@@ -37,6 +37,8 @@ struct _Edje_Nested_Support /* We builed nested-parts list using this struct */
    unsigned char nested_children_count; /* Number of nested children */
 };
 
+static Eina_List *ic_list = NULL;
+
 Evas_Smart *
 _edje_smart_nested_smart_class_new(void)
 {
@@ -798,7 +800,7 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
      }
 #endif
 
-   _edje_file_del(ed);
+   _edje_file_del(ed, EINA_TRUE);
 
    eina_stringshare_replace(&ed->path, file ? eina_file_filename_get(file) : NULL);
    eina_stringshare_replace(&ed->group, group);
@@ -828,7 +830,7 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
         if (ed->collection->parts_count > 0xffff)
           {
              ed->load_error = EDJE_LOAD_ERROR_CORRUPT_FILE;
-             _edje_file_del(ed);
+             _edje_file_del(ed, EINA_TRUE);
              return 0;
           }
         eina_array_step_set(&parts, sizeof (Eina_Array), 8);
@@ -1238,6 +1240,9 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
                {
                   ed->table_parts = malloc(sizeof(Edje_Real_Part *) * n);
                   ed->table_parts_size = n;
+                  // TIZEN_ONLY(20131129): Reuse ecore_imf_context when theme is changed
+                  Eina_List *l = ic_list;
+
                   /* FIXME: check malloc return */
                   n = eina_array_count(&parts) - 1;
                   while ((rp = eina_array_pop(&parts)))
@@ -1327,12 +1332,26 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
 
                             if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
                               {
-                                 _edje_entry_real_part_init(ed, rp);
+                                 // TIZEN_ONLY(20131129): Reuse ecore_imf_context when theme is changed
+                                 Ecore_IMF_Context *ic = NULL;
+                                 if (l)
+                                   {
+                                      ic = l->data;
+                                      l = eina_list_next(l);
+                                   }
+                                 _edje_entry_real_part_init(ed, rp, ic);
+                                 //
+
                                  if (!ed->has_entries)
                                    ed->has_entries = EINA_TRUE;
                               }
                          }
                     }
+
+                  // TIZEN_ONLY(20131129): Reuse ecore_imf_context when theme is changed
+                  if (ic_list)
+                    ic_list = eina_list_free(ic_list);
+                  //
                }
 
              _edje_ref(ed);
@@ -1715,7 +1734,7 @@ on_error:
    _edje_util_thaw(ed);
    _edje_unblock(ed);
    _edje_unref(ed);
-   _edje_file_del(ed);
+   _edje_file_del(ed, EINA_FALSE);
    if (group_path_started)
      {
         const char *path;
@@ -1848,7 +1867,7 @@ _edje_object_collect(Edje *ed)
 }
 
 void
-_edje_file_del(Edje *ed)
+_edje_file_del(Edje *ed, Eina_Bool reuse_ic)
 {
    Edje_User_Defined *eud;
    Evas *tev = NULL;
@@ -1915,7 +1934,17 @@ _edje_file_del(Edje *ed)
 #endif
 
              if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
-               _edje_entry_real_part_shutdown(ed, rp);
+               {
+                  // TIZEN_ONLY(20131129): Reuse ecore_imf_context when theme is changed
+                  if (reuse_ic)
+                    {
+                       Ecore_IMF_Context *ic = _edje_entry_imf_context_get (rp);
+                       ic_list = eina_list_append(ic_list, ic);
+                    }
+
+                  _edje_entry_real_part_shutdown(ed, rp, reuse_ic);
+                  //
+               }
 
              if (rp->object)
                {

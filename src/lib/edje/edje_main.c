@@ -314,7 +314,7 @@ _edje_del(Edje *ed)
    _edje_message_del(ed);
    _edje_signal_callback_free(ed->callbacks);
    ed->callbacks = NULL;
-   _edje_file_del(ed);
+   _edje_file_del(ed, EINA_FALSE);
    if (ed->path) eina_stringshare_del(ed->path);
    if (ed->group) eina_stringshare_del(ed->group);
    if (ed->parent) eina_stringshare_del(ed->parent);

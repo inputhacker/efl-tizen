@@ -148,7 +148,7 @@ _efl_canvas_layout_efl_canvas_group_group_del(Eo *obj, Edje *ed)
      }
 #endif
    if (ed->persp) edje_object_perspective_set(obj, NULL);
-   _edje_file_del(ed);
+   _edje_file_del(ed, EINA_FALSE);
    _edje_unref(ed);
    _edje_lib_unref();
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
