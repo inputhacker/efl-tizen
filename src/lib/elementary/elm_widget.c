@@ -5637,7 +5637,19 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
         evas_object_geometry_get(o, &bx, &by, &bw, &bh);
         x -= bx;
         y -= by;
-        elm_interface_scrollable_content_region_show(w1, x, y, w, h);
+        // TIZEN_ONLY(20171115): [PATCH] Fix for accessibility highlight
+        switch (_elm_config->focus_autoscroll_mode)
+          {
+           case ELM_FOCUS_AUTOSCROLL_MODE_SHOW:
+              elm_interface_scrollable_content_region_show(w1, x, y, w, h);
+              break;
+           case ELM_FOCUS_AUTOSCROLL_MODE_BRING_IN:
+              elm_interface_scrollable_region_bring_in(w1, x, y, w, h);
+              break;
+           default:
+              break;
+          }
+        //
      }
 
    elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
