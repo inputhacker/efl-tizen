@@ -3,6 +3,9 @@
 #endif
 
 #define EFL_ACCESS_PROTECTED
+//TIZEN_ONLY(20171114):  Region show on item elements fixed
+#define EFL_ACCESS_COMPONENT_PROTECTED
+//
 #define EFL_ACCESS_SELECTION_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
@@ -5428,6 +5431,26 @@ _elm_gengrid_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
    free(accessible_name);
    return it->base->accessible_name;
 }
+
+//TIZEN_ONLY(20171114):  Region show on item elements fixed
+EOLIAN static Eina_Bool
+_elm_gengrid_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *it)
+{
+   elm_gengrid_item_show(eo_it, ELM_GENGRID_ITEM_SCROLLTO_IN);
+
+   elm_object_accessibility_highlight_set(VIEW(it), EINA_TRUE);
+
+   return EINA_TRUE;
+}
+
+EOLIAN static Eina_Bool
+_elm_gengrid_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it)
+{
+   elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
+
+   return EINA_TRUE;
+}
+//
 
 EAPI Elm_Object_Item *
 elm_gengrid_nth_item_get(const Evas_Object *obj, unsigned int nth)

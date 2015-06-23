@@ -3,6 +3,9 @@
 #endif
 
 #define EFL_ACCESS_PROTECTED
+//TIZEN_ONLY(20171114):  Region show on item elements fixed
+#define EFL_ACCESS_COMPONENT_PROTECTED
+//
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define EFL_ACCESS_SELECTION_PROTECTED
 //TIZEN_ONLY(20171114): list: enhance accessibility scroll and highlight
@@ -2136,6 +2139,16 @@ _elm_list_item_efl_access_name_get(Eo *eo_it, Elm_List_Item_Data *data)
    if (ret) return ret;
    return _elm_widget_item_accessible_plain_name_get(eo_it, data->label);
 }
+
+//TIZEN_ONLY(20171114):  Region show on item elements fixed
+EOLIAN static Eina_Bool
+_elm_list_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_List_Item_Data *it)
+{
+   elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
+
+   return EINA_TRUE;
+}
+//
 
 static char *
 _access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)

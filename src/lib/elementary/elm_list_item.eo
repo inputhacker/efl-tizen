@@ -119,6 +119,8 @@ class Elm.List.Item(Elm.Widget.Item)
            Efl.Access.state_set { get; }
            //TIZEN_ONLY(20171114): list: enhance accessibility scroll and highlight
            Efl.Access.Component.highlight_grab;
+           //TIZEN_ONLY(20171114):  Region show on item elements fixed
+           Efl.Access.Component.highlight_clear;
            //
       }
 }

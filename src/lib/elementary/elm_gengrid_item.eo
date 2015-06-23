@@ -256,5 +256,9 @@ class Elm.Gengrid.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Focus.Object)
            Efl.Access.name { get; }
            Efl.Access.state_set { get; }
            Efl.Ui.Focus.Object.prepare_logical;
+           //TIZEN_ONLY(20171114):  Region show on item elements fixed
+           Efl.Access.Component.highlight_grab;
+           Efl.Access.Component.highlight_clear;
+           //
       }
 }
