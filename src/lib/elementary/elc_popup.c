@@ -1390,6 +1390,9 @@ err:
 static Eina_Bool
 _key_action_escape(Evas_Object *obj, const char *params EINA_UNUSED)
 {
+//TIZEN_ONLY(20150709) : add keybinding for elm_popup "block,clicked" action
+   evas_object_smart_callback_call(obj, SIG_BLOCK_CLICKED, NULL);
+//
    ELM_POPUP_DATA_GET(obj, pd);
    elm_layout_signal_emit(pd->main_layout, "elm,state,hide", "elm");
    elm_notify_dismiss(pd->notify);
@@ -1788,6 +1791,9 @@ EOLIAN const Efl_Access_Action_Data *
 _elm_popup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *pd)
 {
    static Efl_Access_Action_Data atspi_actions[] = {
+//TIZEN_ONLY(20150709) : add keybinding for elm_popup "block,clicked" action
+          { "escape", "escape", NULL, _key_action_escape},
+//
           { "dismiss", NULL, NULL, _action_dismiss},
           { NULL, NULL, NULL, NULL }
    };

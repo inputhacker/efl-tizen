@@ -604,7 +604,7 @@ group "Elm_Config" struct {
               value "context" int: 0;
               value "key" string: "Escape";
               value "action" string: "escape";
-              value "params" string: "esc";
+              value "params" string: "";
            }
         }
      }
