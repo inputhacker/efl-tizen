@@ -1824,12 +1824,21 @@ _action_click_cb(void *data,
 {
    Elm_Toolbar_Item_Data *it = data;
 
+   // TIZEN_ONLY(20150819): Fix to give a focus to item in mouse clicked event.
+   ELM_TOOLBAR_DATA_GET(WIDGET(it), sd);
+   //
+
    if ((_elm_config->access_mode == ELM_ACCESS_MODE_OFF) ||
        (_elm_access_2nd_click_timeout(VIEW(it))))
      {
         if (_elm_config->access_mode != ELM_ACCESS_MODE_OFF)
           _elm_access_say(E_("Selected"));
         _item_select(it);
+        // TIZEN_ONLY(20150819): Fix to give a focus to item in mouse clicked event.
+        if ((!elm_object_item_disabled_get(EO_OBJ(it))) &&
+            (sd->focused_item != EO_OBJ(it)))
+          elm_object_item_focus_set(EO_OBJ(it), EINA_TRUE);
+        //
      }
 }
 
@@ -2272,9 +2281,10 @@ _mouse_up_cb(Elm_Toolbar_Item_Data *it,
    if (ev->button != 1) return;
    sd->mouse_down = EINA_FALSE;
    ELM_SAFE_FREE(sd->long_timer, ecore_timer_del);
-   if ((!elm_object_item_disabled_get(EO_OBJ(it))) &&
-       (sd->focused_item != EO_OBJ(it)))
-     elm_object_item_focus_set(EO_OBJ(it), EINA_TRUE);
+   // TIZEN_ONLY(20150819): Fix to give a focus to item in mouse clicked event.
+   //if ((!elm_object_item_disabled_get(EO_OBJ(it))) &&
+   //    (sd->focused_item != EO_OBJ(it)))
+   //  elm_object_item_focus_set(EO_OBJ(it), EINA_TRUE);
    evas_object_event_callback_del_full
      (VIEW(it), EVAS_CALLBACK_MOUSE_MOVE,
      (Evas_Object_Event_Cb)_mouse_move_cb, it);
