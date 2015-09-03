@@ -2215,6 +2215,19 @@ _mouse_move_cb(Elm_Toolbar_Item_Data *it,
    Evas_Coord x, y, w, h;
 
    ELM_TOOLBAR_DATA_GET(WIDGET(it), sd);
+
+   // TIZEN_ONLY(20150903): Release the pressed item when mouse move event is handled by scroller.
+   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     {
+        sd->mouse_down = EINA_FALSE;
+        ELM_SAFE_FREE(sd->long_timer, ecore_timer_del);
+
+        elm_layout_signal_emit(VIEW(it), "elm,action,unpressed", "elm");
+
+        return;
+     }
+   //
+
    evas_object_geometry_get(VIEW(it), &x, &y, &w, &h);
 
    if ((x > ev->cur.canvas.x) || (ev->cur.canvas.x > x + w) ||
