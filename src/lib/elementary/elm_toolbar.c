@@ -1123,6 +1123,13 @@ _item_select(Elm_Toolbar_Item_Data *it)
      {
         if (it->func) it->func((void *)(WIDGET_ITEM_DATA_GET(EO_OBJ(it))), WIDGET(it), EO_OBJ(it));
      }
+
+   // TIZEN_ONLY(20150914): Fix to give a focus to item in when it is selected.
+   if ((!elm_object_item_disabled_get(EO_OBJ(it))) &&
+       (sd->focused_item != EO_OBJ(it)))
+     elm_object_item_focus_set(EO_OBJ(it), EINA_TRUE);
+   //
+
    efl_event_callback_legacy_call(obj, EFL_UI_EVENT_SELECTED, EO_OBJ(it));
    if (_elm_atspi_enabled())
     efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_SELECTED, EINA_TRUE);
@@ -1824,21 +1831,12 @@ _action_click_cb(void *data,
 {
    Elm_Toolbar_Item_Data *it = data;
 
-   // TIZEN_ONLY(20150819): Fix to give a focus to item in mouse clicked event.
-   ELM_TOOLBAR_DATA_GET(WIDGET(it), sd);
-   //
-
    if ((_elm_config->access_mode == ELM_ACCESS_MODE_OFF) ||
        (_elm_access_2nd_click_timeout(VIEW(it))))
      {
         if (_elm_config->access_mode != ELM_ACCESS_MODE_OFF)
           _elm_access_say(E_("Selected"));
         _item_select(it);
-        // TIZEN_ONLY(20150819): Fix to give a focus to item in mouse clicked event.
-        if ((!elm_object_item_disabled_get(EO_OBJ(it))) &&
-            (sd->focused_item != EO_OBJ(it)))
-          elm_object_item_focus_set(EO_OBJ(it), EINA_TRUE);
-        //
      }
 }
 
