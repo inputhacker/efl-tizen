@@ -112,7 +112,7 @@ ecore_wl_dnd_selection_has_owner(Ecore_Wl_Dnd *dnd)
 EAPI Eina_Bool
 ecore_wl_dnd_selection_set(Ecore_Wl_Input *input, const char **types_offered)
 {
-   struct wl_data_device_manager *man;
+   struct wl_data_device_manager *manager;
    const char **type;
    char **t;
 
@@ -120,7 +120,7 @@ ecore_wl_dnd_selection_set(Ecore_Wl_Input *input, const char **types_offered)
 
    if (!input) return EINA_FALSE;
 
-   man = input->display->wl.data_device_manager;
+   manager = input->display->wl.data_device_manager;
 
    /* free any old types offered */
    if (input->data_types.data)
@@ -136,15 +136,19 @@ ecore_wl_dnd_selection_set(Ecore_Wl_Input *input, const char **types_offered)
    if (!types_offered[0]) return EINA_FALSE;
 
    /* try to create a new data source */
-   if (!(input->data_source = wl_data_device_manager_create_data_source(man)))
+   if (!(input->data_source = wl_data_device_manager_create_data_source(manager)))
      return EINA_FALSE;
 
    /* add these types to the data source */
    for (type = types_offered; *type; type++)
      {
+        if (!*type) continue;
         t = wl_array_add(&input->data_types, sizeof(*t));
-        if (t) *t = strdup(*type);
-        wl_data_source_offer(input->data_source, *t);
+        if (t)
+          {
+             *t = strdup(*type);
+             wl_data_source_offer(input->data_source, *t);
+          }
      }
 
    /* add a listener for data source events */
