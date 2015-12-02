@@ -552,6 +552,9 @@ _ecore_main_fdh_epoll_mark_active(Eo *obj, Efl_Loop_Data *pd)
         if (ev[i].events & EPOLLIN)  fdh->read_active  = EINA_TRUE;
         if (ev[i].events & EPOLLOUT) fdh->write_active = EINA_TRUE;
         if (ev[i].events & EPOLLERR) fdh->error_active = EINA_TRUE;
+//TIZEN_ONLY(20151202): handle EPOLLHUP
+        if (ev[i].events & EPOLLHUP) fdh->error_active = EINA_TRUE;
+//
 
         _ecore_try_add_to_call_list(obj, pd, fdh);
      }

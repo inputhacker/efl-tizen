@@ -9,6 +9,9 @@
 # define EPOLLPRI      2
 # define EPOLLOUT      4
 # define EPOLLERR      8
+//TIZEN_ONLY(20151202): handle EPOLLHUP
+# define EPOLLHUP     16
+//
 
 # define EPOLL_CTL_ADD 1
 # define EPOLL_CTL_DEL 2
