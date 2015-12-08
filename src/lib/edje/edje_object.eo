@@ -2571,6 +2571,52 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            @since 1.17.0]]
          return: bool; [[$true, on success or $false, on error]]
       }
+      @property size_class {
+         set {
+            [[Sets the object size class.
+
+              This function sets the min and max values for an object level size
+              class. This will make all edje parts in the specified object that
+              have the specified size class update their min and max size with given values.
+
+              @since 1.17]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         get {
+            [[Gets the object size class.
+
+              This function gets the min and max values for an object level size
+              class. These values will only be valid until the size class is changed
+              or the edje object is deleted.
+
+              @since 1.17]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         keys {
+            size_class: const(char)*; [[The size class name]]
+         }
+         values {
+            minw: int; [[The min width]]
+            minh: int; [[The min height]]
+            maxw: int; [[The max width]]
+            maxh: int; [[The max height]]
+         }
+      }
+      size_class_del {
+         [[Delete the object size class.
+
+           This function deletes any values at the object level for the
+           specified object and size class.
+
+           Deleting the size class will revert it to the values
+           defined by edje_size_class_set() or the color class
+           defined in the theme file.
+
+           @since 1.17]]
+         params {
+            @in size_class: const(char)*;
+         }
+      }
       part_drag_step {
          [[Steps the dragable x,y steps.
 

@@ -2239,7 +2239,28 @@ _edje_part_recalc_single_min_max(FLOAT_T sc,
                                  int *minw, int *minh,
                                  int *maxw, int *maxh)
 {
-   *minw = desc->min.w;
+   Edje_Size_Class *size_class = NULL;
+   Evas_Coord mnw, mnh, mxw, mxh;
+
+   if (desc->size_class)
+     size_class = _edje_size_class_find(ed, desc->size_class);
+
+   if (size_class)
+     {
+        mnw = size_class->minw;
+        mnh = size_class->minh;
+        mxw = size_class->maxw;
+        mxh = size_class->maxh;
+     }
+   else
+     {
+        mnw = desc->min.w;
+        mnh = desc->min.h;
+        mxw = desc->max.w;
+        mxh = desc->max.h;
+     }
+
+   *minw = mnw;
    if (ep->part->scale) *minw = TO_INT(SCALE(sc, *minw));
    if ((ep->type == EDJE_RP_TYPE_SWALLOW) &&
        (ep->typedata.swallow))
@@ -2264,7 +2285,7 @@ _edje_part_recalc_single_min_max(FLOAT_T sc,
         if ((ep->typedata.swallow->swallow_params.max.w <= 0) ||
             (ep->typedata.swallow->swallow_params.max.w == EDJE_INF_MAX_W))
           {
-             *maxw = desc->max.w;
+             *maxw = mxw;
              if (*maxw > 0)
                {
                   if (ep->part->scale) *maxw = TO_INT(SCALE(sc, *maxw));
@@ -2273,11 +2294,11 @@ _edje_part_recalc_single_min_max(FLOAT_T sc,
           }
         else
           {
-             if (desc->max.w <= 0)
+             if (mxw <= 0)
                *maxw = ep->typedata.swallow->swallow_params.max.w;
              else
                {
-                  *maxw = desc->max.w;
+                  *maxw = mxw;
                   if (*maxw > 0)
                     {
                        if (ep->part->scale) *maxw = TO_INT(SCALE(sc, *maxw));
@@ -2290,7 +2311,7 @@ _edje_part_recalc_single_min_max(FLOAT_T sc,
      }
    else
      {
-        *maxw = desc->max.w;
+        *maxw = mxw;
         if (*maxw > 0)
           {
              if (ep->part->scale) *maxw = TO_INT(SCALE(sc, *maxw));
@@ -2304,7 +2325,7 @@ _edje_part_recalc_single_min_max(FLOAT_T sc,
         if (*maxw < *minw) *maxw = *minw;
      }
 
-   *minh = desc->min.h;
+   *minh = mnh;
    if (ep->part->scale) *minh = TO_INT(SCALE(sc, *minh));
    if ((ep->type == EDJE_RP_TYPE_SWALLOW) &&
        (ep->typedata.swallow))
@@ -2329,7 +2350,7 @@ _edje_part_recalc_single_min_max(FLOAT_T sc,
         if ((ep->typedata.swallow->swallow_params.max.h <= 0) ||
             (ep->typedata.swallow->swallow_params.max.h == EDJE_INF_MAX_H))
           {
-             *maxh = desc->max.h;
+             *maxh = mxh;
              if (*maxh > 0)
                {
                   if (ep->part->scale) *maxh = TO_INT(SCALE(sc, *maxh));
@@ -2338,11 +2359,11 @@ _edje_part_recalc_single_min_max(FLOAT_T sc,
           }
         else
           {
-             if (desc->max.h <= 0)
+             if (mxh <= 0)
                *maxh = ep->typedata.swallow->swallow_params.max.h;
              else
                {
-                  *maxh = desc->max.h;
+                  *maxh = mxh;
                   if (*maxh > 0)
                     {
                        if (ep->part->scale) *maxh = TO_INT(SCALE(sc, *maxh));
@@ -2355,7 +2376,7 @@ _edje_part_recalc_single_min_max(FLOAT_T sc,
      }
    else
      {
-        *maxh = desc->max.h;
+        *maxh = mxh;
         if (*maxh > 0)
           {
              if (ep->part->scale) *maxh = TO_INT(SCALE(sc, *maxh));

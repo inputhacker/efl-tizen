@@ -395,6 +395,7 @@ typedef struct _Edje_Calc_Params_Physics Edje_Calc_Params_Physics;
 typedef struct _Edje_Pending_Program Edje_Pending_Program;
 typedef struct _Edje_Text_Style Edje_Text_Style;
 typedef struct _Edje_Text_Class Edje_Text_Class;
+typedef struct _Edje_Size_Class Edje_Size_Class;
 typedef struct _Edje_Var Edje_Var;
 typedef struct _Edje_Var_Int Edje_Var_Int;
 typedef struct _Edje_Var_Float Edje_Var_Float;
@@ -557,6 +558,9 @@ struct _Edje_File
 
    Eina_List                      *color_classes;
    Eina_Hash                      *color_hash;
+
+   Eina_List                      *size_classes;
+   Eina_Hash                      *size_hash;
 
    int                             references;
    const char                     *compiler;
@@ -1245,6 +1249,8 @@ struct _Edje_Part_Description_Common
 
    int        clip_to_id; /* state clip override @since 1.15 */
 
+   const char       *size_class;
+
    struct {
       FLOAT_T        relative_x;
       FLOAT_T        relative_y;
@@ -1648,6 +1654,7 @@ struct _Edje
    Eina_List            *pending_actions;
    Eina_Hash            *color_classes;
    Eina_List            *text_classes;
+   Eina_Hash            *size_classes;
    /* variable pool for Edje Embryo scripts */
    Edje_Var_Pool        *var_pool;
    /* for faster lookups to avoid nth list walks */
@@ -2056,6 +2063,15 @@ struct _Edje_Text_Class
    Evas_Font_Size  size;
 };
 
+struct _Edje_Size_Class
+{
+   Eina_Stringshare *name;
+   Evas_Coord        minw;
+   Evas_Coord        minh;
+   Evas_Coord        maxw;
+   Evas_Coord        maxh;
+};
+
 struct _Edje_Var_Int
 {
    int      v;
@@ -2455,6 +2471,12 @@ void              _edje_text_class_member_del(Edje *ed, const char *text_class);
 void              _edje_text_class_members_free(void);
 void              _edje_text_class_hash_free(void);
 void              _edje_text_class_members_clean(Edje *ed);
+Edje_Size_Class  *_edje_size_class_find(Edje *ed, const char *size_class);
+void              _edje_size_class_member_add(Edje *ed, const char *size_class);
+void              _edje_size_class_member_del(Edje *ed, const char *size_class);
+void              _edje_size_class_members_free(void);
+void              _edje_size_class_hash_free(void);
+void              _edje_size_class_members_clean(Edje *ed);
 Edje             *_edje_fetch(const Evas_Object *obj) EINA_PURE;
 int               _edje_util_freeze(Edje *ed);
 int               _edje_util_thaw(Edje *ed);

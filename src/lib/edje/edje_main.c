@@ -166,6 +166,8 @@ shutdown_all:
    _edje_box_shutdown();
    _edje_text_class_members_free();
    _edje_text_class_hash_free();
+   _edje_size_class_members_free();
+   _edje_size_class_hash_free();
    _edje_edd_shutdown();
    // TIZEN_ONLY(20160313): get cache directory from XDG_CACHE_HOME env var if app doesn't want to use efreet.
 #if 1
@@ -222,6 +224,8 @@ _edje_shutdown_core(void)
    _edje_box_shutdown();
    _edje_text_class_members_free();
    _edje_text_class_hash_free();
+   _edje_size_class_members_free();
+   _edje_size_class_hash_free();
    _edje_edd_shutdown();
 
    eina_cow_del(_edje_calc_params_map_cow);
@@ -317,6 +321,7 @@ _edje_del(Edje *ed)
         if (tc->font) eina_stringshare_del(tc->font);
         free(tc);
      }
+   eina_hash_free(ed->size_classes);
    EINA_LIST_FREE(ed->text_insert_filter_callbacks, cb)
      {
         eina_stringshare_del(cb->part);
@@ -330,6 +335,7 @@ _edje_del(Edje *ed)
 
    _edje_color_class_member_clean(ed);
    _edje_text_class_members_clean(ed);
+   _edje_size_class_members_clean(ed);
 }
 
 void
