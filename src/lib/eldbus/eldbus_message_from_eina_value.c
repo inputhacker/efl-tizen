@@ -116,7 +116,6 @@ _array_append(const char *type, const Eina_Value *value_array, Eldbus_Message_It
              }
            break;
         }
-      case 'b'://boolean
       case 'y'://byte
         {
            unsigned char z;
@@ -125,6 +124,17 @@ _array_append(const char *type, const Eina_Value *value_array, Eldbus_Message_It
              {
                 eina_value_array_get(value_array, i, &z);
                 eldbus_message_iter_basic_append(array, type[1], z);
+             }
+           break;
+        }
+      case 'b'://boolean
+        {
+           unsigned char z;
+           unsigned i;
+           for (i = 0; i < eina_value_array_count(value_array); i++)
+             {
+                eina_value_array_get(value_array, i, &z);
+                eldbus_message_iter_basic_append(array, type[1], (uint32_t)z);
              }
            break;
         }
@@ -228,12 +238,18 @@ _basic_append(char type, const Eina_Value *value, const Eina_Value_Struct_Desc *
            eldbus_message_iter_basic_append(iter, type, txt);
            break;
         }
-      case 'b'://boolean
       case 'y'://byte
         {
            unsigned char byte;
            eina_value_struct_get(value, desc->members[idx].name, &byte);
            eldbus_message_iter_basic_append(iter, type, byte);
+           break;
+        }
+      case 'b'://boolean
+        {
+           unsigned char boolean;
+           eina_value_struct_get(value, desc->members[idx].name, &boolean);
+           eldbus_message_iter_basic_append(iter, type, (uint32_t)boolean);
            break;
         }
       case 'n'://int16
