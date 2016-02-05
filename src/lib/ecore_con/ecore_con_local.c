@@ -463,16 +463,16 @@ start:
      goto error_umask;
 
    if (fcntl(svr->fd, F_SETFL, O_NONBLOCK) < 0)
-     goto error_umask;
+     goto error_fd;
 
    if (fcntl(svr->fd, F_SETFD, FD_CLOEXEC) < 0)
-     goto error_umask;
+     goto error_fd;
 
    lin.l_onoff = 1;
    lin.l_linger = 0;
    if (setsockopt(svr->fd, SOL_SOCKET, SO_LINGER, (const void *)&lin,
                   sizeof(struct linger)) < 0)
-     goto error_umask;
+     goto error_fd;
 
    if (bind(svr->fd, (struct sockaddr *)&socket_unix, socket_unix_len) < 0)
      {
@@ -488,13 +488,13 @@ start:
              else
                {
                   ERR("Local socket '%s' removal failed: %s", buf, strerror(errno));
-                  goto error_umask;
+                  goto error_fd;
                }
           }
      }
 
    if (listen(svr->fd, 4096) < 0)
-     goto error_umask;
+     goto error_fd;
 
 #ifdef HAVE_SYSTEMD
 fd_ready:
@@ -512,6 +512,9 @@ fd_ready:
 
    return 1;
 
+error_fd:
+   close(svr->fd);
+   svr->fd = -1;
 error_umask:
    umask(pmode);
 error:
