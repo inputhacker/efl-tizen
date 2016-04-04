@@ -1226,11 +1226,16 @@ _move_resize_cb(void *data EINA_UNUSED,
                 void *event_info EINA_UNUSED)
 {
    Conformant_Part_Type part_type;
+   ELM_CONFORMANT_DATA_GET(obj, sd);
+   Elm_Win_Keyboard_Mode mode;
 
    part_type = (ELM_CONFORMANT_INDICATOR_PART |
                 ELM_CONFORMANT_SOFTKEY_PART |
-                ELM_CONFORMANT_VIRTUAL_KEYPAD_PART |
                 ELM_CONFORMANT_CLIPBOARD_PART);
+
+   mode = elm_win_keyboard_mode_get(sd->win);
+   if (mode == ELM_WIN_KEYBOARD_ON)
+     part_type |= ELM_CONFORMANT_VIRTUAL_KEYPAD_PART;
 
    _conformant_part_sizing_eval(obj, part_type);
 }
