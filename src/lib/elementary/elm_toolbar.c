@@ -160,18 +160,42 @@ _item_menu_destroy(Elm_Toolbar_Item_Data *item)
 static void
 _item_unselect(Elm_Toolbar_Item_Data *item)
 {
+   /* TIZEN_ONLY(20160418): Add auto selected item feature for navigation style.
    if ((!item) || (!item->selected)) return;
+   */
+   Eina_Bool selected;
+
+   if (!item) return;
+
+   selected = item->selected;
+   /* END */
 
    ELM_TOOLBAR_DATA_GET(WIDGET(item), sd);
 
    item->selected = EINA_FALSE;
+   /* TIZEN_ONLY(20160418): Add auto selected item feature for navigation style.
    sd->selected_item = NULL;
+   */
+   if (sd->selected_item == EO_OBJ(item))
+     sd->selected_item = NULL;
+   if (sd->auto_selected_last_item == EO_OBJ(item))
+     sd->auto_selected_last_item = NULL;
+   /* END */
    elm_layout_signal_emit(VIEW(item), "elm,state,unselected", "elm");
    if (item->icon)
      elm_widget_signal_emit(item->icon, "elm,state,unselected", "elm");
+   /* TIZEN_ONLY(20160418): Add auto selected item feature for navigation style.
    efl_event_callback_legacy_call(WIDGET(item), EFL_UI_EVENT_UNSELECTED, EO_OBJ(item));
    if (_elm_atspi_enabled())
     efl_access_state_changed_signal_emit(EO_OBJ(item), EFL_ACCESS_STATE_SELECTED, EINA_FALSE);
+   */
+   if (selected)
+     {
+        efl_event_callback_legacy_call(WIDGET(item), EFL_UI_EVENT_UNSELECTED, EO_OBJ(item));
+        if (_elm_atspi_enabled())
+          efl_access_state_changed_signal_emit(EO_OBJ(item), EFL_ACCESS_STATE_SELECTED, EINA_FALSE);
+     }
+   /* END */
 }
 
 static void
@@ -1029,6 +1053,13 @@ _item_select(Elm_Toolbar_Item_Data *it)
              Elm_Object_Item *eo_it2 = elm_toolbar_selected_item_get(WIDGET(it));
              ELM_TOOLBAR_ITEM_DATA_GET(eo_it2, it2);
              _item_unselect(it2);
+             /* TIZEN_ONLY(20160418): Add auto selected item feature for navigation style. */
+             if (sd->auto_selected_last_item)
+               {
+                  ELM_TOOLBAR_ITEM_DATA_GET(sd->auto_selected_last_item, it3);
+                  _item_unselect(it3);
+               }
+             /* END */
 
              it->selected = EINA_TRUE;
              sd->selected_item = EO_OBJ(it);
@@ -1182,6 +1213,22 @@ _elm_toolbar_item_order_signal_emit(Elm_Toolbar_Data *sd,
                }
           }
      }
+
+   /* TIZEN_ONLY(20160418): Add auto selected item feature for navigation style. */
+   if ((sd->selected_item != EO_OBJ(last_it)) &&
+       (sd->auto_selected_last_item != EO_OBJ(last_it)))
+     {
+        if (sd->auto_selected_last_item &&
+            sd->auto_selected_last_item != sd->selected_item)
+          {
+             ELM_TOOLBAR_ITEM_DATA_GET(sd->auto_selected_last_item, it2);
+
+             _item_unselect(it2);
+          }
+
+        sd->auto_selected_last_item = EO_OBJ(last_it);
+     }
+   /* END */
 
    eina_list_free(list);
 }
