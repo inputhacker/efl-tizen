@@ -364,6 +364,12 @@ struct _Ecore_Wl_Event_Data_Source_Send
    int fd;
 };
 
+typedef enum
+{
+   ECORE_WL_SELECTION_CNP,
+   ECORE_WL_SELECTION_DND
+} Ecore_Wl_Selection_Type;
+
 /** @since 1.12 */
 struct _Ecore_Wl_Event_Data_Source_Target
 {
@@ -378,6 +384,7 @@ struct _Ecore_Wl_Event_Selection_Data_Ready
    Eina_Bool done;
    char **types;
    int num_types;
+   Ecore_Wl_Selection_Type sel_type;
 };
 
 struct _Ecore_Wl_Event_Interfaces_Bound

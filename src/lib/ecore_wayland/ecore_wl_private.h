@@ -372,6 +372,7 @@ struct _Ecore_Wl_Dnd_Source
    int refcount;
    int fd;
    int x, y;
+   Ecore_Wl_Selection_Type sel_type;
 };
 
 struct _Ecore_Wl_Dnd_Target

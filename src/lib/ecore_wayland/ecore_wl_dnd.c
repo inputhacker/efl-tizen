@@ -179,6 +179,7 @@ ecore_wl_dnd_selection_get(Ecore_Wl_Input *input, const char *type)
 
    if (!*t) return EINA_FALSE;
 
+   input->selection_source->sel_type = ECORE_WL_SELECTION_CNP;
    _ecore_wl_dnd_selection_data_receive(input->selection_source, type);
 
    return EINA_TRUE;
@@ -334,6 +335,7 @@ ecore_wl_dnd_drag_get(Ecore_Wl_Input *input, const char *type)
 
    if (!*t) return EINA_FALSE;
 
+   input->drag_source->sel_type = ECORE_WL_SELECTION_DND;
    _ecore_wl_dnd_selection_data_receive(input->drag_source, type);
 
    return EINA_TRUE;
@@ -695,6 +697,7 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
    if (!(event = calloc(1, sizeof(Ecore_Wl_Event_Selection_Data_Ready))))
      return ECORE_CALLBACK_CANCEL;
 
+   event->sel_type = source->sel_type;
    if (len <= 0)
      {
         close(source->fd);
