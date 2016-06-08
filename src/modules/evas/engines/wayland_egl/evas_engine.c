@@ -1369,8 +1369,8 @@ eng_image_native_set(void *engine, void *image, void *native)
 
                   //XXX: workaround for mesa-10.2.8
                   // mesa's eglQueryWaylandBufferWL() with EGL_WAYLAND_Y_INVERTED_WL works incorrect.
-                  //img->native.yinvert = yinvert;
-                  img->native.yinvert = 1;
+                  img->native.yinvert = yinvert;
+//                  img->native.yinvert = 1;
                   img->native.loose = 0;
                   img->native.disp = ob->egl_disp;
                   img->native.shared = ob->gl_context->shared;
