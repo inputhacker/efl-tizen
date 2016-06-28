@@ -45,6 +45,7 @@ static void _ecore_wl_signal_exit_free(void *data EINA_UNUSED, void *event);
 static void _ecore_wl_init_callback(void *data, struct wl_callback *callback, uint32_t serial EINA_UNUSED);
 // TIZEN_ONLY(20150722): Add ecore_wl_window_keygrab_* APIs
 static void _ecore_wl_cb_keygrab_notify(void *data, struct tizen_keyrouter *tizen_keyrouter, struct wl_surface *surface, uint32_t key, uint32_t mode, uint32_t error);
+static void _ecore_wl_cb_keygrab_notify_list(void *data, struct tizen_keyrouter *tizen_keyrouter, struct wl_surface *surface, struct wl_array *grab_result);
 //
 static void _ecore_wl_cb_conformant(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t is_conformant);
 static void _ecore_wl_cb_conformant_area(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t conformant_part, uint32_t state, int32_t x, int32_t y, int32_t w, int32_t h);
@@ -70,6 +71,7 @@ static Eina_Bool _ecore_wl_server_mode = EINA_FALSE;
 // TIZEN_ONLY(20150722): Add ecore_wl_window_keygrab_* APIs
 static Eina_Hash *_keygrabs = NULL;
 static int _ecore_wl_keygrab_error = -1;
+static struct wl_array _ecore_wl_keygrab_result_list;
 static int _ecore_wl_active_angle = -1;
 //
 
@@ -97,7 +99,8 @@ static const struct wl_callback_listener _ecore_wl_anim_listener =
 // TIZEN_ONLY(20150722): Add ecore_wl_window_keygrab_* APIs
 static const struct tizen_keyrouter_listener _ecore_tizen_keyrouter_listener =
 {
-   _ecore_wl_cb_keygrab_notify
+   _ecore_wl_cb_keygrab_notify,
+   _ecore_wl_cb_keygrab_notify_list
 };
 //
 
@@ -1246,6 +1249,15 @@ _ecore_wl_cb_keygrab_notify(void *data EINA_UNUSED, struct tizen_keyrouter *tize
    INF("[PID:%d] key=%d, mode=%d, error=%d", getpid(), key, mode, error);
 }
 
+static void
+_ecore_wl_cb_keygrab_notify_list(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, struct wl_array *grab_result)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   wl_array_init(&_ecore_wl_keygrab_result_list);
+   wl_array_copy(&_ecore_wl_keygrab_result_list, grab_result);
+}
+
 struct _Keycode_Map
 {
    xkb_keysym_t keysym;
@@ -1489,6 +1501,240 @@ ecore_wl_window_keygrab_unset(Ecore_Wl_Window *win, const char *key, int mod EIN
    _ecore_wl_keygrab_error = -1;
    return ret;
 }
+
+char *
+_ecore_wl_keyname_get(int keycode)
+{
+   xkb_keysym_t sym = XKB_KEY_NoSymbol;
+   char name[256] = {0, };
+
+   sym = xkb_state_key_get_one_sym(_ecore_wl_disp->input->xkb.state, keycode);
+   xkb_keysym_get_name(sym, name, sizeof(name));
+
+   return strdup(name);
+}
+
+EAPI Eina_List
+*ecore_wl_window_keygrab_list_set(Ecore_Wl_Window *win, Eina_List *infos)
+{
+   xkb_keysym_t keysym = 0x0;
+   int num_keycodes = 0;
+   xkb_keycode_t *keycodes = NULL;
+
+   struct wl_surface *surface = NULL;
+
+   struct wl_array grab_list;
+   int *grab_data = NULL;
+   Eina_List *l1, *l2;
+   Eina_List *error_keys = NULL;
+   int i;
+
+   Ecore_Wl_Keygrab_Info *info;
+   Ecore_Wl_Window_Keygrab_Info *grab_info;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   if (!_ecore_wl_disp) goto err;
+   while (!_ecore_wl_disp->wl.keyrouter)
+     {
+        INF("Wait until keyrouter interface is ready");
+        wl_display_roundtrip(_ecore_wl_disp->wl.display);
+     }
+
+   while (!_ecore_wl_disp->input)
+     {
+        INF("Wait wl_registry_add_listener reply");
+        wl_display_roundtrip(_ecore_wl_disp->wl.display);
+     }
+
+   while (!_ecore_wl_disp->input->caps_update)
+     {
+        INF("Wait until wl_seat_capabilities_update is ready");
+        wl_display_roundtrip(_ecore_wl_disp->wl.display);
+     }
+   if (_ecore_wl_disp->input->keyboard)
+     {
+        while(!_ecore_wl_disp->input->xkb.keymap)
+          {
+             wl_display_roundtrip(_ecore_wl_disp->wl.display);
+             INF("Wait until keymap event occurs");
+          }
+        INF("Finish keymap event");
+     }
+   else
+     {
+        WRN("This device does not support key");
+        goto err;
+     }
+
+   if (win)
+     surface = ecore_wl_window_surface_get(win);
+
+   wl_array_init(&grab_list);
+
+   EINA_LIST_FOREACH_SAFE(infos, l1, l2, grab_info)
+     {
+        if (!grab_info->key) continue;
+        if ((grab_info->mode < ECORE_WL_WINDOW_KEYGRAB_UNKNOWN) || (grab_info->mode > ECORE_WL_WINDOW_KEYGRAB_EXCLUSIVE))
+          continue;
+
+        keysym = xkb_keysym_from_name(grab_info->key, XKB_KEYSYM_NO_FLAGS);
+
+        if (keysym == XKB_KEYSYM_NO_FLAGS)
+          {
+             WRN("Keysym of key(\"%s\") doesn't exist", grab_info->key);
+             continue;
+          }
+        num_keycodes = ecore_wl_keycode_from_keysym(_ecore_wl_disp->input->xkb.keymap, keysym, &keycodes);
+
+        if (num_keycodes == 0)
+          {
+             WRN("Keycode of key(\"%s\") doesn't exist", grab_info->key);
+             continue;
+          }
+        for (i = 0; i < num_keycodes; i++)
+          {
+             INF("keycode of key:(%d)", keycodes[i]);
+             grab_data = wl_array_add(&grab_list, sizeof(int));
+             *grab_data = keycodes[i];
+             grab_data = wl_array_add(&grab_list, sizeof(int));
+             *grab_data = grab_info->mode;
+             grab_data = wl_array_add(&grab_list, sizeof(int));
+             *grab_data = 0;
+          }
+        free(keycodes);
+        keycodes = NULL;
+     }
+   tizen_keyrouter_set_keygrab_list(_ecore_wl_disp->wl.keyrouter, surface, &grab_list);
+
+   ecore_wl_sync();
+
+   wl_array_for_each(info, &_ecore_wl_keygrab_result_list)
+     {
+
+        if (!info->err)
+          {
+             INF("[PID:%d]Succeed to get return value !", getpid());
+             if (_ecore_wl_keygrab_hash_add(&info->key, surface))
+               INF("Succeed to add key to the keygrab hash!");
+             else
+               WRN("Failed to add key to the keygrab hash!");
+          }
+        else
+          {
+             WRN("After keygrab keycode %d error = %d", info->key, info->err);
+             error_keys = eina_list_append(error_keys, _ecore_wl_keyname_get(info->key));
+          }
+     }
+   wl_array_release(&grab_list);
+   wl_array_release(&_ecore_wl_keygrab_result_list);
+
+   return error_keys;
+
+err:
+   EINA_LIST_FOREACH_SAFE(infos, l1, l2, grab_info)
+     {
+        error_keys = eina_list_append(error_keys, strdup(grab_info->key));
+     }
+   return error_keys;
+}
+
+EAPI Eina_List
+*ecore_wl_window_keygrab_list_unset(Ecore_Wl_Window *win, Eina_List *infos)
+{
+   xkb_keysym_t keysym = 0x0;
+   int num_keycodes = 0;
+   xkb_keycode_t *keycodes = NULL;
+
+   struct wl_surface *surface = NULL;
+
+   struct wl_array ungrab_list;
+   int *grab_data = NULL;
+   Eina_List *l1, *l2;
+   Eina_List *error_keys = NULL;
+   char *key;
+   int i;
+
+   Ecore_Wl_Keyungrab_Info *info;
+   Ecore_Wl_Window_Keygrab_Info *grab_info;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   if ((!_ecore_wl_disp) || (!_ecore_wl_disp->wl.keyrouter)) goto err;
+
+   if ((!_ecore_wl_disp->input) || (!_ecore_wl_disp->input->xkb.keymap))
+     {
+        ERR("Keymap is not ready");
+        goto err;
+     }
+
+   if (win)
+     surface = ecore_wl_window_surface_get(win);
+
+   wl_array_init(&ungrab_list);
+
+   EINA_LIST_FOREACH_SAFE(infos, l1, l2, grab_info)
+     {
+        if (!grab_info->key) continue;
+
+        keysym = xkb_keysym_from_name(grab_info->key, XKB_KEYSYM_NO_FLAGS);
+
+        if (keysym == XKB_KEYSYM_NO_FLAGS)
+          {
+             WRN("Keysym of key(\"%s\") doesn't exist", grab_info->key);
+             continue;
+          }
+        num_keycodes = ecore_wl_keycode_from_keysym(_ecore_wl_disp->input->xkb.keymap, keysym, &keycodes);
+
+        if (num_keycodes == 0)
+          {
+             WRN("Keycode of key(\"%s\") doesn't exist", key);
+             continue;
+          }
+        for (i = 0; i < num_keycodes; i++)
+          {
+             INF("keycode of key:(%d)", keycodes[i]);
+             grab_data = wl_array_add(&ungrab_list, sizeof(int));
+             *grab_data = keycodes[i];
+             grab_data = wl_array_add(&ungrab_list, sizeof(int));
+             *grab_data = 0;
+          }
+        free(keycodes);
+        keycodes = NULL;
+     }
+   tizen_keyrouter_unset_keygrab_list(_ecore_wl_disp->wl.keyrouter, surface, &ungrab_list);
+
+   ecore_wl_sync();
+
+   wl_array_for_each(info, &_ecore_wl_keygrab_result_list)
+     {
+        if (!info->err)
+          {
+             INF("[PID:%d]Succeed to get return value !", getpid());
+             if (_ecore_wl_keygrab_hash_del(&info->key))
+               INF("Succeed to delete key to the keygrab hash!");
+             else
+               WRN("Failed to delete key to the keygrab hash!");
+          }
+        else
+          {
+             WRN("After keyungrab keycode %d error = %d", info->key, info->err);
+             error_keys = eina_list_append(error_keys, _ecore_wl_keyname_get(info->key));
+          }
+     }
+   wl_array_release(&ungrab_list);
+   wl_array_release(&_ecore_wl_keygrab_result_list);
+
+   return error_keys;
+
+err:
+   EINA_LIST_FOREACH_SAFE(info, l1, l2, grab_info)
+     {
+        error_keys = eina_list_append(error_keys, strdup(grab_info->key));
+     }
+   return error_keys;
+}
+//
 
 EAPI int
 ecore_wl_window_active_angle_get(Ecore_Wl_Window *win)

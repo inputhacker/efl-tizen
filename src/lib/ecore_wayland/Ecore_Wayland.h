@@ -89,6 +89,9 @@ typedef struct _Ecore_Wl_Event_Global Ecore_Wl_Event_Global;
 typedef struct _Ecore_Wl_Event_Keymap_Update Ecore_Wl_Event_Keymap_Update;
 typedef struct _Ecore_Wl_Event_Indicator_Flick Ecore_Wl_Event_Indicator_Flick;
 typedef struct _Ecore_Wl_Event_Clipboard_Data_Selected Ecore_Wl_Event_Clipboard_Data_Selected;
+typedef struct _Ecore_Wl_Keygrab_Info Ecore_Wl_Keygrab_Info;
+typedef struct _Ecore_Wl_Keyungrab_Info Ecore_Wl_Keyungrab_Info;
+typedef struct _Ecore_Wl_Window_Keygrab_Info Ecore_Wl_Window_Keygrab_Info;
 
 struct _Ecore_Wl_Event_Global
 {
@@ -444,6 +447,25 @@ struct _Ecore_Wl_Event_Indicator_Flick
 struct _Ecore_Wl_Event_Clipboard_Data_Selected
 {
    unsigned int win;
+}
+
+struct _Ecore_Wl_Keygrab_Info
+{
+   int key;
+   int mode;
+   int err;
+};
+
+struct _Ecore_Wl_Keyungrab_Info
+{
+   int key;
+   int err;
+};
+
+struct _Ecore_Wl_Window_Keygrab_Info
+{
+   char *key;
+   Ecore_Wl_Window_Keygrab_Mode mode;
 };
 /**
  * @internal
@@ -1504,6 +1526,55 @@ EAPI Eina_Bool ecore_wl_window_keygrab_set(Ecore_Wl_Window *win, const char *key
  * @ingroup Ecore_Wl_Window
  */
 EAPI Eina_Bool ecore_wl_window_keygrab_unset(Ecore_Wl_Window *win, const char *key, int mod, int any_mod);
+
+/**
+ * Set keygrab values of the window.
+ *
+ * The returned list should be freed with @c eina_list_free() when you no
+ * longer need it.
+ *
+ * @param win the window
+ * @param infos the list of keys and grab modes for setting keygrab
+ *
+ * @return NULL, or the list of keys being failed keygrab set.
+ *
+ * @Example
+ *
+ * Ecore_Wl_Window_Keygrab_Info *info = malloc(sizeof(Ecore_Wl_Window_Keygrab_Info));
+ * info->key = "XF86AudioLowerVolume";
+ * info->mode = ECORE_WL_WINDOW_KEYGRAB_SHARED;
+ * infos = eina_list_append(infos, info);
+ *
+ * ecore_wl_window_keygrab_list_set(win, infos);
+ *
+ * @ingroup Ecore_Wl_Window
+ * @since tizen 3.0
+ */
+EAPI Eina_List *ecore_wl_window_keygrab_list_set(Ecore_Wl_Window *win, Eina_List *infos);
+
+/**
+ * Unset keygrab values of the window.
+ *
+ * The returned list should be freed with @c eina_list_free() when you no
+ * longer need it.
+ *
+ * @param win the window
+ * @param infos the list of infos for unsetting keygrab
+ *
+ * @return NULL, or the list of keys being failed keygrab unset.
+ *
+ * @Example
+ *
+ * Ecore_Wl_Window_Keygrab_Info *info = malloc(sizeof(Ecore_Wl_Window_Keygrab_Info));
+ * info->key = "XF86AudioLowerVolume";
+ * infos = eina_list_append(infos, info);
+ *
+ * ecore_wl_window_keygrab_list_unset(win, infos);
+ *
+ * @ingroup Ecore_Wl_Window
+ * @since tizen 3.0
+ */
+EAPI Eina_List *ecore_wl_window_keygrab_list_unset(Ecore_Wl_Window *win, Eina_List *infos);
 
 EAPI void ecore_wl_window_conformant_set(Ecore_Wl_Window *win, unsigned int is_conformant);
 EAPI Eina_Bool ecore_wl_window_conformant_get(Ecore_Wl_Window *win);
