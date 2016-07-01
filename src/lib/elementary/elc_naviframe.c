@@ -1833,6 +1833,10 @@ _elm_naviframe_item_pop(Eo *obj, Elm_Naviframe_Data *sd)
    Elm_Naviframe_Item_Data *prev_it = NULL;
    Evas_Object *content = NULL;
 
+   //TIZEN_ONLY(20160917): While popping, another popping should not be executed
+   if (sd->freeze_events && sd->popping) return NULL;
+   //
+
    eo_item = elm_naviframe_top_item_get(obj);
    if (!eo_item) return NULL;
 
