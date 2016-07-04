@@ -39,6 +39,9 @@ evas_init(void)
    if (!eina_init())
      goto shutdown_evil;
 
+   if (!eet_init())
+     goto shutdown_eet;
+
    _evas_log_dom_global = eina_log_domain_register
      ("evas_main", EVAS_DEFAULT_LOG_COLOR);
    if (_evas_log_dom_global < 0)
@@ -94,6 +97,8 @@ evas_init(void)
    eet_shutdown();
 #endif
    eina_log_domain_unregister(_evas_log_dom_global);
+ shutdown_eet:
+   eet_shutdown();
  shutdown_eina:
    eina_shutdown();
  shutdown_evil:
@@ -158,6 +163,8 @@ evas_shutdown(void)
    eo_shutdown();
 
    eina_log_domain_unregister(_evas_log_dom_global);
+
+   eet_shutdown();
 
    eina_shutdown();
 #ifdef HAVE_EVIL

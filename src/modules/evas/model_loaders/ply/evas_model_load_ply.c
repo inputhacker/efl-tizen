@@ -84,8 +84,6 @@ _read_data(float *array, int place, int count, char *current, float divider)
 static inline PLY_Header
 _read_header(char *map)//Check properties of mesh in .ply file.
 {
-   eina_init();
-
    Eina_Bool reading_vertices = EINA_TRUE, check_next_char = EINA_FALSE;
    int vertex_lines, triangles = 0, vertices_in_current_face = 0;
    char **helping_pointer;
