@@ -7347,7 +7347,7 @@ _elm_widget_item_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, E
 
 //TIZEN_ONLY(20160629): add elm color interface
 Eina_Stringshare *
-_elm_widget_edje_class(const Eo_Class *klass, const char *style, const char *part)
+_elm_widget_edje_class_get(const Eo_Class *klass, const char *style, const char *part)
 {
    Eina_Strbuf *buf;
    Eina_Stringshare *str;
@@ -7384,7 +7384,7 @@ _efl_ui_widget_efl_gfx_base_color_part_set(Eo *obj, Elm_Widget_Smart_Data *sd, c
      {
         int r2 = 0, g2 = 0, b2 = 0, a2 = 0, r3 = 0, g3 = 0, b3 = 0, a3 = 0;
 
-        buf = _elm_widget_edje_class(eo_class_get(obj), "default", part);
+        buf = _elm_widget_edje_class_get(eo_class_get(obj), NULL, part);
         _elm_color_unpremul(a, &r, &g, &b);
 
         edje_object_color_class_get(sd->resize_obj, buf, NULL, NULL, NULL, NULL, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3);
@@ -7396,7 +7396,7 @@ _efl_ui_widget_efl_gfx_base_color_part_set(Eo *obj, Elm_Widget_Smart_Data *sd, c
      }
    else
      {
-        ERR("%s does not support %s API.", elm_widget_type_get(obj), "elm_object_color_set()");
+        ERR("%s does not support %s API.", elm_widget_type_get(obj), "elm_object_part_color_set()");
         return EINA_FALSE;
      }
 }
@@ -7409,7 +7409,7 @@ _efl_ui_widget_efl_gfx_base_color_part_get(Eo *obj, Elm_Widget_Smart_Data *sd, c
 
    if (eo_isa(obj, EFL_UI_LAYOUT_CLASS))
      {
-        buf = _elm_widget_edje_class(eo_class_get(obj), "default", part);
+        buf = _elm_widget_edje_class_get(eo_class_get(obj), NULL, part);
 
         int_ret = edje_object_color_class_get(sd->resize_obj, buf, r, g, b, a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
@@ -7421,7 +7421,7 @@ _efl_ui_widget_efl_gfx_base_color_part_get(Eo *obj, Elm_Widget_Smart_Data *sd, c
      }
    else
      {
-        ERR("%s does not support %s API.", elm_widget_type_get(obj), "elm_object_color_get()");
+        ERR("%s does not support %s API.", elm_widget_type_get(obj), "elm_object_part_color_get()");
         return EINA_FALSE;
      }
 }

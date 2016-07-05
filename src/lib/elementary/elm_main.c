@@ -2253,13 +2253,13 @@ elm_color_get(const char *klass, const char *style, const char *part, int *r, in
 }
 
 EAPI void
-elm_object_color_set(Evas_Object *obj, const char *part, int r, int g, int b, int a)
+elm_object_part_color_set(Evas_Object *obj, const char *part, int r, int g, int b, int a)
 {
    efl_gfx_color_part_set(obj, part, r, g, b, a);
 }
 
 EAPI void
-elm_object_color_get(Evas_Object *obj, const char *part, int *r, int *g, int *b, int *a)
+elm_object_part_color_get(Evas_Object *obj, const char *part, int *r, int *g, int *b, int *a)
 {
    efl_gfx_color_part_get(obj, part, r, g, b, a);
 }
