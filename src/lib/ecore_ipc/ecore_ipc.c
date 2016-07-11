@@ -400,7 +400,10 @@ ecore_ipc_server_del(Ecore_Ipc_Server *svr)
         Ecore_Ipc_Client *cl;
 
         EINA_LIST_FREE(svr->clients, cl)
-          ecore_ipc_client_del(cl);
+          {
+             cl->svr = NULL;
+             ecore_ipc_client_del(cl);
+          }
         if (svr->server) ecore_con_server_del(svr->server);
         servers = eina_list_remove(servers, svr);
 
@@ -691,7 +694,8 @@ ecore_ipc_client_del(Ecore_Ipc_Client *cl)
      {
         svr = cl->svr;
         if (cl->client) ecore_con_client_del(cl->client);
-        svr->clients = eina_list_remove(svr->clients, cl);
+        if (ECORE_MAGIC_CHECK(svr, ECORE_MAGIC_IPC_SERVER))
+          svr->clients = eina_list_remove(svr->clients, cl);
         if (cl->buf) free(cl->buf);
         ECORE_MAGIC_SET(cl, ECORE_MAGIC_NONE);
         free(cl);
