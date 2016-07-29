@@ -1965,3 +1965,19 @@ _ecore_win32_event_handle_selection_notify(Ecore_Win32_Callback_Data *msg)
  free_e:
    free(e);
 }
+
+//CF_BITMAP, CF_DIB, CF_DIBV5
+//CF_ENHMETAFILE, CF_METAFILEPICT
+//CF_OEMTEXT, CF_TEXT, CF_UNICODETEXT
+void  _ecore_win32_event_handle_render_format(Ecore_Win32_Callback_Data *msg)
+{
+   if (!msg) return;
+   DBG("In render format");
+   _ecore_win32_set_clipboard(msg);
+}
+
+void  _ecore_win32_event_handle_render_all_format(Ecore_Win32_Callback_Data *msg)
+{
+   ///handle???
+   DBG("In Render all format");
+}
