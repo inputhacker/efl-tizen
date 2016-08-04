@@ -1552,6 +1552,7 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
 #endif
 
              rp = ed->table_parts[i];
+             if (!rp) continue;
 
 #ifdef HAVE_EPHYSICS
              EINA_LIST_FREE(rp->body_faces, face_obj)
@@ -1569,6 +1570,24 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
 
                   _edje_entry_real_part_shutdown(ed, rp, reuse_ic);
                   //
+               }
+
+             if (rp->object)
+               {
+                  _edje_callbacks_focus_del(rp->object, ed);
+                  _edje_callbacks_del(rp->object, ed);
+                  evas_object_del(rp->object);
+                  rp->object = NULL;
+               }
+
+             if (rp->custom)
+               {
+                  // xxx: lua2
+                  _edje_collection_free_part_description_clean(rp->part->type,
+                                                               rp->custom->description,
+                                                               ed->file->free_strings);
+                  free(rp->custom->description);
+                  rp->custom->description = NULL;
                }
 
              if ((rp->type == EDJE_RP_TYPE_CONTAINER) &&
@@ -1625,30 +1644,16 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
                   rp->typedata.swallow = NULL;
                }
 
-             if (rp->object)
-               {
-                  _edje_callbacks_focus_del(rp->object, ed);
-                  _edje_callbacks_del(rp->object, ed);
-                  evas_object_del(rp->object);
-               }
-
-             if (rp->custom)
-               {
-                  // xxx: lua2
-                  _edje_collection_free_part_description_clean(rp->part->type,
-                                                               rp->custom->description,
-                                                               ed->file->free_strings);
-                  free(rp->custom->description);
-                  rp->custom->description = NULL;
-               }
-
              /* Cleanup optional part. */
              free(rp->drag);
+             rp->drag = NULL;
              free(rp->param1.set);
+             rp->param1.set = NULL;
 
              if (rp->param2)
                {
                   free(rp->param2->set);
+                  rp->param2->set = NULL;
                   eina_cow_free(_edje_calc_params_map_cow, (const Eina_Cow_Data **)&rp->param2->p.map);
 #ifdef HAVE_EPHYSICS
                   eina_cow_free(_edje_calc_params_physics_cow, (const Eina_Cow_Data **)&rp->param2->p.physics);
@@ -1659,6 +1664,7 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
              if (rp->custom)
                {
                   free(rp->custom->set);
+                  rp->custom->set = NULL;
                   eina_cow_free(_edje_calc_params_map_cow, (const Eina_Cow_Data **)&rp->custom->p.map);
 #ifdef HAVE_EPHYSICS
                   eina_cow_free(_edje_calc_params_physics_cow, (const Eina_Cow_Data **)&rp->custom->p.physics);
@@ -1681,6 +1687,7 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
              eina_cow_free(_edje_calc_params_physics_cow, (const Eina_Cow_Data **)&rp->param1.p.physics);
 #endif
              eina_mempool_free(_edje_real_part_mp, rp);
+             ed->table_parts[i] = NULL;
           }
      }
    if ((ed->file) && (ed->collection))
