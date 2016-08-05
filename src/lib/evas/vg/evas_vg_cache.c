@@ -1,5 +1,5 @@
-#include "evas_vg_cache.h"
 #include "evas_vg_common.h"
+#include "evas_vg_cache.h"
 
 static Evas_Cache_Svg* svg_cache = NULL;
 
@@ -74,20 +74,16 @@ _evas_cache_svg_vg_tree_update(Svg_Entry *entry)
    Vg_Data *src_vg = NULL, *dst_vg = NULL;
    if(!entry) return;
 
-   if (!entry->src_vg)
+   if (entry->src_vg < 0)
      {
         entry->root = NULL;
         return;
      } 
 
-   if (!entry->dest_vg)
-     {
-        src_vg = _evas_cache_vg_data_find(entry->file, entry->src_vg);
-     }
-   else
-     {
-        dst_vg = _evas_cache_vg_data_find(entry->file, entry->dest_vg);
-     }
+   src_vg = _evas_cache_vg_data_find(entry->file, entry->src_vg);
+   if (entry->dest_vg >= 0)
+     dst_vg = _evas_cache_vg_data_find(entry->file, entry->dest_vg);
+
    entry->root = _evas_vg_dup_vg_tree(src_vg, dst_vg, entry->key_frame, entry->w, entry->h);
    eina_stringshare_del(entry->file);
    entry->file = NULL;

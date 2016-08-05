@@ -274,6 +274,7 @@ _eet_for_polygon_node(void)
 
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eetc, Svg_Polygon_Node);
    eet = eet_data_descriptor_stream_new(&eetc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Polygon_Node, "points_count", points_count, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC_VAR_ARRAY(eet, Svg_Polygon_Node, "points", points, EET_T_DOUBLE);
    return eet;
 }
@@ -302,7 +303,7 @@ struct
    { SVG_NODE_CIRCLE, "circle" },
    { SVG_NODE_ELLIPSE, "ellipse" },
    { SVG_NODE_POLYGON, "polygon" },
-   { SVG_NODE_POLYLINE, "polygon" },
+   { SVG_NODE_POLYLINE, "polyline" },
    { SVG_NODE_RECT, "rect" },
    { SVG_NODE_PATH, "path" },
    { SVG_NODE_UNKNOWN, NULL }
@@ -387,6 +388,7 @@ _evas_vg_svg_node_eet(void)
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "rect", _edje_edd_edje_rect_node);
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "path", _edje_edd_edje_path_node);
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "polygon", _edje_edd_edje_polygon_node);
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "polyline", _edje_edd_edje_polygon_node);
 
    EET_DATA_DESCRIPTOR_ADD_UNION(_edje_edd_edje_vg_node, Svg_Node, "node", node, type, eet_union);
 
@@ -513,7 +515,9 @@ _apply_vg_property(Svg_Node *node, Efl_VG *vg)
      }
 
    // apply the stroke style property
-   evas_vg_shape_stroke_width_set(vg, style->stroke.width);
+   //@TODO HACK, fix the below api to take the stroke width as pixels
+   // rightnow it draws double the pixel (inside and outside the outline)
+   evas_vg_shape_stroke_width_set(vg, style->stroke.width/2.0);
    evas_vg_shape_stroke_cap_set(vg, style->stroke.cap);
    evas_vg_shape_stroke_join_set(vg, style->stroke.join);
    evas_vg_shape_stroke_scale_set(vg, style->stroke.scale);
@@ -590,6 +594,7 @@ _create_vg_node(Svg_Node *node, Efl_VG *parent)
            _add_polyline(vg, node->node.polygon.points, node->node.polygon.points_count, EINA_TRUE);
            break;
         case SVG_NODE_POLYLINE:
+           vg = evas_vg_shape_add(parent);
            _add_polyline(vg, node->node.polygon.points, node->node.polygon.points_count, EINA_FALSE);
            break;
         case SVG_NODE_ELLIPSE:
@@ -612,6 +617,25 @@ _create_vg_node(Svg_Node *node, Efl_VG *parent)
            break;
      }
    _apply_vg_property(node, vg);
+}
+
+static void
+_apply_stroke_scale(Efl_VG *node, double scale)
+{
+   Efl_VG *child;
+   Eina_Iterator *itr;
+
+   if (eo_isa(node, EFL_VG_CONTAINER_CLASS))
+     {
+        eo_do(node, itr = efl_vg_container_children_get());
+        EINA_ITERATOR_FOREACH(itr, child)
+          _apply_stroke_scale(child, scale);
+        eina_iterator_free(itr);
+     }
+   else
+     {
+         evas_vg_shape_stroke_scale_set(node, scale);
+     }
 }
 
 Vg_Data *
@@ -660,12 +684,31 @@ _evas_vg_load_vg_data(Eina_Stringshare *path, int svg_id)
    return vector;
 }
 
+static void
+_apply_transformation(Efl_VG *root, double w, double h, Vg_Data *vg_data)
+{
+   double sx, sy, scale;
+   Eina_Matrix3 m;
+
+   sx = w/vg_data->w;
+   sy = h/vg_data->h;
+   scale = sx < sy ? sx: sy;
+   eina_matrix3_identity(&m);
+   // allign hcenter and vcenter
+   //@TODO take care of the preserveaspectratio attribute
+   eina_matrix3_translate(&m, (w - vg_data->w * scale)/2.0, (h - vg_data->h * scale)/2.0);
+   eina_matrix3_scale(&m, scale, scale);
+   eina_matrix3_translate(&m, -vg_data->x, -vg_data->y);
+   evas_vg_node_transformation_set(root, &m);
+   _apply_stroke_scale(root, scale);
+}
+
 Efl_VG *
 _evas_vg_dup_vg_tree(Vg_Data *src, Vg_Data *dest, float pos, double w, double h)
 {
-   double sx, sy;
+
    Efl_VG *root;
-   Eina_Matrix3 matrix;
+   Eina_Matrix3 m;
 
    if (!src) return NULL;
    if (w==0 || h ==0 ) return NULL;
@@ -673,12 +716,7 @@ _evas_vg_dup_vg_tree(Vg_Data *src, Vg_Data *dest, float pos, double w, double h)
      {
         root = evas_vg_container_add(NULL);
         evas_vg_node_dup(root, src->vg);
-        sx = w/src->w;
-        sy = h/src->h;
-        eina_matrix3_identity(&matrix);
-        eina_matrix3_scale(&matrix, sx, sy);
-        eina_matrix3_translate(&matrix, -src->x, -src->y);
-        evas_vg_node_transformation_set(root, &matrix);
+        _apply_transformation(root, w, h, src);
      }
    else
      {
@@ -686,20 +724,10 @@ _evas_vg_dup_vg_tree(Vg_Data *src, Vg_Data *dest, float pos, double w, double h)
         evas_vg_node_dup(root, src->vg);
 
         // for start vector
-        sx = w/src->w;
-        sy = h/src->h;
-        eina_matrix3_identity(&matrix);
-        eina_matrix3_scale(&matrix, sx, sy);
-        eina_matrix3_translate(&matrix, -src->x, -src->y);
-        evas_vg_node_transformation_set(src->vg, &matrix);
+        _apply_transformation(src->vg, w, h, src);
 
         // for end vector
-        sx = w/dest->w;
-        sy = h/dest->h;
-        eina_matrix3_identity(&matrix);
-        eina_matrix3_scale(&matrix, sx, sy);
-        eina_matrix3_translate(&matrix, -dest->x, -dest->y);
-        evas_vg_node_transformation_set(dest->vg, &matrix);
+        _apply_transformation(dest->vg, w, h, dest);
 
         // do the interpolation
         if (!evas_vg_node_interpolate(root, src->vg, dest->vg, pos))
@@ -710,9 +738,9 @@ _evas_vg_dup_vg_tree(Vg_Data *src, Vg_Data *dest, float pos, double w, double h)
         // instead of duplicating the tree and applying the transformation
         // i just updated the transformation matrix and reset it back to null.
         // assumption is that the root vg will never have a transformation
-        eina_matrix3_identity(&matrix);
-        evas_vg_node_transformation_set(src->vg, &matrix);
-        evas_vg_node_transformation_set(dest->vg, &matrix);
+        eina_matrix3_identity(&m);
+        evas_vg_node_transformation_set(src->vg, &m);
+        evas_vg_node_transformation_set(dest->vg, &m);
      }
    return root;
 }
@@ -770,8 +798,10 @@ _evas_vg_svg_node_free(Svg_Node *node)
            eina_stringshare_del(node->node.path.path);
            break;
         case SVG_NODE_POLYGON:
-        case SVG_NODE_POLYLINE:
            free(node->node.polygon.points);
+           break;
+        case SVG_NODE_POLYLINE:
+           free(node->node.polyline.points);
            break;
         case SVG_NODE_DOC:
            _evas_vg_svg_node_free(node->node.doc.defs);

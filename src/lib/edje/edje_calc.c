@@ -3214,7 +3214,7 @@ _edje_image_recalc_apply(Edje *ed, Edje_Real_Part *ep, Edje_Calc_Params *p3, Edj
 static void
 _edje_svg_recalc_apply(Edje *ed, Edje_Real_Part *ep, Edje_Calc_Params *p3 EINA_UNUSED, Edje_Part_Description_Vector *chosen_desc, FLOAT_T pos)
 {
-   int new_svg = 0;
+   int new_svg = -1; //invalid svg
    int w, h;
 
    evas_object_geometry_get(ep->object, NULL, NULL, &w, &h);
@@ -3224,15 +3224,9 @@ _edje_svg_recalc_apply(Edje *ed, Edje_Real_Part *ep, Edje_Calc_Params *p3 EINA_U
      {
         Edje_Part_Description_Vector *next_state = (Edje_Part_Description_Vector *)ep->param2->description;
         if (chosen_desc->vg.id != next_state->vg.id)
-          {
-             new_svg = next_state->vg.id;
-          }
+          new_svg = next_state->vg.id;
         else
-          {
-             new_svg = 0;
-             pos = 0;
-          }
-          
+          pos = 0;
      }
    evas_object_vg_path_set(ep->object, ed->file->path, chosen_desc->vg.id, new_svg, pos);
 }

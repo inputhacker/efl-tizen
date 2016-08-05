@@ -529,10 +529,18 @@ typedef enum _Evas_Font_Spacing             Evas_Font_Spacing;
 
 // ector cache
 typedef struct _Ector_Surface_Cache Ector_Surface_Cache;
+typedef struct _Ector_Surface_Data  Ector_Surface_Data;
+
+struct _Ector_Surface_Data
+{
+   void         *key;
+   void         *surface;
+};
 
 struct _Ector_Surface_Cache
 {
-   Eina_Hash    *suface_hash;
+   Eina_Hash    *surface_hash;
+   Eina_List    *lru_list;
    void         *output;
 };
 
@@ -1471,9 +1479,9 @@ struct _Evas_Func
    void  (*ector_begin)                  (void *data, void *context, Ector_Surface *ector, void *surface, int x, int y, Eina_Bool do_async);
    void  (*ector_renderer_draw)          (void *data, void *context, void *surface, Ector_Renderer *r, Eina_Array *clips, Eina_Bool do_async);
    void  (*ector_end)                    (void *data, void *context, Ector_Surface *ector, void *surface, Eina_Bool do_async);
-   void *(*ector_surface_create)          (void *data, void *surface, int w, int h);
-   void  (*ector_surface_cache_set)      (void *data, const char *key, void *surface);
-   void *(*ector_surface_cache_get)      (void *data, const char *key);
+   void *(*ector_surface_create)          (void *data, void *surface, int w, int h, Eina_Bool force);
+   void  (*ector_surface_cache_set)      (void *data, void *key, void *surface);
+   void *(*ector_surface_cache_get)      (void *data, void *key);
 };
 
 struct _Evas_Image_Save_Func

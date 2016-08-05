@@ -3890,13 +3890,19 @@ _draw_thread_ector_surface_set(void *data)
 }
 
 static void *
-eng_ector_surface_create(void *data EINA_UNUSED, void *surface EINA_UNUSED, int width EINA_UNUSED, int height EINA_UNUSED)
+eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force)
 {
    RGBA_Image *im;
+   void *pixels = NULL;
+
+   if (!force) return NULL;
 
    if (!surface)
      {
         surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
+        im = surface;
+        pixels = evas_cache_image_pixels(&im->cache_entry);
+        memset(pixels, 0, (width * height * 4));
      }
    else
      {
@@ -3912,49 +3918,73 @@ eng_ector_surface_create(void *data EINA_UNUSED, void *surface EINA_UNUSED, int 
    return surface;
 }
 
-static Ector_Surface_Cache *sw_cache = NULL;
-
-static void
-_ector_surface_cache_free_cb(void *data)
-{
-   eng_image_free(sw_cache->output, data);
-}
+static Ector_Surface_Cache *surface_cache = NULL;
 
 static void 
 _ector_surface_cache_init(void *output)
 {
-   if (!sw_cache)
+   if (!surface_cache)
      {
-        printf("engine cache init\n");
-        sw_cache = calloc(1, sizeof(Ector_Surface_Cache));
-        sw_cache->output = output;
-        sw_cache->suface_hash = eina_hash_string_superfast_new(_ector_surface_cache_free_cb);
+        surface_cache = calloc(1, sizeof(Ector_Surface_Cache));
+        surface_cache->output = output;
+        surface_cache->surface_hash = eina_hash_int32_new(NULL);
      }
 }
 
 static void 
 _ector_surface_cache_dump(void)
 {
-   if (sw_cache)
+   Ector_Surface_Data *data;
+
+   if (surface_cache)
      {
-        eina_hash_free(sw_cache->suface_hash);
-        free(sw_cache);
-        sw_cache = NULL;
+        eina_hash_free(surface_cache->surface_hash);
+        EINA_LIST_FREE(surface_cache->lru_list, data)
+          {
+             eng_image_free(surface_cache->output, data->surface);
+             free(data);
+          }
+        free(surface_cache);
+        surface_cache = NULL;
      }
 }
 
 static void
-eng_ector_surface_cache_set(void *data, const char *key, void *surface)
+eng_ector_surface_cache_set(void *data, void *key, void *surface)
 {
+   Ector_Surface_Data *surface_data = NULL;
+   int count;
    _ector_surface_cache_init(data);
-   eina_hash_add(sw_cache->suface_hash, key, surface);
+   surface_data = calloc(1, sizeof(surface_data));
+   surface_data->key = key;
+   surface_data->surface = surface;
+   eina_hash_add(surface_cache->surface_hash, &key, surface_data);
+   surface_cache->lru_list = eina_list_prepend(surface_cache->lru_list, surface_data);
+   count = eina_list_count(surface_cache->lru_list);
+   if (count > 50)
+   {
+      surface_data = eina_list_data_get(eina_list_last(surface_cache->lru_list));
+      eina_hash_del(surface_cache->surface_hash, &surface_data->key, surface_data);
+      surface_cache->lru_list = eina_list_remove_list(surface_cache->lru_list, eina_list_last(surface_cache->lru_list));
+      eng_image_free(surface_cache->output, surface_data->surface);
+      free(surface_data);
+   }
 }
 
 static void *
-eng_ector_surface_cache_get(void *data, const char *key)
+eng_ector_surface_cache_get(void *data, void *key)
 {
+   Ector_Surface_Data *surface_data = NULL;
+
    _ector_surface_cache_init(data);
-   return eina_hash_find(sw_cache->suface_hash, key);
+   surface_data =  eina_hash_find(surface_cache->surface_hash, &key);
+   if (surface_data)
+     {
+        surface_cache->lru_list = eina_list_remove(surface_cache->lru_list, surface_data);
+        surface_cache->lru_list = eina_list_prepend(surface_cache->lru_list, surface_data);
+        return surface_data->surface;
+     }
+   return NULL;
 }
 
 

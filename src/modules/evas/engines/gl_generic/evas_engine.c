@@ -2471,7 +2471,7 @@ eng_ector_renderer_draw(void *data, void *context, void *surface, Ector_Renderer
 }
 
 static void *
-eng_ector_surface_create(void *data, void *surface, int width, int height)
+eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force EINA_UNUSED)
 {
    Evas_GL_Image *glim;
 
@@ -2552,48 +2552,73 @@ eng_ector_end(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface *
      }
 }
 
-static Ector_Surface_Cache *gl_cache = NULL;
-
-static void
-_ector_surface_cache_free_cb(void *data)
-{
-   eng_image_free(gl_cache->output, data);
-}
+static Ector_Surface_Cache *surface_cache = NULL;
 
 static void 
 _ector_surface_cache_init(void *output)
 {
-   if (!gl_cache)
+   if (!surface_cache)
      {
-        gl_cache = calloc(1, sizeof(Ector_Surface_Cache));
-        gl_cache->output = output;
-        gl_cache->suface_hash = eina_hash_string_superfast_new(_ector_surface_cache_free_cb);
+        surface_cache = calloc(1, sizeof(Ector_Surface_Cache));
+        surface_cache->output = output;
+        surface_cache->surface_hash = eina_hash_int32_new(NULL);
      }
 }
 
 // static void 
 // _ector_surface_cache_dump(void)
 // {
-//    if (gl_cache)
+//    Ector_Surface_Data *data;
+
+//    if (surface_cache)
 //      {
-//         eina_hash_free(gl_cache->suface_hash);
-//         free(gl_cache);
-//         gl_cache = NULL;
+//         eina_hash_free(surface_cache->surface_hash);
+//         EINA_LIST_FREE(surface_cache->lru_list, data)
+//           {
+//              eng_image_free(surface_cache->output, data->surface);
+//              free(data);
+//           }
+//         free(surface_cache);
+//         surface_cache = NULL;
 //      }
 // }
 
 static void
-eng_ector_surface_cache_set(void *data, const char *key, void *surface)
+eng_ector_surface_cache_set(void *data, void *key, void *surface)
 {
+   Ector_Surface_Data *surface_data = NULL;
+   int count;
    _ector_surface_cache_init(data);
-   eina_hash_add(gl_cache->suface_hash, key, surface);
+   surface_data = calloc(1, sizeof(surface_data));
+   surface_data->key = key;
+   surface_data->surface = surface;
+   eina_hash_add(surface_cache->surface_hash, &key, surface_data);
+   surface_cache->lru_list = eina_list_prepend(surface_cache->lru_list, surface_data);
+   count = eina_list_count(surface_cache->lru_list);
+   if (count > 50)
+   {
+      surface_data = eina_list_data_get(eina_list_last(surface_cache->lru_list));
+      eina_hash_del(surface_cache->surface_hash, &surface_data->key, surface_data);
+      surface_cache->lru_list = eina_list_remove_list(surface_cache->lru_list, eina_list_last(surface_cache->lru_list));
+      eng_image_free(surface_cache->output, surface_data->surface);
+      free(surface_data);
+   }
 }
 
 static void *
-eng_ector_surface_cache_get(void *data, const char *key)
+eng_ector_surface_cache_get(void *data, void *key)
 {
+   Ector_Surface_Data *surface_data = NULL;
+
    _ector_surface_cache_init(data);
-   return eina_hash_find(gl_cache->suface_hash, key);
+   surface_data =  eina_hash_find(surface_cache->surface_hash, &key);
+   if (surface_data)
+     {
+        surface_cache->lru_list = eina_list_remove(surface_cache->lru_list, surface_data);
+        surface_cache->lru_list = eina_list_prepend(surface_cache->lru_list, surface_data);
+        return surface_data->surface;
+     }
+   return NULL;
 }
 
 

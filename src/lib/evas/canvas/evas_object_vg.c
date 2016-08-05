@@ -229,6 +229,7 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
    void *buffer;
    Ector_Surface *ector;
    RGBA_Draw_Context *ct;
+   Eina_Bool async_unref;
 
    // if the size changed in between path set and the draw call;
    if (!(svg->w == obj->cur->geometry.w &&
@@ -240,21 +241,23 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
          vd->svg = svg;
      }
    // if the buffer is not created yet
-   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, svg->key);
+   root = evas_cache_svg_vg_tree_get(svg);
+   if (!root) return;
+   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, root);
    if (!buffer)
      {
-        root = evas_cache_svg_vg_tree_get(svg);
-        if (!root) return;
         // manual render the vg tree
         ector = evas_ector_get(obj->layer->evas);
         if (!ector) return;
+
         //1. render pre
         _evas_vg_render_pre(root, ector, NULL);
         // 2. create surface
         buffer = obj->layer->evas->engine.func->ector_surface_create(output,
                                                                      NULL,
                                                                      svg->w,
-                                                                     svg->h);
+                                                                     svg->h,
+                                                                     EINA_TRUE);
         //3. draw into the buffer
         ct = evas_common_draw_context_new();
         evas_common_draw_context_set_render_op(ct, _EVAS_RENDER_COPY);
@@ -267,17 +270,24 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
                         output, ct, buffer,
                         root, NULL,
                         do_async);
+        obj->layer->evas->engine.func->image_dirty_region(output, buffer, 0, 0, 0, 0);
         obj->layer->evas->engine.func->ector_end(output, ct, ector, buffer, do_async);
 
-        obj->layer->evas->engine.func->ector_surface_cache_set(output, svg->key, buffer);
+        obj->layer->evas->engine.func->ector_surface_cache_set(output, root, buffer);
         evas_common_draw_context_free(ct);
      }
    // draw the buffer as image to canvas
-   obj->layer->evas->engine.func->image_draw(output, context, surface,
+
+   async_unref = obj->layer->evas->engine.func->image_draw(output, context, surface,
                                              buffer, 0, 0,
                                              obj->cur->geometry.w, obj->cur->geometry.h, obj->cur->geometry.x + x,
                                              obj->cur->geometry.y + y, obj->cur->geometry.w, obj->cur->geometry.h,
                                              EINA_TRUE, do_async);
+   if (do_async && async_unref)
+     {
+        evas_cache_image_ref((Image_Entry *)buffer);
+        evas_unref_queue_image_put(obj->layer->evas, buffer);
+     }
 }
 
 static void
@@ -327,7 +337,8 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
      vd->backing_store = obj->layer->evas->engine.func->ector_surface_create(output,
                                                                              vd->backing_store,
                                                                              obj->cur->geometry.w,
-                                                                             obj->cur->geometry.h);
+                                                                             obj->cur->geometry.h,
+                                                                             EINA_FALSE);
    if (!vd->backing_store)
      {
         obj->layer->evas->engine.func->ector_begin(output, context, ector, surface,

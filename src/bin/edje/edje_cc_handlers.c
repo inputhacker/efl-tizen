@@ -1970,6 +1970,10 @@ _handle_vector_image(void)
              break;
           }
      }
+
+   if (ed->vg.id < 0)
+     error_and_abort(NULL, "Failed to find the vector resource :%s", name);
+
    free(name);
 }
 
@@ -2035,7 +2039,7 @@ st_images_vector(void)
    vector = edje_file->image_dir->vectors + edje_file->image_dir->vectors_count - 1;
 
    vector->entry = tmp;
-   vector->id = edje_file->image_dir->vectors_count;
+   vector->id = edje_file->image_dir->vectors_count - 1;
 }
 
 /**
@@ -7433,7 +7437,10 @@ st_collections_group_parts_part_description_inherit(void)
            }
       case EDJE_PART_TYPE_VECTOR:
            {
-              // TODO
+              Edje_Part_Description_Vector *ied = (Edje_Part_Description_Vector *) ed;
+              Edje_Part_Description_Vector *iparent = (Edje_Part_Description_Vector *) parent;
+              ied->vg.set = iparent->vg.set;
+              ied->vg.id = iparent->vg.id;
               break;
            }
      }
