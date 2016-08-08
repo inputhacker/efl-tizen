@@ -1253,6 +1253,7 @@ _ecore_wl_input_cb_keyboard_repeat(void *data)
    if (!(input = data)) return ECORE_CALLBACK_RENEW;
 
    // TIZEN_ONLY(20160610): fix key repeat condition. 
+   input->repeat.time += (int)(input->repeat.rate * 1000.0);
    _ecore_wl_input_cb_keyboard_key(input, NULL, input->display->serial,
                                    input->repeat.time,
                                    input->repeat.key, EINA_TRUE);
