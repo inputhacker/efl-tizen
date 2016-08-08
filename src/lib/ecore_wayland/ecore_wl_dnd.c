@@ -555,6 +555,8 @@ _ecore_wl_dnd_selection(void *data, struct wl_data_device *data_device EINA_UNUS
    Ecore_Wl_Input *input;
    // TIZEN_ONLY(20160707): To distinguish clipboard selection in cbhm
    Ecore_Wl_Event_Dnd_Selection *ev;
+   char **types;
+   int num = 0;
    //
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
@@ -577,12 +579,11 @@ _ecore_wl_dnd_selection(void *data, struct wl_data_device *data_device EINA_UNUS
         *t = NULL;
 
         // TIZEN_ONLY(20160707): To distinguish clipboard selection in cbhm
-        int i = 0;
-        for (t = input->selection_source->types.data; *t; t++)
-          {
-             ev->mime_types[i++] = strdup(*t);
-          }
+        num = (input->selection_source->types.size / sizeof(char *));
+        types = input->selection_source->types.data;
 
+        ev->num_types = num;
+        ev->types = types;
         ecore_event_add(ECORE_WL_EVENT_DND_OFFER, ev, _ecore_wl_dnd_selection_cb_free, NULL);
         //
      }
@@ -599,10 +600,6 @@ _ecore_wl_dnd_selection_cb_free(void *data EINA_UNUSED, void *event)
 
    if (!(ev = event)) return;
 
-   for (t = ev->mime_types; *t; t++)
-     {
-        free(*t);
-     }
    free(ev);
 }
 //
@@ -709,6 +706,10 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
      }
    else
      {
+        // TIZEN_ONLY(20160707): To distinguish clipboard selection in cbhm
+        char **types;
+        int num = 0;
+        //
         event->data = malloc(len);
         if (!event->data)
           {
@@ -716,6 +717,14 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
              return ECORE_CALLBACK_CANCEL;
           }
         memcpy(event->data, buffer, len);
+
+        // TIZEN_ONLY(20160707): To distinguish clipboard selection in cbhm
+        num = (source->types.size / sizeof(char *));
+        types = source->types.data;
+
+        event->num_types = num;
+        event->types = types;
+        //
         event->len = len;
         event->done = EINA_FALSE;
         ret = ECORE_CALLBACK_RENEW;
@@ -736,7 +745,9 @@ _ecore_wl_dnd_selection_data_ready_cb_free(void *data EINA_UNUSED, void *event)
 
    if (!(ev = event)) return;
 
-   free(ev->data);
+   // TIZEN_ONLY(20160707): To distinguish clipboard selection in cbhm
+   if (ev->data) free(ev->data);
+   //
    free(ev);
 }
 

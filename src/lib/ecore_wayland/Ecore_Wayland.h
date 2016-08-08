@@ -305,7 +305,8 @@ struct _Ecore_Wl_Event_Window_Lower
 // TIZEN_ONLY(20160706): To distinguish clipboard selection in cbhm
 struct _Ecore_Wl_Event_Dnd_Selection
 {
-   char *mime_types[10];
+   char **types;
+   int num_types;
 };
 //
 
@@ -375,6 +376,8 @@ struct _Ecore_Wl_Event_Selection_Data_Ready
    char *data;
    int len;
    Eina_Bool done;
+   char **types;
+   int num_types;
 };
 
 struct _Ecore_Wl_Event_Interfaces_Bound
