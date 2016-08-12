@@ -771,10 +771,7 @@ _pool_tex_dynamic_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, i
 
    _print_tex_count();
 
-   if (gc->shared->info.sec_tbm_surface)
-     pt->dyn.target = GL_TEXTURE_EXTERNAL_OES;
-   else
-     pt->dyn.target = GL_TEXTURE_2D;
+   pt->dyn.target = GL_TEXTURE_2D;
 
    glGenTextures(1, &(pt->texture));
    glBindTexture(pt->dyn.target, pt->texture);
