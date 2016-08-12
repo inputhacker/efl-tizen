@@ -120,6 +120,20 @@ _on_hover_clicked(void *data, const Efl_Event *event)
 
    if (!dismissstr || strcmp(dismissstr, "on"))
      elm_hoversel_hover_end(data); // for backward compatibility
+   // TIZEN_ONLY(20160812): emit dismiss signal to all items for fade out effect
+   else if (dismissstr && !strcmp(dismissstr, "on"))
+     {
+        Eina_List *l;
+        Elm_Object_Item *eo_item;
+
+        ELM_HOVERSEL_DATA_GET(data, sd);
+        EINA_LIST_FOREACH(sd->items, l, eo_item)
+          {
+             ELM_HOVERSEL_ITEM_DATA_GET(eo_item, it);
+             elm_layout_signal_emit(VIEW(it), "elm,action,dismiss", "elm");
+          }
+     }
+   //
 }
 
 static void
