@@ -251,6 +251,9 @@ _ecore_poller_constructor(Eo *obj, Ecore_Poller_Data *poller, Ecore_Poller_Type 
 
     if (EINA_UNLIKELY(!eina_main_loop_is()))
       {
+// TIZEN_ONLY(20150810): Add multi thread error message
+         ERR("You are calling %s from outside of the main loop threads. Program cannot run nomally", __FUNCTION__);
+//
          EINA_MAIN_LOOP_CHECK_RETURN;
       }
 

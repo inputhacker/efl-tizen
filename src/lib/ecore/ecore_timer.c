@@ -112,6 +112,9 @@ _ecore_timer_add(Ecore_Timer *obj,
 
    if (EINA_UNLIKELY(!eina_main_loop_is()))
      {
+// TIZEN_ONLY(20150810): Add multi thread error message
+        ERR("You are calling %s from outside of the main loop threads. Program cannot run nomally", __FUNCTION__);
+//
         EINA_MAIN_LOOP_CHECK_RETURN_VAL(EINA_FALSE);
      }
 
