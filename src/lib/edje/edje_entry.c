@@ -4394,6 +4394,12 @@ _edje_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx EINA_
 
              if (plain_text)
                {
+                  if(ecore_imf_context_input_hint_get(ctx) & ECORE_IMF_INPUT_HINT_SENSITIVE_DATA)
+                    {
+                       char *itr = NULL;
+                       for (itr = plain_text; itr && *itr; itr++)
+                          *itr = '*';
+                    }
                   if (en->have_selection)
                     {
                        buf = eina_strbuf_new();
