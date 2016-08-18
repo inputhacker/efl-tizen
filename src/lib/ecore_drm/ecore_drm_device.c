@@ -205,7 +205,33 @@ ecore_drm_device_find(const char *name, const char *seat)
 
    /* try to get a list of drm devics */
    if (!(devs = eeze_udev_find_by_type(EEZE_UDEV_TYPE_DRM, name)))
+#ifdef HAVE_TDM
+     {
+        if (!getenv("ECORE_DRM_DEVICE_DUMMY"))
+          return NULL;
+
+        if (dev = calloc(1, sizeof(Ecore_Drm_Device)))
+          {
+             dev->drm.name = eina_stringshare_add("dummy");
+             dev->drm.path = eina_stringshare_add("dummy");
+             dev->id = 0;
+             dev->seat = eina_stringshare_add("seat0");
+             dev->vt = 0;
+             dev->format = 0;
+             dev->use_hw_accel = EINA_FALSE;
+             dev->session = NULL;
+             dev->window = -1;
+
+             ERR("Using Drm Device: %s", dev->drm.name);
+
+             drm_devices = eina_list_append(drm_devices, dev);
+          }
+
+        return dev;
+     }
+#else
      return NULL;
+#endif
 
    DBG("Find Drm Device: %s", name);
 
