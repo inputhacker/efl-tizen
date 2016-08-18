@@ -362,6 +362,23 @@ _sizing_eval(void *data)
           }
      }
    evas_object_size_hint_min_set(sd->spacer, adjusted.w, adjusted.h);
+
+   // TIZEN_ONLY(20150828): shrink item width expanding over hover parent
+   if (!sd->horizontal)
+     {
+        Eina_List *l;
+        Evas_Object *it;
+        Evas_Coord it_w, it_h;
+
+        l = elm_box_children_get(sd->bx);
+        EINA_LIST_FREE(l, it)
+          {
+             evas_object_size_hint_min_get(it, &it_w, &it_h);
+             if (it_w > adjusted.w)
+               evas_object_size_hint_min_set(it, adjusted.w, it_h);
+          }
+     }
+   //
 }
 
 static void
