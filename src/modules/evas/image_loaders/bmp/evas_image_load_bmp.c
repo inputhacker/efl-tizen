@@ -806,7 +806,7 @@ evas_image_load_file_data_bmp(void *loader_data,
                                       count = p[0] / 2;
                                       while (count > 0)
                                         {
-                                           if (x < header.width)
+                                           if (x < image_w)
                                              {
                                                 if ((x >= region_x) && ((x % scale_ratio) == 0) && (scale_x < header.width))
                                                   {
@@ -816,7 +816,7 @@ evas_image_load_file_data_bmp(void *loader_data,
                                                   }
                                                 x++;
                                              }
-                                           if (x < header.width)
+                                           if (x < image_w)
                                              {
                                                 if ((x >= region_x) && ((x % scale_ratio) == 0) && (scale_x < header.width))
                                                   {
@@ -888,7 +888,7 @@ evas_image_load_file_data_bmp(void *loader_data,
                                default:
                                   count = p[1];
                                   if (((p + count) > buffer_end) ||
-                                      ((x + count) > header.width))
+                                      ((x + count) > image_w))
                                     {
                                        p = buffer_end;
                                        break;
