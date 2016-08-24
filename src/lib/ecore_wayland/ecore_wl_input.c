@@ -2166,6 +2166,57 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
    eina_iterator_free(itr);
 }
 
+static void
+_ecore_wl_input_device_last_device_set(Ecore_Wl_Input_Device *dev)
+{
+   Ecore_Wl_Input *input = _ecore_wl_disp->input;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   if (!input) return;
+
+   switch(dev->clas)
+     {
+      case ECORE_DEVICE_CLASS_MOUSE:
+         input->last_device_ptr = dev;
+         break;
+      case ECORE_DEVICE_CLASS_KEYBOARD:
+         input->last_device_kbd = dev;
+         break;
+      case ECORE_DEVICE_CLASS_TOUCH:
+         input->last_device_touch = dev;
+         break;
+      default:
+         break;
+     }
+}
+
+static void
+_ecore_wl_input_device_last_device_unset(Ecore_Wl_Input_Device *dev)
+{
+   Ecore_Wl_Input *input = _ecore_wl_disp->input;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   if (!input) return;
+
+   switch(dev->clas)
+     {
+      case ECORE_DEVICE_CLASS_MOUSE:
+         if (input->last_device_ptr == dev)
+           input->last_device_ptr = NULL;
+         break;
+      case ECORE_DEVICE_CLASS_KEYBOARD:
+         if (input->last_device_kbd == dev)
+           input->last_device_kbd = NULL;
+         break;
+      case ECORE_DEVICE_CLASS_TOUCH:
+         if (input->last_device_touch == dev)
+           input->last_device_touch = NULL;
+         break;
+      default:
+         break;
+     }
+}
+
 void
 _ecore_wl_input_devices_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win)
 {
@@ -2235,6 +2286,8 @@ _ecore_wl_input_device_manager_cb_device_remove(void *data EINA_UNUSED, struct t
           {
              _ecore_wl_input_device_info_broadcast(dev->name, dev->identifier, dev->clas, EINA_FALSE);
 
+             _ecore_wl_input_device_last_device_unset(dev);
+
              if (dev->tz_device) tizen_input_device_release(dev->tz_device);
              if (dev->name) eina_stringshare_del(dev->name);
              if (dev->identifier) eina_stringshare_del(dev->identifier);
@@ -2271,30 +2324,6 @@ _ecore_wl_input_device_cb_device_info(void *data, struct tizen_input_device *tiz
    dev->subclas = (Ecore_Device_Subclass)subclas;
    dev->name = eina_stringshare_add(name);
    _ecore_wl_input_device_info_broadcast(dev->name, dev->identifier, dev->clas, EINA_TRUE);
-}
-
-static void
-_ecore_wl_input_device_last_device_set(Ecore_Wl_Input_Device *dev)
-{
-   Ecore_Wl_Input *input = _ecore_wl_disp->input;
-
-   LOGFN(__FILE__, __LINE__, __FUNCTION__);
-   if (!input) return;
-
-   switch(dev->clas)
-     {
-      case ECORE_DEVICE_CLASS_MOUSE:
-         input->last_device_ptr = dev;
-         break;
-      case ECORE_DEVICE_CLASS_KEYBOARD:
-         input->last_device_kbd = dev;
-         break;
-      case ECORE_DEVICE_CLASS_TOUCH:
-         input->last_device_touch = dev;
-         break;
-      default:
-         break;
-     }
 }
 
 static void
