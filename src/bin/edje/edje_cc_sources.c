@@ -147,7 +147,7 @@ source_fetch_file(const char *fil, const char *filname)
 			      forgetit = 1;
 			    else
 			      {
-				 char *slash;
+				 char *slash = NULL;
 				 ssize_t l = 0;
 
 				 /* get the directory of the current file
