@@ -12,15 +12,23 @@
 Eina_Bool
 _evas_surface_init(Surface *s, int w, int h, int num_buf)
 {
+   if (getenv("EVAS_WAYLAND_USE_TBMBUF"))
+      if (_evas_tbmbuf_surface_create(s, w, h, num_buf)) return EINA_TRUE; 
+
+   if (_evas_shm_surface_create(s, w, h, num_buf)) return EINA_TRUE;
+
+ /*
    if (getenv("EVAS_WAYLAND_USE_SHMBUF"))
       {
-         if (_evas_shm_surface_create(s, w, h, num_buf)) return EINA_TRUE;
+        if (_evas_shm_surface_create(s, w, h, num_buf)) return EINA_TRUE;
       }
    else
-      {
-         if (_evas_tbmbuf_surface_create(s, w, h, num_buf)) return EINA_TRUE;
-         if (_evas_shm_surface_create(s, w, h, num_buf)) return EINA_TRUE;
-      }
+     {
+        if (_evas_tbmbuf_surface_create(s, w, h, num_buf)) return EINA_TRUE;
+        if (_evas_shm_surface_create(s, w, h, num_buf)) return EINA_TRUE;
+     }
+ */
+
    return EINA_FALSE;
 }
 
