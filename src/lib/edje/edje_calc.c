@@ -1741,9 +1741,7 @@ _edje_part_recalc_single_text(FLOAT_T sc EINA_UNUSED,
    if ((*maxw > -1) && (mw > *maxw)) mw = *maxw;
    if ((*maxh > -1) && (mh > *maxh)) mh = *maxh;
 
-   /* TIZEN_ONLY(20160824): Prevent infinite loop for text calculation
    evas_object_resize(ep->object, mw, mh);
-    */
 }
 
 #else
