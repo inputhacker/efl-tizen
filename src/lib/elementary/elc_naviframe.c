@@ -54,6 +54,31 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {NULL, NULL}
 };
 
+//TIZEN ONLY(20160829): Support tizen transition
+static int initted = 0;
+static Elm_Naviframe_Mod_Api *nf_mod = NULL;
+
+static void
+_nf_mod_init(void)
+{
+   Elm_Module *mod;
+
+   initted++;
+   if (initted > 1) return;
+   if (!(mod = _elm_module_find_as("naviframe/api"))) return;
+
+   mod->api = malloc(sizeof(Elm_Naviframe_Mod_Api));
+   if (!mod->api) return;
+
+   ((Elm_Naviframe_Mod_Api *)(mod->api))->tizen_push_effect =
+      _elm_module_symbol_get(mod, "tizen_push_effect");
+   ((Elm_Naviframe_Mod_Api *)(mod->api))->tizen_pop_effect =
+      _elm_module_symbol_get(mod, "tizen_pop_effect");
+
+   nf_mod = mod->api;
+}
+//
+
 static void _on_item_back_btn_clicked(void *data, const Efl_Event *event);
 
 static Eina_Bool _key_action_top_item_get(Evas_Object *obj, const char *params);
@@ -1458,6 +1483,9 @@ _elm_naviframe_efl_canvas_group_group_add(Eo *obj, Elm_Naviframe_Data *priv)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
+   //TIZEN ONLY(20160829): Support tizen transition
+   _nf_mod_init();
+
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
 
@@ -1502,6 +1530,19 @@ _deferred(void *data, const Efl_Event *event EINA_UNUSED)
 
         _send_signal(cur, signals_cur[nfo->push]);
         _send_signal(other, nfo->push ? signals_new : signals_prev);
+
+        //TIZEN ONLY(20160829): Support tizen transition
+        if (nfo->push)
+          {
+             if (nf_mod && nf_mod->tizen_push_effect)
+               nf_mod->tizen_push_effect(WIDGET(cur), VIEW(cur), VIEW(other));
+          }
+        else
+          {
+             if (nf_mod && nf_mod->tizen_pop_effect)
+               nf_mod->tizen_pop_effect(WIDGET(cur), VIEW(cur), VIEW(other));
+          }
+        //
 
         free(nfo);
      }
