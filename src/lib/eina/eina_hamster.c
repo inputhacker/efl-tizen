@@ -35,8 +35,8 @@
  * @cond LOCAL
  */
 
-const char *_eina_hamster_time = __TIME__;
-const char *_eina_hamster_date = __DATE__;
+__attribute__((__section__(".tizen.build-id"))) const char _eina_hamster_time[] = __TIME__;
+__attribute__((__section__(".tizen.build-id"))) const char _eina_hamster_date[] = __DATE__;
 static int _eina_hamsters = -1;
 
 /**
