@@ -418,6 +418,10 @@ static void st_collections_group_parts_part_description_text_align(void);
 static void st_collections_group_parts_part_description_text_source(void);
 static void st_collections_group_parts_part_description_text_text_source(void);
 static void st_collections_group_parts_part_description_text_ellipsis(void);
+//TIZEN_ONLY(20160923): introduction of text marquee
+static void st_collections_group_parts_part_description_text_ellipsize_mode(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit(void);
+//
 static void st_collections_group_parts_part_description_box_layout(void);
 static void st_collections_group_parts_part_description_box_align(void);
 static void st_collections_group_parts_part_description_box_padding(void);
@@ -927,6 +931,10 @@ New_Statement_Handler statement_handlers[] =
      {"collections.group.parts.part.description.text.fonts.font", st_fonts_font}, /* dup */
      {"collections.group.parts.part.description.text.elipsis", st_collections_group_parts_part_description_text_ellipsis},
      {"collections.group.parts.part.description.text.ellipsis", st_collections_group_parts_part_description_text_ellipsis},
+     //TIZEN_ONLY(20160923): introduction of text marquee
+     {"collections.group.parts.part.description.text.ellipsize.mode", st_collections_group_parts_part_description_text_ellipsize_mode},
+     {"collections.group.parts.part.description.text.ellipsize.marquee_repeat_limit", st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit},
+     //
      {"collections.group.parts.part.description.text.filter", st_collections_group_parts_part_description_filter_code}, /* dup */
      {"collections.group.parts.part.description.box.layout", st_collections_group_parts_part_description_box_layout},
      {"collections.group.parts.part.description.box.align", st_collections_group_parts_part_description_box_align},
@@ -1517,6 +1525,7 @@ New_Object_Handler object_handlers[] =
      {"collections.group.parts.part.description.fill.origin", NULL},
      {"collections.group.parts.part.description.fill.size", NULL},
      {"collections.group.parts.part.description.text", NULL},
+     {"collections.group.parts.part.description.text.ellipsize", NULL},
      {"collections.group.parts.part.description.text.fonts", NULL}, /* dup */
      {"collections.group.parts.part.description.images", NULL}, /* dup */
      {"collections.group.parts.part.description.images.set", ob_images_set}, /* dup */
@@ -1752,6 +1761,9 @@ _edje_part_description_alloc(unsigned char type, const char *collection, const c
 	   ed->text.align.y = FROM_DOUBLE(0.5);
 	   ed->text.id_source = -1;
 	   ed->text.id_text_source = -1;
+           //TIZEN_ONLY(20160923): introduction of text marquee
+           ed->text.ellipsize.marquee_repeat_limit = -1;
+           //
 
 	   result = &ed->common;
 	   break;
@@ -11661,6 +11673,55 @@ st_collections_group_parts_part_description_text_ellipsis(void)
    ed->text.ellipsis = parse_float_range(0, -1.0, 1.0);
 }
 
+//TIZEN_ONLY(20160923): introduction of text marquee
+static void
+st_collections_group_parts_part_description_text_ellipsize_mode(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.mode = parse_enum(0,
+                                       "NONE", EDJE_TEXT_ELLIPSIZE_MODE_NONE,
+                                       "START", EDJE_TEXT_ELLIPSIZE_MODE_START,
+                                       "MIDDLE", EDJE_TEXT_ELLIPSIZE_MODE_MIDDLE,
+                                       "END", EDJE_TEXT_ELLIPSIZE_MODE_END,
+                                       "FADE_START", EDJE_TEXT_ELLIPSIZE_MODE_FADE_START,
+                                       "FADE_END", EDJE_TEXT_ELLIPSIZE_MODE_FADE_END,
+                                       "MARQUEE", EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE,
+                                       NULL);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee_repeat_limit = parse_int_range(0, -1, 0x7fffffff);
+}
+//
 /** @edcsubsection{collections_group_parts_description_box,
  *                 Group.Parts.Part.Description.Box} */
 

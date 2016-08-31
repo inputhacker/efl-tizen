@@ -1325,6 +1325,32 @@ typedef enum _Edje_Text_Effect
    EDJE_TEXT_EFFECT_SHADOW_DIRECTION_RIGHT        = (0x7 << 4)  /**< right shadow direction value */
 } Edje_Text_Effect;
 
+//TIZEN_ONLY(20160923): introduction of text marquee
+typedef enum _Edje_Text_Ellipsize_Mode
+{
+   EDJE_TEXT_ELLIPSIZE_MODE_NONE       = 0,
+   EDJE_TEXT_ELLIPSIZE_MODE_START      = 1,
+   EDJE_TEXT_ELLIPSIZE_MODE_MIDDLE     = 2,
+   EDJE_TEXT_ELLIPSIZE_MODE_END        = 3,
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE_START = 4,
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE_END   = 5,
+   EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE    = 6,
+   EDJE_TEXT_ELLIPSIZE_MODE_LAST       = 7
+} Edje_Text_Ellipsize_Mode;
+//
+
+/**
+ * @typedef (*Edje_Text_Change_Cb)
+ *
+ * Callback prototype for Edje_Text_Change.
+ * @param data User provided data to pass to the callback
+ * @param obj The Evas_Object
+ * @param part The edje part
+ */
+typedef void         (*Edje_Text_Change_Cb)     (void *data, Evas_Object *obj, const char *part);
+/**
+ * @}
+ */
 
 /**
  * @defgroup Edje_Text_Selection Edje Text Selection
