@@ -1425,6 +1425,15 @@ struct _Edje_Part_Description_Spec_Text
    unsigned char  max_y; /* if text size should be part max size */
    int            size_range_min;
    int            size_range_max; /* -1 means, no bound. */
+
+   //TIZEN_ONLY(20160923): introduction of text marquee
+   struct {
+      Edje_Text_Ellipsize_Mode mode;
+      int marquee_repeat_limit;
+      int marquee_repeat_count;
+      Evas_Coord_Point marquee_start_point;
+   } ellipsize;
+   //
 };
 
 struct _Edje_Part_Description_Spec_Box
@@ -1990,6 +1999,12 @@ struct _Edje_Real_Part
 #ifdef EDJE_CALC_CACHE
    int                       state; // 4
 #endif
+   //TIZEN_ONLY(20160923): introduction of text marquee
+   double                    text_marquee_prev_time;
+   Ecore_Animator           *text_marquee_animator;
+   Ecore_Job                *text_marquee_job;
+   Evas_Object              *text_marquee_clipper;
+   //
    unsigned char             type; // 1
    unsigned char             calculated : 2; // 1
    unsigned char             calculating : 2; // 0
@@ -1997,6 +2012,9 @@ struct _Edje_Real_Part
 #ifdef EDJE_CALC_CACHE
    Eina_Bool                 invalidate : 1; // 0
 #endif
+   //TIZEN_ONLY(20160923): introduction of text marquee
+   unsigned char             text_marquee_to_left : 1;
+   //
 }; // 128
 // WITH EDJE_CALC_CACHE: 407
 

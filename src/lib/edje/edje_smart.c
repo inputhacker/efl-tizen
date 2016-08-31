@@ -143,10 +143,38 @@ _edje_object_evas_object_smart_del(Eo *obj, Edje *ed)
    _edje_lib_unref();
 }
 
+//TIZEN_ONLY(20160923): introduction of text marquee
+static void
+_marquee_text_object_move(Edje *ed, Edje_Real_Part *ep, Evas_Coord_Point ed_diff)
+{
+   Evas_Coord x, y;
+   Edje_Part_Description_Text *chosen_desc;
+
+   chosen_desc = (Edje_Part_Description_Text *)ep->chosen_description;
+
+   evas_object_geometry_get(ep->object, &x, &y, NULL, NULL);
+
+   /* ed_diff should be handled because of horizontal scroll */
+   evas_object_move(ep->object,
+                    x + ed_diff.x,
+                    ed->y + ep->y + ep->typedata.text->offset.y);
+
+   evas_object_move(ep->text_marquee_clipper, ed->x + ep->x, ed->y + ep->y);
+
+   chosen_desc->text.ellipsize.marquee_start_point.x += ed_diff.x;
+   chosen_desc->text.ellipsize.marquee_start_point.y += ed_diff.y;
+}
+//
+
 EOLIAN static void
 _edje_object_evas_object_smart_move(Eo *obj EINA_UNUSED, Edje *ed, Evas_Coord x, Evas_Coord y)
 {
    unsigned int i;
+   //TIZEN_ONLY(20160923): introduction of text marquee
+   Evas_Coord_Point ed_diff;
+   ed_diff.x = x - ed->x;
+   ed_diff.y = y - ed->y;
+   //
 
    if ((ed->x == x) && (ed->y == y)) return;
    ed->x = x;
@@ -166,13 +194,24 @@ _edje_object_evas_object_smart_move(Eo *obj EINA_UNUSED, Edje *ed, Evas_Coord x,
         ep = ed->table_parts[i];
         if ((ep->type == EDJE_RP_TYPE_TEXT) && (ep->typedata.text))
           {
-             evas_object_move(ep->object,
-                              ed->x + ep->x + ep->typedata.text->offset.x,
-                              ed->y + ep->y + ep->typedata.text->offset.y);
+             //TIZEN_ONLY(20160923): introduction of text marquee
+             if (ep->text_marquee_animator)
+               _marquee_text_object_move(ed, ep, ed_diff);
+             else
+             //
+               evas_object_move(ep->object,
+                                ed->x + ep->x + ep->typedata.text->offset.x,
+                                ed->y + ep->y + ep->typedata.text->offset.y);
           }
         else
           {
-             evas_object_move(ep->object, ed->x + ep->x, ed->y + ep->y);
+             //TIZEN_ONLY(20160923): introduction of text marquee
+             if (ep->text_marquee_animator)
+               _marquee_text_object_move(ed, ep, ed_diff);
+             else
+             //
+               evas_object_move(ep->object, ed->x + ep->x, ed->y + ep->y);
+
              if ((ep->type == EDJE_RP_TYPE_SWALLOW) &&
                  (ep->typedata.swallow))
                {
