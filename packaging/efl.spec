@@ -690,7 +690,7 @@ CFLAGS+=" -DMESA_EGL_NO_X11_HEADERS "
     --disable-scim \
     --disable-wayland-text-input \
     --disable-gesture \
-    --with-tests=regular \
+    --with-tests=none \
     --enable-fb \
     --disable-tslib \
 %if %{with wayland}
@@ -1078,7 +1078,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n edje-tools
 %manifest %{name}.manifest
 %{_bindir}/edje*
-%{_datadir}/edje/data/*
+#%{_datadir}/edje/data/*
 
 #%files -n edje-examples
 #%manifest %{name}.manifest
@@ -1147,7 +1147,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/edje/modules/emotion/*/module.so
 #%{_libdir}/emotion/modules/*/*/module.so
 %{_datadir}/emotion/*
-%{_bindir}/emotion_test*
+#%{_bindir}/emotion_test*
 
 #%files -n emotion-examples
 #%manifest %{name}.manifest
