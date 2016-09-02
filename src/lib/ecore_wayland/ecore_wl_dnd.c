@@ -713,7 +713,11 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
         char **types;
         int num = 0;
         //
-        event->data = malloc(len);
+
+        // TIZEN_ONLY(20160902): Modify data allocation size
+        //event->data = malloc(len);
+        event->data = malloc(len + 1);
+        //
         if (!event->data)
           {
              free(event);
@@ -722,6 +726,8 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
         memcpy(event->data, buffer, len);
 
         // TIZEN_ONLY(20160707): To distinguish clipboard selection in cbhm
+        event->data[len] = '\0';
+
         num = (source->types.size / sizeof(char *));
         types = source->types.data;
 
