@@ -565,7 +565,7 @@ _ecore_evas_drm_init(const char *device)
           goto dev_err;
      }
 
-   if (!ecore_drm_launcher_connect(dev))
+   if (!getenv("ECORE_DRM_SKIP_LAUNCHER_CONNECT") && !ecore_drm_launcher_connect(dev))
      {
         ERR("Could not connect DRM launcher");
         goto launcher_err;
