@@ -16,6 +16,7 @@ Eet_Data_Descriptor *_edje_edd_edje_arc_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_path_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_polygon_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_vg_node = NULL;
+Eet_Data_Descriptor *_edje_edd_edje_line_node = NULL;
 
 #define FREE_DESCRIPTOR(eed)                      \
   if (eed)                              \
@@ -38,6 +39,21 @@ _eet_for_rect_node(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Rect_Node, "h", h, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Rect_Node, "rx", rx, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Rect_Node, "ry", ry, EET_T_DOUBLE);
+   return eet;
+}
+
+static inline Eet_Data_Descriptor*
+_eet_for_line_node(void)
+{
+   Eet_Data_Descriptor *eet;
+   Eet_Data_Descriptor_Class eetc;
+
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eetc, Svg_Line_Node);
+   eet = eet_data_descriptor_stream_new(&eetc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Line_Node, "x1", x1, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Line_Node, "y1", y1, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Line_Node, "x2", x2, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Line_Node, "y2", y2, EET_T_DOUBLE);
    return eet;
 }
 
@@ -306,6 +322,7 @@ struct
    { SVG_NODE_POLYLINE, "polyline" },
    { SVG_NODE_RECT, "rect" },
    { SVG_NODE_PATH, "path" },
+   { SVG_NODE_LINE, "line" },
    { SVG_NODE_UNKNOWN, NULL }
 };
 
@@ -373,6 +390,7 @@ _evas_vg_svg_node_eet(void)
    _edje_edd_edje_circle_node = _eet_for_circle_node();
    _edje_edd_edje_ellipse_node = _eet_for_ellipse_node();
    _edje_edd_edje_rect_node = _eet_for_rect_node();
+   _edje_edd_edje_line_node = _eet_for_line_node();
    _edje_edd_edje_path_node = _eet_for_path_node();
    _edje_edd_edje_polygon_node = _eet_for_polygon_node();
    _edje_edd_edje_style_property_node = _eet_for_style_property();
@@ -386,6 +404,7 @@ _evas_vg_svg_node_eet(void)
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "circle", _edje_edd_edje_circle_node);
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "ellipse", _edje_edd_edje_ellipse_node);
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "rect", _edje_edd_edje_rect_node);
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "line", _edje_edd_edje_line_node);
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "path", _edje_edd_edje_path_node);
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "polygon", _edje_edd_edje_polygon_node);
    EET_DATA_DESCRIPTOR_ADD_MAPPING(eet_union, "polyline", _edje_edd_edje_polygon_node);
@@ -420,6 +439,7 @@ _evas_vg_svg_node_eet_destroy(void)
    FREE_DESCRIPTOR(_edje_edd_edje_path_node);
    FREE_DESCRIPTOR(_edje_edd_edje_polygon_node);
    FREE_DESCRIPTOR(_edje_edd_edje_vg_node);
+   FREE_DESCRIPTOR(_edje_edd_edje_line_node);
 }
 
 
@@ -612,6 +632,11 @@ _create_vg_node(Svg_Node *node, Efl_VG *parent)
            vg = evas_vg_shape_add(parent);
            evas_vg_shape_shape_append_rect(vg, node->node.rect.x, node->node.rect.y, node->node.rect.w, node->node.rect.h,
                                            node->node.rect.rx, node->node.rect.ry);
+           break;
+        case SVG_NODE_LINE:
+           vg = evas_vg_shape_add(parent);
+           evas_vg_shape_shape_append_move_to(vg, node->node.line.x1, node->node.line.y1);
+           evas_vg_shape_shape_append_line_to(vg, node->node.line.x2, node->node.line.y2);
            break;
        default:
            break;

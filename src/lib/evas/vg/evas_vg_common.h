@@ -37,20 +37,21 @@
 #endif
 
 // Svg Node
-typedef enum _Svg_Node_Type Svg_Node_Type;
-typedef enum _Svg_Length_Type Svg_Length_Type;
+typedef enum _Svg_Node_Type         Svg_Node_Type;
+typedef enum _Svg_Length_Type       Svg_Length_Type;
 
-typedef struct _Svg_Node Svg_Node;
-typedef struct _Svg_Doc_Node Svg_Doc_Node;
-typedef struct _Svg_G_Node Svg_G_Node;
-typedef struct _Svg_Defs_Node Svg_Defs_Node;
-typedef struct _Svg_Arc_Node Svg_Arc_Node;
-typedef struct _Svg_Circle_Node Svg_Circle_Node;
-typedef struct _Svg_Ellipse_Node Svg_Ellipse_Node;
-typedef struct _Svg_Polygon_Node Svg_Polygon_Node;
-typedef struct _Svg_Rect_Node Svg_Rect_Node;
-typedef struct _Svg_Path_Node Svg_Path_Node;
-typedef struct _Svg_Style_Property Svg_Style_Property;
+typedef struct _Svg_Node            Svg_Node;
+typedef struct _Svg_Doc_Node        Svg_Doc_Node;
+typedef struct _Svg_G_Node          Svg_G_Node;
+typedef struct _Svg_Defs_Node       Svg_Defs_Node;
+typedef struct _Svg_Arc_Node        Svg_Arc_Node;
+typedef struct _Svg_Circle_Node     Svg_Circle_Node;
+typedef struct _Svg_Ellipse_Node    Svg_Ellipse_Node;
+typedef struct _Svg_Polygon_Node    Svg_Polygon_Node;
+typedef struct _Svg_Rect_Node       Svg_Rect_Node;
+typedef struct _Svg_Path_Node       Svg_Path_Node;
+typedef struct _Svg_Style_Property  Svg_Style_Property;
+typedef struct _Svg_Line_Node       Svg_Line_Node;
 
 typedef struct  _Svg_Style_Stroke   Svg_Style_Stroke;
 typedef struct  _Svg_Style_Fill     Svg_Style_Fill;
@@ -150,6 +151,14 @@ struct _Svg_Rect_Node
    double h;
    double rx;
    double ry;
+};
+
+struct _Svg_Line_Node
+{
+   double x1;
+   double y1;
+   double x2;
+   double y2;
 };
 
 struct _Svg_Path_Node
@@ -281,6 +290,7 @@ struct _Svg_Node
         Svg_Polygon_Node polyline;
         Svg_Rect_Node rect;
         Svg_Path_Node path;
+        Svg_Line_Node line;
      }node;
 };
 

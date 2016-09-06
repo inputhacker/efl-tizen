@@ -1247,6 +1247,65 @@ _create_rect_node(Svg_Node *parent, const char *buf, unsigned buflen)
    return node;
 }
 
+#define LINE_DEF(Name, Field)       \
+  { #Name, sizeof (#Name), offsetof(Svg_Line_Node, Field)}
+
+static const struct {
+   const char *tag;
+   int sz;
+   size_t offset;
+} line_tags[] = {
+  LINE_DEF(x1, x1),
+  LINE_DEF(y1, y1),
+  LINE_DEF(x2, x2),
+  LINE_DEF(y2, y2)
+};
+
+/* parse the attributes for a rect element.
+ * https://www.w3.org/TR/SVG/shapes.html#LineElement
+ */
+static Eina_Bool
+_attr_parse_line_node(void *data, const char *key, const char *value)
+{
+   Svg_Node *node = data;
+   Svg_Line_Node *line = & (node->node.line);
+   unsigned int i;
+   unsigned char *array;
+   int sz = strlen(key);
+
+   array = (unsigned char*) line;
+   for (i = 0; i < sizeof (line_tags) / sizeof(line_tags[0]); i++)
+     if (line_tags[i].sz - 1 == sz && !strncmp(line_tags[i].tag, key, sz))
+       {
+          *((double*) (array + line_tags[i].offset)) = _to_double(value);
+          return EINA_TRUE;
+       }
+
+   if (!strcmp(key, "id"))
+     {
+        node->id = _copy_id(value);
+     }
+   else if (!strcmp(key, "style"))
+     {
+        _attr_style_node(node, value);
+     }
+   else
+     {
+        _parse_style_attr(node, key, value);
+     }
+   return EINA_TRUE;
+}
+
+static Svg_Node *
+_create_line_node(Svg_Node *parent, const char *buf, unsigned buflen)
+{
+   Svg_Node *node = _create_node(parent, SVG_NODE_LINE);
+
+   eina_simple_xml_attributes_parse(buf, buflen,
+                                    _attr_parse_line_node, node);
+   return node;
+}
+
 static Eina_Stringshare *
 _id_from_href(const char *href)
 {
@@ -1368,6 +1427,12 @@ _copy_attribute(Svg_Node *to, Svg_Node *from)
            to->node.rect.rx = from->node.rect.rx;
            to->node.rect.ry = from->node.rect.ry;
            break;
+        case SVG_NODE_LINE:
+           to->node.line.x1 = from->node.line.x1;
+           to->node.line.y1 = from->node.line.y1;
+           to->node.line.x2 = from->node.line.x2;
+           to->node.line.y2 = from->node.line.y2;
+           break;
         case SVG_NODE_PATH:
            to->node.path.path = eina_stringshare_add(from->node.path.path);
            break;
@@ -1450,6 +1515,7 @@ static const struct {
   TAG_DEF(polygon),
   TAG_DEF(rect),
   TAG_DEF(polyline),
+  TAG_DEF(line),
 };
 
 static const struct {

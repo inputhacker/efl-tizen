@@ -2470,33 +2470,6 @@ eng_ector_renderer_draw(void *data, void *context, void *surface, Ector_Renderer
    eina_array_free(c);
 }
 
-static void *
-eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force EINA_UNUSED)
-{
-   Evas_GL_Image *glim;
-
-   if (!surface)
-     {
-        surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
-        //Use this hint for ZERO COPY texture upload.
-        eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
-     }
-   else
-     {
-        int cur_w , cur_h;
-        glim = surface;
-        eng_image_size_get(data, glim, &cur_w, &cur_h);
-        if (width != cur_w || height != cur_h)
-          {
-             eng_image_free(data, surface);
-             surface =  eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
-             //Use this hint for ZERO COPY texture upload.
-             eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
-          }
-      }
-   return surface;
-}
-
 static void
 eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface *ector,
                 void *surface, int x, int y, Eina_Bool do_async EINA_UNUSED)
@@ -2553,15 +2526,35 @@ eng_ector_end(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface *
      }
 }
 
+static void*
+eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force EINA_UNUSED)
+{
+   Evas_GL_Image *glim;
+   int cur_w=0 , cur_h=0;
+
+   if (surface)
+     {
+        glim = surface;
+        eng_image_size_get(data, glim, &cur_w, &cur_h);
+        if ((width == cur_w) && (height == cur_h)) return surface;
+        eng_image_free(data, surface);
+        surface = NULL;
+     }
+
+   surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
+   //Use this hint for ZERO COPY texture upload.
+   eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
+   return surface;
+}
+
 static Ector_Surface_Cache *surface_cache = NULL;
 
 static void 
-_ector_surface_cache_init(void *output)
+_ector_surface_cache_init(void)
 {
    if (!surface_cache)
      {
         surface_cache = calloc(1, sizeof(Ector_Surface_Cache));
-        surface_cache->output = output;
         surface_cache->surface_hash = eina_hash_int32_new(NULL);
      }
 }
@@ -2576,7 +2569,7 @@ _ector_surface_cache_init(void *output)
 //         eina_hash_free(surface_cache->surface_hash);
 //         EINA_LIST_FREE(surface_cache->lru_list, data)
 //           {
-//              eng_image_free(surface_cache->output, data->surface);
+//              eng_image_free(data->output, data->surface);
 //              free(data);
 //           }
 //         free(surface_cache);
@@ -2589,10 +2582,11 @@ eng_ector_surface_cache_set(void *data, void *key, void *surface)
 {
    Ector_Surface_Data *surface_data = NULL;
    int count;
-   _ector_surface_cache_init(data);
-   surface_data = calloc(1, sizeof(surface_data));
+   _ector_surface_cache_init();
+   surface_data = calloc(1, sizeof(Ector_Surface_Data));
    surface_data->key = key;
    surface_data->surface = surface;
+   surface_data->output = data;
    eina_hash_add(surface_cache->surface_hash, &key, surface_data);
    surface_cache->lru_list = eina_list_prepend(surface_cache->lru_list, surface_data);
    count = eina_list_count(surface_cache->lru_list);
@@ -2601,27 +2595,33 @@ eng_ector_surface_cache_set(void *data, void *key, void *surface)
       surface_data = eina_list_data_get(eina_list_last(surface_cache->lru_list));
       eina_hash_del(surface_cache->surface_hash, &surface_data->key, surface_data);
       surface_cache->lru_list = eina_list_remove_list(surface_cache->lru_list, eina_list_last(surface_cache->lru_list));
-      eng_image_free(surface_cache->output, surface_data->surface);
+      eng_image_free(surface_data->output, surface_data->surface);
       free(surface_data);
    }
 }
 
 static void *
-eng_ector_surface_cache_get(void *data, void *key)
+eng_ector_surface_cache_get(void *data EINA_UNUSED, void *key)
 {
-   Ector_Surface_Data *surface_data = NULL;
+   Ector_Surface_Data *surface_data = NULL, *lru_data;
+   Eina_List *l;
 
-   _ector_surface_cache_init(data);
+   _ector_surface_cache_init();
    surface_data =  eina_hash_find(surface_cache->surface_hash, &key);
-   if (surface_data)
+   if (surface_data) 
      {
-        surface_cache->lru_list = eina_list_remove(surface_cache->lru_list, surface_data);
-        surface_cache->lru_list = eina_list_prepend(surface_cache->lru_list, surface_data);
+        EINA_LIST_FOREACH(surface_cache->lru_list, l, lru_data)
+          {
+            if (lru_data == surface_data)
+              {
+                 surface_cache->lru_list = eina_list_demote_list(surface_cache->lru_list, l);
+                 break;
+              }
+          }
         return surface_data->surface;
      }
    return NULL;
 }
-
 
 static Evas_Func func, pfunc;
 

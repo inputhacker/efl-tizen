@@ -533,15 +533,15 @@ typedef struct _Ector_Surface_Data  Ector_Surface_Data;
 
 struct _Ector_Surface_Data
 {
-   void         *key;
-   void         *surface;
+   void         *key;     // vg tree pointer
+   void         *surface; // engine image
+   void         *output;
 };
 
 struct _Ector_Surface_Cache
 {
    Eina_Hash    *surface_hash;
    Eina_List    *lru_list;
-   void         *output;
 };
 
 /* General types - used for script type chceking */
@@ -1479,7 +1479,7 @@ struct _Evas_Func
    void  (*ector_begin)                  (void *data, void *context, Ector_Surface *ector, void *surface, int x, int y, Eina_Bool do_async);
    void  (*ector_renderer_draw)          (void *data, void *context, void *surface, Ector_Renderer *r, Eina_Array *clips, Eina_Bool do_async);
    void  (*ector_end)                    (void *data, void *context, Ector_Surface *ector, void *surface, Eina_Bool do_async);
-   void *(*ector_surface_create)          (void *data, void *surface, int w, int h, Eina_Bool force);
+   void *(*ector_surface_create)         (void *data, void *surface, int w, int h, Eina_Bool force);
    void  (*ector_surface_cache_set)      (void *data, void *key, void *surface);
    void *(*ector_surface_cache_get)      (void *data, void *key);
 };
