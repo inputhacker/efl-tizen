@@ -598,6 +598,12 @@ struct _Edje_Style_Tag
    const char			  *font;
    double			   font_size;
    const char			  *text_class;
+   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+   const char                     *color_class;
+   const char                     *color;
+   const char                     *outline_color;
+   const char                     *shadow_color;
+   /* END */
 };
 
 /*----------*/
@@ -2547,7 +2553,11 @@ void          _edje_message_del             (Edje *ed);
 
 void _edje_textblock_styles_add(Edje *ed, Edje_Real_Part *ep);
 void _edje_textblock_styles_del(Edje *ed, Edje_Part *pt);
+/* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
 void _edje_textblock_styles_cache_free(Edje *ed, const char *text_class);
+ */
+void _edje_textblock_styles_cache_free(Edje *ed, const char *text_class, const char *color_class);
+/* END */
 void _edje_textblock_style_all_update(Edje *ed);
 void _edje_textblock_style_parse_and_fix(Edje_File *edf);
 void _edje_textblock_style_cleanup(Edje_File *edf);

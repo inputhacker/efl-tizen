@@ -674,6 +674,10 @@ edje_color_class_set(const char *color_class, int r, int g, int b, int a, int r2
 #ifdef EDJE_CALC_CACHE
         er->ed->all_part_change = EINA_TRUE;
 #endif
+        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+        _edje_textblock_styles_cache_free(er->ed, NULL, color_class);
+        _edje_textblock_style_all_update(er->ed);
+        /* END */
         _edje_recalc(er->ed);
         _edje_emit(er->ed, "color_class,set", color_class);
      }
@@ -744,6 +748,10 @@ edje_color_class_del(const char *color_class)
 #ifdef EDJE_CALC_CACHE
         er->ed->all_part_change = EINA_TRUE;
 #endif
+        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+        _edje_textblock_styles_cache_free(er->ed, NULL, color_class);
+        _edje_textblock_style_all_update(er->ed);
+        /* END */
         _edje_recalc(er->ed);
         _edje_emit(er->ed, "color_class,del", color_class);
      }
@@ -939,6 +947,10 @@ update_color_class:
                                       a3);
      }
 
+   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+   _edje_textblock_styles_cache_free(ed, NULL, color_class);
+   _edje_textblock_style_all_update(ed);
+   /* END */
    _edje_recalc(ed);
    _edje_emit(ed, "color_class,set", color_class);
 
@@ -1015,6 +1027,10 @@ edje_object_color_class_del(Evas_Object *obj, const char *color_class)
 #ifdef EDJE_CALC_CACHE
    ed->all_part_change = EINA_TRUE;
 #endif
+   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+   _edje_textblock_styles_cache_free(ed, NULL, color_class);
+   _edje_textblock_style_all_update(ed);
+   /* END */
    _edje_recalc(ed);
    _edje_emit(ed, "color_class,del", color_class);
 }
@@ -1141,7 +1157,11 @@ edje_text_class_set(const char *text_class, const char *font, Evas_Font_Size siz
      {
         er->ed->dirty = EINA_TRUE;
         er->ed->recalc_call = EINA_TRUE;
+        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
         _edje_textblock_styles_cache_free(er->ed, text_class);
+         */
+        _edje_textblock_styles_cache_free(er->ed, text_class, NULL);
+        /* END */
         _edje_textblock_style_all_update(er->ed);
 #ifdef EDJE_CALC_CACHE
         er->ed->text_part_change = EINA_TRUE;
@@ -1199,7 +1219,11 @@ edje_text_class_del(const char *text_class)
    EINA_ITERATOR_FOREACH(it, er)
      {
         er->ed->dirty = EINA_TRUE;
+        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
         _edje_textblock_styles_cache_free(er->ed, text_class);
+         */
+        _edje_textblock_styles_cache_free(er->ed, text_class, NULL);
+        /* END */
         _edje_textblock_style_all_update(er->ed);
 #ifdef EDJE_CALC_CACHE
         er->ed->text_part_change = EINA_TRUE;
@@ -1295,7 +1319,11 @@ _edje_object_text_class_set(Eo *obj EINA_UNUSED, Edje *ed, const char *text_clas
 #ifdef EDJE_CALC_CACHE
    ed->text_part_change = EINA_TRUE;
 #endif
+   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
    _edje_textblock_styles_cache_free(ed, text_class);
+    */
+   _edje_textblock_styles_cache_free(ed, text_class, NULL);
+   /* END */
    _edje_textblock_style_all_update(ed);
    _edje_recalc(ed);
 

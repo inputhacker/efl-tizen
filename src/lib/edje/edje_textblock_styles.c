@@ -1,5 +1,87 @@
 #include "edje_private.h"
 
+/* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+static int
+_hex_string_get(char ch)
+{
+   if ((ch >= '0') && (ch <= '9')) return (ch - '0');
+   else if ((ch >= 'A') && (ch <= 'F')) return (ch - 'A' + 10);
+   else if ((ch >= 'a') && (ch <= 'f')) return (ch - 'a' + 10);
+   return 0;
+}
+
+/**
+ * @internal
+ * Calculate the color string according to the given RGBA color.
+ * @detail It returns a multiplied color string.
+ * Return string should be free'd manually.
+ *
+ * @param color The existing color string from Textblock style.
+ * @param r     Red color
+ * @param g     Green color
+ * @param b     Blue color
+ * @param a     Alpha value
+ * @return multiplied color string. It should be free'd manually.
+ */
+char *
+_edje_textblock_color_calc(const char *color, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+   int cr, cg, cb, ca;
+   int nr, ng, nb, na;
+   int len;
+   char *ret;
+
+   cr = cg = cb = ca = 0;
+   len = strlen(color);
+
+   if (len == 7) /* #RRGGBB */
+     {
+        cr = (_hex_string_get(color[1]) << 4) | (_hex_string_get(color[2]));
+        cg = (_hex_string_get(color[3]) << 4) | (_hex_string_get(color[4]));
+        cb = (_hex_string_get(color[5]) << 4) | (_hex_string_get(color[6]));
+        ca = 0xff;
+     }
+   else if (len == 9) /* #RRGGBBAA */
+     {
+        cr = (_hex_string_get(color[1]) << 4) | (_hex_string_get(color[2]));
+        cg = (_hex_string_get(color[3]) << 4) | (_hex_string_get(color[4]));
+        cb = (_hex_string_get(color[5]) << 4) | (_hex_string_get(color[6]));
+        ca = (_hex_string_get(color[7]) << 4) | (_hex_string_get(color[8]));
+     }
+   else if (len == 4) /* #RGB */
+     {
+        cr = _hex_string_get(color[1]);
+        cr = (cr << 4) | cr;
+        cg = _hex_string_get(color[2]);
+        cg = (cg << 4) | cg;
+        cb = _hex_string_get(color[3]);
+        cb = (cb << 4) | cb;
+        ca = 0xff;
+     }
+   else if (len == 5) /* #RGBA */
+     {
+        cr = _hex_string_get(color[1]);
+        cr = (cr << 4) | cr;
+        cg = _hex_string_get(color[2]);
+        cg = (cg << 4) | cg;
+        cb = _hex_string_get(color[3]);
+        cb = (cb << 4) | cb;
+        ca = _hex_string_get(color[4]);
+        ca = (ca << 4) | ca;
+     }
+
+     nr = (((int)r + 1) * cr) >> 8;
+     ng = (((int)g + 1) * cg) >> 8;
+     nb = (((int)b + 1) * cb) >> 8;
+     na = (((int)a + 1) * ca) >> 8;
+
+     ret = malloc(10);
+     snprintf(ret, 10, "#%02x%02x%02x%02x", nr, ng, nb, na);
+
+     return ret;
+}
+/* END */
+
 static int
 _edje_font_is_embedded(Edje_File *edf, char *font)
 {
@@ -125,6 +207,28 @@ _edje_format_reparse(Edje_File *edf, const char *str, Edje_Style_Tag **tag_ret)
                          }
                     }
                }
+             /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+             else if (!strcmp(key, "color_class"))
+               {
+                  if (tag_ret)
+                    (*tag_ret)->color_class = eina_stringshare_add(val);
+               }
+             else if (!strcmp(key, "color"))
+               {
+                  if (tag_ret)
+                    (*tag_ret)->color = eina_stringshare_add(val);
+               }
+             else if (!strcmp(key, "outline_color"))
+               {
+                  if (tag_ret)
+                    (*tag_ret)->outline_color = eina_stringshare_add(val);
+               }
+             else if (!strcmp(key, "shadow_color"))
+               {
+                  if (tag_ret)
+                    (*tag_ret)->shadow_color = eina_stringshare_add(val);
+               }
+             /* END */
              s2 = eina_str_escape(item);
              if (s2)
                {
@@ -163,6 +267,9 @@ _edje_textblock_style_update(Edje *ed, Edje_Style *stl, Eina_Bool force)
    Eina_Strbuf *txt = NULL;
    Edje_Style_Tag *tag;
    Edje_Text_Class *tc;
+   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+   Edje_Color_Class *cc;
+   /* END */
    int found = 0;
    char *fontset = NULL, *fontsource = NULL;
 
@@ -182,6 +289,14 @@ _edje_textblock_style_update(Edje *ed, Edje_Style *stl, Eina_Bool force)
              found = 1;
              break;
           }
+
+        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+        if (tag->color_class)
+          {
+             found = 1;
+             break;
+          }
+        /* END */
      }
 
    /* No text classes , goto next style */
@@ -204,6 +319,11 @@ _edje_textblock_style_update(Edje *ed, Edje_Style *stl, Eina_Bool force)
 
         /* Configure fonts from text class if it exists */
         tc = _edje_text_class_find(ed, tag->text_class);
+
+        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+        /* Configure color from color class if it exists */
+        cc = _edje_color_class_find(ed, tag->color_class);
+        /* END */
 
         /* Add and Handle tag parsed data */
         eina_strbuf_append(txt, tag->value);
@@ -251,6 +371,65 @@ _edje_textblock_style_update(Edje *ed, Edje_Style *stl, Eina_Bool force)
 
              if (sfont) free(sfont);
           }
+        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+        if (tag->color)
+          {
+             eina_strbuf_append(txt, " ");
+             eina_strbuf_append(txt, "color=");
+
+             if (cc)
+               {
+                  char *color;
+
+                  color = _edje_textblock_color_calc(tag->color,
+                                                     cc->r, cc->g, cc->b, cc->a);
+                  eina_strbuf_append_escaped(txt, (const char *)color);
+                  if (color) free(color);
+               }
+             else
+               {
+                  eina_strbuf_append_escaped(txt, tag->color);
+               }
+          }
+        if (tag->outline_color)
+          {
+             eina_strbuf_append(txt, " ");
+             eina_strbuf_append(txt, "outline_color=");
+
+             if (cc)
+               {
+                  char *color;
+
+                  color = _edje_textblock_color_calc(tag->outline_color,
+                                                     cc->r2, cc->g2, cc->b2, cc->a2);
+                  eina_strbuf_append_escaped(txt, (const char *)color);
+                  if (color) free(color);
+               }
+             else
+               {
+                  eina_strbuf_append_escaped(txt, tag->outline_color);
+               }
+          }
+        if (tag->shadow_color)
+          {
+             eina_strbuf_append(txt, " ");
+             eina_strbuf_append(txt, "shadow_color=");
+
+             if (cc)
+               {
+                  char *color;
+
+                  color = _edje_textblock_color_calc(tag->shadow_color,
+                                                     cc->r3, cc->g3, cc->b3, cc->a3);
+                  eina_strbuf_append_escaped(txt, (const char *)color);
+                  if (color) free(color);
+               }
+             else
+               {
+                  eina_strbuf_append_escaped(txt, tag->shadow_color);
+               }
+          }
+        /* END */
 
         eina_strbuf_append(txt, "'");
      }
@@ -308,14 +487,36 @@ _edje_textblock_style_member_add(Edje *ed, Edje_Style *stl)
 
    EINA_LIST_FOREACH(stl->tags, l, tag)
      {
+        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
         if (tag->text_class)
           {
              _edje_text_class_member_add(ed, tag->text_class);
 
-             /* Newly added text_class member should be updated
-                according to the latest text_class's status. */
+             // Newly added text_class member should be updated
+                according to the latest text_class's status. //
              _edje_textblock_style_update(ed, stl, EINA_TRUE);
           }
+         */
+        Eina_Bool force_update = EINA_FALSE;
+
+        if (tag->text_class)
+          {
+             _edje_text_class_member_add(ed, tag->text_class);
+
+             force_update = EINA_TRUE;
+          }
+        if (tag->color_class)
+          {
+             _edje_color_class_member_add(ed, tag->color_class);
+
+             force_update = EINA_TRUE;
+          }
+
+        /* Newly added text_class member should be updated
+           according to the latest text_class's status. */
+        if (force_update)
+          _edje_textblock_style_update(ed, stl, EINA_TRUE);
+        /* END */
      }
 }
 
@@ -378,6 +579,11 @@ _edje_textblock_styles_del(Edje *ed, Edje_Part *pt)
           {
              if (tag->text_class)
                _edje_text_class_member_del(ed, tag->text_class);
+
+             /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+             if (tag->color_class)
+               _edje_color_class_member_del(ed, tag->color_class);
+             /* END */
           }
      }
 
@@ -409,14 +615,23 @@ _edje_textblock_styles_del(Edje *ed, Edje_Part *pt)
      }
 }
 
+/* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
 void
-_edje_textblock_styles_cache_free(Edje *ed, const char *text_class)
+_edje_textblock_styles_cache_free(Edje *ed, const char *text_class, const char *color_class)
+ */
+void
+_edje_textblock_styles_cache_free(Edje *ed, const char *text_class, const char *color_class)
+/* END */
 {
    Eina_List *l, *ll;
    Edje_Style *stl;
 
    if (!ed->file) return;
+   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
    if (!text_class) return;
+    */
+   if (!text_class && !color_class) return;
+   /* END */
 
    EINA_LIST_FOREACH(ed->file->styles, l, stl)
      {
@@ -425,6 +640,7 @@ _edje_textblock_styles_cache_free(Edje *ed, const char *text_class)
 
         EINA_LIST_FOREACH(stl->tags, ll, tag)
           {
+             /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
              if (!tag->text_class) continue;
 
              if (!strcmp(tag->text_class, text_class))
@@ -432,6 +648,23 @@ _edje_textblock_styles_cache_free(Edje *ed, const char *text_class)
                   found = EINA_TRUE;
                   break;
                }
+              */
+             if (!tag->text_class && !tag->color_class) continue;
+
+             if (tag->text_class && text_class &&
+                 !strcmp(tag->text_class, text_class))
+               {
+                  found = EINA_TRUE;
+                  break;
+               }
+
+             if (tag->color_class && color_class &&
+                 !strcmp(tag->color_class, color_class))
+               {
+                  found = EINA_TRUE;
+                  break;
+               }
+             /* END */
           }
         if (found)
           stl->cache = EINA_FALSE;
@@ -510,6 +743,26 @@ _edje_textblock_style_parse_and_fix(Edje_File *edf)
                   eina_strbuf_append(txt, "font_size=");
                   eina_strbuf_append(txt, font_size);
                }
+             /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
+             if (tag->color)
+               {
+                  eina_strbuf_append(txt, " ");
+                  eina_strbuf_append(txt, "color=");
+                  eina_strbuf_append_escaped(txt, tag->color);
+               }
+             if (tag->outline_color)
+               {
+                  eina_strbuf_append(txt, " ");
+                  eina_strbuf_append(txt, "outline_color=");
+                  eina_strbuf_append_escaped(txt, tag->outline_color);
+               }
+             if (tag->shadow_color)
+               {
+                  eina_strbuf_append(txt, " ");
+                  eina_strbuf_append(txt, "shadow_color=");
+                  eina_strbuf_append_escaped(txt, tag->shadow_color);
+               }
+             /* END */
              /* Add font name last to save evas from multiple loads */
              if (tag->font)
                {
