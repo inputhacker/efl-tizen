@@ -10378,6 +10378,7 @@ st_collections_group_parts_part_description_properties_specular(void)
            ed->light.properties.specular.g = parse_float_range(1, 0.0, 1.0);
            ed->light.properties.specular.b = parse_float_range(2, 0.0, 1.0);
            ed->light.properties.specular.a = parse_float_range(3, 0.0, 1.0);
+           break;
         }
       case EDJE_PART_TYPE_MESH_NODE:
         {
