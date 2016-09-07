@@ -110,6 +110,7 @@ struct _Svg_Doc_Node
    double vy;
    double vw;
    double vh;
+   Eina_Bool preserve_aspect;
    Svg_Node *defs;
 };
 

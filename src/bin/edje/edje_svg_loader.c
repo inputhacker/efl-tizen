@@ -686,6 +686,11 @@ _attr_parse_svg_node(void *data, const char *key, const char *value)
             if (_parse_number(&value, &doc->vw))
               _parse_number(&value, &doc->vh);
      }
+   else if (!strcmp(key, "preserveAspectRatio"))
+     {
+        if (!strcmp(value, "none"))
+          doc->preserve_aspect = EINA_FALSE;
+     }
    else if (!strcmp(key, "style"))
      {
         _attr_style_node(node, value);
@@ -934,7 +939,9 @@ static Svg_Node *
 _create_svg_node(Svg_Node *parent, const char *buf, unsigned buflen)
 {
    Svg_Node *node = _create_node(parent, SVG_NODE_DOC);
+   Svg_Doc_Node *doc = &(node->node.doc);
 
+   doc->preserve_aspect = EINA_TRUE;
    eina_simple_xml_attributes_parse(buf, buflen,
                                     _attr_parse_svg_node, node);
    return node;

@@ -243,6 +243,7 @@ _eet_for_doc_node(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Doc_Node, "vy", vy, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Doc_Node, "vw", vw, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Doc_Node, "vh", vh, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Doc_Node, "preserve_aspect", preserve_aspect, EET_T_INT);
    return eet;
 }
 
@@ -701,6 +702,7 @@ _evas_vg_load_vg_data(Eina_Stringshare *path, int svg_id)
         vector->y = node->node.doc.vy;
         vector->w = node->node.doc.vw;
         vector->h = node->node.doc.vh;
+        vector->preserve_aspect = node->node.doc.preserve_aspect;
      }
    vector->vg = root;
    _evas_vg_svg_node_free(node);
@@ -721,9 +723,17 @@ _apply_transformation(Efl_VG *root, double w, double h, Vg_Data *vg_data)
    eina_matrix3_identity(&m);
    // allign hcenter and vcenter
    //@TODO take care of the preserveaspectratio attribute
-   eina_matrix3_translate(&m, (w - vg_data->w * scale)/2.0, (h - vg_data->h * scale)/2.0);
-   eina_matrix3_scale(&m, scale, scale);
-   eina_matrix3_translate(&m, -vg_data->x, -vg_data->y);
+   if (vg_data->preserve_aspect)
+     {
+        eina_matrix3_translate(&m, (w - vg_data->w * scale)/2.0, (h - vg_data->h * scale)/2.0);
+        eina_matrix3_scale(&m, scale, scale);
+        eina_matrix3_translate(&m, -vg_data->x, -vg_data->y);
+     }
+   else
+     {
+        eina_matrix3_scale(&m, sx, sy);
+        eina_matrix3_translate(&m, -vg_data->x, -vg_data->y);
+     }
    evas_vg_node_transformation_set(root, &m);
    _apply_stroke_scale(root, scale);
 }

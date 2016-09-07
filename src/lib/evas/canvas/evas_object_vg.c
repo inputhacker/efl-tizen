@@ -113,6 +113,7 @@ evas_object_vg_path_set(Eo *obj, const char *path, int src_vg,
           }
         pd->svg = entry;
      }
+   evas_object_change(obj, efl_data_scope_get(obj, EFL_CANVAS_OBJECT_CLASS));
 }
 
 Efl_VG *
