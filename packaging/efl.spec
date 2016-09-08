@@ -253,7 +253,7 @@ Development files for eo
 
 ############ Ector
 %package -n ector
-Summary: vector graphics library
+Summary: Vector graphics library
 Requires: %{name}-data = %{version}-%{release}
 License: FTL or GPL-2.0+
 
@@ -746,6 +746,9 @@ rm -rf %{buildroot}%{_libdir}/ecore/system/upower
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
+%post -n efl -p /sbin/ldconfig
+%postun -n efl -p /sbin/ldconfig
+
 %post -n eina -p /sbin/ldconfig
 %postun -n eina -p /sbin/ldconfig
 
@@ -802,6 +805,11 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %post -n elocation -p /sbin/ldconfig
 %postun -n elocation -p /sbin/ldconfig
 
+%post -n eolian-devel -p /sbin/ldconfig
+%postun -n eolian-devel -p /sbin/ldconfig
+
+%post -n elocation-devel -p /sbin/ldconfig
+%postun -n elocation-devel -p /sbin/ldconfig
 
 %files -n %{name}
 %manifest %{name}.manifest
@@ -1273,4 +1281,3 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_libdir}/cmake/Elua*/*.cmake
-
