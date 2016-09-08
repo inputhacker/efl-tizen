@@ -370,6 +370,8 @@ _evas_tbmbuf_surface_assign(Surface *s)
    int num_surface;
    tbm_surface_h surfaces[5];
    sym_tbm_surface_queue_get_surfaces(surface->tbm_queue, surfaces, &num_surface);
+   if (num_surface == 1) return 0;
+
    return num_surface;
 }
 
