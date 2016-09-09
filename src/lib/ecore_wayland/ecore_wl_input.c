@@ -1464,10 +1464,7 @@ _ecore_wl_input_cb_touch_down(void *data, struct wl_touch *touch EINA_UNUSED, un
    _ecore_wl_input_touch_axis_process(input, id);
 
    if (input->touch_focus != win)
-     {
-        input->touch_focus = win;
-        _ecore_wl_input_mouse_move_send(input, input->touch_focus, timestamp, id, EINA_FALSE);
-     }
+     input->touch_focus = win;
 
    if (!input->grab_count)
      {
@@ -1479,6 +1476,7 @@ _ecore_wl_input_cb_touch_down(void *data, struct wl_touch *touch EINA_UNUSED, un
         }
      }
 
+   _ecore_wl_input_mouse_move_send(input, input->touch_focus, timestamp, id, EINA_FALSE);
    _ecore_wl_input_mouse_down_send(input, input->touch_focus,
                                    id, BTN_LEFT, timestamp, EINA_FALSE);
 
