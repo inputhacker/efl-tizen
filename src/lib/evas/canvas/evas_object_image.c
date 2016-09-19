@@ -1544,7 +1544,11 @@ _evas_image_alpha_set(Eo *eo_obj, Evas_Image_Data *o, Eina_Bool has_alpha)
      return;
 
    EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
-     state_write->has_alpha = has_alpha;
+     {
+        state_write->has_alpha = has_alpha;
+        state_write->opaque_valid = 0;
+     }
+
    EINA_COW_IMAGE_STATE_WRITE_END(o, state_write);
 
    if (o->engine_data)
