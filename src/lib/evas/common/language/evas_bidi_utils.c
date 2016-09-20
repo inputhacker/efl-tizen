@@ -257,6 +257,11 @@ evas_bidi_paragraph_props_get(const Eina_Unicode *eina_ustr, size_t len,
 #endif
 
    bidi_props = evas_bidi_paragraph_props_new();
+   if (!bidi_props) /* TIZEN ONLY(20160920): In review on upstrem */
+     {
+         len = -2;
+         goto cleanup;
+     }
    bidi_props->direction = base_bidi;
 
    /* Prep work for reordering */
@@ -562,6 +567,9 @@ evas_bidi_paragraph_props_new(void)
 {
    Evas_BiDi_Paragraph_Props *ret;
    ret = calloc(1, sizeof(Evas_BiDi_Paragraph_Props));
+   /* TIZEN ONLY(20160920): In review on upstrem */
+   if (!ret) return NULL;
+
    ret->direction = EVAS_BIDI_PARAGRAPH_NEUTRAL;
    ret->refcount = 1;
 
