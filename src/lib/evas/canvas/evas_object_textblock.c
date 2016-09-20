@@ -6087,6 +6087,9 @@ _layout(const Evas_Object *eo_obj, int w, int h, int *w_ret, int *h_ret)
    if (!c->paragraphs)
      {
         _layout_paragraph_new(c, NULL, EINA_TRUE);
+
+        if (!c->paragraphs) return;
+
         o->paragraphs = c->paragraphs;
      }
    c->par = (Evas_Object_Textblock_Paragraph *)
@@ -6150,7 +6153,7 @@ _layout(const Evas_Object *eo_obj, int w, int h, int *w_ret, int *h_ret)
         }
 
       /* Get the last visible paragraph in the layout */
-      if (!last_vis_par && c->paragraphs)
+      if (!last_vis_par)
          last_vis_par = (Evas_Object_Textblock_Paragraph *)
             EINA_INLIST_GET(c->paragraphs)->last;
 
