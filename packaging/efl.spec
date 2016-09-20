@@ -1,5 +1,6 @@
 %bcond_with wayland
 %bcond_with x
+%bcond_with emulator
 
 Name:           efl
 Version:        1.16.0
@@ -682,6 +683,10 @@ cp %{SOURCE1001} .
 
 %if ! %{with x}
 CFLAGS+=" -DMESA_EGL_NO_X11_HEADERS "
+%endif
+
+%if %{with emulator}
+CFLAGS+=" -DEFL_FEATURE_EMULATOR "
 %endif
 
 %reconfigure \
