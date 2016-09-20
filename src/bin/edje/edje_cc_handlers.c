@@ -382,6 +382,9 @@ static void st_collections_group_parts_part_description_text_align(void);
 static void st_collections_group_parts_part_description_text_source(void);
 static void st_collections_group_parts_part_description_text_text_source(void);
 static void st_collections_group_parts_part_description_text_ellipsis(void);
+/* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+static void st_collections_group_parts_part_description_text_fade_ellipsis(void);
+/* END */
 static void st_collections_group_parts_part_description_box_layout(void);
 static void st_collections_group_parts_part_description_box_align(void);
 static void st_collections_group_parts_part_description_box_padding(void);
@@ -867,6 +870,9 @@ New_Statement_Handler statement_handlers[] =
      {"collections.group.parts.part.description.text.elipsis", st_collections_group_parts_part_description_text_ellipsis},
      {"collections.group.parts.part.description.text.ellipsis", st_collections_group_parts_part_description_text_ellipsis},
      {"collections.group.parts.part.description.text.filter", st_collections_group_parts_part_description_filter_code}, /* dup */
+     /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+     {"collections.group.parts.part.description.text.fade_ellipsis", st_collections_group_parts_part_description_text_fade_ellipsis},
+     /* END */
      {"collections.group.parts.part.description.box.layout", st_collections_group_parts_part_description_box_layout},
      {"collections.group.parts.part.description.box.align", st_collections_group_parts_part_description_box_align},
      {"collections.group.parts.part.description.box.padding", st_collections_group_parts_part_description_box_padding},
@@ -1489,6 +1495,9 @@ _edje_part_description_alloc(unsigned char type, const char *collection, const c
 	   ed->text.align.y = FROM_DOUBLE(0.5);
 	   ed->text.id_source = -1;
 	   ed->text.id_text_source = -1;
+           /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+	   ed->text.fade_ellipsis = FROM_DOUBLE(0.0);
+           /* END */
 
 	   result = &ed->common;
 	   break;
@@ -7377,6 +7386,9 @@ st_collections_group_parts_part_description_inherit(void)
 
               data_queue_copied_part_nest_lookup(pc, &(tparent->text.id_source), &(ted->text.id_source), &ted->text.id_source_part);
               data_queue_copied_part_nest_lookup(pc, &(tparent->text.id_text_source), &(ted->text.id_text_source), &ted->text.id_text_source_part);
+              /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+              ted->text.fade_ellipsis = tparent->text.fade_ellipsis;
+              /* END */
 
               break;
            }
@@ -9721,6 +9733,30 @@ st_collections_group_parts_part_description_text_ellipsis(void)
 
    ed->text.ellipsis = parse_float_range(0, -1.0, 1.0);
 }
+
+/*
+ * TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part.
+ */
+static void
+st_collections_group_parts_part_description_text_fade_ellipsis(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.fade_ellipsis = parse_float_range(0, -1.0, 1.0) + 1.0;
+}
+/* END */
 
 /** @edcsubsection{collections_group_parts_description_box,
  *                 Group.Parts.Part.Description.Box} */

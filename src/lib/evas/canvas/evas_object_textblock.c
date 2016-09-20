@@ -554,6 +554,10 @@ struct _Evas_Object_Textblock
    Eina_Bool                           legacy_newline : 1;
    Eina_Bool                           inherit_paragraph_direction : 1;
    Eina_Bool                           changed_paragraph_direction : 1;
+
+   /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+   Eina_Bool                           last_computed_ellipsis : 1;
+   /* END */
 };
 
 struct _Evas_Textblock_Selection_Iterator
@@ -5027,6 +5031,10 @@ _layout_par_ellipsis_items(Ctxt *c, double ellip)
    if (exceed <= 0)
       return;
 
+   /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+   c->o->last_computed_ellipsis = EINA_TRUE;
+   /* END */
+
      {
         Evas_Object_Textblock_Item *first_it =
            _ITEM(eina_list_data_get(c->par->logical_items));
@@ -5357,6 +5365,9 @@ _layout_par(Ctxt *c)
                     (!it->format->wrap_word && !it->format->wrap_char &&
                      !it->format->wrap_mixed && !it->format->wrap_hyphenation)))
                {
+                  /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+                  c->o->last_computed_ellipsis = EINA_TRUE;
+                  /* END */
                   _layout_handle_ellipsis(c, it, i);
                   ret = 1;
                   goto end;
@@ -6201,6 +6212,9 @@ _relayout(const Evas_Object *eo_obj)
 {
    Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
    Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
+   /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+   o->last_computed_ellipsis = EINA_FALSE;
+   /* END */
    _layout(eo_obj, obj->cur->geometry.w, obj->cur->geometry.h,
          &o->formatted.w, &o->formatted.h);
    o->formatted.valid = 1;
@@ -13624,6 +13638,18 @@ _evas_textblock_evas_object_paragraph_direction_get(Eo *eo_obj EINA_UNUSED,
 {
    return o->paragraph_direction;
 }
+
+/* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
+EAPI Eina_Bool
+evas_object_textblock_ellipsis_status_get(const Evas_Object *eo_obj)
+{
+   TB_HEAD_RETURN(EINA_FALSE);
+
+   Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
+
+   return o->last_computed_ellipsis;
+}
+/* END */
 
 /**
  * @}

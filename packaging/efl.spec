@@ -1073,6 +1073,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libedje.so.*
 %{_libdir}/edje/utils/*/*
 %{_datadir}/edje/include/edje.inc
+%{_datadir}/edje/images/*
 %{_datadir}/mime/packages/edje.xml
 
 %files -n edje-tools
