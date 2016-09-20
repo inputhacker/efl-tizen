@@ -171,11 +171,9 @@ evas_model_save_file_eet(const Evas_Canvas3D_Mesh *mesh,
    _set_material_to_eet_file_from_mesh(eet_mesh, eet_header, f);
    _set_frame_to_eet_file_from_mesh(eet_mesh);
 
-   if (ef == NULL)
+   if (ef == NULL) /*TIZEN_ONLY(20160920): Fix memory leak */
      {
         ERR("Opening of file is failed.");
-        free(eet_mesh);
-        free(eet_header);
         _evas_canvas3d_eet_file_free();
         return;
      }
