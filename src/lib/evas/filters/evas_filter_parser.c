@@ -1710,8 +1710,12 @@ _transform_padding_update(Evas_Filter_Program *pgm EINA_UNUSED,
    dst = _instruction_param_getbuf(instr, "dst", NULL);
    INSTR_PARAM_CHECK(dst);
 
+   /* TIZEN_ONLY(20160920): remove unnecessary check for unreachable case.
    if (ox < 0) l = (-ox) * 2;
    else r = ox * 2;
+    */
+   r = ox * 2;
+   /*    END   */
 
    if (oy < 0) t = (-oy) * 2;
    else b = oy * 2;
