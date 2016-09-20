@@ -684,13 +684,17 @@ _ecore_evas_wl_common_free(Ecore_Evas *ee)
 void
 _ecore_evas_wl_common_resize(Ecore_Evas *ee, int w, int h)
 {
-   Ecore_Evas_Engine_Wl_Data *wdata = ee->engine.data;
+   Ecore_Evas_Engine_Wl_Data *wdata;
    int orig_w, orig_h;
    int ow, oh;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
    if (!ee) return;
+
+   wdata = ee->engine.data;
+   if (!wdata) return;
+
    if (w < 1) w = 1;
    if (h < 1) h = 1;
 
