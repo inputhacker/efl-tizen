@@ -70,7 +70,10 @@ _extnbuf_new(const char *base, int id, Eina_Bool sys, int num,
    if (b->addr == MAP_FAILED) goto err;
    return b;
 err:
+   /* TIZEN ONLY (20160920): security issue. To access any application, it needs smack rule.
    if (tmp) eina_tmpstr_del(tmp);
+    */
+   /*   END   */
    _extnbuf_free(b);
    return NULL;
 }
