@@ -3195,6 +3195,13 @@ EAPI void evas_object_text_filter_program_set(Eo *obj, const char *code);
 EAPI void evas_object_text_filter_source_set(Eo *obj, const char *name, Evas_Object *eo_source);
 
 /**
+ * TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part.
+ * @internal
+ */
+EAPI Eina_Bool                                evas_object_text_ellipsis_status_get(const Evas_Object *eo_obj) EINA_ARG_NONNULL(1);
+/* END */
+
+/**
  * @}
  */
 
@@ -3248,6 +3255,13 @@ EAPI char                                    *evas_textblock_text_utf8_to_markup
  * @return nothing.
  */
 EAPI void                                     evas_object_textblock_clear(Evas_Object *obj) EINA_ARG_NONNULL(1);
+
+/**
+ * TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part.
+ * @internal
+ */
+EAPI Eina_Bool                                evas_object_textblock_ellipsis_status_get(const Evas_Object *eo_obj) EINA_ARG_NONNULL(1);
+/* END */
 
 #include "canvas/evas_textblock.eo.legacy.h"
 
