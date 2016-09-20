@@ -733,7 +733,7 @@ _ecore_drm_evdev_device_create(Ecore_Drm_Seat *seat, struct libinput_device *dev
         EINA_LIST_FOREACH(devices, l, dev)
           {
              name = eeze_udev_syspath_get_devname(dev);
-             if (strstr(name, edev->path))
+             if (name && strstr(name, edev->path))
                {
                   eina_stringshare_replace(&edev->path, eeze_udev_syspath_get_devpath(dev));
                   break;
