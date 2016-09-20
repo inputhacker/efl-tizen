@@ -2895,6 +2895,7 @@ edje_edit_external_add(Evas_Object *obj, const char *external)
 
    if (!ed->file->external_dir)
      ed->file->external_dir = _alloc(sizeof(Edje_External_Directory));
+   if (!ed->file->external_dir) return EINA_FALSE;
 
    for (i = 0; i < ed->file->external_dir->entries_count; ++i)
      if (!ed->file->external_dir->entries[i].entry)
@@ -12238,18 +12239,19 @@ edje_edit_source_generate(Evas_Object *obj)
         Eina_Iterator *it = eina_hash_iterator_key_new(ed->file->data);
         EINA_ITERATOR_FOREACH(it, entry)
           {
-              es = eina_hash_find(ed->file->data, entry);
-              str = edje_string_get(es);
-              data_len = strlen(str);
-              /* In case when data ends with '\n' character, this item recognize
-               * as data.file. This data will not generated into the source code
-               * of group. */
-              if (str[data_len - 1] == '\n') continue;
-              escaped_entry = eina_str_escape(entry);
-              escaped_string = eina_str_escape(str);
-              BUF_APPENDF(I1"item: \"%s\" \"%s\";\n", escaped_entry, escaped_string);
-              free(escaped_entry);
-              free(escaped_string);
+             es = eina_hash_find(ed->file->data, entry);
+             str = edje_string_get(es);
+             if (!str) break;
+             data_len = strlen(str);
+             /* In case when data ends with '\n' character, this item recognize
+              * as data.file. This data will not generated into the source code
+              * of group. */
+             if (str[data_len - 1] == '\n') continue;
+             escaped_entry = eina_str_escape(entry);
+             escaped_string = eina_str_escape(str);
+             BUF_APPENDF(I1 "item: \"%s\" \"%s\";\n", escaped_entry, escaped_string);
+             free(escaped_entry);
+             free(escaped_string);
           }
         eina_iterator_free(it);
         BUF_APPEND(I0 "}\n\n");
