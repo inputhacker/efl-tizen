@@ -1473,10 +1473,11 @@ void
 _ecore_evas_wl_common_object_cursor_set(Ecore_Evas *ee, Evas_Object *obj, int layer, int hot_x, int hot_y)
 {
    int x, y, fx, fy;
-   Ecore_Evas_Engine_Wl_Data *wdata = ee->engine.data;
+   Ecore_Evas_Engine_Wl_Data *wdata;
    Evas_Object *old;
 
    if (!ee) return;
+   wdata = ee->engine.data;
    old = ee->prop.cursor.object;
    if (obj == NULL)
      {
