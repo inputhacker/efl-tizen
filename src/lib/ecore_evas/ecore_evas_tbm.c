@@ -899,7 +899,7 @@ ecore_evas_tbm_pixels_release(Ecore_Evas *ee)
    Ecore_Evas_Engine_Tbm_Data *tbm_data;
    tbm_surface_info_s surf_info;
 
-   EINA_SAFETY_ON_NULL_RETURN_VAL(ee, NULL);
+   EINA_SAFETY_ON_NULL_RETURN(ee);
 
    tbm_data = ee->engine.data;
    if (tbm_data->tbm_surf) {
