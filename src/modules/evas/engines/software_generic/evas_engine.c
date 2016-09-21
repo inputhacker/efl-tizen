@@ -3958,6 +3958,8 @@ eng_ector_surface_cache_set(void *data, void *key, void *surface)
    int count;
    _ector_surface_cache_init();
    surface_data = calloc(1, sizeof(Ector_Surface_Data));
+   if (!surface_data) return;
+
    surface_data->key = key;
    surface_data->surface = surface;
    surface_data->output = data;
