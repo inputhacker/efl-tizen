@@ -925,7 +925,7 @@ compile(void)
    Eina_List *l;
    Edje_Style *stl;
 
-   strncpy(inc, file_in, 4000);
+   strncpy(inc, file_in, sizeof(inc));
    inc[4001] = 0;
    p = strrchr(inc, '/');
 #ifdef _WIN32
