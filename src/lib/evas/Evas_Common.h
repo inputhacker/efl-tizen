@@ -5022,6 +5022,8 @@ EAPI const Evas_Object_Box_Api *evas_object_box_smart_class_get(void) EINA_CONST
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Cserve Shared Image Cache Server
  * @ingroup Evas
  *

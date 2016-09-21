@@ -3194,6 +3194,8 @@ typedef Eo Ecore_Job;    /**< A job handle */
  */
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Device_Group Ecore Device functions
  * @ingroup Ecore
  *

@@ -50,6 +50,8 @@ EAPI extern Ecore_X_Version *ecore_x_version;
  * @file
  * @brief Ecore functions for dealing with the X Windows System
  *
+ * @internal
+ *
  * @defgroup Ecore_X_Group Ecore_X - X11 Integration
  * @ingroup Ecore
  *

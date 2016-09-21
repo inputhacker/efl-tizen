@@ -50,6 +50,8 @@ extern "C" {
 #endif
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Win32_Group Ecore_Win32 library
  * @ingroup Ecore
  *

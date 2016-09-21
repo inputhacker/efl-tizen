@@ -2,6 +2,7 @@
 #define EMILE_CIPHER_H_
 
 /**
+ * @internal
  * @defgroup Emile_Cipher_Group Top level functions
  * @ingroup Emile
  * Function that allow ciphering content.

@@ -161,7 +161,9 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
 #include "canvas/evas_out.eo.h"
 
 
- /**
+/**
+ * @internal
+ *
  * @defgroup Evas_3D Evas 3D Extensions
  *
  * Evas extension to support 3D rendering.
@@ -216,6 +218,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Types Types & Enums
  * @ingroup Evas_3D
  *
@@ -223,6 +227,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Object Generic 3D Object Descriptions
  * @ingroup Evas_3D
  *
@@ -241,6 +247,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Scene Scene Object
  * @ingroup Evas_3D
  *
@@ -250,6 +258,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Node Node Object
  * @ingroup Evas_3D
  *
@@ -260,6 +270,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Camera Camera Object
  * @ingroup Evas_3D
  *
@@ -277,6 +289,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Light Light Object
  * @ingroup Evas_3D
  *
@@ -288,6 +302,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Mesh Mesh Object
  * @ingroup Evas_3D
  *
@@ -304,6 +320,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Primitive Primitive Object
  * @ingroup Evas_3D
  *
@@ -313,6 +331,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Texture Texture Object
  * @ingroup Evas_3D
  *
@@ -323,6 +343,8 @@ EAPI extern const Eo_Event_Description _EVAS_CANVAS_EVENT_VIEWPORT_RESIZE;
  */
 
 /**
+ * @internal
+ *
  * @defgroup Evas_Canvas3D_Material Material Object
  * @ingroup Evas_3D
  *

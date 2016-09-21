@@ -3,6 +3,7 @@
 
 
 /**
+ * @internal
  * @file evil_locale.h
  * @brief The file that provides functions ported from Unix in locale.h.
  * @defgroup Evil_Locale_Group locale.h functions.

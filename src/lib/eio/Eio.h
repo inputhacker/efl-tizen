@@ -423,7 +423,9 @@ EAPI Eio_File *eio_file_direct_stat(const char *path,
  */
 
 /**
+ * @internal
  * @defgroup Eio_Management Eio file management API.
+ * @addtogroup Eio
  *
  * @brief A set of function to manage file asynchronously.
  *

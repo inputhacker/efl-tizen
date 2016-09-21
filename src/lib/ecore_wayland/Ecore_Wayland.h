@@ -441,6 +441,8 @@ struct _Ecore_Wl_Event_Indicator_Flick
 };
 
 /**
+ * @internal
+ *
  * @file
  * @brief Ecore functions for dealing with the Wayland window system
  *
@@ -495,6 +497,8 @@ EAPI extern int ECORE_WL_EVENT_KEYMAP_UPDATE;
 EAPI extern int ECORE_WL_EVENT_INDICATOR_FLICK;
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Wl_Init_Group Wayland Library Init and Shutdown Functions
  * @ingroup Ecore_Wl_Group
  *
@@ -502,6 +506,8 @@ EAPI extern int ECORE_WL_EVENT_INDICATOR_FLICK;
  */
 
 /**
+ * @internal
+ *
  * Initialize the Wayland display connection to the given display.
  *
  * @param   name Display target name. if @c NULL, the default display is
@@ -514,6 +520,8 @@ EAPI extern int ECORE_WL_EVENT_INDICATOR_FLICK;
 EAPI int ecore_wl_init(const char *name);
 
 /**
+ * @internal
+ *
  * Shuts down the Ecore Wayland Library
  *
  * In shutting down the library, the Wayland display connection is terminated
@@ -527,6 +535,8 @@ EAPI int ecore_wl_init(const char *name);
 EAPI int ecore_wl_shutdown(void);
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Wl_Flush_Group Wayland Synchronization Functions
  * @ingroup Ecore_Wl_Group
  *
@@ -535,6 +545,8 @@ EAPI int ecore_wl_shutdown(void);
  */
 
 /**
+ * @internal
+ *
  * Sends all Wayland commands to the Wayland Display.
  *
  * @ingroup Ecore_Wl_Flush_Group
@@ -543,6 +555,8 @@ EAPI int ecore_wl_shutdown(void);
 EAPI void ecore_wl_flush(void);
 
 /**
+ * @internal
+ *
  * Flushes the command buffer and waits until all requests have been
  * processed by the server.
  *
@@ -552,6 +566,8 @@ EAPI void ecore_wl_flush(void);
 EAPI void ecore_wl_sync(void);
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Wl_Display_Group Wayland Display Functions
  * @ingroup Ecore_Wl_Group
  *
@@ -559,6 +575,8 @@ EAPI void ecore_wl_sync(void);
  */
 
 /**
+ * @internal
+ *
  * Retrieves the Wayland Shm Interface used for the current Wayland connection.
  *
  * @return The current wayland shm interface, or NULL on error
@@ -569,6 +587,8 @@ EAPI void ecore_wl_sync(void);
 EAPI struct wl_shm *ecore_wl_shm_get(void);
 
 /**
+ * @internal
+ *
  * Retrieves the Wayland Display Interface used for the current Wayland connection.
  *
  * @return The current wayland display interface, or NULL on error
@@ -589,6 +609,8 @@ EAPI struct wl_display *ecore_wl_display_get(void);
  */
 
 /**
+ * @internal
+ *
  * Retrieves the size of the current screen.
  *
  * @param w where to return the width. May be NULL. Returns 0 on error.
@@ -600,6 +622,8 @@ EAPI struct wl_display *ecore_wl_display_get(void);
 EAPI void ecore_wl_screen_size_get(int *w, int *h);
 
 /**
+ * @internal
+ *
  * Retrieves the position of the current screen.
  *
  * @param x where to return the horizontal position. May be NULL. Returns 0 on error.
@@ -611,6 +635,8 @@ EAPI void ecore_wl_screen_size_get(int *w, int *h);
 EAPI void ecore_wl_pointer_xy_get(int *x, int *y);
 
 /**
+ * @internal
+ *
  * Return the screen DPI
  *
  * This is a simplistic call to get DPI. It does not account for differing
@@ -624,6 +650,8 @@ EAPI void ecore_wl_pointer_xy_get(int *x, int *y);
 EAPI int ecore_wl_dpi_get(void);
 
 /**
+ * @internal
+ *
  * Dispatch Wayland events
  *
  * Dispatches any events queued on the default queue.  Wayland will attempt
@@ -639,6 +667,8 @@ EAPI void ecore_wl_display_iterate(void);
 EAPI Eina_Bool ecore_wl_animator_source_set(Ecore_Animator_Source source);
 
 /**
+ * @internal
+ *
  * Retrieves the requested cursor from the cursor theme
  *
  * @param cursor_name The desired cursor name to be looked up in the theme
@@ -649,6 +679,8 @@ EAPI Eina_Bool ecore_wl_animator_source_set(Ecore_Animator_Source source);
 EAPI struct wl_cursor *ecore_wl_cursor_get(const char *cursor_name);
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Wl_Input_Group Functions dealing with Wayland Input
  * @ingroup Ecore_Wl_Group
  *
@@ -656,6 +688,8 @@ EAPI struct wl_cursor *ecore_wl_cursor_get(const char *cursor_name);
  */
 
 /**
+ * @internal
+ *
  * @ingroup Ecore_Wl_Input_Group
  * @since 1.8
  */
@@ -670,6 +704,8 @@ EAPI struct wl_seat *ecore_wl_input_seat_get(Ecore_Wl_Input *input);
 EAPI Eina_Inlist *ecore_wl_outputs_get(void);
 
 /**
+ * @internal
+ *
  * @ingroup Ecore_Wl_Input_Group
  * @since 1.12
  */
@@ -684,6 +720,8 @@ EAPI struct xkb_keymap *ecore_wl_input_keymap_get(Ecore_Wl_Input *input);
 
 
 /**
+ * @internal
+ *
  * Retrieves the Wayland Globals Interface list used for the current Wayland connection.
  *
  * This call, if done after the ECORE_WL_EVENT_INTERFACES_BOUND event was
@@ -703,6 +741,8 @@ EAPI struct xkb_keymap *ecore_wl_input_keymap_get(Ecore_Wl_Input *input);
 EAPI Eina_Inlist *ecore_wl_globals_get(void);
 
 /**
+ * @internal
+ *
  * Retrieves the Wayland Registry used for the current Wayland connection.
  *
  * @return The current wayland registry, or NULL on error
@@ -713,6 +753,8 @@ EAPI Eina_Inlist *ecore_wl_globals_get(void);
 EAPI struct wl_registry *ecore_wl_registry_get(void);
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Wl_Window_Group Wayland Window functions.
  * @ingroup Ecore_Wl_Group
  *
@@ -720,6 +762,8 @@ EAPI struct wl_registry *ecore_wl_registry_get(void);
  */
 
 /**
+ * @internal
+ *
  * Creates a new window
  *
  * @param parent The parent window to use. If @p parent is @c 0, the root window
@@ -738,6 +782,8 @@ EAPI struct wl_registry *ecore_wl_registry_get(void);
 EAPI Ecore_Wl_Window *ecore_wl_window_new(Ecore_Wl_Window *parent, int x, int y, int w, int h, int buffer_type);
 
 /**
+ * @internal
+ *
  * Deletes the given window
  *
  * @param win The given window
@@ -748,6 +794,8 @@ EAPI Ecore_Wl_Window *ecore_wl_window_new(Ecore_Wl_Window *parent, int x, int y,
 EAPI void ecore_wl_window_free(Ecore_Wl_Window *win);
 
 /**
+ * @internal
+ *
  * Signals for Wayland to initiate a window move.
  *
  * The position requested (@p x, @p y) is not honored by Wayland because
@@ -763,6 +811,8 @@ EAPI void ecore_wl_window_free(Ecore_Wl_Window *win);
 EAPI void ecore_wl_window_move(Ecore_Wl_Window *win, int x, int y);
 
 /**
+ * @internal
+ *
  * Signals for Wayland to initiate a window resize.
  *
  * The size requested (@p w, @p h) is not honored by Wayland because
@@ -785,6 +835,8 @@ EAPI struct wl_compositor *ecore_wl_compositor_get(void);
 EAPI void ecore_wl_window_commit(Ecore_Wl_Window *win);
 
 /**
+ * @internal
+ *
  * Shows a window
  *
  * Synonymous to "mapping" a window in Wayland System terminology.
@@ -797,6 +849,8 @@ EAPI void ecore_wl_window_commit(Ecore_Wl_Window *win);
 EAPI void ecore_wl_window_show(Ecore_Wl_Window *win);
 
 /**
+ * @internal
+ *
  * Hides a window
  *
  * Synonymous to "unmapping" a window in Wayland System terminology.
@@ -809,6 +863,8 @@ EAPI void ecore_wl_window_show(Ecore_Wl_Window *win);
 EAPI void ecore_wl_window_hide(Ecore_Wl_Window *win);
 
 /**
+ * @internal
+ *
  * Raises a window
  *
  * @param win The window to raise.
@@ -844,6 +900,8 @@ EAPI void ecore_wl_window_role_set(Ecore_Wl_Window *win, const char *role);
 EAPI int ecore_wl_window_active_angle_get(Ecore_Wl_Window *win);
 
 /**
+ * @internal
+ *
  * Iconify a window
  *
  * @param win The window to iconifiy
@@ -866,6 +924,8 @@ EAPI Ecore_Wl_Input *ecore_wl_window_keyboard_get(Ecore_Wl_Window *win);
 EAPI void ecore_wl_window_stack_mode_set(Ecore_Wl_Window *win, Ecore_Wl_Window_Stack_Mode mode);
 
 /**
+ * @internal
+ *
  * Returns a wl_surface with no association to any wl_shell_surface.
  *
  * @param win The window which will use this newly created surface.
@@ -880,6 +940,8 @@ EAPI void ecore_wl_window_alpha_set(Ecore_Wl_Window *win, Eina_Bool alpha);
 EAPI Eina_Bool ecore_wl_window_alpha_get(Ecore_Wl_Window *win);
 
 /**
+ * @internal
+ *
  * Returns the Ecore_Wl_Window from a wl_surface
  *
  * @param surface The surface for which to find the Ecore_Wl_Window from
@@ -926,6 +988,8 @@ EAPI void ecore_wl_window_input_rect_add(Ecore_Wl_Window *win, Eina_Rectangle *i
 EAPI void ecore_wl_window_input_rect_subtract(Ecore_Wl_Window *win, Eina_Rectangle *input_rect);
 
 /**
+ * @internal
+ *
  * Set the input region of the Ecore_Wl_Window.
  *
  * To set an empty region, pass width and height as 0.
@@ -944,6 +1008,8 @@ EAPI void ecore_wl_window_input_rect_subtract(Ecore_Wl_Window *win, Eina_Rectang
 EAPI void ecore_wl_window_input_region_set(Ecore_Wl_Window *win, int x, int y, int w, int h);
 
 /**
+ * @internal
+ *
  * Set the opaque region of the Ecore_Wl_Window
  *
  * @param win The window
@@ -958,6 +1024,8 @@ EAPI void ecore_wl_window_input_region_set(Ecore_Wl_Window *win, int x, int y, i
 EAPI void ecore_wl_window_opaque_region_set(Ecore_Wl_Window *win, int x, int y, int w, int h);
 
 /**
+ * @internal
+ *
  * Set the rotation of the Ecore_Wl_Window
  *
  * @param win The window
@@ -969,6 +1037,8 @@ EAPI void ecore_wl_window_opaque_region_set(Ecore_Wl_Window *win, int x, int y, 
 EAPI void ecore_wl_window_rotation_set(Ecore_Wl_Window *win, int rotation);
 
 /**
+ * @internal
+ *
  * Get the rotation of the Ecore_Wl_Window
  *
  * @param win The window
@@ -980,6 +1050,8 @@ EAPI void ecore_wl_window_rotation_set(Ecore_Wl_Window *win, int rotation);
 EAPI int ecore_wl_window_rotation_get(Ecore_Wl_Window *win);
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Wl_Dnd_Group Functions dealing with Wayland Drag-n-Drop
  * @ingroup Ecore_Wl_Group
  *
@@ -987,36 +1059,48 @@ EAPI int ecore_wl_window_rotation_get(Ecore_Wl_Window *win);
  */
 
 /**
+ * @internal
+ *
  * @deprecated use ecore_wl_dnd_selection_set
  * @since 1.7
 */
 EINA_DEPRECATED EAPI Eina_Bool ecore_wl_dnd_set_selection(Ecore_Wl_Dnd *dnd, const char **types_offered);
 
 /**
+ * @internal
+ *
  * @deprecated use ecore_wl_dnd_selection_get
  * @since 1.7
 */
 EINA_DEPRECATED EAPI Eina_Bool ecore_wl_dnd_get_selection(Ecore_Wl_Dnd *dnd, const char *type);
 
 /**
+ * @internal
+ *
  * @deprecated Do Not Use
  * @since 1.7
  */
 EINA_DEPRECATED EAPI Ecore_Wl_Dnd *ecore_wl_dnd_get(void);
 
 /**
+ * @internal
+ *
  * @deprecated use ecore_wl_dnd_drag_start
  * @since 1.7
  */
 EINA_DEPRECATED EAPI Eina_Bool ecore_wl_dnd_start_drag(Ecore_Wl_Dnd *dnd);
 
 /**
+ * @internal
+ *
  * @deprecated use ecore_wl_dnd_selection_owner_has
  * @since 1.7
  */
 EINA_DEPRECATED EAPI Eina_Bool ecore_wl_dnd_selection_has_owner(Ecore_Wl_Dnd *dnd);
 
 /**
+ * @internal
+ *
  * @return false on error, true otherwise
  *
  * @ingroup Ecore_Wl_Dnd_Group
@@ -1025,6 +1109,8 @@ EINA_DEPRECATED EAPI Eina_Bool ecore_wl_dnd_selection_has_owner(Ecore_Wl_Dnd *dn
 EAPI Eina_Bool ecore_wl_dnd_selection_set(Ecore_Wl_Input *input, const char **types_offered);
 
 /**
+ * @internal
+ *
  * @return false if type not found or on error, true otherwise
  *
  * @ingroup Ecore_Wl_Dnd_Group
@@ -1033,6 +1119,8 @@ EAPI Eina_Bool ecore_wl_dnd_selection_set(Ecore_Wl_Input *input, const char **ty
 EAPI Eina_Bool ecore_wl_dnd_selection_get(Ecore_Wl_Input *input, const char *type);
 
 /**
+ * @internal
+ *
  * @return true if input has a selection source, false otherwise or on error
  *
  * @ingroup Ecore_Wl_Dnd_Group
@@ -1041,6 +1129,8 @@ EAPI Eina_Bool ecore_wl_dnd_selection_get(Ecore_Wl_Input *input, const char *typ
 EAPI Eina_Bool ecore_wl_dnd_selection_owner_has(Ecore_Wl_Input *input);
 
 /**
+ * @internal
+ *
  * @return false on error, true otherwise
  *
  * @ingroup Ecore_Wl_Dnd_Group
@@ -1049,18 +1139,24 @@ EAPI Eina_Bool ecore_wl_dnd_selection_owner_has(Ecore_Wl_Input *input);
 EAPI Eina_Bool ecore_wl_dnd_selection_clear(Ecore_Wl_Input *input);
 
 /**
+ * @internal
+ *
  * @ingroup Ecore_Wl_Dnd_Group
  * @since 1.8
  */
 EAPI void ecore_wl_dnd_drag_start(Ecore_Wl_Input *input, Ecore_Wl_Window *win, Ecore_Wl_Window *dragwin, int x, int y, int w, int h);
 
 /**
+ * @internal
+ *
  * @ingroup Ecore_Wl_Dnd_Group
  * @since 1.8
  */
 EAPI void ecore_wl_dnd_drag_end(Ecore_Wl_Input *input);
 
 /**
+ * @internal
+ *
  * @return false if type not found or on error, true otherwise
  *
  * @ingroup Ecore_Wl_Dnd_Group
@@ -1069,12 +1165,16 @@ EAPI void ecore_wl_dnd_drag_end(Ecore_Wl_Input *input);
 EAPI Eina_Bool ecore_wl_dnd_drag_get(Ecore_Wl_Input *input, const char *type);
 
 /**
+ * @internal
+ *
  * @ingroup Ecore_Wl_Dnd_Group
  * @since 1.8
  */
 EAPI void ecore_wl_dnd_drag_types_set(Ecore_Wl_Input *input, const char **types_offered);
 
 /**
+ * @internal
+ *
  * @return the data types being offered for drag-and-drop, or NULL on error
  *
  * @ingroup Ecore_Wl_Dnd_Group
@@ -1089,6 +1189,8 @@ EAPI struct wl_array *ecore_wl_dnd_drag_types_get(Ecore_Wl_Input *input);
 /* EAPI Ecore_Wl_Dnd_Source *ecore_wl_dnd_drag_source_create(Ecore_Wl_Dnd *dnd); */
 
 /**
+ * @internal
+ *
  * Enable/disable server mode.
  *
  * With this enabled, the compositor acts as a Wayland server, iterating
@@ -1100,6 +1202,8 @@ EAPI void ecore_wl_server_mode_set(Eina_Bool on);
 EAPI Eina_Bool ecore_wl_server_mode_get(void);
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Wl_Subsurf Functions to manipulate subsurfaces.
  * @ingroup Ecore_Wl_Group
  *
@@ -1114,6 +1218,8 @@ EAPI Eina_Bool ecore_wl_server_mode_get(void);
  */
 
 /**
+ * @internal
+ *
  * Create and return a new subsurface.
  *
  * Create a new surface (and subsurface interface), with the parent surface
@@ -1131,6 +1237,8 @@ EAPI Eina_Bool ecore_wl_server_mode_get(void);
 EAPI Ecore_Wl_Subsurf *ecore_wl_subsurf_create(Ecore_Wl_Window *win);
 
 /**
+ * @internal
+ *
  * Destroy the given subsurface, as well as the surface associated with it.
  *
  * @param ess the subsurface
@@ -1141,6 +1249,8 @@ EAPI Ecore_Wl_Subsurf *ecore_wl_subsurf_create(Ecore_Wl_Window *win);
 EAPI void ecore_wl_subsurf_del(Ecore_Wl_Subsurf *ess);
 
 /**
+ * @internal
+ *
  * Get the wl_surface for this subsurface
  *
  * @param ess the subsurface
@@ -1152,6 +1262,8 @@ EAPI void ecore_wl_subsurf_del(Ecore_Wl_Subsurf *ess);
 EAPI struct wl_surface *ecore_wl_subsurf_surface_get(Ecore_Wl_Subsurf *ess);
 
 /**
+ * @internal
+ *
  * Set the position of this subsurface, relative to its parent surface.
  * If ess is defined and the x, y coordinates differ from the currently
  * tracked position, this also schedules a sub-surface position change.
@@ -1166,6 +1278,8 @@ EAPI struct wl_surface *ecore_wl_subsurf_surface_get(Ecore_Wl_Subsurf *ess);
 EAPI void ecore_wl_subsurf_position_set(Ecore_Wl_Subsurf *ess, int x, int y);
 
 /**
+ * @internal
+ *
  * Get the position of this subsurface, relative to its parent surface.
  * Coordinates will be returned in x and y if non-NULL.
  *
@@ -1179,6 +1293,8 @@ EAPI void ecore_wl_subsurf_position_set(Ecore_Wl_Subsurf *ess, int x, int y);
 EAPI void ecore_wl_subsurf_position_get(Ecore_Wl_Subsurf *ess, int *x, int *y);
 
 /**
+ * @internal
+ *
  * Place subsurface on layer above a reference surface
  *
  * Moves the @param ess subsurface to just above the reference @param
@@ -1195,6 +1311,8 @@ EAPI void ecore_wl_subsurf_position_get(Ecore_Wl_Subsurf *ess, int *x, int *y);
 EAPI void ecore_wl_subsurf_place_above(Ecore_Wl_Subsurf *ess, struct wl_surface *surface);
 
 /**
+ * @internal
+ *
  * Place subsurface on layer below a reference surface
  *
  * See ecore_wl_subsurf_place_above.
@@ -1208,6 +1326,8 @@ EAPI void ecore_wl_subsurf_place_above(Ecore_Wl_Subsurf *ess, struct wl_surface 
 EAPI void ecore_wl_subsurf_place_below(Ecore_Wl_Subsurf *ess, struct wl_surface *surface);
 
 /**
+ * @internal
+ *
  * Enables or disables sub-surface synchronization
  *
  * When synchronization is enabled, surface commits on the subsurface
@@ -1236,6 +1356,8 @@ EAPI void ecore_wl_subsurf_place_below(Ecore_Wl_Subsurf *ess, struct wl_surface 
 EAPI void ecore_wl_subsurf_sync_set(Ecore_Wl_Subsurf *ess, Eina_Bool val);
 
 /**
+ * @internal
+ *
  * Set an opaque region for the given subsurface.
  *
  * This is an optimization hint to the compositor to allow it avoid

@@ -38,6 +38,8 @@ extern "C" {
 #endif
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_Avahi_Group Ecore_Avahi - Avahi main loop integration function.
  * @ingroup Ecore
  *

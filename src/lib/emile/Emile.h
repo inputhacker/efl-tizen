@@ -67,6 +67,7 @@ extern "C" {
  */
 
 /**
+ * @internal
  * @defgroup Emile_Group Top level functions
  * @ingroup Emile
  * Function that affect Emile as a whole.

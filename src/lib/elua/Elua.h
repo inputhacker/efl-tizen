@@ -1,4 +1,5 @@
 /**
+ * @internal
  * @file Elua.h
  * @brief Elua Library
  *
@@ -88,6 +89,7 @@ extern "C" {
  * There is a comperehensive API reference available that should get you up
  * and running.
  *
+ * @internal
  * @addtogroup Elua
  * @{
  */

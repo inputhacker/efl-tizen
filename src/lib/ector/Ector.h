@@ -36,6 +36,7 @@ extern "C" {
 #endif
 
 /**
+ * @internal
  * @page ector_main Ector
  *
  * @date 2014 (created)

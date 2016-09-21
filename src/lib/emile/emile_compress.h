@@ -2,6 +2,7 @@
 #define EMILE_COMPRESSION_H_
 
 /**
+ * @internal
  * @defgroup Emile_Group_Compression Non destructive general purpose compression functions.
  * @ingroup Emile
  * Function that allow the compression and expansion of Eina_Binbuf with

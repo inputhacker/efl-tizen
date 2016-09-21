@@ -2,6 +2,7 @@
 #define EMILE_IMAGE_H
 
 /**
+ * @internal
  * @defgroup Emile_Image_Group Top level functions
  * @ingroup Emile
  * Function that allow reading/saving image.

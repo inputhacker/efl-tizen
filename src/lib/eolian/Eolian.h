@@ -37,6 +37,7 @@ extern "C" {
 #endif
 
 /**
+ * @internal
  * @page eolian_main Eolian (BETA)
  *
  * @date 2014 (created)

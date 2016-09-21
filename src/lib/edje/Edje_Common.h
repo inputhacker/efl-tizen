@@ -2126,7 +2126,7 @@ EAPI const Edje_Perspective *edje_evas_global_perspective_get(const Evas *e);
  * affecting all the objects inside that have no particular perspective
  * set already.
  *
- * @ingroup Edje_Audio
+ * @ingroup Edje
  *
  * @{
  */

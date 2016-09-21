@@ -19,6 +19,7 @@
 #endif
 
 /**
+ * @internal
  * @file Eeze_Net.h
  * @brief Network manipulation
  *

@@ -34,6 +34,8 @@ extern "C" {
 #endif
 
 /**
+ * @internal
+ *
  * @defgroup Ecore_FB_Group Ecore_FB - Frame buffer convenience functions.
  * @ingroup Ecore
  *

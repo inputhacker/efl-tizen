@@ -40,6 +40,7 @@ extern "C" {
 #endif
 
 /**
+ * @internal
  * @page eo_main Eo
  *
  * @date 2012 (created)
@@ -94,7 +95,7 @@ extern "C" {
  * @ref Eo_Tutorial
 
  *
- *
+ * @internal
  * @addtogroup Eo
  * @{
  */
@@ -162,6 +163,7 @@ typedef Eina_Bool (*Eo_Event_Cb)(void *data, Eo *obj, const Eo_Event_Description
 #define EO_CLASS EO_BASE_CLASS
 
 /**
+ * @internal
  * @addtogroup Eo_Debug_Information Eo's Debug information helper.
  * @{
  */
@@ -239,6 +241,7 @@ typedef unsigned int Eo_Op;
 #define EO_NOOP ((Eo_Op) 0)
 
 /**
+ * @internal
  * @addtogroup Eo_Events Eo's Event Handling
  * @{
  */
@@ -268,6 +271,7 @@ typedef unsigned int Eo_Op;
  */
 
 /**
+ * @internal
  * @addtogroup Eo_Class Eo Class
  * @{
  */
@@ -854,6 +858,7 @@ EAPI Eina_Bool eo_manual_free(Eo *obj);
 EAPI Eina_Bool eo_destructed_is(const Eo *obj);
 
 /**
+ * @internal
  * @addtogroup Eo_Class_Class Eo's Class class.
  * @{
  */
@@ -865,6 +870,7 @@ EAPI Eina_Bool eo_destructed_is(const Eo *obj);
  */
 
 /**
+ * @internal
  * @addtogroup Eo_Class_Base Eo's Base class.
  * @{
  */
@@ -924,6 +930,7 @@ typedef void (*eo_key_data_free_func)(void *);
 #define eo_wref_del_safe(wref) eo_weak_unref(wref)
 
 /**
+ * @internal
  * @addtogroup Eo_Events Eo's Event Handling
  * @{
  */

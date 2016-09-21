@@ -18,6 +18,7 @@
 #include <Eina.h>
 
 /**
+ * @internal
  * @file Eeze_Sensor.h
  * @brief Sensor information subsystem
  *
@@ -90,6 +91,7 @@ typedef enum
 }  Eeze_Sensor_Type;
 
 /**
+ * @internal
  * @defgroup Eeze_Sensor_Events Available eeze sensor events
  * @brief Sensor events that are emitted from the library as ecore events
  * @ingroup Eeze

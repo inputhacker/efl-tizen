@@ -20,6 +20,7 @@
  * @li @ref Eo
  * @li @ref Eina
  *
+ * @internal
  * @defgroup Emodel_Eio EIO implementation wrapper for Emodel
  *
  * @addtogroup Emodel_Eio
