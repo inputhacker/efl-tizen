@@ -4138,8 +4138,8 @@ st_collections_group_inherit(void)
    cd = eina_list_data_get(eina_list_last(codes));
 
    cd->is_lua = cd2->is_lua;
-   cd->shared = cd2->shared;
-   cd->original = cd2->original;
+   cd->shared = STRDUP(cd2->shared);
+   cd->original = STRDUP(cd2->original);
    script_override = EINA_TRUE;
 
    EINA_LIST_FOREACH(cd2->programs, l, cp2)
