@@ -1657,13 +1657,11 @@ edje_edit_group_copy(Evas_Object *obj, const char *group_name, const char *copy_
      }
    snprintf(buf, sizeof(buf), "edje/collections/%d", e->id);
    epc = eet_data_read(eetf, _edje_edd_edje_part_collection, buf);
-   // TIZEN_ONLY(20160920): add null check and close eet
    if (!epc)
      {
         eet_close(eetf);
         return EINA_FALSE;
      }
-   //
 
    /* Search first free id */
    id = -1;
@@ -1694,9 +1692,7 @@ edje_edit_group_copy(Evas_Object *obj, const char *group_name, const char *copy_
    de = _alloc(sizeof(Edje_Part_Collection_Directory_Entry));
    if (!de)
      {
-        // TIZEN_ONLY(20160920): add null check and close eet
         eet_close(eetf);
-        //
         return EINA_FALSE;
      }
 
