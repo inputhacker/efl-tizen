@@ -3427,13 +3427,13 @@ EAPI const Evas_Object_Textblock_Node_Format *evas_textblock_node_format_next_ge
 EAPI const Evas_Object_Textblock_Node_Format *evas_textblock_node_format_prev_get(const Evas_Object_Textblock_Node_Format *n) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 2.4. Use evas_textblock_at_format_set() instead.
  * Sets the cursor to point to the place where format points to.
  *
  * @param cur the cursor to update.
  * @param n the format node to update according.
- * @deprecated duplicate of evas_textblock_cursor_at_format_set
  */
-EAPI void                                     evas_textblock_cursor_set_at_format(Evas_Textblock_Cursor *cur, const Evas_Object_Textblock_Node_Format *n) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                     evas_textblock_cursor_set_at_format(Evas_Textblock_Cursor *cur, const Evas_Object_Textblock_Node_Format *n) EINA_ARG_NONNULL(1, 2);
 
 /**
  * Return the format node at the position pointed by cur.

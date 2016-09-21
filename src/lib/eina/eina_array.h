@@ -389,6 +389,7 @@ static inline void      eina_array_data_set(const Eina_Array *array,
                                             unsigned int      idx,
                                             const void       *data) EINA_ARG_NONNULL(1);
 /**
+ * @deprecated Deprecated since 2.4. Use eina_array_count() instead.
  * @brief Return the number of elements in an array.
  *
  * @param array The array.
@@ -397,10 +398,8 @@ static inline void      eina_array_data_set(const Eina_Array *array,
  * This function returns the number of elements in @p array (array->count). For
  * performance reasons, there is no check of @p array. If it is
  * @c NULL or invalid, the program may crash.
- *
- * @deprecated use eina_array_count()
  */
-static inline unsigned int eina_array_count_get(const Eina_Array *array) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+static inline unsigned int eina_array_count_get(const Eina_Array *array) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT EINA_DEPRECATED;
 
 /**
  * @brief Return the number of elements in an array.

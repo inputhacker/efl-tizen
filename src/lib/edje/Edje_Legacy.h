@@ -114,7 +114,8 @@ EAPI void        *edje_object_signal_callback_del_full(Evas_Object *obj, const c
  */
  EAPI void         edje_object_color_class_del         (Evas_Object *obj, const char *color_class);
 
- /**
+/**
+ * @deprecated Deprecated since 2.4. Use evas_object_size_hint_min_set() instead.
  * @brief Set the object minimum size.
  *
  * @param obj A valid Evas_Object handle
@@ -122,12 +123,11 @@ EAPI void        *edje_object_signal_callback_del_full(Evas_Object *obj, const c
  * @param minh The minimum height
  *
  * This sets the minimum size restriction for the object.
- *
- * @deprecated use evas_object_size_hint_min_set() instead.
  */
 EINA_DEPRECATED EAPI void         edje_extern_object_min_size_set (Evas_Object *obj, Evas_Coord minw, Evas_Coord minh);
 
 /**
+ * @deprecated Deprecated since 2.4. Use evas_object_size_hint_max_set() instead.
  * @brief Set the object maximum size.
  *
  * @param obj A valid Evas_Object handle
@@ -135,12 +135,11 @@ EINA_DEPRECATED EAPI void         edje_extern_object_min_size_set (Evas_Object *
  * @param maxh The maximum height
  *
  * This sets the maximum size restriction for the object.
- *
- * @deprecated use evas_object_size_hint_max_set() instead.
  */
-EAPI void         edje_extern_object_max_size_set (Evas_Object *obj, Evas_Coord maxw, Evas_Coord maxh);
+EINA_DEPRECATED EAPI void         edje_extern_object_max_size_set (Evas_Object *obj, Evas_Coord maxw, Evas_Coord maxh);
 
 /**
+ * @deprecated Deprecated since 2.4. Use evas_object_size_hint_aspect_set() instead.
  * @brief Set the object aspect size.
  *
  * @param obj A valid Evas_Object handle
@@ -152,10 +151,8 @@ EAPI void         edje_extern_object_max_size_set (Evas_Object *obj, Evas_Coord 
  * swallowed by Edje. The width and height define a preferred size
  * ASPECT and the object may be scaled to be larger or smaller, but
  * retaining the relative scale of both aspect width and height.
- *
- * @deprecated use evas_object_size_hint_aspect_set() instead.
  */
-EAPI void         edje_extern_object_aspect_set   (Evas_Object *obj, Edje_Aspect_Control aspect, Evas_Coord aw, Evas_Coord ah);
+EINA_DEPRECATED EAPI void         edje_extern_object_aspect_set   (Evas_Object *obj, Edje_Aspect_Control aspect, Evas_Coord aw, Evas_Coord ah);
 
 /**
  * @brief Sets the @b EDJ file (and group within it) to load an Edje

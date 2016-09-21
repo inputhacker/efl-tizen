@@ -3169,6 +3169,7 @@ EAPI void evas_object_text_font_set(Eo *obj, const char *font, Evas_Font_Size si
 EAPI void evas_object_text_font_get(const Eo *obj, const char **font, Evas_Font_Size *size);
 
 /**
+ * @deprecated Deprecated since 2.4.
  * @brief Set an evas filter program on this object.
  *
  * Valid for Text objects at the moment.
@@ -3181,9 +3182,10 @@ EAPI void evas_object_text_font_get(const Eo *obj, const char **font, Evas_Font_
  *
  * @param[in] code filter program source code
  */
-EAPI void evas_object_text_filter_program_set(Eo *obj, const char *code);
+EINA_DEPRECATED EAPI void evas_object_text_filter_program_set(Eo *obj, const char *code);
 
 /**
+ * @deprecated Deprecated since 2.4.
  * @brief Bind an object to use as a mask or texture with Evas Filters.
  *
  * This will create automatically a new RGBA buffer containing the source
@@ -3192,7 +3194,7 @@ EAPI void evas_object_text_filter_program_set(Eo *obj, const char *code);
  * @param[in] buffer name as used in the program
  * @param[in] source object to use as a proxy source
  */
-EAPI void evas_object_text_filter_source_set(Eo *obj, const char *name, Evas_Object *eo_source);
+EINA_DEPRECATED EAPI void evas_object_text_filter_source_set(Eo *obj, const char *name, Evas_Object *eo_source);
 
 /**
  * TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part.
