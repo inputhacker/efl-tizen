@@ -174,17 +174,25 @@ _evas_canvas3d_eet_descriptor_shutdown(void)
 void
 _evas_canvas3d_eet_file_free(void)
 {
-   free(eet_file->mesh->geometries[0].vertices);
-   free(eet_file->mesh->geometries);
-   free(eet_file->mesh->frames);
-   free(eet_file->mesh->materials[0].colors);
-   free(eet_file->mesh->materials);
-   free(eet_file->mesh);
-   free(eet_file->header->materials);
-   free(eet_file->header->geometries);
-   free(eet_file->header);
-   free(eet_file);
-
+   if (eet_file)
+     {
+        if (eet_file->mesh)
+          {
+             free(eet_file->mesh->geometries[0].vertices);
+             free(eet_file->mesh->geometries);
+             free(eet_file->mesh->frames);
+             free(eet_file->mesh->materials[0].colors);
+             free(eet_file->mesh->materials);
+             free(eet_file->mesh);
+          }
+        if (eet_file->header)
+          {
+             free(eet_file->header->materials);
+             free(eet_file->header->geometries);
+             free(eet_file->header);
+          }
+        free(eet_file);
+     }
    _evas_canvas3d_eet_descriptor_shutdown();
    eet_shutdown();
    eina_shutdown();
