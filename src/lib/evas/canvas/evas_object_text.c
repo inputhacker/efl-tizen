@@ -2426,19 +2426,4 @@ _evas_text_evas_object_paragraph_direction_get(Eo *eo_obj EINA_UNUSED,
    return o->paragraph_direction;
 }
 
-/* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
-EAPI Eina_Bool
-evas_object_text_ellipsis_status_get(const Evas_Object *eo_obj)
-{
-   Evas_Text_Data *o;
-
-   MAGIC_CHECK(eo_obj, Evas_Object, MAGIC_OBJ);
-   return EINA_FALSE;
-   MAGIC_CHECK_END();
-
-   o = eo_data_scope_get(eo_obj, MY_CLASS);
-   return o->last_computed.ellipsis;
-}
-/* END */
-
 #include "canvas/evas_text.eo.c"
