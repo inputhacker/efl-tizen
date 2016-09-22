@@ -1200,7 +1200,7 @@ _ecore_wl_input_cb_keyboard_modifiers(void *data, struct wl_keyboard *keyboard E
                          depressed, latched, locked, 0, 0, group);
 
    mask = xkb_state_serialize_mods(input->xkb.state,
-                                   (XKB_STATE_DEPRESSED | XKB_STATE_LATCHED));
+                                   (XKB_STATE_DEPRESSED | XKB_STATE_LATCHED | XKB_STATE_LOCKED));
 
    input->modifiers = 0;
    if (mask & input->xkb.control_mask)
