@@ -1732,6 +1732,7 @@ _ecore_evas_wl_common_render_flush_pre(void *data, Evas *evas EINA_UNUSED, void 
    if (!ee->visible) return;
 
    wdata = ee->engine.data;
+   if(!wdata) return;
    if (ee->can_async_render)
       {
          struct wl_surface *surf = ecore_wl_window_surface_get(wdata->win);
@@ -1744,7 +1745,7 @@ _ecore_evas_wl_common_render_flush_pre(void *data, Evas *evas EINA_UNUSED, void 
            }
       }
 
-   if ((wdata) && (wdata->wm_rot.done) &&
+   if ((wdata->wm_rot.done) &&
        (!ee->prop.wm_rot.manual_mode.set))
      {
         wdata->wm_rot.request = 0;
