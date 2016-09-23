@@ -655,6 +655,7 @@ evgl_eng_pbuffer_surface_create(void *data, EVGL_Surface *sfc,
    config_attrs[i++] = EGL_NONE;
    eglQueryContext(disp, ctx, EGL_CONFIG_ID, &config_attrs[1]);
 
+   num_config =0;
    if (!eglChooseConfig(disp, config_attrs, &egl_cfg, 1, &num_config)
        || (num_config < 1))
      {
