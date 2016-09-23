@@ -2140,7 +2140,7 @@ eng_gl_surface_query(void *eng, void *surface, int attr, void *value)
    if (sfc->pbuffer.is_pbuffer)
      {
         // This is a real EGL surface, let's just call EGL directly
-        int val;
+        int val = 0;
         Eina_Bool ok;
         void *disp;
 
