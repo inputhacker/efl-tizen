@@ -1162,6 +1162,8 @@ EAPI void ecore_drm_display_fb_remove(Ecore_Drm_Fb *fb);
 EAPI Eina_Bool ecore_drm_display_fb_hal_buffer_create(Ecore_Drm_Fb *fb);
 EAPI void ecore_drm_display_fb_hal_buffer_destroy(Ecore_Drm_Fb *fb);
 
+EAPI Eina_Bool ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation);
+
 # ifdef __cplusplus
 }
 # endif

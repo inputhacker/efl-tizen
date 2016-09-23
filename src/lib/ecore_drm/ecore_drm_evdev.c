@@ -473,6 +473,7 @@ static void
 _device_handle_pointer_motion(struct libinput_device *device, struct libinput_event_pointer *event)
 {
    Ecore_Drm_Evdev *edev;
+   double dx, dy, temp;
 
    TRACE_INPUT_BEGIN(_device_handle_pointer_motion);
 
@@ -482,8 +483,22 @@ _device_handle_pointer_motion(struct libinput_device *device, struct libinput_ev
         return;
      }
 
-   edev->seat->ptr.dx += libinput_event_pointer_get_dx(event);
-   edev->seat->ptr.dy += libinput_event_pointer_get_dy(event);
+   dx = libinput_event_pointer_get_dx(event);
+   dy = libinput_event_pointer_get_dy(event);
+
+   if (edev->seat->ptr.swap)
+     {
+         temp = dx;
+         dx = dy;
+         dy = temp;
+     }
+   if (edev->seat->ptr.invert_x)
+     dx *= -1;
+   if (edev->seat->ptr.invert_y)
+     dy *= -1;
+
+   edev->seat->ptr.dx += dx;
+   edev->seat->ptr.dy += dy;
 
    edev->mouse.dx = edev->seat->ptr.dx;
    edev->mouse.dy = edev->seat->ptr.dy;

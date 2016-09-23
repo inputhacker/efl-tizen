@@ -194,6 +194,9 @@ struct _Ecore_Drm_Seat
      {
         int ix, iy;
         double dx, dy;
+        Eina_Bool swap;
+        Eina_Bool invert_x;
+        Eina_Bool invert_y;
      } ptr;
 };
 

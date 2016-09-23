@@ -857,3 +857,46 @@ ecore_drm_device_keyboard_cached_keymap_set(struct xkb_keymap *map)
 
    cached_keymap = map;
 }
+
+EAPI Eina_Bool
+ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation)
+{
+   Ecore_Drm_Seat *seat = NULL;
+   Ecore_Drm_Evdev *edev = NULL;
+   Eina_List *l = NULL, *l2 = NULL;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dev, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dev->seats, EINA_FALSE);
+
+   if ((rotation % 90 != 0) || (rotation / 90 > 3) || (rotation < 0)) return EINA_FALSE;
+
+   EINA_LIST_FOREACH(dev->seats, l, seat)
+     {
+        switch (rotation)
+          {
+           case 90:
+              seat->ptr.swap = EINA_TRUE;
+              seat->ptr.invert_x = EINA_FALSE;
+              seat->ptr.invert_y = EINA_TRUE;
+              break;
+           case 180:
+              seat->ptr.swap = EINA_FALSE;
+              seat->ptr.invert_x = EINA_TRUE;
+              seat->ptr.invert_y = EINA_TRUE;
+              break;
+           case 270:
+              seat->ptr.swap = EINA_TRUE;
+              seat->ptr.invert_x = EINA_TRUE;
+              seat->ptr.invert_y = EINA_FALSE;
+		break;
+           case 0:
+              seat->ptr.swap = EINA_FALSE;
+              seat->ptr.invert_x = EINA_FALSE;
+              seat->ptr.invert_y = EINA_FALSE;
+              break;
+           default:
+              break;
+          }
+     }
+   return EINA_TRUE;
+}
