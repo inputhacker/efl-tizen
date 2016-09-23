@@ -106,7 +106,7 @@ _evas_gl_common_shader_program_binary_load(Eet_File *ef, unsigned int flags)
 
    if (!ef || !glsym_glProgramBinary) return NULL;
 
-   sprintf(pname, SHADER_PROG_NAME_FMT, flags);
+   snprintf(pname, sizeof(pname), SHADER_PROG_NAME_FMT, flags);
    data = (void *) eet_read_direct(ef, pname, &length);
    if (!data)
      {
@@ -194,7 +194,7 @@ _evas_gl_common_shader_program_binary_save(Evas_GL_Program *p, Eet_File *ef)
         return 0;
      }
 
-   sprintf(pname, SHADER_PROG_NAME_FMT, p->flags);
+   snprintf(pname, sizeof(pname), SHADER_PROG_NAME_FMT, p->flags);
    if (eet_write(ef, pname, data, length, SHADER_BINARY_EET_COMPRESS) < 0)
      {
         free(data);
@@ -340,7 +340,7 @@ save:
         if (!p->bin_saved)
           {
              int len = 0;
-             sprintf(pname, SHADER_PROG_NAME_FMT, p->flags);
+             snprintf(pname, sizeof(pname), SHADER_PROG_NAME_FMT, p->flags);
              eet_read_direct(ef, pname, &len);
              if (len > 0)
                p->bin_saved = 1; // assume bin data is correct
@@ -918,7 +918,7 @@ evas_gl_common_shader_program_get(Evas_Engine_GL_Context *gc,
         if (gc->shared->shaders_cache)
           {
              char pname[32];
-             sprintf(pname, SHADER_PROG_NAME_FMT, flags);
+             snprintf(pname, sizeof(pname), SHADER_PROG_NAME_FMT, flags);
              p = _evas_gl_common_shader_program_binary_load(gc->shared->shaders_cache, flags);
              if (p)
                {
