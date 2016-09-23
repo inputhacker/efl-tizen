@@ -60,6 +60,7 @@ static void _ecore_wl_cb_active_angle(void *data EINA_UNUSED, struct tizen_polic
 static void _ecore_wl_cb_effect_start(void *data EINA_UNUSED, struct tizen_effect *tizen_effect EINA_UNUSED, struct wl_surface *surface_resource, unsigned int type);
 static void _ecore_wl_cb_effect_end(void *data EINA_UNUSED, struct tizen_effect *tizen_effect EINA_UNUSED, struct wl_surface *surface_resource, unsigned int type);
 static void _ecore_wl_cb_indicator_flick(void *data EINA_UNUSED, struct tizen_indicator *tizen_indicator EINA_UNUSED, struct wl_surface *surface_resource, int type);
+static void _ecore_wl_cb_clipboard_data_selected(void *data EINA_UNUSED, struct tizen_clipboard *clipboard EINA_UNUSED, struct wl_surface *surface);
 static void _ecore_wl_log_cb_print(const char *format, va_list args);
 /* local variables */
 static int _ecore_wl_init_count = 0;
@@ -129,6 +130,11 @@ static const struct tizen_indicator_listener _ecore_tizen_indicator_listener =
    _ecore_wl_cb_indicator_flick,
 };
 
+static const struct tizen_clipboard_listener _ecore_tizen_clipboard_listener =
+{
+   _ecore_wl_cb_clipboard_data_selected,
+};
+
 static void
 xdg_shell_ping(void *data EINA_UNUSED, struct xdg_shell *shell, uint32_t serial)
 {
@@ -188,6 +194,7 @@ EAPI int ECORE_WL_EVENT_GLOBAL_ADDED = 0;
 EAPI int ECORE_WL_EVENT_GLOBAL_REMOVED = 0;
 EAPI int ECORE_WL_EVENT_KEYMAP_UPDATE = 0;
 EAPI int ECORE_WL_EVENT_INDICATOR_FLICK = 0;
+EAPI int ECORE_WL_EVENT_CLIPBOARD_DATA_SELECTED = 0;
 
 
 static void
@@ -282,6 +289,7 @@ ecore_wl_init(const char *name)
         ECORE_WL_EVENT_GLOBAL_REMOVED = ecore_event_type_new();
         ECORE_WL_EVENT_KEYMAP_UPDATE = ecore_event_type_new();
         ECORE_WL_EVENT_INDICATOR_FLICK = ecore_event_type_new();
+        ECORE_WL_EVENT_CLIPBOARD_DATA_SELECTED = ecore_event_type_new();
      }
 
    wl_log_set_handler_client(_ecore_wl_log_cb_print);
@@ -712,6 +720,8 @@ _ecore_wl_shutdown(Eina_Bool close)
           tizen_effect_destroy(_ecore_wl_disp->wl.tz_effect);
         if (_ecore_wl_disp->wl.tz_indicator)
           tizen_indicator_destroy(_ecore_wl_disp->wl.tz_indicator);
+        if (_ecore_wl_disp->wl.tz_clipboard)
+          tizen_clipboard_destroy(_ecore_wl_disp->wl.tz_clipboard);
         if (_ecore_wl_disp->cursor_theme)
           wl_cursor_theme_destroy(_ecore_wl_disp->cursor_theme);
         if (_ecore_wl_disp->wl.display)
@@ -1004,6 +1014,13 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
           wl_registry_bind(registry, id, &tizen_indicator_interface, 1);
         if (ewd->wl.tz_indicator)
           tizen_indicator_add_listener(ewd->wl.tz_indicator, &_ecore_tizen_indicator_listener, ewd->wl.display);
+     }
+   else if (!strcmp(interface, "tizen_clipboard"))
+     {
+        ewd->wl.tz_clipboard =
+           wl_registry_bind(registry, id, &tizen_clipboard_interface, 1);
+        if (ewd->wl.tz_clipboard)
+          tizen_clipboard_add_listener(ewd->wl.tz_clipboard, &_ecore_tizen_clipboard_listener, ewd->wl.display);
      }
 
    if ((ewd->wl.compositor) && (ewd->wl.shm) &&
@@ -1793,6 +1810,22 @@ _ecore_wl_cb_indicator_flick(void *data EINA_UNUSED, struct tizen_indicator *tiz
    ev->type = type;
 
    ecore_event_add(ECORE_WL_EVENT_INDICATOR_FLICK, ev, NULL, NULL);
+}
+
+static void
+_ecore_wl_cb_clipboard_data_selected(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, struct wl_surface *surface)
+{
+   Ecore_Wl_Window *win = NULL;
+   Ecore_Wl_Event_Clipboard_Data_Selected *ev;
+
+   if (!surface) return;
+   win = ecore_wl_window_surface_find(surface);
+   if (!win) return;
+
+   if (!(ev = calloc(1, sizeof(Ecore_Wl_Event_Clipboard_Data_Selected)))) return;
+   ev->win = win->id;
+
+   ecore_event_add(ECORE_WL_EVENT_CLIPBOARD_DATA_SELECTED, ev, NULL, NULL);
 }
 
 static void

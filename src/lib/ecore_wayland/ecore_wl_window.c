@@ -2028,6 +2028,28 @@ ecore_wl_window_clipboard_state_get(Ecore_Wl_Window *win)
    return win->clipboard.state;
 }
 
+EAPI void
+ecore_wl_clipboard_show(Ecore_Wl_Window *win)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   if (!win) return;
+   if (!win->surface) return;
+   if (!_ecore_wl_disp->wl.tz_clipboard) return;
+
+   tizen_clipboard_show(_ecore_wl_disp->wl.tz_clipboard, win->surface);
+}
+
+EAPI void
+ecore_wl_clipboard_hide(Ecore_Wl_Window *win)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   if (!win) return;
+   if (!win->surface) return;
+   if (!_ecore_wl_disp->wl.tz_clipboard) return;
+
+   tizen_clipboard_hide(_ecore_wl_disp->wl.tz_clipboard, win->surface);
+}
+
 void
 ecore_wl_window_keyboard_geometry_set(Ecore_Wl_Window *win, int x, int y, int w, int h)
 {

@@ -101,6 +101,7 @@ struct _Ecore_Wl_Display
         struct tizen_input_device_manager *tz_input_device_manager;
         struct tizen_effect *tz_effect;
         struct tizen_indicator *tz_indicator;
+        struct tizen_clipboard *tz_clipboard;
 
         Eina_Bool prepare_read;
      } wl;

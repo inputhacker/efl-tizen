@@ -88,6 +88,7 @@ typedef struct _Ecore_Wl_Display Ecore_Wl_Display;
 typedef struct _Ecore_Wl_Event_Global Ecore_Wl_Event_Global;
 typedef struct _Ecore_Wl_Event_Keymap_Update Ecore_Wl_Event_Keymap_Update;
 typedef struct _Ecore_Wl_Event_Indicator_Flick Ecore_Wl_Event_Indicator_Flick;
+typedef struct _Ecore_Wl_Event_Clipboard_Data_Selected Ecore_Wl_Event_Clipboard_Data_Selected;
 
 struct _Ecore_Wl_Event_Global
 {
@@ -440,6 +441,10 @@ struct _Ecore_Wl_Event_Indicator_Flick
    int type;
 };
 
+struct _Ecore_Wl_Event_Clipboard_Data_Selected
+{
+   unsigned int win;
+};
 /**
  * @internal
  *
@@ -497,6 +502,7 @@ EAPI extern int ECORE_WL_EVENT_GLOBAL_ADDED;
 EAPI extern int ECORE_WL_EVENT_GLOBAL_REMOVED;
 EAPI extern int ECORE_WL_EVENT_KEYMAP_UPDATE;
 EAPI extern int ECORE_WL_EVENT_INDICATOR_FLICK;
+EAPI extern int ECORE_WL_EVENT_CLIPBOARD_DATA_SELECTED;
 
 /**
  * @internal
@@ -1515,6 +1521,8 @@ EAPI void ecore_wl_window_clipboard_geometry_set(Ecore_Wl_Window *win, int x, in
 EAPI Eina_Bool ecore_wl_window_clipboard_geometry_get(Ecore_Wl_Window *win, int *x, int *y, int *w, int *h);
 EAPI void ecore_wl_window_clipboard_state_set(Ecore_Wl_Window *win, Ecore_Wl_Clipboard_State state);
 EAPI Ecore_Wl_Clipboard_State ecore_wl_window_clipboard_state_get(Ecore_Wl_Window *win);
+EAPI void ecore_wl_clipboard_show(Ecore_Wl_Window *win);
+EAPI void ecore_wl_clipboard_hide(Ecore_Wl_Window *win);
 
 EAPI void ecore_wl_window_keyboard_geometry_set(Ecore_Wl_Window *win, int x, int y, int w, int h);
 EAPI Eina_Bool ecore_wl_window_keyboard_geometry_get(Ecore_Wl_Window *win, int *x, int *y, int *w, int *h);
