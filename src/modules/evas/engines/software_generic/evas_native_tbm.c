@@ -235,11 +235,12 @@ _native_bind_cb(void *data EINA_UNUSED, void *image, int x EINA_UNUSED, int y EI
 static void
 _native_unbind_cb(void *data EINA_UNUSED, void *image)
 {
-   RGBA_Image *im = image;
-   Native *n = im->native.data;
+   RGBA_Image *im;
+   Native *n;
    tbm_surface_h tbm_surf;
 
-   if (!im || !n) return;
+   if (!(im = image)) return;
+   if (!(n = im->native.data)) return;
 
    if (n->ns.type == EVAS_NATIVE_SURFACE_TBM)
      tbm_surf = n->ns.data.tbm.buffer;
@@ -258,10 +259,11 @@ _native_unbind_cb(void *data EINA_UNUSED, void *image)
 static void
 _native_free_cb(void *data EINA_UNUSED, void *image)
 {
-   RGBA_Image *im = image;
-   Native *n = im->native.data;
+   RGBA_Image *im;
+   Native *n;
 
-   if (!im) return;
+   if (!(im = image)) return;
+   if (!(n = im->native.data)) return;
    im->native.data        = NULL;
    im->native.func.bind   = NULL;
    im->native.func.unbind = NULL;
