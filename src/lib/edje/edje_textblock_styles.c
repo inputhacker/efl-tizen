@@ -322,7 +322,7 @@ _edje_textblock_style_update(Edje *ed, Edje_Style *stl, Eina_Bool force)
 
         /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
         /* Configure color from color class if it exists */
-        cc = _edje_color_class_find(ed, tag->color_class);
+        cc = _edje_color_class_recursive_find(ed, tag->color_class);
         /* END */
 
         /* Add and Handle tag parsed data */

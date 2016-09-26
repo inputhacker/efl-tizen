@@ -2440,6 +2440,7 @@ const char *   _edje_text_font_get(const char *base, const char *new,
 Edje_Real_Part   *_edje_real_part_get(const Edje *ed, const char *part);
 Edje_Real_Part   *_edje_real_part_recursive_get(Edje **ed, const char *part);
 Edje_Color_Class *_edje_color_class_find(const Edje *ed, const char *color_class);
+Edje_Color_Class *_edje_color_class_recursive_find(const Edje *ed, const char *color_class);
 void              _edje_color_class_member_add(Edje *ed, const char *color_class);
 void              _edje_color_class_member_del(Edje *ed, const char *color_class);
 void              _edje_color_class_member_clean(Edje *ed);

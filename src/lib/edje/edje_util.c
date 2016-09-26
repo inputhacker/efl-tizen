@@ -5249,6 +5249,28 @@ _edje_hash_find_helper(const Eina_Hash *hash, const char *key)
      }
    return data;
 }
+
+Edje_Color_Class *
+_edje_color_class_recursive_find(const Edje *ed, const char *color_class)
+{
+   Edje_Color_Class *cc = NULL;
+
+   if ((!ed) || (!color_class)) return NULL;
+
+   /* first look through the object scope */
+   cc = _edje_hash_find_helper(ed->color_classes, color_class);
+   if (cc) return cc;
+
+   /* next look through the global scope */
+   cc = _edje_hash_find_helper(_edje_color_class_hash, color_class);
+   if (cc) return cc;
+
+   /* finally, look through the file scope */
+   cc = _edje_hash_find_helper(ed->file->color_hash, color_class);
+   if (cc) return cc;
+
+   return NULL;
+}
 //
 
 Edje_Color_Class *
@@ -5259,20 +5281,16 @@ _edje_color_class_find(const Edje *ed, const char *color_class)
    if ((!ed) || (!color_class)) return NULL;
 
    /* first look through the object scope */
-//TIZEN_ONLY(20160705): add recursive hash search helper
-   //cc = eina_hash_find(ed->color_classes, color_class);
-   cc = _edje_hash_find_helper(ed->color_classes, color_class);
+   cc = eina_hash_find(ed->color_classes, color_class);
    if (cc) return cc;
 
    /* next look through the global scope */
-   //cc = eina_hash_find(_edje_color_class_hash, color_class);
-   cc = _edje_hash_find_helper(_edje_color_class_hash, color_class);
+   cc = eina_hash_find(_edje_color_class_hash, color_class);
    if (cc) return cc;
 
    /* finally, look through the file scope */
-   //cc = eina_hash_find(ed->file->color_hash, color_class);
-   cc = _edje_hash_find_helper(ed->file->color_hash, color_class);
-//
+   cc = eina_hash_find(ed->file->color_hash, color_class);
+
    if (cc) return cc;
 
    return NULL;
