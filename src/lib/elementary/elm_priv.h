@@ -803,7 +803,7 @@ void   _elm_entry_entry_paste(Evas_Object *obj, const char *entry);
 
 double _elm_atof(const char *s);
 
-//TIZEN_ONLY(20160629): add elm color interface
+//TIZEN_ONLY(20160926): add customization interface
 #define _DIV_0xFF(x) ((x+1+((x+1)>>8))>>8)
 static inline void _elm_color_premul(int a, int *r, int *g, int *b)
 {

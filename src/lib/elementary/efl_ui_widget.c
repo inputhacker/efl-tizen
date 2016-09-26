@@ -7345,19 +7345,19 @@ _elm_widget_item_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, E
  * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
  ***********************************************************************************/
 
-//TIZEN_ONLY(20160629): add elm color interface
+//TIZEN_ONLY(20160926): add customization interface
 Eina_Stringshare *
-_elm_widget_edje_class_get(const Eo_Class *klass, const char *style, const char *part)
+_elm_widget_edje_class_get(const Efl_Class *klass, const char *style, const char *part)
 {
    Eina_Strbuf *buf;
    Eina_Stringshare *str;
 
    buf = eina_strbuf_new();
 
-   eina_strbuf_append(buf, eo_class_name_get(klass));
+   eina_strbuf_append(buf, efl_class_name_get(klass));
    eina_strbuf_tolower(buf);
 
-   eina_strbuf_replace_first(buf, "_", "/widget/");
+   eina_strbuf_replace_first(buf, "elm_", "");
 
    if (style)
      {
@@ -7374,56 +7374,92 @@ _elm_widget_edje_class_get(const Eo_Class *klass, const char *style, const char 
    return str;
 }
 
-EOAPI Eina_Bool
-_efl_ui_widget_efl_gfx_base_color_part_set(Eo *obj, Elm_Widget_Smart_Data *sd, const char *part, int r, int g, int b, int a)
+#define ELM_COLOR_CLASS_SET_UPPER(klass) \
+   Eina_Stringshare *buf; \
+   Eina_Bool int_ret = EINA_FALSE; \
+   if (efl_isa(obj, klass)) \
+     { \
+        int r2 = 0, g2 = 0, b2 = 0, a2 = 0, r3 = 0, g3 = 0, b3 = 0, a3 = 0; \
+        buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class); \
+        _elm_color_unpremul(a, &r, &g, &b)
+
+#define ELM_COLOR_CLASS_SET_LOWER() \
+        eina_stringshare_del(buf); \
+        return int_ret; \
+     } \
+   else \
+     { \
+        ERR("%s does not support %s() API.", elm_widget_type_get(obj), __func__); \
+        return EINA_FALSE; \
+     }
+
+EOLIAN static Eina_Bool
+_efl_ui_widget_color_class_color_set(Eo *obj, Elm_Widget_Smart_Data *sd, const char *color_class, int r, int g, int b, int a)
 {
-   Eina_Stringshare *buf;
-   Eina_Bool int_ret;
-
-   if (eo_isa(obj, EFL_UI_LAYOUT_CLASS))
-     {
-        int r2 = 0, g2 = 0, b2 = 0, a2 = 0, r3 = 0, g3 = 0, b3 = 0, a3 = 0;
-
-        buf = _elm_widget_edje_class_get(eo_class_get(obj), NULL, part);
-        _elm_color_unpremul(a, &r, &g, &b);
-
-        edje_object_color_class_get(sd->resize_obj, buf, NULL, NULL, NULL, NULL, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3);
-        int_ret = edje_object_color_class_set(sd->resize_obj, buf, r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3);
-
-        eina_stringshare_del(buf);
-
-        return int_ret;
-     }
-   else
-     {
-        ERR("%s does not support %s API.", elm_widget_type_get(obj), "elm_object_part_color_set()");
-        return EINA_FALSE;
-     }
+   ELM_COLOR_CLASS_SET_UPPER(EFL_UI_LAYOUT_CLASS);
+   edje_object_color_class_get(sd->resize_obj, buf, NULL, NULL, NULL, NULL, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3);
+   int_ret = edje_object_color_class_set(sd->resize_obj, buf, r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3);
+   ELM_COLOR_CLASS_SET_LOWER();
 }
 
-EOAPI Eina_Bool
-_efl_ui_widget_efl_gfx_base_color_part_get(Eo *obj, Elm_Widget_Smart_Data *sd, const char *part, int *r, int *g, int *b, int *a)
+#define ELM_COLOR_CLASS_GET_UPPER(klass) \
+   Eina_Stringshare *buf; \
+   Eina_Bool int_ret = EINA_FALSE; \
+   if (efl_isa(obj, klass)) \
+     { \
+        buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class)
+
+#define ELM_COLOR_CLASS_GET_LOWER() \
+        _elm_color_premul(*a, r, g, b); \
+        eina_stringshare_del(buf); \
+        return int_ret; \
+     } \
+   else \
+     { \
+        ERR("%s does not support %s() API.", efl_class_name_get(efl_class_get(obj)), __func__); \
+        return EINA_FALSE; \
+      }
+
+EOLIAN static Eina_Bool
+_efl_ui_widget_color_class_color_get(Eo *obj, Elm_Widget_Smart_Data *sd, const char *color_class, int *r, int *g, int *b, int *a)
+ {
+   ELM_COLOR_CLASS_GET_UPPER(EFL_UI_LAYOUT_CLASS);
+   int_ret = edje_object_color_class_get(sd->resize_obj, buf, r, g, b, a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   ELM_COLOR_CLASS_GET_LOWER();
+}
+
+EOLIAN static Eina_Bool
+_efl_ui_widget_color_class_color2_set(Eo *obj, Elm_Widget_Smart_Data *sd, const char *color_class, int r, int g, int b, int a)
 {
-   Eina_Stringshare *buf;
-   Eina_Bool int_ret;
+   ELM_COLOR_CLASS_SET_UPPER(EFL_UI_LAYOUT_CLASS);
+   edje_object_color_class_get(sd->resize_obj, buf, &r2, &g2, &b2, &a2, NULL, NULL, NULL, NULL, &r3, &g3, &b3, &a3);
+   int_ret = edje_object_color_class_set(sd->resize_obj, buf, r2, g2, b2, a2, r, g, b, a, r3, g3, b3, a3);
+   ELM_COLOR_CLASS_SET_LOWER();
+}
 
-   if (eo_isa(obj, EFL_UI_LAYOUT_CLASS))
-     {
-        buf = _elm_widget_edje_class_get(eo_class_get(obj), NULL, part);
+EOLIAN static Eina_Bool
+_efl_ui_widget_color_class_color2_get(Eo *obj, Elm_Widget_Smart_Data *sd, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   ELM_COLOR_CLASS_GET_UPPER(EFL_UI_LAYOUT_CLASS);
+   int_ret = edje_object_color_class_get(sd->resize_obj, buf, NULL, NULL, NULL, NULL, r, g, b, a, NULL, NULL, NULL, NULL);
+   ELM_COLOR_CLASS_GET_LOWER();
+}
 
-        int_ret = edje_object_color_class_get(sd->resize_obj, buf, r, g, b, a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+EOLIAN static Eina_Bool
+_efl_ui_widget_color_class_color3_set(Eo *obj, Elm_Widget_Smart_Data *sd, const char *color_class, int r, int g, int b, int a)
+{
+   ELM_COLOR_CLASS_SET_UPPER(EFL_UI_LAYOUT_CLASS);
+   edje_object_color_class_get(sd->resize_obj, buf, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3, NULL, NULL, NULL, NULL);
+   int_ret = edje_object_color_class_set(sd->resize_obj, buf, r2, g2, b2, a2, r3, g3, b3, a3, r, g, b, a);
+   ELM_COLOR_CLASS_SET_LOWER();
+}
 
-        _elm_color_premul(*a, r, g, b);
-
-        eina_stringshare_del(buf);
-
-        return int_ret;
-     }
-   else
-     {
-        ERR("%s does not support %s API.", elm_widget_type_get(obj), "elm_object_part_color_get()");
-        return EINA_FALSE;
-     }
+EOLIAN static Eina_Bool
+_efl_ui_widget_color_class_color3_get(Eo *obj, Elm_Widget_Smart_Data *sd, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   ELM_COLOR_CLASS_GET_UPPER(EFL_UI_LAYOUT_CLASS);
+   int_ret = edje_object_color_class_get(sd->resize_obj, buf, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, r, g, b, a);
+   ELM_COLOR_CLASS_GET_LOWER();
 }
 //
 

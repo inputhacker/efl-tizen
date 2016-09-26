@@ -2207,61 +2207,119 @@ elm_object_accessibility_highlight_set(void *obj, Eina_Bool visible)
 }
 //
 
-//TIZEN_ONLY(20160629): add elm color interface
-EAPI void
-elm_color_set(const char *klass, const char *style, const char *part, int r, int g, int b, int a)
+//TIZEN_ONLY(20160926): add customization interface
+EAPI Eina_Bool
+elm_color_class_color_set(const char *color_class, int r, int g, int b, int a)
 {
-   char buf[1024];
+   Eina_Bool int_ret = EINA_FALSE;
    int r2 = 0, g2 = 0, b2 = 0, a2 = 0, r3 = 0, g3 = 0, b3 = 0, a3 = 0;
-
-   if ((!klass) || (!part)) return;
-
-   if (style)
-     {
-        snprintf(buf, sizeof(buf), "elm/widget/%s/%s/%s", klass, style, part);
-     }
-   else
-     {
-        snprintf(buf, sizeof(buf), "elm/widget/%s/%s", klass, part);
-     }
 
    _elm_color_unpremul(a, &r, &g, &b);
 
-   edje_color_class_get(buf, NULL, NULL, NULL, NULL, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3);
-   edje_color_class_set(buf, r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3);
+   edje_color_class_get(color_class, NULL, NULL, NULL, NULL, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3);
+   int_ret = edje_color_class_set(color_class, r, g, b, a, r2, g2, b2, a2, r3, g3, b3, a3);
+
+   return int_ret;
 }
 
-EAPI void
-elm_color_get(const char *klass, const char *style, const char *part, int *r, int *g, int *b, int *a)
+EAPI Eina_Bool
+elm_color_class_color_get(const char *color_class, int *r, int *g, int *b, int *a)
 {
-   char buf[1024];
+   Eina_Bool int_ret = EINA_FALSE;
 
-   if ((!klass) || (!part)) return;
-
-   if (style)
-     {
-        snprintf(buf, sizeof(buf), "elm/widget/%s/%s/%s", klass, style, part);
-     }
-   else
-     {
-        snprintf(buf, sizeof(buf), "elm/widget/%s/%s", klass, part);
-     }
-
-   edje_color_class_get(buf, r, g, b, a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   int_ret = edje_color_class_get(color_class, r, g, b, a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
    _elm_color_premul(*a, r, g, b);
+
+   return int_ret;
 }
 
-EAPI void
-elm_object_part_color_set(Evas_Object *obj, const char *part, int r, int g, int b, int a)
+EAPI Eina_Bool
+elm_color_class_color2_set(const char *color_class, int r, int g, int b, int a)
 {
-   efl_gfx_color_part_set(obj, part, r, g, b, a);
+   Eina_Bool int_ret = EINA_FALSE;
+   int r2 = 0, g2 = 0, b2 = 0, a2 = 0, r3 = 0, g3 = 0, b3 = 0, a3 = 0;
+
+   _elm_color_unpremul(a, &r, &g, &b);
+
+   edje_color_class_get(color_class, &r2, &g2, &b2, &a2, NULL, NULL, NULL, NULL, &r3, &g3, &b3, &a3);
+   int_ret = edje_color_class_set(color_class, r2, g2, b2, a2, r, g, b, a, r3, g3, b3, a3);
+
+   return int_ret;
 }
 
-EAPI void
-elm_object_part_color_get(Evas_Object *obj, const char *part, int *r, int *g, int *b, int *a)
+EAPI Eina_Bool
+elm_color_class_color2_get(const char *color_class, int *r, int *g, int *b, int *a)
 {
-   efl_gfx_color_part_get(obj, part, r, g, b, a);
+   Eina_Bool int_ret = EINA_FALSE;
+
+   int_ret = edje_color_class_get(color_class, NULL, NULL, NULL, NULL, r, g, b, a, NULL, NULL, NULL, NULL);
+
+   _elm_color_premul(*a, r, g, b);
+
+   return int_ret;
+}
+
+EAPI Eina_Bool
+elm_color_class_color3_set(const char *color_class, int r, int g, int b, int a)
+{
+   Eina_Bool int_ret = EINA_FALSE;
+   int r2 = 0, g2 = 0, b2 = 0, a2 = 0, r3 = 0, g3 = 0, b3 = 0, a3 = 0;
+
+   _elm_color_unpremul(a, &r, &g, &b);
+
+   edje_color_class_get(color_class, &r2, &g2, &b2, &a2, &r3, &g3, &b3, &a3, NULL, NULL, NULL, NULL);
+   int_ret = edje_color_class_set(color_class, r2, g2, b2, a2, r3, g3, b3, a3, r, g, b, a);
+
+   return int_ret;
+}
+
+EAPI Eina_Bool
+elm_color_class_color3_get(const char *color_class, int *r, int *g, int *b, int *a)
+{
+   Eina_Bool int_ret = EINA_FALSE;
+
+   int_ret = edje_color_class_get(color_class, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, r, g, b, a);
+
+   _elm_color_premul(*a, r, g, b);
+
+   return int_ret;
+}
+
+EAPI Eina_Bool
+elm_object_color_class_color_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a)
+{
+   return elm_object_color_class_color_set(obj, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_color_class_color_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   return elm_object_color_class_color_get(obj, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_color_class_color2_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a)
+{
+   return elm_object_color_class_color2_set(obj, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_color_class_color2_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   return elm_object_color_class_color2_get(obj, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_color_class_color3_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a)
+{
+   return elm_object_color_class_color3_set(obj, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_color_class_color3_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   return elm_object_color_class_color3_get(obj, color_class, r, g, b, a);
 }
 //
 
