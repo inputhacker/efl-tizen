@@ -689,6 +689,10 @@ CFLAGS+=" -DMESA_EGL_NO_X11_HEADERS "
 CFLAGS+=" -DEFL_FEATURE_EMULATOR "
 %endif
 
+%if "%{asan}" == "1"
+%restore_fcommon
+%endif
+
 %reconfigure \
     --with-glib=always \
     --disable-xim \
