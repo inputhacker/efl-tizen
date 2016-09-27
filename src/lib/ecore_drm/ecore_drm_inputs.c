@@ -446,11 +446,36 @@ const struct libinput_interface _input_interface =
    _cb_close_restricted,
 };
 
+static void
+ecore_drm_libinput_log_handler(struct libinput *libinput,
+                               enum libinput_log_priority priority,
+                               const char *format, va_list args)
+{
+   char buf[1024] = {0,};
+
+   vsprintf(buf, format, args);
+   switch (priority)
+     {
+        case LIBINPUT_LOG_PRIORITY_DEBUG:
+           DBG(buf);
+           break;
+        case LIBINPUT_LOG_PRIORITY_INFO:
+           INF(buf);
+           break;
+        case LIBINPUT_LOG_PRIORITY_ERROR:
+           ERR(buf);
+           break;
+        default:
+           break;
+     }
+}
+
 /* public functions */
 EAPI Eina_Bool 
 ecore_drm_inputs_create(Ecore_Drm_Device *dev)
 {
    Ecore_Drm_Input *input;
+   char *env;
 
    /* check for valid device */
    EINA_SAFETY_ON_NULL_RETURN_VAL(dev, EINA_FALSE);
@@ -479,6 +504,11 @@ ecore_drm_inputs_create(Ecore_Drm_Device *dev)
      }
 
    /* set libinput log priority */
+   if ((env = getenv(ECORE_DRM_ENV_LIBINPUT_LOG_DISABLE)) && (atoi(env) == 1))
+     libinput_log_set_handler(input->libinput, NULL);
+   else if ((env = getenv(ECORE_DRM_ENV_LIBINPUT_LOG_EINA_LOG)) && (atoi(env) == 1))
+     libinput_log_set_handler(input->libinput, ecore_drm_libinput_log_handler);
+
    libinput_log_set_priority(input->libinput, LIBINPUT_LOG_PRIORITY_INFO);
 
    /* assign udev seat */
@@ -560,6 +590,11 @@ ecore_drm_inputs_devices_create(Ecore_Drm_Device *dev)
      }
 
    /* set libinput log priority */
+   if ((env = getenv(ECORE_DRM_ENV_LIBINPUT_LOG_DISABLE)) && (atoi(env) == 1))
+     libinput_log_set_handler(input->libinput, NULL);
+   else if ((env = getenv(ECORE_DRM_ENV_LIBINPUT_LOG_EINA_LOG)) && (atoi(env) == 1))
+     libinput_log_set_handler(input->libinput, ecore_drm_libinput_log_handler);
+
    libinput_log_set_priority(input->libinput, LIBINPUT_LOG_PRIORITY_INFO);
 
    for (int i = 0; i < devices_num; i++)
