@@ -28,7 +28,7 @@ Eina_Strbuf *docs_generate_full(const Eolian_Documentation *doc, const char *gro
  * @return A documentation comment
  *
  */
-Eina_Strbuf *docs_generate_function(const Eolian_Function *fid, Eolian_Function_Type ftype, int indent, Eina_Bool use_legacy);
+Eina_Strbuf *docs_generate_function(const Eolian_Function *fid, Eolian_Function_Type ftype, int indent, Eina_Bool use_legacy, Eina_Bool is_internal);
 
 #endif
 

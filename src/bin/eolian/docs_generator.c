@@ -257,11 +257,14 @@ _append_group(Eina_Strbuf *buf, char *sgrp, int indent)
 
 static void
 _gen_doc_brief(const char *summary, const char *since, const char *group,
-               int indent, Eina_Strbuf *buf, Eina_Bool use_legacy)
+               int indent, Eina_Strbuf *buf, Eina_Bool use_legacy, Eina_Bool is_internal)
 {
    int curl = 4 + indent;
    Eina_Strbuf *wbuf = eina_strbuf_new();
-   eina_strbuf_append(buf, "/** ");
+   if (!is_internal)
+     eina_strbuf_append(buf, "/** ");
+   else
+     eina_strbuf_append(buf, "/**\n * @internal\n *\n * ");
    curl = _append_section(summary, indent, curl, buf, wbuf, use_legacy);
    eina_strbuf_free(wbuf);
    curl = _append_since(since, indent, curl, buf);
@@ -324,7 +327,7 @@ docs_generate_full(const Eolian_Documentation *doc, const char *group,
 
    Eina_Strbuf *buf = eina_strbuf_new();
    if (!desc)
-     _gen_doc_brief(sum, since, group, indent, buf, use_legacy);
+     _gen_doc_brief(sum, since, group, indent, buf, use_legacy, EINA_FALSE);
    else
      _gen_doc_full(sum, desc, since, group, indent, buf, use_legacy);
    return buf;
@@ -332,7 +335,7 @@ docs_generate_full(const Eolian_Documentation *doc, const char *group,
 
 Eina_Strbuf *
 docs_generate_function(const Eolian_Function *fid, Eolian_Function_Type ftype,
-                       int indent, Eina_Bool use_legacy)
+                       int indent, Eina_Bool use_legacy, Eina_Bool is_internal)
 {
    const Eolian_Function_Parameter *par = NULL;
    const Eolian_Function_Parameter *vpar = NULL;
@@ -448,13 +451,19 @@ docs_generate_function(const Eolian_Function *fid, Eolian_Function_Type ftype,
    if (!desc && !par && !vpar && !rdoc && (ftype == EOLIAN_METHOD || !pdoc))
      {
         _gen_doc_brief(sum ? sum : "No description supplied.", since, group,
-                       indent, buf, use_legacy);
+                       indent, buf, use_legacy, is_internal);
         return buf;
      }
 
    wbuf = eina_strbuf_new();
 
    eina_strbuf_append(buf, "/**\n");
+   if (is_internal)
+     {
+        curl += _indent_line(buf, indent);
+        eina_strbuf_append(buf, " * @internal\n *\n");
+        curl += sizeof(" * @internal \n *\n");
+     }
    curl += _indent_line(buf, indent);
    eina_strbuf_append(buf, " * @brief ");
    curl += sizeof(" * @brief ") - 1;

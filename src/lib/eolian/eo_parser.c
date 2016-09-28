@@ -1183,7 +1183,8 @@ parse_property(Eo_Lexer *ls)
    Eina_Bool has_get       = EINA_FALSE, has_set    = EINA_FALSE,
              has_keys      = EINA_FALSE, has_values = EINA_FALSE,
              has_protected = EINA_FALSE, has_class  = EINA_FALSE,
-             has_c_only    = EINA_FALSE, has_beta   = EINA_FALSE;
+             has_c_only    = EINA_FALSE, has_beta   = EINA_FALSE,
+             has_internal  = EINA_FALSE;
    prop = calloc(1, sizeof(Eolian_Function));
    prop->klass = ls->tmp.kls;
    prop->type = EOLIAN_UNRESOLVED;
@@ -1212,6 +1213,11 @@ parse_property(Eo_Lexer *ls)
       case KW_at_beta:
         CASE_LOCK(ls, beta, "beta qualifier");
         prop->is_beta = EINA_TRUE;
+        eo_lexer_get(ls);
+        break;
+      case KW_at_internal:
+        CASE_LOCK(ls, internal, "internal qualifier");
+        prop->is_internal = EINA_TRUE;
         eo_lexer_get(ls);
         break;
       default:
@@ -1259,7 +1265,7 @@ parse_method(Eo_Lexer *ls)
              has_return      = EINA_FALSE, has_legacy = EINA_FALSE,
              has_protected   = EINA_FALSE, has_class  = EINA_FALSE,
              has_eo          = EINA_FALSE, has_c_only = EINA_FALSE,
-             has_beta        = EINA_FALSE;
+             has_beta        = EINA_FALSE, has_internal = EINA_FALSE;
    meth = calloc(1, sizeof(Eolian_Function));
    meth->klass = ls->tmp.kls;
    meth->type = EOLIAN_METHOD;
@@ -1293,6 +1299,11 @@ parse_method(Eo_Lexer *ls)
       case KW_at_beta:
         CASE_LOCK(ls, beta, "beta qualifier");
         meth->is_beta = EINA_TRUE;
+        eo_lexer_get(ls);
+        break;
+      case KW_at_internal:
+        CASE_LOCK(ls, internal, "internal qualifier");
+        meth->is_internal = EINA_TRUE;
         eo_lexer_get(ls);
         break;
       default:

@@ -93,7 +93,8 @@ eo_fundef_generate(const Eolian_Class *class, const Eolian_Function *func, Eolia
                           eolian_function_documentation_get(func, ftype);
    if (hasnewdocs)
      {
-        Eina_Strbuf *dbuf = docs_generate_function(func, ftype, 0, EINA_FALSE);
+        Eina_Bool is_internal = eolian_function_is_internal(func);
+        Eina_Strbuf *dbuf = docs_generate_function(func, ftype, 0, EINA_FALSE, is_internal);
         eina_strbuf_append(str_func, eina_strbuf_string_get(dbuf));
         eina_strbuf_append_char(str_func, '\n');
         eina_strbuf_free(dbuf);

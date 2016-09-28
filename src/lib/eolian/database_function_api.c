@@ -334,6 +334,13 @@ eolian_function_is_beta(const Eolian_Function *fid)
    return fid->is_beta;
 }
 
+EAPI Eina_Bool
+eolian_function_is_internal(const Eolian_Function *fid)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(fid, EINA_FALSE);
+   return fid->is_internal;
+}
+
 EAPI Eina_Bool eolian_function_is_implemented(
       const Eolian_Function *function_id, Eolian_Function_Type func_type,
       const Eolian_Class *klass)
