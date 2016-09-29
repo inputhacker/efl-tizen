@@ -811,6 +811,7 @@ _pool_tex_dynamic_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, i
                                             pt->dyn.buffer, NULL);
         if (!pt->dyn.img)
           {
+             ERR("eglCreateImage() failed");
              secsym_tbm_surface_destroy(pt->dyn.buffer);
              goto error;
           }
