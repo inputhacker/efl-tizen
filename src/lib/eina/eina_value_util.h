@@ -32,6 +32,10 @@
  * @brief Create a basic #Eina_Value struct desc with refcounting
  * @return The #Eina_Value_Struct_Desc on success, @c NULL on failure
  * @since 1.12
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value_Struct_Desc *eina_value_util_struct_desc_new(void);
 
@@ -40,6 +44,10 @@ EAPI Eina_Value_Struct_Desc *eina_value_util_struct_desc_new(void);
  * @param timestr The value to use
  * @return The #Eina_Value
  * @since 1.12
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value *eina_value_util_time_string_new(const char *timestr);
 

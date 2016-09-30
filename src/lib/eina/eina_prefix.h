@@ -149,6 +149,10 @@ typedef struct _Eina_Prefix Eina_Prefix;
  * @since 1.1.0
  *
  * @see eina_prefix_free()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Prefix *eina_prefix_new(const char *argv0, void *symbol, const char *envprefix,
                                   const char *sharedir, const char *magicsharefile,
@@ -166,6 +170,10 @@ EAPI Eina_Prefix *eina_prefix_new(const char *argv0, void *symbol, const char *e
  * @since 1.1.0
  *
  * @see eina_prefix_new()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_prefix_free(Eina_Prefix *pfx) EINA_ARG_NONNULL(1);
 
@@ -177,6 +185,10 @@ EAPI void eina_prefix_free(Eina_Prefix *pfx) EINA_ARG_NONNULL(1);
  *         "/home/user/myapps/appname" etc.) that the software resides in at runtime
  *
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_prefix_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT EINA_PURE;
 
@@ -188,6 +200,10 @@ EAPI const char *eina_prefix_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA_WARN
  *         "/usr/bin", "/opt/appname/bin", "/home/user/myapps/appname/bin" etc.)
  *
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_prefix_bin_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT EINA_PURE;
 
@@ -199,6 +215,10 @@ EAPI const char *eina_prefix_bin_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA_
  *         "/usr/lib32", "/opt/appname/lib64", "/home/user/myapps/appname/lib" etc.)
  *
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_prefix_lib_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT EINA_PURE;
 
@@ -210,6 +230,10 @@ EAPI const char *eina_prefix_lib_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA_
  *         "/usr/share/appname", "/opt/appname/share/appname", "/home/user/myapps/appname/share/appname" etc.)
  *
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_prefix_data_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT EINA_PURE;
 
@@ -221,6 +245,10 @@ EAPI const char *eina_prefix_data_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA
  *         "/usr/share/locale", "/opt/appname/share/locale", "/home/user/myapps/appname/share/locale" etc.)
  *
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_prefix_locale_get(Eina_Prefix *pfx) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT EINA_PURE;
 

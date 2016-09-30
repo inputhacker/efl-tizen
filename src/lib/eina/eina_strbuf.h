@@ -75,6 +75,10 @@ typedef struct _Eina_Strbuf Eina_Strbuf;
  * @see eina_strbuf_free()
  * @see eina_strbuf_append()
  * @see eina_strbuf_string_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Strbuf *eina_strbuf_new(void) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -93,6 +97,10 @@ EAPI Eina_Strbuf *eina_strbuf_new(void) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
  * @see eina_strbuf_append()
  * @see eina_strbuf_string_get()
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Strbuf *eina_strbuf_manage_new(char *str) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -110,6 +118,10 @@ EAPI Eina_Strbuf *eina_strbuf_manage_new(char *str) EINA_MALLOC EINA_WARN_UNUSED
  *
  * @see eina_strbuf_manage_new()
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Strbuf *eina_strbuf_manage_new_length(char *str, size_t length) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -127,6 +139,10 @@ EAPI Eina_Strbuf *eina_strbuf_manage_new_length(char *str, size_t length) EINA_M
  *
  * @see eina_strbuf_manage_new()
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Strbuf *eina_strbuf_manage_read_only_new_length(const char *str, size_t length) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -137,6 +153,10 @@ EAPI Eina_Strbuf *eina_strbuf_manage_read_only_new_length(const char *str, size_
  *
  * This function frees the memory of @p buf. @p buf must have been
  * created by eina_strbuf_new().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_strbuf_free(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -147,6 +167,10 @@ EAPI void eina_strbuf_free(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
  *
  * This function reset @p buf: the buffer len is set to 0, and the
  * string is set to '\\0'. No memory is free'd.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_strbuf_reset(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -165,6 +189,10 @@ EAPI void eina_strbuf_reset(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
  *
  * @see eina_strbuf_append()
  * @see eina_strbuf_append_length()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_append(Eina_Strbuf *buf, const char *str) EINA_ARG_NONNULL(1, 2);
 
@@ -178,6 +206,10 @@ EAPI Eina_Bool eina_strbuf_append(Eina_Strbuf *buf, const char *str) EINA_ARG_NO
  * This function escapes and then appends the string @p str to @p buf. If @p str
  * can not be appended, #EINA_FALSE is returned, otherwise, #EINA_TRUE is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_append_escaped(Eina_Strbuf *buf, const char *str) EINA_ARG_NONNULL(1, 2);
 
@@ -201,6 +233,10 @@ EAPI Eina_Bool eina_strbuf_append_escaped(Eina_Strbuf *buf, const char *str) EIN
  *
  * @see eina_strbuf_append()
  * @see eina_strbuf_append_length()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_append_n(Eina_Strbuf *buf, const char *str, size_t maxlen) EINA_ARG_NONNULL(1, 2);
 
@@ -222,6 +258,10 @@ EAPI Eina_Bool eina_strbuf_append_n(Eina_Strbuf *buf, const char *str, size_t ma
  * @see eina_stringshare_length()
  * @see eina_strbuf_append()
  * @see eina_strbuf_append_n()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_append_length(Eina_Strbuf *buf, const char *str, size_t length) EINA_ARG_NONNULL(1, 2);
 
@@ -241,6 +281,10 @@ EAPI Eina_Bool eina_strbuf_append_length(Eina_Strbuf *buf, const char *str, size
  * @see eina_strbuf_append_n()
  * @see eina_strbuf_append_length()
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_append_buffer(Eina_Strbuf *buf, const Eina_Strbuf *data) EINA_ARG_NONNULL(1, 2);
 
@@ -254,6 +298,10 @@ EAPI Eina_Bool eina_strbuf_append_buffer(Eina_Strbuf *buf, const Eina_Strbuf *da
  *
  * This function inserts @p c to @p buf. If it can not insert it, #EINA_FALSE
  * is returned, otherwise #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_append_char(Eina_Strbuf *buf, char c) EINA_ARG_NONNULL(1);
 
@@ -269,6 +317,10 @@ EAPI Eina_Bool eina_strbuf_append_char(Eina_Strbuf *buf, char c) EINA_ARG_NONNUL
  * insert it, #EINA_FALSE is returned, otherwise #EINA_TRUE is returned.
  *
  * @see eina_strbuf_append()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_append_printf(Eina_Strbuf *buf, const char *fmt, ...) EINA_ARG_NONNULL(1, 2) EINA_PRINTF(2, 3);
 
@@ -281,6 +333,10 @@ EAPI Eina_Bool eina_strbuf_append_printf(Eina_Strbuf *buf, const char *fmt, ...)
  * @return #EINA_TRUE on success, #EINA_FALSE on failure.
  *
  * @see eina_strbuf_append_printf()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_append_vprintf(Eina_Strbuf *buf, const char *fmt, va_list args) EINA_ARG_NONNULL(1, 2);
 
@@ -297,6 +353,10 @@ EAPI Eina_Bool eina_strbuf_append_vprintf(Eina_Strbuf *buf, const char *fmt, va_
  * eina_strbuf_insert_length(). If  the length is known beforehand,
  * consider using that variant. If @p buf can't insert it, #EINA_FALSE
  * is returned, otherwise #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_insert(Eina_Strbuf *buf, const char *str, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -312,6 +372,10 @@ EAPI Eina_Bool eina_strbuf_insert(Eina_Strbuf *buf, const char *str, size_t pos)
  * This function escapes and inserts the string @p str to @p buf at
  * position @p pos. If @p buf can't insert @p str, #EINA_FALSE is
  * returned, otherwise #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_insert_escaped(Eina_Strbuf *buf, const char *str, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -332,6 +396,10 @@ EAPI Eina_Bool eina_strbuf_insert_escaped(Eina_Strbuf *buf, const char *str, siz
  * should then be checked so that it is greater than the size of
  * @p str). If @p str can not be inserted, #EINA_FALSE is returned,
  * otherwise, #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_insert_n(Eina_Strbuf *buf, const char *str, size_t maxlen, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -354,6 +422,10 @@ EAPI Eina_Bool eina_strbuf_insert_n(Eina_Strbuf *buf, const char *str, size_t ma
  * @see eina_stringshare_length()
  * @see eina_strbuf_insert()
  * @see eina_strbuf_insert_n()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_insert_length(Eina_Strbuf *buf, const char *str, size_t length, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -369,6 +441,10 @@ EAPI Eina_Bool eina_strbuf_insert_length(Eina_Strbuf *buf, const char *str, size
  * This function inserts @p c to @p buf at position @p pos. If @p buf
  * can't append it, #EINA_FALSE is returned, otherwise #EINA_TRUE is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_insert_char(Eina_Strbuf *buf, char c, size_t pos) EINA_ARG_NONNULL(1);
 
@@ -384,6 +460,10 @@ EAPI Eina_Bool eina_strbuf_insert_char(Eina_Strbuf *buf, char c, size_t pos) EIN
  * the position @p pos. @p fmt must be of a valid format for printf family of
  * functions. If it can't insert it, #EINA_FALSE is returned,
  * otherwise #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_insert_printf(Eina_Strbuf *buf, const char *fmt, size_t pos, ...) EINA_ARG_NONNULL(1, 2) EINA_PRINTF(2, 4);
 
@@ -397,6 +477,10 @@ EAPI Eina_Bool eina_strbuf_insert_printf(Eina_Strbuf *buf, const char *fmt, size
  * @return #EINA_TRUE on success, #EINA_FALSE on failure.
  *
  * @see eina_strbuf_insert_printf
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_insert_vprintf(Eina_Strbuf *buf, const char *fmt, size_t pos, va_list args) EINA_ARG_NONNULL(1, 2);
 
@@ -514,6 +598,10 @@ EAPI Eina_Bool eina_strbuf_insert_vprintf(Eina_Strbuf *buf, const char *fmt, siz
  * This function removes a slice of @p buf, starting at @p start
  * (inclusive) and ending at @p end (non-inclusive). Both values are
  * in bytes. It returns #EINA_FALSE on failure, #EINA_TRUE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 
 EAPI Eina_Bool eina_strbuf_remove(Eina_Strbuf *buf, size_t start, size_t end) EINA_ARG_NONNULL(1);
@@ -531,6 +619,10 @@ EAPI Eina_Bool eina_strbuf_remove(Eina_Strbuf *buf, size_t start, size_t end) EI
  * not</b> be freed.
  *
  * @see eina_strbuf_string_steal()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char *eina_strbuf_string_get(const Eina_Strbuf *buf) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -546,6 +638,10 @@ EAPI const char *eina_strbuf_string_get(const Eina_Strbuf *buf) EINA_ARG_NONNULL
  * free().
  *
  * @see eina_strbuf_string_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char *eina_strbuf_string_steal(Eina_Strbuf *buf) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -556,6 +652,10 @@ EAPI char *eina_strbuf_string_steal(Eina_Strbuf *buf) EINA_MALLOC EINA_WARN_UNUS
  *
  * This function frees the string contained in @p buf without freeing
  * @p buf.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_strbuf_string_free(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -566,6 +666,10 @@ EAPI void eina_strbuf_string_free(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
  * @return The current length of the string, in bytes.
  *
  * This function returns the length of @p buf.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI size_t    eina_strbuf_length_get(const Eina_Strbuf *buf) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -581,6 +685,10 @@ EAPI size_t    eina_strbuf_length_get(const Eina_Strbuf *buf) EINA_ARG_NONNULL(1
  *
  * This function replaces the n-th occurrence of @p str in @p buf with
  * @p with. It returns #EINA_FALSE on failure, #EINA_TRUE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_strbuf_replace(Eina_Strbuf *buf, const char *str, const char *with, unsigned int n) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -611,6 +719,10 @@ EAPI Eina_Bool eina_strbuf_replace(Eina_Strbuf *buf, const char *str, const char
  * This function replaces all the occurrences of @p str in @p buf with
  * the string @p with. This function returns the number of times @p str
  * has been replaced. On failure, it returns @c 0.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_strbuf_replace_all(Eina_Strbuf *buf, const char *str, const char *with) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -620,6 +732,10 @@ EAPI int eina_strbuf_replace_all(Eina_Strbuf *buf, const char *str, const char *
  * @param buf the string buffer to work with.
  *
  * This function skips whitespaces in the beginning and the end of the buffer.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_strbuf_trim(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -629,6 +745,10 @@ EAPI void eina_strbuf_trim(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
  * @param buf the string buffer to work with.
  *
  * This function skips whitespaces in the beginning of the buffer.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_strbuf_ltrim(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -638,6 +758,10 @@ EAPI void eina_strbuf_ltrim(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
  * @param buf the string buffer to work with.
  *
  * This function skips whitespaces in the end of the buffer.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_strbuf_rtrim(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -649,6 +773,10 @@ EAPI void eina_strbuf_rtrim(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
  * @param buf the string buffer to work with.
  *
  * This function converts all the characters in the strbuf to lower case.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_strbuf_tolower(Eina_Strbuf *buf) EINA_ARG_NONNULL(1);
 

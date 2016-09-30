@@ -23,6 +23,10 @@ typedef void (*Eldbus_Dict_Cb_Get)(void *data, const void *key, Eldbus_Message_I
  * @param signature of entry, example: "sv"
  * @param cb callback that will be called in each entry
  * @param data context data
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eldbus_message_iter_dict_iterate(Eldbus_Message_Iter *dict, const char *signature, Eldbus_Dict_Cb_Get cb, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 

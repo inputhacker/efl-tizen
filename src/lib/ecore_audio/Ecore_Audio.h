@@ -171,6 +171,8 @@ typedef struct _Ecore_Audio_Vio Ecore_Audio_Vio;
 /* Audio operations */
 
 /**
+ * @internal
+ *
  * @brief Initialize the Ecore_Audio library.
  *
  * @return 1 or greater on success, 0 on error.
@@ -187,6 +189,8 @@ typedef struct _Ecore_Audio_Vio Ecore_Audio_Vio;
 EAPI int                 ecore_audio_init(void);
 
 /**
+ * @internal
+ *
  * @brief Shut down the Ecore_Audio library.
  *
  * @return 0 when the library is completely shut down, 1 or

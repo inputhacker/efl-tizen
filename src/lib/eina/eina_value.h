@@ -344,6 +344,10 @@ union _Eina_Value_Union
  * manages unsigned char type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_UCHAR;
 
@@ -352,6 +356,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_UCHAR;
  * manages unsigned short type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_USHORT;
 
@@ -360,6 +368,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_USHORT;
  * manages unsigned int type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_UINT;
 
@@ -368,6 +380,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_UINT;
  * manages unsigned long type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_ULONG;
 
@@ -377,6 +393,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_ULONG;
  * @note this is identical in function to EINA_VALUE_TYPE_ULONG
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_TIMESTAMP;
 
@@ -385,6 +405,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_TIMESTAMP;
  * manages unsigned integer of 64 bits type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_UINT64;
 
@@ -393,6 +417,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_UINT64;
  * manages char type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_CHAR;
 
@@ -401,6 +429,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_CHAR;
  * manages short type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_SHORT;
 
@@ -409,6 +441,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_SHORT;
  * manages int type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_INT;
 
@@ -417,6 +453,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_INT;
  * manages long type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_LONG;
 
@@ -425,6 +465,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_LONG;
  * manages integer of 64 bits type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_INT64;
 
@@ -433,6 +477,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_INT64;
  * manages float type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_FLOAT;
 
@@ -441,6 +489,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_FLOAT;
  * manages double type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_DOUBLE;
 
@@ -449,6 +501,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_DOUBLE;
  * manages stringshared string type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_STRINGSHARE;
 
@@ -457,6 +513,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_STRINGSHARE;
  * manages string type.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_STRING;
 
@@ -481,6 +541,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_STRING;
  * use by value, no copies are done.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_ARRAY;
 
@@ -503,6 +567,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_ARRAY;
  * done.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_LIST;
 
@@ -532,6 +600,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_LIST;
  *       value must point to strdup(string)!
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_HASH;
 
@@ -546,6 +618,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_HASH;
  * timeval" and it's an exact copy of value.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_TIMEVAL;
 
@@ -562,6 +638,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_TIMEVAL;
  * Memory is untouched unless you provide @c ops (operations) pointer.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_BLOB;
 
@@ -584,6 +664,10 @@ EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_BLOB;
  * use by value, no copies are done.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Type *EINA_VALUE_TYPE_STRUCT;
 
@@ -628,6 +712,10 @@ struct _Eina_Value
  * @see eina_value_free()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value *eina_value_new(const Eina_Value_Type *type) EINA_ARG_NONNULL(1) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -638,6 +726,10 @@ EAPI Eina_Value *eina_value_new(const Eina_Value_Type *type) EINA_ARG_NONNULL(1)
  * @see eina_value_flush()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_value_free(Eina_Value *value);
 
@@ -698,6 +790,10 @@ static inline void eina_value_flush(Eina_Value *value) EINA_ARG_NONNULL(1);
  * by getting the contents of @a value and setting it to @a copy.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_value_copy(const Eina_Value *value,
                                Eina_Value *copy) EINA_ARG_NONNULL(1, 2);
@@ -1024,6 +1120,10 @@ static inline Eina_Bool eina_value_pget(const Eina_Value *value,
  * @note Both objects must have eina_value_setup() called on them beforehand!
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_value_convert(const Eina_Value *value,
                                   Eina_Value *convert) EINA_ARG_NONNULL(1, 2);
@@ -1036,6 +1136,10 @@ EAPI Eina_Bool eina_value_convert(const Eina_Value *value,
  *
  * @see eina_value_convert()
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char *eina_value_to_string(const Eina_Value *value) EINA_ARG_NONNULL(1);
 
@@ -1102,6 +1206,10 @@ struct _Eina_Value_Array
  *       eina_value_array_setup()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value *eina_value_array_new(const Eina_Value_Type *subtype,
                                       unsigned int step) EINA_ARG_NONNULL(1);
@@ -1752,6 +1860,10 @@ struct _Eina_Value_List
  * @see eina_value_list_setup()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value *eina_value_list_new(const Eina_Value_Type *subtype) EINA_ARG_NONNULL(1);
 
@@ -2376,6 +2488,10 @@ struct _Eina_Value_Hash
  * @see eina_value_hash_setup()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value *eina_value_hash_new(const Eina_Value_Type *subtype, unsigned int buckets_power_size) EINA_ARG_NONNULL(1);
 
@@ -2713,6 +2829,10 @@ struct _Eina_Value_Blob_Operations
  * malloc() as well.
  *
  * No compare or to_string are provided, defaults will be used.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Blob_Operations *EINA_VALUE_BLOB_OPERATIONS_MALLOC;
 
@@ -2820,6 +2940,10 @@ struct _Eina_Value_Struct_Operations
  *
  * No other methods are set (alloc, free, copy, compare), then it uses
  * the default operations.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Struct_Operations *EINA_VALUE_STRUCT_OPERATIONS_BINSEARCH;
 
@@ -2835,6 +2959,10 @@ EAPI extern const Eina_Value_Struct_Operations *EINA_VALUE_STRUCT_OPERATIONS_BIN
  *
  * No other methods are set (alloc, free, copy, compare), then it uses
  * the default operations.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern const Eina_Value_Struct_Operations *EINA_VALUE_STRUCT_OPERATIONS_STRINGSHARE;
 
@@ -2937,6 +3065,10 @@ struct _Eina_Value_Struct
  * @see eina_value_struct_setup()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value *eina_value_struct_new(const Eina_Value_Struct_Desc *desc) EINA_ARG_NONNULL(1);
 
@@ -3373,6 +3505,10 @@ struct _Eina_Value_Type
  * @param type type reference.
  * @return string or @c NULL if type is invalid.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_value_type_name_get(const Eina_Value_Type *type) EINA_PURE EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -3385,6 +3521,10 @@ EAPI const char *eina_value_type_name_get(const Eina_Value_Type *type) EINA_PURE
  * as runtime #EINA_VALUE_TYPE_VERSION.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_value_type_check(const Eina_Value_Type *type) EINA_PURE EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 

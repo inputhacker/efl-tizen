@@ -653,51 +653,140 @@ struct _Ecore_Con_Event_Url_Progress
    } up; /**< upload info */
 };
 
-/** A client has connected to the server */
+/**
+ * A client has connected to the serve
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_CLIENT_ADD;
-/** A client has disconnected from the server */
+/**
+ * A client has disconnected from the serve
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_CLIENT_DEL;
-/** A client experienced an error
+/**
+ * A client experienced an error
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI extern int ECORE_CON_EVENT_CLIENT_ERROR;
-/** A client connection has been upgraded to SSL
+/**
+ * A client connection has been upgraded to SSL
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI extern int ECORE_CON_EVENT_CLIENT_UPGRADE;
-/** A server was created */
+/**
+ * A server was create
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_SERVER_ADD;
-/** A server connection was lost */
+/**
+ * A server connection was los
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_SERVER_DEL;
-/** A server experienced an error
+/**
+ * A server experienced an error
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI extern int ECORE_CON_EVENT_SERVER_ERROR;
-/** A server connection has been upgraded to SSL
+/**
+ * A server connection has been upgraded to SSL
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI extern int ECORE_CON_EVENT_SERVER_UPGRADE;
-/** A server connection has sent data to its client
+/**
+ * A server connection has sent data to its client
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI extern int ECORE_CON_EVENT_CLIENT_WRITE;
-/** A server connection object has sent data
+/**
+ * A server connection object has sent data
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI extern int ECORE_CON_EVENT_SERVER_WRITE;
-/** A client connected to the server has sent data */
+/**
+ * A client connected to the server has sent dat
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_CLIENT_DATA;
-/** A server connection object has data */
+/**
+ * A server connection object has dat
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_SERVER_DATA;
-/** A server connection has successfully negotiated an ip:port binding
+/**
+ * A server connection has successfully negotiated an ip:port binding
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI extern int ECORE_CON_EVENT_PROXY_BIND;
-/** A URL object has data */
+/**
+ * A URL object has dat
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_URL_DATA;
-/** A URL object has completed its transfer to and from the server and can be reused */
+/**
+ * A URL object has completed its transfer to and from the server and can be reuse
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_URL_COMPLETE;
-/** A URL object has made progress in its transfer */
+/**
+ * A URL object has made progress in its transfe
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI extern int ECORE_CON_EVENT_URL_PROGRESS;
 
 /**
@@ -718,6 +807,10 @@ EAPI extern int ECORE_CON_EVENT_URL_PROGRESS;
  *
  * @note This function already calls ecore_init() internally, so you don't need
  * to call it explicitly.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_init(void);
 
@@ -727,6 +820,10 @@ EAPI int               ecore_con_init(void);
  *          shut down.
  * @note This function already calls ecore_shutdown() internally, so you don't
  * need to call it explicitly unless you called ecore_init() explicitly too.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_shutdown(void);
 
@@ -748,6 +845,10 @@ EAPI int               ecore_con_shutdown(void);
  * @return 1 if SSL is available and provided by gnutls,
  *         2 if SSL is available and provided by openssl,
  *         0 if it is not available.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_ssl_available_get(void);
 
@@ -760,6 +861,10 @@ EAPI int               ecore_con_ssl_available_get(void);
  * @param svr The server object
  * @param cert The path to the certificate.
  * @return @c EINA_FALSE if the file cannot be loaded, otherwise @c EINA_TRUE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_ssl_server_cert_add(Ecore_Con_Server *svr, const char *cert);
 
@@ -772,6 +877,10 @@ EAPI Eina_Bool         ecore_con_ssl_server_cert_add(Ecore_Con_Server *svr, cons
  * @param svr The server object
  * @param key_file The path to the key file.
  * @return @c EINA_FALSE if the file cannot be loaded, otherwise @c EINA_TRUE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_ssl_server_privkey_add(Ecore_Con_Server *svr, const char *key_file);
 
@@ -784,6 +893,10 @@ EAPI Eina_Bool         ecore_con_ssl_server_privkey_add(Ecore_Con_Server *svr, c
  * @param svr The server object
  * @param crl_file The path to the CRL file.
  * @return @c EINA_FALSE if the file cannot be loaded, otherwise @c EINA_TRUE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_ssl_server_crl_add(Ecore_Con_Server *svr, const char *crl_file);
 
@@ -797,6 +910,10 @@ EAPI Eina_Bool         ecore_con_ssl_server_crl_add(Ecore_Con_Server *svr, const
  * @param ca_file The path to the CA file.
  * @return @c EINA_FALSE if the file cannot be loaded, otherwise @c EINA_TRUE.
  * @note since 1.2, this function can load directores
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_ssl_server_cafile_add(Ecore_Con_Server *svr, const char *ca_file);
 
@@ -806,6 +923,10 @@ EAPI Eina_Bool         ecore_con_ssl_server_cafile_add(Ecore_Con_Server *svr, co
  * Call this function on a server object before main loop has started
  * to enable verification of certificates against loaded certificates.
  * @param svr The server object
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_ssl_server_verify(Ecore_Con_Server *svr);
 
@@ -818,6 +939,10 @@ EAPI void              ecore_con_ssl_server_verify(Ecore_Con_Server *svr);
  * @note This function has no effect when used on a listening server created by
  * ecore_con_server_add
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_ssl_server_verify_basic(Ecore_Con_Server *svr);
 
@@ -833,6 +958,10 @@ EAPI void              ecore_con_ssl_server_verify_basic(Ecore_Con_Server *svr);
  * @param svr The server object
  * @param name The hostname to verify against
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_ssl_server_verify_name_set(Ecore_Con_Server *svr, const char *name);
 
@@ -845,6 +974,10 @@ EAPI void              ecore_con_ssl_server_verify_name_set(Ecore_Con_Server *sv
  * @param svr The server object
  * @return The hostname which will be used
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char       *ecore_con_ssl_server_verify_name_get(Ecore_Con_Server *svr);
 
@@ -860,6 +993,10 @@ EAPI const char       *ecore_con_ssl_server_verify_name_get(Ecore_Con_Server *sv
  * @note This function is NEVER to be used on a server object created with ecore_con_server_add
  * @warning Setting a wrong value for @p compl_type WILL mess up your program.
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_ssl_server_upgrade(Ecore_Con_Server *svr, Ecore_Con_Type compl_type);
 
@@ -874,6 +1011,10 @@ EAPI Eina_Bool         ecore_con_ssl_server_upgrade(Ecore_Con_Server *svr, Ecore
  * @return @c EINA_FALSE if the connection cannot be upgraded, otherwise @c EINA_TRUE.
  * @warning Setting a wrong value for @p compl_type WILL mess up your program.
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_ssl_client_upgrade(Ecore_Con_Client *cl, Ecore_Con_Type compl_type);
 
@@ -898,6 +1039,10 @@ EAPI Eina_Bool         ecore_con_ssl_client_upgrade(Ecore_Con_Client *cl, Ecore_
  * @return An allocated proxy object, or NULL on failure
  * @note This object NEVER needs to be explicitly freed.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Socks *ecore_con_socks4_remote_add(const char *ip, int port, const char *username);
 
@@ -913,6 +1058,10 @@ EAPI Ecore_Con_Socks *ecore_con_socks4_remote_add(const char *ip, int port, cons
  * @note This function matches slightly more loosely than ecore_con_socks4_remote_add(), and
  * ecore_con_socks4_remote_add() should be used to return the actual object.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        ecore_con_socks4_remote_exists(const char *ip, int port, const char *username);
 
@@ -927,6 +1076,10 @@ EAPI Eina_Bool        ecore_con_socks4_remote_exists(const char *ip, int port, c
  * @note This function matches in the same way as ecore_con_socks4_remote_exists().
  * @warning Be aware that deleting a proxy which is being used WILL ruin your life.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             ecore_con_socks4_remote_del(const char *ip, int port, const char *username);
 
@@ -942,6 +1095,10 @@ EAPI void             ecore_con_socks4_remote_del(const char *ip, int port, cons
  * @return An allocated proxy object, or NULL on failure
  * @note This object NEVER needs to be explicitly freed.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Socks *ecore_con_socks5_remote_add(const char *ip, int port, const char *username, const char *password);
 
@@ -958,6 +1115,10 @@ EAPI Ecore_Con_Socks *ecore_con_socks5_remote_add(const char *ip, int port, cons
  * @note This function matches slightly more loosely than ecore_con_socks5_remote_add(), and
  * ecore_con_socks5_remote_add() should be used to return the actual object.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        ecore_con_socks5_remote_exists(const char *ip, int port, const char *username, const char *password);
 
@@ -973,6 +1134,10 @@ EAPI Eina_Bool        ecore_con_socks5_remote_exists(const char *ip, int port, c
  * @note This function matches in the same way as ecore_con_socks4_remote_exists().
  * @warning Be aware that deleting a proxy which is being used WILL ruin your life.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             ecore_con_socks5_remote_del(const char *ip, int port, const char *username, const char *password);
 
@@ -988,6 +1153,10 @@ EAPI void             ecore_con_socks5_remote_del(const char *ip, int port, cons
  * @param enable If true, the proxy will perform the dns lookup
  * @note By default, this setting is DISABLED.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             ecore_con_socks_lookup_set(Ecore_Con_Socks *ecs, Eina_Bool enable);
 
@@ -1002,6 +1171,10 @@ EAPI void             ecore_con_socks_lookup_set(Ecore_Con_Socks *ecs, Eina_Bool
  * @return If true, the proxy will perform the dns lookup
  * @note By default, this setting is DISABLED.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        ecore_con_socks_lookup_get(Ecore_Con_Socks *ecs);
 
@@ -1014,6 +1187,10 @@ EAPI Eina_Bool        ecore_con_socks_lookup_get(Ecore_Con_Socks *ecs);
  * @param is_bind If true, the connection established will be a port binding
  * @warning Be aware that changing the operation mode of an active proxy may result in undefined behavior
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             ecore_con_socks_bind_set(Ecore_Con_Socks *ecs, Eina_Bool is_bind);
 
@@ -1025,6 +1202,10 @@ EAPI void             ecore_con_socks_bind_set(Ecore_Con_Socks *ecs, Eina_Bool i
  * @param ecs The proxy object
  * @return If true, the connection established will be a port binding
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        ecore_con_socks_bind_get(Ecore_Con_Socks *ecs);
 
@@ -1035,6 +1216,10 @@ EAPI Eina_Bool        ecore_con_socks_bind_get(Ecore_Con_Socks *ecs);
  * @param ecs The proxy object
  * @return 0 on error, else 4/5
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI unsigned int     ecore_con_socks_version_get(Ecore_Con_Socks *ecs);
 
@@ -1045,6 +1230,10 @@ EAPI unsigned int     ecore_con_socks_version_get(Ecore_Con_Socks *ecs);
  * @param ecs The proxy object to delete
  * @warning Be aware that deleting a proxy which is being used WILL ruin your life.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             ecore_con_socks_remote_del(Ecore_Con_Socks *ecs);
 
@@ -1056,6 +1245,10 @@ EAPI void             ecore_con_socks_remote_del(Ecore_Con_Socks *ecs);
  * @param ecs The proxy object
  * @see ecore_con_socks_apply_always()
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             ecore_con_socks_apply_once(Ecore_Con_Socks *ecs);
 
@@ -1073,6 +1266,10 @@ EAPI void             ecore_con_socks_apply_once(Ecore_Con_Socks *ecs);
  * server is the IP_ADDRESS of the proxy server
  * port is the port to connect to on the proxy server
  * lookup is 1 if the proxy should perform all DNS lookups, otherwise 0 or omitted
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             ecore_con_socks_apply_always(Ecore_Con_Socks *ecs);
 
@@ -1184,6 +1381,10 @@ EAPI void             ecore_con_socks_apply_always(Ecore_Con_Socks *ecs);
  *
  * The @p data parameter can be fetched later using ecore_con_server_data_get()
  * or changed with ecore_con_server_data_set().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Server *ecore_con_server_add(Ecore_Con_Type type,
                                             const char *name, int port,
@@ -1234,6 +1435,10 @@ EAPI Ecore_Con_Server *ecore_con_server_add(Ecore_Con_Type type,
  *
  * The @p data parameter can be fetched later using ecore_con_server_data_get()
  * or changed with ecore_con_server_data_set().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Server *ecore_con_server_connect(Ecore_Con_Type type,
                                                 const char *name, int port,
@@ -1247,6 +1452,10 @@ EAPI Ecore_Con_Server *ecore_con_server_connect(Ecore_Con_Type type,
  * All the clients connected to this server will be disconnected.
  *
  * @see ecore_con_server_add, ecore_con_server_connect
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *            ecore_con_server_del(Ecore_Con_Server *svr);
 
@@ -1257,6 +1466,10 @@ EAPI void *            ecore_con_server_del(Ecore_Con_Server *svr);
  * @return  The associated data.
  *
  * @see ecore_con_server_data_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *            ecore_con_server_data_get(Ecore_Con_Server *svr);
 /**
@@ -1267,6 +1480,10 @@ EAPI void *            ecore_con_server_data_get(Ecore_Con_Server *svr);
  * @return  The previously associated data, if any.
  *
  * @see ecore_con_server_data_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *            ecore_con_server_data_set(Ecore_Con_Server *svr,
                                                  void *data);
@@ -1275,6 +1492,10 @@ EAPI void *            ecore_con_server_data_set(Ecore_Con_Server *svr,
  *
  * @param   svr The given server.
  * @return @c EINA_TRUE if the server is connected, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_server_connected_get(const Ecore_Con_Server *svr);
 
@@ -1285,6 +1506,10 @@ EAPI Eina_Bool         ecore_con_server_connected_get(const Ecore_Con_Server *sv
  * @return  The server port in use.
  *
  * The port where the server is listening for connections.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_server_port_get(const Ecore_Con_Server *svr);
 /**
@@ -1296,6 +1521,10 @@ EAPI int               ecore_con_server_port_get(const Ecore_Con_Server *svr);
  *
  * This function is used to find out the time that has been elapsed since
  * ecore_con_server_add() succeeded.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double            ecore_con_server_uptime_get(const Ecore_Con_Server *svr);
 /**
@@ -1314,6 +1543,10 @@ EAPI double            ecore_con_server_uptime_get(const Ecore_Con_Server *svr);
  *
  * @see ecore_con_client_send()
  * @see ecore_con_server_flush()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_server_send(Ecore_Con_Server *svr,
                                              const void *data,
@@ -1340,6 +1573,10 @@ EAPI int               ecore_con_server_send(Ecore_Con_Server *svr,
  * already have pending CLIENT_ADD events in your event queue.  Those
  * clients have already connected and will not be affected by this call.
  * Only clients subsequently trying to connect will be affected.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_server_client_limit_set(Ecore_Con_Server *svr,
                                                          int client_limit,
@@ -1353,6 +1590,10 @@ EAPI void              ecore_con_server_client_limit_set(Ecore_Con_Server *svr,
  *          This string should not be modified or trusted to stay valid after
  *          deletion for the @p svr object. If no IP is known @c NULL is
  *          returned.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *      ecore_con_server_ip_get(const Ecore_Con_Server *svr);
 /**
@@ -1364,6 +1605,10 @@ EAPI const char *      ecore_con_server_ip_get(const Ecore_Con_Server *svr);
  *
  * @see ecore_con_server_send()
  * @see ecore_con_client_flush()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_server_flush(Ecore_Con_Server *svr);
 /**
@@ -1383,6 +1628,10 @@ EAPI void              ecore_con_server_flush(Ecore_Con_Server *svr);
  *
  * @see ecore_con_server_timeout_get()
  * @see ecore_con_client_timeout_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_server_timeout_set(Ecore_Con_Server *svr, double timeout);
 /**
@@ -1396,6 +1645,10 @@ EAPI void              ecore_con_server_timeout_set(Ecore_Con_Server *svr, doubl
  *
  * @see ecore_con_server_timeout_set()
  * @see ecore_con_client_timeout_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double            ecore_con_server_timeout_get(const Ecore_Con_Server *svr);
 
@@ -1410,6 +1663,10 @@ EAPI double            ecore_con_server_timeout_get(const Ecore_Con_Server *svr)
  * @note This function is only valid for servers created with ecore_con_server_connect()
  * @warning Seriously. Don't use this unless you know what you are doing.
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_server_fd_get(const Ecore_Con_Server *svr);
 
@@ -1422,6 +1679,10 @@ EAPI int               ecore_con_server_fd_get(const Ecore_Con_Server *svr);
  * This function returns the fd which is used by the underlying client connection.
  * It should not be tampered with unless you REALLY know what you are doing.
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_client_fd_get(const Ecore_Con_Client *cl);
 /**
@@ -1464,6 +1725,10 @@ EAPI int               ecore_con_client_fd_get(const Ecore_Con_Client *cl);
  *
  * @see ecore_con_server_send()
  * @see ecore_con_client_flush()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_client_send(Ecore_Con_Client *cl,
                                              const void *data,
@@ -1473,6 +1738,10 @@ EAPI int               ecore_con_client_send(Ecore_Con_Client *cl,
  *
  * @param   cl The given client.
  * @return  Data associated with the client.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *            ecore_con_client_del(Ecore_Con_Client *cl);
 /**
@@ -1480,6 +1749,10 @@ EAPI void *            ecore_con_client_del(Ecore_Con_Client *cl);
  *
  * @param   cl   The given client.
  * @param   data What to set the data to.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_client_data_set(Ecore_Con_Client *cl,
                                                  const void       *data);
@@ -1488,6 +1761,10 @@ EAPI void              ecore_con_client_data_set(Ecore_Con_Client *cl,
  *
  * @param   cl The given client.
  * @return  The data associated with @p cl.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *            ecore_con_client_data_get(Ecore_Con_Client *cl);
 
@@ -1500,6 +1777,10 @@ EAPI void *            ecore_con_client_data_get(Ecore_Con_Client *cl);
  *
  * The returned string should not be modified, freed or trusted to stay valid
  * after deletion for the @p cl object. If no IP is known @c NULL is returned.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *      ecore_con_client_ip_get(const Ecore_Con_Client *cl);
 /**
@@ -1511,6 +1792,10 @@ EAPI const char *      ecore_con_client_ip_get(const Ecore_Con_Client *cl);
  *
  * @see ecore_con_client_send()
  * @see ecore_con_server_flush()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_client_flush(Ecore_Con_Client *cl);
 /**
@@ -1521,6 +1806,10 @@ EAPI void              ecore_con_client_flush(Ecore_Con_Client *cl);
  * the server
  *
  * This function is used to find out how long a client has been connected for.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double            ecore_con_client_uptime_get(const Ecore_Con_Client *cl);
 /**
@@ -1534,6 +1823,10 @@ EAPI double            ecore_con_client_uptime_get(const Ecore_Con_Client *cl);
  * means the idle timeout is disabled.
  *
  * @see ecore_con_client_timeout_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double            ecore_con_client_timeout_get(const Ecore_Con_Client *cl);
 /**
@@ -1554,6 +1847,10 @@ EAPI double            ecore_con_client_timeout_get(const Ecore_Con_Client *cl);
  *
  * @see ecore_con_client_timeout_get()
  * @see ecore_con_server_timeout_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_client_timeout_set(Ecore_Con_Client *cl, double timeout);
 /**
@@ -1561,6 +1858,10 @@ EAPI void              ecore_con_client_timeout_set(Ecore_Con_Client *cl, double
  *
  * @param   cl The given client.
  * @return @c EINA_TRUE if connected, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_client_connected_get(const Ecore_Con_Client *cl);
 /**
@@ -1569,6 +1870,10 @@ EAPI Eina_Bool         ecore_con_client_connected_get(const Ecore_Con_Client *cl
  * @param cl The client
  * @return The port that @p cl has connected to, or -1 on error
  * Use this function to return the port on which a given client has connected.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_client_port_get(const Ecore_Con_Client *cl);
 
@@ -1696,6 +2001,10 @@ typedef enum _Ecore_Con_Url_Http_Version
  * @return @c EINA_TRUE on success, @c EINA_FALSE on failure to change version.
  * @since 1.2
  * @see ecore_con_url_pipeline_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_url_http_version_set(Ecore_Con_Url *url_con, Ecore_Con_Url_Http_Version version);
    
@@ -1706,6 +2015,10 @@ EAPI Eina_Bool         ecore_con_url_http_version_set(Ecore_Con_Url *url_con, Ec
  *
  * @note This function doesn't call ecore_con_init(). You still need to call it
  * explicitly before calling this one.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_url_init(void);
 
@@ -1715,6 +2028,10 @@ EAPI int               ecore_con_url_init(void);
  *
  * @note This function doesn't call ecore_con_shutdown(). You still need to call
  * it explicitly after calling this one.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_url_shutdown(void);
 
@@ -1732,6 +2049,10 @@ EAPI int               ecore_con_url_shutdown(void);
  * See http://en.wikipedia.org/wiki/HTTP_pipelining for more info.
  *
  * @see ecore_con_url_pipeline_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_pipeline_set(Eina_Bool enable);
 /**
@@ -1739,6 +2060,10 @@ EAPI void              ecore_con_url_pipeline_set(Eina_Bool enable);
  * @return @c EINA_TRUE if it is enable.
  *
  * @see ecore_con_url_pipeline_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_url_pipeline_get(void);
 
@@ -1755,6 +2080,10 @@ EAPI Eina_Bool         ecore_con_url_pipeline_get(void);
  *
  * @see ecore_con_url_custom_new()
  * @see ecore_con_url_url_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Url *   ecore_con_url_new(const char *url);
 /**
@@ -1771,6 +2100,10 @@ EAPI Ecore_Con_Url *   ecore_con_url_new(const char *url);
  *
  * @see ecore_con_url_new()
  * @see ecore_con_url_url_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Url *   ecore_con_url_custom_new(const char *url,
                                                 const char *custom_request);
@@ -1780,6 +2113,10 @@ EAPI Ecore_Con_Url *   ecore_con_url_custom_new(const char *url,
  * @param url_con Connection object to free.
  *
  * @see ecore_con_url_new()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_free(Ecore_Con_Url *url_con);
 
@@ -1793,6 +2130,10 @@ EAPI void              ecore_con_url_free(Ecore_Con_Url *url_con);
  * ecore_con_url_data_get()).
  *
  * @see ecore_con_url_data_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_data_set(Ecore_Con_Url *url_con,
                                               void *data);
@@ -1807,6 +2148,10 @@ EAPI void              ecore_con_url_data_set(Ecore_Con_Url *url_con,
  * set with ecore_con_url_data_set()).
  *
  * @see ecore_con_url_data_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *            ecore_con_url_data_get(Ecore_Con_Url *url_con);
 /**
@@ -1825,6 +2170,10 @@ EAPI void *            ecore_con_url_data_get(Ecore_Con_Url *url_con);
  * @see ecore_con_url_get()
  * @see ecore_con_url_post()
  * @see ecore_con_url_additional_headers_clear()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_additional_header_add(Ecore_Con_Url *url_con,
                                                            const char *key,
@@ -1840,6 +2189,10 @@ EAPI void              ecore_con_url_additional_header_add(Ecore_Con_Url *url_co
  * @see ecore_con_url_additional_header_add()
  * @see ecore_con_url_get()
  * @see ecore_con_url_post()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_additional_headers_clear(Ecore_Con_Url *url_con);
 /**
@@ -1852,6 +2205,10 @@ EAPI void              ecore_con_url_additional_headers_clear(Ecore_Con_Url *url
  * ready at that time).
  *
  * @return List of response headers. This list must not be modified by the user.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Eina_List * ecore_con_url_response_headers_get(Ecore_Con_Url *url_con);
 /**
@@ -1867,6 +2224,10 @@ EAPI const Eina_List * ecore_con_url_response_headers_get(Ecore_Con_Url *url_con
  *
  * This call can be used to easily setup a file where the downloaded data will
  * be saved.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_fd_set(Ecore_Con_Url *url_con, int fd);
 /**
@@ -1881,6 +2242,10 @@ EAPI void              ecore_con_url_fd_set(Ecore_Con_Url *url_con, int fd);
  *
  * @see ecore_con_url_get()
  * @see ecore_con_url_post()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               ecore_con_url_received_bytes_get(Ecore_Con_Url *url_con);
 /**
@@ -1896,6 +2261,10 @@ EAPI int               ecore_con_url_received_bytes_get(Ecore_Con_Url *url_con);
  *
  * @attention Require libcurl >= 7.19.1 to work, otherwise will always return
  * @c 0.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_url_httpauth_set(Ecore_Con_Url *url_con,
                                                   const char *username,
@@ -1920,6 +2289,10 @@ EAPI Eina_Bool         ecore_con_url_httpauth_set(Ecore_Con_Url *url_con,
  * @see ecore_con_url_response_headers_get()
  * @see ecore_con_url_time()
  * @see ecore_con_url_post()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_url_get(Ecore_Con_Url *url_con);
 /**
@@ -1940,6 +2313,10 @@ EAPI Eina_Bool         ecore_con_url_get(Ecore_Con_Url *url_con);
  * @see ecore_con_url_time()
  * @see ecore_con_url_post()
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_url_head(Ecore_Con_Url *url_con);
 /**
@@ -1969,6 +2346,10 @@ EAPI Eina_Bool         ecore_con_url_head(Ecore_Con_Url *url_con);
  * @see ecore_con_url_response_headers_get()
  * @see ecore_con_url_time()
  * @see ecore_con_url_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_url_post(Ecore_Con_Url *url_con,
                                           const void *data, long length,
@@ -1987,6 +2368,10 @@ EAPI Eina_Bool         ecore_con_url_post(Ecore_Con_Url *url_con,
  *
  * @sa ecore_con_url_get()
  * @sa ecore_con_url_post()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_time(Ecore_Con_Url *url_con,
                                           Ecore_Con_Url_Time time_condition,
@@ -2004,6 +2389,10 @@ EAPI void              ecore_con_url_time(Ecore_Con_Url *url_con,
  *
  * Upload @p filename to an ftp server set in @p url_con using @p user
  * and @p pass to directory @p upload_dir
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_url_ftp_upload(Ecore_Con_Url *url_con,
                                                 const char *filename,
@@ -2019,6 +2408,10 @@ EAPI Eina_Bool         ecore_con_url_ftp_upload(Ecore_Con_Url *url_con,
  * If @p verbose is @c EINA_TRUE, libcurl will output a lot of verbose
  * information about its operations, which is useful for
  * debugging. The verbose information will be sent to stderr.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_verbose_set(Ecore_Con_Url *url_con,
                                                  Eina_Bool verbose);
@@ -2026,6 +2419,10 @@ EAPI void              ecore_con_url_verbose_set(Ecore_Con_Url *url_con,
  * @brief Enable or disable EPSV extension
  * @param url_con  The Ecore_Con_Url instance which will be acted upon.
  * @param use_epsv Boolean to enable/disable the EPSV extension.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_ftp_use_epsv_set(Ecore_Con_Url *url_con,
                                                       Eina_Bool use_epsv);
@@ -2041,6 +2438,10 @@ EAPI void              ecore_con_url_ftp_use_epsv_set(Ecore_Con_Url *url_con,
  *
  * @note Even though this function is called @c ecore_con_url_cookies_init(),
  * there is no symmetrical shutdown operation.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_cookies_init(Ecore_Con_Url *url_con);
 /**
@@ -2062,6 +2463,10 @@ EAPI void              ecore_con_url_cookies_init(Ecore_Con_Url *url_con);
  * will not be loaded.
  *
  * @see ecore_con_url_cookies_file_add()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_cookies_ignore_old_session_set(Ecore_Con_Url *url_con,
                                                                     Eina_Bool ignore);
@@ -2086,6 +2491,10 @@ EAPI void              ecore_con_url_cookies_ignore_old_session_set(Ecore_Con_Ur
  *
  * @see ecore_con_url_cookies_session_clear()
  * @see ecore_con_url_cookies_ignore_old_session_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_cookies_clear(Ecore_Con_Url *url_con);
 /**
@@ -2115,6 +2524,10 @@ EAPI void              ecore_con_url_cookies_clear(Ecore_Con_Url *url_con);
  *
  * @see ecore_con_url_cookies_clear()
  * @see ecore_con_url_cookies_ignore_old_session_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_cookies_session_clear(Ecore_Con_Url *url_con);
 /**
@@ -2142,6 +2555,10 @@ EAPI void              ecore_con_url_cookies_session_clear(Ecore_Con_Url *url_co
  *
  * @see ecore_con_url_cookies_ignore_old_session_set()
  * @see ecore_con_url_cookies_jar_file_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_cookies_file_add(Ecore_Con_Url *url_con,
                                                       const char * const file_name);
@@ -2165,6 +2582,10 @@ EAPI void              ecore_con_url_cookies_file_add(Ecore_Con_Url *url_con,
  *       initialized yet.
  *
  * @see ecore_con_url_cookies_jar_write()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         ecore_con_url_cookies_jar_file_set(Ecore_Con_Url *url_con,
                                                           const char * const cookiejar_file);
@@ -2180,6 +2601,10 @@ EAPI Eina_Bool         ecore_con_url_cookies_jar_file_set(Ecore_Con_Url *url_con
  *       initialized yet.
  *
  * @see ecore_con_url_cookies_jar_file_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              ecore_con_url_cookies_jar_write(Ecore_Con_Url *url_con);
 
@@ -2204,6 +2629,10 @@ EAPI int               ecore_con_url_ssl_ca_set(Ecore_Con_Url *url_con,
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE on error.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool ecore_con_url_proxy_set(Ecore_Con_Url *url_con, const char *proxy);
 
@@ -2220,6 +2649,10 @@ EAPI Eina_Bool ecore_con_url_proxy_set(Ecore_Con_Url *url_con, const char *proxy
  * @see ecore_con_url_proxy_set()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool ecore_con_url_proxy_username_set(Ecore_Con_Url *url_con, const char *username);
 
@@ -2236,6 +2669,10 @@ EAPI Eina_Bool ecore_con_url_proxy_username_set(Ecore_Con_Url *url_con, const ch
  * @see ecore_con_url_proxy_set()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool ecore_con_url_proxy_password_set(Ecore_Con_Url *url_con, const char *password);
 
@@ -2253,6 +2690,10 @@ EAPI Eina_Bool ecore_con_url_proxy_password_set(Ecore_Con_Url *url_con, const ch
  * @see ecore_con_url_cookies_jar_file_set()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_url_timeout_set(Ecore_Con_Url *url_con, double timeout);
 
@@ -2264,6 +2705,10 @@ EAPI void ecore_con_url_timeout_set(Ecore_Con_Url *url_con, double timeout);
  * @return A valid HTTP STATUS code, or 0 on failure
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int ecore_con_url_status_code_get(Ecore_Con_Url *url_con);
 /**

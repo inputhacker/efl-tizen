@@ -108,6 +108,10 @@
  * buffer or substring.
  *
  * @see eina_ustringshare_add()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Eina_Unicode *eina_ustringshare_add_length(const Eina_Unicode *str, unsigned int slen) EINA_WARN_UNUSED_RESULT;
 
@@ -129,6 +133,10 @@ EAPI const Eina_Unicode *eina_ustringshare_add_length(const Eina_Unicode *str, u
  * terminated, use eina_stringshare_add_length() instead.
  *
  * @see eina_ustringshare_add_length()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Eina_Unicode *eina_ustringshare_add(const Eina_Unicode *str) EINA_WARN_UNUSED_RESULT;
 
@@ -145,6 +153,10 @@ EAPI const Eina_Unicode *eina_ustringshare_add(const Eina_Unicode *str) EINA_WAR
  * eina_ustringshare_add().
  *
  * There is no unref since this is the work of eina_ustringshare_del().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Eina_Unicode *eina_ustringshare_ref(const Eina_Unicode *str);
 
@@ -160,6 +172,10 @@ EAPI const Eina_Unicode *eina_ustringshare_ref(const Eina_Unicode *str);
  *
  * @note If the given pointer is not shared, bad things will happen, likely a
  * segmentation fault.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                eina_ustringshare_del(const Eina_Unicode *str);
 
@@ -174,6 +190,10 @@ EAPI void                eina_ustringshare_del(const Eina_Unicode *str);
  *
  * @note If the given pointer is not shared, bad things will happen, likely a
  * segmentation fault. If in doubt, try strlen().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                 eina_ustringshare_strlen(const Eina_Unicode *str) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
@@ -182,6 +202,10 @@ EAPI int                 eina_ustringshare_strlen(const Eina_Unicode *str) EINA_
  *
  * This function dumps all strings in the share_common to stdout with a
  * DDD: prefix per line and a memory usage summary.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                eina_ustringshare_dump(void);
 

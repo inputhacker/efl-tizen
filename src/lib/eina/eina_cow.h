@@ -60,6 +60,10 @@ typedef void Eina_Cow_Data;
  * @param default_value The default value returned by this pool.
  * @param gc Is it possible to run garbage collection on this pool.
  * @return a valid new Eina_Cow or @c NULL on error.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Cow *eina_cow_add(const char *name, unsigned int struct_size, unsigned int step, const void *default_value, Eina_Bool gc) EINA_WARN_UNUSED_RESULT;
 
@@ -67,6 +71,10 @@ EAPI Eina_Cow *eina_cow_add(const char *name, unsigned int struct_size, unsigned
  * @brief Destroy an Eina_Cow pool and all the allocated memory
  *
  * @param cow The pool to destroy
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_cow_del(Eina_Cow *cow);
 
@@ -74,6 +82,10 @@ EAPI void eina_cow_del(Eina_Cow *cow);
  * @brief Return an initialized pointer from the pool.
  * @param cow The pool to take things from.
  * @return A pointer to the new pool instance
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Eina_Cow_Data *eina_cow_alloc(Eina_Cow *cow) EINA_WARN_UNUSED_RESULT;
 
@@ -84,6 +96,10 @@ EAPI const Eina_Cow_Data *eina_cow_alloc(Eina_Cow *cow) EINA_WARN_UNUSED_RESULT;
  *
  * @note To simplify the caller code *data will point to the default
  * read only state after the call to this function.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_cow_free(Eina_Cow *cow, const Eina_Cow_Data **data);
 
@@ -93,6 +109,10 @@ EAPI void eina_cow_free(Eina_Cow *cow, const Eina_Cow_Data **data);
  * @param src The pointer you want to write to.
  *
  * NOTE: this function is not thread safe, be careful.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eina_cow_write(Eina_Cow *cow,
 			  const Eina_Cow_Data * const *src) EINA_WARN_UNUSED_RESULT;
@@ -104,6 +124,10 @@ EAPI void *eina_cow_write(Eina_Cow *cow,
  * @param needed_gc Does this pool need to be garbage collected?
  *
  * NOTE: this function is not thread safe, be careful.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_cow_done(Eina_Cow *cow,
 			const Eina_Cow_Data * const *dst,
@@ -114,6 +138,10 @@ EAPI void eina_cow_done(Eina_Cow *cow,
  * @param cow The pool the pointers come from.
  * @param dst The destination to update.
  * @param src The source of information to copy.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_cow_memcpy(Eina_Cow *cow,
 			  const Eina_Cow_Data * const *dst,
@@ -127,6 +155,10 @@ EAPI void eina_cow_memcpy(Eina_Cow *cow,
  * There is no guaranty in the time it will require, but should remain low.
  * It does run a hash function on all possible common structures trying to
  * find the one that match and merge them into one pointer.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_cow_gc(Eina_Cow *cow);
 

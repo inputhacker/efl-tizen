@@ -33,6 +33,10 @@
  * it instead of the naive getenv("HOME").
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_environment_home_get(void);
 
@@ -44,6 +48,10 @@ EAPI const char *eina_environment_home_get(void);
  * it instead of the naive getenv("TMPDIR").
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_environment_tmp_get(void);
 

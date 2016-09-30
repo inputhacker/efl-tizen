@@ -369,6 +369,10 @@ typedef void (*Eina_Benchmark_Specimens)(int request);
  * 
  * When the new module is not needed anymore, use
  * eina_benchmark_free() to free the allocated memory.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Benchmark *eina_benchmark_new(const char *name,
                                         const char *run);
@@ -381,6 +385,10 @@ EAPI Eina_Benchmark *eina_benchmark_new(const char *name,
  * This function removes all the benchmark tests that have been
  * registered and frees @p bench. If @p bench is @c NULL, this
  * function returns immediately.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void            eina_benchmark_free(Eina_Benchmark *bench);
 
@@ -404,6 +412,10 @@ EAPI void            eina_benchmark_free(Eina_Benchmark *bench);
  *
  * If @p bench is @c NULL, this function returns immediately.
  * This function returns #EINA_FALSE on failure, #EINA_TRUE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool       eina_benchmark_register(Eina_Benchmark          *bench,
                                              const char              *name,
@@ -436,6 +448,10 @@ EAPI Eina_Bool       eina_benchmark_register(Eina_Benchmark          *bench,
  * If @p bench is @c NULL, this functions returns @c NULL
  * immediately. Otherwise, it returns the list of the names of each
  * test.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Array *eina_benchmark_run(Eina_Benchmark *bench);
 

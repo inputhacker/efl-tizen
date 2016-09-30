@@ -27,10 +27,20 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
    methods {
       @property supported_font_styles {
          set {
-            [[This function is not implemented yet, do not use.]]
+            [[This function is not implemented yet, do not use.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          get {
-            [[This function is not implemented yet, do not use.]]
+            [[This function is not implemented yet, do not use.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             styles: Evas.Textgrid.Font_Style; [[EVAS_TEXTGRID_FONT_STYLE_NORMAL]]
@@ -45,7 +55,12 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
               $w or $h are less or equal than 0, this
               functiond does nothing.
 
-              @since 1.7]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.7
+            ]]
          }
          get {
             [[Get the size of the textgrid object.
@@ -55,7 +70,12 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
               the textgrid object $obj. $w or $h can be
               $null. On error, their value is 0.
 
-              @since 1.7]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.7
+            ]]
          }
          values {
             w: int; [[The number of columns (width in cells) of the grid.]]
@@ -75,7 +95,12 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
 
               See also @Efl.Text_Properties.font.set and @.supported_font_styles.set
 
-              @since 1.7]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.7
+            ]]
          }
          values {
             width: int; [[A pointer to the location to store the width in pixels of a cell.]]
@@ -91,7 +116,12 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
 
            See also @.cellrow_set,  @.cellrow_get and @.size.set.
 
-         @since 1.7]]
+         \@if MOBILE \@since_tizen 3.0
+         \@elseif WEARABLE \@since_tizen 3.0
+         \@endif
+
+         @since 1.7
+       ]]
          /* FIXME-doc
           * An application should modify cells like this
           * as an example:
@@ -122,7 +152,12 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
 
            See also @.cellrow_get, @.size.set and @.update_add.
 
-           @since 1.7]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.7
+         ]]
 
          params {
             @in y: int; [[The row index of the grid.]]
@@ -138,7 +173,12 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
 
            See also @.cellrow_set, @.size.set and @.update_add.
 
-           @since 1.7]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.7
+         ]]
          return: Evas.Textgrid.Cell*; [[A pointer to the first cell of the given row.]]
          params {
             @in y: int; [[The row index of the grid.]]
@@ -160,7 +200,12 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
 
            See also @.palette_get.
 
-           @since 1.7]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.7
+         ]]
 
          params {
             @in pal: Evas.Textgrid.Palette; [[The type of the palette to set the color.]]
@@ -184,7 +229,12 @@ class Evas.Textgrid (Evas.Object, Efl.Text_Properties)
 
            See also @.palette_set.
 
-           @since 1.7]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.7
+         ]]
          params {
             @in pal: Evas.Textgrid.Palette; [[The type of the palette to set the color.]]
             @in idx: int; [[The index of the palette to which the color is stored.]]

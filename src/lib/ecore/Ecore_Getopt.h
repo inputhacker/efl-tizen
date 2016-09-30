@@ -1024,6 +1024,10 @@ struct _Ecore_Getopt
  * @param info The structure containing information about command line options.
  *
  * @see ecore_getopt_help_category()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void       ecore_getopt_help(FILE *fp, const Ecore_Getopt *info);
 
@@ -1037,6 +1041,10 @@ EAPI void       ecore_getopt_help(FILE *fp, const Ecore_Getopt *info);
  * @return @c EINA_TRUE when the category exists, @c EINA_FALSE otherwise.
  *
  * @see ecore_getopt_help()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool  ecore_getopt_help_category(FILE *fp, const Ecore_Getopt *info, const char *category);
 
@@ -1045,6 +1053,10 @@ EAPI Eina_Bool  ecore_getopt_help_category(FILE *fp, const Ecore_Getopt *info, c
  *
  * @return @c EINA_TRUE if there are duplicates, @c EINA_FALSE otherwise.
  * @param parser The parser to be checked.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool  ecore_getopt_parser_has_duplicates(const Ecore_Getopt *parser);
 
@@ -1109,6 +1121,10 @@ EAPI Eina_Bool  ecore_getopt_parser_has_duplicates(const Ecore_Getopt *parser);
  * @return index of first non-option parameter or -1 on error.
  *
  * @see ecore_getopt_parse_positional()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int        ecore_getopt_parse(const Ecore_Getopt *parser, Ecore_Getopt_Value *values, int argc, char **argv);
 
@@ -1162,6 +1178,10 @@ EAPI int        ecore_getopt_parse(const Ecore_Getopt *parser, Ecore_Getopt_Valu
  * @return index of first non-option parameter or -1 on error. If the
  *         last positional argument is of action @c
  *         ECORE_GETOPT_ACTION_APPEND then it will be the same as @a argc.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int        ecore_getopt_parse_positional(const Ecore_Getopt *parser, Ecore_Getopt_Value *values, int argc, char **argv, int start);
 
@@ -1171,6 +1191,10 @@ EAPI int        ecore_getopt_parse_positional(const Ecore_Getopt *parser, Ecore_
  *
  * @param list pointer to list to be freed.
  * @return always @c NULL, so you can easily make your list head @c NULL.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_List *ecore_getopt_list_free(Eina_List *list);
 
@@ -1188,6 +1212,10 @@ EAPI Eina_List *ecore_getopt_list_free(Eina_List *list);
  * This is a helper functions to be used with ECORE_GETOPT_CALLBACK_*().
  * 
  * @c callback_data value is ignored, you can safely use @c NULL.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool  ecore_getopt_callback_geometry_parse(const Ecore_Getopt *parser, const Ecore_Getopt_Desc *desc, const char *str, void *data, Ecore_Getopt_Value *storage);
 
@@ -1204,6 +1232,10 @@ EAPI Eina_Bool  ecore_getopt_callback_geometry_parse(const Ecore_Getopt *parser,
  * @return @c EINA_TRUE on success, @c EINA_FALSE on incorrect size value.
  *
  * @c callback_data value is ignored, you can safely use @c NULL.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool  ecore_getopt_callback_size_parse(const Ecore_Getopt *parser, const Ecore_Getopt_Desc *desc, const char *str, void *data, Ecore_Getopt_Value *storage);
 

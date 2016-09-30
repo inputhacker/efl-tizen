@@ -15,12 +15,20 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               The units used for $w and $h depend on the engine used by the
               evas.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.1
             ]]
          }
          get {
             [[Get the render engine's output framespace coordinates in
               canvas units.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
 
               @since 1.1
             ]]
@@ -43,6 +51,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               Note: The coordinate values do not have to map 1-to-1 with
               the output target. However, it is generally advised that it
               is done for ease of use.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -55,6 +67,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               output location and size values written to them in canvas
               units. Any of $x, $y, $w or $h that are $null will not be
               written to. If $e is invalid, the results are undefined.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -78,12 +94,20 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
             [[Set the image cache.
 
               This function sets the image cache of canvas in bytes.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
          }
          get {
             [[Get the image cache.
 
               This function returns the image cache size of canvas in bytes.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
          }
          values {
@@ -98,6 +122,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               out with  and initial value (no flags). This lets you set
               the default flags that an event begins with to be $flags.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.2
             ]]
          }
@@ -106,6 +134,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
               This gets the default event flags events are produced with
               when fed in.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
 
               @since 1.2
             ]]
@@ -124,11 +156,19 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
               Note: it is mandatory that one calls \@ref evas_init before
               setting the output method.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
             [[Retrieves the number of the output engine used for the given
               evas.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -137,10 +177,20 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
       }
       @property font_cache {
          set {
-            [[Changes the size of font cache of the given evas.]]
+            [[Changes the size of font cache of the given evas.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          get {
-            [[Get the size of font cache of the given evas in bytes.]]
+            [[Get the size of font cache of the given evas in bytes.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             size: int; [[The size in bytes.]]
@@ -157,6 +207,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
               The units used for $w and $h depend on the engine used by the
               evas.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -168,6 +222,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
               If either $w or $h is $null, then it is ignored.  If $e is
               invalid, the returned results are undefined.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -177,10 +235,20 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
       }
       @property data_attach {
          set {
-            [[Attaches a specific pointer to the evas for fetching later.]]
+            [[Attaches a specific pointer to the evas for fetching later.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
-            [[Returns the pointer attached by @.data_attach.set.]]
+            [[Returns the pointer attached by @.data_attach.set.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             data: void *; [[The attached pointer.]]
@@ -191,10 +259,19 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
             [[Changes the font hinting for the given evas.
 
               #EVAS_FONT_HINTING_AUTO, #EVAS_FONT_HINTING_BYTECODE.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
          }
          get {
-            [[Retrieves the font hinting used by the given evas.]]
+            [[Retrieves the font hinting used by the given evas.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             hinting: Evas.Font.Hinting_Flags; [[
@@ -217,6 +294,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               engines allow their settings to be changed more than once.
 
               Once called, the $info pointer should be considered invalid.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: bool; [[$true if no error occurred, $false otherwise.]]
          }
@@ -228,6 +309,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               are valid until either @.engine_info.set or @.render are called.
 
               This structure does not need to be freed by the caller.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -254,6 +339,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               See also \@ref evas_object_focus_set,
               \@ref evas_object_focus_get, \@ref evas_object_key_grab,
               \@ref evas_object_key_ungrab.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -286,6 +375,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               See also \@ref evas_object_layer_get,
               \@ref evas_object_layer_set, \@ref evas_object_below_get,
               \@ref evas_object_above_get.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
             return: Evas.Object * @warn_unused; [[A pointer to the highest object
                                                   on it (if any) or $null otherwise.]]
@@ -298,6 +391,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
               This is required to check for which locks are set at a given
               time with the \@ref evas_key_lock_is_set function.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: const(Evas.Lock)* @warn_unused; [[
                An Evas_Lock handle to query Evas' keys subsystem with
@@ -314,6 +411,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               the Evas_Coords pointed to by $x and $y to contain these
               coordinates. If $e is not a valid canvas the results of
               this function are undefined.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -335,6 +436,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          get {
             [[Get the number of mouse or multi presses currently active.
 
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
               @since 1.2
             ]]
             return: int;
@@ -355,6 +460,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               generation/run if the calculations maybe cause self-feeding
               effects.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.1
             ]]
             return: int;
@@ -362,12 +471,17 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
       }
       @property focus_state {
          get {
-            [[Get the focus state known by the given evas.]]
+            [[Get the focus state known by the given evas.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
             return: bool;
          }
       }
       @property changed {
-         get {
+         get @internal {
             [[Get the changed marker for the canvas.
 
               @since 1.11
@@ -384,6 +498,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               the integers pointed to by $x and $y to contain these
               coordinates. If $e is not a valid canvas the results of
               this function are undefined.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -418,6 +536,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               A canvas begins with the mouse being assumed outside ($false).
 
               If $e is not a valid canvas, the return value is undefined.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -442,6 +564,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               $maxw and $maxh as there may still be a limit, just a
               much higher one.
 
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
               @since 1.1
             ]]
             return: bool;
@@ -465,6 +591,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
               See also \@ref evas_object_layer_get, \@ref evas_object_layer_set,
               \@ref evas_object_below_get, \@ref evas_object_below_set.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
             return: Evas.Object * @warn_unused; [[
                A pointer to the lowest object on it, if any, or $null
@@ -482,6 +612,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
               See also @.key_modifier_add, @.key_modifier_del,
               @.key_modifier_on, @.key_modifier_off.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: const(Evas.Modifier)* @warn_unused; [[
                An Evas_Modifier handle to query Evas' keys subsystem
@@ -509,6 +643,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               to the last mouse button (button 32).
 
               If $e is not a valid canvas, the return value is undefined.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -537,6 +675,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            given position. It will enter the smart objects.
            It will not append to the list pass events as hidden objects.
            Call eina_list_free on the returned list after usage.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          return: list<Evas.Object *> * @warn_unused;
          params {
@@ -551,6 +693,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessary
            when the mouse wheel is scrolled up or down. It prepares
            information to  be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in direction: int; [[The wheel mouse direction.]]
@@ -568,6 +714,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
               See also @.key_lock_add, @.key_lock_del, @.key_lock_del,
               @.key_lock_off.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in keyname: const(char)* @nonull; [[The name of the lock to enable.]]
@@ -579,6 +729,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessary
            when a key is pressed. It prepares information to be treated
            by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in keyname: const(char)*; [[Name of the key.]]
@@ -601,6 +755,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            See also @.key_modifier_add, \@ref evas_key_modifier_get,
            @.key_modifier_on, @.key_modifier_off,
            \@ref evas_key_modifier_is_set.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: Evas.Modifier_Mask @warn_unused; [[
             The bit mask or 0 if the $keyname key wasn't registered as a
@@ -628,6 +786,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            \@ref ecore_evas_new family of helper functions, Ecore will take
            care of registering on it all standard modifiers: "Shift",
            "Control", "Alt", "Meta", "Hyper", "Super".
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in keyname: const(char)* @nonull; [[
@@ -643,6 +805,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            See also @.key_modifier_add, \@ref evas_key_modifier_get,
            @.key_modifier_on, @.key_modifier_mask_get,
            \@ref evas_key_modifier_is_set.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in keyname: const(char)* @nonull; [[The name of the modifier to disable.]]
@@ -652,6 +818,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          [[Hold event feed.
 
            This function makes the object to stop sending events.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in hold: int; [[The hold.]]
@@ -665,6 +835,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessary
            when the mouse is moved from its last position. It prepares
            information to be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in x: int; [[The horizontal position of the mouse pointer.]]
@@ -679,6 +853,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessary
            when a key is released. It prepares information to be treated
            by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in keyname: const(char)*; [[Name of the key.]]
@@ -695,6 +873,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessar
            when the mouse out event happens. It prepares information to
            be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in timestamp: uint; [[Timestamp of the mouse up event.]]
@@ -729,6 +911,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            Warning: This function will skip objects parented by smart
            objects, acting only on the ones at the "top level", with
            regard to object parenting.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          return: list<Evas.Object *> * @warn_unused; [[
             The list of Evas objects that are over the given position in $e.
@@ -780,7 +966,7 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
             @in data: const(void)*;
          }
       }
-      render_async {
+      render_async @internal {
          [[Render the given Evas canvas asynchronously.
 
            This function only returns $true when a frame will be rendered.
@@ -800,7 +986,7 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          ]]
          return: bool; [[$true if the canvas will render, $false otherwise.]]
       }
-      render2 {
+      render2 @internal {
          [[Render the given Evas canvas using the new rendering infra.
 
            This is experimental and will change over time until noted here.
@@ -814,7 +1000,7 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          ]]
          return: bool; [[$true if the canvas will render, $false otherwise.]]
       }
-      render2_updates {
+      render2_updates @internal {
          [[Render the given Evas canvas using the new rendering infra.
 
            This is experimental and will change over time until noted here.
@@ -829,7 +1015,12 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          ]]
       }
       focus_out {
-         [[Inform to the evas that it lost the focus.]]
+         [[Inform to the evas that it lost the focus.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
       }
       event_input_mouse_move {
          [[Mouse move event feed from input.
@@ -839,6 +1030,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            the input system, relative to the 0,0 of the window, not to the
            canvas 0,0. It will take care of doing any special transformation
            like adding the framespace offset to the mouse event.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
 
            @since 1.8
          ]]
@@ -858,6 +1053,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function updates the canvas internal objects not triggering
            renderization. To force renderization function @.render
            should be used.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       touch_point_list_count {
@@ -866,6 +1065,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            New touched point is added to the list whenever touching the
            evas and point is removed whenever removing touched point from
            the evas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          /* FIXME-doc
          Example:
@@ -904,6 +1107,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
            Warning: Do not use this function unless you know what Evas
            exactly works with "changed" state.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       key_lock_off {
@@ -914,6 +1121,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            after this call.
 
             See also @.key_lock_on.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in keyname: const(char)* @nonull; [[The name of the lock to disable.]]
@@ -927,10 +1138,19 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
            Warning: Do not use this function unless you know what Evas
            exactly works with "changed" state.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       font_cache_flush {
-         [[Force the given evas and associated engine to flush its font cache.]]
+         [[Force the given evas and associated engine to flush its font cache.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
       }
       font_hinting_can_hint @const {
@@ -938,6 +1158,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
            One of #EVAS_FONT_HINTING_NONE, #EVAS_FONT_HINTING_AUTO,
            #EVAS_FONT_HINTING_BYTECODE.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          return: bool @warn_unused; [[$true if it is supported, $false otherwise.]]
          params {
@@ -956,6 +1180,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            Warning: This function will skip objects parented by smart
            objects, acting only on the ones at the "top level", with
            regard to object parenting.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          return: Evas.Object * @warn_unused; [[The Evas object that is over all other objects at the given position.]]
          params {
@@ -979,6 +1207,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            between this call and a matching evas_key_modifier_off().
 
            See also @.key_modifier_off.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in keyname: const(char)* @nonull; [[The name of the modifier to enable.]]
@@ -990,6 +1222,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessary
            when the mouse button is released. It prepares information to
            be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in b: int; [[The button number.]]
@@ -1004,6 +1240,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessary
            when the mouse button is pressed. It prepares information to
            be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in b: int; [[The button number.]]
@@ -1019,6 +1259,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
            This function call evas_event_feed_* functions, so it can
            cause havoc if not used wisely. Please use it responsibly.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in event_copy: void *; [[The event to refeed.]]
@@ -1031,6 +1275,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            The list depends on Evas compile time configuration, such as
            fontconfig support, and the paths provided at runtime as
            explained in \@ref Evas_Font_Path_Group.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          return: list<const(char) *> * @warn_unused; [[
             A newly allocated list of strings. Do not change the
@@ -1057,6 +1305,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            canvas-wide, then which one of the many objects with that
            name is returned is undefined, so only use this if you can
            ensure the object name is unique.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          return: Evas.Object * @warn_unused; [[
             If successful, the Evas object with the given name. Otherwise,
@@ -1069,6 +1321,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
       font_path_append {
          [[Appends a font path to the list of font paths used by the
            given evas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in path: const(char)* @nonull; [[The new font path.]]
@@ -1080,6 +1336,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            The point which comes from Mouse Event has $id 0 and The point
            which comes from Multi Event has $id that is same as Multi
            Event's device id.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          /* FIXME-doc
          Example:
@@ -1100,12 +1360,21 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       font_path_clear {
-         [[Removes all font paths loaded into memory for the given evas.]]
+         [[Removes all font paths loaded into memory for the given evas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
       }
       smart_objects_calculate {
          [[Call user-provided $calculate smart functions and unset the
            flag signalling that the object needs to get recalculated to
            all smart objects in the canvas.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       touch_point_list_nth_xy_get {
@@ -1113,6 +1382,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
            Touch point's coordinates is updated whenever moving that point
            on the canvas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          /* FIXME-doc
          Example:
@@ -1136,6 +1409,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
       key_lock_del {
          [[Removes the $keyname key from the current list of lock keys on
            canvas $e.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in keyname: const(char)* @nonull; [[The name of the key to remove from the locks list.]]
@@ -1149,6 +1426,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
            Note: All newly created Evas rectangles get the default color
            values of 255 255 255 255 (opaque white).
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in x: int; [[The rectangle's left position.]]
@@ -1160,13 +1441,22 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
       sync {
       }
       font_path_list @const {
-         [[Retrieves the list of font paths used by the given evas.]]
+         [[Retrieves the list of font paths used by the given evas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          return: const(list<const(char) *>)* @warn_unused; [[The list of font paths used.]]
       }
       image_cache_reload {
          [[Reload the image cache.
 
            This function reloads the image cache of canvas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
 
       }
@@ -1179,6 +1469,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            output size, viewport size and location, returning it as the
            function  return value. If $e is invalid, the results are
            undefined.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          /* FIXME-doc
          Example:
@@ -1225,6 +1519,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            Note: Evas is a stateful canvas. If no operations changing its
            state took place since the last rendering action, you won't see
            no changes and this call will be a no-op.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          /* FIXME-doc
          Example code follows.
@@ -1245,6 +1543,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          [[Flush the image cache of the canvas.
 
            This function flushes image cache of canvas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
       }
       coord_screen_y_to_world @const {
@@ -1255,6 +1557,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            and converts it into canvas units, accounting for output size,
            viewport size and location, returning it as the function return
            value. If $e is invalid, the results are undefined.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          /* FIXME-doc
          Example:
@@ -1276,6 +1582,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            on canvas $e.
 
            See also @.key_modifier_add.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in keyname: const(char)* @nonull; [[The name of the key to remove from the modifiers list.]]
@@ -1288,6 +1598,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            EVAS_TOUCH_POINT_STILL when the point is not moved after pressed,
            EVAS_TOUCH_POINT_MOVE when moved at least once after pressed and
            EVAS_TOUCH_POINT_UP when released.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          /* FIXME-doc
          Example:
@@ -1311,7 +1625,12 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       focus_in {
-         [[Inform to the evas that it got the focus.]]
+         [[Inform to the evas that it got the focus.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
       }
       obscured_rectangle_add {
          [[Add an "obscured region" to an Evas canvas.
@@ -1346,6 +1665,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            changed. If you want to re-render it afterwards expecting new
            contents, you have to add "damage" regions yourself (see
            \@ref evas_damage_rectangle_add).
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          /* FIXME-doc
           Example code follows.
@@ -1376,6 +1699,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            immediately prior to this to perhaps discard a little more,
            though this function should implicitly delete most of what
            @.render_idle_flush might discard too.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       render_copy {
@@ -1402,6 +1729,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessary
            when the mouse in event happens. It prepares information to be
            treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in timestamp: uint; [[The timestamp of the mouse up event.]]
@@ -1421,6 +1752,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            Warning: This function will skip objects parented by smart
            objects, acting only on the ones at the "top level", with
            regard to object parenting.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          return: Evas.Object * @warn_unused; [[
             The Evas object that is over all other objects at the given
@@ -1448,7 +1783,12 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       render {
-         [[Force renderization of the given canvas.]]
+         [[Force renderization of the given canvas.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
       }
       event_feed_multi_up {
@@ -1471,6 +1811,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
       font_path_prepend {
          [[Prepends a font path to the list of font paths used by the
            given evas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in path: const(char)* @nonull; [[The new font path.]]
@@ -1491,6 +1835,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            changed. If you want to re-render it afterwards expecting new
            contents, you have to add "damage" regions yourself (see
            @.damage_rectangle_add).
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       event_feed_mouse_cancel {
@@ -1498,6 +1846,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
            This function will call @.event_feed_mouse_up when a
            mouse cancel event happens.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in timestamp: uint; [[The timestamp of the mouse up event.]]
@@ -1513,6 +1865,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            output size, viewport size and location, returning it as the
            function return value. If $e is invalid, the results are
            undefined.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          /* FIXME-doc
          Example:
@@ -1550,6 +1906,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            ecore_evas_new() family of helper functions, Ecore will take
            care of registering on it all standard lock keys: "Caps_Lock",
            "Num_Lock", "Scroll_Lock".
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in keyname: const(char)* @nonull; [[The name of the key to add to the locks list.]]
@@ -1563,6 +1923,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            objects. Other things it may also discard are: shared memory
            segments, temporary scratch buffers, cached data to avoid
            re-compute of that data etc.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       coord_world_y_to_screen @const {
@@ -1574,6 +1938,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            output size, viewport size and location, returning it as the
            function return value. If $e is invalid, the results are
            undefined.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          /* FIXME-doc
          Example:
@@ -1597,6 +1965,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            when a key is pressed. It prepares information to be treated
            by the callback function.
 
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
            @since 1.10
          ]]
          params {
@@ -1616,6 +1988,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            when a key is released. It prepares information to be treated
            by the callback function.
 
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
            @since 1.10
          ]]
          params {
@@ -1634,6 +2010,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
            This function will set some evas properties that is necessary
            when an e.g. stylus axis is updated. It prepares information
            to be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
 
            @since 1.13
          ]]

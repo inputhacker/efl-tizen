@@ -272,6 +272,10 @@ struct _Eio_Progress
  * @see ecore_thread_feedback_run()
  * @see eio_file_direct_ls()
  * @see eio_file_stat_ls()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_ls(const char *dir,
                            Eio_Filter_Cb filter_cb,
@@ -307,6 +311,10 @@ EAPI Eio_File *eio_file_ls(const char *dir,
  * @see eio_file_stat_ls()
  * @see eina_file_direct_ls()
  * @see ecore_thread_feedback_run()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_direct_ls(const char *dir,
                                   Eio_Filter_Direct_Cb filter_cb,
@@ -338,6 +346,10 @@ EAPI Eio_File *eio_file_direct_ls(const char *dir,
  * @see eio_file_stat_ls()
  * @see eina_file_stat_ls()
  * @see ecore_thread_feedback_run()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_stat_ls(const char *dir,
                                 Eio_Filter_Direct_Cb filter_cb,
@@ -367,6 +379,10 @@ EAPI Eio_File *eio_file_stat_ls(const char *dir,
  * @see eio_dir_direct_ls()
  * @see eina_file_stat_ls()
  * @see ecore_thread_feedback_run()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_dir_stat_ls(const char *dir,
                                Eio_Filter_Direct_Cb filter_cb,
@@ -395,6 +411,10 @@ EAPI Eio_File *eio_dir_stat_ls(const char *dir,
  * @see eio_dir_stat_ls()
  * @see eina_file_direct_ls()
  * @see ecore_thread_feedback_run()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_dir_direct_ls(const char *dir,
                                  Eio_Filter_Dir_Cb filter_cb,
@@ -412,6 +432,10 @@ EAPI Eio_File *eio_dir_direct_ls(const char *dir,
  * @return A reference to the I/O operation.
  *
  * eio_file_direct_stat calls stat in another thread. This prevents any blocking in your apps.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_direct_stat(const char *path,
                                     Eio_Stat_Cb done_cb,
@@ -447,6 +471,10 @@ EAPI Eio_File *eio_file_direct_stat(const char *path,
  *
  * Set a new permission of a path changing it to the mode passed as argument.
  * It's equivalent to the chmod command.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_chmod(const char *path,
                               mode_t mode,
@@ -466,6 +494,10 @@ EAPI Eio_File *eio_file_chmod(const char *path,
  *
  * This function will change the owner of a path, setting it to the user and
  * group passed as argument. It's equivalent to the chown shell command.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_chown(const char *path,
                               const char *user,
@@ -483,6 +515,10 @@ EAPI Eio_File *eio_file_chown(const char *path,
  * @return A reference to the I/O operation.
  *
  * This function will erase a file.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_unlink(const char *path,
                                Eio_Done_Cb done_cb,
@@ -499,6 +535,10 @@ EAPI Eio_File *eio_file_unlink(const char *path,
  * @return A reference to the I/O operation.
  *
  * Creates a new directory using the mode provided.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_mkdir(const char *path,
                               mode_t mode,
@@ -521,6 +561,10 @@ EAPI Eio_File *eio_file_mkdir(const char *path,
  * This function will copy a file from source to dest. It will try to use splice
  * if possible, if not it will fallback to mmap/write. It will try to preserve
  * access rights, but not user/group identification.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_move(const char *source,
                              const char *dest,
@@ -543,6 +587,10 @@ EAPI Eio_File *eio_file_move(const char *source,
  * This function will copy a file from source to dest. It will try to use splice
  * if possible, if not it will fallback to mmap/write. It will try to preserve
  * access rights, but not user/group identification.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_copy(const char *source,
                              const char *dest,
@@ -573,6 +621,10 @@ EAPI Eio_File *eio_file_copy(const char *source,
  * the main_cb or EINA_FALSE to ignore it.
  *
  * @note if a rename occurs, the filter callback will not be called.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_dir_move(const char *source,
                             const char *dest,
@@ -601,6 +653,10 @@ EAPI Eio_File *eio_dir_move(const char *source,
  * Every file will be passed to the filter_cb, so it's your job to decide if you
  * want to pass the file to the main_cb or not. Return EINA_TRUE to pass it to
  * the main_cb or EINA_FALSE to ignore it.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_dir_copy(const char *source,
                             const char *dest,
@@ -626,6 +682,10 @@ EAPI Eio_File *eio_dir_copy(const char *source,
  * Every file will be passed to the filter_cb, so it's your job to decide if you
  * want to pass the file to the main_cb or not. Return EINA_TRUE to pass it to
  * the main_cb or EINA_FALSE to ignore it.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_dir_unlink(const char *path,
                               Eio_Filter_Direct_Cb filter_cb,
@@ -657,6 +717,10 @@ EAPI Eio_File *eio_dir_unlink(const char *path,
  * @param error_cb Callback called in the main loop when something goes wrong during the listing of the eXtended attribute.
  * @param data Unmodified user data passed to callbacks
  * @return A reference to the I/O operation.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr(const char *path,
 			      Eio_Filter_Cb filter_cb,
@@ -678,6 +742,10 @@ EAPI Eio_File *eio_file_xattr(const char *path,
  *
  * eio_file_xattr_int_set calls eina_xattr_int_set from another thread. This prevents blocking in your apps. If
  * the writing succeeded, the done_cb will be called even if a cancel was requested, but came too late.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr_int_set(const char *path,
 				      const char *attribute,
@@ -700,6 +768,10 @@ EAPI Eio_File *eio_file_xattr_int_set(const char *path,
  *
  * eio_file_xattr_double_set calls eina_xattr_double_set from another thread. This prevents blocking in your apps. If
  * the writing succeeded, the done_cb will be called even if a cancel was requested, but came too late.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr_double_set(const char *path,
 					 const char *attribute,
@@ -721,6 +793,10 @@ EAPI Eio_File *eio_file_xattr_double_set(const char *path,
  *
  * eio_file_xattr_string_set calls eina_xattr_string_set from another thread. This prevents blocking in your apps. If
  * the writing succeeded, the done_cb will be called even if a cancel was requested, but came too late.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr_string_set(const char *path,
 					 const char *attribute,
@@ -743,6 +819,10 @@ EAPI Eio_File *eio_file_xattr_string_set(const char *path,
  *
  * eio_file_xattr_set calls setxattr from another thread. This prevents blocking in your apps. If
  * the writing succeeded, the done_cb will be called even if a cancel was requested, but came too late.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr_set(const char *path,
 				  const char *attribute,
@@ -763,6 +843,10 @@ EAPI Eio_File *eio_file_xattr_set(const char *path,
  * @return A reference to the I/O operation.
  *
  * eio_file_xattr_get calls getxattr from another thread. This prevents blocking in your apps.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr_get(const char *path,
 				  const char *attribute,
@@ -779,6 +863,10 @@ EAPI Eio_File *eio_file_xattr_get(const char *path,
  * @return A reference to the I/O operation.
  *
  * eio_file_xattr_int_get calls eina_xattr_int_get from another thread. This prevents blocking in your apps.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr_int_get(const char *path,
 				      const char *attribute,
@@ -795,6 +883,10 @@ EAPI Eio_File *eio_file_xattr_int_get(const char *path,
  * @return A reference to the I/O operation.
  *
  * eio_file_xattr_double_get calls eina_xattr_double_get from another thread. This prevents blocking in your apps.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr_double_get(const char *path,
 					 const char *attribute,
@@ -811,6 +903,10 @@ EAPI Eio_File *eio_file_xattr_double_get(const char *path,
  * @return A reference to the I/O operation.
  *
  * eio_file_xattr_string_get calls eina_xattr_string_get from another thread. This prevents blocking in your apps.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_xattr_string_get(const char *path,
 					 const char *attribute,
@@ -838,12 +934,20 @@ EAPI Eio_File *eio_file_xattr_string_get(const char *path,
 /**
  * @brief Initialize eio and all its required submodule.
  * @return the current number of eio users.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eio_init(void);
 
 /**
  * @brief Shutdown eio and all its submodule if possible.
  * @return the number of pending users of eio.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eio_shutdown(void);
 
@@ -862,6 +966,10 @@ EAPI int eio_shutdown(void);
  * @note You should give at least a reasonable amount of memory or
  * the thread might stall.
  * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eio_memory_burst_limit_set(size_t limit);
 
@@ -871,6 +979,10 @@ EAPI void eio_memory_burst_limit_set(size_t limit);
  *
  * @since 1.10
  * @see eio_memory_burst_limit_set
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI size_t eio_memory_burst_limit_get(void);
 
@@ -881,6 +993,10 @@ EAPI size_t eio_memory_burst_limit_get(void);
  *
  * This is only available and make sense in the thread callback, not in
  * the mainloop.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eio_file_container_get(Eio_File *ls);
 
@@ -891,6 +1007,10 @@ EAPI void *eio_file_container_get(Eio_File *ls);
  *
  * This will cancel any kind of I/O operation and cleanup the mess. This means
  * that it could take time to cancel an I/O.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eio_file_cancel(Eio_File *ls);
 
@@ -900,6 +1020,10 @@ EAPI Eina_Bool eio_file_cancel(Eio_File *ls);
  * @return EINA_TRUE if it was canceled, EINA_FALSE other wise.
  *
  * In case of an error it also return EINA_TRUE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eio_file_check(Eio_File *ls);
 
@@ -915,6 +1039,10 @@ EAPI Eina_Bool eio_file_check(Eio_File *ls);
  *
  * This function can only be safely called from within the filter callback.
  * If you don't need to copy the key around you can use @ref eio_file_associate_direct_add
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eio_file_associate_add(Eio_File *ls,
 				      const char *key,
@@ -931,6 +1059,10 @@ EAPI Eina_Bool eio_file_associate_add(Eio_File *ls,
  * This function can only be safely called from within the filter callback.
  * If you need eio to make a proper copy of the @p key to be safe use
  * @ref eio_file_associate_add instead.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eio_file_associate_direct_add(Eio_File *ls,
 					     const char *key,
@@ -941,6 +1073,10 @@ EAPI Eina_Bool eio_file_associate_direct_add(Eio_File *ls,
  * @param ls The Eio_File ls request currently calling the notify callback.
  * @param key The key pointing to the data to retrieve.
  * @return the data associated with the key or @p NULL if not found.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eio_file_associate_find(Eio_File *ls, const char *key);
 
@@ -1013,6 +1149,9 @@ static inline Eina_Bool eio_file_is_lnk(const Eina_Stat *stat);
  * @param data Unmodified user data passed to callbacks
  * @return Pointer to the file if successful or NULL otherwise.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_open(const char *name, Eina_Bool shared,
                              Eio_Open_Cb open_cb,
@@ -1026,6 +1165,10 @@ EAPI Eio_File *eio_file_open(const char *name, Eina_Bool shared,
  * @param error_cb Callback called in the main loop when the file couldn't be closed.
  * @param data Unmodified user data passed to callbacks
  * @return Pointer to the file if successful or NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_close(Eina_File *f,
                               Eio_Done_Cb done_cb,
@@ -1043,6 +1186,10 @@ EAPI Eio_File *eio_file_close(Eina_File *f,
  * @return Pointer to the file if successful or NULL otherwise.
  *
  * The container of the Eio_File is the Eina_File.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_map_all(Eina_File *f,
                                 Eina_File_Populate rule,
@@ -1064,6 +1211,10 @@ EAPI Eio_File *eio_file_map_all(Eina_File *f,
  * @return Pointer to the file if successful or NULL otherwise.
  *
  * The container of the Eio_File is the Eina_File.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_file_map_new(Eina_File *f,
                                 Eina_File_Populate rule,
@@ -1098,6 +1249,10 @@ EAPI Eio_File *eio_file_map_new(Eina_File *f,
  * @return NULL in case of a failure.
  *
  * This function calls eet_open() from another thread using Ecore_Thread.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_open(const char *filename,
                             Eet_File_Mode mode,
@@ -1115,6 +1270,10 @@ EAPI Eio_File *eio_eet_open(const char *filename,
  * This function will call eet_close() from another thread by
  * using Ecore_Thread. You should assume that the Eet_File is dead after this
  * function is called.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_close(Eet_File *ef,
 			     Eio_Done_Cb done_cb,
@@ -1131,6 +1290,10 @@ EAPI Eio_File *eio_eet_close(Eet_File *ef,
  *
  * This function will call eet_sync() from another thread. As long as the done_cb or
  * error_cb haven't be called, you must keep @p ef open.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_sync(Eet_File *ef,
                             Eio_Done_Cb done_cb,
@@ -1150,6 +1313,10 @@ EAPI Eio_File *eio_eet_sync(Eet_File *ef,
  * @param error_cb Callback called in the main loop when the file can't be written.
  * @param user_data Private data given to each callback.
  * @return NULL in case of a failure.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_data_write_cipher(Eet_File *ef,
 					 Eet_Data_Descriptor *edd,
@@ -1171,6 +1338,10 @@ EAPI Eio_File *eio_eet_data_write_cipher(Eet_File *ef,
  * @param error_cb Callback called in the main loop when the data can't be read.
  * @param data Unmodified user data passed to callbacks
  * @return NULL in case of a failure.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_data_read_cipher(Eet_File *ef,
                                         Eet_Data_Descriptor *edd,
@@ -1196,6 +1367,10 @@ EAPI Eio_File *eio_eet_data_read_cipher(Eet_File *ef,
  * @param error_cb Callback called in the main loop when the file can't be written.
  * @param user_data Private data given to each callback.
  * @return NULL in case of a failure.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_data_image_write_cipher(Eet_File *ef,
                                                const char *name,
@@ -1219,6 +1394,10 @@ EAPI Eio_File *eio_eet_data_image_write_cipher(Eet_File *ef,
  * @param error_cb Callback called in the main loop when the data can't be read.
  * @param data Unmodified user data passed to callbacks
  * @return NULL in case of a failure.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_read_direct(Eet_File *ef,
                                    const char *name,
@@ -1235,6 +1414,10 @@ EAPI Eio_File *eio_eet_read_direct(Eet_File *ef,
  * @param error_cb Callback called in the main loop when the data can't be read.
  * @param data Unmodified user data passed to callbacks
  * @return NULL in case of a failure.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_read_cipher(Eet_File *ef,
                                    const char *name,
@@ -1255,6 +1438,10 @@ EAPI Eio_File *eio_eet_read_cipher(Eet_File *ef,
  * @param error_cb Callback called in the main loop when the file can't be written.
  * @param user_data Private data given to each callback.
  * @return NULL in case of a failure.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_File *eio_eet_write_cipher(Eet_File *ef,
                                     const char *name,
@@ -1321,6 +1508,10 @@ struct _Eio_Monitor_Event
  * This function will add the given path to its internal
  * list of files to monitor. It utilizes the inotify mechanism
  * introduced in kernel 2.6.13 for passive monitoring.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_Monitor *eio_monitor_add(const char *path);
 
@@ -1334,6 +1525,10 @@ EAPI Eio_Monitor *eio_monitor_add(const char *path);
  *
  * This fuction is just like eio_monitor_add(), however the string passed by
  * argument must be created using eina_stringshare_add().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eio_Monitor *eio_monitor_stringshared_add(const char *path);
 
@@ -1342,6 +1537,10 @@ EAPI Eio_Monitor *eio_monitor_stringshared_add(const char *path);
  * @param monitor The Eio_Monitor you want to stop watching.
  *  It can only be an Eio_Monitor returned to you from calling
  *  eio_monitor_add() or eio_monitor_stringshared_add()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eio_monitor_del(Eio_Monitor *monitor);
 
@@ -1350,6 +1549,10 @@ EAPI void eio_monitor_del(Eio_Monitor *monitor);
  *  Eio_Monitor.
  * @param monitor Eio_Monitor to return the path of
  * @return The stringshared path belonging to @p monitor
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eio_monitor_path_get(Eio_Monitor *monitor);
 

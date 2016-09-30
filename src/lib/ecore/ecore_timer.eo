@@ -15,10 +15,19 @@ class Ecore.Timer (Eo.Base)
          set {
             [[Change the interval the timer ticks off. If set during
               a timer call, this will affect the next interval.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get the interval the timer ticks on.]]
+            [[Get the interval the timer ticks on.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             in: double(-1); [[The new interval in seconds]]
@@ -26,7 +35,12 @@ class Ecore.Timer (Eo.Base)
       }
       @property pending {
          get {
-            [[Get the pending time regarding a timer.]]
+            [[Get the pending time regarding a timer.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
             return: double;
          }
       }
@@ -64,12 +78,20 @@ class Ecore.Timer (Eo.Base)
           [[Reset a timer to its full interval. This effectively makes the
             timer start ticking off from zero now.
 
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+
             @since 1.2
           ]]
       }
       delay {
          [[Add some delay for the next occurrence of a timer.
            This doesn't affect the interval of a timer.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in add: double; [[The amount of time to delay the timer by in seconds]]

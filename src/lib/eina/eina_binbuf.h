@@ -44,6 +44,10 @@ typedef struct _Eina_Strbuf Eina_Binbuf;
  * @see eina_binbuf_free()
  * @see eina_binbuf_append()
  * @see eina_binbuf_string_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Binbuf *eina_binbuf_new(void) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -61,6 +65,10 @@ EAPI Eina_Binbuf *eina_binbuf_new(void) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
  *
  * @see eina_binbuf_manage_new()
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Binbuf *eina_binbuf_manage_new_length(unsigned char *str, size_t length) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_DEPRECATED;
 
@@ -86,10 +94,16 @@ EAPI Eina_Binbuf *eina_binbuf_manage_new_length(unsigned char *str, size_t lengt
  * @see eina_binbuf_manage_read_only_new_length()
  *
  * @since 1.14.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Binbuf *eina_binbuf_manage_new(const unsigned char *str, size_t length, Eina_Bool ro) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @internal
+ *
  * @brief Create a new string buffer using the passed string. The passed
  * string is used directly as the buffer, it's somehow the opposite function of
  * @ref eina_binbuf_string_steal . The passed string will not be touched.
@@ -116,6 +130,10 @@ EAPI Eina_Binbuf *eina_binbuf_manage_read_only_new_length(const unsigned char *s
  *
  * This function frees the memory of @p buf. @p buf must have been
  * created by eina_binbuf_new().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_binbuf_free(Eina_Binbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -126,6 +144,10 @@ EAPI void eina_binbuf_free(Eina_Binbuf *buf) EINA_ARG_NONNULL(1);
  *
  * This function reset @p buf: the buffer len is set to 0, and the
  * string is set to '\\0'. No memory is free'd.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_binbuf_reset(Eina_Binbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -147,6 +169,10 @@ EAPI void eina_binbuf_reset(Eina_Binbuf *buf) EINA_ARG_NONNULL(1);
  * @see eina_stringshare_length()
  * @see eina_binbuf_append()
  * @see eina_binbuf_append_n()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_binbuf_append_length(Eina_Binbuf *buf, const unsigned char *str, size_t length) EINA_ARG_NONNULL(1, 2);
 
@@ -166,6 +192,10 @@ EAPI Eina_Bool eina_binbuf_append_length(Eina_Binbuf *buf, const unsigned char *
  * @see eina_binbuf_append_n()
  * @see eina_binbuf_append_length()
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_binbuf_append_buffer(Eina_Binbuf *buf, const Eina_Binbuf *data) EINA_ARG_NONNULL(1, 2);
 
@@ -179,6 +209,10 @@ EAPI Eina_Bool eina_binbuf_append_buffer(Eina_Binbuf *buf, const Eina_Binbuf *da
  *
  * This function inserts @p c to @p buf. If it can not insert it, #EINA_FALSE
  * is returned, otherwise #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_binbuf_append_char(Eina_Binbuf *buf, unsigned char c) EINA_ARG_NONNULL(1);
 
@@ -201,6 +235,10 @@ EAPI Eina_Bool eina_binbuf_append_char(Eina_Binbuf *buf, unsigned char c) EINA_A
  * @see eina_stringshare_length()
  * @see eina_binbuf_insert()
  * @see eina_binbuf_insert_n()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_binbuf_insert_length(Eina_Binbuf *buf, const unsigned char *str, size_t length, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -216,6 +254,10 @@ EAPI Eina_Bool eina_binbuf_insert_length(Eina_Binbuf *buf, const unsigned char *
  * This function inserts @p c to @p buf at position @p pos. If @p buf
  * can't append it, #EINA_FALSE is returned, otherwise #EINA_TRUE is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_binbuf_insert_char(Eina_Binbuf *buf, unsigned char c, size_t pos) EINA_ARG_NONNULL(1);
 
@@ -232,6 +274,10 @@ EAPI Eina_Bool eina_binbuf_insert_char(Eina_Binbuf *buf, unsigned char c, size_t
  * This function removes a slice of @p buf, starting at @p start
  * (inclusive) and ending at @p end (non-inclusive). Both values are
  * in bytes. It returns #EINA_FALSE on failure, #EINA_TRUE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 
 EAPI Eina_Bool eina_binbuf_remove(Eina_Binbuf *buf, size_t start, size_t end) EINA_ARG_NONNULL(1);
@@ -248,6 +294,10 @@ EAPI Eina_Bool eina_binbuf_remove(Eina_Binbuf *buf, size_t start, size_t end) EI
  * make that pointer invalid.
  *
  * @see eina_binbuf_string_steal()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const unsigned char *eina_binbuf_string_get(const Eina_Binbuf *buf) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -263,6 +313,10 @@ EAPI const unsigned char *eina_binbuf_string_get(const Eina_Binbuf *buf) EINA_AR
  * free().
  *
  * @see eina_binbuf_string_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI unsigned char *eina_binbuf_string_steal(Eina_Binbuf *buf) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -273,6 +327,10 @@ EAPI unsigned char *eina_binbuf_string_steal(Eina_Binbuf *buf) EINA_MALLOC EINA_
  *
  * This function frees the string contained in @p buf without freeing
  * @p buf.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_binbuf_string_free(Eina_Binbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -283,6 +341,10 @@ EAPI void eina_binbuf_string_free(Eina_Binbuf *buf) EINA_ARG_NONNULL(1);
  * @return The current length of the string, in bytes.
  *
  * This function returns the length of @p buf.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI size_t    eina_binbuf_length_get(const Eina_Binbuf *buf) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 

@@ -99,6 +99,10 @@
  * @note The main difference between eina_strlcpy and strncpy is that this
  * ensures @p dst is NULL-terminated even if no @c NULL byte is found in the first
  * @p siz bytes of src.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI size_t          eina_strlcpy(char *dst, const char *src, size_t siz) EINA_ARG_NONNULL(1, 2);
 
@@ -116,6 +120,10 @@ EAPI size_t          eina_strlcpy(char *dst, const char *src, size_t siz) EINA_A
  * (unless @p siz <= strlen(dst)). This function returns strlen(src) +
  * MIN(siz, strlen(initial dst)). If the returned value is greater or
  * equal than @p siz, truncation occurred.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI size_t          eina_strlcat(char *dst, const char *src, size_t siz) EINA_ARG_NONNULL(1, 2);
 
@@ -130,6 +138,10 @@ EAPI size_t          eina_strlcat(char *dst, const char *src, size_t siz) EINA_A
  * This function returns #EINA_TRUE if @p str has the prefix
  * @p prefix, #EINA_FALSE otherwise. If the length of @p prefix is
  * greater than @p str, #EINA_FALSE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool       eina_str_has_prefix(const char *str, const char *prefix) EINA_PURE EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
@@ -143,6 +155,10 @@ EAPI Eina_Bool       eina_str_has_prefix(const char *str, const char *prefix) EI
  * This function returns #EINA_TRUE if @p str has the suffix
  * @p suffix, #EINA_FALSE otherwise. If the length of @p suffix is
  * greater than @p str, #EINA_FALSE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool       eina_str_has_suffix(const char *str, const char *suffix) EINA_PURE EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
@@ -155,6 +171,10 @@ EAPI Eina_Bool       eina_str_has_suffix(const char *str, const char *suffix) EI
  *
  * This function does the same as eina_str_has_suffix(), except it's case
  * insensitive.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool       eina_str_has_extension(const char *str, const char *ext) EINA_PURE EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
@@ -181,6 +201,10 @@ EAPI Eina_Bool       eina_str_has_extension(const char *str, const char *ext) EI
  *
  * @note If you need the number of elements in the returned array see
  * eina_str_split_full().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char          **eina_str_split(const char *string, const char *delimiter, int max_tokens) EINA_ARG_NONNULL(1, 2) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -214,6 +238,10 @@ EAPI char          **eina_str_split(const char *string, const char *delimiter, i
  *       will be 6, but the size of the array (including the @c NULL element) will actually be 7.
  *
  * @see eina_str_split()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char          **eina_str_split_full(const char *string, const char *delimiter, int max_tokens, unsigned int *elements) EINA_ARG_NONNULL(1, 2, 4) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -243,6 +271,10 @@ EAPI char          **eina_str_split_full(const char *string, const char *delimit
  *
  * @see eina_str_join()
  * @see eina_str_join_static()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI size_t          eina_str_join_len(char *dst, size_t size, char sep, const char *a, size_t a_len, const char *b, size_t b_len) EINA_ARG_NONNULL(1, 4, 6);
 
@@ -263,6 +295,10 @@ EAPI size_t          eina_str_join_len(char *dst, size_t size, char sep, const c
  *
  * @warning This function is guaranteed to break when '\0' characters are in @p text.
  * DO NOT USE THIS FUNCTION IF YOUR TEXT CONTAINS NON-TERMINATING '\0' CHARACTERS.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char           *eina_str_convert(const char *enc_from, const char *enc_to, const char *text) EINA_WARN_UNUSED_RESULT EINA_MALLOC EINA_ARG_NONNULL(1, 2, 3);
 
@@ -283,6 +319,10 @@ EAPI char           *eina_str_convert(const char *enc_from, const char *enc_to, 
  * the returned value must be freed.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char           *eina_str_convert_len(const char *enc_from, const char *enc_to, const char *text, size_t len, size_t *retlen) EINA_WARN_UNUSED_RESULT EINA_MALLOC EINA_ARG_NONNULL(1, 2, 3);
 
@@ -298,6 +338,10 @@ EAPI char           *eina_str_convert_len(const char *enc_from, const char *enc_
  * function returns a newly allocated escaped string on success, @c NULL on
  * failure. When not used anymore, the
  * returned value must be freed.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char           *eina_str_escape(const char *str) EINA_WARN_UNUSED_RESULT EINA_MALLOC EINA_ARG_NONNULL(1);
 
@@ -310,6 +354,10 @@ EAPI char           *eina_str_escape(const char *str) EINA_WARN_UNUSED_RESULT EI
  * This function modifies the original string, changing all characters
  * in [A-Z] to lowercase. If @p str is @c NULL or is an empty string,
  * this function does nothing.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            eina_str_tolower(char **str);
 
@@ -321,6 +369,10 @@ EAPI void            eina_str_tolower(char **str);
  * This function modifies the original string, changing all characters
  * in [a-z] to uppercase. If @p str is @c NULL or is an empty string,
  * this function does nothing.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            eina_str_toupper(char **str);
 
@@ -353,6 +405,10 @@ static inline size_t eina_strlen_bounded(const char *str, size_t maxlen) EINA_PU
  * @param terminate If true, the returned memory will be nul terminated with '\0'
  * @return the copied memory, must be freed
  * @since 1.13
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI unsigned char *eina_memdup(unsigned char *mem, size_t size, Eina_Bool terminate);
 #include "eina_inline_str.x"

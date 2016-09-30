@@ -252,6 +252,10 @@ struct _Eina_Inarray
  * @see eina_inarray_free()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inarray *eina_inarray_new(unsigned int member_size,
                                     unsigned int step) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
@@ -264,6 +268,10 @@ EAPI Eina_Inarray *eina_inarray_new(unsigned int member_size,
  * @see eina_inarray_flush()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_inarray_free(Eina_Inarray *array) EINA_ARG_NONNULL(1);
 
@@ -285,6 +293,10 @@ EAPI void eina_inarray_free(Eina_Inarray *array) EINA_ARG_NONNULL(1);
  * @see eina_inarray_flush()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_inarray_step_set(Eina_Inarray *array,
                                 unsigned int sizeof_eina_inarray,
@@ -298,6 +310,10 @@ EAPI void eina_inarray_step_set(Eina_Inarray *array,
  * @param[in] array The array object
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_inarray_flush(Eina_Inarray *array) EINA_ARG_NONNULL(1);
 
@@ -315,6 +331,10 @@ EAPI void eina_inarray_flush(Eina_Inarray *array) EINA_ARG_NONNULL(1);
  * @see eina_inarray_insert_at()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_inarray_push(Eina_Inarray *array,
                            const void *data) EINA_ARG_NONNULL(1, 2);
@@ -329,6 +349,10 @@ EAPI int eina_inarray_push(Eina_Inarray *array,
  *       function.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eina_inarray_grow(Eina_Inarray *array, unsigned int size);
 
@@ -353,6 +377,10 @@ EAPI void *eina_inarray_grow(Eina_Inarray *array, unsigned int size);
  * @see eina_inarray_push()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_inarray_insert(Eina_Inarray *array,
                              const void *data,
@@ -380,6 +408,10 @@ EAPI int eina_inarray_insert(Eina_Inarray *array,
  * @see eina_inarray_sort()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_inarray_insert_sorted(Eina_Inarray *array,
                                     const void *data,
@@ -400,6 +432,10 @@ EAPI int eina_inarray_insert_sorted(Eina_Inarray *array,
  * @see eina_inarray_remove_at()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_inarray_remove(Eina_Inarray *array,
                              const void *data) EINA_ARG_NONNULL(1, 2);
@@ -413,6 +449,10 @@ EAPI int eina_inarray_remove(Eina_Inarray *array,
  * @note The data could be considered valid only until any other operation touched the Inarray.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_inarray_pop(Eina_Inarray *array) EINA_ARG_NONNULL(1);
 
@@ -432,6 +472,10 @@ EAPI void *eina_inarray_pop(Eina_Inarray *array) EINA_ARG_NONNULL(1);
  * @see eina_inarray_lookup_sorted()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_inarray_nth(const Eina_Inarray *array,
                             unsigned int position) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
@@ -458,6 +502,10 @@ EAPI void *eina_inarray_nth(const Eina_Inarray *array,
  * @note If @a position is bigger than the array length, it fails.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_inarray_insert_at(Eina_Inarray *array,
                                       unsigned int position,
@@ -488,6 +536,10 @@ EAPI Eina_Bool eina_inarray_insert_at(Eina_Inarray *array,
  * @note If @a position is bigger than the array length, it fails.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_inarray_alloc_at(Eina_Inarray *array,
                                  unsigned int position,
@@ -509,6 +561,10 @@ EAPI void *eina_inarray_alloc_at(Eina_Inarray *array,
  * @note If @p position does not exist, it fails.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_inarray_replace_at(Eina_Inarray *array,
                                        unsigned int position,
@@ -528,6 +584,10 @@ EAPI Eina_Bool eina_inarray_replace_at(Eina_Inarray *array,
  * @see eina_inarray_remove()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_inarray_remove_at(Eina_Inarray *array,
                                       unsigned int position) EINA_ARG_NONNULL(1);
@@ -543,6 +603,10 @@ EAPI Eina_Bool eina_inarray_remove_at(Eina_Inarray *array,
  * @see EINA_INARRAY_REVERSE_FOREACH()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_inarray_reverse(Eina_Inarray *array) EINA_ARG_NONNULL(1);
 
@@ -560,6 +624,10 @@ EAPI void eina_inarray_reverse(Eina_Inarray *array) EINA_ARG_NONNULL(1);
  * @see eina_inarray_insert_sorted()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_inarray_sort(Eina_Inarray *array,
                             Eina_Compare_Cb compare) EINA_ARG_NONNULL(1, 2);
@@ -581,6 +649,10 @@ EAPI void eina_inarray_sort(Eina_Inarray *array,
  * @see eina_inarray_lookup_sorted()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_inarray_search(const Eina_Inarray *array,
                              const void *data,
@@ -600,6 +672,10 @@ EAPI int eina_inarray_search(const Eina_Inarray *array,
  *       memory itself, do no change it.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_inarray_search_sorted(const Eina_Inarray *array,
                                     const void *data,
@@ -624,6 +700,10 @@ EAPI int eina_inarray_search_sorted(const Eina_Inarray *array,
  * @see EINA_INARRAY_FOREACH()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_inarray_foreach(const Eina_Inarray *array,
                                     Eina_Each_Cb function,
@@ -641,6 +721,10 @@ EAPI Eina_Bool eina_inarray_foreach(const Eina_Inarray *array,
  *          returns #EINA_TRUE.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_inarray_foreach_remove(Eina_Inarray *array,
                                      Eina_Each_Cb match,
@@ -654,6 +738,10 @@ EAPI int eina_inarray_foreach_remove(Eina_Inarray *array,
  * @return #EINA_TRUE if it resized the array successfully.
  *
  * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_inarray_resize(Eina_Inarray *array, unsigned int new_size);
 
@@ -664,6 +752,10 @@ EAPI Eina_Bool eina_inarray_resize(Eina_Inarray *array, unsigned int new_size);
  * @return The number of members in the array
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI unsigned int eina_inarray_count(const Eina_Inarray *array) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -684,6 +776,10 @@ EAPI unsigned int eina_inarray_count(const Eina_Inarray *array) EINA_ARG_NONNULL
  *          iterator's behavior is undefined and your program may crash.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_inarray_iterator_new(const Eina_Inarray *array) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -706,6 +802,10 @@ EAPI Eina_Iterator *eina_inarray_iterator_new(const Eina_Inarray *array) EINA_MA
  *          behavior is undefined and your program may crash.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_inarray_iterator_reversed_new(const Eina_Inarray *array) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -722,6 +822,10 @@ EAPI Eina_Iterator *eina_inarray_iterator_reversed_new(const Eina_Inarray *array
  *       Otherwise, a valid accessor is returned.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Accessor *eina_inarray_accessor_new(const Eina_Inarray *array) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 

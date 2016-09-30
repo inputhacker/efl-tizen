@@ -10,6 +10,11 @@ class Ecore.Con.Server (Ecore.Con.Base) {
             legacy: null;
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             name: const(char) *; [[The name of the server.]]
@@ -26,6 +31,11 @@ class Ecore.Con.Server (Ecore.Con.Base) {
            Only clients subsequently trying to connect will be affected.
          ]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          get {
             legacy: null;
@@ -54,6 +64,11 @@ class Ecore.Con.Server (Ecore.Con.Base) {
            when the server is deleted/freed.
          ]]
          get {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             // FIXME: Ecore.Con.Client is needed, but that introduces a cycle

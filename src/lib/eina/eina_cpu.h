@@ -62,6 +62,10 @@ typedef enum _Eina_Cpu_Features
  * @brief Global hardware architecture handler
  *
  * @return the current cpu features
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI extern Eina_Cpu_Features eina_cpu_features;
 
@@ -69,6 +73,10 @@ EAPI extern Eina_Cpu_Features eina_cpu_features;
  * @brief Cpu features accessor
  *
  * @return the current cpu features
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Cpu_Features eina_cpu_features_get(void);
 
@@ -77,6 +85,10 @@ EAPI Eina_Cpu_Features eina_cpu_features_get(void);
  *
  * @return the number of processors that are online, that
  * is available when the function is called.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               eina_cpu_count(void);
 
@@ -86,6 +98,10 @@ EAPI int               eina_cpu_count(void);
  * @return the fixed length that represents the smallest unit of data for memory
  * allocation performed by the operating system on behalf of the program, and
  * for transfers between the main memory and any other auxiliary store.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               eina_cpu_page_size(void);
 

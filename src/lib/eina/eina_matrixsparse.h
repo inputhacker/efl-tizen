@@ -88,6 +88,10 @@ typedef struct _Eina_Matrixsparse_Cell      Eina_Matrixsparse_Cell;
  * @param user_data given to @a free_func as first parameter.
  *
  * @return Newly allocated matrix or @c NULL if allocation failed.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Matrixsparse *eina_matrixsparse_new(unsigned long rows,
                                               unsigned long cols,
@@ -99,6 +103,10 @@ EAPI Eina_Matrixsparse *eina_matrixsparse_new(unsigned long rows,
  * @brief Free resources allocated to Sparse Matrix.
  *
  * @param m The Sparse Matrix instance to free, must @b not be @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_matrixsparse_free(Eina_Matrixsparse *m);
 
@@ -115,6 +123,10 @@ EAPI void eina_matrixsparse_free(Eina_Matrixsparse *m);
  *        returned value is zero, otherwise it's a positive integer.
  * @param cols returns the number of columns, may be @c NULL. If @a m is
  *        invalid, returned value is zero, otherwise it's a positive integer.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_matrixsparse_size_get(const Eina_Matrixsparse *m,
                                      unsigned long           *rows,
@@ -134,6 +146,10 @@ EAPI void eina_matrixsparse_size_get(const Eina_Matrixsparse *m,
  * @warning cells, rows or columns are not reference counted and thus
  *     after this call any reference might be invalid if instance were
  *     freed.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_size_set(Eina_Matrixsparse *m,
                                           unsigned long      rows,
@@ -154,6 +170,10 @@ EAPI Eina_Bool eina_matrixsparse_size_set(Eina_Matrixsparse *m,
  *
  * @see eina_matrixsparse_cell_data_get()
  * @see eina_matrixsparse_data_idx_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_cell_idx_get(const Eina_Matrixsparse *m, unsigned long row, unsigned long col, Eina_Matrixsparse_Cell **cell);
 
@@ -166,6 +186,10 @@ EAPI Eina_Bool eina_matrixsparse_cell_idx_get(const Eina_Matrixsparse *m, unsign
  *
  * @see eina_matrixsparse_cell_idx_get()
  * @see eina_matrixsparse_data_idx_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void     *eina_matrixsparse_cell_data_get(const Eina_Matrixsparse_Cell *cell);
 
@@ -180,6 +204,10 @@ EAPI void     *eina_matrixsparse_cell_data_get(const Eina_Matrixsparse_Cell *cel
  *
  * @see eina_matrixsparse_cell_idx_get()
  * @see eina_matrixsparse_cell_data_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void     *eina_matrixsparse_data_idx_get(const Eina_Matrixsparse *m, unsigned long row, unsigned long col);
 
@@ -191,6 +219,10 @@ EAPI void     *eina_matrixsparse_data_idx_get(const Eina_Matrixsparse *m, unsign
  * @param col where to store cell column number, may be @c NULL.
  *
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise (@c cell is @c NULL).
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_cell_position_get(const Eina_Matrixsparse_Cell *cell, unsigned long *row, unsigned long *col);
 
@@ -207,6 +239,10 @@ EAPI Eina_Bool eina_matrixsparse_cell_position_get(const Eina_Matrixsparse_Cell 
  *
  * @see eina_matrixsparse_cell_data_set()
  * @see eina_matrixsparse_data_idx_replace()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_cell_data_replace(Eina_Matrixsparse_Cell *cell, const void *data, void **p_old);
 
@@ -223,6 +259,10 @@ EAPI Eina_Bool eina_matrixsparse_cell_data_replace(Eina_Matrixsparse_Cell *cell,
  *
  * @see eina_matrixsparse_cell_data_replace()
  * @see eina_matrixsparse_data_idx_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_cell_data_set(Eina_Matrixsparse_Cell *cell, const void *data);
 
@@ -240,6 +280,10 @@ EAPI Eina_Bool eina_matrixsparse_cell_data_set(Eina_Matrixsparse_Cell *cell, con
  *
  * @see eina_matrixsparse_cell_data_replace()
  * @see eina_matrixsparse_data_idx_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_data_idx_replace(Eina_Matrixsparse *m, unsigned long row, unsigned long col, const void *data, void **p_old);
 
@@ -258,6 +302,10 @@ EAPI Eina_Bool eina_matrixsparse_data_idx_replace(Eina_Matrixsparse *m, unsigned
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise (@a m is @c NULL, indexes are not valid).
  *
  * @see eina_matrixsparse_cell_data_replace()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_data_idx_set(Eina_Matrixsparse *m, unsigned long row, unsigned long col, const void *data);
 
@@ -279,6 +327,10 @@ EAPI Eina_Bool eina_matrixsparse_data_idx_set(Eina_Matrixsparse *m, unsigned lon
  * @warning cells, rows or columns are not reference counted and thus
  *     after this call any reference might be invalid if instance were
  *     freed.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_row_idx_clear(Eina_Matrixsparse *m, unsigned long row);
 
@@ -298,6 +350,10 @@ EAPI Eina_Bool eina_matrixsparse_row_idx_clear(Eina_Matrixsparse *m, unsigned lo
  * @warning cells, rows or columns are not reference counted and thus
  *     after this call any reference might be invalid if instance were
  *     freed.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_column_idx_clear(Eina_Matrixsparse *m, unsigned long col);
 
@@ -320,6 +376,10 @@ EAPI Eina_Bool eina_matrixsparse_column_idx_clear(Eina_Matrixsparse *m, unsigned
  *
  * @note This call might delete container column and row if this cell was the
  * last remainder.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_cell_idx_clear(Eina_Matrixsparse *m, unsigned long row, unsigned long col);
 
@@ -336,6 +396,10 @@ EAPI Eina_Bool eina_matrixsparse_cell_idx_clear(Eina_Matrixsparse *m, unsigned l
  *
  * @note This call might delete container column and row if this cell was the
  * last remainder.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_matrixsparse_cell_clear(Eina_Matrixsparse_Cell *cell);
 
@@ -358,6 +422,10 @@ EAPI Eina_Bool eina_matrixsparse_cell_clear(Eina_Matrixsparse_Cell *cell);
  * @warning if the matrix structure changes then the iterator becomes
  *    invalid! That is, if you add or remove cells this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_matrixsparse_iterator_new(const Eina_Matrixsparse *m);
 
@@ -384,6 +452,10 @@ EAPI Eina_Iterator *eina_matrixsparse_iterator_new(const Eina_Matrixsparse *m);
  * @warning if the matrix structure changes then the iterator becomes
  *    invalid! That is, if you add or remove cells this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_matrixsparse_iterator_complete_new(const Eina_Matrixsparse *m);
 

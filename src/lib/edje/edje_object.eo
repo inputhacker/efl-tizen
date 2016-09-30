@@ -13,10 +13,20 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               By default edje doesn't set size hints on itself. With this function
               call, it will do so if update is true. Be carefully, it cost a lot to
               trigger this feature as it will recalc the object every time it make
-              sense to be sure that's its minimal size hint is always accurate.]]
+              sense to be sure that's its minimal size hint is always accurate.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
-            [[Whether or not Edje will update size hints on itself.]]
+            [[Whether or not Edje will update size hints on itself.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             update: bool; [[Whether or not update the size hints.]]
@@ -26,14 +36,24 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          set {
             [[Set the RTL orientation for this object.
 
-              @since 1.1.0]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.1.0
+            ]]
          }
          get {
             [[Get the RTL orientation for this object.
 
               You can RTL orientation explicitly with edje_object_mirrored_set.
 
-              @since 1.1.0]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.1.0
+            ]]
          }
          values {
             rtl: bool; [[new value of flag true/false]]
@@ -43,12 +63,22 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          set {
             [[Set the language for this object.
 
-              @since 1.1.0]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.1.0
+            ]]
          }
          get {
             [[Get the language for this object.
 
-              @since 1.1.0]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.1.0
+            ]]
          }
          values {
             language: const(char)*; [[The language value]]
@@ -62,7 +92,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               information if it's stopped can be retrieved by
               edje_object_animation_get().
 
-              See also @.animation.get()]]
+              See also @.animation.get()
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
             [[Get the Edje object's animation state.
@@ -70,7 +105,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               This function returns if the animation is stopped or not. The
               animation state is set by edje_object_animation_set().
 
-              See also @.animation.set().]]
+              See also @.animation.set().
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             on: bool; [[The animation state. $true to starts or
@@ -85,7 +125,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               states, depending on the parameter  play. This has no effect if
               the object was already at that state.
 
-              See also @.play.get().]]
+              See also @.play.get().
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
             [[Get the Edje object's state.
@@ -93,7 +138,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               This function tells if an Edje object is playing or not. This state
               is set by edje_object_play_set().
 
-              See also @.play.set().]]
+              See also @.play.set().
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             play: bool; [[Object state ($true to playing,
@@ -116,7 +166,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
               \@ref edje_object_perspective_new()
               See also @.perspective.get()
-              \@ref edje_perspective_set()]]
+              \@ref edje_perspective_set()
+
+               \@if MOBILE \@since_tizen 2.3
+               \@elseif WEARABLE \@since_tizen 2.3.1
+               \@endif
+             ]]
             values {
                 ps: Edje.Perspective*; [[The perspective object that will be used.]]
             }
@@ -124,7 +179,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          get {
             [[Get the current perspective used on this Edje object.
 
-              See also @.perspective.set()]]
+              See also @.perspective.set()
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
             values {
                 ps: const(Edje.Perspective)*; [[The perspective object that will be used.]]
             }
@@ -146,7 +206,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               complete \@ref edcref "syntax reference" for EDC files.
 
               See also @.scale.get()
-              \@ref edje_scale_get() for more details]]
+              \@ref edje_scale_get() for more details
+
+               \@if MOBILE \@since_tizen 2.3
+               \@elseif WEARABLE \@since_tizen 2.3.1
+               \@endif
+             ]]
             return: bool;
          }
          get {
@@ -155,7 +220,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               This function returns the individual scaling factor set on the
                obj Edje object.
 
-              See also @.scale.set() for more details]]
+              See also @.scale.set() for more details
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             scale: double; [[The scaling factor (the default value is @0.0,
@@ -169,7 +239,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               This function returns the base_scale factor set on the
                obj Edje object.
               The base_scale can be set in the collection of edc.
-              If it isn't set, the default value is 1.0]]
+              If it isn't set, the default value is 1.0
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             base_scale: double(1.0); [[The base_scale factor (the default value is @ 1.0,
@@ -180,7 +255,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          set {
             [[Set the object text callback.
 
-              This function sets the callback to be called when the text changes.]]
+              This function sets the callback to be called when the text changes.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             func: Edje.Text.Change_Cb; [[The callback function to handle the text change]]
@@ -190,7 +270,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       @property part_text_cursor_begin {
          set {
             [[Moves the cursor to the beginning of the text part
-              \@ref evas_textblock_cursor_paragraph_first]]
+              \@ref evas_textblock_cursor_paragraph_first
+
+               \@if MOBILE \@since_tizen 3.0
+               \@elseif WEARABLE \@since_tizen 3.0
+               \@endif
+             ]]
          }
          values {
             part: const(char)*; [[The part name]]
@@ -200,7 +285,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       @property part_text_cursor_line_end {
          set {
             [[Move the cursor to the end of the line.
-              \@ref evas_textblock_cursor_line_char_last]]
+              \@ref evas_textblock_cursor_line_char_last
+
+               \@if MOBILE \@since_tizen 3.0
+               \@elseif WEARABLE \@since_tizen 3.0
+               \@endif
+             ]]
          }
          values {
             part: const(char)*; [[The part name]]
@@ -211,7 +301,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          set {
             [[Sets Edje text class.
 
-              This function sets the text class for the Edje.]]
+              This function sets the text class for the Edje.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
             return: bool; [[$true, on success or $false, on error]]
          }
          values {
@@ -224,7 +319,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          set {
             [[Position the given cursor to a X,Y position.
 
-              This is frequently used with the user cursor.]]
+              This is frequently used with the user cursor.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
 
             return: bool; [[True on success, false on error.]]
          }
@@ -238,7 +338,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       @property part_text_cursor_end {
          set {
             [[Moves the cursor to the end of the text part.
-              \@ref evas_textblock_cursor_paragraph_last]]
+              \@ref evas_textblock_cursor_paragraph_last
+
+               \@if MOBILE \@since_tizen 3.0
+               \@elseif WEARABLE \@since_tizen 3.0
+               \@endif
+             ]]
          }
          values {
             part: const(char)*; [[The part name]]
@@ -253,7 +358,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               style escapes like "&amp;" and "&copy;" etc. IF the part is of type TEXT,
               as opposed to TEXTBLOCK.
 
-              @since 1.2]]
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
+              @since 1.2
+            ]]
             return: bool; [[$true on success, $false otherwise]]
          }
          values {
@@ -266,7 +376,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             [[Set the function that provides item objects for named items in an edje entry text
 
               Item objects may be deleted any time by Edje, and will be deleted when the
-              Edje object is deleted (or file is set to a new file).]]
+              Edje object is deleted (or file is set to a new file).
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             func: Edje.Item_Provider_Cb; [[The function to call (or $null to disable) to get item objects]]
@@ -276,7 +391,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       @property part_text_cursor_line_begin {
          set {
             [[Move the cursor to the beginning of the line.
-              \@ref evas_textblock_cursor_line_char_first]]
+              \@ref evas_textblock_cursor_line_char_first
+
+               \@if MOBILE \@since_tizen 3.0
+               \@elseif WEARABLE \@since_tizen 3.0
+               \@endif
+             ]]
          }
          values {
             part: const(char)*; [[The part name]]
@@ -295,7 +415,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               This function associates a message handler function and the
               attached data pointer to the object obj.
 
-              See also @.message_send()]]
+              See also @.message_send()
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             func: Edje.Message_Handler_Cb; [[The function to handle messages  coming from obj]]
@@ -316,7 +441,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               Note: On failure, this function will make all non-$null size
               pointers' pointed variables be set to zero.
 
-              See also @.size_max.get()]]
+              See also @.size_max.get()
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
               /* FIXME-doc
                * Minimum size of groups have the following syntax
                * @code
@@ -346,7 +476,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          get {
             [[Retrieve a list all accessibility part names
 
-              @since 1.7.0]]
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
+              @since 1.7.0
+            ]]
             return: list<const(char)*> *; [[A list all accessibility part names on obj]]
          }
       }
@@ -359,7 +494,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               function. If that function does not return $true, one should
               check for the reason of failure with this one.
 
-              \@ref edje_load_error_str()]]
+              \@ref edje_load_error_str()
+
+               \@if MOBILE \@since_tizen 2.3
+               \@elseif WEARABLE \@since_tizen 2.3.1
+               \@endif
+             ]]
             return: Edje.Load_Error; [[The Edje loading error, one of:
                                        - #EDJE_LOAD_ERROR_NONE
                                        - #EDJE_LOAD_ERROR_GENERIC
@@ -389,7 +529,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               Note: On failure, this function will make all non-$null size
               pointers' pointed variables be set to zero.
 
-              See also @.size_min.get()]]
+              See also @.size_min.get()
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
               /* FIXME-doc
                * Maximum size of groups have the following syntax
                * @code
@@ -419,7 +564,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Removes all object from the table.
 
            Removes all object from the table indicated by part, except the
-           internal ones set from the theme.]]
+           internal ones set from the theme.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true clear the table, $false on failure]]
          params {
@@ -428,7 +578,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_external_param_type_get @const {
-         [[Facility to query the type of the given parameter of the given part.]]
+         [[Facility to query the type of the given parameter of the given part.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          return: Edje.External.Param_Type; [[#EDJE_EXTERNAL_PARAM_TYPE_MAX on errors, or another value
                                              from #Edje_External_Param_Type on success.]]
@@ -443,14 +598,24 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            The default is to  not allow selection. This function only affects user
            selection, functions such as edje_object_part_text_select_all() and
-           edje_object_part_text_select_none() are not affected.]]
+           edje_object_part_text_select_none() are not affected.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
             @in allow: bool; [[true to enable, false otherwise]]
          }
       }
       part_state_get @const {
-         [[Returns the state of the Edje part.]]
+         [[Returns the state of the Edje part.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: const(char)*; [[The part state:
                                  "default" for the default state
@@ -469,7 +634,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            See also @.text_markup_filter_callback_add and @.text_markup_filter_callback_del
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          return: void *; [[The same data pointer if successful, or $null otherwise]]
          params {
@@ -487,7 +657,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            representing the relative size of the dragable area on that axis by which the
            part will be moved.
 
-           See also @.part_drag_step_get()]]
+           See also @.part_drag_step_get()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -501,7 +676,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Gets the x and y step increments for the dragable object.
 
-           See also @.part_drag_step_set()]]
+           See also @.part_drag_step_set()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
            return: bool;
          params {
             @in part: const(char)*; [[The part]]
@@ -515,14 +695,24 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            If ecore_imf was not available when edje was compiled, this function returns $null
            otherwise, the returned pointer is an Ecore_IMF
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          return: void *; [[The input method context (Ecore_IMF_Context *) in entry]]
          params {
             @in part: const(char)*; [[The part name]]
          }
       }
       part_text_select_begin @const {
-         [[Starts selecting at current cursor position]]
+         [[Starts selecting at current cursor position
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -532,7 +722,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This function returns the style associated with the textblock part.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+
+           @since 1.2.0
+         ]]
          return: const(char)*; [[The text string]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -561,7 +756,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       part_text_cursor_next {
          [[Advances the cursor to the next cursor position.
-           \@ref evas_textblock_cursor_char_next]]
+           \@ref evas_textblock_cursor_char_next
+
+            \@if MOBILE \@since_tizen 3.0
+            \@elseif WEARABLE \@since_tizen 3.0
+            \@endif
+          ]]
 
          return: bool;
          params {
@@ -574,7 +774,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This function sets the style associated with the textblock part.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -587,7 +792,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            This function inserts the text for an object part at the end; It does not
            move the cursor.
 
-           @since 1.1]]
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+
+           @since 1.1
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -606,7 +816,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            interested in: they'll be ignored by the function.
 
            Note: On failure, this function will make all non-$null geometry
-           pointers' pointed variables be set to zero.]]
+           pointers' pointed variables be set to zero.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool;
          params {
             @in part: const(char)*; [[The Edje part's name]]
@@ -625,7 +840,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Note that input panel is shown or hidden automatically according to the focus state.
            This API can be used in the case of manually controlling by using edje_object_part_text_input_panel_enabled_set.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -634,7 +854,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Return item geometry.
 
            This function return a list of Evas_Textblock_Rectangle item
-           rectangles.]]
+           rectangles.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool; [[1 if item exists, 0 if not]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -648,7 +873,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_table_unpack {
          [[Removes an object from the table.
 
-           Removes an object from the table indicated by part.]]
+           Removes an object from the table indicated by part.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true object removed, $false on failure]]
          params {
@@ -657,7 +887,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_select_abort @const {
-         [[Aborts any selection action on a part.]]
+         [[Aborts any selection action on a part.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -669,7 +904,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            in part.
            Returns the user data pointer given when added.
 
-           See also @.text_insert_filter_callback_add and @.text_insert_filter_callback_del]]
+           See also @.text_insert_filter_callback_add and @.text_insert_filter_callback_del
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          return: void *; [[The same data pointer if successful, or $null otherwise]]
          params {
@@ -681,7 +921,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_style_user_pop {
          [[Delete the top style form the user style stack.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -694,7 +939,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            The data format MUST be negotiated by both application and the input panel.
            The size and format of data are defined by the input panel.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -705,7 +955,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_input_panel_imdata_get @const {
          [[Get the specific data of the current active input panel.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
             @in data: void *; [[The specific data to be got from the input panel]]
@@ -716,7 +971,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Insert text for an object part.
 
            This function inserts the text for an object part just before the
-           cursor position.]]
+           cursor position.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -729,7 +989,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Removes from the box indicated by part, the object in the position
            pos.
 
-           See also @.part_box_remove() and @.part_box_remove_all()]]
+           See also @.part_box_remove() and @.part_box_remove_all()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: Evas.Object *; [[Pointer to the object removed, or $null.]]
          params {
@@ -738,7 +1003,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_cursor_copy {
-         [[Copy the cursor to another cursor.]]
+         [[Copy the cursor to another cursor.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -761,7 +1031,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            interested in: they'll be ignored by the function.
 
            Note: On failure, this function will make all non-$null geometry
-           pointers' pointed variables be set to zero.]]
+           pointers' pointed variables be set to zero.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -790,7 +1065,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            For the horizontal axis, 0.0 means left if the first parameter of $x in the
            dragable part theme is 1, and right if it is -1.
 
-           See also @.part_drag_value_get()]]
+           See also @.part_drag_value_get()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -807,7 +1087,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            See also @.part_drag_value_set()
 
-           Gets the drag location values.]]
+           Gets the drag location values.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool;
          params {
             @in part: const(char)*; [[The part name]]
@@ -819,13 +1104,23 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Force a Size/Geometry calculation.
 
            Forces the object obj to recalculation layout regardless of
-           freeze/thaw.]]
+           freeze/thaw.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
       }
       part_text_cursor_pos_set {
          [[Sets the cursor position to the given value
 
-           @since 1.1.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.1.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -836,7 +1131,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_cursor_pos_get @const {
          [[Retrieves the current position of the cursor
 
-           @since 1.1.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.1.0
+         ]]
          return: int; [[The cursor position]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -849,7 +1149,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            This function puts all changes on hold. Successive freezes will
            nest, requiring an equal number of thaws.
 
-           See also @.thaw()]]
+           See also @.thaw()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: int; [[The frozen state or 0 on Error]]
       }
@@ -857,7 +1162,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Returns the content (char) at the cursor position.
            \@ref evas_textblock_cursor_content_get
 
-           You must free the return (if not $null) after you are done with it.]]
+           You must free the return (if not $null) after you are done with it.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          return: char *; [[The character string pointed to (may be a multi-byte utf8 sequence) terminated by a nul byte.]]
          params {
@@ -873,7 +1183,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            are expecting to enter and thus have the input panel automatically
            come up with the right mode.
 
-           @since 1.1]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.1
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -885,7 +1200,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            See also @.part_text_input_panel_layout_set
 
-           @since 1.1]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.1
+         ]]
          return: Edje.Input_Panel.Layout; [[Layout type of the input panel]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -894,7 +1214,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_table_pack {
          [[Packs an object into the table.
 
-           Packs an object into the table indicated by part.]]
+           Packs an object into the table indicated by part.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true object was added, $false on failure]]
          params {
@@ -911,7 +1236,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This API can be used if you want to show the Alphabet keyboard.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -923,7 +1253,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            See also @.part_text_input_panel_language_set for more details.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          return: Edje.Input_Panel.Lang; [[input panel language type]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -932,7 +1267,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_table_col_row_size_get @const {
          [[Gets the number of columns and rows the table has.
 
-           Retrieves the size of the table in number of columns and rows.]]
+           Retrieves the size of the table in number of columns and rows.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool; [[$true get some data, $false on failure]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -952,7 +1292,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Note: Almost all swallow rules apply: you should not move, resize,
            hide, show, set the color or clipper of such part. It's a bit
-           more restrictive as one must  never delete this object!]]
+           more restrictive as one must  never delete this object!
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          return: Evas.Object *; [[The externally created object, or $null if there is none or
                                   part is not an external.]]
          params {
@@ -963,7 +1308,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Get an object contained in an part of type EXTERNAL
 
            The content string must not be $null. Its actual value depends on the
-           code providing the EXTERNAL.]]
+           code providing the EXTERNAL.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          return: Evas.Object *;
          params {
             @in part: const(char)*; [[The name of the part holding the EXTERNAL]]
@@ -979,7 +1329,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            It emits a signal "preload,done" when finished.
 
            Note: Use $true on scenarios where you don't need
-           the image data preloaded anymore.]]
+           the image data preloaded anymore.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$false if obj was not a valid Edje object
                          otherwise $true]]
@@ -991,7 +1346,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_input_panel_enabled_set {
          [[Sets the attribute to show the input panel automatically.
 
-           @since 1.1.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.1.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1002,14 +1362,24 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Retrieve the attribute to show the input panel automatically.
            See also @.part_text_input_panel_enabled_set
 
-           @since 1.1.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.1.0
+         ]]
          return: bool; [[true if it supports or false otherwise]]
          params {
             @in part: const(char)*; [[The part name]]
          }
       }
       part_text_select_extend @const {
-         [[Extends the current selection to the current cursor position]]
+         [[Extends the current selection to the current cursor position
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -1020,7 +1390,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Adds child to the box indicated by part, in the position given by
            pos.
 
-           See also @.part_box_append(), @.part_box_prepend() and @.part_box_insert_before()]]
+           See also @.part_box_append(), @.part_box_prepend() and @.part_box_insert_before()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true: Successfully added.
                          $false: An error occurred.]]
@@ -1034,7 +1409,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Return a list of Evas_Textblock_Rectangle anchor rectangles.
 
            This function return a list of Evas_Textblock_Rectangle anchor
-           rectangles.]]
+           rectangles.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: const(list<const(Evas.Textblock_Rectangle)*>)*; [[The list of anchor rects (const Evas_Textblock_Rectangle
                                                                    *), do not modify! Geometry is relative to entry part.]]
          params {
@@ -1043,7 +1423,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_cursor_down {
-         [[Moves the cursor to the char below the current cursor position.]]
+         [[Moves the cursor to the char below the current cursor position.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -1060,7 +1445,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            representing the relative size of the dragable area on that axis by which the
            part will be moved.
 
-           See also @.part_drag_page_get()]]
+           See also @.part_drag_page_get()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -1074,7 +1464,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Gets the x,y page step increments for the dragable object.
 
-           See also @.part_drag_page_set()]]
+           See also @.part_drag_page_set()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool;
          params {
             @in part: const(char)*; [[The part name]]
@@ -1087,7 +1482,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Prepends child to the box indicated by part.
 
-           See also @.part_box_append(), @.part_box_insert_before() and @.part_box_insert_at()]]
+           See also @.part_box_append(), @.part_box_insert_before() and @.part_box_insert_at()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true: Successfully added.
                          $false: An error occurred.]]
@@ -1104,7 +1504,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            having declared matching @'signal' and @'source' fields on its
            block (see \@ref edcref "the syntax" for EDC files).
 
-           See also @.signal_callback_add() for more on Edje signals.]]
+           See also @.signal_callback_add() for more on Edje signals.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
            /* FIXME-doc
             * @code
             * program
@@ -1129,7 +1534,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            are expecting to enter and thus have the input panel automatically
            come up with the right mode.
 
-           @since 1.8]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.8
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1141,7 +1551,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            See also @.part_text_input_panel_layout_variation_set
 
-           @since 1.8]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.8
+         ]]
          return: int; [[Layout variation type of the input panel]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1162,7 +1577,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            context).
 
            The function to handle messages arriving  from obj is set with
-           edje_object_message_handler_set().]]
+           edje_object_message_handler_set().
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          params {
             @in type: Edje.Message_Type; [[The type of message to send to obj]]
@@ -1173,7 +1593,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_select_none @const {
          [[Set the selection to be none.
 
-           This function sets the selection text to be none.]]
+           This function sets the selection text to be none.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -1190,7 +1615,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            because it's meant to be managed by Edje, solely. You are safe to
            query information about its current state (with
            evas_object_visible_get() or \@ref evas_object_color_get() for
-           example), though.]]
+           example), though.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: const(Evas.Object)*; [[A pointer to the Evas object implementing the given part,
                                         or $null on failure (e.g. the given part doesn't exist)]]
          params {
@@ -1205,7 +1635,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Sets the size of the dragable object.
 
-           See also @.part_drag_size_get()]]
+           See also @.part_drag_size_get()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -1219,7 +1654,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Gets the dragable object size.
 
-           See also @.part_drag_size_set()]]
+           See also @.part_drag_size_set()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool;
          params {
             @in part: const(char)*; [[The part name]]
@@ -1233,7 +1673,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Delete the given func filter from the list in part. Returns
            the user data pointer given when added.
 
-           See also @.text_insert_filter_callback_add and @.text_insert_filter_callback_del_full]]
+           See also @.text_insert_filter_callback_add and @.text_insert_filter_callback_del_full
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          return: void *; [[The user data pointer if successful, or $null otherwise]]
          params {
@@ -1246,7 +1691,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            The dragable directions are defined in the EDC file, inside the \@ref dragable
            section, by the attributes $x and $y. See the \@ref edcref for more
-           information.]]
+           information.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: Edje.Drag_Dir; [[#EDJE_DRAG_DIR_NONE: Not dragable
                                   #EDJE_DRAG_DIR_X: Dragable in X direction
@@ -1262,7 +1712,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            This function will not do escape for you if it is a TEXTBLOCK part, that is,
            if text contain tags, these tags will not be interpreted/parsed by TEXTBLOCK.
 
-           See also @.part_text_unescaped_get().]]
+           See also @.part_text_unescaped_get().
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -1278,7 +1733,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            result is newly allocated memory and should be released with free()
            when done.
 
-           See also @.part_text_unescaped_set().]]
+           See also @.part_text_unescaped_set().
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: char *; [[The  allocated text string without escaping, or $null on
                            problems.]]
          params {
@@ -1323,7 +1783,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Note: See \@ref edcref "the syntax" for EDC files
            See also @.signal_emit() on how to emits Edje signals from
            code to a an object
-           \@ref edje_object_signal_callback_del_full()]]
+           \@ref edje_object_signal_callback_del_full()
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
            /* FIXME-doc
             * This function adds a callback function to a signal emitted by  obj, to
             * be issued every time an EDC program like the following
@@ -1349,7 +1814,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_select_all @const {
          [[Set the selection to be everything.
 
-           This function selects all text of the object of the part.]]
+           This function selects all text of the object of the part.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -1357,7 +1827,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_input_panel_return_key_disabled_set {
          [[Set the return key on the input panel to be disabled.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1367,7 +1842,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_input_panel_return_key_disabled_get @const {
          [[Get whether the return key on the input panel should be disabled or not.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          return: bool; [[true if it should be disabled]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1376,7 +1856,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_autocapital_type_set {
          [[Set the autocapitalization type on the immodule.
 
-           @since 1.1.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.1.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1386,7 +1871,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_autocapital_type_get @const {
          [[Retrieves the autocapitalization type
 
-           @since 1.1.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.1.0
+         ]]
          return: Edje.Text.Autocapital_Type; [[The autocapitalization type]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1399,7 +1889,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Note: obj_swallow will  not be deleted or hidden.
            Note: obj_swallow may appear shown on the evas depending on its state when
-           it got unswallowed. Make sure you delete it or hide it if you do not want it to.]]
+           it got unswallowed. Make sure you delete it or hide it if you do not want it to.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          params {
             @in obj_swallow: Evas.Object *; [[The swallowed object]]
@@ -1408,7 +1903,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_prediction_allow_set {
          [[Set whether the prediction is allowed or not.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1418,7 +1918,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_prediction_allow_get @const {
          [[Get whether the prediction is allowed or not.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          return: bool; [[true if prediction feature is allowed.]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1439,7 +1944,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Warning: Do not confuse this call with edje_file_data_get(), which
            queries for a  global EDC data field on an EDC declaration file.
 
-           \@ref edje_object_file_set()]]
+           \@ref edje_object_file_set()
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
            /* FIXME-doc
             * They look like the following:
             * @code
@@ -1486,7 +1996,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            See also @.text_markup_filter_callback_del, @.text_markup_filter_callback_del_full
            and @.text_insert_filter_callback_add
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1499,7 +2014,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This function goes through the object message queue processing the
            pending messages for  this specific Edje object. Normally they'd
-           be processed only at idle time.]]
+           be processed only at idle time.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
       }
       part_box_remove {
@@ -1507,7 +2027,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Removes child from the box indicated by part.
 
-           See also @.part_box_remove_at() and @.part_box_remove_all()]]
+           See also @.part_box_remove_at() and @.part_box_remove_all()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: Evas.Object *; [[Pointer to the object removed, or $null.]]
          params {
@@ -1523,12 +2048,22 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Note:: If sucessives freezes were done, an equal number of
            thaws will be required.
 
-           See also @.freeze()]]
+           See also @.freeze()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: int; [[The frozen state or 0 if the object is not frozen or on error.]]
       }
       part_swallow_get @const {
-         [[Get the object currently swallowed by a part.]]
+         [[Get the object currently swallowed by a part.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: Evas.Object *; [[The swallowed object, or $null if there is none.]]
          params {
@@ -1540,7 +2075,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This can be necessary in the case where modifying the buffer would confuse on-going input method behavior
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -1550,7 +2090,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            An input panel displays the string or icon associated with this type
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1562,14 +2107,24 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            See also @.part_text_input_panel_return_key_type_set() for more details
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          return: Edje.Input_Panel.Return_Key_Type; [[The type of "return" key on the input panel]]
          params {
             @in part: const(char)*; [[The part name]]
          }
       }
       part_table_child_get @const {
-         [[Retrieve a child from a table]]
+         [[Retrieve a child from a table
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: Evas.Object *; [[The child Evas.Object]]
          params {
@@ -1584,7 +2139,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Inserts child in the box given by part, in the position marked by
            reference.
 
-           See also @.part_box_append(), @.part_box_prepend() and @.part_box_insert_at()]]
+           See also @.part_box_append(), @.part_box_prepend() and @.part_box_insert_at()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true: Successfully added.
                          $false: An error occurred.]]
@@ -1611,7 +2171,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            using #Edje_External_Param_Info minimum, maximum, valid
            choices and others. However these should be checked by the
            underlying implementation provided by the external
-           plugin. This is done for performance reasons.]]
+           plugin. This is done for performance reasons.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          return: bool; [[$true if everything went fine, $false on errors.]]
          params {
@@ -1636,7 +2201,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            functions.
 
            This function asks the external plugin what is the current value,
-           independent on how it was set.]]
+           independent on how it was set.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          return: bool; [[$true if everything went fine and param members
                          are filled with information, $false on errors and
@@ -1656,7 +2226,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This call works exactly as edje_object_size_min_restricted_calc(),
            with the last two arguments set to 0. Please refer to its
-           documentation, then.]]
+           documentation, then.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          params {
             @out minw: Evas.Coord; [[Pointer to a variable where to store the minimum
@@ -1671,7 +2246,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Appends child to the box indicated by part.
 
            See also @.part_box_prepend(), @.part_box_insert_before()
-           and @.part_box_insert_at()]]
+           and @.part_box_insert_at()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true: Successfully added.
                          $false: An error occurred.]]
@@ -1695,7 +2275,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            sizes. The caller is the one up to change its geometry or not.
 
            Warning: Be advised that invisible parts in obj  will be taken
-           into account in this calculation.]]
+           into account in this calculation.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          params {
             @out minw: Evas.Coord; [[Pointer to a variable where to store the minimum
@@ -1714,7 +2299,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Removes all the external objects from the box indicated by part.
            Elements created from the theme will not be removed.
 
-           See also @.part_box_remove() and @.part_box_remove_at()]]
+           See also @.part_box_remove() and @.part_box_remove_at()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[1: Successfully cleared.
                          0: An error occurred.]]
@@ -1733,7 +2323,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Warning: Paging is bugged!
 
-           See also @.part_drag_step()]]
+           See also @.part_drag_step()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -1743,7 +2338,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_set {
-         [[Sets the text for an object part]]
+         [[Sets the text for an object part
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true on success, $false otherwise]]
          params {
@@ -1756,7 +2356,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This function returns the text associated to the object part.
 
-           See also @.part_text_set().]]
+           See also @.part_text_set().
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: const(char)*; [[The text string]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1766,7 +2371,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          [[Set the attribute to show the input panel in case of only an user's explicit Mouse Up event.
            It doesn't request to show the input panel even though it has focus.
 
-           @since 1.9.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.9.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1776,7 +2386,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_input_panel_show_on_demand_get @const {
          [[Get the attribute to show the input panel in case of only an user's explicit Mouse Up event.
 
-           @since 1.9.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.9.0
+         ]]
          return: bool; [[$true if the input panel will be shown in case of only Mouse up event.]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1785,7 +2400,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_input_hint_set {
          [[Sets the input hint which allows input methods to fine-tune their behavior.
 
-           @since 1.12.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.12.0
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -1795,7 +2415,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_input_hint_get @const {
          [[Gets the value of input hint
 
-           @since 1.12.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.12.0
+         ]]
          return: Edje.Input_Hints; [[The value of input hint]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1806,7 +2431,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This function returns selection text of the object part.
 
-           See also @.part_text_select_all() and @.part_text_select_none()]]
+           See also @.part_text_select_all() and @.part_text_select_none()
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          return: const(char)*; [[The text string]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1814,7 +2444,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       part_text_cursor_is_format_get @const {
          [[Returns whether the cursor points to a format.
-         \@ref evas_textblock_cursor_is_format]]
+         \@ref evas_textblock_cursor_is_format
+
+          \@if MOBILE \@since_tizen 3.0
+          \@elseif WEARABLE \@since_tizen 3.0
+          \@endif
+        ]]
 
          return: bool; [[true if it's true, false otherwise.]]
          params {
@@ -1827,7 +2462,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            This function gets the font and the font size from the object
            text class. The font string will only be valid until the text
-           class is changed or the edje object is deleted.]]
+           class is changed or the edje object is deleted.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool; [[$true, on success or $false, on error]]
          params {
             @in text_class: const(char)*; [[The text class name]]
@@ -1851,7 +2491,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            the given color.
 
            Note: unlike Evas, Edje colors are  not pre-multiplied. That is,
-           half-transparent white is 255 255 255 128.]]
+           half-transparent white is 255 255 255 128.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -1882,7 +2527,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            to text parts).
 
            Note: unlike Evas, Edje colors are  not pre-multiplied. That is,
-           half-transparent white is 255 255 255 128.]]
+           half-transparent white is 255 255 255 128.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool; [[true if found or false if not found and all
                          values are zeroed.]]
          params {
@@ -1904,7 +2554,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       color_class_description_get @const {
          [[Gets the description of an object color class.
 
-           This function gets the description of a color class in use by an object.]]
+           This function gets the description of a color class in use by an object.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          return: const(char)*; [[The description of the target color class or $null if not found]]
          params {
             @in color_class: const(char)*;
@@ -1924,7 +2579,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Values for dx and dy are real numbers that range from 0 to 1.
 
-           See also @.part_drag_page()]]
+           See also @.part_drag_page()
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -1934,7 +2594,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_cursor_up {
-         [[Move the cursor to the char above the current cursor position.]]
+         [[Move the cursor to the char above the current cursor position.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          return: bool;
          params {
@@ -1944,7 +2609,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       part_text_cursor_geometry_get @const {
          [[Returns the cursor geometry of the part relative to the edje
-           object.]]
+           object.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
             @out x: Evas.Coord; [[Cursor X position]]
@@ -1956,7 +2626,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_anchor_list_get @const {
          [[Return a list of char anchor names.
 
-           This function returns a list of char anchor names.]]
+           This function returns a list of char anchor names.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: const(list<const(char)*>)*; [[The list of anchors (const char *), do not modify!]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -1990,7 +2665,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            will be executed, and then filtered text will be inserted.
 
            See also @.text_insert_filter_callback_del, @.text_insert_filter_callback_del_full
-           and @.text_markup_filter_callback_add]]
+           and @.text_markup_filter_callback_add
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
 
          params {
             @in part: const(char)*; [[The part name]]
@@ -2004,7 +2684,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            Note that input panel is shown or hidden automatically according to the focus state.
            This API can be used in the case of manually controlling by using edje_object_part_text_input_panel_enabled_set.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -2017,7 +2702,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            bound to object obj (with edje_object_file_set()).
 
            This call is useful, for example, when one could expect or not a
-           given GUI element, depending on the  theme applied to obj.]]
+           given GUI element, depending on the  theme applied to obj.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: bool; [[$true, if the Edje part exists in obj's group or
                          $false, otherwise (and on errors)]]
          params {
@@ -2033,7 +2723,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            See also @.text_markup_filter_callback_add and @.text_markup_filter_callback_del_full
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.2.0
+         ]]
 
          return: void *; [[The user data pointer if successful, or $null otherwise]]
          params {
@@ -2044,7 +2739,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_cursor_is_visible_format_get @const {
          [[Return true if the cursor points to a visible format
            For example \\t, \\n, item and etc.
-           @ evas_textblock_cursor_format_is_visible_get]]
+           @ evas_textblock_cursor_format_is_visible_get
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          return: bool;
          params {
             @in part: const(char)*; [[The part name]]
@@ -2057,7 +2757,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            This means it actually registers as a change and emits signals, triggers
            callbacks as appropriate.
 
-           @since 1.2.0]]
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+
+           @since 1.2.0
+         ]]
          params {
             @in part: const(char)*; [[The part name]]
             @in text: const(char)*; [[The text string]]
@@ -2065,7 +2770,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       part_text_cursor_prev {
          [[Moves the cursor to the previous char
-           \@ref evas_textblock_cursor_char_prev]]
+           \@ref evas_textblock_cursor_char_prev
+
+            \@if MOBILE \@since_tizen 3.0
+            \@elseif WEARABLE \@since_tizen 3.0
+            \@endif
+          ]]
 
          return: bool;
          params {
@@ -2076,7 +2786,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       part_text_item_list_get @const {
          [[Return a list of char item names.
 
-           This function returns a list of char item names.]]
+           This function returns a list of char item names.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: const(list<const(char)*>)*; [[The list of items (const char *), do not modify!]]
          params {
             @in part: const(char)*; [[The part name]]
@@ -2112,7 +2827,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             deleted --  obj_swallow will get to an unparented state again.
 
             For more details on EDC $SWALLOW parts, see \@ref edcref "syntax
-            reference".]]
+            reference".
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
 
          return: bool;
          params {
@@ -2126,14 +2846,24 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
                 This define the transition duration factor on this
                 specific object. By default all animation are run at a speed
-                factor of 1.0.]]
+                factor of 1.0.
+
+                \@if MOBILE \@since_tizen 3.0
+                \@elseif WEARABLE \@since_tizen 3.0
+                \@endif
+              ]]
          }
          get {
               [[Get transition duration factor.
 
                 This define the transition duration factor on this
                 specific object. By default all animation are run at a speed
-                factor of 1.0.]]
+                factor of 1.0.
+
+                \@if MOBILE \@since_tizen 3.0
+                \@elseif WEARABLE \@since_tizen 3.0
+                \@endif
+              ]]
          }
          values {
             scale: double; [[The transition duration factor]]

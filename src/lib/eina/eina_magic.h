@@ -150,6 +150,10 @@ typedef unsigned int Eina_Magic;
  *   - (unknown): Magic is not found in the registry.
  *
  * @warning The returned value must not be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_magic_string_get(Eina_Magic magic) EINA_WARN_UNUSED_RESULT;
 /**
@@ -166,6 +170,10 @@ EAPI const char *eina_magic_string_get(Eina_Magic magic) EINA_WARN_UNUSED_RESULT
  *          duplicates. Internally, eina makes a copy of @p magic_name.
  *
  * @see eina_magic_string_static_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   eina_magic_string_set(Eina_Magic  magic,
                                        const char *magic_name) EINA_ARG_NONNULL(2);
@@ -185,6 +193,10 @@ EAPI Eina_Bool   eina_magic_string_set(Eina_Magic  magic,
  *          @p magic_name has to be a valid pointer for as long as @p magic is used.
  *
  * @see eina_magic_string_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   eina_magic_string_static_set(Eina_Magic  magic,
                                               const char *magic_name) EINA_ARG_NONNULL(2);
@@ -202,6 +214,10 @@ EAPI Eina_Bool   eina_magic_string_static_set(Eina_Magic  magic,
 /**
  * @var EINA_ERROR_MAGIC_FAILED
  * @brief The error identifier corresponding to the magic check failure.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern Eina_Error EINA_ERROR_MAGIC_FAILED;
 
@@ -292,6 +308,10 @@ EAPI extern Eina_Error EINA_ERROR_MAGIC_FAILED;
  * @note If the environment variable EINA_LOG_ABORT is set, abort() is
  *       called and the program stops. It is useful for debugging programs
  *       with gdb.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_magic_fail(void *d, Eina_Magic m, Eina_Magic req_m,
                           const char *file, const char *fnc,

@@ -17,6 +17,8 @@
 
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Data Home directory
  * @brief Retrieves the XDG Data Home directory
  *
@@ -26,6 +28,8 @@
 EAPI const char *efreet_data_home_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the Eina_List of preference ordered extra data directories
  * @brief Returns the Eina_List of preference ordered extra data directories
  *
@@ -40,6 +44,8 @@ EAPI Eina_List *efreet_data_dirs_get(void);
 
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Config Home directory
  * @brief Retrieves the XDG Config Home directory
  *
@@ -49,6 +55,8 @@ EAPI Eina_List *efreet_data_dirs_get(void);
 EAPI const char *efreet_config_home_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Desktop directory
  * @brief Retrieves the XDG Desktop directory
  *
@@ -61,6 +69,8 @@ EAPI const char *efreet_config_home_get(void);
 EAPI const char *efreet_desktop_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Download directory
  * @brief Retrieves the XDG Download directory
  *
@@ -81,6 +91,8 @@ EAPI const char *efreet_desktop_dir_get(void);
 EAPI const char *efreet_download_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Templates directory
  * @brief Retrieves the XDG Templates directory
  *
@@ -98,6 +110,8 @@ EAPI const char *efreet_download_dir_get(void);
 EAPI const char *efreet_templates_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Public Share directory
  * @brief Retrieves the XDG Public Share directory
  *
@@ -112,6 +126,8 @@ EAPI const char *efreet_templates_dir_get(void);
 EAPI const char *efreet_public_share_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Documents directory
  * @brief Retrieves the XDG Documents directory
  *
@@ -129,6 +145,8 @@ EAPI const char *efreet_public_share_dir_get(void);
 EAPI const char *efreet_documents_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Music directory
  * @brief Retrieves the XDG Music directory
  *
@@ -146,6 +164,8 @@ EAPI const char *efreet_documents_dir_get(void);
 EAPI const char *efreet_music_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Pictures directory
  * @brief Retrieves the XDG Pictures directory
  *
@@ -163,6 +183,8 @@ EAPI const char *efreet_music_dir_get(void);
 EAPI const char *efreet_pictures_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Videos directory
  * @brief Retrieves the XDG Videos directory
  *
@@ -180,6 +202,8 @@ EAPI const char *efreet_pictures_dir_get(void);
 EAPI const char *efreet_videos_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the Eina_List of preference ordered extra config directories
  * @brief Returns the Eina_List of preference ordered extra config
  * directories
@@ -195,6 +219,8 @@ EAPI Eina_List *efreet_config_dirs_get(void);
 
 
 /**
+ * @internal
+ *
  * @return Returns the XDG Cache Home directory
  * @brief Retrieves the XDG Cache Home directory
  *
@@ -209,6 +235,8 @@ EAPI Eina_List *efreet_config_dirs_get(void);
 EAPI const char *efreet_cache_home_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the XDG User Runtime directory.
  * @brief Retrieves the XDG User Runtime directory.
  *
@@ -256,6 +284,8 @@ EAPI const char *efreet_cache_home_get(void);
 EAPI const char *efreet_runtime_dir_get(void);
 
 /**
+ * @internal
+ *
  * @return Returns the current hostname
  * @brief Returns the current hostname or empty string if not found
  */

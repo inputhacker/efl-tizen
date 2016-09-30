@@ -265,6 +265,10 @@ struct _Eina_File_Line
  *          If @p cb or @p dir is @c NULL or if @p dir is a string of size 0,
  *          or if @p dir cannot be opened, this function returns #EINA_FALSE
  *          immediately. Otherwise, it returns #EINA_TRUE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_file_dir_list(const char           *dir,
                                   Eina_Bool             recursive,
@@ -281,6 +285,10 @@ EAPI Eina_Bool eina_file_dir_list(const char           *dir,
  *          filesystem. If  @p path is @c NULL or if the array cannot be
  *          created, @c NULL is returned, otherwise an array with each part of @p path
  *          is returned.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Array    *eina_file_split(char *path) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -302,6 +310,10 @@ EAPI Eina_Array    *eina_file_split(char *path) EINA_WARN_UNUSED_RESULT EINA_ARG
  * @note The iterator walks over '.' and '..' without returning them.
  *
  * @see eina_file_direct_ls()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *eina_file_ls(const char *dir) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -330,6 +342,10 @@ EAPI Eina_Iterator *eina_file_ls(const char *dir) EINA_WARN_UNUSED_RESULT EINA_A
  *       possible performance penalty.
  *
  * @see eina_file_direct_ls()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *eina_file_stat_ls(const char *dir) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -349,6 +365,10 @@ EAPI Eina_Iterator *eina_file_stat_ls(const char *dir) EINA_WARN_UNUSED_RESULT E
  * @see eina_file_stat_ls()
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eina_file_statat(void *container, Eina_File_Direct_Info *info, Eina_Stat *buf) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2, 3);
 
@@ -381,6 +401,10 @@ EAPI int eina_file_statat(void *container, Eina_File_Direct_Info *info, Eina_Sta
  *
  * @see eina_file_mkdtemp()
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eina_file_mkstemp(const char *templatename, Eina_Tmpstr **path) EINA_ARG_NONNULL(1);
 
@@ -406,6 +430,10 @@ EAPI int eina_file_mkstemp(const char *templatename, Eina_Tmpstr **path) EINA_AR
  *
  * @see eina_file_mkstemp()
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_file_mkdtemp(const char *templatename, Eina_Tmpstr **path) EINA_ARG_NONNULL(1,2);
 
@@ -436,6 +464,10 @@ EAPI Eina_Bool eina_file_mkdtemp(const char *templatename, Eina_Tmpstr **path) E
  *       faster.
  *
  * @see eina_file_ls()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *eina_file_direct_ls(const char *dir) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -451,6 +483,10 @@ EAPI Eina_Iterator *eina_file_direct_ls(const char *dir) EINA_WARN_UNUSED_RESULT
  *          path.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char *eina_file_path_sanitize(const char *path);
 
@@ -489,6 +525,10 @@ typedef enum {
  *          until the whole file is copied or it fails.
  *
  * @note During the progress it may call back @p cb with the progress summary.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_file_copy(const char *src, const char *dst, Eina_File_Copy_Flags flags, Eina_File_Copy_Progress cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
@@ -505,6 +545,10 @@ EAPI Eina_Bool eina_file_copy(const char *src, const char *dst, Eina_File_Copy_F
  *          is #EINA_TRUE, otherwise.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_File *eina_file_open(const char *name, Eina_Bool shared) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -518,6 +562,10 @@ EAPI Eina_File *eina_file_open(const char *name, Eina_Bool shared) EINA_WARN_UNU
  * @return #Eina_File handle to the file
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_File *
 eina_file_virtualize(const char *virtual_name, const void *data, unsigned long long length, Eina_Bool copy) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
@@ -529,6 +577,10 @@ eina_file_virtualize(const char *virtual_name, const void *data, unsigned long l
  * @return #EINA_TRUE if the file is a virtual file
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eina_file_virtual(Eina_File *file) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
@@ -543,6 +595,10 @@ eina_file_virtual(Eina_File *file) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
  *          and recreate them to have the new correct mapping.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_file_refresh(Eina_File *file);
 
@@ -555,6 +611,10 @@ EAPI Eina_Bool eina_file_refresh(Eina_File *file);
  * @note Opens a file in read-only mode.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_File * eina_file_dup(const Eina_File *file);
 
@@ -566,6 +626,10 @@ EAPI Eina_File * eina_file_dup(const Eina_File *file);
  * @details This decrements the file's reference count and if it reaches zero it closes the file.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_file_close(Eina_File *file);
 
@@ -576,6 +640,10 @@ EAPI void eina_file_close(Eina_File *file);
  * @return The length of the file
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI size_t eina_file_size_get(const Eina_File *file);
 
@@ -586,6 +654,10 @@ EAPI size_t eina_file_size_get(const Eina_File *file);
  * @return The last modification time
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI time_t eina_file_mtime_get(const Eina_File *file);
 
@@ -596,6 +668,10 @@ EAPI time_t eina_file_mtime_get(const Eina_File *file);
  * @return The stringshared filename of the file
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_file_filename_get(const Eina_File *file);
 
@@ -609,6 +685,10 @@ EAPI const char *eina_file_filename_get(const Eina_File *file);
  *       them, so you need to copy them yourself if needed.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *eina_file_xattr_get(Eina_File *file);
 
@@ -623,6 +703,10 @@ EAPI Eina_Iterator *eina_file_xattr_get(Eina_File *file);
  *       Eina_Xattr structure.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *eina_file_xattr_value_get(Eina_File *file);
 
@@ -635,6 +719,10 @@ EAPI Eina_Iterator *eina_file_xattr_value_get(Eina_File *file);
  *         @c NULL if it fails
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eina_file_map_all(Eina_File *file, Eina_File_Populate rule);
 
@@ -651,6 +739,10 @@ EAPI void *eina_file_map_all(Eina_File *file, Eina_File_Populate rule);
  * @note This does handle reference counting so it can share the same memory area.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eina_file_map_new(Eina_File *file, Eina_File_Populate rule,
                              unsigned long int offset, unsigned long int length);
@@ -662,6 +754,10 @@ EAPI void *eina_file_map_new(Eina_File *file, Eina_File_Populate rule,
  * @param[in] map The memory map to unref and unmap
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_file_map_free(Eina_File *file, void *map);
 
@@ -679,6 +775,10 @@ EAPI void eina_file_map_free(Eina_File *file, void *map);
  *          be honored if the system chooses to ignore the request.
  * 
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eina_file_map_populate(Eina_File *file, Eina_File_Populate rule, const void *map,
@@ -695,6 +795,10 @@ eina_file_map_populate(Eina_File *file, Eina_File_Populate rule, const void *map
  *          nothing can guarantee that the memory is still going to be mapped.
  *
  * @since 1.3
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *eina_file_map_lines(Eina_File *file);
 
@@ -706,6 +810,10 @@ EAPI Eina_Iterator *eina_file_map_lines(Eina_File *file);
  * @return #EINA_TRUE if there has been an IO error, otherwise #EINA_FALSE
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_file_map_faulted(Eina_File *file, void *map);
 

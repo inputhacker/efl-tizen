@@ -58,6 +58,10 @@ struct _Eina_Xattr
  * if you need.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_xattr_ls(const char *file) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -71,6 +75,10 @@ EAPI Eina_Iterator *eina_xattr_ls(const char *file) EINA_ARG_NONNULL(1) EINA_WAR
  * if you need. The iterator will provide an Eina_Xattr structure.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_xattr_value_ls(const char *file) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -84,6 +92,10 @@ EAPI Eina_Iterator *eina_xattr_value_ls(const char *file) EINA_ARG_NONNULL(1) EI
  * if you need.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_xattr_fd_ls(int fd) EINA_WARN_UNUSED_RESULT;
 
@@ -97,6 +109,10 @@ EAPI Eina_Iterator *eina_xattr_fd_ls(int fd) EINA_WARN_UNUSED_RESULT;
  * if you need. The iterator will provide an Eina_Xattr structure.
  *
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_xattr_value_fd_ls(int fd) EINA_WARN_UNUSED_RESULT;
 
@@ -107,6 +123,10 @@ EAPI Eina_Iterator *eina_xattr_value_fd_ls(int fd) EINA_WARN_UNUSED_RESULT;
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  * @see eina_xattr_fd_copy()
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_copy(const char *src, const char *dst) EINA_ARG_NONNULL(1, 2);
 
@@ -117,6 +137,10 @@ EAPI Eina_Bool eina_xattr_copy(const char *src, const char *dst) EINA_ARG_NONNUL
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  * @see eina_xattr_copy()
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_fd_copy(int src, int dst);
 
@@ -131,6 +155,10 @@ EAPI Eina_Bool eina_xattr_fd_copy(int src, int dst);
  * It will return @c NULL and *size will be @c 0 if it fails.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_xattr_get(const char *file, const char *attribute, ssize_t *size) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
@@ -145,6 +173,10 @@ EAPI void *eina_xattr_get(const char *file, const char *attribute, ssize_t *size
  * It will return @c NULL and *size will be @c 0 if it fails.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eina_xattr_fd_get(int fd, const char *attribute, ssize_t *size) EINA_ARG_NONNULL(2, 3) EINA_WARN_UNUSED_RESULT;
 
@@ -159,6 +191,10 @@ EAPI void *eina_xattr_fd_get(int fd, const char *attribute, ssize_t *size) EINA_
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_set(const char *file, const char *attribute, const void *data, ssize_t length, Eina_Xattr_Flags flags) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -173,6 +209,10 @@ EAPI Eina_Bool eina_xattr_set(const char *file, const char *attribute, const voi
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_fd_set(int fd, const char *attribute, const void *data, ssize_t length, Eina_Xattr_Flags flags) EINA_ARG_NONNULL(2, 3);
 
@@ -185,6 +225,10 @@ EAPI Eina_Bool eina_xattr_fd_set(int fd, const char *attribute, const void *data
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_del(const char *file, const char *attribute) EINA_ARG_NONNULL(1, 2);
 
@@ -196,6 +240,10 @@ EAPI Eina_Bool eina_xattr_del(const char *file, const char *attribute) EINA_ARG_
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_fd_del(int fd, const char *attribute) EINA_ARG_NONNULL(2);
 
@@ -209,6 +257,10 @@ EAPI Eina_Bool eina_xattr_fd_del(int fd, const char *attribute) EINA_ARG_NONNULL
  * @return EINA_TRUE on success, EINA_FALSE otherwise.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_string_set(const char *file, const char *attribute, const char *data, Eina_Xattr_Flags flags);
 
@@ -222,6 +274,10 @@ EAPI Eina_Bool eina_xattr_string_set(const char *file, const char *attribute, co
  * This call check that the string is properly NULL-terminated before returning it.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char *eina_xattr_string_get(const char *file, const char *attribute);
 
@@ -235,6 +291,10 @@ EAPI char *eina_xattr_string_get(const char *file, const char *attribute);
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_double_set(const char *file, const char *attribute, double value, Eina_Xattr_Flags flags);
 
@@ -249,6 +309,10 @@ EAPI Eina_Bool eina_xattr_double_set(const char *file, const char *attribute, do
  * This call check that the double is correctly set.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_double_get(const char *file, const char *attribute, double *value);
 
@@ -262,6 +326,10 @@ EAPI Eina_Bool eina_xattr_double_get(const char *file, const char *attribute, do
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_int_set(const char *file, const char *attribute, int value, Eina_Xattr_Flags flags);
 
@@ -276,6 +344,10 @@ EAPI Eina_Bool eina_xattr_int_set(const char *file, const char *attribute, int v
  * This call check that the int is correctly set.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_xattr_int_get(const char *file, const char *attribute, int *value);
 

@@ -14,6 +14,8 @@
 
 
 /**
+ * @internal
+ *
  * Returns the fdo file id for a given path. If the file isn't inside
  * a default fdo path it will return NULL.
  *
@@ -25,6 +27,8 @@ EAPI const char *efreet_util_path_to_file_id(const char *path);
 
 
 /**
+ * @internal
+ *
  * Find all desktops for a given mime type
  *
  * This list must be freed using EINA_LIST_FREE / efreet_desktop_free
@@ -36,6 +40,8 @@ EAPI Eina_List *efreet_util_desktop_mime_list(const char *mime);
 
 
 /**
+ * @internal
+ *
  * Find all desktops for a given wm class
  *
  * This list must be freed using EINA_LIST_FREE / efreet_desktop_free
@@ -47,6 +53,8 @@ EAPI Eina_List *efreet_util_desktop_mime_list(const char *mime);
 EAPI Efreet_Desktop *efreet_util_desktop_wm_class_find(const char *wmname, const char *wmclass);
 
 /**
+ * @internal
+ *
  * Find a desktop by file id
  *
  * return value must be freed by efreet_desktop_free
@@ -57,6 +65,8 @@ EAPI Efreet_Desktop *efreet_util_desktop_wm_class_find(const char *wmname, const
 EAPI Efreet_Desktop *efreet_util_desktop_file_id_find(const char *file_id);
 
 /**
+ * @internal
+ *
  * Find a desktop by exec
  *
  * return value must be freed by efreet_desktop_free
@@ -67,6 +77,8 @@ EAPI Efreet_Desktop *efreet_util_desktop_file_id_find(const char *file_id);
 EAPI Efreet_Desktop *efreet_util_desktop_exec_find(const char *exec);
 
 /**
+ * @internal
+ *
  * Find a desktop by name
  *
  * return value must be freed by efreet_desktop_free
@@ -77,6 +89,8 @@ EAPI Efreet_Desktop *efreet_util_desktop_exec_find(const char *exec);
 EAPI Efreet_Desktop *efreet_util_desktop_name_find(const char *name);
 
 /**
+ * @internal
+ *
  * Find a desktop by generic name
  *
  * return value must be freed by efreet_desktop_free
@@ -88,6 +102,8 @@ EAPI Efreet_Desktop *efreet_util_desktop_generic_name_find(const char *generic_n
 
 
 /**
+ * @internal
+ *
  * Find all desktops where name matches a glob pattern
  *
  * This list must be freed using EINA_LIST_FREE / efreet_desktop_free
@@ -98,6 +114,8 @@ EAPI Efreet_Desktop *efreet_util_desktop_generic_name_find(const char *generic_n
 EAPI Eina_List *efreet_util_desktop_name_glob_list(const char *glob);
 
 /**
+ * @internal
+ *
  * Find all desktops where exec matches a glob pattern
  *
  * This list must be freed using EINA_LIST_FREE / efreet_desktop_free
@@ -108,6 +126,8 @@ EAPI Eina_List *efreet_util_desktop_name_glob_list(const char *glob);
 EAPI Eina_List *efreet_util_desktop_exec_glob_list(const char *glob);
 
 /**
+ * @internal
+ *
  * Find all desktops where generic name matches a glob pattern
  *
  * This list must be freed using EINA_LIST_FREE / efreet_desktop_free
@@ -118,6 +138,8 @@ EAPI Eina_List *efreet_util_desktop_exec_glob_list(const char *glob);
 EAPI Eina_List *efreet_util_desktop_generic_name_glob_list(const char *glob);
 
 /**
+ * @internal
+ *
  * Find all desktops where comment matches a glob pattern
  *
  * This list must be freed using EINA_LIST_FREE / efreet_desktop_free
@@ -129,6 +151,8 @@ EAPI Eina_List *efreet_util_desktop_comment_glob_list(const char *glob);
 
 
 /**
+ * @internal
+ *
  * Find all desktop categories
  * This list must be freed using EINA_LIST_FREE
  *
@@ -137,6 +161,8 @@ EAPI Eina_List *efreet_util_desktop_comment_glob_list(const char *glob);
 EAPI Eina_List *efreet_util_desktop_categories_list(void);
 
 /**
+ * @internal
+ *
  * Find all desktops in a given category
  *
  * This list must be freed using EINA_LIST_FREE / efreet_desktop_free
@@ -148,12 +174,16 @@ EAPI Eina_List *efreet_util_desktop_category_list(const char *category);
 
 
 /**
+ * @internal
+ *
  * Returns a list of .menu files found in the various config dirs.
  * @return An eina list of menu file paths (const char *). This must be freed with EINA_LIST_FREE.
  */
 EAPI Eina_List *efreet_util_menus_find(void);
 
 /**
+ * @internal
+ *
  * Find all known desktop environments
  * This list must be freed using EINA_LIST_FREE
  * @since 1.12

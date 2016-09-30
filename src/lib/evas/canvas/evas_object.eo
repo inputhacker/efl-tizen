@@ -18,6 +18,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               Note: Smart objects (such as elementary) can have their own
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -39,6 +43,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -59,6 +67,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               Note: Smart objects(such as elementary) can have their own
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
          }
          get {
@@ -70,6 +82,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
          }
          values {
@@ -93,6 +109,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               built-in smart objects, these names are "EvasObjectSmartClipped"
               for the clipped smart object, "Evas_Object_Box" for the box
               object and "Evas_Object_Table for the table object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -120,6 +140,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               Note: Smart objects(such as elementary) can have their own
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -141,6 +165,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -164,10 +192,19 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               will be emitted just when inside this object area.
 
               The default value is EVAS_OBJECT_POINTER_MODE_AUTOGRAB.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Determine how pointer will behave.]]
+            [[Determine how pointer will behave.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             pointer_mode: Evas.Object_Pointer_Mode; [[Desired behavior.]]
@@ -175,11 +212,20 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
       }
       @property render_op {
          set {
-            [[Sets the render_op to be used for rendering the Evas object.]]
+            [[Sets the render_op to be used for rendering the Evas object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
             [[Retrieves the current value of the operation used for
               rendering the Evas object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -202,11 +248,19 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               we won't guarantee the state of the object, that only had
               key/mouse down events, will be.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.1
             ]]
          }
          get {
             [[Determine whether an object is set to freeze (discard) events.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
 
               @since 1.1
             ]]
@@ -237,6 +291,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               Note: The map points a uv coordinates match the image geometry.
               If the $map parameter is $null, the stored map will be freed
               and geometry prior to enabling/setting a map will be restored.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
               If you have a 200x100 source
@@ -265,6 +323,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               object. It is intended for read-only access and is only
               valid as long as the object is not deleted or the map on
               the object is not changed. 
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
               If you wish to modify the map
@@ -297,6 +359,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               Note: Smart objects(such as elementary) can have their own
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -314,6 +380,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             These images illustrate some of the #Evas_Aspect_Control policies:
@@ -392,6 +462,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               The clip object $clip must be a valid object, but can also be
               $null, in which case the effect of this function is the same
               as @.clip_unset on the $obj object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             The following figure illustrates some clipping in Evas:
@@ -414,6 +488,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               This function returns the object clipping $obj. If $obj is
               not being clipped at all, $null is returned. The object $obj
               must be a valid Evas_Object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -438,6 +516,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               Note: Smart objects(such as elementary) can have their own
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -451,6 +533,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             This space will be rendered
@@ -487,6 +573,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               If $repeat is $false, events occurring on $obj will be
               processed only on it.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -498,7 +588,12 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
             */
          }
          get {
-            [[Determine whether an object is set to repeat events.]]
+            [[Determine whether an object is set to repeat events.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             repeat: bool; [[Whether $obj is to repeat events ($true) or
@@ -525,6 +620,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               ones.
 
               Note: Default weight hint values are 0.0, for both axis.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -554,6 +653,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: If $obj is invalid, then the hint components will be
               set with 0.0.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -567,6 +670,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               There might be occasions where one would like to name his/her
               objects.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -582,6 +689,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Return: The name of the object or $null, if no name has been
               given to it.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -607,10 +718,19 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Only text and textblock objects have scaling change
               handlers. Other objects won't change visually on this call.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Retrieves the scaling factor for the given Evas object.]]
+            [[Retrieves the scaling factor for the given Evas object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             scale: double; [[The scaling factor. 1.0 means no scaling,
@@ -626,10 +746,19 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               static clipper and shouldn't be moved with children and
               otherwise considered specially. The default value for new
               objects is $false.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get the "static clipper" hint flag for a given Evas object.]]
+            [[Get the "static clipper" hint flag for a given Evas object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             is_static_clip: bool; [[$true if it's to be used as a static
@@ -648,6 +777,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               exclusive key grabs on other objects.
 
               See also @.key_grab, @.key_ungrab.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -663,6 +796,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               If the passed object is the currently focused one, $true is
               returned. $false is returned, otherwise.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -679,10 +816,24 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
       }
       @property is_frame_object {
          set {
-            [[@since 1.2]]
+            [[not documented.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.2
+            ]]
          }
          get {
-            [[@since 1.2]]
+            [[not documented.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.2
+            ]]
          }
          values {
             is_frame: bool;
@@ -701,6 +852,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               \@ref evas_object_map_set), the initial geometry will be
               undefined. It is advised to always set a map to the object
               first, and then call this function to enable its use.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -709,6 +864,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               This returns the currently enabled state of the map on the
               object indicated. The default map enable state is off. You
               can enable and disable it with @.map_enable.set.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -727,6 +886,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Warning: By using precise point collision detection you'll be
               making Evas more resource intensive.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example code follows.
@@ -740,6 +903,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
          get {
             [[Determine whether an object is set to use precise point
               collision detection.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -772,6 +939,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               that should be used whenever appropriate.
 
               Note: Default alignment hint values are 0.5, for both axis.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             See the following figure:
@@ -801,6 +972,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: If $obj is invalid, then the hint components will be
               set with 0.5
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -826,6 +1001,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               See also @.repeat_events.set, @.pass_events.set,
               @.freeze_events.set.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -833,6 +1012,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               See also @.repeat_events.get, @.pass_events.get,
               @.freeze_events.get.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -853,6 +1036,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               See also @.repeat_events.set, @.propagate_events.set,
               @.freeze_events.set.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -860,6 +1047,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               See also @.repeat_events.get, @.propagate_events.get,
               @.freeze_events.get.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -879,11 +1070,19 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
          set {
             [[Sets whether or not the given Evas object is to be drawn
               anti-aliased.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
             [[Retrieves whether or not the given Evas object is to be drawn
               anti_aliased.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -893,7 +1092,12 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
       }
       @property smart_data {
          get {
-            [[Retrieve user data stored on a given smart object.]]
+            [[Retrieve user data stored on a given smart object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
             return: void * @warn_unused; [[A pointer to data or $null.]]
          }
       }
@@ -903,6 +1107,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Use this function if you want to change any of this clipper's
               properties, like colors.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
             ]]
             return: Evas.Object * @warn_unused;
          }
@@ -924,6 +1132,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               The object $obj must be a valid Evas_Object.
 
               See also @.clip.set, @.clip_unset and @.clip.get.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             Example:
@@ -950,6 +1162,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
          get {
             [[Gets the parent smart object of a given Evas object, if it
               has one.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: Evas.Object * @warn_unused; [[The parent smart object
                                                   of $obj or $null.]]
@@ -963,6 +1179,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               enforcement in any way, it's just a hint that can be used
               whenever appropriate. This mode can be used object's display
               mode like commpress or expand.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          set {
@@ -970,6 +1190,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               This is not a size enforcement in any way, it's just a hint
               that can be used whenever appropriate.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -982,8 +1206,18 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
            can inherit the paragraph direction from the given object.
            The default paragraph direction is @Evas.BiDi_Direction.inherit.]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             dir: Evas.BiDi_Direction; [[Paragraph direction for the given object.]]
@@ -991,6 +1225,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
       }
       clipees_has @const {
          [[Test if any object is clipped by $obj.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
 
            @since 1.8
          ]]
@@ -1025,6 +1263,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
            See also @.key_ungrab, @.focus.get, @.focus.set,
            \@ref evas_focus_get, \@ref evas_key_modifier_add.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          /* FIXME-doc
          Example code follows.
@@ -1061,6 +1303,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
            a smart class' name is a single string in Evas.
 
            See also @.smart_type_check_ptr.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: bool @warn_unused;
          params {
@@ -1078,6 +1324,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
            child tree) then it is not defined which child object will be
            returned. If $recurse is set to -1 then it will recurse without
            limit.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
 
            @since 1.2
          ]]
@@ -1100,6 +1350,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
            See also @.key_grab, @.focus.get, @.focus.set,
            \@ref evas_focus_get.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          /* FIXME-doc
          Example code follows.
@@ -1128,6 +1382,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
            object $obj must be a valid Evas_Object.
 
            See also @.clip.set, @.clipees.get and @.clip.get.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       smart_move_children_relative {
@@ -1141,6 +1399,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
            Note: Clipped smart objects already make use of this function on
            their $move smart function definition.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in dx: Evas.Coord; [[Horizontal offset (delta).]]
@@ -1150,6 +1412,10 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
       smart_type_check_ptr @const {
          [[Checks whether a given smart object or any of its smart object
            parents is of a given smart class, using pointer comparison.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          return: bool @warn_unused; [[$true if $obj or any of its parents
                                       is of type $type, $false otherwise.]]

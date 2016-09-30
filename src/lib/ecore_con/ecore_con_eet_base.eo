@@ -50,7 +50,12 @@ class Ecore.Con.Eet.Base (Eo.Base) {
       }
       register {
          [[Function to register a \@ref Eet_Data_Descriptor to the
-           ecore_con_eet object.]]
+           ecore_con_eet object.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          legacy: ecore_con_eet;
          params {
             name: const (char) *; [[The name of the eet stream.]]

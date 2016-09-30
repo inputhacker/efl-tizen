@@ -176,6 +176,10 @@ EAPI extern Eina_Error EINA_ERROR_CONVERT_OUTRUN_STRING_LENGTH; /**< Not used, p
  *
  * The returned value is the length of the string, including the nul
  * terminated character.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int       eina_convert_itoa(int n, char *s)  EINA_ARG_NONNULL(2);
 
@@ -194,6 +198,10 @@ EAPI int       eina_convert_itoa(int n, char *s)  EINA_ARG_NONNULL(2);
  *
  * The returned value is the length of the string, including the nul
  * terminated character.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int       eina_convert_xtoa(unsigned int n, char *s) EINA_ARG_NONNULL(2);
 
@@ -219,6 +227,10 @@ EAPI int       eina_convert_xtoa(unsigned int n, char *s) EINA_ARG_NONNULL(2);
  *
  * The returned value is the length of the string, including the nul
  * character.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int       eina_convert_dtoa(double d, char *des) EINA_ARG_NONNULL(2);
 
@@ -256,6 +268,10 @@ EAPI int       eina_convert_dtoa(double d, char *des) EINA_ARG_NONNULL(2);
  *
  * If the string is invalid #EINA_FALSE is returned, otherwise #EINA_TRUE is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_convert_atod(const char *src,
                                  int         length,
@@ -289,6 +305,10 @@ EAPI Eina_Bool eina_convert_atod(const char *src,
  * @note The code is the same than eina_convert_dtoa() except that it
  * implements the frexp() function for fixed point numbers and does
  * some optimisations.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int       eina_convert_fptoa(Eina_F32p32 fp,
                                   char       *des) EINA_ARG_NONNULL(2);
@@ -329,6 +349,10 @@ EAPI int       eina_convert_fptoa(Eina_F32p32 fp,
  *
  * @note The code uses eina_convert_atod() and do the correct bit
  * shift to compute the fixed point number.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_convert_atofp(const char  *src,
                                   int          length,

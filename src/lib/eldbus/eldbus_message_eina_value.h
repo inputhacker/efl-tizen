@@ -9,6 +9,10 @@
  *
  * @param msg Message
  * @return Eina_Value of type Eina_Value_Type_Struct
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value *eldbus_message_to_eina_value(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -18,6 +22,10 @@ EAPI Eina_Value *eldbus_message_to_eina_value(const Eldbus_Message *msg) EINA_AR
  *
  * @param iter Message iterator
  * @return Eina_Value of type Eina_Value_Type_Struct
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value *eldbus_message_iter_struct_like_to_eina_value(const Eldbus_Message_Iter *iter);
 
@@ -28,6 +36,10 @@ EAPI Eina_Value *eldbus_message_iter_struct_like_to_eina_value(const Eldbus_Mess
  * @param msg where data will be put
  * @param value source of data, must be of type Eina_Value_Type_Struct
  * @return success or not
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eldbus_message_from_eina_value(const char *signature, Eldbus_Message *msg, const Eina_Value *value) EINA_ARG_NONNULL(1, 2, 3);
 

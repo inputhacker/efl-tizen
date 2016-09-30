@@ -77,6 +77,10 @@ typedef int Eina_Error;
 /**
  * @var EINA_ERROR_OUT_OF_MEMORY
  * @brief The error identifier corresponding to lack of memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern Eina_Error EINA_ERROR_OUT_OF_MEMORY;
 
@@ -93,6 +97,10 @@ EAPI extern Eina_Error EINA_ERROR_OUT_OF_MEMORY;
  *          the returned value to eina_error_msg_get().
  *
  * @see eina_error_msg_static_register()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Error  eina_error_msg_register(const char *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -110,6 +118,10 @@ EAPI Eina_Error  eina_error_msg_register(const char *msg) EINA_ARG_NONNULL(1) EI
  *          the returned value to eina_error_msg_get().
  *
  * @see eina_error_msg_register()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Error  eina_error_msg_static_register(const char *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -128,6 +140,10 @@ EAPI Eina_Error  eina_error_msg_static_register(const char *msg) EINA_ARG_NONNUL
  *          is unrefed and @p msg is copied.
  *
  * @see eina_error_msg_register()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   eina_error_msg_modify(Eina_Error  error,
                                        const char *msg) EINA_ARG_NONNULL(2);
@@ -141,6 +157,10 @@ EAPI Eina_Bool   eina_error_msg_modify(Eina_Error  error,
  *          description of the message is returned by eina_error_msg_get().
  *
  * @note This function is thread safe @since 1.10, but slower to use.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Error  eina_error_get(void);
 
@@ -156,6 +176,10 @@ EAPI Eina_Error  eina_error_get(void);
  *        be @c 0.
  *
  * @note This function is thread safe @since 1.10, but slower to use.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        eina_error_set(Eina_Error err);
 
@@ -168,6 +192,10 @@ EAPI void        eina_error_set(Eina_Error err);
  * @details This function returns the description of an error that has been
  *          registered by eina_error_msg_register(). If an incorrect error is
  *          given, then @c NULL is returned.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eina_error_msg_get(Eina_Error error) EINA_PURE;
 
@@ -179,6 +207,10 @@ EAPI const char *eina_error_msg_get(Eina_Error error) EINA_PURE;
  *
  * @details This function attempts to match @p msg with its corresponding #Eina_Error value.
  *          If no such value is found, @c 0 is returned.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Error  eina_error_find(const char *msg) EINA_ARG_NONNULL(1) EINA_PURE;
 

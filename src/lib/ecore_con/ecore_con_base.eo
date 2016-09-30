@@ -133,6 +133,10 @@ abstract Ecore.Con.Base (Eo.Base) {
            address, addr - a pointer to the socket address, addrlen - the length
            of the socket address, in bytes, data - the data pointer given as
            parameter.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             name: const(char)* @nonull; [[IP address or server name to translate.]]

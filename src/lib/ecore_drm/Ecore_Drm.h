@@ -226,6 +226,8 @@ EAPI extern int ECORE_DRM_EVENT_OUTPUT; /**< @since 1.14 */
 EAPI extern int ECORE_DRM_EVENT_SEAT_ADD; /**< @since 1.14 */
 
 /**
+ * @internal
+ *
  * @file
  * @brief Ecore functions for dealing with drm, virtual terminals
  * 
@@ -248,6 +250,8 @@ EAPI int ecore_drm_init(void);
 EAPI int ecore_drm_shutdown(void);
 
 /**
+ * @internal
+ *
  * Find a drm device in the system.
  *
  * @param name The name of the device to find. If NULL, this function will 
@@ -262,6 +266,8 @@ EAPI int ecore_drm_shutdown(void);
 EAPI Ecore_Drm_Device *ecore_drm_device_find(const char *name, const char *seat);
 
 /**
+ * @internal
+ *
  * Free an Ecore_Drm_Device
  *
  * This function will cleanup and free any previously allocated Ecore_Drm_Device.
@@ -273,6 +279,8 @@ EAPI Ecore_Drm_Device *ecore_drm_device_find(const char *name, const char *seat)
 EAPI void ecore_drm_device_free(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Open an Ecore_Drm_Device
  *
  * This function will open an existing Ecore_Drm_Device for use.
@@ -286,6 +294,8 @@ EAPI void ecore_drm_device_free(Ecore_Drm_Device *dev);
 EAPI Eina_Bool ecore_drm_device_open(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Close an Ecore_Drm_Device
  *
  * This function will close a previously opened Ecore_Drm_Device
@@ -299,6 +309,8 @@ EAPI Eina_Bool ecore_drm_device_open(Ecore_Drm_Device *dev);
 EAPI Eina_Bool ecore_drm_device_close(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Get if a given Ecore_Drm_Device is master
  * 
  * This function will check if the given drm device is set to master
@@ -312,6 +324,8 @@ EAPI Eina_Bool ecore_drm_device_close(Ecore_Drm_Device *dev);
 EAPI Eina_Bool ecore_drm_device_master_get(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Set a given Ecore_Drm_Device to master
  * 
  * This function will attempt to set a given drm device to be master
@@ -325,6 +339,8 @@ EAPI Eina_Bool ecore_drm_device_master_get(Ecore_Drm_Device *dev);
 EAPI Eina_Bool ecore_drm_device_master_set(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Tell a given Ecore_Drm_Device to stop being master
  * 
  * This function will attempt to ask a drm device to stop being master
@@ -338,6 +354,8 @@ EAPI Eina_Bool ecore_drm_device_master_set(Ecore_Drm_Device *dev);
 EAPI Eina_Bool ecore_drm_device_master_drop(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Get the file descriptor of Ecore_Drm_Device
  *
  * This function will get the file descriptor of drm device
@@ -352,6 +370,8 @@ EAPI Eina_Bool ecore_drm_device_master_drop(Ecore_Drm_Device *dev);
 EAPI int ecore_drm_device_fd_get(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Set the window of Ecore_Drm_Device
  *
  * This function will set the window for given drm device
@@ -366,6 +386,8 @@ EAPI int ecore_drm_device_fd_get(Ecore_Drm_Device *dev);
 EAPI void ecore_drm_device_window_set(Ecore_Drm_Device *dev, unsigned int window);
 
 /**
+ * @internal
+ *
  * Get the name of the Ecore_Drm_Device
  *
  * This function will return the name of Ecore_Drm_Device
@@ -381,6 +403,8 @@ EAPI void ecore_drm_device_window_set(Ecore_Drm_Device *dev, unsigned int window
 EAPI const char *ecore_drm_device_name_get(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Setup an Ecore_Drm_Device for software rendering
  *
  * This function will setup an Ecore_Drm_Device for software rendering
@@ -437,6 +461,8 @@ EAPI void ecore_drm_device_keyboard_cached_context_set(struct xkb_context *ctx);
 EAPI void ecore_drm_device_keyboard_cached_keymap_set(struct xkb_keymap *map);
 
 /**
+ * @internal
+ *
  * Find an Ecore_Drm_Output at the given coordinates
  *
  * This function will loop all the existing outputs in Ecore_Drm_Device and 
@@ -454,6 +480,8 @@ EAPI void ecore_drm_device_keyboard_cached_keymap_set(struct xkb_keymap *map);
 EAPI Ecore_Drm_Output *ecore_drm_device_output_find(Ecore_Drm_Device *dev, int x, int y);
 
 /**
+ * @internal
+ *
  * Open a tty for use
  * 
  * @param dev  The Ecore_Drm_Device that this tty will belong to.
@@ -467,6 +495,8 @@ EAPI Ecore_Drm_Output *ecore_drm_device_output_find(Ecore_Drm_Device *dev, int x
 EAPI Eina_Bool ecore_drm_tty_open(Ecore_Drm_Device *dev, const char *name);
 
 /**
+ * @internal
+ *
  * Close an already opened tty
  * 
  * @param dev The Ecore_Drm_Device which owns this tty.
@@ -478,6 +508,8 @@ EAPI Eina_Bool ecore_drm_tty_open(Ecore_Drm_Device *dev, const char *name);
 EAPI Eina_Bool ecore_drm_tty_close(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Release a virtual terminal
  * 
  * @param dev The Ecore_Drm_Device which owns this tty.
@@ -489,6 +521,8 @@ EAPI Eina_Bool ecore_drm_tty_close(Ecore_Drm_Device *dev);
 EAPI Eina_Bool ecore_drm_tty_release(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Acquire a virtual terminal
  * 
  * @param dev The Ecore_Drm_Device which owns this tty.
@@ -500,6 +534,8 @@ EAPI Eina_Bool ecore_drm_tty_release(Ecore_Drm_Device *dev);
 EAPI Eina_Bool ecore_drm_tty_acquire(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Get the opened virtual terminal file descriptor
  * 
  * @param dev The Ecore_Drm_Device which owns this tty.
@@ -513,6 +549,8 @@ EAPI Eina_Bool ecore_drm_tty_acquire(Ecore_Drm_Device *dev);
 EAPI int ecore_drm_tty_get(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Create outputs for a drm device
  *
  * This function will create outputs for Ecore_Drm_Device
@@ -527,6 +565,8 @@ EAPI int ecore_drm_tty_get(Ecore_Drm_Device *dev);
 EAPI Eina_Bool ecore_drm_outputs_create(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Free an Ecore_Drm_Output 
  *
  * This function will cleanup and free any previously allocated Ecore_Drm_Output
@@ -538,6 +578,8 @@ EAPI Eina_Bool ecore_drm_outputs_create(Ecore_Drm_Device *dev);
 EAPI void ecore_drm_output_free(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Set the cursor size for Ecore_Drm_Output 
  *
  * This function will set the cursor size of Ecore_Drm_Output
@@ -552,6 +594,8 @@ EAPI void ecore_drm_output_free(Ecore_Drm_Output *output);
 EAPI void ecore_drm_output_cursor_size_set(Ecore_Drm_Output *output, int handle, int w, int h);
 
 /**
+ * @internal
+ *
  * Enable a Ecore_Drm_Output
  *
  * This function will enable an Ecore_Drm_Output
@@ -564,6 +608,8 @@ EAPI void ecore_drm_output_cursor_size_set(Ecore_Drm_Output *output, int handle,
 EAPI Eina_Bool ecore_drm_output_enable(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Disable a Ecore_Drm_Output
  *
  * This function will disable an Ecore_Drm_Output
@@ -582,6 +628,8 @@ EAPI void ecore_drm_output_fb_release(Ecore_Drm_Output *output, Ecore_Drm_Fb *fb
 EAPI void ecore_drm_output_repaint(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the output size of Ecore_Drm_Device
  *
  * This function will give the output size of Ecore_Drm_Device
@@ -596,12 +644,16 @@ EAPI void ecore_drm_output_repaint(Ecore_Drm_Output *output);
 EAPI void ecore_drm_output_size_get(Ecore_Drm_Device *dev, int output, int *w, int *h);
 
 /**
+ * @internal
+ *
  * TODO: Doxy
  * @since 1.12
  */
 EAPI void ecore_drm_outputs_geometry_get(Ecore_Drm_Device *dev, int *x, int *y, int *w, int *h);
 
 /**
+ * @internal
+ *
  * Get the crtc id of an output
  *
  * This function will return the default crtc id for an output
@@ -616,6 +668,8 @@ EAPI void ecore_drm_outputs_geometry_get(Ecore_Drm_Device *dev, int *x, int *y, 
 EAPI unsigned int ecore_drm_output_crtc_id_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the crtc buffer of an output
  *
  * This function will return the default buffer id for an output
@@ -630,6 +684,8 @@ EAPI unsigned int ecore_drm_output_crtc_id_get(Ecore_Drm_Output *output);
 EAPI unsigned int ecore_drm_output_crtc_buffer_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the connector id of an output
  *
  * This function will return the default connector id for an output
@@ -660,6 +716,8 @@ EAPI Ecore_Drm_Fb *ecore_drm_fb_create(Ecore_Drm_Device *dev, int width, int hei
 EAPI void ecore_drm_fb_destroy(Ecore_Drm_Fb *fb);
 
 /**
+ * @internal
+ *
  * Mark an Ecore_Drm_Fb as dirty
  *
  * This function mark an Ecore_Drm_Fb as being dirty
@@ -674,6 +732,8 @@ EAPI void ecore_drm_fb_destroy(Ecore_Drm_Fb *fb);
 EAPI void ecore_drm_fb_dirty(Ecore_Drm_Fb *fb, Eina_Rectangle *rects, unsigned int count);
 
 /**
+ * @internal
+ *
  * Set an Ecore_Drm_Fb as the current framebuffer
  *
  * This function will set the given Ecore_Drm_Fb as the framebuffer used
@@ -688,6 +748,8 @@ EAPI void ecore_drm_fb_dirty(Ecore_Drm_Fb *fb, Eina_Rectangle *rects, unsigned i
 EAPI void ecore_drm_fb_set(Ecore_Drm_Device *dev, Ecore_Drm_Fb *fb);
 
 /**
+ * @internal
+ *
  * Send an Ecore_Drm_Fb to the Ecore_Drm_Device
  *
  * This function will call drmModePageFlip for the given device using the
@@ -707,6 +769,8 @@ EAPI Eina_Bool ecore_drm_launcher_connect(Ecore_Drm_Device *dev);
 EAPI void ecore_drm_launcher_disconnect(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Get the output position of Ecore_Drm_Output
  *
  * This function will give the output position of Ecore_Drm_Output
@@ -721,6 +785,8 @@ EAPI void ecore_drm_launcher_disconnect(Ecore_Drm_Device *dev);
 EAPI void ecore_drm_output_position_get(Ecore_Drm_Output *output, int *x, int *y);
 
 /**
+ * @internal
+ *
  * Get the current resolution of Ecore_Drm_Output
  *
  * This function will give the current resolution of Ecore_Drm_Output
@@ -736,6 +802,8 @@ EAPI void ecore_drm_output_position_get(Ecore_Drm_Output *output, int *x, int *y
 EAPI void ecore_drm_output_current_resolution_get(Ecore_Drm_Output *output, int *w, int *h, unsigned int *refresh);
 
 /**
+ * @internal
+ *
  * Get the physical size of Ecore_Drm_Output
  *
  * This function will give the physical size (in mm) of Ecore_Drm_Output
@@ -750,6 +818,8 @@ EAPI void ecore_drm_output_current_resolution_get(Ecore_Drm_Output *output, int 
 EAPI void ecore_drm_output_physical_size_get(Ecore_Drm_Output *output, int *w, int *h);
 
 /**
+ * @internal
+ *
  * Get the subpixel order of Ecore_Drm_Output
  *
  * This function will give the subpixel order of Ecore_Drm_Output
@@ -763,6 +833,8 @@ EAPI void ecore_drm_output_physical_size_get(Ecore_Drm_Output *output, int *w, i
 EAPI unsigned int ecore_drm_output_subpixel_order_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the model of Ecore_Drm_Output
  *
  * This function will give the model of Ecore_Drm_Output
@@ -776,6 +848,8 @@ EAPI unsigned int ecore_drm_output_subpixel_order_get(Ecore_Drm_Output *output);
 EAPI Eina_Stringshare *ecore_drm_output_model_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the make of Ecore_Drm_Output
  *
  * This function will give the make of Ecore_Drm_Output
@@ -789,6 +863,8 @@ EAPI Eina_Stringshare *ecore_drm_output_model_get(Ecore_Drm_Output *output);
 EAPI Eina_Stringshare *ecore_drm_output_make_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the name of Ecore_Drm_Output
  *
  * This function will give the name of Ecore_Drm_Output
@@ -802,6 +878,8 @@ EAPI Eina_Stringshare *ecore_drm_output_make_get(Ecore_Drm_Output *output);
 EAPI char *ecore_drm_output_name_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Set the dpms level of an Ecore_Drm_Output
  *
  * This function will set the DPMS level of an Ecore_Drm_Output
@@ -815,6 +893,8 @@ EAPI char *ecore_drm_output_name_get(Ecore_Drm_Output *output);
 EAPI void ecore_drm_output_dpms_set(Ecore_Drm_Output *output, int level);
 
 /**
+ * @internal
+ *
  * Set the gamma level of an Ecore_Drm_Output
  *
  * This function will set the gamma of an Ecore_Drm_Output
@@ -831,6 +911,8 @@ EAPI void ecore_drm_output_dpms_set(Ecore_Drm_Output *output, int level);
 EAPI void ecore_drm_output_gamma_set(Ecore_Drm_Output *output, uint16_t size, uint16_t *r, uint16_t *g, uint16_t *b);
 
 /**
+ * @internal
+ *
  * Get the pointer position of Ecore_Drm_Device
  *
  * This function will give the pointer position of Ecore_Drm_Device
@@ -859,6 +941,8 @@ EAPI void ecore_drm_device_pointer_xy_get(Ecore_Drm_Device *dev, int *x, int *y)
 EAPI void ecore_drm_device_pointer_warp(Ecore_Drm_Device *dev, int x, int y);
 
 /**
+ * @internal
+ *
  * Get the list of drm devices which are allocated.
  *
  * @return Eina_List of drm devices, NULL otherwise
@@ -869,6 +953,8 @@ EAPI void ecore_drm_device_pointer_warp(Ecore_Drm_Device *dev, int x, int y);
 EAPI const Eina_List *ecore_drm_devices_get(void);
 
 /**
+ * @internal
+ *
  * Get the minimum and maximum screen size range
  *
  * @param dev The Ecore_Drm_Device to get screen size range from
@@ -883,6 +969,8 @@ EAPI const Eina_List *ecore_drm_devices_get(void);
 EAPI void ecore_drm_screen_size_range_get(Ecore_Drm_Device *dev, int *minw, int *minh, int *maxw, int *maxh);
 
 /**
+ * @internal
+ *
  * Get if a given output is connected
  *
  * @param output The Ecore_Drm_Output to get the connected status of
@@ -895,6 +983,8 @@ EAPI void ecore_drm_screen_size_range_get(Ecore_Drm_Device *dev, int *minw, int 
 EAPI Eina_Bool ecore_drm_output_connected_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the connector type of a given Ecore_Drm_Output
  *
  * @param output The Ecore_Drm_Output to get the connector type of
@@ -907,6 +997,8 @@ EAPI Eina_Bool ecore_drm_output_connected_get(Ecore_Drm_Output *output);
 EAPI unsigned int ecore_drm_output_connector_type_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get if a given output has a backlight
  *
  * @param output The Ecore_Drm_Output to get the backlight of
@@ -919,6 +1011,8 @@ EAPI unsigned int ecore_drm_output_connector_type_get(Ecore_Drm_Output *output);
 EAPI Eina_Bool ecore_drm_output_backlight_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the edid of a given output
  *
  * @param output The Ecore_Drm_Output to get the backlight of
@@ -931,6 +1025,8 @@ EAPI Eina_Bool ecore_drm_output_backlight_get(Ecore_Drm_Output *output);
 EAPI char *ecore_drm_output_edid_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get a list of the modes supported on a given output
  *
  * @param output The Ecore_Drm_Output to get the modes for
@@ -945,6 +1041,8 @@ EAPI char *ecore_drm_output_edid_get(Ecore_Drm_Output *output);
 EAPI Eina_List *ecore_drm_output_modes_get(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the output which is marked as primary
  *
  * @param dev The Ecore_Drm_Device to get the primary output from
@@ -957,6 +1055,8 @@ EAPI Eina_List *ecore_drm_output_modes_get(Ecore_Drm_Output *output);
 EAPI Ecore_Drm_Output *ecore_drm_output_primary_get(Ecore_Drm_Device *dev);
 
 /**
+ * @internal
+ *
  * Set a given output as primary
  *
  * @param output The Ecore_Drm_Output to set as primary
@@ -967,6 +1067,8 @@ EAPI Ecore_Drm_Output *ecore_drm_output_primary_get(Ecore_Drm_Device *dev);
 EAPI void ecore_drm_output_primary_set(Ecore_Drm_Output *output);
 
 /**
+ * @internal
+ *
  * Get the size of the crtc for a given output
  *
  * @param output The Ecore_Drm_Output to get the crtc size of
@@ -979,6 +1081,8 @@ EAPI void ecore_drm_output_primary_set(Ecore_Drm_Output *output);
 EAPI void ecore_drm_output_crtc_size_get(Ecore_Drm_Output *output, int *width, int *height);
 
 /**
+ * @internal
+ *
  * Find an Ecore_Drm_Output which has the given name
  *
  * This function will loop all the existing outputs in Ecore_Drm_Device and 
@@ -995,6 +1099,8 @@ EAPI void ecore_drm_output_crtc_size_get(Ecore_Drm_Output *output, int *width, i
 EAPI Ecore_Drm_Output *ecore_drm_device_output_name_find(Ecore_Drm_Device *dev, const char *name);
 
 /**
+ * @internal
+ *
  * Get if an Ecore_Drm_Output can be used on a given crtc
  *
  * This function will loop the possible crtcs of an encoder to determine if
@@ -1011,6 +1117,8 @@ EAPI Ecore_Drm_Output *ecore_drm_device_output_name_find(Ecore_Drm_Device *dev, 
 EAPI Eina_Bool ecore_drm_output_possible_crtc_get(Ecore_Drm_Output *output, unsigned int crtc);
 
 /**
+ * @internal
+ *
  * Set a given mode to be used on an Ecore_Drm_Output
  *
  * This function will set the given mode to be used on a given Ecore_Drm_Output

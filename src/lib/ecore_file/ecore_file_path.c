@@ -84,6 +84,10 @@ _ecore_file_path_from_env(const char *env)
  * PATH. If @p in_dir is @c NULL, or if PATH is empty, or @p in_dir is
  * not in PATH, the function returns @c EINA_FALSE, otherwise it returns
  * @c EINA_TRUE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_path_dir_exists(const char *in_dir)
@@ -114,6 +118,10 @@ ecore_file_path_dir_exists(const char *in_dir)
  * This function checks if @p exe exists in PATH and is executable. If
  * @p exe is @c NULL or is not executable, the function returns
  * @c EINA_FALSE, otherwise it returns @c EINA_TRUE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_app_installed(const char *exe)
@@ -145,6 +153,10 @@ ecore_file_app_installed(const char *exe)
  * executable files. If no files are found, the function returns
  * @c NULL. When not needed anymore, the element of the list must be
  * freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_List *
 ecore_file_app_list(void)

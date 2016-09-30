@@ -56,16 +56,28 @@ typedef struct _Eina_Quad
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  * */
 EAPI void eina_quad_rectangle_to(const Eina_Quad *q,
                                  Eina_Rectangle *r);
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  * */
 EAPI void eina_quad_rectangle_from(Eina_Quad *q,
                                    const Eina_Rectangle *r);
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  * */
 EAPI void eina_quad_coords_set(Eina_Quad *q,
                                double x1, double y1,
@@ -75,6 +87,10 @@ EAPI void eina_quad_coords_set(Eina_Quad *q,
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  * */
 EAPI void eina_quad_coords_get(const Eina_Quad *q,
                                double *x1, double *y1,

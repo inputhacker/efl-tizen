@@ -266,6 +266,10 @@ typedef enum _Eet_Compression
  *
  * @since 1.0.0
  * @ingroup Eet_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_init(void);
@@ -282,6 +286,10 @@ eet_init(void);
  *
  * @since 1.0.0
  * @ingroup Eet_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_shutdown(void);
@@ -301,6 +309,10 @@ eet_shutdown(void);
  *
  * @since 1.0.0
  * @ingroup Eet_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_clearcache(void);
@@ -586,6 +598,10 @@ struct _Eet_Entry
  * returned instead.
  *
  * @since 1.0.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_File *
 eet_open(const char *file,
@@ -612,6 +628,10 @@ eet_open(const char *file,
  * maintain correct reference counts.
  *
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_File *
 eet_mmap(const Eina_File *file);
@@ -629,6 +649,10 @@ eet_mmap(const Eina_File *file);
  *
  * @since 1.1.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_File *
 eet_memopen_read(const void *data,
@@ -641,6 +665,10 @@ eet_memopen_read(const void *data,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_File_Mode
 eet_mode_get(Eet_File *ef);
@@ -662,6 +690,10 @@ eet_mode_get(Eet_File *ef);
  * @ingroup Eet_File_Group
  * 
  * @see eet_clearcache()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Error
 eet_close(Eet_File *ef);
@@ -678,6 +710,10 @@ eet_close(Eet_File *ef);
  *
  * @since 1.2.4
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Error
 eet_sync(Eet_File *ef);
@@ -697,6 +733,10 @@ eet_sync(Eet_File *ef);
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Dictionary *
 eet_dictionary_get(Eet_File *ef);
@@ -714,6 +754,10 @@ eet_dictionary_get(Eet_File *ef);
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_dictionary_string_check(Eet_Dictionary *ed,
@@ -726,6 +770,10 @@ eet_dictionary_string_check(Eet_Dictionary *ed,
  *
  * @since 1.6.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_dictionary_count(const Eet_Dictionary *ed);
@@ -751,6 +799,10 @@ eet_dictionary_count(const Eet_Dictionary *ed);
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_read(Eet_File *ef,
@@ -776,6 +828,10 @@ eet_read(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const void *
 eet_read_direct(Eet_File *ef,
@@ -809,6 +865,10 @@ eet_read_direct(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_write(Eet_File *ef,
@@ -834,6 +894,10 @@ eet_write(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_delete(Eet_File *ef,
@@ -853,6 +917,10 @@ eet_delete(Eet_File *ef,
  *
  * @since 1.3.3
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eet_alias(Eet_File *ef,
@@ -869,6 +937,10 @@ eet_alias(Eet_File *ef,
  *
  * @since 1.6
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *
 eet_file_get(Eet_File *ef);
@@ -883,6 +955,10 @@ eet_file_get(Eet_File *ef);
  *
  * @since 1.5
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *
 eet_alias_get(Eet_File *ef,
@@ -917,6 +993,10 @@ eet_alias_get(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char **
 eet_list(Eet_File *ef,
@@ -930,6 +1010,10 @@ eet_list(Eet_File *ef,
  *
  * @since 1.8.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 
 EAPI Eina_Iterator *eet_list_entries(Eet_File *ef);
@@ -942,6 +1026,10 @@ EAPI Eina_Iterator *eet_list_entries(Eet_File *ef);
  *
  * @since 1.0.0
  * @ingroup Eet_File_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_num_entries(Eet_File *ef);
@@ -979,6 +1067,10 @@ eet_num_entries(Eet_File *ef);
  *
  * @since 1.0.0
  * @ingroup Eet_File_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_read_cipher(Eet_File *ef,
@@ -1014,6 +1106,10 @@ eet_read_cipher(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_write_cipher(Eet_File *ef,
@@ -1078,6 +1174,10 @@ eet_write_cipher(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_header_read(Eet_File *ef,
@@ -1123,6 +1223,10 @@ eet_data_image_header_read(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_image_read(Eet_File *ef,
@@ -1181,6 +1285,10 @@ eet_data_image_read(Eet_File *ef,
  *
  * @since 1.0.2
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_read_to_surface(Eet_File *ef,
@@ -1232,6 +1340,10 @@ eet_data_image_read_to_surface(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_write(Eet_File *ef,
@@ -1268,6 +1380,10 @@ eet_data_image_write(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_header_decode(const void *data,
@@ -1308,6 +1424,10 @@ eet_data_image_header_decode(const void *data,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_image_decode(const void *data,
@@ -1346,6 +1466,10 @@ eet_data_image_decode(const void *data,
  *
  * @since 1.0.2
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_decode_to_surface(const void *data,
@@ -1390,6 +1514,10 @@ eet_data_image_decode_to_surface(const void *data,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_image_encode(const void *data,
@@ -1448,6 +1576,10 @@ eet_data_image_encode(const void *data,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_header_read_cipher(Eet_File *ef,
@@ -1471,6 +1603,10 @@ eet_data_image_header_read_cipher(Eet_File *ef,
  *
  * @since 1.10.0
  * @ingroup Eet_File_Image_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_colorspace_get(Eet_File *ef,
@@ -1516,6 +1652,10 @@ eet_data_image_colorspace_get(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_image_read_cipher(Eet_File *ef,
@@ -1570,6 +1710,10 @@ eet_data_image_read_cipher(Eet_File *ef,
  *
  * @since 1.0.2
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_read_to_surface_cipher(Eet_File *ef,
@@ -1631,6 +1775,10 @@ eet_data_image_read_to_surface_cipher(Eet_File *ef,
  *
  * @since 1.10.0
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_read_to_cspace_surface_cipher(Eet_File     *ef,
@@ -1692,6 +1840,10 @@ eet_data_image_read_to_cspace_surface_cipher(Eet_File     *ef,
  *
  * @since 1.10.0
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 
 EAPI int
@@ -1745,6 +1897,10 @@ eet_data_image_decode_to_cspace_surface_cipher(const void   *data,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_write_cipher(Eet_File *ef,
@@ -1794,6 +1950,10 @@ eet_data_image_write_cipher(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_header_decode_cipher(const void *data,
@@ -1844,6 +2004,10 @@ eet_data_image_header_decode_cipher(const void *data,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_image_decode_cipher(const void *data,
@@ -1896,6 +2060,10 @@ eet_data_image_decode_cipher(const void *data,
  *
  * @since 1.0.2
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_image_decode_to_surface_cipher(const void *data,
@@ -1946,6 +2114,10 @@ eet_data_image_decode_to_surface_cipher(const void *data,
  *
  * @since 1.0.0
  * @ingroup Eet_File_Image_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_image_encode_cipher(const void *data,
@@ -2014,6 +2186,10 @@ typedef int (*Eet_Key_Password_Callback)(char *buffer, int size, int rwflag, voi
  * @warning You need to compile signature support in EET.
  * @since 1.2.0
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Key *
 eet_identity_open(const char *certificate_file,
@@ -2029,6 +2205,10 @@ eet_identity_open(const char *certificate_file,
  *
  * @since 1.2.0
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_identity_close(Eet_Key *key);
@@ -2043,6 +2223,10 @@ eet_identity_close(Eet_Key *key);
  *
  * @since 1.2.0
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Error
 eet_identity_set(Eet_File *ef,
@@ -2057,6 +2241,10 @@ eet_identity_set(Eet_File *ef,
  * @warning You need to compile signature support in EET.
  * @since 1.2.0
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_identity_print(Eet_Key *key,
@@ -2080,6 +2268,10 @@ eet_identity_print(Eet_Key *key,
  * @warning You need to compile signature support in EET.
  * @since 1.13
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eet_identity_verify(Eet_File *ef,
@@ -2095,6 +2287,10 @@ eet_identity_verify(Eet_File *ef,
  *
  * @since 1.2.0
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const void *
 eet_identity_x509(Eet_File *ef,
@@ -2109,6 +2305,10 @@ eet_identity_x509(Eet_File *ef,
  * @return the raw signature or @c NULL on error.
  *
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const void *
 eet_identity_signature(Eet_File *ef,
@@ -2125,6 +2325,10 @@ eet_identity_signature(Eet_File *ef,
  *
  * @since 1.2.0
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const void *
 eet_identity_sha1(Eet_File *ef,
@@ -2140,6 +2344,10 @@ eet_identity_sha1(Eet_File *ef,
  * @warning You need to compile signature support in EET.
  * @since 1.2.0
  * @ingroup Eet_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_identity_certificate_print(const unsigned char *certificate,
@@ -2847,6 +3055,8 @@ struct _Eet_Data_Descriptor_Class
  */
 
 /**
+ * @internal
+ *
  * Create a new empty data structure descriptor.
  * @param name The string name of this data structure (most be a
  *        global constant and never change).
@@ -2929,6 +3139,10 @@ EINA_DEPRECATED EAPI Eet_Data_Descriptor *
  *
  * @since 1.2.3
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Data_Descriptor *
 eet_data_descriptor_stream_new(const Eet_Data_Descriptor_Class *eddc);
@@ -2979,6 +3193,10 @@ eet_data_descriptor_stream_new(const Eet_Data_Descriptor_Class *eddc);
  *
  * @since 1.2.3
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Data_Descriptor *
 eet_data_descriptor_file_new(const Eet_Data_Descriptor_Class *eddc);
@@ -3000,6 +3218,10 @@ eet_data_descriptor_file_new(const Eet_Data_Descriptor_Class *eddc);
  *
  * @since 1.2.3
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eet_eina_stream_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
@@ -3041,6 +3263,10 @@ eet_eina_stream_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
  *
  * @since 1.2.3
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eet_eina_file_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
@@ -3075,6 +3301,10 @@ eet_eina_file_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_data_descriptor_free(Eet_Data_Descriptor *edd);
@@ -3084,6 +3314,10 @@ eet_data_descriptor_free(Eet_Data_Descriptor *edd);
  *
  * @since 1.8.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eet_data_descriptor_name_get(const Eet_Data_Descriptor *edd);
 
@@ -3112,6 +3346,10 @@ EAPI const char *eet_data_descriptor_name_get(const Eet_Data_Descriptor *edd);
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_data_descriptor_element_add(Eet_Data_Descriptor *edd,
@@ -3150,6 +3388,10 @@ eet_data_descriptor_element_add(Eet_Data_Descriptor *edd,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_read(Eet_File *ef,
@@ -3174,6 +3416,10 @@ eet_data_read(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_write(Eet_File *ef,
@@ -3239,6 +3485,10 @@ typedef void (*Eet_Dump_Callback)(void *data, const char *str);
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_text_dump(const void *data_in,
@@ -3264,6 +3514,10 @@ eet_data_text_dump(const void *data_in,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_text_undump(const char *text,
@@ -3292,6 +3546,10 @@ eet_data_text_undump(const char *text,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_dump(Eet_File *ef,
@@ -3320,6 +3578,10 @@ eet_data_dump(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_undump(Eet_File *ef,
@@ -3354,6 +3616,10 @@ eet_data_undump(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_descriptor_decode(Eet_Data_Descriptor *edd,
@@ -3388,6 +3654,10 @@ eet_data_descriptor_decode(Eet_Data_Descriptor *edd,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
@@ -3874,6 +4144,10 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_read_cipher(Eet_File *ef,
@@ -3910,6 +4184,10 @@ eet_data_read_cipher(Eet_File *ef,
  *
  * @since 1.10.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_read_cipher_buffer(Eet_File            *ef,
@@ -3941,6 +4219,10 @@ eet_data_read_cipher_buffer(Eet_File            *ef,
  *
  * @since 1.5.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_xattr_cipher_get(const char *filename,
@@ -3964,6 +4246,10 @@ eet_data_xattr_cipher_get(const char *filename,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_write_cipher(Eet_File *ef,
@@ -3989,6 +4275,10 @@ eet_data_write_cipher(Eet_File *ef,
  *
  * @since 1.5.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eet_data_xattr_cipher_set(const char *filename,
@@ -4045,6 +4335,10 @@ eet_data_xattr_cipher_set(const char *filename,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_text_dump_cipher(const void *data_in,
@@ -4073,6 +4367,10 @@ eet_data_text_dump_cipher(const void *data_in,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_text_undump_cipher(const char *text,
@@ -4104,6 +4402,10 @@ eet_data_text_undump_cipher(const char *text,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_dump_cipher(Eet_File *ef,
@@ -4135,6 +4437,10 @@ eet_data_dump_cipher(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_undump_cipher(Eet_File *ef,
@@ -4172,6 +4478,10 @@ eet_data_undump_cipher(Eet_File *ef,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_descriptor_decode_cipher(Eet_Data_Descriptor *edd,
@@ -4209,6 +4519,10 @@ eet_data_descriptor_decode_cipher(Eet_Data_Descriptor *edd,
  *
  * @since 1.0.0
  * @ingroup Eet_Data_Cipher_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_descriptor_encode_cipher(Eet_Data_Descriptor *edd,
@@ -4269,6 +4583,10 @@ struct _Eet_Node_Data
  * @param c Character value.
  * @return A new character node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_char_new(const char *name,
@@ -4280,6 +4598,10 @@ eet_node_char_new(const char *name,
  * @param s short value.
  * @return A new short node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_short_new(const char *name,
@@ -4291,6 +4613,10 @@ eet_node_short_new(const char *name,
  * @param i integer value.
  * @return A new integer node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_int_new(const char *name,
@@ -4302,6 +4628,10 @@ eet_node_int_new(const char *name,
  * @param l long long integer value.
  * @return A new long long integer node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_long_long_new(const char *name,
@@ -4313,6 +4643,10 @@ eet_node_long_long_new(const char *name,
  * @param f float value.
  * @return A new float node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_float_new(const char *name,
@@ -4324,6 +4658,10 @@ eet_node_float_new(const char *name,
  * @param d double value.
  * @return A new double node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_double_new(const char *name,
@@ -4335,6 +4673,10 @@ eet_node_double_new(const char *name,
  * @param uc unsigned char value.
  * @return A new unsigned char node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_unsigned_char_new(const char *name,
@@ -4346,6 +4688,10 @@ eet_node_unsigned_char_new(const char *name,
  * @param us unsigned short value.
  * @return A new unsigned short node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_unsigned_short_new(const char *name,
@@ -4357,6 +4703,10 @@ eet_node_unsigned_short_new(const char *name,
  * @param ui unsigned integer value.
  * @return A new unsigned integer node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_unsigned_int_new(const char *name,
@@ -4368,6 +4718,10 @@ eet_node_unsigned_int_new(const char *name,
  * @param l unsigned long long integer value.
  * @return A new unsigned long long integer node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_unsigned_long_long_new(const char *name,
@@ -4379,6 +4733,10 @@ eet_node_unsigned_long_long_new(const char *name,
  * @param str string value.
  * @return A new string node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_string_new(const char *name,
@@ -4390,6 +4748,10 @@ eet_node_string_new(const char *name,
  * @param str string value.
  * @return A new inlined string node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_inlined_string_new(const char *name,
@@ -4400,6 +4762,10 @@ eet_node_inlined_string_new(const char *name,
  * @param name Name of the node.
  * @return A new empty node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_null_new(const char *name);
@@ -4410,6 +4776,10 @@ eet_node_null_new(const char *name);
  * @param nodes list of nodes.
  * @return A new list node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_list_new(const char *name,
@@ -4422,6 +4792,10 @@ eet_node_list_new(const char *name,
  * @param nodes list of nodes.
  * @return A new array node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_array_new(const char *name,
@@ -4434,6 +4808,10 @@ eet_node_array_new(const char *name,
  * @param nodes list of nodes.
  * @return A new variable array node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_var_array_new(const char *name,
@@ -4449,6 +4827,10 @@ eet_node_var_array_new(const char *name,
  * @param s short value.
  * @return A new short node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_hash_new(const char *name,
@@ -4461,6 +4843,10 @@ eet_node_hash_new(const char *name,
  * @param nodes list of nodes.
  * @return A new struct node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_struct_new(const char *name,
@@ -4476,6 +4862,10 @@ eet_node_struct_new(const char *name,
  * @param s short value.
  * @return A new short node.
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_struct_child_new(const char *parent,
@@ -4487,6 +4877,10 @@ eet_node_struct_child_new(const char *parent,
  * @return The first child node which contains a pointer to the
  * next child node and the parent.
  * @since 1.5
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_children_get(Eet_Node *node);
@@ -4497,6 +4891,10 @@ eet_node_children_get(Eet_Node *node);
  * @return A node which contains a pointer to the
  * next child node and the parent.
  * @since 1.5
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_next_get(Eet_Node *node);
@@ -4506,6 +4904,10 @@ eet_node_next_get(Eet_Node *node);
  * @param node The node
  * @return The parent node of @p node
  * @since 1.5
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_node_parent_get(Eet_Node *node);
@@ -4513,6 +4915,10 @@ eet_node_parent_get(Eet_Node *node);
 /**
  * @brief Append a "list" node TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_node_list_append(Eet_Node *parent,
@@ -4522,6 +4928,10 @@ eet_node_list_append(Eet_Node *parent,
 /**
  * TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_node_struct_append(Eet_Node *parent,
@@ -4531,6 +4941,10 @@ eet_node_struct_append(Eet_Node *parent,
 /**
  * TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_node_hash_add(Eet_Node *parent,
@@ -4541,6 +4955,10 @@ eet_node_hash_add(Eet_Node *parent,
 /**
  * TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_node_dump(Eet_Node *n,
@@ -4553,6 +4971,10 @@ eet_node_dump(Eet_Node *n,
  * @param node The node
  * @return The node's type (EET_T_$TYPE)
  * @since 1.5
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_node_type_get(Eet_Node *node);
@@ -4562,6 +4984,10 @@ eet_node_type_get(Eet_Node *node);
  * @param node The node
  * @return The data contained in the node
  * @since 1.5
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node_Data *
 eet_node_value_get(Eet_Node *node);
@@ -4569,6 +4995,10 @@ eet_node_value_get(Eet_Node *node);
 /**
  * TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eet_node_del(Eet_Node *n);
@@ -4576,6 +5006,10 @@ eet_node_del(Eet_Node *n);
 /**
  * TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_data_node_encode_cipher(Eet_Node *node,
@@ -4585,6 +5019,10 @@ eet_data_node_encode_cipher(Eet_Node *node,
 /**
  * TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_data_node_decode_cipher(const void *data_in,
@@ -4594,6 +5032,10 @@ eet_data_node_decode_cipher(const void *data_in,
 /**
  * TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Node *
 eet_data_node_read_cipher(Eet_File *ef,
@@ -4603,6 +5045,10 @@ eet_data_node_read_cipher(Eet_File *ef,
 /**
  * TODO FIX ME
  * @ingroup Eet_Node_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_data_node_write_cipher(Eet_File *ef,
@@ -4724,6 +5170,10 @@ typedef Eina_Bool Eet_Write_Cb (const void *data, size_t size, void *user_data);
  *
  * @since 1.2.4
  * @ingroup Eet_Connection_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eet_Connection *
 eet_connection_new(Eet_Read_Cb *eet_read_cb,
@@ -4743,6 +5193,10 @@ eet_connection_new(Eet_Read_Cb *eet_read_cb,
  *
  * @since 1.2.4
  * @ingroup Eet_Connection_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eet_connection_received(Eet_Connection *conn,
@@ -4760,6 +5214,10 @@ eet_connection_received(Eet_Connection *conn,
  *
  * @since 1.7
  * @ingroup Eet_Connection_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eet_connection_empty(Eet_Connection *conn);
 
@@ -4779,6 +5237,10 @@ EAPI Eina_Bool eet_connection_empty(Eet_Connection *conn);
  *
  * @since 1.2.4
  * @ingroup Eet_Connection_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eet_connection_send(Eet_Connection *conn,
@@ -4801,6 +5263,10 @@ eet_connection_send(Eet_Connection *conn,
  *
  * @since 1.2.4
  * @ingroup Eet_Connection_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eet_connection_node_send(Eet_Connection *conn,
@@ -4815,6 +5281,10 @@ eet_connection_node_send(Eet_Connection *conn,
  *
  * @since 1.2.4
  * @ingroup Eet_Connection_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eet_connection_close(Eet_Connection *conn,

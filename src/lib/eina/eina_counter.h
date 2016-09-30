@@ -124,6 +124,10 @@ typedef struct _Eina_Counter Eina_Counter;
  *
  * @note Whe the new counter is not needed anymore, use eina_counter_free() to
  *       free the allocated memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Counter *eina_counter_new(const char *name) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -136,6 +140,10 @@ EAPI Eina_Counter *eina_counter_new(const char *name) EINA_WARN_UNUSED_RESULT EI
  *          (see eina_counter_start()) and frees the memory allocated for
  *          @p counter. If @p counter is @c NULL, the function returns
  *          immediately.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void          eina_counter_free(Eina_Counter *counter) EINA_ARG_NONNULL(1);
 
@@ -154,6 +162,10 @@ EAPI void          eina_counter_free(Eina_Counter *counter) EINA_ARG_NONNULL(1);
  *
  * @note To stop the timing, eina_counter_stop() must be called with the
  *       same counter.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void          eina_counter_start(Eina_Counter *counter) EINA_ARG_NONNULL(1);
 
@@ -168,6 +180,10 @@ EAPI void          eina_counter_start(Eina_Counter *counter) EINA_ARG_NONNULL(1)
  *          with eina_counter_start(). @p specimen is the number of the
  *          test. If @p counter or its associated clock is @c NULL, or if the
  *          time can't be retrieved the function exits.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void          eina_counter_stop(Eina_Counter *counter,
                                      int           specimen) EINA_ARG_NONNULL(1);
@@ -189,6 +205,10 @@ EAPI void          eina_counter_stop(Eina_Counter *counter,
  * @endverbatim
  *
  * @note The unit of time is nanoseconds.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char         *eina_counter_dump(Eina_Counter *counter) EINA_ARG_NONNULL(1);
 

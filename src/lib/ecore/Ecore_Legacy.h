@@ -32,6 +32,10 @@ extern "C" {
  * returns 1, it will be called again at the next tick, or if it returns
  * 0 it will be deleted automatically making any references/handles for it
  * invalid.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Poller *ecore_poller_add(Ecore_Poller_Type type, int interval, Ecore_Task_Cb func, const void *data);
 
@@ -43,6 +47,10 @@ EAPI Ecore_Poller *ecore_poller_add(Ecore_Poller_Type type, int interval, Ecore_
  *
  * @note @a poller must be a valid handle. If the poller function has already
  * returned 0, the handle is no longer valid (and does not need to be deleted).
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *ecore_poller_del(Ecore_Poller *poller);
 
@@ -80,6 +88,10 @@ EAPI void *ecore_poller_del(Ecore_Poller *poller);
  *
  * @see ecore_animator_timeline_add()
  * @see ecore_animator_frametime_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Animator *ecore_animator_add(Ecore_Task_Cb func, const void *data);
 
@@ -109,6 +121,10 @@ EAPI Ecore_Animator *ecore_animator_add(Ecore_Task_Cb func, const void *data);
  * @see ecore_animator_add()
  * @see ecore_animator_pos_map()
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Animator *ecore_animator_timeline_add(double runtime, Ecore_Timeline_Cb func, const void *data);
 
@@ -124,6 +140,10 @@ EAPI Ecore_Animator *ecore_animator_timeline_add(double runtime, Ecore_Timeline_
  * failure. After this call returns the specified animator object @p animator
  * is invalid and should not be used again. It will not get called again after
  * deletion.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *ecore_animator_del(Ecore_Animator *animator);
 
@@ -140,6 +160,10 @@ EAPI void *ecore_animator_del(Ecore_Animator *animator);
  *ecore_animator_timeline_add() the @p pos argument given to the callback
  * will increase as if the animator hadn't been frozen and the animator may
  * have it's execution halted if @p runtime elapsed.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_animator_freeze(Ecore_Animator *animator);
 
@@ -150,6 +174,10 @@ EAPI void ecore_animator_freeze(Ecore_Animator *animator);
  *
  * The specified @p animator will be put back in the set of animators that are
  * executed during main loop.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_animator_thaw(Ecore_Animator *animator);
 
@@ -182,6 +210,10 @@ EAPI void ecore_animator_thaw(Ecore_Animator *animator);
  * If it returns 1, it will be called again at the next tick, or if it returns
  * 0 it will be deleted automatically making any references/handles for it
  * invalid.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Timer *ecore_timer_add(double in, Ecore_Task_Cb func, const void *data);
 
@@ -196,6 +228,10 @@ EAPI Ecore_Timer *ecore_timer_add(double in, Ecore_Task_Cb func, const void *dat
  * This is the same as ecore_timer_add(), but "now" is the time from
  * ecore_loop_time_get() not ecore_time_get() as ecore_timer_add() uses. See
  * ecore_timer_add() for more details.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Timer *ecore_timer_loop_add(double in, Ecore_Task_Cb func, const void *data);
 
@@ -207,6 +243,10 @@ EAPI Ecore_Timer *ecore_timer_loop_add(double in, Ecore_Task_Cb func, const void
  *
  * Note: @p timer must be a valid handle. If the timer function has already
  * returned 0, the handle is no longer valid (and does not need to be delete).
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *ecore_timer_del(Ecore_Timer *timer);
 
@@ -240,6 +280,10 @@ EAPI void ecore_timer_thaw(Ecore_Timer *timer);
  * (or ECORE_CALLBACK_CANCEL) deletes the idler.
  *
  * Idlers are useful for progressively prossessing data without blocking.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Idler *ecore_idler_add(Ecore_Task_Cb func, const void *data);
 
@@ -248,6 +292,10 @@ EAPI Ecore_Idler *ecore_idler_add(Ecore_Task_Cb func, const void *data);
  * @param  idler The handle of the idler callback to delete
  * @return The data pointer passed to the idler callback on success, @c NULL
  *         otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *ecore_idler_del(Ecore_Idler *idler);
 
@@ -260,6 +308,10 @@ EAPI void *ecore_idler_del(Ecore_Idler *idler);
  * @note The function func will be called every time the main loop is entering
  * idle state, as long as it returns 1 (or ECORE_CALLBACK_RENEW). A return of 0
  * (or ECORE_CALLBACK_CANCEL) deletes the idle enterer.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Idle_Enterer *ecore_idle_enterer_add(Ecore_Task_Cb func, const void *data);
 
@@ -272,6 +324,10 @@ EAPI Ecore_Idle_Enterer *ecore_idle_enterer_add(Ecore_Task_Cb func, const void *
  * @note The function func will be called every time the main loop is entering
  * idle state, as long as it returns 1 (or ECORE_CALLBACK_RENEW). A return of 0
  * (or ECORE_CALLBACK_CANCEL) deletes the idle enterer.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Idle_Enterer *ecore_idle_enterer_before_add(Ecore_Task_Cb func, const void *data);
 
@@ -280,6 +336,10 @@ EAPI Ecore_Idle_Enterer *ecore_idle_enterer_before_add(Ecore_Task_Cb func, const
  * @param   idle_enterer The idle enterer to delete
  * @return  The data pointer passed to the idler enterer callback on success.
  *          NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *ecore_idle_enterer_del(Ecore_Idle_Enterer *idle_enterer);
 
@@ -291,6 +351,10 @@ EAPI void *ecore_idle_enterer_del(Ecore_Idle_Enterer *idle_enterer);
  * @note The function func will be called every time the main loop is exiting
  * idle state, as long as it returns 1 (or ECORE_CALLBACK_RENEW). A return of 0
  * (or ECORE_CALLBACK_CANCEL) deletes the idle exiter.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Idle_Exiter *ecore_idle_exiter_add(Ecore_Task_Cb func, const void *data);
 
@@ -299,6 +363,10 @@ EAPI Ecore_Idle_Exiter *ecore_idle_exiter_add(Ecore_Task_Cb func, const void *da
  * @param idle_exiter The idle exiter to delete
  * @return The data pointer that was being being passed to the handler if
  *         successful.  NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *ecore_idle_exiter_del(Ecore_Idle_Exiter *idle_exiter);
 
@@ -333,6 +401,10 @@ EAPI void *ecore_idle_exiter_del(Ecore_Idle_Exiter *idle_exiter);
  * @return  The handle of the job.  @c NULL is returned if the job could not be
  *          added to the queue.
  * @note    Once the job has been executed, the job handle is invalid.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_Job *ecore_job_add(Ecore_Cb func, const void *data);
 
@@ -340,6 +412,10 @@ EAPI Ecore_Job *ecore_job_add(Ecore_Cb func, const void *data);
  * Delete a queued job that has not yet been executed.
  * @param   obj  Handle of the job to delete.
  * @return  The data pointer that was to be passed to the job.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *ecore_job_del(Ecore_Job *obj);
 

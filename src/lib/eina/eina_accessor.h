@@ -205,6 +205,10 @@ struct _Eina_Accessor
  * @param[in] accessor The accessor to free
  *
  * @details This function frees @a accessor if it is not @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void      eina_accessor_free(Eina_Accessor *accessor);
 
@@ -221,6 +225,9 @@ EAPI void      eina_accessor_free(Eina_Accessor *accessor);
  *          @p data. If @p accessor is @c NULL or if an error occurs, #EINA_FALSE
  *          is returned, otherwise #EINA_TRUE is returned.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_accessor_data_get(Eina_Accessor *accessor,
                                       unsigned int   position,
@@ -234,6 +241,10 @@ EAPI Eina_Bool eina_accessor_data_get(Eina_Accessor *accessor,
  *
  * @details This function returns the container that created @p accessor. If
  *          @p accessor is @c NULL, this function returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_accessor_container_get(Eina_Accessor *accessor) EINA_ARG_NONNULL(1) EINA_PURE;
 
@@ -252,6 +263,10 @@ EAPI void *eina_accessor_container_get(Eina_Accessor *accessor) EINA_ARG_NONNULL
  *          @p cb is called with the data @p fdata. If @p accessor is @c NULL
  *          or if @p start is greater than or equal to @p end, the function returns
  *          immediately.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void  eina_accessor_over(Eina_Accessor *accessor,
                               Eina_Each_Cb   cb,
@@ -272,6 +287,10 @@ EAPI void  eina_accessor_over(Eina_Accessor *accessor,
  *       lockable, it returns #EINA_TRUE.
  *
  * @warnning None of the existing eina data structures are lockable.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_accessor_lock(Eina_Accessor *accessor) EINA_ARG_NONNULL(1);
 
@@ -281,6 +300,10 @@ EAPI Eina_Bool eina_accessor_lock(Eina_Accessor *accessor) EINA_ARG_NONNULL(1);
  * @param[in] accessor The accessor.
  * @return Another accessor
  * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Accessor* eina_accessor_clone(Eina_Accessor *accessor) EINA_ARG_NONNULL(1);
 
@@ -296,6 +319,10 @@ EAPI Eina_Accessor* eina_accessor_clone(Eina_Accessor *accessor) EINA_ARG_NONNUL
  *       is returned. If the container is not lockable, it returns #EINA_TRUE.
  *
  * @warning None of the existing eina data structures are lockable.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_accessor_unlock(Eina_Accessor *accessor) EINA_ARG_NONNULL(1);
 

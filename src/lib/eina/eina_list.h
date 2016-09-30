@@ -364,6 +364,10 @@ struct _Eina_List_Accounting
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list(or NULL).
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_append(Eina_List *list, const void *data) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -392,6 +396,10 @@ EAPI Eina_List            *eina_list_append(Eina_List *list, const void *data) E
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_prepend(Eina_List *list, const void *data) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -425,6 +433,10 @@ EAPI Eina_List            *eina_list_prepend(Eina_List *list, const void *data) 
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_append_relative(Eina_List *list, const void *data, const void *relative) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -447,6 +459,10 @@ EAPI Eina_List            *eina_list_append_relative(Eina_List *list, const void
  * old pointer is returned.
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_append_relative_list(Eina_List *list, const void *data, Eina_List *relative) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -480,6 +496,10 @@ EAPI Eina_List            *eina_list_append_relative_list(Eina_List *list, const
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_prepend_relative(Eina_List *list, const void *data, const void *relative) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -502,6 +522,10 @@ EAPI Eina_List            *eina_list_prepend_relative(Eina_List *list, const voi
  * old pointer is returned.
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_prepend_relative_list(Eina_List *list, const void *data, Eina_List *relative) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -528,6 +552,10 @@ EAPI Eina_List            *eina_list_prepend_relative_list(Eina_List *list, cons
  * dereference (list walk).
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_sorted_insert(Eina_List *list, Eina_Compare_Cb func, const void *data) EINA_ARG_NONNULL(2, 3) EINA_WARN_UNUSED_RESULT;
 
@@ -547,6 +575,10 @@ EAPI Eina_List            *eina_list_sorted_insert(Eina_List *list, Eina_Compare
  * passed to this function.
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_remove(Eina_List *list, const void *data) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -585,6 +617,10 @@ EAPI Eina_List            *eina_list_remove(Eina_List *list, const void *data) E
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_remove_list(Eina_List *list, Eina_List *remove_list) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -619,6 +655,10 @@ EAPI Eina_List            *eina_list_remove_list(Eina_List *list, Eina_List *rem
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_promote_list(Eina_List *list, Eina_List *move_list) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -653,6 +693,10 @@ EAPI Eina_List            *eina_list_promote_list(Eina_List *list, Eina_List *mo
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_demote_list(Eina_List *list, Eina_List *move_list);
 
@@ -680,6 +724,10 @@ EAPI Eina_List            *eina_list_demote_list(Eina_List *list, Eina_List *mov
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                 *eina_list_data_find(const Eina_List *list, const void *data) EINA_PURE EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -696,6 +744,10 @@ EAPI void                 *eina_list_data_find(const Eina_List *list, const void
  * @c NULL is returned.
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_data_find_list(const Eina_List *list, const void *data) EINA_PURE EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
 
@@ -713,6 +765,10 @@ EAPI Eina_List            *eina_list_data_find_list(const Eina_List *list, const
  * from = eina_list_remove(from, data);
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool             eina_list_move(Eina_List **to, Eina_List **from, void *data);
 
@@ -729,6 +785,10 @@ EAPI Eina_Bool             eina_list_move(Eina_List **to, Eina_List **from, void
  * from = eina_list_remove_list(from, data);
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool             eina_list_move_list(Eina_List **to, Eina_List **from, Eina_List *data);
 
@@ -741,6 +801,10 @@ EAPI Eina_Bool             eina_list_move_list(Eina_List **to, Eina_List **from,
  *
  * This function frees all the nodes of @p list. It does not free the
  * data of the nodes. To free them, use #EINA_LIST_FREE.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_free(Eina_List *list);
 
@@ -760,6 +824,10 @@ EAPI Eina_List            *eina_list_free(Eina_List *list);
  * @note Worst case is O(n).
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                 *eina_list_nth(const Eina_List *list, unsigned int n) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
@@ -781,6 +849,10 @@ EAPI void                 *eina_list_nth(const Eina_List *list, unsigned int n) 
  * @note Worst case is O(n).
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_nth_list(const Eina_List *list, unsigned int n) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
@@ -802,6 +874,10 @@ EAPI Eina_List            *eina_list_nth_list(const Eina_List *list, unsigned in
  *
  * @see eina_list_reverse_clone()
  * @see eina_list_iterator_reversed_new()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_reverse(Eina_List *list) EINA_WARN_UNUSED_RESULT;
 
@@ -823,6 +899,10 @@ EAPI Eina_List            *eina_list_reverse(Eina_List *list) EINA_WARN_UNUSED_R
  *
  * @see eina_list_reverse()
  * @see eina_list_clone()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_reverse_clone(const Eina_List *list) EINA_WARN_UNUSED_RESULT;
 
@@ -843,6 +923,10 @@ EAPI Eina_List            *eina_list_reverse_clone(const Eina_List *list) EINA_W
  * @warning @p list must be a pointer to the first element of the list.
  *
  * @see eina_list_reverse_clone()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_clone(const Eina_List *list) EINA_WARN_UNUSED_RESULT;
 
@@ -886,6 +970,10 @@ EAPI Eina_List            *eina_list_clone(const Eina_List *list) EINA_WARN_UNUS
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_sort(Eina_List *list, unsigned int limit, Eina_Compare_Cb func) EINA_ARG_NONNULL(3) EINA_WARN_UNUSED_RESULT;
 
@@ -907,6 +995,10 @@ EAPI Eina_List            *eina_list_sort(Eina_List *list, unsigned int limit, E
  * @since 1.8
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_List            *eina_list_shuffle(Eina_List *list, Eina_Random_Cb func) EINA_WARN_UNUSED_RESULT;
 
@@ -927,6 +1019,10 @@ EAPI Eina_List            *eina_list_shuffle(Eina_List *list, Eina_Random_Cb fun
  * making count and last access O(1).
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_merge(Eina_List *left, Eina_List *right) EINA_WARN_UNUSED_RESULT;
 
@@ -967,6 +1063,10 @@ EAPI Eina_List            *eina_list_merge(Eina_List *left, Eina_List *right) EI
  * @endcode
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_sorted_merge(Eina_List *left, Eina_List *right, Eina_Compare_Cb func) EINA_ARG_NONNULL(3) EINA_WARN_UNUSED_RESULT;
 
@@ -987,6 +1087,10 @@ EAPI Eina_List            *eina_list_sorted_merge(Eina_List *left, Eina_List *ri
  * list does not exist anymore after the split.
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_split_list(Eina_List *list, Eina_List *relative, Eina_List **right) EINA_WARN_UNUSED_RESULT;
 
@@ -1049,6 +1153,10 @@ EAPI Eina_List            *eina_list_split_list(Eina_List *list, Eina_List *rela
  * @see eina_list_search_sorted_list()
  * @see eina_list_sort()
  * @see eina_list_sorted_merge()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_search_sorted_near_list(const Eina_List *list, Eina_Compare_Cb func, const void *data, int *result_cmp);
 
@@ -1085,6 +1193,10 @@ EAPI Eina_List            *eina_list_search_sorted_near_list(const Eina_List *li
  * @see eina_list_sorted_merge()
  * @see eina_list_search_unsorted_list()
  * @see eina_list_search_sorted_near_list()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_search_sorted_list(const Eina_List *list, Eina_Compare_Cb func, const void *data);
 
@@ -1121,6 +1233,10 @@ EAPI Eina_List            *eina_list_search_sorted_list(const Eina_List *list, E
  * @see eina_list_sort()
  * @see eina_list_sorted_merge()
  * @see eina_list_search_unsorted_list()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                 *eina_list_search_sorted(const Eina_List *list, Eina_Compare_Cb func, const void *data);
 
@@ -1147,6 +1263,10 @@ EAPI void                 *eina_list_search_sorted(const Eina_List *list, Eina_C
  *
  * @see eina_list_search_sorted_list()
  * @see eina_list_search_unsorted()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List            *eina_list_search_unsorted_list(const Eina_List *list, Eina_Compare_Cb func, const void *data);
 
@@ -1174,6 +1294,10 @@ EAPI Eina_List            *eina_list_search_unsorted_list(const Eina_List *list,
  *
  * @see eina_list_search_sorted()
  * @see eina_list_search_unsorted_list()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                 *eina_list_search_unsorted(const Eina_List *list, Eina_Compare_Cb func, const void *data);
 
@@ -1298,6 +1422,10 @@ static inline void        *eina_list_last_data_get(const Eina_List *list);
  * @warning if the list structure changes then the iterator becomes
  *    invalid! That is, if you add or remove nodes this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator        *eina_list_iterator_new(const Eina_List *list) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -1324,6 +1452,10 @@ EAPI Eina_Iterator        *eina_list_iterator_new(const Eina_List *list) EINA_MA
  * @warning if the list structure changes then the iterator becomes
  *    invalid! That is, if you add or remove nodes this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator        *eina_list_iterator_reversed_new(const Eina_List *list) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -1341,6 +1473,10 @@ EAPI Eina_Iterator        *eina_list_iterator_reversed_new(const Eina_List *list
  * returned.
  *
  * @warning @p list must be a pointer to the first element of the list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Accessor        *eina_list_accessor_new(const Eina_List *list) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -1358,6 +1494,10 @@ EAPI Eina_Accessor        *eina_list_accessor_new(const Eina_List *list) EINA_MA
  * @warning @p list must be a pointer to the first element of the list.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int                   eina_list_data_idx(const Eina_List *list, void *data);
 

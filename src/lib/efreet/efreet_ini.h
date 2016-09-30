@@ -28,6 +28,8 @@ struct Efreet_Ini
 
 
 /**
+ * @internal
+ *
  * @param file The file to parse
  * @return Returns a new Efreet_Ini structure initialized with the contents
  * of @a file, or NULL on memory allocation failure
@@ -37,6 +39,8 @@ struct Efreet_Ini
 EAPI Efreet_Ini  *efreet_ini_new(const char *file);
 
 /**
+ * @internal
+ *
  * @param ini The Efreet_Ini to work with
  * @return Returns no value
  * @brief Frees the given Efree_Ini structure.
@@ -44,6 +48,8 @@ EAPI Efreet_Ini  *efreet_ini_new(const char *file);
 EAPI void         efreet_ini_free(Efreet_Ini *ini);
 
 /**
+ * @internal
+ *
  * @param ini The Efreet_Ini to work with
  * @param file The file to load
  * @return Returns no value
@@ -53,6 +59,8 @@ EAPI int          efreet_ini_save(Efreet_Ini *ini, const char *path);
 
 
 /**
+ * @internal
+ *
  * @param ini The Efreet_Ini to work with
  * @param section The section of the ini file we want to get values from
  * @return Returns 1 if the section exists, otherwise 0
@@ -61,6 +69,8 @@ EAPI int          efreet_ini_save(Efreet_Ini *ini, const char *path);
 EAPI int          efreet_ini_section_set(Efreet_Ini *ini, const char *section);
 
 /**
+ * @internal
+ *
  * @param ini The Efreet_Ini to work with
  * @param section The section of the ini file we want to add
  * @return Returns no value
@@ -70,6 +80,8 @@ EAPI void         efreet_ini_section_add(Efreet_Ini *ini, const char *section);
 
 
 /**
+ * @internal
+ *
  * @param ini The Efree_Ini to work with
  * @param key The key to lookup
  * @return Returns the string associated with the given key or NULL if not
@@ -79,6 +91,8 @@ EAPI void         efreet_ini_section_add(Efreet_Ini *ini, const char *section);
 EAPI const char  *efreet_ini_string_get(Efreet_Ini *ini, const char *key);
 
 /**
+ * @internal
+ *
  * @param ini The Efree_Ini to work with
  * @param key The key to use
  * @param value The value to set
@@ -90,6 +104,8 @@ EAPI void         efreet_ini_string_set(Efreet_Ini *ini, const char *key,
 
 
 /**
+ * @internal
+ *
  * @param ini The ini struct to work with
  * @param key The key to search for
  * @return Returns the utf8 encoded string associated with @a key, or NULL
@@ -99,6 +115,8 @@ EAPI void         efreet_ini_string_set(Efreet_Ini *ini, const char *key,
 EAPI const char  *efreet_ini_localestring_get(Efreet_Ini *ini, const char *key);
 
 /**
+ * @internal
+ *
  * @param ini The ini struct to work with
  * @param key The key to use
  * @param value The value to set
@@ -110,6 +128,8 @@ EAPI void         efreet_ini_localestring_set(Efreet_Ini *ini, const char *key,
 
 
 /**
+ * @internal
+ *
  * @param ini The ini struct to work with
  * @param key The key to search for
  * @return Returns 1 if the boolean is true, 0 otherwise
@@ -118,6 +138,8 @@ EAPI void         efreet_ini_localestring_set(Efreet_Ini *ini, const char *key,
 EAPI unsigned int efreet_ini_boolean_get(Efreet_Ini *ini, const char *key);
 
 /**
+ * @internal
+ *
  * @param ini The ini struct to work with
  * @param key The key to use
  * @param value The value to set
@@ -129,6 +151,8 @@ EAPI void         efreet_ini_boolean_set(Efreet_Ini *ini, const char *key,
 
 
 /**
+ * @internal
+ *
  * @param ini The Efree_Ini to work with
  * @param key The key to lookup
  * @return Returns the integer associated with the given key or -1 if not
@@ -138,6 +162,8 @@ EAPI void         efreet_ini_boolean_set(Efreet_Ini *ini, const char *key,
 EAPI int          efreet_ini_int_get(Efreet_Ini *ini, const char *key);
 
 /**
+ * @internal
+ *
  * @param ini The Efree_Ini to work with
  * @param key The key to use
  * @param value The value to set
@@ -148,6 +174,8 @@ EAPI void         efreet_ini_int_set(Efreet_Ini *ini, const char *key, int value
 
 
 /**
+ * @internal
+ *
  * @param ini The Efree_Ini to work with
  * @param key The key to lookup
  * @return Returns the double associated with the given key or -1 if not
@@ -157,6 +185,8 @@ EAPI void         efreet_ini_int_set(Efreet_Ini *ini, const char *key, int value
 EAPI double       efreet_ini_double_get(Efreet_Ini *ini, const char *key);
 
 /**
+ * @internal
+ *
  * @param ini The Efree_Ini to work with
  * @param key The key to use
  * @param value The value to set
@@ -168,6 +198,8 @@ EAPI void         efreet_ini_double_set(Efreet_Ini *ini, const char *key,
 
 
 /**
+ * @internal
+ *
  * @param ini The ini struct to work with
  * @param key The key to remove
  * @return Returns no value

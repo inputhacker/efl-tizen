@@ -319,6 +319,8 @@ typedef void(*Eeze_Udev_Watch_Cb)(const char *, Eeze_Udev_Event, void *, Eeze_Ud
 
 
 /**
+ * @internal
+ *
  * Initialize the eeze library.
  * @return The number of times the function has been called, or -1 on failure.
  *
@@ -330,6 +332,8 @@ typedef void(*Eeze_Udev_Watch_Cb)(const char *, Eeze_Udev_Event, void *, Eeze_Ud
 EAPI int             eeze_init(void);
 
 /**
+ * @internal
+ *
  * Shut down the eeze library.
  * @return The number of times the eeze_init has been called, or -1 when
  * all occurrences of eeze have been shut down.
@@ -341,6 +345,8 @@ EAPI int             eeze_init(void);
 EAPI int             eeze_shutdown(void);
 
 /**
+ * @internal
+ *
  * @return the main udev context used by the library
  * This allows for external reuse of the udev context, reducing direct dependency
  * on libudev.
@@ -362,6 +368,8 @@ EAPI void           *eeze_udev_get(void);
     */
 
 /**
+ * @internal
+ *
  * Returns a stringshared list of all syspaths that are (or should be) the same
  * device as the device pointed at by @p syspath.
  *
@@ -371,6 +379,8 @@ EAPI void           *eeze_udev_get(void);
 EAPI Eina_List       *eeze_udev_find_similar_from_syspath(const char *syspath);
 
 /**
+ * @internal
+ *
  * Updates a list of all syspaths that are (or should be) the same
  * device.
  *
@@ -386,6 +396,8 @@ EAPI Eina_List       *eeze_udev_find_similar_from_syspath(const char *syspath);
 EAPI Eina_List       *eeze_udev_find_unlisted_similar(Eina_List *list);
 
 /**
+ * @internal
+ *
  * Find a list of devices by a sysattr (and, optionally, a value of that sysattr).
  *
  * @param sysattr The attribute to find
@@ -398,6 +410,8 @@ EAPI Eina_List       *eeze_udev_find_unlisted_similar(Eina_List *list);
 EAPI Eina_List       *eeze_udev_find_by_sysattr(const char *sysattr, const char *value);
 
 /**
+ * @internal
+ *
  * Find devices using an #Eeze_Udev_Type and/or a name.
  *
  * @param type An #Eeze_Udev_Type or 0
@@ -409,6 +423,8 @@ EAPI Eina_List       *eeze_udev_find_by_sysattr(const char *sysattr, const char 
 EAPI Eina_List       *eeze_udev_find_by_type(Eeze_Udev_Type type, const char *name);
 
 /**
+ * @internal
+ *
  * A more advanced find, allows finds using udev properties.
  *
  * @param subsystem The udev subsystem to filter by, or @c NULL
@@ -422,6 +438,8 @@ EAPI Eina_List       *eeze_udev_find_by_type(Eeze_Udev_Type type, const char *na
 EAPI Eina_List       *eeze_udev_find_by_filter(const char *subsystem, const char *type, const char *name);
 
 /**
+ * @internal
+ *
  * A more advanced find, allows finds using udev subsystem and sysname
  *
  * @param subsystem The udev subsystem to filter by, or @c NULL
@@ -452,6 +470,8 @@ EAPI Eina_List       *eeze_udev_find_by_subsystem_sysname(const char *subsystem,
     */
 
 /**
+ * @internal
+ *
  * Get the syspath of a device from the /dev/ path.
  *
  * @param devpath The /dev/ path of the device
@@ -462,6 +482,8 @@ EAPI Eina_List       *eeze_udev_find_by_subsystem_sysname(const char *subsystem,
 EAPI const char      *eeze_udev_devpath_get_syspath(const char *devpath);
 
 /**
+ * @internal
+ *
  * Find the root device of a device from its syspath.
  *
  * @param syspath The syspath of a device, with or without "/sys/"
@@ -472,6 +494,8 @@ EAPI const char      *eeze_udev_devpath_get_syspath(const char *devpath);
 EAPI const char      *eeze_udev_syspath_get_parent(const char *syspath);
 
 /**
+ * @internal
+ *
  * Find the parent device of a device from its syspath with a filter applied.
  *
  * @param syspath The syspath of a device, with or without "/sys/"
@@ -485,6 +509,8 @@ EAPI const char      *eeze_udev_syspath_get_parent(const char *syspath);
 EAPI Eina_Stringshare *eeze_udev_syspath_get_parent_filtered(const char *syspath, const char *subsystem, const char *devtype);
 
 /**
+ * @internal
+ *
  * Returns a list of all parent device syspaths for @p syspath.
  *
  * @param syspath The device to find parents of
@@ -493,6 +519,8 @@ EAPI Eina_Stringshare *eeze_udev_syspath_get_parent_filtered(const char *syspath
 EAPI Eina_List       *eeze_udev_syspath_get_parents(const char *syspath);
 
 /**
+ * @internal
+ *
  * Get the /dev/ path from the /sys/ path.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -503,6 +531,8 @@ EAPI Eina_List       *eeze_udev_syspath_get_parents(const char *syspath);
 EAPI const char      *eeze_udev_syspath_get_devpath(const char *syspath);
 
 /**
+ * @internal
+ *
  * Get the /dev/ name from the /sys/ path.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -513,6 +543,8 @@ EAPI const char      *eeze_udev_syspath_get_devpath(const char *syspath);
 EAPI const char      *eeze_udev_syspath_get_devname(const char *syspath);
 
 /**
+ * @internal
+ *
  * Get the subsystem of a device from the /sys/ path.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -524,6 +556,8 @@ EAPI const char      *eeze_udev_syspath_get_devname(const char *syspath);
 EAPI const char      *eeze_udev_syspath_get_subsystem(const char *syspath);
 
 /**
+ * @internal
+ *
  * Check the property value of a device from the /sys/ path against a provided value.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -535,6 +569,8 @@ EAPI const char      *eeze_udev_syspath_get_subsystem(const char *syspath);
 EAPI Eina_Bool eeze_udev_syspath_check_property(const char *syspath, const char *property, const char *value);
 
 /**
+ * @internal
+ *
  * Get the property value of a device from the /sys/ path.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -544,6 +580,8 @@ EAPI Eina_Bool eeze_udev_syspath_check_property(const char *syspath, const char 
 EAPI const char      *eeze_udev_syspath_get_property(const char *syspath, const char *property);
 
 /**
+ * @internal
+ *
  * Get the sysattr value of a device from the /sys/ path.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -553,6 +591,8 @@ EAPI const char      *eeze_udev_syspath_get_property(const char *syspath, const 
 EAPI const char      *eeze_udev_syspath_get_sysattr(const char *syspath, const char *sysattr);
 
 /**
+ * @internal
+ *
  * Check the sysattr value of a device from the /sys/ path against a provided value.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -564,6 +604,8 @@ EAPI const char      *eeze_udev_syspath_get_sysattr(const char *syspath, const c
 EAPI Eina_Bool eeze_udev_syspath_check_sysattr(const char *syspath, const char *sysattr, const char *value);
 
 /**
+ * @internal
+ *
  * Set the sysattr value of a device from the /sys/ path.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -575,6 +617,8 @@ EAPI Eina_Bool eeze_udev_syspath_check_sysattr(const char *syspath, const char *
 EAPI Eina_Bool eeze_udev_syspath_set_sysattr(const char *syspath, const char *sysattr, double value);
 
 /**
+ * @internal
+ *
  * Get the sysattr list of a device from the /sys/ path.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -584,6 +628,8 @@ EAPI Eina_Bool eeze_udev_syspath_set_sysattr(const char *syspath, const char *sy
 EAPI Eina_List *eeze_udev_syspath_get_sysattr_list(const char *syspath);
 
 /**
+ * @internal
+ *
  * Checks whether the device is a mouse.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -592,6 +638,8 @@ EAPI Eina_List *eeze_udev_syspath_get_sysattr_list(const char *syspath);
 EAPI Eina_Bool        eeze_udev_syspath_is_mouse(const char *syspath);
 
 /**
+ * @internal
+ *
  * Checks whether the device is a keyboard.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -600,6 +648,8 @@ EAPI Eina_Bool        eeze_udev_syspath_is_mouse(const char *syspath);
 EAPI Eina_Bool        eeze_udev_syspath_is_kbd(const char *syspath);
 
 /**
+ * @internal
+ *
  * Checks whether the device is a touchpad.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -608,6 +658,8 @@ EAPI Eina_Bool        eeze_udev_syspath_is_kbd(const char *syspath);
 EAPI Eina_Bool        eeze_udev_syspath_is_touchpad(const char *syspath);
 
 /**
+ * @internal
+ *
  * Checks whether the device is a joystick.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -617,6 +669,8 @@ EAPI Eina_Bool        eeze_udev_syspath_is_touchpad(const char *syspath);
 EAPI Eina_Bool        eeze_udev_syspath_is_joystick(const char *syspath);
 
 /**
+ * @internal
+ *
  * Get the sysnum value of a device from the /sys/ path.
  *
  * @param syspath The /sys/ path with or without the /sys/
@@ -642,6 +696,8 @@ EAPI int              eeze_udev_syspath_get_sysnum(const char *syspath);
     */
 
 /**
+ * @internal
+ *
  * Walks up the device chain starting at @p syspath,
  * checking each device for @p sysattr with (optional) @p value.
  *
@@ -654,6 +710,8 @@ EAPI int              eeze_udev_syspath_get_sysnum(const char *syspath);
 EAPI Eina_Bool        eeze_udev_walk_check_sysattr(const char *syspath, const char *sysattr, const char *value);
 
 /**
+ * @internal
+ *
  * Walks up the device chain starting at @p syspath,
  * checking each device for @p sysattr, and returns the value if found.
  *
@@ -684,6 +742,8 @@ EAPI const char      *eeze_udev_walk_get_sysattr(const char *syspath, const char
     */
 
 /**
+ * @internal
+ *
  * Add a watch for a device type
  *
  * @param type The #Eeze_Udev_Type to watch
@@ -700,6 +760,8 @@ EAPI const char      *eeze_udev_walk_get_sysattr(const char *syspath, const char
 EAPI Eeze_Udev_Watch *eeze_udev_watch_add(Eeze_Udev_Type type, int event, Eeze_Udev_Watch_Cb cb, void *user_data);
 
 /**
+ * @internal
+ *
  * Deletes a watch.
  *
  * @param watch An Eeze_Udev_Watch object

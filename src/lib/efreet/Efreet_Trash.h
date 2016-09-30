@@ -44,18 +44,24 @@ extern "C" {
  */
 
 /**
+ * @internal
+ *
  * @return @c 1 on success or @c 0 on failure.
  * @brief Initializes the efreet trash system
  */
 EAPI int         efreet_trash_init(void);
 
 /**
+ * @internal
+ *
  * @return No value.
  * @brief Cleans up the efreet trash system
  */
 EAPI int         efreet_trash_shutdown(void);
 
 /**
+ * @internal
+ *
  * @return The XDG Trash local directory or @c NULL on errors.
  * Return value must be freed with eina_stringshare_del.
  * @brief Retrieves the XDG Trash local directory
@@ -63,6 +69,8 @@ EAPI int         efreet_trash_shutdown(void);
 EAPI const char *efreet_trash_dir_get(const char *for_file);
 
 /**
+ * @internal
+ *
  * @param uri The local uri to move in the trash
  * @param force_delete If you set this to @c 1 than files on different filesystems
  * will be deleted permanently
@@ -76,6 +84,8 @@ EAPI const char *efreet_trash_dir_get(const char *for_file);
 EAPI int         efreet_trash_delete_uri(Efreet_Uri *uri, int force_delete);
 
 /**
+ * @internal
+ *
  * @return A list of strings with filename (remember to free the list
  * when you don't need anymore).
  * @brief List all the files and directory currently inside the trash.
@@ -83,12 +93,16 @@ EAPI int         efreet_trash_delete_uri(Efreet_Uri *uri, int force_delete);
 EAPI Eina_List  *efreet_trash_ls(void);
 
 /**
+ * @internal
+ *
  * @return @c 1 if the trash is empty or @c 0 if some file are in.
  * @brief Check if the trash is currently empty
  */
 EAPI int         efreet_trash_is_empty(void);
 
 /**
+ * @internal
+ *
  * @return @c 1 on success or @c 0 on failure.
  * @brief Delete all the files inside the trash.
  */

@@ -71,6 +71,10 @@ struct _Eina_Thread_Queue_Msg_Sub
  * @return A valid new thread queue, or NULL on failure
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Thread_Queue *
 eina_thread_queue_new(void);
@@ -85,6 +89,10 @@ eina_thread_queue_new(void);
  * @param thq The thread queue to free
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eina_thread_queue_free(Eina_Thread_Queue *thq) EINA_ARG_NONNULL(1);
@@ -104,6 +112,10 @@ eina_thread_queue_free(Eina_Thread_Queue *thq) EINA_ARG_NONNULL(1);
  * have this structure as the first member (first N bytes) of the message.
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eina_thread_queue_send(Eina_Thread_Queue *thq, int size, void **allocref) EINA_ARG_NONNULL(1, 3);
@@ -118,6 +130,10 @@ eina_thread_queue_send(Eina_Thread_Queue *thq, int size, void **allocref) EINA_A
  * listeners.
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eina_thread_queue_send_done(Eina_Thread_Queue *thq, void *allocref) EINA_ARG_NONNULL(1, 2);
@@ -138,6 +154,10 @@ eina_thread_queue_send_done(Eina_Thread_Queue *thq, void *allocref) EINA_ARG_NON
  * they are done.
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eina_thread_queue_wait(Eina_Thread_Queue *thq, void **allocref) EINA_ARG_NONNULL(1, 2);
@@ -152,6 +172,10 @@ eina_thread_queue_wait(Eina_Thread_Queue *thq, void **allocref) EINA_ARG_NONNULL
  * eina_thread_queue_poll() to indicate the caller is done with the message.
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eina_thread_queue_wait_done(Eina_Thread_Queue *thq, void *allocref) EINA_ARG_NONNULL(1, 2);
@@ -170,6 +194,10 @@ eina_thread_queue_wait_done(Eina_Thread_Queue *thq, void *allocref) EINA_ARG_NON
  * @see eina_thread_queue_wait()
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 eina_thread_queue_poll(Eina_Thread_Queue *thq, void **allocref) EINA_ARG_NONNULL(1, 2);
@@ -184,6 +212,10 @@ eina_thread_queue_poll(Eina_Thread_Queue *thq, void **allocref) EINA_ARG_NONNULL
  * eina_thread_queue_wait() or eina_thread_queue_poll().
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eina_thread_queue_pending_get(const Eina_Thread_Queue *thq) EINA_ARG_NONNULL(1);
@@ -201,6 +233,10 @@ eina_thread_queue_pending_get(const Eina_Thread_Queue *thq) EINA_ARG_NONNULL(1);
  * a parent, just set the parent to NULL.
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eina_thread_queue_parent_set(Eina_Thread_Queue *thq, Eina_Thread_Queue *thq_parent) EINA_ARG_NONNULL(1);
@@ -217,6 +253,10 @@ eina_thread_queue_parent_set(Eina_Thread_Queue *thq, Eina_Thread_Queue *thq_pare
  * @see eina_thread_queue_parent_set()
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Thread_Queue *
 eina_thread_queue_parent_get(const Eina_Thread_Queue *thq) EINA_ARG_NONNULL(1);
@@ -237,6 +277,10 @@ eina_thread_queue_parent_get(const Eina_Thread_Queue *thq) EINA_ARG_NONNULL(1);
  * thread queue.
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 eina_thread_queue_fd_set(Eina_Thread_Queue *thq, int fd) EINA_ARG_NONNULL(1);
@@ -253,6 +297,10 @@ eina_thread_queue_fd_set(Eina_Thread_Queue *thq, int fd) EINA_ARG_NONNULL(1);
  * @see eina_thread_queue_fd_set()
  *
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 eina_thread_queue_fd_get(const Eina_Thread_Queue *thq) EINA_ARG_NONNULL(1);

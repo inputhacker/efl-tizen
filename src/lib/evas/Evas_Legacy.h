@@ -29,6 +29,10 @@
  *
  * @return A new uninitialised Evas canvas on success. Otherwise, @c NULL.
  * @ingroup Evas_Canvas
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas             *evas_new(void) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
 
@@ -41,6 +45,10 @@ EAPI Evas             *evas_new(void) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
  * @param   e The given evas.
  *
  * @ingroup Evas_Canvas
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void              evas_free(Evas *e)  EINA_ARG_NONNULL(1);
 
@@ -118,6 +126,10 @@ EAPI void              evas_free(Evas *e)  EINA_ARG_NONNULL(1);
  * existed before exactly as the one being registered (and thus, call
  * it more than once on the event, in this case). This would make
  * sense if you passed different functions and/or callback data, only.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void  evas_event_callback_add(Evas *e, Evas_Callback_Type type, Evas_Event_Cb func, const void *data) EINA_ARG_NONNULL(1, 3);
 
@@ -135,6 +147,10 @@ EAPI void  evas_event_callback_add(Evas *e, Evas_Callback_Type type, Evas_Event_
  *
  * @see evas_event_callback_add
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void  evas_event_callback_priority_add(Evas *e, Evas_Callback_Type type, Evas_Callback_Priority priority, Evas_Event_Cb func, const void *data) EINA_ARG_NONNULL(1, 4);
 
@@ -161,6 +177,10 @@ EAPI void  evas_event_callback_priority_add(Evas *e, Evas_Callback_Type type, Ev
  *
  * my_data = evas_event_callback_del(ebject, EVAS_CALLBACK_CANVAS_FOCUS_IN, focus_in_callback);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *evas_event_callback_del(Evas *e, Evas_Callback_Type type, Evas_Event_Cb func) EINA_ARG_NONNULL(1, 3);
 
@@ -193,6 +213,10 @@ EAPI void *evas_event_callback_del(Evas *e, Evas_Callback_Type type, Evas_Event_
  *
  * @note For deletion of canvas events callbacks filtering by just
  * type and function pointer, user evas_event_callback_del().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *evas_event_callback_del_full(Evas *e, Evas_Callback_Type type, Evas_Event_Cb func, const void *data) EINA_ARG_NONNULL(1, 3);
 
@@ -218,6 +242,9 @@ EAPI void *evas_event_callback_del_full(Evas *e, Evas_Callback_Type type, Evas_E
  * callback prepares information ready for taking action, but the post callback
  * actually does the action).
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void  evas_post_event_callback_push(Evas *e, Evas_Object_Event_Post_Cb func, const void *data);
 
@@ -231,6 +258,10 @@ EAPI void  evas_post_event_callback_push(Evas *e, Evas_Object_Event_Post_Cb func
  * evas_post_event_callback_push(). The first instance of the function in
  * the callback stack is removed from being executed when the stack is
  * unwound. Further instances may still be run on unwind.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void  evas_post_event_callback_remove(Evas *e, Evas_Object_Event_Post_Cb func);
 
@@ -245,6 +276,10 @@ EAPI void  evas_post_event_callback_remove(Evas *e, Evas_Object_Event_Post_Cb fu
  * evas_post_event_callback_push(). The first instance of the function and data
  * in the callback stack is removed from being executed when the stack is
  * unwound. Further instances may still be run on unwind.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void  evas_post_event_callback_remove_full(Evas *e, Evas_Object_Event_Post_Cb func, const void *data);
 
@@ -286,6 +321,10 @@ EAPI void  evas_post_event_callback_remove_full(Evas *e, Evas_Object_Event_Post_
  * events for 3 seconds, when the "f" key is pressed. In a more
  * realistic code we would be freezing while a toolkit or Edje was
  * doing some UI changes, thawing it back afterwards.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_event_freeze(Evas *e) EINA_ARG_NONNULL(1);
 
@@ -301,6 +340,10 @@ EAPI void             evas_event_freeze(Evas *e) EINA_ARG_NONNULL(1);
  * evaluated.
  *
  * See evas_event_freeze() for an example.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_event_thaw(Evas *e) EINA_ARG_NONNULL(1);
 
@@ -323,6 +366,9 @@ EAPI void             evas_event_thaw(Evas *e) EINA_ARG_NONNULL(1);
  * while (evas_event_freeze_get(evas) > 0) evas_event_thaw(evas);
  * @endcode
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int              evas_event_freeze_get(const Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -334,6 +380,10 @@ EAPI int              evas_event_freeze_get(const Evas *e) EINA_WARN_UNUSED_RESU
  * This is normally called after evas_event_thaw() to re-evaluate mouse
  * containment and other states and thus also call callbacks for mouse in and
  * out on new objects if the state change demands it.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_event_thaw_eval(Evas *e) EINA_ARG_NONNULL(1);
 /**
@@ -353,6 +403,10 @@ EAPI void             evas_event_thaw_eval(Evas *e) EINA_ARG_NONNULL(1);
  * @param available the list returned by evas_font_dir_available_list().
  *
  * @ingroup Evas_Font_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                    evas_font_available_list_free(Evas *e, Eina_List *available) EINA_ARG_NONNULL(1);
 
@@ -399,6 +453,10 @@ EAPI void                    evas_font_available_list_free(Evas *e, Eina_List *a
  *
  * @ingroup Evas_Object_Group_Basic
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_object_ref(Evas_Object *obj);
 
@@ -417,6 +475,10 @@ EAPI void             evas_object_ref(Evas_Object *obj);
  *
  * @ingroup Evas_Object_Group_Basic
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_object_unref(Evas_Object *obj);
 
@@ -436,6 +498,10 @@ EAPI void             evas_object_unref(Evas_Object *obj);
  *
  * @ingroup Evas_Object_Group_Basic
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int              evas_object_ref_get(const Evas_Object *obj);
 
@@ -458,6 +524,10 @@ EAPI int              evas_object_ref_get(const Evas_Object *obj);
  * @see evas_object_unref()
  *
  * @ingroup Evas_Object_Group_Basic
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_object_del(Evas_Object *obj) EINA_ARG_NONNULL(1);
 
@@ -489,6 +559,10 @@ EAPI void             evas_object_del(Evas_Object *obj) EINA_ARG_NONNULL(1);
  * See the full @ref Example_Evas_Events "example".
  *
  * @ingroup Evas_Object_Group_Basic
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_object_geometry_get(const Evas_Object *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h) EINA_ARG_NONNULL(1);
 
@@ -516,6 +590,10 @@ EAPI void             evas_object_geometry_get(const Evas_Object *obj, Evas_Coor
  *
  * @since 1.8
  * @ingroup Evas_Object_Group_Basic
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             evas_object_geometry_set(Evas_Object *obj, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h) EINA_ARG_NONNULL(1);
 
@@ -532,6 +610,10 @@ EAPI void             evas_object_geometry_set(Evas_Object *obj, Evas_Coord x, E
  * @see evas_object_visible_get()
  *
  * @ingroup Evas_Object_Group_Basic
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_object_show(Evas_Object *obj) EINA_ARG_NONNULL(1);
 
@@ -564,6 +646,10 @@ EAPI void             evas_object_show(Evas_Object *obj) EINA_ARG_NONNULL(1);
  * See the full @ref Example_Evas_Object_Manipulation "example".
  *
  * @ingroup Evas_Object_Group_Basic
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             evas_object_hide(Evas_Object *obj) EINA_ARG_NONNULL(1);
 
@@ -581,6 +667,10 @@ EAPI void             evas_object_hide(Evas_Object *obj) EINA_ARG_NONNULL(1);
  * @param[in] g The green component of the given color.
  * @param[in] b The blue component of the given color.
  * @param[in] a The alpha component of the given color.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_color_set(Evas_Object *obj, int r, int g, int b, int a);
 
@@ -618,6 +708,10 @@ EAPI void evas_object_color_set(Evas_Object *obj, int r, int g, int b, int a);
  * @param[out] g The green component of the given color.
  * @param[out] b The blue component of the given color.
  * @param[out] a The alpha component of the given color.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_color_get(const Evas_Object *obj, int *r, int *g, int *b, int *a);
 
@@ -627,6 +721,10 @@ EAPI void evas_object_color_get(const Evas_Object *obj, int *r, int *g, int *b, 
  *
  * @param[in] x in
  * @param[in] y in
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 
@@ -636,6 +734,10 @@ EAPI void evas_object_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
  *
  * @param[in] w in
  * @param[in] h in
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 
@@ -643,6 +745,9 @@ EAPI void evas_object_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
  *
  * Retrieves whether or not the given Evas object is visible.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool evas_object_visible_get(const Evas_Object *obj);
 
@@ -667,6 +772,10 @@ EAPI Eina_Bool evas_object_visible_get(const Evas_Object *obj);
  *
  * @param[in] l The number of the layer to place the object on.
 Must be between #EVAS_LAYER_MIN and #EVAS_LAYER_MAX.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_layer_set(Evas_Object *obj, short l);
 
@@ -678,6 +787,9 @@ EAPI void evas_object_layer_set(Evas_Object *obj, short l);
  *
  * @see evas_object_layer_set()
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI short evas_object_layer_get(const Evas_Object *obj);
 
@@ -695,6 +807,9 @@ EAPI short evas_object_layer_get(const Evas_Object *obj);
  * @see evas_object_layer_set()
  * @see evas_object_below_get()
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object *evas_object_below_get(const Evas_Object *obj) EINA_WARN_UNUSED_RESULT;
 
@@ -712,6 +827,9 @@ EAPI Evas_Object *evas_object_below_get(const Evas_Object *obj) EINA_WARN_UNUSED
  * @see evas_object_layer_set()
  * @see evas_object_below_get()
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object *evas_object_above_get(const Evas_Object *obj) EINA_WARN_UNUSED_RESULT;
 
@@ -741,6 +859,10 @@ EAPI Evas_Object *evas_object_above_get(const Evas_Object *obj) EINA_WARN_UNUSED
  *
  *
  * @param[in] below the object below which to stack
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_stack_below(Evas_Object *obj, Evas_Object *below) EINA_ARG_NONNULL(2);
 
@@ -756,6 +878,9 @@ EAPI void evas_object_stack_below(Evas_Object *obj, Evas_Object *below) EINA_ARG
  * @see evas_object_lower()
  *
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_raise(Evas_Object *obj);
 
@@ -785,6 +910,10 @@ EAPI void evas_object_raise(Evas_Object *obj);
  *
  *
  * @param[in] above the object above which to stack
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_stack_above(Evas_Object *obj, Evas_Object *above) EINA_ARG_NONNULL(2);
 
@@ -800,6 +929,9 @@ EAPI void evas_object_stack_above(Evas_Object *obj, Evas_Object *above) EINA_ARG
  * @see evas_object_raise()
  *
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_lower(Evas_Object *obj);
 
@@ -817,6 +949,10 @@ EAPI void evas_object_lower(Evas_Object *obj);
  * @param[in] g The green component of the given color.
  * @param[in] b The blue component of the given color.
  * @param[in] a The alpha component of the given color.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_color_set(Evas_Object *obj, int r, int g, int b, int a);
 
@@ -854,6 +990,10 @@ EAPI void evas_object_color_set(Evas_Object *obj, int r, int g, int b, int a);
  * @param[out] g The green component of the given color.
  * @param[out] b The blue component of the given color.
  * @param[out] a The alpha component of the given color.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_color_get(const Evas_Object *obj, int *r, int *g, int *b, int *a);
 
@@ -863,6 +1003,10 @@ EAPI void evas_object_color_get(const Evas_Object *obj, int *r, int *g, int *b, 
  *
  * @param[in] x in
  * @param[in] y in
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 
@@ -872,6 +1016,10 @@ EAPI void evas_object_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
  *
  * @param[in] w in
  * @param[in] h in
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 
@@ -879,6 +1027,9 @@ EAPI void evas_object_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
  *
  * Retrieves whether or not the given Evas object is visible.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool evas_object_visible_get(const Evas_Object *obj);
 
@@ -1084,6 +1235,9 @@ EAPI Eina_Bool evas_object_visible_get(const Evas_Object *obj);
  *
  * See the full example @ref Example_Evas_Events "here".
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void      evas_object_event_callback_add(Evas_Object *obj, Evas_Callback_Type type, Evas_Object_Event_Cb func, const void *data) EINA_ARG_NONNULL(1, 3);
 
@@ -1100,6 +1254,10 @@ EAPI void      evas_object_event_callback_add(Evas_Object *obj, Evas_Callback_Ty
  *
  * @see evas_object_event_callback_add
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void      evas_object_event_callback_priority_add(Evas_Object *obj, Evas_Callback_Type type, Evas_Callback_Priority priority, Evas_Object_Event_Cb func, const void *data) EINA_ARG_NONNULL(1, 4);
 
@@ -1126,6 +1284,10 @@ EAPI void      evas_object_event_callback_priority_add(Evas_Object *obj, Evas_Ca
  *
  * my_data = evas_object_event_callback_del(object, EVAS_CALLBACK_MOUSE_UP, up_callback);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void     *evas_object_event_callback_del(Evas_Object *obj, Evas_Callback_Type type, Evas_Object_Event_Cb func) EINA_ARG_NONNULL(1, 3);
 
@@ -1160,6 +1322,10 @@ EAPI void     *evas_object_event_callback_del(Evas_Object *obj, Evas_Callback_Ty
  *
  * my_data = evas_object_event_callback_del_full(object, EVAS_CALLBACK_MOUSE_UP, up_callback, data);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void     *evas_object_event_callback_del_full(Evas_Object *obj, Evas_Callback_Type type, Evas_Object_Event_Cb func, const void *data) EINA_ARG_NONNULL(1, 3);
 
@@ -1210,6 +1376,10 @@ EAPI void     *evas_object_event_callback_del_full(Evas_Object *obj, Evas_Callba
  * evas_object_data_set(obj, "name_of_data", my_data);
  * printf("The data that was attached was %p\n", evas_object_data_get(obj, "name_of_data"));
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                     evas_object_data_set(Evas_Object *obj, const char *key, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1241,6 +1411,10 @@ EAPI void                     evas_object_data_set(Evas_Object *obj, const char 
  * if (my_data) printf("Data stored was %p\n", my_data);
  * else printf("No data was stored on the object\n");
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                    *evas_object_data_get(const Evas_Object *obj, const char *key) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
@@ -1263,6 +1437,10 @@ EAPI void                    *evas_object_data_get(const Evas_Object *obj, const
  *
  * my_data = evas_object_data_del(obj, "name_of_my_data");
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                    *evas_object_data_del(Evas_Object *obj, const char *key) EINA_ARG_NONNULL(1, 2);
 
@@ -1291,6 +1469,10 @@ EAPI void                    *evas_object_data_del(Evas_Object *obj, const char 
  * @warning This function will @b skip objects parented by smart
  * objects, acting only on the ones at the "top level", with regard to
  * object parenting.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Object *evas_object_top_at_pointer_get(const Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -1316,6 +1498,9 @@ EAPI Evas_Object *evas_object_top_at_pointer_get(const Evas *e) EINA_WARN_UNUSED
  *
  * @see evas_object_intercept_show_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_show_callback_add(Evas_Object *obj, Evas_Object_Intercept_Show_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1330,6 +1515,9 @@ EAPI void  evas_object_intercept_show_callback_add(Evas_Object *obj, Evas_Object
  *
  * @see evas_object_intercept_show_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_show_callback_del(Evas_Object *obj, Evas_Object_Intercept_Show_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1345,6 +1533,9 @@ EAPI void *evas_object_intercept_show_callback_del(Evas_Object *obj, Evas_Object
  *
  * @see evas_object_intercept_hide_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_hide_callback_add(Evas_Object *obj, Evas_Object_Intercept_Hide_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1359,6 +1550,9 @@ EAPI void  evas_object_intercept_hide_callback_add(Evas_Object *obj, Evas_Object
  *
  * @see evas_object_intercept_hide_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_hide_callback_del(Evas_Object *obj, Evas_Object_Intercept_Hide_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1374,6 +1568,9 @@ EAPI void *evas_object_intercept_hide_callback_del(Evas_Object *obj, Evas_Object
  *
  * @see evas_object_intercept_move_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_move_callback_add(Evas_Object *obj, Evas_Object_Intercept_Move_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1388,6 +1585,9 @@ EAPI void  evas_object_intercept_move_callback_add(Evas_Object *obj, Evas_Object
  *
  * @see evas_object_intercept_move_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_move_callback_del(Evas_Object *obj, Evas_Object_Intercept_Move_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1403,6 +1603,9 @@ EAPI void *evas_object_intercept_move_callback_del(Evas_Object *obj, Evas_Object
  *
  * @see evas_object_intercept_resize_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_resize_callback_add(Evas_Object *obj, Evas_Object_Intercept_Resize_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1417,6 +1620,9 @@ EAPI void  evas_object_intercept_resize_callback_add(Evas_Object *obj, Evas_Obje
  *
  * @see evas_object_intercept_resize_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_resize_callback_del(Evas_Object *obj, Evas_Object_Intercept_Resize_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1432,6 +1638,9 @@ EAPI void *evas_object_intercept_resize_callback_del(Evas_Object *obj, Evas_Obje
  *
  * @see evas_object_intercept_raise_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_raise_callback_add(Evas_Object *obj, Evas_Object_Intercept_Raise_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1446,6 +1655,9 @@ EAPI void  evas_object_intercept_raise_callback_add(Evas_Object *obj, Evas_Objec
  *
  * @see evas_object_intercept_raise_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_raise_callback_del(Evas_Object *obj, Evas_Object_Intercept_Raise_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1461,6 +1673,9 @@ EAPI void *evas_object_intercept_raise_callback_del(Evas_Object *obj, Evas_Objec
  *
  * @see evas_object_intercept_lower_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_lower_callback_add(Evas_Object *obj, Evas_Object_Intercept_Lower_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1475,6 +1690,9 @@ EAPI void  evas_object_intercept_lower_callback_add(Evas_Object *obj, Evas_Objec
  *
  * @see evas_object_intercept_lower_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_lower_callback_del(Evas_Object *obj, Evas_Object_Intercept_Lower_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1490,6 +1708,9 @@ EAPI void *evas_object_intercept_lower_callback_del(Evas_Object *obj, Evas_Objec
  *
  * @see evas_object_intercept_stack_above_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_stack_above_callback_add(Evas_Object *obj, Evas_Object_Intercept_Stack_Above_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1504,6 +1725,9 @@ EAPI void  evas_object_intercept_stack_above_callback_add(Evas_Object *obj, Evas
  *
  * @see evas_object_intercept_stack_above_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_stack_above_callback_del(Evas_Object *obj, Evas_Object_Intercept_Stack_Above_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1519,6 +1743,9 @@ EAPI void *evas_object_intercept_stack_above_callback_del(Evas_Object *obj, Evas
  *
  * @see evas_object_intercept_stack_below_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_stack_below_callback_add(Evas_Object *obj, Evas_Object_Intercept_Stack_Below_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1533,6 +1760,9 @@ EAPI void  evas_object_intercept_stack_below_callback_add(Evas_Object *obj, Evas
  *
  * @see evas_object_intercept_stack_below_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_stack_below_callback_del(Evas_Object *obj, Evas_Object_Intercept_Stack_Below_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1548,6 +1778,9 @@ EAPI void *evas_object_intercept_stack_below_callback_del(Evas_Object *obj, Evas
  *
  * @see evas_object_intercept_layer_set_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_layer_set_callback_add(Evas_Object *obj, Evas_Object_Intercept_Layer_Set_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1562,6 +1795,9 @@ EAPI void  evas_object_intercept_layer_set_callback_add(Evas_Object *obj, Evas_O
  *
  * @see evas_object_intercept_layer_set_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_layer_set_callback_del(Evas_Object *obj, Evas_Object_Intercept_Layer_Set_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1577,6 +1813,9 @@ EAPI void *evas_object_intercept_layer_set_callback_del(Evas_Object *obj, Evas_O
  *
  * @see evas_object_intercept_color_set_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_color_set_callback_add(Evas_Object *obj, Evas_Object_Intercept_Color_Set_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1591,6 +1830,9 @@ EAPI void  evas_object_intercept_color_set_callback_add(Evas_Object *obj, Evas_O
  *
  * @see evas_object_intercept_color_set_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_color_set_callback_del(Evas_Object *obj, Evas_Object_Intercept_Color_Set_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1606,6 +1848,9 @@ EAPI void *evas_object_intercept_color_set_callback_del(Evas_Object *obj, Evas_O
  *
  * @see evas_object_intercept_clip_set_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_clip_set_callback_add(Evas_Object *obj, Evas_Object_Intercept_Clip_Set_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1620,6 +1865,9 @@ EAPI void  evas_object_intercept_clip_set_callback_add(Evas_Object *obj, Evas_Ob
  *
  * @see evas_object_intercept_clip_set_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_clip_set_callback_del(Evas_Object *obj, Evas_Object_Intercept_Clip_Set_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1635,6 +1883,9 @@ EAPI void *evas_object_intercept_clip_set_callback_del(Evas_Object *obj, Evas_Ob
  *
  * @see evas_object_intercept_clip_unset_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_clip_unset_callback_add(Evas_Object *obj, Evas_Object_Intercept_Clip_Unset_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1649,6 +1900,9 @@ EAPI void  evas_object_intercept_clip_unset_callback_add(Evas_Object *obj, Evas_
  *
  * @see evas_object_intercept_clip_unset_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_clip_unset_callback_del(Evas_Object *obj, Evas_Object_Intercept_Clip_Unset_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1664,6 +1918,9 @@ EAPI void *evas_object_intercept_clip_unset_callback_del(Evas_Object *obj, Evas_
  *
  * @see evas_object_intercept_focus_set_callback_del().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void  evas_object_intercept_focus_set_callback_add(Evas_Object *obj, Evas_Object_Intercept_Focus_Set_Cb func, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -1678,6 +1935,9 @@ EAPI void  evas_object_intercept_focus_set_callback_add(Evas_Object *obj, Evas_O
  *
  * @see evas_object_intercept_focus_set_callback_add().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *evas_object_intercept_focus_set_callback_del(Evas_Object *obj, Evas_Object_Intercept_Focus_Set_Cb func) EINA_ARG_NONNULL(1, 2);
 
@@ -1697,6 +1957,10 @@ EAPI void *evas_object_intercept_focus_set_callback_del(Evas_Object *obj, Evas_O
  * @return  The new rectangle object.
  *
  * @ingroup Evas_Object_Rectangle
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object *evas_object_rectangle_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -1791,6 +2055,10 @@ EAPI Evas_Object *evas_object_rectangle_add(Evas *e) EINA_WARN_UNUSED_RESULT EIN
  *
  * @see evas_obj_vg_root_node_get()
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Object *evas_object_vg_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -1805,6 +2073,10 @@ EAPI void evas_object_vg_path_set(Evas_Object *vg, const char *path, int src_vg,
  * @return The created vector shape object handle.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Efl_VG* evas_vg_shape_add(Efl_VG *parent);
 
@@ -1815,6 +2087,10 @@ EAPI Efl_VG* evas_vg_shape_add(Efl_VG *parent);
  * @return The created vector container object handle.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 
 EAPI Efl_VG* evas_vg_container_add(Efl_VG *parent);
@@ -1824,6 +2100,9 @@ EAPI Efl_VG* evas_vg_container_add(Efl_VG *parent);
  * Retrieves whether or not the given Efl_Vg object is visible.
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool evas_vg_node_visible_get(Eo *obj);
 
@@ -1833,6 +2112,9 @@ EAPI Eina_Bool evas_vg_node_visible_get(Eo *obj);
  *
  * @param[in] v @c EINA_TRUE if to make the object visible, @c EINA_FALSE otherwise
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_visible_set(Eo *obj, Eina_Bool v);
 
@@ -1855,6 +2137,9 @@ EAPI void evas_vg_node_visible_set(Eo *obj, Eina_Bool v);
  * @param[out] b The blue component of the given color.
  * @param[out] a The alpha component of the given color.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_color_get(Eo *obj, int *r, int *g, int *b, int *a);
 
@@ -1873,6 +2158,9 @@ EAPI void evas_vg_node_color_get(Eo *obj, int *r, int *g, int *b, int *a);
  * @param[in] b The blue component of the given color.
  * @param[in] a The alpha component of the given color.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_color_set(Eo *obj, int r, int g, int b, int a);
 
@@ -1885,6 +2173,9 @@ EAPI void evas_vg_node_color_set(Eo *obj, int r, int g, int b, int a);
  * @param[out] w in
  * @param[out] h in
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_geometry_get(Eo *obj, int *x, int *y, int *w, int *h);
 
@@ -1897,6 +2188,9 @@ EAPI void evas_vg_node_geometry_get(Eo *obj, int *x, int *y, int *w, int *h);
  * @param[in] w in
  * @param[in] h in
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_geometry_set(Eo *obj, int x, int y, int w, int h);
 
@@ -1927,6 +2221,9 @@ EAPI void evas_vg_node_geometry_set(Eo *obj, int x, int y, int w, int h);
  *
  * @param[in] below the object below which to stack
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_stack_below(Eo *obj, Eo *below);
 
@@ -1957,6 +2254,9 @@ EAPI void evas_vg_node_stack_below(Eo *obj, Eo *below);
  *
  * @param[in] above the object above which to stack
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_stack_above(Eo *obj, Eo *above);
 
@@ -1971,6 +2271,10 @@ EAPI void evas_vg_node_stack_above(Eo *obj, Eo *above);
  * @see evas_object_stack_below()
  * @see evas_object_lower()
  * 
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_raise(Eo *obj);
 
@@ -1987,6 +2291,9 @@ EAPI void evas_vg_node_raise(Eo *obj);
  * 
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_node_lower(Eo *obj);
 
@@ -1998,6 +2305,9 @@ EAPI void evas_vg_node_lower(Eo *obj);
  * @since 1.14
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double evas_vg_shape_stroke_scale_get(Eo *obj);
 
@@ -2009,6 +2319,9 @@ EAPI double evas_vg_shape_stroke_scale_get(Eo *obj);
  *
  * @param[in] s stroke scale value
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_scale_set(Eo *obj, double s);
 
@@ -2022,6 +2335,9 @@ EAPI void evas_vg_shape_stroke_scale_set(Eo *obj, double s);
  * @param[out] b The blue component of the given color.
  * @param[out] a The alpha component of the given color.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_color_get(Eo *obj, int *r, int *g, int *b, int *a);
 
@@ -2035,6 +2351,9 @@ EAPI void evas_vg_shape_stroke_color_get(Eo *obj, int *r, int *g, int *b, int *a
  * @param[in] b The blue component of the given color.
  * @param[in] a The alpha component of the given color.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_color_set(Eo *obj, int r, int g, int b, int a);
 
@@ -2044,6 +2363,9 @@ EAPI void evas_vg_shape_stroke_color_set(Eo *obj, int r, int g, int b, int a);
  * @since 1.14
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double evas_vg_shape_stroke_width_get(Eo *obj);
 
@@ -2054,6 +2376,9 @@ EAPI double evas_vg_shape_stroke_width_get(Eo *obj);
  *
  * @param[in] w stroke width to be used
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_width_set(Eo *obj, double w);
 
@@ -2062,6 +2387,9 @@ EAPI void evas_vg_shape_stroke_width_set(Eo *obj, double w);
  * Not Implemented
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double evas_vg_shape_stroke_location_get(Eo *obj);
 
@@ -2071,6 +2399,9 @@ EAPI double evas_vg_shape_stroke_location_get(Eo *obj);
  *
  * @param[in] centered
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_location_set(Eo *obj, double centered);
 
@@ -2081,6 +2412,9 @@ EAPI void evas_vg_shape_stroke_location_set(Eo *obj, double centered);
  * @param[out] dash
  * @param[out] length
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_dash_get(Eo *obj, const Efl_Gfx_Dash **dash, unsigned int *length);
 
@@ -2091,6 +2425,9 @@ EAPI void evas_vg_shape_stroke_dash_get(Eo *obj, const Efl_Gfx_Dash **dash, unsi
  * @param[in] dash
  * @param[in] length
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_dash_set(Eo *obj, const Efl_Gfx_Dash *dash, unsigned int length);
 
@@ -2100,6 +2437,9 @@ EAPI void evas_vg_shape_stroke_dash_set(Eo *obj, const Efl_Gfx_Dash *dash, unsig
  * @since 1.14
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Efl_Gfx_Cap evas_vg_shape_stroke_cap_get(Eo *obj);
 
@@ -2114,6 +2454,9 @@ EAPI Efl_Gfx_Cap evas_vg_shape_stroke_cap_get(Eo *obj);
  *
  * @param[in] c cap style to use , default is EFL_GFX_CAP_BUTT
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_cap_set(Eo *obj, Efl_Gfx_Cap c);
 
@@ -2123,6 +2466,9 @@ EAPI void evas_vg_shape_stroke_cap_set(Eo *obj, Efl_Gfx_Cap c);
  * @since 1.14
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Efl_Gfx_Join evas_vg_shape_stroke_join_get(Eo *obj);
 
@@ -2138,6 +2484,9 @@ EAPI Efl_Gfx_Join evas_vg_shape_stroke_join_get(Eo *obj);
  * @param[in] j join style to use , default is
 EFL_GFX_JOIN_MITER
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_stroke_join_set(Eo *obj, Efl_Gfx_Join j);
 
@@ -2153,6 +2502,9 @@ EAPI void evas_vg_shape_stroke_join_set(Eo *obj, Efl_Gfx_Join j);
  * @param[in] op command list
  * @param[in] points point list
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_path_set(Eo *obj, const Efl_Gfx_Path_Command *op, const double *points);
 
@@ -2164,6 +2516,9 @@ EAPI void evas_vg_shape_shape_path_set(Eo *obj, const Efl_Gfx_Path_Command *op, 
  * @param[out] op command list
  * @param[out] points point list
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 
 EAPI void evas_vg_shape_shape_path_get(Eo *obj, const Efl_Gfx_Path_Command **op, const double **points);
@@ -2180,6 +2535,9 @@ EAPI void evas_vg_shape_shape_current_ctrl_get(Eo *obj, double *x, double *y);
  *
  * @param[in] dup_from Shape object from where data will be copied.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_dup(Eo *obj, Eo *dup_from);
 
@@ -2191,6 +2549,9 @@ EAPI void evas_vg_shape_shape_dup(Eo *obj, Eo *dup_from);
  * 
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_reset(Eo *obj);
 
@@ -2206,6 +2567,9 @@ EAPI void evas_vg_shape_shape_reset(Eo *obj);
  * @param[in] x X co-ordinate of the current point.
  * @param[in] y Y co-ordinate of the current point.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_move_to(Eo *obj, double x, double y);
 
@@ -2225,6 +2589,9 @@ EAPI void evas_vg_shape_shape_append_move_to(Eo *obj, double x, double y);
  * @param[in] x X co-ordinate of end point of the line.
  * @param[in] y Y co-ordinate of end point of the line.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_line_to(Eo *obj, double x, double y);
 
@@ -2243,6 +2610,9 @@ EAPI void evas_vg_shape_shape_append_line_to(Eo *obj, double x, double y);
  * @param[in] ctrl_x X co-ordinate of control point.
  * @param[in] ctrl_y Y co-ordinate of control point.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_quadratic_to(Eo *obj, double x, double y, double ctrl_x, double ctrl_y);
 
@@ -2258,6 +2628,9 @@ EAPI void evas_vg_shape_shape_append_quadratic_to(Eo *obj, double x, double y, d
  * @param[in] x X co-ordinate of end point of the line.
  * @param[in] y Y co-ordinate of end point of the line.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_squadratic_to(Eo *obj, double x, double y);
 
@@ -2278,6 +2651,9 @@ EAPI void evas_vg_shape_shape_append_squadratic_to(Eo *obj, double x, double y);
  * @param[in] ctrl_x1 X co-ordinate of 2nd control point.
  * @param[in] ctrl_y1 Y co-ordinate of 2nd control point.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_cubic_to(Eo *obj, double x, double y, double ctrl_x0, double ctrl_y0, double ctrl_x1, double ctrl_y1);
 
@@ -2296,6 +2672,9 @@ EAPI void evas_vg_shape_shape_append_cubic_to(Eo *obj, double x, double y, doubl
  * @param[in] ctrl_x X co-ordinate of 2nd control point.
  * @param[in] ctrl_y Y co-ordinate of 2nd control point.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_scubic_to(Eo *obj, double x, double y, double ctrl_x, double ctrl_y);
 
@@ -2320,6 +2699,9 @@ EAPI void evas_vg_shape_shape_append_scubic_to(Eo *obj, double x, double y, doub
  * @param[in] large_arc Defines whether to draw the larger arc or smaller arc joining two point.
  * @param[in] sweep Defines whether the arc will be drawn counter-clockwise or clockwise from current point to the end point taking into account the large_arc property.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_arc_to(Eo *obj, double x, double y, double rx, double ry, double angle, Eina_Bool large_arc, Eina_Bool sweep);
 
@@ -2353,6 +2735,9 @@ EAPI void evas_vg_shape_shape_append_arc(Eo *obj, double x, double y, double w, 
  *
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_close(Eo *obj);
 
@@ -2368,6 +2753,9 @@ EAPI void evas_vg_shape_shape_append_close(Eo *obj);
  * @param[in] y Y co-ordinate of the center of the circle.
  * @param[in] radius radius of the circle.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_circle(Eo *obj, double x, double y, double radius);
 
@@ -2392,6 +2780,9 @@ EAPI void evas_vg_shape_shape_append_circle(Eo *obj, double x, double y, double 
  * @param[in] rx The x radius of the rounded corner and should be in range [ 0 to w/2 ]
  * @param[in] ry The y radius of the rounded corner and should be in range [ 0 to h/2 ]
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_shape_shape_append_rect(Eo *obj, double x, double y, double w, double h, double rx, double ry);
 
@@ -2409,6 +2800,9 @@ EAPI Eina_Bool evas_vg_shape_shape_equal_commands(Eo *obj, const Eo *with);
  * @param[in] colors color stops list
  * @param[in] length length of the list
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_stop_set(Eo *obj, const Efl_Gfx_Gradient_Stop *colors, unsigned int length);
 
@@ -2420,6 +2814,9 @@ EAPI void evas_vg_gradient_stop_set(Eo *obj, const Efl_Gfx_Gradient_Stop *colors
  * @param[out] colors color stops list
  * @param[out] length length of the list
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_stop_get(Eo *obj, const Efl_Gfx_Gradient_Stop **colors, unsigned int *length);
 
@@ -2430,6 +2827,9 @@ EAPI void evas_vg_gradient_stop_get(Eo *obj, const Efl_Gfx_Gradient_Stop **color
  *
  * @param[in] s spread type to be used
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_spread_set(Eo *obj, Efl_Gfx_Gradient_Spread s);
 
@@ -2440,6 +2840,9 @@ EAPI void evas_vg_gradient_spread_set(Eo *obj, Efl_Gfx_Gradient_Spread s);
  * @since 1.14
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Efl_Gfx_Gradient_Spread evas_vg_gradient_spread_get(Eo *obj);
 
@@ -2452,6 +2855,9 @@ EAPI Efl_Gfx_Gradient_Spread evas_vg_gradient_spread_get(Eo *obj);
  * @param[in] x x co-ordinate of start point
  * @param[in] y y co-ordinate of start point
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_linear_start_set(Eo *obj, double x, double y);
 
@@ -2462,6 +2868,9 @@ EAPI void evas_vg_gradient_linear_start_set(Eo *obj, double x, double y);
  * @param[out] x x co-ordinate of start point
  * @param[out] y y co-ordinate of start point
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_linear_start_get(Eo *obj, double *x, double *y);
 
@@ -2472,6 +2881,9 @@ EAPI void evas_vg_gradient_linear_start_get(Eo *obj, double *x, double *y);
  * @param[in] x x co-ordinate of end point
  * @param[in] y y co-ordinate of end point
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_linear_end_set(Eo *obj, double x, double y);
 
@@ -2482,6 +2894,9 @@ EAPI void evas_vg_gradient_linear_end_set(Eo *obj, double x, double y);
  * @param[out] x x co-ordinate of end point
  * @param[out] y y co-ordinate of end point
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_linear_end_get(Eo *obj, double *x, double *y);
 
@@ -2494,6 +2909,9 @@ EAPI void evas_vg_gradient_linear_end_get(Eo *obj, double *x, double *y);
  * @param[in] x x co-ordinate of center point
  * @param[in] y y co-ordinate of center point
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_radial_center_set(Eo *obj, double x, double y);
 
@@ -2504,6 +2922,9 @@ EAPI void evas_vg_gradient_radial_center_set(Eo *obj, double x, double y);
  * @param[out] x x co-ordinate of center point
  * @param[out] y y co-ordinate of center point
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_radial_center_get(Eo *obj, double *x, double *y);
 
@@ -2513,6 +2934,9 @@ EAPI void evas_vg_gradient_radial_center_get(Eo *obj, double *x, double *y);
  *
  * @param[in] r center radius
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_radial_radius_set(Eo *obj, double r);
 
@@ -2521,6 +2945,9 @@ EAPI void evas_vg_gradient_radial_radius_set(Eo *obj, double r);
  * Gets the center radius of this radial gradient.
  *
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double evas_vg_gradient_radial_radius_get(Eo *obj);
 
@@ -2531,6 +2958,9 @@ EAPI double evas_vg_gradient_radial_radius_get(Eo *obj);
  * @param[in] x x co-ordinate of focal point
  * @param[in] y y co-ordinate of focal point
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_radial_focal_set(Eo *obj, double x, double y);
 
@@ -2541,6 +2971,9 @@ EAPI void evas_vg_gradient_radial_focal_set(Eo *obj, double x, double y);
  * @param[out] x x co-ordinate of focal point
  * @param[out] y y co-ordinate of focal point
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_vg_gradient_radial_focal_get(Eo *obj, double *x, double *y);
 
@@ -2578,6 +3011,10 @@ EAPI void evas_vg_gradient_radial_focal_get(Eo *obj, double *x, double *y);
  * img = evas_object_image_add(canvas);
  * evas_object_image_file_set(img, "/path/to/img", NULL);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object                  *evas_object_image_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -2598,6 +3035,10 @@ EAPI Evas_Object                  *evas_object_image_add(Evas *e) EINA_WARN_UNUS
  * @see evas_object_image_add()
  * @see evas_object_image_filled_set()
  * @see evas_object_image_fill_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object                  *evas_object_image_filled_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -2623,6 +3064,10 @@ EAPI Evas_Object                  *evas_object_image_filled_add(Evas *e) EINA_WA
  * @param size The size of the image file data in bytes
  * @param format The format of the file (optional), or @c NULL if not needed
  * @param key The image key in file, or @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          evas_object_image_memfile_set(Evas_Object *obj, void *data, int size, char *format, char *key) EINA_ARG_NONNULL(1, 2);
 
@@ -2634,6 +3079,9 @@ EAPI void                          evas_object_image_memfile_set(Evas_Object *ob
  *
  * This function sets a native surface of a given canvas image.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          evas_object_image_native_surface_set(Evas_Object *obj, Evas_Native_Surface *surf) EINA_ARG_NONNULL(1, 2);
 
@@ -2661,6 +3109,10 @@ EAPI void                          evas_object_image_native_surface_set(Evas_Obj
  * of the former until the image is loaded). It is highly advisable,
  * then, that the user preload an image with it being @b hidden, just
  * to be shown on the #EVAS_CALLBACK_IMAGE_PRELOADED event's callback.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          evas_object_image_preload(Evas_Object *obj, Eina_Bool cancel) EINA_ARG_NONNULL(1);
 
@@ -2672,6 +3124,10 @@ EAPI void                          evas_object_image_preload(Evas_Object *obj, E
  *
  * This is equivalent to calling evas_object_image_source_set() with a
  * @c NULL source.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     evas_object_image_source_unset(Evas_Object *obj) EINA_ARG_NONNULL(1);
 
@@ -2686,6 +3142,10 @@ EAPI Eina_Bool                     evas_object_image_source_unset(Evas_Object *o
  *
  * @param obj Object to use as an alpha mask.
  * @param ismask Use image as alphamask, must be true.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          evas_object_image_alpha_mask_set(Evas_Object *obj, Eina_Bool ismask) EINA_ARG_NONNULL(1);
 
@@ -2719,6 +3179,10 @@ EAPI void                          evas_object_image_alpha_mask_set(Evas_Object 
  * @param[in] file The image file path.
  * @param[in] key The image key in @p file (if its an Eet one), or @c
 NULL, otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_file_set(Eo *obj, const char *file, const char *key);
 
@@ -2735,6 +3199,10 @@ EAPI void evas_object_image_file_set(Eo *obj, const char *file, const char *key)
  * @param[out] file The image file path.
  * @param[out] key The image key in @p file (if its an Eet one), or @c
 NULL, otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_file_get(const Eo *obj, const char **file, const char **key);
 
@@ -2752,6 +3220,10 @@ EAPI void evas_object_image_file_get(const Eo *obj, const char **file, const cha
  * @param[in] f The mmaped file
  * @param[in] key The image key in @p file (if its an Eet one), or @c
 NULL, otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_object_image_mmap_set(Eo *obj, const Eina_File *f, const char *key);
 
@@ -2769,6 +3241,10 @@ EAPI void evas_object_image_mmap_set(Eo *obj, const Eina_File *f, const char *ke
  * @param[out] f The mmaped file
  * @param[out] key The image key in @p file (if its an Eet one), or @c
 NULL, otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_object_image_mmap_get(const Eo *obj, const Eina_File **f, const char **key);
 
@@ -2791,6 +3267,10 @@ obligatory).
 otherwise.
  * @param[in] flags String containing the flags to be used (@c NULL for
 none).
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool evas_object_image_save(const Eo *obj, const char *file, const char *key, const char *flags) EINA_ARG_NONNULL(2);
 
@@ -2845,6 +3325,9 @@ EAPI Eina_Bool evas_object_image_save(const Eo *obj, const char *file, const cha
  * @see evas_object_image_animated_frame_set()
  * @since 1.1
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool evas_object_image_animated_get(const Eo *obj);
 
@@ -2863,6 +3346,10 @@ EAPI Eina_Bool evas_object_image_animated_get(const Eo *obj);
  *
  * @param[in] w The new width of the image's load size.
  * @param[in] h The new height of the image's load size.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_load_size_set(Eo *obj, int w, int h);
 
@@ -2882,6 +3369,10 @@ EAPI void evas_object_image_load_size_set(Eo *obj, int w, int h);
  *
  * @param[out] w The new width of the image's load size.
  * @param[out] h The new height of the image's load size.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_load_size_get(const Eo *obj, int *w, int *h);
 
@@ -2901,6 +3392,10 @@ EAPI void evas_object_image_load_size_get(const Eo *obj, int *w, int *h);
  * @see evas_object_image_smooth_scale_get()
  *
  * @param[in] smooth_scale Whether to use smooth scale or not.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_smooth_scale_set(Eo *obj, Eina_Bool smooth_scale);
 
@@ -2913,6 +3408,9 @@ EAPI void evas_object_image_smooth_scale_set(Eo *obj, Eina_Bool smooth_scale);
  *
  * See @ref evas_object_image_smooth_scale_set() for more details.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool evas_object_image_smooth_scale_get(const Eo *obj);
 
@@ -2922,6 +3420,10 @@ EAPI Eina_Bool evas_object_image_smooth_scale_get(const Eo *obj);
  * EVAS_TEXTURE_RESTRICT, or EVAS_TEXTURE_PAD.
  *
  * @param[in] spread One of EVAS_TEXTURE_REFLECT, EVAS_TEXTURE_REPEAT,
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_fill_spread_set(Evas_Object *obj, Evas_Fill_Spread spread);
 
@@ -2932,6 +3434,9 @@ EAPI void evas_object_image_fill_spread_set(Evas_Object *obj, Evas_Fill_Spread s
  *
  * @return  The current spread mode of the image object.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Fill_Spread evas_object_image_fill_spread_get(const Evas_Object *obj);
 
@@ -2971,6 +3476,10 @@ image) to start drawing from.
 image) to start drawing from.
  * @param[in] w The width the bound image will be displayed at.
  * @param[in] h The height the bound image will be displayed at.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_fill_set(Evas_Object *obj, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h);
 
@@ -2990,6 +3499,10 @@ image) to start drawing from.
 image) to start drawing from.
  * @param[out] w The width the bound image will be displayed at.
  * @param[out] h The height the bound image will be displayed at.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_fill_get(const Evas_Object *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h);
 
@@ -3005,6 +3518,10 @@ EAPI void evas_object_image_fill_get(const Evas_Object *obj, Evas_Coord *x, Evas
  *
  * @param[in] w The new width of the image.
  * @param[in] h The new height of the image.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_size_set(Evas_Object *obj, int w, int h);
 
@@ -3016,6 +3533,10 @@ EAPI void evas_object_image_size_set(Evas_Object *obj, int w, int h);
  *
  * @param[out] w The new width of the image.
  * @param[out] h The new height of the image.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_image_size_get(const Evas_Object *obj, int *w, int *h);
 
@@ -3035,7 +3556,13 @@ EAPI void evas_object_image_size_get(const Evas_Object *obj, int *w, int *h);
  *
  * @param[in] to_cspace The colorspace to which the image raw data will be converted.
  */
-/** @deprecated evas_object_image_data_convert */
+/**
+ * @deprecated evas_object_image_data_conver
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
 EAPI void *evas_object_image_data_convert(Evas_Object *obj, Evas_Colorspace to_cspace) EINA_WARN_UNUSED_RESULT EINA_DEPRECATED;
 
 /*
@@ -3045,7 +3572,13 @@ EAPI void *evas_object_image_data_convert(Evas_Object *obj, Evas_Colorspace to_c
  *
  * @param[in] pixels The pixel's source to be imported.
  */
-/** @deprecated evas_object_image_pixels_import */
+/**
+ * @deprecated evas_object_image_pixels_impor
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
 EAPI Eina_Bool evas_object_image_pixels_import(Evas_Object *obj, Evas_Pixel_Import_Source *pixels) EINA_ARG_NONNULL(2) EINA_DEPRECATED;
 
 /*
@@ -3053,7 +3586,13 @@ EAPI Eina_Bool evas_object_image_pixels_import(Evas_Object *obj, Evas_Pixel_Impo
  *
  * This function reloads the image data bound to image object @p obj.
  */
-/** @deprecated evas_object_image_reload */
+/**
+ * @deprecated evas_object_image_reloa
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
 EAPI void evas_object_image_reload(Evas_Object *obj) EINA_DEPRECATED;
 
 #include "canvas/evas_image.eo.legacy.h"
@@ -3081,6 +3620,10 @@ EAPI void evas_object_image_reload(Evas_Object *obj) EINA_DEPRECATED;
  * @see evas_object_text_font_source_set()
  * @see evas_object_text_font_set()
  * @see evas_object_text_text_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object         *evas_object_text_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3091,6 +3634,10 @@ EAPI Evas_Object         *evas_object_text_add(Evas *e) EINA_WARN_UNUSED_RESULT 
  * @see evas_object_text_text_get()
  *
  * @param[in] text Text string to display on it.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_text_text_set(Eo *obj, const char *text);
 
@@ -3105,6 +3652,9 @@ EAPI void evas_object_text_text_set(Eo *obj, const char *text);
  *
  * @see evas_object_text_text_set()
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char *evas_object_text_text_get(const Eo *obj);
 
@@ -3121,6 +3671,10 @@ EAPI const char *evas_object_text_text_get(const Eo *obj);
  * @see evas_object_text_font_get()
  *
  * @param[in] font_source The font file's path.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_text_font_source_set(Eo *obj, const char *font_source);
 
@@ -3133,6 +3687,9 @@ EAPI void evas_object_text_font_source_set(Eo *obj, const char *font_source);
  *
  * @see evas_object_text_font_get() for more details
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char *evas_object_text_font_source_get(const Eo *obj);
 
@@ -3151,6 +3708,10 @@ EAPI const char *evas_object_text_font_source_get(const Eo *obj);
  *
  * @param[in] font The font family name or filename.
  * @param[in] size The font size, in points.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_text_font_set(Eo *obj, const char *font, Evas_Font_Size size);
 
@@ -3167,6 +3728,10 @@ EAPI void evas_object_text_font_set(Eo *obj, const char *font, Evas_Font_Size si
  *
  * @param[out] font The font family name or filename.
  * @param[out] size The font size, in points.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void evas_object_text_font_get(const Eo *obj, const char **font, Evas_Font_Size *size);
 
@@ -3183,6 +3748,10 @@ EAPI void evas_object_text_font_get(const Eo *obj, const char **font, Evas_Font_
  * Set to null to disable filtering.
  *
  * @param[in] code filter program source code
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EINA_DEPRECATED EAPI void evas_object_text_filter_program_set(Eo *obj, const char *code);
 
@@ -3195,6 +3764,10 @@ EINA_DEPRECATED EAPI void evas_object_text_filter_program_set(Eo *obj, const cha
  *
  * @param[in] buffer name as used in the program
  * @param[in] source object to use as a proxy source
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EINA_DEPRECATED EAPI void evas_object_text_filter_source_set(Eo *obj, const char *name, Evas_Object *eo_source);
 
@@ -3219,6 +3792,10 @@ EAPI Eina_Bool                                evas_object_text_ellipsis_status_g
  * Adds a textblock to the given evas.
  * @param   e The given evas.
  * @return  The new textblock object.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object                             *evas_object_textblock_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3234,6 +3811,10 @@ EAPI Evas_Object                             *evas_object_textblock_add(Evas *e)
  * @param text The markup text (if @c NULL, return @c NULL).
  * @return An allocated plain text version of the markup.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char                                    *evas_textblock_text_markup_to_utf8(const Evas_Object *obj, const char *text) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
 
@@ -3248,6 +3829,10 @@ EAPI char                                    *evas_textblock_text_markup_to_utf8
  * @param text The plain text (if @c NULL, return @c NULL).
  * @return An allocated markup version of the plain text.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char                                    *evas_textblock_text_utf8_to_markup(const Evas_Object *obj, const char *text) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
 
@@ -3257,6 +3842,10 @@ EAPI char                                    *evas_textblock_text_utf8_to_markup
  *
  * @param obj the object to clear.
  * @return nothing.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_object_textblock_clear(Evas_Object *obj) EINA_ARG_NONNULL(1);
 
@@ -3287,6 +3876,10 @@ EAPI Eina_Bool                                evas_object_textblock_ellipsis_sta
  * This function adds a new textgrid object to the Evas @p e and returns the object.
  *
  * @since 1.7
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Object *evas_object_textgrid_add(Evas *e);
 
@@ -3309,6 +3902,10 @@ EAPI Evas_Object *evas_object_textgrid_add(Evas *e);
  * @since 1.7
  *
  * @param[in] font_source The font file's path.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_object_textgrid_font_source_set(Eo *obj, const char *font_source);
 
@@ -3328,6 +3925,9 @@ EAPI void evas_object_textgrid_font_source_set(Eo *obj, const char *font_source)
  *
  * @since 1.7
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *evas_object_textgrid_font_source_get(const Eo *obj);
 
@@ -3352,6 +3952,10 @@ EAPI const char *evas_object_textgrid_font_source_get(const Eo *obj);
  *
  * @param[in] font_name The font (family) name.
  * @param[in] font_size The font size, in points.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_object_textgrid_font_set(Eo *obj, const char *font_name, Evas_Font_Size font_size);
 
@@ -3375,6 +3979,10 @@ EAPI void evas_object_textgrid_font_set(Eo *obj, const char *font_name, Evas_Fon
  *
  * @param[out] font_name The font (family) name.
  * @param[out] font_size The font size, in points.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_object_textgrid_font_get(const Eo *obj, const char **font_name, Evas_Font_Size *font_size);
 
@@ -3391,6 +3999,10 @@ EAPI void evas_object_textgrid_font_get(const Eo *obj, const char **font_name, E
  * Adds a new evas line object to the given evas.
  * @param   e The given evas.
  * @return  The new evas line object.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object *evas_object_line_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3409,6 +4021,10 @@ EAPI Evas_Object *evas_object_line_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG
  * Adds a new evas polygon object to the given evas.
  * @param   e The given evas.
  * @return  A new evas polygon object.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object *evas_object_polygon_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3442,6 +4058,10 @@ EAPI Evas_Object *evas_object_polygon_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_
  * #EVAS_SMART_SUBCLASS_NEW, for example.
  *
  * @ingroup Evas_Smart_Object_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object *evas_object_smart_add(Evas *e, Evas_Smart *s) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2) EINA_MALLOC;
 
@@ -3464,6 +4084,10 @@ EAPI Evas_Object *evas_object_smart_add(Evas *e, Evas_Smart *s) EINA_WARN_UNUSED
  * @see evas_object_smart_members_get()
  *
  * @ingroup Evas_Smart_Object_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         evas_object_smart_member_add(Evas_Object *obj, Evas_Object *smart_obj) EINA_ARG_NONNULL(1, 2);
 
@@ -3479,6 +4103,10 @@ EAPI void         evas_object_smart_member_add(Evas_Object *obj, Evas_Object *sm
  *
  * @see evas_object_smart_member_add() for more details
  * @see evas_object_smart_members_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         evas_object_smart_member_del(Evas_Object *obj) EINA_ARG_NONNULL(1);
 
@@ -3519,6 +4147,10 @@ EAPI void         evas_object_smart_member_del(Evas_Object *obj) EINA_ARG_NONNUL
  *
  * @see evas_object_smart_callback_del()
  * @ingroup Evas_Smart_Object_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         evas_object_smart_callback_add(Evas_Object *obj, const char *event, Evas_Smart_Cb func, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -3536,6 +4168,10 @@ EAPI void         evas_object_smart_callback_add(Evas_Object *obj, const char *e
  * @see evas_object_smart_callback_add
  * @since 1.1
  * @ingroup Evas_Smart_Object_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         evas_object_smart_callback_priority_add(Evas_Object *obj, const char *event, Evas_Callback_Priority priority, Evas_Smart_Cb func, const void *data);
 
@@ -3559,6 +4195,10 @@ EAPI void         evas_object_smart_callback_priority_add(Evas_Object *obj, cons
  * @see evas_object_smart_callback_add() for more details.
  *
  * @ingroup Evas_Smart_Object_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void        *evas_object_smart_callback_del(Evas_Object *obj, const char *event, Evas_Smart_Cb func) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -3587,6 +4227,10 @@ EAPI void        *evas_object_smart_callback_del(Evas_Object *obj, const char *e
  *
  * @note To delete all smart event callbacks which match @p type and @p func,
  * use evas_object_smart_callback_del().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void        *evas_object_smart_callback_del_full(Evas_Object *obj, const char *event, Evas_Smart_Cb func, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -3610,6 +4254,10 @@ EAPI void        *evas_object_smart_callback_del_full(Evas_Object *obj, const ch
  * can have introspection on its events API <b>at run time</b>.
  *
  * @ingroup Evas_Smart_Object_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         evas_object_smart_callback_call(Evas_Object *obj, const char *event, void *event_info) EINA_ARG_NONNULL(1, 2);
 
@@ -3625,6 +4273,10 @@ EAPI void         evas_object_smart_callback_call(Evas_Object *obj, const char *
  *
  * @return The interface's handle pointer, if found, @c NULL
  * otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const void       *evas_object_smart_interface_get(const Evas_Object *obj, const char *name);
 
@@ -3638,6 +4290,10 @@ EAPI const void       *evas_object_smart_interface_get(const Evas_Object *obj, c
  *
  * @return The object interface's private data blob pointer, if found,
  * @c NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             *evas_object_smart_interface_data_get(const Evas_Object *obj, const Evas_Smart_Interface *iface);
 
@@ -3656,6 +4312,10 @@ EAPI void             *evas_object_smart_interface_data_get(const Evas_Object *o
  *
  * @ingroup Evas_Smart_Object_Group
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int          evas_smart_objects_calculate_count_get(const Evas *e);
 
@@ -3681,6 +4341,10 @@ EAPI int          evas_smart_objects_calculate_count_get(const Evas *e);
  * properties, like colors.
  *
  * @see evas_object_smart_clipped_smart_add()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Object            *evas_object_smart_clipped_clipper_get(const Evas_Object *obj) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3708,6 +4372,10 @@ EAPI Evas_Object            *evas_object_smart_clipped_clipper_get(const Evas_Ob
  * set to evas_object_box_layout_horizontal(). The remaining
  * properties of the box must be set/retrieved via
  * <c>evas_object_box_{h,v}_{align,padding}_{get,set)()</c>.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object               *evas_object_box_add(Evas *evas) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3727,6 +4395,10 @@ EAPI Evas_Object               *evas_object_box_add(Evas *evas) EINA_WARN_UNUSED
  * This is a variable argument list variant of the
  * evas_object_box_option_property_get(). See its documentation for
  * more details.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                  evas_object_box_option_property_vget(const Evas_Object *o, Evas_Object_Box_Option *opt, int property, va_list args) EINA_ARG_NONNULL(1, 2);
 
@@ -3746,6 +4418,10 @@ EAPI Eina_Bool                  evas_object_box_option_property_vget(const Evas_
  * This is a variable argument list variant of the
  * evas_object_box_option_property_set(). See its documentation for
  * more details.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                  evas_object_box_option_property_vset(Evas_Object *o, Evas_Object_Box_Option *opt, int property, va_list args) EINA_ARG_NONNULL(1, 2);
 
@@ -3773,6 +4449,10 @@ EAPI Eina_Bool                  evas_object_box_option_property_vset(Evas_Object
  * list, with the values passed after @p property, and call
  * evas_object_box_option_property_vset() with this list and the same
  * previous arguments.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                  evas_object_box_option_property_set(Evas_Object *o, Evas_Object_Box_Option *opt, int property, ...) EINA_ARG_NONNULL(1, 2);
 
@@ -3800,6 +4480,10 @@ EAPI Eina_Bool                  evas_object_box_option_property_set(Evas_Object 
  * list, with the values passed after @p property, and call
  * evas_object_box_option_property_vget() with this list and the same
  * previous arguments.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                  evas_object_box_option_property_get(const Evas_Object *o, Evas_Object_Box_Option *opt, int property, ...) EINA_ARG_NONNULL(1, 2);
 
@@ -3817,6 +4501,10 @@ EAPI Eina_Bool                  evas_object_box_option_property_get(const Evas_O
  *       It's up to the user to destroy it when it no longer needs it.
  *       It's possible to remove objects from the box when walking
  *       this list, but these removals won't be reflected on it.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List                 *evas_object_box_children_get(const Evas_Object *o) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3835,6 +4523,10 @@ EAPI Eina_List                 *evas_object_box_children_get(const Evas_Object *
  * @brief Create a new table.
  *
  * @param evas Canvas in which table will be added.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object                       *evas_object_table_add(Evas *evas) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3842,6 +4534,10 @@ EAPI Evas_Object                       *evas_object_table_add(Evas *evas) EINA_W
  * Get the child of the table at the given coordinates
  *
  * @note This does not take into account col/row spanning
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object                       *evas_object_table_child_get(const Evas_Object *o, unsigned short col, unsigned short row) EINA_ARG_NONNULL(1);
 
@@ -3862,6 +4558,10 @@ EAPI Evas_Object                       *evas_object_table_child_get(const Evas_O
  * It's set to a virtual size of 1x1 by default and add children with
  * evas_object_grid_pack().
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object   *evas_object_grid_add(Evas *evas) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3883,6 +4583,10 @@ EAPI Evas_Object   *evas_object_grid_add(Evas *evas) EINA_WARN_UNUSED_RESULT EIN
  * @see evas_output_size_set
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Out *evas_out_add(Evas *e);
 
@@ -3896,6 +4600,9 @@ EAPI Evas_Out *evas_out_add(Evas *e);
  *
  * @since 1.8
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_output_del(Evas_Out *evo);
 

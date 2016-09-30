@@ -8,6 +8,10 @@ abstract Efl.VG.Base (Eo.Base, Efl.Gfx.Base, Efl.Gfx.Stack)
             [[Set an unique name from the parent point of view. $null means
               no name.
 
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
               @since 1.16
             ]]
          }
@@ -17,6 +21,10 @@ abstract Efl.VG.Base (Eo.Base, Efl.Gfx.Base, Efl.Gfx.Stack)
               $null means no name. When set a parent after the name what
               defined, it might be forced back to $null if the parent
               already has a node of that name.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
 
               @since 1.16
             ]]
@@ -31,12 +39,22 @@ abstract Efl.VG.Base (Eo.Base, Efl.Gfx.Base, Efl.Gfx.Stack)
 
               Note: Pass $null to cancel the applied transformation.
 
-              @since 1.14]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.14
+            ]]
          }
          get {
             [[Gets the transformation matrix used for this node object.
 
-              @since 1.14]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.14
+            ]]
          }
          values {
             m: const(Eina_Matrix3) *; [[transformation matrix.]]
@@ -48,12 +66,22 @@ abstract Efl.VG.Base (Eo.Base, Efl.Gfx.Base, Efl.Gfx.Stack)
 
               This origin position affects to node transformation.
 
-              @since 1.14]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.14
+            ]]
          }
          get {
             [[Gets the origin position of this node object.
 
-              @since 1.14]]
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
+              @since 1.14
+            ]]
          }
          values {
             x: double; [[$origin x position.]]
@@ -62,8 +90,18 @@ abstract Efl.VG.Base (Eo.Base, Efl.Gfx.Base, Efl.Gfx.Stack)
       }
       @property mask {
          set {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             m: Efl_VG *;
@@ -84,7 +122,12 @@ abstract Efl.VG.Base (Eo.Base, Efl.Gfx.Base, Efl.Gfx.Stack)
            It will start as the control box until it is refined once the shape
            is computed.
 
-           @since 1.14]]
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.14
+         ]]
          params {
             @out r: Eina.Rectangle; [[bounding box to be returned.]]
          }

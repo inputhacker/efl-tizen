@@ -14,6 +14,10 @@
  * @param obj The Eldbus_Object on which to do the query.
  * @param interface The interface name of the proxy.
  * @return The corresponding Eldbus_Proxy object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Proxy          *eldbus_proxy_get(Eldbus_Object *obj, const char *interface) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
@@ -22,6 +26,10 @@ EAPI Eldbus_Proxy          *eldbus_proxy_get(Eldbus_Object *obj, const char *int
  *
  * @param proxy The Eldbus_Proxy on which to increase the refcount.
  * @return The Eldbus_Proxy with an increased refcount.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Proxy          *eldbus_proxy_ref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
@@ -30,6 +38,10 @@ EAPI Eldbus_Proxy          *eldbus_proxy_ref(Eldbus_Proxy *proxy) EINA_ARG_NONNU
  * If reference == 0 proxy will be freed and all your children.
  *
  * @param proxy The Eldbus_Proxy on which to decrease the refcount.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_proxy_unref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
@@ -38,6 +50,10 @@ EAPI void                  eldbus_proxy_unref(Eldbus_Proxy *proxy) EINA_ARG_NONN
  *
  * @param proxy The Eldbus_Proxy on which to do the query.
  * @return The corresponding Eldbus_Object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Object         *eldbus_proxy_object_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -46,6 +62,10 @@ EAPI Eldbus_Object         *eldbus_proxy_object_get(const Eldbus_Proxy *proxy) E
  *
  * @param proxy The Eldbus_Proxy on which to do the query.
  * @return The string corresponding to the interface name.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_proxy_interface_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -55,6 +75,10 @@ EAPI const char           *eldbus_proxy_interface_get(const Eldbus_Proxy *proxy)
  * @param proxy The Eldbus_Proxy on which to set the data.
  * @param key A string to which the data will be associated.
  * @param data The data to set to the proxy object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_proxy_data_set(Eldbus_Proxy *proxy, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -64,6 +88,10 @@ EAPI void                  eldbus_proxy_data_set(Eldbus_Proxy *proxy, const char
  * @param proxy The Eldbus_Proxy on which to get the data.
  * @param key The string to which the data is associated.
  * @return The data set to the proxy object associated with the provided key.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                 *eldbus_proxy_data_get(const Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
 
@@ -72,6 +100,10 @@ EAPI void                 *eldbus_proxy_data_get(const Eldbus_Proxy *proxy, cons
  *
  * @param proxy The Eldbus_Proxy on which to delete the data.
  * @param key The string to which the data is associated.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                 *eldbus_proxy_data_del(Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
 
@@ -82,6 +114,10 @@ EAPI void                 *eldbus_proxy_data_del(Eldbus_Proxy *proxy, const char
  * @param proxy The Eldbus_Proxy on which to add the callback.
  * @param cb The callback to add.
  * @param data The data to pass to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_proxy_free_cb_add(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -91,6 +127,10 @@ EAPI void                  eldbus_proxy_free_cb_add(Eldbus_Proxy *proxy, Eldbus_
  * @param proxy The Eldbus_Proxy on which to delete the callback.
  * @param cb The callback to delete.
  * @param data The data passed to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_proxy_free_cb_del(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -100,6 +140,10 @@ EAPI void                  eldbus_proxy_free_cb_del(Eldbus_Proxy *proxy, Eldbus_
  * @param proxy The Eldbus_Proxy on which to call the method.
  * @param member The name of the method to invoke.
  * @return An Eldbus_Message object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message        *eldbus_proxy_method_call_new(Eldbus_Proxy *proxy, const char *member) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
@@ -113,6 +157,10 @@ EAPI Eldbus_Message        *eldbus_proxy_method_call_new(Eldbus_Proxy *proxy, co
  * @param timeout timeout in milliseconds, -1 to default internal value or
  * ELDBUS_TIMEOUT_INFINITE for no timeout
  * @return A Eldbus_Pending object on the sent message.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_proxy_send(Eldbus_Proxy *proxy, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
 
@@ -127,6 +175,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_send(Eldbus_Proxy *proxy, Eldbus_Messag
  * @return The reply message, error message or NULL.
  * The returned Eldbus_Message need to be unref after read.
  * @since 1.13
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message        *eldbus_proxy_send_and_block(Eldbus_Proxy *proxy, Eldbus_Message *msg, double timeout) EINA_ARG_NONNULL(1, 2);
 
@@ -147,6 +199,10 @@ EAPI Eldbus_Message        *eldbus_proxy_send_and_block(Eldbus_Proxy *proxy, Eld
  *
  * @note This function only support basic type to complex types use
  * eldbus_message_iter_* functions.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_proxy_call(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, ...) EINA_ARG_NONNULL(1, 2, 6);
 
@@ -166,6 +222,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_call(Eldbus_Proxy *proxy, const char *m
  *
  * @note This function only support basic type to complex types use
  * eldbus_message_iter_* functions.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_proxy_vcall(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 6);
 
@@ -177,6 +237,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_vcall(Eldbus_Proxy *proxy, const char *
  * @param cb callback that will be called when this signal is received
  * @param cb_data data that will be passed to callback
  * @return A listener to the desired signal.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Signal_Handler *eldbus_proxy_signal_handler_add(Eldbus_Proxy *proxy, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
@@ -246,6 +310,10 @@ typedef void (*Eldbus_Proxy_Event_Cb)(void *data, Eldbus_Proxy *proxy, void *eve
  * @param type The type of the event to register an callback on.
  * @param cb The callback function to register.
  * @param cb_data The data to pass to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eldbus_proxy_event_callback_add(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
@@ -256,6 +324,10 @@ EAPI void eldbus_proxy_event_callback_add(Eldbus_Proxy *proxy, Eldbus_Proxy_Even
  * @param type The type of the event the callback was registered on.
  * @param cb The callback function to delete.
  * @param cb_data The data passed to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eldbus_proxy_event_callback_del(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 

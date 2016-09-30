@@ -47,12 +47,16 @@ extern "C" {
 
 
 /**
+ * @internal
+ *
  * @return @c 1 on success or @c 0 on failure.
  * @brief Initializes the efreet mime settings
  */
 EAPI int         efreet_mime_init(void);
 
 /**
+ * @internal
+ *
  * @return The number of times the init function has been called minus the
  * corresponding init call.
  * @brief Shuts down Efreet mime settings system if a balanced number of
@@ -61,6 +65,8 @@ EAPI int         efreet_mime_init(void);
 EAPI int         efreet_mime_shutdown(void);
 
 /**
+ * @internal
+ *
  * @param file The file to find the mime type
  * @return Mime type as a string.
  * @brief Retrieve the mime type of a file
@@ -68,6 +74,8 @@ EAPI int         efreet_mime_shutdown(void);
 EAPI const char *efreet_mime_type_get(const char *file);
 
 /**
+ * @internal
+ *
  * @param file The file to check the mime type
  * @return Mime type as a string.
  * @brief Retrieve the mime type of a file using magic
@@ -75,6 +83,8 @@ EAPI const char *efreet_mime_type_get(const char *file);
 EAPI const char *efreet_mime_magic_type_get(const char *file);
 
 /**
+ * @internal
+ *
  * @param file The file to check the mime type
  * @return Mime type as a string.
  * @brief Retrieve the mime type of a file using globs
@@ -82,6 +92,8 @@ EAPI const char *efreet_mime_magic_type_get(const char *file);
 EAPI const char *efreet_mime_globs_type_get(const char *file);
 
 /**
+ * @internal
+ *
  * @param file The file to check the mime type
  * @return Mime type as a string.
  * @brief Retrieve the special mime type of a file
@@ -89,6 +101,8 @@ EAPI const char *efreet_mime_globs_type_get(const char *file);
 EAPI const char *efreet_mime_special_type_get(const char *file);
 
 /**
+ * @internal
+ *
  * @param file The file to check the mime type
  * @return Mime type as a string.
  * @brief Retrieve the fallback mime type of a file.
@@ -97,6 +111,8 @@ EAPI const char *efreet_mime_fallback_type_get(const char *file);
 
 
 /**
+ * @internal
+ *
  * @param mime The name of the mime type
  * @param theme The name of the theme to search icons in
  * @param size The wanted size of the icon
@@ -107,11 +123,15 @@ EAPI const char *efreet_mime_type_icon_get(const char *mime, const char *theme,
                                            unsigned int size);
 
 /**
+ * @internal
+ *
  * @brief Clear mime icons mapping cache
  */
 EAPI void efreet_mime_type_cache_clear(void);
 
 /**
+ * @internal
+ *
  * @brief Flush mime icons mapping cache
  *
  * Flush timeout is defined at compile time by

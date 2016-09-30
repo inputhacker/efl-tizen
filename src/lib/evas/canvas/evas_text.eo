@@ -22,10 +22,20 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
 
            See @.shadow_color]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
             [[Note: Use $NULL pointers on the color components you're not
-            interested in: they'll be ignored by the function.]]
+            interested in: they'll be ignored by the function.
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
          }
          values {
             r: int; [[The red component of the given color.]]
@@ -46,8 +56,18 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
 
           @since 1.8]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             ellipsis: double(-1); [[the ellipsis. Allowed values: -1.0 or 0.0-1.0]]
@@ -62,8 +82,18 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
 
            @since 1.1]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             delim: const(char)*; [[A null terminated string of delimiters, e.g ",|".]]
@@ -79,8 +109,18 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
            - @Evas.Text_Style_Type.outline_shadow
            - @Evas.Text_Style_Type.outline_soft_shadow]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             r: int; [[The red component of the given color.]]
@@ -97,8 +137,18 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
            to the @Evas.Text_Style_Type.glow style. See also
            @.glow_color.]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             r: int; [[The red component of the given color.]]
@@ -130,8 +180,18 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
             @see evas_object_text_glow_color_set()
             @see evas_object_text_glow2_color_set() */
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             style: Evas.Text_Style_Type; [[a style type.]]
@@ -148,8 +208,18 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
            itself, but no touching it. For glowing effects right on the
            borders of the glyphs, see 'glow 2' effects.]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             r: int; [[The red component of the given color.]]
@@ -161,11 +231,21 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
       @property max_descent {
          get {
             return: Evas.Coord;
+               [[
+                 \@if MOBILE \@since_tizen 3.0
+                 \@elseif WEARABLE \@since_tizen 3.0
+                 \@endif
+               ]]
          }
       }
       @property style_pad {
          get {
-            [[Gets the text style pad of a text object.]]
+            [[Gets the text style pad of a text object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             l: int; [[The left pad (or $NULL).]]
@@ -177,7 +257,12 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
       @property direction {
          get {
             [[Retrieves the direction of the text currently being displayed in the
-            text object.]]
+            text object.
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
 
             return: Evas.BiDi_Direction;
          }
@@ -185,11 +270,21 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
       @property ascent {
          get {
             return: Evas.Coord;
+               [[
+                 \@if MOBILE \@since_tizen 3.0
+                 \@elseif WEARABLE \@since_tizen 3.0
+                 \@endif
+               ]]
          }
       }
       @property horiz_advance {
          get {
             return: Evas.Coord;
+               [[
+                 \@if MOBILE \@since_tizen 3.0
+                 \@elseif WEARABLE \@since_tizen 3.0
+                 \@endif
+               ]]
          }
       }
       @property horiz_width_without_ellipsis {
@@ -204,25 +299,50 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
       @property inset {
          get {
             return: Evas.Coord;
+               [[
+                 \@if MOBILE \@since_tizen 3.0
+                 \@elseif WEARABLE \@since_tizen 3.0
+                 \@endif
+               ]]
          }
       }
       @property max_ascent {
          get {
             return: Evas.Coord;
+               [[
+                 \@if MOBILE \@since_tizen 3.0
+                 \@elseif WEARABLE \@since_tizen 3.0
+                 \@endif
+               ]]
          }
       }
       @property vert_advance {
          get {
             return: Evas.Coord;
+               [[
+                 \@if MOBILE \@since_tizen 3.0
+                 \@elseif WEARABLE \@since_tizen 3.0
+                 \@endif
+               ]]
          }
       }
       @property descent {
          get {
             return: Evas.Coord;
+               [[
+                 \@if MOBILE \@since_tizen 3.0
+                 \@elseif WEARABLE \@since_tizen 3.0
+                 \@endif
+               ]]
          }
       }
       last_up_to_pos @const {
-         [[Returns the logical position of the last char in the text up to the pos given. this is NOT the position of the last char because of the possibility of RTL in the text.]]
+         [[Returns the logical position of the last char in the text up to the pos given. this is NOT the position of the last char because of the possibility of RTL in the text.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: int(-1);
          params {
             @in x: Evas.Coord;
@@ -246,7 +366,12 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
          This function is used to obtain the X, Y, width and height of the character
          located at $pos within the @Evas.Object $obj. $obj must be a text object
          Any of the $Evas_Coord parameters ($cx, $cy, $cw, $ch) may be $NULL in which case no value will be assigned to that
-         parameter.]]
+         parameter.
+
+         \@if MOBILE \@since_tizen 2.3
+         \@elseif WEARABLE \@since_tizen 2.3.1
+         \@endif
+       ]]
 
          return: bool; [[$false on success, $true otherwise]]
          params {

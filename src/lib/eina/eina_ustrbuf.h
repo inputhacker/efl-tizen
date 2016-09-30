@@ -44,6 +44,10 @@ typedef struct _Eina_Strbuf Eina_UStrbuf;
  * @see eina_ustrbuf_free()
  * @see eina_ustrbuf_append()
  * @see eina_ustrbuf_string_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_UStrbuf *eina_ustrbuf_new(void) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -62,6 +66,10 @@ EAPI Eina_UStrbuf *eina_ustrbuf_new(void) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
  * @see eina_ustrbuf_append()
  * @see eina_ustrbuf_string_get()
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_UStrbuf *eina_ustrbuf_manage_new(Eina_Unicode *str) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -79,6 +87,10 @@ EAPI Eina_UStrbuf *eina_ustrbuf_manage_new(Eina_Unicode *str) EINA_MALLOC EINA_W
  *
  * @see eina_ustrbuf_manage_new()
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_UStrbuf *eina_ustrbuf_manage_new_length(Eina_Unicode *str, size_t length) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -89,6 +101,10 @@ EAPI Eina_UStrbuf *eina_ustrbuf_manage_new_length(Eina_Unicode *str, size_t leng
  *
  * This function frees the memory of @p buf. @p buf must have been
  * created by eina_ustrbuf_new().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_ustrbuf_free(Eina_UStrbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -99,6 +115,10 @@ EAPI void eina_ustrbuf_free(Eina_UStrbuf *buf) EINA_ARG_NONNULL(1);
  *
  * This function reset @p buf: the buffer len is set to 0, and the
  * string is set to '\\0'. No memory is free'd.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_ustrbuf_reset(Eina_UStrbuf *buf) EINA_ARG_NONNULL(1);
 
@@ -117,6 +137,10 @@ EAPI void eina_ustrbuf_reset(Eina_UStrbuf *buf) EINA_ARG_NONNULL(1);
  *
  * @see eina_ustrbuf_append()
  * @see eina_ustrbuf_append_length()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_append(Eina_UStrbuf *buf, const Eina_Unicode *str) EINA_ARG_NONNULL(1, 2);
 
@@ -130,6 +154,10 @@ EAPI Eina_Bool eina_ustrbuf_append(Eina_UStrbuf *buf, const Eina_Unicode *str) E
  * This function appends the escaped string @p str to @p buf. If @p
  * str can not be appended, #EINA_FALSE is returned, otherwise, #EINA_TRUE is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_append_escaped(Eina_UStrbuf *buf, const Eina_Unicode *str) EINA_ARG_NONNULL(1, 2);
 
@@ -153,6 +181,10 @@ EAPI Eina_Bool eina_ustrbuf_append_escaped(Eina_UStrbuf *buf, const Eina_Unicode
  *
  * @see eina_ustrbuf_append()
  * @see eina_ustrbuf_append_length()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_append_n(Eina_UStrbuf *buf, const Eina_Unicode *str, size_t maxlen) EINA_ARG_NONNULL(1, 2);
 
@@ -174,6 +206,10 @@ EAPI Eina_Bool eina_ustrbuf_append_n(Eina_UStrbuf *buf, const Eina_Unicode *str,
  * @see eina_stringshare_length()
  * @see eina_ustrbuf_append()
  * @see eina_ustrbuf_append_n()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_append_length(Eina_UStrbuf *buf, const Eina_Unicode *str, size_t length) EINA_ARG_NONNULL(1, 2);
 
@@ -187,6 +223,10 @@ EAPI Eina_Bool eina_ustrbuf_append_length(Eina_UStrbuf *buf, const Eina_Unicode 
  *
  * This function inserts @p c to @p buf. If it can not insert it, #EINA_FALSE
  * is returned, otherwise #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_append_char(Eina_UStrbuf *buf, Eina_Unicode c) EINA_ARG_NONNULL(1);
 
@@ -203,6 +243,10 @@ EAPI Eina_Bool eina_ustrbuf_append_char(Eina_UStrbuf *buf, Eina_Unicode c) EINA_
  * eina_ustrbuf_insert_length(). If  the length is known beforehand,
  * consider using that variant. If @p buf can't insert it, #EINA_FALSE
  * is returned, otherwise #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_insert(Eina_UStrbuf *buf, const Eina_Unicode *str, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -218,6 +262,10 @@ EAPI Eina_Bool eina_ustrbuf_insert(Eina_UStrbuf *buf, const Eina_Unicode *str, s
  * This function inserts the escaped string @p str to @p buf at
  * position @p pos. If @p buf can't insert @p str, #EINA_FALSE is
  * returned, otherwise #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_insert_escaped(Eina_UStrbuf *buf, const Eina_Unicode *str, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -238,6 +286,10 @@ EAPI Eina_Bool eina_ustrbuf_insert_escaped(Eina_UStrbuf *buf, const Eina_Unicode
  * should then be checked so that it is greater than the size of
  * @p str). If @p str can not be inserted, #EINA_FALSE is returned,
  * otherwise, #EINA_TRUE is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_insert_n(Eina_UStrbuf *buf, const Eina_Unicode *str, size_t maxlen, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -260,6 +312,10 @@ EAPI Eina_Bool eina_ustrbuf_insert_n(Eina_UStrbuf *buf, const Eina_Unicode *str,
  * @see eina_stringshare_length()
  * @see eina_ustrbuf_insert()
  * @see eina_ustrbuf_insert_n()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_insert_length(Eina_UStrbuf *buf, const Eina_Unicode *str, size_t length, size_t pos) EINA_ARG_NONNULL(1, 2);
 
@@ -275,6 +331,10 @@ EAPI Eina_Bool eina_ustrbuf_insert_length(Eina_UStrbuf *buf, const Eina_Unicode 
  * This function inserts @p c to @p buf at position @p pos. If @p buf
  * can't append it, #EINA_FALSE is returned, otherwise #EINA_TRUE is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_ustrbuf_insert_char(Eina_UStrbuf *buf, Eina_Unicode c, size_t pos) EINA_ARG_NONNULL(1);
 
@@ -363,6 +423,10 @@ EAPI Eina_Bool eina_ustrbuf_insert_char(Eina_UStrbuf *buf, Eina_Unicode c, size_
  * This function removes a slice of @p buf, starting at @p start
  * (inclusive) and ending at @p end (non-inclusive). Both values are
  * in bytes. It returns #EINA_FALSE on failure, #EINA_TRUE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool
 eina_ustrbuf_remove(Eina_UStrbuf *buf, size_t start, size_t end) EINA_ARG_NONNULL(1);
@@ -379,6 +443,10 @@ eina_ustrbuf_remove(Eina_UStrbuf *buf, size_t start, size_t end) EINA_ARG_NONNUL
  * make that pointer invalid.
  *
  * @see eina_ustrbuf_string_steal()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Eina_Unicode *
 eina_ustrbuf_string_get(const Eina_UStrbuf *buf) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
@@ -395,6 +463,10 @@ eina_ustrbuf_string_get(const Eina_UStrbuf *buf) EINA_ARG_NONNULL(1) EINA_WARN_U
  * free().
  *
  * @see eina_ustrbuf_string_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Unicode *
 eina_ustrbuf_string_steal(Eina_UStrbuf *buf) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
@@ -406,6 +478,10 @@ eina_ustrbuf_string_steal(Eina_UStrbuf *buf) EINA_MALLOC EINA_WARN_UNUSED_RESULT
  *
  * This function frees the string contained in @p buf without freeing
  * @p buf.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void
 eina_ustrbuf_string_free(Eina_UStrbuf *buf) EINA_ARG_NONNULL(1);
@@ -417,6 +493,10 @@ eina_ustrbuf_string_free(Eina_UStrbuf *buf) EINA_ARG_NONNULL(1);
  * @return The current length of the string, in bytes.
  *
  * This function returns the length of @p buf.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI size_t
 eina_ustrbuf_length_get(const Eina_UStrbuf *buf) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;

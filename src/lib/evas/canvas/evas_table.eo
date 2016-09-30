@@ -56,8 +56,18 @@ class Evas.Table (Evas.Smart_Clipped)
            no minimum size is provided at all then the table will fallback to
            expand mode as well.]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             homogeneous: Evas.Object_Table.Homogeneous_Mode;
@@ -66,8 +76,18 @@ class Evas.Table (Evas.Smart_Clipped)
       @property align {
          [[Control the alignment of the whole bounding box of contents.]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             horizontal: double;
@@ -77,8 +97,18 @@ class Evas.Table (Evas.Smart_Clipped)
       @property padding {
          [[Control the padding between cells.]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             horizontal: Evas.Coord;
@@ -92,8 +122,18 @@ class Evas.Table (Evas.Smart_Clipped)
 
           @since 1.1]]
          set {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
+            [[
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             mirrored: bool; [[$true if mirrored, $false otherwise]]
@@ -106,7 +146,12 @@ class Evas.Table (Evas.Smart_Clipped)
               Note: columns and rows are virtual entities, one can specify a table
               with a single object that takes 4 columns and 5 rows. The only
               difference for a single cell table is that paddings will be
-              accounted proportionally.]]
+              accounted proportionally.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             cols: int;
@@ -120,7 +165,12 @@ class Evas.Table (Evas.Smart_Clipped)
               Note: This is a duplicate of the list kept by the table internally.
               It's up to the user to destroy it when it no longer needs it.
               It's possible to remove objects from the table when walking this
-              list, but these removals won't be reflected on it.]]
+              list, but these removals won't be reflected on it.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
             return: free(own(list<Evas.Object *> *), eina_list_free) @warn_unused;
          }
       }
@@ -128,7 +178,12 @@ class Evas.Table (Evas.Smart_Clipped)
          get {
             [[Get the child of the table at the given coordinates
 
-              Note: This does not take into account col/row spanning]]
+              Note: This does not take into account col/row spanning
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          keys {
             col: ushort;
@@ -139,7 +194,12 @@ class Evas.Table (Evas.Smart_Clipped)
          }
       }
       clear {
-         [[Faster way to remove all child objects from a table object.]]
+         [[Faster way to remove all child objects from a table object.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          params {
             @in clear: bool; [[If $true, it will delete just removed children.]]
@@ -148,26 +208,46 @@ class Evas.Table (Evas.Smart_Clipped)
       accessor_new @const {
          [[Get an accessor to get random access to the list of children for the table.
 
-           Note: Do not remove or delete objects while walking the list.]]
+           Note: Do not remove or delete objects while walking the list.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: free(own(accessor<Evas.Object *> *), eina_accessor_free)
             @warn_unused;
       }
       iterator_new @const {
          [[Get an iterator to walk the list of children for the table.
 
-           Note: Do not remove or delete objects while walking the list.]]
+           Note: Do not remove or delete objects while walking the list.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: free(own(iterator<Evas.Object *> *), eina_iterator_free)
             @warn_unused;
       }
       add_to {
-         [[Create a table that is child of a given element $parent.]]
+         [[Create a table that is child of a given element $parent.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: Evas.Object * @warn_unused;
       }
       pack_get @const {
          [[Get packing location of a child of table
 
-         @since 1.1]]
+         \@if MOBILE \@since_tizen 2.3
+         \@elseif WEARABLE \@since_tizen 2.3.1
+         \@endif
+
+         @since 1.1
+       ]]
          return: bool; [[$true on success, $false on failure.]]
          params {
             @in child: Evas.Object *; [[The child object to add.]]
@@ -184,7 +264,12 @@ class Evas.Table (Evas.Smart_Clipped)
            That means that col + colspan AND row + rowspan must fit inside 16bit
            unsigned values cleanly. You will be warned once values exceed 15bit
            storage, and attempting to use values not able to fit in 16bits will
-           result in failure.]]
+           result in failure.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true on success, $false on failure.]]
          params {
@@ -200,7 +285,12 @@ class Evas.Table (Evas.Smart_Clipped)
 
            Note: removing a child will immediately call a walk over children in order
            to recalculate numbers of columns and rows. If you plan to remove
-           all children, use @Evas.Table.clear instead.]]
+           all children, use @Evas.Table.clear instead.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true on success, $false on failure.]]
          params {

@@ -48,6 +48,10 @@
  * @note Before creating the first Edje object in your code, remember
  * to initialize the library, with edje_init(), or unexpected behavior
  * might occur.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Object *edje_object_add                 (Evas *evas);
 
@@ -69,6 +73,9 @@ EAPI Evas_Object *edje_object_add                 (Evas *evas);
  * @see edje_object_signal_callback_add().
  * @see edje_object_signal_callback_del_full().
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void        *edje_object_signal_callback_del (Evas_Object *obj, const char *emission, const char *source, Edje_Signal_Cb func);
 
@@ -94,6 +101,9 @@ EAPI void        *edje_object_signal_callback_del (Evas_Object *obj, const char 
  * @see edje_object_signal_callback_add().
  * @see edje_object_signal_callback_del().
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void        *edje_object_signal_callback_del_full(Evas_Object *obj, const char *emission, const char *source, Edje_Signal_Cb func, void *data);
 
@@ -111,6 +121,10 @@ EAPI void        *edje_object_signal_callback_del_full(Evas_Object *obj, const c
  *
  * Deleting the color class will emit the signal "color_class,del"
  * for the given Edje object.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
  EAPI void         edje_object_color_class_del         (Evas_Object *obj, const char *color_class);
 
@@ -123,6 +137,10 @@ EAPI void        *edje_object_signal_callback_del_full(Evas_Object *obj, const c
  * @param minh The minimum height
  *
  * This sets the minimum size restriction for the object.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EINA_DEPRECATED EAPI void         edje_extern_object_min_size_set (Evas_Object *obj, Evas_Coord minw, Evas_Coord minh);
 
@@ -135,6 +153,10 @@ EINA_DEPRECATED EAPI void         edje_extern_object_min_size_set (Evas_Object *
  * @param maxh The maximum height
  *
  * This sets the maximum size restriction for the object.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EINA_DEPRECATED EAPI void         edje_extern_object_max_size_set (Evas_Object *obj, Evas_Coord maxw, Evas_Coord maxh);
 
@@ -151,6 +173,10 @@ EINA_DEPRECATED EAPI void         edje_extern_object_max_size_set (Evas_Object *
  * swallowed by Edje. The width and height define a preferred size
  * ASPECT and the object may be scaled to be larger or smaller, but
  * retaining the relative scale of both aspect width and height.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EINA_DEPRECATED EAPI void         edje_extern_object_aspect_set   (Evas_Object *obj, Edje_Aspect_Control aspect, Evas_Coord aw, Evas_Coord ah);
 
@@ -184,6 +210,10 @@ EINA_DEPRECATED EAPI void         edje_extern_object_aspect_set   (Evas_Object *
  * @param[in] file The path to the EDJ file to load @p from
  * @param[in] group The name of the group, in @p file, which implements an
 Edje object
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool edje_object_file_set(Edje_Object *obj, const char *file, const char *group);
 
@@ -204,6 +234,10 @@ EAPI Eina_Bool edje_object_file_set(Edje_Object *obj, const char *file, const ch
  * @param[out] file The path to the EDJ file to load @p from
  * @param[out] group The name of the group, in @p file, which implements an
 Edje object
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void edje_object_file_get(const Edje_Object *obj, const char **file, const char **group);
 
@@ -239,6 +273,10 @@ EAPI void edje_object_file_get(const Edje_Object *obj, const char **file, const 
  * @param[in] file The Eina.File pointing to the EDJ file to load @p from
  * @param[in] group The name of the group, in @p file, which implements an
 Edje object
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool edje_object_mmap_set(Edje_Object *obj, const Eina_File *file, const char *group);
 

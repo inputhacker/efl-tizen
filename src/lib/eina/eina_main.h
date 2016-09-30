@@ -80,6 +80,10 @@ EAPI extern Eina_Version *eina_version;
  *
  * When Eina is not used anymore, call eina_shutdown() to shut down
  * the Eina library.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eina_init(void);
 
@@ -96,6 +100,10 @@ EAPI int eina_init(void);
  * Once this function succeeds (that is, @c 0 is returned), you must
  * not call any of the Eina function anymore. You must call
  * eina_init() again to use the Eina functions again.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eina_shutdown(void);
 
@@ -113,6 +121,10 @@ EAPI int eina_shutdown(void);
  * the mutexes.
  *
  * This function should never be called outside of the main loop.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eina_threads_init(void);
 
@@ -131,6 +143,10 @@ EAPI int eina_threads_init(void);
  * eina_threads_init() again to use the Eina functions in a thread again.
  *
  * This function should never be called outside of the main loop.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eina_threads_shutdown(void);
 
@@ -144,6 +160,10 @@ EAPI int eina_threads_shutdown(void);
  * Most EFL function are not thread safe and all the call need to happen in
  * the main loop. With this call you could know if you can call an EFL
  * function or not.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_main_loop_is(void);
 
@@ -153,6 +173,10 @@ EAPI Eina_Bool eina_main_loop_is(void);
  *
  * If you are reading this documentation, that certainly means you don't know what is the purpose of
  * this call and you should just not use it.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_main_loop_define(void);
 

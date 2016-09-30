@@ -114,6 +114,8 @@ typedef struct _Eo_Opaque Eo;
 typedef Eo Eo_Class;
 
 /**
+ * @internal
+ *
  * @var _eo_class_creation_lock
  * This variable is used for locking purposes in the class_get function
  * defined in #EO_DEFINE_CLASS.
@@ -169,6 +171,8 @@ typedef Eina_Bool (*Eo_Event_Cb)(void *data, Eo *obj, const Eo_Event_Description
  */
 
 /**
+ * @internal
+ *
  * @var EO_DBG_INFO_TYPE
  * The Eina_Value_Type for the debug info.
  */
@@ -219,6 +223,8 @@ do { \
 } while (0)
 
 /**
+ * @internal
+ *
  * Frees the Eo_Dbg_Info tree. (The whole tree recursively).
  * @param[in] info The tree to delete.
  */
@@ -381,6 +387,8 @@ struct _Eo_Class_Description
 typedef struct _Eo_Class_Description Eo_Class_Description;
 
 /**
+ * @internal
+ *
  * @brief Create a new class.
  * @param desc the class description to create the class with.
  * @param parent the class to inherit from.
@@ -395,6 +403,8 @@ typedef struct _Eo_Class_Description Eo_Class_Description;
 EAPI const Eo_Class *eo_class_new(const Eo_Class_Description *desc, const Eo_Class *parent, ...);
 
 /**
+ * @internal
+ *
  * @brief Check if an object "is a" klass.
  * @param obj The object to check
  * @param klass The klass to check against.
@@ -405,6 +415,8 @@ EAPI const Eo_Class *eo_class_new(const Eo_Class_Description *desc, const Eo_Cla
 EAPI Eina_Bool eo_isa(const Eo *obj, const Eo_Class *klass);
 
 /**
+ * @internal
+ *
  * @brief Gets the name of the passed class.
  * @param klass the class to work on.
  * @return The class's name.
@@ -418,6 +430,8 @@ EAPI const char *eo_class_name_get(const Eo_Class *klass);
  */
 
 /**
+ * @internal
+ *
  * @brief Init the eo subsystem
  * @return @c EINA_TRUE on success.
  *
@@ -426,6 +440,8 @@ EAPI const char *eo_class_name_get(const Eo_Class *klass);
 EAPI Eina_Bool eo_init(void);
 
 /**
+ * @internal
+ *
  * @brief Shutdown the eo subsystem
  * @return @c EINA_TRUE on success.
  *
@@ -600,6 +616,8 @@ EAPI EINA_CONST void *_eo_stack_get(void);
 /*****************************************************************************/
 
 /**
+ * @internal
+ *
  * @brief Gets the class of the object.
  * @param obj The object to work on
  * @return The object's class.
@@ -657,6 +675,8 @@ EAPI const Eo_Class *eo_class_get(const Eo *obj);
 EAPI Eo * _eo_add_internal_start(const char *file, int line, const Eo_Class *klass_id, Eo *parent, Eina_Bool ref);
 
 /**
+ * @internal
+ *
  * @brief Get a pointer to the data of an object for a specific class.
  * @param obj the object to work on.
  * @param klass the klass associated with the data.
@@ -666,6 +686,8 @@ EAPI Eo * _eo_add_internal_start(const char *file, int line, const Eo_Class *kla
 EAPI void *eo_data_get(const Eo *obj, const Eo_Class *klass) EINA_DEPRECATED;
 
 /**
+ * @internal
+ *
  * @brief Get a pointer to the data of an object for a specific class.
  * The data reference count is not incremented. The pointer must be used only
  * in the scope of the function and its callees.
@@ -693,6 +715,8 @@ EAPI void *eo_data_scope_get(const Eo *obj, const Eo_Class *klass);
 #define eo_data_ref(obj, klass) eo_data_xref_internal(__FILE__, __LINE__, obj, klass, (const Eo *)obj)
 
 /**
+ * @internal
+ *
  * @brief Get a pointer to the data of an object for a specific class and
  * increment the data reference count.
  * @param obj the object to work on.
@@ -723,6 +747,8 @@ EAPI void *eo_data_xref_internal(const char *file, int line, const Eo *obj, cons
 #define eo_data_unref(obj, data) eo_data_xunref_internal(obj, data, obj)
 
 /**
+ * @internal
+ *
  * @brief Decrement the object data reference count by 1.
  * @param obj the object to work on.
  * @param data a pointer to the data to unreference
@@ -734,6 +760,8 @@ EAPI void *eo_data_xref_internal(const char *file, int line, const Eo *obj, cons
 EAPI void eo_data_xunref_internal(const Eo *obj, void *data, const Eo *ref_obj);
 
 /**
+ * @internal
+ *
  * @brief Increment the object's reference count by 1.
  * @param obj the object to work on.
  * @return The object passed.
@@ -751,6 +779,8 @@ EAPI void eo_data_xunref_internal(const Eo *obj, void *data, const Eo *ref_obj);
 EAPI Eo *eo_ref(const Eo *obj);
 
 /**
+ * @internal
+ *
  * @brief Decrement the object's reference count by 1 and free it if needed.
  * @param obj the object to work on.
  *
@@ -760,6 +790,8 @@ EAPI Eo *eo_ref(const Eo *obj);
 EAPI void eo_unref(const Eo *obj);
 
 /**
+ * @internal
+ *
  * @brief Return the ref count of the object passed.
  * @param obj the object to work on.
  * @return the ref count of the object.
@@ -770,6 +802,8 @@ EAPI void eo_unref(const Eo *obj);
 EAPI int eo_ref_get(const Eo *obj);
 
 /**
+ * @internal
+ *
  * @brief Unrefs the object and reparents it to NULL.
  * @param obj the object to work on.
  *
@@ -789,6 +823,8 @@ EAPI void eo_del(const Eo *obj);
 #define eo_xref(obj, ref_obj) eo_xref_internal(__FILE__, __LINE__, obj, ref_obj)
 
 /**
+ * @internal
+ *
  * @brief Increment the object's reference count by 1 (and associate the ref with ref_obj)
  * @param obj the object to work on.
  * @param ref_obj the object that references obj.
@@ -805,6 +841,8 @@ EAPI void eo_del(const Eo *obj);
 EAPI Eo *eo_xref_internal(const char *file, int line, Eo *obj, const Eo *ref_obj);
 
 /**
+ * @internal
+ *
  * @brief Decrement the object's reference count by 1 and free it if needed. Will free the ref associated with ref_obj).
  * @param obj the object to work on.
  * @param ref_obj the object that references obj.
@@ -818,6 +856,8 @@ EAPI Eo *eo_xref_internal(const char *file, int line, Eo *obj, const Eo *ref_obj
 EAPI void eo_xunref(Eo *obj, const Eo *ref_obj);
 
 /**
+ * @internal
+ *
  * @brief Enable or disable the manual free feature.
  * @param obj the object to work on.
  * @param manual_free indicates if the free is manual (EINA_TRUE) or automatic (EINA_FALSE).
@@ -834,6 +874,8 @@ EAPI void eo_xunref(Eo *obj, const Eo *ref_obj);
 EAPI void eo_manual_free_set(Eo *obj, Eina_Bool manual_free);
 
 /**
+ * @internal
+ *
  * @brief Frees the object.
  * @param obj the object to work on.
  * This function must be called by the developer if the function
@@ -847,6 +889,8 @@ EAPI void eo_manual_free_set(Eo *obj, Eina_Bool manual_free);
 EAPI Eina_Bool eo_manual_free(Eo *obj);
 
 /**
+ * @internal
+ *
  * @brief Checks if the object was already descructed (only relevant for manual_free objects).
  * @param obj the object to check.
  * This function checks if the object was already destructed (but not alraedy
@@ -936,6 +980,8 @@ typedef void (*eo_key_data_free_func)(void *);
  */
 
 /**
+ * @internal
+ *
  * Don't use.
  * The values of the returned event structure are also internal, don't assume
  * anything about them.

@@ -45,6 +45,10 @@ extern "C" {
  * @ingroup Ecore
  *
  *@{
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
    EAPI extern int ECORE_EVENT_KEY_DOWN;
    EAPI extern int ECORE_EVENT_KEY_UP;
@@ -427,10 +431,18 @@ extern "C" {
 
    /**
     * Initialises the Ecore Event system.
+    *
+    * @if MOBILE @since_tizen 2.4
+    * @elseif WEARABLE @since_tizen 3.0
+    * @endif
     */
    EAPI int                  ecore_event_init(void);
    /**
     * Shutdowns the Ecore Event system.
+    *
+    * @if MOBILE @since_tizen 2.4
+    * @elseif WEARABLE @since_tizen 3.0
+    * @endif
     */
    EAPI int                  ecore_event_shutdown(void);
 
@@ -441,6 +453,10 @@ extern "C" {
     * @param modifier A Ecore_Event_Modifier event.
     * @return A event_modifier integer that matches with the provided modifier
     * event.
+    *
+    * @if MOBILE @since_tizen 2.4
+    * @elseif WEARABLE @since_tizen 3.0
+    * @endif
     */
    EAPI unsigned int         ecore_event_modifier_mask(Ecore_Event_Modifier modifier);
 
@@ -453,6 +469,10 @@ extern "C" {
     *
     * @return ECORE_NONE if the key does not match with an existing one, else
     * the corresponding Ecore_Event_Modifier.
+    *
+    * @if MOBILE @since_tizen 2.4
+    * @elseif WEARABLE @since_tizen 3.0
+    * @endif
     */
    EAPI Ecore_Event_Modifier ecore_event_update_modifier(const char *key, Ecore_Event_Modifiers *modifiers, int inc);
 
@@ -465,6 +485,10 @@ extern "C" {
     * @param seq The sequence of key symbols in a Eina_List.
     * @param seqstr_ret The final compose string.
     * @return The status of the composition.
+    *
+    * @if MOBILE @since_tizen 2.4
+    * @elseif WEARABLE @since_tizen 3.0
+    * @endif
     */
    EAPI Ecore_Compose_State  ecore_compose_get(const Eina_List *seq, char **seqstr_ret);
 //TIZEN_ONLY(20160627) - Initial version of ecore joystick event
@@ -473,11 +497,19 @@ extern "C" {
    /**
     * Initialises the Ecore Input Joystick system.
     * @since 1.15
+    *
+    * @if MOBILE @since_tizen 2.4
+    * @elseif WEARABLE @since_tizen 3.0
+    * @endif
     */
    EAPI int                  ecore_input_joystick_init(void);
    /**
     * Shutdowns the Ecore Input Joystick system.
     * @since 1.15
+    *
+    * @if MOBILE @since_tizen 2.4
+    * @elseif WEARABLE @since_tizen 3.0
+    * @endif
     */
    EAPI int                  ecore_input_joystick_shutdown(void);
 #endif

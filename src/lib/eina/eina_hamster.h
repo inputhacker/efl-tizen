@@ -44,6 +44,10 @@
  * @return The number of available hamsters.
  *
  * This function returns how many hamsters you have.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eina_hamster_count(void);
 

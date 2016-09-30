@@ -18,17 +18,29 @@
  * @param member name of the signal
  * @param cb callback that will be called when this signal is received
  * @param cb_data data that will be passed to callback
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Signal_Handler *eldbus_signal_handler_add(Eldbus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 6);
 
 /**
  * @brief Increase signal handler reference.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Signal_Handler *eldbus_signal_handler_ref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
 /**
  * @brief Decrease signal handler reference.
  * If reference == 0 signal handler will be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_signal_handler_unref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
@@ -36,6 +48,10 @@ EAPI void                  eldbus_signal_handler_unref(Eldbus_Signal_Handler *ha
  * @brief Decrease signal handler reference like eldbus_signal_handler_unref()
  * but if reference > 0 this signal handler will stop listening to signals. In other
  * words it will be canceled but memory will not be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_signal_handler_del(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
@@ -54,6 +70,10 @@ EAPI void                  eldbus_signal_handler_del(Eldbus_Signal_Handler *hand
  *
  * @note For more information:
  * http://dbus.freedesktop.org/doc/dbus-specification.html#message-bus-routing-match-rules
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool             eldbus_signal_handler_match_extra_set(Eldbus_Signal_Handler *sh, ...) EINA_ARG_NONNULL(1) EINA_SENTINEL;
 
@@ -72,16 +92,28 @@ EAPI Eina_Bool             eldbus_signal_handler_match_extra_set(Eldbus_Signal_H
  *
  * @note To information:
  * http://dbus.freedesktop.org/doc/dbus-specification.html#message-bus-routing-match-rules
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool             eldbus_signal_handler_match_extra_vset(Eldbus_Signal_Handler *sh, va_list ap) EINA_ARG_NONNULL(1);
 
 /**
  * @brief Add a callback function to be called when signal handler will be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_signal_handler_free_cb_add(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @brief Remove callback registered in eldbus_signal_handler_free_cb_add().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_signal_handler_free_cb_del(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 

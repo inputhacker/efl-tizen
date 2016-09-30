@@ -434,6 +434,10 @@ struct _Eina_Inlist
  * @param in_item new list node, must not be @c NULL.
  *
  * @return the new list head. Use it and not @a in_list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_append(Eina_Inlist *in_list,
                                      Eina_Inlist *in_item) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
@@ -453,6 +457,10 @@ EAPI Eina_Inlist *eina_inlist_append(Eina_Inlist *in_list,
  * @param in_item new list node, must not be @c NULL.
  *
  * @return the new list head. Use it and not @a in_list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_prepend(Eina_Inlist *in_list,
                                       Eina_Inlist *in_item) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
@@ -478,6 +486,10 @@ EAPI Eina_Inlist *eina_inlist_prepend(Eina_Inlist *in_list,
  * @param in_relative reference node, @a in_item will be added after it.
  *
  * @return the new list head. Use it and not @a list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_append_relative(Eina_Inlist *in_list,
                                               Eina_Inlist *in_item,
@@ -504,6 +516,10 @@ EAPI Eina_Inlist *eina_inlist_append_relative(Eina_Inlist *in_list,
  * @param in_relative reference node, @a in_item will be added before it.
  *
  * @return the new list head. Use it and not @a in_list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_prepend_relative(Eina_Inlist *in_list,
                                                Eina_Inlist *in_item,
@@ -525,6 +541,10 @@ EAPI Eina_Inlist *eina_inlist_prepend_relative(Eina_Inlist *in_list,
  * @param in_item existing list node, must not be @c NULL.
  *
  * @return the new list head. Use it and not @a list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist   *eina_inlist_remove(Eina_Inlist *in_list,
                                        Eina_Inlist *in_item) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
@@ -539,6 +559,10 @@ EAPI Eina_Inlist   *eina_inlist_remove(Eina_Inlist *in_list,
  * @param in_item what to search for, must not be @c NULL.
  *
  * @return @a in_item if found, @c NULL if not.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist   *eina_inlist_find(Eina_Inlist *in_list,
                                      Eina_Inlist *in_item) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
@@ -557,6 +581,10 @@ EAPI Eina_Inlist   *eina_inlist_find(Eina_Inlist *in_list,
  * @param item list node to move to beginning (head), must not be @c NULL.
  *
  * @return the new list head. Use it and not @a list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist   *eina_inlist_promote(Eina_Inlist *list,
                                         Eina_Inlist *item) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
@@ -575,6 +603,10 @@ EAPI Eina_Inlist   *eina_inlist_promote(Eina_Inlist *list,
  * @param item list node to move to end (tail), must not be @c NULL.
  *
  * @return the new list head. Use it and not @a list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist   *eina_inlist_demote(Eina_Inlist *list,
                                        Eina_Inlist *item) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
@@ -623,6 +655,10 @@ static inline Eina_Inlist *eina_inlist_last(const Eina_Inlist *list) EINA_PURE E
  * @warning This is an order-N operation and so the time will depend
  *    on the number of elements on the list, so, it might become
  *    slow for big lists!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI unsigned int   eina_inlist_count(const Eina_Inlist *list) EINA_WARN_UNUSED_RESULT;
 
@@ -645,6 +681,10 @@ EAPI unsigned int   eina_inlist_count(const Eina_Inlist *list) EINA_WARN_UNUSED_
  * @warning if the list structure changes then the iterator becomes
  *    invalid, and if you add or remove nodes iterator
  *    behavior is undefined, and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_inlist_iterator_new(const Eina_Inlist *in_list) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -659,6 +699,10 @@ EAPI Eina_Iterator *eina_inlist_iterator_new(const Eina_Inlist *in_list) EINA_MA
  * less or equal than @c 0, this function returns @c NULL. If the memory can
  * not be allocated, @c NULL is returned and Otherwise, a valid accessor is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Accessor *eina_inlist_accessor_new(const Eina_Inlist *in_list) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -682,6 +726,10 @@ EAPI Eina_Accessor *eina_inlist_accessor_new(const Eina_Inlist *in_list) EINA_MA
  * lists do not have O(1) access time, so walking to the correct node
  * can be costly, consider worst case to be almost O(n) pointer
  * dereference (list walk).
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_sorted_insert(Eina_Inlist *list, Eina_Inlist *item, Eina_Compare_Cb func) EINA_ARG_NONNULL(2, 3) EINA_WARN_UNUSED_RESULT;
 
@@ -692,6 +740,10 @@ EAPI Eina_Inlist *eina_inlist_sorted_insert(Eina_Inlist *list, Eina_Inlist *item
  * @since 1.1.0
  *
  * See eina_inlist_sorted_state_insert() for more information.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist_Sorted_State *eina_inlist_sorted_state_new(void);
 
@@ -706,6 +758,10 @@ EAPI Eina_Inlist_Sorted_State *eina_inlist_sorted_state_new(void);
  * See eina_inlist_sorted_state_insert() for more information. This function is
  * useful if you didn't use eina_inlist_sorted_state_insert() at some point, but
  * still think you have a sorted list. It will only correctly work on a sorted list.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_inlist_sorted_state_init(Eina_Inlist_Sorted_State *state, Eina_Inlist *list);
 
@@ -716,6 +772,10 @@ EAPI int eina_inlist_sorted_state_init(Eina_Inlist_Sorted_State *state, Eina_Inl
  * @since 1.1.0
  *
  * See eina_inlist_sorted_state_insert() for more information.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_inlist_sorted_state_free(Eina_Inlist_Sorted_State *state);
 
@@ -746,6 +806,10 @@ EAPI void eina_inlist_sorted_state_free(Eina_Inlist_Sorted_State *state);
  * O(log2(n)) for number small number. After n == 256, it start to add a
  * linear cost again. Consider worst case to be almost O(n) pointer
  * dereference (list walk).
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_sorted_state_insert(Eina_Inlist *list,
 						  Eina_Inlist *item,
@@ -794,6 +858,10 @@ EAPI Eina_Inlist *eina_inlist_sorted_state_insert(Eina_Inlist *list,
  *
  * list = eina_inlist_sort(list, sort_cb);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_sort(Eina_Inlist *head, Eina_Compare_Cb func);
 

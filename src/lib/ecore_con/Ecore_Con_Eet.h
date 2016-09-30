@@ -88,6 +88,10 @@ typedef Eina_Bool (*Ecore_Con_Eet_Server_Cb)(void *data, Ecore_Con_Reply *reply,
  * deleted.
  *
  * @return A new Ecore_Con_Eet server.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Eet *ecore_con_eet_server_new(Ecore_Con_Server *server);
 
@@ -102,6 +106,10 @@ EAPI Ecore_Con_Eet *ecore_con_eet_server_new(Ecore_Con_Server *server);
  * deleted.
  *
  * @return A new Ecore_Con_Eet client.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Eet *ecore_con_eet_client_new(Ecore_Con_Server *server);
 
@@ -112,6 +120,9 @@ EAPI Ecore_Con_Eet *ecore_con_eet_client_new(Ecore_Con_Server *server);
  *                  allocated by a @ref ecore_con_eet_server_new or @ref
  *                  ecore_con_eet_client_new.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_server_free(Ecore_Con_Eet *ece);
 
@@ -123,6 +134,9 @@ EAPI void ecore_con_eet_server_free(Ecore_Con_Eet *ece);
  * @param edd       A Eet data descriptor that describes the data organization
  *                  in the Eet stream.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_register(Ecore_Con_Eet *ece, const char *name, Eet_Data_Descriptor *edd);
 
@@ -135,6 +149,9 @@ EAPI void ecore_con_eet_register(Ecore_Con_Eet *ece, const char *name, Eet_Data_
  * @param func      The function to call as a callback.
  * @param data      The data to pass to the callback.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_data_callback_add(Ecore_Con_Eet *ece, const char *name, Ecore_Con_Eet_Data_Cb func, const void *data);
 
@@ -144,6 +161,9 @@ EAPI void ecore_con_eet_data_callback_add(Ecore_Con_Eet *ece, const char *name, 
  * @param ece       An Ecore_Con_Eet object.
  * @param name      The name of the Eet stream to remove callback on.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_data_callback_del(Ecore_Con_Eet *ece, const char *name);
 
@@ -156,6 +176,9 @@ EAPI void ecore_con_eet_data_callback_del(Ecore_Con_Eet *ece, const char *name);
  * @param func      The function to call as a callback.
  * @param data      The data to pass to the callback.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_raw_data_callback_add(Ecore_Con_Eet *ece, const char *name, Ecore_Con_Eet_Raw_Data_Cb func, const void *data);
 
@@ -165,6 +188,9 @@ EAPI void ecore_con_eet_raw_data_callback_add(Ecore_Con_Eet *ece, const char *na
  * @param ece       An Ecore_Con_Eet object.
  * @param name      The name of the raw Eet stream to remove callback on.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_raw_data_callback_del(Ecore_Con_Eet *ece, const char *name);
 
@@ -177,6 +203,10 @@ EAPI void ecore_con_eet_raw_data_callback_del(Ecore_Con_Eet *ece, const char *na
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The function to call as a callback.
  * @param data      The data to pass to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_client_connect_callback_add(Ecore_Con_Eet *ece, Ecore_Con_Eet_Client_Cb func, const void *data);
 
@@ -186,6 +216,10 @@ EAPI void ecore_con_eet_client_connect_callback_add(Ecore_Con_Eet *ece, Ecore_Co
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The callback to remove.
  * @param data      The data passed to this function at the callback registration.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_client_connect_callback_del(Ecore_Con_Eet *ece, Ecore_Con_Eet_Client_Cb func, const void *data);
 
@@ -198,6 +232,10 @@ EAPI void ecore_con_eet_client_connect_callback_del(Ecore_Con_Eet *ece, Ecore_Co
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The function to call as a callback.
  * @param data      The data to pass to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_client_disconnect_callback_add(Ecore_Con_Eet *ece, Ecore_Con_Eet_Client_Cb func, const void *data);
 
@@ -207,6 +245,10 @@ EAPI void ecore_con_eet_client_disconnect_callback_add(Ecore_Con_Eet *ece, Ecore
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The callback to remove.
  * @param data      The data passed to this function at the callback registration.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_client_disconnect_callback_del(Ecore_Con_Eet *ece, Ecore_Con_Eet_Client_Cb func, const void *data);
 
@@ -219,6 +261,10 @@ EAPI void ecore_con_eet_client_disconnect_callback_del(Ecore_Con_Eet *ece, Ecore
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The function to call as a callback.
  * @param data      The data to pass to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_server_connect_callback_add(Ecore_Con_Eet *ece, Ecore_Con_Eet_Server_Cb func, const void *data);
 
@@ -228,6 +274,10 @@ EAPI void ecore_con_eet_server_connect_callback_add(Ecore_Con_Eet *ece, Ecore_Co
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The callback to remove.
  * @param data      The data passed to this function at the callback registration.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_server_connect_callback_del(Ecore_Con_Eet *ece, Ecore_Con_Eet_Server_Cb func, const void *data);
 
@@ -240,6 +290,10 @@ EAPI void ecore_con_eet_server_connect_callback_del(Ecore_Con_Eet *ece, Ecore_Co
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The function to call as a callback.
  * @param data      The data to pass to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_server_disconnect_callback_add(Ecore_Con_Eet *ece, Ecore_Con_Eet_Server_Cb func, const void *data);
 
@@ -249,6 +303,10 @@ EAPI void ecore_con_eet_server_disconnect_callback_add(Ecore_Con_Eet *ece, Ecore
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The callback to remove.
  * @param data      The data passed to this function at the callback registration.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_server_disconnect_callback_del(Ecore_Con_Eet *ece, Ecore_Con_Eet_Server_Cb func, const void *data);
 
@@ -257,6 +315,10 @@ EAPI void ecore_con_eet_server_disconnect_callback_del(Ecore_Con_Eet *ece, Ecore
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param data      The data to attach to the Ecore_Con_Eet object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_data_set(Ecore_Con_Eet *ece, const void *data);
 
@@ -265,6 +327,10 @@ EAPI void ecore_con_eet_data_set(Ecore_Con_Eet *ece, const void *data);
  *
  * @param ece       An Ecore_Con_Eet object.
  * @return The data attached to the Ecore_Con_Eet object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const void *ecore_con_eet_data_get(Ecore_Con_Eet *ece);
 
@@ -273,6 +339,10 @@ EAPI const void *ecore_con_eet_data_get(Ecore_Con_Eet *ece);
  *
  * @param reply       An Ecore_Con_Reply object.
  * @return The corresponding Ecore_Con_Eet object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Con_Eet *ecore_con_eet_reply(Ecore_Con_Reply *reply);
 
@@ -282,6 +352,10 @@ EAPI Ecore_Con_Eet *ecore_con_eet_reply(Ecore_Con_Reply *reply);
  * @param reply         An Ecore_Con_Reply object.
  * @param protocol_name The protocol type to use.
  * @param value         The data to send.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_send(Ecore_Con_Reply *reply, const char *protocol_name, void *value);
 
@@ -293,6 +367,10 @@ EAPI void ecore_con_eet_send(Ecore_Con_Reply *reply, const char *protocol_name, 
  * @param section       The section to add to the protocol.
  * @param value         The data to send.
  * @param length        The data length.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_con_eet_raw_send(Ecore_Con_Reply *reply, const char *protocol_name, const char *section, void *value, unsigned int length);
 

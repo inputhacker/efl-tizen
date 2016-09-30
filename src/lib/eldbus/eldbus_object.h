@@ -15,6 +15,10 @@
  * @param bus name of bus or unique-id of who listens for calls of this object
  * @param path object path of this object
  * @return The corresponding Eldbus_Object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Object *eldbus_object_get(Eldbus_Connection *conn, const char *bus, const char *path) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
@@ -23,6 +27,10 @@ EAPI Eldbus_Object *eldbus_object_get(Eldbus_Connection *conn, const char *bus, 
  *
  * @param obj An Eldbus_Object.
  * @return The same Eldbus_Object with an increased refcount.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Object *eldbus_object_ref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
 
@@ -31,6 +39,10 @@ EAPI Eldbus_Object *eldbus_object_ref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
  * If reference == 0 object will be freed and all its children.
  *
  * @param obj An Eldbus_Object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void          eldbus_object_unref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
 
@@ -40,6 +52,10 @@ EAPI void          eldbus_object_unref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
  * @param obj object that you want to monitor
  * @param cb callback that will be executed
  * @param data passed to callback
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void          eldbus_object_free_cb_add(Eldbus_Object *obj, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -49,6 +65,10 @@ EAPI void          eldbus_object_free_cb_add(Eldbus_Object *obj, Eldbus_Free_Cb 
  * @param obj Object monitored.
  * @param cb Callback that was registered.
  * @param data Data that was passed to callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void          eldbus_object_free_cb_del(Eldbus_Object *obj, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -132,6 +152,10 @@ typedef void (*Eldbus_Object_Event_Cb)(void *data, Eldbus_Object *obj, void *eve
  * @param type The type of the event.
  * @param cb The callback to call.
  * @param cb_data The data to pass to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_object_event_callback_add(Eldbus_Object *obj, Eldbus_Object_Event_Type type, Eldbus_Object_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
@@ -142,6 +166,10 @@ EAPI void                  eldbus_object_event_callback_add(Eldbus_Object *obj, 
  * @param type The type of the event.
  * @param cb The callback to call.
  * @param cb_data The data to pass to the callback.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_object_event_callback_del(Eldbus_Object *obj, Eldbus_Object_Event_Type type, Eldbus_Object_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
@@ -150,6 +178,10 @@ EAPI void                  eldbus_object_event_callback_del(Eldbus_Object *obj, 
  *
  * @param obj The Eldbus_Object.
  * @return The corresponding Eldbus_Connection object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Connection     *eldbus_object_connection_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -158,6 +190,10 @@ EAPI Eldbus_Connection     *eldbus_object_connection_get(const Eldbus_Object *ob
  *
  * @param obj The Eldbus_Object.
  * @return A string corresponding to the Eldbus_Object name.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_object_bus_name_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -166,6 +202,10 @@ EAPI const char           *eldbus_object_bus_name_get(const Eldbus_Object *obj) 
  *
  * @param obj The Eldbus_Object.
  * @return A string corresponding to the Eldbus_Object path.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_object_path_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -180,6 +220,10 @@ EAPI const char           *eldbus_object_path_get(const Eldbus_Object *obj) EINA
  * @param timeout timeout in milliseconds, -1 to default internal value or
  * ELDBUS_TIMEOUT_INFINITE for no timeout
  * @return A Eldbus_Pending object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_object_send(Eldbus_Object *obj, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
 
@@ -192,6 +236,10 @@ EAPI Eldbus_Pending        *eldbus_object_send(Eldbus_Object *obj, Eldbus_Messag
  * @param cb callback that will be called when this signal is received
  * @param cb_data data that will be passed to callback
  * @return A listener to the desired signal.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Signal_Handler *eldbus_object_signal_handler_add(Eldbus_Object *obj, const char *interface, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 4);
 
@@ -203,6 +251,10 @@ EAPI Eldbus_Signal_Handler *eldbus_object_signal_handler_add(Eldbus_Object *obj,
  * @param member Name of the method to be called.
  *
  * @return a new Eldbus_Message, free with eldbus_message_unref()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message *eldbus_object_method_call_new(Eldbus_Object *obj, const char *interface, const char *member) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 

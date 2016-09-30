@@ -173,11 +173,19 @@ struct _Eina_Matrix3_F16p16
  * @p m.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_f16p16_identity(Eina_Matrix3_F16p16 *m);
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_f16p16_compose(const Eina_Matrix3_F16p16 *m1,
                                       const Eina_Matrix3_F16p16 *m2,
@@ -193,6 +201,10 @@ EAPI void eina_matrix3_f16p16_compose(const Eina_Matrix3_F16p16 *m1,
  * on @p m.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Matrix_Type eina_matrix3_f16p16_type_get(const Eina_Matrix3_F16p16 *m);
 
@@ -225,6 +237,10 @@ EAPI Eina_Matrix_Type eina_matrix3_f16p16_type_get(const Eina_Matrix3_F16p16 *m)
  * on @p m.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Matrix_Type eina_matrix3_type_get(const Eina_Matrix3 *m);
 
@@ -249,6 +265,10 @@ EAPI Eina_Matrix_Type eina_matrix3_type_get(const Eina_Matrix3 *m);
  * @see eina_matrix3_values_get()
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_values_set(Eina_Matrix3 *m,
                                   double xx, double xy, double xz,
@@ -276,6 +296,10 @@ EAPI void eina_matrix3_values_set(Eina_Matrix3 *m,
  * @see eina_matrix3_values_set()
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_values_get(const Eina_Matrix3 *m,
                                   double *xx, double *xy, double *xz,
@@ -303,6 +327,10 @@ EAPI void eina_matrix3_values_get(const Eina_Matrix3 *m,
  * @see eina_matrix3_values_set()
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_fixed_values_get(const Eina_Matrix3 *m,
                                         Eina_F16p16 *xx, Eina_F16p16 *xy, Eina_F16p16 *xz,
@@ -321,6 +349,10 @@ EAPI void eina_matrix3_fixed_values_get(const Eina_Matrix3 *m,
  * @p fm.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_matrix3_f16p16_to(const Eina_Matrix3 *m,
                                          Eina_Matrix3_F16p16 *fm);
@@ -336,11 +368,19 @@ EAPI void eina_matrix3_matrix3_f16p16_to(const Eina_Matrix3 *m,
  * equal, EINA_FALSE otherwise. No check is done on the matrices.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_matrix3_equal(const Eina_Matrix3 *m1, const Eina_Matrix3 *m2);
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_compose(const Eina_Matrix3 *m1,
                                const Eina_Matrix3 *m2,
@@ -353,6 +393,10 @@ EAPI void eina_matrix3_compose(const Eina_Matrix3 *m1,
  * @param[in] ty The Y coordinate translate
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_translate(Eina_Matrix3 *t, double tx, double ty);
 
@@ -363,6 +407,10 @@ EAPI void eina_matrix3_translate(Eina_Matrix3 *t, double tx, double ty);
  * @param[in] sy The Y coordinate scale
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_scale(Eina_Matrix3 *t, double sx, double sy);
 
@@ -372,6 +420,10 @@ EAPI void eina_matrix3_scale(Eina_Matrix3 *t, double sx, double sy);
  * @param[in] rad The radius to rotate the matrix
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_rotate(Eina_Matrix3 *t, double rad);
 
@@ -384,6 +436,10 @@ EAPI void eina_matrix3_rotate(Eina_Matrix3 *t, double rad);
  * @p m.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_identity(Eina_Matrix3 *t);
 
@@ -397,6 +453,10 @@ EAPI void eina_matrix3_identity(Eina_Matrix3 *t);
  * is done on @p m.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double eina_matrix3_determinant(const Eina_Matrix3 *m);
 
@@ -410,6 +470,10 @@ EAPI double eina_matrix3_determinant(const Eina_Matrix3 *m);
  * is done on @p m.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_divide(Eina_Matrix3 *m, double scalar);
 
@@ -424,32 +488,56 @@ EAPI void eina_matrix3_divide(Eina_Matrix3 *m, double scalar);
  * invertible, then @p m2 is set to the identity matrix.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_inverse(const Eina_Matrix3 *m, Eina_Matrix3 *m2);
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_transpose(const Eina_Matrix3 *m, Eina_Matrix3 *a);
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_cofactor(const Eina_Matrix3 *m, Eina_Matrix3 *a);
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_adjoint(const Eina_Matrix3 *m, Eina_Matrix3 *a);
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_point_transform(const Eina_Matrix3 *m,
                                        double x, double y,
                                        double *xr, double *yr);
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_rectangle_transform(const Eina_Matrix3 *m,
                                            const Eina_Rectangle *r,
@@ -457,6 +545,10 @@ EAPI void eina_matrix3_rectangle_transform(const Eina_Matrix3 *m,
 
 /**
  * @brief Creates a projective matrix that maps a quadrangle to a quadrangle
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_matrix3_quad_quad_map(Eina_Matrix3 *m,
                                           const Eina_Quad *src,
@@ -464,12 +556,20 @@ EAPI Eina_Bool eina_matrix3_quad_quad_map(Eina_Matrix3 *m,
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_matrix3_square_quad_map(Eina_Matrix3 *m,
                                             const Eina_Quad *q);
 
 /**
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_matrix3_quad_square_map(Eina_Matrix3 *m,
                                             const Eina_Quad *q);
@@ -483,6 +583,10 @@ EAPI Eina_Bool eina_matrix3_quad_square_map(Eina_Matrix3 *m,
  * Set to matrix first 9 elements from array
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_array_set(Eina_Matrix3 *m, const double *v);
 
@@ -493,6 +597,10 @@ EAPI void eina_matrix3_array_set(Eina_Matrix3 *m, const double *v);
  * @param src The matrix for copy.
  *
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_copy(Eina_Matrix3 *dst, const Eina_Matrix3 *src);
 
@@ -504,6 +612,10 @@ EAPI void eina_matrix3_copy(Eina_Matrix3 *dst, const Eina_Matrix3 *src);
  * @param b The second member of the multiplication
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_multiply(Eina_Matrix3 *out, const Eina_Matrix3 *mat_a,
                                 const Eina_Matrix3 *mat_b);
@@ -516,6 +628,10 @@ EAPI void eina_matrix3_multiply(Eina_Matrix3 *out, const Eina_Matrix3 *mat_a,
  * @param b The second member of the multiplication
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_multiply_copy(Eina_Matrix3 *out, const Eina_Matrix3 *mat_a,
                                      const Eina_Matrix3 *mat_b);
@@ -528,6 +644,10 @@ EAPI void eina_matrix3_multiply_copy(Eina_Matrix3 *out, const Eina_Matrix3 *mat_
  * @param s_y The scale value for y
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_scale_transform_set(Eina_Matrix3 *out, double s_x, double s_y);
 
@@ -539,6 +659,10 @@ EAPI void eina_matrix3_scale_transform_set(Eina_Matrix3 *out, double s_x, double
  * @param p_y The position value for y
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_position_transform_set(Eina_Matrix3 *out, const double p_x,
                                               const double p_y);
@@ -550,6 +674,10 @@ EAPI void eina_matrix3_position_transform_set(Eina_Matrix3 *out, const double p_
  * @param m The matrix
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_normal3_matrix_get(Eina_Matrix3 *out, const Eina_Matrix4 *m);
 
@@ -560,6 +688,10 @@ EAPI void eina_normal3_matrix_get(Eina_Matrix3 *out, const Eina_Matrix4 *m);
  * @param m4 The source Eina_Matrix4.
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix3_matrix4_to(Eina_Matrix4 *m4, const Eina_Matrix3 *m3);
 
@@ -583,6 +715,10 @@ EAPI void eina_matrix3_matrix4_to(Eina_Matrix4 *m4, const Eina_Matrix3 *m3);
  * on @p m.
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Matrix_Type eina_matrix4_type_get(const Eina_Matrix4 *m);
 
@@ -614,6 +750,10 @@ EAPI Eina_Matrix_Type eina_matrix4_type_get(const Eina_Matrix4 *m);
  * @see eina_matrix4_values_get()
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_values_set(Eina_Matrix4 *m,
                                   double xx, double xy, double xz, double xw,
@@ -649,6 +789,10 @@ EAPI void eina_matrix4_values_set(Eina_Matrix4 *m,
  * @see eina_matrix4_values_set()
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_values_get(const Eina_Matrix4 *m,
                                   double *xx, double *xy, double *xz, double *xw,
@@ -666,6 +810,10 @@ EAPI void eina_matrix4_values_get(const Eina_Matrix4 *m,
  * is done on @p m.
  *
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double eina_matrix4_determinant(const Eina_Matrix4 *m);
 
@@ -679,6 +827,10 @@ EAPI double eina_matrix4_determinant(const Eina_Matrix4 *m);
  * is done on @p m.
  *
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_matrix4_normalized(Eina_Matrix4 *out,
                                        const Eina_Matrix4 *in);
@@ -691,6 +843,10 @@ EAPI Eina_Bool eina_matrix4_normalized(Eina_Matrix4 *out,
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  *
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_matrix4_inverse(Eina_Matrix4 *out, const Eina_Matrix4 *in);
 
@@ -703,6 +859,10 @@ EAPI Eina_Bool eina_matrix4_inverse(Eina_Matrix4 *out, const Eina_Matrix4 *in);
  * Just going to swap row and column.
  *
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_transpose(Eina_Matrix4 *out, const Eina_Matrix4 *in);
 
@@ -713,6 +873,10 @@ EAPI void eina_matrix4_transpose(Eina_Matrix4 *out, const Eina_Matrix4 *in);
  * @param m4 The source Eina_Matrix4.
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_matrix3_to(Eina_Matrix3 *m3, const Eina_Matrix4 *m4);
 
@@ -722,6 +886,10 @@ EAPI void eina_matrix4_matrix3_to(Eina_Matrix3 *m3, const Eina_Matrix4 *m4);
  * @param out The matrix to set
  *
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_identity(Eina_Matrix4 *out);
 
@@ -733,6 +901,10 @@ EAPI void eina_matrix4_identity(Eina_Matrix4 *out);
  * @param b The second member of the multiplication
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_multiply_copy(Eina_Matrix4 *out,
                                      const Eina_Matrix4 *mat_a, const Eina_Matrix4 *mat_b);
@@ -746,6 +918,10 @@ EAPI void eina_matrix4_multiply_copy(Eina_Matrix4 *out,
  * Set to matrix first 16 elements from array
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_array_set(Eina_Matrix4 *m, const double *v);
 
@@ -756,6 +932,10 @@ EAPI void eina_matrix4_array_set(Eina_Matrix4 *m, const double *v);
  * @param src The matrix for copy.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_copy(Eina_Matrix4 *dst, const Eina_Matrix4 *src);
 
@@ -767,6 +947,10 @@ EAPI void eina_matrix4_copy(Eina_Matrix4 *dst, const Eina_Matrix4 *src);
  * @param b The second member of the multiplication
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_multiply(Eina_Matrix4 *out, const Eina_Matrix4 *mat_a,
                                 const Eina_Matrix4 *mat_b);
@@ -783,6 +967,10 @@ EAPI void eina_matrix4_multiply(Eina_Matrix4 *out, const Eina_Matrix4 *mat_a,
  * @param dfar The dfar value
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix4_ortho_set(Eina_Matrix4 *m,
                                  double left, double right, double bottom, double top,
@@ -835,6 +1023,10 @@ struct _Eina_Matrix2
  * @see eina_matrix2_values_get()
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix2_values_set(Eina_Matrix2 *m, double xx, double xy,
                     double yx, double yy);
@@ -855,6 +1047,10 @@ EAPI void eina_matrix2_values_set(Eina_Matrix2 *m, double xx, double xy,
  * @see eina_matrix2_values_set()
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix2_values_get(const Eina_Matrix2 *m, double *xx, double *xy,
                     double *yx, double *yy);
@@ -870,6 +1066,10 @@ EAPI void eina_matrix2_values_get(const Eina_Matrix2 *m, double *xx, double *xy,
  * invertible, then @p m2 is set to the identity matrix.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix2_inverse(Eina_Matrix2 *out, const Eina_Matrix2 *mat);
 
@@ -882,6 +1082,10 @@ EAPI void eina_matrix2_inverse(Eina_Matrix2 *out, const Eina_Matrix2 *mat);
  * @p m.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix2_identity(Eina_Matrix2 *m);
 
@@ -894,6 +1098,10 @@ EAPI void eina_matrix2_identity(Eina_Matrix2 *m);
  * Set to matrix first 4 elements from array
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix2_array_set(Eina_Matrix2 *m, const double *v);
 
@@ -904,6 +1112,10 @@ EAPI void eina_matrix2_array_set(Eina_Matrix2 *m, const double *v);
  * @param src The matrix for copy.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix2_copy(Eina_Matrix2 *dst, const Eina_Matrix2 *src);
 
@@ -915,6 +1127,10 @@ EAPI void eina_matrix2_copy(Eina_Matrix2 *dst, const Eina_Matrix2 *src);
  * @param b The second member of the multiplication
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix2_multiply(Eina_Matrix2 *out, const Eina_Matrix2 *mat_a,
                                 const Eina_Matrix2 *mat_b);
@@ -927,6 +1143,10 @@ EAPI void eina_matrix2_multiply(Eina_Matrix2 *out, const Eina_Matrix2 *mat_a,
  * @param b The second member of the multiplication
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_matrix2_multiply_copy(Eina_Matrix2 *out, const Eina_Matrix2 *mat_a,
                     const Eina_Matrix2 *mat_b);
@@ -941,6 +1161,10 @@ EAPI void eina_matrix2_multiply_copy(Eina_Matrix2 *out, const Eina_Matrix2 *mat_
  * on @p m.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Matrix_Type eina_matrix2_type_get(const Eina_Matrix2 *m);
 

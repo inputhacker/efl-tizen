@@ -43,6 +43,10 @@
  *          set the nice level on the current thread. In Linux, it does work and it's the
  *          only one that is implemented as of now. In this case, the nice level is
  *          incremented on this thread by @c NICENESS.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_sched_prio_drop(void);
 

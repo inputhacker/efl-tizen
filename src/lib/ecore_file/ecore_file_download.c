@@ -181,6 +181,10 @@ _ecore_file_download(const char *url,
  * that download job. Similarly ecore_file_download_abort_all() can be used to
  * abort all download operations. This function returns @c EINA_TRUE if the
  * download starts, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_download(const char *url,
@@ -204,6 +208,10 @@ ecore_file_download(const char *url,
  * @param  job_ret Job used to abort the download.
  * @param  headers pointer of header lists.
  * @return @c EINA_TRUE if the download start or @c EINA_FALSE on failure.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_download_full(const char *url,
@@ -227,6 +235,10 @@ ecore_file_download_full(const char *url,
  * @c EINA_FALSE otherwise. @p protocol can be 'http://', 'ftp://' or
  * 'file://'. Ecore_FILE must be compiled with CURL to handle http and
  * ftp protocols.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_download_protocol_available(const char *protocol)
@@ -359,6 +371,10 @@ _ecore_file_download_curl(const char *url, const char *dst,
  * structure filled by ecore_file_download(). If it is @c NULL, this
  * function does nothing. To abort all the currently downloading
  * operations, call ecore_file_download_abort_all().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_file_download_abort(Ecore_File_Download_Job *job)
@@ -382,6 +398,10 @@ ecore_file_download_abort(Ecore_File_Download_Job *job)
  * ecore_file_download(). It loops over the started downloads and call
  * ecore_file_download_abort() for each of them. To abort only one
  * specific download operation, call ecore_file_download_abort().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_file_download_abort_all(void)

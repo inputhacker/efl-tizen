@@ -181,6 +181,10 @@ EAPI int         ecore_evas_engine_type_supported_get(Ecore_Evas_Engine_Type eng
  * Set up the Evas wrapper system. Init Evas and Ecore libraries.
  *
  * @see ecore_evas_shutdown()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int         ecore_evas_init(void);
 /**
@@ -191,6 +195,10 @@ EAPI int         ecore_evas_init(void);
  * This closes the Evas wrapper system down. Shut down Evas and Ecore libraries.
  *
  * @see ecore_evas_init()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int         ecore_evas_shutdown(void);
 
@@ -198,6 +206,8 @@ EAPI void        ecore_evas_app_comp_sync_set(Eina_Bool do_sync);
 EAPI Eina_Bool   ecore_evas_app_comp_sync_get(void);
 
 /**
+ * @internal
+ *
  * @brief Return a list of supported engines names.
  *
  * @return Newly allocated list with engines names. Engines names
@@ -206,12 +216,16 @@ EAPI Eina_Bool   ecore_evas_app_comp_sync_get(void);
  */
 EAPI Eina_List  *ecore_evas_engines_get(void);
 /**
+ * @internal
+ *
  * @brief Free list returned by ecore_evas_engines_get()
  *
  * @param engines list with engines names
  */
 EAPI void        ecore_evas_engines_free(Eina_List *engines);
 /**
+ * @internal
+ *
  * @brief Create a new Ecore_Evas based on engine name and common parameters.
  *
  * @param engine_name engine name as returned by
@@ -246,6 +260,10 @@ EAPI Ecore_Evas *ecore_evas_new(const char *engine_name, int x, int y, int w, in
  * it's transparent).
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_alpha_set(Ecore_Evas *ee, Eina_Bool alpha);
 /**
@@ -258,6 +276,10 @@ EAPI void        ecore_evas_alpha_set(Ecore_Evas *ee, Eina_Bool alpha);
  * @c EINA_FALSE if it does not.
  *
  * @see ecore_evas_alpha_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_alpha_get(const Ecore_Evas *ee);
 /**
@@ -273,6 +295,10 @@ EAPI Eina_Bool   ecore_evas_alpha_get(const Ecore_Evas *ee);
  * @warning Support for this depends on the underlying windowing system.
  *
  * @see ecore_evas_alpha_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_transparent_set(Ecore_Evas *ee, Eina_Bool transparent);
 /**
@@ -282,6 +308,10 @@ EAPI void        ecore_evas_transparent_set(Ecore_Evas *ee, Eina_Bool transparen
  * @return @c EINA_TRUE if ee is transparent, @c EINA_FALSE if it isn't.
  *
  * @see ecore_evas_transparent_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_transparent_get(const Ecore_Evas *ee);
 /**
@@ -306,6 +336,10 @@ EAPI Eina_Bool   ecore_evas_transparent_get(const Ecore_Evas *ee);
  * @see ecore_evas_resize()
  * @see ecore_evas_move()
  * @see ecore_evas_move_resize()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_geometry_get(const Ecore_Evas *ee, int *x, int *y, int *w, int *h);
 /**
@@ -331,6 +365,10 @@ EAPI void        ecore_evas_geometry_get(const Ecore_Evas *ee, int *x, int *y, i
  * @endcode
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_request_geometry_get(const Ecore_Evas *ee, int *x, int *y, int *w, int *h);
 /**
@@ -343,6 +381,10 @@ EAPI void        ecore_evas_request_geometry_get(const Ecore_Evas *ee, int *x, i
  * @p on is @c EINA_FALSE.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_focus_set(Ecore_Evas *ee, Eina_Bool on);
 /**
@@ -352,6 +394,10 @@ EAPI void        ecore_evas_focus_set(Ecore_Evas *ee, Eina_Bool on);
  * @return @c EINA_TRUE if @p ee if focused, @c EINA_FALSE if not.
  *
  * @see ecore_evas_focus_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_focus_get(const Ecore_Evas *ee);
 /**
@@ -366,6 +412,10 @@ EAPI Eina_Bool   ecore_evas_focus_get(const Ecore_Evas *ee);
  * @note Iconify and minimize are synonyms.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_iconified_set(Ecore_Evas *ee, Eina_Bool on);
 /**
@@ -377,6 +427,10 @@ EAPI void        ecore_evas_iconified_set(Ecore_Evas *ee, Eina_Bool on);
  * @note Iconify and minimize are synonyms.
  *
  * @see ecore_evas_iconified_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_iconified_get(const Ecore_Evas *ee);
 /**
@@ -389,6 +443,10 @@ EAPI Eina_Bool   ecore_evas_iconified_get(const Ecore_Evas *ee);
  * if @p on is @c EINA_FALSE.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_borderless_set(Ecore_Evas *ee, Eina_Bool on);
 /**
@@ -398,6 +456,10 @@ EAPI void        ecore_evas_borderless_set(Ecore_Evas *ee, Eina_Bool on);
  * @return @c EINA_TRUE if @p ee is borderless, @c EINA_FALSE if not.
  *
  * @see ecore_evas_borderless_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_borderless_get(const Ecore_Evas *ee);
 /**
@@ -410,6 +472,10 @@ EAPI Eina_Bool   ecore_evas_borderless_get(const Ecore_Evas *ee);
  * not if @p on is @c EINA_FALSE.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_fullscreen_set(Ecore_Evas *ee, Eina_Bool on);
 /**
@@ -419,6 +485,10 @@ EAPI void        ecore_evas_fullscreen_set(Ecore_Evas *ee, Eina_Bool on);
  * @return @c EINA_TRUE if @p ee is fullscreen, @c EINA_FALSE if not.
  *
  * @see ecore_evas_fullscreen_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_fullscreen_get(const Ecore_Evas *ee);
 /**
@@ -434,6 +504,10 @@ EAPI Eina_Bool   ecore_evas_fullscreen_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_window_group_set(Ecore_Evas *ee, const Ecore_Evas *ee_group);
 /**
@@ -446,6 +520,10 @@ EAPI void        ecore_evas_window_group_set(Ecore_Evas *ee, const Ecore_Evas *e
  *
  * @see ecore_evas_window_group_set()
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Ecore_Evas *ecore_evas_window_group_get(const Ecore_Evas *ee);
 /**
@@ -458,6 +536,10 @@ EAPI const Ecore_Evas *ecore_evas_window_group_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_aspect_set(Ecore_Evas *ee, double aspect);
 /**
@@ -470,6 +552,10 @@ EAPI void        ecore_evas_aspect_set(Ecore_Evas *ee, double aspect);
  *
  * @see ecore_evas_aspect_set()
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double      ecore_evas_aspect_get(const Ecore_Evas *ee);
 /**
@@ -483,6 +569,10 @@ EAPI double      ecore_evas_aspect_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_urgent_set(Ecore_Evas *ee, Eina_Bool urgent);
 /**
@@ -495,6 +585,10 @@ EAPI void        ecore_evas_urgent_set(Ecore_Evas *ee, Eina_Bool urgent);
  *
  * @see ecore_evas_urgent_set()
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_urgent_get(const Ecore_Evas *ee);
 /**
@@ -509,6 +603,10 @@ EAPI Eina_Bool   ecore_evas_urgent_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_modal_set(Ecore_Evas *ee, Eina_Bool modal);
 /**
@@ -521,6 +619,10 @@ EAPI void        ecore_evas_modal_set(Ecore_Evas *ee, Eina_Bool modal);
  *
  * @see ecore_evas_modal_set()
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_modal_get(const Ecore_Evas *ee);
 /**
@@ -534,6 +636,10 @@ EAPI Eina_Bool   ecore_evas_modal_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_demand_attention_set(Ecore_Evas *ee, Eina_Bool demand);
 /**
@@ -546,6 +652,10 @@ EAPI void        ecore_evas_demand_attention_set(Ecore_Evas *ee, Eina_Bool deman
  *
  * @see ecore_evas_demand_attention_set()
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_demand_attention_get(const Ecore_Evas *ee);
 /**
@@ -561,6 +671,10 @@ EAPI Eina_Bool   ecore_evas_demand_attention_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_focus_skip_set(Ecore_Evas *ee, Eina_Bool skip);
 /**
@@ -573,6 +687,10 @@ EAPI void        ecore_evas_focus_skip_set(Ecore_Evas *ee, Eina_Bool skip);
  *
  * @see ecore_evas_focus_skip_set()
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_focus_skip_get(const Ecore_Evas *ee);
 
@@ -583,6 +701,10 @@ EAPI Eina_Bool   ecore_evas_focus_skip_get(const Ecore_Evas *ee);
  * @param ignore The Ecore_Evas new ignore state.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_ignore_events_set(Ecore_Evas *ee, Eina_Bool ignore);
 /**
@@ -592,6 +714,10 @@ EAPI void        ecore_evas_ignore_events_set(Ecore_Evas *ee, Eina_Bool ignore);
  * @return The Ecore_Evas window's ignore state.
  *
  * @see ecore_evas_ignore_events_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_ignore_events_get(const Ecore_Evas *ee);
 /**
@@ -604,6 +730,10 @@ EAPI Eina_Bool   ecore_evas_ignore_events_get(const Ecore_Evas *ee);
  *
  * @see ecore_evas_show()
  * @see ecore_evas_hide()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int         ecore_evas_visibility_get(const Ecore_Evas *ee);
 /**
@@ -618,6 +748,10 @@ EAPI int         ecore_evas_visibility_get(const Ecore_Evas *ee);
  *
  * @see ecore_evas_lower()
  * @see ecore_evas_raise()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_layer_set(Ecore_Evas *ee, int layer);
 /**
@@ -629,6 +763,10 @@ EAPI void        ecore_evas_layer_set(Ecore_Evas *ee, int layer);
  * @see ecore_evas_layer_set()
  * @see ecore_evas_lower()
  * @see ecore_evas_raise()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int         ecore_evas_layer_get(const Ecore_Evas *ee);
 /**
@@ -641,6 +779,10 @@ EAPI int         ecore_evas_layer_get(const Ecore_Evas *ee);
  * if @p on is @c EINA_FALSE.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_maximized_set(Ecore_Evas *ee, Eina_Bool on);
 /**
@@ -650,6 +792,10 @@ EAPI void        ecore_evas_maximized_set(Ecore_Evas *ee, Eina_Bool on);
  * @return @c EINA_TRUE if @p ee is maximized, @c EINA_FALSE if not.
  *
  * @see ecore_evas_maximized_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_maximized_get(const Ecore_Evas *ee);
 /**
@@ -660,6 +806,10 @@ EAPI Eina_Bool   ecore_evas_maximized_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_window_profile_supported_get(const Ecore_Evas *ee);
 /**
@@ -670,6 +820,10 @@ EAPI Eina_Bool   ecore_evas_window_profile_supported_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_window_profile_set(Ecore_Evas *ee, const char *profile);
 /**
@@ -680,6 +834,10 @@ EAPI void        ecore_evas_window_profile_set(Ecore_Evas *ee, const char *profi
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *ecore_evas_window_profile_get(const Ecore_Evas *ee);
 /**
@@ -691,6 +849,10 @@ EAPI const char *ecore_evas_window_profile_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_window_available_profiles_set(Ecore_Evas *ee, const char **profiles, const unsigned int count);
 /**
@@ -703,6 +865,10 @@ EAPI void        ecore_evas_window_available_profiles_set(Ecore_Evas *ee, const 
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_window_available_profiles_get(Ecore_Evas *ee, char ***profiles, unsigned int *count);
 /**
@@ -713,6 +879,10 @@ EAPI Eina_Bool   ecore_evas_window_available_profiles_get(Ecore_Evas *ee, char *
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_wm_rotation_supported_get(const Ecore_Evas *ee);
 /**
@@ -723,6 +893,10 @@ EAPI Eina_Bool   ecore_evas_wm_rotation_supported_get(const Ecore_Evas *ee);
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_wm_rotation_preferred_rotation_set(Ecore_Evas *ee, int rotation);
 /**
@@ -733,6 +907,10 @@ EAPI void        ecore_evas_wm_rotation_preferred_rotation_set(Ecore_Evas *ee, i
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int         ecore_evas_wm_rotation_preferred_rotation_get(const Ecore_Evas *ee);
 /**
@@ -744,6 +922,10 @@ EAPI int         ecore_evas_wm_rotation_preferred_rotation_get(const Ecore_Evas 
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_wm_rotation_available_rotations_set(Ecore_Evas *ee, const int *rotations, unsigned int count);
 /**
@@ -756,6 +938,10 @@ EAPI void        ecore_evas_wm_rotation_available_rotations_set(Ecore_Evas *ee, 
  *
  * @warning Support for this depends on the underlying windowing system.
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_wm_rotation_available_rotations_get(const Ecore_Evas *ee, int **rotations, unsigned int *count);
 /**
@@ -767,6 +953,10 @@ EAPI Eina_Bool   ecore_evas_wm_rotation_available_rotations_get(const Ecore_Evas
  * If false, the manual rotation mode is disabled.
  *
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_wm_rotation_manual_rotation_done_set(Ecore_Evas *ee, Eina_Bool set);
 /**
@@ -776,6 +966,10 @@ EAPI void        ecore_evas_wm_rotation_manual_rotation_done_set(Ecore_Evas *ee,
  * @return If true, the manual rotation done mode is enabled
  *
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_wm_rotation_manual_rotation_done_get(const Ecore_Evas *ee);
 /**
@@ -784,6 +978,10 @@ EAPI Eina_Bool   ecore_evas_wm_rotation_manual_rotation_done_get(const Ecore_Eva
  * @param ee The Ecore_Evas
  *
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_wm_rotation_manual_rotation_done(Ecore_Evas *ee);
 /**
@@ -806,6 +1004,10 @@ EAPI void        ecore_evas_wm_rotation_manual_rotation_done(Ecore_Evas *ee);
  * ID:HINT:VALUE,ID:HINT:VALUE,...
  *
  * @since 1.10.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Eina_List *ecore_evas_aux_hints_supported_get(const Ecore_Evas *ee);
 /**
@@ -818,6 +1020,10 @@ EAPI const Eina_List *ecore_evas_aux_hints_supported_get(const Ecore_Evas *ee);
  * @warning Support for this depends on the underlying windowing system.
  *
  * @since 1.10.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_List       *ecore_evas_aux_hints_allowed_get(const Ecore_Evas *ee);
 /**
@@ -830,6 +1036,10 @@ EAPI Eina_List       *ecore_evas_aux_hints_allowed_get(const Ecore_Evas *ee);
  * @warning Support for this depends on the underlying windowing system.
  *
  * @since 1.10.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int              ecore_evas_aux_hint_add(Ecore_Evas *ee, const char *hint, const char *val);
 /**
@@ -841,6 +1051,10 @@ EAPI int              ecore_evas_aux_hint_add(Ecore_Evas *ee, const char *hint, 
  * @warning Support for this depends on the underlying windowing system.
  *
  * @since 1.10.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        ecore_evas_aux_hint_del(Ecore_Evas *ee, const int id);
 /**
@@ -853,6 +1067,10 @@ EAPI Eina_Bool        ecore_evas_aux_hint_del(Ecore_Evas *ee, const int id);
  * @warning Support for this depends on the underlying windowing system.
  *
  * @since 1.10.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        ecore_evas_aux_hint_val_set(Ecore_Evas *ee, const int id, const char *val);
 /**
@@ -864,6 +1082,10 @@ EAPI Eina_Bool        ecore_evas_aux_hint_val_set(Ecore_Evas *ee, const int id, 
  * @warning Support for this depends on the underlying windowing system.
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char      *ecore_evas_aux_hint_val_get(const Ecore_Evas *ee, int id);
 /**
@@ -875,6 +1097,10 @@ EAPI const char      *ecore_evas_aux_hint_val_get(const Ecore_Evas *ee, int id);
  * @warning Support for this depends on the underlying windowing system.
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int              ecore_evas_aux_hint_id_get(const Ecore_Evas *ee, const char *hint);
 /**
@@ -937,6 +1163,10 @@ EAPI Eina_Bool        ecore_evas_obscured_get(const Ecore_Evas *ee);
  * This is a list of examples of these functions:
  * @li @ref ecore_evas_extn_socket_example
  * @li @ref ecore_evas_extn_plug_example
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_evas_msg_parent_send(Ecore_Evas *ee, int msg_domain, int msg_id, void *data, int size);
 /**
@@ -954,6 +1184,10 @@ EAPI void ecore_evas_msg_parent_send(Ecore_Evas *ee, int msg_domain, int msg_id,
  * @see ecore_evas_msg_parent_send()
  * @see ecore_evas_callback_msg_parent_handle_set()
  * @see eecore_evas_callback_msg_handle_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_evas_msg_send(Ecore_Evas *ee, int msg_domain, int msg_id, void *data, int size);
 /**
@@ -968,6 +1202,10 @@ EAPI void ecore_evas_msg_send(Ecore_Evas *ee, int msg_domain, int msg_id, void *
  * @see ecore_evas_msg_parent_send()
  * @see ecore_evas_msg_send()
  * @see eecore_evas_callback_msg_handle_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_evas_callback_msg_parent_handle_set(Ecore_Evas *ee, void (*func_parent_handle)(Ecore_Evas *ee, int msg_domain, int msg_id, void *data, int size));
 /**
@@ -982,6 +1220,10 @@ EAPI void ecore_evas_callback_msg_parent_handle_set(Ecore_Evas *ee, void (*func_
  * @see ecore_evas_msg_parent_send()
  * @see ecore_evas_msg_send()
  * @see ecore_evas_callback_msg_parent_handle_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_evas_callback_msg_handle_set(Ecore_Evas *ee, void (*func_handle)(Ecore_Evas *ee, int msg_domain, int msg_id, void *data, int size));
 
@@ -999,6 +1241,10 @@ EAPI void ecore_evas_callback_msg_handle_set(Ecore_Evas *ee, void (*func_handle)
  * @see ecore_evas_new()
  * @see ecore_evas_resize()
  * @see ecore_evas_move_resize()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_move(Ecore_Evas *ee, int x, int y);
 /**
@@ -1015,6 +1261,10 @@ EAPI void        ecore_evas_move(Ecore_Evas *ee, int x, int y);
  * @see ecore_evas_new()
  * @see ecore_evas_move()
  * @see ecore_evas_move_resize()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_resize(Ecore_Evas *ee, int w, int h);
 /**
@@ -1034,6 +1284,10 @@ EAPI void        ecore_evas_resize(Ecore_Evas *ee, int w, int h);
  * @see ecore_evas_new()
  * @see ecore_evas_move()
  * @see ecore_evas_resize()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_move_resize(Ecore_Evas *ee, int x, int y, int w, int h);
 /**
@@ -1048,6 +1302,10 @@ EAPI void        ecore_evas_move_resize(Ecore_Evas *ee, int x, int y, int w, int
  * @warning Support for this depends on the underlying windowing system.
  *
  * @see ecore_evas_rotation_with_resize_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_rotation_set(Ecore_Evas *ee, int rot);
 /**
@@ -1062,6 +1320,10 @@ EAPI void        ecore_evas_rotation_set(Ecore_Evas *ee, int rot);
  * @warning Support for this depends on the underlying windowing system.
  *
  * @see ecore_evas_rotation_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_rotation_with_resize_set(Ecore_Evas *ee, int rot);
 /**
@@ -1072,6 +1334,10 @@ EAPI void        ecore_evas_rotation_with_resize_set(Ecore_Evas *ee, int rot);
  *
  * @see ecore_evas_rotation_set()
  * @see ecore_evas_rotation_with_resize_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int         ecore_evas_rotation_get(const Ecore_Evas *ee);
 /**
@@ -1085,6 +1351,10 @@ EAPI int         ecore_evas_rotation_get(const Ecore_Evas *ee);
  *
  * @see ecore_evas_lower()
  * @see ecore_evas_layer_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_raise(Ecore_Evas *ee);
 /**
@@ -1098,6 +1368,10 @@ EAPI void        ecore_evas_raise(Ecore_Evas *ee);
  *
  * @see ecore_evas_raise()
  * @see ecore_evas_layer_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_lower(Ecore_Evas *ee);
 /**
@@ -1109,6 +1383,10 @@ EAPI void        ecore_evas_lower(Ecore_Evas *ee);
  * This function sets the title of @p ee to @p t.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_title_set(Ecore_Evas *ee, const char *t);
 /**
@@ -1120,6 +1398,10 @@ EAPI void        ecore_evas_title_set(Ecore_Evas *ee, const char *t);
  * This function returns the title of @p ee.
  *
  * @see ecore_evas_title_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *ecore_evas_title_get(const Ecore_Evas *ee);
 /**
@@ -1133,6 +1415,10 @@ EAPI const char *ecore_evas_title_get(const Ecore_Evas *ee);
  * meaning of @p name and @p class depends on the underlying windowing system.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_name_class_set(Ecore_Evas *ee, const char *n, const char *c);
 /**
@@ -1145,6 +1431,10 @@ EAPI void        ecore_evas_name_class_set(Ecore_Evas *ee, const char *n, const 
  * @param n A pointer to a string to place the name in.
  * @param c A pointer to a string to place the class in.
  * @see ecore_evas_name_class_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_name_class_get(const Ecore_Evas *ee, const char **n, const char **c);
 /**
@@ -1154,12 +1444,18 @@ EAPI void        ecore_evas_name_class_get(const Ecore_Evas *ee, const char **n,
  * @return A pointer to the underlying window.
  *
  * @warning Support for this depends on the underlying windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Window ecore_evas_window_get(const Ecore_Evas *ee);
 
 /* engine/target specific init calls */
 
 /**
+ * @internal
+ *
  * @brief Create Ecore_Evas using software x11.
  * @note If ecore is not compiled with support to x11 then nothing is done and NULL is returned.
  * @param disp_name The name of the Ecore_Evas to be created.
@@ -1173,6 +1469,8 @@ EAPI Ecore_Window ecore_evas_window_get(const Ecore_Evas *ee);
 EAPI Ecore_Evas     *ecore_evas_software_x11_new(const char *disp_name, Ecore_X_Window parent, int x, int y, int w, int h);
 
 /**
+ * @internal
+ *
  * @brief Get the window from Ecore_Evas using software x11.
  * @note If ecore is not compiled with support for x11 or if @p ee was not
  * created with ecore_evas_software_x11_new() then nothing is done and
@@ -1183,6 +1481,8 @@ EAPI Ecore_Evas     *ecore_evas_software_x11_new(const char *disp_name, Ecore_X_
 EAPI Ecore_X_Window  ecore_evas_software_x11_window_get(const Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Set the direct_resize of Ecore_Evas using software x11.
  * @note If ecore is not compiled with support to x11 then nothing is done.
  * @param ee The Ecore_Evas in which to set direct resize.
@@ -1191,6 +1491,8 @@ EAPI Ecore_X_Window  ecore_evas_software_x11_window_get(const Ecore_Evas *ee);
 EAPI void            ecore_evas_software_x11_direct_resize_set(Ecore_Evas *ee, Eina_Bool on);
 
 /**
+ * @internal
+ *
  * @brief Get if the Ecore_Evas is being directly resized using software x11.
  * @note If ecore is not compiled with support to x11 then nothing is done and EINA_FALSE is returned.
  * @param ee The Ecore_Evas from which to get direct resize.
@@ -1199,6 +1501,8 @@ EAPI void            ecore_evas_software_x11_direct_resize_set(Ecore_Evas *ee, E
 EAPI Eina_Bool       ecore_evas_software_x11_direct_resize_get(const Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Add extra window on Ecore_Evas using software x11.
  * @note If ecore is not compiled with support to x11 then nothing is done.
  * @param ee The Ecore_Evas on which to add the window.
@@ -1207,6 +1511,8 @@ EAPI Eina_Bool       ecore_evas_software_x11_direct_resize_get(const Ecore_Evas 
 EAPI void            ecore_evas_software_x11_extra_event_window_add(Ecore_Evas *ee, Ecore_X_Window win);
 
 /**
+ * @internal
+ *
  * @brief Create a new Ecore_Evas which does not contain an XWindow. It will
  * only contain an XPixmap to render to
  *
@@ -1219,6 +1525,8 @@ EAPI void            ecore_evas_software_x11_extra_event_window_add(Ecore_Evas *
 EAPI Ecore_Evas     *ecore_evas_software_x11_pixmap_new(const char *disp_name, Ecore_X_Window parent, int x, int y, int w, int h);
 
 /**
+ * @internal
+ *
  * @brief Return the underlying Ecore_X_Pixmap used in the Ecore_Evas
  *
  * @param ee The Ecore_Evas whose pixmap is desired.
@@ -1250,6 +1558,8 @@ EAPI Ecore_X_Pixmap ecore_evas_software_x11_pixmap_get(const Ecore_Evas *ee);
 #define ECORE_EVAS_GL_X11_SWAP_MODE_TRIPLE ECORE_EVAS_SWAP_MODE_TRIPLE
 
 /**
+ * @internal
+ *
  * @brief Create Ecore_Evas using opengl x11.
  * @note If ecore is not compiled with support to x11 then nothing is done and NULL is returned.
  * @param disp_name The name of the display of the Ecore_Evas to be created.
@@ -1264,6 +1574,8 @@ EAPI Ecore_Evas     *ecore_evas_gl_x11_new(const char *disp_name, Ecore_X_Window
 EAPI Ecore_Evas     *ecore_evas_gl_x11_options_new(const char *disp_name, Ecore_X_Window parent, int x, int y, int w, int h, const int *opt);
 
 /**
+ * @internal
+ *
  * @brief Get the window from Ecore_Evas using opengl x11.
  * @note If ecore is not compiled with support for x11 or if @p ee was not
  * created with ecore_evas_gl_x11_new() then nothing is done and
@@ -1274,6 +1586,8 @@ EAPI Ecore_Evas     *ecore_evas_gl_x11_options_new(const char *disp_name, Ecore_
 EAPI Ecore_X_Window  ecore_evas_gl_x11_window_get(const Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Set direct_resize for Ecore_Evas using opengl x11.
  * @note If ecore is not compiled with support to x11 then nothing is done.
  * @param ee The Ecore_Evas in which to set direct resize.
@@ -1282,6 +1596,8 @@ EAPI Ecore_X_Window  ecore_evas_gl_x11_window_get(const Ecore_Evas *ee);
 EAPI void            ecore_evas_gl_x11_direct_resize_set(Ecore_Evas *ee, Eina_Bool on);
 
 /**
+ * @internal
+ *
  * @brief Get if the Ecore_Evas is being directly resized using opengl x11.
  * @note If ecore is not compiled with support to x11 then nothing is done and EINA_FALSE is returned.
  * @param ee The Ecore_Evas from which to get direct resize.
@@ -1290,6 +1606,8 @@ EAPI void            ecore_evas_gl_x11_direct_resize_set(Ecore_Evas *ee, Eina_Bo
 EAPI Eina_Bool       ecore_evas_gl_x11_direct_resize_get(const Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Add extra window on Ecore_Evas using opengl x11.
  * @note If ecore is not compiled with support to x11 then nothing is done.
  * @param ee The Ecore_Evas for which to add the window.
@@ -1298,6 +1616,8 @@ EAPI Eina_Bool       ecore_evas_gl_x11_direct_resize_get(const Ecore_Evas *ee);
 EAPI void            ecore_evas_gl_x11_extra_event_window_add(Ecore_Evas *ee, Ecore_X_Window win);
 
 /**
+ * @internal
+ *
  * @brief Set the functions to be used before and after the swap callback.
  * @note If ecore is not compiled with support to x11 then nothing is done and the function is returned.
  * @param ee The Ecore_Evas for which to set the swap callback.
@@ -1308,6 +1628,8 @@ EAPI void            ecore_evas_gl_x11_extra_event_window_add(Ecore_Evas *ee, Ec
 EAPI void            ecore_evas_gl_x11_pre_post_swap_callback_set(const Ecore_Evas *ee, void *data, void (*pre_cb) (void *data, Evas *e), void (*post_cb) (void *data, Evas *e));
 
 /**
+ * @internal
+ *
  * @brief Create a new Ecore_Evas which does not contain an XWindow. It will
  * only contain an XPixmap to render to
  *
@@ -1320,6 +1642,8 @@ EAPI void            ecore_evas_gl_x11_pre_post_swap_callback_set(const Ecore_Ev
 EAPI Ecore_Evas     *ecore_evas_gl_x11_pixmap_new(const char *disp_name, Ecore_X_Window parent, int x, int y, int w, int h);
 
 /**
+ * @internal
+ *
  * @brief Return the underlying Ecore_X_Pixmap used in the Ecore_Evas
  *
  * @param ee The Ecore_Evas whose pixmap is desired.
@@ -1355,6 +1679,8 @@ EAPI Eina_Bool       ecore_evas_software_x11_16_direct_resize_get(const Ecore_Ev
 EAPI void            ecore_evas_software_x11_16_extra_event_window_add(Ecore_Evas *ee, Ecore_X_Window win) EINA_DEPRECATED;
 
 /**
+ * @internal
+ *
  * @brief Create Ecore_Evas using fb backend.
  * @param disp_name The name of the display to be used.
  * @param rotation The rotation to be used.
@@ -1410,6 +1736,10 @@ EAPI void            ecore_evas_tbm_pixels_release(Ecore_Evas *ee);
  * arguments and canonical @c malloc() and @c free() to the memory
  * allocation and freeing functions. See that function's documentation
  * for more details.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Evas     *ecore_evas_buffer_new(int w, int h);
 
@@ -1446,6 +1776,10 @@ EAPI Ecore_Evas     *ecore_evas_buffer_new(int w, int h);
  * they'll be interpreted as 1, exactly.
  *
  * @see ecore_evas_buffer_new()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Evas     *ecore_evas_buffer_allocfunc_new(int w, int h, void *(*alloc_func) (void *data, int size), void (*free_func) (void *data, void *pix), const void *data);
 
@@ -1464,6 +1798,10 @@ EAPI Ecore_Evas     *ecore_evas_buffer_allocfunc_new(int w, int h, void *(*alloc
  * @b another canvas, to have as data @p ee's contents, thus
  * snapshoting the canvas. For that case, one can also use the
  * ecore_evas_object_image_new() helper function.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const void     *ecore_evas_buffer_pixels_get(Ecore_Evas *ee);
 
@@ -1478,10 +1816,16 @@ EAPI const void     *ecore_evas_buffer_pixels_get(Ecore_Evas *ee);
  * it, we need to retrieve information from the Ecore_Evas parents.
  *
  * @since 1.13
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Evas *ecore_evas_buffer_ecore_evas_parent_get(Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Create a new @c Ecore_Evas canvas bound to the Evas
  * @b ews (Ecore + Evas Single Process Windowing System) engine
  *
@@ -1510,6 +1854,8 @@ EAPI Ecore_Evas     *ecore_evas_ews_new(int x, int y, int w, int h);
 
 
 /**
+ * @internal
+ *
  * @brief Return the backing store image object that represents the given
  * window in EWS.
  * @return The evas object of EWS backing store.
@@ -1526,6 +1872,8 @@ EAPI Ecore_Evas     *ecore_evas_ews_new(int x, int y, int w, int h);
 EAPI Evas_Object *ecore_evas_ews_backing_store_get(const Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Call the window to be deleted (freed), but can let user decide to
  * forbid it by using ecore_evas_callback_delete_request_set()
  *
@@ -1535,6 +1883,8 @@ EAPI Evas_Object *ecore_evas_ews_backing_store_get(const Ecore_Evas *ee);
 EAPI void ecore_evas_ews_delete_request(Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Create an Evas image object with image data <b>bound to an
  * own, internal @c Ecore_Evas canvas wrapper</b>
  *
@@ -1580,6 +1930,8 @@ EAPI void ecore_evas_ews_delete_request(Ecore_Evas *ee);
 EAPI Evas_Object    *ecore_evas_object_image_new(Ecore_Evas *ee_target);
 
 /**
+ * @internal
+ *
  * @brief Retrieve the internal @c Ecore_Evas handle of an image
  * object created via ecore_evas_object_image_new()
  *
@@ -1590,6 +1942,8 @@ EAPI Evas_Object    *ecore_evas_object_image_new(Ecore_Evas *ee_target);
 EAPI Ecore_Evas     *ecore_evas_object_ecore_evas_get(Evas_Object *obj);
 
 /**
+ * @internal
+ *
  * @brief Retrieve the canvas bound to the internal @c Ecore_Evas
  * handle of an image object created via ecore_evas_object_image_new()
  *
@@ -1678,6 +2032,8 @@ EAPI Ecore_Evas *ecore_evas_psl1ght_new(const char* name, int w, int h);
 
 /* generic manipulation calls */
 /**
+ * @internal
+ *
  * @brief Get the engine name used by this Ecore_Evas(window).
  *
  * @param ee Ecore_Evas whose engine's name is desired.
@@ -1693,6 +2049,10 @@ EAPI const char *ecore_evas_engine_name_get(const Ecore_Evas *ee);
  * @return The Ecore_Evas that holds this Evas, or @c NULL if not held by one.
  *
  * @warning Only use on Evas' created with ecore evas!
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Evas *ecore_evas_ecore_evas_get(const Evas *e);
 /**
@@ -1701,6 +2061,10 @@ EAPI Ecore_Evas *ecore_evas_ecore_evas_get(const Evas *e);
  * @param ee The Ecore_Evas to free
  *
  * This frees up any memory used by the Ecore_Evas.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_free(Ecore_Evas *ee);
 /**
@@ -1716,6 +2080,10 @@ EAPI void        ecore_evas_free(Ecore_Evas *ee);
  *     success.
  *
  * @see ecore_evas_data_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void       *ecore_evas_data_get(const Ecore_Evas *ee, const char *key);
 /**
@@ -1734,6 +2102,10 @@ EAPI void       *ecore_evas_data_get(const Ecore_Evas *ee, const char *key);
  * @see ecore_evas_callback_pre_free_set()
  * @see ecore_evas_free()
  * @see ecore_evas_data_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_data_set(Ecore_Evas *ee, const char *key, const void *data);
 /**
@@ -1746,6 +2118,10 @@ EAPI void        ecore_evas_data_set(Ecore_Evas *ee, const char *key, const void
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_resize_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1758,6 +2134,10 @@ EAPI void        ecore_evas_callback_resize_set(Ecore_Evas *ee, Ecore_Evas_Event
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_move_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1770,6 +2150,10 @@ EAPI void        ecore_evas_callback_move_set(Ecore_Evas *ee, Ecore_Evas_Event_C
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_show_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1782,6 +2166,10 @@ EAPI void        ecore_evas_callback_show_set(Ecore_Evas *ee, Ecore_Evas_Event_C
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_hide_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1794,6 +2182,10 @@ EAPI void        ecore_evas_callback_hide_set(Ecore_Evas *ee, Ecore_Evas_Event_C
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_delete_request_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1806,6 +2198,10 @@ EAPI void        ecore_evas_callback_delete_request_set(Ecore_Evas *ee, Ecore_Ev
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_destroy_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1818,6 +2214,10 @@ EAPI void        ecore_evas_callback_destroy_set(Ecore_Evas *ee, Ecore_Evas_Even
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_focus_in_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1830,6 +2230,10 @@ EAPI void        ecore_evas_callback_focus_in_set(Ecore_Evas *ee, Ecore_Evas_Eve
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_focus_out_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1842,6 +2246,10 @@ EAPI void        ecore_evas_callback_focus_out_set(Ecore_Evas *ee, Ecore_Evas_Ev
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_sticky_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1854,6 +2262,10 @@ EAPI void        ecore_evas_callback_sticky_set(Ecore_Evas *ee, Ecore_Evas_Event
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_unsticky_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1866,6 +2278,10 @@ EAPI void        ecore_evas_callback_unsticky_set(Ecore_Evas *ee, Ecore_Evas_Eve
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_mouse_in_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1878,6 +2294,10 @@ EAPI void        ecore_evas_callback_mouse_in_set(Ecore_Evas *ee, Ecore_Evas_Eve
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_mouse_out_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1890,6 +2310,10 @@ EAPI void        ecore_evas_callback_mouse_out_set(Ecore_Evas *ee, Ecore_Evas_Ev
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_pre_render_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1902,6 +2326,10 @@ EAPI void        ecore_evas_callback_pre_render_set(Ecore_Evas *ee, Ecore_Evas_E
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_post_render_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1914,6 +2342,10 @@ EAPI void        ecore_evas_callback_post_render_set(Ecore_Evas *ee, Ecore_Evas_
  *
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_pre_free_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 /**
@@ -1927,6 +2359,10 @@ EAPI void        ecore_evas_callback_pre_free_set(Ecore_Evas *ee, Ecore_Evas_Eve
  * @since 1.2
  * @warning If and when this function is called depends on the underlying
  * windowing system.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_callback_state_change_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func);
 
@@ -1936,6 +2372,10 @@ EAPI void        ecore_evas_callback_state_change_set(Ecore_Evas *ee, Ecore_Evas
  * @return The Evas wrapped by @p ee
  *
  * This function returns the Evas contained within @p ee.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas       *ecore_evas_get(const Ecore_Evas *ee);
 
@@ -1946,6 +2386,10 @@ EAPI Evas       *ecore_evas_get(const Ecore_Evas *ee);
  * @param y The y coordinate to set as the managed location
  *
  * This sets the managed geometry position of the @p ee to (@p x, @p y)
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_managed_move(Ecore_Evas *ee, int x, int y);
 
@@ -1961,6 +2405,10 @@ EAPI void        ecore_evas_managed_move(Ecore_Evas *ee, int x, int y);
  * will be rectangular, and parts with no data will show random framebuffer
  * artifacting. For non-shaped Ecore_Evases, it is recommended to cover the
  * entire evas with a background object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_shaped_set(Ecore_Evas *ee, Eina_Bool shaped);
 
@@ -1971,6 +2419,10 @@ EAPI void        ecore_evas_shaped_set(Ecore_Evas *ee, Eina_Bool shaped);
  * @return @c EINA_TRUE if shaped, @c EINA_FALSE if not.
  *
  * This function returns @c EINA_TRUE if @p ee is shaped, and @c EINA_FALSE if not.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_shaped_get(const Ecore_Evas *ee);
 /**
@@ -1979,6 +2431,10 @@ EAPI Eina_Bool   ecore_evas_shaped_get(const Ecore_Evas *ee);
  * @param ee The Ecore_Evas to show.
  *
  * This function makes @p ee visible.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_show(Ecore_Evas *ee);
 /**
@@ -1987,6 +2443,10 @@ EAPI void        ecore_evas_show(Ecore_Evas *ee);
  * @param ee The Ecore_Evas to hide.
  *
  * This function makes @p ee hidden(not visible).
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_hide(Ecore_Evas *ee);
 
@@ -1995,6 +2455,10 @@ EAPI void        ecore_evas_hide(Ecore_Evas *ee);
  * @param ee The Ecore_Evas to activate.
  *
  * This functions activates the Ecore_Evas.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_activate(Ecore_Evas *ee);
 
@@ -2015,6 +2479,10 @@ EAPI void        ecore_evas_activate(Ecore_Evas *ee);
  * those set by this function.
  *
  * @see ecore_evas_size_min_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_size_min_set(Ecore_Evas *ee, int w, int h);
 
@@ -2029,6 +2497,10 @@ EAPI void        ecore_evas_size_min_set(Ecore_Evas *ee, int w, int h);
  * interested in: they'll be ignored by the function.
  *
  * @see ecore_evas_size_min_set() for more details
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_size_min_get(const Ecore_Evas *ee, int *w, int *h);
 
@@ -2044,6 +2516,10 @@ EAPI void        ecore_evas_size_min_get(const Ecore_Evas *ee, int *w, int *h);
  * the ones set.
  *
  * @see ecore_evas_size_max_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_size_max_set(Ecore_Evas *ee, int w, int h);
 
@@ -2058,6 +2534,10 @@ EAPI void        ecore_evas_size_max_set(Ecore_Evas *ee, int w, int h);
  * interested in: they'll be ignored by the function.
  *
  * @see ecore_evas_size_max_set() for more details
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_size_max_get(const Ecore_Evas *ee, int *w, int *h);
 
@@ -2073,6 +2553,10 @@ EAPI void        ecore_evas_size_max_get(const Ecore_Evas *ee, int *w, int *h);
  * @b minimum size, instead of those set by ecore_evas_size_min_get().
  *
  * @see ecore_evas_size_base_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_size_base_set(Ecore_Evas *ee, int w, int h);
 
@@ -2087,6 +2571,10 @@ EAPI void        ecore_evas_size_base_set(Ecore_Evas *ee, int w, int h);
  * interested in: they'll be ignored by the function.
  *
  * @see ecore_evas_size_base_set() for more details
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_size_base_get(const Ecore_Evas *ee, int *w, int *h);
 
@@ -2100,6 +2588,10 @@ EAPI void        ecore_evas_size_base_get(const Ecore_Evas *ee, int *w, int *h);
  * This function sets the size steps of @p ee to be @p w x @p h. This
  * limits the size of this @c Ecore_Evas window to be @b always an
  * integer multiple of the step size, for each axis.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_size_step_set(Ecore_Evas *ee, int w, int h);
 
@@ -2114,6 +2606,10 @@ EAPI void        ecore_evas_size_step_set(Ecore_Evas *ee, int w, int h);
  * interested in: they'll be ignored by the function.
  *
  * @see ecore_evas_size_base_set() for more details
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_size_step_get(const Ecore_Evas *ee, int *w, int *h);
 
@@ -2138,6 +2634,10 @@ EAPI void        ecore_evas_size_step_get(const Ecore_Evas *ee, int *w, int *h);
  *
  * @see ecore_evas_object_cursor_set()
  * @see ecore_evas_cursor_unset()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_cursor_set(Ecore_Evas *ee, const char *file, int layer, int hot_x, int hot_y);
 /**
@@ -2154,10 +2654,16 @@ EAPI void        ecore_evas_cursor_set(Ecore_Evas *ee, const char *file, int lay
  * @see ecore_evas_cursor_set()
  * @see ecore_evas_object_cursor_set()
  * @see ecore_evas_cursor_unset()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_cursor_get(const Ecore_Evas *ee, Evas_Object **obj, int *layer, int *hot_x, int *hot_y);
 
 /**
+ * @internal
+ *
  * @brief Set the cursor of an Ecore_Evas
  *
  * @param ee The Ecore_Evas
@@ -2189,6 +2695,10 @@ EAPI void        ecore_evas_object_cursor_set(Ecore_Evas *ee, Evas_Object *obj, 
  * @see ecore_evas_cursor_set()
  * @see ecore_evas_object_cursor_set()
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Object*        ecore_evas_cursor_unset(Ecore_Evas *ee);
 
@@ -2200,6 +2710,10 @@ EAPI Evas_Object*        ecore_evas_cursor_unset(Ecore_Evas *ee);
  *
  * This function causes the window manager to ignore @p ee if @p on is
  * @c EINA_TRUE, or not ignore @p ee if @p on is @c EINA_FALSE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_override_set(Ecore_Evas *ee, Eina_Bool on);
 
@@ -2208,6 +2722,10 @@ EAPI void        ecore_evas_override_set(Ecore_Evas *ee, Eina_Bool on);
  *
  * @param ee The Ecore_Evas to set.
  * @return @c EINA_TRUE if @p ee is overridden, @c EINA_FALSE if not.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_override_get(const Ecore_Evas *ee);
 
@@ -2236,6 +2754,10 @@ EAPI Eina_Bool   ecore_evas_override_get(const Ecore_Evas *ee);
  * anything, but would stay stored on the pixmap, so there's no need to render
  * things again on expose events. This option can be faster than the previous
  * one, but may lead to artifacts during resize of the window.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_avoid_damage_set(Ecore_Evas *ee, Ecore_Evas_Avoid_Damage_Type on);
 
@@ -2244,6 +2766,9 @@ EAPI void        ecore_evas_avoid_damage_set(Ecore_Evas *ee, Ecore_Evas_Avoid_Da
  * @param ee The Ecore_Evas to set
  * @return The type of the damage management
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Evas_Avoid_Damage_Type ecore_evas_avoid_damage_get(const Ecore_Evas *ee);
 
@@ -2252,6 +2777,9 @@ EAPI Ecore_Evas_Avoid_Damage_Type ecore_evas_avoid_damage_get(const Ecore_Evas *
  * @param ee The Ecore_Evas whose window's withdrawn state is set.
  * @param withdrawn The Ecore_Evas window's new withdrawn state.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_withdrawn_set(Ecore_Evas *ee, Eina_Bool withdrawn);
 
@@ -2260,6 +2788,9 @@ EAPI void        ecore_evas_withdrawn_set(Ecore_Evas *ee, Eina_Bool withdrawn);
  * @param ee The Ecore_Evas whose window's withdrawn state is returned.
  * @return The Ecore_Evas window's withdrawn state.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_withdrawn_get(const Ecore_Evas *ee);
 
@@ -2269,6 +2800,9 @@ EAPI Eina_Bool   ecore_evas_withdrawn_get(const Ecore_Evas *ee);
  * @param ee The Ecore_Evas whose window's sticky state is set.
  * @param sticky The Ecore_Evas window's new sticky state.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_sticky_set(Ecore_Evas *ee, Eina_Bool sticky);
 
@@ -2278,6 +2812,9 @@ EAPI void        ecore_evas_sticky_set(Ecore_Evas *ee, Eina_Bool sticky);
  * @param ee The Ecore_Evas whose window's sticky state is returned.
  * @return The Ecore_Evas window's sticky state.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_sticky_get(const Ecore_Evas *ee);
 
@@ -2297,6 +2834,10 @@ EAPI Eina_Bool   ecore_evas_sticky_get(const Ecore_Evas *ee);
  *
  * @see ecore_evas_manual_render_get()
  * @see ecore_evas_manual_render()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_manual_render_set(Ecore_Evas *ee, Eina_Bool manual_render);
 
@@ -2309,6 +2850,10 @@ EAPI void        ecore_evas_manual_render_set(Ecore_Evas *ee, Eina_Bool manual_r
  *
  * @see ecore_evas_manual_render_set()
  * @see ecore_evas_manual_render()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool   ecore_evas_manual_render_get(const Ecore_Evas *ee);
 
@@ -2323,6 +2868,10 @@ EAPI Eina_Bool   ecore_evas_manual_render_get(const Ecore_Evas *ee);
  *
  * @see ecore_evas_input_event_unregister()
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_input_event_register(Ecore_Evas *ee);
 
@@ -2349,6 +2898,10 @@ EAPI void        ecore_evas_input_event_register_with_multi(Ecore_Evas *ee);
  *
  * @see ecore_evas_input_event_register()
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_input_event_unregister(Ecore_Evas *ee);
 
@@ -2359,6 +2912,10 @@ EAPI void        ecore_evas_input_event_unregister(Ecore_Evas *ee);
  *
  * Use this call to forcefully flush the @p ee's canvas rendering
  * pipeline, thus bring its window to an up to date state.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_manual_render(Ecore_Evas *ee);
 EAPI void        ecore_evas_comp_sync_set(Ecore_Evas *ee, Eina_Bool do_sync);
@@ -2374,6 +2931,10 @@ EAPI Eina_Bool   ecore_evas_comp_sync_get(const Ecore_Evas *ee);
  * @param h where to return the height value. May be @c NULL.
  *
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_screen_geometry_get(const Ecore_Evas *ee, int *x, int *y, int *w, int *h);
 
@@ -2385,6 +2946,10 @@ EAPI void        ecore_evas_screen_geometry_get(const Ecore_Evas *ee, int *x, in
  * @param ydpi Pointer to integer to store vertical DPI. May be @c NULL.
  *
  * @since 1.7
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void        ecore_evas_screen_dpi_get(const Ecore_Evas *ee, int *xdpi, int *ydpi);
 
@@ -2392,6 +2957,8 @@ EAPI void        ecore_evas_draw_frame_set(Ecore_Evas *ee, Eina_Bool draw_frame)
 EAPI Eina_Bool   ecore_evas_draw_frame_get(const Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Associate the given object to this ecore evas.
  *
  * @param ee The Ecore_Evas to associate to @a obj
@@ -2434,6 +3001,8 @@ EAPI Eina_Bool   ecore_evas_draw_frame_get(const Ecore_Evas *ee);
  */
 EAPI Eina_Bool    ecore_evas_object_associate(Ecore_Evas *ee, Evas_Object *obj, Ecore_Evas_Object_Associate_Flags flags);
 /**
+ * @internal
+ *
  * @brief Cancel the association set with ecore_evas_object_associate().
  *
  * @param ee The Ecore_Evas to dissociate from @a obj
@@ -2442,6 +3011,8 @@ EAPI Eina_Bool    ecore_evas_object_associate(Ecore_Evas *ee, Evas_Object *obj, 
  */
 EAPI Eina_Bool    ecore_evas_object_dissociate(Ecore_Evas *ee, Evas_Object *obj);
 /**
+ * @internal
+ *
  * @brief Get the object associated with @p ee
  *
  * @param ee The Ecore_Evas to get the object from.
@@ -2453,6 +3024,8 @@ EAPI Evas_Object *ecore_evas_object_associate_get(const Ecore_Evas *ee);
 EAPI unsigned char ecore_getopt_callback_ecore_evas_list_engines(const Ecore_Getopt *parser, const Ecore_Getopt_Desc *desc, const char *str, void *data, Ecore_Getopt_Value *storage);
 
 /**
+ * @internal
+ *
  * @brief Get a list of all the ecore_evases.
  *
  * @return A list of ecore_evases.
@@ -2463,6 +3036,8 @@ EAPI unsigned char ecore_getopt_callback_ecore_evas_list_engines(const Ecore_Get
  */
 EAPI Eina_List   *ecore_evas_ecore_evas_list_get(void);
 /**
+ * @internal
+ *
  * @brief Get a list of all the sub ecore_evases.
  *
  * @param ee Ecore_Evas to get the list from.
@@ -2493,6 +3068,8 @@ EAPI void           ecore_evas_x11_shape_input_apply(Ecore_Evas *ee);
  */
 
 /**
+ * @internal
+ *
  * @brief Set the engine to be used by the backing store engine.
  *
  * @param engine The engine to be set.
@@ -2503,6 +3080,8 @@ EAPI void           ecore_evas_x11_shape_input_apply(Ecore_Evas *ee);
 EAPI Eina_Bool ecore_evas_ews_engine_set(const char *engine, const char *options);
 
 /**
+ * @internal
+ *
  * @brief Reconfigure the backing store used.
  *
  * @param x The X coordinate to be used.
@@ -2515,6 +3094,8 @@ EAPI Eina_Bool ecore_evas_ews_engine_set(const char *engine, const char *options
 EAPI Eina_Bool ecore_evas_ews_setup(int x, int y, int w, int h);
 
 /**
+ * @internal
+ *
  * @brief Return the internal backing store in use.
  *
  * @return The internal backing store in use.
@@ -2527,6 +3108,8 @@ EAPI Eina_Bool ecore_evas_ews_setup(int x, int y, int w, int h);
 EAPI Ecore_Evas *ecore_evas_ews_ecore_evas_get(void);
 
 /**
+ * @internal
+ *
  * @brief Return the internal backing store in use.
  *
  * @return The internal backing store in use.
@@ -2539,11 +3122,15 @@ EAPI Ecore_Evas *ecore_evas_ews_ecore_evas_get(void);
 EAPI Evas *ecore_evas_ews_evas_get(void);
 
 /**
+ * @internal
+ *
  * @brief Get the current background.
  */
 EAPI Evas_Object *ecore_evas_ews_background_get(void);
 
 /**
+ * @internal
+ *
  * @brief Set the current background, must be created at evas ecore_evas_ews_evas_get()
  *
  * It will be kept at lowest layer (EVAS_LAYER_MIN) and below
@@ -2556,6 +3143,8 @@ EAPI Evas_Object *ecore_evas_ews_background_get(void);
 EAPI void ecore_evas_ews_background_set(Evas_Object *o);
 
 /**
+ * @internal
+ *
  * @brief Return all Ecore_Evas* created by EWS.
  *
  * @return An eina list of Ecore_evases.
@@ -2565,6 +3154,8 @@ EAPI void ecore_evas_ews_background_set(Evas_Object *o);
 EAPI const Eina_List *ecore_evas_ews_children_get(void);
 
 /**
+ * @internal
+ *
  * @brief Set the identifier of the manager taking care of internal windows.
  *
  * The ECORE_EVAS_EWS_EVENT_MANAGER_CHANGE event is issued. Consider
@@ -2579,6 +3170,8 @@ EAPI const Eina_List *ecore_evas_ews_children_get(void);
 EAPI void        ecore_evas_ews_manager_set(const void *manager);
 
 /**
+ * @internal
+ *
  * @brief Get the identifier of the manager taking care of internal windows.
  *
  * @return the value set by ecore_evas_ews_manager_set()
@@ -2628,6 +3221,8 @@ EAPI extern int ECORE_EVAS_EXTN_CLIENT_ADD; /**< this event is received when a p
 EAPI extern int ECORE_EVAS_EXTN_CLIENT_DEL; /**< this event is received when a plug has disconnected from an extn socket @since 1.2 */
 
 /**
+ * @internal
+ *
  * @brief Create a new Ecore_Evas canvas for the new external ecore evas socket
  *
  * @param w The width of the canvas, in pixels
@@ -2710,6 +3305,8 @@ EAPI extern int ECORE_EVAS_EXTN_CLIENT_DEL; /**< this event is received when a p
 EAPI Ecore_Evas *ecore_evas_extn_socket_new(int w, int h);
 
 /**
+ * @internal
+ *
  * @brief Create a socket to provide the service for external ecore evas
  * socket.
  *
@@ -2738,6 +3335,8 @@ EAPI Ecore_Evas *ecore_evas_extn_socket_new(int w, int h);
 EAPI Eina_Bool ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, Eina_Bool svcsys);
 
 /**
+ * @internal
+ *
  * @brief Set the blocking about mouse events to Ecore Evas.
  *
  * @param ee The Ecore_Evas.
@@ -2750,6 +3349,8 @@ EAPI Eina_Bool ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname
 EAPI void ecore_evas_extn_socket_events_block_set(Ecore_Evas *ee, Eina_Bool events_block);
 
 /**
+ * @internal
+ *
  * @brief Get the blocking about mouse events to Ecore Evas.
  *
  * @param ee The Ecore_Evas.
@@ -2763,6 +3364,8 @@ EAPI void ecore_evas_extn_socket_events_block_set(Ecore_Evas *ee, Eina_Bool even
 EAPI Eina_Bool ecore_evas_extn_socket_events_block_get(Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Lock the pixel data so the socket cannot change it
  *
  * @param obj The image object returned by ecore_evas_extn_plug_new() to lock
@@ -2787,6 +3390,8 @@ EAPI Eina_Bool ecore_evas_extn_socket_events_block_get(Ecore_Evas *ee);
 EAPI void ecore_evas_extn_plug_object_data_lock(Evas_Object *obj);
 
 /**
+ * @internal
+ *
  * @brief Unlock the pixel data so the socket can change it again.
  *
  * @param obj The image object returned by ecore_evas_extn_plug_new() to unlock
@@ -2802,6 +3407,8 @@ EAPI void ecore_evas_extn_plug_object_data_lock(Evas_Object *obj);
 EAPI void ecore_evas_extn_plug_object_data_unlock(Evas_Object *obj);
 
 /**
+ * @internal
+ *
  * @brief Create a new external ecore evas plug
  *
  * @param ee_target The Ecore_Evas containing the canvas in which the new image object will live.
@@ -2833,6 +3440,8 @@ EAPI void ecore_evas_extn_plug_object_data_unlock(Evas_Object *obj);
 EAPI Evas_Object *ecore_evas_extn_plug_new(Ecore_Evas *ee_target);
 
 /**
+ * @internal
+ *
  * @brief Connect an external ecore evas plug to service provided by external
  * ecore evas socket.
  *
@@ -2859,6 +3468,10 @@ EAPI Eina_Bool ecore_evas_extn_plug_connect(Evas_Object *obj, const char *svcnam
  * @param y Pointer to integer to store vertical coordinate. May be @c NULL.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void ecore_evas_pointer_xy_get(const Ecore_Evas *ee, Evas_Coord *x, Evas_Coord *y);
 
@@ -2872,10 +3485,16 @@ EAPI void ecore_evas_pointer_xy_get(const Ecore_Evas *ee, Evas_Coord *x, Evas_Co
  * @return @c EINA_TRUE on success, EINA_FALSE on failure.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool ecore_evas_pointer_warp(const Ecore_Evas *ee, Evas_Coord x, Evas_Coord y);
 
 /**
+ * @internal
+ *
  * @brief Retrieve the Visual used for pixmap creation
  *
  * @param ee The Ecore_Evas containing the pixmap
@@ -2891,6 +3510,8 @@ EAPI Eina_Bool ecore_evas_pointer_warp(const Ecore_Evas *ee, Evas_Coord x, Evas_
 EAPI void *ecore_evas_pixmap_visual_get(const Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Retrieve the Colormap used for pixmap creation
  *
  * @param ee The Ecore_Evas containing the pixmap
@@ -2906,6 +3527,8 @@ EAPI void *ecore_evas_pixmap_visual_get(const Ecore_Evas *ee);
 EAPI unsigned long ecore_evas_pixmap_colormap_get(const Ecore_Evas *ee);
 
 /**
+ * @internal
+ *
  * @brief Retrieve the depth used for pixmap creation
  *
  * @param ee The Ecore_Evas containing the pixmap

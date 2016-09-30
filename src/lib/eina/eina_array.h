@@ -253,6 +253,10 @@ struct _Eina_Array
  *
  * This function return a valid array on success, or @c NULL if memory
  * allocation fails.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Array *eina_array_new(unsigned int step) EINA_WARN_UNUSED_RESULT EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -266,6 +270,10 @@ EAPI Eina_Array *eina_array_new(unsigned int step) EINA_WARN_UNUSED_RESULT EINA_
  * allocated for the elements of @p array. To free them, walk the array with
  * #EINA_ARRAY_ITER_NEXT. For performance reasons, there is no check
  * of @p array.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void        eina_array_free(Eina_Array *array) EINA_ARG_NONNULL(1);
 
@@ -281,6 +289,10 @@ EAPI void        eina_array_free(Eina_Array *array) EINA_ARG_NONNULL(1);
  * invalid, the program may crash.
  *
  * @warning This function can @b only be called on uninitialized arrays.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void        eina_array_step_set(Eina_Array  *array,
                                      unsigned int sizeof_eina_array,
@@ -306,6 +318,10 @@ static inline void eina_array_clean(Eina_Array *array) EINA_ARG_NONNULL(1);
  * frees and set to NULL its data member. For performance reasons,
  * there is no check of @p array. If it is @c NULL or invalid, the
  * program may crash.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_array_flush(Eina_Array *array) EINA_ARG_NONNULL(1);
 
@@ -324,6 +340,10 @@ EAPI void eina_array_flush(Eina_Array *array) EINA_ARG_NONNULL(1);
  *
  * If it wasn't able to remove items due to an allocation failure, it will
  * return #EINA_FALSE.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_array_remove(Eina_Array * array,
                                  Eina_Bool (*keep)(void *data, void *gdata),
@@ -423,6 +443,10 @@ static inline unsigned int eina_array_count(const Eina_Array *array) EINA_ARG_NO
  * @p array. If @p array is @c NULL or the count member of @p array is
  * less or equal than 0, this function returns @c NULL. If the memory can
  * not be allocated, @c NULL is returned. Otherwise, a valid iterator is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator        *eina_array_iterator_new(const Eina_Array *array) EINA_MALLOC EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -437,6 +461,10 @@ EAPI Eina_Iterator        *eina_array_iterator_new(const Eina_Array *array) EINA
  * less or equal than 0, this function returns @c NULL. If the memory can
  * not be allocated, @c NULL is returned. Otherwise, a valid accessor is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Accessor        *eina_array_accessor_new(const Eina_Array *array) EINA_MALLOC EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 /**

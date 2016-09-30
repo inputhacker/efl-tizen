@@ -26,6 +26,10 @@
  * @param cb Callback to call when receiving answer.
  * @param cb_data Data passed to callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
@@ -42,6 +46,10 @@ EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn, const char *bu
  * @param cb Callback to call when receiving answer.
  * @param cb_data Data passed to callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending *eldbus_name_release(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
@@ -53,6 +61,10 @@ EAPI Eldbus_Pending *eldbus_name_release(Eldbus_Connection *conn, const char *bu
  * @param cb Callback to call when receiving answer.
  * @param cb_data Data passed to callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending *eldbus_name_owner_get(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
@@ -64,6 +76,10 @@ EAPI Eldbus_Pending *eldbus_name_owner_get(Eldbus_Connection *conn, const char *
  * @param cb Callback to call when receiving answer.
  * @param cb_data Data passed to callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending *eldbus_name_owner_has(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data);
 
@@ -74,6 +90,10 @@ EAPI Eldbus_Pending *eldbus_name_owner_has(Eldbus_Connection *conn, const char *
  * @param cb Callback to call when receiving answer.
  * @param cb_data Data passed to callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending *eldbus_names_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
@@ -84,6 +104,10 @@ EAPI Eldbus_Pending *eldbus_names_list(Eldbus_Connection *conn, Eldbus_Message_C
  * @param cb Callback to call when receiving answer.
  * @param cb_data Data passed to callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending *eldbus_names_activatable_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
@@ -94,6 +118,10 @@ EAPI Eldbus_Pending *eldbus_names_activatable_list(Eldbus_Connection *conn, Eldb
  * @param cb Callback to call when receiving answer.
  * @param cb_data Data passed to callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending *eldbus_hello(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
@@ -110,6 +138,10 @@ EAPI Eldbus_Pending *eldbus_hello(Eldbus_Connection *conn, Eldbus_Message_Cb cb,
  * @param cb Callback to call when receiving answer.
  * @param cb_data Data passed to callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_name_start(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
@@ -134,6 +166,10 @@ typedef void (*Eldbus_Name_Owner_Changed_Cb)(void *data, const char *bus, const 
  * @param cb callback
  * @param cb_data context data
  * @param allow_initial_call allow call callback with actual id of the bus
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_name_owner_changed_callback_add(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data, Eina_Bool allow_initial_call) EINA_ARG_NONNULL(1, 2, 3);
 /**
@@ -143,6 +179,10 @@ EAPI void                  eldbus_name_owner_changed_callback_add(Eldbus_Connect
  * @param bus name of bus
  * @param cb callback
  * @param cb_data context data
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_name_owner_changed_callback_del(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -159,6 +199,10 @@ EAPI void                  eldbus_name_owner_changed_callback_del(Eldbus_Connect
  * @param cb Callback called when receiving an answer.
  * @param data Data passed to the callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_object_peer_ping(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -169,6 +213,10 @@ EAPI Eldbus_Pending        *eldbus_object_peer_ping(Eldbus_Object *obj, Eldbus_M
  * @param cb Callback called when receiving an answer.
  * @param data Data passed to the callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -189,6 +237,10 @@ EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(Eldbus_Object *obj
  * @param cb Callback called when receiving an answer.
  * @param data Data passed to the callback.
  * @return The Eldbus_Pending corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 /**
@@ -212,6 +264,10 @@ EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Object *obj, Eldbus_
  * EINA_FALSE if it will asynchrony get the properties.
  * You should listen for a ELDBUS_PROXY_EVENT_PROPERTY_LOADED
  * to know when properties finish to load.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eldbus_proxy_properties_monitor(Eldbus_Proxy *proxy, Eina_Bool enable) EINA_ARG_NONNULL(1);
 
@@ -223,6 +279,10 @@ EAPI Eina_Bool eldbus_proxy_properties_monitor(Eldbus_Proxy *proxy, Eina_Bool en
  * @param cb The callback to be called when receiving an answer.
  * @param data Data to be passed to the callback.
  * @return Eldbus_Pending object corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_proxy_property_get(Eldbus_Proxy *proxy, const char *name, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -236,6 +296,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_property_get(Eldbus_Proxy *proxy, const
  * @param cb The callback to be called when receiving an answer.
  * @param data Data to be passed to the callback.
  * @return Eldbus_Pending object corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_proxy_property_set(Eldbus_Proxy *proxy, const char *name, const char *sig, const void *value, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
 
@@ -246,6 +310,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_property_set(Eldbus_Proxy *proxy, const
  * @param cb The callback to be called when receiving an answer.
  * @param data Data to be passed to the callback.
  * @return Eldbus_Pending object corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_proxy_property_get_all(Eldbus_Proxy *proxy, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -256,6 +324,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_property_get_all(Eldbus_Proxy *proxy, E
  * @param cb The callback to be called when receiving the signal.
  * @param data Data to be passed to the callback.
  * @return Eldbus_Signal_Handler object representing a listener for "PropertiesChanged" signal.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Signal_Handler *eldbus_proxy_properties_changed_callback_add(Eldbus_Proxy *proxy, Eldbus_Signal_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -269,6 +341,10 @@ EAPI Eldbus_Signal_Handler *eldbus_proxy_properties_changed_callback_add(Eldbus_
  * @param proxy The proxy object on which to do the query.
  * @param name The property name to get.
  * @return Cached value of property.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Value           *eldbus_proxy_property_local_get(Eldbus_Proxy *proxy, const char *name) EINA_ARG_NONNULL(1, 2);
 
@@ -281,6 +357,10 @@ EAPI Eina_Value           *eldbus_proxy_property_local_get(Eldbus_Proxy *proxy, 
  *
  * @param proxy The proxy object on which to do the query.
  * @return A Eina_Hash with all cached properties
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
@@ -301,6 +381,10 @@ EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(Eldbus_Proxy *pro
  * @param data The data to pass to the callback.
  *
  * @return A Eldbus_Pending object corresponding to the message sent.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending        *eldbus_object_managed_objects_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -311,6 +395,10 @@ EAPI Eldbus_Pending        *eldbus_object_managed_objects_get(Eldbus_Object *obj
  * @param cb The callback to be called when receiving the signal.
  * @param cb_data Data to be passed to the callback.
  * @return Eldbus_Signal_Handler object representing a listener for "InterfacesAdded" signal.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_added(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
@@ -321,6 +409,10 @@ EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_added(Eldbus_Object
  * @param cb The callback to be called when receiving the signal.
  * @param cb_data Data to be passed to the callback.
  * @return Eldbus_Signal_Handler object representing a listener for "InterfacesRemoved" signal.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_removed(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 

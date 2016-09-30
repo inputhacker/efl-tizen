@@ -83,6 +83,10 @@ EAPI extern Eina_Error EINA_ERROR_NOT_MEMPOOL_MODULE;
  * @param[in] options Unused. Use the variable arguments list instead to pass options to the mempool.
  * @param[in] ... Additional options to pass to the allocator; depends entirely on the type of mempool ("int pool size" for chained and "int item_size" for one_big.
  * @return Newly allocated mempool instance, NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Mempool  *eina_mempool_add(const char *name, const char *context, const char *options, ...) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -90,6 +94,10 @@ EAPI Eina_Mempool  *eina_mempool_add(const char *name, const char *context, cons
  * @brief Deletes the given mempool.
  *
  * @param[in] mp The mempool to delete
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void           eina_mempool_del(Eina_Mempool *mp) EINA_ARG_NONNULL(1);
 
@@ -168,6 +176,10 @@ static inline void  eina_mempool_free(Eina_Mempool *mp, void *element) EINA_ARG_
  *
  * @see Eina_Mempool_Repack_Cb
  * @see _Eina_Mempool_Backend
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void	        eina_mempool_repack(Eina_Mempool *mp, Eina_Mempool_Repack_Cb cb, void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -175,6 +187,10 @@ EAPI void	        eina_mempool_repack(Eina_Mempool *mp, Eina_Mempool_Repack_Cb c
  * @brief Run a garbage collection cycle.
  *
  * @param[in] mp The mempool
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void           eina_mempool_gc(Eina_Mempool *mp) EINA_ARG_NONNULL(1);
 
@@ -183,6 +199,9 @@ EAPI void           eina_mempool_gc(Eina_Mempool *mp) EINA_ARG_NONNULL(1);
  *
  * @param[in] mp The mempool
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void           eina_mempool_statistics(Eina_Mempool *mp) EINA_ARG_NONNULL(1);
 
@@ -192,6 +211,10 @@ EAPI void           eina_mempool_statistics(Eina_Mempool *mp) EINA_ARG_NONNULL(1
  * @param[in] be The backend
  * @return #EINA_TRUE if backend has been correctly registered, #EINA_FALSE
  *         otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool      eina_mempool_register(Eina_Mempool_Backend *be) EINA_ARG_NONNULL(1);
 
@@ -199,6 +222,10 @@ EAPI Eina_Bool      eina_mempool_register(Eina_Mempool_Backend *be) EINA_ARG_NON
  * @brief Unregisters the given memory pool backend.
  *
  * @param[in] be The backend
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void           eina_mempool_unregister(Eina_Mempool_Backend *be) EINA_ARG_NONNULL(1);
 
@@ -207,6 +234,10 @@ EAPI void           eina_mempool_unregister(Eina_Mempool_Backend *be) EINA_ARG_N
  *
  * @param[in] size
  * @return The alignment for an allocation of size @p size.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 static inline unsigned int   eina_mempool_alignof(unsigned int size);
 

@@ -768,6 +768,8 @@ typedef void      (*Evas_Async_Events_Put_Cb)(void *target, Evas_Callback_Type t
  */
 
 /**
+ * @internal
+ *
  * Get the path for the cserve binary to execute
  *
  * There is little need for anyone except a desktop environment to call this.
@@ -813,6 +815,10 @@ EAPI const char *evas_cserve_path_get(void);
  * developers. See the full @ref Example_Evas_Buffer_Simple "example".
  *
  * @ingroup Evas_Main_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               evas_init(void);
 
@@ -844,6 +850,10 @@ EAPI int               evas_init(void);
  * "example".
  *
  * @ingroup Evas_Main_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               evas_shutdown(void);
 
@@ -897,6 +907,10 @@ EAPI int               evas_shutdown(void);
  * @endcode
  *
  * @ingroup Evas_Main_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Alloc_Error  evas_alloc_error(void);
 
@@ -922,6 +936,10 @@ EAPI Evas_Alloc_Error  evas_alloc_error(void);
  * apart from ecore, may make use of it.
  *
  * @ingroup Evas_Main_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               evas_async_events_fd_get(void) EINA_WARN_UNUSED_RESULT;
 
@@ -937,6 +955,10 @@ EAPI int               evas_async_events_fd_get(void) EINA_WARN_UNUSED_RESULT;
  * those parameters), in that order.
  *
  * @ingroup Evas_Main_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int               evas_async_events_process(void);
 
@@ -956,6 +978,10 @@ EAPI int               evas_async_events_process(void);
  * called.
  *
  * @ingroup Evas_Main_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool         evas_async_events_put(const void *target, Evas_Callback_Type type, void *event_info, Evas_Async_Events_Put_Cb func) EINA_ARG_NONNULL(1, 4);
 
@@ -1063,6 +1089,10 @@ EAPI Eina_Bool         evas_async_events_put(const void *target, Evas_Callback_T
  *   }
  * evas_output_method_set(evas, engine_id);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int               evas_render_method_lookup(const char *name) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -1096,6 +1126,10 @@ EAPI int               evas_render_method_lookup(const char *name) EINA_WARN_UNU
  *   printf("%s\n", engine_name);
  * evas_render_method_list_free(engine_list);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List        *evas_render_method_list(void) EINA_WARN_UNUSED_RESULT;
 
@@ -1126,6 +1160,10 @@ EAPI Eina_List        *evas_render_method_list(void) EINA_WARN_UNUSED_RESULT;
  *   printf("%s\n", engine_name);
  * evas_render_method_list_free(engine_list);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void              evas_render_method_list_free(Eina_List *list);
 
@@ -1175,6 +1213,10 @@ EAPI void              evas_render_method_list_free(Eina_List *list);
  * @see evas_render_updates() for an example
  *
  * @ingroup Evas_Canvas
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void              evas_render_updates_free(Eina_List *updates);
 
@@ -1248,6 +1290,10 @@ EAPI void              evas_render_updates_free(Eina_List *updates);
  *
  * @see evas_device_del
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Device *evas_device_add(Evas *e);
 
@@ -1260,6 +1306,10 @@ EAPI Evas_Device *evas_device_add(Evas *e);
  * @see evas_device_push
  * @see evas_device_pop
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_del(Evas_Device *dev);
 
@@ -1289,6 +1339,10 @@ EAPI void evas_device_del(Evas_Device *dev);
  *
  * @see evas_device_pop
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_push(Evas *e, Evas_Device *dev);
 
@@ -1303,6 +1357,10 @@ EAPI void evas_device_push(Evas *e, Evas_Device *dev);
  *
  * @see evas_device_push
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_pop(Evas *e);
 
@@ -1329,6 +1387,10 @@ EAPI void evas_device_pop(Evas *e);
  * @see evas_device_subclass_get
  * @see evas_device_emulation_source_get
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Eina_List *evas_device_list(Evas *e, const Evas_Device *dev);
 
@@ -1339,6 +1401,10 @@ EAPI const Eina_List *evas_device_list(Evas *e, const Evas_Device *dev);
  * @p name The name string as a readable C UTF8 string
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_name_set(Evas_Device *dev, const char *name);
 
@@ -1355,6 +1421,10 @@ EAPI void evas_device_name_set(Evas_Device *dev, const char *name);
  * "Finger", "Keyboard" or "Numberpad" etc.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *evas_device_name_get(const Evas_Device *dev);
 
@@ -1365,6 +1435,10 @@ EAPI const char *evas_device_name_get(const Evas_Device *dev);
  * @p name The description string as a readable C UTF8 string
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_description_set(Evas_Device *dev, const char *desc);
 
@@ -1383,6 +1457,10 @@ EAPI void evas_device_description_set(Evas_Device *dev, const char *desc);
  * precisely which device is being talked about.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *evas_device_description_get(const Evas_Device *dev);
 
@@ -1405,6 +1483,10 @@ EAPI const char *evas_device_description_get(const Evas_Device *dev);
  * @see evas_device_list
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_parent_set(Evas_Device *dev, Evas_Device *parent);
 
@@ -1418,6 +1500,10 @@ EAPI void evas_device_parent_set(Evas_Device *dev, Evas_Device *parent);
  * parent device exists (is a toplevel device).
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Evas_Device *evas_device_parent_get(const Evas_Device *dev);
 
@@ -1431,6 +1517,10 @@ EAPI const Evas_Device *evas_device_parent_get(const Evas_Device *dev);
  * touch, pen etc.).
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_class_set(Evas_Device *dev, Evas_Device_Class clas);
 
@@ -1443,6 +1533,10 @@ EAPI void evas_device_class_set(Evas_Device *dev, Evas_Device_Class clas);
  * This sets the device class set by evas_device_class_set().
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Device_Class evas_device_class_get(const Evas_Device *dev);
 
@@ -1456,6 +1550,10 @@ EAPI Evas_Device_Class evas_device_class_get(const Evas_Device *dev);
  * within a broader category.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_subclass_set(Evas_Device *dev, Evas_Device_Subclass clas);
 
@@ -1466,6 +1564,10 @@ EAPI void evas_device_subclass_set(Evas_Device *dev, Evas_Device_Subclass clas);
  * @return The device sub-class set by evas_device_subclass_set().
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Device_Subclass evas_device_subclass_get(const Evas_Device *dev);
 
@@ -1483,6 +1585,10 @@ EAPI Evas_Device_Subclass evas_device_subclass_get(const Evas_Device *dev);
  * pay attention to source device events for example.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_device_emulation_source_set(Evas_Device *dev, Evas_Device *src);
 
@@ -1493,6 +1599,10 @@ EAPI void evas_device_emulation_source_set(Evas_Device *dev, Evas_Device *src);
  * @return The source emulation device set by evas_device_emulation_source_set().
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Evas_Device *evas_device_emulation_source_get(const Evas_Device *dev);
 
@@ -1944,6 +2054,10 @@ EAPI const Evas_Device *evas_device_emulation_source_get(const Evas_Device *dev)
  * @see evas_map_util_points_populate_from_object()
  * @see evas_map_point_coord_set()
  * @see evas_map_point_image_uv_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_points_populate_from_object_full(Evas_Map *m, const Evas_Object *obj, Evas_Coord z);
 
@@ -1965,6 +2079,10 @@ EAPI void            evas_map_util_points_populate_from_object_full(Evas_Map *m,
  * @see evas_map_util_points_populate_from_geometry()
  * @see evas_map_point_coord_set()
  * @see evas_map_point_image_uv_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_points_populate_from_object(Evas_Map *m, const Evas_Object *obj);
 
@@ -1988,6 +2106,10 @@ EAPI void            evas_map_util_points_populate_from_object(Evas_Map *m, cons
  * @see evas_map_util_points_populate_from_object()
  * @see evas_map_point_coord_set()
  * @see evas_map_point_image_uv_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_points_populate_from_geometry(Evas_Map *m, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h, Evas_Coord z);
 
@@ -2004,6 +2126,10 @@ EAPI void            evas_map_util_points_populate_from_geometry(Evas_Map *m, Ev
  * @param a alpha (0 - 255)
  *
  * @see evas_map_point_color_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_points_color_set(Evas_Map *m, int r, int g, int b, int a);
 
@@ -2023,6 +2149,10 @@ EAPI void            evas_map_util_points_color_set(Evas_Map *m, int r, int g, i
  *
  * @see evas_map_point_coord_set()
  * @see evas_map_util_zoom()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_rotate(Evas_Map *m, double degrees, Evas_Coord cx, Evas_Coord cy);
 
@@ -2043,6 +2173,10 @@ EAPI void            evas_map_util_rotate(Evas_Map *m, double degrees, Evas_Coor
  *
  * @see evas_map_point_coord_set()
  * @see evas_map_util_rotate()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_zoom(Evas_Map *m, double zoomx, double zoomy, Evas_Coord cx, Evas_Coord cy);
 
@@ -2063,6 +2197,10 @@ EAPI void            evas_map_util_zoom(Evas_Map *m, double zoomx, double zoomy,
  * @param cx rotation's center horizontal position.
  * @param cy rotation's center vertical position.
  * @param cz rotation's center vertical position.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_3d_rotate(Evas_Map *m, double dx, double dy, double dz, Evas_Coord cx, Evas_Coord cy, Evas_Coord cz);
 
@@ -2087,6 +2225,10 @@ EAPI void            evas_map_util_3d_rotate(Evas_Map *m, double dx, double dy, 
  * If this is not the case the behavior is undefined.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_quat_rotate(Evas_Map *m, double qx, double qy, double qz, double qw, double cx, double cy, double cz);
 
@@ -2143,6 +2285,10 @@ EAPI void            evas_map_util_quat_rotate(Evas_Map *m, double qx, double qy
  * @param ar ambient color red value (0 - 255)
  * @param ag ambient color green value (0 - 255)
  * @param ab ambient color blue value (0 - 255)
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_3d_lighting(Evas_Map *m, Evas_Coord lx, Evas_Coord ly, Evas_Coord lz, int lr, int lg, int lb, int ar, int ag, int ab);
 
@@ -2167,6 +2313,10 @@ EAPI void            evas_map_util_3d_lighting(Evas_Map *m, Evas_Coord lx, Evas_
  * @param py The perspective distance Y coordinate
  * @param z0 The "0" z plane value
  * @param foc The focal distance
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_util_3d_perspective(Evas_Map *m, Evas_Coord px, Evas_Coord py, Evas_Coord z0, Evas_Coord foc);
 
@@ -2180,6 +2330,10 @@ EAPI void            evas_map_util_3d_perspective(Evas_Map *m, Evas_Coord px, Ev
  *
  * @param m map to query.
  * @return 1 if clockwise, 0 otherwise
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool       evas_map_util_clockwise_get(Evas_Map *m);
 
@@ -2201,6 +2355,10 @@ EAPI Eina_Bool       evas_map_util_clockwise_get(Evas_Map *m);
  * @see evas_map_util_points_populate_from_object()
  *
  * @see evas_object_map_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Map       *evas_map_new(int count);
 
@@ -2213,6 +2371,10 @@ EAPI Evas_Map       *evas_map_new(int count);
  *
  * @param m map to modify. Must not be NULL.
  * @param enabled enable or disable smooth map rendering
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_smooth_set(Evas_Map *m, Eina_Bool enabled);
 
@@ -2223,6 +2385,10 @@ EAPI void            evas_map_smooth_set(Evas_Map *m, Eina_Bool enabled);
  *
  * @param m map to get the smooth from. Must not be NULL.
  * @return @c EINA_TRUE if the smooth is enabled, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool       evas_map_smooth_get(const Evas_Map *m);
 
@@ -2237,6 +2403,10 @@ EAPI Eina_Bool       evas_map_smooth_get(const Evas_Map *m);
  *
  * @param m map to modify. Must not be NULL.
  * @param enabled enable or disable alpha map rendering
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_alpha_set(Evas_Map *m, Eina_Bool enabled);
 
@@ -2247,6 +2417,10 @@ EAPI void            evas_map_alpha_set(Evas_Map *m, Eina_Bool enabled);
  *
  * @param m map to get the alpha from. Must not be NULL.
  * @return EINA_FALSE if map is NULL EINA_TRUE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool       evas_map_alpha_get(const Evas_Map *m);
 
@@ -2262,6 +2436,10 @@ EAPI Eina_Bool       evas_map_alpha_get(const Evas_Map *m);
  * @param enabled enable or disable the object move synchronization for map
  *        rendering.
  * @since 1.13
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void            evas_map_util_object_move_sync_set(Evas_Map *m, Eina_Bool enabled);
 
@@ -2274,6 +2452,10 @@ EAPI void            evas_map_util_object_move_sync_set(Evas_Map *m, Eina_Bool e
  * not be NULL.
  * @return EINA_FALSE if map is NULL EINA_TRUE otherwise.
  * @since 1.13
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool       evas_map_util_object_move_sync_get(const Evas_Map *m);
 
@@ -2284,6 +2466,10 @@ EAPI Eina_Bool       evas_map_util_object_move_sync_get(const Evas_Map *m);
  *
  * @param m map to copy. Must not be NULL.
  * @return newly allocated map with the same count and contents as @p m.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Map       *evas_map_dup(const Evas_Map *m);
 
@@ -2294,6 +2480,10 @@ EAPI Evas_Map       *evas_map_dup(const Evas_Map *m);
  * free a map returned by evas_object_map_get() as this is internal.
  *
  * @param m map to free.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_free(Evas_Map *m);
 
@@ -2304,6 +2494,10 @@ EAPI void            evas_map_free(Evas_Map *m);
  *
  * @param m map to get size.
  * @return -1 on error, points otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int             evas_map_count_get(const Evas_Map *m) EINA_CONST;
 
@@ -2335,6 +2529,10 @@ EAPI int             evas_map_count_get(const Evas_Map *m) EINA_CONST;
  * @see evas_map_util_zoom()
  * @see evas_map_util_points_populate_from_object_full()
  * @see evas_map_util_points_populate_from_object()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_point_coord_set(Evas_Map *m, int idx, Evas_Coord x, Evas_Coord y, Evas_Coord z);
 
@@ -2348,6 +2546,10 @@ EAPI void            evas_map_point_coord_set(Evas_Map *m, int idx, Evas_Coord x
  * @param x where to return the X coordinate.
  * @param y where to return the Y coordinate.
  * @param z where to return the Z coordinate.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_point_coord_get(const Evas_Map *m, int idx, Evas_Coord *x, Evas_Coord *y, Evas_Coord *z);
 
@@ -2399,6 +2601,10 @@ EAPI void            evas_map_point_precise_coord_get(const Evas_Map *m, int idx
  * @see evas_object_map_set()
  * @see evas_map_util_points_populate_from_object_full()
  * @see evas_map_util_points_populate_from_object()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_point_image_uv_set(Evas_Map *m, int idx, double u, double v);
 
@@ -2411,6 +2617,10 @@ EAPI void            evas_map_point_image_uv_set(Evas_Map *m, int idx, double u,
  * @param idx index of point to query. Must be smaller than map size.
  * @param u where to write the X coordinate within the image/texture source
  * @param v where to write the Y coordinate within the image/texture source
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_point_image_uv_get(const Evas_Map *m, int idx, double *u, double *v);
 
@@ -2433,6 +2643,10 @@ EAPI void            evas_map_point_image_uv_get(const Evas_Map *m, int idx, dou
  * @see evas_map_util_points_color_set()
  * @see evas_map_point_coord_set()
  * @see evas_object_map_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_point_color_set(Evas_Map *m, int idx, int r, int g, int b, int a);
 
@@ -2451,6 +2665,10 @@ EAPI void            evas_map_point_color_set(Evas_Map *m, int idx, int r, int g
  *
  * @see evas_map_point_coord_set()
  * @see evas_object_map_set()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            evas_map_point_color_get(const Evas_Map *m, int idx, int *r, int *g, int *b, int *a);
 /**
@@ -3062,6 +3280,10 @@ typedef void (*Evas_Object_Image_Pixels_Get_Cb)(void *data, Evas_Object *o);
  * If file is a Eina_Stringshare, use directly @ref evas_object_image_extension_can_load_fast_get.
  *
  * This functions is threadsafe.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     evas_object_image_extension_can_load_get(const char *file);
 
@@ -3074,6 +3296,10 @@ EAPI Eina_Bool                     evas_object_image_extension_can_load_get(cons
  * @since 1.1
  *
  * This functions is threadsafe.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     evas_object_image_extension_can_load_fast_get(const char *file);
 /**
@@ -3307,6 +3533,10 @@ typedef enum _Evas_Textblock_Cursor_Type
  * Returns the unescaped version of escape.
  * @param escape the string to be escaped
  * @return the unescaped version of escape
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char                              *evas_textblock_escape_string_get(const char *escape) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3315,6 +3545,10 @@ EAPI const char                              *evas_textblock_escape_string_get(c
  * @param string to escape
  * @param len_ret the len of the part of the string that was used.
  * @return the escaped string.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char                              *evas_textblock_string_escape_get(const char *string, int *len_ret) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3324,18 +3558,30 @@ EAPI const char                              *evas_textblock_string_escape_get(c
  * @param escape_start the start of the string.
  * @param escape_end the end of the string.
  * @return the unescaped version of the range
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char                              *evas_textblock_escape_string_range_get(const char *escape_start, const char *escape_end) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
 /**
  * Creates a new textblock style.
  * @return  The new textblock style.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Evas_Textblock_Style                    *evas_textblock_style_new(void) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
 
 /**
  * Destroys a textblock style.
  * @param ts The textblock style to free.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_style_free(Evas_Textblock_Style *ts) EINA_ARG_NONNULL(1);
 
@@ -3346,6 +3592,10 @@ EAPI void                                     evas_textblock_style_free(Evas_Tex
  * @param ts  the style to set.
  * @param text the text to parse - NOT NULL.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_style_set(Evas_Textblock_Style *ts, const char *text) EINA_ARG_NONNULL(1);
 
@@ -3353,6 +3603,10 @@ EAPI void                                     evas_textblock_style_set(Evas_Text
  * Return the text of the style ts.
  * @param ts  the style to get it's text.
  * @return the text of the style or null on error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char                              *evas_textblock_style_get(const Evas_Textblock_Style *ts) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3364,6 +3618,10 @@ EAPI const char                              *evas_textblock_style_get(const Eva
  * @param cur  the cursor to prepend to.
  * @param text the markup text to prepend.
  * @return Return no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_object_textblock_text_markup_prepend(Evas_Textblock_Cursor *cur, const char *text) EINA_ARG_NONNULL(1, 2);
 
@@ -3373,6 +3631,10 @@ EAPI void                                     evas_object_textblock_text_markup_
  *
  * @param cur the cursor to free.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_free(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3381,6 +3643,10 @@ EAPI void                                     evas_textblock_cursor_free(Evas_Te
  *
  * @param cur the cursor to update.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_paragraph_first(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3389,6 +3655,10 @@ EAPI void                                     evas_textblock_cursor_paragraph_fi
  *
  * @param cur the cursor to set.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_paragraph_last(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3398,6 +3668,10 @@ EAPI void                                     evas_textblock_cursor_paragraph_la
  * @param cur the cursor to update
  * @return @c EINA_TRUE if it managed to advance a paragraph, @c EINA_FALSE
  * otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_paragraph_next(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3407,6 +3681,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_paragraph_ne
  * @param cur the cursor to update
  * @return @c EINA_TRUE if it managed to advance a paragraph, @c EINA_FALSE
  * otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_paragraph_prev(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3415,6 +3693,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_paragraph_pr
  *
  * @param n the current format node - not null.
  * @return Returns the next format node, may be null.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Evas_Object_Textblock_Node_Format *evas_textblock_node_format_next_get(const Evas_Object_Textblock_Node_Format *n) EINA_ARG_NONNULL(1);
 
@@ -3423,6 +3705,10 @@ EAPI const Evas_Object_Textblock_Node_Format *evas_textblock_node_format_next_ge
  *
  * @param n the current format node - not null.
  * @return Returns the prev format node, may be null.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Evas_Object_Textblock_Node_Format *evas_textblock_node_format_prev_get(const Evas_Object_Textblock_Node_Format *n) EINA_ARG_NONNULL(1);
 
@@ -3432,6 +3718,10 @@ EAPI const Evas_Object_Textblock_Node_Format *evas_textblock_node_format_prev_ge
  *
  * @param cur the cursor to update.
  * @param n the format node to update according.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EINA_DEPRECATED EAPI void                     evas_textblock_cursor_set_at_format(Evas_Textblock_Cursor *cur, const Evas_Object_Textblock_Node_Format *n) EINA_ARG_NONNULL(1, 2);
 
@@ -3441,6 +3731,10 @@ EINA_DEPRECATED EAPI void                     evas_textblock_cursor_set_at_forma
  * @param cur the position to look at.
  * @return the format node if found, @c NULL otherwise.
  * @see evas_textblock_cursor_format_is_visible_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Evas_Object_Textblock_Node_Format *evas_textblock_cursor_format_get(const Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3449,6 +3743,10 @@ EAPI const Evas_Object_Textblock_Node_Format *evas_textblock_cursor_format_get(c
  *
  * @param fnode the format node.
  * @return the textual format of the format node.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char                              *evas_textblock_node_format_text_get(const Evas_Object_Textblock_Node_Format *fnode) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3457,6 +3755,10 @@ EAPI const char                              *evas_textblock_node_format_text_ge
  *
  * @param cur the cursor to update
  * @param fmt the format to update according to.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_at_format_set(Evas_Textblock_Cursor *cur, const Evas_Object_Textblock_Node_Format *fmt) EINA_ARG_NONNULL(1, 2);
 
@@ -3469,6 +3771,10 @@ EAPI void                                     evas_textblock_cursor_at_format_se
  * @return @c EINA_TRUE if the cursor points to a visible format, @c EINA_FALSE
  * otherwise.
  * @see evas_textblock_cursor_format_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_format_is_visible_get(const Evas_Textblock_Cursor *cur) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3477,6 +3783,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_format_is_vi
  *
  * @param cur the cursor to be updated.
  * @return @c EINA_TRUE on success @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_format_next(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3485,6 +3795,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_format_next(
  *
  * @param cur the cursor to update.
  * @return @c EINA_TRUE on success @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_format_prev(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3494,6 +3808,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_format_prev(
  * @param cur the cursor to check.
  * @return  @c EINA_TRUE if a cursor points to a format @c EINA_FALSE
  * otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_is_format(const Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3502,6 +3820,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_is_format(co
  *
  * @param cur the cursor to advance.
  * @return @c EINA_TRUE on success @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_char_next(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3510,6 +3832,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_char_next(Ev
  *
  * @param cur the cursor to advance.
  * @return @c EINA_TRUE on success @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_char_prev(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3541,6 +3867,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_cluster_prev
  * @param cur the cursor to move.
  * @return @c EINA_TRUE on success @c EINA_FALSE otherwise.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_word_start(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3550,6 +3880,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_word_start(E
  * @param cur the cursor to move.
  * @return @c EINA_TRUE on success @c EINA_FALSE otherwise.
  * @since 1.2
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_word_end(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3558,6 +3892,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_word_end(Eva
  *
  * @param cur the cursor to update.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_paragraph_char_first(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3566,6 +3904,10 @@ EAPI void                                     evas_textblock_cursor_paragraph_ch
  *
  * @param cur the cursor to update.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_paragraph_char_last(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3574,6 +3916,10 @@ EAPI void                                     evas_textblock_cursor_paragraph_ch
  *
  * @param cur the cursor to update.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_line_char_first(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3582,6 +3928,10 @@ EAPI void                                     evas_textblock_cursor_line_char_fi
  *
  * @param cur the cursor to update.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_line_char_last(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3590,6 +3940,10 @@ EAPI void                                     evas_textblock_cursor_line_char_la
  *
  * @param cur the cursor to take the position from.
  * @return the position or -1 on error
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_pos_get(const Evas_Textblock_Cursor *cur) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3598,6 +3952,10 @@ EAPI int                                      evas_textblock_cursor_pos_get(cons
  *
  * @param cur the cursor to be set.
  * @param pos the pos to set.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_pos_set(Evas_Textblock_Cursor *cur, int pos) EINA_ARG_NONNULL(1);
 
@@ -3607,6 +3965,10 @@ EAPI void                                     evas_textblock_cursor_pos_set(Evas
  * @param cur cursor to update.
  * @param line numer to set.
  * @return @c EINA_TRUE on success, @c EINA_FALSE on error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_line_set(Evas_Textblock_Cursor *cur, int line) EINA_ARG_NONNULL(1);
 
@@ -3616,6 +3978,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_line_set(Eva
  * @param cur1 the first cursor.
  * @param cur2 the second cursor.
  * @return -1 if cur1 < cur2, 0 if cur1 == cur2 and 1 otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_compare(const Evas_Textblock_Cursor *cur1, const Evas_Textblock_Cursor *cur2) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
@@ -3626,6 +3992,10 @@ EAPI int                                      evas_textblock_cursor_compare(cons
  * @param cur the source cursor.
  * @param cur_dest destination cursor.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_copy(const Evas_Textblock_Cursor *cur, Evas_Textblock_Cursor *cur_dest) EINA_ARG_NONNULL(1, 2);
 
@@ -3637,6 +4007,10 @@ EAPI void                                     evas_textblock_cursor_copy(const E
  * @param text the text to add.
  * @return Returns the len of the text added.
  * @see evas_textblock_cursor_text_prepend()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_text_append(Evas_Textblock_Cursor *cur, const char *text) EINA_ARG_NONNULL(1, 2);
 
@@ -3648,6 +4022,10 @@ EAPI int                                      evas_textblock_cursor_text_append(
  * @param text the text to add.
  * @return Returns the len of the text added.
  * @see evas_textblock_cursor_text_append()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_text_prepend(Evas_Textblock_Cursor *cur, const char *text) EINA_ARG_NONNULL(1, 2);
 
@@ -3673,6 +4051,10 @@ EAPI int                                      evas_textblock_cursor_text_prepend
  *
  * @param cur the cursor to look at.
  * @return @c EINA_TRUE if the cursor points to the terminating null, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_format_append(Evas_Textblock_Cursor *cur, const char *format) EINA_ARG_NONNULL(1, 2);
 
@@ -3690,6 +4072,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_format_appen
  * @param format the format to add.
  * @return Returns true if a visible format was added, false otherwise.
  * @see evas_textblock_cursor_format_prepend()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_format_prepend(Evas_Textblock_Cursor *cur, const char *format) EINA_ARG_NONNULL(1, 2);
 
@@ -3699,6 +4085,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_format_prepe
  *
  * @param cur the cursor pointing to the current location.
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_char_delete(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
 
@@ -3708,6 +4098,10 @@ EAPI void                                     evas_textblock_cursor_char_delete(
  * @param cur1 one side of the range.
  * @param cur2 the second side of the range
  * @return Returns no value.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                                     evas_textblock_cursor_range_delete(Evas_Textblock_Cursor *cur1, Evas_Textblock_Cursor *cur2) EINA_ARG_NONNULL(1, 2);
 
@@ -3716,6 +4110,10 @@ EAPI void                                     evas_textblock_cursor_range_delete
  *
  * @param cur the cursor pointing to the paragraph.
  * @return the text on success, @c NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char                              *evas_textblock_cursor_paragraph_text_get(const Evas_Textblock_Cursor *cur) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3724,6 +4122,10 @@ EAPI const char                              *evas_textblock_cursor_paragraph_te
  *
  * @param cur the position of the paragraph.
  * @return the length of the paragraph on success, -1 otehrwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_paragraph_text_length_get(const Evas_Textblock_Cursor *cur) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -3734,6 +4136,10 @@ EAPI int                                      evas_textblock_cursor_paragraph_te
  * @param end the end of the range.
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_visible_range_get(Evas_Textblock_Cursor *start, Evas_Textblock_Cursor *end) EINA_ARG_NONNULL(1, 2);
 
@@ -3744,6 +4150,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_visible_rang
  * @param cur2 the other side of the range
  * @return the foramt nodes in the range. You have to free it.
  * @since 1.1
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List                               *evas_textblock_cursor_range_formats_get(const Evas_Textblock_Cursor *cur1, const Evas_Textblock_Cursor *cur2) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
@@ -3755,6 +4165,10 @@ EAPI Eina_List                               *evas_textblock_cursor_range_format
  * @param format The form on which to return the text. Markup - in textblock markup. Plain - UTF8.
  * @return the text in the range
  * @see elm_entry_markup_to_utf8()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char                                    *evas_textblock_cursor_range_text_get(const Evas_Textblock_Cursor *cur1, const Evas_Textblock_Cursor *cur2, Evas_Textblock_Text_Type format) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
@@ -3777,6 +4191,10 @@ EAPI char                                    *evas_textblock_cursor_range_text_v
  *
  * @param cur the cursor
  * @return the text in the range, terminated by a nul byte (may be utf8).
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char                                    *evas_textblock_cursor_content_get(const Evas_Textblock_Cursor *cur) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -3802,6 +4220,10 @@ EAPI char                                    *evas_textblock_cursor_content_get(
  * @param[in] ctype the type of the cursor.
  * @return @c EINA_TRUE for split cursor, @c EINA_FALSE otherwise
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool
 evas_textblock_cursor_geometry_bidi_get(const Evas_Textblock_Cursor *cur, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_Coord *cx2, Evas_Coord *cy2, Evas_Coord *cw2, Evas_Coord *ch2, Evas_Textblock_Cursor_Type ctype);
@@ -3827,6 +4249,10 @@ evas_textblock_cursor_geometry_bidi_get(const Evas_Textblock_Cursor *cur, Evas_C
  * @param dir the direction of the cursor, can be NULL.
  * @param ctype the type of the cursor.
  * @return line number of the char on success, -1 on error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_geometry_get(const Evas_Textblock_Cursor *cur, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_BiDi_Direction *dir, Evas_Textblock_Cursor_Type ctype) EINA_ARG_NONNULL(1);
 
@@ -3839,6 +4265,10 @@ EAPI int                                      evas_textblock_cursor_geometry_get
  * @param cw the w of the char.
  * @param ch the h of the char.
  * @return line number of the char on success, -1 on error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_char_geometry_get(const Evas_Textblock_Cursor *cur, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch) EINA_ARG_NONNULL(1);
 
@@ -3851,6 +4281,10 @@ EAPI int                                      evas_textblock_cursor_char_geometr
  * @param cadv the adv of the char.
  * @param ch the h of the char.
  * @return line number of the char on success, -1 on error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_pen_geometry_get(const Evas_Textblock_Cursor *cur, Evas_Coord *cpen_x, Evas_Coord *cy, Evas_Coord *cadv, Evas_Coord *ch) EINA_ARG_NONNULL(1);
 
@@ -3863,6 +4297,10 @@ EAPI int                                      evas_textblock_cursor_pen_geometry
  * @param cw the width of the line.
  * @param ch the height of the line.
  * @return line number of the line on success, -1 on error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_line_geometry_get(const Evas_Textblock_Cursor *cur, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch) EINA_ARG_NONNULL(1);
 
@@ -3873,6 +4311,10 @@ EAPI int                                      evas_textblock_cursor_line_geometr
  * @param x coord to set by.
  * @param y coord to set by.
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_char_coord_set(Evas_Textblock_Cursor *cur, Evas_Coord x, Evas_Coord y) EINA_ARG_NONNULL(1);
 
@@ -3894,6 +4336,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_cluster_coor
  * @param cur the cur to be set.
  * @param y the coord to set by.
  * @return the line number found, -1 on error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                                      evas_textblock_cursor_line_coord_set(Evas_Textblock_Cursor *cur, Evas_Coord y) EINA_ARG_NONNULL(1);
 
@@ -3903,6 +4349,10 @@ EAPI int                                      evas_textblock_cursor_line_coord_s
  * @param cur1 one side of the range.
  * @param cur2 other side of the range.
  * @return a list of Rectangles representing the geometry of the range.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List                               *evas_textblock_cursor_range_geometry_get(const Evas_Textblock_Cursor *cur1, const Evas_Textblock_Cursor *cur2) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
@@ -3915,6 +4365,10 @@ EAPI Eina_List                               *evas_textblock_cursor_range_geomet
  * @param cur1 one side of the range.
  * @param cur2 other side of the range.
  * @return an iterator of rectangles representing the geometry of the range.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator                               *evas_textblock_cursor_range_simple_geometry_get(const Evas_Textblock_Cursor *cur1, const Evas_Textblock_Cursor *cur2) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
@@ -3923,6 +4377,10 @@ EAPI Eina_Iterator                               *evas_textblock_cursor_range_si
  *
  * @param cur one side of the range.
  * @param cur2 other side of the range.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_format_item_geometry_get(const Evas_Textblock_Cursor *cur, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch) EINA_ARG_NONNULL(1);
 
@@ -3931,6 +4389,10 @@ EAPI Eina_Bool                                evas_textblock_cursor_format_item_
  *
  * @param cur the cursor to check.
  * @return @c EINA_TRUE if true, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                                evas_textblock_cursor_eol_get(const Evas_Textblock_Cursor *cur) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -4432,6 +4894,10 @@ struct _Evas_Smart_Cb_Description
  * Evas will internally count references on #Evas_Smart handles and free them
  * when they are not referenced anymore. Thus, this function is of no use
  * for Evas users, most probably.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                              evas_smart_free(Evas_Smart *s) EINA_ARG_NONNULL(1);
 
@@ -4449,6 +4915,10 @@ EAPI void                              evas_smart_free(Evas_Smart *s) EINA_ARG_N
  * @note If you are willing to subclass a given smart class to
  * construct yours, consider using the #EVAS_SMART_SUBCLASS_NEW macro,
  * which will make use of this function automatically for you.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Evas_Smart                       *evas_smart_class_new(const Evas_Smart_Class *sc) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
@@ -4457,6 +4927,10 @@ EAPI Evas_Smart                       *evas_smart_class_new(const Evas_Smart_Cla
  *
  * @param s a valid #Evas_Smart pointer
  * @return the #Evas_Smart_Class in it
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Evas_Smart_Class           *evas_smart_class_get(const Evas_Smart *s) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -4467,6 +4941,10 @@ EAPI const Evas_Smart_Class           *evas_smart_class_get(const Evas_Smart *s)
  *
  * This data pointer is set as the data field in the #Evas_Smart_Class
  * passed in to evas_smart_class_new().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                             *evas_smart_data_get(const Evas_Smart *s) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -4505,6 +4983,10 @@ EAPI void                             *evas_smart_data_get(const Evas_Smart *s) 
  *       evas_object_smart_callbacks_descriptions_get() to get those
  *       as well.
  * @see evas_object_smart_callbacks_descriptions_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Evas_Smart_Cb_Description **evas_smart_callbacks_descriptions_get(const Evas_Smart *s, unsigned int *count) EINA_ARG_NONNULL(1, 1);
 
@@ -4520,6 +5002,10 @@ EAPI const Evas_Smart_Cb_Description **evas_smart_callbacks_descriptions_get(con
  * @return A reference to the description if found, or @c NULL, otherwise
  *
  * @see evas_smart_callbacks_descriptions_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Evas_Smart_Cb_Description  *evas_smart_callback_description_find(const Evas_Smart *s, const char *name) EINA_ARG_NONNULL(1, 2);
 
@@ -4539,6 +5025,10 @@ EAPI const Evas_Smart_Cb_Description  *evas_smart_callback_description_find(cons
  * @param parent_sc_size size of parent_sc structure, child should be at least
  *        this size. Everything after @c Evas_Smart_Class size is copied
  *        using regular memcpy().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool                         evas_smart_class_inherit_full(Evas_Smart_Class *sc, const Evas_Smart_Class *parent_sc, unsigned int parent_sc_size) EINA_ARG_NONNULL(1, 2);
 
@@ -4560,6 +5050,10 @@ EAPI Eina_Bool                         evas_smart_class_inherit_full(Evas_Smart_
  * behavior etc. etc.), so either never remove the original
  * Evas_Smart_Class data from memory (have it be a constant structure and
  * data), or use this API call and be very careful.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int                               evas_smart_usage_get(const Evas_Smart *s);
 
@@ -4638,6 +5132,10 @@ EAPI int                               evas_smart_usage_get(const Evas_Smart *s)
  * @see eo_isa
  *
  * @ingroup Evas_Smart_Object_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void evas_smart_legacy_type_register(const char *type, const Eo_Class *klass) EINA_ARG_NONNULL(1, 2);
 
@@ -4729,6 +5227,10 @@ struct _Evas_Object_Smart_Clipped_Data
  * @note There are other means of assigning parent smart classes to
  * child ones, like the #EVAS_SMART_SUBCLASS_NEW macro or the
  * evas_smart_class_inherit_full() function.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                    evas_object_smart_clipped_smart_set(Evas_Smart_Class *sc) EINA_ARG_NONNULL(1);
 
@@ -4738,6 +5240,10 @@ EAPI void                    evas_object_smart_clipped_smart_set(Evas_Smart_Clas
  *
  * @see #Evas_Smart_Object_Clipped for more information on this smart
  * class
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Evas_Smart_Class *evas_object_smart_clipped_class_get(void) EINA_CONST;
 /**
@@ -4978,6 +5484,10 @@ struct _Evas_Object_Box_Option
  *
  * @param api The box API struct to set back, most probably with
  * overridden fields (on class extensions scenarios)
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                       evas_object_box_smart_set(Evas_Object_Box_Api *api) EINA_ARG_NONNULL(1);
 
@@ -4988,6 +5498,10 @@ EAPI void                       evas_object_box_smart_set(Evas_Object_Box_Api *a
  *
  * The returned value is @b not to be modified, just use it as your
  * parent class.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Evas_Object_Box_Api *evas_object_box_smart_class_get(void) EINA_CONST;
 
@@ -5102,6 +5616,8 @@ struct _Evas_Cserve_Config
 };
 
 /**
+ * @internal
+ *
  * Retrieves if the system wants to share bitmaps using the server.
  * @return @c EINA_TRUE if it wants, @c EINA_FALSE otherwise.
  * @ingroup Evas_Cserve
@@ -5109,6 +5625,8 @@ struct _Evas_Cserve_Config
 EAPI Eina_Bool   evas_cserve_want_get(void) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @internal
+ *
  * Retrieves if the system is connected to the server used to share
  * bitmaps.
  *
@@ -5118,6 +5636,8 @@ EAPI Eina_Bool   evas_cserve_want_get(void) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool   evas_cserve_connected_get(void) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @internal
+ *
  * Retrieves statistics from a running bitmap sharing server.
  * @param stats pointer to structure to fill with statistics about the
  *        bitmap cache server.
@@ -5129,6 +5649,8 @@ EAPI Eina_Bool   evas_cserve_connected_get(void) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool   evas_cserve_stats_get(Evas_Cserve_Stats *stats) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @internal
+ *
  * Completely discard/clean a given images cache, thus re-setting it.
  *
  * @param cache A handle to the given images cache.
@@ -5136,6 +5658,8 @@ EAPI Eina_Bool   evas_cserve_stats_get(Evas_Cserve_Stats *stats) EINA_WARN_UNUSE
 EAPI void        evas_cserve_image_cache_contents_clean(Evas_Cserve_Image_Cache *cache);
 
 /**
+ * @internal
+ *
  * Retrieves the current configuration of the Evas image caching
  * server.
  *
@@ -5155,6 +5679,8 @@ EAPI void        evas_cserve_image_cache_contents_clean(Evas_Cserve_Image_Cache 
 EAPI Eina_Bool   evas_cserve_config_get(Evas_Cserve_Config *config) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @internal
+ *
  * Changes the configurations of the Evas image caching server.
  *
  * @param config A bitmap cache configuration handle with fields set
@@ -5169,6 +5695,8 @@ EAPI Eina_Bool   evas_cserve_config_get(Evas_Cserve_Config *config) EINA_WARN_UN
 EAPI Eina_Bool   evas_cserve_config_set(const Evas_Cserve_Config *config) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @internal
+ *
  * Force the system to disconnect from the bitmap caching server.
  *
  * @ingroup Evas_Cserve
@@ -5211,6 +5739,10 @@ EAPI void        evas_cserve_disconnect(void);
  * Example_Evas_Images "example".
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char *evas_load_error_str(Evas_Load_Error error);
 
@@ -5232,6 +5764,10 @@ EAPI const char *evas_load_error_str(Evas_Load_Error error);
  * color format.
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  **/
 EAPI void evas_color_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b);
 
@@ -5249,6 +5785,10 @@ EAPI void evas_color_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *
  * color format.
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  **/
 EAPI void evas_color_rgb_to_hsv(int r, int g, int b, float *h, float *s, float *v);
 
@@ -5266,6 +5806,10 @@ EAPI void evas_color_rgb_to_hsv(int r, int g, int b, float *h, float *s, float *
  * factor. Alpha factor is used to define transparency.
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  **/
 EAPI void evas_color_argb_premul(int a, int *r, int *g, int *b);
 
@@ -5283,6 +5827,10 @@ EAPI void evas_color_argb_premul(int a, int *r, int *g, int *b);
  * @see evas_color_argb_premul().
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  **/
 EAPI void evas_color_argb_unpremul(int a, int *r, int *g, int *b);
 
@@ -5296,6 +5844,10 @@ EAPI void evas_color_argb_unpremul(int a, int *r, int *g, int *b);
  * factor. Alpha factor is used to define transparency.
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  **/
 EAPI void evas_data_argb_premul(unsigned int *data, unsigned int len);
 
@@ -5309,6 +5861,10 @@ EAPI void evas_data_argb_premul(unsigned int *data, unsigned int len);
  * factor. Alpha factor is used to define transparency.
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  **/
 EAPI void evas_data_argb_unpremul(unsigned int *data, unsigned int len);
 
@@ -5332,6 +5888,10 @@ EAPI void evas_data_argb_unpremul(unsigned int *data, unsigned int len);
  * @return The byte index of the next character
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int  evas_string_char_next_get(const char *str, int pos, int *decoded) EINA_ARG_NONNULL(1);
 
@@ -5353,6 +5913,10 @@ EAPI int  evas_string_char_next_get(const char *str, int pos, int *decoded) EINA
  * @return The byte index of the previous character
  *
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int  evas_string_char_prev_get(const char *str, int pos, int *decoded) EINA_ARG_NONNULL(1);
 
@@ -5361,6 +5925,10 @@ EAPI int  evas_string_char_prev_get(const char *str, int pos, int *decoded) EINA
  * @param  str The string to get the length of.
  * @return The length in characters (not bytes)
  * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int  evas_string_char_len_get(const char *str) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -5430,6 +5998,10 @@ EAPI void                    evas_language_reinit(void);
  * @see evas_key_modifier_get
  * @see evas_key_modifier_on
  * @see evas_key_modifier_off
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool            evas_key_modifier_is_set(const Evas_Modifier *m, const char *keyname) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
@@ -5449,6 +6021,10 @@ EAPI Eina_Bool            evas_key_modifier_is_set(const Evas_Modifier *m, const
  * @see evas_key_lock_del
  * @see evas_key_lock_on
  * @see evas_key_lock_off
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool            evas_key_lock_is_set(const Evas_Lock *l, const char *keyname) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1, 2);
 
@@ -5492,6 +6068,10 @@ typedef Eo Evas_Out;
  * for the application.
  * @ingroup Evas_Font_Path_Group
  * @since 1.9
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                    evas_font_path_global_clear(void);
 
@@ -5500,6 +6080,10 @@ EAPI void                    evas_font_path_global_clear(void);
  * @param   path The new font path.
  * @ingroup Evas_Font_Path_Group
  * @since 1.9
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                    evas_font_path_global_append(const char *path) EINA_ARG_NONNULL(1);
 
@@ -5508,6 +6092,10 @@ EAPI void                    evas_font_path_global_append(const char *path) EINA
  * @param   path The new font path.
  * @ingroup Evas_Font_Path_Group
  * @since 1.9
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                    evas_font_path_global_prepend(const char *path) EINA_ARG_NONNULL(1);
 
@@ -5516,6 +6104,10 @@ EAPI void                    evas_font_path_global_prepend(const char *path) EIN
  * @return  The list of font paths used.
  * @ingroup Evas_Font_Path_Group
  * @since 1.9
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Eina_List        *evas_font_path_global_list(void) EINA_WARN_UNUSED_RESULT;
 
@@ -5525,6 +6117,10 @@ EAPI const Eina_List        *evas_font_path_global_list(void) EINA_WARN_UNUSED_R
  *
  * @ingroup Evas_Font_Path_Group
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                    evas_font_reinit(void);
 

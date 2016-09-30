@@ -40,6 +40,10 @@ ecore_file_monitor_shutdown(void)
  * When one of the Ecore_File_Event event is notified, @p func is called
  * and @p data is passed to @p func.Call ecore_file_monitor_del() to
  * stop the monitoring.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_File_Monitor *
 ecore_file_monitor_add(const char           *path,
@@ -63,6 +67,10 @@ ecore_file_monitor_add(const char           *path,
  * returned by ecore_file_monitor_add(). If @p em is @c NULL, or none
  * of the notify methods (Inotify, Windows notification or polling) is
  * availablethis function does nothing.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_file_monitor_del(Ecore_File_Monitor *em)
@@ -82,6 +90,10 @@ ecore_file_monitor_del(Ecore_File_Monitor *em)
  * monitored by ecore_file_monitor_add(). @p em must be the value
  * returned by ecore_file_monitor_add(). If @p em is @c NULL, the
  * function returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *
 ecore_file_monitor_path_get(Ecore_File_Monitor *em)

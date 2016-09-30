@@ -373,6 +373,10 @@ typedef Eina_Bool    (*Eina_Hash_Foreach)(const Eina_Hash *hash, const void *key
  * eina_hash_string_small_new(), eina_hash_int32_new(),
  * eina_hash_int64_new(), eina_hash_pointer_new() and
  * eina_hash_stringshared_new().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Hash *eina_hash_new(Eina_Key_Length key_length_cb,
                               Eina_Key_Cmp    key_cmp_cb,
@@ -393,6 +397,10 @@ EAPI Eina_Hash *eina_hash_new(Eina_Key_Length key_length_cb,
  *
  * @since 1.1
  * @see eina_hash_new.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_hash_free_cb_set(Eina_Hash *hash, Eina_Free_Cb data_free_cb) EINA_ARG_NONNULL(1);
 
@@ -408,6 +416,10 @@ EAPI void eina_hash_free_cb_set(Eina_Hash *hash, Eina_Free_Cb data_free_cb) EINA
  * table management and strcmp() to compare the keys. Values can then
  * be looked up with pointers other than the original key pointer that
  * was used to add values. On failure, this function returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Hash *eina_hash_string_djb2_new(Eina_Free_Cb data_free_cb);
 
@@ -427,6 +439,10 @@ EAPI Eina_Hash *eina_hash_string_djb2_new(Eina_Free_Cb data_free_cb);
  *
  * NOTE: don't use this kind of hash when their is a possibility to remotely
  * request and push data in it. This hash is subject to denial of service.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Hash *eina_hash_string_superfast_new(Eina_Free_Cb data_free_cb);
 
@@ -445,6 +461,10 @@ EAPI Eina_Hash *eina_hash_string_superfast_new(Eina_Free_Cb data_free_cb);
  * table. Values can then be looked up with pointers other than the
  * original key pointer that was used to add values. On failure, this
  * function returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Hash *eina_hash_string_small_new(Eina_Free_Cb data_free_cb);
 
@@ -464,6 +484,10 @@ EAPI Eina_Hash *eina_hash_string_small_new(Eina_Free_Cb data_free_cb);
  * used to add values. This method is not suitable to match string keys as
  * it would only match the first character.
  * On failure, this function returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Hash *eina_hash_int32_new(Eina_Free_Cb data_free_cb);
 
@@ -482,6 +506,10 @@ EAPI Eina_Hash *eina_hash_int32_new(Eina_Free_Cb data_free_cb);
  * used to add values. This method is not suitable to match string keys as
  * it would only match the first character.
  * On failure, this function returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Hash *eina_hash_int64_new(Eina_Free_Cb data_free_cb);
 
@@ -508,6 +536,10 @@ EAPI Eina_Hash *eina_hash_int64_new(Eina_Free_Cb data_free_cb);
  * if (!eina_hash_find(hash, &data))
  *    eina_hash_add(hash, &data, data);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Hash *eina_hash_pointer_new(Eina_Free_Cb data_free_cb);
 
@@ -534,6 +566,10 @@ EAPI Eina_Hash *eina_hash_pointer_new(Eina_Free_Cb data_free_cb);
  * eina_hash_add(hash, a, value);
  * eina_hash_find(hash, "key");
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Hash *eina_hash_stringshared_new(Eina_Free_Cb data_free_cb);
 
@@ -557,6 +593,10 @@ EAPI Eina_Hash *eina_hash_stringshared_new(Eina_Free_Cb data_free_cb);
  * with eina_hash_find(), and removed with eina_hash_del(). Key
  * strings are case sensitive. This function returns #EINA_FALSE if an error
  * occurred, #EINA_TRUE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool  eina_hash_add(Eina_Hash  *hash,
                               const void *key,
@@ -585,6 +625,10 @@ EAPI Eina_Bool  eina_hash_add(Eina_Hash  *hash,
  * constant or stored elsewhere ( in the object being added). Key
  * strings are case sensitive. This function returns #EINA_FALSE if an error
  * occurred, #EINA_TRUE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_direct_add(Eina_Hash  *hash,
                                     const void *key,
@@ -612,6 +656,10 @@ EAPI Eina_Bool eina_hash_direct_add(Eina_Hash  *hash,
  *       eina_hash_del_by_key() or eina_hash_del_by_key_hash(). If you
  *       know you don't have the key, use eina_hash_del_by_data()
  *       directly.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_del(Eina_Hash  *hash,
                              const void *key,
@@ -629,6 +677,10 @@ EAPI Eina_Bool eina_hash_del(Eina_Hash  *hash,
  * @p hash. If @p hash is @c NULL, this function returns immediately
  * @c NULL. This function returns the data pointer on success, @c NULL
  * otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_hash_find(const Eina_Hash *hash,
                           const void      *key) EINA_ARG_NONNULL(2);
@@ -645,6 +697,10 @@ EAPI void *eina_hash_find(const Eina_Hash *hash,
  * This function modifies the data of @p key with @p data in @p
  * hash. If no entry is found, nothing is added to @p hash. On success
  * this function returns the old entry, otherwise it returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_hash_modify(Eina_Hash  *hash,
                             const void *key,
@@ -664,6 +720,10 @@ EAPI void *eina_hash_modify(Eina_Hash  *hash,
  * hash. If no entry is found, @p data is added to @p hash with the
  * key @p key. On success this function returns the old entry,
  * otherwise it returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_hash_set(Eina_Hash  *hash,
                          const void *key,
@@ -681,6 +741,10 @@ EAPI void *eina_hash_set(Eina_Hash  *hash,
  * This function allows for the move of data from one key to another,
  * but does not call the Eina_Free_Cb associated with the hash table
  * when destroying the old key.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_move(Eina_Hash  *hash,
                               const void *old_key,
@@ -707,6 +771,10 @@ EAPI Eina_Bool eina_hash_move(Eina_Hash  *hash,
  * eina_hash_free(hash);
  * hash = NULL;
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void      eina_hash_free(Eina_Hash *hash) EINA_ARG_NONNULL(1);
 
@@ -721,6 +789,10 @@ EAPI void      eina_hash_free(Eina_Hash *hash) EINA_ARG_NONNULL(1);
  * then frees the buckets. If no free callback has been passed, no
  * buckets value will be freed. If @p hash is @c NULL, the function
  * returns immediately.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void      eina_hash_free_buckets(Eina_Hash *hash) EINA_ARG_NONNULL(1);
 
@@ -732,6 +804,10 @@ EAPI void      eina_hash_free_buckets(Eina_Hash *hash) EINA_ARG_NONNULL(1);
  *
  * This function returns the number of entries in @p hash, or 0 on
  * error. If @p hash is @c NULL, @c 0 is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int       eina_hash_population(const Eina_Hash *hash) EINA_ARG_NONNULL(1);
 
@@ -758,6 +834,10 @@ EAPI int       eina_hash_population(const Eina_Hash *hash) EINA_ARG_NONNULL(1);
  * returns #EINA_FALSE if an error occurred, #EINA_TRUE otherwise.
  *
  * @see eina_hash_add()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_add_by_hash(Eina_Hash  *hash,
                                      const void *key,
@@ -792,6 +872,10 @@ EAPI Eina_Bool eina_hash_add_by_hash(Eina_Hash  *hash,
  * returns #EINA_FALSE if an error occurred, #EINA_TRUE otherwise.
  *
  * @see eina_hash_direct_add()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_direct_add_by_hash(Eina_Hash  *hash,
                                             const void *key,
@@ -819,6 +903,10 @@ EAPI Eina_Bool eina_hash_direct_add_by_hash(Eina_Hash  *hash,
  *
  * @note if you don't have the key_hash, use eina_hash_del_by_key() instead.
  * @note if you don't have the key, use eina_hash_del_by_data() instead.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_del_by_key_hash(Eina_Hash  *hash,
                                          const void *key,
@@ -846,6 +934,10 @@ EAPI Eina_Bool eina_hash_del_by_key_hash(Eina_Hash  *hash,
  * @note if you already have the key_hash, use eina_hash_del_by_key_hash()
  * instead.
  * @note if you don't have the key, use eina_hash_del_by_data() instead.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_del_by_key(Eina_Hash  *hash,
                                     const void *key) EINA_ARG_NONNULL(1, 2);
@@ -869,6 +961,10 @@ EAPI Eina_Bool eina_hash_del_by_key(Eina_Hash  *hash,
  *
  * @note if you already have the key, use eina_hash_del_by_key() or
  * eina_hash_del_by_key_hash() instead.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_del_by_data(Eina_Hash  *hash,
                                      const void *data) EINA_ARG_NONNULL(1, 2);
@@ -901,6 +997,10 @@ EAPI Eina_Bool eina_hash_del_by_data(Eina_Hash  *hash,
  * @note if you know you already have the key, use eina_hash_del_by_key_hash(),
  *       if you know you don't have the key, use eina_hash_del_by_data()
  *       directly.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_del_by_hash(Eina_Hash  *hash,
                                      const void *key,
@@ -924,6 +1024,10 @@ EAPI Eina_Bool eina_hash_del_by_hash(Eina_Hash  *hash,
  * '\\0' for string when setting the value of @p key_length. If
  * @p hash is @c NULL, this function returns immediately @c NULL. This
  * function returns the data pointer on success, @c NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_hash_find_by_hash(const Eina_Hash *hash,
                                   const void      *key,
@@ -944,6 +1048,10 @@ EAPI void *eina_hash_find_by_hash(const Eina_Hash *hash,
  * @return The data pointer for the old stored entry, or @c NULL if not
  *          found. If an existing entry is not found, nothing is added to the
  *          hash.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *eina_hash_modify_by_hash(Eina_Hash  *hash,
                                     const void *key,
@@ -968,6 +1076,10 @@ EAPI void *eina_hash_modify_by_hash(Eina_Hash  *hash,
  * @warning if the hash structure changes then the iterator becomes
  *    invalid! That is, if you add or remove items this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_hash_iterator_key_new(const Eina_Hash *hash) EINA_MALLOC EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -988,6 +1100,10 @@ EAPI Eina_Iterator *eina_hash_iterator_key_new(const Eina_Hash *hash) EINA_MALLO
  * @warning if the hash structure changes then the iterator becomes
  * invalid. That is, if you add or remove items this iterator behavior
  * is undefined and your program may crash.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_hash_iterator_data_new(const Eina_Hash *hash) EINA_MALLOC EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -1011,6 +1127,10 @@ EAPI Eina_Iterator *eina_hash_iterator_data_new(const Eina_Hash *hash) EINA_MALL
  * @warning if the hash structure changes then the iterator becomes
  *    invalid! That is, if you add or remove items this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator *eina_hash_iterator_tuple_new(const Eina_Hash *hash) EINA_MALLOC EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -1048,6 +1168,10 @@ EAPI Eina_Iterator *eina_hash_iterator_tuple_new(const Eina_Hash *hash) EINA_MAL
  *   free(hash_fn_data);
  * }
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void           eina_hash_foreach(const Eina_Hash  *hash,
                                       Eina_Hash_Foreach func,
@@ -1064,6 +1188,10 @@ EAPI void           eina_hash_foreach(const Eina_Hash  *hash,
  * @param key The key associated with the data
  * @param data The data to append to the list
  * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_hash_list_append(Eina_Hash *hash, const void *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 /**
@@ -1076,6 +1204,10 @@ EAPI void eina_hash_list_append(Eina_Hash *hash, const void *key, const void *da
  * @param key The key associated with the data
  * @param data The data to prepend to the list
  * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_hash_list_prepend(Eina_Hash *hash, const void *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 /**
@@ -1088,6 +1220,10 @@ EAPI void eina_hash_list_prepend(Eina_Hash *hash, const void *key, const void *d
  * @param key The key associated with the data
  * @param data The data to remove from the list
  * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_hash_list_remove(Eina_Hash *hash, const void *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -1098,6 +1234,10 @@ EAPI void eina_hash_list_remove(Eina_Hash *hash, const void *key, const void *da
  * @param key The key to hash
  * @param len The length of the key
  * @return The hash value
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int eina_hash_superfast(const char *key,
                              int         len) EINA_ARG_NONNULL(1);

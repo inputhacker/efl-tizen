@@ -736,6 +736,10 @@ struct _Ecore_IMF_Context_Info
  * @return  Number of times the library has been initialised without being
  *          shut down.
  * @ingroup Ecore_IMF_Lib_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                           ecore_imf_init(void);
 
@@ -744,6 +748,10 @@ EAPI int                           ecore_imf_init(void);
  * @return  Number of times the library has been initialised without being
  *          shut down.
  * @ingroup Ecore_IMF_Lib_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                           ecore_imf_shutdown(void);
 
@@ -755,6 +763,10 @@ EAPI int                           ecore_imf_shutdown(void);
  * @param imf_module_exit   A function to call when exiting
  *
  * @ingroup Ecore_IMF_Lib_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_module_register(const Ecore_IMF_Context_Info *info, Ecore_IMF_Context *(*imf_module_create)(void), Ecore_IMF_Context *(*imf_module_exit)(void));
 
@@ -764,6 +776,10 @@ EAPI void                          ecore_imf_module_register(const Ecore_IMF_Con
             EINA_FALSE if the input panel is already in hidden state
  * @ingroup Ecore_IMF_Lib_Group
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_input_panel_hide(void);
 
@@ -776,6 +792,10 @@ EAPI Eina_Bool                     ecore_imf_input_panel_hide(void);
  * @return Return an Eina_List of strings;
  *         on failure it returns NULL.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List                    *ecore_imf_context_available_ids_get(void);
 
@@ -789,6 +809,10 @@ EAPI Eina_List                    *ecore_imf_context_available_ids_get(void);
  * @return Return an Eina_List of strings;
  *         on failure it returns NULL.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List                    *ecore_imf_context_available_ids_by_canvas_type_get(const char *canvas_type);
 
@@ -800,6 +824,10 @@ EAPI Eina_List                    *ecore_imf_context_available_ids_by_canvas_typ
  * @return Return a string containing the id of the default Input
  *         Method Context; on failure it returns NULL.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char                   *ecore_imf_context_default_id_get(void);
 
@@ -813,6 +841,10 @@ EAPI const char                   *ecore_imf_context_default_id_get(void);
  * @return Return a string containing the id of the default Input
  *         Method Context; on failure it returns NULL.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char                   *ecore_imf_context_default_id_by_canvas_type_get(const char *canvas_type);
 
@@ -849,6 +881,10 @@ EAPI const char                   *ecore_imf_context_default_id_by_canvas_type_g
  *        }
  *   }
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Ecore_IMF_Context_Info *ecore_imf_context_info_by_id_get(const char *id);
 
@@ -859,6 +895,10 @@ EAPI const Ecore_IMF_Context_Info *ecore_imf_context_info_by_id_get(const char *
  * @return A newly allocated Input Method Context;
  *         on failure it returns NULL.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Context            *ecore_imf_context_add(const char *id);
 
@@ -869,6 +909,10 @@ EAPI Ecore_IMF_Context            *ecore_imf_context_add(const char *id);
  * @return Return a #Ecore_IMF_Context_Info for the given Input Method Context;
  *         on failure it returns NULL.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const Ecore_IMF_Context_Info *ecore_imf_context_info_get(Ecore_IMF_Context *ctx);
 
@@ -877,6 +921,10 @@ EAPI const Ecore_IMF_Context_Info *ecore_imf_context_info_get(Ecore_IMF_Context 
  *
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_del(Ecore_IMF_Context *ctx);
 
@@ -890,6 +938,10 @@ EAPI void                          ecore_imf_context_del(Ecore_IMF_Context *ctx)
  * @param window The client window. This may be @c NULL to indicate
  *               that the previous client window no longer exists.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_client_window_set(Ecore_IMF_Context *ctx, void *window);
 
@@ -902,6 +954,10 @@ EAPI void                          ecore_imf_context_client_window_set(Ecore_IMF
  * @return Return the client window.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                         *ecore_imf_context_client_window_get(Ecore_IMF_Context *ctx);
 
@@ -917,6 +973,10 @@ EAPI void                         *ecore_imf_context_client_window_get(Ecore_IMF
  * @param canvas The client canvas. This may be @c NULL to indicate
  *               that the previous client canvas no longer exists.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_client_canvas_set(Ecore_IMF_Context *ctx, void *canvas);
 
@@ -929,6 +989,10 @@ EAPI void                          ecore_imf_context_client_canvas_set(Ecore_IMF
  * @return Return the client canvas.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                         *ecore_imf_context_client_canvas_get(Ecore_IMF_Context *ctx);
 
@@ -937,6 +1001,10 @@ EAPI void                         *ecore_imf_context_client_canvas_get(Ecore_IMF
  *
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_show(Ecore_IMF_Context *ctx);
 
@@ -945,6 +1013,10 @@ EAPI void                          ecore_imf_context_show(Ecore_IMF_Context *ctx
  *
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_hide(Ecore_IMF_Context *ctx);
 
@@ -958,6 +1030,10 @@ EAPI void                          ecore_imf_context_hide(Ecore_IMF_Context *ctx
  * @param cursor_pos Location to store position of cursor (in characters)
  *                   within the preedit string.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_preedit_string_get(Ecore_IMF_Context *ctx, char **str, int *cursor_pos);
 
@@ -1013,6 +1089,10 @@ EAPI void                          ecore_imf_context_preedit_string_get(Ecore_IM
  * free(preedit_string);
  * @endcode
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_preedit_string_with_attributes_get(Ecore_IMF_Context *ctx, char **str, Eina_List **attrs, int *cursor_pos);
 
@@ -1034,6 +1114,10 @@ EAPI void                          ecore_imf_context_preedit_string_with_attribu
  *
  * evas_object_event_callback_add(obj, EVAS_CALLBACK_FOCUS_IN, _focus_in_cb, imf_context);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_focus_in(Ecore_IMF_Context *ctx);
 
@@ -1056,6 +1140,10 @@ EAPI void                          ecore_imf_context_focus_in(Ecore_IMF_Context 
  *
  * evas_object_event_callback_add(obj, EVAS_CALLBACK_FOCUS_OUT, _focus_out_cb, ed);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_focus_out(Ecore_IMF_Context *ctx);
 
@@ -1086,6 +1174,10 @@ EAPI void                          ecore_imf_context_focus_out(Ecore_IMF_Context
  *
  * evas_object_event_callback_add(obj, EVAS_CALLBACK_FOCUS_OUT, _focus_out_cb, imf_context);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_reset(Ecore_IMF_Context *ctx);
 
@@ -1101,6 +1193,10 @@ EAPI void                          ecore_imf_context_reset(Ecore_IMF_Context *ct
  * @param ctx An #Ecore_IMF_Context.
  * @param cursor_pos New cursor position in characters.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_cursor_position_set(Ecore_IMF_Context *ctx, int cursor_pos);
 
@@ -1117,6 +1213,10 @@ EAPI void                          ecore_imf_context_cursor_position_set(Ecore_I
  * @param h cursor height.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_cursor_location_set(Ecore_IMF_Context *ctx, int x, int y, int w, int h);
 
@@ -1129,6 +1229,10 @@ EAPI void                          ecore_imf_context_cursor_location_set(Ecore_I
  * @param ctx An #Ecore_IMF_Context.
  * @param use_preedit Whether the IM context should use the preedit string.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_use_preedit_set(Ecore_IMF_Context *ctx, Eina_Bool use_preedit);
 
@@ -1144,6 +1248,10 @@ EAPI void                          ecore_imf_context_use_preedit_set(Ecore_IMF_C
  * @param func The callback to be called.
  * @param data The data pointer to be passed to @p func
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_retrieve_surrounding_callback_set(Ecore_IMF_Context *ctx, Eina_Bool (*func)(void *data, Ecore_IMF_Context *ctx, char **text, int *cursor_pos), const void *data);
 
@@ -1158,6 +1266,10 @@ EAPI void                          ecore_imf_context_retrieve_surrounding_callba
  * @param data The data pointer to be passed to @p func
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_retrieve_selection_callback_set(Ecore_IMF_Context *ctx, Eina_Bool (*func)(void *data, Ecore_IMF_Context *ctx, char **text), const void *data);
 
@@ -1171,6 +1283,10 @@ EAPI void                          ecore_imf_context_retrieve_selection_callback
  * @param ctx An #Ecore_IMF_Context.
  * @param input_mode The input mode to be used by @p ctx.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_mode_set(Ecore_IMF_Context *ctx, Ecore_IMF_Input_Mode input_mode);
 
@@ -1182,6 +1298,10 @@ EAPI void                          ecore_imf_context_input_mode_set(Ecore_IMF_Co
  * @param ctx An #Ecore_IMF_Context.
  * @return The input mode being used by @p ctx.
  * @ingroup Ecore_IMF_Context_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Input_Mode          ecore_imf_context_input_mode_get(Ecore_IMF_Context *ctx);
 
@@ -1221,6 +1341,10 @@ EAPI Ecore_IMF_Input_Mode          ecore_imf_context_input_mode_get(Ecore_IMF_Co
  *
  * evas_object_event_callback_add(obj, EVAS_CALLBACK_KEY_DOWN, _key_down_cb, data);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_context_filter_event(Ecore_IMF_Context *ctx, Ecore_IMF_Event_Type type, Ecore_IMF_Event *event);
 
@@ -1242,6 +1366,10 @@ EAPI Eina_Bool                     ecore_imf_context_filter_event(Ecore_IMF_Cont
  * @param ctxc An #Ecore_IMF_Context_Class.
  * @return A new #Ecore_IMF_Context; on failure it returns NULL.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Context            *ecore_imf_context_new(const Ecore_IMF_Context_Class *ctxc);
 
@@ -1256,6 +1384,10 @@ EAPI Ecore_IMF_Context            *ecore_imf_context_new(const Ecore_IMF_Context
  * @param data The Input Method Context specific data.
  * @return A new #Ecore_IMF_Context; on failure it returns NULL.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_data_set(Ecore_IMF_Context *ctx, void *data);
 
@@ -1267,6 +1399,10 @@ EAPI void                          ecore_imf_context_data_set(Ecore_IMF_Context 
  * @param ctx An #Ecore_IMF_Context.
  * @return The Input Method Context specific data.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                         *ecore_imf_context_data_get(Ecore_IMF_Context *ctx);
 
@@ -1294,6 +1430,10 @@ EAPI void                         *ecore_imf_context_data_get(Ecore_IMF_Context 
  * @return @c EINA_TRUE if surrounding text was provided; otherwise
  * @c EINA_FALSE.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_context_surrounding_get(Ecore_IMF_Context *ctx, char **text, int *cursor_pos);
 
@@ -1316,6 +1456,10 @@ EAPI Eina_Bool                     ecore_imf_context_surrounding_get(Ecore_IMF_C
  * @c EINA_FALSE.
  * @ingroup Ecore_IMF_Context_Module_Group
  * @since 1.9.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_context_selection_get(Ecore_IMF_Context *ctx, char **text);
 
@@ -1328,6 +1472,10 @@ EAPI Eina_Bool                     ecore_imf_context_selection_get(Ecore_IMF_Con
  *
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_preedit_start_event_add(Ecore_IMF_Context *ctx);
 
@@ -1340,6 +1488,10 @@ EAPI void                          ecore_imf_context_preedit_start_event_add(Eco
  *
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_preedit_end_event_add(Ecore_IMF_Context *ctx);
 
@@ -1351,6 +1503,10 @@ EAPI void                          ecore_imf_context_preedit_end_event_add(Ecore
  *
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_preedit_changed_event_add(Ecore_IMF_Context *ctx);
 
@@ -1363,6 +1519,10 @@ EAPI void                          ecore_imf_context_preedit_changed_event_add(E
  * @param ctx An #Ecore_IMF_Context.
  * @param str The committed string.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_commit_event_add(Ecore_IMF_Context *ctx, const char *str);
 
@@ -1380,6 +1540,10 @@ EAPI void                          ecore_imf_context_commit_event_add(Ecore_IMF_
  * @param offset The start offset of surrounding to be deleted.
  * @param n_chars The number of characters to be deleted.
  * @ingroup Ecore_IMF_Context_Module_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_delete_surrounding_event_add(Ecore_IMF_Context *ctx, int offset, int n_chars);
 
@@ -1414,6 +1578,10 @@ EAPI void                          ecore_imf_context_delete_surrounding_event_ad
  *
  * ecore_imf_context_event_callback_add(en->imf_context, ECORE_IMF_CALLBACK_COMMIT, _imf_event_commit_cb, data);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_event_callback_add(Ecore_IMF_Context *ctx, Ecore_IMF_Callback_Type type, Ecore_IMF_Event_Cb func, const void *data);
 
@@ -1433,6 +1601,10 @@ EAPI void                          ecore_imf_context_event_callback_add(Ecore_IM
  * @return the data pointer
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                         *ecore_imf_context_event_callback_del(Ecore_IMF_Context *ctx, Ecore_IMF_Callback_Type type, Ecore_IMF_Event_Cb func);
 
@@ -1452,6 +1624,10 @@ EAPI void                         *ecore_imf_context_event_callback_del(Ecore_IM
  *        pass to the callback functions registered on this event
  * @ingroup Ecore_IMF_Context_Module_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_event_callback_call(Ecore_IMF_Context *ctx, Ecore_IMF_Callback_Type type, void *event_info);
 
@@ -1465,6 +1641,10 @@ EAPI void                          ecore_imf_context_event_callback_call(Ecore_I
  * @note Default value is EINA_TRUE.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_prediction_allow_set(Ecore_IMF_Context *ctx, Eina_Bool prediction);
 
@@ -1476,6 +1656,10 @@ EAPI void                          ecore_imf_context_prediction_allow_set(Ecore_
  * @c EINA_FALSE.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_context_prediction_allow_get(Ecore_IMF_Context *ctx);
 
@@ -1487,6 +1671,10 @@ EAPI Eina_Bool                     ecore_imf_context_prediction_allow_get(Ecore_
  * @note Default type is ECORE_IMF_AUTOCAPITAL_TYPE_SENTENCE.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_autocapital_type_set(Ecore_IMF_Context *ctx, Ecore_IMF_Autocapital_Type autocapital_type);
 
@@ -1497,6 +1685,10 @@ EAPI void                          ecore_imf_context_autocapital_type_set(Ecore_
  * @return The autocapital type being used by @p ctx.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Autocapital_Type    ecore_imf_context_autocapital_type_get(Ecore_IMF_Context *ctx);
 
@@ -1508,6 +1700,10 @@ EAPI Ecore_IMF_Autocapital_Type    ecore_imf_context_autocapital_type_get(Ecore_
  * @note The default input hint is @c ECORE_IMF_INPUT_HINT_AUTO_COMPLETE.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.12
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_hint_set(Ecore_IMF_Context *ctx, Ecore_IMF_Input_Hints hints);
 
@@ -1518,6 +1714,10 @@ EAPI void                          ecore_imf_context_input_hint_set(Ecore_IMF_Co
  * @return The value of input hint
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.12
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Input_Hints         ecore_imf_context_input_hint_get(Ecore_IMF_Context *ctx);
 
@@ -1527,6 +1727,10 @@ EAPI Ecore_IMF_Input_Hints         ecore_imf_context_input_hint_get(Ecore_IMF_Co
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_control_panel_show(Ecore_IMF_Context *ctx);
 
@@ -1536,6 +1740,10 @@ EAPI void                          ecore_imf_context_control_panel_show(Ecore_IM
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_control_panel_hide(Ecore_IMF_Context *ctx);
 
@@ -1545,6 +1753,10 @@ EAPI void                          ecore_imf_context_control_panel_hide(Ecore_IM
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_show(Ecore_IMF_Context *ctx);
 
@@ -1554,6 +1766,10 @@ EAPI void                          ecore_imf_context_input_panel_show(Ecore_IMF_
  * @param ctx An #Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_hide(Ecore_IMF_Context *ctx);
 
@@ -1565,6 +1781,10 @@ EAPI void                          ecore_imf_context_input_panel_hide(Ecore_IMF_
  * @note Default layout type is ECORE_IMF_INPUT_PANEL_LAYOUT_NORMAL.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_layout_set(Ecore_IMF_Context *ctx, Ecore_IMF_Input_Panel_Layout layout);
 
@@ -1575,6 +1795,10 @@ EAPI void                          ecore_imf_context_input_panel_layout_set(Ecor
  * @return layout see #Ecore_IMF_Input_Panel_Layout
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Input_Panel_Layout  ecore_imf_context_input_panel_layout_get(Ecore_IMF_Context *ctx);
 
@@ -1586,6 +1810,10 @@ EAPI Ecore_IMF_Input_Panel_Layout  ecore_imf_context_input_panel_layout_get(Ecor
  * @note Default layout variation type is NORMAL.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_layout_variation_set(Ecore_IMF_Context *ctx, int variation);
 
@@ -1596,6 +1824,10 @@ EAPI void                          ecore_imf_context_input_panel_layout_variatio
  * @return the layout variation
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                           ecore_imf_context_input_panel_layout_variation_get(Ecore_IMF_Context *ctx);
 
@@ -1607,6 +1839,10 @@ EAPI int                           ecore_imf_context_input_panel_layout_variatio
  * @param lang the language to be set to the input panel.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_language_set(Ecore_IMF_Context *ctx, Ecore_IMF_Input_Panel_Lang lang);
 
@@ -1619,6 +1855,10 @@ EAPI void                          ecore_imf_context_input_panel_language_set(Ec
  * @return Ecore_IMF_Input_Panel_Lang
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Input_Panel_Lang    ecore_imf_context_input_panel_language_get(Ecore_IMF_Context *ctx);
 
@@ -1630,6 +1870,10 @@ EAPI Ecore_IMF_Input_Panel_Lang    ecore_imf_context_input_panel_language_get(Ec
  * @param enabled If true, the input panel will be shown when the widget is clicked or has focus.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_enabled_set(Ecore_IMF_Context *ctx, Eina_Bool enabled);
 
@@ -1640,6 +1884,10 @@ EAPI void                          ecore_imf_context_input_panel_enabled_set(Eco
  * @return Return the attribute to show the input panel automatically
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_context_input_panel_enabled_get(Ecore_IMF_Context *ctx);
 
@@ -1654,6 +1902,10 @@ EAPI Eina_Bool                     ecore_imf_context_input_panel_enabled_get(Eco
  * @param len the length of data, in bytes, to send to the input panel
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_imdata_set(Ecore_IMF_Context *ctx, const void *data, int len);
 
@@ -1665,6 +1917,10 @@ EAPI void                          ecore_imf_context_input_panel_imdata_set(Ecor
  * @param len The length of data
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_imdata_get(Ecore_IMF_Context *ctx, void *data, int *len);
 
@@ -1679,6 +1935,10 @@ EAPI void                          ecore_imf_context_input_panel_imdata_get(Ecor
  * @note Default type is ECORE_IMF_INPUT_PANEL_RETURN_KEY_TYPE_DEFAULT.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_return_key_type_set(Ecore_IMF_Context *ctx, Ecore_IMF_Input_Panel_Return_Key_Type return_key_type);
 
@@ -1691,6 +1951,10 @@ EAPI void                          ecore_imf_context_input_panel_return_key_type
  * @return The type of "return" key on the input panel
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Input_Panel_Return_Key_Type ecore_imf_context_input_panel_return_key_type_get(Ecore_IMF_Context *ctx);
 
@@ -1701,6 +1965,10 @@ EAPI Ecore_IMF_Input_Panel_Return_Key_Type ecore_imf_context_input_panel_return_
  * @param disabled The state
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_return_key_disabled_set(Ecore_IMF_Context *ctx, Eina_Bool disabled);
 
@@ -1711,6 +1979,10 @@ EAPI void                          ecore_imf_context_input_panel_return_key_disa
  * @return @c EINA_TRUE if it should be disabled.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_context_input_panel_return_key_disabled_get(Ecore_IMF_Context *ctx);
 
@@ -1721,6 +1993,10 @@ EAPI Eina_Bool                     ecore_imf_context_input_panel_return_key_disa
  * @param mode Turn on caps lock on the input panel if @c EINA_TRUE.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_caps_lock_mode_set(Ecore_IMF_Context *ctx, Eina_Bool mode);
 
@@ -1731,6 +2007,10 @@ EAPI void                          ecore_imf_context_input_panel_caps_lock_mode_
  * @return @c EINA_TRUE if the caps lock is turned on.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.2.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_context_input_panel_caps_lock_mode_get(Ecore_IMF_Context *ctx);
 
@@ -1744,6 +2024,10 @@ EAPI Eina_Bool                     ecore_imf_context_input_panel_caps_lock_mode_
  * @param h height of the input panel
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.3
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_geometry_get(Ecore_IMF_Context *ctx, int *x, int *y, int *w, int *h);
 
@@ -1754,6 +2038,10 @@ EAPI void                          ecore_imf_context_input_panel_geometry_get(Ec
  * @return The state of input panel.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.3
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_Input_Panel_State   ecore_imf_context_input_panel_state_get(Ecore_IMF_Context *ctx);
 
@@ -1768,6 +2056,10 @@ EAPI Ecore_IMF_Input_Panel_State   ecore_imf_context_input_panel_state_get(Ecore
  * @param data application-input panel specific data.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.3
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_event_callback_add(Ecore_IMF_Context *ctx, Ecore_IMF_Input_Panel_Event type, void (*func) (void *data, Ecore_IMF_Context *ctx, int value), const void *data);
 
@@ -1779,6 +2071,10 @@ EAPI void                          ecore_imf_context_input_panel_event_callback_
  * @param func the callback function
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.3
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_event_callback_del(Ecore_IMF_Context *ctx, Ecore_IMF_Input_Panel_Event type, void (*func) (void *data, Ecore_IMF_Context *ctx, int value));
 
@@ -1790,6 +2086,10 @@ EAPI void                          ecore_imf_context_input_panel_event_callback_
  * @param value the event value
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_event_callback_call(Ecore_IMF_Context *ctx, Ecore_IMF_Input_Panel_Event type, int value);
 
@@ -1801,6 +2101,10 @@ EAPI void                          ecore_imf_context_input_panel_event_callback_
  * @param ctx Ecore_IMF_Context.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_event_callback_clear(Ecore_IMF_Context *ctx);
 
@@ -1814,6 +2118,10 @@ EAPI void                          ecore_imf_context_input_panel_event_callback_
  *             string retrieved must be freed with free().
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.3
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_language_locale_get(Ecore_IMF_Context *ctx, char **lang);
 
@@ -1827,6 +2135,10 @@ EAPI void                          ecore_imf_context_input_panel_language_locale
  * @param h height of the candidate panel
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.3
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_candidate_panel_geometry_get(Ecore_IMF_Context *ctx, int *x, int *y, int *w, int *h);
 
@@ -1838,6 +2150,10 @@ EAPI void                          ecore_imf_context_candidate_panel_geometry_ge
  * @param ondemand If true, the input panel will be shown in case of only Mouse up event. (Focus event will be ignored.)
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_input_panel_show_on_demand_set(Ecore_IMF_Context *ctx, Eina_Bool ondemand);
 
@@ -1848,6 +2164,10 @@ EAPI void                          ecore_imf_context_input_panel_show_on_demand_
  * @return @c EINA_TRUE if the input panel will be shown in case of only Mouse up event.
  * @ingroup Ecore_IMF_Context_Group
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool                     ecore_imf_context_input_panel_show_on_demand_get(Ecore_IMF_Context *ctx);
 
@@ -1859,6 +2179,10 @@ EAPI Eina_Bool                     ecore_imf_context_input_panel_show_on_demand_
  *
  * @param[in] ctx An #Ecore_IMF_Context
  * @param[in] direction the direction mode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                          ecore_imf_context_bidi_direction_set(Ecore_IMF_Context *ctx, Ecore_IMF_BiDi_Direction direction);
 
@@ -1870,6 +2194,10 @@ EAPI void                          ecore_imf_context_bidi_direction_set(Ecore_IM
  *
  * @param[in] ctx An #Ecore_IMF_Context
  * @return the direction mode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Ecore_IMF_BiDi_Direction      ecore_imf_context_bidi_direction_get(Ecore_IMF_Context *ctx);
 

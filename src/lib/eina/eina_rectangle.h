@@ -348,6 +348,10 @@ static inline Eina_Bool   eina_rectangle_subtract(Eina_Rectangle *thiz, Eina_Rec
  * This function adds the rectangle of size (@p width, @p height) to a
  * new pool. If the pool can not be created, @c NULL is
  * returned. Otherwise the newly allocated pool is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Rectangle_Pool *eina_rectangle_pool_new(int w, int h) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -359,6 +363,10 @@ EAPI Eina_Rectangle_Pool *eina_rectangle_pool_new(int w, int h) EINA_MALLOC EINA
  *
  * This function returns the pool in which @p rect is. If  @p rect is
  * @c NULL, @c NULL is returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Rectangle_Pool *eina_rectangle_pool_get(Eina_Rectangle *rect) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -374,6 +382,10 @@ EAPI Eina_Rectangle_Pool *eina_rectangle_pool_get(Eina_Rectangle *rect) EINA_WAR
  * them in respectively @p w and @p h if they are not @c NULL. If
  * @p pool is @c NULL, #EINA_FALSE is returned. Otherwise #EINA_TRUE is
  * returned.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool            eina_rectangle_pool_geometry_get(Eina_Rectangle_Pool *pool, int *w, int *h) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -386,6 +398,10 @@ EAPI Eina_Bool            eina_rectangle_pool_geometry_get(Eina_Rectangle_Pool *
  * This function gets the data from @p pool set by
  * eina_rectangle_pool_data_set(). If @p pool is @c NULL, this
  * function returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                *eina_rectangle_pool_data_get(Eina_Rectangle_Pool *pool) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -397,6 +413,10 @@ EAPI void                *eina_rectangle_pool_data_get(Eina_Rectangle_Pool *pool
  *
  * This function sets @p data to @p pool. If @p pool is @c NULL, this
  * function does nothing.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                 eina_rectangle_pool_data_set(Eina_Rectangle_Pool *pool, const void *data) EINA_ARG_NONNULL(1);
 
@@ -407,6 +427,10 @@ EAPI void                 eina_rectangle_pool_data_set(Eina_Rectangle_Pool *pool
  *
  * This function frees the allocated data of @p pool. If @p pool is
  * @c NULL, this function returned immediately.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                 eina_rectangle_pool_free(Eina_Rectangle_Pool *pool) EINA_ARG_NONNULL(1);
 
@@ -417,6 +441,10 @@ EAPI void                 eina_rectangle_pool_free(Eina_Rectangle_Pool *pool) EI
  * @return The number of rectangles in the pool.
  *
  * This function returns the number of rectangles in @p pool.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                  eina_rectangle_pool_count(Eina_Rectangle_Pool *pool) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -434,6 +462,10 @@ EAPI int                  eina_rectangle_pool_count(Eina_Rectangle_Pool *pool) E
  * pool size, the function returns @c NULL. On success, the function
  * returns the rectangle which matches the size (@p w, @p h).
  * Otherwise it returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Rectangle      *eina_rectangle_pool_request(Eina_Rectangle_Pool *pool, int w, int h) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -445,6 +477,10 @@ EAPI Eina_Rectangle      *eina_rectangle_pool_request(Eina_Rectangle_Pool *pool,
  * This function removes @p rect from the pool. If @p rect is
  * @c NULL, the function returns immediately. Otherwise it removes @p
  * rect from the pool.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                 eina_rectangle_pool_release(Eina_Rectangle *rect) EINA_ARG_NONNULL(1);
 
@@ -484,6 +520,10 @@ EAPI void                 eina_rectangle_pool_release(Eina_Rectangle *rect) EINA
  * coordinates (@p x, @p y), with height @p w and height @p h and adds
  * it to the rectangles pool. No check is done on @p w and @p h. This
  * function returns a new rectangle on success, @c NULL otherwhise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Rectangle *eina_rectangle_new(int x, int y, int w, int h) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -493,6 +533,10 @@ EAPI Eina_Rectangle *eina_rectangle_new(int x, int y, int w, int h) EINA_MALLOC 
  * @param rect The rectangle to free.
  *
  * This function removes @p rect from the rectangles pool.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            eina_rectangle_free(Eina_Rectangle *rect) EINA_ARG_NONNULL(1);
 
@@ -504,6 +548,10 @@ EAPI void            eina_rectangle_free(Eina_Rectangle *rect) EINA_ARG_NONNULL(
  * This function sets @p type of @p pool.
  * @see Eina_Rectangle_Packing
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void            eina_rectangle_pool_packing_set(Eina_Rectangle_Pool *pool,Eina_Rectangle_Packing type) EINA_ARG_NONNULL(1);
 

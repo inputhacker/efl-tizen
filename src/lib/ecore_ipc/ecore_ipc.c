@@ -243,6 +243,10 @@ static Ecore_Event_Handler *handler[6];
  * @return  Number of times the library has been initialised without
  *          being shut down.
  * @ingroup Ecore_IPC_Library_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_ipc_init(void)
@@ -288,6 +292,10 @@ ecore_ipc_init(void)
  * @return  Number of times the library has been initialised without being
  *          shut down.
  * @ingroup Ecore_IPC_Library_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_ipc_shutdown(void)
@@ -331,6 +339,10 @@ ecore_ipc_shutdown(void)
  * @return  New IPC server.  If there is an error, @c NULL is returned.
  * @ingroup Ecore_IPC_Server_Group
  * @todo    Need to add protocol type parameter to this function.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Ipc_Server *
 ecore_ipc_server_add(Ecore_Ipc_Type compl_type, const char *name, int port, const void *data)
@@ -389,6 +401,10 @@ ecore_ipc_server_add(Ecore_Ipc_Type compl_type, const char *name, int port, cons
  * @return  A new IPC server.  @c NULL is returned on error.
  * @ingroup Ecore_IPC_Server_Group
  * @todo    Need to add protocol type parameter.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Ipc_Server *
 ecore_ipc_server_connect(Ecore_Ipc_Type compl_type, char *name, int port, const void *data)
@@ -438,6 +454,10 @@ ecore_ipc_server_connect(Ecore_Ipc_Type compl_type, char *name, int port, const 
  * @param   svr The given IPC server.
  * @return  The data associated with the server when it was created.
  * @ingroup Ecore_IPC_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 ecore_ipc_server_del(Ecore_Ipc_Server *svr)
@@ -477,6 +497,10 @@ ecore_ipc_server_del(Ecore_Ipc_Server *svr)
  * @param   svr The given IPC server.
  * @return  The associated data.
  * @ingroup Ecore_IPC_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 ecore_ipc_server_data_get(Ecore_Ipc_Server *svr)
@@ -495,6 +519,10 @@ ecore_ipc_server_data_get(Ecore_Ipc_Server *svr)
  * @param   svr The given IPC server.
  * @return @c EINA_TRUE if the server is connected, @c EINA_FALSE otherwise.
  * @ingroup Ecore_IPC_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_ipc_server_connected_get(Ecore_Ipc_Server *svr)
@@ -513,6 +541,10 @@ ecore_ipc_server_connected_get(Ecore_Ipc_Server *svr)
  * @param   svr The given IPC server.
  * @return  An Eina_List with the clients.
  * @ingroup Ecore_IPC_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_List *
 ecore_ipc_server_clients_get(Ecore_Ipc_Server *svr)
@@ -576,6 +608,10 @@ ecore_ipc_server_clients_get(Ecore_Ipc_Server *svr)
  * @ingroup Ecore_IPC_Server_Group
  * @todo    This function needs to become an IPC message.
  * @todo Fix up the documentation: Make sure what ref_to and response are.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_ipc_server_send(Ecore_Ipc_Server *svr, int major, int minor, int ref, int ref_to, int response, const void *data, int size)
@@ -640,6 +676,10 @@ ecore_ipc_server_send(Ecore_Ipc_Server *svr, int major, int minor, int ref, int 
  *                        connections (or your kernel's limit, whichever is
  *                        lower).
  * @ingroup Ecore_Ipc_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_ipc_server_client_limit_set(Ecore_Ipc_Server *svr, int client_limit, char reject_excess_clients)
@@ -659,6 +699,10 @@ ecore_ipc_server_client_limit_set(Ecore_Ipc_Server *svr, int client_limit, char 
  * @param   svr           The given server.
  * @param   size          The maximum data payload size in bytes.
  * @ingroup Ecore_Ipc_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_ipc_server_data_size_max_set(Ecore_Ipc_Server *svr, int size)
@@ -678,6 +722,10 @@ ecore_ipc_server_data_size_max_set(Ecore_Ipc_Server *svr, int size)
  * @param   svr           The given server.
  * @return The maximum data payload in bytes.
  * @ingroup Ecore_Ipc_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_ipc_server_data_size_max_get(Ecore_Ipc_Server *svr)
@@ -700,6 +748,10 @@ ecore_ipc_server_data_size_max_get(Ecore_Ipc_Server *svr)
  *          This string should not be modified or trusted to stay valid after
  *          deletion for the @p svr object. If no IP is known NULL is returned.
  * @ingroup Ecore_Ipc_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *
 ecore_ipc_server_ip_get(Ecore_Ipc_Server *svr)
@@ -718,6 +770,10 @@ ecore_ipc_server_ip_get(Ecore_Ipc_Server *svr)
  *
  * @param   svr           The given server.
  * @ingroup Ecore_Ipc_Server_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_ipc_server_flush(Ecore_Ipc_Server *svr)
@@ -785,6 +841,10 @@ ecore_ipc_server_flush(Ecore_Ipc_Server *svr)
  * @ingroup Ecore_IPC_Client_Group
  * @todo    This function needs to become an IPC message.
  * @todo    Make sure ref_to and response parameters are described correctly.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_ipc_client_send(Ecore_Ipc_Client *cl, int major, int minor, int ref, int ref_to, int response, const void *data, int size)
@@ -835,6 +895,10 @@ ecore_ipc_client_send(Ecore_Ipc_Client *cl, int major, int minor, int ref, int r
  * @param   cl The given IPC client.
  * @return  The IPC server the IPC client is connected to.
  * @ingroup Ecore_IPC_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Ipc_Server *
 ecore_ipc_client_server_get(Ecore_Ipc_Client *cl)
@@ -854,6 +918,10 @@ ecore_ipc_client_server_get(Ecore_Ipc_Client *cl)
  * @param   cl The given client.
  * @return  Data associated with the client.
  * @ingroup Ecore_IPC_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 ecore_ipc_client_del(Ecore_Ipc_Client *cl)
@@ -888,6 +956,10 @@ ecore_ipc_client_del(Ecore_Ipc_Client *cl)
  * @param   cl   The given IPC client.
  * @param   data The data to associate with the IPC client.
  * @ingroup Ecore_IPC_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_ipc_client_data_set(Ecore_Ipc_Client *cl, const void *data)
@@ -906,6 +978,10 @@ ecore_ipc_client_data_set(Ecore_Ipc_Client *cl, const void *data)
  * @param   cl The given client.
  * @return  The data associated with the IPC client.
  * @ingroup Ecore_IPC_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *
 ecore_ipc_client_data_get(Ecore_Ipc_Client *cl)
@@ -925,6 +1001,10 @@ ecore_ipc_client_data_get(Ecore_Ipc_Client *cl)
  * @param   cl        The given client.
  * @param   size          The maximum data payload size in bytes.
  * @ingroup Ecore_Ipc_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_ipc_client_data_size_max_set(Ecore_Ipc_Client *cl, int size)
@@ -944,6 +1024,10 @@ ecore_ipc_client_data_size_max_set(Ecore_Ipc_Client *cl, int size)
  * @param   cl            The given client.
  * @return The maximum data payload size in bytes on success, @c -1 on failure.
  * @ingroup Ecore_Ipc_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_ipc_client_data_size_max_get(Ecore_Ipc_Client *cl)
@@ -967,6 +1051,10 @@ ecore_ipc_client_data_size_max_get(Ecore_Ipc_Client *cl)
  *          deletion for the @p cl object. If no IP is known @c NULL is
  *          returned.
  * @ingroup Ecore_Ipc_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *
 ecore_ipc_client_ip_get(Ecore_Ipc_Client *cl)
@@ -985,6 +1073,10 @@ ecore_ipc_client_ip_get(Ecore_Ipc_Client *cl)
  *
  * @param   cl            The given client.
  * @ingroup Ecore_Ipc_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void
 ecore_ipc_client_flush(Ecore_Ipc_Client *cl)
@@ -1002,6 +1094,10 @@ ecore_ipc_client_flush(Ecore_Ipc_Client *cl)
  * Returns if SSL support is available
  * @return  1 if SSL is available, 0 if it is not.
  * @ingroup Ecore_Con_Client_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_ipc_ssl_available_get(void)

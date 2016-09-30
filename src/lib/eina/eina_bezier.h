@@ -63,6 +63,10 @@ struct _Eina_Bezier
  *
  * @p b. No check is done on @p b.
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_bezier_values_set(Eina_Bezier *b, double start_x, double start_y, double ctrl_start_x, double ctrl_start_y, double ctrl_end_x, double ctrl_end_y, double end_x, double end_y) EINA_ARG_NONNULL(1);
 
@@ -82,6 +86,10 @@ EAPI void eina_bezier_values_set(Eina_Bezier *b, double start_x, double start_y,
  *
  * @p b. No check is done on @p b.
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_bezier_values_get(const Eina_Bezier *b, double *start_x, double *start_y, double *ctrl_start_x, double *ctrl_start_y, double *ctrl_end_x, double *ctrl_end_y, double *end_x, double *end_y) EINA_ARG_NONNULL(1);
 
@@ -93,6 +101,10 @@ EAPI void eina_bezier_values_get(const Eina_Bezier *b, double *start_x, double *
  *
  * @p b. No check is done on @p b.
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double eina_bezier_length_get(const Eina_Bezier *b) EINA_ARG_NONNULL(1);
 
@@ -105,6 +117,10 @@ EAPI double eina_bezier_length_get(const Eina_Bezier *b) EINA_ARG_NONNULL(1);
  *
  * @p b. No check is done on @p b.
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double eina_bezier_t_at(const Eina_Bezier *b, double len) EINA_ARG_NONNULL(1);
 
@@ -117,6 +133,10 @@ EAPI double eina_bezier_t_at(const Eina_Bezier *b, double len) EINA_ARG_NONNULL(
  *
  * @p b. No check is done on @p b.
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_bezier_point_at(const Eina_Bezier *b, double t, double *px, double *py) EINA_ARG_NONNULL(1);
 
@@ -129,6 +149,10 @@ EAPI void eina_bezier_point_at(const Eina_Bezier *b, double t, double *px, doubl
  *
  * @p b. No check is done on @p b.
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double eina_bezier_angle_at(const Eina_Bezier *b, double t) EINA_ARG_NONNULL(1);
 
@@ -140,6 +164,10 @@ EAPI double eina_bezier_angle_at(const Eina_Bezier *b, double t) EINA_ARG_NONNUL
  *
  * @p b. No check is done on @p b.
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_bezier_split_at_length(const Eina_Bezier *b, double len, Eina_Bezier *left, Eina_Bezier *right) EINA_ARG_NONNULL(1);
 
@@ -154,6 +182,10 @@ EAPI void eina_bezier_split_at_length(const Eina_Bezier *b, double len, Eina_Bez
  *
  * @p b. No check is done on @p b.
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_bezier_bounds_get(const Eina_Bezier *b, double *x, double *y, double *w, double *h) EINA_ARG_NONNULL(1);
 

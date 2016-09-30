@@ -92,6 +92,10 @@
  *       object or subobject.
  *
  * @see eina_binshare_add()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const void *eina_binshare_add_length(const void  *obj,
                                           unsigned int olen) EINA_WARN_UNUSED_RESULT;
@@ -109,6 +113,10 @@ EAPI const void *eina_binshare_add_length(const void  *obj,
  *       eina_binshare_add().
  *
  * @note There is no unref since this is the work of eina_binshare_del().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const void *eina_binshare_ref(const void *obj);
 
@@ -124,6 +132,10 @@ EAPI const void *eina_binshare_ref(const void *obj);
  *
  * @warning If the given pointer is not shared, bad things happen, mostly a
  *          segmentation fault.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void        eina_binshare_del(const void *obj);
 
@@ -139,6 +151,10 @@ EAPI void        eina_binshare_del(const void *obj);
  *
  * @warning If the given pointer is not shared, bad things happen, mostly a
  *          segmentation fault. If in doubt, try strlen().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int         eina_binshare_length(const void *obj) EINA_WARN_UNUSED_RESULT EINA_PURE;
 
@@ -147,6 +163,10 @@ EAPI int         eina_binshare_length(const void *obj) EINA_WARN_UNUSED_RESULT E
  *
  * @details This function dumps all the objects from share_common to stdout with a
  *          DDD: prefix per line and a memory usage summary.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void        eina_binshare_dump(void);
 

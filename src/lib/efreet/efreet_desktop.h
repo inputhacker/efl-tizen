@@ -19,12 +19,16 @@ EAPI extern int EFREET_DESKTOP_TYPE_LINK;
 EAPI extern int EFREET_DESKTOP_TYPE_DIRECTORY;
 
 /**
+ * @internal
+ *
  * Event id for cache update. All users of efreet_desktop_get must listen to
  * this event and refetch. The old eet cache will be closed and mem will
  * be invalidated.
  */
 EAPI extern int EFREET_EVENT_DESKTOP_CACHE_UPDATE;
 /**
+ * @internal
+ *
  * Event id for cache build complete.
  * @since 1.1.0
  */
@@ -133,6 +137,8 @@ struct _Efreet_Desktop
 
 
 /**
+ * @internal
+ *
  * @param file The file to get the Efreet_Desktop from
  * @return Returns a reference to a cached Efreet_Desktop on success, NULL
  * on failure
@@ -150,6 +156,8 @@ struct _Efreet_Desktop
 EAPI Efreet_Desktop   *efreet_desktop_get(const char *file);
 
 /**
+ * @internal
+ *
  * @param desktop The Efreet_Desktop to ref
  * @return Returns the new reference count
  * @brief Increases reference count on desktop
@@ -157,6 +165,8 @@ EAPI Efreet_Desktop   *efreet_desktop_get(const char *file);
 EAPI int               efreet_desktop_ref(Efreet_Desktop *desktop);
 
 /**
+ * @internal
+ *
  * @param file The file to create the Efreet_Desktop from
  * @return Returns a new empty_Efreet_Desktop on success, NULL on failure
  * @brief Creates a new empty Efreet_Desktop structure or NULL on failure
@@ -164,6 +174,8 @@ EAPI int               efreet_desktop_ref(Efreet_Desktop *desktop);
 EAPI Efreet_Desktop   *efreet_desktop_empty_new(const char *file);
 
 /**
+ * @internal
+ *
  * @param file The file to get the Efreet_Desktop from
  * @return Returns a reference to a cached Efreet_Desktop on success, NULL
  * on failure
@@ -178,6 +190,8 @@ EAPI Efreet_Desktop   *efreet_desktop_empty_new(const char *file);
 EAPI Efreet_Desktop   *efreet_desktop_new(const char *file);
 
 /**
+ * @internal
+ *
  * @param file The file to create the Efreet_Desktop from
  * @return Returns a new Efreet_Desktop on success, NULL on failure
  * @brief Creates a new Efreet_Desktop structure initialized from the
@@ -192,6 +206,8 @@ EAPI Efreet_Desktop   *efreet_desktop_new(const char *file);
 EAPI Efreet_Desktop   *efreet_desktop_uncached_new(const char *file);
 
 /**
+ * @internal
+ *
  * @param desktop The Efreet_Desktop to work with
  * @return Returns no value
  * @brief Frees the Efreet_Desktop structure and all of it's data
@@ -206,6 +222,8 @@ EAPI void              efreet_desktop_free(Efreet_Desktop *desktop);
 
 
 /**
+ * @internal
+ *
  * @param desktop The desktop file to save
  * @return Returns 1 on success or 0 on failure
  * @brief Saves any changes made to @a desktop back to the file on the
@@ -214,6 +232,8 @@ EAPI void              efreet_desktop_free(Efreet_Desktop *desktop);
 EAPI int               efreet_desktop_save(Efreet_Desktop *desktop);
 
 /**
+ * @internal
+ *
  * @param desktop The desktop file to save
  * @param file The filename to save as
  * @return Returns 1 on success or 0 on failure
@@ -227,6 +247,8 @@ EAPI int               efreet_desktop_save_as(Efreet_Desktop *desktop,
 
 
 /**
+ * @internal
+ *
  * @param desktop The desktop file to work with
  * @param files The files to be substituted into the exec line
  * @param data The data pointer to pass
@@ -237,12 +259,16 @@ EAPI void              efreet_desktop_exec(Efreet_Desktop *desktop,
 
 
 /**
+ * @internal
+ *
  * @param environment the environment name
  * @brief sets the global desktop environment name
  */
 EAPI void              efreet_desktop_environment_set(const char *environment);
 
 /**
+ * @internal
+ *
  * @return environment the environment name
  * @brief gets the global desktop environment name
  * (e.g. "Enlightenment" or "Gnome")
@@ -250,6 +276,8 @@ EAPI void              efreet_desktop_environment_set(const char *environment);
 EAPI const char       *efreet_desktop_environment_get(void);
 
 /**
+ * @internal
+ *
  * @param desktop the desktop entry
  * @param files an eina list of file names to execute, as either absolute paths,
  * relative paths, or uris
@@ -266,6 +294,8 @@ EAPI void             *efreet_desktop_command_progress_get(Efreet_Desktop *deskt
                                          Efreet_Desktop_Progress_Cb cb_prog,
                                          void *data);
 /**
+ * @internal
+ *
  * @param desktop the desktop entry
  * @param files an eina list of file names to execute, as either absolute paths,
  * relative paths, or uris
@@ -280,6 +310,8 @@ EAPI void              *efreet_desktop_command_get(Efreet_Desktop *desktop,
                                          void *data);
 
 /**
+ * @internal
+ *
  * @param desktop the desktop entry
  * @param files an eina list of local files, as absolute paths, local paths, or file// uris (or NULL to get exec string with no files appended)
  * @return Returns an eina list of exec strings
@@ -292,6 +324,8 @@ EAPI Eina_List *      efreet_desktop_command_local_get(Efreet_Desktop *desktop,
 
 
 /**
+ * @internal
+ *
  * @param desktop The desktop to work with
  * @return Returns the number of categories assigned to this desktop
  * @brief Retrieves the number of categories the given @a desktop belongs
@@ -300,6 +334,8 @@ EAPI Eina_List *      efreet_desktop_command_local_get(Efreet_Desktop *desktop,
 EAPI unsigned int      efreet_desktop_category_count_get(Efreet_Desktop *desktop);
 
 /**
+ * @internal
+ *
  * @param desktop the desktop
  * @param category the category name
  * @brief add a category to a desktop
@@ -308,6 +344,8 @@ EAPI void              efreet_desktop_category_add(Efreet_Desktop *desktop,
                                               const char *category);
 
 /**
+ * @internal
+ *
  * @param desktop the desktop
  * @param category the category name
  * @brief removes a category from a desktop
@@ -318,6 +356,8 @@ EAPI int               efreet_desktop_category_del(Efreet_Desktop *desktop,
 
 
 /**
+ * @internal
+ *
  * @param type The type to add to the list of matching types
  * @param parse_func a function to parse out custom fields
  * @param save_func a function to save data returned from @a parse_func
@@ -331,6 +371,8 @@ EAPI int               efreet_desktop_type_add(const char *type,
                                     Efreet_Desktop_Type_Free_Cb free_func);
 
 /**
+ * @internal
+ *
  * @brief Add an alias for an existing desktop type.
  * @param from_type the type to alias (e.g. EFREE_DESKTOP_TYPE_APPLICATION)
  * @param alias the alias
@@ -342,6 +384,8 @@ EAPI int               efreet_desktop_type_alias (int from_type,
                                              const char *alias);
 
 /**
+ * @internal
+ *
  * @brief get type specific data for custom desktop types
  * @param desktop the desktop
  * @return type specific data, or NULL if there is none
@@ -350,6 +394,8 @@ EAPI void             *efreet_desktop_type_data_get(Efreet_Desktop *desktop);
 
 
 /**
+ * @internal
+ *
  * @param string the raw string list
  * @return an Eina_List of ecore string's
  * @brief Parse ';' separate list of strings according to the desktop spec
@@ -357,6 +403,8 @@ EAPI void             *efreet_desktop_type_data_get(Efreet_Desktop *desktop);
 EAPI Eina_List        *efreet_desktop_string_list_parse(const char *string);
 
 /**
+ * @internal
+ *
  * @param list Eina_List with strings
  * @return a raw string list
  * @brief Create a ';' separate list of strings according to the desktop spec
@@ -365,6 +413,8 @@ EAPI char             *efreet_desktop_string_list_join(Eina_List *list);
 
 
 /**
+ * @internal
+ *
  * @brief Set the value for a X- field (Non spec) in the structure
  * @param desktop the desktop
  * @param key the key name to set
@@ -376,6 +426,8 @@ EAPI char             *efreet_desktop_string_list_join(Eina_List *list);
 EAPI Eina_Bool         efreet_desktop_x_field_set(Efreet_Desktop *desktop, const char *key, const char *data);
 
 /**
+ * @internal
+ *
  * @brief Get the value for a X- field (Non spec) in the structure
  * @param desktop the desktop
  * @param key the key
@@ -384,6 +436,8 @@ EAPI Eina_Bool         efreet_desktop_x_field_set(Efreet_Desktop *desktop, const
 EAPI const char *      efreet_desktop_x_field_get(Efreet_Desktop *desktop, const char *key);
 
 /**
+ * @internal
+ *
  * @brief Delete the key and value for a X- field (Non spec) in the structure
  * @param desktop the desktop
  * @param key the key

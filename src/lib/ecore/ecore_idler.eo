@@ -2,7 +2,7 @@ class Ecore.Idler (Eo.Base)
 {
    eo_prefix: ecore_idler;
    methods {
-      constructor {
+      constructor @internal {
          [[Constructor.]]
          legacy: null;
          params {

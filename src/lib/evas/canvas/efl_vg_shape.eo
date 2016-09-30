@@ -4,8 +4,18 @@ class Efl.VG.Shape (Efl.VG.Base, Efl.Gfx.Shape)
    methods {
       @property fill {
          set {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
 	 }
 	 get {
+     [[
+       \@if MOBILE \@since_tizen 3.0
+       \@elseif WEARABLE \@since_tizen 3.0
+       \@endif
+     ]]
 	 }
 	 values {
 	    f: Efl_VG *;
@@ -13,8 +23,18 @@ class Efl.VG.Shape (Efl.VG.Base, Efl.Gfx.Shape)
       }
       @property stroke_fill {
          set {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
 	 }
 	 get {
+     [[
+       \@if MOBILE \@since_tizen 3.0
+       \@elseif WEARABLE \@since_tizen 3.0
+       \@endif
+     ]]
 	 }
 	 values {
 	    f: Efl_VG *;
@@ -22,8 +42,18 @@ class Efl.VG.Shape (Efl.VG.Base, Efl.Gfx.Shape)
       }
       @property stroke_marker {
          set {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
 	 }
 	 get {
+     [[
+       \@if MOBILE \@since_tizen 3.0
+       \@elseif WEARABLE \@since_tizen 3.0
+       \@endif
+     ]]
 	 }
 	 values {
 	    m: Efl_VG *;

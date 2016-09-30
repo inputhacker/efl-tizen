@@ -21,11 +21,19 @@ typedef Eo Ecore_Con_Url;
 /**
  * * Controls the URL to send the request to.
  * @param[in] url The URL
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool ecore_con_url_url_set(Ecore_Con_Url *obj, const char *url);
 
 /**
  * * Controls the URL to send the request to.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *ecore_con_url_url_get(const Ecore_Con_Url *obj);
 

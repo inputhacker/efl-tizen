@@ -1846,6 +1846,8 @@ EAPI void                            ecore_x_e_comp_pixmap_set(Ecore_X_Window wi
 EAPI Ecore_X_Pixmap                  ecore_x_e_comp_pixmap_get(Ecore_X_Window win);
 
 /**
+ * @internal
+ *
  * @brief Get the window profile
  *
  * @param win The client x window
@@ -1853,6 +1855,8 @@ EAPI Ecore_X_Pixmap                  ecore_x_e_comp_pixmap_get(Ecore_X_Window wi
  */
 EAPI char                            *ecore_x_e_window_profile_get(Ecore_X_Window win);
 /**
+ * @internal
+ *
  * @brief Set the window profile
  *
  * @param win The client x window
@@ -1860,6 +1864,8 @@ EAPI char                            *ecore_x_e_window_profile_get(Ecore_X_Windo
  */
 EAPI void                             ecore_x_e_window_profile_set(Ecore_X_Window win, const char *profile);
 /**
+ * @internal
+ *
  * @brief Set the array of window profiles
  *
  * @param win The client x window
@@ -1870,6 +1876,8 @@ EAPI void                             ecore_x_e_window_profile_set(Ecore_X_Windo
  */
 EAPI void                             ecore_x_e_window_profile_list_set(Ecore_X_Window  win, const char **profiles, unsigned int num_profiles);
 /**
+ * @internal
+ *
  * @brief Get the array of window profiles
  *
  * @param win The client x window
@@ -1881,6 +1889,8 @@ EAPI void                             ecore_x_e_window_profile_list_set(Ecore_X_
  */
 EAPI Eina_Bool                        ecore_x_e_window_profile_list_get(Ecore_X_Window win, const char ***profiles, int *ret_num);
 /**
+ * @internal
+ *
  * @brief Set the status for the window profile support
  *
  * @param root The root window
@@ -1890,6 +1900,8 @@ EAPI Eina_Bool                        ecore_x_e_window_profile_list_get(Ecore_X_
  */
 EAPI void                             ecore_x_e_window_profile_supported_set(Ecore_X_Window root, Eina_Bool enabled);
 /**
+ * @internal
+ *
  * @brief Query if the window profile is supported
  *
  * @param root The root window
@@ -1899,6 +1911,8 @@ EAPI void                             ecore_x_e_window_profile_supported_set(Eco
  */
 EAPI Eina_Bool                        ecore_x_e_window_profile_supported_get(Ecore_X_Window root);
 /**
+ * @internal
+ *
  * @brief Set the array of available window profiles
  *
  * @param win The client x window
@@ -1909,6 +1923,8 @@ EAPI Eina_Bool                        ecore_x_e_window_profile_supported_get(Eco
  */
 EAPI void                             ecore_x_e_window_available_profiles_set(Ecore_X_Window win, const char **profiles, unsigned int count);
 /**
+ * @internal
+ *
  * @brief Get the array of avaialbe window profiles
  *
  * @param win The client x window
@@ -1920,6 +1936,8 @@ EAPI void                             ecore_x_e_window_available_profiles_set(Ec
  */
 EAPI Eina_Bool                        ecore_x_e_window_available_profiles_get(Ecore_X_Window win, const char ***profiles, int *count);
 /**
+ * @internal
+ *
  * @brief Send a profile change event to the window manager
  *
  * This function sends a request to the window manager to change the profile.
@@ -1935,6 +1953,8 @@ EAPI Eina_Bool                        ecore_x_e_window_available_profiles_get(Ec
  */
 EAPI void                             ecore_x_e_window_profile_change_send(Ecore_X_Window root, Ecore_X_Window win, const char *profile);
 /**
+ * @internal
+ *
  * @brief Send a profile change request event to the client
  *
  * This function sends a request to the client to change the profile.
@@ -1948,6 +1968,8 @@ EAPI void                             ecore_x_e_window_profile_change_send(Ecore
  */
 EAPI void                             ecore_x_e_window_profile_change_request_send(Ecore_X_Window win, const char *profile);
 /**
+ * @internal
+ *
  * @brief Send a profile change done event to the window manager
  *
  * This function sends a profile change done event to the window manager.
@@ -2118,6 +2140,8 @@ EAPI Eina_Bool                                 ecore_x_randr_screen_primary_outp
 EAPI Ecore_X_Randr_Screen_Size_MM             *ecore_x_randr_screen_primary_output_sizes_get(Ecore_X_Window root, int *num);
 
 /**
+ * @internal
+ *
  * @brief get the current set size of a given screen's primary output
  * @param root window which's primary output will be queried
  * @param w the current size's width
@@ -2188,6 +2212,8 @@ EAPI Ecore_X_Randr_Crtc_Gamma_Info            *ecore_x_randr_crtc_gamma_get(Ecor
 EAPI Eina_Bool                                 ecore_x_randr_crtc_gamma_set(Ecore_X_Randr_Crtc crtc, const Ecore_X_Randr_Crtc_Gamma_Info *gamma); /**< @since 1.8 */
 
 /**
+ * @internal
+ *
  * @brief Validates the header from raw EDID data.
  *
  * @param edid The edid structure.
@@ -2197,6 +2223,8 @@ EAPI Eina_Bool                                 ecore_x_randr_crtc_gamma_set(Ecor
 EAPI Eina_Bool                                 ecore_x_randr_edid_has_valid_header(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Checks whether a display's EDID has a valid checksum.
  *
  * @param edid The edid structure.
@@ -2206,6 +2234,8 @@ EAPI Eina_Bool                                 ecore_x_randr_edid_has_valid_head
 EAPI Eina_Bool                                 ecore_x_randr_edid_info_has_valid_checksum(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the encoded version from raw EDID data.
  *
  * The return value has the minor version in the lowest 8 bits, and the major
@@ -2221,6 +2251,8 @@ EAPI Eina_Bool                                 ecore_x_randr_edid_info_has_valid
 EAPI int                                       ecore_x_randr_edid_version_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the encoded manufacturer from raw EDID data.
  *
  * @param edid the edid structure
@@ -2230,6 +2262,8 @@ EAPI int                                       ecore_x_randr_edid_version_get(un
 EAPI char                                     *ecore_x_randr_edid_manufacturer_name_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the encoded name from raw EDID data.
  *
  * @param edid the edid structure
@@ -2239,6 +2273,8 @@ EAPI char                                     *ecore_x_randr_edid_manufacturer_n
 EAPI char                                     *ecore_x_randr_edid_display_name_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the encoded ASCII from raw EDID data.
  *
  * @param edid the edid structure
@@ -2248,6 +2284,8 @@ EAPI char                                     *ecore_x_randr_edid_display_name_g
 EAPI char                                     *ecore_x_randr_edid_display_ascii_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the encoded serial identifier from raw EDID data.
  *
  * @param edid the edid structure
@@ -2257,6 +2295,8 @@ EAPI char                                     *ecore_x_randr_edid_display_ascii_
 EAPI char                                     *ecore_x_randr_edid_display_serial_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the encoded model number from raw EDID data.
  *
  * The manufacturer ID table is necessary for a useful description.
@@ -2268,6 +2308,8 @@ EAPI char                                     *ecore_x_randr_edid_display_serial
 EAPI int                                       ecore_x_randr_edid_model_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the manufacturer serial number from raw EDID data.
  *
  * @param edid the edid structure
@@ -2277,6 +2319,8 @@ EAPI int                                       ecore_x_randr_edid_model_get(unsi
 EAPI int                                       ecore_x_randr_edid_manufacturer_serial_number_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the manufacturer model number from raw EDID data.
  *
  * @param edid the edid structure
@@ -2286,6 +2330,8 @@ EAPI int                                       ecore_x_randr_edid_manufacturer_s
 EAPI int                                       ecore_x_randr_edid_manufacturer_model_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Looks up the DPMS support from raw EDID data.
  *
  * @param edid The edid structure.
@@ -2296,6 +2342,8 @@ EAPI int                                       ecore_x_randr_edid_manufacturer_m
 EAPI Eina_Bool                                 ecore_x_randr_edid_dpms_available_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Looks up the DPMS Standby support from raw EDID data.
  *
  * @param edid The edid structure.
@@ -2305,6 +2353,8 @@ EAPI Eina_Bool                                 ecore_x_randr_edid_dpms_available
 EAPI Eina_Bool                                 ecore_x_randr_edid_dpms_standby_available_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Looks up the DPMS Suspend support from raw EDID data.
  *
  * @param edid The edid structure.
@@ -2314,6 +2364,8 @@ EAPI Eina_Bool                                 ecore_x_randr_edid_dpms_standby_a
 EAPI Eina_Bool                                 ecore_x_randr_edid_dpms_suspend_available_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Looks up the DPMS Off support from raw EDID data.
  *
  * @param edid The edid structure.
@@ -2323,6 +2375,8 @@ EAPI Eina_Bool                                 ecore_x_randr_edid_dpms_suspend_a
 EAPI Eina_Bool                                 ecore_x_randr_edid_dpms_off_available_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the preferred aspect ratio from raw EDID data.
  *
  * @param edid the edid structure
@@ -2332,6 +2386,8 @@ EAPI Eina_Bool                                 ecore_x_randr_edid_dpms_off_avail
 EAPI Ecore_X_Randr_Edid_Aspect_Ratio           ecore_x_randr_edid_display_aspect_ratio_preferred_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the supported aspect ratios from raw EDID data.
  *
  * @param edid the edid structure
@@ -2341,6 +2397,8 @@ EAPI Ecore_X_Randr_Edid_Aspect_Ratio           ecore_x_randr_edid_display_aspect
 EAPI Ecore_X_Randr_Edid_Aspect_Ratio           ecore_x_randr_edid_display_aspect_ratios_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the supported colorschemes from raw EDID data.
  *
  * @param edid the edid structure
@@ -2350,6 +2408,8 @@ EAPI Ecore_X_Randr_Edid_Aspect_Ratio           ecore_x_randr_edid_display_aspect
 EAPI Ecore_X_Randr_Edid_Display_Colorscheme    ecore_x_randr_edid_display_colorscheme_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the display type from raw EDID data.
  *
  * @param edid The edid structure.
@@ -2360,6 +2420,8 @@ EAPI Ecore_X_Randr_Edid_Display_Colorscheme    ecore_x_randr_edid_display_colors
 EAPI Eina_Bool                                 ecore_x_randr_edid_display_type_digital_get(unsigned char *edid, unsigned long edid_length);
 
 /**
+ * @internal
+ *
  * @brief Get the display interface type from raw EDID data.
  *
  * @param edid the edid structure
@@ -2423,6 +2485,8 @@ EAPI void               ecore_x_region_window_shape_set(Ecore_X_Region region, E
 EAPI void               ecore_x_region_picture_clip_set(Ecore_X_Region region, Ecore_X_Picture picture, int x_origin, int y_origin);
 
 /**
+ * @internal
+ *
  * xfixes selection notification request.
  *
  * This lets you choose which selections you want to get notifications for.
@@ -2445,17 +2509,33 @@ EAPI Ecore_X_Window     ecore_x_composite_render_window_enable(Ecore_X_Window ro
 EAPI void               ecore_x_composite_render_window_disable(Ecore_X_Window root);
 
 /* XPresent Extension Support */
-/** @since 1.9 */
+/**
+ * @internal
+ *
+ * @since 1.
+ */
 EAPI void ecore_x_present_select_events(Ecore_X_Window win, unsigned int events);
-/** @since 1.9 */
+/**
+ * @internal
+ *
+ * @since 1.
+ */
 EAPI void ecore_x_present_notify_msc(Ecore_X_Window win, unsigned int serial, unsigned long long target_msc, unsigned long long divisor, unsigned long long remainder);
-/** @since 1.9 */
+/**
+ * @internal
+ *
+ * @since 1.
+ */
 EAPI void ecore_x_present_pixmap(Ecore_X_Window win, Ecore_X_Pixmap pixmap, unsigned int serial, Ecore_X_Region valid,
                                  Ecore_X_Region update, int x_off, int y_off, Ecore_X_Randr_Crtc target_crtc,
                                  Ecore_X_Sync_Fence wait_fence, Ecore_X_Sync_Fence idle_fence, unsigned int options,
                                  unsigned long long target_msc, unsigned long long divisor, unsigned long long remainder,
                                  Ecore_X_Present *notifies, int num_notifies);
-/** @since 1.9 */
+/**
+ * @internal
+ *
+ * @since 1.
+ */
 EAPI Eina_Bool ecore_x_present_exists(void);
 
 /* XDamage Extension Support */
@@ -2516,6 +2596,8 @@ EAPI Eina_Bool      ecore_x_test_fake_key_press(const char *key);
 EAPI const char    *ecore_x_keysym_string_get(int keysym);
 
 /**
+ * @internal
+ *
  * Given a keyname, return the keycode representing that key
  * @param keyname The key from which to get the keycode.
  * @return The keycode of the key.
@@ -2525,6 +2607,8 @@ EAPI const char    *ecore_x_keysym_string_get(int keysym);
 EAPI int            ecore_x_keysym_keycode_get(const char *keyname);
 
 /**
+ * @internal
+ *
  * Return the X-specific keysym for a given key string
  * @param string The key to get the keysym for
  * @return the keysym value

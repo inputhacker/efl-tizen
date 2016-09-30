@@ -4,14 +4,24 @@ class Evas.Polygon (Evas.Object)
    eo_prefix: evas_obj_polygon;
    methods {
       point_add {
-         [[Adds the given point to the given evas polygon object.]]
+         [[Adds the given point to the given evas polygon object.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          params {
             @in x: Evas.Coord; [[The X coordinate of the given point.]]
             @in y: Evas.Coord; [[The Y coordinate of the given point.]]
          }
       }
       points_clear {
-         [[Removes all of the points from the given evas polygon object.]]
+         [[Removes all of the points from the given evas polygon object.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
       }
    }
    implements {

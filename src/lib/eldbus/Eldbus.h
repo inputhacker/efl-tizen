@@ -147,12 +147,20 @@ EAPI extern const Eldbus_Version * eldbus_version; /**< Global Eldbus_Version ob
  * @brief Initialize eldbus.
  *
  * @return 1 or greater on success, 0 otherwise
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eldbus_init(void);
 /**
  * @brief Shutdown eldbus.
  *
  * @return 0 if e_dbus shuts down, greater than 0 otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int eldbus_shutdown(void);
 

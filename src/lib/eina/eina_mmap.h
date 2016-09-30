@@ -38,6 +38,10 @@
  * such "damaged files" that would take down your process.
  *
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eina_mmap_safety_enabled_set(Eina_Bool enabled);
@@ -51,6 +55,10 @@ eina_mmap_safety_enabled_set(Eina_Bool enabled);
  * See eina_mmap_safety_enabled_set() for more information.
  *
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eina_mmap_safety_enabled_get(void);

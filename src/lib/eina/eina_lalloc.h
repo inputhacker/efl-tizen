@@ -74,6 +74,9 @@ typedef struct _Eina_Lalloc Eina_Lalloc;
  *
  * @return A new lazy allocator.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Lalloc *eina_lalloc_new(void             *data,
                                   Eina_Lalloc_Alloc alloc_cb,
@@ -85,6 +88,9 @@ EAPI Eina_Lalloc *eina_lalloc_new(void             *data,
  *
  * @param a The lazy allocator to free.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void      eina_lalloc_free(Eina_Lalloc *a) EINA_ARG_NONNULL(1);
 
@@ -96,6 +102,9 @@ EAPI void      eina_lalloc_free(Eina_Lalloc *a) EINA_ARG_NONNULL(1);
  *
  * @return EINA_TRUE on success, else EINA_FALSE.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_lalloc_elements_add(Eina_Lalloc *a,
                                         int          num) EINA_ARG_NONNULL(1);
@@ -107,6 +116,9 @@ EAPI Eina_Bool eina_lalloc_elements_add(Eina_Lalloc *a,
  *
  * @return EINA_TRUE on success, else EINA_FALSE.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_lalloc_element_add(Eina_Lalloc *a) EINA_ARG_NONNULL(1);
 

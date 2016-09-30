@@ -18,13 +18,23 @@ class Evas.Box (Evas.Smart_Clipped)
 
               Note: The default values for both alignments is $0.5.
 
-              See also @.align.get.]]
+              See also @.align.get.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
             [[Get the alignment of the whole bounding box of contents, for a
               given box object.
 
-              See also @.align.set for more information.]]
+              See also @.align.set for more information.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             horizontal: double; [[The horizontal alignment, in pixels.]]
@@ -37,12 +47,22 @@ class Evas.Box (Evas.Smart_Clipped)
 
               Note: The default values for both padding components is $0.
 
-              See also @.padding.get.]]
+              See also @.padding.get.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          get {
             [[Get the (space) padding between cells set for a given box object.
 
-              See also @.padding.set.]]
+              See also @.padding.set.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             horizontal: Evas.Coord; [[The horizontal padding, in pixels.]]
@@ -63,7 +83,12 @@ class Evas.Box (Evas.Smart_Clipped)
               Refer to each of their documentation texts for details on them.
 
               Note: A box layouting function will be triggered by the
-              $'calculate' smart callback of the box's smart class.]]
+              $'calculate' smart callback of the box's smart class.
+
+                \@if MOBILE \@since_tizen 2.3
+                \@elseif WEARABLE \@since_tizen 2.3.1
+                \@endif
+              ]]
          }
          values {
             cb: Evas_Object_Box_Layout @nonull; [[The new layout function to set on $o.]]
@@ -118,7 +143,12 @@ class Evas.Box (Evas.Smart_Clipped)
            If one desires that, besides having weights, child elements must be
            resized bounded to a minimum or maximum size, those size hints must
            be set, by the evas_object_size_hint_{min,max}_set
-           functions.]]
+           functions.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          params {
               priv: Evas_Object_Box_Data *;
               data: void *;
@@ -129,7 +159,12 @@ class Evas.Box (Evas.Smart_Clipped)
 
            This function behaves analogously to
            evas_object_box_layout_horizontal. The description of its
-           behaviour can be derived from that function's documentation.]]
+           behaviour can be derived from that function's documentation.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          params {
               priv: Evas_Object_Box_Data *;
               data: void *;
@@ -175,7 +210,12 @@ class Evas.Box (Evas.Smart_Clipped)
            properties apply for padding/alignment relative to the overall
            height of the box. A value of $-1.0 to $align_y makes the box
            try to resize this child element to the exact height of its parent
-           (respecting the max hint on the child's height).]]
+           (respecting the max hint on the child's height).
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
          params {
               priv: Evas_Object_Box_Data *;
               data: void *;
@@ -195,7 +235,12 @@ class Evas.Box (Evas.Smart_Clipped)
 
            This function behaves analogously to
            evas_object_box_layout_flow_horizontal. The description of its
-           behaviour can be derived from that function's documentation.]]
+           behaviour can be derived from that function's documentation.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          params {
               priv: Evas_Object_Box_Data *;
               data: void *;
@@ -220,7 +265,12 @@ class Evas.Box (Evas.Smart_Clipped)
            depend on the layout set to it.
 
            Note: This call will trigger the box's
-           _Evas_Object_Box_Api.insert_after smart function.]]
+           _Evas_Object_Box_Api.insert_after smart function.
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
 
          return: Evas_Object_Box_Option *; [[A box option bound to the recently added box item or
                                              $null, on errors]]
@@ -234,7 +284,12 @@ class Evas.Box (Evas.Smart_Clipped)
 
            This has the same effect of calling evas_object_box_remove on
            each of $o's child objects, in sequence. If, and only if, all
-           those calls succeed, so does this one.]]
+           those calls succeed, so does this one.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true, on success, $false otherwise.]]
          params {
@@ -244,7 +299,12 @@ class Evas.Box (Evas.Smart_Clipped)
       iterator_new @const {
          [[Get an iterator to walk the list of children of a given box object.
 
-           Note: Do not remove or delete objects while walking the list.]]
+           Note: Do not remove or delete objects while walking the list.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: free(own(iterator<Evas.Object *> *), eina_iterator_free)
             @warn_unused; [[An iterator on $o's child objects, on success, or $null, on errors.]]
       }
@@ -252,7 +312,12 @@ class Evas.Box (Evas.Smart_Clipped)
          [[Add a new box as a child of a given smart object.
 
            This is a helper function that has the same effect of putting a new
-           box object into $parent by use of evas_object_smart_member_add.]]
+           box object into $parent by use of evas_object_smart_member_add.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: Evas.Object * @warn_unused; [[$null on error, a pointer to a new box object on
                                                success.]]
@@ -268,7 +333,12 @@ class Evas.Box (Evas.Smart_Clipped)
            right.
 
            Note: This call will trigger the box's _Evas_Object_Box_Api.append
-           smart function.]]
+           smart function.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: Evas_Object_Box_Option *; [[A box option bound to the recently added box item or
                                              $null, on errors.]]
@@ -285,7 +355,12 @@ class Evas.Box (Evas.Smart_Clipped)
            (see #Evas_Object_Box_Option) on it, would benefit from this
            function. They'd have to implement it and set it to be the
            _Evas_Object_Box_Api.property_id_get smart class function of the
-           box, which is originally set to $null.]]
+           box, which is originally set to $null.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: int @warn_unused; [[The numerical ID of the given property or $-1, on
                                      errors.]]
          params {
@@ -304,7 +379,12 @@ class Evas.Box (Evas.Smart_Clipped)
            on its left.
 
            Note: This call will trigger the box's
-           _Evas_Object_Box_Api.prepend smart function.]]
+           _Evas_Object_Box_Api.prepend smart function.
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
 
          return: Evas_Object_Box_Option *; [[A box option bound to the recently added box item or
                                              $null, on errors.]]
@@ -316,7 +396,12 @@ class Evas.Box (Evas.Smart_Clipped)
          [[Get an accessor (a structure providing random items access) to the
            list of children of a given box object.
 
-           Note: Do not remove or delete objects while walking the list.]]
+           Note: Do not remove or delete objects while walking the list.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: free(own(accessor<Evas.Object *> *), eina_accessor_free)
             @warn_unused; [[An accessor on $o's child objects, on success, or $null,
                             on errors.]]
@@ -369,7 +454,12 @@ class Evas.Box (Evas.Smart_Clipped)
            given $o's internal list of elements.
 
            Note: This call will trigger the box's
-           _Evas_Object_Box_Api.remove_at smart function.]]
+           _Evas_Object_Box_Api.remove_at smart function.
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
 
          return: bool; [[$ture on success, $false on failure.]]
          params {
@@ -416,7 +506,12 @@ class Evas.Box (Evas.Smart_Clipped)
            depend on the layout set to it.
 
            Note: This call will trigger the box's
-           _Evas_Object_Box_Api.insert_before smart function.]]
+           _Evas_Object_Box_Api.insert_before smart function.
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
 
          return: Evas_Object_Box_Option *; [[A box option bound to the recently added box item or
                                              $null, on errors.]]
@@ -434,7 +529,12 @@ class Evas.Box (Evas.Smart_Clipped)
            (see #Evas_Object_Box_Option) on it, would benefit from this
            function. They'd have to implement it and set it to be the
            _Evas_Object_Box_Api.property_name_get smart class function of the
-           box, which is originally set to $null.]]
+           box, which is originally set to $null.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          return: const(char)* @warn_unused; [[The name of the given property or $null, on errors.]]
          params {
             @in property: int; [[The numerical identifier of the option being searched,
@@ -481,7 +581,12 @@ class Evas.Box (Evas.Smart_Clipped)
            properties apply for padding/alignment relative to the overall
            height of the box. A value of $-1.0 to $align_y makes the box
            try to resize this child element to the exact height of its parent
-           (respecting the maximum size hint on the child's height).]]
+           (respecting the maximum size hint on the child's height).
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
          params {
             @in priv: Evas_Object_Box_Data *;
             @in data: void *;
@@ -502,7 +607,12 @@ class Evas.Box (Evas.Smart_Clipped)
            This function behaves analogously to
            evas_object_box_layout_homogeneous_max_size_horizontal. The
            description of its behaviour can be derived from that function's
-           documentation.]]
+           documentation.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          params {
             @in priv: Evas_Object_Box_Data *;
             @in data: void *;
@@ -530,7 +640,12 @@ class Evas.Box (Evas.Smart_Clipped)
            depend on the layout set to it.
 
            Note: This call will trigger the box's
-           _Evas_Object_Box_Api.insert_at smart function.]]
+           _Evas_Object_Box_Api.insert_at smart function.
+
+            \@if MOBILE \@since_tizen 2.3
+            \@elseif WEARABLE \@since_tizen 2.3.1
+            \@endif
+          ]]
 
          return: Evas_Object_Box_Option *; [[A box option bound to the recently added box item or
                                              $null, on errors.]]
@@ -558,7 +673,12 @@ class Evas.Box (Evas.Smart_Clipped)
            will take place.
 
            Note: This call will trigger the box's _Evas_Object_Box_Api.remove
-           smart function.]]
+           smart function.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
 
          return: bool; [[$true on success, $false otherwise.]]
          params {
@@ -584,7 +704,12 @@ class Evas.Box (Evas.Smart_Clipped)
            $align_x makes the box try to resize this child element to the exact
            width of its cell (respecting the min and max hints on the child's
            width and accounting for its horizontal padding properties). The
-           same applies to the vertical axis.]]
+           same applies to the vertical axis.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          params {
             @in priv: Evas_Object_Box_Data *;
             @in data: void *;
@@ -596,7 +721,12 @@ class Evas.Box (Evas.Smart_Clipped)
 
            This function behaves analogously to
            evas_object_box_layout_homogeneous_horizontal.  The description
-           of its behaviour can be derived from that function's documentation.]]
+           of its behaviour can be derived from that function's documentation.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          params {
               priv: Evas_Object_Box_Data *;
               data: void *;
@@ -635,7 +765,12 @@ class Evas.Box (Evas.Smart_Clipped)
            required height of the child element and is the only means (besides
            row justifying) of setting space between rows. Note, however, that
            $align_y dictates positioning relative to the largest
-           height required by a child object in the actual row.]]
+           height required by a child object in the actual row.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+         ]]
          params {
               priv: Evas_Object_Box_Data *;
               data: void *;

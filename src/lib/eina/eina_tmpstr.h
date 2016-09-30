@@ -161,6 +161,10 @@ typedef const char Eina_Tmpstr;
  * @see eina_tmpstr_add_length()
  *
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Tmpstr *eina_tmpstr_add(const char *str) EINA_WARN_UNUSED_RESULT;
 
@@ -194,6 +198,10 @@ EAPI Eina_Tmpstr *eina_tmpstr_add(const char *str) EINA_WARN_UNUSED_RESULT;
  * @see eina_tmpstr_add()
  *
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Tmpstr *eina_tmpstr_add_length(const char *str, size_t length);
 
@@ -207,6 +215,10 @@ EAPI Eina_Tmpstr *eina_tmpstr_add_length(const char *str, size_t length);
  * @deprecated
  * @see eina_tmpstr_len()
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EINA_DEPRECATED EAPI size_t eina_tmpstr_strlen(Eina_Tmpstr *tmpstr);
 
@@ -218,6 +230,10 @@ EINA_DEPRECATED EAPI size_t eina_tmpstr_strlen(Eina_Tmpstr *tmpstr);
  * @return The length of the string.
  *
  * @since 1.14.0
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI size_t eina_tmpstr_len(Eina_Tmpstr *tmpstr);
 
@@ -234,6 +250,10 @@ EAPI size_t eina_tmpstr_len(Eina_Tmpstr *tmpstr);
  * @see eina_tmpstr_add()
  *
  * @since 1.8.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_tmpstr_del(Eina_Tmpstr *tmpstr) EINA_ARG_NONNULL(1);
 

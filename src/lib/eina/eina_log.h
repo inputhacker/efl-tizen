@@ -229,6 +229,10 @@
 /**
  * EINA_LOG_DOMAIN_GLOBAL is the general purpose log domain to be
  * used, it is always registered and available everywhere.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI extern int EINA_LOG_DOMAIN_GLOBAL;
 
@@ -440,6 +444,10 @@ struct _Eina_Log_Domain
  *
  * The main thread is considered the thread where the first
  * eina_init() was called.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_threads_enable(void);
 
@@ -503,6 +511,10 @@ typedef enum _Eina_Log_State
  * @note MT: given function @a cb will be called protected by mutex.
  *       This means you're safe from other calls but you should never
  *       call eina_log_print(), directly or indirectly.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_print_cb_set(Eina_Log_Print_Cb cb, void *data) EINA_ARG_NONNULL(1);
 
@@ -518,6 +530,10 @@ EAPI void eina_log_print_cb_set(Eina_Log_Print_Cb cb, void *data) EINA_ARG_NONNU
  * @note this is initially set to envvar EINA_LOG_LEVEL by eina_init().
  *
  * @see eina_log_level_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_level_set(int level);
 
@@ -527,6 +543,10 @@ EAPI void eina_log_level_set(int level);
  * @return the log level that limits eina_log_print().
  *
  * @see eina_log_level_set()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int  eina_log_level_get(void) EINA_WARN_UNUSED_RESULT;
 
@@ -550,6 +570,10 @@ static inline Eina_Bool eina_log_level_check(int level);
  * 
  * @return #EINA_TRUE if the current thread is the one that called 
  * eina_log_threads_init(), otherwise #EINA_FALSE. 
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool          eina_log_main_thread_check(void) EINA_CONST EINA_WARN_UNUSED_RESULT;
 
@@ -562,6 +586,10 @@ EAPI Eina_Bool          eina_log_main_thread_check(void) EINA_CONST EINA_WARN_UN
  * @note this is initially set to envvar EINA_LOG_COLOR_DISABLE by eina_init().
  *
  * @see eina_log_color_disable_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_log_color_disable_set(Eina_Bool disabled);
 
@@ -571,6 +599,10 @@ EAPI void               eina_log_color_disable_set(Eina_Bool disabled);
  * @return If #EINA_TRUE, color logging is disabled.
  *
  * @see eina_log_color_disable_set()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool          eina_log_color_disable_get(void) EINA_WARN_UNUSED_RESULT;
 
@@ -582,6 +614,10 @@ EAPI Eina_Bool          eina_log_color_disable_get(void) EINA_WARN_UNUSED_RESULT
  * @note this is initially set to envvar EINA_LOG_FILE_DISABLE by eina_init().
  *
  * @see eina_log_file_disable_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_log_file_disable_set(Eina_Bool disabled);
 
@@ -591,6 +627,10 @@ EAPI void               eina_log_file_disable_set(Eina_Bool disabled);
  * @return if #EINA_TRUE, file name logging should be disabled.
  *
  * @see eina_log_file_disable_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool          eina_log_file_disable_get(void) EINA_WARN_UNUSED_RESULT;
 
@@ -603,6 +643,10 @@ EAPI Eina_Bool          eina_log_file_disable_get(void) EINA_WARN_UNUSED_RESULT;
  *       eina_init().
  *
  * @see eina_log_function_disable_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_log_function_disable_set(Eina_Bool disabled);
 
@@ -612,6 +656,10 @@ EAPI void               eina_log_function_disable_set(Eina_Bool disabled);
  * @return if #EINA_TRUE, function name logging should be disabled.
  *
  * @see eina_log_function_disable_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool          eina_log_function_disable_get(void) EINA_WARN_UNUSED_RESULT;
 
@@ -627,6 +675,10 @@ EAPI Eina_Bool          eina_log_function_disable_get(void) EINA_WARN_UNUSED_RES
  *
  * @see eina_log_abort_on_critical_get()
  * @see eina_log_abort_on_critical_level_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_log_abort_on_critical_set(Eina_Bool abort_on_critical);
 
@@ -639,6 +691,10 @@ EAPI void               eina_log_abort_on_critical_set(Eina_Bool abort_on_critic
  *
  * @see eina_log_abort_on_critical_set()
  * @see eina_log_abort_on_critical_level_set()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool          eina_log_abort_on_critical_get(void) EINA_WARN_UNUSED_RESULT;
 
@@ -654,6 +710,10 @@ EAPI Eina_Bool          eina_log_abort_on_critical_get(void) EINA_WARN_UNUSED_RE
  *
  * @see eina_log_abort_on_critical_level_get()
  * @see eina_log_abort_on_critical_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_log_abort_on_critical_level_set(int critical_level);
 
@@ -666,6 +726,10 @@ EAPI void               eina_log_abort_on_critical_level_set(int critical_level)
  *
  * @see eina_log_abort_on_critical_level_set()
  * @see eina_log_abort_on_critical_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int                eina_log_abort_on_critical_level_get(void) EINA_WARN_UNUSED_RESULT;
 
@@ -681,6 +745,10 @@ EAPI int                eina_log_abort_on_critical_level_get(void) EINA_WARN_UNU
  *        yet, it will be saved as a pending set and applied upon
  *        registration.
  * @param level level to use to limit eina_log_print() for given domain.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_log_domain_level_set(const char *domain_name, int level) EINA_ARG_NONNULL(1);
 
@@ -701,6 +769,10 @@ EAPI void               eina_log_domain_level_set(const char *domain_name, int l
  *
  * @see eina_log_domain_level_set()
  * @see eina_log_domain_registered_level_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int                eina_log_domain_level_get(const char *domain_name) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
@@ -714,6 +786,10 @@ EAPI int                eina_log_domain_level_get(const char *domain_name) EINA_
  *
  * @return #EINA_TRUE if level should be printed, #EINA_FALSE if not.
  *         (domain's level is greater or equal @a level).
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int                eina_log_domain_registered_level_get(int domain) EINA_WARN_UNUSED_RESULT;
 
@@ -726,6 +802,10 @@ EAPI int                eina_log_domain_registered_level_get(int domain) EINA_WA
  *        present.
  * @param level level to use to limit eina_log_print() for given domain.
  * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                eina_log_domain_registered_level_set(int domain, int level);
 
@@ -743,6 +823,10 @@ static inline Eina_Bool eina_log_domain_level_check(int domain, int level);
  *         macros. A negative return value means an log occurred.
  *
  * @note MT: safe to call from any thread.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int  eina_log_domain_register(const char *name, const char *color) EINA_ARG_NONNULL(1);
 
@@ -753,6 +837,10 @@ EAPI int  eina_log_domain_register(const char *name, const char *color) EINA_ARG
  *        must be >= 0.
  *
  * @note MT: safe to call from any thread.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_domain_unregister(int domain);
 
@@ -782,6 +870,10 @@ EAPI void eina_log_domain_unregister(int domain);
  *
  * @note MT: this function may be called from different threads if
  *       eina_log_threads_enable() was called before.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_print(int            domain,
                          Eina_Log_Level level,
@@ -815,6 +907,10 @@ EAPI void eina_log_print(int            domain,
  *       eina_log_threads_enable() was called before.
  *
  * @see eina_log_print()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_vprint(int            domain,
                           Eina_Log_Level level,
@@ -853,6 +949,10 @@ EAPI void eina_log_vprint(int            domain,
  * @note MT: if threads are enabled, this function is called within locks.
  * @note MT: Threads different from main thread will have thread id
  *       appended to domain name.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_print_cb_stdout(const Eina_Log_Domain *d,
                                    Eina_Log_Level         level,
@@ -896,6 +996,10 @@ EAPI void eina_log_print_cb_stdout(const Eina_Log_Domain *d,
  * @note MT: if threads are enabled, this function is called within locks.
  * @note MT: Threads different from main thread will have thread id
  *       appended to domain name.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_print_cb_stderr(const Eina_Log_Domain *d,
                                    Eina_Log_Level         level,
@@ -923,6 +1027,10 @@ EAPI void eina_log_print_cb_stderr(const Eina_Log_Domain *d,
  * @note MT: if threads are enabled, this function is called within locks.
  * @note MT: Threads different from main thread will have thread id
  *       appended to domain name.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_print_cb_file(const Eina_Log_Domain *d,
                                  Eina_Log_Level         level,
@@ -1006,6 +1114,10 @@ EAPI void eina_log_print_cb_dlog(const Eina_Log_Domain *d,
  * @note if the process has been started by systemd this will be the default logging method.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_print_cb_journald(const Eina_Log_Domain *d,
 				     Eina_Log_Level level,
@@ -1027,13 +1139,29 @@ EAPI void eina_log_print_cb_journald(const Eina_Log_Domain *d,
  * @note on windows, both @a fp and @a color is converted automatically.
  *
  * @since 1.7
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_console_color_set(FILE *fp,
                                      const char *color) EINA_ARG_NONNULL(1, 2);
 
-/** String that indicates the log system is initializing */
+/**
+ * String that indicates the log system is initializin
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 extern EAPI const char *_eina_log_state_init;
-/** String that indicates the log system is shutting down */
+/**
+ * String that indicates the log system is shutting dow
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 extern EAPI const char *_eina_log_state_shutdown;
 /** @def EINA_LOG_STATE_INIT
  *String that indicates the log system is initializing 
@@ -1056,6 +1184,10 @@ extern EAPI const char *_eina_log_state_shutdown;
  *    the previous phase has stopped.
  * @note The phase name should be available for all the life of the timing.
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_timing(int domain,
                           Eina_Log_State state,

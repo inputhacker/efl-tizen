@@ -13,6 +13,10 @@
  *
  * @param msg The Eldbus_Message object.
  * @return The previous Eldbus_Message with incremented refcount.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
 
@@ -23,6 +27,10 @@ EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NON
  * freed.
  *
  * @param msg The Eldbus_Message object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
 
@@ -31,6 +39,10 @@ EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NO
  *
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message path.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -39,6 +51,10 @@ EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EI
  *
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message interface.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -47,6 +63,10 @@ EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *ms
  *
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message member.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -55,6 +75,10 @@ EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) 
  *
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message destination.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -63,6 +87,10 @@ EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *
  *
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message sender.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -71,6 +99,10 @@ EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) 
  *
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message signature.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -83,6 +115,10 @@ EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *ms
  * @param method name of the method to be called
  *
  * @return a new Eldbus_Message, free with eldbus_message_unref()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, const char *path, const char *iface, const char *method) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
 
@@ -96,6 +132,10 @@ EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, con
  * @return a new Eldbus_Message, free with eldbus_message_unref()
  *
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *interface, const char *name) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
@@ -107,6 +147,10 @@ EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *int
  * @param error_msg the error message string
  *
  * @return a new Eldbus_Message, free with eldbus_message_unref()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, const char *error_name, const char *error_msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -116,6 +160,10 @@ EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, 
  * @param msg the message we're replying to
  *
  * @return new Eldbus_Message, free with eldbus_message_unref()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -132,6 +180,10 @@ EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Messag
  * @param text Variable in which to store the error text or @c NULL if it's not
  * desired.
  * @return EINA_TRUE on success, else EINA_FALSE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, const char **name, const char **text) EINA_ARG_NONNULL(1);
 
@@ -151,6 +203,10 @@ EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, c
  *
  * @return EINA_TRUE if the arguments were read successfully and stored in the
  * respective pointer arguments.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
@@ -165,6 +221,10 @@ EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *ms
  *
  * @return EINA_TRUE if the arguments were read successfully and stored in the
  * respective pointer arguments.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
@@ -183,6 +243,10 @@ EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *m
  * @param ... Values of each argument to append in param msg.
  *
  * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
@@ -196,6 +260,10 @@ EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, 
  * @see eldbus_message_arguments_append().
  *
  * @return EINA_TRUE on success, EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
 
@@ -221,11 +289,19 @@ EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg,
  * @param contained_signature signature of what iterator will store
  *
  * @return the new iterator
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldbus_Message_Iter *iter, int type, const char* contained_signature) EINA_ARG_NONNULL(1, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @brief Append a basic type into an Eldbus_Iterator.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Iter *iter, int type, ...) EINA_ARG_NONNULL(1, 3);
 
@@ -251,6 +327,10 @@ EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Ite
  * @note This function doesn't support variant, use
  * eldbus_message_iter_container_new() instead to create the variant, fill
  * with data and close it.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
@@ -272,6 +352,10 @@ EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message
  * @note This function don't support variant, use instead
  * eldbus_message_iter_container_new() to create the variant fill
  * data and close it.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -284,6 +368,10 @@ EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Messag
  * @param array data to append
  * @param size of array
  * @return EINA_TRUE on success, else EINA_FALSE
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Message_Iter *iter, int type, const void *array, unsigned int size) EINA_ARG_NONNULL(1, 3);
 
@@ -294,16 +382,28 @@ EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Messa
  * @param sub the iterator that will be closed
  *
  * @return EINA_FALSE if iterator was already close or if not enough memory
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_container_close(Eldbus_Message_Iter *iter, Eldbus_Message_Iter *sub) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @brief Get the main Eldbus_Message_Iter from the Eldbus_Message.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @brief Get a basic type from Eldbus_Iterator.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *iter, void *value) EINA_ARG_NONNULL(1, 2);
 
@@ -314,6 +414,10 @@ EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *
  * @return A string containing the message iterator signature.
  *
  * @note The returned string must be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -322,6 +426,10 @@ EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_It
  * @param iter iterator
  *
  * @return if iterator was reach to end return EINA_FALSE
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
 
@@ -337,6 +445,9 @@ EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter)
  * @return if iterator was reach to end or if type different of the type that
  * iterator points return EINA_FALSE
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Iter *iter, char signature, ...) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -362,6 +473,10 @@ EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Ite
  * @param value
  * @param n_elements
  * @return EINA_TRUE on success, else EINA_FALSE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, int signature, void *value, int *n_elements) EINA_ARG_NONNULL(1, 3, 4);
 
@@ -375,6 +490,10 @@ EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, in
  * @param ... pointers of where data will be stored
  *
  * @return EINA_FALSE if signature different from signature in iterator
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
@@ -388,6 +507,10 @@ EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_It
  * @param ap va_list of the pointers of where data will be stored
  *
  * @return EINA_FALSE if signature different from signature in iterator
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
 
@@ -404,6 +527,10 @@ EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_I
  * and can be deleted.
  *
  * @param iter the iterator to be deleted.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_message_iter_del(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
 

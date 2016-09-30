@@ -192,6 +192,10 @@ typedef const char Eina_Stringshare;
  * buffer or substring.
  *
  * @see eina_share_common_add()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Stringshare  *eina_stringshare_add_length(const char *str, unsigned int slen) EINA_WARN_UNUSED_RESULT;
 
@@ -212,6 +216,10 @@ EAPI Eina_Stringshare  *eina_stringshare_add_length(const char *str, unsigned in
  * terminated, use eina_stringshare_add_length() instead.
  *
  * @see eina_stringshare_add_length()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Stringshare  *eina_stringshare_add(const char *str) EINA_WARN_UNUSED_RESULT;
 
@@ -233,6 +241,10 @@ EAPI Eina_Stringshare  *eina_stringshare_add(const char *str) EINA_WARN_UNUSED_R
  * terminated, use eina_stringshare_nprintf() instead.
  *
  * @see eina_stringshare_nprintf()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Stringshare  *eina_stringshare_printf(const char *fmt, ...) EINA_WARN_UNUSED_RESULT EINA_PRINTF(1, 2);
 
@@ -255,6 +267,10 @@ EAPI Eina_Stringshare  *eina_stringshare_printf(const char *fmt, ...) EINA_WARN_
  * terminated, use eina_stringshare_nprintf() instead.
  *
  * @see eina_stringshare_nprintf()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Stringshare  *eina_stringshare_vprintf(const char *fmt, va_list args) EINA_WARN_UNUSED_RESULT;
 
@@ -275,6 +291,10 @@ EAPI Eina_Stringshare  *eina_stringshare_vprintf(const char *fmt, va_list args) 
  * entire format string, use eina_stringshare_printf() instead.
  *
  * @see eina_stringshare_printf()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Stringshare  *eina_stringshare_nprintf(unsigned int len, const char *fmt, ...) EINA_WARN_UNUSED_RESULT EINA_PRINTF(2, 3);
 
@@ -291,6 +311,10 @@ EAPI Eina_Stringshare  *eina_stringshare_nprintf(unsigned int len, const char *f
  * call to one of the stringshare functions.
  *
  * There is no unref since this is the work of eina_share_common_del().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Stringshare  *eina_stringshare_ref(Eina_Stringshare *str);
 
@@ -306,6 +330,10 @@ EAPI Eina_Stringshare  *eina_stringshare_ref(Eina_Stringshare *str);
  *
  * @note If the given pointer is not shared, bad things will happen, likely a
  * segmentation fault.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void               eina_stringshare_del(Eina_Stringshare *str);
 
@@ -321,6 +349,10 @@ EAPI void               eina_stringshare_del(Eina_Stringshare *str);
  *
  * @note If the given pointer is not shared, bad things will happen, likely a
  * segmentation fault. If in doubt, try strlen().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI int                eina_stringshare_strlen(Eina_Stringshare *str) EINA_PURE EINA_WARN_UNUSED_RESULT;
 
@@ -329,6 +361,10 @@ EAPI int                eina_stringshare_strlen(Eina_Stringshare *str) EINA_PURE
  *
  * This function dumps all strings in the share_common to stdout with a
  * DDD: prefix per line and a memory usage summary.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void               eina_stringshare_dump(void);
 

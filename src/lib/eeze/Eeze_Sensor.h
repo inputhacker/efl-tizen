@@ -92,6 +92,8 @@ typedef enum
 
 /**
  * @internal
+ *
+ * @internal
  * @defgroup Eeze_Sensor_Events Available eeze sensor events
  * @brief Sensor events that are emitted from the library as ecore events
  * @ingroup Eeze
@@ -158,6 +160,8 @@ extern "C" {
 #endif
 
 /**
+ * @internal
+ *
  * @brief Create sensor object to operate on.
  * @param type Sensor type to create object from.
  * @return Sensor object for the given type.
@@ -180,6 +184,8 @@ extern "C" {
 EAPI Eeze_Sensor_Obj *eeze_sensor_new(Eeze_Sensor_Type type);
 
 /**
+ * @internal
+ *
  * @brief Free a sensor object.
  * @param sens Sensor object to operate on.
  *
@@ -191,6 +197,8 @@ EAPI Eeze_Sensor_Obj *eeze_sensor_new(Eeze_Sensor_Type type);
 EAPI void eeze_sensor_free(Eeze_Sensor_Obj *sens);
 
 /**
+ * @internal
+ *
  * @brief Get accuracy from sensor object.
  * @param sens Sensor object to operate on.
  * @param accuracy Pointer to write accuracy value into.
@@ -209,6 +217,8 @@ EAPI void eeze_sensor_free(Eeze_Sensor_Obj *sens);
 EAPI Eina_Bool eeze_sensor_accuracy_get(Eeze_Sensor_Obj *sens, int *accuracy);
 
 /**
+ * @internal
+ *
  * @brief Get data from all three data properties
  * @param sens Sensor object to operate on.
  * @param x Pointer to write first data property value into.
@@ -225,6 +235,8 @@ EAPI Eina_Bool eeze_sensor_accuracy_get(Eeze_Sensor_Obj *sens, int *accuracy);
 EAPI Eina_Bool eeze_sensor_xyz_get(Eeze_Sensor_Obj *sens, float *x, float *y, float *z);
 
 /**
+ * @internal
+ *
  * @brief Get data from first two data properties
  * @param sens Sensor object to operate on.
  * @param x Pointer to write first data property value into.
@@ -239,6 +251,8 @@ EAPI Eina_Bool eeze_sensor_xyz_get(Eeze_Sensor_Obj *sens, float *x, float *y, fl
 EAPI Eina_Bool eeze_sensor_xy_get(Eeze_Sensor_Obj *sens, float *x, float *y);
 
 /**
+ * @internal
+ *
  * @brief Get the data from  first data property
  * @param sens Sensor object to operate on.
  * @param x Pointer to write first data property value into.
@@ -252,6 +266,8 @@ EAPI Eina_Bool eeze_sensor_xy_get(Eeze_Sensor_Obj *sens, float *x, float *y);
 EAPI Eina_Bool eeze_sensor_x_get(Eeze_Sensor_Obj *sens, float *x);
 
 /**
+ * @internal
+ *
  * @brief Get timestamp from sensor object.
  * @param sens Sensor object to operate on.
  * @param timestamp Pointer to write timestamp value into.
@@ -266,6 +282,8 @@ EAPI Eina_Bool eeze_sensor_x_get(Eeze_Sensor_Obj *sens, float *x);
 EAPI Eina_Bool eeze_sensor_timestamp_get(Eeze_Sensor_Obj *sens, double *timestamp);
 
 /**
+ * @internal
+ *
  * @brief Read out sensor data
  * @param sens Sensor object to operate on.
  * @return EINA_TRUE for success and EINA_FALSE for failure
@@ -283,6 +301,8 @@ EAPI Eina_Bool eeze_sensor_timestamp_get(Eeze_Sensor_Obj *sens, double *timestam
 EAPI Eina_Bool eeze_sensor_read(Eeze_Sensor_Obj *sens);
 
 /**
+ * @internal
+ *
  * @brief Asynchronous read out sensor data
  * @param sens Sensor object to operate on.
  * @param user_data Data to pass to the callback function.

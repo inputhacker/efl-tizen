@@ -31,6 +31,8 @@ struct Efreet_Uri
 
 
 /**
+ * @internal
+ *
  * @param uri Create an URI string from an Efreet_Uri struct
  * @return The string rapresentation of uri (ex: 'file:///home/my%20name')
  * @brief Get the string rapresentation of the given uri struct escaping
@@ -42,6 +44,8 @@ struct Efreet_Uri
 EAPI const char *efreet_uri_encode(Efreet_Uri *uri);
 
 /**
+ * @internal
+ *
  * @param val a valid uri string to parse
  * @return Return The corresponding Efreet_Uri structure. Or NULL on errors.
  * @brief Read a single uri and return an Efreet_Uri struct. If there's no
@@ -51,6 +55,8 @@ EAPI const char *efreet_uri_encode(Efreet_Uri *uri);
 EAPI Efreet_Uri *efreet_uri_decode(const char *val);
 
 /**
+ * @internal
+ *
  * @param uri The uri to free
  * @brief Free the given uri structure.
  */

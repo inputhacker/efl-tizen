@@ -5,6 +5,11 @@ class Ecore.Con.Client (Ecore.Con.Base) {
          [[Controls the server representing the socket the client has
            connected to.]]
          get {
+            [[
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             svr: Ecore.Con.Server *; [[The server the client is connected to.]]

@@ -193,6 +193,10 @@ static inline unsigned int eina_f32p32_fracc_get(Eina_F32p32 v);
  *
  * @param a The angle in radians to calculate the cosinus from.
  * @return The cosinus value of the angle @p a
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_F32p32           eina_f32p32_cos(Eina_F32p32 a);
 
@@ -201,6 +205,10 @@ EAPI Eina_F32p32           eina_f32p32_cos(Eina_F32p32 a);
  *
  * @param a The angle in radians to calculate the sinus from.
  * @return The cosinus value of the angle @p a
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_F32p32           eina_f32p32_sin(Eina_F32p32 a);
 

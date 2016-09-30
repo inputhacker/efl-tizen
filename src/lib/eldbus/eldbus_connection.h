@@ -33,6 +33,10 @@ typedef enum
  * ELDBUS_CONNECTION_TYPE_SYSTEM or ELDBUS_CONNECTION_TYPE_STARTER
  *
  * @return connection with bus
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Connection *eldbus_connection_get(Eldbus_Connection_Type type);
 
@@ -46,6 +50,10 @@ EAPI Eldbus_Connection *eldbus_connection_get(Eldbus_Connection_Type type);
  * ELDBUS_CONNECTION_TYPE_SYSTEM or ELDBUS_CONNECTION_TYPE_STARTER
  *
  * @return connection with bus
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Connection *eldbus_private_connection_get(Eldbus_Connection_Type type);
 
@@ -57,6 +65,10 @@ EAPI Eldbus_Connection *eldbus_private_connection_get(Eldbus_Connection_Type typ
  * @param address the address which will be passed to dbus_connection_open()
  *
  * @return connection with bus
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Connection *eldbus_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
 
@@ -69,6 +81,10 @@ EAPI Eldbus_Connection *eldbus_address_connection_get(const char *address) EINA_
  * @param address the address which will be passed to dbus_connection_open_private()
  *
  * @return connection with bus
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Connection *eldbus_private_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
 
@@ -77,6 +93,10 @@ EAPI Eldbus_Connection *eldbus_private_address_connection_get(const char *addres
  *
  * @param conn The given Eldbus_Connection object to reference.
  * @return The Eldbus_Connection object given as parameter.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Connection *eldbus_connection_ref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 
@@ -87,6 +107,10 @@ EAPI Eldbus_Connection *eldbus_connection_ref(Eldbus_Connection *conn) EINA_ARG_
  * its children will be invalidated.
  *
  * @param conn The given Eldbus_Connection object to unreference.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              eldbus_connection_unref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 
@@ -96,11 +120,19 @@ EAPI void              eldbus_connection_unref(Eldbus_Connection *conn) EINA_ARG
  * @param conn The connection object to add the callback to.
  * @param cb callback to be called
  * @param data data passed to callback
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              eldbus_connection_free_cb_add(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @brief Remove callback registered in eldbus_connection_free_cb_add().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              eldbus_connection_free_cb_del(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
@@ -110,6 +142,10 @@ EAPI void              eldbus_connection_free_cb_del(Eldbus_Connection *conn, El
  * @param conn The connection object to store data to
  * @param key to identify data
  * @param data data that will be stored
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              eldbus_connection_data_set(Eldbus_Connection *conn, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -120,6 +156,10 @@ EAPI void              eldbus_connection_data_set(Eldbus_Connection *conn, const
  * @param key key that identifies data
  *
  * @return pointer to data if found otherwise NULL
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             *eldbus_connection_data_get(const Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
 
@@ -130,6 +170,10 @@ EAPI void             *eldbus_connection_data_get(const Eldbus_Connection *conn,
  * @param key that identifies data
  *
  * @return pointer to data if found otherwise NULL
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void             *eldbus_connection_data_del(Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
 
@@ -154,11 +198,19 @@ typedef void (*Eldbus_Connection_Event_Cb)(void *data, Eldbus_Connection *conn, 
 /**
  * @brief Add a callback function to be called when an event occurs of the
  * type passed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_connection_event_callback_add(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @brief Remove callback registered in eldbus_connection_event_callback_add().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                  eldbus_connection_event_callback_del(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
@@ -173,6 +225,10 @@ EAPI void                  eldbus_connection_event_callback_del(Eldbus_Connectio
  * @param timeout timeout in milliseconds, -1 to use default internal value or
  * ELDBUS_TIMEOUT_INFINITE for no timeout
  * @return A Eldbus_Pending struct.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Pending *eldbus_connection_send(Eldbus_Connection *conn, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
 
@@ -183,6 +239,10 @@ EAPI Eldbus_Pending *eldbus_connection_send(Eldbus_Connection *conn, Eldbus_Mess
  *
  * @return pointer to unique name string or NULL or error. Returned value
  * remains valid until connection is free.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *eldbus_connection_unique_name_get(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 /**

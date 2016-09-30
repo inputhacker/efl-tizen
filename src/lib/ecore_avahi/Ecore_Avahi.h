@@ -52,6 +52,8 @@ extern "C" {
 typedef struct _Ecore_Avahi Ecore_Avahi; /**< A handle for an Avahi instance. */
 
 /**
+ * @internal
+ *
  * @brief Create an AvahiPoll context and integrate it within Ecore main loop.
  *
  * @return A handler that reference the AvahiPoll context
@@ -60,6 +62,8 @@ typedef struct _Ecore_Avahi Ecore_Avahi; /**< A handle for an Avahi instance. */
 EAPI Ecore_Avahi *ecore_avahi_add(void);
 
 /**
+ * @internal
+ *
  * @brief Delete the specified handler of an AvahiPoll.
  *
  * @param handler The actual handler to destroy.
@@ -71,6 +75,8 @@ EAPI Ecore_Avahi *ecore_avahi_add(void);
 EAPI void         ecore_avahi_del(Ecore_Avahi *handler);
 
 /**
+ * @internal
+ *
  * @brief Get the AvahiPoll structure to integrate with Ecore main loop.
  *
  * @param handler The handler to get the AvahiPoll structure from.

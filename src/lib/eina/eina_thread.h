@@ -72,6 +72,10 @@ typedef enum _Eina_Thread_Priority
  * Return identifier of the current thread.
  * @return identifier of current thread.
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Thread eina_thread_self(void) EINA_WARN_UNUSED_RESULT;
 
@@ -81,6 +85,10 @@ EAPI Eina_Thread eina_thread_self(void) EINA_WARN_UNUSED_RESULT;
  * @param t2 second thread identifier to compare.
  * @return #EINA_TRUE if they are equal, #EINA_FALSE otherwise.
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_thread_equal(Eina_Thread t1, Eina_Thread t2) EINA_WARN_UNUSED_RESULT;
 
@@ -94,6 +102,10 @@ EAPI Eina_Bool eina_thread_equal(Eina_Thread t1, Eina_Thread t2) EINA_WARN_UNUSE
  * @param data context data to provide to @a func as first argument.
  * @return #EINA_TRUE if thread was created, #EINA_FALSE on errors.
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_thread_create(Eina_Thread *t,
                                   Eina_Thread_Priority prio, int affinity,
@@ -111,6 +123,10 @@ EAPI Eina_Bool eina_thread_create(Eina_Thread *t,
  * @return value returned by @a t creation function @c func() or
  *         @c NULL on errors. Check error with @ref Eina_Error_Group.
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eina_thread_join(Eina_Thread t);
 
@@ -128,6 +144,10 @@ EAPI void *eina_thread_join(Eina_Thread t);
  * @return EINA_TRUE if it succeeds in setting the name or EINA_FALSE
  *         otherwise.
  * @since 1.16
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_thread_name_set(Eina_Thread t, const char *name);
 

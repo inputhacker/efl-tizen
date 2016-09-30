@@ -51,6 +51,10 @@ extern "C" {
  * @param evas_event The received Evas event.
  * @param imf_event The location to store the converted Ecore_IMF event.
  * @ingroup Ecore_IMF_Evas_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_imf_evas_event_mouse_in_wrap(Evas_Event_Mouse_In *evas_event, Ecore_IMF_Event_Mouse_In *imf_event);
 
@@ -60,6 +64,10 @@ EAPI void ecore_imf_evas_event_mouse_in_wrap(Evas_Event_Mouse_In *evas_event, Ec
  * @param evas_event The received Evas event.
  * @param imf_event The location to store the converted Ecore_IMF event.
  * @ingroup Ecore_IMF_Evas_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_imf_evas_event_mouse_out_wrap(Evas_Event_Mouse_Out *evas_event, Ecore_IMF_Event_Mouse_Out *imf_event);
 
@@ -69,6 +77,10 @@ EAPI void ecore_imf_evas_event_mouse_out_wrap(Evas_Event_Mouse_Out *evas_event, 
  * @param evas_event The received Evas event.
  * @param imf_event The location to store the converted Ecore_IMF event.
  * @ingroup Ecore_IMF_Evas_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_imf_evas_event_mouse_move_wrap(Evas_Event_Mouse_Move *evas_event, Ecore_IMF_Event_Mouse_Move *imf_event);
 
@@ -78,6 +90,10 @@ EAPI void ecore_imf_evas_event_mouse_move_wrap(Evas_Event_Mouse_Move *evas_event
  * @param evas_event The received Evas event.
  * @param imf_event The location to store the converted Ecore_IMF event.
  * @ingroup Ecore_IMF_Evas_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_imf_evas_event_mouse_down_wrap(Evas_Event_Mouse_Down *evas_event, Ecore_IMF_Event_Mouse_Down *imf_event);
 
@@ -87,6 +103,10 @@ EAPI void ecore_imf_evas_event_mouse_down_wrap(Evas_Event_Mouse_Down *evas_event
  * @param evas_event The received Evas event.
  * @param imf_event The location to store the converted Ecore_IMF event.
  * @ingroup Ecore_IMF_Evas_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_imf_evas_event_mouse_up_wrap(Evas_Event_Mouse_Up *evas_event, Ecore_IMF_Event_Mouse_Up *imf_event);
 
@@ -96,6 +116,10 @@ EAPI void ecore_imf_evas_event_mouse_up_wrap(Evas_Event_Mouse_Up *evas_event, Ec
  * @param evas_event The received Evas event.
  * @param imf_event The location to store the converted Ecore_IMF event.
  * @ingroup Ecore_IMF_Evas_Group
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_imf_evas_event_mouse_wheel_wrap(Evas_Event_Mouse_Wheel *evas_event, Ecore_IMF_Event_Mouse_Wheel *imf_event);
 
@@ -127,6 +151,10 @@ EAPI void ecore_imf_evas_event_mouse_wheel_wrap(Evas_Event_Mouse_Wheel *evas_eve
  *
  * evas_object_event_callback_add(obj, EVAS_CALLBACK_KEY_DOWN, _key_down_cb, data);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_imf_evas_event_key_down_wrap(Evas_Event_Key_Down *evas_event, Ecore_IMF_Event_Key_Down *imf_event);
 
@@ -158,6 +186,10 @@ EAPI void ecore_imf_evas_event_key_down_wrap(Evas_Event_Key_Down *evas_event, Ec
  *
  * evas_object_event_callback_add(obj, EVAS_CALLBACK_KEY_UP, _key_up_cb, data);
  * @endcode
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void ecore_imf_evas_event_key_up_wrap(Evas_Event_Key_Up *evas_event, Ecore_IMF_Event_Key_Up *imf_event);
 

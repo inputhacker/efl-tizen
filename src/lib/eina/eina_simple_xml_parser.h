@@ -238,6 +238,10 @@ typedef Eina_Bool (*Eina_Simple_XML_Attribute_Cb)(void *data, const char *key, c
  *
  * @return #EINA_TRUE on success or #EINA_FALSE if it was aborted by user or
  *         parsing error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_simple_xml_parse(const char *buf, unsigned buflen,
                                      Eina_Bool strip,
@@ -256,6 +260,9 @@ EAPI Eina_Bool eina_simple_xml_parse(const char *buf, unsigned buflen,
  * The tag contents is returned by eina_simple_xml_parse() when
  * type is #EINA_SIMPLE_XML_OPEN or #EINA_SIMPLE_XML_OPEN_EMPTY.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI const char * eina_simple_xml_tag_attributes_find(const char *buf, unsigned buflen);
 
@@ -273,6 +280,10 @@ EAPI const char * eina_simple_xml_tag_attributes_find(const char *buf, unsigned 
  *
  * @return #EINA_TRUE on success or #EINA_FALSE if it was aborted by user or
  *         parsing error.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_simple_xml_attributes_parse(const char *buf, unsigned buflen,
 						Eina_Simple_XML_Attribute_Cb func, const void *data);
@@ -292,6 +303,10 @@ EAPI Eina_Bool eina_simple_xml_attributes_parse(const char *buf, unsigned buflen
  *          parsing error.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 eina_simple_xml_attribute_w3c_parse(const char *buf, Eina_Simple_XML_Attribute_Cb func, const void *data);
@@ -307,6 +322,10 @@ eina_simple_xml_attribute_w3c_parse(const char *buf, Eina_Simple_XML_Attribute_C
  * @return Newly allocated memory or @c NULL on error. This memory should be
  *         released with eina_simple_xml_attribute_free() or indirectly
  *         with eina_simple_xml_node_tag_free().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Attribute * eina_simple_xml_attribute_new(Eina_Simple_XML_Node_Tag *parent, const char *key, const char *value);
 
@@ -314,6 +333,10 @@ EAPI Eina_Simple_XML_Attribute * eina_simple_xml_attribute_new(Eina_Simple_XML_N
  * Remove attribute from parent and delete it.
  *
  * @param attr attribute to release memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_attribute_free(Eina_Simple_XML_Attribute *attr);
 
@@ -328,6 +351,10 @@ EAPI void eina_simple_xml_attribute_free(Eina_Simple_XML_Attribute *attr);
  * @return Newly allocated memory or @c NULL on error. This memory should be
  *         released with eina_simple_xml_node_tag_free() or indirectly
  *         with eina_simple_xml_node_tag_free() of the parent.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Node_Tag * eina_simple_xml_node_tag_new(Eina_Simple_XML_Node_Tag *parent, const char *name);
 
@@ -335,6 +362,10 @@ EAPI Eina_Simple_XML_Node_Tag * eina_simple_xml_node_tag_new(Eina_Simple_XML_Nod
  * Remove tag from parent and delete it.
  *
  * @param tag to release memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_node_tag_free(Eina_Simple_XML_Node_Tag *tag);
 
@@ -350,6 +381,10 @@ EAPI void eina_simple_xml_node_tag_free(Eina_Simple_XML_Node_Tag *tag);
  * @return Newly allocated memory or NULL on error. This memory should be
  *         released with eina_simple_xml_node_data_free() or indirectly
  *         with eina_simple_xml_node_tag_free() of the parent.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Node_Data * eina_simple_xml_node_data_new(Eina_Simple_XML_Node_Tag *parent, const char *contents, size_t length);
 
@@ -357,6 +392,10 @@ EAPI Eina_Simple_XML_Node_Data * eina_simple_xml_node_data_new(Eina_Simple_XML_N
  * Remove data from parent and delete it.
  *
  * @param node to release memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_node_data_free(Eina_Simple_XML_Node_Data *node);
 
@@ -372,6 +411,10 @@ EAPI void eina_simple_xml_node_data_free(Eina_Simple_XML_Node_Data *node);
  * @return Newly allocated memory or @c NULL on error. This memory should be
  *         released with eina_simple_xml_node_cdata_free() or indirectly
  *         with eina_simple_xml_node_tag_free() of the parent.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Node_CData * eina_simple_xml_node_cdata_new(Eina_Simple_XML_Node_Tag *parent, const char *contents, size_t length);
 
@@ -379,6 +422,10 @@ EAPI Eina_Simple_XML_Node_CData * eina_simple_xml_node_cdata_new(Eina_Simple_XML
  * Remove cdata from parent and delete it.
  *
  * @param node to release memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_node_cdata_free(Eina_Simple_XML_Node_Data *node);
 
@@ -396,6 +443,10 @@ EAPI void eina_simple_xml_node_cdata_free(Eina_Simple_XML_Node_Data *node);
  *         with eina_simple_xml_node_tag_free() of the parent.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Node_Doctype_Child * eina_simple_xml_node_doctype_child_new(Eina_Simple_XML_Node_Tag *parent, const char *contents, size_t length);
 
@@ -405,6 +456,10 @@ EAPI Eina_Simple_XML_Node_Doctype_Child * eina_simple_xml_node_doctype_child_new
  * @param node to release memory.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_node_doctype_child_free(Eina_Simple_XML_Node_Data *node);
 
@@ -420,6 +475,10 @@ EAPI void eina_simple_xml_node_doctype_child_free(Eina_Simple_XML_Node_Data *nod
  * @return Newly allocated memory or @c NULL on error. This memory should be
  *         released with eina_simple_xml_node_processing_free() or indirectly
  *         with eina_simple_xml_node_tag_free() of the parent.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Node_Processing * eina_simple_xml_node_processing_new(Eina_Simple_XML_Node_Tag *parent, const char *contents, size_t length);
 
@@ -427,6 +486,10 @@ EAPI Eina_Simple_XML_Node_Processing * eina_simple_xml_node_processing_new(Eina_
  * Remove processing from parent and delete it.
  *
  * @param node processing to release memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_node_processing_free(Eina_Simple_XML_Node_Data *node);
 
@@ -442,6 +505,10 @@ EAPI void eina_simple_xml_node_processing_free(Eina_Simple_XML_Node_Data *node);
  * @return Newly allocated memory or @c NULL on error. This memory should be
  *         released with eina_simple_xml_node_doctype_free() or indirectly
  *         with eina_simple_xml_node_tag_free() of the parent.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Node_Doctype * eina_simple_xml_node_doctype_new(Eina_Simple_XML_Node_Tag *parent, const char *contents, size_t length);
 
@@ -449,6 +516,10 @@ EAPI Eina_Simple_XML_Node_Doctype * eina_simple_xml_node_doctype_new(Eina_Simple
  * Remove doctype from parent and delete it.
  *
  * @param node doctype to release memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_node_doctype_free(Eina_Simple_XML_Node_Data *node);
 
@@ -464,6 +535,10 @@ EAPI void eina_simple_xml_node_doctype_free(Eina_Simple_XML_Node_Data *node);
  * @return Newly allocated memory or @c NULL on error. This memory should be
  *         released with eina_simple_xml_node_comment_free() or indirectly
  *         with eina_simple_xml_node_tag_free() of the parent.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Node_Comment * eina_simple_xml_node_comment_new(Eina_Simple_XML_Node_Tag *parent, const char *contents, size_t length);
 
@@ -471,6 +546,10 @@ EAPI Eina_Simple_XML_Node_Comment * eina_simple_xml_node_comment_new(Eina_Simple
  * Remove comment from parent and delete it.
  *
  * @param node comment to release memory.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_node_comment_free(Eina_Simple_XML_Node_Data *node);
 
@@ -486,6 +565,10 @@ EAPI void eina_simple_xml_node_comment_free(Eina_Simple_XML_Node_Data *node);
  * @return Document root with children tags, or @c NULL on errors.
  *         Document with errors may return partial tree instead of @c NULL,
  *         we'll do our best to avoid returning nothing.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Simple_XML_Node_Root * eina_simple_xml_node_load(const char *buf, unsigned buflen, Eina_Bool strip);
 
@@ -493,6 +576,10 @@ EAPI Eina_Simple_XML_Node_Root * eina_simple_xml_node_load(const char *buf, unsi
  * Free node tree build with eina_simple_xml_node_load()
  *
  * @param root memory returned by eina_simple_xml_node_load()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void eina_simple_xml_node_root_free(Eina_Simple_XML_Node_Root *root);
 
@@ -503,6 +590,10 @@ EAPI void eina_simple_xml_node_root_free(Eina_Simple_XML_Node_Root *root);
  * @param indent Indentation string, or @c NULL to disable it.
  *
  * @return @c NULL on errors or a newly allocated string on success.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char * eina_simple_xml_node_dump(Eina_Simple_XML_Node *node, const char *indent);
 

@@ -9,6 +9,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               This function sets the DPI resolution of a given loaded canvas
               image. Most useful for the SVG image loader.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -16,6 +20,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               This function returns the DPI resolution of the given canvas
               image.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -27,12 +35,20 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
          set {
             [[Clip the proxy object with the source object's clipper.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.8
             ]]
          }
          get {
             [[Determine whether an object is clipped by source object's
               clipper.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
 
               @since 1.8
             ]]
@@ -59,11 +75,20 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               "proxy state" anymore).
 
               Warning: You cannot set a proxy as another proxy's source.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: bool;
          }
          get {
-            [[Get the current source object of an image object.]]
+            [[Get the current source object of an image object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             src: Evas.Object *; [[Source object to use for the proxy.]]
@@ -78,6 +103,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               automatically trigger a call to \@ref evas_object_image_fill_set
               with the that new size (and 0, 0 as source image's origin),
               so the bound image will fill the whole object's area.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -86,6 +115,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               Returns $true if it is tracking, $false if not (and
               \@ref evas_object_fill_set must be called manually).
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -103,6 +136,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               your driver implementation supports it, setting this hint to
               #EVAS_IMAGE_CONTENT_HINT_DYNAMIC will make it need zero copies
               at texture upload time, which is an "expensive" operation.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -110,6 +147,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               canvas.
 
               This returns #EVAS_IMAGE_CONTENT_HINT_NONE on error.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -128,6 +169,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               Note: The image loader for the image format in question has
               to support selective region loading in order to this function
               to take effect.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -136,6 +181,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               Note: Use $null pointers on the coordinates you're not
               interested in: they'll be ignored by the function.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -155,6 +204,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               makes it use alpha channel data, and $false makes it ignore
               that data. Note that this has nothing to do with an object's
               color as  manipulated by \@ref evas_object_color_set.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -163,6 +216,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               This function returns $true if the image object's alpha
               channel is being used, or $false otherwise.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -189,6 +246,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               Note: By default, image objects have no borders set, i. e.
               $l, $r, $t and $b start as 0.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             /* FIXME-doc
             See the following figures for visual explanation:\n
@@ -212,6 +273,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               Note: Use $null pointers on the border components you're not
               interested in: they'll be ignored by the function.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -225,11 +290,19 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
          set {
             [[Sets the scaling factor (multiplier) for the borders of an
               image object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
             [[Retrieves the scaling factor (multiplier) for the borders
               of an image object.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -246,11 +319,19 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               Warning: Use this function if you really know what you are
               doing.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
             [[Retrieves whether the given image object is dirty (needs to
               be redrawn).
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -261,6 +342,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
          set {
             [[Set the video surface linked to a given image of the canvas.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.1
             ]]
             values {
@@ -269,6 +354,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
          }
          get {
             [[Get the video surface linekd to a given image of the canvas.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
 
               @since 1.1
             ]]
@@ -279,10 +368,20 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
       }
       @property video_surface_caps {
          set {
-            [[Set the video surface capabilities to a given image of the canvas.]]
+            [[Set the video surface capabilities to a given image of the canvas.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          get {
-            [[Get the video surface capabilities to a given image of the canvas.]]
+            [[Get the video surface capabilities to a given image of the canvas.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             caps: uint;
@@ -293,12 +392,20 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
             [[Define if the orientation information in the image file
               should be honored.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.1
             ]]
          }
          get {
             [[Get if the orientation information in the image file should
               be honored.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
 
               @since 1.1
             ]]
@@ -320,11 +427,19 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               for making frames and decorations. You would most probably
               also be using a filled image (as in @.filled.set) to use as
               a frame.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
             [[Retrieves how the center part of the given image object (not
               the borders) is to be drawn when Evas is rendering it.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -350,11 +465,19 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               Warning: If the all of proxies are deleted, then the source
               visibility of the source object will be cancelled.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.8
             ]]
          }
          get {
             [[Get the state of the source object visibility.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
 
               @since 1.8
             ]]
@@ -377,6 +500,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               This function returns the native surface of a given canvas
               image.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -390,11 +517,19 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               This function sets the scale down factor of a given canvas
               image. Most useful for the SVG image loader.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
             [[Get the scale down factor of a given image object's source
               image, when loading it.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -408,6 +543,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               This function sets the scale hint value of the given image
               object in the canvas, which will affect how Evas is to cache
               scaled versions of its original source image.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
@@ -415,6 +554,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               This function returns the scale hint value of the given image
               object of the canvas.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -436,11 +579,19 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               If $source is $false, events occurring on $obj will be
               processed only on it.
 
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
               @since 1.8
             ]]
          }
          get {
             [[Determine whether an object is set to source events.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
 
               @since 1.8
             ]]
@@ -455,12 +606,20 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
             [[Set the colorspace of a given image of the canvas.
 
               This function sets the colorspace of given canvas image.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
             [[Get the colorspace of a given image of the canvas.
 
               This function returns the colorspace of given canvas image.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -473,6 +632,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               This functions sets a function to be the callback function
               that get pixels from a image of the canvas.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -498,6 +661,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               Note that the caller is responsible for freeing the buffer
               when finished with it, as user-set image data will not be
               automatically freed when the image object is deleted.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -515,6 +682,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               @.animated_frame_count.get, @.animated_loop_type.get,
               @.animated_loop_count.get, @.animated_frame_duration_get.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.1
             ]]
          }
@@ -526,6 +697,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
          get {
             [[Get the support state of a given image.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.2
             ]]
             return: bool @warn_unused; [[The region support state.]]
@@ -535,6 +710,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
          get {
             [[Retrieves a number representing any error that occurred during
               the last loading of the given image object's source image.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: Evas_Load_Error @warn_unused; [[
                A value giving the last error that occurred. It should be
@@ -554,6 +733,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               @.animated_frame_count.get, @.animated_loop_type.get,
               @.animated_loop_count.get, @.animated_frame_duration_get.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.1
             ]]
             return: int; [[The number of frames.]]
@@ -565,6 +748,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               The row stride is the number of bytes between the start of a
               row and the start of the next row for image data.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: int @warn_unused; [[The stride of the image (in bytes).]]
          }
@@ -587,6 +774,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               @.animated_frame_count.get, @.animated_loop_type.get,
               @.animated_loop_count.get, @.animated_frame_duration_get.
 
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+
               @since 1.1
             ]]
             return: Evas_Image_Animated_Loop_Hint; [[Loop type of the image object.]]
@@ -606,6 +797,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               See also \@ref evas_object_image_animated_get,
               @.animated_frame_count.get, @.animated_loop_type.get,
               @.animated_loop_count.get, @.animated_frame_duration_get.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
 
               @since 1.1
             ]]
@@ -642,11 +837,19 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
               This function allows to rotate or flip the image.
 
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
               @since 1.14
             ]]
          }
          get {
             [[Get the image orientation.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
 
               @since 1.14
             ]]
@@ -662,12 +865,20 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
               inside it and you can reuse it as a source for any kind
               of effect.
 
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+
               @since 1.15
             ]]
          }
          get {
             [[Determine wether the Evas_Object_Image replicate the content
               of the canvas below.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
 
               @since 1.15
             ]]
@@ -686,6 +897,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
            This function schedules a particular rectangular region of an
            image object to be updated (redrawn) at the next rendering cycle.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in x: int; [[X-offset of the region to be updated.]]
@@ -708,6 +923,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
            @.animated_frame_count.get, @.animated_loop_type.get,
            @.animated_loop_count.get, @.animated_frame_duration_get.
 
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
+
            @since 1.1
          ]]
          return: double;
@@ -725,6 +944,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
            If data is $null, the current image data will be freed.
            Naturally, if one does not set an image object's data
            manually, it will still have one, allocated by Evas.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          params {
             @in data: void *; [[The raw data, or $null.]]
@@ -750,6 +973,10 @@ class Evas.Image (Evas.Object, Efl.File, Efl.Image, Efl.Gfx.Fill, Efl.Gfx.View, 
 
            Note: You may want to use @.data_update_add to inform data
            changes, if you did any.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: void * @warn_unused; [[ The raw image data.]]
          params {

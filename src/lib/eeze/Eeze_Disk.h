@@ -110,6 +110,8 @@ struct _Eeze_Event_Disk_Error
 };
 
 /**
+ * @internal
+ *
  * @brief Use this function to determine whether your eeze is disk-capable
  *
  * Since applications will die if they run/compile against a function that doesn't exist,
@@ -119,6 +121,8 @@ struct _Eeze_Event_Disk_Error
 EAPI void           eeze_disk_function(void);
 
 /**
+ * @internal
+ *
  * @brief Return whether mount support is available in eeze
  *
  * Use this function to determine whether your Eeze library was compiled with a mount
@@ -128,6 +132,8 @@ EAPI void           eeze_disk_function(void);
 EAPI Eina_Bool      eeze_disk_can_mount(void);
 
 /**
+ * @internal
+ *
  * @brief Return whether unmount support is available in eeze
  *
  * Use this function to determine whether your Eeze library was compiled with an unmount
@@ -137,6 +143,8 @@ EAPI Eina_Bool      eeze_disk_can_mount(void);
 EAPI Eina_Bool      eeze_disk_can_unmount(void);
 
 /**
+ * @internal
+ *
  * @brief Return whether eject support is available in eeze
  *
  * Use this function to determine whether your Eeze library was compiled with an eject
@@ -146,6 +154,8 @@ EAPI Eina_Bool      eeze_disk_can_unmount(void);
 EAPI Eina_Bool      eeze_disk_can_eject(void);
 
 /**
+ * @internal
+ *
  * @brief Create a new disk object from a /sys/ path or /dev/ path
  * @param path The /sys/ or /dev path of the disk; CANNOT be @c NULL.
  * @return The new disk object
@@ -158,6 +168,8 @@ EAPI Eina_Bool      eeze_disk_can_eject(void);
 EAPI Eeze_Disk     *eeze_disk_new(const char *path);
 
 /**
+ * @internal
+ *
  * @brief Create a new disk object from a mount point
  * @param mount_point The mount point of the disk; CANNOT be @c NULL
  * @return The new disk object
@@ -171,6 +183,8 @@ EAPI Eeze_Disk     *eeze_disk_new(const char *path);
 EAPI Eeze_Disk     *eeze_disk_new_from_mount(const char *mount_point);
 
 /**
+ * @internal
+ *
  * @brief Frees a disk object
  * @param disk The disk object to free
  *
@@ -180,6 +194,8 @@ EAPI Eeze_Disk     *eeze_disk_new_from_mount(const char *mount_point);
 EAPI void           eeze_disk_free(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Retrieve all disk information
  * @param disk
  *
@@ -191,6 +207,8 @@ EAPI void           eeze_disk_free(Eeze_Disk *disk);
 EAPI void           eeze_disk_scan(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Associate data with a disk
  * @param disk The disk
  * @param data The data
@@ -202,6 +220,8 @@ EAPI void           eeze_disk_scan(Eeze_Disk *disk);
 EAPI void           eeze_disk_data_set(Eeze_Disk *disk, void *data);
 
 /**
+ * @internal
+ *
  * @brief Retrieve data previously associated with a disk
  * @param disk The disk
  * @return The data
@@ -214,6 +234,8 @@ EAPI void           eeze_disk_data_set(Eeze_Disk *disk, void *data);
 EAPI void          *eeze_disk_data_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the /sys/ path of a disk
  * @param disk The disk
  * @return The /sys/ path
@@ -224,6 +246,8 @@ EAPI void          *eeze_disk_data_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_syspath_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the /dev/ path of a disk
  * @param disk The disk
  * @return The /dev/ path
@@ -234,6 +258,8 @@ EAPI const char    *eeze_disk_syspath_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_devpath_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the filesystem of the disk (if known)
  * @param disk The disk
  * @return The filesystem type
@@ -244,6 +270,8 @@ EAPI const char    *eeze_disk_devpath_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_fstype_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the manufacturing vendor of the disk
  * @param disk The disk
  * @return The vendor
@@ -254,6 +282,8 @@ EAPI const char    *eeze_disk_fstype_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_vendor_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the model of the disk
  * @param disk The disk
  * @return The model
@@ -264,6 +294,8 @@ EAPI const char    *eeze_disk_vendor_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_model_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the serial number of the disk
  * @param disk The disk
  * @return The serial number
@@ -274,6 +306,8 @@ EAPI const char    *eeze_disk_model_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_serial_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the UUID of the disk
  * @param disk The disk
  * @return The UUID
@@ -286,6 +320,8 @@ EAPI const char    *eeze_disk_serial_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_uuid_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the label of the disk
  * @param disk The disk
  * @return The label
@@ -296,6 +332,8 @@ EAPI const char    *eeze_disk_uuid_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_label_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the #Eeze_Disk_Type of the disk
  * @param disk The disk
  * @return The type
@@ -307,6 +345,8 @@ EAPI const char    *eeze_disk_label_get(Eeze_Disk *disk);
 EAPI Eeze_Disk_Type eeze_disk_type_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return whether the disk is removable
  * @param disk The disk
  * @return @c EINA_TRUE if removable, @c EINA_FALSE otherwise.
@@ -316,6 +356,8 @@ EAPI Eina_Bool      eeze_disk_removable_get(Eeze_Disk *disk);
 
 
 /**
+ * @internal
+ *
  * @brief Return the mount state of a disk
  * @param disk The disk
  * @return The mount state
@@ -327,6 +369,8 @@ EAPI Eina_Bool      eeze_disk_removable_get(Eeze_Disk *disk);
 EAPI Eina_Bool      eeze_disk_mounted_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Get the previously set mount wrapper for a disk
  * @param disk The disk
  * @return The wrapper, or @c NULL on failure.
@@ -337,6 +381,8 @@ EAPI Eina_Bool      eeze_disk_mounted_get(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_mount_wrapper_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Set a wrapper to run mount commands with
  * @param disk The disk to wrap mount commands for
  * @param wrapper The wrapper executable
@@ -350,6 +396,8 @@ EAPI const char    *eeze_disk_mount_wrapper_get(Eeze_Disk *disk);
 EAPI Eina_Bool      eeze_disk_mount_wrapper_set(Eeze_Disk *disk, const char *wrapper);
 
 /**
+ * @internal
+ *
  * @brief Begin a mount operation on the disk
  * @param disk The disk
  * @return @c EINA_TRUE if the operation was started, @c EINA_FALSE otherwise.
@@ -366,6 +414,8 @@ EAPI Eina_Bool      eeze_disk_mount_wrapper_set(Eeze_Disk *disk, const char *wra
 EAPI Eina_Bool      eeze_disk_mount(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Begin an unmount operation on the disk
  * @param disk The disk
  * @return @c EINA_TRUE if the operation was started, @c EINA_FALSE otherwise.
@@ -382,6 +432,8 @@ EAPI Eina_Bool      eeze_disk_mount(Eeze_Disk *disk);
 EAPI Eina_Bool      eeze_disk_unmount(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Begin an eject operation on the disk
  * @param disk The disk
  * @return @c EINA_TRUE if the operation was started, @c EINA_FALSE otherwise.
@@ -397,6 +449,8 @@ EAPI Eina_Bool      eeze_disk_unmount(Eeze_Disk *disk);
  */
 EAPI Eina_Bool      eeze_disk_eject(Eeze_Disk *disk);
 /**
+ * @internal
+ *
  * @brief Cancel a pending operation on the disk
  * @param disk The disk
  *
@@ -407,6 +461,8 @@ EAPI Eina_Bool      eeze_disk_eject(Eeze_Disk *disk);
 EAPI void           eeze_disk_cancel(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Return the mount point of a disk
  * @param disk The disk
  * @return The mount point
@@ -418,6 +474,8 @@ EAPI void           eeze_disk_cancel(Eeze_Disk *disk);
 EAPI const char    *eeze_disk_mount_point_get(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * @brief Set the mount point of a disk
  * @param disk The disk
  * @param mount_point The mount point
@@ -431,6 +489,8 @@ EAPI const char    *eeze_disk_mount_point_get(Eeze_Disk *disk);
 EAPI Eina_Bool      eeze_disk_mount_point_set(Eeze_Disk *disk, const char *mount_point);
 
 /**
+ * @internal
+ *
  * @brief Set the mount options using flags
  * @param disk The disk
  * @param opts An ORed set of #Eeze_Mount_Opts
@@ -442,6 +502,8 @@ EAPI Eina_Bool      eeze_disk_mount_point_set(Eeze_Disk *disk, const char *mount
 EAPI Eina_Bool      eeze_disk_mountopts_set(Eeze_Disk *disk, unsigned long opts);
 
 /**
+ * @internal
+ *
  * @brief Get the flags of a disk's current mount options
  * @param disk The disk
  * @return An ORed set of #Eeze_Mount_Opts, 0 on failure
@@ -453,6 +515,8 @@ EAPI unsigned long  eeze_disk_mountopts_get(Eeze_Disk *disk);
 
 
 /**
+ * @internal
+ *
  * @brief Begin watching mtab and fstab
  * @return @c EINA_TRUE if watching was started, @c EINA_FALSE otherwise.
  *
@@ -466,6 +530,8 @@ EAPI unsigned long  eeze_disk_mountopts_get(Eeze_Disk *disk);
 EAPI Eina_Bool      eeze_mount_tabs_watch(void);
 
 /**
+ * @internal
+ *
  * @brief Stop watching /etc/fstab and /etc/mtab
  *
  * This function stops watching fstab and mtab.  Data obtained previously will be saved.
@@ -474,6 +540,8 @@ EAPI Eina_Bool      eeze_mount_tabs_watch(void);
 EAPI void           eeze_mount_tabs_unwatch(void);
 
 /**
+ * @internal
+ *
  * @brief Scan /etc/mtab a single time
  * @return @c EINA_TRUE if mtab could be scanned, @c EINA_FALSE otherwise.
  *
@@ -489,6 +557,8 @@ EAPI void           eeze_mount_tabs_unwatch(void);
 EAPI Eina_Bool      eeze_mount_mtab_scan(void);
 
 /**
+ * @internal
+ *
  * @brief Scan /etc/fstab a single time
  * @return @c EINA_TRUE if mtab could be scanned, @c EINA_FALSE otherwise.
  *
@@ -504,6 +574,8 @@ EAPI Eina_Bool      eeze_mount_mtab_scan(void);
 EAPI Eina_Bool      eeze_mount_fstab_scan(void);
 
 /**
+ * @internal
+ *
  * @brief Get the property value of a disk
  *
  * @param disk The disk
@@ -515,6 +587,8 @@ EAPI Eina_Bool      eeze_mount_fstab_scan(void);
 EAPI const char    *eeze_disk_udev_get_property(Eeze_Disk *disk, const char *property);
 
 /**
+ * @internal
+ *
  * @brief Get the sysattr value of a disk.
  *
  * @param disk The disk
@@ -526,6 +600,8 @@ EAPI const char    *eeze_disk_udev_get_property(Eeze_Disk *disk, const char *pro
 EAPI const char    *eeze_disk_udev_get_sysattr(Eeze_Disk *disk, const char *sysattr);
 
 /**
+ * @internal
+ *
  * Find the root device of a disk.
  *
  * @param disk The disk
@@ -537,6 +613,8 @@ EAPI const char    *eeze_disk_udev_get_sysattr(Eeze_Disk *disk, const char *sysa
 EAPI const char    *eeze_disk_udev_get_parent(Eeze_Disk *disk);
 
 /**
+ * @internal
+ *
  * Walks up the device chain using the device from @p disk,
  * checking each device for @p sysattr with (optional) @p value.
  *
@@ -551,6 +629,8 @@ EAPI const char    *eeze_disk_udev_get_parent(Eeze_Disk *disk);
 EAPI Eina_Bool      eeze_disk_udev_walk_check_sysattr(Eeze_Disk *disk, const char *sysattr, const char *value);
 
 /**
+ * @internal
+ *
  * @brief Walks up the device chain of @p disk
  * checking each device for @p sysattr and returns the value if found.
  *

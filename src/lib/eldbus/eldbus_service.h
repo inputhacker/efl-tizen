@@ -124,6 +124,10 @@ typedef struct _Eldbus_Service_Interface_Desc2
  * @param desc description of interface
  *
  * @return Interface
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Service_Interface *eldbus_service_interface_register(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc *desc) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -138,6 +142,10 @@ EAPI Eldbus_Service_Interface *eldbus_service_interface_register(Eldbus_Connecti
  * @since 1.9
  *
  * @return Interface
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Service_Interface *
 eldbus_service_interface_fallback_register(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc *desc) EINA_ARG_NONNULL(1, 2, 3);
@@ -155,6 +163,10 @@ eldbus_service_interface_fallback_register(Eldbus_Connection *conn, const char *
  * @since 1.11
  *
  * @return Interface
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Service_Interface *eldbus_service_interface_register2(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc2 *desc) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -173,6 +185,10 @@ EAPI Eldbus_Service_Interface *eldbus_service_interface_register2(Eldbus_Connect
  * @since 1.11
  *
  * @return Interface
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Service_Interface *
 eldbus_service_interface_fallback_register2(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc2 *desc) EINA_ARG_NONNULL(1, 2, 3);
@@ -182,12 +198,20 @@ eldbus_service_interface_fallback_register2(Eldbus_Connection *conn, const char 
  * @brief Unregister a interface.
  * Note: This doesn't unregister the object path if interface count reaches 0.
  * Use eldbus_service_object_unregister() to unregister the object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eldbus_service_interface_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 
 /**
  * @brief Unregister all interfaces of the object path that this interface belongs
  * and the object path.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eldbus_service_object_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 EAPI Eldbus_Connection *eldbus_service_connection_get(const Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
@@ -201,6 +225,10 @@ EAPI const char *eldbus_service_object_path_get(const Eldbus_Service_Interface *
  * @param iface interface of the signal
  * @param signal_id id of signal
  * @param ... values that will be send on signal
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eldbus_service_signal_emit(const Eldbus_Service_Interface *iface, unsigned int signal_id, ...) EINA_ARG_NONNULL(1);
 
@@ -212,6 +240,10 @@ EAPI Eina_Bool eldbus_service_signal_emit(const Eldbus_Service_Interface *iface,
  *
  * @param iface interface of the signal
  * @param signal_id id of signal
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eldbus_Message *eldbus_service_signal_new(const Eldbus_Service_Interface *iface, unsigned int signal_id) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
@@ -221,6 +253,10 @@ EAPI Eldbus_Message *eldbus_service_signal_new(const Eldbus_Service_Interface *i
  * On success this will call eldbus_message_unref() on the @param signal_msg,
  * which is the intended behavior in 99% of the cases. Remember to increment
  * the refcount if you want to keep it alive.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eldbus_service_signal_send(const Eldbus_Service_Interface *iface, Eldbus_Message *signal_msg) EINA_ARG_NONNULL(1, 2);
 
@@ -232,6 +268,10 @@ EAPI Eina_Bool eldbus_service_signal_send(const Eldbus_Service_Interface *iface,
  * be stored
  * @param key to identify data
  * @param data
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eldbus_service_object_data_set(Eldbus_Service_Interface *iface, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
@@ -242,6 +282,10 @@ EAPI void eldbus_service_object_data_set(Eldbus_Service_Interface *iface, const 
  * @param key that identify data
  *
  * @return pointer to data if found otherwise NULL
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eldbus_service_object_data_get(const Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
@@ -252,6 +296,10 @@ EAPI void *eldbus_service_object_data_get(const Eldbus_Service_Interface *iface,
  * @param key that identify data
  *
  * @return pointer to data if found otherwise NULL
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eldbus_service_object_data_del(Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2);
 
@@ -262,6 +310,10 @@ EAPI void *eldbus_service_object_data_del(Eldbus_Service_Interface *iface, const
  *
  * @param iface Interface containing the changed property
  * @param name Property name
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eldbus_service_property_changed(const Eldbus_Service_Interface *iface, const char *name) EINA_ARG_NONNULL(1, 2);
 
@@ -272,6 +324,10 @@ EAPI Eina_Bool eldbus_service_property_invalidate_set(const Eldbus_Service_Inter
  *
  * @param iface ObjectManager will be attach in object path of this interface.
  * @return EINA_TRUE if success
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eldbus_service_object_manager_attach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 
@@ -280,6 +336,10 @@ EAPI Eina_Bool eldbus_service_object_manager_attach(Eldbus_Service_Interface *if
  *
  * @param iface ObjectManager of object path of this interface will be detach.
  * @return EINA_TRUE if success
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eldbus_service_object_manager_detach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 

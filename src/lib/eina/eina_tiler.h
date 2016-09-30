@@ -182,6 +182,10 @@ typedef struct _Eina_Tile_Grid_Slicer Eina_Tile_Grid_Slicer;
  * @return The newly created tiler
  *
  * @see eina_tiler_free()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Tiler        *eina_tiler_new(int w, int h);
 /**
@@ -191,6 +195,10 @@ EAPI Eina_Tiler        *eina_tiler_new(int w, int h);
  *
  * This function frees @p t. It does not free the memory allocated for the
  * elements of @p t.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void               eina_tiler_free(Eina_Tiler *t);
 /**
@@ -203,6 +211,10 @@ EAPI void               eina_tiler_free(Eina_Tiler *t);
  * @warning @p w and @p h @b must be greater than zero, otherwise tile size
  * won't be changed.
  * @warning Tile size is not used!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void               eina_tiler_tile_size_set(Eina_Tiler *t, int w, int h);
 
@@ -216,6 +228,10 @@ EAPI void               eina_tiler_tile_size_set(Eina_Tiler *t, int w, int h);
  * @since 1.8
  *
  * @warning Must clear the tiler before changing its size.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_tiler_area_size_set(Eina_Tiler *t, int w, int h);
 
@@ -227,6 +243,10 @@ EAPI void               eina_tiler_area_size_set(Eina_Tiler *t, int w, int h);
  * @param h Height of the area.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_tiler_area_size_get(const Eina_Tiler *t, int *w, int *h);
 
@@ -239,6 +259,10 @@ EAPI void               eina_tiler_area_size_get(const Eina_Tiler *t, int *w, in
  * By default it will be loosy.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_tiler_strict_set(Eina_Tiler *t, Eina_Bool strict);
 
@@ -249,6 +273,10 @@ EAPI void               eina_tiler_strict_set(Eina_Tiler *t, Eina_Bool strict);
  * @return EINA_TRUE when empty, EINA_FALSE when not.
  *
  * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool          eina_tiler_empty(Eina_Tiler *t);
 
@@ -260,6 +288,10 @@ EAPI Eina_Bool          eina_tiler_empty(Eina_Tiler *t);
  * @return #EINA_TRUE on success, #EINA_FALSE on failure.
  *
  * @see eina_tiler_rect_del()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool          eina_tiler_rect_add(Eina_Tiler *t, const Eina_Rectangle *r);
 /**
@@ -270,6 +302,10 @@ EAPI Eina_Bool          eina_tiler_rect_add(Eina_Tiler *t, const Eina_Rectangle 
  *
  * @see eina_tiler_rect_add()
  * @see eina_tiler_clear()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void               eina_tiler_rect_del(Eina_Tiler *t, const Eina_Rectangle *r);
 /**
@@ -278,6 +314,10 @@ EAPI void               eina_tiler_rect_del(Eina_Tiler *t, const Eina_Rectangle 
  * @param t The tiler to clear.
  *
  * @see eina_tiler_rect_del()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void               eina_tiler_clear(Eina_Tiler *t);
 /**
@@ -285,6 +325,10 @@ EAPI void               eina_tiler_clear(Eina_Tiler *t);
  *
  * @param t The tiler to iterate over.
  * @return A iterator containing Eina_Rectangle.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator     *eina_tiler_iterator_new(const Eina_Tiler *t);
 
@@ -306,6 +350,10 @@ EAPI Eina_Iterator     *eina_tiler_iterator_new(const Eina_Tiler *t);
  * @note This is a convenience function, iterating over the returned iterator is
  * equivalent to calling eina_tile_grid_slicer_setup() and calling
  * eina_tile_grid_slicer_next() untill it returns #EINA_FALSE.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator     *eina_tile_grid_slicer_iterator_new(int x, int y, int w, int h, int tile_w, int tile_h);
 
@@ -319,6 +367,10 @@ EAPI Eina_Iterator     *eina_tile_grid_slicer_iterator_new(int x, int y, int w, 
  * This fuction get the union of tilers @p dst and @p src.
  * The result is stored in @p dst. It returns #EINA_TRUE if it succeeds.
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool          eina_tiler_union(Eina_Tiler *dst, Eina_Tiler *src);
 
@@ -332,6 +384,10 @@ EAPI Eina_Bool          eina_tiler_union(Eina_Tiler *dst, Eina_Tiler *src);
  * This fuction subtracts two tilers @p dst and @p src.
  * The result is stored in @p dst. It returns #EINA_TRUE if it succeeds.
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool          eina_tiler_subtract(Eina_Tiler *dst, Eina_Tiler *src);
 
@@ -345,6 +401,10 @@ EAPI Eina_Bool          eina_tiler_subtract(Eina_Tiler *dst, Eina_Tiler *src);
  * This fuction gest intersection of two tilers @p t1 and @p t2.
  * It returns a pointer of result if intersection of two tilers exists., otherwise returns NULL.
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Tiler        *eina_tiler_intersection(Eina_Tiler *t1, Eina_Tiler *t2);
 
@@ -358,6 +418,10 @@ EAPI Eina_Tiler        *eina_tiler_intersection(Eina_Tiler *t1, Eina_Tiler *t2);
  * This fuction gets result of comparison for @p t1 and @p t2.
  * It returns #EINA_TRUE if tilers are equal.
  * @since 1.11
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool           eina_tiler_equal(Eina_Tiler *t1, Eina_Tiler *t2);
 

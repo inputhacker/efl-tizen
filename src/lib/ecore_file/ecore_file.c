@@ -104,6 +104,10 @@ _ecore_file_stat(const char *file,
  *
  * When Ecore_File is not used anymore, call ecore_file_shutdown()
  * to shut down the Ecore_File library.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_file_init()
@@ -167,6 +171,10 @@ ecore_file_init()
  * This function shuts down the Ecore_File library. It returns 0 when it has
  * been called the same number of times than ecore_file_init(). In that case
  * it shuts down all the services it uses.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_file_shutdown()
@@ -200,6 +208,10 @@ ecore_file_shutdown()
  *
  * This function returns the time of the last modification of
  * @p file. On failure, it returns 0.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI long long
 ecore_file_mod_time(const char *file)
@@ -220,6 +232,10 @@ ecore_file_mod_time(const char *file)
  *
  * This function returns the size of @p file in bytes. On failure, it
  * returns 0.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI long long
 ecore_file_size(const char *file)
@@ -240,6 +256,10 @@ ecore_file_size(const char *file)
  *
  * This function returns @c EINA_TRUE if @p file exists on local filesystem,
  * @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_exists(const char *file)
@@ -266,6 +286,10 @@ ecore_file_exists(const char *file)
  *
  * This function returns @c EINA_TRUE if @p file exists exists and is a
  * directory on local filesystem, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_is_dir(const char *file)
@@ -290,6 +314,10 @@ static mode_t default_mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S
  * S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH on UNIX
  * (mode is unsued on Windows). On success, it returns @c EINA_TRUE,
  * @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_mkdir(const char *dir)
@@ -309,6 +337,10 @@ ecore_file_mkdir(const char *dir)
  * and call ecore_file_mkdir(). This function returns -1 if @p dirs is
  * @c NULL, otherwise if returns the number of suceesfully created
  * directories.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_file_mkdirs(const char **dirs)
@@ -340,6 +372,10 @@ ecore_file_mkdirs(const char **dirs)
  * empty ("\0"). It returns 0 is @p base is not a directory or
  * invalid, or if it can't be created. Otherwise if returns the number
  * of suceesfully created directories.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_file_mksubdirs(const char *base, const char **subdirs)
@@ -431,6 +467,10 @@ ecore_file_mksubdirs(const char *base, const char **subdirs)
  *
  * This function deletes @p dir. It returns @c EINA_TRUE on success,
  * @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_rmdir(const char *dir)
@@ -447,6 +487,10 @@ ecore_file_rmdir(const char *dir)
  *
  * This function deletes @p file. It returns @c EINA_TRUE on success,
  * @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_unlink(const char *file)
@@ -463,6 +507,10 @@ ecore_file_unlink(const char *file)
  *
  * This function removes @p file. It returns @c EINA_TRUE on success,
  * @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_remove(const char *file)
@@ -480,6 +528,10 @@ ecore_file_remove(const char *file)
  * This function delete @p dir and all its contents. If @p dir is a
  * link only the link is removed. It returns @c EINA_TRUE on success,
  * @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_recursive_rm(const char *dir)
@@ -561,6 +613,10 @@ _ecore_file_mkpath_if_not_exists(const char *path)
  * contains. The separator is '/' or '\'. If @p path exists, this
  * function returns @c EINA_TRUE immediately. It returns @c EINA_TRUE on
  * success, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_mkpath(const char *path)
@@ -599,6 +655,10 @@ ecore_file_mkpath(const char *path)
  * replaced by '/' before calling that function. This function
  * returns -1 if @p paths is @c NULL. Otherwise if returns the number
  * of suceesfully created directories.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_file_mkpaths(const char **paths)
@@ -624,6 +684,10 @@ ecore_file_mkpaths(const char **paths)
  * @p src and @p dst can not be computed, or if they are equal, or if
  * the copy fails, the function returns @c EINA_FALSE, otherwise it
  * returns @c EINA_TRUE.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_cp(const char *src, const char *dst)
@@ -663,6 +727,10 @@ ecore_file_cp(const char *src, const char *dst)
  *
  * This function moves @p src to @p dst. It returns @c EINA_TRUE on
  * success, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_mv(const char *src, const char *dst)
@@ -740,6 +808,10 @@ FAIL:
  * This function create the symbolic link @p dest of @p src. This
  * function does not work on Windows. It returns @c EINA_TRUE on success,
  * @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_symlink(const char *src, const char *dest)
@@ -760,6 +832,10 @@ ecore_file_symlink(const char *src, const char *dest)
  * allocated string. If @p file is @c NULL, or on error, this function
  * returns an empty string. Otherwise, it returns the absolute path
  * name. When not needed anymore, the returned value must be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char *
 ecore_file_realpath(const char *file)
@@ -784,6 +860,10 @@ ecore_file_realpath(const char *file)
  *
  * This function returns the file name of @p path. If @p path is
  * @c NULL, the functions returns @c NULL.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *
 ecore_file_file_get(const char *path)
@@ -816,6 +896,10 @@ ecore_file_file_get(const char *path)
  * allocated string. If @p file is @c NULL or on error, this function
  * returns @c NULL. When not needed anymore, the returned value must
  * be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char *
 ecore_file_dir_get(const char *file)
@@ -838,6 +922,10 @@ ecore_file_dir_get(const char *file)
  *
  * This function returns @c EINA_TRUE if @p file can be read, @c EINA_FALSE
  * otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_can_read(const char *file)
@@ -855,6 +943,10 @@ ecore_file_can_read(const char *file)
  *
  * This function returns @c EINA_TRUE if @p file can be written, @c EINA_FALSE
  * otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_can_write(const char *file)
@@ -873,6 +965,10 @@ ecore_file_can_write(const char *file)
  *
  * This function returns @c EINA_TRUE if @p file can be executed, @c EINA_FALSE
  * otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool
 ecore_file_can_exec(const char *file)
@@ -892,6 +988,10 @@ ecore_file_can_exec(const char *file)
  * allocated string. This function does not work on Windows. On
  * failure, the function returns @c NULL. When not needed anymore, the
  * returned value must be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char *
 ecore_file_readlink(const char *lnk)
@@ -920,6 +1020,10 @@ ecore_file_readlink(const char *lnk)
  * and setlocale. The list will not contain the directory entries for
  * '.' and '..'. On failure, @c NULL is returned. When not needed
  * anymore, the list elements must be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_List *
 ecore_file_ls(const char *dir)
@@ -953,6 +1057,10 @@ ecore_file_ls(const char *dir)
  * are removed and escape characters are handled. If @p app is @c NULL, or
  * on failure, the function returns @c NULL. When not needed anymore, the
  * returned value must be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char *
 ecore_file_app_exe_get(const char *app)
@@ -1027,6 +1135,10 @@ ecore_file_app_exe_get(const char *app)
  * length of the returned string is longer than PATH_MAX, or on
  * failure, @c NULL is returned. When not needed anymore, the returned
  * value must be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char *
 ecore_file_escape_name(const char *filename)
@@ -1097,6 +1209,10 @@ ecore_file_escape_name(const char *filename)
  * result as a newly allocated string. If @p path is @c NULL, or on
  * failure, the function returns @c NULL. When not needed anymore, the
  * returned value must be freed.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char *
 ecore_file_strip_ext(const char *path)
@@ -1132,6 +1248,10 @@ ecore_file_strip_ext(const char *path)
  * This functions checks if @p dir is empty. The '.' and '..' files
  * will be ignored. If @p dir is empty, 1 is returned, if it contains
  * at least one file, @c 0 is returned. On failure, @c -1 is returned.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int
 ecore_file_dir_is_empty(const char *dir)

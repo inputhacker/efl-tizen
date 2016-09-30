@@ -160,6 +160,10 @@ typedef void (*Eina_Rbtree_Free_Cb)(Eina_Rbtree *node, void *data);
  * This function insert a new node in a valid red black tree. @c NULL is
  * an empty valid red black tree. The resulting new tree is a valid red
  * black tree. This function doesn't allocate any data.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Rbtree          *eina_rbtree_inline_insert(Eina_Rbtree *root, Eina_Rbtree *node, Eina_Rbtree_Cmp_Node_Cb cmp, const void *data) EINA_ARG_NONNULL(2, 3) EINA_WARN_UNUSED_RESULT;
 
@@ -175,6 +179,10 @@ EAPI Eina_Rbtree          *eina_rbtree_inline_insert(Eina_Rbtree *root, Eina_Rbt
  * This function remove a new node in a valid red black tree that should
  * contain the node that you are removing. This function will return @c NULL
  * when the red black tree got empty. This function doesn't free any data.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Rbtree          *eina_rbtree_inline_remove(Eina_Rbtree *root, Eina_Rbtree *node, Eina_Rbtree_Cmp_Node_Cb cmp, const void *data) EINA_ARG_NONNULL(2, 3) EINA_WARN_UNUSED_RESULT;
 
@@ -185,6 +193,9 @@ EAPI Eina_Rbtree          *eina_rbtree_inline_remove(Eina_Rbtree *root, Eina_Rbt
  * @param func The callback that will free each node.
  * @param data Private data to help the compare function.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void                  eina_rbtree_delete(Eina_Rbtree *root, Eina_Rbtree_Free_Cb func, void *data) EINA_ARG_NONNULL(2);
 
@@ -208,6 +219,10 @@ static inline Eina_Rbtree *eina_rbtree_inline_lookup(const Eina_Rbtree *root, co
  * @warning if the rbtree structure changes then the iterator becomes
  *    invalid! That is, if you add or remove nodes this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator        *eina_rbtree_iterator_prefix(const Eina_Rbtree *root) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -228,6 +243,10 @@ EAPI Eina_Iterator        *eina_rbtree_iterator_prefix(const Eina_Rbtree *root) 
  * @warning if the rbtree structure changes then the iterator becomes
  *    invalid! That is, if you add or remove nodes this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator        *eina_rbtree_iterator_infix(const Eina_Rbtree *root) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
@@ -248,6 +267,10 @@ EAPI Eina_Iterator        *eina_rbtree_iterator_infix(const Eina_Rbtree *root) E
  * @warning if the rbtree structure changes then the iterator becomes
  *    invalid! That is, if you add or remove nodes this iterator
  *    behavior is undefined and your program may crash!
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator        *eina_rbtree_iterator_postfix(const Eina_Rbtree *root) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
