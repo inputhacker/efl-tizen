@@ -772,7 +772,7 @@ EAPI Eina_Bool eolian_function_is_beta(const Eolian_Function *function_id);
  *
  * @ingroup Eolian
  */
-EAPI Eina_Bool eolian_function_is_internal(const Eolian_Function *function_id);
+EAPI Eina_Bool eolian_function_is_internal(const Eolian_Function *function_id, Eolian_Function_Type ftype);
 
 /*
  * @brief Indicates if a function is a constructing function of a given class.

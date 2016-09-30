@@ -335,10 +335,15 @@ eolian_function_is_beta(const Eolian_Function *fid)
 }
 
 EAPI Eina_Bool
-eolian_function_is_internal(const Eolian_Function *fid)
+eolian_function_is_internal(const Eolian_Function *fid, Eolian_Function_Type ftype)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(fid, EINA_FALSE);
-   return fid->is_internal;
+   switch (ftype)
+     {
+      case EOLIAN_UNRESOLVED: case EOLIAN_METHOD: case EOLIAN_PROPERTY: case EOLIAN_PROP_GET: return fid->get_internal; break;
+      case EOLIAN_PROP_SET: return fid->set_internal; break;
+      default: return EINA_FALSE;
+     }
 }
 
 EAPI Eina_Bool eolian_function_is_implemented(

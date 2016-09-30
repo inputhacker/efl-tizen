@@ -80,7 +80,7 @@ _eapi_decl_func_generate(const Eolian_Class *class, const Eolian_Function *funci
                           eolian_function_documentation_get(funcid, ftype);
    if (hasnewdocs)
      {
-        Eina_Bool is_internal = eolian_function_is_internal(funcid);
+        Eina_Bool is_internal = eolian_function_is_internal(funcid, ftype);
         Eina_Strbuf *dbuf = docs_generate_function(funcid, ftype, 0, EINA_TRUE, is_internal);
 
         eina_strbuf_append_char(fbody, '\n');

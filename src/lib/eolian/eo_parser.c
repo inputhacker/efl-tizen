@@ -1065,7 +1065,7 @@ parse_accessor(Eo_Lexer *ls, Eolian_Function *prop)
    int line, col;
    Eina_Bool has_return = EINA_FALSE, has_legacy = EINA_FALSE,
              has_eo     = EINA_FALSE, has_keys   = EINA_FALSE,
-             has_values = EINA_FALSE;
+             has_values = EINA_FALSE, has_internal = EINA_FALSE;
    Eina_Bool is_get = (ls->t.kw == KW_get);
    if (is_get)
      {
@@ -1086,6 +1086,20 @@ parse_accessor(Eo_Lexer *ls, Eolian_Function *prop)
           prop->type = EOLIAN_PROP_SET;
      }
    eo_lexer_get(ls);
+   for (;;) switch (ls->t.kw)
+     {
+      case KW_at_internal:
+         CASE_LOCK(ls, internal, "internal qualifier");
+         if (is_get)
+           prop->get_internal = EINA_TRUE;
+         else
+           prop->set_internal = EINA_TRUE;
+         eo_lexer_get(ls);
+         break;
+      default:
+         goto body;
+     }
+body:
    line = ls->line_number;
    col = ls->column;
    check_next(ls, '{');
@@ -1217,7 +1231,8 @@ parse_property(Eo_Lexer *ls)
         break;
       case KW_at_internal:
         CASE_LOCK(ls, internal, "internal qualifier");
-        prop->is_internal = EINA_TRUE;
+        prop->get_internal = EINA_TRUE;
+        prop->set_internal = EINA_TRUE;
         eo_lexer_get(ls);
         break;
       default:
@@ -1303,7 +1318,7 @@ parse_method(Eo_Lexer *ls)
         break;
       case KW_at_internal:
         CASE_LOCK(ls, internal, "internal qualifier");
-        meth->is_internal = EINA_TRUE;
+        meth->get_internal = EINA_TRUE;
         eo_lexer_get(ls);
         break;
       default:
