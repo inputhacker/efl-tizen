@@ -3273,6 +3273,18 @@ edje_edit_part_item_index_padding_set(Evas_Object *obj, const char *part, unsign
 EINA_DEPRECATED
 EAPI double edje_edit_part_item_align_x_get(Evas_Object *obj, const char *part, const char *item);
 
+/** Get the horizontal align value of a part state.
+ *
+ * @param obj Object being edited.
+ * @param part Part that contain item.
+ * @param index Index of the item to get horizontal align value.
+ *
+ * @return The horizontal align value for the given align (value is between -1.0 and 1.0)
+ * @since 1.18
+ */
+EAPI double
+edje_edit_part_item_index_align_x_get(Evas_Object *obj, const char *part, unsigned int index);
+
 /** Set the horizontal align value of a part state.
  *
  * @param obj Object being edited.
@@ -3286,6 +3298,19 @@ EAPI double edje_edit_part_item_align_x_get(Evas_Object *obj, const char *part, 
 EINA_DEPRECATED
 EAPI Eina_Bool edje_edit_part_item_align_x_set(Evas_Object *obj, const char *part, const char *item, double align_x);
 
+/** Set the horizontal align value of a part state.
+ *
+ * @param obj Object being edited.
+ * @param part Part that contain itemf
+ * @param index Index of the item to set horizontal align value.
+ * @param align_x New value of the horizontal align.
+ *
+ * @return @c EINA_TRUE in case of success, @c EINA_FALSE otherwise.
+ * @since 1.18
+ */
+EAPI Eina_Bool
+edje_edit_part_item_index_align_x_set(Evas_Object *obj, const char *part, unsigned int index, double align_x);
+
 /** Get the vertical align value of a part state.
  *
  * @param obj Object being edited.
@@ -3297,6 +3322,18 @@ EAPI Eina_Bool edje_edit_part_item_align_x_set(Evas_Object *obj, const char *par
  */
 EINA_DEPRECATED
 EAPI double edje_edit_part_item_align_y_get(Evas_Object *obj, const char *part, const char *item);
+
+/** Get the vertical align value of a part state.
+ *
+ * @param obj Object being edited.
+ * @param part Part that contain item.
+ * @param index Index of the item to get vertical align value.
+ *
+ * @return The vertical align value for the given align (value is between -1.0 and 1.0)
+ * @since 1.18
+ */
+EAPI double
+edje_edit_part_item_index_align_y_get(Evas_Object *obj, const char *part, unsigned int index);
 
 /** Set the vertical align value of a part state.
  *
@@ -3311,6 +3348,19 @@ EAPI double edje_edit_part_item_align_y_get(Evas_Object *obj, const char *part, 
 EINA_DEPRECATED
 EAPI Eina_Bool edje_edit_part_item_align_y_set(Evas_Object *obj, const char *part, const char *item, double align_y);
 
+/** Set the vertical align value of a part state.
+ *
+ * @param obj Object being edited.
+ * @param part Part that contain item.
+ * @param index Index of the item to set vertical align value.
+ * @param align_y New value of the vertical align.
+ *
+ * @return @c EINA_TRUE in case of success, @c EINA_FALSE otherwise.
+ * @since 1.18
+ */
+EAPI Eina_Bool
+edje_edit_part_item_index_align_y_set(Evas_Object *obj, const char *part, unsigned int index, double align_y);
+
 /** Get the horizontal weight value of a part item.
  *
  * @param obj Object being edited.
@@ -3322,6 +3372,18 @@ EAPI Eina_Bool edje_edit_part_item_align_y_set(Evas_Object *obj, const char *par
  */
 EINA_DEPRECATED
 EAPI double edje_edit_part_item_weight_x_get(Evas_Object *obj, const char *part, const char *item);
+
+/** Get the horizontal weight value of a part item.
+ *
+ * @param obj Object being edited.
+ * @param part Part that contain item.
+ * @param index Index of the item to get horizontal weight value.
+ *
+ * @return The horizontal weight value for the given item (value is between -1.0 and 1.0)
+ * @since 1.18
+ */
+EAPI double
+edje_edit_part_item_index_weight_x_get(Evas_Object *obj, const char *part, unsigned int index);
 
 /** Set the horizontal we value of a part item.
  *
@@ -3336,6 +3398,19 @@ EAPI double edje_edit_part_item_weight_x_get(Evas_Object *obj, const char *part,
 EINA_DEPRECATED
 EAPI Eina_Bool edje_edit_part_item_weight_x_set(Evas_Object *obj, const char *part, const char *item, double weight_x);
 
+/** Set the horizontal we value of a part item.
+ *
+ * @param obj Object being edited.
+ * @param part Part that contain itemf
+ * @param index Index of the item to set horizontal weight value.
+ * @param weight_x New value of the horizontal weight.
+ *
+ * @return @c EINA_TRUE If successful, @c EINA_FALSE otherwise.
+ * @since 1.18
+ */
+EAPI Eina_Bool
+edje_edit_part_item_index_weight_x_set(Evas_Object *obj, const char *part, unsigned int index, double weight_x);
+
 /** Get the vertical weight value of a part item.
  *
  * @param obj Object being edited.
@@ -3347,6 +3422,18 @@ EAPI Eina_Bool edje_edit_part_item_weight_x_set(Evas_Object *obj, const char *pa
  */
 EINA_DEPRECATED
 EAPI double edje_edit_part_item_weight_y_get(Evas_Object *obj, const char *part, const char *item);
+
+/** Get the vertical weight value of a part item.
+ *
+ * @param obj Object being edited.
+ * @param part Part that contain item.
+ * @param index Index of the item to get vertical weight value.
+ *
+ * @return The vertical weight value for the given item (value is between -1.0 and 1.0)
+ * @since 1.18
+ */
+EAPI double
+edje_edit_part_item_index_weight_y_get(Evas_Object *obj, const char *part, unsigned int index);
 
 /** Set the vertical weight value of a part item.
  *
@@ -3360,6 +3447,19 @@ EAPI double edje_edit_part_item_weight_y_get(Evas_Object *obj, const char *part,
  */
 EINA_DEPRECATED
 EAPI Eina_Bool edje_edit_part_item_weight_y_set(Evas_Object *obj, const char *part, const char *item, double weight_y);
+
+/** Set the vertical weight value of a part item.
+ *
+ * @param obj Object being edited.
+ * @param part Part that contain item.
+ * @param index Index of the item to set vertical weight value.
+ * @param weight_y New value of the vertical weight.
+ *
+ * @return @c EINA_TRUE If successful, @c EINA_FALSE otherwise.
+ * @since 1.18
+ */
+EAPI Eina_Bool
+edje_edit_part_item_index_weight_y_set(Evas_Object *obj, const char *part, unsigned int index, double weight_y);
 
 /** Get column/row position of the part's item.
  *
