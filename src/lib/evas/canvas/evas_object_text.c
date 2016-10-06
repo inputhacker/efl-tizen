@@ -2295,7 +2295,7 @@ _evas_object_text_recalc(Evas_Object *eo_obj, Eina_Unicode *text)
              /* TIZEN_ONLY(20160305): Remove a whitespcae from the right end of ellipsized RTL text
              min = w + l + r < obj->cur->geometry.w || obj->cur->geometry.w == 0 ? w + l + r : obj->cur->geometry.w;
               */
-             min = w + l + r < obj->cur->geometry.w || obj->cur->geometry.w == 0 ? w + l + r : _evas_object_text_horiz_advance_get(o);
+             min = w + l + r < obj->cur->geometry.w || obj->cur->geometry.w == 0 ? w + l + r : _evas_object_text_horiz_advance_get(o) + l + r;
              /* END */
              eo_do_super(eo_obj, MY_CLASS,
                          efl_gfx_size_set(min, h + t + b));
