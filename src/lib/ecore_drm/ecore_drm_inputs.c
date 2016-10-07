@@ -51,10 +51,45 @@ _cb_close_restricted(int fd, void *data)
      }
 }
 
+static void
+_ecore_event_device_info_free(void *data EINA_UNUSED, void *ev)
+{
+   Ecore_Event_Device_Info *e;
+
+   e = ev;
+   eina_stringshare_del(e->name);
+   eina_stringshare_del(e->identifier);
+   eina_stringshare_del(e->seatname);
+
+   free(e);
+}
+
+void
+_ecore_drm_seat_info_send(unsigned int window, const char *name, Eina_Bool added)
+{
+   Ecore_Event_Device_Info *e;
+
+   if (!name) return;
+
+   if (!(e = calloc(1, sizeof(Ecore_Event_Device_Info)))) return;
+
+   e->name = eina_stringshare_ref(name);
+   e->identifier = eina_stringshare_ref(name);
+   e->seatname = eina_stringshare_ref(name);
+   e->clas = ECORE_DEVICE_CLASS_SEAT;
+   e->window = window;
+
+   if (added)
+     ecore_event_add(ECORE_EVENT_DEVICE_ADD, e, _ecore_event_device_info_free, NULL);
+   else
+     ecore_event_add(ECORE_EVENT_DEVICE_DEL, e, _ecore_event_device_info_free, NULL);
+}
+
 static Ecore_Drm_Seat *
 _seat_create(Ecore_Drm_Input *input, const char *seat)
 {
    Ecore_Drm_Seat *s;
+   Ecore_Device *dev;
 
    /* try to allocate space for new seat */
    if (!(s = calloc(1, sizeof(Ecore_Drm_Seat))))
@@ -67,6 +102,15 @@ _seat_create(Ecore_Drm_Input *input, const char *seat)
    input->dev->seats = eina_list_append(input->dev->seats, s);
 
    ecore_event_add(ECORE_DRM_EVENT_SEAT_ADD, NULL, NULL, NULL);
+
+   if(!(dev = ecore_device_add())) return EINA_FALSE;
+
+   ecore_device_name_set(dev, seat);
+   ecore_device_description_set(dev, seat);
+   ecore_device_identifier_set(dev, seat);
+   ecore_device_class_set(dev, ECORE_DEVICE_CLASS_SEAT);
+
+   _ecore_drm_seat_info_send(input->dev->window, s->name, EINA_TRUE);
 
    return s;
 }
@@ -97,6 +141,8 @@ _ecore_drm_event_input_device_del_free(void *data EINA_UNUSED, void *ev)
    free(e);
 }
 
+
+
 static Ecore_Drm_Seat *
 _seat_get(Ecore_Drm_Input *input, const char *seat)
 {
@@ -108,19 +154,6 @@ _seat_get(Ecore_Drm_Input *input, const char *seat)
      if (!strcmp(s->name, seat)) return s;
 
    return _seat_create(input, seat);
-}
-
-static void
-_ecore_event_device_info_free(void *data EINA_UNUSED, void *ev)
-{
-   Ecore_Event_Device_Info *e;
-
-   e = ev;
-   eina_stringshare_del(e->name);
-   eina_stringshare_del(e->identifier);
-   eina_stringshare_del(e->seatname);
-
-   free(e);
 }
 
 static Ecore_Device_Class
@@ -141,19 +174,19 @@ _ecore_drm_seat_cap_to_ecore_device_class(unsigned int cap)
 }
 
 void
-_ecore_drm_device_info_send(unsigned int window, Ecore_Drm_Evdev *edev, Ecore_Device_Class clas, Eina_Bool flag)
+_ecore_drm_device_info_send(unsigned int window, Ecore_Drm_Evdev *edev, Ecore_Device_Class clas, Eina_Bool added)
 {
    Ecore_Event_Device_Info *e;
 
    if (!(e = calloc(1, sizeof(Ecore_Event_Device_Info)))) return;
 
-   e->name = eina_stringshare_add(libinput_device_get_name(edev->device));
-   e->identifier = eina_stringshare_add(edev->path);
-   e->seatname = eina_stringshare_add(edev->seat->name);
+   e->name = eina_stringshare_ref(edev->name);
+   e->identifier = eina_stringshare_ref(edev->path);
+   e->seatname = eina_stringshare_ref(edev->seat->name);
    e->clas = clas;
    e->window = window;
 
-   if (flag)
+   if (added)
      ecore_event_add(ECORE_EVENT_DEVICE_ADD, e, _ecore_event_device_info_free, NULL);
    else
      ecore_event_add(ECORE_EVENT_DEVICE_DEL, e, _ecore_event_device_info_free, NULL);
@@ -162,58 +195,38 @@ _ecore_drm_device_info_send(unsigned int window, Ecore_Drm_Evdev *edev, Ecore_De
 static Eina_Bool
 _ecore_drm_device_add_ecore_device(Ecore_Drm_Evdev *edev, Ecore_Device_Class clas)
 {
-   const Eina_List *dev_list = NULL;
-   const Eina_List *l;
-   Ecore_Device *dev = NULL;
-   const char *identifier;
+   Ecore_Device *dev = NULL, *seat_dev = NULL;
 
    if (!edev->path) return EINA_FALSE;
 
-   dev_list = ecore_device_list();
-   if (dev_list)
-     {
-        EINA_LIST_FOREACH(dev_list, l, dev)
-          {
-             if (!dev) continue;
-             identifier = ecore_device_identifier_get(dev);
-             if (!identifier) continue;
-             if ((ecore_device_class_get(dev) == clas) && (!strcmp(identifier, edev->path)))
-                return EINA_FALSE;
-          }
-     }
+   if ((dev = ecore_device_find(edev->path, clas)))
+     return EINA_FALSE;
 
    if(!(dev = ecore_device_add())) return EINA_FALSE;
 
-   ecore_device_name_set(dev, libinput_device_get_name(edev->device));
-   ecore_device_description_set(dev, libinput_device_get_name(edev->device));
+   ecore_device_name_set(dev, edev->name);
+   ecore_device_description_set(dev, edev->name);
    ecore_device_identifier_set(dev, edev->path);
    ecore_device_class_set(dev, clas);
+   if ((seat_dev = ecore_device_find(edev->seat->name, ECORE_DEVICE_CLASS_SEAT)))
+     ecore_device_parent_set(dev, seat_dev);
+
    return EINA_TRUE;
 }
 
 static Eina_Bool
 _ecore_drm_device_del_ecore_device(Ecore_Drm_Evdev *edev, Ecore_Device_Class clas)
 {
-   const Eina_List *dev_list = NULL;
-   const Eina_List *l;
    Ecore_Device *dev = NULL;
-   const char *identifier;
 
    if (!edev->path) return EINA_FALSE;
 
-   dev_list = ecore_device_list();
-   if (!dev_list) return EINA_FALSE;
-   EINA_LIST_FOREACH(dev_list, l, dev)
-      {
-         if (!dev) continue;
-         identifier = ecore_device_identifier_get(dev);
-         if (!identifier) continue;
-         if ((ecore_device_class_get(dev) == clas) && (!strcmp(identifier, edev->path)))
-           {
-              ecore_device_del(dev);
-              return EINA_TRUE;
-           }
-      }
+   if ((dev = ecore_device_find(edev->path, clas)))
+     {
+        ecore_device_del(dev);
+        return EINA_TRUE;
+     }
+
    return EINA_FALSE;
 }
 
@@ -227,19 +240,19 @@ _ecore_drm_device_add(unsigned int window, Ecore_Drm_Evdev *edev)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_POINTER);
         ret = _ecore_drm_device_add_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 1);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, EINA_TRUE);
      }
    if (edev->seat_caps & EVDEV_SEAT_KEYBOARD)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_KEYBOARD);
         ret = _ecore_drm_device_add_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 1);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, EINA_TRUE);
      }
    if (edev->seat_caps & EVDEV_SEAT_TOUCH)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_TOUCH);
         ret = _ecore_drm_device_add_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 1);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, EINA_TRUE);
      }
 }
 
@@ -253,19 +266,19 @@ _ecore_drm_device_remove(unsigned int window, Ecore_Drm_Evdev *edev)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_POINTER);
         ret = _ecore_drm_device_del_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 0);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, EINA_FALSE);
      }
    if (edev->seat_caps & EVDEV_SEAT_KEYBOARD)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_KEYBOARD);
         ret = _ecore_drm_device_del_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 0);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, EINA_FALSE);
      }
    if (edev->seat_caps & EVDEV_SEAT_TOUCH)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_TOUCH);
         ret = _ecore_drm_device_del_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 0);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, EINA_FALSE);
      }
 }
 
@@ -311,7 +324,7 @@ _device_added(Ecore_Drm_Input *input, struct libinput_device *device)
         return;
      }
 
-   ev->name = eina_stringshare_add(libinput_device_get_name(device));
+   ev->name = eina_stringshare_add(edev->name);
    ev->sysname = eina_stringshare_add(edev->path);
    ev->seatname = eina_stringshare_add(edev->seat->name);
    ev->caps = edev->seat_caps;
@@ -321,7 +334,7 @@ _device_added(Ecore_Drm_Input *input, struct libinput_device *device)
                    _ecore_drm_event_input_device_add_free,
                    NULL);
 
-   if (input->dev->window != -1) // window id is valid
+   if (input->dev->window_valid)
      _ecore_drm_device_add(input->dev->window, edev);
 
    TRACE_INPUT_END();
@@ -349,7 +362,7 @@ _device_removed(Ecore_Drm_Input *input, struct libinput_device *device)
         return;
      }
 
-   ev->name = eina_stringshare_add(libinput_device_get_name(device));
+   ev->name = eina_stringshare_add(edev->name);
    ev->sysname = eina_stringshare_add(edev->path);
    ev->seatname = eina_stringshare_add(edev->seat->name);
    ev->caps = edev->seat_caps;
@@ -359,7 +372,7 @@ _device_removed(Ecore_Drm_Input *input, struct libinput_device *device)
                    _ecore_drm_event_input_device_del_free,
                    NULL);
 
-   if (input->dev->window != -1) // window id is valid
+   if (input->dev->window_valid)
      _ecore_drm_device_remove(input->dev->window, edev);
 
    /* remove this evdev from the seat's list of devices */
@@ -644,6 +657,8 @@ ecore_drm_inputs_destroy(Ecore_Drm_Device *dev)
    Ecore_Drm_Input *input;
    Ecore_Drm_Seat *seat;
    Ecore_Drm_Evdev *edev;
+   const Eina_List *dev_list, *l;
+   Ecore_Device * ecore_dev;
 
    EINA_SAFETY_ON_NULL_RETURN(dev);
    EINA_LIST_FREE(dev->seats, seat)
@@ -653,6 +668,8 @@ ecore_drm_inputs_destroy(Ecore_Drm_Device *dev)
              _ecore_drm_launcher_device_close(edev->path, edev->fd);
              _ecore_drm_evdev_device_destroy(edev);
           }
+
+        _ecore_drm_seat_info_send(dev->window, seat->name, EINA_FALSE);
 
         if (seat->name) eina_stringshare_del(seat->name);
         free(seat);
@@ -664,6 +681,14 @@ ecore_drm_inputs_destroy(Ecore_Drm_Device *dev)
         if (input->libinput) libinput_unref(input->libinput);
         free(input);
      }
+
+   dev_list = ecore_device_list(NULL);
+   EINA_LIST_FOREACH(dev_list, l, ecore_dev)
+      {
+         if (!ecore_dev) continue;
+         if (ecore_device_class_get(ecore_dev) == ECORE_DEVICE_CLASS_SEAT)
+           ecore_device_del(ecore_dev);
+      }
 }
 
 EAPI Eina_Bool 

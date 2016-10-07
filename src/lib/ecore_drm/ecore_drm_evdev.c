@@ -266,23 +266,12 @@ _device_remapped_key_get(Ecore_Drm_Evdev *edev, int code)
 EAPI Ecore_Device *
 ecore_drm_evdev_get_ecore_device(const char *path, Ecore_Device_Class clas)
 {
-   const Eina_List *dev_list = NULL;
-   const Eina_List *l;
    Ecore_Device *dev = NULL;
-   const char *identifier;
 
-   if (!path) return NULL;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(path, NULL);
 
-   dev_list = ecore_device_list();
-   if (!dev_list) return NULL;
-   EINA_LIST_FOREACH(dev_list, l, dev)
-     {
-        if (!dev) continue;
-        identifier = ecore_device_identifier_get(dev);
-        if (!identifier) continue;
-        if ((ecore_device_class_get(dev) == clas) && !(strcmp(identifier, path)))
-          return dev;
-     }
+   if ((dev = ecore_device_find(path, clas)))
+     return dev;
    return NULL;
 }
 
@@ -736,6 +725,7 @@ _ecore_drm_evdev_device_create(Ecore_Drm_Seat *seat, struct libinput_device *dev
 
    edev->seat = seat;
    edev->device = device;
+   edev->name = eina_stringshare_add(libinput_device_get_name(device));
    edev->path = eina_stringshare_add(libinput_device_get_sysname(device));
    edev->fd = -1;
 

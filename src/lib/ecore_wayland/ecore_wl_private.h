@@ -256,6 +256,8 @@ struct _Ecore_Wl_Window
 
 struct _Ecore_Wl_Input_Device
 {
+   Ecore_Wl_Input *input;
+
    struct tizen_input_device *tz_device;
    const char *name;
    const char *identifier;
@@ -274,6 +276,7 @@ struct _Ecore_Wl_Input
 
    struct wl_touch *touch;
 
+   const char *seat_name;
    Eina_List *devices;
    Ecore_Wl_Input_Device *last_device_ptr;
    Ecore_Wl_Input_Device *last_device_touch;

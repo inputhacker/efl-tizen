@@ -1606,6 +1606,9 @@ EAPI void evas_device_emulation_source_set(Evas_Device *dev, Evas_Device *src);
  */
 EAPI const Evas_Device *evas_device_emulation_source_get(const Evas_Device *dev);
 
+
+EAPI Evas_Device *evas_device_find(Evas *eo_e, const char *desc, Evas_Device_Class clas);
+
 /**
  * @}
  */

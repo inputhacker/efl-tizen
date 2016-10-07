@@ -147,9 +147,9 @@ extern "C" {
    struct _Ecore_Event_Device_Info
      {
         Ecore_Window window;
-        const char *name;
-        const char *identifier;
-        const char *seatname;
+        Eina_Stringshare *name;
+        Eina_Stringshare *identifier;
+        Eina_Stringshare *seatname;
         Ecore_Device_Class clas;
      };
 

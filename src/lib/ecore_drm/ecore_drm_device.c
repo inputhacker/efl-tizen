@@ -611,9 +611,11 @@ ecore_drm_device_window_set(Ecore_Drm_Device *dev, unsigned int window)
    EINA_SAFETY_ON_TRUE_RETURN((!dev) || (dev->drm.fd < 0));
 
    dev->window = window;
+   dev->window_valid = EINA_TRUE;
 
    EINA_LIST_FOREACH(dev->seats, l , seat)
      {
+        _ecore_drm_seat_info_send(window, seat->name, EINA_TRUE);
         EINA_LIST_FOREACH(seat->devices, ll, edev)
           _ecore_drm_device_add(window, edev);
      }

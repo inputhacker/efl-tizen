@@ -217,6 +217,7 @@ struct _Ecore_Drm_Evdev
    Ecore_Drm_Seat *seat;
    struct libinput_device *device;
 
+   const char *name;
    const char *path;
    int fd;
 
@@ -359,6 +360,7 @@ Eina_Bool _ecore_drm_dbus_session_take(void);
 Eina_Bool _ecore_drm_dbus_session_release(void);
 
 void _ecore_drm_device_add(unsigned int window, Ecore_Drm_Evdev *edev);
+void _ecore_drm_seat_info_send(unsigned int window, const char *name, Eina_Bool added);
 
 void _ecore_drm_inputs_init(void);
 void _ecore_drm_inputs_shutdown(void);

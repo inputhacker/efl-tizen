@@ -121,7 +121,7 @@ struct _Ecore_Drm_Device
 
    struct xkb_context *xkb_ctx;
 
-   int window;
+   unsigned int window;
 
    Eeze_Udev_Watch *watch;
 
@@ -133,6 +133,7 @@ struct _Ecore_Drm_Device
 
    Eina_Bool active : 1;
    Eina_Bool left_handed : 1;
+   Eina_Bool window_valid : 1;
 
    void *hal_display;
 };

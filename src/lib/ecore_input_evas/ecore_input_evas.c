@@ -432,10 +432,8 @@ _ecore_event_window_match(Ecore_Window id)
 static Evas_Device *
 _ecore_event_get_evas_device(Evas *e, Ecore_Device *dev)
 {
-   const Eina_List *dev_list = NULL;
-   const Eina_List *l;
    Evas_Device *edev = NULL;
-   const char *edev_name, *name;
+   const char *name;
    Ecore_Device_Class clas;
 
    if (!dev) return NULL;
@@ -443,16 +441,9 @@ _ecore_event_get_evas_device(Evas *e, Ecore_Device *dev)
    if (!name) return NULL;
    clas = ecore_device_class_get(dev);
 
-   dev_list = evas_device_list(e, NULL);
-   if (!dev_list) return NULL;
-   EINA_LIST_FOREACH(dev_list, l, edev)
-     {
-        if (!edev) continue;
-        edev_name = evas_device_description_get(edev);
-        if (!edev_name) continue;
-        if ( (evas_device_class_get(edev) == (Evas_Device_Class)clas) && (!strcmp(edev_name, name)))
-          return edev;
-     }
+   if ((edev = evas_device_find(e, name, (Evas_Device_Class)clas)))
+     return edev;
+
    return NULL;
 }
 
@@ -810,62 +801,71 @@ ecore_event_evas_axis_update(void *data EINA_UNUSED, int type EINA_UNUSED, void 
 }
 
 static void
-_ecore_event_evas_add_evas_device(Evas *e, const char *name, const char *identifier, Ecore_Device_Class clas)
+_ecore_event_evas_add_evas_device(Evas *e, const char *name, const char *identifier, const char *seatname, Ecore_Device_Class clas)
 {
-   const Eina_List *dev_list = NULL;
-   const Eina_List *l;
-   Evas_Device *edev = NULL;
-   const char *edev_name;
+   Evas_Device *edev = NULL, *seat_dev = NULL;
 
-   dev_list = evas_device_list(e, NULL);
-   if (dev_list)
+   if (!name || !identifier || !seatname) return;
+
+   if ((edev = evas_device_find(e, identifier, (Evas_Device_Class)clas)))
      {
-        EINA_LIST_FOREACH(dev_list, l, edev)
-          {
-             if (!edev) continue;
-             edev_name = evas_device_description_get(edev);
-             if (!edev_name) continue;
-             if ((evas_device_class_get(edev) == (Evas_Device_Class)clas) && (!strcmp(edev_name, identifier)))
-               return;
-          }
+        ERR("_ecore_event_evas_add_evas_device: evas_device already exists!\n");
+        return;
      }
 
    edev = evas_device_add(e);
    if (!edev)
      {
-        ERR("_ecore_event_add_evas_device: failed to add evas device");
+        ERR("_ecore_event_evas_add_evas_device: failed to add evas device");
         return;
      }
    evas_device_name_set(edev, name);
    evas_device_description_set(edev, identifier);
    evas_device_class_set(edev, (Evas_Device_Class)clas);
+   if ((seat_dev = evas_device_find(e, seatname, EVAS_DEVICE_CLASS_SEAT)))
+     evas_device_parent_set(edev, seat_dev);
 }
 
 static void
-_ecore_event_evas_del_evas_device(Evas *e, const char *name EINA_UNUSED, const char *identifier, Ecore_Device_Class clas)
+_ecore_event_evas_del_evas_device(Evas *e, const char *name EINA_UNUSED, const char *identifier, const char *seatname EINA_UNUSED, Ecore_Device_Class clas)
 {
-   const Eina_List *dev_list = NULL;
-   const Eina_List *l;
    Evas_Device *edev = NULL;
-   const char *edev_name;
 
-   dev_list = evas_device_list(e, NULL);
-   if (!dev_list)
+   if (!identifier) return;
+
+   if ((edev = evas_device_find(e, identifier, (Evas_Device_Class)clas)))
+     evas_device_del(edev);
+}
+
+static void
+_ecore_event_evas_add_evas_device_seat(Evas *e, const char *seatname)
+{
+   Evas_Device *edev = NULL;
+
+   if ((edev = evas_device_find(e, seatname, EVAS_DEVICE_CLASS_SEAT)))
      {
-        ERR("_ecore_event_evas_del_evas_device: failed to get the list of evas device");
+        ERR("_ecore_event_evas_add_evas_device_seat: evas_device already exists!\n");
         return;
      }
-   EINA_LIST_FOREACH(dev_list, l, edev)
+
+   edev = evas_device_add(e);
+   if (!edev)
      {
-        if (!edev) continue;
-        edev_name = evas_device_description_get(edev);
-        if (!edev_name) continue;
-        if ((evas_device_class_get(edev) == (Evas_Device_Class)clas) && (!strcmp(edev_name, identifier)))
-          {
-             evas_device_del(edev);
-             return;
-          }
+        ERR("_ecore_event_evas_add_evas_device_seat: failed to add evas device");
+        return;
      }
+   evas_device_name_set(edev, seatname);
+   evas_device_description_set(edev, seatname);
+   evas_device_class_set(edev, EVAS_DEVICE_CLASS_SEAT);
+}
+
+static void
+_ecore_event_evas_del_evas_device_seat(Evas *e, const char *seatname)
+{
+   Evas_Device *edev = NULL;
+
+   if ((edev = evas_device_find(e, seatname, EVAS_DEVICE_CLASS_SEAT)))
+     evas_device_del(edev);
 }
 
 EAPI Eina_Bool
@@ -879,7 +879,11 @@ ecore_event_evas_device_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *
    lookup = _ecore_event_window_match(e->window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
 
-   _ecore_event_evas_add_evas_device(lookup->evas, e->name, e->identifier, e->clas);
+
+   if (e->clas == ECORE_DEVICE_CLASS_SEAT)
+     _ecore_event_evas_add_evas_device_seat(lookup->evas, e->seatname);
+   else
+     _ecore_event_evas_add_evas_device(lookup->evas, e->name, e->identifier, e->seatname, e->clas);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -895,7 +899,11 @@ ecore_event_evas_device_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *
    lookup = _ecore_event_window_match(e->window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
 
-   _ecore_event_evas_del_evas_device(lookup->evas, e->name, e->identifier, e->clas);
+
+   if (e->clas == ECORE_DEVICE_CLASS_SEAT)
+     _ecore_event_evas_del_evas_device_seat(lookup->evas, e->seatname);
+   else
+     _ecore_event_evas_del_evas_device(lookup->evas, e->name, e->identifier, e->seatname, e->clas);
 
    return ECORE_CALLBACK_PASS_ON;
 }

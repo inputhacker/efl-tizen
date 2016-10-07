@@ -159,7 +159,7 @@ evas_device_parent_set(Evas_Device *dev, Evas_Device *parent)
      parent->children = eina_list_append(parent->children, dev);
    else
      e->devices = eina_list_append(e->devices, dev);
-   
+
    evas_event_callback_call(dev->evas, EVAS_CALLBACK_DEVICE_CHANGED, dev);
 }
 
@@ -237,6 +237,36 @@ evas_device_emulation_source_get(const Evas_Device *dev)
    MAGIC_CHECK_END();
    return dev->src;
 }
+
+EAPI Evas_Device *
+evas_device_find(Evas *eo_e, const char *desc, Evas_Device_Class clas)
+{
+   const Eina_List *l, *ll;
+   Evas_Device *dev, *child;
+
+   MAGIC_CHECK(eo_e, Evas, MAGIC_EVAS);
+   return NULL;
+   MAGIC_CHECK_END();
+   Evas_Public_Data *e = eo_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(desc, NULL);
+
+   EINA_LIST_FOREACH(e->devices, l, dev)
+     {
+        if ((dev->clas == clas) && (eina_streq(dev->desc, desc)))
+          return dev;
+        if (dev->clas == EVAS_DEVICE_CLASS_SEAT)
+          {
+             EINA_LIST_FOREACH(dev->children, ll, child)
+               {
+                  if ((child->clas == clas) && (eina_streq(child->desc, desc)))
+                    return child;
+               }
+          }
+     }
+   return NULL;
+}
+
 
 void
 _evas_device_cleanup(Evas *eo_e)

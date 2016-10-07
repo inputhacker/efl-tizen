@@ -3783,7 +3783,7 @@ EAPI void ecore_device_del(Ecore_Device *dev);
  * @see evas_device_subclass_get
  * @since 1.8
  */
-EAPI const Eina_List *ecore_device_list(void);
+EAPI const Eina_List *ecore_device_list(const Ecore_Device *dev);
 
 /**
  * Set the name of a device as a string
@@ -3912,7 +3912,10 @@ EAPI void ecore_device_subclass_set(Ecore_Device *dev, Ecore_Device_Subclass cla
  * @since 1.8
  */
 EAPI Ecore_Device_Subclass ecore_device_subclass_get(const Ecore_Device *dev);
+EAPI Ecore_Device *ecore_device_find(const char *identifier, Ecore_Device_Class clas);
 
+EAPI void ecore_device_parent_set(Ecore_Device *dev, Ecore_Device *parent);
+EAPI const Ecore_Device *ecore_device_parent_get(const Ecore_Device *dev);
 /**
  * @}
  */
