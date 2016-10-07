@@ -2506,7 +2506,7 @@ EAPI void evas_vg_shape_stroke_join_set(Eo *obj, Efl_Gfx_Join j);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_path_set(Eo *obj, const Efl_Gfx_Path_Command *op, const double *points);
+EAPI void evas_vg_shape_shape_path_set(Eo *obj, const Efl_Gfx_Path_Command *op, const double *points);
 
 /**
  *
@@ -2521,10 +2521,10 @@ EAPI void evas_vg_shape_path_set(Eo *obj, const Efl_Gfx_Path_Command *op, const 
  * @endif
  */
 
-EAPI void evas_vg_shape_path_get(Eo *obj, const Efl_Gfx_Path_Command **op, const double **points);
-EAPI void evas_vg_shape_path_length_get(Eo *obj, unsigned int *commands, unsigned int *points);
-EAPI void evas_vg_shape_current_get(Eo *obj, double *x, double *y);
-EAPI void evas_vg_shape_current_ctrl_get(Eo *obj, double *x, double *y);
+EAPI void evas_vg_shape_shape_path_get(Eo *obj, const Efl_Gfx_Path_Command **op, const double **points);
+EAPI void evas_vg_shape_shape_path_length_get(Eo *obj, unsigned int *commands, unsigned int *points);
+EAPI void evas_vg_shape_shape_current_get(Eo *obj, double *x, double *y);
+EAPI void evas_vg_shape_shape_current_ctrl_get(Eo *obj, double *x, double *y);
 
 /**
  *
@@ -2539,7 +2539,7 @@ EAPI void evas_vg_shape_current_ctrl_get(Eo *obj, double *x, double *y);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_dup(Eo *obj, Eo *dup_from);
+EAPI void evas_vg_shape_shape_dup(Eo *obj, Eo *dup_from);
 
 /**
  *
@@ -2553,7 +2553,7 @@ EAPI void evas_vg_shape_dup(Eo *obj, Eo *dup_from);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_reset(Eo *obj);
+EAPI void evas_vg_shape_shape_reset(Eo *obj);
 
 /**
  *
@@ -2571,7 +2571,7 @@ EAPI void evas_vg_shape_reset(Eo *obj);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_move_to(Eo *obj, double x, double y);
+EAPI void evas_vg_shape_shape_append_move_to(Eo *obj, double x, double y);
 
 /**
  *
@@ -2593,7 +2593,7 @@ EAPI void evas_vg_shape_append_move_to(Eo *obj, double x, double y);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_line_to(Eo *obj, double x, double y);
+EAPI void evas_vg_shape_shape_append_line_to(Eo *obj, double x, double y);
 
 /**
  *
@@ -2614,7 +2614,7 @@ EAPI void evas_vg_shape_append_line_to(Eo *obj, double x, double y);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_quadratic_to(Eo *obj, double x, double y, double ctrl_x, double ctrl_y);
+EAPI void evas_vg_shape_shape_append_quadratic_to(Eo *obj, double x, double y, double ctrl_x, double ctrl_y);
 
 /**
  *
@@ -2632,7 +2632,7 @@ EAPI void evas_vg_shape_append_quadratic_to(Eo *obj, double x, double y, double 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_squadratic_to(Eo *obj, double x, double y);
+EAPI void evas_vg_shape_shape_append_squadratic_to(Eo *obj, double x, double y);
 
 /**
  *
@@ -2655,7 +2655,7 @@ EAPI void evas_vg_shape_append_squadratic_to(Eo *obj, double x, double y);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_cubic_to(Eo *obj, double x, double y, double ctrl_x0, double ctrl_y0, double ctrl_x1, double ctrl_y1);
+EAPI void evas_vg_shape_shape_append_cubic_to(Eo *obj, double x, double y, double ctrl_x0, double ctrl_y0, double ctrl_x1, double ctrl_y1);
 
 /**
  *
@@ -2676,7 +2676,7 @@ EAPI void evas_vg_shape_append_cubic_to(Eo *obj, double x, double y, double ctrl
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_scubic_to(Eo *obj, double x, double y, double ctrl_x, double ctrl_y);
+EAPI void evas_vg_shape_shape_append_scubic_to(Eo *obj, double x, double y, double ctrl_x, double ctrl_y);
 
 /**
  *
@@ -2703,7 +2703,8 @@ EAPI void evas_vg_shape_append_scubic_to(Eo *obj, double x, double y, double ctr
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_arc_to(Eo *obj, double x, double y, double rx, double ry, double angle, Eina_Bool large_arc, Eina_Bool sweep);
+EAPI void evas_vg_shape_shape_append_arc_to(Eo *obj, double x, double y, double rx, double ry, double angle, Eina_Bool large_arc, Eina_Bool sweep);
+
 
 /**
  * @brief Append an arc that enclosed in the given rectangle (x, y, w, h). The
@@ -2719,7 +2720,8 @@ EAPI void evas_vg_shape_append_arc_to(Eo *obj, double x, double y, double rx, do
  *
  * @ingroup Efl_Gfx_Shape
  */
-EAPI void evas_vg_shape_append_arc(Eo *obj, double x, double y, double w, double h, double start_angle, double sweep_length);
+EAPI void evas_vg_shape_shape_append_arc(Eo *obj, double x, double y, double w, double h, double start_angle, double sweep_length);
+
 
 /**
  *
@@ -2737,7 +2739,7 @@ EAPI void evas_vg_shape_append_arc(Eo *obj, double x, double y, double w, double
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_close(Eo *obj);
+EAPI void evas_vg_shape_shape_append_close(Eo *obj);
 
 /**
  *
@@ -2755,7 +2757,7 @@ EAPI void evas_vg_shape_append_close(Eo *obj);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_circle(Eo *obj, double x, double y, double radius);
+EAPI void evas_vg_shape_shape_append_circle(Eo *obj, double x, double y, double radius);
 
 /**
  *
@@ -2782,11 +2784,11 @@ EAPI void evas_vg_shape_append_circle(Eo *obj, double x, double y, double radius
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void evas_vg_shape_append_rect(Eo *obj, double x, double y, double w, double h, double rx, double ry);
+EAPI void evas_vg_shape_shape_append_rect(Eo *obj, double x, double y, double w, double h, double rx, double ry);
 
-EAPI void evas_vg_shape_append_svg_path(Eo *obj, const char *svg_path_data);
-EAPI Eina_Bool evas_vg_shape_interpolate(Eo *obj, const Eo *from, const Eo *to, double pos_map);
-EAPI Eina_Bool evas_vg_shape_equal_commands(Eo *obj, const Eo *with);
+EAPI void evas_vg_shape_shape_append_svg_path(Eo *obj, const char *svg_path_data);
+EAPI Eina_Bool evas_vg_shape_shape_interpolate(Eo *obj, const Eo *from, const Eo *to, double pos_map);
+EAPI Eina_Bool evas_vg_shape_shape_equal_commands(Eo *obj, const Eo *with);
 
 #include "canvas/efl_vg_shape.eo.legacy.h"
 
@@ -2847,18 +2849,6 @@ EAPI Efl_Gfx_Gradient_Spread evas_vg_gradient_spread_get(Eo *obj);
 #include "canvas/efl_vg_gradient.eo.legacy.h"
 
 /**
- * Creates a new linear gradient object \.
- *
- * @param parent The given vector container object.
- * @return The created linear gradient object handle.
- *
- * @if MOBILE @since_tizen 3.0
- * @elseif WEARABLE @since_tizen 3.0
- * @endif
- */
-EAPI Efl_VG* evas_vg_gradient_linear_add(Efl_VG *parent);
-
-/**
  *
  * Sets the start point of this linear gradient.
  *
@@ -2911,18 +2901,6 @@ EAPI void evas_vg_gradient_linear_end_set(Eo *obj, double x, double y);
 EAPI void evas_vg_gradient_linear_end_get(Eo *obj, double *x, double *y);
 
 #include "canvas/efl_vg_gradient_linear.eo.legacy.h"
-
-/**
- * Creates a new radial gradient object \.
- *
- * @param parent The given vector container object.
- * @return The created radial gradient object handle.
- *
- * @if MOBILE @since_tizen 3.0
- * @elseif WEARABLE @since_tizen 3.0
- * @endif
- */
-EAPI Efl_VG* evas_vg_gradient_radial_add(Efl_VG *parent);
 
 /**
  *

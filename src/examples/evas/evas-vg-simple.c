@@ -365,25 +365,25 @@ void _arcto(Efl_VG *obj, int x, int y, int width, int height, int startAngle, in
     int cy = y + (height)/2;
     int i;
 
-    evas_vg_shape_append_move_to(obj, cx, cy);
-    evas_vg_shape_append_line_to(obj, curve_start.x, curve_start.y);
+    evas_vg_shape_shape_append_move_to(obj, cx, cy);
+    evas_vg_shape_shape_append_line_to(obj, curve_start.x, curve_start.y);
     for (i = 0; i < point_count; i += 3)
       {
-         evas_vg_shape_append_cubic_to(obj,
+         evas_vg_shape_shape_append_cubic_to(obj,
                                              pts[i+2].x, pts[i+2].y,
                                              pts[i].x, pts[i].y,
                                              pts[i+1].x, pts[i+1].y);
       }
-    evas_vg_shape_append_close(obj);
+    evas_vg_shape_shape_append_close(obj);
 }
 
 void _rect_add(Efl_VG *obj, int x, int y, int w, int h)
 {
-   evas_vg_shape_append_move_to(obj, x, y);
-   evas_vg_shape_append_line_to(obj, x + w, y);
-   evas_vg_shape_append_line_to(obj, x + w, y +h);
-   evas_vg_shape_append_line_to(obj, x, y +h);
-   evas_vg_shape_append_close(obj);
+   evas_vg_shape_shape_append_move_to(obj, x, y);
+   evas_vg_shape_shape_append_line_to(obj, x + w, y);
+   evas_vg_shape_shape_append_line_to(obj, x + w, y +h);
+   evas_vg_shape_shape_append_line_to(obj, x, y +h);
+   evas_vg_shape_shape_append_close(obj);
 }
 
 
@@ -539,14 +539,14 @@ vector_set(int x, int y, int w, int h)
 
    Efl_VG *tst = eo_add(EFL_VG_SHAPE_CLASS, root,
                         efl_vg_name_set("tst"));
-   evas_vg_shape_append_rect(tst, 50, 25, 200, 200, 3, 5);
+   evas_vg_shape_shape_append_rect(tst, 50, 25, 200, 200, 3, 5);
    evas_vg_node_color_set(tst, 0, 0, 200, 200);
    evas_vg_shape_stroke_width_set(tst, 2);
    evas_vg_shape_stroke_color_set(tst, 255, 0, 0, 255);
 
    Efl_VG *vc = eo_add(EFL_VG_SHAPE_CLASS, root,
                          efl_vg_name_set("vc"));
-   evas_vg_shape_append_circle(vc, 100, 100, 23);
+   evas_vg_shape_shape_append_circle(vc, 100, 100, 23);
    evas_vg_node_color_set(vc, 0, 200, 0, 255);
    evas_vg_shape_stroke_width_set(vc, 4);
    evas_vg_shape_stroke_color_set(vc, 255, 0, 0, 255);
