@@ -2410,16 +2410,17 @@ eng_ector_create(void *data EINA_UNUSED)
 {
    Ector_Surface *ector;
    const char *ector_backend;
+
    ector_backend = getenv("ECTOR_BACKEND");
-   if (ector_backend && !strcasecmp(ector_backend, "default"))
-     {
-        ector = eo_add(ECTOR_SOFTWARE_SURFACE_CLASS, NULL);
-        use_cairo = EINA_FALSE;
-     }
-   else
+   if (ector_backend && !strcasecmp(ector_backend, "cairo"))
      {
         ector = eo_add(ECTOR_CAIRO_SOFTWARE_SURFACE_CLASS, NULL);
         use_cairo = EINA_TRUE;
+     }
+   else
+     {
+        ector = eo_add(ECTOR_SOFTWARE_SURFACE_CLASS, NULL);
+        use_cairo = EINA_FALSE;
      }
    return ector;
 }
