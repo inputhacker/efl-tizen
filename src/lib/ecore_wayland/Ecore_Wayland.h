@@ -447,7 +447,7 @@ struct _Ecore_Wl_Event_Indicator_Flick
 struct _Ecore_Wl_Event_Clipboard_Data_Selected
 {
    unsigned int win;
-}
+};
 
 struct _Ecore_Wl_Keygrab_Info
 {
