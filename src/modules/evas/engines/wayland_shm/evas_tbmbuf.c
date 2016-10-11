@@ -87,6 +87,7 @@ struct _Tbmbuf_Surface
    struct wl_registry *registry;
    struct wayland_tbm_client *tbm_client;
    tbm_surface_h tbm_surface;
+   tbm_surface_info_s tbm_info;
    void *tbm_queue;
    int wait_release;
    Eina_Bool resize : 1;
@@ -367,31 +368,14 @@ _evas_tbmbuf_surface_assign(Surface *s)
          return 0;
       }
 
+   // check num of tbm surface
    int num_surface;
    tbm_surface_h surfaces[5];
    sym_tbm_surface_queue_get_surfaces(surface->tbm_queue, surfaces, &num_surface);
-   if (num_surface == 1) return 0;
-
-   return num_surface;
-}
-
-
-static void *
-_evas_tbmbuf_surface_data_get(Surface *s, int *w, int *h)
-{
-
-   Tbmbuf_Surface *surface;
-
-   surface = s->surf.tbm;
-
-   if (!surface)
-      {
-         ERR("surface is NULL");
-         return 0;
-      }
 
    if (surface->resize)
       {
+         // reset tbm_surface
          int width, height, format;
          width = surface->w;
          height = surface->h;
@@ -430,16 +414,35 @@ _evas_tbmbuf_surface_data_get(Surface *s, int *w, int *h)
          wl_buffer_add_listener(buffer, &buffer_listener, surface->tbm_surface);
    }
 
-   void *image;
 
    tbm_surface_info_s info;
    sym_tbm_surface_map(surface->tbm_surface, TBM_SURF_OPTION_READ|TBM_SURF_OPTION_WRITE, &info);
+   surface->tbm_info = info;
 
-   image = info.planes[0].ptr;
+   if (num_surface == 1) return 0;
+   return num_surface;
+}
 
-   surface->stride = info.planes[0].stride;
+
+static void *
+_evas_tbmbuf_surface_data_get(Surface *s, int *w, int *h)
+{
+   ERR("_evas_tbmbuf_surface_data_get");
+   Tbmbuf_Surface *surface;
+   void *image;
+
+   surface = s->surf.tbm;
+   if (!surface)
+      {
+         ERR("surface is NULL");
+         return 0;
+      }
+
+   image = surface->tbm_info.planes[0].ptr;
+
+   surface->stride = surface->tbm_info.planes[0].stride;
    if (w) *w = surface->stride / 4;
-   if (h) *h = info.height;
+   if (h) *h = surface->tbm_info.height;
 
    return image;
 }
@@ -485,13 +488,13 @@ _evas_tbmbuf_surface_post(Surface *s, Eina_Rectangle *rects, unsigned int count)
    frame_callback = wl_surface_frame(surface->wl_surface);
    wl_callback_add_listener(frame_callback, &frame_listener, surface->tbm_surface);
 
+   sym_tbm_surface_internal_ref(surface->tbm_surface);
    wl_surface_commit(surface->wl_surface);
 
    sym_tbm_surface_internal_unref(surface->tbm_surface);
    sym_tbm_surface_queue_enqueue(surface->tbm_queue, surface->tbm_surface);
 
    sym_tbm_surface_queue_acquire(surface->tbm_queue, &surface->tbm_surface);
-   sym_tbm_surface_internal_ref(surface->tbm_surface);
 
    return;
 }
