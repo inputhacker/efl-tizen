@@ -185,7 +185,7 @@ ecore_imf_context_info_get(Ecore_IMF_Context *ctx)
    return ctx->module->info;
 }
 
-EAPI void
+EAPI void __attribute__((optimize("O0")))
 ecore_imf_context_del(Ecore_IMF_Context *ctx)
 {
    Ecore_IMF_Func_Node *fn;
