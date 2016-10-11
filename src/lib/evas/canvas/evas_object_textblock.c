@@ -558,6 +558,10 @@ struct _Evas_Object_Textblock
    /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
    Eina_Bool                           last_computed_ellipsis : 1;
    /* END */
+
+   /* TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs */
+   Eina_Bool                           ellipsis_disabled : 1;
+   /* END */
 };
 
 struct _Evas_Textblock_Selection_Iterator
@@ -5142,9 +5146,15 @@ _layout_par(Ctxt *c)
      {
         /* Skip this paragraph if width is the same, there is no ellipsis
          * and we aren't just calculating. */
+        /* TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs
         if (!c->par->text_node->is_new && !c->par->text_node->dirty &&
               !c->width_changed && c->par->lines &&
               !c->o->have_ellipsis && !c->o->obstacle_changed)
+         */
+        if (!c->par->text_node->is_new && !c->par->text_node->dirty &&
+              !c->width_changed && c->par->lines &&
+              (!c->o->have_ellipsis || c->o->ellipsis_disabled) && !c->o->obstacle_changed)
+        /* END */
           {
              Evas_Object_Textblock_Line *ln;
              /* Update c->line_no */
@@ -5219,7 +5229,11 @@ _layout_par(Ctxt *c)
      {
         double ellip;
         ellip = it->format->ellipsis;
+        /* TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs
         if ((0 <= ellip) && (ellip < 1.0))
+         */
+        if (!c->o->ellipsis_disabled && (0 <= ellip) && (ellip < 1.0))
+        /* END */
            _layout_par_ellipsis_items(c, ellip);
      }
 
@@ -5359,11 +5373,20 @@ _layout_par(Ctxt *c)
                   ellip_h_thresh = ascent + descent + maxasc + maxdesc;
                }
 
+             /* TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs
              if ((it->format->ellipsis == 1.0) && (c->h >= 0) &&
                    ((c->y + ellip_h_thresh >
                      c->h - c->o->style_pad.t - c->o->style_pad.b) ||
                     (!it->format->wrap_word && !it->format->wrap_char &&
                      !it->format->wrap_mixed && !it->format->wrap_hyphenation)))
+              */
+             if (!c->o->ellipsis_disabled &&
+                 (it->format->ellipsis == 1.0) && (c->h >= 0) &&
+                   ((c->y + ellip_h_thresh >
+                     c->h - c->o->style_pad.t - c->o->style_pad.b) ||
+                    (!it->format->wrap_word && !it->format->wrap_char &&
+                     !it->format->wrap_mixed && !it->format->wrap_hyphenation)))
+             /* END */
                {
                   /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
                   c->o->last_computed_ellipsis = EINA_TRUE;
@@ -13648,6 +13671,33 @@ evas_object_textblock_ellipsis_status_get(const Evas_Object *eo_obj)
    Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
 
    return o->last_computed_ellipsis;
+}
+/* END */
+
+/* TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs */
+EAPI void
+evas_object_textblock_ellipsis_disabled_set(Evas_Object *eo_obj,
+                                            Eina_Bool disabled)
+{
+   TB_HEAD_RETURN(EINA_FALSE);
+
+   Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
+
+   if (o->ellipsis_disabled == disabled) return;
+
+   o->ellipsis_disabled = disabled;
+   _evas_textblock_invalidate_all(o);
+   _evas_textblock_changed(o, eo_obj);
+}
+
+EAPI Eina_Bool
+evas_object_textblock_ellipsis_disabled_get(Evas_Object *eo_obj)
+{
+   TB_HEAD_RETURN(EINA_FALSE);
+
+   Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
+
+   return o->ellipsis_disabled;
 }
 /* END */
 

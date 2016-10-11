@@ -3876,6 +3876,22 @@ EAPI void                                     evas_object_textblock_clear(Evas_O
 EAPI Eina_Bool                                evas_object_textblock_ellipsis_status_get(const Evas_Object *eo_obj) EINA_ARG_NONNULL(1);
 /* END */
 
+/**
+ * TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs
+ * @internal
+ */
+EAPI void
+evas_object_textblock_ellipsis_disabled_set(Evas_Object *eo_obj, Eina_Bool disabled);
+/* END */
+
+/**
+ * TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs
+ * @internal
+ */
+EAPI Eina_Bool
+evas_object_textblock_ellipsis_disabled_get(Evas_Object *eo_obj);
+/* END */
+
 #include "canvas/evas_textblock.eo.legacy.h"
 
 /**
