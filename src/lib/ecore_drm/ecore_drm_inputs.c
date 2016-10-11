@@ -453,7 +453,7 @@ ecore_drm_libinput_log_handler(struct libinput *libinput,
 {
    char buf[1024] = {0,};
 
-   vsprintf(buf, format, args);
+   vsnprintf(buf, 1024, format, args);
    switch (priority)
      {
         case LIBINPUT_LOG_PRIORITY_DEBUG:
