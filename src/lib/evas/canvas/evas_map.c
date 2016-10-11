@@ -541,6 +541,21 @@ _evas_object_map_enable_get(Eo *eo_obj EINA_UNUSED, Evas_Object_Protected_Data *
 EOLIAN void
 _evas_object_map_set(Eo *eo_obj, Evas_Object_Protected_Data *obj, const Evas_Map *map)
 {
+   // check if the new map and current map attributes are same
+   if (map && obj->map->cur.map &&
+       (obj->map->cur.map->alpha == map->alpha) &&
+       (obj->map->cur.map->smooth == map->smooth) &&
+       (obj->map->cur.map->move_sync.enabled == map->move_sync.enabled) &&
+       (obj->map->cur.map->count == map->count))
+     {
+        const Evas_Map_Point *p1, *p2;
+        p1 = obj->map->cur.map->points;
+        p2 = map->points;
+        if (memcmp(p1, p2, sizeof(Evas_Map_Point) *
+                   map->count) == 0)
+          return;
+     }
+
    evas_object_async_block(obj);
    if ((!map) || (map->count < 4))
      {
