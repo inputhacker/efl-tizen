@@ -85,8 +85,8 @@ static void _ecore_wl_input_cb_data_drop(void *data, struct wl_data_device *data
 static void _ecore_wl_input_cb_data_selection(void *data, struct wl_data_device *data_device, struct wl_data_offer *offer);
 
 static void _ecore_wl_input_mouse_move_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp, int device, Eina_Bool is_pointer);
-static void _ecore_wl_input_mouse_in_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp);
-static void _ecore_wl_input_mouse_out_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp);
+static void _ecore_wl_input_mouse_in_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp, Eina_Bool is_pointer);
+static void _ecore_wl_input_mouse_out_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp, Eina_Bool is_pointer);
 static void _ecore_wl_input_focus_in_send(Ecore_Wl_Input *input EINA_UNUSED, Ecore_Wl_Window *win, unsigned int timestamp);
 static void _ecore_wl_input_focus_out_send(Ecore_Wl_Input *input EINA_UNUSED, Ecore_Wl_Window *win, unsigned int timestamp);
 static void _ecore_wl_input_mouse_down_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, int device, unsigned int button, unsigned int timestamp, Eina_Bool is_pointer);
@@ -1306,7 +1306,9 @@ _ecore_wl_input_cb_pointer_enter(void *data, struct wl_pointer *pointer EINA_UNU
         /*   } */
 
         if (input->pointer)
-          _ecore_wl_input_mouse_in_send(input, win, input->timestamp);
+          _ecore_wl_input_mouse_in_send(input, win, input->timestamp, EINA_TRUE);
+        else
+          _ecore_wl_input_mouse_in_send(input, win, input->timestamp, EINA_FALSE);
      }
 }
 
@@ -1334,7 +1336,9 @@ _ecore_wl_input_cb_pointer_leave(void *data, struct wl_pointer *pointer EINA_UNU
 
    /* _ecore_wl_input_mouse_move_send(input, win, input->timestamp); */
    if (input->pointer)
-     _ecore_wl_input_mouse_out_send(input, win, input->timestamp);
+     _ecore_wl_input_mouse_out_send(input, win, input->timestamp, EINA_TRUE);
+   else
+     _ecore_wl_input_mouse_out_send(input, win, input->timestamp, EINA_FALSE);
 
    if (input->grab)
      {
@@ -1658,7 +1662,7 @@ _ecore_wl_input_mouse_move_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, uns
 }
 
 static void
-_ecore_wl_input_mouse_in_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp)
+_ecore_wl_input_mouse_in_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp, Eina_Bool is_pointer)
 {
    Ecore_Event_Mouse_IO *ev;
 
@@ -1670,7 +1674,10 @@ _ecore_wl_input_mouse_in_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsig
    ev->y = input->sy;
    ev->modifiers = input->modifiers;
    ev->timestamp = timestamp;
-   ev->dev = _ecore_wl_input_get_ecore_device(input->last_device_ptr, ECORE_DEVICE_CLASS_MOUSE);
+   if (is_pointer)
+     ev->dev = _ecore_wl_input_get_ecore_device(input->last_device_ptr, ECORE_DEVICE_CLASS_MOUSE);
+   else
+     ev->dev = _ecore_wl_input_get_ecore_device(input->last_device_touch, ECORE_DEVICE_CLASS_TOUCH);
 
    if (win)
      {
@@ -1682,7 +1689,7 @@ _ecore_wl_input_mouse_in_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsig
 }
 
 static void
-_ecore_wl_input_mouse_out_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp)
+_ecore_wl_input_mouse_out_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsigned int timestamp, Eina_Bool is_pointer)
 {
    Ecore_Event_Mouse_IO *ev;
 
@@ -1694,7 +1701,10 @@ _ecore_wl_input_mouse_out_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win, unsi
    ev->y = input->sy;
    ev->modifiers = input->modifiers;
    ev->timestamp = timestamp;
-   ev->dev = _ecore_wl_input_get_ecore_device(input->last_device_ptr, ECORE_DEVICE_CLASS_MOUSE);
+   if (is_pointer)
+     ev->dev = _ecore_wl_input_get_ecore_device(input->last_device_ptr, ECORE_DEVICE_CLASS_MOUSE);
+   else
+     ev->dev = _ecore_wl_input_get_ecore_device(input->last_device_touch, ECORE_DEVICE_CLASS_TOUCH);
 
    if (win)
      {
