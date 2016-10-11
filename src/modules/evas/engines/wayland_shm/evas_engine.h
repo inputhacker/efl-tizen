@@ -80,6 +80,7 @@ struct _Outbuf
    int rotation;
    int onebuf;
    int num_buff;
+   int prev_age;
    Outbuf_Depth depth;
 
    Evas_Engine_Info_Wayland_Shm *info;
@@ -101,9 +102,6 @@ struct _Outbuf
         /* Eina_Bool redraw : 1; */
         Eina_Bool destination_alpha : 1;
      } priv;
-   // TIZEN_ONLY(20161017): Properly invalidate buffer //
-   int prev_age;
-   //
 };
 
 Eina_Bool _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff);

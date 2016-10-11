@@ -318,7 +318,6 @@ _evas_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects EINA_UNUSED, Evas_Render_Mode
 Render_Engine_Swap_Mode
 _evas_outbuf_swap_mode_get(Outbuf *ob)
 {
-   //TIZEN_ONLY(20161017): Properly invalidate buffer
    int age;
    Render_Engine_Swap_Mode mode;
 
@@ -335,7 +334,6 @@ _evas_outbuf_swap_mode_get(Outbuf *ob)
    ob->prev_age = age;
 
    return mode;
-   //
 }
 
 int
