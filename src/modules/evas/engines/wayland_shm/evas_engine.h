@@ -81,7 +81,7 @@ struct _Outbuf
 
    Ecore_Wl2_Surface *surface;
 
-   struct 
+   struct
      {
         /* one big buffer for updates. flushed on idle_flush */
         RGBA_Image *onebuf;
@@ -99,8 +99,10 @@ struct _Outbuf
         /* Eina_Bool redraw : 1; */
         Eina_Bool destination_alpha : 1;
      } priv;
-
    Eina_Bool dirty : 1;
+   // TIZEN_ONLY(20161017): Properly invalidate buffer //
+   int prev_age;
+   //
 };
 
 Outbuf *_evas_outbuf_setup(int w, int h, Evas_Engine_Info_Wayland *info);

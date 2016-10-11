@@ -264,19 +264,24 @@ _evas_outbuf_flush(Outbuf *ob, Tilebuf_Rect *surface_damage EINA_UNUSED, Tilebuf
 Render_Output_Swap_Mode
 _evas_outbuf_swap_mode_get(Outbuf *ob)
 {
+   //TIZEN_ONLY(20161017): Properly invalidate buffer
    int age;
+   Render_Output_Swap_Mode mode;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
    age = ecore_wl2_surface_assign(ob->surface);
-   if (!age) return MODE_FULL;
+   if (age == 1) mode = MODE_COPY;
+   else if (age == 2) mode = MODE_DOUBLE;
+   else if (age == 3) mode = MODE_TRIPLE;
+   else if (age == 4) mode = MODE_QUADRUPLE;
+   else mode = MODE_FULL;
 
-   else if (age == 1) return MODE_COPY;
-   else if (age == 2) return MODE_DOUBLE;
-   else if (age == 3) return MODE_TRIPLE;
-   else if (age == 4) return MODE_QUADRUPLE;
+   if (ob->prev_age != age) mode = MODE_FULL;
+   ob->prev_age = age;
 
-   return MODE_FULL;
+   return mode;
+   //
 }
 
 int 
