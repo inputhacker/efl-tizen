@@ -678,7 +678,7 @@ cp %{SOURCE1001} .
 %build
 
 %if "%{profile}" == "tv"
-        export CFLAGS+=" -DEFL_FEATURE_TV"
+        export CFLAGS+=" -DTIZEN_PROFILE_TV"
 %endif
 
 %if ! %{with x}

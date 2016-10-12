@@ -179,7 +179,7 @@ eina_evlog(const char *event, void *obj, double srctime, const char *detail)
 
 // TIZEN_ONLY(160401): TTRACE
 #ifdef ENABLE_TTRACE
-#ifndef EFL_FEATURE_TV
+#ifndef TIZEN_PROFILE_TV
    if(!strncmp(event, "+", 1))
      traceBegin(TTRACE_TAG_GRAPHICS, event + 1);
    else if(!strncmp(event, "-", 1))
@@ -263,7 +263,7 @@ eina_evlog(const char *event EINA_UNUSED, void *obj EINA_UNUSED, double srctime 
 {
 // TIZEN_ONLY(160401): TTRACE
 #ifdef ENABLE_TTRACE
-#ifndef EFL_FEATURE_TV
+#ifndef TIZEN_PROFILE_TV
    if(!strncmp(event, "+", 1))
      traceBegin(TTRACE_TAG_GRAPHICS, event + 1);
    else if(!strncmp(event, "-", 1))
