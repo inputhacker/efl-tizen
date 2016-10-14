@@ -2392,7 +2392,7 @@ _ecore_wl_input_device_cb_axis(void *data EINA_UNUSED, struct tizen_input_device
              e->direction = ECORE_DETENT_DIRECTION_CLOCKWISE;
            else
              e->direction = ECORE_DETENT_DIRECTION_COUNTER_CLOCKWISE;
-           e->timestamp = (unsigned int)ecore_time_get();
+           e->timestamp = (int)(ecore_time_get() * 1000.0);
            DBG("detent: dir: %d, time: %d", e->direction, e->timestamp);
            ecore_event_add(ECORE_EVENT_DETENT_ROTATE, e, _ecore_wl_input_detent_rotate_free, NULL);
            break;
