@@ -1728,7 +1728,7 @@ EAPI Eina_List
    return error_keys;
 
 err:
-   EINA_LIST_FOREACH_SAFE(info, l1, l2, grab_info)
+   EINA_LIST_FOREACH_SAFE(infos, l1, l2, grab_info)
      {
         error_keys = eina_list_append(error_keys, strdup(grab_info->key));
      }
