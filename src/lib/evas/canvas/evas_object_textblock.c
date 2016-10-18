@@ -13679,9 +13679,7 @@ EAPI void
 evas_object_textblock_ellipsis_disabled_set(Evas_Object *eo_obj,
                                             Eina_Bool disabled)
 {
-   TB_HEAD_RETURN(EINA_FALSE);
-
-   Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
+   TB_HEAD();
 
    if (o->ellipsis_disabled == disabled) return;
 
