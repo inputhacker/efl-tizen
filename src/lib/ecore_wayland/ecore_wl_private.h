@@ -188,6 +188,7 @@ struct _Ecore_Wl_Window
 
    struct
      {
+        int x, y; /* it indicates a position configured by window manager. */
         int w, h;
         unsigned int edges;
      } configured;

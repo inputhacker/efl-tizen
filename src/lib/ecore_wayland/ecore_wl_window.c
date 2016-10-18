@@ -350,6 +350,8 @@ ecore_wl_window_new(Ecore_Wl_Window *parent, int x, int y, int w, int h, int buf
 
    win->display = _ecore_wl_disp;
    win->parent = parent;
+   win->configured.x = -99999; /* this is arbitary */
+   win->configured.y = -99999;
    win->allocation.x = x;
    win->allocation.y = y;
    win->allocation.w = w;
@@ -1028,7 +1030,8 @@ ecore_wl_window_position_set(Ecore_Wl_Window *win, int x, int y)
 
    if ((win->surface) && (win->tz_position))
      {
-        tizen_position_set(win->tz_position, win->allocation.x, win->allocation.y);
+        if ((win->configured.x != x) || (win->configured.y != y))
+          tizen_position_set(win->tz_position, win->allocation.x, win->allocation.y);
      }
 }
 
@@ -1544,6 +1547,9 @@ _ecore_wl_window_cb_position_change(void *data, struct tizen_position *tizen_pos
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
    if (!(win = data)) return;
+
+   win->configured.x = x;
+   win->configured.y = y;
 
    if ((x != win->allocation.x) || (y != win->allocation.y))
      {
