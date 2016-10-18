@@ -120,6 +120,13 @@ enum _Ecore_Wl_Window_Type
    ECORE_WL_WINDOW_TYPE_UTILITY
 };
 
+enum _Ecore_Wl_Window_Style
+{
+   ECORE_WL_WINDOW_STYLE_NONE,
+   ECORE_WL_WINDOW_STYLE_FULLSCREEN,
+   ECORE_WL_WINDOW_STYLE_MAXIMIZED,
+};
+
 enum _Ecore_Wl_Window_Buffer_Type
 {
    ECORE_WL_WINDOW_BUFFER_TYPE_EGL_WINDOW,
@@ -189,6 +196,7 @@ enum _Ecore_Wl_Window_Stack_Mode
 };
 
 typedef enum _Ecore_Wl_Window_Type Ecore_Wl_Window_Type;
+typedef enum _Ecore_Wl_Window_Style Ecore_Wl_Window_Style;
 typedef enum _Ecore_Wl_Window_Buffer_Type Ecore_Wl_Window_Buffer_Type;
 typedef enum _Ecore_Wl_Window_Keygrab_Mode Ecore_Wl_Window_Keygrab_Mode;
 typedef enum _Ecore_Wl_Conformant_Part_Type Ecore_Wl_Conformant_Part_Type;

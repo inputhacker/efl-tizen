@@ -237,6 +237,7 @@ struct _Ecore_Wl_Window
    Eina_Bool conformant : 1;
 
    Ecore_Wl_Window_Type type;
+   Ecore_Wl_Window_Style style;
    Ecore_Wl_Window_Buffer_Type buffer_type;
 
    Ecore_Wl_Input *pointer_device;

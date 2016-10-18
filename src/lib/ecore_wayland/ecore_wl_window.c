@@ -266,29 +266,6 @@ _ecore_wl_window_shell_surface_init(Ecore_Wl_Window *win)
 
    switch (win->type)
      {
-      case ECORE_WL_WINDOW_TYPE_FULLSCREEN:
-        if (win->xdg_surface)
-          xdg_surface_set_fullscreen(win->xdg_surface, NULL);
-        else if (win->shell_surface)
-          wl_shell_surface_set_fullscreen(win->shell_surface,
-                                          WL_SHELL_SURFACE_FULLSCREEN_METHOD_DEFAULT,
-                                          0, NULL);
-        break;
-      case ECORE_WL_WINDOW_TYPE_MAXIMIZED:
-        if (win->xdg_surface)
-          xdg_surface_set_maximized(win->xdg_surface);
-        else if (win->shell_surface)
-          wl_shell_surface_set_maximized(win->shell_surface, NULL);
-        break;
-      case ECORE_WL_WINDOW_TYPE_TRANSIENT:
-        if (win->xdg_surface)
-          xdg_surface_set_parent(win->xdg_surface, win->parent->xdg_surface);
-        else if (win->shell_surface)
-          wl_shell_surface_set_transient(win->shell_surface,
-                                         win->parent->surface,
-                                         win->allocation.x,
-                                         win->allocation.y, 0);
-        break;
       case ECORE_WL_WINDOW_TYPE_MENU:
         if (win->xdg_surface)
           {
@@ -312,13 +289,42 @@ _ecore_wl_window_shell_surface_init(Ecore_Wl_Window *win)
                                      win->allocation.x, win->allocation.y, 0);
         break;
       case ECORE_WL_WINDOW_TYPE_TOPLEVEL:
-        if (win->xdg_surface)
-          xdg_surface_set_parent(win->xdg_surface, NULL);
-        else if (win->shell_surface)
+        if (win->shell_surface)
           wl_shell_surface_set_toplevel(win->shell_surface);
         break;
       default:
         break;
+     }
+
+   switch (win->style)
+     {
+      case ECORE_WL_WINDOW_STYLE_FULLSCREEN:
+        if (win->xdg_surface)
+          xdg_surface_set_fullscreen(win->xdg_surface, NULL);
+        else if (win->shell_surface)
+          wl_shell_surface_set_fullscreen(win->shell_surface,
+                                          WL_SHELL_SURFACE_FULLSCREEN_METHOD_DEFAULT,
+                                          0, NULL);
+        break;
+      case ECORE_WL_WINDOW_STYLE_MAXIMIZED:
+        if (win->xdg_surface)
+          xdg_surface_set_maximized(win->xdg_surface);
+        else if (win->shell_surface)
+          wl_shell_surface_set_maximized(win->shell_surface, NULL);
+        break;
+      default:
+        break;
+     }
+
+   if (win->parent)
+     {
+        if (win->xdg_surface)
+          xdg_surface_set_parent(win->xdg_surface, win->parent->xdg_surface);
+        else if (win->shell_surface)
+          wl_shell_surface_set_transient(win->shell_surface,
+                                         win->parent->surface,
+                                         win->allocation.x,
+                                         win->allocation.y, 0);
      }
 
    if (!win->visible)
@@ -354,10 +360,7 @@ ecore_wl_window_new(Ecore_Wl_Window *parent, int x, int y, int w, int h, int buf
    win->configured.h = h;
    win->configured.edges = 0;
    win->transparent = EINA_FALSE;
-   if (parent)
-     win->type = ECORE_WL_WINDOW_TYPE_TRANSIENT;
-   else
-     win->type = ECORE_WL_WINDOW_TYPE_TOPLEVEL;
+   win->type = ECORE_WL_WINDOW_TYPE_TOPLEVEL;
    win->buffer_type = buffer_type;
    win->id = _win_id++;
    win->rotation = 0;
@@ -684,27 +687,27 @@ ecore_wl_window_maximized_set(Ecore_Wl_Window *win, Eina_Bool maximized)
 
    if (!win) return;
 
-   if ((win->type == ECORE_WL_WINDOW_TYPE_MAXIMIZED) == maximized) return;
+   if ((win->style == ECORE_WL_WINDOW_STYLE_MAXIMIZED) == maximized) return;
 
-   if (win->type == ECORE_WL_WINDOW_TYPE_TOPLEVEL)
+   if (win->style == ECORE_WL_WINDOW_STYLE_NONE)
      {
         if (win->xdg_surface)
           {
              xdg_surface_set_maximized(win->xdg_surface);
-             win->type = ECORE_WL_WINDOW_TYPE_MAXIMIZED;
+             win->style = ECORE_WL_WINDOW_STYLE_MAXIMIZED;
           }
         else if (win->shell_surface)
           {
              wl_shell_surface_set_maximized(win->shell_surface, NULL);
-             win->type = ECORE_WL_WINDOW_TYPE_MAXIMIZED;
+             win->style = ECORE_WL_WINDOW_STYLE_MAXIMIZED;
           }
      }
-   else if (win->type == ECORE_WL_WINDOW_TYPE_MAXIMIZED)
+   else if (win->style == ECORE_WL_WINDOW_STYLE_MAXIMIZED)
      {
         if (win->xdg_surface)
           {
              xdg_surface_unset_maximized(win->xdg_surface);
-             win->type = ECORE_WL_WINDOW_TYPE_TOPLEVEL;
+             win->style = ECORE_WL_WINDOW_STYLE_NONE;
              _ecore_wl_window_configure_send(win,
                                              win->saved.w,
                                              win->saved.h,
@@ -713,7 +716,7 @@ ecore_wl_window_maximized_set(Ecore_Wl_Window *win, Eina_Bool maximized)
         else if (win->shell_surface)
           {
              wl_shell_surface_set_toplevel(win->shell_surface);
-             win->type = ECORE_WL_WINDOW_TYPE_TOPLEVEL;
+             win->style = ECORE_WL_WINDOW_STYLE_NONE;
              _ecore_wl_window_configure_send(win,
                                              win->saved.w,
                                              win->saved.h,
@@ -729,7 +732,7 @@ ecore_wl_window_maximized_get(Ecore_Wl_Window *win)
 
    if (!win) return EINA_FALSE;
 
-   return (win->maximized) || (win->type == ECORE_WL_WINDOW_TYPE_MAXIMIZED);
+   return (win->maximized) || (win->style == ECORE_WL_WINDOW_STYLE_MAXIMIZED);
 }
 
 EAPI void
@@ -738,10 +741,10 @@ ecore_wl_window_fullscreen_set(Ecore_Wl_Window *win, Eina_Bool fullscreen)
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
    if (!win) return;
-   if ((win->type == ECORE_WL_WINDOW_TYPE_FULLSCREEN) == fullscreen) return;
+   if ((win->style == ECORE_WL_WINDOW_STYLE_FULLSCREEN) == fullscreen) return;
    if (fullscreen)
      {
-        win->type = ECORE_WL_WINDOW_TYPE_FULLSCREEN;
+        win->style = ECORE_WL_WINDOW_STYLE_FULLSCREEN;
 
         if (win->xdg_surface)
           xdg_surface_set_fullscreen(win->xdg_surface, NULL);
@@ -758,7 +761,7 @@ ecore_wl_window_fullscreen_set(Ecore_Wl_Window *win, Eina_Bool fullscreen)
         else if (win->shell_surface)
           wl_shell_surface_set_toplevel(win->shell_surface);
 
-        win->type = ECORE_WL_WINDOW_TYPE_TOPLEVEL;
+        win->style = ECORE_WL_WINDOW_STYLE_NONE;
         _ecore_wl_window_configure_send(win,
                                         win->saved.w, win->saved.h, 0);
      }
@@ -771,7 +774,7 @@ ecore_wl_window_fullscreen_get(Ecore_Wl_Window *win)
 
    if (!win) return EINA_FALSE;
 
-   return win->fullscreen || (win->type == ECORE_WL_WINDOW_TYPE_FULLSCREEN);
+   return win->fullscreen || (win->style == ECORE_WL_WINDOW_STYLE_FULLSCREEN);
 }
 
 EAPI void
@@ -1000,7 +1003,6 @@ ecore_wl_window_parent_set(Ecore_Wl_Window *win, Ecore_Wl_Window *parent)
    win->parent = parent;
    if (win->parent)
      {
-        win->type = ECORE_WL_WINDOW_TYPE_TRANSIENT;
         if (win->xdg_surface)
           xdg_surface_set_parent(win->xdg_surface, win->parent->xdg_surface);
         else if (win->shell_surface)
@@ -1011,7 +1013,6 @@ ecore_wl_window_parent_set(Ecore_Wl_Window *win, Ecore_Wl_Window *parent)
      }
    else
      {
-        win->type = ECORE_WL_WINDOW_TYPE_TOPLEVEL;
         if (win->xdg_surface)
           xdg_surface_set_parent(win->xdg_surface, NULL);
         else if (win->shell_surface)
@@ -1693,7 +1694,6 @@ _ecore_wl_window_iconified_set(Ecore_Wl_Window *win, Eina_Bool iconified, Eina_B
           }
         else if (win->xdg_surface)
           {
-             win->type = ECORE_WL_WINDOW_TYPE_TOPLEVEL;
              wl_array_init(&states);
              s = wl_array_add(&states, sizeof(*s));
              *s = XDG_SURFACE_STATE_ACTIVATED;
@@ -1703,7 +1703,6 @@ _ecore_wl_window_iconified_set(Ecore_Wl_Window *win, Eina_Bool iconified, Eina_B
         else if (win->shell_surface)
           {
              wl_shell_surface_set_toplevel(win->shell_surface);
-             win->type = ECORE_WL_WINDOW_TYPE_TOPLEVEL;
              _ecore_wl_window_configure_send(win,
                                              win->saved.w, win->saved.h, 0);
           }
