@@ -535,7 +535,6 @@ struct _Ector_Surface_Data
 {
    void         *key;     // vg tree pointer
    void         *surface; // engine image
-   void         *output;
 };
 
 struct _Ector_Surface_Cache
