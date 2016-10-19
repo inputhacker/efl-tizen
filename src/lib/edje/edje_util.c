@@ -668,6 +668,11 @@ edje_color_class_set(const char *color_class, int r, int g, int b, int a, int r2
    cc->b3 = b3;
    cc->a3 = a3;
 
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+   _edje_file_textblock_styles_color_class_cache_free(color_class);
+   _edje_file_textblock_styles_cache_update();
+   /* END */
+
    members = eina_hash_find(_edje_color_class_member_hash, color_class);
    if (!members) return EINA_TRUE;
    it = eina_hash_iterator_data_new(members);
@@ -678,8 +683,8 @@ edje_color_class_set(const char *color_class, int r, int g, int b, int a, int r2
 #ifdef EDJE_CALC_CACHE
         er->ed->all_part_change = EINA_TRUE;
 #endif
-        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
-        _edje_textblock_styles_cache_free(er->ed, NULL, color_class);
+        /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+        _edje_textblock_styles_color_class_cache_free(er->ed, color_class);
         _edje_textblock_style_all_update(er->ed);
         /* END */
         _edje_recalc(er->ed);
@@ -742,6 +747,11 @@ edje_color_class_del(const char *color_class)
    eina_stringshare_del(cc->name);
    free(cc);
 
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+   _edje_file_textblock_styles_color_class_cache_free(color_class);
+   _edje_file_textblock_styles_cache_update();
+   /* END */
+
    members = eina_hash_find(_edje_color_class_member_hash, color_class);
    if (!members) return;
    it = eina_hash_iterator_data_new(members);
@@ -752,8 +762,8 @@ edje_color_class_del(const char *color_class)
 #ifdef EDJE_CALC_CACHE
         er->ed->all_part_change = EINA_TRUE;
 #endif
-        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
-        _edje_textblock_styles_cache_free(er->ed, NULL, color_class);
+        /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+        _edje_textblock_styles_color_class_cache_free(er->ed, color_class);
         _edje_textblock_style_all_update(er->ed);
         /* END */
         _edje_recalc(er->ed);
@@ -951,8 +961,8 @@ update_color_class:
                                       a3);
      }
 
-   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
-   _edje_textblock_styles_cache_free(ed, NULL, color_class);
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+   _edje_textblock_styles_color_class_cache_free(ed, color_class);
    _edje_textblock_style_all_update(ed);
    /* END */
    _edje_recalc(ed);
@@ -1031,8 +1041,8 @@ edje_object_color_class_del(Evas_Object *obj, const char *color_class)
 #ifdef EDJE_CALC_CACHE
    ed->all_part_change = EINA_TRUE;
 #endif
-   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style */
-   _edje_textblock_styles_cache_free(ed, NULL, color_class);
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+   _edje_textblock_styles_color_class_cache_free(ed, color_class);
    _edje_textblock_style_all_update(ed);
    /* END */
    _edje_recalc(ed);
@@ -1200,6 +1210,11 @@ edje_text_class_set(const char *text_class, const char *font, Evas_Font_Size siz
         tc->size = size;
      }
 
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+   _edje_file_textblock_styles_text_class_cache_free(text_class);
+   _edje_file_textblock_styles_cache_update();
+   /* END */
+
    /* Tell all members of the text class to recalc */
    members = eina_hash_find(_edje_text_class_member_hash, text_class);
    it = eina_hash_iterator_data_new(members);
@@ -1207,10 +1222,10 @@ edje_text_class_set(const char *text_class, const char *font, Evas_Font_Size siz
      {
         er->ed->dirty = EINA_TRUE;
         er->ed->recalc_call = EINA_TRUE;
-        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
+        /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
         _edje_textblock_styles_cache_free(er->ed, text_class);
          */
-        _edje_textblock_styles_cache_free(er->ed, text_class, NULL);
+        _edje_textblock_styles_text_class_cache_free(er->ed, text_class);
         /* END */
         _edje_textblock_style_all_update(er->ed);
 #ifdef EDJE_CALC_CACHE
@@ -1264,15 +1279,20 @@ edje_text_class_del(const char *text_class)
    eina_stringshare_del(tc->font);
    free(tc);
 
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+   _edje_file_textblock_styles_text_class_cache_free(text_class);
+   _edje_file_textblock_styles_cache_update();
+   /* END */
+
    members = eina_hash_find(_edje_text_class_member_hash, text_class);
    it = eina_hash_iterator_data_new(members);
    EINA_ITERATOR_FOREACH(it, er)
      {
         er->ed->dirty = EINA_TRUE;
-        /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
+        /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
         _edje_textblock_styles_cache_free(er->ed, text_class);
          */
-        _edje_textblock_styles_cache_free(er->ed, text_class, NULL);
+        _edje_textblock_styles_text_class_cache_free(er->ed, text_class);
         /* END */
         _edje_textblock_style_all_update(er->ed);
 #ifdef EDJE_CALC_CACHE
@@ -1369,10 +1389,10 @@ _edje_object_text_class_set(Eo *obj EINA_UNUSED, Edje *ed, const char *text_clas
 #ifdef EDJE_CALC_CACHE
    ed->text_part_change = EINA_TRUE;
 #endif
-   /* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
    _edje_textblock_styles_cache_free(ed, text_class);
     */
-   _edje_textblock_styles_cache_free(ed, text_class, NULL);
+   _edje_textblock_styles_text_class_cache_free(ed, text_class);
    /* END */
    _edje_textblock_style_all_update(ed);
    _edje_recalc(ed);
@@ -5667,6 +5687,7 @@ _edje_hash_find_helper(const Eina_Hash *hash, const char *key)
    return data;
 }
 
+/* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
 Edje_Color_Class *
 _edje_color_class_recursive_find(const Edje *ed, const char *color_class)
 {
@@ -5674,8 +5695,31 @@ _edje_color_class_recursive_find(const Edje *ed, const char *color_class)
 
    if ((!ed) || (!color_class)) return NULL;
 
-   /* first look through the object scope */
+   // first look through the object scope //
    cc = _edje_hash_find_helper(ed->color_classes, color_class);
+   if (cc) return cc;
+
+   // next look through the global scope //
+   cc = _edje_hash_find_helper(_edje_color_class_hash, color_class);
+   if (cc) return cc;
+
+   // finally, look through the file scope //
+   cc = _edje_hash_find_helper(ed->file->color_hash, color_class);
+   if (cc) return cc;
+
+   return NULL;
+}
+ */
+
+Edje_Color_Class *
+_edje_color_class_recursive_find(const Edje *ed, const Edje_File *edf, const char *color_class)
+{
+   Edje_Color_Class *cc = NULL;
+
+   if (!color_class) return NULL;
+
+   /* first look through the object scope */
+   if (ed) cc = _edje_hash_find_helper(ed->color_classes, color_class);
    if (cc) return cc;
 
    /* next look through the global scope */
@@ -5683,11 +5727,12 @@ _edje_color_class_recursive_find(const Edje *ed, const char *color_class)
    if (cc) return cc;
 
    /* finally, look through the file scope */
-   cc = _edje_hash_find_helper(ed->file->color_hash, color_class);
+   if (edf) cc = _edje_hash_find_helper(edf->color_hash, color_class);
    if (cc) return cc;
 
    return NULL;
 }
+/* END */
 //
 
 Edje_Color_Class *
@@ -5695,10 +5740,18 @@ _edje_color_class_find(const Edje *ed, const char *color_class)
 {
    Edje_Color_Class *cc = NULL;
 
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
    if ((!ed) || (!color_class)) return NULL;
+    */
+   if (!color_class) return NULL;
+   /* END */
 
    /* first look through the object scope */
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
    cc = eina_hash_find(ed->color_classes, color_class);
+    */
+   if (ed) cc = eina_hash_find(ed->color_classes, color_class);
+   /* END */
    if (cc) return cc;
 
    /* next look through the global scope */
@@ -5706,7 +5759,11 @@ _edje_color_class_find(const Edje *ed, const char *color_class)
    if (cc) return cc;
 
    /* finally, look through the file scope */
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
    cc = eina_hash_find(ed->file->color_hash, color_class);
+    */
+   if (ed) cc = eina_hash_find(ed->file->color_hash, color_class);
+   /* END */
 
    if (cc) return cc;
 
@@ -5778,9 +5835,20 @@ _edje_text_class_find(Edje *ed, const char *text_class)
    Eina_List *l;
    Edje_Text_Class *tc;
 
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
    if ((!ed) || (!text_class)) return NULL;
    EINA_LIST_FOREACH(ed->text_classes, l, tc)
      if ((tc->name) && (!strcmp(text_class, tc->name))) return tc;
+    */
+   if (!text_class) return NULL;
+
+   if (ed)
+     {
+        EINA_LIST_FOREACH(ed->text_classes, l, tc)
+           if ((tc->name) && (!strcmp(text_class, tc->name))) return tc;
+     }
+   /* END */
+
    return eina_hash_find(_edje_text_class_hash, text_class);
 }
 

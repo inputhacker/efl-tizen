@@ -544,7 +544,11 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
           edje_module_load(ed->file->external_dir->entries[i].entry);
      }
 
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
    _edje_textblock_style_all_update(ed);
+    */
+   _edje_file_textblock_style_all_update(ed->file);
+   /* END */
 
    ed->has_entries = EINA_FALSE;
    if (ed->file && ed->file->mo_dir)

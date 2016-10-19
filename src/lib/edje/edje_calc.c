@@ -1536,11 +1536,30 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
              if (ep->typedata.text->text) text = ep->typedata.text->text;
           }
 
+        /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
         EINA_LIST_FOREACH(ed->file->styles, l, stl)
           {
              if ((stl->name) && (!strcmp(stl->name, style))) break;
              stl = NULL;
           }
+         */
+        /* check object level styles */
+        EINA_LIST_FOREACH(ed->styles, l, stl)
+          {
+             if ((stl->name) && (!strcmp(stl->name, style))) break;
+             stl = NULL;
+          }
+
+        /* check file level styles */
+        if (!stl)
+          {
+             EINA_LIST_FOREACH(ed->file->styles, l, stl)
+               {
+                  if ((stl->name) && (!strcmp(stl->name, style))) break;
+                  stl = NULL;
+               }
+          }
+        /* END */
 
         if (ep->part->scale)
           evas_object_scale_set(ep->object, TO_DOUBLE(sc));
@@ -2879,8 +2898,12 @@ _edje_part_recalc_single(Edje *ed,
    /* colors */
    if (ep->part->type != EDJE_PART_TYPE_SPACER)
      {
+        /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
         if ((desc->color_class) && (*desc->color_class))
           cc = _edje_color_class_recursive_find(ed, desc->color_class);
+         */
+        if ((desc->color_class) && (*desc->color_class))
+          cc = _edje_color_class_recursive_find(ed, ed->file, desc->color_class);
 
         if (cc)
           {

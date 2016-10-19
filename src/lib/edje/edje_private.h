@@ -1676,6 +1676,10 @@ struct _Edje
 
    Eina_List            *groups;
 
+   /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
+   Eina_List            *styles;
+   /* END */
+
    Edje_Perspective     *persp;
 
    const Edje_Signal_Callback_Group *callbacks;
@@ -2478,7 +2482,11 @@ const char *   _edje_text_font_get(const char *base, const char *new,
 Edje_Real_Part   *_edje_real_part_get(const Edje *ed, const char *part);
 Edje_Real_Part   *_edje_real_part_recursive_get(Edje **ed, const char *part);
 Edje_Color_Class *_edje_color_class_find(const Edje *ed, const char *color_class);
+/* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
 Edje_Color_Class *_edje_color_class_recursive_find(const Edje *ed, const char *color_class);
+*/
+Edje_Color_Class *_edje_color_class_recursive_find(const Edje *ed, const Edje_File *edf, const char *color_class);
+/* END */
 void              _edje_color_class_member_add(Edje *ed, const char *color_class);
 void              _edje_color_class_member_del(Edje *ed, const char *color_class);
 void              _edje_color_class_member_clean(Edje *ed);
@@ -2608,10 +2616,15 @@ void          _edje_message_del             (Edje *ed);
 
 void _edje_textblock_styles_add(Edje *ed, Edje_Real_Part *ep);
 void _edje_textblock_styles_del(Edje *ed, Edje_Part *pt);
-/* TIZEN_ONLY(20160908): Apply color_class to TEXTBLOCK part's style
+/* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
 void _edje_textblock_styles_cache_free(Edje *ed, const char *text_class);
  */
-void _edje_textblock_styles_cache_free(Edje *ed, const char *text_class, const char *color_class);
+void _edje_file_textblock_styles_color_class_cache_free(const char *class_name);
+void _edje_file_textblock_styles_text_class_cache_free(const char *class_name);
+void _edje_file_textblock_styles_cache_update(void);
+void _edje_file_textblock_style_all_update(Edje_File *edf);
+void _edje_textblock_styles_color_class_cache_free(Edje *ed, const char *class_name);
+void _edje_textblock_styles_text_class_cache_free(Edje *ed, const char *class_name);
 /* END */
 void _edje_textblock_style_all_update(Edje *ed);
 void _edje_textblock_style_parse_and_fix(Edje_File *edf);
