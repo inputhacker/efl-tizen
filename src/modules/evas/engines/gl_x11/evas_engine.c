@@ -105,6 +105,8 @@ void     (*glsym_glXReleaseBuffersMESA)   (Display *a, XID b) = NULL;
 
 #endif
 
+void (*glsym_evas_gl_common_surface_cache_dump)(void) = NULL;
+
 static inline Outbuf *
 eng_get_ob(Render_Engine *re)
 {
@@ -1205,6 +1207,7 @@ gl_symbols(void)
    if (!glsym_##sym) ERR("Could not find function '%s'", #sym);
 
    // Get function pointer to evas_gl_common that is now provided through the link of GL_Generic.
+   LINK2GENERIC(evas_gl_common_surface_cache_dump);
    LINK2GENERIC(evas_gl_common_image_all_unload);
    LINK2GENERIC(evas_gl_common_image_ref);
    LINK2GENERIC(evas_gl_common_image_unref);
@@ -1882,6 +1885,7 @@ eng_output_dump(void *data)
    Render_Engine *re;
 
    re = (Render_Engine *)data;
+   glsym_evas_gl_common_surface_cache_dump();
    evas_common_image_image_all_unload();
    evas_common_font_font_all_unload();
    glsym_evas_gl_common_image_all_unload(eng_get_ob(re)->gl_context);

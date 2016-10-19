@@ -15,6 +15,8 @@ Evas_GL_Common_Context_Resize_Call glsym_evas_gl_common_context_resize = NULL;
 Evas_GL_Preload_Render_Call glsym_evas_gl_preload_render_lock = NULL;
 Evas_Gl_Symbols glsym_evas_gl_symbols = NULL;
 
+void (*glsym_evas_gl_common_surface_cache_dump)(void) = NULL;
+
 static Outbuf *_sdl_output_setup(int w, int h, int fullscreen, int noframe, Evas_Engine_Info_GL_SDL *info);
 
 int _evas_engine_GL_SDL_log_dom = -1;
@@ -354,6 +356,7 @@ eng_output_dump(void *data)
    Render_Engine *re;
 
    re = (Render_Engine *)data;
+   glsym_evas_gl_common_surface_cache_dump();
    evas_common_image_image_all_unload();
    evas_common_font_font_all_unload();
    glsym_evas_gl_common_image_all_unload(re->generic.software.ob->gl_context);
@@ -370,7 +373,7 @@ gl_symbols(void)
 {
 #define LINK2GENERIC(sym)                       \
    glsym_##sym = dlsym(RTLD_DEFAULT, #sym);
-
+   LINK2GENERIC(evas_gl_common_surface_cache_dump);
    LINK2GENERIC(evas_gl_symbols);
    LINK2GENERIC(evas_gl_common_context_new);
    LINK2GENERIC(evas_gl_common_context_free);

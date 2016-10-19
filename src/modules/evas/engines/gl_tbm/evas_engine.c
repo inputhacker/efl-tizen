@@ -79,6 +79,8 @@ unsigned int (*glsym_eglSwapBuffersWithDamage) (EGLDisplay a, void *b, const EGL
 unsigned int (*glsym_eglSetDamageRegionKHR) (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d) = NULL;
 unsigned int (*glsym_eglQueryWaylandBufferWL)(EGLDisplay a, struct wl_resource *b, EGLint c, EGLint *d) = NULL;
 
+void (*glsym_evas_gl_common_surface_cache_dump)(void) = NULL;
+
 /* local variables */
 static Eina_Bool initted = EINA_FALSE;
 static int gl_wins = 0;
@@ -115,6 +117,7 @@ gl_symbols(void)
    glsym_##sym = dlsym(RTLD_DEFAULT, #sym);
 
    // Get function pointer to evas_gl_common now provided through GL_Generic.
+   LINK2GENERIC(evas_gl_common_surface_cache_dump);
    LINK2GENERIC(evas_gl_common_image_all_unload);
    LINK2GENERIC(evas_gl_common_image_ref);
    LINK2GENERIC(evas_gl_common_image_unref);
@@ -1157,7 +1160,7 @@ eng_output_dump(void *data)
    Render_Engine *re;
 
    if (!(re = (Render_Engine *)data)) return;
-
+   glsym_evas_gl_common_surface_cache_dump();
    evas_common_image_image_all_unload();
    evas_common_font_font_all_unload();
    glsym_evas_gl_common_image_all_unload(eng_get_ob(re)->gl_context);

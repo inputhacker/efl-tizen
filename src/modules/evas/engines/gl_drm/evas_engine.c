@@ -78,6 +78,8 @@ unsigned int (*glsym_eglUnbindWaylandDisplayWL)(EGLDisplay dpy, struct wl_displa
 unsigned int (*glsym_eglQueryWaylandBufferWL)(EGLDisplay a, struct wl_resource *b, EGLint c, EGLint *d) = NULL;
 unsigned int (*glsym_eglSetDamageRegionKHR)(EGLDisplay a, EGLSurface b, EGLint *c, EGLint d) = NULL;
 
+void (*glsym_evas_gl_common_surface_cache_dump)(void) = NULL;
+
 /* local function prototypes */
 static void gl_symbols(void);
 static void gl_extn_veto(Render_Engine *re);
@@ -169,6 +171,7 @@ gl_symbols(void)
    glsym_##sym = dlsym(RTLD_DEFAULT, #sym);
 
    // Get function pointer to evas_gl_common that is now provided through the link of GL_Generic.
+   LINK2GENERIC(evas_gl_common_surface_cache_dump);
    LINK2GENERIC(evas_gl_common_image_all_unload);
    LINK2GENERIC(evas_gl_common_image_ref);
    LINK2GENERIC(evas_gl_common_image_unref);
@@ -1095,7 +1098,7 @@ eng_output_dump(void *data)
 
    re = (Render_Engine *)data;
    if (!re) return;
-
+   glsym_evas_gl_common_surface_cache_dump();
    evas_common_image_image_all_unload();
    evas_common_font_font_all_unload();
    glsym_evas_gl_common_image_all_unload(eng_get_ob(re)->gl_context);

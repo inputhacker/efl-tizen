@@ -226,12 +226,12 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
                  int x, int y, Eina_Bool do_async)
 {
    Svg_Entry *svg = vd->svg;
-   Efl_VG *root;
+   Efl_VG *root, *dupe_root;
    void *buffer;
    Ector_Surface *ector;
    RGBA_Draw_Context *ct;
    Eina_Bool async_unref;
-   Eina_Bool error = EINA_FALSE;
+   Eina_Bool error = EINA_FALSE, created = EINA_FALSE;
 
    // if the size changed in between path set and the draw call;
    if (!(svg->w == obj->cur->geometry.w &&
@@ -251,9 +251,10 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
         // manual render the vg tree
         ector = evas_ector_get(obj->layer->evas);
         if (!ector) return;
-
+        dupe_root = evas_vg_container_add(NULL);
+        evas_vg_node_dup(dupe_root, root);
         //1. render pre
-        _evas_vg_render_pre(root, ector, NULL);
+        _evas_vg_render_pre(dupe_root, ector, NULL);
         // 2. create surface
         buffer = obj->layer->evas->engine.func->ector_surface_create(output,
                                                                      NULL,
@@ -273,13 +274,14 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
                                                    do_async);
         _evas_vg_render(obj, vd,
                         output, ct, buffer,
-                        root, NULL,
+                        dupe_root, NULL,
                         do_async);
         obj->layer->evas->engine.func->image_dirty_region(output, buffer, 0, 0, 0, 0);
         obj->layer->evas->engine.func->ector_end(output, ct, ector, buffer, do_async);
 
-        obj->layer->evas->engine.func->ector_surface_cache_set(output, root, buffer);
         evas_common_draw_context_free(ct);
+        eo_del(dupe_root);
+        created = EINA_TRUE;
      }
    // draw the buffer as image to canvas
 
@@ -293,6 +295,9 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
         evas_cache_image_ref((Image_Entry *)buffer);
         evas_unref_queue_image_put(obj->layer->evas, buffer);
      }
+
+   if (created)
+     obj->layer->evas->engine.func->ector_surface_cache_set(output, root, buffer);
 }
 
 static void

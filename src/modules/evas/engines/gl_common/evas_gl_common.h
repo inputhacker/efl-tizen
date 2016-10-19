@@ -525,6 +525,10 @@ EAPI void         evas_gl_common_error_set(void *data, int error_enum);
 EAPI int          evas_gl_common_error_get(void *data);
 EAPI void        *evas_gl_common_current_context_get(void);
 
+void              evas_gl_common_surface_cache_set(void *key, void *surface);
+void             *evas_gl_common_surface_cache_get(void *key);
+EAPI void         evas_gl_common_surface_cache_dump(void);
+
 typedef int (*Evas_GL_Preload)(void);
 typedef void (*Evas_GL_Common_Image_Call)(Evas_GL_Image *im);
 typedef void (*Evas_GL_Common_Context_Call)(Evas_Engine_GL_Context *gc);
