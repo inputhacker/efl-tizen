@@ -46,6 +46,11 @@ static void _ecore_wl_init_callback(void *data, struct wl_callback *callback, ui
 // TIZEN_ONLY(20150722): Add ecore_wl_window_keygrab_* APIs
 static void _ecore_wl_cb_keygrab_notify(void *data, struct tizen_keyrouter *tizen_keyrouter, struct wl_surface *surface, uint32_t key, uint32_t mode, uint32_t error);
 static void _ecore_wl_cb_keygrab_notify_list(void *data, struct tizen_keyrouter *tizen_keyrouter, struct wl_surface *surface, struct wl_array *grab_result);
+static void _ecore_wl_cb_getgrab_notify_list(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, struct wl_array *grab_result EINA_UNUSED);
+static void _ecore_wl_cb_set_register_none_key(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, uint32_t mode EINA_UNUSED);
+static void _ecore_wl_cb_keyregister_notify(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, uint32_t status EINA_UNUSED);
+static void _ecore_wl_cb_set_input_config(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, uint32_t status EINA_UNUSED);
+static void _ecore_wl_cb_key_cancel(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, uint32_t key);
 //
 static void _ecore_wl_cb_conformant(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t is_conformant);
 static void _ecore_wl_cb_conformant_area(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t conformant_part, uint32_t state, int32_t x, int32_t y, int32_t w, int32_t h);
@@ -100,7 +105,12 @@ static const struct wl_callback_listener _ecore_wl_anim_listener =
 static const struct tizen_keyrouter_listener _ecore_tizen_keyrouter_listener =
 {
    _ecore_wl_cb_keygrab_notify,
-   _ecore_wl_cb_keygrab_notify_list
+   _ecore_wl_cb_keygrab_notify_list,
+   _ecore_wl_cb_getgrab_notify_list,
+   _ecore_wl_cb_set_register_none_key,
+   _ecore_wl_cb_keyregister_notify,
+   _ecore_wl_cb_set_input_config,
+   _ecore_wl_cb_key_cancel
 };
 //
 
@@ -999,7 +1009,7 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
         ewd->wl.keyrouter =
           wl_registry_bind(registry, id, &tizen_keyrouter_interface, 1);
         if (ewd->wl.keyrouter)
-          tizen_keyrouter_add_listener(_ecore_wl_disp->wl.keyrouter, &_ecore_tizen_keyrouter_listener, ewd->wl.display);
+          tizen_keyrouter_add_listener(_ecore_wl_disp->wl.keyrouter, &_ecore_tizen_keyrouter_listener, ewd->input);
      }
 //
    else if (!strcmp(interface, "tizen_input_device_manager"))
@@ -1257,6 +1267,53 @@ _ecore_wl_cb_keygrab_notify_list(void *data EINA_UNUSED, struct tizen_keyrouter 
    wl_array_init(&_ecore_wl_keygrab_result_list);
    wl_array_copy(&_ecore_wl_keygrab_result_list, grab_result);
 }
+
+static void
+_ecore_wl_cb_getgrab_notify_list(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, struct wl_array *grab_result EINA_UNUSED)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+}
+
+static void
+_ecore_wl_cb_set_register_none_key(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, uint32_t mode EINA_UNUSED)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+}
+
+static void
+_ecore_wl_cb_keyregister_notify(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, uint32_t status EINA_UNUSED)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+}
+
+static void
+_ecore_wl_cb_set_input_config(void *data EINA_UNUSED, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, uint32_t status EINA_UNUSED)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+}
+
+static void
+_ecore_wl_cb_key_cancel(void *data, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, uint32_t key)
+{
+   Ecore_Wl_Input *input = (Ecore_Wl_Input *)data;
+
+   if (!input)
+     {
+        WRN("Failed to get Ecore_Wl_Input\n");
+        return;
+     }
+
+   if (input->repeat.key == key)
+     {
+        input->repeat.sym = 0;
+        input->repeat.key = 0;
+        input->repeat.time = 0;
+
+        if (input->repeat.tmr) ecore_timer_del(input->repeat.tmr);
+        input->repeat.tmr = NULL;
+     }
+}
+
 
 struct _Keycode_Map
 {
