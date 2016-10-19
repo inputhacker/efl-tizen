@@ -1977,7 +1977,7 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
    int yinvert = 0;
    Shader_Type shd_in = SHD_IMAGE;
    int tex_target = GL_TEXTURE_2D;
-   Evas_Native_Surface *ens;
+   Evas_Native_Surface *ens = NULL;
    if (tex->im)
      {
         if (tex->im->native.data)
@@ -2330,6 +2330,9 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
 
    if (!nomul)
      PUSH_6_COLORS(pn, r, g, b, a);
+
+   if (pt->dyn.img)
+     shader_array_flush(gc);
 }
 
 void
@@ -2718,6 +2721,9 @@ evas_gl_common_context_nv12_push(Evas_Engine_GL_Context *gc,
    PUSH_MASK(pn, mtex, mx, my, mw, mh, masksam);
    if (!nomul)
      PUSH_6_COLORS(pn, r, g, b, a);
+
+   if (tex->pt->dyn.img)
+     shader_array_flush(gc);
 }
 
 void
@@ -3055,7 +3061,7 @@ evas_gl_common_context_image_map_push(Evas_Engine_GL_Context *gc,
 
    PUSH_MASK(pn, mtex, mx, my, mw, mh, masksam);
 
-   if (!flat)
+   if (!flat || tex->pt->dyn.img)
      {
         shader_array_flush(gc);
         gc->foc = 0;
