@@ -322,6 +322,7 @@ optimized, and convenient.
 Summary:  Development components for the ecore package
 Group:    Graphics & UI Framework/Development
 Requires: ecore = %{version}-%{release}
+Requires: pkgconfig(gbm)
 License: BSD-2-Clause and MIT
 
 %description -n ecore-devel
