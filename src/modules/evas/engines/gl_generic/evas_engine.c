@@ -2545,7 +2545,9 @@ eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_
 
    surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
    //Use this hint for ZERO COPY texture upload.
-   eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
+   if (surface)
+     eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
+
    return surface;
 }
 
