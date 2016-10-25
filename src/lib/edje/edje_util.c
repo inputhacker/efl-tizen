@@ -685,7 +685,7 @@ edje_color_class_set(const char *color_class, int r, int g, int b, int a, int r2
 #endif
         /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
         _edje_textblock_styles_color_class_cache_free(er->ed, color_class);
-        _edje_textblock_style_all_update(er->ed);
+        _edje_textblock_style_all_update(er->ed, EINA_FALSE);
         /* END */
         _edje_recalc(er->ed);
         _edje_emit(er->ed, "color_class,set", color_class);
@@ -764,7 +764,7 @@ edje_color_class_del(const char *color_class)
 #endif
         /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
         _edje_textblock_styles_color_class_cache_free(er->ed, color_class);
-        _edje_textblock_style_all_update(er->ed);
+        _edje_textblock_style_all_update(er->ed, EINA_FALSE);
         /* END */
         _edje_recalc(er->ed);
         _edje_emit(er->ed, "color_class,del", color_class);
@@ -882,6 +882,39 @@ _edje_color_class_list_foreach(const Eina_Hash *hash EINA_UNUSED, const void *ke
    return EINA_TRUE;
 }
 
+/* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+static void
+_edje_color_class_children_update(Edje *ed, const char *color_class)
+{
+   Evas_Object *child;
+   Eina_List *l;
+
+   if (!ed) return;
+
+   EINA_LIST_FOREACH(ed->cc_children, l, child)
+     {
+        Edje *cc_child_ed = _edje_fetch(child);
+
+        cc_child_ed->dirty = EINA_TRUE;
+        cc_child_ed->recalc_call = EINA_TRUE;
+#ifdef EDJE_CALC_CACHE
+        cc_child_ed->all_part_change = EINA_TRUE;
+#endif
+        if (color_class)
+          {
+             _edje_textblock_styles_color_class_cache_free(cc_child_ed, color_class);
+             _edje_textblock_style_all_update(cc_child_ed, EINA_FALSE);
+          }
+        else
+          {
+             _edje_textblock_style_all_update(cc_child_ed, EINA_TRUE);
+          }
+
+        _edje_recalc(cc_child_ed);
+     }
+}
+/* END */
+
 EOLIAN Eina_Bool
 _edje_object_color_class_set(Eo *obj EINA_UNUSED, Edje *ed, const char *color_class, int r, int g, int b, int a, int r2, int g2, int b2, int a2, int r3, int g3, int b3, int a3)
 {
@@ -963,10 +996,14 @@ update_color_class:
 
    /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
    _edje_textblock_styles_color_class_cache_free(ed, color_class);
-   _edje_textblock_style_all_update(ed);
+   _edje_textblock_style_all_update(ed, EINA_FALSE);
    /* END */
    _edje_recalc(ed);
    _edje_emit(ed, "color_class,set", color_class);
+
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   _edje_color_class_children_update(ed, color_class);
+   /* END */
 
    return EINA_TRUE;
 }
@@ -1043,10 +1080,14 @@ edje_object_color_class_del(Evas_Object *obj, const char *color_class)
 #endif
    /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
    _edje_textblock_styles_color_class_cache_free(ed, color_class);
-   _edje_textblock_style_all_update(ed);
+   _edje_textblock_style_all_update(ed, EINA_FALSE);
    /* END */
    _edje_recalc(ed);
    _edje_emit(ed, "color_class,del", color_class);
+
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   _edje_color_class_children_update(ed, color_class);
+   /* END */
 }
 
 EOLIAN Eina_Bool
@@ -1084,6 +1125,9 @@ _edje_object_color_class_clear(const Eo *obj EINA_UNUSED, Edje *ed)
 #ifdef EDJE_CALC_CACHE
    ed->all_part_change = EINA_TRUE;
 #endif
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   _edje_textblock_style_all_update(ed, EINA_TRUE);
+   /* END */
    _edje_recalc(ed);
 
    EINA_LIST_FREE(fdata.list, color_class)
@@ -1092,8 +1136,101 @@ _edje_object_color_class_clear(const Eo *obj EINA_UNUSED, Edje *ed)
         free(color_class);
      }
 
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   _edje_color_class_children_update(ed, NULL);
+   /* END */
+
    return int_ret;
 }
+
+/* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+static void
+_edje_object_color_class_parent_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Evas_Object *child;
+   Eina_List *l, *ll;
+   Edje *ed = _edje_fetch(obj);
+
+   if (!ed) return;
+
+   EINA_LIST_FOREACH_SAFE(ed->cc_children, l, ll, child)
+      edje_object_color_class_parent_unset(child);
+}
+
+static void
+_edje_object_color_class_child_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Edje *ed = _edje_fetch(obj);
+
+   if (!ed) return;
+
+   edje_object_color_class_parent_unset(obj);
+}
+
+static void
+_edje_object_color_class_child_add(Evas_Object *obj, Evas_Object *child)
+{
+   Edje *ed = _edje_fetch(obj);
+
+   if (!ed) return;
+
+   if (!ed->cc_children)
+     evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _edje_object_color_class_parent_del_cb, NULL);
+
+   ed->cc_children = eina_list_append(ed->cc_children, child);
+}
+
+static void
+_edje_object_color_class_child_remove(Evas_Object *obj, Evas_Object *child)
+{
+   Edje *ed = _edje_fetch(obj);
+
+   if (!ed) return;
+
+   ed->cc_children = eina_list_remove(ed->cc_children, child);
+
+   if (!ed->cc_children)
+     evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _edje_object_color_class_parent_del_cb, NULL);
+}
+
+EOLIAN void
+_edje_object_color_class_parent_set(Eo *obj, Edje *ed, Evas_Object *parent)
+{
+   if (!parent) return;
+
+   if (ed->cc_parent) _edje_object_color_class_child_remove(ed->cc_parent, obj);
+
+   if (!ed->cc_parent)
+     evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _edje_object_color_class_child_del_cb, NULL);
+
+   ed->cc_parent = parent;
+   _edje_object_color_class_child_add(parent, obj);
+
+   ed->dirty = EINA_TRUE;
+   ed->recalc_call = EINA_TRUE;
+#ifdef EDJE_CALC_CACHE
+   ed->all_part_change = EINA_TRUE;
+#endif
+   _edje_textblock_style_all_update(ed, EINA_TRUE);
+   _edje_recalc(ed);
+}
+
+EOLIAN void
+_edje_object_color_class_parent_unset(Eo *obj, Edje *ed)
+{
+   if (ed->cc_parent) _edje_object_color_class_child_remove(ed->cc_parent, obj);
+   ed->cc_parent = NULL;
+   evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _edje_object_color_class_child_del_cb, NULL);
+
+   ed->dirty = EINA_TRUE;
+   ed->recalc_call = EINA_TRUE;
+#ifdef EDJE_CALC_CACHE
+   ed->all_part_change = EINA_TRUE;
+#endif
+   _edje_textblock_style_all_update(ed, EINA_TRUE);
+   _edje_recalc(ed);
+}
+/* END */
 
 typedef struct _Edje_File_Color_Class_Iterator Edje_File_Color_Class_Iterator;
 struct _Edje_File_Color_Class_Iterator
@@ -1227,7 +1364,11 @@ edje_text_class_set(const char *text_class, const char *font, Evas_Font_Size siz
          */
         _edje_textblock_styles_text_class_cache_free(er->ed, text_class);
         /* END */
+        /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs
         _edje_textblock_style_all_update(er->ed);
+         */
+        _edje_textblock_style_all_update(er->ed, EINA_FALSE);
+        /* END */
 #ifdef EDJE_CALC_CACHE
         er->ed->text_part_change = EINA_TRUE;
 #endif
@@ -1294,7 +1435,11 @@ edje_text_class_del(const char *text_class)
          */
         _edje_textblock_styles_text_class_cache_free(er->ed, text_class);
         /* END */
+        /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs
         _edje_textblock_style_all_update(er->ed);
+         */
+        _edje_textblock_style_all_update(er->ed, EINA_FALSE);
+        /* END */
 #ifdef EDJE_CALC_CACHE
         er->ed->text_part_change = EINA_TRUE;
 #endif
@@ -1394,7 +1539,11 @@ _edje_object_text_class_set(Eo *obj EINA_UNUSED, Edje *ed, const char *text_clas
     */
    _edje_textblock_styles_text_class_cache_free(ed, text_class);
    /* END */
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs
    _edje_textblock_style_all_update(ed);
+    */
+   _edje_textblock_style_all_update(ed, EINA_FALSE);
+   /* END */
    _edje_recalc(ed);
 
    return EINA_TRUE;
@@ -5711,6 +5860,52 @@ _edje_color_class_recursive_find(const Edje *ed, const char *color_class)
 }
  */
 
+/* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+/* Get Edje_Color_Class from the most near ancestor */
+static Edje_Color_Class *
+_edje_color_class_parent_find(const Edje *ed, const char *color_class)
+{
+   Edje *cc_parent_ed;
+   Edje_Color_Class *cc = NULL;
+
+   if (!ed) return NULL;
+
+   cc_parent_ed = _edje_fetch(ed->cc_parent);
+
+   while(cc_parent_ed)
+     {
+        cc = eina_hash_find(cc_parent_ed->color_classes, color_class);
+        if (cc) return cc;
+
+        cc_parent_ed = _edje_fetch(cc_parent_ed->cc_parent);
+     }
+
+   return NULL;
+}
+
+/* Get Edje_Color_Class from the most near ancestor */
+static Edje_Color_Class *
+_edje_color_class_parent_recursive_find(const Edje *ed, const char *color_class)
+{
+   Edje *cc_parent_ed;
+   Edje_Color_Class *cc = NULL;
+
+   if (!ed) return NULL;
+
+   cc_parent_ed = _edje_fetch(ed->cc_parent);
+
+   while(cc_parent_ed)
+     {
+        cc = _edje_hash_find_helper(cc_parent_ed->color_classes, color_class);
+        if (cc) return cc;
+
+        cc_parent_ed = _edje_fetch(cc_parent_ed->cc_parent);
+     }
+
+   return NULL;
+}
+/* END */
+
 Edje_Color_Class *
 _edje_color_class_recursive_find(const Edje *ed, const Edje_File *edf, const char *color_class)
 {
@@ -5721,6 +5916,12 @@ _edje_color_class_recursive_find(const Edje *ed, const Edje_File *edf, const cha
    /* first look through the object scope */
    if (ed) cc = _edje_hash_find_helper(ed->color_classes, color_class);
    if (cc) return cc;
+
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   if (ed) cc = _edje_color_class_parent_recursive_find(ed, color_class);
+   if (cc) return cc;
+   /* END */
+
 
    /* next look through the global scope */
    cc = _edje_hash_find_helper(_edje_color_class_hash, color_class);
@@ -5753,6 +5954,11 @@ _edje_color_class_find(const Edje *ed, const char *color_class)
    if (ed) cc = eina_hash_find(ed->color_classes, color_class);
    /* END */
    if (cc) return cc;
+
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   if (ed) cc = _edje_color_class_parent_find(ed, color_class);
+   if (cc) return cc;
+   /* END */
 
    /* next look through the global scope */
    cc = eina_hash_find(_edje_color_class_hash, color_class);

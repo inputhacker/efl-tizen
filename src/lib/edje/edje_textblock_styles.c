@@ -484,8 +484,12 @@ _edje_textblock_style_update(Edje *ed, Edje_Style *stl, Eina_Bool force)
  *
  * @param ed The edje containing styles which need to be updated
  */
+/* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs
 void
 _edje_textblock_style_all_update(Edje *ed)
+ */
+void
+_edje_textblock_style_all_update(Edje *ed, Eina_Bool force)
 {
    Eina_List *l;
    Edje_Style *stl;
@@ -497,7 +501,7 @@ _edje_textblock_style_all_update(Edje *ed)
       _edje_textblock_style_update(ed, stl, EINA_FALSE);
     */
    EINA_LIST_FOREACH(ed->styles, l, stl)
-      _edje_textblock_style_update(ed, stl, EINA_FALSE);
+      _edje_textblock_style_update(ed, stl, force);
    /* END */
 }
 

@@ -709,6 +709,11 @@ _sel_update(Edje *ed, Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entr
                   evas_object_show(ob);
                   sel->obj_fg = ob;
                   _edje_subobj_register(ed, sel->obj_fg);
+
+                  /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+                  edje_object_color_class_parent_set(sel->obj_bg, ed->obj);
+                  edje_object_color_class_parent_set(sel->obj_fg, ed->obj);
+                  /* END */
                }
              else
                {
@@ -1080,6 +1085,11 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
                        evas_object_show(ob);
                        sel->obj_fg = ob;
                        _edje_subobj_register(ed, sel->obj_fg);
+
+                       /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+                       edje_object_color_class_parent_set(sel->obj_bg, ed->obj);
+                       edje_object_color_class_parent_set(sel->obj_fg, ed->obj);
+                       /* END */
 
                        ob = evas_object_rectangle_add(ed->base->evas);
                        evas_object_color_set(ob, 0, 0, 0, 0);
@@ -2765,6 +2775,11 @@ _edje_entry_real_part_init(Edje *ed, Edje_Real_Part *rp, Ecore_IMF_Context *ic)
    evas_object_clip_set(en->cursor_fg, evas_object_clip_get(rp->object));
    evas_object_pass_events_set(en->cursor_fg, EINA_TRUE);
    _edje_subobj_register(ed, en->cursor_fg);
+
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   edje_object_color_class_parent_set(en->cursor_bg, ed->obj);
+   edje_object_color_class_parent_set(en->cursor_fg, ed->obj);
+   /* END */
 
    /* A proxy to the main cursor. */
    if (rp->part->cursor_mode == EDJE_ENTRY_CURSOR_MODE_BEFORE)
@@ -4804,5 +4819,4 @@ void _edje_entry_thaw(Edje_Real_Part *rp)
    _edje_entry_real_part_configure(en->ed, rp);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 /* vim:set ts=8 sw=3 sts=3 expandtab cino=>5n-2f0^-2{2(0W1st0 :*/

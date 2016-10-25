@@ -2571,6 +2571,29 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            @since 1.17.0]]
          return: bool; [[$true, on success or $false, on error]]
       }
+      /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+      color_class_parent_set {
+         [[Sets the parent object for color class.
+
+           \@internal
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
+         params {
+            @in parent: Evas.Object *; [[The parent object for color class]]
+         }
+      }
+      color_class_parent_unset {
+         [[Unsets the parent object color class.
+
+           \@internal
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
+      }
+      /* END */
       @property size_class {
          set {
             [[Sets the object size class.

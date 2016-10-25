@@ -1680,6 +1680,11 @@ struct _Edje
    Eina_List            *styles;
    /* END */
 
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   Evas_Object          *cc_parent;
+   Eina_List            *cc_children;
+   /* END */
+
    Edje_Perspective     *persp;
 
    const Edje_Signal_Callback_Group *callbacks;
@@ -2626,7 +2631,11 @@ void _edje_file_textblock_style_all_update(Edje_File *edf);
 void _edje_textblock_styles_color_class_cache_free(Edje *ed, const char *class_name);
 void _edje_textblock_styles_text_class_cache_free(Edje *ed, const char *class_name);
 /* END */
+/* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs
 void _edje_textblock_style_all_update(Edje *ed);
+ */
+void _edje_textblock_style_all_update(Edje *ed, Eina_Bool force);
+/* END */
 void _edje_textblock_style_parse_and_fix(Edje_File *edf);
 void _edje_textblock_style_cleanup(Edje_File *edf);
 Edje_File *_edje_cache_file_coll_open(const Eina_File *file, const char *coll, int *error_ret, Edje_Part_Collection **edc_ret, Edje *ed);
