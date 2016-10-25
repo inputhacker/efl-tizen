@@ -1999,6 +1999,8 @@ struct _Edje_Real_Part
 #ifdef EDJE_CALC_CACHE
    int                       state; // 4
 #endif
+   Evas_Event_Flags          ignore_flags;
+   Evas_Event_Flags          mask_flags;
    //TIZEN_ONLY(20160923): introduction of text marquee
    double                    text_marquee_prev_time;
    Ecore_Animator           *text_marquee_animator;
@@ -2015,6 +2017,8 @@ struct _Edje_Real_Part
    //TIZEN_ONLY(20160923): introduction of text marquee
    unsigned char             text_marquee_to_left : 1;
    //
+   unsigned char             mouse_events : 1;
+   unsigned char             repeat_events : 1;
 }; // 128
 // WITH EDJE_CALC_CACHE: 407
 
@@ -3039,14 +3043,14 @@ typedef Eina_Bool (*Edje_Module_Plugin_Run) (const Evas_Object *obj, const char 
 #endif
 //
 
-Eina_Bool _edje_part_mouse_events_get(Edje *ed, Edje_Real_Part *rp);
-void _edje_part_mouse_events_set(Edje *ed, Edje_Real_Part *rp, Eina_Bool mouse_events);
-Eina_Bool _edje_part_repeat_events_get(Edje *ed, Edje_Real_Part *rp);
-void _edje_part_repeat_events_set(Edje *ed, Edje_Real_Part *rp, Eina_Bool repeat_events);
-Evas_Event_Flags _edje_part_ignore_flags_get(Edje *ed, Edje_Real_Part *rp);
-void _edje_part_ignore_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags ignore_flags);
-Evas_Event_Flags _edje_part_mask_flags_get(Edje *ed, Edje_Real_Part *rp);
-void _edje_part_mask_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags mask_flags);
+Eina_Bool _edje_real_part_mouse_events_get(Edje *ed, Edje_Real_Part *rp);
+void _edje_real_part_mouse_events_set(Edje *ed, Edje_Real_Part *rp, Eina_Bool mouse_events);
+Eina_Bool _edje_real_part_repeat_events_get(Edje *ed, Edje_Real_Part *rp);
+void _edje_real_part_repeat_events_set(Edje *ed, Edje_Real_Part *rp, Eina_Bool repeat_events);
+Evas_Event_Flags _edje_real_part_ignore_flags_get(Edje *ed, Edje_Real_Part *rp);
+void _edje_real_part_ignore_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags ignore_flags);
+Evas_Event_Flags _edje_real_part_mask_flags_get(Edje *ed, Edje_Real_Part *rp);
+void _edje_real_part_mask_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags mask_flags);
 
 #ifdef HAVE_LIBREMIX
 #include <remix/remix.h>
