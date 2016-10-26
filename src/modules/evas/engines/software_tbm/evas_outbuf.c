@@ -394,7 +394,7 @@ _evas_software_tbm_outbuf_update_region_new(Outbuf *ob, int x, int y, int w, int
                          ERR("Could not get surface data");
                          return NULL;
                       }
-                   bw = sym_tbm_surface_get_width(ob->surface);
+                   bw = info.planes[0].stride / 4;
                    bh = sym_tbm_surface_get_height(ob->surface);
                 }
              else {
