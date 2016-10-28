@@ -3892,11 +3892,13 @@ _draw_thread_ector_surface_set(void *data)
 }
 
 static void *
-eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force)
+eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force, int *error)
 {
    RGBA_Image *im;
    void *pixels = NULL;
    int cur_w=0 , cur_h=0;
+
+   *error = EINA_FALSE;
 
    if (!force) return NULL;
 
@@ -3904,19 +3906,23 @@ eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_
      {
         im = surface;
         eng_image_size_get(data, im, &cur_w, &cur_h);
-        if ((width != cur_w) || (height == cur_h))
-          {
-             eng_image_free(data, surface);
-             surface = NULL;
-          }
+        if ((width == cur_w) && (height == cur_h)) return surface;
+        eng_image_free(data, surface);
+        surface = NULL;
      }
 
-   if (!surface)
-     surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
+   surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
 
-   im = surface;
-   pixels = evas_cache_image_pixels(&im->cache_entry);
-   memset(pixels, 0, (width * height * 4));
+   if (!surface)
+     {
+        *error = EINA_TRUE;
+     }
+   else
+     {
+        im = surface;
+        pixels = evas_cache_image_pixels(&im->cache_entry);
+        memset(pixels, 0, (width * height * 4));
+     }
 
    return surface;
 }

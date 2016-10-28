@@ -231,6 +231,7 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
    Ector_Surface *ector;
    RGBA_Draw_Context *ct;
    Eina_Bool async_unref;
+   Eina_Bool error = EINA_FALSE;
 
    // if the size changed in between path set and the draw call;
    if (!(svg->w == obj->cur->geometry.w &&
@@ -258,7 +259,10 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
                                                                      NULL,
                                                                      svg->w,
                                                                      svg->h,
-                                                                     EINA_TRUE);
+                                                                     EINA_TRUE, &error);
+        if (error)
+          return; // surface creation error
+
         //3. draw into the buffer
         ct = evas_common_draw_context_new();
         evas_common_draw_context_set_render_op(ct, _EVAS_RENDER_COPY);
@@ -300,6 +304,7 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
 {
    Evas_VG_Data *vd = type_private_data;
    Ector_Surface *ector = evas_ector_get(obj->layer->evas);
+   Eina_Bool error = EINA_FALSE;
 
    // FIXME: Set context (that should affect Ector_Surface) and
    // then call Ector_Renderer render from bottom to top. Get the
@@ -339,7 +344,10 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
                                                                              vd->backing_store,
                                                                              obj->cur->geometry.w,
                                                                              obj->cur->geometry.h,
-                                                                             EINA_FALSE);
+                                                                             EINA_FALSE, &error);
+   if (error)
+     return; // surface creation error
+
    if (!vd->backing_store)
      {
         obj->layer->evas->engine.func->ector_begin(output, context, ector, surface,

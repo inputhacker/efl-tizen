@@ -2529,10 +2529,12 @@ eng_ector_end(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface *
 }
 
 static void*
-eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force EINA_UNUSED)
+eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force EINA_UNUSED, int *error)
 {
    Evas_GL_Image *glim;
    int cur_w=0 , cur_h=0;
+
+   *error = EINA_FALSE;
 
    if (surface)
      {
@@ -2544,9 +2546,15 @@ eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_
      }
 
    surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
-   //Use this hint for ZERO COPY texture upload.
-   if (surface)
-     eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
+   if (!surface)
+     {
+        *error = EINA_TRUE;
+     }
+   else
+     {
+        //Use this hint for ZERO COPY texture upload.
+        eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
+     }
 
    return surface;
 }
