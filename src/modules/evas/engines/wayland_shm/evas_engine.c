@@ -93,12 +93,12 @@ _symbols(void)
 {
    static int done = 0;
    int fail = 0;
-   const char *wayland_tbm_server_lib = "libwayland-tbm-server.so.0";
+   const char *wayland_tbm_server_lib = "/usr/lib/libwayland-tbm-server.so.0";
 
    if (done) return;
 
-#define LINK2GENERIC(sym)                     \
-   glsym_##sym = dlsym(RTLD_DEFAULT, #sym);   \
+#define LINK2GENERIC(lib, sym)                     \
+   glsym_##sym = dlsym(lib, #sym);   \
    if (!(glsym_##sym))                        \
      {                                        \
         ERR("%s", dlerror());                 \
@@ -106,7 +106,7 @@ _symbols(void)
      }
 
    // Get function pointer to native_common that is now provided through the link of SW_Generic.
-   LINK2GENERIC(evas_native_tbm_surface_image_set);
+   LINK2GENERIC(RTLD_DEFAULT, evas_native_tbm_surface_image_set);
    if (fail == 1)
      {
         ERR("fail to dlsym about evas_native_tbm_surface_image_set symbol");
@@ -115,7 +115,7 @@ _symbols(void)
    tbm_server_lib = dlopen(wayland_tbm_server_lib, RTLD_LOCAL | RTLD_LAZY);
    if (tbm_server_lib)
      {
-        LINK2GENERIC(wayland_tbm_server_get_surface);
+        LINK2GENERIC(tbm_server_lib, wayland_tbm_server_get_surface);
         if (fail == 1)
           {
              ERR("fail to dlsym about wayland_tbm_server_get_surface symbol");
