@@ -1,6 +1,13 @@
 #ifndef EVAS_ENGINE_H
 # define EVAS_ENGINE_H
 
+# include "evas_common_private.h"
+# include "evas_macros.h"
+# include "evas_private.h"
+# include "Evas.h"
+# include "Evas_Engine_Software_Tbm.h"
+# include "Evas_Engine_Software_Generic.h"
+
 # ifdef LOGFNS
 #  include <stdio.h>
 #  define LOGFN(fl, ln, fn) printf("-EVAS-TBM: %25s: %5i - %s\n", fl, ln, fn);
@@ -35,48 +42,6 @@ extern int _evas_engine_software_tbm_log_dom;
 # endif
 # define CRI(...) EINA_LOG_DOM_CRIT(_evas_engine_software_tbm_log_dom, __VA_ARGS__)
 
-# include <wayland-client.h>
-# include "../software_generic/Evas_Engine_Software_Generic.h"
-# include "Evas_Engine_Software_Tbm.h"
-
-#define TBM_SURF_PLANE_MAX 4 /**< maximum number of the planes  */
-/* option to map the tbm_surface */
-#define TBM_SURF_OPTION_READ      (1 << 0) /**< access option to read  */
-#define TBM_SURF_OPTION_WRITE     (1 << 1) /**< access option to write */
-
-typedef struct _tbm_surface * tbm_surface_h;
-typedef uint32_t tbm_format;
-
-typedef struct _tbm_surface_plane
-{
-    unsigned char *ptr;   /**< Plane pointer */
-    uint32_t size;        /**< Plane size */
-    uint32_t offset;      /**< Plane offset */
-    uint32_t stride;      /**< Plane stride */
-
-    void *reserved1;      /**< Reserved pointer1 */
-    void *reserved2;      /**< Reserved pointer2 */
-    void *reserved3;      /**< Reserved pointer3 */
-} tbm_surface_plane_s;
-
-typedef struct _tbm_surface_info
-{
-    uint32_t width;      /**< TBM surface width */
-    uint32_t height;     /**< TBM surface height */
-    tbm_format format;   /**< TBM surface format*/
-    uint32_t bpp;        /**< TBM surface bbp */
-    uint32_t size;       /**< TBM surface size */
-
-    uint32_t num_planes;                            /**< The number of planes */
-    tbm_surface_plane_s planes[TBM_SURF_PLANE_MAX]; /**< Array of planes */
-
-    void *reserved4;   /**< Reserved pointer4 */
-    void *reserved5;   /**< Reserved pointer5 */
-    void *reserved6;   /**< Reserved pointer6 */
-} tbm_surface_info_s;
-
-/* returns 0 on success */
-
 struct _Outbuf
 {
    int w, h;
@@ -89,7 +54,7 @@ struct _Outbuf
    void *tbm_queue;
    Eina_Bool ext_tbm_queue;
 
-   tbm_surface_h surface;
+   void* surface;
 
    struct
    {
@@ -105,10 +70,18 @@ struct _Outbuf
 
       /* Eina_Bool redraw : 1; */
       Eina_Bool destination_alpha : 1;
+
+      /*New Struct*/
+      void *tbm_queue;
+      Eina_Bool queue_need_destroy;
+      Eina_Bool queue_reset;
+      unsigned int frame_age;
+      void *ebuf_info;
    } priv;
 };
 
-
+#if 0
+/*OLD*/
 Outbuf *_evas_software_tbm_outbuf_setup(int w, int h, int rot, Outbuf_Depth depth, Eina_Bool alpha, void *tbm_queue);
 void _evas_software_tbm_outbuf_free(Outbuf *ob);
 void _evas_software_tbm_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode);
@@ -120,7 +93,19 @@ void _evas_software_tbm_outbuf_reconfigure(Outbuf *ob, int x, int y, int w, int 
 void *_evas_software_tbm_outbuf_update_region_new(Outbuf *ob, int x, int y, int w, int h, int *cx, int *cy, int *cw, int *ch);
 void _evas_software_tbm_outbuf_update_region_push(Outbuf *ob, RGBA_Image *update, int x, int y, int w, int h);
 void _evas_software_tbm_outbuf_update_region_free(Outbuf *ob, RGBA_Image *update);
+#endif
 
-
+/*New*/
+Outbuf *evas_outbuf_setup(Evas_Engine_Info_Software_Tbm *info, int w, int h);
+void evas_outbuf_free(Outbuf *ob);
+void evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth);
+Render_Engine_Swap_Mode evas_outbuf_swap_mode_get(Outbuf *ob);
+int evas_outbuf_rot_get(Outbuf *ob);
+Eina_Bool evas_outbuf_update_region_first_rect(Outbuf *ob);
+void *evas_outbuf_update_region_new(Outbuf *ob, int x, int y, int w, int h, int *cx, int *cy, int *cw, int *ch);
+void evas_outbuf_update_region_push(Outbuf *ob, RGBA_Image *update, int x, int y, int w, int h);
+void evas_outbuf_update_region_free(Outbuf *ob, RGBA_Image *update);
+void evas_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode);
+void evas_output_idle_flush(Outbuf *ob);
 
 #endif
