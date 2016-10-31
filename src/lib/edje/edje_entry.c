@@ -54,6 +54,9 @@ struct _Entry
    // TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements.
    Eina_Bool freeze : 1;
    //
+   /* TIZEN_ONLY(2161031): Add edje_object_part_text_select_disable_set API */
+   Eina_Bool              select_disable;
+   /* END */
 
 #ifdef HAVE_ECORE_IMF
    Eina_Bool              have_preedit : 1;
@@ -797,8 +800,13 @@ _edje_anchor_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EIN
    if ((rp->type != EDJE_RP_TYPE_TEXT) ||
        (!rp->typedata.text)) return;
    en = rp->typedata.text->entry_data;
+   /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
    if ((rp->part->select_mode == EDJE_ENTRY_SELECTION_MODE_EXPLICIT) &&
        (en->select_allow))
+    */
+   if ((rp->part->select_mode == EDJE_ENTRY_SELECTION_MODE_EXPLICIT) &&
+       (!en->select_disable && en->select_allow))
+   /* END */
      return;
 
    ignored = rp->ignore_flags & ev->event_flags;
@@ -847,8 +855,13 @@ _edje_anchor_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
    if (!n) n = "";
    len = 200 + strlen(n);
    buf = alloca(len);
+   /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
    if ((rp->part->select_mode != EDJE_ENTRY_SELECTION_MODE_EXPLICIT) ||
        (!en->select_allow))
+    */
+   if ((rp->part->select_mode != EDJE_ENTRY_SELECTION_MODE_EXPLICIT) ||
+       (en->select_disable || !en->select_allow))
+   /* END */
      {
         if ((!ev->event_flags) || (!ignored))
           {
@@ -900,8 +913,13 @@ _edje_anchor_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EIN
    if ((rp->type != EDJE_RP_TYPE_TEXT) ||
        (!rp->typedata.text)) return;
    en = rp->typedata.text->entry_data;
+   /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
    if ((rp->part->select_mode == EDJE_ENTRY_SELECTION_MODE_EXPLICIT) &&
        (en->select_allow))
+    */
+   if ((rp->part->select_mode == EDJE_ENTRY_SELECTION_MODE_EXPLICIT) &&
+       (!en->select_disable && en->select_allow))
+   /* END */
      return;
 
    ignored = rp->ignore_flags & ev->event_flags;
@@ -1684,7 +1702,14 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
      {
         _compose_seq_reset(en);
         // dead keys here. Escape for now (should emit these)
+        /* TIZEN_ONLY(20161118): selection clear when escape key down
         _edje_emit(ed, "entry,key,escape", rp->part->name);
+         */
+        if (en->have_selection)
+          _sel_clear(ed, en->cursor, rp->object, en);
+        else
+          _edje_emit(ed, "entry,key,escape", rp->part->name);
+        /* END */
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
      }
    else if (!strcmp(ev->key, "Up") ||
@@ -1696,7 +1721,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              if (en->have_selection &&
                  (evas_textblock_cursor_pos_get(en->sel_start) != evas_textblock_cursor_pos_get(en->sel_end)))
                ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+             /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
              if (en->select_allow)
+              */
+             if (!en->select_disable)
+             /* END */
                {
                   if (shift)
                     {
@@ -1714,7 +1743,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                }
              if (_curs_up(en->cursor, rp->object, en))
                ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+             /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
              if (en->select_allow)
+              */
+             if (!en->select_disable)
+             /* END */
                {
                   if (shift) _sel_extend(ed, en->cursor, rp->object, en);
                   else _sel_clear(ed, en->cursor, rp->object, en);
@@ -1732,7 +1765,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              if (en->have_selection &&
                  (evas_textblock_cursor_pos_get(en->sel_start) != evas_textblock_cursor_pos_get(en->sel_end)))
                ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+             /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
              if (en->select_allow)
+              */
+             if (!en->select_disable)
+             /* END */
                {
                   if (shift)
                     {
@@ -1750,7 +1787,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                }
              if (_curs_down(en->cursor, rp->object, en))
                ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+             /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
              if (en->select_allow)
+              */
+             if (!en->select_disable)
+             /* END */
                {
                   if (shift) _sel_extend(ed, en->cursor, rp->object, en);
                   else _sel_clear(ed, en->cursor, rp->object, en);
@@ -1766,7 +1807,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         if (en->have_selection &&
             (evas_textblock_cursor_pos_get(en->sel_start) != evas_textblock_cursor_pos_get(en->sel_end)))
           ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift)
                {
@@ -1795,7 +1840,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         /* If control is pressed, go to the start of the word */
         if (control) evas_textblock_cursor_word_start(en->cursor);
 #endif
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_extend(ed, en->cursor, rp->object, en);
              else _sel_clear(ed, en->cursor, rp->object, en);
@@ -1810,7 +1859,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         if (en->have_selection &&
             (evas_textblock_cursor_pos_get(en->sel_start) != evas_textblock_cursor_pos_get(en->sel_end)))
           ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift)
                {
@@ -1839,7 +1892,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         //if (evas_textblock_cursor_char_next(en->cursor))
         if (evas_textblock_cursor_cluster_next(en->cursor))
           ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_extend(ed, en->cursor, rp->object, en);
              else _sel_clear(ed, en->cursor, rp->object, en);
@@ -1932,7 +1989,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              ((!strcmp(ev->key, "KP_Home")) && !ev->string)))
      {
         _compose_seq_reset(en);
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_start(en->cursor, rp->object, en);
              else _sel_clear(ed, en->cursor, rp->object, en);
@@ -1941,7 +2002,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
           _curs_start(en->cursor, rp->object, en);
         else
           _curs_lin_start(en->cursor, rp->object, en);
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_extend(ed, en->cursor, rp->object, en);
           }
@@ -1954,7 +2019,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              ((!strcmp(ev->key, "KP_End")) && !ev->string)))
      {
         _compose_seq_reset(en);
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_start(en->cursor, rp->object, en);
              else _sel_clear(ed, en->cursor, rp->object, en);
@@ -1963,7 +2032,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
           _curs_end(en->cursor, rp->object, en);
         else
           _curs_lin_end(en->cursor, rp->object, en);
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_extend(ed, en->cursor, rp->object, en);
           }
@@ -2136,7 +2209,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             (!strcmp(ev->key, "KP_Prior") && !ev->string))
      {
         _compose_seq_reset(en);
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_start(en->cursor, rp->object, en);
              else _sel_clear(ed, en->cursor, rp->object, en);
@@ -2146,7 +2223,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              evas_textblock_cursor_line_set(en->cursor, 0);
              _curs_lin_start(en->cursor, rp->object, en);
           }
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_extend(ed, en->cursor, rp->object, en);
              else _sel_clear(ed, en->cursor, rp->object, en);
@@ -2159,7 +2240,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
             (!strcmp(ev->key, "KP_Next") && !ev->string))
      {
         _compose_seq_reset(en);
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_start(en->cursor, rp->object, en);
              else _sel_clear(ed, en->cursor, rp->object, en);
@@ -2170,7 +2255,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              evas_textblock_cursor_line_set(en->cursor, last);
              _curs_lin_end(en->cursor, rp->object, en);
           }
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable)
+        /* END */
           {
              if (shift) _sel_extend(ed, en->cursor, rp->object, en);
              else _sel_clear(ed, en->cursor, rp->object, en);
@@ -2411,7 +2500,11 @@ _edje_part_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
    en->select_mod_start = EINA_FALSE;
    en->select_mod_end = EINA_FALSE;
 
+   /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
    if (en->select_allow && ev->button != 2) dosel = EINA_TRUE;
+    */
+   if (!en->select_disable && en->select_allow && ev->button != 2) dosel = EINA_TRUE;
+   /* END */
    if (dosel)
      {
         if (ev->flags & EVAS_BUTTON_TRIPLE_CLICK)
@@ -2711,7 +2804,11 @@ _edje_part_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UN
                }
           }
      }
+   /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
    if (en->select_allow)
+    */
+   if (!en->select_disable && en->select_allow)
+   /* END */
      {
         if (rp->part->select_mode == EDJE_ENTRY_SELECTION_MODE_EXPLICIT)
           {
@@ -2816,7 +2913,11 @@ _edje_part_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
                     _curs_lin_end(en->cursor, rp->object, en);
                }
           }
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
+         */
+        if (!en->select_disable && en->select_allow)
+        /* END */
           {
              if (rp->part->select_mode == EDJE_ENTRY_SELECTION_MODE_EXPLICIT)
                {
@@ -2963,6 +3064,10 @@ _edje_entry_real_part_init(Edje *ed, Edje_Real_Part *rp, Ecore_IMF_Context *ic)
         txt = (Edje_Part_Description_Text *)rp->chosen_description;
 
         en->select_allow = EINA_FALSE;
+        /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API */
+        en->select_disable = EINA_TRUE;
+        /* END */
+
         if (txt && edje_string_get(&txt->text.repch))
           evas_object_textblock_replace_char_set(rp->object, edje_string_get(&txt->text.repch));
         else
@@ -3650,6 +3755,33 @@ _edje_entry_select_allow_get(const Edje_Real_Part *rp)
    if (!en) return EINA_FALSE;
    return en->select_allow;
 }
+
+/* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API */
+void
+_edje_entry_select_disable_set(Edje_Real_Part *rp, Eina_Bool disable)
+{
+   Entry *en;
+
+   if ((rp->type != EDJE_RP_TYPE_TEXT) ||
+       (!rp->typedata.text)) return;
+   en = rp->typedata.text->entry_data;
+   if (!en) return;
+
+   en->select_disable = disable;
+}
+
+Eina_Bool
+_edje_entry_select_disable_get(const Edje_Real_Part *rp)
+{
+   Entry *en;
+
+   if ((rp->type != EDJE_RP_TYPE_TEXT) ||
+       (!rp->typedata.text)) return EINA_FALSE;
+   en = rp->typedata.text->entry_data;
+   if (!en) return EINA_FALSE;
+   return en->select_disable;
+}
+/* END */
 
 void
 _edje_entry_select_abort(Edje_Real_Part *rp)
