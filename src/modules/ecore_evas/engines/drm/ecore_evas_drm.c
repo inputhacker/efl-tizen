@@ -15,6 +15,10 @@
 #include <Ecore_Drm.h>
 #include <Evas_Engine_Drm.h>
 
+#include <Evas_Engine_Software_Tbm.h>
+#include <tbm_bufmgr.h>
+#include <tbm_surface_queue.h>
+
 #ifdef BUILD_ECORE_EVAS_GL_DRM
 # include <Evas_Engine_GL_Drm.h>
 # include <gbm.h>
@@ -180,16 +184,32 @@ EAPI Ecore_Evas *
 ecore_evas_drm_new_internal(const char *device, unsigned int parent EINA_UNUSED, int x, int y, int w, int h)
 {
    Ecore_Evas *ee;
-   Evas_Engine_Info_Drm *einfo;
    Ecore_Evas_Interface_Drm *iface;
    Ecore_Evas_Engine_Drm_Data *edata;
    int method;
+   Eina_Bool use_software_tbm = EINA_FALSE;
+
+   if (getenv("USE_EVAS_SOFTWARE_TBM_ENGINE"))
+     {
+        use_software_tbm = EINA_TRUE;
+     }
 
    /* try to find the evas drm engine */
-   if (!(method = evas_render_method_lookup("drm")))
+   if (use_software_tbm)
      {
-        ERR("Render method lookup failed for Drm");
-        return NULL;
+       if (!(method = evas_render_method_lookup("software_tbm")))
+         {
+            ERR("Render method lookup failed for software_tbm");
+            return NULL;
+         }
+     }
+   else
+     {
+       if (!(method = evas_render_method_lookup("drm")))
+         {
+            ERR("Render method lookup failed for Drm");
+            return NULL;
+         }
      }
 
    /* try to init drm */
@@ -225,8 +245,8 @@ ecore_evas_drm_new_internal(const char *device, unsigned int parent EINA_UNUSED,
    ee->engine.ifaces = eina_list_append(ee->engine.ifaces, iface);
 
    /* set some engine properties */
-   ee->driver = "drm";
-   if (device) ee->name = strdup(device);
+   if (device) 
+     ee->name = strdup(device);
    else
      ee->name = strdup(ecore_drm_device_name_get(dev));
 
@@ -270,48 +290,78 @@ ecore_evas_drm_new_internal(const char *device, unsigned int parent EINA_UNUSED,
      evas_event_callback_add(ee->evas, EVAS_CALLBACK_RENDER_POST,
                              _ecore_evas_drm_render_updates, ee);
 
-   if ((einfo = (Evas_Engine_Info_Drm *)evas_engine_info_get(ee->evas)))
+   if (use_software_tbm)
      {
-        Ecore_Drm_Output *output;
-        char *num;
-
-        einfo->info.depth = 32; // FIXME
-        einfo->info.destination_alpha = ee->alpha;
-        einfo->info.rotation = ee->rotation;
-
-        if ((num = getenv("EVAS_DRM_VSYNC")))
+        Evas_Engine_Info_Software_Tbm *einfo;
+        if ((einfo = (Evas_Engine_Info_Software_Tbm *)evas_engine_info_get(ee->evas)))
           {
-             if (!atoi(num))
-               einfo->info.vsync = EINA_FALSE;
-             else
-               einfo->info.vsync = EINA_TRUE;
+             einfo->info.depth = 32; // FIXME
+             einfo->info.destination_alpha = ee->alpha;
+             einfo->info.rotation = ee->rotation;
+             einfo->info.tbm_queue = (void*)tbm_surface_queue_create(3, w, h, TBM_FORMAT_ARGB8888, TBM_BO_SCANOUT);
+
+             if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+               {
+                  ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+                  goto eng_err;
+               }
           }
         else
-          einfo->info.vsync = EINA_TRUE;
-
-        einfo->info.use_hw_accel = EINA_FALSE;
-        einfo->info.dev = dev;
-
-        if ((output = ecore_drm_device_output_find(dev, x, y)))
           {
-             einfo->info.conn_id = ecore_drm_output_connector_id_get(output);
-             einfo->info.crtc_id = ecore_drm_output_crtc_id_get(output);
-             einfo->info.buffer_id = ecore_drm_output_crtc_buffer_get(output);
-          }
-
-        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
-          {
-             ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+             ERR("Failed to get Evas Engine Info for '%s'", ee->driver);
              goto eng_err;
           }
+
+        ee->driver = "drm_tbm";
+        ee->prop.window = (Ecore_Window)einfo->info.tbm_queue;
      }
    else
      {
-        ERR("Failed to get Evas Engine Info for '%s'", ee->driver);
-        goto eng_err;
-     }
+        Evas_Engine_Info_Drm *einfo;
+        if ((einfo = (Evas_Engine_Info_Drm *)evas_engine_info_get(ee->evas)))
+          {
+             Ecore_Drm_Output *output;
+             char *num;
 
-   ee->prop.window = einfo->info.buffer_id;
+             einfo->info.depth = 32; // FIXME
+             einfo->info.destination_alpha = ee->alpha;
+             einfo->info.rotation = ee->rotation;
+
+             if ((num = getenv("EVAS_DRM_VSYNC")))
+               {
+                  if (!atoi(num))
+                    einfo->info.vsync = EINA_FALSE;
+                  else
+                    einfo->info.vsync = EINA_TRUE;
+               }
+             else
+               einfo->info.vsync = EINA_TRUE;
+
+             einfo->info.use_hw_accel = EINA_FALSE;
+             einfo->info.dev = dev;
+
+             if ((output = ecore_drm_device_output_find(dev, x, y)))
+               {
+                  einfo->info.conn_id = ecore_drm_output_connector_id_get(output);
+                  einfo->info.crtc_id = ecore_drm_output_crtc_id_get(output);
+                  einfo->info.buffer_id = ecore_drm_output_crtc_buffer_get(output);
+               }
+
+             if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+               {
+                  ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+                  goto eng_err;
+               }
+          }
+        else
+          {
+             ERR("Failed to get Evas Engine Info for '%s'", ee->driver);
+             goto eng_err;
+          }
+
+        ee->driver = "drm";
+        ee->prop.window = einfo->info.buffer_id;
+     }
 
    _ecore_evas_register(ee);
 #if 0
