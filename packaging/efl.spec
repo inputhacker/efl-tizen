@@ -683,7 +683,7 @@ cp %{SOURCE1001} .
 %endif
 
 %if ! %{with x}
-CFLAGS+=" -DMESA_EGL_NO_X11_HEADERS "
+CFLAGS+=" -Wno-strict-aliasing -DMESA_EGL_NO_X11_HEADERS "
 %endif
 
 %if %{with emulator}
