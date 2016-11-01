@@ -5968,7 +5968,7 @@ _edje_color_class_find(const Edje *ed, const char *color_class)
    /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock
    cc = eina_hash_find(ed->file->color_hash, color_class);
     */
-   if (ed) cc = eina_hash_find(ed->file->color_hash, color_class);
+   if (ed && ed->file) cc = eina_hash_find(ed->file->color_hash, color_class);
    /* END */
 
    if (cc) return cc;
