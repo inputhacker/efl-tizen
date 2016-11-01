@@ -3023,7 +3023,7 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_WAYLAND], [eo])
 EFL_INTERNAL_DEPEND_PKG([ECORE_WAYLAND], [eina])
 
 EFL_DEPEND_PKG([ECORE_WAYLAND], [WAYLAND],
-   [wayland-client >= 1.3.0 wayland-cursor >= 1.3.0 xkbcommon >= 0.3.0 xdg-shell-client text-client tizen-extension-client tizen-remote-surface-client])
+   [wayland-client >= 1.3.0 wayland-cursor >= 1.3.0 xkbcommon >= 0.3.0 xdg-shell-client text-client tizen-extension-client])
 
 EFL_EVAL_PKGS([ECORE_WAYLAND])
 
@@ -4011,7 +4011,6 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [efl])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [eo])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [eina])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [emile])
-EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [ecore-wayland])
 
 ## modules
 ECORE_EVAS_MODULE([extn], [${want_ecore_evas_extn}])
@@ -4027,7 +4026,6 @@ ECORE_EVAS_MODULE([opengl-cocoa], [${want_ecore_evas_gl_cocoa}])
 
 ECORE_EVAS_MODULE([software-sdl], [${want_sdl}])
 ECORE_EVAS_MODULE([opengl-sdl], [${want_gl_sdl}])
-ECORE_EVAS_MODULE([tizen-remote-surface-client],[yes])
 
 build_ecore_evas_sdl="no"
 if test "x${have_ecore_evas_software_sdl}" = "xyes" || \
