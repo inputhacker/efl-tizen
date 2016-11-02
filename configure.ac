@@ -3987,6 +3987,7 @@ want_ecore_evas_wayland_egl="${have_evas_engine_wayland_egl}"
 want_ecore_evas_tbm="${have_evas_engine_tbm}"
 want_ecore_evas_extn="yes"
 want_ecore_evas_drm="${have_evas_engine_drm}"
+want_remote_surface="no"
 
 if test "x${have_ecore_ipc}" = "xno" || \
    test "x${efl_func_shm_open}" = "xno" || \
@@ -3994,6 +3995,7 @@ if test "x${have_ecore_ipc}" = "xno" || \
    want_ecore_evas_extn="no"
 fi
 
+want_remote_surface="${want_ecore_evas_extn}"
 build_ecore_evas_tbm="no"
 
 ### Checks for programs
@@ -4011,6 +4013,7 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [efl])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [eo])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [eina])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [emile])
+EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [ecore-wayland])
 
 ## modules
 ECORE_EVAS_MODULE([extn], [${want_ecore_evas_extn}])
@@ -4026,6 +4029,7 @@ ECORE_EVAS_MODULE([opengl-cocoa], [${want_ecore_evas_gl_cocoa}])
 
 ECORE_EVAS_MODULE([software-sdl], [${want_sdl}])
 ECORE_EVAS_MODULE([opengl-sdl], [${want_gl_sdl}])
+ECORE_EVAS_MODULE([tizen-remote-surface-client],[${want_remote_surface}])
 
 build_ecore_evas_sdl="no"
 if test "x${have_ecore_evas_software_sdl}" = "xyes" || \
@@ -4072,6 +4076,7 @@ fi
 AM_CONDITIONAL([BUILD_ECORE_EVAS_WIN32],
    [test "${build_ecore_evas_win32}" = "yes"])
 
+PKG_CHECK_MODULES([TIZEN_REMOTE_SURFACE], [tizen-remote-surface-client])
 
 # XXX TODO: ecore_evas_x11
 
