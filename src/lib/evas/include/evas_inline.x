@@ -3,6 +3,19 @@
 
 #include "evas_private.h"
 
+/* Paranoid safety checks.
+ * This can avoid lots of SEGV with dangling pointers to deleted objects.
+ * Two variants: valid or alive (extra check on delete_me).
+ */
+#define EVAS_OBJECT_DATA_VALID(o) ((o) && (o)->layer && (o)->layer->evas)
+#define EVAS_OBJECT_DATA_ALIVE(o) (EVAS_OBJECT_DATA_VALID(o) && !(o)->delete_me)
+#define EVAS_OBJECT_DATA_VALID_CHECK(o, ...) do { \
+   if (EINA_UNLIKELY(!EVAS_OBJECT_DATA_VALID(o))) return __VA_ARGS__; } while (0)
+#define EVAS_OBJECT_DATA_ALIVE_CHECK(o, ...) do { \
+   if (EINA_UNLIKELY(!EVAS_OBJECT_DATA_ALIVE(o))) return __VA_ARGS__; } while (0)
+#define EVAS_OBJECT_DATA_SAFE_GET(eo_o) \
+   (((eo_o) && eo_isa((eo_o), EVAS_OBJECT_CLASS)) ? eo_data_scope_get((eo_o), EVAS_OBJECT_CLASS) : NULL)
+
 static inline Eina_Bool
 _evas_render_has_map(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj)
 {
@@ -253,11 +266,13 @@ evas_object_clip_recalc(Evas_Object_Protected_Data *obj)
    Eina_Bool cvis, nvis;
    Evas_Object *eo_obj;
 
+   EVAS_OBJECT_DATA_ALIVE_CHECK(obj);
+
    eo_obj = obj->object;
    clipper = obj->cur->clipper;
 
    if ((!obj->cur->cache.clip.dirty) &&
-       !(!obj->cur->clipper || clipper->cur->cache.clip.dirty)) return;
+       !(!clipper || clipper->cur->cache.clip.dirty)) return;
 
    if (obj->layer->evas->is_frozen) return;
 
@@ -285,7 +300,7 @@ evas_object_clip_recalc(Evas_Object_Protected_Data *obj)
    cr = obj->cur->color.r; cg = obj->cur->color.g;
    cb = obj->cur->color.b; ca = obj->cur->color.a;
 
-   if (clipper)
+   if (EVAS_OBJECT_DATA_VALID(clipper))
      {
         // this causes problems... hmmm ?????
         if (clipper->cur->cache.clip.dirty)
@@ -374,7 +389,7 @@ evas_object_clip_recalc(Evas_Object_Protected_Data *obj)
 static inline void
 evas_object_async_block(Evas_Object_Protected_Data *obj)
 {
-   if ((obj) && (obj->layer) && (obj->layer->evas))
+   if (EVAS_OBJECT_DATA_VALID(obj))
      {
         eina_lock_take(&(obj->layer->evas->lock_objects));
         eina_lock_release(&(obj->layer->evas->lock_objects));
