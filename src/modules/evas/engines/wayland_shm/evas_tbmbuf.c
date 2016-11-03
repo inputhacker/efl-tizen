@@ -427,7 +427,6 @@ _evas_tbmbuf_surface_assign(Surface *s)
 static void *
 _evas_tbmbuf_surface_data_get(Surface *s, int *w, int *h)
 {
-   ERR("_evas_tbmbuf_surface_data_get");
    Tbmbuf_Surface *surface;
    void *image;
 
