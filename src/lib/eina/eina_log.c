@@ -2345,33 +2345,24 @@ eina_log_print_cb_dlog(const Eina_Log_Domain *d,
 #ifdef EINA_ENABLE_LOG
    int log_level;
    const char buf[512];
-   char tmp_log_level[512];
 
    switch (level)
      {
       case EINA_LOG_LEVEL_CRITICAL:
-         log_level = DLOG_FATAL;
-         strcpy(tmp_log_level, "FATAL");
-         break;
       case EINA_LOG_LEVEL_ERR:
          log_level = DLOG_ERROR;
-         strcpy(tmp_log_level, "ERROR");
          break;
       case EINA_LOG_LEVEL_WARN:
          log_level = DLOG_WARN;
-         strcpy(tmp_log_level, "WARNING");
          break;
       case EINA_LOG_LEVEL_INFO:
          log_level = DLOG_INFO;
-         strcpy(tmp_log_level, "INFO");
          break;
       case EINA_LOG_LEVEL_DBG:
          log_level = DLOG_DEBUG;
-         strcpy(tmp_log_level, "DEBUG");
          break;
       default:
          log_level = DLOG_VERBOSE;
-         strcpy(tmp_log_level, "VERBOSE");
          break;
      }
 
