@@ -136,6 +136,7 @@ static void *(*sym_wayland_tbm_client_create_surface_queue) (struct wayland_tbm_
                                                              int width, int height, tbm_format format) = NULL;
 static struct wl_tbm_queue * (*sym_wayland_tbm_client_get_wl_tbm_queue) (struct wayland_tbm_client *tbm_client,
                                                                          struct wl_surface *surface) = NULL;
+static struct wl_tbm * (*sym_wayland_tbm_client_get_wl_tbm) (struct wayland_tbm_client *tbm_client) = NULL;
 
 static Eina_Bool
 tbm_init(void)
@@ -209,6 +210,7 @@ tbm_init(void)
                fail = 0;
                SYM(tbm_client_lib, wayland_tbm_client_init);
                SYM(tbm_client_lib, wayland_tbm_client_deinit);
+               SYM(tbm_client_lib, wayland_tbm_client_get_wl_tbm);
                SYM(tbm_client_lib, wayland_tbm_client_get_wl_tbm_queue);
                SYM(tbm_client_lib, wayland_tbm_client_create_buffer);
                SYM(tbm_client_lib, wayland_tbm_client_destroy_buffer);
@@ -286,6 +288,7 @@ _wait_free_buffer(Tbmbuf_Surface *surface)
    if (!surface) return;
 
    struct wl_tbm_queue *wl_queue;
+   struct wl_tbm *wl_tbm;
    int i, num_surface;
    tbm_surface_h surfaces[5];
    struct wl_event_queue *queue = NULL;
@@ -296,6 +299,12 @@ _wait_free_buffer(Tbmbuf_Surface *surface)
       return;
 
    DBG("WAIT free buffer");
+   wl_tbm = sym_wayland_tbm_client_get_wl_tbm(surface->tbm_client);
+   if (!wl_tbm) {
+         ERR(" sym_wayland_tbm_client_get_wl_tbm() wl_tbm == NULL");
+         return;
+   }
+
    wl_queue = sym_wayland_tbm_client_get_wl_tbm_queue(surface->tbm_client, surface->wl_surface);
    if (!wl_queue) {
          ERR(" wayland_tbm_client_get_wl_tbm_queue() wl_queue == NULL");
@@ -317,6 +326,8 @@ _wait_free_buffer(Tbmbuf_Surface *surface)
    }
    wl_proxy_set_queue((struct wl_proxy*)wl_queue, queue);
 
+   wl_proxy_set_queue((struct wl_proxy*)wl_tbm, queue);
+
    while (!sym_tbm_surface_queue_can_dequeue(surface->tbm_queue, 0)) {
          wl_display_dispatch_queue(surface->wl_display, queue);
    }
@@ -329,6 +340,8 @@ _wait_free_buffer(Tbmbuf_Surface *surface)
    }
 
    wl_proxy_set_queue((struct wl_proxy*)wl_queue, NULL);
+
+   wl_proxy_set_queue((struct wl_proxy*)wl_tbm, NULL);
 
    wl_event_queue_destroy(queue);
 }
@@ -404,6 +417,8 @@ _evas_tbmbuf_surface_assign(Surface *s)
    surface->wait_release = 0;
    if(!sym_tbm_surface_internal_get_user_data(surface->tbm_surface, KEY_WL_BUFFER, (void **)&buffer)) {
          buffer = sym_wayland_tbm_client_create_buffer(surface->tbm_client, surface->tbm_surface);
+
+         wl_proxy_set_queue((struct wl_proxy *)buffer, NULL);
 
          sym_tbm_surface_internal_add_user_data(surface->tbm_surface, KEY_WL_BUFFER, (tbm_data_free)buffer_destroy);
          sym_tbm_surface_internal_set_user_data(surface->tbm_surface, KEY_WL_BUFFER, buffer);
