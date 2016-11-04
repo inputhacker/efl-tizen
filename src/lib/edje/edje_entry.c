@@ -691,30 +691,37 @@ _sel_update(Edje *ed, Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entr
 
                   sel = calloc(1, sizeof(Sel));
                   en->sel = eina_list_append(en->sel, sel);
-                  ob = edje_object_add(ed->base->evas);
-                  edje_object_file_set(ob, ed->path, en->rp->part->source);
-                  evas_object_smart_member_add(ob, smart);
-                  evas_object_stack_below(ob, o);
-                  evas_object_clip_set(ob, clip);
-                  evas_object_pass_events_set(ob, EINA_TRUE);
-                  evas_object_show(ob);
-                  sel->obj_bg = ob;
-                  _edje_subobj_register(ed, sel->obj_bg);
+                  if (en->rp->part->source)
+                    {
+                       ob = edje_object_add(ed->base->evas);
+                       edje_object_file_set(ob, ed->path, en->rp->part->source);
+                       evas_object_smart_member_add(ob, smart);
+                       evas_object_stack_below(ob, o);
+                       evas_object_clip_set(ob, clip);
+                       evas_object_pass_events_set(ob, EINA_TRUE);
+                       evas_object_show(ob);
+                       sel->obj_bg = ob;
+                       _edje_subobj_register(ed, sel->obj_bg);
+                       /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+                       edje_object_color_class_parent_set(sel->obj_bg, ed->obj);
+                       /* END */
+                    }
 
-                  ob = edje_object_add(ed->base->evas);
-                  edje_object_file_set(ob, ed->path, en->rp->part->source2);
-                  evas_object_smart_member_add(ob, smart);
-                  evas_object_stack_above(ob, o);
-                  evas_object_clip_set(ob, clip);
-                  evas_object_pass_events_set(ob, EINA_TRUE);
-                  evas_object_show(ob);
-                  sel->obj_fg = ob;
-                  _edje_subobj_register(ed, sel->obj_fg);
-
-                  /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
-                  edje_object_color_class_parent_set(sel->obj_bg, ed->obj);
-                  edje_object_color_class_parent_set(sel->obj_fg, ed->obj);
-                  /* END */
+                  if (en->rp->part->source2)
+                    {
+                       ob = edje_object_add(ed->base->evas);
+                       edje_object_file_set(ob, ed->path, en->rp->part->source2);
+                       evas_object_smart_member_add(ob, smart);
+                       evas_object_stack_above(ob, o);
+                       evas_object_clip_set(ob, clip);
+                       evas_object_pass_events_set(ob, EINA_TRUE);
+                       evas_object_show(ob);
+                       sel->obj_fg = ob;
+                       _edje_subobj_register(ed, sel->obj_fg);
+                       /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+                       edje_object_color_class_parent_set(sel->obj_fg, ed->obj);
+                       /* END */
+                    }
                }
              else
                {
@@ -1117,30 +1124,37 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
 
                        sel = calloc(1, sizeof(Sel));
                        an->sel = eina_list_append(an->sel, sel);
-                       ob = edje_object_add(ed->base->evas);
-                       edje_object_file_set(ob, ed->path, en->rp->part->source5);
-                       evas_object_smart_member_add(ob, smart);
-                       evas_object_stack_below(ob, o);
-                       evas_object_clip_set(ob, clip);
-                       evas_object_pass_events_set(ob, EINA_TRUE);
-                       evas_object_show(ob);
-                       sel->obj_bg = ob;
-                       _edje_subobj_register(ed, sel->obj_bg);
+                       if (en->rp->part->source5)
+                         {
+                            ob = edje_object_add(ed->base->evas);
+                            edje_object_file_set(ob, ed->path, en->rp->part->source5);
+                            evas_object_smart_member_add(ob, smart);
+                            evas_object_stack_below(ob, o);
+                            evas_object_clip_set(ob, clip);
+                            evas_object_pass_events_set(ob, EINA_TRUE);
+                            evas_object_show(ob);
+                            sel->obj_bg = ob;
+                            _edje_subobj_register(ed, sel->obj_bg);
+                            /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+                            edje_object_color_class_parent_set(sel->obj_bg, ed->obj);
+                            /* END */
+                         }
 
-                       ob = edje_object_add(ed->base->evas);
-                       edje_object_file_set(ob, ed->path, en->rp->part->source6);
-                       evas_object_smart_member_add(ob, smart);
-                       evas_object_stack_above(ob, o);
-                       evas_object_clip_set(ob, clip);
-                       evas_object_pass_events_set(ob, EINA_TRUE);
-                       evas_object_show(ob);
-                       sel->obj_fg = ob;
-                       _edje_subobj_register(ed, sel->obj_fg);
-
-                       /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
-                       edje_object_color_class_parent_set(sel->obj_bg, ed->obj);
-                       edje_object_color_class_parent_set(sel->obj_fg, ed->obj);
-                       /* END */
+                       if (en->rp->part->source6)
+                         {
+                            ob = edje_object_add(ed->base->evas);
+                            edje_object_file_set(ob, ed->path, en->rp->part->source6);
+                            evas_object_smart_member_add(ob, smart);
+                            evas_object_stack_above(ob, o);
+                            evas_object_clip_set(ob, clip);
+                            evas_object_pass_events_set(ob, EINA_TRUE);
+                            evas_object_show(ob);
+                            sel->obj_fg = ob;
+                            _edje_subobj_register(ed, sel->obj_fg);
+                            /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+                            edje_object_color_class_parent_set(sel->obj_fg, ed->obj);
+                            /* END */
+                         }
 
                        ob = evas_object_rectangle_add(ed->base->evas);
                        evas_object_color_set(ob, 0, 0, 0, 0);
@@ -2839,27 +2853,32 @@ _edje_entry_real_part_init(Edje *ed, Edje_Real_Part *rp, Ecore_IMF_Context *ic)
         else
           evas_object_textblock_replace_char_set(rp->object, "*");
      }
-
-   en->cursor_bg = edje_object_add(ed->base->evas);
-   edje_object_file_set(en->cursor_bg, ed->path, rp->part->source3);
-   evas_object_smart_member_add(en->cursor_bg, ed->obj);
-   evas_object_stack_below(en->cursor_bg, rp->object);
-   evas_object_clip_set(en->cursor_bg, evas_object_clip_get(rp->object));
-   evas_object_pass_events_set(en->cursor_bg, EINA_TRUE);
-   _edje_subobj_register(ed, en->cursor_bg);
-
-   en->cursor_fg = edje_object_add(ed->base->evas);
-   edje_object_file_set(en->cursor_fg, ed->path, rp->part->source4);
-   evas_object_smart_member_add(en->cursor_fg, ed->obj);
-   evas_object_stack_above(en->cursor_fg, rp->object);
-   evas_object_clip_set(en->cursor_fg, evas_object_clip_get(rp->object));
-   evas_object_pass_events_set(en->cursor_fg, EINA_TRUE);
-   _edje_subobj_register(ed, en->cursor_fg);
-
-   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
-   edje_object_color_class_parent_set(en->cursor_bg, ed->obj);
-   edje_object_color_class_parent_set(en->cursor_fg, ed->obj);
-   /* END */
+   if (rp->part->source3)
+     {
+        en->cursor_bg = edje_object_add(ed->base->evas);
+        edje_object_file_set(en->cursor_bg, ed->path, rp->part->source3);
+        evas_object_smart_member_add(en->cursor_bg, ed->obj);
+        evas_object_stack_below(en->cursor_bg, rp->object);
+        evas_object_clip_set(en->cursor_bg, evas_object_clip_get(rp->object));
+        evas_object_pass_events_set(en->cursor_bg, EINA_TRUE);
+        _edje_subobj_register(ed, en->cursor_bg);
+        /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+        edje_object_color_class_parent_set(en->cursor_bg, ed->obj);
+        /* END */
+     }
+   if (rp->part->source4)
+     {
+        en->cursor_fg = edje_object_add(ed->base->evas);
+        edje_object_file_set(en->cursor_fg, ed->path, rp->part->source4);
+        evas_object_smart_member_add(en->cursor_fg, ed->obj);
+        evas_object_stack_above(en->cursor_fg, rp->object);
+        evas_object_clip_set(en->cursor_fg, evas_object_clip_get(rp->object));
+        evas_object_pass_events_set(en->cursor_fg, EINA_TRUE);
+        _edje_subobj_register(ed, en->cursor_fg);
+        /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+        edje_object_color_class_parent_set(en->cursor_bg, ed->obj);
+        /* END */
+     }
 
    /* A proxy to the main cursor. */
    if (rp->part->cursor_mode == EDJE_ENTRY_CURSOR_MODE_BEFORE)
