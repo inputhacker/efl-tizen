@@ -509,8 +509,6 @@ eng_outbuf_update_region_new(Outbuf *ob, int x, int y, int w, int h, int *cx EIN
         ob->gl_context->master_clip.w = w;
         ob->gl_context->master_clip.h = h;
 
-        if (glsym_eglSetDamageRegionKHR)
-          _damage_rect_set(ob, x, y, w, h);
      }
 
    return ob->gl_context->def_surface;
@@ -568,6 +566,9 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
                   _convert_glcoords(&result[i], ob, r->x, r->y, r->w, r->h);
                   i += 4;
                }
+             if (glsym_eglSetDamageRegionKHR)
+                glsym_eglSetDamageRegionKHR(ob->egl_disp, ob->egl_surface[0], result, num);
+
              glsym_eglSwapBuffersWithDamage(ob->egl_disp, ob->egl_surface[0],
                                             result, num);
           }
