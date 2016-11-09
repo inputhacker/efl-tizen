@@ -11,6 +11,10 @@ ecore_audio_eolian_files = \
 	lib/ecore_audio/ecore_audio_in_tone.eo
 
 
+if HAVE_ECORE_AUDIO_TIZEN
+ecore_audio_eolian_files += lib/ecore_audio/ecore_audio_out_tizen.eo
+endif
+
 if HAVE_ECORE_AUDIO_PULSE
 ecore_audio_eolian_files += lib/ecore_audio/ecore_audio_out_pulse.eo
 endif
@@ -57,10 +61,19 @@ lib/ecore_audio/ecore_audio_obj_out.c \
 lib/ecore_audio/ecore_audio_obj_in_tone.c \
 lib/ecore_audio/ecore_audio_private.h
 
-lib_ecore_audio_libecore_audio_la_CPPFLAGS = -I$(top_builddir)/src/lib/efl @ECORE_AUDIO_CFLAGS@
+lib_ecore_audio_libecore_audio_la_CPPFLAGS = -I$(top_builddir)/src/lib/efl @ECORE_AUDIO_CFLAGS@ -DPACKAGE_LIB_DIR=\"$(libdir)\"
+
 lib_ecore_audio_libecore_audio_la_LIBADD = @ECORE_AUDIO_LIBS@
 lib_ecore_audio_libecore_audio_la_DEPENDENCIES = @ECORE_AUDIO_INTERNAL_LIBS@
 lib_ecore_audio_libecore_audio_la_LDFLAGS = @EFL_LTLIBRARY_FLAGS@
+
+if HAVE_ECORE_AUDIO_TIZEN
+dist_installed_ecoreaudiomainheaders_DATA += \
+lib/ecore_audio/ecore_audio_obj_out_tizen.h
+
+lib_ecore_audio_libecore_audio_la_SOURCES += \
+lib/ecore_audio/ecore_audio_obj_out_tizen.c
+endif
 
 if HAVE_ECORE_AUDIO_PULSE
 dist_installed_ecoreaudiomainheaders_DATA += \
