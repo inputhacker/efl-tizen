@@ -5581,7 +5581,9 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
                             eo_do(map_obj,
                                   evas_obj_map_enable_set(EINA_FALSE),
                                   evas_obj_map_set(NULL));
+#ifdef HAVE_EPHYSICS
                          }
+#endif
                     }
                }
 
@@ -5596,6 +5598,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
                }
              /* END */
           }
+     }
 
    if (map_colors_free) _map_colors_free(pf);
 
