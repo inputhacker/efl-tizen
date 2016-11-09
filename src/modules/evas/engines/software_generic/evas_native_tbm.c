@@ -67,6 +67,8 @@ typedef struct _tbm_surface_info
 /* returns 0 on success */
 static int (*sym_tbm_surface_map) (tbm_surface_h surface, int opt, tbm_surface_info_s *info) = NULL;
 static int (*sym_tbm_surface_unmap) (tbm_surface_h surface) = NULL;
+static void (*sym_tbm_surface_internal_unref) (tbm_surface_h surface) = NULL;
+static void (*sym_tbm_surface_internal_ref) (tbm_surface_h surface) = NULL;
 
 static Eina_Bool
 tbm_init(void)
@@ -102,6 +104,8 @@ tbm_init(void)
              fail = 0;
              SYM(tbm_lib, tbm_surface_map);
              SYM(tbm_lib, tbm_surface_unmap);
+             SYM(tbm_lib, tbm_surface_internal_unref);
+             SYM(tbm_lib, tbm_surface_internal_ref);
              if (fail)
                {
                   dlclose(tbm_lib);
@@ -261,16 +265,27 @@ _native_free_cb(void *data EINA_UNUSED, void *image)
 {
    RGBA_Image *im;
    Native *n;
+   tbm_surface_h tbm_surf;
 
    if (!(im = image)) return;
    if (!(n = im->native.data)) return;
+
+   if (n->ns.type == EVAS_NATIVE_SURFACE_TBM)
+     tbm_surf = n->ns.data.tbm.buffer;
+   else if (n->ns.type == EVAS_NATIVE_SURFACE_WL)
+     tbm_surf = n->ns_data.wl_surface.tbm_surface;
+   else
+     tbm_surf = NULL;
+
+   if (tbm_surf)
+      sym_tbm_surface_internal_unref(tbm_surf);
+
    im->native.data        = NULL;
    im->native.func.bind   = NULL;
    im->native.func.unbind = NULL;
    im->native.func.free   = NULL;
    im->native.func.data   = NULL;
    im->image.data         = NULL;
-
    free(n);
 
    tbm_shutdown();
@@ -377,6 +392,8 @@ evas_native_tbm_surface_image_set(void *data, void *image, void *native)
         im->native.func.bind   = _native_bind_cb;
         im->native.func.unbind = _native_unbind_cb;
         im->native.func.free   = _native_free_cb;
+
+        sym_tbm_surface_internal_ref(tbm_surf);
 
         if (sym_tbm_surface_unmap(tbm_surf))
           {
