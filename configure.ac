@@ -3311,6 +3311,22 @@ want_alsa="no"
 # TODO: and the EFL_OPTIONAL_DEPEND_PKG(), use EFL_DEPEND_PKG()
 want_sndfile="yes"
 
+AC_ARG_ENABLE([tizenaudio],
+   [AS_HELP_STRING([--enable-tizenaudio],[enable tizen audio sound support. @<:@default=enabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_tizenaudio="yes"
+    else
+       want_tizenaudio="no"
+    fi
+   ],
+   [want_tizenaudio="no"])
+if test "x${want_tizenaudio}" = "xyes"; then
+   AC_DEFINE([HAVE_TIZENAUDIO], [1], [Tizen Audio support enabled])
+else
+   AC_DEFINE([HAVE_TIZENAUDIO], [0], [Tizen Audio support disabled])
+fi
+
 AC_ARG_ENABLE([pulseaudio],
    [AS_HELP_STRING([--disable-pulseaudio],[disable pulseaudio sound support. @<:@default=enabled@:>@])],
    [
@@ -3398,6 +3414,7 @@ EFL_ADD_FEATURE([ECORE_AUDIO], [alsa])
 EFL_ADD_FEATURE([ECORE_AUDIO], [pulseaudio])
 EFL_ADD_FEATURE([ECORE_AUDIO], [sndfile])
 EFL_ADD_FEATURE([ECORE_AUDIO], [coreaudio])
+EFL_ADD_FEATURE([ECORE_AUDIO], [tizenaudio])
 
 ### Checks for header files
 
@@ -3415,6 +3432,7 @@ EFL_LIB_END_OPTIONAL([Ecore_Audio])
 AM_CONDITIONAL([HAVE_ECORE_AUDIO_PULSE], [test "x${want_pulseaudio}" = "xyes"])
 AM_CONDITIONAL([HAVE_ECORE_AUDIO_SNDFILE], [test "x${want_sndfile}" = "xyes"])
 AM_CONDITIONAL([HAVE_ECORE_AUDIO_CORE_AUDIO], [test "x${want_coreaudio}" = "xyes"])
+AM_CONDITIONAL([HAVE_ECORE_AUDIO_TIZEN], [test "x${want_tizenaudio}" = "xyes"])
 
 #### End of Ecore_Audio
 

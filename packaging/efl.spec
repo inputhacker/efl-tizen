@@ -729,6 +729,7 @@ CFLAGS+=" -DEFL_FEATURE_EMULATOR "
     --enable-harfbuzz \
     --enable-hyphen \
     --with-dictionaries-hyphen-dir=/usr/share/hyphen/ \
+    --enable-tizenaudio \
     --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-aba
 
 
