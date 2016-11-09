@@ -14674,7 +14674,7 @@ struct _NinePatch_Image_Info
 
 Eina_List *ninepatch_image_infos = NULL;
 
-Eina_Bool is_ninepatch_image(char* name)
+Eina_Bool is_ninepatch_image(const char* name)
 {
    char* check_point;
    int str_len = strlen(name);

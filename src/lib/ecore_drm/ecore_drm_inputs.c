@@ -447,7 +447,7 @@ const struct libinput_interface _input_interface =
 };
 
 static void
-ecore_drm_libinput_log_handler(struct libinput *libinput,
+ecore_drm_libinput_log_handler(struct libinput *libinput EINA_UNUSED,
                                enum libinput_log_priority priority,
                                const char *format, va_list args)
 {

@@ -1538,8 +1538,8 @@ _efl_gfx_shape_append_svg_path(Eo *obj, Efl_Gfx_Shape_Data *pd,
              goto error;
           }
         process_command(obj, pd, cmd, number_array, number_count, &cur_x, &cur_y);
-        if (!arc && (cmd == 'a') || (cmd == 'A') ||
-            (cmd == 'e') || (cmd == 'E'))
+        if ((!arc) && ((cmd == 'a') || (cmd == 'A') ||
+            (cmd == 'e') || (cmd == 'E')))
           arc = EINA_TRUE;
      }
    if (arc)

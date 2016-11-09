@@ -3958,7 +3958,7 @@ _ector_surface_cache_dump(void)
 }
 
 static void
-eng_ector_surface_cache_set(void *data, void *key, void *surface)
+eng_ector_surface_cache_set(void *data EINA_UNUSED, void *key, void *surface)
 {
    Ector_Surface_Data *surface_data = NULL;
    int count;

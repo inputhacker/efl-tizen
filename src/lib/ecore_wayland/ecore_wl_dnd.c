@@ -600,7 +600,6 @@ static void
 _ecore_wl_dnd_selection_cb_free(void *data EINA_UNUSED, void *event)
 {
    Ecore_Wl_Event_Dnd_Selection *ev;
-   char **t;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 

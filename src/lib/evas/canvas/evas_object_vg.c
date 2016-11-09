@@ -231,7 +231,8 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
    Ector_Surface *ector;
    RGBA_Draw_Context *ct;
    Eina_Bool async_unref;
-   Eina_Bool error = EINA_FALSE, created = EINA_FALSE;
+   Eina_Bool created = EINA_FALSE;
+   int error = 0;
 
    // if the size changed in between path set and the draw call;
    if (!(svg->w == obj->cur->geometry.w &&
@@ -309,7 +310,7 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
 {
    Evas_VG_Data *vd = type_private_data;
    Ector_Surface *ector = evas_ector_get(obj->layer->evas);
-   Eina_Bool error = EINA_FALSE;
+   int error = 0;
 
    // FIXME: Set context (that should affect Ector_Surface) and
    // then call Ector_Renderer render from bottom to top. Get the

@@ -111,7 +111,7 @@ _timer_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
    fd_set rfds, wfds, exfds;
    struct timeval tv;
    unsigned int t;
-   char tick = 0;
+   signed char tick = 0;
    double t0, d;
    int ret;
 

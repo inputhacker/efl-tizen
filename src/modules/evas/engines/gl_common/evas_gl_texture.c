@@ -1103,7 +1103,7 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
    if ((tex->gc->shared->info.tune.atlas.max_memcpy_size > im->cache_entry.w) &&
            (tex->gc->shared->info.tune.atlas.max_memcpy_size > im->cache_entry.h))
      {
-        int sw, sh, dw, dh, sidx, didx;
+        int sw, sh, dw, dh;
 
         dw = im->cache_entry.w + 2;
         dh = im->cache_entry.h + 2;
@@ -1112,10 +1112,7 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
         DATA32 * temp = alloca (dw * dh * bytes_count);
         DATA8 *dp = (unsigned char *)temp;
         DATA8 *sp = (unsigned char *)im->image.data;
-        int i,j;
-
-        sidx = 0;
-        didx = 0;
+        int i;
 
         dp += (dw * bytes_count);
         for(i = 0 ; i < sh ; i ++)

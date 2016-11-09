@@ -449,8 +449,8 @@ _evas_tbmbuf_surface_data_get(Surface *s, int *w, int *h)
 
 
 static void
-__cb_client_frame_callback(void *data, struct wl_callback *callback,
-                           uint32_t time)
+__cb_client_frame_callback(void *data EINA_UNUSED, struct wl_callback *callback,
+                           uint32_t time EINA_UNUSED)
 {
    wl_callback_destroy(callback);
 }

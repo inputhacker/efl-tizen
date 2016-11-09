@@ -1246,7 +1246,6 @@ static Eina_Bool
 _ecore_wl_input_cb_keyboard_repeat(void *data)
 {
    Ecore_Wl_Input *input;
-   Ecore_Wl_Window *win = NULL;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
