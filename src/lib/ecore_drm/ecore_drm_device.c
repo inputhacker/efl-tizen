@@ -210,7 +210,7 @@ ecore_drm_device_find(const char *name, const char *seat)
         if (!getenv("ECORE_DRM_DEVICE_DUMMY"))
           return NULL;
 
-        if (dev = calloc(1, sizeof(Ecore_Drm_Device)))
+        if ((dev = calloc(1, sizeof(Ecore_Drm_Device))))
           {
              dev->drm.name = eina_stringshare_add("dummy");
              dev->drm.path = eina_stringshare_add("dummy");
@@ -862,8 +862,7 @@ EAPI Eina_Bool
 ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation)
 {
    Ecore_Drm_Seat *seat = NULL;
-   Ecore_Drm_Evdev *edev = NULL;
-   Eina_List *l = NULL, *l2 = NULL;
+   Eina_List *l = NULL;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(dev, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(dev->seats, EINA_FALSE);

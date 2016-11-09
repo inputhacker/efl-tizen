@@ -6,6 +6,10 @@
 # include <dlfcn.h>
 #endif
 
+#ifdef EVAS_CSERVE2
+#include "evas_cs2_private.h"
+#endif
+
 /* local structures */
 typedef struct _Render_Engine Render_Engine;
 

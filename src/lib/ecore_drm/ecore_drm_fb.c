@@ -57,11 +57,6 @@ _ecore_drm_fb_create2(int fd, Ecore_Drm_Fb *fb)
 EAPI Ecore_Drm_Fb *
 ecore_drm_fb_create(Ecore_Drm_Device *dev, int width, int height)
 {
-   Ecore_Drm_Fb *fb;
-   struct drm_mode_create_dumb carg;
-   struct drm_mode_destroy_dumb darg;
-   struct drm_mode_map_dumb marg;
-
    EINA_SAFETY_ON_NULL_RETURN_VAL(dev, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL((width < 1) || (height < 1), NULL);
 
@@ -77,6 +72,10 @@ ecore_drm_fb_create(Ecore_Drm_Device *dev, int width, int height)
    else
      return _ecore_drm_display_fb_create(dev, width, height);
 #endif
+   Ecore_Drm_Fb *fb;
+   struct drm_mode_create_dumb carg;
+   struct drm_mode_destroy_dumb darg;
+   struct drm_mode_map_dumb marg;
 
    if (!(fb = calloc(1, sizeof(Ecore_Drm_Fb)))) return NULL;
 

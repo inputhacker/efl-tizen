@@ -2560,7 +2560,7 @@ eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_
 }
 
 static void
-eng_ector_surface_cache_set(void *data, void *key, void *surface)
+eng_ector_surface_cache_set(void *data EINA_UNUSED, void *key, void *surface)
 {
    evas_gl_common_surface_cache_set(key, surface);
 }

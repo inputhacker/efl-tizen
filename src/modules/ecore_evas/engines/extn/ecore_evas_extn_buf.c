@@ -20,7 +20,9 @@ _extnbuf_new(const char *base, int id, Eina_Bool sys, int num,
    mode_t mode = S_IRUSR;
    int prot = PROT_READ;
    int page_size;
-   Eina_Tmpstr *tmp = NULL;
+   //TIZEN ONLY (150908): security issue. To access any application, it needs smack rule.
+   //Eina_Tmpstr *tmp = NULL;
+   //
 
    page_size = eina_cpu_page_size();
 

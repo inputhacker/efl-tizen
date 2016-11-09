@@ -3847,7 +3847,7 @@ _circular_dependency_find(Edje *ed, Edje_Real_Part *ep, Edje_Real_Part *cep, Ein
 #define EDJE_DEFAULT_RIGHT_FADE_IMAGE "edje_default_right_fade_image.png"
 
 static void
-_edje_real_part_text_fade_image_set(Edje *ed, Edje_Real_Part *ep, double align)
+_edje_real_part_text_fade_image_set(Edje *ed EINA_UNUSED, Edje_Real_Part *ep, double align)
 {
    Evas_Object *fade_obj = fade_obj = ep->typedata.text->fade.object;
    char buf[1024];

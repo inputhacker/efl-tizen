@@ -274,6 +274,7 @@ evgl_eng_display_get(void *data)
    if (!(ob = eng_get_ob(re))) return NULL;
    return (void *)ob->egl_disp;
 #else
+   (void)data;
    return NULL;
 #endif
 }
@@ -289,6 +290,7 @@ evgl_eng_evas_surface_get(void *data)
    if (!(ob = eng_get_ob(re))) return NULL;
    return (void *)ob->egl_surface[0];
 #else
+   (void)data;
    return NULL;
 #endif
 }
@@ -328,6 +330,7 @@ evgl_eng_native_window_create(void *data)
 
    return (void *)surface;
 #else
+   (void)data;
    return NULL;
 #endif
 }
@@ -354,6 +357,8 @@ evgl_eng_native_window_destroy(void *data, void *win)
    free(surface);
    return 1;
 #else
+   (void)data;
+   (void)win;
    return 0;
 #endif
 }
@@ -387,6 +392,8 @@ evgl_eng_window_surface_create(void *data, void *win)
 
    return (void *)surface;
 #else
+   (void)data;
+   (void)win;
    return NULL;
 #endif
 }
@@ -415,6 +422,8 @@ evgl_eng_window_surface_destroy(void *data, void *surface)
    eglDestroySurface(ob->egl_disp, (EGLSurface)surface);
    return 1;
 #else
+   (void)data;
+   (void)surface;
    return 0;
 #endif
 }
@@ -506,6 +515,9 @@ evgl_eng_context_create(void *data, void *ctxt, Evas_GL_Context_Version version)
 
    return (void *)context;
 #else
+   (void)data;
+   (void)ctxt;
+   (void)version;
    return NULL;
 #endif
 }
@@ -534,6 +546,8 @@ evgl_eng_context_destroy(void *data, void *ctxt)
    eglDestroyContext(ob->egl_disp, (EGLContext)ctxt);
    return 1;
 #else
+   (void)data;
+   (void)ctxt;
    return 0;
 #endif
 }
@@ -592,6 +606,10 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
 
    return 1;
 #else
+   (void)data;
+   (void)surface;
+   (void)ctxt;
+   (void) flush;
    return 0;
 #endif
 }
@@ -603,6 +621,7 @@ evgl_eng_proc_address_get(const char *name)
    if (glsym_eglGetProcAddress) return glsym_eglGetProcAddress(name);
    return dlsym(RTLD_DEFAULT, name);
 #else
+   (void)name;
    return NULL;
 #endif
 }
@@ -624,6 +643,7 @@ evgl_eng_string_get(void *data)
 
    return eglQueryString(ob->egl_disp, EGL_EXTENSIONS);
 #else
+   (void)data;
    return NULL;
 #endif
 }
@@ -652,6 +672,7 @@ evgl_eng_rotation_angle_get(void *data)
         return 0;
      }
 #else
+   (void)data;
    return 0;
 #endif
 }
@@ -793,6 +814,9 @@ evgl_eng_pbuffer_surface_create(void *data, EVGL_Surface *sfc,
    return (void*)(intptr_t)pbuf;
 #endif
 #else
+   (void)data;
+   (void)sfc;
+   (void)attrib_list;
    return NULL;
 #endif
 }
@@ -830,6 +854,8 @@ evgl_eng_pbuffer_surface_destroy(void *data, void *surface)
 
    return 1;
 #else
+   (void)data;
+   (void)surface;
    return 0;
 #endif
 }
@@ -853,6 +879,11 @@ evgl_eng_native_win_surface_config_get(void *data, int *win_depth,
        eng_get_ob(re)->detected.depth_buffer_size,
        eng_get_ob(re)->detected.stencil_buffer_size,
        eng_get_ob(re)->detected.msaa);
+#else
+   (void)data;
+   (void)win_depth;
+   (void)win_stencil;
+   (void)win_msaa;
 #endif
 }
 
@@ -1235,7 +1266,7 @@ _native_cb_bind(void *data EINA_UNUSED, void *image)
         if (n->ns_data.evasgl.surface)
           {
              Eina_Bool is_egl_image = EINA_FALSE;
-             void *surface;
+             void *surface = NULL;
 
              if (glsym_evgl_native_surface_buffer_get)
                surface = glsym_evgl_native_surface_buffer_get(n->ns_data.evasgl.surface, &is_egl_image);
