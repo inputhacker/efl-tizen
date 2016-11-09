@@ -226,6 +226,10 @@ EAPI int                 ecore_audio_shutdown(void);
 # include <ecore_audio_obj_out_pulse.h>
 #endif
 
+#if HAVE_TIZENAUDIO
+# include <ecore_audio_obj_out_tizen.h>
+#endif
+
 /**
  * @}
  */

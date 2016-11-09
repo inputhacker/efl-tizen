@@ -209,11 +209,21 @@ _edje_multisense_internal_sound_sample_play(Edje *ed, const char *sample_name, c
                          eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED, _play_finished, NULL));
              if (!out)
                {
+#if HAVE_TIZENAUDIO
+                  if (!(out = eo_add(ECORE_AUDIO_OUT_TIZEN_CLASS, NULL)))
+                    {
+                       ERR("Could not create multisense audio out (Tizen Audio)");
+#endif
+
 #if HAVE_COREAUDIO
                   out = eo_add(ECORE_AUDIO_OUT_CORE_AUDIO_CLASS, NULL);
 #elif HAVE_PULSE
                   out = eo_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL,
                                eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL, _out_fail, NULL));
+#endif
+
+#if HAVE_TIZENAUDIO
+                    }
 #endif
                   if (out) outs++;
                }
