@@ -2635,6 +2635,9 @@ _edje_part_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UN
    /* TIZEN_ONLY(20161110): ignore a mouse up event which is holded by other object */
    if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
    /* END */
+   /* TIZEN_ONLY(20161110): ignore a mouse up event which is holded by other object */
+   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
+   /* END */
 
    /* We don't check for ON_HOLD because we'd like to end selection anyway when
     * mouse is up, even if it's held. */
