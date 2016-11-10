@@ -2689,6 +2689,28 @@ _edje_object_part_text_cursor_geometry_get(Eo *obj EINA_UNUSED, Edje *ed, const 
      }
 }
 
+/* TIZEN_ONLY(20161110): keep cursor position on mouse down and move */
+EOLIAN void
+_edje_object_part_text_cursor_on_mouse_geometry_get(Eo *obj EINA_UNUSED, Edje *ed, const char *part, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
+{
+   Edje_Real_Part *rp;
+
+   if (x) *x = 0;
+   if (y) *y = 0;
+   if (w) *w = 0;
+   if (h) *h = 0;
+   if ((!ed) || (!part)) return;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return;
+   if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
+     {
+        _edje_entry_cursor_on_mouse_geometry_get(rp, x, y, w, h, NULL);
+        if (x) *x -= ed->x;
+        if (y) *y -= ed->y;
+     }
+}
+/* END */
+
 EOLIAN void
 _edje_object_part_text_user_insert(Eo *obj EINA_UNUSED, Edje *ed, const char *part, const char *text)
 {

@@ -2729,6 +2729,25 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             @out h: Evas.Coord; [[Cursor height]]
          }
       }
+      /* TIZEN_ONLY(20161110): keep cursor position on mouse down and move */
+      part_text_cursor_on_mouse_geometry_get @const {
+         [[Returns the cursor geometry of the part relative to the edje
+           object. The cursor geometry is kept in mouse down and move.
+
+           \@internal
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
+         params {
+            @in part: const(char)*; [[The part name]]
+            @out x: Evas.Coord; [[Cursor X position]]
+            @out y: Evas.Coord; [[Cursor Y position]]
+            @out w: Evas.Coord; [[Cursor width]]
+            @out h: Evas.Coord; [[Cursor height]]
+         }
+      }
+      /* END */
       part_text_anchor_list_get @const {
          [[Return a list of char anchor names.
 
