@@ -1585,6 +1585,9 @@ eet_data_image_encode_cipher(const void  *data,
    unsigned int ciphered_sz = 0;
    int size = 0;
 
+   if (!data)
+     return NULL;
+
    switch (lossy)
      {
       case EET_IMAGE_LOSSLESS:
@@ -1695,6 +1698,9 @@ eet_data_image_header_advance_decode_cipher(const void   *data,
    void *deciphered_d = NULL;
    unsigned int deciphered_sz = 0;
    int r = 0;
+
+   if (!data)
+     return NULL;
 
    if (cipher_key)
      {
@@ -2091,6 +2097,9 @@ eet_data_image_decode_cipher(const void   *data,
    void *deciphered_d = NULL;
    unsigned int deciphered_sz = 0;
 
+   if (!data)
+     return NULL;
+
    if (cipher_key)
      {
         if (!eet_decipher(data, size, cipher_key, strlen(cipher_key),
@@ -2178,6 +2187,9 @@ eet_data_image_decode_to_cspace_surface_cipher(const void   *data,
    const Eet_Colorspace *cspaces = NULL;
    void *deciphered_d = NULL;
    unsigned int deciphered_sz = 0;
+
+   if (!data)
+     return NULL;
 
    if (cipher_key)
      {
