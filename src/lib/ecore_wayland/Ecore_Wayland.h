@@ -736,7 +736,7 @@ EAPI Eina_Bool ecore_wl_animator_source_set(Ecore_Animator_Source source);
  *
  * @since 1.2
  */
-EAPI struct wl_cursor *ecore_wl_cursor_get(const char *cursor_name);
+EAPI struct wl_cursor *ecore_wl_cursor_get(Ecore_Wl_Input *input, const char *cursor_name);
 
 /**
  * @internal

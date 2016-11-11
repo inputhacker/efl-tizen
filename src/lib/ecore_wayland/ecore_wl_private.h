@@ -124,8 +124,6 @@ struct _Ecore_Wl_Display
         struct xkb_context *context;
      } xkb;
 
-   struct wl_cursor_theme *cursor_theme;
-
    Ecore_Wl_Output *output;
    Ecore_Wl_Input *input;
 
@@ -290,6 +288,7 @@ struct _Ecore_Wl_Input
    unsigned int cursor_current_index;
    unsigned int cursor_size;
    const char *cursor_theme_name;
+   struct wl_cursor_theme *cursor_theme;
 
    struct wl_data_device *data_device;
    struct wl_data_source *data_source;

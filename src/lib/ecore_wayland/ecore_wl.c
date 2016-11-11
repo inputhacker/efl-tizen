@@ -625,12 +625,12 @@ ecore_wl_animator_source_set(Ecore_Animator_Source source)
 }
 
 EAPI struct wl_cursor *
-ecore_wl_cursor_get(const char *cursor_name)
+ecore_wl_cursor_get(Ecore_Wl_Input *input, const char *cursor_name)
 {
-   if ((!_ecore_wl_disp) || (!_ecore_wl_disp->cursor_theme))
+   if ((!input) || (!input->cursor_theme))
      return NULL;
 
-   return wl_cursor_theme_get_cursor(_ecore_wl_disp->cursor_theme,
+   return wl_cursor_theme_get_cursor(input->cursor_theme,
                                      cursor_name);
 }
 
@@ -735,8 +735,6 @@ _ecore_wl_shutdown(Eina_Bool close)
           tizen_indicator_destroy(_ecore_wl_disp->wl.tz_indicator);
         if (_ecore_wl_disp->wl.tz_clipboard)
           tizen_clipboard_destroy(_ecore_wl_disp->wl.tz_clipboard);
-        if (_ecore_wl_disp->cursor_theme)
-          wl_cursor_theme_destroy(_ecore_wl_disp->cursor_theme);
         if (_ecore_wl_disp->wl.display)
           {
              wl_registry_destroy(_ecore_wl_disp->wl.registry);
@@ -972,9 +970,9 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
 
         if (ewd->input)
           _ecore_wl_input_setup(ewd->input);
-        else if (!ewd->cursor_theme)
+        if (ewd->input && !ewd->input->cursor_theme)
           {
-             ewd->cursor_theme =
+             ewd->input->cursor_theme =
                wl_cursor_theme_load(NULL, ECORE_WL_DEFAULT_CURSOR_SIZE,
                                     ewd->wl.shm);
           }

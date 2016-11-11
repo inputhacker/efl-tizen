@@ -278,10 +278,10 @@ ecore_wl_input_cursor_size_set(Ecore_Wl_Input *input, const int size)
 
    EINA_SAFETY_ON_NULL_RETURN(input->display->wl.shm);
 
-   if (input->display->cursor_theme)
-     wl_cursor_theme_destroy(input->display->cursor_theme);
+   if (input->cursor_theme)
+     wl_cursor_theme_destroy(input->cursor_theme);
 
-   input->display->cursor_theme =
+   input->cursor_theme =
      wl_cursor_theme_load(NULL, input->cursor_size, input->display->wl.shm);
 }
 
@@ -296,9 +296,9 @@ ecore_wl_input_cursor_theme_name_set(Ecore_Wl_Input *input, const char *cursor_t
 
    EINA_SAFETY_ON_NULL_RETURN(input->display->wl.shm);
 
-   if (input->display->cursor_theme)
-     wl_cursor_theme_destroy(input->display->cursor_theme);
-   input->display->cursor_theme =
+   if (input->cursor_theme)
+     wl_cursor_theme_destroy(input->cursor_theme);
+   input->cursor_theme =
      wl_cursor_theme_load(input->cursor_theme_name, input->cursor_size,
                           input->display->wl.shm);
 }
@@ -378,10 +378,10 @@ ecore_wl_input_cursor_from_name_set(Ecore_Wl_Input *input, const char *cursor_na
      eina_stringshare_replace(&input->cursor_name, "left_ptr");
 
    /* try to get this cursor from the theme */
-   if (!(cursor = ecore_wl_cursor_get(input->cursor_name)))
+   if (!(cursor = ecore_wl_cursor_get(input, input->cursor_name)))
      {
         /* if the theme does not have this cursor, default to left pointer */
-        if (!(cursor = ecore_wl_cursor_get("left_ptr")))
+        if (!(cursor = ecore_wl_cursor_get(input, "left_ptr")))
           return;
      }
 
@@ -534,9 +534,9 @@ _ecore_wl_input_del(Ecore_Wl_Input *input)
    if (input->cursor_name) eina_stringshare_del(input->cursor_name);
    input->cursor_name = NULL;
    eina_stringshare_replace(&input->cursor_theme_name, NULL);
-   if (input->display->cursor_theme)
-     wl_cursor_theme_destroy(input->display->cursor_theme);
-   input->display->cursor_theme = NULL;
+   if (input->cursor_theme)
+     wl_cursor_theme_destroy(input->cursor_theme);
+   input->cursor_theme = NULL;
 
    if (input->touch_focus)
      {
@@ -676,9 +676,9 @@ _ecore_wl_input_seat_handle_capabilities(void *data, struct wl_seat *seat, enum 
              input->cursor_surface =
                wl_compositor_create_surface(_ecore_wl_disp->wl.compositor);
           }
-        if (!input->display->cursor_theme)
+        if (!input->cursor_theme)
           {
-             input->display->cursor_theme =
+             input->cursor_theme =
                wl_cursor_theme_load(input->cursor_theme_name, input->cursor_size,
                                     input->display->wl.shm);
           }
@@ -687,9 +687,9 @@ _ecore_wl_input_seat_handle_capabilities(void *data, struct wl_seat *seat, enum 
      {
         if (input->cursor_surface) wl_surface_destroy(input->cursor_surface);
         input->cursor_surface = NULL;
-        if (input->display->cursor_theme)
-          wl_cursor_theme_destroy(input->display->cursor_theme);
-        input->display->cursor_theme = NULL;
+        if (input->cursor_theme)
+          wl_cursor_theme_destroy(input->cursor_theme);
+        input->cursor_theme = NULL;
 #ifdef WL_POINTER_RELEASE_SINCE_VERSION
         if (input->seat_version >= WL_POINTER_RELEASE_SINCE_VERSION)
           wl_pointer_release(input->pointer);
@@ -2235,7 +2235,7 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
 static void
 _ecore_wl_input_device_last_device_set(Ecore_Wl_Input_Device *dev)
 {
-   Ecore_Wl_Input *input = _ecore_wl_disp->input;
+   Ecore_Wl_Input *input = dev->input;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
    if (!input) return;
@@ -2259,7 +2259,7 @@ _ecore_wl_input_device_last_device_set(Ecore_Wl_Input_Device *dev)
 static void
 _ecore_wl_input_device_last_device_unset(Ecore_Wl_Input_Device *dev)
 {
-   Ecore_Wl_Input *input = _ecore_wl_disp->input;
+   Ecore_Wl_Input *input = dev->input;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
    if (!input) return;
@@ -2415,11 +2415,9 @@ _ecore_wl_input_device_cb_device_info(void *data, struct tizen_input_device *tiz
 static void
 _ecore_wl_input_device_cb_event_device(void *data, struct tizen_input_device *tizen_input_device EINA_UNUSED, unsigned int serial EINA_UNUSED, const char *name EINA_UNUSED, uint32_t time EINA_UNUSED)
 {
-   Ecore_Wl_Input *input = _ecore_wl_disp->input;
    Ecore_Wl_Input_Device *dev;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
-   if (!input) return;
 
    if (!(dev = data)) return;
    if (!dev->identifier) return;
