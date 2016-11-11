@@ -492,8 +492,6 @@ _pool_tex_find(Evas_Engine_GL_Context *gc, int w, int h, int wpadding, int hpadd
        (h > gc->shared->info.tune.atlas.max_h) ||
        (!gc->shared->info.etc1_subimage && (intformat == etc1_fmt)))
      {
-        w -= wpadding;
-        h -= hpadding;
         pt = _pool_tex_new(gc, w, h, intformat, format);
         if (!pt) return NULL;
         gc->shared->tex.whole = eina_list_prepend(gc->shared->tex.whole, pt);
@@ -596,13 +594,8 @@ evas_gl_common_texture_new(Evas_Engine_GL_Context *gc, RGBA_Image *im, Eina_Bool
         evas_gl_common_texture_light_free(tex);
         return NULL;
      }
-   tex->x = u;
-   tex->y = v;
-   if (!tex->pt->whole)
-     {
-        tex->x += xoffset;
-        tex->y += yoffset;
-     }
+   tex->x = u + xoffset;
+   tex->y = v + yoffset;
 
    tex->pt->references++;
    evas_gl_common_texture_update(tex, im);

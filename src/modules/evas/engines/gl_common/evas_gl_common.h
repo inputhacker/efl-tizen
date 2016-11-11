@@ -158,7 +158,7 @@ struct _Evas_GL_Shared
 #define DEF_ATLAS_H                 512
 
 #define MAX_ATLAS_MEMCPY       1024
-#define DEF_ATLAS_MEMCPY       256
+#define DEF_ATLAS_MEMCPY       512
 
 #define ATLAS_FORMATS_COUNT    12
 
