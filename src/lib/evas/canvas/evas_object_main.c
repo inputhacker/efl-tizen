@@ -849,11 +849,19 @@ _evas_object_efl_gfx_base_position_set(Eo *eo_obj, Evas_Object_Protected_Data *o
                                                      obj->layer->evas->pointer.x,
                                                      obj->layer->evas->pointer.y, 1, 1);
                   if ((is ^ was) && obj->cur->visible)
+                    {
+                    INF("Duna | _gfx_base_position_set()");
+                    Evas_Device *dev = NULL;
+                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_MOUSE);
+                    if (!dev) dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+                    if (dev) evas_device_push(obj->layer->evas->evas, dev);
                     evas_event_feed_mouse_move(obj->layer->evas->evas,
                                                obj->layer->evas->pointer.x,
                                                obj->layer->evas->pointer.y,
                                                obj->layer->evas->last_timestamp,
                                                NULL);
+                    if (dev) evas_device_pop(obj->layer->evas->evas);
+                    }
                }
           }
      }
@@ -934,11 +942,19 @@ _evas_object_efl_gfx_base_size_set(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                                                      obj->layer->evas->pointer.x,
                                                      obj->layer->evas->pointer.y, 1, 1);
                   if ((is ^ was) && (obj->cur->visible))
+                    {
+                    INF("Duna | _gfx_base_size_set()");
+                    Evas_Device *dev = NULL;
+                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_MOUSE);
+                    if (!dev) dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+                    if (dev) evas_device_push(obj->layer->evas->evas, dev);
                     evas_event_feed_mouse_move(obj->layer->evas->evas,
                                                obj->layer->evas->pointer.x,
                                                obj->layer->evas->pointer.y,
                                                obj->layer->evas->last_timestamp,
                                                NULL);
+                    if (dev) evas_device_pop(obj->layer->evas->evas);
+                    }
                }
           }
      }
@@ -1282,11 +1298,19 @@ _show(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj)
                   if (evas_object_is_in_output_rect(eo_obj, obj,
                                                     obj->layer->evas->pointer.x,
                                                     obj->layer->evas->pointer.y, 1, 1))
+                    {
+                    INF("Duna | _show()");
+                    Evas_Device *dev = NULL;
+                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_MOUSE);
+                    if (!dev) dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+                    if (dev) evas_device_push(obj->layer->evas->evas, dev);
                     evas_event_feed_mouse_move(obj->layer->evas->evas,
                                                obj->layer->evas->pointer.x,
                                                obj->layer->evas->pointer.y,
                                                obj->layer->evas->last_timestamp,
                                                NULL);
+                    if (dev) evas_device_pop(obj->layer->evas->evas);
+                    }
                }
           }
      }
@@ -1356,11 +1380,19 @@ _hide(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj)
                        if (evas_object_is_in_output_rect(eo_obj, obj,
                                                          obj->layer->evas->pointer.x,
                                                          obj->layer->evas->pointer.y, 1, 1))
+                    {
+                    INF("Duna | _hide()");
+                    Evas_Device *dev = NULL;
+                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_MOUSE);
+                    if (!dev) dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+                    if (dev) evas_device_push(obj->layer->evas->evas, dev);
                           evas_event_feed_mouse_move(obj->layer->evas->evas,
                                                      obj->layer->evas->pointer.x,
                                                      obj->layer->evas->pointer.y,
                                                      obj->layer->evas->last_timestamp,
                                                      NULL);
+                    if (dev) evas_device_pop(obj->layer->evas->evas);
+                    }
                     }
 /* this is at odds to handling events when an obj is moved out of the mouse
  * ore resized out or clipped out. if mouse is grabbed - regardless of

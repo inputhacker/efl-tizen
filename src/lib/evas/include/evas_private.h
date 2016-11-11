@@ -873,6 +873,9 @@ struct _Evas_Public_Data
    Eina_List     *touch_points;
    Eina_List     *devices;
    Eina_Array    *cur_device;
+   Evas_Device   *cur_mouse;
+   Evas_Device   *cur_touch;
+   Evas_Device   *cur_kbd;
 
    Eina_List     *outputs;
 
@@ -1925,6 +1928,7 @@ void _evas_touch_point_remove(Evas *e, int id);
 
 void _evas_device_cleanup(Evas *e);
 Evas_Device *_evas_device_top_get(const Evas *e);
+Evas_Device *_evas_device_top_get_by_class(const Evas *e, Evas_Device_Class clas);
 void _evas_device_ref(Evas_Device *dev);
 void _evas_device_unref(Evas_Device *dev);
 

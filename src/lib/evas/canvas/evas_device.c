@@ -62,6 +62,21 @@ evas_device_push(Evas *eo_e, Evas_Device *dev)
      }
    dev->ref++;
    eina_array_push(e->cur_device, dev);
+
+   switch (dev->clas)
+     {
+      case EVAS_DEVICE_CLASS_MOUSE:
+         e->cur_mouse = dev;
+         break;
+      case EVAS_DEVICE_CLASS_TOUCH:
+         e->cur_touch = dev;
+         break;
+      case EVAS_DEVICE_CLASS_KEYBOARD:
+         e->cur_kbd = dev;
+         break;
+      default:
+         break;
+     }
 }
 
 EAPI void
@@ -292,6 +307,9 @@ _evas_device_cleanup(Evas *eo_e)
                break;
           }
      }
+   if (e->cur_mouse) e->cur_mouse = NULL;
+   if (e->cur_touch) e->cur_touch = NULL;
+   if (e->cur_kbd) e->cur_kbd = NULL;
 }
 
 Evas_Device *
@@ -304,6 +322,24 @@ _evas_device_top_get(const Evas *eo_e)
    num = eina_array_count(e->cur_device);
    if (num < 1) return NULL;
    return eina_array_data_get(e->cur_device, num - 1);
+}
+
+Evas_Device *
+_evas_device_top_get_by_class(const Evas *eo_e, Evas_Device_Class clas)
+{
+   Evas_Public_Data *e = eo_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+   switch (clas)
+     {
+      case EVAS_DEVICE_CLASS_MOUSE:
+         if (e->cur_mouse) return e->cur_mouse;
+      case EVAS_DEVICE_CLASS_TOUCH:
+         if (e->cur_touch) return e->cur_touch;
+      case EVAS_DEVICE_CLASS_KEYBOARD:
+         if (e->cur_kbd) return e->cur_kbd;
+      default:
+         return NULL;
+     }
+   return NULL;
 }
 
 void
@@ -319,6 +355,9 @@ _evas_device_unref(Evas_Device *dev)
    if (dev->ref > 0) return;
    Evas_Public_Data *e = eo_data_scope_get(dev->evas, EVAS_CANVAS_CLASS);
    e->devices = eina_list_remove(e->devices, dev);
+   if (e->cur_mouse == dev) e->cur_mouse = NULL;
+   if (e->cur_touch == dev) e->cur_touch = NULL;
+   if (e->cur_kbd == dev) e->cur_kbd = NULL;
    evas_event_callback_call(dev->evas, EVAS_CALLBACK_DEVICE_CHANGED, dev);
    if (dev->name) eina_stringshare_del(dev->name);
    if (dev->desc) eina_stringshare_del(dev->desc);

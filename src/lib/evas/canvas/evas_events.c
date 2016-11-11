@@ -943,8 +943,15 @@ _evas_canvas_event_default_flags_get(Eo *eo_e EINA_UNUSED, Evas_Public_Data *e)
 static inline void
 _canvas_event_thaw_eval_internal(Eo *eo_e, Evas_Public_Data *e)
 {
+   INF("Duna | _canvas_event_thaw_eval_internal()");
+   Evas_Device *dev;
+
+   dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_MOUSE);
+   if (!dev) dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_TOUCH);
+   if (dev) evas_device_push(eo_e, dev);
    evas_event_feed_mouse_move(eo_e, e->pointer.x, e->pointer.y,
          e->last_timestamp, NULL);
+   if (dev) evas_device_pop(eo_e);
 }
 
 EAPI void
@@ -1214,6 +1221,8 @@ _post_up_handle(Evas *eo_e, unsigned int timestamp, const void *data)
         ev_in.locks = &(e->locks);
         ev_in.timestamp = timestamp;
         ev_in.event_flags = e->default_event_flags;
+        ev_in.dev = _evas_device_top_get(eo_e);
+        if (ev_in.dev) _evas_device_ref(ev_in.dev);
 
         EINA_LIST_FOREACH(ins, l, eo_obj_itr)
           {
@@ -1259,7 +1268,17 @@ _post_up_handle(Evas *eo_e, unsigned int timestamp, const void *data)
         eina_list_free(ins);
      }
    if (e->pointer.inside)
+     {
+      INF("Duna |_post_up_handle");
+
+      Evas_Device *dev;
+
+      dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_MOUSE);
+      if (!dev) dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_TOUCH);
+      if (dev) evas_device_push(eo_e, dev);
       evas_event_feed_mouse_move(eo_e, e->pointer.x, e->pointer.y, timestamp, data);
+      if (dev) evas_device_pop(eo_e);
+     }
    if (ev.dev) _evas_device_unref(ev.dev);
    return post_called;
 }
@@ -1472,6 +1491,7 @@ _canvas_event_feed_mouse_move_internal(Eo *eo_e, void *_pd, int x, int y, unsign
    Evas_Object *nogrep_obj = NULL;
    int px, py;
 
+   INF("Duna | _canvas_event_feed_mouse_move_internal()");
    px = e->pointer.x;
    py = e->pointer.y;
 
@@ -1604,6 +1624,7 @@ _canvas_event_feed_mouse_move_internal(Eo *eo_e, void *_pd, int x, int y, unsign
                                                   &ev.canvas.y,
                                                   obj->mouse_grabbed);
                        e->pointer.object.in = eina_list_remove(e->pointer.object.in, eo_obj);
+                       INF(" Duna | _canvas_event_feed_mouse_move_internal() mouse_grabbed MOUSE_OUT ev->dev:%s", ev.dev? evas_device_description_get(ev.dev) : "NULL");
                        evas_object_event_callback_call(eo_obj, obj,
                                                        EVAS_CALLBACK_MOUSE_OUT,
                                                        &ev, event_id);
@@ -1725,6 +1746,7 @@ _canvas_event_feed_mouse_move_internal(Eo *eo_e, void *_pd, int x, int y, unsign
                        _evas_event_havemap_adjust(eo_obj, obj, &ev2.canvas.x,
                                                   &ev2.canvas.y,
                                                   obj->mouse_grabbed);
+                       INF(" Duna | _canvas_event_feed_mouse_move_internal() mouse_grabbed false MOUSE_OUT ev->dev:%s", ev2.dev? evas_device_description_get(ev2.dev) : "NULL");
                        evas_object_event_callback_call(eo_obj, obj,
                                                        EVAS_CALLBACK_MOUSE_OUT,
                                                        &ev2, event_id);
@@ -1758,6 +1780,7 @@ _canvas_event_feed_mouse_move_internal(Eo *eo_e, void *_pd, int x, int y, unsign
                        _evas_event_havemap_adjust(eo_obj, obj, &ev3.canvas.x,
                                                   &ev3.canvas.y,
                                                   obj->mouse_grabbed);
+                       ERR(" Duna | _canvas_event_feed_mouse_move_internal() mouse_grabbed false MOUSE_IN ev->dev:%s", ev3.dev? evas_device_description_get(ev3.dev) : "NULL");
                        evas_object_event_callback_call(eo_obj, obj,
                                                        EVAS_CALLBACK_MOUSE_IN,
                                                        &ev3, event_id2);
@@ -1920,6 +1943,7 @@ nogrep:
                   ev2.canvas.y = e->pointer.y;
                   _evas_event_havemap_adjust(eo_obj, obj, &ev2.canvas.x,
                                              &ev2.canvas.y, obj->mouse_grabbed);
+                  INF(" Duna | _canvas_event_feed_mouse_move_internal() nograb: MOUSE_OUT ev->dev:%s", ev2.dev? evas_device_description_get(ev2.dev) : "NULL");
                   evas_object_event_callback_call(eo_obj, obj,
                                                   EVAS_CALLBACK_MOUSE_OUT, &ev2,
                                                   event_id);
@@ -1950,6 +1974,7 @@ nogrep:
                   ev3.canvas.y = e->pointer.y;
                   _evas_event_havemap_adjust(eo_obj, obj, &ev3.canvas.x,
                                              &ev3.canvas.y, obj->mouse_grabbed);
+                  INF(" Duna | _canvas_event_feed_mouse_move_internal() no grab MOUSE_IN ev3->dev:%s", ev3.dev? evas_device_description_get(ev3.dev) : "NULL");
                   evas_object_event_callback_call(eo_obj, obj,
                                                   EVAS_CALLBACK_MOUSE_IN, &ev3,
                                                   event_id2);
@@ -1973,18 +1998,21 @@ nogrep:
 EOLIAN void
 _evas_canvas_event_input_mouse_move(Eo *eo_e, Evas_Public_Data *e, int x, int y, unsigned int timestamp, const void *data)
 {
+   INF("Duna | _evas_canvas_event_input_mouse_move()");
    _canvas_event_feed_mouse_move_internal(eo_e, e, x - e->framespace.x, y - e->framespace.y, timestamp, data, 0, 0, 0, 0, 0);
 }
 
 EOLIAN void
 _evas_canvas_event_input_mouse_move_with_multi_info(Eo *eo_e, Evas_Public_Data *e, int x, int y, unsigned int timestamp, const void *data, double rad, double radx, double rady, double pres, double ang)
 {
+   INF("Duna | _evas_canvas_event_input_mouse_move_with_multi_info()");
    _canvas_event_feed_mouse_move_internal(eo_e, e, x - e->framespace.x, y - e->framespace.y, timestamp, data, rad, radx, rady, pres, ang);
 }
 
 EOLIAN void
 _evas_canvas_event_feed_mouse_move(Eo *eo_e, Evas_Public_Data *e, int x, int y, unsigned int timestamp, const void *data)
 {
+   INF("Duna | _evas_canvas_event_feed_mouse_move()");
    _canvas_event_feed_mouse_move_internal(eo_e, e, x, y, timestamp, data, 0, 0, 0, 0, 0);
 }
 
@@ -2035,6 +2063,7 @@ _evas_canvas_event_feed_mouse_in(Eo *eo_e, Evas_Public_Data *e, unsigned int tim
              ev.canvas.y = e->pointer.y;
              _evas_event_havemap_adjust(eo_obj, obj, &ev.canvas.x, &ev.canvas.y,
                                         obj->mouse_grabbed);
+             INF("Duna | _evas_canvas_event_feed_mouse_in() ev->dev:%s", ev.dev? evas_device_description_get(ev.dev) : "NULL");
              evas_object_event_callback_call(eo_obj, obj,
                                              EVAS_CALLBACK_MOUSE_IN, &ev,
                                              event_id);
@@ -2048,7 +2077,15 @@ _evas_canvas_event_feed_mouse_in(Eo *eo_e, Evas_Public_Data *e, unsigned int tim
    /* and set up the new one */
    e->pointer.object.in = ins;
    _evas_post_event_callback_call(eo_e, e);
+
+   INF("Duna | _evas_canvas_event_feed_mouse_in()");
+   Evas_Device *dev;
+
+   dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_MOUSE);
+   if (!dev) dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_TOUCH);
+   if (dev) evas_device_push(eo_e, dev);
    evas_event_feed_mouse_move(eo_e, e->pointer.x, e->pointer.y, timestamp, data);
+   if (dev) evas_device_pop(eo_e);
    if (ev.dev) _evas_device_unref(ev.dev);
    _evas_unwalk(e);
 }
@@ -2099,6 +2136,7 @@ _evas_canvas_event_feed_mouse_out(Eo *eo_e, Evas_Public_Data *e, unsigned int ti
              ev.canvas.y = e->pointer.y;
              _evas_event_havemap_adjust(eo_obj, obj, &ev.canvas.x, &ev.canvas.y,
                                         obj->mouse_grabbed);
+             INF(" Duna | _evas_canvas_event_feed_mouse_out() MOUSE_OUT ev->dev:%s", ev.dev? evas_device_description_get(ev.dev) : "NULL");
              evas_object_event_callback_call(eo_obj, obj,
                                              EVAS_CALLBACK_MOUSE_OUT, &ev,
                                              event_id);
@@ -2865,11 +2903,21 @@ _feed_mouse_move_eval_internal(Eo *eo_obj, Evas_Object_Protected_Data *obj)
        ((!obj->precise_is_inside) || (evas_object_is_inside(eo_obj, obj,
                                                             evas->pointer.x,
                                                             evas->pointer.y))))
+     {
+     INF("Duna | _feed_mouse_move_eval_internal()");
+
+     Evas_Device *dev;
+
+     dev = _evas_device_top_get_by_class(evas->evas, EVAS_DEVICE_CLASS_MOUSE);
+     if (!dev) dev = _evas_device_top_get_by_class(evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+     if (dev) evas_device_push(evas->evas, dev);
      evas_event_feed_mouse_move(evas->evas,
                                 evas->pointer.x,
                                 evas->pointer.y,
                                 evas->last_timestamp,
                                 NULL);
+     if (dev) evas_device_pop(evas->evas);
+     }
 }
 
 EOLIAN void
