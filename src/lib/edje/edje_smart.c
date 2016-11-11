@@ -206,7 +206,7 @@ _edje_object_evas_object_smart_move(Eo *obj EINA_UNUSED, Edje *ed, Evas_Coord x,
         else
           {
              //TIZEN_ONLY(20160923): introduction of text marquee
-             if (ep->text_marquee_animator)
+             if (ep->text_marquee_animator && ep->typedata.text)
                _marquee_text_object_move(ed, ep, ed_diff);
              else
              //
