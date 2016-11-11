@@ -895,6 +895,8 @@ _edje_color_class_children_update(Edje *ed, const char *color_class)
      {
         Edje *cc_child_ed = _edje_fetch(child);
 
+        if (!cc_child_ed) continue;
+
         cc_child_ed->dirty = EINA_TRUE;
         cc_child_ed->recalc_call = EINA_TRUE;
 #ifdef EDJE_CALC_CACHE
