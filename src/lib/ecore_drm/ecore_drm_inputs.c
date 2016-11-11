@@ -7,6 +7,8 @@
 EAPI int ECORE_DRM_EVENT_SEAT_ADD = -1;
 static Eina_Hash *_fd_hash = NULL;
 
+static void _input_events_process(Ecore_Drm_Input *input);
+
 /* local functions */
 static int 
 _cb_open_restricted(const char *path, int flags, void *data)
@@ -302,6 +304,29 @@ _device_added(Ecore_Drm_Input *input, struct libinput_device *device)
         ERR("Could not get matching seat: %s", seat_name);
         TRACE_INPUT_END();
         return;
+     }
+
+   Eina_List *l;
+   EINA_LIST_FOREACH(seat->devices, l, edev)
+     {
+        if (libinput_device_has_capability(edev->device,
+                                           LIBINPUT_DEVICE_CAP_POINTER))
+          {
+             if (libinput_device_set_seat_logical_name(device, "2nd_Seat") < 0)
+               {
+                  ERR("Failed to set the seat new logical name: 2nd_Seat \n");
+                  return;
+               }
+
+            /* try to get another seat */
+             if (!(seat = _seat_get(input, "2nd_Seat")))
+               {
+                  ERR("Could not get matching 2nd seat");
+                  return;
+               }
+             _input_events_process(input);
+             break;
+          }
      }
 
    /* try to create a new evdev device */
