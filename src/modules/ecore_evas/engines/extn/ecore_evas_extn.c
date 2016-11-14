@@ -208,7 +208,7 @@ _tizen_remote_surface_init(void)
 static int
 _ecore_evas_extn_type_get()
 {
-   static int type = EXTN_TYPE_SHM;
+   static int type = EXTN_TYPE_WAYLAND_EGL;
    static int checked = 0;
    char *engine = NULL;
 
