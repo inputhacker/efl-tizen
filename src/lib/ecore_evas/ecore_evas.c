@@ -2228,6 +2228,16 @@ ecore_evas_aux_hints_supported_get(const Ecore_Evas *ee)
                          "ecore_evas_aux_hints_supported_get");
         return NULL;
      }
+
+   if (!strncmp(ee->driver, "wayland", 7))
+     {
+        Ecore_Evas_Interface_Wayland *iface;
+        iface = (Ecore_Evas_Interface_Wayland *)_ecore_evas_interface_get(ee, "wayland");
+
+        if ((iface) && (iface->supported_aux_hints_get))
+          iface->supported_aux_hints_get(ee);
+     }
+
    return ee->prop.aux_hint.supported_list;
 }
 
@@ -2274,7 +2284,7 @@ ecore_evas_aux_hint_add(Ecore_Evas *ee, const char *hint, const char *val)
              iface = (Ecore_Evas_Interface_Wayland *)_ecore_evas_interface_get(ee, "wayland");
              EINA_SAFETY_ON_NULL_RETURN_VAL(iface, -1);
 
-             if (iface->aux_hint_add)
+             if (iface->supported_aux_hints_get)
                iface->supported_aux_hints_get(ee);
 
              if (ee->prop.aux_hint.supported_list == NULL)

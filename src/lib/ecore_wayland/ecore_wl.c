@@ -1970,6 +1970,8 @@ _ecore_wl_cb_supported_aux_hints(void *data EINA_UNUSED, struct tizen_policy *ti
    str = calloc(num_hints, sizeof(char *));
    if (!str) return;
 
+   _ecore_wl_window_aux_hint_free(win);
+
    while ((const char *)p < ((const char *)hints->data + hints->size))
      {
         str[i] = (char *)eina_stringshare_add(p);
