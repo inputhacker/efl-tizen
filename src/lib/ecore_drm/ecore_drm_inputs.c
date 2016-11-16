@@ -6,6 +6,7 @@
 
 EAPI int ECORE_DRM_EVENT_SEAT_ADD = -1;
 static Eina_Hash *_fd_hash = NULL;
+int seat_name_suffix;
 
 static void _input_events_process(Ecore_Drm_Input *input);
 
@@ -284,6 +285,29 @@ _ecore_drm_device_remove(unsigned int window, Ecore_Drm_Evdev *edev)
      }
 }
 
+#define DEFAULT_SEAT_NAME_PREFIX "seat"
+
+char *
+_get_new_seat_name()
+{
+     char *buffer = NULL;
+     int len =0;
+
+     len = snprintf(0, 0, "%d", seat_name_suffix);
+     buffer = (char*)malloc(strlen(DEFAULT_SEAT_NAME_PREFIX)+ len+1);
+     if(!buffer)
+       {
+          return 0;
+       }
+     strcpy(buffer,DEFAULT_SEAT_NAME_PREFIX);
+     len = strlen(DEFAULT_SEAT_NAME_PREFIX);
+     sprintf(&buffer[len] ,"%d", seat_name_suffix);
+     seat_name_suffix++;
+     ERR("NEW SEAT NAME == %s \n", buffer);
+
+     return buffer;
+}
+
 static void 
 _device_added(Ecore_Drm_Input *input, struct libinput_device *device)
 {
@@ -295,6 +319,7 @@ _device_added(Ecore_Drm_Input *input, struct libinput_device *device)
 
    TRACE_INPUT_BEGIN(_device_added);
 
+   ERR("_device_added\n");
    libinput_seat = libinput_device_get_seat(device);
    seat_name = libinput_seat_get_logical_name(libinput_seat);
 
@@ -306,26 +331,62 @@ _device_added(Ecore_Drm_Input *input, struct libinput_device *device)
         return;
      }
 
-   Eina_List *l;
-   EINA_LIST_FOREACH(seat->devices, l, edev)
+   if (input->dev->window_valid)
      {
-        if (libinput_device_has_capability(edev->device,
-                                           LIBINPUT_DEVICE_CAP_POINTER))
+        ERR("input->dev->window_valid TRUE! seat_assignment started!\n");
+        Ecore_Drm_Seat *prev_seat = NULL;
+        Eina_Bool seat_is_available;
+        Eina_Bool new_seat_needed = EINA_TRUE;
+
+        Eina_List *l, *ll;
+        EINA_LIST_FOREACH(input->dev->seats, l, prev_seat)
           {
-             if (libinput_device_set_seat_logical_name(device, "2nd_Seat") < 0)
+             seat_is_available = EINA_TRUE;
+             EINA_LIST_FOREACH(prev_seat->devices, ll, edev)
                {
-                  ERR("Failed to set the seat new logical name: 2nd_Seat \n");
-                  return;
+                  if ((libinput_device_has_capability(device, LIBINPUT_DEVICE_CAP_POINTER) && (edev->seat_caps & EVDEV_SEAT_POINTER))
+                      ||(libinput_device_has_capability(device, LIBINPUT_DEVICE_CAP_TOUCH) && (edev->seat_caps & EVDEV_SEAT_TOUCH))
+                      ||(libinput_device_has_capability(device, LIBINPUT_DEVICE_CAP_KEYBOARD)  && (edev->seat_caps & EVDEV_SEAT_KEYBOARD)))
+                    {
+                       ERR("_device_added() the seat(%s) is not available!", prev_seat->name);
+                       seat_is_available = EINA_FALSE;
+                       break;
+                    }
                }
 
-            /* try to get another seat */
-             if (!(seat = _seat_get(input, "2nd_Seat")))
+             if (seat_is_available)
                {
-                  ERR("Could not get matching 2nd seat");
+                  ERR("seat_is_available TRUE! prev_seat->name:%s", prev_seat->name);
+                   new_seat_needed = EINA_FALSE;
+
+                  if (seat == prev_seat) break;
+                  seat = prev_seat;
+
+                  if (libinput_device_set_seat_logical_name(device, prev_seat->name) < 0)
+                    {
+                       ERR("Failed to set the seat new logical name: prev_seat->name:%s \n", prev_seat->name);
+                       return;
+                    }
+
+                  _input_events_process(input);
+                  break;
+               }
+          }
+        if (new_seat_needed)
+          {
+             const char * sname = _get_new_seat_name();
+             ERR("new_seat_needed TRUE! sname:%s", sname);
+             if (libinput_device_set_seat_logical_name(device, sname) < 0)
+               {
+                  ERR("Failed to set the seat new logical name: sname->name:%s \n", sname);
+                  return;
+               }
+             if (!(seat = _seat_get(input, sname)))
+               {
+                  ERR("Could not get matching seat->name:%s \n", sname);
                   return;
                }
              _input_events_process(input);
-             break;
           }
      }
 
@@ -774,6 +835,27 @@ ecore_drm_seat_evdev_list_get(Ecore_Drm_Seat *seat)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(seat, NULL);
    return seat->devices;
+}
+
+EAPI Eina_Bool
+ecore_drm_device_seat_reassign(Ecore_Drm_Evdev *evdev, const char *seatname)
+{
+   if (!evdev && !seatname)
+     {
+        ERR("The arguments passed are invalid.\n");
+        return EINA_FALSE;
+     }
+
+   ERR("ecore_drm_device_seat_reassign() evdev->path:%s, name:%s, prev_seat: %s, seatname:%s", evdev->path, evdev->name, evdev->seat->name, seatname);
+   if (libinput_device_set_seat_logical_name(evdev->device, seatname) < 0)
+     {
+        ERR("Failed to set the seat logical name \n");
+        return EINA_FALSE;
+     }
+
+   _input_events_process(evdev->seat->input);
+
+   return EINA_TRUE;
 }
 
 void
