@@ -44,6 +44,16 @@ class Elm.Pan (Efl.Canvas.Group)
             y: int; [[Y coordinate]]
          }
       }
+
+      //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+      pos_adjust {
+         params {
+            @out x: int;
+            @out y: int;
+         }
+      }
+      //
+
    }
    implements {
       Efl.Object.constructor;

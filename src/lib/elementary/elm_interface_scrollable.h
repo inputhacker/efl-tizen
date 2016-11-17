@@ -239,6 +239,23 @@ struct _Elm_Scrollable_Smart_Interface_Data
    Eina_Bool  loop_v : 1;
 
    Efl_Ui_Focus_Manager *manager;
+
+   //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+   struct
+   {
+      Ecore_Job *bar_size_adjust;
+      Ecore_Job *bar_pos_adjust;
+      Ecore_Job *page_adjust;
+   } adjust_job;
+   
+
+   ////FIXME FIXME FIXME: Would you please fix me ?
+   struct
+   {
+      Evas_Coord h, v;
+      int loop_cnt;
+   } requested_page;
+   //END
 };
 
 #define ELM_SCROLLABLE_CHECK(obj, ...)                                       \

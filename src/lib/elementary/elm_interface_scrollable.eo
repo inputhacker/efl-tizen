@@ -664,6 +664,22 @@ mixin Elm.Interface_Scrollable(Efl.Ui.Scrollable, Efl.Ui.Focus.Manager.Sub, Efl.
             enable: bool; [[True to enable looping.]]
          }
       }
+
+      //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+      wanted_region_set {
+         params {
+            @in x: int;
+            @in y: int;
+         }
+      }
+      custom_pan_pos_adjust {
+         params {
+            @in x: ptr(int);
+            @in y: ptr(int);
+         }
+      }
+      //
+
    }
    implements {
       class.constructor;

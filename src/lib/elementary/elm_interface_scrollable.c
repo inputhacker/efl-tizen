@@ -327,9 +327,10 @@ _elm_pan_class_constructor(Efl_Class *klass)
        return val;                                           \
     }
 
-static void _elm_scroll_scroll_bar_size_adjust(
-  Elm_Scrollable_Smart_Interface_Data *);
-static void _elm_scroll_wanted_region_set(Evas_Object *);
+static void _elm_scroll_scroll_bar_size_adjust(Elm_Scrollable_Smart_Interface_Data *);
+//TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+static void _elm_scroll_scroll_bar_pos_adjust(Elm_Scrollable_Smart_Interface_Data *);
+//
 static Eina_Bool _paging_is_enabled(Elm_Scrollable_Smart_Interface_Data *sid);
 static Evas_Coord _elm_scroll_page_x_get(
    Elm_Scrollable_Smart_Interface_Data *sid, int offset, Eina_Bool limit);
@@ -789,6 +790,8 @@ _elm_scroll_scroll_bar_visibility_adjust(
    _elm_scroll_scroll_bar_auto_visibility_adjust(sid);
 }
 
+//TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+#if 0
 static void
 _elm_scroll_scroll_bar_size_adjust(Elm_Scrollable_Smart_Interface_Data *sid)
 {
@@ -835,15 +838,19 @@ _elm_scroll_scroll_bar_size_adjust(Elm_Scrollable_Smart_Interface_Data *sid)
         edje_object_part_drag_size_set
           (sid->edje_obj, "elm.dragable.vbar", 1.0, size);
 
-        edje_object_part_drag_value_get
-          (sid->edje_obj, "elm.dragable.hbar", &vx, NULL);
-        edje_object_part_drag_value_get
-          (sid->edje_obj, "elm.dragable.vbar", NULL, &vy);
+        //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+        //edje_object_part_drag_value_get
+        //  (sid->edje_obj, "elm.dragable.hbar", &vx, NULL);
+        //edje_object_part_drag_value_get
+        //  (sid->edje_obj, "elm.dragable.vbar", NULL, &vy);
+        //
 
         elm_obj_pan_pos_max_get(sid->pan_obj, &mx, &my);
         elm_obj_pan_pos_min_get(sid->pan_obj, &minx, &miny);
-        x = vx * mx + minx;
-        y = vy * my + miny;
+        //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+        //x = vx * mx + minx;
+        //y = vy * my + miny;
+        //
 
         edje_object_part_drag_step_set
           (sid->edje_obj, "elm.dragable.hbar", (double)sid->step.x /
@@ -868,9 +875,15 @@ _elm_scroll_scroll_bar_size_adjust(Elm_Scrollable_Smart_Interface_Data *sid)
             (sid->edje_obj, "elm.dragable.vbar", 0.0,
             -((double)sid->page.y * ((double)vh / (double)h)) / 100.0);
 
-        elm_obj_pan_pos_get(sid->pan_obj, &px, &py);
-        if (vx != mx) x = px;
-        if (vy != my) y = py;
+        //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+        //elm_obj_pan_pos_get(sid->pan_obj, &px, &py);
+        //
+        //if (vx != mx) x = px;
+        //if (vy != my) y = py;
+        //
+        elm_interface_scrollable_custom_pan_pos_adjust(sid->obj, &x, &y);
+        //
+
         elm_obj_pan_pos_set(sid->pan_obj, x, y);
 
         if (mx > 0) vx = (double)(x - minx) / (double)mx;
@@ -914,6 +927,194 @@ _elm_scroll_scroll_bar_size_adjust(Elm_Scrollable_Smart_Interface_Data *sid)
         sid->size_adjust_recurse_abort = EINA_FALSE;
      }
 }
+//TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+#endif
+//Calculate size of bar and position of bar must be separated two different functions.
+//So we divided a function into the elm_scroll_scroll_bar_pos_adjust and elm_scroll_scroll_bar_size_adjust.
+//A elm_scroll_scroll_bar_pos_adjust is called when size of content is changed.
+//If size of pan is changed only, A elm_scroll_scroll_bar_pos_adjust isn`t called. Only a elm_scroll_scroll_bar_size_adjust is called.
+//
+//This function adjusts the size of the bar.
+static void
+_elm_scroll_scroll_bar_size_adjust_internal(void *data)
+{
+   Elm_Scrollable_Smart_Interface_Data *sid = (Elm_Scrollable_Smart_Interface_Data *)data;
+
+   if (!sid->pan_obj || !sid->edje_obj) return;
+
+   sid->adjust_job.bar_size_adjust = NULL;
+
+   if ((sid->content) || (sid->extern_pan))
+     {
+        Evas_Coord w, h, vw = 0, vh = 0;
+        double size;
+
+        edje_object_part_geometry_get
+          (sid->edje_obj, "elm.swallow.content", NULL, NULL, &vw, &vh);
+        w = sid->content_info.w;
+        if (w < 1) w = 1;
+        size = (double)vw / (double)w;
+        if (size > 1.0) size = 1.0;
+        edje_object_part_drag_size_set
+          (sid->edje_obj, "elm.dragable.hbar", size, 1.0);
+
+        h = sid->content_info.h;
+        if (h < 1) h = 1;
+        size = (double)vh / (double)h;
+        if (size > 1.0) size = 1.0;
+        edje_object_part_drag_size_set
+          (sid->edje_obj, "elm.dragable.vbar", 1.0, size);
+
+        edje_object_part_drag_step_set
+          (sid->edje_obj, "elm.dragable.hbar", (double)sid->step.x /
+          (double)w, 0.0);
+        edje_object_part_drag_step_set
+          (sid->edje_obj, "elm.dragable.vbar", 0.0, (double)sid->step.y /
+          (double)h);
+        if (sid->page.x > 0)
+          edje_object_part_drag_page_set
+            (sid->edje_obj, "elm.dragable.hbar", (double)sid->page.x /
+            (double)w, 0.0);
+        else
+          edje_object_part_drag_page_set
+            (sid->edje_obj, "elm.dragable.hbar",
+            -((double)sid->page.x * ((double)vw / (double)w)) / 100.0, 0.0);
+        if (sid->page.y > 0)
+          edje_object_part_drag_page_set
+            (sid->edje_obj, "elm.dragable.vbar", 0.0,
+            (double)sid->page.y / (double)h);
+        else
+          edje_object_part_drag_page_set
+            (sid->edje_obj, "elm.dragable.vbar", 0.0,
+            -((double)sid->page.y * ((double)vh / (double)h)) / 100.0);
+     }
+   else
+     {
+        edje_object_part_drag_size_set
+          (sid->edje_obj, "elm.dragable.vbar", 1.0, 1.0);
+        edje_object_part_drag_size_set
+          (sid->edje_obj, "elm.dragable.hbar", 1.0, 1.0);
+     }
+   _elm_scroll_scroll_bar_visibility_adjust(sid);
+}
+
+static void
+_elm_scroll_scroll_bar_size_adjust(Elm_Scrollable_Smart_Interface_Data *sid)
+{
+   if (!sid->pan_obj || !sid->edje_obj) return;
+
+   if (!sid->adjust_job.bar_size_adjust)
+     sid->adjust_job.bar_size_adjust
+       = ecore_job_add(_elm_scroll_scroll_bar_size_adjust_internal, sid);
+}
+
+//This function adjusts the position of the bar.
+static void
+_elm_scroll_scroll_bar_pos_adjust_internal(void *data)
+{
+   Elm_Scrollable_Smart_Interface_Data *sid = (Elm_Scrollable_Smart_Interface_Data *)data;
+
+   if (!sid->pan_obj || !sid->edje_obj) return;
+
+   sid->adjust_job.bar_pos_adjust = NULL;
+
+   if ((sid->content) || (sid->extern_pan))
+     {
+        Evas_Coord x, y, w, h, mx = 0, my = 0, vw = 0, vh = 0,
+                   minx = 0, miny = 0;
+        double vx, vy, size;
+
+        edje_object_part_geometry_get
+          (sid->edje_obj, "elm.swallow.content", NULL, NULL, &vw, &vh);
+        w = sid->content_info.w;
+        if (w < 1) w = 1;
+        size = (double)vw / (double)w;
+        if (size > 1.0)
+          {
+             size = 1.0;
+             edje_object_part_drag_value_set
+               (sid->edje_obj, "elm.dragable.hbar", 0.0, 0.0);
+          }
+
+        h = sid->content_info.h;
+        if (h < 1) h = 1;
+        size = (double)vh / (double)h;
+        if (size > 1.0)
+          {
+             size = 1.0;
+             edje_object_part_drag_value_set
+               (sid->edje_obj, "elm.dragable.vbar", 0.0, 0.0);
+          }
+
+         elm_obj_pan_pos_max_get(sid->pan_obj,&mx, &my);
+        elm_obj_pan_pos_min_get(sid->pan_obj, &minx, &miny);
+        elm_interface_scrollable_custom_pan_pos_adjust(sid->obj, &x, &y);
+        elm_obj_pan_pos_set(sid->pan_obj, x, y);
+
+        if (mx > 0) vx = (double)(x - minx) / (double)mx;
+        else vx = 0.0;
+
+        if (vx < 0.0) vx = 0.0;
+        else if (vx > 1.0)
+          vx = 1.0;
+
+        if (my > 0) vy = (double)(y - miny) / (double)my;
+        else vy = 0.0;
+
+        if (vy < 0.0) vy = 0.0;
+        else if (vy > 1.0)
+          vy = 1.0;
+
+        edje_object_part_drag_value_set
+           (sid->edje_obj, "elm.dragable.vbar", 0.0, vy);
+        edje_object_part_drag_value_set
+           (sid->edje_obj, "elm.dragable.hbar", vx, 0.0);
+     }
+   else
+     {
+        Evas_Coord px = 0, py = 0, minx = 0, miny = 0;
+
+        elm_obj_pan_pos_min_get(sid->pan_obj, &minx, &miny);
+        elm_obj_pan_pos_get(sid->pan_obj, &px, &py);
+        elm_obj_pan_pos_set(sid->pan_obj, minx, miny);
+        if ((px != minx) || (py != miny))
+          edje_object_signal_emit(sid->edje_obj, "elm,action,scroll", "elm");
+     }
+}
+
+static void
+_elm_scroll_scroll_bar_pos_adjust(Elm_Scrollable_Smart_Interface_Data *sid)
+{
+   if (!sid->pan_obj || !sid->edje_obj) return;
+
+   if (!sid->adjust_job.bar_pos_adjust)
+     sid->adjust_job.bar_pos_adjust
+       = ecore_job_add(_elm_scroll_scroll_bar_pos_adjust_internal, sid);
+}
+
+EOLIAN static void
+_elm_interface_scrollable_custom_pan_pos_adjust(Eo *obj EINA_UNUSED, Elm_Scrollable_Smart_Interface_Data *sid, Evas_Coord *x, Evas_Coord *y)
+{
+   Evas_Coord mx, my, minx, miny, px, py;
+   double vx, vy;
+
+   edje_object_part_drag_value_get
+      (sid->edje_obj, "elm.dragable.hbar", &vx, NULL);
+   edje_object_part_drag_value_get
+      (sid->edje_obj, "elm.dragable.vbar", NULL, &vy);
+
+   elm_obj_pan_pos_max_get(sid->pan_obj, &mx, &my);
+   elm_obj_pan_pos_min_get(sid->pan_obj, &minx, &miny);
+
+   *x = _round(vx * (double)mx + minx, 1);
+   *y = _round(vy * (double)my + miny, 1);
+
+   elm_obj_pan_pos_get(sid->pan_obj, &px, &py);
+
+   if (vx != mx) *x = px;
+   if (vy != my) *y = py;
+}
+//
 
 static void
 _elm_scroll_scroll_bar_read_and_update(
@@ -1303,7 +1504,10 @@ _elm_scroll_momentum_end(Elm_Scrollable_Smart_Interface_Data *sid)
         sid->down.pdx = 0;
         sid->down.pdy = 0;
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
 }
 
@@ -1355,7 +1559,11 @@ _elm_scroll_bounce_x_animator(void *data, const Efl_Event *event EINA_UNUSED)
              sid->bouncemex = EINA_FALSE;
              _elm_scroll_momentum_end(sid);
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
+
              ELM_ANIMATOR_CONNECT(sid->obj, sid->down.bounce_x_animator, _elm_scroll_bounce_x_animator, sid->obj);
           }
      }
@@ -1409,7 +1617,10 @@ _elm_scroll_bounce_y_animator(void *data, const Efl_Event *event EINA_UNUSED)
              sid->bouncemey = EINA_FALSE;
              _elm_scroll_momentum_end(sid);
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
              ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_y_animator, _elm_scroll_bounce_y_animator, sid->obj);
           }
      }
@@ -1429,13 +1640,19 @@ _elm_scroll_bounce_eval(Elm_Scrollable_Smart_Interface_Data *sid)
      {
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.onhold_animator, _elm_scroll_on_hold_animator, sid);
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    if (sid->down.hold_animator)
      {
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.hold_animator, _elm_scroll_hold_animator, sid);
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    ELM_SAFE_FREE(sid->down.hold_enterer, ecore_idle_enterer_del);
 
@@ -1775,14 +1992,20 @@ _elm_scroll_content_region_show_internal(Evas_Object *obj,
              ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_x_animator, _elm_scroll_bounce_x_animator, sid->obj);
              sid->bouncemex = EINA_FALSE;
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
           }
         if (sid->down.bounce_y_animator)
           {
              ELM_ANIMATOR_CONNECT(sid->obj, sid->down.bounce_y_animator, _elm_scroll_bounce_y_animator, sid->obj);
              sid->bouncemey = EINA_FALSE;
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
           }
 
         _elm_scroll_anim_stop(sid);
@@ -1792,7 +2015,10 @@ _elm_scroll_content_region_show_internal(Evas_Object *obj,
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.hold_animator, _elm_scroll_hold_animator, sid);
         _elm_scroll_drag_stop(sid);
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    ELM_SAFE_FREE(sid->down.hold_enterer, ecore_idle_enterer_del);
    if (sid->down.momentum_animator)
@@ -1805,7 +2031,10 @@ _elm_scroll_content_region_show_internal(Evas_Object *obj,
         sid->down.pdx = 0;
         sid->down.pdy = 0;
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
 
    if (_paging_is_enabled(sid))
@@ -1878,13 +2107,19 @@ _elm_interface_scrollable_content_region_show(Eo *obj, Elm_Scrollable_Smart_Inte
      }
 }
 
-static void
-_elm_scroll_wanted_region_set(Evas_Object *obj)
+//TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+//static void
+//_elm_scroll_wanted_region_set(Evas_Object *obj)
+EOLIAN static void
+_elm_interface_scrollable_wanted_region_set(Eo *obj, Elm_Scrollable_Smart_Interface_Data *sid, Evas_Coord x EINA_UNUSED, Evas_Coord y EINA_UNUSED)
+//
 {
    Evas_Coord ww, wh, wx;
    Evas_Coord mx = 0, my = 0;
 
-   ELM_SCROLL_IFACE_DATA_GET_OR_RETURN(obj, sid);
+//TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+//   ELM_SCROLL_IFACE_DATA_GET_OR_RETURN(obj, sid);
+//
 
    wx = sid->wx;
 
@@ -2008,14 +2243,20 @@ _scroll_wheel_post_event_cb(void *data, Evas *e EINA_UNUSED)
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_x_animator, _elm_scroll_bounce_x_animator, sid->obj);
         sid->bouncemex = EINA_FALSE;
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    if (sid->down.bounce_y_animator)
      {
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_y_animator, _elm_scroll_bounce_y_animator, sid->obj);
         sid->bouncemey = EINA_FALSE;
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    elm_interface_scrollable_content_viewport_geometry_get
          (sid->obj, NULL, NULL, &vw, &vh);
@@ -2293,7 +2534,10 @@ _elm_scroll_momentum_animator(void *data, const Efl_Event *event EINA_UNUSED)
              sid->down.pdx = 0;
              sid->down.pdy = 0;
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
           }
      }
 }
@@ -2507,7 +2751,10 @@ _elm_scroll_scroll_to_y(Elm_Scrollable_Smart_Interface_Data *sid,
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_y_animator, _elm_scroll_bounce_y_animator, sid->obj);
         _elm_scroll_momentum_end(sid);
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    sid->bouncemey = EINA_FALSE;
 }
@@ -2551,7 +2798,10 @@ _elm_scroll_scroll_to_x(Elm_Scrollable_Smart_Interface_Data *sid,
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_x_animator, _elm_scroll_bounce_x_animator, sid->obj);
         _elm_scroll_momentum_end(sid);
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    sid->bouncemex = EINA_FALSE;
 }
@@ -2594,7 +2844,10 @@ _elm_scroll_mouse_up_event_cb(void *data,
           {
              ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.onhold_animator, _elm_scroll_on_hold_animator, sid);
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
           }
         x = ev->canvas.x - sid->down.x;
         y = ev->canvas.y - sid->down.y;
@@ -2870,7 +3123,10 @@ _elm_scroll_mouse_up_event_cb(void *data,
           {
              ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.hold_animator, _elm_scroll_hold_animator, sid);
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
           }
         ELM_SAFE_FREE(sid->down.hold_enterer, ecore_idle_enterer_del);
         if (sid->down.scroll)
@@ -2894,7 +3150,10 @@ _elm_scroll_mouse_up_event_cb(void *data,
         _elm_scroll_wanted_coordinates_update(sid, x, y);
 
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj,sid->wx, sid->wy);
+          //
 
         if (!_paging_is_enabled(sid))
           _elm_scroll_bounce_eval(sid);
@@ -2943,21 +3202,30 @@ _elm_scroll_mouse_down_event_cb(void *data,
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_x_animator, _elm_scroll_bounce_x_animator, sid->obj);
         sid->bouncemex = EINA_FALSE;
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    if (sid->down.bounce_y_animator)
      {
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_y_animator, _elm_scroll_bounce_y_animator, sid->obj);
         sid->bouncemey = EINA_FALSE;
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    if (sid->down.hold_animator)
      {
         ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.hold_animator, _elm_scroll_hold_animator, sid);
         _elm_scroll_drag_stop(sid);
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    ELM_SAFE_FREE(sid->down.hold_enterer, ecore_idle_enterer_del);
    if (sid->down.momentum_animator)
@@ -2968,7 +3236,10 @@ _elm_scroll_mouse_down_event_cb(void *data,
         sid->down.ax = 0;
         sid->down.ay = 0;
         if (sid->content_info.resized)
-          _elm_scroll_wanted_region_set(sid->obj);
+          //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+          //_elm_scroll_wanted_region_set(sid->obj);
+          elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+          //
      }
    if (ev->button == 1)
      {
@@ -3152,6 +3423,28 @@ _elm_scroll_post_event_move(void *data,
    return EINA_FALSE;
 }
 
+
+//TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+static void
+_elm_scroll_down_coord_limit(Elm_Scrollable_Smart_Interface_Data *sid,
+                             Evas_Coord *x,
+                             Evas_Coord *y)
+{
+   Evas_Coord w = 0, h = 0;
+
+   evas_object_geometry_get(sid->pan_obj, NULL, NULL, &w, &h);
+
+   if (sid->loop_h &&
+       ((*x + sid->content_info.w) % sid->content_info.w - w < 0) &&
+       ((*x + sid->content_info.w) % sid->content_info.w + w > sid->content_info.w))
+     *x = 0;
+   if (sid->loop_v &&
+       ((*y + sid->content_info.h) % sid->content_info.h - h < 0) &&
+       ((*y + sid->content_info.h) % sid->content_info.h + h > sid->content_info.h))
+     *y = 0;
+}
+// END
+
 static void
 _elm_scroll_down_coord_eval(Elm_Scrollable_Smart_Interface_Data *sid,
                             Evas_Coord *x,
@@ -3192,7 +3485,12 @@ _elm_scroll_down_coord_eval(Elm_Scrollable_Smart_Interface_Data *sid,
    else if (!sid->loop_v && (sid->content_info.h - sid->h + miny) < *y)
      *y += (sid->content_info.h - sid->h + miny - *y) *
        _elm_config->thumbscroll_border_friction;
+
+   //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+   _elm_scroll_down_coord_limit(sid, x, y);
+   // END
 }
+
 
 static Eina_Bool
 _elm_scroll_hold_enterer(void *data)
@@ -3706,7 +4004,10 @@ _elm_scroll_mouse_move_event_cb(void *data,
                {
                   ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.onhold_animator, _elm_scroll_on_hold_animator, sid);
                   if (sid->content_info.resized)
-                    _elm_scroll_wanted_region_set(sid->obj);
+                    //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+                    //_elm_scroll_wanted_region_set(sid->obj);
+                    elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+                    //
                }
           }
      }
@@ -3780,7 +4081,10 @@ _on_edje_resize(void *data,
         sid->size_count = 0;
      }
    if (reconf_ok) _elm_scroll_reconfigure(sid);
-   _elm_scroll_wanted_region_set(sid->obj);
+   //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+   //_elm_scroll_wanted_region_set(sid->obj);
+   elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+   //
 }
 
 static void
@@ -4052,7 +4356,31 @@ _elm_scroll_pan_changed_cb(void *data, const Efl_Event *event EINA_UNUSED)
         evas_object_size_hint_min_set
           (sid->edje_obj, sid->content_info.w, sid->content_info.h);
         sid->content_info.resized = EINA_TRUE;
-        _elm_scroll_wanted_region_set(sid->obj);
+
+        //FIXME FIXME FIXME: Would you please fix me ?
+        //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+        int current_calc = 0;
+        Evas_Coord x = 0, y = 0;
+        current_calc = evas_smart_objects_calculate_count_get(evas_object_evas_get(event->object));
+        if (sid->requested_page.loop_cnt == current_calc)
+          {
+             ELM_SAFE_FREE(sid->scrollto.x.animator, ecore_animator_del);
+             ELM_SAFE_FREE(sid->scrollto.y.animator, ecore_animator_del);
+
+             x = sid->pagesize_h * sid->requested_page.h;
+             x = (sid->is_mirrored ? _elm_scroll_x_mirrored_get(sid->obj, x) : x);
+             y = sid->pagesize_v * sid->requested_page.v;
+
+             _elm_scroll_wanted_coordinates_update(sid, x, y);
+             elm_obj_pan_pos_set(sid->pan_obj, x, y);
+          }
+        else
+          {
+             //TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid.
+             elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+             //END
+          }
+        //END
      }
 }
 
@@ -4066,6 +4394,11 @@ _elm_scroll_content_del_cb(void *data,
 
    sid->content = NULL;
    _elm_scroll_scroll_bar_size_adjust(sid);
+   //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+   //A elm_scroll_scroll_bar_pos_adjust is called when size of content is changed.
+   //If size of pan is changed only, A elm_scroll_scroll_bar_pos_adjust isn`t called. Only a elm_scroll_scroll_bar_size_adjust is called.
+   _elm_scroll_scroll_bar_pos_adjust(sid);
+   //
    _elm_scroll_scroll_bar_reset(sid);
 }
 
@@ -4111,6 +4444,11 @@ _elm_interface_scrollable_scrollable_content_set(Eo *obj, Elm_Scrollable_Smart_I
    sid->content_info.h = h;
 
    _elm_scroll_scroll_bar_size_adjust(sid);
+   //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+   //A elm_scroll_scroll_bar_pos_adjust is called when size of content is changed.
+   //If size of pan is changed only, A elm_scroll_scroll_bar_pos_adjust isn`t called. Only a elm_scroll_scroll_bar_size_adjust is called.
+   _elm_scroll_scroll_bar_pos_adjust(sid);
+   //
    _elm_scroll_scroll_bar_reset(sid);
 }
 
@@ -4306,7 +4644,10 @@ _elm_interface_scrollable_momentum_animator_disabled_set(Eo *obj EINA_UNUSED, El
           {
              ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.momentum_animator, _elm_scroll_momentum_animator, sid);
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
           }
      }
 }
@@ -4451,7 +4792,10 @@ _elm_interface_scrollable_freeze_set(Eo *obj EINA_UNUSED, Elm_Scrollable_Smart_I
           {
              ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.onhold_animator, _elm_scroll_on_hold_animator, sid);
              if (sid->content_info.resized)
-               _elm_scroll_wanted_region_set(sid->obj);
+               //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+               //_elm_scroll_wanted_region_set(sid->obj);
+               elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
+               //
           }
      }
    else
@@ -4603,6 +4947,13 @@ _elm_interface_scrollable_page_show(Eo *obj, Elm_Scrollable_Smart_Interface_Data
    sid->current_page.x = _elm_scroll_page_x_get(sid, 0, EINA_FALSE);
    sid->current_page.y = _elm_scroll_page_y_get(sid, 0, EINA_FALSE);
 
+   //FIXME FIXME FIXME: Would you please fix me ?
+   //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+   sid->requested_page.h = pagenumber_h;
+   sid->requested_page.v = pagenumber_v;
+   sid->requested_page.loop_cnt = evas_smart_objects_calculate_count_get(evas_object_evas_get(obj));
+   //END
+
    elm_interface_scrollable_content_viewport_geometry_get
          (sid->obj, NULL, NULL, &w, &h);
    x = sid->pagesize_h * pagenumber_h;
@@ -4636,6 +4987,14 @@ _elm_interface_scrollable_page_bring_in(Eo *obj, Elm_Scrollable_Smart_Interface_
    x = sid->pagesize_h * pagenumber_h;
    x = (sid->is_mirrored ? _elm_scroll_x_mirrored_get(sid->obj, x) : x);
    y = sid->pagesize_v * pagenumber_v;
+
+   //FIXME FIXME FIXME: Would you please fix me ?
+   //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+   sid->requested_page.h = pagenumber_h;
+   sid->requested_page.v = pagenumber_v;
+   sid->requested_page.loop_cnt = evas_smart_objects_calculate_count_get(evas_object_evas_get(obj));
+   //END
+
    if (_elm_scroll_content_region_show_internal(obj, &x, &y, w, h))
      {
         _elm_scroll_scroll_to_x(sid, _elm_config->bring_in_scroll_friction, x);
@@ -4729,6 +5088,12 @@ _elm_interface_scrollable_efl_canvas_group_group_add(Eo *obj, Elm_Scrollable_Sma
    sid->vbar_visible = EINA_TRUE;
    sid->loop_h = EINA_FALSE;
    sid->loop_v = EINA_FALSE;
+   //FIXME FIXME FIXME: Would you please fix me ?
+   //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+   sid->requested_page.h = 0;
+   sid->requested_page.v = 0;
+   sid->requested_page.loop_cnt = evas_smart_objects_calculate_count_get(evas_object_evas_get(obj));
+   //END
 
    sid->bounce_horiz = EINA_TRUE;
    sid->bounce_vert = EINA_TRUE;
