@@ -360,7 +360,7 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
              evas_object_image_pixels_dirty_set(bdata->image, EINA_TRUE);
           }
         bdata->pixels = NULL;
-        if(_ecore_evas_extn_type_get == EXTN_TYPE_WAYLAND_EGL)
+        if(_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
           {
              extn->wl_tbm = NULL;
              extn->resource_id = NULL;
