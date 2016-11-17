@@ -7,6 +7,14 @@
 #include "ecore_wl_private.h"
 
 /* local structures */
+// TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+struct _dnd_source
+{
+   Ecore_Wl_Dnd_Source *source;
+   int read_fd;
+};
+//
+
 struct _dnd_task
 {
    void *data;
@@ -632,6 +640,9 @@ _ecore_wl_dnd_selection_data_receive(Ecore_Wl_Dnd_Source *source, const char *ty
    struct epoll_event *ep = NULL;
    struct _dnd_task *task = NULL;
    struct _dnd_read_ctx *read_ctx = NULL;
+   // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+   struct _dnd_source *read_source = NULL;
+   //
    int p[2];
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
@@ -657,7 +668,15 @@ _ecore_wl_dnd_selection_data_receive(Ecore_Wl_Dnd_Source *source, const char *ty
    epoll_fd  = epoll_create1(0);
    if (epoll_fd < 0) goto err;
 
-   task->data = source;
+   // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+   //task->data = source;
+   read_source = calloc(1, sizeof(struct _dnd_source));
+   if (!read_source) goto err;
+
+   read_source->source = source;
+   read_source->read_fd = p[0];
+   task->data = read_source;
+   //
    task->cb = _ecore_wl_dnd_selection_data_read;
    ep->events = EPOLLIN;
    ep->data.ptr = task;
@@ -670,7 +689,9 @@ _ecore_wl_dnd_selection_data_receive(Ecore_Wl_Dnd_Source *source, const char *ty
    if (!ecore_idler_add(_ecore_wl_dnd_selection_cb_idle, read_ctx)) goto err;
 
    source->refcount++;
-   source->fd = p[0];
+   // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+   //source->fd = p[0];
+   //
 
    return;
 
@@ -678,6 +699,9 @@ err:
    if (ep) free(ep);
    if (task) free(task);
    if (read_ctx) free(read_ctx);
+   // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+   if (read_source) free(read_source);
+   //
    close(p[0]);
    return;
 }
@@ -688,14 +712,22 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
    int len;
    char buffer[PATH_MAX];
    Ecore_Wl_Dnd_Source *source;
+   // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+   struct _dnd_source *read_source;
+   //
    Ecore_Wl_Event_Selection_Data_Ready *event;
    Eina_Bool ret;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
-   source = data;
+   // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+   //source = data;
+   //len = read(source->fd, buffer, sizeof buffer);
+   read_source = data;
+   source = read_source->source;
 
-   len = read(source->fd, buffer, sizeof buffer);
+   len = read(read_source->read_fd, buffer, sizeof buffer);
+   //
 
    if (!(event = calloc(1, sizeof(Ecore_Wl_Event_Selection_Data_Ready))))
      return ECORE_CALLBACK_CANCEL;
@@ -703,7 +735,10 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
    event->sel_type = source->sel_type;
    if (len <= 0)
      {
-        close(source->fd);
+        // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+        //close(source->fd);
+        close(read_source->read_fd);
+        //
         _ecore_wl_dnd_del(source);
         event->done = EINA_TRUE;
         event->data = NULL;
@@ -780,6 +815,9 @@ _ecore_wl_dnd_selection_cb_idle(void *data)
         if (task->cb(task->data, NULL) == ECORE_CALLBACK_CANCEL)
           {
              free(ctx->ep);
+             // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
+             free(task->data);
+             //
              free(task);
              free(ctx);
              return ECORE_CALLBACK_CANCEL;
