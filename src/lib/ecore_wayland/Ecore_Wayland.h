@@ -1620,6 +1620,7 @@ EAPI void ecore_wl_window_aux_hint_del(Ecore_Wl_Window *win, int id);
 
 EAPI void ecore_wl_window_floating_mode_set(Ecore_Wl_Window *win, Eina_Bool floating);
 EAPI void ecore_wl_window_geometry_get(Ecore_Wl_Window *win, int *x, int *y, int *w, int *h);
+EAPI Ecore_Wl_Input * ecore_wl_window_input_get(Ecore_Wl_Window *win);
 
 #ifdef __cplusplus
 }
