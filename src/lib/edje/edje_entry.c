@@ -1972,9 +1972,15 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
      }
 #if defined(__APPLE__) && defined(__MACH__)
-   else if ((super) && (!shift) && (!strcmp(ev->keyname, "v")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((super) && (!shift) && (!strcmp(ev->keyname, "v")))
+   else if ((super) && (!shift) && (!strcasecmp(ev->keyname, "v")))
+   //
 #else
-   else if ((control) && (!shift) && (!strcmp(ev->keyname, "v")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((control) && (!shift) && (!strcmp(ev->keyname, "v")))
+   else if ((control) && (!shift) && (!strcasecmp(ev->keyname, "v")))
+   //
 #endif
      {
         _compose_seq_reset(en);
@@ -1983,9 +1989,15 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
      }
 #if defined(__APPLE__) && defined(__MACH__)
-   else if ((super) && (!strcmp(ev->keyname, "a")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((super) && (!strcmp(ev->keyname, "a")))
+   else if ((super) && (!strcasecmp(ev->keyname, "a")))
+   //
 #else
-   else if ((control) && (!strcmp(ev->keyname, "a")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((control) && (!strcmp(ev->keyname, "a")))
+   else if ((control) && (!strcasecmp(ev->keyname, "a")))
+   //
 #endif
      {
         _compose_seq_reset(en);
@@ -2001,9 +2013,15 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
           }
      }
 #if defined(__APPLE__) && defined(__MACH__)
-   else if ((super) && (((!shift) && !strcmp(ev->keyname, "c")) || !strcmp(ev->key, "Insert")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((super) && (((!shift) && !strcmp(ev->keyname, "c")) || !strcmp(ev->key, "Insert")))
+   else if ((super) && (((!shift) && !strcasecmp(ev->keyname, "c")) || !strcmp(ev->key, "Insert")))
+   //
 #else
-   else if ((control) && (((!shift) && !strcmp(ev->keyname, "c")) || !strcmp(ev->key, "Insert")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((control) && (((!shift) && !strcmp(ev->keyname, "c")) || !strcmp(ev->key, "Insert")))
+   else if ((control) && (((!shift) && !strcasecmp(ev->keyname, "c")) || !strcmp(ev->key, "Insert")))
+   //
 #endif
      {
         _compose_seq_reset(en);
@@ -2011,9 +2029,15 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
      }
 #if defined(__APPLE__) && defined(__MACH__)
-   else if ((super) && (!shift) && ((!strcmp(ev->keyname, "x") || (!strcmp(ev->keyname, "m")))))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((super) && (!shift) && ((!strcmp(ev->keyname, "x") || (!strcmp(ev->keyname, "m")))))
+   else if ((super) && (!shift) && ((!strcasecmp(ev->keyname, "x") || (!strcasecmp(ev->keyname, "m")))))
+   //
 #else
-   else if ((control) && (!shift) && ((!strcmp(ev->keyname, "x") || (!strcmp(ev->keyname, "m")))))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((control) && (!shift) && ((!strcmp(ev->keyname, "x") || (!strcmp(ev->keyname, "m")))))
+   else if ((control) && (!shift) && ((!strcasecmp(ev->keyname, "x") || (!strcasecmp(ev->keyname, "m")))))
+   //
 #endif
      {
         _compose_seq_reset(en);
@@ -2021,9 +2045,15 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
      }
 #if defined(__APPLE__) && defined(__MACH__)
-   else if ((super) && (!strcmp(ev->keyname, "z")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((super) && (!strcmp(ev->keyname, "z")))
+   else if ((super) && (!strcasecmp(ev->keyname, "z")))
+   //
 #else
-   else if ((control) && (!strcmp(ev->keyname, "z")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((control) && (!strcmp(ev->keyname, "z")))
+   else if ((control) && (!strcasecmp(ev->keyname, "z")))
+   //
 #endif
      {
         _compose_seq_reset(en);
@@ -2040,9 +2070,15 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
      }
 #if defined(__APPLE__) && defined(__MACH__)
-   else if ((super) && (!shift) && (!strcmp(ev->keyname, "y")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((super) && (!shift) && (!strcmp(ev->keyname, "y")))
+   else if ((super) && (!shift) && (!strcasecmp(ev->keyname, "y")))
+   //
 #else
-   else if ((control) && (!shift) && (!strcmp(ev->keyname, "y")))
+   //TIZE_ONLY(20161118): fix "command do nothing when capslock on"
+   //else if ((control) && (!shift) && (!strcmp(ev->keyname, "y")))
+   else if ((control) && (!shift) && (!strcasecmp(ev->keyname, "y")))
+   //
 #endif
      {
         _compose_seq_reset(en);
