@@ -2213,3 +2213,22 @@ ecore_wl_window_geometry_get(Ecore_Wl_Window *win, int *x, int *y, int *w, int *
    if (w) *w = win->configured.w;
    if (h) *h = win->configured.h;
 }
+
+EAPI Ecore_Wl_Input *
+ecore_wl_window_input_get(Ecore_Wl_Window *win)
+{
+   Ecore_Wl_Input *input;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(win, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(win->display, NULL);
+
+   if (win->pointer_device) return win->pointer_device;
+
+   EINA_INLIST_FOREACH(_ecore_wl_disp->inputs, input)
+     {
+        if (input->pointer_focus) return input;
+     }
+
+   return NULL;
+}
