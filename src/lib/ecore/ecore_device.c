@@ -235,14 +235,25 @@ ecore_device_find(const char *identifier, Ecore_Device_Class clas)
 
    EINA_LIST_FOREACH(_ecore_devices, l, dev)
      {
-        if ((dev->clas == clas) && (eina_streq(dev->identifier, identifier)))
-          return dev;
-        if (dev->clas == ECORE_DEVICE_CLASS_SEAT)
+        if (clas == ECORE_DEVICE_CLASS_SEAT)
           {
-             EINA_LIST_FOREACH(dev->children, ll, child)
+             if (dev->clas != ECORE_DEVICE_CLASS_SEAT) continue;
+             if (eina_streq(dev->identifier, identifier))
+               return dev;
+             else
+               continue;
+          }
+        else
+          {
+             if ((dev->clas == clas) && (eina_streq(dev->identifier, identifier)))
+               return dev;
+             if (dev->clas == ECORE_DEVICE_CLASS_SEAT)
                {
-                  if ((child->clas == clas) && (eina_streq(child->identifier, identifier)))
-                    return child;
+                  EINA_LIST_FOREACH(dev->children, ll, child)
+                    {
+                       if ((child->clas == clas) && (eina_streq(child->identifier, identifier)))
+                         return child;
+                    }
                }
           }
      }

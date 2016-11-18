@@ -268,14 +268,25 @@ evas_device_find(Evas *eo_e, const char *desc, Evas_Device_Class clas)
 
    EINA_LIST_FOREACH(e->devices, l, dev)
      {
-        if ((dev->clas == clas) && (eina_streq(dev->desc, desc)))
-          return dev;
-        if (dev->clas == EVAS_DEVICE_CLASS_SEAT)
+        if (clas == EVAS_DEVICE_CLASS_SEAT)
           {
-             EINA_LIST_FOREACH(dev->children, ll, child)
+             if (dev->clas != EVAS_DEVICE_CLASS_SEAT) continue;
+             if (eina_streq(dev->desc, desc))
+               return dev;
+             else
+               continue;
+          }
+        else
+          {
+             if ((dev->clas == clas) && (eina_streq(dev->desc, desc)))
+               return dev;
+             if (dev->clas == EVAS_DEVICE_CLASS_SEAT)
                {
-                  if ((child->clas == clas) && (eina_streq(child->desc, desc)))
-                    return child;
+                  EINA_LIST_FOREACH(dev->children, ll, child)
+                    {
+                       if ((child->clas == clas) && (eina_streq(child->desc, desc)))
+                         return child;
+                    }
                }
           }
      }
