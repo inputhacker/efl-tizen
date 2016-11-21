@@ -1561,7 +1561,21 @@ _ecore_evas_socket_resize(Ecore_Evas *ee, int w, int h)
    extn = bdata->data;
    if(_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
      {
-        INF("[EXTN_GL]Socket Resize is Called ");
+        if ( extn && extn->ipc.clients)
+          {
+             Ipc_Data_Resize ipc;
+             Eina_List *l;
+             Ecore_Ipc_Client *client;
+
+             EINA_LIST_FOREACH(extn->ipc.clients, l, client)
+               {
+                  ipc.w = ee->w;
+                  ipc.h = ee->h;
+                  INF("[EXTN_GL]Socket Resize is Called (%dx%d)",ee->w,ee->h);
+                  ecore_ipc_client_send(client, MAJOR, OP_RESIZE,
+                                           0, 0, 0, &ipc, sizeof(ipc));
+               }
+          }
      }
    else if (extn)
      {
@@ -1786,9 +1800,13 @@ _ipc_client_add(void *data, int type EINA_UNUSED, void *event)
    if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
      {
         INF("[EXTN_GL] send resouce id to client ( %dx%d,  resource_id:%u)",ee->w,ee->h,extn->resource_id);
+        ipc.w = ee->w;
+        ipc.h = ee->h;
         ecore_ipc_client_send(e->client, MAJOR, OP_GL_REF,
                                 extn->resource_id, NULL, 0,
                                 NULL,0);
+        ecore_ipc_client_send(e->client, MAJOR, OP_RESIZE,
+                              0, 0, 0, &ipc, sizeof(ipc));
      }
    else
      {
