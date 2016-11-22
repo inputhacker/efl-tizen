@@ -1,6 +1,10 @@
 #ifndef ECTOR_PRIVATE_H_
 #define ECTOR_PRIVATE_H_
 
+#include "Ector.h"
+
+#include "ector_gl_internal.h"
+
 /*
  * variable and macros used for the eina_log module
  */
@@ -64,6 +68,15 @@ typedef unsigned short DATA16;
 
 #define ARGB_JOIN(a,r,g,b) \
   (((a) << 24) + ((r) << 16) + ((g) << 8) + (b))
+
+#define ECTOR_ARGB_JOIN(a,r,g,b) \
+        (((a) << 24) + ((r) << 16) + ((g) << 8) + (b))
+
+#define ECTOR_MUL4_SYM(x, y) \
+ ( ((((((x) >> 16) & 0xff00) * (((y) >> 16) & 0xff00)) + 0xff0000) & 0xff000000) + \
+   ((((((x) >> 8) & 0xff00) * (((y) >> 16) & 0xff)) + 0xff00) & 0xff0000) + \
+   ((((((x) & 0xff00) * ((y) & 0xff00)) + 0xff0000) >> 16) & 0xff00) + \
+   (((((x) & 0xff) * ((y) & 0xff)) + 0xff) >> 8) )
 
 static inline void
 _ector_renderer_replace(Ector_Renderer **d, const Ector_Renderer *s)
