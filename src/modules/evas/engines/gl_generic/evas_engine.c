@@ -2,6 +2,7 @@
 #include "evas_gl_core_private.h"
 
 #include "software/Ector_Software.h"
+#include "gl/Ector_Gl.h"
 
 #include "ector_cairo_software_surface.eo.h"
 
@@ -2404,6 +2405,7 @@ eng_texture_image_get(void *data EINA_UNUSED, void *texture)
 }
 
 static Eina_Bool use_cairo;
+static Eina_Bool use_gl = EINA_FALSE;
 
 static Ector_Surface *
 eng_ector_create(void *data EINA_UNUSED)
@@ -2412,7 +2414,12 @@ eng_ector_create(void *data EINA_UNUSED)
    const char *ector_backend;
 
    ector_backend = getenv("ECTOR_BACKEND");
-   if (ector_backend && !strcasecmp(ector_backend, "cairo"))
+   if (ector_backend && !strcasecmp(ector_backend, "gl"))
+     {
+        ector = eo_add(ECTOR_GL_SURFACE_CLASS, NULL);
+        use_gl = EINA_TRUE;
+     }
+   else if (ector_backend && !strcasecmp(ector_backend, "cairo"))
      {
         ector = eo_add(ECTOR_CAIRO_SOFTWARE_SURFACE_CLASS, NULL);
         use_cairo = EINA_TRUE;
@@ -2481,6 +2488,20 @@ eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface
    DATA32 *pixels;
    int load_err;
 
+   if (use_gl)
+     {
+        Evas_Engine_GL_Context *gl_context;
+        Render_Engine_GL_Generic *re = data;
+
+        re->window_use(re->software.ob);
+        gl_context = re->window_gl_context_get(re->software.ob);
+        evas_gl_common_context_target_surface_set(gl_context, surface);
+        eo_do(ector,
+              ector_gl_surface_set(glim, glim->w, glim->h, 0),
+              ector_surface_reference_point_set(x, y));
+        return;
+     }
+
    glim = eng_image_data_get(data, glim, EINA_TRUE, &pixels, &load_err,NULL);
    eng_image_stride_get(data, glim, &stride);
    eng_image_size_get(data, glim, &w, &h);
@@ -2504,6 +2525,13 @@ static void
 eng_ector_end(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface *ector, void *surface EINA_UNUSED, Eina_Bool do_async EINA_UNUSED)
 {
    void *pixels = NULL;
+
+   if (use_gl)
+     {
+        eo_do(ector, ector_gl_surface_set(NULL, 0, 0, 0));
+        return;
+     }
+
    if (use_cairo)
      {
         eo_do(ector,
@@ -2545,17 +2573,31 @@ eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_
         surface = NULL;
      }
 
-   surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
-   if (!surface)
+   if (use_gl)
      {
-        *error = EINA_TRUE;
+        Evas_Engine_GL_Context *gl_context;
+        Render_Engine_GL_Generic *re = data;
+        re->window_use(re->software.ob);
+        gl_context = re->window_gl_context_get(re->software.ob);
+        surface = evas_gl_common_image_surface_new(gl_context, width, height, EINA_TRUE, EINA_TRUE);
+        if (!surface)
+          {
+            *error = EINA_TRUE;
+          }
      }
    else
      {
-        //Use this hint for ZERO COPY texture upload.
-        eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
+        surface = eng_image_new_from_copied_data(data, width, height, NULL, EINA_TRUE, EVAS_COLORSPACE_ARGB8888);
+        if (!surface)
+          {
+             *error = EINA_TRUE;
+          }
+        else
+          {
+             //Use this hint for ZERO COPY texture upload.
+             eng_image_content_hint_set(data, surface, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);
+          }
      }
-
    return surface;
 }
 
@@ -2587,6 +2629,9 @@ module_open(Evas_Module *em)
         EINA_LOG_ERR("Can not create a module log domain.");
         return 0;
      }
+
+   ector_init();
+   ector_glsym_set(dlsym, RTLD_DEFAULT);
 
    /* store it for later use */
    func = pfunc;
