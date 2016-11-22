@@ -946,8 +946,7 @@ _canvas_event_thaw_eval_internal(Eo *eo_e, Evas_Public_Data *e)
    INF("Duna | _canvas_event_thaw_eval_internal()");
    Evas_Device *dev;
 
-   dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_MOUSE);
-   if (!dev) dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_TOUCH);
+   dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_SEAT);
    if (dev) evas_device_push(eo_e, dev);
    evas_event_feed_mouse_move(eo_e, e->pointer.x, e->pointer.y,
          e->last_timestamp, NULL);
@@ -1273,8 +1272,7 @@ _post_up_handle(Evas *eo_e, unsigned int timestamp, const void *data)
 
       Evas_Device *dev;
 
-      dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_MOUSE);
-      if (!dev) dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_TOUCH);
+      dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_SEAT);
       if (dev) evas_device_push(eo_e, dev);
       evas_event_feed_mouse_move(eo_e, e->pointer.x, e->pointer.y, timestamp, data);
       if (dev) evas_device_pop(eo_e);
@@ -2081,8 +2079,7 @@ _evas_canvas_event_feed_mouse_in(Eo *eo_e, Evas_Public_Data *e, unsigned int tim
    INF("Duna | _evas_canvas_event_feed_mouse_in()");
    Evas_Device *dev;
 
-   dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_MOUSE);
-   if (!dev) dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_TOUCH);
+   dev = _evas_device_top_get_by_class(eo_e, EVAS_DEVICE_CLASS_SEAT);
    if (dev) evas_device_push(eo_e, dev);
    evas_event_feed_mouse_move(eo_e, e->pointer.x, e->pointer.y, timestamp, data);
    if (dev) evas_device_pop(eo_e);
@@ -2908,8 +2905,7 @@ _feed_mouse_move_eval_internal(Eo *eo_obj, Evas_Object_Protected_Data *obj)
 
      Evas_Device *dev;
 
-     dev = _evas_device_top_get_by_class(evas->evas, EVAS_DEVICE_CLASS_MOUSE);
-     if (!dev) dev = _evas_device_top_get_by_class(evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+     dev = _evas_device_top_get_by_class(evas->evas, EVAS_DEVICE_CLASS_SEAT);
      if (dev) evas_device_push(evas->evas, dev);
      evas_event_feed_mouse_move(evas->evas,
                                 evas->pointer.x,

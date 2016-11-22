@@ -852,8 +852,7 @@ _evas_object_efl_gfx_base_position_set(Eo *eo_obj, Evas_Object_Protected_Data *o
                     {
                     INF("Duna | _gfx_base_position_set()");
                     Evas_Device *dev = NULL;
-                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_MOUSE);
-                    if (!dev) dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_SEAT);
                     if (dev) evas_device_push(obj->layer->evas->evas, dev);
                     evas_event_feed_mouse_move(obj->layer->evas->evas,
                                                obj->layer->evas->pointer.x,
@@ -945,8 +944,7 @@ _evas_object_efl_gfx_base_size_set(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                     {
                     INF("Duna | _gfx_base_size_set()");
                     Evas_Device *dev = NULL;
-                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_MOUSE);
-                    if (!dev) dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_SEAT);
                     if (dev) evas_device_push(obj->layer->evas->evas, dev);
                     evas_event_feed_mouse_move(obj->layer->evas->evas,
                                                obj->layer->evas->pointer.x,
@@ -1301,8 +1299,7 @@ _show(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj)
                     {
                     INF("Duna | _show()");
                     Evas_Device *dev = NULL;
-                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_MOUSE);
-                    if (!dev) dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_SEAT);
                     if (dev) evas_device_push(obj->layer->evas->evas, dev);
                     evas_event_feed_mouse_move(obj->layer->evas->evas,
                                                obj->layer->evas->pointer.x,
@@ -1383,8 +1380,7 @@ _hide(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj)
                     {
                     INF("Duna | _hide()");
                     Evas_Device *dev = NULL;
-                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_MOUSE);
-                    if (!dev) dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_TOUCH);
+                    dev = _evas_device_top_get_by_class(obj->layer->evas->evas, EVAS_DEVICE_CLASS_SEAT);
                     if (dev) evas_device_push(obj->layer->evas->evas, dev);
                           evas_event_feed_mouse_move(obj->layer->evas->evas,
                                                      obj->layer->evas->pointer.x,

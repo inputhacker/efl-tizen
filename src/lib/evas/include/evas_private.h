@@ -876,6 +876,7 @@ struct _Evas_Public_Data
    Evas_Device   *cur_mouse;
    Evas_Device   *cur_touch;
    Evas_Device   *cur_kbd;
+   Evas_Device   *cur_seat;
 
    Eina_List     *outputs;
 

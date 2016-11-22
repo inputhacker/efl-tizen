@@ -63,17 +63,34 @@ evas_device_push(Evas *eo_e, Evas_Device *dev)
    dev->ref++;
    eina_array_push(e->cur_device, dev);
 
+   if (dev->parent)
+     {
+        if (e->cur_seat) _evas_device_unref(e->cur_seat);
+        dev->parent->ref++;
+        e->cur_seat = dev->parent;
+     }
+
    switch (dev->clas)
      {
       case EVAS_DEVICE_CLASS_MOUSE:
+         if (e->cur_mouse) _evas_device_unref(e->cur_mouse);
+         dev->ref++;
          e->cur_mouse = dev;
          break;
       case EVAS_DEVICE_CLASS_TOUCH:
+         if (e->cur_touch) _evas_device_unref(e->cur_touch);
+         dev->ref++;
          e->cur_touch = dev;
          break;
       case EVAS_DEVICE_CLASS_KEYBOARD:
+         if (e->cur_kbd) _evas_device_unref(e->cur_kbd);
+         dev->ref++;
          e->cur_kbd = dev;
          break;
+      case EVAS_DEVICE_CLASS_SEAT:
+         if (e->cur_seat) _evas_device_unref(e->cur_seat);
+         dev->ref++;
+         e->cur_seat = dev;
       default:
          break;
      }
@@ -301,6 +318,27 @@ _evas_device_cleanup(Evas *eo_e)
    Eina_List *l1, *l2;
    
    Evas_Public_Data *e = eo_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+
+   if (e->cur_mouse)
+     {
+        _evas_device_unref(e->cur_mouse);
+        e->cur_mouse = NULL;
+     }
+   if (e->cur_touch)
+     {
+        _evas_device_unref(e->cur_touch);
+        e->cur_touch = NULL;
+     }
+   if (e->cur_kbd)
+     {
+        _evas_device_unref(e->cur_kbd);
+        e->cur_kbd = NULL;
+     }
+   if (e->cur_seat)
+     {
+        _evas_device_unref(e->cur_seat);
+        e->cur_seat = NULL;
+     }
    if (e->cur_device)
      {
         while ((dev = eina_array_pop(e->cur_device)))
@@ -318,9 +356,6 @@ _evas_device_cleanup(Evas *eo_e)
                break;
           }
      }
-   if (e->cur_mouse) e->cur_mouse = NULL;
-   if (e->cur_touch) e->cur_touch = NULL;
-   if (e->cur_kbd) e->cur_kbd = NULL;
 }
 
 Evas_Device *
@@ -347,6 +382,8 @@ _evas_device_top_get_by_class(const Evas *eo_e, Evas_Device_Class clas)
          if (e->cur_touch) return e->cur_touch;
       case EVAS_DEVICE_CLASS_KEYBOARD:
          if (e->cur_kbd) return e->cur_kbd;
+      case EVAS_DEVICE_CLASS_SEAT:
+         if (e->cur_seat) return e->cur_seat;
       default:
          return NULL;
      }
