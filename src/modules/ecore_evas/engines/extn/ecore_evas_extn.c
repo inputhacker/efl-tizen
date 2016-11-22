@@ -150,7 +150,6 @@ _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *tr
    ns.type = EVAS_NATIVE_SURFACE_TBM;
    ns.data.tbm.buffer = tbm_surface;
 
-   evas_object_resize(img, width, height);
    evas_object_image_size_set(img, width, height);
 
    //set native surface
