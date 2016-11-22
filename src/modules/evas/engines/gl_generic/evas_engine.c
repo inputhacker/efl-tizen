@@ -653,7 +653,7 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
         h = im1->w;
      }
 
-   im2 = evas_gl_common_image_surface_new(gl_context, w, h, alpha);
+   im2 = evas_gl_common_image_surface_new(gl_context, w, h, alpha, EINA_FALSE);
 
    evas_gl_common_context_target_surface_set(gl_context, im2);
 
@@ -1233,7 +1233,7 @@ eng_image_map_surface_new(void *data, int w, int h, int alpha)
 
    re->window_use(re->software.ob);
    gl_context = re->window_gl_context_get(re->software.ob);
-   return evas_gl_common_image_surface_new(gl_context, w, h, alpha);
+   return evas_gl_common_image_surface_new(gl_context, w, h, alpha, EINA_FALSE);
 }
 
 static void *

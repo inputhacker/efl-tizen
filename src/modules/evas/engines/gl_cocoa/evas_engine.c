@@ -949,7 +949,7 @@ eng_image_map_surface_new(void *data EINA_UNUSED, int w, int h, int alpha)
    Render_Engine *re;
    
    re = (Render_Engine *)data;
-   return evas_gl_common_image_surface_new(re->win->gl_context, w, h, alpha);
+   return evas_gl_common_image_surface_new(re->win->gl_context, w, h, alpha, EINA_FALSE);
 }
 
 static void

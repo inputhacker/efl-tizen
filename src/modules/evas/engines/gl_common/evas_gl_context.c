@@ -962,7 +962,7 @@ evas_gl_common_context_new(void)
    gc->shared->references++;
    _evas_gl_common_viewport_set(gc,1);
 
-   gc->def_surface = evas_gl_common_image_surface_new(gc, 1, 1, 1);
+   gc->def_surface = evas_gl_common_image_surface_new(gc, 1, 1, 1, EINA_FALSE);
 
    TRACE_EFL_END();
 
