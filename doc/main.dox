@@ -1,5 +1,5 @@
 /**
- * @defgroup EFL
+ * @defgroup EFL EFL
  * @ingroup CAPI_UI_FRAMEWORK
  *
  * @brief EFL is a collection of libraries that are independent or may build
@@ -170,28 +170,28 @@
 
 /**
  * @internal
- * @defgroup Eo
+ * @defgroup Eo Eo
  * @ingroup EFL
  *
  * @brief Generic object system.
  */
 
 /**
- * @defgroup Evas
+ * @defgroup Evas Evas
  * @ingroup EFL
  *
  * @brief Drawing canvas.
  */
 
 /**
- * @defgroup Eet
+ * @defgroup Eet Eet
  * @ingroup EFL
  *
  * @brief Binary data parser and serializer.
  */
 
 /**
- * @defgroup Eina
+ * @defgroup Eina Eina
  * @ingroup EFL
  *
  * @brief Data types and low-level/basic abstractions.
@@ -199,7 +199,7 @@
 
 /**
  * @internal
- * @defgroup Embryo
+ * @defgroup Embryo Embryo
  * @ingroup EFL
  *
  * @brief Embedded script language.
@@ -207,7 +207,7 @@
 
 /**
  * @internal
- * @defgroup Evil
+ * @defgroup Evil Evil
  * @ingroup EFL
  *
  * @brief Microsoft Windows portability layer.
@@ -215,28 +215,28 @@
 
 /**
  * @internal
- * @defgroup Escape
+ * @defgroup Escape Escape
  * @ingroup EFL
  *
  * @brief PlayStation3 portability layer.
  */
 
 /**
- * @defgroup Ecore
+ * @defgroup Ecore Ecore
  * @ingroup EFL
  *
  * @brief Operating System Abstraction and Integration.
  */
 
 /**
- * @defgroup Eio
+ * @defgroup Eio Eio
  * @ingroup EFL
  *
  * @brief Asynchronous input/output and file manipulation.
  */
 
 /**
- * @defgroup Eldbus
+ * @defgroup Eldbus Eldbus
  * @ingroup EFL
  *
  * @brief D-Bus integration with EFL (Ecore).
@@ -244,7 +244,7 @@
 
 /**
  * @internal
- * @defgroup Efreet
+ * @defgroup Efreet Efreet
  * @ingroup EFL
  *
  * @brief FreeDesktop.Org (XDG) menu and desktop integration.
@@ -252,14 +252,14 @@
 
 /**
  * @internal
- * @defgroup Eeze
+ * @defgroup Eeze Eeze
  * @ingroup EFL
  *
  * @brief Hardware device manipulation and notification, wraps UDev and similar.
  */
 
 /**
- * @defgroup Edje
+ * @defgroup Edje Edje
  * @ingroup EFL
  *
  * @brief Layout and theme library with super-powers.
@@ -267,7 +267,7 @@
 
 /**
  * @internal
- * @defgroup Emotion
+ * @defgroup Emotion Emotion
  * @ingroup EFL
  *
  * @brief Plays music and videos.
@@ -275,7 +275,7 @@
 
 /**
  * @internal
- * @defgroup Ethumb
+ * @defgroup Ethumb Ethumb
  * @ingroup EFL
  *
  * @brief Generates thumbnail images of files.
@@ -283,7 +283,7 @@
 
 /**
  * @internal
- * @defgroup EPhysics
+ * @defgroup EPhysics EPhysics
  * @ingroup EFL
  *
  * @brief Physics simulation integration and visual effects.
