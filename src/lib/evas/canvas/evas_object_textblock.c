@@ -5202,8 +5202,21 @@ _layout_par(Ctxt *c)
 
              /* After this par we are no longer at the beginning, as there
               * must be some text in the par. */
+             /* TIZEN_ONLY(20161122): fix to keep calculated size properly when calculation is skipped
              if (c->position == TEXTBLOCK_POSITION_START)
                 c->position = TEXTBLOCK_POSITION_ELSE;
+              */
+             if (!EINA_INLIST_GET(c->par)->next)
+               {
+                  c->position = (c->position == TEXTBLOCK_POSITION_START) ?
+                     TEXTBLOCK_POSITION_SINGLE : TEXTBLOCK_POSITION_END;
+               }
+             else
+               {
+                  if (c->position == TEXTBLOCK_POSITION_START)
+                     c->position = TEXTBLOCK_POSITION_ELSE;
+               }
+             /* END */
 
              return 0;
           }
@@ -6110,7 +6123,11 @@ _layout(const Evas_Object *eo_obj, int w, int h, int *w_ret, int *h_ret)
    c->x = c->y = 0;
    c->w = w;
    c->h = h;
+   /* TIZEN_ONLY(20161122): fix to keep calculated size properly when calculation is skipped
    c->wmax = c->hmax = 0;
+    */
+   c->wmax = c->hmax = -1;
+   /* END */
    c->ascent = c->descent = 0;
    c->maxascent = c->maxdescent = 0;
    c->marginl = c->marginr = 0;
@@ -6292,8 +6309,18 @@ _relayout(const Evas_Object *eo_obj)
    /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
    o->last_computed_ellipsis = EINA_FALSE;
    /* END */
+   /* TIZEN_ONLY(20161122): fix to keep calculated size properly when calculation is skipped
    _layout(eo_obj, obj->cur->geometry.w, obj->cur->geometry.h,
          &o->formatted.w, &o->formatted.h);
+    */
+   Evas_Coord fw, fh;
+
+   _layout(eo_obj, obj->cur->geometry.w, obj->cur->geometry.h,
+         &fw, &fh);
+
+   if (fw >= 0) o->formatted.w = fw;
+   if (fh >= 0) o->formatted.h = fh;
+   /* END */
    o->formatted.valid = 1;
    o->formatted.oneline_h = 0;
    o->last_w = obj->cur->geometry.w;
