@@ -1,0 +1,48 @@
+class Ector.Gl.Surface (Ector.Generic.Surface)
+{
+   eo_prefix: ector_gl_surface;
+   legacy_prefix: null;
+   methods {
+      @property surface {
+         set {
+         }
+         get {
+         }
+         values {
+            pixels: void *;
+            width: uint;
+            height: uint;
+            stride: uint;
+         }
+      }
+      offset {
+        params {
+          x:int;
+          y:int;
+        }
+      }
+      path_fill {
+        params {
+          vertex:float *;
+          vertex_count: uint;
+          stops: int *;
+          stop_count: uint;
+          color: uint;
+        }
+      }
+      path_stroke {
+        params {
+          vertex:float *;
+          vertex_count: uint;
+          color: uint;
+        }
+      }
+   }
+
+   implements {
+      Ector.Generic.Surface.renderer_factory_new;
+      Ector.Generic.Surface.reference_point.set;
+      Eo.Base.destructor;
+      Eo.Base.constructor;
+   }
+}

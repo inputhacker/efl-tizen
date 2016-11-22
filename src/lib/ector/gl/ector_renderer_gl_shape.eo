@@ -1,0 +1,14 @@
+class Ector.Renderer.Gl.Shape (Ector.Renderer.Gl.Base, Ector.Renderer.Generic.Shape)
+{
+   eo_prefix: ector_renderer_gl_shape;
+   legacy_prefix: null;
+   implements {
+      Ector.Renderer.Generic.Base.prepare;
+      Ector.Renderer.Generic.Base.draw;
+      Ector.Renderer.Generic.Base.crc.get;
+      Efl.Gfx.Shape.path.set;
+      Ector.Renderer.Gl.Base.fill;
+      Eo.Base.constructor;
+      Eo.Base.destructor;
+   }
+}
