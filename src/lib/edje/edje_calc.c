@@ -4258,17 +4258,7 @@ _edje_fade_ellipsis_apply(Edje *ed, Edje_Real_Part *ep,
 
    if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
      {
-        Evas_Coord fw, fh;
-
-        evas_object_textblock_size_native_get(ep->object, &tw, &th);
-        evas_object_textblock_size_formatted_get(ep->object, &fw, &fh);
-
-        // FIXME: Sometimes, formatted_get returns 0 as width in single-line textblock.
-        if (fh > th)
-          {
-             tw = fw;
-             th = fh;
-          }
+        evas_object_textblock_size_formatted_get(ep->object, &tw, &th);
      }
    else
      {
