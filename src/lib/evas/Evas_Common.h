@@ -257,6 +257,8 @@ typedef struct _Evas_Event_Key_Up        Evas_Event_Key_Up; /**< Event structure
 typedef struct _Evas_Event_Hold          Evas_Event_Hold; /**< Event structure for #EVAS_CALLBACK_HOLD event callbacks */
 typedef struct _Evas_Event_Render_Post   Evas_Event_Render_Post; /**< Event structure that may come with #EVAS_CALLBACK_RENDER_POST event callbacks @since 1.8 */
 typedef struct _Evas_Event_Axis_Update   Evas_Event_Axis_Update; /**< Event structure for #EVAS_CALLBACK_AXIS_UPDATE event callbacks @since 1.13 */
+typedef struct _Evas_Event_Focus_In      Evas_Event_Focus_In;/**<  Event structure for #EVAS_CALLBACK_FOCUS_IN event callbacks*/
+typedef struct _Evas_Event_Focus_Out     Evas_Event_Focus_Out;/**<  Event structure for #EVAS_CALLBACK_FOCUS_OUT event callbacks*/
 
 typedef enum _Evas_Alloc_Error
 {
@@ -752,6 +754,15 @@ struct _Evas_Event_Axis_Update
    int naxis;
    Evas_Axis *axis;
    Evas_Device *dev;
+};
+
+struct _Evas_Event_Focus_In /** Focus enter event for seat*/
+{
+   Evas_Device     *dev;
+};
+struct _Evas_Event_Focus_Out /** Focus leave event for seat*/
+{
+   Evas_Device     *dev;
 };
 
 typedef void      (*Evas_Smart_Cb)(void *data, Evas_Object *obj, void *event_info);  /**< Evas smart objects' "smart callback" function signature */
