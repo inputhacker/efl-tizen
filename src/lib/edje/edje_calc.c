@@ -1670,6 +1670,64 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                       ((ptxt) && (!text)))
                     evas_object_textblock_text_markup_set(ep->object, text);
                }
+             /* TIZEN_ONLY(20160901): Edje calc: Fix textblock size calculation logic
+             if ((chosen_desc->text.min_x) || (chosen_desc->text.min_y))
+               {
+                  int mw = 0, mh = 0;
+
+                  tw = th = 0;
+                  if (!chosen_desc->text.min_x)
+                    {
+                       eo_do(ep->object,
+                             efl_gfx_size_set(TO_INT(params->eval.w), TO_INT(params->eval.h)),
+                             evas_obj_textblock_size_formatted_get(&tw, &th));
+                    }
+                  else
+                    evas_object_textblock_size_native_get(ep->object, &tw, &th);
+                  evas_object_textblock_style_insets_get(ep->object, &ins_l,
+                                                         &ins_r, &ins_t, &ins_b);
+                  mw = ins_l + tw + ins_r;
+                  mh = ins_t + th + ins_b;
+                  if (minw && chosen_desc->text.min_x)
+                    {
+                       if (mw > *minw) *minw = mw;
+                    }
+                  if (minh && chosen_desc->text.min_y)
+                    {
+                       if (mh > *minh) *minh = mh;
+                    }
+               }
+          }
+
+        if ((chosen_desc->text.max_x) || (chosen_desc->text.max_y))
+          {
+             int mw = 0, mh = 0;
+
+             tw = th = 0;
+             if (!chosen_desc->text.max_x)
+               {
+                  eo_do(ep->object,
+                        efl_gfx_size_set(TO_INT(params->eval.w), TO_INT(params->eval.h)),
+                        evas_obj_textblock_size_formatted_get(&tw, &th));
+               }
+             else
+               evas_object_textblock_size_native_get(ep->object, &tw, &th);
+             evas_object_textblock_style_insets_get(ep->object, &ins_l, &ins_r,
+                                                    &ins_t, &ins_b);
+             mw = ins_l + tw + ins_r;
+             mh = ins_t + th + ins_b;
+             if (maxw && chosen_desc->text.max_x)
+               {
+                  if (mw > *maxw) *maxw = mw;
+                  if (minw && (*maxw < *minw)) *maxw = *minw;
+               }
+             if (maxh && chosen_desc->text.max_y)
+               {
+                  if (mh > *maxh) *maxh = mh;
+                  if (minh && (*maxh < *minh)) *maxh = *minh;
+               }
+          }
+           */
              if ((chosen_desc->text.min_x) || (chosen_desc->text.min_y))
                {
                   evas_object_textblock_style_insets_get(ep->object, &ins_l,
@@ -1703,20 +1761,19 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                             temp_h = *maxh;
                          }
 
+                       eo_do(ep->object,
+                             efl_gfx_size_set(temp_w, temp_h),
+                             evas_obj_textblock_size_formatted_get(&tw, &th));
+
+                       tw += ins_l + ins_r;
+                       th += ins_t + ins_b;
+
                        /* If base width for calculation is 0,
                         * don't get meaningless height for multiline */
-                       if (temp_w > 0)
+                       if (temp_w <= 0)
                          {
                             eo_do(ep->object,
-                                  efl_gfx_size_set(temp_w, temp_h),
-                                  evas_obj_textblock_size_formatted_get(&tw, &th));
-
-                            tw += ins_l + ins_r;
-                            th += ins_t + ins_b;
-                         }
-                       else
-                         {
-                            eo_do(ep->object, evas_obj_textblock_size_native_get(NULL, &th));
+                                  evas_obj_textblock_size_native_get(NULL, &th));
 
                             th += ins_t + ins_b;
                          }
@@ -1746,20 +1803,19 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                                  temp_h = *maxh;
                               }
 
+                            eo_do(ep->object,
+                                  efl_gfx_size_set(temp_w, temp_h),
+                                  evas_obj_textblock_size_formatted_get(&tw, &th));
+
+                            tw += ins_l + ins_r;
+                            th += ins_t + ins_b;
+
                             /* If base width for calculation is 0,
                              * don't get meaningless height for multiline */
-                            if (temp_w > 0)
+                            if (temp_w <= 0)
                               {
                                  eo_do(ep->object,
-                                       efl_gfx_size_set(temp_w, temp_h),
-                                       evas_obj_textblock_size_formatted_get(&tw, &th));
-
-                                 tw += ins_l + ins_r;
-                                 th += ins_t + ins_b;
-                              }
-                            else
-                              {
-                                 eo_do(ep->object, evas_obj_textblock_size_native_get(NULL, &th));
+                                       evas_obj_textblock_size_native_get(NULL, &th));
 
                                  th += ins_t + ins_b;
                               }
@@ -1787,153 +1843,139 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                          }
                     }
 
-                  if (chosen_desc->text.min_x)
-                    {
-                       if (tw > min_calc_w) min_calc_w = tw;
-                    }
-                  if (chosen_desc->text.min_y)
-                    {
-                       if (th > min_calc_h) min_calc_h = th;
-                    }
-
-                  if (minw) *minw = min_calc_w;
-                  if (minh) *minh = min_calc_h;
+                  if (tw > min_calc_w) min_calc_w = tw;
+                  if (th > min_calc_h) min_calc_h = th;
+                  if (chosen_desc->text.min_x && minw) *minw = min_calc_w;
+                  if (chosen_desc->text.min_y && minh) *minh = min_calc_h;
                }
-          }
 
-        if ((chosen_desc->text.max_x) || (chosen_desc->text.max_y))
-          {
-             evas_object_textblock_style_insets_get(ep->object, &ins_l, &ins_r,
-                                                    &ins_t, &ins_b);
-
-             tw = th = 0;
-             if (!chosen_desc->text.max_x)
+             if ((chosen_desc->text.max_x) || (chosen_desc->text.max_y))
                {
-                  /* text.min: X X
-                   * text.max: 0 1 */
-                  int temp_w, temp_h;
+                  evas_object_textblock_style_insets_get(ep->object, &ins_l, &ins_r,
+                                                         &ins_t, &ins_b);
 
-                  if (chosen_desc->text.min_y)
+                  tw = th = 0;
+                  if (!chosen_desc->text.max_x)
                     {
-                       /* text.min: X 1
-                        * text.max: 0 1
-                        * Already calculated in text for height. */
-                       tw = TO_INT(params->eval.w);
-                       if (min_calc_w > tw)
-                         tw = min_calc_w;
-
-                       th = min_calc_h;
-                    }
-                  else
-                    {
-                       /* text.min: X 0
+                       /* text.min: X X
                         * text.max: 0 1 */
-                       temp_w = TO_INT(params->eval.w);
-                       temp_h = TO_INT(params->eval.h);
+                       int temp_w, temp_h;
 
-                       if (min_calc_w > temp_w)
-                         temp_w = min_calc_w;
-                       if (maxw && (*maxw > -1) && (*maxw < temp_w))
-                         temp_w = *maxw;
-                       if (min_calc_h > temp_h)
-                         temp_h = min_calc_h;
-
-                       /* If base width for calculation is 0,
-                        * don't get meaningless height for multiline */
-                       if (temp_w > 0)
+                       if (chosen_desc->text.min_y)
                          {
+                            /* text.min: X 1
+                             * text.max: 0 1
+                             * Already calculated in text for height. */
+                            tw = TO_INT(params->eval.w);
+                            if (min_calc_w > tw)
+                              tw = min_calc_w;
+
+                            th = min_calc_h;
+                         }
+                       else
+                         {
+                            /* text.min: X 0
+                             * text.max: 0 1 */
+                            temp_w = TO_INT(params->eval.w);
+                            temp_h = TO_INT(params->eval.h);
+
+                            if (min_calc_w > temp_w)
+                              temp_w = min_calc_w;
+                            if (maxw && (*maxw > -1) && (*maxw < temp_w))
+                              temp_w = *maxw;
+                            if (min_calc_h > temp_h)
+                              temp_h = min_calc_h;
+
                             eo_do(ep->object,
                                   efl_gfx_size_set(temp_w, temp_h),
                                   evas_obj_textblock_size_formatted_get(&tw, &th));
 
                             tw += ins_l + ins_r;
                             th += ins_t + ins_b;
-                         }
-                       else
-                         {
-                            eo_do(ep->object, evas_obj_textblock_size_native_get(NULL, &th));
 
-                            th += ins_t + ins_b;
-                         }
-                    }
-               }
-             else
-               {
-                  /* text.max: 1 X */
-                  if (chosen_desc->text.min_x)
-                    {
-                       /* text.min: 1 X
-                        * text.max: 1 X
-                        * Singleline. */
-                       eo_do(ep->object, evas_obj_textblock_size_native_get(&tw, &th));
+                            /* If base width for calculation is 0,
+                             * don't get meaningless height for multiline */
+                            if (temp_w <= 0)
+                              {
+                                 eo_do(ep->object,
+                                       evas_obj_textblock_size_native_get(NULL, &th));
 
-                       tw += ins_l + ins_r;
-                       th += ins_t + ins_b;
+                                 th += ins_t + ins_b;
+                              }
+                         }
                     }
                   else
                     {
-                       /* text.min: 0 X
-                        * text.max: 1 X */
-                       if (chosen_desc->text.max_y)
+                       /* text.max: 1 X */
+                       if (chosen_desc->text.min_x)
+                         {
+                            /* text.min: 1 X
+                             * text.max: 1 X
+                             * Singleline. */
+                            eo_do(ep->object, evas_obj_textblock_size_native_get(&tw, &th));
+
+                            tw += ins_l + ins_r;
+                            th += ins_t + ins_b;
+                         }
+                       else
                          {
                             /* text.min: 0 X
-                             * text.max: 1 1 */
-                            int temp_w, temp_h;
-
-                            temp_w = TO_INT(params->eval.w);
-                            temp_h = TO_INT(params->eval.h);
-
-                            if (min_calc_w > temp_w)
-                              temp_w = min_calc_w;
-                            if (min_calc_h > temp_h)
-                              temp_h = min_calc_h;
-
-                            if (chosen_desc->text.min_y)
+                             * text.max: 1 X */
+                            if (chosen_desc->text.max_y)
                               {
-                                 /* text.min: 0 1
-                                  * text.max: 1 1
-                                  * There is no need to calculate it again. */
-                                 tw = temp_w;
-                                 th = min_calc_h;
-                              }
-                            else
-                              {
-                                 /* text.min: 0 0
+                                 /* text.min: 0 X
                                   * text.max: 1 1 */
+                                 int temp_w, temp_h;
 
-                                 /* If base width for calculation is 0,
-                                  * don't get meaningless height for multiline */
-                                 if (temp_w > 0)
+                                 temp_w = TO_INT(params->eval.w);
+                                 temp_h = TO_INT(params->eval.h);
+
+                                 if (min_calc_w > temp_w)
+                                   temp_w = min_calc_w;
+                                 if (min_calc_h > temp_h)
+                                   temp_h = min_calc_h;
+
+                                 if (chosen_desc->text.min_y)
                                    {
+                                      /* text.min: 0 1
+                                       * text.max: 1 1
+                                       * There is no need to calculate it again. */
+                                      tw = min_calc_w;
+                                      th = min_calc_h;
+                                   }
+                                 else
+                                   {
+                                      /* text.min: 0 0
+                                       * text.max: 1 1 */
+
                                       eo_do(ep->object,
                                             efl_gfx_size_set(temp_w, temp_h),
                                             evas_obj_textblock_size_formatted_get(&tw, &th));
 
                                       tw += ins_l + ins_r;
                                       th += ins_t + ins_b;
-                                   }
-                                 else
-                                   {
-                                      eo_do(ep->object, evas_obj_textblock_size_native_get(&tw, &th));
 
-                                      th += ins_t + ins_b;
+                                      /* If base width for calculation is 0,
+                                       * don't get meaningless height for multiline */
+                                      if (temp_w <= 0)
+                                        {
+                                           eo_do(ep->object,
+                                                 evas_obj_textblock_size_native_get(NULL, &th));
+
+                                           th += ins_t + ins_b;
+                                        }
                                    }
                               }
-                         }
-                       else
-                         {
-                            /* text.min: 0 X
-                             * text.max: 1 0 */
-                            int temp_w, temp_h;
-
-                            temp_w = TO_INT(params->eval.w);
-                            if (min_calc_w > temp_w)
-                              temp_w = min_calc_w;
-
-                            /* If base width for calculation is 0,
-                             * don't get meaningless height for multiline */
-                            if (temp_w > 0)
+                            else
                               {
+                                 /* text.min: 0 X
+                                  * text.max: 1 0 */
+                                 int temp_w, temp_h;
+
+                                 temp_w = TO_INT(params->eval.w);
+                                 if (min_calc_w > temp_w)
+                                   temp_w = min_calc_w;
+
                                  eo_do(ep->object,
                                        efl_gfx_size_get(NULL, &temp_h),
                                        efl_gfx_size_set(temp_w, temp_h),
@@ -1941,21 +1983,32 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
 
                                  tw += ins_l + ins_r;
                                  th += ins_t + ins_b;
+
+                                 /* If base width for calculation is 0,
+                                  * don't get meaningless height for multiline */
+                                 if (temp_w <= 0)
+                                   {
+                                      eo_do(ep->object,
+                                            evas_obj_textblock_size_native_get(NULL, &th));
+
+                                      th += ins_t + ins_b;
+                                   }
                               }
                          }
                     }
-               }
-             if (maxw && chosen_desc->text.max_x)
-               {
-                  if (tw > *maxw) *maxw = tw;
-                  if (minw && (*maxw < *minw)) *maxw = *minw;
-               }
-             if (maxh && chosen_desc->text.max_y)
-               {
-                  if (th > *maxh) *maxh = th;
-                  if (minh && (*maxh < *minh)) *maxh = *minh;
+                  if (maxw && chosen_desc->text.max_x)
+                    {
+                       if (tw > *maxw) *maxw = tw;
+                       if (minw && (*maxw < *minw)) *maxw = *minw;
+                    }
+                  if (maxh && chosen_desc->text.max_y)
+                    {
+                       if (th > *maxh) *maxh = th;
+                       if (minh && (*maxh < *minh)) *maxh = *minh;
+                    }
                }
           }
+        /* END */
 
         evas_object_textblock_valign_set(ep->object, TO_DOUBLE(chosen_desc->text.align.y));
      }
