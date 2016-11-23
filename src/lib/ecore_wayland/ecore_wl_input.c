@@ -2154,23 +2154,33 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
    Ecore_Wl_Window *win = NULL;
    void *data;
    Eina_Bool ret = EINA_FALSE;
+   Eina_Bool has_win = EINA_FALSE;
 
    windows = _ecore_wl_window_hash_get();
-   if (!windows) return;
    if (!name) return;
-   itr = eina_hash_iterator_data_new(windows);
-   while (eina_iterator_next(itr, &data))
-     {
-        win = data;
-        if (flag)
-          ret = _ecore_wl_input_add_ecore_device(name, identifier, clas);
-        else
-          ret = _ecore_wl_input_del_ecore_device(name, identifier, clas);
-        if (ret)
-          _ecore_wl_input_device_info_send(win->id, name, identifier, clas, flag);
-     }
 
-   eina_iterator_free(itr);
+   if (flag)
+     ret = _ecore_wl_input_add_ecore_device(name, identifier, clas);
+   else
+     ret = _ecore_wl_input_del_ecore_device(name, identifier, clas);
+
+   if (!ret) return;
+   if (windows)
+     {
+        itr = eina_hash_iterator_data_new(windows);
+        while (eina_iterator_next(itr, &data))
+          {
+             win = data;
+             has_win = EINA_TRUE;
+             _ecore_wl_input_device_info_send(win->id, name, identifier, clas, flag);
+          }
+
+        eina_iterator_free(itr);
+     }
+   if (!has_win)
+     {
+        _ecore_wl_input_device_info_send((uintptr_t)NULL, name, identifier, clas, flag);
+     }
 }
 
 static void
