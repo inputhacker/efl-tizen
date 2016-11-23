@@ -295,6 +295,7 @@ modules_ecore_evas_engines_drm_module_la_CPPFLAGS = -I$(top_builddir)/src/lib/ef
 -I$(top_srcdir)/src/modules/evas/engines/drm \
 -I$(top_srcdir)/src/modules/evas/engines/gl_drm \
 -I$(top_srcdir)/src/modules/evas/engines/software_tbm \
+-I$(top_srcdir)/src/modules/evas/engines/gl_tbm \
 @ecore_evas_engines_gl_drm_cflags@
 modules_ecore_evas_engines_drm_module_la_LIBADD = @USE_ECORE_EVAS_LIBS@ \
 @TBM_LIBS@ \

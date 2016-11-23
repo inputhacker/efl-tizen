@@ -777,7 +777,6 @@ ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,
    evas_output_method_set(ee->evas, rmethod);
    evas_output_size_set(ee->evas, w, h);
    evas_output_viewport_set(ee->evas, 0, 0, w, h);
-
    tbm_data->tbm_queue = tbm_data->alloc_func(tbm_data->data, w, h);
 
    if (!strcmp(driver_name, "gl_tbm"))

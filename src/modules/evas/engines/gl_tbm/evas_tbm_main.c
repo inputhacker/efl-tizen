@@ -1,9 +1,13 @@
 #include "evas_engine.h"
 #include <tbm_bufmgr.h>
+#include <dlfcn.h>
 
-# define SET_RESTORE_CONTEXT() do { if (glsym_evas_gl_context_restore_set) glsym_evas_gl_context_restore_set(EINA_TRUE); } while(0)
+# define SET_RESTORE_CONTEXT() do { if (glsym_evas_gl_common_context_restore_set) glsym_evas_gl_common_context_restore_set(EINA_TRUE); } while(0)
 
 /* local function prototypes */
+typedef void (*glsym_func_void) ();
+glsym_func_void glsym_evas_gl_common_context_restore_set = NULL;
+//
 
 /* local variables */
 static Outbuf *_evas_gl_wl_window = NULL;
@@ -11,8 +15,7 @@ static EGLContext context = EGL_NO_CONTEXT;
 static int win_count = 0;
 
 Outbuf *
-eng_window_new(Evas *evas, Evas_Engine_Info_GL_Tbm *einfo, int w, int h, Render_Engine_Swap_Mode swap_mode,
-                          int depth_bits, int stencil_bits, int msaa_bits)
+eng_window_new(Evas *evas, Evas_Engine_Info_GL_Tbm *einfo, int w, int h, Render_Engine_Swap_Mode swap_mode)
 {
    Outbuf *gw;
    int context_attrs[3];
@@ -38,9 +41,9 @@ eng_window_new(Evas *evas, Evas_Engine_Info_GL_Tbm *einfo, int w, int h, Render_
    gw->depth = einfo->info.depth;
    gw->alpha = einfo->info.destination_alpha;
    gw->rot = einfo->info.rotation;
-   gw->depth_bits = depth_bits;
-   gw->stencil_bits = stencil_bits;
-   gw->msaa_bits = msaa_bits;
+   gw->depth_bits = einfo->depth_bits;
+   gw->stencil_bits = einfo->stencil_bits;
+   gw->msaa_bits = einfo->msaa_bits;
 
    context_attrs[0] = EGL_CONTEXT_CLIENT_VERSION;
    context_attrs[1] = 2;
@@ -66,7 +69,7 @@ eng_window_new(Evas *evas, Evas_Engine_Info_GL_Tbm *einfo, int w, int h, Render_
    config_attrs[n++] = gw->depth_bits;
    config_attrs[n++] = EGL_STENCIL_SIZE;
    config_attrs[n++] = gw->stencil_bits;
-   if (msaa_bits > 0)
+   if (gw->msaa_bits > 0)
      {
         config_attrs[n++] = EGL_SAMPLE_BUFFERS;
         config_attrs[n++] = 1;
@@ -427,20 +430,6 @@ _convert_glcoords(int *result, Outbuf *ob, int x, int y, int w, int h)
      }
 }
 
-static void
-_damage_rect_set(Outbuf *ob, int x, int y, int w, int h)
-{
-   int rects[4];
-
-   if ((x == 0) && (y == 0) &&
-       (((w == ob->gl_context->w) && (h == ob->gl_context->h)) ||
-           ((h == ob->gl_context->w) && (w == ob->gl_context->h))))
-     return;
-
-   _convert_glcoords(rects, ob, x, y, w, h);
-   glsym_eglSetDamageRegionKHR(ob->egl_disp, ob->egl_surface[0], rects, 1);
-}
-
 void *
 eng_outbuf_update_region_new(Outbuf *ob, int x, int y, int w, int h, int *cx EINA_UNUSED, int *cy EINA_UNUSED, int *cw EINA_UNUSED, int *ch EINA_UNUSED)
 {
@@ -453,9 +442,6 @@ eng_outbuf_update_region_new(Outbuf *ob, int x, int y, int w, int h, int *cx EIN
         ob->gl_context->master_clip.y = y;
         ob->gl_context->master_clip.w = w;
         ob->gl_context->master_clip.h = h;
-
-        if (glsym_eglSetDamageRegionKHR)
-          _damage_rect_set(ob, x, y, w, h);
      }
 
    return ob->gl_context->def_surface;
@@ -513,6 +499,8 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
                   _convert_glcoords(&result[i], ob, r->x, r->y, r->w, r->h);
                   i += 4;
                }
+             if (glsym_eglSetDamageRegionKHR)
+                glsym_eglSetDamageRegionKHR(ob->egl_disp, ob->egl_surface[0], result, num);
              glsym_eglSwapBuffersWithDamage(ob->egl_disp, ob->egl_surface[0],
                                             result, num);
           }

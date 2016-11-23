@@ -1293,11 +1293,14 @@ modules_evas_engines_gl_tbm_module_la_SOURCES = $(GL_TBM_SOURCES)
 modules_evas_engines_gl_tbm_module_la_CPPFLAGS = -I$(top_builddir)/src/lib/efl \
 -I$(top_srcdir)/src/lib/evas/include \
 -I$(top_srcdir)/src/lib/evas/cserve2 \
+-I$(top_srcdir)/src/modules/evas/engines/software_generic \
 -I$(top_srcdir)/src/modules/evas/engines/gl_tbm \
 @EVAS_CFLAGS@ \
+@TBM_CFLAGS@\
 @evas_engine_gl_tbm_cflags@
 modules_evas_engines_gl_tbm_module_la_LIBADD = \
 @USE_EVAS_LIBS@ \
+@TBM_LIBS@\
 @evas_engine_gl_tbm_libs@
 modules_evas_engines_gl_tbm_module_la_DEPENDENCIES = @USE_EVAS_INTERNAL_LIBS@
 modules_evas_engines_gl_tbm_module_la_LDFLAGS = -module @EFL_LTMODULE_FLAGS@
