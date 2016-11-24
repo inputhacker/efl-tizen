@@ -977,6 +977,12 @@ _edje_textblock_style_cleanup(Edje_File *edf)
 /*                FIXME: Find a proper way to handle it. */
                   if (tag->text_class) eina_stringshare_del(tag->text_class);
                   if (tag->font) eina_stringshare_del(tag->font);
+                  /* TIZEN_ONLY(20161124): clean up newly added tag strings */
+                  if (tag->color_class) eina_stringshare_del(tag->color_class);
+                  if (tag->color) eina_stringshare_del(tag->color);
+                  if (tag->outline_color) eina_stringshare_del(tag->outline_color);
+                  if (tag->shadow_color) eina_stringshare_del(tag->shadow_color);
+                  /* END */
                }
              free(tag);
           }
