@@ -134,7 +134,6 @@ _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *tr
    int width, height;
 
    //added image object for native surface
-   evas_object_show(img);
    tizen_remote_surface_transfer_visibility(trs,
                               TIZEN_REMOTE_SURFACE_VISIBILITY_TYPE_VISIBLE);
 
@@ -1736,6 +1735,11 @@ _ecore_evas_extn_socket_render(Ecore_Evas *ee)
         updates = evas_render_updates(ee->evas);
         evas_render_updates_free(updates);
         _ecore_evas_idle_timeout_update(ee);
+        if (extn->profile.done)
+          {
+             _ecore_evas_extn_socket_window_profile_change_done_send(ee);
+             extn->profile.done = EINA_FALSE;
+          }
      }
    else
      {
