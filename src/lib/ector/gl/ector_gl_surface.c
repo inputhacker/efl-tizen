@@ -185,7 +185,7 @@ static void
 _ector_gl_surface_path_fill(Eo *obj EINA_UNUSED,
                               Ector_Gl_Surface_Data *pd,
                               float *vertex,
-                              unsigned int vertex_count,
+                              unsigned int vertex_count EINA_UNUSED,
                               int *stops,
                               unsigned int stop_count,
                               unsigned int color)
@@ -233,7 +233,7 @@ _ector_gl_surface_path_fill(Eo *obj EINA_UNUSED,
      }
 
    // 7.draw a bounding rectangle covering the shape
-   float rect_bound[10] = {0, 0 , pd->width, 0, pd->width, pd->height, 0, pd->height};
+   float rect_bound[10] = {0, 0 , pd->dest_fbo.w, 0, pd->dest_fbo.w, pd->dest_fbo.h, 0, pd->dest_fbo.h};
    GL.glVertexAttribPointer(SHAD_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, rect_bound);
    GL.glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
@@ -282,37 +282,109 @@ _ector_gl_surface_path_stroke(Eo *obj EINA_UNUSED,
         // Pass when high bit is set, replace stencil value with 0
         GL.glStencilFunc(GL_NOTEQUAL, 0, GL_STENCIL_HIGH_BIT);
 
-        // draw a rectangle
-        float rect_bound[10] = {0, 0 , pd->width, 0, pd->width, pd->height, 0, pd->height};
-        GL.glVertexAttribPointer(SHAD_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, rect_bound);
-        GL.glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+         // draw a rectangle
+         float rect_bound[10] = {0, 0 , pd->dest_fbo.w, 0, pd->dest_fbo.w, pd->dest_fbo.h, 0, pd->dest_fbo.h};
+         GL.glVertexAttribPointer(SHAD_VERTEX, 2, GL_FLOAT, GL_FALSE, 0, rect_bound);
+         GL.glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
         // reset
         GL.glStencilFunc(GL_ALWAYS, 0, 0xff);
         GL.glDisable(GL_STENCIL_TEST);
      }
 }
+
+Eina_Bool
+_update_scratch_fbo(Ector_Gl_Surface_Data *pd, int width, int height)
+{
+   GLint current_fbo;
+
+   GL.glGetIntegerv(GL_FRAMEBUFFER_BINDING, &current_fbo);
+   // update dest info
+   pd->dest_fbo.fbo = current_fbo;
+   pd->dest_fbo.w = width;
+   pd->dest_fbo.h = height;
+
+   if (!pd->scratch_fbo.msaa) return EINA_TRUE;
+
+   if (pd->scratch_fbo.w >= width && pd->scratch_fbo.h >= height)
+     {
+        // no need to update the scratch buffer
+        GL.glBindFramebuffer(GL_FRAMEBUFFER, pd->scratch_fbo.fbo);
+        return EINA_TRUE;
+     }
+
+   // delete old buffer if any
+   if (pd->scratch_fbo.fbo)
+     {
+        GL.glDeleteRenderbuffers(1, &(pd->scratch_fbo.rbo_color));
+        GL.glDeleteRenderbuffers(1, &(pd->scratch_fbo.rbo_stencil));
+        GL.glDeleteFramebuffers(1, &(pd->scratch_fbo.fbo));
+        pd->scratch_fbo.fbo = 0;
+     }
+
+   pd->scratch_fbo.w = pd->dest_fbo.w;
+   pd->scratch_fbo.h = pd->dest_fbo.h;
+
+   GL.glGenRenderbuffers(1, &pd->scratch_fbo.rbo_color);
+   GL.glBindRenderbuffer(GL_RENDERBUFFER, pd->scratch_fbo.rbo_color);
+   GL.glRenderbufferStorageMultisample(GL_RENDERBUFFER,
+                                       pd->scratch_fbo.msaa_level,
+                                       GL_RGBA,
+                                       pd->scratch_fbo.w, pd->scratch_fbo.h);
+
+   // create a 4x MSAA renderbuffer object for depthbuffer
+   GL.glGenRenderbuffers(1, &pd->scratch_fbo.rbo_stencil);
+   GL.glBindRenderbuffer(GL_RENDERBUFFER, pd->scratch_fbo.rbo_stencil);
+   GL.glRenderbufferStorageMultisample(GL_RENDERBUFFER,
+                                       pd->scratch_fbo.msaa_level,
+                                       GL_STENCIL_INDEX8,
+                                       pd->scratch_fbo.w, pd->scratch_fbo.h);
+
+
+   GL.glGenFramebuffers(1, &pd->scratch_fbo.fbo);
+   GL.glBindFramebuffer(GL_FRAMEBUFFER, pd->scratch_fbo.fbo);
+
+   // attach colorbuffer image to FBO
+   GL.glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                                GL_COLOR_ATTACHMENT0,
+                                GL_RENDERBUFFER,
+                                pd->scratch_fbo.rbo_color);
+
+   // attach depthbuffer image to FBO
+   GL.glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                                GL_STENCIL_ATTACHMENT,
+                                GL_RENDERBUFFER,
+                                pd->scratch_fbo.rbo_stencil);
+
+   // check FBO status
+   GLenum status = GL.glCheckFramebufferStatus(GL_FRAMEBUFFER);
+   if(status != GL_FRAMEBUFFER_COMPLETE)
+     {
+        ERR("cretaing MSAA fbo failed");
+        GL.glDeleteRenderbuffers(1, &(pd->scratch_fbo.rbo_color));
+        GL.glDeleteRenderbuffers(1, &(pd->scratch_fbo.rbo_stencil));
+        GL.glDeleteFramebuffers(1, &(pd->scratch_fbo.fbo));
+        pd->scratch_fbo.fbo = 0;
+        return EINA_FALSE;
+     }
+
+   return EINA_TRUE;
+}
+
+
 void
 _ector_gl_surface_surface_set(Eo *obj EINA_UNUSED,
                               Ector_Gl_Surface_Data *pd,
                               void *pixels EINA_UNUSED, unsigned int width,
                               unsigned int height, unsigned int stride EINA_UNUSED)
 {
-   if (!pd->init)
-     {
-        pd->init = EINA_TRUE;
-        pd->simple_program = _init_shader();
-        pd->uniform_color = GL.glGetUniformLocation(pd->simple_program, "color");
-        pd->uniform_pos = GL.glGetUniformLocation(pd->simple_program, "pos");
-        pd->uniform_mvp = GL.glGetUniformLocation(pd->simple_program, "mvp");
-        pd->init = EINA_TRUE;
-     }
    if (pixels)
      {
-        pd->width  = width;
-        pd->height = height;
+        if (!_update_scratch_fbo(pd, width, height))
+          return;
+
         float  mvp[16];
-        GL.glViewport(0, 0, pd->width, pd->height);
+        GL.glViewport(0, 0, pd->dest_fbo.w, pd->dest_fbo.h);
         GL.glClearStencil(0);
         GL.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         GL.glClearColor(0, 0, 0, 0);
@@ -321,11 +393,23 @@ _ector_gl_surface_surface_set(Eo *obj EINA_UNUSED,
         GL.glDisable(GL_STENCIL_TEST);
         GL.glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
         init_matrix(mvp);
-        matrix_ortho(mvp,0, pd->width, pd->height, 0,-1000000.0, 1000000.0,0, pd->width, pd->height,1, 1.0);
+        matrix_ortho(mvp,0, pd->dest_fbo.w, pd->dest_fbo.h, 0,-1000000.0, 1000000.0,0, pd->dest_fbo.w, pd->dest_fbo.h,1, 1.0);
         GL.glUseProgram(pd->simple_program);
         GL.glUniformMatrix4fv(pd->uniform_mvp, 1, GL_FALSE, mvp);
         GL.glEnableVertexAttribArray(SHAD_VERTEX);
      }
+   else
+    {
+       if (pd->scratch_fbo.msaa)
+         {
+            GL.glBindFramebuffer(GL_READ_FRAMEBUFFER, pd->scratch_fbo.fbo);
+            GL.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pd->dest_fbo.fbo);
+            GL.glBlitFramebuffer(0, 0, pd->dest_fbo.w, pd->dest_fbo.h,
+                                 0, 0, pd->dest_fbo.w, pd->dest_fbo.h,
+                                 GL_COLOR_BUFFER_BIT,
+                                 GL_LINEAR);
+         }
+    }
 }
 
 static void
@@ -350,7 +434,33 @@ static Eo *
 _ector_gl_surface_eo_base_constructor(Eo *obj,
                                       Ector_Gl_Surface_Data *pd EINA_UNUSED)
 {
+   const char *ector_msaa = NULL;
+
    obj = eo_do_super_ret(obj, ECTOR_GL_SURFACE_CLASS, obj, eo_constructor());
+
+   pd->simple_program = _init_shader();
+   pd->uniform_color = GL.glGetUniformLocation(pd->simple_program, "color");
+   pd->uniform_pos = GL.glGetUniformLocation(pd->simple_program, "pos");
+   pd->uniform_mvp = GL.glGetUniformLocation(pd->simple_program, "mvp");
+
+   ector_msaa = getenv("ECTOR_MSAA");
+   if (ector_msaa)
+     {
+        //@TODO parse the msaa level;
+        pd->scratch_fbo.msaa_level = 4;
+     }
+   else
+     {
+        pd->scratch_fbo.msaa_level = 4;
+     }
+   if (GL.glFuncExist(GL.glBlitFramebuffer))
+     {
+        pd->scratch_fbo.msaa = EINA_FALSE;
+     }
+   else
+     {
+        pd->scratch_fbo.msaa = EINA_FALSE;
+     }
    return obj;
 }
 
@@ -358,6 +468,17 @@ static void
 _ector_gl_surface_eo_base_destructor(Eo *obj EINA_UNUSED,
                                      Ector_Gl_Surface_Data *pd EINA_UNUSED)
 {
+   if (pd->simple_program)
+     {
+        GL.glDeleteProgram(pd->simple_program);
+     }
+   if (pd->scratch_fbo.fbo)
+     {
+        GL.glDeleteRenderbuffers(1, &(pd->scratch_fbo.rbo_color));
+        GL.glDeleteRenderbuffers(1, &(pd->scratch_fbo.rbo_stencil));
+        GL.glDeleteFramebuffers(1, &(pd->scratch_fbo.fbo));
+        pd->scratch_fbo.fbo = 0;
+     }
    eo_do_super(obj, ECTOR_GL_SURFACE_CLASS, eo_destructor());
 }
 

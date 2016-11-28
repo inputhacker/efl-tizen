@@ -21,7 +21,20 @@ struct _Ector_Gl_Surface_Data
    GLuint uniform_color;
    GLuint uniform_mvp;
    GLuint uniform_pos;
-   Eina_Bool init;
+
+   struct {
+      int w, h;
+      GLuint fbo;
+   } dest_fbo;
+
+   struct {
+      int w, h;
+      GLuint fbo;
+      GLuint rbo_color;
+      GLuint rbo_stencil;
+      Eina_Bool msaa;
+      int msaa_level;
+   } scratch_fbo;
 };
 
 // Gradient related structure
