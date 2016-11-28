@@ -58,8 +58,17 @@ ector_init(void)
 }
 
 static void
-donothing(void)
+no_gl_impl()
 {
+
+}
+
+static Eina_Bool
+gl_func_exist(void *fp)
+{
+   if (fp == no_gl_impl) return EINA_FALSE;
+
+   return EINA_TRUE;
 }
 
 EAPI Eina_Bool
@@ -69,7 +78,7 @@ ector_glsym_set(void *(*glsym)(void *lib, const char *name), void *lib)
 
    if (!glsym) return EINA_FALSE;
 
-#define ORD(a) do { GL.a = glsym(lib, #a); if (!GL.a) { GL.a = (void*) donothing; r = EINA_FALSE; } } while (0)
+#define ORD(a) do { GL.a = glsym(lib, #a); if (!GL.a) { GL.a = (void*) no_gl_impl; r = EINA_FALSE; } } while (0)
 
    ORD(glActiveTexture);
    ORD(glAttachShader);
@@ -169,6 +178,7 @@ ector_glsym_set(void *(*glsym)(void *lib, const char *name), void *lib)
    ORD(glReadPixels);
    ORD(glReleaseShaderCompiler);
    ORD(glRenderbufferStorage);
+   ORD(glRenderbufferStorageMultisample);
    ORD(glSampleCoverage);
    ORD(glScissor);
    ORD(glShaderBinary);
@@ -216,7 +226,8 @@ ector_glsym_set(void *(*glsym)(void *lib, const char *name), void *lib)
    ORD(glVertexAttrib4fv);
    ORD(glVertexAttribPointer);
    ORD(glViewport);
-
+   ORD(glBlitFramebuffer);
+   GL.glFuncExist = gl_func_exist;
    GL.init = r;
    return r;
 }
