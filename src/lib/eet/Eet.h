@@ -3494,7 +3494,7 @@ EAPI int
 eet_data_text_dump(const void *data_in,
                    int size_in,
                    Eet_Dump_Callback dumpfunc,
-                   void *dumpdata);
+                   void *dumpdata) EINA_ARG_NONNULL(3);
 
 /**
  * Take an ascii encoding from eet_data_text_dump() and re-encode in binary.
@@ -3555,7 +3555,7 @@ EAPI int
 eet_data_dump(Eet_File *ef,
               const char *name,
               Eet_Dump_Callback dumpfunc,
-              void *dumpdata);
+              void *dumpdata) EINA_ARG_NONNULL(3);
 
 /**
  * Take an ascii encoding from eet_data_dump() and re-encode in binary.
@@ -4345,7 +4345,7 @@ eet_data_text_dump_cipher(const void *data_in,
                           const char *cipher_key,
                           int size_in,
                           Eet_Dump_Callback dumpfunc,
-                          void *dumpdata);
+                          void *dumpdata) EINA_ARG_NONNULL(4);
 
 /**
  * Take an ascii encoding from eet_data_text_dump() and re-encode
@@ -4412,7 +4412,7 @@ eet_data_dump_cipher(Eet_File *ef,
                      const char *name,
                      const char *cipher_key,
                      Eet_Dump_Callback dumpfunc,
-                     void *dumpdata);
+                     void *dumpdata) EINA_ARG_NONNULL(4);
 
 /**
  * Take an ascii encoding from eet_data_dump() and re-encode in
