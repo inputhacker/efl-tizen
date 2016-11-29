@@ -99,7 +99,8 @@ enum
 };
 
 enum {
-   EXTN_TYPE_SHM = 0, /* shared memory-based buffer backend */
+   EXTN_TYPE_NONE = 0, /* not set yet */
+   EXTN_TYPE_SHM , /* shared memory-based buffer backend */
    EXTN_TYPE_WAYLAND_EGL,      /* wayland_egl backend  */
 };
 

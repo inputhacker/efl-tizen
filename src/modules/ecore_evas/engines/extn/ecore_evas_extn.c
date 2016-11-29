@@ -81,16 +81,22 @@ struct _Extn
    struct {
       Eina_Bool   done : 1; /* need to send change done event to the client(plug) */
    } profile;
-   // for tizen remote surface
-   struct wl_tbm *wl_tbm;
+
+   /* Tizen Only : for tizen remote surface */
+   struct tizen_remote_surface_provider *tizen_rsp;
+   struct wayland_tbm_client *tbm_client;
+   struct tizen_remote_surface *tizen_rs;
    uint32_t resource_id;
+   int extn_type_client;
+   /* Tizen Only : --- End */
 };
 
 static Eina_List *extn_ee_list = NULL;
 
 /* Tizen Only : for tizen remote surface */
-/* for tizen remote manager */
+/* local value for tizen remote manager */
 struct tizen_remote_surface_manager *tizen_rsm = NULL;
+static int extn_type = EXTN_TYPE_NONE;
 
 /* Tizen Only : Callback function  & listener for tizen remote surface */
 static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider, uint32_t res_id)
@@ -202,29 +208,33 @@ _tizen_remote_surface_init(void)
 }
 
 
-
+void
+_ecore_evas_extn_type_set(int type)
+{
+   extn_type = type;
+}
 static int
 _ecore_evas_extn_type_get()
 {
-   static int type = EXTN_TYPE_SHM;
-   static int checked = 0;
    char *engine = NULL;
 
-   if (checked) return type;
+   if( extn_type != EXTN_TYPE_NONE)
+     return extn_type;
+
+   extn_type = EXTN_TYPE_SHM;
 
    engine = getenv("ECORE_EVAS_EXTN_SOCKET_ENGINE");
 
    if (engine)
      {
         if ((!strcasecmp(engine, "buffer")))
-           type = EXTN_TYPE_SHM;
+           extn_type = EXTN_TYPE_SHM;
         else if ((!strcasecmp(engine, "wayland_egl")))
-           type = EXTN_TYPE_WAYLAND_EGL;
+           extn_type = EXTN_TYPE_WAYLAND_EGL;
         else
-           type = EXTN_TYPE_SHM;
+           extn_type = EXTN_TYPE_SHM;
      }
-   checked = 1;
-   return type;
+   return extn_type;
 }
 
 static Eina_Bool
@@ -264,9 +274,8 @@ _ecore_evas_extn_plug_render_pre(void *data, Evas *e EINA_UNUSED, void *event_in
    if (!bdata) return;
    extn = bdata->data;
    if (!extn) return;
-   if(_ecore_evas_extn_type_get() ==  EXTN_TYPE_WAYLAND_EGL)
-     return;
-   bdata->pixels = _extnbuf_lock(extn->b[extn->cur_b].buf, NULL, NULL, NULL);
+   if(extn->extn_type_client ==  EXTN_TYPE_SHM)
+     bdata->pixels = _extnbuf_lock(extn->b[extn->cur_b].buf, NULL, NULL, NULL);
 }
 
 static void
@@ -281,14 +290,15 @@ _ecore_evas_extn_plug_render_post(void *data, Evas *e EINA_UNUSED, void *event_i
    if (!bdata) return;
    extn = bdata->data;
    if (!extn) return;
-   if(_ecore_evas_extn_type_get() ==  EXTN_TYPE_WAYLAND_EGL)
-     return;
-   _extnbuf_unlock(extn->b[extn->cur_b].buf);
-   if (extn->b[extn->cur_b].obuf)
+   if(extn->extn_type_client ==  EXTN_TYPE_SHM)
      {
-        _extnbuf_unlock(extn->b[extn->cur_b].obuf);
-        _extnbuf_free(extn->b[extn->cur_b].obuf);
-        extn->b[extn->cur_b].obuf = NULL;
+        _extnbuf_unlock(extn->b[extn->cur_b].buf);
+        if (extn->b[extn->cur_b].obuf)
+          {
+             _extnbuf_unlock(extn->b[extn->cur_b].obuf);
+             _extnbuf_free(extn->b[extn->cur_b].obuf);
+             extn->b[extn->cur_b].obuf = NULL;
+          }
      }
 }
 
@@ -358,10 +368,13 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
              evas_object_image_pixels_dirty_set(bdata->image, EINA_TRUE);
           }
         bdata->pixels = NULL;
-        if(_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
+        if(extn->extn_type_client ==  EXTN_TYPE_WAYLAND_EGL)
           {
-             extn->wl_tbm = NULL;
              extn->resource_id = NULL;
+             if(extn->tizen_rsp) tizen_remote_surface_provider_destroy(extn->tizen_rsp);
+             if(extn->tizen_rs) tizen_remote_surface_destroy(extn->tizen_rs);
+             if(extn->tbm_client) wayland_tbm_client_deinit(extn->tbm_client);
+             if(tizen_rsm) tizen_remote_surface_manager_destroy(tizen_rsm);
           }
         else
           {
@@ -1297,18 +1310,40 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
               uint32_t rid = e->ref;
               INF("[EXTN_GL] receive socket to client >>  (resource_id:%u)",rid);
 
-              struct tizen_remote_surface *tizen_rs = NULL;
-              if(!tizen_rs){
-                //create tizen_remote_surface
-                tizen_rs = tizen_remote_surface_manager_create_surface(tizen_rsm, rid, extn->wl_tbm);
-                if(!tizen_rs)
-                   {
-                      ERR("tizen_rs is NULL");
-                      break;
-                   }
-                tizen_remote_surface_add_listener(tizen_rs, &_ecore_evas_extn_gl_plug_listener, bdata->image);
-                tizen_remote_surface_redirect(tizen_rs);
-              }
+              // initailize tizen remote surface
+              if (!_tizen_remote_surface_init())
+                {
+                   ERR("_tizen_remote_surface_init() is failed");
+                   return EINA_FALSE;
+                }
+
+              // get wayland tbm
+              if(!(extn->tbm_client))
+                {
+                   extn->tbm_client = (struct wayland_tbm_client *)wayland_tbm_client_init(ecore_wl_display_get());
+                   struct wl_tbm *wl_tbm;
+                   wl_tbm = (struct wl_tbm *)wayland_tbm_client_get_wl_tbm(extn->tbm_client);
+                   INF("[EXTN_GL] Get wl_tbm:%p",wl_tbm);
+                   if (!wl_tbm)
+                     {
+                        ERR("wl_tbm is NULL");
+                     }
+                  // Add listener for tizen remote surface
+                  if(!(extn->tizen_rs)){
+                     //create tizen_remote_surface
+                     extn->tizen_rs = tizen_remote_surface_manager_create_surface(tizen_rsm, rid, wl_tbm);
+                     if(!(extn->tizen_rs))
+                       {
+                          ERR("tizen_rs is NULL");
+                          break;
+                       }
+                     tizen_remote_surface_add_listener(extn->tizen_rs, &_ecore_evas_extn_gl_plug_listener, bdata->image);
+                     tizen_remote_surface_redirect(extn->tizen_rs);
+                  }
+                }
+
+              //Set extn_type
+              extn->extn_type_client = EXTN_TYPE_WAYLAND_EGL;
            }
          break;
       case OP_RESIZE:
@@ -1461,15 +1496,6 @@ ecore_evas_extn_plug_new_internal(Ecore_Evas *ee_target)
    evas_event_callback_add(ee_target->evas, EVAS_CALLBACK_RENDER_POST,
                            _ecore_evas_extn_plug_render_post, ee);
 
-   if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
-     {
-        if (!_tizen_remote_surface_init())
-          {
-             ERR("_tizen_remote_surface_init() is failed");
-              return EINA_FALSE;
-          }
-     }
-
    return o;
 }
 
@@ -1491,25 +1517,16 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
    extn = calloc(1, sizeof(Extn));
    if (!extn) return EINA_FALSE;
 
-   if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
-     {
-        struct wayland_tbm_client *tbm_client;
-        tbm_client = (struct wayland_tbm_client *)wayland_tbm_client_init(ecore_wl_display_get());
-        if (!(extn->wl_tbm))
-          extn->wl_tbm = (struct wl_tbm *)wayland_tbm_client_get_wl_tbm(tbm_client);
-        INF("[EXTN_GL] Get wl_tbm:%p",extn->wl_tbm);
-        if (!extn->wl_tbm)
-          {
-             ERR("wl_tbm is NULL");
-          }
-     }
-
    Ecore_Ipc_Type ipctype = ECORE_IPC_LOCAL_USER;
 
    ecore_ipc_init();
    extn->svc.name = eina_stringshare_add(svcname);
    extn->svc.num = svcnum;
    extn->svc.sys = svcsys;
+
+   extn->extn_type_client = EXTN_TYPE_SHM;
+   extn->tizen_rs = NULL;
+   extn->tbm_client = NULL;
 
    if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
    extn->ipc.server = ecore_ipc_server_connect(ipctype, (char *)extn->svc.name,
@@ -2358,22 +2375,27 @@ ecore_evas_extn_socket_new_internal(int w, int h)
         ee = ecore_evas_wayland_egl_new(NULL, 0, 0, 0, w, h, 0);
         if (!ee)
           {
+             ERR("[Extn_GL] ecore_evas_wayland_egl_new is failed! it will be buffer backend ");
+             _ecore_evas_extn_type_set(EXTN_TYPE_SHM);
              free(bdata);
-             return NULL;
           }
-        ee->engine.func = (Ecore_Evas_Engine_Func *)&_ecore_extn_socket_engine_func;
-        ee->engine.extn.data = bdata;
-
-        iface = _ecore_evas_extn_interface_new();
-        ee->engine.ifaces = eina_list_append(ee->engine.ifaces, iface);
-        ee->visible = 0;
-        if (!_tizen_remote_surface_init())
+        else
           {
-             ERR("_tizen_remote_surface_init() is failed");
-              return EINA_FALSE;
+             ee->engine.func = (Ecore_Evas_Engine_Func *)&_ecore_extn_socket_engine_func;
+             ee->engine.extn.data = bdata;
+
+             iface = _ecore_evas_extn_interface_new();
+             ee->engine.ifaces = eina_list_append(ee->engine.ifaces, iface);
+             ee->visible = 0;
+             if (!_tizen_remote_surface_init())
+               {
+                  ERR("_tizen_remote_surface_init() is failed");
+                  return EINA_FALSE;
+               }
           }
      }
-   else
+
+   if (_ecore_evas_extn_type_get() == EXTN_TYPE_SHM)
      {
         Evas_Engine_Info_Buffer *einfo;
         Ecore_Evas_Engine_Buffer_Data *bdata;
@@ -2489,6 +2511,7 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
         extn->svc.name = eina_stringshare_add(svcname);
         extn->svc.num = svcnum;
         extn->svc.sys = svcsys;
+        extn->tizen_rsp = NULL;
 
         if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
           {
@@ -2524,17 +2547,17 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
                   ERR("tizen_rsm is NULL");
                   return NULL;
                }
-             struct tizen_remote_surface_provider *tizen_rsp = NULL;
-             if (!tizen_rsp)
+
+             if (!(extn->tizen_rsp))
                {
-                  tizen_rsp = tizen_remote_surface_manager_create_provider(tizen_rsm, surface);
-                  INF("[EXTN_GL] tizen remote surface provider : %p",tizen_rsp);
-                  if (!tizen_rsp)
+                  extn->tizen_rsp = tizen_remote_surface_manager_create_provider(tizen_rsm, surface);
+                  INF("[EXTN_GL] tizen remote surface provider : %p",extn->tizen_rsp);
+                  if (!(extn->tizen_rsp))
                     {
                        ERR("Could not create tizen_remote_surface_provider\n");
                        return NULL;
                     }
-                 tizen_remote_surface_provider_add_listener(tizen_rsp, &_ecore_evas_extn_gl_socket_listener, ee);
+                 tizen_remote_surface_provider_add_listener(extn->tizen_rsp, &_ecore_evas_extn_gl_socket_listener, ee);
                }
           }
         else
