@@ -348,6 +348,10 @@ struct _Evas_Engine_GL_Context
    RGBA_Image *font_surface;
    // TIZEN_ONLY(20160529): Set this flag for gl_drm engine surface
    int IsGLDRM;
+
+   //TIZEN_ONLY(20161121)
+   // If set, the driver will rotate the buffer itself
+   Eina_Bool pre_rotated : 1;
 };
 
 struct _Evas_GL_Texture_Pool

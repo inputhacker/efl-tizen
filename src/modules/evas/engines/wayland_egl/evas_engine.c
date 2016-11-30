@@ -98,6 +98,14 @@ void (*glsym_evas_gl_common_surface_cache_dump)(void) = NULL;
         prefix##dst = (typ)dst##_thread_cmd; \
      }
 
+//TIZEN_ONLY(20161121) : Support PreRotation
+////////////////////////////////////
+//libwayland-client.so.0
+static void *wl_client_lib_handle = NULL;
+wl_egl_win_get_capabilities glsym_wl_egl_win_get_capabilities = NULL;
+wl_egl_win_set_rotation glsym_wl_egl_win_set_rotation = NULL;
+//
+
 /* local variables */
 static Eina_Bool initted = EINA_FALSE;
 static int gl_wins = 0;
@@ -213,6 +221,38 @@ gl_symbols(void)
    done = EINA_TRUE;
 }
 
+//TIZEN_ONLY(20161121) : Support PreRotation
+static void
+pre_rotation_symbols(void)
+{
+   static Eina_Bool init_pre_rotation_syms = EINA_FALSE;
+   if (init_pre_rotation_syms) return;
+   init_pre_rotation_syms = EINA_TRUE;
+
+#ifdef GL_GLES
+   const char *wayland_egl_lib = LIBDIR"/libwayland-egl.so";
+   wl_client_lib_handle = dlopen(wayland_egl_lib, RTLD_NOW);
+   if (!wl_client_lib_handle)
+     {
+        ERR("Unable to open libtbm: %s", dlerror());
+        return;
+     }
+
+#define FIND_EGL_WL_SYM(dst, sym, typ) \
+   if (!dst) dst = (typ)dlsym(wl_client_lib_handle, sym); \
+   if (!dst)  \
+     { \
+        ERR("Symbol not found %s\n", sym); \
+        return; \
+     }
+
+   FIND_EGL_WL_SYM(glsym_wl_egl_win_set_rotation, "wl_egl_window_set_rotation", glsym_func_void);
+   FIND_EGL_WL_SYM(glsym_wl_egl_win_get_capabilities, "wl_egl_window_get_capabilities", glsym_func_int);
+
+#undef FIND_EGL_WL_SYM
+#endif
+}
+
 static void
 gl_extn_veto(Render_Engine *re)
 {
@@ -289,6 +329,42 @@ _re_winfree(Render_Engine *re)
    if (!ob->surf) return;
    glsym_evas_gl_preload_render_relax(eng_preload_make_current, ob);
    eng_window_unsurf(ob);
+}
+
+static void
+_evas_native_win_pre_rotation_set(struct wl_egl_window *win, int angle)
+{
+    wl_egl_window_rotation rot;
+    if (!win) return;
+    if (!glsym_wl_egl_win_set_rotation)
+      {
+         ERR("Not supported PreRotation");
+         return;
+      }
+
+    switch (angle)
+      {
+         case 270:
+            rot = ROTATION_90;
+            break;
+         case 180:
+            rot = ROTATION_180;
+            break;
+         case 90:
+            rot = ROTATION_270;
+            break;
+         case 0:
+            rot = ROTATION_0;
+            break;
+         default:
+            rot = ROTATION_0;
+            break;
+      }
+
+    if (glsym_wl_egl_win_set_rotation)
+      {
+         glsym_wl_egl_win_set_rotation(win, rot);
+      }
 }
 
 static void *
@@ -862,6 +938,28 @@ evgl_eng_native_win_surface_config_get(void *data, int *win_depth,
        eng_get_ob(re)->detected.msaa);
 }
 
+static int
+evgl_eng_native_win_prerotation_set(void *data)
+{
+   Render_Engine *re = data;
+   if (!re) return 0;
+   if (!(eng_get_ob(re)->support_pre_rotation)) return 0;
+   if (eng_get_ob(re)->gl_context->pre_rotated) return 0;
+
+   _evas_native_win_pre_rotation_set(eng_get_ob(re)->info->info.win, eng_get_ob(re)->info->info.rotation);
+
+   // re->win's h & w are not modified
+   eng_get_ob(re)->rot = 0;
+
+   /* There maybe bad frame due to mismatch of surface and
+    * window size if orientation changes in the middle of
+    * rendering pipeline, therefore recreate the surface.
+    */
+   eng_get_ob(re)->gl_context->pre_rotated = EINA_TRUE;
+
+   return 1;
+}
+
 static const EVGL_Interface evgl_funcs =
 {
    evgl_eng_display_get,
@@ -882,6 +980,7 @@ static const EVGL_Interface evgl_funcs =
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
    evgl_eng_native_win_surface_config_get,
+   evgl_eng_native_win_prerotation_set,
 };
 
 /* engine functions */
@@ -1084,9 +1183,17 @@ eng_setup(Evas *evas, void *info)
                   eng_get_ob(re)->gl_context->references--;
                }
              else if ((ob->w != epd->output.w) || (ob->h != epd->output.h) ||
-                      (ob->info->info.rotation != ob->rot))
+                      (ob->info->info.rotation != ob->rot) ||
+                      (ob->gl_context->pre_rotated))
                {
-                  eng_outbuf_reconfigure(ob, epd->output.w, epd->output.h,
+                 //TIZEN_ONLY(20161121) : Support PreRotation
+                 if (ob->support_pre_rotation && ob->gl_context->pre_rotated)
+                   {
+                      ob->gl_context->pre_rotated = EINA_FALSE;
+                      evgl_eng_native_win_prerotation_set(re);
+                   }
+
+                 eng_outbuf_reconfigure(ob, epd->output.w, epd->output.h,
                                          ob->info->info.rotation, 0);
                }
           }
@@ -1839,6 +1946,10 @@ module_open(Evas_Module *em)
 
    evas_gl_thread_link_init();
    gl_symbols();
+
+   //TIZEN_ONLY(20161121) : Support PreRotation
+   pre_rotation_symbols();
+   //
 
    /* advertise out which functions we support */
    em->functions = (void *)(&func);

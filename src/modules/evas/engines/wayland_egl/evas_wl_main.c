@@ -57,6 +57,8 @@ _orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int
    gw->depth_bits = depth_bits;
    gw->stencil_bits = stencil_bits;
    gw->msaa_bits = msaa_bits;
+   //TIZEN_ONLY(20161121):Support PreRotation
+   gw->support_pre_rotation = 0;
 
    context_attrs[0] = EGL_CONTEXT_CLIENT_VERSION;
    context_attrs[1] = 2;
@@ -143,6 +145,25 @@ _orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int
             gw->win, eglGetError());
         eng_window_free(gw);
         return NULL;
+     }
+
+   //TIZEN_ONLY(20161121):Support PreRotation
+   if (glsym_wl_egl_win_get_capabilities)
+     {
+        int prerotation_cap = WL_EGL_WINDOW_CAPABILITY_NONE;
+        prerotation_cap = glsym_wl_egl_win_get_capabilities(gw->win);
+        if (prerotation_cap == WL_EGL_WINDOW_CAPABILITY_ROTATION_SUPPORTED)
+          {
+             gw->support_pre_rotation = 1;
+          }
+        else
+          {
+            gw->support_pre_rotation = 0;
+          }
+     }
+   else
+     {
+        DBG("PreRotation API is Invalid!!");
      }
 
    gw->egl_context[0] = 
