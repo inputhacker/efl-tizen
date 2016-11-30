@@ -2984,6 +2984,42 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 	 }
          return: bool; [[$true if the visible character is hidden. $false if there is no visible character or the object is not set for password mode.]]
       }
+      /* TIZEN_ONLY(20161130): add part_text_min_policy property for internal usage */
+      @property part_text_min_policy @internal {
+         set {
+            [[Sets the object text min calculation policy.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         get {
+            [[Gets the object text min calculation policy.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+
+              \@if MOBILE \@since_tizen 3.0
+              \@elseif WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         keys {
+            part: const(char)*; [[The part name]]
+            state_name: const(char)*; [[The state name]]
+         }
+         values {
+            min_x: bool; [[The min width policy]]
+            min_y: bool; [[The min height policy]]
+         }
+      }
+      /* END */
    }
    implements {
       Eo.Base.constructor;
