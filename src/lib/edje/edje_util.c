@@ -6835,4 +6835,54 @@ EAPI void edje_object_part_text_thaw(Evas_Object *obj, const char *part)
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/* TIZEN_ONLY(20161130): add part_text_min_policy property for internal usage */
+EOLIAN Eina_Bool
+_edje_object_part_text_min_policy_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, const char *state_name, Eina_Bool min_x, Eina_Bool min_y)
+{
+   Edje_Real_Part *rp;
+   Edje_Part_Description_Text *desc;
+
+   if ((!part) || (!state_name)) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return EINA_FALSE;
+
+   desc = (Edje_Part_Description_Text *)_edje_part_description_find(ed, rp, state_name, 0.0, EINA_FALSE);
+
+   if (desc)
+     {
+        desc->text.min_x = (unsigned char)min_x;
+        desc->text.min_y = (unsigned char)min_y;
+     }
+
+   return EINA_TRUE;
+}
+
+EOLIAN Eina_Bool
+_edje_object_part_text_min_policy_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, const char *state_name, Eina_Bool *min_x, Eina_Bool *min_y)
+{
+   Edje_Real_Part *rp;
+   Edje_Part_Description_Text *desc;
+
+   if ((!part) || (!state_name) || (!min_x && !min_y)) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return EINA_FALSE;
+
+   desc = (Edje_Part_Description_Text *)_edje_part_description_find(ed, rp, state_name, 0.0, EINA_FALSE);
+
+   if (desc)
+     {
+        if (min_x) *min_x = (Eina_Bool)desc->text.min_x;
+        if (min_y) *min_y = (Eina_Bool)desc->text.min_y;
+     }
+
+   return EINA_TRUE;
+}
+/* END */
+
 /* vim:set ts=8 sw=3 sts=3 expandtab cino=>5n-2f0^-2{2(0W1st0 :*/
