@@ -83,6 +83,7 @@ _ector_renderer_gl_shape_ector_renderer_generic_base_draw(Eo *obj EINA_UNUSED,
    _shape_transform(new_pts, pt_count, pd->base->m);
    if (!cmd_count) return EINA_FALSE;
 
+   eo_do(pd->surface, ector_gl_surface_offset(pd->base->origin.x, pd->base->origin.y));
    if (pd->base->color.a > 0)
      {
         unsigned int fill_color = ECTOR_ARGB_JOIN(pd->base->color.a, pd->base->color.r, pd->base->color.g, pd->base->color.b);
