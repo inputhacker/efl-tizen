@@ -224,9 +224,7 @@ static int _ecore_main_win32_select(int             nfds,
 static void _ecore_main_win32_handlers_cleanup(void);
 #endif
 
-int in_main_loop = 0;
-
-static unsigned char _ecore_exit_code = 0;
+static int in_main_loop = 0;
 static int do_quit = 0;
 static Ecore_Fd_Handler *fd_handlers = NULL;
 static Ecore_Fd_Handler *fd_handler_current = NULL;
@@ -2042,8 +2040,6 @@ process_all: /*-*********************************************************/
      }
 
 done: /*-*****************************************************************/
-   /* Agressively flush animator */
-   _ecore_animator_flush();
    in_main_loop--;
 }
 
