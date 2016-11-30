@@ -2194,10 +2194,6 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
    windows = _ecore_wl_window_hash_get();
    if (!name) return;
 
-   if (flag)
-     ret = _ecore_wl_input_add_ecore_device(name, identifier, clas);
-   else
-     ret = _ecore_wl_input_del_ecore_device(name, identifier, clas);
    if (added)
      {
         if (clas == ECORE_DEVICE_CLASS_SEAT)
@@ -2222,13 +2218,13 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
           {
              win = data;
              has_win = EINA_TRUE;
-             _ecore_wl_input_device_info_send(win->id, name, identifier, clas, flag);
+             _ecore_wl_input_device_info_send(win->id, name, identifier, seatname, clas, added);
           }
         eina_iterator_free(itr);
      }
    if (!has_win)
      {
-        _ecore_wl_input_device_info_send((uintptr_t)NULL, name, identifier, clas, flag);
+        _ecore_wl_input_device_info_send((uintptr_t)NULL, name, identifier, seatname, clas, added);
      }
 }
 
