@@ -81,7 +81,6 @@ _context_store(void *data, void *surface, void *context)
         if (rsc->id == evgl_engine->main_tid)
           {
              _need_context_restore = EINA_FALSE;
-    
              rsc->stored.data = data;
              rsc->stored.surface = surface;
              rsc->stored.context = context;
@@ -728,7 +727,7 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
 #ifdef GL_GLES
    re->window_use(re->software.ob);
 
-   if ((im->tex) && (im->tex->pt) && (im->tex->pt->dyn.img) && 
+   if ((im->tex) && (im->tex->pt) && (im->tex->pt->dyn.img) &&
        (im->cs.space == EVAS_COLORSPACE_ARGB8888))
      {
         if (im->tex->pt->dyn.checked_out > 0)
@@ -2655,7 +2654,7 @@ eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_
         Render_Engine_GL_Generic *re = data;
         re->window_use(re->software.ob);
         gl_context = re->window_gl_context_get(re->software.ob);
-        surface = evas_gl_common_image_surface_new(gl_context, width, height, EINA_TRUE, EINA_TRUE);
+        surface = evas_gl_common_image_surface_new(gl_context, width, height, EINA_TRUE, EINA_FALSE);
         if (!surface)
           {
             *error = EINA_TRUE;
