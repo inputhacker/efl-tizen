@@ -878,6 +878,7 @@ static const EVGL_Interface evgl_funcs =
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
    evgl_eng_native_win_surface_config_get,
+   NULL, // native_win_prerotation_set
 };
 
 /* engine functions */
