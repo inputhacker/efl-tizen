@@ -2234,7 +2234,7 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
    if ((tex->im) && (tex->im->native.data)
         && (ens) && (ens->type == EVAS_NATIVE_SURFACE_TBM))
       {
-         double tmp;
+         double tmp, tmp_ori_ratio_h, tmp_small_ratio_h;
          double src_ratio, dst_ratio;
          src_ratio = (double) tex->im->w / (double) tex->im->h;
          dst_ratio = (double) sw / sh;
@@ -2249,8 +2249,13 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
                   }
                else if (src_ratio < dst_ratio)
                   {
+                     tmp_ori_ratio_h = sh * tex->im->w / (double)tex->im->h;
+                     tmp_small_ratio_h = sh * tex->im->h / (double)tex->im->w;
+                     sx = sx * (tmp_ori_ratio_h / tmp_small_ratio_h);
+
                      tmp = sx; sx = (tex->im->h - sy - sh) * tex->im->w / (double)tex->im->h;
                      sy = tmp * tex->im->h / (double)tex->im->w;
+
                      tmp = sw; sw = sh * tex->im->h / (double)tex->im->w;
                      sh = tmp * tex->im->h / (double)tex->im->w;
                   }
@@ -2276,8 +2281,13 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
                   }
                else if (src_ratio < dst_ratio)
                   {
+                     tmp_ori_ratio_h = sh * tex->im->w / (double)tex->im->h;
+                     tmp_small_ratio_h = sh * tex->im->h / (double)tex->im->w;
+                     sy = sy * (tmp_ori_ratio_h / tmp_small_ratio_h);
+
                      tmp = sy; sy = (tex->im->w - sx - sw) * tex->im->h / (double)tex->im->w;
                      sx = tmp * tex->im->w / (double)tex->im->h;
+
                      tmp = sw; sw = sh * tex->im->h / (double)tex->im->w;
                      sh = tmp * tex->im->h / (double)tex->im->w;
                   }
