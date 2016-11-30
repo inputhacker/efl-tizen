@@ -2,10 +2,26 @@
 #define ECTOR_GL_PRIVATE_H_
 
 #define SHAD_VERTEX 0
+#define SHAD_TEXUV  1
+
 #define GL_STENCIL_HIGH_BIT  0x80
 
 typedef struct _Ector_Renderer_Gl_Gradient_Data    Ector_Renderer_Gl_Gradient_Data;
 typedef struct _Ector_Gl_Surface_Data              Ector_Gl_Surface_Data;
+
+typedef struct _Shader_Program                     Shader_Program;
+
+struct _Shader_Program
+{
+  GLuint program;
+  GLuint v_shader;
+  GLuint f_shader;
+  GLuint u_color;
+  GLuint u_mvp;
+  GLuint u_pos;
+  GLuint u_texture;
+};
+
 
 struct _Ector_Gl_Surface_Data
 {
@@ -15,12 +31,9 @@ struct _Ector_Gl_Surface_Data
    struct {
       int x, y;
    } offset;
-   int width;
-   int height;
-   GLuint simple_program;
-   GLuint uniform_color;
-   GLuint uniform_mvp;
-   GLuint uniform_pos;
+
+   Shader_Program *simple_shader;
+   Shader_Program *texture_shader;
 
    struct {
       int w, h;
@@ -28,12 +41,14 @@ struct _Ector_Gl_Surface_Data
    } dest_fbo;
 
    struct {
-      int w, h;
-      GLuint fbo;
-      GLuint rbo_color;
-      GLuint rbo_stencil;
+      int       w, h;
+      GLuint    fbo;
+      GLuint    texture;
+      GLuint    rbo_color;
+      GLuint    rbo_stencil;
       Eina_Bool msaa;
-      int msaa_level;
+      Eina_Bool ext_msaa;
+      int       msaa_level;
    } scratch_fbo;
 };
 
