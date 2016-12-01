@@ -2157,7 +2157,18 @@ _ecore_evas_extn_socket_alpha_set(Ecore_Evas *ee, int alpha)
      {
         if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
           {
-             INF("[EXTN_GL] pass socket alpha set");
+             Evas_Engine_Info_Wayland_Egl *einfo;
+             ee->alpha = alpha;
+             einfo = (Evas_Engine_Info_Wayland_Egl *)evas_engine_info_get(ee->evas);
+             if(einfo)
+               {
+                  int fw, fh;
+                  evas_output_framespace_get(ee->evas, NULL, NULL, &fw, &fh);
+                  einfo->info.destination_alpha = EINA_TRUE;
+                  if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+                    ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+                  evas_damage_rectangle_add(ee->evas, 0, 0, ee->w + fw, ee->h + fh);
+               }
           }
         else
           {

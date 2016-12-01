@@ -32,6 +32,7 @@
 #include <wayland-tbm-client.h>
 #include <Ecore_Wayland.h>
 #include <tbm_surface.h>
+#include <Evas_Engine_Wayland_Egl.h>
 
 #include "ecore_private.h" // FIXME: Because of ECORE_MAGIC
 #include "ecore_evas_private.h"
