@@ -70,6 +70,7 @@ modules_ecore_evas_engines_extn_module_la_CPPFLAGS = -I$(top_builddir)/src/lib/e
 @ECORE_IPC_CFLAGS@ \
 @TIZEN_REMOTE_SURFACE_CFLAGS@ \
 -I$(top_srcdir)/src/modules/evas/engines/buffer \
+-I$(top_srcdir)/src/modules/evas/engines/wayland_egl \
 -I$(top_srcdir)/src/modules/ecore_evas/engines/extn
 modules_ecore_evas_engines_extn_module_la_LIBADD = \
 @USE_ECORE_EVAS_LIBS@ \
