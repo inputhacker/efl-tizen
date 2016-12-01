@@ -1218,7 +1218,7 @@ _native_cb_bind(void *data EINA_UNUSED, void *image)
           {
              if (glsym_glEGLImageTargetTexture2DOES)
                {
-                  glsym_glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, n->ns_data.wl_surface.surface);
+                  glsym_glEGLImageTargetTexture2DOES(img->native.target, n->ns_data.wl_surface.surface);
                   GLERRV("glsym_glEGLImageTargetTexture2DOES");
                }
              else
@@ -1581,7 +1581,9 @@ eng_image_native_set(void *data, void *image, void *native)
                   glsym_eglQueryWaylandBufferWL(ob->egl_disp, wl_buf,
                                                 EGL_TEXTURE_FORMAT, &format);
                   if ((format != EGL_TEXTURE_RGB) &&
-                      (format != EGL_TEXTURE_RGBA))
+                      (format != EGL_TEXTURE_RGBA)&&
+                      (format != EGL_TEXTURE_Y_U_V_WL) &&
+                      (format != EGL_TEXTURE_Y_UV_WL))
                     {
                        ERR("eglQueryWaylandBufferWL() %d format is not supported ", format);
                        glsym_evas_gl_common_image_free(img);
@@ -1629,15 +1631,19 @@ eng_image_native_set(void *data, void *image, void *native)
 
                   //XXX: workaround for mesa-10.2.8
                   // mesa's eglQueryWaylandBufferWL() with EGL_WAYLAND_Y_INVERTED_WL works incorrect.
-                  //img->native.yinvert = yinvert;
-                  img->native.yinvert = 1;
+                  img->native.yinvert = yinvert;
+//                  img->native.yinvert = 1;
                   img->native.loose = 0;
                   img->native.data = n;
                   img->native.func.data = re;
                   img->native.func.bind = _native_cb_bind;
                   img->native.func.unbind = _native_cb_unbind;
                   img->native.func.free = _native_cb_free;
-                  img->native.target = GL_TEXTURE_2D;
+                  if ( (format == EGL_TEXTURE_Y_U_V_WL)||
+                       (format == EGL_TEXTURE_Y_UV_WL))
+                     img->native.target = GL_TEXTURE_EXTERNAL_OES;
+                  else
+                     img->native.target = GL_TEXTURE_2D;
                   img->native.mipmap = 0;
 
                   glsym_evas_gl_common_image_native_enable(img);
