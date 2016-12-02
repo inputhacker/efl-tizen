@@ -61,7 +61,7 @@ struct _Ector_Renderer_Gl_Gradient_Data
       Ector_Renderer_Generic_Gradient_Radial_Data *grd;
    };
    Eina_Bool alpha;
-   uint* color_table;
+   uint32_t* color_table;
 };
 
 #endif
