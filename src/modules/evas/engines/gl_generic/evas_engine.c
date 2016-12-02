@@ -2556,7 +2556,9 @@ eng_ector_renderer_draw(void *data, void *context, void *surface, Ector_Renderer
 
 static void
 eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface *ector,
-                void *surface, int x, int y, Eina_Bool do_async EINA_UNUSED)
+                void *surface, Eina_Bool surface_clear EINA_UNUSED,
+                int x, int y, int width EINA_UNUSED, int height EINA_UNUSED,
+                Eina_Bool do_async EINA_UNUSED)
 {
    int w, h, stride;
    Evas_GL_Image *glim = surface;
