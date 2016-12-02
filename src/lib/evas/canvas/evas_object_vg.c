@@ -239,7 +239,7 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
          svg->h == obj->cur->geometry.h))
      {
          evas_cache_svg_entry_del(svg);
-         svg = evas_cache_svg_find(svg->file, svg->src_vg, svg->dest_vg, 
+         svg = evas_cache_svg_find(svg->file, svg->src_vg, svg->dest_vg,
                                    svg->key_frame, obj->cur->geometry.w, obj->cur->geometry.h);
          vd->svg = svg;
      }
@@ -270,8 +270,9 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
         evas_common_draw_context_set_render_op(ct, _EVAS_RENDER_COPY);
         evas_common_draw_context_set_color(ct, 255, 255, 255, 255);
         obj->layer->evas->engine.func->ector_begin(output, ct,
-                                                   ector, buffer,
+                                                   ector, buffer, EINA_TRUE,
                                                    0, 0,
+                                                   obj->cur->geometry.w, obj->cur->geometry.h,
                                                    do_async);
         _evas_vg_render(obj, vd,
                         output, ct, buffer,
@@ -356,8 +357,9 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
 
    if (!vd->backing_store)
      {
-        obj->layer->evas->engine.func->ector_begin(output, context, ector, surface,
+        obj->layer->evas->engine.func->ector_begin(output, context, ector, surface, EINA_FALSE,
                                                    obj->cur->geometry.x + x, obj->cur->geometry.y + y,
+                                                   obj->cur->geometry.w, obj->cur->geometry.h,
                                                    do_async);
         _evas_vg_render(obj, vd, output, context, surface, vd->root, NULL, do_async);
         obj->layer->evas->engine.func->ector_end(output, context, ector, surface, do_async);
@@ -366,7 +368,10 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
      {
         if (vd->content_changed)
           {
-             obj->layer->evas->engine.func->ector_begin(output, context, ector, vd->backing_store, 0, 0, do_async);
+             obj->layer->evas->engine.func->ector_begin(output, context, ector, vd->backing_store, EINA_TRUE,
+                                                        0, 0,
+                                                        obj->cur->geometry.w, obj->cur->geometry.h,
+                                                        do_async);
              _evas_vg_render(obj, vd, output, context, vd->backing_store, vd->root, NULL,do_async);
              obj->layer->evas->engine.func->image_dirty_region(obj->layer->evas->engine.data.output, vd->backing_store,
                                                                0, 0, 0, 0);
