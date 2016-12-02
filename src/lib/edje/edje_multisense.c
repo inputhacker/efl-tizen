@@ -209,12 +209,16 @@ _edje_multisense_internal_sound_sample_play(Edje *ed, const char *sample_name, c
                          eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED, _play_finished, NULL));
              if (!out)
                {
+/* TIZEN_ONLY(20161109, 20161202)
+ *  (20161109): ecore_audio: Add tizen ecore_audio module(e182090493d623212cd0ee7d55ae4ebd679eff42)
+ *  (20161202): ecore_audio: Add 'TIZEN_ONLY' comment
+ */
 #if HAVE_TIZENAUDIO
                   if (!(out = eo_add(ECORE_AUDIO_OUT_TIZEN_CLASS, NULL)))
                     {
                        ERR("Could not create multisense audio out (Tizen Audio)");
 #endif
-
+/* END */
 #if HAVE_COREAUDIO
                   out = eo_add(ECORE_AUDIO_OUT_CORE_AUDIO_CLASS, NULL);
 #elif HAVE_PULSE
@@ -222,9 +226,14 @@ _edje_multisense_internal_sound_sample_play(Edje *ed, const char *sample_name, c
                                eo_event_callback_add(ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL, _out_fail, NULL));
 #endif
 
+/* TIZEN_ONLY(20161109, 20161202)
+ *  (20161109): ecore_audio: Add tizen ecore_audio module(e182090493d623212cd0ee7d55ae4ebd679eff42)
+ *  (20161202): ecore_audio: Add 'TIZEN_ONLY' comment
+ */
 #if HAVE_TIZENAUDIO
                     }
 #endif
+/* END */
                   if (out) outs++;
                }
              if (!out)
