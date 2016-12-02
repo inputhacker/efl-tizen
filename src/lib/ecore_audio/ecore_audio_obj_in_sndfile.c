@@ -30,12 +30,16 @@ typedef struct _Ecore_Audio_In_Sndfile_Data Ecore_Audio_In_Sndfile_Data;
 EOLIAN static ssize_t
 _ecore_audio_in_sndfile_ecore_audio_in_read_internal(Eo *eo_obj EINA_UNUSED, Ecore_Audio_In_Sndfile_Data *obj, void *data, size_t len)
 {
-  // TIZEN_ONLY(20161116): Add signed 16 read if write module only support S16
+  /* TIZEN_ONLY(20161109, 20161202)
+   *  (20161109): ecore_audio: Add tizen ecore_audio module(e182090493d623212cd0ee7d55ae4ebd679eff42)
+   *  (20161202): ecore_audio: Add 'TIZEN_ONLY' comment
+   * Description: Add signed 16 read if write module only support S16
+   */
   char *pcm_fmt;
   eo_do(eo_obj, pcm_fmt = (char *)eo_key_data_get("pcm_fmt"));
   if (pcm_fmt && !strcmp(pcm_fmt, "S16"))
     return sf_read_short(obj->handle, data, len/2)*2;
-  //
+  /* END */
 
   return sf_read_float(obj->handle, data, len/4)*4;
 }
@@ -212,12 +216,16 @@ _ecore_audio_in_sndfile_eo_base_destructor(Eo *eo_obj, Ecore_Audio_In_Sndfile_Da
   if (ea_obj->vio)
     _free_vio(ea_obj);
 
-  // TIZEN_ONLY(20161116): Add signed 16 read if write module only support S16
+  /* TIZEN_ONLY(20161109, 20161202)
+   *  (20161109): ecore_audio: Add tizen ecore_audio module(e182090493d623212cd0ee7d55ae4ebd679eff42)
+   *  (20161202): ecore_audio: Add 'TIZEN_ONLY' comment
+   * Description: Add signed 16 read if write module only support S16
+   */
   char *pcm_fmt;
   eo_do(eo_obj, pcm_fmt = (char *)eo_key_data_get("pcm_fmt"));
   eo_do(eo_obj, eo_key_data_set("pcm_fmt", NULL));
   free(pcm_fmt);
-  //
+  /* END */
 
   eo_do_super(eo_obj, MY_CLASS, eo_destructor());
 }
