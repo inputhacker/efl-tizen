@@ -730,6 +730,16 @@ _edje_textblock_styles_del(Edje *ed, Edje_Part *pt)
                {
                   if (tag->text_class)
                     _edje_text_class_member_del(ed, tag->text_class);
+
+                  /* TIZEN_ONLY(20161202): Clear color_class members for all descriptions */
+                  if (tag->color_class)
+                    _edje_color_class_member_del(ed, tag->color_class);
+                  /* END */
+
+                  /* TIZEN_ONLY(20161202): Clear color_class members for all descriptions */
+                  if (tag->text_class || tag->color_class)
+                    _edje_textblock_styles_cache_del(ed, stl);
+                  /* END */
                }
           }
      }
