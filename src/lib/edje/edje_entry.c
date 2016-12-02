@@ -3102,7 +3102,7 @@ _edje_entry_real_part_init(Edje *ed, Edje_Real_Part *rp, Ecore_IMF_Context *ic)
         evas_object_pass_events_set(en->cursor_fg, EINA_TRUE);
         _edje_subobj_register(ed, en->cursor_fg);
         /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
-        edje_object_color_class_parent_set(en->cursor_bg, ed->obj);
+        edje_object_color_class_parent_set(en->cursor_fg, ed->obj);
         /* END */
      }
 
