@@ -10,9 +10,9 @@ class Ector.Gl.Surface (Ector.Generic.Surface)
          }
          values {
             pixels: void *;
-            width: uint;
-            height: uint;
-            stride: uint;
+            width: uint32_t;
+            height: uint32_t;
+            stride: uint32_t;
          }
       }
       offset {
@@ -24,17 +24,17 @@ class Ector.Gl.Surface (Ector.Generic.Surface)
       path_fill {
         params {
           vertex:float *;
-          vertex_count: uint;
+          vertex_count: uint32_t;
           stops: int *;
-          stop_count: uint;
-          color: uint;
+          stop_count: uint32_t;
+          color: uint32_t;
         }
       }
       path_stroke {
         params {
           vertex:float *;
-          vertex_count: uint;
-          color: uint;
+          vertex_count: uint32_t;
+          color: uint32_t;
         }
       }
    }
