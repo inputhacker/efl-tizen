@@ -580,6 +580,10 @@ delete_input_field(Entry *en)
         en->txt_style = NULL;
      }
 
+   ecore_imf_context_event_callback_del(en->imf_context, ECORE_IMF_CALLBACK_COMMIT, _ecore_imf_event_commit_cb);
+   ecore_imf_context_event_callback_del(en->imf_context, ECORE_IMF_CALLBACK_PREEDIT_CHANGED, _ecore_imf_event_preedit_changed_cb);
+   ecore_imf_context_event_callback_del(en->imf_context, ECORE_IMF_CALLBACK_DELETE_SURROUNDING, _ecore_imf_event_delete_surrounding_cb);
+
    if (en->imf_context)
      {
         ecore_imf_context_del(en->imf_context);
