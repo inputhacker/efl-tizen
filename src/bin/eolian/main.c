@@ -419,11 +419,14 @@ end:
    free(eo_filename_copy);
    free(output_filename);
 
-   eina_log_timing(_eolian_gen_log_dom,
-         EINA_LOG_STATE_START,
-         EINA_LOG_STATE_SHUTDOWN);
-   eina_log_domain_unregister(_eolian_gen_log_dom);
-   _eolian_gen_log_dom = -1;
+   if (_eolian_gen_log_dom >= 0)
+     {
+        eina_log_timing(_eolian_gen_log_dom,
+                        EINA_LOG_STATE_START,
+                        EINA_LOG_STATE_SHUTDOWN);
+        eina_log_domain_unregister(_eolian_gen_log_dom);
+        _eolian_gen_log_dom = -1;
+     }
 
    eolian_shutdown();
    eina_shutdown();
