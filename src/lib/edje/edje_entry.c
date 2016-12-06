@@ -4728,14 +4728,16 @@ _edje_entry_imf_cursor_info_set(Entry *en)
 
 #ifdef HAVE_ECORE_IMF
 static Eina_Bool
-_edje_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx EINA_UNUSED, char **text, int *cursor_pos)
+_edje_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx, char **text, int *cursor_pos)
 {
    Edje *ed = data;
    Edje_Real_Part *rp = ed->focused_part;
    Entry *en = NULL;
    const char *str;
    char *plain_text;
-
+// TIZEN_ONLY(20161206): Support multibyte on result of retrieve_surrounding_cb
+   int i = 0, len = 0;
+// END
    if (!rp) return EINA_FALSE;
    if ((rp->type != EDJE_RP_TYPE_TEXT) ||
        (!rp->typedata.text)) return EINA_FALSE;
@@ -4754,13 +4756,6 @@ _edje_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx EINA_
 
              if (plain_text)
                {
-                  if(ecore_imf_context_input_hint_get(ctx) & ECORE_IMF_INPUT_HINT_SENSITIVE_DATA)
-                    {
-                       char *itr = NULL;
-                       for (itr = plain_text; itr && *itr; itr++)
-                          *itr = '*';
-                    }
-
                   *text = strdup(plain_text);
                   free(plain_text);
                   plain_text = NULL;
@@ -4770,6 +4765,20 @@ _edje_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx EINA_
           }
         else
           *text = strdup("");
+
+// TIZEN_ONLY(20161206): Support multibyte on result of retrieve_surrounding_cb
+        if (ctx && (ecore_imf_context_input_hint_get(ctx) & ECORE_IMF_INPUT_HINT_SENSITIVE_DATA))
+          {
+             len = eina_unicode_utf8_get_len(*text);
+             *text = realloc(*text, (1+len)*sizeof(char));
+             if(*text)
+               {
+                  for (i = 0; i < len; i++)
+                    (*text)[i] = '*';
+                  (*text)[len] = '\0';
+               }
+          }
+// END
      }
 
    if (cursor_pos)
