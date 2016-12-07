@@ -2065,7 +2065,7 @@ EAPI Evas_Object *evas_object_vg_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_N
 EAPI void evas_object_vg_path_set(Evas_Object *vg, const char *path, int src_vg, int dest_vg, float pos) EINA_ARG_NONNULL(1);
 
 #include "canvas/evas_vg.eo.legacy.h"
-
+#include "canvas/efl_vg_container.eo.legacy.h"
 /**
  * Creates a new vector shape object \.
  *
