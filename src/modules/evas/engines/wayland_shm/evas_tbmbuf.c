@@ -528,9 +528,6 @@ _evas_tbmbuf_surface_destroy(Surface *s)
                sym_tbm_surface_queue_destroy(surf->tbm_queue);
             }
 
-         if (surf->tbm_client)
-            sym_wayland_tbm_client_deinit(surf->tbm_client);
-
          surf->tbm_queue = NULL;
          surf->tbm_client = NULL;
          free(surf);
@@ -564,7 +561,7 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff EINA_UNUSED)
    surf->compositor_version = 3;
 
    /* create tbm_client */
-   surf->tbm_client = sym_wayland_tbm_client_init(surf->wl_display);
+   surf->tbm_client = s->info->info.tbm_client;
    if (surf->tbm_client == NULL) {
          ERR("No wayland_tbm global");
          goto err;

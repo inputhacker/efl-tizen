@@ -15,6 +15,7 @@ struct _Evas_Engine_Info_Wayland_Shm
         /* the wayland shm object used to create new shm pool */
         struct wl_shm *wl_shm;
         struct wl_surface *wl_surface;
+        struct wayland_tbm_client *tbm_client;
 
         unsigned int rotation, depth;
         Eina_Bool destination_alpha : 1;
