@@ -1205,6 +1205,11 @@ EAPI void
 evas_gl_common_context_resize(Evas_Engine_GL_Context *gc, int w, int h, int rot, int force_update)
 {
    if (!gc) return;
+
+   // update default surface size
+   gc->def_surface->w = w;
+   gc->def_surface->h = h;
+
    if ((!force_update) && (gc->w == w) && (gc->h == h) && (gc->rot == rot)) return;
    evas_gl_common_context_flush(gc);
    gc->rot = rot;
