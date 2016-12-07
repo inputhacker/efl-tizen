@@ -1085,8 +1085,13 @@ _is_anchors_outside_viewport(Evas_Coord oxy, Evas_Coord axy, Evas_Coord awh,
    return EINA_FALSE;
 }
 
+/* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
 static void
 _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
+ */
+static void
+_anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en, Eina_Bool force_update)
+/* END */
 {
    Eina_List *l, *ll, *range = NULL;
    Evas_Coord x, y, w, h;
@@ -1098,7 +1103,11 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
    Edje *ed = en->ed;
 
    /* Better not to update anchors outside the view port. */
+   /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
    if (en->anchors_updated) return;
+    */
+   if (!force_update && en->anchors_updated) return;
+   /* END */
 
    smart = evas_object_smart_parent_get(o);
    clip = evas_object_clip_get(o);
@@ -1121,8 +1130,14 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
                   continue;
                }
 
+             /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
              if (_is_anchors_outside_viewport(y, cy, ch, vy, tvh) ||
                            _is_anchors_outside_viewport(x, cx, cw, vx, tvw))
+              */
+             if (!force_update &&
+                 (_is_anchors_outside_viewport(y, cy, ch, vy, tvh) ||
+                  _is_anchors_outside_viewport(x, cx, cw, vx, tvw)))
+             /* END */
                {
                   if (an->sel)
                     {
@@ -1149,7 +1164,15 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
              sel = an->sel->data;
              evas_object_move(sel->obj, x + cx, y + cy);
              evas_object_resize(sel->obj, cw, ch);
+             /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
              evas_object_show(sel->obj);
+              */
+             if (_is_anchors_outside_viewport(y, cy, ch, vy, tvh) ||
+                 _is_anchors_outside_viewport(x, cx, cw, vx, tvw))
+               evas_object_show(sel->obj);
+             else
+               evas_object_hide(sel->obj);
+             /* END */
           }
         // for link anchors
         else
@@ -1177,7 +1200,11 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
                        r->h = r->y + r_last->y + r_last->h;
                     }
                   /* For vertically layout entry */
+                  /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
                   if (_is_anchors_outside_viewport(y, r->y, r->h, vy, tvh))
+                   */
+                  if (!force_update && _is_anchors_outside_viewport(y, r->y, r->h, vy, tvh))
+                  /* END */
                     {
                        EINA_LIST_FREE(range, r)
                          free(r);
@@ -1310,12 +1337,21 @@ _anchors_update_check(Edje *ed, Edje_Real_Part *rp)
 
    if (en->anchors_updated)
      en->anchors_updated = anchors_updated;
+   /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
    _anchors_update(en->cursor, rp->object, en);
+    */
+   _anchors_update(en->cursor, rp->object, en, EINA_FALSE);
+   /* END */
    en->anchors_updated = anchors_updated;
 }
 
+/* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
 static void
 _anchors_need_update(Edje_Real_Part *rp)
+ */
+static void
+_anchors_need_update(Edje_Real_Part *rp, Eina_Bool force_update)
+/* END */
 {
    Entry *en;
    Eina_Bool anchors_updated;
@@ -1323,7 +1359,11 @@ _anchors_need_update(Edje_Real_Part *rp)
    en = rp->typedata.text->entry_data;
    anchors_updated = en->anchors_updated;
    en->anchors_updated = EINA_FALSE;
+   /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
    _anchors_update(en->cursor, rp->object, en);
+    */
+   _anchors_update(en->cursor, rp->object, en, force_update);
+   /* END */
    en->anchors_updated = anchors_updated;
 }
 
@@ -2972,7 +3012,11 @@ _canvas_viewport_resize_cb(void *data, Evas *e EINA_UNUSED, void *event_info EIN
                        (rp->part->entry_mode < EDJE_ENTRY_EDIT_MODE_SELECTABLE))
      return;
 
+   /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
    _anchors_need_update(rp);
+    */
+   _anchors_need_update(rp, EINA_FALSE);
+   /* END */
 }
 
 static void
@@ -3581,7 +3625,11 @@ _edje_entry_anchor_geometry_get(Edje_Real_Part *rp, const char *anchor)
    if (!en) return NULL;
    /* Update the anchors first in case entry is not inside the canvas
     * viewport */
+   /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
    _anchors_need_update(rp);
+    */
+   _anchors_need_update(rp, EINA_TRUE);
+   /* END */
    EINA_LIST_FOREACH(en->anchors, l, an)
      {
         const char *n = an->name;
@@ -3605,7 +3653,11 @@ _edje_entry_anchors_list(Edje_Real_Part *rp)
    if (!en) return NULL;
    /* Update the anchors first in case entry is not inside the canvas
     * viewport */
+   /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
    _anchors_need_update(rp);
+    */
+   _anchors_need_update(rp, EINA_TRUE);
+   /* END */
    if (!en->anchorlist)
      {
         EINA_LIST_FOREACH(en->anchors, l, an)
@@ -3630,6 +3682,11 @@ _edje_entry_item_geometry_get(Edje_Real_Part *rp, const char *item, Evas_Coord *
        (!rp->typedata.text)) return EINA_FALSE;
    en = rp->typedata.text->entry_data;
    if (!en) return EINA_FALSE;
+   /* Update the anchors first in case entry is not inside the canvas
+    * viewport */
+   /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors */
+   _anchors_need_update(rp, EINA_TRUE);
+   /* END */
    EINA_LIST_FOREACH(en->anchors, l, an)
      {
         const char *n = an->name;
@@ -3657,7 +3714,11 @@ _edje_entry_items_list(Edje_Real_Part *rp)
    if (!en) return NULL;
    /* Update the anchors first in case entry is not inside the canvas
     * viewport */
+   /* TIZEN_ONLY(20161207): force update anchors when a API is called to get list of anchors
    _anchors_need_update(rp);
+    */
+   _anchors_need_update(rp, EINA_TRUE);
+   /* END */
    if (!en->itemlist)
      {
         EINA_LIST_FOREACH(en->anchors, l, an)
