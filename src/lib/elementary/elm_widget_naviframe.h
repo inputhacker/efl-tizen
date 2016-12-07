@@ -97,8 +97,11 @@ struct _Elm_Naviframe_Text_Item_Pair
 typedef struct _Elm_Naviframe_Mod_Api Elm_Naviframe_Mod_Api;
 struct _Elm_Naviframe_Mod_Api
 {
-   void (*tizen_push_effect)(Evas_Object *nf, Evas_Object *cur_view, Evas_Object *new_view);
-   void (*tizen_pop_effect)(Evas_Object *nf, Evas_Object *cur_view, Evas_Object *prev_view);
+   void (*tizen_push_effect)(Evas_Object *nf, Evas_Object *view, Eina_Bool is_cur_view);
+   void (*tizen_pop_effect)(Evas_Object *nf, Evas_Object *view, Eina_Bool is_cur_view);
+   void (*tizen_push_deferred_effect)(Evas_Object *nf, Evas_Object *view, Eina_Bool is_cur_view);
+   void (*tizen_pop_deferred_effect)(Evas_Object *nf, Evas_Object *view, Eina_Bool is_cur_view);
+   Eina_Bool (*tizen_effect_enabled_get)(Evas_Object *view);
 };
 //
 

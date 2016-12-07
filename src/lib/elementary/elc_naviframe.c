@@ -74,8 +74,29 @@ _nf_mod_init(void)
       _elm_module_symbol_get(mod, "tizen_push_effect");
    ((Elm_Naviframe_Mod_Api *)(mod->api))->tizen_pop_effect =
       _elm_module_symbol_get(mod, "tizen_pop_effect");
+   ((Elm_Naviframe_Mod_Api *)(mod->api))->tizen_push_deferred_effect =
+      _elm_module_symbol_get(mod, "tizen_push_deferred_effect");
+   ((Elm_Naviframe_Mod_Api *)(mod->api))->tizen_pop_deferred_effect =
+      _elm_module_symbol_get(mod, "tizen_pop_deferred_effect");
+   ((Elm_Naviframe_Mod_Api *)(mod->api))->tizen_effect_enabled_get =
+      _elm_module_symbol_get(mod, "tizen_effect_enabled_get");
 
    nf_mod = mod->api;
+}
+//
+
+//TIZEN ONLY(20161208): Support tizen transition
+static Eina_Bool
+_tizen_effect_enabled_get(Elm_Naviframe_Item_Data *it)
+{
+   if (nf_mod &&
+       nf_mod->tizen_effect_enabled_get &&
+       nf_mod->tizen_effect_enabled_get(VIEW(it)))
+     {
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
 }
 //
 
@@ -666,7 +687,11 @@ _elm_naviframe_item_efl_object_destructor(Eo *eo_item, Elm_Naviframe_Item_Data *
 
         _prev_page_focus_recover(prev_it);
 
-        elm_object_signal_emit(VIEW(prev_it), "elm,state,visible", "elm");
+        //TIZEN ONLY(20161208): Support tizen transition
+        //elm_object_signal_emit(VIEW(prev_it), "elm,state,visible", "elm");
+        if (!_tizen_effect_enabled_get(prev_it))
+          elm_object_signal_emit(VIEW(prev_it), "elm,state,visible", "elm");
+        //
 
         //TIZEN_ONLY(20171019): add state_notify api
         if (_elm_atspi_enabled())
@@ -1222,7 +1247,11 @@ _on_item_push_finished(void *data,
       efl_access_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
    //
 
-   elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+   //TIZEN ONLY(20161208): Support tizen transition
+   //elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+   if (!_tizen_effect_enabled_get(it))
+     elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+   //
 
    if (sd->freeze_events)
      evas_object_freeze_events_set(VIEW(it), EINA_FALSE);
@@ -1270,7 +1299,11 @@ _on_item_show_finished(void *data,
 
    ELM_NAVIFRAME_DATA_GET(WIDGET(it), sd);
 
-   elm_object_signal_emit(VIEW(it), "elm,state,visible", "elm");
+   //TIZEN ONLY(20161208): Support tizen transition
+   //elm_object_signal_emit(VIEW(it), "elm,state,visible", "elm");
+   if (!_tizen_effect_enabled_get(it))
+     elm_object_signal_emit(VIEW(it), "elm,state,visible", "elm");
+   //
 
    elm_widget_tree_unfocusable_set(VIEW(it), EINA_FALSE);
    _prev_page_focus_recover(it);
@@ -1528,20 +1561,44 @@ _deferred(void *data, const Efl_Event *event EINA_UNUSED)
         cur = nfo->push ? nfo->related : nfo->self;
         other = nfo->push ? nfo->self : nfo->related;
 
-        _send_signal(cur, signals_cur[nfo->push]);
-        _send_signal(other, nfo->push ? signals_new : signals_prev);
-
-        //TIZEN ONLY(20160829): Support tizen transition
-        if (nfo->push)
+        //TIZEN ONLY(20161208): Support tizen transition
+        //_send_signal(cur, signals_cur[nfo->push]);
+        //_send_signal(other, nfo->push ? signals_new : signals_prev);
+        if (_tizen_effect_enabled_get(cur))
           {
-             if (nf_mod && nf_mod->tizen_push_effect)
-               nf_mod->tizen_push_effect(WIDGET(cur), VIEW(cur), VIEW(other));
+             if (nfo->push)
+               {
+                  if (nf_mod->tizen_push_deferred_effect)
+                    nf_mod->tizen_push_deferred_effect(WIDGET(cur), VIEW(cur),
+                                                       EINA_TRUE);
+               }
+             else
+               {
+                  if (nf_mod->tizen_pop_deferred_effect)
+                    nf_mod->tizen_pop_deferred_effect(WIDGET(cur), VIEW(cur),
+                                                      EINA_TRUE);
+               }
           }
         else
+          _send_signal(cur, signals_cur[nfo->push]);
+
+        if (_tizen_effect_enabled_get(other))
           {
-             if (nf_mod && nf_mod->tizen_pop_effect)
-               nf_mod->tizen_pop_effect(WIDGET(cur), VIEW(cur), VIEW(other));
+             if (nfo->push)
+               {
+                  if (nf_mod->tizen_push_deferred_effect)
+                    nf_mod->tizen_push_deferred_effect(WIDGET(other),
+                                                       VIEW(other), EINA_FALSE);
+               }
+             else
+               {
+                  if (nf_mod->tizen_pop_deferred_effect)
+                    nf_mod->tizen_pop_deferred_effect(WIDGET(other),
+                                                      VIEW(other), EINA_FALSE);
+               }
           }
+        else
+          _send_signal(other, nfo->push ? signals_new : signals_prev);
         //
 
         free(nfo);
@@ -1687,10 +1744,34 @@ _item_push_helper(Elm_Naviframe_Item_Data *item)
              evas_object_freeze_events_set(VIEW(item), EINA_TRUE);
              evas_object_freeze_events_set(VIEW(top_item), EINA_TRUE);
           }
-        elm_object_signal_emit(VIEW(top_item), "elm,state,cur,pushed", "elm");
-        elm_object_signal_emit(VIEW(item), "elm,state,new,pushed", "elm");
-        edje_object_message_signal_process(elm_layout_edje_get(VIEW(top_item)));
-        edje_object_message_signal_process(elm_layout_edje_get(VIEW(item)));
+
+        //TIZEN ONLY(20161208): Support tizen transition
+        //elm_object_signal_emit(VIEW(top_item), "elm,state,cur,pushed", "elm");
+        //elm_object_signal_emit(VIEW(item), "elm,state,new,pushed", "elm");
+        //edje_object_message_signal_process(elm_layout_edje_get(VIEW(top_item)));
+        //edje_object_message_signal_process(elm_layout_edje_get(VIEW(item)));
+        if (_tizen_effect_enabled_get(top_item))
+          {
+             if (nf_mod->tizen_push_effect)
+               nf_mod->tizen_push_effect(obj, VIEW(top_item), EINA_TRUE);
+          }
+        else
+          {
+             elm_object_signal_emit(VIEW(top_item), "elm,state,cur,pushed", "elm");
+             edje_object_message_signal_process(elm_layout_edje_get(VIEW(top_item)));
+          }
+
+        if (_tizen_effect_enabled_get(item))
+          {
+             if (nf_mod->tizen_push_effect)
+               nf_mod->tizen_push_effect(obj, VIEW(item), EINA_FALSE);
+          }
+        else
+          {
+             elm_object_signal_emit(VIEW(item), "elm,state,new,pushed", "elm");
+             edje_object_message_signal_process(elm_layout_edje_get(VIEW(item)));
+          }
+        //
 
         nfo->self = item;
         nfo->related = top_item;
@@ -1712,7 +1793,13 @@ _item_push_helper(Elm_Naviframe_Item_Data *item)
    sd->stack = eina_inlist_append(sd->stack, EINA_INLIST_GET(item));
 
    if (!top_item)
-     elm_object_signal_emit(VIEW(item), "elm,state,visible", "elm");
+     //TIZEN ONLY(20161208): Support tizen transition
+     //elm_object_signal_emit(VIEW(item), "elm,state,visible", "elm");
+     {
+        if (!_tizen_effect_enabled_get(item))
+          elm_object_signal_emit(VIEW(item), "elm,state,visible", "elm");
+     }
+   //
 
    elm_layout_sizing_eval(obj);
 
@@ -1795,7 +1882,11 @@ _elm_naviframe_item_insert_before(Eo *obj, Elm_Naviframe_Data *sd, Elm_Object_It
 
    elm_widget_tree_unfocusable_set(VIEW(it), EINA_TRUE);
    evas_object_hide(VIEW(it));
-   elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+   //TIZEN ONLY(20161208): Support tizen transition
+   //elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+   if (!_tizen_effect_enabled_get(it))
+     elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+   //
 
    elm_layout_sizing_eval(obj);
 
@@ -1845,11 +1936,24 @@ _elm_naviframe_item_insert_after(Eo *obj, Elm_Naviframe_Data *sd, Elm_Object_Ite
           elm_object_focus_set(VIEW(it), EINA_TRUE);
         else
           elm_object_focus_set(WIDGET(it), EINA_TRUE);
-        elm_object_signal_emit(VIEW(it), "elm,state,visible", "elm");
-        elm_object_signal_emit(VIEW(after), "elm,state,invisible", "elm");
+        //TIZEN ONLY(20161208): Support tizen transition
+        //elm_object_signal_emit(VIEW(it), "elm,state,visible", "elm");
+        //elm_object_signal_emit(VIEW(after), "elm,state,invisible", "elm");
+        if (!_tizen_effect_enabled_get(it))
+          elm_object_signal_emit(VIEW(it), "elm,state,visible", "elm");
+
+        if (!_tizen_effect_enabled_get(after))
+          elm_object_signal_emit(VIEW(after), "elm,state,invisible", "elm");
+        //
      }
    else
-     elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+   //TIZEN ONLY(20161208): Support tizen transition
+     //elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+     {
+        if (!_tizen_effect_enabled_get(it))
+          elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
+     }
+   //
 
    elm_layout_sizing_eval(obj);
 
@@ -1938,11 +2042,34 @@ _elm_naviframe_item_pop(Eo *obj, Elm_Naviframe_Data *sd)
 
         elm_widget_resize_object_set(obj, VIEW(prev_it));
 
+        //TIZEN ONLY(20161208): Support tizen transition
         /* these 2 signals MUST take place simultaneously */
-        elm_object_signal_emit(VIEW(it), "elm,state,cur,popped", "elm");
-        elm_object_signal_emit(VIEW(prev_it), "elm,state,prev,popped", "elm");
-        edje_object_message_signal_process(elm_layout_edje_get(VIEW(it)));
-        edje_object_message_signal_process(elm_layout_edje_get(VIEW(prev_it)));
+        //elm_object_signal_emit(VIEW(it), "elm,state,cur,popped", "elm");
+        //elm_object_signal_emit(VIEW(prev_it), "elm,state,prev,popped", "elm");
+        //edje_object_message_signal_process(elm_layout_edje_get(VIEW(it)));
+        //edje_object_message_signal_process(elm_layout_edje_get(VIEW(prev_it)));
+        if (_tizen_effect_enabled_get(it))
+          {
+             if (nf_mod->tizen_pop_effect)
+               nf_mod->tizen_pop_effect(obj, VIEW(it), EINA_TRUE);
+          }
+        else
+          {
+             elm_object_signal_emit(VIEW(it), "elm,state,cur,popped", "elm");
+             edje_object_message_signal_process(elm_layout_edje_get(VIEW(it)));
+          }
+
+        if (_tizen_effect_enabled_get(prev_it))
+          {
+             if (nf_mod->tizen_pop_effect)
+               nf_mod->tizen_pop_effect(obj, VIEW(prev_it), EINA_FALSE);
+          }
+        else
+          {
+             elm_object_signal_emit(VIEW(prev_it), "elm,state,prev,popped", "elm");
+             edje_object_message_signal_process(elm_layout_edje_get(VIEW(prev_it)));
+          }
+        //
 
         //Show hidden previous view when pop transition begins.
         evas_object_show(VIEW(prev_it));
