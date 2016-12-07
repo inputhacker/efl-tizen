@@ -1,4 +1,5 @@
 #include "ecore_evas_wayland_private.h"
+#include <wayland-tbm-client.h>
 
 #ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
 # include <Evas_Engine_Wayland_Shm.h>
@@ -31,6 +32,7 @@
 #endif /* ! _WIN32 */
 
 /* local function prototypes */
+static void _ecore_evas_wl_free(Ecore_Evas *ee);
 static void _ecore_evas_wl_move_resize(Ecore_Evas *ee, int x, int y, int w, int h);
 static void _ecore_evas_wl_show(Ecore_Evas *ee);
 static void _ecore_evas_wl_hide(Ecore_Evas *ee);
@@ -40,7 +42,7 @@ static void _ecore_evas_wl_rotation_set(Ecore_Evas *ee, int rotation, int resize
 
 static Ecore_Evas_Engine_Func _ecore_wl_engine_func = 
 {
-   _ecore_evas_wl_common_free,
+   _ecore_evas_wl_free,
    _ecore_evas_wl_common_callback_resize_set,
    _ecore_evas_wl_common_callback_move_set,
    NULL, 
@@ -125,6 +127,7 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
    Ecore_Evas_Engine_Wl_Data *wdata;
    Ecore_Evas_Interface_Wayland *iface;
    Ecore_Evas *ee;
+   int _ecore_evas_wl_init_count = -1;
    int method = 0;
    int fx = 0, fy = 0, fw = 0, fh = 0;
 
@@ -162,7 +165,7 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
 
    ECORE_MAGIC_SET(ee, ECORE_MAGIC_EVAS);
 
-   _ecore_evas_wl_common_init();
+   _ecore_evas_wl_init_count = _ecore_evas_wl_common_init();
 
    ee->engine.func = (Ecore_Evas_Engine_Func *)&_ecore_wl_engine_func;
    ee->engine.data = wdata;
@@ -252,6 +255,10 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
      {
         einfo->info.wl_disp = ecore_wl_display_get();
         einfo->info.wl_shm = ecore_wl_shm_get();
+
+        if (_ecore_evas_wl_init_count == 1)
+              einfo->info.tbm_client = wayland_tbm_client_init(einfo->info.wl_disp);
+
         einfo->info.destination_alpha = EINA_TRUE;
         einfo->info.rotation = ee->rotation;
         einfo->info.wl_surface = ecore_wl_window_surface_create(wdata->win);
@@ -316,6 +323,24 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
 }
 
 static void 
+_ecore_evas_wl_free(Ecore_Evas *ee)
+{
+   Evas_Engine_Info_Wayland_Shm *einfo;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   if (!ee) return;
+
+   einfo = (Evas_Engine_Info_Wayland_Shm *)evas_engine_info_get(ee->evas);
+   if (einfo && einfo->info.tbm_client)
+      {
+         if (_ecore_evas_common_init_count_get() == 1)
+            wayland_tbm_client_deinit(einfo->info.tbm_client);
+      }
+   _ecore_evas_wl_common_free(ee);
+}
+
+static void
 _ecore_evas_wl_move_resize(Ecore_Evas *ee, int x, int y, int w, int h)
 {
    LOGFN(__FILE__, __LINE__, __FUNCTION__);

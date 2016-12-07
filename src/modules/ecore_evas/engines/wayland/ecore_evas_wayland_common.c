@@ -2091,3 +2091,9 @@ _ecore_evas_wl_interface_new(void)
 
    return iface;
 }
+
+int
+_ecore_evas_common_init_count_get(void)
+{
+   return _ecore_evas_wl_init_count;
+}
