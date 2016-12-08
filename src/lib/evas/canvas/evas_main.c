@@ -67,7 +67,7 @@ evas_init(void)
    evas_filter_init();
    evas_cache_svg_init();
 
-   if(!evas_thread_init())
+   if(!evas_threads_init())
      goto shutdown_thread;
 
    eina_log_timing(_evas_log_dom_global,
@@ -146,7 +146,7 @@ evas_shutdown(void)
    evas_object_filter_cow = NULL;
    evas_object_mask_cow = NULL;
 
-   evas_thread_shutdown();
+   evas_threads_shutdown();
    _evas_preload_thread_shutdown();
    evas_async_events_shutdown();
    evas_common_shutdown();

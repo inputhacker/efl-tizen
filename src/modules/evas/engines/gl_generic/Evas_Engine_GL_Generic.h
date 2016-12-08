@@ -5,6 +5,7 @@
 #include "../gl_common/evas_gl_common.h"
 #include "../gl_common/evas_gl_core.h"
 #include "../gl_common/evas_gl_core_private.h"
+#include "../gl_common/evas_gl_thread.h"
 
 typedef struct _Render_Engine_GL_Generic Render_Engine_GL_Generic;
 typedef struct _Context_3D Context_3D;

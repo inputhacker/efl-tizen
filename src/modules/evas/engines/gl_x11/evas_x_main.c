@@ -2,6 +2,11 @@
 #include "../gl_common/evas_gl_define.h"
 #include <dlfcn.h>
 
+#ifdef GL_GLES
+#include "../gl_common/evas_gl_thread_egl.h"
+#endif
+#include "../gl_common/evas_gl_thread_gl.h"
+
 # define SET_RESTORE_CONTEXT() do { if (glsym_evas_gl_common_context_restore_set) glsym_evas_gl_common_context_restore_set(EINA_TRUE); } while(0)
 
 static Eina_TLS _outbuf_key = 0;
@@ -229,9 +234,9 @@ eng_window_new(Evas_Engine_Info_GL_X11 *info,
         eng_window_free(gw);
         return NULL;
      }
-   if (!eglBindAPI(EGL_OPENGL_ES_API))
+   if (!eglBindAPI_thread_cmd(EGL_OPENGL_ES_API))
      {
-        ERR("eglBindAPI() fail. code=%#x", eglGetError());
+        ERR("eglBindAPI() fail. code=%#x", eglGetError_thread_cmd());
         eng_window_free(gw);
         return NULL;
      }
@@ -276,20 +281,20 @@ try_gles2:
      _tls_context_set(gw->egl_context[0]);
    
    SET_RESTORE_CONTEXT();
-   if (eglMakeCurrent(gw->egl_disp,
+   if (eglMakeCurrent_thread_cmd(gw->egl_disp,
                       gw->egl_surface[0],
                       gw->egl_surface[0],
                       gw->egl_context[0]) == EGL_FALSE)
      {
-        ERR("eglMakeCurrent() fail. code=%#x", eglGetError());
+        ERR("eglMakeCurrent() fail. code=%#x", eglGetError_thread_cmd());
         eng_window_free(gw);
         return NULL;
      }
 
-   vendor = glGetString(GL_VENDOR);
-   renderer = glGetString(GL_RENDERER);
-   version = glGetString(GL_VERSION);
-   glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+   vendor = glGetString_thread_cmd(GL_VENDOR);
+   renderer = glGetString_thread_cmd(GL_RENDERER);
+   version = glGetString_thread_cmd(GL_VERSION);
+   glslversion = glGetString_thread_cmd(GL_SHADING_LANGUAGE_VERSION);
    if (!vendor)   vendor   = (unsigned char *)"-UNKNOWN-";
    if (!renderer) renderer = (unsigned char *)"-UNKNOWN-";
    if (!version)  version  = (unsigned char *)"-UNKNOWN-";
@@ -428,10 +433,10 @@ try_gles2:
      }
    // FIXME: move this up to context creation
 
-   vendor = glGetString(GL_VENDOR);
-   renderer = glGetString(GL_RENDERER);
-   version = glGetString(GL_VERSION);
-   glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+   vendor = glGetString_thread_cmd(GL_VENDOR);
+   renderer = glGetString_thread_cmd(GL_RENDERER);
+   version = glGetString_thread_cmd(GL_VERSION);
+   glslversion = glGetString_thread_cmd(GL_SHADING_LANGUAGE_VERSION);
    if (!vendor)   vendor   = (unsigned char *)"-UNKNOWN-";
    if (!renderer) renderer = (unsigned char *)"-UNKNOWN-";
    if (!version)  version  = (unsigned char *)"-UNKNOWN-";
@@ -591,7 +596,7 @@ eng_window_free(Outbuf *gw)
      }
 #ifdef GL_GLES
    SET_RESTORE_CONTEXT();
-   eglMakeCurrent(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+   eglMakeCurrent_thread_cmd(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
    if (gw->egl_surface[0] != EGL_NO_SURFACE)
       eglDestroySurface(gw->egl_disp, gw->egl_surface[0]);
    if (gw->egl_surface[1] != EGL_NO_SURFACE)
@@ -632,12 +637,12 @@ eng_window_make_current(void *data, void *doit)
    SET_RESTORE_CONTEXT();
    if (doit)
      {
-        if (!eglMakeCurrent(gw->egl_disp, gw->egl_surface[0], gw->egl_surface[0], gw->egl_context[0]))
+        if (!eglMakeCurrent_thread_cmd(gw->egl_disp, gw->egl_surface[0], gw->egl_surface[0], gw->egl_context[0]))
           return EINA_FALSE;
      }
    else
      {
-        if (!eglMakeCurrent(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
+        if (!eglMakeCurrent_thread_cmd(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
           return EINA_FALSE;
      }
 #else
@@ -670,15 +675,15 @@ eng_window_use(Outbuf *gw)
 #ifdef GL_GLES
    if (xwin)
      {
-        if ((eglGetCurrentDisplay() !=
+        if ((eglGetCurrentDisplay_thread_cmd() !=
              xwin->egl_disp) ||
-            (eglGetCurrentContext() !=
+            (eglGetCurrentContext_thread_cmd() !=
              xwin->egl_context[0])
 #if 0
             // FIXME: Figure out what that offscreen thing was about...
-            || (eglGetCurrentSurface(EGL_READ) !=
+            || (eglGetCurrentSurface_thread_cmd(EGL_READ) !=
                 xwin->egl_surface[xwin->offscreen])
-            || (eglGetCurrentSurface(EGL_DRAW) !=
+            || (eglGetCurrentSurface_thread_cmd(EGL_DRAW) !=
                 xwin->egl_surface[xwin->offscreen])
 #endif
             )
@@ -706,7 +711,7 @@ eng_window_use(Outbuf *gw)
              if (gw->egl_surface[0] != EGL_NO_SURFACE)
                {
                   SET_RESTORE_CONTEXT();
-                  if (eglMakeCurrent(gw->egl_disp,
+                  if (eglMakeCurrent_thread_cmd(gw->egl_disp,
                                      gw->egl_surface[0],
                                      gw->egl_surface[0],
                                      gw->egl_context[0]) == EGL_FALSE)
@@ -742,7 +747,7 @@ eng_window_unsurf(Outbuf *gw)
    if (xwin == gw)
      {
         SET_RESTORE_CONTEXT();
-        eglMakeCurrent(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        eglMakeCurrent_thread_cmd(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         if (gw->egl_surface[0] != EGL_NO_SURFACE)
            eglDestroySurface(gw->egl_disp, gw->egl_surface[0]);
         gw->egl_surface[0] = EGL_NO_SURFACE;
@@ -777,7 +782,7 @@ eng_window_resurf(Outbuf *gw)
         return;
      }
    SET_RESTORE_CONTEXT();
-   if (eglMakeCurrent(gw->egl_disp,
+   if (eglMakeCurrent_thread_cmd(gw->egl_disp,
                       gw->egl_surface[0],
                       gw->egl_surface[0],
                       gw->egl_context[0]) == EGL_FALSE)
@@ -1332,7 +1337,7 @@ eng_gl_context_use(Context_3D *ctx)
 {
 #if GL_GLES
     SET_RESTORE_CONTEXT();
-   if (eglMakeCurrent(ctx->display, ctx->surface,
+   if (eglMakeCurrent_thread_cmd(ctx->display, ctx->surface,
                       ctx->surface, ctx->context) == EGL_FALSE)
      {
         ERR("eglMakeCurrent() failed.");
@@ -1372,7 +1377,7 @@ eng_outbuf_swap_mode(Outbuf *ob)
 #ifdef GL_GLES
         EGLint age = 0;
 
-        if (!eglQuerySurface(ob->egl_disp, ob->egl_surface[0],
+        if (!eglQuerySurface_thread_cmd(ob->egl_disp, ob->egl_surface[0],
                              EGL_BUFFER_AGE_EXT, &age))
           age = 0;
 #else
@@ -1418,8 +1423,8 @@ eng_outbuf_region_first_rect(Outbuf *ob)
    glsym_evas_gl_common_context_newframe(ob->gl_context);
    if (partial_render_debug == 1)
      {
-        glClearColor(0.2, 0.5, 1.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor_thread_cmd(0.2, 0.5, 1.0, 1.0);
+        glClear_thread_cmd(GL_COLOR_BUFFER_BIT);
      }
 
    return EINA_FALSE;
@@ -1478,7 +1483,7 @@ _set_damage_rect(Outbuf *ob, int x, int y, int w, int h)
      }
 
    _convert_to_glcoords(rects, ob, x, y, w, h);
-   glsym_eglSetDamageRegionKHR(ob->egl_disp, ob->egl_surface[0], rects, 1);
+   glsym_eglSetDamageRegion(ob->egl_disp, ob->egl_surface[0], rects, 1);
 }
 #endif
 
@@ -1500,7 +1505,7 @@ eng_outbuf_new_region_for_update(Outbuf *ob,
         ob->gl_context->master_clip.w = w;
         ob->gl_context->master_clip.h = h;
 #ifdef GL_GLES
-        if (glsym_eglSetDamageRegionKHR)
+        if (glsym_eglSetDamageRegion)
           _set_damage_rect(ob, x, y, w, h);
 #endif
      }
@@ -1558,8 +1563,8 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
 #ifdef GL_GLES
    if (!ob->vsync)
      {
-        if (ob->info->vsync) eglSwapInterval(ob->egl_disp, 1);
-        else eglSwapInterval(ob->egl_disp, 0);
+        if (ob->info->vsync) eglSwapInterval_thread_cmd(ob->egl_disp, 1);
+        else eglSwapInterval_thread_cmd(ob->egl_disp, 0);
         ob->vsync = 1;
      }
    if (ob->info->callback.pre_swap)
@@ -1588,7 +1593,7 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
           }
      }
    else
-     eglSwapBuffers(ob->egl_disp, ob->egl_surface[0]);
+     eglSwapBuffers_thread_cmd(ob->egl_disp, ob->egl_surface[0]);
 
 //xx   if (!safe_native) eglWaitGL();
    if (ob->info->callback.post_swap)

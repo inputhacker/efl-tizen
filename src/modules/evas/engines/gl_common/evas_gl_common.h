@@ -208,7 +208,6 @@ struct _Evas_GL_Shared
    int mflip;
    // persp map
    int foc, z0, px, py;
-   int ax, ay;
    GLfloat proj[16];
 
    Eina_Bool needs_shaders_flush : 1;
@@ -251,7 +250,6 @@ struct _Evas_Engine_GL_Context
    int                references;
    int                w, h;
    int                rot;
-   int                foc, z0, px, py;
    RGBA_Draw_Context *dc;
 
    Evas_GL_Shared     *shared;
@@ -279,6 +277,9 @@ struct _Evas_Engine_GL_Context
    } master_clip;
 
    struct {
+      struct {
+        int foc, z0, px, py;
+      } viewport;
       struct {
          int             x, y, w, h;
          Shader_Type     type;
@@ -329,10 +330,6 @@ struct _Evas_Engine_GL_Context
       } array;
    } pipe[MAX_PIPES];
 
-   struct {
-      Eina_Bool size : 1;
-   } change;
-   
    Eina_List *font_glyph_textures;
 
    Eina_Bool havestuff : 1;
@@ -784,6 +781,8 @@ void pt_unref(Evas_GL_Texture_Pool *pt);
 // Enable very basic GL calls logging (requires GL_ERRORS)
 //#define GL_ERRORS_TRACE 1
 
+#include "evas_gl_thread.h"
+
 #ifdef GL_ERRORS
 
 # ifndef _WIN32
@@ -799,7 +798,7 @@ __evas_gl_errdyn(int err, const char *file, const char *func, int line, const ch
 }
 # define GLERRV(op) \
   { \
-      int __gl_err = glGetError(); \
+      int __gl_err = glGetError_thread_cmd(); \
       if (__gl_err != GL_NO_ERROR) \
         __evas_gl_errdyn(__gl_err, __FILE__, __FUNCTION__, __LINE__, op); \
    }
@@ -812,56 +811,56 @@ __evas_gl_errdyn(int err, const char *file, const char *func, int line, const ch
 #   define GL_ERROR_TRACE(f, _args, ...) do { DBG("%s(%s);", #f, _args); f(__VA_ARGS__); GLERRV(#f); } while(0)
 #   define GL_ERROR_TRACE_RET(t, f, _args, ...) ({ t _r; DBG("%s(%s);", #f, _args); _r = f(__VA_ARGS__); GLERRV(#f); _r; })
 #  endif
-#  define glActiveTexture(...) GL_ERROR_TRACE(glActiveTexture, #__VA_ARGS__, __VA_ARGS__)
-#  define glBindAttribLocation(...) GL_ERROR_TRACE(glBindAttribLocation, #__VA_ARGS__, __VA_ARGS__)
-#  define glBindBuffer(...) GL_ERROR_TRACE(glBindBuffer, #__VA_ARGS__, __VA_ARGS__)
-#  define glBindTexture(...) GL_ERROR_TRACE(glBindTexture, #__VA_ARGS__, __VA_ARGS__)
-#  define glBlendFunc(...) GL_ERROR_TRACE(glBlendFunc, #__VA_ARGS__, __VA_ARGS__)
-#  define glBufferData(...) GL_ERROR_TRACE(glBufferData, #__VA_ARGS__, __VA_ARGS__)
-#  define glCompressedTexSubImage2D(...) GL_ERROR_TRACE(glCompressedTexSubImage2D, #__VA_ARGS__, __VA_ARGS__)
-#  define glDeleteBuffers(...) GL_ERROR_TRACE(glDeleteBuffers, #__VA_ARGS__, __VA_ARGS__)
-#  define glDepthMask(...) GL_ERROR_TRACE(glDepthMask, #__VA_ARGS__, __VA_ARGS__)
-#  define glDisable(...) GL_ERROR_TRACE(glDisable, #__VA_ARGS__, __VA_ARGS__)
-#  define glDisableVertexAttribArray(...) GL_ERROR_TRACE(glDisableVertexAttribArray, #__VA_ARGS__, __VA_ARGS__)
-#  define glDrawArrays(...) GL_ERROR_TRACE(glDrawArrays, #__VA_ARGS__, __VA_ARGS__)
-#  define glEnable(...) GL_ERROR_TRACE(glEnable, #__VA_ARGS__, __VA_ARGS__)
-#  define glEnableVertexAttribArray(...) GL_ERROR_TRACE(glEnableVertexAttribArray, #__VA_ARGS__, __VA_ARGS__)
-#  define glGenBuffers(...) GL_ERROR_TRACE(glGenBuffers, #__VA_ARGS__, __VA_ARGS__)
-#  define glGetFloatv(...) GL_ERROR_TRACE(glGetFloatv, #__VA_ARGS__, __VA_ARGS__)
-#  define glGetIntegerv(...) GL_ERROR_TRACE(glGetIntegerv, #__VA_ARGS__, __VA_ARGS__)
-#  define glGetUniformLocation(...) GL_ERROR_TRACE_RET(GLuint, glGetUniformLocation, #__VA_ARGS__, __VA_ARGS__)
-#  define glHint(...) GL_ERROR_TRACE(glHint, #__VA_ARGS__, __VA_ARGS__)
-#  define glReadPixels(...) GL_ERROR_TRACE(glReadPixels, #__VA_ARGS__, __VA_ARGS__)
-#  define glScissor(...) GL_ERROR_TRACE(glScissor, #__VA_ARGS__, __VA_ARGS__)
-#  define glGenFramebuffers(...) GL_ERROR_TRACE(glGenFramebuffers, #__VA_ARGS__, __VA_ARGS__)
-#  define glBindFramebuffer(...) GL_ERROR_TRACE(glBindFramebuffer, #__VA_ARGS__, __VA_ARGS__)
-#  define glEndTiling(...) GL_ERROR_TRACE(glEndTiling, #__VA_ARGS__, __VA_ARGS__)
-#  define glGetProgramBinary(...) GL_ERROR_TRACE(glGetProgramBinary, #__VA_ARGS__, __VA_ARGS__)
-#  define glMapBuffer(...) GL_ERROR_TRACE_RET(void *, glMapBuffer, #__VA_ARGS__, __VA_ARGS__)
-#  define glStartTiling(...) GL_ERROR_TRACE(glStartTiling, #__VA_ARGS__, __VA_ARGS__)
-#  define glUnmapBuffer(...) GL_ERROR_TRACE(glUnmapBuffer, #__VA_ARGS__, __VA_ARGS__)
-#  define glTexParameterf(...) GL_ERROR_TRACE(glTexParameterf, #__VA_ARGS__, __VA_ARGS__)
-#  define glTexParameteri(...) GL_ERROR_TRACE(glTexParameteri, #__VA_ARGS__, __VA_ARGS__)
-#  define glTexSubImage2D(...) GL_ERROR_TRACE(glTexSubImage2D, #__VA_ARGS__, __VA_ARGS__)
-#  define glUniform1f(...) GL_ERROR_TRACE(glUniform1f, #__VA_ARGS__, __VA_ARGS__)
-#  define glUniform1i(...) GL_ERROR_TRACE(glUniform1i, #__VA_ARGS__, __VA_ARGS__)
-#  define glUniform2fv(...) GL_ERROR_TRACE(glUniform2fv, #__VA_ARGS__, __VA_ARGS__)
-#  define glUniform4fv(...) GL_ERROR_TRACE(glUniform4fv, #__VA_ARGS__, __VA_ARGS__)
-#  define glUniformMatrix4fv(...) GL_ERROR_TRACE(glUniformMatrix4fv, #__VA_ARGS__, __VA_ARGS__)
-#  define glUseProgram(...) GL_ERROR_TRACE(glUseProgram, #__VA_ARGS__, __VA_ARGS__)
-#  define glVertexAttribPointer(...) GL_ERROR_TRACE(glVertexAttribPointer, #__VA_ARGS__, __VA_ARGS__)
-#  define glViewport(...) GL_ERROR_TRACE(glViewport, #__VA_ARGS__, __VA_ARGS__)
-#  define glPixelStorei(...) GL_ERROR_TRACE(glPixelStorei, #__VA_ARGS__, __VA_ARGS__)
-#  define glCompressedTexImage2D(...) GL_ERROR_TRACE(glCompressedTexImage2D, #__VA_ARGS__, __VA_ARGS__)
-#  define glCreateShader(...) GL_ERROR_TRACE_RET(GLuint, glCreateShader, #__VA_ARGS__, __VA_ARGS__)
-#  define glCreateProgram(...) GL_ERROR_TRACE_RET(GLuint, glCreateProgram, #__VA_ARGS__, __VA_ARGS__)
-#  define glAttachShader(...) GL_ERROR_TRACE(glAttachShader, #__VA_ARGS__, __VA_ARGS__)
-#  define glLinkProgram(...) GL_ERROR_TRACE(glLinkProgram, #__VA_ARGS__, __VA_ARGS__)
-#  define glGetProgramiv(...) GL_ERROR_TRACE(glGetProgramiv, #__VA_ARGS__, __VA_ARGS__)
-#  define glGetProgramInfoLog(...) GL_ERROR_TRACE(glGetProgramInfoLog, #__VA_ARGS__, __VA_ARGS__)
-#  define glGetShaderiv(...) GL_ERROR_TRACE(glGetShaderiv, #__VA_ARGS__, __VA_ARGS__)
-#  define glShaderSource(...) GL_ERROR_TRACE(glShaderSource, #__VA_ARGS__, __VA_ARGS__)
-#  define glCompileShader(...) GL_ERROR_TRACE(glCompileShader, #__VA_ARGS__, __VA_ARGS__)
+#  define glActiveTexture(...) GL_ERROR_TRACE(glActiveTexture_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glBindAttribLocation(...) GL_ERROR_TRACE(glBindAttribLocation_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glBindBuffer(...) GL_ERROR_TRACE(glBindBuffer_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glBindTexture(...) GL_ERROR_TRACE(glBindTexture_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glBlendFunc(...) GL_ERROR_TRACE(glBlendFunc_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glBufferData(...) GL_ERROR_TRACE(glBufferData_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glCompressedTexSubImage2D(...) GL_ERROR_TRACE(glCompressedTexSubImage2D_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glDeleteBuffers(...) GL_ERROR_TRACE(glDeleteBuffers_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glDepthMask(...) GL_ERROR_TRACE(glDepthMask_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glDisable(...) GL_ERROR_TRACE(glDisable_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glDisableVertexAttribArray(...) GL_ERROR_TRACE(glDisableVertexAttribArray_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glDrawArrays(...) GL_ERROR_TRACE(glDrawArrays_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glEnable(...) GL_ERROR_TRACE(glEnable_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glEnableVertexAttribArray(...) GL_ERROR_TRACE(glEnableVertexAttribArray_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGenBuffers(...) GL_ERROR_TRACE(glGenBuffers_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGetFloatv(...) GL_ERROR_TRACE(glGetFloatv_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGetIntegerv(...) GL_ERROR_TRACE(glGetIntegerv_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGetUniformLocation(...) GL_ERROR_TRACE_RET(GLuint, glGetUniformLocation_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glHint(...) GL_ERROR_TRACE(glHint_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glReadPixels(...) GL_ERROR_TRACE(glReadPixels_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glScissor(...) GL_ERROR_TRACE(glScissor_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGenFramebuffers(...) GL_ERROR_TRACE(glGenFramebuffers_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glBindFramebuffer(...) GL_ERROR_TRACE(glBindFramebuffer_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glEndTiling(...) GL_ERROR_TRACE(glEndTiling_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGetProgramBinary(...) GL_ERROR_TRACE(glGetProgramBinary_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glMapBuffer(...) GL_ERROR_TRACE_RET(void *, glMapBuffer_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glStartTiling(...) GL_ERROR_TRACE(glStartTiling_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glUnmapBuffer(...) GL_ERROR_TRACE(glUnmapBuffer_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glTexParameterf(...) GL_ERROR_TRACE(glTexParameterf_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glTexParameteri(...) GL_ERROR_TRACE(glTexParameteri_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glTexSubImage2D(...) GL_ERROR_TRACE(glTexSubImage2D_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glUniform1f(...) GL_ERROR_TRACE(glUniform1f_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glUniform1i(...) GL_ERROR_TRACE(glUniform1i_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glUniform2fv(...) GL_ERROR_TRACE(glUniform2fv_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glUniform4fv(...) GL_ERROR_TRACE(glUniform4fv_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glUniformMatrix4fv(...) GL_ERROR_TRACE(glUniformMatrix4fv_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glUseProgram(...) GL_ERROR_TRACE(glUseProgram_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glVertexAttribPointer(...) GL_ERROR_TRACE(glVertexAttribPointer_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glViewport(...) GL_ERROR_TRACE(glViewport_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glPixelStorei(...) GL_ERROR_TRACE(glPixelStorei_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glCompressedTexImage2D(...) GL_ERROR_TRACE(glCompressedTexImage2D_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glCreateShader(...) GL_ERROR_TRACE_RET(GLuint, glCreateShader_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glCreateProgram(...) GL_ERROR_TRACE_RET(GLuint, glCreateProgram_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glAttachShader(...) GL_ERROR_TRACE(glAttachShader_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glLinkProgram(...) GL_ERROR_TRACE(glLinkProgram_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGetProgramiv(...) GL_ERROR_TRACE(glGetProgramiv_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGetProgramInfoLog(...) GL_ERROR_TRACE(glGetProgramInfoLog_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glGetShaderiv(...) GL_ERROR_TRACE(glGetShaderiv_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glShaderSource(...) GL_ERROR_TRACE(glShaderSource_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
+#  define glCompileShader(...) GL_ERROR_TRACE(glCompileShader_thread_cmd, #__VA_ARGS__, __VA_ARGS__)
 #  define glsym_glGenFramebuffers(...) GL_ERROR_TRACE(glsym_glGenFramebuffers, #__VA_ARGS__, __VA_ARGS__)
 #  define glsym_glBindFramebuffer(...) GL_ERROR_TRACE(glsym_glBindFramebuffer, #__VA_ARGS__, __VA_ARGS__)
 #  define glsym_glFramebufferTexture2D(...) GL_ERROR_TRACE(glsym_glFramebufferTexture2D, #__VA_ARGS__, __VA_ARGS__)
@@ -885,22 +884,6 @@ __evas_gl_errdyn(int err, const char *file, const char *func, int line, const ch
 
 Eina_Bool evas_gl_common_module_open(void);
 void      evas_gl_common_module_close(void);
-
-static inline void
-_tex_sub_2d(Evas_Engine_GL_Context *gc, int x, int y, int w, int h, int fmt, int type, const void *pix)
-{
-   if ((w > gc->shared->info.max_texture_size) ||
-       (h > gc->shared->info.max_texture_size)) return;
-   glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, fmt, type, pix);
-}
-
-static inline void
-_comp_tex_sub_2d(Evas_Engine_GL_Context *gc, int x, int y, int w, int h, int fmt, int imgsize, const void *pix)
-{
-   if ((w > gc->shared->info.max_texture_size) ||
-       (h > gc->shared->info.max_texture_size)) return;
-   glCompressedTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, fmt, imgsize, pix);
-}
 
 #include "evas_gl_3d_common.h"
 

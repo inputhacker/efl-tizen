@@ -126,6 +126,8 @@ struct _EVGL_Surface
    unsigned buffers_skip_allocate : 1;
    unsigned buffers_allocated : 1;
 
+   unsigned thread_rendering : 1;
+
    void   *cfg;
    int     cfg_index;
 
@@ -328,6 +330,7 @@ struct _EVGL_Engine
    Eina_TLS           resource_key;
    Eina_List         *resource_list;
    Eina_Thread        main_tid;
+   EVGL_Resource     *resource_main;
 
    // Add more debug logs (DBG levels 4 and 6)
    int                api_debug_mode;

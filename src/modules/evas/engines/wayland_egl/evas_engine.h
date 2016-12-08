@@ -116,7 +116,7 @@ extern Evas_GL_Preload_Render_Call glsym_evas_gl_preload_render_lock;
 extern Evas_GL_Preload_Render_Call glsym_evas_gl_preload_render_unlock;
 
 extern unsigned int (*glsym_eglSwapBuffersWithDamage) (EGLDisplay a, void *b, const EGLint *d, EGLint c);
-extern unsigned int (*glsym_eglSetDamageRegionKHR) (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d);
+extern unsigned int (*glsym_eglSetDamageRegion) (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d);
 
 Outbuf *eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Render_Engine_Swap_Mode swap_mode,
                                   int depth_bits, int stencil_bits, int msaa_bits);

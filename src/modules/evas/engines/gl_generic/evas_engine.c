@@ -13,6 +13,7 @@
 #endif
 
 #include "../gl_common/evas_gl_common.h"
+#include "../gl_common/evas_gl_thread_gl.h"
 
 #include "Evas_Engine_GL_Generic.h"
 
@@ -313,7 +314,7 @@ _native_bind_cb(void *data EINA_UNUSED, void *image)
    Evas_Native_Surface *n = im->native.data;
 
    if (n->type == EVAS_NATIVE_SURFACE_OPENGL)
-     glBindTexture(GL_TEXTURE_2D, n->data.opengl.texture_id);
+     glBindTexture_thread_cmd(GL_TEXTURE_2D, n->data.opengl.texture_id);
 }
 
 static void
@@ -323,7 +324,7 @@ _native_unbind_cb(void *data EINA_UNUSED, void *image)
   Evas_Native_Surface *n = im->native.data;
 
   if (n->type == EVAS_NATIVE_SURFACE_OPENGL)
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture_thread_cmd(GL_TEXTURE_2D, 0);
 }
 
 static void
@@ -1127,6 +1128,7 @@ eng_image_draw(void *data, void *context, void *surface, void *image, int src_x,
                              direct_surface);
 
         // Call pixel get function
+        // IS DDDDDDDDDDDDIRECT RENDERING
         evgl_get_pixels_pre();
         re->func.get_pixels(re->func.get_pixels_data, re->func.obj);
         evgl_get_pixels_post();
@@ -1536,16 +1538,19 @@ eng_gl_make_current(void *data, void *surface, void *context)
 
    if ((sfc) && (ctx))
      {
-        Evas_Engine_GL_Context *gl_context;
-
-        gl_context = re->window_gl_context_get(re->software.ob);
-        if ((gl_context->havestuff) ||
-            (gl_context->master_clip.used))
+        if (!sfc->thread_rendering)
           {
-             re->window_use(re->software.ob);
-             evas_gl_common_context_flush(gl_context);
-             if (gl_context->master_clip.used)
-                evas_gl_common_context_done(gl_context);
+             Evas_Engine_GL_Context *gl_context;
+
+             gl_context = re->window_gl_context_get(re->software.ob);
+             if ((gl_context->havestuff) ||
+                 (gl_context->master_clip.used))
+               {
+                  re->window_use(re->software.ob);
+                  evas_gl_common_context_flush(gl_context);
+                  if (gl_context->master_clip.used)
+                     evas_gl_common_context_done(gl_context);
+               }
           }
      }
 
@@ -1660,6 +1665,9 @@ eng_gl_surface_direct_renderable_get(void *data, Evas_Native_Surface *ns, Eina_B
    Evas_Engine_GL_Context *gl_context;
    Evas_GL_Image *sfc = surface;
 
+   if (evas_gl_thread_enabled())
+     return EINA_FALSE;
+
    if (!re) return EINA_FALSE;
    EVGLINIT(data, EINA_FALSE);
    if (!ns) return EINA_FALSE;
@@ -1694,6 +1702,74 @@ eng_gl_get_pixels_pre(void *data)
 {
    EVGLINIT(data, );
    evgl_get_pixels_pre();
+}
+
+typedef struct
+{
+   Evas_Object_Image_Pixels_Get_Cb cb;
+   void *get_pixels_data;
+   Evas_Object *o;
+} Evas_GL_Thread_Command_get_pixels;
+
+static void
+_evgl_thread_get_pixels(void *data)
+{
+   Evas_GL_Thread_Command_get_pixels *thread_param =
+      (Evas_GL_Thread_Command_get_pixels *)data;
+
+  evas_evgl_thread_begin();
+  thread_param->cb(thread_param->get_pixels_data, thread_param->o);
+  evas_evgl_thread_end();
+
+  eina_mempool_free(_mp_command, thread_param);
+}
+
+static void
+get_pixels_evgl_thread_cmd(Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data, Evas_Object *o)
+{
+   if (!evas_gl_thread_enabled()) /* XXX */
+     {
+        cb(get_pixels_data, o);
+        return;
+     }
+
+   Evas_GL_Thread_Command_get_pixels *thread_param;
+   thread_param = eina_mempool_malloc(_mp_command,
+                                      sizeof(Evas_GL_Thread_Command_get_pixels));
+   thread_param->cb = cb;
+   thread_param->get_pixels_data = get_pixels_data;
+   thread_param->o = o;
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_get_pixels,
+                              thread_param,
+                              EVAS_GL_THREAD_MODE_FLUSH);
+}
+
+static void
+eng_gl_get_pixels(void *data EINA_UNUSED, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data, Evas_Object *o, void *image)
+{
+   Evas_GL_Image *im = image;
+   Evas_Native_Surface *n;
+   EVGL_Surface *sfc;
+
+   if (im)
+     {
+        n = im->native.data;
+        if (n)
+          {
+             sfc = n->data.evasgl.surface;
+             if (sfc)
+               {
+                  if (sfc->thread_rendering)
+                    {
+                       get_pixels_evgl_thread_cmd(cb, get_pixels_data, o);
+                       return;
+                    }
+               }
+          }
+     }
+
+   cb(get_pixels_data, o);
 }
 
 static void
@@ -1755,20 +1831,20 @@ eng_gl_surface_read_pixels(void *data EINA_UNUSED, void *surface,
     * But some devices don't support GL_BGRA, so we still need to convert.
     */
 
-   glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo);
+   glGetIntegerv_thread_cmd(GL_FRAMEBUFFER_BINDING, &fbo);
    if (fbo != (GLint) im->tex->pt->fb)
      glsym_glBindFramebuffer(GL_FRAMEBUFFER, im->tex->pt->fb);
-   glPixelStorei(GL_PACK_ALIGNMENT, 4);
+   glPixelStorei_thread_cmd(GL_PACK_ALIGNMENT, 4);
 
    // With GLX we will try to read BGRA even if the driver reports RGBA
 #if defined(GL_GLES) && defined(GL_IMPLEMENTATION_COLOR_READ_FORMAT)
-   glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &fmt);
+   glGetIntegerv_thread_cmd(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &fmt);
 #endif
 
    if ((im->tex->pt->format == GL_BGRA) && (fmt == GL_BGRA))
      {
-        glReadPixels(x, y, w, h, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-        done = (glGetError() == GL_NO_ERROR);
+        glReadPixels_thread_cmd(x, y, w, h, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+        done = (glGetError_thread_cmd() == GL_NO_ERROR);
      }
 
    if (!done)
@@ -1776,7 +1852,7 @@ eng_gl_surface_read_pixels(void *data EINA_UNUSED, void *surface,
         DATA32 *ptr = pixels;
         int k;
 
-        glReadPixels(x, y, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        glReadPixels_thread_cmd(x, y, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
         for (k = w * h; k; --k)
           {
              const DATA32 v = *ptr;
@@ -2709,6 +2785,7 @@ module_open(Evas_Module *em)
    ORD(gl_surface_direct_renderable_get);
    ORD(gl_get_pixels_set);
    ORD(gl_get_pixels_pre);
+   ORD(gl_get_pixels);
    ORD(gl_get_pixels_post);
    ORD(gl_surface_lock);
    ORD(gl_surface_read_pixels);

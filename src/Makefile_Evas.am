@@ -676,6 +676,16 @@ BUILT_SOURCES += \
 modules/evas/engines/gl_generic/ector_cairo_software_surface.eo.c \
 modules/evas/engines/gl_generic/ector_cairo_software_surface.eo.h
 
+GL_COMMON_THREAD_SOURCES = \
+modules/evas/engines/gl_common/evas_gl_thread.h \
+modules/evas/engines/gl_common/evas_gl_thread.c \
+modules/evas/engines/gl_common/evas_gl_thread_egl.h \
+modules/evas/engines/gl_common/evas_gl_thread_egl.c \
+modules/evas/engines/gl_common/evas_gl_thread_glx.h \
+modules/evas/engines/gl_common/evas_gl_thread_glx.c \
+modules/evas/engines/gl_common/evas_gl_thread_gl.h \
+modules/evas/engines/gl_common/evas_gl_thread_gl.c
+
 GL_COMMON_SOURCES = \
 modules/evas/engines/gl_common/evas_gl_private.h \
 modules/evas/engines/gl_common/evas_gl_common.h \
@@ -701,6 +711,7 @@ modules/evas/engines/gl_common/evas_gl_api_gles1.c \
 modules/evas/engines/gl_common/evas_gl_api_gles3_def.h \
 modules/evas/engines/gl_common/evas_gl_api_ext.c \
 modules/evas/engines/gl_common/evas_gl_surface_cache.c \
+$(GL_COMMON_THREAD_SOURCES) \
 modules/evas/engines/gl_common/shader/evas_gl_shaders.x \
 modules/evas/engines/gl_common/shader_3d/evas_gl_3d_shaders.x \
 $(NULL)
@@ -766,7 +777,9 @@ lib_evas_libevas_la_LIBADD += @evas_engine_gl_common_libs@ @TTRACE_LIBS@
 else
 noinst_LTLIBRARIES += modules/evas/engines/gl_common/libevas_engine_gl_common.la
 modules_evas_engines_gl_common_libevas_engine_gl_common_la_SOURCES = $(GL_COMMON_SOURCES)
-modules_evas_engines_gl_common_libevas_engine_gl_common_la_CPPFLAGS = -I$(top_builddir)/src/lib/efl \
+modules_evas_engines_gl_common_libevas_engine_gl_common_la_CPPFLAGS = \
+-DEVAS_GL_RENDER_THREAD_IS_GENERIC \
+-I$(top_builddir)/src/lib/efl \
 -I$(top_srcdir)/src/lib/evas/include \
 -I$(top_srcdir)/src/lib/evas/cserve2 \
 @EVAS_CFLAGS@
@@ -782,6 +795,7 @@ $(install_engineglgenericpkgLTLIBRARIES): install-libLTLIBRARIES
 
 modules_evas_engines_gl_generic_module_la_SOURCES = $(GL_GENERIC_SOURCES)
 modules_evas_engines_gl_generic_module_la_CFLAGS = \
+-DEVAS_GL_RENDER_THREAD_IS_GENERIC \
 -I$(top_builddir)/src/lib/efl \
 -I$(top_srcdir)/src/lib/evas/include \
 -I$(top_srcdir)/src/lib/evas/cserve2 \
@@ -903,6 +917,7 @@ endif
 if BUILD_ENGINE_GL_X11
 dist_installed_evasmainheaders_DATA += modules/evas/engines/gl_x11/Evas_Engine_GL_X11.h
 GL_X11_SOURCES = \
+$(GL_COMMON_THREAD_SOURCES) \
 modules/evas/engines/gl_x11/evas_engine.c \
 modules/evas/engines/gl_x11/evas_x_main.c \
 modules/evas/engines/gl_x11/evas_engine.h
@@ -1122,6 +1137,7 @@ endif
 if BUILD_ENGINE_WAYLAND_EGL
 dist_installed_evasmainheaders_DATA += modules/evas/engines/wayland_egl/Evas_Engine_Wayland_Egl.h
 WAYLAND_EGL_SOURCES = \
+$(GL_COMMON_THREAD_SOURCES) \
 modules/evas/engines/wayland_egl/evas_engine.c \
 modules/evas/engines/wayland_egl/evas_wl_main.c \
 modules/evas/engines/wayland_egl/evas_engine.h

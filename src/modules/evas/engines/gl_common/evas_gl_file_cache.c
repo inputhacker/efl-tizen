@@ -95,9 +95,9 @@ evas_gl_common_file_cache_file_check(const char *cache_dir, const char *cache_na
    char *driver = NULL;
    char *version = NULL;
 
-   vendor = (char *)glGetString(GL_VENDOR);
-   driver = (char *)glGetString(GL_RENDERER);
-   version = (char *)glGetString(GL_VERSION);
+   vendor = (char *)glGetString_thread_cmd(GL_VENDOR);
+   driver = (char *)glGetString_thread_cmd(GL_RENDERER);
+   version = (char *)glGetString_thread_cmd(GL_VERSION);
 
    if (!vendor)  vendor  = "-UNKNOWN-";
    if (!driver)  driver  = "-UNKNOWN-";

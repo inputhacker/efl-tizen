@@ -1480,6 +1480,8 @@ struct _Evas_Func
    void *(*ector_surface_create)         (void *data, void *surface, int w, int h, Eina_Bool force, int *error);
    void  (*ector_surface_cache_set)      (void *data, void *key, void *surface);
    void *(*ector_surface_cache_get)      (void *data, void *key);
+
+   void (*gl_get_pixels)                 (void *data, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data, Evas_Object *o, void *image);
 };
 
 struct _Evas_Image_Save_Func

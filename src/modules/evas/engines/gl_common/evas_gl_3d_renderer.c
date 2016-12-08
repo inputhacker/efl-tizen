@@ -116,7 +116,7 @@ _renderer_vertex_attrib_array_enable(E3D_Renderer *renderer, int index)
    if (renderer->vertex_attrib_enable[index])
      return;
 
-   glEnableVertexAttribArray(index);
+   glEnableVertexAttribArray_thread_cmd(index);
    renderer->vertex_attrib_enable[index] = EINA_TRUE;
 }
 
@@ -126,7 +126,7 @@ _renderer_vertex_attrib_array_disable(E3D_Renderer *renderer, int index)
    if (!renderer->vertex_attrib_enable[index])
      return;
 
-   glDisableVertexAttribArray(index);
+   glDisableVertexAttribArray_thread_cmd(index);
    renderer->vertex_attrib_enable[index] = EINA_FALSE;
 }
 
@@ -134,8 +134,8 @@ static inline void
 _renderer_vertex_attrib_pointer_set(E3D_Renderer *renderer EINA_UNUSED, int index,
                                     const Evas_Canvas3D_Vertex_Buffer *buffer)
 {
-   glVertexAttribPointer(index, buffer->element_count, GL_FLOAT,
-                         GL_FALSE, buffer->stride, buffer->data);
+   glVertexAttribPointer_thread_cmd(index, buffer->element_count, GL_FLOAT,
+                                    GL_FALSE, buffer->stride, buffer->data);
 }
 
 static inline void
@@ -145,9 +145,9 @@ _renderer_elements_draw(E3D_Renderer *renderer EINA_UNUSED, Evas_Canvas3D_Vertex
    GLenum mode = _gl_assembly_get(assembly);
 
    if (format == EVAS_CANVAS3D_INDEX_FORMAT_UNSIGNED_BYTE)
-     glDrawElements(mode, count, GL_UNSIGNED_BYTE, indices);
+     glDrawElements_thread_cmd(mode, count, GL_UNSIGNED_BYTE, indices);
    else if (format == EVAS_CANVAS3D_INDEX_FORMAT_UNSIGNED_SHORT)
-     glDrawElements(mode, count, GL_UNSIGNED_SHORT, indices);
+     glDrawElements_thread_cmd(mode, count, GL_UNSIGNED_SHORT, indices);
 }
 
 static inline void
@@ -156,7 +156,7 @@ _renderer_array_draw(E3D_Renderer *renderer EINA_UNUSED,
 {
    GLenum mode = _gl_assembly_get(assembly);
 
-   glDrawArrays(mode, 0, count);
+   glDrawArrays_thread_cmd(mode, 0, count);
 }
 
 static inline void
@@ -166,7 +166,7 @@ _renderer_program_use(E3D_Renderer *renderer ,E3D_Program *program)
 
    if (renderer->program != prog)
      {
-        glUseProgram(prog);
+        glUseProgram_thread_cmd(prog);
         renderer->program = prog;
      }
 }
@@ -182,8 +182,8 @@ _renderer_texture_bind(E3D_Renderer *renderer, E3D_Draw_Data *data)
           {
              if (renderer->textures[data->materials[i].sampler0] != data->materials[i].tex0)
                {
-                  glActiveTexture(GL_TEXTURE0 + data->materials[i].sampler0);
-                  glBindTexture(GL_TEXTURE_2D, data->materials[i].tex0->tex);
+                  glActiveTexture_thread_cmd(GL_TEXTURE0 + data->materials[i].sampler0);
+                  glBindTexture_thread_cmd(GL_TEXTURE_2D, data->materials[i].tex0->tex);
                   e3d_texture_param_update(data->materials[i].tex0);
 
                   renderer->textures[data->materials[i].sampler0] = data->materials[i].tex0;
@@ -194,8 +194,8 @@ _renderer_texture_bind(E3D_Renderer *renderer, E3D_Draw_Data *data)
           {
              if (renderer->textures[data->materials[i].sampler1] != data->materials[i].tex1)
                {
-                  glActiveTexture(GL_TEXTURE0 + data->materials[i].sampler1);
-                  glBindTexture(GL_TEXTURE_2D, data->materials[i].tex1->tex);
+                  glActiveTexture_thread_cmd(GL_TEXTURE0 + data->materials[i].sampler1);
+                  glBindTexture_thread_cmd(GL_TEXTURE_2D, data->materials[i].tex1->tex);
                   e3d_texture_param_update(data->materials[i].tex1);
 
                   renderer->textures[data->materials[i].sampler1] = data->materials[i].tex1;
@@ -204,8 +204,8 @@ _renderer_texture_bind(E3D_Renderer *renderer, E3D_Draw_Data *data)
      }
    if ((data->flags & E3D_SHADER_FLAG_SHADOWED) && (renderer->smap_sampler != data->smap_sampler))
      {
-        glActiveTexture(GL_TEXTURE0 + data->smap_sampler);
-        glBindTexture(GL_TEXTURE_2D, renderer->texDepth);
+        glActiveTexture_thread_cmd(GL_TEXTURE0 + data->smap_sampler);
+        glBindTexture_thread_cmd(GL_TEXTURE_2D, renderer->texDepth);
         renderer->smap_sampler = data->smap_sampler;
      }
 }
@@ -217,12 +217,12 @@ _renderer_depth_test_enable(E3D_Renderer *renderer, Eina_Bool enable)
      {
         if (enable)
           {
-             glEnable(GL_DEPTH_TEST);
+             glEnable_thread_cmd(GL_DEPTH_TEST);
              /* Use default depth func. */
           }
         else
           {
-             glDisable(GL_DEPTH_TEST);
+             glDisable_thread_cmd(GL_DEPTH_TEST);
           }
 
         renderer->depth_test_enable = enable;
@@ -265,8 +265,8 @@ e3d_renderer_target_set(E3D_Renderer *renderer, E3D_Drawable *target)
    if (renderer->fbo == target->fbo)
      return;
 
-   glBindFramebuffer(GL_FRAMEBUFFER, target->fbo);
-   glViewport(0, 0, target->w, target->h);
+   glBindFramebuffer_thread_cmd(GL_FRAMEBUFFER, target->fbo);
+   glViewport_thread_cmd(0, 0, target->w, target->h);
    renderer->fbo = target->fbo;
    renderer->texDepth = target->texDepth;
 }
@@ -274,8 +274,8 @@ e3d_renderer_target_set(E3D_Renderer *renderer, E3D_Drawable *target)
 void
 e3d_renderer_clear(E3D_Renderer *renderer EINA_UNUSED, const Evas_Color *color)
 {
-   glClearColor(color->r, color->g, color->b, color->a);
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glClearColor_thread_cmd(color->r, color->g, color->b, color->a);
+   glClear_thread_cmd(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void
@@ -345,19 +345,20 @@ e3d_renderer_draw(E3D_Renderer *renderer, E3D_Draw_Data *data)
 
    if (data->blending)
      {
-        glEnable(GL_BLEND);
-        glBlendFunc(_gl_blend_func_get(data->blend_sfactor), _gl_blend_func_get(data->blend_dfactor));
+        glEnable_thread_cmd(GL_BLEND);
+        glBlendFunc_thread_cmd(_gl_blend_func_get(data->blend_sfactor),
+                               _gl_blend_func_get(data->blend_dfactor));
      }
-   else glDisable(GL_BLEND);
+   else glDisable_thread_cmd(GL_BLEND);
 
 #ifndef GL_GLES
    if (data->alpha_test_enabled)
      {
-        glEnable(GL_ALPHA_TEST);
-        glAlphaFunc(_gl_comparison_func_get(data->alpha_comparison),
-                    (GLclampf)data->alpha_ref_value);
+        glEnable_thread_cmd(GL_ALPHA_TEST);
+        glAlphaFunc_thread_cmd(_gl_comparison_func_get(data->alpha_comparison),
+                               (GLclampf)data->alpha_ref_value);
      }
-   else glDisable(GL_ALPHA_TEST);
+   else glDisable_thread_cmd(GL_ALPHA_TEST);
 #endif
 
    if (data->indices)
@@ -374,5 +375,5 @@ e3d_renderer_draw(E3D_Renderer *renderer, E3D_Draw_Data *data)
 void
 e3d_renderer_flush(E3D_Renderer *renderer EINA_UNUSED)
 {
-   glFlush();
+   glFlush_thread_cmd();
 }
