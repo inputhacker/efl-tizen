@@ -732,6 +732,8 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
    if (!(event = calloc(1, sizeof(Ecore_Wl_Event_Selection_Data_Ready))))
      return ECORE_CALLBACK_CANCEL;
 
+   // TIZEN_ONLY(20161208): modify receiving logic to get once
+   /*
    event->sel_type = source->sel_type;
    if (len <= 0)
      {
@@ -776,6 +778,35 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
         event->done = EINA_FALSE;
         ret = ECORE_CALLBACK_RENEW;
      }
+   */
+
+   char **types;
+   int num = 0;
+
+   event->data = malloc(len + 1);
+   if (!event->data)
+     {
+        free(event);
+        return ECORE_CALLBACK_CANCEL;
+     }
+   memcpy(event->data, buffer, len);
+   event->data[len] = '\0';
+
+   num = (source->types.size / sizeof(char *));
+   types = source->types.data;
+
+   event->num_types = num;
+   event->types = types;
+   event->len = len;
+   event->sel_type = source->sel_type;
+   //FIXME: EINA_FALSE means receiving data complete in elm_cnp
+   event->done = EINA_FALSE;
+
+   close(read_source->read_fd);
+   _ecore_wl_dnd_del(source);
+
+   ret = ECORE_CALLBACK_CANCEL;
+   //
 
    ecore_event_add(ECORE_WL_EVENT_SELECTION_DATA_READY, event,
                    _ecore_wl_dnd_selection_data_ready_cb_free, NULL);
@@ -809,6 +840,9 @@ _ecore_wl_dnd_selection_cb_idle(void *data)
 
    ctx = data;
    count = epoll_wait(ctx->epoll_fd, ctx->ep, 1, 0);
+
+   // TIZEN_ONLY(20161208): modify receiving logic to get once
+   /*
    for (i = 0; i < count; i++)
      {
         task = ctx->ep->data.ptr;
@@ -823,6 +857,19 @@ _ecore_wl_dnd_selection_cb_idle(void *data)
              return ECORE_CALLBACK_CANCEL;
           }
      }
+   */
+   if (count > 0)
+     {
+        task = ctx->ep->data.ptr;
+        task->cb(task->data, NULL);
+        free(ctx->ep);
+        free(task->data);
+        free(task);
+        free(ctx);
+        return ECORE_CALLBACK_CANCEL;
+     }
+   //
+
    return ECORE_CALLBACK_RENEW;
 }
 
