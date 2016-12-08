@@ -120,6 +120,8 @@ lib/ector/gl/ector_renderer_gl_gradient_linear.c \
 lib/ector/gl/ector_renderer_gl_gradient_radial.c \
 lib/ector/gl/ector_renderer_gl_shape.c \
 lib/ector/gl/ector_gl_surface.c \
+lib/ector/gl/ector_gl_engine.c \
+lib/ector/gl/ector_gl_shaders.x \
 static_libs/triangulator/triangulator_stroker.c \
 static_libs/triangulator/triangulator_simple.c
 

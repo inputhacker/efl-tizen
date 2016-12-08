@@ -2480,8 +2480,8 @@ eng_ector_renderer_draw(void *data, void *context, void *surface, Ector_Renderer
 
 static void
 eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface *ector,
-                void *surface, Eina_Bool surface_clear EINA_UNUSED,
-                int x, int y, int width EINA_UNUSED, int height EINA_UNUSED,
+                void *surface, Eina_Bool surface_clear,
+                int x, int y, int width, int height,
                 Eina_Bool do_async EINA_UNUSED)
 {
    int w, h, stride;
@@ -2493,13 +2493,50 @@ eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface
      {
         Evas_Engine_GL_Context *gl_context;
         Render_Engine_GL_Generic *re = data;
+        RGBA_Draw_Context *dc;
+        Eina_Rectangle clip;
+        int mul_color = 0xffffffff;
 
         re->window_use(re->software.ob);
         gl_context = re->window_gl_context_get(re->software.ob);
         evas_gl_common_context_target_surface_set(gl_context, surface);
+
+        // handle clip
+        dc = gl_context->dc;
+        if (surface_clear)
+          {
+             clip.x = 0;
+             clip.y = 0;
+             clip.w = width;
+             clip.h = height;
+          }
+        else
+          {
+             if (dc->clip.use)
+               {
+                  clip.x = dc->clip.x;
+                  clip.y = dc->clip.y;
+                  clip.w = dc->clip.w;
+                  clip.h = dc->clip.h;
+                  // clip the clip rect to surface boundary.
+                  RECTS_CLIP_TO_RECT(clip.x, clip.y, clip.w, clip.h, 0, 0, glim->w, glim->h);
+               }
+             else
+               {
+                  clip.x = 0;
+                  clip.y = 0;
+                  clip.w = glim->w;
+                  clip.h = glim->h;
+               }
+
+             mul_color = ector_color_multiply(dc->mul.use ? dc->mul.col : 0xffffffff, dc->col.col);
+
+          }
+        Eina_Rectangle vg_rect = {x, y, width, height};
         eo_do(ector,
-              ector_gl_surface_set(glim, glim->w, glim->h, 0),
-              ector_surface_reference_point_set(x, y));
+              ector_gl_surface_vg_info_set(&vg_rect, mul_color),
+              ector_gl_surface_context_info_set(glim->w, glim->h, gl_context->rot, &clip, surface_clear),
+              ector_gl_surface_draw_begin());
         return;
      }
 
@@ -2529,7 +2566,7 @@ eng_ector_end(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface *
 
    if (use_gl)
      {
-        eo_do(ector, ector_gl_surface_set(NULL, 0, 0, 0));
+        eo_do(ector, ector_gl_surface_draw_end());
         return;
      }
 

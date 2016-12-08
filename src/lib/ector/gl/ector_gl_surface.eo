@@ -3,45 +3,34 @@ class Ector.Gl.Surface (Ector.Generic.Surface)
    eo_prefix: ector_gl_surface;
    legacy_prefix: null;
    methods {
-      @property surface {
-         set {
-         }
-         get {
-         }
-         values {
-            pixels: void *;
-            width: uint32_t;
-            height: uint32_t;
-            stride: uint32_t;
+      context_info_set {
+         params {
+            width:          int;
+            height:         int;
+            rotation:       int;
+            clip:           Eina_Rectangle *;
+            clear:          Eina_Bool;
          }
       }
-      offset {
-        params {
-          x:int;
-          y:int;
-        }
+      vg_info_set {
+         params {
+            geom:    Eina_Rectangle *;
+            color:   int;
+         }
       }
-      path_fill {
-        params {
-          vertex:float *;
-          vertex_count: uint32_t;
-          stops: int *;
-          stop_count: uint32_t;
-          color: uint32_t;
-        }
+
+       draw_begin {
+         params {
+         }
       }
-      path_stroke {
-        params {
-          vertex:float *;
-          vertex_count: uint32_t;
-          color: uint32_t;
-        }
+       draw_end {
+         params {
+         }
       }
    }
 
    implements {
       Ector.Generic.Surface.renderer_factory_new;
-      Ector.Generic.Surface.reference_point.set;
       Eo.Base.destructor;
       Eo.Base.constructor;
    }
