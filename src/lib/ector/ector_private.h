@@ -42,42 +42,6 @@ extern int _ector_log_dom_global;
 
 /* The following macro are internal to Ector only at this stage */
 
-typedef unsigned char DATA8;
-typedef unsigned short DATA16;
-
-#ifndef WORDS_BIGENDIAN
-/* x86 */
-#define A_VAL(p) (((DATA8 *)(p))[3])
-#define R_VAL(p) (((DATA8 *)(p))[2])
-#define G_VAL(p) (((DATA8 *)(p))[1])
-#define B_VAL(p) (((DATA8 *)(p))[0])
-#define AR_VAL(p) ((DATA16 *)(p)[1])
-#define GB_VAL(p) ((DATA16 *)(p)[0])
-#else
-/* ppc */
-#define A_VAL(p) (((DATA8 *)(p))[0])
-#define R_VAL(p) (((DATA8 *)(p))[1])
-#define G_VAL(p) (((DATA8 *)(p))[2])
-#define B_VAL(p) (((DATA8 *)(p))[3])
-#define AR_VAL(p) ((DATA16 *)(p)[0])
-#define GB_VAL(p) ((DATA16 *)(p)[1])
-#endif
-
-#define RGB_JOIN(r,g,b) \
-  (((r) << 16) + ((g) << 8) + (b))
-
-#define ARGB_JOIN(a,r,g,b) \
-  (((a) << 24) + ((r) << 16) + ((g) << 8) + (b))
-
-#define ECTOR_ARGB_JOIN(a,r,g,b) \
-        (((a) << 24) + ((r) << 16) + ((g) << 8) + (b))
-
-#define ECTOR_MUL4_SYM(x, y) \
- ( ((((((x) >> 16) & 0xff00) * (((y) >> 16) & 0xff00)) + 0xff0000) & 0xff000000) + \
-   ((((((x) >> 8) & 0xff00) * (((y) >> 16) & 0xff)) + 0xff00) & 0xff0000) + \
-   ((((((x) & 0xff00) * ((y) & 0xff00)) + 0xff0000) >> 16) & 0xff00) + \
-   (((((x) & 0xff) * ((y) & 0xff)) + 0xff) >> 8) )
-
 static inline void
 _ector_renderer_replace(Ector_Renderer **d, const Ector_Renderer *s)
 {
