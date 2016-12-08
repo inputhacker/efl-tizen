@@ -294,7 +294,6 @@ _edje_text_recalc_apply(Edje *ed, Edje_Real_Part *ep,
 
    if (params->type.text.size)
      size = params->type.text.size;
-   if (!text) text = "";
 
    if ((text == ep->typedata.text->cache.in_str)
        || (text && ep->typedata.text->cache.in_str && !strcmp(ep->typedata.text->cache.in_str, text)))
