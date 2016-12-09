@@ -677,6 +677,8 @@ cp %{SOURCE1001} .
 
 %build
 
+export CFLAGS=$( echo $CFLAGS | sed -e "s/-flto//g")
+export CXXFLAGS=$( echo $CXXFLAGS | sed -e "s/-flto//g")
 %if "%{profile}" == "tv"
         export CFLAGS+=" -DTIZEN_PROFILE_TV"
 %endif
