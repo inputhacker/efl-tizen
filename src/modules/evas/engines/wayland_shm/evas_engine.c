@@ -93,7 +93,7 @@ _symbols(void)
 {
    static int done = 0;
    int fail = 0;
-   const char *wayland_tbm_server_lib = "libwayland-tbm-server.so.0";
+   const char *wayland_tbm_server_lib = LIBDIR"/libwayland-tbm-server.so.0";
 
    if (done) return;
 

@@ -690,6 +690,8 @@ CFLAGS+=" -DMESA_EGL_NO_X11_HEADERS "
 CFLAGS+=" -DEFL_FEATURE_EMULATOR "
 %endif
 
+CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
+
 %if "%{asan}" == "1"
 %restore_fcommon
 %endif
