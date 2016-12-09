@@ -149,13 +149,13 @@ tbm_init(void)
 
    const char *tbm_libs[] =
          {
-               "libtbm.so.1",
-               "libtbm.so.0",
+               LIBDIR"/libtbm.so.1",
+               LIBDIR"/libtbm.so.0",
                NULL,
          };
    const char *tbm_clients[] =
          {
-               "libwayland-tbm-client.so.0",
+               LIBDIR"/libwayland-tbm-client.so.0",
                NULL,
          };
    int i, fail;
