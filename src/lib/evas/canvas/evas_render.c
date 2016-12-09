@@ -1846,6 +1846,26 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
    return clean_them;
 }
 
+/* TIZEN ONLY(2016/12/09): Gurantee the cache data of proxy source object validation.
+   Don't know in detail but in a rare case, it happens that few object's state is
+   not up to date... */
+static void
+evas_render_gurantee_recalc(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj)
+{
+   if (obj->cur->clipper) evas_object_clip_recalc(obj);
+   evas_object_change(eo_obj, obj);
+
+   if (obj->is_smart)
+     {
+        Evas_Object_Protected_Data *obj2;
+
+        EINA_INLIST_FOREACH(evas_object_smart_members_get_direct(eo_obj), obj2)
+          {
+             evas_render_gurantee_recalc(obj2->object, obj2);
+          }
+     }
+}
+
 /*
  * Render the source object when a proxy is set.
  * Used to force a draw if necessary, else just makes sure it's available.
@@ -1869,6 +1889,8 @@ evas_render_proxy_subrender(Evas *eo_e, Evas_Object *eo_source, Evas_Object *eo_
 
    if (!eo_source) return;
    source = eo_data_scope_get(eo_source, EVAS_OBJECT_CLASS);
+
+   evas_render_gurantee_recalc(source->object, source);
 
    w = source->cur->geometry.w;
    h = source->cur->geometry.h;
