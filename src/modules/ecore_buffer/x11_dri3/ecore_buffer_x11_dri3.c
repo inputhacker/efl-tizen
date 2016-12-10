@@ -43,6 +43,8 @@ struct _Ecore_Buffer_X11_Dri3_Data {
      Eina_Bool is_imported;
 };
 
+static Ecore_Pixmap  _ecore_buffer_x11_dri3_pixmap_get(Ecore_Buffer_Module_Data bmdata, Ecore_Buffer_Data bdata);
+
 static int
 _buf_get_num_planes(Ecore_Buffer_Format format)
 {
@@ -325,8 +327,8 @@ _dri3_open(Ecore_X_Display *dpy, Ecore_X_Window root, unsigned provider)
 static Ecore_X_Pixmap
 _dri3_pixmap_from_fd(Ecore_X_Display *dpy, Ecore_X_Drawable draw, int width, int height, int depth, int fd, int bpp, int stride, int size)
 {
-   xcb_connection_t *c = XGetXCBConnection(dpy);
-   Ecore_X_Pixmap pixmap = xcb_generate_id(c);
+   xcb_connection_t *c;
+   Ecore_X_Pixmap pixmap;
 
    if (!dpy)
      return 0;
@@ -431,6 +433,8 @@ _ecore_buffer_x11_dri3_buffer_alloc_with_tbm_surface(Ecore_Buffer_Module_Data bm
 {
    Ecore_Buffer_X11_Dri3_Data *buf;
 
+   EINA_SAFETY_ON_NULL_RETURN_VAL(tbm_surface, NULL);
+
    buf = calloc(1, sizeof(Ecore_Buffer_X11_Dri3_Data));
    if (!buf)
      return NULL;
@@ -447,6 +451,41 @@ _ecore_buffer_x11_dri3_buffer_alloc_with_tbm_surface(Ecore_Buffer_Module_Data bm
    if (ret_format) *ret_format = buf->format;
 
    return buf;
+}
+
+static Eina_Bool
+_ecore_buffer_x11_dri3_buffer_info_get(Ecore_Buffer_Module_Data bmdata, Ecore_Buffer_Data bdata, Ecore_Buffer_Info *info)
+{
+   Ecore_Buffer_X11_Dri3_Data *buf = bdata;
+   tbm_surface_info_s tinfo;
+   int i, res;
+
+   if (!buf->tbm_surface)
+     return EINA_FALSE;
+
+   res = tbm_surface_get_info(buf->tbm_surface, &tinfo);
+   if (res != TBM_SURFACE_ERROR_NONE)
+     return EINA_FALSE;
+
+   if (info)
+     {
+        info->width = tinfo.width;
+        info->height = tinfo.height;
+        info->format = tinfo.format;
+        info->bpp = tinfo.bpp;
+        info->size = tinfo.size;
+        info->num_planes = tinfo.num_planes;
+        info->pixmap = _ecore_buffer_x11_dri3_pixmap_get(bmdata, bdata);
+
+        for (i = 0; i < tinfo.num_planes; i++)
+          {
+             info->planes[i].size = tinfo.planes[i].size;
+             info->planes[i].offset = tinfo.planes[i].offset;
+             info->planes[i].stride = tinfo.planes[i].stride;
+          }
+     }
+
+   return EINA_TRUE;
 }
 
 static void
@@ -485,13 +524,13 @@ _ecore_buffer_x11_dri3_buffer_export(Ecore_Buffer_Module_Data bmdata EINA_UNUSED
 }
 
 static Ecore_Buffer_Data
-_ecore_buffer_x11_dri3_buffer_import(Ecore_Buffer_Module_Data bmdata, int w, int h, Ecore_Buffer_Format format, Ecore_Export_Type type, int export_id, unsigned int flags)
+_ecore_buffer_x11_dri3_buffer_import(Ecore_Buffer_Module_Data bmdata, Ecore_Buffer_Info *einfo, Ecore_Export_Type type, int export_id, unsigned int flags)
 {
    Ecore_Buffer_Module_X11_Dri3_Data *bm = bmdata;
    Ecore_Buffer_X11_Dri3_Data *buf;
    tbm_bo bo;
-   tbm_surface_info_s info;
-   int i, num_plane;
+   tbm_surface_info_s tinfo;
+   int i;
 
    if (!bm)
      return NULL;
@@ -506,9 +545,9 @@ _ecore_buffer_x11_dri3_buffer_import(Ecore_Buffer_Module_Data bmdata, int w, int
    if (!buf)
      return NULL;
 
-   buf->w = w;
-   buf->h = h;
-   buf->format = format;
+   buf->w = einfo->width;
+   buf->h = einfo->height;
+   buf->format = einfo->format;
    buf->flags = flags;
    buf->is_imported = EINA_TRUE;
 
@@ -520,21 +559,20 @@ _ecore_buffer_x11_dri3_buffer_import(Ecore_Buffer_Module_Data bmdata, int w, int
         return NULL;
      }
 
-   num_plane = _buf_get_num_planes(format);
-   info.width = w;
-   info.height = h;
-   info.format = format;
-   info.bpp = _buf_get_bpp(format);
-   info.size = w * h * info.bpp;
-   info.num_planes = num_plane;
-   for ( i = 0 ; i < num_plane ; i++)
+   tinfo.width = buf->w = einfo->width;
+   tinfo.height = buf->h = einfo->height;
+   tinfo.format = buf->format = einfo->format;
+   tinfo.bpp = _buf_get_bpp(einfo->format);
+   tinfo.size = einfo->height * einfo->planes[0].stride;
+   tinfo.num_planes = _buf_get_num_planes(einfo->format);
+   for (i = 0; i < tinfo.num_planes; i++)
    {
-      info.planes[i].size = w * h * info.bpp;
-      info.planes[i].stride = w * info.bpp;
-      info.planes[i].offset = 0;
+      tinfo.planes[i].size = einfo->height * einfo->planes[i].stride;
+      tinfo.planes[i].stride = einfo->planes[i].stride;
+      tinfo.planes[i].offset = einfo->planes[i].offset;
    }
 
-   buf->tbm_surface = tbm_surface_internal_create_with_bos(&info, &bo, 1);
+   buf->tbm_surface = tbm_surface_internal_create_with_bos(&tinfo, &bo, 1);
    if (!buf->tbm_surface)
      {
         tbm_bo_unref(bo);
@@ -604,6 +642,7 @@ static Ecore_Buffer_Backend _ecore_buffer_x11_dri3_backend = {
      &_ecore_buffer_x11_dri3_shutdown,
      &_ecore_buffer_x11_dri3_buffer_alloc,
      &_ecore_buffer_x11_dri3_buffer_alloc_with_tbm_surface,
+     &_ecore_buffer_x11_dri3_buffer_info_get,
      &_ecore_buffer_x11_dri3_buffer_free,
      &_ecore_buffer_x11_dri3_buffer_export,
      &_ecore_buffer_x11_dri3_buffer_import,

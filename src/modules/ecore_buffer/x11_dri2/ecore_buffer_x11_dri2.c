@@ -222,8 +222,8 @@ _ecore_buffer_x11_dri2_init(const char *context EINA_UNUSED, const char *options
    Ecore_X_Window root;
    int eb, ee;
    int major, minor;
-   char *driver_name;
-   char *device_name;
+   char *driver_name = NULL;
+   char *device_name = NULL;
    int fd = 0;
    drm_magic_t magic;
    Ecore_Buffer_Module_X11_Dri2_Data *mdata = NULL;
@@ -253,14 +253,14 @@ _ecore_buffer_x11_dri2_init(const char *context EINA_UNUSED, const char *options
      goto on_error;
 
    if (drmGetMagic(fd, &magic) < 0)
-     goto on_error;
+     goto on_fd_error;
 
    if (!(DRI2Authenticate(xdpy, root, magic)))
-     goto on_error;
+     goto on_fd_error;
 
    mdata->tbm_mgr = tbm_bufmgr_init(fd);
    if (!mdata->tbm_mgr)
-     goto on_error;
+     goto on_fd_error;
 
    free(driver_name);
    free(device_name);
@@ -268,8 +268,10 @@ _ecore_buffer_x11_dri2_init(const char *context EINA_UNUSED, const char *options
 
    return mdata;
 
+on_fd_error:
+   close(fd);
+
 on_error:
-   if (fd > 0) close(fd);
    if (driver_name) free(driver_name);
    if (device_name) free(device_name);
    if (mdata) free(mdata);
@@ -348,11 +350,11 @@ _ecore_buffer_x11_dri2_buffer_alloc(Ecore_Buffer_Module_Data bmdata, int width, 
    info.height =  height;
    info.format = format;
    info.bpp = bpp;
-   info.size = width * bufs->pitch;
+   info.size = height * bufs->pitch;
    info.num_planes = num_plane;
    for ( i = 0 ; i < num_plane ; i++)
    {
-      info.planes[i].size = width * bufs->pitch;
+      info.planes[i].size = height * bufs->pitch;
       info.planes[i].stride = bufs->pitch;
       info.planes[i].offset = 0;
    }
@@ -382,8 +384,7 @@ _ecore_buffer_x11_dri2_buffer_alloc_with_tbm_surface(Ecore_Buffer_Module_Data bm
 {
    Ecore_Buffer_X11_Dri2_Data *buf;
 
-   if (!tbm_surface)
-     return NULL;
+   EINA_SAFETY_ON_NULL_RETURN_VAL(tbm_surface, NULL);
 
    buf = calloc(1, sizeof(Ecore_Buffer_X11_Dri2_Data));
    if (!buf)
@@ -392,6 +393,7 @@ _ecore_buffer_x11_dri2_buffer_alloc_with_tbm_surface(Ecore_Buffer_Module_Data bm
    buf->w = tbm_surface_get_width(tbm_surface);
    buf->h = tbm_surface_get_height(tbm_surface);
    buf->format = tbm_surface_get_format(tbm_surface);
+   buf->pixmap = 0;
    buf->tbm.surface = tbm_surface;
    buf->tbm.owned = EINA_FALSE;
    buf->is_imported = EINA_FALSE;
@@ -401,6 +403,41 @@ _ecore_buffer_x11_dri2_buffer_alloc_with_tbm_surface(Ecore_Buffer_Module_Data bm
    if (ret_format) *ret_format = buf->format;
 
    return buf;
+}
+
+static Eina_Bool
+_ecore_buffer_x11_dri2_buffer_info_get(Ecore_Buffer_Module_Data bmdata EINA_UNUSED, Ecore_Buffer_Data bdata, Ecore_Buffer_Info *info)
+{
+   Ecore_Buffer_X11_Dri2_Data *buf = bdata;
+   tbm_surface_info_s tinfo;
+   int i, res;
+
+   if (!buf->tbm.surface)
+     return EINA_FALSE;
+
+   res = tbm_surface_get_info(buf->tbm.surface, &tinfo);
+   if (res != TBM_SURFACE_ERROR_NONE)
+     return EINA_FALSE;
+
+   if (info)
+     {
+        info->width = tinfo.width;
+        info->height = tinfo.height;
+        info->format = tinfo.format;
+        info->bpp = tinfo.bpp;
+        info->size = tinfo.size;
+        info->num_planes = tinfo.num_planes;
+        info->pixmap = buf->pixmap;
+
+        for (i = 0; i < tinfo.num_planes; i++)
+          {
+             info->planes[i].size = tinfo.planes[i].size;
+             info->planes[i].offset = tinfo.planes[i].offset;
+             info->planes[i].stride = tinfo.planes[i].stride;
+          }
+     }
+
+   return EINA_TRUE;
 }
 
 static void
@@ -428,87 +465,118 @@ static Ecore_Export_Type
 _ecore_buffer_x11_dri2_buffer_export(Ecore_Buffer_Module_Data bmdata EINA_UNUSED, Ecore_Buffer_Data bdata, int *id)
 {
    Ecore_Buffer_X11_Dri2_Data *buf = bdata;
+   tbm_bo bo;
 
-   if (id) *id = buf->pixmap;
+   if (id)
+     {
+        if (buf->pixmap)
+          *id = buf->pixmap;
+        else
+          {
+             tbm_bo bo;
+             /* NOTE: constraints - cannot support more than two bos */
+             bo = tbm_surface_internal_get_bo(buf->tbm.surface, 0);
+             *id = (int)(tbm_bo_export(bo));
+          }
+     }
 
    return EXPORT_TYPE_ID;
 }
 
-static void *
-_ecore_buffer_x11_dri2_buffer_import(Ecore_Buffer_Module_Data bmdata EINA_UNUSED, int w, int h, Ecore_Buffer_Format format, Ecore_Export_Type type, int export_id, unsigned int flags EINA_UNUSED)
+static tbm_bo
+_x11_dri2_bo_get_from_pixmap(tbm_bufmgr tbm_mgr, Ecore_Pixmap pixmap, int width, int height)
 {
-   Ecore_Buffer_Module_X11_Dri2_Data *bm = bmdata;
    Ecore_X_Display *xdpy;
-   Ecore_X_Pixmap pixmap = (Ecore_X_Pixmap)export_id;
-   Ecore_Buffer_X11_Dri2_Data *buf;
-   int rw, rh, rx, ry;
    DRI2Buffer *bufs = NULL;
    tbm_bo bo = NULL;
+   int rw, rh, rx, ry;
    int rcount;
    unsigned int attachment = DRI2BufferFrontLeft;
-   tbm_surface_info_s info;
-   int num_plane,i;
+
+   // Check valid pixmap
+   ecore_x_pixmap_geometry_get(pixmap, &rx, &ry, &rw, &rh);
+   if ((rw != width) || (rh != height))
+     return NULL;
+
+   xdpy = ecore_x_display_get();
+   DRI2CreateDrawable(xdpy, pixmap);
+   bufs = DRI2GetBuffers(xdpy, pixmap, &rw, &rh, &attachment, 1, &rcount);
+   if ((!bufs) || (width != rw) || (height != rh))
+     goto err;
+
+   bo = tbm_bo_import(tbm_mgr, bufs->name);
+   free(bufs);
+   if (!bo)
+     goto err;
+
+   return bo;
+err:
+   DRI2DestroyDrawable(xdpy, pixmap);
+   return NULL;
+}
+
+static void *
+_ecore_buffer_x11_dri2_buffer_import(Ecore_Buffer_Module_Data bmdata, Ecore_Buffer_Info *einfo, Ecore_Export_Type type, int export_id, unsigned int flags EINA_UNUSED)
+{
+   Ecore_Buffer_Module_X11_Dri2_Data *bm = bmdata;
+   Ecore_Buffer_X11_Dri2_Data *buf;
+   tbm_bo bo = NULL;
+   tbm_surface_h surface;
+   tbm_surface_info_s tinfo;
+   int i;
 
    if (type != EXPORT_TYPE_ID)
      return NULL;
 
-   xdpy = ecore_x_display_get();
-
-   //Check valid pixmap
-   ecore_x_pixmap_geometry_get(pixmap, &rx, &ry, &rw, &rh);
-   if ((rw != w) || (rh != h))
+   if (!einfo)
      return NULL;
+
+   if (einfo->pixmap)
+     bo = _x11_dri2_bo_get_from_pixmap(bm->tbm_mgr, einfo->pixmap, einfo->width, einfo->height);
+   else
+     bo = tbm_bo_import(bm->tbm_mgr, export_id);
+
+   if (!bo)
+     goto err;
+
+   tinfo.width = einfo->width;
+   tinfo.height = einfo->height;
+   tinfo.format = einfo->format;
+   tinfo.bpp = _buf_get_bpp(einfo->format);
+   tinfo.size = einfo->height * einfo->planes[0].stride;
+   tinfo.num_planes = _buf_get_num_planes(einfo->format);
+   for (i = 0; i < tinfo.num_planes; i++)
+     {
+        tinfo.planes[i].size = einfo->height * einfo->planes[i].stride;
+        tinfo.planes[i].stride = einfo->planes[i].stride;
+        tinfo.planes[i].offset = einfo->planes[i].offset;
+     }
+
+   surface = tbm_surface_internal_create_with_bos(&tinfo, &bo, 1);
+   tbm_bo_unref(bo);
+   if (!surface)
+     goto err;
 
    buf = calloc(1, sizeof(Ecore_Buffer_X11_Dri2_Data));
    if (!buf)
-     return NULL;
+     goto err_alloc;
 
-   buf->w = w;
-   buf->h = h;
-   buf->format = format;
-   buf->pixmap = pixmap;
+   buf->w = einfo->width;
+   buf->h = einfo->height;
+   buf->format = einfo->format;
+   buf->pixmap = einfo->pixmap;
+   buf->stride = einfo->planes[0].stride;
    buf->is_imported = EINA_TRUE;
-
-   //Get DRI2Buffer
-   DRI2CreateDrawable(xdpy, buf->pixmap);
-   bufs = DRI2GetBuffers(xdpy, buf->pixmap, &rw, &rh, &attachment, 1, &rcount);
-   if ((!bufs) || (buf->w != rw) || (buf->h != rh))
-     goto on_error;
-
-   buf->stride = bufs->pitch;
-
-   //Import tbm_surface
-   bo = tbm_bo_import(bm->tbm_mgr, bufs->name);
-   if (!bo)
-     goto on_error;
-
-   num_plane = _buf_get_num_planes(format);
-   info.width = w;
-   info.height = h;
-   info.format = format;
-   info.bpp = _buf_get_bpp(format);
-   info.size = w * bufs->pitch;
-   info.num_planes = num_plane;
-   for ( i = 0 ; i < num_plane ; i++)
-   {
-      info.planes[i].size = w * bufs->pitch;
-      info.planes[i].stride = bufs->pitch;
-      info.planes[i].offset = 0;
-   }
-
-   buf->tbm.surface = tbm_surface_internal_create_with_bos(&info, &bo, 1);
-   if (!buf->tbm.surface)
-     goto on_error;
-
+   buf->tbm.surface = surface;
    buf->tbm.owned = EINA_TRUE;
-   tbm_bo_unref(bo);
-   free(bufs);
 
    return buf;
-on_error:
-   if (bo) tbm_bo_unref(bo);
-   if (bufs) free(bufs);
-   DRI2DestroyDrawable(xdpy, buf->pixmap);
+err_alloc:
+   tbm_surface_internal_unref(surface);
+err:
+   if ((bo) && (einfo->pixmap))
+     DRI2DestroyDrawable(ecore_x_display_get(), einfo->pixmap);
+
    free(buf);
 
    return NULL;
@@ -545,6 +613,7 @@ static Ecore_Buffer_Backend _ecore_buffer_x11_dri2_backend = {
      &_ecore_buffer_x11_dri2_shutdown,
      &_ecore_buffer_x11_dri2_buffer_alloc,
      &_ecore_buffer_x11_dri2_buffer_alloc_with_tbm_surface,
+     &_ecore_buffer_x11_dri2_buffer_info_get,
      &_ecore_buffer_x11_dri2_buffer_free,
      &_ecore_buffer_x11_dri2_buffer_export,
      &_ecore_buffer_x11_dri2_buffer_import,
