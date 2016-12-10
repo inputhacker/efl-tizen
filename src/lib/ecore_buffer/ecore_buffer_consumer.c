@@ -28,11 +28,12 @@ static void _ecore_buffer_consumer_cb_provider_connected(void *data, struct bq_c
 static void _ecore_buffer_consumer_cb_provider_disconnected(void *data, struct bq_consumer *bq_consumer);
 static void _ecore_buffer_consumer_cb_buffer_attached(void *data, struct bq_consumer *bq_consumer, struct bq_buffer *id, const char *engine, int32_t width, int32_t height, int32_t format, uint32_t flags);
 static void _ecore_buffer_consumer_cb_buffer_id_set(void *data, struct bq_consumer *bq_consumer, struct bq_buffer *buffer, int32_t id, int32_t offset0, int32_t stride0, int32_t offset1, int32_t stride1, int32_t offset2, int32_t stride2);
+static void _ecore_buffer_consumer_cb_buffer_pixmap_id_set(void *data, struct bq_consumer *bq_consumer, struct bq_buffer *buffer, int32_t id, int32_t offset0, int32_t stride0, int32_t offset1, int32_t stride1, int32_t offset2, int32_t stride2);
 static void _ecore_buffer_consumer_cb_buffer_fd_set(void *data, struct bq_consumer *bq_consumer, struct bq_buffer *buffer, int32_t fd, int32_t offset0, int32_t stride0, int32_t offset1, int32_t stride1, int32_t offset2, int32_t stride2);
 static void _ecore_buffer_consumer_cb_buffer_detached(void *data, struct bq_consumer *bq_consumer, struct bq_buffer *id);
 static void _ecore_buffer_consumer_cb_add_buffer(void *data, struct bq_consumer *bq_consumer, struct bq_buffer *buffer, uint32_t serial);
 static void _ecore_buffer_consumer_cb_buffer_free(Ecore_Buffer *buf, void *data);
-static Eina_Bool _ecore_buffer_consumer_buffer_import(Ecore_Buffer_Consumer *consumer, Shared_Buffer *sb, int32_t seed, Ecore_Export_Type export_type);
+static Eina_Bool _ecore_buffer_consumer_buffer_import(Ecore_Buffer_Consumer *consumer, Shared_Buffer *sb, int32_t seed, Ecore_Export_Type export_type, Ecore_Buffer_Info *info);
 
 struct bq_consumer_listener _ecore_buffer_consumer_listener =
 {
@@ -64,7 +65,7 @@ ecore_buffer_consumer_new(const char *name, int32_t queue_size, int32_t w, int32
 
    _ecore_buffer_con_init_wait();
 
-   consumer = calloc(1, sizeof(Ecore_Buffer_Consumer));
+   consumer = calloc(sizeof(Ecore_Buffer_Consumer), 1);
    if (!consumer)
      return NULL;
 
@@ -90,12 +91,32 @@ ecore_buffer_consumer_new(const char *name, int32_t queue_size, int32_t w, int32
    return consumer;
 }
 
+static void
+_consumer_shared_buffer_free(Ecore_Buffer_Consumer *consumer)
+{
+   Eina_List *clone, *shared_buffers, *l;
+   Shared_Buffer *sb;
+
+   if (!consumer->ebq)
+     return;
+
+   shared_buffers = _ecore_buffer_queue_shared_buffer_list_get(consumer->ebq);
+   clone = eina_list_clone(shared_buffers);
+
+   EINA_LIST_FOREACH(clone, l, sb)
+      ecore_buffer_free(_shared_buffer_buffer_get(sb));
+
+   eina_list_free(clone);
+}
+
 EAPI void
 ecore_buffer_consumer_free(Ecore_Buffer_Consumer *consumer)
 {
    EINA_SAFETY_ON_NULL_RETURN(consumer);
 
    DBG("Consumer Free");
+
+   _consumer_shared_buffer_free(consumer);
 
    if (consumer->ebq)
      _ecore_buffer_queue_free(consumer->ebq);
@@ -232,8 +253,6 @@ static void
 _ecore_buffer_consumer_cb_provider_disconnected(void *data, struct bq_consumer *bq_consumer EINA_UNUSED)
 {
    Ecore_Buffer_Consumer *consumer = data;
-   Eina_List *clone, *shared_buffers, *l;
-   Shared_Buffer *sb;
 
    EINA_SAFETY_ON_NULL_RETURN(consumer);
 
@@ -243,13 +262,7 @@ _ecore_buffer_consumer_cb_provider_disconnected(void *data, struct bq_consumer *
 
    CALLBACK_CALL(consumer, provider_del);
 
-   shared_buffers = _ecore_buffer_queue_shared_buffer_list_get(consumer->ebq);
-   clone = eina_list_clone(shared_buffers);
-
-   EINA_LIST_FOREACH(clone, l, sb)
-      ecore_buffer_free(_shared_buffer_buffer_get(sb));
-
-   eina_list_free(clone);
+   _consumer_shared_buffer_free(consumer);
 }
 
 static void
@@ -288,35 +301,50 @@ _ecore_buffer_consumer_cb_buffer_free(Ecore_Buffer *buf, void *data)
    _shared_buffer_free(sb);
 }
 
+#define INFO_SET(I, PIX)         \
+   I.planes[0].offset = offset0; \
+   I.planes[0].stride = stride0; \
+   I.planes[1].offset = offset1; \
+   I.planes[1].stride = stride1; \
+   I.planes[2].offset = offset2; \
+   I.planes[2].stride = stride2; \
+   I.pixmap = PIX
 static void
-_ecore_buffer_consumer_cb_buffer_id_set(void *data, struct bq_consumer *bq_consumer EINA_UNUSED, struct bq_buffer *buffer, int32_t id, int32_t offset0 EINA_UNUSED, int32_t stride0 EINA_UNUSED, int32_t offset1 EINA_UNUSED, int32_t stride1 EINA_UNUSED, int32_t offset2 EINA_UNUSED, int32_t stride2 EINA_UNUSED)
+_ecore_buffer_consumer_cb_buffer_id_set(void *data, struct bq_consumer *bq_consumer EINA_UNUSED, struct bq_buffer *buffer, int32_t id, int32_t offset0, int32_t stride0, int32_t offset1, int32_t stride1, int32_t offset2, int32_t stride2)
 {
    Ecore_Buffer_Consumer *consumer = data;
    Shared_Buffer *sb = bq_buffer_get_user_data(buffer);
+   Ecore_Buffer_Info info;
 
    EINA_SAFETY_ON_NULL_RETURN(consumer);
    EINA_SAFETY_ON_NULL_RETURN(sb);
 
-   if (_ecore_buffer_consumer_buffer_import(consumer, sb, id, EXPORT_TYPE_ID))
+   INFO_SET(info, 0);
+
+   if (_ecore_buffer_consumer_buffer_import(consumer, sb, id, EXPORT_TYPE_ID, &info))
      bq_buffer_set_user_data(buffer, sb);
    else
      ERR("Failed to import buffer - buffer resource %p", buffer);
 }
 
 static void
-_ecore_buffer_consumer_cb_buffer_fd_set(void *data, struct bq_consumer *bq_consumer EINA_UNUSED, struct bq_buffer *buffer, int32_t fd, int32_t offset0 EINA_UNUSED, int32_t stride0 EINA_UNUSED, int32_t offset1 EINA_UNUSED, int32_t stride1 EINA_UNUSED, int32_t offset2 EINA_UNUSED, int32_t stride2 EINA_UNUSED)
+_ecore_buffer_consumer_cb_buffer_fd_set(void *data, struct bq_consumer *bq_consumer EINA_UNUSED, struct bq_buffer *buffer, int32_t fd, int32_t offset0, int32_t stride0, int32_t offset1, int32_t stride1, int32_t offset2, int32_t stride2)
 {
    Ecore_Buffer_Consumer *consumer = data;
    Shared_Buffer *sb = bq_buffer_get_user_data(buffer);
+   Ecore_Buffer_Info info;
 
    EINA_SAFETY_ON_NULL_RETURN(consumer);
    EINA_SAFETY_ON_NULL_RETURN(sb);
 
-   if (_ecore_buffer_consumer_buffer_import(consumer, sb, fd, EXPORT_TYPE_FD))
+   INFO_SET(info, 0);
+
+   if (_ecore_buffer_consumer_buffer_import(consumer, sb, fd, EXPORT_TYPE_FD, &info))
      bq_buffer_set_user_data(buffer, sb);
    else
      ERR("Failed to import buffer - buffer resource %p", buffer);
 }
+#undef INFO_SET
 
 static void
 _ecore_buffer_consumer_cb_buffer_detached(void *data, struct bq_consumer *bq_consumer EINA_UNUSED, struct bq_buffer *id)
@@ -377,7 +405,7 @@ _ecore_buffer_consumer_cb_add_buffer(void *data, struct bq_consumer *bq_consumer
 }
 
 static Eina_Bool
-_ecore_buffer_consumer_buffer_import(Ecore_Buffer_Consumer *consumer, Shared_Buffer *sb, int32_t seed, Ecore_Export_Type export_type)
+_ecore_buffer_consumer_buffer_import(Ecore_Buffer_Consumer *consumer, Shared_Buffer *sb, int32_t seed, Ecore_Export_Type export_type, Ecore_Buffer_Info *info)
 {
    Ecore_Buffer *buffer;
    const char *engine = NULL;
@@ -398,7 +426,11 @@ _ecore_buffer_consumer_buffer_import(Ecore_Buffer_Consumer *consumer, Shared_Buf
         return EINA_FALSE;
      }
 
-   if (!(buffer = _ecore_buffer_import(engine, w, h, format, export_type, seed, flags)))
+   info->width = w;
+   info->height = h;
+   info->format = format;
+
+   if (!(buffer = _ecore_buffer_import(engine, info, export_type, seed, flags)))
      {
         ERR("Failed to Import Buffer - size (%dx%d), foramt %d, seed %d, export_type %d",
             w, h, format, seed, export_type);

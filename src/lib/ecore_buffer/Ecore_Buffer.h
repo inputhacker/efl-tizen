@@ -422,12 +422,60 @@ typedef void (*Ecore_Buffer_Cb)(Ecore_Buffer* buf, void* data);
  * Types for export buffer.
  * @since 1.15
  */
-typedef enum _Ecore_Export_Type
+enum _Ecore_Export_Type
 {
    EXPORT_TYPE_INVALID,
    EXPORT_TYPE_ID,
    EXPORT_TYPE_FD
-} Ecore_Export_Type;
+};
+
+/**
+ * @typedef Ecore_Buffer_Plane
+ * Types for plane information.
+ * @since 1.15
+ */
+typedef struct _Ecore_Buffer_Plane Ecore_Buffer_Plane;
+
+/**
+ * @typedef Ecore_Buffer_Info
+ * Types for buffer information.
+ * @since 1.15
+ */
+typedef struct _Ecore_Buffer_Info Ecore_Buffer_Info;
+
+/**
+ * @brief Definition for the maximum number of Ecore_Buffer's plane.
+ * @since 1.15
+ */
+#define ECORE_BUFFER_PLANE_MAX   4
+
+/**
+ * @brief Definition for the Ecore_Buffer plane struct.
+ * @since 1.15
+ */
+struct _Ecore_Buffer_Plane
+{
+   int size;
+   int offset;
+   int stride;
+};
+
+/**
+ * @brief Definition for the Ecore_Buffer information struct.
+ * @since 1.15
+ */
+struct _Ecore_Buffer_Info
+{
+   int width;
+   int height;
+   int bpp;
+   int size;
+   Ecore_Buffer_Format format;
+
+   int num_planes;
+   Ecore_Buffer_Plane planes[ECORE_BUFFER_PLANE_MAX];
+   Ecore_Pixmap pixmap;
+};
 
 /**
  * @struct _Ecore_Buffer_Backend
@@ -450,13 +498,15 @@ struct _Ecore_Buffer_Backend
                                                                 int *ret_w, int *ret_h,
                                                                 Ecore_Buffer_Format *ret_format,
                                                                 unsigned int flags); /**< Create Ecore_Buffer from existed tbm_surface handle. */
+   Eina_Bool                   (*buffer_info_get)(Ecore_Buffer_Module_Data bmdata,
+                                                  Ecore_Buffer_Data bdata,
+                                                  Ecore_Buffer_Info *info);
    void                        (*buffer_free)(Ecore_Buffer_Module_Data bmdata,
                                               Ecore_Buffer_Data bdata); /**< Free allocated memory */
    Ecore_Export_Type           (*buffer_export)(Ecore_Buffer_Module_Data bmdata,
                                                 Ecore_Buffer_Data bdata, int *id); /**< Get the id or fd of Ecore_Buffer for exporting it */
    Ecore_Buffer_Data           (*buffer_import)(Ecore_Buffer_Module_Data bmdata,
-                                                int w, int h,
-                                                Ecore_Buffer_Format format,
+                                                Ecore_Buffer_Info *info,
                                                 Ecore_Export_Type type,
                                                 int export_id,
                                                 unsigned int flags); /**< Import and create Ecore_Buffer from id or fd */
