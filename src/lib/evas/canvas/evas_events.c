@@ -58,7 +58,7 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
    int inside;
 
    if (!list) return in;
-   for (obj = _EINA_INLIST_CONTAINER(obj, list);
+   for (obj = _EINA_INLIST_CONTAINER(obj, eina_inlist_last(list));
         obj;
         obj = _EINA_INLIST_CONTAINER(obj, EINA_INLIST_GET(obj)->prev))
      {
@@ -68,9 +68,9 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
              *no_rep = 1;
              return in;
           }
+        if (evas_event_passes_through(eo_obj, obj)) continue;
         if (!source)
           {
-             if (evas_event_passes_through(eo_obj, obj)) continue;
              if (evas_object_is_source_invisible(eo_obj, obj)) continue;
           }
         if ((obj->delete_me == 0) &&
