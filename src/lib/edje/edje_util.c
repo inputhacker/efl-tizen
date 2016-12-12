@@ -1013,7 +1013,7 @@ update_color_class:
 EOLIAN Eina_Bool
 _edje_object_color_class_get(Eo *obj EINA_UNUSED, Edje *ed, const char *color_class, int *r, int *g, int *b, int *a, int *r2, int *g2, int *b2, int *a2, int *r3, int *g3, int *b3, int *a3)
 {
-   Edje_Color_Class *cc = _edje_color_class_recursive_find(ed, color_class);
+   Edje_Color_Class *cc = _edje_color_class_recursive_find(ed, ed->file, color_class);
 
    if (cc)
      {
