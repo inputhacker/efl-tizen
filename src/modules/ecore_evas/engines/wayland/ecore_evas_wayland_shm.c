@@ -256,12 +256,18 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
         einfo->info.wl_disp = ecore_wl_display_get();
         einfo->info.wl_shm = ecore_wl_shm_get();
 
-        if (_ecore_evas_wl_init_count == 1)
-              einfo->info.tbm_client = wayland_tbm_client_init(einfo->info.wl_disp);
-
         einfo->info.destination_alpha = EINA_TRUE;
         einfo->info.rotation = ee->rotation;
         einfo->info.wl_surface = ecore_wl_window_surface_create(wdata->win);
+        if (_ecore_evas_wl_init_count == 1)
+           {
+              einfo->info.tbm_client = wayland_tbm_client_init(einfo->info.wl_disp);
+              einfo->info.tbm_queue = wayland_tbm_client_create_surface_queue(einfo->info.tbm_client,
+                                                                              einfo->info.wl_surface,
+                                                                              3,
+                                                                              w, h,
+                                                                              TBM_FORMAT_ARGB8888);
+           }
         if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
           {
              ERR("Failed to set Evas Engine Info for '%s'", ee->driver);
@@ -335,7 +341,11 @@ _ecore_evas_wl_free(Ecore_Evas *ee)
    if (einfo && einfo->info.tbm_client)
       {
          if (_ecore_evas_common_init_count_get() == 1)
-            wayland_tbm_client_deinit(einfo->info.tbm_client);
+            {
+               if (einfo->info.tbm_queue)
+                  tbm_surface_queue_destroy(einfo->info.tbm_queue);
+               wayland_tbm_client_deinit(einfo->info.tbm_client);
+            }
       }
    _ecore_evas_wl_common_free(ee);
 }
