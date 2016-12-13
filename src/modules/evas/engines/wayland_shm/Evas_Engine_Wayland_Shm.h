@@ -16,6 +16,7 @@ struct _Evas_Engine_Info_Wayland_Shm
         struct wl_shm *wl_shm;
         struct wl_surface *wl_surface;
         struct wayland_tbm_client *tbm_client;
+        void *tbm_queue;
 
         unsigned int rotation, depth;
         Eina_Bool destination_alpha : 1;
