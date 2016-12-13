@@ -129,7 +129,7 @@ _ecore_audio_out_tizen_ecore_audio_out_input_attach(Eo *eo_obj, Ecore_Audio_Out_
 {
    int ret;
    Eina_Bool ret2;
-   void *handle;
+   void *handle, *data;
    int samplerate = 0;
    int channels = 0;
 
@@ -150,17 +150,37 @@ _ecore_audio_out_tizen_ecore_audio_out_input_attach(Eo *eo_obj, Ecore_Audio_Out_
    eo_do(in, eo_key_data_set("mod_handle", handle));
    eo_do(in, eo_key_data_set("mod_data", _td));
    eo_do(in, eo_key_data_set("pcm_fmt", strdup("S16")));
+
+   eo_do(in, data = eo_key_data_get("mod_handle"));
+   if (!data) goto err;
+   eo_do(in, data = eo_key_data_get("mod_data"));
+   if (!data) goto err;
+   eo_do(in, data = eo_key_data_get("pcm_fmt"));
+   if (!data) goto err;
+
    _td->attached_in = in;
    ret = _td->func->set_write_cb(handle, _stream_write_cb, in);
-   if (ret)
-     {
-        eo_do_super(eo_obj, MY_CLASS, ecore_audio_obj_out_input_detach(in));
-        ERR("set_write_callback error : %d", ret);
-        _td->func->deinit(handle);
-        return EINA_FALSE;
-     }
+
+   if (ret) goto err;
 
    return EINA_TRUE;
+
+err:
+   eo_do_super(eo_obj, MY_CLASS, ecore_audio_obj_out_input_detach(in));
+   _td->attached_in = NULL;
+   ERR("set_write_callback error : %d", ret);
+   _td->func->deinit(handle);
+
+   eo_do(in, eo_key_data_del("mod_handle"));
+   eo_do(in, eo_key_data_del("mod_data"));
+   eo_do(in, data = eo_key_data_get("pcm_fmt"));
+   if (data)
+     {
+        free(data);
+        eo_do(in, eo_key_data_del("pcm_fmt"));
+     }
+
+   return EINA_FALSE;
 }
 
 EOLIAN static Eina_Bool
