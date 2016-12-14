@@ -2143,25 +2143,11 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
          dst_ratio = (double) sw / sh;
          if (tex->im->native.rot == EVAS_IMAGE_ORIENT_90)
             {
-               if (src_ratio > dst_ratio)
-                  {
-                     sy = (tex->im->h - sy - sh)  * sh / (double)sw;
-                     if (1 > dst_ratio)
-                        sx = sy * sh / (double)sw;
-                     SWAP(&sw, &sh, tmp);
-                  }
-               else if (src_ratio < dst_ratio)
-                  {
-                     tmp_ori_ratio_h = sh * tex->im->w / (double)tex->im->h;
-                     tmp_small_ratio_h = sh * tex->im->h / (double)tex->im->w;
-                     sx = sx * (tmp_ori_ratio_h / tmp_small_ratio_h);
+               tmp = sx; sx = (tex->im->h - sy - sh) * tex->im->w / (double)tex->im->h;
+               sy = tmp * tex->im->h / (double)tex->im->w;
 
-                     tmp = sx; sx = (tex->im->h - sy - sh) * tex->im->w / (double)tex->im->h;
-                     sy = tmp * tex->im->h / (double)tex->im->w;
-
-                     tmp = sw; sw = sh * tex->im->h / (double)tex->im->w;
-                     sh = tmp * tex->im->h / (double)tex->im->w;
-                  }
+               tmp = sw; sw = sh * tex->im->w / (double)tex->im->h;
+               sh = tmp * tex->im->h / (double)tex->im->w;
             }
 
          // both HORIZONTAL and VERTICAL flip
@@ -2174,26 +2160,11 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
 
          if (tex->im->native.rot == EVAS_IMAGE_ORIENT_270)
             {
-               if (src_ratio > dst_ratio)
-                  {
-                     sx = (tex->im->w - sx - sw) * sw / (double)sh;
-                     if (1 > dst_ratio)
-                        sy = sx * sw / (double)sh;
-                     SWAP(&sw, &sh, tmp);
+               tmp = sy; sy = (tex->im->w - sx - sw) * tex->im->h / (double)tex->im->w;
+               sx = tmp * tex->im->w / (double)tex->im->h;
 
-                  }
-               else if (src_ratio < dst_ratio)
-                  {
-                     tmp_ori_ratio_h = sh * tex->im->w / (double)tex->im->h;
-                     tmp_small_ratio_h = sh * tex->im->h / (double)tex->im->w;
-                     sy = sy * (tmp_ori_ratio_h / tmp_small_ratio_h);
-
-                     tmp = sy; sy = (tex->im->w - sx - sw) * tex->im->h / (double)tex->im->w;
-                     sx = tmp * tex->im->w / (double)tex->im->h;
-
-                     tmp = sw; sw = sh * tex->im->h / (double)tex->im->w;
-                     sh = tmp * tex->im->h / (double)tex->im->w;
-                  }
+               tmp = sw; sw = sh * tex->im->w / (double)tex->im->h;
+               sh = tmp * tex->im->h / (double)tex->im->w;
             }
 
          if (tex->im &&
