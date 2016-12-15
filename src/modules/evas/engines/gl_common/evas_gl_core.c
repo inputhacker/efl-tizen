@@ -1284,7 +1284,7 @@ _surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, 
      }
 
    // Depth_stencil buffers or separate buffers
-   if (sfc->depth_stencil_fmt)
+   if (sfc->depth_stencil_fmt && version > EVAS_GL_GLES_1_X)
      {
 #ifdef GL_GLES
         if (version == EVAS_GL_GLES_3_X)
