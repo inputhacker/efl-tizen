@@ -39,6 +39,8 @@ static void _ecore_evas_wl_hide(Ecore_Evas *ee);
 static void _ecore_evas_wl_alpha_set(Ecore_Evas *ee, int alpha);
 static void _ecore_evas_wl_transparent_set(Ecore_Evas *ee, int transparent);
 static void _ecore_evas_wl_rotation_set(Ecore_Evas *ee, int rotation, int resize);
+static struct wayland_tbm_client *tbm_client;
+static void *tbm_queue;
 
 static Ecore_Evas_Engine_Func _ecore_wl_engine_func = 
 {
@@ -261,13 +263,16 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
         einfo->info.wl_surface = ecore_wl_window_surface_create(wdata->win);
         if (_ecore_evas_wl_init_count == 1)
            {
-              einfo->info.tbm_client = wayland_tbm_client_init(einfo->info.wl_disp);
-              einfo->info.tbm_queue = wayland_tbm_client_create_surface_queue(einfo->info.tbm_client,
-                                                                              einfo->info.wl_surface,
-                                                                              3,
-                                                                              w, h,
-                                                                              TBM_FORMAT_ARGB8888);
+              tbm_client = wayland_tbm_client_init(einfo->info.wl_disp);
+              tbm_queue = wayland_tbm_client_create_surface_queue(tbm_client,
+                                                                  einfo->info.wl_surface,
+                                                                  3,
+                                                                  w, h,
+                                                                  TBM_FORMAT_ARGB8888);
            }
+        einfo->info.tbm_client = tbm_client;
+        einfo->info.tbm_queue = tbm_queue;
+
         if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
           {
              ERR("Failed to set Evas Engine Info for '%s'", ee->driver);
@@ -337,16 +342,14 @@ _ecore_evas_wl_free(Ecore_Evas *ee)
 
    if (!ee) return;
 
-   einfo = (Evas_Engine_Info_Wayland_Shm *)evas_engine_info_get(ee->evas);
-   if (einfo && einfo->info.tbm_client)
+   if (_ecore_evas_common_init_count_get() == 1)
       {
-         if (_ecore_evas_common_init_count_get() == 1)
-            {
-               if (einfo->info.tbm_queue)
-                  tbm_surface_queue_destroy(einfo->info.tbm_queue);
-               wayland_tbm_client_deinit(einfo->info.tbm_client);
-            }
+         if (tbm_queue)
+            tbm_surface_queue_destroy(tbm_queue);
+         if (tbm_client)
+            wayland_tbm_client_deinit(tbm_client);
       }
+
    _ecore_evas_wl_common_free(ee);
 }
 
