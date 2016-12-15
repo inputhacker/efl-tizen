@@ -1267,6 +1267,23 @@ _proxy_context_clip(Evas_Public_Data *evas, void *ctx, Evas_Proxy_Render_Data *p
                               -proxy_render_data->src_obj->cur->geometry.y);
 }
 
+static Eina_Bool
+_mask_apply_inside_proxy(Evas_Proxy_Render_Data *proxy_render_data,
+                         Evas_Object_Protected_Data *mask)
+{
+   // Trying to find out if the mask should be applied inside the proxy or not.
+   if (!proxy_render_data || proxy_render_data->source_clip) return EINA_TRUE;
+   if (!proxy_render_data->src_obj->cur->clipper) return EINA_FALSE;
+   if (!mask) return EINA_FALSE;
+
+   // FIXME:
+   // Not sure how to do that. For now, just reject prev_mask inside proxies.
+   return EINA_FALSE;
+
+   //if (mask == proxy_render_data->src_obj->cur->clipper) return EINA_TRUE;
+   //return _mask_apply_inside_proxy(proxy_render_data, mask->cur->clipper);
+}
+
 static void
 _evas_render_mapped_context_clip_set(Evas_Public_Data *evas, Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, void *ctx, Evas_Proxy_Render_Data *proxy_render_data, int off_x, int off_y)
 {
@@ -1314,7 +1331,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                    void *surface, int off_x, int off_y, int mapped, int ecx,
                    int ecy, int ecw, int ech,
                    Evas_Proxy_Render_Data *proxy_render_data, int level,
-                   Eina_Bool use_mapped_ctx, Eina_Bool do_async)
+                   Eina_Bool do_async)
 {
    Evas_Object_Protected_Data *obj2;
    Eina_Bool clean_them = EINA_FALSE;
@@ -1340,8 +1357,8 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
    RD(level, "{\n");
    RD(level, "  evas_render_mapped(evas:%p, obj:%p", evas, obj);
    IFRD(obj->name, 0, " '%s'", obj->name);
-   RD(0, ", ctx:%p, sfc:%p, offset:%i,%i, %s, use_mapped_ctx:%d, %s)\n", context, surface, off_x, off_y,
-      mapped ? "mapped" : "normal", use_mapped_ctx, do_async ? "async" : "sync");
+   RD(0, ", ctx:%p, sfc:%p, offset:%i,%i, %s, %s)\n", context, surface, off_x, off_y,
+      mapped ? "mapped" : "normal", do_async ? "async" : "sync");
    RD(level, "  obj: '%s' %s", obj->type, obj->is_smart ? "(smart) " : "");
    if (obj->name) RD(0, "'%s'\n", obj->name);
    else RD(0, "\n");
@@ -1371,7 +1388,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
         if (_evas_render_object_is_mask(obj))
           {
              RD(level, "  is mask: redraw:%d sfc:%p\n", obj->mask->redraw, obj->mask->surface);
-             if (!use_mapped_ctx || (surface != obj->mask->surface))
+             if (surface != obj->mask->surface)
                {
                   RD(level, "  not rendering mask surface\n");
                   RD(level, "}\n");
@@ -1423,7 +1440,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
              RD(level, "}\n");
              return clean_them;
           }
-        else if (obj->no_render && (!use_mapped_ctx || (surface != obj->proxy->surface)))
+        else if (obj->no_render && (surface != obj->proxy->surface))
           {
              RD(level, "  no_render\n");
              RD(level, "}\n");
@@ -1542,7 +1559,6 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                                                            ecx, ecy, ecw, ech,
                                                            proxy_render_data,
                                                            level + 1,
-                                                           EINA_FALSE,
                                                            do_async);
                           /* We aren't sure this object will be rendered by
                              normal(not proxy) drawing after, we reset this
@@ -1621,11 +1637,20 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                     {
                        // This path can be hit when we're multiplying masks on top of each other...
                        Evas_Object_Protected_Data *mask = obj->cur->clipper;
-                       RD(level, "  has mask: [%p%s%s] redraw:%d sfc:%p\n",
-                          mask, mask->name?":":"", mask->name?mask->name:"",
-                          mask->mask->redraw, mask->mask->surface);
-                       if (mask->mask->redraw || !mask->mask->surface)
-                         evas_render_mask_subrender(evas, mask, obj->clip.prev_mask, level + 1);
+                       Evas_Object_Protected_Data *prev_mask = obj->clip.prev_mask;
+                       Eina_Bool redraw = mask->mask->redraw;
+
+                       RD(level, "  has mask: [%p%s%s] redraw:%d sfc:%p prev_mask:%p\n",
+                          mask->object, mask->name?":":"", mask->name?mask->name:"",
+                          mask->mask->redraw, mask->mask->surface, prev_mask);
+                       if (prev_mask && !_mask_apply_inside_proxy(proxy_render_data, prev_mask))
+                         {
+                            RD(level, "  discard prev mask and redraw (guessed outside proxy)\n");
+                            prev_mask = NULL;
+                            redraw = EINA_TRUE;
+                         }
+                       if (redraw || !mask->mask->surface)
+                         evas_render_mask_subrender(evas, mask, prev_mask, level + 1);
 
                        if (mask->mask->surface)
                          {
@@ -1637,7 +1662,6 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                     }
                }
           }
-        //if (surface == ENFN)
         ENFN->context_clip_clip(ENDT, ctx, ecx, ecy, ecw, ech);
         if (!_is_obj_in_framespace(obj))
           _evas_render_framespace_context_clip_clip(evas, ctx);
@@ -1656,7 +1680,6 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                 obj->map->surface, obj->map->spans,
                 obj->map->cur.map->smooth, 0, do_async);
           }
-
         ENFN->context_free(ENDT, ctx);
 
         // FIXME: needs to cache these maps and
@@ -1667,14 +1690,10 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
      }
    else // not "has map"
      {
+        ctx = ENFN->context_dup(ENDT, context);
         if (mapped)
           {
              RD(level, "  child of mapped obj\n");
-
-             if (use_mapped_ctx)
-               ctx = ENFN->context_dup(ENDT, context);
-             else
-               ctx = ENFN->context_new(ENDT);
 
              if (obj->is_smart)
                {
@@ -1684,18 +1703,26 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                     {
                        // This path can be hit when we're multiplying masks on top of each other...
                        Evas_Object_Protected_Data *mask = obj->cur->clipper;
+                       Evas_Object_Protected_Data *prev_mask;
+                       Eina_Bool redraw = mask->mask->redraw;
 
                        evas_object_clip_recalc(obj);
+                       prev_mask = obj->clip.prev_mask
 
-                       RD(level, "  has mask: [%p%s%s] redraw:%d sfc:%p\n",
-                          mask, mask->name?":":"", mask->name?mask->name:"",
-                          mask->mask->redraw, mask->mask->surface);
-                       if (mask->mask->redraw || !mask->mask->surface)
-                         evas_render_mask_subrender(evas, mask, obj->clip.prev_mask, level + 1);
+                       RD(level, "  has mask: [%p%s%s] redraw:%d sfc:%p prev_mask:%p\n",
+                          mask->object, mask->name?":":"", mask->name?mask->name:"",
+                          mask->mask->redraw, mask->mask->surface, prev_mask ? prev_mask->object : NULL);
+                       if (prev_mask && !_mask_apply_inside_proxy(proxy_render_data, prev_mask))
+                         {
+                            RD(level, "  discard prev mask and redraw (guessed outside proxy)\n");
+                            prev_mask = NULL;
+                            redraw = EINA_TRUE;
+                         }
+                       if (redraw || !mask->mask->surface)
+                         evas_render_mask_subrender(evas, mask, prev_mask, level + 1);
 
                        if (mask->mask->surface)
                          {
-                            use_mapped_ctx = EINA_TRUE;
                             ENFN->context_clip_image_set(ENDT, ctx,
                                                          mask->mask->surface,
                                                          mask->cur->geometry.x + off_x,
@@ -1705,8 +1732,9 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                     }
                   else if (!proxy_src_clip)
                     {
+                       // inside proxy subrender
                        if (!_proxy_context_clip(evas, ctx, proxy_render_data, obj, off_x, off_y))
-                         return clean_them;
+                         goto on_empty_clip;
                     }
 
 #ifdef REND_DBG
@@ -1725,7 +1753,6 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                                                            ecx, ecy, ecw, ech,
                                                            proxy_render_data,
                                                            level + 1,
-                                                           use_mapped_ctx,
                                                            do_async);
                           /* We aren't sure this object will be rendered by
                              normal(not proxy) drawing after, we reset this
@@ -1743,6 +1770,8 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
 
                   if (obj->cur->clipper && (mapped > 1))
                     {
+                       Evas_Object_Protected_Data *mask = obj->cur->clipper;
+
                        if (proxy_src_clip)
                          {
                             if (_evas_render_has_map(eo_obj, obj) ||
@@ -1755,19 +1784,27 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                        else
                          {
                             if (!_proxy_context_clip(evas, ctx, proxy_render_data, obj, off_x, off_y))
-                              return clean_them;
+                              goto on_empty_clip;
                          }
 
                        /* Clipper masks */
                        if (_evas_render_object_is_mask(obj->cur->clipper))
                          {
                             // This path can be hit when we're multiplying masks on top of each other...
-                            Evas_Object_Protected_Data *mask = obj->cur->clipper;
-                            RD(level, "  has mask: [%p%s%s] redraw:%d sfc:%p\n",
-                               mask, mask->name?":":"", mask->name?mask->name:"",
-                               mask->mask->redraw, mask->mask->surface);
-                            if (mask->mask->redraw || !mask->mask->surface)
-                              evas_render_mask_subrender(evas, mask, obj->clip.prev_mask, level + 1);
+                            Evas_Object_Protected_Data *prev_mask = obj->clip.prev_mask;
+                            Eina_Bool redraw = mask->mask->redraw;
+
+                            RD(level, "  has mask: [%p%s%s] redraw:%d sfc:%p prev_mask:%p\n",
+                               mask->object, mask->name?":":"", mask->name?mask->name:"",
+                               mask->mask->redraw, mask->mask->surface, prev_mask ? prev_mask->object : NULL);
+                            if (prev_mask && !_mask_apply_inside_proxy(proxy_render_data, prev_mask))
+                              {
+                                 RD(level, "  discard prev mask and redraw (guessed outside proxy)\n");
+                                 prev_mask = NULL;
+                                 redraw = EINA_TRUE;
+                              }
+                            if (redraw || !mask->mask->surface)
+                              evas_render_mask_subrender(evas, mask, prev_mask, level + 1);
 
                             if (mask->mask->surface)
                               {
@@ -1785,16 +1822,12 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                   _c = ENFN->context_clip_get(ENDT, ctx, &_cx, &_cy, &_cw, &_ch);
                   RD(level, "  render(clip: [%d] %d,%d %dx%d)\n", _c, _cx, _cy, _cw, _ch);
 #endif
-
                   obj->func->render(eo_obj, obj, obj->private_data,
                                     ENDT, ctx, surface, off_x, off_y, EINA_FALSE);
                }
-
-             ENFN->context_free(ENDT, ctx);
           }
         else
           {
-             ctx = ENFN->context_dup(ENDT, context);
              if (obj->cur->clipper)
                {
                   Evas_Object_Protected_Data *clipper = obj->cur->clipper;
@@ -1824,7 +1857,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                   else
                     {
                        if (!_proxy_context_clip(evas, ctx, proxy_render_data, obj, off_x, off_y))
-                         return clean_them;
+                         goto on_empty_clip;
                     }
                }
 
@@ -1837,9 +1870,11 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
              obj->func->render(eo_obj, obj, obj->private_data,
                                ENDT, ctx, surface,
                                off_x, off_y, do_async);
-             ENFN->context_free(ENDT, ctx);
           }
         if (obj->changed_map) clean_them = EINA_TRUE;
+
+on_empty_clip:
+        ENFN->context_free(ENDT, ctx);
      }
    RD(level, "}\n");
 
@@ -1878,7 +1913,6 @@ evas_render_proxy_subrender(Evas *eo_e, Evas_Object *eo_source, Evas_Object *eo_
 {
    Evas_Public_Data *evas = eo_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
    Evas_Object_Protected_Data *source;
-   Eina_Bool source_clip = EINA_FALSE;
    int level = 1;
    void *ctx;
    int w, h;
@@ -1890,6 +1924,8 @@ evas_render_proxy_subrender(Evas *eo_e, Evas_Object *eo_source, Evas_Object *eo_
    if (!eo_source) return;
    source = eo_data_scope_get(eo_source, EVAS_OBJECT_CLASS);
 
+   // FIXME: This is wrong. Object cache should simply not be trusted for
+   // proxy subrender. Forcing recalc will not fix anything.
    evas_render_gurantee_recalc(source->object, source);
 
    w = source->cur->geometry.w;
@@ -1924,31 +1960,28 @@ evas_render_proxy_subrender(Evas *eo_e, Evas_Object *eo_source, Evas_Object *eo_
           }
 
         ctx = ENFN->context_new(ENDT);
-        ENFN->context_color_set(ENDT, ctx, 0, 0,0, 0);
+        ENFN->context_color_set(ENDT, ctx, 0, 0, 0, 0);
         ENFN->context_render_op_set(ENDT, ctx, EVAS_RENDER_COPY);
         ENFN->rectangle_draw(ENDT, ctx, proxy_write->surface, 0, 0, w, h, do_async);
-        ENFN->context_free(ENDT, ctx);
-
-        if (eo_isa(eo_proxy, EVAS_IMAGE_CLASS))
-          eo_do(eo_proxy, source_clip = evas_obj_image_source_clip_get());
+        ENFN->context_color_set(ENDT, ctx, 255, 255, 255, 255);
+        ENFN->context_render_op_set(ENDT, ctx, EVAS_RENDER_BLEND);
 
         Evas_Proxy_Render_Data proxy_render_data = {
              .eo_proxy = eo_proxy,
              .proxy_obj = proxy_obj,
              .eo_src = eo_source,
              .src_obj = source,
-             .source_clip = source_clip
+             .source_clip = evas_object_image_source_clip_get(eo_proxy)
         };
 
         /* protect changes to the objects' cache.clip */
         evas_event_freeze(evas->evas);
 
-        ctx = ENFN->context_new(ENDT);
         evas_render_mapped(evas, eo_source, source, ctx, proxy_write->surface,
                            -source->cur->geometry.x,
                            -source->cur->geometry.y,
                            level + 1, 0, 0, evas->output.w, evas->output.h,
-                           &proxy_render_data, level + 1, EINA_TRUE, do_async);
+                           &proxy_render_data, level + 1, do_async);
         ENFN->context_free(ENDT, ctx);
 
         proxy_write->surface = ENFN->image_dirty_region(ENDT, proxy_write->surface, 0, 0, w, h);
@@ -1977,11 +2010,6 @@ evas_render_mask_subrender(Evas_Public_Data *evas,
    void *ctx;
 
    if (!mask) return;
-   if (!mask->mask->redraw && mask->mask->surface)
-     {
-        DBG("Requested mask redraw but the redraw flag is off.");
-        return;
-     }
 
    RD(level, "evas_render_mask_subrender(%p, prev: %p)\n", mask, prev_mask);
 
@@ -2094,10 +2122,10 @@ evas_render_mask_subrender(Evas_Public_Data *evas,
           ENFN->context_color_set(ENDT, ctx, 0, 0, 0, 0);
           ENFN->context_render_op_set(ENDT, ctx, EVAS_RENDER_COPY);
           ENFN->rectangle_draw(ENDT, ctx, mdata->surface, 0, 0, w, h, EINA_FALSE);
-          ENFN->context_free(ENDT, ctx);
+          ENFN->context_color_set(ENDT, ctx, 255, 255, 255, 255);
+          ENFN->context_render_op_set(ENDT, ctx, EVAS_RENDER_BLEND);
 
           /* Render mask to RGBA surface */
-          ctx = ENFN->context_new(ENDT);
           if (prev_mask)
             {
                ENFN->context_clip_image_set(ENDT, ctx,
@@ -2105,10 +2133,26 @@ evas_render_mask_subrender(Evas_Public_Data *evas,
                                             prev_mask->cur->geometry.x - x,
                                             prev_mask->cur->geometry.y - y,
                                             evas, EINA_FALSE);
+               ENFN->context_clip_set(ENDT, ctx,
+                                      prev_mask->cur->geometry.x - x,
+                                      prev_mask->cur->geometry.y - y,
+                                      prev_mask->cur->geometry.w,
+                                      prev_mask->cur->geometry.h);
             }
-          evas_render_mapped(evas, mask->object, mask, ctx, mdata->surface,
-                             -x, -y, 2, 0, 0, evas->output.w, evas->output.h,
-                             NULL, level, EINA_TRUE, EINA_FALSE);
+
+          if (EINA_LIKELY(!mask->is_smart))
+            {
+               mask->func->render(mask->object, mask, mask->private_data, ENDT,
+                                  ctx, mdata->surface, -x, -y, EINA_FALSE);
+            }
+          else
+            {
+               // Note: This case is never gonna happen until we actually
+               // implement support for smart masks!
+               evas_render_mapped(evas, mask->object, mask, ctx, mdata->surface,
+                                  -x, -y, 2, 0, 0, evas->output.w, evas->output.h,
+                                  NULL, level, EINA_FALSE);
+            }
           ENFN->context_free(ENDT, ctx);
 
           /* BEGIN HACK */
@@ -2459,7 +2503,6 @@ evas_render_updates_internal_loop(Evas *eo_e, Evas_Public_Data *e,
                                                    off_y + fy, 0,
                                                    cx, cy, cw, ch,
                                                    NULL, level + 3,
-                                                   EINA_FALSE,
                                                    do_async);
                   e->engine.func->context_cutout_clear(e->engine.data.output,
                                                        context);
