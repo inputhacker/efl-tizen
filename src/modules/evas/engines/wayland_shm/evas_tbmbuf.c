@@ -104,6 +104,7 @@ struct _Tbmbuf_Surface
 static void *tbm_lib = NULL;
 static void *tbm_client_lib = NULL;
 static int   tbm_ref = 0;
+static int   tbm_queue_ref = 0;
 
 static int (*sym_tbm_surface_map) (tbm_surface_h surface, int opt, tbm_surface_info_s *info) = NULL;
 static int (*sym_tbm_surface_unmap) (tbm_surface_h surface) = NULL;
@@ -128,6 +129,10 @@ static tbm_surface_queue_error_e (*sym_tbm_surface_queue_reset) (void *surface_q
 
 static struct wl_buffer * (*sym_wayland_tbm_client_create_buffer) (struct wayland_tbm_client *tbm_client, tbm_surface_h surface) = NULL;
 static struct wl_tbm * (*sym_wayland_tbm_client_get_wl_tbm) (struct wayland_tbm_client *tbm_client) = NULL;
+static void *(*sym_wayland_tbm_client_create_surface_queue) (struct wayland_tbm_client *tbm_client,
+                                                             struct wl_surface *surface,
+                                                             int queue_size,
+                                                             int width, int height, tbm_format format) = NULL;
 
 static Eina_Bool
 tbm_init(void)
@@ -201,6 +206,7 @@ tbm_init(void)
                fail = 0;
                SYM(tbm_client_lib, wayland_tbm_client_get_wl_tbm);
                SYM(tbm_client_lib, wayland_tbm_client_create_buffer);
+               SYM(tbm_client_lib, wayland_tbm_client_create_surface_queue);
                if (fail)
                   {
                      dlclose(tbm_client_lib);
@@ -498,8 +504,15 @@ _evas_tbmbuf_surface_destroy(Surface *s)
    surf = s->surf.tbm;
    if (surf)
       {
-         surf->tbm_queue = NULL;
-         surf->tbm_client = NULL;
+         if (surf->tbm_queue && tbm_queue_ref == 0)
+            {
+               if (surf->tbm_surface)
+                  sym_tbm_surface_internal_set_user_data(surf->tbm_surface, KEY_WINDOW, NULL);
+               sym_tbm_surface_queue_destroy(surf->tbm_queue);
+               if (s->info) s->info->info.tbm_queue = NULL;
+            }
+         if (tbm_queue_ref)
+            --tbm_queue_ref;
          free(surf);
          s->surf.tbm = NULL;
       }
@@ -537,15 +550,27 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff EINA_UNUSED)
          goto err;
    }
 
-   /* get tbm_queue */
-   surf->tbm_queue = s->info->info.tbm_queue;
+   /* create surface buffers */
+   if (!s->info->info.tbm_queue)
+      {
+         s->info->info.tbm_queue = sym_wayland_tbm_client_create_surface_queue(surf->tbm_client,
+                                                                       surf->wl_surface,
+                                                                       3,
+                                                                       w, h,
+                                                                       TBM_FORMAT_ARGB8888);
+         surf->tbm_queue = s->info->info.tbm_queue;
+      }
+   else
+      {
+         /* reuse tbm_queue */
+         surf->tbm_queue = s->info->info.tbm_queue;
+         sym_tbm_surface_queue_reset(surf->tbm_queue, w, h, TBM_FORMAT_ARGB8888);
+         tbm_queue_ref++;
+      }
    if (surf->tbm_queue == NULL) {
-         ERR("surf->tbm_queue NULL reture err");
+         ERR("surf->tbm_queue NULL");
          goto err;
    }
-   // reset tbm_queue
-   sym_tbm_surface_queue_reset(surf->tbm_queue, w, h, TBM_FORMAT_ARGB8888);
-
    surf->tbm_surface = NULL;
 
    s->type = SURFACE_TBM;
