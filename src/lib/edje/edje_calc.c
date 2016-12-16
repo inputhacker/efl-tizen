@@ -3107,12 +3107,10 @@ _edje_part_recalc_single_filter(Edje *ed,
                         else
                           {
                              char *name = strdup(src1);
-                             if (name)
-                               {
-                                  name[part - src1] = 0;
-                                  efl_gfx_filter_source_set(name, NULL);
-                                  free(name);
-                               }
+                             if (!name) continue ;
+                             name[part - src1] = 0;
+                             efl_gfx_filter_source_set(name, NULL);
+                             free(name);
                           }
                      }
                 }
@@ -3124,7 +3122,8 @@ _edje_part_recalc_single_filter(Edje *ed,
                    if ((part = strchr(src1, ':')) != NULL)
                      {
                         name = strdup(src1);
-                        if (name) name[part - src1] = 0;
+                        if (!name) continue ;
+                        name[part - src1] = 0;
                         part++;
                      }
                    else
