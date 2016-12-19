@@ -1169,9 +1169,9 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en,
               */
              if (_is_anchors_outside_viewport(y, cy, ch, vy, tvh) ||
                  _is_anchors_outside_viewport(x, cx, cw, vx, tvw))
-               evas_object_show(sel->obj);
-             else
                evas_object_hide(sel->obj);
+             else
+               evas_object_show(sel->obj);
              /* END */
           }
         // for link anchors
