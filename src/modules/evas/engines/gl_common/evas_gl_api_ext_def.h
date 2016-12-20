@@ -1244,6 +1244,18 @@ _EVASGL_EXT_END()
 _EVASGL_EXT_BEGIN(texture_sRGB_decode)
         _EVASGL_EXT_DRVNAME(GL_EXT_texture_sRGB_decode)
 _EVASGL_EXT_END()
+
+_EVASGL_EXT_BEGIN(color_buffer_float)
+        _EVASGL_EXT_DRVNAME(GL_EXT_color_buffer_float)
+_EVASGL_EXT_END()
+
+_EVASGL_EXT_BEGIN(color_buffer_half_float)
+        _EVASGL_EXT_DRVNAME(GL_EXT_color_buffer_half_float)
+_EVASGL_EXT_END()
+
+_EVASGL_EXT_BEGIN(texture_cube_map_array)
+        _EVASGL_EXT_DRVNAME(GL_EXT_texture_cube_map_array)
+_EVASGL_EXT_END()
 #endif // GL_GLES
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
