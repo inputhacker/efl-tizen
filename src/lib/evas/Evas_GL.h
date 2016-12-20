@@ -4423,7 +4423,7 @@ typedef struct __GLsync*   GLsync;
 # define __gl3_h_ 1
 
 #define GL_ES_VERSION_3_0 1
-
+typedef unsigned short GLhalf;
 #define GL_READ_BUFFER                    0x0C02
 #define GL_UNPACK_ROW_LENGTH              0x0CF2
 #define GL_UNPACK_SKIP_ROWS               0x0CF3
