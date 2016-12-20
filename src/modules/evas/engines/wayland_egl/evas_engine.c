@@ -322,7 +322,7 @@ _re_winfree(Render_Engine *re)
 static void
 _evas_native_win_pre_rotation_set(struct wl_egl_window *win, int angle)
 {
-    wl_egl_window_rotation rot;
+    evas_wl_egl_window_rotation rot;
     if (!win) return;
     if (!glsym_wl_egl_win_set_rotation)
       {
