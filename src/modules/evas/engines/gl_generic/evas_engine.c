@@ -708,8 +708,7 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
    if (im->native.data)
      return im;
 
-   if (im->im &&
-       im->orient != EVAS_IMAGE_ORIENT_NONE)
+   if (im->im && im->rotated)
      {
         im_new = _rotate_image_data(data, image);
         if (!im_new)
@@ -717,9 +716,9 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
              if (err) *err = EVAS_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED;
              return im;
           }
-        evas_gl_common_image_free(im);
 
         *image_data = im_new->im->image.data;
+        if (tofree) *tofree = EINA_TRUE;
         return im_new;
      }
 
@@ -1008,6 +1007,7 @@ eng_image_orient_set(void *data, void *image, Evas_Image_Orient orient)
    im_new->cached = EINA_FALSE;
 
    im_new->orient = orient;
+   im_new->rotated = EINA_TRUE;
    im_new->tex = im->tex;
    im_new->tex->references++;
    im_new->tex->pt->references++;
