@@ -1369,11 +1369,9 @@ _evgl_glGetString(GLenum name)
         ret = (const char *) glGetString(GL_SHADING_LANGUAGE_VERSION);
         if (!ret) return NULL;
 #ifdef GL_GLES
-        if (ret[18] != '1')
+        if ((ret[18] == '3') && (ret[20] == '2'))
           {
-             // We try not to remove the vendor fluff
-             snprintf(_glsl, sizeof(_glsl), "OpenGL ES GLSL ES 1.00 Evas GL (%s)", ret + 18);
-             _glsl[sizeof(_glsl) - 1] = '\0';
+             snprintf(_glsl, sizeof(_glsl), "OpenGL ES GLSL ES 3.10");
              return (const GLubyte *) _glsl;
           }
         return (const GLubyte *) ret;
@@ -1388,6 +1386,11 @@ _evgl_glGetString(GLenum name)
         ret = (const char *) glGetString(GL_VERSION);
         if (!ret) return NULL;
 #ifdef GL_GLES
+        if ((ret[10] == '3') && (ret[12] == '2'))
+          {
+             snprintf(_version, sizeof(_version), "OpenGL ES 3.1");
+             return (const GLubyte *) _version;
+          }
         if ((ret[10] != '2') && (ret[10] != '3'))
           {
              // We try not to remove the vendor fluff
