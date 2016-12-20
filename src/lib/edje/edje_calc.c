@@ -4395,35 +4395,76 @@ _edje_fade_ellipsis_apply(Edje *ed, Edje_Real_Part *ep,
 }
 /* END */
 //TIZEN_ONLY(20160923): introduction of text marquee
+#define MARQUEE_CLIP 1
 static void
-_text_marquee_clipper_update(Edje_Real_Part *ep, Eina_Bool del_clipper)
+_text_marquee_clipper_update(Edje_Real_Part *ep, int x, int y, int w, int h)
 {
    Evas_Object *prev_clipper;
-   Evas_Coord_Rectangle text_cur_area;
 
-   prev_clipper = evas_object_clip_get(ep->text_marquee_clipper);
-   if (!del_clipper)
+   if (!ep->text_marquee_clipper)
      {
+        ep->text_marquee_clipper = evas_object_rectangle_add(evas_object_evas_get(ep->object));
+        evas_object_show(ep->text_marquee_clipper);
+#if MARQUEE_CLIP
+        evas_object_color_set(ep->text_marquee_clipper, 255, 255, 255, 255);
+        prev_clipper = evas_object_clip_get(ep->object);
+        if (prev_clipper) evas_object_clip_set(ep->text_marquee_clipper, prev_clipper);
+        evas_object_clip_set(ep->object, ep->text_marquee_clipper);
+#else
+        /* ambient red color rectangle for debugging clipper object */
+        evas_object_color_set(ep->text_marquee_clipper, 150, 0, 0, 150);
+#endif
+     }
+   else
+     {
+#if MARQUEE_CLIP
+        prev_clipper = evas_object_clip_get(ep->object);
+
         /* reset marquee clipper changed in _edje_part_recalc */
         if (prev_clipper && prev_clipper != ep->text_marquee_clipper)
           {
              evas_object_clip_set(ep->text_marquee_clipper, prev_clipper);
              evas_object_clip_set(ep->object, ep->text_marquee_clipper);
           }
+#endif
+     }
 
-        evas_object_geometry_get(ep->object, &text_cur_area.x, &text_cur_area.y,
-                                             &text_cur_area.w, &text_cur_area.h);
-        evas_object_move(ep->text_marquee_clipper, text_cur_area.x - ep->typedata.text->offset.x,
-                                                   text_cur_area.y - ep->typedata.text->offset.y);
-        evas_object_resize(ep->text_marquee_clipper, ep->w, ep->h);
+   evas_object_move(ep->text_marquee_clipper, x, y);
+   evas_object_resize(ep->text_marquee_clipper, w, h);
+}
+
+static void
+_text_marquee_clipper_del(Edje_Real_Part *ep)
+{
+   Evas_Object *prev_clipper;
+
+   if (!ep->text_marquee_clipper) return;
+
+#if MARQUEE_CLIP
+   prev_clipper = evas_object_clip_get(ep->object);
+
+   /* reset marquee clipper changed in _edje_part_recalc */
+   if (prev_clipper && prev_clipper != ep->text_marquee_clipper)
+     {
+        evas_object_clip_unset(ep->text_marquee_clipper);
+        evas_object_del(ep->text_marquee_clipper);
+        ep->text_marquee_clipper = NULL;
+
+        evas_object_clip_set(ep->object, prev_clipper);
      }
    else
      {
+        prev_clipper = evas_object_clip_get(ep->text_marquee_clipper);
+        evas_object_clip_unset(ep->text_marquee_clipper);
         evas_object_del(ep->text_marquee_clipper);
         ep->text_marquee_clipper = NULL;
 
         if (prev_clipper) evas_object_clip_set(ep->object, prev_clipper);
      }
+#else
+   evas_object_del(ep->text_marquee_clipper);
+   ep->text_marquee_clipper = NULL;
+#endif
 }
 
 static Eina_Bool
@@ -4448,31 +4489,16 @@ _text_object_marquee_animator(void *data)
      {
         /* text marquee will not work */
         if (ep->text_marquee_clipper)
-          _text_marquee_clipper_update(ep, EINA_TRUE);
+          _text_marquee_clipper_del(ep);
 
         ep->text_marquee_animator = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
 
-   if (!ep->text_marquee_clipper)
-     {
-        ep->text_marquee_clipper = evas_object_rectangle_add(evas_object_evas_get(ep->object));
-        evas_object_color_set(ep->text_marquee_clipper, 255, 255, 255, 255);
-        evas_object_show(ep->text_marquee_clipper);
-
-        Evas_Object *prev_clipper = evas_object_clip_get(ep->object);
-        if (prev_clipper) evas_object_clip_set(ep->text_marquee_clipper, prev_clipper);
-
-        evas_object_clip_set(ep->object, ep->text_marquee_clipper);
-        evas_object_move(ep->text_marquee_clipper, text_cur_area.x - ep->typedata.text->offset.x,
-                                                   text_cur_area.y - ep->typedata.text->offset.y);
-
-        ep->text_marquee_prev_time = ecore_time_get();
-     }
-
-   evas_object_resize(ep->text_marquee_clipper, ep->w, ep->h);
    evas_object_geometry_get(ep->text_marquee_clipper, &clipper_area.x, &clipper_area.y,
                                                       &clipper_area.w, &clipper_area.h);
+   _text_marquee_clipper_update(ep, clipper_area.x, clipper_area.y,
+                                clipper_area.w, clipper_area.h);
 
    cur_time = ecore_time_get();
    elapsed_time = cur_time - ep->text_marquee_prev_time;
@@ -4494,7 +4520,7 @@ _text_object_marquee_animator(void *data)
           }
         else
           {
-             text_cur_area.x = text_cur_area.x - move_length;
+             text_cur_area.x -= move_length;
           }
      }
    else
@@ -4508,7 +4534,7 @@ _text_object_marquee_animator(void *data)
           }
         else
           {
-             text_cur_area.x = text_cur_area.x + move_length;
+             text_cur_area.x += move_length;
           }
      }
 
@@ -4534,78 +4560,23 @@ _text_object_marquee_animator(void *data)
 }
 
 static void
-_text_marquee_job(void *data)
-{
-   Edje_Real_Part *ep;
-   Evas_BiDi_Direction dir;
-   Edje_Part_Description_Text *chosen_desc;
-   Evas_Coord_Rectangle text_cur_position;
-
-   ep = data;
-   chosen_desc = (Edje_Part_Description_Text *)ep->chosen_description;
-
-   /* keep marquee start point */
-   evas_object_geometry_get(ep->object, &text_cur_position.x,
-                                        &text_cur_position.y,
-                                                  NULL, NULL);
-   chosen_desc->text.ellipsize.marquee_start_point.x = text_cur_position.x;
-   chosen_desc->text.ellipsize.marquee_start_point.y = text_cur_position.y;
-
-   if (ep->text_marquee_animator)
-     {
-        ecore_animator_del(ep->text_marquee_animator);
-        ep->text_marquee_animator = NULL;
-     }
-   ep->text_marquee_animator = ecore_animator_add(_text_object_marquee_animator, ep);
-
-   /* check text direction */
-   if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
-     {
-        dir = evas_object_paragraph_direction_get(ep->object);
-        if (dir == EVAS_BIDI_DIRECTION_NEUTRAL)
-          {
-             Evas_Textblock_Cursor *cur;
-             cur = evas_object_textblock_cursor_new(ep->object);
-             evas_textblock_cursor_geometry_get(cur,
-                                                NULL, NULL, NULL, NULL, &dir,
-                                                EVAS_TEXTBLOCK_CURSOR_BEFORE);
-             evas_textblock_cursor_free(cur);
-          }
-     }
-   else
-     {
-        dir = evas_object_text_direction_get(ep->object);
-     }
-
-   /* define marquee direction */
-   ep->text_marquee_to_left = (dir != EVAS_BIDI_DIRECTION_RTL);
-
-   ep->text_marquee_job = NULL;
-}
-
-static void
 _text_object_del_cb(void *data, EINA_UNUSED Evas *e, EINA_UNUSED Evas_Object *obj, EINA_UNUSED void *event_info)
 {
    Edje_Real_Part *ep;
 
    ep = data;
-   if (ep->text_marquee_job)
-     {
-        ecore_job_del(ep->text_marquee_job);
-        ep->text_marquee_job = NULL;
-     }
 
    if (ep->text_marquee_animator)
      {
         ecore_animator_del(ep->text_marquee_animator);
         ep->text_marquee_animator = NULL;
-        _text_marquee_clipper_update(ep, EINA_TRUE);
+        _text_marquee_clipper_del(ep);
      }
 }
 
 static void
 _edje_text_marquee_apply(Edje *ed EINA_UNUSED, Edje_Real_Part *ep,
-                         Edje_Calc_Params *params EINA_UNUSED,
+                         Edje_Calc_Params *pf,
                          Edje_Part_Description_Text *chosen_desc)
 {
    Eina_Bool is_marquee_on;
@@ -4614,12 +4585,6 @@ _edje_text_marquee_apply(Edje *ed EINA_UNUSED, Edje_Real_Part *ep,
                     (chosen_desc->text.ellipsize.marquee_repeat_count !=
                      chosen_desc->text.ellipsize.marquee_repeat_limit));
 
-   if (ep->text_marquee_job)
-     {
-        ecore_job_del(ep->text_marquee_job);
-        ep->text_marquee_job = NULL;
-     }
-
    if (ep->text_marquee_animator)
      {
         ecore_animator_del(ep->text_marquee_animator);
@@ -4627,14 +4592,89 @@ _edje_text_marquee_apply(Edje *ed EINA_UNUSED, Edje_Real_Part *ep,
      }
 
    /* in case of marquee mode, do not remove existing clipper */
-   if (ep->text_marquee_clipper)
-     _text_marquee_clipper_update(ep, !is_marquee_on);
-
    if (is_marquee_on)
      {
-        ep->text_marquee_job = ecore_job_add(_text_marquee_job, ep);
+        Evas_BiDi_Direction dir;
+        int width, height;
+        int offset_x = 0, offset_y = 0;
+
+
+        ep->text_marquee_prev_time = ecore_time_get();
+
+        /* check text direction */
+        if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
+          {
+             dir = evas_object_paragraph_direction_get(ep->object);
+             if (dir == EVAS_BIDI_DIRECTION_NEUTRAL)
+               {
+                  Evas_Textblock_Cursor *cur;
+                  cur = evas_object_textblock_cursor_new(ep->object);
+                  evas_textblock_cursor_geometry_get(cur,
+                                                     NULL, NULL, NULL, NULL, &dir,
+                                                     EVAS_TEXTBLOCK_CURSOR_BEFORE);
+                  evas_textblock_cursor_free(cur);
+               }
+             evas_object_textblock_size_formatted_get(ep->object, &width, NULL);
+          }
+        else
+          {
+             dir = evas_object_text_direction_get(ep->object);
+
+             /* force recalc by calling resize */
+             evas_object_resize(ep->object, pf->final.w, pf->final.h);
+             width = evas_object_text_horiz_advance_get(ep->object);
+             height = evas_object_text_vert_advance_get(ep->object);
+
+             /* Handle alignment */
+               {
+                  FLOAT_T align_x;
+                  if (pf->type.text.align.x < FROM_INT(0))
+                    {
+                       if (evas_object_text_direction_get(ep->object) ==
+                           EVAS_BIDI_DIRECTION_RTL)
+                         {
+                            align_x = FROM_INT(1);
+                         }
+                       else
+                         {
+                            align_x = FROM_INT(0);
+                         }
+                    }
+                  else
+                    {
+                       align_x = pf->type.text.align.x;
+                    }
+                  if (width < pf->final.w)
+                    offset_x = TO_INT(SCALE(align_x, (pf->final.w - width)));
+                  if (height < pf->final.h)
+                    offset_y = TO_INT(SCALE(pf->type.text.align.y, (pf->final.h - height)));
+               }
+          }
+
+        chosen_desc->text.ellipsize.marquee_start_point.x = ed->x + pf->final.x + offset_x;
+        chosen_desc->text.ellipsize.marquee_start_point.y = ed->y + pf->final.y + offset_y;
+
+        _text_marquee_clipper_update(ep, ed->x + pf->final.x, ed->y + pf->final.y, pf->final.w, pf->final.h);
+
+        /* define marquee direction */
+        ep->text_marquee_to_left = (dir != EVAS_BIDI_DIRECTION_RTL);
+
+        /* adjust start position for RTL text */
+        if (!ep->text_marquee_to_left)
+          chosen_desc->text.ellipsize.marquee_start_point.x += pf->final.w - width;
+
+        /* move the object to the start point */
+        evas_object_move(ep->object,
+                         chosen_desc->text.ellipsize.marquee_start_point.x,
+                         chosen_desc->text.ellipsize.marquee_start_point.y);
+
+        ep->text_marquee_animator = ecore_animator_add(_text_object_marquee_animator, ep);
         evas_object_event_callback_add(ep->object, EVAS_CALLBACK_DEL,
                                        _text_object_del_cb, ep);
+     }
+   else
+     {
+        _text_marquee_clipper_del(ep);
      }
 }
 //
