@@ -159,6 +159,19 @@ _re_wincheck(Outbuf *ob)
 // TIZEN_ONLY(20160425): Fix linking to 'context_restore_set'
 // extern void (*glsym_evas_gl_context_restore_set) (Eina_Bool enable);
 //
+enum evas_wl_egl_window_capability_rotation {
+    EVAS_WL_EGL_WINDOW_CAPABILITY_NONE = 0,
+    EVAS_WL_EGL_WINDOW_CAPABILITY_ROTATION_SUPPORTED = (1 << 0),
+    EVAS_WL_EGL_WINDOW_CAPABILITY_ROTATION_UNSUPPORTED = (1 << 1),
+    EVAS_WL_EGL_WINDOW_CAPABILITY_ROTATION_UNKNOWN = (1 << 2),
+};
+
+typedef enum {
+    EVAS_ROTATION_0 = 0,
+    EVAS_ROTATION_90 = 90,
+    EVAS_ROTATION_180 = 180,
+    EVAS_ROTATION_270 = 270
+} evas_wl_egl_window_rotation;
 
 //TIZEN_ONLY(20161121) : Support PreRotation
 typedef int (*wl_egl_win_get_capabilities) (struct wl_egl_window *egl_window);
