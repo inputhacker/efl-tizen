@@ -345,19 +345,19 @@ _evas_native_win_pre_rotation_set(struct wl_egl_window *win, int angle)
     switch (angle)
       {
          case 270:
-            rot = ROTATION_90;
+            rot = EVAS_ROTATION_90;
             break;
          case 180:
-            rot = ROTATION_180;
+            rot = EVAS_ROTATION_180;
             break;
          case 90:
-            rot = ROTATION_270;
+            rot = EVAS_ROTATION_270;
             break;
          case 0:
-            rot = ROTATION_0;
+            rot = EVAS_ROTATION_0;
             break;
          default:
-            rot = ROTATION_0;
+            rot = EVAS_ROTATION_0;
             break;
       }
 

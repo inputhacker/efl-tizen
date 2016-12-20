@@ -150,9 +150,9 @@ _orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int
    //TIZEN_ONLY(20161121):Support PreRotation
    if (glsym_wl_egl_win_get_capabilities)
      {
-        int prerotation_cap = WL_EGL_WINDOW_CAPABILITY_NONE;
+        int prerotation_cap = EVAS_WL_EGL_WINDOW_CAPABILITY_NONE;
         prerotation_cap = glsym_wl_egl_win_get_capabilities(gw->win);
-        if (prerotation_cap == WL_EGL_WINDOW_CAPABILITY_ROTATION_SUPPORTED)
+        if (prerotation_cap == EVAS_WL_EGL_WINDOW_CAPABILITY_ROTATION_SUPPORTED)
           {
              gw->support_pre_rotation = 1;
           }
