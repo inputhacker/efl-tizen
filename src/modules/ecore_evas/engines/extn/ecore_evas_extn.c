@@ -97,6 +97,7 @@ static Eina_List *extn_ee_list = NULL;
 /* local value for tizen remote manager */
 struct tizen_remote_surface_manager *tizen_rsm = NULL;
 static int extn_type = EXTN_TYPE_NONE;
+struct wl_buffer *pre_buffer; //pre_buffer for tizen remote surface
 
 /* Tizen Only : Callback function  & listener for tizen remote surface */
 static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider, uint32_t res_id)
@@ -161,6 +162,13 @@ _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *tr
    evas_object_image_native_surface_set(img, &ns);
    //set dirty for image updating
    evas_object_image_pixels_dirty_set(img, EINA_TRUE);
+
+   if( pre_buffer)
+     {
+        if (tizen_remote_surface_get_version(trs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
+           tizen_remote_surface_release(trs, pre_buffer);
+     }
+   pre_buffer = buffer;
 }
 
 static void
@@ -193,7 +201,7 @@ _tizen_remote_surface_init(void)
                {
                   tizen_rsm =
                      wl_registry_bind(registry, global->id,
-                                      &tizen_remote_surface_manager_interface, 1);
+                                      &tizen_remote_surface_manager_interface, global->version<2? global->version : 2);
                    INF("[EXTN_GL] Create tizen_rsm : %p",tizen_rsm);
                }
           }
