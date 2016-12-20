@@ -2011,7 +2011,6 @@ struct _Edje_Real_Part
    //TIZEN_ONLY(20160923): introduction of text marquee
    double                    text_marquee_prev_time;
    Ecore_Animator           *text_marquee_animator;
-   Ecore_Job                *text_marquee_job;
    Evas_Object              *text_marquee_clipper;
    //
    unsigned char             type; // 1
