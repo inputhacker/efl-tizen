@@ -148,7 +148,7 @@ eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Re
      }
 
    //TIZEN_ONLY(20161121):Support PreRotation
-   if (glsym_wl_egl_win_get_capabilities)
+   if (getenv("EVAS_GL_PREROTATION") && glsym_wl_egl_win_get_capabilities)
      {
         int prerotation_cap = EVAS_WL_EGL_WINDOW_CAPABILITY_NONE;
         prerotation_cap = glsym_wl_egl_win_get_capabilities(gw->win);
@@ -158,12 +158,12 @@ eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Re
           }
         else
           {
-            gw->support_pre_rotation = 0;
+             gw->support_pre_rotation = 0;
           }
      }
    else
      {
-        DBG("PreRotation API is Invalid!!");
+        DBG("PreRotation is invalid!!");
      }
 
    gw->egl_context[0] = 
