@@ -775,18 +775,12 @@ eldbus_idle_enterer(void *data)
    eldbus_init();
    eldbus_connection_ref(conn);
 
-//TIZEN_ONLY(20161216)
-/* Quick fix to solve quickpanel GEM usage issue */
-#if 0
    DBusDispatchStatus status;
    do
      {
         status = dbus_connection_dispatch(conn->dbus_conn);
      }
    while(status == DBUS_DISPATCH_DATA_REMAINS);
-#endif
-   dbus_connection_dispatch(conn->dbus_conn);
-//
 
    eldbus_connection_unref(conn);
    eldbus_shutdown();
