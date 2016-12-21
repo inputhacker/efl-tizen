@@ -3890,6 +3890,63 @@ _edje_data_item_list_foreach(const Eina_Hash *hash EINA_UNUSED, const void *key,
 
 #define STRDUP(x) x ? strdup(x) : NULL
 static void
+_parts_count_update(unsigned int type, int inc)
+{
+   switch (type)
+     {
+      case EDJE_PART_TYPE_RECTANGLE:
+         current_de->count.RECTANGLE += inc;
+         break;
+      case EDJE_PART_TYPE_TEXT:
+         current_de->count.TEXT += inc;
+         break;
+      case EDJE_PART_TYPE_IMAGE:
+         current_de->count.IMAGE += inc;
+         break;
+      case EDJE_PART_TYPE_SWALLOW:
+         current_de->count.SWALLOW += inc;
+         break;
+      case EDJE_PART_TYPE_TEXTBLOCK:
+         current_de->count.TEXTBLOCK += inc;
+         break;
+      case EDJE_PART_TYPE_GROUP:
+         current_de->count.GROUP += inc;
+         break;
+      case EDJE_PART_TYPE_BOX:
+         current_de->count.BOX += inc;
+         break;
+      case EDJE_PART_TYPE_TABLE:
+         current_de->count.TABLE += inc;
+         break;
+      case EDJE_PART_TYPE_EXTERNAL:
+         current_de->count.EXTERNAL += inc;
+         break;
+      case EDJE_PART_TYPE_PROXY:
+         current_de->count.PROXY += inc;
+         break;
+      case EDJE_PART_TYPE_MESH_NODE:
+         current_de->count.MESH_NODE += inc;
+         break;
+      case EDJE_PART_TYPE_LIGHT:
+         current_de->count.LIGHT += inc;
+         break;
+      case EDJE_PART_TYPE_CAMERA:
+         current_de->count.CAMERA += inc;
+         break;
+      case EDJE_PART_TYPE_SPACER:
+         current_de->count.SPACER += inc;
+         break;
+      case EDJE_PART_TYPE_SNAPSHOT:
+         current_de->count.SNAPSHOT += inc;
+         break;
+      case EDJE_PART_TYPE_VECTOR:
+         current_de->count.VECTOR += inc;
+         break;
+     }
+   current_de->count.part += inc;
+}
+
+static void
 _part_copy(Edje_Part *ep, Edje_Part *ep2)
 {
    Edje_Part_Collection *pc;
@@ -3979,6 +4036,8 @@ _part_copy(Edje_Part *ep, Edje_Part *ep2)
 
         pitem = (Edje_Pack_Element_Parser *)item;
         pitem->can_override = EINA_TRUE;
+
+        _parts_count_update(item->type, 1);
      }
 
    ep->api.name = STRDUP(ep2->api.name);
@@ -5331,6 +5390,7 @@ _part_type_set(unsigned int type)
      }
 
    current_part->type = type;
+   _parts_count_update(current_part->type, 1);
 }
 
 static void
@@ -5705,7 +5765,7 @@ _part_name_check(void)
 static void
 st_collections_group_part_remove(void)
 {
-   unsigned int n, argc, orig_count;
+   unsigned int n, argc, orig_count, part_type;
    Edje_Part_Collection *pc;
 
    check_min_arg_count(1);
@@ -5732,6 +5792,7 @@ st_collections_group_part_remove(void)
 
              if (strcmp(pc->parts[j]->name, name)) continue;
 
+             part_type = pc->parts[j]->type;
              pc->parts[j] = _part_free(pc, pc->parts[j]);
              for (i = j; i < pc->parts_count - 1; i++)
                {
@@ -5739,6 +5800,7 @@ st_collections_group_part_remove(void)
                   pc->parts[i] = pc->parts[i + 1];
                }
              pc->parts_count--;
+             _parts_count_update(part_type, -1);
              break;
           }
         if (cur_count == pc->parts_count)
