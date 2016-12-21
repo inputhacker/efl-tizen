@@ -714,8 +714,8 @@ EAPI void eina_matrix3_copy(Eina_Matrix3 *dst, const Eina_Matrix3 *src);
  * @brief Multiplies two matrix.
  *
  * @param out The resulting matrix
- * @param a The first member of the multiplication
- * @param b The second member of the multiplication
+ * @param mat_a The first member of the multiplication
+ * @param mat_b The second member of the multiplication
  *
  * @since 1.17
  *
@@ -730,8 +730,8 @@ EAPI void eina_matrix3_multiply(Eina_Matrix3 *out, const Eina_Matrix3 *mat_a,
  * @brief Multiplies two matrix.
  *
  * @param out The resulting matrix
- * @param a The first member of the multiplication
- * @param b The second member of the multiplication
+ * @param mat_a The first member of the multiplication
+ * @param mat_b The second member of the multiplication
  *
  * @since 1.17
  *

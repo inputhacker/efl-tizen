@@ -491,7 +491,7 @@ typedef enum _Eet_File_Mode
 } Eet_File_Mode; /**< Modes that a file can be opened. */
 
 /**
- * @enum _Eet_Image_Encoding
+ * @enum Eet_Image_Encoding
  * Specify lossy encoding for image
  * @since 1.10
  */
