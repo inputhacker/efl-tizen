@@ -80,29 +80,24 @@ struct _Ecore_Exe_Data
    Ecore_Win32_Handler *h_close;
    Ecore_Exe_Win32_Signal sig;
 
-   struct
-   {
-      HANDLE child_pipe;
-      HANDLE thread;
-      void *data_buf;
-      DWORD data_size;
-   } pipe_read;
+   Ecore_Thread *th;
 
-   struct
-   {
+   struct {
       HANDLE child_pipe;
-      HANDLE child_pipe_x;
       void *data_buf;
       int data_size;
-   } pipe_write;
+   } pipe_read;
 
-   struct
-   {
+   struct {
       HANDLE child_pipe;
-      HANDLE thread;
       void *data_buf;
-      DWORD data_size;
+      int data_size;
    } pipe_error;
+
+   struct {
+      HANDLE child_pipe;
+      HANDLE child_pipe_x;
+   } pipe_write;
 
    Eina_Bool close_threads : 1;
    Eina_Bool is_suspended : 1;
