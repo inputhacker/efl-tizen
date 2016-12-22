@@ -363,6 +363,10 @@ _evas_event_source_mouse_move_events(Evas_Object *eo_obj, Evas *eo_e, Evas_Event
           {
              child = eo_data_scope_get(eo_child, EVAS_OBJECT_CLASS);
 
+             //FIXME: When object is deleted in the src_event_in list,
+             //the src_event_in list should be updated. But now there is no way.
+             //So add checking NULL logic, please delete it if you make a better way.
+             if (!child) continue;
              if ((evas_object_clippers_is_visible(eo_child, child) ||
                  child->mouse_grabbed) &&
                (!evas_event_passes_through(eo_child, child)) &&
@@ -424,6 +428,10 @@ _evas_event_source_mouse_move_events(Evas_Object *eo_obj, Evas *eo_e, Evas_Event
         EINA_LIST_FOREACH(copy, l, eo_child)
           {
              child = eo_data_scope_get(eo_child, EVAS_OBJECT_CLASS);
+             //FIXME: When object is deleted in the src_event_in list,
+             //the src_event_in list should be updated. But now there is no way.
+             //So add checking NULL logic, please delete it if you make a better way.
+             if (!child) continue;
 
              ev->cur.canvas = point;
 
@@ -602,6 +610,10 @@ _evas_event_source_wheel_events(Evas_Object *eo_obj, Evas *eo_e, Evas_Event_Mous
      {
         if (src->delete_me) return;
         child = eo_data_scope_get(eo_child, EVAS_OBJECT_CLASS);
+        //FIXME: When object is deleted in the src_event_in list,
+        //the src_event_in list should be updated. But now there is no way.
+        //So add checking NULL logic, please delete it if you make a better way.
+        if (!child) continue;
         ev->canvas = point;
         _evas_event_havemap_adjust(eo_child, child,
                                    &ev->canvas.x,
