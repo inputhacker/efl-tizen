@@ -4005,15 +4005,15 @@ want_ecore_evas_wayland_egl="${have_evas_engine_wayland_egl}"
 want_ecore_evas_tbm="${have_evas_engine_tbm}"
 want_ecore_evas_extn="yes"
 want_ecore_evas_drm="${have_evas_engine_drm}"
-want_remote_surface="no"
+want_ecore_evas_extn_gl="${have_evas_engine_wayland_egl}"
 
 if test "x${have_ecore_ipc}" = "xno" || \
    test "x${efl_func_shm_open}" = "xno" || \
    test "x${have_windows}" = "xyes" ; then
    want_ecore_evas_extn="no"
+   want_ecore_evas_extn_gl="no"
 fi
 
-want_remote_surface="${want_ecore_evas_extn}"
 build_ecore_evas_tbm="no"
 
 ### Checks for programs
@@ -4031,7 +4031,10 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [efl])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [eo])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [eina])
 EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [emile])
-EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [ecore-wayland])
+if test "x${want_wayland}" = "xyes"; then
+   EFL_INTERNAL_DEPEND_PKG([ECORE_EVAS], [ecore-wayland])
+fi
+
 
 ## modules
 ECORE_EVAS_MODULE([extn], [${want_ecore_evas_extn}])
@@ -4047,7 +4050,7 @@ ECORE_EVAS_MODULE([opengl-cocoa], [${want_ecore_evas_gl_cocoa}])
 
 ECORE_EVAS_MODULE([software-sdl], [${want_sdl}])
 ECORE_EVAS_MODULE([opengl-sdl], [${want_gl_sdl}])
-ECORE_EVAS_MODULE([tizen-remote-surface-client],[${want_remote_surface}])
+ECORE_EVAS_MODULE([tizen-remote-surface-client],[${want_ecore_evas_extn_gl}])
 
 build_ecore_evas_sdl="no"
 if test "x${have_ecore_evas_software_sdl}" = "xyes" || \
@@ -4094,7 +4097,16 @@ fi
 AM_CONDITIONAL([BUILD_ECORE_EVAS_WIN32],
    [test "${build_ecore_evas_win32}" = "yes"])
 
-PKG_CHECK_MODULES([TIZEN_REMOTE_SURFACE], [tizen-remote-surface-client])
+build_ecore_evas_extn_gl="no"
+if test "${want_ecore_evas_extn_gl}" = "yes"; then
+   PKG_CHECK_MODULES([TIZEN_REMOTE_SURFACE], [tizen-remote-surface-client],
+   [
+      build_ecore_evas_extn_gl="yes"
+      AC_DEFINE(BUILD_TIZEN_REMOTE_SURFACE, 1, [Support Tizen remote surface])
+   ])
+fi
+AM_CONDITIONAL([BUILD_TIZEN_REMOTE_SURFACE],
+   [test "${build_ecore_evas_extn_gl}" = "yes"])
 
 # XXX TODO: ecore_evas_x11
 
