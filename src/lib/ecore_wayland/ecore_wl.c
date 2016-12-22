@@ -547,7 +547,16 @@ ecore_wl_dpi_get(void)
 
    _ecore_wl_init_wait();
 
-   if (!_ecore_wl_disp->output) return 75;
+   //TIZEN_ONLY(20161222): Insert also ecore_wl_display output sync in ecore_wl_dpi_get
+   // the first sync is in case registry replies are not back yet
+   if (!_ecore_wl_disp->output)
+     {
+        // second sync is in case bound object replies in registry are not back
+        ecore_wl_sync();
+        if (!_ecore_wl_disp->output) ecore_wl_sync();
+     }
+   //if (!_ecore_wl_disp->output) return 75;
+   //
 
    mw = _ecore_wl_disp->output->mw;
    if (mw <= 0) return 75;
