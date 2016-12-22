@@ -32,6 +32,8 @@ static Ecore_Evas_Interface_Extn *_ecore_evas_extn_interface_new(void);
 static void *_ecore_evas_socket_switch(void *data, void *dest_buf);
 
 /* Tizen Only : Callback function  & listener for tizen remote surface */
+
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
 // For Provider
 static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider, uint32_t res_id);
 static void _ecore_evas_extn_rsp_cb_visibility(void *data, struct tizen_remote_surface_provider *provider, uint32_t visibility);
@@ -52,6 +54,7 @@ static const struct tizen_remote_surface_listener _ecore_evas_extn_gl_plug_liste
    _ecore_evas_extn_rs_cb_missing,
 };
 
+#endif
 /* Tizen Only : --- End */
 typedef struct _Extn Extn;
 
@@ -83,11 +86,14 @@ struct _Extn
    } profile;
 
    /* Tizen Only : for tizen remote surface */
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
    struct tizen_remote_surface_provider *tizen_rsp;
    struct wayland_tbm_client *tbm_client;
    struct tizen_remote_surface *tizen_rs;
    uint32_t resource_id;
+#endif
    int extn_type_client;
+
    /* Tizen Only : --- End */
 };
 
@@ -95,11 +101,14 @@ static Eina_List *extn_ee_list = NULL;
 
 /* Tizen Only : for tizen remote surface */
 /* local value for tizen remote manager */
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
 struct tizen_remote_surface_manager *tizen_rsm = NULL;
-static int extn_type = EXTN_TYPE_NONE;
 struct wl_buffer *pre_buffer; //pre_buffer for tizen remote surface
+#endif
+static int extn_type = EXTN_TYPE_NONE;
 
 /* Tizen Only : Callback function  & listener for tizen remote surface */
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
 static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider, uint32_t res_id)
 {
    /* to get resource id of this remote surface */
@@ -214,7 +223,7 @@ _tizen_remote_surface_init(void)
 
    return EINA_TRUE;
 }
-
+#endif
 
 void
 _ecore_evas_extn_type_set(int type)
@@ -229,6 +238,7 @@ _ecore_evas_extn_type_get()
    if( extn_type != EXTN_TYPE_NONE)
      return extn_type;
 
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
    extn_type = EXTN_TYPE_SHM;
 
    engine = getenv("ECORE_EVAS_EXTN_SOCKET_ENGINE");
@@ -242,6 +252,10 @@ _ecore_evas_extn_type_get()
         else
            extn_type = EXTN_TYPE_SHM;
      }
+#else
+   extn_type = EXTN_TYPE_SHM;
+#endif
+
    return extn_type;
 }
 
@@ -376,6 +390,7 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
              evas_object_image_pixels_dirty_set(bdata->image, EINA_TRUE);
           }
         bdata->pixels = NULL;
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
         if(extn->extn_type_client ==  EXTN_TYPE_WAYLAND_EGL)
           {
              extn->resource_id = NULL;
@@ -385,6 +400,7 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
              if(tizen_rsm) tizen_remote_surface_manager_destroy(tizen_rsm);
           }
         else
+#endif
           {
              for (i = 0; i < NBUF; i++)
                {
@@ -1312,6 +1328,7 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
                 }
            }
          break;
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
       case OP_GL_REF:
            {
               // save resouce id
@@ -1354,6 +1371,7 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
               extn->extn_type_client = EXTN_TYPE_WAYLAND_EGL;
            }
          break;
+ #endif
       case OP_RESIZE:
          if ((e->data) && (e->size >= (int)sizeof(Ipc_Data_Resize)))
            {
@@ -1533,8 +1551,10 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
    extn->svc.sys = svcsys;
 
    extn->extn_type_client = EXTN_TYPE_SHM;
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
    extn->tizen_rs = NULL;
    extn->tbm_client = NULL;
+#endif
 
    if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
    extn->ipc.server = ecore_ipc_server_connect(ipctype, (char *)extn->svc.name,
@@ -1582,6 +1602,7 @@ _ecore_evas_socket_resize(Ecore_Evas *ee, int w, int h)
    evas_output_viewport_set(ee->evas, 0, 0, ee->w, ee->h);
    evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
    extn = bdata->data;
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
    if(_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
      {
         if ( extn && extn->ipc.clients)
@@ -1601,6 +1622,9 @@ _ecore_evas_socket_resize(Ecore_Evas *ee, int w, int h)
           }
      }
    else if (extn)
+#else
+   if(extn)
+#endif
      {
         int i, last_try = 0;
 
@@ -1755,6 +1779,7 @@ _ecore_evas_extn_socket_render(Ecore_Evas *ee)
    if (ee->func.fn_pre_render) ee->func.fn_pre_render(ee);
 
    cur_b = extn->cur_b;
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
    if( _ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL )
      {
         updates = evas_render_updates(ee->evas);
@@ -1767,6 +1792,7 @@ _ecore_evas_extn_socket_render(Ecore_Evas *ee)
           }
      }
    else
+#endif
      {
         if (bdata->pixels)
           {
@@ -1825,6 +1851,7 @@ _ipc_client_add(void *data, int type EINA_UNUSED, void *event)
 
    extn->ipc.clients = eina_list_append(extn->ipc.clients, e->client);
 
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
    if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
      {
         INF("[EXTN_GL] send resouce id to client ( %dx%d,  resource_id:%u)",ee->w,ee->h,extn->resource_id);
@@ -1837,6 +1864,7 @@ _ipc_client_add(void *data, int type EINA_UNUSED, void *event)
                               0, 0, 0, &ipc, sizeof(ipc));
      }
    else
+#endif
      {
         for (i = 0; i < NBUF; i++)
           {
@@ -2180,6 +2208,7 @@ _ecore_evas_extn_socket_alpha_set(Ecore_Evas *ee, int alpha)
    extn = bdata->data;
    if (extn)
      {
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
         if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
           {
              Evas_Engine_Info_Wayland_Egl *einfo;
@@ -2196,6 +2225,7 @@ _ecore_evas_extn_socket_alpha_set(Ecore_Evas *ee, int alpha)
                }
           }
         else
+#endif
           {
              Evas_Engine_Info_Buffer *einfo;
 
@@ -2375,6 +2405,7 @@ ecore_evas_extn_socket_new_internal(int w, int h)
    Ecore_Evas *ee;
    int rmethod;
 
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
    if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
      {
         Ecore_Evas_Engine_Buffer_Data *bdata;
@@ -2402,6 +2433,7 @@ ecore_evas_extn_socket_new_internal(int w, int h)
                }
           }
      }
+#endif
 
    if (_ecore_evas_extn_type_get() == EXTN_TYPE_SHM)
      {
@@ -2519,8 +2551,9 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
         extn->svc.name = eina_stringshare_add(svcname);
         extn->svc.num = svcnum;
         extn->svc.sys = svcsys;
-        extn->tizen_rsp = NULL;
 
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
+        extn->tizen_rsp = NULL;
         if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
           {
              if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
@@ -2569,6 +2602,7 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
                }
           }
         else
+#endif
           {
              for (i = 0; i < NBUF; i++)
                {

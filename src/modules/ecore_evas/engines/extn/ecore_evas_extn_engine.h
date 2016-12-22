@@ -28,11 +28,13 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Input.h>
 #include <Ecore_Ipc.h>
-#include <wayland-extension/tizen-remote-surface-client-protocol.h>
-#include <wayland-tbm-client.h>
-#include <Ecore_Wayland.h>
-#include <tbm_surface.h>
-#include <Evas_Engine_Wayland_Egl.h>
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
+# include <wayland-extension/tizen-remote-surface-client-protocol.h>
+# include <wayland-tbm-client.h>
+# include <Ecore_Wayland.h>
+# include <tbm_surface.h>
+# include <Evas_Engine_Wayland_Egl.h>
+#endif
 
 #include "ecore_private.h" // FIXME: Because of ECORE_MAGIC
 #include "ecore_evas_private.h"
