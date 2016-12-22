@@ -559,9 +559,8 @@ _impl_ecore_exe_send(Ecore_Exe  *obj,
    DWORD num_exe;
    BOOL res;
 
-   res = WriteFile(exe->pipe_write.child_pipe_x, buf, size, &num_exe, NULL);
-   printf(" ** res : %d\n", res);
-   if (!res || num_exe == 0)
+   res = WriteFile(exe->pipe_write.child_pipe_x, data, size, &num_exe, NULL);
+   if (size && !res || num_exe == 0)
      {
         ERR("Ecore_Exe %p stdin is closed! Cannot send %d bytes from %p",
             obj, size, data);
