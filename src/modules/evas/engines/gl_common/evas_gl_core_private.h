@@ -177,6 +177,9 @@ struct _EVGL_Context
    GLuint       current_draw_fbo;    //for GLES3
    GLuint       current_read_fbo;    //for GLES3
 
+   // Map texture
+   GLuint       map_tex;
+
    // Direct Rendering Related
    unsigned     scissor_enabled : 1;
    unsigned     scissor_updated : 1;
@@ -283,6 +286,8 @@ struct _EVGL_Resource
         int                  rot;
         int                  win_w;
         int                  win_h;
+
+        GLuint               map_tex;
 
         struct {
              int             x, y, w, h;

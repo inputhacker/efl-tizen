@@ -455,7 +455,12 @@ _evgl_glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenu
         return;
      }
 
-   if (!_evgl_direct_enabled())
+   if (_evgl_direct_enabled())
+     {
+        if (ctx->map_tex)
+          target_is_fbo = EINA_TRUE;
+     }
+   else
      {
         if (ctx->current_fbo == 0)
           target_is_fbo = EINA_TRUE;

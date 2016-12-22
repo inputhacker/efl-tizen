@@ -1085,6 +1085,7 @@ eng_image_draw(void *data, void *context, void *surface, void *image, int src_x,
    Evas_Engine_GL_Context *gl_context;
    Render_Engine_GL_Generic *re = data;
    Evas_GL_Image *im = image;
+   Evas_GL_Image *surf = surface;
    Evas_Native_Surface *n;
 
    if (!im) return EINA_FALSE;
@@ -1095,9 +1096,16 @@ eng_image_draw(void *data, void *context, void *surface, void *image, int src_x,
 
    if (eng_gl_image_direct_get(data, image))
      {
+        int map_tex = 0;
         void *direct_surface = NULL;
 
         gl_context->dc = context;
+        if (surface != gl_context->def_surface)
+          {
+             map_tex = surf->tex->pt->texture;
+             dst_y = gl_context->h - dst_y - dst_h;
+          }
+
         if ((gl_context->master_clip.enabled) &&
             (gl_context->master_clip.w > 0) &&
             (gl_context->master_clip.h > 0))
@@ -1117,7 +1125,8 @@ eng_image_draw(void *data, void *context, void *surface, void *image, int src_x,
         // Set necessary info for direct rendering
         evgl_direct_info_set(gl_context->w,
                              gl_context->h,
-                             gl_context->rot,
+                             map_tex?0:gl_context->rot,
+                             map_tex,
                              dst_x, dst_y, dst_w, dst_h,
                              gl_context->dc->clip.x,
                              gl_context->dc->clip.y,
@@ -1681,7 +1690,10 @@ eng_gl_surface_direct_renderable_get(void *data, Evas_Native_Surface *ns, Eina_B
 
    gl_context = re->window_gl_context_get(re->software.ob);
    if (gl_context->def_surface != sfc)
-     return EINA_FALSE;
+     {
+       *override = EINA_FALSE;
+       return EINA_FALSE;
+     }
 
    return EINA_TRUE;
 }
