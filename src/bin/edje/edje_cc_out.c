@@ -1216,7 +1216,6 @@ data_write_images(Eet_File *ef, int *image_num)
    int i;
    Ecore_Evas *ee;
    Evas *evas;
-   const char *ext = NULL;
 
    if (!((edje_file) && (edje_file->image_dir))) return;
 
@@ -1306,54 +1305,7 @@ data_write_images(Eet_File *ef, int *image_num)
                        exit(1); // ensure static analysis tools know we exit
                     }
                }
-          }
-        if (img->source_type != EDJE_IMAGE_SOURCE_TYPE_EXTERNAL)
-          {
-             ext = strrchr(img->entry, '.');
-             if (ext && (!strcasecmp(ext, ".svg") || !strcasecmp(ext, ".svgz")))
-               {
-                  int size = strlen(img->entry) + strlen(".png") + 1;
-                  char *tmp = malloc(size);
-                  snprintf(tmp, size, "%s.png", img->entry);
-                  INF("Vector '%s' used as image, convert to bitmap '%s'", img->entry, tmp);
-                  free(img->entry);
-                  img->entry = tmp;
-               }
-          }
-     }
-}
-
-static void
-data_check_models(Eet_File *ef EINA_UNUSED, int *model_num EINA_UNUSED)
-{
-   int i;
-
-   if (!((edje_file) && (edje_file->model_dir))) return;
-
-   for (i = 0; i < (int)edje_file->model_dir->entries_count; i++)
-     {
-        Edje_Model_Directory_Entry *model;
-        Eina_List *ll;
-        char *s;
-        Eina_Bool file_exist = EINA_FALSE;
-
-        model = &edje_file->model_dir->entries[i];
-
-        EINA_LIST_FOREACH(model_dirs, ll, s)
-          {
-             char buf[PATH_MAX];
-
-             snprintf(buf, sizeof(buf), "%s/%s", s, model->entry);
-
-             file_exist = file_exist || ecore_file_exists(buf);
-
-          }
-        if (!file_exist)
-          {
-             ERR("Unable to load model \"%s\". Check if path to file is correct (both directory and file name).",
-                 model->entry);
-             exit(-1);
-          }
+	  }
      }
 }
 
@@ -2489,6 +2441,7 @@ data_write(void)
 
    pending_threads++;
    t = ecore_time_get();
+   data_write_header(ef);
 
    INF("header: %3.5f", ecore_time_get() - t); t = ecore_time_get();
    data_write_groups(ef, &collection_num);
@@ -2547,7 +2500,6 @@ data_write(void)
    pending_threads--;
    if (pending_threads > 0) ecore_main_loop_begin();
    INF("THREADS: %3.5f", ecore_time_get() - t);
-   data_write_header(ef);
 
    err = eet_close(ef);
    if (err)
