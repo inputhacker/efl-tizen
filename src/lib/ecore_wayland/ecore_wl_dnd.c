@@ -706,11 +706,20 @@ err:
    return;
 }
 
+// TIZEN_ONLY(20161226): To increse buffer size to get very long text to satify html use case.
+//                       It should be changed to allow up to unlimit value to maintain compatibility.
+#define _MAX_SIZE_OF_COPY_DATA 103424
+//
+
 static Eina_Bool
 _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_UNUSED)
 {
    int len;
-   char buffer[PATH_MAX];
+   // TIZEN_ONLY(20161226): To increse buffer size to get very long text to satify html use case.
+   //                       It should be changed to allow up to unlimit value to maintain compatibility.
+   //char buffer[PATH_MAX];
+   char *buffer;
+   //
    Ecore_Wl_Dnd_Source *source;
    // TIZEN_ONLY(20161117): To prevent overwriting read file descriptor
    struct _dnd_source *read_source;
@@ -725,8 +734,6 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
    //len = read(source->fd, buffer, sizeof buffer);
    read_source = data;
    source = read_source->source;
-
-   len = read(read_source->read_fd, buffer, sizeof buffer);
    //
 
    if (!(event = calloc(1, sizeof(Ecore_Wl_Event_Selection_Data_Ready))))
@@ -783,13 +790,40 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
    char **types;
    int num = 0;
 
-   event->data = malloc(len + 1);
-   if (!event->data)
+   // TIZEN_ONLY(20161226): To increse buffer size to get very long text to satify html use case.
+   //                       It should be changed to allow up to unlimit value to maintain compatibility.
+   buffer = malloc(_MAX_SIZE_OF_COPY_DATA);
+   if (!buffer)
      {
         free(event);
         return ECORE_CALLBACK_CANCEL;
      }
+
+   len = read(read_source->read_fd, buffer, _MAX_SIZE_OF_COPY_DATA);
+   if (len <= 0)
+     {
+        free(buffer);
+        free(event);
+        return ECORE_CALLBACK_CANCEL;
+     }
+   //
+
+   event->data = malloc(len + 1);
+   if (!event->data)
+     {
+        // TIZEN_ONLY(20161226): To increse buffer size to get very long text to satify html use case.
+        //                       It should be changed to allow up to unlimit value to maintain compatibility.
+        free(buffer);
+        //
+        free(event);
+        return ECORE_CALLBACK_CANCEL;
+     }
+
    memcpy(event->data, buffer, len);
+   // TIZEN_ONLY(20161226): To increse buffer size to get very long text to satify html use case.
+   //                       It should be changed to allow up to unlimit value to maintain compatibility.
+   free(buffer);
+   //
    event->data[len] = '\0';
 
    num = (source->types.size / sizeof(char *));
