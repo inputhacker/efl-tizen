@@ -1757,16 +1757,19 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                          }
 
                        if (temp_w > 0) temp_w--;
-                       eo_do(ep->object,
-                             efl_gfx_size_set(temp_w, temp_h),
-                             evas_obj_textblock_size_formatted_get(&tw, &th));
-
-                       tw += ins_l + ins_r;
-                       th += ins_t + ins_b;
 
                        /* If base width for calculation is 0,
                         * don't get meaningless height for multiline */
-                       if (temp_w <= 0)
+                       if (temp_w > 0)
+                         {
+                            eo_do(ep->object,
+                                  efl_gfx_size_set(temp_w, temp_h),
+                                  evas_obj_textblock_size_formatted_get(&tw, &th));
+
+                            tw += ins_l + ins_r;
+                            th += ins_t + ins_b;
+                         }
+                       else
                          {
                             eo_do(ep->object,
                                   evas_obj_textblock_size_native_get(NULL, &th));
@@ -1884,16 +1887,19 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                               temp_h = min_calc_h;
 
                             if (temp_w > 0) temp_w--;
-                            eo_do(ep->object,
-                                  efl_gfx_size_set(temp_w, temp_h),
-                                  evas_obj_textblock_size_formatted_get(&tw, &th));
-
-                            tw += ins_l + ins_r;
-                            th += ins_t + ins_b;
 
                             /* If base width for calculation is 0,
                              * don't get meaningless height for multiline */
-                            if (temp_w <= 0)
+                            if (temp_w > 0)
+                              {
+                                 eo_do(ep->object,
+                                       efl_gfx_size_set(temp_w, temp_h),
+                                       evas_obj_textblock_size_formatted_get(&tw, &th));
+
+                                 tw += ins_l + ins_r;
+                                 th += ins_t + ins_b;
+                              }
+                            else
                               {
                                  eo_do(ep->object,
                                        evas_obj_textblock_size_native_get(NULL, &th));
