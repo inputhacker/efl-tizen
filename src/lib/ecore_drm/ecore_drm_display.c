@@ -41,9 +41,9 @@ static Eina_Bool
 _ecore_drm_display_output_mode_set_with_fb(Ecore_Drm_Output *output, Ecore_Drm_Output_Mode *mode, Ecore_Drm_Fb *fb, int x, int y);
 
 static void
-_ecore_drm_display_output_cb_commit(tdm_output *output EINA_UNUSED, unsigned int sequence EINA_UNUSED,
-                                    unsigned int tv_sec EINA_UNUSED, unsigned int tv_usec EINA_UNUSED,
-                                    void *user_data)
+_ecore_drm_display_layer_cb_commit(tdm_layer *layer EINA_UNUSED, unsigned int sequence EINA_UNUSED,
+                                   unsigned int tv_sec EINA_UNUSED, unsigned int tv_usec EINA_UNUSED,
+                                   void *user_data)
 {
    Ecore_Drm_Pageflip_Callback *cb;
    static int flip_count = 0;
@@ -441,7 +441,7 @@ _ecore_drm_display_fb_send(Ecore_Drm_Device *dev, Ecore_Drm_Fb *fb, Ecore_Drm_Pa
           }
 
         fb->pending_flip = EINA_TRUE;
-        ret = tdm_output_commit(hal_output->output, 0, _ecore_drm_display_output_cb_commit, cb);
+        ret = tdm_layer_commit(hal_output->primary_layer, _ecore_drm_display_layer_cb_commit, cb);
         if (ret != TDM_ERROR_NONE)
           {
              fb->pending_flip = EINA_FALSE;
@@ -1162,7 +1162,7 @@ _ecore_drm_display_output_mode_set_with_fb(Ecore_Drm_Output *output, Ecore_Drm_O
         EINA_SAFETY_ON_FALSE_GOTO(err == TDM_ERROR_NONE, fail_set);
 
         TRACE_EFL_BEGIN(Mode_Set);
-        err = tdm_output_commit(hal_output->output, 0, NULL, NULL);
+        err = tdm_layer_commit(hal_output->primary_layer, NULL, NULL);
         if (err != TDM_ERROR_NONE)
           {
              TRACE_EFL_END();
@@ -1174,7 +1174,7 @@ _ecore_drm_display_output_mode_set_with_fb(Ecore_Drm_Output *output, Ecore_Drm_O
    else
      {
         tdm_layer_set_buffer(hal_output->primary_layer, NULL);
-        tdm_output_commit(hal_output->output, 0, NULL, NULL);
+        tdm_layer_commit(hal_output->primary_layer, NULL, NULL);
      }
 
    return ret;
