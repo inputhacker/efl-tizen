@@ -138,7 +138,7 @@ extern "C" {
     * An enum of Compose states.
     */
    typedef enum _Ecore_Compose_State
-     {   
+     {
         ECORE_COMPOSE_NONE,
         ECORE_COMPOSE_MIDDLE,
         ECORE_COMPOSE_DONE
@@ -218,16 +218,16 @@ extern "C" {
         Ecore_Window     window; /**< The main window where event happened */
         Ecore_Window     root_window; /**< The root window where event happened */
         Ecore_Window     event_window; /**< The child window where event happened */
-        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Key @since 1.18 */
-        
+
         unsigned int     timestamp; /**< Time when the event occurred */
         unsigned int     modifiers; /**< The combination of modifiers key (SHIT,CTRL,ALT,..)*/
-        
+
         int              same_screen; /**< same screen flag */
 
         unsigned int     keycode; /**< Key scan code numeric value @since 1.10 */
 
         void            *data; /**< User data associated with an Ecore_Event_Key @since 1.10 */
+        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Key @since 1.18 */
      };
 
    /**
@@ -239,7 +239,6 @@ extern "C" {
         Ecore_Window     window; /**< The main window where event happened */
         Ecore_Window     root_window; /**< The root window where event happened */
         Ecore_Window     event_window; /**< The child window where event happened */
-        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Mouse_Button @since 1.18 */
 
         unsigned int     timestamp; /**< Time when the event occurred */
         unsigned int     modifiers; /**< The combination of modifiers key (SHIT,CTRL,ALT,..)*/
@@ -247,14 +246,14 @@ extern "C" {
         unsigned int     double_click; /**< Double click event */
         unsigned int     triple_click; /**< Triple click event */
         int              same_screen; /**< Same screen flag */
-        
+
         int              x; /**< x coordinate relative to window where event happened */
         int              y; /**< y coordinate relative to window where event happened */
         struct {
            int           x;
            int           y;
         } root; /**< Coordinates relative to root window */
-        
+
         struct {
            int           device; /**< 0 if normal mouse, 1+ for other mouse-devices (eg multi-touch - other fingers) */
            double        radius, radius_x, radius_y; /**< radius of press point - radius_x and y if its an ellipse (radius is the average of the 2) */
@@ -265,6 +264,7 @@ extern "C" {
               double     x, y;
            } root; /**< same as root.x, root.y, but with sub-pixel precision, if available */
         } multi;
+        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Mouse_Button @since 1.18 */
      };
 
    /**
@@ -276,20 +276,21 @@ extern "C" {
         Ecore_Window     window; /**< The main window where event happened */
         Ecore_Window     root_window; /**< The root window where event happened */
         Ecore_Window     event_window; /**< The child window where event happened */
-        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Mouse_Wheel @since 1.18 */
+
         unsigned int     timestamp; /**< Time when the event occurred */
         unsigned int     modifiers; /**< The combination of modifiers key (SHIT,CTRL,ALT,..)*/
-        
+
         int              same_screen; /**< Same screen flag */
         int              direction; /**< Orientation of the wheel (horizontal/vertical) */
         int              z; /**< Value of the wheel event (+1/-1) */
-        
+
         int              x; /**< x coordinate relative to window where event happened */
         int              y; /**< y coordinate relative to window where event happened */
         struct {
            int           x;
            int           y;
         } root; /**< Coordinates relative to root window */
+        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Mouse_Wheel @since 1.18 */
      };
 
    /**
@@ -301,20 +302,19 @@ extern "C" {
         Ecore_Window     window; /**< The main window where event happened */
         Ecore_Window     root_window; /**< The root window where event happened */
         Ecore_Window     event_window; /**< The child window where event happened */
-        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Mouse_Move @since 1.18 */
 
         unsigned int     timestamp; /**< Time when the event occurred */
         unsigned int     modifiers; /**< The combination of modifiers key (SHIT,CTRL,ALT,..)*/
-        
+
         int              same_screen; /**< Same screen flag */
-        
+
         int              x; /**< x coordinate relative to window where event happened */
         int              y; /**< y coordinate relative to window where event happened */
         struct {
            int           x;
            int           y;
         } root; /**< Coordinates relative to root window */
-        
+
         struct {
            int           device; /**< 0 if normal mouse, 1+ for other mouse-devices (eg multi-touch - other fingers) */
            double        radius, radius_x, radius_y; /**< radius of press point - radius_x and y if its an ellipse (radius is the average of the 2) */
@@ -325,6 +325,7 @@ extern "C" {
               double     x, y;
            } root;
         } multi;
+        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Mouse_Move @since 1.18 */
      };
 
    typedef enum _Ecore_Axis_Label
@@ -384,13 +385,13 @@ extern "C" {
      {
         Ecore_Window     window; /**< The main window where event happened */
         Ecore_Window     event_window; /**< The child window where event happened */
-        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Mouse_IO @since 1.18 */
 
         unsigned int     timestamp; /**< Time when the event occurred */
         unsigned int     modifiers; /**< The combination of modifiers key (SHIT,CTRL,ALT,..)*/
-        
+
         int              x; /**< x coordinate relative to window where event happened */
         int              y; /**< y coordinate relative to window where event happened */
+        Ecore_Device     *dev; /**< source device object associated with an Ecore_Event_Mouse_IO @since 1.18 */
      };
 
    /**
