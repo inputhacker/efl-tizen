@@ -89,6 +89,7 @@ _nf_mod_init(void)
 static Eina_Bool
 _tizen_effect_enabled_get(Elm_Naviframe_Item_Data *it)
 {
+   if (!it) return EINA_FALSE;
    if (nf_mod &&
        nf_mod->tizen_effect_enabled_get &&
        nf_mod->tizen_effect_enabled_get(VIEW(it)))
