@@ -4923,12 +4923,30 @@ _edje_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx, char
 
    if (cursor_pos)
      {
+        /* TIZEN_ONLY(20161227): fix to get start position of selection from surrounding_cb
         if (en->have_selection && en->sel_start)
           *cursor_pos = evas_textblock_cursor_pos_get(en->sel_start);
         else if (en->cursor)
           *cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
         else
           *cursor_pos = 0;
+         */
+        if (en->have_selection)
+          {
+             if (evas_textblock_cursor_compare(en->sel_start, en->sel_end) < 0)
+               *cursor_pos = evas_textblock_cursor_pos_get(en->sel_start);
+             else
+               *cursor_pos = evas_textblock_cursor_pos_get(en->sel_end);
+          }
+        else if (en->cursor)
+          {
+             *cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
+          }
+        else
+          {
+             *cursor_pos = 0;
+          }
+        /* END */
      }
 
    return EINA_TRUE;
@@ -5199,7 +5217,25 @@ _edje_entry_imf_event_delete_surrounding_cb(void *data, Ecore_IMF_Context *ctx E
        (rp->part->entry_mode < EDJE_ENTRY_EDIT_MODE_SELECTABLE))
      return;
 
+   /* TIZEN_ONLY(20161227): fix to get start position of selection from surrounding_cb
    cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
+    */
+   if (en->have_selection)
+     {
+        if (evas_textblock_cursor_compare(en->sel_start, en->sel_end) < 0)
+          cursor_pos = evas_textblock_cursor_pos_get(en->sel_start);
+        else
+          cursor_pos = evas_textblock_cursor_pos_get(en->sel_end);
+     }
+   else if (en->cursor)
+     {
+        cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
+     }
+   else
+     {
+        cursor_pos = 0;
+     }
+   /* END */
 
    del_start = evas_object_textblock_cursor_new(en->rp->object);
    evas_textblock_cursor_pos_set(del_start, cursor_pos + ev->offset);
