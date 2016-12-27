@@ -425,42 +425,81 @@ _framebuffer_check(Evas_GL_Context_Version version)
 
 // Gen Renderbuffer
 static void
-_renderbuffer_create(GLuint *buf)
+_renderbuffer_create(GLuint *buf, Evas_GL_Context_Version version)
 {
-   glGenRenderbuffers(1, buf);
+  // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
+   if (version == EVAS_GL_GLES_1_X)
+     {
+        if (EXT_FUNC_GLES1(glGenRenderbuffersOES))
+          EXT_FUNC_GLES1(glGenRenderbuffersOES)(1, buf);
+     }
+   else
+     {
+        glGenRenderbuffers(1, buf);
+     }
 }
 
 
 // Attach a renderbuffer with the given format to already bound FBO
 static void
-_renderbuffer_allocate(GLuint buf, GLenum fmt, int w, int h, int samples)
+_renderbuffer_allocate(GLuint buf, GLenum fmt, int w, int h, int samples, Evas_GL_Context_Version version)
 {
-   glBindRenderbuffer(GL_RENDERBUFFER, buf);
-   if (samples)
+  // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
+   if (version == EVAS_GL_GLES_1_X)
      {
-        if (glsym_glRenderbufferStorageMultisample)
-          glsym_glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, fmt, w, h);
+        if (EXT_FUNC_GLES1(glBindRenderbufferOES))
+          EXT_FUNC_GLES1(glBindRenderbufferOES)(GL_RENDERBUFFER, buf);
+
+        if (samples)
+#ifdef GL_GLES
+          EXT_FUNC(glRenderbufferStorageMultisample)(GL_RENDERBUFFER, samples, fmt, w, h);
+#else
+          ERR("MSAA not supported.  Should not have come in here...!");
+#endif
         else
           {
-#ifdef GL_GLES
-             if (EXT_FUNC(glRenderbufferStorageMultisample))
-               EXT_FUNC(glRenderbufferStorageMultisample)(GL_RENDERBUFFER, samples, fmt, w, h);
-             else
-#endif
-               ERR("MSAA not supported.  Should not have come in here...!");
+             if (EXT_FUNC_GLES1(glRenderbufferStorageOES))
+               EXT_FUNC_GLES1(glRenderbufferStorageOES)(GL_RENDERBUFFER, fmt, w, h);
           }
+
+        if (EXT_FUNC_GLES1(glBindRenderbufferOES))
+          EXT_FUNC_GLES1(glBindRenderbufferOES)(GL_RENDERBUFFER, 0);
      }
    else
-     glRenderbufferStorage(GL_RENDERBUFFER, fmt, w, h);
-   glBindRenderbuffer(GL_RENDERBUFFER, 0);
+     {
+        glBindRenderbuffer(GL_RENDERBUFFER, buf);
+
+        if (samples)
+#ifdef GL_GLES
+          EXT_FUNC(glRenderbufferStorageMultisample)(GL_RENDERBUFFER, samples, fmt, w, h);
+#else
+          ERR("MSAA not supported.  Should not have come in here...!");
+#endif
+        else
+          {
+             glRenderbufferStorage(GL_RENDERBUFFER, fmt, w, h);
+          }
+
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+     }
 }
 
 static void
-_renderbuffer_destroy(GLuint *buf)
+_renderbuffer_destroy(GLuint *buf, Evas_GL_Context_Version version)
 {
    if (*buf)
      {
-        glDeleteRenderbuffers(1, buf);
+       // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
+        if (version == EVAS_GL_GLES_1_X)
+          {
+             if (EXT_FUNC_GLES1(glDeleteRenderbuffersOES))
+             EXT_FUNC_GLES1(glDeleteRenderbuffersOES)(1, buf);
+          }
+        else
+          {
+             glDeleteRenderbuffers(1, buf);
+          }
+
         *buf = 0;
      }
 }
@@ -527,13 +566,14 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
    if (depth_fmt == GL_DEPTH24_STENCIL8)
 #endif
      {
-        _renderbuffer_create(&depth_stencil_buf);
-        _renderbuffer_allocate(depth_stencil_buf, depth_fmt, w, h, mult_samples);
+       // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
+        _renderbuffer_create(&depth_stencil_buf, EVAS_GL_GLES_2_X);
+        _renderbuffer_allocate(depth_stencil_buf, depth_fmt, w, h, mult_samples, EVAS_GL_GLES_2_X);
 #ifdef GL_GLES
-        _renderbuffer_attach(depth_stencil_buf, GL_DEPTH_ATTACHMENT, EINA_FALSE);
-        _renderbuffer_attach(depth_stencil_buf, GL_STENCIL_ATTACHMENT, EINA_FALSE);
+        _renderbuffer_attach(depth_stencil_buf, GL_DEPTH_ATTACHMENT, EVAS_GL_GLES_2_X);
+        _renderbuffer_attach(depth_stencil_buf, GL_STENCIL_ATTACHMENT, EVAS_GL_GLES_2_X);
 #else
-        _renderbuffer_attach(depth_stencil_buf, GL_DEPTH_STENCIL_ATTACHMENT, EINA_FALSE);
+        _renderbuffer_attach(depth_stencil_buf, GL_DEPTH_STENCIL_ATTACHMENT, EVAS_GL_GLES_2_X);
 #endif
         depth_stencil = 1;
      }
@@ -541,16 +581,16 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
    // Depth Attachment
    if ((!depth_stencil) && (depth_fmt))
      {
-        _renderbuffer_create(&depth_buf);
-        _renderbuffer_allocate(depth_buf, depth_fmt, w, h, mult_samples);
+        _renderbuffer_create(&depth_buf, EVAS_GL_GLES_2_X);
+        _renderbuffer_allocate(depth_buf, depth_fmt, w, h, mult_samples, EVAS_GL_GLES_2_X);
         _renderbuffer_attach(depth_buf, GL_DEPTH_ATTACHMENT, EVAS_GL_GLES_2_X);
      }
 
    // Stencil Attachment
    if ((!depth_stencil) && (stencil_fmt))
      {
-        _renderbuffer_create(&stencil_buf);
-        _renderbuffer_allocate(stencil_buf, stencil_fmt, w, h, mult_samples);
+        _renderbuffer_create(&stencil_buf, EVAS_GL_GLES_2_X);
+        _renderbuffer_allocate(stencil_buf, stencil_fmt, w, h, mult_samples, EVAS_GL_GLES_2_X);
         _renderbuffer_attach(stencil_buf, GL_STENCIL_ATTACHMENT, EVAS_GL_GLES_2_X);
      }
 
@@ -559,12 +599,12 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
 
    // Delete Created Resources
    _texture_destroy(&color_buf);
-   _renderbuffer_destroy(&depth_buf);
-   _renderbuffer_destroy(&stencil_buf);
+   _renderbuffer_destroy(&depth_buf, EVAS_GL_GLES_2_X);
+   _renderbuffer_destroy(&stencil_buf, EVAS_GL_GLES_2_X);
 #ifdef GL_GLES
    _texture_destroy(&depth_stencil_buf);
 #else
-   _renderbuffer_destroy(&depth_stencil_buf);
+   _renderbuffer_destroy(&depth_stencil_buf, EVAS_GL_GLES_2_X);
 #endif
 
    // Delete FBO
@@ -1279,7 +1319,7 @@ _surface_buffers_fbo_set(EVGL_Surface *sfc, GLuint fbo, Evas_GL_Context_Version 
 }
 
 static int
-_surface_buffers_create(EVGL_Surface *sfc)
+_surface_buffers_create(EVGL_Surface *sfc, Evas_GL_Context_Version version)
 {
    // Create buffers
    if (sfc->color_fmt)
@@ -1287,8 +1327,8 @@ _surface_buffers_create(EVGL_Surface *sfc)
         _texture_create(&sfc->color_buf);
      }
 
-
    // Depth_stencil buffers or separate buffers
+   // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
    if (sfc->depth_stencil_fmt)
      {
 #ifdef GL_GLES
@@ -1296,17 +1336,17 @@ _surface_buffers_create(EVGL_Surface *sfc)
           _texture_create(&sfc->depth_stencil_buf);
         else
 #endif
-          _renderbuffer_create(&sfc->depth_stencil_buf);
+          _renderbuffer_create(&sfc->depth_stencil_buf, version);
      }
    else
      {
         if (sfc->depth_fmt)
           {
-             _renderbuffer_create(&sfc->depth_buf);
+             _renderbuffer_create(&sfc->depth_buf, version);
           }
         if (sfc->stencil_fmt)
           {
-             _renderbuffer_create(&sfc->stencil_buf);
+             _renderbuffer_create(&sfc->stencil_buf, version);
           }
      }
 
@@ -1357,7 +1397,7 @@ _surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, 
           {
              _renderbuffer_allocate(sfc->depth_stencil_buf,
                                     sfc->depth_stencil_fmt, w, h,
-                                    sfc->msaa_samples);
+                                    sfc->msaa_samples, version);
           }
         sfc->buffer_mem[3] = w * h * 4;
      }
@@ -1366,13 +1406,13 @@ _surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, 
         if (sfc->depth_fmt)
           {
              _renderbuffer_allocate(sfc->depth_buf, sfc->depth_fmt, w, h,
-                                    sfc->msaa_samples);
+                                    sfc->msaa_samples, version);
              sfc->buffer_mem[1] = w * h * 3; // Assume it's 24 bits
           }
         if (sfc->stencil_fmt)
           {
              _renderbuffer_allocate(sfc->stencil_buf, sfc->stencil_fmt, w,
-                                    h, sfc->msaa_samples);
+                                    h, sfc->msaa_samples, version);
              sfc->buffer_mem[2] = w * h; // Assume it's 8 bits
           }
      }
@@ -1381,19 +1421,20 @@ _surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, 
 }
 
 static int
-_surface_buffers_destroy(EVGL_Surface *sfc)
+_surface_buffers_destroy(EVGL_Surface *sfc, Evas_GL_Context_Version version)
 {
    if (sfc->egl_image)
      {
         _egl_image_destroy(sfc->egl_image);
         sfc->egl_image = NULL;
      }
+   // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
    if (sfc->color_buf)
       _texture_destroy(&sfc->color_buf);
    if (sfc->depth_buf)
-      _renderbuffer_destroy(&sfc->depth_buf);
+      _renderbuffer_destroy(&sfc->depth_buf, version);
    if (sfc->stencil_buf)
-      _renderbuffer_destroy(&sfc->stencil_buf);
+      _renderbuffer_destroy(&sfc->stencil_buf, version);
    if (sfc->depth_stencil_buf)
      {
 #ifdef GL_GLES
@@ -1401,7 +1442,7 @@ _surface_buffers_destroy(EVGL_Surface *sfc)
           _texture_destroy(&sfc->depth_stencil_buf);
         else
 #endif
-          _renderbuffer_destroy(&sfc->depth_stencil_buf);
+          _renderbuffer_destroy(&sfc->depth_stencil_buf, version);
      }
 
    return 1;
@@ -1446,6 +1487,11 @@ try_again:
 
         if (color_bit & evgl_engine->caps.fbo_fmts[i].color_bit)
           {
+            // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
+             if (cfg->gles_version == EVAS_GL_GLES_1_X &&
+                  evgl_engine->caps.fbo_fmts[i].depth_stencil_fmt == GL_DEPTH_STENCIL_OES)
+                continue;
+
              if (depth_bit)
                {
                   if (!(depth_bit & evgl_engine->caps.fbo_fmts[i].depth_bit))
@@ -2196,7 +2242,8 @@ evgl_surface_destroy(void *eng_data, EVGL_Surface *sfc)
           }
 
         // Destroy created buffers
-        if (!_surface_buffers_destroy(sfc))
+        // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
+        if (!_surface_buffers_destroy(sfc, rsc->current_ctx->version))
           {
              ERR("Error deleting surface resources.");
              return 0;
@@ -2589,7 +2636,8 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
 
    if (!sfc->buffers_skip_allocate)
      {
-        if (!sfc->color_buf && !_surface_buffers_create(sfc))
+       // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
+        if (!sfc->color_buf && !_surface_buffers_create(sfc, ctx->version))
           {
              ERR("Unable to create specified surfaces.");
              evas_gl_common_error_set(EVAS_GL_BAD_ALLOC);
