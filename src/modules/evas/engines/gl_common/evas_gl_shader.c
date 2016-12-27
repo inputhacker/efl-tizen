@@ -881,6 +881,9 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
 
    if (hastex)
      {
+        GLuint curr_prog = 0;
+        glGetIntegerv(GL_CURRENT_PROGRAM, (GLint *)&curr_prog);
+
         glUseProgram(p->prog); // is this necessary??
         for (i = 0; textures[i].name; i++)
           {
@@ -893,6 +896,7 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
                }
              glUniform1i(loc, p->tex_count++);
           }
+        glUseProgram(curr_prog);
      }
 }
 
