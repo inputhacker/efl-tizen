@@ -1034,7 +1034,7 @@ eng_setup(Evas *evas, void *info)
 
    if (!(re = epd->engine.data.output))
      {
-        Render_Engine_Merge_Mode merge = MERGE_SMART;
+        Render_Engine_Merge_Mode merge = MERGE_BOUNDING;
 
         /* FIXME: Remove this line as soon as eglGetDisplay() autodetection
          * gets fixed. Currently it is incorrectly detecting wl_display and
