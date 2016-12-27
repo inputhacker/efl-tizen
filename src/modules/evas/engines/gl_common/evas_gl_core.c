@@ -2618,19 +2618,25 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
                }
              else
                {
-                 // Create internal buffers if not yet created
-                 // TIZEN_ONLY(20171110) : Direct rendering render to map fix
-                 if (!sfc->buffers_allocated)
-                   {
-                     if (dbg) DBG("Allocating buffers for sfc %p", sfc);
-                     if (!_surface_buffers_allocate(eng_data, sfc, sfc->w, sfc->h, ctx->version))
-                       {
-                         ERR("Unable Create Specificed Surfaces.  Unsupported format!");
-                         evas_gl_common_error_set(EVAS_GL_BAD_ALLOC);
-                         return 0;
-                       }
-                     sfc->buffers_allocated = 1;
-                   }
+                  if ((sfc->direct_fb_opt) && (!sfc->direct_fallback))
+                    {
+                       DBG("Not creating fallback surfaces even though it should. Use at OWN discretion!");
+                    }
+                  else
+                    {
+                       // Create internal buffers if not yet created
+                       if (!sfc->buffers_allocated)
+                         {
+                            if (dbg) DBG("Allocating buffers for sfc %p", sfc);
+                            if (!_surface_buffers_allocate(eng_data, sfc, sfc->w, sfc->h, ctx->version))
+                               {
+                                  ERR("Unable Create Specificed Surfaces.  Unsupported format!");
+                                  evas_gl_common_error_set(EVAS_GL_BAD_ALLOC);
+                                  return 0;
+                               }
+                            sfc->buffers_allocated = 1;
+                         }
+                    }
                }
           }
         else
@@ -2824,33 +2830,39 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
              if ((ctx_changed) || (ctx->current_sfc != sfc) || (rsc->direct.rendered))
                {
                   sfc->current_ctx = ctx;
-                  // If it's transitioning from direct render to fbo render
-                  // Call end tiling
-                  // TIZEN_ONLY(20171110) : Direct rendering render to map fix
-                  if (rsc->direct.partial.enabled)
-                    evgl_direct_partial_render_end();
-
-                  if (!_surface_buffers_fbo_set(sfc, ctx->surface_fbo, ctx->version))
+                  if ((sfc->direct_mem_opt) && (sfc->direct_fb_opt) && (!sfc->direct_fallback))
                     {
-                       ERR("Attaching buffers to context fbo failed. Engine: %p  Surface: %p Context FBO: %u", evgl_engine, sfc, ctx->surface_fbo);
-                       evas_gl_common_error_set(EVAS_GL_BAD_CONTEXT);
-                       return 0;
-                    }
-
-                  // Bind to the previously bound buffer
-
-                  if (ctx->version == EVAS_GL_GLES_3_X)
-                    {
-                       if (ctx->current_draw_fbo)
-                         _framebuffer_draw_bind(ctx->current_draw_fbo, ctx->version);
-
-                       if (ctx->current_read_fbo)
-                         _framebuffer_read_bind(ctx->current_read_fbo, ctx->version);
+                       DBG("Not creating fallback surfaces even though it should. Use at OWN discretion!");
                     }
                   else
                     {
-                       if (ctx->current_fbo)
-                         _framebuffer_bind(ctx->current_fbo, ctx->version);
+                       // If it's transitioning from direct render to fbo render
+                       // Call end tiling
+                       if (rsc->direct.partial.enabled)
+                         evgl_direct_partial_render_end();
+
+                       if (!_surface_buffers_fbo_set(sfc, ctx->surface_fbo, ctx->version))
+                         {
+                            ERR("Attaching buffers to context fbo failed. Engine: %p  Surface: %p Context FBO: %u", evgl_engine, sfc, ctx->surface_fbo);
+                            evas_gl_common_error_set(EVAS_GL_BAD_CONTEXT);
+                            return 0;
+                         }
+
+                       // Bind to the previously bound buffer
+
+                       if (ctx->version == EVAS_GL_GLES_3_X)
+                         {
+                            if (ctx->current_draw_fbo)
+                              _framebuffer_draw_bind(ctx->current_draw_fbo, ctx->version);
+
+                            if (ctx->current_read_fbo)
+                              _framebuffer_read_bind(ctx->current_read_fbo, ctx->version);
+                         }
+                       else
+                         {
+                            if (ctx->current_fbo)
+                              _framebuffer_bind(ctx->current_fbo, ctx->version);
+                         }
                     }
                }
              rsc->direct.rendered = 0;
@@ -3048,6 +3060,26 @@ evgl_native_surface_direct_opts_get(Evas_Native_Surface *ns,
    if (direct_override) *direct_override |= sfc->direct_override;
    if (client_side_rotation) *client_side_rotation = sfc->client_side_rotation;
    return EINA_TRUE;
+}
+
+// TIZEN_ONLY(20171110) : Skip FBO creation when direct_mem_opt is set, unless direct fallback is set
+void
+evgl_native_surface_direct_fallback_set(Evas_Native_Surface *ns,
+                              Eina_Bool direct_fallback)
+{
+   EVGL_Surface *sfc;
+
+   if (!evgl_engine) return EINA_FALSE;
+   if (!ns) return EINA_FALSE;
+
+   if (ns->type == EVAS_NATIVE_SURFACE_EVASGL &&
+            ns->data.evasgl.surface)
+     {
+        sfc = ns->data.evasgl.surface;
+     }
+   else return;
+
+   sfc->direct_fallback = direct_fallback;
 }
 
 void

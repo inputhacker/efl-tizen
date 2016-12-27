@@ -83,6 +83,9 @@ Eina_Bool    evgl_native_surface_direct_opts_get(Evas_Native_Surface *ns,
                                                  Eina_Bool *direct_render,
                                                  Eina_Bool *client_side_rotation,
                                                  Eina_Bool *direct_override);
+// TIZEN_ONLY(20171110) : Skip FBO creation when direct_mem_opt is set, unless direct fallback is set
+void       evgl_native_surface_direct_fallback_set(Evas_Native_Surface *ns,
+                                                     Eina_Bool direct_fallback);
 
 void         evgl_direct_partial_info_set(int pres);
 void         evgl_direct_partial_info_clear(void);

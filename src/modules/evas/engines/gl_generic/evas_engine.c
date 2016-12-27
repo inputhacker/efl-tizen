@@ -1766,7 +1766,14 @@ eng_gl_surface_direct_renderable_get(void *eng, void *output, Evas_Native_Surfac
      {
        // TIZEN_ONLY(20171110) : Direct rendering render to map fix
        *override = EINA_FALSE;
+       // TIZEN_ONLY(20171110) : Skip FBO creation when direct_mem_opt is set, unless direct fallback is set
+        evgl_native_surface_direct_fallback_set(ns, EINA_TRUE);
        return EINA_FALSE;
+     }
+   else
+     {
+       // TIZEN_ONLY(20171110) : Skip FBO creation when direct_mem_opt is set, unless direct fallback is set
+       evgl_native_surface_direct_fallback_set(ns, EINA_FALSE);
      }
 
    return EINA_TRUE;

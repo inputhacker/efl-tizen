@@ -121,6 +121,8 @@ struct _EVGL_Surface
    // Moved from evgl_engine
    unsigned direct_override : 1;
    unsigned direct_mem_opt : 1;
+   // TIZEN_ONLY(20171110) : Skip FBO creation when direct_mem_opt is set, unless direct fallback is set
+   unsigned direct_fallback : 1; // Set when render target for direct rendering is FBO
 
    // Init Flag
    unsigned buffers_skip_allocate : 1;
