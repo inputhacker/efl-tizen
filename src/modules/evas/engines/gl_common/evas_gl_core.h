@@ -83,6 +83,8 @@ Eina_Bool    evgl_native_surface_direct_opts_get(Evas_Native_Surface *ns,
                                                  Eina_Bool *direct_render,
                                                  Eina_Bool *client_side_rotation,
                                                  Eina_Bool *direct_override);
+void       evgl_native_surface_direct_fallback_set(Evas_Native_Surface *ns,
+                                                     Eina_Bool direct_fallback);
 
 void         evgl_direct_partial_info_set(int pres);
 void         evgl_direct_partial_info_clear();

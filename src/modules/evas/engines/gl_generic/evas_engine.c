@@ -1682,8 +1682,11 @@ eng_gl_surface_direct_renderable_get(void *data, Evas_Native_Surface *ns, Eina_B
    if (gl_context->def_surface != sfc)
      {
        *override = EINA_FALSE;
+        evgl_native_surface_direct_fallback_set(ns, EINA_TRUE);
        return EINA_FALSE;
      }
+   else
+     evgl_native_surface_direct_fallback_set(ns, EINA_FALSE);
 
    return EINA_TRUE;
 }
