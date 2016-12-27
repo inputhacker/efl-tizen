@@ -294,10 +294,24 @@ evas_object_clip_recalc(Evas_Object_Protected_Data *obj)
      }
    else
      {
-        cx = obj->cur->geometry.x;
-        cy = obj->cur->geometry.y;
-        cw = obj->cur->geometry.w;
-        ch = obj->cur->geometry.h;
+        if (obj->is_smart)
+          {
+             Evas_Coord_Rectangle bounding_box;
+
+             evas_object_smart_bounding_box_update(eo_obj, obj);
+             evas_object_smart_bounding_box_get(eo_obj, &bounding_box, NULL);
+             cx = bounding_box.x;
+             cy = bounding_box.y;
+             cw = bounding_box.w;
+             ch = bounding_box.h;
+          }
+        else
+          {
+             cx = obj->cur->geometry.x;
+             cy = obj->cur->geometry.y;
+             cw = obj->cur->geometry.w;
+             ch = obj->cur->geometry.h;
+          }
      }
 
    if (obj->cur->color.a == 0 && obj->cur->render_op == EVAS_RENDER_BLEND)
@@ -310,7 +324,6 @@ evas_object_clip_recalc(Evas_Object_Protected_Data *obj)
    if (EVAS_OBJECT_DATA_VALID(clipper))
      {
         // this causes problems... hmmm ?????
-        if (clipper->cur->cache.clip.dirty)
           evas_object_clip_recalc(clipper);
 
         // I don't know why this test was here in the first place. As I have
@@ -336,6 +349,7 @@ evas_object_clip_recalc(Evas_Object_Protected_Data *obj)
                {
                   Evas_Object_Protected_Data *parent =
                         eo_data_scope_get(obj->smart.parent, EVAS_OBJECT_CLASS);
+                  evas_object_clip_recalc(parent);
                   if (parent->clip.mask)
                     {
                        if (parent->clip.mask != obj->clip.mask)
