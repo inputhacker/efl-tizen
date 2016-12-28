@@ -759,17 +759,6 @@ struct _Evas_Post_Callback
    unsigned char              delete_me : 1;
 };
 
-// somehow this has bugs ... and i am not sure why...
-//#define INLINE_ACTIVE_GEOM 1
-
-typedef struct
-{
-#ifdef INLINE_ACTIVE_GEOM
-   Evas_Coord_Rectangle        rect;
-#endif
-   Evas_Object_Protected_Data *obj;
-} Evas_Active_Entry;
-
 struct _Evas_Public_Data
 {
    EINA_INLIST;
@@ -841,7 +830,7 @@ struct _Evas_Public_Data
    } render;
 
    Eina_Array     delete_objects;
-   Eina_Inarray   active_objects;
+   Eina_Array     active_objects;
    Eina_Array     restack_objects;
    Eina_Array     render_objects;
    Eina_Array     pending_objects;
@@ -867,8 +856,6 @@ struct _Evas_Public_Data
    Eina_List     *grabs;
 
    Eina_List     *font_path;
-
-   Eina_Inarray  *update_del_redirect_array;
 
    int            in_smart_calc;
    int            smart_calc_count;
@@ -909,9 +896,7 @@ struct _Evas_Layer
    Evas_Public_Data *evas;
 
    void             *engine_data;
-   Eina_List        *removes;
    int               usage;
-   int               walking_objects;
    unsigned char     delete_me : 1;
 };
 
@@ -1106,7 +1091,6 @@ struct _Evas_Object_Protected_Data
 
    unsigned int                ref;
 
-   unsigned char               no_change_render;
    unsigned char               delete_me;
 
    struct  {
@@ -1514,9 +1498,6 @@ void evas_object_change_reset(Evas_Object *obj);
 void evas_object_cur_prev(Evas_Object *obj);
 void evas_object_free(Evas_Object *obj, int clean_layer);
 void evas_object_update_bounding_box(Evas_Object *obj, Evas_Object_Protected_Data *pd);
-void evas_object_smart_render_cache_clear(Evas_Object *eo_obj);
-void *evas_object_smart_render_cache_get(const Evas_Object *eo_obj);
-void evas_object_smart_render_cache_set(Evas_Object *eo_obj, void *data);
 void evas_object_inject(Evas_Object *obj, Evas_Object_Protected_Data *pd, Evas *e);
 void evas_object_release(Evas_Object *obj, Evas_Object_Protected_Data *pd, int clean_layer);
 void evas_object_change(Evas_Object *obj, Evas_Object_Protected_Data *pd);
@@ -1531,7 +1512,6 @@ void evas_rects_return_difference_rects(Eina_Array *rects, int x, int y, int w, 
 void evas_object_clip_dirty(Evas_Object *obj, Evas_Object_Protected_Data *pd);
 void evas_object_recalc_clippees(Evas_Object_Protected_Data *pd);
 Evas_Layer *evas_layer_new(Evas *e);
-void _evas_layer_flush_removes(Evas_Layer *lay);
 void evas_layer_pre_free(Evas_Layer *lay);
 void evas_layer_free_objects(Evas_Layer *lay);
 void evas_layer_clean(Evas *e);
@@ -1921,9 +1901,6 @@ EAPI int _evas_module_engine_inherit(Evas_Func *funcs, char *name);
 EAPI const char *_evas_module_libdir_get(void);
 const char *_evas_module_datadir_get(void);
 
-void
-evas_render_object_render_cache_free(Evas_Object *eo_obj EINA_UNUSED,
-                                     void *data);
 Eina_Bool evas_render_mapped(Evas_Public_Data *e, Evas_Object *obj,
                              Evas_Object_Protected_Data *source_pd,
                              void *context, void *surface, int off_x, int off_y,

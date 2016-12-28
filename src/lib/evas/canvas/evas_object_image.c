@@ -2385,7 +2385,6 @@ _evas_canvas_image_cache_reload(Eo *eo_e, Evas_Public_Data *e)
      {
 	Evas_Object_Protected_Data *obj;
 
-        layer->walking_objects++;
 	EINA_INLIST_FOREACH(layer->objects, obj)
 	  {
              if (eo_isa(obj->object, MY_CLASS))
@@ -2394,15 +2393,12 @@ _evas_canvas_image_cache_reload(Eo *eo_e, Evas_Public_Data *e)
                   evas_object_inform_call_image_unloaded(obj->object);
                }
 	  }
-        layer->walking_objects--;
-        _evas_layer_flush_removes(layer);
      }
    evas_image_cache_flush(eo_e);
    EINA_INLIST_FOREACH(e->layers, layer)
      {
 	Evas_Object_Protected_Data *obj;
 
-        layer->walking_objects++;
 	EINA_INLIST_FOREACH(layer->objects, obj)
 	  {
              if (eo_isa(obj->object, MY_CLASS))
@@ -2413,8 +2409,6 @@ _evas_canvas_image_cache_reload(Eo *eo_e, Evas_Public_Data *e)
                   evas_object_change(obj->object, obj);
                }
 	  }
-        layer->walking_objects--;
-        _evas_layer_flush_removes(layer);
      }
    evas_image_cache_flush(eo_e);
 }

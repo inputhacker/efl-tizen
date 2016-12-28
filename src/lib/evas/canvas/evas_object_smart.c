@@ -23,7 +23,6 @@ struct _Evas_Smart_Data
    Eina_Inlist      *callbacks;
    Eina_Inlist      *contained; /** list of smart member objects */
 
-   void             *render_cache;
   /* ptr array + data blob holding all interfaces private data for
    * this object */
    void            **interface_privates;
@@ -493,32 +492,6 @@ _evas_object_smart_members_all_del(Evas_Object *eo_obj)
      {
         evas_object_del((Evas_Object *)((Evas_Object_Protected_Data *)memobj->object));
      }
-}
-
-void
-evas_object_smart_render_cache_clear(Evas_Object *eo_obj)
-{
-   Evas_Smart_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
-   if (!o) return;
-   if (!o->render_cache) return;
-   evas_render_object_render_cache_free(eo_obj, o->render_cache);
-   o->render_cache = NULL;
-}
-
-void *
-evas_object_smart_render_cache_get(const Evas_Object *eo_obj)
-{
-   Evas_Smart_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
-   if (!o) return NULL;
-   return o->render_cache;
-}
-
-void
-evas_object_smart_render_cache_set(Evas_Object *eo_obj, void *data)
-{
-   Evas_Smart_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
-   if (!o) return;
-   o->render_cache = data;
 }
 
 static void
