@@ -48,19 +48,6 @@ _evas_event_havemap_is_in_output_rect(Evas_Object *eo_obj, Evas_Object_Protected
    return 0;
 }
 
-// TIZEN ONLY(20161220): Fix to update clip area
-// This patch is a part of upstream commit f6b3c31561276a6c7afc8fb56ae2e5363772782c
-// (evas event handling3 - fix yet more corner cases for clipped objects)
-static void
-clip_calc(Evas_Object_Protected_Data *obj, Evas_Coord_Rectangle *c)
-{
-   if (!obj) return;
-   RECTS_CLIP_TO_RECT(c->x, c->y, c->w, c->h,
-                      obj->cur->geometry.x, obj->cur->geometry.y,
-                      obj->cur->geometry.w, obj->cur->geometry.h);
-   clip_calc(obj->cur->clipper, c);
-}
-//
 static Eina_List *
 _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
                                    const Eina_Inlist *list, Evas_Object *stop,
@@ -68,11 +55,6 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
 {
    Evas_Object *eo_obj;
    Evas_Object_Protected_Data *obj = NULL;
-    // TIZEN ONLY(20161220): Fix to update clip area
-    // This patch is a part of upstream commit f6b3c31561276a6c7afc8fb56ae2e5363772782c
-    // (evas event handling3 - fix yet more corner cases for clipped objects)
-    Evas_Coord_Rectangle c;
-    //
    int inside;
 
    if (!list) return in;
@@ -86,41 +68,6 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
              *no_rep = 1;
              return in;
           }
-
-        // TIZEN ONLY(20161220): Fix to update clip area
-        // This patch is a part of upstream commit f6b3c31561276a6c7afc8fb56ae2e5363772782c
-        // (evas event handling3 - fix yet more corner cases for clipped objects)
-        if (!obj->cur->visible) continue;
-        // XXX: this below DYNAMICALLY calculates the current clip rect
-        // by walking clippers to each parent clipper until there are
-        // no more of them. this is a necessary hack because cache.clip
-        // cooreds are broken. somewhere along the way in the past few years
-        // someone has forgotten to flag them as dirty and update them
-        // so a clicp recalce caqn work... somewhere. maybe a prexy or map fix
-        // or an optimization. finding this is really hard, so i'm going
-        // for plan b and doing this on the fly. it's only for event or
-        // callback handling so its a small percentage of the time, but
-        // it's better that we get this right
-        if (obj->is_smart)
-          {
-             Evas_Coord_Rectangle bounding_box = { 0, 0, 0, 0 };
-
-             evas_object_smart_bounding_box_update(eo_obj, obj);
-             evas_object_smart_bounding_box_get(obj->object, &bounding_box, NULL);
-             c = bounding_box;
-          }
-        else
-          {
-             if (obj->clip.clipees) continue;
-             c = obj->cur->geometry;
-          }
-        clip_calc(obj->cur->clipper, &c);
-        // only worry about objects that intersect INCLUDING clippint
-        if ((!RECTS_INTERSECT(x, y, 1, 1, c.x, c.y, c.w, c.h)))
-          {
-             continue;
-          }
-        //
         if (evas_event_passes_through(eo_obj, obj)) continue;
         if (!source)
           {
