@@ -1615,6 +1615,7 @@ EAPI void ecore_wl_window_rotation_preferred_rotation_set(Ecore_Wl_Window *win, 
 EAPI void ecore_wl_window_rotation_available_rotations_set(Ecore_Wl_Window *win, const int *rots, unsigned int count);
 EAPI void ecore_wl_window_rotation_change_done_send(Ecore_Wl_Window *win);
 EAPI void ecore_wl_window_rotation_geometry_set(Ecore_Wl_Window *win, int rot, int x, int y, int w, int h);
+EAPI void ecore_wl_window_rotation_changed_callback_set(Ecore_Wl_Window *win, void *data, void (*func)(Ecore_Wl_Window *win, int rot, Eina_Bool resize, int w, int h, void *data));
 
 EAPI Eina_List * ecore_wl_window_aux_hints_supported_get(Ecore_Wl_Window *win);
 EAPI void ecore_wl_window_aux_hint_add(Ecore_Wl_Window *win, int id, const char *hint, const char *val);

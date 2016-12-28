@@ -1003,9 +1003,9 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
    else if (!strcmp(interface, "tizen_policy_ext"))
      {
         ewd->wl.tz_policy_ext =
-          wl_registry_bind(registry, id, &tizen_policy_ext_interface, 1);
+          wl_registry_bind(registry, id, &tizen_policy_ext_interface, 2);
         if (ewd->wl.tz_policy_ext)
-          tizen_policy_add_listener(_ecore_wl_disp->wl.tz_policy_ext, &_ecore_tizen_policy_ext_listener, ewd->wl.display);
+          tizen_policy_ext_add_listener(_ecore_wl_disp->wl.tz_policy_ext, &_ecore_tizen_policy_ext_listener, ewd->wl.display);
      }
    else if (!strcmp(interface, "tizen_surface"))
      {

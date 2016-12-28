@@ -252,6 +252,9 @@ struct _Ecore_Wl_Window
    Ecore_Wl_Subsurf *subsurfs;
 
    void *data;
+
+   void (*cb_rot_changed)(int win_id, int rot, Eina_Bool resize, int w, int h, void *data);
+   void *cb_rot_changed_data;
 };
 
 struct _Ecore_Wl_Input_Device
