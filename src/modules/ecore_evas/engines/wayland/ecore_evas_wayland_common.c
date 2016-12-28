@@ -1301,6 +1301,109 @@ _ecore_evas_wl_common_wm_rot_manual_rotation_done(Ecore_Evas *ee)
 }
 
 void
+_ecore_evas_wl_common_wm_rot_cb_angle_changed(Ecore_Wl_Window *win, int rot, Eina_Bool resize, int w, int h, void *data)
+{
+   Ecore_Evas *ee;
+   Ecore_Evas_Engine_Wl_Data *wdata;
+   int minw, minh, maxw, maxh;
+   int basew, baseh, stepw, steph;
+
+   ee = (Ecore_Evas *)data;
+   EINA_SAFETY_ON_NULL_RETURN(ee);
+
+   wdata = ee->engine.data;
+   EINA_SAFETY_ON_NULL_RETURN(wdata);
+
+   EINA_SAFETY_ON_FALSE_RETURN(win == wdata->win);
+
+   if ((!ee->prop.wm_rot.supported) || (!ee->prop.wm_rot.app_set))
+     return;
+
+   /* get min, max, base, & step sizes */
+   ecore_evas_size_min_get(ee, &minw, &minh);
+   ecore_evas_size_max_get(ee, &maxw, &maxh);
+   ecore_evas_size_base_get(ee, &basew, &baseh);
+   ecore_evas_size_step_get(ee, &stepw, &steph);
+
+   wdata->wm_rot.request = 1;
+   wdata->wm_rot.done = 0;
+
+   ee->rotation = rot;
+
+   _ecore_evas_wl_common_resize(ee, w, h);
+
+   if (ee->prop.wm_rot.manual_mode.set)
+     {
+        ee->prop.wm_rot.manual_mode.wait_for_done = EINA_TRUE;
+        _ecore_evas_wl_common_wm_rot_manual_rotation_done_timeout_update(ee);
+     }
+
+   if (ee->in_async_render)
+     {
+        ee->delayed.rotation = rot;
+        ee->delayed.rotation_resize = resize;
+        ee->delayed.rotation_changed = EINA_TRUE;
+        return;
+     }
+
+   if (ECORE_EVAS_PORTRAIT(ee))
+     evas_damage_rectangle_add(ee->evas, 0, 0, ee->req.w, ee->req.h);
+   else
+     evas_damage_rectangle_add(ee->evas, 0, 0, ee->req.h, ee->req.w);
+
+   /* reset min, max, base, & step sizes */
+   ecore_evas_size_min_set(ee, minh, minw);
+   ecore_evas_size_max_set(ee, maxh, maxw);
+   ecore_evas_size_base_set(ee, baseh, basew);
+   ecore_evas_size_step_set(ee, steph, stepw);
+
+   /* send a mouse_move process
+    *
+    * NB: Is This Really Needed ?
+    * Yes, it's required to update the mouse position, relatively to
+    * widgets. After a rotation change, e.g., the mouse might not be over
+    * a button anymore. */
+   _ecore_evas_mouse_move_process(ee, ee->mouse.x, ee->mouse.y,
+                                  ecore_loop_time_get());
+
+   if (!strcmp(ee->driver, "wayland_shm"))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
+        Evas_Engine_Info_Wayland_Shm *einfo;
+        einfo = (Evas_Engine_Info_Wayland_Shm *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+
+        einfo->info.rotation = rot;
+
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+#endif
+     }
+   else if (!strcmp(ee->driver, "wayland_egl"))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
+        Evas_Engine_Info_Wayland_Egl *einfo;
+        einfo = (Evas_Engine_Info_Wayland_Egl *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+
+        einfo->info.rotation = rot;
+
+        /* TIZEN_ONLY(20160728):
+           wayland spec is not define whether wl_egl_window_create() can use null surface or not.
+           so current tizen device does not allow to create null surface wayland window.
+         */
+        if ((einfo->info.surface) &&
+            (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo)))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+#endif
+     }
+
+   _ecore_evas_wl_common_state_update(ee);
+
+   wdata->wm_rot.done = 1;
+}
+
+void
 _ecore_evas_wl_common_raise(Ecore_Evas *ee)
 {
    Ecore_Evas_Engine_Wl_Data *wdata;
