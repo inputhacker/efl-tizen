@@ -1230,7 +1230,7 @@ _surface_buffers_fbo_set(EVGL_Surface *sfc, GLuint fbo, Evas_GL_Context_Version 
 }
 
 static int
-_surface_buffers_create(EVGL_Surface *sfc, Evas_GL_Context_Version version)
+_surface_buffers_create(EVGL_Surface *sfc)
 {
    // Create buffers
    if (sfc->color_fmt)
@@ -1240,7 +1240,7 @@ _surface_buffers_create(EVGL_Surface *sfc, Evas_GL_Context_Version version)
 
 
    // Depth_stencil buffers or separate buffers
-   if (sfc->depth_stencil_fmt && version > EVAS_GL_GLES_1_X)
+   if (sfc->depth_stencil_fmt)
      {
 #ifdef GL_GLES
         _texture_create(&sfc->depth_stencil_buf);
@@ -2587,7 +2587,7 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
 
    if (!sfc->buffers_skip_allocate)
      {
-        if (!sfc->color_buf && !_surface_buffers_create(sfc, ctx->version))
+        if (!sfc->color_buf && !_surface_buffers_create(sfc))
           {
              ERR("Unable to create specified surfaces.");
              evas_gl_common_error_set(eng_data, EVAS_GL_BAD_ALLOC);
