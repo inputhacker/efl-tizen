@@ -555,8 +555,8 @@ ecore_wl_dpi_get(void)
         ecore_wl_sync();
         if (!_ecore_wl_disp->output) ecore_wl_sync();
      }
-   //if (!_ecore_wl_disp->output) return 75;
    //
+   if (!_ecore_wl_disp->output) return 75;
 
    mw = _ecore_wl_disp->output->mw;
    if (mw <= 0) return 75;
