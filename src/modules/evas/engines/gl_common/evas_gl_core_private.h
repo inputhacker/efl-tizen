@@ -83,6 +83,13 @@ struct _EVGL_Interface
 
    //TIZEN_ONLY(20161121) Support PreRotation
    int         (*native_win_prerotation_set)(void *data);
+
+   // partial rendering enable
+   void        (*partial_rendering_enable)();
+
+   // partial rendering disable
+   void        (*partial_rendering_disable)();
+
 };
 
 struct _EVGL_Surface

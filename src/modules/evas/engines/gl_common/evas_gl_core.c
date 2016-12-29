@@ -2040,6 +2040,9 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
 
    _surface_context_list_print();
 
+   if (evgl_engine->funcs->partial_rendering_disable)
+      evgl_engine->funcs->partial_rendering_disable();
+
    return sfc;
 
 error:
@@ -2254,6 +2257,9 @@ evgl_surface_destroy(void *eng_data, EVGL_Surface *sfc)
    free(sfc);
 
    _surface_context_list_print();
+
+   if (evgl_engine->funcs->partial_rendering_enable)
+     evgl_engine->funcs->partial_rendering_enable();
 
    return 1;
 
