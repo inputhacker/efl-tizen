@@ -3062,8 +3062,8 @@ evgl_native_surface_direct_fallback_set(Evas_Native_Surface *ns,
 {
    EVGL_Surface *sfc;
 
-   if (!evgl_engine) return EINA_FALSE;
-   if (!ns) return EINA_FALSE;
+   if (!evgl_engine) return;
+   if (!ns) return;
 
    if (ns->type == EVAS_NATIVE_SURFACE_EVASGL &&
             ns->data.evasgl.surface)
