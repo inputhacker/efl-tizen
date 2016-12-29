@@ -1061,6 +1061,12 @@ edje_object_color_class_del(Evas_Object *obj, const char *color_class)
 
    if ((!ed) || (!color_class)) return;
 
+   /* TIZEN_ONLY(20161229): fix to work color_class del for textblock styles
+    * _edje_textblock_styles_color_class_cache_free() should be called before
+    * deleting color_class from the hash. */
+   _edje_textblock_styles_color_class_cache_free(ed, color_class);
+   /* END */
+
    eina_hash_del(ed->color_classes, color_class, cc);
 
    for (i = 0; i < ed->table_parts_size; i++)
@@ -1081,7 +1087,6 @@ edje_object_color_class_del(Evas_Object *obj, const char *color_class)
    ed->all_part_change = EINA_TRUE;
 #endif
    /* TIZEN_ONLY(20161019): update color_class/text_class logic for textblock */
-   _edje_textblock_styles_color_class_cache_free(ed, color_class);
    _edje_textblock_style_all_update(ed, EINA_FALSE);
    /* END */
    _edje_recalc(ed);
