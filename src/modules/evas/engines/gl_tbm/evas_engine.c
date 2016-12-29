@@ -895,12 +895,12 @@ static const EVGL_Interface evgl_funcs =
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
-   evgl_eng_native_win_surface_config_get
+   evgl_eng_native_win_surface_config_get,
 #if 0
    NULL, // native_win_prerotation_set
+#endif
    NULL, //partial_rendering_enable
    NULL, //partial_rendering_disable
-#endif
 };
 
 /* engine functions */

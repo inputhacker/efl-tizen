@@ -119,6 +119,8 @@ static const EVGL_Interface evgl_funcs =
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
    NULL, // native_win_surface_config_get
+   NULL, //partial_rendering_enable
+   NULL, //partial_rendering_disable
 };
 
 Eina_Bool
