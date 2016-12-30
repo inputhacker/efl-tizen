@@ -3424,6 +3424,8 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                                                      obj->cur->geometry.h,
                                                      do_async);
                                 ENFN->context_render_op_set(output, context, obj->cur->render_op);
+                                ENFN->context_cutout_clear(ENDT, context);
+                                ENFN->context_clip_unset(ENDT, context);
 
                                 ix = iy = 0;
                                 if (ns->data.tbm.rot == EVAS_IMAGE_ORIENT_90 || ns->data.tbm.rot == EVAS_IMAGE_ORIENT_270)
