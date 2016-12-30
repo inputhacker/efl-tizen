@@ -708,7 +708,7 @@ err:
 
 // TIZEN_ONLY(20161226): To increse buffer size to get very long text to satify html use case.
 //                       It should be changed to allow up to unlimit value to maintain compatibility.
-#define _MAX_SIZE_OF_COPY_DATA 103424
+#define _MAX_SIZE_OF_COPY_DATA 204800
 //
 
 static Eina_Bool
