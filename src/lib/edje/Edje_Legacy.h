@@ -140,6 +140,9 @@ EAPI void        *edje_object_signal_callback_del_full(Evas_Object *obj, const c
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
+ *
+ * @deprecated use evas_object_size_hint_min_set() instead.
+ *             Deprecated since Tizen 2.4
  */
 EINA_DEPRECATED EAPI void         edje_extern_object_min_size_set (Evas_Object *obj, Evas_Coord minw, Evas_Coord minh);
 
@@ -155,8 +158,11 @@ EINA_DEPRECATED EAPI void         edje_extern_object_min_size_set (Evas_Object *
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
+ *
+ * @deprecated use evas_object_size_hint_max_set() instead.
+ *             Deprecated since Tizen 2.4
  */
-EAPI void         edje_extern_object_max_size_set (Evas_Object *obj, Evas_Coord maxw, Evas_Coord maxh);
+EINA_DEPRECATED EAPI void         edje_extern_object_max_size_set (Evas_Object *obj, Evas_Coord maxw, Evas_Coord maxh);
 
 /**
  * @brief Set the object aspect size.
@@ -174,8 +180,11 @@ EAPI void         edje_extern_object_max_size_set (Evas_Object *obj, Evas_Coord 
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
+ *
+ * @deprecated use evas_object_size_hint_aspect_set() instead.
+ *             Deprecated since Tizen 2.4
  */
-EAPI void         edje_extern_object_aspect_set   (Evas_Object *obj, Edje_Aspect_Control aspect, Evas_Coord aw, Evas_Coord ah);
+EINA_DEPRECATED EAPI void         edje_extern_object_aspect_set   (Evas_Object *obj, Edje_Aspect_Control aspect, Evas_Coord aw, Evas_Coord ah);
 
 /**
  * @brief Sets the @b EDJ file (and group within it) to load an Edje

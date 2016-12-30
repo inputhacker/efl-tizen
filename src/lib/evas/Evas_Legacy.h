@@ -3773,8 +3773,10 @@ EAPI void evas_object_text_font_get(const Eo *obj, const char **font, Evas_Font_
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
+ *
+ * @deprecated Deprecated since Tizen 2.4
  */
-EAPI void evas_object_text_filter_program_set(Eo *obj, const char *code);
+EINA_DEPRECATED EAPI void evas_object_text_filter_program_set(Eo *obj, const char *code);
 
 /**
  * @brief Bind an object to use as a mask or texture with Evas Filters.
@@ -3788,8 +3790,10 @@ EAPI void evas_object_text_filter_program_set(Eo *obj, const char *code);
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
+ *
+ * @deprecated Deprecated since Tizen 2.4
  */
-EAPI void evas_object_text_filter_source_set(Eo *obj, const char *name, Evas_Object *eo_source);
+EINA_DEPRECATED EAPI void evas_object_text_filter_source_set(Eo *obj, const char *name, Evas_Object *eo_source);
 
 /**
  * TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part.
