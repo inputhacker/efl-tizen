@@ -2239,10 +2239,7 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
    if ((tex->im) && (tex->im->native.data)
         && (ens) && (ens->type == EVAS_NATIVE_SURFACE_TBM))
       {
-         double tmp, tmp_ori_ratio_h, tmp_small_ratio_h;
-         double src_ratio, dst_ratio;
-         src_ratio = (double) tex->im->w / (double) tex->im->h;
-         dst_ratio = (double) sw / sh;
+         double tmp;
          if (tex->im->native.rot == EVAS_IMAGE_ORIENT_90)
             {
                tmp = sx; sx = (tex->im->h - sy - sh) * tex->im->w / (double)tex->im->h;
