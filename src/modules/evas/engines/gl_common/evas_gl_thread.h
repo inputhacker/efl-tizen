@@ -1,9 +1,9 @@
 #ifndef EVAS_GL_THREAD_H
 #define EVAS_GL_THREAD_H
 
-extern Eina_Thread _main_thread_id;
-
 #include "evas_gl_common.h"
+
+extern Eina_Thread _main_thread_id;
 
 /* Memory Pool */
 extern Eina_Mempool *_mp_default;
@@ -25,7 +25,7 @@ extern unsigned int _mp_delete_object_pool_size;
 extern unsigned int _mp_texture_pool_size;
 
 
-#ifdef EVAS_GL_RENDER_THREAD_IS_GENERIC
+#ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 #ifdef EAPI
 # undef EAPI
@@ -69,7 +69,7 @@ extern void evas_gl_thread_init();
 extern void evas_gl_thread_terminate();
 
 
-#else /* ! EVAS_GL_RENDER_THREAD_IS_GENERIC */
+#else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
 extern int (*evas_gl_thread_enabled)();
@@ -85,7 +85,7 @@ extern void (*evas_evgl_thread_finish)();
 extern void evas_gl_thread_link_init();
 
 
-#endif /* EVAS_GL_RENDER_THREAD_IS_GENERIC */
+#endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
 #include "evas_gl_thread_gl.h"

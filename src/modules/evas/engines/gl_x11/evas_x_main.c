@@ -2,11 +2,6 @@
 #include "../gl_common/evas_gl_define.h"
 #include <dlfcn.h>
 
-#ifdef GL_GLES
-#include "../gl_common/evas_gl_thread_egl.h"
-#endif
-#include "../gl_common/evas_gl_thread_gl.h"
-
 # define SET_RESTORE_CONTEXT() do { if (glsym_evas_gl_common_context_restore_set) glsym_evas_gl_common_context_restore_set(EINA_TRUE); } while(0)
 
 static Eina_TLS _outbuf_key = 0;

@@ -1,11 +1,10 @@
-#include "evas_common_private.h"
 #include "evas_gl_thread.h"
 
 
 #ifndef GL_GLES
 
 
-#ifdef EVAS_GL_RENDER_THREAD_IS_GENERIC
+#ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 
 /*
@@ -20,7 +19,7 @@ typedef struct
    int buffer;
    const int *attrib_list;
 
-} Thread_Command_glXBindTexImage;
+} Evas_Thread_Command_glXBindTexImage;
 
 void (*orig_evas_glXBindTexImage)(Display *dpy, GLXDrawable drawable, int buffer, const int *attrib_list);
 
@@ -39,13 +38,13 @@ glXBindTexImage_orig_evas_get(void)
 static void
 _gl_thread_glXBindTexImage(void *data)
 {
-   Thread_Command_glXBindTexImage *thread_param =
-      (Thread_Command_glXBindTexImage *)data;
+   Evas_Thread_Command_glXBindTexImage *thread_data =
+       (Evas_Thread_Command_glXBindTexImage *)data;
 
-   orig_evas_glXBindTexImage(thread_param->dpy,
-                             thread_param->drawable,
-                             thread_param->buffer,
-                             thread_param->attrib_list);
+   orig_evas_glXBindTexImage(thread_data->dpy,
+                             thread_data->drawable,
+                             thread_data->buffer,
+                             thread_data->attrib_list);
 
 }
 
@@ -60,17 +59,17 @@ glXBindTexImage_thread_cmd(Display *dpy, GLXDrawable drawable, int buffer, const
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXBindTexImage thread_param_local;
-   Thread_Command_glXBindTexImage *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXBindTexImage thread_data_local;
+   Evas_Thread_Command_glXBindTexImage *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
-   thread_param->buffer = buffer;
-   thread_param->attrib_list = attrib_list;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
+   thread_data->buffer = buffer;
+   thread_data->attrib_list = attrib_list;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXBindTexImage,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -87,18 +86,18 @@ typedef struct
    const int *attribList;
    int *nitems;
 
-} Thread_Command_glXChooseFBConfig;
+} Evas_Thread_Command_glXChooseFBConfig;
 
 static void
 _gl_thread_glXChooseFBConfig(void *data)
 {
-   Thread_Command_glXChooseFBConfig *thread_param =
-      (Thread_Command_glXChooseFBConfig *)data;
+   Evas_Thread_Command_glXChooseFBConfig *thread_data =
+       (Evas_Thread_Command_glXChooseFBConfig *)data;
 
-   thread_param->return_value = glXChooseFBConfig(thread_param->dpy,
-                                                  thread_param->screen,
-                                                  thread_param->attribList,
-                                                  thread_param->nitems);
+   thread_data->return_value = glXChooseFBConfig(thread_data->dpy,
+                                                 thread_data->screen,
+                                                 thread_data->attribList,
+                                                 thread_data->nitems);
 
 }
 
@@ -112,20 +111,20 @@ glXChooseFBConfig_thread_cmd(Display *dpy, int screen, const int *attribList, in
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXChooseFBConfig thread_param_local;
-   Thread_Command_glXChooseFBConfig *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXChooseFBConfig thread_data_local;
+   Evas_Thread_Command_glXChooseFBConfig *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->screen = screen;
-   thread_param->attribList = attribList;
-   thread_param->nitems = nitems;
+   thread_data->dpy = dpy;
+   thread_data->screen = screen;
+   thread_data->attribList = attribList;
+   thread_data->nitems = nitems;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXChooseFBConfig,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -141,18 +140,18 @@ typedef struct
    GLXContext shareList;
    Bool direct;
 
-} Thread_Command_glXCreateContext;
+} Evas_Thread_Command_glXCreateContext;
 
 static void
 _gl_thread_glXCreateContext(void *data)
 {
-   Thread_Command_glXCreateContext *thread_param =
-      (Thread_Command_glXCreateContext *)data;
+   Evas_Thread_Command_glXCreateContext *thread_data =
+       (Evas_Thread_Command_glXCreateContext *)data;
 
-   thread_param->return_value = glXCreateContext(thread_param->dpy,
-                                                 thread_param->vis,
-                                                 thread_param->shareList,
-                                                 thread_param->direct);
+   thread_data->return_value = glXCreateContext(thread_data->dpy,
+                                                thread_data->vis,
+                                                thread_data->shareList,
+                                                thread_data->direct);
 
 }
 
@@ -166,20 +165,20 @@ glXCreateContext_thread_cmd(Display *dpy, XVisualInfo *vis, GLXContext shareList
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXCreateContext thread_param_local;
-   Thread_Command_glXCreateContext *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXCreateContext thread_data_local;
+   Evas_Thread_Command_glXCreateContext *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->vis = vis;
-   thread_param->shareList = shareList;
-   thread_param->direct = direct;
+   thread_data->dpy = dpy;
+   thread_data->vis = vis;
+   thread_data->shareList = shareList;
+   thread_data->direct = direct;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXCreateContext,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -196,19 +195,19 @@ typedef struct
    GLXContext shareList;
    Bool direct;
 
-} Thread_Command_glXCreateNewContext;
+} Evas_Thread_Command_glXCreateNewContext;
 
 static void
 _gl_thread_glXCreateNewContext(void *data)
 {
-   Thread_Command_glXCreateNewContext *thread_param =
-      (Thread_Command_glXCreateNewContext *)data;
+   Evas_Thread_Command_glXCreateNewContext *thread_data =
+       (Evas_Thread_Command_glXCreateNewContext *)data;
 
-   thread_param->return_value = glXCreateNewContext(thread_param->dpy,
-                                                    thread_param->config,
-                                                    thread_param->renderType,
-                                                    thread_param->shareList,
-                                                    thread_param->direct);
+   thread_data->return_value = glXCreateNewContext(thread_data->dpy,
+                                                   thread_data->config,
+                                                   thread_data->renderType,
+                                                   thread_data->shareList,
+                                                   thread_data->direct);
 
 }
 
@@ -222,21 +221,21 @@ glXCreateNewContext_thread_cmd(Display *dpy, GLXFBConfig config, int renderType,
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXCreateNewContext thread_param_local;
-   Thread_Command_glXCreateNewContext *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXCreateNewContext thread_data_local;
+   Evas_Thread_Command_glXCreateNewContext *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->renderType = renderType;
-   thread_param->shareList = shareList;
-   thread_param->direct = direct;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->renderType = renderType;
+   thread_data->shareList = shareList;
+   thread_data->direct = direct;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXCreateNewContext,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -251,17 +250,17 @@ typedef struct
    GLXFBConfig config;
    const int *attribList;
 
-} Thread_Command_glXCreatePbuffer;
+} Evas_Thread_Command_glXCreatePbuffer;
 
 static void
 _gl_thread_glXCreatePbuffer(void *data)
 {
-   Thread_Command_glXCreatePbuffer *thread_param =
-      (Thread_Command_glXCreatePbuffer *)data;
+   Evas_Thread_Command_glXCreatePbuffer *thread_data =
+       (Evas_Thread_Command_glXCreatePbuffer *)data;
 
-   thread_param->return_value = glXCreatePbuffer(thread_param->dpy,
-                                                 thread_param->config,
-                                                 thread_param->attribList);
+   thread_data->return_value = glXCreatePbuffer(thread_data->dpy,
+                                                thread_data->config,
+                                                thread_data->attribList);
 
 }
 
@@ -275,19 +274,19 @@ glXCreatePbuffer_thread_cmd(Display *dpy, GLXFBConfig config, const int *attribL
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXCreatePbuffer thread_param_local;
-   Thread_Command_glXCreatePbuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXCreatePbuffer thread_data_local;
+   Evas_Thread_Command_glXCreatePbuffer *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->attribList = attribList;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->attribList = attribList;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXCreatePbuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -303,7 +302,7 @@ typedef struct
    Pixmap pixmap;
    const int *attribList;
 
-} Thread_Command_glXCreatePixmap;
+} Evas_Thread_Command_glXCreatePixmap;
 
 GLXPixmap (*orig_evas_glXCreatePixmap)(Display *dpy, GLXFBConfig config, Pixmap pixmap, const int *attribList);
 
@@ -323,13 +322,13 @@ glXCreatePixmap_orig_evas_get(void)
 static void
 _gl_thread_glXCreatePixmap(void *data)
 {
-   Thread_Command_glXCreatePixmap *thread_param =
-      (Thread_Command_glXCreatePixmap *)data;
+   Evas_Thread_Command_glXCreatePixmap *thread_data =
+       (Evas_Thread_Command_glXCreatePixmap *)data;
 
-   thread_param->return_value = orig_evas_glXCreatePixmap(thread_param->dpy,
-                                                          thread_param->config,
-                                                          thread_param->pixmap,
-                                                          thread_param->attribList);
+   thread_data->return_value = orig_evas_glXCreatePixmap(thread_data->dpy,
+                                                         thread_data->config,
+                                                         thread_data->pixmap,
+                                                         thread_data->attribList);
 
 }
 
@@ -343,20 +342,20 @@ glXCreatePixmap_thread_cmd(Display *dpy, GLXFBConfig config, Pixmap pixmap, cons
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXCreatePixmap thread_param_local;
-   Thread_Command_glXCreatePixmap *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXCreatePixmap thread_data_local;
+   Evas_Thread_Command_glXCreatePixmap *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->pixmap = pixmap;
-   thread_param->attribList = attribList;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->pixmap = pixmap;
+   thread_data->attribList = attribList;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXCreatePixmap,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -372,18 +371,18 @@ typedef struct
    Window win;
    const int *attribList;
 
-} Thread_Command_glXCreateWindow;
+} Evas_Thread_Command_glXCreateWindow;
 
 static void
 _gl_thread_glXCreateWindow(void *data)
 {
-   Thread_Command_glXCreateWindow *thread_param =
-      (Thread_Command_glXCreateWindow *)data;
+   Evas_Thread_Command_glXCreateWindow *thread_data =
+       (Evas_Thread_Command_glXCreateWindow *)data;
 
-   thread_param->return_value = glXCreateWindow(thread_param->dpy,
-                                                thread_param->config,
-                                                thread_param->win,
-                                                thread_param->attribList);
+   thread_data->return_value = glXCreateWindow(thread_data->dpy,
+                                               thread_data->config,
+                                               thread_data->win,
+                                               thread_data->attribList);
 
 }
 
@@ -397,20 +396,20 @@ glXCreateWindow_thread_cmd(Display *dpy, GLXFBConfig config, Window win, const i
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXCreateWindow thread_param_local;
-   Thread_Command_glXCreateWindow *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXCreateWindow thread_data_local;
+   Evas_Thread_Command_glXCreateWindow *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->win = win;
-   thread_param->attribList = attribList;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->win = win;
+   thread_data->attribList = attribList;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXCreateWindow,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -423,16 +422,16 @@ typedef struct
    Display *dpy;
    GLXPbuffer pbuf;
 
-} Thread_Command_glXDestroyPbuffer;
+} Evas_Thread_Command_glXDestroyPbuffer;
 
 static void
 _gl_thread_glXDestroyPbuffer(void *data)
 {
-   Thread_Command_glXDestroyPbuffer *thread_param =
-      (Thread_Command_glXDestroyPbuffer *)data;
+   Evas_Thread_Command_glXDestroyPbuffer *thread_data =
+       (Evas_Thread_Command_glXDestroyPbuffer *)data;
 
-   glXDestroyPbuffer(thread_param->dpy,
-                     thread_param->pbuf);
+   glXDestroyPbuffer(thread_data->dpy,
+                     thread_data->pbuf);
 
 }
 
@@ -447,15 +446,15 @@ glXDestroyPbuffer_thread_cmd(Display *dpy, GLXPbuffer pbuf)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXDestroyPbuffer thread_param_local;
-   Thread_Command_glXDestroyPbuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXDestroyPbuffer thread_data_local;
+   Evas_Thread_Command_glXDestroyPbuffer *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->pbuf = pbuf;
+   thread_data->dpy = dpy;
+   thread_data->pbuf = pbuf;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXDestroyPbuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -469,7 +468,7 @@ typedef struct
    Display *dpy;
    GLXPixmap pixmap;
 
-} Thread_Command_glXDestroyPixmap;
+} Evas_Thread_Command_glXDestroyPixmap;
 
 void (*orig_evas_glXDestroyPixmap)(Display *dpy, GLXPixmap pixmap);
 
@@ -488,11 +487,11 @@ glXDestroyPixmap_orig_evas_get(void)
 static void
 _gl_thread_glXDestroyPixmap(void *data)
 {
-   Thread_Command_glXDestroyPixmap *thread_param =
-      (Thread_Command_glXDestroyPixmap *)data;
+   Evas_Thread_Command_glXDestroyPixmap *thread_data =
+       (Evas_Thread_Command_glXDestroyPixmap *)data;
 
-   orig_evas_glXDestroyPixmap(thread_param->dpy,
-                              thread_param->pixmap);
+   orig_evas_glXDestroyPixmap(thread_data->dpy,
+                              thread_data->pixmap);
 
 }
 
@@ -507,15 +506,15 @@ glXDestroyPixmap_thread_cmd(Display *dpy, GLXPixmap pixmap)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXDestroyPixmap thread_param_local;
-   Thread_Command_glXDestroyPixmap *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXDestroyPixmap thread_data_local;
+   Evas_Thread_Command_glXDestroyPixmap *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->pixmap = pixmap;
+   thread_data->dpy = dpy;
+   thread_data->pixmap = pixmap;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXDestroyPixmap,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -529,16 +528,16 @@ typedef struct
    Display *dpy;
    GLXWindow window;
 
-} Thread_Command_glXDestroyWindow;
+} Evas_Thread_Command_glXDestroyWindow;
 
 static void
 _gl_thread_glXDestroyWindow(void *data)
 {
-   Thread_Command_glXDestroyWindow *thread_param =
-      (Thread_Command_glXDestroyWindow *)data;
+   Evas_Thread_Command_glXDestroyWindow *thread_data =
+       (Evas_Thread_Command_glXDestroyWindow *)data;
 
-   glXDestroyWindow(thread_param->dpy,
-                    thread_param->window);
+   glXDestroyWindow(thread_data->dpy,
+                    thread_data->window);
 
 }
 
@@ -553,15 +552,15 @@ glXDestroyWindow_thread_cmd(Display *dpy, GLXWindow window)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXDestroyWindow thread_param_local;
-   Thread_Command_glXDestroyWindow *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXDestroyWindow thread_data_local;
+   Evas_Thread_Command_glXDestroyWindow *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->window = window;
+   thread_data->dpy = dpy;
+   thread_data->window = window;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXDestroyWindow,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -578,18 +577,18 @@ typedef struct
    int attrib;
    int *value;
 
-} Thread_Command_glXGetConfig;
+} Evas_Thread_Command_glXGetConfig;
 
 static void
 _gl_thread_glXGetConfig(void *data)
 {
-   Thread_Command_glXGetConfig *thread_param =
-      (Thread_Command_glXGetConfig *)data;
+   Evas_Thread_Command_glXGetConfig *thread_data =
+       (Evas_Thread_Command_glXGetConfig *)data;
 
-   thread_param->return_value = glXGetConfig(thread_param->dpy,
-                                             thread_param->visual,
-                                             thread_param->attrib,
-                                             thread_param->value);
+   thread_data->return_value = glXGetConfig(thread_data->dpy,
+                                            thread_data->visual,
+                                            thread_data->attrib,
+                                            thread_data->value);
 
 }
 
@@ -603,20 +602,20 @@ glXGetConfig_thread_cmd(Display *dpy, XVisualInfo *visual, int attrib, int *valu
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXGetConfig thread_param_local;
-   Thread_Command_glXGetConfig *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXGetConfig thread_data_local;
+   Evas_Thread_Command_glXGetConfig *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->visual = visual;
-   thread_param->attrib = attrib;
-   thread_param->value = value;
+   thread_data->dpy = dpy;
+   thread_data->visual = visual;
+   thread_data->attrib = attrib;
+   thread_data->value = value;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXGetConfig,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -632,18 +631,18 @@ typedef struct
    int attribute;
    int *value;
 
-} Thread_Command_glXGetFBConfigAttrib;
+} Evas_Thread_Command_glXGetFBConfigAttrib;
 
 static void
 _gl_thread_glXGetFBConfigAttrib(void *data)
 {
-   Thread_Command_glXGetFBConfigAttrib *thread_param =
-      (Thread_Command_glXGetFBConfigAttrib *)data;
+   Evas_Thread_Command_glXGetFBConfigAttrib *thread_data =
+       (Evas_Thread_Command_glXGetFBConfigAttrib *)data;
 
-   thread_param->return_value = glXGetFBConfigAttrib(thread_param->dpy,
-                                                     thread_param->config,
-                                                     thread_param->attribute,
-                                                     thread_param->value);
+   thread_data->return_value = glXGetFBConfigAttrib(thread_data->dpy,
+                                                    thread_data->config,
+                                                    thread_data->attribute,
+                                                    thread_data->value);
 
 }
 
@@ -657,20 +656,20 @@ glXGetFBConfigAttrib_thread_cmd(Display *dpy, GLXFBConfig config, int attribute,
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXGetFBConfigAttrib thread_param_local;
-   Thread_Command_glXGetFBConfigAttrib *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXGetFBConfigAttrib thread_data_local;
+   Evas_Thread_Command_glXGetFBConfigAttrib *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->attribute = attribute;
-   thread_param->value = value;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->attribute = attribute;
+   thread_data->value = value;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXGetFBConfigAttrib,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -683,7 +682,7 @@ typedef struct
    int return_value;
    unsigned int *count;
 
-} Thread_Command_glXGetVideoSync;
+} Evas_Thread_Command_glXGetVideoSync;
 
 int (*orig_evas_glXGetVideoSync)(unsigned int *count);
 
@@ -702,10 +701,10 @@ glXGetVideoSync_orig_evas_get(void)
 static void
 _gl_thread_glXGetVideoSync(void *data)
 {
-   Thread_Command_glXGetVideoSync *thread_param =
-      (Thread_Command_glXGetVideoSync *)data;
+   Evas_Thread_Command_glXGetVideoSync *thread_data =
+       (Evas_Thread_Command_glXGetVideoSync *)data;
 
-   thread_param->return_value = orig_evas_glXGetVideoSync(thread_param->count);
+   thread_data->return_value = orig_evas_glXGetVideoSync(thread_data->count);
 
 }
 
@@ -719,17 +718,17 @@ glXGetVideoSync_thread_cmd(unsigned int *count)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXGetVideoSync thread_param_local;
-   Thread_Command_glXGetVideoSync *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXGetVideoSync thread_data_local;
+   Evas_Thread_Command_glXGetVideoSync *thread_data = &thread_data_local;
 
-   thread_param->count = count;
+   thread_data->count = count;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXGetVideoSync,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -743,16 +742,16 @@ typedef struct
    Display *dpy;
    GLXFBConfig config;
 
-} Thread_Command_glXGetVisualFromFBConfig;
+} Evas_Thread_Command_glXGetVisualFromFBConfig;
 
 static void
 _gl_thread_glXGetVisualFromFBConfig(void *data)
 {
-   Thread_Command_glXGetVisualFromFBConfig *thread_param =
-      (Thread_Command_glXGetVisualFromFBConfig *)data;
+   Evas_Thread_Command_glXGetVisualFromFBConfig *thread_data =
+       (Evas_Thread_Command_glXGetVisualFromFBConfig *)data;
 
-   thread_param->return_value = glXGetVisualFromFBConfig(thread_param->dpy,
-                                                         thread_param->config);
+   thread_data->return_value = glXGetVisualFromFBConfig(thread_data->dpy,
+                                                        thread_data->config);
 
 }
 
@@ -766,18 +765,18 @@ glXGetVisualFromFBConfig_thread_cmd(Display *dpy, GLXFBConfig config)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXGetVisualFromFBConfig thread_param_local;
-   Thread_Command_glXGetVisualFromFBConfig *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXGetVisualFromFBConfig thread_data_local;
+   Evas_Thread_Command_glXGetVisualFromFBConfig *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXGetVisualFromFBConfig,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -793,34 +792,28 @@ typedef struct
    GLXDrawable read;
    GLXContext ctx;
 
-} Thread_Command_glXMakeContextCurrent;
+} Evas_Thread_Command_glXMakeContextCurrent;
 
 
-GLXContext current_thread_ctx = NULL;
-GLXDrawable current_thread_draw = NULL;
-GLXDrawable current_thread_read = NULL;
+GLXContext  current_thread_ctx  = (GLXContext)0;
 
 static void
 _gl_thread_glXMakeContextCurrent(void *data)
 {
-   Thread_Command_glXMakeContextCurrent *thread_param =
-      (Thread_Command_glXMakeContextCurrent *)data;
+   Evas_Thread_Command_glXMakeContextCurrent *thread_data =
+       (Evas_Thread_Command_glXMakeContextCurrent *)data;
 
-   fprintf(stderr,"THREAD >> OTHER THREAD MAKECONTEXTCURRENT : (%p, %p, %p, %p)\n",
-                                 thread_param->dpy, (void *)thread_param->draw,
-                                 (void* )thread_param->read, thread_param->ctx);
+   DBG("THREAD >> OTHER THREAD MAKECONTEXTCURRENT : (%p, %p, %p, %p)\n",
+           thread_data->dpy, (void *)thread_data->draw,
+           (void* )thread_data->read, thread_data->ctx);
 
-   thread_param->return_value = glXMakeContextCurrent(thread_param->dpy,
-                                                      thread_param->draw,
-                                                      thread_param->read,
-                                                      thread_param->ctx);
+   thread_data->return_value = glXMakeContextCurrent(thread_data->dpy,
+                                                     thread_data->draw,
+                                                     thread_data->read,
+                                                     thread_data->ctx);
 
-   if (thread_param->return_value)
-     {
-        current_thread_ctx = thread_param->ctx;
-        current_thread_draw = thread_param->draw;
-        current_thread_read = thread_param->read;
-     }
+   if (thread_data->return_value)
+      current_thread_ctx = thread_data->ctx;
 
 }
 
@@ -832,27 +825,22 @@ glXMakeContextCurrent_thread_cmd(Display *dpy, GLXDrawable draw, GLXDrawable rea
         return glXMakeContextCurrent(dpy, draw, read, ctx);
      }
 
-   if (current_thread_ctx == ctx &&
-       current_thread_draw == draw &&
-       current_thread_read == read)
-      return True;
-
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXMakeContextCurrent thread_param_local;
-   Thread_Command_glXMakeContextCurrent *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXMakeContextCurrent thread_data_local;
+   Evas_Thread_Command_glXMakeContextCurrent *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->draw = draw;
-   thread_param->read = read;
-   thread_param->ctx = ctx;
+   thread_data->dpy = dpy;
+   thread_data->draw = draw;
+   thread_data->read = read;
+   thread_data->ctx = ctx;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXMakeContextCurrent,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -881,16 +869,16 @@ typedef struct
    Display *dpy;
    GLXContext ctx;
 
-} Thread_Command_glXDestroyContext;
+} Evas_Thread_Command_glXDestroyContext;
 
 static void
 _gl_thread_glXDestroyContext(void *data)
 {
-   Thread_Command_glXDestroyContext *thread_param =
-      (Thread_Command_glXDestroyContext *)data;
+   Evas_Thread_Command_glXDestroyContext *thread_data =
+       (Evas_Thread_Command_glXDestroyContext *)data;
 
-   glXDestroyContext(thread_param->dpy,
-                     thread_param->ctx);
+   glXDestroyContext(thread_data->dpy,
+                     thread_data->ctx);
 
 }
 
@@ -905,15 +893,15 @@ glXDestroyContext_thread_cmd(Display *dpy, GLXContext ctx)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXDestroyContext thread_param_local;
-   Thread_Command_glXDestroyContext *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXDestroyContext thread_data_local;
+   Evas_Thread_Command_glXDestroyContext *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->ctx = ctx;
+   thread_data->dpy = dpy;
+   thread_data->ctx = ctx;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXDestroyContext,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -930,7 +918,7 @@ typedef struct
    int attribute;
    unsigned int *value;
 
-} Thread_Command_glXQueryDrawable;
+} Evas_Thread_Command_glXQueryDrawable;
 
 void (*orig_evas_glXQueryDrawable)(Display *dpy, GLXDrawable draw, int attribute, unsigned int *value);
 
@@ -949,13 +937,13 @@ glXQueryDrawable_orig_evas_get(void)
 static void
 _gl_thread_glXQueryDrawable(void *data)
 {
-   Thread_Command_glXQueryDrawable *thread_param =
-      (Thread_Command_glXQueryDrawable *)data;
+   Evas_Thread_Command_glXQueryDrawable *thread_data =
+       (Evas_Thread_Command_glXQueryDrawable *)data;
 
-   orig_evas_glXQueryDrawable(thread_param->dpy,
-                              thread_param->draw,
-                              thread_param->attribute,
-                              thread_param->value);
+   orig_evas_glXQueryDrawable(thread_data->dpy,
+                              thread_data->draw,
+                              thread_data->attribute,
+                              thread_data->value);
 
 }
 
@@ -970,17 +958,17 @@ glXQueryDrawable_thread_cmd(Display *dpy, GLXDrawable draw, int attribute, unsig
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXQueryDrawable thread_param_local;
-   Thread_Command_glXQueryDrawable *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXQueryDrawable thread_data_local;
+   Evas_Thread_Command_glXQueryDrawable *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->draw = draw;
-   thread_param->attribute = attribute;
-   thread_param->value = value;
+   thread_data->dpy = dpy;
+   thread_data->draw = draw;
+   thread_data->attribute = attribute;
+   thread_data->value = value;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXQueryDrawable,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -996,17 +984,17 @@ typedef struct
    int *errorb;
    int *event;
 
-} Thread_Command_glXQueryExtension;
+} Evas_Thread_Command_glXQueryExtension;
 
 static void
 _gl_thread_glXQueryExtension(void *data)
 {
-   Thread_Command_glXQueryExtension *thread_param =
-      (Thread_Command_glXQueryExtension *)data;
+   Evas_Thread_Command_glXQueryExtension *thread_data =
+       (Evas_Thread_Command_glXQueryExtension *)data;
 
-   thread_param->return_value = glXQueryExtension(thread_param->dpy,
-                                                  thread_param->errorb,
-                                                  thread_param->event);
+   thread_data->return_value = glXQueryExtension(thread_data->dpy,
+                                                 thread_data->errorb,
+                                                 thread_data->event);
 
 }
 
@@ -1020,19 +1008,19 @@ glXQueryExtension_thread_cmd(Display *dpy, int *errorb, int *event)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXQueryExtension thread_param_local;
-   Thread_Command_glXQueryExtension *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXQueryExtension thread_data_local;
+   Evas_Thread_Command_glXQueryExtension *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->errorb = errorb;
-   thread_param->event = event;
+   thread_data->dpy = dpy;
+   thread_data->errorb = errorb;
+   thread_data->event = event;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXQueryExtension,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1046,16 +1034,16 @@ typedef struct
    Display *dpy;
    int screen;
 
-} Thread_Command_glXQueryExtensionsString;
+} Evas_Thread_Command_glXQueryExtensionsString;
 
 static void
 _gl_thread_glXQueryExtensionsString(void *data)
 {
-   Thread_Command_glXQueryExtensionsString *thread_param =
-      (Thread_Command_glXQueryExtensionsString *)data;
+   Evas_Thread_Command_glXQueryExtensionsString *thread_data =
+       (Evas_Thread_Command_glXQueryExtensionsString *)data;
 
-   thread_param->return_value = glXQueryExtensionsString(thread_param->dpy,
-                                                         thread_param->screen);
+   thread_data->return_value = glXQueryExtensionsString(thread_data->dpy,
+                                                        thread_data->screen);
 
 }
 
@@ -1069,18 +1057,18 @@ glXQueryExtensionsString_thread_cmd(Display *dpy, int screen)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXQueryExtensionsString thread_param_local;
-   Thread_Command_glXQueryExtensionsString *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXQueryExtensionsString thread_data_local;
+   Evas_Thread_Command_glXQueryExtensionsString *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->screen = screen;
+   thread_data->dpy = dpy;
+   thread_data->screen = screen;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXQueryExtensionsString,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1094,7 +1082,7 @@ typedef struct
    Display *dpy;
    GLXDrawable drawable;
 
-} Thread_Command_glXReleaseBuffersMESA;
+} Evas_Thread_Command_glXReleaseBuffersMESA;
 
 Bool (*orig_evas_glXReleaseBuffersMESA)(Display *dpy, GLXDrawable drawable);
 
@@ -1113,11 +1101,11 @@ glXReleaseBuffersMESA_orig_evas_get(void)
 static void
 _gl_thread_glXReleaseBuffersMESA(void *data)
 {
-   Thread_Command_glXReleaseBuffersMESA *thread_param =
-      (Thread_Command_glXReleaseBuffersMESA *)data;
+   Evas_Thread_Command_glXReleaseBuffersMESA *thread_data =
+       (Evas_Thread_Command_glXReleaseBuffersMESA *)data;
 
-   thread_param->return_value = orig_evas_glXReleaseBuffersMESA(thread_param->dpy,
-                                                                thread_param->drawable);
+   thread_data->return_value = orig_evas_glXReleaseBuffersMESA(thread_data->dpy,
+                                                               thread_data->drawable);
 
 }
 
@@ -1131,18 +1119,18 @@ glXReleaseBuffersMESA_thread_cmd(Display *dpy, GLXDrawable drawable)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXReleaseBuffersMESA thread_param_local;
-   Thread_Command_glXReleaseBuffersMESA *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXReleaseBuffersMESA thread_data_local;
+   Evas_Thread_Command_glXReleaseBuffersMESA *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXReleaseBuffersMESA,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1156,7 +1144,7 @@ typedef struct
    GLXDrawable drawable;
    int buffer;
 
-} Thread_Command_glXReleaseTexImage;
+} Evas_Thread_Command_glXReleaseTexImage;
 
 void (*orig_evas_glXReleaseTexImage)(Display *dpy, GLXDrawable drawable, int buffer);
 
@@ -1175,12 +1163,12 @@ glXReleaseTexImage_orig_evas_get(void)
 static void
 _gl_thread_glXReleaseTexImage(void *data)
 {
-   Thread_Command_glXReleaseTexImage *thread_param =
-      (Thread_Command_glXReleaseTexImage *)data;
+   Evas_Thread_Command_glXReleaseTexImage *thread_data =
+       (Evas_Thread_Command_glXReleaseTexImage *)data;
 
-   orig_evas_glXReleaseTexImage(thread_param->dpy,
-                                thread_param->drawable,
-                                thread_param->buffer);
+   orig_evas_glXReleaseTexImage(thread_data->dpy,
+                                thread_data->drawable,
+                                thread_data->buffer);
 
 }
 
@@ -1195,16 +1183,16 @@ glXReleaseTexImage_thread_cmd(Display *dpy, GLXDrawable drawable, int buffer)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXReleaseTexImage thread_param_local;
-   Thread_Command_glXReleaseTexImage *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXReleaseTexImage thread_data_local;
+   Evas_Thread_Command_glXReleaseTexImage *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
-   thread_param->buffer = buffer;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
+   thread_data->buffer = buffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXReleaseTexImage,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -1218,16 +1206,16 @@ typedef struct
    Display *dpy;
    GLXDrawable drawable;
 
-} Thread_Command_glXSwapBuffers;
+} Evas_Thread_Command_glXSwapBuffers;
 
 static void
 _gl_thread_glXSwapBuffers(void *data)
 {
-   Thread_Command_glXSwapBuffers *thread_param =
-      (Thread_Command_glXSwapBuffers *)data;
+   Evas_Thread_Command_glXSwapBuffers *thread_data =
+       (Evas_Thread_Command_glXSwapBuffers *)data;
 
-   glXSwapBuffers(thread_param->dpy,
-                  thread_param->drawable);
+   glXSwapBuffers(thread_data->dpy,
+                  thread_data->drawable);
 
 }
 
@@ -1242,15 +1230,15 @@ glXSwapBuffers_thread_cmd(Display *dpy, GLXDrawable drawable)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXSwapBuffers thread_param_local;
-   Thread_Command_glXSwapBuffers *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXSwapBuffers thread_data_local;
+   Evas_Thread_Command_glXSwapBuffers *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXSwapBuffers,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -1265,7 +1253,7 @@ typedef struct
    GLXDrawable drawable;
    int interval;
 
-} Thread_Command_glXSwapIntervalEXT;
+} Evas_Thread_Command_glXSwapIntervalEXT;
 
 void (*orig_evas_glXSwapIntervalEXT)(Display *dpy, GLXDrawable drawable, int interval);
 
@@ -1284,12 +1272,12 @@ glXSwapIntervalEXT_orig_evas_get(void)
 static void
 _gl_thread_glXSwapIntervalEXT(void *data)
 {
-   Thread_Command_glXSwapIntervalEXT *thread_param =
-      (Thread_Command_glXSwapIntervalEXT *)data;
+   Evas_Thread_Command_glXSwapIntervalEXT *thread_data =
+       (Evas_Thread_Command_glXSwapIntervalEXT *)data;
 
-   orig_evas_glXSwapIntervalEXT(thread_param->dpy,
-                                thread_param->drawable,
-                                thread_param->interval);
+   orig_evas_glXSwapIntervalEXT(thread_data->dpy,
+                                thread_data->drawable,
+                                thread_data->interval);
 
 }
 
@@ -1304,16 +1292,16 @@ glXSwapIntervalEXT_thread_cmd(Display *dpy, GLXDrawable drawable, int interval)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXSwapIntervalEXT thread_param_local;
-   Thread_Command_glXSwapIntervalEXT *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXSwapIntervalEXT thread_data_local;
+   Evas_Thread_Command_glXSwapIntervalEXT *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
-   thread_param->interval = interval;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
+   thread_data->interval = interval;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXSwapIntervalEXT,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -1327,7 +1315,7 @@ typedef struct
    int return_value;
    int interval;
 
-} Thread_Command_glXSwapIntervalSGI;
+} Evas_Thread_Command_glXSwapIntervalSGI;
 
 int (*orig_evas_glXSwapIntervalSGI)(int interval);
 
@@ -1346,10 +1334,10 @@ glXSwapIntervalSGI_orig_evas_get(void)
 static void
 _gl_thread_glXSwapIntervalSGI(void *data)
 {
-   Thread_Command_glXSwapIntervalSGI *thread_param =
-      (Thread_Command_glXSwapIntervalSGI *)data;
+   Evas_Thread_Command_glXSwapIntervalSGI *thread_data =
+       (Evas_Thread_Command_glXSwapIntervalSGI *)data;
 
-   thread_param->return_value = orig_evas_glXSwapIntervalSGI(thread_param->interval);
+   thread_data->return_value = orig_evas_glXSwapIntervalSGI(thread_data->interval);
 
 }
 
@@ -1363,17 +1351,17 @@ glXSwapIntervalSGI_thread_cmd(int interval)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXSwapIntervalSGI thread_param_local;
-   Thread_Command_glXSwapIntervalSGI *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXSwapIntervalSGI thread_data_local;
+   Evas_Thread_Command_glXSwapIntervalSGI *thread_data = &thread_data_local;
 
-   thread_param->interval = interval;
+   thread_data->interval = interval;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXSwapIntervalSGI,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1388,7 +1376,7 @@ typedef struct
    int remainder;
    unsigned int *count;
 
-} Thread_Command_glXWaitVideoSync;
+} Evas_Thread_Command_glXWaitVideoSync;
 
 int (*orig_evas_glXWaitVideoSync)(int divisor, int remainder, unsigned int *count);
 
@@ -1407,12 +1395,12 @@ glXWaitVideoSync_orig_evas_get(void)
 static void
 _gl_thread_glXWaitVideoSync(void *data)
 {
-   Thread_Command_glXWaitVideoSync *thread_param =
-      (Thread_Command_glXWaitVideoSync *)data;
+   Evas_Thread_Command_glXWaitVideoSync *thread_data =
+       (Evas_Thread_Command_glXWaitVideoSync *)data;
 
-   thread_param->return_value = orig_evas_glXWaitVideoSync(thread_param->divisor,
-                                                           thread_param->remainder,
-                                                           thread_param->count);
+   thread_data->return_value = orig_evas_glXWaitVideoSync(thread_data->divisor,
+                                                          thread_data->remainder,
+                                                          thread_data->count);
 
 }
 
@@ -1426,19 +1414,19 @@ glXWaitVideoSync_thread_cmd(int divisor, int remainder, unsigned int *count)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glXWaitVideoSync thread_param_local;
-   Thread_Command_glXWaitVideoSync *thread_param = &thread_param_local;
+   Evas_Thread_Command_glXWaitVideoSync thread_data_local;
+   Evas_Thread_Command_glXWaitVideoSync *thread_data = &thread_data_local;
 
-   thread_param->divisor = divisor;
-   thread_param->remainder = remainder;
-   thread_param->count = count;
+   thread_data->divisor = divisor;
+   thread_data->remainder = remainder;
+   thread_data->count = count;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glXWaitVideoSync,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /****** EVAS GL ******/
@@ -1473,13 +1461,13 @@ glXBindTexImage_orig_evgl_get(void)
 static void
 _evgl_thread_glXBindTexImage(void *data)
 {
-   EVGL_Thread_Command_glXBindTexImage *thread_param =
-      (EVGL_Thread_Command_glXBindTexImage *)data;
+   EVGL_Thread_Command_glXBindTexImage *thread_data =
+       (EVGL_Thread_Command_glXBindTexImage *)data;
 
-   orig_evgl_glXBindTexImage(thread_param->dpy,
-                             thread_param->drawable,
-                             thread_param->buffer,
-                             thread_param->attrib_list);
+   orig_evgl_glXBindTexImage(thread_data->dpy,
+                             thread_data->drawable,
+                             thread_data->buffer,
+                             thread_data->attrib_list);
 
 }
 
@@ -1494,17 +1482,17 @@ glXBindTexImage_evgl_thread_cmd(Display *dpy, GLXDrawable drawable, int buffer, 
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXBindTexImage thread_param_local;
-   EVGL_Thread_Command_glXBindTexImage *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXBindTexImage thread_data_local;
+   EVGL_Thread_Command_glXBindTexImage *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
-   thread_param->buffer = buffer;
-   thread_param->attrib_list = attrib_list;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
+   thread_data->buffer = buffer;
+   thread_data->attrib_list = attrib_list;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXBindTexImage,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -1526,13 +1514,13 @@ typedef struct
 static void
 _evgl_thread_glXChooseFBConfig(void *data)
 {
-   EVGL_Thread_Command_glXChooseFBConfig *thread_param =
-      (EVGL_Thread_Command_glXChooseFBConfig *)data;
+   EVGL_Thread_Command_glXChooseFBConfig *thread_data =
+       (EVGL_Thread_Command_glXChooseFBConfig *)data;
 
-   thread_param->return_value = glXChooseFBConfig(thread_param->dpy,
-                                                  thread_param->screen,
-                                                  thread_param->attribList,
-                                                  thread_param->nitems);
+   thread_data->return_value = glXChooseFBConfig(thread_data->dpy,
+                                                 thread_data->screen,
+                                                 thread_data->attribList,
+                                                 thread_data->nitems);
 
 }
 
@@ -1546,20 +1534,20 @@ glXChooseFBConfig_evgl_thread_cmd(Display *dpy, int screen, const int *attribLis
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXChooseFBConfig thread_param_local;
-   EVGL_Thread_Command_glXChooseFBConfig *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXChooseFBConfig thread_data_local;
+   EVGL_Thread_Command_glXChooseFBConfig *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->screen = screen;
-   thread_param->attribList = attribList;
-   thread_param->nitems = nitems;
+   thread_data->dpy = dpy;
+   thread_data->screen = screen;
+   thread_data->attribList = attribList;
+   thread_data->nitems = nitems;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXChooseFBConfig,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1580,13 +1568,13 @@ typedef struct
 static void
 _evgl_thread_glXCreateContext(void *data)
 {
-   EVGL_Thread_Command_glXCreateContext *thread_param =
-      (EVGL_Thread_Command_glXCreateContext *)data;
+   EVGL_Thread_Command_glXCreateContext *thread_data =
+       (EVGL_Thread_Command_glXCreateContext *)data;
 
-   thread_param->return_value = glXCreateContext(thread_param->dpy,
-                                                 thread_param->vis,
-                                                 thread_param->shareList,
-                                                 thread_param->direct);
+   thread_data->return_value = glXCreateContext(thread_data->dpy,
+                                                thread_data->vis,
+                                                thread_data->shareList,
+                                                thread_data->direct);
 
 }
 
@@ -1600,20 +1588,20 @@ glXCreateContext_evgl_thread_cmd(Display *dpy, XVisualInfo *vis, GLXContext shar
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXCreateContext thread_param_local;
-   EVGL_Thread_Command_glXCreateContext *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXCreateContext thread_data_local;
+   EVGL_Thread_Command_glXCreateContext *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->vis = vis;
-   thread_param->shareList = shareList;
-   thread_param->direct = direct;
+   thread_data->dpy = dpy;
+   thread_data->vis = vis;
+   thread_data->shareList = shareList;
+   thread_data->direct = direct;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXCreateContext,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1635,14 +1623,14 @@ typedef struct
 static void
 _evgl_thread_glXCreateNewContext(void *data)
 {
-   EVGL_Thread_Command_glXCreateNewContext *thread_param =
-      (EVGL_Thread_Command_glXCreateNewContext *)data;
+   EVGL_Thread_Command_glXCreateNewContext *thread_data =
+       (EVGL_Thread_Command_glXCreateNewContext *)data;
 
-   thread_param->return_value = glXCreateNewContext(thread_param->dpy,
-                                                    thread_param->config,
-                                                    thread_param->renderType,
-                                                    thread_param->shareList,
-                                                    thread_param->direct);
+   thread_data->return_value = glXCreateNewContext(thread_data->dpy,
+                                                   thread_data->config,
+                                                   thread_data->renderType,
+                                                   thread_data->shareList,
+                                                   thread_data->direct);
 
 }
 
@@ -1656,21 +1644,21 @@ glXCreateNewContext_evgl_thread_cmd(Display *dpy, GLXFBConfig config, int render
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXCreateNewContext thread_param_local;
-   EVGL_Thread_Command_glXCreateNewContext *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXCreateNewContext thread_data_local;
+   EVGL_Thread_Command_glXCreateNewContext *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->renderType = renderType;
-   thread_param->shareList = shareList;
-   thread_param->direct = direct;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->renderType = renderType;
+   thread_data->shareList = shareList;
+   thread_data->direct = direct;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXCreateNewContext,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1690,12 +1678,12 @@ typedef struct
 static void
 _evgl_thread_glXCreatePbuffer(void *data)
 {
-   EVGL_Thread_Command_glXCreatePbuffer *thread_param =
-      (EVGL_Thread_Command_glXCreatePbuffer *)data;
+   EVGL_Thread_Command_glXCreatePbuffer *thread_data =
+       (EVGL_Thread_Command_glXCreatePbuffer *)data;
 
-   thread_param->return_value = glXCreatePbuffer(thread_param->dpy,
-                                                 thread_param->config,
-                                                 thread_param->attribList);
+   thread_data->return_value = glXCreatePbuffer(thread_data->dpy,
+                                                thread_data->config,
+                                                thread_data->attribList);
 
 }
 
@@ -1709,19 +1697,19 @@ glXCreatePbuffer_evgl_thread_cmd(Display *dpy, GLXFBConfig config, const int *at
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXCreatePbuffer thread_param_local;
-   EVGL_Thread_Command_glXCreatePbuffer *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXCreatePbuffer thread_data_local;
+   EVGL_Thread_Command_glXCreatePbuffer *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->attribList = attribList;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->attribList = attribList;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXCreatePbuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1756,13 +1744,13 @@ glXCreatePixmap_orig_evgl_get(void)
 static void
 _evgl_thread_glXCreatePixmap(void *data)
 {
-   EVGL_Thread_Command_glXCreatePixmap *thread_param =
-      (EVGL_Thread_Command_glXCreatePixmap *)data;
+   EVGL_Thread_Command_glXCreatePixmap *thread_data =
+       (EVGL_Thread_Command_glXCreatePixmap *)data;
 
-   thread_param->return_value = orig_evgl_glXCreatePixmap(thread_param->dpy,
-                                                          thread_param->config,
-                                                          thread_param->pixmap,
-                                                          thread_param->attribList);
+   thread_data->return_value = orig_evgl_glXCreatePixmap(thread_data->dpy,
+                                                         thread_data->config,
+                                                         thread_data->pixmap,
+                                                         thread_data->attribList);
 
 }
 
@@ -1776,20 +1764,20 @@ glXCreatePixmap_evgl_thread_cmd(Display *dpy, GLXFBConfig config, Pixmap pixmap,
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXCreatePixmap thread_param_local;
-   EVGL_Thread_Command_glXCreatePixmap *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXCreatePixmap thread_data_local;
+   EVGL_Thread_Command_glXCreatePixmap *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->pixmap = pixmap;
-   thread_param->attribList = attribList;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->pixmap = pixmap;
+   thread_data->attribList = attribList;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXCreatePixmap,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1810,13 +1798,13 @@ typedef struct
 static void
 _evgl_thread_glXCreateWindow(void *data)
 {
-   EVGL_Thread_Command_glXCreateWindow *thread_param =
-      (EVGL_Thread_Command_glXCreateWindow *)data;
+   EVGL_Thread_Command_glXCreateWindow *thread_data =
+       (EVGL_Thread_Command_glXCreateWindow *)data;
 
-   thread_param->return_value = glXCreateWindow(thread_param->dpy,
-                                                thread_param->config,
-                                                thread_param->win,
-                                                thread_param->attribList);
+   thread_data->return_value = glXCreateWindow(thread_data->dpy,
+                                               thread_data->config,
+                                               thread_data->win,
+                                               thread_data->attribList);
 
 }
 
@@ -1830,20 +1818,20 @@ glXCreateWindow_evgl_thread_cmd(Display *dpy, GLXFBConfig config, Window win, co
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXCreateWindow thread_param_local;
-   EVGL_Thread_Command_glXCreateWindow *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXCreateWindow thread_data_local;
+   EVGL_Thread_Command_glXCreateWindow *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->win = win;
-   thread_param->attribList = attribList;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->win = win;
+   thread_data->attribList = attribList;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXCreateWindow,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -1861,11 +1849,11 @@ typedef struct
 static void
 _evgl_thread_glXDestroyContext(void *data)
 {
-   EVGL_Thread_Command_glXDestroyContext *thread_param =
-      (EVGL_Thread_Command_glXDestroyContext *)data;
+   EVGL_Thread_Command_glXDestroyContext *thread_data =
+       (EVGL_Thread_Command_glXDestroyContext *)data;
 
-   glXDestroyContext(thread_param->dpy,
-                     thread_param->ctx);
+   glXDestroyContext(thread_data->dpy,
+                     thread_data->ctx);
 
 }
 
@@ -1880,15 +1868,15 @@ glXDestroyContext_evgl_thread_cmd(Display *dpy, GLXContext ctx)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXDestroyContext thread_param_local;
-   EVGL_Thread_Command_glXDestroyContext *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXDestroyContext thread_data_local;
+   EVGL_Thread_Command_glXDestroyContext *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->ctx = ctx;
+   thread_data->dpy = dpy;
+   thread_data->ctx = ctx;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXDestroyContext,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -1907,11 +1895,11 @@ typedef struct
 static void
 _evgl_thread_glXDestroyPbuffer(void *data)
 {
-   EVGL_Thread_Command_glXDestroyPbuffer *thread_param =
-      (EVGL_Thread_Command_glXDestroyPbuffer *)data;
+   EVGL_Thread_Command_glXDestroyPbuffer *thread_data =
+       (EVGL_Thread_Command_glXDestroyPbuffer *)data;
 
-   glXDestroyPbuffer(thread_param->dpy,
-                     thread_param->pbuf);
+   glXDestroyPbuffer(thread_data->dpy,
+                     thread_data->pbuf);
 
 }
 
@@ -1926,15 +1914,15 @@ glXDestroyPbuffer_evgl_thread_cmd(Display *dpy, GLXPbuffer pbuf)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXDestroyPbuffer thread_param_local;
-   EVGL_Thread_Command_glXDestroyPbuffer *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXDestroyPbuffer thread_data_local;
+   EVGL_Thread_Command_glXDestroyPbuffer *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->pbuf = pbuf;
+   thread_data->dpy = dpy;
+   thread_data->pbuf = pbuf;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXDestroyPbuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -1967,11 +1955,11 @@ glXDestroyPixmap_orig_evgl_get(void)
 static void
 _evgl_thread_glXDestroyPixmap(void *data)
 {
-   EVGL_Thread_Command_glXDestroyPixmap *thread_param =
-      (EVGL_Thread_Command_glXDestroyPixmap *)data;
+   EVGL_Thread_Command_glXDestroyPixmap *thread_data =
+       (EVGL_Thread_Command_glXDestroyPixmap *)data;
 
-   orig_evgl_glXDestroyPixmap(thread_param->dpy,
-                              thread_param->pixmap);
+   orig_evgl_glXDestroyPixmap(thread_data->dpy,
+                              thread_data->pixmap);
 
 }
 
@@ -1986,15 +1974,15 @@ glXDestroyPixmap_evgl_thread_cmd(Display *dpy, GLXPixmap pixmap)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXDestroyPixmap thread_param_local;
-   EVGL_Thread_Command_glXDestroyPixmap *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXDestroyPixmap thread_data_local;
+   EVGL_Thread_Command_glXDestroyPixmap *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->pixmap = pixmap;
+   thread_data->dpy = dpy;
+   thread_data->pixmap = pixmap;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXDestroyPixmap,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -2013,11 +2001,11 @@ typedef struct
 static void
 _evgl_thread_glXDestroyWindow(void *data)
 {
-   EVGL_Thread_Command_glXDestroyWindow *thread_param =
-      (EVGL_Thread_Command_glXDestroyWindow *)data;
+   EVGL_Thread_Command_glXDestroyWindow *thread_data =
+       (EVGL_Thread_Command_glXDestroyWindow *)data;
 
-   glXDestroyWindow(thread_param->dpy,
-                    thread_param->window);
+   glXDestroyWindow(thread_data->dpy,
+                    thread_data->window);
 
 }
 
@@ -2032,15 +2020,15 @@ glXDestroyWindow_evgl_thread_cmd(Display *dpy, GLXWindow window)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXDestroyWindow thread_param_local;
-   EVGL_Thread_Command_glXDestroyWindow *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXDestroyWindow thread_data_local;
+   EVGL_Thread_Command_glXDestroyWindow *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->window = window;
+   thread_data->dpy = dpy;
+   thread_data->window = window;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXDestroyWindow,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -2062,13 +2050,13 @@ typedef struct
 static void
 _evgl_thread_glXGetConfig(void *data)
 {
-   EVGL_Thread_Command_glXGetConfig *thread_param =
-      (EVGL_Thread_Command_glXGetConfig *)data;
+   EVGL_Thread_Command_glXGetConfig *thread_data =
+       (EVGL_Thread_Command_glXGetConfig *)data;
 
-   thread_param->return_value = glXGetConfig(thread_param->dpy,
-                                             thread_param->visual,
-                                             thread_param->attrib,
-                                             thread_param->value);
+   thread_data->return_value = glXGetConfig(thread_data->dpy,
+                                            thread_data->visual,
+                                            thread_data->attrib,
+                                            thread_data->value);
 
 }
 
@@ -2082,20 +2070,20 @@ glXGetConfig_evgl_thread_cmd(Display *dpy, XVisualInfo *visual, int attrib, int 
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXGetConfig thread_param_local;
-   EVGL_Thread_Command_glXGetConfig *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXGetConfig thread_data_local;
+   EVGL_Thread_Command_glXGetConfig *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->visual = visual;
-   thread_param->attrib = attrib;
-   thread_param->value = value;
+   thread_data->dpy = dpy;
+   thread_data->visual = visual;
+   thread_data->attrib = attrib;
+   thread_data->value = value;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXGetConfig,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2116,13 +2104,13 @@ typedef struct
 static void
 _evgl_thread_glXGetFBConfigAttrib(void *data)
 {
-   EVGL_Thread_Command_glXGetFBConfigAttrib *thread_param =
-      (EVGL_Thread_Command_glXGetFBConfigAttrib *)data;
+   EVGL_Thread_Command_glXGetFBConfigAttrib *thread_data =
+       (EVGL_Thread_Command_glXGetFBConfigAttrib *)data;
 
-   thread_param->return_value = glXGetFBConfigAttrib(thread_param->dpy,
-                                                     thread_param->config,
-                                                     thread_param->attribute,
-                                                     thread_param->value);
+   thread_data->return_value = glXGetFBConfigAttrib(thread_data->dpy,
+                                                    thread_data->config,
+                                                    thread_data->attribute,
+                                                    thread_data->value);
 
 }
 
@@ -2136,20 +2124,20 @@ glXGetFBConfigAttrib_evgl_thread_cmd(Display *dpy, GLXFBConfig config, int attri
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXGetFBConfigAttrib thread_param_local;
-   EVGL_Thread_Command_glXGetFBConfigAttrib *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXGetFBConfigAttrib thread_data_local;
+   EVGL_Thread_Command_glXGetFBConfigAttrib *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
-   thread_param->attribute = attribute;
-   thread_param->value = value;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
+   thread_data->attribute = attribute;
+   thread_data->value = value;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXGetFBConfigAttrib,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2181,10 +2169,10 @@ glXGetVideoSync_orig_evgl_get(void)
 static void
 _evgl_thread_glXGetVideoSync(void *data)
 {
-   EVGL_Thread_Command_glXGetVideoSync *thread_param =
-      (EVGL_Thread_Command_glXGetVideoSync *)data;
+   EVGL_Thread_Command_glXGetVideoSync *thread_data =
+       (EVGL_Thread_Command_glXGetVideoSync *)data;
 
-   thread_param->return_value = orig_evgl_glXGetVideoSync(thread_param->count);
+   thread_data->return_value = orig_evgl_glXGetVideoSync(thread_data->count);
 
 }
 
@@ -2198,17 +2186,17 @@ glXGetVideoSync_evgl_thread_cmd(unsigned int *count)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXGetVideoSync thread_param_local;
-   EVGL_Thread_Command_glXGetVideoSync *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXGetVideoSync thread_data_local;
+   EVGL_Thread_Command_glXGetVideoSync *thread_data = &thread_data_local;
 
-   thread_param->count = count;
+   thread_data->count = count;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXGetVideoSync,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2227,11 +2215,11 @@ typedef struct
 static void
 _evgl_thread_glXGetVisualFromFBConfig(void *data)
 {
-   EVGL_Thread_Command_glXGetVisualFromFBConfig *thread_param =
-      (EVGL_Thread_Command_glXGetVisualFromFBConfig *)data;
+   EVGL_Thread_Command_glXGetVisualFromFBConfig *thread_data =
+       (EVGL_Thread_Command_glXGetVisualFromFBConfig *)data;
 
-   thread_param->return_value = glXGetVisualFromFBConfig(thread_param->dpy,
-                                                         thread_param->config);
+   thread_data->return_value = glXGetVisualFromFBConfig(thread_data->dpy,
+                                                        thread_data->config);
 
 }
 
@@ -2245,18 +2233,18 @@ glXGetVisualFromFBConfig_evgl_thread_cmd(Display *dpy, GLXFBConfig config)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXGetVisualFromFBConfig thread_param_local;
-   EVGL_Thread_Command_glXGetVisualFromFBConfig *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXGetVisualFromFBConfig thread_data_local;
+   EVGL_Thread_Command_glXGetVisualFromFBConfig *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->config = config;
+   thread_data->dpy = dpy;
+   thread_data->config = config;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXGetVisualFromFBConfig,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2274,31 +2262,25 @@ typedef struct
 
 } EVGL_Thread_Command_glXMakeContextCurrent;
 
-GLXContext current_evgl_thread_ctx = NULL;
-GLXDrawable current_evgl_thread_draw = NULL;
-GLXDrawable current_evgl_thread_read = NULL;
+GLXContext  current_evgl_thread_ctx  = (GLXContext)0;
 
 static void
 _evgl_thread_glXMakeContextCurrent(void *data)
 {
-   EVGL_Thread_Command_glXMakeContextCurrent *thread_param =
-      (EVGL_Thread_Command_glXMakeContextCurrent *)data;
+   EVGL_Thread_Command_glXMakeContextCurrent *thread_data =
+       (EVGL_Thread_Command_glXMakeContextCurrent *)data;
 
-   fprintf(stderr,"EVGL THREAD >> OTHER THREAD MAKECONTEXTCURRENT : (%p, %p, %p, %p)\n",
-                                 thread_param->dpy, (void *)thread_param->draw,
-                                 (void* )thread_param->read, thread_param->ctx);
+   DBG("EVGL THREAD >> OTHER THREAD MAKECONTEXTCURRENT : (%p, %p, %p, %p)\n",
+           thread_data->dpy, (void *)thread_data->draw,
+           (void* )thread_data->read, thread_data->ctx);
 
-   thread_param->return_value = glXMakeContextCurrent(thread_param->dpy,
-                                                      thread_param->draw,
-                                                      thread_param->read,
-                                                      thread_param->ctx);
+   thread_data->return_value = glXMakeContextCurrent(thread_data->dpy,
+                                                     thread_data->draw,
+                                                     thread_data->read,
+                                                     thread_data->ctx);
 
-   if (thread_param->return_value)
-     {
-        current_evgl_thread_ctx = thread_param->ctx;
-        current_evgl_thread_draw = thread_param->draw;
-        current_evgl_thread_read = thread_param->read;
-     }
+   if (thread_data->return_value)
+      current_evgl_thread_ctx = thread_data->ctx;
 
 }
 
@@ -2310,27 +2292,22 @@ glXMakeContextCurrent_evgl_thread_cmd(Display *dpy, GLXDrawable draw, GLXDrawabl
         return glXMakeContextCurrent(dpy, draw, read, ctx);
      }
 
-   if (current_evgl_thread_ctx == ctx &&
-       current_evgl_thread_draw == draw &&
-       current_evgl_thread_read == read)
-      return True;
-
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXMakeContextCurrent thread_param_local;
-   EVGL_Thread_Command_glXMakeContextCurrent *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXMakeContextCurrent thread_data_local;
+   EVGL_Thread_Command_glXMakeContextCurrent *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->draw = draw;
-   thread_param->read = read;
-   thread_param->ctx = ctx;
+   thread_data->dpy = dpy;
+   thread_data->draw = draw;
+   thread_data->read = read;
+   thread_data->ctx = ctx;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXMakeContextCurrent,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2381,13 +2358,13 @@ glXQueryDrawable_orig_evgl_get(void)
 static void
 _evgl_thread_glXQueryDrawable(void *data)
 {
-   EVGL_Thread_Command_glXQueryDrawable *thread_param =
-      (EVGL_Thread_Command_glXQueryDrawable *)data;
+   EVGL_Thread_Command_glXQueryDrawable *thread_data =
+       (EVGL_Thread_Command_glXQueryDrawable *)data;
 
-   orig_evgl_glXQueryDrawable(thread_param->dpy,
-                              thread_param->draw,
-                              thread_param->attribute,
-                              thread_param->value);
+   orig_evgl_glXQueryDrawable(thread_data->dpy,
+                              thread_data->draw,
+                              thread_data->attribute,
+                              thread_data->value);
 
 }
 
@@ -2402,17 +2379,17 @@ glXQueryDrawable_evgl_thread_cmd(Display *dpy, GLXDrawable draw, int attribute, 
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXQueryDrawable thread_param_local;
-   EVGL_Thread_Command_glXQueryDrawable *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXQueryDrawable thread_data_local;
+   EVGL_Thread_Command_glXQueryDrawable *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->draw = draw;
-   thread_param->attribute = attribute;
-   thread_param->value = value;
+   thread_data->dpy = dpy;
+   thread_data->draw = draw;
+   thread_data->attribute = attribute;
+   thread_data->value = value;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXQueryDrawable,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -2433,12 +2410,12 @@ typedef struct
 static void
 _evgl_thread_glXQueryExtension(void *data)
 {
-   EVGL_Thread_Command_glXQueryExtension *thread_param =
-      (EVGL_Thread_Command_glXQueryExtension *)data;
+   EVGL_Thread_Command_glXQueryExtension *thread_data =
+       (EVGL_Thread_Command_glXQueryExtension *)data;
 
-   thread_param->return_value = glXQueryExtension(thread_param->dpy,
-                                                  thread_param->errorb,
-                                                  thread_param->event);
+   thread_data->return_value = glXQueryExtension(thread_data->dpy,
+                                                 thread_data->errorb,
+                                                 thread_data->event);
 
 }
 
@@ -2452,19 +2429,19 @@ glXQueryExtension_evgl_thread_cmd(Display *dpy, int *errorb, int *event)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXQueryExtension thread_param_local;
-   EVGL_Thread_Command_glXQueryExtension *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXQueryExtension thread_data_local;
+   EVGL_Thread_Command_glXQueryExtension *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->errorb = errorb;
-   thread_param->event = event;
+   thread_data->dpy = dpy;
+   thread_data->errorb = errorb;
+   thread_data->event = event;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXQueryExtension,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2483,11 +2460,11 @@ typedef struct
 static void
 _evgl_thread_glXQueryExtensionsString(void *data)
 {
-   EVGL_Thread_Command_glXQueryExtensionsString *thread_param =
-      (EVGL_Thread_Command_glXQueryExtensionsString *)data;
+   EVGL_Thread_Command_glXQueryExtensionsString *thread_data =
+       (EVGL_Thread_Command_glXQueryExtensionsString *)data;
 
-   thread_param->return_value = glXQueryExtensionsString(thread_param->dpy,
-                                                         thread_param->screen);
+   thread_data->return_value = glXQueryExtensionsString(thread_data->dpy,
+                                                        thread_data->screen);
 
 }
 
@@ -2501,18 +2478,18 @@ glXQueryExtensionsString_evgl_thread_cmd(Display *dpy, int screen)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXQueryExtensionsString thread_param_local;
-   EVGL_Thread_Command_glXQueryExtensionsString *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXQueryExtensionsString thread_data_local;
+   EVGL_Thread_Command_glXQueryExtensionsString *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->screen = screen;
+   thread_data->dpy = dpy;
+   thread_data->screen = screen;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXQueryExtensionsString,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2545,11 +2522,11 @@ glXReleaseBuffersMESA_orig_evgl_get(void)
 static void
 _evgl_thread_glXReleaseBuffersMESA(void *data)
 {
-   EVGL_Thread_Command_glXReleaseBuffersMESA *thread_param =
-      (EVGL_Thread_Command_glXReleaseBuffersMESA *)data;
+   EVGL_Thread_Command_glXReleaseBuffersMESA *thread_data =
+       (EVGL_Thread_Command_glXReleaseBuffersMESA *)data;
 
-   thread_param->return_value = orig_evgl_glXReleaseBuffersMESA(thread_param->dpy,
-                                                                thread_param->drawable);
+   thread_data->return_value = orig_evgl_glXReleaseBuffersMESA(thread_data->dpy,
+                                                               thread_data->drawable);
 
 }
 
@@ -2563,18 +2540,18 @@ glXReleaseBuffersMESA_evgl_thread_cmd(Display *dpy, GLXDrawable drawable)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXReleaseBuffersMESA thread_param_local;
-   EVGL_Thread_Command_glXReleaseBuffersMESA *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXReleaseBuffersMESA thread_data_local;
+   EVGL_Thread_Command_glXReleaseBuffersMESA *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXReleaseBuffersMESA,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2607,12 +2584,12 @@ glXReleaseTexImage_orig_evgl_get(void)
 static void
 _evgl_thread_glXReleaseTexImage(void *data)
 {
-   EVGL_Thread_Command_glXReleaseTexImage *thread_param =
-      (EVGL_Thread_Command_glXReleaseTexImage *)data;
+   EVGL_Thread_Command_glXReleaseTexImage *thread_data =
+       (EVGL_Thread_Command_glXReleaseTexImage *)data;
 
-   orig_evgl_glXReleaseTexImage(thread_param->dpy,
-                                thread_param->drawable,
-                                thread_param->buffer);
+   orig_evgl_glXReleaseTexImage(thread_data->dpy,
+                                thread_data->drawable,
+                                thread_data->buffer);
 
 }
 
@@ -2627,16 +2604,16 @@ glXReleaseTexImage_evgl_thread_cmd(Display *dpy, GLXDrawable drawable, int buffe
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXReleaseTexImage thread_param_local;
-   EVGL_Thread_Command_glXReleaseTexImage *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXReleaseTexImage thread_data_local;
+   EVGL_Thread_Command_glXReleaseTexImage *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
-   thread_param->buffer = buffer;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
+   thread_data->buffer = buffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXReleaseTexImage,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -2655,11 +2632,11 @@ typedef struct
 static void
 _evgl_thread_glXSwapBuffers(void *data)
 {
-   EVGL_Thread_Command_glXSwapBuffers *thread_param =
-      (EVGL_Thread_Command_glXSwapBuffers *)data;
+   EVGL_Thread_Command_glXSwapBuffers *thread_data =
+       (EVGL_Thread_Command_glXSwapBuffers *)data;
 
-   glXSwapBuffers(thread_param->dpy,
-                  thread_param->drawable);
+   glXSwapBuffers(thread_data->dpy,
+                  thread_data->drawable);
 
 }
 
@@ -2674,15 +2651,15 @@ glXSwapBuffers_evgl_thread_cmd(Display *dpy, GLXDrawable drawable)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXSwapBuffers thread_param_local;
-   EVGL_Thread_Command_glXSwapBuffers *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXSwapBuffers thread_data_local;
+   EVGL_Thread_Command_glXSwapBuffers *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXSwapBuffers,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -2716,12 +2693,12 @@ glXSwapIntervalEXT_orig_evgl_get(void)
 static void
 _evgl_thread_glXSwapIntervalEXT(void *data)
 {
-   EVGL_Thread_Command_glXSwapIntervalEXT *thread_param =
-      (EVGL_Thread_Command_glXSwapIntervalEXT *)data;
+   EVGL_Thread_Command_glXSwapIntervalEXT *thread_data =
+       (EVGL_Thread_Command_glXSwapIntervalEXT *)data;
 
-   orig_evgl_glXSwapIntervalEXT(thread_param->dpy,
-                                thread_param->drawable,
-                                thread_param->interval);
+   orig_evgl_glXSwapIntervalEXT(thread_data->dpy,
+                                thread_data->drawable,
+                                thread_data->interval);
 
 }
 
@@ -2736,16 +2713,16 @@ glXSwapIntervalEXT_evgl_thread_cmd(Display *dpy, GLXDrawable drawable, int inter
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXSwapIntervalEXT thread_param_local;
-   EVGL_Thread_Command_glXSwapIntervalEXT *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXSwapIntervalEXT thread_data_local;
+   EVGL_Thread_Command_glXSwapIntervalEXT *thread_data = &thread_data_local;
 
-   thread_param->dpy = dpy;
-   thread_param->drawable = drawable;
-   thread_param->interval = interval;
+   thread_data->dpy = dpy;
+   thread_data->drawable = drawable;
+   thread_data->interval = interval;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXSwapIntervalEXT,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
@@ -2778,10 +2755,10 @@ glXSwapIntervalSGI_orig_evgl_get(void)
 static void
 _evgl_thread_glXSwapIntervalSGI(void *data)
 {
-   EVGL_Thread_Command_glXSwapIntervalSGI *thread_param =
-      (EVGL_Thread_Command_glXSwapIntervalSGI *)data;
+   EVGL_Thread_Command_glXSwapIntervalSGI *thread_data =
+       (EVGL_Thread_Command_glXSwapIntervalSGI *)data;
 
-   thread_param->return_value = orig_evgl_glXSwapIntervalSGI(thread_param->interval);
+   thread_data->return_value = orig_evgl_glXSwapIntervalSGI(thread_data->interval);
 
 }
 
@@ -2795,17 +2772,17 @@ glXSwapIntervalSGI_evgl_thread_cmd(int interval)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXSwapIntervalSGI thread_param_local;
-   EVGL_Thread_Command_glXSwapIntervalSGI *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXSwapIntervalSGI thread_data_local;
+   EVGL_Thread_Command_glXSwapIntervalSGI *thread_data = &thread_data_local;
 
-   thread_param->interval = interval;
+   thread_data->interval = interval;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXSwapIntervalSGI,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
@@ -2839,12 +2816,12 @@ glXWaitVideoSync_orig_evgl_get(void)
 static void
 _evgl_thread_glXWaitVideoSync(void *data)
 {
-   EVGL_Thread_Command_glXWaitVideoSync *thread_param =
-      (EVGL_Thread_Command_glXWaitVideoSync *)data;
+   EVGL_Thread_Command_glXWaitVideoSync *thread_data =
+       (EVGL_Thread_Command_glXWaitVideoSync *)data;
 
-   thread_param->return_value = orig_evgl_glXWaitVideoSync(thread_param->divisor,
-                                                           thread_param->remainder,
-                                                           thread_param->count);
+   thread_data->return_value = orig_evgl_glXWaitVideoSync(thread_data->divisor,
+                                                          thread_data->remainder,
+                                                          thread_data->count);
 
 }
 
@@ -2858,123 +2835,122 @@ glXWaitVideoSync_evgl_thread_cmd(int divisor, int remainder, unsigned int *count
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   EVGL_Thread_Command_glXWaitVideoSync thread_param_local;
-   EVGL_Thread_Command_glXWaitVideoSync *thread_param = &thread_param_local;
+   EVGL_Thread_Command_glXWaitVideoSync thread_data_local;
+   EVGL_Thread_Command_glXWaitVideoSync *thread_data = &thread_data_local;
 
-   thread_param->divisor = divisor;
-   thread_param->remainder = remainder;
-   thread_param->count = count;
+   thread_data->divisor = divisor;
+   thread_data->remainder = remainder;
+   thread_data->count = count;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_thread_glXWaitVideoSync,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 
-#else /* EVAS_GL_RENDER_THREAD_IS_GENERIC */
-
+#else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 #include <dlfcn.h>
 
 
-void (*glXBindTexImage_orig_evas_set)(void *func) = NULL;
-void *(*glXBindTexImage_orig_evas_get)(void) = NULL;
-void (*glXBindTexImage_thread_cmd)(Display *dpy, GLXDrawable drawable, int buffer, const int *attrib_list) = NULL;
-GLXFBConfig * (*glXChooseFBConfig_thread_cmd)(Display *dpy, int screen, const int *attribList, int *nitems) = NULL;
-GLXContext (*glXCreateContext_thread_cmd)(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct) = NULL;
-GLXContext (*glXCreateNewContext_thread_cmd)(Display *dpy, GLXFBConfig config, int renderType, GLXContext shareList, Bool direct) = NULL;
-GLXPbuffer (*glXCreatePbuffer_thread_cmd)(Display *dpy, GLXFBConfig config, const int *attribList) = NULL;
-void (*glXCreatePixmap_orig_evas_set)(void *func) = NULL;
-void *(*glXCreatePixmap_orig_evas_get)(void) = NULL;
-GLXPixmap (*glXCreatePixmap_thread_cmd)(Display *dpy, GLXFBConfig config, Pixmap pixmap, const int *attribList) = NULL;
-GLXWindow (*glXCreateWindow_thread_cmd)(Display *dpy, GLXFBConfig config, Window win, const int *attribList) = NULL;
-void (*glXDestroyContext_thread_cmd)(Display *dpy, GLXContext ctx) = NULL;
-void (*glXDestroyPbuffer_thread_cmd)(Display *dpy, GLXPbuffer pbuf) = NULL;
-void (*glXDestroyPixmap_orig_evas_set)(void *func) = NULL;
-void *(*glXDestroyPixmap_orig_evas_get)(void) = NULL;
-void (*glXDestroyPixmap_thread_cmd)(Display *dpy, GLXPixmap pixmap) = NULL;
-void (*glXDestroyWindow_thread_cmd)(Display *dpy, GLXWindow window) = NULL;
-int (*glXGetConfig_thread_cmd)(Display *dpy, XVisualInfo *visual, int attrib, int *value) = NULL;
-GLXContext (*glXGetCurrentContext_thread_cmd)(void) = NULL;
-int (*glXGetFBConfigAttrib_thread_cmd)(Display *dpy, GLXFBConfig config, int attribute, int *value) = NULL;
-void (*glXGetVideoSync_orig_evas_set)(void *func) = NULL;
-void *(*glXGetVideoSync_orig_evas_get)(void) = NULL;
-int (*glXGetVideoSync_thread_cmd)(unsigned int *count) = NULL;
-XVisualInfo * (*glXGetVisualFromFBConfig_thread_cmd)(Display *dpy, GLXFBConfig config) = NULL;
-Bool (*glXMakeContextCurrent_thread_cmd)(Display *dpy, GLXDrawable draw, GLXDrawable read, GLXContext ctx) = NULL;
-void (*glXQueryDrawable_orig_evas_set)(void *func) = NULL;
-void *(*glXQueryDrawable_orig_evas_get)(void) = NULL;
-void (*glXQueryDrawable_thread_cmd)(Display *dpy, GLXDrawable draw, int attribute, unsigned int *value) = NULL;
-Bool (*glXQueryExtension_thread_cmd)(Display *dpy, int *errorb, int *event) = NULL;
-const char * (*glXQueryExtensionsString_thread_cmd)(Display *dpy, int screen) = NULL;
-void (*glXReleaseBuffersMESA_orig_evas_set)(void *func) = NULL;
-void *(*glXReleaseBuffersMESA_orig_evas_get)(void) = NULL;
-Bool (*glXReleaseBuffersMESA_thread_cmd)(Display *dpy, GLXDrawable drawable) = NULL;
-void (*glXReleaseTexImage_orig_evas_set)(void *func) = NULL;
-void *(*glXReleaseTexImage_orig_evas_get)(void) = NULL;
-void (*glXReleaseTexImage_thread_cmd)(Display *dpy, GLXDrawable drawable, int buffer) = NULL;
-void (*glXSwapBuffers_thread_cmd)(Display *dpy, GLXDrawable drawable) = NULL;
-void (*glXSwapIntervalEXT_orig_evas_set)(void *func) = NULL;
-void *(*glXSwapIntervalEXT_orig_evas_get)(void) = NULL;
-void (*glXSwapIntervalEXT_thread_cmd)(Display *dpy, GLXDrawable drawable, int interval) = NULL;
-void (*glXSwapIntervalSGI_orig_evas_set)(void *func) = NULL;
-void *(*glXSwapIntervalSGI_orig_evas_get)(void) = NULL;
-int (*glXSwapIntervalSGI_thread_cmd)(int interval) = NULL;
-void (*glXWaitVideoSync_orig_evas_set)(void *func) = NULL;
-void *(*glXWaitVideoSync_orig_evas_get)(void) = NULL;
-int (*glXWaitVideoSync_thread_cmd)(int divisor, int remainder, unsigned int *count) = NULL;
+void          (*glXBindTexImage_orig_evas_set)(void *func) = NULL;
+void         *(*glXBindTexImage_orig_evas_get)(void) = NULL;
+void          (*glXBindTexImage_thread_cmd)(Display *dpy, GLXDrawable drawable, int buffer, const int *attrib_list) = NULL;
+GLXFBConfig  *(*glXChooseFBConfig_thread_cmd)(Display *dpy, int screen, const int *attribList, int *nitems) = NULL;
+GLXContext    (*glXCreateContext_thread_cmd)(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct) = NULL;
+GLXContext    (*glXCreateNewContext_thread_cmd)(Display *dpy, GLXFBConfig config, int renderType, GLXContext shareList, Bool direct) = NULL;
+GLXPbuffer    (*glXCreatePbuffer_thread_cmd)(Display *dpy, GLXFBConfig config, const int *attribList) = NULL;
+void          (*glXCreatePixmap_orig_evas_set)(void *func) = NULL;
+void         *(*glXCreatePixmap_orig_evas_get)(void) = NULL;
+GLXPixmap     (*glXCreatePixmap_thread_cmd)(Display *dpy, GLXFBConfig config, Pixmap pixmap, const int *attribList) = NULL;
+GLXWindow     (*glXCreateWindow_thread_cmd)(Display *dpy, GLXFBConfig config, Window win, const int *attribList) = NULL;
+void          (*glXDestroyContext_thread_cmd)(Display *dpy, GLXContext ctx) = NULL;
+void          (*glXDestroyPbuffer_thread_cmd)(Display *dpy, GLXPbuffer pbuf) = NULL;
+void          (*glXDestroyPixmap_orig_evas_set)(void *func) = NULL;
+void         *(*glXDestroyPixmap_orig_evas_get)(void) = NULL;
+void          (*glXDestroyPixmap_thread_cmd)(Display *dpy, GLXPixmap pixmap) = NULL;
+void          (*glXDestroyWindow_thread_cmd)(Display *dpy, GLXWindow window) = NULL;
+int           (*glXGetConfig_thread_cmd)(Display *dpy, XVisualInfo *visual, int attrib, int *value) = NULL;
+GLXContext    (*glXGetCurrentContext_thread_cmd)(void) = NULL;
+int           (*glXGetFBConfigAttrib_thread_cmd)(Display *dpy, GLXFBConfig config, int attribute, int *value) = NULL;
+void          (*glXGetVideoSync_orig_evas_set)(void *func) = NULL;
+void         *(*glXGetVideoSync_orig_evas_get)(void) = NULL;
+int           (*glXGetVideoSync_thread_cmd)(unsigned int *count) = NULL;
+XVisualInfo  *(*glXGetVisualFromFBConfig_thread_cmd)(Display *dpy, GLXFBConfig config) = NULL;
+Bool          (*glXMakeContextCurrent_thread_cmd)(Display *dpy, GLXDrawable draw, GLXDrawable read, GLXContext ctx) = NULL;
+void          (*glXQueryDrawable_orig_evas_set)(void *func) = NULL;
+void         *(*glXQueryDrawable_orig_evas_get)(void) = NULL;
+void          (*glXQueryDrawable_thread_cmd)(Display *dpy, GLXDrawable draw, int attribute, unsigned int *value) = NULL;
+Bool          (*glXQueryExtension_thread_cmd)(Display *dpy, int *errorb, int *event) = NULL;
+const char   *(*glXQueryExtensionsString_thread_cmd)(Display *dpy, int screen) = NULL;
+void          (*glXReleaseBuffersMESA_orig_evas_set)(void *func) = NULL;
+void         *(*glXReleaseBuffersMESA_orig_evas_get)(void) = NULL;
+Bool          (*glXReleaseBuffersMESA_thread_cmd)(Display *dpy, GLXDrawable drawable) = NULL;
+void          (*glXReleaseTexImage_orig_evas_set)(void *func) = NULL;
+void         *(*glXReleaseTexImage_orig_evas_get)(void) = NULL;
+void          (*glXReleaseTexImage_thread_cmd)(Display *dpy, GLXDrawable drawable, int buffer) = NULL;
+void          (*glXSwapBuffers_thread_cmd)(Display *dpy, GLXDrawable drawable) = NULL;
+void          (*glXSwapIntervalEXT_orig_evas_set)(void *func) = NULL;
+void         *(*glXSwapIntervalEXT_orig_evas_get)(void) = NULL;
+void          (*glXSwapIntervalEXT_thread_cmd)(Display *dpy, GLXDrawable drawable, int interval) = NULL;
+void          (*glXSwapIntervalSGI_orig_evas_set)(void *func) = NULL;
+void         *(*glXSwapIntervalSGI_orig_evas_get)(void) = NULL;
+int           (*glXSwapIntervalSGI_thread_cmd)(int interval) = NULL;
+void          (*glXWaitVideoSync_orig_evas_set)(void *func) = NULL;
+void         *(*glXWaitVideoSync_orig_evas_get)(void) = NULL;
+int           (*glXWaitVideoSync_thread_cmd)(int divisor, int remainder, unsigned int *count) = NULL;
 
 /****** EVAS GL ******/
 
-void (*glXBindTexImage_orig_evgl_set)(void *func) = NULL;
-void *(*glXBindTexImage_orig_evgl_get)(void) = NULL;
-void (*glXBindTexImage_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable, int buffer, const int *attrib_list) = NULL;
-GLXFBConfig * (*glXChooseFBConfig_evgl_thread_cmd)(Display *dpy, int screen, const int *attribList, int *nitems) = NULL;
-GLXContext (*glXCreateContext_evgl_thread_cmd)(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct) = NULL;
-GLXContext (*glXCreateNewContext_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, int renderType, GLXContext shareList, Bool direct) = NULL;
-GLXPbuffer (*glXCreatePbuffer_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, const int *attribList) = NULL;
-void (*glXCreatePixmap_orig_evgl_set)(void *func) = NULL;
-void *(*glXCreatePixmap_orig_evgl_get)(void) = NULL;
-GLXPixmap (*glXCreatePixmap_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, Pixmap pixmap, const int *attribList) = NULL;
-GLXWindow (*glXCreateWindow_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, Window win, const int *attribList) = NULL;
-void (*glXDestroyContext_evgl_thread_cmd)(Display *dpy, GLXContext ctx) = NULL;
-void (*glXDestroyPbuffer_evgl_thread_cmd)(Display *dpy, GLXPbuffer pbuf) = NULL;
-void (*glXDestroyPixmap_orig_evgl_set)(void *func) = NULL;
-void *(*glXDestroyPixmap_orig_evgl_get)(void) = NULL;
-void (*glXDestroyPixmap_evgl_thread_cmd)(Display *dpy, GLXPixmap pixmap) = NULL;
-void (*glXDestroyWindow_evgl_thread_cmd)(Display *dpy, GLXWindow window) = NULL;
-int (*glXGetConfig_evgl_thread_cmd)(Display *dpy, XVisualInfo *visual, int attrib, int *value) = NULL;
-GLXContext (*glXGetCurrentContext_evgl_thread_cmd)(void) = NULL;
-int (*glXGetFBConfigAttrib_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, int attribute, int *value) = NULL;
-void (*glXGetVideoSync_orig_evgl_set)(void *func) = NULL;
-void *(*glXGetVideoSync_orig_evgl_get)(void) = NULL;
-int (*glXGetVideoSync_evgl_thread_cmd)(unsigned int *count) = NULL;
-XVisualInfo * (*glXGetVisualFromFBConfig_evgl_thread_cmd)(Display *dpy, GLXFBConfig config) = NULL;
-Bool (*glXMakeContextCurrent_evgl_thread_cmd)(Display *dpy, GLXDrawable draw, GLXDrawable read, GLXContext ctx) = NULL;
-void (*glXQueryDrawable_orig_evgl_set)(void *func) = NULL;
-void *(*glXQueryDrawable_orig_evgl_get)(void) = NULL;
-void (*glXQueryDrawable_evgl_thread_cmd)(Display *dpy, GLXDrawable draw, int attribute, unsigned int *value) = NULL;
-Bool (*glXQueryExtension_evgl_thread_cmd)(Display *dpy, int *errorb, int *event) = NULL;
-const char * (*glXQueryExtensionsString_evgl_thread_cmd)(Display *dpy, int screen) = NULL;
-void (*glXReleaseBuffersMESA_orig_evgl_set)(void *func) = NULL;
-void *(*glXReleaseBuffersMESA_orig_evgl_get)(void) = NULL;
-Bool (*glXReleaseBuffersMESA_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable) = NULL;
-void (*glXReleaseTexImage_orig_evgl_set)(void *func) = NULL;
-void *(*glXReleaseTexImage_orig_evgl_get)(void) = NULL;
-void (*glXReleaseTexImage_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable, int buffer) = NULL;
-void (*glXSwapBuffers_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable) = NULL;
-void (*glXSwapIntervalEXT_orig_evgl_set)(void *func) = NULL;
-void *(*glXSwapIntervalEXT_orig_evgl_get)(void) = NULL;
-void (*glXSwapIntervalEXT_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable, int interval) = NULL;
-void (*glXSwapIntervalSGI_orig_evgl_set)(void *func) = NULL;
-void *(*glXSwapIntervalSGI_orig_evgl_get)(void) = NULL;
-int (*glXSwapIntervalSGI_evgl_thread_cmd)(int interval) = NULL;
-void (*glXWaitVideoSync_orig_evgl_set)(void *func) = NULL;
-void *(*glXWaitVideoSync_orig_evgl_get)(void) = NULL;
-int (*glXWaitVideoSync_evgl_thread_cmd)(int divisor, int remainder, unsigned int *count) = NULL;
+void          (*glXBindTexImage_orig_evgl_set)(void *func) = NULL;
+void         *(*glXBindTexImage_orig_evgl_get)(void) = NULL;
+void          (*glXBindTexImage_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable, int buffer, const int *attrib_list) = NULL;
+GLXFBConfig  *(*glXChooseFBConfig_evgl_thread_cmd)(Display *dpy, int screen, const int *attribList, int *nitems) = NULL;
+GLXContext    (*glXCreateContext_evgl_thread_cmd)(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct) = NULL;
+GLXContext    (*glXCreateNewContext_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, int renderType, GLXContext shareList, Bool direct) = NULL;
+GLXPbuffer    (*glXCreatePbuffer_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, const int *attribList) = NULL;
+void          (*glXCreatePixmap_orig_evgl_set)(void *func) = NULL;
+void         *(*glXCreatePixmap_orig_evgl_get)(void) = NULL;
+GLXPixmap     (*glXCreatePixmap_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, Pixmap pixmap, const int *attribList) = NULL;
+GLXWindow     (*glXCreateWindow_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, Window win, const int *attribList) = NULL;
+void          (*glXDestroyContext_evgl_thread_cmd)(Display *dpy, GLXContext ctx) = NULL;
+void          (*glXDestroyPbuffer_evgl_thread_cmd)(Display *dpy, GLXPbuffer pbuf) = NULL;
+void          (*glXDestroyPixmap_orig_evgl_set)(void *func) = NULL;
+void         *(*glXDestroyPixmap_orig_evgl_get)(void) = NULL;
+void          (*glXDestroyPixmap_evgl_thread_cmd)(Display *dpy, GLXPixmap pixmap) = NULL;
+void          (*glXDestroyWindow_evgl_thread_cmd)(Display *dpy, GLXWindow window) = NULL;
+int           (*glXGetConfig_evgl_thread_cmd)(Display *dpy, XVisualInfo *visual, int attrib, int *value) = NULL;
+GLXContext    (*glXGetCurrentContext_evgl_thread_cmd)(void) = NULL;
+int           (*glXGetFBConfigAttrib_evgl_thread_cmd)(Display *dpy, GLXFBConfig config, int attribute, int *value) = NULL;
+void          (*glXGetVideoSync_orig_evgl_set)(void *func) = NULL;
+void         *(*glXGetVideoSync_orig_evgl_get)(void) = NULL;
+int           (*glXGetVideoSync_evgl_thread_cmd)(unsigned int *count) = NULL;
+XVisualInfo  *(*glXGetVisualFromFBConfig_evgl_thread_cmd)(Display *dpy, GLXFBConfig config) = NULL;
+Bool          (*glXMakeContextCurrent_evgl_thread_cmd)(Display *dpy, GLXDrawable draw, GLXDrawable read, GLXContext ctx) = NULL;
+void          (*glXQueryDrawable_orig_evgl_set)(void *func) = NULL;
+void         *(*glXQueryDrawable_orig_evgl_get)(void) = NULL;
+void          (*glXQueryDrawable_evgl_thread_cmd)(Display *dpy, GLXDrawable draw, int attribute, unsigned int *value) = NULL;
+Bool          (*glXQueryExtension_evgl_thread_cmd)(Display *dpy, int *errorb, int *event) = NULL;
+const char   *(*glXQueryExtensionsString_evgl_thread_cmd)(Display *dpy, int screen) = NULL;
+void          (*glXReleaseBuffersMESA_orig_evgl_set)(void *func) = NULL;
+void         *(*glXReleaseBuffersMESA_orig_evgl_get)(void) = NULL;
+Bool          (*glXReleaseBuffersMESA_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable) = NULL;
+void          (*glXReleaseTexImage_orig_evgl_set)(void *func) = NULL;
+void         *(*glXReleaseTexImage_orig_evgl_get)(void) = NULL;
+void          (*glXReleaseTexImage_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable, int buffer) = NULL;
+void          (*glXSwapBuffers_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable) = NULL;
+void          (*glXSwapIntervalEXT_orig_evgl_set)(void *func) = NULL;
+void         *(*glXSwapIntervalEXT_orig_evgl_get)(void) = NULL;
+void          (*glXSwapIntervalEXT_evgl_thread_cmd)(Display *dpy, GLXDrawable drawable, int interval) = NULL;
+void          (*glXSwapIntervalSGI_orig_evgl_set)(void *func) = NULL;
+void         *(*glXSwapIntervalSGI_orig_evgl_get)(void) = NULL;
+int           (*glXSwapIntervalSGI_evgl_thread_cmd)(int interval) = NULL;
+void          (*glXWaitVideoSync_orig_evgl_set)(void *func) = NULL;
+void         *(*glXWaitVideoSync_orig_evgl_get)(void) = NULL;
+int           (*glXWaitVideoSync_evgl_thread_cmd)(int divisor, int remainder, unsigned int *count) = NULL;
 
 
 
@@ -3081,7 +3057,7 @@ void _glx_thread_link_init()
    LINK2GENERIC(glXWaitVideoSync_evgl_thread_cmd);
 }
 
-#endif /* EVAS_GL_RENDER_THREAD_IS_GENERIC */
+#endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
 #endif /* ! GL_GLES */

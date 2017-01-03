@@ -1822,6 +1822,7 @@ evas_gl_common_texture_rgb_a_pair_update(Evas_GL_Texture *tex,
      }
 on_error:
    glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+   evas_gl_thread_finish();
 }
 
 Evas_GL_Texture *

@@ -4,7 +4,7 @@
 /* Main Thread id */
 Eina_Thread _main_thread_id = 0;
 
-#ifdef EVAS_GL_RENDER_THREAD_IS_GENERIC
+#ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 /* Memory Pool */
 Eina_Mempool *_mp_default = NULL;
@@ -92,7 +92,8 @@ evas_gl_thread_force_finish()
 }
 
 
-void evas_gl_thread_init()
+void
+evas_gl_thread_init()
 {
 #define BUILD_MEMPOOL(name) \
    name = eina_mempool_add("chained_mempool", #name, NULL, \
@@ -109,7 +110,8 @@ void evas_gl_thread_init()
    _main_thread_id = eina_thread_self();
 }
 
-void evas_gl_thread_terminate()
+void
+evas_gl_thread_terminate()
 {
    eina_mempool_del(_mp_default);
    eina_mempool_del(_mp_command);
@@ -173,7 +175,7 @@ evas_evgl_thread_finish()
 }
 
 
-#else /* ! EVAS_GL_RENDER_THREAD_IS_GENERIC */
+#else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
 #include <dlfcn.h>
@@ -188,7 +190,8 @@ void (*evas_evgl_thread_begin)();
 void (*evas_evgl_thread_end)();
 void (*evas_evgl_thread_finish)();
 
-void evas_gl_thread_link_init()
+void
+evas_gl_thread_link_init()
 {
 #define LINK2GENERIC(sym) \
    sym = dlsym(RTLD_DEFAULT, #sym); \
@@ -210,10 +213,9 @@ void evas_gl_thread_link_init()
    _glx_thread_link_init();
 #endif
    _gl_thread_link_init();
-   _evgl_thread_link_init();
 
    _main_thread_id = eina_thread_self();
 }
 
 
-#endif /* EVAS_GL_RENDER_THREAD_IS_GENERIC */
+#endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */

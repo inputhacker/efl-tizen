@@ -3,11 +3,6 @@
 #include "../gl_common/evas_gl_define.h"
 #include "../software_generic/evas_native_common.h"
 
-#ifdef GL_GLES
-#include "../gl_common/evas_gl_thread_egl.h"
-#endif
-#include "../gl_common/evas_gl_thread_gl.h"
-
 #ifdef HAVE_DLSYM
 # include <dlfcn.h>      /* dlopen,dlclose,etc */
 #else

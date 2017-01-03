@@ -13,7 +13,6 @@
 #endif
 
 #include "../gl_common/evas_gl_common.h"
-#include "../gl_common/evas_gl_thread_gl.h"
 
 #include "Evas_Engine_GL_Generic.h"
 
@@ -1134,7 +1133,6 @@ eng_image_draw(void *data, void *context, void *surface, void *image, int src_x,
                              direct_surface);
 
         // Call pixel get function
-        // IS DDDDDDDDDDDDIRECT RENDERING
         evgl_get_pixels_pre();
         re->func.get_pixels(re->func.get_pixels_data, re->func.obj);
         evgl_get_pixels_post();

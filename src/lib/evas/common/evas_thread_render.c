@@ -13,8 +13,7 @@ typedef struct
    Evas_Thread_Command *queue_cache;
    unsigned int queue_cache_max;
 
-   Eina_Condition finish_condition;
-   Eina_Lock finish_lock;
+   Eina_Spinlock finish_spinlock;
    Evas_Thread_Command *waiting_cmd;
 
    volatile int exited;
@@ -64,9 +63,9 @@ evas_thread_queue_append(Evas_Thread *ev_thread, Evas_Thread_Command_Cb cb, void
 
    if (do_finish)
      {
-        eina_lock_take(&ev_thread->finish_lock);
+        eina_spinlock_take(&ev_thread->finish_spinlock);
         ev_thread->waiting_cmd = cmd;
-        eina_lock_release(&ev_thread->finish_lock);
+        eina_spinlock_release(&ev_thread->finish_spinlock);
      }
 
    if (do_flush)
@@ -193,10 +192,10 @@ evas_thread_worker_func(void *data, Eina_Thread thread EINA_UNUSED)
              eina_evlog("+thread_do", cmd->data, 0.0, NULL);
              cmd->cb(cmd->data);
              eina_evlog("-thread_do", cmd->data, 0.0, NULL);
-             eina_lock_take(&ev_thread->finish_lock);
+             eina_spinlock_take(&ev_thread->finish_spinlock);
              if (cmd == ev_thread->waiting_cmd)
                ev_thread->waiting_cmd = NULL;
-             eina_lock_release(&ev_thread->finish_lock);
+             eina_spinlock_release(&ev_thread->finish_spinlock);
 
              cmd++;
              len--;
@@ -221,11 +220,6 @@ evas_thread_init(Evas_Thread *ev_thread, char *thread_name)
    ev_thread->exited = 0;
    ev_thread->exit_thread = EINA_FALSE;
 
-   if(!eina_threads_init())
-     {
-        CRI("Could not init eina threads");
-        goto fail_on_eina_thread_init;
-     }
 
    eina_inarray_step_set(&ev_thread->queue, sizeof (Eina_Inarray), sizeof (Evas_Thread_Command), 128);
 
@@ -234,20 +228,15 @@ evas_thread_init(Evas_Thread *ev_thread, char *thread_name)
          CRI("Could not create draw thread queue lock");
          goto fail_on_lock_creation;
       }
-   if (!eina_lock_new(&ev_thread->finish_lock))
+   if (!eina_spinlock_new(&ev_thread->finish_spinlock))
       {
          CRI("Could not create draw thread finish lock");
-         goto fail_on_lock_creation;
+         goto fail_on_spin_lock_creation;
       }
    if (!eina_condition_new(&ev_thread->queue_condition, &ev_thread->queue_lock))
       {
          CRI("Could not create draw thread queue condition");
          goto fail_on_cond_creation;
-      }
-   if (!eina_condition_new(&ev_thread->finish_condition, &ev_thread->finish_lock))
-      {
-         CRI("Could not create draw thread finish condition");
-         goto fail_on_cond_finish_creation;
       }
    if (!eina_thread_create(&ev_thread->worker, EINA_THREAD_NORMAL, 0,
                            evas_thread_worker_func, ev_thread))
@@ -258,12 +247,12 @@ evas_thread_init(Evas_Thread *ev_thread, char *thread_name)
    return 1;
 fail_on_thread_creation:
    ev_thread->worker = 0;
-   eina_condition_free(&ev_thread->finish_condition);
+   eina_spinlock_free(&ev_thread->finish_spinlock);
    eina_condition_free(&ev_thread->queue_condition);
-fail_on_cond_finish_creation:
-   eina_lock_free(&ev_thread->finish_lock);
 fail_on_cond_creation:
    eina_lock_free(&ev_thread->queue_lock);
+fail_on_spin_lock_creation:
+   eina_spinlock_free(&ev_thread->finish_spinlock);
 fail_on_lock_creation:
    eina_threads_shutdown();
 fail_on_eina_thread_init:
@@ -297,6 +286,7 @@ evas_thread_shutdown(Evas_Thread *ev_thread)
 
    eina_thread_join(ev_thread->worker);
 timeout_shutdown:
+   eina_spinlock_free(&ev_thread->finish_spinlock);
    eina_lock_free(&ev_thread->queue_lock);
    eina_condition_free(&ev_thread->queue_condition);
 
@@ -305,7 +295,6 @@ timeout_shutdown:
    eina_inarray_flush(&ev_thread->queue);
    free(ev_thread->queue_cache);
 
-   eina_threads_shutdown();
 }
 
 int
@@ -313,6 +302,11 @@ evas_threads_init(void)
 {
    if (evas_threads_init_count++) return evas_threads_init_count;
 
+   if(!eina_threads_init())
+     {
+        CRI("Could not init eina threads");
+        return --evas_threads_init_count;
+     }
    if (!evas_thread_init(&evas_thread_software, "Eevas-thread-wk-sw")) return --evas_threads_init_count;
    if (!evas_thread_init(&evas_thread_gl, "Eevas-thread-wk-gl"))       return --evas_threads_init_count;
    if (!evas_thread_init(&evas_thread_evgl, "Eevas-thread-wk-evgl"))   return --evas_threads_init_count;
@@ -331,5 +325,5 @@ evas_threads_shutdown(void)
    evas_thread_shutdown(&evas_thread_evgl);
    evas_thread_shutdown(&evas_thread_gl);
    evas_thread_shutdown(&evas_thread_software);
-
+   eina_threads_shutdown();
 }

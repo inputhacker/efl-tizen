@@ -1,5 +1,9 @@
-/* DO NOT MODIFY THIS FILE AS IT IS AUTO-GENERATED */
-
+/*
+ * This is an automatically generated file using a python script.
+ * ($EFL_HOME/src/utils/evas/generate_gl_thread_api.py)
+ * Recommend that you modify data files ($EFL_HOME/src/utils/evas/gl_api_def.txt)
+ * and make use of scripts if you need to fix them.
+ */
 
 #define EVAS_GL_NO_GL_H_CHECK 1
 #include "Evas_GL.h"

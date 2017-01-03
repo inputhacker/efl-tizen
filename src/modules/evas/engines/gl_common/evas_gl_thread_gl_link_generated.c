@@ -1,5 +1,9 @@
-/* DO NOT MODIFY THIS FILE AS IT IS AUTO-GENERATED */
-
+/*
+ * This is an automatically generated file using a python script.
+ * ($EFL_HOME/src/utils/evas/generate_gl_thread_api.py)
+ * Recommend that you modify data files ($EFL_HOME/src/utils/evas/gl_api_def.txt)
+ * and make use of scripts if you need to fix them.
+ */
 GLenum (*glGetError_thread_cmd)(void) = NULL;
 void (*glVertexAttribPointer_thread_cmd)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer) = NULL;
 void (*glEnableVertexAttribArray_thread_cmd)(GLuint index) = NULL;
@@ -165,7 +169,8 @@ void *(*glGetStringi_orig_evas_get)(void) = NULL;
 const GLubyte * (*glGetStringi_thread_cmd)(GLenum name, GLuint index) = NULL;
 
 
-void _gl_thread_link_init()
+void
+_gl_thread_link_gl_generated_init()
 {
 #define LINK2GENERIC(sym) \
    sym = dlsym(RTLD_DEFAULT, #sym); \

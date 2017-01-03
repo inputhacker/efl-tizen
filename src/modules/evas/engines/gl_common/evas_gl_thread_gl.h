@@ -1,7 +1,7 @@
 #ifndef EVAS_GL_THREAD_GL_H
 #define EVAS_GL_THREAD_GL_H
 
-#ifdef EVAS_GL_RENDER_THREAD_IS_GENERIC
+#ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 #ifndef TIZEN
 /* We should clear platform dependencies for Evas_GL.h */
@@ -42,7 +42,7 @@ typedef uint64_t EvasGLuint64;
 EAPI void
 glTexSubImage2DEVAS_thread_cmd(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
 
-#else /* ! EVAS_GL_RENDER_THREAD_IS_GENERIC */
+#else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
 # include "evas_gl_thread_gl_link_generated.h"
@@ -50,6 +50,8 @@ glTexSubImage2DEVAS_thread_cmd(int thread_push, GLenum target, GLint level, GLin
 
 extern void (*glTexSubImage2DEVAS_thread_cmd)(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
 
-#endif /* EVAS_GL_RENDER_THREAD_IS_GENERIC */
+extern void _gl_thread_link_init();
+
+#endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 #endif /* EVAS_GL_THREAD_GL_H */

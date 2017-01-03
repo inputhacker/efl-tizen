@@ -1,9 +1,8 @@
-#include "evas_common_private.h"
 #include "evas_gl_thread.h"
 
 #ifdef GL_GLES
 
-#ifdef EVAS_GL_RENDER_THREAD_IS_GENERIC
+#ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 
 
@@ -15,8 +14,8 @@ typedef struct
 static void
 _gl_thread_eglGetError(void *data)
 {
-   Evas_Thread_Command_eglGetError *thread_param = data;
-   thread_param->return_value = eglGetError();
+   Evas_Thread_Command_eglGetError *thread_data = data;
+   thread_data->return_value = eglGetError();
 }
 
 EAPI EGLint
@@ -25,9 +24,14 @@ eglGetError_thread_cmd(void)
    if (!evas_gl_thread_enabled())
      return eglGetError();
 
-   Evas_Thread_Command_eglGetError thread_param;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglGetError, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglGetError thread_data;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglGetError,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -41,8 +45,9 @@ typedef struct
 static void
 _gl_thread_eglBindAPI(void *data)
 {
-   Evas_Thread_Command_eglBindAPI *thread_param = data;
-   thread_param->return_value = eglBindAPI(thread_param->api);
+   Evas_Thread_Command_eglBindAPI *thread_data = data;
+
+   thread_data->return_value = eglBindAPI(thread_data->api);
 }
 
 EAPI EGLBoolean
@@ -51,10 +56,16 @@ eglBindAPI_thread_cmd(EGLenum api)
    if (!evas_gl_thread_enabled())
      return eglBindAPI(api);
 
-   Evas_Thread_Command_eglBindAPI thread_param;
-   thread_param.api = api;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglBindAPI, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglBindAPI thread_data;
+
+   thread_data.api = api;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglBindAPI,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -67,8 +78,9 @@ typedef struct
 static void
 _gl_thread_eglQueryAPI(void *data)
 {
-   Evas_Thread_Command_eglQueryAPI *thread_param = data;
-   thread_param->return_value = eglQueryAPI();
+   Evas_Thread_Command_eglQueryAPI *thread_data = data;
+
+   thread_data->return_value = eglQueryAPI();
 }
 
 EAPI EGLenum
@@ -77,9 +89,14 @@ eglQueryAPI_thread_cmd(void)
    if (!evas_gl_thread_enabled())
      return eglQueryAPI();
 
-   Evas_Thread_Command_eglQueryAPI thread_param;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglQueryAPI, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglQueryAPI thread_data;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglQueryAPI,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -93,16 +110,30 @@ typedef struct
    EGLContext ctx;
 } Evas_Thread_Command_eglMakeCurrent;
 
-EGLContext current_thread_ctx = EGL_NO_CONTEXT;
+EGLDisplay current_thread_dpy  = EGL_NO_DISPLAY;
+EGLSurface current_thread_draw = EGL_NO_SURFACE;
+EGLSurface current_thread_read = EGL_NO_SURFACE;
+EGLContext current_thread_ctx  = EGL_NO_CONTEXT;
 
 static void
 _gl_thread_eglMakeCurrent(void *data)
 {
-   Evas_Thread_Command_eglMakeCurrent *thread_param = data;
-   ERR("THREAD >> OTHER THREAD MAKECURRENT : (%p, %p, %p, %p)\n", thread_param->dpy, thread_param->draw, thread_param->read, thread_param->ctx);
-   thread_param->return_value = eglMakeCurrent(thread_param->dpy, thread_param->draw, thread_param->read, thread_param->ctx);
-   if (thread_param->return_value == EGL_TRUE)
-     current_thread_ctx = thread_param->ctx;
+   Evas_Thread_Command_eglMakeCurrent *thread_data = data;
+   DBG("THREAD >> OTHER THREAD MAKECURRENT : (%p, %p, %p, %p)\n", thread_data->dpy,
+         thread_data->draw, thread_data->read, thread_data->ctx);
+
+   thread_data->return_value = eglMakeCurrent(thread_data->dpy,
+                                              thread_data->draw,
+                                              thread_data->read,
+                                              thread_data->ctx);
+
+   if (thread_data->return_value == EGL_TRUE)
+     {
+        current_thread_dpy = thread_data->dpy;
+        current_thread_draw = thread_data->draw;
+        current_thread_read = thread_data->read;
+        current_thread_ctx = thread_data->ctx;
+     }
 }
 
 EAPI EGLBoolean
@@ -111,13 +142,19 @@ eglMakeCurrent_thread_cmd(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLC
    if (!evas_gl_thread_enabled())
      return eglMakeCurrent(dpy, draw, read, ctx);
 
-   Evas_Thread_Command_eglMakeCurrent thread_param;
-   thread_param.dpy = dpy;
-   thread_param.draw = draw;
-   thread_param.read = read;
-   thread_param.ctx = ctx;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglMakeCurrent, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglMakeCurrent thread_data;
+
+   thread_data.dpy = dpy;
+   thread_data.draw = draw;
+   thread_data.read = read;
+   thread_data.ctx = ctx;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglMakeCurrent,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -133,45 +170,18 @@ eglGetCurrentContext_thread_cmd(void)
 }
 
 
-
-typedef struct
-{
-   EGLDisplay return_value;
-   EGLint     readdraw;
-} Evas_Thread_Command_eglGetCurrentSurface;
-
-static void
-_gl_thread_eglGetCurrentSurface(void *data)
-{
-   Evas_Thread_Command_eglGetCurrentSurface *thread_param = data;
-   thread_param->return_value = eglGetCurrentSurface(thread_param->readdraw);
-}
-
 EAPI EGLSurface
 eglGetCurrentSurface_thread_cmd(EGLint readdraw)
 {
    if (!evas_gl_thread_enabled())
      return eglGetCurrentSurface(readdraw);
 
-   Evas_Thread_Command_eglGetCurrentSurface thread_param;
-   thread_param.readdraw = readdraw;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglGetCurrentSurface, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   if (readdraw == EGL_READ)
+      return current_thread_read;
+   if (readdraw == EGL_DRAW)
+      return current_thread_draw;
 }
 
-
-
-typedef struct
-{
-   EGLDisplay return_value;
-} Evas_Thread_Command_eglGetCurrentDisplay;
-
-static void
-_gl_thread_eglGetCurrentDisplay(void *data)
-{
-   Evas_Thread_Command_eglGetCurrentDisplay *thread_param = data;
-   thread_param->return_value = eglGetCurrentDisplay();
-}
 
 EAPI EGLDisplay
 eglGetCurrentDisplay_thread_cmd(void)
@@ -179,11 +189,8 @@ eglGetCurrentDisplay_thread_cmd(void)
    if (!evas_gl_thread_enabled())
      return eglGetCurrentDisplay();
 
-   Evas_Thread_Command_eglGetCurrentDisplay thread_param;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglGetCurrentDisplay, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   return current_thread_dpy;
 }
-
 
 
 typedef struct
@@ -194,8 +201,9 @@ typedef struct
 static void
 _gl_thread_eglReleaseThread(void *data)
 {
-   Evas_Thread_Command_eglReleaseThread *thread_param = data;
-   thread_param->return_value = eglReleaseThread();
+   Evas_Thread_Command_eglReleaseThread *thread_data = data;
+
+   thread_data->return_value = eglReleaseThread();
 }
 
 EAPI EGLBoolean
@@ -204,9 +212,14 @@ eglReleaseThread_thread_cmd(void)
    if (!evas_gl_thread_enabled())
      return eglReleaseThread();
 
-   Evas_Thread_Command_eglReleaseThread thread_param;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglReleaseThread, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglReleaseThread thread_data;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglReleaseThread,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -223,8 +236,12 @@ typedef struct
 static void
 _gl_thread_eglQuerySurface(void *data)
 {
-   Evas_Thread_Command_eglQuerySurface *thread_param = data;
-   thread_param->return_value = eglQuerySurface(thread_param->dpy, thread_param->surface, thread_param->attribute, thread_param->value);
+   Evas_Thread_Command_eglQuerySurface *thread_data = data;
+
+   thread_data->return_value = eglQuerySurface(thread_data->dpy,
+                                               thread_data->surface,
+                                               thread_data->attribute,
+                                               thread_data->value);
 }
 
 EAPI EGLBoolean
@@ -233,13 +250,19 @@ eglQuerySurface_thread_cmd(EGLDisplay dpy, EGLSurface surface, EGLint attribute,
    if (!evas_gl_thread_enabled())
      return eglQuerySurface(dpy, surface, attribute, value);
 
-   Evas_Thread_Command_eglQuerySurface thread_param;
-   thread_param.dpy = dpy;
-   thread_param.surface = surface;
-   thread_param.attribute = attribute;
-   thread_param.value = value;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglQuerySurface, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglQuerySurface thread_data;
+
+   thread_data.dpy = dpy;
+   thread_data.surface = surface;
+   thread_data.attribute = attribute;
+   thread_data.value = value;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglQuerySurface,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -254,8 +277,10 @@ typedef struct
 static void
 _gl_thread_eglSwapInterval(void *data)
 {
-   Evas_Thread_Command_eglSwapInterval *thread_param = data;
-   thread_param->return_value = eglSwapInterval(thread_param->dpy, thread_param->interval);
+   Evas_Thread_Command_eglSwapInterval *thread_data = data;
+
+   thread_data->return_value = eglSwapInterval(thread_data->dpy,
+                                               thread_data->interval);
 }
 
 EAPI EGLBoolean
@@ -264,11 +289,17 @@ eglSwapInterval_thread_cmd(EGLDisplay dpy, EGLint interval)
    if (!evas_gl_thread_enabled())
      return eglSwapInterval(dpy, interval);
 
-   Evas_Thread_Command_eglSwapInterval thread_param;
-   thread_param.dpy = dpy;
-   thread_param.interval = interval;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglSwapInterval, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglSwapInterval thread_data;
+
+   thread_data.dpy = dpy;
+   thread_data.interval = interval;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglSwapInterval,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -281,8 +312,9 @@ typedef struct
 static void
 _gl_thread_eglWaitGL(void *data)
 {
-   Evas_Thread_Command_eglWaitGL *thread_param = data;
-   thread_param->return_value = eglWaitGL();
+   Evas_Thread_Command_eglWaitGL *thread_data = data;
+
+   thread_data->return_value = eglWaitGL();
 }
 
 EAPI EGLBoolean
@@ -291,9 +323,14 @@ eglWaitGL_thread_cmd(void)
    if (!evas_gl_thread_enabled())
      return eglWaitGL();
 
-   Evas_Thread_Command_eglWaitGL thread_param;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglWaitGL, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglWaitGL thread_data;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglWaitGL,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -308,8 +345,10 @@ typedef struct
 static void
 _gl_thread_eglSwapBuffers(void *data)
 {
-   Evas_Thread_Command_eglSwapBuffers *thread_param = data;
-   thread_param->return_value = eglSwapBuffers(thread_param->dpy, thread_param->surface);
+   Evas_Thread_Command_eglSwapBuffers *thread_data = data;
+
+   thread_data->return_value = eglSwapBuffers(thread_data->dpy,
+                                              thread_data->surface);
 }
 
 EAPI EGLBoolean
@@ -318,11 +357,17 @@ eglSwapBuffers_thread_cmd(EGLDisplay dpy, EGLSurface surface)
    if (!evas_gl_thread_enabled())
      return eglSwapBuffers(dpy, surface);
 
-   Evas_Thread_Command_eglSwapBuffers thread_param;
-   thread_param.dpy = dpy;
-   thread_param.surface = surface;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglSwapBuffers, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglSwapBuffers thread_data;
+
+   thread_data.dpy = dpy;
+   thread_data.surface = surface;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglSwapBuffers,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -353,8 +398,12 @@ eglSwapBuffersWithDamage_orig_evas_get()
 static void
 _gl_thread_eglSwapBuffersWithDamage(void *data)
 {
-   Evas_Thread_Command_eglSwapBuffersWithDamage *thread_param = data;
-   thread_param->return_value = orig_evas_eglSwapBuffersWithDamage(thread_param->dpy, thread_param->surface, thread_param->rects, thread_param->n_rects);
+   Evas_Thread_Command_eglSwapBuffersWithDamage *thread_data = data;
+
+   thread_data->return_value = orig_evas_eglSwapBuffersWithDamage(thread_data->dpy,
+                                                                  thread_data->surface,
+                                                                  thread_data->rects,
+                                                                  thread_data->n_rects);
 }
 
 EAPI EGLBoolean
@@ -363,13 +412,19 @@ eglSwapBuffersWithDamage_thread_cmd(EGLDisplay dpy, EGLSurface surface, EGLint *
    if (!evas_gl_thread_enabled())
      return orig_evas_eglSwapBuffersWithDamage(dpy, surface, rects, n_rects);
 
-   Evas_Thread_Command_eglSwapBuffersWithDamage thread_param;
-   thread_param.dpy = dpy;
-   thread_param.surface = surface;
-   thread_param.rects = rects;
-   thread_param.n_rects = n_rects;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglSwapBuffersWithDamage, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglSwapBuffersWithDamage thread_data;
+
+   thread_data.dpy = dpy;
+   thread_data.surface = surface;
+   thread_data.rects = rects;
+   thread_data.n_rects = n_rects;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglSwapBuffersWithDamage,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -400,8 +455,12 @@ eglSetDamageRegion_orig_evas_get()
 static void
 _gl_thread_eglSetDamageRegion(void *data)
 {
-   Evas_Thread_Command_eglSetDamageRegion *thread_param = data;
-   thread_param->return_value = orig_evas_eglSetDamageRegion(thread_param->dpy, thread_param->surface, thread_param->rects, thread_param->n_rects);
+   Evas_Thread_Command_eglSetDamageRegion *thread_data = data;
+
+   thread_data->return_value = orig_evas_eglSetDamageRegion(thread_data->dpy,
+                                                            thread_data->surface,
+                                                            thread_data->rects,
+                                                            thread_data->n_rects);
 }
 
 EAPI EGLBoolean
@@ -410,13 +469,19 @@ eglSetDamageRegion_thread_cmd(EGLDisplay dpy, EGLSurface surface, EGLint *rects,
    if (!evas_gl_thread_enabled())
      return orig_evas_eglSetDamageRegion(dpy, surface, rects, n_rects);
 
-   Evas_Thread_Command_eglSetDamageRegion thread_param;
-   thread_param.dpy = dpy;
-   thread_param.surface = surface;
-   thread_param.rects = rects;
-   thread_param.n_rects = n_rects;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglSetDamageRegion, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglSetDamageRegion thread_data;
+
+   thread_data.dpy = dpy;
+   thread_data.surface = surface;
+   thread_data.rects = rects;
+   thread_data.n_rects = n_rects;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglSetDamageRegion,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -447,8 +512,12 @@ eglQueryWaylandBuffer_orig_evas_get()
 static void
 _gl_thread_eglQueryWaylandBuffer(void *data)
 {
-   Evas_Thread_Command_eglQueryWaylandBuffer *thread_param = data;
-   thread_param->return_value = orig_evas_eglQueryWaylandBuffer(thread_param->dpy, thread_param->buffer, thread_param->attribute, thread_param->value);
+   Evas_Thread_Command_eglQueryWaylandBuffer *thread_data = data;
+
+   thread_data->return_value = orig_evas_eglQueryWaylandBuffer(thread_data->dpy,
+                                                               thread_data->buffer,
+                                                               thread_data->attribute,
+                                                               thread_data->value);
 }
 
 EAPI EGLBoolean
@@ -457,13 +526,19 @@ eglQueryWaylandBuffer_thread_cmd(EGLDisplay dpy, void *buffer, EGLint attribute,
    if (!evas_gl_thread_enabled())
      return orig_evas_eglQueryWaylandBuffer(dpy, buffer, attribute, value);
 
-   Evas_Thread_Command_eglQueryWaylandBuffer thread_param;
-   thread_param.dpy = dpy;
-   thread_param.buffer = buffer;
-   thread_param.attribute = attribute;
-   thread_param.value = value;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL, _gl_thread_eglQueryWaylandBuffer, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_Thread_Command_eglQueryWaylandBuffer thread_data;
+
+   thread_data.dpy = dpy;
+   thread_data.buffer = buffer;
+   thread_data.attribute = attribute;
+   thread_data.value = value;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglQueryWaylandBuffer,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
@@ -478,8 +553,9 @@ typedef struct
 static void
 _evgl_thread_eglGetError(void *data)
 {
-   Evas_GL_Thread_Command_eglGetError *thread_param = data;
-   thread_param->return_value = eglGetError();
+   Evas_GL_Thread_Command_eglGetError *thread_data = data;
+
+   thread_data->return_value = eglGetError();
 }
 
 EAPI EGLint
@@ -488,15 +564,22 @@ eglGetError_evgl_thread_cmd(void)
    if (!evas_evgl_thread_enabled())
      return eglGetError();
 
-   Evas_GL_Thread_Command_eglGetError thread_param;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL, _evgl_thread_eglGetError, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_GL_Thread_Command_eglGetError thread_data;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_eglGetError,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
 
 
-EGLContext current_evgl_thread_context = EGL_NO_CONTEXT;
-
+EGLDisplay current_evgl_thread_dpy  = EGL_NO_DISPLAY;
+EGLSurface current_evgl_thread_draw = EGL_NO_SURFACE;
+EGLSurface current_evgl_thread_read = EGL_NO_SURFACE;
+EGLContext current_evgl_thread_ctx  = EGL_NO_CONTEXT;
 
 typedef struct
 {
@@ -510,11 +593,23 @@ typedef struct
 static void
 _evgl_thread_eglMakeCurrent(void *data)
 {
-   Evas_GL_Thread_Command_eglMakeCurrent *thread_param = data;
-   ERR("THREAD >> EVGL OTHER THREAD MAKECURRENT : (%p, %p, %p, %p)\n", thread_param->dpy, thread_param->draw, thread_param->read, thread_param->ctx);
-   thread_param->return_value = eglMakeCurrent(thread_param->dpy, thread_param->draw, thread_param->read, thread_param->ctx);
-   if (thread_param->return_value == EGL_TRUE)
-	   current_evgl_thread_context = thread_param->ctx;
+   Evas_GL_Thread_Command_eglMakeCurrent *thread_data = data;
+
+   DBG("THREAD >> EVGL OTHER THREAD MAKECURRENT : (%p, %p, %p, %p)\n", thread_data->dpy,
+                     thread_data->draw, thread_data->read, thread_data->ctx);
+
+   thread_data->return_value = eglMakeCurrent(thread_data->dpy,
+                                              thread_data->draw,
+                                              thread_data->read,
+                                              thread_data->ctx);
+
+   if (thread_data->return_value == EGL_TRUE)
+     {
+        current_evgl_thread_dpy = thread_data->dpy;
+        current_evgl_thread_draw = thread_data->draw;
+        current_evgl_thread_read = thread_data->read;
+        current_evgl_thread_ctx = thread_data->ctx;
+     }
 }
 
 EAPI EGLBoolean
@@ -523,32 +618,26 @@ eglMakeCurrent_evgl_thread_cmd(EGLDisplay dpy, EGLSurface draw, EGLSurface read,
    if (!evas_evgl_thread_enabled())
      {
         if (eina_thread_self() == evas_gl_thread_get(EVAS_GL_THREAD_TYPE_EVGL))
-           ERR("THREAD >> EVGL OTHER THREAD MAKECURRENT(INNER) : (%p, %p, %p, %p)\n", dpy, draw, read, ctx);
+           DBG("THREAD >> EVGL OTHER THREAD MAKECURRENT(INNER) : (%p, %p, %p, %p)\n",
+                                                               dpy, draw, read, ctx);
         return eglMakeCurrent(dpy, draw, read, ctx);
      }
 
-   Evas_GL_Thread_Command_eglMakeCurrent thread_param;
-   thread_param.dpy = dpy;
-   thread_param.draw = draw;
-   thread_param.read = read;
-   thread_param.ctx = ctx;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL, _evgl_thread_eglMakeCurrent, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   Evas_GL_Thread_Command_eglMakeCurrent thread_data;
+
+   thread_data.dpy = dpy;
+   thread_data.draw = draw;
+   thread_data.read = read;
+   thread_data.ctx = ctx;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_eglMakeCurrent,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
 }
 
-
-
-typedef struct
-{
-   EGLContext return_value;
-} Evas_GL_Thread_Command_eglGetCurrentContext;
-
-static void
-_evgl_thread_eglGetCurrentContext(void *data)
-{
-   Evas_GL_Thread_Command_eglGetCurrentContext *thread_param = data;
-   thread_param->return_value = eglGetCurrentContext();
-}
 
 EAPI EGLContext
 eglGetCurrentContext_evgl_thread_cmd(void)
@@ -556,27 +645,9 @@ eglGetCurrentContext_evgl_thread_cmd(void)
    if (!evas_evgl_thread_enabled())
      return eglGetCurrentContext();
 
-   return current_evgl_thread_context;
-
-   Evas_GL_Thread_Command_eglGetCurrentContext thread_param;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL, _evgl_thread_eglGetCurrentContext, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   return current_evgl_thread_ctx;
 }
 
-
-
-typedef struct
-{
-   EGLDisplay return_value;
-   EGLint     readdraw;
-} Evas_GL_Thread_Command_eglGetCurrentSurface;
-
-static void
-_evgl_thread_eglGetCurrentSurface(void *data)
-{
-   Evas_GL_Thread_Command_eglGetCurrentSurface *thread_param = data;
-   thread_param->return_value = eglGetCurrentSurface(thread_param->readdraw);
-}
 
 EAPI EGLSurface
 eglGetCurrentSurface_evgl_thread_cmd(EGLint readdraw)
@@ -584,25 +655,12 @@ eglGetCurrentSurface_evgl_thread_cmd(EGLint readdraw)
    if (!evas_evgl_thread_enabled())
      return eglGetCurrentSurface(readdraw);
 
-   Evas_GL_Thread_Command_eglGetCurrentSurface thread_param;
-   thread_param.readdraw = readdraw;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL, _evgl_thread_eglGetCurrentSurface, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   if (readdraw == EGL_READ)
+      return current_evgl_thread_read;
+   if (readdraw == EGL_DRAW)
+      return current_evgl_thread_draw;
 }
 
-
-
-typedef struct
-{
-   EGLDisplay return_value;
-} Evas_GL_Thread_Command_eglGetCurrentDisplay;
-
-static void
-_evgl_thread_eglGetCurrentDisplay(void *data)
-{
-   Evas_GL_Thread_Command_eglGetCurrentDisplay *thread_param = data;
-   thread_param->return_value = eglGetCurrentDisplay();
-}
 
 EAPI EGLDisplay
 eglGetCurrentDisplay_evgl_thread_cmd(void)
@@ -610,21 +668,18 @@ eglGetCurrentDisplay_evgl_thread_cmd(void)
    if (!evas_evgl_thread_enabled())
      return eglGetCurrentDisplay();
 
-   Evas_GL_Thread_Command_eglGetCurrentDisplay thread_param;
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL, _evgl_thread_eglGetCurrentDisplay, &thread_param, EVAS_GL_THREAD_MODE_FINISH);
-   return thread_param.return_value;
+   return current_evgl_thread_dpy;
 }
 
 
-
-#else /* EVAS_GL_RENDER_THREAD_IS_GENERIC */
+#else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
 #include <dlfcn.h>
 
-EGLint (*eglGetError_thread_cmd)();
+EGLint     (*eglGetError_thread_cmd)();
 EGLBoolean (*eglBindAPI_thread_cmd)(EGLenum api);
-EGLenum (*eglQueryAPI_thread_cmd)();
+EGLenum    (*eglQueryAPI_thread_cmd)();
 EGLBoolean (*eglMakeCurrent_thread_cmd)(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
 EGLContext (*eglGetCurrentContext_thread_cmd)(void);
 EGLSurface (*eglGetCurrentSurface_thread_cmd)(EGLint readdraw);
@@ -636,22 +691,22 @@ EGLBoolean (*eglSwapInterval_thread_cmd)(EGLDisplay dpy, EGLint interval);
 EGLBoolean (*eglWaitGL_thread_cmd)(void);
 EGLBoolean (*eglSwapBuffers_thread_cmd)(EGLDisplay dpy, EGLSurface surface);
 
-void (*eglSwapBuffersWithDamage_orig_evas_set)(void *func);
-void *(*eglSwapBuffersWithDamage_orig_evas_get)();
+void       (*eglSwapBuffersWithDamage_orig_evas_set)(void *func);
+void      *(*eglSwapBuffersWithDamage_orig_evas_get)();
 EGLBoolean (*eglSwapBuffersWithDamage_thread_cmd)(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
 
-void (*eglSetDamageRegion_orig_evas_set)(void *func);
-void *(*eglSetDamageRegion_orig_evas_get)();
+void       (*eglSetDamageRegion_orig_evas_set)(void *func);
+void      *(*eglSetDamageRegion_orig_evas_get)();
 EGLBoolean (*eglSetDamageRegion_thread_cmd)(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
 
-void (*eglQueryWaylandBuffer_orig_evas_set)(void *func);
-void *(*eglQueryWaylandBuffer_orig_evas_get)();
+void       (*eglQueryWaylandBuffer_orig_evas_set)(void *func);
+void      *(*eglQueryWaylandBuffer_orig_evas_get)();
 EGLBoolean (*eglQueryWaylandBuffer_thread_cmd)(EGLDisplay dpy, void *buffer, EGLint attribute, EGLint *value);
 
 
 /***** EVAS GL *****/
 
-EGLint (*eglGetError_evgl_thread_cmd)();
+EGLint     (*eglGetError_evgl_thread_cmd)();
 EGLBoolean (*eglMakeCurrent_evgl_thread_cmd)(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
 EGLContext (*eglGetCurrentContext_evgl_thread_cmd)(void);
 EGLSurface (*eglGetCurrentSurface_evgl_thread_cmd)(EGLint readdraw);
@@ -700,6 +755,6 @@ void _egl_thread_link_init()
    LINK2GENERIC(eglGetCurrentDisplay_evgl_thread_cmd);
 }
 
-#endif /* EVAS_GL_RENDER_THREAD_IS_GENERIC */
+#endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 #endif

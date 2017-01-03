@@ -1,24 +1,28 @@
-/* DO NOT MODIFY THIS FILE AS IT IS AUTO-GENERATED */
-
+/*
+ * This is an automatically generated file using a python script.
+ * ($EFL_HOME/src/utils/evas/generate_gl_thread_api.py)
+ * Recommend that you modify data files ($EFL_HOME/src/utils/evas/gl_api_def.txt)
+ * and make use of scripts if you need to fix them.
+ */
 
 /*
-   GLenum
-   glGetError(void);
+ * GLenum
+ * glGetError(void);
  */
 
 typedef struct
 {
    GLenum return_value;
 
-} Thread_Command_glGetError;
+} Evas_Thread_Command_glGetError;
 
 static void
 _gl_thread_glGetError(void *data)
 {
-   Thread_Command_glGetError *thread_param =
-      (Thread_Command_glGetError *)data;
+   Evas_Thread_Command_glGetError *thread_data =
+      (Evas_Thread_Command_glGetError *)data;
 
-   thread_param->return_value = glGetError();
+   thread_data->return_value = glGetError();
 
 }
 
@@ -32,21 +36,21 @@ glGetError_thread_cmd(void)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetError thread_param_local;
-   Thread_Command_glGetError *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetError thread_data_local;
+   Evas_Thread_Command_glGetError *thread_data = &thread_data_local;
 
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetError,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
+ * void
+ * glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
  */
 
 typedef struct
@@ -58,20 +62,20 @@ typedef struct
    GLsizei stride;
    const void *pointer;
 
-} Thread_Command_glVertexAttribPointer;
+} Evas_Thread_Command_glVertexAttribPointer;
 
 static void
 _gl_thread_glVertexAttribPointer(void *data)
 {
-   Thread_Command_glVertexAttribPointer *thread_param =
-      (Thread_Command_glVertexAttribPointer *)data;
+   Evas_Thread_Command_glVertexAttribPointer *thread_data =
+      (Evas_Thread_Command_glVertexAttribPointer *)data;
 
-   glVertexAttribPointer(thread_param->index,
-                         thread_param->size,
-                         thread_param->type,
-                         thread_param->normalized,
-                         thread_param->stride,
-                         thread_param->pointer);
+   glVertexAttribPointer(thread_data->index,
+                         thread_data->size,
+                         thread_data->type,
+                         thread_data->normalized,
+                         thread_data->stride,
+                         thread_data->pointer);
 
 }
 
@@ -86,25 +90,25 @@ glVertexAttribPointer_thread_cmd(GLuint index, GLint size, GLenum type, GLboolea
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glVertexAttribPointer thread_param_local;
-   Thread_Command_glVertexAttribPointer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glVertexAttribPointer thread_data_local;
+   Evas_Thread_Command_glVertexAttribPointer *thread_data = &thread_data_local;
 
-   thread_param->index = index;
-   thread_param->size = size;
-   thread_param->type = type;
-   thread_param->normalized = normalized;
-   thread_param->stride = stride;
-   thread_param->pointer = pointer;
+   thread_data->index = index;
+   thread_data->size = size;
+   thread_data->type = type;
+   thread_data->normalized = normalized;
+   thread_data->stride = stride;
+   thread_data->pointer = pointer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glVertexAttribPointer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glEnableVertexAttribArray(GLuint index);
+ * void
+ * glEnableVertexAttribArray(GLuint index);
  */
 
 typedef struct
@@ -112,18 +116,18 @@ typedef struct
    GLuint index;
    int command_allocated;
 
-} Thread_Command_glEnableVertexAttribArray;
+} Evas_Thread_Command_glEnableVertexAttribArray;
 
 static void
 _gl_thread_glEnableVertexAttribArray(void *data)
 {
-   Thread_Command_glEnableVertexAttribArray *thread_param =
-      (Thread_Command_glEnableVertexAttribArray *)data;
+   Evas_Thread_Command_glEnableVertexAttribArray *thread_data =
+      (Evas_Thread_Command_glEnableVertexAttribArray *)data;
 
-   glEnableVertexAttribArray(thread_param->index);
+   glEnableVertexAttribArray(thread_data->index);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -137,36 +141,36 @@ glEnableVertexAttribArray_thread_cmd(GLuint index)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glEnableVertexAttribArray thread_param_local;
-   Thread_Command_glEnableVertexAttribArray *thread_param = &thread_param_local;
+   Evas_Thread_Command_glEnableVertexAttribArray thread_data_local;
+   Evas_Thread_Command_glEnableVertexAttribArray *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glEnableVertexAttribArray *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glEnableVertexAttribArray));
-        if (thread_param_new)
+        Evas_Thread_Command_glEnableVertexAttribArray *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glEnableVertexAttribArray));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_ENQUEUE;
           }
      }
 
-   thread_param->index = index;
+   thread_data->index = index;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glEnableVertexAttribArray,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDisableVertexAttribArray(GLuint index);
+ * void
+ * glDisableVertexAttribArray(GLuint index);
  */
 
 typedef struct
@@ -174,18 +178,18 @@ typedef struct
    GLuint index;
    int command_allocated;
 
-} Thread_Command_glDisableVertexAttribArray;
+} Evas_Thread_Command_glDisableVertexAttribArray;
 
 static void
 _gl_thread_glDisableVertexAttribArray(void *data)
 {
-   Thread_Command_glDisableVertexAttribArray *thread_param =
-      (Thread_Command_glDisableVertexAttribArray *)data;
+   Evas_Thread_Command_glDisableVertexAttribArray *thread_data =
+      (Evas_Thread_Command_glDisableVertexAttribArray *)data;
 
-   glDisableVertexAttribArray(thread_param->index);
+   glDisableVertexAttribArray(thread_data->index);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -199,36 +203,36 @@ glDisableVertexAttribArray_thread_cmd(GLuint index)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDisableVertexAttribArray thread_param_local;
-   Thread_Command_glDisableVertexAttribArray *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDisableVertexAttribArray thread_data_local;
+   Evas_Thread_Command_glDisableVertexAttribArray *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDisableVertexAttribArray *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDisableVertexAttribArray));
-        if (thread_param_new)
+        Evas_Thread_Command_glDisableVertexAttribArray *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDisableVertexAttribArray));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_ENQUEUE;
           }
      }
 
-   thread_param->index = index;
+   thread_data->index = index;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDisableVertexAttribArray,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDrawArrays(GLenum mode, GLint first, GLsizei count);
+ * void
+ * glDrawArrays(GLenum mode, GLint first, GLsizei count);
  */
 
 typedef struct
@@ -237,17 +241,17 @@ typedef struct
    GLint first;
    GLsizei count;
 
-} Thread_Command_glDrawArrays;
+} Evas_Thread_Command_glDrawArrays;
 
 static void
 _gl_thread_glDrawArrays(void *data)
 {
-   Thread_Command_glDrawArrays *thread_param =
-      (Thread_Command_glDrawArrays *)data;
+   Evas_Thread_Command_glDrawArrays *thread_data =
+      (Evas_Thread_Command_glDrawArrays *)data;
 
-   glDrawArrays(thread_param->mode,
-                thread_param->first,
-                thread_param->count);
+   glDrawArrays(thread_data->mode,
+                thread_data->first,
+                thread_data->count);
 
 }
 
@@ -262,22 +266,22 @@ glDrawArrays_thread_cmd(GLenum mode, GLint first, GLsizei count)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDrawArrays thread_param_local;
-   Thread_Command_glDrawArrays *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDrawArrays thread_data_local;
+   Evas_Thread_Command_glDrawArrays *thread_data = &thread_data_local;
 
-   thread_param->mode = mode;
-   thread_param->first = first;
-   thread_param->count = count;
+   thread_data->mode = mode;
+   thread_data->first = first;
+   thread_data->count = count;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDrawArrays,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDrawElements(GLenum mode, GLsizei count, GLenum type, const void *indices);
+ * void
+ * glDrawElements(GLenum mode, GLsizei count, GLenum type, const void *indices);
  */
 
 typedef struct
@@ -287,18 +291,18 @@ typedef struct
    GLenum type;
    const void *indices;
 
-} Thread_Command_glDrawElements;
+} Evas_Thread_Command_glDrawElements;
 
 static void
 _gl_thread_glDrawElements(void *data)
 {
-   Thread_Command_glDrawElements *thread_param =
-      (Thread_Command_glDrawElements *)data;
+   Evas_Thread_Command_glDrawElements *thread_data =
+      (Evas_Thread_Command_glDrawElements *)data;
 
-   glDrawElements(thread_param->mode,
-                  thread_param->count,
-                  thread_param->type,
-                  thread_param->indices);
+   glDrawElements(thread_data->mode,
+                  thread_data->count,
+                  thread_data->type,
+                  thread_data->indices);
 
 }
 
@@ -313,23 +317,23 @@ glDrawElements_thread_cmd(GLenum mode, GLsizei count, GLenum type, const void *i
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDrawElements thread_param_local;
-   Thread_Command_glDrawElements *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDrawElements thread_data_local;
+   Evas_Thread_Command_glDrawElements *thread_data = &thread_data_local;
 
-   thread_param->mode = mode;
-   thread_param->count = count;
-   thread_param->type = type;
-   thread_param->indices = indices;
+   thread_data->mode = mode;
+   thread_data->count = count;
+   thread_data->type = type;
+   thread_data->indices = indices;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDrawElements,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGenBuffers(GLsizei n, GLuint *buffers);
+ * void
+ * glGenBuffers(GLsizei n, GLuint *buffers);
  */
 
 typedef struct
@@ -337,16 +341,16 @@ typedef struct
    GLsizei n;
    GLuint *buffers;
 
-} Thread_Command_glGenBuffers;
+} Evas_Thread_Command_glGenBuffers;
 
 static void
 _gl_thread_glGenBuffers(void *data)
 {
-   Thread_Command_glGenBuffers *thread_param =
-      (Thread_Command_glGenBuffers *)data;
+   Evas_Thread_Command_glGenBuffers *thread_data =
+      (Evas_Thread_Command_glGenBuffers *)data;
 
-   glGenBuffers(thread_param->n,
-                thread_param->buffers);
+   glGenBuffers(thread_data->n,
+                thread_data->buffers);
 
 }
 
@@ -361,21 +365,21 @@ glGenBuffers_thread_cmd(GLsizei n, GLuint *buffers)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGenBuffers thread_param_local;
-   Thread_Command_glGenBuffers *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGenBuffers thread_data_local;
+   Evas_Thread_Command_glGenBuffers *thread_data = &thread_data_local;
 
-   thread_param->n = n;
-   thread_param->buffers = buffers;
+   thread_data->n = n;
+   thread_data->buffers = buffers;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGenBuffers,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDeleteBuffers(GLsizei n, const GLuint *buffers);
+ * void
+ * glDeleteBuffers(GLsizei n, const GLuint *buffers);
  */
 
 typedef struct
@@ -385,23 +389,23 @@ typedef struct
    void *buffers_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glDeleteBuffers;
+} Evas_Thread_Command_glDeleteBuffers;
 
 static void
 _gl_thread_glDeleteBuffers(void *data)
 {
-   Thread_Command_glDeleteBuffers *thread_param =
-      (Thread_Command_glDeleteBuffers *)data;
+   Evas_Thread_Command_glDeleteBuffers *thread_data =
+      (Evas_Thread_Command_glDeleteBuffers *)data;
 
-   glDeleteBuffers(thread_param->n,
-                   thread_param->buffers);
+   glDeleteBuffers(thread_data->n,
+                   thread_data->buffers);
 
 
-   if (thread_param->buffers_copied)
-     eina_mempool_free(_mp_delete_object, thread_param->buffers_copied);
+   if (thread_data->buffers_copied)
+     eina_mempool_free(_mp_delete_object, thread_data->buffers_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -415,29 +419,29 @@ glDeleteBuffers_thread_cmd(GLsizei n, const GLuint *buffers)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDeleteBuffers thread_param_local;
-   Thread_Command_glDeleteBuffers *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDeleteBuffers thread_data_local;
+   Evas_Thread_Command_glDeleteBuffers *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDeleteBuffers *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDeleteBuffers));
-        if (thread_param_new)
+        Evas_Thread_Command_glDeleteBuffers *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDeleteBuffers));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->n = n;
-   thread_param->buffers = buffers;
+   thread_data->n = n;
+   thread_data->buffers = buffers;
 
-   thread_param->buffers_copied = NULL;
+   thread_data->buffers_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -452,10 +456,10 @@ glDeleteBuffers_thread_cmd(GLsizei n, const GLuint *buffers)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->buffers_copied = eina_mempool_malloc(_mp_delete_object, copy_size);
-        if (thread_param->buffers_copied)
+        thread_data->buffers_copied = eina_mempool_malloc(_mp_delete_object, copy_size);
+        if (thread_data->buffers_copied)
           {
-             memcpy(thread_param->buffers_copied, buffers, copy_size);
+             memcpy(thread_data->buffers_copied, buffers, copy_size);
           }
         else
           {
@@ -463,20 +467,20 @@ glDeleteBuffers_thread_cmd(GLsizei n, const GLuint *buffers)
              goto finish;
           }
         /* 3. replace */
-        thread_param->buffers = (const GLuint  *)thread_param->buffers_copied;
+        thread_data->buffers = (const GLuint  *)thread_data->buffers_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDeleteBuffers,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glBindBuffer(GLenum target, GLuint buffer);
+ * void
+ * glBindBuffer(GLenum target, GLuint buffer);
  */
 
 typedef struct
@@ -485,19 +489,19 @@ typedef struct
    GLuint buffer;
    int command_allocated;
 
-} Thread_Command_glBindBuffer;
+} Evas_Thread_Command_glBindBuffer;
 
 static void
 _gl_thread_glBindBuffer(void *data)
 {
-   Thread_Command_glBindBuffer *thread_param =
-      (Thread_Command_glBindBuffer *)data;
+   Evas_Thread_Command_glBindBuffer *thread_data =
+      (Evas_Thread_Command_glBindBuffer *)data;
 
-   glBindBuffer(thread_param->target,
-                thread_param->buffer);
+   glBindBuffer(thread_data->target,
+                thread_data->buffer);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -511,37 +515,37 @@ glBindBuffer_thread_cmd(GLenum target, GLuint buffer)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glBindBuffer thread_param_local;
-   Thread_Command_glBindBuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glBindBuffer thread_data_local;
+   Evas_Thread_Command_glBindBuffer *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glBindBuffer *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glBindBuffer));
-        if (thread_param_new)
+        Evas_Thread_Command_glBindBuffer *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glBindBuffer));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->buffer = buffer;
+   thread_data->target = target;
+   thread_data->buffer = buffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glBindBuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glBufferData(GLenum target, GLsizeiptr size, const void *data, GLenum usage);
+ * void
+ * glBufferData(GLenum target, GLsizeiptr size, const void *data, GLenum usage);
  */
 
 typedef struct
@@ -551,18 +555,18 @@ typedef struct
    const void *data;
    GLenum usage;
 
-} Thread_Command_glBufferData;
+} Evas_Thread_Command_glBufferData;
 
 static void
 _gl_thread_glBufferData(void *data)
 {
-   Thread_Command_glBufferData *thread_param =
-      (Thread_Command_glBufferData *)data;
+   Evas_Thread_Command_glBufferData *thread_data =
+      (Evas_Thread_Command_glBufferData *)data;
 
-   glBufferData(thread_param->target,
-                thread_param->size,
-                thread_param->data,
-                thread_param->usage);
+   glBufferData(thread_data->target,
+                thread_data->size,
+                thread_data->data,
+                thread_data->usage);
 
 }
 
@@ -577,23 +581,23 @@ glBufferData_thread_cmd(GLenum target, GLsizeiptr size, const void *data, GLenum
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glBufferData thread_param_local;
-   Thread_Command_glBufferData *thread_param = &thread_param_local;
+   Evas_Thread_Command_glBufferData thread_data_local;
+   Evas_Thread_Command_glBufferData *thread_data = &thread_data_local;
 
-   thread_param->target = target;
-   thread_param->size = size;
-   thread_param->data = data;
-   thread_param->usage = usage;
+   thread_data->target = target;
+   thread_data->size = size;
+   thread_data->data = data;
+   thread_data->usage = usage;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glBufferData,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void *
-   glMapBuffer(GLenum target, GLenum access);
+ * void *
+ * glMapBuffer(GLenum target, GLenum access);
  */
 
 typedef struct
@@ -602,7 +606,7 @@ typedef struct
    GLenum target;
    GLenum access;
 
-} Thread_Command_glMapBuffer;
+} Evas_Thread_Command_glMapBuffer;
 
 void * (*orig_evas_glMapBuffer)(GLenum target, GLenum access);
 
@@ -621,11 +625,11 @@ glMapBuffer_orig_evas_get(void)
 static void
 _gl_thread_glMapBuffer(void *data)
 {
-   Thread_Command_glMapBuffer *thread_param =
-      (Thread_Command_glMapBuffer *)data;
+   Evas_Thread_Command_glMapBuffer *thread_data =
+      (Evas_Thread_Command_glMapBuffer *)data;
 
-   thread_param->return_value = orig_evas_glMapBuffer(thread_param->target,
-                                                      thread_param->access);
+   thread_data->return_value = orig_evas_glMapBuffer(thread_data->target,
+                                                     thread_data->access);
 
 }
 
@@ -639,23 +643,23 @@ glMapBuffer_thread_cmd(GLenum target, GLenum access)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glMapBuffer thread_param_local;
-   Thread_Command_glMapBuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glMapBuffer thread_data_local;
+   Evas_Thread_Command_glMapBuffer *thread_data = &thread_data_local;
 
-   thread_param->target = target;
-   thread_param->access = access;
+   thread_data->target = target;
+   thread_data->access = access;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glMapBuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   GLboolean
-   glUnmapBuffer(GLenum target);
+ * GLboolean
+ * glUnmapBuffer(GLenum target);
  */
 
 typedef struct
@@ -663,7 +667,7 @@ typedef struct
    GLboolean return_value;
    GLenum target;
 
-} Thread_Command_glUnmapBuffer;
+} Evas_Thread_Command_glUnmapBuffer;
 
 GLboolean (*orig_evas_glUnmapBuffer)(GLenum target);
 
@@ -682,10 +686,10 @@ glUnmapBuffer_orig_evas_get(void)
 static void
 _gl_thread_glUnmapBuffer(void *data)
 {
-   Thread_Command_glUnmapBuffer *thread_param =
-      (Thread_Command_glUnmapBuffer *)data;
+   Evas_Thread_Command_glUnmapBuffer *thread_data =
+      (Evas_Thread_Command_glUnmapBuffer *)data;
 
-   thread_param->return_value = orig_evas_glUnmapBuffer(thread_param->target);
+   thread_data->return_value = orig_evas_glUnmapBuffer(thread_data->target);
 
 }
 
@@ -699,22 +703,22 @@ glUnmapBuffer_thread_cmd(GLenum target)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUnmapBuffer thread_param_local;
-   Thread_Command_glUnmapBuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUnmapBuffer thread_data_local;
+   Evas_Thread_Command_glUnmapBuffer *thread_data = &thread_data_local;
 
-   thread_param->target = target;
+   thread_data->target = target;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUnmapBuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   GLuint
-   glCreateShader(GLenum type);
+ * GLuint
+ * glCreateShader(GLenum type);
  */
 
 typedef struct
@@ -722,15 +726,15 @@ typedef struct
    GLuint return_value;
    GLenum type;
 
-} Thread_Command_glCreateShader;
+} Evas_Thread_Command_glCreateShader;
 
 static void
 _gl_thread_glCreateShader(void *data)
 {
-   Thread_Command_glCreateShader *thread_param =
-      (Thread_Command_glCreateShader *)data;
+   Evas_Thread_Command_glCreateShader *thread_data =
+      (Evas_Thread_Command_glCreateShader *)data;
 
-   thread_param->return_value = glCreateShader(thread_param->type);
+   thread_data->return_value = glCreateShader(thread_data->type);
 
 }
 
@@ -744,22 +748,22 @@ glCreateShader_thread_cmd(GLenum type)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glCreateShader thread_param_local;
-   Thread_Command_glCreateShader *thread_param = &thread_param_local;
+   Evas_Thread_Command_glCreateShader thread_data_local;
+   Evas_Thread_Command_glCreateShader *thread_data = &thread_data_local;
 
-   thread_param->type = type;
+   thread_data->type = type;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glCreateShader,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glShaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length);
+ * void
+ * glShaderSource(GLuint shader, GLsizei count, const GLchar **string, const GLint *length);
  */
 
 typedef struct
@@ -771,23 +775,23 @@ typedef struct
    int command_allocated;
    GLSHADERSOURCE_COPY_VARIABLE; /* TODO */
 
-} Thread_Command_glShaderSource;
+} Evas_Thread_Command_glShaderSource;
 
 static void
 _gl_thread_glShaderSource(void *data)
 {
-   Thread_Command_glShaderSource *thread_param =
-      (Thread_Command_glShaderSource *)data;
+   Evas_Thread_Command_glShaderSource *thread_data =
+      (Evas_Thread_Command_glShaderSource *)data;
 
-   glShaderSource(thread_param->shader,
-                  thread_param->count,
-                  thread_param->string,
-                  thread_param->length);
+   glShaderSource(thread_data->shader,
+                  thread_data->count,
+                  thread_data->string,
+                  thread_data->length);
 
    GLSHADERSOURCE_COPY_VARIABLE_FREE; /* TODO */
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -801,29 +805,29 @@ glShaderSource_thread_cmd(GLuint shader, GLsizei count, const GLchar **string, c
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glShaderSource thread_param_local;
-   Thread_Command_glShaderSource *thread_param = &thread_param_local;
+   Evas_Thread_Command_glShaderSource thread_data_local;
+   Evas_Thread_Command_glShaderSource *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glShaderSource *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glShaderSource));
-        if (thread_param_new)
+        Evas_Thread_Command_glShaderSource *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glShaderSource));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->shader = shader;
-   thread_param->count = count;
-   thread_param->string = string;
-   thread_param->length = length;
+   thread_data->shader = shader;
+   thread_data->count = count;
+   thread_data->string = string;
+   thread_data->length = length;
 
    GLSHADERSOURCE_COPY_VARIABLE_INIT; /* TODO */
 
@@ -835,13 +839,13 @@ glShaderSource_thread_cmd(GLuint shader, GLsizei count, const GLchar **string, c
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glShaderSource,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glCompileShader(GLuint shader);
+ * void
+ * glCompileShader(GLuint shader);
  */
 
 typedef struct
@@ -849,18 +853,18 @@ typedef struct
    GLuint shader;
    int command_allocated;
 
-} Thread_Command_glCompileShader;
+} Evas_Thread_Command_glCompileShader;
 
 static void
 _gl_thread_glCompileShader(void *data)
 {
-   Thread_Command_glCompileShader *thread_param =
-      (Thread_Command_glCompileShader *)data;
+   Evas_Thread_Command_glCompileShader *thread_data =
+      (Evas_Thread_Command_glCompileShader *)data;
 
-   glCompileShader(thread_param->shader);
+   glCompileShader(thread_data->shader);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -874,36 +878,36 @@ glCompileShader_thread_cmd(GLuint shader)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glCompileShader thread_param_local;
-   Thread_Command_glCompileShader *thread_param = &thread_param_local;
+   Evas_Thread_Command_glCompileShader thread_data_local;
+   Evas_Thread_Command_glCompileShader *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glCompileShader *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glCompileShader));
-        if (thread_param_new)
+        Evas_Thread_Command_glCompileShader *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glCompileShader));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->shader = shader;
+   thread_data->shader = shader;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glCompileShader,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glReleaseShaderCompiler(void);
+ * void
+ * glReleaseShaderCompiler(void);
  */
 
 void (*orig_evas_glReleaseShaderCompiler)(void);
@@ -945,8 +949,8 @@ glReleaseShaderCompiler_thread_cmd(void)
 }
 
 /*
-   void
-   glDeleteShader(GLuint shader);
+ * void
+ * glDeleteShader(GLuint shader);
  */
 
 typedef struct
@@ -954,18 +958,18 @@ typedef struct
    GLuint shader;
    int command_allocated;
 
-} Thread_Command_glDeleteShader;
+} Evas_Thread_Command_glDeleteShader;
 
 static void
 _gl_thread_glDeleteShader(void *data)
 {
-   Thread_Command_glDeleteShader *thread_param =
-      (Thread_Command_glDeleteShader *)data;
+   Evas_Thread_Command_glDeleteShader *thread_data =
+      (Evas_Thread_Command_glDeleteShader *)data;
 
-   glDeleteShader(thread_param->shader);
+   glDeleteShader(thread_data->shader);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -979,51 +983,51 @@ glDeleteShader_thread_cmd(GLuint shader)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDeleteShader thread_param_local;
-   Thread_Command_glDeleteShader *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDeleteShader thread_data_local;
+   Evas_Thread_Command_glDeleteShader *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDeleteShader *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDeleteShader));
-        if (thread_param_new)
+        Evas_Thread_Command_glDeleteShader *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDeleteShader));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->shader = shader;
+   thread_data->shader = shader;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDeleteShader,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLuint
-   glCreateProgram(void);
+ * GLuint
+ * glCreateProgram(void);
  */
 
 typedef struct
 {
    GLuint return_value;
 
-} Thread_Command_glCreateProgram;
+} Evas_Thread_Command_glCreateProgram;
 
 static void
 _gl_thread_glCreateProgram(void *data)
 {
-   Thread_Command_glCreateProgram *thread_param =
-      (Thread_Command_glCreateProgram *)data;
+   Evas_Thread_Command_glCreateProgram *thread_data =
+      (Evas_Thread_Command_glCreateProgram *)data;
 
-   thread_param->return_value = glCreateProgram();
+   thread_data->return_value = glCreateProgram();
 
 }
 
@@ -1037,21 +1041,21 @@ glCreateProgram_thread_cmd(void)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glCreateProgram thread_param_local;
-   Thread_Command_glCreateProgram *thread_param = &thread_param_local;
+   Evas_Thread_Command_glCreateProgram thread_data_local;
+   Evas_Thread_Command_glCreateProgram *thread_data = &thread_data_local;
 
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glCreateProgram,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glAttachShader(GLuint program, GLuint shader);
+ * void
+ * glAttachShader(GLuint program, GLuint shader);
  */
 
 typedef struct
@@ -1060,19 +1064,19 @@ typedef struct
    GLuint shader;
    int command_allocated;
 
-} Thread_Command_glAttachShader;
+} Evas_Thread_Command_glAttachShader;
 
 static void
 _gl_thread_glAttachShader(void *data)
 {
-   Thread_Command_glAttachShader *thread_param =
-      (Thread_Command_glAttachShader *)data;
+   Evas_Thread_Command_glAttachShader *thread_data =
+      (Evas_Thread_Command_glAttachShader *)data;
 
-   glAttachShader(thread_param->program,
-                  thread_param->shader);
+   glAttachShader(thread_data->program,
+                  thread_data->shader);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1086,37 +1090,37 @@ glAttachShader_thread_cmd(GLuint program, GLuint shader)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glAttachShader thread_param_local;
-   Thread_Command_glAttachShader *thread_param = &thread_param_local;
+   Evas_Thread_Command_glAttachShader thread_data_local;
+   Evas_Thread_Command_glAttachShader *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glAttachShader *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glAttachShader));
-        if (thread_param_new)
+        Evas_Thread_Command_glAttachShader *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glAttachShader));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->program = program;
-   thread_param->shader = shader;
+   thread_data->program = program;
+   thread_data->shader = shader;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glAttachShader,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDetachShader(GLuint program, GLuint shader);
+ * void
+ * glDetachShader(GLuint program, GLuint shader);
  */
 
 typedef struct
@@ -1125,19 +1129,19 @@ typedef struct
    GLuint shader;
    int command_allocated;
 
-} Thread_Command_glDetachShader;
+} Evas_Thread_Command_glDetachShader;
 
 static void
 _gl_thread_glDetachShader(void *data)
 {
-   Thread_Command_glDetachShader *thread_param =
-      (Thread_Command_glDetachShader *)data;
+   Evas_Thread_Command_glDetachShader *thread_data =
+      (Evas_Thread_Command_glDetachShader *)data;
 
-   glDetachShader(thread_param->program,
-                  thread_param->shader);
+   glDetachShader(thread_data->program,
+                  thread_data->shader);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1151,37 +1155,37 @@ glDetachShader_thread_cmd(GLuint program, GLuint shader)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDetachShader thread_param_local;
-   Thread_Command_glDetachShader *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDetachShader thread_data_local;
+   Evas_Thread_Command_glDetachShader *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDetachShader *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDetachShader));
-        if (thread_param_new)
+        Evas_Thread_Command_glDetachShader *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDetachShader));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->program = program;
-   thread_param->shader = shader;
+   thread_data->program = program;
+   thread_data->shader = shader;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDetachShader,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glLinkProgram(GLuint program);
+ * void
+ * glLinkProgram(GLuint program);
  */
 
 typedef struct
@@ -1189,18 +1193,18 @@ typedef struct
    GLuint program;
    int command_allocated;
 
-} Thread_Command_glLinkProgram;
+} Evas_Thread_Command_glLinkProgram;
 
 static void
 _gl_thread_glLinkProgram(void *data)
 {
-   Thread_Command_glLinkProgram *thread_param =
-      (Thread_Command_glLinkProgram *)data;
+   Evas_Thread_Command_glLinkProgram *thread_data =
+      (Evas_Thread_Command_glLinkProgram *)data;
 
-   glLinkProgram(thread_param->program);
+   glLinkProgram(thread_data->program);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1214,36 +1218,36 @@ glLinkProgram_thread_cmd(GLuint program)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glLinkProgram thread_param_local;
-   Thread_Command_glLinkProgram *thread_param = &thread_param_local;
+   Evas_Thread_Command_glLinkProgram thread_data_local;
+   Evas_Thread_Command_glLinkProgram *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glLinkProgram *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glLinkProgram));
-        if (thread_param_new)
+        Evas_Thread_Command_glLinkProgram *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glLinkProgram));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->program = program;
+   thread_data->program = program;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glLinkProgram,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUseProgram(GLuint program);
+ * void
+ * glUseProgram(GLuint program);
  */
 
 typedef struct
@@ -1251,18 +1255,18 @@ typedef struct
    GLuint program;
    int command_allocated;
 
-} Thread_Command_glUseProgram;
+} Evas_Thread_Command_glUseProgram;
 
 static void
 _gl_thread_glUseProgram(void *data)
 {
-   Thread_Command_glUseProgram *thread_param =
-      (Thread_Command_glUseProgram *)data;
+   Evas_Thread_Command_glUseProgram *thread_data =
+      (Evas_Thread_Command_glUseProgram *)data;
 
-   glUseProgram(thread_param->program);
+   glUseProgram(thread_data->program);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1276,36 +1280,36 @@ glUseProgram_thread_cmd(GLuint program)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUseProgram thread_param_local;
-   Thread_Command_glUseProgram *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUseProgram thread_data_local;
+   Evas_Thread_Command_glUseProgram *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUseProgram *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUseProgram));
-        if (thread_param_new)
+        Evas_Thread_Command_glUseProgram *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUseProgram));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->program = program;
+   thread_data->program = program;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUseProgram,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glProgramParameteri(GLuint program, GLenum pname, GLint value);
+ * void
+ * glProgramParameteri(GLuint program, GLenum pname, GLint value);
  */
 
 typedef struct
@@ -1315,7 +1319,7 @@ typedef struct
    GLint value;
    int command_allocated;
 
-} Thread_Command_glProgramParameteri;
+} Evas_Thread_Command_glProgramParameteri;
 
 void (*orig_evas_glProgramParameteri)(GLuint program, GLenum pname, GLint value);
 
@@ -1334,15 +1338,15 @@ glProgramParameteri_orig_evas_get(void)
 static void
 _gl_thread_glProgramParameteri(void *data)
 {
-   Thread_Command_glProgramParameteri *thread_param =
-      (Thread_Command_glProgramParameteri *)data;
+   Evas_Thread_Command_glProgramParameteri *thread_data =
+      (Evas_Thread_Command_glProgramParameteri *)data;
 
-   orig_evas_glProgramParameteri(thread_param->program,
-                                 thread_param->pname,
-                                 thread_param->value);
+   orig_evas_glProgramParameteri(thread_data->program,
+                                 thread_data->pname,
+                                 thread_data->value);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1356,38 +1360,38 @@ glProgramParameteri_thread_cmd(GLuint program, GLenum pname, GLint value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glProgramParameteri thread_param_local;
-   Thread_Command_glProgramParameteri *thread_param = &thread_param_local;
+   Evas_Thread_Command_glProgramParameteri thread_data_local;
+   Evas_Thread_Command_glProgramParameteri *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glProgramParameteri *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glProgramParameteri));
-        if (thread_param_new)
+        Evas_Thread_Command_glProgramParameteri *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glProgramParameteri));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->program = program;
-   thread_param->pname = pname;
-   thread_param->value = value;
+   thread_data->program = program;
+   thread_data->pname = pname;
+   thread_data->value = value;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glProgramParameteri,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDeleteProgram(GLuint program);
+ * void
+ * glDeleteProgram(GLuint program);
  */
 
 typedef struct
@@ -1395,18 +1399,18 @@ typedef struct
    GLuint program;
    int command_allocated;
 
-} Thread_Command_glDeleteProgram;
+} Evas_Thread_Command_glDeleteProgram;
 
 static void
 _gl_thread_glDeleteProgram(void *data)
 {
-   Thread_Command_glDeleteProgram *thread_param =
-      (Thread_Command_glDeleteProgram *)data;
+   Evas_Thread_Command_glDeleteProgram *thread_data =
+      (Evas_Thread_Command_glDeleteProgram *)data;
 
-   glDeleteProgram(thread_param->program);
+   glDeleteProgram(thread_data->program);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1420,36 +1424,36 @@ glDeleteProgram_thread_cmd(GLuint program)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDeleteProgram thread_param_local;
-   Thread_Command_glDeleteProgram *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDeleteProgram thread_data_local;
+   Evas_Thread_Command_glDeleteProgram *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDeleteProgram *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDeleteProgram));
-        if (thread_param_new)
+        Evas_Thread_Command_glDeleteProgram *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDeleteProgram));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->program = program;
+   thread_data->program = program;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDeleteProgram,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetProgramBinary(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary);
+ * void
+ * glGetProgramBinary(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary);
  */
 
 typedef struct
@@ -1460,7 +1464,7 @@ typedef struct
    GLenum *binaryFormat;
    void *binary;
 
-} Thread_Command_glGetProgramBinary;
+} Evas_Thread_Command_glGetProgramBinary;
 
 void (*orig_evas_glGetProgramBinary)(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary);
 
@@ -1479,14 +1483,14 @@ glGetProgramBinary_orig_evas_get(void)
 static void
 _gl_thread_glGetProgramBinary(void *data)
 {
-   Thread_Command_glGetProgramBinary *thread_param =
-      (Thread_Command_glGetProgramBinary *)data;
+   Evas_Thread_Command_glGetProgramBinary *thread_data =
+      (Evas_Thread_Command_glGetProgramBinary *)data;
 
-   orig_evas_glGetProgramBinary(thread_param->program,
-                                thread_param->bufSize,
-                                thread_param->length,
-                                thread_param->binaryFormat,
-                                thread_param->binary);
+   orig_evas_glGetProgramBinary(thread_data->program,
+                                thread_data->bufSize,
+                                thread_data->length,
+                                thread_data->binaryFormat,
+                                thread_data->binary);
 
 }
 
@@ -1501,24 +1505,24 @@ glGetProgramBinary_thread_cmd(GLuint program, GLsizei bufSize, GLsizei *length, 
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetProgramBinary thread_param_local;
-   Thread_Command_glGetProgramBinary *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetProgramBinary thread_data_local;
+   Evas_Thread_Command_glGetProgramBinary *thread_data = &thread_data_local;
 
-   thread_param->program = program;
-   thread_param->bufSize = bufSize;
-   thread_param->length = length;
-   thread_param->binaryFormat = binaryFormat;
-   thread_param->binary = binary;
+   thread_data->program = program;
+   thread_data->bufSize = bufSize;
+   thread_data->length = length;
+   thread_data->binaryFormat = binaryFormat;
+   thread_data->binary = binary;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetProgramBinary,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glProgramBinary(GLuint program, GLenum binaryFormat, const void *binary, GLint length);
+ * void
+ * glProgramBinary(GLuint program, GLenum binaryFormat, const void *binary, GLint length);
  */
 
 typedef struct
@@ -1530,7 +1534,7 @@ typedef struct
    void *binary_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glProgramBinary;
+} Evas_Thread_Command_glProgramBinary;
 
 void (*orig_evas_glProgramBinary)(GLuint program, GLenum binaryFormat, const void *binary, GLint length);
 
@@ -1549,20 +1553,20 @@ glProgramBinary_orig_evas_get(void)
 static void
 _gl_thread_glProgramBinary(void *data)
 {
-   Thread_Command_glProgramBinary *thread_param =
-      (Thread_Command_glProgramBinary *)data;
+   Evas_Thread_Command_glProgramBinary *thread_data =
+      (Evas_Thread_Command_glProgramBinary *)data;
 
-   orig_evas_glProgramBinary(thread_param->program,
-                             thread_param->binaryFormat,
-                             thread_param->binary,
-                             thread_param->length);
+   orig_evas_glProgramBinary(thread_data->program,
+                             thread_data->binaryFormat,
+                             thread_data->binary,
+                             thread_data->length);
 
 
-   if (thread_param->binary_copied)
-     eina_mempool_free(_mp_default, thread_param->binary_copied);
+   if (thread_data->binary_copied)
+     eina_mempool_free(_mp_default, thread_data->binary_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1576,31 +1580,31 @@ glProgramBinary_thread_cmd(GLuint program, GLenum binaryFormat, const void *bina
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glProgramBinary thread_param_local;
-   Thread_Command_glProgramBinary *thread_param = &thread_param_local;
+   Evas_Thread_Command_glProgramBinary thread_data_local;
+   Evas_Thread_Command_glProgramBinary *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glProgramBinary *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glProgramBinary));
-        if (thread_param_new)
+        Evas_Thread_Command_glProgramBinary *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glProgramBinary));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->program = program;
-   thread_param->binaryFormat = binaryFormat;
-   thread_param->binary = binary;
-   thread_param->length = length;
+   thread_data->program = program;
+   thread_data->binaryFormat = binaryFormat;
+   thread_data->binary = binary;
+   thread_data->length = length;
 
-   thread_param->binary_copied = NULL;
+   thread_data->binary_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -1615,10 +1619,10 @@ glProgramBinary_thread_cmd(GLuint program, GLenum binaryFormat, const void *bina
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->binary_copied = eina_mempool_malloc(_mp_default, copy_size);
-        if (thread_param->binary_copied)
+        thread_data->binary_copied = eina_mempool_malloc(_mp_default, copy_size);
+        if (thread_data->binary_copied)
           {
-             memcpy(thread_param->binary_copied, binary, copy_size);
+             memcpy(thread_data->binary_copied, binary, copy_size);
           }
         else
           {
@@ -1626,20 +1630,20 @@ glProgramBinary_thread_cmd(GLuint program, GLenum binaryFormat, const void *bina
              goto finish;
           }
         /* 3. replace */
-        thread_param->binary = (const void  *)thread_param->binary_copied;
+        thread_data->binary = (const void  *)thread_data->binary_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glProgramBinary,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
+ * void
+ * glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
  */
 
 typedef struct
@@ -1652,21 +1656,21 @@ typedef struct
    GLenum *type;
    GLchar *name;
 
-} Thread_Command_glGetActiveAttrib;
+} Evas_Thread_Command_glGetActiveAttrib;
 
 static void
 _gl_thread_glGetActiveAttrib(void *data)
 {
-   Thread_Command_glGetActiveAttrib *thread_param =
-      (Thread_Command_glGetActiveAttrib *)data;
+   Evas_Thread_Command_glGetActiveAttrib *thread_data =
+      (Evas_Thread_Command_glGetActiveAttrib *)data;
 
-   glGetActiveAttrib(thread_param->program,
-                     thread_param->index,
-                     thread_param->bufSize,
-                     thread_param->length,
-                     thread_param->size,
-                     thread_param->type,
-                     thread_param->name);
+   glGetActiveAttrib(thread_data->program,
+                     thread_data->index,
+                     thread_data->bufSize,
+                     thread_data->length,
+                     thread_data->size,
+                     thread_data->type,
+                     thread_data->name);
 
 }
 
@@ -1681,26 +1685,26 @@ glGetActiveAttrib_thread_cmd(GLuint program, GLuint index, GLsizei bufSize, GLsi
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetActiveAttrib thread_param_local;
-   Thread_Command_glGetActiveAttrib *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetActiveAttrib thread_data_local;
+   Evas_Thread_Command_glGetActiveAttrib *thread_data = &thread_data_local;
 
-   thread_param->program = program;
-   thread_param->index = index;
-   thread_param->bufSize = bufSize;
-   thread_param->length = length;
-   thread_param->size = size;
-   thread_param->type = type;
-   thread_param->name = name;
+   thread_data->program = program;
+   thread_data->index = index;
+   thread_data->bufSize = bufSize;
+   thread_data->length = length;
+   thread_data->size = size;
+   thread_data->type = type;
+   thread_data->name = name;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetActiveAttrib,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLint
-   glGetAttribLocation(GLuint program, const GLchar *name);
+ * GLint
+ * glGetAttribLocation(GLuint program, const GLchar *name);
  */
 
 typedef struct
@@ -1709,16 +1713,16 @@ typedef struct
    GLuint program;
    const GLchar *name;
 
-} Thread_Command_glGetAttribLocation;
+} Evas_Thread_Command_glGetAttribLocation;
 
 static void
 _gl_thread_glGetAttribLocation(void *data)
 {
-   Thread_Command_glGetAttribLocation *thread_param =
-      (Thread_Command_glGetAttribLocation *)data;
+   Evas_Thread_Command_glGetAttribLocation *thread_data =
+      (Evas_Thread_Command_glGetAttribLocation *)data;
 
-   thread_param->return_value = glGetAttribLocation(thread_param->program,
-                                                    thread_param->name);
+   thread_data->return_value = glGetAttribLocation(thread_data->program,
+                                                   thread_data->name);
 
 }
 
@@ -1732,23 +1736,23 @@ glGetAttribLocation_thread_cmd(GLuint program, const GLchar *name)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetAttribLocation thread_param_local;
-   Thread_Command_glGetAttribLocation *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetAttribLocation thread_data_local;
+   Evas_Thread_Command_glGetAttribLocation *thread_data = &thread_data_local;
 
-   thread_param->program = program;
-   thread_param->name = name;
+   thread_data->program = program;
+   thread_data->name = name;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetAttribLocation,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glBindAttribLocation(GLuint program, GLuint index, const GLchar *name);
+ * void
+ * glBindAttribLocation(GLuint program, GLuint index, const GLchar *name);
  */
 
 typedef struct
@@ -1757,17 +1761,17 @@ typedef struct
    GLuint index;
    const GLchar *name;
 
-} Thread_Command_glBindAttribLocation;
+} Evas_Thread_Command_glBindAttribLocation;
 
 static void
 _gl_thread_glBindAttribLocation(void *data)
 {
-   Thread_Command_glBindAttribLocation *thread_param =
-      (Thread_Command_glBindAttribLocation *)data;
+   Evas_Thread_Command_glBindAttribLocation *thread_data =
+      (Evas_Thread_Command_glBindAttribLocation *)data;
 
-   glBindAttribLocation(thread_param->program,
-                        thread_param->index,
-                        thread_param->name);
+   glBindAttribLocation(thread_data->program,
+                        thread_data->index,
+                        thread_data->name);
 
 }
 
@@ -1782,22 +1786,22 @@ glBindAttribLocation_thread_cmd(GLuint program, GLuint index, const GLchar *name
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glBindAttribLocation thread_param_local;
-   Thread_Command_glBindAttribLocation *thread_param = &thread_param_local;
+   Evas_Thread_Command_glBindAttribLocation thread_data_local;
+   Evas_Thread_Command_glBindAttribLocation *thread_data = &thread_data_local;
 
-   thread_param->program = program;
-   thread_param->index = index;
-   thread_param->name = name;
+   thread_data->program = program;
+   thread_data->index = index;
+   thread_data->name = name;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glBindAttribLocation,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLint
-   glGetUniformLocation(GLuint program, const GLchar *name);
+ * GLint
+ * glGetUniformLocation(GLuint program, const GLchar *name);
  */
 
 typedef struct
@@ -1806,16 +1810,16 @@ typedef struct
    GLuint program;
    const GLchar *name;
 
-} Thread_Command_glGetUniformLocation;
+} Evas_Thread_Command_glGetUniformLocation;
 
 static void
 _gl_thread_glGetUniformLocation(void *data)
 {
-   Thread_Command_glGetUniformLocation *thread_param =
-      (Thread_Command_glGetUniformLocation *)data;
+   Evas_Thread_Command_glGetUniformLocation *thread_data =
+      (Evas_Thread_Command_glGetUniformLocation *)data;
 
-   thread_param->return_value = glGetUniformLocation(thread_param->program,
-                                                     thread_param->name);
+   thread_data->return_value = glGetUniformLocation(thread_data->program,
+                                                    thread_data->name);
 
 }
 
@@ -1829,23 +1833,23 @@ glGetUniformLocation_thread_cmd(GLuint program, const GLchar *name)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetUniformLocation thread_param_local;
-   Thread_Command_glGetUniformLocation *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetUniformLocation thread_data_local;
+   Evas_Thread_Command_glGetUniformLocation *thread_data = &thread_data_local;
 
-   thread_param->program = program;
-   thread_param->name = name;
+   thread_data->program = program;
+   thread_data->name = name;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetUniformLocation,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glUniform1f(GLint location, GLfloat v0);
+ * void
+ * glUniform1f(GLint location, GLfloat v0);
  */
 
 typedef struct
@@ -1854,19 +1858,19 @@ typedef struct
    GLfloat v0;
    int command_allocated;
 
-} Thread_Command_glUniform1f;
+} Evas_Thread_Command_glUniform1f;
 
 static void
 _gl_thread_glUniform1f(void *data)
 {
-   Thread_Command_glUniform1f *thread_param =
-      (Thread_Command_glUniform1f *)data;
+   Evas_Thread_Command_glUniform1f *thread_data =
+      (Evas_Thread_Command_glUniform1f *)data;
 
-   glUniform1f(thread_param->location,
-               thread_param->v0);
+   glUniform1f(thread_data->location,
+               thread_data->v0);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1880,37 +1884,37 @@ glUniform1f_thread_cmd(GLint location, GLfloat v0)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform1f thread_param_local;
-   Thread_Command_glUniform1f *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform1f thread_data_local;
+   Evas_Thread_Command_glUniform1f *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform1f *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform1f));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform1f *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform1f));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->v0 = v0;
+   thread_data->location = location;
+   thread_data->v0 = v0;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform1f,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform1i(GLint location, GLint v0);
+ * void
+ * glUniform1i(GLint location, GLint v0);
  */
 
 typedef struct
@@ -1919,19 +1923,19 @@ typedef struct
    GLint v0;
    int command_allocated;
 
-} Thread_Command_glUniform1i;
+} Evas_Thread_Command_glUniform1i;
 
 static void
 _gl_thread_glUniform1i(void *data)
 {
-   Thread_Command_glUniform1i *thread_param =
-      (Thread_Command_glUniform1i *)data;
+   Evas_Thread_Command_glUniform1i *thread_data =
+      (Evas_Thread_Command_glUniform1i *)data;
 
-   glUniform1i(thread_param->location,
-               thread_param->v0);
+   glUniform1i(thread_data->location,
+               thread_data->v0);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -1945,37 +1949,37 @@ glUniform1i_thread_cmd(GLint location, GLint v0)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform1i thread_param_local;
-   Thread_Command_glUniform1i *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform1i thread_data_local;
+   Evas_Thread_Command_glUniform1i *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform1i *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform1i));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform1i *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform1i));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->v0 = v0;
+   thread_data->location = location;
+   thread_data->v0 = v0;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform1i,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform2f(GLint location, GLfloat v0, GLfloat v1);
+ * void
+ * glUniform2f(GLint location, GLfloat v0, GLfloat v1);
  */
 
 typedef struct
@@ -1985,20 +1989,20 @@ typedef struct
    GLfloat v1;
    int command_allocated;
 
-} Thread_Command_glUniform2f;
+} Evas_Thread_Command_glUniform2f;
 
 static void
 _gl_thread_glUniform2f(void *data)
 {
-   Thread_Command_glUniform2f *thread_param =
-      (Thread_Command_glUniform2f *)data;
+   Evas_Thread_Command_glUniform2f *thread_data =
+      (Evas_Thread_Command_glUniform2f *)data;
 
-   glUniform2f(thread_param->location,
-               thread_param->v0,
-               thread_param->v1);
+   glUniform2f(thread_data->location,
+               thread_data->v0,
+               thread_data->v1);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2012,38 +2016,38 @@ glUniform2f_thread_cmd(GLint location, GLfloat v0, GLfloat v1)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform2f thread_param_local;
-   Thread_Command_glUniform2f *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform2f thread_data_local;
+   Evas_Thread_Command_glUniform2f *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform2f *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform2f));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform2f *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform2f));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->v0 = v0;
-   thread_param->v1 = v1;
+   thread_data->location = location;
+   thread_data->v0 = v0;
+   thread_data->v1 = v1;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform2f,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform2i(GLint location, GLint v0, GLint v1);
+ * void
+ * glUniform2i(GLint location, GLint v0, GLint v1);
  */
 
 typedef struct
@@ -2053,20 +2057,20 @@ typedef struct
    GLint v1;
    int command_allocated;
 
-} Thread_Command_glUniform2i;
+} Evas_Thread_Command_glUniform2i;
 
 static void
 _gl_thread_glUniform2i(void *data)
 {
-   Thread_Command_glUniform2i *thread_param =
-      (Thread_Command_glUniform2i *)data;
+   Evas_Thread_Command_glUniform2i *thread_data =
+      (Evas_Thread_Command_glUniform2i *)data;
 
-   glUniform2i(thread_param->location,
-               thread_param->v0,
-               thread_param->v1);
+   glUniform2i(thread_data->location,
+               thread_data->v0,
+               thread_data->v1);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2080,38 +2084,38 @@ glUniform2i_thread_cmd(GLint location, GLint v0, GLint v1)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform2i thread_param_local;
-   Thread_Command_glUniform2i *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform2i thread_data_local;
+   Evas_Thread_Command_glUniform2i *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform2i *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform2i));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform2i *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform2i));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->v0 = v0;
-   thread_param->v1 = v1;
+   thread_data->location = location;
+   thread_data->v0 = v0;
+   thread_data->v1 = v1;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform2i,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
+ * void
+ * glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
  */
 
 typedef struct
@@ -2122,21 +2126,21 @@ typedef struct
    GLfloat v2;
    int command_allocated;
 
-} Thread_Command_glUniform3f;
+} Evas_Thread_Command_glUniform3f;
 
 static void
 _gl_thread_glUniform3f(void *data)
 {
-   Thread_Command_glUniform3f *thread_param =
-      (Thread_Command_glUniform3f *)data;
+   Evas_Thread_Command_glUniform3f *thread_data =
+      (Evas_Thread_Command_glUniform3f *)data;
 
-   glUniform3f(thread_param->location,
-               thread_param->v0,
-               thread_param->v1,
-               thread_param->v2);
+   glUniform3f(thread_data->location,
+               thread_data->v0,
+               thread_data->v1,
+               thread_data->v2);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2150,39 +2154,39 @@ glUniform3f_thread_cmd(GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform3f thread_param_local;
-   Thread_Command_glUniform3f *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform3f thread_data_local;
+   Evas_Thread_Command_glUniform3f *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform3f *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform3f));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform3f *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform3f));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->v0 = v0;
-   thread_param->v1 = v1;
-   thread_param->v2 = v2;
+   thread_data->location = location;
+   thread_data->v0 = v0;
+   thread_data->v1 = v1;
+   thread_data->v2 = v2;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform3f,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform3i(GLint location, GLint v0, GLint v1, GLint v2);
+ * void
+ * glUniform3i(GLint location, GLint v0, GLint v1, GLint v2);
  */
 
 typedef struct
@@ -2193,21 +2197,21 @@ typedef struct
    GLint v2;
    int command_allocated;
 
-} Thread_Command_glUniform3i;
+} Evas_Thread_Command_glUniform3i;
 
 static void
 _gl_thread_glUniform3i(void *data)
 {
-   Thread_Command_glUniform3i *thread_param =
-      (Thread_Command_glUniform3i *)data;
+   Evas_Thread_Command_glUniform3i *thread_data =
+      (Evas_Thread_Command_glUniform3i *)data;
 
-   glUniform3i(thread_param->location,
-               thread_param->v0,
-               thread_param->v1,
-               thread_param->v2);
+   glUniform3i(thread_data->location,
+               thread_data->v0,
+               thread_data->v1,
+               thread_data->v2);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2221,39 +2225,39 @@ glUniform3i_thread_cmd(GLint location, GLint v0, GLint v1, GLint v2)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform3i thread_param_local;
-   Thread_Command_glUniform3i *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform3i thread_data_local;
+   Evas_Thread_Command_glUniform3i *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform3i *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform3i));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform3i *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform3i));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->v0 = v0;
-   thread_param->v1 = v1;
-   thread_param->v2 = v2;
+   thread_data->location = location;
+   thread_data->v0 = v0;
+   thread_data->v1 = v1;
+   thread_data->v2 = v2;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform3i,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+ * void
+ * glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
  */
 
 typedef struct
@@ -2265,22 +2269,22 @@ typedef struct
    GLfloat v3;
    int command_allocated;
 
-} Thread_Command_glUniform4f;
+} Evas_Thread_Command_glUniform4f;
 
 static void
 _gl_thread_glUniform4f(void *data)
 {
-   Thread_Command_glUniform4f *thread_param =
-      (Thread_Command_glUniform4f *)data;
+   Evas_Thread_Command_glUniform4f *thread_data =
+      (Evas_Thread_Command_glUniform4f *)data;
 
-   glUniform4f(thread_param->location,
-               thread_param->v0,
-               thread_param->v1,
-               thread_param->v2,
-               thread_param->v3);
+   glUniform4f(thread_data->location,
+               thread_data->v0,
+               thread_data->v1,
+               thread_data->v2,
+               thread_data->v3);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2294,40 +2298,40 @@ glUniform4f_thread_cmd(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLflo
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform4f thread_param_local;
-   Thread_Command_glUniform4f *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform4f thread_data_local;
+   Evas_Thread_Command_glUniform4f *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform4f *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform4f));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform4f *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform4f));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->v0 = v0;
-   thread_param->v1 = v1;
-   thread_param->v2 = v2;
-   thread_param->v3 = v3;
+   thread_data->location = location;
+   thread_data->v0 = v0;
+   thread_data->v1 = v1;
+   thread_data->v2 = v2;
+   thread_data->v3 = v3;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform4f,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
+ * void
+ * glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
  */
 
 typedef struct
@@ -2339,22 +2343,22 @@ typedef struct
    GLint v3;
    int command_allocated;
 
-} Thread_Command_glUniform4i;
+} Evas_Thread_Command_glUniform4i;
 
 static void
 _gl_thread_glUniform4i(void *data)
 {
-   Thread_Command_glUniform4i *thread_param =
-      (Thread_Command_glUniform4i *)data;
+   Evas_Thread_Command_glUniform4i *thread_data =
+      (Evas_Thread_Command_glUniform4i *)data;
 
-   glUniform4i(thread_param->location,
-               thread_param->v0,
-               thread_param->v1,
-               thread_param->v2,
-               thread_param->v3);
+   glUniform4i(thread_data->location,
+               thread_data->v0,
+               thread_data->v1,
+               thread_data->v2,
+               thread_data->v3);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2368,40 +2372,40 @@ glUniform4i_thread_cmd(GLint location, GLint v0, GLint v1, GLint v2, GLint v3)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform4i thread_param_local;
-   Thread_Command_glUniform4i *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform4i thread_data_local;
+   Evas_Thread_Command_glUniform4i *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform4i *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform4i));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform4i *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform4i));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->v0 = v0;
-   thread_param->v1 = v1;
-   thread_param->v2 = v2;
-   thread_param->v3 = v3;
+   thread_data->location = location;
+   thread_data->v0 = v0;
+   thread_data->v1 = v1;
+   thread_data->v2 = v2;
+   thread_data->v3 = v3;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform4i,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform1fv(GLint location, GLsizei count, const GLfloat *value);
+ * void
+ * glUniform1fv(GLint location, GLsizei count, const GLfloat *value);
  */
 
 typedef struct
@@ -2412,24 +2416,24 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniform1fv;
+} Evas_Thread_Command_glUniform1fv;
 
 static void
 _gl_thread_glUniform1fv(void *data)
 {
-   Thread_Command_glUniform1fv *thread_param =
-      (Thread_Command_glUniform1fv *)data;
+   Evas_Thread_Command_glUniform1fv *thread_data =
+      (Evas_Thread_Command_glUniform1fv *)data;
 
-   glUniform1fv(thread_param->location,
-                thread_param->count,
-                thread_param->value);
+   glUniform1fv(thread_data->location,
+                thread_data->count,
+                thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2443,30 +2447,30 @@ glUniform1fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform1fv thread_param_local;
-   Thread_Command_glUniform1fv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform1fv thread_data_local;
+   Evas_Thread_Command_glUniform1fv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform1fv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform1fv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform1fv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform1fv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -2481,10 +2485,10 @@ glUniform1fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -2492,20 +2496,20 @@ glUniform1fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLfloat  *)thread_param->value_copied;
+        thread_data->value = (const GLfloat  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform1fv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform1iv(GLint location, GLsizei count, const GLint *value);
+ * void
+ * glUniform1iv(GLint location, GLsizei count, const GLint *value);
  */
 
 typedef struct
@@ -2516,24 +2520,24 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniform1iv;
+} Evas_Thread_Command_glUniform1iv;
 
 static void
 _gl_thread_glUniform1iv(void *data)
 {
-   Thread_Command_glUniform1iv *thread_param =
-      (Thread_Command_glUniform1iv *)data;
+   Evas_Thread_Command_glUniform1iv *thread_data =
+      (Evas_Thread_Command_glUniform1iv *)data;
 
-   glUniform1iv(thread_param->location,
-                thread_param->count,
-                thread_param->value);
+   glUniform1iv(thread_data->location,
+                thread_data->count,
+                thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2547,30 +2551,30 @@ glUniform1iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform1iv thread_param_local;
-   Thread_Command_glUniform1iv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform1iv thread_data_local;
+   Evas_Thread_Command_glUniform1iv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform1iv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform1iv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform1iv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform1iv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -2585,10 +2589,10 @@ glUniform1iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -2596,20 +2600,20 @@ glUniform1iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLint  *)thread_param->value_copied;
+        thread_data->value = (const GLint  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform1iv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform2fv(GLint location, GLsizei count, const GLfloat *value);
+ * void
+ * glUniform2fv(GLint location, GLsizei count, const GLfloat *value);
  */
 
 typedef struct
@@ -2620,24 +2624,24 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniform2fv;
+} Evas_Thread_Command_glUniform2fv;
 
 static void
 _gl_thread_glUniform2fv(void *data)
 {
-   Thread_Command_glUniform2fv *thread_param =
-      (Thread_Command_glUniform2fv *)data;
+   Evas_Thread_Command_glUniform2fv *thread_data =
+      (Evas_Thread_Command_glUniform2fv *)data;
 
-   glUniform2fv(thread_param->location,
-                thread_param->count,
-                thread_param->value);
+   glUniform2fv(thread_data->location,
+                thread_data->count,
+                thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2651,30 +2655,30 @@ glUniform2fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform2fv thread_param_local;
-   Thread_Command_glUniform2fv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform2fv thread_data_local;
+   Evas_Thread_Command_glUniform2fv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform2fv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform2fv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform2fv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform2fv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -2689,10 +2693,10 @@ glUniform2fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -2700,20 +2704,20 @@ glUniform2fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLfloat  *)thread_param->value_copied;
+        thread_data->value = (const GLfloat  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform2fv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform2iv(GLint location, GLsizei count, const GLint *value);
+ * void
+ * glUniform2iv(GLint location, GLsizei count, const GLint *value);
  */
 
 typedef struct
@@ -2724,24 +2728,24 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniform2iv;
+} Evas_Thread_Command_glUniform2iv;
 
 static void
 _gl_thread_glUniform2iv(void *data)
 {
-   Thread_Command_glUniform2iv *thread_param =
-      (Thread_Command_glUniform2iv *)data;
+   Evas_Thread_Command_glUniform2iv *thread_data =
+      (Evas_Thread_Command_glUniform2iv *)data;
 
-   glUniform2iv(thread_param->location,
-                thread_param->count,
-                thread_param->value);
+   glUniform2iv(thread_data->location,
+                thread_data->count,
+                thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2755,30 +2759,30 @@ glUniform2iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform2iv thread_param_local;
-   Thread_Command_glUniform2iv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform2iv thread_data_local;
+   Evas_Thread_Command_glUniform2iv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform2iv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform2iv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform2iv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform2iv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -2793,10 +2797,10 @@ glUniform2iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -2804,20 +2808,20 @@ glUniform2iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLint  *)thread_param->value_copied;
+        thread_data->value = (const GLint  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform2iv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform3fv(GLint location, GLsizei count, const GLfloat *value);
+ * void
+ * glUniform3fv(GLint location, GLsizei count, const GLfloat *value);
  */
 
 typedef struct
@@ -2828,24 +2832,24 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniform3fv;
+} Evas_Thread_Command_glUniform3fv;
 
 static void
 _gl_thread_glUniform3fv(void *data)
 {
-   Thread_Command_glUniform3fv *thread_param =
-      (Thread_Command_glUniform3fv *)data;
+   Evas_Thread_Command_glUniform3fv *thread_data =
+      (Evas_Thread_Command_glUniform3fv *)data;
 
-   glUniform3fv(thread_param->location,
-                thread_param->count,
-                thread_param->value);
+   glUniform3fv(thread_data->location,
+                thread_data->count,
+                thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2859,30 +2863,30 @@ glUniform3fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform3fv thread_param_local;
-   Thread_Command_glUniform3fv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform3fv thread_data_local;
+   Evas_Thread_Command_glUniform3fv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform3fv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform3fv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform3fv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform3fv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -2897,10 +2901,10 @@ glUniform3fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -2908,20 +2912,20 @@ glUniform3fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLfloat  *)thread_param->value_copied;
+        thread_data->value = (const GLfloat  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform3fv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform3iv(GLint location, GLsizei count, const GLint *value);
+ * void
+ * glUniform3iv(GLint location, GLsizei count, const GLint *value);
  */
 
 typedef struct
@@ -2932,24 +2936,24 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniform3iv;
+} Evas_Thread_Command_glUniform3iv;
 
 static void
 _gl_thread_glUniform3iv(void *data)
 {
-   Thread_Command_glUniform3iv *thread_param =
-      (Thread_Command_glUniform3iv *)data;
+   Evas_Thread_Command_glUniform3iv *thread_data =
+      (Evas_Thread_Command_glUniform3iv *)data;
 
-   glUniform3iv(thread_param->location,
-                thread_param->count,
-                thread_param->value);
+   glUniform3iv(thread_data->location,
+                thread_data->count,
+                thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -2963,30 +2967,30 @@ glUniform3iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform3iv thread_param_local;
-   Thread_Command_glUniform3iv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform3iv thread_data_local;
+   Evas_Thread_Command_glUniform3iv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform3iv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform3iv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform3iv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform3iv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -3001,10 +3005,10 @@ glUniform3iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -3012,20 +3016,20 @@ glUniform3iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLint  *)thread_param->value_copied;
+        thread_data->value = (const GLint  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform3iv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform4fv(GLint location, GLsizei count, const GLfloat *value);
+ * void
+ * glUniform4fv(GLint location, GLsizei count, const GLfloat *value);
  */
 
 typedef struct
@@ -3036,24 +3040,24 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniform4fv;
+} Evas_Thread_Command_glUniform4fv;
 
 static void
 _gl_thread_glUniform4fv(void *data)
 {
-   Thread_Command_glUniform4fv *thread_param =
-      (Thread_Command_glUniform4fv *)data;
+   Evas_Thread_Command_glUniform4fv *thread_data =
+      (Evas_Thread_Command_glUniform4fv *)data;
 
-   glUniform4fv(thread_param->location,
-                thread_param->count,
-                thread_param->value);
+   glUniform4fv(thread_data->location,
+                thread_data->count,
+                thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3067,30 +3071,30 @@ glUniform4fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform4fv thread_param_local;
-   Thread_Command_glUniform4fv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform4fv thread_data_local;
+   Evas_Thread_Command_glUniform4fv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform4fv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform4fv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform4fv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform4fv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -3105,10 +3109,10 @@ glUniform4fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -3116,20 +3120,20 @@ glUniform4fv_thread_cmd(GLint location, GLsizei count, const GLfloat *value)
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLfloat  *)thread_param->value_copied;
+        thread_data->value = (const GLfloat  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform4fv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniform4iv(GLint location, GLsizei count, const GLint *value);
+ * void
+ * glUniform4iv(GLint location, GLsizei count, const GLint *value);
  */
 
 typedef struct
@@ -3140,24 +3144,24 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniform4iv;
+} Evas_Thread_Command_glUniform4iv;
 
 static void
 _gl_thread_glUniform4iv(void *data)
 {
-   Thread_Command_glUniform4iv *thread_param =
-      (Thread_Command_glUniform4iv *)data;
+   Evas_Thread_Command_glUniform4iv *thread_data =
+      (Evas_Thread_Command_glUniform4iv *)data;
 
-   glUniform4iv(thread_param->location,
-                thread_param->count,
-                thread_param->value);
+   glUniform4iv(thread_data->location,
+                thread_data->count,
+                thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3171,30 +3175,30 @@ glUniform4iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniform4iv thread_param_local;
-   Thread_Command_glUniform4iv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniform4iv thread_data_local;
+   Evas_Thread_Command_glUniform4iv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniform4iv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniform4iv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniform4iv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniform4iv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -3209,10 +3213,10 @@ glUniform4iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -3220,20 +3224,20 @@ glUniform4iv_thread_cmd(GLint location, GLsizei count, const GLint *value)
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLint  *)thread_param->value_copied;
+        thread_data->value = (const GLint  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniform4iv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+ * void
+ * glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
  */
 
 typedef struct
@@ -3245,25 +3249,25 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniformMatrix2fv;
+} Evas_Thread_Command_glUniformMatrix2fv;
 
 static void
 _gl_thread_glUniformMatrix2fv(void *data)
 {
-   Thread_Command_glUniformMatrix2fv *thread_param =
-      (Thread_Command_glUniformMatrix2fv *)data;
+   Evas_Thread_Command_glUniformMatrix2fv *thread_data =
+      (Evas_Thread_Command_glUniformMatrix2fv *)data;
 
-   glUniformMatrix2fv(thread_param->location,
-                      thread_param->count,
-                      thread_param->transpose,
-                      thread_param->value);
+   glUniformMatrix2fv(thread_data->location,
+                      thread_data->count,
+                      thread_data->transpose,
+                      thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3277,31 +3281,31 @@ glUniformMatrix2fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniformMatrix2fv thread_param_local;
-   Thread_Command_glUniformMatrix2fv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniformMatrix2fv thread_data_local;
+   Evas_Thread_Command_glUniformMatrix2fv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniformMatrix2fv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniformMatrix2fv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniformMatrix2fv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniformMatrix2fv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->transpose = transpose;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->transpose = transpose;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -3316,10 +3320,10 @@ glUniformMatrix2fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -3327,20 +3331,20 @@ glUniformMatrix2fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLfloat  *)thread_param->value_copied;
+        thread_data->value = (const GLfloat  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniformMatrix2fv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+ * void
+ * glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
  */
 
 typedef struct
@@ -3352,25 +3356,25 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniformMatrix3fv;
+} Evas_Thread_Command_glUniformMatrix3fv;
 
 static void
 _gl_thread_glUniformMatrix3fv(void *data)
 {
-   Thread_Command_glUniformMatrix3fv *thread_param =
-      (Thread_Command_glUniformMatrix3fv *)data;
+   Evas_Thread_Command_glUniformMatrix3fv *thread_data =
+      (Evas_Thread_Command_glUniformMatrix3fv *)data;
 
-   glUniformMatrix3fv(thread_param->location,
-                      thread_param->count,
-                      thread_param->transpose,
-                      thread_param->value);
+   glUniformMatrix3fv(thread_data->location,
+                      thread_data->count,
+                      thread_data->transpose,
+                      thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3384,31 +3388,31 @@ glUniformMatrix3fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniformMatrix3fv thread_param_local;
-   Thread_Command_glUniformMatrix3fv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniformMatrix3fv thread_data_local;
+   Evas_Thread_Command_glUniformMatrix3fv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniformMatrix3fv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniformMatrix3fv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniformMatrix3fv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniformMatrix3fv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->transpose = transpose;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->transpose = transpose;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -3423,10 +3427,10 @@ glUniformMatrix3fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -3434,20 +3438,20 @@ glUniformMatrix3fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLfloat  *)thread_param->value_copied;
+        thread_data->value = (const GLfloat  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniformMatrix3fv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+ * void
+ * glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
  */
 
 typedef struct
@@ -3459,25 +3463,25 @@ typedef struct
    void *value_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glUniformMatrix4fv;
+} Evas_Thread_Command_glUniformMatrix4fv;
 
 static void
 _gl_thread_glUniformMatrix4fv(void *data)
 {
-   Thread_Command_glUniformMatrix4fv *thread_param =
-      (Thread_Command_glUniformMatrix4fv *)data;
+   Evas_Thread_Command_glUniformMatrix4fv *thread_data =
+      (Evas_Thread_Command_glUniformMatrix4fv *)data;
 
-   glUniformMatrix4fv(thread_param->location,
-                      thread_param->count,
-                      thread_param->transpose,
-                      thread_param->value);
+   glUniformMatrix4fv(thread_data->location,
+                      thread_data->count,
+                      thread_data->transpose,
+                      thread_data->value);
 
 
-   if (thread_param->value_copied)
-     eina_mempool_free(_mp_uniform, thread_param->value_copied);
+   if (thread_data->value_copied)
+     eina_mempool_free(_mp_uniform, thread_data->value_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3491,31 +3495,31 @@ glUniformMatrix4fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glUniformMatrix4fv thread_param_local;
-   Thread_Command_glUniformMatrix4fv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glUniformMatrix4fv thread_data_local;
+   Evas_Thread_Command_glUniformMatrix4fv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glUniformMatrix4fv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glUniformMatrix4fv));
-        if (thread_param_new)
+        Evas_Thread_Command_glUniformMatrix4fv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glUniformMatrix4fv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->location = location;
-   thread_param->count = count;
-   thread_param->transpose = transpose;
-   thread_param->value = value;
+   thread_data->location = location;
+   thread_data->count = count;
+   thread_data->transpose = transpose;
+   thread_data->value = value;
 
-   thread_param->value_copied = NULL;
+   thread_data->value_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -3530,10 +3534,10 @@ glUniformMatrix4fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
-        if (thread_param->value_copied)
+        thread_data->value_copied = eina_mempool_malloc(_mp_uniform, copy_size);
+        if (thread_data->value_copied)
           {
-             memcpy(thread_param->value_copied, value, copy_size);
+             memcpy(thread_data->value_copied, value, copy_size);
           }
         else
           {
@@ -3541,20 +3545,20 @@ glUniformMatrix4fv_thread_cmd(GLint location, GLsizei count, GLboolean transpose
              goto finish;
           }
         /* 3. replace */
-        thread_param->value = (const GLfloat  *)thread_param->value_copied;
+        thread_data->value = (const GLfloat  *)thread_data->value_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glUniformMatrix4fv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glViewport(GLint x, GLint y, GLsizei width, GLsizei height);
+ * void
+ * glViewport(GLint x, GLint y, GLsizei width, GLsizei height);
  */
 
 typedef struct
@@ -3565,21 +3569,21 @@ typedef struct
    GLsizei height;
    int command_allocated;
 
-} Thread_Command_glViewport;
+} Evas_Thread_Command_glViewport;
 
 static void
 _gl_thread_glViewport(void *data)
 {
-   Thread_Command_glViewport *thread_param =
-      (Thread_Command_glViewport *)data;
+   Evas_Thread_Command_glViewport *thread_data =
+      (Evas_Thread_Command_glViewport *)data;
 
-   glViewport(thread_param->x,
-              thread_param->y,
-              thread_param->width,
-              thread_param->height);
+   glViewport(thread_data->x,
+              thread_data->y,
+              thread_data->width,
+              thread_data->height);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3593,39 +3597,39 @@ glViewport_thread_cmd(GLint x, GLint y, GLsizei width, GLsizei height)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glViewport thread_param_local;
-   Thread_Command_glViewport *thread_param = &thread_param_local;
+   Evas_Thread_Command_glViewport thread_data_local;
+   Evas_Thread_Command_glViewport *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glViewport *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glViewport));
-        if (thread_param_new)
+        Evas_Thread_Command_glViewport *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glViewport));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->x = x;
-   thread_param->y = y;
-   thread_param->width = width;
-   thread_param->height = height;
+   thread_data->x = x;
+   thread_data->y = y;
+   thread_data->width = width;
+   thread_data->height = height;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glViewport,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glEnable(GLenum cap);
+ * void
+ * glEnable(GLenum cap);
  */
 
 typedef struct
@@ -3633,18 +3637,18 @@ typedef struct
    GLenum cap;
    int command_allocated;
 
-} Thread_Command_glEnable;
+} Evas_Thread_Command_glEnable;
 
 static void
 _gl_thread_glEnable(void *data)
 {
-   Thread_Command_glEnable *thread_param =
-      (Thread_Command_glEnable *)data;
+   Evas_Thread_Command_glEnable *thread_data =
+      (Evas_Thread_Command_glEnable *)data;
 
-   glEnable(thread_param->cap);
+   glEnable(thread_data->cap);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3658,36 +3662,36 @@ glEnable_thread_cmd(GLenum cap)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glEnable thread_param_local;
-   Thread_Command_glEnable *thread_param = &thread_param_local;
+   Evas_Thread_Command_glEnable thread_data_local;
+   Evas_Thread_Command_glEnable *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glEnable *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glEnable));
-        if (thread_param_new)
+        Evas_Thread_Command_glEnable *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glEnable));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_ENQUEUE;
           }
      }
 
-   thread_param->cap = cap;
+   thread_data->cap = cap;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glEnable,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDisable(GLenum cap);
+ * void
+ * glDisable(GLenum cap);
  */
 
 typedef struct
@@ -3695,18 +3699,18 @@ typedef struct
    GLenum cap;
    int command_allocated;
 
-} Thread_Command_glDisable;
+} Evas_Thread_Command_glDisable;
 
 static void
 _gl_thread_glDisable(void *data)
 {
-   Thread_Command_glDisable *thread_param =
-      (Thread_Command_glDisable *)data;
+   Evas_Thread_Command_glDisable *thread_data =
+      (Evas_Thread_Command_glDisable *)data;
 
-   glDisable(thread_param->cap);
+   glDisable(thread_data->cap);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3720,36 +3724,36 @@ glDisable_thread_cmd(GLenum cap)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDisable thread_param_local;
-   Thread_Command_glDisable *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDisable thread_data_local;
+   Evas_Thread_Command_glDisable *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDisable *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDisable));
-        if (thread_param_new)
+        Evas_Thread_Command_glDisable *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDisable));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_ENQUEUE;
           }
      }
 
-   thread_param->cap = cap;
+   thread_data->cap = cap;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDisable,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glLineWidth(GLfloat width);
+ * void
+ * glLineWidth(GLfloat width);
  */
 
 typedef struct
@@ -3757,18 +3761,18 @@ typedef struct
    GLfloat width;
    int command_allocated;
 
-} Thread_Command_glLineWidth;
+} Evas_Thread_Command_glLineWidth;
 
 static void
 _gl_thread_glLineWidth(void *data)
 {
-   Thread_Command_glLineWidth *thread_param =
-      (Thread_Command_glLineWidth *)data;
+   Evas_Thread_Command_glLineWidth *thread_data =
+      (Evas_Thread_Command_glLineWidth *)data;
 
-   glLineWidth(thread_param->width);
+   glLineWidth(thread_data->width);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3782,36 +3786,36 @@ glLineWidth_thread_cmd(GLfloat width)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glLineWidth thread_param_local;
-   Thread_Command_glLineWidth *thread_param = &thread_param_local;
+   Evas_Thread_Command_glLineWidth thread_data_local;
+   Evas_Thread_Command_glLineWidth *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glLineWidth *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glLineWidth));
-        if (thread_param_new)
+        Evas_Thread_Command_glLineWidth *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glLineWidth));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->width = width;
+   thread_data->width = width;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glLineWidth,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glPolygonOffset(GLfloat factor, GLfloat units);
+ * void
+ * glPolygonOffset(GLfloat factor, GLfloat units);
  */
 
 typedef struct
@@ -3820,19 +3824,19 @@ typedef struct
    GLfloat units;
    int command_allocated;
 
-} Thread_Command_glPolygonOffset;
+} Evas_Thread_Command_glPolygonOffset;
 
 static void
 _gl_thread_glPolygonOffset(void *data)
 {
-   Thread_Command_glPolygonOffset *thread_param =
-      (Thread_Command_glPolygonOffset *)data;
+   Evas_Thread_Command_glPolygonOffset *thread_data =
+      (Evas_Thread_Command_glPolygonOffset *)data;
 
-   glPolygonOffset(thread_param->factor,
-                   thread_param->units);
+   glPolygonOffset(thread_data->factor,
+                   thread_data->units);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3846,37 +3850,37 @@ glPolygonOffset_thread_cmd(GLfloat factor, GLfloat units)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glPolygonOffset thread_param_local;
-   Thread_Command_glPolygonOffset *thread_param = &thread_param_local;
+   Evas_Thread_Command_glPolygonOffset thread_data_local;
+   Evas_Thread_Command_glPolygonOffset *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glPolygonOffset *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glPolygonOffset));
-        if (thread_param_new)
+        Evas_Thread_Command_glPolygonOffset *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glPolygonOffset));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->factor = factor;
-   thread_param->units = units;
+   thread_data->factor = factor;
+   thread_data->units = units;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glPolygonOffset,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glPixelStorei(GLenum pname, GLint param);
+ * void
+ * glPixelStorei(GLenum pname, GLint param);
  */
 
 typedef struct
@@ -3885,19 +3889,19 @@ typedef struct
    GLint param;
    int command_allocated;
 
-} Thread_Command_glPixelStorei;
+} Evas_Thread_Command_glPixelStorei;
 
 static void
 _gl_thread_glPixelStorei(void *data)
 {
-   Thread_Command_glPixelStorei *thread_param =
-      (Thread_Command_glPixelStorei *)data;
+   Evas_Thread_Command_glPixelStorei *thread_data =
+      (Evas_Thread_Command_glPixelStorei *)data;
 
-   glPixelStorei(thread_param->pname,
-                 thread_param->param);
+   glPixelStorei(thread_data->pname,
+                 thread_data->param);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3911,37 +3915,37 @@ glPixelStorei_thread_cmd(GLenum pname, GLint param)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glPixelStorei thread_param_local;
-   Thread_Command_glPixelStorei *thread_param = &thread_param_local;
+   Evas_Thread_Command_glPixelStorei thread_data_local;
+   Evas_Thread_Command_glPixelStorei *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glPixelStorei *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glPixelStorei));
-        if (thread_param_new)
+        Evas_Thread_Command_glPixelStorei *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glPixelStorei));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->pname = pname;
-   thread_param->param = param;
+   thread_data->pname = pname;
+   thread_data->param = param;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glPixelStorei,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glActiveTexture(GLenum texture);
+ * void
+ * glActiveTexture(GLenum texture);
  */
 
 typedef struct
@@ -3949,18 +3953,18 @@ typedef struct
    GLenum texture;
    int command_allocated;
 
-} Thread_Command_glActiveTexture;
+} Evas_Thread_Command_glActiveTexture;
 
 static void
 _gl_thread_glActiveTexture(void *data)
 {
-   Thread_Command_glActiveTexture *thread_param =
-      (Thread_Command_glActiveTexture *)data;
+   Evas_Thread_Command_glActiveTexture *thread_data =
+      (Evas_Thread_Command_glActiveTexture *)data;
 
-   glActiveTexture(thread_param->texture);
+   glActiveTexture(thread_data->texture);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3974,36 +3978,36 @@ glActiveTexture_thread_cmd(GLenum texture)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glActiveTexture thread_param_local;
-   Thread_Command_glActiveTexture *thread_param = &thread_param_local;
+   Evas_Thread_Command_glActiveTexture thread_data_local;
+   Evas_Thread_Command_glActiveTexture *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glActiveTexture *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glActiveTexture));
-        if (thread_param_new)
+        Evas_Thread_Command_glActiveTexture *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glActiveTexture));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->texture = texture;
+   thread_data->texture = texture;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glActiveTexture,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGenTextures(GLsizei n, GLuint *textures);
+ * void
+ * glGenTextures(GLsizei n, GLuint *textures);
  */
 
 typedef struct
@@ -4011,16 +4015,16 @@ typedef struct
    GLsizei n;
    GLuint *textures;
 
-} Thread_Command_glGenTextures;
+} Evas_Thread_Command_glGenTextures;
 
 static void
 _gl_thread_glGenTextures(void *data)
 {
-   Thread_Command_glGenTextures *thread_param =
-      (Thread_Command_glGenTextures *)data;
+   Evas_Thread_Command_glGenTextures *thread_data =
+      (Evas_Thread_Command_glGenTextures *)data;
 
-   glGenTextures(thread_param->n,
-                 thread_param->textures);
+   glGenTextures(thread_data->n,
+                 thread_data->textures);
 
 }
 
@@ -4035,21 +4039,21 @@ glGenTextures_thread_cmd(GLsizei n, GLuint *textures)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGenTextures thread_param_local;
-   Thread_Command_glGenTextures *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGenTextures thread_data_local;
+   Evas_Thread_Command_glGenTextures *thread_data = &thread_data_local;
 
-   thread_param->n = n;
-   thread_param->textures = textures;
+   thread_data->n = n;
+   thread_data->textures = textures;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGenTextures,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glBindTexture(GLenum target, GLuint texture);
+ * void
+ * glBindTexture(GLenum target, GLuint texture);
  */
 
 typedef struct
@@ -4058,19 +4062,19 @@ typedef struct
    GLuint texture;
    int command_allocated;
 
-} Thread_Command_glBindTexture;
+} Evas_Thread_Command_glBindTexture;
 
 static void
 _gl_thread_glBindTexture(void *data)
 {
-   Thread_Command_glBindTexture *thread_param =
-      (Thread_Command_glBindTexture *)data;
+   Evas_Thread_Command_glBindTexture *thread_data =
+      (Evas_Thread_Command_glBindTexture *)data;
 
-   glBindTexture(thread_param->target,
-                 thread_param->texture);
+   glBindTexture(thread_data->target,
+                 thread_data->texture);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4084,37 +4088,37 @@ glBindTexture_thread_cmd(GLenum target, GLuint texture)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glBindTexture thread_param_local;
-   Thread_Command_glBindTexture *thread_param = &thread_param_local;
+   Evas_Thread_Command_glBindTexture thread_data_local;
+   Evas_Thread_Command_glBindTexture *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glBindTexture *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glBindTexture));
-        if (thread_param_new)
+        Evas_Thread_Command_glBindTexture *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glBindTexture));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->texture = texture;
+   thread_data->target = target;
+   thread_data->texture = texture;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glBindTexture,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDeleteTextures(GLsizei n, const GLuint *textures);
+ * void
+ * glDeleteTextures(GLsizei n, const GLuint *textures);
  */
 
 typedef struct
@@ -4124,23 +4128,23 @@ typedef struct
    void *textures_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glDeleteTextures;
+} Evas_Thread_Command_glDeleteTextures;
 
 static void
 _gl_thread_glDeleteTextures(void *data)
 {
-   Thread_Command_glDeleteTextures *thread_param =
-      (Thread_Command_glDeleteTextures *)data;
+   Evas_Thread_Command_glDeleteTextures *thread_data =
+      (Evas_Thread_Command_glDeleteTextures *)data;
 
-   glDeleteTextures(thread_param->n,
-                    thread_param->textures);
+   glDeleteTextures(thread_data->n,
+                    thread_data->textures);
 
 
-   if (thread_param->textures_copied)
-     eina_mempool_free(_mp_delete_object, thread_param->textures_copied);
+   if (thread_data->textures_copied)
+     eina_mempool_free(_mp_delete_object, thread_data->textures_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4154,29 +4158,29 @@ glDeleteTextures_thread_cmd(GLsizei n, const GLuint *textures)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDeleteTextures thread_param_local;
-   Thread_Command_glDeleteTextures *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDeleteTextures thread_data_local;
+   Evas_Thread_Command_glDeleteTextures *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDeleteTextures *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDeleteTextures));
-        if (thread_param_new)
+        Evas_Thread_Command_glDeleteTextures *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDeleteTextures));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->n = n;
-   thread_param->textures = textures;
+   thread_data->n = n;
+   thread_data->textures = textures;
 
-   thread_param->textures_copied = NULL;
+   thread_data->textures_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -4191,10 +4195,10 @@ glDeleteTextures_thread_cmd(GLsizei n, const GLuint *textures)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->textures_copied = eina_mempool_malloc(_mp_delete_object, copy_size);
-        if (thread_param->textures_copied)
+        thread_data->textures_copied = eina_mempool_malloc(_mp_delete_object, copy_size);
+        if (thread_data->textures_copied)
           {
-             memcpy(thread_param->textures_copied, textures, copy_size);
+             memcpy(thread_data->textures_copied, textures, copy_size);
           }
         else
           {
@@ -4202,20 +4206,20 @@ glDeleteTextures_thread_cmd(GLsizei n, const GLuint *textures)
              goto finish;
           }
         /* 3. replace */
-        thread_param->textures = (const GLuint  *)thread_param->textures_copied;
+        thread_data->textures = (const GLuint  *)thread_data->textures_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDeleteTextures,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels);
+ * void
+ * glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels);
  */
 
 typedef struct
@@ -4232,28 +4236,28 @@ typedef struct
    int command_allocated;
    GLTEXIMAGE2D_COPY_VARIABLE; /* TODO */
 
-} Thread_Command_glTexImage2D;
+} Evas_Thread_Command_glTexImage2D;
 
 static void
 _gl_thread_glTexImage2D(void *data)
 {
-   Thread_Command_glTexImage2D *thread_param =
-      (Thread_Command_glTexImage2D *)data;
+   Evas_Thread_Command_glTexImage2D *thread_data =
+      (Evas_Thread_Command_glTexImage2D *)data;
 
-   glTexImage2D(thread_param->target,
-                thread_param->level,
-                thread_param->internalformat,
-                thread_param->width,
-                thread_param->height,
-                thread_param->border,
-                thread_param->format,
-                thread_param->type,
-                thread_param->pixels);
+   glTexImage2D(thread_data->target,
+                thread_data->level,
+                thread_data->internalformat,
+                thread_data->width,
+                thread_data->height,
+                thread_data->border,
+                thread_data->format,
+                thread_data->type,
+                thread_data->pixels);
 
    GLTEXIMAGE2D_COPY_VARIABLE_FREE; /* TODO */
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4267,34 +4271,34 @@ glTexImage2D_thread_cmd(GLenum target, GLint level, GLint internalformat, GLsize
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glTexImage2D thread_param_local;
-   Thread_Command_glTexImage2D *thread_param = &thread_param_local;
+   Evas_Thread_Command_glTexImage2D thread_data_local;
+   Evas_Thread_Command_glTexImage2D *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glTexImage2D *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glTexImage2D));
-        if (thread_param_new)
+        Evas_Thread_Command_glTexImage2D *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glTexImage2D));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->level = level;
-   thread_param->internalformat = internalformat;
-   thread_param->width = width;
-   thread_param->height = height;
-   thread_param->border = border;
-   thread_param->format = format;
-   thread_param->type = type;
-   thread_param->pixels = pixels;
+   thread_data->target = target;
+   thread_data->level = level;
+   thread_data->internalformat = internalformat;
+   thread_data->width = width;
+   thread_data->height = height;
+   thread_data->border = border;
+   thread_data->format = format;
+   thread_data->type = type;
+   thread_data->pixels = pixels;
 
    GLTEXIMAGE2D_COPY_VARIABLE_INIT; /* TODO */
 
@@ -4306,13 +4310,13 @@ glTexImage2D_thread_cmd(GLenum target, GLint level, GLint internalformat, GLsize
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glTexImage2D,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
+ * void
+ * glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
  */
 
 typedef struct
@@ -4329,28 +4333,28 @@ typedef struct
    int command_allocated;
    GLTEXSUBIMAGE2D_COPY_VARIABLE; /* TODO */
 
-} Thread_Command_glTexSubImage2D;
+} Evas_Thread_Command_glTexSubImage2D;
 
 static void
 _gl_thread_glTexSubImage2D(void *data)
 {
-   Thread_Command_glTexSubImage2D *thread_param =
-      (Thread_Command_glTexSubImage2D *)data;
+   Evas_Thread_Command_glTexSubImage2D *thread_data =
+      (Evas_Thread_Command_glTexSubImage2D *)data;
 
-   glTexSubImage2D(thread_param->target,
-                   thread_param->level,
-                   thread_param->xoffset,
-                   thread_param->yoffset,
-                   thread_param->width,
-                   thread_param->height,
-                   thread_param->format,
-                   thread_param->type,
-                   thread_param->pixels);
+   glTexSubImage2D(thread_data->target,
+                   thread_data->level,
+                   thread_data->xoffset,
+                   thread_data->yoffset,
+                   thread_data->width,
+                   thread_data->height,
+                   thread_data->format,
+                   thread_data->type,
+                   thread_data->pixels);
 
    GLTEXSUBIMAGE2D_COPY_VARIABLE_FREE; /* TODO */
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4364,34 +4368,34 @@ glTexSubImage2D_thread_cmd(GLenum target, GLint level, GLint xoffset, GLint yoff
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glTexSubImage2D thread_param_local;
-   Thread_Command_glTexSubImage2D *thread_param = &thread_param_local;
+   Evas_Thread_Command_glTexSubImage2D thread_data_local;
+   Evas_Thread_Command_glTexSubImage2D *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glTexSubImage2D *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glTexSubImage2D));
-        if (thread_param_new)
+        Evas_Thread_Command_glTexSubImage2D *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glTexSubImage2D));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->level = level;
-   thread_param->xoffset = xoffset;
-   thread_param->yoffset = yoffset;
-   thread_param->width = width;
-   thread_param->height = height;
-   thread_param->format = format;
-   thread_param->type = type;
-   thread_param->pixels = pixels;
+   thread_data->target = target;
+   thread_data->level = level;
+   thread_data->xoffset = xoffset;
+   thread_data->yoffset = yoffset;
+   thread_data->width = width;
+   thread_data->height = height;
+   thread_data->format = format;
+   thread_data->type = type;
+   thread_data->pixels = pixels;
 
    GLTEXSUBIMAGE2D_COPY_VARIABLE_INIT; /* TODO */
 
@@ -4403,13 +4407,13 @@ glTexSubImage2D_thread_cmd(GLenum target, GLint level, GLint xoffset, GLint yoff
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glTexSubImage2D,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void *data);
+ * void
+ * glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const void *data);
  */
 
 typedef struct
@@ -4425,27 +4429,27 @@ typedef struct
    int command_allocated;
    GLCOMPRESSEDTEXIMAGE2D_COPY_VARIABLE; /* TODO */
 
-} Thread_Command_glCompressedTexImage2D;
+} Evas_Thread_Command_glCompressedTexImage2D;
 
 static void
 _gl_thread_glCompressedTexImage2D(void *data)
 {
-   Thread_Command_glCompressedTexImage2D *thread_param =
-      (Thread_Command_glCompressedTexImage2D *)data;
+   Evas_Thread_Command_glCompressedTexImage2D *thread_data =
+      (Evas_Thread_Command_glCompressedTexImage2D *)data;
 
-   glCompressedTexImage2D(thread_param->target,
-                          thread_param->level,
-                          thread_param->internalformat,
-                          thread_param->width,
-                          thread_param->height,
-                          thread_param->border,
-                          thread_param->imageSize,
-                          thread_param->data);
+   glCompressedTexImage2D(thread_data->target,
+                          thread_data->level,
+                          thread_data->internalformat,
+                          thread_data->width,
+                          thread_data->height,
+                          thread_data->border,
+                          thread_data->imageSize,
+                          thread_data->data);
 
    GLCOMPRESSEDTEXIMAGE2D_COPY_VARIABLE_FREE; /* TODO */
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4459,33 +4463,33 @@ glCompressedTexImage2D_thread_cmd(GLenum target, GLint level, GLenum internalfor
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glCompressedTexImage2D thread_param_local;
-   Thread_Command_glCompressedTexImage2D *thread_param = &thread_param_local;
+   Evas_Thread_Command_glCompressedTexImage2D thread_data_local;
+   Evas_Thread_Command_glCompressedTexImage2D *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glCompressedTexImage2D *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glCompressedTexImage2D));
-        if (thread_param_new)
+        Evas_Thread_Command_glCompressedTexImage2D *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glCompressedTexImage2D));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->level = level;
-   thread_param->internalformat = internalformat;
-   thread_param->width = width;
-   thread_param->height = height;
-   thread_param->border = border;
-   thread_param->imageSize = imageSize;
-   thread_param->data = data;
+   thread_data->target = target;
+   thread_data->level = level;
+   thread_data->internalformat = internalformat;
+   thread_data->width = width;
+   thread_data->height = height;
+   thread_data->border = border;
+   thread_data->imageSize = imageSize;
+   thread_data->data = data;
 
    GLCOMPRESSEDTEXIMAGE2D_COPY_VARIABLE_INIT; /* TODO */
 
@@ -4497,13 +4501,13 @@ glCompressedTexImage2D_thread_cmd(GLenum target, GLint level, GLenum internalfor
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glCompressedTexImage2D,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *data);
+ * void
+ * glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *data);
  */
 
 typedef struct
@@ -4520,28 +4524,28 @@ typedef struct
    int command_allocated;
    GLCOMPRESSEDTEXSUBIMAGE2D_COPY_VARIABLE; /* TODO */
 
-} Thread_Command_glCompressedTexSubImage2D;
+} Evas_Thread_Command_glCompressedTexSubImage2D;
 
 static void
 _gl_thread_glCompressedTexSubImage2D(void *data)
 {
-   Thread_Command_glCompressedTexSubImage2D *thread_param =
-      (Thread_Command_glCompressedTexSubImage2D *)data;
+   Evas_Thread_Command_glCompressedTexSubImage2D *thread_data =
+      (Evas_Thread_Command_glCompressedTexSubImage2D *)data;
 
-   glCompressedTexSubImage2D(thread_param->target,
-                             thread_param->level,
-                             thread_param->xoffset,
-                             thread_param->yoffset,
-                             thread_param->width,
-                             thread_param->height,
-                             thread_param->format,
-                             thread_param->imageSize,
-                             thread_param->data);
+   glCompressedTexSubImage2D(thread_data->target,
+                             thread_data->level,
+                             thread_data->xoffset,
+                             thread_data->yoffset,
+                             thread_data->width,
+                             thread_data->height,
+                             thread_data->format,
+                             thread_data->imageSize,
+                             thread_data->data);
 
    GLCOMPRESSEDTEXSUBIMAGE2D_COPY_VARIABLE_FREE; /* TODO */
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4555,34 +4559,34 @@ glCompressedTexSubImage2D_thread_cmd(GLenum target, GLint level, GLint xoffset, 
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glCompressedTexSubImage2D thread_param_local;
-   Thread_Command_glCompressedTexSubImage2D *thread_param = &thread_param_local;
+   Evas_Thread_Command_glCompressedTexSubImage2D thread_data_local;
+   Evas_Thread_Command_glCompressedTexSubImage2D *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glCompressedTexSubImage2D *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glCompressedTexSubImage2D));
-        if (thread_param_new)
+        Evas_Thread_Command_glCompressedTexSubImage2D *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glCompressedTexSubImage2D));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->level = level;
-   thread_param->xoffset = xoffset;
-   thread_param->yoffset = yoffset;
-   thread_param->width = width;
-   thread_param->height = height;
-   thread_param->format = format;
-   thread_param->imageSize = imageSize;
-   thread_param->data = data;
+   thread_data->target = target;
+   thread_data->level = level;
+   thread_data->xoffset = xoffset;
+   thread_data->yoffset = yoffset;
+   thread_data->width = width;
+   thread_data->height = height;
+   thread_data->format = format;
+   thread_data->imageSize = imageSize;
+   thread_data->data = data;
 
    GLCOMPRESSEDTEXSUBIMAGE2D_COPY_VARIABLE_INIT; /* TODO */
 
@@ -4594,13 +4598,13 @@ glCompressedTexSubImage2D_thread_cmd(GLenum target, GLint level, GLint xoffset, 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glCompressedTexSubImage2D,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glTexParameterf(GLenum target, GLenum pname, GLfloat param);
+ * void
+ * glTexParameterf(GLenum target, GLenum pname, GLfloat param);
  */
 
 typedef struct
@@ -4610,20 +4614,20 @@ typedef struct
    GLfloat param;
    int command_allocated;
 
-} Thread_Command_glTexParameterf;
+} Evas_Thread_Command_glTexParameterf;
 
 static void
 _gl_thread_glTexParameterf(void *data)
 {
-   Thread_Command_glTexParameterf *thread_param =
-      (Thread_Command_glTexParameterf *)data;
+   Evas_Thread_Command_glTexParameterf *thread_data =
+      (Evas_Thread_Command_glTexParameterf *)data;
 
-   glTexParameterf(thread_param->target,
-                   thread_param->pname,
-                   thread_param->param);
+   glTexParameterf(thread_data->target,
+                   thread_data->pname,
+                   thread_data->param);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4637,38 +4641,38 @@ glTexParameterf_thread_cmd(GLenum target, GLenum pname, GLfloat param)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glTexParameterf thread_param_local;
-   Thread_Command_glTexParameterf *thread_param = &thread_param_local;
+   Evas_Thread_Command_glTexParameterf thread_data_local;
+   Evas_Thread_Command_glTexParameterf *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glTexParameterf *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glTexParameterf));
-        if (thread_param_new)
+        Evas_Thread_Command_glTexParameterf *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glTexParameterf));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->pname = pname;
-   thread_param->param = param;
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->param = param;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glTexParameterf,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glTexParameterfv(GLenum target, GLenum pname, const GLfloat *params);
+ * void
+ * glTexParameterfv(GLenum target, GLenum pname, const GLfloat *params);
  */
 
 typedef struct
@@ -4679,24 +4683,24 @@ typedef struct
    void *params_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glTexParameterfv;
+} Evas_Thread_Command_glTexParameterfv;
 
 static void
 _gl_thread_glTexParameterfv(void *data)
 {
-   Thread_Command_glTexParameterfv *thread_param =
-      (Thread_Command_glTexParameterfv *)data;
+   Evas_Thread_Command_glTexParameterfv *thread_data =
+      (Evas_Thread_Command_glTexParameterfv *)data;
 
-   glTexParameterfv(thread_param->target,
-                    thread_param->pname,
-                    thread_param->params);
+   glTexParameterfv(thread_data->target,
+                    thread_data->pname,
+                    thread_data->params);
 
 
-   if (thread_param->params_copied)
-     eina_mempool_free(_mp_default, thread_param->params_copied);
+   if (thread_data->params_copied)
+     eina_mempool_free(_mp_default, thread_data->params_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4710,30 +4714,30 @@ glTexParameterfv_thread_cmd(GLenum target, GLenum pname, const GLfloat *params)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glTexParameterfv thread_param_local;
-   Thread_Command_glTexParameterfv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glTexParameterfv thread_data_local;
+   Evas_Thread_Command_glTexParameterfv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glTexParameterfv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glTexParameterfv));
-        if (thread_param_new)
+        Evas_Thread_Command_glTexParameterfv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glTexParameterfv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
-   thread_param->params_copied = NULL;
+   thread_data->params_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -4748,10 +4752,10 @@ glTexParameterfv_thread_cmd(GLenum target, GLenum pname, const GLfloat *params)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->params_copied = eina_mempool_malloc(_mp_default, copy_size);
-        if (thread_param->params_copied)
+        thread_data->params_copied = eina_mempool_malloc(_mp_default, copy_size);
+        if (thread_data->params_copied)
           {
-             memcpy(thread_param->params_copied, params, copy_size);
+             memcpy(thread_data->params_copied, params, copy_size);
           }
         else
           {
@@ -4759,20 +4763,20 @@ glTexParameterfv_thread_cmd(GLenum target, GLenum pname, const GLfloat *params)
              goto finish;
           }
         /* 3. replace */
-        thread_param->params = (const GLfloat  *)thread_param->params_copied;
+        thread_data->params = (const GLfloat  *)thread_data->params_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glTexParameterfv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glTexParameteri(GLenum target, GLenum pname, GLint param);
+ * void
+ * glTexParameteri(GLenum target, GLenum pname, GLint param);
  */
 
 typedef struct
@@ -4782,20 +4786,20 @@ typedef struct
    GLint param;
    int command_allocated;
 
-} Thread_Command_glTexParameteri;
+} Evas_Thread_Command_glTexParameteri;
 
 static void
 _gl_thread_glTexParameteri(void *data)
 {
-   Thread_Command_glTexParameteri *thread_param =
-      (Thread_Command_glTexParameteri *)data;
+   Evas_Thread_Command_glTexParameteri *thread_data =
+      (Evas_Thread_Command_glTexParameteri *)data;
 
-   glTexParameteri(thread_param->target,
-                   thread_param->pname,
-                   thread_param->param);
+   glTexParameteri(thread_data->target,
+                   thread_data->pname,
+                   thread_data->param);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4809,38 +4813,38 @@ glTexParameteri_thread_cmd(GLenum target, GLenum pname, GLint param)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glTexParameteri thread_param_local;
-   Thread_Command_glTexParameteri *thread_param = &thread_param_local;
+   Evas_Thread_Command_glTexParameteri thread_data_local;
+   Evas_Thread_Command_glTexParameteri *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glTexParameteri *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glTexParameteri));
-        if (thread_param_new)
+        Evas_Thread_Command_glTexParameteri *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glTexParameteri));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->pname = pname;
-   thread_param->param = param;
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->param = param;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glTexParameteri,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glTexParameteriv(GLenum target, GLenum pname, const GLint *params);
+ * void
+ * glTexParameteriv(GLenum target, GLenum pname, const GLint *params);
  */
 
 typedef struct
@@ -4851,24 +4855,24 @@ typedef struct
    void *params_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glTexParameteriv;
+} Evas_Thread_Command_glTexParameteriv;
 
 static void
 _gl_thread_glTexParameteriv(void *data)
 {
-   Thread_Command_glTexParameteriv *thread_param =
-      (Thread_Command_glTexParameteriv *)data;
+   Evas_Thread_Command_glTexParameteriv *thread_data =
+      (Evas_Thread_Command_glTexParameteriv *)data;
 
-   glTexParameteriv(thread_param->target,
-                    thread_param->pname,
-                    thread_param->params);
+   glTexParameteriv(thread_data->target,
+                    thread_data->pname,
+                    thread_data->params);
 
 
-   if (thread_param->params_copied)
-     eina_mempool_free(_mp_default, thread_param->params_copied);
+   if (thread_data->params_copied)
+     eina_mempool_free(_mp_default, thread_data->params_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4882,30 +4886,30 @@ glTexParameteriv_thread_cmd(GLenum target, GLenum pname, const GLint *params)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glTexParameteriv thread_param_local;
-   Thread_Command_glTexParameteriv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glTexParameteriv thread_data_local;
+   Evas_Thread_Command_glTexParameteriv *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glTexParameteriv *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glTexParameteriv));
-        if (thread_param_new)
+        Evas_Thread_Command_glTexParameteriv *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glTexParameteriv));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
-   thread_param->params_copied = NULL;
+   thread_data->params_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -4920,10 +4924,10 @@ glTexParameteriv_thread_cmd(GLenum target, GLenum pname, const GLint *params)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->params_copied = eina_mempool_malloc(_mp_default, copy_size);
-        if (thread_param->params_copied)
+        thread_data->params_copied = eina_mempool_malloc(_mp_default, copy_size);
+        if (thread_data->params_copied)
           {
-             memcpy(thread_param->params_copied, params, copy_size);
+             memcpy(thread_data->params_copied, params, copy_size);
           }
         else
           {
@@ -4931,20 +4935,20 @@ glTexParameteriv_thread_cmd(GLenum target, GLenum pname, const GLint *params)
              goto finish;
           }
         /* 3. replace */
-        thread_param->params = (const GLint  *)thread_param->params_copied;
+        thread_data->params = (const GLint  *)thread_data->params_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glTexParameteriv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glScissor(GLint x, GLint y, GLsizei width, GLsizei height);
+ * void
+ * glScissor(GLint x, GLint y, GLsizei width, GLsizei height);
  */
 
 typedef struct
@@ -4955,21 +4959,21 @@ typedef struct
    GLsizei height;
    int command_allocated;
 
-} Thread_Command_glScissor;
+} Evas_Thread_Command_glScissor;
 
 static void
 _gl_thread_glScissor(void *data)
 {
-   Thread_Command_glScissor *thread_param =
-      (Thread_Command_glScissor *)data;
+   Evas_Thread_Command_glScissor *thread_data =
+      (Evas_Thread_Command_glScissor *)data;
 
-   glScissor(thread_param->x,
-             thread_param->y,
-             thread_param->width,
-             thread_param->height);
+   glScissor(thread_data->x,
+             thread_data->y,
+             thread_data->width,
+             thread_data->height);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4983,39 +4987,39 @@ glScissor_thread_cmd(GLint x, GLint y, GLsizei width, GLsizei height)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glScissor thread_param_local;
-   Thread_Command_glScissor *thread_param = &thread_param_local;
+   Evas_Thread_Command_glScissor thread_data_local;
+   Evas_Thread_Command_glScissor *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glScissor *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glScissor));
-        if (thread_param_new)
+        Evas_Thread_Command_glScissor *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glScissor));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->x = x;
-   thread_param->y = y;
-   thread_param->width = width;
-   thread_param->height = height;
+   thread_data->x = x;
+   thread_data->y = y;
+   thread_data->width = width;
+   thread_data->height = height;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glScissor,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glBlendFunc(GLenum sfactor, GLenum dfactor);
+ * void
+ * glBlendFunc(GLenum sfactor, GLenum dfactor);
  */
 
 typedef struct
@@ -5024,19 +5028,19 @@ typedef struct
    GLenum dfactor;
    int command_allocated;
 
-} Thread_Command_glBlendFunc;
+} Evas_Thread_Command_glBlendFunc;
 
 static void
 _gl_thread_glBlendFunc(void *data)
 {
-   Thread_Command_glBlendFunc *thread_param =
-      (Thread_Command_glBlendFunc *)data;
+   Evas_Thread_Command_glBlendFunc *thread_data =
+      (Evas_Thread_Command_glBlendFunc *)data;
 
-   glBlendFunc(thread_param->sfactor,
-               thread_param->dfactor);
+   glBlendFunc(thread_data->sfactor,
+               thread_data->dfactor);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5050,37 +5054,37 @@ glBlendFunc_thread_cmd(GLenum sfactor, GLenum dfactor)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glBlendFunc thread_param_local;
-   Thread_Command_glBlendFunc *thread_param = &thread_param_local;
+   Evas_Thread_Command_glBlendFunc thread_data_local;
+   Evas_Thread_Command_glBlendFunc *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glBlendFunc *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glBlendFunc));
-        if (thread_param_new)
+        Evas_Thread_Command_glBlendFunc *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glBlendFunc));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->sfactor = sfactor;
-   thread_param->dfactor = dfactor;
+   thread_data->sfactor = sfactor;
+   thread_data->dfactor = dfactor;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glBlendFunc,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glBlendColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+ * void
+ * glBlendColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
  */
 
 typedef struct
@@ -5091,21 +5095,21 @@ typedef struct
    GLfloat alpha;
    int command_allocated;
 
-} Thread_Command_glBlendColor;
+} Evas_Thread_Command_glBlendColor;
 
 static void
 _gl_thread_glBlendColor(void *data)
 {
-   Thread_Command_glBlendColor *thread_param =
-      (Thread_Command_glBlendColor *)data;
+   Evas_Thread_Command_glBlendColor *thread_data =
+      (Evas_Thread_Command_glBlendColor *)data;
 
-   glBlendColor(thread_param->red,
-                thread_param->green,
-                thread_param->blue,
-                thread_param->alpha);
+   glBlendColor(thread_data->red,
+                thread_data->green,
+                thread_data->blue,
+                thread_data->alpha);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5119,39 +5123,39 @@ glBlendColor_thread_cmd(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glBlendColor thread_param_local;
-   Thread_Command_glBlendColor *thread_param = &thread_param_local;
+   Evas_Thread_Command_glBlendColor thread_data_local;
+   Evas_Thread_Command_glBlendColor *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glBlendColor *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glBlendColor));
-        if (thread_param_new)
+        Evas_Thread_Command_glBlendColor *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glBlendColor));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->red = red;
-   thread_param->green = green;
-   thread_param->blue = blue;
-   thread_param->alpha = alpha;
+   thread_data->red = red;
+   thread_data->green = green;
+   thread_data->blue = blue;
+   thread_data->alpha = alpha;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glBlendColor,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDepthMask(GLboolean flag);
+ * void
+ * glDepthMask(GLboolean flag);
  */
 
 typedef struct
@@ -5159,18 +5163,18 @@ typedef struct
    GLboolean flag;
    int command_allocated;
 
-} Thread_Command_glDepthMask;
+} Evas_Thread_Command_glDepthMask;
 
 static void
 _gl_thread_glDepthMask(void *data)
 {
-   Thread_Command_glDepthMask *thread_param =
-      (Thread_Command_glDepthMask *)data;
+   Evas_Thread_Command_glDepthMask *thread_data =
+      (Evas_Thread_Command_glDepthMask *)data;
 
-   glDepthMask(thread_param->flag);
+   glDepthMask(thread_data->flag);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5184,36 +5188,36 @@ glDepthMask_thread_cmd(GLboolean flag)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDepthMask thread_param_local;
-   Thread_Command_glDepthMask *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDepthMask thread_data_local;
+   Evas_Thread_Command_glDepthMask *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDepthMask *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDepthMask));
-        if (thread_param_new)
+        Evas_Thread_Command_glDepthMask *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDepthMask));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->flag = flag;
+   thread_data->flag = flag;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDepthMask,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glClear(GLbitfield mask);
+ * void
+ * glClear(GLbitfield mask);
  */
 
 typedef struct
@@ -5221,18 +5225,18 @@ typedef struct
    GLbitfield mask;
    int command_allocated;
 
-} Thread_Command_glClear;
+} Evas_Thread_Command_glClear;
 
 static void
 _gl_thread_glClear(void *data)
 {
-   Thread_Command_glClear *thread_param =
-      (Thread_Command_glClear *)data;
+   Evas_Thread_Command_glClear *thread_data =
+      (Evas_Thread_Command_glClear *)data;
 
-   glClear(thread_param->mask);
+   glClear(thread_data->mask);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5246,36 +5250,36 @@ glClear_thread_cmd(GLbitfield mask)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glClear thread_param_local;
-   Thread_Command_glClear *thread_param = &thread_param_local;
+   Evas_Thread_Command_glClear thread_data_local;
+   Evas_Thread_Command_glClear *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glClear *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glClear));
-        if (thread_param_new)
+        Evas_Thread_Command_glClear *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glClear));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->mask = mask;
+   thread_data->mask = mask;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glClear,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+ * void
+ * glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
  */
 
 typedef struct
@@ -5286,21 +5290,21 @@ typedef struct
    GLfloat alpha;
    int command_allocated;
 
-} Thread_Command_glClearColor;
+} Evas_Thread_Command_glClearColor;
 
 static void
 _gl_thread_glClearColor(void *data)
 {
-   Thread_Command_glClearColor *thread_param =
-      (Thread_Command_glClearColor *)data;
+   Evas_Thread_Command_glClearColor *thread_data =
+      (Evas_Thread_Command_glClearColor *)data;
 
-   glClearColor(thread_param->red,
-                thread_param->green,
-                thread_param->blue,
-                thread_param->alpha);
+   glClearColor(thread_data->red,
+                thread_data->green,
+                thread_data->blue,
+                thread_data->alpha);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5314,39 +5318,39 @@ glClearColor_thread_cmd(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glClearColor thread_param_local;
-   Thread_Command_glClearColor *thread_param = &thread_param_local;
+   Evas_Thread_Command_glClearColor thread_data_local;
+   Evas_Thread_Command_glClearColor *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glClearColor *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glClearColor));
-        if (thread_param_new)
+        Evas_Thread_Command_glClearColor *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glClearColor));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->red = red;
-   thread_param->green = green;
-   thread_param->blue = blue;
-   thread_param->alpha = alpha;
+   thread_data->red = red;
+   thread_data->green = green;
+   thread_data->blue = blue;
+   thread_data->alpha = alpha;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glClearColor,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void *pixels);
+ * void
+ * glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void *pixels);
  */
 
 typedef struct
@@ -5359,21 +5363,21 @@ typedef struct
    GLenum type;
    void *pixels;
 
-} Thread_Command_glReadPixels;
+} Evas_Thread_Command_glReadPixels;
 
 static void
 _gl_thread_glReadPixels(void *data)
 {
-   Thread_Command_glReadPixels *thread_param =
-      (Thread_Command_glReadPixels *)data;
+   Evas_Thread_Command_glReadPixels *thread_data =
+      (Evas_Thread_Command_glReadPixels *)data;
 
-   glReadPixels(thread_param->x,
-                thread_param->y,
-                thread_param->width,
-                thread_param->height,
-                thread_param->format,
-                thread_param->type,
-                thread_param->pixels);
+   glReadPixels(thread_data->x,
+                thread_data->y,
+                thread_data->width,
+                thread_data->height,
+                thread_data->format,
+                thread_data->type,
+                thread_data->pixels);
 
 }
 
@@ -5388,26 +5392,26 @@ glReadPixels_thread_cmd(GLint x, GLint y, GLsizei width, GLsizei height, GLenum 
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glReadPixels thread_param_local;
-   Thread_Command_glReadPixels *thread_param = &thread_param_local;
+   Evas_Thread_Command_glReadPixels thread_data_local;
+   Evas_Thread_Command_glReadPixels *thread_data = &thread_data_local;
 
-   thread_param->x = x;
-   thread_param->y = y;
-   thread_param->width = width;
-   thread_param->height = height;
-   thread_param->format = format;
-   thread_param->type = type;
-   thread_param->pixels = pixels;
+   thread_data->x = x;
+   thread_data->y = y;
+   thread_data->width = width;
+   thread_data->height = height;
+   thread_data->format = format;
+   thread_data->type = type;
+   thread_data->pixels = pixels;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glReadPixels,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGenFramebuffers(GLsizei n, GLuint *framebuffers);
+ * void
+ * glGenFramebuffers(GLsizei n, GLuint *framebuffers);
  */
 
 typedef struct
@@ -5415,7 +5419,7 @@ typedef struct
    GLsizei n;
    GLuint *framebuffers;
 
-} Thread_Command_glGenFramebuffers;
+} Evas_Thread_Command_glGenFramebuffers;
 
 void (*orig_evas_glGenFramebuffers)(GLsizei n, GLuint *framebuffers);
 
@@ -5434,11 +5438,11 @@ glGenFramebuffers_orig_evas_get(void)
 static void
 _gl_thread_glGenFramebuffers(void *data)
 {
-   Thread_Command_glGenFramebuffers *thread_param =
-      (Thread_Command_glGenFramebuffers *)data;
+   Evas_Thread_Command_glGenFramebuffers *thread_data =
+      (Evas_Thread_Command_glGenFramebuffers *)data;
 
-   orig_evas_glGenFramebuffers(thread_param->n,
-                               thread_param->framebuffers);
+   orig_evas_glGenFramebuffers(thread_data->n,
+                               thread_data->framebuffers);
 
 }
 
@@ -5453,21 +5457,21 @@ glGenFramebuffers_thread_cmd(GLsizei n, GLuint *framebuffers)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGenFramebuffers thread_param_local;
-   Thread_Command_glGenFramebuffers *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGenFramebuffers thread_data_local;
+   Evas_Thread_Command_glGenFramebuffers *thread_data = &thread_data_local;
 
-   thread_param->n = n;
-   thread_param->framebuffers = framebuffers;
+   thread_data->n = n;
+   thread_data->framebuffers = framebuffers;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGenFramebuffers,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glBindFramebuffer(GLenum target, GLuint framebuffer);
+ * void
+ * glBindFramebuffer(GLenum target, GLuint framebuffer);
  */
 
 typedef struct
@@ -5476,7 +5480,7 @@ typedef struct
    GLuint framebuffer;
    int command_allocated;
 
-} Thread_Command_glBindFramebuffer;
+} Evas_Thread_Command_glBindFramebuffer;
 
 void (*orig_evas_glBindFramebuffer)(GLenum target, GLuint framebuffer);
 
@@ -5495,14 +5499,14 @@ glBindFramebuffer_orig_evas_get(void)
 static void
 _gl_thread_glBindFramebuffer(void *data)
 {
-   Thread_Command_glBindFramebuffer *thread_param =
-      (Thread_Command_glBindFramebuffer *)data;
+   Evas_Thread_Command_glBindFramebuffer *thread_data =
+      (Evas_Thread_Command_glBindFramebuffer *)data;
 
-   orig_evas_glBindFramebuffer(thread_param->target,
-                               thread_param->framebuffer);
+   orig_evas_glBindFramebuffer(thread_data->target,
+                               thread_data->framebuffer);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5516,37 +5520,37 @@ glBindFramebuffer_thread_cmd(GLenum target, GLuint framebuffer)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glBindFramebuffer thread_param_local;
-   Thread_Command_glBindFramebuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glBindFramebuffer thread_data_local;
+   Evas_Thread_Command_glBindFramebuffer *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glBindFramebuffer *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glBindFramebuffer));
-        if (thread_param_new)
+        Evas_Thread_Command_glBindFramebuffer *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glBindFramebuffer));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->framebuffer = framebuffer;
+   thread_data->target = target;
+   thread_data->framebuffer = framebuffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glBindFramebuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDeleteFramebuffers(GLsizei n, const GLuint *framebuffers);
+ * void
+ * glDeleteFramebuffers(GLsizei n, const GLuint *framebuffers);
  */
 
 typedef struct
@@ -5556,7 +5560,7 @@ typedef struct
    void *framebuffers_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glDeleteFramebuffers;
+} Evas_Thread_Command_glDeleteFramebuffers;
 
 void (*orig_evas_glDeleteFramebuffers)(GLsizei n, const GLuint *framebuffers);
 
@@ -5575,18 +5579,18 @@ glDeleteFramebuffers_orig_evas_get(void)
 static void
 _gl_thread_glDeleteFramebuffers(void *data)
 {
-   Thread_Command_glDeleteFramebuffers *thread_param =
-      (Thread_Command_glDeleteFramebuffers *)data;
+   Evas_Thread_Command_glDeleteFramebuffers *thread_data =
+      (Evas_Thread_Command_glDeleteFramebuffers *)data;
 
-   orig_evas_glDeleteFramebuffers(thread_param->n,
-                                  thread_param->framebuffers);
+   orig_evas_glDeleteFramebuffers(thread_data->n,
+                                  thread_data->framebuffers);
 
 
-   if (thread_param->framebuffers_copied)
-     eina_mempool_free(_mp_delete_object, thread_param->framebuffers_copied);
+   if (thread_data->framebuffers_copied)
+     eina_mempool_free(_mp_delete_object, thread_data->framebuffers_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5600,29 +5604,29 @@ glDeleteFramebuffers_thread_cmd(GLsizei n, const GLuint *framebuffers)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDeleteFramebuffers thread_param_local;
-   Thread_Command_glDeleteFramebuffers *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDeleteFramebuffers thread_data_local;
+   Evas_Thread_Command_glDeleteFramebuffers *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDeleteFramebuffers *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDeleteFramebuffers));
-        if (thread_param_new)
+        Evas_Thread_Command_glDeleteFramebuffers *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDeleteFramebuffers));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->n = n;
-   thread_param->framebuffers = framebuffers;
+   thread_data->n = n;
+   thread_data->framebuffers = framebuffers;
 
-   thread_param->framebuffers_copied = NULL;
+   thread_data->framebuffers_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -5637,10 +5641,10 @@ glDeleteFramebuffers_thread_cmd(GLsizei n, const GLuint *framebuffers)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->framebuffers_copied = eina_mempool_malloc(_mp_delete_object, copy_size);
-        if (thread_param->framebuffers_copied)
+        thread_data->framebuffers_copied = eina_mempool_malloc(_mp_delete_object, copy_size);
+        if (thread_data->framebuffers_copied)
           {
-             memcpy(thread_param->framebuffers_copied, framebuffers, copy_size);
+             memcpy(thread_data->framebuffers_copied, framebuffers, copy_size);
           }
         else
           {
@@ -5648,20 +5652,20 @@ glDeleteFramebuffers_thread_cmd(GLsizei n, const GLuint *framebuffers)
              goto finish;
           }
         /* 3. replace */
-        thread_param->framebuffers = (const GLuint  *)thread_param->framebuffers_copied;
+        thread_data->framebuffers = (const GLuint  *)thread_data->framebuffers_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDeleteFramebuffers,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGenRenderbuffers(GLsizei n, GLuint *renderbuffers);
+ * void
+ * glGenRenderbuffers(GLsizei n, GLuint *renderbuffers);
  */
 
 typedef struct
@@ -5669,16 +5673,16 @@ typedef struct
    GLsizei n;
    GLuint *renderbuffers;
 
-} Thread_Command_glGenRenderbuffers;
+} Evas_Thread_Command_glGenRenderbuffers;
 
 static void
 _gl_thread_glGenRenderbuffers(void *data)
 {
-   Thread_Command_glGenRenderbuffers *thread_param =
-      (Thread_Command_glGenRenderbuffers *)data;
+   Evas_Thread_Command_glGenRenderbuffers *thread_data =
+      (Evas_Thread_Command_glGenRenderbuffers *)data;
 
-   glGenRenderbuffers(thread_param->n,
-                      thread_param->renderbuffers);
+   glGenRenderbuffers(thread_data->n,
+                      thread_data->renderbuffers);
 
 }
 
@@ -5693,21 +5697,21 @@ glGenRenderbuffers_thread_cmd(GLsizei n, GLuint *renderbuffers)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGenRenderbuffers thread_param_local;
-   Thread_Command_glGenRenderbuffers *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGenRenderbuffers thread_data_local;
+   Evas_Thread_Command_glGenRenderbuffers *thread_data = &thread_data_local;
 
-   thread_param->n = n;
-   thread_param->renderbuffers = renderbuffers;
+   thread_data->n = n;
+   thread_data->renderbuffers = renderbuffers;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGenRenderbuffers,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glBindRenderbuffer(GLenum target, GLuint renderbuffer);
+ * void
+ * glBindRenderbuffer(GLenum target, GLuint renderbuffer);
  */
 
 typedef struct
@@ -5716,19 +5720,19 @@ typedef struct
    GLuint renderbuffer;
    int command_allocated;
 
-} Thread_Command_glBindRenderbuffer;
+} Evas_Thread_Command_glBindRenderbuffer;
 
 static void
 _gl_thread_glBindRenderbuffer(void *data)
 {
-   Thread_Command_glBindRenderbuffer *thread_param =
-      (Thread_Command_glBindRenderbuffer *)data;
+   Evas_Thread_Command_glBindRenderbuffer *thread_data =
+      (Evas_Thread_Command_glBindRenderbuffer *)data;
 
-   glBindRenderbuffer(thread_param->target,
-                      thread_param->renderbuffer);
+   glBindRenderbuffer(thread_data->target,
+                      thread_data->renderbuffer);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5742,37 +5746,37 @@ glBindRenderbuffer_thread_cmd(GLenum target, GLuint renderbuffer)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glBindRenderbuffer thread_param_local;
-   Thread_Command_glBindRenderbuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glBindRenderbuffer thread_data_local;
+   Evas_Thread_Command_glBindRenderbuffer *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glBindRenderbuffer *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glBindRenderbuffer));
-        if (thread_param_new)
+        Evas_Thread_Command_glBindRenderbuffer *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glBindRenderbuffer));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->renderbuffer = renderbuffer;
+   thread_data->target = target;
+   thread_data->renderbuffer = renderbuffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glBindRenderbuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers);
+ * void
+ * glDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers);
  */
 
 typedef struct
@@ -5782,23 +5786,23 @@ typedef struct
    void *renderbuffers_copied; /* COPIED */
    int command_allocated;
 
-} Thread_Command_glDeleteRenderbuffers;
+} Evas_Thread_Command_glDeleteRenderbuffers;
 
 static void
 _gl_thread_glDeleteRenderbuffers(void *data)
 {
-   Thread_Command_glDeleteRenderbuffers *thread_param =
-      (Thread_Command_glDeleteRenderbuffers *)data;
+   Evas_Thread_Command_glDeleteRenderbuffers *thread_data =
+      (Evas_Thread_Command_glDeleteRenderbuffers *)data;
 
-   glDeleteRenderbuffers(thread_param->n,
-                         thread_param->renderbuffers);
+   glDeleteRenderbuffers(thread_data->n,
+                         thread_data->renderbuffers);
 
 
-   if (thread_param->renderbuffers_copied)
-     eina_mempool_free(_mp_delete_object, thread_param->renderbuffers_copied);
+   if (thread_data->renderbuffers_copied)
+     eina_mempool_free(_mp_delete_object, thread_data->renderbuffers_copied);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5812,29 +5816,29 @@ glDeleteRenderbuffers_thread_cmd(GLsizei n, const GLuint *renderbuffers)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glDeleteRenderbuffers thread_param_local;
-   Thread_Command_glDeleteRenderbuffers *thread_param = &thread_param_local;
+   Evas_Thread_Command_glDeleteRenderbuffers thread_data_local;
+   Evas_Thread_Command_glDeleteRenderbuffers *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glDeleteRenderbuffers *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glDeleteRenderbuffers));
-        if (thread_param_new)
+        Evas_Thread_Command_glDeleteRenderbuffers *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glDeleteRenderbuffers));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->n = n;
-   thread_param->renderbuffers = renderbuffers;
+   thread_data->n = n;
+   thread_data->renderbuffers = renderbuffers;
 
-   thread_param->renderbuffers_copied = NULL;
+   thread_data->renderbuffers_copied = NULL;
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
 
@@ -5849,10 +5853,10 @@ glDeleteRenderbuffers_thread_cmd(GLsizei n, const GLuint *renderbuffers)
              goto finish;
           }
         /* 2. malloc & copy */
-        thread_param->renderbuffers_copied = eina_mempool_malloc(_mp_delete_object, copy_size);
-        if (thread_param->renderbuffers_copied)
+        thread_data->renderbuffers_copied = eina_mempool_malloc(_mp_delete_object, copy_size);
+        if (thread_data->renderbuffers_copied)
           {
-             memcpy(thread_param->renderbuffers_copied, renderbuffers, copy_size);
+             memcpy(thread_data->renderbuffers_copied, renderbuffers, copy_size);
           }
         else
           {
@@ -5860,20 +5864,20 @@ glDeleteRenderbuffers_thread_cmd(GLsizei n, const GLuint *renderbuffers)
              goto finish;
           }
         /* 3. replace */
-        thread_param->renderbuffers = (const GLuint  *)thread_param->renderbuffers_copied;
+        thread_data->renderbuffers = (const GLuint  *)thread_data->renderbuffers_copied;
      }
    /* end of copy variable */
 
 finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glDeleteRenderbuffers,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
+ * void
+ * glRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
  */
 
 typedef struct
@@ -5884,21 +5888,21 @@ typedef struct
    GLsizei height;
    int command_allocated;
 
-} Thread_Command_glRenderbufferStorage;
+} Evas_Thread_Command_glRenderbufferStorage;
 
 static void
 _gl_thread_glRenderbufferStorage(void *data)
 {
-   Thread_Command_glRenderbufferStorage *thread_param =
-      (Thread_Command_glRenderbufferStorage *)data;
+   Evas_Thread_Command_glRenderbufferStorage *thread_data =
+      (Evas_Thread_Command_glRenderbufferStorage *)data;
 
-   glRenderbufferStorage(thread_param->target,
-                         thread_param->internalformat,
-                         thread_param->width,
-                         thread_param->height);
+   glRenderbufferStorage(thread_data->target,
+                         thread_data->internalformat,
+                         thread_data->width,
+                         thread_data->height);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5912,39 +5916,39 @@ glRenderbufferStorage_thread_cmd(GLenum target, GLenum internalformat, GLsizei w
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glRenderbufferStorage thread_param_local;
-   Thread_Command_glRenderbufferStorage *thread_param = &thread_param_local;
+   Evas_Thread_Command_glRenderbufferStorage thread_data_local;
+   Evas_Thread_Command_glRenderbufferStorage *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glRenderbufferStorage *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glRenderbufferStorage));
-        if (thread_param_new)
+        Evas_Thread_Command_glRenderbufferStorage *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glRenderbufferStorage));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->internalformat = internalformat;
-   thread_param->width = width;
-   thread_param->height = height;
+   thread_data->target = target;
+   thread_data->internalformat = internalformat;
+   thread_data->width = width;
+   thread_data->height = height;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glRenderbufferStorage,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
+ * void
+ * glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
  */
 
 typedef struct
@@ -5955,21 +5959,21 @@ typedef struct
    GLuint renderbuffer;
    int command_allocated;
 
-} Thread_Command_glFramebufferRenderbuffer;
+} Evas_Thread_Command_glFramebufferRenderbuffer;
 
 static void
 _gl_thread_glFramebufferRenderbuffer(void *data)
 {
-   Thread_Command_glFramebufferRenderbuffer *thread_param =
-      (Thread_Command_glFramebufferRenderbuffer *)data;
+   Evas_Thread_Command_glFramebufferRenderbuffer *thread_data =
+      (Evas_Thread_Command_glFramebufferRenderbuffer *)data;
 
-   glFramebufferRenderbuffer(thread_param->target,
-                             thread_param->attachment,
-                             thread_param->renderbuffertarget,
-                             thread_param->renderbuffer);
+   glFramebufferRenderbuffer(thread_data->target,
+                             thread_data->attachment,
+                             thread_data->renderbuffertarget,
+                             thread_data->renderbuffer);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -5983,39 +5987,39 @@ glFramebufferRenderbuffer_thread_cmd(GLenum target, GLenum attachment, GLenum re
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glFramebufferRenderbuffer thread_param_local;
-   Thread_Command_glFramebufferRenderbuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glFramebufferRenderbuffer thread_data_local;
+   Evas_Thread_Command_glFramebufferRenderbuffer *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glFramebufferRenderbuffer *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glFramebufferRenderbuffer));
-        if (thread_param_new)
+        Evas_Thread_Command_glFramebufferRenderbuffer *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glFramebufferRenderbuffer));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->attachment = attachment;
-   thread_param->renderbuffertarget = renderbuffertarget;
-   thread_param->renderbuffer = renderbuffer;
+   thread_data->target = target;
+   thread_data->attachment = attachment;
+   thread_data->renderbuffertarget = renderbuffertarget;
+   thread_data->renderbuffer = renderbuffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glFramebufferRenderbuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+ * void
+ * glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
  */
 
 typedef struct
@@ -6027,7 +6031,7 @@ typedef struct
    GLint level;
    int command_allocated;
 
-} Thread_Command_glFramebufferTexture2D;
+} Evas_Thread_Command_glFramebufferTexture2D;
 
 void (*orig_evas_glFramebufferTexture2D)(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
 
@@ -6046,17 +6050,17 @@ glFramebufferTexture2D_orig_evas_get(void)
 static void
 _gl_thread_glFramebufferTexture2D(void *data)
 {
-   Thread_Command_glFramebufferTexture2D *thread_param =
-      (Thread_Command_glFramebufferTexture2D *)data;
+   Evas_Thread_Command_glFramebufferTexture2D *thread_data =
+      (Evas_Thread_Command_glFramebufferTexture2D *)data;
 
-   orig_evas_glFramebufferTexture2D(thread_param->target,
-                                    thread_param->attachment,
-                                    thread_param->textarget,
-                                    thread_param->texture,
-                                    thread_param->level);
+   orig_evas_glFramebufferTexture2D(thread_data->target,
+                                    thread_data->attachment,
+                                    thread_data->textarget,
+                                    thread_data->texture,
+                                    thread_data->level);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -6070,40 +6074,40 @@ glFramebufferTexture2D_thread_cmd(GLenum target, GLenum attachment, GLenum texta
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glFramebufferTexture2D thread_param_local;
-   Thread_Command_glFramebufferTexture2D *thread_param = &thread_param_local;
+   Evas_Thread_Command_glFramebufferTexture2D thread_data_local;
+   Evas_Thread_Command_glFramebufferTexture2D *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glFramebufferTexture2D *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glFramebufferTexture2D));
-        if (thread_param_new)
+        Evas_Thread_Command_glFramebufferTexture2D *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glFramebufferTexture2D));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->attachment = attachment;
-   thread_param->textarget = textarget;
-   thread_param->texture = texture;
-   thread_param->level = level;
+   thread_data->target = target;
+   thread_data->attachment = attachment;
+   thread_data->textarget = textarget;
+   thread_data->texture = texture;
+   thread_data->level = level;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glFramebufferTexture2D,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glFramebufferTexture2DMultisample(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples);
+ * void
+ * glFramebufferTexture2DMultisample(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples);
  */
 
 typedef struct
@@ -6116,7 +6120,7 @@ typedef struct
    GLsizei samples;
    int command_allocated;
 
-} Thread_Command_glFramebufferTexture2DMultisample;
+} Evas_Thread_Command_glFramebufferTexture2DMultisample;
 
 void (*orig_evas_glFramebufferTexture2DMultisample)(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples);
 
@@ -6135,18 +6139,18 @@ glFramebufferTexture2DMultisample_orig_evas_get(void)
 static void
 _gl_thread_glFramebufferTexture2DMultisample(void *data)
 {
-   Thread_Command_glFramebufferTexture2DMultisample *thread_param =
-      (Thread_Command_glFramebufferTexture2DMultisample *)data;
+   Evas_Thread_Command_glFramebufferTexture2DMultisample *thread_data =
+      (Evas_Thread_Command_glFramebufferTexture2DMultisample *)data;
 
-   orig_evas_glFramebufferTexture2DMultisample(thread_param->target,
-                                               thread_param->attachment,
-                                               thread_param->textarget,
-                                               thread_param->texture,
-                                               thread_param->level,
-                                               thread_param->samples);
+   orig_evas_glFramebufferTexture2DMultisample(thread_data->target,
+                                               thread_data->attachment,
+                                               thread_data->textarget,
+                                               thread_data->texture,
+                                               thread_data->level,
+                                               thread_data->samples);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -6160,41 +6164,41 @@ glFramebufferTexture2DMultisample_thread_cmd(GLenum target, GLenum attachment, G
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glFramebufferTexture2DMultisample thread_param_local;
-   Thread_Command_glFramebufferTexture2DMultisample *thread_param = &thread_param_local;
+   Evas_Thread_Command_glFramebufferTexture2DMultisample thread_data_local;
+   Evas_Thread_Command_glFramebufferTexture2DMultisample *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glFramebufferTexture2DMultisample *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glFramebufferTexture2DMultisample));
-        if (thread_param_new)
+        Evas_Thread_Command_glFramebufferTexture2DMultisample *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glFramebufferTexture2DMultisample));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->attachment = attachment;
-   thread_param->textarget = textarget;
-   thread_param->texture = texture;
-   thread_param->level = level;
-   thread_param->samples = samples;
+   thread_data->target = target;
+   thread_data->attachment = attachment;
+   thread_data->textarget = textarget;
+   thread_data->texture = texture;
+   thread_data->level = level;
+   thread_data->samples = samples;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glFramebufferTexture2DMultisample,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLenum
-   glCheckFramebufferStatus(GLenum target);
+ * GLenum
+ * glCheckFramebufferStatus(GLenum target);
  */
 
 typedef struct
@@ -6202,15 +6206,15 @@ typedef struct
    GLenum return_value;
    GLenum target;
 
-} Thread_Command_glCheckFramebufferStatus;
+} Evas_Thread_Command_glCheckFramebufferStatus;
 
 static void
 _gl_thread_glCheckFramebufferStatus(void *data)
 {
-   Thread_Command_glCheckFramebufferStatus *thread_param =
-      (Thread_Command_glCheckFramebufferStatus *)data;
+   Evas_Thread_Command_glCheckFramebufferStatus *thread_data =
+      (Evas_Thread_Command_glCheckFramebufferStatus *)data;
 
-   thread_param->return_value = glCheckFramebufferStatus(thread_param->target);
+   thread_data->return_value = glCheckFramebufferStatus(thread_data->target);
 
 }
 
@@ -6224,22 +6228,22 @@ glCheckFramebufferStatus_thread_cmd(GLenum target)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glCheckFramebufferStatus thread_param_local;
-   Thread_Command_glCheckFramebufferStatus *thread_param = &thread_param_local;
+   Evas_Thread_Command_glCheckFramebufferStatus thread_data_local;
+   Evas_Thread_Command_glCheckFramebufferStatus *thread_data = &thread_data_local;
 
-   thread_param->target = target;
+   thread_data->target = target;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glCheckFramebufferStatus,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glFlush(void);
+ * void
+ * glFlush(void);
  */
 
 static void
@@ -6267,8 +6271,8 @@ glFlush_thread_cmd(void)
 }
 
 /*
-   void
-   glFinish(void);
+ * void
+ * glFinish(void);
  */
 
 static void
@@ -6296,8 +6300,8 @@ glFinish_thread_cmd(void)
 }
 
 /*
-   void
-   glHint(GLenum target, GLenum mode);
+ * void
+ * glHint(GLenum target, GLenum mode);
  */
 
 typedef struct
@@ -6306,19 +6310,19 @@ typedef struct
    GLenum mode;
    int command_allocated;
 
-} Thread_Command_glHint;
+} Evas_Thread_Command_glHint;
 
 static void
 _gl_thread_glHint(void *data)
 {
-   Thread_Command_glHint *thread_param =
-      (Thread_Command_glHint *)data;
+   Evas_Thread_Command_glHint *thread_data =
+      (Evas_Thread_Command_glHint *)data;
 
-   glHint(thread_param->target,
-          thread_param->mode);
+   glHint(thread_data->target,
+          thread_data->mode);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -6332,37 +6336,37 @@ glHint_thread_cmd(GLenum target, GLenum mode)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glHint thread_param_local;
-   Thread_Command_glHint *thread_param = &thread_param_local;
+   Evas_Thread_Command_glHint thread_data_local;
+   Evas_Thread_Command_glHint *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glHint *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glHint));
-        if (thread_param_new)
+        Evas_Thread_Command_glHint *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glHint));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->target = target;
-   thread_param->mode = mode;
+   thread_data->target = target;
+   thread_data->mode = mode;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glHint,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   const GLubyte *
-   glGetString(GLenum name);
+ * const GLubyte *
+ * glGetString(GLenum name);
  */
 
 typedef struct
@@ -6370,15 +6374,15 @@ typedef struct
    const GLubyte * return_value;
    GLenum name;
 
-} Thread_Command_glGetString;
+} Evas_Thread_Command_glGetString;
 
 static void
 _gl_thread_glGetString(void *data)
 {
-   Thread_Command_glGetString *thread_param =
-      (Thread_Command_glGetString *)data;
+   Evas_Thread_Command_glGetString *thread_data =
+      (Evas_Thread_Command_glGetString *)data;
 
-   thread_param->return_value = glGetString(thread_param->name);
+   thread_data->return_value = glGetString(thread_data->name);
 
 }
 
@@ -6392,22 +6396,22 @@ glGetString_thread_cmd(GLenum name)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetString thread_param_local;
-   Thread_Command_glGetString *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetString thread_data_local;
+   Evas_Thread_Command_glGetString *thread_data = &thread_data_local;
 
-   thread_param->name = name;
+   thread_data->name = name;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetString,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glGetBooleanv(GLenum pname, GLboolean *data);
+ * void
+ * glGetBooleanv(GLenum pname, GLboolean *data);
  */
 
 typedef struct
@@ -6415,16 +6419,16 @@ typedef struct
    GLenum pname;
    GLboolean *data;
 
-} Thread_Command_glGetBooleanv;
+} Evas_Thread_Command_glGetBooleanv;
 
 static void
 _gl_thread_glGetBooleanv(void *data)
 {
-   Thread_Command_glGetBooleanv *thread_param =
-      (Thread_Command_glGetBooleanv *)data;
+   Evas_Thread_Command_glGetBooleanv *thread_data =
+      (Evas_Thread_Command_glGetBooleanv *)data;
 
-   glGetBooleanv(thread_param->pname,
-                 thread_param->data);
+   glGetBooleanv(thread_data->pname,
+                 thread_data->data);
 
 }
 
@@ -6439,21 +6443,21 @@ glGetBooleanv_thread_cmd(GLenum pname, GLboolean *data)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetBooleanv thread_param_local;
-   Thread_Command_glGetBooleanv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetBooleanv thread_data_local;
+   Evas_Thread_Command_glGetBooleanv *thread_data = &thread_data_local;
 
-   thread_param->pname = pname;
-   thread_param->data = data;
+   thread_data->pname = pname;
+   thread_data->data = data;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetBooleanv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetFloatv(GLenum pname, GLfloat *data);
+ * void
+ * glGetFloatv(GLenum pname, GLfloat *data);
  */
 
 typedef struct
@@ -6461,16 +6465,16 @@ typedef struct
    GLenum pname;
    GLfloat *data;
 
-} Thread_Command_glGetFloatv;
+} Evas_Thread_Command_glGetFloatv;
 
 static void
 _gl_thread_glGetFloatv(void *data)
 {
-   Thread_Command_glGetFloatv *thread_param =
-      (Thread_Command_glGetFloatv *)data;
+   Evas_Thread_Command_glGetFloatv *thread_data =
+      (Evas_Thread_Command_glGetFloatv *)data;
 
-   glGetFloatv(thread_param->pname,
-               thread_param->data);
+   glGetFloatv(thread_data->pname,
+               thread_data->data);
 
 }
 
@@ -6485,21 +6489,21 @@ glGetFloatv_thread_cmd(GLenum pname, GLfloat *data)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetFloatv thread_param_local;
-   Thread_Command_glGetFloatv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetFloatv thread_data_local;
+   Evas_Thread_Command_glGetFloatv *thread_data = &thread_data_local;
 
-   thread_param->pname = pname;
-   thread_param->data = data;
+   thread_data->pname = pname;
+   thread_data->data = data;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetFloatv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetIntegerv(GLenum pname, GLint *data);
+ * void
+ * glGetIntegerv(GLenum pname, GLint *data);
  */
 
 typedef struct
@@ -6507,16 +6511,16 @@ typedef struct
    GLenum pname;
    GLint *data;
 
-} Thread_Command_glGetIntegerv;
+} Evas_Thread_Command_glGetIntegerv;
 
 static void
 _gl_thread_glGetIntegerv(void *data)
 {
-   Thread_Command_glGetIntegerv *thread_param =
-      (Thread_Command_glGetIntegerv *)data;
+   Evas_Thread_Command_glGetIntegerv *thread_data =
+      (Evas_Thread_Command_glGetIntegerv *)data;
 
-   glGetIntegerv(thread_param->pname,
-                 thread_param->data);
+   glGetIntegerv(thread_data->pname,
+                 thread_data->data);
 
 }
 
@@ -6531,21 +6535,21 @@ glGetIntegerv_thread_cmd(GLenum pname, GLint *data)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetIntegerv thread_param_local;
-   Thread_Command_glGetIntegerv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetIntegerv thread_data_local;
+   Evas_Thread_Command_glGetIntegerv *thread_data = &thread_data_local;
 
-   thread_param->pname = pname;
-   thread_param->data = data;
+   thread_data->pname = pname;
+   thread_data->data = data;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetIntegerv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLboolean
-   glIsBuffer(GLint buffer);
+ * GLboolean
+ * glIsBuffer(GLint buffer);
  */
 
 typedef struct
@@ -6553,15 +6557,15 @@ typedef struct
    GLboolean return_value;
    GLint buffer;
 
-} Thread_Command_glIsBuffer;
+} Evas_Thread_Command_glIsBuffer;
 
 static void
 _gl_thread_glIsBuffer(void *data)
 {
-   Thread_Command_glIsBuffer *thread_param =
-      (Thread_Command_glIsBuffer *)data;
+   Evas_Thread_Command_glIsBuffer *thread_data =
+      (Evas_Thread_Command_glIsBuffer *)data;
 
-   thread_param->return_value = glIsBuffer(thread_param->buffer);
+   thread_data->return_value = glIsBuffer(thread_data->buffer);
 
 }
 
@@ -6575,22 +6579,22 @@ glIsBuffer_thread_cmd(GLint buffer)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glIsBuffer thread_param_local;
-   Thread_Command_glIsBuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glIsBuffer thread_data_local;
+   Evas_Thread_Command_glIsBuffer *thread_data = &thread_data_local;
 
-   thread_param->buffer = buffer;
+   thread_data->buffer = buffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glIsBuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glGetBufferParameteriv(GLenum target, GLenum pname, GLint *params);
+ * void
+ * glGetBufferParameteriv(GLenum target, GLenum pname, GLint *params);
  */
 
 typedef struct
@@ -6599,17 +6603,17 @@ typedef struct
    GLenum pname;
    GLint *params;
 
-} Thread_Command_glGetBufferParameteriv;
+} Evas_Thread_Command_glGetBufferParameteriv;
 
 static void
 _gl_thread_glGetBufferParameteriv(void *data)
 {
-   Thread_Command_glGetBufferParameteriv *thread_param =
-      (Thread_Command_glGetBufferParameteriv *)data;
+   Evas_Thread_Command_glGetBufferParameteriv *thread_data =
+      (Evas_Thread_Command_glGetBufferParameteriv *)data;
 
-   glGetBufferParameteriv(thread_param->target,
-                          thread_param->pname,
-                          thread_param->params);
+   glGetBufferParameteriv(thread_data->target,
+                          thread_data->pname,
+                          thread_data->params);
 
 }
 
@@ -6624,22 +6628,22 @@ glGetBufferParameteriv_thread_cmd(GLenum target, GLenum pname, GLint *params)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetBufferParameteriv thread_param_local;
-   Thread_Command_glGetBufferParameteriv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetBufferParameteriv thread_data_local;
+   Evas_Thread_Command_glGetBufferParameteriv *thread_data = &thread_data_local;
 
-   thread_param->target = target;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetBufferParameteriv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLboolean
-   glIsShader(GLuint shader);
+ * GLboolean
+ * glIsShader(GLuint shader);
  */
 
 typedef struct
@@ -6647,15 +6651,15 @@ typedef struct
    GLboolean return_value;
    GLuint shader;
 
-} Thread_Command_glIsShader;
+} Evas_Thread_Command_glIsShader;
 
 static void
 _gl_thread_glIsShader(void *data)
 {
-   Thread_Command_glIsShader *thread_param =
-      (Thread_Command_glIsShader *)data;
+   Evas_Thread_Command_glIsShader *thread_data =
+      (Evas_Thread_Command_glIsShader *)data;
 
-   thread_param->return_value = glIsShader(thread_param->shader);
+   thread_data->return_value = glIsShader(thread_data->shader);
 
 }
 
@@ -6669,22 +6673,22 @@ glIsShader_thread_cmd(GLuint shader)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glIsShader thread_param_local;
-   Thread_Command_glIsShader *thread_param = &thread_param_local;
+   Evas_Thread_Command_glIsShader thread_data_local;
+   Evas_Thread_Command_glIsShader *thread_data = &thread_data_local;
 
-   thread_param->shader = shader;
+   thread_data->shader = shader;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glIsShader,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glGetShaderiv(GLuint shader, GLenum pname, GLint *params);
+ * void
+ * glGetShaderiv(GLuint shader, GLenum pname, GLint *params);
  */
 
 typedef struct
@@ -6693,17 +6697,17 @@ typedef struct
    GLenum pname;
    GLint *params;
 
-} Thread_Command_glGetShaderiv;
+} Evas_Thread_Command_glGetShaderiv;
 
 static void
 _gl_thread_glGetShaderiv(void *data)
 {
-   Thread_Command_glGetShaderiv *thread_param =
-      (Thread_Command_glGetShaderiv *)data;
+   Evas_Thread_Command_glGetShaderiv *thread_data =
+      (Evas_Thread_Command_glGetShaderiv *)data;
 
-   glGetShaderiv(thread_param->shader,
-                 thread_param->pname,
-                 thread_param->params);
+   glGetShaderiv(thread_data->shader,
+                 thread_data->pname,
+                 thread_data->params);
 
 }
 
@@ -6718,22 +6722,22 @@ glGetShaderiv_thread_cmd(GLuint shader, GLenum pname, GLint *params)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetShaderiv thread_param_local;
-   Thread_Command_glGetShaderiv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetShaderiv thread_data_local;
+   Evas_Thread_Command_glGetShaderiv *thread_data = &thread_data_local;
 
-   thread_param->shader = shader;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->shader = shader;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetShaderiv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *shaders);
+ * void
+ * glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *shaders);
  */
 
 typedef struct
@@ -6743,18 +6747,18 @@ typedef struct
    GLsizei *count;
    GLuint *shaders;
 
-} Thread_Command_glGetAttachedShaders;
+} Evas_Thread_Command_glGetAttachedShaders;
 
 static void
 _gl_thread_glGetAttachedShaders(void *data)
 {
-   Thread_Command_glGetAttachedShaders *thread_param =
-      (Thread_Command_glGetAttachedShaders *)data;
+   Evas_Thread_Command_glGetAttachedShaders *thread_data =
+      (Evas_Thread_Command_glGetAttachedShaders *)data;
 
-   glGetAttachedShaders(thread_param->program,
-                        thread_param->maxCount,
-                        thread_param->count,
-                        thread_param->shaders);
+   glGetAttachedShaders(thread_data->program,
+                        thread_data->maxCount,
+                        thread_data->count,
+                        thread_data->shaders);
 
 }
 
@@ -6769,23 +6773,23 @@ glGetAttachedShaders_thread_cmd(GLuint program, GLsizei maxCount, GLsizei *count
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetAttachedShaders thread_param_local;
-   Thread_Command_glGetAttachedShaders *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetAttachedShaders thread_data_local;
+   Evas_Thread_Command_glGetAttachedShaders *thread_data = &thread_data_local;
 
-   thread_param->program = program;
-   thread_param->maxCount = maxCount;
-   thread_param->count = count;
-   thread_param->shaders = shaders;
+   thread_data->program = program;
+   thread_data->maxCount = maxCount;
+   thread_data->count = count;
+   thread_data->shaders = shaders;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetAttachedShaders,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+ * void
+ * glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
  */
 
 typedef struct
@@ -6795,18 +6799,18 @@ typedef struct
    GLsizei *length;
    GLchar *infoLog;
 
-} Thread_Command_glGetShaderInfoLog;
+} Evas_Thread_Command_glGetShaderInfoLog;
 
 static void
 _gl_thread_glGetShaderInfoLog(void *data)
 {
-   Thread_Command_glGetShaderInfoLog *thread_param =
-      (Thread_Command_glGetShaderInfoLog *)data;
+   Evas_Thread_Command_glGetShaderInfoLog *thread_data =
+      (Evas_Thread_Command_glGetShaderInfoLog *)data;
 
-   glGetShaderInfoLog(thread_param->shader,
-                      thread_param->bufSize,
-                      thread_param->length,
-                      thread_param->infoLog);
+   glGetShaderInfoLog(thread_data->shader,
+                      thread_data->bufSize,
+                      thread_data->length,
+                      thread_data->infoLog);
 
 }
 
@@ -6821,23 +6825,23 @@ glGetShaderInfoLog_thread_cmd(GLuint shader, GLsizei bufSize, GLsizei *length, G
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetShaderInfoLog thread_param_local;
-   Thread_Command_glGetShaderInfoLog *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetShaderInfoLog thread_data_local;
+   Evas_Thread_Command_glGetShaderInfoLog *thread_data = &thread_data_local;
 
-   thread_param->shader = shader;
-   thread_param->bufSize = bufSize;
-   thread_param->length = length;
-   thread_param->infoLog = infoLog;
+   thread_data->shader = shader;
+   thread_data->bufSize = bufSize;
+   thread_data->length = length;
+   thread_data->infoLog = infoLog;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetShaderInfoLog,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
+ * void
+ * glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
  */
 
 typedef struct
@@ -6847,18 +6851,18 @@ typedef struct
    GLsizei *length;
    GLchar *source;
 
-} Thread_Command_glGetShaderSource;
+} Evas_Thread_Command_glGetShaderSource;
 
 static void
 _gl_thread_glGetShaderSource(void *data)
 {
-   Thread_Command_glGetShaderSource *thread_param =
-      (Thread_Command_glGetShaderSource *)data;
+   Evas_Thread_Command_glGetShaderSource *thread_data =
+      (Evas_Thread_Command_glGetShaderSource *)data;
 
-   glGetShaderSource(thread_param->shader,
-                     thread_param->bufSize,
-                     thread_param->length,
-                     thread_param->source);
+   glGetShaderSource(thread_data->shader,
+                     thread_data->bufSize,
+                     thread_data->length,
+                     thread_data->source);
 
 }
 
@@ -6873,23 +6877,23 @@ glGetShaderSource_thread_cmd(GLuint shader, GLsizei bufSize, GLsizei *length, GL
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetShaderSource thread_param_local;
-   Thread_Command_glGetShaderSource *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetShaderSource thread_data_local;
+   Evas_Thread_Command_glGetShaderSource *thread_data = &thread_data_local;
 
-   thread_param->shader = shader;
-   thread_param->bufSize = bufSize;
-   thread_param->length = length;
-   thread_param->source = source;
+   thread_data->shader = shader;
+   thread_data->bufSize = bufSize;
+   thread_data->length = length;
+   thread_data->source = source;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetShaderSource,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype, GLint *range, GLint *precision);
+ * void
+ * glGetShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype, GLint *range, GLint *precision);
  */
 
 typedef struct
@@ -6899,18 +6903,18 @@ typedef struct
    GLint *range;
    GLint *precision;
 
-} Thread_Command_glGetShaderPrecisionFormat;
+} Evas_Thread_Command_glGetShaderPrecisionFormat;
 
 static void
 _gl_thread_glGetShaderPrecisionFormat(void *data)
 {
-   Thread_Command_glGetShaderPrecisionFormat *thread_param =
-      (Thread_Command_glGetShaderPrecisionFormat *)data;
+   Evas_Thread_Command_glGetShaderPrecisionFormat *thread_data =
+      (Evas_Thread_Command_glGetShaderPrecisionFormat *)data;
 
-   glGetShaderPrecisionFormat(thread_param->shadertype,
-                              thread_param->precisiontype,
-                              thread_param->range,
-                              thread_param->precision);
+   glGetShaderPrecisionFormat(thread_data->shadertype,
+                              thread_data->precisiontype,
+                              thread_data->range,
+                              thread_data->precision);
 
 }
 
@@ -6925,23 +6929,23 @@ glGetShaderPrecisionFormat_thread_cmd(GLenum shadertype, GLenum precisiontype, G
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetShaderPrecisionFormat thread_param_local;
-   Thread_Command_glGetShaderPrecisionFormat *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetShaderPrecisionFormat thread_data_local;
+   Evas_Thread_Command_glGetShaderPrecisionFormat *thread_data = &thread_data_local;
 
-   thread_param->shadertype = shadertype;
-   thread_param->precisiontype = precisiontype;
-   thread_param->range = range;
-   thread_param->precision = precision;
+   thread_data->shadertype = shadertype;
+   thread_data->precisiontype = precisiontype;
+   thread_data->range = range;
+   thread_data->precision = precision;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetShaderPrecisionFormat,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat *params);
+ * void
+ * glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat *params);
  */
 
 typedef struct
@@ -6950,17 +6954,17 @@ typedef struct
    GLenum pname;
    GLfloat *params;
 
-} Thread_Command_glGetVertexAttribfv;
+} Evas_Thread_Command_glGetVertexAttribfv;
 
 static void
 _gl_thread_glGetVertexAttribfv(void *data)
 {
-   Thread_Command_glGetVertexAttribfv *thread_param =
-      (Thread_Command_glGetVertexAttribfv *)data;
+   Evas_Thread_Command_glGetVertexAttribfv *thread_data =
+      (Evas_Thread_Command_glGetVertexAttribfv *)data;
 
-   glGetVertexAttribfv(thread_param->index,
-                       thread_param->pname,
-                       thread_param->params);
+   glGetVertexAttribfv(thread_data->index,
+                       thread_data->pname,
+                       thread_data->params);
 
 }
 
@@ -6975,22 +6979,22 @@ glGetVertexAttribfv_thread_cmd(GLuint index, GLenum pname, GLfloat *params)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetVertexAttribfv thread_param_local;
-   Thread_Command_glGetVertexAttribfv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetVertexAttribfv thread_data_local;
+   Evas_Thread_Command_glGetVertexAttribfv *thread_data = &thread_data_local;
 
-   thread_param->index = index;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->index = index;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetVertexAttribfv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetVertexAttribiv(GLuint index, GLenum pname, GLint *params);
+ * void
+ * glGetVertexAttribiv(GLuint index, GLenum pname, GLint *params);
  */
 
 typedef struct
@@ -6999,17 +7003,17 @@ typedef struct
    GLenum pname;
    GLint *params;
 
-} Thread_Command_glGetVertexAttribiv;
+} Evas_Thread_Command_glGetVertexAttribiv;
 
 static void
 _gl_thread_glGetVertexAttribiv(void *data)
 {
-   Thread_Command_glGetVertexAttribiv *thread_param =
-      (Thread_Command_glGetVertexAttribiv *)data;
+   Evas_Thread_Command_glGetVertexAttribiv *thread_data =
+      (Evas_Thread_Command_glGetVertexAttribiv *)data;
 
-   glGetVertexAttribiv(thread_param->index,
-                       thread_param->pname,
-                       thread_param->params);
+   glGetVertexAttribiv(thread_data->index,
+                       thread_data->pname,
+                       thread_data->params);
 
 }
 
@@ -7024,22 +7028,22 @@ glGetVertexAttribiv_thread_cmd(GLuint index, GLenum pname, GLint *params)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetVertexAttribiv thread_param_local;
-   Thread_Command_glGetVertexAttribiv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetVertexAttribiv thread_data_local;
+   Evas_Thread_Command_glGetVertexAttribiv *thread_data = &thread_data_local;
 
-   thread_param->index = index;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->index = index;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetVertexAttribiv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLboolean
-   glIsProgram(GLuint program);
+ * GLboolean
+ * glIsProgram(GLuint program);
  */
 
 typedef struct
@@ -7047,15 +7051,15 @@ typedef struct
    GLboolean return_value;
    GLuint program;
 
-} Thread_Command_glIsProgram;
+} Evas_Thread_Command_glIsProgram;
 
 static void
 _gl_thread_glIsProgram(void *data)
 {
-   Thread_Command_glIsProgram *thread_param =
-      (Thread_Command_glIsProgram *)data;
+   Evas_Thread_Command_glIsProgram *thread_data =
+      (Evas_Thread_Command_glIsProgram *)data;
 
-   thread_param->return_value = glIsProgram(thread_param->program);
+   thread_data->return_value = glIsProgram(thread_data->program);
 
 }
 
@@ -7069,22 +7073,22 @@ glIsProgram_thread_cmd(GLuint program)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glIsProgram thread_param_local;
-   Thread_Command_glIsProgram *thread_param = &thread_param_local;
+   Evas_Thread_Command_glIsProgram thread_data_local;
+   Evas_Thread_Command_glIsProgram *thread_data = &thread_data_local;
 
-   thread_param->program = program;
+   thread_data->program = program;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glIsProgram,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+ * void
+ * glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
  */
 
 typedef struct
@@ -7094,18 +7098,18 @@ typedef struct
    GLsizei *length;
    GLchar *infoLog;
 
-} Thread_Command_glGetProgramInfoLog;
+} Evas_Thread_Command_glGetProgramInfoLog;
 
 static void
 _gl_thread_glGetProgramInfoLog(void *data)
 {
-   Thread_Command_glGetProgramInfoLog *thread_param =
-      (Thread_Command_glGetProgramInfoLog *)data;
+   Evas_Thread_Command_glGetProgramInfoLog *thread_data =
+      (Evas_Thread_Command_glGetProgramInfoLog *)data;
 
-   glGetProgramInfoLog(thread_param->program,
-                       thread_param->bufSize,
-                       thread_param->length,
-                       thread_param->infoLog);
+   glGetProgramInfoLog(thread_data->program,
+                       thread_data->bufSize,
+                       thread_data->length,
+                       thread_data->infoLog);
 
 }
 
@@ -7120,23 +7124,23 @@ glGetProgramInfoLog_thread_cmd(GLuint program, GLsizei bufSize, GLsizei *length,
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetProgramInfoLog thread_param_local;
-   Thread_Command_glGetProgramInfoLog *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetProgramInfoLog thread_data_local;
+   Evas_Thread_Command_glGetProgramInfoLog *thread_data = &thread_data_local;
 
-   thread_param->program = program;
-   thread_param->bufSize = bufSize;
-   thread_param->length = length;
-   thread_param->infoLog = infoLog;
+   thread_data->program = program;
+   thread_data->bufSize = bufSize;
+   thread_data->length = length;
+   thread_data->infoLog = infoLog;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetProgramInfoLog,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glGetProgramiv(GLuint program, GLenum pname, GLint *params);
+ * void
+ * glGetProgramiv(GLuint program, GLenum pname, GLint *params);
  */
 
 typedef struct
@@ -7145,17 +7149,17 @@ typedef struct
    GLenum pname;
    GLint *params;
 
-} Thread_Command_glGetProgramiv;
+} Evas_Thread_Command_glGetProgramiv;
 
 static void
 _gl_thread_glGetProgramiv(void *data)
 {
-   Thread_Command_glGetProgramiv *thread_param =
-      (Thread_Command_glGetProgramiv *)data;
+   Evas_Thread_Command_glGetProgramiv *thread_data =
+      (Evas_Thread_Command_glGetProgramiv *)data;
 
-   glGetProgramiv(thread_param->program,
-                  thread_param->pname,
-                  thread_param->params);
+   glGetProgramiv(thread_data->program,
+                  thread_data->pname,
+                  thread_data->params);
 
 }
 
@@ -7170,22 +7174,22 @@ glGetProgramiv_thread_cmd(GLuint program, GLenum pname, GLint *params)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetProgramiv thread_param_local;
-   Thread_Command_glGetProgramiv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetProgramiv thread_data_local;
+   Evas_Thread_Command_glGetProgramiv *thread_data = &thread_data_local;
 
-   thread_param->program = program;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->program = program;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetProgramiv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLboolean
-   glIsFramebuffer(GLint framebuffer);
+ * GLboolean
+ * glIsFramebuffer(GLint framebuffer);
  */
 
 typedef struct
@@ -7193,15 +7197,15 @@ typedef struct
    GLboolean return_value;
    GLint framebuffer;
 
-} Thread_Command_glIsFramebuffer;
+} Evas_Thread_Command_glIsFramebuffer;
 
 static void
 _gl_thread_glIsFramebuffer(void *data)
 {
-   Thread_Command_glIsFramebuffer *thread_param =
-      (Thread_Command_glIsFramebuffer *)data;
+   Evas_Thread_Command_glIsFramebuffer *thread_data =
+      (Evas_Thread_Command_glIsFramebuffer *)data;
 
-   thread_param->return_value = glIsFramebuffer(thread_param->framebuffer);
+   thread_data->return_value = glIsFramebuffer(thread_data->framebuffer);
 
 }
 
@@ -7215,22 +7219,22 @@ glIsFramebuffer_thread_cmd(GLint framebuffer)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glIsFramebuffer thread_param_local;
-   Thread_Command_glIsFramebuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glIsFramebuffer thread_data_local;
+   Evas_Thread_Command_glIsFramebuffer *thread_data = &thread_data_local;
 
-   thread_param->framebuffer = framebuffer;
+   thread_data->framebuffer = framebuffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glIsFramebuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glGetFramebufferParameteriv(GLenum target, GLenum pname, GLint *params);
+ * void
+ * glGetFramebufferParameteriv(GLenum target, GLenum pname, GLint *params);
  */
 
 typedef struct
@@ -7239,7 +7243,7 @@ typedef struct
    GLenum pname;
    GLint *params;
 
-} Thread_Command_glGetFramebufferParameteriv;
+} Evas_Thread_Command_glGetFramebufferParameteriv;
 
 void (*orig_evas_glGetFramebufferParameteriv)(GLenum target, GLenum pname, GLint *params);
 
@@ -7258,12 +7262,12 @@ glGetFramebufferParameteriv_orig_evas_get(void)
 static void
 _gl_thread_glGetFramebufferParameteriv(void *data)
 {
-   Thread_Command_glGetFramebufferParameteriv *thread_param =
-      (Thread_Command_glGetFramebufferParameteriv *)data;
+   Evas_Thread_Command_glGetFramebufferParameteriv *thread_data =
+      (Evas_Thread_Command_glGetFramebufferParameteriv *)data;
 
-   orig_evas_glGetFramebufferParameteriv(thread_param->target,
-                                         thread_param->pname,
-                                         thread_param->params);
+   orig_evas_glGetFramebufferParameteriv(thread_data->target,
+                                         thread_data->pname,
+                                         thread_data->params);
 
 }
 
@@ -7278,22 +7282,22 @@ glGetFramebufferParameteriv_thread_cmd(GLenum target, GLenum pname, GLint *param
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetFramebufferParameteriv thread_param_local;
-   Thread_Command_glGetFramebufferParameteriv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetFramebufferParameteriv thread_data_local;
+   Evas_Thread_Command_glGetFramebufferParameteriv *thread_data = &thread_data_local;
 
-   thread_param->target = target;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetFramebufferParameteriv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLboolean
-   glIsRenderbuffer(GLint renderbuffer);
+ * GLboolean
+ * glIsRenderbuffer(GLint renderbuffer);
  */
 
 typedef struct
@@ -7301,15 +7305,15 @@ typedef struct
    GLboolean return_value;
    GLint renderbuffer;
 
-} Thread_Command_glIsRenderbuffer;
+} Evas_Thread_Command_glIsRenderbuffer;
 
 static void
 _gl_thread_glIsRenderbuffer(void *data)
 {
-   Thread_Command_glIsRenderbuffer *thread_param =
-      (Thread_Command_glIsRenderbuffer *)data;
+   Evas_Thread_Command_glIsRenderbuffer *thread_data =
+      (Evas_Thread_Command_glIsRenderbuffer *)data;
 
-   thread_param->return_value = glIsRenderbuffer(thread_param->renderbuffer);
+   thread_data->return_value = glIsRenderbuffer(thread_data->renderbuffer);
 
 }
 
@@ -7323,22 +7327,22 @@ glIsRenderbuffer_thread_cmd(GLint renderbuffer)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glIsRenderbuffer thread_param_local;
-   Thread_Command_glIsRenderbuffer *thread_param = &thread_param_local;
+   Evas_Thread_Command_glIsRenderbuffer thread_data_local;
+   Evas_Thread_Command_glIsRenderbuffer *thread_data = &thread_data_local;
 
-   thread_param->renderbuffer = renderbuffer;
+   thread_data->renderbuffer = renderbuffer;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glIsRenderbuffer,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint *params);
+ * void
+ * glGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint *params);
  */
 
 typedef struct
@@ -7347,17 +7351,17 @@ typedef struct
    GLenum pname;
    GLint *params;
 
-} Thread_Command_glGetRenderbufferParameteriv;
+} Evas_Thread_Command_glGetRenderbufferParameteriv;
 
 static void
 _gl_thread_glGetRenderbufferParameteriv(void *data)
 {
-   Thread_Command_glGetRenderbufferParameteriv *thread_param =
-      (Thread_Command_glGetRenderbufferParameteriv *)data;
+   Evas_Thread_Command_glGetRenderbufferParameteriv *thread_data =
+      (Evas_Thread_Command_glGetRenderbufferParameteriv *)data;
 
-   glGetRenderbufferParameteriv(thread_param->target,
-                                thread_param->pname,
-                                thread_param->params);
+   glGetRenderbufferParameteriv(thread_data->target,
+                                thread_data->pname,
+                                thread_data->params);
 
 }
 
@@ -7372,22 +7376,22 @@ glGetRenderbufferParameteriv_thread_cmd(GLenum target, GLenum pname, GLint *para
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetRenderbufferParameteriv thread_param_local;
-   Thread_Command_glGetRenderbufferParameteriv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetRenderbufferParameteriv thread_data_local;
+   Evas_Thread_Command_glGetRenderbufferParameteriv *thread_data = &thread_data_local;
 
-   thread_param->target = target;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetRenderbufferParameteriv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   GLboolean
-   glIsTexture(GLint texture);
+ * GLboolean
+ * glIsTexture(GLint texture);
  */
 
 typedef struct
@@ -7395,15 +7399,15 @@ typedef struct
    GLboolean return_value;
    GLint texture;
 
-} Thread_Command_glIsTexture;
+} Evas_Thread_Command_glIsTexture;
 
 static void
 _gl_thread_glIsTexture(void *data)
 {
-   Thread_Command_glIsTexture *thread_param =
-      (Thread_Command_glIsTexture *)data;
+   Evas_Thread_Command_glIsTexture *thread_data =
+      (Evas_Thread_Command_glIsTexture *)data;
 
-   thread_param->return_value = glIsTexture(thread_param->texture);
+   thread_data->return_value = glIsTexture(thread_data->texture);
 
 }
 
@@ -7417,22 +7421,22 @@ glIsTexture_thread_cmd(GLint texture)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glIsTexture thread_param_local;
-   Thread_Command_glIsTexture *thread_param = &thread_param_local;
+   Evas_Thread_Command_glIsTexture thread_data_local;
+   Evas_Thread_Command_glIsTexture *thread_data = &thread_data_local;
 
-   thread_param->texture = texture;
+   thread_data->texture = texture;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glIsTexture,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }
 
 /*
-   void
-   glStartTiling(GLuint a, GLuint b, GLuint c, GLuint d, GLuint e);
+ * void
+ * glStartTiling(GLuint a, GLuint b, GLuint c, GLuint d, GLuint e);
  */
 
 typedef struct
@@ -7444,7 +7448,7 @@ typedef struct
    GLuint e;
    int command_allocated;
 
-} Thread_Command_glStartTiling;
+} Evas_Thread_Command_glStartTiling;
 
 void (*orig_evas_glStartTiling)(GLuint a, GLuint b, GLuint c, GLuint d, GLuint e);
 
@@ -7463,17 +7467,17 @@ glStartTiling_orig_evas_get(void)
 static void
 _gl_thread_glStartTiling(void *data)
 {
-   Thread_Command_glStartTiling *thread_param =
-      (Thread_Command_glStartTiling *)data;
+   Evas_Thread_Command_glStartTiling *thread_data =
+      (Evas_Thread_Command_glStartTiling *)data;
 
-   orig_evas_glStartTiling(thread_param->a,
-                           thread_param->b,
-                           thread_param->c,
-                           thread_param->d,
-                           thread_param->e);
+   orig_evas_glStartTiling(thread_data->a,
+                           thread_data->b,
+                           thread_data->c,
+                           thread_data->d,
+                           thread_data->e);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -7487,40 +7491,40 @@ glStartTiling_thread_cmd(GLuint a, GLuint b, GLuint c, GLuint d, GLuint e)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glStartTiling thread_param_local;
-   Thread_Command_glStartTiling *thread_param = &thread_param_local;
+   Evas_Thread_Command_glStartTiling thread_data_local;
+   Evas_Thread_Command_glStartTiling *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glStartTiling *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glStartTiling));
-        if (thread_param_new)
+        Evas_Thread_Command_glStartTiling *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glStartTiling));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->a = a;
-   thread_param->b = b;
-   thread_param->c = c;
-   thread_param->d = d;
-   thread_param->e = e;
+   thread_data->a = a;
+   thread_data->b = b;
+   thread_data->c = c;
+   thread_data->d = d;
+   thread_data->e = e;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glStartTiling,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glEndTiling(GLuint a);
+ * void
+ * glEndTiling(GLuint a);
  */
 
 typedef struct
@@ -7528,7 +7532,7 @@ typedef struct
    GLuint a;
    int command_allocated;
 
-} Thread_Command_glEndTiling;
+} Evas_Thread_Command_glEndTiling;
 
 void (*orig_evas_glEndTiling)(GLuint a);
 
@@ -7547,13 +7551,13 @@ glEndTiling_orig_evas_get(void)
 static void
 _gl_thread_glEndTiling(void *data)
 {
-   Thread_Command_glEndTiling *thread_param =
-      (Thread_Command_glEndTiling *)data;
+   Evas_Thread_Command_glEndTiling *thread_data =
+      (Evas_Thread_Command_glEndTiling *)data;
 
-   orig_evas_glEndTiling(thread_param->a);
+   orig_evas_glEndTiling(thread_data->a);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -7567,36 +7571,36 @@ glEndTiling_thread_cmd(GLuint a)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glEndTiling thread_param_local;
-   Thread_Command_glEndTiling *thread_param = &thread_param_local;
+   Evas_Thread_Command_glEndTiling thread_data_local;
+   Evas_Thread_Command_glEndTiling *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glEndTiling *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glEndTiling));
-        if (thread_param_new)
+        Evas_Thread_Command_glEndTiling *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glEndTiling));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->a = a;
+   thread_data->a = a;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glEndTiling,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glActivateTile(GLuint a, GLuint b, GLuint c, GLuint d, GLuint e);
+ * void
+ * glActivateTile(GLuint a, GLuint b, GLuint c, GLuint d, GLuint e);
  */
 
 typedef struct
@@ -7608,7 +7612,7 @@ typedef struct
    GLuint e;
    int command_allocated;
 
-} Thread_Command_glActivateTile;
+} Evas_Thread_Command_glActivateTile;
 
 void (*orig_evas_glActivateTile)(GLuint a, GLuint b, GLuint c, GLuint d, GLuint e);
 
@@ -7627,17 +7631,17 @@ glActivateTile_orig_evas_get(void)
 static void
 _gl_thread_glActivateTile(void *data)
 {
-   Thread_Command_glActivateTile *thread_param =
-      (Thread_Command_glActivateTile *)data;
+   Evas_Thread_Command_glActivateTile *thread_data =
+      (Evas_Thread_Command_glActivateTile *)data;
 
-   orig_evas_glActivateTile(thread_param->a,
-                            thread_param->b,
-                            thread_param->c,
-                            thread_param->d,
-                            thread_param->e);
+   orig_evas_glActivateTile(thread_data->a,
+                            thread_data->b,
+                            thread_data->c,
+                            thread_data->d,
+                            thread_data->e);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -7651,40 +7655,40 @@ glActivateTile_thread_cmd(GLuint a, GLuint b, GLuint c, GLuint d, GLuint e)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glActivateTile thread_param_local;
-   Thread_Command_glActivateTile *thread_param = &thread_param_local;
+   Evas_Thread_Command_glActivateTile thread_data_local;
+   Evas_Thread_Command_glActivateTile *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glActivateTile *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glActivateTile));
-        if (thread_param_new)
+        Evas_Thread_Command_glActivateTile *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glActivateTile));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->a = a;
-   thread_param->b = b;
-   thread_param->c = c;
-   thread_param->d = d;
-   thread_param->e = e;
+   thread_data->a = a;
+   thread_data->b = b;
+   thread_data->c = c;
+   thread_data->d = d;
+   thread_data->e = e;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glActivateTile,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 /*
-   void
-   glEGLImageTargetTexture2DOES(GLenum target, void *image);
+ * void
+ * glEGLImageTargetTexture2DOES(GLenum target, void *image);
  */
 
 typedef struct
@@ -7692,7 +7696,7 @@ typedef struct
    GLenum target;
    void *image;
 
-} Thread_Command_glEGLImageTargetTexture2DOES;
+} Evas_Thread_Command_glEGLImageTargetTexture2DOES;
 
 void (*orig_evas_glEGLImageTargetTexture2DOES)(GLenum target, void *image);
 
@@ -7711,11 +7715,11 @@ glEGLImageTargetTexture2DOES_orig_evas_get(void)
 static void
 _gl_thread_glEGLImageTargetTexture2DOES(void *data)
 {
-   Thread_Command_glEGLImageTargetTexture2DOES *thread_param =
-      (Thread_Command_glEGLImageTargetTexture2DOES *)data;
+   Evas_Thread_Command_glEGLImageTargetTexture2DOES *thread_data =
+      (Evas_Thread_Command_glEGLImageTargetTexture2DOES *)data;
 
-   orig_evas_glEGLImageTargetTexture2DOES(thread_param->target,
-                                          thread_param->image);
+   orig_evas_glEGLImageTargetTexture2DOES(thread_data->target,
+                                          thread_data->image);
 
 }
 
@@ -7730,23 +7734,23 @@ glEGLImageTargetTexture2DOES_thread_cmd(GLenum target, void *image)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glEGLImageTargetTexture2DOES thread_param_local;
-   Thread_Command_glEGLImageTargetTexture2DOES *thread_param = &thread_param_local;
+   Evas_Thread_Command_glEGLImageTargetTexture2DOES thread_data_local;
+   Evas_Thread_Command_glEGLImageTargetTexture2DOES *thread_data = &thread_data_local;
 
-   thread_param->target = target;
-   thread_param->image = image;
+   thread_data->target = target;
+   thread_data->image = image;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glEGLImageTargetTexture2DOES,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 
 #ifndef GL_GLES
 
 /*
-   void
-   glAlphaFunc(GLenum func, GLclampf ref);
+ * void
+ * glAlphaFunc(GLenum func, GLclampf ref);
  */
 
 typedef struct
@@ -7755,19 +7759,19 @@ typedef struct
    GLclampf ref;
    int command_allocated;
 
-} Thread_Command_glAlphaFunc;
+} Evas_Thread_Command_glAlphaFunc;
 
 static void
 _gl_thread_glAlphaFunc(void *data)
 {
-   Thread_Command_glAlphaFunc *thread_param =
-      (Thread_Command_glAlphaFunc *)data;
+   Evas_Thread_Command_glAlphaFunc *thread_data =
+      (Evas_Thread_Command_glAlphaFunc *)data;
 
-   glAlphaFunc(thread_param->func,
-               thread_param->ref);
+   glAlphaFunc(thread_data->func,
+               thread_data->ref);
 
-   if (thread_param->command_allocated)
-     eina_mempool_free(_mp_command, thread_param);
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -7781,31 +7785,31 @@ glAlphaFunc_thread_cmd(GLenum func, GLclampf ref)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glAlphaFunc thread_param_local;
-   Thread_Command_glAlphaFunc *thread_param = &thread_param_local;
+   Evas_Thread_Command_glAlphaFunc thread_data_local;
+   Evas_Thread_Command_glAlphaFunc *thread_data = &thread_data_local;
 
    /* command_allocated flag init. */
-   thread_param->command_allocated = 0;
+   thread_data->command_allocated = 0;
 
    if (!evas_gl_thread_force_finish())
      { /* _flush */
-        Thread_Command_glAlphaFunc *thread_param_new;
-        thread_param_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Thread_Command_glAlphaFunc));
-        if (thread_param_new)
+        Evas_Thread_Command_glAlphaFunc *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glAlphaFunc));
+        if (thread_data_new)
           {
-             thread_param = thread_param_new;
-             thread_param->command_allocated = 1;
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
           }
      }
 
-   thread_param->func = func;
-   thread_param->ref = ref;
+   thread_data->func = func;
+   thread_data->ref = ref;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glAlphaFunc,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 #endif
@@ -7813,8 +7817,8 @@ glAlphaFunc_thread_cmd(GLenum func, GLclampf ref)
 #ifndef GL_GLES
 
 /*
-   void
-   glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint *params);
+ * void
+ * glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint *params);
  */
 
 typedef struct
@@ -7824,18 +7828,18 @@ typedef struct
    GLenum pname;
    GLint *params;
 
-} Thread_Command_glGetTexLevelParameteriv;
+} Evas_Thread_Command_glGetTexLevelParameteriv;
 
 static void
 _gl_thread_glGetTexLevelParameteriv(void *data)
 {
-   Thread_Command_glGetTexLevelParameteriv *thread_param =
-      (Thread_Command_glGetTexLevelParameteriv *)data;
+   Evas_Thread_Command_glGetTexLevelParameteriv *thread_data =
+      (Evas_Thread_Command_glGetTexLevelParameteriv *)data;
 
-   glGetTexLevelParameteriv(thread_param->target,
-                            thread_param->level,
-                            thread_param->pname,
-                            thread_param->params);
+   glGetTexLevelParameteriv(thread_data->target,
+                            thread_data->level,
+                            thread_data->pname,
+                            thread_data->params);
 
 }
 
@@ -7850,17 +7854,17 @@ glGetTexLevelParameteriv_thread_cmd(GLenum target, GLint level, GLenum pname, GL
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetTexLevelParameteriv thread_param_local;
-   Thread_Command_glGetTexLevelParameteriv *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetTexLevelParameteriv thread_data_local;
+   Evas_Thread_Command_glGetTexLevelParameteriv *thread_data = &thread_data_local;
 
-   thread_param->target = target;
-   thread_param->level = level;
-   thread_param->pname = pname;
-   thread_param->params = params;
+   thread_data->target = target;
+   thread_data->level = level;
+   thread_data->pname = pname;
+   thread_data->params = params;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetTexLevelParameteriv,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 #endif
@@ -7868,8 +7872,8 @@ glGetTexLevelParameteriv_thread_cmd(GLenum target, GLint level, GLenum pname, GL
 #ifndef GL_GLES
 
 /*
-   void
-   glRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
+ * void
+ * glRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
  */
 
 typedef struct
@@ -7880,7 +7884,7 @@ typedef struct
    GLsizei width;
    GLsizei height;
 
-} Thread_Command_glRenderbufferStorageMultisample;
+} Evas_Thread_Command_glRenderbufferStorageMultisample;
 
 void (*orig_evas_glRenderbufferStorageMultisample)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
 
@@ -7899,14 +7903,14 @@ glRenderbufferStorageMultisample_orig_evas_get(void)
 static void
 _gl_thread_glRenderbufferStorageMultisample(void *data)
 {
-   Thread_Command_glRenderbufferStorageMultisample *thread_param =
-      (Thread_Command_glRenderbufferStorageMultisample *)data;
+   Evas_Thread_Command_glRenderbufferStorageMultisample *thread_data =
+      (Evas_Thread_Command_glRenderbufferStorageMultisample *)data;
 
-   orig_evas_glRenderbufferStorageMultisample(thread_param->target,
-                                              thread_param->samples,
-                                              thread_param->internalformat,
-                                              thread_param->width,
-                                              thread_param->height);
+   orig_evas_glRenderbufferStorageMultisample(thread_data->target,
+                                              thread_data->samples,
+                                              thread_data->internalformat,
+                                              thread_data->width,
+                                              thread_data->height);
 
 }
 
@@ -7921,25 +7925,25 @@ glRenderbufferStorageMultisample_thread_cmd(GLenum target, GLsizei samples, GLen
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glRenderbufferStorageMultisample thread_param_local;
-   Thread_Command_glRenderbufferStorageMultisample *thread_param = &thread_param_local;
+   Evas_Thread_Command_glRenderbufferStorageMultisample thread_data_local;
+   Evas_Thread_Command_glRenderbufferStorageMultisample *thread_data = &thread_data_local;
 
-   thread_param->target = target;
-   thread_param->samples = samples;
-   thread_param->internalformat = internalformat;
-   thread_param->width = width;
-   thread_param->height = height;
+   thread_data->target = target;
+   thread_data->samples = samples;
+   thread_data->internalformat = internalformat;
+   thread_data->width = width;
+   thread_data->height = height;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glRenderbufferStorageMultisample,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 }
 #endif
 
 /*
-   const GLubyte *
-   glGetStringi(GLenum name, GLuint index);
+ * const GLubyte *
+ * glGetStringi(GLenum name, GLuint index);
  */
 
 typedef struct
@@ -7948,7 +7952,7 @@ typedef struct
    GLenum name;
    GLuint index;
 
-} Thread_Command_glGetStringi;
+} Evas_Thread_Command_glGetStringi;
 
 const GLubyte * (*orig_evas_glGetStringi)(GLenum name, GLuint index);
 
@@ -7967,11 +7971,11 @@ glGetStringi_orig_evas_get(void)
 static void
 _gl_thread_glGetStringi(void *data)
 {
-   Thread_Command_glGetStringi *thread_param =
-      (Thread_Command_glGetStringi *)data;
+   Evas_Thread_Command_glGetStringi *thread_data =
+      (Evas_Thread_Command_glGetStringi *)data;
 
-   thread_param->return_value = orig_evas_glGetStringi(thread_param->name,
-                                                       thread_param->index);
+   thread_data->return_value = orig_evas_glGetStringi(thread_data->name,
+                                                      thread_data->index);
 
 }
 
@@ -7985,16 +7989,16 @@ glGetStringi_thread_cmd(GLenum name, GLuint index)
 
    int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
 
-   Thread_Command_glGetStringi thread_param_local;
-   Thread_Command_glGetStringi *thread_param = &thread_param_local;
+   Evas_Thread_Command_glGetStringi thread_data_local;
+   Evas_Thread_Command_glGetStringi *thread_data = &thread_data_local;
 
-   thread_param->name = name;
-   thread_param->index = index;
+   thread_data->name = name;
+   thread_data->index = index;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glGetStringi,
-                              thread_param,
+                              thread_data,
                               thread_mode);
 
-   return thread_param->return_value;
+   return thread_data->return_value;
 }

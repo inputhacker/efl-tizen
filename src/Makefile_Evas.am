@@ -778,7 +778,7 @@ else
 noinst_LTLIBRARIES += modules/evas/engines/gl_common/libevas_engine_gl_common.la
 modules_evas_engines_gl_common_libevas_engine_gl_common_la_SOURCES = $(GL_COMMON_SOURCES)
 modules_evas_engines_gl_common_libevas_engine_gl_common_la_CPPFLAGS = \
--DEVAS_GL_RENDER_THREAD_IS_GENERIC \
+-DEVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC \
 -I$(top_builddir)/src/lib/efl \
 -I$(top_srcdir)/src/lib/evas/include \
 -I$(top_srcdir)/src/lib/evas/cserve2 \
@@ -795,7 +795,7 @@ $(install_engineglgenericpkgLTLIBRARIES): install-libLTLIBRARIES
 
 modules_evas_engines_gl_generic_module_la_SOURCES = $(GL_GENERIC_SOURCES)
 modules_evas_engines_gl_generic_module_la_CFLAGS = \
--DEVAS_GL_RENDER_THREAD_IS_GENERIC \
+-DEVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC \
 -I$(top_builddir)/src/lib/efl \
 -I$(top_srcdir)/src/lib/evas/include \
 -I$(top_srcdir)/src/lib/evas/cserve2 \
