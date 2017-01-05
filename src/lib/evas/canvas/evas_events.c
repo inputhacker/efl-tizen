@@ -1449,7 +1449,7 @@ _evas_canvas_event_feed_mouse_cancel(Eo *eo_e, Evas_Public_Data *e, unsigned int
    EINA_LIST_FOREACH_SAFE(e->touch_points, l, ll, point)
      {
         if ((point->state == EVAS_TOUCH_POINT_DOWN) ||
-            (point->state == EVAS_TOUCH_POINT_MOVE)
+            (point->state == EVAS_TOUCH_POINT_MOVE) ||
             (point->state == EVAS_TOUCH_POINT_STILL))
           evas_event_feed_multi_up(eo_e, point->id, point->x, point->y,
                                    0, 0, 0, 0, 0, 0, 0, 0, timestamp, data);
