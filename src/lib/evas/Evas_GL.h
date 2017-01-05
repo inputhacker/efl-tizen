@@ -1088,6 +1088,13 @@ typedef signed int       GLfixed;      // Changed khronos_int32_t
 typedef signed long int  GLintptr;     // Changed khronos_intptr_t
 typedef signed long int  GLsizeiptr;   // Changed khronos_ssize_t
 
+/*
+ * Evas GL has two types to support 64 bit interger both EvasGL[u]int64 and GL[u]int64
+ * EvasGL[u]int64 is for backwards compatibility and GL[u]int64 is for native type.
+*/
+typedef khronos_int64_t  GLint64;
+typedef khronos_uint64_t GLuint64;
+
 /* OpenGL ES core versions */
 //#define GL_ES_VERSION_2_0                 1
 
@@ -5624,9 +5631,9 @@ EvasGLImage *img = glapi->evasglCreateImageForContext
    GLsync       (*glFenceSyncAPPLE) (GLenum condition, GLbitfield flags);
    GLboolean    (*glIsSyncAPPLE) (GLsync sync);
    void         (*glDeleteSyncAPPLE) (GLsync sync);
-   GLenum       (*glClientWaitSyncAPPLE) (GLsync sync, GLbitfield flags, EvasGLuint64 timeout);
-   void         (*glWaitSyncAPPLE) (GLsync sync, GLbitfield flags, EvasGLuint64 timeout);
-   void         (*glGetInteger64vAPPLE) (GLenum pname, EvasGLint64 *params);
+   GLenum       (*glClientWaitSyncAPPLE) (GLsync sync, GLbitfield flags, GLuint64 timeout);
+   void         (*glWaitSyncAPPLE) (GLsync sync, GLbitfield flags, GLuint64 timeout);
+   void         (*glGetInteger64vAPPLE) (GLenum pname, GLint64 *params);
    void         (*glGetSyncivAPPLE) (GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values);
 
    /* GL_EXT_map_buffer_range */
@@ -5819,7 +5826,7 @@ EvasGLImage *img = glapi->evasglCreateImageForContext
     void         (*glClearBufferfv) (GLenum buffer, GLint drawBuffer, const GLfloat * value);
     void         (*glClearBufferiv) (GLenum buffer, GLint drawBuffer, const GLint * value);
     void         (*glClearBufferuiv) (GLenum buffer, GLint drawBuffer, const GLuint * value);
-    GLenum       (*glClientWaitSync) (GLsync sync, GLbitfield flags, EvasGLuint64 timeout);
+    GLenum       (*glClientWaitSync) (GLsync sync, GLbitfield flags, GLuint64 timeout);
     void         (*glCompressedTexImage3D) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid * data);
     void         (*glCompressedTexSubImage3D) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid * data);
     void         (*glCopyBufferSubData) (GLenum readtarget, GLenum writetarget, GLintptr readoffset, GLintptr writeoffset, GLsizeiptr size);
@@ -5845,11 +5852,11 @@ EvasGLImage *img = glapi->evasglCreateImageForContext
     void         (*glGetActiveUniformBlockiv) (GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
     void         (*glGetActiveUniformBlockName) (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
     void         (*glGetActiveUniformsiv) (GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params);
-    void         (*glGetBufferParameteri64v) (GLenum target, GLenum value, EvasGLint64 * data);
+    void         (*glGetBufferParameteri64v) (GLenum target, GLenum value, GLint64 * data);
     void         (*glGetBufferPointerv) (GLenum target, GLenum pname, GLvoid ** params);
     GLint        (*glGetFragDataLocation) (GLuint program, const char * name);
-    void         (*glGetInteger64i_v) (GLenum target, GLuint index, EvasGLint64 * data);
-    void         (*glGetInteger64v) (GLenum pname, EvasGLint64 * data);
+    void         (*glGetInteger64i_v) (GLenum target, GLuint index, GLint64 * data);
+    void         (*glGetInteger64v) (GLenum pname, GLint64 * data);
     void         (*glGetIntegeri_v) (GLenum target, GLuint index, GLint * data);
     void         (*glGetInternalformativ) (GLenum target, GLenum internalformat, GLenum pname, GLsizei bufSize, GLint *params);
     void         (*glGetProgramBinary) (GLuint program, GLsizei bufsize, GLsizei *length, GLenum *binaryFormat, void *binary);
@@ -5910,7 +5917,7 @@ EvasGLImage *img = glapi->evasglCreateImageForContext
     void         (*glVertexAttribI4ui) (GLuint index, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
     void         (*glVertexAttribI4uiv) (GLuint index, const GLuint *v);
     void         (*glVertexAttribIPointer) (GLuint index, GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
-    void         (*glWaitSync) (GLsync sync, GLbitfield flags, EvasGLuint64 timeout);
+    void         (*glWaitSync) (GLsync sync, GLbitfield flags, GLuint64 timeout);
    /** @} */
    /**
     * @anchor gles3.1
