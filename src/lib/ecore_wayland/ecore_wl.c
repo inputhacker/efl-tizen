@@ -914,6 +914,7 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
    Ecore_Wl_Display *ewd;
    Ecore_Wl_Global *global;
    Ecore_Wl_Event_Global *ev;
+   int client_version = 1;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
@@ -1002,8 +1003,13 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
      }
    else if (!strcmp(interface, "tizen_policy_ext"))
      {
+        if (version >= 2)
+          client_version = 2;
+        else
+          client_version = 1;
+
         ewd->wl.tz_policy_ext =
-          wl_registry_bind(registry, id, &tizen_policy_ext_interface, 2);
+          wl_registry_bind(registry, id, &tizen_policy_ext_interface, client_version);
         if (ewd->wl.tz_policy_ext)
           tizen_policy_ext_add_listener(_ecore_wl_disp->wl.tz_policy_ext, &_ecore_tizen_policy_ext_listener, ewd->wl.display);
      }
