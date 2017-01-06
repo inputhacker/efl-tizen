@@ -228,15 +228,15 @@ evas_thread_init(Evas_Thread *ev_thread, char *thread_name)
          CRI("Could not create draw thread queue lock");
          goto fail_on_lock_creation;
       }
-   if (!eina_spinlock_new(&ev_thread->finish_spinlock))
-      {
-         CRI("Could not create draw thread finish lock");
-         goto fail_on_spin_lock_creation;
-      }
    if (!eina_condition_new(&ev_thread->queue_condition, &ev_thread->queue_lock))
       {
          CRI("Could not create draw thread queue condition");
          goto fail_on_cond_creation;
+      }
+   if (!eina_spinlock_new(&ev_thread->finish_spinlock))
+      {
+         CRI("Could not create draw thread finish lock");
+         goto fail_on_spin_lock_creation;
       }
    if (!eina_thread_create(&ev_thread->worker, EINA_THREAD_NORMAL, 0,
                            evas_thread_worker_func, ev_thread))
@@ -247,12 +247,11 @@ evas_thread_init(Evas_Thread *ev_thread, char *thread_name)
    return 1;
 fail_on_thread_creation:
    ev_thread->worker = 0;
-   eina_spinlock_free(&ev_thread->finish_spinlock);
    eina_condition_free(&ev_thread->queue_condition);
-fail_on_cond_creation:
-   eina_lock_free(&ev_thread->queue_lock);
 fail_on_spin_lock_creation:
    eina_spinlock_free(&ev_thread->finish_spinlock);
+fail_on_cond_creation:
+   eina_lock_free(&ev_thread->queue_lock);
 fail_on_lock_creation:
    eina_threads_shutdown();
 fail_on_eina_thread_init:

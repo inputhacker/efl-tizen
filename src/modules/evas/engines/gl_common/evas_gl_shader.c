@@ -897,7 +897,7 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
                }
              glUniform1i_thread_cmd(loc, p->tex_count++);
           }
-        glUseProgram(curr_prog);
+        glUseProgram_thread_cmd(curr_prog);
      }
 }
 

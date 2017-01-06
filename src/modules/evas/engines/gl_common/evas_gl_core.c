@@ -265,9 +265,9 @@ static void
 _texture_destroy(GLuint *tex)
 {
    GLint curr_tex = 0;
-   glGetIntegerv(GL_TEXTURE_BINDING_2D, &curr_tex);
+   glGetIntegerv_evgl_thread_cmd(GL_TEXTURE_BINDING_2D, &curr_tex);
 
-   if ((GLuint)curr_tex == *tex) glBindTexture(GL_TEXTURE_2D, 0);
+   if ((GLuint)curr_tex == *tex) glBindTexture_evgl_thread_cmd(GL_TEXTURE_2D, 0);
    if (*tex)
      {
         glDeleteTextures_evgl_thread_cmd(1, tex);
