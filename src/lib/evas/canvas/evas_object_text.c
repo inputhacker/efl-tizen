@@ -2533,6 +2533,10 @@ evas_object_text_ellipsis_status_get(const Evas_Object *eo_obj)
    MAGIC_CHECK_END();
 
    o = eo_data_scope_get(eo_obj, MY_CLASS);
+   /* TIZEN_ONLY(20170106): Safety check to avoid crash */
+   if (!o)
+     return EINA_FALSE;
+   /*END*/
    return o->last_computed.ellipsis;
 }
 /* END */
