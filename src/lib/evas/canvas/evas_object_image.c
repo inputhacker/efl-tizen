@@ -684,11 +684,17 @@ _evas_image_orient_set(Eo *eo_obj, Evas_Image_Data *o, Evas_Image_Orient orient)
 
    if (o->cur->orient == orient) return;
 
+   /* TIZEN_ONLY(20170106): This code will be removed in upstream as well
+                            after being proved safe.
+                            _evas_image_orient_set function still has a problem
+                            in that preloading actually takes no effect
+                            in engine's image_orient_set function. need to be fixed.
    if ((o->preloading) && (o->engine_data))
      {
         o->preloading = EINA_FALSE;
         ENFN->image_data_preload_cancel(ENDT, o->engine_data, eo_obj);
      }
+   */
 
    if (o->engine_data)
      {
