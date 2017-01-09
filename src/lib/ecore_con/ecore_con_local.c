@@ -98,6 +98,12 @@ _ecore_con_local_get_socket_from_server()
    struct tizen_embedded_compositor *tec = NULL;
    int fd = -1;
 
+   // TIZEN_ONLY(20170109): check whether socket_from_server is needed or not
+   const char *s = getenv("ECORE_CON_DISABLE_SOCKET_FROM_SERVER");
+   if ((s) && (!strncmp(s, "1", 1)))
+     return -1;
+   //
+
    if (ecore_wl_server_mode_get())
      return -1;
 
