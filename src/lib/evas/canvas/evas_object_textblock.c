@@ -7072,6 +7072,7 @@ _evas_textblock_text_markup_set(Eo *eo_obj EINA_UNUSED, Evas_Textblock_Data *o, 
             EINA_INLIST_GET(o->text_nodes),
             EINA_INLIST_GET(o->cursor->node)));
 
+   eo_do(o->cursor, eo_event_freeze());
    evas_textblock_cursor_paragraph_first(o->cursor);
 
    evas_object_textblock_text_markup_prepend(o->cursor, text);
@@ -7082,8 +7083,17 @@ _evas_textblock_text_markup_set(Eo *eo_obj EINA_UNUSED, Evas_Textblock_Data *o, 
 
         evas_textblock_cursor_paragraph_first(o->cursor);
         EINA_LIST_FOREACH(o->cursors, l, data)
-           evas_textblock_cursor_paragraph_first(data);
+          {
+             eo_do(data, eo_event_freeze());
+             evas_textblock_cursor_paragraph_first(data);
+          }
+
+        EINA_LIST_FOREACH(o->cursors, l, data)
+          {
+             eo_do(data, eo_event_thaw());
+          }
      }
+   eo_do(o->cursor, eo_event_thaw());
 
     o->markup_text = text;
 }
