@@ -476,6 +476,23 @@ ecore_wl_window_move(Ecore_Wl_Window *win, int x, int y)
           input = win->parent->pointer_device;
      }
 
+   /* NB: The window with property of the focus skip can not receive the
+    * wl_keyboard::enter event, so there is no way to find the wl_seat
+    * resource needed for the window move or resize request.
+    *
+    * To resolve this problem it has changed to use the first wl_seat
+    * resource in the Ecore_Wl_Display when requesting the window move
+    * or resize.
+    *
+    * This modification may cause unknown problems, so the tizen extension
+    * protocol that doesn't require wl_seat resource should be added.
+    */
+   EINA_INLIST_FOREACH(_ecore_wl_disp->inputs, input)
+     {
+        if (!input->seat) continue;
+        break;
+     }
+
    if ((!input) || (!input->seat)) return;
 
    _ecore_wl_input_grab_release(input, win);
@@ -502,6 +519,23 @@ ecore_wl_window_resize(Ecore_Wl_Window *win, int w EINA_UNUSED, int h EINA_UNUSE
      {
         if (!(input = win->parent->keyboard_device))
           input = win->parent->pointer_device;
+     }
+
+   /* NB: The window with property of the focus skip can not receive the
+    * wl_keyboard::enter event, so there is no way to find the wl_seat
+    * resource needed for the window move or resize request.
+    *
+    * To resolve this problem it has changed to use the first wl_seat
+    * resource in the Ecore_Wl_Display when requesting the window move
+    * or resize.
+    *
+    * This modification may cause unknown problems, so the tizen extension
+    * protocol that doesn't require wl_seat resource should be added.
+    */
+   EINA_INLIST_FOREACH(_ecore_wl_disp->inputs, input)
+     {
+        if (!input->seat) continue;
+        break;
      }
 
    if ((!input) || (!input->seat)) return;
