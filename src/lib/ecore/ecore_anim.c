@@ -76,6 +76,12 @@ static Ecore_Cb begin_tick_cb = NULL;
 static const void *begin_tick_data = NULL;
 static Ecore_Cb end_tick_cb = NULL;
 static const void *end_tick_data = NULL;
+
+/* TIZEN_ONLY : To use vsync as a custom source of animator */
+static Ecore_Cb quit_tick_cb = NULL;
+static const void *quit_tick_data = NULL;
+/* TIZEN_ONLY : To use vsync as a custom source of animator */
+
 static Eina_Bool animator_ran = EINA_FALSE;
 
 static int timer_fd_read = -1;
@@ -848,10 +854,29 @@ ecore_animator_custom_tick(void)
    _ecore_unlock();
 }
 
+/* TIZEN_ONLY : To use vsync as a custom source of animator */
+EAPI void
+ecore_animator_custom_source_tick_quit_callback_set(Ecore_Cb func,
+                                                     EINA_UNUSED const void *data)
+{
+   EINA_MAIN_LOOP_CHECK_RETURN;
+   _ecore_lock();
+   _end_tick();
+   quit_tick_cb = func;
+   quit_tick_data = data;
+   if (_have_animators()) _begin_tick();
+   _ecore_unlock();
+}
+/* TIZEN_ONLY : To use vsync as a custom source of animator */
+
 void
 _ecore_animator_shutdown(void)
 {
    _timer_tick_quit();
+
+/* TIZEN_ONLY : To use vsync as a custom source of animator */
+   if (src == ECORE_ANIMATOR_SOURCE_CUSTOM && quit_tick_cb) quit_tick_cb((void *)quit_tick_data);
+
    _end_tick();
    while (animators)
      {

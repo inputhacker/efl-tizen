@@ -3470,6 +3470,23 @@ EAPI void ecore_animator_custom_source_tick_begin_callback_set(Ecore_Cb func, co
  */
 EAPI void ecore_animator_custom_source_tick_end_callback_set(Ecore_Cb func, const void *data);
 
+
+/* TIZEN_ONLY : To use vsync as a custom source of animator */
+/**
+ * @internal
+ * @brief Set the function that quit a custom animator tick source
+ *
+ * @param func The function to call when ticking is to quit
+ * @param data The data passed to the tick quit function as its parameter
+ *
+ * @warning Do not use this function unless you know what you are doing.
+ *
+ */
+
+EAPI void ecore_animator_custom_source_tick_quit_callback_set(Ecore_Cb func, const void *data);
+/* TIZEN_ONLY : To use vsync as a custom source of animator */
+
+
 /**
  * @brief Triggers a custom animator tick.
  *
