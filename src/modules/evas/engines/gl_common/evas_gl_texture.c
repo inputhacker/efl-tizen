@@ -449,7 +449,12 @@ _pool_tex_new(Evas_Engine_GL_Context *gc, int w, int h, GLenum intformat, GLenum
    glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
    glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
    ok = _tex_2d(gc, pt->intformat, w, h, pt->format, pt->dataformat, NULL);
-   glBindTexture_thread_cmd(gc->state.current.tex_target, gc->state.current.cur_tex);
+
+   if (gc->state.current.tex_target)
+      glBindTexture_thread_cmd(gc->state.current.tex_target, gc->state.current.cur_tex);
+   else
+      glBindTexture_thread_cmd(GL_TEXTURE_2D, gc->state.current.cur_tex);
+
    if (!ok)
      {
         glDeleteTextures_thread_cmd(1, &(pt->texture));
@@ -694,7 +699,10 @@ _pool_tex_render_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, in
      }
 
    glsym_glBindFramebuffer(GL_FRAMEBUFFER, fnum);
-   glBindTexture_thread_cmd(gc->state.current.tex_target, gc->state.current.cur_tex);
+   if (gc->state.current.tex_target)
+      glBindTexture_thread_cmd(gc->state.current.tex_target, gc->state.current.cur_tex);
+   else
+      glBindTexture_thread_cmd(GL_TEXTURE_2D, gc->state.current.cur_tex);
 
    if (!ok)
      {
@@ -762,7 +770,10 @@ _pool_tex_native_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, in
    glTexParameteri_thread_cmd(im->native.target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
    glTexParameteri_thread_cmd(im->native.target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
    glBindTexture_thread_cmd(im->native.target, 0);
-   glBindTexture_thread_cmd(gc->state.current.tex_target, gc->state.current.cur_tex);
+   if (gc->state.current.tex_target)
+      glBindTexture_thread_cmd(gc->state.current.tex_target, gc->state.current.cur_tex);
+   else
+      glBindTexture_thread_cmd(GL_TEXTURE_2D, gc->state.current.cur_tex);
 
    texinfo.n.num++;
    texinfo.n.pix += pt->w * pt->h;
@@ -912,7 +923,10 @@ _pool_tex_dynamic_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, i
         goto error;
      }
 
-   glBindTexture_thread_cmd(gc->state.current.tex_target, gc->state.current.cur_tex);
+   if (gc->state.current.tex_target)
+      glBindTexture_thread_cmd(gc->state.current.tex_target, gc->state.current.cur_tex);
+   else
+      glBindTexture_thread_cmd(GL_TEXTURE_2D, gc->state.current.cur_tex);
 #else
    if (gc + w + h + intformat + format) return pt;
 #endif
@@ -1282,7 +1296,12 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
      }
    //glPixelStorei_thread_cmd(GL_UNPACK_ALIGNMENT, 4);
    if (tex->pt->texture != tex->gc->state.current.cur_tex)
-     glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+     {
+        if (tex->gc->state.current.tex_target)
+           glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+        else
+           glBindTexture_thread_cmd(GL_TEXTURE_2D, tex->gc->state.current.cur_tex);
+     }
 }
 
 void
@@ -1382,7 +1401,10 @@ evas_gl_common_texture_update(Evas_GL_Texture *tex, RGBA_Image *im)
 
            if (tex->pt->texture != tex->gc->state.current.cur_tex)
              {
-                glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+                if (tex->gc->state.current.tex_target)
+                   glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+                else
+                   glBindTexture_thread_cmd(GL_TEXTURE_2D, tex->gc->state.current.cur_tex);
              }
            return;
         }
@@ -1502,7 +1524,12 @@ evas_gl_common_texture_update(Evas_GL_Texture *tex, RGBA_Image *im)
 
         // Switch back to current texture
         if (tex->ptt->texture != tex->gc->state.current.cur_tex)
-          glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+          {
+             if (tex->gc->state.current.tex_target)
+                glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+             else
+                glBindTexture_thread_cmd(GL_TEXTURE_2D, tex->gc->state.current.cur_tex);
+          }
 
         // Now prepare uploading the main texture before returning;
         async = malloc(sizeof (Evas_GL_Texture_Async_Preload));
@@ -1647,7 +1674,12 @@ evas_gl_common_texture_alpha_update(Evas_GL_Texture *tex, DATA8 *pixels,
    _tex_sub_2d(tex->gc, tex->x, tex->y, w, h, tex->pt->format,
                tex->pt->dataformat, pixels);
    if (tex->pt->texture != tex->gc->state.current.cur_tex)
-     glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+     {
+        if (tex->gc->state.current.tex_target)
+           glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+        else
+           glBindTexture_thread_cmd(GL_TEXTURE_2D, tex->gc->state.current.cur_tex);
+     }
 }
 
 Evas_GL_Texture *
@@ -1821,7 +1853,10 @@ evas_gl_common_texture_rgb_a_pair_update(Evas_GL_Texture *tex,
           }
      }
 on_error:
-   glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+   if (tex->gc->state.current.tex_target)
+      glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+   else
+      glBindTexture_thread_cmd(GL_TEXTURE_2D, tex->gc->state.current.cur_tex);
    evas_gl_thread_finish();
 }
 
@@ -2005,7 +2040,12 @@ _orig_evas_gl_common_texture_yuv_update(Evas_GL_Texture *tex, DATA8 **rows, unsi
           }
      }
    if (tex->pt->texture != tex->gc->state.current.cur_tex)
-     glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+     {
+        if (tex->gc->state.current.tex_target)
+          glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+        else
+          glBindTexture_thread_cmd(GL_TEXTURE_2D, tex->gc->state.current.cur_tex);
+     }
 
 finish:
    evas_gl_thread_finish();
@@ -2219,7 +2259,12 @@ evas_gl_common_texture_yuy2_update(Evas_GL_Texture *tex, DATA8 **rows, unsigned 
      }
 
    if (tex->pt->texture != tex->gc->state.current.cur_tex)
-     glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+     {
+        if (tex->gc->state.current.tex_target)
+          glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+        else
+          glBindTexture_thread_cmd(GL_TEXTURE_2D, tex->gc->state.current.cur_tex);
+     }
 finish:
    evas_gl_thread_finish();
 }
@@ -2276,7 +2321,12 @@ evas_gl_common_texture_nv12_update(Evas_GL_Texture *tex, DATA8 **rows, unsigned 
           }
      }
    if (tex->pt->texture != tex->gc->state.current.cur_tex)
-     glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+     {
+        if (tex->gc->state.current.tex_target)
+          glBindTexture_thread_cmd(tex->gc->state.current.tex_target, tex->gc->state.current.cur_tex);
+        else
+          glBindTexture_thread_cmd(GL_TEXTURE_2D, tex->gc->state.current.cur_tex);
+     }
 finish:
    evas_gl_thread_finish();
 }
