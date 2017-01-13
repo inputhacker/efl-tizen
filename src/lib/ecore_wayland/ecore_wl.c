@@ -608,16 +608,16 @@ ecore_wl_animator_source_set(Ecore_Animator_Source source)
 
    if (_ecore_wl_server_mode) return EINA_FALSE;
 
-   /* FIXME: check existing source. If custom, disable anim_callbacks */
-
-   /* based on the animator source we are using, setup or destroy callbacks */
+   /* TIZEN_ONLY : To use vsync as custom source of animator */
    switch (source)
      {
       case ECORE_ANIMATOR_SOURCE_CUSTOM:
         ecore_animator_custom_source_tick_begin_callback_set
-          (_ecore_wl_animator_tick_cb_begin, NULL);
+          (_ecore_wl_animator_vsync_tick_begin, NULL);
         ecore_animator_custom_source_tick_end_callback_set
-          (_ecore_wl_animator_tick_cb_end, NULL);
+          (_ecore_wl_animator_vsync_tick_end, NULL);
+        ecore_animator_custom_source_tick_quit_callback_set
+          (_ecore_wl_animator_vsync_tick_quit, NULL);
         break;
       case ECORE_ANIMATOR_SOURCE_TIMER:
         ecore_animator_custom_source_tick_begin_callback_set(NULL, NULL);
