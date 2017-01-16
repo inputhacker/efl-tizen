@@ -900,7 +900,7 @@ evgl_eng_native_win_prerotation_set(void *data)
    if (!(eng_get_ob(re)->support_pre_rotation)) return 0;
    if (eng_get_ob(re)->gl_context->pre_rotated) return 0;
 
-   _evas_native_win_pre_rotation_set(eng_get_ob(re)->info->info.win, eng_get_ob(re)->info->info.rotation);
+   _evas_native_win_pre_rotation_set(eng_get_ob(re)->win, eng_get_ob(re)->info->info.rotation);
 
    // re->win's h & w are not modified
    eng_get_ob(re)->rot = 0;
@@ -1162,11 +1162,15 @@ eng_setup(Evas *evas, void *info)
                  if (ob->support_pre_rotation && ob->gl_context->pre_rotated)
                    {
                       ob->gl_context->pre_rotated = EINA_FALSE;
+                      eng_outbuf_reconfigure(ob, epd->output.w, epd->output.h, 0, 0);
                       evgl_eng_native_win_prerotation_set(re);
                    }
+                 else
+                   {
+                      eng_outbuf_reconfigure(ob, epd->output.w, epd->output.h,
+                                              ob->info->info.rotation, 0);
+                   }
 
-                 eng_outbuf_reconfigure(ob, epd->output.w, epd->output.h,
-                                         ob->info->info.rotation, 0);
                }
           }
      }
