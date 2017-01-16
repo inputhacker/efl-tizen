@@ -45,13 +45,16 @@ static const struct tizen_remote_surface_provider_listener _ecore_evas_extn_gl_s
 };
 
 //For Cousumer
-static void _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *trs, struct wl_buffer *buffer, uint32_t time);
+static void _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *trs, struct wl_buffer *buffer, uint32_t time); /* This callback will be deprecated */
 static void _ecore_evas_extn_rs_cb_missing(void *data, struct tizen_remote_surface *trs);
+static void _ecore_evas_extn_rs_cb_changed_buffer(void *data, struct tizen_remote_surface *trs, uint32_t type, struct wl_buffer *buffer,
+                              int32_t img_file_fd, uint32_t img_file_size, uint32_t time, struct wl_array *keys);
 
 static const struct tizen_remote_surface_listener _ecore_evas_extn_gl_plug_listener =
 {
-   _ecore_evas_extn_rs_cb_buffer_update,
+   _ecore_evas_extn_rs_cb_buffer_update, // it will be deprecated
    _ecore_evas_extn_rs_cb_missing,
+   _ecore_evas_extn_rs_cb_changed_buffer,
 };
 
 #endif
@@ -141,7 +144,7 @@ static void _ecore_evas_extn_rsp_cb_visibility(void *data, struct tizen_remote_s
 }
 
 static void
-_ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *trs, struct wl_buffer *buffer, uint32_t time)
+_ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *trs, struct wl_buffer *buffer, uint32_t time) /* This callback will be deprecated */
 {
   Evas_Object* img = data;
 
@@ -181,6 +184,55 @@ _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *tr
 }
 
 static void
+_ecore_evas_extn_rs_cb_changed_buffer(void *data, struct tizen_remote_surface *trs, uint32_t type, struct wl_buffer *buffer,
+                              int32_t img_file_fd, uint32_t img_file_size, uint32_t time, struct wl_array *keys)
+{
+   /* check type of given buffer */
+   if (type == TIZEN_REMOTE_SURFACE_BUFFER_TYPE_TBM)
+     {
+        Evas_Object* img = data;
+        //see next page
+        tbm_surface_h tbm_surface;
+        int width, height;
+
+        //added image object for native surface
+        tizen_remote_surface_transfer_visibility(trs,
+                                   TIZEN_REMOTE_SURFACE_VISIBILITY_TYPE_VISIBLE);
+
+        //get tbm surface from buffer
+        tbm_surface = wl_buffer_get_user_data(buffer);
+        width = tbm_surface_get_width(tbm_surface);
+        height = tbm_surface_get_height(tbm_surface);
+        INF("[EXTN_GL] BUFFER UPDATE %p %p (%dx%d)",buffer,tbm_surface,width,height);
+
+        Evas_Native_Surface ns;
+        memset(&ns, 0, sizeof(Evas_Native_Surface));
+        ns.version = EVAS_NATIVE_SURFACE_VERSION;
+        ns.type = EVAS_NATIVE_SURFACE_TBM;
+        ns.data.tbm.buffer = tbm_surface;
+
+        evas_object_image_size_set(img, width, height);
+
+        //set native surface
+        evas_object_image_native_surface_set(img, &ns);
+        //set dirty for image updating
+        evas_object_image_pixels_dirty_set(img, EINA_TRUE);
+     }
+   else if (type == TIZEN_REMOTE_SURFACE_BUFFER_TYPE_IMAGE_FILE)
+     {
+        ERR("[EXTN_GL] IMAGE_FILE type can't use now");
+     }
+
+   // release pre_buffer & image_file_fd
+   if( pre_buffer)
+     {
+        if (tizen_remote_surface_get_version(trs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
+           tizen_remote_surface_release(trs, pre_buffer);
+     }
+   pre_buffer = buffer;
+   close(img_file_fd); /* close passed fd whatever type is */
+}
+static void
 _ecore_evas_extn_rs_cb_missing(void *data, struct tizen_remote_surface *trs)
 {
     ERR("Plug is missing...! ");
@@ -210,7 +262,7 @@ _tizen_remote_surface_init(void)
                {
                   tizen_rsm =
                      wl_registry_bind(registry, global->id,
-                                      &tizen_remote_surface_manager_interface, global->version<2? global->version : 2);
+                                      &tizen_remote_surface_manager_interface, global->version<3? global->version : 3);
                    INF("[EXTN_GL] Create tizen_rsm : %p",tizen_rsm);
                }
           }
