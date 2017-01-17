@@ -6529,7 +6529,8 @@ _edje_real_part_swallow(Edje *ed,
    if (rp->mouse_events)
      {
         _edje_callbacks_add(obj_swallow, ed, rp);
-        evas_object_repeat_events_set(obj_swallow, rp->repeat_events);
+        if (rp->repeat_events)
+          evas_object_repeat_events_set(obj_swallow, rp->repeat_events);
         if (rp->part->pointer_mode != EVAS_OBJECT_POINTER_MODE_AUTOGRAB)
           evas_object_pointer_mode_set(obj_swallow, rp->part->pointer_mode);
         evas_object_pass_events_set(obj_swallow, 0);
