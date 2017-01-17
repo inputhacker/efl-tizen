@@ -886,7 +886,6 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
                   end_ellip_it = _layout_ellipsis_item_new(obj, o);
                }
              o->last_computed.ellipsis_end = end_ellip_it;
-             ellip_frame -= end_ellip_it->w;
              /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
              ellip_frame -= end_ellip_it->w;
               */
