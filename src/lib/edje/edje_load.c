@@ -1233,8 +1233,14 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
                             if (rp->mouse_events)
                               {
                                  _edje_callbacks_add(rp->object, ed, rp);
+                                 /* TIZEN_ONLY(20170117): set repeat_events of swallowed object only when the part has value
+                                  *                       This is to solve backward compatibility issue that swallowed obj's
+                                  *                       repeat_events is not working.
+                                 evas_object_repeat_events_set(obj_swallow, rp->repeat_events);
+                                  */
                                  if (rp->repeat_events)
                                    evas_object_repeat_events_set(rp->object, rp->repeat_events);
+                                 /* END */
 
                                  if (ep->pointer_mode != EVAS_OBJECT_POINTER_MODE_AUTOGRAB)
                                    evas_object_pointer_mode_set(rp->object, ep->pointer_mode);
