@@ -1330,6 +1330,12 @@ _ecore_evas_wl_common_wm_rot_cb_angle_changed(Ecore_Wl_Window *win, int rot, Ein
 
    ee->rotation = rot;
 
+   /* reset min, max, base, & step sizes */
+   ecore_evas_size_min_set(ee, minw, minh);
+   ecore_evas_size_max_set(ee, maxw, maxh);
+   ecore_evas_size_base_set(ee, basew, baseh);
+   ecore_evas_size_step_set(ee, stepw, steph);
+
    _ecore_evas_wl_common_resize(ee, w, h);
 
    if (ee->prop.wm_rot.manual_mode.set)
@@ -1350,12 +1356,6 @@ _ecore_evas_wl_common_wm_rot_cb_angle_changed(Ecore_Wl_Window *win, int rot, Ein
      evas_damage_rectangle_add(ee->evas, 0, 0, ee->req.w, ee->req.h);
    else
      evas_damage_rectangle_add(ee->evas, 0, 0, ee->req.h, ee->req.w);
-
-   /* reset min, max, base, & step sizes */
-   ecore_evas_size_min_set(ee, minh, minw);
-   ecore_evas_size_max_set(ee, maxh, maxw);
-   ecore_evas_size_base_set(ee, baseh, basew);
-   ecore_evas_size_step_set(ee, steph, stepw);
 
    /* send a mouse_move process
     *
