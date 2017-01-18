@@ -808,7 +808,10 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %{_datadir}/locale/*/*/*.mo
 %{_libdir}/libefl.so.*
-%{_bindir}/efl_debug*
+%exclude %{_bindir}/efl_debug
+%exclude %{_bindir}/efl_debugd
+%exclude /usr/lib/debug/usr/bin/efl_debug.debug
+%exclude /usr/lib/debug/usr/bin//efl_debugd.debug
 
 %files -n %{name}-devel
 %manifest %{name}.manifest
@@ -930,8 +933,10 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %license COPYING
 %{_bindir}/ecore_evas_*
 %{_bindir}/evas_cserve2_client
-%{_bindir}/evas_cserve2_debug
-%{_bindir}/evas_cserve2_shm_debug
+%exclude %{_bindir}/evas_cserve2_debug
+%exclude %{_bindir}/evas_cserve2_shm_debug
+%exclude /usr/lib/debug/usr/bin/evas_cserve2_debug.debug
+%exclude /usr/lib/debug/usr/bin/evas_cserve2_shm_debug.debug
 %{_bindir}/evas_cserve2_usage
 %{_libdir}/evas/modules/*/*/*/module.so
 %{_libdir}/libevas.so.*
