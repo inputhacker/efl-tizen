@@ -1410,7 +1410,7 @@ _ecore_evas_wl_common_raise(Ecore_Evas *ee)
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
-   if ((!ee) || (!ee->visible)) return;
+   if (!ee) return;
    wdata = ee->engine.data;
    ecore_wl_window_raise(wdata->win);
 }
@@ -1422,7 +1422,7 @@ _ecore_evas_wl_common_lower(Ecore_Evas *ee)
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
-   if ((!ee) || (!ee->visible)) return;
+   if (!ee) return;
    wdata = ee->engine.data;
    ecore_wl_window_lower(wdata->win);
 }
