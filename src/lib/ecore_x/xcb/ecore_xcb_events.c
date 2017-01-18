@@ -2429,6 +2429,7 @@ _ecore_xcb_event_key_press(xcb_generic_event_t *event)
         DBG("Sending Key Down Event: %s", e->keyname);
         ecore_event_add(ECORE_EVENT_KEY_DOWN, e, NULL, NULL);
      }
+   free(compose);
    _ecore_xcb_event_last_time = xevent->time;
 }
 
@@ -2497,7 +2498,8 @@ _ecore_xcb_event_key_release(xcb_generic_event_t *event)
 
         ecore_event_add(ECORE_EVENT_KEY_UP, e, NULL, NULL);
      }
-   _ecore_xcb_event_last_time = xevent->time;
+    free(compose);
+    _ecore_xcb_event_last_time = xevent->time;
 }
 
 void
