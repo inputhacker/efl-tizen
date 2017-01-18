@@ -1531,6 +1531,7 @@ evas_font_reinit(void)
    Eina_List *l;
    char *path;
 
+   /* TIZEN_ONLY(20170118): don't reinit fontconfig to destroy _fcConfig
    if (fc_config) FcConfigDestroy(fc_config);
 
    FcInitReinitialize();
@@ -1538,5 +1539,15 @@ evas_font_reinit(void)
 
    EINA_LIST_FOREACH(global_font_path, l, path)
       FcConfigAppFontAddDir(fc_config, (const FcChar8 *) path);
+    */
+   if (fc_config)
+     {
+        FcConfigDestroy(fc_config);
+        fc_config = FcInitLoadConfigAndFonts();
+
+        EINA_LIST_FOREACH(global_font_path, l, path)
+           FcConfigAppFontAddDir(fc_config, (const FcChar8 *) path);
+     }
+   /* END */
 #endif
 }
