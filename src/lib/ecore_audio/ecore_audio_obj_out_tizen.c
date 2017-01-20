@@ -102,7 +102,7 @@ static Eina_Bool _module_load(Ecore_Audio_Out_Tizen_Data *td)
    return EINA_TRUE;
 }
 
-static void _stream_write_cb(void *handle, size_t len EINA_UNUSED, void *data)
+static void _stream_write_cb(void *handle, size_t len, void *data)
 {
    Eo *in = data;
    Ecore_Audio_Out_Tizen_Data *_td;
@@ -110,9 +110,8 @@ static void _stream_write_cb(void *handle, size_t len EINA_UNUSED, void *data)
 
    void *buf;
    ssize_t bread = 0;
-   size_t wlen;
+   size_t wlen = len;
 
-   _td->func->get_buffer_size(handle, &wlen);
    buf = malloc(wlen);
    eo_do(in, bread = ecore_audio_obj_in_read(buf, wlen));
 
