@@ -2443,8 +2443,12 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                                   info, _free_entry_change_info);
                   _edje_emit(ed, "cursor,changed", rp->part->name);
                   cursor_changed = EINA_TRUE;
+             /* TIZEN_ONLY(20170123): If text is filtered out event get propagated.
                   ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+             */
                }
+             ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+             /* END */
              if (free_string) free(string);
           }
      }
