@@ -320,8 +320,14 @@ _ecore_wl_window_shell_surface_init(Ecore_Wl_Window *win)
 
    if (win->parent)
      {
-        if (win->xdg_surface)
+        if (win->xdg_surface && win->parent->xdg_surface)
           xdg_surface_set_parent(win->xdg_surface, win->parent->xdg_surface);
+        else if (_ecore_wl_disp->wl.tz_policy && win->surface && win->parent->surface)
+          {
+             uint32_t ver = wl_proxy_get_version((struct wl_proxy *)_ecore_wl_disp->wl.tz_policy);
+             if (ver >= 3)
+               tizen_policy_set_parent(_ecore_wl_disp->wl.tz_policy, win->surface, win->parent->surface);
+          }
         else if (win->shell_surface)
           wl_shell_surface_set_transient(win->shell_surface,
                                          win->parent->surface,
@@ -1041,8 +1047,14 @@ ecore_wl_window_parent_set(Ecore_Wl_Window *win, Ecore_Wl_Window *parent)
    win->parent = parent;
    if (win->parent)
      {
-        if (win->xdg_surface)
+        if (win->xdg_surface && win->parent->xdg_surface)
           xdg_surface_set_parent(win->xdg_surface, win->parent->xdg_surface);
+        else if (_ecore_wl_disp->wl.tz_policy && win->surface && win->parent->surface)
+          {
+             uint32_t ver = wl_proxy_get_version((struct wl_proxy *)_ecore_wl_disp->wl.tz_policy);
+             if (ver >= 3)
+               tizen_policy_set_parent(_ecore_wl_disp->wl.tz_policy, win->surface, win->parent->surface);
+          }
         else if (win->shell_surface)
           wl_shell_surface_set_transient(win->shell_surface,
                                          win->parent->surface,

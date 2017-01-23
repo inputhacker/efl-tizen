@@ -996,8 +996,13 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
      }
    else if (!strcmp(interface, "tizen_policy"))
      {
+        if (version >= 3)
+          client_version = 3;
+        else
+          client_version = version;
+
         ewd->wl.tz_policy =
-          wl_registry_bind(registry, id, &tizen_policy_interface, 1);
+          wl_registry_bind(registry, id, &tizen_policy_interface, client_version);
         if (ewd->wl.tz_policy)
           tizen_policy_add_listener(_ecore_wl_disp->wl.tz_policy, &_ecore_tizen_policy_listener, ewd->wl.display);
      }
