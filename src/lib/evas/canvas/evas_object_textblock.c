@@ -2666,6 +2666,9 @@ struct _Ctxt
    int line_no;
    int underline_extend;
    int have_underline, have_underline2;
+   /* TIZEN_ONLY(20170201): Fix RTL + LTR word wrap issue caused by wrong line start pos */
+   int ln_min_text_pos;
+   /* END */
    double align, valign;
    Textblock_Position position;
    Eina_Bool align_auto : 1;
@@ -2864,6 +2867,9 @@ _layout_line_new(Ctxt *c, Evas_Object_Textblock_Format *fmt)
    c->maxascent = c->maxdescent = 0;
    c->ln->line_no = -1;
    c->ln->par = c->par;
+   /* TIZEN_ONLY(20170201): Fix RTL + LTR word wrap issue caused by wrong line start pos */
+   c->ln_min_text_pos = -1;
+   /* END */
 }
 
 static inline Evas_Object_Textblock_Paragraph *
@@ -5300,6 +5306,13 @@ _layout_par(Ctxt *c)
         Evas_Textblock_Obstacle_Info *obs_info = NULL;
 
         it = _ITEM(eina_list_data_get(i));
+
+        /* TIZEN_ONLY(20170201): Fix RTL + LTR word wrap issue caused by wrong line start pos */
+        if ((c->ln_min_text_pos == -1) ||
+            (c->ln_min_text_pos > it->text_pos))
+          c->ln_min_text_pos = it->text_pos;
+        /* END */
+
         /* Skip visually deleted items */
         if (it->visually_deleted ||
             ((it->type == EVAS_TEXTBLOCK_ITEM_TEXT) && !it->format->font.font))
@@ -5510,10 +5523,14 @@ _layout_par(Ctxt *c)
                              len, lang, word_breaks);
                     }
 
+                  /* TIZEN_ONLY(20170201): Fix RTL + LTR word wrap issue caused by wrong line start pos
                   if (c->ln->items)
                      line_start = c->ln->items->text_pos;
                   else
                      line_start = it->text_pos;
+                   */
+                  line_start = c->ln_min_text_pos;
+                  /* END */
 
                   /* Only when doing non-obstacle handling */
                   if (!obs)
