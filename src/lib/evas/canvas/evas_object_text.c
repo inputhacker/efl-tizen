@@ -749,10 +749,26 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
         switch (par_dir)
           {
            case EVAS_BIDI_DIRECTION_LTR:
+              /* TIZEN_ONLY(20170202): Apply WRTL for VD_ONLY. It should be removed from Tizen 4.0.
               bidi_par_type = EVAS_BIDI_PARAGRAPH_LTR;
+               */
+#ifndef TIZEN_PROFILE_TV
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_LTR;
+#else
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_WLTR;
+#endif
+              /* END */
               break;
            case EVAS_BIDI_DIRECTION_RTL:
+              /* TIZEN_ONLY(20170202): Apply WRTL for VD_ONLY. It should be removed from Tizen 4.0.
               bidi_par_type = EVAS_BIDI_PARAGRAPH_RTL;
+               */
+#ifndef TIZEN_PROFILE_TV
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_RTL;
+#else
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_WRTL;
+#endif
+              /* END */
               break;
            case EVAS_BIDI_DIRECTION_NEUTRAL:
            default:
@@ -1225,6 +1241,14 @@ _evas_text_direction_get(Eo *eo_obj, Evas_Text_Data *o)
         evas_object_render_pre_prev_cur_add(&obj->layer->evas->clip_changes,
                                             eo_obj, obj);
      }
+
+   /* TIZEN_ONLY(20170202): Apply WRTL for VD_ONLY. It should be removed from Tizen 4.0. */
+#ifdef TIZEN_PROFILE_TV
+   if ((o->paragraph_direction == EVAS_BIDI_DIRECTION_LTR) ||
+       (o->paragraph_direction == EVAS_BIDI_DIRECTION_RTL))
+     return o->paragraph_direction;
+#endif
+   /* END */
 #endif
 
    return o->bidi_dir;
