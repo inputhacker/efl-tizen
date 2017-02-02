@@ -2993,10 +2993,26 @@ _layout_update_bidi_props(const Evas_Textblock_Data *o,
         switch (par_dir)
           {
            case EVAS_BIDI_DIRECTION_LTR:
+              /* TIZEN_ONLY(20170202): Apply WRTL for VD_ONLY. It should be removed from Tizen 4.0.
               bidi_par_type = EVAS_BIDI_PARAGRAPH_LTR;
+               */
+#ifndef TIZEN_PROFILE_TV
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_LTR;
+#else
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_WLTR;
+#endif
+              /* END */
               break;
            case EVAS_BIDI_DIRECTION_RTL:
+              /* TIZEN_ONLY(20170202): Apply WRTL for VD_ONLY. It should be removed from Tizen 4.0.
               bidi_par_type = EVAS_BIDI_PARAGRAPH_RTL;
+               */
+#ifndef TIZEN_PROFILE_TV
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_RTL;
+#else
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_WRTL;
+#endif
+              /* END */
               break;
            case EVAS_BIDI_DIRECTION_NEUTRAL:
            default:
@@ -3295,6 +3311,15 @@ _layout_line_align_get(Ctxt *c)
 #ifdef BIDI_SUPPORT
    if (c->align_auto && c->ln)
      {
+        /* TIZEN_ONLY(20170202): Apply WRTL for VD_ONLY. It should be removed from Tizen 4.0. */
+#ifdef TIZEN_PROFILE_TV
+        if (c->o->paragraph_direction == EVAS_BIDI_DIRECTION_LTR)
+          return 0.0;
+        else if (c->o->paragraph_direction == EVAS_BIDI_DIRECTION_RTL)
+          return 1.0;
+#endif
+        /* END */
+
         if (c->ln->items && c->ln->items->text_node &&
               (c->ln->par->direction == EVAS_BIDI_DIRECTION_RTL))
           {
