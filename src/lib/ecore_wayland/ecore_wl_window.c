@@ -860,12 +860,8 @@ ecore_wl_window_alpha_set(Ecore_Wl_Window *win, Eina_Bool alpha)
    if (!win->alpha)
      ecore_wl_window_opaque_region_set(win, win->opaque.x, win->opaque.y,
                                        win->opaque.w, win->opaque.h);
-   else
-     {
-        ecore_wl_window_opaque_region_set(win, win->opaque.x, win->opaque.y, 0, 0);
-        if (win->surface)
-          wl_surface_set_opaque_region(win->surface, NULL);
-     }
+   else if (win->surface)
+     wl_surface_set_opaque_region(win->surface, NULL);
 }
 
 EAPI Eina_Bool
