@@ -274,6 +274,7 @@ _ecore_buffer_tbm_buffer_alloc_with_tbm_surface(Ecore_Buffer_Module_Data bmdata 
    buf->flags = flags;
    buf->is_imported = EINA_FALSE;
    buf->tbm_surface = tbm_surface;
+   tbm_surface_internal_ref(tbm_surface);
 
    if (ret_w) *ret_w = buf->w;
    if (ret_h) *ret_h = buf->h;
