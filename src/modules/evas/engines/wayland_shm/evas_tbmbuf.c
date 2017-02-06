@@ -10,9 +10,12 @@
 
 #define KEY_WINDOW (unsigned long)(&key_window)
 #define KEY_WL_BUFFER (unsigned long)(&key_wl_buffer)
+#define KEY_SURFACE_INFO (unsigned long)(&key_surface_info)
+
 
 static int key_window;
 static int key_wl_buffer;
+static int key_surface_info;
 
 
 
@@ -97,9 +100,16 @@ struct _Tbmbuf_Surface
    int w, h;
    int dx, dy;
    int stride;
-
+   int frame_age;
    Eina_Bool alpha : 1;
 };
+
+
+typedef struct {
+   unsigned int age;
+   unsigned int num_surface;
+} tbm_buffer_info;
+
 
 static void *tbm_lib = NULL;
 static void *tbm_client_lib = NULL;
@@ -112,8 +122,6 @@ static int (*sym_tbm_surface_queue_can_dequeue) (void *tbm_queue, int value) = N
 static int (*sym_tbm_surface_queue_dequeue) (void *tbm_queue, tbm_surface_h *surface) = NULL;
 static int (*sym_tbm_surface_queue_enqueue) (void *tbm_queue, tbm_surface_h surface) = NULL;
 static tbm_surface_queue_error_e (*sym_tbm_surface_queue_acquire) (void *tbm_queue, tbm_surface_h *surface) = NULL;
-static int (*sym_tbm_surface_get_width) (tbm_surface_h surface) = NULL;
-static int (*sym_tbm_surface_get_height) (tbm_surface_h surface) = NULL;
 static tbm_surface_queue_error_e (*sym_tbm_surface_queue_get_surfaces) (void *surface_queue,
                                                                         tbm_surface_h *surfaces, int *num) = NULL;
 static tbm_surface_queue_error_e (*sym_tbm_surface_queue_release) (void *surface_queue, tbm_surface_h surface) = NULL;
@@ -176,8 +184,6 @@ tbm_init(void)
                SYM(tbm_lib, tbm_surface_queue_dequeue);
                SYM(tbm_lib, tbm_surface_queue_enqueue);
                SYM(tbm_lib, tbm_surface_queue_acquire);
-               SYM(tbm_lib, tbm_surface_get_width);
-               SYM(tbm_lib, tbm_surface_get_height);
                SYM(tbm_lib, tbm_surface_queue_get_surfaces);
                SYM(tbm_lib, tbm_surface_queue_release);
                SYM(tbm_lib, tbm_surface_queue_destroy);
@@ -352,21 +358,20 @@ static const struct wl_buffer_listener buffer_listener = {
       buffer_release
 };
 
+
 static int
 _evas_tbmbuf_surface_assign(Surface *s)
 {
    Tbmbuf_Surface *surface;
+   Render_Engine_Swap_Mode mode = MODE_FULL;
+   tbm_buffer_info *tbuf_info = NULL;
+   if (!s) return 0;
    surface = s->surf.tbm;
    if (!surface)
       {
          ERR("surface is NULL");
          return 0;
       }
-
-   // check num of tbm surface
-   int num_surface;
-   tbm_surface_h surfaces[5];
-   sym_tbm_surface_queue_get_surfaces(surface->tbm_queue, surfaces, &num_surface);
 
    if (surface->resize)
       {
@@ -384,6 +389,11 @@ _evas_tbmbuf_surface_assign(Surface *s)
    struct wl_buffer *buffer;
 
    _wait_free_buffer(surface);
+
+   // check num of tbm surface
+   int num_surface;
+   tbm_surface_h surfaces[5];
+   sym_tbm_surface_queue_get_surfaces(surface->tbm_queue, surfaces, &num_surface);
 
    ret = sym_tbm_surface_queue_dequeue(surface->tbm_queue, &surface->tbm_surface);
 
@@ -416,8 +426,47 @@ _evas_tbmbuf_surface_assign(Surface *s)
    sym_tbm_surface_map(surface->tbm_surface, TBM_SURF_OPTION_READ|TBM_SURF_OPTION_WRITE, &info);
    surface->tbm_info = info;
 
-   if (num_surface == 1) return 0;
-   return num_surface;
+   // check buffer age
+   if (!sym_tbm_surface_internal_get_user_data(surface->tbm_surface, KEY_SURFACE_INFO, (void**)&tbuf_info)) {
+       tbuf_info = calloc(1, sizeof(tbuf_info));
+       tbuf_info->age = 0;
+       tbuf_info->num_surface = num_surface;
+       sym_tbm_surface_internal_add_user_data(surface->tbm_surface, KEY_SURFACE_INFO, free);
+       sym_tbm_surface_internal_set_user_data(surface->tbm_surface, KEY_SURFACE_INFO, tbuf_info);
+   }
+
+   //reset
+   if (num_surface != tbuf_info->num_surface)
+     {
+       s->frame_age = 0;
+       tbuf_info->age = 0;
+       tbuf_info->num_surface = num_surface;
+     }
+
+   if (!tbuf_info->age)
+     return MODE_FULL;
+
+   if (tbuf_info->age < s->frame_age)
+     {
+       unsigned int diff;
+       diff = s->frame_age - tbuf_info->age + 1;
+       if (diff > num_surface) return MODE_FULL;
+       switch(diff)
+       {
+         case 1:
+           mode = MODE_COPY;
+           break;
+         case 2:
+           mode = MODE_DOUBLE;
+           break;
+         case 3:
+           mode = MODE_TRIPLE;
+           break;
+         default:
+           mode = MODE_FULL;
+       }
+     }
+   return mode;
 }
 
 
@@ -462,6 +511,7 @@ _evas_tbmbuf_surface_post(Surface *s, Eina_Rectangle *rects, unsigned int count)
 {
    Tbmbuf_Surface *surface;
    struct wl_callback *frame_callback = NULL;
+   tbm_buffer_info *tbuf_info = NULL;
    if (!s) return;
 
    surface = s->surf.tbm;
@@ -476,6 +526,12 @@ _evas_tbmbuf_surface_post(Surface *s, Eina_Rectangle *rects, unsigned int count)
          ERR("Enqueue:%p from queue:%p", surface->tbm_surface, surface->tbm_queue);
          return;
    }
+
+   ++s->frame_age;
+   sym_tbm_surface_internal_get_user_data(surface->tbm_surface, KEY_SURFACE_INFO, (void **)&tbuf_info);
+   if (tbuf_info)
+     tbuf_info->age = s->frame_age;
+
 
    wl_surface_attach(surface->wl_surface, buffer, 0, 0);
    _evas_surface_damage(surface->wl_surface, surface->compositor_version,
