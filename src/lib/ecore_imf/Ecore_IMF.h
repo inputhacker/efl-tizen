@@ -712,6 +712,7 @@ struct _Ecore_IMF_Context_Class
    void (*candidate_panel_geometry_get)(Ecore_IMF_Context *ctx, int *x, int *y, int *w, int *h); /**< Return the candidate panel geometry */
    void (*input_hint_set) (Ecore_IMF_Context *ctx, Ecore_IMF_Input_Hints input_hints); /**< Sets input hint to fine-tune input methods behavior */
    void (*bidi_direction_set) (Ecore_IMF_Context *ctx, Ecore_IMF_BiDi_Direction direction); /**< Set bidirectionality at the cursor position */
+   Ecore_IMF_Input_Panel_Keyboard_Mode (*keyboard_mode_get) (Ecore_IMF_Context *ctx); /**< Return the current keyboard mode of the input panel */
 };
 
 /**
@@ -2200,6 +2201,19 @@ EAPI void                          ecore_imf_context_bidi_direction_set(Ecore_IM
  * @endif
  */
 EAPI Ecore_IMF_BiDi_Direction      ecore_imf_context_bidi_direction_get(Ecore_IMF_Context *ctx);
+
+/**
+ * @brief Get the keyboard mode on the input panel.
+ *
+ * @ingroup Ecore_IMF_Context_Group
+ * @since 1.20.0
+ *
+ * @param[in] ctx An #Ecore_IMF_Context
+ * @return the keyboard mode
+ *
+ * @since_tizen 4.0
+ */
+EAPI Ecore_IMF_Input_Panel_Keyboard_Mode ecore_imf_context_keyboard_mode_get(Ecore_IMF_Context *ctx);
 
 /* The following entry points must be exported by each input method module
  */
