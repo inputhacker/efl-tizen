@@ -142,7 +142,8 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
 {
    Msg *msg;
    void *ref;
-   int tick = 0, fail_cnt = 0;
+   int tick = 0;
+   double ptime = 0.0;
    tdm_error err;
    eina_thread_name_set(eina_thread_self(), "Eanimator-vsync");
    struct pollfd fds;
@@ -178,14 +179,27 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
              while (msg);
           }
         if (tick == -1)
-             goto done;
-        else if ((tick == 1) && (!vblank_wait))
+          goto done;
+        else if (tick == 1)
           {
              fd_set rfds;
              int ret;
-
-             if(_tdm_tick_schedule() != TDM_ERROR_NONE)
-               goto done;
+             if (!vblank_wait)
+               {
+                  if(_tdm_tick_schedule() != TDM_ERROR_NONE)
+                    goto done;
+                  ptime = ecore_time_get();
+               }
+             else
+               {
+                  if ((ptime + (_tdm_req_fps / 1000)) <= ecore_time_get())
+                    {
+                       vblank_wait = 0;
+                       _tdm_send_time(ecore_time_get());
+                       ERR("tdm vblank handler does not called in %lfms\n", _tdm_req_fps);
+                       continue;
+                    }
+               }
 
              FD_ZERO(&rfds);
              FD_SET(tdm_fd, &rfds);
@@ -194,7 +208,6 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
 
              if ((ret == 1) && (FD_ISSET(tdm_fd, &rfds)))
                {
-                  fail_cnt = 0;
                   err = tdm_client_handle_events(client);
                   if (err != TDM_ERROR_NONE) {
                        ERR("tdm_client_handle_events failed err %d\n", err);
@@ -204,24 +217,11 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
                }
              else
                {
-                  if ((err < 0) && (errno != EINTR) && (errno != EAGAIN))  /* normal case */
+                  if ((ret < 0) || (errno != EINTR) && (errno != EAGAIN))  /* normal case */
                     goto done;
 
-                  fail_cnt = 0;
                   vblank_wait = 0;
                   _tdm_send_time(ecore_time_get());
-               }
-
-          }
-        else
-          {
-             fail_cnt++;
-             if (fail_cnt > 1000)
-               {
-                  vblank_wait = 0;
-                  _tdm_send_time(ecore_time_get());
-                  ERR("tdm vblank handler issue\n");
-                  fail_cnt = 0;
                }
           }
      }
@@ -351,9 +351,8 @@ void
 _ecore_wl_animator_vsync_tick_quit(EINA_UNUSED void *data)
 {
    int i;
-   _tick_send(-1);
 
-   if (!thq) return;
+   _tick_send(-1);
 
    for (i = 0; (i < 500) && (tdm_thread); i++)
      {
