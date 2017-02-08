@@ -4360,7 +4360,10 @@ _elm_scroll_pan_changed_cb(void *data, const Efl_Event *event EINA_UNUSED)
      {
         sid->content_info.w = w;
         sid->content_info.h = h;
-        _elm_scroll_scroll_bar_size_adjust(sid);
+
+        //TIZEN_ONLY(20170210): update pan position once pan size is changed
+        //_elm_scroll_scroll_bar_size_adjust(sid);
+        //END
 
         evas_object_size_hint_min_set
           (sid->edje_obj, sid->content_info.w, sid->content_info.h);
@@ -4394,6 +4397,13 @@ _elm_scroll_pan_changed_cb(void *data, const Efl_Event *event EINA_UNUSED)
         evas_object_smart_callback_call(sid->obj, SIG_CONTENT_RESIZE, NULL);
         //END
      }
+
+   //TIZEN_ONLY(20170210): update pan position once pan size is changed
+   //Bar should be updated on not only content size changed moment, but also pan pos/size updated moment
+   _elm_scroll_scroll_bar_size_adjust(sid);
+   _elm_scroll_scroll_bar_pos_adjust(sid);
+   //END
+
 }
 
 static void
