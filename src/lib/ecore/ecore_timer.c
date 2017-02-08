@@ -228,6 +228,8 @@ _ecore_timer_reset(Eo *obj, Ecore_Timer_Data *timer)
    double now, add;
    EINA_MAIN_LOOP_CHECK_RETURN;
 
+   if (timer_current == timer) return;
+
    _ecore_lock();
    now = ecore_time_get();
 
