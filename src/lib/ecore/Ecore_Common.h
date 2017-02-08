@@ -620,8 +620,8 @@ typedef Eina_Bool (*Ecore_Event_Handler_Cb)(void *data, int type, void *event);
  */
 struct _Ecore_Event_Signal_User
 {
-   int       number;  /**< The signal number. Either 1 or 2 */
-   void     *ext_data;  /**< Extension data - not used */
+   int       number; /**< The signal number. Either 1 or 2 */
+   void     *ext_data; /**< Extension data - not used */
 
 #if !defined (_WIN32) && !defined (__lv2ppu__) && !defined (EXOTIC_NO_SIGNAL)
    siginfo_t data; /**< Signal info */
@@ -634,7 +634,7 @@ struct _Ecore_Event_Signal_User
  */
 struct _Ecore_Event_Signal_Hup
 {
-   void     *ext_data;  /**< Extension data - not used */
+   void     *ext_data; /**< Extension data - not used */
 
 #if !defined (_WIN32) && !defined (__lv2ppu__) && !defined (EXOTIC_NO_SIGNAL)
    siginfo_t data; /**< Signal info */
@@ -663,7 +663,7 @@ struct _Ecore_Event_Signal_Exit
  */
 struct _Ecore_Event_Signal_Power
 {
-   void     *ext_data;  /**< Extension data - not used */
+   void     *ext_data; /**< Extension data - not used */
 
 #if !defined (_WIN32) && !defined (__lv2ppu__) && !defined (EXOTIC_NO_SIGNAL)
    siginfo_t data; /**< Signal info */
@@ -918,7 +918,7 @@ EAPI void *ecore_event_current_event_get(void);
  * Indicates current system memory state.
  * @since 1.8
  */
-enum _Ecore_Memory_State    /* Memory state */
+enum _Ecore_Memory_State /* Memory state */
 {
    ECORE_MEMORY_STATE_NORMAL, /**< The normal memory usage state. No need to do anything special here - operation as normal. */
    ECORE_MEMORY_STATE_LOW /**< The system is low on memory resources. This would indicate that it may be a good idea to free memory you don't need and minimize footprint to avoid general system problems. */
@@ -954,7 +954,7 @@ EAPI void ecore_memory_state_set(Ecore_Memory_State state);
  * Indicates current system memory state.
  * @since 1.8
  */
-enum _Ecore_Power_State    /* Power state */
+enum _Ecore_Power_State /* Power state */
 {
    ECORE_POWER_STATE_MAINS, /**< The system is connected to a mains supply of power, thus there is no need to limit processing to save battery life at all. */
    ECORE_POWER_STATE_BATTERY, /**< The system is running off battery power, but is otherwise running normally. */
@@ -1013,10 +1013,11 @@ EAPI void ecore_power_state_set(Ecore_Power_State state);
 /** Inherit priority from parent process */
 #define ECORE_EXE_PRIORITY_INHERIT 9999
 
-EAPI extern int ECORE_EXE_EVENT_ADD;     /**< A child process has been added */
-EAPI extern int ECORE_EXE_EVENT_DEL;     /**< A child process has been deleted (it exited, naming consistent with the rest of ecore). */
-EAPI extern int ECORE_EXE_EVENT_DATA;    /**< Data from a child process. */
-EAPI extern int ECORE_EXE_EVENT_ERROR;    /**< Errors from a child process. */
+EAPI extern int ECORE_EXE_EVENT_ADD; /**< A child process has been added */
+EAPI extern int ECORE_EXE_EVENT_DEL; /**< A child process has been deleted (it exited, naming consistent with the rest of ecore). */
+EAPI extern int ECORE_EXE_EVENT_DATA; /**< Data from a child process. */
+EAPI extern int ECORE_EXE_EVENT_ERROR; /**< Errors from a child process. */
+
 
 /**
  * @enum _Ecore_Exe_Win32_Priority
@@ -1029,7 +1030,7 @@ enum _Ecore_Exe_Win32_Priority
    ECORE_EXE_WIN32_PRIORITY_NORMAL, /**< Default priority */
    ECORE_EXE_WIN32_PRIORITY_ABOVE_NORMAL, /**< Above default priority */
    ECORE_EXE_WIN32_PRIORITY_HIGH, /**< High priority, use with care as other threads in the system will not get processor time */
-   ECORE_EXE_WIN32_PRIORITY_REALTIME     /**< Realtime priority, should be almost never used as it can interrupt system threads that manage mouse input, keyboard input, and background disk flushing */
+   ECORE_EXE_WIN32_PRIORITY_REALTIME /**< Realtime priority, should be almost never used as it can interrupt system threads that manage mouse input, keyboard input, and background disk flushing */
 };
 typedef enum _Ecore_Exe_Win32_Priority Ecore_Exe_Win32_Priority;
 
@@ -1527,6 +1528,8 @@ EAPI Eina_Bool ecore_main_fd_handler_active_get(Ecore_Fd_Handler *fd_handler, Ec
 EAPI void ecore_main_fd_handler_active_set(Ecore_Fd_Handler *fd_handler, Ecore_Fd_Handler_Flags flags);
 
 /**
+ * @internal
+ *
  * @brief Creates a Ecore_Win32_Handler object and add it to the win32_handlers list.
  * @param h    The win32 handler.
  * @param func The function to add as a callback.
@@ -1534,6 +1537,8 @@ EAPI void ecore_main_fd_handler_active_set(Ecore_Fd_Handler *fd_handler, Ecore_F
  */
 EAPI Ecore_Win32_Handler *ecore_main_win32_handler_add(void *h, Ecore_Win32_Handle_Cb func, const void *data);
 /**
+ * @internal
+ *
  * @brief Sets Ecore_Win32_Handler object to delete state.
  * The handler will be deleted in the _ecore_main_win32_handlers_cleanup function.
  *
@@ -1607,6 +1612,8 @@ EAPI double ecore_time_unix_get(void);
 EAPI double ecore_loop_time_get(void);
 
 /**
+ * @internal
+ *
  * Sets the loop time.
  * 
  * @param t The new loop time
@@ -2727,7 +2734,7 @@ EAPI double ecore_throttle_get(void);
  * @enum _Ecore_Animator_Source
  * Defines the timing sources for animators.
  */
-enum _Ecore_Animator_Source    /* Timing sources for animators */
+enum _Ecore_Animator_Source /* Timing sources for animators */
 {
    ECORE_ANIMATOR_SOURCE_TIMER, /**< The default system clock/timer based animator that ticks every "frametime" seconds */
    ECORE_ANIMATOR_SOURCE_CUSTOM /**< A custom animator trigger that you need to call ecore_animator_custom_tick() to make it tick */
