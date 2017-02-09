@@ -32,7 +32,7 @@
 # Buffer Objects
 | EVAS | void | glGenBuffers | GLsizei n,GLuint *buffers | finish | noext | | |
 | EVAS | void | glDeleteBuffers | GLsizei n,const GLuint *buffers | flush | noext | _mp_delete_object, n * sizeof(GLuint), buffers | |
-| EVAS | void | glBindBuffer | GLenum target,GLuint buffer | flush | noext | | |
+| EVAS | void | glBindBuffer | GLenum target,GLuint buffer | finish | noext | | |
 | EVAS | void | glBufferData | GLenum target,GLsizeiptr size,const void *data,GLenum usage | finish | noext | | |
 | EVAS | void * | glMapBuffer | GLenum target,GLenum access | finish | ext | | |
 | EVAS | GLboolean | glUnmapBuffer | GLenum target | finish | ext | | |
@@ -246,7 +246,7 @@
 # Buffer Objects
 | EVAS GL | void | glGenBuffers | GLsizei n,GLuint *buffers | finish | noext | | |
 | EVAS GL | void | glDeleteBuffers | GLsizei n,const GLuint *buffers | flush | noext | _mp_delete_object, n * sizeof(GLuint), buffers | |
-| EVAS GL | void | glBindBuffer | GLenum target,GLuint buffer | flush | noext | | |
+| EVAS GL | void | glBindBuffer | GLenum target,GLuint buffer | finish | noext | | |
 | EVAS GL | void | glBufferData | GLenum target,GLsizeiptr size,const void *data,GLenum usage | finish | noext | | |
 
 # Vertex Shaders
@@ -425,7 +425,7 @@
 | EVAS GL API | void | glActiveTexture | GLenum texture | finish | noext | | |
 | EVAS GL API | void | glAttachShader | GLuint program, GLuint shader | flush | noext | | |
 | EVAS GL API | void | glBindAttribLocation | GLuint program, GLuint index, const char* name | finish | noext | _mp_default, strlen(name), name | |
-| EVAS GL API | void | glBindBuffer | GLenum target, GLuint buffer | flush | noext | | |
+| EVAS GL API | void | glBindBuffer | GLenum target, GLuint buffer | finish | noext | | |
 | EVAS GL API | void | glBindFramebuffer | GLenum target, GLuint framebuffer | flush | noext | | |
 | EVAS GL API | void | glBindRenderbuffer | GLenum target, GLuint renderbuffer | flush | noext | | |
 | EVAS GL API | void | glBindTexture | GLenum target, GLuint texture | flush | noext | | |

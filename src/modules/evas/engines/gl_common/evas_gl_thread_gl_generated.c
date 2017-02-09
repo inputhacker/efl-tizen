@@ -518,22 +518,6 @@ glBindBuffer_thread_cmd(GLenum target, GLuint buffer)
    Evas_Thread_Command_glBindBuffer thread_data_local;
    Evas_Thread_Command_glBindBuffer *thread_data = &thread_data_local;
 
-   /* command_allocated flag init. */
-   thread_data->command_allocated = 0;
-
-   if (!evas_gl_thread_force_finish())
-     { /* _flush */
-        Evas_Thread_Command_glBindBuffer *thread_data_new;
-        thread_data_new = eina_mempool_malloc(_mp_command,
-                                              sizeof(Evas_Thread_Command_glBindBuffer));
-        if (thread_data_new)
-          {
-             thread_data = thread_data_new;
-             thread_data->command_allocated = 1;
-             thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
-          }
-     }
-
    thread_data->target = target;
    thread_data->buffer = buffer;
 
