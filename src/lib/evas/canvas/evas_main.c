@@ -67,19 +67,12 @@ evas_init(void)
    evas_filter_init();
    evas_cache_svg_init();
 
-   if(!evas_threads_init())
-     goto shutdown_thread;
-
    eina_log_timing(_evas_log_dom_global,
 		   EINA_LOG_STATE_STOP,
 		   EINA_LOG_STATE_INIT);
 
    return _evas_init_count;
 
- shutdown_thread:
-   evas_cache_svg_shutdown();
-   evas_filter_shutdown();
-   _evas_preload_thread_shutdown();
 #ifdef EVAS_CSERVE2
    {
       const char *env;
@@ -146,7 +139,6 @@ evas_shutdown(void)
    evas_object_filter_cow = NULL;
    evas_object_mask_cow = NULL;
 
-   evas_threads_shutdown();
    _evas_preload_thread_shutdown();
    evas_async_events_shutdown();
    evas_common_shutdown();

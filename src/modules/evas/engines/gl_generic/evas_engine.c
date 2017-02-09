@@ -2744,6 +2744,7 @@ static int
 module_open(Evas_Module *em)
 {
    if (!em) return 0;
+   if (!evas_threads_gl_init()) return 0;
    if (!evas_gl_common_module_open()) return 0;
    /* get whatever engine module we inherit from */
    if (!_evas_module_engine_inherit(&pfunc, "software_generic")) return 0;
@@ -2904,6 +2905,7 @@ module_close(Evas_Module *em EINA_UNUSED)
 {
    eina_log_domain_unregister(_evas_engine_GL_log_dom);
    evas_gl_common_module_close();
+   evas_threads_gl_shutdown();
 }
 
 static Evas_Module_Api evas_modapi =

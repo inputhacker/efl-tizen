@@ -4,23 +4,23 @@
 
 typedef struct
 {
-   char *thread_name;
+   const char *thread_name;
    Eina_Thread worker;
-   Eina_Condition queue_condition;
-   Eina_Lock queue_lock;
-   Eina_Bool queue_ready;
-   Eina_Inarray queue;
-   Evas_Thread_Command *queue_cache;
-   unsigned int queue_cache_max;
-
-   Eina_Spinlock finish_spinlock;
-   Evas_Thread_Command *waiting_cmd;
+   Eina_Thread_Queue *thread_queue_command;
+   Eina_Thread_Queue *thread_queue_finish;
 
    volatile int exited;
    Eina_Bool exit_thread;
 } Evas_Thread;
 
-static int evas_threads_init_count = 0;
+typedef struct
+{
+   Eina_Thread_Queue_Msg thq_head;
+   Evas_Thread_Command *finish_cmd;
+} Evas_Thread_Finish_Reply;
+
+static int evas_threads_sw_init_count = 0;
+static int evas_threads_gl_init_count = 0;
 
 static Evas_Thread evas_thread_software;
 static Evas_Thread evas_thread_gl;
@@ -43,40 +43,43 @@ _shutdown_timeout(double *time, int mode, int timeout_ms)
 }
 
 static void
-evas_thread_queue_append(Evas_Thread *ev_thread, Evas_Thread_Command_Cb cb, void *data, Eina_Bool do_flush, Eina_Bool do_finish)
+evas_thread_queue_append(Evas_Thread *ev_thread, Evas_Thread_Command_Cb cb, void *data, Eina_Bool do_flush EINA_UNUSED, Eina_Bool do_finish)
 {
    Evas_Thread_Command *cmd;
+   void *ref;
 
-   eina_lock_take(&ev_thread->queue_lock);
+   cmd = eina_thread_queue_send(ev_thread->thread_queue_command, sizeof(Evas_Thread_Command), &ref);
 
-   cmd = eina_inarray_grow(&ev_thread->queue, 1);
+
    if (cmd)
      {
         cmd->cb = cb;
         cmd->data = data;
+
+        if (do_finish)
+           cmd->finish = EINA_TRUE;
+        else
+           cmd->finish = EINA_FALSE;
+
+        eina_thread_queue_send_done(ev_thread->thread_queue_command, ref);
      }
    else
      {
         ERR("Out of memory allocating thread command.");
-        goto out;
+        return;
      }
 
    if (do_finish)
      {
-        eina_spinlock_take(&ev_thread->finish_spinlock);
-        ev_thread->waiting_cmd = cmd;
-        eina_spinlock_release(&ev_thread->finish_spinlock);
-     }
+        void *finish_ref;
+        Evas_Thread_Finish_Reply *rep;
 
-   if (do_flush)
-     {
-        ev_thread->queue_ready = EINA_TRUE;
-        eina_condition_signal(&ev_thread->queue_condition);
+        rep = eina_thread_queue_wait(ev_thread->thread_queue_finish, &finish_ref);
+        assert(rep && rep->finish_cmd == cmd);
+        eina_thread_queue_wait_done(ev_thread->thread_queue_finish, finish_ref);
      }
-
-out:
-   eina_lock_release(&ev_thread->queue_lock);
 }
+
 
 EAPI void
 evas_thread_cmd_enqueue(Evas_Thread_Command_Cb cb, void *data)
@@ -100,24 +103,26 @@ evas_gl_thread_cmd_enqueue(int thread_type, Evas_Thread_Command_Cb cb, void *dat
    else if (thread_type == EVAS_GL_THREAD_TYPE_EVGL)
       ev_thread = &evas_thread_evgl;
    else
-      ERR("GL thread type is invalid");
+     {
+        ERR("GL thread type is invalid");
+        goto out;
+     }
 
    if (thread_mode == EVAS_GL_THREAD_MODE_ENQUEUE)
       evas_thread_queue_append(ev_thread, cb, data, EINA_FALSE, EINA_FALSE);
    else if (thread_mode == EVAS_GL_THREAD_MODE_FLUSH)
       evas_thread_queue_append(ev_thread, cb, data, EINA_TRUE, EINA_FALSE);
    else if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
-     {
-        evas_thread_queue_append(ev_thread, cb, data, EINA_TRUE, EINA_TRUE);
-        while (ev_thread->waiting_cmd)
-          {
-             sched_yield();
-          }
-     }
+      evas_thread_queue_append(ev_thread, cb, data, EINA_TRUE, EINA_TRUE);
    else
-      ERR("GL thread mode is invalid");
-}
+     {
+        ERR("GL thread mode is invalid");
+        goto out;
+     }
 
+out:
+   return;
+}
 EAPI Eina_Thread
 evas_gl_thread_get(int thread_type)
 {
@@ -130,151 +135,122 @@ evas_gl_thread_get(int thread_type)
    else
      {
         ERR("GL thread type is invalid");
-        return (Eina_Thread)NULL;
+        goto out;
      }
 
    return ev_thread->worker;
-}
 
+out:
+   return (Eina_Thread)NULL;
+}
 
 static void*
 evas_thread_worker_func(void *data, Eina_Thread thread EINA_UNUSED)
 {
    Evas_Thread *ev_thread = data;
+   void *ref;
+
    eina_thread_name_set(eina_thread_self(), ev_thread->thread_name);
+
    while (1)
      {
         Evas_Thread_Command *cmd;
-        unsigned int len, max;
 
-        eina_lock_take(&ev_thread->queue_lock);
+        cmd = eina_thread_queue_wait(ev_thread->thread_queue_command, &ref);
 
-        while (!ev_thread->queue_ready)
+        if (cmd && cmd->cb)
           {
-             if (ev_thread->exit_thread)
-               {
-                  eina_lock_release(&ev_thread->queue_lock);
-                  goto out;
-               }
-             eina_condition_wait(&ev_thread->queue_condition);
-          }
-
-        if (!eina_inarray_count(&ev_thread->queue))
-          {
-             ERR("Signaled to find an empty queue. BUG!");
-             ev_thread->queue_ready = EINA_FALSE;
-             eina_lock_release(&ev_thread->queue_lock);
-             continue;
-          }
-
-        cmd = ev_thread->queue.members;
-        ev_thread->queue.members = ev_thread->queue_cache;
-        ev_thread->queue_cache = cmd;
-
-        max = ev_thread->queue.max;
-        ev_thread->queue.max = ev_thread->queue_cache_max;
-        ev_thread->queue_cache_max = max;
-
-        len = ev_thread->queue.len;
-        ev_thread->queue.len = 0;
-
-        ev_thread->queue_ready = EINA_FALSE;
-
-        eina_lock_release(&ev_thread->queue_lock);
-
-        DBG("Evas render thread command queue length: %u", len);
-
-        eina_evlog("+thread", NULL, 0.0, NULL);
-        while (len)
-          {
-             assert(cmd->cb);
-
              eina_evlog("+thread_do", cmd->data, 0.0, NULL);
              cmd->cb(cmd->data);
              eina_evlog("-thread_do", cmd->data, 0.0, NULL);
-             eina_spinlock_take(&ev_thread->finish_spinlock);
-             if (cmd == ev_thread->waiting_cmd)
-               ev_thread->waiting_cmd = NULL;
-             eina_spinlock_release(&ev_thread->finish_spinlock);
 
-             cmd++;
-             len--;
+             eina_thread_queue_wait_done(ev_thread->thread_queue_command, ref);
+
+             if (cmd->finish)
+               {
+                  void *finish_ref;
+                  Evas_Thread_Finish_Reply *rep;
+
+                  rep = eina_thread_queue_send(ev_thread->thread_queue_finish,
+                                               sizeof(Evas_Thread_Finish_Reply),
+                                               &finish_ref);
+                  rep->finish_cmd = cmd;
+                  eina_thread_queue_send_done(ev_thread->thread_queue_finish, finish_ref);
+               }
           }
-        eina_evlog("-thread", NULL, 0.0, NULL);
+        else
+           goto out;
      }
 
 out:
-   /* WRN: add a memory barrier or use a lock if we add more code here */
    ev_thread->exited = 1;
+
    return NULL;
 }
 
-static int
-evas_thread_init(Evas_Thread *ev_thread, char *thread_name)
+static Eina_Bool
+evas_thread_init(Evas_Thread *ev_thread, const char *thread_name)
 {
    ev_thread->thread_name = thread_name;
-   ev_thread->queue_ready = EINA_FALSE;
-   ev_thread->queue_cache = NULL;
-   ev_thread->queue_cache_max = 0;
 
-   ev_thread->exited = 0;
+   ev_thread->thread_queue_command = eina_thread_queue_new();
+   if (!ev_thread->thread_queue_command)
+     {
+        CRI("Could not create thread queue for command (%m)");
+        goto fail_on_thread_queue_command_creation;
+     }
+
+   ev_thread->thread_queue_finish = eina_thread_queue_new();
+   if (!ev_thread->thread_queue_finish)
+     {
+        CRI("Could not create thread queue for finish (%m)");
+        goto fail_on_thread_queue_finish_creation;
+     }
+
    ev_thread->exit_thread = EINA_FALSE;
+   ev_thread->exited = 0;
 
-
-   eina_inarray_step_set(&ev_thread->queue, sizeof (Eina_Inarray), sizeof (Evas_Thread_Command), 128);
-
-   if (!eina_lock_new(&ev_thread->queue_lock))
-      {
-         CRI("Could not create draw thread queue lock");
-         goto fail_on_lock_creation;
-      }
-   if (!eina_condition_new(&ev_thread->queue_condition, &ev_thread->queue_lock))
-      {
-         CRI("Could not create draw thread queue condition");
-         goto fail_on_cond_creation;
-      }
-   if (!eina_spinlock_new(&ev_thread->finish_spinlock))
-      {
-         CRI("Could not create draw thread finish lock");
-         goto fail_on_spin_lock_creation;
-      }
-   if (!eina_thread_create(&ev_thread->worker, EINA_THREAD_NORMAL, 0,
+   if (!eina_thread_create(&ev_thread->worker, EINA_THREAD_NORMAL, -1,
                            evas_thread_worker_func, ev_thread))
-      {
-         CRI("Could not create draw thread");
-         goto fail_on_thread_creation;
-      }
-   return 1;
+     {
+        CRI("Could not create draw thread (%m)");
+        goto fail_on_thread_creation;
+     }
+
+   return EINA_TRUE;
+
 fail_on_thread_creation:
    ev_thread->worker = 0;
-   eina_condition_free(&ev_thread->queue_condition);
-fail_on_spin_lock_creation:
-   eina_spinlock_free(&ev_thread->finish_spinlock);
-fail_on_cond_creation:
-   eina_lock_free(&ev_thread->queue_lock);
-fail_on_lock_creation:
-   eina_threads_shutdown();
-fail_on_eina_thread_init:
-   ev_thread->exited = 1;
+   eina_thread_queue_free(ev_thread->thread_queue_finish);
+fail_on_thread_queue_finish_creation:
+   eina_thread_queue_free(ev_thread->thread_queue_command);
+fail_on_thread_queue_command_creation:
    ev_thread->exit_thread = EINA_TRUE;
-
-   return 0;
+   ev_thread->exited = 1;
+   return EINA_FALSE;
 }
-
 static void
 evas_thread_shutdown(Evas_Thread *ev_thread)
 {
+   Evas_Thread_Command *cmd;
+   void *ref;
    double to = 0;
-   eina_lock_take(&ev_thread->queue_lock);
+
+   if (!ev_thread) return;
 
    ev_thread->exit_thread = EINA_TRUE;
-   eina_condition_signal(&ev_thread->queue_condition);
 
-   eina_lock_release(&ev_thread->queue_lock);
+   cmd = eina_thread_queue_send(ev_thread->thread_queue_command, sizeof(Evas_Thread_Command), &ref);
+   if (cmd)
+     {
+        cmd->cb = NULL;
+        cmd->data = NULL;
+        cmd->finish = EINA_FALSE;
+        eina_thread_queue_send_done(ev_thread->thread_queue_command, ref);
+     }
 
    _shutdown_timeout(&to, SHUTDOWN_TIMEOUT_RESET, SHUTDOWN_TIMEOUT);
-   while (!ev_thread->exited &&
-          evas_async_events_process() != -1)
+   while (!ev_thread->exited && (evas_async_events_process() != -1))
      {
         if(_shutdown_timeout(&to, SHUTDOWN_TIMEOUT_CHECK, SHUTDOWN_TIMEOUT))
           {
@@ -284,45 +260,97 @@ evas_thread_shutdown(Evas_Thread *ev_thread)
      }
 
    eina_thread_join(ev_thread->worker);
+
 timeout_shutdown:
-   eina_spinlock_free(&ev_thread->finish_spinlock);
-   eina_lock_free(&ev_thread->queue_lock);
-   eina_condition_free(&ev_thread->queue_condition);
-
+   eina_thread_queue_free(ev_thread->thread_queue_command);
+   eina_thread_queue_free(ev_thread->thread_queue_finish);
    ev_thread->worker = 0;
-
-   eina_inarray_flush(&ev_thread->queue);
-   free(ev_thread->queue_cache);
-
 }
 
-int
-evas_threads_init(void)
+EAPI int
+evas_threads_sw_init(void)
 {
-   if (evas_threads_init_count++) return evas_threads_init_count;
+   if (evas_threads_sw_init_count++)
+      return evas_threads_sw_init_count;
 
-   if(!eina_threads_init())
+   if (!eina_threads_init())
      {
         CRI("Could not init eina threads");
-        return --evas_threads_init_count;
+        goto fail_on_eina_thread_init;
      }
-   if (!evas_thread_init(&evas_thread_software, "Eevas-thread-wk-sw")) return --evas_threads_init_count;
-   if (!evas_thread_init(&evas_thread_gl, "Eevas-thread-wk-gl"))       return --evas_threads_init_count;
-   if (!evas_thread_init(&evas_thread_evgl, "Eevas-thread-wk-evgl"))   return --evas_threads_init_count;
 
-   return evas_threads_init_count;
+   if (!evas_thread_init(&evas_thread_software, "Evas-thread-wk-sw"))
+      goto fail_on_software_thread_init;
+   return evas_threads_sw_init_count;
+
+fail_on_software_thread_init:
+   eina_threads_shutdown();
+fail_on_eina_thread_init:
+   return --evas_threads_gl_init_count;
+ }
+
+EAPI int
+evas_threads_gl_init(void)
+{
+   if (evas_threads_gl_init_count++)
+      return evas_threads_gl_init_count;
+
+   if (!eina_threads_init())
+     {
+        CRI("Could not init eina threads");
+        goto fail_on_eina_thread_init;
+     }
+
+   if (!evas_thread_init(&evas_thread_gl, "Evas-thread-wk-gl"))
+      goto fail_on_gl_thread_init;
+   if (!evas_thread_init(&evas_thread_evgl, "Evas-thread-wk-evgl"))
+      goto fail_on_evgl_thread_init;
+   return evas_threads_gl_init_count;
+
+fail_on_evgl_thread_init:
+   evas_thread_shutdown(&evas_thread_gl);
+fail_on_gl_thread_init:
+   eina_threads_shutdown();
+fail_on_eina_thread_init:
+   return --evas_threads_gl_init_count;
+ }
+
+EAPI int
+evas_threads_sw_shutdown(void)
+{
+   if (evas_threads_sw_init_count <= 0)
+     {
+        ERR("Too many calls to shutdown, ignored.");
+        return 0;
+     }
+
+   if (--evas_threads_sw_init_count)
+     return evas_threads_sw_init_count;
+
+   evas_thread_shutdown(&evas_thread_software);
+
+   eina_threads_shutdown();
+
+   return 0;
 }
 
-void
-evas_threads_shutdown(void)
+EAPI int
+evas_threads_gl_shutdown(void)
 {
-   assert(evas_threads_init_count);
+   if (evas_threads_gl_init_count <= 0)
+     {
+        ERR("Too many calls to shutdown, ignored.");
+        return 0;
+     }
 
-   if (--evas_threads_init_count)
-     return;
+   if (--evas_threads_gl_init_count)
+     return evas_threads_gl_init_count;
 
    evas_thread_shutdown(&evas_thread_evgl);
    evas_thread_shutdown(&evas_thread_gl);
-   evas_thread_shutdown(&evas_thread_software);
+
+
    eina_threads_shutdown();
+
+   return 0;
 }

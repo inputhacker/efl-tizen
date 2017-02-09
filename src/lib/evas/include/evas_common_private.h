@@ -475,8 +475,10 @@ typedef struct _Evas_Thread_Command Evas_Thread_Command;
 
 struct _Evas_Thread_Command
 {
+   Eina_Thread_Queue_Msg thq_head;
    Evas_Thread_Command_Cb cb;
    void *data;
+   Eina_Bool finish;
 };
 
 /*****************************************************************************/
@@ -1310,8 +1312,10 @@ void              evas_all_sync(void);
 #define EVAS_GL_THREAD_MODE_FLUSH    1
 #define EVAS_GL_THREAD_MODE_ENQUEUE  2
 
-int               evas_threads_init(void);
-void              evas_threads_shutdown(void);
+EAPI int          evas_threads_sw_init(void);
+EAPI int          evas_threads_gl_init(void);
+EAPI int          evas_threads_sw_shutdown(void);
+EAPI int          evas_threads_gl_shutdown(void);
 EAPI void         evas_thread_cmd_enqueue(Evas_Thread_Command_Cb cb, void *data);
 EAPI void         evas_thread_queue_flush(Evas_Thread_Command_Cb cb, void *data);
 EAPI void         evas_gl_thread_cmd_enqueue(int thread_type, Evas_Thread_Command_Cb cb, void *data, int thread_mode);
