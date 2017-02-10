@@ -35,7 +35,7 @@
  * @defgroup Ecore_Con_Eet_Group Eet connection functions
  * @ingroup Ecore_Con_Group
  *
- * The Ecore Connection Eet library ( @c Ecore_Con_Eet) adds @c Eet data
+ * The Ecore Connection Eet library (@c Ecore_Con_Eet) adds @c Eet data
  * serialization features to Ecore Connection objects. Its main aim is to
  * provide a way to send @c Eet data streams to another program through sockets
  * using @c Ecore_Con objects.
@@ -78,7 +78,7 @@ typedef Eina_Bool (*Ecore_Con_Eet_Server_Cb)(void *data, Ecore_Con_Reply *reply,
 #endif
 
 /**
- * Create a Ecore_Con_Eet server.
+ * @brief Creates an Ecore_Con_Eet server.
  *
  * @param server    An existing Ecore_Con_Server that have been previously
  *                  created by the server program with @ref
@@ -96,7 +96,7 @@ typedef Eina_Bool (*Ecore_Con_Eet_Server_Cb)(void *data, Ecore_Con_Reply *reply,
 EAPI Ecore_Con_Eet *ecore_con_eet_server_new(Ecore_Con_Server *server);
 
 /**
- * Create a Ecore_Con_Eet client.
+ * @brief Creates an Ecore_Con_Eet client.
  *
  * @param server    An existing Ecore_Con_Server that have been previously
  *                  returned by a call to @ref ecore_con_server_connect in the
@@ -114,7 +114,7 @@ EAPI Ecore_Con_Eet *ecore_con_eet_server_new(Ecore_Con_Server *server);
 EAPI Ecore_Con_Eet *ecore_con_eet_client_new(Ecore_Con_Server *server);
 
 /**
- * Free an existing Ecore_Con_Eet object.
+ * @brief Frees an existing Ecore_Con_Eet object.
  *
  * @param server    An existing Ecore_Con_Eet object that have been previously
  *                  allocated by a @ref ecore_con_eet_server_new or @ref
@@ -127,7 +127,7 @@ EAPI Ecore_Con_Eet *ecore_con_eet_client_new(Ecore_Con_Server *server);
 EAPI void ecore_con_eet_server_free(Ecore_Con_Eet *ece);
 
 /**
- * Register an @c Eet data descriptor on a Ecore_Con_Eet object.
+ * @brief Registers an @c Eet data descriptor on a Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param name      The name of the Eet stream to connect.
@@ -141,7 +141,7 @@ EAPI void ecore_con_eet_server_free(Ecore_Con_Eet *ece);
 EAPI void ecore_con_eet_register(Ecore_Con_Eet *ece, const char *name, Eet_Data_Descriptor *edd);
 
 /**
- * Register a data callback on a Ecore_Con_Eet object.
+ * @brief Registers a data callback on a Ecore_Con_Eet object.
  * When the Ecore_Con_Eet object is deleted, this automatically gets removed.
  *
  * @param ece       An Ecore_Con_Eet object.
@@ -156,7 +156,7 @@ EAPI void ecore_con_eet_register(Ecore_Con_Eet *ece, const char *name, Eet_Data_
 EAPI void ecore_con_eet_data_callback_add(Ecore_Con_Eet *ece, const char *name, Ecore_Con_Eet_Data_Cb func, const void *data);
 
 /**
- * Remove a data callback on a Ecore_Con_Eet object.
+ * @brief Removes a data callback on a Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param name      The name of the Eet stream to remove callback on.
@@ -168,7 +168,7 @@ EAPI void ecore_con_eet_data_callback_add(Ecore_Con_Eet *ece, const char *name, 
 EAPI void ecore_con_eet_data_callback_del(Ecore_Con_Eet *ece, const char *name);
 
 /**
- * Register a raw data callback on a Ecore_Con_Eet object.
+ * @brief Registers a raw data callback on a Ecore_Con_Eet object.
  * When the Ecore_Con_Eet object is deleted, this automatically gets removed.
  *
  * @param ece       An Ecore_Con_Eet object.
@@ -183,7 +183,7 @@ EAPI void ecore_con_eet_data_callback_del(Ecore_Con_Eet *ece, const char *name);
 EAPI void ecore_con_eet_raw_data_callback_add(Ecore_Con_Eet *ece, const char *name, Ecore_Con_Eet_Raw_Data_Cb func, const void *data);
 
 /**
- * Remove a raw data callback on a Ecore_Con_Eet object.
+ * @brief Removes a raw data callback on a Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param name      The name of the raw Eet stream to remove callback on.
@@ -195,7 +195,7 @@ EAPI void ecore_con_eet_raw_data_callback_add(Ecore_Con_Eet *ece, const char *na
 EAPI void ecore_con_eet_raw_data_callback_del(Ecore_Con_Eet *ece, const char *name);
 
 /**
- * Register a client connect callback on a Ecore_Con_Eet object.
+ * @brief Registers a client connect callback on a Ecore_Con_Eet object.
  * @brief This callback can be registered on the server program to know when a
  * client connects.
  * When the Ecore_Con_Eet object is deleted, this automatically gets removed.
@@ -211,7 +211,7 @@ EAPI void ecore_con_eet_raw_data_callback_del(Ecore_Con_Eet *ece, const char *na
 EAPI void ecore_con_eet_client_connect_callback_add(Ecore_Con_Eet *ece, Ecore_Con_Eet_Client_Cb func, const void *data);
 
 /**
- * Remove a client connect callback on a Ecore_Con_Eet object.
+ * @brief Removes a client connect callback on a Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The callback to remove.
@@ -224,7 +224,7 @@ EAPI void ecore_con_eet_client_connect_callback_add(Ecore_Con_Eet *ece, Ecore_Co
 EAPI void ecore_con_eet_client_connect_callback_del(Ecore_Con_Eet *ece, Ecore_Con_Eet_Client_Cb func, const void *data);
 
 /**
- * Register a client disconnect callback on a Ecore_Con_Eet object.
+ * @brief Registers a client disconnect callback on a Ecore_Con_Eet object.
  * @brief This callback can be registered on the server program to know when a
  * client disconnects.
  * When the Ecore_Con_Eet object is deleted, this automatically gets removed.
@@ -240,7 +240,7 @@ EAPI void ecore_con_eet_client_connect_callback_del(Ecore_Con_Eet *ece, Ecore_Co
 EAPI void ecore_con_eet_client_disconnect_callback_add(Ecore_Con_Eet *ece, Ecore_Con_Eet_Client_Cb func, const void *data);
 
 /**
- * Remove a client disconnect callback on a Ecore_Con_Eet object.
+ * @brief Removes a client disconnect callback on a Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The callback to remove.
@@ -253,8 +253,8 @@ EAPI void ecore_con_eet_client_disconnect_callback_add(Ecore_Con_Eet *ece, Ecore
 EAPI void ecore_con_eet_client_disconnect_callback_del(Ecore_Con_Eet *ece, Ecore_Con_Eet_Client_Cb func, const void *data);
 
 /**
- * Register a server connect callback on a Ecore_Con_Eet object.
- * @brief This callback can be registered on the client program to be called
+ * @brief Registers a server connect callback on a Ecore_Con_Eet object.
+ * @brief This callback can be registered on the client program to be called.
  * when it has been connected to the server.
  * When the Ecore_Con_Eet object is deleted, this automatically gets removed.
  *
@@ -269,7 +269,7 @@ EAPI void ecore_con_eet_client_disconnect_callback_del(Ecore_Con_Eet *ece, Ecore
 EAPI void ecore_con_eet_server_connect_callback_add(Ecore_Con_Eet *ece, Ecore_Con_Eet_Server_Cb func, const void *data);
 
 /**
- * Remove a server connect callback on a Ecore_Con_Eet object.
+ * @brief Removes a server connect callback on a Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The callback to remove.
@@ -282,7 +282,7 @@ EAPI void ecore_con_eet_server_connect_callback_add(Ecore_Con_Eet *ece, Ecore_Co
 EAPI void ecore_con_eet_server_connect_callback_del(Ecore_Con_Eet *ece, Ecore_Con_Eet_Server_Cb func, const void *data);
 
 /**
- * Register a server disconnect callback on a Ecore_Con_Eet object.
+ * @brief Registers a server disconnect callback on a Ecore_Con_Eet object.
  * @brief This callback can be registered on the client program to be called
  * when it has been disconnected from the server.
  * When the Ecore_Con_Eet object is deleted, this automatically gets removed.
@@ -298,7 +298,7 @@ EAPI void ecore_con_eet_server_connect_callback_del(Ecore_Con_Eet *ece, Ecore_Co
 EAPI void ecore_con_eet_server_disconnect_callback_add(Ecore_Con_Eet *ece, Ecore_Con_Eet_Server_Cb func, const void *data);
 
 /**
- * Remove a server disconnect callback on a Ecore_Con_Eet object.
+ * @brief Removes a server disconnect callback on a Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param func      The callback to remove.
@@ -311,7 +311,7 @@ EAPI void ecore_con_eet_server_disconnect_callback_add(Ecore_Con_Eet *ece, Ecore
 EAPI void ecore_con_eet_server_disconnect_callback_del(Ecore_Con_Eet *ece, Ecore_Con_Eet_Server_Cb func, const void *data);
 
 /**
- * Attach data to an Ecore_Con_Eet object.
+ * @brief Attaches data to an Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @param data      The data to attach to the Ecore_Con_Eet object.
@@ -323,7 +323,7 @@ EAPI void ecore_con_eet_server_disconnect_callback_del(Ecore_Con_Eet *ece, Ecore
 EAPI void ecore_con_eet_data_set(Ecore_Con_Eet *ece, const void *data);
 
 /**
- * Get the data attached to an Ecore_Con_Eet object.
+ * @brief Gets the data attached to an Ecore_Con_Eet object.
  *
  * @param ece       An Ecore_Con_Eet object.
  * @return The data attached to the Ecore_Con_Eet object.
@@ -335,7 +335,7 @@ EAPI void ecore_con_eet_data_set(Ecore_Con_Eet *ece, const void *data);
 EAPI const void *ecore_con_eet_data_get(Ecore_Con_Eet *ece);
 
 /**
- * Get the Ecore_Con_Eet object corresponding to the Ecore_Con_Reply object.
+ * @brief Gets the Ecore_Con_Eet object corresponding to the Ecore_Con_Reply object.
  *
  * @param reply       An Ecore_Con_Reply object.
  * @return The corresponding Ecore_Con_Eet object.
@@ -347,7 +347,7 @@ EAPI const void *ecore_con_eet_data_get(Ecore_Con_Eet *ece);
 EAPI Ecore_Con_Eet *ecore_con_eet_reply(Ecore_Con_Reply *reply);
 
 /**
- * Send some data using a protocol type.
+ * @brief Sends some data using a protocol type.
  *
  * @param reply         An Ecore_Con_Reply object.
  * @param protocol_name The protocol type to use.
@@ -360,7 +360,7 @@ EAPI Ecore_Con_Eet *ecore_con_eet_reply(Ecore_Con_Reply *reply);
 EAPI void ecore_con_eet_send(Ecore_Con_Reply *reply, const char *protocol_name, void *value);
 
 /**
- * Send some raw data using a protocol type.
+ * @brief Sends some raw data using a protocol type.
  *
  * @param reply         An Ecore_Con_Reply object.
  * @param protocol_name The protocol type to use.

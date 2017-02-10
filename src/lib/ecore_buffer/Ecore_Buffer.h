@@ -517,7 +517,7 @@ struct _Ecore_Buffer_Backend
 };
 
 /**
- * @brief Initialize the Ecore_Buffer system.
+ * @brief Initializes the Ecore_Buffer system.
  *
  * @since 1.15
  *
@@ -531,7 +531,7 @@ struct _Ecore_Buffer_Backend
  */
 EAPI Eina_Bool     ecore_buffer_init(void);
 /**
- * @brief Shut down the Ecore_Buffer system.
+ * @brief Shuts down the Ecore_Buffer system.
  *
  * @since 1.15
  *
@@ -571,15 +571,15 @@ EAPI Eina_Bool     ecore_buffer_register(Ecore_Buffer_Backend *be);
  */
 EAPI void          ecore_buffer_unregister(Ecore_Buffer_Backend *be);
 /**
- * @brief Creates a new Ecore_Buffer given type
+ * @brief Creates a new Ecore_Buffer given type.
  *
  * @since 1.15
  *
- * @param[in] engine the name of backend
- * @param[in] width width for Ecore_Buffer
- * @param[in] height height for Ecore_Buffer
- * @param[in] format format for Ecore_Buffer
- * @param[in] flags flags for Ecore_Buffer
+ * @param[in] engine The name of backend
+ * @param[in] width Width for Ecore_Buffer
+ * @param[in] height Height for Ecore_Buffer
+ * @param[in] format Format for Ecore_Buffer
+ * @param[in] flags Flags for Ecore_Buffer
  *
  * @return Newly allocated Ecore_Buffer instance, NULL otherwise.
  *
@@ -593,9 +593,9 @@ EAPI Ecore_Buffer *ecore_buffer_new(const char *engine, unsigned int width, unsi
  *
  * @since 1.15
  *
- * @param[in] engine the name of backend
- * @param[in] tbm_surface the handle of tbm_surface_h
- * @param[in] flags the flags for Ecore_Buffer
+ * @param[in] engine The name of backend
+ * @param[in] tbm_surface The handle of tbm_surface_h
+ * @param[in] flags The flags for Ecore_Buffer
  *
  * @return Newly allocated Ecore_Buffer instance based on tbm surface, NULL otherwise.
  *
@@ -605,7 +605,7 @@ EAPI Ecore_Buffer *ecore_buffer_new(const char *engine, unsigned int width, unsi
  */
 EAPI Ecore_Buffer *ecore_buffer_new_with_tbm_surface(const char *engine, void *tbm_surface, unsigned int flags);
 /**
- * @brief Free the given Ecore_Buffer.
+ * @brief Frees the given Ecore_Buffer.
  *
  * @since 1.15
  *
@@ -617,7 +617,7 @@ EAPI Ecore_Buffer *ecore_buffer_new_with_tbm_surface(const char *engine, void *t
  */
 EAPI void          ecore_buffer_free(Ecore_Buffer *buf);
 /**
- * @brief Set a callback for Ecore_Buffer free events.
+ * @brief Sets a callback for Ecore_Buffer free events.
  *
  * @since 1.15
  *
@@ -636,7 +636,7 @@ EAPI void          ecore_buffer_free(Ecore_Buffer *buf);
  */
 EAPI void          ecore_buffer_free_callback_add(Ecore_Buffer *buf, Ecore_Buffer_Cb  func, void *data);
 /**
- * @brief Remove a callback for Ecore_Buffer free events.
+ * @brief Removes a callback for Ecore_Buffer free events.
  *
  * @since 1.15
  *
@@ -652,13 +652,13 @@ EAPI void          ecore_buffer_free_callback_add(Ecore_Buffer *buf, Ecore_Buffe
  */
 EAPI void          ecore_buffer_free_callback_remove(Ecore_Buffer *buf, Ecore_Buffer_Cb func, void *data);
 /**
- * @brief Return the Pixmap of given Ecore_Buffer.
+ * @brief Returns the Pixmap of given Ecore_Buffer.
  *
  * @since 1.15
  *
  * @param[in] buf The Ecore_Buffer
  *
- * @return The Pixmap instance, 0 otherwise.
+ * @return The Pixmap instance, @c 0 otherwise.
  *
  * @if MOBILE @since_tizen 2.4
  * @elseif WEARABLE @since_tizen 3.0
@@ -666,7 +666,7 @@ EAPI void          ecore_buffer_free_callback_remove(Ecore_Buffer *buf, Ecore_Bu
  */
 EAPI Ecore_Pixmap  ecore_buffer_pixmap_get(Ecore_Buffer *buf);
 /**
- * @brief Return the tbm surface handle of given Ecore_Buffer.
+ * @brief Returns the tbm surface handle of given Ecore_Buffer.
  *
  * @since 1.15
  *
@@ -683,13 +683,13 @@ EAPI Ecore_Pixmap  ecore_buffer_pixmap_get(Ecore_Buffer *buf);
  */
 EAPI void         *ecore_buffer_tbm_surface_get(Ecore_Buffer *buf);
 /**
- * @brief Return size of given Ecore_Buffer.
+ * @brief Returns size of given Ecore_Buffer.
  *
  * @since 1.15
  *
  * @param[in] buf The Ecore_Buffer
- * @param[out] width where to return the width value. May be @c NULL.
- * @param[out] height  where to return the height value. May be @c NULL.
+ * @param[out] width Where to return the width value. May be @c NULL.
+ * @param[out] height Where to return the height value. May be @c NULL.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  *
@@ -699,7 +699,7 @@ EAPI void         *ecore_buffer_tbm_surface_get(Ecore_Buffer *buf);
  */
 EAPI Eina_Bool     ecore_buffer_size_get(Ecore_Buffer *buf, unsigned int *width, unsigned int *height);
 /**
- * @brief Return format of given Ecore_Buffer.
+ * @brief Returns format of given Ecore_Buffer.
  *
  * @since 1.15
  *
@@ -707,7 +707,7 @@ EAPI Eina_Bool     ecore_buffer_size_get(Ecore_Buffer *buf, unsigned int *width,
  *
  * @return The format of given Ecore_Buffer.
  *
- * return value can be one of those pre-defined value such as ECORE_BUFFER_FORMAT_XRGB8888.
+ * Return value can be one of those pre-defined value such as ECORE_BUFFER_FORMAT_XRGB8888.
  *
  * @if MOBILE @since_tizen 2.4
  * @elseif WEARABLE @since_tizen 3.0
@@ -715,7 +715,7 @@ EAPI Eina_Bool     ecore_buffer_size_get(Ecore_Buffer *buf, unsigned int *width,
  */
 EAPI Ecore_Buffer_Format ecore_buffer_format_get(Ecore_Buffer *buf);
 /**
- * @brief Return flags of given Ecore_Buffer.
+ * @brief Returns the flags of given Ecore_Buffer.
  *
  * @since 1.15
  *
