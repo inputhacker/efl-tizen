@@ -70,6 +70,7 @@ edje_cache_emp_free(Edje_Part_Collection_Directory_Entry *ce)
   eina_mempool_del(ce->mp_rtl.EXTERNAL);
   eina_mempool_del(ce->mp_rtl.SPACER);
   eina_mempool_del(ce->mp_rtl.SNAPSHOT);
+  eina_mempool_del(ce->mp_rtl.VECTOR);
   memset(&ce->mp_rtl, 0, sizeof (ce->mp_rtl));
   ce->ref = NULL;
 }
