@@ -516,6 +516,22 @@ EAPI void          ecore_buffer_unregister(Ecore_Buffer_Backend *be);
  */
 EAPI Ecore_Buffer *ecore_buffer_new(const char *engine, unsigned int width, unsigned int height, Ecore_Buffer_Format format, unsigned int flags);
 /**
+ * @brief Creates a new Ecore_Buffer based on given tbm surface.
+ *
+ * @since 1.15
+ *
+ * @param[in] engine The name of backend
+ * @param[in] tbm_surface The handle of tbm_surface_h
+ * @param[in] flags The flags for Ecore_Buffer
+ *
+ * @return Newly allocated Ecore_Buffer instance based on tbm surface, NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Ecore_Buffer *ecore_buffer_new_with_tbm_surface(const char *engine, void *tbm_surface, unsigned int flags);
+/**
  * @brief Frees the given Ecore_Buffer.
  *
  * @since 1.15

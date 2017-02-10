@@ -269,7 +269,7 @@ typedef enum
 
 /**
  * @typedef Ecore_Con_Socks
- * An object representing a SOCKS proxy
+ * An object representing a SOCKS proxy.
  * @ingroup Ecore_Con_Socks_Group
  * @since 1.2
  */
