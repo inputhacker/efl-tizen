@@ -1656,6 +1656,7 @@ _ecore_wl_window_cb_angle_change(void *data, struct tizen_rotation *tizen_rotati
 
    if (!(win = data)) return;
    if (!(ev = calloc(1, sizeof(Ecore_Wl_Event_Window_Rotate)))) return;
+   DBG("PendingRotation: wayland rotation callback angle=%d serial=%d", angle, serial);
 
    win->tz_rot.serial = serial;
 
@@ -1690,7 +1691,10 @@ _ecore_wl_window_cb_angle_change(void *data, struct tizen_rotation *tizen_rotati
      }
 
    ecore_event_add(ECORE_WL_EVENT_WINDOW_ROTATE, ev, NULL, NULL);
-   ecore_wl_window_rotation_set(win, ev->angle);
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+   //this code don't need. This code will be added opensource code.
+   //ecore_wl_window_rotation_set(win, ev->angle);
+//
 }
 
 static void
