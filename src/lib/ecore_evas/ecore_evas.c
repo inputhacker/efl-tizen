@@ -2353,17 +2353,6 @@ ecore_evas_aux_hint_add(Ecore_Evas *ee, const char *hint, const char *val)
                        if (iface->aux_hint_add)
                          iface->aux_hint_add(ee, aux->id, hint, val);
 
-// TIZEN_ONLY(20170212): pend rotation until app set rotation
-/* This is really hotfix.
- * But until the new api is opened, we use aux_hint as pending rotation set
- * X don't need the pending rotation.
- */
-                       if(!strncmp(hint, "wm.policy.win.rot.render.nopending", strlen(hint)))
-                         {
-                            ee->prop.wm_rot.pending_mode.app_set = EINA_TRUE;
-                            DBG("PendingRotation: ecore_evas rotation_pending_set sucess");
-                         }
-//
                        return aux->id;
                     }
                   else
