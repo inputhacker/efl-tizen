@@ -432,7 +432,7 @@ extern "C" {
      };
 
    /**
-    * Initialises the Ecore Event system.
+    * Initializes the Ecore Event system.
     *
     * @if MOBILE @since_tizen 2.4
     * @elseif WEARABLE @since_tizen 3.0
@@ -449,7 +449,7 @@ extern "C" {
    EAPI int                  ecore_event_shutdown(void);
 
    /**
-    * Return the Ecore modifier event integer associated to a
+    * Returns the Ecore modifier event integer associated to a
     * Ecore_Event_Modifier modifier event.
     *
     * @param modifier A Ecore_Event_Modifier event.
@@ -479,7 +479,7 @@ extern "C" {
    EAPI Ecore_Event_Modifier ecore_event_update_modifier(const char *key, Ecore_Event_Modifiers *modifiers, int inc);
 
    /**
-    * Handle a sequence of key symbols to make a final compose string.
+    * Handles a sequence of key symbols to make a final compose string.
     *
     * The final compose string seqstr_ret is allocated in this function and
     * thus shall be freed when not needed anymore.
@@ -497,7 +497,7 @@ extern "C" {
 #ifndef _WIN32
 #ifndef __APPLE__
    /**
-    * Initialises the Ecore Input Joystick system.
+    * Initializes the Ecore Input Joystick system.
     * @since 1.15
     *
     * @if MOBILE @since_tizen 2.4
