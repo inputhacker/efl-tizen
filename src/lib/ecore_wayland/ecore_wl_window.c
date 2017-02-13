@@ -1491,6 +1491,8 @@ ecore_wl_window_rotation_geometry_set(Ecore_Wl_Window *win, int rot, int x, int 
 {
    int i = 0;
    int rotation = 0;
+   enum tizen_rotation_angle angle = TIZEN_ROTATION_ANGLE_NONE;
+
    if (!win) return;
 
    if ((rot % 90 != 0) || (rot / 90 > 3) || (rot < 0)) return;
@@ -1503,6 +1505,26 @@ ecore_wl_window_rotation_geometry_set(Ecore_Wl_Window *win, int rot, int x, int 
    win->rotation_geometry_hints[i].valid = EINA_TRUE;
 
    if (!win->tz_rot.resource) return;
+   switch (rot)
+     {
+        case 0:
+          angle = TIZEN_ROTATION_ANGLE_0;
+          break;
+        case 90:
+          angle = TIZEN_ROTATION_ANGLE_90;
+          break;
+        case 180:
+          angle = TIZEN_ROTATION_ANGLE_180;
+          break;
+        case 270:
+          angle = TIZEN_ROTATION_ANGLE_270;
+          break;
+        default:
+          break;
+     }
+   tizen_rotation_set_geometry_hint(win->tz_rot.resource,
+                                    (uint32_t)angle, x, y, w, h);
+
    rotation = ecore_wl_window_rotation_get(win);
    if ((rotation % 90 != 0) || (rotation / 90 > 3) || (rotation < 0)) return;
    if ((i == (rotation / 90)) &&

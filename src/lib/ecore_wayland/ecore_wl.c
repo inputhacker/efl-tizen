@@ -1008,10 +1008,10 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
      }
    else if (!strcmp(interface, "tizen_policy_ext"))
      {
-        if (version >= 2)
-          client_version = 2;
+        if (version >= 3)
+          client_version = 3;
         else
-          client_version = 1;
+          client_version = version;
 
         ewd->wl.tz_policy_ext =
           wl_registry_bind(registry, id, &tizen_policy_ext_interface, client_version);
