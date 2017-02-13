@@ -12972,8 +12972,7 @@ evas_object_textblock_render(Evas_Object *eo_obj EINA_UNUSED,
       in this context (eg. inside a proxy).
       Plus, one more scenario is that the object isn't visible but actually is visible
       by evas_map. */
-   if (o->changed || o->content_changed || o->format_changed || o->obstacle_changed)
-       _relayout_if_needed(eo_obj, o);
+   _relayout_if_needed(eo_obj, o);
 
    /* If there are no paragraphs and thus there are no lines,
     * there's nothing left to do. */
