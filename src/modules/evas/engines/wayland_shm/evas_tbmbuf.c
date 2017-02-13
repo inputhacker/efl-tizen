@@ -428,7 +428,7 @@ _evas_tbmbuf_surface_assign(Surface *s)
 
    // check buffer age
    if (!sym_tbm_surface_internal_get_user_data(surface->tbm_surface, KEY_SURFACE_INFO, (void**)&tbuf_info)) {
-       tbuf_info = calloc(1, sizeof(tbuf_info));
+       tbuf_info = calloc(1, sizeof(tbm_buffer_info));
        tbuf_info->age = 0;
        tbuf_info->num_surface = num_surface;
        sym_tbm_surface_internal_add_user_data(surface->tbm_surface, KEY_SURFACE_INFO, free);
