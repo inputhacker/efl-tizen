@@ -1707,7 +1707,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                        Eina_Bool redraw = mask->mask->redraw;
 
                        evas_object_clip_recalc(obj);
-                       prev_mask = obj->clip.prev_mask
+                       prev_mask = obj->clip.prev_mask;
 
                        RD(level, "  has mask: [%p%s%s] redraw:%d sfc:%p prev_mask:%p\n",
                           mask->object, mask->name?":":"", mask->name?mask->name:"",
