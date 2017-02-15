@@ -5332,12 +5332,6 @@ _layout_par(Ctxt *c)
 
         it = _ITEM(eina_list_data_get(i));
 
-        /* TIZEN_ONLY(20170201): Fix RTL + LTR word wrap issue caused by wrong line start pos */
-        if ((c->ln_min_text_pos == -1) ||
-            (c->ln_min_text_pos > it->text_pos))
-          c->ln_min_text_pos = it->text_pos;
-        /* END */
-
         /* Skip visually deleted items */
         if (it->visually_deleted ||
             ((it->type == EVAS_TEXTBLOCK_ITEM_TEXT) && !it->format->font.font))
@@ -5349,6 +5343,12 @@ _layout_par(Ctxt *c)
              i = eina_list_next(i);
              continue;
           }
+
+        /* TIZEN_ONLY(20170201): Fix RTL + LTR word wrap issue caused by wrong line start pos */
+        if ((c->ln_min_text_pos == -1) ||
+            (c->ln_min_text_pos > it->text_pos))
+          c->ln_min_text_pos = it->text_pos;
+        /* END */
 
         it->x = c->x;
         if (it->type == EVAS_TEXTBLOCK_ITEM_TEXT)
