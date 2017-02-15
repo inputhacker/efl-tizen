@@ -474,7 +474,12 @@ ecore_wl_window_move(Ecore_Wl_Window *win, int x, int y)
    if (!win) return;
 
    input = win->keyboard_device;
-   ecore_wl_window_update_location(win, x, y);
+   /* TIZEN_ONLY(20170215): Wayland handles moving surfaces by itself so
+    * window geometry should not be updated with specific x/y here.
+    * Otherwise, window geometry x/y can be updated as 0 incorrectly by
+    * elm_win_move_resize_start(). */
+   //ecore_wl_window_update_location(win, x, y);
+   /* END */
 
    if ((!input) && (win->parent))
      {
