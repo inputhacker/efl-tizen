@@ -2138,6 +2138,29 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
         && (ens) && (ens->type == EVAS_NATIVE_SURFACE_TBM))
       {
          double tmp;
+
+         if (tex->im &&
+                (tex->im->native.flip == EVAS_IMAGE_FLIP_HORIZONTAL))
+             {
+                sx = tex->im->w - sw - sx;
+             }
+
+          if (tex->im->native.flip == EVAS_IMAGE_FLIP_VERTICAL)
+             {
+                sy = tex->im->h - sh - sy;
+             }
+
+          if (tex->im->native.flip == EVAS_IMAGE_FLIP_TRANSVERSE)
+             {
+                double tmp;
+
+                SWAP(&sw, &sh, tmp);
+                SWAP(&sx, &sy, tmp);
+
+                sx = tex->im->w - sw - sx;
+                sy = tex->im->h - sh - sy;
+             }
+
          if (tex->im->native.rot == EVAS_IMAGE_ORIENT_90)
             {
                tmp = sx; sx = (tex->im->h - sy - sh) * tex->im->w / (double)tex->im->h;
@@ -2162,28 +2185,6 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
 
                tmp = sw; sw = sh * tex->im->w / (double)tex->im->h;
                sh = tmp * tex->im->h / (double)tex->im->w;
-            }
-
-         if (tex->im &&
-               (tex->im->native.flip == EVAS_IMAGE_FLIP_HORIZONTAL))
-            {
-               sx = tex->im->w - sw - sx;
-            }
-
-         if (tex->im->native.flip == EVAS_IMAGE_FLIP_VERTICAL)
-            {
-               sy = tex->im->h - sh - sy;
-            }
-
-         if (tex->im->native.flip == EVAS_IMAGE_FLIP_TRANSVERSE)
-            {
-               double tmp;
-
-               SWAP(&sw, &sh, tmp);
-               SWAP(&sx, &sy, tmp);
-
-               sx = tex->im->w - sw - sx;
-               sy = tex->im->h - sh - sy;
             }
 
          if (tex->im->native.flip == EVAS_IMAGE_FLIP_TRANSPOSE)
