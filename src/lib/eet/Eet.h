@@ -1,7 +1,7 @@
 /**
-   @brief Eet Data Handling Library Public API Calls
+   @brief Eet Data Handling Library Public API Calls.
 
-   These routines are used for Eet Library interaction
+   These routines are used for Eet Library interaction.
 
    @page eet_main Eet
 
@@ -140,12 +140,12 @@ extern "C" {
 
 /**
  * @def EET_VERSION_MAJOR
- * The major number of eet version
+ * The major number of eet version.
  */
 #define EET_VERSION_MAJOR EFL_VERSION_MAJOR
 /**
  * @def EET_VERSION_MINOR
- * The minor number of eet version
+ * The minor number of eet version.
  */
 #define EET_VERSION_MINOR EFL_VERSION_MINOR
 /**
@@ -255,17 +255,17 @@ typedef enum _Eet_Compression
  */
 
 /**
- * Initialize the EET library.
+ * @ingroup Eet_Group
+ * @brief Initializes the EET library.
  *
  * The first time this function is called, it will perform all the internal
  * initialization required for the library to function properly and increment
  * the initialization counter. Any subsequent call only increment this counter
  * and return its new value, so it's safe to call this function more than once.
  *
- * @return The new init count. Will be 0 if initialization failed.
+ * @return The new init count. Will be @c 0 if initialization failed.
  *
  * @since 1.0.0
- * @ingroup Eet_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -275,7 +275,8 @@ EAPI int
 eet_init(void);
 
 /**
- * Shut down the EET library.
+ * @ingroup Eet_Group
+ * @brief Shuts down the EET library.
  *
  * If eet_init() was called more than once for the running application,
  * eet_shutdown() will decrement the initialization counter and return its
@@ -285,7 +286,6 @@ eet_init(void);
  * @return The new init count.
  *
  * @since 1.0.0
- * @ingroup Eet_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -295,7 +295,8 @@ EAPI int
 eet_shutdown(void);
 
 /**
- * Clear eet cache
+ * @ingroup Eet_Group
+ * @Clears eet cache.
  *
  * For a faster access to previously accessed data, Eet keeps an internal
  * cache of files. These files will be freed automatically only when
@@ -308,7 +309,6 @@ eet_shutdown(void);
  * will be written down to disk before flushing them from memory.
  *
  * @since 1.0.0
- * @ingroup Eet_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -324,7 +324,7 @@ eet_clearcache(void);
  * Functions to create, destroy and do basic manipulation of
  * #Eet_File handles.
  *
- * This sections explains how to use the most basic Eet functions, which
+ * This section explains how to use the most basic Eet functions, which
  * are used to work with eet files, read data from them, store it back in or
  * take a look at what entries it contains, without making use of the
  * serialization capabilities explained in @ref Eet_Data_Group.
@@ -561,12 +561,12 @@ struct _Eet_Entry
  */
 
 /**
- * Open an eet file on disk, and returns a handle to it.
+ * @ingroup Eet_File_Group
+ * @brief Opens an eet file on disk, and returns a handle to it.
  * @param file The file path to the eet file. eg: @c "/tmp/file.eet".
  * @param mode The mode for opening. Either #EET_FILE_MODE_READ,
  *        #EET_FILE_MODE_WRITE or #EET_FILE_MODE_READ_WRITE.
  * @return An opened eet file handle.
- * @ingroup Eet_File_Group
  *
  * This function will open an exiting eet file for reading, and build
  * the directory table in memory and return a handle to the file, if it
@@ -608,10 +608,10 @@ eet_open(const char *file,
          Eet_File_Mode mode);
 
 /**
- * Open an eet file on disk from an Eina_File handle, and returns a handle to it.
+ * @ingroup Eet_File_Group
+ * @brief Opens an eet file on disk from an Eina_File handle, and returns a handle to it.
  * @param file The Eina_File handle to map to an eet file.
  * @return An opened eet file handle.
- * @ingroup Eet_File_Group
  *
  * This function will open an exiting eet file for reading, and build
  * the directory table in memory and return a handle to the file, if it
@@ -637,7 +637,8 @@ EAPI Eet_File *
 eet_mmap(const Eina_File *file);
 
 /**
- * Open an eet file directly from a memory location. The data is not copied,
+ * @ingroup Eet_File_Group
+ * Opens an eet file directly from a memory location. The data is not copied,
  * so you must keep it around as long as the eet file is open. There is
  * currently no cache for this kind of Eet_File, so it's reopened every time
  * you use eet_memopen_read.
@@ -648,7 +649,6 @@ eet_mmap(const Eina_File *file);
  * Files opened this way will always be in read-only mode.
  *
  * @since 1.1.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -659,12 +659,12 @@ eet_memopen_read(const void *data,
                  size_t size);
 
 /**
- * Get the mode an Eet_File was opened with.
+ * @ingroup Eet_File_Group
+ * @brief Gets the mode an Eet_File was opened with.
  * @param ef A valid eet file handle.
  * @return The mode ef was opened with.
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -674,7 +674,8 @@ EAPI Eet_File_Mode
 eet_mode_get(Eet_File *ef);
 
 /**
- * Close an eet file handle and flush pending writes.
+ * @ingroup Eet_File_Group
+ * @brief Closes an eet file handle and flush pending writes.
  * @param ef A valid eet file handle.
  * @return An eet error identifier.
  *
@@ -687,7 +688,6 @@ eet_mode_get(Eet_File *ef);
  * If the eet file handle is not valid nothing will be done.
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  * 
  * @see eet_clearcache()
  *
@@ -699,7 +699,8 @@ EAPI Eet_Error
 eet_close(Eet_File *ef);
 
 /**
- * Sync content of an eet file handle, flushing pending writes.
+ * @ingroup Eet_File_Group
+ * @brief Syncs content of an eet file handle, flushing pending writes.
  * @param ef A valid eet file handle.
  * @return An eet error identifier.
  *
@@ -709,7 +710,6 @@ eet_close(Eet_File *ef);
  * If the eet file handle is not valid nothing will be done.
  *
  * @since 1.2.4
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -719,7 +719,8 @@ EAPI Eet_Error
 eet_sync(Eet_File *ef);
 
 /**
- * Return a handle to the shared string dictionary of the Eet file
+ * @ingroup Eet_File_Group
+ * @brief Returns a handle to the shared string dictionary of the Eet file
  * @param ef A valid eet file handle.
  * @return A handle to the dictionary of the file
  *
@@ -732,7 +733,6 @@ eet_sync(Eet_File *ef);
  *      the #Eet_Data_Descriptor_Class instructions.
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -742,18 +742,18 @@ EAPI Eet_Dictionary *
 eet_dictionary_get(Eet_File *ef);
 
 /**
- * Check if a given string comes from a given dictionary
+ * @ingroup Eet_File_Group
+ * @brief Checks if a given string comes from a given dictionary
  * @param ed A valid dictionary handle
  * @param string A valid 0 byte terminated C string
- * @return 1 if it is in the dictionary, 0 otherwise
+ * @return @c 1 if it is in the dictionary, @c 0 otherwise
  *
  * This checks the given dictionary to see if the given string is actually
- * inside that dictionary (i.e. comes from it) and returns 1 if it does.
+ * inside that dictionary (i.e. comes from it) and returns @c 1 if it does.
  * If the dictionary handle is invalid, the string is NULL or the string is
- * not in the dictionary, 0 is returned.
+ * not in the dictionary, @c 0 is returned.
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -764,12 +764,12 @@ eet_dictionary_string_check(Eet_Dictionary *ed,
                             const char *string);
 
 /**
- * Return the number of strings inside a dictionary
+ * @ingroup Eet_File_Group
+ * @brief Returns the number of strings inside a dictionary.
  * @param ed A valid dictionary handle
  * @return the number of strings inside a dictionary
  *
  * @since 1.6.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -779,7 +779,8 @@ EAPI int
 eet_dictionary_count(const Eet_Dictionary *ed);
 
 /**
- * Read a specified entry from an eet file and return data
+ * @ingroup Eet_File_Group
+ * @brief Reads a specified entry from an eet file and return data.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param size_ret Number of bytes read from entry and returned.
@@ -793,12 +794,11 @@ eet_dictionary_count(const Eet_Dictionary *ed);
  * placed in size_ret.
  *
  * If the eet file handle is not valid NULL is returned and size_ret is
- * filled with 0.
+ * filled with @c 0.
  *
  * @see eet_read_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -810,7 +810,8 @@ eet_read(Eet_File *ef,
          int *size_ret);
 
 /**
- * Read a specified entry from an eet file and return data
+ * @ingroup Eet_File_Group
+ * @brief Reads a specified entry from an eet file and return data.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param size_ret Number of bytes read from entry and returned.
@@ -824,10 +825,9 @@ eet_read(Eet_File *ef,
  * data chunk are placed in size_ret.
  *
  * If the eet file handle is not valid NULL is returned and size_ret is
- * filled with 0.
+ * filled with @c 0.
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -839,7 +839,8 @@ eet_read_direct(Eet_File *ef,
                 int *size_ret);
 
 /**
- * Write a specified entry to an eet file handle
+ * @ingroup Eet_File_Group
+ * @brief Write a specified entry to an eet file handle.
  * @param ef A valid eet file handle opened for writing.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param data Pointer to the data to be stored.
@@ -864,7 +865,6 @@ eet_read_direct(Eet_File *ef,
  * @see eet_write_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -878,7 +878,8 @@ eet_write(Eet_File *ef,
           int compress);
 
 /**
- * Delete a specified entry from an Eet file being written or re-written
+ * @ingroup Eet_File_Group
+ * @brief Deletes a specified entry from an Eet file being written or re-written.
  * @param ef A valid eet file handle opened for writing.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @return Success or failure of the delete.
@@ -893,7 +894,6 @@ eet_write(Eet_File *ef,
  * Name, must not be NULL, otherwise 0 will be returned.
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -904,7 +904,8 @@ eet_delete(Eet_File *ef,
            const char *name);
 
 /**
- * Alias a specific section to another one. Destination may exist or not,
+ * @ingroup Eet_File_Group
+ * @brief Alias a specific section to another one. Destination may exist or not,
  * no checks are done.
  * @param ef A valid eet file handle opened for writing.
  * @param name Name of the new entry. eg: "/base/file_i_want".
@@ -916,7 +917,6 @@ eet_delete(Eet_File *ef,
  * The equivalent of this would be calling 'ln -s destination name'
  *
  * @since 1.3.3
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -929,14 +929,14 @@ eet_alias(Eet_File *ef,
           int compress);
 
 /**
- * Retrieve the filename of an Eet_File
+ * @ingroup Eet_File_Group
+ * @brief Retrieves the filename of an Eet_File.
  * @param ef A valid eet file handle opened for writing.
  * @return The stringshared file string opened with eet_open(), or NULL on error
  *
  * @note This function will return NULL for files opened with eet_memopen_read()
  *
  * @since 1.6
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -946,7 +946,8 @@ EAPI const char *
 eet_file_get(Eet_File *ef);
 
 /**
- * Retrieve the destination name of an alias
+ * @ingroup Eet_File_Group
+ * @brief Retrieves the destination name of an alias.
  * @param ef A valid eet file handle opened for writing
  * @param name Name of the entry. eg: "/base/file_i_want"
  * @return Destination of the alias. eg: "/base/the_real_stuff_i_want", NULL on failure
@@ -954,7 +955,6 @@ eet_file_get(Eet_File *ef);
  * Name must not be NULL, otherwise NULL will be returned.
  *
  * @since 1.5
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -965,7 +965,8 @@ eet_alias_get(Eet_File *ef,
               const char *name);
 
 /**
- * List all entries in eet file matching shell glob.
+ * @ingroup Eet_File_Group
+ * @brief Lists all entries in eet file matching shell glob.
  * @param ef A valid eet file handle.
  * @param glob A shell glob to match against.
  * @param count_ret Number of entries found to match.
@@ -976,7 +977,7 @@ eet_alias_get(Eet_File *ef,
  * there are any, and if no memory errors occur.
  *
  * The eet file handle must be valid and glob must not be NULL, or NULL
- * will be returned and count_ret will be filled with 0.
+ * will be returned and count_ret will be filled with @c 0.
  *
  * The calling program must call free() on the array returned, but NOT
  * on the string pointers in the array. They are taken as read-only
@@ -984,7 +985,7 @@ eet_alias_get(Eet_File *ef,
  * the file handle is not closed. When it is closed those pointers in the
  * array are now not valid and should not be used.
  *
- * On success the array returned will have a list of string pointers
+ * On success, the array returned will have a list of string pointers
  * that are the names of the entries that matched, and count_ret will have
  * the number of entries in this array placed in it.
  *
@@ -992,7 +993,6 @@ eet_alias_get(Eet_File *ef,
  * value of "*".
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1004,12 +1004,12 @@ eet_list(Eet_File *ef,
          int *count_ret);
 
 /**
- * Return an iterator that will describe each entry of an Eet_File.
+ * @ingroup Eet_File_Group
+ * @brief Returns an iterator that will describe each entry of an Eet_File.
  * @param ef A valid eet file handle.
  * @return An interator of Eet_Entry.
  *
  * @since 1.8.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1019,13 +1019,13 @@ eet_list(Eet_File *ef,
 EAPI Eina_Iterator *eet_list_entries(Eet_File *ef);
 
 /**
- * Return the number of entries in the specified eet file.
+ * @ingroup Eet_File_Group
+ * @brief Returns the number of entries in the specified eet file.
  * @param ef A valid eet file handle.
- * @return Number of entries in ef or -1 if the number of entries
+ * @return Number of entries in ef or @c -1 if the number of entries
  *         cannot be read due to open mode restrictions.
  *
  * @since 1.0.0
- * @ingroup Eet_File_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1036,17 +1036,18 @@ eet_num_entries(Eet_File *ef);
 
 /**
  * @defgroup Eet_File_Cipher_Group Eet File Ciphered Main Functions
+ * @ingroup Eet_File_Group
  *
  * Most of the @ref Eet_File_Group have alternative versions that
  * accounts for ciphers to protect their content.
  *
  * @see @ref Eet_Cipher_Group
  *
- * @ingroup Eet_File_Group
  */
 
 /**
- * Read a specified entry from an eet file and return data using a cipher.
+ * @ingroup Eet_File_Cipher_Group
+ * @brif Reads a specified entry from an eet file and return data using a cipher.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param size_ret Number of bytes read from entry and returned.
@@ -1061,12 +1062,11 @@ eet_num_entries(Eet_File *ef);
  * placed in size_ret.
  *
  * If the eet file handle is not valid NULL is returned and size_ret is
- * filled with 0.
+ * filled with @c 0.
  *
  * @see eet_read()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1079,20 +1079,21 @@ eet_read_cipher(Eet_File *ef,
                 const char *cipher_key);
 
 /**
- * Write a specified entry to an eet file handle using a cipher.
+ * @ingroup Eet_File_Cipher_Group
+ * @brief Writes a specified entry to an eet file handle using a cipher.
  * @param ef A valid eet file handle opened for writing.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param data Pointer to the data to be stored.
  * @param size Length in bytes in the data to be stored.
  * @param compress Compression flags (1 == compress, 0 = don't compress).
  * @param cipher_key The key to use as cipher.
- * @return bytes written on successful write, 0 on failure.
+ * @return Bytes written on successful write, @c 0 on failure.
  *
  * This function will write the specified chunk of data to the eet file
- * and return greater than 0 on success. 0 will be returned on failure.
+ * and return greater than @c 0 on success. 0 will be returned on failure.
  *
  * The eet file handle must be a valid file handle for an eet file opened
- * for writing. If it is not, 0 will be returned and no action will be
+ * for writing. If it is not, @c 0 will be returned and no action will be
  * performed.
  *
  * Name, and data must not be NULL, and size must be > 0. If these
@@ -1105,7 +1106,6 @@ eet_read_cipher(Eet_File *ef,
  * @see eet_write()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1145,7 +1145,8 @@ eet_write_cipher(Eet_File *ef,
  */
 
 /**
- * Read just the header data for an image and dont decode the pixels.
+ * @ingroup Eet_File_Image_Group
+ * @brief Reads just the header data for an image and dont decode the pixels.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param w A pointer to the unsigned int to hold the width in pixels.
@@ -1154,7 +1155,7 @@ eet_write_cipher(Eet_File *ef,
  * @param compress A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on successful decode, 0 otherwise
+ * @return @c 1 on successful decode, @c 0 otherwise
  *
  * Reads and decodes the image header data stored under the given key and
  * Eet file.
@@ -1173,7 +1174,6 @@ eet_write_cipher(Eet_File *ef,
  * @see eet_data_image_header_read_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1190,7 +1190,8 @@ eet_data_image_header_read(Eet_File *ef,
                            Eet_Image_Encoding *lossy);
 
 /**
- * Read image data from the named key in the eet file.
+ * @ingroup Eet_File_Image_Group
+ * @brief Reads image data from the named key in the eet file.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param w A pointer to the unsigned int to hold the width in pixels.
@@ -1222,7 +1223,6 @@ eet_data_image_header_read(Eet_File *ef,
  * @see eet_data_image_read_to_surface()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1239,7 +1239,8 @@ eet_data_image_read(Eet_File *ef,
                     Eet_Image_Encoding *lossy);
 
 /**
- * Read image data from the named key in the eet file and store it in the given buffer.
+ * @ingroup Eet_File_Image_Group
+ * @brief Reads image data from the named key in the eet file and store it in the given buffer.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param src_x The starting x coordinate from where to dump the stream.
@@ -1252,7 +1253,7 @@ eet_data_image_read(Eet_File *ef,
  * @param compress A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on success, 0 otherwise.
+ * @return @c 1 on success, @c 0 otherwise.
  *
  * Reads and decodes the image stored in the given Eet file, placing the
  * resulting pixel data in the buffer pointed by the user.
@@ -1284,7 +1285,6 @@ eet_data_image_read(Eet_File *ef,
  * @see eet_data_image_decode_to_cspace_surface_cipher()
  *
  * @since 1.0.2
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1305,7 +1305,8 @@ eet_data_image_read_to_surface(Eet_File *ef,
                                Eet_Image_Encoding *lossy);
 
 /**
- * Write image data to the named key in an eet file.
+ * @ingroup Eet_File_Image_Group
+ * @brief Writes image data to the named key in an eet file.
  * @param ef A valid eet file handle opened for writing.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param data A pointer to the image pixel data.
@@ -1339,7 +1340,6 @@ eet_data_image_read_to_surface(Eet_File *ef,
  * @see eet_data_image_write_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1357,7 +1357,8 @@ eet_data_image_write(Eet_File *ef,
                      Eet_Image_Encoding lossy);
 
 /**
- * Decode Image data header only to get information.
+ * @ingroup Eet_File_Image_Group
+ * @brief Decodes Image data header only to get information.
  * @param data The encoded pixel data.
  * @param size The size, in bytes, of the encoded pixel data.
  * @param w A pointer to the unsigned int to hold the width in pixels.
@@ -1366,20 +1367,19 @@ eet_data_image_write(Eet_File *ef,
  * @param compress A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on success, 0 on failure.
+ * @return @c 1 on success, @c 0 on failure.
  *
  * This function works exactly like eet_data_image_header_read(), but instead
  * of reading from an Eet file, it takes the buffer of size @p size pointed
  * by @p data, which must be a valid Eet encoded image.
  *
- * On success the function returns 1 indicating the header was read and
- * decoded properly, or 0 on failure.
+ * On success the function returns @c 1 indicating the header was read and
+ * decoded properly, or @c 0 on failure.
  *
  * @see eet_data_image_header_read()
  * @see eet_data_image_header_decode_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1396,7 +1396,8 @@ eet_data_image_header_decode(const void *data,
                              Eet_Image_Encoding *lossy);
 
 /**
- * Decode Image data into pixel data.
+ * @ingroup Eet_File_Image_Group
+ * @brief Decodes Image data into pixel data.
  * @param data The encoded pixel data.
  * @param size The size, in bytes, of the encoded pixel data.
  * @param w A pointer to the unsigned int to hold the width in pixels.
@@ -1423,7 +1424,6 @@ eet_data_image_header_decode(const void *data,
  * @see eet_data_image_decode_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1440,7 +1440,8 @@ eet_data_image_decode(const void *data,
                       Eet_Image_Encoding *lossy);
 
 /**
- * Decode Image data into pixel data and stores in the given buffer.
+ * @ingroup Eet_File_Image_Group
+ * @brief Decodes Image data into pixel data and stores in the given buffer.
  * @param data The encoded pixel data.
  * @param size The size, in bytes, of the encoded pixel data.
  * @param src_x The starting x coordinate from where to dump the stream.
@@ -1453,7 +1454,7 @@ eet_data_image_decode(const void *data,
  * @param compress A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on success, 0 otherwise.
+ * @return @c 1 on success, @c 0 otherwise.
  *
  * Like eet_data_image_read_to_surface(), but reading the given @p data buffer
  * instead of a file.
@@ -1465,7 +1466,6 @@ eet_data_image_decode(const void *data,
  * @see eet_data_image_decode_to_surface_cipher()
  *
  * @since 1.0.2
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1486,7 +1486,8 @@ eet_data_image_decode_to_surface(const void *data,
                                  Eet_Image_Encoding *lossy);
 
 /**
- * Encode image data for storage or transmission.
+ * @ingroup Eet_File_Image_Group
+ * @brief Encodes image data for storage or transmission.
  * @param data A pointer to the image pixel data.
  * @param size_ret A pointer to an int to hold the size of the returned data.
  * @param w The width of the image in pixels.
@@ -1513,7 +1514,6 @@ eet_data_image_decode_to_surface(const void *data,
  * @see eet_data_image_encode_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1531,17 +1531,18 @@ eet_data_image_encode(const void *data,
 
 /**
  * @defgroup Eet_File_Image_Cipher_Group Image Store and Load using a Cipher
+ * @ingroup Eet_File_Image_Group
  *
  * Most of the @ref Eet_File_Image_Group have alternative versions
  * that accounts for ciphers to protect their content.
  *
  * @see @ref Eet_Cipher_Group
  *
- * @ingroup Eet_File_Image_Group
  */
 
 /**
- * Read just the header data for an image and dont decode the pixels using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Reads just the header data for an image and dont decode the pixels using a cipher.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param cipher_key The key to use as cipher.
@@ -1551,7 +1552,7 @@ eet_data_image_encode(const void *data,
  * @param compress A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on successful decode, 0 otherwise
+ * @return @c 1 on successful decode, @c 0 otherwise
  *
  * This function reads an image from an eet file stored under the named
  * key in the eet file and return a pointer to the decompressed pixel data.
@@ -1569,13 +1570,12 @@ eet_data_image_encode(const void *data,
  * the image file (0 - 100). The lossy flags is either 0 or 1 as to if
  * the image was encoded lossily or not.
  *
- * On success the function returns 1 indicating the header was read and
- * decoded properly, or 0 on failure.
+ * On success the function returns @c 1 indicating the header was read and
+ * decoded properly, or @c 0 on failure.
  *
  * @see eet_data_image_header_read()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1593,7 +1593,8 @@ eet_data_image_header_read_cipher(Eet_File *ef,
                                   Eet_Image_Encoding *lossy);
 
 /**
- * Get the colorspace Eet can decode into of a given eet image ressource
+ * @ingroup Eet_File_Image_Group
+ * @brief Gets the colorspace Eet can decode into of a given eet image ressource.
  *
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
@@ -1602,7 +1603,6 @@ eet_data_image_header_read_cipher(Eet_File *ef,
  * @return 1 on successful get, 0 otherwise.
  *
  * @since 1.10.0
- * @ingroup Eet_File_Image_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1615,7 +1615,8 @@ eet_data_image_colorspace_get(Eet_File *ef,
                               const Eet_Colorspace **cspaces);
 
 /**
- * Read image data from the named key in the eet file using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Reads image data from the named key in the eet file using a cipher.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param cipher_key The key to use as cipher.
@@ -1651,7 +1652,6 @@ eet_data_image_colorspace_get(Eet_File *ef,
  * @see eet_data_image_read()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1669,7 +1669,8 @@ eet_data_image_read_cipher(Eet_File *ef,
                            Eet_Image_Encoding *lossy);
 
 /**
- * Read image data from the named key in the eet file using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Reads image data from the named key in the eet file using a cipher.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param cipher_key The key to use as cipher.
@@ -1683,7 +1684,7 @@ eet_data_image_read_cipher(Eet_File *ef,
  * @param compress A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on success, 0 otherwise.
+ * @return @c 1 on success, @c 0 otherwise.
  *
  * This function reads an image from an eet file stored under the named
  * key in the eet file and store the decompressed pixel data in the provided
@@ -1709,7 +1710,6 @@ eet_data_image_read_cipher(Eet_File *ef,
  * @see eet_data_image_decode_to_cspace_surface_cipher()
  *
  * @since 1.0.2
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1732,7 +1732,8 @@ eet_data_image_read_to_surface_cipher(Eet_File *ef,
 
 
 /**
- * Read image data from the named key in the eet file using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Reads image data from the named key in the eet file using a cipher.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param cipher_key The key to use as cipher.
@@ -1747,7 +1748,7 @@ eet_data_image_read_to_surface_cipher(Eet_File *ef,
  * @param comp A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on success, 0 otherwise.
+ * @return @c 1 on success, @c 0 otherwise.
  *
  * This function reads an image from an eet file stored under the named
  * key in the eet file and store the decompressed pixel data in the provided
@@ -1774,7 +1775,6 @@ eet_data_image_read_to_surface_cipher(Eet_File *ef,
  * @see eet_data_image_read_to_surface_cipher()
  *
  * @since 1.10.0
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1798,7 +1798,8 @@ eet_data_image_read_to_cspace_surface_cipher(Eet_File     *ef,
 
 
 /**
- * Read image data from the named key in the eet file using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Reads image data from the named key in the eet file using a cipher.
  * @param ef A valid eet file handle opened for reading.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param cipher_key The key to use as cipher.
@@ -1813,7 +1814,7 @@ eet_data_image_read_to_cspace_surface_cipher(Eet_File     *ef,
  * @param comp A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on success, 0 otherwise.
+ * @return @c 1 on success, @c 0 otherwise.
  *
  * This function reads an image from an eet file stored under the named
  * key in the eet file and store the decompressed pixels in the specified
@@ -1839,7 +1840,6 @@ eet_data_image_read_to_cspace_surface_cipher(Eet_File     *ef,
  * @see eet_data_image_read_to_surface_cipher()
  *
  * @since 1.10.0
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1863,7 +1863,8 @@ eet_data_image_decode_to_cspace_surface_cipher(const void   *data,
                                                Eet_Image_Encoding *lossy);
 
 /**
- * Write image data to the named key in an eet file using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Writes image data to the named key in an eet file using a cipher.
  * @param ef A valid eet file handle opened for writing.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param cipher_key The key to use as cipher.
@@ -1896,7 +1897,6 @@ eet_data_image_decode_to_cspace_surface_cipher(const void   *data,
  * @see eet_data_image_write()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1915,7 +1915,8 @@ eet_data_image_write_cipher(Eet_File *ef,
                             Eet_Image_Encoding lossy);
 
 /**
- * Decode Image data header only to get information using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Decodes Image data header only to get information using a cipher.
  * @param data The encoded pixel data.
  * @param cipher_key The key to use as cipher.
  * @param size The size, in bytes, of the encoded pixel data.
@@ -1925,7 +1926,7 @@ eet_data_image_write_cipher(Eet_File *ef,
  * @param compress A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on success, 0 on failure.
+ * @return @c 1 on success, @c 0 on failure.
  *
  * This function takes encoded pixel data and decodes it into raw RGBA
  * pixels on success.
@@ -1949,7 +1950,6 @@ eet_data_image_write_cipher(Eet_File *ef,
  * @see eet_data_image_header_decode()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -1967,7 +1967,8 @@ eet_data_image_header_decode_cipher(const void *data,
                                     Eet_Image_Encoding *lossy);
 
 /**
- * Decode Image data into pixel data using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Decodes Image data into pixel data using a cipher.
  * @param data The encoded pixel data.
  * @param cipher_key The key to use as cipher.
  * @param size The size, in bytes, of the encoded pixel data.
@@ -2003,7 +2004,6 @@ eet_data_image_header_decode_cipher(const void *data,
  * @see eet_data_image_decode()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2021,7 +2021,8 @@ eet_data_image_decode_cipher(const void *data,
                              Eet_Image_Encoding *lossy);
 
 /**
- * Decode Image data into pixel data using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Decodes Image data into pixel data using a cipher.
  * @param data The encoded pixel data.
  * @param cipher_key The key to use as cipher.
  * @param size The size, in bytes, of the encoded pixel data.
@@ -2035,7 +2036,7 @@ eet_data_image_decode_cipher(const void *data,
  * @param compress A pointer to the int to hold the compression amount.
  * @param quality A pointer to the int to hold the quality amount.
  * @param lossy A pointer to the int to hold the lossiness flag.
- * @return 1 on success, 0 otherwise.
+ * @return @c 1 on success, @c 0 otherwise.
  *
  * This function takes encoded pixel data and decodes it into raw RGBA
  * pixels on success.
@@ -2059,7 +2060,6 @@ eet_data_image_decode_cipher(const void *data,
  * @see eet_data_image_decode_to_surface()
  *
  * @since 1.0.2
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2081,7 +2081,8 @@ eet_data_image_decode_to_surface_cipher(const void *data,
                                         Eet_Image_Encoding *lossy);
 
 /**
- * Encode image data for storage or transmission using a cipher.
+ * @ingroup Eet_File_Image_Cipher_Group
+ * @brief Encodes image data for storage or transmission using a cipher.
  * @param data A pointer to the image pixel data.
  * @param cipher_key The key to use as cipher.
  * @param size_ret A pointer to an int to hold the size of the returned data.
@@ -2113,7 +2114,6 @@ eet_data_image_decode_to_surface_cipher(const void *data,
  * @see eet_data_image_encode()
  *
  * @since 1.0.0
- * @ingroup Eet_File_Image_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2156,21 +2156,22 @@ typedef struct _Eet_Key Eet_Key;
  */
 
 /**
- * Callback used to request if needed the password of a private key.
+ * @ingroup Eet_Cipher_Group
+ * @brief Callback used to request if needed the password of a private key.
  *
  * @param buffer the buffer where to store the password.
  * @param size the maximum password size (size of buffer, including '@\0').
  * @param rwflag if the buffer is also readable or just writable.
  * @param data currently unused, may contain some context in future.
- * @return 1 on success and password was set to @p buffer, 0 on failure.
+ * @return @c 1 on success and password was set to @p buffer, @c 0 on failure.
  *
  * @since 1.2.0
- * @ingroup Eet_Cipher_Group
  */
 typedef int (*Eet_Key_Password_Callback)(char *buffer, int size, int rwflag, void *data);
 
 /**
- * Create an Eet_Key needed for signing an eet file.
+ * @ingroup Eet_Cipher_Group
+ * @brief Creates an Eet_Key needed for signing an eet file.
  *
  * The certificate should provide the public that match the private key.
  * No verification is done to ensure that.
@@ -2185,7 +2186,6 @@ typedef int (*Eet_Key_Password_Callback)(char *buffer, int size, int rwflag, voi
  *
  * @warning You need to compile signature support in EET.
  * @since 1.2.0
- * @ingroup Eet_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2197,14 +2197,14 @@ eet_identity_open(const char *certificate_file,
                   Eet_Key_Password_Callback cb);
 
 /**
- * Close and release all resource used by an Eet_Key.  An
- * reference counter prevent it from being freed until all file
+ * @ingroup Eet_Cipher_Group
+ * @brief Close and release all resource used by an Eet_Key. 
+ * A reference counter prevent it from being freed until all file
  * using it are also closed.
  *
  * @param key the key handle to close and free resources.
  *
  * @since 1.2.0
- * @ingroup Eet_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2214,7 +2214,8 @@ EAPI void
 eet_identity_close(Eet_Key *key);
 
 /**
- * Set a key to sign a file
+ * @ingroup Eet_Cipher_Group
+ * @breif Sets a key to sign a file.
  *
  * @param ef the file to set the identity.
  * @param key the key handle to set as identity.
@@ -2222,7 +2223,6 @@ eet_identity_close(Eet_Key *key);
  *         #EET_ERROR_NONE on success.
  *
  * @since 1.2.0
- * @ingroup Eet_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2233,14 +2233,14 @@ eet_identity_set(Eet_File *ef,
                  Eet_Key *key);
 
 /**
- * Display both private and public key of an Eet_Key.
+ * @ingroup Eet_Cipher_Group
+ * @brief Displays both private and public key of an Eet_Key.
  *
  * @param key the handle to print.
  * @param out where to print.
  *
  * @warning You need to compile signature support in EET.
  * @since 1.2.0
- * @ingroup Eet_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2251,11 +2251,12 @@ eet_identity_print(Eet_Key *key,
                    FILE *out);
 
 /**
- * Compare the identify certificate of an eet file against a stored one
+ * @ingroup Eet_Cipher_Group
+ * @brief Compares the identify certificate of an eet file against a stored one
  *
  * @param ef The file handle to check the identify of
  * @param certificate_file The path to the certificate file
- * @return EINA_TRUE if the certificates match, otherwise EINA_FALSE;
+ * @return @c EINA_TRUE if the certificates match, otherwise @c EINA_FALSE
  *
  * The @p ef file handle mus be valid, and a signed file, otherwise
  * checking will fail. The path to the certificate file must be a valid
@@ -2267,7 +2268,6 @@ eet_identity_print(Eet_Key *key,
  * security. This is just a convenience test function.
  * @warning You need to compile signature support in EET.
  * @since 1.13
- * @ingroup Eet_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2278,7 +2278,8 @@ eet_identity_verify(Eet_File *ef,
                     const char *certificate_file);
 
 /**
- * Get the x509 der certificate associated with an Eet_File. Will return NULL
+ * @ingroup Eet_Cipher_Group
+ * @brief Gets the x509 der certificate associated with an Eet_File. Will return NULL
  * if the file is not signed.
  *
  * @param ef The file handle to query.
@@ -2286,7 +2287,6 @@ eet_identity_verify(Eet_File *ef,
  * @return the x509 certificate or @c NULL on error.
  *
  * @since 1.2.0
- * @ingroup Eet_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2297,14 +2297,13 @@ eet_identity_x509(Eet_File *ef,
                   int *der_length);
 
 /**
- * Get the raw signature associated with an Eet_File. Will return NULL
+ * @ingroup Eet_Cipher_Group
+ * @brief Gets the raw signature associated with an Eet_File. Will return NULL
  * if the file is not signed.
  *
  * @param ef The file handle to query.
  * @param signature_length The length of returned data, may be @c NULL.
- * @return the raw signature or @c NULL on error.
- *
- * @ingroup Eet_Cipher_Group
+ * @return The raw signature or @c NULL on error.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2315,7 +2314,8 @@ eet_identity_signature(Eet_File *ef,
                        int *signature_length);
 
 /**
- * Get the SHA1 associated with a file. Could be the one used to
+ * @ingroup Eet_Cipher_Group
+ * @brief Gets the SHA1 associated with a file. Could be the one used to
  * sign the data or if the data where not signed, it will be the
  * SHA1 of the file.
  *
@@ -2324,7 +2324,6 @@ eet_identity_signature(Eet_File *ef,
  * @return the associated SHA1 or @c NULL on error.
  *
  * @since 1.2.0
- * @ingroup Eet_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2335,7 +2334,8 @@ eet_identity_sha1(Eet_File *ef,
                   int *sha1_length);
 
 /**
- * Display the x509 der certificate to out.
+ * @ingroup Eet_Cipher_Group
+ * @brief Displays the x509 der certificate to out.
  *
  * @param certificate the x509 certificate to print
  * @param der_length The length the certificate.
@@ -2343,7 +2343,6 @@ eet_identity_sha1(Eet_File *ef,
  *
  * @warning You need to compile signature support in EET.
  * @since 1.2.0
- * @ingroup Eet_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -2850,19 +2849,19 @@ typedef struct _Eet_Data_Descriptor_Class Eet_Data_Descriptor_Class;
  * @typedef (*Eet_Descriptor_Hash_Foreach_Callback_Callback)
  *
  * Callback prototype for Eet_Descriptor_Hash_Foreach_Callback
- * @param h the hash
- * @param k the key
- * @param dt the data
- * @param fdt the data passed to the callback
- * @return an integer
+ * @param h The hash
+ * @param k The key
+ * @param dt The data
+ * @param fdt The data passed to the callback
+ * @return An integer
  */
 typedef int                             (*Eet_Descriptor_Hash_Foreach_Callback_Callback)(void *h, const char *k, void *dt, void *fdt);
 
 /**
  * @typedef (*Eet_Descriptor_Mem_Alloc_Callback)
  *
- * Callback prototype for Eet_Descriptor_Mem_Alloc
- * @param size is the size of memory to alloc on call of the callback
+ * Callback prototype for Eet_Descriptor_Mem_Alloc.
+ * @param size Is the size of memory to alloc on call of the callback
  */
 typedef void *                          (*Eet_Descriptor_Mem_Alloc_Callback)(size_t size);
 
@@ -2870,7 +2869,7 @@ typedef void *                          (*Eet_Descriptor_Mem_Alloc_Callback)(siz
  * @typedef (*Eet_Descriptor_Mem_Free_Callback)
  *
  * Callback prototype for Eet_Descriptor_Mem_Alloc
- * @param mem must be a pointer to free on call of the callback
+ * @param mem Must be a pointer to free on call of the callback
  */
 typedef void                            (*Eet_Descriptor_Mem_Free_Callback)(void *mem);
 
@@ -2878,8 +2877,8 @@ typedef void                            (*Eet_Descriptor_Mem_Free_Callback)(void
  * @typedef (*Eet_Descriptor_Str_Alloc_Callback)
  *
  * Callback prototype for Eet_Descriptor_Str_Alloc
- * @param str must be the string to alloc
- * @return have must be an allocated char * for the given string
+ * @param str Must be the string to alloc
+ * @return have Must be an allocated char * for the given string
  */
 typedef char *                          (*Eet_Descriptor_Str_Alloc_Callback)(const char *str);
 
@@ -2887,7 +2886,7 @@ typedef char *                          (*Eet_Descriptor_Str_Alloc_Callback)(con
  * @typedef (*Eet_Descriptor_Str_Free_Callback)
  *
  * Callback prototype for Eet_Descriptor_Str_Free
- * @param str must be an allocated string to free
+ * @param str Must be an allocated string to free
  */
 typedef void                            (*Eet_Descriptor_Str_Free_Callback)(const char *str);
 
@@ -2895,8 +2894,8 @@ typedef void                            (*Eet_Descriptor_Str_Free_Callback)(cons
  * @typedef (*Eet_Descriptor_List_Next_Callback)
  *
  * Callback prototype for Eet_Descriptor_List_Next
- * @param l must be a pointer to the list
- * @return must be a pointer to the list
+ * @param l Must be a pointer to the list
+ * @return Must be a pointer to the list
  */
 typedef void *                          (*Eet_Descriptor_List_Next_Callback)(void *l);
 
@@ -2904,9 +2903,9 @@ typedef void *                          (*Eet_Descriptor_List_Next_Callback)(voi
  * @typedef (*Eet_Descriptor_List_Append_Callback)
  *
  * Callback prototype for Eet_Descriptor_List_Append
- * @param l must be a pointer to the list
- * @param d the data to append to the list
- * @return must be a pointer to the list
+ * @param l Must be a pointer to the list
+ * @param d The data to append to the list
+ * @return Must be a pointer to the list
  */
 typedef void *                          (*Eet_Descriptor_List_Append_Callback)(void *l, void *d);
 
@@ -2915,8 +2914,8 @@ typedef void *                          (*Eet_Descriptor_List_Append_Callback)(v
  * @typedef (*Eet_Descriptor_List_Data_Callback)
  *
  * Callback prototype for Eet_Descriptor_List_Data
- * @param l must be a pointer to the list
- * @return must be a pointer to the list
+ * @param l Must be a pointer to the list
+ * @return Must be a pointer to the list
  */
 typedef void *                          (*Eet_Descriptor_List_Data_Callback)(void *l);
 
@@ -2924,7 +2923,7 @@ typedef void *                          (*Eet_Descriptor_List_Data_Callback)(voi
  * @typedef (*Eet_Descriptor_List_Free_Callback)
  *
  * Callback prototype for Eet_Descriptor_List_Free
- * @param l must be a pointer to the list to free
+ * @param l Must be a pointer to the list to free
  */
 typedef void *                          (*Eet_Descriptor_List_Free_Callback)(void *l);
 
@@ -2932,9 +2931,9 @@ typedef void *                          (*Eet_Descriptor_List_Free_Callback)(voi
  * @typedef (*Eet_Descriptor_Hash_Foreach_Callback)
  *
  * Callback for Eet_Descriptor_Hash_Foreach
- * @param h the hash
- * @param func the function callback to call on each iteration
- * @param fdt the data to pass to the callbac setted in param func
+ * @param h The hash
+ * @param func The function callback to call on each iteration
+ * @param fdt The data to pass to the callbac setted in param func
  */
 typedef void                            (*Eet_Descriptor_Hash_Foreach_Callback)(void *h, Eet_Descriptor_Hash_Foreach_Callback_Callback func, void *fdt);
 
@@ -2942,9 +2941,9 @@ typedef void                            (*Eet_Descriptor_Hash_Foreach_Callback)(
  * @typedef (*Eet_Descriptor_Hash_Add_Callback)
  *
  * Callback prototype for Eet_Descriptor_Hash_Add
- * @param h the hash
- * @param k the key
- * @param d the data to associate with the 'k' key
+ * @param h The hash
+ * @param k The key
+ * @param d The data to associate with the 'k' key
  */
 typedef void *                          (*Eet_Descriptor_Hash_Add_Callback)(void *h, const char *k, void *d);
 
@@ -2952,7 +2951,7 @@ typedef void *                          (*Eet_Descriptor_Hash_Add_Callback)(void
  * @typedef (*Eet_Descriptor_Hash_Free_Callback)
  *
  * Callback prototype for Eet_Descriptor_Hash_Free
- * @param h the hash to free
+ * @param h The hash to free
  */
 typedef void                            (*Eet_Descriptor_Hash_Free_Callback)(void *h);
 
@@ -2960,8 +2959,8 @@ typedef void                            (*Eet_Descriptor_Hash_Free_Callback)(voi
  * @typedef (*Eet_Descriptor_Str_Alloc_Callback)
  *
  * Callback prototype for Eet_Descriptor_Str_Alloc
- * @param str the string to allocate
- * @return an allocated pointer to the string
+ * @param str The string to allocate
+ * @return An allocated pointer to the string
  */
 typedef char *                          (*Eet_Descriptor_Str_Direct_Alloc_Callback)(const char *str);
 
@@ -2969,7 +2968,7 @@ typedef char *                          (*Eet_Descriptor_Str_Direct_Alloc_Callba
  * @typedef (*Eet_Descriptor_Str_Free_Callback)
  *
  * Callback prototype for Eet_Descriptor_Str_Free
- * @param str the string to free
+ * @param str The string to free
  */
 typedef void                            (*Eet_Descriptor_Str_Direct_Free_Callback)(const char *str);
 
@@ -2978,7 +2977,7 @@ typedef void                            (*Eet_Descriptor_Str_Direct_Free_Callbac
  * @typedef (*Eet_Descriptor_Type_Get_Callback)
  *
  * Callback prototype for Eet_Descriptor_Type_Get
- * @param data data to pass to the callback
+ * @param data Data to pass to the callback
  * @param unknow Eina_Bool __FIXME__
  */
 typedef const char *                    (*Eet_Descriptor_Type_Get_Callback)(const void *data, Eina_Bool *unknow);
@@ -2987,8 +2986,8 @@ typedef const char *                    (*Eet_Descriptor_Type_Get_Callback)(cons
  * @typedef (*Eet_Descriptor_Type_Set_Callback)
  *
  * Callback prototype for Eet_Descriptor_Type_Set
- * @param type the type to set
- * @param data to pass to the callback
+ * @param type The type to set
+ * @param data To pass to the callback
  * @param unknow Eina_Bool __FIXME__
  */
 typedef Eina_Bool                       (*Eet_Descriptor_Type_Set_Callback)(const char *type, void *data, Eina_Bool unknow);
@@ -3057,7 +3056,10 @@ struct _Eet_Data_Descriptor_Class
 /**
  * @internal
  *
- * Create a new empty data structure descriptor.
+ * @ingroup Eet_Data_Group
+ * @deprecated use eet_data_descriptor_stream_new() or
+ *             eet_data_descriptor_file_new()
+ * @brief Creates a new empty data structure descriptor.
  * @param name The string name of this data structure (most be a
  *        global constant and never change).
  * @param size The size of the struct (in bytes).
@@ -3089,10 +3091,7 @@ struct _Eet_Data_Descriptor_Class
  * needed if you use those data types, else you can pass NULL instead.
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
- * @deprecated use eet_data_descriptor_stream_new() or
- *             eet_data_descriptor_file_new()
  */
 EINA_DEPRECATED EAPI Eet_Data_Descriptor *
 eet_data_descriptor_new(const char *name,
@@ -3116,6 +3115,7 @@ EINA_DEPRECATED EAPI Eet_Data_Descriptor *
  eet_data_descriptor3_new(const Eet_Data_Descriptor_Class *eddc);
 
 /**
+ * @ingroup Eet_Data_Group
  * This function creates a new data descriptor and returns a handle to the
  * new data descriptor. On creation it will be empty, containing no contents
  * describing anything other than the shell of the data structure.
@@ -3138,7 +3138,6 @@ EINA_DEPRECATED EAPI Eet_Data_Descriptor *
  * and duplicated in memory.
  *
  * @since 1.2.3
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3148,6 +3147,7 @@ EAPI Eet_Data_Descriptor *
 eet_data_descriptor_stream_new(const Eet_Data_Descriptor_Class *eddc);
 
 /**
+ * @ingroup Eet_Data_Group
  * This function creates a new data descriptor and returns a handle to the
  * new data descriptor. On creation it will be empty, containing no contents
  * describing anything other than the shell of the data structure.
@@ -3192,7 +3192,6 @@ eet_data_descriptor_stream_new(const Eet_Data_Descriptor_Class *eddc);
  * @endcode
  *
  * @since 1.2.3
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3202,6 +3201,7 @@ EAPI Eet_Data_Descriptor *
 eet_data_descriptor_file_new(const Eet_Data_Descriptor_Class *eddc);
 
 /**
+ * @ingroup Eet_Data_Group
  * This function is an helper that set all the parameters of an
  * Eet_Data_Descriptor_Class correctly when you use Eina data type
  * with a stream.
@@ -3209,7 +3209,7 @@ eet_data_descriptor_file_new(const Eet_Data_Descriptor_Class *eddc);
  * @param eddc_size The size of the Eet_Data_Descriptor_Class at the compilation time.
  * @param name The name of the structure described by this class.
  * @param size The size of the structure described by this class.
- * @return EINA_TRUE if the structure was correctly set (The only
+ * @return @c EINA_TRUE if the structure was correctly set (The only
  *         reason that could make it fail is if you did give wrong
  *         parameter).
  *
@@ -3217,7 +3217,6 @@ eet_data_descriptor_file_new(const Eet_Data_Descriptor_Class *eddc);
  * the EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET macro is recommended.
  *
  * @since 1.2.3
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3230,6 +3229,7 @@ eet_eina_stream_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
                                           int size);
 
 /**
+ * @ingroup Eet_Data_Group
  * This macro is an helper that set all the parameter of an
  * Eet_Data_Descriptor_Class correctly when you use Eina data type
  * with stream.
@@ -3241,12 +3241,12 @@ eet_eina_stream_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
  *
  * @see eet_data_descriptor_stream_new
  * @since 1.2.3
- * @ingroup Eet_Data_Group
  */
 #define EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(clas, type) \
   (eet_eina_stream_data_descriptor_class_set(clas, sizeof (*(clas)), # type, sizeof(type)))
 
 /**
+ * @ingroup Eet_Data_Group
  * This function is an helper that set all the parameter of an
  * Eet_Data_Descriptor_Class correctly when you use Eina data type
  * with a file.
@@ -3254,7 +3254,7 @@ eet_eina_stream_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
  * @param eddc_size The size of the Eet_Data_Descriptor_Class at the compilation time.
  * @param name The name of the structure described by this class.
  * @param size The size of the structure described by this class.
- * @return EINA_TRUE if the structure was correctly set (The only
+ * @return @c EINA_TRUE if the structure was correctly set (The only
  *         reason that could make it fail is if you did give wrong
  *         parameter).
  *
@@ -3262,7 +3262,6 @@ eet_eina_stream_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
  * the EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET macro is recommended.
  *
  * @since 1.2.3
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3275,24 +3274,25 @@ eet_eina_file_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
                                         int size);
 
 /**
+ * @ingroup Eet_Data_Group
  * This macro is an helper that set all the parameter of an
  * Eet_Data_Descriptor_Class correctly when you use Eina data type
  * with file.
  * @param clas The Eet_Data_Descriptor_Class you want to set.
  * @param type The type of the structure described by this class.
- * @return EINA_TRUE if the structure was correctly set (The only
+ * @return @c EINA_TRUE if the structure was correctly set (The only
  *         reason that could make it fail is if you did give wrong
  *         parameter).
  *
  * @see eet_data_descriptor_file_new
  * @since 1.2.3
- * @ingroup Eet_Data_Group
  */
 #define EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(clas, type) \
   (eet_eina_file_data_descriptor_class_set(clas, sizeof (*(clas)), # type, sizeof(type)))
 
 /**
- * This function frees a data descriptor when it is not needed anymore.
+ * @ingroup Eet_Data_Group
+ * @brief This function frees a data descriptor when it is not needed anymore.
  * @param edd The data descriptor to free.
  *
  * This function takes a data descriptor handle as a parameter and frees all
@@ -3300,7 +3300,6 @@ eet_eina_file_data_descriptor_class_set(Eet_Data_Descriptor_Class *eddc,
  * call the descriptor is no longer valid.
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3310,10 +3309,10 @@ EAPI void
 eet_data_descriptor_free(Eet_Data_Descriptor *edd);
 
 /**
- * This function returns the name of a data descriptor.
+ * @ingroup Eet_Data_Group
+ * @brief This function returns the name of a data descriptor.
  *
  * @since 1.8.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3322,7 +3321,8 @@ eet_data_descriptor_free(Eet_Data_Descriptor *edd);
 EAPI const char *eet_data_descriptor_name_get(const Eet_Data_Descriptor *edd);
 
 /**
- * This function is an internal used by macros.
+ * @ingroup Eet_Data_Group
+ * @brief This function is an internal used by macros.
  *
  * This function is used by macros EET_DATA_DESCRIPTOR_ADD_BASIC(),
  * EET_DATA_DESCRIPTOR_ADD_SUB() and EET_DATA_DESCRIPTOR_ADD_LIST(). It is
@@ -3345,7 +3345,6 @@ EAPI const char *eet_data_descriptor_name_get(const Eet_Data_Descriptor *edd);
  * @param subtype If contains a subtype, then its data descriptor.
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3363,7 +3362,8 @@ eet_data_descriptor_element_add(Eet_Data_Descriptor *edd,
                                 Eet_Data_Descriptor *subtype);
 
 /**
- * Read a data structure from an eet file and decodes it.
+ * @ingroup Eet_Data_Group
+ * @brief Reads a data structure from an eet file and decodes it.
  * @param ef The eet file handle to read from.
  * @param edd The data descriptor handle to use when decoding.
  * @param name The key the data is stored under in the eet file.
@@ -3387,7 +3387,6 @@ eet_data_descriptor_element_add(Eet_Data_Descriptor *edd,
  * @see eet_data_read_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3399,13 +3398,14 @@ eet_data_read(Eet_File *ef,
               const char *name);
 
 /**
- * Write a data structure from memory and store in an eet file.
+ * @ingroup Eet_Data_Group
+ * @brief Writes a data structure from memory and store in an eet file.
  * @param ef The eet file handle to write to.
  * @param edd The data descriptor to use when encoding.
  * @param name The key to store the data under in the eet file.
  * @param data A pointer to the data structure to save and encode.
  * @param compress Compression flags for storage.
- * @return bytes written on successful write, 0 on failure.
+ * @return bytes Written on successful write, @c 0 on failure.
  *
  * This function is the reverse of eet_data_read(), saving a data structure
  * to an eet file. The file must have been opening in write mode and the data
@@ -3415,7 +3415,6 @@ eet_data_read(Eet_File *ef,
  * @see eet_data_write_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3433,20 +3432,21 @@ eet_data_write(Eet_File *ef,
  * 
  * Callback protoype for Eet_Dump 
  *
- * @param data to passe to the callback
- * @param str the string to dump 
+ * @param data To passe to the callback
+ * @param str The string to dump
  *
  */
 typedef void (*Eet_Dump_Callback)(void *data, const char *str);
 
 /**
- * Dump an eet encoded data structure into ascii text
+ * @ingroup Eet_Data_Group
+ * @brief Dumps an eet encoded data structure into ascii text
  * @param data_in The pointer to the data to decode into a struct.
  * @param size_in The size of the data pointed to in bytes.
  * @param dumpfunc The function to call passed a string when new
  *        data is converted to text
  * @param dumpdata The data to pass to the @p dumpfunc callback.
- * @return 1 on success, 0 on failure
+ * @return @c 1 on success, @c 0 on failure
  *
  * This function will take a chunk of data encoded by
  * eet_data_descriptor_encode() and convert it into human readable
@@ -3470,7 +3470,7 @@ typedef void (*Eet_Dump_Callback)(void *data, const char *str);
  *   int len;
  *   void *data;
  *
- *   f = fopen(file, "r");
+ *   f = fopen(file, "rb");
  *   fseek(f, 0, SEEK_END);
  *   len = ftell(f);
  *   rewind(f);
@@ -3484,7 +3484,6 @@ typedef void (*Eet_Dump_Callback)(void *data, const char *str);
  * @see eet_data_text_dump_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3497,7 +3496,8 @@ eet_data_text_dump(const void *data_in,
                    void *dumpdata) EINA_ARG_NONNULL(3);
 
 /**
- * Take an ascii encoding from eet_data_text_dump() and re-encode in binary.
+ * @ingroup Eet_Data_Group
+ * @brief Takes an ascii encoding from eet_data_text_dump() and re-encode in binary.
  * @param text The pointer to the string data to parse and encode.
  * @param textlen The size of the string in bytes (not including 0
  *        byte terminator).
@@ -3513,7 +3513,6 @@ eet_data_text_dump(const void *data_in,
  * @see eet_data_text_undump_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3525,13 +3524,14 @@ eet_data_text_undump(const char *text,
                      int *size_ret);
 
 /**
- * Dump an eet encoded data structure from an eet file into ascii text
+ * @ingroup Eet_Data_Group
+ * @brief Dumps an eet encoded data structure from an eet file into ascii text.
  * @param ef A valid eet file handle.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param dumpfunc The function to call passed a string when new
  *        data is converted to text
  * @param dumpdata The data to pass to the @p dumpfunc callback.
- * @return 1 on success, 0 on failure
+ * @return @c 1 on success, @c 0 on failure
  *
  * This function will take an open and valid eet file from
  * eet_open() request the data encoded by
@@ -3545,7 +3545,6 @@ eet_data_text_undump(const char *text,
  * @see eet_data_dump_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3558,14 +3557,15 @@ eet_data_dump(Eet_File *ef,
               void *dumpdata) EINA_ARG_NONNULL(3);
 
 /**
- * Take an ascii encoding from eet_data_dump() and re-encode in binary.
+ * @ingroup Eet_Data_Group
+ * @brief Takes an ascii encoding from eet_data_dump() and re-encode in binary.
  * @param ef A valid eet file handle.
  * @param name Name of the entry. eg: "/base/file_i_want".
  * @param text The pointer to the string data to parse and encode.
  * @param textlen The size of the string in bytes (not including 0
  *        byte terminator).
  * @param compress Compression flags (1 == compress, 0 = don't compress).
- * @return 1 on success, 0 on failure
+ * @return @c 1 on success, @c 0 on failure
  *
  * This function will parse the string pointed to by @p text,
  * encode it the same way eet_data_descriptor_encode() takes an
@@ -3577,7 +3577,6 @@ eet_data_dump(Eet_File *ef,
  * @see eet_data_undump_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3591,8 +3590,9 @@ eet_data_undump(Eet_File *ef,
                 int compress);
 
 /**
- * Decode a data structure from an arbitrary location in memory.
- * @param edd The data  descriptor to use when decoding.
+ * @ingroup Eet_Data_Group
+ * @brief Decodes a data structure from an arbitrary location in memory.
+ * @param edd The data descriptor to use when decoding.
  * @param data_in The pointer to the data to decode into a struct.
  * @param size_in The size of the data pointed to in bytes.
  * @return NULL on failure, or a valid decoded struct pointer on success.
@@ -3615,7 +3615,6 @@ eet_data_undump(Eet_File *ef,
  * @see eet_data_descriptor_decode_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3627,8 +3626,9 @@ eet_data_descriptor_decode(Eet_Data_Descriptor *edd,
                            int size_in);
 
 /**
- * Encode a dsata struct to memory and return that encoded data.
- * @param edd The data  descriptor to use when encoding.
+ * @ingroup Eet_Data_Group
+ * @brief Encodes a dsata struct to memory and return that encoded data.
+ * @param edd The data descriptor to use when encoding.
  * @param data_in The pointer to the struct to encode into data.
  * @param size_ret pointer to the an int to be filled with the decoded size.
  * @return NULL on failure, or a valid encoded data chunk on success.
@@ -3653,7 +3653,6 @@ eet_data_descriptor_decode(Eet_Data_Descriptor *edd,
  * @see eet_data_descriptor_encode_cipher()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -3665,7 +3664,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
                            int *size_ret);
 
 /**
- * Add a basic data element to a data descriptor.
+ * @ingroup Eet_Data_Group
+ * @brief Adds a basic data element to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3685,7 +3685,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * EET_T_USHORT, EET_T_UINT, EET_T_ULONG_LONG or EET_T_STRING.
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_BASIC(edd, struct_type, name, member, type) \
   do {                                                                      \
@@ -3697,7 +3696,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while(0)
 
 /**
- * Add a sub-element type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a sub-element type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3712,7 +3712,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * this element.
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_SUB(edd, struct_type, name, member, subtype)   \
   do {                                                                         \
@@ -3724,7 +3723,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a nested sub-element type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a nested sub-element type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3738,7 +3738,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * All the parameters are the same as for EET_DATA_DESCRIPTOR_ADD_SUB().
  *
  * @since 1.8.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_SUB_NESTED(edd, struct_type, name, member, subtype)   \
   do {                                                                         \
@@ -3750,7 +3749,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a linked list type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a linked list type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3764,7 +3764,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * element that is in each member of the linked list to be stored.
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_LIST(edd, struct_type, name, member, subtype) \
   do {                                                                        \
@@ -3776,7 +3775,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a linked list of string to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a linked list of string to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3787,7 +3787,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * parameters are the same as for EET_DATA_DESCRIPTOR_ADD_BASIC().
  *
  * @since 1.5.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd, struct_type, name, member) \
   do {                                                                      \
@@ -3799,7 +3798,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a hash type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a hash type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3814,7 +3814,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * The hash keys must be strings.
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_HASH(edd, struct_type, name, member, subtype) \
   do {                                                                        \
@@ -3826,7 +3825,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a hash of string to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a hash of string to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3837,7 +3837,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * parameters are the same as for EET_DATA_DESCRIPTOR_ADD_HASH().
  *
  * @since 1.3.4
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_HASH_STRING(edd, struct_type, name, member) \
   do {                                                                      \
@@ -3849,7 +3848,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add an array of basic data elements to a data descriptor.
+ * @ingroup Eet_Data_Group
+ * @brief Adds an array of basic data elements to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3864,7 +3864,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * struct containing it.
  *
  * @since 1.5.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_BASIC_ARRAY(edd, struct_type, name, member, type) \
   do {                                                                            \
@@ -3878,7 +3877,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while(0)
 
 /**
- * Add a variable array of basic data elements to a data descriptor.
+ * @ingroup Eet_Data_Group
+ * @brief Adds a variable array of basic data elements to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3895,7 +3895,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * is in.
  *
  * @since 1.6.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_BASIC_VAR_ARRAY(edd, struct_type, name, member, type) \
   do {                                                                                \
@@ -3910,7 +3909,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while(0)
 
 /**
- * Add a fixed size array type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a fixed size array type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3927,7 +3927,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * struct containing it.
  *
  * @since 1.0.2
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_ARRAY(edd, struct_type, name, member, subtype)   \
   do {                                                                           \
@@ -3940,7 +3939,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a variable size array type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a variable size array type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3959,7 +3959,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * is in.
  *
  * @since 1.0.2
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_VAR_ARRAY(edd, struct_type, name, member, subtype) \
   do {                                                                             \
@@ -3977,7 +3976,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a variable size array type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a variable size array type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -3988,7 +3988,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * the parameters are the same as for EET_DATA_DESCRIPTOR_ADD_BASIC().
  *
  * @since 1.4.0
- * @ingroup Eet_Data_Group
  */
 #define EET_DATA_DESCRIPTOR_ADD_VAR_ARRAY_STRING(edd, struct_type, name, member) \
   do {                                                                           \
@@ -4006,7 +4005,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add an union type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds an union type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -4021,7 +4021,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * callback of unified_type should be defined.
  *
  * @since 1.2.4
- * @ingroup Eet_Data_Group
  * @see Eet_Data_Descriptor_Class
  */
 #define EET_DATA_DESCRIPTOR_ADD_UNION(edd, struct_type, name, member, type_member, unified_type) \
@@ -4036,7 +4035,8 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a automatically selectable type to a data descriptor
+ * @ingroup Eet_Data_Group
+ * @brief Adds a automatically selectable type to a data descriptor.
  * @param edd The data descriptor to add the type to.
  * @param struct_type The type of the struct.
  * @param name The string name to use to encode/decode this member
@@ -4053,7 +4053,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * given previously and telling it by setting unknow to EINA_TRUE.
  *
  * @since 1.2.4
- * @ingroup Eet_Data_Group
  * @see Eet_Data_Descriptor_Class
  */
 #define EET_DATA_DESCRIPTOR_ADD_VARIANT(edd, struct_type, name, member, type_member, unified_type) \
@@ -4068,13 +4067,13 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
     } while (0)
 
 /**
- * Add a mapping to a data descriptor that will be used by union, variant or inherited type
+ * @ingroup Eet_Data_Group
+ * @brief Adds a mapping to a data descriptor that will be used by union, variant or inherited type.
  * @param unified_type The data descriptor to add the mapping to.
  * @param name The string name to get/set type.
  * @param subtype The matching data descriptor.
  *
  * @since 1.2.4
- * @ingroup Eet_Data_Group
  * @see Eet_Data_Descriptor_Class
  */
 #define EET_DATA_DESCRIPTOR_ADD_MAPPING(unified_type, name, subtype) \
@@ -4088,13 +4087,13 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
                                   subtype)
 
 /**
- * Add a mapping of a basic type to a data descriptor that will be used by a union type.
+ * @ingroup Eet_Data_Group
+ * @brief Adds a mapping of a basic type to a data descriptor that will be used by a union type.
  * @param unified_type The data descriptor to add the mapping to.
  * @param name The string name to get/set type.
  * @param basic_type The matching basic type.
  *
  * @since 1.8
- * @ingroup Eet_Data_Group
  * @see Eet_Data_Descriptor_Class
  */
 #define EET_DATA_DESCRIPTOR_ADD_MAPPING_BASIC(unified_type, name, basic_type) \
@@ -4108,17 +4107,18 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
                                   NULL)
 /**
  * @defgroup Eet_Data_Cipher_Group Eet Data Serialization using A Ciphers
+ * @ingroup Eet_Data_Group
  *
  * Most of the @ref Eet_Data_Group have alternative versions that
  * accounts for ciphers to protect their content.
  *
  * @see @ref Eet_Cipher_Group
  *
- * @ingroup Eet_Data_Group
  */
 
 /**
- * Read a data structure from an eet file and decodes it using a cipher.
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Reads a data structure from an eet file and decodes it using a cipher.
  * @param ef The eet file handle to read from.
  * @param edd The data descriptor handle to use when decoding.
  * @param name The key the data is stored under in the eet file.
@@ -4143,7 +4143,6 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * @see eet_data_read()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4156,14 +4155,15 @@ eet_data_read_cipher(Eet_File *ef,
                      const char *cipher_key);
 
 /**
- * Read a data structure from an eet file and decodes it into a buffer using a cipher,
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Reads a data structure from an eet file and decodes it into a buffer using a cipher.
  * @param ef The eet file handle to read from.
  * @param edd The data descriptor handle to use when decoding.
  * @param name The key the data is stored under in the eet file.
  * @param cipher_key The key to use as cipher.
  * @param buffer Buffer.
  * @param buffer_size The buffer size.
- * @return A pointer to buffer if successful and NULL on error.
+ * @return A pointer to buffer if successful, and NULL on error.
  *
  * This function decodes a data structure stored in an eet file, returning
  * a pointer to it if it decoded successfully, or NULL on failure. This
@@ -4183,7 +4183,6 @@ eet_data_read_cipher(Eet_File *ef,
  * @see eet_data_read_cipher()
  *
  * @since 1.10.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4198,7 +4197,8 @@ eet_data_read_cipher_buffer(Eet_File            *ef,
                             int                 buffer_size);
 
 /**
- * Read a data structure from an eet extended attribute and decodes it using a cipher.
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Reads a data structure from an eet extended attribute and decodes it using a cipher.
  * @param filename The file to extract the extended attribute from.
  * @param attribute The attribute to get the data from.
  * @param edd The data descriptor handle to use when decoding.
@@ -4218,7 +4218,6 @@ eet_data_read_cipher_buffer(Eet_File            *ef,
  * is as simple as a single function call.
  *
  * @since 1.5.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4231,7 +4230,8 @@ eet_data_xattr_cipher_get(const char *filename,
                           const char *cipher_key);
 
 /**
- * Write a data structure from memory and store in an eet file
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Writes a data structure from memory and store in an eet file
  * using a cipher.
  * @param ef The eet file handle to write to.
  * @param edd The data descriptor to use when encoding.
@@ -4245,7 +4245,6 @@ eet_data_xattr_cipher_get(const char *filename,
  * to an eet file.
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4260,7 +4259,8 @@ eet_data_write_cipher(Eet_File *ef,
                       int compress);
 
 /**
- * Write a data structure from memory and store in an eet extended attribute
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Writes a data structure from memory and store in an eet extended attribute
  * using a cipher.
  * @param filename The file to write the extended attribute to.
  * @param attribute The attribute to store the data to.
@@ -4274,7 +4274,6 @@ eet_data_write_cipher(Eet_File *ef,
  * to an eet extended attribute.
  *
  * @since 1.5.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4289,14 +4288,15 @@ eet_data_xattr_cipher_set(const char *filename,
                           Eina_Xattr_Flags flags);
 
 /**
- * Dump an eet encoded data structure into ascii text using a cipher.
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Dumps an eet encoded data structure into ascii text using a cipher.
  * @param data_in The pointer to the data to decode into a struct.
  * @param cipher_key The key to use as cipher.
  * @param size_in The size of the data pointed to in bytes.
  * @param dumpfunc The function to call passed a string when new
  *        data is converted to text
  * @param dumpdata The data to pass to the @p dumpfunc callback.
- * @return 1 on success, 0 on failure
+ * @return @c 1 on success, @c 0 on failure
  *
  * This function will take a chunk of data encoded by
  * eet_data_descriptor_encode() and convert it into human readable
@@ -4320,7 +4320,7 @@ eet_data_xattr_cipher_set(const char *filename,
  *   int len;
  *   void *data;
  *
- *   f = fopen(file, "r");
+ *   f = fopen(file, "rb");
  *   fseek(f, 0, SEEK_END);
  *   len = ftell(f);
  *   rewind(f);
@@ -4334,7 +4334,6 @@ eet_data_xattr_cipher_set(const char *filename,
  * @see eet_data_text_dump()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4348,7 +4347,8 @@ eet_data_text_dump_cipher(const void *data_in,
                           void *dumpdata) EINA_ARG_NONNULL(4);
 
 /**
- * Take an ascii encoding from eet_data_text_dump() and re-encode
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Takes an ascii encoding from eet_data_text_dump() and re-encode
  * in binary using a cipher.
  * @param text The pointer to the string data to parse and encode.
  * @param cipher_key The key to use as cipher.
@@ -4366,7 +4366,6 @@ eet_data_text_dump_cipher(const void *data_in,
  * @see eet_data_text_undump()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4379,7 +4378,8 @@ eet_data_text_undump_cipher(const char *text,
                             int *size_ret);
 
 /**
- * Dump an eet encoded data structure from an eet file into ascii
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Dumps an eet encoded data structure from an eet file into ascii
  * text using a cipher.
  * @param ef A valid eet file handle.
  * @param name Name of the entry. eg: "/base/file_i_want".
@@ -4387,7 +4387,7 @@ eet_data_text_undump_cipher(const char *text,
  * @param dumpfunc The function to call passed a string when new
  *        data is converted to text
  * @param dumpdata The data to pass to the @p dumpfunc callback.
- * @return 1 on success, 0 on failure
+ * @return @c 1 on success, @c 0 on failure
  *
  * This function will take an open and valid eet file from
  * eet_open() request the data encoded by
@@ -4401,7 +4401,6 @@ eet_data_text_undump_cipher(const char *text,
  * @see eet_data_dump()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4415,7 +4414,8 @@ eet_data_dump_cipher(Eet_File *ef,
                      void *dumpdata) EINA_ARG_NONNULL(4);
 
 /**
- * Take an ascii encoding from eet_data_dump() and re-encode in
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Takes an ascii encoding from eet_data_dump() and re-encode in
  * binary using a cipher.
  * @param ef A valid eet file handle.
  * @param name Name of the entry. eg: "/base/file_i_want".
@@ -4424,7 +4424,7 @@ eet_data_dump_cipher(Eet_File *ef,
  * @param textlen The size of the string in bytes (not including 0
  *        byte terminator).
  * @param compress Compression flags (1 == compress, 0 = don't compress).
- * @return 1 on success, 0 on failure
+ * @return @c 1 on success, @c 0 on failure
  *
  * This function will parse the string pointed to by @p text,
  * encode it the same way eet_data_descriptor_encode() takes an
@@ -4436,7 +4436,6 @@ eet_data_dump_cipher(Eet_File *ef,
  * @see eet_data_undump()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4451,7 +4450,8 @@ eet_data_undump_cipher(Eet_File *ef,
                        int compress);
 
 /**
- * Decode a data structure from an arbitrary location in memory
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Decodes a data structure from an arbitrary location in memory
  * using a cipher.
  * @param edd The data  descriptor to use when decoding.
  * @param data_in The pointer to the data to decode into a struct.
@@ -4477,7 +4477,6 @@ eet_data_undump_cipher(Eet_File *ef,
  * @see eet_data_descriptor_decode()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4490,9 +4489,10 @@ eet_data_descriptor_decode_cipher(Eet_Data_Descriptor *edd,
                                   int size_in);
 
 /**
- * Encode a data struct to memory and return that encoded data
+ * @ingroup Eet_Data_Cipher_Group
+ * @brief Encodes a data struct to memory and return that encoded data
  * using a cipher.
- * @param edd The data  descriptor to use when encoding.
+ * @param edd The data descriptor to use when encoding.
  * @param data_in The pointer to the struct to encode into data.
  * @param cipher_key The key to use as cipher.
  * @param size_ret pointer to the an int to be filled with the decoded size.
@@ -4518,7 +4518,6 @@ eet_data_descriptor_decode_cipher(Eet_Data_Descriptor *edd,
  * @see eet_data_descriptor_encode()
  *
  * @since 1.0.0
- * @ingroup Eet_Data_Cipher_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4578,11 +4577,11 @@ struct _Eet_Node_Data
  */
 
 /**
- * Create a new character node.
+ * @ingroup Eet_Node_Group
+ * @brief Creates a new character node.
  * @param name Name of the node.
  * @param c Character value.
  * @return A new character node.
- * @ingroup Eet_Node_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4593,11 +4592,11 @@ eet_node_char_new(const char *name,
                   char c);
 
 /**
- * Create a new short node.
- * @param name Name of the node.
- * @param s short value.
- * @return A new short node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new short node.
+ * @param name Name of the node.
+ * @param s Short value.
+ * @return A new short node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4608,11 +4607,11 @@ eet_node_short_new(const char *name,
                    short s);
 
 /**
- * Create a new integer node.
- * @param name Name of the node.
- * @param i integer value.
- * @return A new integer node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new integer node.
+ * @param name Name of the node.
+ * @param i Integer value.
+ * @return A new integer node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4623,11 +4622,11 @@ eet_node_int_new(const char *name,
                  int i);
 
 /**
- * Create a new long long integer node.
- * @param name Name of the node.
- * @param l long long integer value.
- * @return A new long long integer node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new long long integer node.
+ * @param name Name of the node.
+ * @param l Long long integer value.
+ * @return A new long long integer node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4638,11 +4637,11 @@ eet_node_long_long_new(const char *name,
                        long long l);
 
 /**
- * Create a new float node.
- * @param name Name of the node.
- * @param f float value.
- * @return A new float node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new float node.
+ * @param name Name of the node.
+ * @param f Float value.
+ * @return A new float node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4653,11 +4652,11 @@ eet_node_float_new(const char *name,
                    float f);
 
 /**
- * Create a new double node.
- * @param name Name of the node.
- * @param d double value.
- * @return A new double node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new double node.
+ * @param name Name of the node.
+ * @param d Double value.
+ * @return A new double node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4668,11 +4667,12 @@ eet_node_double_new(const char *name,
                     double d);
 
 /**
- * Create a new unsigned character node.
- * @param name Name of the node.
- * @param uc unsigned char value.
- * @return A new unsigned char node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new unsigned character node.
+ * @param name Name of the node.
+ * @param uc Unsigned char value.
+ * @return A new unsigned char node.
+
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4683,11 +4683,11 @@ eet_node_unsigned_char_new(const char *name,
                            unsigned char uc);
 
 /**
- * Create a new unsigned short node.
- * @param name Name of the node.
- * @param us unsigned short value.
- * @return A new unsigned short node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new unsigned short node.
+ * @param name Name of the node.
+ * @param us Unsigned short value.
+ * @return A new unsigned short node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4698,11 +4698,11 @@ eet_node_unsigned_short_new(const char *name,
                             unsigned short us);
 
 /**
- * Create a new unsigned integer node.
- * @param name Name of the node.
- * @param ui unsigned integer value.
- * @return A new unsigned integer node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new unsigned integer node.
+ * @param name Name of the node.
+ * @param ui Unsigned integer value.
+ * @return A new unsigned integer node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4713,11 +4713,11 @@ eet_node_unsigned_int_new(const char *name,
                           unsigned int ui);
 
 /**
- * Create a new unsigned long long integer node.
- * @param name Name of the node.
- * @param l unsigned long long integer value.
- * @return A new unsigned long long integer node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new unsigned long long integer node.
+ * @param name Name of the node.
+ * @param l Unsigned long long integer value.
+ * @return A new unsigned long long integer node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4728,11 +4728,11 @@ eet_node_unsigned_long_long_new(const char *name,
                                 unsigned long long l);
 
 /**
- * Create a new string node.
- * @param name Name of the node.
- * @param str string value.
- * @return A new string node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new string node.
+ * @param name Name of the node.
+ * @param str String value.
+ * @return A new string node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4743,11 +4743,11 @@ eet_node_string_new(const char *name,
                     const char *str);
 
 /**
- * Create a new inlined string node.
- * @param name Name of the node.
- * @param str string value.
- * @return A new inlined string node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new inlined string node.
+ * @param name Name of the node.
+ * @param str String value.
+ * @return A new inlined string node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4758,10 +4758,10 @@ eet_node_inlined_string_new(const char *name,
                             const char *str);
 
 /**
- * Create a new empty node.
+ * @ingroup Eet_Node_Group
+ * @brief Creates a new empty node.
  * @param name Name of the node.
  * @return A new empty node.
- * @ingroup Eet_Node_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4771,11 +4771,11 @@ EAPI Eet_Node *
 eet_node_null_new(const char *name);
 
 /**
- * Create a new list node.
- * @param name Name of the node.
- * @param nodes list of nodes.
- * @return A new list node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new list node.
+ * @param name Name of the node.
+ * @param nodes List of nodes.
+ * @return A new list node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4786,12 +4786,12 @@ eet_node_list_new(const char *name,
                   Eina_List *nodes);
 
 /**
- * Create a new array node.
- * @param name Name of the node.
- * @param count number of nodes
- * @param nodes list of nodes.
- * @return A new array node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new array node.
+ * @param name Name of the node.
+ * @param count Number of nodes
+ * @param nodes List of nodes.
+ * @return A new array node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4803,11 +4803,11 @@ eet_node_array_new(const char *name,
                    Eina_List *nodes);
 
 /**
- * Create a new variable array node.
- * @param name Name of the node.
- * @param nodes list of nodes.
- * @return A new variable array node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new variable array node.
+ * @param name Name of the node.
+ * @param nodes List of nodes.
+ * @return A new variable array node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4822,11 +4822,11 @@ eet_node_var_array_new(const char *name,
  * @ingroup Eet_Node_Group
  */
 /**
- * Create a new short node.
- * @param name Name of the node.
- * @param s short value.
- * @return A new short node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new short node.
+ * @param name Name of the node.
+ * @param s Short value.
+ * @return A new short node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4838,11 +4838,11 @@ eet_node_hash_new(const char *name,
                   Eet_Node *node);
 
 /**
- * Create a new struct node.
- * @param name Name of the node.
- * @param nodes list of nodes.
- * @return A new struct node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new struct node.
+ * @param name Name of the node.
+ * @param nodes List of nodes.
+ * @return A new struct node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4857,11 +4857,11 @@ eet_node_struct_new(const char *name,
  * @ingroup Eet_Node_Group
  */
 /**
- * Create a new short node.
- * @param name Name of the node.
- * @param s short value.
- * @return A new short node.
  * @ingroup Eet_Node_Group
+ * @brief Creates a new short node.
+ * @param name Name of the node.
+ * @param s Short value.
+ * @return A new short node.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4872,7 +4872,7 @@ eet_node_struct_child_new(const char *parent,
                           Eet_Node *child);
 
 /**
- * @brief Get a node's child nodes
+ * @brief Gets a node's child nodes.
  * @param node The node
  * @return The first child node which contains a pointer to the
  * next child node and the parent.
@@ -4886,7 +4886,7 @@ EAPI Eet_Node *
 eet_node_children_get(Eet_Node *node);
 
 /**
- * @brief Get the next node in a list of nodes
+ * @brief Gets the next node in a list of nodes.
  * @param node The node
  * @return A node which contains a pointer to the
  * next child node and the parent.
@@ -4900,7 +4900,7 @@ EAPI Eet_Node *
 eet_node_next_get(Eet_Node *node);
 
 /**
- * @brief Get the parent node of a node
+ * @brief Gets the parent node of a node.
  * @param node The node
  * @return The parent node of @p node
  * @since 1.5
@@ -4913,8 +4913,8 @@ EAPI Eet_Node *
 eet_node_parent_get(Eet_Node *node);
 
 /**
- * @brief Append a "list" node TODO FIX ME
  * @ingroup Eet_Node_Group
+ * @brief Appends a "list" node TODO FIX ME.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -4967,7 +4967,7 @@ eet_node_dump(Eet_Node *n,
               void *dumpdata);
 
 /**
- * @brief Return the type of a node
+ * @brief Returns the type of a node.
  * @param node The node
  * @return The node's type (EET_T_$TYPE)
  * @since 1.5
@@ -4980,7 +4980,7 @@ EAPI int
 eet_node_type_get(Eet_Node *node);
 
 /**
- * @brief Return the node's data
+ * @brief Returns the node's data.
  * @param node The node
  * @return The data contained in the node
  * @since 1.5
@@ -5070,7 +5070,7 @@ typedef struct _Eet_Node_Walk Eet_Node_Walk;
  *
  * Callback prototype for Eet_Node_Walk_Struct_Alloc
  * @param type The allocation type
- * @param user_data the data passed by the user to the callback
+ * @param user_data The data passed by the user to the callback
  */
 typedef void *              (*Eet_Node_Walk_Struct_Alloc_Callback)(const char *type, void *user_data);
 
@@ -5079,9 +5079,9 @@ typedef void *              (*Eet_Node_Walk_Struct_Alloc_Callback)(const char *t
  *
  * Callback prototype for Eet_Node_Walk_Struct_Add
  * @param parent The parent node
- * @param name the name for the new node
- * @param child the child node
- * @param user_data the data passed by the user to the callback
+ * @param name The name for the new node
+ * @param child The child node
+ * @param user_data The data passed by the user to the callback
  */
 typedef void                (*Eet_Node_Walk_Struct_Add_Callback)(void *parent, const char *name, void *child, void *user_data);
 
@@ -5089,10 +5089,10 @@ typedef void                (*Eet_Node_Walk_Struct_Add_Callback)(void *parent, c
  * @typedef (*Eet_Node_Walk_Array_Callback)
  *
  * Callback prototype for Eet_Node_Walk_Array
- * @param variable EINA_TRUE or EINA_FALSE
- * @param name a name
- * @param count a counter
- * @param user_data the data passed by the user to the callback
+ * @param variable @c EINA_TRUE or @c EINA_FALSE
+ * @param name A name
+ * @param count A counter
+ * @param user_data The data passed by the user to the callback
  */
 typedef void *              (*Eet_Node_Walk_Array_Callback)(Eina_Bool variable, const char *name, int count, void *user_data);
 
@@ -5136,40 +5136,40 @@ eet_node_walk(void *parent,
  */
 
 /**
+ * @ingroup Eet_Connection_Group
  * @typedef Eet_Connection
  * Opaque handle to track paquet for a specific connection.
  *
- * @ingroup Eet_Connection_Group
  */
 typedef struct _Eet_Connection Eet_Connection;
 
 /**
+ * @ingroup Eet_Connection_Group
  * @typedef Eet_Read_Cb
  * Called back when an @ref Eet_Data_Group has been received completely and could be used.
  *
- * @ingroup Eet_Connection_Group
  */
 typedef Eina_Bool Eet_Read_Cb (const void *eet_data, size_t size, void *user_data);
 
 /**
+ * @ingroup Eet_Connection_Group
  * @typedef Eet_Write_Cb
  * Called back when a packet containing @ref Eet_Data_Group data is ready to be send.
  *
- * @ingroup Eet_Connection_Group
  */
 typedef Eina_Bool Eet_Write_Cb (const void *data, size_t size, void *user_data);
 
 /**
- * Instanciate a new connection to track.
+ * @ingroup Eet_Connection_Group
+ * @brief Instanciates a new connection to track.
  * @param eet_read_cb Function to call when one Eet_Data packet has been fully assemble.
  * @param eet_write_cb Function to call when one Eet_Data packet is ready to be send over the wire.
  * @param user_data Pointer provided to both functions to be used as a context handler.
- * @return NULL on failure, or a valid Eet_Connection handler.
+ * @return @c NULL on failure, or a valid Eet_Connection handler.
  *
  * For every connection to track you will need a separate Eet_Connection provider.
  *
  * @since 1.2.4
- * @ingroup Eet_Connection_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -5181,18 +5181,18 @@ eet_connection_new(Eet_Read_Cb *eet_read_cb,
                    const void *user_data);
 
 /**
- * Process a raw packet received over the link
+ * @ingroup Eet_Connection_Group
+ * @brief Processes a raw packet received over the link.
  * @param conn Connection handler to track.
  * @param data Raw data packet.
  * @param size The size of that packet.
- * @return 0 on complete success, any other value indicate where in the stream it got wrong (It could be before that packet).
+ * @return @c 0 on complete success, any other value indicate where in the stream it got wrong (It could be before that packet).
  *
  * Every time you receive a packet related to your connection, you should pass
  * it to that function so that it could process and assemble packet has you
  * receive it. It will automatically call Eet_Read_Cb when one is fully received.
  *
  * @since 1.2.4
- * @ingroup Eet_Connection_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -5204,16 +5204,16 @@ eet_connection_received(Eet_Connection *conn,
                         size_t size);
 
 /**
- * Tell if the Eet_Connection as received some partial data.
+ * @ingroup Eet_Connection_Group
+ * @brief Tells if the Eet_Connection as received some partial data.
  * @param conn Connection handler to request.
- * @return EINA_TRUE if there is some data pending inside, EINA_FALSE otherwise.
+ * @return @c EINA_TRUE if there is some data pending inside, @c EINA_FALSE otherwise.
  *
  * Eet_Connection buffer data until the received data can be unserialized correctly. This
  * function let you know if there is some data inside that buffer waiting for more data to
  * be received before being processed.
  *
  * @since 1.7
- * @ingroup Eet_Connection_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -5222,12 +5222,13 @@ eet_connection_received(Eet_Connection *conn,
 EAPI Eina_Bool eet_connection_empty(Eet_Connection *conn);
 
 /**
- * Convert a complex structure and prepare it to be send.
+ * @ingroup Eet_Connection_Group
+ * @brief Converts a complex structure and prepare it to be send.
  * @param conn Connection handler to track.
  * @param edd The data descriptor to use when encoding.
  * @param data_in The pointer to the struct to encode into data.
  * @param cipher_key The key to use as cipher.
- * @return EINA_TRUE if the data where correctly send, EINA_FALSE if they don't.
+ * @return @c EINA_TRUE if the data where correctly send, @c EINA_FALSE if they don't.
  *
  * This function serialize data_in with edd, assemble the packet and call
  * Eet_Write_Cb when ready. The data passed Eet_Write_Cb are temporary allocated
@@ -5236,7 +5237,6 @@ EAPI Eina_Bool eet_connection_empty(Eet_Connection *conn);
  * @see eet_data_descriptor_encode_cipher
  *
  * @since 1.2.4
- * @ingroup Eet_Connection_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -5249,11 +5249,12 @@ eet_connection_send(Eet_Connection *conn,
                     const char *cipher_key);
 
 /**
- * Convert a Eet_Node tree and prepare it to be send.
+ * @ingroup Eet_Connection_Group
+ * @brief Converts a Eet_Node tree and prepare it to be send.
  * @param conn Connection handler to track.
  * @param node The data tree to use when encoding.
  * @param cipher_key The key to use as cipher.
- * @return EINA_TRUE if the data where correctly send, EINA_FALSE if they don't.
+ * @return @c EINA_TRUE if the data where correctly send, @c EINA_FALSE if they don't.
  *
  * This function serialize node, assemble the packet and call
  * Eet_Write_Cb when ready. The data passed Eet_Write_Cb are temporary allocated
@@ -5262,7 +5263,6 @@ eet_connection_send(Eet_Connection *conn,
  * @see eet_data_node_encode_cipher
  *
  * @since 1.2.4
- * @ingroup Eet_Connection_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -5274,13 +5274,13 @@ eet_connection_node_send(Eet_Connection *conn,
                          const char *cipher_key);
 
 /**
- * Close a connection and lost its track.
+ * @ingroup Eet_Connection_Group
+ * @brief Closes a connection and lost its track.
  * @param conn Connection handler to close.
  * @param on_going Signal if a partial packet wasn't completed.
  * @return the user_data passed to both callback.
  *
  * @since 1.2.4
- * @ingroup Eet_Connection_Group
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
