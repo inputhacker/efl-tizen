@@ -783,6 +783,13 @@ _surface_cap_load(Eet_File *ef)
    if ((!data) || (length <= 0)) goto finish;
    if (data[length - 1] != 0) goto finish;
    evgl_engine->caps.num_fbo_fmts = atoi(data);
+
+   if (evgl_engine->caps.num_fbo_fmts < 0 || evgl_engine->caps.num_fbo_fmts > 100)
+     {
+        ERR("num_fbo_fmts is invalid. %d", evgl_engine->caps.num_fbo_fmts);
+        goto finish;
+     }
+
    free(data);
    data = NULL;
 
