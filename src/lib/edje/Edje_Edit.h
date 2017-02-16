@@ -8093,8 +8093,6 @@ EAPI Eina_Bool
 edje_edit_program_plugin_set(Evas_Object *obj, const char *prog, const char *name);
 #endif
 
-
-
 /**
  * @brief Sets parts into intermediate state of programs transition.
  *
