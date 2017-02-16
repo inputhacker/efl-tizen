@@ -3328,13 +3328,12 @@ _layout_line_align_get(Ctxt *c)
 #ifdef BIDI_SUPPORT
    if (c->align_auto && c->ln)
      {
-        /* TIZEN_ONLY(20170202): Apply WRTL for VD_ONLY. It should be removed from Tizen 4.0. */
-#ifdef TIZEN_PROFILE_TV
+        /* TIZEN_ONLY(20170216): Apply align according to paragraph_direction */
         if (c->o->paragraph_direction == EVAS_BIDI_DIRECTION_LTR)
           return 0.0;
-        else if (c->o->paragraph_direction == EVAS_BIDI_DIRECTION_RTL)
+        else if ((c->o->paragraph_direction == EVAS_BIDI_DIRECTION_RTL) ||
+                 (c->o->paragraph_direction == EVAS_BIDI_DIRECTION_ANY_RTL))
           return 1.0;
-#endif
         /* END */
 
         if (c->ln->items && c->ln->items->text_node &&
