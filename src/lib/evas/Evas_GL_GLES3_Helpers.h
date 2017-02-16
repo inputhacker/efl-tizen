@@ -587,6 +587,51 @@ evgl_init(...)
 #define  glVertexAttribBinding                   __evas_gl_glapi->glVertexAttribBinding
 #define  glVertexBindingDivisor                  __evas_gl_glapi->glVertexBindingDivisor
 
+//GLES 3.2
+#define glBlendBarrier __evas_gl_glapi->glBlendBarrier
+#define glCopyImageSubData __evas_gl_glapi->glCopyImageSubData
+#define glDebugMessageControl __evas_gl_glapi->glDebugMessageControl
+#define glDebugMessageInsert __evas_gl_glapi->glDebugMessageInsert
+#define glDebugMessageCallback __evas_gl_glapi->glDebugMessageCallback
+#define glGetDebugMessageLog __evas_gl_glapi->glGetDebugMessageLog
+#define glPushDebugGroup __evas_gl_glapi->glPushDebugGroup
+#define glPopDebugGroup __evas_gl_glapi->glPopDebugGroup
+#define glObjectLabel __evas_gl_glapi->glObjectLabel
+#define glGetObjectLabel __evas_gl_glapi->glGetObjectLabel
+#define glObjectPtrLabel __evas_gl_glapi->glObjectPtrLabel
+#define glGetObjectPtrLabel __evas_gl_glapi->glGetObjectPtrLabel
+#define glGetPointerv __evas_gl_glapi->glGetPointerv
+#define glEnablei __evas_gl_glapi->glEnablei
+#define glDisablei __evas_gl_glapi->glDisablei
+#define glBlendEquationi __evas_gl_glapi->glBlendEquationi
+#define glBlendEquationSeparatei __evas_gl_glapi->glBlendEquationSeparatei
+#define glBlendFunci __evas_gl_glapi->glBlendFunci
+#define glBlendFuncSeparatei __evas_gl_glapi->glBlendFuncSeparatei
+#define glColorMaski __evas_gl_glapi->glColorMaski
+#define glIsEnabledi __evas_gl_glapi->glIsEnabledi
+#define glDrawElementsBaseVertex __evas_gl_glapi->glDrawElementsBaseVertex
+#define glDrawRangeElementsBaseVertex __evas_gl_glapi->glDrawRangeElementsBaseVertex
+#define glDrawElementsInstancedBaseVertex __evas_gl_glapi->glDrawElementsInstancedBaseVertex
+#define glFramebufferTexture __evas_gl_glapi->glFramebufferTexture
+#define glPrimitiveBoundingBox __evas_gl_glapi->glPrimitiveBoundingBox
+#define glGetGraphicsResetStatus __evas_gl_glapi->glGetGraphicsResetStatus
+#define glReadnPixels __evas_gl_glapi->glReadnPixels
+#define glGetnUniformfv __evas_gl_glapi->glGetnUniformfv
+#define glGetnUniformiv __evas_gl_glapi->glGetnUniformiv
+#define glGetnUniformuiv __evas_gl_glapi->glGetnUniformuiv
+#define glMinSampleShading __evas_gl_glapi->glMinSampleShading
+#define glPatchParameteri __evas_gl_glapi->glPatchParameteri
+#define glTexParameterIiv __evas_gl_glapi->glTexParameterIiv
+#define glTexParameterIuiv __evas_gl_glapi->glTexParameterIuiv
+#define glGetTexParameterIiv __evas_gl_glapi->glGetTexParameterIiv
+#define glGetTexParameterIuiv __evas_gl_glapi->glGetTexParameterIuiv
+#define glSamplerParameterIiv __evas_gl_glapi->glSamplerParameterIiv
+#define glSamplerParameterIuiv __evas_gl_glapi->glSamplerParameterIuiv
+#define glGetSamplerParameterIiv __evas_gl_glapi->glGetSamplerParameterIiv
+#define glGetSamplerParameterIuiv __evas_gl_glapi->glGetSamplerParameterIuiv
+#define glTexBuffer __evas_gl_glapi->glTexBuffer
+#define glTexBufferRange __evas_gl_glapi->glTexBufferRange
+#define glTexStorage3DMultisample __evas_gl_glapi->glTexStorage3DMultisample
 
 /**
  * @ingroup Evas_GL_GLES3_Helpers

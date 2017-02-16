@@ -177,7 +177,6 @@ typedef struct
 {
    GLenum target;
    GLuint buffer;
-   int command_allocated;
 
 } EVGL_API_Thread_Command_glBindBuffer;
 
@@ -192,8 +191,6 @@ _evgl_api_thread_glBindBuffer(void *data)
    orig_evgl_api_glBindBuffer(thread_data->target,
                               thread_data->buffer);
 
-   if (thread_data->command_allocated)
-     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -31926,6 +31923,2097 @@ glVertexBindingDivisor_evgl_api_thread_cmd(GLuint bindingindex, GLuint divisor)
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _evgl_api_thread_glVertexBindingDivisor,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glBlendBarrier(void);
+ */
+
+void (*orig_evgl_api_glBlendBarrier)(void);
+
+static void
+_evgl_api_thread_glBlendBarrier(void *data EINA_UNUSED)
+{
+   orig_evgl_api_glBlendBarrier();
+
+}
+
+EAPI void
+glBlendBarrier_evgl_api_thread_cmd(void)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glBlendBarrier();
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glBlendBarrier,
+                              NULL,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glCopyImageSubData(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);
+ */
+
+typedef struct
+{
+   GLuint srcName;
+   GLenum srcTarget;
+   GLint srcLevel;
+   GLint srcX;
+   GLint srcY;
+   GLint srcZ;
+   GLuint dstName;
+   GLenum dstTarget;
+   GLint dstLevel;
+   GLint dstX;
+   GLint dstY;
+   GLint dstZ;
+   GLsizei srcWidth;
+   GLsizei srcHeight;
+   GLsizei srcDepth;
+
+} EVGL_API_Thread_Command_glCopyImageSubData;
+
+void (*orig_evgl_api_glCopyImageSubData)(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);
+
+static void
+_evgl_api_thread_glCopyImageSubData(void *data)
+{
+   EVGL_API_Thread_Command_glCopyImageSubData *thread_data =
+      (EVGL_API_Thread_Command_glCopyImageSubData *)data;
+
+   orig_evgl_api_glCopyImageSubData(thread_data->srcName,
+                                    thread_data->srcTarget,
+                                    thread_data->srcLevel,
+                                    thread_data->srcX,
+                                    thread_data->srcY,
+                                    thread_data->srcZ,
+                                    thread_data->dstName,
+                                    thread_data->dstTarget,
+                                    thread_data->dstLevel,
+                                    thread_data->dstX,
+                                    thread_data->dstY,
+                                    thread_data->dstZ,
+                                    thread_data->srcWidth,
+                                    thread_data->srcHeight,
+                                    thread_data->srcDepth);
+
+}
+
+EAPI void
+glCopyImageSubData_evgl_api_thread_cmd(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glCopyImageSubData(srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, srcWidth, srcHeight, srcDepth);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glCopyImageSubData thread_data_local;
+   EVGL_API_Thread_Command_glCopyImageSubData *thread_data = &thread_data_local;
+
+   thread_data->srcName = srcName;
+   thread_data->srcTarget = srcTarget;
+   thread_data->srcLevel = srcLevel;
+   thread_data->srcX = srcX;
+   thread_data->srcY = srcY;
+   thread_data->srcZ = srcZ;
+   thread_data->dstName = dstName;
+   thread_data->dstTarget = dstTarget;
+   thread_data->dstLevel = dstLevel;
+   thread_data->dstX = dstX;
+   thread_data->dstY = dstY;
+   thread_data->dstZ = dstZ;
+   thread_data->srcWidth = srcWidth;
+   thread_data->srcHeight = srcHeight;
+   thread_data->srcDepth = srcDepth;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glCopyImageSubData,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glDebugMessageControl(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled);
+ */
+
+typedef struct
+{
+   GLenum source;
+   GLenum type;
+   GLenum severity;
+   GLsizei count;
+   const GLuint *ids;
+   GLboolean enabled;
+
+} EVGL_API_Thread_Command_glDebugMessageControl;
+
+void (*orig_evgl_api_glDebugMessageControl)(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled);
+
+static void
+_evgl_api_thread_glDebugMessageControl(void *data)
+{
+   EVGL_API_Thread_Command_glDebugMessageControl *thread_data =
+      (EVGL_API_Thread_Command_glDebugMessageControl *)data;
+
+   orig_evgl_api_glDebugMessageControl(thread_data->source,
+                                       thread_data->type,
+                                       thread_data->severity,
+                                       thread_data->count,
+                                       thread_data->ids,
+                                       thread_data->enabled);
+
+}
+
+EAPI void
+glDebugMessageControl_evgl_api_thread_cmd(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glDebugMessageControl(source, type, severity, count, ids, enabled);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glDebugMessageControl thread_data_local;
+   EVGL_API_Thread_Command_glDebugMessageControl *thread_data = &thread_data_local;
+
+   thread_data->source = source;
+   thread_data->type = type;
+   thread_data->severity = severity;
+   thread_data->count = count;
+   thread_data->ids = ids;
+   thread_data->enabled = enabled;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glDebugMessageControl,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glDebugMessageInsert(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf);
+ */
+
+typedef struct
+{
+   GLenum source;
+   GLenum type;
+   GLuint id;
+   GLenum severity;
+   GLsizei length;
+   const GLchar *buf;
+
+} EVGL_API_Thread_Command_glDebugMessageInsert;
+
+void (*orig_evgl_api_glDebugMessageInsert)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf);
+
+static void
+_evgl_api_thread_glDebugMessageInsert(void *data)
+{
+   EVGL_API_Thread_Command_glDebugMessageInsert *thread_data =
+      (EVGL_API_Thread_Command_glDebugMessageInsert *)data;
+
+   orig_evgl_api_glDebugMessageInsert(thread_data->source,
+                                      thread_data->type,
+                                      thread_data->id,
+                                      thread_data->severity,
+                                      thread_data->length,
+                                      thread_data->buf);
+
+}
+
+EAPI void
+glDebugMessageInsert_evgl_api_thread_cmd(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glDebugMessageInsert(source, type, id, severity, length, buf);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glDebugMessageInsert thread_data_local;
+   EVGL_API_Thread_Command_glDebugMessageInsert *thread_data = &thread_data_local;
+
+   thread_data->source = source;
+   thread_data->type = type;
+   thread_data->id = id;
+   thread_data->severity = severity;
+   thread_data->length = length;
+   thread_data->buf = buf;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glDebugMessageInsert,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glDebugMessageCallback(GLDEBUGPROC callback, const void *userParam);
+ */
+
+typedef struct
+{
+   GLDEBUGPROC callback;
+   const void *userParam;
+
+} EVGL_API_Thread_Command_glDebugMessageCallback;
+
+void (*orig_evgl_api_glDebugMessageCallback)(GLDEBUGPROC callback, const void *userParam);
+
+static void
+_evgl_api_thread_glDebugMessageCallback(void *data)
+{
+   EVGL_API_Thread_Command_glDebugMessageCallback *thread_data =
+      (EVGL_API_Thread_Command_glDebugMessageCallback *)data;
+
+   orig_evgl_api_glDebugMessageCallback(thread_data->callback,
+                                        thread_data->userParam);
+
+}
+
+EAPI void
+glDebugMessageCallback_evgl_api_thread_cmd(GLDEBUGPROC callback, const void *userParam)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glDebugMessageCallback(callback, userParam);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glDebugMessageCallback thread_data_local;
+   EVGL_API_Thread_Command_glDebugMessageCallback *thread_data = &thread_data_local;
+
+   thread_data->callback = callback;
+   thread_data->userParam = userParam;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glDebugMessageCallback,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * GLuint
+ * glGetDebugMessageLog(GLuint count, GLsizei bufSize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog);
+ */
+
+typedef struct
+{
+   GLuint return_value;
+   GLuint count;
+   GLsizei bufSize;
+   GLenum *sources;
+   GLenum *types;
+   GLuint *ids;
+   GLenum *severities;
+   GLsizei *lengths;
+   GLchar *messageLog;
+
+} EVGL_API_Thread_Command_glGetDebugMessageLog;
+
+GLuint (*orig_evgl_api_glGetDebugMessageLog)(GLuint count, GLsizei bufSize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog);
+
+static void
+_evgl_api_thread_glGetDebugMessageLog(void *data)
+{
+   EVGL_API_Thread_Command_glGetDebugMessageLog *thread_data =
+      (EVGL_API_Thread_Command_glGetDebugMessageLog *)data;
+
+   thread_data->return_value = orig_evgl_api_glGetDebugMessageLog(thread_data->count,
+                                                                  thread_data->bufSize,
+                                                                  thread_data->sources,
+                                                                  thread_data->types,
+                                                                  thread_data->ids,
+                                                                  thread_data->severities,
+                                                                  thread_data->lengths,
+                                                                  thread_data->messageLog);
+
+}
+
+EAPI GLuint
+glGetDebugMessageLog_evgl_api_thread_cmd(GLuint count, GLsizei bufSize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        return orig_evgl_api_glGetDebugMessageLog(count, bufSize, sources, types, ids, severities, lengths, messageLog);
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glGetDebugMessageLog thread_data_local;
+   EVGL_API_Thread_Command_glGetDebugMessageLog *thread_data = &thread_data_local;
+
+   thread_data->count = count;
+   thread_data->bufSize = bufSize;
+   thread_data->sources = sources;
+   thread_data->types = types;
+   thread_data->ids = ids;
+   thread_data->severities = severities;
+   thread_data->lengths = lengths;
+   thread_data->messageLog = messageLog;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glGetDebugMessageLog,
+                              thread_data,
+                              thread_mode);
+
+   return thread_data->return_value;
+}
+
+/*
+ * void
+ * glPushDebugGroup(GLenum source, GLuint id, GLsizei length, const GLchar *message);
+ */
+
+typedef struct
+{
+   GLenum source;
+   GLuint id;
+   GLsizei length;
+   const GLchar *message;
+
+} EVGL_API_Thread_Command_glPushDebugGroup;
+
+void (*orig_evgl_api_glPushDebugGroup)(GLenum source, GLuint id, GLsizei length, const GLchar *message);
+
+static void
+_evgl_api_thread_glPushDebugGroup(void *data)
+{
+   EVGL_API_Thread_Command_glPushDebugGroup *thread_data =
+      (EVGL_API_Thread_Command_glPushDebugGroup *)data;
+
+   orig_evgl_api_glPushDebugGroup(thread_data->source,
+                                  thread_data->id,
+                                  thread_data->length,
+                                  thread_data->message);
+
+}
+
+EAPI void
+glPushDebugGroup_evgl_api_thread_cmd(GLenum source, GLuint id, GLsizei length, const GLchar *message)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glPushDebugGroup(source, id, length, message);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glPushDebugGroup thread_data_local;
+   EVGL_API_Thread_Command_glPushDebugGroup *thread_data = &thread_data_local;
+
+   thread_data->source = source;
+   thread_data->id = id;
+   thread_data->length = length;
+   thread_data->message = message;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glPushDebugGroup,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glPopDebugGroup(void);
+ */
+
+void (*orig_evgl_api_glPopDebugGroup)(void);
+
+static void
+_evgl_api_thread_glPopDebugGroup(void *data EINA_UNUSED)
+{
+   orig_evgl_api_glPopDebugGroup();
+
+}
+
+EAPI void
+glPopDebugGroup_evgl_api_thread_cmd(void)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glPopDebugGroup();
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glPopDebugGroup,
+                              NULL,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glObjectLabel(GLenum identifier, GLuint name, GLsizei length, const GLchar *label);
+ */
+
+typedef struct
+{
+   GLenum identifier;
+   GLuint name;
+   GLsizei length;
+   const GLchar *label;
+
+} EVGL_API_Thread_Command_glObjectLabel;
+
+void (*orig_evgl_api_glObjectLabel)(GLenum identifier, GLuint name, GLsizei length, const GLchar *label);
+
+static void
+_evgl_api_thread_glObjectLabel(void *data)
+{
+   EVGL_API_Thread_Command_glObjectLabel *thread_data =
+      (EVGL_API_Thread_Command_glObjectLabel *)data;
+
+   orig_evgl_api_glObjectLabel(thread_data->identifier,
+                               thread_data->name,
+                               thread_data->length,
+                               thread_data->label);
+
+}
+
+EAPI void
+glObjectLabel_evgl_api_thread_cmd(GLenum identifier, GLuint name, GLsizei length, const GLchar *label)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glObjectLabel(identifier, name, length, label);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glObjectLabel thread_data_local;
+   EVGL_API_Thread_Command_glObjectLabel *thread_data = &thread_data_local;
+
+   thread_data->identifier = identifier;
+   thread_data->name = name;
+   thread_data->length = length;
+   thread_data->label = label;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glObjectLabel,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glGetObjectLabel(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei *length, GLchar *label);
+ */
+
+typedef struct
+{
+   GLenum identifier;
+   GLuint name;
+   GLsizei bufSize;
+   GLsizei *length;
+   GLchar *label;
+
+} EVGL_API_Thread_Command_glGetObjectLabel;
+
+void (*orig_evgl_api_glGetObjectLabel)(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei *length, GLchar *label);
+
+static void
+_evgl_api_thread_glGetObjectLabel(void *data)
+{
+   EVGL_API_Thread_Command_glGetObjectLabel *thread_data =
+      (EVGL_API_Thread_Command_glGetObjectLabel *)data;
+
+   orig_evgl_api_glGetObjectLabel(thread_data->identifier,
+                                  thread_data->name,
+                                  thread_data->bufSize,
+                                  thread_data->length,
+                                  thread_data->label);
+
+}
+
+EAPI void
+glGetObjectLabel_evgl_api_thread_cmd(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei *length, GLchar *label)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glGetObjectLabel(identifier, name, bufSize, length, label);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glGetObjectLabel thread_data_local;
+   EVGL_API_Thread_Command_glGetObjectLabel *thread_data = &thread_data_local;
+
+   thread_data->identifier = identifier;
+   thread_data->name = name;
+   thread_data->bufSize = bufSize;
+   thread_data->length = length;
+   thread_data->label = label;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glGetObjectLabel,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glObjectPtrLabel(const void *ptr, GLsizei length, const GLchar *label);
+ */
+
+typedef struct
+{
+   const void *ptr;
+   GLsizei length;
+   const GLchar *label;
+
+} EVGL_API_Thread_Command_glObjectPtrLabel;
+
+void (*orig_evgl_api_glObjectPtrLabel)(const void *ptr, GLsizei length, const GLchar *label);
+
+static void
+_evgl_api_thread_glObjectPtrLabel(void *data)
+{
+   EVGL_API_Thread_Command_glObjectPtrLabel *thread_data =
+      (EVGL_API_Thread_Command_glObjectPtrLabel *)data;
+
+   orig_evgl_api_glObjectPtrLabel(thread_data->ptr,
+                                  thread_data->length,
+                                  thread_data->label);
+
+}
+
+EAPI void
+glObjectPtrLabel_evgl_api_thread_cmd(const void *ptr, GLsizei length, const GLchar *label)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glObjectPtrLabel(ptr, length, label);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glObjectPtrLabel thread_data_local;
+   EVGL_API_Thread_Command_glObjectPtrLabel *thread_data = &thread_data_local;
+
+   thread_data->ptr = ptr;
+   thread_data->length = length;
+   thread_data->label = label;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glObjectPtrLabel,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glGetObjectPtrLabel(const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label);
+ */
+
+typedef struct
+{
+   const void *ptr;
+   GLsizei bufSize;
+   GLsizei *length;
+   GLchar *label;
+
+} EVGL_API_Thread_Command_glGetObjectPtrLabel;
+
+void (*orig_evgl_api_glGetObjectPtrLabel)(const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label);
+
+static void
+_evgl_api_thread_glGetObjectPtrLabel(void *data)
+{
+   EVGL_API_Thread_Command_glGetObjectPtrLabel *thread_data =
+      (EVGL_API_Thread_Command_glGetObjectPtrLabel *)data;
+
+   orig_evgl_api_glGetObjectPtrLabel(thread_data->ptr,
+                                     thread_data->bufSize,
+                                     thread_data->length,
+                                     thread_data->label);
+
+}
+
+EAPI void
+glGetObjectPtrLabel_evgl_api_thread_cmd(const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glGetObjectPtrLabel(ptr, bufSize, length, label);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glGetObjectPtrLabel thread_data_local;
+   EVGL_API_Thread_Command_glGetObjectPtrLabel *thread_data = &thread_data_local;
+
+   thread_data->ptr = ptr;
+   thread_data->bufSize = bufSize;
+   thread_data->length = length;
+   thread_data->label = label;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glGetObjectPtrLabel,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glEnablei(GLenum target, GLuint index);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLuint index;
+
+} EVGL_API_Thread_Command_glEnablei;
+
+void (*orig_evgl_api_glEnablei)(GLenum target, GLuint index);
+
+static void
+_evgl_api_thread_glEnablei(void *data)
+{
+   EVGL_API_Thread_Command_glEnablei *thread_data =
+      (EVGL_API_Thread_Command_glEnablei *)data;
+
+   orig_evgl_api_glEnablei(thread_data->target,
+                           thread_data->index);
+
+}
+
+EAPI void
+glEnablei_evgl_api_thread_cmd(GLenum target, GLuint index)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glEnablei(target, index);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glEnablei thread_data_local;
+   EVGL_API_Thread_Command_glEnablei *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->index = index;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glEnablei,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glDisablei(GLenum target, GLuint index);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLuint index;
+
+} EVGL_API_Thread_Command_glDisablei;
+
+void (*orig_evgl_api_glDisablei)(GLenum target, GLuint index);
+
+static void
+_evgl_api_thread_glDisablei(void *data)
+{
+   EVGL_API_Thread_Command_glDisablei *thread_data =
+      (EVGL_API_Thread_Command_glDisablei *)data;
+
+   orig_evgl_api_glDisablei(thread_data->target,
+                            thread_data->index);
+
+}
+
+EAPI void
+glDisablei_evgl_api_thread_cmd(GLenum target, GLuint index)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glDisablei(target, index);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glDisablei thread_data_local;
+   EVGL_API_Thread_Command_glDisablei *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->index = index;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glDisablei,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glBlendEquationi(GLuint buf, GLenum mode);
+ */
+
+typedef struct
+{
+   GLuint buf;
+   GLenum mode;
+
+} EVGL_API_Thread_Command_glBlendEquationi;
+
+void (*orig_evgl_api_glBlendEquationi)(GLuint buf, GLenum mode);
+
+static void
+_evgl_api_thread_glBlendEquationi(void *data)
+{
+   EVGL_API_Thread_Command_glBlendEquationi *thread_data =
+      (EVGL_API_Thread_Command_glBlendEquationi *)data;
+
+   orig_evgl_api_glBlendEquationi(thread_data->buf,
+                                  thread_data->mode);
+
+}
+
+EAPI void
+glBlendEquationi_evgl_api_thread_cmd(GLuint buf, GLenum mode)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glBlendEquationi(buf, mode);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glBlendEquationi thread_data_local;
+   EVGL_API_Thread_Command_glBlendEquationi *thread_data = &thread_data_local;
+
+   thread_data->buf = buf;
+   thread_data->mode = mode;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glBlendEquationi,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glBlendEquationSeparatei(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
+ */
+
+typedef struct
+{
+   GLuint buf;
+   GLenum modeRGB;
+   GLenum modeAlpha;
+
+} EVGL_API_Thread_Command_glBlendEquationSeparatei;
+
+void (*orig_evgl_api_glBlendEquationSeparatei)(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
+
+static void
+_evgl_api_thread_glBlendEquationSeparatei(void *data)
+{
+   EVGL_API_Thread_Command_glBlendEquationSeparatei *thread_data =
+      (EVGL_API_Thread_Command_glBlendEquationSeparatei *)data;
+
+   orig_evgl_api_glBlendEquationSeparatei(thread_data->buf,
+                                          thread_data->modeRGB,
+                                          thread_data->modeAlpha);
+
+}
+
+EAPI void
+glBlendEquationSeparatei_evgl_api_thread_cmd(GLuint buf, GLenum modeRGB, GLenum modeAlpha)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glBlendEquationSeparatei(buf, modeRGB, modeAlpha);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glBlendEquationSeparatei thread_data_local;
+   EVGL_API_Thread_Command_glBlendEquationSeparatei *thread_data = &thread_data_local;
+
+   thread_data->buf = buf;
+   thread_data->modeRGB = modeRGB;
+   thread_data->modeAlpha = modeAlpha;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glBlendEquationSeparatei,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glBlendFunci(GLuint buf, GLenum src, GLenum dst);
+ */
+
+typedef struct
+{
+   GLuint buf;
+   GLenum src;
+   GLenum dst;
+
+} EVGL_API_Thread_Command_glBlendFunci;
+
+void (*orig_evgl_api_glBlendFunci)(GLuint buf, GLenum src, GLenum dst);
+
+static void
+_evgl_api_thread_glBlendFunci(void *data)
+{
+   EVGL_API_Thread_Command_glBlendFunci *thread_data =
+      (EVGL_API_Thread_Command_glBlendFunci *)data;
+
+   orig_evgl_api_glBlendFunci(thread_data->buf,
+                              thread_data->src,
+                              thread_data->dst);
+
+}
+
+EAPI void
+glBlendFunci_evgl_api_thread_cmd(GLuint buf, GLenum src, GLenum dst)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glBlendFunci(buf, src, dst);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glBlendFunci thread_data_local;
+   EVGL_API_Thread_Command_glBlendFunci *thread_data = &thread_data_local;
+
+   thread_data->buf = buf;
+   thread_data->src = src;
+   thread_data->dst = dst;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glBlendFunci,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glBlendFuncSeparatei(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+ */
+
+typedef struct
+{
+   GLuint buf;
+   GLenum srcRGB;
+   GLenum dstRGB;
+   GLenum srcAlpha;
+   GLenum dstAlpha;
+
+} EVGL_API_Thread_Command_glBlendFuncSeparatei;
+
+void (*orig_evgl_api_glBlendFuncSeparatei)(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+
+static void
+_evgl_api_thread_glBlendFuncSeparatei(void *data)
+{
+   EVGL_API_Thread_Command_glBlendFuncSeparatei *thread_data =
+      (EVGL_API_Thread_Command_glBlendFuncSeparatei *)data;
+
+   orig_evgl_api_glBlendFuncSeparatei(thread_data->buf,
+                                      thread_data->srcRGB,
+                                      thread_data->dstRGB,
+                                      thread_data->srcAlpha,
+                                      thread_data->dstAlpha);
+
+}
+
+EAPI void
+glBlendFuncSeparatei_evgl_api_thread_cmd(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glBlendFuncSeparatei(buf, srcRGB, dstRGB, srcAlpha, dstAlpha);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glBlendFuncSeparatei thread_data_local;
+   EVGL_API_Thread_Command_glBlendFuncSeparatei *thread_data = &thread_data_local;
+
+   thread_data->buf = buf;
+   thread_data->srcRGB = srcRGB;
+   thread_data->dstRGB = dstRGB;
+   thread_data->srcAlpha = srcAlpha;
+   thread_data->dstAlpha = dstAlpha;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glBlendFuncSeparatei,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glColorMaski(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
+ */
+
+typedef struct
+{
+   GLuint index;
+   GLboolean r;
+   GLboolean g;
+   GLboolean b;
+   GLboolean a;
+
+} EVGL_API_Thread_Command_glColorMaski;
+
+void (*orig_evgl_api_glColorMaski)(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
+
+static void
+_evgl_api_thread_glColorMaski(void *data)
+{
+   EVGL_API_Thread_Command_glColorMaski *thread_data =
+      (EVGL_API_Thread_Command_glColorMaski *)data;
+
+   orig_evgl_api_glColorMaski(thread_data->index,
+                              thread_data->r,
+                              thread_data->g,
+                              thread_data->b,
+                              thread_data->a);
+
+}
+
+EAPI void
+glColorMaski_evgl_api_thread_cmd(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glColorMaski(index, r, g, b, a);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glColorMaski thread_data_local;
+   EVGL_API_Thread_Command_glColorMaski *thread_data = &thread_data_local;
+
+   thread_data->index = index;
+   thread_data->r = r;
+   thread_data->g = g;
+   thread_data->b = b;
+   thread_data->a = a;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glColorMaski,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * GLboolean
+ * glIsEnabledi(GLenum target, GLuint index);
+ */
+
+typedef struct
+{
+   GLboolean return_value;
+   GLenum target;
+   GLuint index;
+
+} EVGL_API_Thread_Command_glIsEnabledi;
+
+GLboolean (*orig_evgl_api_glIsEnabledi)(GLenum target, GLuint index);
+
+static void
+_evgl_api_thread_glIsEnabledi(void *data)
+{
+   EVGL_API_Thread_Command_glIsEnabledi *thread_data =
+      (EVGL_API_Thread_Command_glIsEnabledi *)data;
+
+   thread_data->return_value = orig_evgl_api_glIsEnabledi(thread_data->target,
+                                                          thread_data->index);
+
+}
+
+EAPI GLboolean
+glIsEnabledi_evgl_api_thread_cmd(GLenum target, GLuint index)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        return orig_evgl_api_glIsEnabledi(target, index);
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glIsEnabledi thread_data_local;
+   EVGL_API_Thread_Command_glIsEnabledi *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->index = index;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glIsEnabledi,
+                              thread_data,
+                              thread_mode);
+
+   return thread_data->return_value;
+}
+
+/*
+ * void
+ * glDrawElementsBaseVertex(GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+ */
+
+typedef struct
+{
+   GLenum mode;
+   GLsizei count;
+   GLenum type;
+   const void *indices;
+   GLint basevertex;
+
+} EVGL_API_Thread_Command_glDrawElementsBaseVertex;
+
+void (*orig_evgl_api_glDrawElementsBaseVertex)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+
+static void
+_evgl_api_thread_glDrawElementsBaseVertex(void *data)
+{
+   EVGL_API_Thread_Command_glDrawElementsBaseVertex *thread_data =
+      (EVGL_API_Thread_Command_glDrawElementsBaseVertex *)data;
+
+   orig_evgl_api_glDrawElementsBaseVertex(thread_data->mode,
+                                          thread_data->count,
+                                          thread_data->type,
+                                          thread_data->indices,
+                                          thread_data->basevertex);
+
+}
+
+EAPI void
+glDrawElementsBaseVertex_evgl_api_thread_cmd(GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glDrawElementsBaseVertex(mode, count, type, indices, basevertex);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glDrawElementsBaseVertex thread_data_local;
+   EVGL_API_Thread_Command_glDrawElementsBaseVertex *thread_data = &thread_data_local;
+
+   thread_data->mode = mode;
+   thread_data->count = count;
+   thread_data->type = type;
+   thread_data->indices = indices;
+   thread_data->basevertex = basevertex;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glDrawElementsBaseVertex,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glDrawRangeElementsBaseVertex(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+ */
+
+typedef struct
+{
+   GLenum mode;
+   GLuint start;
+   GLuint end;
+   GLsizei count;
+   GLenum type;
+   const void *indices;
+   GLint basevertex;
+
+} EVGL_API_Thread_Command_glDrawRangeElementsBaseVertex;
+
+void (*orig_evgl_api_glDrawRangeElementsBaseVertex)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+
+static void
+_evgl_api_thread_glDrawRangeElementsBaseVertex(void *data)
+{
+   EVGL_API_Thread_Command_glDrawRangeElementsBaseVertex *thread_data =
+      (EVGL_API_Thread_Command_glDrawRangeElementsBaseVertex *)data;
+
+   orig_evgl_api_glDrawRangeElementsBaseVertex(thread_data->mode,
+                                               thread_data->start,
+                                               thread_data->end,
+                                               thread_data->count,
+                                               thread_data->type,
+                                               thread_data->indices,
+                                               thread_data->basevertex);
+
+}
+
+EAPI void
+glDrawRangeElementsBaseVertex_evgl_api_thread_cmd(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLint basevertex)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glDrawRangeElementsBaseVertex(mode, start, end, count, type, indices, basevertex);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glDrawRangeElementsBaseVertex thread_data_local;
+   EVGL_API_Thread_Command_glDrawRangeElementsBaseVertex *thread_data = &thread_data_local;
+
+   thread_data->mode = mode;
+   thread_data->start = start;
+   thread_data->end = end;
+   thread_data->count = count;
+   thread_data->type = type;
+   thread_data->indices = indices;
+   thread_data->basevertex = basevertex;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glDrawRangeElementsBaseVertex,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glDrawElementsInstancedBaseVertex(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex);
+ */
+
+typedef struct
+{
+   GLenum mode;
+   GLsizei count;
+   GLenum type;
+   const void *indices;
+   GLsizei instancecount;
+   GLint basevertex;
+
+} EVGL_API_Thread_Command_glDrawElementsInstancedBaseVertex;
+
+void (*orig_evgl_api_glDrawElementsInstancedBaseVertex)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex);
+
+static void
+_evgl_api_thread_glDrawElementsInstancedBaseVertex(void *data)
+{
+   EVGL_API_Thread_Command_glDrawElementsInstancedBaseVertex *thread_data =
+      (EVGL_API_Thread_Command_glDrawElementsInstancedBaseVertex *)data;
+
+   orig_evgl_api_glDrawElementsInstancedBaseVertex(thread_data->mode,
+                                                   thread_data->count,
+                                                   thread_data->type,
+                                                   thread_data->indices,
+                                                   thread_data->instancecount,
+                                                   thread_data->basevertex);
+
+}
+
+EAPI void
+glDrawElementsInstancedBaseVertex_evgl_api_thread_cmd(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glDrawElementsInstancedBaseVertex(mode, count, type, indices, instancecount, basevertex);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glDrawElementsInstancedBaseVertex thread_data_local;
+   EVGL_API_Thread_Command_glDrawElementsInstancedBaseVertex *thread_data = &thread_data_local;
+
+   thread_data->mode = mode;
+   thread_data->count = count;
+   thread_data->type = type;
+   thread_data->indices = indices;
+   thread_data->instancecount = instancecount;
+   thread_data->basevertex = basevertex;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glDrawElementsInstancedBaseVertex,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glFramebufferTexture(GLenum target, GLenum attachment, GLuint texture, GLint level);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLenum attachment;
+   GLuint texture;
+   GLint level;
+
+} EVGL_API_Thread_Command_glFramebufferTexture;
+
+void (*orig_evgl_api_glFramebufferTexture)(GLenum target, GLenum attachment, GLuint texture, GLint level);
+
+static void
+_evgl_api_thread_glFramebufferTexture(void *data)
+{
+   EVGL_API_Thread_Command_glFramebufferTexture *thread_data =
+      (EVGL_API_Thread_Command_glFramebufferTexture *)data;
+
+   orig_evgl_api_glFramebufferTexture(thread_data->target,
+                                      thread_data->attachment,
+                                      thread_data->texture,
+                                      thread_data->level);
+
+}
+
+EAPI void
+glFramebufferTexture_evgl_api_thread_cmd(GLenum target, GLenum attachment, GLuint texture, GLint level)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glFramebufferTexture(target, attachment, texture, level);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glFramebufferTexture thread_data_local;
+   EVGL_API_Thread_Command_glFramebufferTexture *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->attachment = attachment;
+   thread_data->texture = texture;
+   thread_data->level = level;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glFramebufferTexture,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glPrimitiveBoundingBox(GLfloat minX, GLfloat minY, GLfloat minZ, GLfloat minW, GLfloat maxX, GLfloat maxY, GLfloat maxZ, GLfloat maxW);
+ */
+
+typedef struct
+{
+   GLfloat minX;
+   GLfloat minY;
+   GLfloat minZ;
+   GLfloat minW;
+   GLfloat maxX;
+   GLfloat maxY;
+   GLfloat maxZ;
+   GLfloat maxW;
+
+} EVGL_API_Thread_Command_glPrimitiveBoundingBox;
+
+void (*orig_evgl_api_glPrimitiveBoundingBox)(GLfloat minX, GLfloat minY, GLfloat minZ, GLfloat minW, GLfloat maxX, GLfloat maxY, GLfloat maxZ, GLfloat maxW);
+
+static void
+_evgl_api_thread_glPrimitiveBoundingBox(void *data)
+{
+   EVGL_API_Thread_Command_glPrimitiveBoundingBox *thread_data =
+      (EVGL_API_Thread_Command_glPrimitiveBoundingBox *)data;
+
+   orig_evgl_api_glPrimitiveBoundingBox(thread_data->minX,
+                                        thread_data->minY,
+                                        thread_data->minZ,
+                                        thread_data->minW,
+                                        thread_data->maxX,
+                                        thread_data->maxY,
+                                        thread_data->maxZ,
+                                        thread_data->maxW);
+
+}
+
+EAPI void
+glPrimitiveBoundingBox_evgl_api_thread_cmd(GLfloat minX, GLfloat minY, GLfloat minZ, GLfloat minW, GLfloat maxX, GLfloat maxY, GLfloat maxZ, GLfloat maxW)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glPrimitiveBoundingBox(minX, minY, minZ, minW, maxX, maxY, maxZ, maxW);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glPrimitiveBoundingBox thread_data_local;
+   EVGL_API_Thread_Command_glPrimitiveBoundingBox *thread_data = &thread_data_local;
+
+   thread_data->minX = minX;
+   thread_data->minY = minY;
+   thread_data->minZ = minZ;
+   thread_data->minW = minW;
+   thread_data->maxX = maxX;
+   thread_data->maxY = maxY;
+   thread_data->maxZ = maxZ;
+   thread_data->maxW = maxW;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glPrimitiveBoundingBox,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glGetnUniformuiv(GLuint program, GLint location, GLsizei bufSize, GLuint *params);
+ */
+
+typedef struct
+{
+   GLuint program;
+   GLint location;
+   GLsizei bufSize;
+   GLuint *params;
+
+} EVGL_API_Thread_Command_glGetnUniformuiv;
+
+void (*orig_evgl_api_glGetnUniformuiv)(GLuint program, GLint location, GLsizei bufSize, GLuint *params);
+
+static void
+_evgl_api_thread_glGetnUniformuiv(void *data)
+{
+   EVGL_API_Thread_Command_glGetnUniformuiv *thread_data =
+      (EVGL_API_Thread_Command_glGetnUniformuiv *)data;
+
+   orig_evgl_api_glGetnUniformuiv(thread_data->program,
+                                  thread_data->location,
+                                  thread_data->bufSize,
+                                  thread_data->params);
+
+}
+
+EAPI void
+glGetnUniformuiv_evgl_api_thread_cmd(GLuint program, GLint location, GLsizei bufSize, GLuint *params)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glGetnUniformuiv(program, location, bufSize, params);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glGetnUniformuiv thread_data_local;
+   EVGL_API_Thread_Command_glGetnUniformuiv *thread_data = &thread_data_local;
+
+   thread_data->program = program;
+   thread_data->location = location;
+   thread_data->bufSize = bufSize;
+   thread_data->params = params;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glGetnUniformuiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glMinSampleShading(GLfloat value);
+ */
+
+typedef struct
+{
+   GLfloat value;
+
+} EVGL_API_Thread_Command_glMinSampleShading;
+
+void (*orig_evgl_api_glMinSampleShading)(GLfloat value);
+
+static void
+_evgl_api_thread_glMinSampleShading(void *data)
+{
+   EVGL_API_Thread_Command_glMinSampleShading *thread_data =
+      (EVGL_API_Thread_Command_glMinSampleShading *)data;
+
+   orig_evgl_api_glMinSampleShading(thread_data->value);
+
+}
+
+EAPI void
+glMinSampleShading_evgl_api_thread_cmd(GLfloat value)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glMinSampleShading(value);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glMinSampleShading thread_data_local;
+   EVGL_API_Thread_Command_glMinSampleShading *thread_data = &thread_data_local;
+
+   thread_data->value = value;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glMinSampleShading,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glPatchParameteri(GLenum pname, GLint value);
+ */
+
+typedef struct
+{
+   GLenum pname;
+   GLint value;
+
+} EVGL_API_Thread_Command_glPatchParameteri;
+
+void (*orig_evgl_api_glPatchParameteri)(GLenum pname, GLint value);
+
+static void
+_evgl_api_thread_glPatchParameteri(void *data)
+{
+   EVGL_API_Thread_Command_glPatchParameteri *thread_data =
+      (EVGL_API_Thread_Command_glPatchParameteri *)data;
+
+   orig_evgl_api_glPatchParameteri(thread_data->pname,
+                                   thread_data->value);
+
+}
+
+EAPI void
+glPatchParameteri_evgl_api_thread_cmd(GLenum pname, GLint value)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glPatchParameteri(pname, value);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glPatchParameteri thread_data_local;
+   EVGL_API_Thread_Command_glPatchParameteri *thread_data = &thread_data_local;
+
+   thread_data->pname = pname;
+   thread_data->value = value;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glPatchParameteri,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glTexParameterIiv(GLenum target, GLenum pname, const GLint *params);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLenum pname;
+   const GLint *params;
+
+} EVGL_API_Thread_Command_glTexParameterIiv;
+
+void (*orig_evgl_api_glTexParameterIiv)(GLenum target, GLenum pname, const GLint *params);
+
+static void
+_evgl_api_thread_glTexParameterIiv(void *data)
+{
+   EVGL_API_Thread_Command_glTexParameterIiv *thread_data =
+      (EVGL_API_Thread_Command_glTexParameterIiv *)data;
+
+   orig_evgl_api_glTexParameterIiv(thread_data->target,
+                                   thread_data->pname,
+                                   thread_data->params);
+
+}
+
+EAPI void
+glTexParameterIiv_evgl_api_thread_cmd(GLenum target, GLenum pname, const GLint *params)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glTexParameterIiv(target, pname, params);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glTexParameterIiv thread_data_local;
+   EVGL_API_Thread_Command_glTexParameterIiv *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glTexParameterIiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glTexParameterIuiv(GLenum target, GLenum pname, const GLuint *params);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLenum pname;
+   const GLuint *params;
+
+} EVGL_API_Thread_Command_glTexParameterIuiv;
+
+void (*orig_evgl_api_glTexParameterIuiv)(GLenum target, GLenum pname, const GLuint *params);
+
+static void
+_evgl_api_thread_glTexParameterIuiv(void *data)
+{
+   EVGL_API_Thread_Command_glTexParameterIuiv *thread_data =
+      (EVGL_API_Thread_Command_glTexParameterIuiv *)data;
+
+   orig_evgl_api_glTexParameterIuiv(thread_data->target,
+                                    thread_data->pname,
+                                    thread_data->params);
+
+}
+
+EAPI void
+glTexParameterIuiv_evgl_api_thread_cmd(GLenum target, GLenum pname, const GLuint *params)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glTexParameterIuiv(target, pname, params);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glTexParameterIuiv thread_data_local;
+   EVGL_API_Thread_Command_glTexParameterIuiv *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glTexParameterIuiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glGetTexParameterIiv(GLenum target, GLenum pname, GLint *params);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLenum pname;
+   GLint *params;
+
+} EVGL_API_Thread_Command_glGetTexParameterIiv;
+
+void (*orig_evgl_api_glGetTexParameterIiv)(GLenum target, GLenum pname, GLint *params);
+
+static void
+_evgl_api_thread_glGetTexParameterIiv(void *data)
+{
+   EVGL_API_Thread_Command_glGetTexParameterIiv *thread_data =
+      (EVGL_API_Thread_Command_glGetTexParameterIiv *)data;
+
+   orig_evgl_api_glGetTexParameterIiv(thread_data->target,
+                                      thread_data->pname,
+                                      thread_data->params);
+
+}
+
+EAPI void
+glGetTexParameterIiv_evgl_api_thread_cmd(GLenum target, GLenum pname, GLint *params)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glGetTexParameterIiv(target, pname, params);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glGetTexParameterIiv thread_data_local;
+   EVGL_API_Thread_Command_glGetTexParameterIiv *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glGetTexParameterIiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glGetTexParameterIuiv(GLenum target, GLenum pname, GLuint *params);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLenum pname;
+   GLuint *params;
+
+} EVGL_API_Thread_Command_glGetTexParameterIuiv;
+
+void (*orig_evgl_api_glGetTexParameterIuiv)(GLenum target, GLenum pname, GLuint *params);
+
+static void
+_evgl_api_thread_glGetTexParameterIuiv(void *data)
+{
+   EVGL_API_Thread_Command_glGetTexParameterIuiv *thread_data =
+      (EVGL_API_Thread_Command_glGetTexParameterIuiv *)data;
+
+   orig_evgl_api_glGetTexParameterIuiv(thread_data->target,
+                                       thread_data->pname,
+                                       thread_data->params);
+
+}
+
+EAPI void
+glGetTexParameterIuiv_evgl_api_thread_cmd(GLenum target, GLenum pname, GLuint *params)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glGetTexParameterIuiv(target, pname, params);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glGetTexParameterIuiv thread_data_local;
+   EVGL_API_Thread_Command_glGetTexParameterIuiv *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->pname = pname;
+   thread_data->params = params;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glGetTexParameterIuiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glSamplerParameterIiv(GLuint sampler, GLenum pname, const GLint *param);
+ */
+
+typedef struct
+{
+   GLuint sampler;
+   GLenum pname;
+   const GLint *param;
+
+} EVGL_API_Thread_Command_glSamplerParameterIiv;
+
+void (*orig_evgl_api_glSamplerParameterIiv)(GLuint sampler, GLenum pname, const GLint *param);
+
+static void
+_evgl_api_thread_glSamplerParameterIiv(void *data)
+{
+   EVGL_API_Thread_Command_glSamplerParameterIiv *thread_data =
+      (EVGL_API_Thread_Command_glSamplerParameterIiv *)data;
+
+   orig_evgl_api_glSamplerParameterIiv(thread_data->sampler,
+                                       thread_data->pname,
+                                       thread_data->param);
+
+}
+
+EAPI void
+glSamplerParameterIiv_evgl_api_thread_cmd(GLuint sampler, GLenum pname, const GLint *param)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glSamplerParameterIiv(sampler, pname, param);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glSamplerParameterIiv thread_data_local;
+   EVGL_API_Thread_Command_glSamplerParameterIiv *thread_data = &thread_data_local;
+
+   thread_data->sampler = sampler;
+   thread_data->pname = pname;
+   thread_data->param = param;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glSamplerParameterIiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glSamplerParameterIuiv(GLuint sampler, GLenum pname, const GLuint *param);
+ */
+
+typedef struct
+{
+   GLuint sampler;
+   GLenum pname;
+   const GLuint *param;
+
+} EVGL_API_Thread_Command_glSamplerParameterIuiv;
+
+void (*orig_evgl_api_glSamplerParameterIuiv)(GLuint sampler, GLenum pname, const GLuint *param);
+
+static void
+_evgl_api_thread_glSamplerParameterIuiv(void *data)
+{
+   EVGL_API_Thread_Command_glSamplerParameterIuiv *thread_data =
+      (EVGL_API_Thread_Command_glSamplerParameterIuiv *)data;
+
+   orig_evgl_api_glSamplerParameterIuiv(thread_data->sampler,
+                                        thread_data->pname,
+                                        thread_data->param);
+
+}
+
+EAPI void
+glSamplerParameterIuiv_evgl_api_thread_cmd(GLuint sampler, GLenum pname, const GLuint *param)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glSamplerParameterIuiv(sampler, pname, param);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glSamplerParameterIuiv thread_data_local;
+   EVGL_API_Thread_Command_glSamplerParameterIuiv *thread_data = &thread_data_local;
+
+   thread_data->sampler = sampler;
+   thread_data->pname = pname;
+   thread_data->param = param;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glSamplerParameterIuiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glGetSamplerParameterIiv(GLuint sampler, GLenum pname, GLint *params);
+ */
+
+typedef struct
+{
+   GLuint sampler;
+   GLenum pname;
+   GLint *params;
+
+} EVGL_API_Thread_Command_glGetSamplerParameterIiv;
+
+void (*orig_evgl_api_glGetSamplerParameterIiv)(GLuint sampler, GLenum pname, GLint *params);
+
+static void
+_evgl_api_thread_glGetSamplerParameterIiv(void *data)
+{
+   EVGL_API_Thread_Command_glGetSamplerParameterIiv *thread_data =
+      (EVGL_API_Thread_Command_glGetSamplerParameterIiv *)data;
+
+   orig_evgl_api_glGetSamplerParameterIiv(thread_data->sampler,
+                                          thread_data->pname,
+                                          thread_data->params);
+
+}
+
+EAPI void
+glGetSamplerParameterIiv_evgl_api_thread_cmd(GLuint sampler, GLenum pname, GLint *params)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glGetSamplerParameterIiv(sampler, pname, params);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glGetSamplerParameterIiv thread_data_local;
+   EVGL_API_Thread_Command_glGetSamplerParameterIiv *thread_data = &thread_data_local;
+
+   thread_data->sampler = sampler;
+   thread_data->pname = pname;
+   thread_data->params = params;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glGetSamplerParameterIiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glGetSamplerParameterIuiv(GLuint sampler, GLenum pname, GLuint *params);
+ */
+
+typedef struct
+{
+   GLuint sampler;
+   GLenum pname;
+   GLuint *params;
+
+} EVGL_API_Thread_Command_glGetSamplerParameterIuiv;
+
+void (*orig_evgl_api_glGetSamplerParameterIuiv)(GLuint sampler, GLenum pname, GLuint *params);
+
+static void
+_evgl_api_thread_glGetSamplerParameterIuiv(void *data)
+{
+   EVGL_API_Thread_Command_glGetSamplerParameterIuiv *thread_data =
+      (EVGL_API_Thread_Command_glGetSamplerParameterIuiv *)data;
+
+   orig_evgl_api_glGetSamplerParameterIuiv(thread_data->sampler,
+                                           thread_data->pname,
+                                           thread_data->params);
+
+}
+
+EAPI void
+glGetSamplerParameterIuiv_evgl_api_thread_cmd(GLuint sampler, GLenum pname, GLuint *params)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glGetSamplerParameterIuiv(sampler, pname, params);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glGetSamplerParameterIuiv thread_data_local;
+   EVGL_API_Thread_Command_glGetSamplerParameterIuiv *thread_data = &thread_data_local;
+
+   thread_data->sampler = sampler;
+   thread_data->pname = pname;
+   thread_data->params = params;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glGetSamplerParameterIuiv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glTexBuffer(GLenum target, GLenum internalformat, GLuint buffer);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLenum internalformat;
+   GLuint buffer;
+
+} EVGL_API_Thread_Command_glTexBuffer;
+
+void (*orig_evgl_api_glTexBuffer)(GLenum target, GLenum internalformat, GLuint buffer);
+
+static void
+_evgl_api_thread_glTexBuffer(void *data)
+{
+   EVGL_API_Thread_Command_glTexBuffer *thread_data =
+      (EVGL_API_Thread_Command_glTexBuffer *)data;
+
+   orig_evgl_api_glTexBuffer(thread_data->target,
+                             thread_data->internalformat,
+                             thread_data->buffer);
+
+}
+
+EAPI void
+glTexBuffer_evgl_api_thread_cmd(GLenum target, GLenum internalformat, GLuint buffer)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glTexBuffer(target, internalformat, buffer);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glTexBuffer thread_data_local;
+   EVGL_API_Thread_Command_glTexBuffer *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->internalformat = internalformat;
+   thread_data->buffer = buffer;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glTexBuffer,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glTexBufferRange(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLenum internalformat;
+   GLuint buffer;
+   GLintptr offset;
+   GLsizeiptr size;
+
+} EVGL_API_Thread_Command_glTexBufferRange;
+
+void (*orig_evgl_api_glTexBufferRange)(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size);
+
+static void
+_evgl_api_thread_glTexBufferRange(void *data)
+{
+   EVGL_API_Thread_Command_glTexBufferRange *thread_data =
+      (EVGL_API_Thread_Command_glTexBufferRange *)data;
+
+   orig_evgl_api_glTexBufferRange(thread_data->target,
+                                  thread_data->internalformat,
+                                  thread_data->buffer,
+                                  thread_data->offset,
+                                  thread_data->size);
+
+}
+
+EAPI void
+glTexBufferRange_evgl_api_thread_cmd(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glTexBufferRange(target, internalformat, buffer, offset, size);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glTexBufferRange thread_data_local;
+   EVGL_API_Thread_Command_glTexBufferRange *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->internalformat = internalformat;
+   thread_data->buffer = buffer;
+   thread_data->offset = offset;
+   thread_data->size = size;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glTexBufferRange,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
+ * glTexStorage3DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLsizei samples;
+   GLenum internalformat;
+   GLsizei width;
+   GLsizei height;
+   GLsizei depth;
+   GLboolean fixedsamplelocations;
+
+} EVGL_API_Thread_Command_glTexStorage3DMultisample;
+
+void (*orig_evgl_api_glTexStorage3DMultisample)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+
+static void
+_evgl_api_thread_glTexStorage3DMultisample(void *data)
+{
+   EVGL_API_Thread_Command_glTexStorage3DMultisample *thread_data =
+      (EVGL_API_Thread_Command_glTexStorage3DMultisample *)data;
+
+   orig_evgl_api_glTexStorage3DMultisample(thread_data->target,
+                                           thread_data->samples,
+                                           thread_data->internalformat,
+                                           thread_data->width,
+                                           thread_data->height,
+                                           thread_data->depth,
+                                           thread_data->fixedsamplelocations);
+
+}
+
+EAPI void
+glTexStorage3DMultisample_evgl_api_thread_cmd(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)
+{
+   if (!evas_evgl_thread_enabled() || (_main_thread_id != eina_thread_self()))
+     {
+        orig_evgl_api_glTexStorage3DMultisample(target, samples, internalformat, width, height, depth, fixedsamplelocations);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_API_Thread_Command_glTexStorage3DMultisample thread_data_local;
+   EVGL_API_Thread_Command_glTexStorage3DMultisample *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->samples = samples;
+   thread_data->internalformat = internalformat;
+   thread_data->width = width;
+   thread_data->height = height;
+   thread_data->depth = depth;
+   thread_data->fixedsamplelocations = fixedsamplelocations;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_api_thread_glTexStorage3DMultisample,
                               thread_data,
                               thread_mode);
 }

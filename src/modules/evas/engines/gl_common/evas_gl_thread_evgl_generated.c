@@ -487,7 +487,6 @@ typedef struct
 {
    GLenum target;
    GLuint buffer;
-   int command_allocated;
 
 } EVGL_Thread_Command_glBindBuffer;
 
@@ -500,8 +499,6 @@ _evgl_thread_glBindBuffer(void *data)
    glBindBuffer(thread_data->target,
                 thread_data->buffer);
 
-   if (thread_data->command_allocated)
-     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void

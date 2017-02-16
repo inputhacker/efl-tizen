@@ -1769,6 +1769,123 @@ EAPI void glVertexAttribBinding_evgl_api_thread_cmd(GLuint attribindex, GLuint b
 extern void (*orig_evgl_api_glVertexBindingDivisor)(GLuint bindingindex, GLuint divisor);
 EAPI void glVertexBindingDivisor_evgl_api_thread_cmd(GLuint bindingindex, GLuint divisor);
 
+extern void (*orig_evgl_api_glBlendBarrier)(void);
+EAPI void glBlendBarrier_evgl_api_thread_cmd(void);
+
+extern void (*orig_evgl_api_glCopyImageSubData)(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);
+EAPI void glCopyImageSubData_evgl_api_thread_cmd(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);
+
+extern void (*orig_evgl_api_glDebugMessageControl)(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled);
+EAPI void glDebugMessageControl_evgl_api_thread_cmd(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled);
+
+extern void (*orig_evgl_api_glDebugMessageInsert)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf);
+EAPI void glDebugMessageInsert_evgl_api_thread_cmd(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf);
+
+extern void (*orig_evgl_api_glDebugMessageCallback)(GLDEBUGPROC callback, const void *userParam);
+EAPI void glDebugMessageCallback_evgl_api_thread_cmd(GLDEBUGPROC callback, const void *userParam);
+
+extern GLuint (*orig_evgl_api_glGetDebugMessageLog)(GLuint count, GLsizei bufSize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog);
+EAPI GLuint glGetDebugMessageLog_evgl_api_thread_cmd(GLuint count, GLsizei bufSize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog);
+
+extern void (*orig_evgl_api_glPushDebugGroup)(GLenum source, GLuint id, GLsizei length, const GLchar *message);
+EAPI void glPushDebugGroup_evgl_api_thread_cmd(GLenum source, GLuint id, GLsizei length, const GLchar *message);
+
+extern void (*orig_evgl_api_glPopDebugGroup)(void);
+EAPI void glPopDebugGroup_evgl_api_thread_cmd(void);
+
+extern void (*orig_evgl_api_glObjectLabel)(GLenum identifier, GLuint name, GLsizei length, const GLchar *label);
+EAPI void glObjectLabel_evgl_api_thread_cmd(GLenum identifier, GLuint name, GLsizei length, const GLchar *label);
+
+extern void (*orig_evgl_api_glGetObjectLabel)(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei *length, GLchar *label);
+EAPI void glGetObjectLabel_evgl_api_thread_cmd(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei *length, GLchar *label);
+
+extern void (*orig_evgl_api_glObjectPtrLabel)(const void *ptr, GLsizei length, const GLchar *label);
+EAPI void glObjectPtrLabel_evgl_api_thread_cmd(const void *ptr, GLsizei length, const GLchar *label);
+
+extern void (*orig_evgl_api_glGetObjectPtrLabel)(const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label);
+EAPI void glGetObjectPtrLabel_evgl_api_thread_cmd(const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label);
+
+extern void (*orig_evgl_api_glEnablei)(GLenum target, GLuint index);
+EAPI void glEnablei_evgl_api_thread_cmd(GLenum target, GLuint index);
+
+extern void (*orig_evgl_api_glDisablei)(GLenum target, GLuint index);
+EAPI void glDisablei_evgl_api_thread_cmd(GLenum target, GLuint index);
+
+extern void (*orig_evgl_api_glBlendEquationi)(GLuint buf, GLenum mode);
+EAPI void glBlendEquationi_evgl_api_thread_cmd(GLuint buf, GLenum mode);
+
+extern void (*orig_evgl_api_glBlendEquationSeparatei)(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
+EAPI void glBlendEquationSeparatei_evgl_api_thread_cmd(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
+
+extern void (*orig_evgl_api_glBlendFunci)(GLuint buf, GLenum src, GLenum dst);
+EAPI void glBlendFunci_evgl_api_thread_cmd(GLuint buf, GLenum src, GLenum dst);
+
+extern void (*orig_evgl_api_glBlendFuncSeparatei)(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+EAPI void glBlendFuncSeparatei_evgl_api_thread_cmd(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+
+extern void (*orig_evgl_api_glColorMaski)(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
+EAPI void glColorMaski_evgl_api_thread_cmd(GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
+
+extern GLboolean (*orig_evgl_api_glIsEnabledi)(GLenum target, GLuint index);
+EAPI GLboolean glIsEnabledi_evgl_api_thread_cmd(GLenum target, GLuint index);
+
+extern void (*orig_evgl_api_glDrawElementsBaseVertex)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+EAPI void glDrawElementsBaseVertex_evgl_api_thread_cmd(GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+
+extern void (*orig_evgl_api_glDrawRangeElementsBaseVertex)(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+EAPI void glDrawRangeElementsBaseVertex_evgl_api_thread_cmd(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLint basevertex);
+
+extern void (*orig_evgl_api_glDrawElementsInstancedBaseVertex)(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex);
+EAPI void glDrawElementsInstancedBaseVertex_evgl_api_thread_cmd(GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount, GLint basevertex);
+
+extern void (*orig_evgl_api_glFramebufferTexture)(GLenum target, GLenum attachment, GLuint texture, GLint level);
+EAPI void glFramebufferTexture_evgl_api_thread_cmd(GLenum target, GLenum attachment, GLuint texture, GLint level);
+
+extern void (*orig_evgl_api_glPrimitiveBoundingBox)(GLfloat minX, GLfloat minY, GLfloat minZ, GLfloat minW, GLfloat maxX, GLfloat maxY, GLfloat maxZ, GLfloat maxW);
+EAPI void glPrimitiveBoundingBox_evgl_api_thread_cmd(GLfloat minX, GLfloat minY, GLfloat minZ, GLfloat minW, GLfloat maxX, GLfloat maxY, GLfloat maxZ, GLfloat maxW);
+
+extern void (*orig_evgl_api_glGetnUniformuiv)(GLuint program, GLint location, GLsizei bufSize, GLuint *params);
+EAPI void glGetnUniformuiv_evgl_api_thread_cmd(GLuint program, GLint location, GLsizei bufSize, GLuint *params);
+
+extern void (*orig_evgl_api_glMinSampleShading)(GLfloat value);
+EAPI void glMinSampleShading_evgl_api_thread_cmd(GLfloat value);
+
+extern void (*orig_evgl_api_glPatchParameteri)(GLenum pname, GLint value);
+EAPI void glPatchParameteri_evgl_api_thread_cmd(GLenum pname, GLint value);
+
+extern void (*orig_evgl_api_glTexParameterIiv)(GLenum target, GLenum pname, const GLint *params);
+EAPI void glTexParameterIiv_evgl_api_thread_cmd(GLenum target, GLenum pname, const GLint *params);
+
+extern void (*orig_evgl_api_glTexParameterIuiv)(GLenum target, GLenum pname, const GLuint *params);
+EAPI void glTexParameterIuiv_evgl_api_thread_cmd(GLenum target, GLenum pname, const GLuint *params);
+
+extern void (*orig_evgl_api_glGetTexParameterIiv)(GLenum target, GLenum pname, GLint *params);
+EAPI void glGetTexParameterIiv_evgl_api_thread_cmd(GLenum target, GLenum pname, GLint *params);
+
+extern void (*orig_evgl_api_glGetTexParameterIuiv)(GLenum target, GLenum pname, GLuint *params);
+EAPI void glGetTexParameterIuiv_evgl_api_thread_cmd(GLenum target, GLenum pname, GLuint *params);
+
+extern void (*orig_evgl_api_glSamplerParameterIiv)(GLuint sampler, GLenum pname, const GLint *param);
+EAPI void glSamplerParameterIiv_evgl_api_thread_cmd(GLuint sampler, GLenum pname, const GLint *param);
+
+extern void (*orig_evgl_api_glSamplerParameterIuiv)(GLuint sampler, GLenum pname, const GLuint *param);
+EAPI void glSamplerParameterIuiv_evgl_api_thread_cmd(GLuint sampler, GLenum pname, const GLuint *param);
+
+extern void (*orig_evgl_api_glGetSamplerParameterIiv)(GLuint sampler, GLenum pname, GLint *params);
+EAPI void glGetSamplerParameterIiv_evgl_api_thread_cmd(GLuint sampler, GLenum pname, GLint *params);
+
+extern void (*orig_evgl_api_glGetSamplerParameterIuiv)(GLuint sampler, GLenum pname, GLuint *params);
+EAPI void glGetSamplerParameterIuiv_evgl_api_thread_cmd(GLuint sampler, GLenum pname, GLuint *params);
+
+extern void (*orig_evgl_api_glTexBuffer)(GLenum target, GLenum internalformat, GLuint buffer);
+EAPI void glTexBuffer_evgl_api_thread_cmd(GLenum target, GLenum internalformat, GLuint buffer);
+
+extern void (*orig_evgl_api_glTexBufferRange)(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size);
+EAPI void glTexBufferRange_evgl_api_thread_cmd(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size);
+
+extern void (*orig_evgl_api_glTexStorage3DMultisample)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+EAPI void glTexStorage3DMultisample_evgl_api_thread_cmd(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+
 extern void (*orig_evgl_api_glEGLImageTargetTexture2DOES)(GLenum target, void *image);
 EAPI void glEGLImageTargetTexture2DOES_evgl_api_thread_cmd(GLenum target, void *image);
 
