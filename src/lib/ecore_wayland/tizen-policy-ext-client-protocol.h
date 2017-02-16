@@ -153,6 +153,7 @@ tizen_rotation_add_listener(struct tizen_rotation *tizen_rotation,
 #define TIZEN_ROTATION_SET_AVAILABLE_ANGLES	1
 #define TIZEN_ROTATION_SET_PREFERRED_ANGLE	2
 #define TIZEN_ROTATION_ACK_ANGLE_CHANGE	3
+#define TIZEN_ROTATION_SET_GEOMETRY_HINT	4
 
 #define TIZEN_ROTATION_DESTROY_SINCE_VERSION	1
 #define TIZEN_ROTATION_SET_AVAILABLE_ANGLES_SINCE_VERSION	1
@@ -205,6 +206,13 @@ tizen_rotation_ack_angle_change(struct tizen_rotation *tizen_rotation, uint32_t 
 {
 	wl_proxy_marshal((struct wl_proxy *) tizen_rotation,
 			 TIZEN_ROTATION_ACK_ANGLE_CHANGE, serial);
+}
+
+static inline void
+tizen_rotation_set_geometry_hint(struct tizen_rotation *tizen_rotation, uint32_t angle, uint32_t x, uint32_t y, uint32_t w, uint32_t h)
+{
+	wl_proxy_marshal((struct wl_proxy *) tizen_rotation,
+			 TIZEN_ROTATION_SET_GEOMETRY_HINT, angle, x, y, w, h);
 }
 
 #ifdef  __cplusplus
