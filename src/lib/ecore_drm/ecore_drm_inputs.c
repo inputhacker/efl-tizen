@@ -560,7 +560,7 @@ ecore_drm_inputs_devices_create(Ecore_Drm_Device *dev)
 
    if ((env = getenv("PATH_DEVICES_NUM")))
      devices_num = atoi(env);
-   if (!env || devices_num <= 0)
+   if (devices_num <= 0 || devices_num >= INT_MAX)
      {
         TRACE_INPUT_END();
         TRACE_EFL_END();
