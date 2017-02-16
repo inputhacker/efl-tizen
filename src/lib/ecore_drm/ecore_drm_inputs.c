@@ -548,7 +548,7 @@ ecore_drm_inputs_devices_create(Ecore_Drm_Device *dev)
 {
    Ecore_Drm_Input *input;
    struct libinput_device *device;
-   int devices_num;
+   int devices_num =0;
    char *env;
    Eina_Stringshare *path;
 
@@ -560,7 +560,7 @@ ecore_drm_inputs_devices_create(Ecore_Drm_Device *dev)
 
    if ((env = getenv("PATH_DEVICES_NUM")))
      devices_num = atoi(env);
-   if (!env || devices_num == 0)
+   if (!env || devices_num <= 0)
      {
         TRACE_INPUT_END();
         TRACE_EFL_END();
