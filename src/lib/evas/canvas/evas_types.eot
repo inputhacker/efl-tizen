@@ -74,7 +74,13 @@ enum Evas.BiDi_Direction {
    neutral = 0,
    ltr,
    rtl,
+   /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
    inherit
+    */
+   inherit,
+   any_rtl [[\@internal EVAS_BIDI_DIRECTION_ANY_RTL is not made for public.
+             It should be opened to public when it is accepted to EFL upstream.]]
+   /* END */
 }
 
 enum Evas.Text_Style_Type {

@@ -547,7 +547,11 @@ struct _Evas_Object_Textblock
    void                               *engine_data;
    const char                         *repch;
    const char                         *bidi_delimiters;
+   /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
    Evas_BiDi_Direction                 paragraph_direction : 2;
+    */
+   Evas_BiDi_Direction                 paragraph_direction : 3;
+   /* END */
    struct {
       int                              w, h, oneline_h;
       Eina_Bool                        valid : 1;
@@ -2982,6 +2986,9 @@ _layout_update_bidi_props(const Evas_Textblock_Data *o,
         int *segment_idxs = NULL;
         Evas_BiDi_Direction par_dir;
         EvasBiDiParType bidi_par_type;
+        /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API */
+        Eina_Bool is_any_rtl = EINA_FALSE;
+        /* END */
 
         text = eina_ustrbuf_string_get(par->text_node->unicode);
 
@@ -3014,6 +3021,10 @@ _layout_update_bidi_props(const Evas_Textblock_Data *o,
 #endif
               /* END */
               break;
+           /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API */
+           case EVAS_BIDI_DIRECTION_ANY_RTL:
+              is_any_rtl = EINA_TRUE;
+           /* END */
            case EVAS_BIDI_DIRECTION_NEUTRAL:
            default:
               bidi_par_type = EVAS_BIDI_PARAGRAPH_NEUTRAL;
@@ -3021,9 +3032,15 @@ _layout_update_bidi_props(const Evas_Textblock_Data *o,
           }
 
         evas_bidi_paragraph_props_unref(par->bidi_props);
+        /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
         par->bidi_props = evas_bidi_paragraph_props_get(text,
               eina_ustrbuf_length_get(par->text_node->unicode),
               segment_idxs, bidi_par_type);
+         */
+        par->bidi_props = evas_bidi_paragraph_props_get(text,
+              eina_ustrbuf_length_get(par->text_node->unicode),
+              segment_idxs, bidi_par_type, is_any_rtl);
+        /* END */
         par->direction = EVAS_BIDI_PARAGRAPH_DIRECTION_IS_RTL(par->bidi_props) ?
            EVAS_BIDI_DIRECTION_RTL : EVAS_BIDI_DIRECTION_LTR;
         par->is_bidi = !!par->bidi_props;
