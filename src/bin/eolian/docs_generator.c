@@ -261,10 +261,15 @@ _gen_doc_brief(const char *summary, const char *since, const char *group,
 {
    int curl = 4 + indent;
    Eina_Strbuf *wbuf = eina_strbuf_new();
-   if (!is_internal)
-     eina_strbuf_append(buf, "/** ");
+   if (indent)
+     eina_strbuf_append(buf, "/**< ");
    else
-     eina_strbuf_append(buf, "/**\n * @internal\n *\n * ");
+     eina_strbuf_append(buf, "/** ");
+   if (is_internal)
+     {
+        eina_strbuf_rtrim(buf);
+        eina_strbuf_append(buf, "\n * @internal\n *\n * ");
+     }
    curl = _append_section(summary, indent, curl, buf, wbuf, use_legacy);
    eina_strbuf_free(wbuf);
    curl = _append_since(since, indent, curl, buf);
