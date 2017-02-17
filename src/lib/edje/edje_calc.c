@@ -2013,6 +2013,11 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
           }
         /* END */
 
+        /* TIZEN_ONLY(20170217): add part_text_valign property for internal usage */
+        if (ep->typedata.text->valign != -1.0)
+          evas_object_textblock_valign_set(ep->object, TO_DOUBLE(ep->typedata.text->valign));
+        else
+        /* END */
         evas_object_textblock_valign_set(ep->object, TO_DOUBLE(chosen_desc->text.align.y));
      }
 }

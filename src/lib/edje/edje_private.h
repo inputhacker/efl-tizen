@@ -1923,6 +1923,9 @@ struct _Edje_Real_Part_Text
    const char            *style; // 4
    Edje_Position          offset; // 8
    short                  size; // 2
+   /* TIZEN_ONLY(20170217): add part_text_valign property for internal usage */
+   FLOAT_T                valign; // 4
+   /* END */
    /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
    struct {
       Evas_Object *object; // 4

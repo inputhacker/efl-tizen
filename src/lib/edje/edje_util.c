@@ -6913,4 +6913,67 @@ _edje_object_part_text_min_policy_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const ch
 }
 /* END */
 
+/* TIZEN_ONLY(20170217): add part_text_valign property for internal usage */
+EOLIAN Eina_Bool
+_edje_object_part_text_valign_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double valign)
+{
+   Edje_Real_Part *rp;
+   Edje_Part_Description_Text *desc;
+
+   if (!part) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return EINA_FALSE;
+
+   if (rp->typedata.text)
+     {
+        rp->typedata.text->valign = FROM_DOUBLE(valign);
+
+        if (rp->typedata.text->valign == -1.0)
+          {
+             desc = (Edje_Part_Description_Text *)rp->chosen_description;
+             evas_object_textblock_valign_set(rp->object, TO_DOUBLE(desc->text.align.y));
+          }
+        else
+          {
+             evas_object_textblock_valign_set(rp->object, valign);
+          }
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
+EOLIAN double
+_edje_object_part_text_valign_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
+{
+   Edje_Real_Part *rp;
+   Edje_Part_Description_Text *desc;
+
+   if (!part) return -1,0;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return -1.0;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return -1.0;
+
+   if (rp->typedata.text)
+     {
+        if (rp->typedata.text->valign == -1.0)
+          {
+             desc = (Edje_Part_Description_Text *)rp->chosen_description;
+             return TO_DOUBLE(desc->text.align.y);
+          }
+        else
+          {
+             return TO_DOUBLE(rp->typedata.text->valign);
+          }
+     }
+
+   return -1.0;
+}
+/* END */
+
 /* vim:set ts=8 sw=3 sts=3 expandtab cino=>5n-2f0^-2{2(0W1st0 :*/
