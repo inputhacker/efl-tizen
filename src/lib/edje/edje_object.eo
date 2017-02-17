@@ -3039,6 +3039,31 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       /* END */
+      /* TIZEN_ONLY(20170217): add part_text_valign property for internal usage */
+      @property part_text_valign @internal {
+         set {
+            [[Sets the valign for text.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+            ]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         get {
+            [[Gets the valign for text.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+            ]]
+         }
+         keys {
+            part: const(char)*; [[The part name]]
+         }
+         values {
+            valign: double; [[The valign 0.0~1.0. -1.0 for respect EDC's align value.]]
+         }
+      }
+      /* END */
    }
    implements {
       Eo.Base.constructor;
