@@ -62,6 +62,8 @@ _type_generate(const Eolian_Type *tp, Eina_Bool full, Eina_Bool use_legacy)
            {
               const Eolian_Struct_Type_Field *member;
               char *name = _concat_name(tp);
+              if (!eina_strbuf_length_get(buf))
+                eina_strbuf_append_printf(buf, "/**\n * %s\n * @ingroup %s\n */\n", name, eolian_type_full_name_get(tp));
               if (tp_type == EOLIAN_TYPE_STRUCT_OPAQUE || !full)
                 {
                    eina_strbuf_append_printf(buf, "typedef struct _%s %s", name, name);
@@ -91,6 +93,8 @@ _type_generate(const Eolian_Type *tp, Eina_Bool full, Eina_Bool use_legacy)
                              eina_strbuf_free(fbuf);
                           }
                      }
+                   else
+                     eina_strbuf_append(buf, "/**< No description */");
                    eina_strbuf_append(buf, "\n");
                 }
               eina_iterator_free(members);
@@ -105,6 +109,8 @@ _type_generate(const Eolian_Type *tp, Eina_Bool full, Eina_Bool use_legacy)
               if (!full)
                 break;
               name = _concat_name(tp);
+              if (!eina_strbuf_length_get(buf))
+                eina_strbuf_append_printf(buf, "/**\n * %s\n * @ingroup %s\n */\n", name, eolian_type_full_name_get(tp));
               char *pre = NULL;
               eina_strbuf_append_printf(buf, "typedef enum\n{\n");
               if (eolian_type_enum_legacy_prefix_get(tp))
@@ -157,6 +163,8 @@ _type_generate(const Eolian_Type *tp, Eina_Bool full, Eina_Bool use_legacy)
                              eina_strbuf_free(fbuf);
                           }
                      }
+                   else
+                     eina_strbuf_append(buf, "/**< No description */");
                    eina_strbuf_append(buf, "\n");
                 }
               eina_strbuf_append_printf(buf, "} %s", name);
