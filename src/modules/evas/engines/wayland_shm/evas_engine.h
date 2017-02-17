@@ -72,7 +72,7 @@ struct _Surface
         int  (*assign)(Surface *surface);
         void (*post)(Surface *surface, Eina_Rectangle *rects, unsigned int count);
    } funcs;
-   int frame_age;
+   unsigned int frame_age;
 };
 
 struct _Outbuf

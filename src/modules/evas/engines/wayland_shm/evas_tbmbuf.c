@@ -391,7 +391,7 @@ _evas_tbmbuf_surface_assign(Surface *s)
    _wait_free_buffer(surface);
 
    // check num of tbm surface
-   int num_surface;
+   int num_surface, i;
    tbm_surface_h surfaces[5];
    sym_tbm_surface_queue_get_surfaces(surface->tbm_queue, surfaces, &num_surface);
 
@@ -439,8 +439,14 @@ _evas_tbmbuf_surface_assign(Surface *s)
    if (num_surface != tbuf_info->num_surface)
      {
        s->frame_age = 0;
-       tbuf_info->age = 0;
-       tbuf_info->num_surface = num_surface;
+
+       for(i=0; i<num_surface; i++) {
+           sym_tbm_surface_internal_get_user_data(surfaces[i], KEY_SURFACE_INFO, (void **)&tbuf_info);
+           if (tbuf_info) {
+               tbuf_info->age = 0;
+               tbuf_info->num_surface = num_surface;
+           }
+       }
      }
 
    if (!tbuf_info->age)
