@@ -351,41 +351,11 @@ _ecore_evas_wl_common_cb_window_pending_rotate(Ecore_Evas *ee, Ecore_Wl_Event_Wi
 //   if (ee->prop.wm_rot.pending_mode.app_angle != (int) ev->angle)
      {
         DBG("PendingRotation: ecore_evas_wl pend rotation");
+        //THIS IS HOTFIX: we need to negotiate rotation done protocol with display server.
+        ecore_wl_window_rotation_change_done_send(wdata->win);
         ee->prop.wm_rot.pending_mode.wm_angle = ev->angle;
         return ECORE_CALLBACK_PASS_ON;
      }
-
-   DBG("PendingRotation: ecore_evas_wl do rotation %d", ev->angle);
-   wdata->wm_rot.request = 1;
-   wdata->wm_rot.done = 0;
-
-   if ((ee->w != ev->w) || (ee->h != ev->h))
-     {
-        _ecore_evas_wl_common_resize(ee, ev->w , ev->h);
-     }
-
-   if (ee->prop.wm_rot.manual_mode.set)
-     {
-        ee->prop.wm_rot.manual_mode.wait_for_done = EINA_TRUE;
-        _ecore_evas_wl_common_wm_rot_manual_rotation_done_timeout_update(ee);
-     }
-
-   if (!strcmp(ee->driver, "wayland_shm"))
-     {
-#ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
-        _ecore_evas_wayland_shm_window_rotate(ee, ev->angle, 1);
-#endif
-     }
-   else if (!strcmp(ee->driver, "wayland_egl"))
-     {
-#ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
-        _ecore_evas_wayland_egl_window_rotate(ee, ev->angle, 1);
-#endif
-     }
-
-   wdata->wm_rot.done = 1;
-
-   return ECORE_CALLBACK_PASS_ON;
 }
 //
 
@@ -649,8 +619,8 @@ _ecore_evas_wl_common_app_rotation_set(Ecore_Evas *ee, int rotation, int resize)
      return;
 
    DBG("RotationPending: ecore_evas_wl do rotation %d", rotation);
-   wdata->wm_rot.request = 1;
-   wdata->wm_rot.done = 0;
+   //wdata->wm_rot.request = 1;
+   //wdata->wm_rot.done = 0;
 
    if (!strcmp(ee->driver, "wayland_shm"))
      {
@@ -665,7 +635,7 @@ _ecore_evas_wl_common_app_rotation_set(Ecore_Evas *ee, int rotation, int resize)
 #endif
      }
 
-   wdata->wm_rot.done = 1;
+   //wdata->wm_rot.done = 1;
 }
 //
 
