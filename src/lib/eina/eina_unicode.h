@@ -163,6 +163,8 @@ EAPI Eina_Unicode *eina_unicode_escape(const Eina_Unicode *str) EINA_ARG_NONNULL
 static inline Eina_Unicode eina_unicode_utf8_next_get(const char *buf, int *iindex) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated use eina_unicode_utf8_next_get
+ *             Deprecated since Tizen 2.4
  * Reads UTF8 bytes from @p buf, starting at @p iindex and returns
  * the decoded code point at @p iindex offset, and advances @p iindex
  * to the next code point after this. @p iindex is always advanced,
@@ -179,8 +181,6 @@ static inline Eina_Unicode eina_unicode_utf8_next_get(const char *buf, int *iind
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
  *
- * @deprecated use eina_unicode_utf8_next_get
- *             Deprecated since Tizen 2.4
  */
 EINA_DEPRECATED EAPI Eina_Unicode eina_unicode_utf8_get_next(const char *buf, int *iindex) EINA_ARG_NONNULL(1, 2) EINA_DEPRECATED;
 

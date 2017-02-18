@@ -34,7 +34,7 @@
 /**
  * @defgroup Eina_Thread_Group Thread
  *
- * Abstracts platform threads, providing an uniform API. It's modeled
+ * Abstracts platform threads, providing an uniform API. It's modelled
  * after POSIX THREADS (pthreads), on Linux they are almost 1:1
  * mapping.
  *
@@ -69,7 +69,7 @@ typedef enum _Eina_Thread_Priority
 } Eina_Thread_Priority;
 
 /**
- * Return identifier of the current thread.
+ * @brief Returns identifier of the current thread.
  * @return identifier of current thread.
  * @since 1.8
  *
@@ -80,7 +80,7 @@ typedef enum _Eina_Thread_Priority
 EAPI Eina_Thread eina_thread_self(void) EINA_WARN_UNUSED_RESULT;
 
 /**
- * Check if two thread identifiers are the same.
+ * @brief Checks if two thread identifiers are the same.
  * @param t1 first thread identifier to compare.
  * @param t2 second thread identifier to compare.
  * @return #EINA_TRUE if they are equal, #EINA_FALSE otherwise.
@@ -93,7 +93,7 @@ EAPI Eina_Thread eina_thread_self(void) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Bool eina_thread_equal(Eina_Thread t1, Eina_Thread t2) EINA_WARN_UNUSED_RESULT;
 
 /**
- * Create a new thread, setting its priority and affinity.
+ * @brief Creates a new thread, setting its priority and affinity.
  *
  * @param t[out] where to return the thread identifier. Must @b not be @c NULL.
  * @param prio thread priority to use, usually #EINA_THREAD_BACKGROUND
@@ -112,7 +112,7 @@ EAPI Eina_Bool eina_thread_create(Eina_Thread *t,
                                   Eina_Thread_Cb func, const void *data) EINA_ARG_NONNULL(1, 4) EINA_WARN_UNUSED_RESULT;
 
 /**
- * Join a currently running thread, waiting until it finishes.
+ * @brief Joins a currently running thread, waiting until it finishes.
  *
  * This function will block the current thread until @a t
  * finishes. The returned value is the one returned by @a t @c func()
@@ -131,11 +131,11 @@ EAPI Eina_Bool eina_thread_create(Eina_Thread *t,
 EAPI void *eina_thread_join(Eina_Thread t);
 
 /**
- * Set the name of a given thread for debugging purposes.
+ * @brief Sets the name of a given thread for debugging purposes.
  *
  * This maps to the pthread_setname_np() GNU extension or similar
  * if available. The name may be limited in size (possibly 16
- * characters including the nul byte terminator). This is useful
+ * characters including the null byte terminator). This is useful
  * for debugging to name a thread so external tools can display a
  * meaningful name attached to the thread.
  *

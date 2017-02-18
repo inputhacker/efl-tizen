@@ -109,7 +109,7 @@ extern EAPI Eina_Error EINA_ERROR_WRONG_MODULE;
 extern EAPI Eina_Error EINA_ERROR_MODULE_INIT_FAILED;
 
 /**
- * @brief Return a new module.
+ * @brief Returns a new module.
  *
  * @param file The name of the file module to load.
  * @return A new module. If @p file is @c NULL, or if it does not exist,
@@ -130,7 +130,7 @@ EAPI Eina_Module *
  eina_module_new(const char *file) EINA_MALLOC EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
 /**
- * @brief Delete a module.
+ * @brief Deletes a module.
  *
  * @param module The module to delete.
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
@@ -148,7 +148,7 @@ EAPI Eina_Bool
  eina_module_free(Eina_Module *module) EINA_ARG_NONNULL(1);
 
 /**
- * @brief Load a module.
+ * @brief Loads a module.
  *
  * @param module The module to load.
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
@@ -173,7 +173,7 @@ EAPI Eina_Bool
  eina_module_load(Eina_Module *module) EINA_ARG_NONNULL(1);
 
 /**
- * @brief Unload a module.
+ * @brief Unloads a module.
  *
  * @param module The module to load.
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
@@ -182,7 +182,7 @@ EAPI Eina_Bool
  * loaded by eina_module_load(). If the reference counter of @p module is
  * strictly greater than @c 1, #EINA_FALSE is returned. Otherwise, the
  * shared object file is closed and if it is a internal Eina module, it
- * is shutted down just before. In that case, #EINA_TRUE is
+ * is shut down just before. In that case, #EINA_TRUE is
  * returned. In all case, the reference counter is decreased. If @p module
  * is @c NULL, the function returns immediately #EINA_FALSE.
  *
@@ -194,7 +194,7 @@ EAPI Eina_Bool
  eina_module_unload(Eina_Module *module) EINA_ARG_NONNULL(1);
 
 /**
- * @brief Retrieve the data associated to a symbol.
+ * @brief Retrieves the data associated to a symbol.
  *
  * @param module The module.
  * @param symbol The symbol.
@@ -213,7 +213,7 @@ EAPI void *
  eina_module_symbol_get(const Eina_Module *module, const char *symbol) EINA_PURE EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
- * @brief Return the file name associated to the module.
+ * @brief Returns the file name associated to the module.
  *
  * @param module The module.
  * @return The file name.
@@ -230,7 +230,7 @@ EAPI const char *
  eina_module_file_get(const Eina_Module *module) EINA_PURE EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
 /**
- * @brief Define if on module load we should expose all symbol
+ * @brief Defines if on module load we should expose all symbol
  *
  * @param module The module to turn off/on symbol to be exposed
  * @since 1.11
@@ -242,7 +242,7 @@ EAPI const char *
 EAPI void eina_module_symbol_global_set(Eina_Module *module, Eina_Bool global) EINA_ARG_NONNULL(1);
 
 /**
- * @brief Return the path built from the location of a library and a
+ * @brief Returns the path built from the location of a library and a
  * given sub directory.
  *
  * @param symbol The symbol to search for.
@@ -263,7 +263,7 @@ EAPI char *
  eina_module_symbol_path_get(const void *symbol, const char *sub_dir) EINA_PURE EINA_MALLOC EINA_ARG_NONNULL(1, 2);
 
 /**
- * @brief Return the path built from the value of an environment variable and a
+ * @brief Returns the path built from the value of an environment variable and a
  * given sub directory.
  *
  * @param env The environment variable to expand.
@@ -285,7 +285,7 @@ EAPI char *
 
 
 /**
- * @brief Get an array of modules found on the directory path matching an arch type.
+ * @brief Gets an array of modules found on the directory path matching an arch type.
  *
  * @param array The array that stores the list of the modules.
  * @param path The directory's path to search for modules.
@@ -305,7 +305,7 @@ EAPI Eina_Array *
  eina_module_arch_list_get(Eina_Array *array, const char *path, const char *arch);
 
 /**
- * @brief Get a list of modules found on the directory path.
+ * @brief Gets a list of modules found on the directory path.
  *
  * @param array The array that stores the list of the modules.
  * @param path The directory's path to search for modules.
@@ -331,7 +331,7 @@ EAPI Eina_Array *
  eina_module_list_get(Eina_Array *array, const char *path, Eina_Bool recursive, Eina_Module_Cb cb, void *data) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
 /**
- * @brief Load every module on the list of modules.
+ * @brief Loads every module on the list of modules.
  *
  * @param array The array of modules to load.
  *
@@ -346,7 +346,7 @@ EAPI void
  eina_module_list_load(Eina_Array *array) EINA_ARG_NONNULL(1);
 
 /**
- * @brief Unload every module on the list of modules.
+ * @brief Unloads every module on the list of modules.
  *
  * @param array The array of modules to unload.
  *
@@ -361,7 +361,7 @@ EAPI void
  eina_module_list_unload(Eina_Array *array) EINA_ARG_NONNULL(1);
 
 /**
- * @p Free every module on the list of modules.
+ * @p Frees every module on the list of modules.
  *
  * @param array The array of modules to free.
  *
@@ -376,7 +376,7 @@ EAPI void
  eina_module_list_free(Eina_Array *array) EINA_ARG_NONNULL(1);
 
 /**
- * @brief Find an module in array.
+ * @brief Finds an module in array.
  *
  * @param array The array to find the module.
  * @param module The name of module to be searched.
