@@ -51,6 +51,8 @@ static void _ecore_evas_wayland_transparent_do(Ecore_Evas *ee, int transparent);
 static void _ecore_evas_wl_common_border_update(Ecore_Evas *ee);
 static Eina_Bool _ecore_evas_wl_common_wm_rot_manual_rotation_done_timeout(void *data);
 static void      _ecore_evas_wl_common_wm_rot_manual_rotation_done_timeout_update(Ecore_Evas *ee);
+int _ecore_evas_wl_common_render(Ecore_Evas *ee);
+
 
 /* local functions */
 static void 
@@ -348,14 +350,17 @@ _ecore_evas_wl_common_cb_window_pending_rotate(Ecore_Evas *ee, Ecore_Wl_Event_Wi
 //If app not set proper rotation, client cannot deal with the rotation properly.
 //Need to discuss this issue with server.
 
-//   if (ee->prop.wm_rot.pending_mode.app_angle != (int) ev->angle)
+
+   DBG("PendingRotation: ecore_evas_wl pend rotation");
+   //THIS IS HOTFIX: we need to negotiate rotation done protocol with display server.
+   ecore_wl_window_rotation_change_done_send(wdata->win);
+   if (ee->prop.wm_rot.pending_mode.app_angle == (int) ev->angle)
      {
-        DBG("PendingRotation: ecore_evas_wl pend rotation");
-        //THIS IS HOTFIX: we need to negotiate rotation done protocol with display server.
-        ecore_wl_window_rotation_change_done_send(wdata->win);
-        ee->prop.wm_rot.pending_mode.wm_angle = ev->angle;
-        return ECORE_CALLBACK_PASS_ON;
+        _ecore_evas_wl_common_damage_add(ee);
+        _ecore_evas_wl_common_render(ee);
      }
+   ee->prop.wm_rot.pending_mode.wm_angle = ev->angle;
+   return ECORE_CALLBACK_PASS_ON;
 }
 //
 
@@ -621,6 +626,7 @@ _ecore_evas_wl_common_app_rotation_set(Ecore_Evas *ee, int rotation, int resize)
    DBG("RotationPending: ecore_evas_wl do rotation %d", rotation);
    //wdata->wm_rot.request = 1;
    //wdata->wm_rot.done = 0;
+   ee->prop.wm_rot.pending_mode.app_angle = rotation;
 
    if (!strcmp(ee->driver, "wayland_shm"))
      {
