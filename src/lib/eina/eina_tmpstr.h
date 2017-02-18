@@ -58,11 +58,11 @@
  *
  * Eina tmpstr is intended for being able to conveniently pass strings back
  * to a calling parent without having to use single static buffers (which
- * don't work with multiple threads or when returning multilpe times as
+ * don't work with multiple threads or when returning multiple times as
  * parameters to a single function.
  *
  * The traditional way to "return" a string in C is either to provide a buffer
- * as a paramater to return it in, return a pointer to a single static buffer,
+ * as a parameter to return it in, return a pointer to a single static buffer,
  * which has issues, or return a duplicated string. All cases are inconvenient
  * and return special handling. This is intended to make this easier. Now you
  * can do something like this:
@@ -121,7 +121,7 @@
 typedef const char Eina_Tmpstr;
 
 /**
- * @brief Add a new temporary string based on the input string.
+ * @brief Adds a new temporary string based on the input string.
  *
  * @param str This is the input stringthat is copied into the temp string.
  * @return A pointer to the tmp string that is a standard C string.
@@ -137,7 +137,7 @@ typedef const char Eina_Tmpstr;
  * NULL will be returned, otherwise a valid string pointer will be returned
  * that you can treat as any other C string (eg strdup(tmpstr) or
  * printf("%s\n", tmpstr) etc.). This string should be considered read-only
- * and immutable, and when youa re done with the string yo should delete it
+ * and immutable, and when you are done with the string you should delete it
  * with eina_tmpstr_del().
  *
  * Example usage:
@@ -169,7 +169,7 @@ typedef const char Eina_Tmpstr;
 EAPI Eina_Tmpstr *eina_tmpstr_add(const char *str) EINA_WARN_UNUSED_RESULT;
 
 /**
- * @brief Add a new temporary string based on the input string and length.
+ * @brief Adds a new temporary string based on the input string and length.
  *
  * @param str This is the input string that is copied into the temp string.
  * @param length This is the maximum length and the allocated length of the temp string.
@@ -206,13 +206,13 @@ EAPI Eina_Tmpstr *eina_tmpstr_add(const char *str) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Tmpstr *eina_tmpstr_add_length(const char *str, size_t length);
 
 /**
+ * @deprecated
  * @brief **Deprecated** Return the length of a temporary string including the '\0'.
  *
  * @param tmpstr This is any C string pointer, but if it is a tmp string
  * it will return the length faster.
- * @return The length of the string including the '\0';
+ * @return The length of the string including the '\0'
  *
- * @deprecated
  * @see eina_tmpstr_len()
  * @since 1.8.0
  *
@@ -223,7 +223,7 @@ EAPI Eina_Tmpstr *eina_tmpstr_add_length(const char *str, size_t length);
 EINA_DEPRECATED EAPI size_t eina_tmpstr_strlen(Eina_Tmpstr *tmpstr);
 
 /**
- * @brief Return the length of a temporary string.
+ * @brief Returns the length of a temporary string.
  *
  * @param tmpstr This is any C string pointer, but if it is a tmp string
  * it will return the length faster.
@@ -238,7 +238,7 @@ EINA_DEPRECATED EAPI size_t eina_tmpstr_strlen(Eina_Tmpstr *tmpstr);
 EAPI size_t eina_tmpstr_len(Eina_Tmpstr *tmpstr);
 
 /**
- * @brief Delete the temporary string if it is one, or ignore it if it is not.
+ * @brief Deletes the temporary string if it is one, or ignore it if it is not.
  *
  * @param tmpstr This is any C string pointer, but if it is a tmp string
  * it is freed.

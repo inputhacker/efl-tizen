@@ -67,7 +67,7 @@
  * also printed, so now we go to the cool stuff and use an iterator to do same
  * stuff to a list:
  * @until eina_iterator_free
- * @note The only significant diference to the block above is in the
+ * @note The only significant difference to the block above is in the
  * function used to create the iterator.
  *
  * And now we free the list and shut eina down:
@@ -197,7 +197,7 @@ struct _Eina_Iterator
 
 
 /**
- * @brief Free an iterator.
+ * @brief Frees an iterator.
  *
  * @param iterator The iterator to free.
  *
@@ -211,7 +211,7 @@ EAPI void      eina_iterator_free(Eina_Iterator *iterator);
 
 
 /**
- * @brief Return the container of an iterator.
+ * @brief Returns the container of an iterator.
  *
  * @param iterator The iterator.
  * @return The container which created the iterator.
@@ -226,7 +226,7 @@ EAPI void      eina_iterator_free(Eina_Iterator *iterator);
 EAPI void     *eina_iterator_container_get(Eina_Iterator *iterator) EINA_ARG_NONNULL(1) EINA_PURE;
 
 /**
- * @brief Return the value of the current element and go to the next one.
+ * @brief Returns the value of the current element and go to the next one.
  *
  * @param iterator The iterator.
  * @param data The data of the element.
@@ -246,7 +246,7 @@ EAPI Eina_Bool eina_iterator_next(Eina_Iterator *iterator,
 
 
 /**
- * @brief Iterate over the container and execute a callback on each element.
+ * @brief Iterates over the container and execute a callback on each element.
  *
  * @param iterator The iterator.
  * @param callback The callback called on each iteration.
@@ -269,7 +269,7 @@ EAPI void eina_iterator_foreach(Eina_Iterator *iterator,
 
 
 /**
- * @brief Lock the container of the iterator.
+ * @brief Locks the container of the iterator.
  *
  * @param iterator The iterator.
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
@@ -289,7 +289,7 @@ EAPI void eina_iterator_foreach(Eina_Iterator *iterator,
 EAPI Eina_Bool eina_iterator_lock(Eina_Iterator *iterator) EINA_ARG_NONNULL(1);
 
 /**
- * @brief Unlock the container of the iterator.
+ * @brief Unlocks the container of the iterator.
  *
  * @param iterator The iterator.
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
@@ -310,7 +310,7 @@ EAPI Eina_Bool eina_iterator_unlock(Eina_Iterator *iterator) EINA_ARG_NONNULL(1)
 
 /**
  * @def EINA_ITERATOR_FOREACH
- * @brief Macro to iterate over all elements easily.
+ * @brief Definition for the macro to iterate over all elements easily.
  *
  * @param itr The iterator to use.
  * @param data Where to store * data, must be a pointer support getting
@@ -339,7 +339,7 @@ EAPI Eina_Bool eina_iterator_unlock(Eina_Iterator *iterator) EINA_ARG_NONNULL(1)
  * eina_list_free(list);
  * @endcode
  *
- * @note this example is not optimal algorithm to release a list since
+ * @note This example is not optimal algorithm to release a list since
  *    it will walk the list twice, but it serves as an example. For
  *    optimized version use EINA_LIST_FREE()
  *

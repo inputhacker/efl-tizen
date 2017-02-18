@@ -71,7 +71,7 @@
  * @brief This group discusses the functions to handle files and directories.
  *
  * @details These functions make it easier to do a number of file and directory operations
- *          such as getting the list of files in a directory, spliting paths, and finding
+ *          such as getting the list of files in a directory, splitting paths, and finding
  *          out file size and type.
  *
  * @warning All functions in this group are @b blocking, which means they may
@@ -159,7 +159,7 @@ typedef enum {
  * it never happens */
 /**
  * @def EINA_PATH_MAX
- * @brief The constant defined as the highest value for PATH_MAX.
+ * @brief Definition for the constant defined as the highest value for PATH_MAX.
  */
 #define EINA_PATH_MAX 8192
 
@@ -239,23 +239,15 @@ struct _Eina_File_Line
 /**
  * @def EINA_FILE_DIR_LIST_CB
  * @brief The macro to cast to an #Eina_File_Dir_List_Cb.
- *
+ * @details This macro casts @p function to #Eina_File_Dir_List_Cb.
  * @param function The function to cast
  *
- * @details This macro casts @p function to #Eina_File_Dir_List_Cb.
  */
 #define EINA_FILE_DIR_LIST_CB(function) ((Eina_File_Dir_List_Cb)function)
 
 
 /**
  * @brief Lists all the files on the directory by calling the function for every file found.
- *
- * @param[in] dir The directory name
- * @param[in] recursive Iterate recursively in the directory
- * @param[in] cb The callback to be called
- * @param[in] data The data to pass to the callback
- * @return #EINA_TRUE on success, otherwise #EINA_FALSE
- *
  * @details This function calls @p cb for each file that is in @p dir. To have @p cb
  *          called on the files that are in subdirectories of @p dir, @p recursive should
  *          be #EINA_TRUE. In other words, if @p recursive is #EINA_FALSE, only direct children
@@ -265,6 +257,12 @@ struct _Eina_File_Line
  *          If @p cb or @p dir is @c NULL or if @p dir is a string of size 0,
  *          or if @p dir cannot be opened, this function returns #EINA_FALSE
  *          immediately. Otherwise, it returns #EINA_TRUE.
+ *
+ * @param[in] dir The directory name
+ * @param[in] recursive Iterate recursively in the directory
+ * @param[in] cb The callback to be called
+ * @param[in] data The data to pass to the callback
+ * @return #EINA_TRUE on success, otherwise #EINA_FALSE
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -277,14 +275,13 @@ EAPI Eina_Bool eina_file_dir_list(const char           *dir,
 
 /**
  * @brief Splits a path according to the delimiter of the filesystem.
- *
- * @param[in] path The path to split
- * @return An array of the parts of the path to split
- *
  * @details This function splits @p path according to the delimiter of the used
  *          filesystem. If  @p path is @c NULL or if the array cannot be
  *          created, @c NULL is returned, otherwise an array with each part of @p path
  *          is returned.
+ *
+ * @param[in] path The path to split
+ * @return An array of the parts of the path to split
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -294,14 +291,13 @@ EAPI Eina_Array    *eina_file_split(char *path) EINA_WARN_UNUSED_RESULT EINA_ARG
 
 /**
  * @brief Gets an iterator to list the content of a directory.
+ * @details This returns an iterator for shared strings, the name of each file in @p dir is
+ *          only fetched when advancing the iterator, which means there is very little
+ *          cost associated with creating the list and stopping halfway through it.
  *
  * @param [in] dir The name of the directory to list
  * @return An #Eina_Iterator that walks over the files and directories
  *         in @p dir. On failure, it returns @c NULL.
- *
- * @details This returns an iterator for shared strings, the name of each file in @p dir is
- *          only fetched when advancing the iterator, which means there is very little
- *          cost associated with creating the list and stopping halfway through it.
  *
  * @note The iterator hands the user a stringshared value with the full
  *       path. The user must free the string using eina_stringshare_del() on it.
@@ -320,15 +316,14 @@ EAPI Eina_Iterator *eina_file_ls(const char *dir) EINA_WARN_UNUSED_RESULT EINA_A
 /**
  * @brief Gets an iterator to list the content of a directory, with direct
  *        information.
+ * @details This returns an iterator for #Eina_File_Direct_Info, the name of each file in @p
+ *          dir is only fetched when advancing the iterator, which means there is
+ *          cost associated with creating the list and stopping halfway through it.
  *
  * @param [in] dir The name of the directory to list
  *
  * @return An #Eina_Iterator that walks over the files and
  *         directories in @p dir. On failure, it returns @c NULL.
- *
- * @details This returns an iterator for #Eina_File_Direct_Info, the name of each file in @p
- *          dir is only fetched when advancing the iterator, which means there is
- *          cost associated with creating the list and stopping halfway through it.
  *
  * @warning The #Eina_File_Direct_Info returned by the iterator <b>must not</b>
  *          be modified in any way.
@@ -352,14 +347,13 @@ EAPI Eina_Iterator *eina_file_stat_ls(const char *dir) EINA_WARN_UNUSED_RESULT E
 /**
  * @brief Uses information provided by #Eina_Iterator of eina_file_stat_ls() or eina_file_direct_ls()
  *        to call stat in the most efficient way on your system.
+ * @details This function calls fstatat or stat depending on what your system supports. This makes it efficient and simple
+ *          to use on your side without complex detection already done inside Eina on what the system can do.
  *
  * @param[in] container The container returned by #Eina_Iterator using eina_iterator_container_get()
  * @param[in] info The content of the current #Eina_File_Direct_Info provided by #Eina_Iterator
  * @param[in] buf The location put the result of the stat
- * @return @c 0 is returnedon success, otherwise @c -1 is returned on error and errno is set appropriately
- *
- * @details This function calls fstatat or stat depending on what your system supports. This makes it efficient and simple
- *          to use on your side without complex detection already done inside Eina on what the system can do.
+ * @return @c 0 is returned on success, otherwise @c -1 is returned on error and errno is set appropriately
  *
  * @see eina_file_direct_ls()
  * @see eina_file_stat_ls()
@@ -375,6 +369,9 @@ EAPI int eina_file_statat(void *container, Eina_File_Direct_Info *info, Eina_Sta
 /**
  * @brief Generates and creates a uniquely named temporary file from a template name.
  *        The generated file is opened with the open(2) @c O_EXCL flag.
+ * @details This function calls mkstemp(), generates a unique temporary filename
+ *          from template, creates and opens the file, and returns an open file
+ *          descriptor for the file.
  *
  * @param[in] templatename This is a string. It must contain the six characters 'XXXXXX'
  *                         at the end or directly followed by an extension as in
@@ -384,10 +381,6 @@ EAPI int eina_file_statat(void *container, Eina_File_Direct_Info *info, Eina_Sta
  * @return On success @c file descriptor of the temporary file is returned,
  *         On error @c -1 is returned, in which case @c errno is set appropriately.
  *
- * @details This function calls mkstemp(), generates a unique temporary filename
- *          from template, creates and opens the file, and returns an open file
- *          descriptor for the file.
- *
  * @note If a filename extension was specified in @p templatename, then the new @p path
  *       will also contain this extension (since 1.10).
  *
@@ -396,7 +389,7 @@ EAPI int eina_file_statat(void *container, Eina_File_Direct_Info *info, Eina_Sta
  *       the system temporary directory (@see eina_environment_tmp_get()). If the
  *       @p templatename contains a directory separator ('/', or '\\' on Windows)
  *       then the file will be created inside this directory, which must exist and
- *       be writable. Use ./filename.XXXXXX to create files in the current
+ *       be writeable. Use ./filename.XXXXXX to create files in the current
  *       working directory. (since 1.17)
  *
  * @see eina_file_mkdtemp()
@@ -410,6 +403,8 @@ EAPI int eina_file_mkstemp(const char *templatename, Eina_Tmpstr **path) EINA_AR
 
 /**
  * @brief Generates and creates a uniquely named temporary directory from a template name.
+ * @details This function calls mkdtemp(). The directory is then created with
+ *           permissions 0700.
  *
  * @param[in] templatename This is a string. The last six characters of @p templatename
  *                         must be XXXXXX.
@@ -418,15 +413,12 @@ EAPI int eina_file_mkstemp(const char *templatename, Eina_Tmpstr **path) EINA_AR
  * @return On success @c EINA_TRUE is returned, On error @c EINA_FALSE is returned,
  *                    in which case @c errno is set appropriately.
  *
- * @details This function calls mkdtemp(). The directory is then created with
- *           permissions 0700.
- *
  * @note If the @p templatename is a simple directory name (no relative or absolute
  *       path to another directory), then a temporary directory will be created inside
  *       the system temporary directory (@see eina_environment_tmp_get()). If the
  *       @p templatename contains a directory separator ('/', or '\\' on Windows)
  *       then the temporary directory will be created inside that other directory,
- *       which must exist and be writable. (since 1.17)
+ *       which must exist and be writeable. (since 1.17)
  *
  * @see eina_file_mkstemp()
  * @since 1.8
@@ -440,15 +432,14 @@ EAPI Eina_Bool eina_file_mkdtemp(const char *templatename, Eina_Tmpstr **path) E
 /**
  * @brief Gets an iterator to list the content of a directory, with direct
  *        information.
+ * @details This returns an iterator for #Eina_File_Direct_Info, the name of each file in
+ *          @p dir is only fetched when advancing the iterator, which means there is
+ *          cost associated with creating the list and stopping halfway through it.
  *
  * @param [in] dir The name of the directory to list
  *
  * @return An Eina_Iterator that walks over the files and
  *         directories in @p dir. On failure, it returns @c NULL.
- *
- * @details This returns an iterator for #Eina_File_Direct_Info, the name of each file in
- *          @p dir is only fetched when advancing the iterator, which means there is
- *          cost associated with creating the list and stopping halfway through it.
  *
  * @warning If readdir_r doesn't contain file type information, file type is
  *          EINA_FILE_UNKNOWN.
@@ -473,14 +464,13 @@ EAPI Eina_Iterator *eina_file_direct_ls(const char *dir) EINA_WARN_UNUSED_RESULT
 
 /**
  * @brief Sanitizes the file path.
+ * @details This function takes care of adding the current working directory if its a
+ *          relative path and also removes all '..' and '//' references in the original
+ *          path.
  *
  * @param[in] path The path to sanitize
  *
  * @return An allocated string with the sanitized path
- *
- * @details This function takes care of adding the current working directory if its a
- *          relative path and also removes all '..' and '//' references in the original
- *          path.
  *
  * @since 1.1
  *
@@ -511,7 +501,9 @@ typedef enum {
 } Eina_File_Copy_Flags;
 
 /**
- * @brief Copy one file to another using the fastest possible way and report progress.
+ * @brief Copies one file to another using the fastest possible way and report progress.
+ * @details This function tries to splice if it is available. It is blocked
+ *          until the whole file is copied or it fails.
  *
  * @param[in] src The source file.
  * @param[in] dst The destination file.
@@ -520,9 +512,6 @@ typedef enum {
  * @param[in] cb_data Context data to provide to @p cb during copy.
  * @return #EINA_TRUE on success, #EINA_FALSE otherwise (and @p dst
  *         will be deleted)
- *
- * @details This function tries to splice if it is available. It is blocked
- *          until the whole file is copied or it fails.
  *
  * @note During the progress it may call back @p cb with the progress summary.
  *
@@ -534,15 +523,14 @@ EAPI Eina_Bool eina_file_copy(const char *src, const char *dst, Eina_File_Copy_F
 
 /**
  * @brief Gets a read-only handler to a file.
+ * @details This opens a file in the read-only mode. @p name should be an absolute path. An
+ *          #Eina_File handle can be shared among multiple instances if @p shared
+ *          is #EINA_TRUE, otherwise.
  *
  * @param[in] name The filename to open
  * @param[in] shared Requested a shm
 
  * @return An #Eina_File handle to the file
- *
- * @details This opens a file in the read-only mode. @p name should be an absolute path. An
- *          #Eina_File handle can be shared among multiple instances if @p shared
- *          is #EINA_TRUE, otherwise.
  *
  * @since 1.1
  *
@@ -553,7 +541,7 @@ EAPI Eina_Bool eina_file_copy(const char *src, const char *dst, Eina_File_Copy_F
 EAPI Eina_File *eina_file_open(const char *name, Eina_Bool shared) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
 /**
- * @brief Create a virtual file from a memory pointer.
+ * @brief Creates a virtual file from a memory pointer.
  *
  * @param[in] virtual_name A virtual name for Eina_File, if @c NULL, a generated one will be given
  * @param[in] data The memory pointer to take data from
@@ -571,7 +559,7 @@ EAPI Eina_File *
 eina_file_virtualize(const char *virtual_name, const void *data, unsigned long long length, Eina_Bool copy) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
 /**
- * @brief Tells if a file is a real file or only exist in memory
+ * @brief Tells if a file is a real file or only exist in memory.
  *
  * @param file The file to test
  * @return #EINA_TRUE if the file is a virtual file
@@ -586,13 +574,12 @@ EAPI Eina_Bool
 eina_file_virtual(Eina_File *file) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1);
 
 /**
- * @brief Refreshes file information
+ * @brief Refreshes file information.
+ * @details All current map continue to exist. You need to manually delete
+ *          and recreate them to have the new correct mapping.
  *
  * @param file The file to refresh
  * @return #EINA_TRUE if the file has changed
- *
- * @details All current map continue to exist. You need to manually delete
- *          and recreate them to have the new correct mapping.
  *
  * @since 1.8
  *
@@ -620,10 +607,9 @@ EAPI Eina_File * eina_file_dup(const Eina_File *file);
 
 /**
  * @brief Unrefs the file handler.
+ * @details This decrements the file's reference count and if it reaches zero it closes the file.
  *
  * @param[in] file The file handler to unref
- *
- * @details This decrements the file's reference count and if it reaches zero it closes the file.
  *
  * @since 1.1
  *
@@ -762,17 +748,16 @@ EAPI void *eina_file_map_new(Eina_File *file, Eina_File_Populate rule,
 EAPI void eina_file_map_free(Eina_File *file, void *map);
 
 /**
- * @brief Ask the OS to populate or otherwise pages of memory in file mapping
+ * @brief Asks the OS to populate or otherwise pages of memory in file mapping.
+ * @details This advises the operating system as to what to do with the memory mapped
+ *          to the given @p file. This affects a specific range of memory and may not
+ *          be honoured if the system chooses to ignore the request.
  * 
  * @param[in] file The file handle from which the map comes
  * @param[in] rule The rule to apply to the mapped memory
  * @param[in] map Memory that was mapped inside of which the memory range is
  * @param[in] offset The offset in bytes from the start of the map address
  * @param [in]length The length in bytes of the memory region to populate
- * 
- * @details This advises the operating system as to what to do with the memory mapped
- *          to the given @p file. This affects a specific range of memory and may not
- *          be honored if the system chooses to ignore the request.
  * 
  * @since 1.8
  *
@@ -786,13 +771,12 @@ eina_file_map_populate(Eina_File *file, Eina_File_Populate rule, const void *map
 
 /**
  * @brief Maps line by line in the memory efficiently using an #Eina_Iterator.
- *
- * @param[in] file The file to run over
- * @return An Eina_Iterator that produces #Eina_File_Line
- *
  * @details This function returns an iterator that acts like fgets without
  *          useless memcpy. Be aware that once eina_iterator_next has been called,
  *          nothing can guarantee that the memory is still going to be mapped.
+ *
+ * @param[in] file The file to run over
+ * @return An Eina_Iterator that produces #Eina_File_Line
  *
  * @since 1.3
  *
@@ -803,7 +787,7 @@ eina_file_map_populate(Eina_File *file, Eina_File_Populate rule, const void *map
 EAPI Eina_Iterator *eina_file_map_lines(Eina_File *file);
 
 /**
- * @brief Tells whether there has been an IO error during the life of a mmaped file,
+ * @brief Tells whether there has been an IO error during the life of a mmaped file.
  *
  * @param[in] file The file handler to the mmaped file
  * @param[in] map The memory map to check if an error occurred on it
