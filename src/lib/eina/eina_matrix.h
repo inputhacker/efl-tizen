@@ -372,7 +372,7 @@ EAPI void eina_matrix3_compose(const Eina_Matrix3 *m1,
 
 /**
  * @brief Sets the matrix values for a translation.
- * @param[out] m The matrix to set the translation values
+ * @param[out] t The matrix to set the translation values
  * @param[in] tx The X coordinate translate
  * @param[in] ty The Y coordinate translate
  *
@@ -382,7 +382,7 @@ EAPI void eina_matrix3_translate(Eina_Matrix3 *t, double tx, double ty);
 
 /**
  * @brief Sets the matrix values for a scale.
- * @param[out] m The matrix to set the scale values
+ * @param[out] t The matrix to set the scale values
  * @param[in] sx The X coordinate scale
  * @param[in] sy The Y coordinate scale
  *
@@ -402,7 +402,7 @@ EAPI void eina_matrix3_rotate(Eina_Matrix3 *t, double rad);
 /**
  * @brief Sets the given floating point matrix to the identity matrix.
  *
- * @param[out] m The floating point matrix to set
+ * @param[out] t The floating point matrix to set
  *
  * This function sets @p m to the identity matrix. No check is done on
  * @p m.

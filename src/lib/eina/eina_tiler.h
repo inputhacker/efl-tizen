@@ -311,6 +311,10 @@ EAPI Eina_Iterator     *eina_tiler_iterator_new(const Eina_Tiler *t);
  * @note This is a convenience function, iterating over the returned iterator is
  * equivalent to calling eina_tile_grid_slicer_setup() and calling
  * eina_tile_grid_slicer_next() until it returns #EINA_FALSE.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Iterator     *eina_tile_grid_slicer_iterator_new(int x, int y, int w, int h, int tile_w, int tile_h);
 

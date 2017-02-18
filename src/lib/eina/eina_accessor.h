@@ -218,6 +218,9 @@ EAPI void      eina_accessor_free(Eina_Accessor *accessor);
  * @param[in] data The pointer that stores the data to retrieve
  * @return #EINA_TRUE on success, otherwise #EINA_FALSE
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_accessor_data_get(Eina_Accessor *accessor,
                                       unsigned int   position,
@@ -248,6 +251,9 @@ EAPI void *eina_accessor_container_get(Eina_Accessor *accessor) EINA_ARG_NONNULL
  * @param[in] end The position of the last element
  * @param[in] fdata The data passed to the callback
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void  eina_accessor_over(Eina_Accessor *accessor,
                               Eina_Each_Cb   cb,
@@ -268,6 +274,10 @@ EAPI void  eina_accessor_over(Eina_Accessor *accessor,
  *       lockable, it returns #EINA_TRUE.
  *
  * @warning None of the existing eina data structures are lockable.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_accessor_lock(Eina_Accessor *accessor) EINA_ARG_NONNULL(1);
 

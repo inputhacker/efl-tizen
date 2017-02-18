@@ -818,6 +818,10 @@ EAPI Eina_Bool eina_hash_direct_add_by_hash(Eina_Hash  *hash,
  *
  * @note If you don't have the key_hash, use eina_hash_del_by_key() instead.
  * @note If you don't have the key, use eina_hash_del_by_data() instead.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_del_by_key_hash(Eina_Hash  *hash,
                                          const void *key,
@@ -845,6 +849,10 @@ EAPI Eina_Bool eina_hash_del_by_key_hash(Eina_Hash  *hash,
  * @note If you already have the key_hash, use eina_hash_del_by_key_hash()
  * instead.
  * @note If you don't have the key, use eina_hash_del_by_data() instead.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool eina_hash_del_by_key(Eina_Hash  *hash,
                                     const void *key) EINA_ARG_NONNULL(1, 2);

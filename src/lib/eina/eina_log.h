@@ -683,6 +683,10 @@ EAPI int                eina_log_abort_on_critical_level_get(void) EINA_WARN_UNU
  *        yet, it will be saved as a pending set and applied upon
  *        registration.
  * @param level Level to use to limit eina_log_print() for given domain.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void               eina_log_domain_level_set(const char *domain_name, int level) EINA_ARG_NONNULL(1);
 
@@ -745,6 +749,10 @@ static inline Eina_Bool eina_log_domain_level_check(int domain, int level);
  *         macros. A negative return value means an error occurred.
  *
  * @note MT: Safe to call from any thread.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int  eina_log_domain_register(const char *name, const char *color) EINA_ARG_NONNULL(1);
 
@@ -755,6 +763,10 @@ EAPI int  eina_log_domain_register(const char *name, const char *color) EINA_ARG
  *        must be >= 0.
  *
  * @note MT: Safe to call from any thread.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_log_domain_unregister(int domain);
 
@@ -1039,6 +1051,23 @@ extern EAPI const char *_eina_log_state_shutdown;
 /**
  * @def EINA_LOG_STATE_INIT
  * String that indicates the log system is initializing 
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+extern EAPI const char *_eina_log_state_init;
+/**
+ * String that indicates the log system is shutting down.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+extern EAPI const char *_eina_log_state_shutdown;
+/**
+ * @def EINA_LOG_STATE_INIT
+ * String that indicates the log system is initializing
  */
 #define EINA_LOG_STATE_INIT _eina_log_state_init
 /**

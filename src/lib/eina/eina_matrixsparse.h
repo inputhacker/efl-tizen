@@ -88,6 +88,10 @@ typedef struct _Eina_Matrixsparse_Cell      Eina_Matrixsparse_Cell;
  * @param user_data Given to @a free_func as first parameter.
  *
  * @return Newly allocated matrix, or @c NULL if allocation failed.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Matrixsparse *eina_matrixsparse_new(unsigned long rows,
                                               unsigned long cols,

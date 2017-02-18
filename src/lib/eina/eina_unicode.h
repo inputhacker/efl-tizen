@@ -143,6 +143,7 @@ static inline Eina_Unicode eina_unicode_utf8_next_get(const char *buf, int *iind
 
 /**
  * @deprecated use eina_unicode_utf8_next_get
+ *             Deprecated since Tizen 2.4
  * Reads UTF8 bytes from @p buf, starting at @p iindex and returns
  * the decoded code point at @p iindex offset, and advances @p iindex
  * to the next code point after this. @p iindex is always advanced,

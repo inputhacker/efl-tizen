@@ -60,6 +60,10 @@ typedef void Eina_Cow_Data;
  * @param default_value The default value returned by this pool.
  * @param gc Is it possible to run garbage collection on this pool.
  * @return A valid new Eina_Cow, or @c NULL on error.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Cow *eina_cow_add(const char *name, unsigned int struct_size, unsigned int step, const void *default_value, Eina_Bool gc) EINA_WARN_UNUSED_RESULT;
 

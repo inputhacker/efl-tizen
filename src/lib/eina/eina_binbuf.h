@@ -91,6 +91,8 @@ EAPI Eina_Binbuf *eina_binbuf_manage_new_length(unsigned char *str, size_t lengt
 EAPI Eina_Binbuf *eina_binbuf_manage_new(const unsigned char *str, size_t length, Eina_Bool ro) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @internal
+ *
  * @brief Creates a new string buffer using the passed string. The passed
  * string is used directly as the buffer, it's somehow the opposite function of
  * @ref eina_binbuf_string_steal . The passed string will not be touched.

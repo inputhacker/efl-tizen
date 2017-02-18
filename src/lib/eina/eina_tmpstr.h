@@ -198,13 +198,13 @@ EAPI Eina_Tmpstr *eina_tmpstr_add(const char *str) EINA_WARN_UNUSED_RESULT;
 EAPI Eina_Tmpstr *eina_tmpstr_add_length(const char *str, size_t length);
 
 /**
+ * @deprecated
  * @brief **Deprecated** Return the length of a temporary string including the '\0'.
  *
  * @param tmpstr This is any C string pointer, but if it is a tmp string
  * it will return the length faster.
  * @return The length of the string including the '\0'
  *
- * @deprecated
  * @see eina_tmpstr_len()
  * @since 1.8.0
  */

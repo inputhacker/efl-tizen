@@ -525,6 +525,10 @@ EAPI void                 eina_rectangle_pool_release(Eina_Rectangle *rect) EINA
  * coordinates (@p x, @p y), with height @p w and height @p h and adds
  * it to the rectangles pool. No check is done on @p w and @p h. This
  * function returns a new rectangle on success, @c NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Rectangle *eina_rectangle_new(int x, int y, int w, int h) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
 

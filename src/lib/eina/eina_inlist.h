@@ -434,6 +434,10 @@ struct _Eina_Inlist
  * @param in_item New list node, must not be @c NULL.
  *
  * @return The new list head. Use it and not @a in_list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_append(Eina_Inlist *in_list,
                                      Eina_Inlist *in_item) EINA_ARG_NONNULL(2) EINA_WARN_UNUSED_RESULT;
@@ -504,6 +508,10 @@ EAPI Eina_Inlist *eina_inlist_append_relative(Eina_Inlist *in_list,
  * @param in_relative Reference node, @a in_item will be added before it.
  *
  * @return The new list head. Use it and not @a in_list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist *eina_inlist_prepend_relative(Eina_Inlist *in_list,
                                                Eina_Inlist *in_item,
@@ -575,6 +583,10 @@ EAPI Eina_Inlist   *eina_inlist_promote(Eina_Inlist *list,
  * @param item List node to move to end (tail), must not be @c NULL.
  *
  * @return The new list head. Use it and not @a list anymore.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Inlist   *eina_inlist_demote(Eina_Inlist *list,
                                        Eina_Inlist *item) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;

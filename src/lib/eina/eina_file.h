@@ -263,6 +263,10 @@ struct _Eina_File_Line
  * @param[in] cb The callback to be called
  * @param[in] data The data to pass to the callback
  * @return #EINA_TRUE on success, otherwise #EINA_FALSE
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_file_dir_list(const char           *dir,
                                   Eina_Bool             recursive,
@@ -279,6 +283,9 @@ EAPI Eina_Bool eina_file_dir_list(const char           *dir,
  * @param[in] path The path to split
  * @return An array of the parts of the path to split
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Array    *eina_file_split(char *path) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 

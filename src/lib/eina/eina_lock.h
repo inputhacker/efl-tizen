@@ -107,13 +107,12 @@ EAPI extern Eina_Error EINA_ERROR_NOT_MAIN_LOOP;
 
 /**
  * @brief Initializes a new #Eina_Lock.
- *
- * @param[in] mutex The #Eina_Lock structure to be initialized
- * @return #EINA_TRUE on success, #EINA_FALSE otherwise
- *
  * @details This function initializes an #Eina_Lock with appropriate values.
  *          These values are platform dependent as is the structure of the
  *          #Eina_Lock itself.
+ * @param[in] mutex The #Eina_Lock structure to be initialized
+ * @return #EINA_TRUE on success, #EINA_FALSE otherwise
+ *
  *
  * @see eina_lock_free()
  */
@@ -223,6 +222,11 @@ EAPI void eina_lock_debug(const Eina_Lock *mutex);
  * Condition variables are used to coordinate actions between threads.  See
  * <a href="https://computing.llnl.gov/tutorials/pthreads/#ConVarOverview"> Condition Varable Overview </a>
  * for an introduction to condition variables and their use.
+ *
+ * @param[in] cond The condition variable to create
+ * @param[in] mutex The #Eina_Lock structure that controls access to this condition variable
+ *
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  *
  * @see eina_condition_free()
  */

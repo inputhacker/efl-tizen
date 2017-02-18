@@ -503,6 +503,10 @@ EAPI void eina_simple_xml_node_root_free(Eina_Simple_XML_Node_Root *root);
  * @param indent Indentation string, or @c NULL to disable it.
  *
  * @return @c NULL on errors, or a newly allocated string on success.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char * eina_simple_xml_node_dump(Eina_Simple_XML_Node *node, const char *indent);
 

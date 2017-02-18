@@ -158,7 +158,6 @@ EAPI Eina_Error  eina_error_msg_static_register(const char *msg) EINA_ARG_NONNUL
  * @note It is not possible to modify messages that exist in libC's @c
  *       errno.h, such as @c ENOMEM or @c EBADF.
  *
- *
  * @see eina_error_msg_register()
  */
 EAPI Eina_Bool   eina_error_msg_modify(Eina_Error  error,
@@ -212,6 +211,10 @@ EAPI const char *eina_error_msg_get(Eina_Error error) EINA_PURE;
  *       such as the messages given to eina_error_msg_register(),
  *       eina_error_msg_static_register() or modified with
  *       eina_error_msg_modify().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Error  eina_error_find(const char *msg) EINA_ARG_NONNULL(1) EINA_PURE;
 
