@@ -1389,6 +1389,49 @@ EAPI void             ecore_con_socks_apply_always(Ecore_Con_Socks *ecs);
 EAPI Ecore_Con_Server *ecore_con_server_add(Ecore_Con_Type type,
                                             const char *name, int port,
                                             const void *data);
+/**
+ * @internal
+ *
+ * @brief Creates a server to listen for connections.
+ *
+ * @param  type The connection type.
+ * @param  name       Name to associate with the socket. It is used when
+ *                    generating the socket name of a Unix socket, or for
+ *                    determining what host to listen on for TCP sockets.
+ *                    @c NULL will not be accepted.
+ * @param  fd         The socket's fd.
+ * @param  port       Number to identify socket. When a Unix socket is used,
+ *                    it becomes part of the socket name. When a TCP socket
+ *                    is used, it is used as the TCP port.
+ * @param  data       Data to associate with the created Ecore_Con_Server
+ *                    object.
+ * @return A new Ecore_Con_Server.
+ *
+ * The socket on which the server listens depends on the connection
+ * type:
+ * @li If @a type is @c ECORE_CON_LOCAL_USER, the server will listen on
+ *     the Unix socket. The path to the socket is taken from XDG_RUNTIME_DIR,
+ *     if that is not set, then from HOME, even if this is not set, then from
+ *     TMPDIR. If none is set, then path would be /tmp. From this path socket
+ *     would be created as "[path]/.ecore/[name]/[port]". If port is negetive,
+ *     then "[path]/.ecore/[name]".
+ * @li If @a type is @c ECORE_CON_LOCAL_SYSTEM, the server will listen
+ *     on Unix socket "/tmp/.ecore_service|[name]|[port]". If port is negetive,
+ *     then "/tmp/.ecore_service|[name]".
+ * @li If @a type is @c ECORE_CON_LOCAL_ABSTRACT, then port number is not
+ *     considered while creating the socket.
+ * @li If @a type is @c ECORE_CON_REMOTE_TCP, the server will listen
+ *     on TCP port @c port.
+ *
+ * More information about the @p type can be found at @ref _Ecore_Con_Type.
+ *
+ * The @p data parameter can be fetched later using ecore_con_server_data_get()
+ * or changed with ecore_con_server_data_set().
+ */
+EAPI Ecore_Con_Server *ecore_con_server_with_fd_add(Ecore_Con_Type type,
+                                                    const char *name, int port,
+                                                    int fd,
+                                                    const void *data);
 
 /**
  * @brief Create a connection to the specified server and return an associated object.
@@ -1443,6 +1486,60 @@ EAPI Ecore_Con_Server *ecore_con_server_add(Ecore_Con_Type type,
 EAPI Ecore_Con_Server *ecore_con_server_connect(Ecore_Con_Type type,
                                                 const char *name, int port,
                                                 const void *data);
+
+/**
+ * @internal
+ *
+ * @brief Creates a connection to the specified server and return an associated object.
+ *
+ * @param  type The connection type.
+ * @param  name       Name used when determining what socket to connect to.
+ *                    It is used to generate the socket name when the socket
+ *                    is a Unix socket. It is used as the hostname when
+ *                    connecting with a TCP socket.
+ * @param  port       Number to identify the socket to connect to. Used when
+ *                    generating the socket name for a Unix socket, or as the
+ *                    TCP port when connecting to a TCP socket.
+ * @param  fd         The socket's fd.
+ * @param  data       Data to associate with the created Ecore_Con_Server
+ *                    object.
+ * @return A new Ecore_Con_Server.
+ *
+ * The socket to which the connection is made depends on the connection type:
+ * @li If @a type is @c ECORE_CON_LOCAL_USER, the server will conect to
+ *     the Unix socket. The path to the socket is taken from XDG_RUNTIME_DIR,
+ *     if that is not set, then from HOME, even if this is not set, then from
+ *     TMPDIR. If none is set, then path would be /tmp. From this path the
+ *     function would connect to socket at "[path]/.ecore/[name]/[port]". If
+ *     port is negative, then to socket at "[path]/.ecore/[name]".
+ * @li If @a type is @c ECORE_CON_LOCAL_SYSTEM, the server will connect to
+ *     Unix socket at "/tmp/.ecore_service|[name]|[port]". If port is negative,
+ *     then to Unix socket at "/tmp/.ecore_service|[name]".
+ * @li If @a type is @c ECORE_CON_LOCAL_ABSTRACT, then port number is not
+ *     considered while connecting to socket.
+ * @li If @a type is @c ECORE_CON_REMOTE_TCP, the server will listen
+ *     on TCP port @c port.
+ *
+ * More information about the @p type can be found at @ref _Ecore_Con_Type.
+ *
+ * This function won't block. It will either succeed, or fail due to invalid
+ * parameters, failed memory allocation, etc., returning @c NULL on that case.
+ *
+ * However, even if this call returns a valid @ref Ecore_Con_Server, the
+ * connection will only be successfully completed if an event of type
+ * @ref ECORE_CON_EVENT_SERVER_ADD is received. If it fails to complete, an
+ * @ref ECORE_CON_EVENT_SERVER_DEL will be received.
+ *
+ * The created object gets deleted automatically if the connection to the
+ * server is lost.
+ *
+ * The @p data parameter can be fetched later using ecore_con_server_data_get()
+ * or changed with ecore_con_server_data_set().
+ */
+EAPI Ecore_Con_Server *ecore_con_server_with_fd_connect(Ecore_Con_Type type,
+                                                      const char *name, int port,
+                                                      int fd,
+                                                      const void *data);
 /**
  * @brief Close the connection and free the given server.
  *

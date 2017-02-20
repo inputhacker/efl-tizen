@@ -36,6 +36,13 @@
 # include <Evas_Engine_Wayland_Egl.h>
 #endif
 
+// TIZEN ONLY (170220): request e19 compositor to create socket
+#if HAVE_ECORE_WAYLAND
+# include <Ecore_Wayland.h>
+# include <wayland-server.h>
+# include <tizen-extension-client-protocol.h>
+#endif
+// TIZEN ONLY: END
 #include "ecore_private.h" // FIXME: Because of ECORE_MAGIC
 #include "ecore_evas_private.h"
 #include "ecore_evas_buffer.h"

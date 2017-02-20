@@ -27,13 +27,6 @@
 
 #include "Ecore_Con.h"
 #include "ecore_con_private.h"
-// TIZEN ONLY (151223): request e19 compositor to create socket
-#if HAVE_ECORE_WAYLAND
-# include "Ecore_Wayland.h"
-# include <wayland-server.h>
-# include <tizen-extension-client-protocol.h>
-#endif
-// TIZEN ONLY: END
 
 #define LENGTH_OF_SOCKADDR_UN(s)                (strlen((s)->sun_path) +                 \
                                                  (size_t)(((struct sockaddr_un *)NULL)-> \
@@ -73,83 +66,6 @@ ecore_con_local_shutdown(void)
 
    return _ecore_con_local_init_count;
 }
-
-// TIZEN ONLY (151223): request e19 compositor to create socket
-#if HAVE_ECORE_WAYLAND
-static void
-_ecore_con_compositor_socket(void *data, struct tizen_embedded_compositor *tec EINA_UNUSED, int fd)
-{
-   int *socket_fd = (int *)data;
-
-   *socket_fd = fd;
-   return;
-}
-
-static const struct tizen_embedded_compositor_listener tizen_embedded_compositor_listener =
-{
-   _ecore_con_compositor_socket
-};
-
-static int
-_ecore_con_local_get_socket_from_server()
-{
-   Eina_Inlist *l, *tmp;
-   Ecore_Wl_Global *global;
-   struct tizen_embedded_compositor *tec = NULL;
-   int fd = -1;
-
-   // TIZEN_ONLY(20170109): check whether socket_from_server is needed or not
-   const char *s = getenv("ECORE_CON_DISABLE_SOCKET_FROM_SERVER");
-   if ((s) && (!strncmp(s, "1", 1)))
-     return -1;
-   //
-
-   if (ecore_wl_server_mode_get())
-     return -1;
-
-   l = ecore_wl_globals_get();
-   if (!l)
-     {
-        DBG("Cannot get wl globals");
-        return -1;
-     }
-
-   EINA_INLIST_FOREACH_SAFE(l, tmp, global)
-     {
-        if (!strcmp(global->interface, "tizen_embedded_compositor"))
-          {
-             tec = wl_registry_bind(ecore_wl_registry_get(),
-                               global->id,
-                               &tizen_embedded_compositor_interface,
-                               1);
-             tizen_embedded_compositor_add_listener(tec,
-                               &tizen_embedded_compositor_listener,
-                               &fd);
-             break;
-          }
-     }
-
-   if (!tec)
-     {
-        DBG("Cannot find tizen embedded compositor");
-        return -1;
-     }
-
-   tizen_embedded_compositor_get_socket(tec);
-   ecore_wl_sync();
-
-   tizen_embedded_compositor_destroy(tec);
-   return fd;
-}
-#else
-static int
-_ecore_con_local_get_socket_from_server()
-{
-   DBG("Just return -1");
-   return -1;
-}
-#endif
-// TIZEN ONLY: END
 
 int
 ecore_con_local_connect(Ecore_Con_Server *obj,
@@ -225,15 +141,8 @@ ecore_con_local_connect(Ecore_Con_Server *obj,
         buf[sizeof(buf) - 1] = 0;
      }
 
-   // TIZEN ONLY (151223): request e19 compositor to create socket
-   //svr->fd = socket(AF_UNIX, SOCK_STREAM, 0);
-   svr->fd = _ecore_con_local_get_socket_from_server();
    if (svr->fd < 0)
-     {
-        svr->fd = socket(AF_UNIX, SOCK_STREAM, 0);
-        DBG("efd < 0: get socket by ourself: %d", svr->fd);
-     }
-   // TIZEN ONLY: END
+     svr->fd = socket(AF_UNIX, SOCK_STREAM, 0);
    if (svr->fd < 0)
      return 0;
 
@@ -462,15 +371,8 @@ start:
 #else
    (void)abstract_socket;
 #endif
-   // TIZEN ONLY (151223): request e19 compositor to create socket
-   //svr->fd = socket(AF_UNIX, SOCK_STREAM, 0);
-   svr->fd = _ecore_con_local_get_socket_from_server();
    if (svr->fd < 0)
-     {
-        svr->fd = socket(AF_UNIX, SOCK_STREAM, 0);
-        DBG("listen: socket from e19 < 0, get it ourself: %d", svr->fd);
-     }
-   // TIZEN ONLY: END
+     svr->fd = socket(AF_UNIX, SOCK_STREAM, 0);
    if (svr->fd < 0)
      goto error_umask;
 
