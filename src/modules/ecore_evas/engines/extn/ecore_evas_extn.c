@@ -1577,11 +1577,91 @@ ecore_evas_extn_plug_new_internal(Ecore_Evas *ee_target)
    return o;
 }
 
+// TIZEN ONLY (170220): request e19 compositor to create socket
+#if HAVE_ECORE_WAYLAND
+static void
+_ecore_evas_extn_compositor_socket(void *data, struct tizen_embedded_compositor *tec EINA_UNUSED, int fd)
+{
+   int *socket_fd = (int *)data;
+
+   *socket_fd = fd;
+   return;
+}
+
+static const struct tizen_embedded_compositor_listener tizen_embedded_compositor_listener =
+{
+   _ecore_evas_extn_compositor_socket
+};
+
+static int
+_compositor_socket_get()
+{
+   Eina_Inlist *l, *tmp;
+   Ecore_Wl_Global *global;
+   struct tizen_embedded_compositor *tec = NULL;
+   int fd = -1;
+
+   // TIZEN_ONLY(20170109): check whether socket_from_server is needed or not
+   const char *s = getenv("ECORE_EVAS_EXTN_DISABLE_SOCKET_FROM_SERVER");
+   if ((s) && (!strncmp(s, "1", 1)))
+     return -1;
+   //
+
+   if (ecore_wl_server_mode_get())
+     return -1;
+
+   l = ecore_wl_globals_get();
+   if (!l)
+     {
+        ERR("Cannot get wl globals");
+        return -1;
+     }
+
+   EINA_INLIST_FOREACH_SAFE(l, tmp, global)
+     {
+        if (!strcmp(global->interface, "tizen_embedded_compositor"))
+          {
+             tec = wl_registry_bind(ecore_wl_registry_get(),
+                               global->id,
+                               &tizen_embedded_compositor_interface,
+                               1);
+             tizen_embedded_compositor_add_listener(tec,
+                               &tizen_embedded_compositor_listener,
+                               &fd);
+             break;
+          }
+     }
+
+   if (!tec)
+     {
+        ERR("Cannot find tizen embedded compositor");
+        return -1;
+     }
+
+   tizen_embedded_compositor_get_socket(tec);
+   ecore_wl_sync();
+
+   tizen_embedded_compositor_destroy(tec);
+   return fd;
+}
+#else
+static int
+_compositor_socket_get()
+{
+   DBG("Just return -1");
+   return -1;
+}
+#endif
+// TIZEN ONLY: END
+
+
 static Eina_Bool
 _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, Eina_Bool svcsys)
 {
    Extn *extn;
    Ecore_Evas_Engine_Buffer_Data *bdata;
+
+   int fd = _compositor_socket_get();
 
    if (!ECORE_MAGIC_CHECK(ee, ECORE_MAGIC_EVAS)) return EINA_FALSE;
 
@@ -1609,8 +1689,8 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
 #endif
 
    if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
-   extn->ipc.server = ecore_ipc_server_connect(ipctype, (char *)extn->svc.name,
-                                               extn->svc.num, ee);
+   extn->ipc.server = ecore_ipc_server_with_fd_connect(ipctype, (char *)extn->svc.name,
+                                               extn->svc.num, fd, ee);
    if (!extn->ipc.server)
      {
         bdata->data = NULL;
@@ -2598,20 +2678,22 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
         Ecore_Ipc_Type ipctype = ECORE_IPC_LOCAL_USER;
         int i;
         int last_try = 0;
+        int fd = 0;
 
         ecore_ipc_init();
         extn->svc.name = eina_stringshare_add(svcname);
         extn->svc.num = svcnum;
         extn->svc.sys = svcsys;
 
+        fd = _compositor_socket_get();
 #ifdef BUILD_TIZEN_REMOTE_SURFACE
         extn->tizen_rsp = NULL;
         if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
           {
              if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
-             extn->ipc.server = ecore_ipc_server_add(ipctype,
+             extn->ipc.server = ecore_ipc_server_with_fd_add(ipctype,
                                                      (char *)extn->svc.name,
-                                                     extn->svc.num, ee);
+                                                     extn->svc.num, fd, ee);
              if (!extn->ipc.server)
                {
                   eina_stringshare_del(extn->svc.name);
@@ -2683,9 +2765,9 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
                }
 
              if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
-             extn->ipc.server = ecore_ipc_server_add(ipctype,
+             extn->ipc.server = ecore_ipc_server_with_fd_add(ipctype,
                                                      (char *)extn->svc.name,
-                                                     extn->svc.num, ee);
+                                                     extn->svc.num, fd, ee);
              if (!extn->ipc.server)
                {
                   for (i = 0; i < NBUF; i++)

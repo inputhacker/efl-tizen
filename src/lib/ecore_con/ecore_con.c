@@ -373,6 +373,32 @@ ecore_con_server_add(Ecore_Con_Type compl_type,
    return obj;
 }
 
+// TIZEN ONLY (20170220): support getting socket from compositor in ecore_evas extn engine
+// internal API
+EAPI Ecore_Con_Server *
+ecore_con_server_with_fd_add(Ecore_Con_Type compl_type,
+                             const char *name,
+                             int port,
+                             int fd,
+                             const void *data)
+{
+   Ecore_Con_Server *obj;
+
+   /* local  system socket: FILE:   /tmp/.ecore_service|[name]|[port] */
+   /* remote system socket: TCP/IP: [name]:[port] */
+   obj = eo_add(ECORE_CON_SERVER_CLASS, NULL,
+         ecore_con_server_obj_connection_type_set(compl_type),
+         ecore_con_server_obj_name_set(name),
+         ecore_con_obj_port_set(port),
+         ecore_con_obj_fd_set(fd));
+
+   ecore_con_server_data_set(obj, (void *) data);
+
+   return obj;
+}
+////
+
+
 EOLIAN static Eo *
 _ecore_con_server_eo_base_constructor(Ecore_Con_Server *obj, Ecore_Con_Server_Data *svr)
 {
@@ -471,6 +497,32 @@ ecore_con_server_connect(Ecore_Con_Type compl_type,
 
    return obj;
 }
+
+// TIZEN ONLY (20170220): support getting socket from compositor in ecore_evas extn engine
+// internal API
+EAPI Ecore_Con_Server *
+ecore_con_server_with_fd_connect(Ecore_Con_Type compl_type,
+                                 const char *name,
+                                 int port,
+                                 int fd,
+                                 const void *data)
+{
+   Ecore_Con_Server *obj;
+   /* local  user   socket: FILE:   ~/.ecore/[name]/[port] */
+   /* local  system socket: FILE:   /tmp/.ecore_service|[name]|[port] */
+   /* remote system socket: TCP/IP: [name]:[port] */
+   obj = eo_add(ECORE_CON_CONNECTOR_CLASS, NULL,
+         ecore_con_server_obj_connection_type_set(compl_type),
+         ecore_con_server_obj_name_set(name),
+         ecore_con_obj_fd_set(fd),
+         ecore_con_obj_port_set(port));
+
+   ecore_con_server_data_set(obj, (void *) data);
+
+   return obj;
+}
+////
+
 
 EOLIAN static Eo *
 _ecore_con_connector_eo_base_finalize(Ecore_Con_Server *obj, void *pd EINA_UNUSED)
@@ -1019,6 +1071,12 @@ _ecore_con_server_ecore_con_base_fd_get(Eo *obj EINA_UNUSED, Ecore_Con_Server_Da
    if (svr->created) return -1;
    if (svr->delete_me) return -1;
    return ecore_main_fd_handler_fd_get(svr->fd_handler);
+}
+
+EOLIAN static void
+_ecore_con_server_ecore_con_base_fd_set(Eo *obj EINA_UNUSED, Ecore_Con_Server_Data *svr, int fd)
+{
+   svr->fd = fd;
 }
 
 EOLIAN static int
