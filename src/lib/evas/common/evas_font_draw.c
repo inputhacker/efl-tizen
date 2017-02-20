@@ -114,6 +114,20 @@ evas_common_font_rgba_draw(RGBA_Image *dst, RGBA_Draw_Context *dc, int x, int y,
         w = fg->glyph_out->bitmap.width;
         h = fg->glyph_out->bitmap.rows;
 
+        /* TIZEN_ONLY(20170220): clear the previous engine's data for color emoticon */
+        if (fg->ext_dat && FT_HAS_COLOR(fg->fi->src->ft.face))
+          {
+             if (((fg->ext_dat_free == _evas_font_image_free) &&
+                  dc->font_ext.func.gl_image_new_from_data) ||
+                 ((fg->ext_dat_free != _evas_font_image_free) &&
+                  !dc->font_ext.func.gl_image_new_from_data))
+               {
+                  fg->ext_dat_free(fg->ext_dat);
+                  fg->ext_dat = NULL;
+               }
+          }
+        /* END */
+
         if ((!fg->ext_dat) && (dc->font_ext.func.gl_new))
           {
              /* extension calls */
