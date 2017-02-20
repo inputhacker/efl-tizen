@@ -2623,12 +2623,6 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_CON], [eet])
 EFL_INTERNAL_DEPEND_PKG([ECORE_CON], [eina])
 EFL_INTERNAL_DEPEND_PKG([ECORE_CON], [ecore])
 EFL_INTERNAL_DEPEND_PKG([ECORE_CON], [emile])
-### TIZEN ONLY (151223): request e19 compositor to create sockets
-if test "x${want_wayland}" = "xyes"; then
-   EFL_INTERNAL_DEPEND_PKG([ECORE_CON], [ecore-wayland])
-   PKG_CHECK_MODULES([ECORE_CON], [wayland-server tizen-extension-client])
-fi
-### TIZEN ONLY: END
 
 EFL_ADD_LIBS([ECORE_CON], [-lm])
 

@@ -292,9 +292,10 @@ ecore_ipc_shutdown(void)
    return _ecore_ipc_init_count;
 }
 
-/* FIXME: need to add protocol type parameter */
+// TIZEN ONLY (20170220): support getting socket from compositor in ecore_evas extn engine
+// internal API
 EAPI Ecore_Ipc_Server *
-ecore_ipc_server_add(Ecore_Ipc_Type compl_type, const char *name, int port, const void *data)
+ecore_ipc_server_with_fd_add(Ecore_Ipc_Type compl_type, const char *name, int port, int fd, const void *data)
 {
    Ecore_Ipc_Server *svr;
    Ecore_Ipc_Type type;
@@ -310,10 +311,10 @@ ecore_ipc_server_add(Ecore_Ipc_Type compl_type, const char *name, int port, cons
    switch (type)
      {
       case ECORE_IPC_LOCAL_USER:
-        svr->server = ecore_con_server_add(ECORE_CON_LOCAL_USER | extra, name, port, svr);
+        svr->server = ecore_con_server_with_fd_add(ECORE_CON_LOCAL_USER | extra, name, port, fd, svr);
         break;
       case ECORE_IPC_LOCAL_SYSTEM:
-        svr->server = ecore_con_server_add(ECORE_CON_LOCAL_SYSTEM | extra, name, port, svr);
+        svr->server = ecore_con_server_with_fd_add(ECORE_CON_LOCAL_SYSTEM | extra, name, port, fd, svr);
         break;
       case ECORE_IPC_REMOTE_SYSTEM:
         svr->server = ecore_con_server_add(ECORE_CON_REMOTE_SYSTEM | extra, name, port, svr);
@@ -333,10 +334,19 @@ ecore_ipc_server_add(Ecore_Ipc_Type compl_type, const char *name, int port, cons
    ECORE_MAGIC_SET(svr, ECORE_MAGIC_IPC_SERVER);
    return svr;
 }
+////
 
 /* FIXME: need to add protocol type parameter */
 EAPI Ecore_Ipc_Server *
-ecore_ipc_server_connect(Ecore_Ipc_Type compl_type, char *name, int port, const void *data)
+ecore_ipc_server_add(Ecore_Ipc_Type compl_type, const char *name, int port, const void *data)
+{
+   return ecore_ipc_server_with_fd_add(compl_type, name, port, -1, data);
+}
+
+// TIZEN ONLY (20170220): support getting socket from compositor in ecore_evas extn engine
+// internal API
+EAPI Ecore_Ipc_Server *
+ecore_ipc_server_with_fd_connect(Ecore_Ipc_Type compl_type, char *name, int port, int fd, const void *data)
 {
    Ecore_Ipc_Server *svr;
    Ecore_Ipc_Type type;
@@ -354,10 +364,10 @@ ecore_ipc_server_connect(Ecore_Ipc_Type compl_type, char *name, int port, const 
    switch (type)
      {
       case ECORE_IPC_LOCAL_USER:
-        svr->server = ecore_con_server_connect(ECORE_CON_LOCAL_USER | extra, name, port, svr);
+        svr->server = ecore_con_server_with_fd_connect(ECORE_CON_LOCAL_USER | extra, name, port, fd, svr);
         break;
       case ECORE_IPC_LOCAL_SYSTEM:
-        svr->server = ecore_con_server_connect(ECORE_CON_LOCAL_SYSTEM | extra, name, port, svr);
+        svr->server = ecore_con_server_with_fd_connect(ECORE_CON_LOCAL_SYSTEM | extra, name, port, fd, svr);
         break;
       case ECORE_IPC_REMOTE_SYSTEM:
         svr->server = ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM | extra, name, port, svr);
@@ -376,6 +386,14 @@ ecore_ipc_server_connect(Ecore_Ipc_Type compl_type, char *name, int port, const 
    servers = eina_list_append(servers, svr);
    ECORE_MAGIC_SET(svr, ECORE_MAGIC_IPC_SERVER);
    return svr;
+}
+////
+
+/* FIXME: need to add protocol type parameter */
+EAPI Ecore_Ipc_Server *
+ecore_ipc_server_connect(Ecore_Ipc_Type compl_type, char *name, int port, const void *data)
+{
+   return ecore_ipc_server_with_fd_connect(compl_type, name, port, -1, data);
 }
 
 EAPI void *

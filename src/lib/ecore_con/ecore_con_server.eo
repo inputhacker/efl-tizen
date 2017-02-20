@@ -96,6 +96,7 @@ class Ecore.Con.Server (Ecore.Con.Base) {
       Ecore.Con.Base.port.set;
       Ecore.Con.Base.port.get;
       Ecore.Con.Base.fd.get;
+      Ecore.Con.Base.fd.set;
       Ecore.Con.Base.connected.get;
       Ecore.Con.Base.timeout.set;
       Ecore.Con.Base.timeout.get;
