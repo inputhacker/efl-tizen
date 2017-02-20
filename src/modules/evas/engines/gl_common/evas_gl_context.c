@@ -3380,8 +3380,16 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
                   if (shared->info.anisotropic > 0.0)
                     glTexParameterf_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, shared->info.anisotropic);
 #endif
-                  glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                  glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                  if (gc->pipe[i].array.im && gc->pipe[i].array.im->native.target == GL_TEXTURE_EXTERNAL_OES)
+                    {
+                      glTexParameteri_thread_cmd(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                      glTexParameteri_thread_cmd(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    }
+                  else
+                    {
+                      glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                      glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    }
                   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                }
