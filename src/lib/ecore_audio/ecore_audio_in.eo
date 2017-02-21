@@ -6,13 +6,13 @@ class Ecore_Audio_In (Ecore_Audio)
    methods {
       @property speed {
          set {
-            [[Set the playback speed of the input.
+            [[Sets the playback speed of the input.
 
               @since 1.8
             ]]
          }
          get {
-            [[Get the playback speed of the input.
+            [[Gets the playback speed of the input.
 
               @since 1.8
             ]]
@@ -23,13 +23,13 @@ class Ecore_Audio_In (Ecore_Audio)
       }
       @property samplerate {
          set {
-            [[Set the sample-rate of the input
+            [[Sets the sample-rate of the input
 
               @since 1.8
             ]]
          }
          get {
-            [[Get the he sample-rate of the input
+            [[Gets the he sample-rate of the input
 
               @since 1.8
             ]]
@@ -40,13 +40,13 @@ class Ecore_Audio_In (Ecore_Audio)
       }
       @property channels {
          set {
-            [[Set the amount of channels the input has
+            [[Sets the amount of channels the input has
 
               @since 1.8
             ]]
          }
          get {
-            [[Get the amount of channels the input has
+            [[Gets the amount of channels the input has
 
               @since 1.8
             ]]
@@ -57,24 +57,24 @@ class Ecore_Audio_In (Ecore_Audio)
       }
       @property preloaded {
          set {
-            [[Set the preloaded state of the input
+            [[Sets the preloaded state of the input
 
               @since 1.8
             ]]
          }
          get {
-            [[Get the the preloaded state of the input
+            [[Gets the the preloaded state of the input
 
               @since 1.8
             ]]
          }
          values {
-            preloaded: bool; [[true if the input should be cached, false otherwise]]
+            preloaded: bool; [[$true if the input should be cached, $false otherwise]]
          }
       }
       @property looped {
          set {
-            [[Set the looped state of the input
+            [[Sets the looped state of the input
 
               If the input is looped and reaches the end it will start from the
               beginning again. At the same time the event
@@ -84,18 +84,18 @@ class Ecore_Audio_In (Ecore_Audio)
             ]]
          }
          get {
-            [[Get the looped state of the input
+            [[Gets the looped state of the input
 
               @since 1.8
             ]]
          }
          values {
-            looped: bool; [[true if the input should be looped, false otherwise]]
+            looped: bool; [[$true if the input should be looped, $false otherwise]]
          }
       }
       @property length {
          set {
-            [[Set the length of the input
+            [[Sets the length of the input
 
               This function is only implemented by some classes
               (i.e. ECORE_AUDIO_OBJ_IN_TONE_CLASS)
@@ -104,7 +104,7 @@ class Ecore_Audio_In (Ecore_Audio)
             ]]
          }
          get {
-            [[Get the length of the input
+            [[Gets the length of the input
 
               @since 1.8
             ]]
@@ -115,7 +115,7 @@ class Ecore_Audio_In (Ecore_Audio)
       }
       @property output {
          get {
-            [[Get the output that this input is attached to
+            [[Gets the output that this input is attached to
 
               @since 1.8
             ]]
@@ -126,7 +126,7 @@ class Ecore_Audio_In (Ecore_Audio)
       }
       @property remaining {
          get {
-            [[Get the remaining time of the input
+            [[Gets the remaining time of the input
 
               @since 1.8
             ]]
@@ -136,7 +136,7 @@ class Ecore_Audio_In (Ecore_Audio)
          }
       }
       read {
-         [[Read from the input
+         [[Reads from the input
 
            @since 1.8
          ]]
@@ -158,7 +158,7 @@ class Ecore_Audio_In (Ecore_Audio)
          }
       }
       seek {
-         [[Seek within the input
+         [[Seeks within the input
 
            @since 1.8
          ]]

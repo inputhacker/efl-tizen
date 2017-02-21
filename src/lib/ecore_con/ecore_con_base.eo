@@ -4,7 +4,7 @@ abstract Ecore.Con.Base (Eo.Base) {
    data: null;
    methods {
       @property ip {
-         [[Control the IP address of a server that has been connected to.
+         [[Controls the IP address of a server that has been connected to.
 
            The param is a pointer to an internal string that contains the IP
            address of the connected server in the form "XXX.YYY.ZZZ.AAA" IP
@@ -20,7 +20,7 @@ abstract Ecore.Con.Base (Eo.Base) {
          }
       }
       @property uptime {
-         [[Check how long the object has been connected
+         [[Checks how long the object has been connected
 
            This function is used to find out how long a client has been
            connected for.
@@ -33,7 +33,7 @@ abstract Ecore.Con.Base (Eo.Base) {
          }
       }
       @property port {
-         [[Return the port that the obj is connected to]]
+         [[Returns the port that the obj is connected to]]
          set {
              legacy: null;
          }
@@ -45,7 +45,7 @@ abstract Ecore.Con.Base (Eo.Base) {
          }
       }
       @property fd {
-         [[Get the fd that the server is connected to
+         [[Gets the fd that the server is connected to
 
            This function returns the fd which is used by the underlying server
            connection. It should not be tampered with unless you REALLY know
@@ -74,11 +74,11 @@ abstract Ecore.Con.Base (Eo.Base) {
              legacy: null;
          }
          values {
-            connected: bool; [[Returns true if connected, false otherwise.]]
+            connected: bool; [[Returns $true if connected, $false otherwise.]]
          }
       }
       @property timeout {
-         [[Control the default time after which an inactive client will be
+         [[Controls the default time after which an inactive client will be
            disconnected.
 
            This function is used by the server to set the default idle timeout
@@ -126,7 +126,7 @@ abstract Ecore.Con.Base (Eo.Base) {
                         is an error.]]
       }
       lookup @class {
-         [[Do an asynchronous DNS lookup.
+         [[Does an asynchronous DNS lookup.
 
            This function performs a DNS lookup on the hostname specified by name,
            then calls done_cb with the result and the data given as parameter.
@@ -146,7 +146,7 @@ abstract Ecore.Con.Base (Eo.Base) {
             done_cb: Ecore_Con_Dns_Cb; [[Callback to notify when done.]]
             data: const(void)*; [[User data to be given to done_cb.]]
          }
-         return: bool; [[true if the request did not fail to be set up, false otherwise.]]
+         return: bool; [[$true if the request did not fail to be set up, $false otherwise.]]
       }
    }
    implements {

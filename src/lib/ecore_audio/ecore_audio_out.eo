@@ -5,21 +5,21 @@ class Ecore_Audio_Out (Ecore_Audio)
    data: Ecore_Audio_Output;
    methods {
       input_attach {
-         [[Attach an input to an output
+         [[Attaches an input to an output
 
            @since 1.8
          ]]
-         return: bool; [[true if the input was attached, false otherwise]]
+         return: bool; [[$true if the input was attached, $false otherwise]]
          params {
             @in input: Ecore_Audio_In *; [[The input to attach to the output]]
          }
       }
       input_detach {
-         [[Detach an input from an output
+         [[Detaches an input from an output
 
            @since 1.8
          ]]
-         return: bool; [[true if the input was detached, false otherwise]]
+         return: bool; [[$true if the input was detached, $false otherwise]]
          params {
             @in input: Ecore_Audio_In *; [[The input to detach to the output]]
          }

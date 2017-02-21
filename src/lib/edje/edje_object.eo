@@ -34,7 +34,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property mirrored {
          set {
-            [[Set the RTL orientation for this object.
+            [[Sets the RTL orientation for this object.
 
               \@if MOBILE \@since_tizen 3.0
               \@elseif WEARABLE \@since_tizen 3.0
@@ -44,7 +44,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             ]]
          }
          get {
-            [[Get the RTL orientation for this object.
+            [[Gets the RTL orientation for this object.
 
               You can RTL orientation explicitly with edje_object_mirrored_set.
 
@@ -56,12 +56,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             ]]
          }
          values {
-            rtl: bool; [[new value of flag true/false]]
+            rtl: bool; [[New value of flag $true/$false]]
          }
       }
       @property language {
          set {
-            [[Set the language for this object.
+            [[Sets the language for this object.
 
               \@if MOBILE \@since_tizen 3.0
               \@elseif WEARABLE \@since_tizen 3.0
@@ -71,7 +71,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             ]]
          }
          get {
-            [[Get the language for this object.
+            [[Gets the language for this object.
 
               \@if MOBILE \@since_tizen 3.0
               \@elseif WEARABLE \@since_tizen 3.0
@@ -86,7 +86,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property animation {
          set {
-            [[Set the object's animation state.
+            [[Sets the object's animation state.
 
               This function starts or stops an Edje object's animation. The
               information if it's stopped can be retrieved by
@@ -100,7 +100,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             ]]
          }
          get {
-            [[Get the Edje object's animation state.
+            [[Gets the Edje object's animation state.
 
               This function returns if the animation is stopped or not. The
               animation state is set by edje_object_animation_set().
@@ -119,7 +119,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property play {
          set {
-            [[Set the Edje object to playing or paused states.
+            [[Sets the Edje object to playing or paused states.
 
               This function sets the Edje object  obj to playing or paused
               states, depending on the parameter  play. This has no effect if
@@ -133,7 +133,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             ]]
          }
          get {
-            [[Get the Edje object's state.
+            [[Gets the Edje object's state.
 
               This function tells if an Edje object is playing or not. This state
               is set by edje_object_play_set().
@@ -152,7 +152,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property perspective {
          set {
-            [[Set the given perspective object on this Edje object.
+            [[Sets the given perspective object on this Edje object.
 
               Make the given perspective object be the default perspective for this Edje
               object.
@@ -177,7 +177,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             }
          }
          get {
-            [[Get the current perspective used on this Edje object.
+            [[Gets the current perspective used on this Edje object.
 
               See also @.perspective.set()
 
@@ -192,7 +192,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property scale {
          set {
-            [[Set the scaling factor for a given Edje object.
+            [[Sets the scaling factor for a given Edje object.
 
               This function sets an  individual scaling factor on the  obj
               Edje object. This property (or Edje's global scaling factor, when
@@ -215,7 +215,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
             return: bool;
          }
          get {
-            [[Get a given Edje object's scaling factor.
+            [[Gets a given Edje object's scaling factor.
 
               This function returns the individual scaling factor set on the
                obj Edje object.
@@ -234,7 +234,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property base_scale {
          get {
-            [[Get a given Edje object's base_scale factor.
+            [[Gets a given Edje object's base_scale factor.
 
               This function returns the base_scale factor set on the
                obj Edje object.
@@ -253,7 +253,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property text_change_cb {
          set {
-            [[Set the object text callback.
+            [[Sets the object text callback.
 
               This function sets the callback to be called when the text changes.
 
@@ -279,12 +279,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
          values {
             part: const(char)*; [[The part name]]
-            cur: Edje.Cursor; [[the edje cursor to work on]]
+            cur: Edje.Cursor; [[The edje cursor to work on]]
          }
       }
       @property part_text_cursor_line_end {
          set {
-            [[Move the cursor to the end of the line.
+            [[Moves the cursor to the end of the line.
               \@ref evas_textblock_cursor_line_char_last
 
                \@if MOBILE \@since_tizen 3.0
@@ -294,7 +294,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
          values {
             part: const(char)*; [[The part name]]
-            cur: Edje.Cursor; [[the edje cursor to work on]]
+            cur: Edje.Cursor; [[The edje cursor to work on]]
          }
       }
       @property text_class {
@@ -326,7 +326,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               \@endif
             ]]
 
-            return: bool; [[True on success, false on error.]]
+            return: bool; [[$true on success, false on error.]]
          }
          values {
             part: const(char)*; [[The part containing the object.]]
@@ -347,7 +347,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
          values {
             part: const(char)*; [[The part name]]
-            cur: Edje.Cursor; [[the edje cursor to work on]]
+            cur: Edje.Cursor; [[The edje cursor to work on]]
          }
       }
       @property part_text_escaped {
@@ -373,7 +373,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property item_provider {
          set {
-            [[Set the function that provides item objects for named items in an edje entry text
+            [[Sets the function that provides item objects for named items in an edje entry text
 
               Item objects may be deleted any time by Edje, and will be deleted when the
               Edje object is deleted (or file is set to a new file).
@@ -390,7 +390,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property part_text_cursor_line_begin {
          set {
-            [[Move the cursor to the beginning of the line.
+            [[Moves the cursor to the beginning of the line.
               \@ref evas_textblock_cursor_line_char_first
 
                \@if MOBILE \@since_tizen 3.0
@@ -400,12 +400,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
          values {
             part: const(char)*; [[The part name]]
-            cur: Edje.Cursor; [[the edje cursor to work on]]
+            cur: Edje.Cursor; [[The edje cursor to work on]]
          }
       }
       @property message_handler {
          set {
-            [[Set an Edje message handler function for a given Edje object.
+            [[Sets an Edje message handler function for a given Edje object.
 
               For scriptable programs on an Edje object's defining EDC file which
               send messages with the send_message() primitive, one can attach
@@ -429,7 +429,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property size_min {
          get {
-            [[Get the minimum size specified -- as an EDC property -- for a
+            [[Gets the minimum size specified -- as an EDC property -- for a
               given Edje object
 
               This function retrieves the obj object's minimum size values,
@@ -474,7 +474,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property access_part_list {
          get {
-            [[Retrieve a list all accessibility part names
+            [[Retrieves a list all accessibility part names
 
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
@@ -516,7 +516,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property size_max {
          get {
-            [[Get the maximum size specified -- as an EDC property -- for a
+            [[Gets the maximum size specified -- as an EDC property -- for a
               given Edje object
 
               This function retrieves the obj object's maximum size values,
@@ -589,7 +589,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
                                              from #Edje_External_Param_Type on success.]]
          params {
             @in part: const(char)*; [[The part name]]
-            @out param: const(char); [[the parameter name to use.]]
+            @out param: const(char); [[The parameter name to use.]]
          }
       }
       part_text_select_allow_set @const {
@@ -606,7 +606,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          ]]
          params {
             @in part: const(char)*; [[The part name]]
-            @in allow: bool; [[true to enable, false otherwise]]
+            @in allow: bool; [[$true to enable, $false otherwise]]
          }
       }
       /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API */
@@ -624,7 +624,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          ]]
          params {
             @in part: const(char)*; [[The part name]]
-            @in disable: bool; [[true to enable, false otherwise]]
+            @in disable: bool; [[$true to enable, $false otherwise]]
          }
       }
       /* END */
@@ -645,7 +645,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       text_markup_filter_callback_del_full {
-         [[Delete a function and matching user data from the markup filter list.
+         [[Deletes a function and matching user data from the markup filter list.
 
            Delete the given func filter and data user data from the list
            in part.
@@ -709,7 +709,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_imf_context_get @const {
-         [[Get the input method context in entry.
+         [[Gets the input method context in entry.
 
            If ecore_imf was not available when edje was compiled, this function returns $null
            otherwise, the returned pointer is an Ecore_IMF
@@ -737,7 +737,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_style_user_peek @const {
-         [[Return the text of the object part.
+         [[Returns the text of the object part.
 
            This function returns the style associated with the textblock part.
 
@@ -753,7 +753,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       signal_callback_del {
-         [[Remove a signal-triggered callback from an object.
+         [[Removes a signal-triggered callback from an object.
 
            This function removes a callback, previously attached to the
            emittion of a signal, from the object  obj. The parameters
@@ -789,7 +789,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_style_user_push {
-         [[Set the style of the
+         [[Sets the style of the
 
            This function sets the style associated with the textblock part.
 
@@ -806,7 +806,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_append {
-         [[Insert text for an object part.
+         [[Inserts text for an object part.
 
            This function inserts the text for an object part at the end; It does not
            move the cursor.
@@ -824,7 +824,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_geometry_get @const {
-         [[Retrieve the geometry of a given Edje part, in a given Edje
+         [[Retrieves the geometry of a given Edje part, in a given Edje
            object's group definition, relative to the object's area.
 
            This function gets the geometry of an Edje part within its
@@ -853,7 +853,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_hide @const {
-         [[Hide the input panel (virtual keyboard).
+         [[Hides the input panel (virtual keyboard).
            See also @.part_text_input_panel_show
 
            Note that input panel is shown or hidden automatically according to the focus state.
@@ -870,7 +870,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_item_geometry_get @const {
-         [[Return item geometry.
+         [[Returns item geometry.
 
            This function return a list of Evas_Textblock_Rectangle item
            rectangles.
@@ -917,7 +917,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       text_insert_filter_callback_del_full {
-         [[Delete a function and matching user data from the filter list.
+         [[Deletes a function and matching user data from the filter list.
 
            Delete the given func filter and data user data from the list
            in part.
@@ -938,7 +938,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_style_user_pop {
-         [[Delete the top style form the user style stack.
+         [[Deletes the top style form the user style stack.
 
            \@if MOBILE \@since_tizen 2.3
            \@elseif WEARABLE \@since_tizen 2.3.1
@@ -952,7 +952,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_imdata_set {
-         [[Set the input panel-specific data to deliver to the input panel.
+         [[Sets the input panel-specific data to deliver to the input panel.
 
            This API is used by applications to deliver specific data to the input panel.
            The data format MUST be negotiated by both application and the input panel.
@@ -972,7 +972,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_imdata_get @const {
-         [[Get the specific data of the current active input panel.
+         [[Gets the specific data of the current active input panel.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -987,7 +987,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_insert {
-         [[Insert text for an object part.
+         [[Inserts text for an object part.
 
            This function inserts the text for an object part just before the
            cursor position.
@@ -1022,7 +1022,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_cursor_copy {
-         [[Copy the cursor to another cursor.
+         [[Copies the cursor to another cursor.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -1031,12 +1031,12 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
          params {
             @in part: const(char)*; [[The part name]]
-            @in src: Edje.Cursor; [[the cursor to copy from]]
-            @in dst: Edje.Cursor; [[the cursor to copy to]]
+            @in src: Edje.Cursor; [[The cursor to copy from]]
+            @in dst: Edje.Cursor; [[The cursor to copy to]]
          }
       }
       parts_extends_calc {
-         [[Calculate the geometry of the region, relative to a given Edje
+         [[Calculates the geometry of the region, relative to a given Edje
            object's area, occupied by all parts in the object.
 
            This function gets the geometry of the rectangle equal to the area
@@ -1070,7 +1070,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_drag_value_set {
-         [[Set the dragable object location.
+         [[Sets the dragable object location.
 
            Places the dragable object at the given location.
 
@@ -1099,7 +1099,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_drag_value_get @const {
-         [[Get the dragable object location.
+         [[Gets the dragable object location.
 
            Values for dx and dy are real numbers that range from 0 to 1,
            representing the relative position to the dragable area on that axis.
@@ -1120,7 +1120,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       calc_force {
-         [[Force a Size/Geometry calculation.
+         [[Forces a Size/Geometry calculation.
 
            Forces the object obj to recalculation layout regardless of
            freeze/thaw.
@@ -1144,7 +1144,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          params {
             @in part: const(char)*; [[The part name]]
             @in cur: Edje.Cursor; [[The cursor to move]]
-            @in pos: int; [[the position of the cursor]]
+            @in pos: int; [[The position of the cursor]]
          }
       }
       part_text_cursor_pos_get @const {
@@ -1195,7 +1195,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_layout_set {
-         [[Set the layout of the input panel.
+         [[Sets the layout of the input panel.
 
            The layout of the input panel or virtual keyboard can make it easier or
            harder to enter content. This allows you to hint what kind of input you
@@ -1211,11 +1211,11 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
          params {
             @in part: const(char)*; [[The part name]]
-            @in layout: Edje.Input_Panel.Layout; [[layout type]]
+            @in layout: Edje.Input_Panel.Layout; [[Layout type]]
          }
       }
       part_text_input_panel_layout_get @const {
-         [[Get the layout of the input panel.
+         [[Gets the layout of the input panel.
 
            See also @.part_text_input_panel_layout_set
 
@@ -1251,7 +1251,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_language_set {
-         [[Set the language mode of the input panel.
+         [[Sets the language mode of the input panel.
 
            This API can be used if you want to show the Alphabet keyboard.
 
@@ -1264,11 +1264,11 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
          params {
             @in part: const(char)*; [[The part name]]
-            @in lang: Edje.Input_Panel.Lang; [[the language to be set to the input panel.]]
+            @in lang: Edje.Input_Panel.Lang; [[The language to be set to the input panel.]]
          }
       }
       part_text_input_panel_language_get @const {
-         [[Get the language mode of the input panel.
+         [[Gets the language mode of the input panel.
 
            See also @.part_text_input_panel_language_set for more details.
 
@@ -1278,7 +1278,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            @since 1.2.0
          ]]
-         return: Edje.Input_Panel.Lang; [[input panel language type]]
+         return: Edje.Input_Panel.Lang; [[Input panel language type]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -1300,7 +1300,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_external_object_get @const {
-         [[Get the object created by this external part.
+         [[Gets the object created by this external part.
 
            Parts of type external creates the part object using information
            provided by external plugins. It's somehow like "swallow"
@@ -1324,7 +1324,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_external_content_get @const {
-         [[Get an object contained in an part of type EXTERNAL
+         [[Gets an object contained in an part of type EXTERNAL
 
            The content string must not be $null. Its actual value depends on the
            code providing the EXTERNAL.
@@ -1340,7 +1340,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       preload {
-         [[Preload the images on the Edje Object in the background.
+         [[Preloads the images on the Edje Object in the background.
 
            This function requests the preload of all data images (on the given
            object) in the background. The work is queued before being processed
@@ -1374,11 +1374,11 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
          params {
             @in part: const(char)*; [[The part name]]
-            @in enabled: bool; [[If true, the input panel is appeared when entry is clicked or has a focus]]
+            @in enabled: bool; [[If $true, the input panel is appeared when entry is clicked or has a focus]]
          }
       }
       part_text_input_panel_enabled_get @const {
-         [[Retrieve the attribute to show the input panel automatically.
+         [[Retrieves the attribute to show the input panel automatically.
            See also @.part_text_input_panel_enabled_set
 
            \@if MOBILE \@since_tizen 3.0
@@ -1387,7 +1387,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            @since 1.1.0
          ]]
-         return: bool; [[true if it supports or false otherwise]]
+         return: bool; [[$true if it supports, or $false otherwise]]
          params {
             @in part: const(char)*; [[The part name]]
          }
@@ -1425,7 +1425,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_anchor_geometry_get @const {
-         [[Return a list of Evas_Textblock_Rectangle anchor rectangles.
+         [[Returns a list of Evas_Textblock_Rectangle anchor rectangles.
 
            This function return a list of Evas_Textblock_Rectangle anchor
            rectangles.
@@ -1452,7 +1452,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          return: bool;
          params {
             @in part: const(char)*; [[The part name]]
-            @in cur: Edje.Cursor; [[the edje cursor to work on]]
+            @in cur: Edje.Cursor; [[The edje cursor to work on]]
          }
       }
       part_drag_page_set {
@@ -1516,7 +1516,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       signal_emit {
-         [[Send/emit an Edje signal to a given Edje object
+         [[Sends/emits an Edje signal to a given Edje object
 
            This function sends a signal to the object  obj. An Edje program,
            at obj's EDC specification level, can respond to a signal by
@@ -1546,7 +1546,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_layout_variation_set {
-         [[Set the layout variation of the input panel.
+         [[Sets the layout variation of the input panel.
 
            The layout variation of the input panel or virtual keyboard can make it easier or
            harder to enter content. This allows you to hint what kind of input you
@@ -1562,11 +1562,11 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
          params {
             @in part: const(char)*; [[The part name]]
-            @in variation: int; [[layout variation type]]
+            @in variation: int; [[Layout variation type]]
          }
       }
       part_text_input_panel_layout_variation_get @const {
-         [[Get the layout variation of the input panel.
+         [[Gets the layout variation of the input panel.
 
            See also @.part_text_input_panel_layout_variation_set
 
@@ -1582,7 +1582,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       message_send {
-         [[Send an (Edje) message to a given Edje object
+         [[Sends an (Edje) message to a given Edje object
 
            This function sends an Edje message to obj and to all of its
            child objects, if it has any (swallowed objects are one kind of
@@ -1610,7 +1610,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_select_none @const {
-         [[Set the selection to be none.
+         [[Sets the selection to be none.
 
            This function sets the selection text to be none.
 
@@ -1623,7 +1623,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_object_get @const {
-         [[Get a handle to the Evas object implementing a given Edje
+         [[Gets a handle to the Evas object implementing a given Edje
            part, in an Edje object.
 
            This function gets a pointer of the Evas object corresponding to a
@@ -1647,7 +1647,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_drag_size_set {
-         [[Set the dragable object size.
+         [[Sets the dragable object size.
 
            Values for dw and dh are real numbers that range from 0 to 1,
            representing the relative size of the dragable area on that axis.
@@ -1669,7 +1669,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_drag_size_get @const {
-         [[Get the dragable object size.
+         [[Gets the dragable object size.
 
            Gets the dragable object size.
 
@@ -1687,7 +1687,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       text_insert_filter_callback_del {
-         [[Delete a function from the filter list.
+         [[Deletes a function from the filter list.
 
            Delete the given func filter from the list in part. Returns
            the user data pointer given when added.
@@ -1706,7 +1706,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_drag_dir_get @const {
-         [[Determine dragable directions.
+         [[Determines dragable directions.
 
            The dragable directions are defined in the EDC file, inside the \@ref dragable
            section, by the attributes $x and $y. See the \@ref edcref for more
@@ -1765,7 +1765,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       signal_callback_add {
-         [[Add a callback for an arriving Edje signal, emitted by
+         [[Adds a callback for an arriving Edje signal, emitted by
            a given Edje object.
 
            Edje signals are one of the communication interfaces between
@@ -1831,7 +1831,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_select_all @const {
-         [[Set the selection to be everything.
+         [[Sets the selection to be everything.
 
            This function selects all text of the object of the part.
 
@@ -1844,7 +1844,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_return_key_disabled_set {
-         [[Set the return key on the input panel to be disabled.
+         [[Sets the return key on the input panel to be disabled.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -1859,7 +1859,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_return_key_disabled_get @const {
-         [[Get whether the return key on the input panel should be disabled or not.
+         [[Gets whether the return key on the input panel should be disabled or not.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -1867,13 +1867,13 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            @since 1.2.0
          ]]
-         return: bool; [[true if it should be disabled]]
+         return: bool; [[$true if it should be disabled]]
          params {
             @in part: const(char)*; [[The part name]]
          }
       }
       part_text_autocapital_type_set {
-         [[Set the autocapitalization type on the immodule.
+         [[Sets the autocapitalization type on the immodule.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -1902,7 +1902,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_unswallow {
-         [[Unswallow an object.
+         [[Unswallows an object.
 
            Causes the edje to regurgitate a previously swallowed object. :)
 
@@ -1920,7 +1920,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_prediction_allow_set {
-         [[Set whether the prediction is allowed or not.
+         [[Sets whether the prediction is allowed or not.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -1931,11 +1931,11 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
          params {
             @in part: const(char)*; [[The part name]]
-            @in prediction: bool; [[If true, the prediction feature is allowed.]]
+            @in prediction: bool; [[If $true, the prediction feature is allowed.]]
          }
       }
       part_text_prediction_allow_get @const {
-         [[Get whether the prediction is allowed or not.
+         [[Gets whether the prediction is allowed or not.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -1943,13 +1943,13 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            @since 1.2.0
          ]]
-         return: bool; [[true if prediction feature is allowed.]]
+         return: bool; [[$true if prediction feature is allowed.]]
          params {
             @in part: const(char)*; [[The part name]]
          }
       }
       data_get @const {
-         [[Retrive an EDC data field's value from a given Edje object's group.
+         [[Retrives an EDC data field's value from a given Edje object's group.
 
            This function fetches an EDC data field's value, which is declared
            on the objects building EDC file, under its group. EDC data blocks
@@ -1992,7 +1992,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       text_markup_filter_callback_add {
-         [[Add a markup filter function for newly inserted text.
+         [[Adds a markup filter function for newly inserted text.
 
            Whenever text is inserted (not the same as set) into the given part,
            the list of markup filter functions will be called to decide if and how
@@ -2029,7 +2029,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       message_signal_process {
-         [[Process an object's message queue.
+         [[Processes an object's message queue.
 
            This function goes through the object message queue processing the
            pending messages for  this specific Edje object. Normally they'd
@@ -2077,7 +2077,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          return: int; [[The frozen state or 0 if the object is not frozen or on error.]]
       }
       part_swallow_get @const {
-         [[Get the object currently swallowed by a part.
+         [[Gets the object currently swallowed by a part.
 
            \@if MOBILE \@since_tizen 2.3
            \@elseif WEARABLE \@since_tizen 2.3.1
@@ -2090,7 +2090,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_imf_context_reset @const {
-         [[Reset the input method context if needed.
+         [[Resets the input method context if needed.
 
            This can be necessary in the case where modifying the buffer would confuse on-going input method behavior
 
@@ -2105,7 +2105,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_return_key_type_set {
-         [[Set the "return" key type. This type is used to set string or icon on the "return" key of the input panel.
+         [[Sets the "return" key type. This type is used to set string or icon on the "return" key of the input panel.
 
            An input panel displays the string or icon associated with this type
 
@@ -2122,7 +2122,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_return_key_type_get @const {
-         [[Get the "return" key type.
+         [[Gets the "return" key type.
 
            See also @.part_text_input_panel_return_key_type_set() for more details
 
@@ -2138,7 +2138,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_table_child_get @const {
-         [[Retrieve a child from a table
+         [[Retrieves a child from a table
 
            \@if MOBILE \@since_tizen 2.3
            \@elseif WEARABLE \@since_tizen 2.3.1
@@ -2174,7 +2174,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_external_param_set {
-         [[Set the parameter for the external part.
+         [[Sets the parameter for the external part.
 
            Parts of type external may carry extra properties that have
            meanings defined by the external plugin. For instance, it may be a
@@ -2200,7 +2200,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          return: bool; [[$true if everything went fine, $false on errors.]]
          params {
             @in part: const(char)*; [[The part name]]
-            @in param: const(Edje.External.Param)*; [[the parameter details, including its name, type and
+            @in param: const(Edje.External.Param)*; [[The parameter details, including its name, type and
                                                       actual value. This pointer should be valid, and the
                                                       parameter must exist in
                                                       #Edje_External_Type.parameters_info, with the exact type,
@@ -2209,7 +2209,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_external_param_get @const {
-         [[Get the parameter for the external part.
+         [[Gets the parameter for the external part.
 
            Parts of type external may carry extra properties that have
            meanings defined by the external plugin. For instance, it may be a
@@ -2232,7 +2232,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
                          param member values are not set or valid.]]
          params {
             @in part: const(char)*; [[The part name]]
-            @out param: Edje.External.Param; [[the parameter details. It is used as both input and
+            @out param: Edje.External.Param; [[The parameter details. It is used as both input and
                                                output variable. This pointer should be valid, and the
                                                parameter must exist in
                                                #Edje_External_Type.parameters_info, with the exact type,
@@ -2241,7 +2241,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       size_min_calc {
-         [[Calculate the minimum required size for a given Edje object.
+         [[Calculates the minimum required size for a given Edje object.
 
            This call works exactly as edje_object_size_min_restricted_calc(),
            with the last two arguments set to 0. Please refer to its
@@ -2280,7 +2280,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       size_min_restricted_calc {
-         [[Calculate the minimum required size for a given Edje object.
+         [[Calculates the minimum required size for a given Edje object.
 
            This call will trigger an internal recalculation of all parts of
            the obj object, in order to return its minimum required
@@ -2325,8 +2325,8 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            \@endif
          ]]
 
-         return: bool; [[1: Successfully cleared.
-                         0: An error occurred.]]
+         return: bool; [[$1: Successfully cleared.
+                         $0: An error occurred.]]
          params {
             @in part: const(char)*; [[The part name]]
             @in clear: bool; [[Delete objects on removal]]
@@ -2371,7 +2371,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_get @const {
-         [[Return the text of the object part.
+         [[Returns the text of the object part.
 
            This function returns the text associated to the object part.
 
@@ -2387,7 +2387,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_show_on_demand_set {
-         [[Set the attribute to show the input panel in case of only an user's explicit Mouse Up event.
+         [[Sets the attribute to show the input panel in case of only an user's explicit Mouse Up event.
            It doesn't request to show the input panel even though it has focus.
 
            \@if MOBILE \@since_tizen 3.0
@@ -2399,11 +2399,11 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
          params {
             @in part: const(char)*; [[The part name]]
-            @in ondemand: bool; [[If true, the input panel will be shown in case of only Mouse up event. (Focus event will be ignored.)]]
+            @in ondemand: bool; [[If $true, the input panel will be shown in case of only Mouse up event. (Focus event will be ignored.)]]
          }
       }
       part_text_input_panel_show_on_demand_get @const {
-         [[Get the attribute to show the input panel in case of only an user's explicit Mouse Up event.
+         [[Gets the attribute to show the input panel in case of only an user's explicit Mouse Up event.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -2428,7 +2428,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
          params {
             @in part: const(char)*; [[The part name]]
-            @in input_hints: Edje.Input_Hints; [[input hints]]
+            @in input_hints: Edje.Input_Hints; [[Input hints]]
          }
       }
       part_text_input_hint_get @const {
@@ -2446,7 +2446,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_selection_get @const {
-         [[Return the selection text of the object part.
+         [[Returns the selection text of the object part.
 
            This function returns selection text of the object part.
 
@@ -2470,7 +2470,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
           \@endif
         ]]
 
-         return: bool; [[true if it's true, false otherwise.]]
+         return: bool; [[$true if it's true, $false otherwise.]]
          params {
             @in part: const(char)*; [[The part name]]
             @in cur: Edje.Cursor; [[The cursor to adjust.]]
@@ -2552,7 +2552,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            \@elseif WEARABLE \@since_tizen 2.3.1
            \@endif
          ]]
-         return: bool; [[true if found or false if not found and all
+         return: bool; [[$true if found, or $false if not found and all
                          values are zeroed.]]
          params {
             @in color_class: const(char)*;
@@ -2630,7 +2630,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
               @since 1.17
             ]]
-            return: bool; [[$true, on success or $false, on error]]
+            return: bool; [[$true on success, or $false on error]]
          }
          get {
             [[Gets the object size class.
@@ -2645,7 +2645,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
               @since 1.17
             ]]
-            return: bool; [[$true, on success or $false, on error]]
+            return: bool; [[$true on success, or $false on error]]
          }
          keys {
             size_class: const(char)*; [[The size class name]]
@@ -2658,7 +2658,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       size_class_del {
-         [[Delete the object size class.
+         [[Deletes the object size class.
 
            This function deletes any values at the object level for the
            specified object and size class.
@@ -2700,7 +2700,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_cursor_up {
-         [[Move the cursor to the char above the current cursor position.
+         [[Moves the cursor to the char above the current cursor position.
 
            \@if MOBILE \@since_tizen 3.0
            \@elseif WEARABLE \@since_tizen 3.0
@@ -2710,7 +2710,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          return: bool;
          params {
             @in part: const(char)*; [[The part name]]
-            @in cur: Edje.Cursor; [[the edje cursor to work on]]
+            @in cur: Edje.Cursor; [[The edje cursor to work on]]
          }
       }
       part_text_cursor_geometry_get @const {
@@ -2749,7 +2749,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       /* END */
       part_text_anchor_list_get @const {
-         [[Return a list of char anchor names.
+         [[Returns a list of char anchor names.
 
            This function returns a list of char anchor names.
 
@@ -2763,7 +2763,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       text_insert_filter_callback_add {
-         [[Add a filter function for newly inserted text.
+         [[Adds a filter function for newly inserted text.
 
            Whenever text is inserted (not the same as set) into the given part,
            the list of filter functions will be called to decide if and how the new
@@ -2804,7 +2804,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_input_panel_show @const {
-         [[Show the input panel (virtual keyboard) based on the input panel property such as layout, autocapital types, and so on.
+         [[Shows the input panel (virtual keyboard) based on the input panel property such as layout, autocapital types, and so on.
 
            Note that input panel is shown or hidden automatically according to the focus state.
            This API can be used in the case of manually controlling by using edje_object_part_text_input_panel_enabled_set.
@@ -2820,7 +2820,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_exists @const {
-         [[Check if an Edje part exists in a given Edje object's group
+         [[Checks if an Edje part exists in a given Edje object's group
            definition.
 
            This function returns if a given part exists in the Edje group
@@ -2833,15 +2833,15 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
            \@elseif WEARABLE \@since_tizen 2.3.1
            \@endif
          ]]
-         return: bool; [[$true, if the Edje part exists in obj's group or
-                         $false, otherwise (and on errors)]]
+         return: bool; [[$true if the Edje part exists in obj's group, or
+                         $false otherwise (and on errors)]]
          params {
             @in part: const(char)*; [[The part's name to check for existence in obj's
                                       group]]
          }
       }
       text_markup_filter_callback_del {
-         [[Delete a function from the markup filter list.
+         [[Deletes a function from the markup filter list.
 
            Delete the given func filter from the list in part. Returns
            the user data pointer given when added.
@@ -2862,7 +2862,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_cursor_is_visible_format_get @const {
-         [[Return true if the cursor points to a visible format
+         [[Returns true if the cursor points to a visible format
            For example \\t, \\n, item and etc.
            @ evas_textblock_cursor_format_is_visible_get
 
@@ -2905,11 +2905,11 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          return: bool;
          params {
             @in part: const(char)*; [[The part name]]
-            @in cur: Edje.Cursor; [[the edje cursor to work on]]
+            @in cur: Edje.Cursor; [[The edje cursor to work on]]
          }
       }
       part_text_item_list_get @const {
-         [[Return a list of char item names.
+         [[Returns a list of char item names.
 
            This function returns a list of char item names.
 
@@ -2967,7 +2967,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
       }
       @property transition_duration_factor {
          set {
-              [[Set transition duration factor.
+              [[Sets transition duration factor.
 
                 This define the transition duration factor on this
                 specific object. By default all animation are run at a speed
@@ -2979,7 +2979,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               ]]
          }
          get {
-              [[Get transition duration factor.
+              [[Gets transition duration factor.
 
                 This define the transition duration factor on this
                 specific object. By default all animation are run at a speed
@@ -2995,7 +2995,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       part_text_hide_visible_password {
-         [[Hide visible last character for password mode.
+         [[Hides visible last character for password mode.
 
            @since 1.18.0]]
          params {
@@ -3015,7 +3015,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               \@elseif WEARABLE \@since_tizen 3.0
               \@endif
             ]]
-            return: bool; [[$true, on success or $false, on error]]
+            return: bool; [[$true on success, or $false on error]]
          }
          get {
             [[Gets the object text min calculation policy.
@@ -3027,7 +3027,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
               \@elseif WEARABLE \@since_tizen 3.0
               \@endif
             ]]
-            return: bool; [[$true, on success or $false, on error]]
+            return: bool; [[$true on success, or $false on error]]
          }
          keys {
             part: const(char)*; [[The part name]]
