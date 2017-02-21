@@ -44,7 +44,7 @@ class Ecore.Con.Server (Ecore.Con.Base) {
             client_limit: int; [[The maximum number of clients to handle
                                  concurrently. -1 means unlimited (default).
                                  0 effectively disables the server.]]
-            reject_excess_clients: char; [[Set to 1 to automatically disconnect excess clients as
+            reject_excess_clients: char; [[Sets to 1 to automatically disconnect excess clients as
                                            soon as they connect if you are already handling
                                            client_limit clients. Set to 0 (default) to just
                                            hold off on the "accept()" system call until the
