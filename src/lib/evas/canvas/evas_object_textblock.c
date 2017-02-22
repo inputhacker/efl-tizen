@@ -12541,11 +12541,7 @@ _evas_textblock_size_formatted_get(Eo *eo_obj, Evas_Textblock_Data *o, Evas_Coor
    evas_object_async_block(obj);
    _relayout_if_needed(eo_obj, o);
 
-   /* TIZEN_ONLY(20170117): +1 to formatted width from Textblock
    if (w) *w = o->formatted.w;
-    */
-   if (w) *w = o->formatted.w + 1;
-   /* END */
    if (h) *h = o->formatted.h;
 }
 
