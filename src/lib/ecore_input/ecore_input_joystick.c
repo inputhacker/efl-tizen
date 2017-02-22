@@ -1,5 +1,4 @@
 #ifndef _WIN32
-#ifndef __APPLE__
 #include <libudev.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -391,5 +390,4 @@ ecore_input_joystick_shutdown(void)
 
    return _ecore_input_joystick_init_count;
 }
-#endif
 #endif

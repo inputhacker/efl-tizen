@@ -2777,13 +2777,9 @@ EFL_PLATFORM_DEPEND([ECORE_INPUT], [evil])
 EFL_INTERNAL_DEPEND_PKG([ECORE_INPUT], [ecore])
 EFL_INTERNAL_DEPEND_PKG([ECORE_INPUT], [eo])
 EFL_INTERNAL_DEPEND_PKG([ECORE_INPUT], [eina])
-PKG_CHECK_EXISTS([libudev],
-                 [have_ecore_udev="yes"],
-                 [have_ecore_udev="no"])
+
 if test "x${have_win32}" = "xno" ; then
-if test "${have_ecore_udev}" = "yes"; then
-    EFL_ADD_LIBS([ECORE_INPUT], [-ludev])
-fi
+	EFL_ADD_LIBS([ECORE_INPUT], [-ludev])
 fi
 
 ### Checks for header files

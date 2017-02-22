@@ -494,7 +494,6 @@ extern "C" {
    EAPI Ecore_Compose_State  ecore_compose_get(const Eina_List *seq, char **seqstr_ret);
 //TIZEN_ONLY(20160627) - Initial version of ecore joystick event
 #ifndef _WIN32
-#ifndef __APPLE__
    /**
     * Initializes the Ecore Input Joystick system.
     * @since 1.15
@@ -513,7 +512,6 @@ extern "C" {
     * @endif
     */
    EAPI int                  ecore_input_joystick_shutdown(void);
-#endif
 #endif
 //
 #ifdef __cplusplus
