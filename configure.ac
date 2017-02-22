@@ -2778,10 +2778,6 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_INPUT], [ecore])
 EFL_INTERNAL_DEPEND_PKG([ECORE_INPUT], [eo])
 EFL_INTERNAL_DEPEND_PKG([ECORE_INPUT], [eina])
 
-if test "x${have_win32}" = "xno" ; then
-	EFL_ADD_LIBS([ECORE_INPUT], [-ludev])
-fi
-
 ### Checks for header files
 
 ### Checks for types
