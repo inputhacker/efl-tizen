@@ -1527,7 +1527,8 @@ try_again:
 
    if (cfg_index < 0)
      {
-        ERR("Unable to find a matching config format.");
+        ERR("Unable to find a matching config format (depth:%d, stencil:%d, msaa:%d)",
+            depth_size, stencil_bit, msaa_samples);
         if ((stencil_bit > 8) || (depth_size > 24))
           {
              INF("Please note that Evas GL might not support 32-bit depth or "
@@ -1540,6 +1541,13 @@ try_again:
                }
              if (stencil_bit > 8) stencil_bit = 8; // see STENCIL_BIT_8
              DBG("Fallback to depth:%d, stencil:%d", depth_size, stencil_bit);
+             goto try_again;
+          }
+        else if (msaa_samples > 0)
+          {
+             msaa_samples /= 2;
+             if (msaa_samples == 1) msaa_samples = 0;
+             DBG("Fallback to msaa:%d", msaa_samples);
              goto try_again;
           }
         return 0;
