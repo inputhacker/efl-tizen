@@ -314,6 +314,8 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
    Evas_VG_Data *vd = type_private_data;
    Ector_Surface *ector = evas_ector_get(obj->layer->evas);
    int error = 0;
+   Eina_Bool async;
+   Eina_Bool async_unref;
 
    // FIXME: Set context (that should affect Ector_Surface) and
    // then call Ector_Renderer render from bottom to top. Get the
@@ -353,7 +355,7 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
                                                                              vd->backing_store,
                                                                              obj->cur->geometry.w,
                                                                              obj->cur->geometry.h,
-                                                                             EINA_FALSE, &error);
+                                                                             EINA_TRUE, &error);
    if (error)
      return; // surface creation error
 
@@ -368,22 +370,35 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
      }
    else
      {
+        async = do_async;
+        do_async = EINA_FALSE;
         if (vd->content_changed)
           {
-             obj->layer->evas->engine.func->ector_begin(output, context, ector, vd->backing_store, EINA_TRUE,
+             RGBA_Draw_Context *ct;
+             ct = evas_common_draw_context_new();
+             evas_common_draw_context_set_render_op(ct, _EVAS_RENDER_COPY);
+             evas_common_draw_context_set_color(ct, 255, 255, 255, 255);
+             obj->layer->evas->engine.func->ector_begin(output, ct, ector, vd->backing_store, EINA_TRUE,
                                                         0, 0,
                                                         obj->cur->geometry.w, obj->cur->geometry.h,
                                                         do_async);
-             _evas_vg_render(obj, vd, output, context, vd->backing_store, vd->root, NULL,do_async);
+             _evas_vg_render(obj, vd, output, ct, vd->backing_store, vd->root, NULL,do_async);
              obj->layer->evas->engine.func->image_dirty_region(obj->layer->evas->engine.data.output, vd->backing_store,
                                                                0, 0, 0, 0);
-             obj->layer->evas->engine.func->ector_end(output, context, ector, vd->backing_store, do_async);
+             obj->layer->evas->engine.func->ector_end(output, ct, ector, vd->backing_store, do_async);
+             evas_common_draw_context_free(ct);
           }
-        obj->layer->evas->engine.func->image_draw(output, context, surface,
-                                                  vd->backing_store, 0, 0,
-                                                  obj->cur->geometry.w, obj->cur->geometry.h, obj->cur->geometry.x + x,
-                                                  obj->cur->geometry.y + y, obj->cur->geometry.w, obj->cur->geometry.h,
-                                                  EINA_TRUE, do_async);
+        do_async = async;
+        async_unref = obj->layer->evas->engine.func->image_draw(output, context, surface,
+                                                                vd->backing_store, 0, 0,
+                                                                obj->cur->geometry.w, obj->cur->geometry.h, obj->cur->geometry.x + x,
+                                                                obj->cur->geometry.y + y, obj->cur->geometry.w, obj->cur->geometry.h,
+                                                                EINA_TRUE, do_async);
+        if (do_async && async_unref)
+          {
+             evas_cache_image_ref((Image_Entry *)vd->backing_store);
+             evas_unref_queue_image_put(obj->layer->evas, vd->backing_store);
+          }
      }
    // reset the content change flag
    // don't move this to render_pre as there is no guarentee that
