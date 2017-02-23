@@ -1,3 +1,5 @@
+#ifndef _WIN32
+#ifndef __APPLE__
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -621,3 +623,5 @@ ecore_input_joystick_event_axis_deadzone_get(void)
 {
    return _event_axis_deadzone;
 }
+#endif
+#endif

@@ -431,6 +431,8 @@ extern "C" {
           };
      };
 
+#ifndef _WIN32
+#ifndef __APPLE__
    /**
     * Initialises the Ecore Event system.
     *
@@ -515,6 +517,8 @@ extern "C" {
     * @since 1.19
     */
    EAPI int ecore_input_joystick_event_axis_deadzone_get(void);
+#endif
+#endif
 
 #ifdef __cplusplus
 }
