@@ -993,7 +993,20 @@ eng_image_orient_set(void *data, void *image, Evas_Image_Orient orient)
    evas_gl_common_image_update(im->gc, im);
 
    if (im->im)
-      im_new = evas_gl_common_image_new_from_copied_data(im->gc, im->w, im->h, im->im->image.data, im->alpha, im->cs.space);
+     {
+       if (!im->im->image.data)
+         {
+#ifdef EVAS_CSERVE2
+           if (evas_cserve2_use_get() && evas_cache2_image_cached(&im->im->cache_entry))
+             evas_cache2_image_load_data(&im->im->cache_entry);
+           else
+#endif
+             evas_cache_image_load_data(&im->im->cache_entry);
+         }
+       evas_gl_common_image_alloc_ensure(im);
+
+       im_new = evas_gl_common_image_new_from_copied_data(im->gc, im->w, im->h, im->im->image.data, im->alpha, im->cs.space);
+     }
    if (!im_new) return im;
 
    im_new->load_opts = im->load_opts;
