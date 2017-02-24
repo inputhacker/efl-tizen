@@ -252,11 +252,8 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
         // manual render the vg tree
         ector = evas_ector_get(obj->layer->evas);
         if (!ector) return;
-        dupe_root = evas_vg_container_add(NULL);
-        evas_vg_node_dup(dupe_root, root);
-        //1. render pre
-        _evas_vg_render_pre(dupe_root, ector, NULL);
-        // 2. create surface
+
+        // 1. create surface
         buffer = obj->layer->evas->engine.func->ector_surface_create(output,
                                                                      NULL,
                                                                      svg->w,
@@ -264,6 +261,11 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
                                                                      EINA_TRUE, &error);
         if (error)
           return; // surface creation error
+
+        dupe_root = evas_vg_container_add(NULL);
+        evas_vg_node_dup(dupe_root, root);
+        //2. render pre
+        _evas_vg_render_pre(dupe_root, ector, NULL);
 
         //3. draw into the buffer
         ct = evas_common_draw_context_new();
