@@ -204,10 +204,10 @@ typedef struct _Ecore_Drm_Sprite Ecore_Drm_Sprite;
 /* structure to inform drm activation state */
 typedef struct _Ecore_Drm_Event_Activate Ecore_Drm_Event_Activate;
 
-/* sturcture to inform new input device added */
+/* structure to inform new input device added */
 typedef struct _Ecore_Drm_Event_Input_Device_Add Ecore_Drm_Event_Input_Device_Add;
 
-/* sturcture to inform old input device deleted */
+/* structure to inform old input device deleted */
 typedef struct _Ecore_Drm_Event_Input_Device_Del Ecore_Drm_Event_Input_Device_Del;
 
 /* structure to inform drm output plug events */
@@ -229,12 +229,11 @@ EAPI extern int ECORE_DRM_EVENT_SEAT_ADD; /**< @since 1.14 */
  * @internal
  *
  * @file
- * @brief Ecore functions for dealing with drm, virtual terminals
- * 
  * @defgroup Ecore_Drm_Group Ecore_Drm - Drm Integration
  * @ingroup Ecore
- * 
- * Ecore_Drm provides a wrapper and functions for using libdrm
+ * @brief Ecore functions for dealing with drm, virtual terminals.
+ *
+ * Ecore_Drm provides a wrapper and functions for using libdrm.
  * 
  * @li @ref Ecore_Drm_Init_Group
  * @li @ref Ecore_Drm_Device_Group
@@ -251,8 +250,8 @@ EAPI int ecore_drm_shutdown(void);
 
 /**
  * @internal
- *
- * Find a drm device in the system.
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Finds a drm device in the system.
  *
  * @param name The name of the device to find. If NULL, this function will 
  *             search for the default drm device.
@@ -261,125 +260,114 @@ EAPI int ecore_drm_shutdown(void);
  * 
  * @return An opaque Ecore_Drm_Device structure representing the card.
  * 
- * @ingroup Ecore_Drm_Device_Group
  */
 EAPI Ecore_Drm_Device *ecore_drm_device_find(const char *name, const char *seat);
 
 /**
  * @internal
- *
- * Free an Ecore_Drm_Device
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Frees an Ecore_Drm_Device.
  *
  * This function will cleanup and free any previously allocated Ecore_Drm_Device.
  * 
  * @param dev The Ecore_Drm_Device to free
  * 
- * @ingroup Ecore_Drm_Device_Group
  */
 EAPI void ecore_drm_device_free(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Open an Ecore_Drm_Device
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Opens an Ecore_Drm_Device.
  *
  * This function will open an existing Ecore_Drm_Device for use.
  * 
  * @param dev The Ecore_Drm_Device to try and open
  * 
- * @return EINA_TRUE on success, EINA_FALSE on failure
- * 
- * @ingroup Ecore_Drm_Device_Group
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
+ *
  */
 EAPI Eina_Bool ecore_drm_device_open(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Close an Ecore_Drm_Device
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Closes an Ecore_Drm_Device.
  *
  * This function will close a previously opened Ecore_Drm_Device
  * 
  * @param dev The Ecore_Drm_Device to free
  * 
- * @return EINA_TRUE on success, EINA_FALSE on failure
- * 
- * @ingroup Ecore_Drm_Device_Group
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
+ *
  */
 EAPI Eina_Bool ecore_drm_device_close(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Get if a given Ecore_Drm_Device is master
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Gets if a given Ecore_Drm_Device is master.
  * 
  * This function will check if the given drm device is set to master
  * 
  * @param dev The Ecore_Drm_Device to check
  * 
- * @return EINA_TRUE if device is master, EINA_FALSE otherwise
- * 
- * @ingroup Ecore_Drm_Device_Group
+ * @return @c EINA_TRUE if device is master, @c EINA_FALSE otherwise
+ *
  */
 EAPI Eina_Bool ecore_drm_device_master_get(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Set a given Ecore_Drm_Device to master
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Sets a given Ecore_Drm_Device to master.
  * 
  * This function will attempt to set a given drm device to be master
  * 
  * @param dev The Ecore_Drm_Device to set
  * 
- * @return EINA_TRUE on success, EINA_FALSE on failure
- * 
- * @ingroup Ecore_Drm_Device_Group
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
+ *
  */
 EAPI Eina_Bool ecore_drm_device_master_set(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Tell a given Ecore_Drm_Device to stop being master
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Tells a given Ecore_Drm_Device to stop being master.
  * 
  * This function will attempt to ask a drm device to stop being master
  * 
  * @param dev The Ecore_Drm_Device to set
  * 
- * @return EINA_TRUE on success, EINA_FALSE on failure
- * 
- * @ingroup Ecore_Drm_Device_Group
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
+ *
  */
 EAPI Eina_Bool ecore_drm_device_master_drop(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Get the file descriptor of Ecore_Drm_Device
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Gets the file descriptor of Ecore_Drm_Devices.
  *
  * This function will get the file descriptor of drm device
  *
  * @param dev The Ecore_Drm_Device to get
  *
- * @return fd value on success, -1 on failure
- *
- * @ingroup Ecore_Drm_Device_Group
+ * @return fd Value on success, @c -1 on failure
  *
  */
 EAPI int ecore_drm_device_fd_get(Ecore_Drm_Device *dev);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Sets the window of Ecore_Drm_Devices.
  *
- * Set the window of Ecore_Drm_Device
- *
- * This function will set the window for given drm device
+ * This function will set the window for given drm devices.
  *
  * @param dev The Ecore_Drm_Device for which window is set
  * @param window The window to set
- *
- * @ingroup Ecore_Drm_Device_Group
  *
  * @since 1.10
  */
@@ -387,16 +375,15 @@ EAPI void ecore_drm_device_window_set(Ecore_Drm_Device *dev, unsigned int window
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Gets the name of the Ecore_Drm_Device.
  *
- * Get the name of the Ecore_Drm_Device
- *
- * This function will return the name of Ecore_Drm_Device
+ * This function will return the name of Ecore_Drm_Device.
  *
  * @param dev The Ecore_Drm_Device to get name
  *
  * @return device name on success, NULL on failure
  *
- * @ingroup Ecore_Drm_Device_Group
  *
  * @since 1.10
  */
@@ -404,66 +391,62 @@ EAPI const char *ecore_drm_device_name_get(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Setup an Ecore_Drm_Device for software rendering
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Sets up an Ecore_Drm_Device for software rendering.
  *
  * This function will setup an Ecore_Drm_Device for software rendering
- * which includes creating dumb buffers to render into
+ * which includes creating dumb buffers to render into.
  *
  * @param dev The Ecore_Drm_Device to setup for software rendering
  *
  * @return EINA_TRUE on success, EINA_FALSE on failure
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.14
  */
 EAPI Eina_Bool ecore_drm_device_software_setup(Ecore_Drm_Device *dev);
 
 /**
- * Set a left handed mode at the given Ecore_Drm_Device
- *
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Sets a left handed mode at the given Ecore_Drm_Device.
  * This function will loop all the registered inputs in Ecore_Drm_Device and
  * set/unset left handed mode.
  *
  * @param dev The Ecore_Drm_Device to set left handed mode
  * @param left_handed The flag of enable/disable left handed mode
  *
- * @return EINA_TRUE on success, EINA_FALSE on failure
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
  *
- * @ingroup Ecore_Drm_Device_Group
  */
 EAPI Eina_Bool ecore_drm_device_pointer_left_handed_set(Ecore_Drm_Device *dev, Eina_Bool left_handed);
 
 /**
- * Setup a cached context to use same context for each devices
- *
- * This function will setup a cached context to use same context for each devices
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Sets up a cached context to use same context for each devices.
+ * This function will setup a cached context to use same context for each devices.
  * This function will be called before initialize Ecore_Drm.
  *
  * @param ctx struct xkb_context used in libxkbcommon
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.17
  */
 EAPI void ecore_drm_device_keyboard_cached_context_set(struct xkb_context *ctx);
 
 /**
- * Setup a cached keymap to use same keymap for each devices
- *
- * This function will setup a cached keymap to use same keymap for each devices
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Sets up a cached keymap to use same keymap for each devices
+ * This function will setup a cached keymap to use same keymap for each devices.
  * This function will be called before initialize Ecore_Drm.
  *
  * @param map struct xkb_keymap used in libxkbcommon
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.17
  */
 EAPI void ecore_drm_device_keyboard_cached_keymap_set(struct xkb_keymap *map);
 
 /**
  * @internal
- *
- * Find an Ecore_Drm_Output at the given coordinates
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Finds an Ecore_Drm_Output at the given coordinates.
  *
  * This function will loop all the existing outputs in Ecore_Drm_Device and 
  * return an output if one exists that encapsulates the given coordinates.
@@ -472,151 +455,140 @@ EAPI void ecore_drm_device_keyboard_cached_keymap_set(struct xkb_keymap *map);
  * @param x The x coordinate
  * @param y The y coordinate
  *
- * @return An Ecore_Drm_Output if one exists at these coordinates or NULL
+ * @return An Ecore_Drm_Output if one exists at these coordinates, or NULL
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.14
  */
 EAPI Ecore_Drm_Output *ecore_drm_device_output_find(Ecore_Drm_Device *dev, int x, int y);
 
 /**
  * @internal
- *
- * Open a tty for use
+ * @ingroup Ecore_Drm_Tty_Group
+ * @brief Opens a tty for use.
  * 
  * @param dev  The Ecore_Drm_Device that this tty will belong to.
  * @param name The name of the tty to try and open. 
  *             If NULL, /dev/tty0 will be used.
  * 
- * @return     EINA_TRUE on success, EINA_FALSE on failure
- * 
- * @ingroup Ecore_Drm_Tty_Group
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
+ *
  */
 EAPI Eina_Bool ecore_drm_tty_open(Ecore_Drm_Device *dev, const char *name);
 
 /**
  * @internal
- *
- * Close an already opened tty
+ * @ingroup Ecore_Drm_Tty_Group
+ * @brief Closes an already opened tty.
  * 
  * @param dev The Ecore_Drm_Device which owns this tty.
  * 
- * @return    EINA_TRUE on success, EINA_FALSE on failure
- * 
- * @ingroup Ecore_Drm_Tty_Group
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
+ *
  */
 EAPI Eina_Bool ecore_drm_tty_close(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Release a virtual terminal
+ * @ingroup Ecore_Drm_Tty_Group
+ * @brief Releases a virtual terminal.
  * 
  * @param dev The Ecore_Drm_Device which owns this tty.
  * 
- * @return    EINA_TRUE on success, EINA_FALSE on failure
- * 
- * @ingroup Ecore_Drm_Tty_Group
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
+ *
  */
 EAPI Eina_Bool ecore_drm_tty_release(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Acquire a virtual terminal
+ * @ingroup Ecore_Drm_Tty_Group
+ * @brief Acquires a virtual terminal.
  * 
  * @param dev The Ecore_Drm_Device which owns this tty.
  * 
- * @return    EINA_TRUE on success, EINA_FALSE on failure
- * 
- * @ingroup Ecore_Drm_Tty_Group
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
+ *
  */
 EAPI Eina_Bool ecore_drm_tty_acquire(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Get the opened virtual terminal file descriptor
- * 
- * @param dev The Ecore_Drm_Device which owns this tty.
- * 
- * @return    The tty fd opened from previous call to ecore_drm_tty_open
- * 
  * @ingroup Ecore_Drm_Tty_Group
- * 
+ * @brief Gets the opened virtual terminal file descriptor.
+ *
+ * @param dev The Ecore_Drm_Device which owns this tty.
+ *
+ * @return    The tty fd opened from previous call to ecore_drm_tty_open
+ *
+ *
  * @since 1.10
  */
 EAPI int ecore_drm_tty_get(Ecore_Drm_Device *dev);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Creates outputs for a drm device.
  *
- * Create outputs for a drm device
- *
- * This function will create outputs for Ecore_Drm_Device
+ * This function will create outputs for Ecore_Drm_Device.
  *
  * @param dev The Ecore_Drm_Device device for which outputs
  *            needs to be created   
  * 
  * @return EINA_TRUE on success, EINA_FALSE on failure.
  *
- * @ingroup Ecore_Drm_Output_Group
  */
 EAPI Eina_Bool ecore_drm_outputs_create(Ecore_Drm_Device *dev);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Frees an Ecore_Drm_Output.
  *
- * Free an Ecore_Drm_Output 
- *
- * This function will cleanup and free any previously allocated Ecore_Drm_Output
+ * This function will cleanup and free any previously allocated Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to free
  * 
- * @ingroup Ecore_Drm_Output_Group
  */
 EAPI void ecore_drm_output_free(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Sets the cursor size for Ecore_Drm_Output.
  *
- * Set the cursor size for Ecore_Drm_Output 
- *
- * This function will set the cursor size of Ecore_Drm_Output
+ * This function will set the cursor size of Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to set
  * @param handle The Drm handle
  * @param w The width of cursor
  * @param h The height of cursor
  *
- * @ingroup Ecore_Drm_Output_Group
  */
 EAPI void ecore_drm_output_cursor_size_set(Ecore_Drm_Output *output, int handle, int w, int h);
 
 /**
  * @internal
- *
- * Enable a Ecore_Drm_Output
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Enables a Ecore_Drm_Output.
  *
  * This function will enable an Ecore_Drm_Output
  *
  * @param output The Ecore_Drm_Output to enable
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI Eina_Bool ecore_drm_output_enable(Ecore_Drm_Output *output);
 
 /**
  * @internal
- *
- * Disable a Ecore_Drm_Output
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Disables a Ecore_Drm_Output.
  *
  * This function will disable an Ecore_Drm_Output
  *
  * @param output The Ecore_Drm_Output to disable
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI void ecore_drm_output_disable(Ecore_Drm_Output *output);
@@ -629,17 +601,16 @@ EAPI void ecore_drm_output_repaint(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the output size of Ecore_Drm_Device.
  *
- * Get the output size of Ecore_Drm_Device
- *
- * This function will give the output size of Ecore_Drm_Device
+ * This function will give the output size of Ecore_Drm_Device.
  *
  * @param dev The Ecore_Drm_Device to get output size
- * @param output The output id whose information needs to be retrived 
+ * @param output The output id whose information needs to be retrieved
  * @param *w The parameter in which output width is stored
  * @param *h The parameter in which output height is stored
  *
- * @ingroup Ecore_Drm_Output_Group
  */
 EAPI void ecore_drm_output_size_get(Ecore_Drm_Device *dev, int output, int *w, int *h);
 
@@ -653,48 +624,45 @@ EAPI void ecore_drm_outputs_geometry_get(Ecore_Drm_Device *dev, int *x, int *y, 
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the crtc id of an output.
  *
- * Get the crtc id of an output
- *
- * This function will return the default crtc id for an output
+ * This function will return the default crtc id for an output.
  *
  * @param output The Ecore_Drm_Output to get the default crtc of
  *
  * @return The id of the default crtc for this output
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI unsigned int ecore_drm_output_crtc_id_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the crtc buffer of an output.
  *
- * Get the crtc buffer of an output
- *
- * This function will return the default buffer id for an output
+ * This function will return the default buffer id for an output.
  *
  * @param output The Ecore_Drm_Output to get the default buffer of
  *
  * @return The id of the default buffer for this output
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI unsigned int ecore_drm_output_crtc_buffer_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the connector id of an output.
  *
- * Get the connector id of an output
- *
- * This function will return the default connector id for an output
+ * This function will return the default connector id for an output.
  *
  * @param output The Ecore_Drm_Output to get the default connector of
  *
  * @return The id of the default connector id for this output
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI unsigned int ecore_drm_output_connector_id_get(Ecore_Drm_Output *output);
@@ -717,50 +685,47 @@ EAPI void ecore_drm_fb_destroy(Ecore_Drm_Fb *fb);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Fb_Group
+ * @brief Marks an Ecore_Drm_Fb as dirty.
  *
- * Mark an Ecore_Drm_Fb as dirty
- *
- * This function mark an Ecore_Drm_Fb as being dirty
+ * This function mark an Ecore_Drm_Fb as being dirty.
  *
  * @param fb The Ecore_Drm_Fb to mark as dirty
  * @param rects The regions of the Ecore_Drm_Fb which are dirty
  * @param count The number of regions
  * 
- * @ingroup Ecore_Drm_Fb_Group
  * @since 1.14
  */
 EAPI void ecore_drm_fb_dirty(Ecore_Drm_Fb *fb, Eina_Rectangle *rects, unsigned int count);
 
 /**
  * @internal
- *
- * Set an Ecore_Drm_Fb as the current framebuffer
+ * @ingroup Ecore_Drm_Fb_Group
+ * @brief Sets an Ecore_Drm_Fb as the current framebuffer.
  *
  * This function will set the given Ecore_Drm_Fb as the framebuffer used
- * across all outputs
+ * across all outputs.
  *
  * @param dev The Ecore_Drm_Device to use
  * @param fb The Ecore_Drm_Fb to make the current framebuffer
  *
- * @ingroup Ecore_Drm_Fb_Group
  * @since 1.14
  */
 EAPI void ecore_drm_fb_set(Ecore_Drm_Device *dev, Ecore_Drm_Fb *fb);
 
 /**
  * @internal
- *
- * Send an Ecore_Drm_Fb to the Ecore_Drm_Device
+ * @ingroup Ecore_Drm_Fb_Group
+ * @brief Sends an Ecore_Drm_Fb to the Ecore_Drm_Device.
  *
  * This function will call drmModePageFlip for the given device using the
- * given Ecore_Drm_Fb as the framebuffer
+ * given Ecore_Drm_Fb as the framebuffer.
  *
  * @param dev The Ecore_Drm_Device to use
  * @param fb The Ecore_Drm_Fb to send
  * @param cb The function to call when the page flip has completed
  * @param data The data to pass to the callback function
  *
- * @ingroup Ecore_Drm_Fb_Group
  * @since 1.14
  */
 EAPI void ecore_drm_fb_send(Ecore_Drm_Device *dev, Ecore_Drm_Fb *fb, Ecore_Drm_Pageflip_Cb func, void *data);
@@ -770,134 +735,126 @@ EAPI void ecore_drm_launcher_disconnect(Ecore_Drm_Device *dev);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the output position of Ecore_Drm_Output.
  *
- * Get the output position of Ecore_Drm_Output
- *
- * This function will give the output position of Ecore_Drm_Output
+ * This function will give the output position of Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to get position for
  * @param *x The parameter in which output x co-ordinate is stored
  * @param *y The parameter in which output y co-ordinate is stored
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI void ecore_drm_output_position_get(Ecore_Drm_Output *output, int *x, int *y);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the current resolution of Ecore_Drm_Output.
  *
- * Get the current resolution of Ecore_Drm_Output
- *
- * This function will give the current resolution of Ecore_Drm_Output
+ * This function will give the current resolution of Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to get resolution for
  * @param *w The parameter in which output width is stored
  * @param *h The parameter in which output height is stored
  * @param *refresh The parameter in which output refresh rate is stored
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI void ecore_drm_output_current_resolution_get(Ecore_Drm_Output *output, int *w, int *h, unsigned int *refresh);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the physical size of Ecore_Drm_Output.
  *
- * Get the physical size of Ecore_Drm_Output
- *
- * This function will give the physical size (in mm) of Ecore_Drm_Output
+ * This function will give the physical size (in mm) of Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to get physical size for
  * @param *w The parameter in which output physical width is stored
  * @param *h The parameter in which output physical height is stored
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI void ecore_drm_output_physical_size_get(Ecore_Drm_Output *output, int *w, int *h);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the subpixel order of Ecore_Drm_Output.
  *
- * Get the subpixel order of Ecore_Drm_Output
- *
- * This function will give the subpixel order of Ecore_Drm_Output
+ * This function will give the subpixel order of Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to get subpixel order for
  * @return The output subpixel order
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI unsigned int ecore_drm_output_subpixel_order_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the model of Ecore_Drm_Output.
  *
- * Get the model of Ecore_Drm_Output
- *
- * This function will give the model of Ecore_Drm_Output
+ * This function will give the model of Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to get model for
  * @return The model (do NOT eina_stringshare_del this return!)
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI Eina_Stringshare *ecore_drm_output_model_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the make of Ecore_Drm_Output.
  *
- * Get the make of Ecore_Drm_Output
- *
- * This function will give the make of Ecore_Drm_Output
+ * This function will give the make of Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to get model for
  * @return The make (do NOT eina_stringshare_del this return!)
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI Eina_Stringshare *ecore_drm_output_make_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the name of Ecore_Drm_Output.
  *
- * Get the name of Ecore_Drm_Output
- *
- * This function will give the name of Ecore_Drm_Output
+ * This function will give the name of Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to get name for
  * @return The name. Caller should free this return.
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI char *ecore_drm_output_name_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Sets the dpms level of an Ecore_Drm_Output.
  *
- * Set the dpms level of an Ecore_Drm_Output
- *
- * This function will set the DPMS level of an Ecore_Drm_Output
+ * This function will set the DPMS level of an Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to set the dpms level on
  * @param level The level to set
  * 
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI void ecore_drm_output_dpms_set(Ecore_Drm_Output *output, int level);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Sets the gamma level of an Ecore_Drm_Output.
  *
- * Set the gamma level of an Ecore_Drm_Output
- *
- * This function will set the gamma of an Ecore_Drm_Output
+ * This function will set the gamma of an Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to set the gamma level on
  * @param size The gamma table size to set
@@ -905,57 +862,54 @@ EAPI void ecore_drm_output_dpms_set(Ecore_Drm_Output *output, int level);
  * @param g The amount to scale the green channel
  * @param b The amount to scale the blue channel
  * 
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.14
  */
 EAPI void ecore_drm_output_gamma_set(Ecore_Drm_Output *output, uint16_t size, uint16_t *r, uint16_t *g, uint16_t *b);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Gets the pointer position of Ecore_Drm_Device.
  *
- * Get the pointer position of Ecore_Drm_Device
- *
- * This function will give the pointer position of Ecore_Drm_Device
+ * This function will give the pointer position of Ecore_Drm_Device.
  *
  * @param dev The Ecore_Drm_Device to get pointer position for
  * @param *x The parameter in which output x co-ordinate is stored
  * @param *y The parameter in which output y co-ordinate is stored
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.14
  */
 EAPI void ecore_drm_device_pointer_xy_get(Ecore_Drm_Device *dev, int *x, int *y);
 
 /**
- * Warp the pointer position of Ecore_Drm_Device
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Warps the pointer position of Ecore_Drm_Device.
  *
- * This function will set the pointer position of Ecore_Drm_Device
+ * This function will set the pointer position of Ecore_Drm_Device.
  *
  * @param dev The Ecore_Drm_Device to set pointer position for
  * @param x The new x co-ordinate
  * @param y The new y co-ordinate
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.18
  */
 EAPI void ecore_drm_device_pointer_warp(Ecore_Drm_Device *dev, int x, int y);
 
 /**
  * @internal
- *
- * Get the list of drm devices which are allocated.
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Gets the list of drm devices which are allocated.
  *
  * @return Eina_List of drm devices, NULL otherwise
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.14
  */
 EAPI const Eina_List *ecore_drm_devices_get(void);
 
 /**
  * @internal
- *
- * Get the minimum and maximum screen size range
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Gets the minimum and maximum screen size range.
  *
  * @param dev The Ecore_Drm_Device to get screen size range from
  * @param *minw The parameter in which smallest width is stored
@@ -963,71 +917,66 @@ EAPI const Eina_List *ecore_drm_devices_get(void);
  * @param *maxw The parameter in which largest width is stored
  * @param *maxh The parameter in which largest height is stored
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.15
  */
 EAPI void ecore_drm_screen_size_range_get(Ecore_Drm_Device *dev, int *minw, int *minh, int *maxw, int *maxh);
 
 /**
  * @internal
- *
- * Get if a given output is connected
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets if a given output is connected.
  *
  * @param output The Ecore_Drm_Output to get the connected status of
  *
  * @return EINA_TRUE if output is connected, EINA_FALSE otherwise
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI Eina_Bool ecore_drm_output_connected_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
- *
- * Get the connector type of a given Ecore_Drm_Output
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the connector type of a given Ecore_Drm_Output.
  *
  * @param output The Ecore_Drm_Output to get the connector type of
  *
  * @return An unsigned integer representing the type of connector for this output
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI unsigned int ecore_drm_output_connector_type_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
- *
- * Get if a given output has a backlight
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets if a given output has a backlight.
  *
  * @param output The Ecore_Drm_Output to get the backlight of
  *
  * @return EINA_TRUE if this output has a backlight, EINA_FALSE otherwise
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI Eina_Bool ecore_drm_output_backlight_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the edid of a given output.
  *
- * Get the edid of a given output
- *
- * @param output The Ecore_Drm_Output to get the backlight of
+ * @param output The Ecore_Drm_Output to get the edid of
  *
  * @return A string representing the edid
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI char *ecore_drm_output_edid_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
- *
- * Get a list of the modes supported on a given output
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets a list of the modes supported on a given output.
  *
  * @param output The Ecore_Drm_Output to get the modes for
  *
@@ -1035,55 +984,51 @@ EAPI char *ecore_drm_output_edid_get(Ecore_Drm_Output *output);
  *
  * @note The returned list should not be freed
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI Eina_List *ecore_drm_output_modes_get(Ecore_Drm_Output *output);
 
 /**
  * @internal
- *
- * Get the output which is marked as primary
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the output which is marked as primary.
  *
  * @param dev The Ecore_Drm_Device to get the primary output from
  *
  * @return The primary Ecore_Drm_Output or NULL if no primary output is set
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI Ecore_Drm_Output *ecore_drm_output_primary_get(Ecore_Drm_Device *dev);
 
 /**
  * @internal
- *
- * Set a given output as primary
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Sets a given output as primary.
  *
  * @param output The Ecore_Drm_Output to set as primary
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI void ecore_drm_output_primary_set(Ecore_Drm_Output *output);
 
 /**
  * @internal
- *
- * Get the size of the crtc for a given output
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets the size of the crtc for a given output.
  *
  * @param output The Ecore_Drm_Output to get the crtc size of
  * @param *width The parameter in which width is stored
  * @param *height The parameter in which height is stored
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI void ecore_drm_output_crtc_size_get(Ecore_Drm_Output *output, int *width, int *height);
 
 /**
  * @internal
- *
- * Find an Ecore_Drm_Output which has the given name
+ * @ingroup Ecore_Drm_Device_Group
+ * @brief Finds an Ecore_Drm_Output which has the given name.
  *
  * This function will loop all the existing outputs in Ecore_Drm_Device and 
  * return an output if one exists that matches the given name.
@@ -1093,15 +1038,14 @@ EAPI void ecore_drm_output_crtc_size_get(Ecore_Drm_Output *output, int *width, i
  *
  * @return An Ecore_Drm_Output if one exists at these coordinates or NULL
  *
- * @ingroup Ecore_Drm_Device_Group
  * @since 1.15
  */
 EAPI Ecore_Drm_Output *ecore_drm_device_output_name_find(Ecore_Drm_Device *dev, const char *name);
 
 /**
  * @internal
- *
- * Get if an Ecore_Drm_Output can be used on a given crtc
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Gets if an Ecore_Drm_Output can be used on a given crtc.
  *
  * This function will loop the possible crtcs of an encoder to determine if
  * a given output can be assigned to a given crtc
@@ -1109,17 +1053,16 @@ EAPI Ecore_Drm_Output *ecore_drm_device_output_name_find(Ecore_Drm_Device *dev, 
  * @param output The Ecore_Drm_Output to test if can be used on crtc
  * @param crtc The crtc to test an Ecore_Drm_Output against
  *
- * @return EINA_TRUE if the output can be assigned to given crtc, EINA_FALSE otherwise
+ * @return @c EINA_TRUE if the output can be assigned to given crtc, @c EINA_FALSE otherwise
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI Eina_Bool ecore_drm_output_possible_crtc_get(Ecore_Drm_Output *output, unsigned int crtc);
 
 /**
  * @internal
- *
- * Set a given mode to be used on an Ecore_Drm_Output
+ * @ingroup Ecore_Drm_Output_Group
+ * @brief Sets a given mode to be used on an Ecore_Drm_Output.
  *
  * This function will set the given mode to be used on a given Ecore_Drm_Output
  *
@@ -1128,9 +1071,8 @@ EAPI Eina_Bool ecore_drm_output_possible_crtc_get(Ecore_Drm_Output *output, unsi
  * @param X The X position to set this output to
  * @param Y The Y position to set this output to
  *
- * @return EINA_TRUE on success, EINA_FALSE on failure
+ * @return @c EINA_TRUE on success, @c EINA_FALSE on failure
  *
- * @ingroup Ecore_Drm_Output_Group
  * @since 1.15
  */
 EAPI Eina_Bool ecore_drm_output_mode_set(Ecore_Drm_Output *output, Ecore_Drm_Output_Mode *mode, int x, int y);
