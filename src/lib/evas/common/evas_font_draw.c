@@ -140,10 +140,17 @@ evas_common_font_rgba_draw(RGBA_Image *dst, RGBA_Draw_Context *dc, int x, int y,
              if (dc->font_ext.func.gl_image_new_from_data)
                {
                   /* extension calls */
+                  /* TIZEN_ONLY(20170226): clean up GL images for emojis when GL context is free'd in shutdown process
                   fg->ext_dat = dc->font_ext.func.gl_image_new_from_data
                     (dc->font_ext.data, (unsigned int)w, (unsigned int)h,
                      (DATA32 *)fg->glyph_out->bitmap.buffer, EINA_TRUE,
                      EVAS_COLORSPACE_ARGB8888);
+                   */
+                  fg->ext_dat = dc->font_ext.func.gl_image_new_from_data
+                    (dc->font_ext.data, fg, (unsigned int)w, (unsigned int)h,
+                     (DATA32 *)fg->glyph_out->bitmap.buffer, EINA_TRUE,
+                     EVAS_COLORSPACE_ARGB8888);
+                  /* END */
                   fg->ext_dat_free = dc->font_ext.func.gl_image_free;
                }
              else

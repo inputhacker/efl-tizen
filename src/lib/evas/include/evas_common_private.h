@@ -753,7 +753,11 @@ struct _RGBA_Draw_Context
          void *(*gl_new)  (void *data, RGBA_Font_Glyph *fg);
          void  (*gl_free) (void *ext_dat);
          void  (*gl_draw) (void *data, void *dest, void *context, RGBA_Font_Glyph *fg, int x, int y);
+         /* TIZEN_ONLY(20170226): clean up GL images for emojis when GL context is free'd in shutdown process
          void *(*gl_image_new_from_data) (void *gc, unsigned int w, unsigned int h, DATA32 *image_data, int alpha, Evas_Colorspace cspace);
+          */
+         void *(*gl_image_new_from_data) (void *gc, RGBA_Font_Glyph *fg, unsigned int w, unsigned int h, DATA32 *image_data, int alpha, Evas_Colorspace cspace);
+         /* END */
          void  (*gl_image_free) (void *image);
          void  (*gl_image_draw) (void *gc, void *im, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, int smooth);
       } func;
