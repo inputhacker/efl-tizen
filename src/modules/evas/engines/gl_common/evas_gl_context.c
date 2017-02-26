@@ -1051,6 +1051,11 @@ evas_gl_common_context_free(Evas_Engine_GL_Context *gc)
    while (gc->font_glyph_textures)
      evas_gl_common_texture_free(gc->font_glyph_textures->data, EINA_TRUE);
 
+   /* TIZEN_ONLY(20170226): clean up GL images for emojis when GL context is free'd in shutdown process */
+   while (gc->font_glyph_images)
+     evas_gl_common_image_free(gc->font_glyph_images->data);
+   /* END */
+
    if ((gc->shared) && (gc->shared->references == 0))
      {
         Evas_GL_Texture_Pool *pt;

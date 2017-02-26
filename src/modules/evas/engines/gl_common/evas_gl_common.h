@@ -331,6 +331,9 @@ struct _Evas_Engine_GL_Context
    } pipe[MAX_PIPES];
 
    Eina_List *font_glyph_textures;
+   /* TIZEN_ONLY(20170226): clean up GL images for emojis when GL context is free'd in shutdown process */
+   Eina_List *font_glyph_images;
+   /* END */
 
    Eina_Bool havestuff : 1;
 
@@ -422,6 +425,9 @@ struct _Evas_GL_Image
    RGBA_Image      *im;
    Evas_GL_Texture *tex;
    Evas_Image_Load_Opts load_opts;
+   /* TIZEN_ONLY(20170226): clean up GL images for emojis when GL context is free'd in shutdown process */
+   RGBA_Font_Glyph *fglyph;
+   /* END */
    int              references;
    // if im->im == NULL, it's a render-surface so these here are used
    int              w, h;
@@ -688,7 +694,11 @@ void              evas_gl_common_image_draw(Evas_Engine_GL_Context *gc, Evas_GL_
 void             *evas_gl_font_texture_new(void *gc, RGBA_Font_Glyph *fg);
 void              evas_gl_font_texture_free(void *);
 void              evas_gl_font_texture_draw(void *gc, void *surface, void *dc, RGBA_Font_Glyph *fg, int x, int y);
+/* TIZEN_ONLY(20170226): clean up GL images for emojis when GL context is free'd in shutdown process
 void             *evas_gl_image_new_from_data(void *gc, unsigned int w, unsigned int h, DATA32 *data, int alpha, Evas_Colorspace cspace);
+ */
+void             *evas_gl_image_new_from_data(void *gc, RGBA_Font_Glyph *fg, unsigned int w, unsigned int h, DATA32 *data, int alpha, Evas_Colorspace cspace);
+/* END */
 void              evas_gl_image_free(void *im);
 void              evas_gl_image_draw(void *gc, void *im, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, int smooth);
 

@@ -695,6 +695,14 @@ evas_gl_common_image_free(Evas_GL_Image *im)
 {
    im->references--;
    if (im->references > 0) return;
+   /* TIZEN_ONLY(20170226): clean up GL images for emojis when GL context is free'd in shutdown process */
+   if (im->fglyph)
+     {
+        im->gc->font_glyph_images = eina_list_remove(im->gc->font_glyph_images, im);
+        im->fglyph->ext_dat = NULL;
+        im->fglyph->ext_dat_free = NULL;
+     }
+   /* END */
    evas_gl_common_context_flush(im->gc);
 
    if (im->scaled.origin)
@@ -1256,6 +1264,7 @@ evas_gl_common_image_draw(Evas_Engine_GL_Context *gc, Evas_GL_Image *im, int sx,
    gc->dc->clip.use = c; gc->dc->clip.x = cx; gc->dc->clip.y = cy; gc->dc->clip.w = cw; gc->dc->clip.h = ch;
 }
 
+/* TIZEN_ONLY(20170226): clean up GL images for emojis when GL context is free'd in shutdown process
 void *
 evas_gl_image_new_from_data(void *gc, unsigned int w, unsigned int h, DATA32 *data, int alpha, Evas_Colorspace cspace)
 {
@@ -1265,6 +1274,26 @@ evas_gl_image_new_from_data(void *gc, unsigned int w, unsigned int h, DATA32 *da
                                                      alpha,
                                                      cspace);
 }
+ */
+void *
+evas_gl_image_new_from_data(void *gc, RGBA_Font_Glyph *fg, unsigned int w, unsigned int h, DATA32 *data, int alpha, Evas_Colorspace cspace)
+{
+   Evas_Engine_GL_Context *context = (Evas_Engine_GL_Context *)gc;
+   Evas_GL_Image *im = evas_gl_common_image_new_from_data(context,
+                                                          w, h,
+                                                          data,
+                                                          alpha,
+                                                          cspace);
+
+   if (im)
+     {
+        im->fglyph = fg;
+        context->font_glyph_images = eina_list_append(context->font_glyph_images, im);
+     }
+
+   return (void *)im;
+}
+/* END */
 
 void
 evas_gl_image_free(void *im)
