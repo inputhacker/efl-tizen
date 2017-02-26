@@ -279,9 +279,18 @@ static void
 _ecore_buffer_provider_cb_add_buffer(void *data, struct bq_provider *bq_provider EINA_UNUSED, struct bq_buffer *buffer, uint32_t serial EINA_UNUSED)
 {
    Ecore_Buffer_Provider *provider = data;
-   Shared_Buffer *sb = bq_buffer_get_user_data(buffer);
+   Shared_Buffer *sb = NULL, *sb2 = NULL;
+   Eina_List *shared_buffers, *l;
 
    EINA_SAFETY_ON_NULL_RETURN(provider);
+   EINA_SAFETY_ON_NULL_RETURN(buffer);
+
+   shared_buffers = _ecore_buffer_queue_shared_buffer_list_get(provider->ebq);
+   EINA_LIST_FOREACH(shared_buffers, l, sb2)
+      {
+         if (_shared_buffer_resource_get(sb2) == buffer)
+            sb = sb2;
+      }
 
    if (!sb) return;
 
