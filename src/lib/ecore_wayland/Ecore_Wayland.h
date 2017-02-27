@@ -1440,6 +1440,7 @@ EAPI void ecore_wl_window_clipboard_state_set(Ecore_Wl_Window *win, Ecore_Wl_Cli
 EAPI Ecore_Wl_Clipboard_State ecore_wl_window_clipboard_state_get(Ecore_Wl_Window *win);
 EAPI void ecore_wl_clipboard_show(Ecore_Wl_Window *win);
 EAPI void ecore_wl_clipboard_hide(Ecore_Wl_Window *win);
+EAPI Eina_Bool ecore_wl_clipboard_data_only_set(Eina_Bool data_only);
 
 EAPI void ecore_wl_window_keyboard_geometry_set(Ecore_Wl_Window *win, int x, int y, int w, int h);
 EAPI Eina_Bool ecore_wl_window_keyboard_geometry_get(Ecore_Wl_Window *win, int *x, int *y, int *w, int *h);

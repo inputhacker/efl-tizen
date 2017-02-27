@@ -67,6 +67,7 @@ static void _ecore_wl_cb_effect_start(void *data EINA_UNUSED, struct tizen_effec
 static void _ecore_wl_cb_effect_end(void *data EINA_UNUSED, struct tizen_effect *tizen_effect EINA_UNUSED, struct wl_surface *surface_resource, unsigned int type);
 static void _ecore_wl_cb_indicator_flick(void *data EINA_UNUSED, struct tizen_indicator *tizen_indicator EINA_UNUSED, struct wl_surface *surface_resource, int type);
 static void _ecore_wl_cb_clipboard_data_selected(void *data EINA_UNUSED, struct tizen_clipboard *clipboard EINA_UNUSED, struct wl_surface *surface);
+static void _ecore_wl_cb_clipboard_data_only_allowed(void *data EINA_UNUSED, struct tizen_clipboard *clipboard EINA_UNUSED, uint32_t allowed);
 static void _ecore_wl_log_cb_print(const char *format, va_list args);
 /* local variables */
 static int _ecore_wl_init_count = 0;
@@ -146,6 +147,7 @@ static const struct tizen_indicator_listener _ecore_tizen_indicator_listener =
 static const struct tizen_clipboard_listener _ecore_tizen_clipboard_listener =
 {
    _ecore_wl_cb_clipboard_data_selected,
+   _ecore_wl_cb_clipboard_data_only_allowed,
 };
 
 static void
@@ -1050,8 +1052,13 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
      }
    else if (!strcmp(interface, "tizen_clipboard"))
      {
+        if (version >= 2)
+          client_version = 2;
+        else
+          client_version = version;
+
         ewd->wl.tz_clipboard =
-           wl_registry_bind(registry, id, &tizen_clipboard_interface, 1);
+           wl_registry_bind(registry, id, &tizen_clipboard_interface, client_version);
         if (ewd->wl.tz_clipboard)
           tizen_clipboard_add_listener(ewd->wl.tz_clipboard, &_ecore_tizen_clipboard_listener, ewd->wl.display);
      }
@@ -2137,6 +2144,21 @@ _ecore_wl_cb_indicator_flick(void *data EINA_UNUSED, struct tizen_indicator *tiz
    ecore_event_add(ECORE_WL_EVENT_INDICATOR_FLICK, ev, NULL, NULL);
 }
 
+EAPI Eina_Bool
+ecore_wl_clipboard_data_only_set(Eina_Bool data_only)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   if (!_ecore_wl_disp) return EINA_FALSE;
+   if (!_ecore_wl_disp->wl.tz_clipboard) return EINA_FALSE;
+   if (!_ecore_wl_disp->input) return EINA_FALSE;
+
+   tizen_clipboard_set_data_only(_ecore_wl_disp->wl.tz_clipboard, data_only);
+
+   ecore_wl_sync();
+
+   return _ecore_wl_disp->input->is_data_only;
+}
+
 static void
 _ecore_wl_cb_clipboard_data_selected(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, struct wl_surface *surface)
 {
@@ -2151,6 +2173,18 @@ _ecore_wl_cb_clipboard_data_selected(void *data EINA_UNUSED, struct tizen_clipbo
    ev->win = win->id;
 
    ecore_event_add(ECORE_WL_EVENT_CLIPBOARD_DATA_SELECTED, ev, NULL, NULL);
+}
+
+static void
+_ecore_wl_cb_clipboard_data_only_allowed(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, uint32_t allowed)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   if (!_ecore_wl_disp->input) return;
+
+   if (allowed)
+     _ecore_wl_disp->input->is_data_only = EINA_TRUE;
+   else
+     _ecore_wl_disp->input->is_data_only = EINA_FALSE;
 }
 
 static void
