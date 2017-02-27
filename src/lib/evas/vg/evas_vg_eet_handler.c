@@ -8,6 +8,7 @@ Eet_Data_Descriptor *_edje_edd_edje_linear_gradient_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_radial_gradient_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_style_gradient_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_style_property_node = NULL;
+Eet_Data_Descriptor *_edje_edd_edje_style_dash_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_matrix3_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_doc_node = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_defs_node = NULL;
@@ -158,6 +159,21 @@ _eet_for_style_gradient(void)
 }
 
 static inline Eet_Data_Descriptor*
+_eet_for_style_dash(void)
+{
+   Eet_Data_Descriptor_Class eetc;
+
+   if (_edje_edd_edje_style_dash_node) return _edje_edd_edje_style_dash_node;
+
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eetc, Efl_Gfx_Dash);
+   _edje_edd_edje_style_dash_node = eet_data_descriptor_stream_new(&eetc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_style_dash_node, Efl_Gfx_Dash, "length", length, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_style_dash_node, Efl_Gfx_Dash, "gap", gap, EET_T_DOUBLE);
+
+   return _edje_edd_edje_style_dash_node;
+}
+
+static inline Eet_Data_Descriptor*
 _eet_for_style_property(void)
 {
    Eet_Data_Descriptor *eet, *eet_gradient, *eet_dash;
@@ -166,11 +182,7 @@ _eet_for_style_property(void)
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eetc, Svg_Style_Property);
    eet = eet_data_descriptor_stream_new(&eetc);
    eet_gradient = _eet_for_style_gradient();
-
-   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eetc_dash, Efl_Gfx_Dash);
-   eet_dash = eet_data_descriptor_stream_new(&eetc_dash);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(eet_dash, Efl_Gfx_Dash, "length", length, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(eet_dash, Efl_Gfx_Dash, "gap", gap, EET_T_DOUBLE);
+   eet_dash = _eet_for_style_dash();
 
    EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Style_Property, "r", r, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(eet, Svg_Style_Property, "g", g, EET_T_INT);
@@ -421,7 +433,7 @@ _evas_vg_svg_node_eet(void)
    return _edje_edd_edje_vg_node;
 }
 
-EAPI void 
+EAPI void
 _evas_vg_svg_node_eet_destroy(void)
 {
    FREE_DESCRIPTOR(_edje_edd_edje_rect_node);
@@ -431,6 +443,7 @@ _evas_vg_svg_node_eet_destroy(void)
    FREE_DESCRIPTOR(_edje_edd_edje_linear_gradient_node);
    FREE_DESCRIPTOR(_edje_edd_edje_radial_gradient_node);
    FREE_DESCRIPTOR(_edje_edd_edje_style_gradient_node);
+   FREE_DESCRIPTOR(_edje_edd_edje_style_dash_node);
    FREE_DESCRIPTOR(_edje_edd_edje_style_property_node);
    FREE_DESCRIPTOR(_edje_edd_edje_matrix3_node);
    FREE_DESCRIPTOR(_edje_edd_edje_doc_node);
