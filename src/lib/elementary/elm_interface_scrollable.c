@@ -1478,8 +1478,12 @@ _elm_scroll_wanted_coordinates_update(Elm_Scrollable_Smart_Interface_Data *sid,
         if (!sid->loop_h) sid->wx = minx;
         else sid->wx = mx;
      }
+
+/* TIZEN_ONLY(20180116) : interface_scrollable: Remove redundant code block
    else if (sid->is_mirrored)
      sid->wx = _elm_scroll_x_mirrored_get(sid->obj, x);
+*/
+
    else if (!sid->loop_h && (x > mx)) sid->wx = mx;
    else if (sid->loop_h && x >= (sid->ww + mx)) sid->wx = minx;
    else sid->wx = x;
@@ -2140,9 +2144,11 @@ _elm_interface_scrollable_wanted_region_set(Eo *obj, Elm_Scrollable_Smart_Interf
 
    sid->content_info.resized = EINA_FALSE;
 
+// TIZEN_ONLY(20180116) : interface_scrollable: Remove redundant code block
    /* Flip to RTL cords only if init in RTL mode */
-   if (sid->is_mirrored)
-     wx = _elm_scroll_x_mirrored_get(obj, sid->wx);
+//   if (sid->is_mirrored)
+//     wx = _elm_scroll_x_mirrored_get(obj, sid->wx);
+
 
    if (sid->ww == -1)
      {
