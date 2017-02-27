@@ -318,6 +318,7 @@ struct _Ecore_Wl_Input
 
    Ecore_Wl_Dnd_Source *drag_source;
    Ecore_Wl_Dnd_Source *selection_source;
+   Eina_Bool is_data_only;
 
    struct
      {
