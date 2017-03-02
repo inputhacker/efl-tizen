@@ -1662,12 +1662,15 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                     }
                }
           }
-        ENFN->context_clip_clip(ENDT, ctx, ecx, ecy, ecw, ech);
-        if (!_is_obj_in_framespace(obj))
-          _evas_render_framespace_context_clip_clip(evas, ctx);
 
         if (obj->cur->cache.clip.visible || !proxy_src_clip)
           {
+             if (!mapped)
+               {
+                  ENFN->context_clip_clip(ENDT, ctx, ecx, ecy, ecw, ech);
+                  if (!_is_obj_in_framespace(obj, evas))
+                    _evas_render_framespace_context_clip_clip(evas, ctx);
+               }
              ENFN->context_multiplier_unset(ENDT, ctx);
              ENFN->context_render_op_set(ENDT, ctx, obj->cur->render_op);
 #ifdef REND_DBG
