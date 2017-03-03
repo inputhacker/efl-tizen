@@ -771,7 +771,6 @@ void
 _ecore_evas_wl_common_resize(Ecore_Evas *ee, int w, int h)
 {
    Ecore_Evas_Engine_Wl_Data *wdata;
-   int orig_w, orig_h;
    int ow, oh;
    int diff = 0;
 
@@ -787,8 +786,11 @@ _ecore_evas_wl_common_resize(Ecore_Evas *ee, int w, int h)
 
    ee->req.w = w;
    ee->req.h = h;
-   orig_w = w;
-   orig_h = h;
+
+   /* TODO: wayland client can resize the ecore_evas directly.
+    * In the future, we will remove ee->req value in wayland backend */
+   ee->w = w;
+   ee->h = h;
 
    if (!ee->prop.fullscreen)
      {
@@ -896,8 +898,10 @@ _ecore_evas_wl_common_resize(Ecore_Evas *ee, int w, int h)
         else if (h < minh) 
           h = minh;
 
-        orig_w = w;
-        orig_h = h;
+        ee->w = w;
+        ee->h = h;
+        ee->req.w = w;
+        ee->req.h = h;
 
         if (ECORE_EVAS_PORTRAIT(ee))
           {
@@ -920,11 +924,6 @@ _ecore_evas_wl_common_resize(Ecore_Evas *ee, int w, int h)
 
    if (diff)
      {
-        ee->w = orig_w;
-        ee->h = orig_h;
-        ee->req.w = orig_w;
-        ee->req.h = orig_h;
-
         if (ECORE_EVAS_PORTRAIT(ee))
           {
              evas_output_size_set(ee->evas, w, h);
