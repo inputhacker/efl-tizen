@@ -741,8 +741,19 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
                                     TBM_SURF_OPTION_READ|TBM_SURF_OPTION_WRITE,
                                     &info))
                {
-                  ERR("tbm_surface_map failed!");
-                  *image_data = im->tex->pt->dyn.data = NULL;
+                  ERR("tbm_surface_map failed! buffer :%p try again", im->tex->pt->dyn.buffer);
+                  /* if tbm_surface_map failed, try again */
+                  if (secsym_tbm_surface_unmap(im->tex->pt->dyn.buffer))
+                    ERR("tbm_surface_unmap failed buffer : %p", im->tex->pt->dyn.buffer);
+                  if (secsym_tbm_surface_map(im->tex->pt->dyn.buffer,
+                                             TBM_SURF_OPTION_READ|TBM_SURF_OPTION_WRITE,
+                                             &info))
+                    {
+                      ERR("tbm_surface_map failed! buffer :%p", im->tex->pt->dyn.buffer);
+                      *image_data = im->tex->pt->dyn.data = NULL;
+                    }
+                  else
+                      *image_data = im->tex->pt->dyn.data = (DATA32 *) info.planes[0].ptr;
                }
              else
                *image_data = im->tex->pt->dyn.data = (DATA32 *) info.planes[0].ptr;
@@ -2571,7 +2582,7 @@ eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface
    eng_image_size_get(data, glim, &w, &h);
    if (!pixels)
      {
-       ERR("pixels is NULL, eng_image_data_get failed, return.");
+       ERR("pixels is NULL return.");
        return;
      }
    memset(pixels, 0, stride * h);
