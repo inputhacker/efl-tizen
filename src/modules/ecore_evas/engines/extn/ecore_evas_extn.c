@@ -447,7 +447,15 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
           {
              extn->resource_id = NULL;
              if(extn->tizen_rsp) tizen_remote_surface_provider_destroy(extn->tizen_rsp);
-             if(extn->tizen_rs) tizen_remote_surface_destroy(extn->tizen_rs);
+             if(extn->tizen_rs)
+               {
+                  if( pre_buffer)
+                    {
+                       if (tizen_remote_surface_get_version(extn->tizen_rs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
+                         tizen_remote_surface_release(extn->tizen_rs, pre_buffer);
+                    }
+                  tizen_remote_surface_destroy(extn->tizen_rs);
+               }
              if(extn->tbm_client) wayland_tbm_client_deinit(extn->tbm_client);
              if(tizen_rsm) tizen_remote_surface_manager_destroy(tizen_rsm);
           }
@@ -2554,7 +2562,7 @@ ecore_evas_extn_socket_new_internal(int w, int h)
         ee = ecore_evas_wayland_egl_new(NULL, 0, 0, 0, w, h, 0);
         if (!ee)
           {
-             ERR("[Extn_GL] ecore_evas_wayland_egl_new is failed! it will be buffer backend ");
+             ERR("[EXTN_GL] ecore_evas_wayland_egl_new is failed! it will be buffer backend ");
              _ecore_evas_extn_type_set(EXTN_TYPE_SHM);
              free(bdata);
           }
