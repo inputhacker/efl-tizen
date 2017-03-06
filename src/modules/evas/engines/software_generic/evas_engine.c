@@ -3993,12 +3993,6 @@ eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_
      {
         *error = EINA_TRUE;
      }
-   else
-     {
-        im = surface;
-        pixels = evas_cache_image_pixels(&im->cache_entry);
-        memset(pixels, 0, (width * height * 4));
-     }
 
    return surface;
 }
@@ -4087,6 +4081,16 @@ eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface
                 int x, int y, int width EINA_UNUSED, int height EINA_UNUSED,
                 Eina_Bool do_async EINA_UNUSED)
 {
+   RGBA_Image *sf = surface;
+   void *pixels = NULL;
+   unsigned int w = 0;
+   unsigned int h = 0;
+
+   pixels = evas_cache_image_pixels(&sf->cache_entry);
+   w = sf->cache_entry.w;
+   h = sf->cache_entry.h;
+   memset(pixels, 0, (w * h * 4));
+
    if (do_async)
      {
         Evas_Thread_Command_Ector_Surface *nes;
@@ -4103,15 +4107,6 @@ eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface
      }
    else
      {
-        RGBA_Image *sf = surface;
-        void *pixels = NULL;
-        unsigned int w = 0;
-        unsigned int h = 0;
-
-        pixels = evas_cache_image_pixels(&sf->cache_entry);
-        w = sf->cache_entry.w;
-        h = sf->cache_entry.h;
-
         if (use_cairo)
           {
              eo_do(ector,

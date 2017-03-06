@@ -271,17 +271,18 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
         ct = evas_common_draw_context_new();
         evas_common_draw_context_set_render_op(ct, _EVAS_RENDER_COPY);
         evas_common_draw_context_set_color(ct, 255, 255, 255, 255);
+        evas_common_draw_context_set_clip(ct, 0, 0, obj->cur->geometry.w, obj->cur->geometry.h);
         obj->layer->evas->engine.func->ector_begin(output, ct,
                                                    ector, buffer, EINA_TRUE,
                                                    0, 0,
                                                    obj->cur->geometry.w, obj->cur->geometry.h,
-                                                   do_async);
+                                                   EINA_FALSE);
         _evas_vg_render(obj, vd,
                         output, ct, buffer,
                         dupe_root, NULL,
-                        do_async);
+                        EINA_FALSE);
         obj->layer->evas->engine.func->image_dirty_region(output, buffer, 0, 0, 0, 0);
-        obj->layer->evas->engine.func->ector_end(output, ct, ector, buffer, do_async);
+        obj->layer->evas->engine.func->ector_end(output, ct, ector, buffer, EINA_FALSE);
 
         evas_common_draw_context_free(ct);
         eo_del(dupe_root);
@@ -378,6 +379,7 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
              ct = evas_common_draw_context_new();
              evas_common_draw_context_set_render_op(ct, _EVAS_RENDER_COPY);
              evas_common_draw_context_set_color(ct, 255, 255, 255, 255);
+             evas_common_draw_context_set_clip(ct, 0, 0, obj->cur->geometry.w, obj->cur->geometry.h);
              obj->layer->evas->engine.func->ector_begin(output, ct, ector, vd->backing_store, EINA_TRUE,
                                                         0, 0,
                                                         obj->cur->geometry.w, obj->cur->geometry.h,
