@@ -1439,6 +1439,7 @@ _internal_config_set(void *eng_data, EVGL_Surface *sfc, Evas_GL_Config *cfg)
    int depth_size = 0;
    int native_win_depth = 0, native_win_stencil = 0, native_win_msaa = 0;
    Eina_Bool support_win_cfg = 1;
+   int updated_by_wincfg = 0;
 
    // Check if engine is valid
    if (!evgl_engine)
@@ -1532,7 +1533,7 @@ try_again:
              // When direct rendering is enabled, FBO configuration should match
              // window surface configuration as FBO will be used in fallback cases.
              // So we search again for the formats that match window surface's.
-             if (sfc->direct_fb_opt &&
+             if (sfc->direct_fb_opt && !updated_by_wincfg &&
                  ((native_win_depth != depth_size) ||
                   (native_win_stencil != stencil_bit) ||
                   (native_win_msaa != msaa_samples)))
@@ -1542,6 +1543,7 @@ try_again:
                   depth_size = native_win_depth;
                   stencil_bit = native_win_stencil;
                   msaa_samples = native_win_msaa;
+                  updated_by_wincfg = 1;
                   goto try_again;
                }
 
