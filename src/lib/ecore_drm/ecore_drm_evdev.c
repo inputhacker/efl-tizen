@@ -959,7 +959,7 @@ _device_handle_touch_down(struct libinput_device *device, struct libinput_event_
    edev->mouse.dy = edev->seat->ptr.iy = edev->seat->ptr.dy =
      libinput_event_touch_get_y_transformed(event, edev->output->current_mode->height);
 
-   edev->mt_slot = libinput_event_touch_get_seat_slot(event);
+   edev->mt_slot = libinput_event_touch_get_slot(event);
 
    _device_handle_touch_motion_send(edev, event);
    _device_handle_touch_event_send(edev, event, ECORE_EVENT_MOUSE_BUTTON_DOWN);
@@ -995,7 +995,7 @@ _device_handle_touch_motion(struct libinput_device *device, struct libinput_even
    edev->seat->ptr.ix = edev->seat->ptr.dx;
    edev->seat->ptr.iy = edev->seat->ptr.dy;
 
-   edev->mt_slot = libinput_event_touch_get_seat_slot(event);
+   edev->mt_slot = libinput_event_touch_get_slot(event);
 
    _device_handle_touch_motion_send(edev, event);
    TRACE_INPUT_END();
@@ -1014,7 +1014,7 @@ _device_handle_touch_up(struct libinput_device *device, struct libinput_event_to
         return;
      }
 
-   edev->mt_slot = libinput_event_touch_get_seat_slot(event);
+   edev->mt_slot = libinput_event_touch_get_slot(event);
 
    _device_handle_touch_event_send(edev, event, ECORE_EVENT_MOUSE_BUTTON_UP);
    TRACE_INPUT_END();
