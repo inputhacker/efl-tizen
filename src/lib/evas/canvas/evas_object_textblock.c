@@ -667,6 +667,9 @@ static void _evas_textblock_changed(Evas_Textblock_Data *o, Evas_Object *eo_obj)
 static void _evas_textblock_invalidate_all(Evas_Textblock_Data *o);
 static void _evas_textblock_cursors_update_offset(const Evas_Textblock_Cursor *cur, const Evas_Object_Textblock_Node_Text *n, size_t start, int offset);
 static void _evas_textblock_cursors_set_node(Evas_Textblock_Data *o, const Evas_Object_Textblock_Node_Text *n, Evas_Object_Textblock_Node_Text *new_node);
+/* TIZEN_ONLY(20170307): update style tags when a Evas Textblock Style is updated */
+static const char *_textblock_format_node_from_style_tag(Evas_Textblock_Data *o, Evas_Object_Textblock_Node_Format *fnode, const char *format, size_t format_len);
+/* END */
 
 
 #ifdef HAVE_HYPHEN
@@ -6558,6 +6561,41 @@ evas_textblock_style_free(Evas_Textblock_Style *ts)
    free(ts);
 }
 
+/* TIZEN_ONLY(20170307): update style tags when a Evas Textblock Style is updated */
+static void
+_evas_textblock_update_format_nodes_from_style_tag(Evas_Textblock_Data *o)
+{
+   Evas_Object_Textblock_Node_Format *fnode = o->format_nodes;
+   while (fnode)
+     {
+        const char *match;
+        size_t format_len = eina_stringshare_strlen(fnode->orig_format);
+        /* Is this safe to use alloca here? Strings might possibly get large */
+
+        if (fnode->own_closer &&
+           (format_len > 0) && (fnode->orig_format[format_len - 1] == '/'))
+          {
+             format_len--;
+          }
+
+        match = _textblock_format_node_from_style_tag(o, fnode, fnode->orig_format,
+              format_len);
+
+        if (match && fnode->format && strcmp(match, fnode->format))
+          {
+             if ((*match == '+') || (*match == '-'))
+               {
+                  match++;
+                  while (*match == ' ') match++;
+               }
+             fnode->is_new = EINA_TRUE;
+             eina_stringshare_replace(&fnode->format, match);
+          }
+        fnode = _NODE_FORMAT(EINA_INLIST_GET(fnode)->next);
+     }
+}
+/* END */
+
 EAPI void
 evas_textblock_style_set(Evas_Textblock_Style *ts, const char *text)
 {
@@ -6570,6 +6608,7 @@ evas_textblock_style_set(Evas_Textblock_Style *ts, const char *text)
        (ts->style_text && text && !strcmp(text, ts->style_text)))
       return;
 
+   /* TIZEN_ONLY(20170307): update style tags when a Evas Textblock Style is updated
    EINA_LIST_FOREACH(ts->objects, l, eo_obj)
      {
         Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
@@ -6578,6 +6617,8 @@ evas_textblock_style_set(Evas_Textblock_Style *ts, const char *text)
         _evas_textblock_invalidate_all(o);
         _evas_textblock_changed(o, eo_obj);
      }
+    */
+   /* END */
 
    _style_replace(ts, text);
 
@@ -6699,6 +6740,18 @@ evas_textblock_style_set(Evas_Textblock_Style *ts, const char *text)
              p++;
           }
      }
+
+   /* TIZEN_ONLY(20170307): update style tags when a Evas Textblock Style is updated */
+   EINA_LIST_FOREACH(ts->objects, l, eo_obj)
+     {
+        Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
+        Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
+        evas_object_async_block(obj);
+        _evas_textblock_update_format_nodes_from_style_tag(o);
+        _evas_textblock_invalidate_all(o);
+        _evas_textblock_changed(o, eo_obj);
+     }
+   /* END */
 }
 
 EAPI const char *
@@ -6763,12 +6816,13 @@ _textblock_style_generic_set(Evas_Object *eo_obj, Evas_Textblock_Style *ts,
      }
    *obj_ts = ts;
 
+   /* TIZEN_ONLY(20170307): update style tags when a Evas Textblock Style is updated
    Evas_Object_Textblock_Node_Format *fnode = o->format_nodes;
    while (fnode)
      {
         const char *match;
         size_t format_len = eina_stringshare_strlen(fnode->orig_format);
-        /* Is this safe to use alloca here? Strings might possibly get large */
+        // Is this safe to use alloca here? Strings might possibly get large
 
         if (fnode->own_closer &&
            (format_len > 0) && (fnode->orig_format[format_len - 1] == '/'))
@@ -6791,6 +6845,9 @@ _textblock_style_generic_set(Evas_Object *eo_obj, Evas_Textblock_Style *ts,
           }
         fnode = _NODE_FORMAT(EINA_INLIST_GET(fnode)->next);
      }
+    */
+   _evas_textblock_update_format_nodes_from_style_tag(o);
+   /* END */
 
    o->format_changed = EINA_TRUE;
    _evas_textblock_invalidate_all(o);
