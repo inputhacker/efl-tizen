@@ -59,7 +59,11 @@ ecore_event_init(void)
    ECORE_EVENT_MOUSE_BUTTON_CANCEL = ecore_event_type_new();
    ECORE_EVENT_JOYSTICK = ecore_event_type_new();
 
+   //TIZEN_ONLY(20170307) Remove warning message
+   #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
    ecore_input_joystick_init();
+   #pragma GCC diagnostic pop
+   //
 
    return _ecore_event_init_count;
 }
@@ -81,7 +85,11 @@ ecore_event_shutdown(void)
                           ECORE_EVENT_AXIS_UPDATE,
                           ECORE_EVENT_MOUSE_BUTTON_CANCEL,
                           ECORE_EVENT_JOYSTICK);
+   //TIZEN_ONLY(20170307) Remove warning message
+   #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
    ecore_input_joystick_shutdown();
+   #pragma GCC diagnostic pop
+   //
    eina_log_domain_unregister(_ecore_input_log_dom);
    _ecore_input_log_dom = -1;
    ecore_shutdown();
