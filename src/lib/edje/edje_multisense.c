@@ -7,6 +7,24 @@ static Eo *out = NULL;
 static int outs = 0;
 static Eina_Bool outfail = EINA_FALSE;
 
+/* TIZEN_ONLY(20170307) */
+#if HAVE_TIZENAUDIO
+static void _destroy_cb(void *data)
+{
+   Eo *in = (Eo *)data;
+   eo_del(in);
+}
+
+static Eina_Bool
+_play_finished_thread_safe(void *data EINA_UNUSED, Eo *in, const Eo_Event_Description *desc EINA_UNUSED, void *event_info EINA_UNUSED)
+{
+   ecore_main_loop_thread_safe_call_async(_destroy_cb, in);
+
+   return EINA_TRUE;
+}
+#endif
+/* END */
+
 static Eina_Bool
 _play_finished(void *data EINA_UNUSED, Eo *in, const Eo_Event_Description *desc EINA_UNUSED, void *event_info EINA_UNUSED)
 {
@@ -206,7 +224,15 @@ _edje_multisense_internal_sound_sample_play(Edje *ed, const char *sample_name, c
                          ecore_audio_obj_name_set(snd_id_str),
                          ecore_audio_obj_in_speed_set(speed),
                          ecore_audio_obj_vio_set(&eet_data->vio, eet_data, _free),
+/* TIZEN_ONLY(20170307)
                          eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED, _play_finished, NULL));
+*/
+#if HAVE_TIZENAUDIO
+                         eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED, _play_finished_thread_safe, NULL));
+#else
+                         eo_event_callback_add(ECORE_AUDIO_IN_EVENT_IN_STOPPED, _play_finished, NULL));
+#endif
+/* END */
              if (!out)
                {
 /* TIZEN_ONLY(20161109, 20161202)
