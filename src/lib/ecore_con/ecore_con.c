@@ -2320,7 +2320,7 @@ _ecore_con_cl_handler(void *data,
      }
    if (want_read)
      _ecore_con_cl_read(obj);
-   else if (want_write) /* only possible with non-ssl connections */
+   if (want_write) /* only possible with non-ssl connections */
      {
         if (svr->connecting && (!svr_try_connect_plain(obj)) && (!svr->ecs_state))
           return ECORE_CALLBACK_RENEW;
