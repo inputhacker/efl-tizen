@@ -156,9 +156,14 @@ eng_setup(Evas *eo_evas, void *info)
         re = _render_engine_ouput_setup(einfo, epd->output.w, epd->output.h);
 
         if (re)
-          re->generic.ob->info = einfo;
+          {
+             re->generic.ob->info = einfo;
+             /* init tbm native surface lib */
+             _evas_native_tbm_init();
+          }
         else
           goto err;
+
      }
    else
      {
@@ -207,6 +212,9 @@ eng_output_free(void *data)
         free(re);
      }
 
+   /* shutdown tbm native surface lib */
+   _evas_native_tbm_shutdown();
+
    if (tbm_server_lib)
      {
        dlclose(tbm_server_lib);
@@ -222,6 +230,7 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
    Evas_Native_Surface *ns = native;
    Image_Entry *ie = image;
    RGBA_Image *im = image, *im2 = NULL;
+   int stride = -1;
 
    if (!im) return im;
 
@@ -256,6 +265,22 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
                                                  EVAS_COLORSPACE_ARGB8888);
      }
 
+   if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+     {
+        stride = _evas_native_tbm_surface_stride_get(NULL, ns);
+        if (stride > -1)
+          im2 = (RGBA_Image *)evas_cache_image_copied_data(evas_common_image_cache_get(),
+                                                    stride, ie->h, NULL, ie->flags.alpha,
+                                                    EVAS_COLORSPACE_ARGB8888);
+     }
+   else
+     {
+        im2 = (RGBA_Image *)evas_cache_image_data(evas_common_image_cache_get(),
+                                 ie->w, ie->h,
+                                 NULL, 1,
+                                 EVAS_COLORSPACE_ARGB8888);
+     }
+
    if (im->native.data)
       {
          if (im->native.func.free)
@@ -275,7 +300,7 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
 
    if (ns->type == EVAS_NATIVE_SURFACE_TBM)
      {
-          return evas_native_tbm_surface_image_set(NULL, im, ns);
+          return _evas_native_tbm_surface_image_set(NULL, im, ns);
      }
    else if (ns->type == EVAS_NATIVE_SURFACE_WL)
      {
@@ -290,7 +315,7 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
 
             tbm_surface_get_info(_tbm_surface, &info);
 
-            return evas_native_tbm_surface_image_set(_tbm_surface, im, ns);
+            return _evas_native_tbm_surface_image_set(_tbm_surface, im, ns);
          }
        else
          {

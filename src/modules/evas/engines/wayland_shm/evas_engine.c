@@ -17,8 +17,6 @@ int _evas_engine_way_shm_log_dom = -1;
 /* evas function tables - filled in later (func and parent func) */
 static Evas_Func func, pfunc;
 
-Evas_Native_Tbm_Surface_Image_Set_Call  glsym_evas_native_tbm_surface_image_set = NULL;
-
 /* For wl_buffer's native set */
 static void *tbm_server_lib = NULL;
 typedef struct _tbm_surface * tbm_surface_h;
@@ -105,13 +103,6 @@ _symbols(void)
         fail = 1;                             \
      }
 
-   // Get function pointer to native_common that is now provided through the link of SW_Generic.
-   LINK2GENERIC(RTLD_DEFAULT, evas_native_tbm_surface_image_set);
-   if (fail == 1)
-     {
-        ERR("fail to dlsym about evas_native_tbm_surface_image_set symbol");
-        return;
-     }
    tbm_server_lib = dlopen(wayland_tbm_server_lib, RTLD_LOCAL | RTLD_LAZY);
    if (tbm_server_lib)
      {
@@ -188,7 +179,11 @@ eng_setup(Evas *eo_evas, void *info)
         re = _render_engine_swapbuf_setup(epd->output.w, epd->output.h, einfo);
 
         if (re)
-          re->generic.ob->info = einfo;
+          {
+             re->generic.ob->info = einfo;
+             /* init tbm native surface lib */
+             _evas_native_tbm_init();
+          }
         else
           goto err;
      }
@@ -237,6 +232,9 @@ eng_output_free(void *data)
         evas_render_engine_software_generic_clean(&re->generic);
         free(re);
      }
+
+   /* shutdown tbm native surface lib */
+   _evas_native_tbm_shutdown();
 
    if (tbm_server_lib)
      {
@@ -298,6 +296,7 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
    RGBA_Image *im = image;
    RGBA_Image *im2 = NULL;
    void *wl_buf = NULL;
+   int stride = -1;
 
    if (!im) return im;
 
@@ -334,6 +333,14 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
                                       ie->w, ie->h,
                                       ns->data.x11.visual, 1,
                                       EVAS_COLORSPACE_ARGB8888);
+        else if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+          {
+             stride = _evas_native_tbm_surface_stride_get(NULL, ns);
+             if (stride > -1)
+               im2 = (RGBA_Image *)evas_cache_image_copied_data(evas_common_image_cache_get(),
+                                                         stride, ie->h, NULL, ie->flags.alpha,
+                                                         EVAS_COLORSPACE_ARGB8888);
+          }
         else
           im2 = (RGBA_Image *)evas_cache_image_data(evas_common_image_cache_get(),
                                       ie->w, ie->h,
@@ -359,21 +366,18 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
 
    if (ns->type == EVAS_NATIVE_SURFACE_TBM)
      {
-        if (glsym_evas_native_tbm_surface_image_set)
-          return glsym_evas_native_tbm_surface_image_set(NULL, im, ns);
-        else
-          return NULL;
+        return _evas_native_tbm_surface_image_set(NULL, im, ns);
      }
    else if (ns->type == EVAS_NATIVE_SURFACE_WL)
      {
        // TODO  : need the code for all wl_buffer type
        // First of all, for TBM surface
-       if (glsym_wayland_tbm_server_get_surface && glsym_evas_native_tbm_surface_image_set)
+       if (glsym_wayland_tbm_server_get_surface)
          {
             tbm_surface_h _tbm_surface;
 
             _tbm_surface = glsym_wayland_tbm_server_get_surface(NULL,ns->data.wl.legacy_buffer);
-            return glsym_evas_native_tbm_surface_image_set(_tbm_surface, im, ns);
+            return _evas_native_tbm_surface_image_set(_tbm_surface, im, ns);
          }
        else
          {

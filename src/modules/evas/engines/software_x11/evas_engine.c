@@ -32,7 +32,6 @@
 # include <dlfcn.h>
 #endif
 
-Evas_Native_Tbm_Surface_Image_Set_Call  glsym_evas_native_tbm_surface_image_set = NULL;
 int _evas_engine_soft_x11_log_dom = -1;
 
 /* function tables - filled in later (func and parent func) */
@@ -431,9 +430,6 @@ _symbols(void)
 #define LINK2GENERIC(sym) \
    glsym_##sym = dlsym(RTLD_DEFAULT, #sym);
 
-   // Get function pointer to native_common that is now provided through the link of SW_Generic.
-   LINK2GENERIC(evas_native_tbm_surface_image_set);
-
    done = 1;
 }
 
@@ -538,6 +534,11 @@ eng_setup(Evas *eo_e, void *in)
 #endif
 
         e->engine.data.output = re;
+        /* init tbm native surface lib */
+        if (re)
+          {
+             _evas_native_tbm_init();
+          }
      }
    else
      {
@@ -618,6 +619,7 @@ eng_setup(Evas *eo_e, void *in)
         /* if ((re) && (re->ob)) re->ob->onebuf = ponebuf; */
      }
    if (!e->engine.data.output) return 0;
+
    if (!e->engine.data.context)
      {
         e->engine.data.context =
@@ -642,6 +644,9 @@ eng_output_free(void *data)
 #endif
         free(re);
      }
+
+   /* shutdown tbm native surface lib */
+   _evas_native_tbm_shutdown();
 
    evas_common_shutdown();
 }
@@ -678,6 +683,7 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
    Evas_Native_Surface *ns = native;
    Image_Entry *ie = image, *ie2 = NULL;
    RGBA_Image *im = image;
+   int stride = -1;
 
    if (!im) return NULL;
    if (!ns)
@@ -719,6 +725,14 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
      ie2 = evas_cache_image_data(evas_common_image_cache_get(),
                                  ie->w, ie->h, ns->data.evasgl.surface, 1,
                                  EVAS_COLORSPACE_ARGB8888);
+   else if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+     {
+        stride = _evas_native_tbm_surface_stride_get(NULL, ns);
+        if (stride > -1)
+          ie2 = (RGBA_Image *)evas_cache_image_copied_data(evas_common_image_cache_get(),
+                                                    stride, ie->h, NULL, ie->flags.alpha,
+                                                    EVAS_COLORSPACE_ARGB8888);
+     }
    else
      ie2 = evas_cache_image_data(evas_common_image_cache_get(),
                                  ie->w, ie->h, NULL, ie->flags.alpha,
@@ -753,7 +767,7 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
      }
    else if (ns->type == EVAS_NATIVE_SURFACE_TBM)
      {
-        return glsym_evas_native_tbm_surface_image_set(re->generic.ob, ie, ns);
+        return evas_native_tbm_surface_image_set(re->generic.ob, ie, ns);
      }
    else if (ns->type == EVAS_NATIVE_SURFACE_EVASGL)
      {
