@@ -94,6 +94,7 @@ struct _Extn
    struct wayland_tbm_client *tbm_client;
    struct tizen_remote_surface *tizen_rs;
    uint32_t resource_id;
+   Eina_Bool redirect;
 #endif
    int extn_type_client;
 
@@ -106,7 +107,7 @@ static Eina_List *extn_ee_list = NULL;
 /* local value for tizen remote manager */
 #ifdef BUILD_TIZEN_REMOTE_SURFACE
 struct tizen_remote_surface_manager *tizen_rsm = NULL;
-struct wl_buffer *pre_buffer; //pre_buffer for tizen remote surface
+struct wl_buffer *pre_buffer = NULL; //pre_buffer for tizen remote surface
 #endif
 static int extn_type = EXTN_TYPE_NONE;
 
@@ -1074,6 +1075,84 @@ _ecore_evas_extn_cb_hide(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
    ecore_ipc_server_send(extn->ipc.server, MAJOR, OP_HIDE, 0, 0, 0, NULL, 0);
 }
 
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
+static void
+_ecore_evas_plug_cb_window_iconify_change(void *data, int type EINA_UNUSED, void *event)
+{
+   Extn *extn;
+   Ecore_Evas *ee,*ee2;
+   Ecore_Wl_Event_Window_Iconify_State_Change *ev;
+   Ecore_Evas_Engine_Buffer_Data *bdata;
+
+   ev = event;
+   ee = ecore_event_window_match(ev->win);
+
+   if (!ee) return ECORE_CALLBACK_PASS_ON;
+   if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
+
+   ee2 = data;
+   bdata = ee2->engine.extn.data;
+   if(!bdata) ERR("[EXTN_GL] bdata is null");
+
+   extn = bdata->data;
+
+   if(extn->extn_type_client == EXTN_TYPE_SHM) return ECORE_CALLBACK_PASS_ON;
+
+   if(extn->tizen_rs)
+     {
+        if(ee->prop.iconified && pre_buffer)
+          {
+             INF("[EXTN_GL] plug is iconified ");
+             if (tizen_remote_surface_get_version(extn->tizen_rs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
+               {
+                  INF("[EXTN_GL] buffer release (iconify_change) >> %p",pre_buffer);
+                  tizen_remote_surface_release(extn->tizen_rs, pre_buffer);
+               }
+             if(extn->redirect)
+               {
+                  INF("[EXTN_GL] tizen remote surface unredirect");
+                  tizen_remote_surface_unredirect(extn->tizen_rs);
+                  extn->redirect = EINA_FALSE;
+                  pre_buffer = NULL;
+               }
+          }
+        else
+          {
+             INF("[EXTN_GL] plug is un-iconified ");
+             if(!extn->redirect)
+               {
+                  INF("[EXTN_GL] tizen remote surface redirect");
+                  tizen_remote_surface_redirect(extn->tizen_rs);
+                  extn->redirect = EINA_TRUE;
+                  ecore_wl_sync();
+               }
+          }
+     }
+  return ECORE_CALLBACK_PASS_ON;
+}
+
+static void
+_ecore_evas_plug_cb_window_show(void *data, int type EINA_UNUSED, void *event)
+{
+   Extn *extn;
+   Ecore_Evas *ee;
+   Ecore_Evas_Engine_Buffer_Data *bdata;
+
+   ee = data;
+   bdata = ee->engine.extn.data;
+   if(!bdata) ERR("[EXTN_GL] bdata is null");
+   extn = bdata->data;
+   if(extn->extn_type_client == EXTN_TYPE_SHM) return ECORE_CALLBACK_PASS_ON;
+
+   if(extn->tizen_rs && !extn->redirect)
+     {
+        INF("[EXTN_GL] redirect buffer");
+        tizen_remote_surface_redirect(extn->tizen_rs);
+        extn->redirect = EINA_TRUE;
+     }
+   return ECORE_CALLBACK_PASS_ON;
+}
+#endif
 static void
 _ecore_evas_extn_plug_profile_set(Ecore_Evas *ee, const char *profile)
 {
@@ -1424,7 +1503,21 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
                           break;
                        }
                      tizen_remote_surface_add_listener(extn->tizen_rs, &_ecore_evas_extn_gl_plug_listener, bdata->image);
-                     tizen_remote_surface_redirect(extn->tizen_rs);
+
+                     Ecore_Evas* ee_origin = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
+                     if(!ecore_evas_withdrawn_get(ee_origin) && !ecore_evas_iconified_get(ee_origin))
+                       {
+                          if(!extn->redirect)
+                            {
+                               INF("[EXTN_GL] this window(ee:%p) is normal status . iconify:%d, withdraw:%d ",ee_origin,ecore_evas_iconified_get(ee_origin),ecore_evas_withdrawn_get(ee_origin));
+                               tizen_remote_surface_redirect(extn->tizen_rs);
+                               extn->redirect = EINA_TRUE;
+                            }
+                       }
+                    else
+                      {
+                         INF("[EXTN_GL] this window(ee:%p) is iconified or withdrawn . iconify:%d, withdraw:%d ",ee_origin,ecore_evas_iconified_get(ee_origin),ecore_evas_withdrawn_get(ee_origin));
+                      }
                   }
                 }
 
@@ -1695,6 +1788,7 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
 #ifdef BUILD_TIZEN_REMOTE_SURFACE
    extn->tizen_rs = NULL;
    extn->tbm_client = NULL;
+   extn->redirect = EINA_FALSE;
 #endif
 
    if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
@@ -1721,6 +1815,19 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
       (extn->ipc.handlers,
        ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
                                _ipc_server_data, ee));
+
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
+    extn->ipc.handlers = eina_list_append
+      (extn->ipc.handlers,
+       ecore_event_handler_add(ECORE_WL_EVENT_WINDOW_ICONIFY_STATE_CHANGE,
+                               _ecore_evas_plug_cb_window_iconify_change, ee));
+
+    extn->ipc.handlers = eina_list_append
+      (extn->ipc.handlers,
+       ecore_event_handler_add(ECORE_WL_EVENT_WINDOW_SHOW,
+                               _ecore_evas_plug_cb_window_show, ee));
+#endif
+
    return EINA_TRUE;
 }
 
