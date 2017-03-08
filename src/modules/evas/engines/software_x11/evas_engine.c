@@ -683,7 +683,6 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
    Evas_Native_Surface *ns = native;
    Image_Entry *ie = image, *ie2 = NULL;
    RGBA_Image *im = image;
-   int stride = -1;
 
    if (!im) return NULL;
    if (!ns)
@@ -727,11 +726,41 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
                                  EVAS_COLORSPACE_ARGB8888);
    else if (ns->type == EVAS_NATIVE_SURFACE_TBM)
      {
-        stride = _evas_native_tbm_surface_stride_get(NULL, ns);
-        if (stride > -1)
-          ie2 = (RGBA_Image *)evas_cache_image_copied_data(evas_common_image_cache_get(),
-                                                    stride, ie->h, NULL, ie->flags.alpha,
-                                                    EVAS_COLORSPACE_ARGB8888);
+       Evas_Colorspace cs = _evas_native_tbm_surface_colorspace_get(NULL, ns);
+       if (cs == EVAS_COLORSPACE_ARGB8888)
+         {
+            ie2 = (RGBA_Image *)evas_cache_image_data(evas_common_image_cache_get(),
+                                                      ie->w, ie->h, NULL, ie->flags.alpha,
+                                                      EVAS_COLORSPACE_ARGB8888);
+         }
+       else
+         {
+           int stride = _evas_native_tbm_surface_stride_get(NULL, ns);
+           if (stride > -1)
+             {
+                /**
+                 * To support various color format in Native TBM Surface,
+                 * Cache Image should have both im->image.data and cs.data memory.
+                 * In default, evas_cache_image_copied_data is callled with his colorspace.
+                 * In the case, cs.data is allocated and free, then re-allocated.
+                 * To optimize, we have two options.
+                 * One of them, evas_cache_image_copied_data is called with EVAS_COLORSPACE_ARGB8888
+                 * The other option, evas_cache_image_data is called with his colorspace
+                 * and evas_cache_image_surface_alloc should be called.
+                 * Then, new Cache Image's cs should be set with EVAS_COLORSPACE_ARGB8888.
+                 * Because of allocation cs.data in _evas_native_tbm_surface_image_set()
+                 * In current, first option is used.
+                 **/
+                ie2 = (RGBA_Image *)evas_cache_image_copied_data(evas_common_image_cache_get(),
+                                                                stride, ie->h, NULL, ie->flags.alpha,
+                                                                EVAS_COLORSPACE_ARGB8888);
+            }
+           else
+             {
+                ERR("Fail to get stride");
+                return im;
+             }
+         }
      }
    else
      ie2 = evas_cache_image_data(evas_common_image_cache_get(),
