@@ -1668,7 +1668,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
              if (!mapped)
                {
                   ENFN->context_clip_clip(ENDT, ctx, ecx, ecy, ecw, ech);
-                  if (!_is_obj_in_framespace(obj, evas))
+                  if (!_is_obj_in_framespace(obj))
                     _evas_render_framespace_context_clip_clip(evas, ctx);
                }
              ENFN->context_multiplier_unset(ENDT, ctx);
