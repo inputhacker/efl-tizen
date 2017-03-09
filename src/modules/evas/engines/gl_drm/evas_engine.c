@@ -27,6 +27,7 @@ int _extn_have_buffer_age = 1;
 /* local variables */
 static Eina_Bool initted = EINA_FALSE;
 static int gl_wins = 0;
+static Eina_Bool useHash = EINA_FALSE;
 
 /* local function prototype types */
 typedef void (*_eng_fn)(void);
@@ -830,6 +831,13 @@ eng_setup(Evas *evas, void *in)
 
    TRACE_EFL_BEGIN(SETUP);
 
+   /* check use hash on native surface set */
+   s = getenv("EVAS_USE_HASH_NATIVE_SURFACE");
+   if ((s) && (atoi(s)))
+     {
+       useHash = EINA_TRUE;
+     }
+
    s = getenv("EVAS_GL_SWAP_MODE");
    if (s)
      {
@@ -1319,7 +1327,8 @@ eng_image_native_set(void *data, void *image, void *native)
                                                     EVAS_GL_WAYLAND_Y_INVERTED_WL,
                                                     &yinvert) == EGL_FALSE)
                     yinvert = 1;
-                  eina_hash_add(ob->gl_context->shared->native_wl_hash,
+                  if (useHash)
+                    eina_hash_add(ob->gl_context->shared->native_wl_hash,
                                 &wlid, img);
 
                   n->ns_data.wl_surface.wl_buf = wl_buf;
@@ -1374,7 +1383,8 @@ eng_image_native_set(void *data, void *image, void *native)
              if ((n = calloc(1, sizeof(Native))))
                {
                   memcpy(&(n->ns), ns, sizeof(Evas_Native_Surface));
-                  eina_hash_add(ob->gl_context->shared->native_tex_hash,
+                  if (useHash)
+                    eina_hash_add(ob->gl_context->shared->native_tex_hash,
                                 &texid, img);
 
                   n->ns_data.opengl.surface = 0;
@@ -1402,7 +1412,8 @@ eng_image_native_set(void *data, void *image, void *native)
                {
                   memcpy(&(n->ns), ns, sizeof(Evas_Native_Surface));
 
-                  eina_hash_add(ob->gl_context->shared->native_evasgl_hash, &buffer, img);
+                  if (useHash)
+                    eina_hash_add(ob->gl_context->shared->native_evasgl_hash, &buffer, img);
 
                   n->ns_data.evasgl.surface = ns->data.evasgl.surface;
 
@@ -1428,7 +1439,8 @@ eng_image_native_set(void *data, void *image, void *native)
            n = calloc(1, sizeof(Native));
            if (n)
              {
-               eina_hash_add(eng_get_ob(re)->gl_context->shared->native_tbm_hash, &buffer, img);
+               if (useHash)
+                 eina_hash_add(eng_get_ob(re)->gl_context->shared->native_tbm_hash, &buffer, img);
 
                memcpy(&(n->ns), ns, sizeof(Evas_Native_Surface));
                n->ns_data.tbm.buffer = buffer;
