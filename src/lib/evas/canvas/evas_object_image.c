@@ -3407,92 +3407,139 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
         else
           {
               if (o->native_video)
-                 {
-                    // for native surface video rendering
-                    Evas_Native_Surface *ns;
-                    ns = ENFN->image_native_get(ENDT, o->engine_data);
-                    if (ns && (ns->type == EVAS_NATIVE_SURFACE_TBM))
-                       {
-                          float ratio = ns->data.tbm.ratio;
+                {
+                  // for native surface video rendering
+                  Evas_Native_Surface *ns;
+                  ns = ENFN->image_native_get(ENDT, o->engine_data);
+                  if (ns && (ns->type == EVAS_NATIVE_SURFACE_TBM))
+                    {
+                      float ratio = ns->data.tbm.ratio;
 
-                          if (ratio > 0.01f)
-                             {
-                                // we need to draw a black rectangle underneath the video
-                                // since image dimensions will be different from object dimensions in case of letterbox mode
-                                ENFN->context_color_set(output,
-                                                        context,
-                                                        0, 0, 0, 255);
-                                ENFN->context_render_op_set(output, context, EVAS_RENDER_COPY);
-                                ENFN->rectangle_draw(output,
-                                                     context,
-                                                     surface,
-                                                     obj->cur->geometry.x + x,
-                                                     obj->cur->geometry.y + y,
-                                                     obj->cur->geometry.w,
-                                                     obj->cur->geometry.h,
-                                                     do_async);
-                                ENFN->context_render_op_set(output, context, obj->cur->render_op);
-                                ENFN->context_cutout_clear(ENDT, context);
-                                ENFN->context_clip_unset(ENDT, context);
+                      if (ratio > 0.01f || ratio == -1)
+                        {
+                          // we need to draw a black rectangle underneath the video
+                          // since image dimensions will be different from object dimensions in case of letterbox mode
+                          ENFN->context_color_set(output,
+                                                  context,
+                                                  0, 0, 0, 255);
+                          ENFN->context_render_op_set(output, context, EVAS_RENDER_COPY);
+                          ENFN->rectangle_draw(output,
+                                               context,
+                                               surface,
+                                               obj->cur->geometry.x + x,
+                                               obj->cur->geometry.y + y,
+                                               obj->cur->geometry.w,
+                                               obj->cur->geometry.h,
+                                               do_async);
+                          ENFN->context_render_op_set(output, context, obj->cur->render_op);
+                          ENFN->context_cutout_clear(ENDT, context);
+                          ENFN->context_clip_unset(ENDT, context);
 
-                                ix = iy = 0;
-                                if (ns->data.tbm.rot == EVAS_IMAGE_ORIENT_90 || ns->data.tbm.rot == EVAS_IMAGE_ORIENT_270)
-                                   {
-                                      if (o->cur->fill.w * ratio < o->cur->fill.h)
-                                         iy = (double)(o->cur->fill.h - (double)(o->cur->fill.w * ratio)) * 0.5f;
-                                      else if (o->cur->fill.w * ratio > o->cur->fill.h)
-                                         ix = (double)(o->cur->fill.w - (double)(o->cur->fill.h / ratio)) * 0.5f;
-                                   }
-                                else
-                                   {
-                                      if (o->cur->fill.w < o->cur->fill.h * ratio)
-                                         iy = (double)(o->cur->fill.h - (double)(o->cur->fill.w / ratio)) * 0.5f;
-                                      else if (o->cur->fill.w > o->cur->fill.h * ratio)
-                                         ix = (double)(o->cur->fill.w - (double)(o->cur->fill.h * ratio)) * 0.5f;
-                                   }
-                                ENFN->image_draw
-                                  (output, context, surface, pixels,
-                                   0, 0,
-                                   imagew, imageh,
-                                   obj->cur->geometry.x + o->cur->fill.x + ix,
-                                   obj->cur->geometry.y + o->cur->fill.y + iy,
-                                   o->cur->fill.w - ix * 2,
-                                   o->cur->fill.h - iy * 2,
-                                   o->cur->smooth_scale,
-                                   do_async);
-                             }
-                          else if ((obj->cur->geometry.w > o->cur->fill.w) ||
-                                   (obj->cur->geometry.h > o->cur->fill.h))
-                            ENFN->image_draw(output,
-                                             context,
-                                             surface,
-                                             pixels,
-                                             0, 0,
-                                             imagew,
-                                             imageh,
-                                             o->cur->fill.x + (o->cur->fill.w - imagew) / 2,
-                                             o->cur->fill.y + (o->cur->fill.h - imageh) / 2,
-                                             imagew,
-                                             imageh,
-                                             o->cur->smooth_scale,
-                                             do_async);
+                          ix = iy = 0;
+                          int dstx, dsty;
+                          if (ns->data.tbm.rot == EVAS_IMAGE_ORIENT_90 || ns->data.tbm.rot == EVAS_IMAGE_ORIENT_270)
+                            {
+                              /* ROI mode */
+                              if (ratio == -1)
+                                {
+                                  if (ns->data.tbm.rot == EVAS_IMAGE_ORIENT_270)
+                                    {
+                                      dstx =  obj->cur->geometry.x + (obj->cur->geometry.w - o->cur->fill.y -  o->cur->fill.w);
+                                      dsty =  obj->cur->geometry.y + o->cur->fill.x;
+                                    }
+                                  else
+                                    {
+                                      dstx =  obj->cur->geometry.x + o->cur->fill.y;
+                                      dsty =  obj->cur->geometry.y + (obj->cur->geometry.h - o->cur->fill.x -  o->cur->fill.h);
+                                    }
+                                }
+                              /* letter box mode */
+                              else
+                                {
+                                  if (o->cur->fill.w * ratio < o->cur->fill.h)
+                                     iy = (double)(o->cur->fill.h - (double)(o->cur->fill.w * ratio)) * 0.5f;
+                                  else if (o->cur->fill.w * ratio > o->cur->fill.h)
+                                     ix = (double)(o->cur->fill.w - (double)(o->cur->fill.h / ratio)) * 0.5f;
+
+                                  dstx = obj->cur->geometry.x + o->cur->fill.x;
+                                  dsty = obj->cur->geometry.y + o->cur->fill.y;
+                                }
+                            }
                           else
-                            ENFN->image_draw(output,
-                                             context,
-                                             surface,
-                                             pixels,
-                                             0, 0,
-                                             imagew,
-                                             imageh,
-                                             obj->cur->geometry.x + o->cur->fill.x + x,
-                                             obj->cur->geometry.y + o->cur->fill.y + y,
-                                             o->cur->fill.w,
-                                             o->cur->fill.h,
-                                             o->cur->smooth_scale,
-                                             do_async);
-                                return;
-                             }
-                       }
+                            {
+
+                              /* ROI mode */
+                              if (ratio == -1)
+                                {
+                                  if (ns->data.tbm.rot == EVAS_IMAGE_ORIENT_180)
+                                    {
+                                      dstx =  obj->cur->geometry.x + (obj->cur->geometry.w - o->cur->fill.x - o->cur->fill.w);
+                                      dsty =  obj->cur->geometry.y + (obj->cur->geometry.h - o->cur->fill.y - o->cur->fill.h);
+                                    }
+                                  else
+                                    {
+                                      dstx = obj->cur->geometry.x + o->cur->fill.x;
+                                      dsty = obj->cur->geometry.y + o->cur->fill.y;
+                                    }
+
+                                }
+                              /* letter box mode */
+                              else
+                                {
+                                  if (o->cur->fill.w < o->cur->fill.h * ratio)
+                                    iy = (double)(o->cur->fill.h - (double)(o->cur->fill.w / ratio)) * 0.5f;
+                                  else if (o->cur->fill.w > o->cur->fill.h * ratio)
+                                    ix = (double)(o->cur->fill.w - (double)(o->cur->fill.h * ratio)) * 0.5f;
+
+                                  dstx = obj->cur->geometry.x + o->cur->fill.x;
+                                  dsty = obj->cur->geometry.y + o->cur->fill.y;
+                                }
+                            }
+
+
+                          ENFN->image_draw
+                          (output, context, surface, pixels,
+                           0, 0,
+                           imagew, imageh,
+                           dstx + ix,
+                           dsty + iy,
+                           o->cur->fill.w - ix * 2,
+                           o->cur->fill.h - iy * 2,
+                           o->cur->smooth_scale,
+                           do_async);
+                        }
+                      else if ((obj->cur->geometry.w > o->cur->fill.w) ||
+                          (obj->cur->geometry.h > o->cur->fill.h))
+                        ENFN->image_draw(output,
+                                         context,
+                                         surface,
+                                         pixels,
+                                         0, 0,
+                                         imagew,
+                                         imageh,
+                                         o->cur->fill.x + (o->cur->fill.w - imagew) / 2,
+                                         o->cur->fill.y + (o->cur->fill.h - imageh) / 2,
+                                         imagew,
+                                         imageh,
+                                         o->cur->smooth_scale,
+                                         do_async);
+                      else
+                        ENFN->image_draw(output,
+                                         context,
+                                         surface,
+                                         pixels,
+                                         0, 0,
+                                         imagew,
+                                         imageh,
+                                         obj->cur->geometry.x + o->cur->fill.x + x,
+                                         obj->cur->geometry.y + o->cur->fill.y + y,
+                                         o->cur->fill.w,
+                                         o->cur->fill.h,
+                                         o->cur->smooth_scale,
+                                         do_async);
+                      return;
+                    }
+                }
 
              int offx, offy;
 
