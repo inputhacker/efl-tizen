@@ -354,11 +354,12 @@ _ecore_evas_wl_common_cb_window_pending_rotate(Ecore_Evas *ee, Ecore_Wl_Event_Wi
    DBG("PendingRotation: ecore_evas_wl pend rotation");
    //THIS IS HOTFIX: we need to negotiate rotation done protocol with display server.
    ecore_wl_window_rotation_change_done_send(wdata->win);
-   if (ee->prop.wm_rot.pending_mode.app_angle == (int) ev->angle)
-     {
-        _ecore_evas_wl_common_damage_add(ee);
-        _ecore_evas_wl_common_render(ee);
-     }
+
+   //Server has responsibility to show frame even though app not call render when app turns on manual rotation render feature.
+   //until server add the code, client create fake damage.
+   _ecore_evas_wl_common_damage_add(ee);
+   _ecore_evas_wl_common_render(ee);
+
    ee->prop.wm_rot.pending_mode.wm_angle = ev->angle;
    return ECORE_CALLBACK_PASS_ON;
 }
