@@ -63,6 +63,9 @@ EAPI void       eglQueryWaylandBuffer_orig_evas_set(void *func);
 EAPI void      *eglQueryWaylandBuffer_orig_evas_get();
 EAPI EGLBoolean eglQueryWaylandBuffer_thread_cmd(EGLDisplay dpy, void *buffer, EGLint attribute, EGLint *value);
 
+EAPI void       eglGetProcAddress_orig_evas_set(void *func);
+EAPI void      *eglGetProcAddress_orig_evas_get();
+EAPI void      *eglGetProcAddress_thread_cmd(char const * procname);
 
 /***** EVAS GL *****/
 
@@ -86,6 +89,9 @@ extern EGLContext (*eglGetCurrentContext_thread_cmd)(void);
 extern EGLSurface (*eglGetCurrentSurface_thread_cmd)(EGLint readdraw);
 extern EGLDisplay (*eglGetCurrentDisplay_thread_cmd)(void);
 extern EGLBoolean (*eglReleaseThread_thread_cmd)();
+extern void       (*eglGetProcAddress_orig_evas_set)(void *func);
+extern void      *(*eglGetProcAddress_orig_evas_get)();
+extern void       *(*eglGetProcAddress_thread_cmd)(char const * procname);
 
 
 /* EGL 1.4 Sequential Operations */

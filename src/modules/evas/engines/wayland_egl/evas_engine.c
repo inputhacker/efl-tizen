@@ -186,6 +186,7 @@ gl_symbols(void)
    FINDSYM(glsym_eglGetProcAddress, "eglGetProcAddressEXT", glsym_func_eng_fn);
    FINDSYM(glsym_eglGetProcAddress, "eglGetProcAddressARB", glsym_func_eng_fn);
    FINDSYM(glsym_eglGetProcAddress, "eglGetProcAddress", glsym_func_eng_fn);
+   REPLACE_THREAD(glsym_, eglGetProcAddress, glsym_func_eng_fn);
 
    glsym_evas_gl_symbols((void*)glsym_eglGetProcAddress);
 

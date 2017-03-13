@@ -222,6 +222,53 @@ eglReleaseThread_thread_cmd(void)
    return thread_data.return_value;
 }
 
+typedef struct
+{
+  void *return_value;
+  char const * procname;
+} Evas_Thread_Command_eglGetProcAddress;
+
+
+void *(*orig_evas_eglGetProcAddress)(char const * procname);
+
+EAPI void
+eglGetProcAddress_orig_evas_set(void *func)
+{
+   orig_evas_eglGetProcAddress = func;
+}
+
+EAPI void *
+eglGetProcAddress_orig_evas_get()
+{
+   return orig_evas_eglGetProcAddress;
+}
+
+
+static void
+_gl_thread_eglGetProcAddress(void *data)
+{
+  Evas_Thread_Command_eglGetProcAddress *thread_data = data;
+
+   thread_data->return_value = orig_evas_eglGetProcAddress(thread_data->procname);
+}
+
+EAPI void *
+eglGetProcAddress_thread_cmd(char const * procname)
+{
+   if (!evas_gl_thread_enabled())
+     return eglGetProcAddress(procname);
+
+   Evas_Thread_Command_eglGetProcAddress thread_data;
+
+   thread_data.procname = procname;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+                              _gl_thread_eglGetProcAddress,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
+}
 
 
 typedef struct
@@ -427,8 +474,6 @@ eglSwapBuffersWithDamage_thread_cmd(EGLDisplay dpy, EGLSurface surface, EGLint *
    return thread_data.return_value;
 }
 
-
-
 typedef struct
 {
    EGLBoolean return_value;
@@ -625,6 +670,13 @@ eglMakeCurrent_evgl_thread_cmd(EGLDisplay dpy, EGLSurface draw, EGLSurface read,
 
    Evas_GL_Thread_Command_eglMakeCurrent thread_data;
 
+   /* Skip for noop make-current */
+   if (current_evgl_thread_dpy == dpy &&
+       current_evgl_thread_draw == draw &&
+       current_evgl_thread_read == read &&
+       current_evgl_thread_ctx == ctx)
+      return EGL_TRUE;
+
    thread_data.dpy = dpy;
    thread_data.draw = draw;
    thread_data.read = read;
@@ -685,6 +737,9 @@ EGLContext (*eglGetCurrentContext_thread_cmd)(void);
 EGLSurface (*eglGetCurrentSurface_thread_cmd)(EGLint readdraw);
 EGLDisplay (*eglGetCurrentDisplay_thread_cmd)(void);
 EGLBoolean (*eglReleaseThread_thread_cmd)();
+void       (*eglGetProcAddress_orig_evas_set)(void *func);
+void      *(*eglGetProcAddress_orig_evas_get)();
+void       *(*eglGetProcAddress_thread_cmd)(char const * procname);
 
 EGLBoolean (*eglQuerySurface_thread_cmd)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value);
 EGLBoolean (*eglSwapInterval_thread_cmd)(EGLDisplay dpy, EGLint interval);
@@ -728,6 +783,9 @@ void _egl_thread_link_init()
    LINK2GENERIC(eglGetCurrentSurface_thread_cmd);
    LINK2GENERIC(eglGetCurrentDisplay_thread_cmd);
    LINK2GENERIC(eglReleaseThread_thread_cmd);
+   LINK2GENERIC(eglGetProcAddress_orig_evas_set);
+   LINK2GENERIC(eglGetProcAddress_orig_evas_get);
+   LINK2GENERIC(eglGetProcAddress_thread_cmd);
 
    LINK2GENERIC(eglQuerySurface_thread_cmd);
    LINK2GENERIC(eglSwapInterval_thread_cmd);
