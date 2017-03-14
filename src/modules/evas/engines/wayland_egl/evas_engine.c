@@ -1162,7 +1162,6 @@ eng_setup(Evas *evas, void *info)
                  if (ob->support_pre_rotation && ob->gl_context->pre_rotated)
                    {
                       ob->gl_context->pre_rotated = EINA_FALSE;
-                      eng_outbuf_reconfigure(ob, epd->output.w, epd->output.h, 0, 0);
                       evgl_eng_native_win_prerotation_set(re);
                    }
                  else
