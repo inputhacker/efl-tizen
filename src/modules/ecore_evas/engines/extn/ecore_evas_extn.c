@@ -111,6 +111,10 @@ struct wl_buffer *pre_buffer = NULL; //pre_buffer for tizen remote surface
 #endif
 static int extn_type = EXTN_TYPE_NONE;
 
+//TIZEN_ONLY(170317): add skipping indicator buffer logic
+static Eina_Bool indicator_buffer_skip = EINA_FALSE;
+//END
+
 /* Tizen Only : Callback function  & listener for tizen remote surface */
 #ifdef BUILD_TIZEN_REMOTE_SURFACE
 static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider, uint32_t res_id)
@@ -533,10 +537,40 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
    extn_ee_list = eina_list_remove(extn_ee_list, ee);
 }
 
+
+//TIZEN_ONLY(170317): add skipping indicator buffer logic
+static Eina_Bool
+_ecore_evas_indicator_size_check(Ecore_Evas *ee, int *w)
+{
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Extn *extn = bdata->data;
+   Ecore_Evas *ee2;
+   int ew;
+
+   if (!bdata->image) return EINA_FALSE;
+   if (strcmp(extn->svc.name, "elm_indicator")) return EINA_FALSE;
+
+   ee2 = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
+   ecore_evas_geometry_get(ee2, NULL, NULL, &ew, NULL);
+
+   if (*w != ew && ew > 1)
+     {
+        *w = ew;
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+//END
+
 static void
 _ecore_evas_resize(Ecore_Evas *ee, int w, int h)
 {
    Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+
+   //TIZEN_ONLY(170317): add skipping indicator buffer logic
+   if (_ecore_evas_indicator_size_check(ee, &w)) return;
+   //END
 
    if (w < 1) w = 1;
    if (h < 1) h = 1;
@@ -565,6 +599,79 @@ _ecore_evas_resize(Ecore_Evas *ee, int w, int h)
       }*/
    if (ee->func.fn_resize) ee->func.fn_resize(ee);
 }
+
+//TIZEN_ONLY(170317): add skipping indicator buffer logic
+static void
+_ecore_evas_indicator_state_change(Ecore_Evas *ee)
+{
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Extn *extn = bdata->data;
+   Ecore_Evas *ee2;
+   void *data;
+   int ew = 0, w = 0, h = 0, n = 0, pn = 0;
+
+   ee2 = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
+   if (ee->rotation != ecore_evas_rotation_get(ee2))
+     {
+        ee->rotation = ecore_evas_rotation_get(ee2);
+
+        if (indicator_buffer_skip)
+          {
+             indicator_buffer_skip = EINA_FALSE;
+             for (n = 0; n < NBUF; n++)
+               {
+                  if (extn->b[n].buf)
+                    {
+                       if (_extnbuf_lock_get(extn->b[n].buf))
+                         {
+                            if (extn->b[n].obuf) ERR("obuf is non-null");
+                            extn->b[n].obuf = extn->b[n].buf;
+                         }
+                       else
+                         _extnbuf_free(extn->b[n].buf);
+                    }
+                  ecore_evas_geometry_get(ee2, NULL, NULL, &ew, NULL);
+                  extn->b[n].w = ew;
+                  extn->b[n].buf = _extnbuf_new(extn->b[n].base,
+                                                extn->b[n].id,
+                                                extn->b[n].sys,
+                                                extn->b[n].num,
+                                                extn->b[n].w,
+                                                extn->b[n].h,
+                                                EINA_FALSE);
+                  if ((extn->b[n].buf) && (extn->b[n].lock))
+                    _extnbuf_lock_file_set(extn->b[n].buf,
+                                           extn->b[n].lock);
+               }
+
+             _ecore_evas_resize(ee, ew, ee->h);
+
+             if (extn->cur_b == 0)
+               n = 1;
+             else if (extn->cur_b == 1)
+               n = 0;
+
+             pn = extn->cur_b;
+             extn->cur_b = n;
+
+             if (extn->b[pn].buf)_extnbuf_unlock(extn->b[pn].buf);
+
+             if (extn->b[n].buf)
+               {
+                  evas_object_image_colorspace_set(bdata->image, EVAS_COLORSPACE_ARGB8888);
+                  data = _extnbuf_data_get(extn->b[n].buf, &w, &h, NULL);
+                  bdata->pixels = data;
+                  evas_object_image_alpha_set(bdata->image,
+                                              extn->b[n].alpha);
+                  evas_object_image_size_set(bdata->image, w, h);
+                  evas_object_image_data_set(bdata->image, data);
+               }
+          }
+        else
+          ecore_evas_manual_render_set(ee2, EINA_TRUE);
+     }
+}
+//END
 
 static void
 _ecore_evas_move_resize(Ecore_Evas *ee, int x EINA_UNUSED, int y EINA_UNUSED, int w, int h)
@@ -1382,6 +1489,11 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
                    void *data2;
                    int w = 0, h = 0, pn;
 
+                   //TIZEN_ONLY(170317): add skipping indicator buffer logic
+                   if (indicator_buffer_skip)
+                     return;
+                   //END
+
                    pn = extn->cur_b;
                    extn->cur_b = n;
 
@@ -1404,6 +1516,15 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
                         evas_object_image_size_set(bdata->image, 1, 1);
                         evas_object_image_data_set(bdata->image, &blank);
                      }
+
+                   //TIZEN_ONLY(170317): add skipping indicator buffer logic
+                   if (!strcmp(extn->svc.name, "elm_indicator"))
+                     {
+                        Ecore_Evas *ee2 = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
+                        if (ecore_evas_manual_render_get(ee2))
+                          ecore_evas_manual_render_set(ee2, EINA_FALSE);
+                     }
+                   //END
                 }
            }
          break;
@@ -1456,6 +1577,17 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
                 {
                    extn->b[n].alpha = e->ref;
                    extn->b[n].sys = e->ref_to;
+
+                   //TIZEN_ONLY(170317): add skipping indicator buffer logic
+                   if (_ecore_evas_indicator_size_check(ee, &(extn->b[n].w)))
+                     {
+                        indicator_buffer_skip = EINA_TRUE;
+                        return;
+                     }
+                   else
+                     indicator_buffer_skip = EINA_FALSE;
+                   //END
+
                    if (extn->b[n].buf)
                      {
                         if (_extnbuf_lock_get(extn->b[n].buf))
@@ -1839,6 +1971,10 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
                                _ecore_evas_plug_cb_window_show, ee));
 #endif
 
+   //TIZEN_ONLY(170317): add skipping indicator buffer logic
+   if (!strcmp(extn->svc.name, "elm_indicator"))
+     ecore_evas_callback_state_change_set(ee, _ecore_evas_indicator_state_change);
+   //END
    return EINA_TRUE;
 }
 

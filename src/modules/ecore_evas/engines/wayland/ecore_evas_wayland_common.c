@@ -58,6 +58,18 @@ int _ecore_evas_wl_common_render(Ecore_Evas *ee);
 static void 
 _ecore_evas_wl_common_state_update(Ecore_Evas *ee)
 {
+   //TIZEN_ONLY(170317): add skipping indicator buffer logic
+   Eina_List *l;
+   Ecore_Evas *ee2;
+   EINA_LIST_FOREACH(ee->sub_ecore_evas, l, ee2)
+     {
+        if (!strcmp(ee2->driver, "extn_plug"))
+          {
+             if (ee2->func.fn_state_change) ee2->func.fn_state_change(ee2);
+          }
+     }
+   //END
+
    if (ee->func.fn_state_change) ee->func.fn_state_change(ee);
 }
 
