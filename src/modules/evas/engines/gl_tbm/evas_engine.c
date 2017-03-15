@@ -1150,6 +1150,7 @@ eng_output_free(void *data)
 
    if ((initted == EINA_TRUE) && (gl_wins == 0))
      {
+        glsym_evas_gl_common_surface_cache_dump();
         glsym_evas_gl_preload_shutdown();
         evas_common_shutdown();
         initted = EINA_FALSE;

@@ -1828,6 +1828,7 @@ eng_output_free(void *data)
      }
    if ((initted == 1) && (gl_wins == 0))
      {
+        glsym_evas_gl_common_surface_cache_dump();
         glsym_evas_gl_preload_shutdown();
         evas_common_shutdown();
         initted = 0;
