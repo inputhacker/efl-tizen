@@ -292,7 +292,7 @@ _ecore_evas_extn_type_get()
      return extn_type;
 
 #ifdef BUILD_TIZEN_REMOTE_SURFACE
-   extn_type = EXTN_TYPE_SHM;
+   extn_type = EXTN_TYPE_WAYLAND_EGL;
 
    engine = getenv("ECORE_EVAS_EXTN_SOCKET_ENGINE");
 
