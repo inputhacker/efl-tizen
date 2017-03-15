@@ -2108,7 +2108,7 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
    else if (evgl_engine->direct_override == 1)
      sfc->direct_override = EINA_TRUE;
 
-   if (sfc->direct_override == EINA_TRUE)
+   if ((sfc->direct_override == EINA_TRUE) || (cfg->options_bits & EVAS_GL_OPTIONS_DIRECT))
      {
         if (evas_gl_thread_enabled())
           {
