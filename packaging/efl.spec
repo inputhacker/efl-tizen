@@ -1536,7 +1536,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
 %files -n ecore-extra
 #%{_libdir}/ecore_imf/modules/*/*/module.so
-%{_libdir}/ecore/system/systemd/v-*/module.so
+%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
+%exclude /usr/lib/debug/usr/lib*/ecore/system/systemd/v-*/module.so.debug
 %{_datadir}/ecore_x/checkme
 
 %files -n eldbus
