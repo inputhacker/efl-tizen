@@ -1123,6 +1123,7 @@ _ecore_drm_display_output_mode_set_with_fb(Ecore_Drm_Output *output, Ecore_Drm_O
         tbm_surface_h tdm_buffer = NULL;
         tbm_surface_info_s buffer_info;
         tdm_error err;
+        tdm_output_dpms dpms_value;
 
         EINA_SAFETY_ON_NULL_RETURN_VAL(mode->hal_mode, EINA_FALSE);
 
@@ -1160,6 +1161,15 @@ _ecore_drm_display_output_mode_set_with_fb(Ecore_Drm_Output *output, Ecore_Drm_O
 
         err = tdm_layer_set_buffer(hal_output->primary_layer, tdm_buffer);
         EINA_SAFETY_ON_FALSE_GOTO(err == TDM_ERROR_NONE, fail_set);
+
+        err = tdm_output_get_dpms(hal_output->output, &dpms_value);
+        EINA_SAFETY_ON_FALSE_GOTO(err == TDM_ERROR_NONE, fail_set);
+
+        if (dpms_value != TDM_OUTPUT_DPMS_ON)
+          {
+             tdm_output_set_dpms(hal_output->output, TDM_OUTPUT_DPMS_ON);
+             EINA_SAFETY_ON_FALSE_GOTO(err == TDM_ERROR_NONE, fail_set);
+          }
 
         TRACE_EFL_BEGIN(Mode_Set);
         err = tdm_layer_commit(hal_output->primary_layer, NULL, NULL);
