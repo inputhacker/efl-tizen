@@ -45,7 +45,7 @@ static void _ecore_evas_wayland_resize(Ecore_Evas *ee, int location);
 /* local function prototypes */
 static int _ecore_evas_wl_common_render_updates_process(Ecore_Evas *ee, Eina_List *updates);
 void _ecore_evas_wl_common_render_updates(void *data, Evas *evas EINA_UNUSED, void *event);
-static void _rotation_do(Ecore_Evas *ee, int rotation, int resize);
+static void _rotation_do(Ecore_Evas *ee, int rotation, int output_rotation, int resize);
 static void _ecore_evas_wayland_alpha_do(Ecore_Evas *ee, int alpha);
 static void _ecore_evas_wayland_transparent_do(Ecore_Evas *ee, int transparent);
 static void _ecore_evas_wl_common_border_update(Ecore_Evas *ee);
@@ -59,6 +59,70 @@ static void
 _ecore_evas_wl_common_state_update(Ecore_Evas *ee)
 {
    if (ee->func.fn_state_change) ee->func.fn_state_change(ee);
+}
+
+static int
+_ecore_evas_wl_common_engine_rotation_get(Ecore_Evas *ee)
+{
+   if (!strncmp(ee->driver, "wayland_shm", 11))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
+        Evas_Engine_Info_Wayland_Shm *einfo;
+        einfo = (Evas_Engine_Info_Wayland_Shm *)evas_engine_info_get(ee->evas);
+        return einfo->info.rotation;
+#endif
+     }
+   else if (!strncmp(ee->driver, "wayland_egl", 11))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
+        Evas_Engine_Info_Wayland_Egl *einfo;
+        einfo = (Evas_Engine_Info_Wayland_Egl *)evas_engine_info_get(ee->evas);
+        return einfo->info.rotation;
+#endif
+     }
+   return 0;
+}
+
+void
+_ecore_evas_wl_common_engine_info_rotation_set(Ecore_Evas *ee, Evas_Engine_Info *info)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata = ee->engine.data;
+
+   if (!strncmp(ee->driver, "wayland_shm", 11))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
+        Evas_Engine_Info_Wayland_Shm *einfo = (Evas_Engine_Info_Wayland_Shm *)info;
+        einfo->info.rotation = (ee->rotation + wdata->output_rotation) % 360;
+        ecore_wl_window_buffer_transform_set(wdata->win, wdata->output_rotation / 90);
+        WRN("evas engine rotate: %d", einfo->info.rotation);
+#endif
+     }
+   else if (!strncmp(ee->driver, "wayland_egl", 11))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
+        Evas_Engine_Info_Wayland_Egl *einfo = (Evas_Engine_Info_Wayland_Egl *)info;
+        einfo->info.rotation = (ee->rotation + wdata->output_rotation) % 360;
+        ecore_wl_window_buffer_transform_set(wdata->win, wdata->output_rotation / 90);
+        WRN("evas engine rotate: %d", einfo->info.rotation);
+#endif
+     }
+}
+
+static void
+_ecore_evas_wl_common_rotate_update(Ecore_Evas *ee)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+   Ecore_Wl_Output *output;
+   int rotation;
+
+   wdata = ee->engine.data;
+   output = ecore_wl_window_output_find(wdata->win);
+   rotation = ecore_wl_output_transform_get(output) * 90;
+
+   if (_ecore_evas_wl_common_engine_rotation_get(ee) == ((rotation + ee->rotation) % 360))
+     return;
+
+   _rotation_do(ee, ee->rotation, rotation, 0);
 }
 
 static int 
@@ -199,6 +263,8 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
         _ecore_evas_wl_common_move(ee, nx, ny);
         _ecore_evas_wl_common_resize(ee, nw, nh);
 
+        _ecore_evas_wl_common_rotate_update(ee);
+
         if (prev_full != ee->prop.fullscreen)
           _ecore_evas_wl_common_state_update(ee);
 
@@ -210,6 +276,8 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
 
    if ((ee->req.w != nw) || (ee->req.h != nh))
      _ecore_evas_wl_common_resize(ee, nw, nh);
+
+   _ecore_evas_wl_common_rotate_update(ee);
 
    if ((prev_max != ee->prop.maximized) ||
        (prev_full != ee->prop.fullscreen))
@@ -436,13 +504,16 @@ _ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void
    output = ecore_wl_window_output_find(wdata->win);
    if (output != ev->output) return ECORE_CALLBACK_PASS_ON;
 
-   /* do something */
+   _ecore_evas_wl_common_rotate_update(ee);
 
    return ECORE_CALLBACK_PASS_ON;
 }
 
+/* ee->rotation shouldn't include the output rotation value. Therefore, we
+ * SHOULD handle the window rotation and output transform seperately.
+ */
 static void
-_rotation_do(Ecore_Evas *ee, int rotation, int resize)
+_rotation_do(Ecore_Evas *ee, int rotation, int output_rotation, int resize)
 {
    Ecore_Evas_Engine_Wl_Data *wdata;
    int rot_dif;
@@ -457,7 +528,7 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
    ecore_wl_window_rotation_set(wdata->win, rotation);
 
    /* check if rotation is just a flip */
-   if (rot_dif != 180)
+   if (rot_dif % 180)
      {
         int minw, minh, maxw, maxh;
         int basew, baseh, stepw, steph;
@@ -472,7 +543,7 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
              evas_output_framespace_get(ee->evas, NULL, NULL, &fw, &fh);
 
              /* check for fullscreen */
-             if (!ee->prop.fullscreen)
+             if (!ee->prop.fullscreen && !ee->prop.maximized)
                {
                   /* resize the ecore_wayland window */
                   ecore_wl_window_resize(wdata->win,
@@ -549,6 +620,7 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
 
         /* record the current rotation of the ecore_evas */
         ee->rotation = rotation;
+        wdata->output_rotation = output_rotation;
 
         /* reset min, max, base, & step sizes */
         ecore_evas_size_min_set(ee, minh, minw);
@@ -572,6 +644,7 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
 
         /* record the current rotation of the ecore_evas */
         ee->rotation = rotation;
+        wdata->output_rotation = output_rotation;
 
         /* send a mouse_move process
          *
@@ -597,7 +670,7 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
         einfo = (Evas_Engine_Info_Wayland_Shm *)evas_engine_info_get(ee->evas);
         if (!einfo) return;
 
-        einfo->info.rotation = rotation;
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
 
         if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
           ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
@@ -610,7 +683,7 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
         einfo = (Evas_Engine_Info_Wayland_Egl *)evas_engine_info_get(ee->evas);
         if (!einfo) return;
 
-        einfo->info.rotation = rotation;
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
 
         /* TIZEN_ONLY(20160728):
              wayland spec is not define whether wl_egl_window_create() can use null surface or not.
@@ -668,6 +741,8 @@ _ecore_evas_wl_common_app_rotation_set(Ecore_Evas *ee, int rotation, int resize)
 void
 _ecore_evas_wl_common_rotation_set(Ecore_Evas *ee, int rotation, int resize)
 {
+   Ecore_Evas_Engine_Wl_Data *wdata;
+
 // TIZEN_ONLY(20170212): pend rotation until app set rotation
    if (ecore_evas_data_get(ee, "pending_rotation"))
      {
@@ -681,7 +756,9 @@ _ecore_evas_wl_common_rotation_set(Ecore_Evas *ee, int rotation, int resize)
         ee->delayed.rotation_changed = EINA_TRUE;
         return;
      }
-   _rotation_do(ee, rotation, resize);
+
+   wdata = ee->engine.data;
+   _rotation_do(ee, rotation, wdata->output_rotation, resize);
 }
 
 int
@@ -936,6 +1013,8 @@ _ecore_evas_wl_common_resize(Ecore_Evas *ee, int w, int h)
              h += fw;
           }
      }
+
+   _ecore_evas_wl_common_rotate_update(ee);
 
    evas_output_size_get(ee->evas, &ow, &oh);
 
@@ -1486,7 +1565,7 @@ _ecore_evas_wl_common_wm_rot_cb_angle_changed(Ecore_Wl_Window *win, int rot, Ein
         einfo = (Evas_Engine_Info_Wayland_Shm *)evas_engine_info_get(ee->evas);
         if (!einfo) return;
 
-        einfo->info.rotation = rot;
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
 
         if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
           ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
@@ -1499,7 +1578,7 @@ _ecore_evas_wl_common_wm_rot_cb_angle_changed(Ecore_Wl_Window *win, int rot, Ein
         einfo = (Evas_Engine_Info_Wayland_Egl *)evas_engine_info_get(ee->evas);
         if (!einfo) return;
 
-        einfo->info.rotation = rot;
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
 
         /* TIZEN_ONLY(20160728):
            wayland spec is not define whether wl_egl_window_create() can use null surface or not.
@@ -1996,7 +2075,8 @@ _ecore_evas_wl_common_render_updates(void *data, Evas *evas EINA_UNUSED, void *e
      }
    if (ee->delayed.rotation_changed)
      {
-        _rotation_do(ee, ee->delayed.rotation, ee->delayed.rotation_resize);
+        Ecore_Evas_Engine_Wl_Data *wdata = ee->engine.data;
+        _rotation_do(ee, ee->delayed.rotation, wdata->output_rotation, ee->delayed.rotation_resize);
         ee->delayed.rotation_changed = EINA_FALSE;
      }
 }
@@ -2125,10 +2205,14 @@ void
 _ecore_evas_wl_common_output_transform_register(Ecore_Evas *ee)
 {
    Ecore_Evas_Engine_Wl_Data *wdata;
+   Ecore_Wl_Output *output;
 
    if (!ee) return;
    if (!(wdata = ee->engine.data)) return;
    if (wdata->output_transform_hdl) return;
+
+   output = ecore_wl_window_output_find(wdata->win);
+   wdata->output_rotation = ecore_wl_output_transform_get(output) * 90;
 
    wdata->output_transform_hdl =
      ecore_event_handler_add(ECORE_WL_EVENT_OUTPUT_TRANSFORM,
