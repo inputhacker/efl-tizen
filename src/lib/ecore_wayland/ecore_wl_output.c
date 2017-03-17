@@ -12,12 +12,30 @@ _ecore_wl_output_cb_geometry(void *data, struct wl_output *wl_output EINA_UNUSED
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
+   if (transform & 0x4)
+     ERR("can't support the output flip transform");
+
+   transform &= 0x3;
+
    output = data;
    output->allocation.x = x;
    output->allocation.y = y;
    output->mw = w;
    output->mh = h;
-   output->transform = transform;
+
+   if (output->transform != transform)
+     {
+        Ecore_Wl_Event_Output_Transform *ev;
+
+        output->transform = transform;
+
+        if (!(ev = calloc(1, sizeof(Ecore_Wl_Event_Output_Transform)))) return;
+
+        ev->output = output;
+        ev->old_transform = output->transform;
+        ev->transform = transform;
+        ecore_event_add(ECORE_WL_EVENT_OUTPUT_TRANSFORM, ev, NULL, NULL);
+     }
 }
 
 /* Sets the output's mode */
@@ -88,6 +106,9 @@ _ecore_wl_output_add(Ecore_Wl_Display *ewd, unsigned int id)
 
    ewd->outputs = eina_inlist_append(ewd->outputs, EINA_INLIST_GET(output));
    wl_output_add_listener(output->output, &_ecore_wl_output_listener, output);
+
+   /* to dispatch the output geometry event now */
+   ecore_wl_sync();
 }
 
 /* Destruct the output and remove it from the display's list of available
