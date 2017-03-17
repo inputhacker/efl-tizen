@@ -48,6 +48,9 @@ struct _Ecore_Evas_Engine_Wl_Data
         unsigned char below : 1;
      } state;
    struct wl_callback *anim_callback;
+
+   Ecore_Event_Handler *output_transform_hdl;
+   short output_rotation;
 };
 
 Ecore_Evas_Interface_Wayland *_ecore_evas_wl_interface_new(void);
@@ -89,6 +92,7 @@ void _ecore_evas_wl_common_post_render(Ecore_Evas *ee);
 int  _ecore_evas_wl_common_render(Ecore_Evas *ee);
 void _ecore_evas_wl_common_screen_geometry_get(const Ecore_Evas *ee, int *x, int *y, int *w, int *h);
 void _ecore_evas_wl_common_screen_dpi_get(const Ecore_Evas *ee, int *xdpi, int *ydpi);
+void _ecore_evas_wl_common_output_transform_register(Ecore_Evas *ee);
 void _ecore_evas_wl_common_render_flush_pre(void *data, Evas *evas EINA_UNUSED, void *event);
 void _ecore_evas_wl_common_render_flush_post(void *data, Evas *evas EINA_UNUSED, void *event);
 void _ecore_evas_wl_common_render_updates(void *data, Evas *evas, void *event);

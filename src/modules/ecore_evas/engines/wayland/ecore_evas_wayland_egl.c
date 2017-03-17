@@ -225,6 +225,8 @@ ecore_evas_wayland_egl_options_new_internal(const char *disp_name, unsigned int 
                          ECORE_WL_WINDOW_BUFFER_TYPE_EGL_WINDOW);
    ee->prop.window = ecore_wl_window_id_get(wdata->win);
 
+   _ecore_evas_wl_common_output_transform_register(ee);
+
    if (wdata->win)
      ecore_wl_window_rotation_changed_callback_set
        (wdata->win, ee, _ecore_evas_wl_common_wm_rot_cb_angle_changed);

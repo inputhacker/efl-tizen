@@ -422,6 +422,25 @@ _ecore_evas_wl_common_cb_window_rotate(void *data EINA_UNUSED, int type EINA_UNU
    return ECORE_CALLBACK_PASS_ON;
 }
 
+static Eina_Bool
+_ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void *event)
+{
+   Ecore_Evas *ee = data;
+   Ecore_Wl_Event_Output_Transform *ev = event;
+   Ecore_Evas_Engine_Wl_Data *wdata;
+   Ecore_Wl_Output *output;
+
+   if (!ee) return ECORE_CALLBACK_PASS_ON;
+   if (!(wdata = ee->engine.data)) return ECORE_CALLBACK_PASS_ON;
+
+   output = ecore_wl_window_output_find(wdata->win);
+   if (output != ev->output) return ECORE_CALLBACK_PASS_ON;
+
+   /* do something */
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
 static void
 _rotation_do(Ecore_Evas *ee, int rotation, int resize)
 {
@@ -755,6 +774,8 @@ _ecore_evas_wl_common_free(Ecore_Evas *ee)
 
    if (!ee) return;
    wdata = ee->engine.data;
+   if (wdata->output_transform_hdl)
+     ecore_event_handler_del(wdata->output_transform_hdl);
    if (wdata->anim_callback)
      wl_callback_destroy(wdata->anim_callback);
    if (wdata->win) ecore_wl_window_free(wdata->win);
@@ -2098,6 +2119,20 @@ _ecore_evas_wayland_resize(Ecore_Evas *ee, int location)
         _ecore_evas_wayland_egl_resize(ee, location);
 #endif
      }
+}
+
+void
+_ecore_evas_wl_common_output_transform_register(Ecore_Evas *ee)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+
+   if (!ee) return;
+   if (!(wdata = ee->engine.data)) return;
+   if (wdata->output_transform_hdl) return;
+
+   wdata->output_transform_hdl =
+     ecore_event_handler_add(ECORE_WL_EVENT_OUTPUT_TRANSFORM,
+                             _ecore_evas_wl_common_cb_output_transform, ee);
 }
 
 static void
