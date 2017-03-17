@@ -115,6 +115,7 @@ void _ecore_evas_wl_common_wm_rot_manual_rotation_done(Ecore_Evas *ee);
 void _ecore_evas_wl_common_wm_rot_cb_angle_changed(Ecore_Wl_Window *win, int rot, Eina_Bool resize, int w, int h, void *data);
 
 int _ecore_evas_common_init_count_get(void);
+void _ecore_evas_wl_common_engine_info_rotation_set(Ecore_Evas *ee, Evas_Engine_Info *info);
 
 #ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
 void _ecore_evas_wayland_shm_resize(Ecore_Evas *ee, int location);

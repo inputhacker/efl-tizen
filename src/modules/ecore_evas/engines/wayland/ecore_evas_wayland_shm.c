@@ -270,6 +270,7 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
         if (_ecore_evas_common_init_count_get() == 1)
               tbm_client = wayland_tbm_client_init(einfo->info.wl_disp);
         einfo->info.tbm_client = tbm_client;
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
         if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
           {
              ERR("Failed to set Evas Engine Info for '%s'", ee->driver);
