@@ -902,6 +902,16 @@ ecore_wl_window_transparent_get(Ecore_Wl_Window *win)
 }
 
 EAPI void
+ecore_wl_window_buffer_transform_set(Ecore_Wl_Window *win, int buffer_transform)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   if (!win) return;
+
+   wl_surface_set_buffer_transform(win->surface, buffer_transform);
+}
+
+EAPI void
 ecore_wl_window_update_size(Ecore_Wl_Window *win, int w, int h)
 {
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
