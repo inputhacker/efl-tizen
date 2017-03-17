@@ -206,6 +206,7 @@ EAPI int ECORE_WL_EVENT_AUX_MESSAGE = 0;
 EAPI int ECORE_WL_EVENT_WINDOW_ICONIFY_STATE_CHANGE = 0;
 EAPI int ECORE_WL_EVENT_EFFECT_START = 0;
 EAPI int ECORE_WL_EVENT_EFFECT_END = 0;
+EAPI int ECORE_WL_EVENT_OUTPUT_TRANSFORM = 0;
 EAPI int ECORE_WL_EVENT_GLOBAL_ADDED = 0;
 EAPI int ECORE_WL_EVENT_GLOBAL_REMOVED = 0;
 EAPI int ECORE_WL_EVENT_KEYMAP_UPDATE = 0;
@@ -302,6 +303,7 @@ ecore_wl_init(const char *name)
         ECORE_WL_EVENT_WINDOW_ICONIFY_STATE_CHANGE = ecore_event_type_new();
         ECORE_WL_EVENT_EFFECT_START = ecore_event_type_new();
         ECORE_WL_EVENT_EFFECT_END = ecore_event_type_new();
+        ECORE_WL_EVENT_OUTPUT_TRANSFORM = ecore_event_type_new();
         ECORE_WL_EVENT_GLOBAL_ADDED = ecore_event_type_new();
         ECORE_WL_EVENT_GLOBAL_REMOVED = ecore_event_type_new();
         ECORE_WL_EVENT_KEYMAP_UPDATE = ecore_event_type_new();
