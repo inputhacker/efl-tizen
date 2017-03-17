@@ -468,10 +468,7 @@ evas_outbuf_new(Evas_Engine_Info_GL_Drm *info, int w, int h, Render_Engine_Swap_
    /* if ((num = getenv("EVAS_GL_DRM_VSYNC"))) */
    /*   ob->vsync = atoi(num); */
 
-   if ((ob->rotation == 0) || (ob->rotation == 180))
-     _evas_outbuf_gbm_surface_create(ob, w, h);
-   else if ((ob->rotation == 90) || (ob->rotation == 270))
-     _evas_outbuf_gbm_surface_create(ob, h, w);
+   _evas_outbuf_gbm_surface_create(ob, w, h);
 
    if (!_evas_outbuf_egl_setup(ob))
      {
@@ -479,8 +476,7 @@ evas_outbuf_new(Evas_Engine_Info_GL_Drm *info, int w, int h, Render_Engine_Swap_
         return NULL;
      }
 
-   /* HWC: set the gbm_surface to the engine_info */
-   if (info->info.hwc_enable) info->info.surface =  ob->surface;
+   info->info.surface =  ob->surface;
 
    return ob;
 }
@@ -614,6 +610,7 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth)
    Evas_Engine_Info_GL_Drm *einfo;
    Render_Engine *re;
    Outbuf *nob;
+   int ow, oh;
 
    if (depth == OUTBUF_DEPTH_INHERIT) depth = ob->depth;
 
@@ -625,16 +622,29 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth)
 
    einfo = ob->info;
 
-   if ((ob->rotation == 0) || (ob->rotation == 180))
-     nob = evas_outbuf_new(einfo, w, h, ob->swap_mode);
+   if (rot % 180)
+     ow = h, oh = w;
    else
-     nob = evas_outbuf_new(einfo, h, w, ob->swap_mode);
+     ow = w, oh = h;
 
+   /* don't create a new ob to avoid the screen block */
+   if (ob->w == ow && ob->h == oh && ob->depth == depth)
+     {
+        ob->depth = depth;
+        ob->rotation = rot;
+        glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot, 1);
+        return;
+     }
+
+   nob = evas_outbuf_new(einfo, ow, oh, ob->swap_mode);
    if (!nob)
      {
         ERR("Could not create new Outbuf");
         return;
      }
+
+   /* inherit the old ob's evas */
+   nob->evas = ob->evas;
 
    re->generic.software.ob->gl_context->references++;
 
