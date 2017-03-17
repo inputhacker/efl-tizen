@@ -855,16 +855,156 @@ _ecore_evas_drm_move_resize(Ecore_Evas *ee, int x, int y, int w, int h)
 }
 
 static void
-_ecore_evas_drm_rotation_set(Ecore_Evas *ee, int rotation, int resize EINA_UNUSED)
+_ecore_evas_drm_rotation_set(Ecore_Evas *ee, int rotation, int resize)
 {
-   Evas_Engine_Info_Drm *einfo;
+   int rot_dif;
 
    if (ee->rotation == rotation) return;
-   einfo = (Evas_Engine_Info_Drm *)evas_engine_info_get(ee->evas);
-   if (!einfo) return;
-   einfo->info.rotation = rotation;
-   if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
-     ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+
+   /* calculate difference in rotation */
+   rot_dif = ee->rotation - rotation;
+   if (rot_dif < 0) rot_dif = -rot_dif;
+
+   /* check if rotation is just a flip */
+   if (rot_dif % 180)
+     {
+        int minw, minh, maxw, maxh;
+        int basew, baseh, stepw, steph;
+
+        /* check if we are rotating with resize */
+        if (!resize)
+          {
+             int fw, fh;
+             int ww, hh;
+
+             /* grab framespace width & height */
+             evas_output_framespace_get(ee->evas, NULL, NULL, &fw, &fh);
+
+             /* check for fullscreen */
+             if (!ee->prop.fullscreen)
+               {
+               }
+             else
+               {
+                  /* resize the canvas based on rotation */
+                  if ((rotation == 0) || (rotation == 180))
+                    {
+                       /* resize the canvas */
+                       evas_output_size_set(ee->evas, ee->req.w, ee->req.h);
+                       evas_output_viewport_set(ee->evas, 0, 0,
+                                                ee->req.w, ee->req.h);
+                    }
+                  else
+                    {
+                       /* resize the canvas */
+                       evas_output_size_set(ee->evas, ee->req.h, ee->req.w);
+                       evas_output_viewport_set(ee->evas, 0, 0,
+                                                ee->req.h, ee->req.w);
+                    }
+               }
+
+             /* add canvas damage */
+             if (ECORE_EVAS_PORTRAIT(ee))
+               evas_damage_rectangle_add(ee->evas, 0, 0, ee->req.w, ee->req.h);
+             else
+               evas_damage_rectangle_add(ee->evas, 0, 0, ee->req.h, ee->req.w);
+             ww = ee->h;
+             hh = ee->w;
+             ee->w = ww;
+             ee->h = hh;
+             ee->req.w = ww;
+             ee->req.h = hh;
+          }
+        else
+          {
+             /* resize the canvas based on rotation */
+             if ((rotation == 0) || (rotation == 180))
+               {
+                  evas_output_size_set(ee->evas, ee->w, ee->h);
+                  evas_output_viewport_set(ee->evas, 0, 0, ee->w, ee->h);
+               }
+             else
+               {
+                  evas_output_size_set(ee->evas, ee->h, ee->w);
+                  evas_output_viewport_set(ee->evas, 0, 0, ee->h, ee->w);
+               }
+
+             /* call the ecore_evas' resize function */
+             if (ee->func.fn_resize) ee->func.fn_resize(ee);
+
+             /* add canvas damage */
+             if (ECORE_EVAS_PORTRAIT(ee))
+               evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+             else
+               evas_damage_rectangle_add(ee->evas, 0, 0, ee->h, ee->w);
+          }
+
+        /* get min, max, base, & step sizes */
+        ecore_evas_size_min_get(ee, &minw, &minh);
+        ecore_evas_size_max_get(ee, &maxw, &maxh);
+        ecore_evas_size_base_get(ee, &basew, &baseh);
+        ecore_evas_size_step_get(ee, &stepw, &steph);
+
+        /* record the current rotation of the ecore_evas */
+        ee->rotation = rotation;
+
+        /* reset min, max, base, & step sizes */
+        ecore_evas_size_min_set(ee, minh, minw);
+        ecore_evas_size_max_set(ee, maxh, maxw);
+        ecore_evas_size_base_set(ee, baseh, basew);
+        ecore_evas_size_step_set(ee, steph, stepw);
+
+        /* send a mouse_move process
+         *
+         * NB: Is This Really Needed ?
+         * Yes, it's required to update the mouse position, relatively to
+         * widgets. After a rotation change, e.g., the mouse might not be over
+         * a button anymore. */
+        _ecore_evas_mouse_move_process(ee, ee->mouse.x, ee->mouse.y,
+                                       ecore_loop_time_get());
+     }
+   else
+     {
+        /* record the current rotation of the ecore_evas */
+        ee->rotation = rotation;
+
+        /* send a mouse_move process
+         *
+         * NB: Is This Really Needed ? Yes, it's required to update the mouse
+         * position, relatively to widgets. */
+        _ecore_evas_mouse_move_process(ee, ee->mouse.x, ee->mouse.y,
+                                       ecore_loop_time_get());
+
+        /* call the ecore_evas' resize function */
+        if (ee->func.fn_resize) ee->func.fn_resize(ee);
+
+        /* add canvas damage */
+        if (ECORE_EVAS_PORTRAIT(ee))
+          evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+        else
+          evas_damage_rectangle_add(ee->evas, 0, 0, ee->h, ee->w);
+     }
+
+   if (!strcmp(ee->driver, "drm"))
+     {
+        Evas_Engine_Info_Drm *einfo;
+        einfo = (Evas_Engine_Info_Drm *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+        einfo->info.rotation = rotation;
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+     }
+   else if (!strcmp(ee->driver, "gl_drm"))
+     {
+        Evas_Engine_Info_GL_Drm *einfo;
+        einfo = (Evas_Engine_Info_GL_Drm *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+        einfo->info.rotation = rotation;
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+     }
+
+   if (ee->func.fn_state_change) ee->func.fn_state_change(ee);
 }
 
 static void
