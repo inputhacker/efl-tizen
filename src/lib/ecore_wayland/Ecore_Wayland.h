@@ -755,6 +755,9 @@ EAPI struct wl_seat *ecore_wl_input_seat_get(Ecore_Wl_Input *input);
 
 EAPI Eina_Inlist *ecore_wl_outputs_get(void);
 
+EAPI Ecore_Wl_Output * ecore_wl_window_output_find(Ecore_Wl_Window *window);
+EAPI int ecore_wl_output_transform_get(Ecore_Wl_Output *output);
+
 /**
  * @internal
  * @ingroup Ecore_Wl_Input_Group
@@ -922,6 +925,7 @@ EAPI void ecore_wl_window_fullscreen_set(Ecore_Wl_Window *win, Eina_Bool fullscr
 EAPI Eina_Bool ecore_wl_window_fullscreen_get(Ecore_Wl_Window *win);
 EAPI void ecore_wl_window_transparent_set(Ecore_Wl_Window *win, Eina_Bool transparent);
 EAPI Eina_Bool ecore_wl_window_transparent_get(Ecore_Wl_Window *win);
+EAPI void ecore_wl_window_buffer_transform_set(Ecore_Wl_Window *win, int buffer_transform);
 EAPI void ecore_wl_window_update_size(Ecore_Wl_Window *win, int w, int h);
 EAPI void ecore_wl_window_update_location(Ecore_Wl_Window *win, int x, int y);
 EAPI struct wl_surface *ecore_wl_window_surface_get(Ecore_Wl_Window *win);

@@ -533,6 +533,46 @@ ecore_wl_screen_size_get(int *w, int *h)
    if (h) *h = oh;
 }
 
+EAPI Ecore_Wl_Output *
+ecore_wl_window_output_find(Ecore_Wl_Window *window)
+{
+   Ecore_Wl_Output *out;
+   Eina_Inlist *tmp;
+   int x = 0, y = 0;
+
+   ecore_wl_window_geometry_get(window, &x, &y, NULL, NULL);
+
+   EINA_INLIST_FOREACH_SAFE(_ecore_wl_disp->outputs, tmp, out)
+     {
+        int ox, oy, ow, oh;
+
+        ox = out->allocation.x;
+        oy = out->allocation.y;
+
+        switch (out->transform)
+          {
+           case WL_OUTPUT_TRANSFORM_90:
+           case WL_OUTPUT_TRANSFORM_270:
+           case WL_OUTPUT_TRANSFORM_FLIPPED_90:
+           case WL_OUTPUT_TRANSFORM_FLIPPED_270:
+             /* Swap width and height */
+             ow = out->allocation.h;
+             oh = out->allocation.w;
+             break;
+           default:
+             ow = out->allocation.w;
+             oh = out->allocation.h;
+             break;
+          }
+
+        if ((x >= ox && x < ow) && (y >= oy && y < oh))
+          return out;
+     }
+
+   return NULL;
+}
+
+
 /* @since 1.2 */
 EAPI void
 ecore_wl_pointer_xy_get(int *x, int *y)

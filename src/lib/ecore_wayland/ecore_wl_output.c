@@ -124,3 +124,11 @@ _ecore_wl_output_del(Ecore_Wl_Output *output)
      eina_inlist_remove(_ecore_wl_disp->outputs, EINA_INLIST_GET(output));
    free(output);
 }
+
+EAPI int
+ecore_wl_output_transform_get(Ecore_Wl_Output *output)
+{
+   if (!output) return 0;
+
+   return output->transform;
+}
