@@ -755,6 +755,9 @@ _ecore_wl_shutdown(Eina_Bool close)
              wl_display_disconnect(_ecore_wl_disp->wl.display);
           }
         free(_ecore_wl_disp);
+        // TIZEN_ONLY (20170319) : Set Null after free to not make it be used again
+        _ecore_wl_disp = NULL;
+        //
      }
 
    ecore_event_shutdown();
