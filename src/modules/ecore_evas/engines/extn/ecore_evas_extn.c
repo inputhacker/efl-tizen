@@ -1193,7 +1193,7 @@ _ecore_evas_extn_cb_hide(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
 }
 
 #ifdef BUILD_TIZEN_REMOTE_SURFACE
-static void
+static Eina_Bool
 _ecore_evas_plug_cb_window_iconify_change(void *data, int type EINA_UNUSED, void *event)
 {
    Extn *extn;
@@ -1209,7 +1209,7 @@ _ecore_evas_plug_cb_window_iconify_change(void *data, int type EINA_UNUSED, void
 
    ee2 = data;
    bdata = ee2->engine.extn.data;
-   if(!bdata) ERR("[EXTN_GL] bdata is null");
+   if(!bdata) return ECORE_CALLBACK_PASS_ON;
 
    extn = bdata->data;
 
@@ -1249,7 +1249,7 @@ _ecore_evas_plug_cb_window_iconify_change(void *data, int type EINA_UNUSED, void
   return ECORE_CALLBACK_PASS_ON;
 }
 
-static void
+static Eina_Bool
 _ecore_evas_plug_cb_window_show(void *data, int type EINA_UNUSED, void *event)
 {
    Extn *extn;
@@ -1258,7 +1258,7 @@ _ecore_evas_plug_cb_window_show(void *data, int type EINA_UNUSED, void *event)
 
    ee = data;
    bdata = ee->engine.extn.data;
-   if(!bdata) ERR("[EXTN_GL] bdata is null");
+   if(!bdata) return ECORE_CALLBACK_PASS_ON;
    extn = bdata->data;
    if(extn->extn_type_client == EXTN_TYPE_SHM) return ECORE_CALLBACK_PASS_ON;
 
