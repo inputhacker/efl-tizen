@@ -21,6 +21,22 @@ ector:           licenses/COPYING.FTL, licenses/COPYING.GPL (dual licenses)
 evas:            licenses/COPYING.BSD
 embryo:          licenses/COPYING.SMALL
 ecore:           licenses/COPYING.BSD
+ecore-core:      licenses/COPYING.BSD
+ecore-audio:     licenses/COPYING.BSD
+ecore-avahi:     licenses/COPYING.BSD
+ecore-buffer:    licenses/COPYING.BSD
+ecore-con:       licenses/COPYING.BSD
+ecore-drm:       licenses/COPYING.BSD
+ecore-evas:      licenses/COPYING.BSD
+ecore-fb:        licenses/COPYING.BSD
+ecore-file:      licenses/COPYING.BSD
+ecore-imf:       licenses/COPYING.BSD
+ecore-imf-evas:  licenses/COPYING.BSD
+ecore-input:     licenses/COPYING.BSD
+ecore-input-evas:licenses/COPYING.BSD
+ecore-ipc:       licenses/COPYING.BSD
+ecore-wayland:   licenses/COPYING.BSD
+ecore-x:         licenses/COPYING.BSD
 eio:             licenses/COPYING.LGPL
 eldbus:          licenses/COPYING.LGPL
 efreet:          licenses/COPYING.BSD

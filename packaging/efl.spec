@@ -301,7 +301,26 @@ Development files for evas
 ############ Ecore
 %package -n ecore
 Summary: Enlightened Core X interface library
-Requires: %{name}-data = %{version}-%{release}
+Requires: ecore-core
+Requires: ecore-audio
+Requires: ecore-avahi
+Requires: ecore-buffer
+Requires: ecore-con
+Requires: ecore-evas
+Requires: ecore-fb
+Requires: ecore-file
+Requires: ecore-imf
+Requires: ecore-imf-evas
+Requires: ecore-input
+Requires: ecore-input-evas
+Requires: ecore-ipc
+%if %{with wayland}
+Requires: ecore-wayland
+Requires: ecore-drm
+%endif
+%if %{with x}
+Requires: ecore-x
+%endif
 License: BSD-2-Clause and MIT
 
 %description -n ecore
@@ -309,23 +328,354 @@ Ecore is the event/X abstraction layer that makes doing selections,
 Xdnd, general X stuff, event loops, timeouts and idle handlers fast,
 optimized, and convenient.
 
-#%package -n ecore-examples
-#Summary:  Examples for the ecore package
-#Group:    Graphics & UI Framework/Testing
-#Requires: ecore = %{version}-%{release}
-#License: BSD-2-Clause and MIT
-
-#%description -n ecore-examples
-#Example files for ecore
-
 %package -n ecore-devel
 Summary:  Development components for the ecore package
 Group:    Graphics & UI Framework/Development
-Requires: ecore = %{version}-%{release}
+Requires: ecore-core-devel
+Requires: ecore-audio-devel
+Requires: ecore-avahi-devel
+Requires: ecore-buffer-devel
+Requires: ecore-con-devel
+Requires: ecore-evas-devel
+Requires: ecore-fb-devel
+Requires: ecore-file-devel
+Requires: ecore-imf-devel
+Requires: ecore-imf-evas-devel
+Requires: ecore-input-devel
+Requires: ecore-input-evas-devel
+Requires: ecore-ipc-devel
+%if %{with wayland}
+Requires: ecore-wayland-devel
+Requires: ecore-drm-devel
+%endif
+%if %{with x}
+Requires: ecore-x-devel
+%endif
 License: BSD-2-Clause and MIT
 
 %description -n ecore-devel
 Development files for ecore
+
+%package -n ecore-core
+Summary:  Enlightened Core X interface library - core
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-core
+This is the core main-loop, system events and execution layer. This
+handles running the main loop, integrating with external data and
+timing sources (the system clock, file descriptors, system signals),
+and producing an event queue, walking that queue and dispatching
+events to appropriate callbacks.
+
+%package -n ecore-core-devel
+Summary:  Development components for the ecore-core package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-core = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-core-devel
+Development files for ecore-core
+
+%package -n ecore-audio
+Summary: Enlightened Core X interface library - audio
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-audio
+This library provides an API for audio playback and recording. It uses
+pulse audio underneath to handle mixing and policies. The API for this
+should not be considered stable right now because it relies on EO and
+EO is not considered finalized yet.
+
+%package -n ecore-audio-devel
+Summary:  Development components for the ecore_audio package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-audio = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-audio-devel
+Development files for ecore_audio
+
+%package -n ecore-avahi
+Summary: Enlightened Core X interface library - avahi
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-avahi
+Avahi main loop integration function.
+
+%package -n ecore-avahi-devel
+Summary:  Development components for the ecore_avahi package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-avahi = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-avahi-devel
+Development files for ecore_avahi
+
+%package -n ecore-buffer
+Summary: Enlightened Core X interface library - buffer
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-buffer
+The Ecore Buffer is an abstraction of graphic buffer.
+This library also provides simple mechanisms for sharing graphic buffer bet-
+ween processes using wayland socket. Ecore Buffer Queue is for this
+function, and it consists of two main object,
+The Ecore_Buffer_Consumer and the Ecore_Buffer_Provider.
+
+%package -n ecore-buffer-devel
+Summary:  Development components for the ecore_buffer package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-buffer = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-buffer-devel
+Development files for ecore_buffer
+
+%package -n ecore-con
+Summary: Enlightened Core X interface library - con
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-con
+This provides a completely event-based TCP/UDP and Unix domain socket
+API that integrates with the main-loop. This means no blocking to send
+or receive data, supporting "infinite send buffers" with storage and
+spooling being done by Ecore Con. It also supports SSL encryption
+transparently turned on or not on the same connection, certificate
+verification, CURL wrapping for HTTP connection usage (GETs, POSTs
+etc.), asynchronous DNS lookups and provides the ability to also be a
+server, not just a client, with the same event-based API.
+
+%package -n ecore-con-devel
+Summary:  Development components for the ecore_con package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-con = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-con-devel
+Development files for ecore_con
+
+%package -n ecore-drm
+Summary: Enlightened Core X interface library - drm
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-drm
+Ecore_Drm provides a wrapper and functions for using libdrm.
+
+%package -n ecore-drm-devel
+Summary:  Development components for the ecore_drm package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-drm = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-drm-devel
+Development files for ecore_drm
+
+%package -n ecore-evas
+Summary: Enlightened Core X interface library - evas
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-evas
+This acts as glue between the display target (X11, Wayland,
+Frame buffer, Cocoa on OSX, Win32 etc.) and Evas. It creates/provides a
+target for Evas to render to (a Window or Surface etc.) and feeds
+input events (Keyboard, Mouse, Multi-touch) into Evas, which then
+selects the target object and calls the callbacks. It also provides
+wrappers/glue for manipulating the Window/Surface.
+
+%package -n ecore-evas-devel
+Summary:  Development components for the ecore_evas package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-evas = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-evas-devel
+Development files for ecore_evas
+
+%package -n ecore-fb
+Summary: Enlightened Core X interface library - fb
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-fb
+This provides virtual terminal allocation, access and handling,
+frame buffer information, raw input handling for keyboard, mouse and
+touch (via tslib).
+
+%package -n ecore-fb-devel
+Summary:  Development components for the ecore_fb package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-fb = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-fb-devel
+Development files for ecore_fb
+
+%package -n ecore-file
+Summary: Enlightened Core X interface library - file
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-file
+This provides file access convenience APIs for doing simple file
+operations like renames, copies, listing directories and more. It also
+supports file change monitoring and URL downloads.
+
+%package -n ecore-file-devel
+Summary:  Development components for the ecore_file package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-file = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-file-devel
+Development files for ecore_file
+
+%package -n ecore-imf
+Summary: Enlightened Core X interface library - imf
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-imf
+This is an input method abstraction framework to allow EFL to talk to
+things like SCIM, IBus, Wayland and XIM. This allows for complex text
+entry in languages such as Chinese, Japanese and Korean.
+
+%package -n ecore-imf-devel
+Summary:  Development components for the ecore_imf package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-imf = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-imf-devel
+Development files for ecore_imf
+
+%package -n ecore-imf-evas
+Summary: Enlightened Core X interface library - imf_evas
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-imf-evas
+This library glues Input method support from Ecore IMF and Evas
+together.
+
+%package -n ecore-imf-evas-devel
+Summary:  Development components for the ecore_imf_evas package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-imf-evas = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-imf-evas-devel
+Development files for ecore_imf_evas
+
+%package -n ecore-input
+Summary: Enlightened Core X interface library - input
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-input
+This acts as a generic input layer where multiple display systems can
+post events in the same format to the event queue.
+
+%package -n ecore-input-devel
+Summary:  Development components for the ecore_input package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-input = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-input-devel
+Development files for ecore_input
+
+%package -n ecore-input-evas
+Summary: Enlightened Core X interface library - input_evas
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-input-evas
+This Routes events from Ecore Input into a given Evas canvas which
+will then route the event further to the destination object and
+callbacks.
+
+%package -n ecore-input-evas-devel
+Summary:  Development components for the ecore_input_evas package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-input-evas = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-input-evas-devel
+Development files for ecore_input_evas
+
+%package -n ecore-ipc
+Summary: Enlightened Core X interface library - ipc
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-ipc
+This acts as a layer on top of Ecore Con which handles entire IPC
+message packets, dealing with header delta compression and
+portability, as well as ensuring an entire message is received in one
+go as a single IPC message, regardless of payload data size. The
+entire API is event based almost exactly like Ecore Con and thus it
+supports all the transport layers Ecore Con supports.
+
+%package -n ecore-ipc-devel
+Summary:  Development components for the ecore_ipc package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-ipc = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-ipc-devel
+Development files for ecore_ipc
+
+%package -n ecore-wayland
+Summary: Enlightened Core X interface library - wayland
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-wayland
+This is a glue/wrapper library to interface EFL to Wayland libraries
+to tie them into the Ecore main-loop and event queue.
+
+%package -n ecore-wayland-devel
+Summary:  Development components for the ecore_wayland package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-wayland = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-wayland-devel
+Development files for ecore_wayland
+
+%package -n ecore-x
+Summary: Enlightened Core X interface library - x
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-x
+This is a library to wrap/deal with Xlib as well as optionally XCB to
+make dealing with X11 less painful and less footwork as well as being
+glue to tie these into the Ecore main-loop and event queue.
+
+%package -n ecore-x-devel
+Summary:  Development components for the ecore_x package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-x = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-x-devel
+Development files for ecore_x
+
+%package -n ecore-extra
+Summary: Enlightened Core X interface library
+License: BSD-2-Clause and MIT
+
+%description -n ecore-extra
+This is the remaining file during the building block jobs
+and needs to be removed.
 
 ############ Eldbus
 %package -n eldbus
@@ -806,7 +1156,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n %{name}
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_datadir}/locale/*/*/*.mo
+%exclude %{_datadir}/locale/*/*/*.mo
 %{_libdir}/libefl.so.*
 %exclude %{_bindir}/efl_debug
 %exclude %{_bindir}/efl_debugd
@@ -961,72 +1311,233 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 /usr/share/eolian/include/evas-*1/*.eot
 
 %files -n ecore
+
+%files -n ecore-devel
+
+%files -n ecore-core
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license COPYING
 %{_libdir}/libecore.so.*
-%{_libdir}/libecore_audio.so.*
-%{_libdir}/libecore_avahi.so.*
-%{_libdir}/libecore_con.so.*
-%{_libdir}/libecore_evas.so.*
-%{_libdir}/libecore_file.so.*
-%{_libdir}/libecore_imf.so.*
-%{_libdir}/libecore_imf_evas.so.*
-%{_libdir}/libecore_input.so.*
-%{_libdir}/libecore_input_evas.so.*
-%{_libdir}/libecore_ipc.so.*
-%{_libdir}/libecore_fb.so.*
-%{_libdir}/libecore_buffer.so.*
-%if %{with wayland}
-%{_libdir}/libecore_wayland.so.*
-%{_libdir}/libecore_drm.so.*
-%endif
-%if %{with x}
-%{_libdir}/libecore_x.so.*
-%{_libdir}/ecore_x/*/*/*
-%endif
-%{_libdir}/ecore_evas/engines/*/*/module.so
-#%{_libdir}/ecore_imf/modules/*/*/module.so
-%{_libdir}/ecore/system/systemd/v-*/module.so
-%{_libdir}/ecore_buffer/modules/*/*/module.so
 %{_datadir}/ecore/checkme
-%{_datadir}/ecore_*/checkme
-%{_tmpfilesdir}/efl.conf
 
-#%files -n ecore-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/ecore*/examples/*
-#%{_libdir}/ecore*/examples/*
-
-
-%files -n ecore-devel
+%files -n ecore-core-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore*/*.h
-#%{_includedir}/ecore*cxx*/*.hh
+%{_includedir}/ecore-1/*.h
 %{_libdir}/libecore.so
-%{_libdir}/libecore_audio.so
-%{_libdir}/libecore_avahi.so
-%{_libdir}/libecore_con.so
-%{_libdir}/libecore_evas.so
-%{_libdir}/libecore_file.so
-%{_libdir}/libecore_imf.so
-%{_libdir}/libecore_imf_evas.so
-%{_libdir}/libecore_input.so
-%{_libdir}/libecore_input_evas.so
-%{_libdir}/libecore_ipc.so
-%{_libdir}/libecore_fb.so
-%{_libdir}/libecore_buffer.so
-%if %{with wayland}
-%{_libdir}/libecore_wayland.so
-%{_libdir}/libecore_drm.so
-%endif
-%if %{with x}
-%{_libdir}/libecore_x.so
-%endif
-%{_libdir}/pkgconfig/ecore*.pc
+%{_libdir}/pkgconfig/ecore.pc
 %{_libdir}/cmake/Ecore*/*.cmake
+
+%files -n ecore-audio
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_audio.so.*
+
+%files -n ecore-audio-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-audio*/*.h
+%{_libdir}/libecore_audio.so
+%{_libdir}/pkgconfig/ecore-audio*.pc
+
+%files -n ecore-avahi
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_avahi.so.*
+
+%files -n ecore-avahi-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-avahi*/*.h
+%{_libdir}/libecore_avahi.so
+%{_libdir}/pkgconfig/ecore-avahi*.pc
+
+%files -n ecore-buffer
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_buffer.so.*
+%{_libdir}/ecore_buffer/modules/*/*/module.so
+
+%files -n ecore-buffer-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-buffer*/*.h
+%{_libdir}/libecore_buffer.so
+%{_libdir}/pkgconfig/ecore-buffer*.pc
+
+%files -n ecore-con
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_con.so.*
+%{_tmpfilesdir}/efl.conf
+
+%files -n ecore-con-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-con*/*.h
+%{_libdir}/libecore_con.so
+%{_libdir}/pkgconfig/ecore-con*.pc
+
+%files -n ecore-evas
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_evas.so.*
+%{_libdir}/ecore_evas/engines/*/*/module.so
+
+%files -n ecore-evas-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-evas*/*.h
+%{_libdir}/libecore_evas.so
+%{_libdir}/pkgconfig/ecore-evas*.pc
+
+%files -n ecore-fb
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_fb.so.*
+
+%files -n ecore-fb-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-fb*/*.h
+%{_libdir}/libecore_fb.so
+%{_libdir}/pkgconfig/ecore-fb*.pc
+
+%files -n ecore-file
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_file.so.*
+
+%files -n ecore-file-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-file*/*.h
+%{_libdir}/libecore_file.so
+%{_libdir}/pkgconfig/ecore-file*.pc
+
+%files -n ecore-imf
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_imf.so.*
+#%{_libdir}/ecore_imf/modules/*/*/module.so
+%{_datadir}/ecore_imf/checkme
+
+%files -n ecore-imf-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-imf-1/*.h
+%{_libdir}/libecore_imf.so
+%{_libdir}/pkgconfig/ecore-imf.pc
+
+%files -n ecore-imf-evas
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_imf_evas.so.*
+
+%files -n ecore-imf-evas-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-imf-evas*/*.h
+%{_libdir}/libecore_imf_evas.so
+%{_libdir}/pkgconfig/ecore-imf-evas.pc
+
+%files -n ecore-input
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_input.so.*
+
+%files -n ecore-input-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-input-1/*.h
+%{_libdir}/libecore_input.so
+%{_libdir}/pkgconfig/ecore-input.pc
+
+%files -n ecore-input-evas
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_input_evas.so.*
+
+%files -n ecore-input-evas-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-input-evas*/*.h
+%{_libdir}/libecore_input_evas.so
+%{_libdir}/pkgconfig/ecore-input-evas.pc
+
+%files -n ecore-ipc
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_ipc.so.*
+
+%files -n ecore-ipc-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-ipc-1/*.h
+%{_libdir}/libecore_ipc.so
+%{_libdir}/pkgconfig/ecore-ipc.pc
+
+%if %{with wayland}
+%files -n ecore-drm
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_drm.so.*
+
+%files -n ecore-drm-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-drm*/*.h
+%{_libdir}/libecore_drm.so
+%{_libdir}/pkgconfig/ecore-drm*.pc
+
+%files -n ecore-wayland
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_wayland.so.*
+
+%files -n ecore-wayland-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-wayland-1/*.h
+%{_libdir}/libecore_wayland.so
+%{_libdir}/pkgconfig/ecore-wayland.pc
+%endif
+
+%if %{with x}
+%files -n ecore-x
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_libdir}/libecore_x.so.*
+%{_libdir}/ecore_x/*/*/*
+
+%files -n ecore-x-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-x-1/*.h
+%{_libdir}/libecore_x.so
+%{_libdir}/pkgconfig/ecore-x.pc
+%endif
+
+%files -n ecore-extra
+#%{_libdir}/ecore_imf/modules/*/*/module.so
+%{_libdir}/ecore/system/systemd/v-*/module.so
+%{_datadir}/ecore_x/checkme
 
 %files -n eldbus
 %manifest %{name}.manifest
