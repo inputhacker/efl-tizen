@@ -69,7 +69,7 @@ struct _Edje_Size_Class
 
 /**
  * @defgroup Edje_Object_Communication_Interface_Signal Edje Communication Interface: Signal
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions that deal with signals.
  *
@@ -968,7 +968,7 @@ EAPI const Edje_External_Type       *edje_external_type_get         (const char 
  */
 
 /**
- * @defgroup Edje_Object_Group Edje Object
+ * @defgroup Edje_Object Edje Object
  * @ingroup Edje
  *
  * @brief This group discusses functions that deal with Edje layouts and its components
@@ -990,7 +990,7 @@ EAPI const Edje_External_Type       *edje_external_type_get         (const char 
 
 /**
  * @defgroup Edje_Object_Scale Edje Scale
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions that deal with scaling objects
  *
@@ -1193,7 +1193,7 @@ EAPI void edje_password_show_last_timeout_set(double password_show_last_timeout)
 
 /**
  * @defgroup Edje_Object_Color_Class Edje Class: Color
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions that deal with Color Classes
  *
@@ -1363,7 +1363,7 @@ EAPI Eina_Iterator *edje_mmap_color_class_iterator_new(Eina_File *f);
 
 /**
  * @defgroup Edje_Object_Part Edje Part
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions that deal with layout components
  *
@@ -1570,7 +1570,7 @@ typedef enum _Edje_Aspect_Control
 
 /**
  * @defgroup Edje_Object_Geometry_Group Edje Object Geometry
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions that deal with object's geometry.
  *
@@ -1686,7 +1686,7 @@ typedef enum _Edje_Object_Table_Homogeneous_Mode
 
 /**
  * @defgroup Edje_Object_Text_Class Edje Class: Text
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  * @brief Functions that deal with Text Classes.
  *
  * Sometimes we want to change the text of two or more parts equally and
@@ -1783,7 +1783,7 @@ EAPI Eina_List   *edje_text_class_list            (void);
 
 /**
  * @defgroup Edje_Object_Size_Class Edje Class: Size
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions that deal with Size Classes
  *
@@ -1901,7 +1901,7 @@ EAPI Eina_Iterator *edje_mmap_size_class_iterator_new(Eina_File *f);
 
 /**
  * @defgroup Edje_Object_File Edje Object File
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions to deals with EDJ files.
  *
@@ -2040,7 +2040,7 @@ EAPI const char	      *edje_load_error_str	  (Edje_Load_Error error);
 
 /**
  * @defgroup Edje_Object_Animation Edje Object Animation
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  * @brief Functions that deal with animations.
  *
  * Edje has the ability to animate objects. One can start, stop, play,
@@ -2250,7 +2250,7 @@ EAPI double       edje_transition_duration_factor_get                  (void);
 
 /**
  * @defgroup Edje_Object_Communication_Interface_Message Edje Communication Interface: Message
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions that deal with messages.
  *
@@ -2358,7 +2358,7 @@ EAPI void         edje_message_signal_process             (void);
 
 /**
  * @defgroup Edje_Perspective Edje Perspective
- * @ingroup Edje_Object_Group
+ * @ingroup Edje_Object
  *
  * @brief Functions that deal with 3D projection of an 2D object.
  *

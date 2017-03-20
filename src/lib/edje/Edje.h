@@ -131,7 +131,7 @@ save you tons of work compared to using just Evas directly.
 Recommended reading:
 @li @ref edcref
 @li @ref Edje_General_Group
-@li @ref Edje_Object_Group
+@li @ref Edje_Object
 @li @ref Edje_External_Group
 @li @ref luaref
 
