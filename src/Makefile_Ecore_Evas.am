@@ -85,6 +85,7 @@ modules_ecore_evas_engines_extn_module_la_LIBTOOLFLAGS = --tag=disable-static
 if BUILD_TIZEN_REMOTE_SURFACE
 modules_ecore_evas_engines_extn_module_la_CPPFLAGS += \
 @TIZEN_REMOTE_SURFACE_CFLAGS@ \
+-I$(top_srcdir)/src/modules/evas/engines/wayland_shm \
 -I$(top_srcdir)/src/modules/evas/engines/wayland_egl
 
 modules_ecore_evas_engines_extn_module_la_LIBADD += \
