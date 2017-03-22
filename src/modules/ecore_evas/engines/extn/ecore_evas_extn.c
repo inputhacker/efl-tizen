@@ -1622,20 +1622,50 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
               if (!_tizen_remote_surface_init())
                 {
                    ERR("_tizen_remote_surface_init() is failed");
-                   return EINA_FALSE;
+                   break;
+                }
+
+              Ecore_Evas* ee_origin = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
+              if(!ee_origin)
+                {
+                   ERR("[EXTN_GL] ee_origin is NULL");
+                   break;
                 }
 
               // get wayland tbm
               if(!(extn->tbm_client))
                 {
-                   extn->tbm_client = (struct wayland_tbm_client *)wayland_tbm_client_init(ecore_wl_display_get());
-                   struct wl_tbm *wl_tbm;
-                   wl_tbm = (struct wl_tbm *)wayland_tbm_client_get_wl_tbm(extn->tbm_client);
-                   INF("[EXTN_GL] Get wl_tbm:%p",wl_tbm);
+                   struct wl_tbm *wl_tbm = NULL;
+
+                   if (!strcmp(ee_origin->driver, "wayland_shm"))
+                     {
+                        // create client pointer for shm backend
+                        struct wayland_tbm_client *tbm_client_shm = NULL;
+
+                        // get tbm_client_shm from wayland_shm backend
+                        Evas_Engine_Info_Wayland_Shm *einfo;
+                        if ((einfo = (Evas_Engine_Info_Wayland_Shm *)evas_engine_info_get(ee_origin->evas)))
+                          tbm_client_shm = einfo->info.tbm_client;
+
+                        // get wayland tbm
+                        wl_tbm = (struct wl_tbm *)wayland_tbm_client_get_wl_tbm(tbm_client_shm);
+                        INF("[EXTN_GL] Get wl_tbm(SHM backend) :%p", wl_tbm);
+                     }
+                   else
+                     {
+                        extn->tbm_client = (struct wayland_tbm_client *)wayland_tbm_client_init(ecore_wl_display_get());
+
+                        // get wayland tbm
+                        wl_tbm = (struct wl_tbm *)wayland_tbm_client_get_wl_tbm(extn->tbm_client);
+                        INF("[EXTN_GL] Get wl_tbm : %p", wl_tbm);
+                     }
+
                    if (!wl_tbm)
                      {
-                        ERR("wl_tbm is NULL");
+                        ERR("[EXTN_GL] wl_tbm is NULL");
+                        break;
                      }
+
                   // Add listener for tizen remote surface
                   if(!(extn->tizen_rs)){
                      //create tizen_remote_surface
@@ -1647,7 +1677,6 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
                        }
                      tizen_remote_surface_add_listener(extn->tizen_rs, &_ecore_evas_extn_gl_plug_listener, bdata->image);
 
-                     Ecore_Evas* ee_origin = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
                      if(!ecore_evas_withdrawn_get(ee_origin) && !ecore_evas_iconified_get(ee_origin))
                        {
                           if(!extn->redirect)
