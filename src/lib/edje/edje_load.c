@@ -1591,6 +1591,9 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
                   eina_stringshare_del(rp->typedata.text->font);
                   eina_stringshare_del(rp->typedata.text->cache.in_str);
                   eina_stringshare_del(rp->typedata.text->cache.out_str);
+                  /* TIZEN_ONLY(20170322): fix crash issue when Edje tries to clean up fade object */
+                  _edje_fade_ellipsis_remove(rp);
+                  /* END */
                   free(rp->typedata.text);
                }
              else if ((rp->type == EDJE_RP_TYPE_SWALLOW) &&

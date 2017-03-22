@@ -3066,6 +3066,9 @@ Evas_Event_Flags _edje_real_part_ignore_flags_get(Edje *ed, Edje_Real_Part *rp);
 void _edje_real_part_ignore_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags ignore_flags);
 Evas_Event_Flags _edje_real_part_mask_flags_get(Edje *ed, Edje_Real_Part *rp);
 void _edje_real_part_mask_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags mask_flags);
+/* TIZEN_ONLY(20170322): fix crash issue when Edje tries to clean up fade object */
+void _edje_fade_ellipsis_remove(Edje_Real_Part *ep);
+/* END */
 
 #ifdef HAVE_LIBREMIX
 #include <remix/remix.h>
