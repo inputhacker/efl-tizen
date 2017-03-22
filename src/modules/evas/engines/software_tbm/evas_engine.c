@@ -223,7 +223,7 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
    Image_Entry *ie = image;
    RGBA_Image *im = image, *im2;
 
-   if (!im || !ns) return im;
+   if (!im) return im;
 
    if (ns->type == EVAS_NATIVE_SURFACE_TBM)
      {
@@ -259,6 +259,8 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
          if (im->native.func.free)
             im->native.func.free(im->native.func.data, im);
       }
+
+   if (!ns) return im;
 
 #ifdef EVAS_CSERVE2
    if (evas_cserve2_use_get() && evas_cache2_image_cached(ie))
