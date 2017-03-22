@@ -218,7 +218,9 @@ _ecore_wl_window_shell_surface_init(Ecore_Wl_Window *win)
      }
    if ((!win->tz_rot.resource) && (_ecore_wl_disp->wl.tz_policy_ext))
      {
-        int i = 0, w, h, rot;
+        int i = 0, x, y, w, h, rot;
+        enum tizen_rotation_angle angle = TIZEN_ROTATION_ANGLE_NONE;
+
         win->tz_rot.resource =
         tizen_policy_ext_get_rotation(_ecore_wl_disp->wl.tz_policy_ext,
                                       win->surface);
@@ -239,13 +241,36 @@ _ecore_wl_window_shell_surface_init(Ecore_Wl_Window *win)
           }
 
         rot = ecore_wl_window_rotation_get(win);
-        if ((rot % 90 == 0) && (rot / 90 <= 3) && (rot >= 0))
+        for (i = 0; i <= 3; i++)
           {
-             i = rot / 90;
+             if (!win->rotation_geometry_hints[i].valid) continue;
+
+             x = win->rotation_geometry_hints[i].x;
+             y = win->rotation_geometry_hints[i].y;
              w = win->rotation_geometry_hints[i].w;
              h = win->rotation_geometry_hints[i].h;
 
-             if ((win->rotation_geometry_hints[i].valid) &&
+             switch (i)
+               {
+                  case 0:
+                    angle = TIZEN_ROTATION_ANGLE_0;
+                    break;
+                  case 1:
+                    angle = TIZEN_ROTATION_ANGLE_90;
+                    break;
+                  case 2:
+                    angle = TIZEN_ROTATION_ANGLE_180;
+                    break;
+                  case 3:
+                    angle = TIZEN_ROTATION_ANGLE_270;
+                    break;
+                  default:
+                    break;
+               }
+             tizen_rotation_set_geometry_hint(win->tz_rot.resource,
+                                              (uint32_t)angle, x, y, w, h);
+
+             if ((rot == (i * 90)) &&
                  ((win->allocation.w != w) || (win->allocation.h != h)))
                {
                   _ecore_wl_window_configure_send(win,
