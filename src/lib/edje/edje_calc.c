@@ -4175,19 +4175,6 @@ _edje_real_part_text_fade_image_set(Edje *ed EINA_UNUSED, Edje_Real_Part *ep, do
 }
 
 static void
-_real_part_object_del_cb_for_fade_object(void *data,
-                                         Evas *e EINA_UNUSED,
-                                         Evas_Object *obj EINA_UNUSED,
-                                         void *event_info EINA_UNUSED)
-{
-   Edje_Real_Part *ep = (Edje_Real_Part *)data;
-
-   if (ep->typedata.text->fade.object)
-     evas_object_del(ep->typedata.text->fade.object);
-   ep->typedata.text->fade.object = NULL;
-}
-
-static void
 _real_part_object_move_cb_for_fade_object(void *data,
                                          Evas *e EINA_UNUSED,
                                          Evas_Object *obj EINA_UNUSED,
@@ -4195,7 +4182,7 @@ _real_part_object_move_cb_for_fade_object(void *data,
 {
    Edje_Real_Part *ep = (Edje_Real_Part *)data;
 
-   if (ep->typedata.text->fade.object)
+   if (ep->typedata.text && ep->typedata.text->fade.object)
      {
         Evas_Coord x, y;
 
@@ -4203,6 +4190,21 @@ _real_part_object_move_cb_for_fade_object(void *data,
         evas_object_move(ep->typedata.text->fade.object, x, y);
      }
 }
+
+/* TIZEN_ONLY(20170322): fix crash issue when Edje tries to clean up fade object */
+void
+_edje_fade_ellipsis_remove(Edje_Real_Part *ep)
+{
+   if (!ep || !ep->typedata.text) return;
+   if (!ep->typedata.text->fade.object) return;
+
+   if (ep->object)
+     evas_object_event_callback_del_full(ep->object, EVAS_CALLBACK_MOVE, _real_part_object_move_cb_for_fade_object, ep);
+
+   evas_object_del(ep->typedata.text->fade.object);
+   ep->typedata.text->fade.object = NULL;
+}
+/* END */
 
 static void
 _edje_fade_ellipsis_apply(Edje *ed, Edje_Real_Part *ep,
@@ -4288,7 +4290,6 @@ _edje_fade_ellipsis_apply(Edje *ed, Edje_Real_Part *ep,
         evas_object_pass_events_set(ep->typedata.text->fade.object, 1);
         evas_object_pointer_mode_set(ep->typedata.text->fade.object, EVAS_OBJECT_POINTER_MODE_NOGRAB);
         evas_object_smart_member_add(ep->typedata.text->fade.object, ed->obj);
-        evas_object_event_callback_add(ep->object, EVAS_CALLBACK_DEL, _real_part_object_del_cb_for_fade_object, ep);
         evas_object_event_callback_add(ep->object, EVAS_CALLBACK_MOVE, _real_part_object_move_cb_for_fade_object, ep);
 
         ep->typedata.text->fade.align = -1;
