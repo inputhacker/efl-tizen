@@ -225,34 +225,36 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
 
    if (!im) return im;
 
-   if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+   if (ns)
      {
-        if (im->native.data)
-          {
-             //image have native surface already
-             Evas_Native_Surface *ens = im->native.data;
+       if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+         {
+           if (im->native.data)
+             {
+               //image have native surface already
+               Evas_Native_Surface *ens = im->native.data;
+               if ((ens->type == ns->type) &&
+                   (ens->data.tbm.buffer == ns->data.tbm.buffer))
+                 return im;
+             }
+         }
+       else if (ns->type == EVAS_NATIVE_SURFACE_WL)
+         {
+           if (im->native.data)
+             {
+               Evas_Native_Surface *ens;
 
-             if ((ens->type == ns->type) &&
-                 (ens->data.tbm.buffer == ns->data.tbm.buffer))
-                return im;
-          }
-      }
-   else if (ns->type == EVAS_NATIVE_SURFACE_WL)
-     {
-        if (im->native.data)
-          {
-             Evas_Native_Surface *ens;
+               ens = im->native.data;
+               if (ens->data.wl.legacy_buffer == ns->data.wl.legacy_buffer)
+                 return im;
+             }
+         }
 
-             ens = im->native.data;
-             if (ens->data.wl.legacy_buffer == ns->data.wl.legacy_buffer)
-               return im;
-          }
+       im2 = (RGBA_Image *)evas_cache_image_data(evas_common_image_cache_get(),
+                                                 ie->w, ie->h,
+                                                 NULL, 1,
+                                                 EVAS_COLORSPACE_ARGB8888);
      }
-
-   im2 = (RGBA_Image *)evas_cache_image_data(evas_common_image_cache_get(),
-                                 ie->w, ie->h,
-                                 NULL, 1,
-                                 EVAS_COLORSPACE_ARGB8888);
 
    if (im->native.data)
       {
