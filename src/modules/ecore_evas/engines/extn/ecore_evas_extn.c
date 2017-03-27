@@ -566,6 +566,9 @@ _ecore_evas_indicator_size_check(Ecore_Evas *ee, int *w)
    if (strcmp(extn->svc.name, "elm_indicator")) return EINA_FALSE;
 
    ee2 = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
+
+   if (ecore_evas_data_get(ee2, "floating_mode")) return EINA_FALSE;
+
    ecore_evas_geometry_get(ee2, NULL, NULL, &ew, NULL);
 
    if (*w != ew && ew > 1)
@@ -624,11 +627,17 @@ _ecore_evas_indicator_state_change(Ecore_Evas *ee)
    Ecore_Evas *ee2;
    void *data;
    int ew = 0, w = 0, h = 0, n = 0, pn = 0;
+   int rotation = 0, rot_dif = 0;
 
    ee2 = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
-   if (ee->rotation != ecore_evas_rotation_get(ee2))
+   rotation = ecore_evas_rotation_get(ee2);
+   if (ee->rotation != rotation)
      {
-        ee->rotation = ecore_evas_rotation_get(ee2);
+        rot_dif = ee->rotation - rotation;
+        if (rot_dif < 0) rot_dif = -rot_dif;
+        ee->rotation = rotation;
+
+        if (rot_dif == 180) return;
 
         if (indicator_buffer_skip)
           {
@@ -683,7 +692,10 @@ _ecore_evas_indicator_state_change(Ecore_Evas *ee)
                }
           }
         else
-          ecore_evas_manual_render_set(ee2, EINA_TRUE);
+          {
+             if (!ee2->prop.wm_rot.pending_mode.app_set)
+               ecore_evas_manual_render_set(ee2, EINA_TRUE);
+          }
      }
 }
 //END
