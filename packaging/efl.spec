@@ -1098,6 +1098,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
 %files -n edje-tools
 %manifest %{name}.manifest
+%license COPYING
 %{_bindir}/edje*
 #%{_datadir}/edje/data/*
 
