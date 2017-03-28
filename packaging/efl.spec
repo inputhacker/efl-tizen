@@ -670,14 +670,6 @@ License: BSD-2-Clause and MIT
 %description -n ecore-x-devel
 Development files for ecore_x
 
-%package -n ecore-extra
-Summary: Enlightened Core X interface library
-License: BSD-2-Clause and MIT
-
-%description -n ecore-extra
-This is the remaining file during the building block jobs
-and needs to be removed.
-
 ############ Eldbus
 %package -n eldbus
 Summary: D-Bus bindings for EFL
@@ -1320,6 +1312,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %license COPYING
 %{_libdir}/libecore.so.*
+%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
+%exclude /usr/lib/debug/%{_libdir}/ecore/system/systemd/v-*/module.so.debug
 %{_datadir}/ecore/checkme
 
 %files -n ecore-core-devel
@@ -1526,6 +1520,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %license COPYING
 %{_libdir}/libecore_x.so.*
 %{_libdir}/ecore_x/*/*/*
+%{_datadir}/ecore_x/checkme
 
 %files -n ecore-x-devel
 %manifest %{name}.manifest
@@ -1534,12 +1529,6 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libecore_x.so
 %{_libdir}/pkgconfig/ecore-x.pc
 %endif
-
-%files -n ecore-extra
-#%{_libdir}/ecore_imf/modules/*/*/module.so
-%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
-%exclude /usr/lib/debug/usr/lib*/ecore/system/systemd/v-*/module.so.debug
-%{_datadir}/ecore_x/checkme
 
 %files -n eldbus
 %manifest %{name}.manifest

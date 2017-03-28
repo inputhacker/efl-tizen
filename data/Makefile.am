@@ -29,9 +29,11 @@ EXTRA_DIST += $(ecorefiles_DATA)
 
 ########################################################################
 # Ecore_X
+if HAVE_ECORE_X
 ecore_xfilesdir = $(datadir)/ecore_x
 ecore_xfiles_DATA = ecore_x/checkme
 EXTRA_DIST += $(ecore_xfiles_DATA)
+endif
 
 ########################################################################
 # Ecore_Imf
