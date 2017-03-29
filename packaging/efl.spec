@@ -1150,6 +1150,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %exclude %{_datadir}/locale/*/*/*.mo
+%license licenses/COPYING.LGPL
 %{_libdir}/libefl.so.*
 %exclude %{_bindir}/efl_debug
 %exclude %{_bindir}/efl_debugd
@@ -1169,7 +1170,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eina
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.LGPL
 %{_libdir}/libeina.so.*
 %{_bindir}/eina-bench-cmp
 
@@ -1195,7 +1196,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n emile
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.LGPL
 %{_libdir}/libemile.so.*
 
 %files -n emile-devel
@@ -1209,7 +1210,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eet
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libeet*.so.*
 
 %files -n eet-tools
@@ -1237,6 +1238,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eo
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
+%license licenses/COPYING.BSD
 %{_libdir}/libeo.so.*
 
 #%files -n eo-examples
@@ -1260,6 +1262,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ector
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
+%license licenses/COPYING.FTL licenses/COPYING.GPL
 %{_libdir}/libector.so.*
 
 %files -n ector-devel
@@ -1273,7 +1276,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n evas
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_bindir}/ecore_evas_*
 %{_bindir}/evas_cserve2_client
 %exclude %{_bindir}/evas_cserve2_debug
@@ -1304,6 +1307,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 /usr/share/eolian/include/evas-*1/*.eot
 
 %files -n ecore
+%license licenses/COPYING.BSD
 
 %files -n ecore-devel
 %{_libdir}/pkgconfig/ecore.pc
@@ -1311,7 +1315,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-core
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore.so.*
 %exclude %{_libdir}/ecore/system/systemd/v-*/module.so
 %exclude /usr/lib/debug/%{_libdir}/ecore/system/systemd/v-*/module.so.debug
@@ -1328,7 +1332,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-audio
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_audio.so.*
 
 %files -n ecore-audio-devel
@@ -1341,7 +1345,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-avahi
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_avahi.so.*
 
 %files -n ecore-avahi-devel
@@ -1354,7 +1358,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-buffer
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_buffer.so.*
 %{_libdir}/ecore_buffer/modules/*/*/module.so
 
@@ -1368,7 +1372,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-con
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_con.so.*
 %{_tmpfilesdir}/efl.conf
 
@@ -1382,7 +1386,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-evas
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_evas.so.*
 %{_libdir}/ecore_evas/engines/*/*/module.so
 
@@ -1396,7 +1400,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-fb
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_fb.so.*
 
 %files -n ecore-fb-devel
@@ -1409,7 +1413,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-file
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_file.so.*
 
 %files -n ecore-file-devel
@@ -1422,7 +1426,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-imf
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_imf.so.*
 #%{_libdir}/ecore_imf/modules/*/*/module.so
 %{_datadir}/ecore_imf/checkme
@@ -1437,7 +1441,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-imf-evas
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_imf_evas.so.*
 
 %files -n ecore-imf-evas-devel
@@ -1450,7 +1454,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-input
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_input.so.*
 
 %files -n ecore-input-devel
@@ -1463,7 +1467,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-input-evas
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_input_evas.so.*
 
 %files -n ecore-input-evas-devel
@@ -1476,7 +1480,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-ipc
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_ipc.so.*
 
 %files -n ecore-ipc-devel
@@ -1490,7 +1494,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-drm
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_drm.so.*
 
 %files -n ecore-drm-devel
@@ -1503,7 +1507,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-wayland
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_wayland.so.*
 
 %files -n ecore-wayland-devel
@@ -1518,7 +1522,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore-x
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore_x.so.*
 %{_libdir}/ecore_x/*/*/*
 %{_datadir}/ecore_x/checkme
@@ -1536,7 +1540,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %{_libdir}/libeldbus.so.*
 %{_bindir}/eldbus*
-%license COPYING
+%license licenses/COPYING.LGPL
 
 #%files -n eldbus-examples
 #%manifest %{name}.manifest
@@ -1555,7 +1559,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n embryo
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.SMALL
 %{_bindir}/embryo_cc
 %{_libdir}/libembryo.so.*
 %{_datadir}/embryo/include/default.inc
@@ -1570,7 +1574,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eio
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.LGPL
 %{_libdir}/libeio.so.*
 
 #%files -n eio-examples
@@ -1590,7 +1594,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n edje
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libedje.so.*
 %{_libdir}/edje/utils/*/*
 %{_datadir}/edje/include/edje.inc
@@ -1620,7 +1624,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eeze
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libeeze.so.*
 %{_bindir}/eeze_disk_ls
 %{_bindir}/eeze_mount
@@ -1641,7 +1645,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n efreet
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %exclude %{_bindir}/efreetd
 %exclude /usr/lib/debug/usr/bin/efreetd.debug
 %{_libdir}/efreet/*/efreet_desktop_cache_create
@@ -1664,7 +1668,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n emotion
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libemotion.so.*
 %{_libdir}/edje/modules/emotion/*/module.so
 #%{_libdir}/emotion/modules/*/*/module.so
@@ -1688,7 +1692,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ethumb
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libethumb.so.*
 %{_libdir}/libethumb_client.so.*
 %exclude %{_datadir}/dbus-1/services/org.enlightenment.Ethumb.service
@@ -1728,6 +1732,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 #%files -n ephysics
 #%manifest %{name}.manifest
 #%defattr(-,root,root,-)
+#%license licenses/COPYING.BSD
 #%{_libdir}/libephysics.so.*
 
 #%files -n ephysics-devel
@@ -1744,6 +1749,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eolian
 %{_bindir}/eolian*
 %{_libdir}/libeolian.so.*
+%license licenses/COPYING.BSD
 
 %files -n eolian-devel
 %{_includedir}/eolian-*1/*.h*
@@ -1774,6 +1780,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
 %files -n elua
 %manifest %{name}.manifest
+%license licenses/COPYING.BSD
 %defattr(-,root,root,-)
 %{_datadir}/elua/checkme
 
