@@ -808,6 +808,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_datadir}/locale/*/*/*.mo
+%license licenses/COPYING.LGPL
 %{_libdir}/libefl.so.*
 %exclude %{_bindir}/efl_debug
 %exclude %{_bindir}/efl_debugd
@@ -827,7 +828,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eina
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.LGPL
 %{_libdir}/libeina.so.*
 %{_bindir}/eina-bench-cmp
 
@@ -918,6 +919,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ector
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
+%license licenses/COPYING.FTL licenses/COPYING.GPL
 %{_libdir}/libector.so.*
 
 %files -n ector-devel
@@ -931,7 +933,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n evas
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_bindir}/ecore_evas_*
 %{_bindir}/evas_cserve2_client
 %exclude %{_bindir}/evas_cserve2_debug
@@ -964,7 +966,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libecore.so.*
 %{_libdir}/libecore_audio.so.*
 %{_libdir}/libecore_avahi.so.*
@@ -1035,7 +1037,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %{_libdir}/libeldbus.so.*
 %{_bindir}/eldbus*
-%license COPYING
+%license licenses/COPYING.LGPL
 
 #%files -n eldbus-examples
 #%manifest %{name}.manifest
@@ -1054,7 +1056,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n embryo
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.SMALL
 %{_bindir}/embryo_cc
 %{_libdir}/libembryo.so.*
 %{_datadir}/embryo/include/default.inc
@@ -1069,7 +1071,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eio
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.LGPL
 %{_libdir}/libeio.so.*
 
 #%files -n eio-examples
@@ -1120,7 +1122,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eeze
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libeeze.so.*
 %{_bindir}/eeze_disk_ls
 %{_bindir}/eeze_mount
@@ -1141,7 +1143,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n efreet
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %exclude %{_bindir}/efreetd
 %exclude /usr/lib/debug/usr/bin/efreetd.debug
 %{_libdir}/efreet/*/efreet_desktop_cache_create
@@ -1164,7 +1166,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n emotion
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%license COPYING
+%license licenses/COPYING.BSD
 %{_libdir}/libemotion.so.*
 %{_libdir}/edje/modules/emotion/*/module.so
 #%{_libdir}/emotion/modules/*/*/module.so
@@ -1274,6 +1276,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
 %files -n elua
 %manifest %{name}.manifest
+%license licenses/COPYING.BSD
 %defattr(-,root,root,-)
 %{_datadir}/elua/checkme
 
