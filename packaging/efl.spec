@@ -989,7 +989,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/ecore_evas/engines/*/*/module.so
 #%{_libdir}/ecore_imf/modules/*/*/module.so
 %exclude %{_libdir}/ecore/system/systemd/v-*/module.so
-%exclude /usr/lib/debug/usr/lib/ecore/system/systemd/v-*/module.so.debug
+%exclude /usr/lib/debug/usr/lib*/ecore/system/systemd/v-*/module.so.debug
 %{_libdir}/ecore_buffer/modules/*/*/module.so
 %{_datadir}/ecore/checkme
 %{_datadir}/ecore_*/checkme
