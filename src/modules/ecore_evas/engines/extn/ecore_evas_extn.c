@@ -185,6 +185,11 @@ _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *tr
         if (tizen_remote_surface_get_version(trs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
           {
              tizen_remote_surface_release(trs, pre_buffer);
+
+             // unref pre tbm_surface
+             tbm_surface_h pre_tbm_surface;
+             pre_tbm_surface = wl_buffer_get_user_data(pre_buffer);
+             tbm_surface_internal_unref(pre_tbm_surface);
              wl_buffer_destroy(pre_buffer);
           }
      }
@@ -237,6 +242,11 @@ _ecore_evas_extn_rs_cb_changed_buffer(void *data, struct tizen_remote_surface *t
         if (tizen_remote_surface_get_version(trs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
           {
              tizen_remote_surface_release(trs, pre_buffer);
+
+             // unref pre tbm_surface
+             tbm_surface_h pre_tbm_surface;
+             pre_tbm_surface = wl_buffer_get_user_data(pre_buffer);
+             tbm_surface_internal_unref(pre_tbm_surface);
              wl_buffer_destroy(pre_buffer);
           }
      }
@@ -465,6 +475,11 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
                        if (tizen_remote_surface_get_version(extn->tizen_rs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
                          {
                             tizen_remote_surface_release(extn->tizen_rs, pre_buffer);
+
+                            // unref pre tbm_surface
+                            tbm_surface_h pre_tbm_surface;
+                            pre_tbm_surface = wl_buffer_get_user_data(pre_buffer);
+                            tbm_surface_internal_unref(pre_tbm_surface);
                             wl_buffer_destroy(pre_buffer);
                             pre_buffer = NULL;
                          }
@@ -1224,6 +1239,11 @@ _ecore_evas_plug_cb_window_iconify_change(void *data, int type EINA_UNUSED, void
                {
                   INF("[EXTN_GL] buffer release (iconify_change) >> %p",pre_buffer);
                   tizen_remote_surface_release(extn->tizen_rs, pre_buffer);
+
+                  // unref pre tbm_surface
+                  tbm_surface_h pre_tbm_surface;
+                  pre_tbm_surface = wl_buffer_get_user_data(pre_buffer);
+                  tbm_surface_internal_unref(pre_tbm_surface);
                   wl_buffer_destroy(pre_buffer);
                   pre_buffer = NULL;
                }
