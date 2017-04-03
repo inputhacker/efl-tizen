@@ -1458,7 +1458,8 @@ try_again:
         if (color_bit & evgl_engine->caps.fbo_fmts[i].color_bit)
           {
              if (cfg->gles_version == EVAS_GL_GLES_1_X &&
-                  evgl_engine->caps.fbo_fmts[i].depth_stencil_fmt == GL_DEPTH_STENCIL_OES)
+                  (evgl_engine->caps.fbo_fmts[i].depth_stencil_fmt == GL_DEPTH_STENCIL_OES
+                   || evgl_engine->caps.fbo_fmts[i].depth_stencil_fmt == GL_DEPTH24_STENCIL8_OES))
                 continue;
 
              if (depth_bit)
