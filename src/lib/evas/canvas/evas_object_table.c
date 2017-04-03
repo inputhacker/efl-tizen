@@ -782,11 +782,13 @@ _evas_object_table_calculate_layout_regular(Evas_Object *o, Evas_Table_Data *pri
    Eina_List *l;
    Evas_Coord *cols = NULL, *rows = NULL;
    Evas_Coord x, y, w, h;
+   Evas_Coord totw;
 
    c = priv->cache;
    if (!c) return;
 
    evas_object_geometry_get(o, &x, &y, &w, &h);
+   totw = w;
 
    /* handle horizontal */
    if ((c->total.expands.h <= 0) || (c->total.min.w >= w))
@@ -853,7 +855,7 @@ _evas_object_table_calculate_layout_regular(Evas_Object *o, Evas_Table_Data *pri
 
         if (priv->is_mirrored)
           {
-             evas_object_move(opt->obj, x + w - (cx - x + cw), cy);
+             evas_object_move(opt->obj, x + w + 2 * (0.5 - priv->align.h) * (totw - w) - (cx - x + cw), cy);
           }
         else
           {
