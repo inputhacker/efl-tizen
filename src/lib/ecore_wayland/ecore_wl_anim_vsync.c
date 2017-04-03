@@ -22,7 +22,7 @@ static tdm_client_vblank *vblank = NULL;
 static Eina_Bool vblank_wait= 0;
 static int _vsync_log_dom = -1;
 static int tdm_fd = -1;
-static unsigned int _tdm_req_fps = (1.0 / 60.0) * 1000;
+static double _tdm_req_fps = 1.0 / 60.0;
 static Eina_Thread_Queue *thq = NULL;
 static Ecore_Thread *tdm_thread = NULL;
 static Eina_Bool tdm_event_is_busy = EINA_FALSE;
@@ -190,21 +190,13 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
                     goto done;
                   ptime = ecore_time_get();
                }
-             else
-               {
-                  if ((ptime + (_tdm_req_fps / 1000)) <= ecore_time_get())
-                    {
-                       vblank_wait = 0;
-                       _tdm_send_time(ecore_time_get());
-                       ERR("tdm vblank handler does not called in %lfms\n", _tdm_req_fps);
-                       continue;
-                    }
-               }
+             else if ((ptime + _tdm_req_fps) <= ecore_time_get())
+               DBG("tdm vblank handler does not called in %lfms\n", ecore_time_get() - ptime);
 
              FD_ZERO(&rfds);
              FD_SET(tdm_fd, &rfds);
 
-             ret = poll(&fds, 1, _tdm_req_fps);
+             ret = poll(&fds, 1, -1);
 
              if ((ret == 1) && (FD_ISSET(tdm_fd, &rfds)))
                {
@@ -217,8 +209,11 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
                }
              else
                {
-                  if ((ret < 0) || (errno != EINTR) && (errno != EAGAIN))  /* normal case */
-                    goto done;
+                  if ((ret < 0) && (errno != EINTR) && (errno != EAGAIN))  /* normal case */
+                    {
+                       ERR("tdm_fd poll fail\n");
+                       goto done;
+                    }
 
                   vblank_wait = 0;
                   _tdm_send_time(ecore_time_get());
@@ -256,13 +251,13 @@ _tdm_tick_notify(void *data EINA_UNUSED, Ecore_Thread *thread EINA_UNUSED, void 
         static double pt = 0.0;
 
         DBG("VSYNC %1.8f = delt %1.8f", *t, *t - pt);
-        if ((!tick_skip) && (tick_queued == 1) && (*t > pt))
+        if (((!tick_skip) || (tick_skip && tick_queued == 1)) && (*t > pt))
           {
              ecore_loop_time_set(*t);
              ecore_animator_custom_tick();
              pt = *t;
           }
-        else if (tick_queued > 10)
+        else if ((tick_skip) && (tick_queued > 10))
           {
              DBG("skip this vsync for schedule queued %d\n", tick_queued);
           }
@@ -308,9 +303,11 @@ _tdm_client_init(void)
      }
 
    fps = ecore_animator_frametime_get();
-   if (_tdm_req_fps != fps * 1000)
-     _tdm_req_fps = fps * 1000;
-   tdm_client_vblank_set_fps(vblank, _tdm_req_fps);
+   if (_tdm_req_fps != fps)
+     {
+        _tdm_req_fps = fps;
+        tdm_client_vblank_set_fps(vblank, (unsigned int)(1 / fps));
+     }
 
    return EINA_TRUE;
 
@@ -368,7 +365,7 @@ _ecore_wl_animator_vsync_tick_begin(EINA_UNUSED void *data)
 
    if (_tdm_client_init())
      {
-        // if (getenv("ECORE_ANIMATOR_SKIP")) tick_skip = EINA_TRUE;
+        if (getenv("ECORE_ANIMATOR_SKIP")) tick_skip = EINA_TRUE;
         tdm_event_is_busy = 1;
         if (!tdm_thread)
           {
