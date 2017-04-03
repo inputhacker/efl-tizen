@@ -19,6 +19,7 @@
 
 #include "ecore_wl_private.h"
 #include <sys/mman.h>
+#include <locale.h>
 #include <ctype.h>
 
 /* FIXME: This gives BTN_LEFT/RIGHT/MIDDLE for linux systems ...
@@ -2465,7 +2466,9 @@ _ecore_wl_input_key_conversion_set(void)
      }
    else
      {
+        setlocale(LC_NUMERIC, "C");
         _tizen_api_version = atof(temp);
+        setlocale(LC_NUMERIC, "");
         INF("TIZEN_API_VERSION: %lf, Environment variable: %s\n", _tizen_api_version, temp);
         if (_tizen_api_version < 2.4)
           {
