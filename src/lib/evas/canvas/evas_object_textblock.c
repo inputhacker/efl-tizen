@@ -3087,6 +3087,10 @@ _paragraph_clear(const Evas_Object *obj,
                }
           }
 
+        /* TIZEN_ONLY(20170403): remove ellipsis item from its line */
+        if (o->ellip_ti && (_ITEM(o->ellip_ti)->ln == ln))
+          _ITEM(o->ellip_ti)->ln = NULL;
+        /* END */
         _line_free(ln);
      }
 }
@@ -4849,7 +4853,11 @@ _layout_ellipsis_item_new(Ctxt *c, const Evas_Object_Textblock_Item *cur_it)
    size_t len = 1; /* The length of _ellip_str */
 
    /* We can free it here, cause there's only one ellipsis item per tb. */
+   /* TIZEN_ONLY(20170403): remove ellipsis item from its line
    if (c->o->ellip_ti) _item_free(c->obj, NULL, _ITEM(c->o->ellip_ti));
+    */
+   if (c->o->ellip_ti) _item_free(c->obj, _ITEM(c->o->ellip_ti)->ln, _ITEM(c->o->ellip_ti));
+   /* END */
    c->o->ellip_ti = ellip_ti = _layout_text_item_new(c, cur_it->format);
    ellip_ti->parent.text_node = cur_it->text_node;
    ellip_ti->parent.text_pos = cur_it->text_pos;
