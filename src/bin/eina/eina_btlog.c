@@ -214,5 +214,17 @@ main(void)
         printf("\033[01m\033[33m%s\033[0m @ \033[32m%s\033[36m()", buf, bt->func_name);
         printf("\033[0m\n");
      }
+   /* TIZEN_ONLY(20170404): fix memory leak in eina_btlog */
+   EINA_LIST_FREE(btl, bt)
+     {
+        free(bt->bin_dir);
+        free(bt->bin_name);
+        free(bt->file_dir);
+        free(bt->file_name);
+        free(bt->func_name);
+        free(bt);
+     }
+   /* END */
+
    return 0;
 }
