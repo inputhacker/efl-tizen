@@ -659,6 +659,7 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
 
    // Create a new and temporary context
    dc = evas_common_draw_context_new();
+   evas_common_draw_context_set_render_op(dc, _EVAS_RENDER_COPY);
    evas_common_draw_context_set_clip(dc, 0, 0, im2->w, im2->h);
    gl_context->dc = dc;
 
