@@ -147,7 +147,7 @@ _internal_resource_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context 
           {
              if (!sfc->indirect_sfc)
                {
-                  evgl_engine->funcs->indirect_surface_create(evgl_engine, eng_data, sfc, sfc->cfg, sfc->w, sfc->h);
+                  evgl_engine->funcs->indirect_surface_create(evgl_engine, eng_data, sfc, &sfc->cfg, sfc->w, sfc->h);
                   if (sfc->egl_image) _egl_image_destroy(sfc->egl_image);
                   sfc->egl_image = _egl_image_create(NULL, EVAS_GL_NATIVE_PIXMAP, sfc->indirect_sfc_native);
                }
@@ -1418,13 +1418,14 @@ _surface_buffers_destroy(EVGL_Surface *sfc, Evas_GL_Context_Version version)
 }
 
 static int
-_internal_config_set(void *eng_data, EVGL_Surface *sfc, Evas_GL_Config *cfg)
+_internal_config_set(void *eng_data, EVGL_Surface *sfc, Evas_GL_Context_Version version)
 {
    int i = 0, cfg_index = -1;
    int color_bit = 0, depth_bit = 0, stencil_bit = 0, msaa_samples = 0;
    int depth_size = 0;
    int native_win_depth = 0, native_win_stencil = 0, native_win_msaa = 0;
    Eina_Bool support_win_cfg = 1;
+   Evas_GL_Config *cfg = &sfc->cfg;
 
    // Check if engine is valid
    if (!evgl_engine)
@@ -1457,7 +1458,7 @@ try_again:
 
         if (color_bit & evgl_engine->caps.fbo_fmts[i].color_bit)
           {
-             if (cfg->gles_version == EVAS_GL_GLES_1_X &&
+             if (version == EVAS_GL_GLES_1_X &&
                   (evgl_engine->caps.fbo_fmts[i].depth_stencil_fmt == GL_DEPTH_STENCIL_OES
                    || evgl_engine->caps.fbo_fmts[i].depth_stencil_fmt == GL_DEPTH24_STENCIL8_OES))
                 continue;
@@ -2077,14 +2078,8 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
    else if (evgl_engine->direct_override == 1)
      sfc->direct_override = EINA_TRUE;
 
-   // Set the internal config value
-   if (!_internal_config_set(eng_data, sfc, cfg))
-     {
-        ERR("Unsupported Format!");
-        evas_gl_common_error_set(eng_data, EVAS_GL_BAD_CONFIG);
-        goto error;
-     }
-   sfc->cfg = cfg;
+   sfc->cfg = *cfg;
+   sfc->cfg_index = -1;
 
    // Keep track of all the created surfaces
    LKL(evgl_engine->resource_lock);
@@ -2154,17 +2149,8 @@ evgl_pbuffer_surface_create(void *eng_data, Evas_GL_Config *cfg,
    if (sfc->pbuffer.color_fmt == EVAS_GL_NO_FBO)
       sfc->buffers_skip_allocate = 1;
 
-   if (!sfc->buffers_skip_allocate)
-     {
-        // Set the internal config value
-        if (!_internal_config_set(eng_data, sfc, cfg))
-          {
-             ERR("Unsupported Format!");
-             evas_gl_common_error_set(eng_data, EVAS_GL_BAD_CONFIG);
-             goto error;
-          }
-     }
-   sfc->cfg = cfg;
+   sfc->cfg = *cfg;
+   sfc->cfg_index = -1;
 
    pbuffer = evgl_engine->funcs->pbuffer_surface_create
      (eng_data, sfc, attrib_list);
@@ -2588,6 +2574,16 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
           }
         if (dbg) DBG("Call to make_current(NULL, NULL) was successful.");
         return 1;
+     }
+
+   if(sfc && (sfc->cfg_index < 0) && (!sfc->buffers_skip_allocate))
+     {
+        // Set the internal config value
+        if (!_internal_config_set(eng_data, sfc, ctx->version))
+          {
+             ERR("Unsupported Format!");
+             evas_gl_common_error_set(eng_data, EVAS_GL_BAD_CONFIG);
+          }
      }
 
    // Disable partial rendering for previous context

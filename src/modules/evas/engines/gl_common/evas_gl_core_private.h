@@ -137,8 +137,8 @@ struct _EVGL_Surface
    unsigned buffers_skip_allocate : 1;
    unsigned buffers_allocated : 1;
 
-   void   *cfg;
-   int     cfg_index;
+   Evas_GL_Config   cfg;
+   int              cfg_index;
 
 
    // Rough estimate of buffer in memory per renderbuffer
