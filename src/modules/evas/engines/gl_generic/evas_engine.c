@@ -1747,6 +1747,8 @@ get_pixels_evgl_thread_cmd(Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_
    Evas_GL_Thread_Command_get_pixels *thread_param;
    thread_param = eina_mempool_malloc(_mp_command,
                                       sizeof(Evas_GL_Thread_Command_get_pixels));
+   if (!thread_param) return;
+
    thread_param->cb = cb;
    thread_param->get_pixels_data = get_pixels_data;
    thread_param->o = o;
