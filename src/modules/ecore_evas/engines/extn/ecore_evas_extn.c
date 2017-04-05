@@ -2880,7 +2880,8 @@ ecore_evas_extn_socket_new_internal(int w, int h)
              if (!_tizen_remote_surface_init())
                {
                   ERR("_tizen_remote_surface_init() is failed");
-                  return EINA_FALSE;
+                  ecore_evas_free(ee);
+                  return NULL;
                }
           }
      }
