@@ -711,8 +711,11 @@ eglGetCurrentSurface_evgl_thread_cmd(EGLint readdraw)
 
    if (readdraw == EGL_READ)
       return current_evgl_thread_read;
-   if (readdraw == EGL_DRAW)
+   else if (readdraw == EGL_DRAW)
       return current_evgl_thread_draw;
+   else
+      return NULL;
+
 }
 
 
