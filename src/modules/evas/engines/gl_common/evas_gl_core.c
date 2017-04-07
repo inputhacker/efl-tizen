@@ -2496,6 +2496,7 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
    Eina_Bool dbg = EINA_FALSE;
    EVGL_Resource *rsc;
    int curr_fbo = 0, curr_draw_fbo = 0, curr_read_fbo = 0;
+   Eina_Bool ctx_changed = EINA_FALSE;
 
    // Check the input validity. If either sfc is valid but ctx is NULL, it's also error.
    // sfc can be NULL as evas gl supports surfaceless make current
@@ -2600,6 +2601,9 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
         evas_gl_common_error_set(eng_data, EVAS_GL_BAD_CONTEXT);
         return 0;
      }
+
+   if (rsc->current_ctx != ctx)
+     ctx_changed = EINA_TRUE;
    rsc->current_ctx = ctx;
    rsc->current_eng = eng_data;
    rsc->prev_ctx = NULL;
@@ -2877,7 +2881,7 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
                _framebuffer_create(&ctx->surface_fbo, ctx->version);
 
              // Attach fbo and the buffers
-             if ((rsc->current_ctx != ctx) || (ctx->current_sfc != sfc) || (rsc->direct.rendered))
+             if ((ctx_changed) || (ctx->current_sfc != sfc) || (rsc->direct.rendered))
                {
                   sfc->current_ctx = ctx;
                   
