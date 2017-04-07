@@ -452,7 +452,8 @@ _clipper_del_cb(void *data, Eo *eo_clip, const Eo_Event_Description *desc EINA_U
 
    EVAS_OBJECT_DATA_VALID_CHECK(obj, EO_CALLBACK_CONTINUE);
 
-   _evas_object_clip_unset(eo_obj, obj);
+   if (EINA_LIKELY(obj->cur->clipper && (obj->cur->clipper == clip)))
+     _evas_object_clip_unset(eo_obj, obj);
    if (obj->prev->clipper && (obj->prev->clipper == clip))
      {
         // not removing cb since it's the del cb... it can't be called again!
