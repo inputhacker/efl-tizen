@@ -312,7 +312,7 @@ _evas_object_text_last_up_to_pos(const Evas_Object *eo_obj,
                         o->font,
                         &it->text_props,
                         cx - x,
-                        cy);
+                        cy, 0);
                }
              x += it->adv;
           }
@@ -329,7 +329,7 @@ _evas_object_text_last_up_to_pos(const Evas_Object *eo_obj,
                         o->font,
                         &it->text_props,
                         cx - it->x,
-                        cy);
+                        cy, 0);
                }
           }
      }
@@ -964,7 +964,7 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
                         o->font,
                         &itr->text_props,
                         ellipsis_coord - (advance + l + r),
-                        0);
+                        0, start_ellip_it->w);
                   if (cut >= 0)
                     {
                        start_ellip_it->text_pos = itr->text_pos;
@@ -1023,7 +1023,7 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
                                                   o->font,
                                                   &itr->text_props,
                                                   ellip_frame - (advance + l + r),
-                                                  0);
+                                                  0, end_ellip_it->w);
                   if (cut >= 0)
                     {
                        end_ellip_it->text_pos = itr->text_pos + cut;
