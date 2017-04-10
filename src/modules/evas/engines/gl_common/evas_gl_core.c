@@ -3017,10 +3017,13 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
              if ((ctx_changed) || (ctx->current_sfc != sfc) || (rsc->direct.rendered))
                {
                   sfc->current_ctx = ctx;
+                  rsc->direct.rendered = 0;
 
                   if ((sfc->direct_mem_opt) && (sfc->direct_fb_opt) && (!sfc->direct_fallback))
                     {
                        DBG("Not creating fallback surfaces even though it should. Use at OWN discretion!");
+                       //In this case, fallback didn't proceed so mark direct to 1 for next frame's fallback.
+                       rsc->direct.rendered = 1;
                     }
                   else
                     {
@@ -3053,7 +3056,8 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
                          }
                     }
                }
-             rsc->direct.rendered = 0;
+             else
+               rsc->direct.rendered = 0;
           }
      }
 
