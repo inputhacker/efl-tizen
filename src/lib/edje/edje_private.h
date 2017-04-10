@@ -1760,6 +1760,7 @@ struct _Edje
    Eina_Bool          update_hints : 1;
    Eina_Bool          recalc_hints : 1;
    Eina_Bool          need_map_update : 1;
+   Eina_Bool          has_state_clip : 1;
 };
 
 struct _Edje_Calc_Params_Map
