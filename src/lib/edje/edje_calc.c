@@ -868,7 +868,7 @@ _edje_part_description_apply(Edje *ed, Edje_Real_Part *ep, const char *d1, doubl
                                 last_desc_text->text.ellipsize.mode != desc_text->text.ellipsize.mode)
                          {
                             //FIXME: Need to enhancement using other ellipsize modes
-                            Eina_Bool ellipsis = evas_object_text_ellipsis_get(ep->object);
+                            Eina_Bool ellipsis = evas_object_textblock_ellipsis_disabled_get(ep->object);
                             evas_object_textblock_ellipsis_disabled_set(ep->object, ellipsis);
                          }
                     }
