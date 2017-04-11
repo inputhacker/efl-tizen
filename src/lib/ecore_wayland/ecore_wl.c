@@ -1739,7 +1739,6 @@ EAPI Eina_List
    int *grab_data = NULL;
    Eina_List *l1, *l2;
    Eina_List *error_keys = NULL;
-   char *key;
    int i;
 
    Ecore_Wl_Keyungrab_Info *info;
@@ -1775,7 +1774,7 @@ EAPI Eina_List
 
         if (num_keycodes == 0)
           {
-             WRN("Keycode of key(\"%s\") doesn't exist", key);
+             WRN("Keycode of key(\"%s\") doesn't exist", grab_info->key);
              continue;
           }
         for (i = 0; i < num_keycodes; i++)
