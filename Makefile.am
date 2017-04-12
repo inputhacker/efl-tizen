@@ -132,6 +132,7 @@ pc/emile.pc \
 pc/eet.pc \
 pc/evas.pc \
 pc/ecore.pc \
+pc/ecore-core.pc \
 pc/ecore-con.pc \
 pc/ecore-ipc.pc \
 pc/ecore-file.pc \

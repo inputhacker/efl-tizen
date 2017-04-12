@@ -1306,6 +1306,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n ecore
 
 %files -n ecore-devel
+%{_libdir}/pkgconfig/ecore.pc
 
 %files -n ecore-core
 %manifest %{name}.manifest
@@ -1321,7 +1322,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %{_includedir}/ecore-1/*.h
 %{_libdir}/libecore.so
-%{_libdir}/pkgconfig/ecore.pc
+%{_libdir}/pkgconfig/ecore-core.pc
 %{_libdir}/cmake/Ecore*/*.cmake
 
 %files -n ecore-audio
