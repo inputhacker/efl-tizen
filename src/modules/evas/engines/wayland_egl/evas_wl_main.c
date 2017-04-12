@@ -10,15 +10,77 @@ glsym_func_void glsym_evas_gl_common_context_restore_set = NULL;
 //
 
 /* local variables */
-static Outbuf *_evas_gl_wl_window = NULL;
-static EGLContext context = EGL_NO_CONTEXT;
+static Eina_TLS _outbuf_key = 0;
+static Eina_TLS _context_key = 0;
+
+typedef EGLContext GLContext;
 static int win_count = 0;
+
+static Eina_Bool initted = EINA_FALSE;
+
+Eina_Bool
+eng_init(void)
+{
+   if (initted)
+     return EINA_TRUE;
+
+#define LINK2GENERIC(sym) \
+   glsym_##sym = dlsym(RTLD_DEFAULT, #sym); \
+   if (!glsym_##sym) ERR("Could not find function '%s'", #sym);
+
+   LINK2GENERIC(evas_gl_common_context_restore_set);
+
+   // FIXME: These resources are never released
+   if (!eina_tls_new(&_outbuf_key))
+     goto error;
+   if (!eina_tls_new(&_context_key))
+     goto error;
+
+   eina_tls_set(_outbuf_key, NULL);
+   eina_tls_set(_context_key, NULL);
+
+   initted = EINA_TRUE;
+   return EINA_TRUE;
+
+error:
+   ERR("Could not create TLS key!");
+   return EINA_FALSE;
+}
+
+static inline Outbuf *
+_tls_outbuf_get(void)
+{
+   if (!initted) eng_init();
+   return eina_tls_get(_outbuf_key);
+}
+
+static inline Eina_Bool
+_tls_outbuf_set(Outbuf *wl_win)
+{
+   if (!initted) eng_init();
+   return eina_tls_set(_outbuf_key, wl_win);
+}
+
+static inline GLContext
+_tls_context_get(void)
+{
+   if (!initted) eng_init();
+   return eina_tls_get(_context_key);
+}
+
+static inline Eina_Bool
+_tls_context_set(GLContext ctx)
+{
+   if (!initted) eng_init();
+   return eina_tls_set(_context_key, ctx);
+}
 
 Outbuf *
 eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Render_Engine_Swap_Mode swap_mode,
                           int depth_bits, int stencil_bits, int msaa_bits)
 {
    Outbuf *gw;
+   GLContext context;
    int context_attrs[3];
    int config_attrs[40];
    int major_version, minor_version;
@@ -30,16 +92,6 @@ eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Re
    /* try to allocate space for our window */
    if (!(gw = calloc(1, sizeof(Outbuf))))
      return NULL;
-// TIZEN_ONLY(20160425): Fix linking to 'context_restore_set'
-#define LINK2GENERIC(sym) \
-   do { \
-   if (!glsym_##sym) {\
-   glsym_##sym = dlsym(RTLD_DEFAULT, #sym); \
-   if (!glsym_##sym) ERR("Could not find function '%s'", #sym); }\
-   } while(0)
-
-   LINK2GENERIC(evas_gl_common_context_restore_set);
-//
 
    win_count++;
    gw->info = einfo;
@@ -166,6 +218,7 @@ eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Re
         DBG("PreRotation is invalid!!");
      }
 
+   context = _tls_context_get();
    gw->egl_context[0] = 
      eglCreateContext(gw->egl_disp, gw->egl_config, context, context_attrs);
    if (gw->egl_context[0] == EGL_NO_CONTEXT)
@@ -175,7 +228,8 @@ eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Re
         return NULL;
      }
 
-   if (context == EGL_NO_CONTEXT) context = gw->egl_context[0];
+   if (context == EGL_NO_CONTEXT)
+     _tls_context_set(gw->egl_context[0]);
 
    SET_RESTORE_CONTEXT();
    if (eglMakeCurrent(gw->egl_disp, gw->egl_surface[0],
@@ -248,13 +302,17 @@ eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Re
 void
 eng_window_free(Outbuf *gw)
 {
+   Outbuf *wl_win;
+   GLContext context;
    int ref = 0;
 
    win_count--;
    eng_window_use(gw);
 
-   if (gw == _evas_gl_wl_window) _evas_gl_wl_window = NULL;
+   context = _tls_context_get();
+   wl_win = _tls_outbuf_get();
 
+   if (gw == wl_win) _tls_outbuf_set(NULL);
    if (gw->gl_context)
      {
         ref = gw->gl_context->references - 1;
@@ -278,7 +336,7 @@ eng_window_free(Outbuf *gw)
         if (context) eglDestroyContext(gw->egl_disp, context);
         eglTerminate(gw->egl_disp);
         eglReleaseThread();
-        context = EGL_NO_CONTEXT;
+        _tls_context_set(EGL_NO_CONTEXT);
      }
 
    free(gw);
@@ -288,25 +346,34 @@ void
 eng_window_use(Outbuf *gw)
 {
    Eina_Bool force = EINA_FALSE;
+   Outbuf *wl_win;
+
+   wl_win = _tls_outbuf_get();
 
    glsym_evas_gl_preload_render_lock(eng_preload_make_current, gw);
 
-   if (_evas_gl_wl_window)
+   if (wl_win)
      {
-        if (eglGetCurrentContext() != _evas_gl_wl_window->egl_context[0])
+       if ((eglGetCurrentDisplay() !=
+            wl_win->egl_disp) ||
+           (eglGetCurrentContext() !=
+            wl_win->egl_context[0])
+           || (eglGetCurrentSurface(EGL_READ) !=
+               wl_win->egl_surface[0])
+           || (eglGetCurrentSurface(EGL_DRAW) !=
+               wl_win->egl_surface[0]))
           force = EINA_TRUE;
      }
 
-   if ((_evas_gl_wl_window != gw) || (force))
+   if ((wl_win != gw) || (force))
      {
-        if (_evas_gl_wl_window)
+        if (wl_win)
           {
-             glsym_evas_gl_common_context_use(_evas_gl_wl_window->gl_context);
-             glsym_evas_gl_common_context_flush(_evas_gl_wl_window->gl_context);
+             glsym_evas_gl_common_context_use(wl_win->gl_context);
+             glsym_evas_gl_common_context_flush(wl_win->gl_context);
           }
 
-        _evas_gl_wl_window = gw;
-
+        _tls_outbuf_set(gw);
         if (gw)
           {
              if (gw->egl_surface[0] != EGL_NO_SURFACE)
@@ -334,10 +401,13 @@ eng_window_unsurf(Outbuf *gw)
    if (!getenv("EVAS_GL_WIN_RESURF")) return;
    if (getenv("EVAS_GL_INFO")) printf("unsurf %p\n", gw);
 
-   if (_evas_gl_wl_window)
-     glsym_evas_gl_common_context_flush(_evas_gl_wl_window->gl_context);
+   Outbuf *wl_win;
 
-   if (_evas_gl_wl_window == gw)
+   wl_win = _tls_outbuf_get();
+   if (wl_win)
+     glsym_evas_gl_common_context_flush(wl_win->gl_context);
+
+   if (wl_win == gw)
      {
         SET_RESTORE_CONTEXT();
         eglMakeCurrent(gw->egl_disp, EGL_NO_SURFACE, 
@@ -346,7 +416,7 @@ eng_window_unsurf(Outbuf *gw)
           eglDestroySurface(gw->egl_disp, gw->egl_surface[0]);
         gw->egl_surface[0] = EGL_NO_SURFACE;
 
-        _evas_gl_wl_window = NULL;
+        _tls_outbuf_set(NULL);
      }
 
    gw->surf = EINA_FALSE;
