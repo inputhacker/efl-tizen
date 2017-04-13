@@ -102,6 +102,7 @@ struct _Ecore_Wl_Display
         struct tizen_effect *tz_effect;
         struct tizen_indicator *tz_indicator;
         struct tizen_clipboard *tz_clipboard;
+        struct tizen_screen_rotation *tz_screen_rotation;
 
         Eina_Bool prepare_read;
      } wl;
@@ -169,6 +170,7 @@ struct _Ecore_Wl_Window
    Eina_Bool focus_skip : 1;
    Eina_Bool iconified : 1;
    Eina_Bool floating : 1;
+   Eina_Bool ignore_output_transform : 1;
 
    struct
      {
@@ -431,5 +433,7 @@ void _ecore_wl_animator_vsync_tick_begin(void *data);
 void _ecore_wl_animator_vsync_tick_end(void *data);
 void _ecore_wl_animator_vsync_tick_quit(void *data);
 /* TIZEN_ONLY : To use vsync as a custom source of animator */
+
+void _ecore_wl_window_ignore_output_transform_set(Ecore_Wl_Window *win, Eina_Bool ignore);
 
 #endif

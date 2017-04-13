@@ -68,6 +68,8 @@ static void _ecore_wl_cb_effect_end(void *data EINA_UNUSED, struct tizen_effect 
 static void _ecore_wl_cb_indicator_flick(void *data EINA_UNUSED, struct tizen_indicator *tizen_indicator EINA_UNUSED, struct wl_surface *surface_resource, int type);
 static void _ecore_wl_cb_clipboard_data_selected(void *data EINA_UNUSED, struct tizen_clipboard *clipboard EINA_UNUSED, struct wl_surface *surface);
 static void _ecore_wl_cb_clipboard_data_only_allowed(void *data EINA_UNUSED, struct tizen_clipboard *clipboard EINA_UNUSED, uint32_t allowed);
+static void _ecore_wl_cb_ignore_output_transform(void *data EINA_UNUSED, struct tizen_screen_rotation *tizen_screen_rotation EINA_UNUSED, struct wl_surface *surface, uint32_t ignore);
+
 static void _ecore_wl_log_cb_print(const char *format, va_list args);
 /* local variables */
 static int _ecore_wl_init_count = 0;
@@ -150,6 +152,11 @@ static const struct tizen_clipboard_listener _ecore_tizen_clipboard_listener =
    _ecore_wl_cb_clipboard_data_only_allowed,
 };
 
+static const struct tizen_screen_rotation_listener _ecore_tizen_screen_rotation_listener =
+{
+   _ecore_wl_cb_ignore_output_transform,
+};
+
 static void
 xdg_shell_ping(void *data EINA_UNUSED, struct xdg_shell *shell, uint32_t serial)
 {
@@ -207,6 +214,7 @@ EAPI int ECORE_WL_EVENT_WINDOW_ICONIFY_STATE_CHANGE = 0;
 EAPI int ECORE_WL_EVENT_EFFECT_START = 0;
 EAPI int ECORE_WL_EVENT_EFFECT_END = 0;
 EAPI int ECORE_WL_EVENT_OUTPUT_TRANSFORM = 0;
+EAPI int ECORE_WL_EVENT_IGNORE_OUTPUT_TRANSFORM = 0;
 EAPI int ECORE_WL_EVENT_GLOBAL_ADDED = 0;
 EAPI int ECORE_WL_EVENT_GLOBAL_REMOVED = 0;
 EAPI int ECORE_WL_EVENT_KEYMAP_UPDATE = 0;
@@ -304,6 +312,7 @@ ecore_wl_init(const char *name)
         ECORE_WL_EVENT_EFFECT_START = ecore_event_type_new();
         ECORE_WL_EVENT_EFFECT_END = ecore_event_type_new();
         ECORE_WL_EVENT_OUTPUT_TRANSFORM = ecore_event_type_new();
+        ECORE_WL_EVENT_IGNORE_OUTPUT_TRANSFORM = ecore_event_type_new();
         ECORE_WL_EVENT_GLOBAL_ADDED = ecore_event_type_new();
         ECORE_WL_EVENT_GLOBAL_REMOVED = ecore_event_type_new();
         ECORE_WL_EVENT_KEYMAP_UPDATE = ecore_event_type_new();
@@ -790,6 +799,8 @@ _ecore_wl_shutdown(Eina_Bool close)
           tizen_indicator_destroy(_ecore_wl_disp->wl.tz_indicator);
         if (_ecore_wl_disp->wl.tz_clipboard)
           tizen_clipboard_destroy(_ecore_wl_disp->wl.tz_clipboard);
+        if (_ecore_wl_disp->wl.tz_screen_rotation)
+          tizen_screen_rotation_destroy(_ecore_wl_disp->wl.tz_screen_rotation);
         if (_ecore_wl_disp->cursor_theme)
           wl_cursor_theme_destroy(_ecore_wl_disp->cursor_theme);
         if (_ecore_wl_disp->wl.display)
@@ -1105,6 +1116,13 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
            wl_registry_bind(registry, id, &tizen_clipboard_interface, client_version);
         if (ewd->wl.tz_clipboard)
           tizen_clipboard_add_listener(ewd->wl.tz_clipboard, &_ecore_tizen_clipboard_listener, ewd->wl.display);
+     }
+   else if (!strcmp(interface, "tizen_screen_rotation"))
+     {
+        ewd->wl.tz_screen_rotation =
+           wl_registry_bind(registry, id, &tizen_screen_rotation_interface, 1);
+        if (ewd->wl.tz_screen_rotation)
+          tizen_screen_rotation_add_listener(ewd->wl.tz_screen_rotation, &_ecore_tizen_screen_rotation_listener, ewd->wl.display);
      }
 
    if ((ewd->wl.compositor) && (ewd->wl.shm) &&
@@ -2228,6 +2246,27 @@ _ecore_wl_cb_clipboard_data_only_allowed(void *data EINA_UNUSED, struct tizen_cl
      _ecore_wl_disp->input->is_data_only = EINA_TRUE;
    else
      _ecore_wl_disp->input->is_data_only = EINA_FALSE;
+}
+
+static void
+_ecore_wl_cb_ignore_output_transform(void *data EINA_UNUSED, struct tizen_screen_rotation *tizen_screen_rotation EINA_UNUSED, struct wl_surface *surface, uint32_t ignore)
+{
+   Ecore_Wl_Window *win = NULL;
+   Ecore_Wl_Event_Ignore_Output_Transform *ev;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   if (!surface) return;
+   win = ecore_wl_window_surface_find(surface);
+   if (!win) return;
+
+   _ecore_wl_window_ignore_output_transform_set(win, ignore);
+
+   if (!(ev = calloc(1, sizeof(Ecore_Wl_Event_Ignore_Output_Transform)))) return;
+
+   ev->win = win;
+   ev->ignore = (ignore) ? EINA_TRUE : EINA_FALSE;
+   ecore_event_add(ECORE_WL_EVENT_IGNORE_OUTPUT_TRANSFORM, ev, NULL, NULL);
 }
 
 static void

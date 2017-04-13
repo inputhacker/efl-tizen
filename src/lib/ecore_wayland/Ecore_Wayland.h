@@ -87,6 +87,7 @@ typedef struct _Ecore_Wl_Event_Effect Ecore_Wl_Event_Effect_Start;
 typedef struct _Ecore_Wl_Event_Effect Ecore_Wl_Event_Effect_End;
 typedef struct _Ecore_Wl_Display Ecore_Wl_Display;
 typedef struct _Ecore_Wl_Event_Output_Transform Ecore_Wl_Event_Output_Transform;
+typedef struct _Ecore_Wl_Event_Ignore_Output_Transform Ecore_Wl_Event_Ignore_Output_Transform;
 typedef struct _Ecore_Wl_Event_Global Ecore_Wl_Event_Global;
 typedef struct _Ecore_Wl_Event_Keymap_Update Ecore_Wl_Event_Keymap_Update;
 typedef struct _Ecore_Wl_Event_Indicator_Flick Ecore_Wl_Event_Indicator_Flick;
@@ -107,6 +108,12 @@ struct _Ecore_Wl_Event_Output_Transform
    Ecore_Wl_Output *output;
    int old_transform;
    int transform;
+};
+
+struct _Ecore_Wl_Event_Ignore_Output_Transform
+{
+   Ecore_Wl_Window *win;
+   Eina_Bool ignore;
 };
 
 struct _Ecore_Wl_Event_Keymap_Update
@@ -555,6 +562,7 @@ EAPI extern int ECORE_WL_EVENT_WINDOW_ICONIFY_STATE_CHANGE;
 EAPI extern int ECORE_WL_EVENT_EFFECT_START;
 EAPI extern int ECORE_WL_EVENT_EFFECT_END;
 EAPI extern int ECORE_WL_EVENT_OUTPUT_TRANSFORM;
+EAPI extern int ECORE_WL_EVENT_IGNORE_OUTPUT_TRANSFORM;
 EAPI extern int ECORE_WL_EVENT_GLOBAL_ADDED;
 EAPI extern int ECORE_WL_EVENT_GLOBAL_REMOVED;
 EAPI extern int ECORE_WL_EVENT_KEYMAP_UPDATE;
@@ -1493,6 +1501,8 @@ EAPI void ecore_wl_window_aux_hint_del(Ecore_Wl_Window *win, int id);
 EAPI void ecore_wl_window_floating_mode_set(Ecore_Wl_Window *win, Eina_Bool floating);
 EAPI void ecore_wl_window_geometry_get(Ecore_Wl_Window *win, int *x, int *y, int *w, int *h);
 EAPI Ecore_Wl_Input * ecore_wl_window_input_get(Ecore_Wl_Window *win);
+
+EAPI Eina_Bool ecore_wl_window_ignore_output_transform_get(Ecore_Wl_Window *win);
 
 #ifdef __cplusplus
 }
