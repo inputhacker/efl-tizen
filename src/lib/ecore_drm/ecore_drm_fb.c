@@ -60,11 +60,6 @@ ecore_drm_fb_create(Ecore_Drm_Device *dev, int width, int height)
    EINA_SAFETY_ON_NULL_RETURN_VAL(dev, NULL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL((width < 1) || (height < 1), NULL);
 
-// ecore_drm_fb creates the Ecore_Drm_Fb from only TDM, not from drm dumb except emulator.
-// emulator supports only drm dumb memory to display the images on the screen.
-#ifndef EFL_FEATURE_EMULATOR
-   return _ecore_drm_display_fb_create(dev, width, height);
-#else
 #ifdef HAVE_TDM
    drmVersionPtr ver = drmGetVersion(ecore_drm_device_fd_get(dev));
    if (ver)
@@ -152,7 +147,6 @@ add_err:
 create_err:
    free(fb);
    return NULL;
-#endif // EFL_FEATURE_EMULATOR
 }
 
 EAPI void 
