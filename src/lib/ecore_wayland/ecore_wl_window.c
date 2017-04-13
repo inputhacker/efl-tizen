@@ -654,6 +654,8 @@ ecore_wl_window_surface_create(Ecore_Wl_Window *win)
      win->surface = wl_compositor_create_surface(wlcomp);
    if (!win->surface) return NULL;
    win->surface_id = wl_proxy_get_id((struct wl_proxy *)win->surface);
+   if (_ecore_wl_disp->wl.tz_screen_rotation)
+     tizen_screen_rotation_get_ignore_output_transform(_ecore_wl_disp->wl.tz_screen_rotation, win->surface);
    return win->surface;
 }
 
@@ -2401,4 +2403,21 @@ ecore_wl_window_input_get(Ecore_Wl_Window *win)
      }
 
    return NULL;
+}
+
+void
+_ecore_wl_window_ignore_output_transform_set(Ecore_Wl_Window *win, Eina_Bool ignore)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   if (!win) return;
+
+   win->ignore_output_transform = ignore;
+}
+
+EAPI Eina_Bool
+ecore_wl_window_ignore_output_transform_get(Ecore_Wl_Window *win)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   return win->ignore_output_transform;
 }

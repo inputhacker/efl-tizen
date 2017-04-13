@@ -124,12 +124,19 @@ static void
 _ecore_evas_wl_common_rotate_update(Ecore_Evas *ee)
 {
    Ecore_Evas_Engine_Wl_Data *wdata;
-   Ecore_Wl_Output *output;
    int rotation;
 
    wdata = ee->engine.data;
-   output = ecore_wl_window_output_find(wdata->win);
-   rotation = ecore_wl_output_transform_get(output) * 90;
+
+   if (ecore_wl_window_ignore_output_transform_get(wdata->win))
+     rotation = 0;
+   else
+     {
+        Ecore_Wl_Output *output = ecore_wl_window_output_find(wdata->win);
+        rotation = ecore_wl_output_transform_get(output) * 90;
+     }
+
+   WRN("ignore_output_transform(%d) rotation(%d)", ecore_wl_window_ignore_output_transform_get(wdata->win), rotation);
 
    if (_ecore_evas_wl_common_engine_rotation_get(ee) == ((rotation + ee->rotation) % 360))
      return;
@@ -517,6 +524,22 @@ _ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void
    if (output != ev->output) return ECORE_CALLBACK_PASS_ON;
 
    _ecore_evas_wl_common_rotate_update(ee);
+   evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+   _ecore_evas_wl_common_render(ee);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ecore_evas_wl_common_cb_ignore_output_transform(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
+{
+   Ecore_Evas *ee = data;
+
+   if (!ee) return ECORE_CALLBACK_PASS_ON;
+
+   _ecore_evas_wl_common_rotate_update(ee);
+   evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+   _ecore_evas_wl_common_render(ee);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -865,6 +888,8 @@ _ecore_evas_wl_common_free(Ecore_Evas *ee)
    wdata = ee->engine.data;
    if (wdata->output_transform_hdl)
      ecore_event_handler_del(wdata->output_transform_hdl);
+   if (wdata->ignore_output_transform_hdl)
+     ecore_event_handler_del(wdata->ignore_output_transform_hdl);
    if (wdata->anim_callback)
      wl_callback_destroy(wdata->anim_callback);
    if (wdata->win) ecore_wl_window_free(wdata->win);
@@ -2229,6 +2254,10 @@ _ecore_evas_wl_common_output_transform_register(Ecore_Evas *ee)
    wdata->output_transform_hdl =
      ecore_event_handler_add(ECORE_WL_EVENT_OUTPUT_TRANSFORM,
                              _ecore_evas_wl_common_cb_output_transform, ee);
+   wdata->ignore_output_transform_hdl =
+     ecore_event_handler_add(ECORE_WL_EVENT_IGNORE_OUTPUT_TRANSFORM,
+                             _ecore_evas_wl_common_cb_ignore_output_transform, ee);
+
 }
 
 static void

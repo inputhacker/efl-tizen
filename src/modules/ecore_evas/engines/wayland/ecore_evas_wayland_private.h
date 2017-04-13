@@ -51,6 +51,8 @@ struct _Ecore_Evas_Engine_Wl_Data
 
    Ecore_Event_Handler *output_transform_hdl;
    short output_rotation;
+
+   Ecore_Event_Handler *ignore_output_transform_hdl;
 };
 
 Ecore_Evas_Interface_Wayland *_ecore_evas_wl_interface_new(void);
