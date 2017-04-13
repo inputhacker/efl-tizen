@@ -61,6 +61,7 @@ typedef struct _Ecore_Wl_Event_Window_Configure Ecore_Wl_Event_Window_Configure;
 typedef struct _Ecore_Wl_Event_Window_Activate Ecore_Wl_Event_Window_Activate;
 typedef struct _Ecore_Wl_Event_Window_Deactivate Ecore_Wl_Event_Window_Deactivate;
 typedef struct _Ecore_Wl_Event_Window_Visibility_Change Ecore_Wl_Event_Window_Visibility_Change;
+typedef struct _Ecore_Wl_Event_Window_Pre_Visibility_Change Ecore_Wl_Event_Window_Pre_Visibility_Change;
 typedef struct _Ecore_Wl_Event_Window_Rotate Ecore_Wl_Event_Window_Rotate;
 typedef struct _Ecore_Wl_Event_Window_Show Ecore_Wl_Event_Window_Show;
 typedef struct _Ecore_Wl_Event_Window_Hide Ecore_Wl_Event_Window_Hide;
@@ -104,6 +105,15 @@ struct _Ecore_Wl_Event_Keymap_Update
 {
    Ecore_Wl_Input *input;
    struct xkb_keymap *keymap;
+};
+
+enum _Ecore_Wl_Window_Visibility_Type
+{
+   ECORE_WL_WINDOW_VISIBILITY_TYPE_UNKNOWN = 0,
+   ECORE_WL_WINDOW_VISIBILITY_TYPE_UNOBSCURED = 1,
+   ECORE_WL_WINDOW_VISIBILITY_TYPE_PARTIALLY_OBSCURED = 2,
+   ECORE_WL_WINDOW_VISIBILITY_TYPE_FULLY_OBSCURED = 3,
+   ECORE_WL_WINDOW_VISIBILITY_TYPE_PRE_UNOBSCURED = 4,
 };
 
 enum _Ecore_Wl_Window_Type
@@ -209,6 +219,7 @@ typedef enum _Ecore_Wl_Clipboard_State Ecore_Wl_Clipboard_State;
 typedef enum _Ecore_Wl_Indicator_Opacity_Mode Ecore_Wl_Indicator_Opacity_Mode;
 typedef enum _Ecore_Wl_Indicator_Visible_Type Ecore_Wl_Indicator_Visible_Type;
 typedef enum _Ecore_Wl_Window_Stack_Mode Ecore_Wl_Window_Stack_Mode;
+typedef enum _Ecore_Wl_Window_Visibility_Type Ecore_Wl_Window_Visibility_Type;
 
 /** @since 1.7.6 */
 struct _Ecore_Wl_Global
@@ -287,6 +298,13 @@ struct _Ecore_Wl_Event_Window_Visibility_Change
 {
    unsigned int win;
    int          fully_obscured;
+};
+
+struct _Ecore_Wl_Event_Window_Pre_Visibility_Change
+{
+   unsigned int win;
+   Ecore_Wl_Window_Visibility_Type type;
+   unsigned int option;
 };
 
 struct _Ecore_Wl_Event_Window_Rotate
@@ -506,6 +524,7 @@ EAPI extern int ECORE_WL_EVENT_WINDOW_CONFIGURE;
 EAPI extern int ECORE_WL_EVENT_WINDOW_ACTIVATE;
 EAPI extern int ECORE_WL_EVENT_WINDOW_DEACTIVATE;
 EAPI extern int ECORE_WL_EVENT_WINDOW_VISIBILITY_CHANGE;
+EAPI extern int ECORE_WL_EVENT_WINDOW_PRE_VISIBILITY_CHANGE;
 EAPI extern int ECORE_WL_EVENT_WINDOW_SHOW;
 EAPI extern int ECORE_WL_EVENT_WINDOW_HIDE;
 EAPI extern int ECORE_WL_EVENT_WINDOW_LOWER;
