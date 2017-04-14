@@ -184,7 +184,6 @@ EAPI int ECORE_WL_EVENT_WINDOW_CONFIGURE = 0;
 EAPI int ECORE_WL_EVENT_WINDOW_ACTIVATE = 0;
 EAPI int ECORE_WL_EVENT_WINDOW_DEACTIVATE = 0;
 EAPI int ECORE_WL_EVENT_WINDOW_VISIBILITY_CHANGE = 0;
-EAPI int ECORE_WL_EVENT_WINDOW_PRE_VISIBILITY_CHANGE = 0;
 EAPI int ECORE_WL_EVENT_WINDOW_SHOW = 0;
 EAPI int ECORE_WL_EVENT_WINDOW_HIDE = 0;
 EAPI int ECORE_WL_EVENT_WINDOW_LOWER = 0;
@@ -280,7 +279,6 @@ ecore_wl_init(const char *name)
         ECORE_WL_EVENT_WINDOW_ACTIVATE = ecore_event_type_new();
         ECORE_WL_EVENT_WINDOW_DEACTIVATE = ecore_event_type_new();
         ECORE_WL_EVENT_WINDOW_VISIBILITY_CHANGE = ecore_event_type_new();
-        ECORE_WL_EVENT_WINDOW_PRE_VISIBILITY_CHANGE = ecore_event_type_new();
         ECORE_WL_EVENT_WINDOW_SHOW = ecore_event_type_new();
         ECORE_WL_EVENT_WINDOW_HIDE = ecore_event_type_new();
         ECORE_WL_EVENT_WINDOW_LOWER = ecore_event_type_new();
@@ -1000,8 +998,8 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
      }
    else if (!strcmp(interface, "tizen_policy"))
      {
-        if (version >= 5)
-          client_version = 5;
+        if (version >= 3)
+          client_version = 3;
         else
           client_version = version;
 
