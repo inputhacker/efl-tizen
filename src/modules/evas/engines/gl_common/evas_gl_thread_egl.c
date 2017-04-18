@@ -389,6 +389,7 @@ typedef struct
    EGLBoolean return_value;
    EGLDisplay dpy;
    EGLSurface surface;
+   int command_allocated;
 } Evas_Thread_Command_eglSwapBuffers;
 
 static void
@@ -398,6 +399,9 @@ _gl_thread_eglSwapBuffers(void *data)
 
    thread_data->return_value = eglSwapBuffers(thread_data->dpy,
                                               thread_data->surface);
+
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI EGLBoolean
@@ -406,17 +410,36 @@ eglSwapBuffers_thread_cmd(EGLDisplay dpy, EGLSurface surface)
    if (!evas_gl_thread_enabled())
      return eglSwapBuffers(dpy, surface);
 
-   Evas_Thread_Command_eglSwapBuffers thread_data;
+   Evas_Thread_Command_eglSwapBuffers thread_data_local;
+   Evas_Thread_Command_eglSwapBuffers *thread_data = &thread_data_local;
 
-   thread_data.dpy = dpy;
-   thread_data.surface = surface;
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   /* command_allocated flag init. */
+   thread_data->command_allocated = 0;
+
+   if (!evas_gl_thread_force_finish())
+     { /* _flush */
+       Evas_Thread_Command_eglSwapBuffers *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_eglSwapBuffers));
+        if (thread_data_new)
+          {
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
+             thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+          }
+     }
+
+   thread_data->dpy = dpy;
+   thread_data->surface = surface;
 
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_eglSwapBuffers,
-                              &thread_data,
-                              EVAS_GL_THREAD_MODE_FINISH);
+                              thread_data,
+                              thread_mode);
 
-   return thread_data.return_value;
+   return thread_data->return_value;
 }
 
 

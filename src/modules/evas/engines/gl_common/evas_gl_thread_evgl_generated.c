@@ -114,7 +114,6 @@ glVertexAttribPointer_evgl_thread_cmd(GLuint index, GLint size, GLenum type, GLb
 typedef struct
 {
    GLuint index;
-   int command_allocated;
 
 } EVGL_Thread_Command_glEnableVertexAttribArray;
 
@@ -126,8 +125,6 @@ _evgl_thread_glEnableVertexAttribArray(void *data)
 
    glEnableVertexAttribArray(thread_data->index);
 
-   if (thread_data->command_allocated)
-     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -143,22 +140,6 @@ glEnableVertexAttribArray_evgl_thread_cmd(GLuint index)
 
    EVGL_Thread_Command_glEnableVertexAttribArray thread_data_local;
    EVGL_Thread_Command_glEnableVertexAttribArray *thread_data = &thread_data_local;
-
-   /* command_allocated flag init. */
-   thread_data->command_allocated = 0;
-
-   if (!evas_gl_thread_force_finish())
-     { /* _flush */
-        EVGL_Thread_Command_glEnableVertexAttribArray *thread_data_new;
-        thread_data_new = eina_mempool_malloc(_mp_command,
-                                              sizeof(EVGL_Thread_Command_glEnableVertexAttribArray));
-        if (thread_data_new)
-          {
-             thread_data = thread_data_new;
-             thread_data->command_allocated = 1;
-             thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
-          }
-     }
 
    thread_data->index = index;
 
@@ -176,7 +157,6 @@ glEnableVertexAttribArray_evgl_thread_cmd(GLuint index)
 typedef struct
 {
    GLuint index;
-   int command_allocated;
 
 } EVGL_Thread_Command_glDisableVertexAttribArray;
 
@@ -188,8 +168,6 @@ _evgl_thread_glDisableVertexAttribArray(void *data)
 
    glDisableVertexAttribArray(thread_data->index);
 
-   if (thread_data->command_allocated)
-     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -205,22 +183,6 @@ glDisableVertexAttribArray_evgl_thread_cmd(GLuint index)
 
    EVGL_Thread_Command_glDisableVertexAttribArray thread_data_local;
    EVGL_Thread_Command_glDisableVertexAttribArray *thread_data = &thread_data_local;
-
-   /* command_allocated flag init. */
-   thread_data->command_allocated = 0;
-
-   if (!evas_gl_thread_force_finish())
-     { /* _flush */
-        EVGL_Thread_Command_glDisableVertexAttribArray *thread_data_new;
-        thread_data_new = eina_mempool_malloc(_mp_command,
-                                              sizeof(EVGL_Thread_Command_glDisableVertexAttribArray));
-        if (thread_data_new)
-          {
-             thread_data = thread_data_new;
-             thread_data->command_allocated = 1;
-             thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
-          }
-     }
 
    thread_data->index = index;
 
@@ -3686,7 +3648,6 @@ glPixelStorei_evgl_thread_cmd(GLenum pname, GLint param)
 typedef struct
 {
    GLenum texture;
-   int command_allocated;
 
 } EVGL_Thread_Command_glActiveTexture;
 
@@ -3698,8 +3659,6 @@ _evgl_thread_glActiveTexture(void *data)
 
    glActiveTexture(thread_data->texture);
 
-   if (thread_data->command_allocated)
-     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -3715,22 +3674,6 @@ glActiveTexture_evgl_thread_cmd(GLenum texture)
 
    EVGL_Thread_Command_glActiveTexture thread_data_local;
    EVGL_Thread_Command_glActiveTexture *thread_data = &thread_data_local;
-
-   /* command_allocated flag init. */
-   thread_data->command_allocated = 0;
-
-   if (!evas_gl_thread_force_finish())
-     { /* _flush */
-        EVGL_Thread_Command_glActiveTexture *thread_data_new;
-        thread_data_new = eina_mempool_malloc(_mp_command,
-                                              sizeof(EVGL_Thread_Command_glActiveTexture));
-        if (thread_data_new)
-          {
-             thread_data = thread_data_new;
-             thread_data->command_allocated = 1;
-             thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
-          }
-     }
 
    thread_data->texture = texture;
 

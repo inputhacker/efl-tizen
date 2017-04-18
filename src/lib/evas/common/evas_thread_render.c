@@ -43,7 +43,7 @@ _shutdown_timeout(double *time, int mode, int timeout_ms)
 }
 
 static void
-evas_thread_queue_append(Evas_Thread *ev_thread, Evas_Thread_Command_Cb cb, void *data, Eina_Bool do_flush EINA_UNUSED, Eina_Bool do_finish)
+evas_thread_queue_append(Evas_Thread *ev_thread, Evas_Thread_Command_Cb cb, void *data, Eina_Bool do_flush EINA_UNUSED, Eina_Bool need_finish, Eina_Bool do_finish)
 {
   Evas_Thread_Command *cmd;
   void *ref;
@@ -56,7 +56,7 @@ evas_thread_queue_append(Evas_Thread *ev_thread, Evas_Thread_Command_Cb cb, void
       cmd->cb = cb;
       cmd->data = data;
 
-      if (do_finish)
+        if (need_finish)
         cmd->finish = EINA_TRUE;
       else
         cmd->finish = EINA_FALSE;
@@ -90,13 +90,13 @@ evas_thread_queue_append(Evas_Thread *ev_thread, Evas_Thread_Command_Cb cb, void
 EAPI void
 evas_thread_cmd_enqueue(Evas_Thread_Command_Cb cb, void *data)
 {
-  evas_thread_queue_append(&evas_thread_software, cb, data, EINA_FALSE, EINA_FALSE);
+   evas_thread_queue_append(&evas_thread_software, cb, data, EINA_FALSE, EINA_FALSE, EINA_FALSE);
 }
 
 EAPI void
 evas_thread_queue_flush(Evas_Thread_Command_Cb cb, void *data)
 {
-  evas_thread_queue_append(&evas_thread_software, cb, data, EINA_TRUE, EINA_FALSE);
+   evas_thread_queue_append(&evas_thread_software, cb, data, EINA_TRUE, EINA_FALSE, EINA_FALSE);
 }
 
 EAPI void
@@ -115,11 +115,13 @@ evas_gl_thread_cmd_enqueue(int thread_type, Evas_Thread_Command_Cb cb, void *dat
     }
 
   if (thread_mode == EVAS_GL_THREAD_MODE_ENQUEUE)
-    evas_thread_queue_append(ev_thread, cb, data, EINA_FALSE, EINA_FALSE);
+     evas_thread_queue_append(ev_thread, cb, data, EINA_FALSE, EINA_FALSE, EINA_FALSE);
   else if (thread_mode == EVAS_GL_THREAD_MODE_FLUSH)
-    evas_thread_queue_append(ev_thread, cb, data, EINA_TRUE, EINA_FALSE);
+     evas_thread_queue_append(ev_thread, cb, data, EINA_TRUE, EINA_FALSE, EINA_FALSE);
   else if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
-    evas_thread_queue_append(ev_thread, cb, data, EINA_TRUE, EINA_TRUE);
+     evas_thread_queue_append(ev_thread, cb, data, EINA_TRUE, EINA_TRUE, EINA_TRUE);
+  else if (thread_mode == EVAS_GL_THREAD_MODE_ASYNC_FINISH)
+     evas_thread_queue_append(ev_thread, cb, data, EINA_TRUE, EINA_TRUE, EINA_FALSE);
   else
     {
       ERR("GL thread mode is invalid");
@@ -128,6 +130,41 @@ evas_gl_thread_cmd_enqueue(int thread_type, Evas_Thread_Command_Cb cb, void *dat
 
 out:
   return;
+}
+
+EAPI void
+evas_gl_thread_cmd_wait(int thread_type, void *data, Eina_Bool *finished_ptr)
+{
+   Evas_Thread *ev_thread = NULL;
+
+   if (thread_type == EVAS_GL_THREAD_TYPE_GL)
+      ev_thread = &evas_thread_gl;
+   else if (thread_type == EVAS_GL_THREAD_TYPE_EVGL)
+      ev_thread = &evas_thread_evgl;
+   else
+     {
+        ERR("GL thread type is invalid");
+        goto out;
+     }
+
+   while (!(*finished_ptr))
+     {
+        void *finish_ref;
+        Evas_Thread_Finish_Reply *rep;
+
+        rep = eina_thread_queue_wait(ev_thread->thread_queue_finish, &finish_ref);
+        if (rep && rep->data == data)
+          {
+             eina_thread_queue_wait_done(ev_thread->thread_queue_finish, finish_ref);
+             return;
+
+
+          }
+        eina_thread_queue_wait_done(ev_thread->thread_queue_finish, finish_ref);
+     }
+
+out:
+     return;
 }
 
 EAPI Eina_Thread
@@ -229,12 +266,12 @@ evas_thread_init(Evas_Thread *ev_thread, const char *thread_name)
 
   return EINA_TRUE;
 
-  fail_on_thread_creation:
+fail_on_thread_creation:
   ev_thread->worker = 0;
   eina_thread_queue_free(ev_thread->thread_queue_finish);
-  fail_on_thread_queue_finish_creation:
+fail_on_thread_queue_finish_creation:
   eina_thread_queue_free(ev_thread->thread_queue_command);
-  fail_on_thread_queue_command_creation:
+fail_on_thread_queue_command_creation:
   ev_thread->exit_thread = EINA_TRUE;
   ev_thread->exited = 1;
   return EINA_FALSE;

@@ -22,8 +22,8 @@
 # Vertex Arrays
 ## Vertex Array
 | EVAS | void | glVertexAttribPointer | GLuint index,GLint size,GLenum type,GLboolean normalized,GLsizei stride,const void *pointer | finish | noext | | |
-| EVAS | void | glEnableVertexAttribArray | GLuint index | enqueue | noext | | |
-| EVAS | void | glDisableVertexAttribArray | GLuint index | enqueue | noext | | |
+| EVAS | void | glEnableVertexAttribArray | GLuint index | finish | noext | | |
+| EVAS | void | glDisableVertexAttribArray | GLuint index | finish | noext | | |
 
 ## Drawing
 | EVAS | void | glDrawArrays | GLenum mode,GLint first,GLsizei count | finish | noext | | |
@@ -105,7 +105,7 @@
 
 
 # Texturing
-| EVAS | void | glActiveTexture | GLenum texture | flush | noext | | |
+| EVAS | void | glActiveTexture | GLenum texture | finish | noext | | |
 
 # Texture Objects
 | EVAS | void | glGenTextures | GLsizei n,GLuint *textures | finish | noext | | |
@@ -236,8 +236,8 @@
 # Vertex Arrays
 ## Vertex Array
 | EVAS GL | void | glVertexAttribPointer | GLuint index,GLint size,GLenum type,GLboolean normalized,GLsizei stride,const void *pointer | finish | noext | | |
-| EVAS GL | void | glEnableVertexAttribArray | GLuint index | flush | noext | | |
-| EVAS GL | void | glDisableVertexAttribArray | GLuint index | flush | noext | | |
+| EVAS GL | void | glEnableVertexAttribArray | GLuint index | finish | noext | | |
+| EVAS GL | void | glDisableVertexAttribArray | GLuint index | finish | noext | | |
 
 ## Drawing
 | EVAS GL | void | glDrawArrays | GLenum mode,GLint first,GLsizei count | finish | noext | | |
@@ -315,7 +315,7 @@
 
 
 # Texturing
-| EVAS GL | void | glActiveTexture | GLenum texture | flush | noext | | |
+| EVAS GL | void | glActiveTexture | GLenum texture | finish | noext | | |
 
 # Texture Objects
 | EVAS GL | void | glGenTextures | GLsizei n,GLuint *textures | finish | noext | | |
@@ -461,11 +461,11 @@
 | EVAS GL API | void | glDepthRangef | GLclampf zNear, GLclampf zFar | finish | noext | | |
 | EVAS GL API | void | glDetachShader | GLuint program, GLuint shader | flush | noext | | |
 | EVAS GL API | void | glDisable | GLenum cap | flush | noext | | |
-| EVAS GL API | void | glDisableVertexAttribArray | GLuint index | flush | noext | | |
+| EVAS GL API | void | glDisableVertexAttribArray | GLuint index | finish | noext | | |
 | EVAS GL API | void | glDrawArrays | GLenum mode, GLint first, GLsizei count | finish | noext | | |
 | EVAS GL API | void | glDrawElements | GLenum mode, GLsizei count, GLenum type, const void* indices | finish | noext | | |
 | EVAS GL API | void | glEnable | GLenum cap | flush | noext | | |
-| EVAS GL API | void | glEnableVertexAttribArray | GLuint index | flush | noext | | |
+| EVAS GL API | void | glEnableVertexAttribArray | GLuint index | finish | noext | | |
 | EVAS GL API | void | glFinish | void | finish | noext | | |
 | EVAS GL API | void | glFlush | void | finish | noext | | |
 | EVAS GL API | void | glFramebufferRenderbuffer | GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer | flush | noext | | |
