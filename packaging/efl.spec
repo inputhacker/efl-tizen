@@ -1312,7 +1312,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore.so.*
-%{_libdir}/ecore/system/systemd/v-*/module.so
+%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
+%exclude /usr/lib/debug/%{_libdir}/ecore/system/systemd/v-*/module.so.debug
 %{_datadir}/ecore/checkme
 
 %files -n ecore-core-devel
