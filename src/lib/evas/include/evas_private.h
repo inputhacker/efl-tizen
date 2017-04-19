@@ -1434,7 +1434,7 @@ struct _Evas_Func
    void *(*gl_surface_create)            (void *engine, void *config, int w, int h);
    void *(*gl_pbuffer_surface_create)    (void *engine, void *config, int w, int h, int const *attrib_list);
    int  (*gl_surface_destroy)            (void *engine, void *surface);
-   void *(*gl_context_create)            (void *engine, void *share_context, int version, void *(*native_context_get)(void *ctx), void *(*engine_data_get)(void *evasgl));
+   void *(*gl_context_create)            (void *engine, void *share_context, int version, int ctx_flag, void *(*native_context_get)(void *ctx), void *(*engine_data_get)(void *evasgl));
    int  (*gl_context_destroy)            (void *engine, void *context);
    int  (*gl_make_current)               (void *engine, void *surface, void *context);
    const char *(*gl_string_query)        (void *engine, int name);

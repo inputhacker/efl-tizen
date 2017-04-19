@@ -3591,7 +3591,7 @@ eng_gl_surface_destroy(void *data EINA_UNUSED, void *surface)
 }
 
 static void *
-eng_gl_context_create(void *data EINA_UNUSED, void *share_context, int version,
+eng_gl_context_create(void *data EINA_UNUSED, void *share_context, int version, int ctx_flag EINA_UNUSED,
                       void *(*native_context_get)(void *) EINA_UNUSED,
                       void *(*engine_data_get)(void *) EINA_UNUSED)
 {

@@ -91,7 +91,7 @@ static void *evgl_eng_native_window_create(void *data);
 static int evgl_eng_native_window_destroy(void *data, void *native_window);
 static void *evgl_eng_window_surface_create(void *data, void *native_window);
 static int evgl_eng_window_surface_destroy(void *data, void *surface);
-static void *evgl_eng_context_create(void *data, void *share_ctx, Evas_GL_Context_Version version);
+static void *evgl_eng_context_create(void *data, void *share_ctx, Evas_GL_Context_Version version, int ctx_flag);
 static int evgl_eng_context_destroy(void *data, void *context);
 static const char *evgl_eng_string_get(void *data);
 static void *evgl_eng_proc_address_get(const char *name);
@@ -476,7 +476,7 @@ evgl_eng_window_surface_destroy(void *data, void *surface)
 }
 
 static void *
-evgl_eng_context_create(void *data, void *share_ctx, Evas_GL_Context_Version version)
+evgl_eng_context_create(void *data, void *share_ctx, Evas_GL_Context_Version version, int ctx_flag EINA_UNUSED)
 {
    Render_Engine *re;
    EGLContext context = EGL_NO_CONTEXT;

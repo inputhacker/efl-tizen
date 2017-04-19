@@ -1739,14 +1739,14 @@ eng_gl_surface_destroy(void *engine, void *surface)
 }
 
 static void *
-eng_gl_context_create(void *engine, void *share_context, int version,
+eng_gl_context_create(void *engine, void *share_context, int version, int ctx_flag,
                       void *(*native_context_get)(void *),
                       void *(*engine_data_get)(void *))
 {
    EVGL_Context  *sctx = (EVGL_Context *)share_context;
 
    EVGLINIT(NULL);
-   return evgl_context_create(re, sctx, version, native_context_get, engine_data_get);
+   return evgl_context_create(re, sctx, version, ctx_flag, native_context_get, engine_data_get);
 }
 
 static int

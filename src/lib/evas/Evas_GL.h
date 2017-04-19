@@ -548,9 +548,10 @@ typedef enum _Evas_GL_Multisample_Bits
  */
 typedef enum _Evas_GL_Context_Version
 {
-   EVAS_GL_GLES_1_X = 1, /**< OpenGL-ES 1.x */
-   EVAS_GL_GLES_2_X = 2, /**< OpenGL-ES 2.x is the default */
-   EVAS_GL_GLES_3_X = 3  /**< @internal OpenGL-ES 3.x, not implemented yet */
+   EVAS_GL_GLES_1_X = 1,       /**< OpenGL-ES 1.x */
+   EVAS_GL_GLES_2_X = 2,       /**< OpenGL-ES 2.x is the default */
+   EVAS_GL_GLES_3_X = 3,       /**< OpenGL-ES 3.x (@b Since: 2.4) */
+   EVAS_GL_DEBUG    = 0x1000   /**< Enable debug mode on this context (See GL_KHR_debug) (@b Since 4.0) */
 } Evas_GL_Context_Version;
 
 /**

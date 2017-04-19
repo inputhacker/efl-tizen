@@ -323,7 +323,7 @@ struct _EVGL_Interface
    int         (*surface_destroy)(void *data, void *surface);
 
    // Creates/Destroys the native surface from evas engine.
-   void       *(*context_create)(void *data, void *share_ctx, Evas_GL_Context_Version version);
+   void       *(*context_create)(void *data, void *share_ctx, Evas_GL_Context_Version version, int ctx_flag);
    int         (*context_destroy)(void *data, void *context);
 
    // Calls the make_current from evas_engine.

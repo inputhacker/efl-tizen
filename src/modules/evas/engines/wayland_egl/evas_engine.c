@@ -469,12 +469,12 @@ evgl_eng_window_surface_destroy(void *data, void *surface)
 }
 
 static void *
-evgl_eng_context_create(void *data, void *ctxt, Evas_GL_Context_Version version)
+evgl_eng_context_create(void *data, void *ctxt, Evas_GL_Context_Version version, int ctx_flag)
 {
    Render_Engine *re;
    Outbuf *ob;
    EGLContext context = EGL_NO_CONTEXT;
-   int attrs[3];
+   int attrs[5] = {0};
 
    if (!(re = (Render_Engine *)data))
      {
@@ -522,7 +522,15 @@ evgl_eng_context_create(void *data, void *ctxt, Evas_GL_Context_Version version)
 
    attrs[0] = EGL_CONTEXT_CLIENT_VERSION;
    attrs[1] = version;
-   attrs[2] = EGL_NONE;
+
+   if (ctx_flag & EVAS_GL_DEBUG)
+     {
+        attrs[2] = EGL_CONTEXT_FLAGS_KHR;
+        attrs[3] |= EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR;
+        attrs[4] = EGL_NONE;
+     }
+   else
+     attrs[2] = EGL_NONE;
 
    if (ctxt)
      {

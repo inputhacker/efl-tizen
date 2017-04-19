@@ -127,7 +127,7 @@ _internal_resource_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context 
         if (!rsc->context)
           {
              // Create a resource context
-             rsc->context = evgl_engine->funcs->context_create(eng_data, NULL, EVAS_GL_GLES_2_X);
+             rsc->context = evgl_engine->funcs->context_create(eng_data, NULL, EVAS_GL_GLES_2_X, 0);
              if (!rsc->context)
                {
                   ERR("Internal resource context creation failed.");
@@ -2455,7 +2455,7 @@ evgl_surface_destroy(void *eng_data, EVGL_Surface *sfc)
 
 void *
 evgl_context_create(void *eng_data, EVGL_Context *share_ctx,
-                    Evas_GL_Context_Version version,
+                    Evas_GL_Context_Version version, int ctx_flag,
                     void *(*native_context_get)(void *),
                     void *(*engine_data_get)(void *))
 {
@@ -2504,9 +2504,9 @@ evgl_context_create(void *eng_data, EVGL_Context *share_ctx,
 
    // Call engine create context
    if (share_ctx)
-      ctx->context = evgl_engine->funcs->context_create(eng_data, share_ctx->context, version);
+      ctx->context = evgl_engine->funcs->context_create(eng_data, share_ctx->context, version, ctx_flag);
    else
-      ctx->context = evgl_engine->funcs->context_create(eng_data, NULL, version);
+      ctx->context = evgl_engine->funcs->context_create(eng_data, NULL, version, ctx_flag);
 
    // Call engine create context
    if (!ctx->context)

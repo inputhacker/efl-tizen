@@ -3,6 +3,7 @@
 #include "evas_private.h"
 #include "Evas_GL.h"
 
+#define CONTEXT_VERSION_MASK 0xFF
 typedef struct _Evas_GL_TLS_data Evas_GL_TLS_data;
 
 /* since 1.16: store current evas gl - this TLS is never destroyed */
@@ -24,6 +25,7 @@ struct _Evas_GL_Context
 {
    void    *data;
    Evas_GL_Context_Version version;
+   int ctx_flag;
 };
 
 struct _Evas_GL_Surface
@@ -371,11 +373,15 @@ evas_gl_context_version_create(Evas_GL *evas_gl, Evas_GL_Context *share_ctx,
                                Evas_GL_Context_Version version)
 {
    Evas_GL_Context *ctx;
+   int ctx_flag;
 
    // Magic
    MAGIC_CHECK(evas_gl, Evas_GL, MAGIC_EVAS_GL);
    return NULL;
    MAGIC_CHECK_END();
+
+   ctx_flag = version & EVAS_GL_DEBUG;
+   version &= CONTEXT_VERSION_MASK;
 
    if ((version < EVAS_GL_GLES_1_X) || (version > EVAS_GL_GLES_3_X))
      {
@@ -396,9 +402,10 @@ evas_gl_context_version_create(Evas_GL *evas_gl, Evas_GL_Context *share_ctx,
 
    // Call engine->gl_create_context
    ctx->version = version;
+   ctx->ctx_flag = ctx_flag;
    ctx->data = evas_gl->evas->engine.func->gl_context_create
      (_evas_engine_context(evas_gl->evas), share_ctx ? share_ctx->data : NULL,
-      version, &evas_gl_native_context_get, &evas_gl_engine_data_get);
+      version, ctx_flag, &evas_gl_native_context_get, &evas_gl_engine_data_get);
 
    // Set a few variables
    if (!ctx->data)
