@@ -1399,7 +1399,7 @@ ecore_imf_context_keyboard_mode_get(Ecore_IMF_Context *ctx)
 }
 
 EAPI void
-ecore_imf_context_prediction_hint_set(Ecore_IMF_Context *ctx, char *prediction_hint)
+ecore_imf_context_prediction_hint_set(Ecore_IMF_Context *ctx, const char *prediction_hint)
 {
    if (!ECORE_MAGIC_CHECK(ctx, ECORE_MAGIC_CONTEXT))
      {

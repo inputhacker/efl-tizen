@@ -713,7 +713,7 @@ struct _Ecore_IMF_Context_Class
    void (*input_hint_set) (Ecore_IMF_Context *ctx, Ecore_IMF_Input_Hints input_hints); /**< Sets input hint to fine-tune input methods behavior */
    void (*bidi_direction_set) (Ecore_IMF_Context *ctx, Ecore_IMF_BiDi_Direction direction); /**< Set bidirectionality at the cursor position */
    Ecore_IMF_Input_Panel_Keyboard_Mode (*keyboard_mode_get) (Ecore_IMF_Context *ctx); /**< Return the current keyboard mode of the input panel */
-   void (*prediction_hint_set) (Ecore_IMF_Context *ctx, char *prediction_hint); /**< Set the prediction hint to the input panel */
+   void (*prediction_hint_set) (Ecore_IMF_Context *ctx, const char *prediction_hint); /**< Set the prediction hint to the input panel */
 };
 
 /**
@@ -2230,7 +2230,7 @@ EAPI Ecore_IMF_Input_Panel_Keyboard_Mode ecore_imf_context_keyboard_mode_get(Eco
  * @since_tizen 4.0
  * @endif
  */
-EAPI void                         ecore_imf_context_prediction_hint_set(Ecore_IMF_Context *ctx, char *prediction_hint);
+EAPI void                         ecore_imf_context_prediction_hint_set(Ecore_IMF_Context *ctx, const char *prediction_hint);
 
 /* The following entry points must be exported by each input method module
  */
