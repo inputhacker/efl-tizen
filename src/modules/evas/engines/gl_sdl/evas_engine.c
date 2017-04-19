@@ -200,7 +200,7 @@ evgl_eng_window_surface_destroy(void *data EINA_UNUSED,
 }
 
 static void *
-evgl_eng_context_create(void *data, void *share_ctx EINA_UNUSED, int version)
+evgl_eng_context_create(void *data, void *share_ctx EINA_UNUSED, int version, int ctx_flag EINA_UNUSED)
 {
    Render_Engine *re = data;
 

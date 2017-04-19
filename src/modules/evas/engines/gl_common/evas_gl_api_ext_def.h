@@ -1750,6 +1750,9 @@ _EVASGL_EXT_BEGIN(EGL_WL_bind_wayland_display)
 
 _EVASGL_EXT_END()
 
+_EVASGL_EXT_BEGIN(EGL_KHR_create_context)
+        _EVASGL_EXT_DRVNAME(EGL_KHR_create_context)
+_EVASGL_EXT_END()
 
 #if 0
 _EVASGL_EXT_BEGIN(EGL_SEC_map_image)
