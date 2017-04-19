@@ -1337,6 +1337,33 @@ _efl_ui_slider_efl_ui_widget_on_focus_update(Eo *obj, Efl_Ui_Slider_Data *sd EIN
    return int_ret;
 }
 
+//TIZEN_ONLY(20170419): fix slider indicator behavior
+EOLIAN static Eina_Bool
+_efl_ui_slider_efl_ui_widget_on_disabled_update(Eo *obj, Efl_Ui_Slider_Data *sd, Eina_Bool disabled)
+{
+   if (!efl_ui_widget_on_disabled_update(efl_super(obj, MY_CLASS), disabled))
+     return EINA_FALSE;
+
+   if (sd->popup)
+     {
+        if (disabled)
+          edje_object_signal_emit(sd->popup, "elm,state,disabled", "elm");
+        else
+          edje_object_signal_emit(sd->popup, "elm,state,enabled", "elm");
+     }
+
+   if (sd->popup2)
+     {
+        if (disabled)
+          edje_object_signal_emit(sd->popup2, "elm,state,disabled", "elm");
+        else
+          edje_object_signal_emit(sd->popup2, "elm,state,enabled", "elm");
+     }
+
+   return EINA_TRUE;
+}
+//
+
 EOLIAN static void
 _efl_ui_slider_class_constructor(Efl_Class *klass)
 {
@@ -1548,6 +1575,16 @@ _efl_ui_slider_part_indicator_visible_mode_set(Eo *obj, void *_pd EINA_UNUSED, E
    if (sd->indicator_visible_mode == indicator_visible_mode) return;
 
    sd->indicator_visible_mode = indicator_visible_mode;
+   //TIZEN_ONLY(20170419): fix slider indicator behavior
+   if (sd->indicator_visible_mode == ELM_SLIDER_INDICATOR_VISIBLE_MODE_ALWAYS)
+     {
+        _popup_show(obj, NULL, NULL, NULL);
+     }
+   else
+     {
+        _popup_hide(obj, NULL, NULL, NULL);
+     }
+   //
 }
 
 EOLIAN static Efl_Ui_Slider_Indicator_Visible_Mode
