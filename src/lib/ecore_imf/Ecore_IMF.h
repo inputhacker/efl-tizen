@@ -2220,7 +2220,11 @@ EAPI Ecore_IMF_Input_Panel_Keyboard_Mode ecore_imf_context_keyboard_mode_get(Eco
 /**
  * @ingroup Ecore_IMF_Context_Group
  * @brief Set the prediction hint string to deliver to the input panel.
- * This string is used to set prediction hint.
+ *
+ * This API can be used when you want to set prediction hint to use an intelligent reply suggestion service.
+ * An intelligent reply suggestion service generates reply candidates for given prediction hint.
+ * Example
+ * prediction hint: How are you? -> result: I'm fine, Not bad, I'm all right.
  *
  * @since 1.20.0
  *
