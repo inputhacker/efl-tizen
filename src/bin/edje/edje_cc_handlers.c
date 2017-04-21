@@ -395,6 +395,14 @@ static void st_collections_group_parts_part_description_text_fade_ellipsis(void)
 static void st_collections_group_parts_part_description_text_ellipsize_mode(void);
 static void st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit(void);
 //
+/* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+static void st_collections_group_parts_part_description_text_ellipsize_align(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_type(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_loop(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_loop_delay(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_speed(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_duration(void);
+/* END */
 static void st_collections_group_parts_part_description_box_layout(void);
 static void st_collections_group_parts_part_description_box_align(void);
 static void st_collections_group_parts_part_description_box_padding(void);
@@ -894,6 +902,14 @@ New_Statement_Handler statement_handlers[] =
      {"collections.group.parts.part.description.text.ellipsize.mode", st_collections_group_parts_part_description_text_ellipsize_mode},
      {"collections.group.parts.part.description.text.ellipsize.marquee_repeat_limit", st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit},
      //
+     /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+     {"collections.group.parts.part.description.text.ellipsize.align", st_collections_group_parts_part_description_text_ellipsize_align},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.type", st_collections_group_parts_part_description_text_ellipsize_marquee_type},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.loop", st_collections_group_parts_part_description_text_ellipsize_marquee_loop},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.loop_delay", st_collections_group_parts_part_description_text_ellipsize_marquee_loop_delay},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.speed", st_collections_group_parts_part_description_text_ellipsize_marquee_speed},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.duration", st_collections_group_parts_part_description_text_ellipsize_marquee_duration},
+     /* END */
      {"collections.group.parts.part.description.text.filter", st_collections_group_parts_part_description_filter_code}, /* dup */
      /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
      {"collections.group.parts.part.description.text.fade_ellipsis", st_collections_group_parts_part_description_text_fade_ellipsis},
@@ -1301,6 +1317,9 @@ New_Object_Handler object_handlers[] =
      {"collections.group.parts.part.description.fill.size", NULL},
      {"collections.group.parts.part.description.text", NULL},
      {"collections.group.parts.part.description.text.ellipsize", NULL},
+     /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+     {"collections.group.parts.part.description.text.ellipsize.marquee", NULL},
+     /* END */
      {"collections.group.parts.part.description.text.fonts", NULL}, /* dup */
      {"collections.group.parts.part.description.images", NULL}, /* dup */
      {"collections.group.parts.part.description.images.set", ob_images_set}, /* dup */
@@ -10060,6 +10079,9 @@ st_collections_group_parts_part_description_text_ellipsize_mode(void)
                                        "FADE_START", EDJE_TEXT_ELLIPSIZE_MODE_FADE_START,
                                        "FADE_END", EDJE_TEXT_ELLIPSIZE_MODE_FADE_END,
                                        "MARQUEE", EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE,
+                                       "NORMAL", EDJE_TEXT_ELLIPSIZE_MODE_NORMAL,
+                                       "FADE", EDJE_TEXT_ELLIPSIZE_MODE_FADE,
+                                       "FADE_MARQUEE", EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE,
                                        NULL);
 }
 
@@ -10082,6 +10104,140 @@ st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit(
 
    ed->text.ellipsize.marquee_repeat_limit = parse_int_range(0, -1, 0x7fffffff);
 }
+
+/* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+static void
+st_collections_group_parts_part_description_text_ellipsize_align(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.align = parse_enum(0,
+                                         "END", EDJE_TEXT_ELLIPSIZE_ALIGN_END,
+                                         "START", EDJE_TEXT_ELLIPSIZE_ALIGN_START,
+                                         "RIGHT", EDJE_TEXT_ELLIPSIZE_ALIGN_RIGHT,
+                                         "LEFT", EDJE_TEXT_ELLIPSIZE_ALIGN_LEFT,
+                                         "LOCALE", EDJE_TEXT_ELLIPSIZE_ALIGN_LOCALE,
+                                         NULL);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_type(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee.type = parse_enum(0,
+                                                "DEFAULT", EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_DEFAULT,
+                                                "ROLL", EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL,
+                                                NULL);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_loop(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee_repeat_limit = parse_int_range(0, -1, 0x7fffffff);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_loop_delay(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee.loop_delay = parse_float(0);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_speed(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee.speed = parse_float(0);
+   ed->text.ellipsize.marquee.duration = 0.0;
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_duration(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee.duration = parse_float(0);
+   ed->text.ellipsize.marquee.speed = 0.0;
+}
+/* END */
+
 //
 /** @edcsubsection{collections_group_parts_description_box,
  *                 Group.Parts.Part.Description.Box} */

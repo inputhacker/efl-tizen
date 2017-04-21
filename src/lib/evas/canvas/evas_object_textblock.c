@@ -550,6 +550,9 @@ struct _Evas_Object_Textblock
       int                              l, r, t, b;
    } style_pad;
    double                              valign;
+   /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+   double                              ellipsis;
+   /* END */
    Eina_Stringshare                   *markup_text;
    void                               *engine_data;
    const char                         *repch;
@@ -5363,6 +5366,10 @@ _layout_par(Ctxt *c)
      {
         double ellip;
         ellip = it->format->ellipsis;
+        /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+        if (c->o->ellipsis != -1.0)
+          ellip = c->o->ellipsis;
+        /* END */
         /* TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs
         if ((0 <= ellip) && (ellip < 1.0) && c->line_no == 0)
          */
@@ -5538,7 +5545,7 @@ _layout_par(Ctxt *c)
                      !it->format->wrap_mixed && !it->format->wrap_hyphenation)))
               */
              if (!c->o->ellipsis_disabled &&
-                 (it->format->ellipsis == 1.0) && (c->h >= 0) &&
+                 ((c->o->ellipsis == 1.0) || (it->format->ellipsis == 1.0)) && (c->h >= 0) &&
                    ((c->y + ellip_h_thresh >
                      c->h - c->o->style_pad.t - c->o->style_pad.b) ||
                     (!it->format->wrap_word && !it->format->wrap_char &&
@@ -5687,7 +5694,11 @@ _layout_par(Ctxt *c)
                          {
                             /* FIXME: Should redo the ellipsis handling.
                              * If we can do ellipsis, just cut here. */
+                            /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features.
                             if (it->format->ellipsis == 1.0)
+                             */
+                            if ((c->o->ellipsis == 1.0) || (it->format->ellipsis == 1.0))
+                            /* END */
                               {
                                  _layout_handle_ellipsis(c, it, i);
                                  ret = 1;
@@ -6567,6 +6578,9 @@ _evas_textblock_eo_base_constructor(Eo *eo_obj, Evas_Textblock_Data *class_data 
 
    o = obj->private_data;
    o->cursor = calloc(1, sizeof(Evas_Textblock_Cursor));
+   /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+   o->ellipsis = -1.0;
+   /* END */
    _format_command_init();
    evas_object_textblock_init(eo_obj);
 
@@ -13939,6 +13953,66 @@ evas_object_textblock_ellipsis_disabled_get(Evas_Object *eo_obj)
    Evas_Textblock_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
 
    return o->ellipsis_disabled;
+}
+/* END */
+
+/* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+EAPI void
+evas_object_textblock_ellipsis_set(Evas_Object *eo_obj, double ellipsis)
+{
+   TB_HEAD();
+
+   if (o->ellipsis == ellipsis) return;
+
+   o->ellipsis = ellipsis;
+
+   _evas_textblock_invalidate_all(o);
+   _evas_textblock_changed(o, eo_obj);
+}
+
+EAPI double
+evas_object_textblock_ellipsis_get(const Evas_Object *eo_obj)
+{
+   Evas_Object_Textblock_Paragraph *par;
+   Evas_Object_Textblock_Item *it;
+   Evas_Textblock_Data *o;
+   Eina_List *l;
+
+   TB_HEAD_RETURN(-1.0);
+
+   o = eo_data_scope_get(eo_obj, MY_CLASS);
+
+   if (o->ellipsis != -1.0)
+     return o->ellipsis;
+
+   EINA_INLIST_FOREACH(o->paragraphs, par)
+     {
+        EINA_LIST_FOREACH(par->logical_items, l, it)
+          {
+             if (it->format)
+               return it->format->ellipsis;
+          }
+     }
+
+   return -1.0;
+}
+
+EAPI Evas_BiDi_Direction
+evas_textblock_cursor_paragraph_direction_get(const Evas_Textblock_Cursor *cur)
+{
+   if (!cur) return EVAS_BIDI_DIRECTION_NEUTRAL;
+   if (!cur->node)
+     {
+        ERR("There is no node information on the given cursor: %p", cur);
+        return EVAS_BIDI_DIRECTION_NEUTRAL;
+     }
+   if (!cur->node->par)
+     {
+        ERR("There is no paragraph information on the given cursor: %p, node: %p", cur, cur->node);
+        return EVAS_BIDI_DIRECTION_NEUTRAL;
+     }
+
+   return cur->node->par->direction;
 }
 /* END */
 
