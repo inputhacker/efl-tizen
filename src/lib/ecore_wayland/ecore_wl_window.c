@@ -21,6 +21,7 @@ static void _ecore_xdg_handle_surface_delete(void *data, struct xdg_surface *xdg
 static void _ecore_xdg_handle_popup_done(void *data, struct xdg_popup *xdg_popup);
 static void _ecore_session_recovery_uuid(void *data, struct session_recovery *session_recovery, const char *uuid);
 static void _ecore_wl_window_cb_visibility_change(void *data, struct tizen_visibility *tizen_visibility, uint32_t visibility);
+static void _ecore_wl_window_cb_visibility_change_v5(void *data, struct tizen_visibility *tizen_visibility, uint32_t type, uint32_t option);
 static void _ecore_wl_window_cb_position_change(void *data, struct tizen_position *tizen_position, int32_t x, int32_t y);
 static void _ecore_wl_window_cb_available_angles_done(void *data, struct tizen_rotation *tizen_rotation, uint32_t angles);
 static void _ecore_wl_window_cb_preferred_angle_done(void *data, struct tizen_rotation *tizen_rotation, uint32_t angle);
@@ -55,6 +56,7 @@ static const struct xdg_popup_listener _ecore_xdg_popup_listener =
 static const struct tizen_visibility_listener _ecore_tizen_visibility_listener =
 {
    _ecore_wl_window_cb_visibility_change,
+   _ecore_wl_window_cb_visibility_change_v5,
 };
 
 static const struct tizen_position_listener _ecore_tizen_position_listener =
@@ -1683,6 +1685,29 @@ _ecore_wl_window_cb_visibility_change(void *data, struct tizen_visibility *tizen
      ev->fully_obscured = 0;
 
    ecore_event_add(ECORE_WL_EVENT_WINDOW_VISIBILITY_CHANGE, ev, NULL, NULL);
+}
+
+static void
+_ecore_wl_window_cb_visibility_change_v5(void *data, struct tizen_visibility *tizen_visibility EINA_UNUSED, uint32_t type, uint32_t option)
+{
+   Ecore_Wl_Window *win = (Ecore_Wl_Window *)data;
+   Ecore_Wl_Event_Window_Pre_Visibility_Change *ev;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   EINA_SAFETY_ON_NULL_RETURN(win);
+
+   if (type == TIZEN_VISIBILITY_VISIBILITY_PRE_UNOBSCURED)
+     {
+        ev = calloc(1, sizeof(Ecore_Wl_Event_Window_Pre_Visibility_Change));
+        EINA_SAFETY_ON_NULL_RETURN(ev);
+
+        ev->win = win->id;
+        ev->type = ECORE_WL_WINDOW_VISIBILITY_TYPE_PRE_UNOBSCURED;
+        ev->option = option;
+
+        ecore_event_add(ECORE_WL_EVENT_WINDOW_PRE_VISIBILITY_CHANGE, ev, NULL, NULL);
+     }
 }
 
 static void
