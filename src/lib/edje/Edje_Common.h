@@ -1468,16 +1468,38 @@ typedef enum _Edje_Text_Effect
 //TIZEN_ONLY(20160923): introduction of text marquee
 typedef enum _Edje_Text_Ellipsize_Mode
 {
-   EDJE_TEXT_ELLIPSIZE_MODE_NONE       = 0,
-   EDJE_TEXT_ELLIPSIZE_MODE_START      = 1,
-   EDJE_TEXT_ELLIPSIZE_MODE_MIDDLE     = 2,
-   EDJE_TEXT_ELLIPSIZE_MODE_END        = 3,
-   EDJE_TEXT_ELLIPSIZE_MODE_FADE_START = 4,
-   EDJE_TEXT_ELLIPSIZE_MODE_FADE_END   = 5,
-   EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE    = 6,
-   EDJE_TEXT_ELLIPSIZE_MODE_LAST       = 7
+   EDJE_TEXT_ELLIPSIZE_MODE_NONE         = 0,
+   EDJE_TEXT_ELLIPSIZE_MODE_START        = 1, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_MIDDLE       = 2, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_END          = 3, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE_START   = 4, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE_END     = 5, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE      = 6,
+   EDJE_TEXT_ELLIPSIZE_MODE_NORMAL       = 7,
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE         = 8,
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE = 9,
+   EDJE_TEXT_ELLIPSIZE_MODE_LAST         = 10
 } Edje_Text_Ellipsize_Mode;
 //
+
+/* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+typedef enum _Edje_Text_Ellipsize_Align
+{
+   EDJE_TEXT_ELLIPSIZE_ALIGN_END    = 0,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_START  = 1,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_RIGHT  = 2,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_LEFT   = 3,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_LOCALE = 4,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_LAST   = 5
+} Edje_Text_Ellipsize_Align;
+
+typedef enum _Edje_Text_Ellipsize_Marquee_Type
+{
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_DEFAULT = 0,
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL    = 1,
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_LAST    = 2
+} Edje_Text_Ellipsize_Marquee_Type;
+/* END */
 
 /**
  * @typedef (*Edje_Text_Change_Cb)

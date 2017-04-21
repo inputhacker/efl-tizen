@@ -1430,8 +1430,19 @@ struct _Edje_Part_Description_Spec_Text
    struct {
       Edje_Text_Ellipsize_Mode mode;
       int marquee_repeat_limit;
-      int marquee_repeat_count;
-      Evas_Coord_Point marquee_start_point;
+      int marquee_repeat_count;             /* Deprecated: Use loop_count in Edje_Real_Part_Text */
+      Evas_Coord_Point marquee_start_point; /* Deprecated: Use marquee_start_x, y in Edje_Real_Part_Text */
+
+      /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
+      Edje_Text_Ellipsize_Align align;
+
+      struct {
+         Edje_Text_Ellipsize_Marquee_Type type;
+         double                           loop_delay;
+         double                           speed;
+         double                           duration;
+      } marquee;
+      /* END */
    } ellipsize;
    //
 };
@@ -1928,9 +1939,29 @@ struct _Edje_Real_Part_Text
    /* END */
    /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
    struct {
-      Evas_Object *object; // 4
-      float align;         // 4
-   } fade;
+      Evas_Object    *clipper_obj; // 4
+      float           halign;      // 4
+      float           valign;      // 4
+      int             text_w, text_h;
+      Eina_Bool       is_fade;
+      Eina_Bool       is_marquee;
+
+      struct {
+         Evas_Object    *mask_obj;
+         Ecore_Animator *animator;
+         int             x, y, w, h;
+      } fade;
+
+      struct {
+         Evas_Object    *proxy_obj;
+         Ecore_Animator *animator;
+         double          animator_prev_time;
+         double          sec_per_pixel;
+         int             orig_x, orig_y;
+         int             loop_count;
+         int             distance;
+      } marquee;
+   } ellipsize;
    /* END */
    struct {
       unsigned char       fit_x, fit_y; // 2
@@ -2014,11 +2045,6 @@ struct _Edje_Real_Part
 #endif
    Evas_Event_Flags          ignore_flags;
    Evas_Event_Flags          mask_flags;
-   //TIZEN_ONLY(20160923): introduction of text marquee
-   double                    text_marquee_prev_time;
-   Ecore_Animator           *text_marquee_animator;
-   Evas_Object              *text_marquee_clipper;
-   //
    unsigned char             type; // 1
    unsigned char             calculated : 2; // 1
    unsigned char             calculating : 2; // 0
@@ -2026,9 +2052,6 @@ struct _Edje_Real_Part
 #ifdef EDJE_CALC_CACHE
    Eina_Bool                 invalidate : 1; // 0
 #endif
-   //TIZEN_ONLY(20160923): introduction of text marquee
-   unsigned char             text_marquee_to_left : 1;
-   //
    unsigned char             mouse_events : 1;
    unsigned char             repeat_events : 1;
 }; // 128
@@ -3072,7 +3095,7 @@ void _edje_real_part_ignore_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_F
 Evas_Event_Flags _edje_real_part_mask_flags_get(Edje *ed, Edje_Real_Part *rp);
 void _edje_real_part_mask_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags mask_flags);
 /* TIZEN_ONLY(20170322): fix crash issue when Edje tries to clean up fade object */
-void _edje_fade_ellipsis_remove(Edje_Real_Part *ep);
+void _edje_text_ellipsize_remove(Edje_Real_Part *ep);
 /* END */
 
 #ifdef HAVE_LIBREMIX

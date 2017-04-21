@@ -3896,6 +3896,27 @@ EAPI Eina_Bool
 evas_object_textblock_ellipsis_disabled_get(Evas_Object *eo_obj);
 /* END */
 
+/**
+ * TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features.
+ * @internal
+ */
+EAPI void
+evas_object_textblock_ellipsis_set(Evas_Object *eo_obj, double ellipsis);
+
+/**
+ * TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features.
+ * @internal
+ */
+EAPI double
+evas_object_textblock_ellipsis_get(const Evas_Object *eo_obj);
+
+/**
+ * TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features.
+ * @internal
+ */
+EAPI Evas_BiDi_Direction
+evas_textblock_cursor_paragraph_direction_get(const Evas_Textblock_Cursor *cur);
+
 #include "canvas/evas_textblock.eo.legacy.h"
 
 /**

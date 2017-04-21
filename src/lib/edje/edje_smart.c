@@ -145,24 +145,56 @@ _edje_object_evas_object_smart_del(Eo *obj, Edje *ed)
 
 //TIZEN_ONLY(20160923): introduction of text marquee
 static void
-_marquee_text_object_move(Edje *ed, Edje_Real_Part *ep, Evas_Coord_Point ed_diff)
+_edje_object_text_ellipsize_clipper_move(Edje *ed, Edje_Real_Part *ep, Evas_Coord_Point ed_diff)
 {
-   Evas_Coord x, y;
-   Edje_Part_Description_Text *chosen_desc;
+   Evas_Coord x = 0, y = 0;
 
-   chosen_desc = (Edje_Part_Description_Text *)ep->chosen_description;
+   if (ep->typedata.text->ellipsize.marquee.animator)
+     {
+        evas_object_geometry_get(ep->object, &x, &y, NULL, NULL);
 
-   evas_object_geometry_get(ep->object, &x, &y, NULL, NULL);
+        /* Horizontal Case */
+        x += ed_diff.x;
+        y += ed_diff.y;
 
-   /* ed_diff should be handled because of horizontal scroll */
-   evas_object_move(ep->object,
-                    x + ed_diff.x,
-                    ed->y + ep->y + ep->typedata.text->offset.y);
+        /* ed_diff should be handled because of horizontal scroll */
+        ep->typedata.text->ellipsize.marquee.orig_x += ed_diff.x;
+        ep->typedata.text->ellipsize.marquee.orig_y += ed_diff.y;
+     }
+   else
+     {
+        x = ed->x + ep->x + ep->typedata.text->offset.x;
+        y = ed->y + ep->y + ep->typedata.text->offset.y;
+     }
 
-   evas_object_move(ep->text_marquee_clipper, ed->x + ep->x, ed->y + ep->y);
+   if (ep->typedata.text->ellipsize.marquee.proxy_obj)
+     {
+        int px, py;
 
-   chosen_desc->text.ellipsize.marquee_start_point.x += ed_diff.x;
-   chosen_desc->text.ellipsize.marquee_start_point.y += ed_diff.y;
+        evas_object_geometry_get(ep->typedata.text->ellipsize.marquee.proxy_obj,
+                                 &px, &py, NULL, NULL);
+        evas_object_move(ep->typedata.text->ellipsize.marquee.proxy_obj,
+                         px + ed_diff.x, py + ed_diff.y);
+     }
+
+   if (ep->typedata.text->ellipsize.fade.animator)
+     {
+        ep->typedata.text->ellipsize.fade.x += ed_diff.x;
+        ep->typedata.text->ellipsize.fade.y += ed_diff.y;
+     }
+
+   if (ep->typedata.text->ellipsize.fade.mask_obj)
+     {
+        int mx, my;
+
+        evas_object_geometry_get(ep->typedata.text->ellipsize.fade.mask_obj,
+                                 &mx, &my, NULL, NULL);
+        evas_object_move(ep->typedata.text->ellipsize.fade.mask_obj,
+                         mx + ed_diff.x, my + ed_diff.y);
+     }
+
+   evas_object_move(ep->typedata.text->ellipsize.clipper_obj, ed->x + ep->x, ed->y + ep->y);
+   evas_object_move(ep->object, x, y);
 }
 //
 
@@ -195,8 +227,9 @@ _edje_object_evas_object_smart_move(Eo *obj EINA_UNUSED, Edje *ed, Evas_Coord x,
         if ((ep->type == EDJE_RP_TYPE_TEXT) && (ep->typedata.text))
           {
              //TIZEN_ONLY(20160923): introduction of text marquee
-             if (ep->text_marquee_animator)
-               _marquee_text_object_move(ed, ep, ed_diff);
+             if (ep->typedata.text->ellipsize.clipper_obj &&
+                 evas_object_visible_get(ep->typedata.text->ellipsize.clipper_obj))
+               _edje_object_text_ellipsize_clipper_move(ed, ep, ed_diff);
              else
              //
                evas_object_move(ep->object,
@@ -205,12 +238,7 @@ _edje_object_evas_object_smart_move(Eo *obj EINA_UNUSED, Edje *ed, Evas_Coord x,
           }
         else
           {
-             //TIZEN_ONLY(20160923): introduction of text marquee
-             if (ep->text_marquee_animator && ep->typedata.text)
-               _marquee_text_object_move(ed, ep, ed_diff);
-             else
-             //
-               evas_object_move(ep->object, ed->x + ep->x, ed->y + ep->y);
+             evas_object_move(ep->object, ed->x + ep->x, ed->y + ep->y);
 
              if ((ep->type == EDJE_RP_TYPE_SWALLOW) &&
                  (ep->typedata.swallow))
