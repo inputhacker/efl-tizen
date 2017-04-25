@@ -1154,7 +1154,12 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
         dh = im->cache_entry.h + 2;
         sw = im->cache_entry.w;
         sh = im->cache_entry.h;
-        DATA32 * temp = alloca (dw * dh * bytes_count);
+        DATA32 * temp = malloc (dw * dh * bytes_count);
+        if(!temp)
+          {
+             ERR("memory allocation is failed..");
+             return;
+          }
         DATA8 *dp = (unsigned char *)temp;
         DATA8 *sp = (unsigned char *)im->image.data;
         int i;
@@ -1184,6 +1189,7 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
         // xxxxx
         memcpy(dp, dp + (dw * bytes_count), dw * bytes_count);
         _tex_sub_2d(tex->gc, tex->x - 1, tex->y - 1, dw, dh, fmt, tex->pt->dataformat, temp);
+        free(temp);
      }
    else
      {
