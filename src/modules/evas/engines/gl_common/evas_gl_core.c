@@ -1899,7 +1899,7 @@ _evgl_engine_data_get(Evas_GL *evasgl)
 EVGL_Engine *
 evgl_engine_init(void *eng_data, const EVGL_Interface *efunc)
 {
-   int direct_off = 0, direct_soff = 0, debug_mode = 0;
+   int direct_off = 0, direct_soff = 0, debug_mode = 0, disable_render_thread = 0;
    char *s = NULL;
 
    if (evgl_engine) return evgl_engine;
@@ -1993,6 +1993,13 @@ evgl_engine_init(void *eng_data, const EVGL_Interface *efunc)
    if (s) debug_mode = atoi(s);
    if (debug_mode == 1)
       evgl_engine->api_debug_mode = 1;
+
+
+   /* Thread rendering is forced off when disable render thread option is on */
+   s = getenv("EVAS_GL_DISABLE_RENDER_THREAD");
+   if (s) disable_render_thread = atoi(s);
+   if (disable_render_thread == 1)
+     evgl_engine->disable_render_thread = 1;
 
    return evgl_engine;
 
@@ -2109,7 +2116,7 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
    else if (evgl_engine->direct_override == 1)
      sfc->direct_override = EINA_TRUE;
 
-   if ((sfc->direct_override == EINA_TRUE) || (cfg->options_bits & EVAS_GL_OPTIONS_DIRECT))
+   if ((sfc->direct_override == EINA_TRUE) || (cfg->options_bits & EVAS_GL_OPTIONS_DIRECT) || (evgl_engine->disable_render_thread == 1))
      {
         if (evas_gl_thread_enabled())
           {

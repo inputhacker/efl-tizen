@@ -367,6 +367,9 @@ struct _EVGL_Engine
 
    //void              *engine_data;  
    Eina_Hash         *safe_extensions;
+
+   // Force off render threading
+   int                disable_render_thread;
 };
 
 
