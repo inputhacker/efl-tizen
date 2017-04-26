@@ -64,6 +64,8 @@ extern "C" {
  * - http://tizen.org/feature/opengles.version.1_1
  * - http://tizen.org/feature/opengles.version.2_0
  * - http://tizen.org/feature/opengles.version.3_0
+ * - http://tizen.org/feature/opengles.version.3_1
+ * - http://tizen.org/feature/opengles.version.3_2
  *
  * It is recommended to design feature related codes in your application for reliability.\n
  *
