@@ -5918,6 +5918,19 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
              if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK ||
                  ep->part->type == EDJE_PART_TYPE_TEXT)
                {
+                  /* TIZEN_ONLY(20170427): fix clipper loop issue caused by clipper object for fade ellipsis.
+                   * Reset clipper for Textblock to fix the issue. */
+                  if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
+                    {
+                       if (pf->clip_to && pf->clip_to->object)
+                         evas_object_clip_set(ep->object, pf->clip_to->object);
+                       else if (ep->part->clip_to_id >= 0)
+                         evas_object_clip_set(ep->object, ed->table_parts[ep->part->clip_to_id % ed->table_parts_size]->object);
+                       else
+                         evas_object_clip_set(ep->object, ed->base->clipper);
+                    }
+                  /* END */
+
                   _edje_fade_ellipsis_apply(ed, ep, pf, (Edje_Part_Description_Text*) chosen_desc);
                   //TIZEN_ONLY(20160923): introduction of text marquee
                   _edje_text_marquee_apply(ed, ep, pf, (Edje_Part_Description_Text *) chosen_desc);
