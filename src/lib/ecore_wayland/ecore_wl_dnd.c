@@ -632,10 +632,7 @@ _ecore_wl_dnd_del(Ecore_Wl_Dnd_Source *source)
           {
              char **t;
              wl_array_for_each(t, &source->types)
-               {
-                  free(*t);
-                  *t = NULL;
-               }
+               free(*t);
           }
         //
         wl_array_release(&source->types);
@@ -800,16 +797,12 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
 
    char **types;
    int num = 0;
-   int count = 0;
 
    // TIZEN_ONLY(20161226): To increse buffer size to get very long text to satify html use case.
    //                       It should be changed to allow up to unlimit value to maintain compatibility.
    buffer = malloc(_MAX_SIZE_OF_COPY_DATA);
    if (!buffer)
      {
-        event->done = EINA_FALSE;
-        close(read_source->read_fd);
-        _ecore_wl_dnd_del(source);
         free(event);
         return ECORE_CALLBACK_CANCEL;
      }
@@ -817,9 +810,6 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
    len = read(read_source->read_fd, buffer, _MAX_SIZE_OF_COPY_DATA);
    if (len <= 0)
      {
-        event->done = EINA_FALSE;
-        close(read_source->read_fd);
-        _ecore_wl_dnd_del(source);
         free(buffer);
         free(event);
         return ECORE_CALLBACK_CANCEL;
@@ -831,9 +821,6 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
      {
         // TIZEN_ONLY(20161226): To increse buffer size to get very long text to satify html use case.
         //                       It should be changed to allow up to unlimit value to maintain compatibility.
-        event->done = EINA_FALSE;
-        close(read_source->read_fd);
-        _ecore_wl_dnd_del(source);
         free(buffer);
         //
         free(event);
@@ -848,30 +835,9 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
    event->data[len] = '\0';
 
    num = (source->types.size / sizeof(char *));
+   types = source->types.data;
 
    event->num_types = num;
-
-   types = (char **)calloc(num, sizeof(char *));
-   if (!types)
-     {
-        event->done = EINA_FALSE;
-        close(read_source->read_fd);
-        _ecore_wl_dnd_del(source);
-        free(event->data);
-        free(buffer);
-        free(event);
-        return ECORE_CALLBACK_CANCEL;
-     }
-
-   if (source->types.data)
-     {
-        char **t;
-        wl_array_for_each(t, &source->types)
-          {
-             types[count] = (*t) ? strdup(*t) : NULL;
-             count++;
-          }
-     }
    event->types = types;
    event->len = len;
    event->sel_type = source->sel_type;
@@ -900,14 +866,7 @@ _ecore_wl_dnd_selection_data_ready_cb_free(void *data EINA_UNUSED, void *event)
    if (!(ev = event)) return;
 
    // TIZEN_ONLY(20160707): To distinguish clipboard selection in cbhm
-   int i;
-   char *s;
    if (ev->data) free(ev->data);
-   for (i = 0; i < ev->num_types; i++)
-     {
-        s = ev->types[i];
-        free(s);
-     }
    //
    free(ev);
 }
