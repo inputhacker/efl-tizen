@@ -65,6 +65,17 @@ evas_font_init(void)
    fc_init = EINA_TRUE;
 #ifdef HAVE_FONTCONFIG
    fc_config = FcInitLoadConfigAndFonts();
+
+   /* TIZEN_ONLY(20170428): Append global font path when Evas initializes Fontconfig */
+   if (fc_config)
+     {
+        Eina_List *l;
+        char *path;
+
+        EINA_LIST_FOREACH(global_font_path, l, path)
+           FcConfigAppFontAddDir(fc_config, (const FcChar8 *) path);
+     }
+   /* END */
 #endif
 }
 
