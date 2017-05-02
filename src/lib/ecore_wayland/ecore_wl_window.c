@@ -266,8 +266,6 @@ _ecore_wl_window_shell_surface_init(Ecore_Wl_Window *win)
                   case 3:
                     angle = TIZEN_ROTATION_ANGLE_270;
                     break;
-                  default:
-                    break;
                }
              tizen_rotation_set_geometry_hint(win->tz_rot.resource,
                                               (uint32_t)angle, x, y, w, h);
