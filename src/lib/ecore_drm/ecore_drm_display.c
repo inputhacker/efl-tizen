@@ -1249,6 +1249,7 @@ _ecore_drm_display_output_wait_vblank(Ecore_Drm_Output *output, int interval, Ec
    if (ret != TDM_ERROR_NONE)
      {
         ERR("Error Wait VBlank: %m");
+        free(cb);
         return EINA_FALSE;
      }
 
