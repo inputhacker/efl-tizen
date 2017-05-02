@@ -69,6 +69,7 @@ _ecore_evas_wl_common_engine_rotation_get(Ecore_Evas *ee)
 #ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
         Evas_Engine_Info_Wayland_Shm *einfo;
         einfo = (Evas_Engine_Info_Wayland_Shm *)evas_engine_info_get(ee->evas);
+        if (!einfo) return 0;
         return einfo->info.rotation;
 #endif
      }
@@ -77,6 +78,7 @@ _ecore_evas_wl_common_engine_rotation_get(Ecore_Evas *ee)
 #ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
         Evas_Engine_Info_Wayland_Egl *einfo;
         einfo = (Evas_Engine_Info_Wayland_Egl *)evas_engine_info_get(ee->evas);
+        if (!einfo) return 0;
         return einfo->info.rotation;
 #endif
      }
