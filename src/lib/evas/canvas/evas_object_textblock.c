@@ -5126,7 +5126,7 @@ _layout_par_ellipsis_items(Ctxt *c, double ellip)
         off += it->adv;
      }
    c->o->ellip_prev_it = i;
-   if (it) _layout_ellipsis_item_new(c, it);
+   if (it) ellip_ti = _layout_ellipsis_item_new(c, it);
 
 
    pos = (it && it->type == EVAS_TEXTBLOCK_ITEM_TEXT) ?
