@@ -749,7 +749,10 @@ _edje_part_description_apply(Edje *ed, Edje_Real_Part *ep, const char *d1, doubl
           {
              ep->param2 = eina_mempool_malloc(_edje_real_part_state_mp,
                                               sizeof(Edje_Real_Part_State));
-             memset(ep->param2, 0, sizeof(Edje_Real_Part_State));
+//TIZEN_ONLY(20170508): null checking the return value of a function eina_mempool_malloc
+             if (ep->param2)
+//
+               memset(ep->param2, 0, sizeof(Edje_Real_Part_State));
              ep->param2->p.map = eina_cow_alloc(_edje_calc_params_map_cow);
 #ifdef HAVE_EPHYSICS
              ep->param2->p.physics = eina_cow_alloc(_edje_calc_params_physics_cow);
@@ -762,7 +765,10 @@ _edje_part_description_apply(Edje *ed, Edje_Real_Part *ep, const char *d1, doubl
                _edje_external_parsed_params_free(ep->typedata.swallow->swallowed_object,
                                                  ep->param2->external_params);
           }
-        ep->param2->external_params = NULL;
+//TIZEN_ONLY(20170508): null checking the return value of a function eina_mempool_malloc
+        if (ep->param2)
+//
+          ep->param2->external_params = NULL;
      }
    else
    if (ep->param2)
