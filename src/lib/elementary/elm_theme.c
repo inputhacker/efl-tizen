@@ -821,7 +821,10 @@ elm_theme_name_available_list_new(void)
                {
                   th = strdup(file);
                   s = strrchr(th, '.');
-                  *s = 0;
+//TIZEN_ONLY(20170508): null checking the return value of a function strrchr
+                  if (s)
+//
+                    *s = 0;
                   list = eina_list_append(list, th);
                }
           }
@@ -841,7 +844,10 @@ elm_theme_name_available_list_new(void)
 
                   th = strdup(file);
                   s = strrchr(th, '.');
-                  *s = 0;
+//TIZEN_ONLY(20170508): null checking the return value of a function strrchr
+                  if (s)
+//
+                    *s = 0;
                   dupp = 0;
                   EINA_LIST_FOREACH(list, l, s)
                     {
