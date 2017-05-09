@@ -107,6 +107,13 @@
    free(str);
    free(ret);
 
+   str = malloc(sizeof(char) * 4);
+   strcpy(str, "a\t ");
+   ret = eina_str_escape(str);
+   fail_if(!eina_streq(ret, "a\\t\\ "));
+   free(str);
+   free(ret);
+
    eina_shutdown();
 }
 END_TEST
