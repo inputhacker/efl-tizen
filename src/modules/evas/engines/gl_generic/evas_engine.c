@@ -1384,6 +1384,19 @@ eng_image_stride_get(void *data EINA_UNUSED, void *image, int *stride)
 {
    Evas_GL_Image *im = image;
 
+   if (im->native.data)
+     {
+       Evas_Native_Surface *ns = im->native.data;
+       if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+         {
+           tbm_surface_h tbm = ns->data.tbm.buffer;
+           tbm_surface_info_s tinfo;
+           secsym_tbm_surface_get_info(tbm, &tinfo);
+           *stride = tinfo.planes[0].stride;
+           return;
+         }
+     }
+
    if ((im->tex) && (im->tex->pt->dyn.img))
      *stride = im->tex->pt->dyn.stride;
    else
