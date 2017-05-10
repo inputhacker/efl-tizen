@@ -432,7 +432,7 @@ _evas_cache_image_async_cancel(void *data)
    if ((ie->flags.delete_me) || (ie->flags.dirty))
      {
         ie->flags.delete_me = 0;
-        _evas_cache_image_entry_delete(ie->cache, ie);
+        evas_cache_image_drop(ie);
         return;
      }
    if (ie->flags.loaded) _evas_cache_image_async_end(ie);
