@@ -4157,6 +4157,8 @@ typedef struct
    GLenum format;
    GLenum type;
    const void *pixels;
+   int command_allocated;
+   GLTEXIMAGE2D_COPY_VARIABLE; /* TODO */
 
 } Evas_Thread_Command_glTexImage2D;
 
@@ -4176,6 +4178,10 @@ _gl_thread_glTexImage2D(void *data)
                 thread_data->type,
                 thread_data->pixels);
 
+   GLTEXIMAGE2D_COPY_VARIABLE_FREE; /* TODO */
+
+   if (thread_data->command_allocated)
+     eina_mempool_free(_mp_command, thread_data);
 }
 
 EAPI void
@@ -4192,6 +4198,22 @@ glTexImage2D_thread_cmd(GLenum target, GLint level, GLint internalformat, GLsize
    Evas_Thread_Command_glTexImage2D thread_data_local;
    Evas_Thread_Command_glTexImage2D *thread_data = &thread_data_local;
 
+   /* command_allocated flag init. */
+   thread_data->command_allocated = 0;
+
+   if (!evas_gl_thread_force_finish())
+     { /* _flush */
+        Evas_Thread_Command_glTexImage2D *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(Evas_Thread_Command_glTexImage2D));
+        if (thread_data_new)
+          {
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
+             thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+          }
+     }
+
    thread_data->target = target;
    thread_data->level = level;
    thread_data->internalformat = internalformat;
@@ -4202,6 +4224,14 @@ glTexImage2D_thread_cmd(GLenum target, GLint level, GLint internalformat, GLsize
    thread_data->type = type;
    thread_data->pixels = pixels;
 
+   GLTEXIMAGE2D_COPY_VARIABLE_INIT; /* TODO */
+
+   if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
+     goto finish;
+
+   GLTEXIMAGE2D_COPY_TO_MEMPOOL; /* TODO */
+
+finish:
    evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
                               _gl_thread_glTexImage2D,
                               thread_data,

@@ -114,7 +114,7 @@
 
 
 # Texture Image Specification
-| EVAS | void | glTexImage2D | GLenum target,GLint level,GLint internalformat,GLsizei width,GLsizei height,GLint border,GLenum format,GLenum type,const void *pixels | finish | noext | userDefined | |
+| EVAS | void | glTexImage2D | GLenum target,GLint level,GLint internalformat,GLsizei width,GLsizei height,GLint border,GLenum format,GLenum type,const void *pixels | flush | noext | userDefined | |
 | EVAS | void | glTexSubImage2D | GLenum target,GLint level,GLint xoffset,GLint yoffset,GLsizei width,GLsizei height,GLenum format,GLenum type,const void *pixels | flush | noext |  userDefined | |
 
 # Compressed Texture Images
@@ -324,7 +324,7 @@
 
 
 # Texture Image Specification
-| EVAS GL | void | glTexImage2D | GLenum target,GLint level,GLint internalformat,GLsizei width,GLsizei height,GLint border,GLenum format,GLenum type,const void *pixels | finish | noext | userDefined | |
+| EVAS GL | void | glTexImage2D | GLenum target,GLint level,GLint internalformat,GLsizei width,GLsizei height,GLint border,GLenum format,GLenum type,const void *pixels | flush | noext | userDefined | |
 | EVAS GL | void | glTexSubImage2D | GLenum target,GLint level,GLint xoffset,GLint yoffset,GLsizei width,GLsizei height,GLenum format,GLenum type,const void *pixels | flush | noext |  userDefined | |
 
 # Compressed Texture Images
@@ -527,7 +527,7 @@
 | EVAS GL API | void | glStencilMaskSeparate | GLenum face, GLuint mask | finish | noext | | |
 | EVAS GL API | void | glStencilOp | GLenum fail, GLenum zfail, GLenum zpass | finish | noext | | |
 | EVAS GL API | void | glStencilOpSeparate | GLenum face, GLenum fail, GLenum zfail, GLenum zpass | finish | noext | | |
-| EVAS GL API | void | glTexImage2D | GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void* pixels | finish | noext | userDefined | |
+| EVAS GL API | void | glTexImage2D | GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void* pixels | flush | noext | userDefined | |
 | EVAS GL API | void | glTexParameterf | GLenum target, GLenum pname, GLfloat param | flush | noext | | |
 | EVAS GL API | void | glTexParameterfv | GLenum target, GLenum pname, const GLfloat* params | flush | noext | _mp_default, sizeof(GLfloat), params | |
 | EVAS GL API | void | glTexParameteri | GLenum target, GLenum pname, GLint param | flush | noext | | |
