@@ -328,6 +328,60 @@ get_size(GLenum format, GLenum type)
 #include "evas_gl_thread_evgl_api_generated.c"
 
 EAPI void
+glTexImage2DEVAS_evgl_thread_cmd(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels)
+{
+   if (!evas_evgl_thread_enabled())
+     {
+        glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_Thread_Command_glTexImage2D thread_data_local;
+   EVGL_Thread_Command_glTexImage2D *thread_data = &thread_data_local;
+
+   /* command_allocated flag init. */
+   thread_data->command_allocated = 0;
+
+   if (!evas_gl_thread_force_finish() && !finish_mode)
+     { /* _flush */
+        EVGL_Thread_Command_glTexImage2D *thread_data_new;
+        thread_data_new = eina_mempool_malloc(_mp_command,
+                                              sizeof(EVGL_Thread_Command_glTexImage2D));
+        if (thread_data_new)
+          {
+             thread_data = thread_data_new;
+             thread_data->command_allocated = 1;
+             thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+          }
+     }
+
+   thread_data->target = target;
+   thread_data->level = level;
+   thread_data->internalformat = internalformat;
+   thread_data->width = width;
+   thread_data->height = height;
+   thread_data->border = border;
+   thread_data->format = format;
+   thread_data->type = type;
+   thread_data->pixels = pixels;
+
+   GLTEXIMAGE2D_COPY_VARIABLE_INIT; /* TODO */
+
+   if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
+     goto finish;
+
+   GLTEXIMAGE2D_COPY_TO_MEMPOOL; /* TODO */
+
+finish:
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_glTexImage2D,
+                              thread_data,
+                              thread_mode);
+}
+
+EAPI void
 glTexSubImage2DEVAS_thread_cmd(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels)
 {
    if (!evas_gl_thread_enabled())
@@ -397,6 +451,7 @@ finish:
 #include "evas_gl_thread_gl_link_generated.c"
 #include "evas_gl_thread_evgl_link_generated.c"
 
+void (*glTexImage2DEVAS_evgl_thread_cmd)(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels) = NULL;
 void (*glTexSubImage2DEVAS_thread_cmd)(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels) = NULL;
 
 void

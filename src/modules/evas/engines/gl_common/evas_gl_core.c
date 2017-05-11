@@ -247,7 +247,7 @@ _texture_create(GLuint *tex)
 
 // Create and allocate 2D texture
 static void
-_texture_allocate_2d(GLuint tex, GLint ifmt, GLenum fmt, GLenum type, int w, int h)
+_texture_allocate_2d(GLuint tex, GLint ifmt, GLenum fmt, GLenum type, int w, int h, int version)
 {
    //if (!(*tex))
    //   glGenTextures(1, tex);
@@ -260,6 +260,9 @@ _texture_allocate_2d(GLuint tex, GLint ifmt, GLenum fmt, GLenum type, int w, int
    glTexParameteri_evgl_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
    glTexParameteri_evgl_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameteri_evgl_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   if (version == EVAS_GL_GLES_1_X)
+     glTexImage2DEVAS_evgl_thread_cmd(1, GL_TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, NULL);
+   else
    glTexImage2D_evgl_thread_cmd(GL_TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, NULL);
    glBindTexture_evgl_thread_cmd(GL_TEXTURE_2D, (GLuint)curr_tex);
 }
@@ -558,7 +561,7 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
    if ((color_ifmt) && (color_fmt))
      {
         _texture_create(&color_buf);
-        _texture_allocate_2d(color_buf, color_ifmt, color_fmt, GL_UNSIGNED_BYTE, w, h);
+        _texture_allocate_2d(color_buf, color_ifmt, color_fmt, GL_UNSIGNED_BYTE, w, h, EVAS_GL_GLES_2_X);
         _texture_attach_2d(color_buf, GL_COLOR_ATTACHMENT0, 0, mult_samples, EVAS_GL_GLES_2_X);
      }
 
@@ -568,7 +571,7 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
      {
         _texture_create(&depth_stencil_buf);
         _texture_allocate_2d(depth_stencil_buf, depth_fmt,
-                           depth_fmt, GL_UNSIGNED_INT_24_8_OES, w, h);
+                           depth_fmt, GL_UNSIGNED_INT_24_8_OES, w, h, EVAS_GL_GLES_2_X);
         _texture_attach_2d(depth_stencil_buf, GL_DEPTH_ATTACHMENT,
                            GL_STENCIL_ATTACHMENT, mult_samples, EVAS_GL_GLES_2_X);
         depth_stencil = 1;
@@ -1350,7 +1353,7 @@ _surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, 
    if (sfc->color_fmt)
      {
         _texture_allocate_2d(sfc->color_buf, sfc->color_ifmt, sfc->color_fmt,
-                             GL_UNSIGNED_BYTE, w, h);
+                             GL_UNSIGNED_BYTE, w, h, version);
         if (sfc->egl_image)
           {
              _egl_image_destroy(sfc->egl_image);
@@ -1372,13 +1375,13 @@ _surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, 
                {
                   _texture_allocate_2d(sfc->depth_stencil_buf, GL_DEPTH24_STENCIL8_OES,
                      sfc->depth_stencil_fmt, GL_UNSIGNED_INT_24_8_OES,
-                     w, h);
+                     w, h, version);
                }
              else
                {
                   _texture_allocate_2d(sfc->depth_stencil_buf, sfc->depth_stencil_fmt,
                      sfc->depth_stencil_fmt, GL_UNSIGNED_INT_24_8_OES,
-                     w, h);
+                     w, h, version);
                }
           }
         else
