@@ -627,14 +627,6 @@ _ecore_wl_dnd_del(Ecore_Wl_Dnd_Source *source)
    if (source->refcount == 0)
      {
         wl_data_offer_destroy(source->data_offer);
-        // TIZEN_ONLY(20170306): Free the heap allocated content of wl_array
-        if (source->types.data)
-          {
-             char **t;
-             wl_array_for_each(t, &source->types)
-               free(*t);
-          }
-        //
         wl_array_release(&source->types);
         free(source);
      }
