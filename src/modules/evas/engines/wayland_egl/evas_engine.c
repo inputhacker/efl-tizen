@@ -1955,6 +1955,10 @@ module_open(Evas_Module *em)
         return 0;
      }
 
+   /* default enable EVAS_GL_RENDER_THREAD and EVAS_GL_EVGL_RENDER_THREAD at wayland_egl backend */
+   setenv("EVAS_GL_RENDER_THREAD", "1", 0);
+   setenv("EVAS_EVGL_RENDER_THREAD", "1", 0);
+
    /* store functions for later use */
    func = pfunc;
 #define ORD(f) EVAS_API_OVERRIDE(f, &func, eng_)
