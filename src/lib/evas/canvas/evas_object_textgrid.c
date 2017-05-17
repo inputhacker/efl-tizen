@@ -947,8 +947,8 @@ evas_object_textgrid_render_pre(Evas_Object *eo_obj,
 }
 
 static void
-evas_object_textgrid_render_post(Evas_Object *eo_obj,
-				 Evas_Object_Protected_Data *obj EINA_UNUSED,
+evas_object_textgrid_render_post(Evas_Object *eo_obj EINA_UNUSED,
+				 Evas_Object_Protected_Data *obj ,
 				 void *type_private_data)
 {
    /* this moves the current data to the previous state parts of the object */
@@ -956,9 +956,9 @@ evas_object_textgrid_render_post(Evas_Object *eo_obj,
    /* data anymore we can free it if the object deems this is a good idea */
    Evas_Textgrid_Data *o = type_private_data;
    /* remove those pesky changes */
-   evas_object_clip_changes_clean(eo_obj);
+   evas_object_clip_changes_clean(obj);
    /* move cur to prev safely for object data */
-   evas_object_cur_prev(eo_obj);
+   evas_object_cur_prev(obj);
    o->prev = o->cur;
 
    while (eina_array_count(&o->glyphs_cleanup) > 0)

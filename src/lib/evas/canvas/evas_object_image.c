@@ -4070,8 +4070,8 @@ evas_object_image_render_pre(Evas_Object *eo_obj,
 }
 
 static void
-evas_object_image_render_post(Evas_Object *eo_obj,
-			      Evas_Object_Protected_Data *obj EINA_UNUSED,
+evas_object_image_render_post(Evas_Object *eo_obj EINA_UNUSED,
+			      Evas_Object_Protected_Data *obj ,
 			      void *type_private_data)
 {
    Evas_Image_Data *o = type_private_data;
@@ -4081,7 +4081,7 @@ evas_object_image_render_post(Evas_Object *eo_obj,
    /* in whatever way is safest for the object. also if we don't need object */
    /* data anymore we can free it if the object deems this is a good idea */
    /* remove those pesky changes */
-   evas_object_clip_changes_clean(eo_obj);
+   evas_object_clip_changes_clean(obj);
 
    if (o->pixels->pixel_updates)
      {
@@ -4094,7 +4094,7 @@ evas_object_image_render_post(Evas_Object *eo_obj,
      }
 
    /* move cur to prev safely for object data */
-   evas_object_cur_prev(eo_obj);
+   evas_object_cur_prev(obj);
    eina_cow_memcpy(evas_object_image_state_cow, (const Eina_Cow_Data **) &o->prev, o->cur);
    /* FIXME: copy strings across */
 }

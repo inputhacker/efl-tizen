@@ -114,9 +114,8 @@ _evas_object_eo_base_constructor(Eo *eo_obj, Evas_Object_Protected_Data *obj)
 }
 
 void
-evas_object_change_reset(Evas_Object *eo_obj)
+evas_object_change_reset(Evas_Object_Protected_Data *obj)
 {
-   Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, MY_CLASS);
    if (!obj) return;
    obj->changed = EINA_FALSE;
    obj->changed_move = EINA_FALSE;
@@ -127,9 +126,8 @@ evas_object_change_reset(Evas_Object *eo_obj)
 }
 
 void
-evas_object_cur_prev(Evas_Object *eo_obj)
+evas_object_cur_prev(Evas_Object_Protected_Data *obj)
 {
-   Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, MY_CLASS);
    if (!obj) return;
    if (!obj->map->prev.valid_map && obj->map->prev.map)
      {
@@ -215,7 +213,7 @@ evas_object_free(Evas_Object *eo_obj, int clean_layer)
    if (obj->clip.clipees)
      obj->clip.clipees = eina_list_free(obj->clip.clipees);
    obj->clip.cache_clipees_answer = eina_list_free(obj->clip.cache_clipees_answer);
-   evas_object_clip_changes_clean(eo_obj);
+   evas_object_clip_changes_clean(obj);
    evas_object_event_callback_all_del(eo_obj);
    evas_object_event_callback_cleanup(eo_obj);
    if (obj->map->spans)
@@ -435,9 +433,8 @@ evas_object_render_pre_prev_cur_add(Eina_Array *rects, Evas_Object *eo_obj EINA_
 }
 
 void
-evas_object_clip_changes_clean(Evas_Object *eo_obj)
+evas_object_clip_changes_clean(Evas_Object_Protected_Data *obj)
 {
-   Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, MY_CLASS);
    if (!obj) return;
 
    Eina_Rectangle *r;
@@ -541,7 +538,7 @@ evas_object_render_pre_effect_updates(Eina_Array *rects, Evas_Object *eo_obj, in
      {
         /* This is a clipper object: add regions that changed here,
          * See above: EINA_LIST_FOREACH(clipper->clip.changes) */
-        evas_object_clip_changes_clean(eo_obj);
+        evas_object_clip_changes_clean(obj);
         EINA_ARRAY_ITER_NEXT(rects, i, r, it)
            obj->clip.changes = eina_list_append(obj->clip.changes, r);
         eina_array_clean(rects);

@@ -712,7 +712,7 @@ _evas_render_phase1_object_process(Evas_Public_Data *e, Evas_Object *eo_obj,
                           by the current (hidden) state. */
                        if (evas_object_is_visible(eo_obj, obj) !=
                            evas_object_was_visible(eo_obj, obj))
-                         evas_object_cur_prev(eo_obj);
+                         evas_object_cur_prev(obj);
 
                        RD(level, "  skip - not smart, not active or clippees or not relevant\n");
                     }
@@ -946,13 +946,13 @@ pending_change(void *data, void *gdata EINA_UNUSED)
         RD(0, "] pending change %i -> 0, pre %i\n", obj->changed, obj->pre_render_done);
         obj->func->render_post(eo_obj, obj, obj->private_data);
         obj->pre_render_done = EINA_FALSE;
-        evas_object_change_reset(eo_obj);
+        evas_object_change_reset(obj);
      }
    else if (!_evas_render_can_render(eo_obj, obj) &&
             (!obj->is_active) && (!obj->render_pre) &&
             (!obj->rect_del))
      {
-        evas_object_change_reset(eo_obj);
+        evas_object_change_reset(obj);
      }
    if (!obj->changed) eo_data_unref(eo_obj, obj);
    return obj->changed ? EINA_TRUE : EINA_FALSE;
@@ -1566,7 +1566,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                              push this object in an array then reset them 
                              in the end of the rendering.*/
                           if (!proxy_render_data)
-                            evas_object_change_reset(obj2->object);
+                            evas_object_change_reset(obj2);
                        }
                }
              else
@@ -1763,7 +1763,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                              push this object in an array then reset them
                              in the end of the rendering.*/
                           if (!proxy_render_data)
-                            evas_object_change_reset(obj2->object);
+                            evas_object_change_reset(obj2);
                        }
                }
              else
@@ -2912,7 +2912,7 @@ evas_render_updates_internal(Evas *eo_e,
              RD(0, "] render_post()\n");
              obj->func->render_post(eo_obj, obj, obj->private_data);
              obj->restack = EINA_FALSE;
-             evas_object_change_reset(eo_obj);
+             evas_object_change_reset(obj);
           }
         /* moved to other pre-process phase 1
            if (obj->delete_me == 2)
@@ -2956,7 +2956,7 @@ evas_render_updates_internal(Evas *eo_e,
           {
              obj->func->render_post(eo_obj, obj, obj->private_data);
              obj->restack = EINA_FALSE;
-             evas_object_change_reset(eo_obj);
+             evas_object_change_reset(obj);
           }
      }
 
