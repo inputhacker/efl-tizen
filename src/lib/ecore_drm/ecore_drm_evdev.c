@@ -786,7 +786,13 @@ _ecore_drm_evdev_device_create(Ecore_Drm_Seat *seat, struct libinput_device *dev
 
    if (libinput_device_has_capability(device, LIBINPUT_DEVICE_CAP_TOUCH))
      {
+        int palm_code;
         edev->seat_caps |= EVDEV_SEAT_TOUCH;
+        palm_code = libinput_device_touch_aux_data_get_code(LIBINPUT_TOUCH_AUX_DATA_TYPE_PALM);
+        if (libinput_device_touch_has_aux_data(device, palm_code))
+          {
+             libinput_device_touch_set_aux_data(device, palm_code);
+          }
      }
 
    libinput_device_set_user_data(device, edev);
@@ -1026,6 +1032,49 @@ _device_handle_touch_frame(struct libinput_device *device EINA_UNUSED, struct li
    /* DBG("Unhandled Touch Frame Event"); */
 }
 
+static void
+_ecore_drm_aux_data_event_free(void *user_data EINA_UNUSED, Ecore_Event_Axis_Update *e)
+{
+   if (e->axis)
+     free(e->axis);
+   free(e);
+}
+
+static void
+_device_handle_touch_aux_data(struct libinput_device *device, struct libinput_event_touch_aux_data *event)
+{
+   Ecore_Drm_Evdev *edev;
+   Ecore_Drm_Input *input;
+   Ecore_Event_Axis_Update *ev;
+   Ecore_Axis *axis;
+
+   TRACE_INPUT_BEGIN(_device_handle_touch_aux_data);
+
+   if (libinput_event_touch_aux_data_get_type(event) != LIBINPUT_TOUCH_AUX_DATA_TYPE_PALM &&
+       libinput_event_touch_aux_data_get_value(event) > 0)
+      goto end;
+
+   if (!(edev = libinput_device_get_user_data(device))) goto end;
+   if (!(input = edev->seat->input)) goto end;
+   if (!(ev = calloc(1, sizeof(Ecore_Event_Axis_Update))))goto end;
+
+   ev->window = (Ecore_Window)input->dev->window;
+   ev->event_window = (Ecore_Window)input->dev->window;
+   ev->root_window = (Ecore_Window)input->dev->window;
+   ev->timestamp = libinput_event_touch_aux_data_get_time(event);
+
+   axis = (Ecore_Axis *)calloc(1, sizeof(Ecore_Axis));
+   axis->label = ECORE_AXIS_LABEL_TOUCH_PALM;
+   axis->value = libinput_event_touch_aux_data_get_value(event);
+   ev->naxis = 1;
+   ev->axis = axis;
+
+   ecore_event_add(ECORE_EVENT_AXIS_UPDATE, ev, _ecore_drm_aux_data_event_free, NULL);
+
+end:
+   TRACE_INPUT_END();
+}
+
 void 
 _ecore_drm_evdev_device_destroy(Ecore_Drm_Evdev *edev)
 {
@@ -1083,6 +1132,8 @@ _ecore_drm_evdev_event_process(struct libinput_event *event)
       case LIBINPUT_EVENT_TOUCH_FRAME:
         _device_handle_touch_frame(device, libinput_event_get_touch_event(event));
         break;
+      case LIBINPUT_EVENT_TOUCH_AUX_DATA:
+        _device_handle_touch_aux_data(device, libinput_event_get_touch_aux_data(event));
       default:
         ret = EINA_FALSE;
         break;
