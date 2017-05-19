@@ -1261,6 +1261,8 @@ _post_up_handle(Evas *eo_e, unsigned int timestamp, const void *data)
         ev_in.locks = &(e->locks);
         ev_in.timestamp = timestamp;
         ev_in.event_flags = e->default_event_flags;
+        ev_in.dev = _evas_device_top_get(eo_e);
+        if (ev_in.dev) evas_device_ref(ev_in.dev);
 
         EINA_LIST_FOREACH(ins, l, eo_obj_itr)
           {
@@ -1287,6 +1289,7 @@ _post_up_handle(Evas *eo_e, unsigned int timestamp, const void *data)
           }
         post_called = 1;
         _evas_post_event_callback_call(eo_e, e);
+        if (ev_in.dev) _evas_device_unref(ev_in.dev);
      }
    else
      {
