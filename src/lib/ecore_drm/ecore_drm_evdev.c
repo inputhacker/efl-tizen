@@ -1147,6 +1147,7 @@ _ecore_drm_evdev_event_process(struct libinput_event *event)
         break;
       case LIBINPUT_EVENT_TOUCH_AUX_DATA:
         _device_handle_touch_aux_data(device, libinput_event_get_touch_aux_data(event));
+        break;
       default:
         ret = EINA_FALSE;
         break;
