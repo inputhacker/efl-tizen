@@ -858,7 +858,6 @@ _ecore_wl_dnd_selection_data_read(void *data, Ecore_Fd_Handler *fd_handler EINA_
         close(read_source->read_fd);
         _ecore_wl_dnd_del(source);
         free(event->data);
-        free(buffer);
         free(event);
         return ECORE_CALLBACK_CANCEL;
      }
