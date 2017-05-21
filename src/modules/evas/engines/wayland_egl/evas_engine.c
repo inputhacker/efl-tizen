@@ -642,17 +642,6 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
 
    if ((!ctxt) && (!surface))
      {
-#ifdef SCORE_EGL_MOVE_TO_OTHER_THREAD
-        ret = eglMakeCurrent_evgl_thread_cmd(ob->egl_disp, EGL_NO_SURFACE,
-                                             EGL_NO_SURFACE, EGL_NO_CONTEXT);
-        if (!ret)
-          {
-             int err = eglGetError_evgl_thread_cmd();
-             glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
-             ERR("eglMakeCurrent failed! Error Code=%#x", err);
-             return 0;
-          }
-#else
         ret =
           eglMakeCurrent_thread_cmd(ob->egl_disp, EGL_NO_SURFACE,
                          EGL_NO_SURFACE, EGL_NO_CONTEXT);
@@ -663,30 +652,8 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
              ERR("eglMakeCurrent() failed! Error Code=%#x", err);
              return 0;
           }
-#endif
         return 1;
      }
-
-#ifdef SCORE_EGL_MOVE_TO_OTHER_THREAD
-   if ((eglGetCurrentContext_evgl_thread_cmd() != ctx) ||
-       (eglGetCurrentSurface_evgl_thread_cmd(EGL_READ) != surf) ||
-       (eglGetCurrentSurface_evgl_thread_cmd(EGL_DRAW) != surf) )
-     {
-        //!!!! Does it need to be flushed with it's set to NULL above??
-        // Flush remainder of what's in Evas' pipeline
-        //if (flush) eng_window_use(NULL);
-
-        ret = eglMakeCurrent_evgl_thread_cmd(ob->egl_disp, surf, surf, ctx);
-        if (!ret)
-          {
-             int err = eglGetError_evgl_thread_cmd();
-             glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
-             ERR("eglMakeCurrent() failed! Error Code=%#x", err);
-             return 0;
-          }
-     }
-
-#else
 
    if ((eglGetCurrentContext_thread_cmd() != ctx) ||
        (eglGetCurrentSurface_thread_cmd(EGL_READ) != surf) ||
@@ -703,9 +670,6 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
              return 0;
           }
      }
-
-#endif
-
    return 1;
 }
 
