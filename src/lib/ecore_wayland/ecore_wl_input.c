@@ -671,6 +671,14 @@ _ecore_wl_input_seat_handle_capabilities(void *data, struct wl_seat *seat, enum 
              input->cursor_surface =
                wl_compositor_create_surface(_ecore_wl_disp->wl.compositor);
           }
+        if (_ecore_wl_disp->wl.tz_policy)
+          {
+             if (input->cursor_surface)
+               {
+                  tizen_policy_set_role(_ecore_wl_disp->wl.tz_policy,
+                                        input->cursor_surface, "wl_pointer-cursor");
+               }
+          }
         if (!input->display->cursor_theme)
           {
              input->display->cursor_theme =
