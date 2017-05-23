@@ -283,7 +283,6 @@ _native_free_cb(void *data EINA_UNUSED, void *image)
    im->native.func.unbind = NULL;
    im->native.func.free   = NULL;
    im->native.func.data   = NULL;
-   im->image.data         = NULL;
    free(n);
 
    /*
