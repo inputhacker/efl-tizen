@@ -466,11 +466,13 @@ evgl_eng_window_surface_create(void *data, void *win)
    if (!(evgl_surface = (Evgl_wl_Surface *)win)) return NULL;
    if (!(evgl_surface->egl_win)) return NULL;
 
-   surface = eglCreateWindowSurface(ob->egl_disp, ob->egl_config,
+   surface = eglCreateWindowSurface_evgl_thread_cmd(ob->egl_disp, ob->egl_config,
                                     (EGLNativeWindowType)evgl_surface->egl_win, NULL);
    if (!surface)
      {
-        ERR("Could not create egl window surface: %#x", eglGetError());
+        int err = eglGetError_evgl_thread_cmd();
+        glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
+        ERR("Could not create egl window surface: %#x", err);
         return NULL;
      }
 
@@ -497,7 +499,7 @@ evgl_eng_window_surface_destroy(void *data, void *surface)
         glsym_evas_gl_common_error_set(data, EVAS_GL_BAD_SURFACE);
         return 0;
      }
-   eglDestroySurface(ob->egl_disp, (EGLSurface)surface);
+   eglDestroySurface_evgl_thread_cmd(ob->egl_disp, (EGLSurface)surface);
    return 1;
 }
 
@@ -568,26 +570,26 @@ evgl_eng_context_create(void *data, void *ctxt, Evas_GL_Context_Version version,
    if (ctxt)
      {
         context =
-          eglCreateContext(ob->egl_disp, ob->egl_config,
-                           (EGLContext)ctxt, attrs);
+            eglCreateContext_evgl_thread_cmd(ob->egl_disp, ob->egl_config,
+                                             (EGLContext)ctxt, attrs);
      }
 
    else if (version == EVAS_GL_GLES_1_X || version == EVAS_GL_GLES_3_X)
      {
         context =
-          eglCreateContext(ob->egl_disp, ob->egl_config,
-                           NULL, attrs);
+            eglCreateContext_evgl_thread_cmd(ob->egl_disp, ob->egl_config,
+                                             NULL, attrs);
      }
    else
      {
         context =
-          eglCreateContext(ob->egl_disp, ob->egl_config,
-                           ob->egl_context[0], attrs);
+            eglCreateContext_evgl_thread_cmd(ob->egl_disp, ob->egl_config,
+                                             ob->egl_context[0], attrs);
      }
 
    if (!context)
      {
-        int err = eglGetError();
+        int err = eglGetError_evgl_thread_cmd();
         ERR("Failed to create egl context: %#x", err);
         glsym_evas_gl_common_error_set(data, err - EGL_SUCCESS);
         return NULL;
@@ -616,7 +618,7 @@ evgl_eng_context_destroy(void *data, void *ctxt)
         return 0;
      }
 
-   eglDestroyContext(ob->egl_disp, (EGLContext)ctxt);
+   eglDestroyContext_evgl_thread_cmd(ob->egl_disp, (EGLContext)ctxt);
    return 1;
 }
 
@@ -643,11 +645,11 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
    if ((!ctxt) && (!surface))
      {
         ret =
-          eglMakeCurrent_thread_cmd(ob->egl_disp, EGL_NO_SURFACE,
+          eglMakeCurrent_evgl_thread_cmd(ob->egl_disp, EGL_NO_SURFACE,
                          EGL_NO_SURFACE, EGL_NO_CONTEXT);
         if (!ret)
           {
-             int err = eglGetError_thread_cmd();
+             int err = eglGetError_evgl_thread_cmd();
              glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
              ERR("eglMakeCurrent() failed! Error Code=%#x", err);
              return 0;
@@ -655,16 +657,16 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
         return 1;
      }
 
-   if ((eglGetCurrentContext_thread_cmd() != ctx) ||
-       (eglGetCurrentSurface_thread_cmd(EGL_READ) != surf) ||
-       (eglGetCurrentSurface_thread_cmd(EGL_DRAW) != surf))
+   if ((eglGetCurrentContext_evgl_thread_cmd() != ctx) ||
+       (eglGetCurrentSurface_evgl_thread_cmd(EGL_READ) != surf) ||
+       (eglGetCurrentSurface_evgl_thread_cmd(EGL_DRAW) != surf))
      {
         if (flush) eng_window_use(NULL);
 
-        ret = eglMakeCurrent_thread_cmd(ob->egl_disp, surf, surf, ctx);
+        ret = eglMakeCurrent_evgl_thread_cmd(ob->egl_disp, surf, surf, ctx);
         if (!ret)
           {
-             int err = eglGetError_thread_cmd();
+             int err = eglGetError_evgl_thread_cmd();
              glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
              ERR("eglMakeCurrent() failed! Error Code=%#x", err);
              return 0;
@@ -694,7 +696,7 @@ evgl_eng_string_get(void *data)
      }
    if (!(ob = eng_get_ob(re))) return NULL;
 
-   return eglQueryString(ob->egl_disp, EGL_EXTENSIONS);
+   return eglQueryString_evgl_thread_cmd(ob->egl_disp, EGL_EXTENSIONS);
 }
 
 static int
@@ -1291,7 +1293,7 @@ eng_gl_current_context_get(void *data EINA_UNUSED)
      return NULL;
 
 #ifdef GL_GLES
-   if (eglGetCurrentContext_thread_cmd() == (ctx->context))
+   if (eglGetCurrentContext_evgl_thread_cmd() == (ctx->context))
      return ctx;
    else
      return NULL;
@@ -1307,11 +1309,11 @@ static int
 eng_gl_error_get(void *data)
 {
    int err;
-
-   if ((err = glsym_evas_gl_common_error_get(data)) != EVAS_GL_SUCCESS)
+   err = glsym_evas_gl_common_error_get(data);
+   if (err != EVAS_GL_SUCCESS && err != EVAS_GL_NOT_INITIALIZED)
      goto end;
 
-   err = eglGetError() - EGL_SUCCESS;
+   err = eglGetError_evgl_thread_cmd() - EGL_SUCCESS;
 
 end:
    glsym_evas_gl_common_error_set(data, EVAS_GL_SUCCESS);
@@ -1359,7 +1361,7 @@ _native_cb_bind(void *data EINA_UNUSED, void *image)
                   if (glsym_glEGLImageTargetTexture2DOES)
                     {
                        glsym_glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, surface);
-                       if (eglGetError() != EGL_SUCCESS)
+                       if (eglGetError_thread_cmd() != EGL_SUCCESS)
                          ERR("glEGLImageTargetTexture2DOES() failed.");
                     }
                   else
@@ -1379,7 +1381,7 @@ _native_cb_bind(void *data EINA_UNUSED, void *image)
            if (glsym_glEGLImageTargetTexture2DOES)
               {
                 glsym_glEGLImageTargetTexture2DOES(GL_TEXTURE_EXTERNAL_OES, n->ns_data.tbm.surface);
-                if (eglGetError() != EGL_SUCCESS)
+                if (eglGetError_thread_cmd() != EGL_SUCCESS)
                   ERR("glEGLImageTargetTexture2DOES() failed.");
               }
             else

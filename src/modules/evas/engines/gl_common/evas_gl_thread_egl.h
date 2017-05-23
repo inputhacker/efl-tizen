@@ -75,6 +75,11 @@ EAPI EGLBoolean eglMakeCurrent_evgl_thread_cmd(EGLDisplay dpy, EGLSurface draw, 
 EAPI EGLContext eglGetCurrentContext_evgl_thread_cmd(void);
 EAPI EGLSurface eglGetCurrentSurface_evgl_thread_cmd(EGLint readdraw);
 EAPI EGLDisplay eglGetCurrentDisplay_evgl_thread_cmd(void);
+EAPI EGLSurface eglCreateWindowSurface_evgl_thread_cmd(EGLDisplay egl_disp, EGLConfig egl_config, EGLNativeWindowType egl_win, EGLint const * attrib_list);
+EAPI EGLSurface eglDestroySurface_evgl_thread_cmd(EGLDisplay egl_disp, EGLSurface egl_surf);
+EAPI EGLContext eglCreateContext_evgl_thread_cmd(EGLDisplay display, EGLConfig config, EGLContext share_context, EGLint const * attrib_list);
+EAPI EGLBoolean eglDestroyContext_evgl_thread_cmd(EGLDisplay display, EGLContext context);
+EAPI char const *eglQueryString_evgl_thread_cmd(EGLDisplay display,  EGLint name);
 
 
 #else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
@@ -118,6 +123,11 @@ extern EGLBoolean (*eglMakeCurrent_evgl_thread_cmd)(EGLDisplay dpy, EGLSurface d
 extern EGLContext (*eglGetCurrentContext_evgl_thread_cmd)(void);
 extern EGLSurface (*eglGetCurrentSurface_evgl_thread_cmd)(EGLint readdraw);
 extern EGLDisplay (*eglGetCurrentDisplay_evgl_thread_cmd)(void);
+extern EGLSurface (*eglCreateWindowSurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLConfig egl_config, EGLNativeWindowType egl_win, EGLint const * attrib_list);
+extern EGLSurface (*eglDestroySurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLSurface egl_surf);
+extern EGLContext (*eglCreateContext_evgl_thread_cmd)(EGLDisplay display, EGLConfig config, EGLContext share_context, EGLint const * attrib_list);
+extern EGLBoolean (*eglDestroyContext_evgl_thread_cmd)(EGLDisplay display, EGLContext context);
+extern char const *(*eglQueryString_evgl_thread_cmd)(EGLDisplay display,  EGLint name);
 
 
 

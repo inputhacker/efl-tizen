@@ -257,14 +257,14 @@ _gl_thread_eglGetProcAddress(void *data)
 EAPI void *
 eglGetProcAddress_thread_cmd(char const * procname)
 {
-   if (!evas_gl_thread_enabled())
+   if (!evas_evgl_thread_enabled())
      return eglGetProcAddress(procname);
 
    Evas_Thread_Command_eglGetProcAddress thread_data;
 
    thread_data.procname = procname;
 
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
                               _gl_thread_eglGetProcAddress,
                               &thread_data,
                               EVAS_GL_THREAD_MODE_FINISH);
@@ -752,6 +752,204 @@ eglGetCurrentDisplay_evgl_thread_cmd(void)
 }
 
 
+
+
+typedef struct
+{
+  EGLSurface return_value;
+   EGLDisplay egl_disp;
+   EGLConfig egl_config;
+   EGLNativeWindowType egl_win;
+   EGLint const * attrib_list;
+} Evas_GL_Thread_Command_eglCreateWindowSurface;
+
+static void
+_evgl_thread_eglCreateWindowSurface(void *data)
+{
+  Evas_GL_Thread_Command_eglCreateWindowSurface *thread_data = data;
+
+   thread_data->return_value = eglCreateWindowSurface(thread_data->egl_disp,
+                                                      thread_data->egl_config,
+                                                      thread_data->egl_win,
+                                                      thread_data->attrib_list);
+}
+
+EAPI EGLSurface
+eglCreateWindowSurface_evgl_thread_cmd(EGLDisplay egl_disp, EGLConfig egl_config,
+                                       EGLNativeWindowType egl_win, EGLint const * attrib_list)
+{
+   if (!evas_evgl_thread_enabled())
+     return eglCreateWindowSurface(egl_disp, egl_config,
+                                   egl_win, attrib_list);
+
+   Evas_GL_Thread_Command_eglCreateWindowSurface thread_data;
+
+   thread_data.egl_disp = egl_disp;
+   thread_data.egl_config = egl_config;
+   thread_data.egl_win = egl_win;
+   thread_data.attrib_list = attrib_list;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_eglCreateWindowSurface,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
+}
+
+typedef struct
+{
+  EGLBoolean return_value;
+  EGLDisplay egl_disp;
+  EGLSurface egl_surf;
+} Evas_GL_Thread_Command_eglDestroySurface;
+
+static void
+_evgl_thread_eglDestroySurface(void *data)
+{
+  Evas_GL_Thread_Command_eglDestroySurface *thread_data = data;
+
+   thread_data->return_value = eglDestroySurface(thread_data->egl_disp,
+                                                 thread_data->egl_surf);
+}
+
+EAPI EGLSurface
+eglDestroySurface_evgl_thread_cmd(EGLDisplay egl_disp, EGLSurface egl_surf)
+{
+   if (!evas_evgl_thread_enabled())
+     return eglDestroySurface(egl_disp, egl_surf);
+
+   Evas_GL_Thread_Command_eglDestroySurface thread_data;
+
+   thread_data.egl_disp = egl_disp;
+   thread_data.egl_surf = egl_surf;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_eglDestroySurface,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
+}
+
+
+typedef struct
+{
+  EGLContext return_value;
+  EGLDisplay display;
+  EGLConfig config;
+  EGLContext share_context;
+  EGLint const * attrib_list;
+} Evas_GL_Thread_Command_eglCreateContext;
+
+static void
+_evgl_thread_eglCreateContext(void *data)
+{
+  Evas_GL_Thread_Command_eglCreateContext *thread_data = data;
+
+  thread_data->return_value = eglCreateContext(thread_data->display,
+                                               thread_data->config,
+                                               thread_data->share_context,
+                                               thread_data->attrib_list);
+}
+
+EAPI EGLContext
+eglCreateContext_evgl_thread_cmd(EGLDisplay display,
+                                 EGLConfig config,
+                                 EGLContext share_context,
+                                 EGLint const * attrib_list)
+{
+   if (!evas_evgl_thread_enabled())
+     return eglCreateContext(display, config, share_context, attrib_list);
+
+   Evas_GL_Thread_Command_eglCreateContext thread_data;
+
+   thread_data.display = display;
+   thread_data.config = config;
+   thread_data.share_context = share_context;
+   thread_data.attrib_list = attrib_list;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_eglCreateContext,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
+}
+
+typedef struct
+{
+  EGLBoolean return_value;
+  EGLDisplay display;
+  EGLContext context;
+} Evas_GL_Thread_Command_eglDestroyContext;
+
+static void
+_evgl_thread_eglDestroyContext(void *data)
+{
+  Evas_GL_Thread_Command_eglDestroyContext *thread_data = data;
+
+  thread_data->return_value = eglDestroyContext(thread_data->display,
+                                               thread_data->context);
+}
+
+EAPI EGLBoolean
+eglDestroyContext_evgl_thread_cmd(EGLDisplay display,
+                                 EGLContext context)
+{
+   if (!evas_evgl_thread_enabled())
+     return eglDestroyContext(display, context);
+
+   Evas_GL_Thread_Command_eglDestroyContext thread_data;
+
+   thread_data.display = display;
+   thread_data.context = context;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_eglDestroyContext,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
+}
+
+
+typedef struct
+{
+  char const * return_value;
+  EGLDisplay display;
+  EGLint name;
+} Evas_GL_Thread_Command_eglQueryString;
+
+static void
+_evgl_thread_eglQueryString(void *data)
+{
+  Evas_GL_Thread_Command_eglQueryString *thread_data = data;
+
+  thread_data->return_value = eglQueryString(thread_data->display,
+                                               thread_data->name);
+}
+
+EAPI char const *
+eglQueryString_evgl_thread_cmd(EGLDisplay display,  EGLint name)
+{
+   if (!evas_evgl_thread_enabled())
+     return eglQueryString(display, name);
+
+   Evas_GL_Thread_Command_eglQueryString thread_data;
+
+   thread_data.display = display;
+   thread_data.name = name;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_eglQueryString,
+                              &thread_data,
+                              EVAS_GL_THREAD_MODE_FINISH);
+
+   return thread_data.return_value;
+}
+
+
 #else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
@@ -794,6 +992,11 @@ EGLBoolean (*eglMakeCurrent_evgl_thread_cmd)(EGLDisplay dpy, EGLSurface draw, EG
 EGLContext (*eglGetCurrentContext_evgl_thread_cmd)(void);
 EGLSurface (*eglGetCurrentSurface_evgl_thread_cmd)(EGLint readdraw);
 EGLDisplay (*eglGetCurrentDisplay_evgl_thread_cmd)(void);
+EGLSurface (*eglCreateWindowSurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLConfig egl_config, EGLNativeWindowType egl_win, EGLint const * attrib_list);
+EGLSurface (*eglDestroySurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLSurface egl_surf);
+EGLContext (*eglCreateContext_evgl_thread_cmd)(EGLDisplay display, EGLConfig config, EGLContext share_context, EGLint const * attrib_list);
+EGLBoolean (*eglDestroyContext_evgl_thread_cmd)(EGLDisplay display, EGLContext context);
+char const *(*eglQueryString_evgl_thread_cmd)(EGLDisplay display,  EGLint name);
 
 
 void _egl_thread_link_init()
@@ -839,6 +1042,13 @@ void _egl_thread_link_init()
    LINK2GENERIC(eglGetCurrentContext_evgl_thread_cmd);
    LINK2GENERIC(eglGetCurrentSurface_evgl_thread_cmd);
    LINK2GENERIC(eglGetCurrentDisplay_evgl_thread_cmd);
+   LINK2GENERIC(eglCreateWindowSurface_evgl_thread_cmd);
+   LINK2GENERIC(eglDestroySurface_evgl_thread_cmd);
+   LINK2GENERIC(eglCreateContext_evgl_thread_cmd);
+   LINK2GENERIC(eglDestroyContext_evgl_thread_cmd);
+   LINK2GENERIC(eglQueryString_evgl_thread_cmd);
+
+
 }
 
 #endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
