@@ -285,53 +285,15 @@ _wait_free_buffer(Tbmbuf_Surface *surface)
 {
    if (!surface) return;
 
-   struct wl_tbm *wl_tbm;
-   int i, num_surface;
-   tbm_surface_h surfaces[5];
-   struct wl_event_queue *queue = NULL;
-   struct wl_buffer *buffer;
-
    wl_display_dispatch_pending(surface->wl_display);
    if (sym_tbm_surface_queue_can_dequeue(surface->tbm_queue, 0))
       return;
 
    DBG("WAIT free buffer");
-   wl_tbm = sym_wayland_tbm_client_get_wl_tbm(surface->tbm_client);
-   if (!wl_tbm) {
-         ERR(" sym_wayland_tbm_client_get_wl_tbm() wl_tbm == NULL");
-         return;
-   }
-
-   queue = wl_display_create_queue((struct wl_display *)surface->wl_display);
-   if (!queue) {
-         ERR("wl_display_create_queue() queue == NULL");
-         return;
-   }
-
-   sym_tbm_surface_queue_get_surfaces(surface->tbm_queue, surfaces, &num_surface);
-   for(i=0; i<num_surface; i++) {
-         sym_tbm_surface_internal_get_user_data(surfaces[i], KEY_WL_BUFFER, (void **)&buffer);
-         if (buffer) {
-               wl_proxy_set_queue((struct wl_proxy*)buffer, queue);
-         }
-   }
-
-   wl_proxy_set_queue((struct wl_proxy*)wl_tbm, queue);
 
    while (!sym_tbm_surface_queue_can_dequeue(surface->tbm_queue, 0)) {
-         wl_display_dispatch_queue(surface->wl_display, queue);
+         wl_display_dispatch(surface->wl_display);
    }
-
-   for(i=0; i<num_surface; i++) {
-         sym_tbm_surface_internal_get_user_data(surfaces[i], KEY_WL_BUFFER, (void **)&buffer);
-         if (buffer) {
-               wl_proxy_set_queue((struct wl_proxy*)buffer, NULL);
-         }
-   }
-
-   wl_proxy_set_queue((struct wl_proxy*)wl_tbm, NULL);
-
-   wl_event_queue_destroy(queue);
 }
 
 static void
