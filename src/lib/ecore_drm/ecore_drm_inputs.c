@@ -143,7 +143,7 @@ _ecore_drm_seat_cap_to_ecore_device_class(unsigned int cap)
 }
 
 void
-_ecore_drm_device_info_send(unsigned int window, Ecore_Drm_Evdev *edev, Ecore_Device_Class clas, Eina_Bool flag)
+_ecore_drm_device_info_send(unsigned int window, Ecore_Drm_Evdev *edev, Ecore_Device_Class clas, Ecore_Device_Subclass subclas, Eina_Bool flag)
 {
    Ecore_Event_Device_Info *e;
 
@@ -153,6 +153,7 @@ _ecore_drm_device_info_send(unsigned int window, Ecore_Drm_Evdev *edev, Ecore_De
    e->identifier = eina_stringshare_add(edev->path);
    e->seatname = eina_stringshare_add(edev->seat->name);
    e->clas = clas;
+   e->subclas = subclas;
    e->window = window;
 
    if (flag)
@@ -229,19 +230,19 @@ _ecore_drm_device_add(unsigned int window, Ecore_Drm_Evdev *edev)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_POINTER);
         ret = _ecore_drm_device_add_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 1);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, ECORE_DEVICE_SUBCLASS_NONE, 1);
      }
    if (edev->seat_caps & EVDEV_SEAT_KEYBOARD)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_KEYBOARD);
         ret = _ecore_drm_device_add_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 1);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, ECORE_DEVICE_SUBCLASS_NONE, 1);
      }
    if (edev->seat_caps & EVDEV_SEAT_TOUCH)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_TOUCH);
         ret = _ecore_drm_device_add_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 1);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, ECORE_DEVICE_SUBCLASS_NONE, 1);
      }
 }
 
@@ -255,19 +256,19 @@ _ecore_drm_device_remove(unsigned int window, Ecore_Drm_Evdev *edev)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_POINTER);
         ret = _ecore_drm_device_del_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 0);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, ECORE_DEVICE_SUBCLASS_NONE, 0);
      }
    if (edev->seat_caps & EVDEV_SEAT_KEYBOARD)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_KEYBOARD);
         ret = _ecore_drm_device_del_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 0);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, ECORE_DEVICE_SUBCLASS_NONE, 0);
      }
    if (edev->seat_caps & EVDEV_SEAT_TOUCH)
      {
         clas = _ecore_drm_seat_cap_to_ecore_device_class(EVDEV_SEAT_TOUCH);
         ret = _ecore_drm_device_del_ecore_device(edev, clas);
-        if (ret) _ecore_drm_device_info_send(window, edev, clas, 0);
+        if (ret) _ecore_drm_device_info_send(window, edev, clas, ECORE_DEVICE_SUBCLASS_NONE, 0);
      }
 }
 

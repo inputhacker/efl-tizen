@@ -2056,7 +2056,7 @@ _ecore_wl_input_device_info_free(void *data EINA_UNUSED, void *ev)
 }
 
 void
-_ecore_wl_input_device_info_send(int win_id, const char *name,  const char *identifier, Ecore_Device_Class clas, Eina_Bool flag)
+_ecore_wl_input_device_info_send(int win_id, const char *name,  const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas, Eina_Bool flag)
 {
    Ecore_Event_Device_Info *e;
 
@@ -2066,6 +2066,7 @@ _ecore_wl_input_device_info_send(int win_id, const char *name,  const char *iden
    e->identifier = eina_stringshare_add(identifier);
    e->seatname = eina_stringshare_add(name);
    e->clas = clas;
+   e->subclas = subclas;
    e->window = win_id;
 
    if (flag)
@@ -2099,7 +2100,7 @@ _ecore_wl_input_get_ecore_device(Ecore_Wl_Input_Device *input_dev, Ecore_Device_
 }
 
 static Eina_Bool
-_ecore_wl_input_add_ecore_device(const char *name, const char *identifier, Ecore_Device_Class clas)
+_ecore_wl_input_add_ecore_device(const char *name, const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas)
 {
    const Eina_List *dev_list = NULL;
    const Eina_List *l;
@@ -2127,11 +2128,12 @@ _ecore_wl_input_add_ecore_device(const char *name, const char *identifier, Ecore
    ecore_device_description_set(dev, name);
    ecore_device_identifier_set(dev, identifier);
    ecore_device_class_set(dev, clas);
+   ecore_device_subclass_set(dev, subclas);
    return EINA_TRUE;
 }
 
 static Eina_Bool
-_ecore_wl_input_del_ecore_device(const char *name EINA_UNUSED, const char *identifier, Ecore_Device_Class clas)
+_ecore_wl_input_del_ecore_device(const char *name EINA_UNUSED, const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas)
 {
    const Eina_List *dev_list = NULL;
    const Eina_List *l;
@@ -2147,7 +2149,9 @@ _ecore_wl_input_del_ecore_device(const char *name EINA_UNUSED, const char *ident
          if (!dev) continue;
          ecdev_name = ecore_device_identifier_get(dev);
          if (!ecdev_name) continue;
-         if ((ecore_device_class_get(dev) == clas) && (!strcmp(ecdev_name, identifier)))
+         if ((ecore_device_class_get(dev) == clas) &&
+             (ecore_device_subclass_get(dev) == subclas) &&
+             (!strcmp(ecdev_name, identifier)))
            {
               ecore_device_del(dev);
               return EINA_TRUE;
@@ -2157,7 +2161,7 @@ _ecore_wl_input_del_ecore_device(const char *name EINA_UNUSED, const char *ident
 }
 
 void
-_ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, Ecore_Device_Class clas, Eina_Bool flag)
+_ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas, Eina_Bool flag)
 {
    Eina_Hash *windows = NULL;
    Eina_Iterator *itr;
@@ -2170,9 +2174,8 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
    if (!name) return;
 
    if (flag)
-     ret = _ecore_wl_input_add_ecore_device(name, identifier, clas);
-   else
-     ret = _ecore_wl_input_del_ecore_device(name, identifier, clas);
+     ret = _ecore_wl_input_add_ecore_device(name, identifier, clas, subclas);
+
 
    if (!ret) return;
    if (windows)
@@ -2182,15 +2185,18 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
           {
              win = data;
              has_win = EINA_TRUE;
-             _ecore_wl_input_device_info_send(win->id, name, identifier, clas, flag);
+             _ecore_wl_input_device_info_send(win->id, name, identifier, clas, subclas, flag);
           }
 
         eina_iterator_free(itr);
      }
    if (!has_win)
      {
-        _ecore_wl_input_device_info_send((uintptr_t)NULL, name, identifier, clas, flag);
+        _ecore_wl_input_device_info_send((uintptr_t)NULL, name, identifier, clas, subclas, flag);
      }
+
+    else
+     ret = _ecore_wl_input_del_ecore_device(name, identifier, clas, subclas);
 }
 
 static void
@@ -2256,9 +2262,9 @@ _ecore_wl_input_devices_send(Ecore_Wl_Input *input, Ecore_Wl_Window *win)
 
    EINA_LIST_FOREACH(input->devices, l, dev)
      {
-        ret = _ecore_wl_input_add_ecore_device(dev->name, dev->identifier, dev->clas);
+        ret = _ecore_wl_input_add_ecore_device(dev->name, dev->identifier, dev->clas, dev->subclas);
         DBG("ecore_device added.. dev->name:%s, dev->identifier:%s, ret:%d", dev->name? : "NULL", dev->identifier? : "NULL", ret);
-        _ecore_wl_input_device_info_send(win->id, dev->name, dev->identifier, dev->clas, EINA_TRUE);
+        _ecore_wl_input_device_info_send(win->id, dev->name, dev->identifier, dev->clas, dev->subclas, EINA_TRUE);
      }
 }
 
@@ -2311,7 +2317,7 @@ _ecore_wl_input_device_manager_cb_device_remove(void *data EINA_UNUSED, struct t
         if (!dev->identifier) continue;
         if ((!strcmp(dev->identifier, identifier)) && (seat == dev->seat) && (device == dev->tz_device))
           {
-             _ecore_wl_input_device_info_broadcast(dev->name, dev->identifier, dev->clas, EINA_FALSE);
+             _ecore_wl_input_device_info_broadcast(dev->name, dev->identifier, dev->clas, dev->subclas, EINA_FALSE);
 
              _ecore_wl_input_device_last_device_unset(dev);
 
@@ -2350,7 +2356,7 @@ _ecore_wl_input_device_cb_device_info(void *data, struct tizen_input_device *tiz
    dev->clas = (Ecore_Device_Class)clas;
    dev->subclas = (Ecore_Device_Subclass)subclas;
    dev->name = eina_stringshare_add(name);
-   _ecore_wl_input_device_info_broadcast(dev->name, dev->identifier, dev->clas, EINA_TRUE);
+   _ecore_wl_input_device_info_broadcast(dev->name, dev->identifier, dev->clas, dev->subclas, EINA_TRUE);
 }
 
 static void

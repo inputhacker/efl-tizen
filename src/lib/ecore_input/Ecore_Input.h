@@ -151,6 +151,7 @@ extern "C" {
         const char *identifier;
         const char *seatname;
         Ecore_Device_Class clas;
+        Ecore_Device_Subclass subclas;
      };
 
    /**

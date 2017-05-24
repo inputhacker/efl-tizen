@@ -810,7 +810,7 @@ ecore_event_evas_axis_update(void *data EINA_UNUSED, int type EINA_UNUSED, void 
 }
 
 static void
-_ecore_event_evas_add_evas_device(Evas *e, const char *name, const char *identifier, Ecore_Device_Class clas)
+_ecore_event_evas_add_evas_device(Evas *e, const char *name, const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas)
 {
    const Eina_List *dev_list = NULL;
    const Eina_List *l;
@@ -839,10 +839,11 @@ _ecore_event_evas_add_evas_device(Evas *e, const char *name, const char *identif
    evas_device_name_set(edev, name);
    evas_device_description_set(edev, identifier);
    evas_device_class_set(edev, (Evas_Device_Class)clas);
+   evas_device_subclass_set(edev, (Evas_Device_Subclass)subclas);
 }
 
 static void
-_ecore_event_evas_del_evas_device(Evas *e, const char *name EINA_UNUSED, const char *identifier, Ecore_Device_Class clas)
+_ecore_event_evas_del_evas_device(Evas *e, const char *name EINA_UNUSED, const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas)
 {
    const Eina_List *dev_list = NULL;
    const Eina_List *l;
@@ -860,7 +861,9 @@ _ecore_event_evas_del_evas_device(Evas *e, const char *name EINA_UNUSED, const c
         if (!edev) continue;
         edev_name = evas_device_description_get(edev);
         if (!edev_name) continue;
-        if ((evas_device_class_get(edev) == (Evas_Device_Class)clas) && (!strcmp(edev_name, identifier)))
+        if ((evas_device_class_get(edev) == (Evas_Device_Class)clas) &&
+            (evas_device_subclass_get(edev) == (Evas_Device_Subclass)subclas) &&
+            (!strcmp(edev_name, identifier)))
           {
              evas_device_del(edev);
              return;
@@ -879,7 +882,7 @@ ecore_event_evas_device_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *
    lookup = _ecore_event_window_match(e->window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
 
-   _ecore_event_evas_add_evas_device(lookup->evas, e->name, e->identifier, e->clas);
+   _ecore_event_evas_add_evas_device(lookup->evas, e->name, e->identifier, e->clas, e->subclas);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -895,7 +898,7 @@ ecore_event_evas_device_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *
    lookup = _ecore_event_window_match(e->window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
 
-   _ecore_event_evas_del_evas_device(lookup->evas, e->name, e->identifier, e->clas);
+   _ecore_event_evas_del_evas_device(lookup->evas, e->name, e->identifier, e->clas, e->subclas);
 
    return ECORE_CALLBACK_PASS_ON;
 }
