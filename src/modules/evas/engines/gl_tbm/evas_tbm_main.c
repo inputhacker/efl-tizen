@@ -338,11 +338,16 @@ eng_window_resurf(Outbuf *gw)
 void
 eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EINA_UNUSED)
 {
-   ob->w = w;
-   ob->h = h;
-   ob->rot = rot;
-   eng_window_use(ob);
-   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot,1);
+   if (ob->w != w || ob->h != h)
+     {
+        ob->w = w;
+        ob->h = h;
+        ob->rot = rot;
+        eng_window_use(ob);
+        glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot,1);
+
+        tbm_surface_queue_reset(ob->tbm_queue, w, h, TBM_FORMAT_ARGB8888);
+     }
 }
 
 int
