@@ -476,7 +476,8 @@ evas_outbuf_new(Evas_Engine_Info_GL_Drm *info, int w, int h, Render_Engine_Swap_
         return NULL;
      }
 
-   info->info.surface =  ob->surface;
+   /* HWC: set the gbm_surface to the engine_info */
+   if (info->info.hwc_enable) info->info.surface =  ob->surface;
 
    return ob;
 }
