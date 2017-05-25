@@ -614,6 +614,9 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth)
 
    if (depth == OUTBUF_DEPTH_INHERIT) depth = ob->depth;
 
+   ERR("##### soolim:: w=%d h=%d rot=%d depth=%d, ob->w=%d ob->h=%d, ob->depth=%d\n",
+       w, h, depth, ob->w, ob->h, ob->depth);
+
    epd = eo_data_scope_get(ob->evas, EVAS_CANVAS_CLASS);
    EINA_SAFETY_ON_NULL_RETURN(epd);
 
@@ -643,6 +646,8 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth)
         return;
      }
 
+   ERR("##### soolim:: create new outbuf\n");
+
    /* inherit the old ob's evas */
    nob->evas = ob->evas;
 
@@ -653,11 +658,11 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth)
 
    evas_outbuf_use(nob);
 
-   evas_render_engine_software_generic_update(&re->generic.software, nob, w, h);
+   evas_render_engine_software_generic_update(&re->generic.software, nob, ow, oh);
 
    re->generic.software.ob->gl_context->references--;
 
-   glsym_evas_gl_common_context_resize(nob->gl_context, w, h, rot, 1);
+   glsym_evas_gl_common_context_resize(nob->gl_context, ow, oh, rot, 1);
 }
 
 Render_Engine_Swap_Mode
