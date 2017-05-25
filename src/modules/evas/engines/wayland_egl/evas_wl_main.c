@@ -136,6 +136,14 @@ _orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int
    else if ((gw->rot == 90) || (gw->rot == 270))
      gw->win = wl_egl_window_create(gw->surface, gw->h, gw->w);
 
+   if (gw->win == NULL)
+     {
+       ERR("wl_egl_window_create() fail");
+       eng_window_free(gw);
+       return NULL;
+     }
+   gw->info->info.win = gw->win;
+
    gw->egl_surface[0] = 
      eglCreateWindowSurface(gw->egl_disp, gw->egl_config,
                             (EGLNativeWindowType)gw->win, NULL);
