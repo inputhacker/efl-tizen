@@ -614,8 +614,8 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth)
 
    if (depth == OUTBUF_DEPTH_INHERIT) depth = ob->depth;
 
-   ERR("##### soolim:: w=%d h=%d rot=%d depth=%d, ob->w=%d ob->h=%d, ob->depth=%d\n",
-       w, h, depth, ob->w, ob->h, ob->depth);
+   ERR("##### soolim:: w=%d h=%d rot=%d depth=%d, ob->w=%d ob->h=%d, ob->depth=%d, ob->rotation=%d\n",
+       w, h, rot, depth, ob->w, ob->h, ob->depth, ob->rotation);
 
    epd = eo_data_scope_get(ob->evas, EVAS_CANVAS_CLASS);
    EINA_SAFETY_ON_NULL_RETURN(epd);
