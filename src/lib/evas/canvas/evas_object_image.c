@@ -3413,7 +3413,9 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                     {
                       float ratio = ns->data.tbm.ratio;
 
-                      if (ratio > 0.01f || ratio == -1)
+                      if (ratio > 0.01f || ratio == -1 ||
+                          (obj->cur->geometry.w > o->cur->fill.w) ||
+                          (obj->cur->geometry.h > o->cur->fill.h))
                         {
                           // we need to draw a black rectangle underneath the video
                           // since image dimensions will be different from object dimensions in case of letterbox mode
@@ -3432,7 +3434,10 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                           ENFN->context_render_op_set(output, context, obj->cur->render_op);
                           ENFN->context_cutout_clear(ENDT, context);
                           ENFN->context_clip_unset(ENDT, context);
+                        }
 
+                      if (ratio > 0.01f || ratio == -1)
+                        {
                           ix = iy = 0;
                           int dstx, dsty;
                           if (ns->data.tbm.rot == EVAS_IMAGE_ORIENT_90 || ns->data.tbm.rot == EVAS_IMAGE_ORIENT_270)
@@ -3508,6 +3513,22 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                         }
                       else if ((obj->cur->geometry.w > o->cur->fill.w) ||
                           (obj->cur->geometry.h > o->cur->fill.h))
+                        {
+                          int dstx, dsty, dstw, dsth;
+                          if (ns->data.tbm.rot == EVAS_IMAGE_ORIENT_90 || ns->data.tbm.rot == EVAS_IMAGE_ORIENT_270)
+                            {
+                              dstx = o->cur->fill.x + (o->cur->fill.w - imageh) / 2;
+                              dsty = o->cur->fill.y + (o->cur->fill.h - imagew) / 2;
+                              dstw = imageh;
+                              dsth = imagew;
+                            }
+                          else
+                            {
+                              dstx = o->cur->fill.x + (o->cur->fill.w - imagew) / 2;
+                              dsty = o->cur->fill.y + (o->cur->fill.h - imageh) / 2;
+                              dstw = imagew;
+                              dsth = imageh;
+                            }
                         ENFN->image_draw(output,
                                          context,
                                          surface,
@@ -3515,12 +3536,13 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                                          0, 0,
                                          imagew,
                                          imageh,
-                                         o->cur->fill.x + (o->cur->fill.w - imagew) / 2,
-                                         o->cur->fill.y + (o->cur->fill.h - imageh) / 2,
-                                         imagew,
-                                         imageh,
+                                              dstx,
+                                              dsty,
+                                              dstw,
+                                              dsth,
                                          o->cur->smooth_scale,
                                          do_async);
+                        }
                       else
                         ENFN->image_draw(output,
                                          context,
