@@ -57,6 +57,8 @@ _tick_send(char val)
 {
    Msg *msg;
    void *ref;
+
+   if (!thq) return;
    msg = eina_thread_queue_send(thq, sizeof(Msg), &ref);
    msg->val = val;
    eina_thread_queue_send_done(thq, ref);
@@ -348,6 +350,8 @@ void
 _ecore_wl_animator_vsync_tick_quit(EINA_UNUSED void *data)
 {
    int i;
+
+   if (!tdm_thread) return;
 
    _tick_send(-1);
 
