@@ -43,8 +43,8 @@ _edje_object_message_handler_set(Eo *obj EINA_UNUSED, Edje *ed, Edje_Message_Han
    _edje_message_cb_set(ed, func, data);
 }
 
-EOLIAN void
-_edje_object_message_signal_process(Eo *obj EINA_UNUSED, Edje *ed)
+static void
+_edje_object_message_signal_process_do(Eo *obj EINA_UNUSED, Edje *ed)
 {
    Eina_List *l, *ln, *tmpq = NULL;
    Edje *lookup_ed;
@@ -129,11 +129,43 @@ end:
      tmp_msgq_restart = 1;
 }
 
+EOLIAN void
+_edje_object_message_signal_process(Eo *obj, Edje *ed, Eina_Bool recurse)
+{
+   Edje *sub_ed;
+   Eina_List *l;
+   Evas_Object *o;
+
+   _edje_object_message_signal_process_do(obj, ed);
+   if (!recurse) return;
+
+   EINA_LIST_FOREACH(ed->subobjs, l, o)
+     {
+        sub_ed = _edje_fetch(o);
+        if (!sub_ed) continue;
+
+        _edje_object_message_signal_process(o, sub_ed, EINA_TRUE);
+     }
+}
+
 EAPI void
 edje_message_signal_process(void)
 {
    _edje_message_queue_process();
 }
+
+EAPI void
+edje_object_message_signal_process(Edje_Object *obj)
+{
+   eo_do(obj, edje_obj_message_signal_process(EINA_FALSE));
+}
+
+EAPI void
+edje_object_message_signal_recursive_process(Edje_Object *obj)
+{
+   eo_do(obj, edje_obj_message_signal_process(EINA_TRUE));
+}
+
 
 static Eina_Bool
 _edje_dummy_timer(void *data EINA_UNUSED)

@@ -286,6 +286,33 @@ Edje object
  */
 EAPI Eina_Bool edje_object_mmap_set(Edje_Object *obj, const Eina_File *file, const char *group);
 
+/**
+ * @brief Processes an object's message queue.
+ *
+ * This function goes through the object message queue processing the pending
+ * messages for this specific Edje object. Normally they'd be processed only
+ * at idle time. Child objects will not be affected.
+ *
+ * @see edje_object_message_signal_recursive_process
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI void edje_object_message_signal_process(Edje_Object *obj);
+
+/**
+ * @brief Processes an object's message queue recursively.
+ *
+ * This function goes through the object message queue processing the pending
+ * messages for this specific Edje object. Normally they'd be processed only
+ * at idle time. This will also propagate the processing to all child objects.
+ *
+ * @see edje_object_message_signal_process
+ *
+ * @since_tizen 4.0
+ */
+EAPI void edje_object_message_signal_recursive_process(Edje_Object *obj);
 
 #include "edje_object.eo.legacy.h"
 #include "edje_edit.eo.legacy.h"
