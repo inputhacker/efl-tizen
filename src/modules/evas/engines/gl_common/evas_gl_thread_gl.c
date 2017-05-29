@@ -31,9 +31,15 @@
       int i, len = 0; \
       for (i = 0; i < count; i++) \
         { \
-           if (length) len = length[i]; \
-           else        len = strlen(string[i]); \
-           if ((unsigned int)len + 1 > _mp_default_memory_size) \
+           if (length) { \
+               len = length[i]; \
+               if (len < 0) \
+                  len = string[i] ? strlen(string[i]) : 0; \
+           } \
+           else  { \
+               len = string[i] ? strlen(string[i]) : 0; \
+           } \
+           if (len == 0 || ((unsigned int)len + 1 > _mp_default_memory_size )) \
              { \
                 thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
                 goto finish; \
@@ -46,8 +52,14 @@
            memset(thread_data->string_copied, 0x00, sizeof(char *) * count); \
            for (i = 0, len = 0; i < count; i++) \
              { \
-                if (length) len = length[i]; \
-                else        len = strlen(string[i]); \
+               if (length) { \
+                   len = length[i]; \
+                   if (len < 0) \
+                      len = string[i] ? strlen(string[i]) : 0; \
+               } \
+               else  { \
+                   len = string[i] ? strlen(string[i]) : 0; \
+               } \
                 thread_data->string_copied[i] = eina_mempool_malloc(_mp_default, len + 1); \
                 if (thread_data->string_copied[i]) \
                   { \
