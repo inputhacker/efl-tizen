@@ -49,6 +49,8 @@ _cb_close_restricted(int fd, void *data)
                }
           }
      }
+
+   if (fd >= 0) close(fd);
 }
 
 static Ecore_Drm_Seat *
