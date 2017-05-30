@@ -1266,7 +1266,7 @@ static inline int eina_hash_djb2_len(const char *key,
 
 /**
  * @brief
- * Hash function from http://www.concentric.net/~Ttwang/tech/inthash.htm
+ * Hash function from http://web.archive.org/web/20071223173210/http://www.concentric.net/~Ttwang/tech/inthash.htm
  *
  * @param pkey The key to hash
  * @param len The length of the key
@@ -1277,7 +1277,7 @@ static inline int eina_hash_int32(const unsigned int *pkey,
 
 /**
  * @brief
- * Hash function from http://www.concentric.net/~Ttwang/tech/inthash.htm
+ * Hash function from http://web.archive.org/web/20071223173210/http://www.concentric.net/~Ttwang/tech/inthash.htm
  *
  * @param pkey The key to hash
  * @param len The length of the key
