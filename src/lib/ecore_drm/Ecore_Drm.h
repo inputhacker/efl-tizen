@@ -1087,6 +1087,7 @@ EAPI Eina_Bool ecore_drm_evdev_key_remap_enable(Ecore_Drm_Evdev *edev, Eina_Bool
 EAPI Eina_Bool ecore_drm_evdev_key_remap_set(Ecore_Drm_Evdev *edev, int *from_keys, int *to_keys, int num);
 EAPI int ecore_drm_evdev_wheel_click_angle_get(Ecore_Drm_Evdev *dev);
 EAPI Ecore_Device *ecore_drm_evdev_get_ecore_device(const char *path, Ecore_Device_Class clas);
+EAPI Eina_Bool ecore_drm_evdev_touch_calibration_set(Ecore_Drm_Evdev *edev, float matrix[6]);
 
 typedef void (*Ecore_Drm_VBlank_Cb)(void *data);
 EAPI Eina_Bool  ecore_drm_output_wait_vblank(Ecore_Drm_Output *output, int interval, Ecore_Drm_VBlank_Cb func, void *data);
@@ -1105,6 +1106,8 @@ EAPI Eina_Bool ecore_drm_display_fb_hal_buffer_create(Ecore_Drm_Fb *fb);
 EAPI void ecore_drm_display_fb_hal_buffer_destroy(Ecore_Drm_Fb *fb);
 
 EAPI Eina_Bool ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation);
+EAPI Eina_Bool ecore_drm_evdev_device_rotate_set(Ecore_Drm_Device *dev, unsigned int rotation);
+EAPI Eina_Bool ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation);
 
 # ifdef __cplusplus
 }

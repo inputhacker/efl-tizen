@@ -1278,3 +1278,24 @@ ecore_drm_evdev_wheel_click_angle_get(Ecore_Drm_Evdev *dev)
    EINA_SAFETY_ON_NULL_RETURN_VAL(dev, -1);
    return libinput_device_config_scroll_get_wheel_click_angle(dev->device);
 }
+
+EAPI Eina_Bool
+ecore_drm_evdev_touch_calibration_set(Ecore_Drm_Evdev *edev, float matrix[6])
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(edev, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(edev->device, EINA_FALSE);
+
+   if (!libinput_device_config_calibration_has_matrix(edev->device) ||
+       !libinput_device_has_capability(edev->device, LIBINPUT_DEVICE_CAP_TOUCH))
+     return EINA_FALSE;
+
+   if (libinput_device_config_calibration_set_matrix(edev->device, matrix) !=
+       LIBINPUT_CONFIG_STATUS_SUCCESS)
+     {
+        WRN("Failed to set input transformation about device: %s\n",
+            libinput_device_get_name(edev->device));
+        return EINA_FALSE;
+     }
+
+   return EINA_TRUE;
+}
