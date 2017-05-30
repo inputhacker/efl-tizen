@@ -899,3 +899,70 @@ ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation)
      }
    return EINA_TRUE;
 }
+
+EAPI Eina_Bool
+ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation)
+{
+   Ecore_Drm_Seat *seat = NULL;
+   Ecore_Drm_Evdev *edev = NULL;
+   Eina_List *l = NULL, *l2 = NULL;
+   float matrix[6] = {0, };
+   float w = 0.0, h = 0.0;
+   Eina_Bool res = EINA_TRUE;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dev, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dev->seats, EINA_FALSE);
+
+   EINA_LIST_FOREACH(dev->seats, l, seat)
+     {
+        EINA_LIST_FOREACH(ecore_drm_seat_evdev_list_get(seat), l2, edev)
+          {
+             if (edev->seat_caps & EVDEV_SEAT_TOUCH)
+               {
+                  w = (float)edev->output->current_mode->width;
+                  h = (float)edev->output->current_mode->height;
+                  if (w == 0.0) w = 1.0;
+                  if (h == 0.0) h = 1.0;
+
+                  switch (rotation)
+                    {
+                       case 90:
+                         matrix[1] = -h/w;
+                         matrix[2] = h/w;
+                         matrix[3] = w/h;
+                         break;
+                       case 180:
+                         matrix[0] = -1.0;
+                         matrix[2] = 1.0;
+                         matrix[4] = -1.0;
+                         matrix[5] = 1.0;
+                         break;
+                       case 270:
+                         matrix[1] = h/w;
+                         matrix[3] = -w/h;
+                         matrix[5] = w/h;
+                         break;
+                       case 0:
+                         matrix[0] = 1.0;
+                         matrix[4] = 1.0;
+                         break;
+                       default:
+                         WRN("Please input valid angle(%d)\n", rotation);
+                         return;
+                    }
+
+                  if (!ecore_drm_evdev_touch_calibration_set(edev, matrix))
+                    {
+                       res = EINA_FALSE;
+                    }
+                  else
+                    {
+                       edev->touch.transform.rotation = rotation;
+                    }
+               }
+          }
+     }
+
+   return res;
+}
+

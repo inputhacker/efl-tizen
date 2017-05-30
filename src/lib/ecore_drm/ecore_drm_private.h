@@ -269,6 +269,16 @@ struct _Ecore_Drm_Evdev
 
    /* Ecore_Drm_Evdev_Capabilities caps; */
    Ecore_Drm_Seat_Capabilities seat_caps;
+
+   struct
+     {
+        struct
+          {
+             int rotation;
+             int x, y;
+             int w, h;
+          } transform;
+     } touch;
 };
 
 struct _Ecore_Drm_Sprite
