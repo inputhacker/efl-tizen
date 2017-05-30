@@ -900,14 +900,88 @@ ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation)
    return EINA_TRUE;
 }
 
+static void
+_ecore_drm_device_touch_matrix_identify(float result[6])
+{
+   result[0] = 1.0;
+   result[1] = 0.0;
+   result[2] = 0.0;
+   result[3] = 0.0;
+   result[4] = 1.0;
+   result[5] = 0.0;
+}
+
+static void
+_ecore_drm_device_touch_matrix_mulifly(float result[6], float m1[6], float m2[6])
+{
+   result[0] = m1[0] * m2 [0] + m1[1] * m2[3];
+   result[1] = m1[0] * m2 [1] + m1[1] * m2[4];
+   result[2] = m1[0] * m2 [2] + m1[1] * m2[5] + m1[2];
+   result[3] = m1[3] * m2 [0] + m1[4] * m2[3];
+   result[4] = m1[3] * m2 [1] + m1[4] * m2[4];
+   result[5] = m1[3] * m2 [2] + m1[4] * m2[5] + m1[5];
+}
+
+static void
+_ecore_drm_device_touch_matrix_rotation_get(float result[6], int degree, float w, float h)
+{
+   if (w == 0.0) w = 1.0;
+   if (h == 0.0) h = 1.0;
+
+   switch (degree)
+     {
+        case 90:
+          result[0] = 0.0;
+          result[1] = -h/w;
+          result[2] = h/w;
+          result[3] = w/h;
+          result[4] = 0.0;
+          result[5] = 0.0;
+          break;
+        case 180:
+          result[0] = -1.0;
+          result[1] = 0.0;
+          result[2] = 1.0;
+          result[3] = 0.0;
+          result[4] = -1.0;
+          result[5] = 1.0;
+          break;
+        case 270:
+          result[0] = 0.0;
+          result[1] = h/w;
+          result[2] = 0.0;
+          result[3] = -w/h;
+          result[4] = 0.0;
+          result[5] = w/h;
+          break;
+        case 0:
+          _ecore_drm_device_touch_matrix_identify(result);
+          break;
+        default:
+          WRN("Please input valid angle(%d)\n", degree);
+     }
+}
+
+static void
+_ecore_drm_device_touch_matrix_translate_get(float result[6], float x, float y, float w, float h, float default_w, float default_h)
+{
+   if (default_w == 0.0) default_w = 1.0;
+   if (default_h == 0.0) default_h = 1.0;
+
+   result[0] = w / default_w;
+   result[4] = h / default_h;
+   result[2] = x / default_w;
+   result[5] = y / default_h;
+}
+
 EAPI Eina_Bool
 ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation)
 {
    Ecore_Drm_Seat *seat = NULL;
    Ecore_Drm_Evdev *edev = NULL;
    Eina_List *l = NULL, *l2 = NULL;
-   float matrix[6] = {0, };
-   float w = 0.0, h = 0.0;
+   float mat_translate[6] = {0.0, }, mat_rotation[6] = {0.0, }, result[6] = {0.0, };
+   float default_w = 0.0, default_h = 0.0;
    Eina_Bool res = EINA_TRUE;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(dev, EINA_FALSE);
@@ -919,41 +993,33 @@ ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation
           {
              if (edev->seat_caps & EVDEV_SEAT_TOUCH)
                {
-                  w = (float)edev->output->current_mode->width;
-                  h = (float)edev->output->current_mode->height;
-                  if (w == 0.0) w = 1.0;
-                  if (h == 0.0) h = 1.0;
+                  default_w = (float)edev->output->current_mode->width;
+                  default_h = (float)edev->output->current_mode->height;
 
-                  switch (rotation)
+                  _ecore_drm_device_touch_matrix_identify(mat_translate);
+                  _ecore_drm_device_touch_matrix_identify(mat_rotation);
+                  _ecore_drm_device_touch_matrix_identify(result);
+
+                  if (edev->touch.transform.x || edev->touch.transform.y ||
+                      edev->touch.transform.w || edev->touch.transform.h)
                     {
-                       case 90:
-                         matrix[1] = -h/w;
-                         matrix[2] = h/w;
-                         matrix[3] = w/h;
-                         break;
-                       case 180:
-                         matrix[0] = -1.0;
-                         matrix[2] = 1.0;
-                         matrix[4] = -1.0;
-                         matrix[5] = 1.0;
-                         break;
-                       case 270:
-                         matrix[1] = h/w;
-                         matrix[3] = -w/h;
-                         matrix[5] = w/h;
-                         break;
-                       case 0:
-                         matrix[0] = 1.0;
-                         matrix[4] = 1.0;
-                         break;
-                       default:
-                         WRN("Please input valid angle(%d)\n", rotation);
-                         return;
+                       _ecore_drm_device_touch_matrix_translate_get(mat_translate,
+                                                                    (float)edev->touch.transform.x,
+                                                                    (float)edev->touch.transform.y,
+                                                                    (float)edev->touch.transform.w,
+                                                                    (float)edev->touch.transform.h,
+                                                                    default_w, default_h);
+
                     }
 
-                  if (!ecore_drm_evdev_touch_calibration_set(edev, matrix))
+                  _ecore_drm_device_touch_matrix_rotation_get(mat_rotation, rotation, default_w, default_h);
+
+                  _ecore_drm_device_touch_matrix_mulifly(result, mat_translate, mat_rotation);
+
+                  if (!ecore_drm_evdev_touch_calibration_set(edev, result))
                     {
                        res = EINA_FALSE;
+                       continue;
                     }
                   else
                     {
@@ -966,3 +1032,60 @@ ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation
    return res;
 }
 
+EAPI Eina_Bool
+ecore_drm_device_touch_transformation_set(Ecore_Drm_Device *dev, int offset_x, int offset_y, int w, int h)
+{
+   Ecore_Drm_Seat *seat = NULL;
+   Ecore_Drm_Evdev *edev = NULL;
+   Eina_List *l = NULL, *l2 = NULL;
+   float mat_translate[6] = {0.0, }, mat_rotation[6] = {0.0 }, result[6] = {0.0, };
+   float default_w, default_h;
+   Eina_Bool res = EINA_TRUE;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dev, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dev->seats, EINA_FALSE);
+   EINA_SAFETY_ON_TRUE_RETURN_VAL((w == 0) || (h == 0), EINA_FALSE);
+
+   EINA_LIST_FOREACH(dev->seats, l, seat)
+     {
+        EINA_LIST_FOREACH(ecore_drm_seat_evdev_list_get(seat), l2, edev)
+          {
+             if (edev->seat_caps & EVDEV_SEAT_TOUCH)
+               {
+                  default_w = (float)edev->output->current_mode->width;
+                  default_h = (float)edev->output->current_mode->height;
+
+                  _ecore_drm_device_touch_matrix_identify(mat_translate);
+                  _ecore_drm_device_touch_matrix_identify(mat_rotation);
+                  _ecore_drm_device_touch_matrix_identify(result);
+
+                  _ecore_drm_device_touch_matrix_translate_get(mat_translate,
+                                                               (float)offset_x, (float)offset_y,
+                                                               (float)w, (float)h, default_w, default_h);
+
+                  if (edev->touch.transform.rotation)
+                    {
+                       _ecore_drm_device_touch_matrix_rotation_get(mat_rotation,
+                                                                   edev->touch.transform.rotation,
+                                                                   default_w, default_h);
+                    }
+
+                  _ecore_drm_device_touch_matrix_mulifly(result, mat_translate, mat_rotation);
+
+                  if (!ecore_drm_evdev_touch_calibration_set(edev, result))
+                    {
+                       res = EINA_FALSE;
+                       continue;
+                    }
+                  else
+                    {
+                       edev->touch.transform.x = offset_x;
+                       edev->touch.transform.y = offset_y;
+                       edev->touch.transform.w = w;
+                       edev->touch.transform.h = h;
+                    }
+               }
+          }
+     }
+   return res;
+}

@@ -1108,6 +1108,7 @@ EAPI void ecore_drm_display_fb_hal_buffer_destroy(Ecore_Drm_Fb *fb);
 EAPI Eina_Bool ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation);
 EAPI Eina_Bool ecore_drm_evdev_device_rotate_set(Ecore_Drm_Device *dev, unsigned int rotation);
 EAPI Eina_Bool ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation);
+EAPI Eina_Bool ecore_drm_device_touch_transformation_set(Ecore_Drm_Device *dev, int offset_x, int offset_y, int w, int h);
 
 # ifdef __cplusplus
 }
