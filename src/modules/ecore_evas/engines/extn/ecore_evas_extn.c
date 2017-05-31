@@ -1109,19 +1109,18 @@ _ecore_evas_plug_cb_window_iconify_change(void *data, int type EINA_UNUSED, void
    Ecore_Wl_Event_Window_Iconify_State_Change *ev;
    Ecore_Evas_Engine_Buffer_Data *bdata;
 
-   ev = event;
-   ee = ecore_event_window_match(ev->win);
-
-   if (!ee) return ECORE_CALLBACK_PASS_ON;
-   if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
-
    ee2 = data;
    bdata = ee2->engine.extn.data;
    if(!bdata) return ECORE_CALLBACK_PASS_ON;
 
    extn = bdata->data;
-
    if(extn->extn_type_client == EXTN_TYPE_SHM) return ECORE_CALLBACK_PASS_ON;
+
+   ev = event;
+   ee = ecore_event_window_match(ev->win);
+
+   if (!ee) return ECORE_CALLBACK_PASS_ON;
+   if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
 
    if(extn->tizen_rs)
      {
