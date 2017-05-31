@@ -557,6 +557,11 @@ _evas_object_map_set(Eo *eo_obj, Evas_Object_Protected_Data *obj, const Evas_Map
      }
 
    evas_object_async_block(obj);
+
+   /* changed_pchange means map's change.
+    * This flag will be used to decide whether to redraw the map surface.
+    * And value of flag would be EINA_FALSE after rendering. */
+   obj->changed_pchange = EINA_TRUE;
    if ((!map) || (map->count < 4))
      {
         if (obj->map->surface)
