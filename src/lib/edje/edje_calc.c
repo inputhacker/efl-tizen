@@ -1737,7 +1737,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                     {
                        /* text.min: 0 1
                         * text.max: X X */
-                       int temp_h = TO_INT(params->eval.h);
+                       int temp_h;
                        int temp_w = TO_INT(params->eval.w);
 
                        if (min_calc_w > temp_w)
@@ -1746,18 +1746,22 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                            maxw && (*maxw > -1) && (*maxw < temp_w))
                          temp_w = *maxw;
 
-                       if (chosen_desc->text.max_y)
-                         {
-                            /* text.min: 0 1
-                             * text.max: X 1 */
-                            temp_h = INT_MAX / 10000;
-                         }
-                       else if (maxh && (*maxh > TO_INT(params->eval.h)))
+                       if (!chosen_desc->text.max_y && maxh && (*maxh > -1))
                          {
                             /* text.min: 0 1
                              * text.max: X 0
                              * And there is a limit for height. */
                             temp_h = *maxh;
+                         }
+                       else
+                         {
+                            /* text.min: 0 1
+                             * text.max: X 1
+                             * or
+                             * text.min: 0 1
+                             * text.max: X 0
+                             * And there is no a limit for height. */
+                            temp_h = INT_MAX / 10000;
                          }
 
                        /* If base width for calculation is 0,
