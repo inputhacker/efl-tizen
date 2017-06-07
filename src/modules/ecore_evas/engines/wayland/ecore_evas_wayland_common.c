@@ -509,6 +509,7 @@ _ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void
 
    if (!ee) return ECORE_CALLBACK_PASS_ON;
    if (!(wdata = ee->engine.data)) return ECORE_CALLBACK_PASS_ON;
+   if (ecore_wl_window_iconified_get(wdata->win)) return ECORE_CALLBACK_PASS_ON;
 
    output = ecore_wl_window_output_find(wdata->win);
    if (output != ev->output) return ECORE_CALLBACK_PASS_ON;
