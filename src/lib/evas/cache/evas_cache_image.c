@@ -435,12 +435,12 @@ _evas_cache_image_async_cancel(void *data)
         evas_cache_image_drop(ie);
         return;
      }
-   if (ie->flags.loaded) _evas_cache_image_async_end(ie);
    if (ie->references == 0)
      {
         _evas_cache_image_lru_add(ie);
         cache = ie->cache;
      }
+   if (ie->flags.loaded) _evas_cache_image_async_end(ie);
    if (cache) evas_cache_image_flush(cache);
 }
 
