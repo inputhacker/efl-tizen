@@ -950,6 +950,7 @@ evas_gl_common_image_map_draw(Evas_Engine_GL_Context *gc, Evas_GL_Image *im,
    Evas_GL_Texture *mtex = NULL;
    int r, g, b, a;
    int c, cx, cy, cw, ch;
+   int offset = 0;
 
    if (dc->mul.use)
      {
@@ -987,11 +988,16 @@ evas_gl_common_image_map_draw(Evas_Engine_GL_Context *gc, Evas_GL_Image *im,
         else mtex = NULL;
      }
 
-   evas_gl_common_context_image_map_push(gc, im->tex, npoints, p,
-                                         c, cx, cy, cw, ch,
-                                         mtex, mx, my, mw, mh, mask_smooth,
-                                         r, g, b, a, smooth, im->tex_only,
-                                         im->cs.space);
+   while (npoints >= 4)
+     {
+        evas_gl_common_context_image_map_push(gc, im->tex, npoints, &p[offset],
+                                              c, cx, cy, cw, ch,
+                                              mtex, mx, my, mw, mh, mask_smooth,
+                                              r, g, b, a, smooth, im->tex_only,
+                                              im->cs.space);
+        offset += 4;
+        npoints -= 4;
+     }
 }
 
 static void
