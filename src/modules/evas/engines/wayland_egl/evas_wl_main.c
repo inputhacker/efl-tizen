@@ -156,7 +156,7 @@ _orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int
      }
 
    //TIZEN_ONLY(20161121):Support PreRotation
-   if (getenv("EVAS_GL_PREROTATION") && glsym_wl_egl_win_get_capabilities)
+   if (!getenv("EVAS_GL_PREROTATION_DISABLE") && glsym_wl_egl_win_get_capabilities)
      {
         int prerotation_cap = EVAS_WL_EGL_WINDOW_CAPABILITY_NONE;
         prerotation_cap = glsym_wl_egl_win_get_capabilities(gw->win);
@@ -461,21 +461,23 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
    ob->w = w;
    ob->h = h;
    ob->rot = rot;
+   if (ob->support_pre_rotation && ob->gl_context->pre_rotated)
+     ob->rot = 0;
    eng_window_use(ob);
-   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot,1);
+   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, ob->rot,1);
 
    if (ob->win)
      {
         int aw, ah, dx = 0, dy = 0;
 
-        if ((ob->rot == 90) || (ob->rot == 270))
+        if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
           wl_egl_window_get_attached_size(ob->win, &ah, &aw);
         else
           wl_egl_window_get_attached_size(ob->win, &aw, &ah);
 
         if (ob->info->info.edges & 4) // resize from left
           {
-             if ((ob->rot == 90) || (ob->rot == 270))
+             if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
                dx = ah - h;
              else
                dx = aw - w;
@@ -483,16 +485,18 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
 
         if (ob->info->info.edges & 1) // resize from top
           {
-             if ((ob->rot == 90) || (ob->rot == 270))
+             if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
                dy = aw - w;
              else
                dy = ah - h;
           }
 
-        if ((ob->rot == 90) || (ob->rot == 270))
+        if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
           wl_egl_window_resize(ob->win, h, w, dx, dy);
         else
           wl_egl_window_resize(ob->win, w, h, dx, dy);
+
+
      }
 }
 
