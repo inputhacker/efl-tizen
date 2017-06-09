@@ -60,8 +60,11 @@ _evas_outbuf_setup(int w, int h, Evas_Engine_Info_Wayland_Shm *info)
    ob->depth = info->info.depth;
    ob->priv.destination_alpha = info->info.destination_alpha;
 
-   /* default to double buffer */
-   ob->num_buff = 2;
+   /* default buffer */
+   if (getenv("EVAS_WAYLAND_USE_SHMBUF"))
+     ob->num_buff = 2;
+   else
+     ob->num_buff = 3;
 
    /* check for any 'number of buffers' override in the environment */
    if ((num = getenv("EVAS_WAYLAND_SHM_BUFFERS")))

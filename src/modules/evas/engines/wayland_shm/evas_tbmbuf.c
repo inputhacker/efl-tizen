@@ -584,7 +584,7 @@ _evas_tbmbuf_surface_destroy(Surface *s)
 }
 
 Eina_Bool
-_evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff EINA_UNUSED)
+_evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
 {
    Tbmbuf_Surface *surf = NULL;
 
@@ -614,12 +614,15 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff EINA_UNUSED)
          goto err;
    }
 
+   /* check num_buff, not yet support single buffer */
+   if (num_buff == 1) num_buff = 2;
+
    /* create surface buffers */
    if (!s->info->info.tbm_queue)
       {
          s->info->info.tbm_queue = sym_wayland_tbm_client_create_surface_queue(surf->tbm_client,
                                                                        surf->wl_surface,
-                                                                       3,
+                                                                       num_buff,
                                                                        w, h,
                                                                        TBM_FORMAT_ARGB8888);
          surf->tbm_queue = s->info->info.tbm_queue;
