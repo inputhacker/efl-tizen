@@ -732,6 +732,12 @@ evas_ector_get(Evas_Public_Data *e)
    return e->engine.ector;
 }
 
+EAPI Evas_BiDi_Direction
+evas_language_direction_get(void)
+{
+   return evas_common_language_direction_get();
+}
+
 EAPI void
 evas_language_reinit(void)
 {
