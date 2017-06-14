@@ -6952,7 +6952,7 @@ _edje_object_part_text_valign_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *
    Edje_Real_Part *rp;
    Edje_Part_Description_Text *desc;
 
-   if (!part) return -1,0;
+   if (!part) return -1.0;
    rp = _edje_real_part_recursive_get(&ed, part);
    if (!rp) return -1.0;
    if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
