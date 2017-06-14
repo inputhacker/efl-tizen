@@ -371,7 +371,8 @@ eng_window_use(Outbuf *gw)
 
    if (_evas_gl_wl_window)
      {
-        if (eglGetCurrentContext_thread_cmd() != _evas_gl_wl_window->egl_context[0])
+        if ((eglGetCurrentContext_thread_cmd() != _evas_gl_wl_window->egl_context[0])
+            || (eglGetCurrentDisplay_thread_cmd() != _evas_gl_wl_window->egl_disp))
           force = EINA_TRUE;
      }
 

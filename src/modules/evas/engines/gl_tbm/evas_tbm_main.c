@@ -251,7 +251,8 @@ eng_window_use(Outbuf *gw)
 
    if (_evas_gl_wl_window)
      {
-        if (eglGetCurrentContext() != _evas_gl_wl_window->egl_context[0])
+        if ((eglGetCurrentContext() != _evas_gl_wl_window->egl_context[0])
+            || (eglGetCurrentDisplay() != _evas_gl_wl_window->egl_disp))
           force = EINA_TRUE;
      }
 
