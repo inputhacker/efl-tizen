@@ -116,7 +116,8 @@ _ecore_evas_wl_common_engine_info_rotation_set(Ecore_Evas *ee, Evas_Engine_Info 
 #ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
         Evas_Engine_Info_Wayland_Egl *einfo = (Evas_Engine_Info_Wayland_Egl *)info;
         einfo->info.rotation = (ee->rotation + wdata->output_rotation) % 360;
-        ecore_wl_window_buffer_transform_set(wdata->win, wdata->output_rotation / 90);
+        /* the buffer transform information will be set in side of gl when rendering finish */
+        einfo->window_rotation = ee->rotation;
         WRN("evas engine rotate: %d", einfo->info.rotation);
 #endif
      }
