@@ -986,8 +986,13 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
 
    if (!strcmp(interface, "wl_compositor"))
      {
+        if (version < 4)
+          client_version = version;
+        else
+          client_version = 4;
+
         ewd->wl.compositor =
-          wl_registry_bind(registry, id, &wl_compositor_interface, 3);
+          wl_registry_bind(registry, id, &wl_compositor_interface, client_version);
      }
    else if (!strcmp(interface, "wl_subcompositor"))
      {
