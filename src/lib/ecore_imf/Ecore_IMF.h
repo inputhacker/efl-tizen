@@ -2232,7 +2232,6 @@ EAPI Ecore_IMF_BiDi_Direction      ecore_imf_context_bidi_direction_get(Ecore_IM
  * @return the keyboard mode
  *
  * @since_tizen 4.0
- * @endif
  */
 EAPI Ecore_IMF_Input_Panel_Keyboard_Mode ecore_imf_context_keyboard_mode_get(Ecore_IMF_Context *ctx);
 
@@ -2251,7 +2250,6 @@ EAPI Ecore_IMF_Input_Panel_Keyboard_Mode ecore_imf_context_keyboard_mode_get(Eco
  * @param[in] prediction_hint The prediction hint string.
  *
  * @since_tizen 4.0
- * @endif
  */
 EAPI void                         ecore_imf_context_prediction_hint_set(Ecore_IMF_Context *ctx, const char *prediction_hint);
 
@@ -2271,7 +2269,6 @@ EAPI void                         ecore_imf_context_prediction_hint_set(Ecore_IM
  * @endcode
  *
  * @since_tizen 4.0
- * @endif
  */
 EAPI void                         ecore_imf_context_mime_type_accept_set(Ecore_IMF_Context *ctx, const char *mime_type);
 
