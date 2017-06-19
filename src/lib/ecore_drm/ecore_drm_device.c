@@ -993,8 +993,16 @@ ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation
           {
              if (edev->seat_caps & EVDEV_SEAT_TOUCH)
                {
-                  default_w = (float)edev->output->current_mode->width;
-                  default_h = (float)edev->output->current_mode->height;
+                  if (edev->output && edev->output->current_mode)
+                    {
+                       default_w = (float)edev->output->current_mode->width;
+                       default_h = (float)edev->output->current_mode->height;
+                    }
+                  else
+                    {
+                       default_w = 0.0;
+                       default_h = 0.0;
+                    }
 
                   _ecore_drm_device_touch_matrix_identify(mat_translate);
                   _ecore_drm_device_touch_matrix_identify(mat_rotation);
@@ -1052,8 +1060,16 @@ ecore_drm_device_touch_transformation_set(Ecore_Drm_Device *dev, int offset_x, i
           {
              if (edev->seat_caps & EVDEV_SEAT_TOUCH)
                {
-                  default_w = (float)edev->output->current_mode->width;
-                  default_h = (float)edev->output->current_mode->height;
+                  if (edev->output && edev->output->current_mode)
+                    {
+                       default_w = (float)edev->output->current_mode->width;
+                       default_h = (float)edev->output->current_mode->height;
+                    }
+                  else
+                    {
+                       default_w = 0.0;
+                       default_h = 0.0;
+                    }
 
                   _ecore_drm_device_touch_matrix_identify(mat_translate);
                   _ecore_drm_device_touch_matrix_identify(mat_rotation);
