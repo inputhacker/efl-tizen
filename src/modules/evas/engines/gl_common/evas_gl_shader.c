@@ -905,11 +905,10 @@ evas_gl_common_shader_flags_get(Evas_GL_Shared *shared, Shader_Type type,
         flags |= SHADER_FLAG_TEX;
         if (!tex->alpha && tex_only)
           {
-             if ((flags & SHADER_FLAG_EXTERNAL) || tex->pt->dyn.img)
+             // TIZEN_ONLY: the AFILL's policy for tizen
+             if ((flags & SHADER_FLAG_EXTERNAL) || (tex->pt->dyn.img))
                {
-                  // TIZEN_ONLY(20160529): Avoid AFILL flag set for gl_drm engine surface
-                  if(tex->im && tex->im->gc && !tex->im->gc->IsGLDRM)
-                    flags |= SHADER_FLAG_AFILL;
+                 flags |= SHADER_FLAG_AFILL;
                }
           }
      }

@@ -355,8 +355,6 @@ struct _Evas_Engine_GL_Context
    int gles_version;
 
    RGBA_Image *font_surface;
-   // TIZEN_ONLY(20160529): Set this flag for gl_drm engine surface
-   int IsGLDRM;
 
    //TIZEN_ONLY(20161121)
    // If set, the driver will rotate the buffer itself
