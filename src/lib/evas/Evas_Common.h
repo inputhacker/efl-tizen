@@ -494,6 +494,10 @@ typedef enum _Evas_Device_Subclass
    EVAS_DEVICE_SUBCLASS_TRACKPAD, /**< A trackpad style mouse @since 1.8 */
    EVAS_DEVICE_SUBCLASS_TRACKPOINT, /**< A trackpoint style mouse @since 1.8 */
    EVAS_DEVICE_SUBCLASS_TRACKBALL, /**< A trackball style mouse @since 1.8 */
+   // TIZEN_ONLY(20170620): Add new device subclasses.
+   EVAS_DEVICE_SUBCLASS_REMOCON, /**< A remote controller @since_tizen 4.0 */
+   EVAS_DEVICE_SUBCLASS_VIRTUAL_KEYBOARD /**< A virtual keyboard @since_tizen 4.0*/
+   //
 } Evas_Device_Subclass; /**< A general subclass of device @since 1.8 */
 
 struct _Evas_Engine_Info /** Generic engine information. Generic info is useless */
