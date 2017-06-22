@@ -334,7 +334,7 @@ struct _EVGL_Engine
 
    const EVGL_Interface     *funcs;
 
-   EVGL_Cap            caps;
+   EVGL_Cap            caps[3];
 
    const char         *gl_ext;
    const char         *evgl_ext;
