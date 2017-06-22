@@ -351,7 +351,7 @@ _ecore_wl_animator_vsync_tick_quit(EINA_UNUSED void *data)
 {
    int i;
 
-   if (!tdm_thread) return;
+   if (!thq) return;
 
    _tick_send(-1);
 
@@ -380,8 +380,8 @@ _ecore_wl_animator_vsync_tick_begin(EINA_UNUSED void *data)
                                                     _tdm_tick_finished,
                                                     _tdm_tick_finished,
                                                     NULL, EINA_TRUE);
+             tick_queue_count = 0;
           }
-        tick_queue_count = 0;
         _tick_send(1);
      }
    else
@@ -391,8 +391,8 @@ _ecore_wl_animator_vsync_tick_begin(EINA_UNUSED void *data)
 void
 _ecore_wl_animator_vsync_tick_end(EINA_UNUSED void *data)
 {
+   if (!thq) return;
    tdm_event_is_busy = 0;
-   tick_queue_count = 0;
    _tick_send(0);
 }
 
