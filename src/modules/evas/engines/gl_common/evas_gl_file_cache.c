@@ -1,4 +1,7 @@
 #include "evas_gl_private.h"
+// TIZEN_ONLY(20171110) : FBO capa test for each version
+#define EVAS_GL_NO_GL_H_CHECK 1
+#include "Evas_GL.h"
 
 static mode_t default_mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
 
@@ -83,8 +86,9 @@ evas_gl_common_file_cache_dir_check(char *cache_dir, int num)
    return evas_gl_common_file_cache_file_exists(cache_dir);
 }
 
+// TIZEN_ONLY(20171110) : FBO capa test for each version
 int
-evas_gl_common_file_cache_file_check(const char *cache_dir, const char *cache_name, char *cache_file, int dir_num)
+evas_gl_common_file_cache_file_check(const char *cache_dir, const char *cache_name, char *cache_file, int dir_num, Evas_GL_Context_Version gles_version)
 {
    char before_name[PATH_MAX];
    char after_name[PATH_MAX];
@@ -103,7 +107,12 @@ evas_gl_common_file_cache_file_check(const char *cache_dir, const char *cache_na
    if (!driver)  driver  = "-UNKNOWN-";
    if (!version) version = "-UNKNOWN-";
 
-   new_path_len = snprintf(before_name, sizeof(before_name), "%s::%s::%s::%s.%d::%s.eet",
+   // TIZEN_ONLY(20171110) : FBO capa test for each version
+   if (!strcmp(cache_name, "surface_cap"))
+     new_path_len = snprintf(before_name, sizeof(before_name), "%s::%s::%s::%s.%d::%s::%d.eet",
+                           vendor, version, driver, MODULE_ARCH, evas_version->micro, cache_name, gles_version);
+   else
+     new_path_len = snprintf(before_name, sizeof(before_name), "%s::%s::%s::%s.%d::%s.eet",
                            vendor, version, driver, MODULE_ARCH, evas_version->micro, cache_name);
 
    /* remove '/' from file name */

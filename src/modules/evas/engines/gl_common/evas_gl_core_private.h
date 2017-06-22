@@ -128,9 +128,9 @@ struct _EVGL_Surface
    unsigned buffers_skip_allocate : 1;
    unsigned buffers_allocated : 1;
 
-   void   *cfg;
-   int     cfg_index;
-
+   // TIZEN_ONLY(20171110) : FBO capa test for each version
+   Evas_GL_Config cfg;
+   int            cfg_index;
 
    // Rough estimate of buffer in memory per renderbuffer
    // 0. color 1. depth 2. stencil 3. depth_stencil
@@ -323,7 +323,8 @@ struct _EVGL_Engine
 
    const EVGL_Interface     *funcs;
 
-   EVGL_Cap            caps;
+   // TIZEN_ONLY(20171110) : FBO capa test for each version
+   EVGL_Cap            caps[3];
 
    const char         *gl_ext;
    const char         *evgl_ext;

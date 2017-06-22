@@ -634,12 +634,15 @@ static void
 _evgl_glEnable(GLenum cap)
 {
    EVGL_Context *ctx;
+   int caps_idx;
 
    ctx = evas_gl_common_current_context_get();
 
    if (ctx && (cap == GL_SCISSOR_TEST))
      {
         ctx->scissor_enabled = 1;
+        // TIZEN_ONLY(20171110) : FBO capa test for each version
+        caps_idx = ctx->version - 1;
 
         if (_evgl_direct_enabled())
           {
@@ -691,7 +694,8 @@ _evgl_glEnable(GLenum cap)
                   else if (ctx->direct_scissor)
                     {
                        // Back to the default scissors (here: max texture size)
-                       glScissor(0, 0, evgl_engine->caps.max_w, evgl_engine->caps.max_h);
+                      // TIZEN_ONLY(20171110) : FBO capa test for each version
+                       glScissor(0, 0, evgl_engine->caps[caps_idx].max_w, evgl_engine->caps[caps_idx].max_h);
                     }
                   ctx->direct_scissor = 0;
                }

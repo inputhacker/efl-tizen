@@ -25,7 +25,7 @@ typedef void           *(*glsym_func_void_ptr) ();
 glsym_func_void_ptr glsym_evas_gl_native_context_get = NULL;
 glsym_func_void_ptr glsym_evas_gl_engine_data_get = NULL;
 
-static void _surface_cap_print(int error);
+static void _surface_cap_print(int error, Evas_GL_Context_Version version);
 static void _surface_context_list_print();
 static void _internal_resources_destroy(void *eng_data, EVGL_Resource *rsc);
 static void *_egl_image_create(EVGL_Context *context, int target, void *buffer);
@@ -147,7 +147,7 @@ _internal_resource_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context 
           {
              if (!sfc->indirect_sfc)
                {
-                  evgl_engine->funcs->indirect_surface_create(evgl_engine, eng_data, sfc, sfc->cfg, sfc->w, sfc->h);
+                  evgl_engine->funcs->indirect_surface_create(evgl_engine, eng_data, sfc, &sfc->cfg, sfc->w, sfc->h);
                   if (sfc->egl_image) _egl_image_destroy(sfc->egl_image);
                   sfc->egl_image = _egl_image_create(NULL, EVAS_GL_NATIVE_PIXMAP, sfc->indirect_sfc_native);
                }
@@ -230,7 +230,7 @@ _texture_create(GLuint *tex)
 
 // Create and allocate 2D texture
 static void
-_texture_allocate_2d(GLuint tex, GLint ifmt, GLenum fmt, GLenum type, int w, int h)
+_texture_allocate_2d(GLuint tex, GLint ifmt, GLenum fmt, GLenum type, int w, int h, int version)
 {
    //if (!(*tex))
    //   glGenTextures(1, tex);
@@ -266,42 +266,98 @@ _texture_destroy(GLuint *tex)
 static void
 _texture_attach_2d(GLuint tex, GLenum attach, GLenum attach2, int samples, Evas_GL_Context_Version version)
 {
-   if (samples && (version == EVAS_GL_GLES_2_X))
+   if (EVAS_GL_GLES_2_X == version)
      {
-#ifdef GL_GLES
-        if (EXT_FUNC(glFramebufferTexture2DMultisample))
+        if (samples)
           {
-             EXT_FUNC(glFramebufferTexture2DMultisample)(GL_FRAMEBUFFER,
-                                                         attach,
-                                                         GL_TEXTURE_2D, tex,
-                                                         0, samples);
+#ifdef GL_GLES
+             if (EXT_FUNC(glFramebufferTexture2DMultisampleEXT))
+               {
+                  EXT_FUNC(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                                                              attach,
+                                                              GL_TEXTURE_2D, tex,
+                                                              0, samples);
+
+                  if (attach2)
+                    EXT_FUNC(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                                                                attach2,
+                                                                GL_TEXTURE_2D, tex,
+                                                                0, samples);
+               }
+             else
+#endif
+             ERR("MSAA not supported.  Should not have come in here...!");
+           }
+        else
+          {
+             glFramebufferTexture2D(GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
 
              if (attach2)
-               EXT_FUNC(glFramebufferTexture2DMultisample)(GL_FRAMEBUFFER,
-                                                           attach2,
-                                                           GL_TEXTURE_2D, tex,
-                                                           0, samples);
+               glFramebufferTexture2D(GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
+          }
+     }
+   else if (EVAS_GL_GLES_3_X == version)
+     {
+        if (samples)
+          {
+#ifdef GL_GLES
+             if (EXT_FUNC_GLES3(glFramebufferTexture2DMultisampleEXT))
+               {
+                  EXT_FUNC_GLES3(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                                                                    attach,
+                                                                    GL_TEXTURE_2D, tex,
+                                                                    0, samples);
+
+                  if (attach2)
+                    EXT_FUNC_GLES3(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                                                                      attach2,
+                                                                      GL_TEXTURE_2D, tex,
+                                                                      0, samples);
+               }
+             else
+#endif
+             ERR("MSAA not supported.  Should not have come in here...!");
+           }
+        else
+          {
+             glFramebufferTexture2D(GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
+
+             if (attach2)
+               glFramebufferTexture2D(GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
+          }
+     }
+   else if (EVAS_GL_GLES_1_X == version)
+     {
+        if (samples)
+          {
+#ifdef GL_GLES
+             if (EXT_FUNC_GLES1(glFramebufferTexture2DMultisampleEXT))
+               {
+                  EXT_FUNC_GLES1(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                                                              attach,
+                                                              GL_TEXTURE_2D, tex,
+                                                              0, samples);
+
+                  if (attach2)
+                    EXT_FUNC_GLES1(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                                                                attach2,
+                                                                GL_TEXTURE_2D, tex,
+                                                                0, samples);
+               }
+             else
+#endif
+             ERR("MSAA not supported.  Should not have come in here...!");
+
           }
         else
-#endif
-        ERR("MSAA not supported.  Should not have come in here...!");
-     }
-   else if (version == EVAS_GL_GLES_1_X)
-     {
-        if (EXT_FUNC_GLES1(glFramebufferTexture2DOES))
-          EXT_FUNC_GLES1(glFramebufferTexture2DOES)(GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
+          {
+             if (EXT_FUNC_GLES1(glFramebufferTexture2DOES))
+               EXT_FUNC_GLES1(glFramebufferTexture2DOES)(GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
 
-        if (attach2)
-          if (EXT_FUNC_GLES1(glFramebufferTexture2DOES))
-            EXT_FUNC_GLES1(glFramebufferTexture2DOES)(GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
-     }
-   else
-     {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
-
-        if (attach2)
-           glFramebufferTexture2D(GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
-
+             if (attach2)
+               if (EXT_FUNC_GLES1(glFramebufferTexture2DOES))
+                 EXT_FUNC_GLES1(glFramebufferTexture2DOES)(GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
+          }
      }
 }
 
@@ -369,7 +425,7 @@ _framebuffer_create(GLuint *buf, Evas_GL_Context_Version version)
    if (version == EVAS_GL_GLES_1_X)
      {
         if (EXT_FUNC_GLES1(glGenFramebuffersOES))
-            EXT_FUNC_GLES1(glGenFramebuffersOES)(1, buf);
+          EXT_FUNC_GLES1(glGenFramebuffersOES)(1, buf);
      }
    else
      {
@@ -405,6 +461,20 @@ _framebuffer_read_bind(GLuint buf, Evas_GL_Context_Version version)
 {
    if (version == EVAS_GL_GLES_3_X)
      glBindFramebuffer(GL_READ_FRAMEBUFFER, buf);
+}
+
+static void
+_framebuffer_delete(GLuint *buf, Evas_GL_Context_Version version)
+{
+   if (version == EVAS_GL_GLES_1_X)
+     {
+        if (EXT_FUNC_GLES1(glDeleteFramebuffersOES))
+          EXT_FUNC_GLES1(glDeleteFramebuffersOES)(1, buf);
+     }
+   else
+     {
+        glDeleteFramebuffers(1, buf);
+     }
 }
 
 static GLenum
@@ -452,7 +522,10 @@ _renderbuffer_allocate(GLuint buf, GLenum fmt, int w, int h, int samples, Evas_G
 
         if (samples)
 #ifdef GL_GLES
-          EXT_FUNC(glRenderbufferStorageMultisample)(GL_RENDERBUFFER, samples, fmt, w, h);
+          {
+            if (EXT_FUNC_GLES1(glRenderbufferStorageMultisampleEXT))
+              EXT_FUNC_GLES1(glRenderbufferStorageMultisampleEXT)(GL_RENDERBUFFER, samples, fmt, w, h);
+          }
 #else
           ERR("MSAA not supported.  Should not have come in here...!");
 #endif
@@ -464,14 +537,37 @@ _renderbuffer_allocate(GLuint buf, GLenum fmt, int w, int h, int samples, Evas_G
 
         if (EXT_FUNC_GLES1(glBindRenderbufferOES))
           EXT_FUNC_GLES1(glBindRenderbufferOES)(GL_RENDERBUFFER, 0);
-     }
+      }
+   else if (version == EVAS_GL_GLES_3_X)
+     {
+         glBindRenderbuffer(GL_RENDERBUFFER, buf);
+
+        if (samples)
+#ifdef GL_GLES
+          {
+             if (EXT_FUNC_GLES3(glRenderbufferStorageMultisampleEXT))
+               EXT_FUNC_GLES3(glRenderbufferStorageMultisampleEXT)(GL_RENDERBUFFER, samples, fmt, w, h);
+          }
+#else
+          ERR("MSAA not supported.  Should not have come in here...!");
+#endif
+        else
+          {
+             glRenderbufferStorage(GL_RENDERBUFFER, fmt, w, h);
+          }
+
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    }
    else
      {
         glBindRenderbuffer(GL_RENDERBUFFER, buf);
 
         if (samples)
 #ifdef GL_GLES
-          EXT_FUNC(glRenderbufferStorageMultisample)(GL_RENDERBUFFER, samples, fmt, w, h);
+          {
+             if (EXT_FUNC(glRenderbufferStorageMultisampleEXT))
+               EXT_FUNC(glRenderbufferStorageMultisampleEXT)(GL_RENDERBUFFER, samples, fmt, w, h);
+          }
 #else
           ERR("MSAA not supported.  Should not have come in here...!");
 #endif
@@ -520,10 +616,9 @@ _renderbuffer_attach(GLuint buf, GLenum attach, Evas_GL_Context_Version version)
 }
 
 // Check whether the given FBO surface config is supported by the driver
-// TODO - we also should test with GLES3's formats.
 static int
 _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
-                      GLenum depth_fmt, GLenum stencil_fmt, int mult_samples)
+                      GLenum depth_fmt, GLenum stencil_fmt, int mult_samples, Evas_GL_Context_Version version)
 {
    GLuint fbo = 0;
    GLuint color_buf = 0;
@@ -533,47 +628,35 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
    int depth_stencil = 0;
    int fb_status = 0;
    int w = 2, h = 2;   // Test it with a simple (2,2) surface.  Should I test it with NPOT?
-   Evas_GL_Context_Version ver = evas_gl_common_version_check(NULL);
+   int ret = 1;
 
    // Gen FBO
-   glGenFramebuffers(1, &fbo);
-   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-   // FIXME: GLES 3 support for MSAA is NOT IMPLEMENTED!
-   // Needs to use RenderbufferStorageMultisample + FramebufferRenderbuffer
+   _framebuffer_create(&fbo, version);
+   _framebuffer_bind(fbo, version);
 
    // Color Buffer Texture
    if ((color_ifmt) && (color_fmt))
      {
         _texture_create(&color_buf);
-        _texture_allocate_2d(color_buf, color_ifmt, color_fmt, GL_UNSIGNED_BYTE, w, h);
-        _texture_attach_2d(color_buf, GL_COLOR_ATTACHMENT0, 0, mult_samples, ver);
+        _texture_allocate_2d(color_buf, color_ifmt, color_fmt, GL_UNSIGNED_BYTE, w, h, version);
+        _texture_attach_2d(color_buf, GL_COLOR_ATTACHMENT0, 0, mult_samples, version);
      }
 
       // Check Depth_Stencil Format First
 #ifdef GL_GLES
-   if ((depth_fmt == GL_DEPTH_STENCIL_OES) && (!mult_samples))
-     {
-        _texture_create(&depth_stencil_buf);
-        _texture_allocate_2d(depth_stencil_buf, depth_fmt,
-                           depth_fmt, GL_UNSIGNED_INT_24_8_OES, w, h);
-        _texture_attach_2d(depth_stencil_buf, GL_DEPTH_ATTACHMENT,
-                           GL_STENCIL_ATTACHMENT, mult_samples, EINA_FALSE);
-        depth_stencil = 1;
-     }
-   else if ((depth_fmt == GL_DEPTH24_STENCIL8_OES) && (mult_samples))
+   if (depth_fmt == GL_DEPTH24_STENCIL8_OES)
 #else
    if (depth_fmt == GL_DEPTH24_STENCIL8)
 #endif
      {
        // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
-        _renderbuffer_create(&depth_stencil_buf, EVAS_GL_GLES_2_X);
-        _renderbuffer_allocate(depth_stencil_buf, depth_fmt, w, h, mult_samples, EVAS_GL_GLES_2_X);
+        _renderbuffer_create(&depth_stencil_buf, version);
+        _renderbuffer_allocate(depth_stencil_buf, depth_fmt, w, h, mult_samples, version);
 #ifdef GL_GLES
-        _renderbuffer_attach(depth_stencil_buf, GL_DEPTH_ATTACHMENT, EVAS_GL_GLES_2_X);
-        _renderbuffer_attach(depth_stencil_buf, GL_STENCIL_ATTACHMENT, EVAS_GL_GLES_2_X);
+        _renderbuffer_attach(depth_stencil_buf, GL_DEPTH_ATTACHMENT, version);
+        _renderbuffer_attach(depth_stencil_buf, GL_STENCIL_ATTACHMENT, version);
 #else
-        _renderbuffer_attach(depth_stencil_buf, GL_DEPTH_STENCIL_ATTACHMENT, EVAS_GL_GLES_2_X);
+        _renderbuffer_attach(depth_stencil_buf, GL_DEPTH_STENCIL_ATTACHMENT, version);
 #endif
         depth_stencil = 1;
      }
@@ -581,35 +664,21 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
    // Depth Attachment
    if ((!depth_stencil) && (depth_fmt))
      {
-        _renderbuffer_create(&depth_buf, EVAS_GL_GLES_2_X);
-        _renderbuffer_allocate(depth_buf, depth_fmt, w, h, mult_samples, EVAS_GL_GLES_2_X);
-        _renderbuffer_attach(depth_buf, GL_DEPTH_ATTACHMENT, EVAS_GL_GLES_2_X);
+        _renderbuffer_create(&depth_buf, version);
+        _renderbuffer_allocate(depth_buf, depth_fmt, w, h, mult_samples, version);
+        _renderbuffer_attach(depth_buf, GL_DEPTH_ATTACHMENT, version);
      }
 
    // Stencil Attachment
    if ((!depth_stencil) && (stencil_fmt))
      {
-        _renderbuffer_create(&stencil_buf, EVAS_GL_GLES_2_X);
-        _renderbuffer_allocate(stencil_buf, stencil_fmt, w, h, mult_samples, EVAS_GL_GLES_2_X);
-        _renderbuffer_attach(stencil_buf, GL_STENCIL_ATTACHMENT, EVAS_GL_GLES_2_X);
+        _renderbuffer_create(&stencil_buf, version);
+        _renderbuffer_allocate(stencil_buf, stencil_fmt, w, h, mult_samples, version);
+        _renderbuffer_attach(stencil_buf, GL_STENCIL_ATTACHMENT, version);
      }
 
    // Check FBO for completeness
-   fb_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
-   // Delete Created Resources
-   _texture_destroy(&color_buf);
-   _renderbuffer_destroy(&depth_buf, EVAS_GL_GLES_2_X);
-   _renderbuffer_destroy(&stencil_buf, EVAS_GL_GLES_2_X);
-#ifdef GL_GLES
-   _texture_destroy(&depth_stencil_buf);
-#else
-   _renderbuffer_destroy(&depth_stencil_buf, EVAS_GL_GLES_2_X);
-#endif
-
-   // Delete FBO
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-   if (fbo) glDeleteFramebuffers(1, &fbo);
+   fb_status = _framebuffer_check(version);
 
    // Return the result
    if (fb_status != GL_FRAMEBUFFER_COMPLETE)
@@ -619,15 +688,40 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
         if (err != GL_NO_ERROR)
            DBG("glGetError() returns %x ", err);
 
-        return 0;
+        ret = 0;
      }
    else
-      return 1;
+     {
+        // Check that all attachments is valid.
+        GLint color_atc, depth_atc, stencil_atc;
+        glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &color_atc);
+        glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &depth_atc);
+        glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &stencil_atc);
+
+        if (color_fmt && !color_atc)
+          ret = 0;
+        if ((depth_stencil || depth_fmt) && !depth_atc)
+          ret = 0;
+        if ((depth_stencil || stencil_fmt) && !stencil_atc)
+          ret = 0;
+     }
+
+   // Delete Created Resources
+   _texture_destroy(&color_buf);
+   _renderbuffer_destroy(&depth_buf, version);
+   _renderbuffer_destroy(&stencil_buf, version);
+   _renderbuffer_destroy(&depth_stencil_buf, version);
+
+   // Delete FBO
+   _framebuffer_bind(0, version);
+   if (fbo) _framebuffer_delete(&fbo, version);
+
+   return ret;
 }
 
 static int
 _surface_cap_test(EVGL_Surface_Format *fmt, GL_Format *color,
-                  GL_Format *depth, GL_Format *stencil, int samples)
+                  GL_Format *depth, GL_Format *stencil, int samples, Evas_GL_Context_Version version)
 {
    int ret = 0;
 
@@ -637,7 +731,7 @@ _surface_cap_test(EVGL_Surface_Format *fmt, GL_Format *color,
    ret = _fbo_surface_cap_test((GLint)color->fmt,
                                color->fmt,
                                depth->fmt,
-                               stencil->fmt, samples);
+                               stencil->fmt, samples, version);
    if (ret)
      {
         fmt->color_bit  = color->bit;
@@ -669,10 +763,11 @@ _surface_cap_test(EVGL_Surface_Format *fmt, GL_Format *color,
 
 
 static int
-_surface_cap_check()
+_surface_cap_check(Evas_GL_Context_Version version)
 {
    int num_fmts = 0;
    int i, j, k, m;
+   int caps_idx = version - 1;
 
    GL_Format color[]   = {
                            { COLOR_RGB_888,   GL_RGB },
@@ -683,7 +778,6 @@ _surface_cap_check()
 #ifdef GL_GLES
    GL_Format depth[]   = {
                            { DEPTH_NONE,   0 },
-                           { DEPTH_STENCIL, GL_DEPTH_STENCIL_OES },
                            { DEPTH_STENCIL, GL_DEPTH24_STENCIL8_OES },
                            { DEPTH_BIT_8,   GL_DEPTH_COMPONENT },
                            { DEPTH_BIT_16,  GL_DEPTH_COMPONENT16 },
@@ -729,15 +823,15 @@ _surface_cap_check()
      }
 
    // Check Surface Cap for MSAA
-   if (evgl_engine->caps.msaa_supported)
+   if (evgl_engine->caps[caps_idx].msaa_supported)
      {
-        if ((evgl_engine->caps.msaa_samples[2] != evgl_engine->caps.msaa_samples[1]) &&
-            (evgl_engine->caps.msaa_samples[2] != evgl_engine->caps.msaa_samples[0]))
-             msaa_samples[3] = evgl_engine->caps.msaa_samples[2];    // HIGH
-        if ((evgl_engine->caps.msaa_samples[1] != evgl_engine->caps.msaa_samples[0]))
-             msaa_samples[2] = evgl_engine->caps.msaa_samples[1];    // MED
-        if (evgl_engine->caps.msaa_samples[0])
-             msaa_samples[1] = evgl_engine->caps.msaa_samples[0];    // LOW
+        if ((evgl_engine->caps[caps_idx].msaa_samples[2] != evgl_engine->caps[caps_idx].msaa_samples[1]) &&
+            (evgl_engine->caps[caps_idx].msaa_samples[2] != evgl_engine->caps[caps_idx].msaa_samples[0]))
+             msaa_samples[3] = evgl_engine->caps[caps_idx].msaa_samples[2];    // HIGH
+        if ((evgl_engine->caps[caps_idx].msaa_samples[1] != evgl_engine->caps[caps_idx].msaa_samples[0]))
+             msaa_samples[2] = evgl_engine->caps[caps_idx].msaa_samples[1];    // MED
+        if (evgl_engine->caps[caps_idx].msaa_samples[0])
+             msaa_samples[1] = evgl_engine->caps[caps_idx].msaa_samples[0];    // LOW
      }
 
 
@@ -758,8 +852,8 @@ _surface_cap_check()
                   // Stencil Formats
                   while ( stencil[k].bit >= 0)
                     {
-                       fmt = &evgl_engine->caps.fbo_fmts[num_fmts];
-                       if (_surface_cap_test(fmt, &color[i], &depth[j], &stencil[k], msaa_samples[m]))
+                       fmt = &evgl_engine->caps[caps_idx].fbo_fmts[num_fmts];
+                       if (_surface_cap_test(fmt, &color[i], &depth[j], &stencil[k], msaa_samples[m], version))
                           num_fmts++;
                        k++;
                     }
@@ -773,24 +867,32 @@ _surface_cap_check()
 }
 
 static int
-_surface_cap_load(Eet_File *ef)
+_surface_cap_load(Eet_File *ef, Evas_GL_Context_Version version)
 {
    int res = 0, i = 0, length = 0;
    char tag[80];
    char *data = NULL;
+   int caps_idx = version - 1;
 
    data = eet_read(ef, "num_fbo_fmts", &length);
    if ((!data) || (length <= 0)) goto finish;
    if (data[length - 1] != 0) goto finish;
-   evgl_engine->caps.num_fbo_fmts = atoi(data);
+   evgl_engine->caps[caps_idx].num_fbo_fmts = atoi(data);
+
+   if (evgl_engine->caps[caps_idx].num_fbo_fmts < 0 || evgl_engine->caps[caps_idx].num_fbo_fmts > 100)
+     {
+        ERR("num_fbo_fmts is invalid. %d", evgl_engine->caps[caps_idx].num_fbo_fmts);
+        goto finish;
+     }
+
    free(data);
    data = NULL;
 
    // !!!FIXME
    // Should use eet functionality instead of just reading using sscanfs...
-   for (i = 0; i < evgl_engine->caps.num_fbo_fmts; ++i)
+   for (i = 0; i < evgl_engine->caps[caps_idx].num_fbo_fmts; ++i)
      {
-        EVGL_Surface_Format *fmt = &evgl_engine->caps.fbo_fmts[i];
+        EVGL_Surface_Format *fmt = &evgl_engine->caps[caps_idx].fbo_fmts[i];
 
         snprintf(tag, sizeof(tag), "fbo_%d", i);
         data = eet_read(ef, tag, &length);
@@ -814,20 +916,21 @@ finish:
 }
 
 static int
-_surface_cap_save(Eet_File *ef)
+_surface_cap_save(Eet_File *ef, Evas_GL_Context_Version version)
 {
    int i = 0;
    char tag[80], data[80];
+   int caps_idx = version - 1;
 
-   snprintf(data, sizeof(data), "%d", evgl_engine->caps.num_fbo_fmts);
+   snprintf(data, sizeof(data), "%d", evgl_engine->caps[caps_idx].num_fbo_fmts);
    if (eet_write(ef, "num_fbo_fmts", data, strlen(data) + 1, 1) < 0)
       return 0;
 
    // !!!FIXME
    // Should use eet functionality instead of just writing out using snprintfs...
-   for (i = 0; i < evgl_engine->caps.num_fbo_fmts; ++i)
+   for (i = 0; i < evgl_engine->caps[caps_idx].num_fbo_fmts; ++i)
      {
-        EVGL_Surface_Format *fmt = &evgl_engine->caps.fbo_fmts[i];
+        EVGL_Surface_Format *fmt = &evgl_engine->caps[caps_idx].fbo_fmts[i];
 
         snprintf(tag, sizeof(tag), "fbo_%d", i);
         snprintf(data, sizeof(data), "%d %d %d %d %d %d %d %d %d %d",
@@ -844,7 +947,7 @@ _surface_cap_save(Eet_File *ef)
 }
 
 static int
-_surface_cap_cache_load()
+_surface_cap_cache_load(Evas_GL_Context_Version version)
 {
    /* check eet */
    Eet_File *et = NULL;
@@ -855,7 +958,7 @@ _surface_cap_cache_load()
       return 0;
 
    if (!evas_gl_common_file_cache_file_check(cap_dir_path, "surface_cap",
-                                             cap_file_path, sizeof(cap_dir_path)))
+                                             cap_file_path, sizeof(cap_dir_path), version))
       return 0;
 
    /* use eet */
@@ -863,7 +966,7 @@ _surface_cap_cache_load()
    et = eet_open(cap_file_path, EET_FILE_MODE_READ);
    if (!et) goto error;
 
-   if (!_surface_cap_load(et))
+   if (!_surface_cap_load(et, version))
       goto error;
 
    if (et) eet_close(et);
@@ -877,7 +980,7 @@ error:
 }
 
 static int
-_surface_cap_cache_save()
+_surface_cap_cache_save(Evas_GL_Context_Version version)
 {
    /* check eet */
    Eet_File *et = NULL; //check eet file
@@ -897,7 +1000,7 @@ _surface_cap_cache_save()
      }
 
    evas_gl_common_file_cache_file_check(cap_dir_path, "surface_cap", cap_file_path,
-                                        sizeof(cap_dir_path));
+                                        sizeof(cap_dir_path), version);
 
    /* use mkstemp for writing */
    snprintf(tmp_file_name, sizeof(tmp_file_name), "%s.XXXXXX.cache", cap_file_path);
@@ -907,7 +1010,7 @@ _surface_cap_cache_save()
    et = eet_open(tmp_file_path, EET_FILE_MODE_WRITE);
    if (!et) goto error;
 
-   if (!_surface_cap_save(et)) goto error;
+   if (!_surface_cap_save(et, version)) goto error;
 
    if (eet_close(et) != EET_ERROR_NONE) goto destroyed;
    if (rename(tmp_file_path, cap_file_path) < 0) goto destroyed;
@@ -931,45 +1034,26 @@ error:
 }
 
 static int
-_surface_cap_init(void *eng_data)
+_surface_cap_init(void *eng_data EINA_UNUSED, Evas_GL_Context_Version version)
 {
-   int gles_version;
    int ret = 0;
    int max_size = 0;
    int max_samples = 0;
-
-   // Do internal make current
-   if (!_internal_resource_make_current(eng_data, NULL, NULL))
-     {
-        ERR("Error doing an internal resource make current");
-        return ret;
-     }
+   int caps_idx = version - 1;
 
    // Query the max width and height of the surface
    glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &max_size);
 
-   evgl_engine->caps.max_w = max_size;
-   evgl_engine->caps.max_h = max_size;
-   DBG("Max Surface Width: %d   Height: %d", evgl_engine->caps.max_w, evgl_engine->caps.max_h);
-
-   gles_version = evas_gl_common_version_check(NULL);
-
+   evgl_engine->caps[caps_idx].max_w = max_size;
+   evgl_engine->caps[caps_idx].max_h = max_size;
+   DBG("Max Surface Width: %d   Height: %d", evgl_engine->caps[caps_idx].max_w, evgl_engine->caps[caps_idx].max_h);
    // Check for MSAA support
-   if (gles_version == 3)
+
+   if (version == 3)
      {
         glGetIntegerv(GL_MAX_SAMPLES, &max_samples);
-        INF("MSAA support for GLES 3 is not implemented yet!");
-        max_samples = 0;
      }
 #ifdef GL_GLES
-   else if (EXTENSION_SUPPORT(IMG_multisampled_render_to_texture))
-     {
-        glGetIntegerv(GL_MAX_SAMPLES_IMG, &max_samples);
-     }
-   else if (EXTENSION_SUPPORT(EXT_multisampled_render_to_texture))
-     {
-        glGetIntegerv(GL_MAX_SAMPLES_EXT, &max_samples);
-     }
    else
      {
         const char *exts = (const char *) glGetString(GL_EXTENSIONS);
@@ -983,18 +1067,18 @@ _surface_cap_init(void *eng_data)
 
    if (max_samples >= 2)
      {
-        evgl_engine->caps.msaa_samples[0] = 2;
-        evgl_engine->caps.msaa_samples[1] = (max_samples >> 1) < 2 ? 2 : (max_samples >> 1);
-        evgl_engine->caps.msaa_samples[2] = max_samples;
-        evgl_engine->caps.msaa_supported  = 1;
+        evgl_engine->caps[caps_idx].msaa_samples[0] = 2;
+        evgl_engine->caps[caps_idx].msaa_samples[1] = (max_samples >> 1) < 2 ? 2 : (max_samples >> 1);
+        evgl_engine->caps[caps_idx].msaa_samples[2] = max_samples;
+        evgl_engine->caps[caps_idx].msaa_supported  = 1;
      }
 
    // Load Surface Cap
-   if (!_surface_cap_cache_load())
+   if (!_surface_cap_cache_load(version))
      {
         // Check Surface Cap
-        evgl_engine->caps.num_fbo_fmts = _surface_cap_check();
-        _surface_cap_cache_save();
+        evgl_engine->caps[caps_idx].num_fbo_fmts = _surface_cap_check(version);
+        _surface_cap_cache_save(version);
         DBG("Ran Evas GL Surface Cap and Cached the existing values.");
      }
    else
@@ -1002,19 +1086,16 @@ _surface_cap_init(void *eng_data)
         DBG("Loaded cached Evas GL Surface Cap values.");
      }
 
-   if (evgl_engine->caps.num_fbo_fmts)
+   if (evgl_engine->caps[caps_idx].num_fbo_fmts)
      {
-        _surface_cap_print(0);
-        DBG("Number of supported surface formats: %d", evgl_engine->caps.num_fbo_fmts);
+        _surface_cap_print(1, version);
+        DBG("Number of supported surface formats: %d", evgl_engine->caps[caps_idx].num_fbo_fmts);
         ret = 1;
      }
    else
      {
         ERR("There are no available surface formats. Error!");
      }
-
-   // Destroy internal resources
-   _evgl_tls_resource_destroy(eng_data);
 
    return ret;
 }
@@ -1148,9 +1229,10 @@ _glenum_string_get(GLenum e)
 }
 
 static void
-_surface_cap_print(int error)
+_surface_cap_print(int error, Evas_GL_Context_Version version)
 {
    int i = 0;
+   int caps_idx = version - 1;
 #define PRINT_LOG(...) \
    if (error) \
       ERR(__VA_ARGS__); \
@@ -1160,13 +1242,13 @@ _surface_cap_print(int error)
    PRINT_LOG("----------------------------------------------------------------------------------------------------------------");
    PRINT_LOG("                 Evas GL Supported Surface Format                                                               ");
    PRINT_LOG("----------------------------------------------------------------------------------------------------------------");
-   PRINT_LOG(" Max Surface Width: %d Height: %d", evgl_engine->caps.max_w, evgl_engine->caps.max_h);
-   PRINT_LOG(" Multisample Support: %d", evgl_engine->caps.msaa_supported);
+   PRINT_LOG(" Max Surface Width: %d Height: %d", evgl_engine->caps[caps_idx].max_w, evgl_engine->caps[caps_idx].max_h);
+   PRINT_LOG(" Multisample Support: %d", evgl_engine->caps[caps_idx].msaa_supported);
    //if (evgl_engine->caps.msaa_supported)
      {
-        PRINT_LOG("             Low  Samples: %d", evgl_engine->caps.msaa_samples[0]);
-        PRINT_LOG("             Med  Samples: %d", evgl_engine->caps.msaa_samples[1]);
-        PRINT_LOG("             High Samples: %d", evgl_engine->caps.msaa_samples[2]);
+        PRINT_LOG("             Low  Samples: %d", evgl_engine->caps[caps_idx].msaa_samples[0]);
+        PRINT_LOG("             Med  Samples: %d", evgl_engine->caps[caps_idx].msaa_samples[1]);
+        PRINT_LOG("             High Samples: %d", evgl_engine->caps[caps_idx].msaa_samples[2]);
      }
    PRINT_LOG("[Index] [Color Format]  [------Depth Bits------]      [----Stencil Bits---]     [---Depth_Stencil---]  [Samples]");
 
@@ -1175,9 +1257,9 @@ _surface_cap_print(int error)
         PRINT_LOG("  %3d  %10s    %25s  %25s  %25s  %5d", IDX, _glenum_string_get(COLOR), _glenum_string_get(DEPTH), _glenum_string_get(STENCIL), _glenum_string_get(DS), SAMPLE ); \
      }
 
-   for (i = 0; i < evgl_engine->caps.num_fbo_fmts; ++i)
+   for (i = 0; i < evgl_engine->caps[caps_idx].num_fbo_fmts; ++i)
      {
-        EVGL_Surface_Format *fmt = &evgl_engine->caps.fbo_fmts[i];
+        EVGL_Surface_Format *fmt = &evgl_engine->caps[caps_idx].fbo_fmts[i];
         PRINT_SURFACE_CAP(i, fmt->color_fmt, fmt->depth_fmt, fmt->stencil_fmt, fmt->depth_stencil_fmt, fmt->samples);
      }
 
@@ -1270,10 +1352,9 @@ _surface_buffers_fbo_set(EVGL_Surface *sfc, GLuint fbo, Evas_GL_Context_Version 
 
    // Detach any previously attached buffers
    _texture_attach_2d(0, GL_COLOR_ATTACHMENT0, 0, 0, version);
+#ifdef GL_GLES
    _renderbuffer_attach(0, GL_DEPTH_ATTACHMENT, version);
    _renderbuffer_attach(0, GL_STENCIL_ATTACHMENT, version);
-#ifdef GL_GLES
-   _texture_attach_2d(0, GL_DEPTH_ATTACHMENT, GL_STENCIL_ATTACHMENT, 0, version);
 #else
     _renderbuffer_attach(0, GL_DEPTH_STENCIL_ATTACHMENT, version);
 #endif
@@ -1286,16 +1367,10 @@ _surface_buffers_fbo_set(EVGL_Surface *sfc, GLuint fbo, Evas_GL_Context_Version 
    if (sfc->depth_stencil_buf)
      {
 #ifdef GL_GLES
-        if (sfc->depth_stencil_fmt == GL_DEPTH_STENCIL_OES)
-          _texture_attach_2d(sfc->depth_stencil_buf, GL_DEPTH_ATTACHMENT,
-                             GL_STENCIL_ATTACHMENT, sfc->msaa_samples, version);
-        else
-          {
-             _renderbuffer_attach(sfc->depth_stencil_buf, GL_DEPTH_ATTACHMENT, version);
-             _renderbuffer_attach(sfc->depth_stencil_buf, GL_STENCIL_ATTACHMENT, version);
-          }
+        _renderbuffer_attach(sfc->depth_stencil_buf, GL_DEPTH_ATTACHMENT, version);
+        _renderbuffer_attach(sfc->depth_stencil_buf, GL_STENCIL_ATTACHMENT, version);
 #else
-       _renderbuffer_attach(sfc->depth_stencil_buf, GL_DEPTH_STENCIL_ATTACHMENT, version);
+        _renderbuffer_attach(sfc->depth_stencil_buf, GL_DEPTH_STENCIL_ATTACHMENT, version);
 #endif
      }
 
@@ -1331,11 +1406,6 @@ _surface_buffers_create(EVGL_Surface *sfc, Evas_GL_Context_Version version)
    // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
    if (sfc->depth_stencil_fmt)
      {
-#ifdef GL_GLES
-        if (sfc->depth_stencil_fmt == GL_DEPTH_STENCIL_OES)
-          _texture_create(&sfc->depth_stencil_buf);
-        else
-#endif
           _renderbuffer_create(&sfc->depth_stencil_buf, version);
      }
    else
@@ -1355,13 +1425,13 @@ _surface_buffers_create(EVGL_Surface *sfc, Evas_GL_Context_Version version)
 
 
 static int
-_surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, int h, Evas_GL_Context_Version version EINA_UNUSED/* unused ecept gles */)
+_surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, int h, Evas_GL_Context_Version version)
 {
    // Create buffers
    if (sfc->color_fmt)
      {
         _texture_allocate_2d(sfc->color_buf, sfc->color_ifmt, sfc->color_fmt,
-                             GL_UNSIGNED_BYTE, w, h);
+                             GL_UNSIGNED_BYTE, w, h, version);
         if (sfc->egl_image)
           {
              _egl_image_destroy(sfc->egl_image);
@@ -1376,24 +1446,6 @@ _surface_buffers_allocate(void *eng_data EINA_UNUSED, EVGL_Surface *sfc, int w, 
    // Depth_stencil buffers or separate buffers
    if (sfc->depth_stencil_fmt)
      {
-#ifdef GL_GLES
-        if (sfc->depth_stencil_fmt == GL_DEPTH_STENCIL_OES)
-          {
-             if (version == EVAS_GL_GLES_3_X)
-               {
-                  _texture_allocate_2d(sfc->depth_stencil_buf, GL_DEPTH24_STENCIL8_OES,
-                     sfc->depth_stencil_fmt, GL_UNSIGNED_INT_24_8_OES,
-                     w, h);
-               }
-             else
-               {
-                  _texture_allocate_2d(sfc->depth_stencil_buf, sfc->depth_stencil_fmt,
-                     sfc->depth_stencil_fmt, GL_UNSIGNED_INT_24_8_OES,
-                     w, h);
-               }
-          }
-        else
-#endif
           {
              _renderbuffer_allocate(sfc->depth_stencil_buf,
                                     sfc->depth_stencil_fmt, w, h,
@@ -1437,11 +1489,6 @@ _surface_buffers_destroy(EVGL_Surface *sfc, Evas_GL_Context_Version version)
       _renderbuffer_destroy(&sfc->stencil_buf, version);
    if (sfc->depth_stencil_buf)
      {
-#ifdef GL_GLES
-        if (sfc->depth_stencil_fmt == GL_DEPTH_STENCIL_OES)
-          _texture_destroy(&sfc->depth_stencil_buf);
-        else
-#endif
           _renderbuffer_destroy(&sfc->depth_stencil_buf, version);
      }
 
@@ -1449,12 +1496,14 @@ _surface_buffers_destroy(EVGL_Surface *sfc, Evas_GL_Context_Version version)
 }
 
 static int
-_internal_config_set(void *eng_data, EVGL_Surface *sfc, Evas_GL_Config *cfg)
+_internal_config_set(void *eng_data, EVGL_Surface *sfc, Evas_GL_Context_Version version)
 {
    int i = 0, cfg_index = -1;
    int color_bit = 0, depth_bit = 0, stencil_bit = 0, msaa_samples = 0;
    int depth_size = 0;
    int native_win_depth = 0, native_win_stencil = 0, native_win_msaa = 0;
+   Evas_GL_Config *cfg = &sfc->cfg;
+   int caps_idx = version - 1;
 
    // Check if engine is valid
    if (!evgl_engine)
@@ -1472,45 +1521,40 @@ _internal_config_set(void *eng_data, EVGL_Surface *sfc, Evas_GL_Config *cfg)
      }
    if (cfg->stencil_bits) stencil_bit = (1 << (cfg->stencil_bits-1));
    if (cfg->multisample_bits)
-      msaa_samples = evgl_engine->caps.msaa_samples[cfg->multisample_bits-1];
+      msaa_samples = evgl_engine->caps[caps_idx].msaa_samples[cfg->multisample_bits-1];
 
 try_again:
    // Run through all the available formats and choose the first match
-   for (i = 0; i < evgl_engine->caps.num_fbo_fmts; ++i)
+   for (i = 0; i < evgl_engine->caps[caps_idx].num_fbo_fmts; ++i)
      {
         // Check if the MSAA is supported.  Fallback if not.
-        if ((msaa_samples) && (evgl_engine->caps.msaa_supported))
+        if ((msaa_samples) && (evgl_engine->caps[caps_idx].msaa_supported))
           {
-             if (msaa_samples > evgl_engine->caps.fbo_fmts[i].samples)
+             if (msaa_samples > evgl_engine->caps[caps_idx].fbo_fmts[i].samples)
                   continue;
           }
 
-        if (color_bit & evgl_engine->caps.fbo_fmts[i].color_bit)
+        if (color_bit & evgl_engine->caps[caps_idx].fbo_fmts[i].color_bit)
           {
-            // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
-             if (cfg->gles_version == EVAS_GL_GLES_1_X &&
-                  evgl_engine->caps.fbo_fmts[i].depth_stencil_fmt == GL_DEPTH_STENCIL_OES)
-                continue;
-
              if (depth_bit)
                {
-                  if (!(depth_bit & evgl_engine->caps.fbo_fmts[i].depth_bit))
+                  if (!(depth_bit & evgl_engine->caps[caps_idx].fbo_fmts[i].depth_bit))
                      continue;
                }
 
              if (stencil_bit)
                {
-                  if (!(stencil_bit & evgl_engine->caps.fbo_fmts[i].stencil_bit))
+                  if (!(stencil_bit & evgl_engine->caps[caps_idx].fbo_fmts[i].stencil_bit))
                      continue;
                }
 
              // Set the surface format
-             sfc->color_ifmt        = evgl_engine->caps.fbo_fmts[i].color_ifmt;
-             sfc->color_fmt         = evgl_engine->caps.fbo_fmts[i].color_fmt;
-             sfc->depth_fmt         = evgl_engine->caps.fbo_fmts[i].depth_fmt;
-             sfc->stencil_fmt       = evgl_engine->caps.fbo_fmts[i].stencil_fmt;
-             sfc->depth_stencil_fmt = evgl_engine->caps.fbo_fmts[i].depth_stencil_fmt;
-             sfc->msaa_samples      = evgl_engine->caps.fbo_fmts[i].samples;
+             sfc->color_ifmt        = evgl_engine->caps[caps_idx].fbo_fmts[i].color_ifmt;
+             sfc->color_fmt         = evgl_engine->caps[caps_idx].fbo_fmts[i].color_fmt;
+             sfc->depth_fmt         = evgl_engine->caps[caps_idx].fbo_fmts[i].depth_fmt;
+             sfc->stencil_fmt       = evgl_engine->caps[caps_idx].fbo_fmts[i].stencil_fmt;
+             sfc->depth_stencil_fmt = evgl_engine->caps[caps_idx].fbo_fmts[i].depth_stencil_fmt;
+             sfc->msaa_samples      = evgl_engine->caps[caps_idx].fbo_fmts[i].samples;
 
              // Direct Rendering Option
              if (cfg->options_bits & EVAS_GL_OPTIONS_DIRECT)
@@ -1891,7 +1935,6 @@ _evgl_engine_data_get(Evas_GL *evasgl)
 //    - Assign engine funcs form evas_engine
 //    - Create internal resources: internal context, surface for resource creation
 //    - Initialize extensions
-//    - Check surface capability
 //
 // This code should be called during eng_setup() in evas_engine
 EVGL_Engine *
@@ -1941,12 +1984,11 @@ evgl_engine_init(void *eng_data, const EVGL_Interface *efunc)
    // Main Thread ID
    evgl_engine->main_tid = eina_thread_self();
 
-   // Surface Caps
-   if (!_surface_cap_init(eng_data))
-     {
-        ERR("Error initializing surface cap");
-        goto error;
-     }
+   // Initialize Extensions
+   if (efunc->proc_address_get && efunc->ext_string_get)
+      _evgl_api_gles2_ext_init(efunc->proc_address_get, efunc->ext_string_get(eng_data));
+   else
+      ERR("Proc address get function not available.  Extension not initialized.");
 
    // NOTE: Should we finally remove these variables?
    // Check for Direct rendering override env var.
@@ -2062,15 +2104,6 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
         return NULL;
      }
 
-   // Check the size of the surface
-   if ((w > evgl_engine->caps.max_w) || (h > evgl_engine->caps.max_h))
-     {
-        ERR("Requested surface size [%d, %d] is greater than max supported size [%d, %d]",
-             w, h, evgl_engine->caps.max_w, evgl_engine->caps.max_h);
-        evas_gl_common_error_set(EVAS_GL_BAD_PARAMETER);
-        return NULL;
-     }
-
    // Allocate surface structure
    sfc = calloc(1, sizeof(EVGL_Surface));
    if (!sfc)
@@ -2101,14 +2134,8 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
    else if (evgl_engine->direct_override == 1)
      sfc->direct_override = EINA_TRUE;
 
-   // Set the internal config value
-   if (!_internal_config_set(eng_data, sfc, cfg))
-     {
-        ERR("Unsupported Format!");
-        evas_gl_common_error_set(EVAS_GL_BAD_CONFIG);
-        goto error;
-     }
-   sfc->cfg = cfg;
+   sfc->cfg = *cfg;
+   sfc->cfg_index = -1;
 
    // Keep track of all the created surfaces
    LKL(evgl_engine->resource_lock);
@@ -2175,17 +2202,8 @@ evgl_pbuffer_surface_create(void *eng_data, Evas_GL_Config *cfg,
    if (sfc->pbuffer.color_fmt == EVAS_GL_NO_FBO)
       sfc->buffers_skip_allocate = 1;
 
-   if (!sfc->buffers_skip_allocate)
-     {
-        // Set the internal config value
-        if (!_internal_config_set(eng_data, sfc, cfg))
-          {
-             ERR("Unsupported Format!");
-             evas_gl_common_error_set(EVAS_GL_BAD_CONFIG);
-             goto error;
-          }
-     }
-   sfc->cfg = cfg;
+   sfc->cfg = *cfg;
+   sfc->cfg_index = -1;
 
    pbuffer = evgl_engine->funcs->pbuffer_surface_create
      (eng_data, sfc, attrib_list);
@@ -2342,6 +2360,7 @@ evgl_context_create(void *eng_data, EVGL_Context *share_ctx,
                     void *(*engine_data_get)(void *))
 {
    EVGL_Context *ctx   = NULL;
+   int caps_idx = version - 1;
 
    // A little bit ugly. But it works even when dlsym(DEFAULT) doesn't work.
    glsym_evas_gl_native_context_get = native_context_get;
@@ -2379,8 +2398,8 @@ evgl_context_create(void *eng_data, EVGL_Context *share_ctx,
    ctx->version_minor = 0;
    ctx->scissor_coord[0] = 0;
    ctx->scissor_coord[1] = 0;
-   ctx->scissor_coord[2] = evgl_engine->caps.max_w;
-   ctx->scissor_coord[3] = evgl_engine->caps.max_h;
+   ctx->scissor_coord[2] = evgl_engine->caps[caps_idx].max_w;
+   ctx->scissor_coord[3] = evgl_engine->caps[caps_idx].max_h;
    ctx->gl_error = GL_NO_ERROR;
 
    // Call engine create context
@@ -2508,6 +2527,7 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
    EVGL_Resource *rsc;
    int curr_fbo = 0, curr_draw_fbo = 0, curr_read_fbo = 0;
    Eina_Bool ctx_changed = EINA_FALSE;
+   int caps_idx;
 
    // Check the input validity. If either sfc is valid but ctx is NULL, it's also error.
    // sfc can be NULL as evas gl supports surfaceless make current
@@ -2620,6 +2640,35 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
           {
              ERR("Unable to check required extension for the current context");
              evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+             return 0;
+          }
+     }
+
+   if (sfc && (sfc->cfg_index < 0 ) && (!sfc->buffers_skip_allocate))
+     {
+        if (!_surface_cap_init(eng_data, ctx->version))
+          {
+             ERR("Error initializing surface cap");
+             evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+             return 0;
+          }
+
+        caps_idx = ctx->version - 1;
+
+        // Check the size of the surface
+        if ((sfc->w > evgl_engine->caps[caps_idx].max_w) || (sfc->h > evgl_engine->caps[caps_idx].max_h))
+          {
+             ERR("Requested surface size [%d, %d] is greater than max supported size [%d, %d]",
+                  sfc->w, sfc->h, evgl_engine->caps[caps_idx].max_w, evgl_engine->caps[caps_idx].max_h);
+             evas_gl_common_error_set(EVAS_GL_BAD_PARAMETER);
+             return 0;
+          }
+
+        // Set the internal config value
+        if (!_internal_config_set(eng_data, sfc, ctx->version))
+          {
+             ERR("Unsupported Format!");
+             evas_gl_common_error_set(EVAS_GL_BAD_CONFIG);
              return 0;
           }
      }

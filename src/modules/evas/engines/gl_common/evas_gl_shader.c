@@ -288,7 +288,7 @@ _evas_gl_common_shader_binary_init(Evas_GL_Shared *shared)
      return 0;
 
    if (!evas_gl_common_file_cache_file_check(bin_dir_path, SHADER_EET_CACHENAME,
-                                             bin_file_path, sizeof(bin_dir_path)))
+                                             bin_file_path, sizeof(bin_dir_path), 0))
      return 0;
 
    if (!eet_init()) return 0;
@@ -328,7 +328,7 @@ _evas_gl_common_shader_binary_save(Evas_GL_Shared *shared)
      }
 
    copy = evas_gl_common_file_cache_file_check(bin_dir_path, SHADER_EET_CACHENAME,
-                                               bin_file_path, sizeof(bin_dir_path));
+                                               bin_file_path, sizeof(bin_dir_path), 0);
 
    /* use mkstemp for writing */
    snprintf(tmp_file_name, sizeof(tmp_file_name), "%s.XXXXXX.cache", bin_file_path);

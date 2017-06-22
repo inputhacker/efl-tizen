@@ -44,6 +44,10 @@
 
 #endif
 
+// TIZEN_ONLY(20171110) : FBO capa test for each version
+#define EVAS_GL_NO_GL_H_CHECK 1
+#include "Evas_GL.h"
+
 #include "evas_gl_define.h"
 
 #define EVAS_GL_TILE_SIZE 16
@@ -701,7 +705,7 @@ Eina_Bool         evas_gl_common_file_cache_file_exists(const char *file);
 Eina_Bool         evas_gl_common_file_cache_mkpath_if_not_exists(const char *path);
 Eina_Bool         evas_gl_common_file_cache_mkpath(const char *path);
 int               evas_gl_common_file_cache_dir_check(char *cache_dir, int num);
-int               evas_gl_common_file_cache_file_check(const char *cache_dir, const char *cache_name, char *cache_file, int dir_num);
+int               evas_gl_common_file_cache_file_check(const char *cache_dir, const char *cache_name, char *cache_file, int dir_num, Evas_GL_Context_Version gles_version);
 
 void              evas_gl_common_rect_draw(Evas_Engine_GL_Context *gc, int x, int y, int w, int h);
 
