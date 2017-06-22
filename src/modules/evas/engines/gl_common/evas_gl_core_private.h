@@ -139,8 +139,8 @@ struct _EVGL_Surface
 
    unsigned thread_rendering : 1;
 
-   void   *cfg;
-   int     cfg_index;
+   Evas_GL_Config cfg;
+   int            cfg_index;
 
 
    // Rough estimate of buffer in memory per renderbuffer
@@ -336,7 +336,7 @@ struct _EVGL_Engine
 
    const EVGL_Interface     *funcs;
 
-   EVGL_Cap            caps;
+   EVGL_Cap            caps[3];
 
    const char         *gl_ext;
    const char         *evgl_ext;

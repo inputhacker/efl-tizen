@@ -5301,6 +5301,58 @@ finish:
 
 /*
  * void
+ * glGetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenum pname, GLint *params);
+ */
+
+typedef struct
+{
+   GLenum target;
+   GLenum attachment;
+   GLenum pname;
+   GLint *params;
+
+} EVGL_Thread_Command_glGetFramebufferAttachmentParameteriv;
+
+static void
+_evgl_thread_glGetFramebufferAttachmentParameteriv(void *data)
+{
+   EVGL_Thread_Command_glGetFramebufferAttachmentParameteriv *thread_data =
+      (EVGL_Thread_Command_glGetFramebufferAttachmentParameteriv *)data;
+
+   glGetFramebufferAttachmentParameteriv(thread_data->target,
+                                         thread_data->attachment,
+                                         thread_data->pname,
+                                         thread_data->params);
+
+}
+
+EAPI void
+glGetFramebufferAttachmentParameteriv_evgl_thread_cmd(GLenum target, GLenum attachment, GLenum pname, GLint *params)
+{
+   if (!evas_evgl_thread_enabled())
+     {
+        glGetFramebufferAttachmentParameteriv(target, attachment, pname, params);
+        return;
+     }
+
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+
+   EVGL_Thread_Command_glGetFramebufferAttachmentParameteriv thread_data_local;
+   EVGL_Thread_Command_glGetFramebufferAttachmentParameteriv *thread_data = &thread_data_local;
+
+   thread_data->target = target;
+   thread_data->attachment = attachment;
+   thread_data->pname = pname;
+   thread_data->params = params;
+
+   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
+                              _evgl_thread_glGetFramebufferAttachmentParameteriv,
+                              thread_data,
+                              thread_mode);
+}
+
+/*
+ * void
  * glGenRenderbuffers(GLsizei n, GLuint *renderbuffers);
  */
 

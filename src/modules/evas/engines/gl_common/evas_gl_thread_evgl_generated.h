@@ -113,6 +113,7 @@ EAPI void glReadPixels_evgl_thread_cmd(GLint x, GLint y, GLsizei width, GLsizei 
 EAPI void glGenFramebuffers_evgl_thread_cmd(GLsizei n, GLuint *framebuffers);
 EAPI void glBindFramebuffer_evgl_thread_cmd(GLenum target, GLuint framebuffer);
 EAPI void glDeleteFramebuffers_evgl_thread_cmd(GLsizei n, const GLuint *framebuffers);
+EAPI void glGetFramebufferAttachmentParameteriv_evgl_thread_cmd(GLenum target, GLenum attachment, GLenum pname, GLint *params);
 EAPI void glGenRenderbuffers_evgl_thread_cmd(GLsizei n, GLuint *renderbuffers);
 EAPI void glBindRenderbuffer_evgl_thread_cmd(GLenum target, GLuint renderbuffer);
 EAPI void glDeleteRenderbuffers_evgl_thread_cmd(GLsizei n, const GLuint *renderbuffers);

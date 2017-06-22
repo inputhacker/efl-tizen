@@ -360,6 +360,7 @@
 | EVAS GL | void | glGenFramebuffers | GLsizei n,GLuint *framebuffers | finish | noext | | |
 | EVAS GL | void | glBindFramebuffer | GLenum target,GLuint framebuffer | flush | noext | | |
 | EVAS GL | void | glDeleteFramebuffers | GLsizei n,const GLuint *framebuffers | flush | noext | _mp_delete_object, n * sizeof(GLuint), framebuffers | |
+| EVAS GL | void | glGetFramebufferAttachmentParameteriv | GLenum target, GLenum attachment, GLenum pname, GLint *params | finish | noext | | |
 
 # Renderbuffer Objects
 | EVAS GL | void | glGenRenderbuffers | GLsizei n,GLuint *renderbuffers | finish | noext | | |

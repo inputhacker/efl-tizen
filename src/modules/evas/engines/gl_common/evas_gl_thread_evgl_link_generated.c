@@ -81,6 +81,7 @@ void (*glReadPixels_evgl_thread_cmd)(GLint x, GLint y, GLsizei width, GLsizei he
 void (*glGenFramebuffers_evgl_thread_cmd)(GLsizei n, GLuint *framebuffers) = NULL;
 void (*glBindFramebuffer_evgl_thread_cmd)(GLenum target, GLuint framebuffer) = NULL;
 void (*glDeleteFramebuffers_evgl_thread_cmd)(GLsizei n, const GLuint *framebuffers) = NULL;
+void (*glGetFramebufferAttachmentParameteriv_evgl_thread_cmd)(GLenum target, GLenum attachment, GLenum pname, GLint *params) = NULL;
 void (*glGenRenderbuffers_evgl_thread_cmd)(GLsizei n, GLuint *renderbuffers) = NULL;
 void (*glBindRenderbuffer_evgl_thread_cmd)(GLenum target, GLuint renderbuffer) = NULL;
 void (*glDeleteRenderbuffers_evgl_thread_cmd)(GLsizei n, const GLuint *renderbuffers) = NULL;
@@ -198,6 +199,7 @@ _gl_thread_link_evgl_generated_init()
    LINK2GENERIC(glGenFramebuffers_evgl_thread_cmd);
    LINK2GENERIC(glBindFramebuffer_evgl_thread_cmd);
    LINK2GENERIC(glDeleteFramebuffers_evgl_thread_cmd);
+   LINK2GENERIC(glGetFramebufferAttachmentParameteriv_evgl_thread_cmd);
    LINK2GENERIC(glGenRenderbuffers_evgl_thread_cmd);
    LINK2GENERIC(glBindRenderbuffer_evgl_thread_cmd);
    LINK2GENERIC(glDeleteRenderbuffers_evgl_thread_cmd);

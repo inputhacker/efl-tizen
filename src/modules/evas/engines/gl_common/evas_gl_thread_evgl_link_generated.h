@@ -81,6 +81,7 @@ extern void (*glReadPixels_evgl_thread_cmd)(GLint x, GLint y, GLsizei width, GLs
 extern void (*glGenFramebuffers_evgl_thread_cmd)(GLsizei n, GLuint *framebuffers);
 extern void (*glBindFramebuffer_evgl_thread_cmd)(GLenum target, GLuint framebuffer);
 extern void (*glDeleteFramebuffers_evgl_thread_cmd)(GLsizei n, const GLuint *framebuffers);
+extern void (*glGetFramebufferAttachmentParameteriv_evgl_thread_cmd)(GLenum target, GLenum attachment, GLenum pname, GLint *params);
 extern void (*glGenRenderbuffers_evgl_thread_cmd)(GLsizei n, GLuint *renderbuffers);
 extern void (*glBindRenderbuffer_evgl_thread_cmd)(GLenum target, GLuint renderbuffer);
 extern void (*glDeleteRenderbuffers_evgl_thread_cmd)(GLsizei n, const GLuint *renderbuffers);
