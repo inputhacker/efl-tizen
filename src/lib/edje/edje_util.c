@@ -2112,6 +2112,20 @@ _edje_object_part_text_raw_set(Edje *ed, Evas_Object *obj, Edje_Real_Part *rp, c
    return EINA_TRUE;
 }
 
+EOLIAN void
+_edje_object_part_text_prediction_hint_set(Eo *obj EINA_UNUSED, Edje *ed, const char *part, const char *prediction_hint)
+{
+   Edje_Real_Part *rp;
+
+   if ((!ed) || (!part)) return;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return;
+   if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
+     {
+        _edje_entry_prediction_hint_set(rp, prediction_hint);
+     }
+}
+
 Eina_Bool
 _edje_object_part_text_raw_append(Edje *ed, Evas_Object *obj, Edje_Real_Part *rp, const char *part, const char *text)
 {

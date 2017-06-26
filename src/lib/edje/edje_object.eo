@@ -3003,6 +3003,15 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 	 }
          return: bool; [[$true if the visible character is hidden. $false if there is no visible character or the object is not set for password mode.]]
       }
+      part_text_prediction_hint_set {
+         [[Sets the prediction hint to use an intelligent reply suggestion service
+
+           @since 1.20.0]]
+         params {
+            @in part: const(char)*; [[The part name]]
+            @in prediction_hint: const(char)*; [[Prediction hint]]
+         }
+      }
       /* TIZEN_ONLY(20161130): add part_text_min_policy property for internal usage */
       @property part_text_min_policy @internal {
          set {
