@@ -3747,6 +3747,8 @@ typedef enum _Ecore_Device_Subclass
      ECORE_DEVICE_SUBCLASS_TRACKPAD, /**< A trackpad style mouse @since 1.18 */
      ECORE_DEVICE_SUBCLASS_TRACKPOINT, /**< A trackpoint style mouse @since 1.18 */
      ECORE_DEVICE_SUBCLASS_TRACKBALL, /**< A trackball style mouse @since 1.18 */
+     ECORE_DEVICE_SUBCLASS_REMOCON, /**< A remote controller @since_tizen 4.0 */
+     ECORE_DEVICE_SUBCLASS_VIRTUAL_KEYBOARD /**< A virtual keyboard @since_tizen 4.0*/
   } Ecore_Device_Subclass; /**< A general subclass of device @since 1.18 */
 
 typedef struct _Ecore_Device_Event_Info Ecore_Device_Event_Info; /**< @since 1.18 */
