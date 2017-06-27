@@ -5,6 +5,9 @@
 
 #include <EGL/egl.h>
 
+
+typedef void (*WL_EGL_RECONFIG)(void *win, int w, int h, int rot, int info_rot, int window_rotation, int info_edges);
+
 #ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 
@@ -67,6 +70,8 @@ EAPI void       eglGetProcAddress_orig_evas_set(void *func);
 EAPI void      *eglGetProcAddress_orig_evas_get();
 EAPI void      *eglGetProcAddress_thread_cmd(char const * procname);
 
+EAPI void       eglWindowReconfig_thread_cmd(void *win, int w, int h, int rot, int info_rot, int window_rotation, int info_edges, WL_EGL_RECONFIG fn_wl_egl_reconfig);
+
 /***** EVAS GL *****/
 
 /* EGL 1.4 Referencing to Thread Local Storage */
@@ -113,6 +118,7 @@ extern EGLBoolean (*eglSetDamageRegion_thread_cmd)(EGLDisplay dpy, EGLSurface su
 extern void       (*eglQueryWaylandBuffer_orig_evas_set)(void *func);
 extern void      *(*eglQueryWaylandBuffer_orig_evas_get)();
 extern EGLBoolean (*eglQueryWaylandBuffer_thread_cmd)(EGLDisplay dpy, void *buffer, EGLint attribute, EGLint *value);
+extern void       (*eglWindowReconfig_thread_cmd)(void *win, int w, int h, int rot, int info_rot, int window_rotation, int info_edges, WL_EGL_RECONFIG fn_wl_egl_reconfig);
 
 
 /***** EVAS GL *****/
