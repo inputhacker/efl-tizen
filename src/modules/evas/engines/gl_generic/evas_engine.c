@@ -709,19 +709,8 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
    if (im->native.data)
      return im;
 
-   if (im->im && im->rotated)
-     {
-        im_new = _rotate_image_data(data, image);
-        if (!im_new)
-          {
-             if (err) *err = EVAS_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED;
-             return im;
-          }
-
-        *image_data = im_new->im->image.data;
-        if (tofree) *tofree = EINA_TRUE;
-        return im_new;
-     }
+   if ((tofree != NULL) && im->im && (im->orient != EVAS_IMAGE_ORIENT_NONE))
+     goto rotate_image;
 
 #ifdef GL_GLES
    re->window_use(re->software.ob);
@@ -844,10 +833,14 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
 
    if (!im->im)
      {
-        // FIXME: Should we create an FBO and draw the texture there, to then read it back?
+        if (tofree)
+          goto rotate_image;
+        else
+          {
         ERR("GL image has no source data, failed to get pixel data");
         if (err) *err = EVAS_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED;
         return NULL;
+     }
      }
 
 #ifdef EVAS_CSERVE2
@@ -856,6 +849,13 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
    else
 #endif
      error = evas_cache_image_load_data(&im->im->cache_entry);
+
+   if (error != EVAS_LOAD_ERROR_NONE)
+     {
+        if (tofree)
+          goto rotate_image;
+     }
+
    evas_gl_common_image_alloc_ensure(im);
    switch (im->cs.space)
      {
@@ -904,6 +904,19 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
      }
    if (err) *err = error;
    return im;
+
+rotate_image:
+   // rotate data for image save
+   im_new = _rotate_image_data(data, image);
+   if (!im_new)
+     {
+        if (err) *err = EVAS_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED;
+        ERR("Image rotation failed.");
+        return im;
+     }
+   *tofree = EINA_TRUE;
+   *image_data = im_new->im->image.data;
+   return im_new;
 }
 
 static void *
@@ -1033,7 +1046,6 @@ eng_image_orient_set(void *data, void *image, Evas_Image_Orient orient)
    im_new->cached = EINA_FALSE;
 
    im_new->orient = orient;
-   im_new->rotated = EINA_TRUE;
 
    evas_gl_common_image_free(im);
    return im_new;
