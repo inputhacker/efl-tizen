@@ -8,6 +8,8 @@
 #include <dlfcn.h>
 #include <wayland-client.h>
 
+#include "tizen-surface-client.h"
+
 #define KEY_WINDOW (unsigned long)(&key_window)
 #define KEY_WL_BUFFER (unsigned long)(&key_wl_buffer)
 #define KEY_SURFACE_INFO (unsigned long)(&key_surface_info)
@@ -102,6 +104,8 @@ struct _Tbmbuf_Surface
    int stride;
    int frame_age;
    Eina_Bool alpha : 1;
+
+   struct tizen_surface_shm_flusher *tzsurf_flusher;
 };
 
 
@@ -115,6 +119,7 @@ static void *tbm_lib = NULL;
 static void *tbm_client_lib = NULL;
 static int   tbm_ref = 0;
 static int   tbm_queue_ref = 0;
+static struct tizen_surface_shm *tzsurf;
 
 static int (*sym_tbm_surface_map) (tbm_surface_h surface, int opt, tbm_surface_info_s *info) = NULL;
 static int (*sym_tbm_surface_unmap) (tbm_surface_h surface) = NULL;
@@ -133,7 +138,8 @@ static int (*sym_tbm_surface_internal_add_user_data) (tbm_surface_h surface, uns
 static int (*sym_tbm_surface_internal_set_user_data) (tbm_surface_h surface, unsigned long key, void *data) = NULL;
 static int (*sym_tbm_surface_queue_get_format) (void *surface_queue) = NULL;
 static tbm_surface_queue_error_e (*sym_tbm_surface_queue_reset) (void *surface_queue, int width, int height, int format) = NULL;
-
+static tbm_surface_queue_error_e (*sym_tbm_surface_queue_flush) (void* surface_queue) = NULL;
+static tbm_surface_queue_error_e (*sym_tbm_surface_queue_free_flush) (void* surface_queue) = NULL;
 
 static struct wl_buffer * (*sym_wayland_tbm_client_create_buffer) (struct wayland_tbm_client *tbm_client, tbm_surface_h surface) = NULL;
 static struct wl_tbm * (*sym_wayland_tbm_client_get_wl_tbm) (struct wayland_tbm_client *tbm_client) = NULL;
@@ -194,6 +200,8 @@ tbm_init(void)
                SYM(tbm_lib, tbm_surface_internal_set_user_data);
                SYM(tbm_lib, tbm_surface_queue_get_format);
                SYM(tbm_lib, tbm_surface_queue_reset);
+               SYM(tbm_lib, tbm_surface_queue_flush);
+               SYM(tbm_lib, tbm_surface_queue_free_flush);
                if (fail)
                   {
                      dlclose(tbm_lib);
@@ -245,6 +253,12 @@ tbm_shutdown(void)
                   {
                      dlclose(tbm_client_lib);
                      tbm_client_lib = NULL;
+                  }
+
+               if (tzsurf)
+                  {
+                     tizen_surface_shm_destroy(tzsurf);
+                     tzsurf = NULL;
                   }
             }
       }
@@ -462,6 +476,68 @@ _evas_tbmbuf_surface_data_get(Surface *s, int *w, int *h)
    return image;
 }
 
+static void
+_shm_wl_registry_global(void *data EINA_UNUSED, struct wl_registry *registry, uint32_t name, const char *interface, uint32_t version EINA_UNUSED)
+{
+   if (!strcmp(interface, "tizen_surface_shm"))
+     tzsurf = wl_registry_bind(registry, name, &tizen_surface_shm_interface, 2);
+}
+
+static void
+_shm_wl_registry_global_remove(void *data EINA_UNUSED, struct wl_registry *registry EINA_UNUSED, uint32_t name EINA_UNUSED)
+{
+}
+
+static void
+_shm_tzsurf_flusher_cb_flush(void *data, struct tizen_surface_shm_flusher *flusher EINA_UNUSED)
+{
+   Tbmbuf_Surface *surf = data;
+
+   sym_tbm_surface_queue_flush(surf->tbm_queue);
+}
+
+static void
+_shm_tzsurf_flusher_cb_free_flush(void *data, struct tizen_surface_shm_flusher *flusher EINA_UNUSED)
+{
+   Tbmbuf_Surface *surf = data;
+
+   sym_tbm_surface_queue_free_flush(surf->tbm_queue);
+}
+
+static const struct tizen_surface_shm_flusher_listener _tzsurf_flusher_listener =
+{
+      _shm_tzsurf_flusher_cb_flush,
+      _shm_tzsurf_flusher_cb_free_flush
+};
+
+static const struct wl_registry_listener _shm_wl_registry_listener =
+{
+   _shm_wl_registry_global,
+   _shm_wl_registry_global_remove
+};
+
+static void
+_shm_tzsurf_init(struct wl_display *disp)
+{
+   struct wl_event_queue *queue;
+   struct wl_registry *registry;
+
+   queue = wl_display_create_queue(disp);
+   registry = wl_display_get_registry(disp);
+
+   wl_proxy_set_queue((struct wl_proxy *)registry, queue);
+   wl_registry_add_listener(registry, &_shm_wl_registry_listener, NULL);
+   if ((wl_display_roundtrip_queue(disp, queue) < 0) || (!tzsurf))
+     goto err_registry;
+
+   /* use default queue */
+   wl_proxy_set_queue((struct wl_proxy *)tzsurf, NULL);
+
+err_registry:
+   wl_registry_destroy(registry);
+   wl_event_queue_destroy(queue);
+   return;
+}
 
 
 static void
@@ -532,6 +608,12 @@ _evas_tbmbuf_surface_destroy(Surface *s)
       {
          if (surf->tbm_queue && tbm_queue_ref == 0)
             {
+               if (surf->tzsurf_flusher)
+                 {
+                    tizen_surface_shm_flusher_destroy(surf->tzsurf_flusher);
+                    surf->tzsurf_flusher = NULL;
+                 }
+
                if (surf->tbm_surface)
                   sym_tbm_surface_internal_set_user_data(surf->tbm_surface, KEY_WINDOW, NULL);
                sym_tbm_surface_queue_destroy(surf->tbm_queue);
@@ -608,6 +690,12 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
    s->funcs.data_get = _evas_tbmbuf_surface_data_get;
    s->funcs.assign = _evas_tbmbuf_surface_assign;
    s->funcs.post = _evas_tbmbuf_surface_post;
+
+   if (!tzsurf)
+      _shm_tzsurf_init(surf->wl_display);
+
+   surf->tzsurf_flusher = tizen_surface_shm_get_flusher(tzsurf, surf->wl_surface);
+   tizen_surface_shm_flusher_add_listener(surf->tzsurf_flusher, &_tzsurf_flusher_listener, surf);
 
    return EINA_TRUE;
 
