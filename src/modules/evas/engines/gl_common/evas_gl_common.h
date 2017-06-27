@@ -472,7 +472,6 @@ struct _Evas_GL_Image
    unsigned char    direct : 1; // evas gl direct renderable
    /*Disable generate atlas for texture unit, EINA_FALSE by default*/
    Eina_Bool        disable_atlas : 1;
-   Eina_Bool rotated : 1; // check eng_image_orient_set() called
 };
 
 struct _Evas_GL_Font_Texture
