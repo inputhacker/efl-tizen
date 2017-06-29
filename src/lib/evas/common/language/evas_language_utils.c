@@ -197,7 +197,11 @@ evas_common_language_direction_get(void)
 {
    if (lang_dir == EVAS_BIDI_DIRECTION_NEUTRAL)
      {
+        /* TIZEN_ONLY(20170629): change PACKAGE macro to elementary
         const char *dir_str = dgettext(PACKAGE, "default:LTR");
+         */
+        const char *dir_str = dgettext("elementary", "default:LTR");
+        /* END */
 
         if (dir_str && !strcmp(dir_str, "default:RTL"))
           lang_dir = EVAS_BIDI_DIRECTION_RTL;
