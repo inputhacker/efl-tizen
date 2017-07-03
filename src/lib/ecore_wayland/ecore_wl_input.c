@@ -2175,7 +2175,8 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
 
    if (flag)
      ret = _ecore_wl_input_add_ecore_device(name, identifier, clas, subclas);
-
+   else
+     ret = _ecore_wl_input_del_ecore_device(name, identifier, clas, subclas);
 
    if (!ret) return;
    if (windows)
@@ -2194,9 +2195,6 @@ _ecore_wl_input_device_info_broadcast(const char *name, const char *identifier, 
      {
         _ecore_wl_input_device_info_send((uintptr_t)NULL, name, identifier, clas, subclas, flag);
      }
-
-    else
-     ret = _ecore_wl_input_del_ecore_device(name, identifier, clas, subclas);
 }
 
 static void
