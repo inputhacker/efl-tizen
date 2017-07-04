@@ -692,8 +692,11 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
    if (!tzsurf)
       _shm_tzsurf_init(surf->wl_display);
 
-   surf->tzsurf_flusher = tizen_surface_shm_get_flusher(tzsurf, surf->wl_surface);
-   tizen_surface_shm_flusher_add_listener(surf->tzsurf_flusher, &_tzsurf_flusher_listener, surf);
+   if (tzsurf && !surf->tzsurf_flusher)
+     {
+        surf->tzsurf_flusher = tizen_surface_shm_get_flusher(tzsurf, surf->wl_surface);
+        tizen_surface_shm_flusher_add_listener(surf->tzsurf_flusher, &_tzsurf_flusher_listener, surf);
+     }
 
    return EINA_TRUE;
 
