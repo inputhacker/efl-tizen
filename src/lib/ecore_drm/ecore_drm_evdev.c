@@ -55,6 +55,7 @@ _device_output_set(Ecore_Drm_Evdev *edev)
    Ecore_Drm_Input *input;
    Ecore_Drm_Output *output = NULL;
    const char *oname;
+   int temp;
 
    if (!edev->seat) return;
    if (!(input = edev->seat->input)) return;
@@ -77,13 +78,24 @@ _device_output_set(Ecore_Drm_Evdev *edev)
 
    edev->output = output;
 
-   if (libinput_device_has_capability(edev->device, 
+   if (libinput_device_has_capability(edev->device,
                                       LIBINPUT_DEVICE_CAP_POINTER))
      {
         edev->seat->ptr.ix = edev->seat->ptr.dx = edev->output->current_mode->width / 2;
         edev->seat->ptr.iy = edev->seat->ptr.dy = edev->output->current_mode->height / 2;
         edev->mouse.dx = edev->seat->ptr.dx;
         edev->mouse.dy = edev->seat->ptr.dy;
+
+        if (output->rotation == 90 || output->rotation == 270)
+          {
+             temp = edev->mouse.minx;
+             edev->mouse.minx = edev->mouse.miny;
+             edev->mouse.miny = temp;
+
+             temp = edev->mouse.maxw;
+             edev->mouse.maxw = edev->mouse.maxh;
+             edev->mouse.maxh = temp;
+          }
      }
 }
 
@@ -512,6 +524,7 @@ _device_handle_pointer_motion(struct libinput_device *device, struct libinput_ev
 
    edev->seat->ptr.ix = edev->seat->ptr.dx;
    edev->seat->ptr.iy = edev->seat->ptr.dy;
+
   _device_pointer_motion(edev, event);
 
   TRACE_INPUT_END();

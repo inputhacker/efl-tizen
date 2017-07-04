@@ -858,12 +858,18 @@ static void
 _ecore_evas_drm_rotation_set(Ecore_Evas *ee, int rotation, int resize)
 {
    int rot_dif;
+   Ecore_Drm_Output *output;
 
    if (ee->rotation == rotation) return;
 
    /* rotate the input events in ecore_drm */
    if (dev)
-     ecore_drm_device_touch_rotation_set(dev, rotation);
+     {
+        output = ecore_drm_device_output_find(dev, ee->x, ee->y);
+        ecore_drm_output_rotation_set(output, rotation);
+        ecore_drm_device_touch_rotation_set(dev, rotation);
+        ecore_drm_device_rotation_set(dev, rotation);
+     }
 
    /* calculate difference in rotation */
    rot_dif = ee->rotation - rotation;
