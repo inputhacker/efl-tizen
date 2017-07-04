@@ -14,11 +14,14 @@ struct wl_resource;
 
 struct tizen_surface_shm;
 struct tizen_surface_shm_flusher;
+struct wl_surface;
 
 extern const struct wl_interface tizen_surface_shm_interface;
 extern const struct wl_interface tizen_surface_shm_flusher_interface;
 
 #define TIZEN_SURFACE_SHM_GET_FLUSHER	0
+
+#define TIZEN_SURFACE_SHM_GET_FLUSHER_SINCE_VERSION	1
 
 static inline void
 tizen_surface_shm_set_user_data(struct tizen_surface_shm *tizen_surface_shm, void *user_data)
@@ -30,6 +33,12 @@ static inline void *
 tizen_surface_shm_get_user_data(struct tizen_surface_shm *tizen_surface_shm)
 {
 	return wl_proxy_get_user_data((struct wl_proxy *) tizen_surface_shm);
+}
+
+static inline uint32_t
+tizen_surface_shm_get_version(struct tizen_surface_shm *tizen_surface_shm)
+{
+	return wl_proxy_get_version((struct wl_proxy *) tizen_surface_shm);
 }
 
 static inline void
@@ -55,6 +64,12 @@ struct tizen_surface_shm_flusher_listener {
 	 */
 	void (*flush)(void *data,
 		      struct tizen_surface_shm_flusher *tizen_surface_shm_flusher);
+	/**
+	 * free_flush - (none)
+	 * @since: 2
+	 */
+	void (*free_flush)(void *data,
+			   struct tizen_surface_shm_flusher *tizen_surface_shm_flusher);
 };
 
 static inline int
@@ -67,6 +82,8 @@ tizen_surface_shm_flusher_add_listener(struct tizen_surface_shm_flusher *tizen_s
 
 #define TIZEN_SURFACE_SHM_FLUSHER_DESTROY	0
 
+#define TIZEN_SURFACE_SHM_FLUSHER_DESTROY_SINCE_VERSION	1
+
 static inline void
 tizen_surface_shm_flusher_set_user_data(struct tizen_surface_shm_flusher *tizen_surface_shm_flusher, void *user_data)
 {
@@ -77,6 +94,12 @@ static inline void *
 tizen_surface_shm_flusher_get_user_data(struct tizen_surface_shm_flusher *tizen_surface_shm_flusher)
 {
 	return wl_proxy_get_user_data((struct wl_proxy *) tizen_surface_shm_flusher);
+}
+
+static inline uint32_t
+tizen_surface_shm_flusher_get_version(struct tizen_surface_shm_flusher *tizen_surface_shm_flusher)
+{
+	return wl_proxy_get_version((struct wl_proxy *) tizen_surface_shm_flusher);
 }
 
 static inline void
