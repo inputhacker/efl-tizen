@@ -1093,6 +1093,7 @@ typedef void (*Ecore_Drm_VBlank_Cb)(void *data);
 EAPI Eina_Bool  ecore_drm_output_wait_vblank(Ecore_Drm_Output *output, int interval, Ecore_Drm_VBlank_Cb func, void *data);
 EAPI int ecore_drm_output_dpms_get(Ecore_Drm_Output *output);
 EAPI void *ecore_drm_output_hal_private_get(Ecore_Drm_Output *output);
+EAPI void ecore_drm_output_rotation_set(Ecore_Drm_Output *output, int rotation);
 
 /* This is ugly, will remove after rebaseing on 1.14 */
 EAPI unsigned int ecore_drm_output_crtc_id_get(Ecore_Drm_Output *output);
@@ -1106,7 +1107,7 @@ EAPI Eina_Bool ecore_drm_display_fb_hal_buffer_create(Ecore_Drm_Fb *fb);
 EAPI void ecore_drm_display_fb_hal_buffer_destroy(Ecore_Drm_Fb *fb);
 
 EAPI Eina_Bool ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation);
-EAPI Eina_Bool ecore_drm_evdev_device_rotate_set(Ecore_Drm_Device *dev, unsigned int rotation);
+EAPI void ecore_drm_device_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation);
 EAPI Eina_Bool ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation);
 EAPI Eina_Bool ecore_drm_device_touch_transformation_set(Ecore_Drm_Device *dev, int offset_x, int offset_y, int w, int h);
 

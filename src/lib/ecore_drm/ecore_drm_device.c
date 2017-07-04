@@ -900,6 +900,44 @@ ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation)
    return EINA_TRUE;
 }
 
+EAPI void
+ecore_drm_device_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation)
+{
+   unsigned int rot = 0;
+   Ecore_Drm_Seat *seat = NULL;
+   Ecore_Drm_Evdev *edev = NULL;
+   Eina_List *l = NULL, *l2 = NULL;
+   int temp;
+
+   EINA_SAFETY_ON_NULL_RETURN(dev);
+   EINA_SAFETY_ON_NULL_RETURN(dev->seats);
+
+   EINA_LIST_FOREACH(dev->seats, l, seat)
+     {
+        EINA_LIST_FOREACH(ecore_drm_seat_evdev_list_get(seat), l2, edev)
+          {
+             if (libinput_device_has_capability(edev->device,
+                                      LIBINPUT_DEVICE_CAP_POINTER))
+               {
+                  ecore_drm_outputs_geometry_get(edev->seat->input->dev,
+                                       &edev->mouse.minx, &edev->mouse.miny,
+                                       &edev->mouse.maxw, &edev->mouse.maxh);
+
+                  if (rotation == 90 || rotation == 270)
+                    {
+                       temp = edev->mouse.minx;
+                       edev->mouse.minx = edev->mouse.miny;
+                       edev->mouse.miny = temp;
+
+                       temp = edev->mouse.maxw;
+                       edev->mouse.maxw = edev->mouse.maxh;
+                       edev->mouse.maxh = temp;
+                    }
+               }
+          }
+     }
+}
+
 static void
 _ecore_drm_device_touch_matrix_identify(float result[6])
 {

@@ -182,6 +182,8 @@ struct _Ecore_Drm_Output
    int curr_fb_format;
 
    void *hal_output;
+
+   int rotation;
 };
 
 struct _Ecore_Drm_Seat

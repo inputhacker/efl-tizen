@@ -1679,3 +1679,10 @@ ecore_drm_output_wait_vblank(Ecore_Drm_Output *output, int interval, Ecore_Drm_V
    return EINA_TRUE;
 #endif
 }
+
+EAPI void
+ecore_drm_output_rotation_set(Ecore_Drm_Output *output, int rotation)
+{
+   EINA_SAFETY_ON_NULL_RETURN(output);
+   output->rotation = rotation;
+}
