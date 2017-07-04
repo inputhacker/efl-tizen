@@ -657,7 +657,9 @@ else
 fi
 
 AC_ARG_ENABLE([systemd],
-   [AS_HELP_STRING([--enable-systemd],[Enable systemd support. @<:@default=disabled@:>@])],
+# TIZEN_ONLY(20170704): Turn off systemd from efl owing to the timing of calling sd_notify in mainloop
+#   [AS_HELP_STRING([--enable-systemd],[Enable systemd support. @<:@default=disabled@:>@])],
+   [AS_HELP_STRING([--disable-systemd],[Enable systemd support. @<:@default=disabled@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        want_systemd="yes"
