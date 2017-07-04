@@ -76,7 +76,6 @@ _shm_pool_make(struct wl_shm *shm, int size, void **data)
    const char *path;
    char *name;
    int fd = 0;
-   int len=0;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
@@ -87,27 +86,18 @@ _shm_pool_make(struct wl_shm *shm, int size, void **data)
    if ((path = getenv("TIZEN_WAYLAND_SHM_DIR")) ||
        (path = getenv("XDG_RUNTIME_DIR")))
      {
-        len = strlen(path) + sizeof(tmp);
-        if ((name = malloc(len+1)))
-          {
-             strncpy(name, path, len);
-             name[len]=0;
-          }
+        if ((name = malloc(strlen(path) + sizeof(tmp))))
+          strcpy(name, path);
      }
    else
      {
-        len = strlen("/tmp") + sizeof(tmp);
-        if ((name = malloc(len+1)))
-          {
-             strncpy(name, "/tmp", len);
-             name[len]=0;
-          }
+        if ((name = malloc(strlen("/tmp") + sizeof(tmp))))
+          strcpy(name, "/tmp");
      }
 
    if (!name) return NULL;
 
-   strncat(name, tmp, sizeof(tmp));
-   name[len]=0;
+   strcat(name, tmp);
 
    /* try to create tmp file */
    if ((fd = mkstemp(name)) < 0)
@@ -392,7 +382,7 @@ static void
 _shm_wl_registry_global(void *data EINA_UNUSED, struct wl_registry *registry, uint32_t name, const char *interface, uint32_t version)
 {
    if (!strcmp(interface, "tizen_surface_shm"))
-     shmdat.tzsurf = wl_registry_bind(registry, name, &tizen_surface_shm_interface, 2);
+     shmdat.tzsurf = wl_registry_bind(registry, name, &tizen_surface_shm_interface, version);
 }
 
 static void
@@ -472,32 +462,9 @@ _shm_tzsurf_flusher_cb_flush(void *data, struct tizen_surface_shm_flusher *flush
      }
 }
 
-static void
-_shm_tzsurf_flusher_cb_free_flush(void *data, struct tizen_surface_shm_flusher *flusher EINA_UNUSED)
-{
-   Shm_Surface *surf;
-   Shm_Leaf *leaf;
-   int i = 0;
-
-   surf = data;
-
-   for (; i < surf->num_buff; i++)
-     {
-        leaf = &surf->leaf[i];
-        if (leaf->busy)
-          {
-             continue;
-          }
-
-        _shm_leaf_release(&surf->leaf[i]);
-        surf->leaf[i].freed = EINA_TRUE;
-     }
-}
-
 static const struct tizen_surface_shm_flusher_listener _tzsurf_flusher_listener =
 {
-      _shm_tzsurf_flusher_cb_flush,
-      _shm_tzsurf_flusher_cb_free_flush
+      _shm_tzsurf_flusher_cb_flush
 };
 
 void 
