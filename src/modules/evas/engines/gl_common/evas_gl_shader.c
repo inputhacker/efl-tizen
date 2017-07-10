@@ -500,6 +500,30 @@ evas_gl_common_shader_precompile_list(Evas_GL_Shared *shared)
 
    if (!shared) return NULL;
 
+   // In case of some devices, glLinkProgram()'s time is spent too much.
+   // To optimize that, the precompiling's list are reduced.
+   // At first, base shaders are only included to the list.
+   if (getenv("EVAS_GL_SHADER_OPTIMIZE"))
+     {
+       /* most popular shaders */
+       const int BGRA = (shared->info.bgra ? SHADER_FLAG_BGRA : 0);
+       const int autoload[] = {
+          /* rect */ BASEFLAG,
+          /* text */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_ALPHA,
+          /* img1 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | BGRA,
+          /* img2 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | SHADER_FLAG_NOMUL | BGRA,
+       };
+
+       int i;
+       // Add to base shaders
+       for (i = 0; i < 4; i++)
+         li = eina_list_append(li, P(autoload[i]));
+
+       DBG("Built list of %d shaders to precompile for tizen", eina_list_count(li));
+       return li;
+     }
+
+
    // rect
    li = eina_list_append(li, P(BASEFLAG));
 
