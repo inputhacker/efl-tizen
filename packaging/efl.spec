@@ -725,7 +725,7 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 %endif
     --disable-physics \
     --disable-cxx-bindings \
-    --enable-systemd \
+    --disable-systemd \
     --enable-lua-old \
     --enable-ecore-buffer \
     --disable-gstreamer1 \
