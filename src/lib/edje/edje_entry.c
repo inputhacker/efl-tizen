@@ -4998,9 +4998,22 @@ _edje_text_cursor_coord_set(Edje_Real_Part *rp, Efl_Text_Cursor_Cursor *c,
           }
      }
    /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
+    * TIZEN_ONLY(20170711): send cursor,changed signal when cursor is changed by function call
    return evas_textblock_cursor_char_coord_set(c, x, y);
     */
-   return evas_textblock_cursor_cluster_coord_set(c, x, y);
+   Eina_Bool ret = evas_textblock_cursor_cluster_coord_set(c, x, y);
+
+   if (cur == EDJE_CURSOR_MAIN)
+     {
+        _edje_entry_imf_context_reset(rp);
+        _sel_update(en->ed, c, rp->object, rp->typedata.text->entry_data);
+
+        _edje_entry_imf_cursor_info_set(en);
+        _edje_emit(en->ed, "cursor,changed", rp->part->name);
+        _edje_entry_real_part_configure(en->ed, rp);
+     }
+
+   return ret;
    /* END */
 }
 
