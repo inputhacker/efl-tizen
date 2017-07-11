@@ -4346,7 +4346,6 @@ _edje_object_part_drag_value_set(Eo *obj EINA_UNUSED, Edje *ed, const char *part
    rp = _edje_real_part_recursive_get(&ed, part);
    if (!rp) return EINA_FALSE;
    if (!rp->drag) return EINA_FALSE;
-   if (rp->drag->down.count > 0) return EINA_FALSE;
 
    EINA_LIST_FOREACH(ed->user_defined, l, eud)
      if (eud->type == EDJE_USER_DRAG_VALUE && !strcmp(part, eud->part))
@@ -4656,7 +4655,6 @@ _edje_object_part_drag_step(Eo *obj EINA_UNUSED, Edje *ed, const char *part, dou
    rp = _edje_real_part_recursive_get(&ed, part);
    if (!rp) return EINA_FALSE;
    if (!rp->drag) return EINA_FALSE;
-   if (rp->drag->down.count > 0) return EINA_FALSE;
 
    EINA_LIST_FOREACH(ed->user_defined, l, eud)
      if (eud->type == EDJE_USER_DRAG_STEP && !strcmp(part, eud->part))
@@ -4708,7 +4706,6 @@ _edje_object_part_drag_page(Eo *obj EINA_UNUSED, Edje *ed, const char *part, dou
    rp = _edje_real_part_recursive_get(&ed, part);
    if (!rp) return EINA_FALSE;
    if (!rp->drag) return EINA_FALSE;
-   if (rp->drag->down.count > 0) return EINA_FALSE;
 
    EINA_LIST_FOREACH(ed->user_defined, l, eud)
      if (eud->type == EDJE_USER_DRAG_PAGE && !strcmp(part, eud->part))

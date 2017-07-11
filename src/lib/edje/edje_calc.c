@@ -1061,12 +1061,14 @@ _edje_dragable_pos_set(Edje *ed, Edje_Real_Part *ep, FLOAT_T x, FLOAT_T y)
 {
    /* check whether this part is dragable at all */
    if (!ep->drag) return;
+   if (ep->drag->down.count > 0) return;
 
    /* instead of checking for equality, we really should check that
     * the difference is greater than foo, but I have no idea what
     * value we would set foo to, because it would depend on the
     * size of the dragable...
     */
+
    if (ep->drag->x != x || ep->drag->tmp.x)
      {
         ep->drag->x = x;
@@ -4855,7 +4857,9 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
         dy = ZERO;
         _edje_part_dragable_calc(ed, ep, &dx, &dy);
         ep->drag->x = dx;
+        ep->drag->val.x = dx;
         ep->drag->y = dy;
+        ep->drag->val.y = dy;
         ep->drag->tmp.x = 0;
         ep->drag->tmp.y = 0;
         ep->drag->need_reset = 0;
