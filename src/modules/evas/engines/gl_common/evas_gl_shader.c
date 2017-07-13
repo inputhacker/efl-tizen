@@ -321,16 +321,10 @@ _evas_gl_common_shader_binary_save(Evas_GL_Shared *shared)
    /* copy old file */
    if (copy)
      {
-        ef = eet_open(tmp_file_path, EET_FILE_MODE_READ);
-        if (!ef) goto save;
-        if (!_evas_gl_common_shader_binary_checksum_check(shared, ef))
-          copy = EINA_FALSE;
-        eet_close(ef);
-        if (copy)
-          eina_file_copy(bin_file_path, tmp_file_path, EINA_FILE_COPY_DATA, NULL, NULL);
+        if(!eina_file_copy(bin_file_path, tmp_file_path, EINA_FILE_COPY_DATA, NULL, NULL))
+          ERR("fail to copy old shader");
      }
 
-save:
    ef = eet_open(tmp_file_path, copy ? EET_FILE_MODE_READ_WRITE : EET_FILE_MODE_WRITE);
    if (!ef) goto error;
 
