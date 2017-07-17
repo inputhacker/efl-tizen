@@ -951,7 +951,7 @@ static void
 _ecore_wl_cb_awake(void *data)
 {
    Ecore_Wl_Display *ewd;
-   Ecore_Fd_Handler_Flags flags = ECORE_FD_READ|ECORE_FD_WRITE|ECORE_FD_ERROR;
+   Ecore_Fd_Handler_Flags flags = ECORE_FD_READ;
 
    if (_ecore_wl_fatal_error) return;
    if (!(ewd = data)) return;
