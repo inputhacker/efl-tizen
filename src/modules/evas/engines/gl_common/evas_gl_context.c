@@ -2440,8 +2440,19 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
 
    if (sam)
      {
-        double samx = (double)(sw) / (double)(tex->pt->w * w * 4);
-        double samy = (double)(sh) / (double)(tex->pt->h * h * 4);
+       double samx;
+       double samy;
+       if (tex->im &&
+           (tex->im->orient == EVAS_IMAGE_ORIENT_270 || tex->im->orient == EVAS_IMAGE_ORIENT_90))
+         {
+           samx = (double)(sh) / (double)(tex->pt->h * w * 4);
+           samy = (double)(sw) / (double)(tex->pt->w * h * 4);
+         }
+       else
+         {
+           samx = (double)(sw) / (double)(tex->pt->w * w * 4);
+           samy = (double)(sh) / (double)(tex->pt->h * h * 4);
+         }
         PUSH_SAMPLES(pn, samx, samy);
      }
 
