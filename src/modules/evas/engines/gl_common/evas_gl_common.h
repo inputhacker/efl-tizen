@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <Eet.h>
+#include <fcntl.h>
 
 #define GL_GLEXT_PROTOTYPES
 
@@ -238,6 +239,7 @@ struct _Evas_GL_Shared
    int offx, offy;
    GLfloat proj[16];
    Eina_Bool needs_shaders_flush : 1;
+   int lock_shader;
 };
 
 typedef enum _Shader_Sampling Shader_Sampling;

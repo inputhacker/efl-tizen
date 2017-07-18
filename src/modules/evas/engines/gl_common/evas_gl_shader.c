@@ -414,6 +414,51 @@ _shaders_hash_free_cb(void *data)
    _program_del(data);
 }
 
+static void
+_shader_lock(Evas_GL_Shared *shared,const char *cache_dir)
+{
+   char lock_path[PATH_MAX];
+   snprintf(lock_path, sizeof(lock_path), "%s/shader_compile.lock", cache_dir);
+   shared->lock_shader = open(lock_path, O_RDWR | O_CREAT , S_IRUSR | S_IWUSR);
+   if(shared->lock_shader<0)
+     {
+        ERR("lock create is failed ");
+        return;
+     }
+
+   /* lock for wait creating shader*/
+   struct flock filelock;
+   filelock.l_type = F_WRLCK;
+   filelock.l_whence = SEEK_SET;
+   filelock.l_start = 0;
+   filelock.l_len = 0;
+   if (fcntl(shared->lock_shader, F_SETLKW, &filelock) == -1)
+     {
+        ERR("lock take fail");
+        return;
+     }
+}
+
+static void
+_shader_unlock(Evas_GL_Shared *shared)
+{
+   if(shared->lock_shader < 0) return;
+
+    /* reset lock */
+   struct flock filelock;
+   filelock.l_type = F_UNLCK;
+   filelock.l_whence = SEEK_SET;
+   filelock.l_start = 0;
+   filelock.l_len = 0;
+   if (fcntl(shared->lock_shader, F_SETLKW, &filelock) == -1)
+     {
+        ERR("lock release fail");
+     }
+
+   /* need to close lock file */
+   close(shared->lock_shader);
+}
+
 static char *
 evas_gl_common_shader_glsl_get(unsigned int flags, const char *base)
 {
@@ -644,31 +689,46 @@ evas_gl_common_shader_program_init(Evas_GL_Shared *shared)
    };
    Evas_GL_Program *p;
    unsigned i;
+   char bin_dir_path[PATH_MAX];
 
    shared->shaders_hash = eina_hash_int32_new(_shaders_hash_free_cb);
-   if (_evas_gl_common_shader_binary_init(shared))
+   if (!evas_gl_common_file_cache_dir_check(bin_dir_path, sizeof(bin_dir_path)))
+     evas_gl_common_file_cache_mkpath(bin_dir_path);
+
+   if(_evas_gl_common_shader_binary_init(shared))
+     goto Load;
+
+   //shader lock for wait other process
+   _shader_lock(shared,bin_dir_path);
+   if(_evas_gl_common_shader_binary_init(shared))
      {
-        for (i = 0; i < (sizeof(autoload) / sizeof(autoload[0])); i++)
-          {
-             p = _evas_gl_common_shader_program_binary_load(shared->shaders_cache, autoload[i]);
-             if (p)
-               {
-                  evas_gl_common_shader_textures_bind(p);
-                  eina_hash_add(shared->shaders_hash, &autoload[i], p);
-               }
-          }
-     }
-   else
-     {
-        evas_gl_common_shader_precompile_all(shared);
-        for (i = 0; i < (sizeof(autoload) / sizeof(autoload[0])); i++)
-          {
-             p = eina_hash_find(shared->shaders_hash, &autoload[i]);
-             if (p) p->delete_me = 0;
-          }
-        evas_gl_common_shaders_flush(shared);
+        _shader_unlock(shared);
+        goto Load;
      }
 
+   //precompile shader
+   evas_gl_common_shader_precompile_all(shared);
+   for (i = 0; i < (sizeof(autoload) / sizeof(autoload[0])); i++)
+     {
+        p = eina_hash_find(shared->shaders_hash, &autoload[i]);
+        if (p) p->delete_me = 0;
+     }
+   evas_gl_common_shaders_flush(shared);
+
+   //shader un-lock for wait other process
+   _shader_unlock(shared);
+   return 1;
+
+Load:
+   for (i = 0; i < (sizeof(autoload) / sizeof(autoload[0])); i++)
+     {
+        p = _evas_gl_common_shader_program_binary_load(shared->shaders_cache, autoload[i]);
+        if (p)
+          {
+             evas_gl_common_shader_textures_bind(p);
+             eina_hash_add(shared->shaders_hash, &autoload[i], p);
+          }
+     }
    return 1;
 }
 
