@@ -40,8 +40,18 @@
   Bool = 0;
 
 static const char SIG_CHANGED[] = "changed";
+
+//TIZEN_ONLY(20170718): Add content,resize callback to keep backward compat
+static const char SIG_CONTENT_RESIZE[] = "content,resize";
+//END
+
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, ""},
+
+//TIZEN_ONLY(20170718): Add content,resize callback to keep backward compat
+   {SIG_CONTENT_RESIZE, ""},
+//END
+
    {NULL, NULL}
 };
 
@@ -4379,6 +4389,9 @@ _elm_scroll_pan_changed_cb(void *data, const Efl_Event *event EINA_UNUSED)
              elm_interface_scrollable_wanted_region_set(sid->obj, sid->wx, sid->wy);
              //END
           }
+        //END
+        //TIZEN_ONLY(20170718): Add content,resize callback to keep backward compat
+        evas_object_smart_callback_call(sid->obj, SIG_CONTENT_RESIZE, NULL);
         //END
      }
 }
