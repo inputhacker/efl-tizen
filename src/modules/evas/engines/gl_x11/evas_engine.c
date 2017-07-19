@@ -85,7 +85,7 @@ void     (*glsym_eglDestroyImage)              (EGLDisplay a, void *b) = NULL;
 void     (*glsym_glEGLImageTargetTexture2DOES) (int a, void *b)  = NULL;
 unsigned int   (*glsym_eglSwapBuffersWithDamage) (EGLDisplay a, void *b, const EGLint *d, EGLint c) = NULL;
 unsigned int   (*glsym_eglSetDamageRegion)  (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d) = NULL;
-unsigned int (*glsym_eglQueryWaylandBuffer)(EGLDisplay a, /*struct wl_resource */void *b, EGLint c, EGLint *d) = NULL;
+unsigned int (*glsym_eglQueryWaylandBufferWL)(EGLDisplay a, /*struct wl_resource */void *b, EGLint c, EGLint *d) = NULL;
 
 #else
 
@@ -104,15 +104,6 @@ void     (*glsym_glXSwapIntervalEXT) (Display *s, GLXDrawable b, int c) = NULL;
 void     (*glsym_glXReleaseBuffersMESA)   (Display *a, XID b) = NULL;
 
 #endif
-
-#define REPLACE_THREAD(prefix, dst, typ) \
-   if (prefix##dst && (typ)prefix##dst != (typ)dst##_thread_cmd) \
-     { \
-        dst##_orig_evas_set(prefix##dst); \
-        prefix##dst = (typ)dst##_thread_cmd; \
-     }
-
-void (*glsym_evas_gl_common_surface_cache_dump)(void) = NULL;
 
 static inline Outbuf *
 eng_get_ob(Render_Engine *re)
@@ -168,6 +159,110 @@ evgl_eng_evas_surface_get(void *data)
       return NULL;
 }
 
+#ifdef GL_GLES
+static EGLDisplay main_dpy  = EGL_NO_DISPLAY;
+static EGLSurface main_draw = EGL_NO_SURFACE;
+static EGLSurface main_read = EGL_NO_SURFACE;
+static EGLContext main_ctx  = EGL_NO_CONTEXT;
+
+EGLContext
+evas_eglGetCurrentContext(GL_X11_Context_Type type)
+{
+   if (type == GL_X11_CONTEXT_TYPE_EVAS)
+     {
+        return GL_TH(eglGetCurrentContext);
+     }
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL)
+     {
+        return EVGL_TH(eglGetCurrentContext);
+     }
+   else
+     {
+        if (eina_main_loop_is())
+           return main_ctx;
+        else
+           return eglGetCurrentContext();
+     }
+}
+
+EGLSurface
+evas_eglGetCurrentSurface(GL_X11_Context_Type type, EGLint readdraw)
+{
+   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled())
+     {
+        return GL_TH(eglGetCurrentSurface, readdraw);
+     }
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_evgl_thread_enabled())
+     {
+        return EVGL_TH(eglGetCurrentSurface, readdraw);
+     }
+   else
+     {
+        if (eina_main_loop_is())
+           return (readdraw == EGL_READ) ? main_read : main_draw;
+        else
+           return eglGetCurrentSurface(readdraw);
+     }
+}
+
+EGLDisplay
+evas_eglGetCurrentDisplay(GL_X11_Context_Type type)
+{
+   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled())
+     {
+        return GL_TH(eglGetCurrentDisplay);
+     }
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_evgl_thread_enabled())
+     {
+        return EVGL_TH(eglGetCurrentDisplay);
+     }
+   else
+     {
+        if (eina_main_loop_is())
+           return main_ctx;
+        else
+           return eglGetCurrentDisplay();
+     }
+}
+
+EGLBoolean
+evas_eglMakeCurrent(GL_X11_Context_Type type, EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx)
+{
+   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled())
+     {
+        return GL_TH(eglMakeCurrent, dpy, draw, read, ctx);
+     }
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_evgl_thread_enabled())
+     {
+        return EVGL_TH(eglMakeCurrent, dpy, draw, read, ctx);
+     }
+   else
+     {
+        if (eina_main_loop_is())
+          {
+             EGLBoolean ret;
+
+             if ((dpy == main_dpy) && (draw == main_draw) &&
+                 (read == main_read) && (ctx == main_ctx))
+               return EGL_TRUE;
+
+             ret = eglMakeCurrent(dpy, draw, read, ctx);
+             if (ret)
+               {
+                  main_dpy  = dpy;
+                  main_draw = draw;
+                  main_read = read;
+                  main_ctx  = ctx;
+               }
+             return ret;
+          }
+        else
+          return eglMakeCurrent(dpy, draw, read, ctx);
+     }
+   return EGL_FALSE;
+}
+#endif
+
 static int
 evgl_eng_make_current(void *data, void *surface, void *context, int flush)
 {
@@ -182,7 +277,6 @@ evgl_eng_make_current(void *data, void *surface, void *context, int flush)
         return 0;
      }
 
-
 #ifdef GL_GLES
    EGLContext ctx = (EGLContext)context;
    EGLSurface sfc = (EGLSurface)surface;
@@ -190,25 +284,21 @@ evgl_eng_make_current(void *data, void *surface, void *context, int flush)
 
    if ((!context) && (!surface))
      {
-        if (!eglGetCurrentContext_thread_cmd() &&
-            !eglGetCurrentSurface_thread_cmd(EGL_READ) &&
-            !eglGetCurrentSurface_thread_cmd(EGL_DRAW))
-          return 1;
-        ret = eglMakeCurrent_thread_cmd(dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        ret = evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVGL, dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         if (!ret)
           {
-             int err = eglGetError_thread_cmd();
+             int err = eglGetError();
              glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
-             ERR("eglMakeCurrent() failed! Error Code=%#x", err);
+             ERR("evas_eglMakeCurrent() failed! Error Code=%#x", err);
              return 0;
           }
         return 1;
      }
 
    // FIXME: Check (eglGetCurrentDisplay() != dpy) ?
-   if ((eglGetCurrentContext_thread_cmd() != ctx) ||
-       (eglGetCurrentSurface_thread_cmd(EGL_READ) != sfc) ||
-       (eglGetCurrentSurface_thread_cmd(EGL_DRAW) != sfc) )
+   if ((evas_eglGetCurrentContext(GL_X11_CONTEXT_TYPE_EVGL) != ctx) ||
+       (evas_eglGetCurrentSurface(GL_X11_CONTEXT_TYPE_EVGL, EGL_READ) != sfc) ||
+       (evas_eglGetCurrentSurface(GL_X11_CONTEXT_TYPE_EVGL, EGL_DRAW) != sfc) )
      {
 
         //!!!! Does it need to be flushed with it's set to NULL above??
@@ -216,13 +306,13 @@ evgl_eng_make_current(void *data, void *surface, void *context, int flush)
         if (flush) eng_window_use(NULL);
 
         // Do a make current
-        ret = eglMakeCurrent_thread_cmd(dpy, sfc, sfc, ctx);
+        ret = evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVGL, dpy, sfc, sfc, ctx);
 
         if (!ret)
           {
-             int err = eglGetError_thread_cmd();
+             int err = eglGetError();
              glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
-             ERR("eglMakeCurrent() failed! Error Code=%#x", err);
+             ERR("evas_eglMakeCurrent() failed! Error Code=%#x", err);
              return 0;
           }
      }
@@ -234,7 +324,7 @@ evgl_eng_make_current(void *data, void *surface, void *context, int flush)
 
    if ((!context) && (!surface))
      {
-        ret = __glXMakeContextCurrent(eng_get_ob(re)->info->info.display, 0, NULL);
+        ret = __glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVGL, eng_get_ob(re)->info->info.display, 0, NULL);
         if (!ret)
           {
              ERR("glXMakeContextCurrent() failed!");
@@ -254,10 +344,12 @@ evgl_eng_make_current(void *data, void *surface, void *context, int flush)
         // Do a make current
         if ((sfc == eng_get_ob(re)->win) ||
             (sfc == eng_get_ob(re)->glxwin))
-          ret = __glXMakeContextCurrent(eng_get_ob(re)->info->info.display,
+          ret = __glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVGL,
+				                        eng_get_ob(re)->info->info.display,
                                         eng_get_ob(re)->glxwin, ctx);
         else
-          ret = __glXMakeContextCurrent(eng_get_ob(re)->info->info.display,
+          ret = __glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVGL,
+				                        eng_get_ob(re)->info->info.display,
                                         sfc, ctx);
         if (!ret)
           {
@@ -1262,9 +1354,8 @@ gl_symbols(void)
    FINDSYM(glsym_eglGetProcAddress, "eglGetProcAddressARB", glsym_func_eng_fn);
    FINDSYM(glsym_eglGetProcAddress, "eglGetProcAddress", glsym_func_eng_fn);
 
-   FINDSYM(glsym_eglQueryWaylandBuffer, "eglQueryWaylandBufferWL",
+   FINDSYM(glsym_eglQueryWaylandBufferWL, "eglQueryWaylandBufferWL",
            glsym_func_uint)
-   REPLACE_THREAD(glsym_, eglQueryWaylandBuffer, glsym_func_eng_fn);
 #else
 #define FINDSYM(dst, sym, typ) \
    if (glsym_glXGetProcAddress) { \
@@ -1309,15 +1400,12 @@ eng_gl_symbols(void)
    FINDSYM(glsym_eglDestroyImage, "eglDestroyImage", glsym_func_void);
 
    FINDSYM(glsym_glEGLImageTargetTexture2DOES, "glEGLImageTargetTexture2DOES", glsym_func_void);
-   REPLACE_THREAD(glsym_, glEGLImageTargetTexture2DOES, glsym_func_void);
 
    FINDSYM(glsym_eglSwapBuffersWithDamage, "eglSwapBuffersWithDamageEXT", glsym_func_uint);
    FINDSYM(glsym_eglSwapBuffersWithDamage, "eglSwapBuffersWithDamageINTEL", glsym_func_uint);
    FINDSYM(glsym_eglSwapBuffersWithDamage, "eglSwapBuffersWithDamage", glsym_func_uint);
-   REPLACE_THREAD(glsym_, eglSwapBuffersWithDamage, glsym_func_uint);
 
    FINDSYM(glsym_eglSetDamageRegion, "eglSetDamageRegionKHR", glsym_func_uint);
-   REPLACE_THREAD(glsym_, eglSetDamageRegion, glsym_func_uint);
 
 
 #else
@@ -1401,8 +1489,8 @@ gl_extn_veto(Render_Engine *re)
           {
              const GLubyte *vendor, *renderer;
 
-             vendor = glGetString_thread_cmd(GL_VENDOR);
-             renderer = glGetString_thread_cmd(GL_RENDERER);
+             vendor = GL_TH(glGetString, GL_VENDOR);
+             renderer = GL_TH(glGetString, GL_RENDERER);
              // XXX: workaround mesa bug!
              // looking for mesa and intel build which is known to
              // advertise the EGL_NOK_texture_from_pixmap extension
@@ -1833,7 +1921,7 @@ eng_output_free(void *data)
 
 #ifndef GL_GLES
         if (glsym_glXReleaseBuffersMESA)
-          glsym_glXReleaseBuffersMESA(disp, win);
+          GL_TH_CALL(glXReleaseBuffersMESA, glsym_glXReleaseBuffersMESA, disp, win);
 #endif
         gl_wins--;
 
@@ -1858,10 +1946,10 @@ eng_preload_make_current(void *data, void *doit)
    if (doit)
      {
 #ifdef GL_GLES
-        if (!eglMakeCurrent_thread_cmd(ob->egl_disp, ob->egl_surface[0], ob->egl_surface[0], ob->egl_context[0]))
+        if (!evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS, ob->egl_disp, ob->egl_surface, ob->egl_surface, ob->egl_context))
           return EINA_FALSE;
 #else
-        if (!__glXMakeContextCurrent(ob->info->info.display, ob->glxwin, ob->context))
+        if (!__glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVAS, ob->info->info.display, ob->glxwin, ob->context))
           {
              ERR("glXMakeContextCurrent(%p, %p, %p) failed",
                  ob->info->info.display, (void *)ob->win, (void *)ob->context);
@@ -1873,10 +1961,10 @@ eng_preload_make_current(void *data, void *doit)
    else
      {
 #ifdef GL_GLES
-        if (!eglMakeCurrent_thread_cmd(ob->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
+        if (!evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS, ob->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
           return EINA_FALSE;
 #else
-        if (!__glXMakeContextCurrent(ob->info->info.display, 0, NULL))
+        if (!__glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVAS, ob->info->info.display, 0, NULL))
           {
              ERR("glXMakeContextCurrent(%p, None, NULL) failed",
                  ob->info->info.display);
@@ -1921,10 +2009,10 @@ eng_gl_current_context_get(void *data EINA_UNUSED)
    context = glsym_evgl_current_native_context_get(ctx);
 
 #ifdef GL_GLES
-   if (eglGetCurrentContext_thread_cmd() == context)
+   if (evas_eglGetCurrentContext(GL_X11_CONTEXT_TYPE_EVAS) == context)
      return ctx;
 #else
-   if (glXGetCurrentContext() == context)
+   if (GL_TH(glXGetCurrentContext) == context)
      return ctx;
 #endif
 
@@ -1940,7 +2028,7 @@ eng_gl_error_get(void *data)
      goto end;
 
 #ifdef GL_GLES
-   err = eglGetError_thread_cmd() - EGL_SUCCESS;
+   err = GL_TH(eglGetError) - EGL_SUCCESS;
 #else
    Render_Engine *re = data;
 
@@ -1980,7 +2068,7 @@ _native_bind_cb(void *data EINA_UNUSED, void *image)
          {
             if (glsym_glEGLImageTargetTexture2DOES)
               {
-                 glsym_glEGLImageTargetTexture2DOES(im->native.target, n->ns_data.x11.surface);
+                 GL_TH_CALL(glEGLImageTargetTexture2DOES, glsym_glEGLImageTargetTexture2DOES, im->native.target, n->ns_data.x11.surface);
                  GLERRV("glsym_glEGLImageTargetTexture2DOES");
               }
             else
@@ -1992,7 +2080,7 @@ _native_bind_cb(void *data EINA_UNUSED, void *image)
 
        if (glsym_glXBindTexImage)
          {
-            glsym_glXBindTexImage(eng_get_ob(re)->disp, (XID)n->ns_data.x11.surface,
+            GL_TH_CALL(glXBindTexImage, glsym_glXBindTexImage, eng_get_ob(re)->disp, (XID)n->ns_data.x11.surface,
                                   GLX_FRONT_LEFT_EXT, NULL);
             GLERRV("glsym_glXBindTexImage");
          }
@@ -2003,7 +2091,7 @@ _native_bind_cb(void *data EINA_UNUSED, void *image)
     }
   else if (n->ns.type == EVAS_NATIVE_SURFACE_OPENGL)
     {
-       glBindTexture_thread_cmd(im->native.target, n->ns.data.opengl.texture_id);
+       GL_TH(glBindTexture, im->native.target, n->ns.data.opengl.texture_id);
     }
   else if (n->ns.type == EVAS_NATIVE_SURFACE_TBM)
     {
@@ -2012,7 +2100,7 @@ _native_bind_cb(void *data EINA_UNUSED, void *image)
          {
             if (glsym_glEGLImageTargetTexture2DOES)
               {
-                 glsym_glEGLImageTargetTexture2DOES(im->native.target, n->ns_data.tbm.surface);
+                 GL_TH_CALL(glEGLImageTargetTexture2DOES, glsym_glEGLImageTargetTexture2DOES, im->native.target, n->ns_data.tbm.surface);
                  GLERRV("glsym_glEGLImageTargetTexture2DOES");
               }
              else
@@ -2034,7 +2122,7 @@ _native_bind_cb(void *data EINA_UNUSED, void *image)
 #ifdef GL_GLES
                  if (glsym_glEGLImageTargetTexture2DOES)
                    {
-                      glsym_glEGLImageTargetTexture2DOES(im->native.target, surface);
+                      GL_TH_CALL(glEGLImageTargetTexture2DOES, glsym_glEGLImageTargetTexture2DOES, im->native.target, surface);
                       GLERRV("glsym_glEGLImageTargetTexture2DOES");
                    }
                  else
@@ -2043,7 +2131,7 @@ _native_bind_cb(void *data EINA_UNUSED, void *image)
               }
             else
               {
-                 glBindTexture_thread_cmd(GL_TEXTURE_2D, (GLuint)(uintptr_t)surface);
+                 GL_TH(glBindTexture, GL_TEXTURE_2D, (GLuint)(uintptr_t)surface);
               }
          }
     }
@@ -2055,7 +2143,7 @@ _native_bind_cb(void *data EINA_UNUSED, void *image)
           {
              if (glsym_glEGLImageTargetTexture2DOES)
                {
-                  glsym_glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, n->ns_data.wl_surface.surface);
+                  GL_TH_CALL(glEGLImageTargetTexture2DOES, glsym_glEGLImageTargetTexture2DOES, GL_TEXTURE_2D, n->ns_data.wl_surface.surface);
                   GLERRV("glsym_glEGLImageTargetTexture2DOES");
                }
              else
@@ -2082,7 +2170,7 @@ _native_unbind_cb(void *data EINA_UNUSED, void *image)
 
         if (glsym_glXReleaseTexImage)
           {
-             glsym_glXReleaseTexImage(eng_get_ob(re)->disp, (XID)(n->ns_data.x11.surface),
+             GL_TH_CALL(glXReleaseTexImage, glsym_glXReleaseTexImage, eng_get_ob(re)->disp, (XID)(n->ns_data.x11.surface),
                                       GLX_FRONT_LEFT_EXT);
           }
         else
@@ -2092,7 +2180,7 @@ _native_unbind_cb(void *data EINA_UNUSED, void *image)
      }
    else if (n->ns.type == EVAS_NATIVE_SURFACE_OPENGL)
      {
-        glBindTexture_thread_cmd(im->native.target, 0);
+        GL_TH(glBindTexture, im->native.target, 0);
      }
    else if (n->ns.type == EVAS_NATIVE_SURFACE_TBM)
      {
@@ -2103,7 +2191,7 @@ _native_unbind_cb(void *data EINA_UNUSED, void *image)
 #ifdef GL_GLES
         // nothing
 #else
-        glBindTexture_thread_cmd(GL_TEXTURE_2D, 0);
+        GL_TH(glBindTexture, GL_TEXTURE_2D, 0);
 #endif
      }
 }
@@ -2133,7 +2221,7 @@ _native_free_cb(void *data, void *image)
               {
                  glsym_eglDestroyImage(eng_get_ob(re)->egl_disp,
                                        n->ns_data.x11.surface);
-                 if ((err = eglGetError()) != EGL_SUCCESS)
+                 if ((err = GL_TH(eglGetError)) != EGL_SUCCESS)
                    {
                       ERR("eglDestroyImage() failed.");
                       glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
@@ -2150,7 +2238,7 @@ _native_free_cb(void *data, void *image)
               {
                  if (glsym_glXReleaseTexImage)
                    {
-                     glsym_glXReleaseTexImage(eng_get_ob(re)->disp, (XID)n->ns_data.x11.surface,
+                     GL_TH_CALL(glXReleaseTexImage, glsym_glXReleaseTexImage, eng_get_ob(re)->disp, (XID)n->ns_data.x11.surface,
                                               GLX_FRONT_LEFT_EXT);
                    }
                  else
@@ -2158,7 +2246,7 @@ _native_free_cb(void *data, void *image)
               }
             if (glsym_glXDestroyPixmap)
               {
-                 glsym_glXDestroyPixmap(eng_get_ob(re)->disp, (XID)n->ns_data.x11.surface);
+                 GL_TH_CALL(glXDestroyPixmap, glsym_glXDestroyPixmap, eng_get_ob(re)->disp, (XID)n->ns_data.x11.surface);
                  GLERRV("glsym_glXDestroyPixmap");
               }
             else
@@ -2184,7 +2272,7 @@ _native_free_cb(void *data, void *image)
               {
                  glsym_eglDestroyImage(eng_get_ob(re)->egl_disp,
                                        n->ns_data.tbm.surface);
-                 if ((err = eglGetError()) != EGL_SUCCESS)
+                 if ((err = GL_TH(eglGetError)) != EGL_SUCCESS)
                    {
                       ERR("eglDestroyImage() failed.");
                       glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
@@ -2210,7 +2298,7 @@ _native_free_cb(void *data, void *image)
              if (glsym_eglDestroyImage)
                {
                   glsym_eglDestroyImage(eng_get_ob(re)->egl_disp, n->ns_data.wl_surface.surface);
-                  if (eglGetError() != EGL_SUCCESS)
+                  if (GL_TH(eglGetError) != EGL_SUCCESS)
                     ERR("eglDestroyImage() failed.");
                }
              else
@@ -2502,7 +2590,7 @@ eng_image_native_set(void *data, void *image, void *native)
                  if (!eglChooseConfig(eng_get_ob(re)->egl_disp, config_attrs,
                                       &egl_config, 1, &num_config))
                    {
-                      int err = eglGetError();
+                      int err = GL_TH(eglGetError);
                       ERR("eglChooseConfig() failed for pixmap 0x%x, num_config = %i with error %d",
                                                              (unsigned int)pm, num_config, err);
                       glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
@@ -2698,7 +2786,8 @@ eng_image_native_set(void *data, void *image, void *native)
                       n->ns_data.x11.pixmap = pm;
                       n->ns_data.x11.visual = vis;
                       if (glsym_glXCreatePixmap)
-                        n->ns_data.x11.surface = (void *)glsym_glXCreatePixmap(eng_get_ob(re)->disp,
+                        n->ns_data.x11.surface = (void *)GL_TH_CALL(glXCreatePixmap, glsym_glXCreatePixmap,
+                                                                   eng_get_ob(re)->disp,
                                                                    n->ns_data.x11.config,
                                                                    n->ns_data.x11.pixmap,
                                                                    pixmap_att);
@@ -2712,7 +2801,8 @@ eng_image_native_set(void *data, void *image, void *native)
                              {
                                 ERR("no target :(");
                                 if (glsym_glXQueryDrawable)
-                                  glsym_glXQueryDrawable(eng_get_ob(re)->disp,
+                                  GL_TH_CALL(glXQueryDrawable, glsym_glXQueryDrawable,
+                                             eng_get_ob(re)->disp,
                                                          n->ns_data.x11.pixmap,
                                                          GLX_TEXTURE_TARGET_EXT,
                                                          &target);
@@ -2861,8 +2951,8 @@ eng_image_native_set(void *data, void *image, void *native)
                   EGLint attribs[3];
                   int format, yinvert = 1;
 
-                  glsym_eglQueryWaylandBuffer(eng_get_ob(re)->egl_disp, wl_buf,
-                                              EGL_TEXTURE_FORMAT, &format); // TODO : THREAD
+                  GL_TH_CALL(eglQueryWaylandBufferWL, glsym_eglQueryWaylandBufferWL, eng_get_ob(re)->egl_disp, wl_buf,
+                             EGL_TEXTURE_FORMAT, &format);
                   if ((format != EGL_TEXTURE_RGB) &&
                       (format != EGL_TEXTURE_RGBA))
                     {
@@ -2877,9 +2967,8 @@ eng_image_native_set(void *data, void *image, void *native)
                   attribs[2] = EGL_NONE;
 
                   memcpy(&(n->ns), ns, sizeof(Evas_Native_Surface));
-                  if (glsym_eglQueryWaylandBuffer(eng_get_ob(re)->egl_disp, wl_buf,
-                                                    EGL_WAYLAND_Y_INVERTED_WL,
-                                                    &yinvert) == EGL_FALSE)
+                  if (GL_TH_CALL(eglQueryWaylandBufferWL, glsym_eglQueryWaylandBufferWL, eng_get_ob(re)->egl_disp, wl_buf,
+                                 EGL_WAYLAND_Y_INVERTED_WL, &yinvert) == EGL_FALSE)
                     yinvert = 1;
                   eina_hash_add(eng_get_ob(re)->gl_context->shared->native_wl_hash,
                                 &wlid, im);
@@ -2911,7 +3000,7 @@ eng_image_native_set(void *data, void *image, void *native)
                     }
 
                   //XXX: workaround for mesa-10.2.8
-                  // mesa's eglQueryWaylandBuffer() with EGL_WAYLAND_Y_INVERTED_WL works incorrect.
+                  // mesa's eglQueryWaylandBufferWL() with EGL_WAYLAND_Y_INVERTED_WL works incorrect.
                   //im->native.yinvert = yinvert;
                   im->native.yinvert = 1;
                   im->native.loose = 0;
@@ -2981,8 +3070,8 @@ module_open(Evas_Module *em)
    if (!(platform_env = getenv("EGL_PLATFORM")))
       setenv("EGL_PLATFORM", "x11", 0);
 
+   evas_gl_thread_link_init();
    gl_symbols();
-   _init_thread_egl_use();
 
    if (!platform_env)
       unsetenv("EGL_PLATFORM");

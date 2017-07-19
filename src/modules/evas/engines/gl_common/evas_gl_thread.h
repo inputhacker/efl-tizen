@@ -1,9 +1,37 @@
 #ifndef EVAS_GL_THREAD_H
 #define EVAS_GL_THREAD_H
 
+
 #include "evas_gl_common.h"
 
-extern Eina_Thread _main_thread_id;
+typedef struct
+{
+   int (*evas_gl_thread_enabled)(int thread_type);
+   void (*evas_gl_thread_disabled)(void);
+   void (*evas_gl_thread_finish)(void);
+
+   void *(*evas_gl_thread_gl_func_get)(void);
+   void *(*evas_gl_thread_egl_func_get)(void);
+   void *(*evas_gl_thread_glx_func_get)(void);
+} Evas_GL_Thread_Func;
+
+#define GL_TH_FN(api)                evas_##api##_thread_cmd
+#define GL_TH_FNTYPE(api)            PFN_EVTH_##api
+#define GL_TH_ST(api)                Evas_Thread_Command_##api
+#define GL_TH_CB(api)                _gl_thread_##api
+#define GL_TH_DP                     int thread_type, void *orig_func
+
+#define GL_TH(api, ...)              GL_TH_FN(api)(EVAS_GL_THREAD_TYPE_GL, api, ##__VA_ARGS__)
+#define GL_TH_CALL(api, orig, ...)   GL_TH_FN(api)(EVAS_GL_THREAD_TYPE_GL, orig, ##__VA_ARGS__)
+
+//#define EVGL_TH(api, ...)            GL_TH_FN(api)(EVAS_GL_THREAD_TYPE_GL, api, ##__VA_ARGS__)
+//#define EVGL_TH_CALL(api, orig, ...) GL_TH_FN(api)(EVAS_GL_THREAD_TYPE_GL, orig, ##__VA_ARGS__)
+#define EVGL_TH(api, ...)            GL_TH_FN(api)(EVAS_GL_THREAD_TYPE_EVGL, api, ##__VA_ARGS__)
+#define EVGL_TH_CALL(api, orig, ...) GL_TH_FN(api)(EVAS_GL_THREAD_TYPE_EVGL, orig, ##__VA_ARGS__)
+#define EVGL_TH_FN(api)              GL_TH_FN(api)
+
+
+#ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 /* Memory Pool */
 extern Eina_Mempool *_mp_default;
@@ -24,8 +52,6 @@ extern unsigned int _mp_uniform_pool_size;
 extern unsigned int _mp_delete_object_pool_size;
 extern unsigned int _mp_texture_pool_size;
 
-
-#ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 #ifdef EAPI
 # undef EAPI
@@ -54,35 +80,27 @@ extern unsigned int _mp_texture_pool_size;
 #endif /* ! _WIN32 */
 
 
-EAPI int evas_gl_thread_enabled();
-EAPI int evas_evgl_thread_enabled();
-EAPI int evas_gl_thread_force_finish();
+EAPI const Evas_GL_Thread_Func *evas_gl_thread_func_get(void);
 
-EAPI void evas_gl_thread_begin();
-EAPI void evas_gl_thread_end();
-EAPI void evas_gl_thread_finish();
-EAPI void evas_evgl_thread_begin();
-EAPI void evas_evgl_thread_end();
-EAPI void evas_evgl_thread_finish();
+extern int evas_gl_thread_enabled(int thread_type);
+extern void evas_gl_thread_disabled(void);
+extern int evas_gl_thread_force_finish(void);
+extern void evas_gl_thread_finish(void);
 
-extern void evas_gl_thread_init();
-extern void evas_gl_thread_terminate();
+extern void evas_gl_thread_init(void);
+extern void evas_gl_thread_terminate(void);
 
 
 #else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
-extern int (*evas_gl_thread_enabled)();
-extern int (*evas_evgl_thread_enabled)();
+extern const Evas_GL_Thread_Func *(*evas_gl_thread_func_get)(void);
 
-extern void (*evas_gl_thread_begin)();
-extern void (*evas_gl_thread_end)();
-extern void (*evas_gl_thread_finish)();
-extern void (*evas_evgl_thread_begin)();
-extern void (*evas_evgl_thread_end)();
-extern void (*evas_evgl_thread_finish)();
+extern int (*evas_gl_thread_enabled)(int thread_type);
+extern void (*evas_gl_thread_disabled)(void);
+extern void (*evas_gl_thread_finish)(void);
 
-extern void evas_gl_thread_link_init();
+extern void evas_gl_thread_link_init(void);
 
 
 #endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */

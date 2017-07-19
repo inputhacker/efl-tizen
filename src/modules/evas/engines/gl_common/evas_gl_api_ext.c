@@ -46,22 +46,16 @@ struct wl_resource;
 #define _EVASGL_EXT_DRVNAME(name)
 #define _EVASGL_EXT_DRVNAME_PRIVATE(name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
-   ret (*egl_ext_sym_##name) param1 = NULL; \
-   ret (*gl_ext_sym_##name) param1 = NULL; \
-   ret (*gles1_ext_sym_##name) param1 = NULL; \
-   ret (*gles3_ext_sym_##name) param1 = NULL;
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
-   ret (*egl_ext_sym_##name) param1 = NULL; \
-   ret (*gl_ext_sym_##name) param1 = NULL; \
-   ret (*gles1_ext_sym_##name) param1 = NULL; \
-   ret (*gles3_ext_sym_##name) param1 = NULL;
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
+   ret (*egl_ext_sym_##name) (_EVASGL_PARAM_PROTO(__VA_ARGS__)) = NULL; \
+   ret (*gl_ext_sym_##name) (_EVASGL_PARAM_PROTO(__VA_ARGS__)) = NULL; \
+   ret (*gles1_ext_sym_##name) (_EVASGL_PARAM_PROTO(__VA_ARGS__)) = NULL; \
+   ret (*gles3_ext_sym_##name) (_EVASGL_PARAM_PROTO(__VA_ARGS__)) = NULL;
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #include "evas_gl_api_ext_def.h"
 
@@ -73,13 +67,11 @@ struct wl_resource;
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,14 +92,12 @@ struct wl_resource;
    int _gles1_ext_support_func_##name = 0; \
    int _gles3_ext_support_func_##name = 0;
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #include "evas_gl_api_ext_def.h"
 
@@ -121,13 +111,11 @@ struct wl_resource;
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define EVGL_FUNC_BEGIN() if (UNLIKELY(_need_context_restore)) _context_restore()
@@ -209,10 +197,11 @@ _evgl_eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx,
         *a = EGL_NONE;
      }
 
-   eglimg = EXT_FUNC_EGL(eglCreateImage)(dpy, ctx, target, buffer, attribs);
+   eglimg = EVGL_TH_CALL(eglCreateImage, EXT_FUNC_EGL(eglCreateImage), dpy, ctx, target, buffer, attribs);
    if (!eglimg) return NULL;
 
    img = calloc(1, sizeof(EvasGLImage_EGL));
+   if (!img) return NULL;
    img->dpy = dpy;
    img->img = eglimg;
    return img;
@@ -233,7 +222,7 @@ _evgl_evasglCreateImage(int target, void* buffer, const int *attrib_list)
    /* EGL_NO_CONTEXT will always fail for TEXTURE_2D */
    if (target == EVAS_GL_TEXTURE_2D)
      {
-        ctx = eglGetCurrentContext();
+        ctx = EVGL_TH(eglGetCurrentContext);
         DBG("Creating EGL image based on the current context: %p", ctx);
      }
 
@@ -270,7 +259,7 @@ _evgl_evasglDestroyImage(EvasGLImage image)
         return;
      }
 
-   EXT_FUNC_EGL(eglDestroyImage)(img->dpy, img->img);
+   EVGL_TH_CALL(eglDestroyImage, EXT_FUNC_EGL(eglDestroyImage), img->dpy, img->img);
    free(img);
 }
 
@@ -303,11 +292,11 @@ _evgl_glEvasGLImageTargetTexture2D(GLenum target, EvasGLImage image)
   if (!img)
     {
        ERR("EvasGLImage is NULL");
-       EXT_FUNC(glEGLImageTargetTexture2DOES)(target, NULL);
+       EVGL_TH_CALL(glEGLImageTargetTexture2DOES, EXT_FUNC(glEGLImageTargetTexture2DOES), target, NULL);
        return;
     }
 
-   EXT_FUNC(glEGLImageTargetTexture2DOES)(target, img->img);
+   EVGL_TH_CALL(glEGLImageTargetTexture2DOES, EXT_FUNC(glEGLImageTargetTexture2DOES), target, img->img);
 }
 
 static void
@@ -339,11 +328,11 @@ _evgl_glEvasGLImageTargetRenderbufferStorage(GLenum target, EvasGLImage image)
   if (!img)
     {
        ERR("EvasGLImage is NULL");
-       EXT_FUNC(glEGLImageTargetRenderbufferStorageOES)(target, NULL);
+       EVGL_TH_CALL(glEGLImageTargetRenderbufferStorageOES, EXT_FUNC(glEGLImageTargetRenderbufferStorageOES), target, NULL);
        return;
     }
 
-   EXT_FUNC(glEGLImageTargetRenderbufferStorageOES)(target, img->img);
+   EVGL_TH_CALL(glEGLImageTargetRenderbufferStorageOES, EXT_FUNC(glEGLImageTargetRenderbufferStorageOES), target, img->img);
 }
 
 static EvasGLSync
@@ -352,7 +341,7 @@ _evgl_evasglCreateSync(Evas_GL *evas_gl,
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return NULL;
-   return EXT_FUNC_EGL(eglCreateSyncKHR)(dpy, type, attrib_list);
+   return EVGL_TH_CALL(eglCreateSyncKHR, EXT_FUNC_EGL(eglCreateSyncKHR), dpy, type, attrib_list);
 }
 
 static Eina_Bool
@@ -360,7 +349,7 @@ _evgl_evasglDestroySync(Evas_GL *evas_gl, EvasGLSync sync)
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return EINA_FALSE;
-   return EXT_FUNC_EGL(eglDestroySyncKHR)(dpy, sync);
+   return EVGL_TH_CALL(eglDestroySyncKHR, EXT_FUNC_EGL(eglDestroySyncKHR), dpy, sync);
 }
 
 static int
@@ -369,7 +358,7 @@ _evgl_evasglClientWaitSync(Evas_GL *evas_gl,
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return EINA_FALSE;
-   return EXT_FUNC_EGL(eglClientWaitSyncKHR)(dpy, sync, flags, timeout);
+   return EVGL_TH_CALL(eglClientWaitSyncKHR, EXT_FUNC_EGL(eglClientWaitSyncKHR), dpy, sync, flags, timeout);
 }
 
 static Eina_Bool
@@ -378,7 +367,7 @@ _evgl_evasglSignalSync(Evas_GL *evas_gl,
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return EINA_FALSE;
-   return EXT_FUNC_EGL(eglSignalSyncKHR)(dpy, sync, mode);
+   return EVGL_TH_CALL(eglSignalSyncKHR, EXT_FUNC_EGL(eglSignalSyncKHR), dpy, sync, mode);
 }
 
 static Eina_Bool
@@ -387,7 +376,7 @@ _evgl_evasglGetSyncAttrib(Evas_GL *evas_gl,
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return EINA_FALSE;
-   return EXT_FUNC_EGL(eglGetSyncAttribKHR)(dpy, sync, attribute, value);
+   return EVGL_TH_CALL(eglGetSyncAttribKHR, EXT_FUNC_EGL(eglGetSyncAttribKHR), dpy, sync, attribute, value);
 }
 
 static int
@@ -396,7 +385,7 @@ _evgl_evasglWaitSync(Evas_GL *evas_gl,
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return EINA_FALSE;
-   return EXT_FUNC_EGL(eglWaitSyncKHR)(dpy, sync, flags);
+   return EVGL_TH_CALL(eglWaitSyncKHR, EXT_FUNC_EGL(eglWaitSyncKHR), dpy, sync, flags);
 }
 
 static Eina_Bool
@@ -405,7 +394,7 @@ _evgl_evasglBindWaylandDisplay(Evas_GL *evas_gl,
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return EINA_FALSE;
-   return EXT_FUNC_EGL(eglBindWaylandDisplayWL)(dpy, wl_display);
+   return EVGL_TH_CALL(eglBindWaylandDisplayWL, EXT_FUNC_EGL(eglBindWaylandDisplayWL), dpy, wl_display);
 }
 
 static Eina_Bool
@@ -414,7 +403,7 @@ _evgl_evasglUnbindWaylandDisplay(Evas_GL *evas_gl,
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return EINA_FALSE;
-   return EXT_FUNC_EGL(eglUnbindWaylandDisplayWL)(dpy, wl_display);
+   return EVGL_TH_CALL(eglUnbindWaylandDisplayWL, EXT_FUNC_EGL(eglUnbindWaylandDisplayWL), dpy, wl_display);
 }
 
 static Eina_Bool
@@ -423,7 +412,7 @@ _evgl_evasglQueryWaylandBuffer(Evas_GL *evas_gl,
 {
    EGLDisplay dpy = EGLDISPLAY_GET(evas_gl);
    if (!dpy) return EINA_FALSE;
-   return EXT_FUNC_EGL(eglQueryWaylandBufferWL)(dpy, buffer, attribute, value);
+   return EVGL_TH_CALL(eglQueryWaylandBufferWL, EXT_FUNC_EGL(eglQueryWaylandBufferWL), dpy, buffer, attribute, value);
 }
 
 #else
@@ -485,12 +474,12 @@ _evgl_glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenu
                att[i] = GL_STENCIL_ATTACHMENT;
              i++;
           }
-        EXT_FUNC(glDiscardFramebuffer)(target, numAttachments, att);
+        EVGL_TH_CALL(glDiscardFramebufferEXT, EXT_FUNC(glDiscardFramebuffer), target, numAttachments, att);
         free(att);
      }
    else
      {
-        EXT_FUNC(glDiscardFramebuffer)(target, numAttachments, attachments);
+        EVGL_TH_CALL(glDiscardFramebufferEXT, EXT_FUNC(glDiscardFramebuffer), target, numAttachments, attachments);
      }
 }
 
@@ -502,19 +491,15 @@ _evgl_glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenu
 #define _EVASGL_EXT_DRVNAME(name)
 #define _EVASGL_EXT_DRVNAME_PRIVATE(name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
-    static ret evgl_##name param1 { EVGL_FUNC_BEGIN(); return EXT_FUNC(name) param2; }
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
-    static ret evgl_##name param1 { EVGL_FUNC_BEGIN(); return EXT_FUNC(name) param2; }
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
+    static ret evgl_##name (_EVASGL_PARAM_PROTO(__VA_ARGS__)) { EVGL_FUNC_BEGIN(); return EVGL_TH_CALL(name, _EVASGL_PARAM_NAME(void, EXT_FUNC(name), __VA_ARGS__)); }
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_PRIVATE_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #include "evas_gl_api_ext_def.h"
 
@@ -526,16 +511,13 @@ _evgl_glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenu
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN
-#undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 
 //1.1 ext bodies
 #define _EVASGL_EXT_CHECK_SUPPORT(name)
@@ -545,19 +527,15 @@ _evgl_glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenu
 #define _EVASGL_EXT_DRVNAME(name)
 #define _EVASGL_EXT_DRVNAME_PRIVATE(name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
-    static ret evgl_gles1_##name param1 { EVGL_FUNC_BEGIN(); return EXT_FUNC_GLES1(name) param2; }
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
-    static ret evgl_gles1_##name param1 { EVGL_FUNC_BEGIN(); return EXT_FUNC_GLES1(name) param2; }
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
+    static ret evgl_gles1_##name (_EVASGL_PARAM_PROTO(__VA_ARGS__)) { EVGL_FUNC_BEGIN(); return EVGL_TH_CALL(name, _EVASGL_PARAM_NAME(void, EXT_FUNC_GLES1(name), __VA_ARGS__)); }
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_PRIVATE_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #include "evas_gl_api_ext_def.h"
 
@@ -569,16 +547,13 @@ _evgl_glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenu
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN
-#undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 
 //3.X ext bodies
 #define _EVASGL_EXT_CHECK_SUPPORT(name)
@@ -588,19 +563,15 @@ _evgl_glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenu
 #define _EVASGL_EXT_DRVNAME(name)
 #define _EVASGL_EXT_DRVNAME_PRIVATE(name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
-    static ret evgl_gles3_##name param1 { EVGL_FUNC_BEGIN(); return EXT_FUNC_GLES3(name) param2; }
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
-    static ret evgl_gles3_##name param1 { EVGL_FUNC_BEGIN(); return EXT_FUNC_GLES3(name) param2; }
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
+    static ret evgl_gles3_##name (_EVASGL_PARAM_PROTO(__VA_ARGS__)) { EVGL_FUNC_BEGIN(); return EVGL_TH_CALL(name, _EVASGL_PARAM_NAME(void, EXT_FUNC_GLES3(name), __VA_ARGS__)); }
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_PRIVATE_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #include "evas_gl_api_ext_def.h"
 
@@ -612,16 +583,13 @@ _evgl_glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenu
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN
-#undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 
 //  0: not initialized,
 //  1: GLESv2 initialized,
@@ -681,22 +649,16 @@ evgl_api_egl_ext_init(void *getproc, const char *glueexts)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname) \
    if (_EVASGL_EXT_CHECK_SUPPORT(deskname)) *ext_support = 1;
 
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
      { \
-        ret (**drvfunc)param1 = &egl_ext_sym_##name; \
+        ret (**drvfunc)(_EVASGL_PARAM_PROTO(__VA_ARGS__)) = &egl_ext_sym_##name; \
         if (*ext_support == 1) \
           {
 
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
-     { \
-        ret (**drvfunc)param1 = &egl_ext_sym_##name; \
-        if (*ext_support == 1) \
-          {
 #define _EVASGL_EXT_FUNCTION_END() \
           } \
         if ((*drvfunc) == NULL) _EVASGL_EXT_DISCARD_SUPPORT(); \
      }
-
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name) \
@@ -705,14 +667,6 @@ evgl_api_egl_ext_init(void *getproc, const char *glueexts)
 // This adds all the function names to the "safe" list but only one pointer
 // will be stored in the hash table.
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name) \
-   if ((*drvfunc) == NULL) \
-     { \
-        *drvfunc = GETPROCADDR(name); \
-        evgl_safe_extension_add(name, (void *) (*drvfunc)); \
-     } \
-   else evgl_safe_extension_add(name, NULL);
-
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name) \
    if ((*drvfunc) == NULL) \
      { \
         *drvfunc = GETPROCADDR(name); \
@@ -741,13 +695,11 @@ evgl_api_egl_ext_init(void *getproc, const char *glueexts)
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 
 #undef GETPROCADDR
    /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -778,14 +730,12 @@ evgl_api_egl_ext_init(void *getproc, const char *glueexts)
      if (_curext_supported && _egl_ext_support_func_##name) \
        _EVASGL_EXT_DRVNAME_PRINT(#name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #define _EVASGL_EXT_ENABLE_GL_GLES 0
 #define _EVASGL_EXT_ENABLE_EGL 1
@@ -803,13 +753,11 @@ evgl_api_egl_ext_init(void *getproc, const char *glueexts)
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
    /////////////////////////////////////////////////////////////////////////////////////////////////////
 
    if (_egl_ext_string) free(_egl_ext_string);
@@ -843,7 +791,7 @@ _evgl_api_gles2_ext_init(void *getproc, const char *glueexts)
 #endif
 
    // GLES Extensions
-   glexts = (const char*)glGetString_evgl_thread_cmd(GL_EXTENSIONS);
+   glexts = (const char*)EVGL_TH(glGetString, GL_EXTENSIONS);
    if (!glexts)
      {
         ERR("glGetString returned NULL! Something is very wrong...");
@@ -881,18 +829,9 @@ _evgl_api_gles2_ext_init(void *getproc, const char *glueexts)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname) \
    if (_EVASGL_EXT_CHECK_SUPPORT(deskname)) *ext_support = 1;
 
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
      { \
-        ret (**drvfunc)param1 = &gl_ext_sym_##name; \
-        ret (**origfunc)param1 = &orig_evgl_api_##name; \
-        ret (*threadfunc)param1 = &name##_evgl_api_thread_cmd; \
-        origfunc = origfunc; threadfunc = threadfunc; \
-        if (*ext_support == 1) \
-          {
-
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
-     { \
-        ret (**drvfunc)param1 = &gl_ext_sym_##name; \
+        ret (**drvfunc)(_EVASGL_PARAM_PROTO(__VA_ARGS__)) = &gl_ext_sym_##name; \
         if (*ext_support == 1) \
           {
 
@@ -908,19 +847,6 @@ _evgl_api_gles2_ext_init(void *getproc, const char *glueexts)
 // This adds all the function names to the "safe" list but only one pointer
 // will be stored in the hash table.
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name) \
-   if ((*drvfunc) == NULL) \
-     { \
-        *drvfunc = GETPROCADDR(name); \
-       if (*drvfunc) \
-       { \
-          *origfunc = *drvfunc; \
-          *drvfunc = *threadfunc; \
-       } \
-        evgl_safe_extension_add(name, (void *) (*drvfunc)); \
-     } \
-   else evgl_safe_extension_add(name, NULL);
-
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name) \
    if ((*drvfunc) == NULL) \
      { \
         *drvfunc = GETPROCADDR(name); \
@@ -949,13 +875,11 @@ _evgl_api_gles2_ext_init(void *getproc, const char *glueexts)
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 
 #undef GETPROCADDR
    /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -987,14 +911,12 @@ _evgl_api_gles2_ext_init(void *getproc, const char *glueexts)
      if (_curext_supported && _gl_ext_support_func_##name) \
        _EVASGL_EXT_DRVNAME_PRINT(#name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 #define _EVASGL_EXT_ENABLE_GL_GLES 1
 #define _EVASGL_EXT_ENABLE_EGL 1
 
@@ -1011,13 +933,11 @@ _evgl_api_gles2_ext_init(void *getproc, const char *glueexts)
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
    /////////////////////////////////////////////////////////////////////////////////////////////////////
 
    if (_gl_ext_string) free(_gl_ext_string);
@@ -1043,7 +963,6 @@ evgl_api_gles2_ext_get(Evas_GL_API *gl_funcs, void *getproc, const char *glueext
              return;
           }
      }
-
 #define ORD(f) EVAS_API_OVERRIDE(f, gl_funcs, evgl_)
 
    /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1059,19 +978,15 @@ evgl_api_gles2_ext_get(Evas_GL_API *gl_funcs, void *getproc, const char *glueext
 #define _EVASGL_EXT_DRVNAME(name)
 #define _EVASGL_EXT_DRVNAME_PRIVATE(name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
-   ORD(name);
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
    ORD(name);
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_PRIVATE_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #undef _EVASGL_EXT_WHITELIST_ONLY
 #define _EVASGL_EXT_WHITELIST_ONLY 0
@@ -1092,16 +1007,13 @@ evgl_api_gles2_ext_get(Evas_GL_API *gl_funcs, void *getproc, const char *glueext
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN
-#undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
    /////////////////////////////////////////////////////////////////////////////////////////////////////
 #undef ORD
 
@@ -1113,9 +1025,7 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
    const char *glexts;
    fp_getproc gp = (fp_getproc)getproc;
    int _curext_supported = 0;
-   /*
    Evas_GL_API *gles1_funcs;
-   */
    Eina_Strbuf *sb = eina_strbuf_new();
    Eina_Strbuf *sboff = eina_strbuf_new();
 
@@ -1153,7 +1063,6 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
      }
 #endif
 
-   /*
    gles1_funcs = _evgl_api_gles1_internal_get();
    if (!gles1_funcs || !gles1_funcs->glGetString)
      {
@@ -1161,9 +1070,7 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
         goto error;
      }
 
-   glexts = (const char *) gles1_funcs->glGetString(GL_EXTENSIONS);
-   */
-   glexts = (const char *) glGetString_evgl_thread_cmd(GL_EXTENSIONS);
+   glexts = (const char *) EVGL_TH_CALL(glGetString, gles1_funcs->glGetString, GL_EXTENSIONS);
    if (!glexts)
      {
         ERR("GLESv1:glGetString(GL_EXTENSIONS) returned NULL!");
@@ -1200,18 +1107,9 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname) \
    if (_EVASGL_EXT_CHECK_SUPPORT(deskname)) *ext_support = 1;
 
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
      { \
-        ret (**drvfunc)param1 = &gles1_ext_sym_##name; \
-        ret (**origfunc)param1 = &orig_evgl_api_##name; \
-        ret (*threadfunc)param1 = &name##_evgl_api_thread_cmd; \
-        origfunc = origfunc; threadfunc = threadfunc; \
-        if (*ext_support == 1) \
-          {
-
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
-     { \
-        ret (**drvfunc)param1 = &gles1_ext_sym_##name; \
+        ret (**drvfunc)(_EVASGL_PARAM_PROTO(__VA_ARGS__)) = &gles1_ext_sym_##name; \
         if (*ext_support == 1) \
           {
 
@@ -1219,7 +1117,6 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
           } \
         if ((*drvfunc) == NULL) _EVASGL_EXT_DISCARD_SUPPORT(); \
      }
-
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN() \
    if (EINA_FALSE) \
      {
@@ -1229,19 +1126,6 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
    if ((*drvfunc) == NULL) *drvfunc = name;
 
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name) \
-   if ((*drvfunc) == NULL) \
-     { \
-        *drvfunc = GETPROCADDR(name); \
-       if (*drvfunc) \
-       { \
-          *origfunc = *drvfunc; \
-          *drvfunc = *threadfunc; \
-       } \
-        evgl_safe_extension_add(name, (void *) (*drvfunc)); \
-     } \
-   else evgl_safe_extension_add(name, NULL);
-
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name) \
    if ((*drvfunc) == NULL) \
      { \
         *drvfunc = GETPROCADDR(name); \
@@ -1273,13 +1157,11 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 #undef GETPROCADDR
 
 #define _EVASGL_EXT_BEGIN(name) \
@@ -1311,14 +1193,12 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
    if (_curext_supported && _gles1_ext_support_func_##name) \
       _EVASGL_EXT_DRVNAME_PRINT(#name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 #define _EVASGL_EXT_ENABLE_GL_GLES 1
 #define _EVASGL_EXT_ENABLE_EGL 1
 
@@ -1335,13 +1215,11 @@ _evgl_api_gles1_ext_init(void *getproc, const char *glueexts)
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 
    if (_gles1_ext_string) free(_gles1_ext_string);
    if (_gles1_ext_string_official) free(_gles1_ext_string_official);
@@ -1390,19 +1268,15 @@ evgl_api_gles1_ext_get(Evas_GL_API *gl_funcs, void *getproc, const char *glueext
 #define _EVASGL_EXT_DRVNAME(name)
 #define _EVASGL_EXT_DRVNAME_PRIVATE(name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
-   ORD(name);
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
    ORD(name);
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_PRIVATE_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #undef _EVASGL_EXT_WHITELIST_ONLY
 #define _EVASGL_EXT_WHITELIST_ONLY 0
@@ -1421,16 +1295,13 @@ evgl_api_gles1_ext_get(Evas_GL_API *gl_funcs, void *getproc, const char *glueext
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN
-#undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
    /////////////////////////////////////////////////////////////////////////////////////////////////////
 #undef ORD
 
@@ -1442,9 +1313,7 @@ _evgl_api_gles3_ext_init(void *getproc, const char *glueexts)
    const char *glexts;
    fp_getproc gp = (fp_getproc)getproc;
    int _curext_supported = 0;
-   /*
    Evas_GL_API *gles3_funcs;
-   */
    Eina_Strbuf *sb = eina_strbuf_new();
    Eina_Strbuf *sboff = eina_strbuf_new();
 
@@ -1483,7 +1352,6 @@ _evgl_api_gles3_ext_init(void *getproc, const char *glueexts)
 #endif
 
    _gles3_ext_plist = eina_array_new(1);
-   /*
    gles3_funcs = _evgl_api_gles3_internal_get();
    if (!gles3_funcs || !gles3_funcs->glGetString)
      {
@@ -1491,9 +1359,7 @@ _evgl_api_gles3_ext_init(void *getproc, const char *glueexts)
         goto error;
      }
 
-   glexts = (const char *) gles3_funcs->glGetString(GL_EXTENSIONS);
-   */
-   glexts = (const char *) glGetString_evgl_thread_cmd(GL_EXTENSIONS);
+   glexts = (const char *) EVGL_TH_CALL(glGetString, gles3_funcs->glGetString, GL_EXTENSIONS);
    if (!glexts)
      {
         ERR("GLESv3:glGetString(GL_EXTENSIONS) returned NULL!");
@@ -1530,18 +1396,9 @@ _evgl_api_gles3_ext_init(void *getproc, const char *glueexts)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname) \
    if (_EVASGL_EXT_CHECK_SUPPORT(deskname)) *ext_support = 1;
 
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
      { \
-        ret (**drvfunc)param1 = &gles3_ext_sym_##name; \
-        ret (**origfunc)param1 = &orig_evgl_api_##name; \
-        ret (*threadfunc)param1 = &name##_evgl_api_thread_cmd; \
-        origfunc = origfunc; threadfunc = threadfunc; \
-        if (*ext_support == 1) \
-          {
-
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
-     { \
-        ret (**drvfunc)param1 = &gles3_ext_sym_##name; \
+        ret (**drvfunc)(_EVASGL_PARAM_PROTO(__VA_ARGS__)) = &gles3_ext_sym_##name; \
         if (*ext_support == 1) \
           {
 
@@ -1549,26 +1406,12 @@ _evgl_api_gles3_ext_init(void *getproc, const char *glueexts)
           } \
         if ((*drvfunc) == NULL) _EVASGL_EXT_DISCARD_SUPPORT(); \
      }
-
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name) \
    if ((*drvfunc) == NULL) *drvfunc = name;
 
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name) \
-   if ((*drvfunc) == NULL) \
-     { \
-        *drvfunc = GETPROCADDR(name); \
-       if (*drvfunc) \
-       { \
-          *origfunc = *drvfunc; \
-          *drvfunc = *threadfunc; \
-       } \
-        evgl_safe_extension_add(name, (void *) (*drvfunc)); \
-     } \
-   else evgl_safe_extension_add(name, NULL);
-
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name) \
    if ((*drvfunc) == NULL) \
      { \
         *drvfunc = GETPROCADDR(name); \
@@ -1598,13 +1441,11 @@ _evgl_api_gles3_ext_init(void *getproc, const char *glueexts)
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 #undef GETPROCADDR
 
 #define _EVASGL_EXT_BEGIN(name) \
@@ -1639,14 +1480,12 @@ _evgl_api_gles3_ext_init(void *getproc, const char *glueexts)
    if (_curext_supported && _gles3_ext_support_func_##name) \
       _EVASGL_EXT_DRVNAME_PRINT(#name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #define _EVASGL_EXT_ENABLE_GL_GLES 1
 #define _EVASGL_EXT_ENABLE_EGL 1
@@ -1664,13 +1503,11 @@ _evgl_api_gles3_ext_init(void *getproc, const char *glueexts)
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
 
    if (_gles3_ext_string) free(_gles3_ext_string);
    if (_gles3_ext_string_official) free(_gles3_ext_string_official);
@@ -1719,19 +1556,15 @@ evgl_api_gles3_ext_get(Evas_GL_API *gl_funcs, void *getproc, const char *glueext
 #define _EVASGL_EXT_DRVNAME(name)
 #define _EVASGL_EXT_DRVNAME_PRIVATE(name)
 #define _EVASGL_EXT_DRVNAME_DESKTOP(deskname)
-#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, param1, param2) \
-   ORD(name);
-#define _EVASGL_EXT_FUNCTION_BEGIN_NOTH(ret, name, param1, param2) \
+#define _EVASGL_EXT_FUNCTION_BEGIN(ret, name, ...) \
    ORD(name);
 #define _EVASGL_EXT_FUNCTION_END()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN()
 #define _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END()
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, param1, param2)
-#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH(ret, name, param1, param2)
+#define _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN(ret, name, ...)
 #define _EVASGL_EXT_FUNCTION_PRIVATE_END()
 #define _EVASGL_EXT_FUNCTION_DRVFUNC(name)
 #define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR(name)
-#define _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH(name)
 
 #undef _EVASGL_EXT_WHITELIST_ONLY
 #define _EVASGL_EXT_WHITELIST_ONLY 0
@@ -1751,16 +1584,13 @@ evgl_api_gles3_ext_get(Evas_GL_API *gl_funcs, void *getproc, const char *glueext
 #undef _EVASGL_EXT_DRVNAME_PRIVATE
 #undef _EVASGL_EXT_DRVNAME_DESKTOP
 #undef _EVASGL_EXT_FUNCTION_BEGIN
-#undef _EVASGL_EXT_FUNCTION_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_END
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_BEGIN
 #undef _EVASGL_EXT_FUNCTION_DISABLE_FOR_GLES1_END
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN
-#undef _EVASGL_EXT_FUNCTION_PRIVATE_BEGIN_NOTH
 #undef _EVASGL_EXT_FUNCTION_PRIVATE_END
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC
 #undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR
-#undef _EVASGL_EXT_FUNCTION_DRVFUNC_PROCADDR_NOTH
    /////////////////////////////////////////////////////////////////////////////////////////////////////
 #undef ORD
 

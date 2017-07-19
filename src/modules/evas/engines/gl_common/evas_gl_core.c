@@ -1,4 +1,5 @@
 #include "evas_gl_core_private.h"
+#include "evas_gl_api_ext.h"
 
 #ifndef _WIN32
 # include <dlfcn.h>
@@ -170,9 +171,7 @@ _internal_resource_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context 
    if (!surface)
      {
         // Set the surface to evas surface if it's there
-        // But this reusing mechanism is only available at the single thread model like direct rendering.
-        // So avoid it when evasgl thread rendering is used.
-        if (rsc->id == evgl_engine->main_tid && !evas_gl_thread_enabled())
+        if (rsc->id == evgl_engine->main_tid)
            rsc->direct.surface = evgl_engine->funcs->evas_surface_get(eng_data);
 
         if (rsc->direct.surface)
@@ -242,7 +241,7 @@ _internal_resource_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context 
 static void
 _texture_create(GLuint *tex)
 {
-   glGenTextures_evgl_thread_cmd(1, tex);
+   EVGL_TH(glGenTextures, 1, tex);
 }
 
 // Create and allocate 2D texture
@@ -250,21 +249,20 @@ static void
 _texture_allocate_2d(GLuint tex, GLint ifmt, GLenum fmt, GLenum type, int w, int h, int version)
 {
    //if (!(*tex))
-   //   glGenTextures(1, tex);
-
+   //   EVGL_TH(glGenTextures, 1, tex);
    GLint curr_tex = 0;
-   glGetIntegerv_evgl_thread_cmd(GL_TEXTURE_BINDING_2D, &curr_tex);
+   EVGL_TH(glGetIntegerv, GL_TEXTURE_BINDING_2D, &curr_tex);
 
-   glBindTexture_evgl_thread_cmd(GL_TEXTURE_2D, tex);
-   glTexParameteri_evgl_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameteri_evgl_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   glTexParameteri_evgl_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   glTexParameteri_evgl_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   EVGL_TH(glBindTexture, GL_TEXTURE_2D, tex);
+   EVGL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   EVGL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+   EVGL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   EVGL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    if (version == EVAS_GL_GLES_1_X)
-     glTexImage2DEVAS_evgl_thread_cmd(1, GL_TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, NULL);
+     EVGL_TH_FN(glTexImage2DEVAS)(1, GL_TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, NULL);
    else
-     glTexImage2D_evgl_thread_cmd(GL_TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, NULL);
-   glBindTexture_evgl_thread_cmd(GL_TEXTURE_2D, (GLuint)curr_tex);
+      EVGL_TH(glTexImage2D, GL_TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, NULL);
+   EVGL_TH(glBindTexture, GL_TEXTURE_2D, (GLuint)curr_tex);
 }
 
 // Destroy Texture
@@ -272,12 +270,12 @@ static void
 _texture_destroy(GLuint *tex)
 {
    GLint curr_tex = 0;
-   glGetIntegerv_evgl_thread_cmd(GL_TEXTURE_BINDING_2D, &curr_tex);
+   EVGL_TH(glGetIntegerv, GL_TEXTURE_BINDING_2D, &curr_tex);
 
-   if ((GLuint)curr_tex == *tex) glBindTexture_evgl_thread_cmd(GL_TEXTURE_2D, 0);
+   if ((GLuint)curr_tex == *tex) EVGL_TH(glBindTexture, GL_TEXTURE_2D, 0);
    if (*tex)
      {
-        glDeleteTextures_evgl_thread_cmd(1, tex);
+        EVGL_TH(glDeleteTextures, 1, tex);
         *tex = 0;
      }
 }
@@ -292,29 +290,28 @@ _texture_attach_2d(GLuint tex, GLenum attach, GLenum attach2, int samples, Evas_
         if (samples)
           {
 #ifdef GL_GLES
-             if (EXT_FUNC(glFramebufferTexture2DMultisampleEXT))
-               {
-                  EXT_FUNC(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
-                                                              attach,
-                                                              GL_TEXTURE_2D, tex,
-                                                              0, samples);
+            if (EXT_FUNC(glFramebufferTexture2DMultisampleEXT))
+              {
+                EVGL_TH_CALL(glFramebufferTexture2DMultisampleEXT, EXT_FUNC(glFramebufferTexture2DMultisampleEXT),
+                             GL_FRAMEBUFFER,
+                             attach,
+                             GL_TEXTURE_2D, tex,
+                             0, samples);
 
-                  if (attach2)
-                    EXT_FUNC(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
-                                                                attach2,
-                                                                GL_TEXTURE_2D, tex,
-                                                                0, samples);
-               }
-             else
+                if (attach2)
+                  EVGL_TH_CALL(glFramebufferTexture2DMultisampleEXT, EXT_FUNC(glFramebufferTexture2DMultisampleEXT),
+                               GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0, samples);
+              }
+            else
 #endif
-             ERR("MSAA not supported.  Should not have come in here...!");
-           }
+               ERR("MSAA not supported.  Should not have come in here...!");
+          }
         else
           {
-             glFramebufferTexture2D_evgl_thread_cmd(GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
+            EVGL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
 
-             if (attach2)
-               glFramebufferTexture2D_evgl_thread_cmd(GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
+            if (attach2)
+              EVGL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
           }
      }
    else if (EVAS_GL_GLES_3_X == version)
@@ -324,13 +321,15 @@ _texture_attach_2d(GLuint tex, GLenum attach, GLenum attach2, int samples, Evas_
 #ifdef GL_GLES
              if (EXT_FUNC_GLES3(glFramebufferTexture2DMultisampleEXT))
                {
-                  EXT_FUNC_GLES3(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                 EVGL_TH_CALL(glFramebufferTexture2DMultisampleEXT, EXT_FUNC_GLES3(glFramebufferTexture2DMultisampleEXT),
+                                                                    GL_FRAMEBUFFER,
                                                                     attach,
                                                                     GL_TEXTURE_2D, tex,
                                                                     0, samples);
 
                   if (attach2)
-                    EXT_FUNC_GLES3(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                    EVGL_TH_CALL(glFramebufferTexture2DMultisampleEXT, EXT_FUNC_GLES3(glFramebufferTexture2DMultisampleEXT),
+                                                                      GL_FRAMEBUFFER,
                                                                       attach2,
                                                                       GL_TEXTURE_2D, tex,
                                                                       0, samples);
@@ -341,10 +340,10 @@ _texture_attach_2d(GLuint tex, GLenum attach, GLenum attach2, int samples, Evas_
            }
         else
           {
-             glFramebufferTexture2D_evgl_thread_cmd(GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
+            EVGL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
 
              if (attach2)
-               glFramebufferTexture2D_evgl_thread_cmd(GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
+               EVGL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
           }
      }
    else if (EVAS_GL_GLES_1_X == version)
@@ -354,13 +353,15 @@ _texture_attach_2d(GLuint tex, GLenum attach, GLenum attach2, int samples, Evas_
 #ifdef GL_GLES
              if (EXT_FUNC_GLES1(glFramebufferTexture2DMultisampleEXT))
                {
-                  EXT_FUNC_GLES1(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                 EVGL_TH_CALL(glFramebufferTexture2DMultisampleEXT, EXT_FUNC_GLES1(glFramebufferTexture2DMultisampleEXT),
+                                                              GL_FRAMEBUFFER,
                                                               attach,
                                                               GL_TEXTURE_2D, tex,
                                                               0, samples);
 
                   if (attach2)
-                    EXT_FUNC_GLES1(glFramebufferTexture2DMultisampleEXT)(GL_FRAMEBUFFER,
+                    EVGL_TH_CALL(glFramebufferTexture2DMultisampleEXT, EXT_FUNC_GLES1(glFramebufferTexture2DMultisampleEXT),
+                                                                GL_FRAMEBUFFER,
                                                                 attach2,
                                                                 GL_TEXTURE_2D, tex,
                                                                 0, samples);
@@ -373,11 +374,12 @@ _texture_attach_2d(GLuint tex, GLenum attach, GLenum attach2, int samples, Evas_
         else
           {
              if (EXT_FUNC_GLES1(glFramebufferTexture2DOES))
-               EXT_FUNC_GLES1(glFramebufferTexture2DOES)(GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
-
+               EVGL_TH_CALL(glFramebufferTexture2DOES, EXT_FUNC_GLES1(glFramebufferTexture2DOES),
+                                                   GL_FRAMEBUFFER, attach, GL_TEXTURE_2D, tex, 0);
              if (attach2)
                if (EXT_FUNC_GLES1(glFramebufferTexture2DOES))
-                 EXT_FUNC_GLES1(glFramebufferTexture2DOES)(GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
+                 EVGL_TH_CALL(glFramebufferTexture2DOES, EXT_FUNC_GLES1(glFramebufferTexture2DOES),
+                                                   GL_FRAMEBUFFER, attach2, GL_TEXTURE_2D, tex, 0);
           }
      }
 }
@@ -446,11 +448,11 @@ _framebuffer_create(GLuint *buf, Evas_GL_Context_Version version)
    if (version == EVAS_GL_GLES_1_X)
      {
         if (EXT_FUNC_GLES1(glGenFramebuffersOES))
-          EXT_FUNC_GLES1(glGenFramebuffersOES)(1, buf);
+            EVGL_TH_CALL(glGenFramebuffersOES, EXT_FUNC_GLES1(glGenFramebuffersOES), 1, buf);
      }
    else
      {
-        glGenFramebuffers_evgl_thread_cmd(1, buf);
+        EVGL_TH(glGenFramebuffers, 1, buf);
      }
 }
 
@@ -460,11 +462,11 @@ _framebuffer_bind(GLuint buf, Evas_GL_Context_Version version)
    if (version == EVAS_GL_GLES_1_X)
      {
         if (EXT_FUNC_GLES1(glBindFramebufferOES))
-          EXT_FUNC_GLES1(glBindFramebufferOES)(GL_FRAMEBUFFER, buf);
+          EVGL_TH_CALL(glBindFramebuffer, EXT_FUNC_GLES1(glBindFramebufferOES), GL_FRAMEBUFFER, buf);
      }
    else
      {
-        glBindFramebuffer_evgl_thread_cmd(GL_FRAMEBUFFER, buf);
+        EVGL_TH(glBindFramebuffer, GL_FRAMEBUFFER, buf);
      }
 }
 
@@ -472,7 +474,7 @@ static void
 _framebuffer_draw_bind(GLuint buf, Evas_GL_Context_Version version)
 {
    if (version == EVAS_GL_GLES_3_X)
-     glBindFramebuffer_evgl_thread_cmd(GL_DRAW_FRAMEBUFFER, buf);
+     EVGL_TH(glBindFramebuffer, GL_DRAW_FRAMEBUFFER, buf);
 }
 
 //This function is not needed in EvasGL backend engine with GLES 2.0.
@@ -481,7 +483,7 @@ static void
 _framebuffer_read_bind(GLuint buf, Evas_GL_Context_Version version)
 {
    if (version == EVAS_GL_GLES_3_X)
-     glBindFramebuffer_evgl_thread_cmd(GL_READ_FRAMEBUFFER, buf);
+     EVGL_TH(glBindFramebuffer, GL_READ_FRAMEBUFFER, buf);
 }
 
 static void
@@ -490,11 +492,11 @@ _framebuffer_delete(GLuint *buf, Evas_GL_Context_Version version)
    if (version == EVAS_GL_GLES_1_X)
      {
         if (EXT_FUNC_GLES1(glDeleteFramebuffersOES))
-          EXT_FUNC_GLES1(glDeleteFramebuffersOES)(1, buf);
+          EVGL_TH_CALL(glDeleteFramebuffersOES, EXT_FUNC_GLES1(glDeleteFramebuffersOES), 1, buf);
      }
    else
      {
-        glDeleteFramebuffers_evgl_thread_cmd(1, buf);
+        EVGL_TH(glDeleteFramebuffers, 1, buf);
      }
 }
 
@@ -505,11 +507,11 @@ _framebuffer_check(Evas_GL_Context_Version version)
    if (version == EVAS_GL_GLES_1_X)
      {
         if (EXT_FUNC_GLES1(glCheckFramebufferStatusOES))
-          ret = EXT_FUNC_GLES1(glCheckFramebufferStatusOES)(GL_FRAMEBUFFER);
+          ret = EVGL_TH_CALL(glCheckFramebufferStatus, EXT_FUNC_GLES1(glCheckFramebufferStatusOES), GL_FRAMEBUFFER);
      }
    else
      {
-        ret = glCheckFramebufferStatus_evgl_thread_cmd(GL_FRAMEBUFFER);
+        ret = EVGL_TH(glCheckFramebufferStatus, GL_FRAMEBUFFER);
      }
    return ret;
 }
@@ -521,11 +523,11 @@ _renderbuffer_create(GLuint *buf, Evas_GL_Context_Version version)
    if (version == EVAS_GL_GLES_1_X)
      {
         if (EXT_FUNC_GLES1(glGenRenderbuffersOES))
-          EXT_FUNC_GLES1(glGenRenderbuffersOES)(1, buf);
+            EVGL_TH_CALL(glGenRenderbuffersOES, EXT_FUNC_GLES1(glGenRenderbuffersOES), 1, buf);
      }
    else
      {
-        glGenRenderbuffers_evgl_thread_cmd(1, buf);
+        EVGL_TH(glGenRenderbuffers, 1, buf);
      }
 }
 
@@ -534,72 +536,75 @@ _renderbuffer_create(GLuint *buf, Evas_GL_Context_Version version)
 static void
 _renderbuffer_allocate(GLuint buf, GLenum fmt, int w, int h, int samples, Evas_GL_Context_Version version)
 {
-   if (version == EVAS_GL_GLES_1_X)
-     {
-        if (EXT_FUNC_GLES1(glBindRenderbufferOES))
-          EXT_FUNC_GLES1(glBindRenderbufferOES)(GL_RENDERBUFFER, buf);
+  if (version == EVAS_GL_GLES_1_X)
+    {
+      if (EXT_FUNC_GLES1(glBindRenderbufferOES))
+        EVGL_TH_CALL(glBindRenderbufferOES, EXT_FUNC_GLES1(glBindRenderbufferOES), GL_RENDERBUFFER, buf);
 
-        if (samples)
+      if (samples)
+        {
 #ifdef GL_GLES
           {
             if (EXT_FUNC_GLES1(glRenderbufferStorageMultisampleEXT))
-              EXT_FUNC_GLES1(glRenderbufferStorageMultisampleEXT)(GL_RENDERBUFFER, samples, fmt, w, h);
+              EVGL_TH_CALL(glRenderbufferStorageMultisampleEXT, EXT_FUNC_GLES1(glRenderbufferStorageMultisampleEXT), GL_RENDERBUFFER, samples, fmt, w, h);
           }
 #else
           ERR("MSAA not supported.  Should not have come in here...!");
 #endif
-        else
-          {
-             if (EXT_FUNC_GLES1(glRenderbufferStorageOES))
-               EXT_FUNC_GLES1(glRenderbufferStorageOES)(GL_RENDERBUFFER, fmt, w, h);
-          }
+        }
+      else
+        {
+          if (EXT_FUNC_GLES1(glRenderbufferStorageOES))
+            EVGL_TH_CALL(glRenderbufferStorageOES, EXT_FUNC_GLES1(glRenderbufferStorageOES), GL_RENDERBUFFER, fmt, w, h);
+        }
 
         if (EXT_FUNC_GLES1(glBindRenderbufferOES))
-          EXT_FUNC_GLES1(glBindRenderbufferOES)(GL_RENDERBUFFER, 0);
+          EVGL_TH_CALL(glBindRenderbufferOES, EXT_FUNC_GLES1(glBindRenderbufferOES), GL_RENDERBUFFER, 0);
       }
    else if (version == EVAS_GL_GLES_3_X)
      {
-         glBindRenderbuffer_evgl_thread_cmd(GL_RENDERBUFFER, buf);
+       EVGL_TH(glBindRenderbuffer, GL_RENDERBUFFER, buf);
 
         if (samples)
 #ifdef GL_GLES
           {
              if (EXT_FUNC_GLES3(glRenderbufferStorageMultisampleEXT))
-               EXT_FUNC_GLES3(glRenderbufferStorageMultisampleEXT)(GL_RENDERBUFFER, samples, fmt, w, h);
+               EVGL_TH_CALL(glRenderbufferStorageMultisampleEXT, EXT_FUNC_GLES3(glRenderbufferStorageMultisampleEXT), GL_RENDERBUFFER, samples, fmt, w, h);
           }
 #else
           ERR("MSAA not supported.  Should not have come in here...!");
 #endif
         else
           {
-             glRenderbufferStorage_evgl_thread_cmd(GL_RENDERBUFFER, fmt, w, h);
+            EVGL_TH(glRenderbufferStorage, GL_RENDERBUFFER, fmt, w, h);
           }
 
-        glBindRenderbuffer_evgl_thread_cmd(GL_RENDERBUFFER, 0);
+        EVGL_TH(glBindRenderbuffer, GL_RENDERBUFFER, 0);
     }
    else
      {
-        glBindRenderbuffer_evgl_thread_cmd(GL_RENDERBUFFER, buf);
+       EVGL_TH(glBindRenderbuffer, GL_RENDERBUFFER, buf);
 
-        if (samples)
+      if (samples)
+        {
 #ifdef GL_GLES
           {
              if (EXT_FUNC(glRenderbufferStorageMultisampleEXT))
-               EXT_FUNC(glRenderbufferStorageMultisampleEXT)(GL_RENDERBUFFER, samples, fmt, w, h);
+               EVGL_TH_CALL(glRenderbufferStorageMultisampleEXT, EXT_FUNC(glRenderbufferStorageMultisampleEXT), GL_RENDERBUFFER, samples, fmt, w, h);
           }
 #else
           ERR("MSAA not supported.  Should not have come in here...!");
 #endif
-        else
-          {
-             glRenderbufferStorage_evgl_thread_cmd(GL_RENDERBUFFER, fmt, w, h);
-          }
+        }
+      else
+        {
+          EVGL_TH(glRenderbufferStorage, GL_RENDERBUFFER, fmt, w, h);
+        }
 
-        glBindRenderbuffer_evgl_thread_cmd(GL_RENDERBUFFER, 0);
-     }
+      EVGL_TH(glBindRenderbuffer, GL_RENDERBUFFER, 0);
+    }
 
-   return;
-   samples = 0;
+  return;
 }
 
 static void
@@ -610,11 +615,11 @@ _renderbuffer_destroy(GLuint *buf, Evas_GL_Context_Version version)
         if (version == EVAS_GL_GLES_1_X)
           {
              if (EXT_FUNC_GLES1(glDeleteRenderbuffersOES))
-             EXT_FUNC_GLES1(glDeleteRenderbuffersOES)(1, buf);
+                EVGL_TH_CALL(glDeleteRenderbuffersOES, EXT_FUNC_GLES1(glDeleteRenderbuffersOES), 1, buf);
           }
         else
           {
-             glDeleteRenderbuffers_evgl_thread_cmd(1, buf);
+             EVGL_TH(glDeleteRenderbuffers, 1, buf);
           }
 
         *buf = 0;
@@ -628,11 +633,11 @@ _renderbuffer_attach(GLuint buf, GLenum attach, Evas_GL_Context_Version version)
    if (version == EVAS_GL_GLES_1_X)
      {
         if (EXT_FUNC_GLES1(glFramebufferRenderbufferOES))
-          EXT_FUNC_GLES1(glFramebufferRenderbufferOES)(GL_FRAMEBUFFER, attach, GL_RENDERBUFFER, buf);
+           EVGL_TH_CALL(glFramebufferRenderbuffer, EXT_FUNC_GLES1(glFramebufferRenderbufferOES), GL_FRAMEBUFFER, attach, GL_RENDERBUFFER, buf);
      }
    else
      {
-        glFramebufferRenderbuffer_evgl_thread_cmd(GL_FRAMEBUFFER, attach, GL_RENDERBUFFER, buf);
+        EVGL_TH(glFramebufferRenderbuffer, GL_FRAMEBUFFER, attach, GL_RENDERBUFFER, buf);
      }
 }
 
@@ -703,7 +708,7 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
    // Return the result
    if (fb_status != GL_FRAMEBUFFER_COMPLETE)
      {
-        int err = glGetError();
+        int err = EVGL_TH(glGetError);
 
         if (err != GL_NO_ERROR)
            DBG("glGetError() returns %x ", err);
@@ -714,9 +719,9 @@ _fbo_surface_cap_test(GLint color_ifmt, GLenum color_fmt,
      {
         // Check that all attachments is valid.
         GLint color_atc, depth_atc, stencil_atc;
-        glGetFramebufferAttachmentParameteriv_evgl_thread_cmd(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &color_atc);
-        glGetFramebufferAttachmentParameteriv_evgl_thread_cmd(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &depth_atc);
-        glGetFramebufferAttachmentParameteriv_evgl_thread_cmd(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &stencil_atc);
+        EVGL_TH(glGetFramebufferAttachmentParameteriv, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &color_atc);
+        EVGL_TH(glGetFramebufferAttachmentParameteriv, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &depth_atc);
+        EVGL_TH(glGetFramebufferAttachmentParameteriv, GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &stencil_atc);
 
         if (color_fmt && !color_atc)
           ret = 0;
@@ -1062,7 +1067,7 @@ _surface_cap_init(void *eng_data EINA_UNUSED, Evas_GL_Context_Version version)
    int caps_idx = version - 1;
 
    // Query the max width and height of the surface
-   glGetIntegerv_evgl_thread_cmd(GL_MAX_RENDERBUFFER_SIZE, &max_size);
+   EVGL_TH(glGetIntegerv, GL_MAX_RENDERBUFFER_SIZE, &max_size);
 
    evgl_engine->caps[caps_idx].max_w = max_size;
    evgl_engine->caps[caps_idx].max_h = max_size;
@@ -1071,17 +1076,17 @@ _surface_cap_init(void *eng_data EINA_UNUSED, Evas_GL_Context_Version version)
 
    if (version == 3)
      {
-        glGetIntegerv_evgl_thread_cmd(GL_MAX_SAMPLES, &max_samples);
+        EVGL_TH(glGetIntegerv, GL_MAX_SAMPLES, &max_samples);
      }
 #ifdef GL_GLES
    else
      {
-        const char *exts = (const char *) glGetString_evgl_thread_cmd(GL_EXTENSIONS);
+        const char *exts = (const char *) EVGL_TH(glGetString, GL_EXTENSIONS);
 
         if (exts && strstr(exts, "EXT_multisampled_render_to_texture"))
-          glGetIntegerv_evgl_thread_cmd(GL_MAX_SAMPLES_EXT, &max_samples);
+          EVGL_TH(glGetIntegerv, GL_MAX_SAMPLES_EXT, &max_samples);
         else if (exts && strstr(exts, "IMG_multisampled_render_to_texture"))
-          glGetIntegerv_evgl_thread_cmd(GL_MAX_SAMPLES_IMG, &max_samples);
+          EVGL_TH(glGetIntegerv, GL_MAX_SAMPLES_IMG, &max_samples);
      }
 #endif
 
@@ -1581,7 +1586,7 @@ try_again:
                   support_win_cfg = EINA_FALSE;
                }
 
-             if ((sfc->direct_override) || (support_win_cfg && !evas_gl_thread_enabled()))
+             if (sfc->direct_override || support_win_cfg )
                sfc->direct_fb_opt = !!(cfg->options_bits & EVAS_GL_OPTIONS_DIRECT);
              else if (cfg->options_bits & EVAS_GL_OPTIONS_DIRECT)
                {
@@ -1685,7 +1690,6 @@ _evgl_direct_renderable(EVGL_Resource *rsc, EVGL_Surface *sfc)
    if (rsc->id != evgl_engine->main_tid) return 0;
    if (!sfc->direct_fb_opt) return 0;
    if (!rsc->direct.enabled) return 0;
-   if (evas_gl_thread_enabled()) return 0;
 
    return 1;
 }
@@ -1693,7 +1697,6 @@ _evgl_direct_renderable(EVGL_Resource *rsc, EVGL_Surface *sfc)
 //---------------------------------------------------------------//
 // Functions used by Evas GL module
 //---------------------------------------------------------------//
-
 EVGL_Resource *
 _evgl_tls_resource_get(void)
 {
@@ -2136,7 +2139,7 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
      {
         ERR("Surface allocation failed.");
         evas_gl_common_error_set(eng_data, EVAS_GL_BAD_ALLOC);
-        goto error;
+        return NULL;
      }
 
    // Set surface info
@@ -2160,9 +2163,9 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
    else if (evgl_engine->direct_override == 1)
      sfc->direct_override = EINA_TRUE;
 
-   if ((sfc->direct_override == EINA_TRUE) || (cfg->options_bits & EVAS_GL_OPTIONS_DIRECT) || (evgl_engine->disable_render_thread == 1))
+   if (evgl_engine->disable_render_thread == 1)
      {
-        if (evas_gl_thread_enabled())
+        if (evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
           {
              // Now surface direct override is ON.
              // It means that EvasGL DIRECT rendering is enabled strictly
@@ -2171,20 +2174,15 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
              // But it may not work correctly if some rendering is not yet completely finished.
              // So it is recommended that programmer should disable EVAS_GL_THREAD_RENDER flag.
              int ret;
-             EGLDisplay display = eglGetCurrentDisplay_thread_cmd();
+             EGLDisplay display = GL_TH(eglGetCurrentDisplay);
 
              DBG("Overriding Thread Rendering ON to OFF (FALLBACK is occurred)");
 
-             ret = eglMakeCurrent_thread_cmd(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+             ret = GL_TH(eglMakeCurrent, display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
              if (ret != EGL_TRUE)
                ERR("Evas GL thread fallback is failed");
 
-             ret = eglMakeCurrent_evgl_thread_cmd(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-             if (ret != EGL_TRUE)
-               ERR("Evas GL thread fallback is failed");
-
-             evas_gl_thread_begin();
-             evas_evgl_thread_begin();
+             evas_gl_thread_disabled();
           }
      }
 
@@ -2204,10 +2202,6 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
       evgl_engine->funcs->partial_rendering_disable();
 
    return sfc;
-
-error:
-   if (sfc) free(sfc);
-   return NULL;
 }
 
 void *
@@ -2554,7 +2548,7 @@ evgl_context_destroy(void *eng_data, EVGL_Context *ctx)
              ERR("Error doing an internal resource make current");
              return 0;
           }
-        glDeleteFramebuffers_evgl_thread_cmd(1, &ctx->surface_fbo);
+        EVGL_TH(glDeleteFramebuffers, 1, &ctx->surface_fbo);
      }
 
    // Retrieve the resource object
@@ -2650,24 +2644,24 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
 
              if (rsc->current_ctx->version == EVAS_GL_GLES_3_X)
                {
-                  glGetIntegerv_evgl_thread_cmd(GL_DRAW_FRAMEBUFFER_BINDING, &curr_draw_fbo);
+                  EVGL_TH(glGetIntegerv, GL_DRAW_FRAMEBUFFER_BINDING, &curr_draw_fbo);
                   if ((rsc->current_ctx->surface_fbo == (GLuint) curr_draw_fbo) ||
                       (rsc->current_ctx->current_sfc &&
                        rsc->current_ctx->current_sfc->color_buf == (GLuint) curr_draw_fbo))
                     {
-                       glBindFramebuffer_evgl_thread_cmd(GL_FRAMEBUFFER, 0);
+                       EVGL_TH(glBindFramebuffer, GL_FRAMEBUFFER, 0);
                        rsc->current_ctx->current_draw_fbo = 0;
                        rsc->current_ctx->current_read_fbo = 0;
                     }
                }
              else
                {
-                  glGetIntegerv_evgl_thread_cmd(GL_FRAMEBUFFER_BINDING, &curr_fbo);
+                  EVGL_TH(glGetIntegerv, GL_FRAMEBUFFER_BINDING, &curr_fbo);
                   if ((rsc->current_ctx->surface_fbo == (GLuint) curr_fbo) ||
                       (rsc->current_ctx->current_sfc &&
                        rsc->current_ctx->current_sfc->color_buf == (GLuint) curr_fbo))
                     {
-                       glBindFramebuffer_evgl_thread_cmd(GL_FRAMEBUFFER, 0);
+                       EVGL_TH(glBindFramebuffer, GL_FRAMEBUFFER, 0);
                        rsc->current_ctx->current_fbo = 0;
                     }
                }
@@ -2766,8 +2760,8 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
    else
      {
         DBG("Performing surfaceless make current");
-        glViewport_evgl_thread_cmd(0, 0, 0, 0);
-        glScissor_evgl_thread_cmd(0, 0, 0, 0);
+        EVGL_TH(glViewport, 0, 0, 0, 0);
+        EVGL_TH(glScissor, 0, 0, 0, 0);
         rsc->direct.rendered = 0;
         goto finish;
      }
@@ -2848,9 +2842,9 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
              if (!rsc->direct.rendered)
                {
                   // Restore viewport and scissor test to direct rendering mode
-                  glViewport_evgl_thread_cmd(ctx->viewport_direct[0], ctx->viewport_direct[1], ctx->viewport_direct[2], ctx->viewport_direct[3]);
+                  EVGL_TH(glViewport, ctx->viewport_direct[0], ctx->viewport_direct[1], ctx->viewport_direct[2], ctx->viewport_direct[3]);
                   if ((ctx->direct_scissor) && (!ctx->scissor_enabled))
-                    glEnable_evgl_thread_cmd(GL_SCISSOR_TEST);
+                    EVGL_TH(glEnable, GL_SCISSOR_TEST);
                }
              if (dbg) DBG("sfc %p is direct renderable.", sfc);
              rsc->direct.rendered = 1;
@@ -2860,9 +2854,9 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
              // Transition from direct rendering to indirect rendering
              if (rsc->direct.rendered)
                {
-                  glViewport_evgl_thread_cmd(ctx->viewport_coord[0], ctx->viewport_coord[1], ctx->viewport_coord[2], ctx->viewport_coord[3]);
+                  EVGL_TH(glViewport, ctx->viewport_coord[0], ctx->viewport_coord[1], ctx->viewport_coord[2], ctx->viewport_coord[3]);
                   if ((ctx->direct_scissor) && (!ctx->scissor_enabled))
-                    glDisable_evgl_thread_cmd(GL_SCISSOR_TEST);
+                    EVGL_TH(glDisable, GL_SCISSOR_TEST);
              }
 
              if (ctx->version == EVAS_GL_GLES_3_X)
@@ -2892,7 +2886,7 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
              if (ctx->version == EVAS_GL_GLES_3_X)
                {
                   // This is to transition from FBO rendering to direct rendering
-                  glGetIntegerv_evgl_thread_cmd(GL_DRAW_FRAMEBUFFER_BINDING, &curr_draw_fbo);
+                  EVGL_TH(glGetIntegerv, GL_DRAW_FRAMEBUFFER_BINDING, &curr_draw_fbo);
                   if (ctx->surface_fbo == (GLuint)curr_draw_fbo)
                     {
                        _framebuffer_draw_bind(0, ctx->version);
@@ -2905,7 +2899,7 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
                        ctx->current_draw_fbo = 0;
                     }
 
-                  glGetIntegerv_evgl_thread_cmd(GL_READ_FRAMEBUFFER_BINDING, &curr_read_fbo);
+                  EVGL_TH(glGetIntegerv, GL_READ_FRAMEBUFFER_BINDING, &curr_read_fbo);
                   if (ctx->surface_fbo == (GLuint)curr_read_fbo)
                     {
                        _framebuffer_read_bind(0, ctx->version);
@@ -2944,7 +2938,7 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
                   else
                     {
                   // This is to transition from FBO rendering to direct rendering
-                  glGetIntegerv_evgl_thread_cmd(GL_FRAMEBUFFER_BINDING, &curr_fbo);
+                  EVGL_TH(glGetIntegerv, GL_FRAMEBUFFER_BINDING, &curr_fbo);
                   if (ctx->surface_fbo == (GLuint)curr_fbo)
                     {
                        _framebuffer_bind(0, ctx->version);
@@ -3379,7 +3373,7 @@ evgl_api_get(void *eng_data, Evas_GL_Context_Version version, Eina_Bool alloc_on
         api = gles3_funcs;
      }
    else return NULL;
-   if (alloc_only && (api->version == EVAS_GL_API_VERSION))
+   if (alloc_only && (api && api->version == EVAS_GL_API_VERSION))
      return api;
 
 #ifdef GL_GLES
@@ -3400,7 +3394,14 @@ evgl_api_get(void *eng_data, Evas_GL_Context_Version version, Eina_Bool alloc_on
      }
    else if (version == EVAS_GL_GLES_3_X)
      {
-        _evgl_api_gles3_get(api, evgl_engine->api_debug_mode);
+        void *(*get_proc_address)(const char *) = NULL;
+        const char *egl_exts;
+
+        egl_exts = evgl_engine->funcs->ext_string_get(eng_data);
+        if (egl_exts && strstr(egl_exts, "EGL_KHR_get_all_proc_addresses"))
+          get_proc_address = evgl_engine->funcs->proc_address_get;
+
+        _evgl_api_gles3_get(api, get_proc_address, evgl_engine->api_debug_mode);
         evgl_api_gles3_ext_get(api, evgl_engine->funcs->proc_address_get, evgl_engine->funcs->ext_string_get(eng_data));
      }
 

@@ -476,9 +476,11 @@ typedef struct _Evas_Thread_Command Evas_Thread_Command;
 struct _Evas_Thread_Command
 {
    Eina_Thread_Queue_Msg thq_head;
+   int thread_type;
    Evas_Thread_Command_Cb cb;
    void *data;
    Eina_Bool finish;
+   void *thq_ref;
 };
 
 /*****************************************************************************/
@@ -1304,6 +1306,8 @@ Tilebuf_Rect *evas_common_regionbuf_rects_get (Regionbuf *rb);
 
 void              evas_font_dir_cache_free(void);
 
+EAPI void         evas_thread_queue_wait(void);
+
 EAPI int          evas_async_events_process_blocking(void);
 void	          evas_render_rendering_wait(Evas_Public_Data *evas);
 void              evas_all_sync(void);
@@ -1323,7 +1327,8 @@ EAPI int          evas_threads_sw_shutdown(void);
 EAPI int          evas_threads_gl_shutdown(void);
 EAPI void         evas_thread_cmd_enqueue(Evas_Thread_Command_Cb cb, void *data);
 EAPI void         evas_thread_queue_flush(Evas_Thread_Command_Cb cb, void *data);
-EAPI void         evas_gl_thread_cmd_enqueue(int thread_type, Evas_Thread_Command_Cb cb, void *data, int thread_mode);
+EAPI void        *evas_gl_thread_cmd_create(int thread_type, int length, void **ref);
+EAPI void         evas_gl_thread_cmd_enqueue(void *ref, Evas_Thread_Command_Cb cb, int thread_mode);
 EAPI void         evas_gl_thread_cmd_wait(int thread_type, void *data, Eina_Bool *finished_ptr);
 EAPI Eina_Thread  evas_gl_thread_get(int thread_type);
 

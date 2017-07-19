@@ -4,138 +4,87 @@
 #ifdef GL_GLES
 
 #include <EGL/egl.h>
+#include <EGL/eglext.h>
+
+extern void *evas_gl_thread_egl_func_get(void);
+
+
+#define EVAS_TH_EGL_FN_LIST \
+/* EGL 1.4 Referencing to Thread Local Storage */ \
+EVAS_TH_EGL_FN      (EGLint     , eglGetError) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglBindAPI, EGLenum api) \
+EVAS_TH_EGL_FN      (EGLenum    , eglQueryAPI) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglMakeCurrent, EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx) \
+EVAS_TH_EGL_FN      (EGLContext , eglGetCurrentContext) \
+EVAS_TH_EGL_FN      (EGLSurface , eglGetCurrentSurface, EGLint readdraw) \
+EVAS_TH_EGL_FN      (EGLDisplay , eglGetCurrentDisplay) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglReleaseThread) \
+ \
+/* EGL 1.4 Sequential Operations */ \
+EVAS_TH_EGL_FN      (EGLBoolean , eglQuerySurface, EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglSwapInterval, EGLDisplay dpy, EGLint interval) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglWaitGL) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglSwapBuffers, EGLDisplay dpy, EGLSurface surface) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglSwapBuffersWithDamage, EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglSetDamageRegion, EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglQueryWaylandBufferWL, EGLDisplay dpy, void *buffer, EGLint attribute, EGLint *value) \
+EVAS_TH_EGL_FN      (EGLSurface , eglCreateWindowSurface, EGLDisplay egl_disp, EGLConfig egl_config, EGLNativeWindowType egl_win, EGLint const * attrib_list) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglDestroySurface, EGLDisplay egl_disp, EGLSurface egl_surf) \
+EVAS_TH_EGL_FN      (EGLContext , eglCreateContext, EGLDisplay display, EGLConfig config, EGLContext share_context, EGLint const * attrib_list) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglDestroyContext, EGLDisplay display, EGLContext context) \
+EVAS_TH_EGL_FN      (char const *, eglQueryString, EGLDisplay display,  EGLint name) \
+EVAS_TH_EGL_FN      (void *     , eglCreateImage, EGLDisplay dpy, EGLContext ctx, int target, void* buffer, int *attribs) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglDestroyImage,  EGLDisplay  dpy, EGLImageKHR img) \
+EVAS_TH_EGL_FN      (void *     , eglCreateSyncKHR, EGLDisplay dpy, unsigned int type, const int *attrib_list) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglDestroySyncKHR,  EGLDisplay  dpy, void * sync) \
+EVAS_TH_EGL_FN      (int        , eglClientWaitSyncKHR,  EGLDisplay  dpy,  void * sync, int flags, unsigned long long timeout) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglSignalSyncKHR,  EGLDisplay  dpy,  void * sync, unsigned mode) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglGetSyncAttribKHR,  EGLDisplay  dpy,  void * sync, int attribute, int *value) \
+EVAS_TH_EGL_FN      (int        , eglWaitSyncKHR,  EGLDisplay  dpy,  void * sync, int flags) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglBindWaylandDisplayWL,  EGLDisplay  dpy,  void *wl_display) \
+EVAS_TH_EGL_FN      (EGLBoolean , eglUnbindWaylandDisplayWL,  EGLDisplay  dpy,  void *wl_display) \
+EVAS_TH_EGL_FN      (void *     , eglGetProcAddress, char const * procname)
+
+
+
+
+
 
 #ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
 
-#ifdef EAPI
-# undef EAPI
-#endif
+#define EVAS_TH_EGL_FN(ret, name, ...) \
+ extern ret GL_TH_FN(name)(GL_TH_DP, ##__VA_ARGS__);
+#define EVAS_TH_EGL_FN_ASYNC(ret, name, ...) \
+ extern void *GL_TH_FN(name##_begin)(GL_TH_DP, ##__VA_ARGS__); \
+ extern ret GL_TH_FN(name##_end)(void *ref);
 
-#ifdef _WIN32
-# ifdef EFL_EVAS_BUILD
-#  ifdef DLL_EXPORT
-#   define EAPI __declspec(dllexport)
-#  else
-#   define EAPI
-#  endif /* ! DLL_EXPORT */
-# else
-#  define EAPI __declspec(dllimport)
-# endif /* ! EFL_EVAS_BUILD */
-#else
-# ifdef __GNUC__
-#  if __GNUC__ >= 4
-#   define EAPI __attribute__ ((visibility("default")))
-#  else
-#   define EAPI
-#  endif
-# else
-#  define EAPI
-# endif
-#endif /* ! _WIN32 */
+EVAS_TH_EGL_FN_LIST
 
-/* EGL 1.4 Referencing to Thread Local Storage */
-EAPI EGLint     eglGetError_thread_cmd();
-EAPI EGLBoolean eglBindAPI_thread_cmd(EGLenum api);
-EAPI EGLenum    eglQueryAPI_thread_cmd();
-EAPI EGLBoolean eglMakeCurrent_thread_cmd(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
-EAPI EGLContext eglGetCurrentContext_thread_cmd(void);
-EAPI EGLSurface eglGetCurrentSurface_thread_cmd(EGLint readdraw);
-EAPI EGLDisplay eglGetCurrentDisplay_thread_cmd(void);
-EAPI EGLBoolean eglReleaseThread_thread_cmd();
-
-
-/* EGL 1.4 Sequential Operations */
-EAPI EGLBoolean eglQuerySurface_thread_cmd(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value);
-EAPI EGLBoolean eglSwapInterval_thread_cmd(EGLDisplay dpy, EGLint interval);
-EAPI EGLBoolean eglWaitGL_thread_cmd(void);
-EAPI EGLBoolean eglSwapBuffers_thread_cmd(EGLDisplay dpy, EGLSurface surface);
-
-EAPI void       eglSwapBuffersWithDamage_orig_evas_set(void *func);
-EAPI void      *eglSwapBuffersWithDamage_orig_evas_get();
-EAPI EGLBoolean eglSwapBuffersWithDamage_thread_cmd(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
-
-EAPI void       eglSetDamageRegion_orig_evas_set(void *func);
-EAPI void      *eglSetDamageRegion_orig_evas_get();
-EAPI EGLBoolean eglSetDamageRegion_thread_cmd(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
-
-EAPI void       eglQueryWaylandBuffer_orig_evas_set(void *func);
-EAPI void      *eglQueryWaylandBuffer_orig_evas_get();
-EAPI EGLBoolean eglQueryWaylandBuffer_thread_cmd(EGLDisplay dpy, void *buffer, EGLint attribute, EGLint *value);
-
-EAPI void       eglGetProcAddress_orig_evas_set(void *func);
-EAPI void      *eglGetProcAddress_orig_evas_get();
-EAPI void      *eglGetProcAddress_thread_cmd(char const * procname);
-
-/***** EVAS GL *****/
-
-/* EGL 1.4 Referencing to Thread Local Storage */
-EAPI EGLint     eglGetError_evgl_thread_cmd();
-EAPI EGLBoolean eglMakeCurrent_evgl_thread_cmd(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
-EAPI EGLContext eglGetCurrentContext_evgl_thread_cmd(void);
-EAPI EGLSurface eglGetCurrentSurface_evgl_thread_cmd(EGLint readdraw);
-EAPI EGLDisplay eglGetCurrentDisplay_evgl_thread_cmd(void);
-EAPI EGLSurface eglCreateWindowSurface_evgl_thread_cmd(EGLDisplay egl_disp, EGLConfig egl_config, EGLNativeWindowType egl_win, EGLint const * attrib_list);
-EAPI EGLBoolean eglDestroySurface_evgl_thread_cmd(EGLDisplay egl_disp, EGLSurface egl_surf);
-EAPI EGLContext eglCreateContext_evgl_thread_cmd(EGLDisplay display, EGLConfig config, EGLContext share_context, EGLint const * attrib_list);
-EAPI EGLBoolean eglDestroyContext_evgl_thread_cmd(EGLDisplay display, EGLContext context);
-EAPI char const *eglQueryString_evgl_thread_cmd(EGLDisplay display,  EGLint name);
+#undef EVAS_TH_EGL_FN_ASYNC
+#undef EVAS_TH_EGL_FN
 
 
 #else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
 
-/* EGL 1.4 Referencing to Thread Local Storage */
-extern EGLint     (*eglGetError_thread_cmd)();
-extern EGLBoolean (*eglBindAPI_thread_cmd)(EGLenum api);
-extern EGLenum    (*eglQueryAPI_thread_cmd)();
-extern EGLBoolean (*eglMakeCurrent_thread_cmd)(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
-extern EGLContext (*eglGetCurrentContext_thread_cmd)(void);
-extern EGLSurface (*eglGetCurrentSurface_thread_cmd)(EGLint readdraw);
-extern EGLDisplay (*eglGetCurrentDisplay_thread_cmd)(void);
-extern EGLBoolean (*eglReleaseThread_thread_cmd)();
-extern void       (*eglGetProcAddress_orig_evas_set)(void *func);
-extern void      *(*eglGetProcAddress_orig_evas_get)();
-extern void       *(*eglGetProcAddress_thread_cmd)(char const * procname);
+#define EVAS_TH_EGL_FN(ret, name, ...) \
+ extern ret (*GL_TH_FN(name))(GL_TH_DP, ##__VA_ARGS__);
+#define EVAS_TH_EGL_FN_ASYNC(ret, name, ...) \
+ extern void *(*GL_TH_FN(name##_begin))(GL_TH_DP, ##__VA_ARGS__); \
+ extern ret (*GL_TH_FN(name##_end))(void *ref);
 
+EVAS_TH_EGL_FN_LIST
 
-/* EGL 1.4 Sequential Operations */
-extern EGLBoolean (*eglQuerySurface_thread_cmd)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value);
-extern EGLBoolean (*eglSwapInterval_thread_cmd)(EGLDisplay dpy, EGLint interval);
-extern EGLBoolean (*eglWaitGL_thread_cmd)(void);
-extern EGLBoolean (*eglSwapBuffers_thread_cmd)(EGLDisplay dpy, EGLSurface surface);
-extern void       (*eglSwapBuffersWithDamage_orig_evas_set)(void *func);
-extern void      *(*eglSwapBuffersWithDamage_orig_evas_get)();
-extern EGLBoolean (*eglSwapBuffersWithDamage_thread_cmd)(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
-extern void       (*eglSetDamageRegion_orig_evas_set)(void *func);
-extern void      *(*eglSetDamageRegion_orig_evas_get)();
-extern EGLBoolean (*eglSetDamageRegion_thread_cmd)(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
-extern void       (*eglQueryWaylandBuffer_orig_evas_set)(void *func);
-extern void      *(*eglQueryWaylandBuffer_orig_evas_get)();
-extern EGLBoolean (*eglQueryWaylandBuffer_thread_cmd)(EGLDisplay dpy, void *buffer, EGLint attribute, EGLint *value);
+#undef EVAS_TH_EGL_FN_ASYNC
+#undef EVAS_TH_EGL_FN
 
-
-/***** EVAS GL *****/
-
-/* EGL 1.4 Referencing to Thread Local Storage */
-extern EGLint     (*eglGetError_evgl_thread_cmd)();
-extern EGLBoolean (*eglMakeCurrent_evgl_thread_cmd)(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
-extern EGLContext (*eglGetCurrentContext_evgl_thread_cmd)(void);
-extern EGLSurface (*eglGetCurrentSurface_evgl_thread_cmd)(EGLint readdraw);
-extern EGLDisplay (*eglGetCurrentDisplay_evgl_thread_cmd)(void);
-extern EGLSurface (*eglCreateWindowSurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLConfig egl_config, EGLNativeWindowType egl_win, EGLint const * attrib_list);
-extern EGLBoolean (*eglDestroySurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLSurface egl_surf);
-extern EGLContext (*eglCreateContext_evgl_thread_cmd)(EGLDisplay display, EGLConfig config, EGLContext share_context, EGLint const * attrib_list);
-extern EGLBoolean (*eglDestroyContext_evgl_thread_cmd)(EGLDisplay display, EGLContext context);
-extern char const *(*eglQueryString_evgl_thread_cmd)(EGLDisplay display,  EGLint name);
-
-
-
-extern void _egl_thread_link_init();
+extern void _egl_thread_link_init(void *func_ptr);
 
 
 #endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
+
 #endif /* GL_GLES */
 
-#endif
+#endif /* EVAS_GL_THREAD_EGL_H */

@@ -798,7 +798,10 @@ modules_evas_engines_gl_generic_module_la_CFLAGS = \
 -DEVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC \
 -I$(top_builddir)/src/lib/efl \
 -I$(top_srcdir)/src/lib/evas/include \
+-I$(top_builddir)/src/lib/evas/include \
 -I$(top_srcdir)/src/lib/evas/cserve2 \
+-I$(top_srcdir)/src/lib/evas/filters \
+-I$(top_builddir)/src/lib/evas/canvas \
 -I$(top_srcdir)/src/modules/evas/engines/gl_common \
 -I$(top_builddir)/src/modules/evas/engines/gl_generic \
 @evas_engine_gl_common_cflags@ \
@@ -920,7 +923,8 @@ GL_X11_SOURCES = \
 $(GL_COMMON_THREAD_SOURCES) \
 modules/evas/engines/gl_x11/evas_engine.c \
 modules/evas/engines/gl_x11/evas_x_main.c \
-modules/evas/engines/gl_x11/evas_engine.h
+modules/evas/engines/gl_x11/evas_engine.h \
+modules/evas/engines/gl_x11/Evas_Engine_GL_X11.h
 if EVAS_STATIC_BUILD_GL_X11
 lib_evas_libevas_la_SOURCES += $(GL_X11_SOURCES)
 lib_evas_libevas_la_CPPFLAGS += \
@@ -1140,7 +1144,8 @@ WAYLAND_EGL_SOURCES = \
 $(GL_COMMON_THREAD_SOURCES) \
 modules/evas/engines/wayland_egl/evas_engine.c \
 modules/evas/engines/wayland_egl/evas_wl_main.c \
-modules/evas/engines/wayland_egl/evas_engine.h
+modules/evas/engines/wayland_egl/evas_engine.h \
+modules/evas/engines/wayland_common/Evas_Engine_Wayland.h
 if EVAS_STATIC_BUILD_WAYLAND_EGL
 lib_evas_libevas_la_SOURCES += $(WAYLAND_EGL_SOURCES)
 lib_evas_libevas_la_CPPFLAGS += @evas_engine_wayland_egl_cflags@

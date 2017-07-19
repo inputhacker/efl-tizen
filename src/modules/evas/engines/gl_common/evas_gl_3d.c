@@ -23,15 +23,15 @@ e3d_texture_param_update(E3D_Texture *texture)
 {
    if (texture->wrap_dirty)
      {
-        glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrap_s);
-        glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture->wrap_t);
+        GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrap_s);
+        GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture->wrap_t);
         texture->wrap_dirty = EINA_FALSE;
      }
 
    if (texture->filter_dirty)
      {
-        glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture->filter_min);
-        glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture->filter_mag);
+        GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture->filter_min);
+        GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture->filter_mag);
         texture->filter_dirty = EINA_FALSE;
      }
 }
@@ -268,6 +268,27 @@ e3d_texture_filter_get(const E3D_Texture *texture,
      *mag = _to_e3d_texture_filter(texture->filter_mag);
 }
 
+static void
+_gen_texture_2d(GLuint *texture, GLenum wrap_type, GLfloat filter_type)
+{
+   GL_TH(glGenTextures, 1, texture);
+   GL_TH(glBindTexture, GL_TEXTURE_2D, *texture);
+   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_type);
+   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_type);
+   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_type);
+   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_type);
+}
+
+static void
+_gen_depth_stencil_buffer(GLuint *buffer, GLenum format, GLenum attach,
+                          int size_w, int size_h)
+{
+   GL_TH(glGenRenderbuffers, 1, buffer);
+   GL_TH(glBindRenderbuffer, GL_RENDERBUFFER, *buffer);
+   GL_TH(glRenderbufferStorage, GL_RENDERBUFFER, format, size_w, size_h);
+   GL_TH(glFramebufferRenderbuffer, GL_FRAMEBUFFER, attach, GL_RENDERBUFFER, *buffer);
+}
+
 E3D_Drawable *
 e3d_drawable_new(int w, int h, int alpha, GLenum depth_format, GLenum stencil_format)
 {
@@ -278,59 +299,33 @@ e3d_drawable_new(int w, int h, int alpha, GLenum depth_format, GLenum stencil_fo
    GLuint         stencil_buf = 0;
    Eina_Bool      depth_stencil = EINA_FALSE;
 
-   glGenTextures_thread_cmd(1, &tex);
-   glBindTexture_thread_cmd(GL_TEXTURE_2D, tex);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+   _gen_texture_2d(&tex, GL_CLAMP_TO_EDGE, GL_NEAREST);
    if (alpha)
-     glTexImage2D_thread_cmd(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+     GL_TH(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
    else
-     glTexImage2D_thread_cmd(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+     GL_TH(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
-   glGenTextures_thread_cmd(1, &texDepth);
-   glBindTexture_thread_cmd(GL_TEXTURE_2D, texDepth);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   glTexImage2D_thread_cmd(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+   _gen_texture_2d(&texDepth, GL_CLAMP_TO_EDGE, GL_NEAREST);
+   GL_TH(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-   glGenFramebuffers_thread_cmd(1, &color_pick_fb_id);
-   glGenTextures_thread_cmd(1, &texcolorpick);
-   glBindTexture_thread_cmd(GL_TEXTURE_2D, texcolorpick);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-#ifndef GL_GLES
-   glTexImage2D_thread_cmd(GL_TEXTURE_2D, 0, GL_R16, w, h, 0, GL_RED, GL_UNSIGNED_SHORT, 0);
-#else
-   glTexImage2D_thread_cmd(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-#endif
+   GL_TH(glGenFramebuffers, 1, &color_pick_fb_id);
+   _gen_texture_2d(&texcolorpick, GL_CLAMP_TO_EDGE, GL_NEAREST);
+   GL_TH(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-   glGenFramebuffers_thread_cmd(1, &fbo);
-   glBindFramebuffer_thread_cmd(GL_FRAMEBUFFER, fbo);
-   glFramebufferTexture2D_thread_cmd(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+   GL_TH(glGenFramebuffers, 1, &fbo);
+   GL_TH(glBindFramebuffer, GL_FRAMEBUFFER, fbo);
+   GL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
 
 #ifdef GL_GLES
    if (depth_format == GL_DEPTH_STENCIL_OES)
      {
-        glGenTextures_thread_cmd(1, &depth_stencil_buf);
-        glBindTexture_thread_cmd(GL_TEXTURE_2D, depth_stencil_buf);
-        glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri_thread_cmd(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        glTexImage2D_thread_cmd(GL_TEXTURE_2D, 0, GL_DEPTH_STENCIL_OES, w, h, 0,
+        _gen_texture_2d(&depth_stencil_buf, GL_CLAMP_TO_EDGE, GL_NEAREST);
+        GL_TH(glTexImage2D, GL_TEXTURE_2D, 0, GL_DEPTH_STENCIL_OES, w, h, 0,
                                 GL_DEPTH_STENCIL_OES, GL_UNSIGNED_INT_24_8_OES, NULL);
 
-        glFramebufferTexture2D_thread_cmd(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+        GL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                           GL_TEXTURE_2D, depth_stencil_buf, 0);
-        glFramebufferTexture2D_thread_cmd(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+        GL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
                                           GL_TEXTURE_2D, depth_stencil_buf, 0);
 
         depth_stencil = EINA_TRUE;
@@ -338,35 +333,19 @@ e3d_drawable_new(int w, int h, int alpha, GLenum depth_format, GLenum stencil_fo
 #else
    if (depth_format == GL_DEPTH24_STENCIL8)
      {
-        glGenRenderbuffers_thread_cmd(1, &depth_stencil_buf);
-        glBindRenderbuffer_thread_cmd(GL_RENDERBUFFER, depth_stencil_buf);
-        glRenderbufferStorage_thread_cmd(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, w, h);
-        glFramebufferRenderbuffer_thread_cmd(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                             GL_RENDERBUFFER, depth_stencil_buf);
-
+        _gen_depth_stencil_buffer(&depth_stencil_buf, GL_DEPTH24_STENCIL8,
+                                  GL_DEPTH_STENCIL_ATTACHMENT, w, h);
         depth_stencil = EINA_TRUE;
      }
 #endif
 
    if ((!depth_stencil) && (depth_format))
-     {
-        glGenRenderbuffers_thread_cmd(1, &depth_buf);
-        glBindRenderbuffer_thread_cmd(GL_RENDERBUFFER, depth_buf);
-        glRenderbufferStorage_thread_cmd(GL_RENDERBUFFER, depth_format, w, h);
-        glFramebufferRenderbuffer_thread_cmd(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                             GL_RENDERBUFFER, depth_buf);
-     }
+     _gen_depth_stencil_buffer(&depth_buf, depth_format, GL_DEPTH_ATTACHMENT, w, h);
 
    if ((!depth_stencil) && (stencil_format))
-     {
-        glGenRenderbuffers_thread_cmd(1, &stencil_buf);
-        glBindRenderbuffer_thread_cmd(GL_RENDERBUFFER, stencil_buf);
-        glRenderbufferStorage_thread_cmd(GL_RENDERBUFFER, stencil_format, w, h);
-        glFramebufferRenderbuffer_thread_cmd(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                             GL_RENDERBUFFER, stencil_buf);
-     }
+     _gen_depth_stencil_buffer(&stencil_buf, stencil_format, GL_STENCIL_ATTACHMENT, w, h);
 
-   if (glCheckFramebufferStatus_thread_cmd(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+   if (GL_TH(glCheckFramebufferStatus, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
      goto error;
 
    drawable = (E3D_Drawable *)calloc(1, sizeof(E3D_Drawable));
@@ -399,31 +378,31 @@ error:
    ERR("Drawable creation failed.");
 
    if (tex)
-     glDeleteTextures_thread_cmd(1, &tex);
+     GL_TH(glDeleteTextures, 1, &tex);
    if (texcolorpick)
-     glDeleteTextures_thread_cmd(1, &texcolorpick);
+     GL_TH(glDeleteTextures, 1, &texcolorpick);
    if (texDepth)
-     glDeleteTextures_thread_cmd(1, &texDepth);
+     GL_TH(glDeleteTextures, 1, &texDepth);
 
    if (fbo)
-     glDeleteFramebuffers_thread_cmd(1, &fbo);
+     GL_TH(glDeleteFramebuffers, 1, &fbo);
    if (color_pick_fb_id)
-     glDeleteFramebuffers_thread_cmd(1, &color_pick_fb_id);
+     GL_TH(glDeleteFramebuffers, 1, &color_pick_fb_id);
 
    if (depth_stencil_buf)
      {
 #ifdef GL_GLES
-        glDeleteTextures_thread_cmd(1, &depth_stencil_buf);
+        GL_TH(glDeleteTextures, 1, &depth_stencil_buf);
 #else
-        glDeleteRenderbuffers_thread_cmd(1, &depth_stencil_buf);
+        GL_TH(glDeleteRenderbuffers, 1, &depth_stencil_buf);
 #endif
      }
 
    if (depth_buf)
-     glDeleteRenderbuffers_thread_cmd(1, &depth_buf);
+     GL_TH(glDeleteRenderbuffers, 1, &depth_buf);
 
    if (stencil_buf)
-     glDeleteRenderbuffers_thread_cmd(1, &stencil_buf);
+     GL_TH(glDeleteRenderbuffers, 1, &stencil_buf);
 
 
    return NULL;
@@ -436,25 +415,25 @@ e3d_drawable_free(E3D_Drawable *drawable)
      return;
 
    if (drawable->tex)
-     glDeleteTextures_thread_cmd(1, &drawable->tex);
+     GL_TH(glDeleteTextures, 1, &drawable->tex);
 
    if (drawable->fbo)
-     glDeleteFramebuffers_thread_cmd(1, &drawable->fbo);
+     GL_TH(glDeleteFramebuffers, 1, &drawable->fbo);
 
    if (drawable->depth_stencil_buf)
      {
 #ifdef GL_GLES
-        glDeleteTextures_thread_cmd(1, &drawable->depth_stencil_buf);
+        GL_TH(glDeleteTextures, 1, &drawable->depth_stencil_buf);
 #else
-        glDeleteRenderbuffers_thread_cmd(1, &drawable->depth_stencil_buf);
+        GL_TH(glDeleteRenderbuffers, 1, &drawable->depth_stencil_buf);
 #endif
      }
 
    if (drawable->depth_buf)
-     glDeleteRenderbuffers_thread_cmd(1, &drawable->depth_buf);
+     GL_TH(glDeleteRenderbuffers, 1, &drawable->depth_buf);
 
    if (drawable->stencil_buf)
-     glDeleteRenderbuffers_thread_cmd(1, &drawable->stencil_buf);
+     GL_TH(glDeleteRenderbuffers, 1, &drawable->stencil_buf);
 
    free(drawable);
 }
@@ -1128,7 +1107,7 @@ _mesh_draw_data_build(E3D_Draw_Data *data,
      }
 
    int num;
-   glGetIntegerv_thread_cmd(GL_MAX_TEXTURE_IMAGE_UNITS, &num);
+   GL_TH(glGetIntegerv, GL_MAX_TEXTURE_IMAGE_UNITS, &num);
    data->smap_sampler = num - 1;
 
    if (data->texture_count >= num)
@@ -1164,10 +1143,10 @@ void _shadowmap_render(E3D_Drawable *drawable, E3D_Renderer *renderer,
    Evas_Color      c = {1.0, 1.0, 1.0, 1.0};
    Evas_Mat4 matrix_vp;
 
-   glEnable_thread_cmd(GL_POLYGON_OFFSET_FILL);
-   glPolygonOffset_thread_cmd(data->depth_offset, data->depth_constant);
+   GL_TH(glEnable, GL_POLYGON_OFFSET_FILL);
+   GL_TH(glPolygonOffset, data->depth_offset, data->depth_constant);
 
-   glFramebufferTexture2D_thread_cmd(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+   GL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                                      drawable->texDepth, 0);
 
    e3d_renderer_target_set(renderer, drawable);
@@ -1202,10 +1181,10 @@ void _shadowmap_render(E3D_Drawable *drawable, E3D_Renderer *renderer,
           }
      }
 
-     glDisable_thread_cmd(GL_POLYGON_OFFSET_FILL);
+   GL_TH(glDisable, GL_POLYGON_OFFSET_FILL);
 
-     glFramebufferTexture2D_thread_cmd(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                                       drawable->tex, 0);
+        GL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                                      drawable->tex, 0);
 }
 
 void
@@ -1299,16 +1278,16 @@ e3d_drawable_scene_render_to_texture(E3D_Drawable *drawable, E3D_Renderer *rende
    Eina_List *repeat_node = NULL;
    Evas_Color c = {0.0, 0.0, 0.0, 0.0}, *unic_color = NULL;
 
-   glBindFramebuffer_thread_cmd(GL_FRAMEBUFFER, drawable->color_pick_fb_id);
-   glFramebufferTexture2D_thread_cmd(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+   GL_TH(glBindFramebuffer, GL_FRAMEBUFFER, drawable->color_pick_fb_id);
+   GL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                      GL_TEXTURE_2D, drawable->texcolorpick, 0);
 #ifdef GL_GLES
-   glBindRenderbuffer_thread_cmd(GL_RENDERBUFFER, drawable->depth_stencil_buf);
-   glFramebufferTexture2D_thread_cmd(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+   GL_TH(glBindRenderbuffer, GL_RENDERBUFFER, drawable->depth_stencil_buf);
+   GL_TH(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                      GL_TEXTURE_2D, drawable->depth_stencil_buf, 0);
 #else
-   glBindRenderbuffer_thread_cmd(GL_RENDERBUFFER, drawable->depth_stencil_buf);
-   glFramebufferRenderbuffer_thread_cmd(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+   GL_TH(glBindRenderbuffer, GL_RENDERBUFFER, drawable->depth_stencil_buf);
+   GL_TH(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
                                         GL_RENDERBUFFER, drawable->depth_stencil_buf);
 #endif
 
@@ -1367,7 +1346,7 @@ e3d_drawable_scene_render_to_texture(E3D_Drawable *drawable, E3D_Renderer *rende
 
    eina_iterator_free(itmn);
    eina_list_free(repeat_node);
-   glBindFramebuffer_thread_cmd(GL_FRAMEBUFFER, drawable->fbo);
+   GL_TH(glBindFramebuffer, GL_FRAMEBUFFER, drawable->fbo);
    return EINA_TRUE;
 }
 
@@ -1377,20 +1356,15 @@ e3d_drawable_texture_pixel_color_get(GLuint tex EINA_UNUSED, int x, int y,
 {
    E3D_Drawable *d = (E3D_Drawable *)drawable;
 
-   glBindFramebuffer_thread_cmd(GL_FRAMEBUFFER, d->color_pick_fb_id);
-#ifndef GL_GLES
-   GLuint pixel = 0;
-   glReadPixels_thread_cmd(x, y, 1, 1, GL_RED, GL_UNSIGNED_SHORT, &pixel);
-   color->r = (double)pixel / USHRT_MAX;
-#else
+   GL_TH(glBindFramebuffer, GL_FRAMEBUFFER, d->color_pick_fb_id);
+
    GLubyte pixel[4] = {0, 0, 0, 0};
-   glReadPixels_thread_cmd(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+   GL_TH(glReadPixels, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
    color->r = (double)pixel[0] / 255;
    color->g = (double)pixel[1] / 255;
    color->b = (double)pixel[2] / 255;
-#endif
 
-   glBindFramebuffer_thread_cmd(GL_FRAMEBUFFER, d->fbo);
+   GL_TH(glBindFramebuffer, GL_FRAMEBUFFER, d->fbo);
 }
 
 #undef RENDER_MESH_NODE_ITERATE_BEGIN

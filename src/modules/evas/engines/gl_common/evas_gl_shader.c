@@ -75,22 +75,36 @@ gl_compile_link_error(GLuint target, const char *action, Eina_Bool is_shader)
 
    if (is_shader)
      /* Shader info log */
-     glGetShaderiv_thread_cmd(target, GL_INFO_LOG_LENGTH, &loglen);
+     GL_TH(glGetShaderiv, target, GL_INFO_LOG_LENGTH, &loglen);
    else
      /* Program info log */
-     glGetProgramiv_thread_cmd(target, GL_INFO_LOG_LENGTH, &loglen);
+     GL_TH(glGetProgramiv, target, GL_INFO_LOG_LENGTH, &loglen);
 
    if (loglen > 0)
      {
         logtxt = calloc(loglen, sizeof(char));
         if (logtxt)
           {
-             if (is_shader) glGetShaderInfoLog_thread_cmd(target, loglen, &chars, logtxt);
-             else glGetProgramInfoLog_thread_cmd(target, loglen, &chars, logtxt);
+             if (is_shader) GL_TH(glGetShaderInfoLog, target, loglen, &chars, logtxt);
+             else GL_TH(glGetProgramInfoLog, target, loglen, &chars, logtxt);
              ERR("Failed to %s: %s", action, logtxt);
              free(logtxt);
           }
      }
+}
+
+static inline void
+_attributes_bind(GLint prg)
+{
+   GL_TH(glBindAttribLocation, prg, SHAD_VERTEX,  "vertex");
+   GL_TH(glBindAttribLocation, prg, SHAD_COLOR,   "color");
+   GL_TH(glBindAttribLocation, prg, SHAD_TEXUV,   "tex_coord");
+   GL_TH(glBindAttribLocation, prg, SHAD_TEXUV2,  "tex_coord2");
+   GL_TH(glBindAttribLocation, prg, SHAD_TEXUV3,  "tex_coord3");
+   GL_TH(glBindAttribLocation, prg, SHAD_TEXA,    "tex_coorda");
+   GL_TH(glBindAttribLocation, prg, SHAD_TEXSAM,  "tex_sample");
+   GL_TH(glBindAttribLocation, prg, SHAD_MASK,    "mask_coord");
+   GL_TH(glBindAttribLocation, prg, SHAD_MASKSAM, "tex_masksample");
 }
 
 static Evas_GL_Program *
@@ -115,59 +129,52 @@ _evas_gl_common_shader_program_binary_load(Eet_File *ef, unsigned int flags)
      }
    if ((!data) || (length <= 0)) goto finish;
 
-   glGetIntegerv_thread_cmd(GL_NUM_PROGRAM_BINARY_FORMATS, &num);
+   GL_TH(glGetIntegerv, GL_NUM_PROGRAM_BINARY_FORMATS, &num);
    if (num <= 0) goto finish;
 
    formats = calloc(num, sizeof(int));
    if (!formats) goto finish;
 
-   glGetIntegerv_thread_cmd(GL_PROGRAM_BINARY_FORMATS, formats);
+   GL_TH(glGetIntegerv, GL_PROGRAM_BINARY_FORMATS, formats);
    if (!formats[0]) goto finish;
 
-   prg = glCreateProgram_thread_cmd();
+   prg = GL_TH(glCreateProgram);
 #if 1
    // TODO: invalid rendering error occurs when attempting to use a
    // glProgramBinary. in order to render correctly we should create a dummy
    // vertex shader.
-   vtx = glCreateShader_thread_cmd(GL_VERTEX_SHADER);
-   glAttachShader_thread_cmd(prg, vtx);
-   frg = glCreateShader_thread_cmd(GL_FRAGMENT_SHADER);
-   glAttachShader_thread_cmd(prg, frg);
+   vtx = GL_TH(glCreateShader, GL_VERTEX_SHADER);
+   GL_TH(glAttachShader, prg, vtx);
+   frg = GL_TH(glCreateShader, GL_FRAGMENT_SHADER);
+   GL_TH(glAttachShader, prg, frg);
 #endif
-   glsym_glProgramBinary(prg, formats[0], data, length);
+   GL_TH_CALL(glProgramBinaryOES, glsym_glProgramBinary, prg, formats[0], data, length);
 
-   glBindAttribLocation_thread_cmd(prg, SHAD_VERTEX,  "vertex");
-   glBindAttribLocation_thread_cmd(prg, SHAD_COLOR,   "color");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXUV,   "tex_coord");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXUV2,  "tex_coord2");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXUV3,  "tex_coord3");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXA,    "tex_coorda");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXSAM,  "tex_sample");
-   glBindAttribLocation_thread_cmd(prg, SHAD_MASK,    "mask_coord");
-   glBindAttribLocation_thread_cmd(prg, SHAD_MASKSAM, "tex_masksample");
+   _attributes_bind(prg);
 
-   glGetProgramiv_thread_cmd(prg, GL_LINK_STATUS, &ok);
+   GL_TH(glGetProgramiv, prg, GL_LINK_STATUS, &ok);
    if (!ok)
      {
         gl_compile_link_error(prg, "load a program object", EINA_FALSE);
         ERR("Abort load of program (%s)", pname);
-        glDeleteProgram_thread_cmd(prg);
+        GL_TH(glDeleteProgram, prg);
         goto finish;
      }
 
    p = calloc(1, sizeof(*p));
+   if (!p) goto finish;
    p->flags = flags;
    p->prog = prg;
    p->reset = EINA_TRUE;
    p->bin_saved = EINA_TRUE;
-   glUseProgram_thread_cmd(prg);
-   p->uniform.mvp = glGetUniformLocation_thread_cmd(prg, "mvp");
-   p->uniform.rotation_id = glGetUniformLocation_thread_cmd(prg, "rotation_id");
+   GL_TH(glUseProgram, prg);
+   p->uniform.mvp = GL_TH(glGetUniformLocation, prg, "mvp");
+   p->uniform.rotation_id = GL_TH(glGetUniformLocation, prg, "rotation_id");
    evas_gl_common_shader_textures_bind(p);
 
 finish:
-   if (vtx) glDeleteShader_thread_cmd(vtx);
-   if (frg) glDeleteShader_thread_cmd(frg);
+   if (vtx) GL_TH(glDeleteShader, vtx);
+   if (frg) GL_TH(glDeleteShader, frg);
    free(formats);
    if (!direct) free(data);
    return p;
@@ -183,13 +190,13 @@ _evas_gl_common_shader_program_binary_save(Evas_GL_Program *p, Eet_File *ef)
 
    if (!glsym_glGetProgramBinary) return 0;
 
-   glGetProgramiv_thread_cmd(p->prog, GL_PROGRAM_BINARY_LENGTH, &length);
+   GL_TH(glGetProgramiv, p->prog, GL_PROGRAM_BINARY_LENGTH, &length);
    if (length <= 0) return 0;
 
    data = malloc(length);
    if (!data) return 0;
 
-   glsym_glGetProgramBinary(p->prog, length, &size, &format, data);
+   GL_TH_CALL(glGetProgramBinaryOES, glsym_glGetProgramBinary, p->prog, length, &size, &format, data);
 
    if (length != size)
      {
@@ -379,7 +386,7 @@ _evas_gl_common_shader_binary_save(Evas_GL_Shared *shared)
 static inline void
 _program_del(Evas_GL_Program *p)
 {
-   if (p->prog) glDeleteProgram_thread_cmd(p->prog);
+   if (p->prog) GL_TH(glDeleteProgram, p->prog);
    free(p);
 }
 
@@ -462,71 +469,66 @@ evas_gl_common_shader_compile(unsigned int flags, const char *vertex,
    GLint ok = 0;
 
    compiler_released = EINA_FALSE;
-   vtx = glCreateShader_thread_cmd(GL_VERTEX_SHADER);
-   frg = glCreateShader_thread_cmd(GL_FRAGMENT_SHADER);
+   vtx = GL_TH(glCreateShader, GL_VERTEX_SHADER);
+   frg = GL_TH(glCreateShader, GL_FRAGMENT_SHADER);
 
-   glShaderSource_thread_cmd(vtx, 1, &vertex, NULL);
-   glCompileShader_thread_cmd(vtx);
-   glGetShaderiv_thread_cmd(vtx, GL_COMPILE_STATUS, &ok);
+   GL_TH(glShaderSource, vtx, 1, &vertex, NULL);
+   GL_TH(glCompileShader, vtx);
+   GL_TH(glGetShaderiv, vtx, GL_COMPILE_STATUS, &ok);
    if (!ok)
      {
         gl_compile_link_error(vtx, "compile vertex shader", EINA_TRUE);
         ERR("Abort compile of vertex shader:\n%s", vertex);
-        glDeleteShader_thread_cmd(vtx);
+        GL_TH(glDeleteShader, vtx);
         return NULL;
      }
    ok = 0;
 
-   glShaderSource_thread_cmd(frg, 1, &fragment, NULL);
-   glCompileShader_thread_cmd(frg);
-   glGetShaderiv_thread_cmd(frg, GL_COMPILE_STATUS, &ok);
+   GL_TH(glShaderSource, frg, 1, &fragment, NULL);
+   GL_TH(glCompileShader, frg);
+   GL_TH(glGetShaderiv, frg, GL_COMPILE_STATUS, &ok);
    if (!ok)
      {
         gl_compile_link_error(frg, "compile fragment shader", EINA_TRUE);
         ERR("Abort compile of fragment shader:\n%s", fragment);
-        glDeleteShader_thread_cmd(vtx);
-        glDeleteShader_thread_cmd(frg);
+        GL_TH(glDeleteShader, vtx);
+        GL_TH(glDeleteShader, frg);
         return NULL;
      }
    ok = 0;
 
-   prg = glCreateProgram_thread_cmd();
+   prg = GL_TH(glCreateProgram);
 #ifndef GL_GLES
    if ((glsym_glGetProgramBinary) && (glsym_glProgramParameteri))
-     glsym_glProgramParameteri(prg, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE);
+     GL_TH_CALL(glProgramParameteri, glsym_glProgramParameteri, prg, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE);
 #endif
-   glAttachShader_thread_cmd(prg, vtx);
-   glAttachShader_thread_cmd(prg, frg);
+   GL_TH(glAttachShader, prg, vtx);
+   GL_TH(glAttachShader, prg, frg);
 
-   glBindAttribLocation_thread_cmd(prg, SHAD_VERTEX,  "vertex");
-   glBindAttribLocation_thread_cmd(prg, SHAD_COLOR,   "color");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXUV,   "tex_coord");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXUV2,  "tex_coord2");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXUV3,  "tex_coord3");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXA,    "tex_coorda");
-   glBindAttribLocation_thread_cmd(prg, SHAD_TEXSAM,  "tex_sample");
-   glBindAttribLocation_thread_cmd(prg, SHAD_MASK,    "mask_coord");
-   glBindAttribLocation_thread_cmd(prg, SHAD_MASKSAM, "tex_masksample");
+   _attributes_bind(prg);
 
-   glLinkProgram_thread_cmd(prg);
-   glGetProgramiv_thread_cmd(prg, GL_LINK_STATUS, &ok);
+   GL_TH(glLinkProgram, prg);
+   GL_TH(glGetProgramiv, prg, GL_LINK_STATUS, &ok);
    if (!ok)
      {
         gl_compile_link_error(prg, "link fragment and vertex shaders", EINA_FALSE);
         ERR("Abort compile of shader (flags: %08x)", flags);
-        glDeleteShader_thread_cmd(vtx);
-        glDeleteShader_thread_cmd(frg);
-        glDeleteProgram_thread_cmd(prg);
+        GL_TH(glDeleteShader, vtx);
+        GL_TH(glDeleteShader, frg);
+        GL_TH(glDeleteProgram, prg);
         return 0;
      }
 
    p = calloc(1, sizeof(*p));
-   p->flags = flags;
-   p->prog = prg;
-   p->reset = EINA_TRUE;
+   if (p)
+     {
+       p->flags = flags;
+       p->prog = prg;
+       p->reset = EINA_TRUE;
+     }
 
-   glDeleteShader_thread_cmd(vtx);
-   glDeleteShader_thread_cmd(frg);
+   GL_TH(glDeleteShader, vtx);
+   GL_TH(glDeleteShader, frg);
 
    return p;
 }
@@ -632,8 +634,8 @@ evas_gl_common_shader_generate_and_compile(Evas_GL_Shared *shared, unsigned int 
    if (p)
      {
         shared->needs_shaders_flush = 1;
-        p->uniform.mvp = glGetUniformLocation_thread_cmd(p->prog, "mvp");
-        p->uniform.rotation_id = glGetUniformLocation_thread_cmd(p->prog, "rotation_id");
+        p->uniform.mvp = GL_TH(glGetUniformLocation, p->prog, "mvp");
+        p->uniform.rotation_id = GL_TH(glGetUniformLocation, p->prog, "rotation_id");
         evas_gl_common_shader_textures_bind(p);
         eina_hash_add(shared->shaders_hash, &flags, p);
      }
@@ -733,10 +735,10 @@ evas_gl_common_shaders_flush(Evas_GL_Shared *shared)
      {
         compiler_released = EINA_TRUE;
 #ifdef GL_GLES
-        glReleaseShaderCompiler_thread_cmd();
+        GL_TH(glReleaseShaderCompiler);
 #else
         if (glsym_glReleaseShaderCompiler)
-          glsym_glReleaseShaderCompiler();
+          GL_TH_CALL(glReleaseShaderCompiler, glsym_glReleaseShaderCompiler);
 #endif
      }
    if (shared->needs_shaders_flush)
@@ -961,21 +963,21 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
    if (hastex)
      {
         GLuint curr_prog = 0;
-        glGetIntegerv_thread_cmd(GL_CURRENT_PROGRAM, (GLint *)&curr_prog);
+        GL_TH(glGetIntegerv, GL_CURRENT_PROGRAM, (GLint *)&curr_prog);
 
-        glUseProgram_thread_cmd(p->prog); // is this necessary??
+        GL_TH(glUseProgram, p->prog); // is this necessary??
         for (i = 0; textures[i].name; i++)
           {
              if (!textures[i].enabled) continue;
-             loc = glGetUniformLocation_thread_cmd(p->prog, textures[i].name);
+             loc = GL_TH(glGetUniformLocation, p->prog, textures[i].name);
              if (loc < 0)
                {
                   ERR("Couldn't find uniform '%s' (shader: %08x)",
                       textures[i].name, p->flags);
                }
-             glUniform1i_thread_cmd(loc, p->tex_count++);
+             GL_TH(glUniform1i, loc, p->tex_count++);
           }
-        glUseProgram_thread_cmd(curr_prog);
+        GL_TH(glUseProgram, curr_prog);
      }
 }
 

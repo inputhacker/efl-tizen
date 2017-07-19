@@ -115,10 +115,46 @@ _tls_rgba_context_set(GLXContext ctx)
 }
 
 Eina_Bool
-__glXMakeContextCurrent(Display *disp, GLXDrawable glxwin, GLXContext context)
+__glXMakeContextCurrent(GL_X11_Context_Type type, Display *disp, GLXDrawable glxwin, GLXContext context)
 {
+#if 1 // TEST
+   if (type == GL_X11_CONTEXT_TYPE_EVAS)
+     {
+        if (!GL_TH(glXMakeContextCurrent, disp, glxwin, glxwin, context)) return EINA_FALSE;
+        return EINA_TRUE;
+     }
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL)
+     {
+        if (!EVGL_TH(glXMakeContextCurrent, disp, glxwin, glxwin, context)) return EINA_FALSE;
+        return EINA_TRUE;
+     }
+   else
+     {
    if (!glXMakeContextCurrent(disp, glxwin, glxwin, context)) return EINA_FALSE;
    return EINA_TRUE;
+     }
+   return EINA_FALSE;
+#else
+   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled())
+     {
+        void *ret = GL_TH(glXMakeContextCurrentASYNC_begin, disp, glxwin, glxwin, context);
+        if (!ret) ERR("NO ASYNC RETURN!");
+        if (!GL_TH(glXMakeContextCurrentASYNC_end, ret)) return EINA_FALSE;
+        ERR("GOOD ASYNC RETURN TRUE!");
+        return EINA_TRUE;
+     }
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_evgl_thread_enabled())
+     {
+        if (!EVGL_TH(glXMakeContextCurrent, disp, glxwin, glxwin, context)) return EINA_FALSE;
+        return EINA_TRUE;
+     }
+   else
+     {
+        if (!glXMakeContextCurrent(disp, glxwin, glxwin, context)) return EINA_FALSE;
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+#endif
 }
 #endif
 
@@ -219,19 +255,19 @@ eng_window_new(Evas_Engine_Info_GL_X11 *info,
    gw->egl_disp = eglGetDisplay((EGLNativeDisplayType)(gw->disp));
    if (!gw->egl_disp)
      {
-        ERR("eglGetDisplay() fail. code=%#x", eglGetError());
+        ERR("eglGetDisplay() fail. code=%#x", GL_TH(eglGetError));
         eng_window_free(gw);
         return NULL;
      }
    if (!eglInitialize(gw->egl_disp, &major_version, &minor_version))
      {
-        ERR("eglInitialize() fail. code=%#x", eglGetError());
+        ERR("eglInitialize() fail. code=%#x", GL_TH(eglGetError));
         eng_window_free(gw);
         return NULL;
      }
-   if (!eglBindAPI_thread_cmd(EGL_OPENGL_ES_API))
+   if (!GL_TH(eglBindAPI, EGL_OPENGL_ES_API))
      {
-        ERR("eglBindAPI() fail. code=%#x", eglGetError_thread_cmd());
+        ERR("eglBindAPI() fail. code=%#x", GL_TH(eglGetError));
         eng_window_free(gw);
         return NULL;
      }
@@ -243,7 +279,7 @@ eng_window_new(Evas_Engine_Info_GL_X11 *info,
                                                NULL);
    if (gw->egl_surface[0] == EGL_NO_SURFACE)
      {
-        int err = eglGetError();
+        int err = GL_TH(eglGetError);
         printf("surf creat fail! %x\n", err);
         ERR("eglCreateWindowSurface() fail for %#x. code=%#x",
             (unsigned int)gw->win, err);
@@ -261,7 +297,7 @@ try_gles2:
      (gw->egl_disp, gw->egl_config, context, context_attrs);
    if (gw->egl_context[0] == EGL_NO_CONTEXT)
      {
-        ERR("eglCreateContext() fail. code=%#x", eglGetError());
+        ERR("eglCreateContext() fail. code=%#x", GL_TH(eglGetError));
         if (gw->gles3)
           {
              /* Note: this shouldn't happen */
@@ -276,20 +312,20 @@ try_gles2:
      _tls_context_set(gw->egl_context[0]);
    
    SET_RESTORE_CONTEXT();
-   if (eglMakeCurrent_thread_cmd(gw->egl_disp,
+   if (evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS,
                       gw->egl_surface[0],
                       gw->egl_surface[0],
                       gw->egl_context[0]) == EGL_FALSE)
      {
-        ERR("eglMakeCurrent() fail. code=%#x", eglGetError_thread_cmd());
+        ERR("evas_eglMakeCurrent() fail. code=%#x", GL_TH(eglGetError));
         eng_window_free(gw);
         return NULL;
      }
 
-   vendor = glGetString_thread_cmd(GL_VENDOR);
-   renderer = glGetString_thread_cmd(GL_RENDERER);
-   version = glGetString_thread_cmd(GL_VERSION);
-   glslversion = glGetString_thread_cmd(GL_SHADING_LANGUAGE_VERSION);
+   vendor = GL_TH(glGetString, GL_VENDOR);
+   renderer = GL_TH(glGetString, GL_RENDERER);
+   version = GL_TH(glGetString, GL_VERSION);
+   glslversion = GL_TH(glGetString, GL_SHADING_LANGUAGE_VERSION);
    if (!vendor)   vendor   = (unsigned char *)"-UNKNOWN-";
    if (!renderer) renderer = (unsigned char *)"-UNKNOWN-";
    if (!version)  version  = (unsigned char *)"-UNKNOWN-";
@@ -420,7 +456,7 @@ try_gles2:
         eng_window_free(gw);
         return NULL;
      }
-   if (!__glXMakeContextCurrent(gw->disp, gw->glxwin, gw->context))
+   if (!__glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVAS, gw->disp, gw->glxwin, gw->context))
      {
         ERR("glXMakeContextCurrent(%p, %p, %p, %p)\n", (void *)gw->disp, (void *)gw->glxwin, (void *)gw->win, (void *)gw->context);
         eng_window_free(gw);
@@ -428,10 +464,10 @@ try_gles2:
      }
    // FIXME: move this up to context creation
 
-   vendor = glGetString_thread_cmd(GL_VENDOR);
-   renderer = glGetString_thread_cmd(GL_RENDERER);
-   version = glGetString_thread_cmd(GL_VERSION);
-   glslversion = glGetString_thread_cmd(GL_SHADING_LANGUAGE_VERSION);
+   vendor = GL_TH(glGetString, GL_VENDOR);
+   renderer = GL_TH(glGetString, GL_RENDERER);
+   version = GL_TH(glGetString, GL_VERSION);
+   glslversion = GL_TH(glGetString, GL_SHADING_LANGUAGE_VERSION);
    if (!vendor)   vendor   = (unsigned char *)"-UNKNOWN-";
    if (!renderer) renderer = (unsigned char *)"-UNKNOWN-";
    if (!version)  version  = (unsigned char *)"-UNKNOWN-";
@@ -591,7 +627,7 @@ eng_window_free(Outbuf *gw)
      }
 #ifdef GL_GLES
    SET_RESTORE_CONTEXT();
-   eglMakeCurrent_thread_cmd(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+   evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS, gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
    if (gw->egl_surface[0] != EGL_NO_SURFACE)
       eglDestroySurface(gw->egl_disp, gw->egl_surface[0]);
    if (gw->egl_surface[1] != EGL_NO_SURFACE)
@@ -601,10 +637,10 @@ eng_window_free(Outbuf *gw)
    if (ref == 0)
      {
         if (context) eglDestroyContext(gw->egl_disp, context);
-        eglTerminate(gw->egl_disp);
-        eglReleaseThread();
         eina_hash_free(_evas_gl_visuals);
         _evas_gl_visuals = NULL;
+        eglTerminate(gw->egl_disp);
+        GL_TH(eglReleaseThread);
         _tls_context_set(EGL_NO_CONTEXT);
      }
 #else
@@ -632,18 +668,18 @@ eng_window_make_current(void *data, void *doit)
    SET_RESTORE_CONTEXT();
    if (doit)
      {
-        if (!eglMakeCurrent_thread_cmd(gw->egl_disp, gw->egl_surface[0], gw->egl_surface[0], gw->egl_context[0]))
+        if (!evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS, gw->egl_disp, gw->egl_surface[0], gw->egl_surface[0], gw->egl_context[0]))
           return EINA_FALSE;
      }
    else
      {
-        if (!eglMakeCurrent_thread_cmd(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
+        if (!evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS, gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
           return EINA_FALSE;
      }
 #else
    if (doit)
      {
-        if (!__glXMakeContextCurrent(gw->disp, gw->glxwin, gw->context))
+         if (!__glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVAS, gw->disp, gw->glxwin, gw->context))
           {
              ERR("glXMakeContextCurrent(%p, %p, %p, %p)", (void *)gw->disp, (void *)gw->glxwin, (void *)gw->win, (void *)gw->context);
              return EINA_FALSE;
@@ -651,7 +687,7 @@ eng_window_make_current(void *data, void *doit)
      }
    else
      {
-        if (!__glXMakeContextCurrent(gw->disp, 0, NULL))
+         if (!__glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVAS, gw->disp, 0, NULL))
           return EINA_FALSE;
      }
 #endif
@@ -670,24 +706,14 @@ eng_window_use(Outbuf *gw)
 #ifdef GL_GLES
    if (xwin)
      {
-        if ((eglGetCurrentDisplay_thread_cmd() !=
-             xwin->egl_disp) ||
-            (eglGetCurrentContext_thread_cmd() !=
-             xwin->egl_context[0])
-#if 0
-            // FIXME: Figure out what that offscreen thing was about...
-            || (eglGetCurrentSurface_thread_cmd(EGL_READ) !=
-                xwin->egl_surface[xwin->offscreen])
-            || (eglGetCurrentSurface_thread_cmd(EGL_DRAW) !=
-                xwin->egl_surface[xwin->offscreen])
-#endif
-            )
+        if ((evas_eglGetCurrentDisplay(GL_X11_CONTEXT_TYPE_EVAS) != xwin->egl_disp) ||
+            (evas_eglGetCurrentContext(GL_X11_CONTEXT_TYPE_EVAS) != xwin->egl_context[0]))
           force_use = EINA_TRUE;
      }
 #else
    if (xwin)
      {
-        if (glXGetCurrentContext() != xwin->context)
+        if (GL_TH(glXGetCurrentContext) != xwin->context)
            force_use = EINA_TRUE;
      }
 #endif
@@ -706,17 +732,19 @@ eng_window_use(Outbuf *gw)
              if (gw->egl_surface[0] != EGL_NO_SURFACE)
                {
                   SET_RESTORE_CONTEXT();
-                  if (eglMakeCurrent_thread_cmd(gw->egl_disp,
+                  if (evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS,
+                                     gw->egl_disp,
                                      gw->egl_surface[0],
                                      gw->egl_surface[0],
                                      gw->egl_context[0]) == EGL_FALSE)
                     {
-                       ERR("eglMakeCurrent() failed!");
+                       ERR("evas_eglMakeCurrent() failed!");
                     }
                }
 // GLX
 #else
-             if (!__glXMakeContextCurrent(gw->disp, gw->glxwin, gw->context))
+             if (!__glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVAS,
+                                          gw->disp, gw->glxwin, gw->context))
                {
                   ERR("glXMakeContextCurrent(%p, %p, %p, %p)", (void *)gw->disp, (void *)gw->glxwin, (void *)gw->win, (void *)gw->context);
                }
@@ -742,7 +770,7 @@ eng_window_unsurf(Outbuf *gw)
    if (xwin == gw)
      {
         SET_RESTORE_CONTEXT();
-        eglMakeCurrent_thread_cmd(gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS, gw->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         if (gw->egl_surface[0] != EGL_NO_SURFACE)
            eglDestroySurface(gw->egl_disp, gw->egl_surface[0]);
         gw->egl_surface[0] = EGL_NO_SURFACE;
@@ -773,16 +801,16 @@ eng_window_resurf(Outbuf *gw)
    if (gw->egl_surface[0] == EGL_NO_SURFACE)
      {
         ERR("eglCreateWindowSurface() fail for %#x. code=%#x",
-            (unsigned int)gw->win, eglGetError());
+            (unsigned int)gw->win, GL_TH(eglGetError));
         return;
      }
    SET_RESTORE_CONTEXT();
-   if (eglMakeCurrent_thread_cmd(gw->egl_disp,
+   if (evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS,
                       gw->egl_surface[0],
                       gw->egl_surface[0],
                       gw->egl_context[0]) == EGL_FALSE)
      {
-        ERR("eglMakeCurrent() failed!");
+        ERR("evas_eglMakeCurrent() failed!");
      }
 #else
    Evas_GL_X11_Visual *evis;
@@ -799,7 +827,7 @@ eng_window_resurf(Outbuf *gw)
           }
      }
    gw->glxwin = glXCreateWindow(gw->disp, evis->config, gw->win, NULL);
-   if (!__glXMakeContextCurrent(gw->disp, gw->glxwin, gw->context))
+   if (!__glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVAS, gw->disp, gw->glxwin, gw->context))
      {
         ERR("glXMakeContextCurrent(%p, %p, %p, %p)", (void *)gw->disp, (void *)gw->glxwin, (void *)gw->win, (void *)gw->context);
      }
@@ -1332,13 +1360,15 @@ eng_gl_context_use(Context_3D *ctx)
 {
 #if GL_GLES
     SET_RESTORE_CONTEXT();
-   if (eglMakeCurrent_thread_cmd(ctx->display, ctx->surface,
+   if (evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVGL,
+                           ctx->display, ctx->surface,
                       ctx->surface, ctx->context) == EGL_FALSE)
      {
-        ERR("eglMakeCurrent() failed.");
+        ERR("evas_eglMakeCurrent() failed.");
      }
 #else
-   if (!__glXMakeContextCurrent(ctx->display, ctx->glxwin, ctx->context))
+   if (!__glXMakeContextCurrent(GL_X11_CONTEXT_TYPE_EVGL,
+                                ctx->display, ctx->glxwin, ctx->context))
      {
         ERR("glXMakeContextCurrent(%p, %p, %p, %p) faild.",
             (void *)ctx->display, (void *)ctx->glxwin,
@@ -1372,15 +1402,18 @@ eng_outbuf_swap_mode(Outbuf *ob)
 #ifdef GL_GLES
         EGLint age = 0;
 
-        if (!eglQuerySurface_thread_cmd(ob->egl_disp, ob->egl_surface[0],
+        if (!GL_TH(eglQuerySurface, ob->egl_disp, ob->egl_surface[0],
                              EGL_BUFFER_AGE_EXT, &age))
           age = 0;
 #else
         unsigned int age = 0;
 
         if (glsym_glXQueryDrawable)
-          glsym_glXQueryDrawable(ob->disp, ob->glxwin,
-                                 GLX_BACK_BUFFER_AGE_EXT, &age);
+          {
+             if (GL_TH_CALL(glXQueryDrawable, glsym_glXQueryDrawable,
+                            ob->disp, ob->glxwin, GLX_BACK_BUFFER_AGE_EXT, &age) < 1)
+               age = 0;
+          }
 #endif
         if (age == 1) swap_mode = MODE_COPY;
         else if (age == 2) swap_mode = MODE_DOUBLE;
@@ -1418,8 +1451,8 @@ eng_outbuf_region_first_rect(Outbuf *ob)
    glsym_evas_gl_common_context_newframe(ob->gl_context);
    if (partial_render_debug == 1)
      {
-        glClearColor_thread_cmd(0.2, 0.5, 1.0, 1.0);
-        glClear_thread_cmd(GL_COLOR_BUFFER_BIT);
+        GL_TH(glClearColor, 0.2, 0.5, 1.0, 1.0);
+        GL_TH(glClear, GL_COLOR_BUFFER_BIT);
      }
 
    return EINA_FALSE;
@@ -1478,7 +1511,7 @@ _set_damage_rect(Outbuf *ob, int x, int y, int w, int h)
      }
 
    _convert_to_glcoords(rects, ob, x, y, w, h);
-   glsym_eglSetDamageRegion(ob->egl_disp, ob->egl_surface[0], rects, 1);
+   GL_TH_CALL(eglSetDamageRegion, glsym_eglSetDamageRegion, ob->egl_disp, ob->egl_surface[0], rects, 1);
 }
 #endif
 
@@ -1558,8 +1591,8 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
 #ifdef GL_GLES
    if (!ob->vsync)
      {
-        if (ob->info->vsync) eglSwapInterval_thread_cmd(ob->egl_disp, 1);
-        else eglSwapInterval_thread_cmd(ob->egl_disp, 0);
+        if (ob->info->vsync) GL_TH(eglSwapInterval, ob->egl_disp, 1);
+        else GL_TH(eglSwapInterval, ob->egl_disp, 0);
         ob->vsync = 1;
      }
    if (ob->info->callback.pre_swap)
@@ -1582,13 +1615,12 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
                   _convert_to_glcoords(&result[i], ob, r->x, r->y, r->w, r->h);
                   i += 4;
                }
-             glsym_eglSwapBuffersWithDamage(ob->egl_disp,
-                                            ob->egl_surface[0],
-                                            result, num);
+             GL_TH_CALL(eglSwapBuffersWithDamage, glsym_eglSwapBuffersWithDamage, 
+                                            ob->egl_disp, ob->egl_surface[0], result, num);
           }
      }
    else
-     eglSwapBuffers_thread_cmd(ob->egl_disp, ob->egl_surface[0]);
+     GL_TH(eglSwapBuffers, ob->egl_disp, ob->egl_surface);
 
 //xx   if (!safe_native) eglWaitGL();
    if (ob->info->callback.post_swap)
@@ -1608,8 +1640,8 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
           {
              if (!ob->vsync)
                {
-                  if (ob->info->vsync) glsym_glXSwapIntervalEXT(ob->disp, ob->win, 1);
-                  else glsym_glXSwapIntervalEXT(ob->disp, ob->win, 0);
+                  if (ob->info->vsync) GL_TH_CALL(glXSwapIntervalEXT, glsym_glXSwapIntervalEXT, ob->disp, ob->win, 1);
+                  else GL_TH_CALL(glXSwapIntervalEXT, glsym_glXSwapIntervalEXT, ob->disp, ob->win, 0);
                   ob->vsync = 1;
                }
           }
@@ -1617,8 +1649,8 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
           {
              if (!ob->vsync)
                {
-                  if (ob->info->vsync) glsym_glXSwapIntervalSGI(1);
-                  else glsym_glXSwapIntervalSGI(0);
+                  if (ob->info->vsync) GL_TH_CALL(glXSwapIntervalSGI, glsym_glXSwapIntervalSGI, 1);
+                  else GL_TH_CALL(glXSwapIntervalSGI, glsym_glXSwapIntervalSGI, 0);
                   ob->vsync = 1;
                }
           }
@@ -1628,8 +1660,8 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
                {
                   unsigned int rc;
 
-                  glsym_glXGetVideoSync(&rc);
-                  glsym_glXWaitVideoSync(1, 0, &rc);
+                  GL_TH_CALL(glXGetVideoSync, glsym_glXGetVideoSync, &rc);
+                  GL_TH_CALL(glXWaitVideoSync, glsym_glXWaitVideoSync ,1, 0, &rc);
                }
           }
      }
@@ -1640,7 +1672,7 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *rects, Evas_Render_Mode render_mode)
      }
    // XXX: if partial swaps can be done use re->rects
 //   measure(0, "swap");
-   glXSwapBuffers(ob->disp, ob->glxwin);
+   GL_TH(glXSwapBuffers, ob->disp, ob->glxwin);
 //   measure(1, "swap");
    if (ob->info->callback.post_swap)
      {

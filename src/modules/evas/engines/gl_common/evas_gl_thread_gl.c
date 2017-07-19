@@ -1,10 +1,20 @@
 #include "evas_gl_common.h"
 
+typedef struct
+{
+   void *(*gl_generated_func_get)(void);
+
+   void (*EVGL_TH_FN(glTexImage2DEVAS))(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels);
+   void (*GL_TH_FN(glTexSubImage2DEVAS))(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
+} Evas_GL_Thread_GL_Func;
 
 #ifdef EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC
 
-#define GLSHADERSOURCE_COPY_VARIABLE GLchar **string_copied
-#define GLSHADERSOURCE_COPY_VARIABLE_FREE \
+#define GLSHADERSOURCE_VARIABLE_DECLARE \
+   GLchar **string_copied;
+
+#define GLSHADERSOURCE_GLCALL_BEFORE
+#define GLSHADERSOURCE_GLCALL_AFTER \
    if (thread_data->string_copied) \
      { \
         int i; \
@@ -16,10 +26,10 @@
         eina_mempool_free(_mp_default, thread_data->string_copied); \
      }
 
-#define GLSHADERSOURCE_COPY_VARIABLE_INIT \
+#define GLSHADERSOURCE_VARIABLE_INIT \
    thread_data->string_copied = NULL;
 
-#define GLSHADERSOURCE_COPY_TO_MEMPOOL \
+#define GLSHADERSOURCE_ASYNC_PREPARE \
    if (string) \
      { \
         /* 1. check memory size */ \
@@ -81,10 +91,40 @@
       thread_data->string = (const GLchar **)thread_data->string_copied; \
    }
 
+#define GLSHADERSOURCE_ENQUEUE_BEFORE
+#define GLSHADERSOURCE_ENQUEUE_AFTER
+
+/* Unpack Caches */
+static GLint   _cache_glPixelStorei_unpack_row_length = 0;
+static GLint   _cache_glPixelStorei_unpack_alignment  = 4;
+
+/* Buffer Cache */
+static GLuint  _cache_glBindBuffer_pixel_unpack_buffer_idx = 0;
+
+/*
+ * n : number of elements in a group (comp)
+ * l : number of groups in the row (width)
+ *     if   UNPACK_ROW_LENGTH is 0, l is width
+ *     else l = UNPACK_ROW_LENGTH
+ * a : value of UNPACK_ALIGNMENT (1,2,4, or 8)
+ * s : size, in units of GL ubytes, of an element (csize)
+ *
+ * if, (s >= a)
+ *    k = n * l
+ * else if (s < a)
+ *    k = (a / s) * ceil( (s * n * l)/a )
+ *
+ */
+
 static int
-get_size(GLenum format, GLenum type)
+get_size(GLenum format, GLenum type, GLsizei width, GLsizei height)
 {
-   int csize = 0, comp = 0;
+   int csize = 0, comp = 0, k =0;
+   int l = _cache_glPixelStorei_unpack_row_length;
+   int a = _cache_glPixelStorei_unpack_alignment;
+
+   if (l == 0) l = width;
+
    switch (type)
      {
 #ifdef GL_UNSIGNED_BYTE_3_3_2
@@ -186,35 +226,78 @@ get_size(GLenum format, GLenum type)
           }
      }
 
-   return csize * comp;
+//   if (csize >= a)
+//      k = comp * l;
+//   else /* csize < a */
+//      k = (a / csize) * ceil( (csize * comp * l) / a);
+//
+//   return k * height;
+
+  return csize * comp;
 }
 
+#define GLPIXELSTOREI_VARIABLE_DECLARE \
+   ;
+#define GLPIXELSTOREI_GLCALL_BEFORE
+#define GLPIXELSTOREI_GLCALL_AFTER
+#define GLPIXELSTOREI_VARIABLE_INIT
+#define GLPIXELSTOREI_ASYNC_PREPARE
+#define GLPIXELSTOREI_ENQUEUE_BEFORE \
+   switch (pname) \
+     { \
+        case GL_UNPACK_ROW_LENGTH: \
+         if (param >= 0) _cache_glPixelStorei_unpack_row_length = param; \
+         break; \
+        case GL_UNPACK_ALIGNMENT: \
+           if (param == 1 || param == 2 || param == 4 || param == 8) \
+              _cache_glPixelStorei_unpack_alignment = param; \
+           break; \
+     }
 
-#define GLTEXIMAGE2D_COPY_VARIABLE void *pixels_copied
-#define GLTEXIMAGE2D_COPY_VARIABLE_FREE \
+#define GLPIXELSTOREI_ENQUEUE_AFTER
+
+#define GLBINDBUFFER_VARIABLE_DECLARE \
+   ;
+#define GLBINDBUFFER_GLCALL_BEFORE
+#define GLBINDBUFFER_GLCALL_AFTER
+#define GLBINDBUFFER_VARIABLE_INIT
+#define GLBINDBUFFER_ASYNC_PREPARE
+#define GLBINDBUFFER_ENQUEUE_BEFORE \
+   /* pixel unpack buffer id caching */ \
+   if (target == GL_PIXEL_UNPACK_BUFFER) \
+     { \
+        _cache_glBindBuffer_pixel_unpack_buffer_idx = buffer; \
+     }
+#define GLBINDBUFFER_ENQUEUE_AFTER
+
+
+
+#define GLTEXIMAGE2D_VARIABLE_DECLARE \
+   void *pixels_copied;
+
+#define GLTEXIMAGE2D_GLCALL_BEFORE
+#define GLTEXIMAGE2D_GLCALL_AFTER \
    if (thread_data->pixels_copied) \
       eina_mempool_free(_mp_texture, thread_data->pixels_copied);
 
-#define GLTEXIMAGE2D_COPY_VARIABLE_INIT \
+#define GLTEXIMAGE2D_VARIABLE_INIT \
    thread_data->pixels_copied = NULL;
 
-#define GLTEXIMAGE2D_COPY_TO_MEMPOOL \
-   int size = get_size(format, type); \
-   if (size < 0) \
+#define GLTEXIMAGE2D_ASYNC_PREPARE \
+   /* 1. check pixel_ubpack_buffer_index */ \
+   if (_cache_glBindBuffer_pixel_unpack_buffer_idx == 0) \
+     { \
+       /* 2. check memory size */ \
+       int size = get_size(format, type, width + (border *2), height + (border *2)); \
+       int copy_size = (width + (border * 2)) * (height + (border * 2)) * size; \
+          if (size < 0 || copy_size < 0 || (unsigned int)copy_size > _mp_texture_memory_size) \
      { \
         thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
         goto finish; \
      } \
    if (pixels) \
      { \
-        /* 1. check memory size */ \
-        unsigned int copy_size = (width + (border * 2)) * (height + (border * 2)) * size; \
-        if (copy_size > _mp_texture_memory_size) \
-          { \
-             thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
-             goto finish; \
-          } \
-        /* 2. malloc & copy */ \
+               /* 3. malloc & copy */ \
         thread_data->pixels_copied = eina_mempool_malloc(_mp_texture, copy_size); \
         if (thread_data->pixels_copied) \
           { \
@@ -227,34 +310,38 @@ get_size(GLenum format, GLenum type)
           } \
         /* 3. replace */ \
         thread_data->pixels = (const void *)thread_data->pixels_copied; \
+            } \
      }
 
+#define GLTEXIMAGE2D_ENQUEUE_BEFORE
+#define GLTEXIMAGE2D_ENQUEUE_AFTER
 
-#define GLTEXSUBIMAGE2D_COPY_VARIABLE void *pixels_copied
-#define GLTEXSUBIMAGE2D_COPY_VARIABLE_FREE \
+#define GLTEXSUBIMAGE2D_VARIABLE_DECLARE \
+   void *pixels_copied;
+
+#define GLTEXSUBIMAGE2D_GLCALL_BEFORE
+#define GLTEXSUBIMAGE2D_GLCALL_AFTER \
    if (thread_data->pixels_copied) \
       eina_mempool_free(_mp_texture, thread_data->pixels_copied);
 
-#define GLTEXSUBIMAGE2D_COPY_VARIABLE_INIT \
+#define GLTEXSUBIMAGE2D_VARIABLE_INIT \
    thread_data->pixels_copied = NULL;
 
-#define GLTEXSUBIMAGE2D_COPY_TO_MEMPOOL \
-   int size = get_size(format, type); \
-   if (size < 0) \
+#define GLTEXSUBIMAGE2D_ASYNC_PREPARE \
+   /* 1. check pixel_ubpack_buffer_index */ \
+   if (_cache_glBindBuffer_pixel_unpack_buffer_idx == 0) \
+     { \
+       /* 2. check memory size */ \
+       int size = get_size(format, type, width, height); \
+       int copy_size = width * height * size; \
+       if (size < 0 || copy_size < 0 || (unsigned int)copy_size > _mp_texture_memory_size) \
      { \
         thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
         goto finish; \
      } \
    if (pixels) \
      { \
-        /* 1. check memory size */ \
-        unsigned int copy_size = width * height * size; \
-        if (copy_size > _mp_texture_memory_size) \
-          { \
-             thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
-             goto finish; \
-          } \
-        /* 2. malloc & copy */ \
+            /* 3. malloc & copy */ \
         thread_data->pixels_copied = eina_mempool_malloc(_mp_texture, copy_size); \
         if (thread_data->pixels_copied) \
           { \
@@ -265,28 +352,38 @@ get_size(GLenum format, GLenum type)
              thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
              goto finish; \
           } \
-        /* 3. replace */ \
+            /* 4. replace */ \
         thread_data->pixels = (const void *)thread_data->pixels_copied; \
+         } \
      }
 
-#define GLCOMPRESSEDTEXIMAGE2D_COPY_VARIABLE void *data_copied
-#define GLCOMPRESSEDTEXIMAGE2D_COPY_VARIABLE_FREE \
+#define GLTEXSUBIMAGE2D_ENQUEUE_BEFORE
+#define GLTEXSUBIMAGE2D_ENQUEUE_AFTER
+
+#define GLCOMPRESSEDTEXIMAGE2D_VARIABLE_DECLARE \
+   void *data_copied;
+
+#define GLCOMPRESSEDTEXIMAGE2D_GLCALL_BEFORE
+#define GLCOMPRESSEDTEXIMAGE2D_GLCALL_AFTER \
    if (thread_data->data_copied) \
       eina_mempool_free(_mp_texture, thread_data->data_copied);
 
-#define GLCOMPRESSEDTEXIMAGE2D_COPY_VARIABLE_INIT \
+#define GLCOMPRESSEDTEXIMAGE2D_VARIABLE_INIT \
    thread_data->data_copied = NULL;
 
-#define GLCOMPRESSEDTEXIMAGE2D_COPY_TO_MEMPOOL \
-   if (data) \
+#define GLCOMPRESSEDTEXIMAGE2D_ASYNC_PREPARE \
+   /* 1. check pixel_ubpack_buffer_index */ \
+   if (_cache_glBindBuffer_pixel_unpack_buffer_idx == 0) \
      { \
-        /* 1. check memory size */ \
+        /* 2. check memory size */ \
         if ((unsigned int)imageSize > _mp_texture_memory_size) \
           { \
              thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
              goto finish; \
           } \
-        /* 2. malloc & copy */ \
+        if (data) \
+          { \
+             /* 3. malloc & copy */ \
         thread_data->data_copied = eina_mempool_malloc(_mp_texture, imageSize); \
         if (thread_data->data_copied) \
           { \
@@ -297,29 +394,38 @@ get_size(GLenum format, GLenum type)
              thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
              goto finish; \
           } \
-        /* 3. replace */ \
+             /* 4. replace */ \
         thread_data->data = (const void *)thread_data->data_copied; \
+          } \
      }
 
+#define GLCOMPRESSEDTEXIMAGE2D_ENQUEUE_BEFORE
+#define GLCOMPRESSEDTEXIMAGE2D_ENQUEUE_AFTER \
 
-#define GLCOMPRESSEDTEXSUBIMAGE2D_COPY_VARIABLE void *data_copied
-#define GLCOMPRESSEDTEXSUBIMAGE2D_COPY_VARIABLE_FREE \
+#define GLCOMPRESSEDTEXSUBIMAGE2D_VARIABLE_DECLARE \
+   void *data_copied;
+
+#define GLCOMPRESSEDTEXSUBIMAGE2D_GLCALL_BEFORE
+#define GLCOMPRESSEDTEXSUBIMAGE2D_GLCALL_AFTER \
    if (thread_data->data_copied) \
       eina_mempool_free(_mp_texture, thread_data->data_copied);
 
-#define GLCOMPRESSEDTEXSUBIMAGE2D_COPY_VARIABLE_INIT \
+#define GLCOMPRESSEDTEXSUBIMAGE2D_VARIABLE_INIT \
    thread_data->data_copied = NULL;
 
-#define GLCOMPRESSEDTEXSUBIMAGE2D_COPY_TO_MEMPOOL \
-   if (data) \
+#define GLCOMPRESSEDTEXSUBIMAGE2D_ASYNC_PREPARE \
+   /* 1. check pixel_ubpack_buffer_index */ \
+   if (_cache_glBindBuffer_pixel_unpack_buffer_idx == 0) \
      { \
-        /* 1. check memory size */ \
+        /* 2. check memory size */ \
         if ((unsigned int)imageSize > _mp_texture_memory_size) \
           { \
              thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
              goto finish; \
           } \
-        /* 2. malloc & copy */ \
+        if (data) \
+          { \
+             /* 3. malloc & copy */ \
         thread_data->data_copied = eina_mempool_malloc(_mp_texture, imageSize); \
         if (thread_data->data_copied) \
           { \
@@ -330,98 +436,80 @@ get_size(GLenum format, GLenum type)
              thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
              goto finish; \
           } \
-        /* 3. replace */ \
+             /* 4. replace */ \
         thread_data->data = (const void *)thread_data->data_copied; \
+          } \
      }
+
+#define GLCOMPRESSEDTEXSUBIMAGE2D_ENQUEUE_BEFORE
+#define GLCOMPRESSEDTEXSUBIMAGE2D_ENQUEUE_AFTER
+
+
 
 
 #include "evas_gl_thread_gl_generated.c"
-#include "evas_gl_thread_evgl_generated.c"
-#include "evas_gl_thread_evgl_api_generated.c"
 
-EAPI void
-glTexImage2DEVAS_evgl_thread_cmd(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels)
+
+void
+EVGL_TH_FN(glTexImage2DEVAS)(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels)
 {
-   if (!evas_evgl_thread_enabled())
-     {
-        glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
-        return;
-     }
+  int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+  GL_TH_ST(glTexImage2D) thread_data_local, *thread_data = &thread_data_local, **thread_data_ptr;
+  void *thcmd_ref;
 
-   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+  if (!evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_EVGL))
+    {
+      glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+      return;
+    }
 
-   EVGL_Thread_Command_glTexImage2D thread_data_local;
-   EVGL_Thread_Command_glTexImage2D *thread_data = &thread_data_local;
 
-   /* command_allocated flag init. */
-   thread_data->command_allocated = 0;
+  thread_data_ptr =
+      evas_gl_thread_cmd_create(EVAS_GL_THREAD_TYPE_EVGL, sizeof(GL_TH_ST(glTexImage2D) *) + sizeof(GL_TH_ST(glTexImage2D)), &thcmd_ref);
+  *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glTexImage2D) *));
+  thread_data = *thread_data_ptr;
 
-   if (!evas_gl_thread_force_finish() && !finish_mode)
-     { /* _flush */
-        EVGL_Thread_Command_glTexImage2D *thread_data_new;
-        thread_data_new = eina_mempool_malloc(_mp_command,
-                                              sizeof(EVGL_Thread_Command_glTexImage2D));
-        if (thread_data_new)
-          {
-             thread_data = thread_data_new;
-             thread_data->command_allocated = 1;
-             thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
-          }
-     }
+  if (!evas_gl_thread_force_finish() && !finish_mode)
+    thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
 
-   thread_data->target = target;
-   thread_data->level = level;
-   thread_data->internalformat = internalformat;
-   thread_data->width = width;
-   thread_data->height = height;
-   thread_data->border = border;
-   thread_data->format = format;
-   thread_data->type = type;
-   thread_data->pixels = pixels;
+  thread_data->target = target;
+  thread_data->level = level;
+  thread_data->internalformat = internalformat;
+  thread_data->width = width;
+  thread_data->height = height;
+  thread_data->format = format;
+  thread_data->type = type;
+  thread_data->pixels = pixels;
+  thread_data->orig_func = glTexImage2D;
 
-   GLTEXIMAGE2D_COPY_VARIABLE_INIT; /* TODO */
+  GLTEXIMAGE2D_VARIABLE_INIT; /* TODO */
 
-   if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
-     goto finish;
-
-   GLTEXIMAGE2D_COPY_TO_MEMPOOL; /* TODO */
-
-finish:
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_EVGL,
-                              _evgl_thread_glTexImage2D,
-                              thread_data,
-                              thread_mode);
+  evas_gl_thread_cmd_enqueue(thcmd_ref,
+                             GL_TH_CB(glTexImage2D),
+                             thread_mode);
 }
 
-EAPI void
-glTexSubImage2DEVAS_thread_cmd(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels)
+
+void
+GL_TH_FN(glTexSubImage2DEVAS)(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels)
 {
-   if (!evas_gl_thread_enabled())
+   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
+   GL_TH_ST(glTexSubImage2D) thread_data_local, *thread_data = &thread_data_local, **thread_data_ptr;
+   void *thcmd_ref;
+
+   if (!evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
      {
         glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
         return;
      }
 
-   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
-
-   Evas_Thread_Command_glTexSubImage2D thread_data_local;
-   Evas_Thread_Command_glTexSubImage2D *thread_data = &thread_data_local;
-
-   /* command_allocated flag init. */
-   thread_data->command_allocated = 0;
+   thread_data_ptr =
+      evas_gl_thread_cmd_create(EVAS_GL_THREAD_TYPE_GL, sizeof(GL_TH_ST(glTexSubImage2D) *) + sizeof(GL_TH_ST(glTexSubImage2D)), &thcmd_ref);
+   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glTexSubImage2D) *));
+   thread_data = *thread_data_ptr;
 
    if (!evas_gl_thread_force_finish())
-     { /* _flush */
-        Evas_Thread_Command_glTexSubImage2D *thread_data_new;
-        thread_data_new = eina_mempool_malloc(_mp_command,
-                                               sizeof(Evas_Thread_Command_glTexSubImage2D));
-        if (thread_data_new)
-          {
-             thread_data = thread_data_new;
-             thread_data->command_allocated = 1;
              thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
-          }
-     }
 
    thread_data->target = target;
    thread_data->level = level;
@@ -432,8 +520,9 @@ glTexSubImage2DEVAS_thread_cmd(int thread_push, GLenum target, GLint level, GLin
    thread_data->format = format;
    thread_data->type = type;
    thread_data->pixels = pixels;
+   thread_data->orig_func = glTexSubImage2D;
 
-   GLTEXSUBIMAGE2D_COPY_VARIABLE_INIT; /* TODO */
+   GLTEXSUBIMAGE2D_VARIABLE_INIT; /* TODO */
 
    if (thread_mode == EVAS_GL_THREAD_MODE_FINISH)
      goto finish;
@@ -445,15 +534,39 @@ glTexSubImage2DEVAS_thread_cmd(int thread_push, GLenum target, GLint level, GLin
      }
    else
      {
-        GLTEXSUBIMAGE2D_COPY_TO_MEMPOOL; /* TODO */
+        GLTEXSUBIMAGE2D_ASYNC_PREPARE; /* TODO */
      }
 
 finish:
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
-                              _gl_thread_glTexSubImage2D,
-                              thread_data,
+   evas_gl_thread_cmd_enqueue(thcmd_ref,
+                              GL_TH_CB(glTexSubImage2D),
                               thread_mode);
 }
+
+
+
+static Evas_GL_Thread_GL_Func th_gl_func;
+Eina_Bool th_gl_func_initialized = EINA_FALSE;
+
+void *
+evas_gl_thread_gl_func_get(void)
+{
+   if (!th_gl_func_initialized)
+     {
+#define THREAD_FUNCTION_ASSIGN(func) th_gl_func.func = func;
+
+       THREAD_FUNCTION_ASSIGN(EVGL_TH_FN(glTexImage2DEVAS));
+       THREAD_FUNCTION_ASSIGN(GL_TH_FN(glTexSubImage2DEVAS));
+
+       THREAD_FUNCTION_ASSIGN(gl_generated_func_get);
+#undef THREAD_FUNCTION_ASSIGN
+
+        th_gl_func_initialized = EINA_TRUE;
+     }
+
+   return &th_gl_func;
+}
+
 
 
 #else  /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
@@ -461,22 +574,33 @@ finish:
 
 #include <dlfcn.h>
 #include "evas_gl_thread_gl_link_generated.c"
-#include "evas_gl_thread_evgl_link_generated.c"
 
-void (*glTexImage2DEVAS_evgl_thread_cmd)(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels) = NULL;
-void (*glTexSubImage2DEVAS_thread_cmd)(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels) = NULL;
+void (*EVGL_TH_FN(glTexImage2DEVAS))(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels) = NULL;
+void (*GL_TH_FN(glTexSubImage2DEVAS))(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels) = NULL;
 
 void
-_gl_thread_link_init()
+_gl_thread_link_init(void *func_ptr)
 {
-#define LINK2GENERIC(sym) \
-   sym = dlsym(RTLD_DEFAULT, #sym); \
-   if (!sym) ERR("Could not find function '%s'", #sym);
+   const Evas_GL_Thread_GL_Func *th_gl_func = func_ptr;
 
-   LINK2GENERIC(glGetError_thread_cmd);
+   if (!th_gl_func)
+     {
+        ERR("Thread functions (GL BASE) are not exist");
+        return;
+     }
 
-   _gl_thread_link_gl_generated_init();
-   _gl_thread_link_evgl_generated_init();
+#define THREAD_FUNCTION_ASSIGN(func) func = th_gl_func->func;
+
+   THREAD_FUNCTION_ASSIGN(EVGL_TH_FN(glTexImage2DEVAS));
+   THREAD_FUNCTION_ASSIGN(GL_TH_FN(glTexSubImage2DEVAS));
+
+#undef THREAD_FUNCTION_ASSIGN
+
+   if (th_gl_func->gl_generated_func_get)
+      _gl_thread_link_gl_generated_init(th_gl_func->gl_generated_func_get());
+   else
+      ERR("Thread functions (GL-generated) are not exist");
+
 }
 
 #endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
