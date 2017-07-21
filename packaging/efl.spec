@@ -1020,7 +1020,7 @@ cp %{SOURCE1001} .
 
 %build
 
-%if "%{TIZEN_PRODUCT_TV}" == "1"
+%if "%{tizen_profile_name}" == "tv"
         export CFLAGS+=" -DTIZEN_PROFILE_TV"
 %endif
 
