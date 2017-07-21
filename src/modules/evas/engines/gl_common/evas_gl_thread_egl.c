@@ -611,61 +611,6 @@ eglQueryWaylandBuffer_thread_cmd(EGLDisplay dpy, void *buffer, EGLint attribute,
    return thread_data.return_value;
 }
 
-typedef struct
-{
-   void *win;
-   int w, h;
-   int rot, info_rot, window_rotation;
-   int info_edges;
-   WL_EGL_RECONFIG func_reconfig;
-} Evas_Thread_Command_eglWindowReconfig;
-
-static void
-_gl_thread_eglWindowReconfig(void *data)
-{
-  Evas_Thread_Command_eglWindowReconfig *thread_data = data;
-
-  /* set outbuf rotation -> it is screen rotation */
-  if (thread_data->func_reconfig)
-    thread_data->func_reconfig(thread_data->win, thread_data->w, thread_data->h, thread_data->rot, thread_data->info_rot,
-                               thread_data->window_rotation, thread_data->info_edges);
-
-}
-
-
-
-EAPI void
-eglWindowReconfig_thread_cmd(void *win, int w, int h, int rot, int info_rot,
-                             int window_rotation, int info_edges, WL_EGL_RECONFIG fn_wl_egl_reconfig)
-{
-   if (!evas_gl_thread_enabled())
-     {
-       if (fn_wl_egl_reconfig)
-         fn_wl_egl_reconfig(win, w, h, rot, info_rot, window_rotation, info_edges);
-       return;
-     }
-
-   Evas_Thread_Command_eglWindowReconfig thread_data_local;
-   Evas_Thread_Command_eglWindowReconfig *thread_data = &thread_data_local;
-
-   int thread_mode = EVAS_GL_THREAD_MODE_FINISH;
-
-   thread_data->win = win;
-   thread_data->w = w;
-   thread_data->h = h;
-   thread_data->rot = rot;
-   thread_data->info_rot = info_rot;
-   thread_data->window_rotation = window_rotation;
-   thread_data->info_edges = info_edges;
-   thread_data->func_reconfig = fn_wl_egl_reconfig;
-
-
-   evas_gl_thread_cmd_enqueue(EVAS_GL_THREAD_TYPE_GL,
-                              _gl_thread_eglWindowReconfig,
-                              thread_data,
-                              thread_mode);
-
-}
 
 
 /***** EVAS GL *****/
@@ -1039,8 +984,6 @@ void       (*eglQueryWaylandBuffer_orig_evas_set)(void *func);
 void      *(*eglQueryWaylandBuffer_orig_evas_get)();
 EGLBoolean (*eglQueryWaylandBuffer_thread_cmd)(EGLDisplay dpy, void *buffer, EGLint attribute, EGLint *value);
 
-void (*eglWindowReconfig_thread_cmd)(void *win, int w, int h, int rot, int info_rot, int window_rotation, int info_edges, WL_EGL_RECONFIG fn_wl_egl_reconfig);
-
 
 /***** EVAS GL *****/
 
@@ -1091,8 +1034,6 @@ void _egl_thread_link_init()
    LINK2GENERIC(eglQueryWaylandBuffer_orig_evas_set);
    LINK2GENERIC(eglQueryWaylandBuffer_orig_evas_get);
    LINK2GENERIC(eglQueryWaylandBuffer_thread_cmd);
-
-   LINK2GENERIC(eglWindowReconfig_thread_cmd);
 
    /***** EVAS GL *****/
 

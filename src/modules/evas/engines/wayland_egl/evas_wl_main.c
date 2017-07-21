@@ -525,45 +525,7 @@ eng_window_resurf(Outbuf *gw)
    gw->surf = EINA_TRUE;
 }
 
-void
-_wl_egl_window_reconfig(void *win, int w, int h, int rot, int info_rot, int window_rotation, int info_edges)
-{
-
-  int aw, ah, dx = 0, dy = 0;
-
-  if ((info_rot == 90) || (info_rot == 270))
-    wl_egl_window_get_attached_size(win, &ah, &aw);
-  else
-    wl_egl_window_get_attached_size(win, &aw, &ah);
-
-  if (info_edges & 4) // resize from left
-    {
-       if ((info_rot == 90) || (info_rot == 270))
-         dx = ah - h;
-       else
-         dx = aw - w;
-    }
-
-  if (info_edges & 1) // resize from top
-    {
-       if ((info_rot == 90) || (info_rot == 270))
-         dy = aw - w;
-       else
-         dy = ah - h;
-    }
-
-  /* set outbuf rotation -> it is screen rotation */
-  wl_egl_window_set_buffer_transform(win, rot / 90);
-  wl_egl_window_set_window_transform(win, window_rotation / 90);
-
-  if ((info_rot == 90) || (info_rot == 270))
-    wl_egl_window_resize(win, h, w, dx, dy);
-  else
-    wl_egl_window_resize(win, w, h, dx, dy);
-}
-
-
-void
+void 
 eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EINA_UNUSED)
 {
    ob->w = w;
@@ -575,18 +537,55 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
    glsym_evas_gl_common_context_resize(ob->gl_context, w, h, ob->rot,1);
 
    if (ob->win)
-        eglWindowReconfig_thread_cmd(ob->win, w, h,  ob->rot, ob->info->info.rotation,
-                                     ob->info->window_rotation, ob->info->info.edges,
-                                     _wl_egl_window_reconfig);
+     {
+        int aw, ah, dx = 0, dy = 0;
+
+        if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
+          wl_egl_window_get_attached_size(ob->win, &ah, &aw);
+        else
+          wl_egl_window_get_attached_size(ob->win, &aw, &ah);
+
+        if (ob->info->info.edges & 4) // resize from left
+          {
+             if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
+               dx = ah - h;
+             else
+               dx = aw - w;
+          }
+
+        if (ob->info->info.edges & 1) // resize from top
+          {
+             if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
+               dy = aw - w;
+             else
+               dy = ah - h;
+          }
+
+        /* buffer_transform: screen rotation + window rotation
+         * window_transform: window rotation only
+         * We have to let the display server know the window rotation value
+         * because the display server needs to calcuate the screen rotation value
+         * from buffer_transform value.
+         */
+        wl_egl_window_set_buffer_transform(ob->win, ob->info->info.rotation / 90);
+        wl_egl_window_set_window_transform(ob->win, ob->info->window_rotation / 90);
+
+        if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
+          wl_egl_window_resize(ob->win, h, w, dx, dy);
+        else
+          wl_egl_window_resize(ob->win, w, h, dx, dy);
+
+
+     }
 }
 
-int
+int 
 eng_outbuf_rotation_get(Outbuf *ob)
 {
    return ob->rot;
 }
 
-Render_Engine_Swap_Mode
+Render_Engine_Swap_Mode 
 eng_outbuf_swap_mode_get(Outbuf *ob)
 {
    if ((ob->swap_mode == MODE_AUTO) && (extn_have_buffer_age))

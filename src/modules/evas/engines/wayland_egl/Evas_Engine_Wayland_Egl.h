@@ -51,7 +51,7 @@ struct _Evas_Engine_Info_Wayland_Egl
    int           stencil_bits;
    int           msaa_bits;
 
-   int           window_rotation;
+   int window_rotation;
 };
 
 #endif
