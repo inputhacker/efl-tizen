@@ -1017,6 +1017,9 @@ evas_gl_common_shader_program_get(Evas_Engine_GL_Context *gc,
                }
           }
         p = evas_gl_common_shader_generate_and_compile(gc->shared, flags);
+
+        //save shader after compile
+        evas_gl_common_shaders_flush(gc->shared);
         if (!p) return NULL;
      }
 end:
