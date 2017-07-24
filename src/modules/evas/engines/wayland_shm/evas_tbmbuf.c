@@ -412,7 +412,7 @@ _evas_tbmbuf_surface_assign(Surface *s)
    }
 
    //reset
-   if (num_surface != tbuf_info->num_surface)
+   if ((unsigned int)num_surface != tbuf_info->num_surface)
      {
        s->frame_age = 0;
 
@@ -432,7 +432,7 @@ _evas_tbmbuf_surface_assign(Surface *s)
      {
        unsigned int diff;
        diff = s->frame_age - tbuf_info->age + 1;
-       if (diff > num_surface) return MODE_FULL;
+       if (diff > (unsigned int)num_surface) return MODE_FULL;
        switch(diff)
        {
          case 1:

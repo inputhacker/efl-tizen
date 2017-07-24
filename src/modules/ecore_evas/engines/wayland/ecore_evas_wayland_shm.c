@@ -40,7 +40,6 @@ static void _ecore_evas_wl_alpha_set(Ecore_Evas *ee, int alpha);
 static void _ecore_evas_wl_transparent_set(Ecore_Evas *ee, int transparent);
 static void _ecore_evas_wl_rotation_set(Ecore_Evas *ee, int rotation, int resize);
 static struct wayland_tbm_client *tbm_client;
-static void *tbm_queue;
 
 static Ecore_Evas_Engine_Func _ecore_wl_engine_func = 
 {
@@ -129,7 +128,6 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
    Ecore_Evas_Engine_Wl_Data *wdata;
    Ecore_Evas_Interface_Wayland *iface;
    Ecore_Evas *ee;
-   int _ecore_evas_wl_init_count = -1;
    int method = 0;
    int fx = 0, fy = 0, fw = 0, fh = 0;
 
@@ -167,7 +165,7 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
 
    ECORE_MAGIC_SET(ee, ECORE_MAGIC_EVAS);
 
-   _ecore_evas_wl_init_count = _ecore_evas_wl_common_init();
+   _ecore_evas_wl_common_init();
 
    ee->engine.func = (Ecore_Evas_Engine_Func *)&_ecore_wl_engine_func;
    ee->engine.data = wdata;
@@ -334,8 +332,6 @@ ecore_evas_wayland_shm_new_internal(const char *disp_name, unsigned int parent, 
 static void 
 _ecore_evas_wl_free(Ecore_Evas *ee)
 {
-   Evas_Engine_Info_Wayland_Shm *einfo;
-
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
    if (!ee) return;

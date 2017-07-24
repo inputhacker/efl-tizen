@@ -40,6 +40,8 @@ typedef uint64_t EvasGLuint64;
 # include "evas_gl_thread_evgl_api_generated.h"
 
 EAPI void
+glTexImage2DEVAS_evgl_thread_cmd(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels);
+EAPI void
 glTexSubImage2DEVAS_thread_cmd(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
 
 #else /* ! EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
@@ -48,6 +50,7 @@ glTexSubImage2DEVAS_thread_cmd(int thread_push, GLenum target, GLint level, GLin
 # include "evas_gl_thread_gl_link_generated.h"
 # include "evas_gl_thread_evgl_link_generated.h"
 
+extern void (*glTexImage2DEVAS_evgl_thread_cmd)(int finish_mode, GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void *pixels);
 extern void (*glTexSubImage2DEVAS_thread_cmd)(int thread_push, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
 
 extern void _gl_thread_link_init();

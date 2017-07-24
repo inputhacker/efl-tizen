@@ -813,7 +813,7 @@ _evgl_thread_eglDestroySurface(void *data)
                                                  thread_data->egl_surf);
 }
 
-EAPI EGLSurface
+EAPI EGLBoolean
 eglDestroySurface_evgl_thread_cmd(EGLDisplay egl_disp, EGLSurface egl_surf)
 {
    if (!evas_evgl_thread_enabled())
@@ -993,7 +993,7 @@ EGLContext (*eglGetCurrentContext_evgl_thread_cmd)(void);
 EGLSurface (*eglGetCurrentSurface_evgl_thread_cmd)(EGLint readdraw);
 EGLDisplay (*eglGetCurrentDisplay_evgl_thread_cmd)(void);
 EGLSurface (*eglCreateWindowSurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLConfig egl_config, EGLNativeWindowType egl_win, EGLint const * attrib_list);
-EGLSurface (*eglDestroySurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLSurface egl_surf);
+EGLBoolean (*eglDestroySurface_evgl_thread_cmd)(EGLDisplay egl_disp, EGLSurface egl_surf);
 EGLContext (*eglCreateContext_evgl_thread_cmd)(EGLDisplay display, EGLConfig config, EGLContext share_context, EGLint const * attrib_list);
 EGLBoolean (*eglDestroyContext_evgl_thread_cmd)(EGLDisplay display, EGLContext context);
 char const *(*eglQueryString_evgl_thread_cmd)(EGLDisplay display,  EGLint name);
