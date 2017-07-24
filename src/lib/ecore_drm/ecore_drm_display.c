@@ -892,7 +892,6 @@ Eina_Bool
 _ecore_drm_display_outputs_create(Ecore_Drm_Device *dev)
 {
    Eina_Bool ret = EINA_TRUE;
-   Ecore_Drm_Output *output = NULL;
    int i = 0, x = 0, y = 0, count = 0;
    Ecore_Drm_Hal_Display *hal_display;
 
@@ -916,18 +915,10 @@ _ecore_drm_display_outputs_create(Ecore_Drm_Device *dev)
    dev->min_height = 0;
    dev->max_width = UINT32_MAX;
    dev->max_height = UINT32_MAX;
-#if 0
-   for (i = 0; i < count; i++)
-     {
-        if (!(output = _ecore_drm_display_output_create(dev, i, x, y, EINA_FALSE)))
-          continue;
 
-        x += output->current_mode->width;
-     }
-#else
    /* create only main output when init */
-   output = _ecore_drm_display_output_create(dev, 0, x, y, EINA_FALSE);
-#endif
+   _ecore_drm_display_output_create(dev, 0, x, y, EINA_FALSE);
+
    ret = EINA_TRUE;
    if (eina_list_count(dev->outputs) < 1)
      ret = EINA_FALSE;
