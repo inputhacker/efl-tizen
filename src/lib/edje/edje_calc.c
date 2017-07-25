@@ -6482,16 +6482,16 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
                {
                 case EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL:
                    if (text_marquee_vertical)
-                     distance_per_loop = th + pf->final.h;
+                     distance_per_loop = th + roll_gap;
                    else
-                     distance_per_loop = tw + pf->final.w;
+                     distance_per_loop = tw + roll_gap;
                    break;
                 case EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_DEFAULT:
                 default:
                    if (text_marquee_vertical)
-                     distance_per_loop = th + roll_gap;
+                     distance_per_loop = th + pf->final.h;
                    else
-                     distance_per_loop = tw + roll_gap;
+                     distance_per_loop = tw + pf->final.w;
                }
 
              ep->typedata.text->ellipsize.marquee.sec_per_pixel =
