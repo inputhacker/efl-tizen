@@ -683,9 +683,9 @@ _pool_tex_render_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, in
 
    if (ok)
      {
-        GL_TH_CALL(glGenFramebuffers, glsym_glGenFramebuffers, 1, &(pt->fb));
-        GL_TH_CALL(glBindFramebuffer, glsym_glBindFramebuffer, GL_FRAMEBUFFER, pt->fb);
-        GL_TH_CALL(glFramebufferTexture2D, glsym_glFramebufferTexture2D,
+        GL_TH(glGenFramebuffers, 1, &(pt->fb));
+        GL_TH(glBindFramebuffer, GL_FRAMEBUFFER, pt->fb);
+        GL_TH(glFramebufferTexture2D,
                    GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pt->texture, 0);
         // note: should check fbo completeness
      }
@@ -699,7 +699,7 @@ _pool_tex_render_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, in
         GL_TH(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, pt->stencil);
      }
 
-   GL_TH_CALL(glBindFramebuffer, glsym_glBindFramebuffer, GL_FRAMEBUFFER, fnum);
+   GL_TH(glBindFramebuffer, GL_FRAMEBUFFER, fnum);
    if (gc->state.current.tex_target)
       GL_TH(glBindTexture, gc->state.current.tex_target, gc->state.current.cur_tex);
    else
@@ -1023,7 +1023,7 @@ evas_gl_texture_pool_empty(Evas_GL_Texture_Pool *pt)
      }
    if (pt->fb)
      {
-        GL_TH_CALL(glDeleteFramebuffers, glsym_glDeleteFramebuffers, 1, &(pt->fb));
+        GL_TH(glDeleteFramebuffers, 1, &(pt->fb));
         pt->fb = 0;
      }
     EINA_LIST_FREE(pt->allocations, apt)

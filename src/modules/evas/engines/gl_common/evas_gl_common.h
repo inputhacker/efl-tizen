@@ -716,10 +716,6 @@ void              evas_gl_common_texture_shared_back(Evas_Engine_GL_Context *gc,
 
 void              evas_gl_common_line_draw(Evas_Engine_GL_Context *gc, int x1, int y1, int x2, int y2);
 
-extern void       (*glsym_glGenFramebuffers)      (GLsizei a, GLuint *b);
-extern void       (*glsym_glBindFramebuffer)      (GLenum a, GLuint b);
-extern void       (*glsym_glFramebufferTexture2D) (GLenum a, GLenum b, GLenum c, GLuint d, GLint e);
-extern void       (*glsym_glDeleteFramebuffers)   (GLsizei a, const GLuint *b);
 extern void       (*glsym_glGetProgramBinary)     (GLuint a, GLsizei b, GLsizei *c, GLenum *d, void *e);
 extern void       (*glsym_glProgramBinary)        (GLuint a, GLenum b, const void *c, GLint d);
 extern void       (*glsym_glProgramParameteri)    (GLuint a, GLuint b, GLint d);
@@ -882,10 +878,10 @@ __evas_gl_errdyn(int err, const char *file, const char *func, int line, const ch
 #  define glGetShaderiv(...) GL_ERROR_TRACE(glGetShaderiv, glGetShaderiv, #__VA_ARGS__, __VA_ARGS__)
 #  define glShaderSource(...) GL_ERROR_TRACE(glShaderSource, glShaderSource, #__VA_ARGS__, __VA_ARGS__)
 #  define glCompileShader(...) GL_ERROR_TRACE(glCompileShader, glCompileShader, #__VA_ARGS__, __VA_ARGS__)
-#  define glsym_glGenFramebuffers(...) GL_ERROR_TRACE(glGenFramebuffers, glsym_glGenFramebuffers, #__VA_ARGS__, __VA_ARGS__)
-#  define glsym_glBindFramebuffer(...) GL_ERROR_TRACE(glBindFramebuffer, glsym_glBindFramebuffer, #__VA_ARGS__, __VA_ARGS__)
-#  define glsym_glFramebufferTexture2D(...) GL_ERROR_TRACE(glFramebufferTexture2D, glsym_glFramebufferTexture2D, #__VA_ARGS__, __VA_ARGS__)
-#  define glsym_glDeleteFramebuffers(...) GL_ERROR_TRACE(glDeleteFramebuffers, glsym_glDeleteFramebuffers, #__VA_ARGS__, __VA_ARGS__)
+#  define glGenFramebuffers(...) GL_ERROR_TRACE(glGenFramebuffers, glGenFramebuffers, #__VA_ARGS__, __VA_ARGS__)
+#  define glBindFramebuffer(...) GL_ERROR_TRACE(glBindFramebuffer, glBindFramebuffer, #__VA_ARGS__, __VA_ARGS__)
+#  define glFramebufferTexture2D(...) GL_ERROR_TRACE(glFramebufferTexture2D, glFramebufferTexture2D, #__VA_ARGS__, __VA_ARGS__)
+#  define glDeleteFramebuffers(...) GL_ERROR_TRACE(glDeleteFramebuffers, glDeleteFramebuffers, #__VA_ARGS__, __VA_ARGS__)
 #  define glsym_glGetProgramBinary(...) GL_ERROR_TRACE(glGetProgramBinary, glsym_glGetProgramBinary, #__VA_ARGS__, __VA_ARGS__)
 #  define glsym_glProgramBinary(...) GL_ERROR_TRACE(glProgramBinary, glsym_glProgramBinary, #__VA_ARGS__, __VA_ARGS__)
 #  define glsym_glProgramParameteri(...) GL_ERROR_TRACE(glProgramParameteri, glsym_glProgramParameteri, #__VA_ARGS__, __VA_ARGS__)

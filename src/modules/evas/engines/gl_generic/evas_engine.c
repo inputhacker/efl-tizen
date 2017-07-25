@@ -1890,7 +1890,7 @@ eng_gl_surface_read_pixels(void *data EINA_UNUSED, void *surface,
 
    GL_TH(glGetIntegerv, GL_FRAMEBUFFER_BINDING, &fbo);
    if (fbo != (GLint) im->tex->pt->fb)
-     GL_TH_CALL(glBindFramebuffer, glsym_glBindFramebuffer, GL_FRAMEBUFFER, im->tex->pt->fb);
+     GL_TH(glBindFramebuffer, GL_FRAMEBUFFER, im->tex->pt->fb);
    GL_TH(glPixelStorei, GL_PACK_ALIGNMENT, 4);
 
    // With GLX we will try to read BGRA even if the driver reports RGBA
@@ -1920,7 +1920,7 @@ eng_gl_surface_read_pixels(void *data EINA_UNUSED, void *surface,
      }
 
    if (fbo != (GLint) im->tex->pt->fb)
-     GL_TH_CALL(glBindFramebuffer, glsym_glBindFramebuffer, GL_FRAMEBUFFER, fbo);
+     GL_TH(glBindFramebuffer,  GL_FRAMEBUFFER, fbo);
 
    return EINA_TRUE;
 }

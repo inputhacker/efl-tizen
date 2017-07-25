@@ -20,10 +20,6 @@ typedef void      *(*glsym_func_void_ptr) ();
 typedef GLboolean  (*glsym_func_boolean) ();
 typedef const char *(*glsym_func_const_char_ptr) ();
 
-void       (*glsym_glGenFramebuffers)      (GLsizei a, GLuint *b) = NULL;
-void       (*glsym_glBindFramebuffer)      (GLenum a, GLuint b) = NULL;
-void       (*glsym_glFramebufferTexture2D) (GLenum a, GLenum b, GLenum c, GLuint d, GLint e) = NULL;
-void       (*glsym_glDeleteFramebuffers)   (GLsizei a, const GLuint *b) = NULL;
 void       (*glsym_glGetProgramBinary)     (GLuint a, GLsizei b, GLsizei *c, GLenum *d, void *e) = NULL;
 void       (*glsym_glProgramBinary)        (GLuint a, GLenum b, const void *c, GLint d) = NULL;
 void       (*glsym_glProgramParameteri)    (GLuint a, GLuint b, GLint d) = NULL;
@@ -98,46 +94,6 @@ evas_gl_symbols(void *(*GetProcAddress)(const char *name))
    tmp = *a; \
    *a = *b; \
    *b = tmp;
-
-#ifdef GL_GLES
-   FINDSYM(glsym_glGenFramebuffers, "glGenFramebuffers", glsym_func_void);
-   FINDSYM2(glsym_glGenFramebuffers, "glGenFramebuffers", glsym_func_void);
-   FALLBAK(glsym_glGenFramebuffers, glsym_func_void);
-#else
-   FINDSYM(glsym_glGenFramebuffers, "glGenFramebuffersEXT", glsym_func_void);
-   FINDSYM(glsym_glGenFramebuffers, "glGenFramebuffersARB", glsym_func_void);
-   FINDSYM(glsym_glGenFramebuffers, "glGenFramebuffers", glsym_func_void);
-   // nvidia tegra3 drivers seem to not expose via getprocaddress, but dlsym finds it
-   FINDSYM2(glsym_glGenFramebuffers, "glGenFramebuffers", glsym_func_void);
-   FALLBAK(glsym_glGenFramebuffers, glsym_func_void);
-#endif
-
-#ifdef GL_GLES
-   FINDSYM(glsym_glBindFramebuffer, "glBindFramebuffer", glsym_func_void);
-   FINDSYM2(glsym_glBindFramebuffer, "glBindFramebuffer", glsym_func_void);
-   FALLBAK(glsym_glBindFramebuffer, glsym_func_void);
-#else
-   FINDSYM(glsym_glBindFramebuffer, "glBindFramebufferEXT", glsym_func_void);
-   FINDSYM(glsym_glBindFramebuffer, "glBindFramebufferARB", glsym_func_void);
-   FINDSYM(glsym_glBindFramebuffer, "glBindFramebuffer", glsym_func_void);
-   // nvidia tegra3 drivers seem to not expose via getprocaddress, but dlsym finds it
-   FINDSYM2(glsym_glBindFramebuffer, "glBindFramebuffer", glsym_func_void);
-   FALLBAK(glsym_glBindFramebuffer, glsym_func_void);
-#endif
-
-   FINDSYM(glsym_glFramebufferTexture2D, "glFramebufferTexture2DEXT", glsym_func_void);
-   FINDSYM(glsym_glFramebufferTexture2D, "glFramebufferTexture2DARB", glsym_func_void);
-   FINDSYM(glsym_glFramebufferTexture2D, "glFramebufferTexture2D", glsym_func_void);
-   // nvidia tegra3 drivers seem to not expose via getprocaddress, but dlsym finds it
-   FINDSYM2(glsym_glFramebufferTexture2D, "glFramebufferTexture2D", glsym_func_void);
-   FALLBAK(glsym_glFramebufferTexture2D, glsym_func_void);
-
-   FINDSYM(glsym_glDeleteFramebuffers, "glDeleteFramebuffersEXT", glsym_func_void);
-   FINDSYM(glsym_glDeleteFramebuffers, "glDeleteFramebuffersARB", glsym_func_void);
-   FINDSYM(glsym_glDeleteFramebuffers, "glDeleteFramebuffers", glsym_func_void);
-   // nvidia tegra3 drivers seem to not expose via getprocaddress, but dlsym finds it
-   FINDSYM2(glsym_glDeleteFramebuffers, "glDeleteFramebuffers", glsym_func_void);
-   FALLBAK(glsym_glDeleteFramebuffers, glsym_func_void);
 
    FINDSYM(glsym_glGetProgramBinary, "glGetProgramBinaryOES", glsym_func_void);
    FINDSYM(glsym_glGetProgramBinary, "glGetProgramBinaryKHR", glsym_func_void);
@@ -1291,9 +1247,9 @@ evas_gl_common_context_target_surface_set(Evas_Engine_GL_Context *gc,
 # endif
 #endif
    if (gc->pipe[0].shader.surface == gc->def_surface)
-      GL_TH_CALL(glBindFramebuffer, glsym_glBindFramebuffer, GL_FRAMEBUFFER, 0);
+      GL_TH(glBindFramebuffer,  GL_FRAMEBUFFER, 0);
    else
-      GL_TH_CALL(glBindFramebuffer, glsym_glBindFramebuffer, GL_FRAMEBUFFER, surface->tex->pt->fb);
+      GL_TH(glBindFramebuffer,  GL_FRAMEBUFFER, surface->tex->pt->fb);
    _evas_gl_common_viewport_set(gc, 0, 0);
 }
 
