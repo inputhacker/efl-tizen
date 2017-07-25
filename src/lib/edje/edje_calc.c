@@ -6102,60 +6102,56 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
                }
           }
 
-        /* If there is a loop limit, update loop and check it */
-        if (chosen_desc->text.ellipsize.marquee_repeat_limit > 0)
+        /* Update moved distance which is used to update loop count */
+        ep->typedata.text->ellipsize.marquee.distance += move_pixel;
+
+        /* Update loop count */
+        if (ep->typedata.text->ellipsize.marquee.distance >= distance_per_loop)
           {
-             /* Update moved distance which is used to update loop count */
-             ep->typedata.text->ellipsize.marquee.distance += move_pixel;
+             ep->typedata.text->ellipsize.marquee.loop_count += ep->typedata.text->ellipsize.marquee.distance / distance_per_loop;
+             ep->typedata.text->ellipsize.marquee.distance %= distance_per_loop;
 
-             /* Update loop count */
-             if (ep->typedata.text->ellipsize.marquee.distance >= distance_per_loop)
+             /* Give a latency for next loop. The code below corrects the latency of the next loop,
+                taking into account the pixels beyond the loop. */
+             if (chosen_desc->text.ellipsize.marquee.loop_delay > 0.0)
                {
-                  ep->typedata.text->ellipsize.marquee.loop_count += ep->typedata.text->ellipsize.marquee.distance / distance_per_loop;
-                  ep->typedata.text->ellipsize.marquee.distance %= distance_per_loop;
+                  double next_delay_time;
 
-                  /* Give a latency for next loop. The code below corrects the latency of the next loop,
-                     taking into account the pixels beyond the loop. */
-                  if (chosen_desc->text.ellipsize.marquee.loop_delay > 0.0)
+                  overpixel_for_loop = ep->typedata.text->ellipsize.marquee.distance;
+                  overtime_for_loop = overpixel_for_loop * time_sec_per_pixel;
+                  next_delay_time = chosen_desc->text.ellipsize.marquee.loop_delay - overtime_for_loop;
+
+                  if (next_delay_time >= 0.0)
                     {
-                       double next_delay_time;
-
-                       overpixel_for_loop = ep->typedata.text->ellipsize.marquee.distance;
-                       overtime_for_loop = overpixel_for_loop * time_sec_per_pixel;
-                       next_delay_time = chosen_desc->text.ellipsize.marquee.loop_delay - overtime_for_loop;
-
-                       if (next_delay_time >= 0.0)
-                         {
-                            ep->typedata.text->ellipsize.marquee.animator_prev_time += next_delay_time;
-                            overpixel_for_loop = -ep->typedata.text->ellipsize.marquee.distance;
-                         }
-                       else
-                         {
-                            /* Below is a code of extraordinary situations.
-                               If the time beyond a loop is greater than the latency of a given loop,
-                               then it is necessary to remove the pixels of the corresponding delay.
-                               The overpixel_for_loop variable will have negative value. */
-                            overpixel_for_loop = next_delay_time * time_sec_per_pixel;
-                         }
-
-                       ep->typedata.text->ellipsize.marquee.distance += overpixel_for_loop;
+                       ep->typedata.text->ellipsize.marquee.animator_prev_time += next_delay_time;
+                       overpixel_for_loop = -ep->typedata.text->ellipsize.marquee.distance;
                     }
+                  else
+                    {
+                       /* Below is a code of extraordinary situations.
+                          If the time beyond a loop is greater than the latency of a given loop,
+                          then it is necessary to remove the pixels of the corresponding delay.
+                          The overpixel_for_loop variable will have negative value. */
+                       overpixel_for_loop = next_delay_time * time_sec_per_pixel;
+                    }
+
+                  ep->typedata.text->ellipsize.marquee.distance += overpixel_for_loop;
                }
+          }
 
-             /* Check if the loop count reaches the given loop limit. */
-             if (ep->typedata.text->ellipsize.marquee.loop_count >=
-                 chosen_desc->text.ellipsize.marquee_repeat_limit)
-               {
-                  evas_object_move(ep->object,
-                                   ep->typedata.text->ellipsize.marquee.orig_x,
-                                   ep->typedata.text->ellipsize.marquee.orig_y);
+        /* Check if the loop count reaches the given loop limit. */
+        if ((chosen_desc->text.ellipsize.marquee_repeat_limit > 0) &&
+            (ep->typedata.text->ellipsize.marquee.loop_count >= chosen_desc->text.ellipsize.marquee_repeat_limit))
+          {
+             evas_object_move(ep->object,
+                              ep->typedata.text->ellipsize.marquee.orig_x,
+                              ep->typedata.text->ellipsize.marquee.orig_y);
 
-                  ep->typedata.text->ellipsize.marquee.animator = NULL;
-                  _edje_text_ellipsize_marquee_remove(ep);
-                  _edje_text_ellipsize_fade_update(ep, EINA_TRUE);
+             ep->typedata.text->ellipsize.marquee.animator = NULL;
+             _edje_text_ellipsize_marquee_remove(ep);
+             _edje_text_ellipsize_fade_update(ep, EINA_TRUE);
 
-                  return ECORE_CALLBACK_DONE;
-               }
+             return ECORE_CALLBACK_DONE;
           }
 
         if (text_marquee_top_left)
