@@ -6285,7 +6285,8 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
         if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
           evas_object_textblock_ellipsis_set(ep->object, -1.0);
         else if (ep->part->type == EDJE_PART_TYPE_TEXT)
-          evas_object_text_ellipsis_set(ep->object, -1.0);
+          evas_object_text_ellipsis_set(ep->object,
+                                        chosen_desc->text.min_x ? -1.0 : pf->type.text.ellipsis);
 
         return;
      }
