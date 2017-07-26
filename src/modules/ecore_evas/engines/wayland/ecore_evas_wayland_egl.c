@@ -419,7 +419,10 @@ _ecore_evas_wl_show(Ecore_Evas *ee)
                   ecore_evas_manual_render_set(ee, 0);
                   einfo->info.surface = surf;
                   evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo);
-                  evas_damage_rectangle_add(ee->evas, 0, 0, ee->w + fw, ee->h + fh);
+                  if (ECORE_EVAS_PORTRAIT(ee))
+                    evas_damage_rectangle_add(ee->evas, 0, 0, ee->w + fw, ee->h + fh);
+                  else
+                    evas_damage_rectangle_add(ee->evas, 0, 0, ee->h + fh, ee->w + fw);
                }
           }
      }
