@@ -220,7 +220,7 @@ pre_rotation_symbols(void)
    init_pre_rotation_syms = EINA_TRUE;
 
 #ifdef GL_GLES
-   const char *wayland_egl_lib = LIBDIR"/libwayland-egl.so";
+   const char *wayland_egl_lib = LIBDIR"/libwayland-egl.so.1";
    wl_client_lib_handle = dlopen(wayland_egl_lib, RTLD_NOW);
    if (!wl_client_lib_handle)
      {
