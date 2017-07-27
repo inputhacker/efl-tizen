@@ -40,7 +40,6 @@
 // TIZEN ONLY (170220): request e19 compositor to create socket
 #if HAVE_ECORE_WAYLAND
 # include <Ecore_Wayland.h>
-# include <wayland-server.h>
 # include <tizen-extension-client-protocol.h>
 #endif
 // TIZEN ONLY: END
