@@ -1146,8 +1146,8 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
      GL_TH(glPixelStorei, GL_UNPACK_ROW_LENGTH, 0);
    GL_TH(glPixelStorei, GL_UNPACK_ALIGNMENT, bytes_count);
 
-   if ((tex->gc->shared->info.tune.atlas.max_memcpy_size > im->cache_entry.w) &&
-           (tex->gc->shared->info.tune.atlas.max_memcpy_size > im->cache_entry.h))
+   if ((tex->gc->shared->info.tune.atlas.max_memcpy_size > (int)im->cache_entry.w) &&
+           (tex->gc->shared->info.tune.atlas.max_memcpy_size > (int)im->cache_entry.h))
      {
         int sw, sh, dw, dh;
 
@@ -1161,8 +1161,8 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
              ERR("memory allocation is failed..");
              return;
           }
-        DATA8 *dp = (unsigned char *)temp;
-        DATA8 *sp = (unsigned char *)im->image.data;
+        DATA8 *dp = (DATA8 *) temp;
+        DATA8 *sp = (DATA8 *) im->image.data;
         int i;
 
         dp += (dw * bytes_count);
@@ -1185,7 +1185,7 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
         // ooooo
         memcpy(dp, dp - (dw * bytes_count), dw * bytes_count);
 
-        dp = temp;
+        dp =  (DATA8 *) temp;
         // ooooo
         // xxxxx
         memcpy(dp, dp + (dw * bytes_count), dw * bytes_count);
