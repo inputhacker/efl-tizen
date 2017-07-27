@@ -22,7 +22,7 @@ Evas_Native_Tbm_Surface_Image_Set_Call  glsym_evas_native_tbm_surface_image_set 
 /* For wl_buffer's native set */
 static void *tbm_server_lib = NULL;
 typedef struct _tbm_surface * tbm_surface_h;
-static tbm_surface_h (*glsym_wayland_tbm_server_get_surface) (struct wayland_tbm_server *tbm_srv, struct wl_resource *wl_buffer) = NULL;
+static tbm_surface_h (*glsym_wayland_tbm_server_get_surface) (void *tbm_srv, void *wl_buffer) = NULL;
 
 /* engine structure data */
 typedef struct _Render_Engine Render_Engine;
