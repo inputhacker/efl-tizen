@@ -171,6 +171,8 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot EINA_UNUSED, Outbuf_De
 Render_Engine_Swap_Mode
 evas_outbuf_swap_mode_get(Outbuf *ob)
 {
+#define USE_BUFFER_AGE   0
+
    tbm_surface_h surface = NULL;
    evas_buffer_info *ebuf_info;
    Eina_Bool is_first = EINA_FALSE;
@@ -186,7 +188,7 @@ evas_outbuf_swap_mode_get(Outbuf *ob)
       ERR("Fail to get evas_buffer_info");
 
    ob->priv.ebuf_info = ebuf_info;
-
+#if USE_BUFFER_AGE
    if (!ob->priv.frame_age || is_first == EINA_TRUE)
       mode = MODE_FULL;
    else
@@ -214,6 +216,7 @@ evas_outbuf_swap_mode_get(Outbuf *ob)
              }
           }
      }
+#endif
 
    tbm_surface_map(surface, TBM_SURF_OPTION_READ|TBM_SURF_OPTION_WRITE, &tbm_info);
    tbm_surface_internal_ref(surface);
@@ -224,8 +227,7 @@ evas_outbuf_swap_mode_get(Outbuf *ob)
       ob->priv.frame_age, ebuf_info->age,
       surface);
 #endif
-
-   return MODE_FULL;
+   return mode;
 }
 
 Eina_Bool
