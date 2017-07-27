@@ -2261,7 +2261,7 @@ ecore_evas_aux_hints_supported_get(const Ecore_Evas *ee)
         iface = (Ecore_Evas_Interface_Wayland *)_ecore_evas_interface_get(ee, "wayland");
 
         if ((iface) && (iface->supported_aux_hints_get))
-          iface->supported_aux_hints_get(ee);
+          iface->supported_aux_hints_get((Ecore_Evas *)ee);
      }
 
    return ee->prop.aux_hint.supported_list;

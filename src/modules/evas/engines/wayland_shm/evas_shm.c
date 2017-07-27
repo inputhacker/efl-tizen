@@ -389,7 +389,7 @@ _shm_leaf_release(Shm_Leaf *leaf)
 }
 
 static void
-_shm_wl_registry_global(void *data EINA_UNUSED, struct wl_registry *registry, uint32_t name, const char *interface, uint32_t version)
+_shm_wl_registry_global(void *data EINA_UNUSED, struct wl_registry *registry, uint32_t name, const char *interface, uint32_t version EINA_UNUSED)
 {
    if (!strcmp(interface, "tizen_surface_shm"))
      shmdat.tzsurf = wl_registry_bind(registry, name, &tizen_surface_shm_interface, 2);
