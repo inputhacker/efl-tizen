@@ -1482,6 +1482,9 @@ struct _Evas_Func
    void *(*ector_surface_cache_get)      (void *data, void *key);
 
    void (*gl_get_pixels)                 (void *data, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data, Evas_Object *o, void *image);
+
+   // Unset PreRotation
+   void (*gl_prerotation_unset)          (void *data);
 };
 
 struct _Evas_Image_Save_Func

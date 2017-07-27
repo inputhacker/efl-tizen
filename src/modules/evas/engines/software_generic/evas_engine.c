@@ -4350,8 +4350,9 @@ static Evas_Func func =
      eng_ector_end,
      eng_ector_surface_create,
      eng_ector_surface_cache_set,
-     eng_ector_surface_cache_get
+     eng_ector_surface_cache_get,
    /* FUTURE software generic calls go here */
+     NULL //gl_prerotation_unset
 };
 
 

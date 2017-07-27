@@ -910,7 +910,7 @@ evgl_eng_native_win_prerotation_set(void *data)
    if (!(eng_get_ob(re)->support_pre_rotation)) return 0;
    if (eng_get_ob(re)->gl_context->pre_rotated) return 0;
 
-   _evas_native_win_pre_rotation_set(eng_get_ob(re)->info->info.win, eng_get_ob(re)->info->info.rotation);
+   _evas_native_win_pre_rotation_set(eng_get_ob(re)->win, eng_get_ob(re)->info->info.rotation);
 
    // re->win's h & w are not modified
    eng_get_ob(re)->rot = 0;
@@ -1168,7 +1168,7 @@ eng_setup(Evas *evas, void *info)
                       (ob->info->info.rotation != ob->rot) ||
                       (ob->gl_context->pre_rotated))
                {
-                 //TIZEN_ONLY(20161121) : Support PreRotation
+                 // Support PreRotation
                  if (ob->support_pre_rotation && ob->gl_context->pre_rotated)
                    {
                       ob->gl_context->pre_rotated = EINA_FALSE;
@@ -1306,6 +1306,15 @@ eng_gl_error_get(void *data)
 end:
    glsym_evas_gl_common_error_set(data, EVAS_GL_SUCCESS);
    return err;
+}
+
+static void
+eng_gl_prerotation_unset(void *data)
+{
+   Render_Engine *re;
+   if (!(re = (Render_Engine *)data)) return;
+
+   eng_get_ob(re)->gl_context->pre_rotated = EINA_FALSE;
 }
 
 static void
@@ -1926,6 +1935,9 @@ module_open(Evas_Module *em)
 
    ORD(gl_current_context_get);
    ORD(gl_error_get);
+
+   //Unset PreRotation
+   ORD(gl_prerotation_unset);
 
    evas_gl_thread_link_init();
    gl_symbols();

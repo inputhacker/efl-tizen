@@ -1630,7 +1630,7 @@ try_again:
                  (evgl_engine->funcs->native_win_prerotation_set))
                {
                   if (!evgl_engine->funcs->native_win_prerotation_set(eng_data))
-                    ERR("Prerotation does not work");
+                    DBG("Prerotation does not work");
                }
              //
 

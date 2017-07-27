@@ -109,7 +109,7 @@ _orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int
    gw->depth_bits = depth_bits;
    gw->stencil_bits = stencil_bits;
    gw->msaa_bits = msaa_bits;
-   //TIZEN_ONLY(20161121):Support PreRotation
+   //Support PreRotation
    gw->support_pre_rotation = 0;
 
    context_attrs[0] = EGL_CONTEXT_CLIENT_VERSION;
@@ -207,7 +207,7 @@ _orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int
         return NULL;
      }
 
-   //TIZEN_ONLY(20161121):Support PreRotation
+   //Support PreRotation
    if (!getenv("EVAS_GL_PREROTATION_DISABLE") && glsym_wl_egl_win_get_capabilities)
      {
         int prerotation_cap = EVAS_WL_EGL_WINDOW_CAPABILITY_NONE;
@@ -530,9 +530,11 @@ _orig_eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth dep
 {
   ob->w = w;
   ob->h = h;
-  ob->rot = rot;
-  if (ob->support_pre_rotation && ob->gl_context->pre_rotated)
-    ob->rot = 0;
+   if (ob->support_pre_rotation && ob->gl_context->pre_rotated)
+     ob->rot = 0;
+   else
+     ob->rot = rot;
+
   eng_window_use(ob);
   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, ob->rot,1);
 
