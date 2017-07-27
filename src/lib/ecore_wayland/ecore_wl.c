@@ -71,6 +71,8 @@ static void _ecore_wl_cb_clipboard_data_only_allowed(void *data EINA_UNUSED, str
 static void _ecore_wl_cb_ignore_output_transform(void *data EINA_UNUSED, struct tizen_screen_rotation *tizen_screen_rotation EINA_UNUSED, struct wl_surface *surface, uint32_t ignore);
 
 static void _ecore_wl_log_cb_print(const char *format, va_list args);
+extern void _ecore_wl_window_aux_hint_free(Ecore_Wl_Window *win);
+
 /* local variables */
 static int _ecore_wl_init_count = 0;
 static Eina_Bool _ecore_wl_animator_busy = EINA_FALSE;

@@ -255,7 +255,7 @@ struct _Ecore_Wl_Window
 
    void *data;
 
-   void (*cb_rot_changed)(int win_id, int rot, Eina_Bool resize, int w, int h, void *data);
+   void (*cb_rot_changed)(Ecore_Wl_Window *win, int rot, Eina_Bool resize, int w, int h, void *data);
    void *cb_rot_changed_data;
 };
 
