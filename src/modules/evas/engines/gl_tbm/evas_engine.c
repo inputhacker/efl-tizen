@@ -1379,9 +1379,8 @@ _native_cb_free(void *data, void *image)
 }
 
 static int
-_native_cb_yinvert(void *data, void *image)
+_native_cb_yinvert(void *data EINA_UNUSED, void *image)
 {
-   Render_Engine *re = data;
    Evas_GL_Image *im = image;
    Native *n = im->native.data;
    int yinvert = 0;
@@ -1818,6 +1817,7 @@ module_open(Evas_Module *em)
    ORD(output_dump);
 
    ORD(image_native_set);
+   ORD(image_native_get);
 
    ORD(gl_current_context_get);
    ORD(gl_error_get);

@@ -532,10 +532,10 @@ static Ecore_Evas_Engine_Func _ecore_tbm_engine_func =
      NULL  // aux_hints_set
 };
 
-static tbm_surface_queue_h *
+static void *
 _ecore_evas_tbm_queue_alloc(void *data EINA_UNUSED, int w, int h)
 {
-   return tbm_surface_queue_create(3, w, h, TBM_FORMAT_ARGB8888, TBM_BO_DEFAULT);
+   return (void *)tbm_surface_queue_create(3, w, h, TBM_FORMAT_ARGB8888, TBM_BO_DEFAULT);
 }
 
 static void

@@ -113,7 +113,7 @@ static int extn_type = EXTN_TYPE_NONE;
 
 /* Tizen Only : Callback function  & listener for tizen remote surface */
 #ifdef BUILD_TIZEN_REMOTE_SURFACE
-static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider, uint32_t res_id)
+static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider EINA_UNUSED, uint32_t res_id)
 {
    /* to get resource id of this remote surface */
    Ecore_Evas *ee = data;
@@ -139,13 +139,13 @@ static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_
    extn->resource_id = res_id;
    INF("[EXTN_GL] remote surcace's resource_id: %u ",extn->resource_id);
 }
-static void _ecore_evas_extn_rsp_cb_visibility(void *data, struct tizen_remote_surface_provider *provider, uint32_t visibility)
+static void _ecore_evas_extn_rsp_cb_visibility(void *data EINA_UNUSED, struct tizen_remote_surface_provider *provider EINA_UNUSED, uint32_t visibility EINA_UNUSED)
 {
    /* To do : add visibility change  */
 }
 
 static void
-_ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *trs, struct wl_buffer *buffer, uint32_t time) /* This callback will be deprecated */
+_ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *trs, struct wl_buffer *buffer, uint32_t time EINA_UNUSED) /* This callback will be deprecated */
 {
   Evas_Object* img = data;
 
@@ -194,7 +194,7 @@ _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *tr
 
 static void
 _ecore_evas_extn_rs_cb_changed_buffer(void *data, struct tizen_remote_surface *trs, uint32_t type, struct wl_buffer *buffer,
-                              int32_t img_file_fd, uint32_t img_file_size, uint32_t time, struct wl_array *keys)
+                              int32_t img_file_fd, uint32_t img_file_size EINA_UNUSED, uint32_t time EINA_UNUSED, struct wl_array *keys EINA_UNUSED)
 {
    /* check type of given buffer */
    if (type == TIZEN_REMOTE_SURFACE_BUFFER_TYPE_TBM)
@@ -250,7 +250,7 @@ _ecore_evas_extn_rs_cb_changed_buffer(void *data, struct tizen_remote_surface *t
    close(img_file_fd); /* close passed fd whatever type is */
 }
 static void
-_ecore_evas_extn_rs_cb_missing(void *data, struct tizen_remote_surface *trs)
+_ecore_evas_extn_rs_cb_missing(void *data EINA_UNUSED, struct tizen_remote_surface *trs EINA_UNUSED)
 {
     ERR("Plug is missing...! ");
 }
@@ -462,7 +462,7 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
 #ifdef BUILD_TIZEN_REMOTE_SURFACE
         if(extn->extn_type_client ==  EXTN_TYPE_WAYLAND_EGL)
           {
-             extn->resource_id = NULL;
+             extn->resource_id = 0;
              if(extn->tizen_rsp) tizen_remote_surface_provider_destroy(extn->tizen_rsp);
              if(extn->tizen_rs)
                {
@@ -1162,7 +1162,7 @@ _ecore_evas_plug_cb_window_iconify_change(void *data, int type EINA_UNUSED, void
 }
 
 static Eina_Bool
-_ecore_evas_plug_cb_window_show(void *data, int type EINA_UNUSED, void *event)
+_ecore_evas_plug_cb_window_show(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
    Extn *extn;
    Ecore_Evas *ee;
@@ -2165,7 +2165,7 @@ _ipc_client_add(void *data, int type EINA_UNUSED, void *event)
         ipc.w = ee->w;
         ipc.h = ee->h;
         ecore_ipc_client_send(e->client, MAJOR, OP_GL_REF,
-                                extn->resource_id, NULL, 0,
+                                extn->resource_id, 0, 0,
                                 NULL,0);
         ecore_ipc_client_send(e->client, MAJOR, OP_RESIZE,
                               0, 0, 0, &ipc, sizeof(ipc));
@@ -2747,10 +2747,20 @@ ecore_evas_extn_socket_new_internal(int w, int h)
                   return NULL;
                }
           }
-     }
-#endif
+        evas_key_modifier_add(ee->evas, "Shift");
+        evas_key_modifier_add(ee->evas, "Control");
+        evas_key_modifier_add(ee->evas, "Alt");
+        evas_key_modifier_add(ee->evas, "Meta");
+        evas_key_modifier_add(ee->evas, "Hyper");
+        evas_key_modifier_add(ee->evas, "Super");
+        evas_key_lock_add(ee->evas, "Caps_Lock");
+        evas_key_lock_add(ee->evas, "Num_Lock");
+        evas_key_lock_add(ee->evas, "Scroll_Lock");
 
-   if (_ecore_evas_extn_type_get() == EXTN_TYPE_SHM)
+        extn_ee_list = eina_list_append(extn_ee_list, ee);
+     }
+   else
+#endif
      {
         Evas_Engine_Info_Buffer *einfo;
         Ecore_Evas_Engine_Buffer_Data *bdata;
@@ -2830,19 +2840,19 @@ ecore_evas_extn_socket_new_internal(int w, int h)
              ecore_evas_free(ee);
              return NULL;
           }
-          _ecore_evas_register(ee);
-     }
-   evas_key_modifier_add(ee->evas, "Shift");
-   evas_key_modifier_add(ee->evas, "Control");
-   evas_key_modifier_add(ee->evas, "Alt");
-   evas_key_modifier_add(ee->evas, "Meta");
-   evas_key_modifier_add(ee->evas, "Hyper");
-   evas_key_modifier_add(ee->evas, "Super");
-   evas_key_lock_add(ee->evas, "Caps_Lock");
-   evas_key_lock_add(ee->evas, "Num_Lock");
-   evas_key_lock_add(ee->evas, "Scroll_Lock");
+        _ecore_evas_register(ee);
+        evas_key_modifier_add(ee->evas, "Shift");
+        evas_key_modifier_add(ee->evas, "Control");
+        evas_key_modifier_add(ee->evas, "Alt");
+        evas_key_modifier_add(ee->evas, "Meta");
+        evas_key_modifier_add(ee->evas, "Hyper");
+        evas_key_modifier_add(ee->evas, "Super");
+        evas_key_lock_add(ee->evas, "Caps_Lock");
+        evas_key_lock_add(ee->evas, "Num_Lock");
+        evas_key_lock_add(ee->evas, "Scroll_Lock");
 
-   extn_ee_list = eina_list_append(extn_ee_list, ee);
+        extn_ee_list = eina_list_append(extn_ee_list, ee);
+     }
    return ee;
 }
 
@@ -2903,7 +2913,7 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
              if (!tizen_rsm)
                {
                   ERR("tizen_rsm is NULL");
-                  return NULL;
+                  return EINA_FALSE;
                }
 
              if (!(extn->tizen_rsp))
@@ -2913,7 +2923,7 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
                   if (!(extn->tizen_rsp))
                     {
                        ERR("Could not create tizen_remote_surface_provider\n");
-                       return NULL;
+                       return EINA_FALSE;
                     }
                  tizen_remote_surface_provider_add_listener(extn->tizen_rsp, &_ecore_evas_extn_gl_socket_listener, ee);
                }

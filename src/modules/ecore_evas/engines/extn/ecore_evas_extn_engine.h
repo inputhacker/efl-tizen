@@ -33,8 +33,10 @@
 # include <wayland-tbm-client.h>
 # include <Ecore_Wayland.h>
 # include <tbm_surface.h>
+# include <tbm_surface_internal.h>
 # include <Evas_Engine_Wayland_Egl.h>
 # include <Evas_Engine_Wayland_Shm.h>
+# include <Ecore_Input_Evas.h>
 #endif
 
 // TIZEN ONLY (170220): request e19 compositor to create socket
