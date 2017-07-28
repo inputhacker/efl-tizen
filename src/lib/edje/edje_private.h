@@ -1950,6 +1950,7 @@ struct _Edje_Real_Part_Text
       } fade;
 
       struct {
+         Edje           *edje;
          Evas_Object    *proxy_obj;
          Ecore_Animator *animator;
          double          animator_prev_time;

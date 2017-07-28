@@ -5944,6 +5944,7 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
    double cur_time;
    double elapsed_time;
    Edje_Real_Part *ep = (Edje_Real_Part *)data;
+   Edje *ed = ep->typedata.text->ellipsize.marquee.edje;
    Edje_Part_Description_Text *chosen_desc = (Edje_Part_Description_Text *)ep->chosen_description;
    Evas_Object *clipper_obj = ep->typedata.text->ellipsize.clipper_obj;
    Evas_Coord_Rectangle text_cur_area;
@@ -5998,6 +5999,9 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
         ep->typedata.text->ellipsize.marquee.animator = NULL;
         _edje_text_ellipsize_marquee_remove(ep);
         _edje_text_ellipsize_fade_update(ep, EINA_FALSE);
+
+        /* Emit a signal when text is too short to do slide. */
+        _edje_emit(ed, "text,ellipsize,marquee,none", ep->part->name);
 
         return ECORE_CALLBACK_CANCEL;
      }
@@ -6137,6 +6141,9 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
 
                   ep->typedata.text->ellipsize.marquee.distance += overpixel_for_loop;
                }
+
+             /* Emit a signal when a loop(or loops) is done. */
+             _edje_emit(ed, "text,ellipsize,marquee,loop", ep->part->name);
           }
 
         /* Check if the loop count reaches the given loop limit. */
@@ -6150,6 +6157,9 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
              ep->typedata.text->ellipsize.marquee.animator = NULL;
              _edje_text_ellipsize_marquee_remove(ep);
              _edje_text_ellipsize_fade_update(ep, EINA_TRUE);
+
+             /* Emit a signal when all loops are done. */
+             _edje_emit(ed, "text,ellipsize,marquee,done", ep->part->name);
 
              return ECORE_CALLBACK_DONE;
           }
@@ -6264,6 +6274,18 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
         _edje_text_ellipsize_fade_update(ep, EINA_FALSE);
      }
 
+   /* Enable fade if one of fade types is set or legacy fade_ellipsis option is set */
+   if ((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE) ||
+       (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE) ||
+       (chosen_desc->text.fade_ellipsis > 0.0))
+     is_fade = EINA_TRUE;
+
+   /* Enable marquee if one of marquee types is set and loop count is bigger than zero */
+   if (((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE) ||
+        (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE)) &&
+       (chosen_desc->text.ellipsize.marquee_repeat_limit != 0))
+     is_marquee = EINA_TRUE;
+
    /* Hide fade image if fade_ellipsis option is off or object size is zero. */
    if ((pf->final.w == 0) || (pf->final.h == 0) ||
        ((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_NONE) &&
@@ -6287,6 +6309,12 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
         else if (ep->part->type == EDJE_PART_TYPE_TEXT)
           evas_object_text_ellipsis_set(ep->object,
                                         chosen_desc->text.min_x ? -1.0 : pf->type.text.ellipsis);
+
+        if (is_marquee)
+          {
+             /* Emit a signal when text is too short to do slide. */
+             _edje_emit(ed, "text,ellipsize,marquee,none", ep->part->name);
+          }
 
         return;
      }
@@ -6333,18 +6361,6 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
    else if (ep->part->type == EDJE_PART_TYPE_TEXT)
      evas_object_text_ellipsis_set(ep->object, -1.0);
 
-   /* Enable fade if one of fade types is set or legacy fade_ellipsis option is set */
-   if ((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE) ||
-       (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE) ||
-       (chosen_desc->text.fade_ellipsis > 0.0))
-     is_fade = EINA_TRUE;
-
-   /* Enable marquee if one of marquee types is set and loop count is bigger than zero */
-   if (((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE) ||
-        (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE)) &&
-       (chosen_desc->text.ellipsize.marquee_repeat_limit != 0))
-     is_marquee = EINA_TRUE;
-
    if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
      {
         evas_object_textblock_size_formatted_get(ep->object, &tw, &th);
@@ -6368,6 +6384,12 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
           {
              evas_object_clip_unset(ep->typedata.text->ellipsize.fade.mask_obj);
              evas_object_hide(ep->typedata.text->ellipsize.fade.mask_obj);
+          }
+
+        if (is_marquee)
+          {
+             /* Emit a signal when text is too short to do slide. */
+             _edje_emit(ed, "text,ellipsize,marquee,none", ep->part->name);
           }
 
         return;
@@ -6511,6 +6533,7 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
         ep->typedata.text->ellipsize.marquee.animator_prev_time = ecore_time_get();
         ep->typedata.text->ellipsize.marquee.orig_x = tx;
         ep->typedata.text->ellipsize.marquee.orig_y = ty;
+        ep->typedata.text->ellipsize.marquee.edje = ed;
 
         /* Give a latency for first loop. */
         if (chosen_desc->text.ellipsize.marquee.loop_delay > 0.0)
