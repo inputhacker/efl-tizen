@@ -219,7 +219,7 @@ pre_rotation_symbols(void)
    init_pre_rotation_syms = EINA_TRUE;
 
 #ifdef GL_GLES
-   const char *wayland_egl_lib = LIBDIR"/libwayland-egl.so";
+   const char *wayland_egl_lib = LIBDIR"/libwayland-egl.so.1";
    wl_client_lib_handle = dlopen(wayland_egl_lib, RTLD_NOW);
    if (!wl_client_lib_handle)
      {
@@ -649,7 +649,6 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
              return 0;
           }
      }
-
    return 1;
 }
 
@@ -1158,18 +1157,15 @@ eng_setup(Evas *evas, void *info)
                       (ob->info->info.rotation != ob->rot) ||
                       (ob->gl_context->pre_rotated))
                {
-                 //TIZEN_ONLY(20161121) : Support PreRotation
+                 // Support PreRotation
                  if (ob->support_pre_rotation && ob->gl_context->pre_rotated)
                    {
                       ob->gl_context->pre_rotated = EINA_FALSE;
                       evgl_eng_native_win_prerotation_set(re);
                    }
-                 else
-                   {
-                      eng_outbuf_reconfigure(ob, epd->output.w, epd->output.h,
-                                              ob->info->info.rotation, 0);
-                   }
 
+                 eng_outbuf_reconfigure(ob, epd->output.w, epd->output.h,
+                                         ob->info->info.rotation, 0);
                }
           }
      }

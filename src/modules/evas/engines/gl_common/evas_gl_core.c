@@ -1537,14 +1537,13 @@ try_again:
              sfc->client_side_rotation = !!(cfg->options_bits & EVAS_GL_OPTIONS_CLIENT_SIDE_ROTATION);
              sfc->alpha = (cfg->color_format == EVAS_GL_RGBA_8888);
 
-             //TIZEN_ONLY(20161121)
              // Pre-rotation should be enabled only when direct rendering is set but client side rotation is not set
              if ((sfc->direct_fb_opt) &&
                  (!sfc->client_side_rotation) &&
                  (evgl_engine->funcs->native_win_prerotation_set))
                {
                   if (!evgl_engine->funcs->native_win_prerotation_set(eng_data))
-                    ERR("Prerotation does not work");
+                    DBG("Prerotation does not work");
                }
              //
 

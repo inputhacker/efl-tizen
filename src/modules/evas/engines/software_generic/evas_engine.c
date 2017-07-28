@@ -4,7 +4,6 @@
 #ifdef EVAS_CSERVE2
 #include "evas_cs2_private.h"
 #endif
-
 #include "region.h"
 
 #include <software/Ector_Software.h>
