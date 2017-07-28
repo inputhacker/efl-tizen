@@ -1287,6 +1287,15 @@ end:
 }
 
 static void
+eng_gl_prerotation_unset(void *data)
+{
+   Render_Engine *re;
+   if (!(re = (Render_Engine *)data)) return;
+
+   eng_get_ob(re)->gl_context->pre_rotated = EINA_FALSE;
+}
+
+static void
 _native_cb_bind(void *data EINA_UNUSED, void *image)
 {
    Evas_GL_Image *img;
@@ -1903,6 +1912,9 @@ module_open(Evas_Module *em)
 
    ORD(gl_current_context_get);
    ORD(gl_error_get);
+
+   //Unset PreRotation
+   ORD(gl_prerotation_unset);
 
    gl_symbols();
 

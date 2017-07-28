@@ -1480,6 +1480,10 @@ struct _Evas_Func
    void *(*ector_surface_create)         (void *data, void *surface, int w, int h, Eina_Bool force, int *error);
    void  (*ector_surface_cache_set)      (void *data, void *key, void *surface);
    void *(*ector_surface_cache_get)      (void *data, void *key);
+
+
+   // Unset PreRotation
+   void (*gl_prerotation_unset)          (void *data);
 };
 
 struct _Evas_Image_Save_Func

@@ -185,6 +185,10 @@ evas_gl_free(Evas_GL *evas_gl)
    // Destroy private tls
    _evas_gl_internal_tls_destroy(evas_gl);
 
+   // Unset PreRotation
+   if (evas_gl->evas->engine.func->gl_prerotation_unset)
+     evas_gl->evas->engine.func->gl_prerotation_unset(evas_gl->evas->engine.data.output);
+
    // Reset current evas gl tls
    if (_current_evas_gl_key && (evas_gl == eina_tls_get(_current_evas_gl_key)))
      eina_tls_set(_current_evas_gl_key, NULL);
