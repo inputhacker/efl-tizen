@@ -460,13 +460,13 @@ ecore_drm_libinput_log_handler(struct libinput *libinput EINA_UNUSED,
    switch (priority)
      {
         case LIBINPUT_LOG_PRIORITY_DEBUG:
-           DBG(buf);
+           DBG("%s", buf);
            break;
         case LIBINPUT_LOG_PRIORITY_INFO:
-           INF(buf);
+           INF("%s", buf);
            break;
         case LIBINPUT_LOG_PRIORITY_ERROR:
-           ERR(buf);
+           ERR("%s", buf);
            break;
         default:
            break;

@@ -903,7 +903,6 @@ ecore_drm_device_pointer_rotation_set(Ecore_Drm_Device *dev, int rotation)
 EAPI void
 ecore_drm_device_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation)
 {
-   unsigned int rot = 0;
    Ecore_Drm_Seat *seat = NULL;
    Ecore_Drm_Evdev *edev = NULL;
    Eina_List *l = NULL, *l2 = NULL;

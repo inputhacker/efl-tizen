@@ -1046,8 +1046,9 @@ _device_handle_touch_frame(struct libinput_device *device EINA_UNUSED, struct li
 }
 
 static void
-_ecore_drm_aux_data_event_free(void *user_data EINA_UNUSED, Ecore_Event_Axis_Update *e)
+_ecore_drm_aux_data_event_free(void *user_data EINA_UNUSED, void *ev)
 {
+   Ecore_Event_Axis_Update *e = (Ecore_Event_Axis_Update *)ev;
    if (e->axis)
      free(e->axis);
    free(e);
