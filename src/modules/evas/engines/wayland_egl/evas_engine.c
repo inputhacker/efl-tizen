@@ -1861,18 +1861,6 @@ eng_image_native_set(void *data, void *image, void *native)
    return img;
 }
 
-static void *
-eng_image_native_get(void *data EINA_UNUSED, void *image)
-{
-   Evas_GL_Image *im = image;
-   Evas_Native_Surface *n;
-
-   if (!im) return NULL;
-   n = im->native.data;
-   if (!n) return NULL;
-   return n;
-}
-
 Eina_Bool
 eng_preload_make_current(void *data, void *doit)
 {
