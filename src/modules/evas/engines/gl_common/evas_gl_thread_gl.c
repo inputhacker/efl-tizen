@@ -226,14 +226,12 @@ get_size(GLenum format, GLenum type, GLsizei width, GLsizei height)
           }
      }
 
-//   if (csize >= a)
-//      k = comp * l;
-//   else /* csize < a */
-//      k = (a / csize) * ceil( (csize * comp * l) / a);
-//
-//   return k * height;
+   if (csize >= a)
+      k = comp * l;
+   else /* csize < a */
+      k = (a / csize) * ceil( (csize * comp * l) / a);
 
-  return csize * comp;
+   return k * height * csize;
 }
 
 #define GLPIXELSTOREI_VARIABLE_DECLARE \
@@ -288,9 +286,8 @@ get_size(GLenum format, GLenum type, GLsizei width, GLsizei height)
    if (_cache_glBindBuffer_pixel_unpack_buffer_idx == 0) \
      { \
        /* 2. check memory size */ \
-       int size = get_size(format, type, width + (border *2), height + (border *2)); \
-       int copy_size = (width + (border * 2)) * (height + (border * 2)) * size; \
-          if (size < 0 || copy_size < 0 || (unsigned int)copy_size > _mp_texture_memory_size) \
+       int copy_size = get_size(format, type, width + (border *2), height + (border *2)); \
+          if (copy_size < 0 || (unsigned int)copy_size > _mp_texture_memory_size) \
      { \
         thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
         goto finish; \
@@ -332,9 +329,8 @@ get_size(GLenum format, GLenum type, GLsizei width, GLsizei height)
    if (_cache_glBindBuffer_pixel_unpack_buffer_idx == 0) \
      { \
        /* 2. check memory size */ \
-       int size = get_size(format, type, width, height); \
-       int copy_size = width * height * size; \
-       if (size < 0 || copy_size < 0 || (unsigned int)copy_size > _mp_texture_memory_size) \
+       int copy_size = get_size(format, type, width, height); \
+       if (copy_size < 0 || (unsigned int)copy_size > _mp_texture_memory_size) \
      { \
         thread_mode = EVAS_GL_THREAD_MODE_FINISH; \
         goto finish; \
