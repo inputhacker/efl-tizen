@@ -156,13 +156,16 @@ _evas_gl_common_shader_program_binary_load(Eet_File *ef, unsigned int flags)
      }
 
    p = calloc(1, sizeof(*p));
-   p->flags = flags;
-   p->prog = prg;
-   p->reset = EINA_TRUE;
-   p->bin_saved = EINA_TRUE;
-   p->uniform.mvp = glGetUniformLocation(prg, "mvp");
-   p->uniform.rotation_id = glGetUniformLocation(prg, "rotation_id");
-   evas_gl_common_shader_textures_bind(p);
+   if (p)
+     {
+       p->flags = flags;
+       p->prog = prg;
+       p->reset = EINA_TRUE;
+       p->bin_saved = EINA_TRUE;
+       p->uniform.mvp = glGetUniformLocation(prg, "mvp");
+       p->uniform.rotation_id = glGetUniformLocation(prg, "rotation_id");
+       evas_gl_common_shader_textures_bind(p);
+     }
 
 finish:
    if (vtx) glDeleteShader(vtx);

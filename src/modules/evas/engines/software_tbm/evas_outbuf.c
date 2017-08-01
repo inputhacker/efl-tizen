@@ -71,6 +71,7 @@ _tbm_surface_evas_buffer_info_get(tbm_surface_h surface, Eina_Bool *is_first)
           ERR("fail to evas_cache_image_data()");
 
         ebuf_info = calloc(1, sizeof(evas_buffer_info));
+        if (!ebuf_info) return NULL;
         ebuf_info->im = img;
         ebuf_info->tbm_surface = surface;
         tbm_surface_internal_set_user_data(surface, KEY_EVAS_BUFFER, ebuf_info);

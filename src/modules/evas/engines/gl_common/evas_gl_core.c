@@ -480,7 +480,6 @@ _renderbuffer_allocate(GLuint buf, GLenum fmt, int w, int h, int samples, Evas_G
      }
 
    return;
-   samples = 0;
 }
 
 static void
@@ -2136,7 +2135,7 @@ evgl_pbuffer_surface_create(void *eng_data, Evas_GL_Config *cfg,
      {
         ERR("Surface allocation failed.");
         evas_gl_common_error_set(eng_data, EVAS_GL_BAD_ALLOC);
-        goto error;
+        return NULL;
      }
 
    sfc->w = w;
@@ -3247,7 +3246,7 @@ evgl_api_get(void *eng_data, Evas_GL_Context_Version version, Eina_Bool alloc_on
         api = gles3_funcs;
      }
    else return NULL;
-   if (alloc_only && (api->version == EVAS_GL_API_VERSION))
+   if (alloc_only && (api && api->version == EVAS_GL_API_VERSION))
      return api;
 
 #ifdef GL_GLES
