@@ -517,11 +517,13 @@ static const struct wl_registry_listener _shm_wl_registry_listener =
 static void
 _shm_tzsurf_init(struct wl_display *disp)
 {
-   struct wl_event_queue *queue;
-   struct wl_registry *registry;
+   struct wl_event_queue *queue = NULL;
+   struct wl_registry *registry = NULL;
 
    queue = wl_display_create_queue(disp);
+   EINA_SAFETY_ON_NULL_GOTO(queue, err_registry);
    registry = wl_display_get_registry(disp);
+   EINA_SAFETY_ON_NULL_GOTO(queue, err_registry);
 
    wl_proxy_set_queue((struct wl_proxy *)registry, queue);
    wl_registry_add_listener(registry, &_shm_wl_registry_listener, NULL);
@@ -532,8 +534,10 @@ _shm_tzsurf_init(struct wl_display *disp)
    wl_proxy_set_queue((struct wl_proxy *)tzsurf, NULL);
 
 err_registry:
-   wl_registry_destroy(registry);
-   wl_event_queue_destroy(queue);
+   if (registry)
+     wl_registry_destroy(registry);
+   if (queue)
+     wl_event_queue_destroy(queue);
    return;
 }
 
