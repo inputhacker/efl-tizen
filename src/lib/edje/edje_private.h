@@ -1937,6 +1937,11 @@ struct _Edje_Real_Part_Text
    /* TIZEN_ONLY(20170217): add part_text_valign property for internal usage */
    FLOAT_T                valign; // 4
    /* END */
+   /* TIZEN_ONLY(20170801): add text marquee duration set/get APIs for internal usages */
+   struct {
+      double                 duration; // 8
+   } marquee;
+   /* END */
    /* TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part. */
    struct {
       Evas_Object    *clipper_obj; // 4
@@ -1961,6 +1966,8 @@ struct _Edje_Real_Part_Text
          int             orig_x, orig_y;
          int             loop_count;
          int             distance;
+
+         double          duration;
       } marquee;
    } ellipsize;
    /* END */
