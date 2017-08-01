@@ -5378,6 +5378,10 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
  * 20170322: fix crash issue when Edje tries to clean up fade object
  * 20170427: fix clipper loop issue caused by clipper object for fade
  * 20170703: Add ellipsize feature and refactory fade_ellipsis, marquee features.
+ * 20170725: fix wrong speed calculation for text marquee's duration.
+ * 20170725: fix to apply loop_delay even if there is no loop limit.
+ * 20170725: restore ellipsis state of TEXT part when marquee mode is NONE.
+ * 20170801: add text marquee duration set/get APIs for internal usages.
  *
  **********************************************************************************/
 #define EDJE_DEFAULT_FADE_IMAGE "edje_default_fade_image.png"
@@ -6489,6 +6493,8 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
 
    if (is_marquee)
      {
+        double duration = chosen_desc->text.ellipsize.marquee.duration;
+        double speed = chosen_desc->text.ellipsize.marquee.speed;
         Eina_Bool text_marquee_vertical;
 
         if (valign != -1.0)
@@ -6496,7 +6502,10 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
         else
           text_marquee_vertical = EINA_FALSE;
 
-        if (chosen_desc->text.ellipsize.marquee.speed > 0.0)
+        if (ep->typedata.text->ellipsize.marquee.duration > 0.0)
+          duration = ep->typedata.text->ellipsize.marquee.duration;
+
+        if (speed > 0.0)
           {
              /* Convert px_per_sec (speed) to sec_per_pixel */
              FLOAT_T sc = 1.0;
@@ -6507,9 +6516,9 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
                   if (sc == 0.0) sc = 1.0;
                }
 
-             ep->typedata.text->ellipsize.marquee.sec_per_pixel = 1.0 / (chosen_desc->text.ellipsize.marquee.speed * TO_DOUBLE(sc));
+             ep->typedata.text->ellipsize.marquee.sec_per_pixel = 1.0 / (speed * TO_DOUBLE(sc));
           }
-        else if (chosen_desc->text.ellipsize.marquee.duration > 0.0)
+        else if (duration > 0.0)
           {
              /* Convert sec_per_loop (duration) to sec_per_pixel */
              int distance_per_loop = 0.0;
@@ -6530,8 +6539,7 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
                      distance_per_loop = tw + pf->final.w;
                }
 
-             ep->typedata.text->ellipsize.marquee.sec_per_pixel =
-                chosen_desc->text.ellipsize.marquee.duration / (double)distance_per_loop;
+             ep->typedata.text->ellipsize.marquee.sec_per_pixel = duration / (double)distance_per_loop;
           }
         else
           {
