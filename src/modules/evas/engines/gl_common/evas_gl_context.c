@@ -689,6 +689,7 @@ evas_gl_common_context_new(void)
         const char *ext;
 
         shared = calloc(1, sizeof(Evas_GL_Shared));
+        if (!shared)  goto error;
         ext = (const char *) glGetString(GL_EXTENSIONS);
         if (ext)
           {

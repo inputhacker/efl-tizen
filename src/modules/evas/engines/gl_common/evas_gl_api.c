@@ -1289,7 +1289,7 @@ _evgl_glGetIntegerv(GLenum pname, GLint* params)
           }
         else if (ctx->version == EVAS_GL_GLES_3_X)
           {
-             if (pname == GL_DRAW_FRAMEBUFFER_BINDING || pname == GL_FRAMEBUFFER_BINDING)
+             if (pname == GL_DRAW_FRAMEBUFFER_BINDING)
                {
                   *params = ctx->current_draw_fbo;
                   return;

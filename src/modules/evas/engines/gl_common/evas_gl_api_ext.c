@@ -201,6 +201,7 @@ _evgl_eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx,
    if (!eglimg) return NULL;
 
    img = calloc(1, sizeof(EvasGLImage_EGL));
+   if (!img) return NULL;
    img->dpy = dpy;
    img->img = eglimg;
    return img;
