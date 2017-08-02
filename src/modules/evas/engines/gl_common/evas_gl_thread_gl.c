@@ -229,7 +229,7 @@ get_size(GLenum format, GLenum type, GLsizei width, GLsizei height)
    if (csize >= a)
       k = comp * l;
    else /* csize < a */
-      k = (a / csize) * ceil( (csize * comp * l) / a);
+      k = (int)(a / csize) * (int)ceil( (csize * comp * l) / a);
 
    return k * height * csize;
 }
