@@ -5382,6 +5382,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
  * 20170725: fix to apply loop_delay even if there is no loop limit.
  * 20170725: restore ellipsis state of TEXT part when marquee mode is NONE.
  * 20170801: add text marquee duration set/get APIs for internal usages.
+ * 20170802: remove build warnings caused by unused parameter or variable.
  *
  **********************************************************************************/
 #define EDJE_DEFAULT_FADE_IMAGE "edje_default_fade_image.png"
@@ -5517,7 +5518,7 @@ _edje_text_ellipsize_remove(Edje_Real_Part *ep)
 
 /* Get alignment of ellipsize according to ellipsize.align and Text/Textblock's status */
 static void
-_edje_text_ellipsize_align_get(Edje_Real_Part *ep, Edje_Calc_Params *pf, Edje_Part_Description_Text *chosen_desc, double *halign, double *valign)
+_edje_text_ellipsize_align_get(Edje_Real_Part *ep, Edje_Part_Description_Text *chosen_desc, double *halign, double *valign)
 {
    Evas_BiDi_Direction bidi_dir;
    Edje_Text_Ellipsize_Align ellip_align;
@@ -6346,7 +6347,7 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
      ellipsis_status = evas_object_text_ellipsis_status_get(ep->object);
 
    /* Get alignment of ellipsize according to ellipsize.align and Text/Textblock's status */
-   _edje_text_ellipsize_align_get(ep, pf, chosen_desc, &halign, &valign);
+   _edje_text_ellipsize_align_get(ep, chosen_desc, &halign, &valign);
 
    /* Enable normal ellipsis and quit the function */
    if (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_NORMAL)
