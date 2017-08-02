@@ -5447,8 +5447,8 @@ _layout_par(Ctxt *c)
 
         /* TIZEN_ONLY(20170201): Fix RTL + LTR word wrap issue caused by wrong line start pos */
         if ((c->ln_min_text_pos == -1) ||
-            (c->ln_min_text_pos > it->text_pos))
-          c->ln_min_text_pos = it->text_pos;
+            (c->ln_min_text_pos > (int)it->text_pos))
+          c->ln_min_text_pos = (int)it->text_pos;
         /* END */
 
         it->x = c->x;
