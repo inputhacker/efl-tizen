@@ -615,6 +615,7 @@ _evas_tbmbuf_surface_destroy(Surface *s)
                     tizen_surface_shm_flusher_destroy(surf->tzsurf_flusher);
                     surf->tzsurf_flusher = NULL;
                  }
+               if (s->info) s->info->info.tzsurf_flusher = NULL;
 
                if (surf->tbm_surface)
                   sym_tbm_surface_internal_set_user_data(surf->tbm_surface, KEY_WINDOW, NULL);
@@ -663,6 +664,10 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
    /* check num_buff, not yet support single buffer */
    if (num_buff == 1) num_buff = 2;
 
+   if (!tzsurf)
+      _shm_tzsurf_init(surf->wl_display);
+
+
    /* create surface buffers */
    if (!s->info->info.tbm_queue)
       {
@@ -672,12 +677,24 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
                                                                        w, h,
                                                                        TBM_FORMAT_ARGB8888);
          surf->tbm_queue = s->info->info.tbm_queue;
+
+         if (tzsurf && !s->info->info.tzsurf_flusher)
+           {
+             s->info->info.tzsurf_flusher = tizen_surface_shm_get_flusher(tzsurf, surf->wl_surface);
+             surf->tzsurf_flusher = s->info->info.tzsurf_flusher;
+             tizen_surface_shm_flusher_add_listener(surf->tzsurf_flusher, &_tzsurf_flusher_listener, surf);
+           }
+
       }
    else
       {
          /* reuse tbm_queue */
          surf->tbm_queue = s->info->info.tbm_queue;
          sym_tbm_surface_queue_reset(surf->tbm_queue, w, h, TBM_FORMAT_ARGB8888);
+
+         /* reuse tzsurf_flusher */
+         surf->tzsurf_flusher = s->info->info.tzsurf_flusher;
+
          tbm_queue_ref++;
       }
    if (surf->tbm_queue == NULL) {
@@ -693,14 +710,7 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
    s->funcs.assign = _evas_tbmbuf_surface_assign;
    s->funcs.post = _evas_tbmbuf_surface_post;
 
-   if (!tzsurf)
-      _shm_tzsurf_init(surf->wl_display);
 
-   if (tzsurf && !surf->tzsurf_flusher)
-     {
-        surf->tzsurf_flusher = tizen_surface_shm_get_flusher(tzsurf, surf->wl_surface);
-        tizen_surface_shm_flusher_add_listener(surf->tzsurf_flusher, &_tzsurf_flusher_listener, surf);
-     }
 
    return EINA_TRUE;
 

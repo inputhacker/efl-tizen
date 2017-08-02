@@ -23,6 +23,8 @@ struct _Evas_Engine_Info_Wayland_Shm
         int edges;
 
         struct wl_display *wl_disp;
+
+        struct tizen_surface_shm_flusher *tzsurf_flusher;
      } info;
 
    /* non-blocking or blocking mode */
