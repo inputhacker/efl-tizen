@@ -14974,6 +14974,12 @@ Eina_Bool ninepatch_image_info_get(char* name, int *w, int *h, int* borderleft, 
 
 
    info = (NinePatch_Image_Info*)calloc(1, sizeof(NinePatch_Image_Info));
+   if (!info)
+     {
+        evas_object_del(obj_img);
+        return EINA_FALSE;
+     }
+
    int info_name_size = strlen(name) + 1;
    info->name = (char*)calloc(info_name_size, sizeof(char));
    strncpy(info->name, name, info_name_size);
