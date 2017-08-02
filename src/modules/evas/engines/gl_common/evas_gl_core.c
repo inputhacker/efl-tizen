@@ -3246,7 +3246,9 @@ evgl_api_get(void *eng_data, Evas_GL_Context_Version version, Eina_Bool alloc_on
         api = gles3_funcs;
      }
    else return NULL;
-   if (alloc_only && (api && api->version == EVAS_GL_API_VERSION))
+
+   if (!api) return NULL;
+   if (alloc_only && (api->version == EVAS_GL_API_VERSION))
      return api;
 
 #ifdef GL_GLES
