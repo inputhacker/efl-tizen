@@ -6981,7 +6981,6 @@ EOLIAN Eina_Bool
 _edje_object_part_text_marquee_duration_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double duration)
 {
    Edje_Real_Part *rp;
-   Edje_Part_Description_Text *desc;
 
    if (!part) return EINA_FALSE;
    rp = _edje_real_part_recursive_get(&ed, part);
