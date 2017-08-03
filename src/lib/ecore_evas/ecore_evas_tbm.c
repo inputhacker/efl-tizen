@@ -545,7 +545,7 @@ _ecore_evas_tbm_queue_free(void *data EINA_UNUSED, void *tbm_queue)
 }
 
 EAPI Ecore_Evas *
-ecore_evas_tbm_ext_new(const char *engine, const void *tbm_surf_queue, void* data)
+ecore_evas_tbm_ext_new(const char *engine, void *tbm_surf_queue, void* data)
 {
 
    Ecore_Evas_Engine_Tbm_Data *tbm_data;
