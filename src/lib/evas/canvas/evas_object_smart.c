@@ -179,6 +179,11 @@ evas_object_smart_interface_data_get(const Evas_Object *eo_obj,
    return NULL;
    MAGIC_CHECK_END();
 
+  /* TIZEN_ONLY(20170803): Safety code for smart object
+  This code would be deleted when Tizen has upgrad of EFL version.
+  */
+   if (!eo_isa(eo_obj, EVAS_OBJECT_SMART_CLASS)) return NULL;
+
    obj = eo_data_scope_get(eo_obj, MY_CLASS);
    s = evas_object_smart_smart_get(eo_obj);
    if (!s) return NULL;
@@ -731,6 +736,12 @@ evas_object_smart_callback_priority_add(Evas_Object *eo_obj, const char *event, 
    MAGIC_CHECK(eo_obj, Evas_Object, MAGIC_OBJ);
    return;
    MAGIC_CHECK_END();
+
+  /* TIZEN_ONLY(20170803): Safety code for smart object
+  This code would be deleted when Tizen has upgrad of EFL version.
+  */
+   if (!eo_isa(eo_obj, EVAS_OBJECT_SMART_CLASS)) return;
+
    o = eo_data_scope_get(eo_obj, MY_CLASS);
 
    if (!event) return;
@@ -757,6 +768,13 @@ evas_object_smart_callback_del(Evas_Object *eo_obj, const char *event, Evas_Smar
    MAGIC_CHECK(eo_obj, Evas_Object, MAGIC_OBJ);
    return NULL;
    MAGIC_CHECK_END();
+
+
+  /* TIZEN_ONLY(20170803): Safety code for smart object
+  This code would be deleted when Tizen has upgrad of EFL version.
+  */
+   if (!eo_isa(eo_obj, EVAS_OBJECT_SMART_CLASS)) return NULL;
+
    o = eo_data_scope_get(eo_obj, MY_CLASS);
    if (!o) return NULL;
 
@@ -789,6 +807,12 @@ evas_object_smart_callback_del_full(Evas_Object *eo_obj, const char *event, Evas
    MAGIC_CHECK(eo_obj, Evas_Object, MAGIC_OBJ);
    return NULL;
    MAGIC_CHECK_END();
+
+   /* TIZEN_ONLY(20170803): Safety code for smart object
+   This code would be deleted when Tizen has upgrad of EFL version.
+   */
+   if (!eo_isa(eo_obj, EVAS_OBJECT_SMART_CLASS)) return NULL;
+
    if (!event) return NULL;
    o = eo_data_scope_get(eo_obj, MY_CLASS);
    if (!o) return NULL;
