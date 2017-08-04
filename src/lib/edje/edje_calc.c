@@ -5384,6 +5384,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
  * 20170801: add text marquee duration set/get APIs for internal usages.
  * 20170802: remove build warnings caused by unused parameter or variable.
  * 20170804: add text marquee speed set/get APIs for internal usages.
+ * 20170804: fixed top-aligned issue when marquee is started.
  *
  **********************************************************************************/
 #define EDJE_DEFAULT_FADE_IMAGE "edje_default_fade_image.png"
@@ -6446,6 +6447,12 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
    clipper_y = ed->y + pf->final.y;
    clipper_w = pf->final.w;
    clipper_h = pf->final.h;
+
+   if (pf->final.w > tw)
+     tw = pf->final.w;
+
+   if (pf->final.h > th)
+     th = pf->final.h;
 
    if (halign == 0.0)
      tx = ed->x + pf->final.x + pf->final.w - tw;
