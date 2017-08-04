@@ -7040,4 +7040,57 @@ _edje_object_part_text_marquee_duration_get(Eo *eo_obj EINA_UNUSED, Edje *ed, co
 }
 /* END */
 
+/* TIZEN_ONLY(20170804): add text marquee speed set/get APIs for internal usages */
+EOLIAN Eina_Bool
+_edje_object_part_text_marquee_speed_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double speed)
+{
+   Edje_Real_Part *rp;
+
+   if (!part) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return EINA_FALSE;
+
+   if (rp->typedata.text)
+     {
+        rp->typedata.text->ellipsize.marquee.speed = speed;
+
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
+EOLIAN double
+_edje_object_part_text_marquee_speed_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
+{
+   Edje_Real_Part *rp;
+   Edje_Part_Description_Text *desc;
+
+   if (!part) return -1.0;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return -1.0;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return -1.0;
+
+   if (rp->typedata.text)
+     {
+        if (rp->typedata.text->ellipsize.marquee.speed <= 0.0)
+          {
+             desc = (Edje_Part_Description_Text *)rp->chosen_description;
+             return desc->text.ellipsize.marquee.speed;
+          }
+        else
+          {
+             return rp->typedata.text->ellipsize.marquee.speed;
+          }
+     }
+
+   return -1.0;
+}
+/* END */
+
 /* vim:set ts=8 sw=3 sts=3 expandtab cino=>5n-2f0^-2{2(0W1st0 :*/

@@ -5383,6 +5383,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
  * 20170725: restore ellipsis state of TEXT part when marquee mode is NONE.
  * 20170801: add text marquee duration set/get APIs for internal usages.
  * 20170802: remove build warnings caused by unused parameter or variable.
+ * 20170804: add text marquee speed set/get APIs for internal usages.
  *
  **********************************************************************************/
 #define EDJE_DEFAULT_FADE_IMAGE "edje_default_fade_image.png"
@@ -6505,6 +6506,9 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
 
         if (ep->typedata.text->ellipsize.marquee.duration > 0.0)
           duration = ep->typedata.text->ellipsize.marquee.duration;
+
+        if (ep->typedata.text->ellipsize.marquee.speed > 0.0)
+          speed = ep->typedata.text->ellipsize.marquee.speed;
 
         if (speed > 0.0)
           {
