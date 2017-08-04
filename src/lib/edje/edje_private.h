@@ -1968,6 +1968,7 @@ struct _Edje_Real_Part_Text
          int             distance;
 
          double          duration;
+         double          speed;
       } marquee;
    } ellipsize;
    /* END */

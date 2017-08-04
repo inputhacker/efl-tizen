@@ -3089,6 +3089,31 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       /* END */
+      /* TIZEN_ONLY(20170804): add text marquee speed set/get APIs for internal usages */
+      @property part_text_marquee_speed @internal {
+         set {
+            [[Sets the speed for text's marquee.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+            ]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         get {
+            [[Gets the speed for text's marquee.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+            ]]
+         }
+         keys {
+            part: const(char)*; [[The part name]]
+         }
+         values {
+            speed: double; [[The speed. 0.0 for respect EDC's speed value.]]
+         }
+      }
+      /* END */
    }
    implements {
       Eo.Base.constructor;
