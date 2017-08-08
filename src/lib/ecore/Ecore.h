@@ -32,7 +32,7 @@
  * @li @ref Ecore_Input_Group
  * @li @ref Ecore_IMF_Lib_Group
  * @li @ref Ecore_IPC_Group
- * @li @link Ecore_X.h Ecore_X - X Windows System wrapper. @endlink
+ * @li Ecore_X.h Ecore_X - X Windows System wrapper.
  * @li @ref Ecore_Win32_Group
  * @li @ref Ecore_Audio_Group
  * @li @ref Ecore_Avahi_Group
@@ -147,7 +147,7 @@
  * Here is a diagram of the main loop flow of a simple program:
  *
  * @image html  prog_flow.png
- * @image latex prog_flow.eps width=\textwidth
+ * @image latex prog_flow.eps width=\\textwidth
  *
  *
  *

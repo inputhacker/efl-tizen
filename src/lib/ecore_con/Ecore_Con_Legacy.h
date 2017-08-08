@@ -12,6 +12,15 @@
 /********************************************************************
  * ecore_con_url.eo.h
  *******************************************************************/
+/**
+ * @ingroup Ecore_Con_Url_Group
+ * @typedef Ecore_Con_Url
+ * Used to provide legacy API/ABI compatibility with non-Eo applications.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @else WEARABLE @since_tizen 3.0
+ * @endif
+ */
 typedef Eo Ecore_Con_Url;
 
 
@@ -19,6 +28,7 @@ typedef Eo Ecore_Con_Url;
  * ecore_con_url.eo.legacy.h
  *******************************************************************/
 /**
+ * @ingroup Ecore_Con_Url_Group
  * @brief Controls the URL to send the request to.
  * @param[in] url The URL
  *
@@ -29,6 +39,7 @@ typedef Eo Ecore_Con_Url;
 EAPI Eina_Bool ecore_con_url_url_set(Ecore_Con_Url *obj, const char *url);
 
 /**
+ * @ingroup Ecore_Con_Url_Group
  * @brief Controls the URL to send the request to.
  *
  * @if MOBILE @since_tizen 3.0

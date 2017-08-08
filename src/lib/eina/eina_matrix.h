@@ -40,7 +40,8 @@
  */
 
 /**
- * @typedef Matrix3 types
+ * @typedef Eina_Matrix_Type
+ * Matrix3 types
  */
 typedef enum _Eina_Matrix_Type
   {
