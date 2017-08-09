@@ -102,6 +102,7 @@ struct _Elm_Naviframe_Mod_Api
    void (*tizen_push_deferred_effect)(Evas_Object *nf, Evas_Object *view, Eina_Bool is_cur_view);
    void (*tizen_pop_deferred_effect)(Evas_Object *nf, Evas_Object *view, Eina_Bool is_cur_view);
    Eina_Bool (*tizen_effect_enabled_get)(Evas_Object *view);
+   void (*tizen_effect_cancel)(Evas_Object *view);
 };
 //
 

@@ -80,6 +80,8 @@ _nf_mod_init(void)
       _elm_module_symbol_get(mod, "tizen_pop_deferred_effect");
    ((Elm_Naviframe_Mod_Api *)(mod->api))->tizen_effect_enabled_get =
       _elm_module_symbol_get(mod, "tizen_effect_enabled_get");
+   ((Elm_Naviframe_Mod_Api *)(mod->api))->tizen_effect_cancel =
+      _elm_module_symbol_get(mod, "tizen_effect_cancel");
 
    nf_mod = mod->api;
 }
@@ -690,7 +692,12 @@ _elm_naviframe_item_efl_object_destructor(Eo *eo_item, Elm_Naviframe_Item_Data *
 
         //TIZEN ONLY(20161208): Support tizen transition
         //elm_object_signal_emit(VIEW(prev_it), "elm,state,visible", "elm");
-        if (!_tizen_effect_enabled_get(prev_it))
+        if (_tizen_effect_enabled_get(nit))
+          nf_mod->tizen_effect_cancel(VIEW(nit));
+
+        if (_tizen_effect_enabled_get(prev_it))
+          nf_mod->tizen_effect_cancel(VIEW(prev_it));
+        else
           elm_object_signal_emit(VIEW(prev_it), "elm,state,visible", "elm");
         //
 
