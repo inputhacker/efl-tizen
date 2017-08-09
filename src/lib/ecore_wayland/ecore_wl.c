@@ -422,12 +422,31 @@ ecore_wl_sync(void)
    _ecore_wl_sync_wait(_ecore_wl_disp);
    while (_ecore_wl_disp->sync_ref_count > 0)
      {
+        int last_dpy_err = wl_display_get_error(_ecore_wl_disp->wl.display);
+        if (last_dpy_err == EPIPE)
+          {
+             errno = EPIPE;
+             ERR("Disconnected from a wayland compositor : %s", strerror(errno));
+             _ecore_wl_signal_exit();
+             return;
+          }
         ret = wl_display_dispatch(_ecore_wl_disp->wl.display);
         if ((ret < 0) && ((errno != EAGAIN) && (errno != EINVAL)))
           {
              /* raise exit signal */
-             ERR("Wayland socket error: %s", strerror(errno));
-             abort();
+             last_dpy_err = wl_display_get_error(_ecore_wl_disp->wl.display);
+             if ((last_dpy_err == EPIPE) || (errno == EPIPE))
+               {
+                  errno = EPIPE;
+                  ERR("Disconnected from a wayland compositor : %s", strerror(errno));
+                  _ecore_wl_signal_exit();
+                  return;
+               }
+             else
+               {
+                  ERR("Wayland socket error: %s", strerror(errno));
+                  abort();
+               }
              break;
           }
      }
