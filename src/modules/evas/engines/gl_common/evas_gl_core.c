@@ -1113,7 +1113,7 @@ _surface_cap_init(void *eng_data EINA_UNUSED, Evas_GL_Context_Version version)
 
    if (evgl_engine->caps[caps_idx].num_fbo_fmts)
      {
-        _surface_cap_print(1, version);
+        _surface_cap_print(0, version);
         DBG("Number of supported surface formats: %d", evgl_engine->caps[caps_idx].num_fbo_fmts);
         ret = 1;
      }
