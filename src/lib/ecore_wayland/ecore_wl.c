@@ -414,6 +414,15 @@ ecore_wl_flush(void)
    wl_display_flush(_ecore_wl_disp->wl.display);
 }
 
+static Eina_Bool _ecore_wl_disconnect(int error)
+{
+   if (error == EPIPE ||
+       error == ECONNRESET)
+     return EINA_TRUE;
+
+   return EINA_FALSE;
+}
+
 EAPI void
 ecore_wl_sync(void)
 {
@@ -423,9 +432,9 @@ ecore_wl_sync(void)
    while (_ecore_wl_disp->sync_ref_count > 0)
      {
         int last_dpy_err = wl_display_get_error(_ecore_wl_disp->wl.display);
-        if (last_dpy_err == EPIPE)
+        if (_ecore_wl_disconnect(last_dpy_err))
           {
-             errno = EPIPE;
+             errno = last_dpy_err;
              ERR("Disconnected from a wayland compositor : %s", strerror(errno));
              _ecore_wl_signal_exit();
              return;
@@ -435,9 +444,15 @@ ecore_wl_sync(void)
           {
              /* raise exit signal */
              last_dpy_err = wl_display_get_error(_ecore_wl_disp->wl.display);
-             if ((last_dpy_err == EPIPE) || (errno == EPIPE))
+             if (_ecore_wl_disconnect(last_dpy_err))
                {
-                  errno = EPIPE;
+                  errno = last_dpy_err;
+                  ERR("Disconnected from a wayland compositor : %s", strerror(last_dpy_err));
+                  _ecore_wl_signal_exit();
+                  return;
+               }
+             else if (_ecore_wl_disconnect(errno))
+               {
                   ERR("Disconnected from a wayland compositor : %s", strerror(errno));
                   _ecore_wl_signal_exit();
                   return;
