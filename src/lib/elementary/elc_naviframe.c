@@ -1313,7 +1313,11 @@ _on_item_show_finished(void *data,
      elm_object_signal_emit(VIEW(it), "elm,state,visible", "elm");
    //
 
-   elm_widget_tree_unfocusable_set(VIEW(it), EINA_FALSE);
+   /* TIZEN_ONLY(20170811): Set focus to new item view immediately when new item is pushed to show keypad fast. */
+   //elm_widget_tree_unfocusable_set(VIEW(it), EINA_FALSE);
+   if (!it->pushing)
+     elm_widget_tree_unfocusable_set(VIEW(it), EINA_FALSE);
+   /* END */
    _prev_page_focus_recover(it);
 
    if (sd->freeze_events)
@@ -1744,7 +1748,10 @@ _item_push_helper(Elm_Naviframe_Item_Data *item)
      {
         Elm_Naviframe_Op *nfo = calloc(1, sizeof (Elm_Naviframe_Op));
 
-        elm_widget_tree_unfocusable_set(VIEW(item), EINA_TRUE);
+        /* TIZEN_ONLY(20170811): Set focus to new item view immediately when new item is pushed to show keypad fast. */
+        //elm_widget_tree_unfocusable_set(VIEW(item), EINA_TRUE);
+        elm_widget_tree_unfocusable_set(VIEW(item), EINA_FALSE);
+        /* END */
         elm_widget_tree_unfocusable_set(VIEW(top_item), EINA_TRUE);
 
         if (sd->freeze_events)
