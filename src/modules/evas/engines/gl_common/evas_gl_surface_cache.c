@@ -8,7 +8,8 @@ evas_gl_common_surface_cache_init(void)
    if (!surface_cache)
      {
         surface_cache = calloc(1, sizeof(Ector_Surface_Cache));
-        surface_cache->surface_hash = eina_hash_int32_new(NULL);
+        if (surface_cache)
+          surface_cache->surface_hash = eina_hash_int32_new(NULL);
      }
 }
 
@@ -36,6 +37,7 @@ evas_gl_common_surface_cache_set(void *key, void *surface)
    int count;
    evas_gl_common_surface_cache_init();
    surface_data = calloc(1, sizeof(Ector_Surface_Data));
+   if (!surface_data) return;
    surface_data->key = key;
    surface_data->surface = surface;
    eina_hash_add(surface_cache->surface_hash, &key, surface_data);
