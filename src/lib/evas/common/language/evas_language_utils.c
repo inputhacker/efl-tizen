@@ -130,6 +130,14 @@ evas_common_language_script_type_get(const Eina_Unicode *str, size_t len)
      {
         script = evas_common_language_char_script_get(*str);
      }
+
+   /* TIZEN_ONLY(20170817): fix emoji merge issues caused by wrong handling of INHERITED script.
+    * If there is no EXPLICIT script, we need to return COMMON script as result.
+    * Returning INHERITED script can cause meaningless font query. */
+   if (!EXPLICIT_SCRIPT(script))
+     script = EVAS_SCRIPT_COMMON;
+   /* END */
+
    return script;
 }
 
