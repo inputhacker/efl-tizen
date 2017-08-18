@@ -149,23 +149,14 @@ _edje_object_text_ellipsize_clipper_move(Edje *ed, Edje_Real_Part *ep, Evas_Coor
 {
    Evas_Coord x = 0, y = 0;
 
-   if (ep->typedata.text->ellipsize.marquee.animator)
-     {
-        evas_object_geometry_get(ep->object, &x, &y, NULL, NULL);
+   evas_object_geometry_get(ep->object, &x, &y, NULL, NULL);
 
-        /* Horizontal Case */
-        x += ed_diff.x;
-        y += ed_diff.y;
+   x += ed_diff.x;
+   y += ed_diff.y;
 
-        /* ed_diff should be handled because of horizontal scroll */
-        ep->typedata.text->ellipsize.marquee.orig_x += ed_diff.x;
-        ep->typedata.text->ellipsize.marquee.orig_y += ed_diff.y;
-     }
-   else
-     {
-        x = ed->x + ep->x + ep->typedata.text->offset.x;
-        y = ed->y + ep->y + ep->typedata.text->offset.y;
-     }
+   /* ed_diff should be handled because of marquee */
+   ep->typedata.text->ellipsize.marquee.orig_x += ed_diff.x;
+   ep->typedata.text->ellipsize.marquee.orig_y += ed_diff.y;
 
    if (ep->typedata.text->ellipsize.marquee.proxy_obj)
      {

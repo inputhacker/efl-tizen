@@ -5385,6 +5385,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
  * 20170802: remove build warnings caused by unused parameter or variable.
  * 20170804: add text marquee speed set/get APIs for internal usages.
  * 20170804: fixed top-aligned issue when marquee is started.
+ * 20170818: move Text, Textblock object based on its original position in smart move
  *
  **********************************************************************************/
 #define EDJE_DEFAULT_FADE_IMAGE "edje_default_fade_image.png"
