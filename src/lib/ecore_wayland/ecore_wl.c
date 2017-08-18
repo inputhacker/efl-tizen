@@ -233,6 +233,45 @@ _ecore_wl_init_callback(void *data, struct wl_callback *callback, uint32_t seria
    ewd->init_done = EINA_TRUE;
 }
 
+static Eina_Bool _ecore_wl_disconnected(int error)
+{
+   if (error == EPIPE ||
+       error == ECONNRESET)
+     return EINA_TRUE;
+
+   return EINA_FALSE;
+}
+
+static void
+_ecore_wl_display_dispatch_error()
+{
+   uint32_t ecode = 0, id = 0;
+   const struct wl_interface *intf = NULL;
+   int last_err;
+
+   /* write out message about protocol error */
+   ecode = wl_display_get_protocol_error(_ecore_wl_disp->wl.display, &intf, &id);
+
+   if (intf)
+     ERR("Wayland Client: Got protocol error %u on interface %s"
+         " (object %u)\n", ecode, intf->name, id);
+
+   /* raise exit signal */
+   last_err = wl_display_get_error(_ecore_wl_disp->wl.display);
+   if (_ecore_wl_disconnected(errno) || _ecore_wl_disconnected(last_err))
+     {
+        ERR("Disconnected from a wayland compositor : errno:%s | last err:%s",
+            strerror(errno), strerror(last_err));
+        _ecore_wl_signal_exit();
+        return;
+     }
+   else
+     {
+        ERR("Wayland socket error: %s", strerror(errno));
+        abort();
+     }
+}
+
 static void
 _ecore_wl_init_wait(void)
 {
@@ -241,11 +280,9 @@ _ecore_wl_init_wait(void)
    while (!_ecore_wl_disp->init_done)
      {
         ret = wl_display_dispatch(_ecore_wl_disp->wl.display);
-        if ((ret < 0) && ((errno != EAGAIN) && (errno != EINVAL)))
+        if ((ret < 0) && (errno != EAGAIN))
           {
-             /* raise exit signal */
-             ERR("Wayland socket error: %s", strerror(errno));
-             abort();
+             _ecore_wl_display_dispatch_error();
              break;
           }
      }
@@ -414,15 +451,6 @@ ecore_wl_flush(void)
    wl_display_flush(_ecore_wl_disp->wl.display);
 }
 
-static Eina_Bool _ecore_wl_disconnect(int error)
-{
-   if (error == EPIPE ||
-       error == ECONNRESET)
-     return EINA_TRUE;
-
-   return EINA_FALSE;
-}
-
 EAPI void
 ecore_wl_sync(void)
 {
@@ -432,7 +460,7 @@ ecore_wl_sync(void)
    while (_ecore_wl_disp->sync_ref_count > 0)
      {
         int last_dpy_err = wl_display_get_error(_ecore_wl_disp->wl.display);
-        if (_ecore_wl_disconnect(last_dpy_err))
+        if (_ecore_wl_disconnected(last_dpy_err))
           {
              errno = last_dpy_err;
              ERR("Disconnected from a wayland compositor : %s", strerror(errno));
@@ -440,28 +468,9 @@ ecore_wl_sync(void)
              return;
           }
         ret = wl_display_dispatch(_ecore_wl_disp->wl.display);
-        if ((ret < 0) && ((errno != EAGAIN) && (errno != EINVAL)))
+        if ((ret < 0) && (errno != EAGAIN))
           {
-             /* raise exit signal */
-             last_dpy_err = wl_display_get_error(_ecore_wl_disp->wl.display);
-             if (_ecore_wl_disconnect(last_dpy_err))
-               {
-                  errno = last_dpy_err;
-                  ERR("Disconnected from a wayland compositor : %s", strerror(last_dpy_err));
-                  _ecore_wl_signal_exit();
-                  return;
-               }
-             else if (_ecore_wl_disconnect(errno))
-               {
-                  ERR("Disconnected from a wayland compositor : %s", strerror(errno));
-                  _ecore_wl_signal_exit();
-                  return;
-               }
-             else
-               {
-                  ERR("Wayland socket error: %s", strerror(errno));
-                  abort();
-               }
+             _ecore_wl_display_dispatch_error();
              break;
           }
      }
@@ -682,11 +691,9 @@ ecore_wl_display_iterate(void)
    if (!_ecore_wl_server_mode)
      {
         ret = wl_display_dispatch(_ecore_wl_disp->wl.display);
-        if ((ret < 0) && ((errno != EAGAIN) && (errno != EINVAL)))
+        if ((ret < 0) && (errno != EAGAIN))
           {
-             /* raise exit signal */
-             ERR("Wayland socket error: %s", strerror(errno));
-             abort();
+             _ecore_wl_display_dispatch_error();
           }
      }
 }
