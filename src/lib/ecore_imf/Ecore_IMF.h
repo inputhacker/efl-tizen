@@ -456,6 +456,10 @@ typedef enum _Ecore_IMF_Device_Subclass
    ECORE_IMF_DEVICE_SUBCLASS_TRACKPAD, /**< A trackpad style mouse @since 1.14 */
    ECORE_IMF_DEVICE_SUBCLASS_TRACKPOINT, /**< A trackpoint style mouse @since 1.14 */
    ECORE_IMF_DEVICE_SUBCLASS_TRACKBALL, /**< A trackball style mouse @since 1.14 */
+   // TIZEN_ONLY(20170822): Add new device subclasses.
+   ECORE_IMF_DEVICE_SUBCLASS_REMOCON, /**< A remote controller @since_tizen 4.0 */
+   ECORE_IMF_DEVICE_SUBCLASS_VIRTUAL_KEYBOARD /**< A virtual keyboard @since_tizen 4.0 */
+   //
 } Ecore_IMF_Device_Subclass; /**< A general subclass of device @since 1.14 */
 
 /**
