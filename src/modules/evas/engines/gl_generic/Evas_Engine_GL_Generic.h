@@ -8,6 +8,7 @@
 
 typedef struct _Render_Engine_GL_Generic Render_Engine_GL_Generic;
 typedef struct _Context_3D Context_3D;
+typedef struct _Evas_Object_Image_Data_Entry Evas_Object_Image_Data_Entry;
 
 typedef void (*Window_Use)(Outbuf *ob);
 typedef Evas_Engine_GL_Context *(*Window_GL_Context_Get)(Outbuf *ob);
@@ -36,6 +37,11 @@ struct _Render_Engine_GL_Generic
    const EVGL_Interface *evgl_funcs;
 
    Eina_Bool evgl_initted : 1;
+};
+
+struct _Evas_Object_Image_Data_Entry
+{
+   Evas_Image_Orient orient;
 };
 
 static inline Eina_Bool
