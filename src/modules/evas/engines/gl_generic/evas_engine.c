@@ -654,7 +654,6 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
      }
 
    im2 = evas_gl_common_image_surface_new(gl_context, w, h, alpha, EINA_FALSE);
-   if (!im2) return NULL;
 
    evas_gl_common_context_target_surface_set(gl_context, im2);
 
@@ -673,20 +672,12 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
    gl_context->dc = NULL;
    evas_common_draw_context_free(dc);
 
-   // Reverts to the previous target surface.
-   evas_gl_common_context_target_surface_set(gl_context, im1);
-
    // flush everything
    eng_gl_surface_lock(re, im2);
 
    // Rely on Evas_GL_Image infrastructure to allocate pixels
    im2->im = (RGBA_Image *)evas_cache_image_empty(evas_common_image_cache_get());
-   if (!im2->im)
-     {
-       eng_gl_surface_unlock(re, im2);
-       evas_gl_common_image_free(im2);
-       return NULL;
-     }
+   if (!im2->im) return NULL;
    im2->im->cache_entry.flags.alpha = !!alpha;
    evas_gl_common_image_alloc_ensure(im2);
 
@@ -694,7 +685,6 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
                               EVAS_COLORSPACE_ARGB8888, im2->im->image.data);
 
    eng_gl_surface_unlock(re, im2);
-
    return im2;
 }
 
