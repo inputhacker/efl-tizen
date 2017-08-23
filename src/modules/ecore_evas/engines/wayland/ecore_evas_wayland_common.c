@@ -2134,7 +2134,6 @@ _ecore_evas_wl_common_render(Ecore_Evas *ee)
 
    /* TODO: handle comp no sync */
 
-   if (ee->manual_render) return 0;
    if (ee->in_async_render) return 0;
    if (!ee->visible)
      {
