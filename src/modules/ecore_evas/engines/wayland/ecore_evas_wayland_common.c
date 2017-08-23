@@ -517,7 +517,9 @@ _ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void
 
    _ecore_evas_wl_common_rotate_update(ee);
    evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
-   _ecore_evas_wl_common_render(ee);
+
+   if (!ee->manual_render)
+     _ecore_evas_wl_common_render(ee);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -531,7 +533,9 @@ _ecore_evas_wl_common_cb_ignore_output_transform(void *data, int type EINA_UNUSE
 
    _ecore_evas_wl_common_rotate_update(ee);
    evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
-   _ecore_evas_wl_common_render(ee);
+
+   if (!ee->manual_render)
+     _ecore_evas_wl_common_render(ee);
 
    return ECORE_CALLBACK_PASS_ON;
 }
