@@ -1342,6 +1342,7 @@ _evas_image_data_get(const Eo *eo_obj, Evas_Image_Data *_pd EINA_UNUSED, Eina_Bo
    int stride = 0;
    void *pixels;
    DATA32 *data;
+   Eina_Bool tofree = 0;
 
    if (!o->engine_data) return NULL;
 
@@ -1355,12 +1356,27 @@ _evas_image_data_get(const Eo *eo_obj, Evas_Image_Data *_pd EINA_UNUSED, Eina_Bo
      ENFN->image_scale_hint_set(ENDT, o->engine_data, o->scale_hint);
    if (ENFN->image_content_hint_set)
      ENFN->image_content_hint_set(ENDT, o->engine_data, o->content_hint);
-   pixels = ENFN->image_data_get(ENDT, o->engine_data, for_writing, &data, &o->load_error, NULL);
+   pixels = ENFN->image_data_get(ENDT, o->engine_data, for_writing, &data, &o->load_error, &tofree);
 
    /* if we fail to get engine_data, we have to return NULL */
    if (!pixels) return NULL;
 
-   o->engine_data = pixels;
+   if (tofree)
+     {
+       ENFN->image_free(ENDT, o->engine_data);
+       o->engine_data = pixels;
+
+       if (ENFN->image_scale_hint_set)
+         ENFN->image_scale_hint_set(ENDT, o->engine_data, o->scale_hint);
+       if (ENFN->image_content_hint_set)
+         ENFN->image_content_hint_set(ENDT, o->engine_data, o->content_hint);
+
+     }
+   else
+     {
+       o->engine_data = pixels;
+     }
+
    if (ENFN->image_stride_get)
      ENFN->image_stride_get(ENDT, o->engine_data, &stride);
    else
