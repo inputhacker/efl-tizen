@@ -81,8 +81,6 @@ struct _Render_Engine_Software_Generic
    unsigned char end : 1;
    unsigned char lost_back : 1;
    unsigned char tile_strict : 1;
-
-   Eina_Hash          *image_entry_hash;
 };
 
 static inline Eina_Bool
@@ -147,9 +145,6 @@ evas_render_engine_software_generic_clean(Render_Engine_Software_Generic *re)
    if (re->rects_prev[1]) evas_common_tilebuf_free_render_rects(re->rects_prev[1]);
    if (re->rects_prev[2]) evas_common_tilebuf_free_render_rects(re->rects_prev[2]);
    if (re->rects_prev[3]) evas_common_tilebuf_free_render_rects(re->rects_prev[3]);
-
-   if (re->image_entry_hash) eina_hash_free(re->image_entry_hash);
-
 
    memset(re, 0, sizeof (Render_Engine_Software_Generic));
 }

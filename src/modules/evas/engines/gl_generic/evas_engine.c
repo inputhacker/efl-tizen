@@ -688,20 +688,12 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
    return im2;
 }
 
-static void
-_image_data_entry_del_cb(void *data)
-{
-  Evas_Object_Image_Data_Entry *data_entry = data;
-  if (data_entry) free(data_entry);
-}
-
 static void *
 eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, int *err, Eina_Bool *tofree)
 {
    Render_Engine_GL_Generic *re = data;
    Evas_GL_Image *im_new = NULL;
    Evas_GL_Image *im = image;
-   Evas_Object_Image_Data_Entry *data_entry = NULL;
    int error;
 
    *image_data = NULL;
@@ -719,9 +711,6 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
 
    if ((tofree != NULL) && im->im && (im->orient != EVAS_IMAGE_ORIENT_NONE))
      goto rotate_image;
-
-   if (!re->software.image_entry_hash && im->orient != EVAS_IMAGE_ORIENT_NONE)
-       re->software.image_entry_hash = eina_hash_pointer_new(_image_data_entry_del_cb);
 
 #ifdef GL_GLES
    re->window_use(re->software.ob);
@@ -876,25 +865,12 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
                         if (err) *err = EVAS_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED;
                         return NULL;
                      }
-                   im_new->orient = im->orient;
                    evas_gl_common_image_free(im);
                    im = im_new;
                 }
               else
                 evas_gl_common_image_dirty(im, 0, 0, 0, 0);
            }
-
-         if (re->software.image_entry_hash)
-           {
-             data_entry = calloc(1, sizeof(Evas_Object_Image_Data_Entry));
-             if (data_entry)
-               {
-                 data_entry->orient = im->orient;
-                 Evas_Object_Image_Data_Entry *old_entry = eina_hash_set(re->software.image_entry_hash, im->im->image.data, data_entry);
-                 if (old_entry) free(old_entry);
-               }
-           }
-
          *image_data = im->im->image.data;
          break;
       case EVAS_COLORSPACE_YCBCR422P601_PL:
@@ -985,32 +961,10 @@ eng_image_data_put(void *data, void *image, DATA32 *image_data)
       case EVAS_COLORSPACE_ARGB8888:
          if ((!im->im) || (image_data != im->im->image.data))
            {
-             Evas_Object_Image_Data_Entry *data_entry = NULL;
-             int width, height;
-             width = im->w;
-             height = im->h;
-             if (re->software.image_entry_hash)
-               {
-                 data_entry = eina_hash_find(re->software.image_entry_hash, image_data);
-                 if (data_entry)
-                   {
-                     if (data_entry->orient == EVAS_IMAGE_ORIENT_90 ||
-                         data_entry->orient == EVAS_IMAGE_ORIENT_270 ||
-                         data_entry->orient == EVAS_IMAGE_FLIP_TRANSPOSE ||
-                         data_entry->orient == EVAS_IMAGE_FLIP_TRANSVERSE)
-                       {
-                         width = im->h;
-                         height = im->w;
-                       }
-                   }
-               }
-
-              im2 = eng_image_new_from_data(data, width, height, image_data,
+              im2 = eng_image_new_from_data(data, im->w, im->h, image_data,
                                             eng_image_alpha_get(data, image),
                                             eng_image_colorspace_get(data, image));
               if (!im2) return im;
-              if (data_entry)
-                im2->orient = data_entry->orient;
               evas_gl_common_image_free(im);
               im = im2;
            }
