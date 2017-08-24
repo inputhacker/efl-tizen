@@ -507,12 +507,6 @@ _ecore_wl_dnd_leave(void *data, struct wl_data_device *data_device EINA_UNUSED)
    if (input->keyboard_focus)
      ev->source = input->keyboard_focus->id;
 
-   if (input->drag_source)
-     {
-        _ecore_wl_dnd_del(input->drag_source);
-        input->drag_source = NULL;
-     }
-
    ecore_event_add(ECORE_WL_EVENT_DND_LEAVE, ev, NULL, NULL);
 }
 
