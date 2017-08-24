@@ -463,6 +463,7 @@ struct _Evas_GL_Image
    Eina_List         *filtered;
    Eina_List         *targets;
    Evas_Image_Orient orient;
+   Evas_Image_Orient rotated_orient;
 
    unsigned char    dirty : 1;
    unsigned char    cached : 1;
