@@ -654,6 +654,8 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
      }
 
    im2 = evas_gl_common_image_surface_new(gl_context, w, h, alpha, EINA_FALSE);
+   if (!im2) return NULL;
+   im2->rotated_orient = im1->orient;
 
    evas_gl_common_context_target_surface_set(gl_context, im2);
 
@@ -672,12 +674,20 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
    gl_context->dc = NULL;
    evas_common_draw_context_free(dc);
 
+   // Reverts to the previous target surface.
+    evas_gl_common_context_target_surface_set(gl_context, im1);
+
    // flush everything
    eng_gl_surface_lock(re, im2);
 
    // Rely on Evas_GL_Image infrastructure to allocate pixels
    im2->im = (RGBA_Image *)evas_cache_image_empty(evas_common_image_cache_get());
-   if (!im2->im) return NULL;
+   if (!im2->im)
+      {
+        eng_gl_surface_unlock(re, im2);
+        evas_gl_common_image_free(im2);
+        return NULL;
+      }
    im2->im->cache_entry.flags.alpha = !!alpha;
    evas_gl_common_image_alloc_ensure(im2);
 
@@ -848,13 +858,7 @@ eng_image_data_get(void *data, void *image, int to_write, DATA32 **image_data, i
      error = evas_cache2_image_load_data(&im->im->cache_entry);
    else
 #endif
-     error = evas_cache_image_load_data(&im->im->cache_entry);
-
-   if (error != EVAS_LOAD_ERROR_NONE)
-     {
-        if (tofree)
-          goto rotate_image;
-     }
+   error = evas_cache_image_load_data(&im->im->cache_entry);
 
    evas_gl_common_image_alloc_ensure(im);
    switch (im->cs.space)
@@ -1011,7 +1015,7 @@ eng_image_orient_set(void *data, void *image, Evas_Image_Orient orient)
 
    if (!image) return NULL;
    im = image;
-   if (im->orient == orient) return image;
+   if (im->orient == orient && !im->rotated_orient) return image;
 
    re->window_use(re->software.ob);
 
@@ -1033,6 +1037,30 @@ eng_image_orient_set(void *data, void *image, Evas_Image_Orient orient)
        im_new = evas_gl_common_image_new_from_copied_data(im->gc, im->w, im->h, im->im->image.data, im->alpha, im->cs.space);
      }
    if (!im_new) return im;
+
+
+   // If the image has already been rotated because of evas_object_image_data_get()
+   // undo the previous orientation
+   if (im->rotated_orient)
+     {
+       Evas_GL_Image *im_rotated_new = NULL;
+       switch(im->rotated_orient)
+       {
+       case EVAS_IMAGE_ORIENT_90:
+         im_new->orient = EVAS_IMAGE_ORIENT_270;
+         break;
+       case EVAS_IMAGE_ORIENT_270:
+         im_new->orient = EVAS_IMAGE_ORIENT_90;
+         break;
+       default:
+         im_new->orient = im->rotated_orient;
+         break;
+       }
+       im_rotated_new = _rotate_image_data(data, im_new);
+       evas_gl_common_image_free(im_new);
+       im_new = im_rotated_new;
+       im_new->rotated_orient = EVAS_IMAGE_ORIENT_NONE;
+     }
 
    im_new->load_opts = im->load_opts;
    im_new->scaled = im->scaled;
