@@ -2613,16 +2613,6 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
         return 1;
      }
 
-   if(sfc && (sfc->cfg_index < 0) && (!sfc->buffers_skip_allocate))
-     {
-        // Set the internal config value
-        if (!_internal_config_set(eng_data, sfc, ctx->version))
-          {
-             ERR("Unsupported Format!");
-             evas_gl_common_error_set(eng_data, EVAS_GL_BAD_CONFIG);
-          }
-     }
-
    // Disable partial rendering for previous context
    if ((rsc->current_ctx) && (rsc->current_ctx != ctx))
      {
