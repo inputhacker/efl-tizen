@@ -248,6 +248,7 @@ _ecore_wl_display_dispatch_error()
    uint32_t ecode = 0, id = 0;
    const struct wl_interface *intf = NULL;
    int last_err;
+   char buffer[1024];
 
    /* write out message about protocol error */
    ecode = wl_display_get_protocol_error(_ecore_wl_disp->wl.display, &intf, &id);
@@ -260,14 +261,17 @@ _ecore_wl_display_dispatch_error()
    last_err = wl_display_get_error(_ecore_wl_disp->wl.display);
    if (_ecore_wl_disconnected(errno) || _ecore_wl_disconnected(last_err))
      {
-        ERR("Disconnected from a wayland compositor : errno:%s | last err:%s",
-            strerror(errno), strerror(last_err));
+        int _err = errno;
+        if (last_err) _err = last_err;
+        strerror_r(_err, buffer, sizeof(buffer));
+        ERR("Disconnected from a wayland compositor : error:(%d) %s", _err, buffer);
         _ecore_wl_signal_exit();
         return;
      }
    else
      {
-        ERR("Wayland socket error: %s", strerror(errno));
+        strerror_r(errno, buffer, sizeof(buffer));
+        ERR("wayland socket error:(%d) %s", errno, buffer);
         abort();
      }
 }
