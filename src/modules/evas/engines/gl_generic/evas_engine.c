@@ -1078,6 +1078,34 @@ eng_image_orient_get(void *data EINA_UNUSED, void *image)
    return im->orient;
 }
 
+
+static void
+_preload_done(void *data, void *image, const void *target)
+{
+  Render_Engine_GL_Generic *re = data;
+   Evas_GL_Image *gim = image;
+   RGBA_Image *im;
+
+   if (!gim || !re) return;
+   if (gim->native.data) return;
+   im = (RGBA_Image *)gim->im;
+   if (!im) return;
+
+   if (!gim->tex)
+     {
+       Evas_Engine_GL_Context *gl_context;
+
+       re->window_use(re->software.ob);
+       gl_context = re->window_gl_context_get(re->software.ob);
+       gim->tex = evas_gl_common_texture_new(gl_context, gim->im, EINA_FALSE);
+       EINA_SAFETY_ON_NULL_RETURN(gim->tex);
+       gim->tex->im = gim;
+       im->cache_entry.flags.updated_data = 1;
+     }
+   evas_gl_preload_target_register(gim->tex, (Eo*) target);
+}
+
+
 static void
 eng_image_data_preload_request(void *data, void *image, const Eo *target)
 {
@@ -1095,19 +1123,7 @@ eng_image_data_preload_request(void *data, void *image, const Eo *target)
      evas_cache2_image_preload_data(&im->cache_entry, target);
    else
 #endif
-     evas_cache_image_preload_data(&im->cache_entry, target, NULL, NULL, NULL);
-   if (!gim->tex)
-     {
-        Evas_Engine_GL_Context *gl_context;
-
-        re->window_use(re->software.ob);
-        gl_context = re->window_gl_context_get(re->software.ob);
-        gim->tex = evas_gl_common_texture_new(gl_context, gim->im, EINA_FALSE);
-        EINA_SAFETY_ON_NULL_RETURN(gim->tex);
-        gim->tex->im = gim;
-        im->cache_entry.flags.updated_data = 1;
-     }
-   evas_gl_preload_target_register(gim->tex, (Eo*) target);
+     evas_cache_image_preload_data(&im->cache_entry, target, NULL, _preload_done, data, gim);
 }
 
 static void

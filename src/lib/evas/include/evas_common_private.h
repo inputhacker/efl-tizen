@@ -462,6 +462,7 @@ typedef void (*Alpha_Gfx_Func)   (DATA8 *src, DATA8 *dst, int len);
 typedef void (*Evas_Render_Done_Cb)(void *);
 
 typedef void (*Evas_Engine_Thread_Task_Cb)(void *engine_data, Image_Entry *ie, void *custom_data);
+typedef void (*Evas_Engine_Thread_Done_Cb)(void *engine_data, void *image, void *custom_data);
 
 #include "../cache/evas_cache.h"
 #ifdef EVAS_CSERVE2
@@ -587,6 +588,9 @@ struct _Evas_Cache_Target
   EINA_INLIST;
   const Eo *target;
   void *data;
+  Evas_Engine_Thread_Done_Cb done_cb;
+  void *engine_data;
+  void *custom_data;
 };
 
 struct _Image_Timestamp

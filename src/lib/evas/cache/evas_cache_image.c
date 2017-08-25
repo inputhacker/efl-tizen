@@ -399,10 +399,15 @@ _evas_cache_image_async_end(void *data)
 
    while ((tmp = ie->targets))
      {
-        evas_object_inform_call_image_preloaded((Evas_Object*) tmp->target);
+       if (tmp->done_cb)
+         tmp->done_cb(tmp->engine_data, tmp->custom_data, tmp->target);
+
+       evas_object_inform_call_image_preloaded((Evas_Object*) tmp->target);
+
         ie->targets = (Evas_Cache_Target *)
-           eina_inlist_remove(EINA_INLIST_GET(ie->targets), 
+           eina_inlist_remove(EINA_INLIST_GET(ie->targets),
                               EINA_INLIST_GET(ie->targets));
+
         free(tmp);
      }
 
@@ -442,18 +447,18 @@ _evas_cache_image_async_cancel(void *data)
 // entry. make sure you only add once, or remove first, then add
 static int
 _evas_cache_image_entry_preload_add(Image_Entry *ie, const Eo *target,
-				    Evas_Engine_Thread_Task_Cb func, const void *engine_data, const void *custom_data)
+				    Evas_Engine_Thread_Task_Cb func, Evas_Engine_Thread_Done_Cb done_func, const void *engine_data, const void *custom_data)
 {
    Evas_Cache_Target *tg;
    Image_Entry_Task *task;
 
    if (ie->flags.preload_done) return 0;
 
-   tg = malloc(sizeof (Evas_Cache_Target));
+   tg = calloc(1, sizeof (Evas_Cache_Target));
    if (!tg) return 0;
    tg->target = target;
 
-   if (func == NULL && engine_data == NULL && custom_data == NULL)
+   if (func == NULL)
      {
         task = (Image_Entry_Task*) &dummy_task;
      }
@@ -468,6 +473,13 @@ _evas_cache_image_entry_preload_add(Image_Entry *ie, const Eo *target,
         task->cb = func;
         task->engine_data = engine_data;
         task->custom_data = custom_data;
+     }
+
+   if (done_func)
+     {
+       tg->done_cb = done_func;
+       tg->engine_data = engine_data;
+       tg->custom_data = custom_data;
      }
 
    ie->targets = (Evas_Cache_Target *)
@@ -1281,7 +1293,7 @@ evas_cache_image_is_loaded(Image_Entry *im)
 
 EAPI void
 evas_cache_image_preload_data(Image_Entry *im, const Eo *target,
-                              Evas_Engine_Thread_Task_Cb func, const void *engine_data, const void *custom_data)
+                              Evas_Engine_Thread_Task_Cb func, Evas_Engine_Thread_Done_Cb done_func, const void *engine_data, const void *custom_data)
 {
    RGBA_Image *img = (RGBA_Image *)im;
 
@@ -1291,7 +1303,7 @@ evas_cache_image_preload_data(Image_Entry *im, const Eo *target,
         return;
      }
    im->flags.loaded = 0;
-   if (!_evas_cache_image_entry_preload_add(im, target, func, engine_data, custom_data))
+   if (!_evas_cache_image_entry_preload_add(im, target, func, done_func, engine_data, custom_data))
      evas_object_inform_call_image_preloaded((Evas_Object*) target);
 }
 
