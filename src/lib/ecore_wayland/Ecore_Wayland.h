@@ -1503,6 +1503,7 @@ EAPI void ecore_wl_window_geometry_get(Ecore_Wl_Window *win, int *x, int *y, int
 EAPI Ecore_Wl_Input * ecore_wl_window_input_get(Ecore_Wl_Window *win);
 
 EAPI Eina_Bool ecore_wl_window_ignore_output_transform_get(Ecore_Wl_Window *win);
+EAPI void ecore_wl_window_video_has(Ecore_Wl_Window *win, Eina_Bool has);
 
 #ifdef __cplusplus
 }

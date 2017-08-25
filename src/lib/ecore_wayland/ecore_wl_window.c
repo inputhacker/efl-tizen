@@ -2419,3 +2419,17 @@ ecore_wl_window_ignore_output_transform_get(Ecore_Wl_Window *win)
 
    return win->ignore_output_transform;
 }
+
+EAPI void
+ecore_wl_window_video_has(Ecore_Wl_Window *win, Eina_Bool has)
+{
+   uint32_t ver;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+   if (!win) return;
+   if (!win->surface || !_ecore_wl_disp->wl.tz_policy) return;
+
+   ver = wl_proxy_get_version((struct wl_proxy *)_ecore_wl_disp->wl.tz_policy);
+   if (ver >= 7)
+     tizen_policy_has_video(_ecore_wl_disp->wl.tz_policy, win->surface, has);
+}
