@@ -2746,20 +2746,20 @@ ecore_evas_extn_socket_new_internal(int w, int h)
                   ecore_evas_free(ee);
                   return NULL;
                }
-          }
-        evas_key_modifier_add(ee->evas, "Shift");
-        evas_key_modifier_add(ee->evas, "Control");
-        evas_key_modifier_add(ee->evas, "Alt");
-        evas_key_modifier_add(ee->evas, "Meta");
-        evas_key_modifier_add(ee->evas, "Hyper");
-        evas_key_modifier_add(ee->evas, "Super");
-        evas_key_lock_add(ee->evas, "Caps_Lock");
-        evas_key_lock_add(ee->evas, "Num_Lock");
-        evas_key_lock_add(ee->evas, "Scroll_Lock");
+             evas_key_modifier_add(ee->evas, "Shift");
+             evas_key_modifier_add(ee->evas, "Control");
+             evas_key_modifier_add(ee->evas, "Alt");
+             evas_key_modifier_add(ee->evas, "Meta");
+             evas_key_modifier_add(ee->evas, "Hyper");
+             evas_key_modifier_add(ee->evas, "Super");
+             evas_key_lock_add(ee->evas, "Caps_Lock");
+             evas_key_lock_add(ee->evas, "Num_Lock");
+             evas_key_lock_add(ee->evas, "Scroll_Lock");
 
-        extn_ee_list = eina_list_append(extn_ee_list, ee);
+             extn_ee_list = eina_list_append(extn_ee_list, ee);
+          }
      }
-   else
+   if (_ecore_evas_extn_type_get() == EXTN_TYPE_SHM)
 #endif
      {
         Evas_Engine_Info_Buffer *einfo;
