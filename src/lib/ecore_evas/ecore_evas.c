@@ -3565,6 +3565,28 @@ _ecore_evas_mouse_multi_move_process(Ecore_Evas *ee, int device,
                                  timestamp, NULL);
 }
 
+// TIZEN_ONLY(20170829): ecore_evas: do not use evas rotation in drm engine
+EAPI void
+_ecore_evas_mouse_multi_move_process2(Ecore_Evas *ee, int device,
+                                     int x, int y,
+                                     double radius,
+                                     double radius_x, double radius_y,
+                                     double pressure,
+                                     double angle,
+                                     double mx, double my,
+                                     unsigned int timestamp)
+{
+   evas_event_input_multi_move(ee->evas, device,
+                               x, y,
+                               radius,
+                               radius_x, radius_y,
+                               pressure,
+                               angle - ee->rotation,
+                               mx, my,
+                               timestamp, NULL);
+}
+//
+
 EAPI void
 _ecore_evas_mouse_multi_down_process(Ecore_Evas *ee, int device,
                                      int x, int y,
@@ -3614,6 +3636,29 @@ _ecore_evas_mouse_multi_down_process(Ecore_Evas *ee, int device,
                                  flags, timestamp, NULL);
 }
 
+// TIZEN_ONLY(20170829): ecore_evas: do not use evas rotation in drm engine
+EAPI void
+_ecore_evas_mouse_multi_down_process2(Ecore_Evas *ee, int device,
+                                     int x, int y,
+                                     double radius,
+                                     double radius_x, double radius_y,
+                                     double pressure,
+                                     double angle,
+                                     double mx, double my,
+                                     Evas_Button_Flags flags,
+                                     unsigned int timestamp)
+{
+   evas_event_input_multi_down(ee->evas, device,
+                               x, y,
+                               radius,
+                               radius_x, radius_y,
+                               pressure,
+                               angle - ee->rotation,
+                               mx, my,
+                               flags, timestamp, NULL);
+}
+//
+
 EAPI void
 _ecore_evas_mouse_multi_up_process(Ecore_Evas *ee, int device,
                                    int x, int y,
@@ -3662,6 +3707,29 @@ _ecore_evas_mouse_multi_up_process(Ecore_Evas *ee, int device,
                                my, ee->w - mx - 1,
                                flags, timestamp, NULL);
 }
+
+// TIZEN_ONLY(20170829): ecore_evas: do not use evas rotation in drm engine
+EAPI void
+_ecore_evas_mouse_multi_up_process2(Ecore_Evas *ee, int device,
+                                   int x, int y,
+                                   double radius,
+                                   double radius_x, double radius_y,
+                                   double pressure,
+                                   double angle,
+                                   double mx, double my,
+                                   Evas_Button_Flags flags,
+                                   unsigned int timestamp)
+{
+   evas_event_input_multi_up(ee->evas, device,
+                             x, y,
+                             radius,
+                             radius_x, radius_y,
+                             pressure,
+                             angle - ee->rotation,
+                             mx, my,
+                             flags, timestamp, NULL);
+}
+//
 
 EAPI void
 _ecore_evas_window_profile_free(Ecore_Evas *ee)

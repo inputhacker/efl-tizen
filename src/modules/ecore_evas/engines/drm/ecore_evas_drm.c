@@ -380,11 +380,12 @@ ecore_evas_drm_new_internal(const char *device, unsigned int parent EINA_UNUSED,
                                (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
 #endif
    // TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+   // TIZEN_ONLY(20170829): ecore_evas: do not use evas rotation in drm engine
    ecore_event_window_register_with_multi(ee->prop.window, ee, ee->evas,
                                          (Ecore_Event_Mouse_Move_With_Multi_Cb)_ecore_evas_mouse_move_with_multi_info_process2,
-                                         (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process,
-                                         (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process,
-                                         (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
+                                         (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process2,
+                                         (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process2,
+                                         (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process2);
    //
 
    return ee;
@@ -613,11 +614,12 @@ ecore_evas_gl_drm_new_internal(const char *device, unsigned int parent EINA_UNUS
                                (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
 #endif
    // TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+   // TIZEN_ONLY(20170829): ecore_evas: do not use evas rotation in drm engine
    ecore_event_window_register_with_multi(ee->prop.window, ee, ee->evas,
                                          (Ecore_Event_Mouse_Move_With_Multi_Cb)_ecore_evas_mouse_move_with_multi_info_process2,
-                                         (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process,
-                                         (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process,
-                                         (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
+                                         (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process2,
+                                         (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process2,
+                                         (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process2);
    //
 
    TRACE_EFL_END();
