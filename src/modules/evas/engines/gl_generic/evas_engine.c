@@ -1832,7 +1832,7 @@ GL_TH_FN(eng_gl_get_pixels)(Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels
 
    thread_data_ptr =
       evas_gl_thread_cmd_create(EVAS_GL_THREAD_TYPE_GL, sizeof(GL_TH_ST(eng_gl_get_pixels) *) + sizeof(GL_TH_ST(eng_gl_get_pixels)), &thcmd_ref);
-   *thread_data_ptr = (void *)(thread_data_ptr + sizeof(GL_TH_ST(eng_gl_get_pixels) *));
+   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(eng_gl_get_pixels) *));
    thread_data = *thread_data_ptr;
 
    if (!evas_gl_thread_force_finish())
