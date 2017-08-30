@@ -5386,6 +5386,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
  * 20170804: add text marquee speed set/get APIs for internal usages.
  * 20170804: fixed top-aligned issue when marquee is started.
  * 20170818: move Text, Textblock object based on its original position in smart move
+ * 20170830: fix valign issue when slide_roll style.
  *
  **********************************************************************************/
 #define EDJE_DEFAULT_FADE_IMAGE "edje_default_fade_image.png"
@@ -5712,10 +5713,12 @@ _edje_text_ellipsize_marquee_proxy_object_get(Edje_Real_Part *ep)
         if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
           {
              const Evas_Textblock_Style *st = evas_object_textblock_style_get(ep->object);
+             double valign = evas_object_textblock_valign_get(ep->object);
 
              p_obj = evas_object_textblock_add(evas_object_evas_get(ep->object));
              evas_object_textblock_style_set(p_obj, st);
              evas_object_textblock_text_markup_set(p_obj, ep->typedata.text->text);
+             evas_object_textblock_valign_set(p_obj, valign);
           }
         else
           {
