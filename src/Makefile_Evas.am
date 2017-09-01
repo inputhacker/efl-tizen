@@ -579,7 +579,8 @@ modules/evas/engines/software_generic/evas_engine.c \
 modules/evas/engines/software_generic/Evas_Engine_Software_Generic.h \
 modules/evas/engines/software_generic/evas_native_tbm.c \
 modules/evas/engines/software_generic/ector_surface.c  \
-modules/evas/engines/software_generic/evas_native_common.h
+modules/evas/engines/software_generic/evas_native_common.h \
+modules/evas/engines/software_generic/evas_engine.h \
 lib_evas_libevas_la_LIBADD +=
 else
 enginesoftwaregenericpkgdir = $(libdir)/evas/modules/engines/software_generic/$(MODULE_ARCH)
@@ -594,7 +595,8 @@ modules_evas_engines_software_generic_module_la_SOURCES = \
 modules/evas/engines/software_generic/evas_engine.c \
 modules/evas/engines/software_generic/Evas_Engine_Software_Generic.h \
 modules/evas/engines/software_generic/evas_native_tbm.c \
-modules/evas/engines/software_generic/evas_native_common.h
+modules/evas/engines/software_generic/evas_native_common.h \
+modules/evas/engines/software_generic/evas_engine.h
 modules_evas_engines_software_generic_module_la_CPPFLAGS = -I$(top_builddir)/src/lib/efl \
 -I$(top_srcdir)/src/lib/evas/include \
 -I$(top_srcdir)/src/lib/evas/cserve2 \
