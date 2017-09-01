@@ -1,6 +1,7 @@
 #include "evas_common_private.h" /* Also includes international specific stuff */
 #include "evas_private.h"
 #include "evas_blend_private.h"
+#include "evas_engine.h"
 #ifdef EVAS_CSERVE2
 #include "evas_cs2_private.h"
 #endif
@@ -1393,7 +1394,7 @@ eng_image_data_put(void *data, void *image, DATA32 *image_data)
    return im;
 }
 
-static void
+EAPI void
 _image_flip_horizontal(DATA32 *pixels_out, const DATA32 *pixels_in,
                        int iw, int ih)
 {
@@ -1417,7 +1418,7 @@ _image_flip_horizontal(DATA32 *pixels_out, const DATA32 *pixels_in,
      }
 }
 
-static void
+EAPI void
 _image_flip_vertical(DATA32 *pixels_out, const DATA32 *pixels_in,
                      int iw, int ih)
 {
@@ -1441,7 +1442,7 @@ _image_flip_vertical(DATA32 *pixels_out, const DATA32 *pixels_in,
      }
 }
 
-static void
+EAPI void
 _image_rotate_180(DATA32 *pixels_out, const DATA32 *pixels_in,
                   int iw, int ih)
 {
@@ -1463,7 +1464,7 @@ _image_rotate_180(DATA32 *pixels_out, const DATA32 *pixels_in,
      }
 }
 
-static void
+EAPI void
 _image_rotate_90(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
 {
    int x, y, xx, yy, xx2, yy2;
@@ -1494,7 +1495,7 @@ _image_rotate_90(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
      }
 }
 
-static void
+EAPI void
 _image_rotate_270(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
 {
    int x, y, xx, yy, xx2, yy2;
@@ -1525,7 +1526,7 @@ _image_rotate_270(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
      }
 }
 
-static void
+EAPI void
 _image_flip_transpose(DATA32 *pixels_out, const DATA32 *pixels_in,
                       int iw, int ih)
 {
@@ -1548,7 +1549,7 @@ _image_flip_transpose(DATA32 *pixels_out, const DATA32 *pixels_in,
      }
 }
 
-static void
+EAPI void
 _image_flip_transverse(DATA32 *pixels_out, const DATA32 *pixels_in,
                        int iw, int ih)
 {
