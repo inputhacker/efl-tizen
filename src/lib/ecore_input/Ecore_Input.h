@@ -437,8 +437,6 @@ extern "C" {
           };
      };
 
-#ifndef _WIN32
-#ifndef __APPLE__
    /**
     * Initialises the Ecore Event system.
     *
@@ -503,6 +501,10 @@ extern "C" {
     */
    EAPI Ecore_Compose_State  ecore_compose_get(const Eina_List *seq, char **seqstr_ret);
 
+   // TIZEN_ONLY(20170906): Fix build error on Windows and MacOS
+#ifndef _WIN32
+#ifndef __APPLE__
+   //
    //TIZEN_ONLY(20170307) Deprecate ecore_input_joystick_init/shutdown API
    /**
     * Initializes the Ecore Input Joystick system.
@@ -550,8 +552,10 @@ extern "C" {
     * @since 1.19
     */
    EAPI int ecore_input_joystick_event_axis_deadzone_get(void);
+   // TIZEN_ONLY(20170906): Fix build error on Windows and MacOS
 #endif
 #endif
+   //
 
 #ifdef __cplusplus
 }
