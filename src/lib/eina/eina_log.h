@@ -1041,7 +1041,7 @@ EAPI void eina_log_print_cb_file(const Eina_Log_Domain *d,
                                  void                  *data,
                                  va_list                args);
 
-/*--- TIZEN_ONLY : begin ---*/
+// TIZEN_ONLY(20150121): Support tizen dlog logging system
 /**
  * @brief Alternative logging function, this outputs to the system log.
  *
@@ -1092,7 +1092,7 @@ EAPI void eina_log_print_cb_dlog(const Eina_Log_Domain *d,
                                  va_list                args);
 #endif
 
-/*--- TIZEN_ONLY : end ---*/
+//
 
 
 

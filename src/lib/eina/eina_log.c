@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <errno.h>
 
-/*--- TIZEN_ONLY : begin ---*/
+// TIZEN_ONLY(20150121): Support tizen dlog logging system
 #ifdef HAVE_DLOG
 #include <syslog.h>
 
@@ -51,7 +51,7 @@ syslog(int priority, const char *fmt, ...)
    printf("no use syslog\n");
 }
 #endif
-/*--- TIZEN_ONLY : end ---*/
+//
 
 #ifdef HAVE_SYSTEMD
 # include <systemd/sd-journal.h>
@@ -104,13 +104,13 @@ syslog(int priority, const char *fmt, ...)
 #define EINA_LOG_ENV_FUNCTION_DISABLE "EINA_LOG_FUNCTION_DISABLE"
 #define EINA_LOG_ENV_BACKTRACE "EINA_LOG_BACKTRACE"
 
-/*--- TIZEN_ONLY : begin ---*/
+// TIZEN_ONLY(20150121): Support tizen dlog logging system
 #define EINA_LOG_ENV_SYSLOG_ENABLE "EINA_LOG_SYSLOG_ENABLE"
 
 #ifdef HAVE_DLOG
 # define EINA_LOG_ENV_DLOG_ENABLE "EINA_LOG_DLOG_ENABLE"
 #endif
-/*--- TIZEN_ONLY : end ---*/
+//
 
 #ifdef EINA_ENABLE_LOG
 
@@ -1399,7 +1399,7 @@ eina_log_init(void)
    if ((tmp = getenv(EINA_LOG_ENV_ABORT_LEVEL)))
       _abort_level_on_critical = atoi(tmp);
 
-   /*--- TIZEN_ONLY : begin ---*/
+   // TIZEN_ONLY(20150121): Support tizen dlog logging system
    if ((tmp = getenv(EINA_LOG_ENV_SYSLOG_ENABLE)) && (atoi(tmp) == 1))
       _print_cb = eina_log_print_cb_syslog;
 
@@ -1408,7 +1408,7 @@ eina_log_init(void)
    if ((tmp = getenv(EINA_LOG_ENV_DLOG_ENABLE)) && (atoi(tmp) == 1))
       _print_cb = eina_log_print_cb_dlog;
 #endif
-   /*--- TIZEN_ONLY : end ---*/
+   //
 
    eina_log_print_prefix_update();
 
@@ -2090,7 +2090,7 @@ end:
 #endif
 }
 
-/*--- TIZEN_ONLY : begin ---*/
+// TIZEN_ONLY(20150121): Support tizen dlog logging system
 EAPI void
 eina_log_print_cb_syslog(const Eina_Log_Domain *d,
                          Eina_Log_Level level,
@@ -2235,7 +2235,7 @@ eina_log_print_cb_dlog(const Eina_Log_Domain *d,
 }
 #endif
 
-/*--- TIZEN_ONLY : end ---*/
+//
 
 EAPI void
 eina_log_print(int domain, Eina_Log_Level level, const char *file,

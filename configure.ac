@@ -882,6 +882,7 @@ EFL_ADD_LIBS([EINA], [-lm])
 
 ## Options
 
+## TIZEN_ONLY(20150121): Support tizen dlog logging system
 # dlog
 PKG_CHECK_EXISTS([dlog], [have_dlog="yes"], [have_dlog="no"])
 AC_MSG_CHECKING([Use dlog logger])
@@ -890,6 +891,7 @@ if test "x${have_dlog}" = "xyes"; then
     AC_DEFINE([HAVE_DLOG], [1], [Define to 1 if you have dlog])
     EFL_DEPEND_PKG([EINA], [DLOG], [dlog])
 fi
+##
 
 # Valgrind
 AC_ARG_ENABLE([valgrind],
