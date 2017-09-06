@@ -1948,6 +1948,7 @@ struct _Edje_Real_Part_Text
       float           halign;      // 4
       float           valign;      // 4
       int             text_w, text_h;
+      int             offset_x, offset_y;
       Eina_Bool       is_fade;
       Eina_Bool       is_marquee;
 
