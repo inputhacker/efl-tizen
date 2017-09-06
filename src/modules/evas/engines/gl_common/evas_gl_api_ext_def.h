@@ -1132,6 +1132,10 @@ _EVASGL_EXT_END()
 _EVASGL_EXT_BEGIN(texture_cube_map_array)
         _EVASGL_EXT_DRVNAME(GL_EXT_texture_cube_map_array)
 _EVASGL_EXT_END()
+
+_EVASGL_EXT_BEGIN(shader_multisample_interpolation)
+        _EVASGL_EXT_DRVNAME(GL_OES_shader_multisample_interpolation)
+_EVASGL_EXT_END()
 #endif // GL_GLES
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1267,6 +1271,14 @@ _EVASGL_EXT_FUNCTION_WHITELIST("glGetQueryObjectuivEXT")
 
 _EVASGL_EXT_END()
 
+
+// ----------------------------------------------------------
+_EVASGL_EXT_BEGIN(sample_shading)
+_EVASGL_EXT_DRVNAME(GL_OES_sample_shading)
+
+_EVASGL_EXT_FUNCTION_WHITELIST("glMinSampleShadingOES")
+
+_EVASGL_EXT_END()
 
 // ----------------------------------------------------------
 // NOTE: This extension changes state
