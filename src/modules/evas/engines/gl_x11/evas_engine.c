@@ -87,6 +87,8 @@ unsigned int   (*glsym_eglSwapBuffersWithDamage) (EGLDisplay a, void *b, const E
 unsigned int   (*glsym_eglSetDamageRegion)  (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d) = NULL;
 unsigned int (*glsym_eglQueryWaylandBufferWL)(EGLDisplay a, /*struct wl_resource */void *b, EGLint c, EGLint *d) = NULL;
 
+void (*glsym_evas_gl_common_surface_cache_dump)(void) = NULL;
+
 #else
 
 typedef XID     (*glsym_func_xid) ();
@@ -188,11 +190,11 @@ evas_eglGetCurrentContext(GL_X11_Context_Type type)
 EGLSurface
 evas_eglGetCurrentSurface(GL_X11_Context_Type type, EGLint readdraw)
 {
-   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled())
+   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
      {
         return GL_TH(eglGetCurrentSurface, readdraw);
      }
-   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_evgl_thread_enabled())
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_EVGL))
      {
         return EVGL_TH(eglGetCurrentSurface, readdraw);
      }
@@ -208,11 +210,11 @@ evas_eglGetCurrentSurface(GL_X11_Context_Type type, EGLint readdraw)
 EGLDisplay
 evas_eglGetCurrentDisplay(GL_X11_Context_Type type)
 {
-   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled())
+   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
      {
         return GL_TH(eglGetCurrentDisplay);
      }
-   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_evgl_thread_enabled())
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_EVGL))
      {
         return EVGL_TH(eglGetCurrentDisplay);
      }
@@ -228,11 +230,11 @@ evas_eglGetCurrentDisplay(GL_X11_Context_Type type)
 EGLBoolean
 evas_eglMakeCurrent(GL_X11_Context_Type type, EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx)
 {
-   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled())
+   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
      {
         return GL_TH(eglMakeCurrent, dpy, draw, read, ctx);
      }
-   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_evgl_thread_enabled())
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_EVGL))
      {
         return EVGL_TH(eglMakeCurrent, dpy, draw, read, ctx);
      }

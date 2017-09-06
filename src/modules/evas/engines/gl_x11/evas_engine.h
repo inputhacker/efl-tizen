@@ -12,6 +12,7 @@
 #ifdef GL_GLES
 # define SUPPORT_X11 1
 # include <EGL/egl.h>
+# include <EGL/eglext.h>
 # include <GLES2/gl2.h>
 # include <GLES2/gl2ext.h>
 # include <X11/Xlib.h>
@@ -214,8 +215,20 @@ _re_wincheck(Outbuf *ob)
    return 0;
 }
 
-#ifndef GL_GLES
-Eina_Bool __glXMakeContextCurrent(Display *disp, GLXDrawable glxwin,
+typedef enum
+{
+   GL_X11_CONTEXT_TYPE_EVAS = 0,
+   GL_X11_CONTEXT_TYPE_EVGL = 1
+} GL_X11_Context_Type;
+
+
+#ifdef GL_GLES
+EGLBoolean evas_eglMakeCurrent(GL_X11_Context_Type type, EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
+EGLContext evas_eglGetCurrentContext(GL_X11_Context_Type type);
+EGLSurface evas_eglGetCurrentSurface(GL_X11_Context_Type type, EGLint readdraw);
+EGLDisplay evas_eglGetCurrentDisplay(GL_X11_Context_Type type);
+#else
+Eina_Bool __glXMakeContextCurrent(GL_X11_Context_Type type, Display *disp, GLXDrawable glxwin,
                                   GLXContext context);
 #endif
 

@@ -135,7 +135,7 @@ __glXMakeContextCurrent(GL_X11_Context_Type type, Display *disp, GLXDrawable glx
      }
    return EINA_FALSE;
 #else
-   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled())
+   if (type == GL_X11_CONTEXT_TYPE_EVAS && evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
      {
         void *ret = GL_TH(glXMakeContextCurrentASYNC_begin, disp, glxwin, glxwin, context);
         if (!ret) ERR("NO ASYNC RETURN!");
@@ -143,7 +143,7 @@ __glXMakeContextCurrent(GL_X11_Context_Type type, Display *disp, GLXDrawable glx
         ERR("GOOD ASYNC RETURN TRUE!");
         return EINA_TRUE;
      }
-   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_evgl_thread_enabled())
+   else if (type == GL_X11_CONTEXT_TYPE_EVGL && evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_EVGL))
      {
         if (!EVGL_TH(glXMakeContextCurrent, disp, glxwin, glxwin, context)) return EINA_FALSE;
         return EINA_TRUE;
