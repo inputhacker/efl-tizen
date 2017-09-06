@@ -982,6 +982,7 @@ evgl_eng_indirect_surface_create(EVGL_Engine *evgl EINA_UNUSED, void *data,
    int config_attrs[40];
    Eina_Bool found = EINA_FALSE;
    int msaa = 0, depth = 0, stencil = 0;
+   int msaa_samples[3] = {2, 4, 8};
    Visual *visual = NULL;
    Eina_Bool retried = EINA_FALSE;
    EGLint val = 0;
@@ -999,7 +1000,7 @@ evgl_eng_indirect_surface_create(EVGL_Engine *evgl EINA_UNUSED, void *data,
 
    if ((cfg->multisample_bits > EVAS_GL_MULTISAMPLE_NONE) &&
        (cfg->multisample_bits <= EVAS_GL_MULTISAMPLE_HIGH))
-     msaa = evgl->caps.msaa_samples[(int) cfg->multisample_bits - 1];
+     msaa = msaa_samples[(int) cfg->multisample_bits - 1];
 
 try_again:
    i = 0;
@@ -1039,7 +1040,6 @@ try_again:
      }
    if (msaa)
      {
-        msaa = evgl->caps.msaa_samples[(int) cfg->multisample_bits - 1];
         config_attrs[i++] = EGL_SAMPLE_BUFFERS;
         config_attrs[i++] = 1;
         config_attrs[i++] = EGL_SAMPLES;
