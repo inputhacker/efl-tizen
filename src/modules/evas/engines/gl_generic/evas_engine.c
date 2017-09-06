@@ -1504,6 +1504,7 @@ eng_image_stride_get(void *data EINA_UNUSED, void *image, int *stride)
    Evas_GL_Image *im = image;
    int width = 0;
 
+#ifdef GL_GLES
    if (im->native.data)
      {
        Evas_Native_Surface *ns = im->native.data;
@@ -1516,6 +1517,7 @@ eng_image_stride_get(void *data EINA_UNUSED, void *image, int *stride)
            return;
          }
      }
+#endif
 
    if ((im->tex) && (im->tex->pt->dyn.img))
      *stride = im->tex->pt->dyn.stride;
