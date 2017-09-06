@@ -5387,6 +5387,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
  * 20170804: fixed top-aligned issue when marquee is started.
  * 20170818: move Text, Textblock object based on its original position in smart move
  * 20170830: fix valign issue when slide_roll style.
+ * 20170906: apply x/y offset to run marquee with short text
  *
  **********************************************************************************/
 #define EDJE_DEFAULT_FADE_IMAGE "edje_default_fade_image.png"
@@ -5526,7 +5527,7 @@ _edje_text_ellipsize_align_get(Edje_Real_Part *ep, Edje_Part_Description_Text *c
 {
    Evas_BiDi_Direction bidi_dir;
    Edje_Text_Ellipsize_Align ellip_align;
-   Evas_Coord tw, th;
+   Eina_Bool is_multiline = EINA_FALSE;
    double valign_ret = -1.0;
    double halign_ret = -1.0;
 
@@ -5537,15 +5538,13 @@ _edje_text_ellipsize_align_get(Edje_Real_Part *ep, Edje_Part_Description_Text *c
         cur = evas_object_textblock_cursor_new(ep->object);
 
         bidi_dir = evas_textblock_cursor_paragraph_direction_get(cur);
-        evas_object_textblock_size_formatted_get(ep->object, &tw, &th);
+        is_multiline = evas_textblock_cursor_line_set(cur, 1);
 
         evas_textblock_cursor_free(cur);
      }
    else
      {
         bidi_dir = evas_object_text_direction_get(ep->object);
-        tw = evas_object_text_horiz_advance_get(ep->object);
-        th = evas_object_text_vert_advance_get(ep->object);
      }
 
    if (chosen_desc->text.fade_ellipsis == 2.0)
@@ -5655,8 +5654,7 @@ _edje_text_ellipsize_align_get(Edje_Real_Part *ep, Edje_Part_Description_Text *c
           }
      }
 
-   if ((ep->part->type == EDJE_PART_TYPE_TEXTBLOCK) &&
-       (th > ep->h))
+   if (is_multiline)
      {
         /* variable for improving readability */
         double text_ellipsis_top;
@@ -5861,6 +5859,8 @@ _edje_text_ellipsize_fade_update(Edje_Real_Part *ep, Eina_Bool anim)
    bottom_fade_y = bottom_fade_off_y = cy + ch + BOTTOM_BORDER;
 
    evas_object_geometry_get(ep->object, &tx, &ty, NULL, NULL);
+   tx += ep->typedata.text->ellipsize.offset_x;
+   ty += ep->typedata.text->ellipsize.offset_y;
    tw = ep->typedata.text->ellipsize.text_w;
    th = ep->typedata.text->ellipsize.text_h;
 
@@ -5902,6 +5902,8 @@ _edje_text_ellipsize_fade_update(Edje_Real_Part *ep, Eina_Bool anim)
      {
         evas_object_geometry_get(ep->typedata.text->ellipsize.marquee.proxy_obj,
                                  &tx, &ty, NULL, NULL);
+        tx += ep->typedata.text->ellipsize.offset_x;
+        ty += ep->typedata.text->ellipsize.offset_y;
 
         if ((tx < cx) && (tx + tw > cx))
           {
@@ -5990,14 +5992,6 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
    evas_object_geometry_get(ep->object, &text_cur_area.x, &text_cur_area.y,
                             &text_cur_area.w, &text_cur_area.h);
 
-   if ((text_cur_area.w != ep->typedata.text->ellipsize.text_w) ||
-       (text_cur_area.h != ep->typedata.text->ellipsize.text_h))
-     {
-        text_cur_area.w = ep->typedata.text->ellipsize.text_w;
-        text_cur_area.h = ep->typedata.text->ellipsize.text_h;
-        evas_object_resize(ep->object, text_cur_area.w, text_cur_area.h);
-     }
-
    if (ep->typedata.text->ellipsize.valign != -1.0)
      text_marquee_vertical = EINA_TRUE;
    else
@@ -6016,22 +6010,6 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
           text_marquee_top_left = EINA_TRUE;
         else
           text_marquee_top_left = EINA_FALSE;
-     }
-
-   /* If text's current width is smaller than part's width, cancel marquee */
-   if ((text_cur_area.w <= ep->w) && (text_cur_area.h <= ep->h))
-     {
-        evas_object_move(ep->object,
-                         ep->typedata.text->ellipsize.marquee.orig_x,
-                         ep->typedata.text->ellipsize.marquee.orig_y);
-        ep->typedata.text->ellipsize.marquee.animator = NULL;
-        _edje_text_ellipsize_marquee_remove(ep);
-        _edje_text_ellipsize_fade_update(ep, EINA_FALSE);
-
-        /* Emit a signal when text is too short to do slide. */
-        _edje_emit(ed, "text,ellipsize,marquee,none", ep->part->name);
-
-        return ECORE_CALLBACK_CANCEL;
      }
 
    evas_object_geometry_get(clipper_obj,
@@ -6061,26 +6039,35 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
         double overpixel_for_loop = 0.0;
         int clipper_pos, clipper_length;
         int text_pos, text_length;
+        Edje_Text_Ellipsize_Marquee_Type marquee_type;
+        int offset = 0;
 
         if (text_marquee_vertical)
           {
              clipper_pos = clipper_area.y;
              clipper_length = clipper_area.h;
              text_pos = text_cur_area.y;
-             text_length = text_cur_area.h;
+             text_length = ep->typedata.text->ellipsize.text_h;
+             offset = ep->typedata.text->ellipsize.offset_y;
           }
         else
           {
              clipper_pos = clipper_area.x;
              clipper_length = clipper_area.w;
              text_pos = text_cur_area.x;
-             text_length = text_cur_area.w;
+             text_length = ep->typedata.text->ellipsize.text_w;
+             offset = ep->typedata.text->ellipsize.offset_x;
           }
 
+        marquee_type = chosen_desc->text.ellipsize.marquee.type;
+
         /* Calculate basic information of a loop according to marquee type */
-        switch (chosen_desc->text.ellipsize.marquee.type)
+        switch (marquee_type)
           {
            case EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL:
+              if (clipper_length - text_length - offset > roll_gap)
+                roll_gap = clipper_length - text_length - offset;
+
               distance_per_loop = text_length + roll_gap;
 
               if (text_marquee_top_left)
@@ -6109,6 +6096,9 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
                    loop_jump_to_pos = clipper_pos - text_length;
                 }
           }
+
+        loop_jump_from_pos -= offset;
+        loop_jump_to_pos -= offset;
 
         /* Calculate new x, y position according to current marquee direction */
         if (text_marquee_top_left)
@@ -6198,7 +6188,7 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
           text_pos += overpixel_for_loop;
 
         /* If current marquee type needs a proxy object, update it, too. */
-        if (chosen_desc->text.ellipsize.marquee.type == EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL)
+        if (marquee_type == EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL)
           {
              Evas_Object *p_obj = _edje_text_ellipsize_marquee_proxy_object_get(ep);
              int proxy_text_x, proxy_text_y;
@@ -6239,6 +6229,39 @@ _edje_text_ellipsize_marquee_animator_cb(void *data)
    return ECORE_CALLBACK_RENEW;
 }
 
+static void
+_edje_text_ellipsize_position_offset_get(Edje_Real_Part *ep,
+                                         int pw, int ph, int tw, int th,
+                                         int *x_offset, int *y_offset)
+{
+   int ret_x = 0, ret_y = 0;
+
+   if ((tw >= pw) && (th >= ph)) return;
+
+   if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
+     {
+        Evas_Textblock_Cursor *cur;
+        int lx, ly, lw, lh;
+
+        /* FIXME: It does not make sense for horizontal marquee of multiline Textblock */
+        cur = evas_object_textblock_cursor_new(ep->object);
+        evas_textblock_cursor_line_geometry_get(cur, &lx, &ly, &lw, &lh);
+        evas_textblock_cursor_free(cur);
+
+        ret_x = lx;
+        ret_y = ly;
+     }
+   else
+     {
+        ret_x = ep->typedata.text->offset.x;
+        ret_y = ep->typedata.text->offset.y;
+     }
+
+   if (x_offset && (pw > tw)) *x_offset = ret_x;
+   if (y_offset && (ph > th)) *y_offset = ret_y;
+}
+
+
 /*
  * _edje_text_ellipsize_apply() is a main function to apply ellipsis, fade, marquee.
  * ellipsize.mode: NONE will off this feature and respect old way of ellipsis.
@@ -6278,6 +6301,8 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
    int roll_gap = EDJE_TEXT_ELLIPSIZE_MARQUEE_ROLL_GAP;
    int clipper_x, clipper_y, clipper_w, clipper_h;
    int tx, ty, tw, th;
+   int resize_w, resize_h;
+   int offset_x, offset_y;
 
    if ((ep->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
        (ep->part->type != EDJE_PART_TYPE_TEXT))
@@ -6452,18 +6477,12 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
    clipper_w = pf->final.w;
    clipper_h = pf->final.h;
 
-   if (pf->final.w > tw)
-     tw = pf->final.w;
-
-   if (pf->final.h > th)
-     th = pf->final.h;
-
-   if (halign == 0.0)
+   if ((halign == 0.0) && (tw > pf->final.w))
      tx = ed->x + pf->final.x + pf->final.w - tw;
    else
      tx = ed->x + pf->final.x;
 
-   if (valign == 0.0)
+   if ((valign == 0.0) && (th > pf->final.h))
      ty = ed->y + pf->final.y + pf->final.h - th;
    else
      ty = ed->y + pf->final.y;
@@ -6501,8 +6520,17 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
    evas_object_move(clipper_obj, clipper_x, clipper_y);
    evas_object_show(clipper_obj);
 
-   evas_object_resize(ep->object, tw, th);
+   resize_w = (pf->final.w > tw) ? pf->final.w : tw;
+   resize_h = (pf->final.h > th) ? pf->final.h : th;
+   evas_object_resize(ep->object, resize_w, resize_h);
    evas_object_move(ep->object, tx, ty);
+
+   offset_x = offset_y = 0;
+   _edje_text_ellipsize_position_offset_get(ep,
+                                            pf->final.w, pf->final.h, tw, th,
+                                            &offset_x, &offset_y);
+   ep->typedata.text->ellipsize.offset_x = offset_x;
+   ep->typedata.text->ellipsize.offset_y = offset_y;
 
    if (is_marquee)
      {
@@ -6538,21 +6566,34 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
           {
              /* Convert sec_per_loop (duration) to sec_per_pixel */
              int distance_per_loop = 0.0;
+             int text_length;
+             int clipper_length;
+             int offset;
+
+             if (text_marquee_vertical)
+               {
+                  clipper_length = clipper_h;
+                  text_length = th;
+                  offset = offset_y;
+               }
+             else
+               {
+                  clipper_length = clipper_w;
+                  text_length = tw;
+                  offset = offset_x;
+               }
 
              switch (chosen_desc->text.ellipsize.marquee.type)
                {
                 case EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL:
-                   if (text_marquee_vertical)
-                     distance_per_loop = th + roll_gap;
-                   else
-                     distance_per_loop = tw + roll_gap;
+                   if (clipper_length - text_length - offset > roll_gap)
+                     roll_gap = clipper_length - text_length - offset;
+
+                   distance_per_loop = text_length + roll_gap;
                    break;
                 case EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_DEFAULT:
                 default:
-                   if (text_marquee_vertical)
-                     distance_per_loop = th + pf->final.h;
-                   else
-                     distance_per_loop = tw + pf->final.w;
+                   distance_per_loop = text_length + clipper_length;
                }
 
              ep->typedata.text->ellipsize.marquee.sec_per_pixel = duration / (double)distance_per_loop;
