@@ -2167,6 +2167,7 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
      {
         if (evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
           {
+#ifndef BUILD_ENGINE_GL_COCOA
              // Now surface direct override is ON.
              // It means that EvasGL DIRECT rendering is enabled strictly
              // and Evas GL THREAD rendering needs disabled from now,
@@ -2183,6 +2184,7 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
                ERR("Evas GL thread fallback is failed");
 
              evas_gl_thread_disabled();
+#endif /* ! BUILD_ENGINE_GL_COCOA */
           }
      }
 

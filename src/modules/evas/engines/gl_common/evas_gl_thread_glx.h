@@ -3,6 +3,8 @@
 
 #ifndef GL_GLES
 
+#ifndef BUILD_ENGINE_GL_COCOA
+
 #include <GL/glx.h>
 
 extern void *evas_gl_thread_glx_func_get(void);
@@ -74,6 +76,8 @@ extern void _glx_thread_link_init(void *func_ptr);
 
 #endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
 
+
+#endif /* ! BUILD_ENGINE_GL_COCOA */
 
 #endif /* ! GL_GLES */
 

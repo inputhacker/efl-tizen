@@ -3,6 +3,8 @@
 
 #ifndef GL_GLES
 
+#ifndef BUILD_ENGINE_GL_COCOA
+
 #define EVAS_TH_GLX_FN(ret, name, ...) \
  ret (*GL_TH_FN(name))(GL_TH_DP, ##__VA_ARGS__);
 #define EVAS_TH_GLX_FN_ASYNC(ret, name, ...) \
@@ -1614,5 +1616,7 @@ _glx_thread_link_init(void *func_ptr)
 
 
 #endif /* EVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC */
+
+#endif /* ! BUILD_ENGINE_GL_COCOA */
 
 #endif /* ! GL_GLES */

@@ -90,8 +90,10 @@ evas_gl_thread_func_get(void)
 #ifdef GL_GLES
         THREAD_FUNCTION_ASSIGN(evas_gl_thread_egl_func_get);
 #else
+ #ifndef BUILD_ENGINE_GL_COCOA
         THREAD_FUNCTION_ASSIGN(evas_gl_thread_glx_func_get);
-#endif
+ #endif /* ! BUILD_ENGINE_GL_COCOA */
+#endif /* GL_GLES */
 
         THREAD_FUNCTION_ASSIGN(evas_gl_thread_gl_func_get);
 
@@ -205,11 +207,13 @@ evas_gl_thread_link_init(void)
    else
       ERR("Thread functions (EGL) are not exist");
 #else
+ #ifndef BUILD_ENGINE_GL_COCOA
    if (th_func->evas_gl_thread_glx_func_get)
       _glx_thread_link_init(th_func->evas_gl_thread_glx_func_get());
    else
       ERR("Thread functions (GLX) are not exist");
-#endif
+ #endif /* ! BUILD_ENGINE_GL_COCOA */
+#endif /* GL_GLES */
 
    if (th_func->evas_gl_thread_gl_func_get)
       _gl_thread_link_init(th_func->evas_gl_thread_gl_func_get());
