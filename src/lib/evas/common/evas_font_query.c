@@ -89,6 +89,12 @@ get_top_font:
               * the meanwhile. */
              if (*itr <= 0x1F)
                 continue;
+
+             /* Skip searching font for INHERITED script unicodes.
+              * It is meaningful when only it comes after other unicodes from same font. */
+             if (evas_common_language_char_script_get(*itr) == EVAS_SCRIPT_INHERITED)
+                continue;
+
              /* Break if either it's not in the font, or if it is in the
               * script's font. */
              if (!evas_common_get_char_index(fi, *itr))
