@@ -91,7 +91,7 @@ typedef enum
    ECORE_IMF_INPUT_PANEL_GEOMETRY_EVENT,           /**< called when the size of the input panel is changed. @since 1.7 */
    ECORE_IMF_CANDIDATE_PANEL_STATE_EVENT,          /**< called when the state of the candidate word panel is changed. @since 1.7 */
    ECORE_IMF_CANDIDATE_PANEL_GEOMETRY_EVENT,       /**< called when the size of the candidate word panel is changed. @since 1.7 */
-   ECORE_IMF_INPUT_PANEL_KEYBOARD_MODE_EVENT       /**< called when the keyboard mode state of the input panel is changed @since 1.18 @since_tizen 3.0 */
+   ECORE_IMF_INPUT_PANEL_KEYBOARD_MODE_EVENT       /**< called when the keyboard mode state of the input panel is changed @since 1.20 @since_tizen 3.0 */
 } Ecore_IMF_Input_Panel_Event;
 
 /**
@@ -132,8 +132,8 @@ typedef enum
  */
 typedef enum
 {
-    ECORE_IMF_INPUT_PANEL_HW_KEYBOARD_MODE, /**< @since 1.18 */
-    ECORE_IMF_INPUT_PANEL_SW_KEYBOARD_MODE  /**< @since 1.18 */
+   ECORE_IMF_INPUT_PANEL_HW_KEYBOARD_MODE, /**< @since 1.20 */
+   ECORE_IMF_INPUT_PANEL_SW_KEYBOARD_MODE  /**< @since 1.20 */
 } Ecore_IMF_Input_Panel_Keyboard_Mode;
 
 /* Events sent by the Input Method */
