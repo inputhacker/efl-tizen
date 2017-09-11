@@ -119,7 +119,8 @@ static GLuint  _cache_glBindBuffer_pixel_unpack_buffer_idx = 0;
 static int
 get_size(GLenum format, GLenum type, GLsizei width, GLsizei height)
 {
-   int csize = 0, comp = 0, k =0;
+   int csize = 0, comp = 0;
+   float k = 0;
    int l = _cache_glPixelStorei_unpack_row_length;
    int a = _cache_glPixelStorei_unpack_alignment;
 
@@ -227,11 +228,11 @@ get_size(GLenum format, GLenum type, GLsizei width, GLsizei height)
      }
 
    if (csize >= a)
-      k = comp * l;
+      k = (float)comp * l;
    else /* csize < a */
-      k = (int)(a / csize) * (int)ceil( (csize * comp * l) / a);
+      k = (a / (float)csize) * (float)ceil( (csize * comp * l) / (float)a);
 
-   return k * height * csize;
+   return (int)k * height * csize;
 }
 
 #define GLPIXELSTOREI_VARIABLE_DECLARE \
