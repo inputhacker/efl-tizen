@@ -313,6 +313,7 @@ try_gles2:
    
    SET_RESTORE_CONTEXT();
    if (evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS,
+                           gw->egl_disp,
                       gw->egl_surface[0],
                       gw->egl_surface[0],
                       gw->egl_context[0]) == EGL_FALSE)
@@ -806,6 +807,7 @@ eng_window_resurf(Outbuf *gw)
      }
    SET_RESTORE_CONTEXT();
    if (evas_eglMakeCurrent(GL_X11_CONTEXT_TYPE_EVAS,
+                           gw->egl_disp,
                       gw->egl_surface[0],
                       gw->egl_surface[0],
                       gw->egl_context[0]) == EGL_FALSE)
