@@ -1441,7 +1441,16 @@ struct _Edje_Part_Description_Spec_Text
          double                           loop_delay;
          double                           speed;
          double                           duration;
+         Edje_Text_Ellipsize_Marquee_Mode mode;
       } marquee;
+
+      struct {
+         Edje_Text_Ellipsize_Normal_Mode mode;
+      } normal;
+
+      struct {
+         Edje_Text_Ellipsize_Fade_Mode mode;
+      } fade;
       /* END */
    } ellipsize;
    //
@@ -1949,6 +1958,7 @@ struct _Edje_Real_Part_Text
       float           valign;      // 4
       int             text_w, text_h;
       int             offset_x, offset_y;
+      Eina_Bool       is_normal;
       Eina_Bool       is_fade;
       Eina_Bool       is_marquee;
 
