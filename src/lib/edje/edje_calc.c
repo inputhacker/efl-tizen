@@ -5523,10 +5523,9 @@ _edje_text_ellipsize_remove(Edje_Real_Part *ep)
 
 /* Get alignment of ellipsize according to ellipsize.align and Text/Textblock's status */
 static void
-_edje_text_ellipsize_align_get(Edje_Real_Part *ep, Edje_Part_Description_Text *chosen_desc, double *halign, double *valign)
+_edje_text_ellipsize_align_get(Edje_Real_Part *ep, Edje_Text_Ellipsize_Align ellip_align, Eina_Bool is_normal, double *halign, double *valign)
 {
    Evas_BiDi_Direction bidi_dir;
-   Edje_Text_Ellipsize_Align ellip_align;
    Eina_Bool is_multiline = EINA_FALSE;
    double valign_ret = -1.0;
    double halign_ret = -1.0;
@@ -5547,17 +5546,10 @@ _edje_text_ellipsize_align_get(Edje_Real_Part *ep, Edje_Part_Description_Text *c
         bidi_dir = evas_object_text_direction_get(ep->object);
      }
 
-   if (chosen_desc->text.fade_ellipsis == 2.0)
-     chosen_desc->text.ellipsize.align = EDJE_TEXT_ELLIPSIZE_ALIGN_END;
-   else if (chosen_desc->text.fade_ellipsis == 1.0)
-     chosen_desc->text.ellipsize.align = EDJE_TEXT_ELLIPSIZE_ALIGN_START;
-
-   ellip_align = chosen_desc->text.ellipsize.align;
-
    /* Handle NORMAL ellipsis. It considers difference of TEXTBLOCK and TEXT.
     * Also, it considers a logic inside of each type of object with the given ellipsis value.
     */
-   if (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_NORMAL)
+   if (is_normal)
      {
         /* variable for improving readability */
         double text_ellipsis_end;
@@ -5751,6 +5743,10 @@ _edje_text_ellipsize_marquee_proxy_object_get(Edje_Real_Part *ep)
           evas_object_clip_set(p_obj, ep->typedata.text->ellipsize.fade.mask_obj);
         else
           evas_object_clip_set(p_obj, ep->typedata.text->ellipsize.clipper_obj);
+
+        if (ep->typedata.text->ellipsize.is_normal)
+          evas_object_textblock_ellipsis_set(p_obj,
+                                             evas_object_textblock_ellipsis_get(ep->object));
 
         evas_object_scale_set(p_obj, scale);
         ep->typedata.text->ellipsize.marquee.proxy_obj = p_obj;
@@ -6261,6 +6257,26 @@ _edje_text_ellipsize_position_offset_get(Edje_Real_Part *ep,
    if (y_offset && (ph > th)) *y_offset = ret_y;
 }
 
+static void
+_edje_text_ellipsize_update_legacy_mode(Edje_Part_Description_Text *chosen_desc)
+{
+   if ((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE) ||
+       (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE) ||
+       (chosen_desc->text.fade_ellipsis > 0.0))
+     chosen_desc->text.ellipsize.fade.mode = EDJE_TEXT_ELLIPSIZE_FADE_MODE_ON;
+
+   if ((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE) ||
+       (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE))
+     chosen_desc->text.ellipsize.marquee.mode = EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ON;
+
+   if (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_NORMAL)
+     chosen_desc->text.ellipsize.normal.mode = EDJE_TEXT_ELLIPSIZE_NORMAL_MODE_ON;
+
+   if (chosen_desc->text.fade_ellipsis == 2.0)
+     chosen_desc->text.ellipsize.align = EDJE_TEXT_ELLIPSIZE_ALIGN_END;
+   else if (chosen_desc->text.fade_ellipsis == 1.0)
+     chosen_desc->text.ellipsize.align = EDJE_TEXT_ELLIPSIZE_ALIGN_START;
+}
 
 /*
  * _edje_text_ellipsize_apply() is a main function to apply ellipsis, fade, marquee.
@@ -6294,9 +6310,10 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
    Evas_Object *clipper_obj;
    Evas_Object *mask_obj;
    double halign, valign;
-   Eina_Bool ellipsis_status;
+   Eina_Bool is_normal = EINA_FALSE;
    Eina_Bool is_fade = EINA_FALSE;
    Eina_Bool is_marquee = EINA_FALSE;
+   Eina_Bool ellipsis_status = EINA_FALSE;
    /* TODO: roll_gap should be controlled by edc developers? */
    int roll_gap = EDJE_TEXT_ELLIPSIZE_MARQUEE_ROLL_GAP;
    int clipper_x, clipper_y, clipper_w, clipper_h;
@@ -6308,6 +6325,8 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
        (ep->part->type != EDJE_PART_TYPE_TEXT))
      return;
 
+   /* Reset clipper objects from Edje.
+    * It should be same as other code for setting default clipper in Edje. */
    if (pf->clip_to && pf->clip_to->object)
      evas_object_clip_set(ep->object, pf->clip_to->object);
    else if (ep->part->clip_to_id >= 0)
@@ -6327,22 +6346,24 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
         _edje_text_ellipsize_fade_update(ep, EINA_FALSE);
      }
 
+   /* Update ellipsize properties using legacy properties. */
+   _edje_text_ellipsize_update_legacy_mode(chosen_desc);
+
+   if (chosen_desc->text.ellipsize.normal.mode == EDJE_TEXT_ELLIPSIZE_NORMAL_MODE_ON)
+     is_normal = EINA_TRUE;
+
    /* Enable fade if one of fade types is set or legacy fade_ellipsis option is set */
-   if ((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE) ||
-       (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE) ||
-       (chosen_desc->text.fade_ellipsis > 0.0))
+   if (chosen_desc->text.ellipsize.fade.mode == EDJE_TEXT_ELLIPSIZE_FADE_MODE_ON)
      is_fade = EINA_TRUE;
 
    /* Enable marquee if one of marquee types is set and loop count is bigger than zero */
-   if (((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE) ||
-        (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE)) &&
+   if ((chosen_desc->text.ellipsize.marquee.mode >= EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ON) &&
        (chosen_desc->text.ellipsize.marquee_repeat_limit != 0))
      is_marquee = EINA_TRUE;
 
-   /* Hide fade image if fade_ellipsis option is off or object size is zero. */
+   /* Hide ellipsize clipper and mask object all options are disabled. */
    if ((pf->final.w == 0) || (pf->final.h == 0) ||
-       ((chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_NONE) &&
-        (chosen_desc->text.fade_ellipsis - 1.0 == -1.0)))
+       !(is_normal || is_fade || is_marquee))
      {
         if (ep->typedata.text->ellipsize.clipper_obj)
           {
@@ -6372,17 +6393,12 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
         return;
      }
 
-   if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
-     ellipsis_status = evas_object_textblock_ellipsis_status_get(ep->object);
-   else
-     ellipsis_status = evas_object_text_ellipsis_status_get(ep->object);
-
-   /* Get alignment of ellipsize according to ellipsize.align and Text/Textblock's status */
-   _edje_text_ellipsize_align_get(ep, chosen_desc, &halign, &valign);
-
-   /* Enable normal ellipsis and quit the function */
-   if (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_NORMAL)
+   /* Enable normal ellipsis */
+   if (is_normal)
      {
+        /* Get align only for normal ellipsis */
+        _edje_text_ellipsize_align_get(ep, chosen_desc->text.ellipsize.align, EINA_TRUE, &halign, NULL);
+
         if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
           {
              evas_object_textblock_ellipsis_set(ep->object, halign);
@@ -6393,39 +6409,60 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
              evas_object_resize(ep->object, pf->final.w, pf->final.h);
           }
 
-        if (ep->typedata.text->ellipsize.clipper_obj)
+        /* Skip the rest of code if only normal mode is turned on. */
+        if (!(is_fade || is_marquee))
           {
-             evas_object_clip_unset(ep->typedata.text->ellipsize.clipper_obj);
-             evas_object_hide(ep->typedata.text->ellipsize.clipper_obj);
+             if (ep->typedata.text->ellipsize.clipper_obj)
+               {
+                  evas_object_clip_unset(ep->typedata.text->ellipsize.clipper_obj);
+                  evas_object_hide(ep->typedata.text->ellipsize.clipper_obj);
+               }
+
+             if (ep->typedata.text->ellipsize.fade.mask_obj)
+               {
+                  evas_object_clip_unset(ep->typedata.text->ellipsize.fade.mask_obj);
+                  evas_object_hide(ep->typedata.text->ellipsize.fade.mask_obj);
+               }
+
+             return;
           }
-
-        if (ep->typedata.text->ellipsize.fade.mask_obj)
-          {
-             evas_object_clip_unset(ep->typedata.text->ellipsize.fade.mask_obj);
-             evas_object_hide(ep->typedata.text->ellipsize.fade.mask_obj);
-          }
-
-        return;
-     }
-
-   /* Disable normal ellipsis and proceed */
-   if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
-     evas_object_textblock_ellipsis_set(ep->object, -1.0);
-   else if (ep->part->type == EDJE_PART_TYPE_TEXT)
-     evas_object_text_ellipsis_set(ep->object, -1.0);
-
-   if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
-     {
-        evas_object_textblock_size_formatted_get(ep->object, &tw, &th);
      }
    else
      {
-        tw = evas_object_text_horiz_advance_get(ep->object);
+        /* Disable normal ellipsis and proceed */
+        if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
+          evas_object_textblock_ellipsis_set(ep->object, -1.0);
+        else if (ep->part->type == EDJE_PART_TYPE_TEXT)
+          evas_object_text_ellipsis_set(ep->object, -1.0);
+     }
+
+   /* Get size of contents. If normal mode is off, disable ellipsis and get whole size. */
+   if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
+     {
+        ellipsis_status = evas_object_textblock_ellipsis_status_get(ep->object);
+
+        if (ellipsis_status && !is_normal)
+          evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_TRUE);
+
+        evas_object_textblock_size_formatted_get(ep->object, &tw, &th);
+
+        if (ellipsis_status && !is_normal)
+          evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_FALSE);
+     }
+   else
+     {
+        ellipsis_status = evas_object_text_ellipsis_status_get(ep->object);
+
+        if (ellipsis_status && !is_normal)
+          tw = evas_object_text_horiz_width_without_ellipsis_get(ep->object);
+        else
+          tw = evas_object_text_horiz_advance_get(ep->object);
         th = evas_object_text_vert_advance_get(ep->object);
      }
 
    /* Hide fade image if text is not exceed the given area. */
-   if ((tw <= pf->final.w) && (th <= pf->final.h) && !ellipsis_status)
+   if ((chosen_desc->text.ellipsize.marquee.mode != EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ALWAYS) &&
+       ((tw <= pf->final.w) && (th <= pf->final.h)))
      {
         if (ep->typedata.text->ellipsize.clipper_obj)
           {
@@ -6448,20 +6485,6 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
         return;
      }
 
-   if (ellipsis_status)
-     {
-        if (ep->part->type == EDJE_PART_TYPE_TEXTBLOCK)
-          {
-             evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_TRUE);
-             evas_object_textblock_size_formatted_get(ep->object, &tw, &th);
-             evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_FALSE);
-          }
-        else
-          {
-             tw = evas_object_text_horiz_width_without_ellipsis_get(ep->object);
-          }
-     }
-
    /* Add a cllipper object */
    if (!ep->typedata.text->ellipsize.clipper_obj)
      {
@@ -6477,6 +6500,9 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
    clipper_w = pf->final.w;
    clipper_h = pf->final.h;
 
+   /* Get alignment of ellipsize according to ellipsize.align and Text/Textblock's status */
+   _edje_text_ellipsize_align_get(ep, chosen_desc->text.ellipsize.align, EINA_FALSE, &halign, &valign);
+
    if ((halign == 0.0) && (tw > pf->final.w))
      tx = ed->x + pf->final.x + pf->final.w - tw;
    else
@@ -6489,6 +6515,7 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
 
    ep->typedata.text->ellipsize.text_w = tw;
    ep->typedata.text->ellipsize.text_h = th;
+   ep->typedata.text->ellipsize.is_normal = is_normal;
    ep->typedata.text->ellipsize.is_fade = is_fade;
    ep->typedata.text->ellipsize.is_marquee = is_marquee;
    ep->typedata.text->ellipsize.halign = (float)halign;

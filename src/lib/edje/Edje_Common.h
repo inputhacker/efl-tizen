@@ -1482,6 +1482,27 @@ typedef enum _Edje_Text_Ellipsize_Mode
 } Edje_Text_Ellipsize_Mode;
 //
 
+/* TIZEN_ONLY(20170912): Add interfaces to control each ellipsize features independently */
+typedef enum _Edje_Text_Ellipsize_Normal_Mode
+{
+   EDJE_TEXT_ELLIPSIZE_NORMAL_MODE_OFF = 0,
+   EDJE_TEXT_ELLIPSIZE_NORMAL_MODE_ON
+} Edje_Text_Ellipsize_Normal_Mode;
+
+typedef enum _Edje_Text_Ellipsize_Fade_Mode
+{
+   EDJE_TEXT_ELLIPSIZE_FADE_MODE_OFF = 0,
+   EDJE_TEXT_ELLIPSIZE_FADE_MODE_ON
+} Edje_Text_Ellipsize_Fade_Mode;
+
+typedef enum _Edje_Text_Ellipsize_Marquee_Mode
+{
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_OFF = 0,
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ON,
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ALWAYS
+} Edje_Text_Ellipsize_Marquee_Mode;
+/* END */
+
 /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
 typedef enum _Edje_Text_Ellipsize_Align
 {
