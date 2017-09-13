@@ -402,7 +402,7 @@ eina_file_virtualize(const char *virtual_name, const void *data, unsigned long l
    else
      sprintf((char*) file->filename, tmpname, ti);
 
-   eina_lock_new(&file->lock);
+   eina_lock_recursive_new(&file->lock);
    file->mtime = ti / 1000;
    file->length = length;
 #ifdef _STAT_VER_LINUX
@@ -1025,7 +1025,7 @@ eina_file_init(void)
         return EINA_FALSE;
      }
 
-   eina_lock_new(&_eina_file_lock_cache);
+   eina_lock_recursive_new(&_eina_file_lock_cache);
 
    return EINA_TRUE;
 }
