@@ -2281,7 +2281,7 @@ EAPI void                         ecore_imf_context_mime_type_accept_set(Ecore_I
  * @brief Sets the x,y coordinates of the input panel.
  * This API can be used in floating mode.
  *
- * @since 1.20.0
+ * @since 1.21.0
  *
  * @param[in] ctx An #Ecore_IMF_Context
  * @param x top-left x coordinate of the input panel
