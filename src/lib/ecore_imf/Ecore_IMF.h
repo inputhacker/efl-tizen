@@ -2330,6 +2330,12 @@ EAPI void                         ecore_imf_context_mime_type_accept_set(Ecore_I
  */
 EAPI void                         ecore_imf_context_input_panel_position_set(Ecore_IMF_Context *ctx, int x, int y);
 
+EAPI Eina_Bool                    ecore_imf_context_prediction_hint_hash_set(Ecore_IMF_Context *ctx, const char *key, const char *value);
+
+EAPI Eina_Bool                    ecore_imf_context_prediction_hint_hash_del(Ecore_IMF_Context *ctx, const char *key);
+
+EAPI const Eina_Hash             *ecore_imf_context_prediction_hint_hash_get(Ecore_IMF_Context *ctx);
+
 /* The following entry points must be exported by each input method module
  */
 
