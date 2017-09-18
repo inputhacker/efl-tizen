@@ -61,6 +61,7 @@ static void _ecore_wl_cb_iconify_state_changed(void *data EINA_UNUSED, struct ti
 static void _ecore_wl_cb_supported_aux_hints(void *data  EINA_UNUSED, struct tizen_policy *tizen_policy  EINA_UNUSED, struct wl_surface *surface_resource, struct wl_array *hints, uint32_t num_hints);
 static void _ecore_wl_cb_allowed_aux_hint(void *data  EINA_UNUSED, struct tizen_policy *tizen_policy  EINA_UNUSED, struct wl_surface *surface_resource, int id);
 static void _ecore_wl_cb_aux_message(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, const char *key, const char *val, struct wl_array *options);
+static void _ecore_wl_cb_conformant_region(void *data, struct tizen_policy *tizen_policy, struct wl_surface *surface, uint32_t conformant_part, uint32_t state, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t serial);
 static void _ecore_wl_window_conformant_area_send(Ecore_Wl_Window *win, uint32_t conformant_part, uint32_t state);
 static void _ecore_wl_cb_active_angle(void *data EINA_UNUSED, struct tizen_policy_ext *tizen_policy_ext EINA_UNUSED, uint32_t angle);
 static void _ecore_wl_cb_effect_start(void *data EINA_UNUSED, struct tizen_effect *tizen_effect EINA_UNUSED, struct wl_surface *surface_resource, unsigned int type);
@@ -130,6 +131,7 @@ static const struct tizen_policy_listener _ecore_tizen_policy_listener =
    _ecore_wl_cb_supported_aux_hints,
    _ecore_wl_cb_allowed_aux_hint,
    _ecore_wl_cb_aux_message,
+   _ecore_wl_cb_conformant_region,
 };
 
 static const struct tizen_policy_ext_listener _ecore_tizen_policy_ext_listener =
@@ -1105,8 +1107,8 @@ _ecore_wl_cb_handle_global(void *data, struct wl_registry *registry, unsigned in
      }
    else if (!strcmp(interface, "tizen_policy"))
      {
-        if (version >= 5)
-          client_version = 5;
+        if (version >= 7)
+          client_version = 7;
         else
           client_version = version;
 
@@ -2190,6 +2192,12 @@ _ecore_wl_cb_aux_message(void *data EINA_UNUSED, struct tizen_policy *tizen_poli
    ev->options = opt_list;
 
    ecore_event_add(ECORE_WL_EVENT_AUX_MESSAGE, ev, _cb_aux_message_free, NULL);
+}
+
+static void
+_ecore_wl_cb_conformant_region(void *data, struct tizen_policy *tizen_policy, struct wl_surface *surface, uint32_t conformant_part, uint32_t state, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t serial)
+{
+      ; // nothing to do.
 }
 
 static void
