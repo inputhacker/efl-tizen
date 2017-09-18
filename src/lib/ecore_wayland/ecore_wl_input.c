@@ -2270,7 +2270,7 @@ void
 _ecore_wl_input_device_manager_setup(unsigned int id)
 {
    _ecore_wl_disp->wl.tz_input_device_manager =
-   wl_registry_bind(_ecore_wl_disp->wl.registry, id, &tizen_input_device_manager_interface, 1);
+   wl_registry_bind(_ecore_wl_disp->wl.registry, id, &tizen_input_device_manager_interface, 2);
 
    tizen_input_device_manager_add_listener(_ecore_wl_disp->wl.tz_input_device_manager,
                                        &_ecore_tizen_input_device_mgr_listener, _ecore_wl_disp->wl.display);
