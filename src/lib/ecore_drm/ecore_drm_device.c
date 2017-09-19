@@ -518,7 +518,9 @@ ecore_drm_device_close(Ecore_Drm_Device *dev)
 
    _ecore_drm_launcher_device_close(dev->drm.name, dev->drm.fd);
 
+#ifdef HAVE_TDM
    _ecore_drm_display_destroy(dev);
+#endif
 
    /* reset device fd */
    dev->drm.fd = -1;

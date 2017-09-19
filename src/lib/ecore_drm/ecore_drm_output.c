@@ -774,7 +774,7 @@ next:
         if (destory_output)
           {
              eina_list_remove(dev->outputs, destory_output);
-             _ecore_drm_output_delete(dev, destory_output);
+//             _ecore_drm_output_delete(dev, destory_output);
           }
      }
 #endif
@@ -1311,6 +1311,7 @@ ecore_drm_output_dpms_get(Ecore_Drm_Output *output)
    return output->dpms_level;
 }
 
+#ifdef HAVE_TDM
 EAPI void *
 ecore_drm_output_hal_private_get(Ecore_Drm_Output *output)
 {
@@ -1319,7 +1320,7 @@ ecore_drm_output_hal_private_get(Ecore_Drm_Output *output)
 
    return _ecore_drm_display_output_hal_private_get(output);
 }
-
+#endif
 
 
 #ifndef HAVE_TDM
