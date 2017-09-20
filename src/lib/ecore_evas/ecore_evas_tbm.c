@@ -29,7 +29,7 @@ _ecore_evas_tbm_free(Ecore_Evas *ee)
 {
    Ecore_Evas_Engine_Tbm_Data *tbm_data = ee->engine.data;
 
-   if (tbm_data->tbm_queue)
+   if (tbm_data->tbm_queue && tbm_data->free_func)
      tbm_data->free_func(tbm_data->data,tbm_data->tbm_queue);
    free(tbm_data);
 }
