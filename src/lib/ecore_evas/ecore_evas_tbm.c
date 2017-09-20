@@ -620,6 +620,7 @@ ecore_evas_tbm_ext_new(const char *engine, void *tbm_surf_queue, void* data)
     ee->prop.fullscreen = EINA_FALSE;
     ee->prop.withdrawn = EINA_FALSE;
     ee->prop.sticky = EINA_FALSE;
+    ee->prop.window = (Ecore_Window)tbm_data->tbm_queue;
 
     /* init evas here */
     ee->evas = evas_new();
