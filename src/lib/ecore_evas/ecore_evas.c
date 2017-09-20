@@ -3801,6 +3801,11 @@ ecore_evas_input_event_register_with_multi(Ecore_Evas *ee)
                                           (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process,
                                           (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process,
                                           (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
+   ecore_event_window_register_with_multi((Ecore_Window)ee->prop.window, ee, ee->evas,
+                                          (Ecore_Event_Mouse_Move_With_Multi_Cb)_ecore_evas_mouse_move_with_multi_info_process2,
+                                          (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process2,
+                                          (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process2,
+                                          (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process2);
 }
 //
 
