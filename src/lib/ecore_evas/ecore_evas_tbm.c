@@ -688,11 +688,7 @@ ecore_evas_tbm_ext_new(const char *engine, void *tbm_surf_queue, void* data)
     evas_key_lock_add(ee->evas, "Num_Lock");
     evas_key_lock_add(ee->evas, "Scroll_Lock");
 
-    evas_event_feed_mouse_in(ee->evas, 0, NULL);
-
     _ecore_evas_register(ee);
-
-    evas_event_feed_mouse_in(ee->evas, (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), NULL);
 
     return ee;
 }
