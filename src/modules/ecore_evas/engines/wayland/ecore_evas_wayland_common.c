@@ -117,10 +117,15 @@ _ecore_evas_wl_common_cb_mouse_in(void *data EINA_UNUSED, int type EINA_UNUSED, 
    if (ev->window != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
    if (_ecore_evas_mouse_in_check(ee, ev->dev)) return ECORE_CALLBACK_PASS_ON;
 
+   if (ee->func.fn_mouse_in) ee->func.fn_mouse_in(ee);
+#if 1//ENABLE_CODE_DISABLED_BY_ECORE_DEVICE
    _ecore_evas_mouse_inout_set(ee, ev->dev, EINA_TRUE, EINA_FALSE);
    ecore_event_evas_seat_modifier_lock_update(ee->evas, ev->modifiers, ev->dev);
    evas_event_feed_mouse_in(ee->evas, ev->timestamp, NULL);
    _ecore_evas_mouse_device_move_process(ee, ev->dev, ev->x, ev->y, ev->timestamp);
+#endif
+
+   ee->in = EINA_TRUE;
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -138,11 +143,19 @@ _ecore_evas_wl_common_cb_mouse_out(void *data EINA_UNUSED, int type EINA_UNUSED,
    if (ev->window != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
    if (!_ecore_evas_mouse_in_check(ee, ev->dev)) return ECORE_CALLBACK_PASS_ON;
 
-   ecore_event_evas_seat_modifier_lock_update(ee->evas,
-                                              ev->modifiers, ev->dev);
-   _ecore_evas_mouse_device_move_process(ee, ev->dev, ev->x, ev->y, ev->timestamp);
-   evas_event_feed_mouse_out(ee->evas, ev->timestamp, NULL);
-   _ecore_evas_mouse_inout_set(ee, ev->dev, EINA_FALSE, EINA_FALSE);
+   if (ee->in)
+     {
+#if 1//ENABLE_CODE_DISABLED_BY_ECORE_DEVICE
+        ecore_event_evas_seat_modifier_lock_update(ee->evas,
+													 ev->modifiers, ev->dev);
+        _ecore_evas_mouse_device_move_process(ee, ev->dev, ev->x, ev->y, ev->timestamp);
+        evas_event_feed_mouse_out(ee->evas, ev->timestamp, NULL);
+        _ecore_evas_mouse_inout_set(ee, ev->dev, EINA_FALSE, EINA_FALSE);
+#endif
+        if (ee->func.fn_mouse_out) ee->func.fn_mouse_out(ee);
+        if (ee->prop.cursor.object) evas_object_hide(ee->prop.cursor.object);
+        ee->in = EINA_FALSE;
+     }
    return ECORE_CALLBACK_PASS_ON;
 }
 
