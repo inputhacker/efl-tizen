@@ -866,6 +866,57 @@ _evgl_glFramebufferTexture(GLenum target, GLenum attachment, GLuint texture, GLi
     _gles3_api.glFramebufferTexture(target, attachment, texture, level);
 }
 
+static void
+_evgl_glFramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer)
+{
+    EVGL_Resource *rsc;
+    EVGL_Context *ctx;
+
+    if (!(rsc=_evgl_tls_resource_get()))
+      {
+         ERR("Unable to execute GL command. Error retrieving tls");
+         return;
+      }
+
+    if (!rsc->current_eng)
+      {
+         ERR("Unable to retrive Current Engine");
+         return;
+      }
+
+    ctx = rsc->current_ctx;
+    if (!ctx)
+      {
+         ERR("Unable to retrive Current Context");
+         return;
+      }
+
+    if (!_evgl_direct_enabled())
+      {
+         if (ctx->version == EVAS_GL_GLES_3_X)
+           {
+              if (target == GL_DRAW_FRAMEBUFFER || target == GL_FRAMEBUFFER)
+                {
+                   if (ctx->current_draw_fbo == 0)
+                     {
+                        SET_GL_ERROR(GL_INVALID_OPERATION);
+                        return;
+                     }
+                }
+              else if (target == GL_READ_FRAMEBUFFER)
+                {
+                   if (ctx->current_read_fbo == 0)
+                     {
+                        SET_GL_ERROR(GL_INVALID_OPERATION);
+                        return;
+                     }
+                }
+           }
+      }
+
+    _gles3_api.glFramebufferTextureLayer(target, attachment, texture, level, layer);
+}
+
 
 static void
 _evgl_glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
@@ -1508,6 +1559,144 @@ _evgl_glGetStringi(GLenum name, GLuint index)
      }
 
    return NULL;
+}
+
+static void
+_evgl_glInvalidateFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments)
+{
+   EVGL_Resource *rsc;
+   EVGL_Context *ctx;
+   GLenum *cp_attachments = NULL;
+
+   if (!(rsc=_evgl_tls_resource_get()))
+     {
+        ERR("Unable to execute GL command. Error retrieving tls");
+        return;
+     }
+
+   if (!rsc->current_eng)
+     {
+        ERR("Unable to retrive Current Engine");
+        return;
+     }
+
+   ctx = rsc->current_ctx;
+   if (!ctx)
+     {
+        ERR("Unable to retrive Current Context");
+        return;
+     }
+
+   if (!_evgl_direct_enabled())
+     {
+        if (ctx->current_draw_fbo == 0)
+          {
+             int i;
+             cp_attachments = (GLenum *) malloc(sizeof(GLenum) * numAttachments);
+
+             if (!cp_attachments)
+               {
+                 ERR("malloc failed");
+                 return;
+               }
+
+             for (i = 0; i < numAttachments; i++)
+               {
+                  if (attachments[i] == GL_COLOR)
+                    cp_attachments[i] = GL_COLOR_ATTACHMENT0;
+                  else if (attachments[i] == GL_DEPTH)
+                    cp_attachments[i] = GL_DEPTH_ATTACHMENT;
+                  else if (attachments[i] == GL_STENCIL)
+                    cp_attachments[i] = GL_STENCIL_ATTACHMENT;
+                  else
+                    {
+                       // When default framebuffer is bound, GL_DEPTH_STENCIL generates INVALID_ENUM.
+                       SET_GL_ERROR(GL_INVALID_ENUM);
+                       free(cp_attachments);
+                       return;
+                    }
+               }
+          }
+      }
+
+   if (cp_attachments)
+     {
+        _gles3_api.glInvalidateFramebuffer(target, numAttachments, cp_attachments);
+        free(cp_attachments);
+     }
+   else
+      _gles3_api.glInvalidateFramebuffer(target, numAttachments, attachments);
+
+   return;
+}
+
+static void
+_evgl_glInvalidateSubFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments, GLint x, GLint y, GLsizei width, GLsizei height)
+{
+   EVGL_Resource *rsc;
+   EVGL_Context *ctx;
+   GLenum *cp_attachments = NULL;
+
+   if (!(rsc=_evgl_tls_resource_get()))
+     {
+        ERR("Unable to execute GL command. Error retrieving tls");
+        return;
+     }
+
+   if (!rsc->current_eng)
+     {
+        ERR("Unable to retrive Current Engine");
+        return;
+     }
+
+   ctx = rsc->current_ctx;
+   if (!ctx)
+     {
+        ERR("Unable to retrive Current Context");
+        return;
+     }
+
+   if (!_evgl_direct_enabled())
+     {
+        if (ctx->current_draw_fbo == 0)
+          {
+             int i;
+             cp_attachments = (GLenum *) malloc(sizeof(GLenum) * numAttachments);
+
+             if (!cp_attachments)
+               {
+                 ERR("malloc failed");
+                 return;
+               }
+
+             for (i = 0; i < numAttachments; i++)
+               {
+                  if (attachments[i] == GL_COLOR)
+                    cp_attachments[i] = GL_COLOR_ATTACHMENT0;
+                  else if (attachments[i] == GL_DEPTH)
+                    cp_attachments[i] = GL_DEPTH_ATTACHMENT;
+                  else if (attachments[i] == GL_STENCIL)
+                    cp_attachments[i] = GL_STENCIL_ATTACHMENT;
+                  else
+                    {
+                       // When default framebuffer is bound, GL_DEPTH_STENCIL generates INVALID_ENUM.
+                       SET_GL_ERROR(GL_INVALID_ENUM);
+                       free(cp_attachments);
+                       return;
+                    }
+               }
+          }
+      }
+
+   if (cp_attachments)
+     {
+        _gles3_api.glInvalidateSubFramebuffer(target, numAttachments, cp_attachments, x, y, width, height);
+        free(cp_attachments);
+     }
+   else
+      _gles3_api.glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
+
+   return;
 }
 
 static void
