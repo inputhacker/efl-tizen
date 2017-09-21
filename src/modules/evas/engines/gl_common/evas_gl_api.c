@@ -1214,19 +1214,33 @@ _evgl_glGetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GL
           }
         else if (ctx->version == EVAS_GL_GLES_3_X)
           {
-             if (target == GL_DRAW_FRAMEBUFFER || target == GL_FRAMEBUFFER)
+             if (((target == GL_DRAW_FRAMEBUFFER || target == GL_FRAMEBUFFER) && (ctx->current_draw_fbo == 0))
+                 || (target == GL_READ_FRAMEBUFFER && ctx->current_read_fbo == 0))
                {
-                  if (ctx->current_draw_fbo == 0 && attachment == GL_BACK)
+                  if (pname == GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)
+                    {
+                       SET_GL_ERROR(GL_INVALID_ENUM);
+                       return;
+                    }
+
+                  if (attachment == GL_BACK)
                     {
                        EVGL_TH(glGetFramebufferAttachmentParameteriv, target, GL_COLOR_ATTACHMENT0, pname, params);
                        return;
                     }
-               }
-             else if (target == GL_READ_FRAMEBUFFER)
-               {
-                  if (ctx->current_read_fbo == 0 && attachment == GL_BACK)
+                  else if (attachment == GL_DEPTH)
                     {
-                       EVGL_TH(glGetFramebufferAttachmentParameteriv, target, GL_COLOR_ATTACHMENT0, pname, params);
+                       EVGL_TH(glGetFramebufferAttachmentParameteriv, target, GL_DEPTH_ATTACHMENT, pname, params);
+                       return;
+                    }
+                  else if (attachment == GL_STENCIL)
+                    {
+                       EVGL_TH(glGetFramebufferAttachmentParameteriv, target, GL_STENCIL_ATTACHMENT, pname, params);
+                       return;
+                    }
+                  else
+                    {
+                       SET_GL_ERROR(GL_INVALID_ENUM);
                        return;
                     }
                }
