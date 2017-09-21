@@ -32,6 +32,7 @@ typedef enum
 /////////////////////////////////////////////////////////////////////
 #define CHECK_LANGUAGE_CLUSTER_AVAILABLE(script) \
    (((script == EVAS_SCRIPT_THAI) || \
+     (script == EVAS_SCRIPT_ARABIC) || \
      (script == EVAS_SCRIPT_DEVANAGARI) || \
      (script == EVAS_SCRIPT_BENGALI) || \
      (script == EVAS_SCRIPT_GUJARATI) || \
