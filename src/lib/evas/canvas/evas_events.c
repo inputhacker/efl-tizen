@@ -48,6 +48,16 @@ _evas_event_havemap_is_in_output_rect(Evas_Object *eo_obj, Evas_Object_Protected
    return 0;
 }
 
+static void
+clip_calc(Evas_Object_Protected_Data *obj, Evas_Coord_Rectangle *c)
+{
+   if (!obj) return;
+   RECTS_CLIP_TO_RECT(c->x, c->y, c->w, c->h,
+                      obj->cur->geometry.x, obj->cur->geometry.y,
+                      obj->cur->geometry.w, obj->cur->geometry.h);
+   clip_calc(obj->cur->clipper, c);
+}
+
 static Eina_List *
 _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
                                    const Eina_Inlist *list, Evas_Object *stop,
@@ -55,6 +65,8 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
 {
    Evas_Object *eo_obj;
    Evas_Object_Protected_Data *obj = NULL;
+   Evas_Coord_Rectangle c;
+
    int inside;
 
    if (!list) return in;
@@ -68,10 +80,37 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
              *no_rep = 1;
              return in;
           }
-        if (evas_event_passes_through(eo_obj, obj)) continue;
+        if (!obj->cur->visible) continue;
+
+        if (EINA_UNLIKELY((!!obj->map) && (obj->map->cur.map)
+                          && (obj->map->cur.usemap)))
+          c = obj->map->cur.map->normal_geometry;
+        else
+          {
+             if (obj->is_smart)
+               {
+                  Evas_Coord_Rectangle bounding_box = { 0, 0, 0, 0};
+
+                  evas_object_smart_bounding_box_update(eo_obj, obj);
+                  evas_object_smart_bounding_box_get(eo_obj, &bounding_box, NULL);
+                  c = bounding_box;
+               }
+             else
+               {
+                  if (obj->clip.clipees) continue;
+                  c = obj->cur->geometry;
+               }
+          }
+        clip_calc(obj->cur->clipper, &c);
+        // only worry about objects that intersect INCLUDING clippint
+        if ((!RECTS_INTERSECT(x, y, 1, 1, c.x, c.y, c.w, c.h)) && (!obj->child_has_map))
+          continue;
+
         if (!source)
           {
              if (evas_object_is_source_invisible(eo_obj, obj)) continue;
+             if (evas_event_passes_through(eo_obj, obj)) continue;
+
           }
         if ((obj->delete_me == 0) &&
             ((source) || ((obj->cur->visible) && (!obj->clip.clipees) &&
