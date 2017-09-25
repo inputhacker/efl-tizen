@@ -19,6 +19,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
@@ -44,6 +46,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
@@ -68,6 +72,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 3.0
               \@elseif WEARABLE \@since_tizen 3.0
               \@endif
@@ -82,6 +88,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@ingroup Evas_Object_Group_Size_Hints
 
               \@if MOBILE \@since_tizen 3.0
               \@elseif WEARABLE \@since_tizen 3.0
@@ -141,6 +149,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
@@ -165,6 +175,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@ingroup Evas_Object_Group_Size_Hints
 
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
@@ -360,6 +372,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
@@ -380,6 +394,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@ingroup Evas_Object_Group_Size_Hints
 
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
@@ -517,6 +533,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               size hint policy. So calling this API may or may not affect
               the size of smart objects.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
@@ -533,6 +551,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Use $null pointers on the hint components you're not
               interested in: they'll be ignored by the function.
+
+              \@ingroup Evas_Object_Group_Size_Hints
 
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
@@ -621,6 +641,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Default weight hint values are 0.0, for both axis.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
@@ -653,6 +675,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: If $obj is invalid, then the hint components will be
               set with 0.0.
+
+              \@ingroup Evas_Object_Group_Size_Hints
 
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
@@ -940,6 +964,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: Default alignment hint values are 0.5, for both axis.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
@@ -972,6 +998,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               Note: If $obj is invalid, then the hint components will be
               set with 0.5
+
+              \@ingroup Evas_Object_Group_Size_Hints
 
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
@@ -1180,6 +1208,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               whenever appropriate. This mode can be used object's display
               mode like commpress or expand.
 
+              \@ingroup Evas_Object_Group_Size_Hints
+
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
@@ -1190,6 +1220,8 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
 
               This is not a size enforcement in any way, it's just a hint
               that can be used whenever appropriate.
+
+              \@ingroup Evas_Object_Group_Size_Hints
 
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1
