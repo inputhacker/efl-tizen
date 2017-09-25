@@ -28,12 +28,12 @@
 #endif /* ! _WIN32 */
 
 
-EAPI void _image_flip_horizontal(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
-EAPI void _image_flip_vertical(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
-EAPI void _image_rotate_180(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
-EAPI void _image_rotate_90(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
-EAPI void _image_rotate_270(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
-EAPI void _image_flip_transpose(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
-EAPI void _image_flip_transverse(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
+EAPI void _evas_image_flip_horizontal(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
+EAPI void _evas_image_flip_vertical(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
+EAPI void _evas_image_rotate_180(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
+EAPI void _evas_image_rotate_90(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
+EAPI void _evas_image_rotate_270(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
+EAPI void _evas_image_flip_transpose(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
+EAPI void _evas_image_flip_transverse(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih);
 
 #endif //_EVAS_ENGINE_H
