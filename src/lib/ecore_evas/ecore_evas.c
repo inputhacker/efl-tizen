@@ -4006,6 +4006,18 @@ ecore_evas_input_event_register_with_multi(Ecore_Evas *ee)
 }
 //
 
+// TIZEN_ONLY(20170925): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+EAPI void
+ecore_evas_input_event_register_with_multi2(Ecore_Evas *ee)
+{
+   ecore_event_window_register_with_multi((Ecore_Window)ee->prop.window, ee, ee->evas,
+                                          (Ecore_Event_Mouse_Move_With_Multi_Cb)_ecore_evas_mouse_move_with_multi_info_process2,
+                                          (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process2,
+                                          (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process2,
+                                          (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process2);
+}
+//
+
 EAPI void
 ecore_evas_input_event_unregister(Ecore_Evas *ee)
 {
