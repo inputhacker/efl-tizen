@@ -635,11 +635,14 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
    int alpha;
    Evas_GL_Image *im2;
    Evas_Engine_GL_Context *gl_context;
-   RGBA_Draw_Context *dc;
    int w, h;
+   void *pixels_in = NULL;
+   void *pixels_out = NULL;
 
    re->window_use(re->software.ob);
    gl_context = re->window_gl_context_get(re->software.ob);
+
+   if (!im1->im) return NULL;
 
    w = im1->w;
    h = im1->h;
@@ -654,49 +657,48 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
         h = im1->w;
      }
 
-   im2 = evas_gl_common_image_surface_new(gl_context, w, h, alpha, EINA_FALSE);
-   if (!im2) return NULL;
+   im2 = evas_gl_common_image_new_from_copied_data(gl_context, w, h, im1->im->image.data, alpha, im1->cs.space);
+   if (!im2 || !im2->im) return NULL;
    im2->rotated_orient = im1->orient;
 
-   evas_gl_common_context_target_surface_set(gl_context, im2);
+   pixels_in = im1->im->image.data;
+   pixels_out = im2->im->image.data;
 
-   // Create a new and temporary context
-   dc = evas_common_draw_context_new();
-   evas_common_draw_context_set_render_op(dc, _EVAS_RENDER_COPY);
-   evas_common_draw_context_set_clip(dc, 0, 0, im2->w, im2->h);
-   gl_context->dc = dc;
+   if (!pixels_out || !pixels_in) {
+       return NULL;
+   }
 
-   // Image draw handle the rotation magically for us
-   evas_gl_common_image_draw(gl_context, im1,
-                             0, 0, w, h,
-                             0, 0, im2->w, im2->h,
-                             0);
 
-   gl_context->dc = NULL;
-   evas_common_draw_context_free(dc);
-
-   // Reverts to the previous target surface.
-   evas_gl_common_context_target_surface_set(gl_context, im1);
-
-   // flush everything
-   eng_gl_surface_lock(re, im2);
-
-   // Rely on Evas_GL_Image infrastructure to allocate pixels
-   im2->im = (RGBA_Image *)evas_cache_image_empty(evas_common_image_cache_get());
-   if (!im2->im)
-      {
-        eng_gl_surface_unlock(re, im2);
-        evas_gl_common_image_free(im2);
-        return NULL;
-      }
-   im2->im->cache_entry.flags.alpha = !!alpha;
-   evas_gl_common_image_alloc_ensure(im2);
-
-   eng_gl_surface_read_pixels(re, im2, 0, 0, im2->w, im2->h,
-                              EVAS_COLORSPACE_ARGB8888, im2->im->image.data);
-
-   eng_gl_surface_unlock(re, im2);
-
+   switch(im1->orient)
+   {
+     case EVAS_IMAGE_ORIENT_0:
+       memcpy(pixels_out, pixels_in, sizeof (unsigned int) * im1->w * im1->h);
+       break;
+     case EVAS_IMAGE_ORIENT_90:
+       _evas_image_rotate_90(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_ORIENT_180:
+       _evas_image_rotate_180(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_ORIENT_270:
+       _evas_image_rotate_270(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_FLIP_HORIZONTAL:
+       _evas_image_flip_horizontal(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_FLIP_VERTICAL:
+       _evas_image_flip_vertical(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_FLIP_TRANSPOSE:
+       _evas_image_flip_transpose(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_FLIP_TRANSVERSE:
+       _evas_image_flip_transverse(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     default:
+       ERR("Wrong orient value");
+       return NULL;
+   }
 
    return im2;
 }
@@ -1062,25 +1064,25 @@ eng_image_orient_set(void *data, void *image, Evas_Image_Orient orient)
                memcpy(pixels_out, pixels_in, sizeof (unsigned int) * im->w * im->h);
                break;
              case EVAS_IMAGE_ORIENT_90:
-               _image_rotate_270(pixels_out, pixels_in, im->w, im->h);
+               _evas_image_rotate_270(pixels_out, pixels_in, im->w, im->h);
                break;
              case EVAS_IMAGE_ORIENT_180:
-               _image_rotate_180(pixels_out, pixels_in, im->w, im->h);
+               _evas_image_rotate_180(pixels_out, pixels_in, im->w, im->h);
                break;
              case EVAS_IMAGE_ORIENT_270:
-               _image_rotate_90(pixels_out, pixels_in, im->w, im->h);
+               _evas_image_rotate_90(pixels_out, pixels_in, im->w, im->h);
                break;
              case EVAS_IMAGE_FLIP_HORIZONTAL:
-               _image_flip_horizontal(pixels_out, pixels_in, im->w, im->h);
+               _evas_image_flip_horizontal(pixels_out, pixels_in, im->w, im->h);
                break;
              case EVAS_IMAGE_FLIP_VERTICAL:
-               _image_flip_vertical(pixels_out, pixels_in, im->w, im->h);
+               _evas_image_flip_vertical(pixels_out, pixels_in, im->w, im->h);
                break;
              case EVAS_IMAGE_FLIP_TRANSPOSE:
-               _image_flip_transpose(pixels_out, pixels_in, im->w, im->h);
+               _evas_image_flip_transpose(pixels_out, pixels_in, im->w, im->h);
                break;
              case EVAS_IMAGE_FLIP_TRANSVERSE:
-               _image_flip_transverse(pixels_out, pixels_in, im->w, im->h);
+               _evas_image_flip_transverse(pixels_out, pixels_in, im->w, im->h);
                break;
              default:
                ERR("Wrong orient value");
