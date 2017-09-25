@@ -2562,6 +2562,7 @@ _evas_text_efl_text_font_font_bitmap_scalable_get(Eo *eo_obj EINA_UNUSED, Evas_T
 {
    return o->cur.bitmap_scalable;
 }
+
 /*********************************************************************************
  * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
  *                       Edje textblock/text calculation/ellipsize feature.
