@@ -147,6 +147,18 @@ elm_legacy_eolian_files = \
 	lib/elementary/elm_glview.eo \
 	lib/elementary/elm_hover.eo \
 	lib/elementary/elm_index.eo \
+	lib/elementary/elm_interface_atspi_accessible.eo \
+	lib/elementary/efl_access_action.eo \
+	lib/elementary/efl_access_component.eo \
+	lib/elementary/efl_access_editable_text.eo \
+	lib/elementary/efl_access_image.eo \
+	lib/elementary/efl_access_selection.eo \
+	lib/elementary/efl_access_text.eo \
+	lib/elementary/efl_access_value.eo \
+	lib/elementary/elm_interface_atspi_widget_action.eo \
+	lib/elementary/efl_access_window.eo \
+	lib/elementary/elm_interface_fileselector.eo \
+	lib/elementary/elm_interface_scrollable.eo \
 	lib/elementary/elm_label.eo \
 	lib/elementary/elm_list.eo \
 	lib/elementary/elm_map.eo \
@@ -266,6 +278,7 @@ includesunstable_HEADERS = \
 	lib/elementary/elm_atspi_bridge.h \
 	lib/elementary/elm_atspi_ewk_wrapper.h \
 	lib/elementary/efl_access.h \
+	lib/elementary/efl_access_legacy.h \
 	lib/elementary/efl_access_text.h \
 	lib/elementary/efl_access_widget_action.h \
 	lib/elementary/efl_access_window.h \

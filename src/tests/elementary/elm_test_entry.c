@@ -5,6 +5,7 @@
 #define EFL_ACCESS_BETA
 #define EFL_ACCESS_TEXT_BETA
 #define EFL_ACCESS_TEXT_PROTECTED
+
 #include <Elementary.h>
 #include "elm_suite.h"
 
