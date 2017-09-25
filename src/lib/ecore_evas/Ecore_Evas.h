@@ -2893,6 +2893,22 @@ EAPI void        ecore_evas_input_event_register(Ecore_Evas *ee);
 EAPI void        ecore_evas_input_event_register_with_multi(Ecore_Evas *ee);
 //
 
+// TIZEN_ONLY(20170925): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+/**
+ * @brief Registers an @c Ecore_Evas to receive events through ecore_input_evas.
+ *
+ * @param ee The @c Ecore_Evas handle.
+ *
+ * This function calls ecore_event_window_register_with_multi() with the @p ee as its @c
+ * id argument, @c window argument, and uses its @c Evas too. It is useful when
+ * no @c window information is available on a given @c Ecore_Evas backend.
+ *
+ * @see ecore_evas_input_event_unregister()
+ * @since 1.1
+ */
+EAPI void        ecore_evas_input_event_register_with_multi2(Ecore_Evas *ee);
+//
+
 /**
  * @brief Unregisters an @c Ecore_Evas receiving events through ecore_input_evas.
  *
