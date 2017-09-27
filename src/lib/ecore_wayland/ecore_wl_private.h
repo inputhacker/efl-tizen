@@ -350,6 +350,10 @@ struct _Ecore_Wl_Input
 
    unsigned int seat_version;
    Eina_Bool caps_update: 1;
+
+   Ecore_Wl_Window *key_win;
+   Ecore_Wl_Window *repeat_win;
+   int key_mode;
 };
 
 struct _Ecore_Wl_Output

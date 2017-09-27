@@ -1038,6 +1038,7 @@ _ecore_wl_input_cb_keyboard_key(void *data, struct wl_keyboard *keyboard EINA_UN
    xkb_keysym_t sym = XKB_KEY_NoSymbol;
    char key[256], keyname[256], compose[256];
    Ecore_Event_Key *e;
+   Eina_Bool had_focus = EINA_TRUE;
 
    struct wl_surface *surface = NULL;
 
@@ -1045,7 +1046,26 @@ _ecore_wl_input_cb_keyboard_key(void *data, struct wl_keyboard *keyboard EINA_UN
 
    if (!(input = data)) return;
 
-   win = input->keyboard_focus;
+   if (input->key_win)
+     {
+        win = input->key_win;
+        if (!win->keyboard_device)
+          {
+             had_focus = EINA_FALSE;
+             win->keyboard_device = input;
+          }
+     }
+   else if ((input->repeat.key) && (keycode == input->repeat.key) && (input->repeat_win))
+     {
+        win = input->repeat_win;
+        if (!win->keyboard_device)
+          {
+             had_focus = EINA_FALSE;
+             win->keyboard_device = input;
+          }
+     }
+   else
+     win = input->keyboard_focus;
 // TIZEN_ONLY(20150911): Deal with key event if window is not exist.
 //   if ((!win) || (win->keyboard_device != input) || (!input->xkb.state))
 //     return;
@@ -1088,6 +1108,16 @@ _ecore_wl_input_cb_keyboard_key(void *data, struct wl_keyboard *keyboard EINA_UN
              INF("window(%p) is focused, but keyboard device info is wrong", win);
              return;
           }
+     }
+
+   if (input->key_win)
+     {
+        input->key_win = NULL;
+        if (!had_focus) win->keyboard_device = NULL;
+     }
+   else if ((input->repeat.key) && (keycode == input->repeat.key) && (input->repeat_win))
+     {
+        if (win && !had_focus) win->keyboard_device = NULL;
      }
 
    if (!input->xkb.state)
@@ -1175,6 +1205,7 @@ _ecore_wl_input_cb_keyboard_key(void *data, struct wl_keyboard *keyboard EINA_UN
 
         if (input->repeat.tmr) ecore_timer_del(input->repeat.tmr);
         input->repeat.tmr = NULL;
+        input->repeat_win = NULL;
      }
    else if ((state) && (keycode != input->repeat.key))
      {
@@ -1183,6 +1214,7 @@ _ecore_wl_input_cb_keyboard_key(void *data, struct wl_keyboard *keyboard EINA_UN
         input->repeat.sym = sym;
         input->repeat.key = keycode;
         input->repeat.time = timestamp;
+        input->repeat_win = win;
 
         if (!input->repeat.tmr)
           {
