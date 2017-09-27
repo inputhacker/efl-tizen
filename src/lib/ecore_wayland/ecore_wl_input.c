@@ -1541,7 +1541,7 @@ _ecore_wl_input_cb_touch_frame(void *data EINA_UNUSED, struct wl_touch *touch EI
 }
 
 static void
-_ecore_wl_input_cb_touch_cancel(void *data EINA_UNUSED, struct wl_touch *touch EINA_UNUSED)
+_ecore_wl_input_cb_touch_cancel(void *data, struct wl_touch *touch EINA_UNUSED)
 {
    Ecore_Event_Mouse_Button *ev;
    Ecore_Wl_Input *input;
@@ -1557,6 +1557,18 @@ _ecore_wl_input_cb_touch_cancel(void *data EINA_UNUSED, struct wl_touch *touch E
    ev->same_screen = 1;
    ev->window = input->touch_focus->id;
    ev->event_window = input->touch_focus->id;
+
+   ev->buttons = 1;
+
+   ev->root.x = input->sx;
+   ev->root.y = input->sy;
+   ev->x = input->sx;
+   ev->y = input->sy;
+   ev->modifiers = input->modifiers;
+
+   ev->double_click = 0;
+   ev->triple_click = 0;
+   ev->dev = _ecore_wl_input_get_ecore_device(input->last_device_touch, ECORE_DEVICE_CLASS_TOUCH);
 
    ecore_event_add(ECORE_EVENT_MOUSE_BUTTON_CANCEL, ev, NULL, NULL);
 }
