@@ -1330,6 +1330,10 @@ New_Object_Handler object_handlers[] =
      /* TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features. */
      {"collections.group.parts.part.description.text.ellipsize.marquee", NULL},
      /* END */
+     /* TIZEN_ONLY(20170928): Add missing fields in ellipsize */
+     {"collections.group.parts.part.description.text.ellipsize.normal", NULL},
+     {"collections.group.parts.part.description.text.ellipsize.fade", NULL},
+     /* END */
      {"collections.group.parts.part.description.text.fonts", NULL}, /* dup */
      {"collections.group.parts.part.description.images", NULL}, /* dup */
      {"collections.group.parts.part.description.images.set", ob_images_set}, /* dup */
