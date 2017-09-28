@@ -8833,6 +8833,8 @@ st_collections_group_parts_part_description_image_normal(void)
            ed->image.border.t = border_top;
            ed->image.border.b = border_bottom;
         }
+
+      free(name);
    }
  /************************************************************************************/
 }
