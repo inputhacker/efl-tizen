@@ -484,9 +484,7 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          get {
             [[Get the changed marker for the canvas.
 
-              \@if MOBILE \@since_tizen 4.0
-              \@elseif WEARABLE \@since_tizen 4.0
-              \@endif
+              \@since_tizen 4.0
             ]]
             return: bool;
          }
