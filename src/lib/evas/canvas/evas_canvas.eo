@@ -481,10 +481,10 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       @property changed {
-         get @internal {
+         get {
             [[Get the changed marker for the canvas.
 
-              @since 1.11
+              \@since_tizen 4.0
             ]]
             return: bool;
          }
