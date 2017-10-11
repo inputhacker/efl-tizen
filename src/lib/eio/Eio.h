@@ -103,7 +103,7 @@ extern "C" {
  *
  * The Eio library is a library that implements an API for asynchronous
  * input/output operation. Most operations are done in a separate thread
- * to prevent lock. See @ref Eio_Group. Some helper to work on data
+ * to prevent lock. See @ref Eio. Some helper to work on data
  * received in Eio callback are also provided see @ref Eio_Helper.
  * It is also possible to work asynchronously on Eina_File with @ref Eio_Map
  * or on Eet_File with @ref Eio_Eet. It comes with way to manipulate
