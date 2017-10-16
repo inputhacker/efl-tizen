@@ -467,7 +467,7 @@ EAPI const char    *ecore_file_file_get     (const char *path);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI char          *ecore_file_dir_get      (const char *path);
+EAPI char          *ecore_file_dir_get      (const char *file);
 
 /**
  * @brief Checks if the given file can be read.
@@ -518,7 +518,7 @@ EAPI Eina_Bool      ecore_file_can_exec     (const char *file);
 /**
  * @brief Gets the path pointed by the given link.
  *
- * @param  lnk The name of the link.
+ * @param  link The name of the link.
  * @return The path pointed by link or NULL.
  *
  * This function returns the path pointed by @p link as a newly
@@ -604,7 +604,7 @@ EAPI char          *ecore_file_escape_name  (const char *filename);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI char          *ecore_file_strip_ext    (const char *file);
+EAPI char          *ecore_file_strip_ext    (const char *path);
 
 /**
  * @brief Checks if the given directory is empty.
@@ -665,7 +665,7 @@ EAPI Ecore_File_Monitor *ecore_file_monitor_add(const char *path,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                ecore_file_monitor_del(Ecore_File_Monitor *ecore_file_monitor);
+EAPI void                ecore_file_monitor_del(Ecore_File_Monitor *em);
 
 /**
  * @brief Gets the monitored path.
@@ -682,7 +682,7 @@ EAPI void                ecore_file_monitor_del(Ecore_File_Monitor *ecore_file_m
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char         *ecore_file_monitor_path_get(Ecore_File_Monitor *ecore_file_monitor);
+EAPI const char         *ecore_file_monitor_path_get(Ecore_File_Monitor *em);
 
 /* Path */
 
