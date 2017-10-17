@@ -2543,7 +2543,7 @@ EAPI const Edje_Perspective *edje_evas_global_perspective_get(const Evas *e);
 
 /**
  * @defgroup Edje_Audio Edje Audio
- * @ingroup Edje_Audio
+ * @ingroup Edje
  *
  * @brief Functions to manipulate audio abilities in edje.
  *
