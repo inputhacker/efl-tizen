@@ -992,14 +992,14 @@ EAPI const char       *ecore_con_ssl_server_verify_name_get(Ecore_Con_Server *sv
  * @param ssl_type The SSL connection type (ONLY).
  * @return @c EINA_FALSE if the connection cannot be upgraded, otherwise @c EINA_TRUE.
  * @note This function is NEVER to be used on a server object created with ecore_con_server_add.
- * @warning Setting a wrong value for @p compl_type WILL mess up your program.
+ * @warning Setting a wrong value for @p ssl_type WILL mess up your program.
  * @since 1.1
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool         ecore_con_ssl_server_upgrade(Ecore_Con_Server *svr, Ecore_Con_Type compl_type);
+EAPI Eina_Bool         ecore_con_ssl_server_upgrade(Ecore_Con_Server *svr, Ecore_Con_Type ssl_type);
 
 /**
  * @brief Upgrades a connection to a specified level of encryption.
@@ -1010,14 +1010,14 @@ EAPI Eina_Bool         ecore_con_ssl_server_upgrade(Ecore_Con_Server *svr, Ecore
  * @param cl The client object.
  * @param ssl_type The SSL connection type (ONLY).
  * @return @c EINA_FALSE if the connection cannot be upgraded, otherwise @c EINA_TRUE.
- * @warning Setting a wrong value for @p compl_type WILL mess up your program.
+ * @warning Setting a wrong value for @p ssl_type WILL mess up your program.
  * @since 1.1
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool         ecore_con_ssl_client_upgrade(Ecore_Con_Client *cl, Ecore_Con_Type compl_type);
+EAPI Eina_Bool         ecore_con_ssl_client_upgrade(Ecore_Con_Client *cl, Ecore_Con_Type ssl_type);
 
 /**
  * @}
@@ -1331,7 +1331,7 @@ EAPI void             ecore_con_socks_apply_always(Ecore_Con_Socks *ecs);
  * @endhtmlonly
  *
  * @image rtf ecore_con-client-server.png
- * @image latex ecore_con-client-server.eps width=\textwidth
+ * @image latex ecore_con-client-server.eps width=\\textwidth
  *
  * Please notice the important difference between these two codes: the first is
  * used for writing a @b server, while the second should be used for writing a
