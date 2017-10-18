@@ -110,10 +110,10 @@ typedef struct _Eina_Prefix Eina_Prefix;
  * Compile the following defining at compile time your prefixes like (example):
  *
  * gcc appname.c -o appname
- * -DPACKAGE_BIN_DIR=\\"/usr/local/bin\"
- * -DPACKAGE_LIB_DIR=\\"/usr/local/lib\"
- * -DPACKAGE_DATA_DIR=\\"/usr/local/share/appname\"
- * -DLOCALE_DIR=\\"/usr/local/share/locale\"
+ * -DPACKAGE_BIN_DIR="/usr/local/bin"
+ * -DPACKAGE_LIB_DIR="/usr/local/lib"
+ * -DPACKAGE_DATA_DIR="/usr/local/share/appname"
+ * -DLOCALE_DIR="/usr/local/share/locale"
  * `pkg-config --cflags --libs eina`
  *
  * (of course add appropriate compile flags to linking and note that

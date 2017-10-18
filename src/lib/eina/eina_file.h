@@ -172,7 +172,7 @@ typedef enum {
  */
 /**
  * @def EINA_PATH_SEP_S
- * @brief The constant defined the path separator as the string "\" on Windows
+ * @brief The constant defined the path separator as the string \"\\" on Windows
  * and "/" otherwise.
  *
  * @since 1.16

@@ -116,7 +116,7 @@ abstract Evas.Object (Eo.Base, Evas.Common_Interface, Efl.Gfx.Base, Efl.Gfx.Stac
               of the smart class itself is returned on this call. For the
               built-in smart objects, these names are "EvasObjectSmartClipped"
               for the clipped smart object, "Evas_Object_Box" for the box
-              object and "Evas_Object_Table for the table object.
+              object and "Evas_Object_Table" for the table object.
 
               \@if MOBILE \@since_tizen 2.3
               \@elseif WEARABLE \@since_tizen 2.3.1

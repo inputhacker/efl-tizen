@@ -1779,7 +1779,7 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
            Signal callback registration is powerful, in the way that  blobs
            may be used to match multiple signals at once. All the
-           "*?[\" set of $fnmatch() operators can be used, both for
+           \"*?[\\" set of $fnmatch() operators can be used, both for
            emission and source.
 
            Edje has  internal signals it will emit, automatically, on
