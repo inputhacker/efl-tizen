@@ -341,7 +341,8 @@ eet_clearcache(void);
  * First, we define our file handler and some other things we'll put in it.
  * @line static int
  * @skip Eet_File
- * @until ";
+ * @until some_data
+ * @until ;
  * @skip eet_open
  *
  * We open a new file in write mode, and if it fails, we just return, since
@@ -2534,7 +2535,7 @@ eet_identity_certificate_print(const unsigned char *certificate,
  *    EET_DATA_DESCRIPTOR_ADD_BASIC(my_desc, some_struct, "sub.other_num",
  *                                  sub.other_num, EET_T_INT);
  *    EET_DATA_DESCRIPTOR_ADD_BASIC(my_desc, some_struct, "sub.one_more",
- *                                  sub.one_more", EET_T_INT);
+ *                                  sub.one_more, EET_T_INT);
  *    ...
  * }
  * @endcode

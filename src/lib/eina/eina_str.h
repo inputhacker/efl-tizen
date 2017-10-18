@@ -46,7 +46,8 @@
  * @until free(str
  *
  * Finally we see strlcat in action:
- * @until printf("
+ * @until sprintf(
+ * @until printf(
  *
  * And then shut eina down and exit:
  * @until }

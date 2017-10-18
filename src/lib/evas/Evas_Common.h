@@ -5183,7 +5183,7 @@ struct _Evas_Object_Smart_Clipped_Data
 };
 
 /**
- * Set a given smart class' callbacks so it implements the <b>clipped smart
+ * Set a given smart class' callbacks so it implements the <b>"clipped smart
  * object"</b>'s interface.
  *
  * @param sc The smart class handle to operate on
