@@ -195,6 +195,8 @@ EAPI int    ecore_buffer_queue_init(void);
  *
  * This closes the connection of Buffer Queue daemon, and Shut down Ecore_Buffer_Queue libraries.
  *
+ * @return How many times the lib has been initialized.
+ *
  * @see ecore_buffer_queue_init()
  *
  * @if MOBILE @since_tizen 2.4
