@@ -449,6 +449,8 @@ extern "C" {
    /**
     * Shutdowns the Ecore Event system.
     *
+    * @return How many times the lib has been initialized.
+    *
     * @if MOBILE @since_tizen 2.4
     * @elseif WEARABLE @since_tizen 3.0
     * @endif
@@ -508,6 +510,9 @@ extern "C" {
    //TIZEN_ONLY(20170307) Deprecate ecore_input_joystick_init/shutdown API
    /**
     * Initializes the Ecore Input Joystick system.
+    *
+    * @return How many times the lib has been initialized.
+    *
     * @since 1.15
     *
     * @if MOBILE @since_tizen 2.4
@@ -520,6 +525,9 @@ extern "C" {
    EINA_DEPRECATED EAPI int                  ecore_input_joystick_init(void);
    /**
     * Shutdowns the Ecore Input Joystick system.
+    *
+    * @return How many times the lib has been initialized.
+    *
     * @since 1.15
     *
     * @if MOBILE @since_tizen 2.4
