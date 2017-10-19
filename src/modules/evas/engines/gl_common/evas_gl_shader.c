@@ -719,16 +719,12 @@ evas_gl_common_shader_flags_get(Evas_GL_Shared *shared, Shader_Type type,
    // image downscale sampling
    if (smooth && ((type == SHD_IMAGE) || (type == SHD_IMAGENATIVE)))
      {
-       // In the 270 or 90 orient, texture sampling is skipped.
-       if (!tex->im || (tex->im->orient != EVAS_IMAGE_ORIENT_270 && tex->im->orient != EVAS_IMAGE_ORIENT_90))
-         {
-           if ((sw >= (w * 2)) && (sh >= (h * 2)))
-             sam = SHD_SAM22;
-           else if (sw >= (w * 2))
-             sam = SHD_SAM21;
-           else if (sh >= (h * 2))
-             sam = SHD_SAM12;
-         }
+       if ((sw >= (w * 2)) && (sh >= (h * 2)))
+         sam = SHD_SAM22;
+       else if (sw >= (w * 2))
+         sam = SHD_SAM21;
+       else if (sh >= (h * 2))
+         sam = SHD_SAM12;
        if (sam)
          flags |= (1 << (SHADER_FLAG_SAM_BITSHIFT + sam - 1));
      }
