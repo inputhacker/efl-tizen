@@ -2064,7 +2064,7 @@ _socket_embedded(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus
    const char *bus, *path;
    Eo *bridge = _elm_atspi_bridge_get();
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
-   proxy = elm_interface_atspi_accessible_parent_get(obj);
+   proxy = efl_access_parent_get(obj);
 
    if (!efl_isa(proxy, ELM_ATSPI_PROXY_CLASS))
      return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "Unable to embed object.");
@@ -3286,7 +3286,7 @@ _iter_interfaces_append(Eldbus_Message_Iter *iter, const Eo *obj)
 static Eina_Bool
 _cache_item_reference_append_cb(Eo *bridge, Eo *data, Eldbus_Message_Iter *iter_array)
 {
-  if (!efl_ref_count(data) || efl_destructed_is(data))
+  if (!efl_ref_get(data) || efl_destructed_is(data))
     return EINA_TRUE;
 
   Eldbus_Message_Iter *iter_struct, *iter_sub_array;
@@ -4457,23 +4457,23 @@ static void
 _bridge_cache_build(Eo *bridge, void *obj)
 {
    Eina_List *children;
-   Elm_Atspi_State_Set ss;
+   Efl_Access_State_Set ss;
    Eo *child;
 
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(bridge, pd);
 
-   if (!efl_isa(obj, ELM_INTERFACE_ATSPI_ACCESSIBLE_MIXIN))
+   if (!efl_isa(obj, EFL_ACCESS_MIXIN))
      return;
 
    if (!efl_isa(obj, ELM_ATSPI_PROXY_CLASS))
       _bridge_object_register(bridge, obj);
 
-   ss = elm_interface_atspi_accessible_state_set_get(obj);
-   if (STATE_TYPE_GET(ss, ELM_ATSPI_STATE_MANAGES_DESCENDANTS))
+   ss = efl_access_state_set_get(obj);
+   if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_MANAGES_DESCENDANTS))
      return;
    if (efl_isa(obj, EFL_ACCESS_WINDOW_INTERFACE))
      {
-        if (STATE_TYPE_GET(ss, ELM_ATSPI_STATE_ACTIVE))
+        if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_ACTIVE))
           {
              efl_access_window_activated_signal_emit(obj);
           }
@@ -4482,7 +4482,7 @@ _bridge_cache_build(Eo *bridge, void *obj)
              efl_access_window_deactivated_signal_emit(obj);
           }
      }
-   children = elm_interface_atspi_accessible_children_get(obj);
+   children = efl_access_children_get(obj);
    EINA_LIST_FREE(children, child)
       _bridge_cache_build(bridge, child);
 }
@@ -4953,7 +4953,7 @@ _elm_atspi_bridge_root_get(Eo *obj EINA_UNUSED, Elm_Atspi_Bridge_Data *pd)
    if (!pd->root)
      {
         pd->root = efl_add(ELM_ATSPI_APP_OBJECT_CLASS, NULL);
-        elm_interface_atspi_accessible_added(pd->root);
+        efl_access_added(pd->root);
      }
 
    return pd->root;
@@ -5051,7 +5051,7 @@ elm_atspi_bridge_object_address_get(Eo *obj, char **bus, char **path)
         return EINA_FALSE;
      }
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(bridge, pd, EINA_FALSE);
-   if (!efl_isa(obj, ELM_INTERFACE_ATSPI_ACCESSIBLE_MIXIN))
+   if (!efl_isa(obj, EFL_ACCESS_MIXIN))
      {
         ERR("Connection with accessibility bus not established.");
         return EINA_FALSE;
@@ -5116,7 +5116,7 @@ static void _embedded_reply_cb(void *data, const Eldbus_Message *msg, Eldbus_Pen
 
    parent = efl_parent_get(proxy);
    if (parent)
-     elm_interface_atspi_accessible_children_changed_added_signal_emit(parent, proxy)
+     efl_access_children_changed_added_signal_emit(parent, proxy)
 }
 
 static void

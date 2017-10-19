@@ -4100,9 +4100,9 @@ _elm_widget_item_efl_access_state_set_get(Eo *eo_item,
    if (win && efl_isa(win, EFL_UI_WIN_CLASS))
      {
         if (_elm_win_accessibility_highlight_get(win) == item->view)
-          STATE_TYPE_SET(states, ELM_ATSPI_STATE_HIGHLIGHTED);
+          STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
      }
-   STATE_TYPE_SET(states, ELM_ATSPI_STATE_HIGHLIGHTABLE);
+   STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
    //
 
    STATE_TYPE_SET(states, EFL_ACCESS_STATE_FOCUSABLE);
@@ -5426,9 +5426,9 @@ _elm_widget_efl_access_state_set_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNU
    if (win && efl_isa(win, EFL_UI_WIN_CLASS))
      {
         if (_elm_win_accessibility_highlight_get(win) == obj)
-          STATE_TYPE_SET(states, ELM_ATSPI_STATE_HIGHLIGHTED);
+          STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
      }
-   STATE_TYPE_SET(states, ELM_ATSPI_STATE_HIGHLIGHTABLE);
+   STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
    //
 
    if (evas_object_visible_get(obj))
@@ -6111,7 +6111,7 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
         y -= ee_y;
      }
 
-   children = elm_interface_atspi_accessible_children_get(obj);
+   children = efl_access_children_get(obj);
 
    /* Get evas_object stacked at given x,y coordinates starting from top */
    Eina_List *stack = evas_tree_objects_at_xy_get(evas_object_evas_get(obj), NULL, x, y);
@@ -6179,7 +6179,7 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
    if (win && efl_isa(win, EFL_UI_WIN_CLASS))
      {
         _elm_win_accessibility_highlight_set(win, sd->view);
-        elm_interface_atspi_accessible_state_changed_signal_emit(obj, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
         return EINA_TRUE;
      }
    return EINA_FALSE;
@@ -6195,7 +6195,7 @@ _elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_D
           return EINA_TRUE;
 
         _elm_win_accessibility_highlight_set(win, NULL);
-        elm_interface_atspi_accessible_state_changed_signal_emit(obj, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_FALSE);
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
         return EINA_TRUE;
      }
    return EINA_FALSE;
@@ -6205,7 +6205,7 @@ EOLIAN static Eina_Bool
 _elm_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
 {
    elm_object_accessibility_highlight_set(obj, EINA_TRUE);
-   elm_interface_atspi_accessible_state_changed_signal_emit(obj, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    return EINA_TRUE;
 }
 
@@ -6213,7 +6213,7 @@ EOLIAN static Eina_Bool
 _elm_widget_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
 {
    elm_object_accessibility_highlight_set(obj, EINA_FALSE);
-   elm_interface_atspi_accessible_state_changed_signal_emit(obj, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_FALSE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    return EINA_TRUE;
 }
 //
