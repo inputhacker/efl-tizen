@@ -53,6 +53,7 @@ EOAPI void  evas_obj_simple_b_set(void);
 /**
  * @brief comment foo
  *
+ * @param[in] a a
  * @param[in,out] b
  * @param[out] c
  *
