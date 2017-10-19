@@ -76,7 +76,7 @@ _tls_context_set(GLContext ctx)
 }
 
 Outbuf *
-_orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Render_Engine_Swap_Mode swap_mode,
+eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Render_Engine_Swap_Mode swap_mode,
                           int depth_bits, int stencil_bits, int msaa_bits)
 {
    Outbuf *gw;
@@ -228,10 +228,10 @@ _orig_eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int
 
    context = _tls_context_get();
    gw->egl_context[0] = 
-     eglCreateContext(gw->egl_disp, gw->egl_config, context, context_attrs);
+     GL_TH(eglCreateContext, gw->egl_disp, gw->egl_config, context, context_attrs);
    if (gw->egl_context[0] == EGL_NO_CONTEXT)
      {
-        ERR("eglCreateContext() fail. code=%#x", eglGetError());
+        ERR("eglCreateContext() fail. code=%#x", GL_TH(eglGetError));
         eng_window_free(gw);
         return NULL;
      }
@@ -333,7 +333,7 @@ eng_window_free(Outbuf *gw)
                   EGL_NO_SURFACE, EGL_NO_CONTEXT);
 
    if (gw->egl_context[0] != context)
-     eglDestroyContext(gw->egl_disp, gw->egl_context[0]);
+     GL_TH(eglDestroyContext, gw->egl_disp, gw->egl_context[0]);
 
    if (gw->egl_surface[0] != EGL_NO_SURFACE)
      eglDestroySurface(gw->egl_disp, gw->egl_surface[0]);
@@ -342,7 +342,7 @@ eng_window_free(Outbuf *gw)
 
    if (ref == 0)
      {
-        if (context) eglDestroyContext(gw->egl_disp, context);
+        if (context) GL_TH(eglDestroyContext, gw->egl_disp, context);
         eglTerminate(gw->egl_disp);
         GL_TH(eglReleaseThread);
         _tls_context_set(EGL_NO_CONTEXT);
@@ -351,128 +351,7 @@ eng_window_free(Outbuf *gw)
    free(gw);
 }
 
-typedef struct
-{
-   Outbuf *return_value;
-   Evas *evas;
-   Evas_Engine_Info_Wayland_Egl *einfo;
-   int w;
-   int h;
-   Render_Engine_Swap_Mode swap_mode;
-   int depth_bits;
-   int stencil_bits;
-   int msaa_bits;
-} GL_TH_ST(eng_window_new);
-
-static void
-GL_TH_CB(eng_window_new)(void *data)
-{
-   GL_TH_ST(eng_window_new) *thread_param = *(void **)data;
-
-   thread_param->return_value = _orig_eng_window_new(thread_param->evas,
-                                                     thread_param->einfo,
-                                                     thread_param->w,
-                                                     thread_param->h,
-                                                     thread_param->swap_mode,
-                                                     thread_param->depth_bits,
-                                                     thread_param->stencil_bits,
-                                                     thread_param->msaa_bits);
-
-
-}
-
-Outbuf *
-eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Render_Engine_Swap_Mode swap_mode,
-               int depth_bits, int stencil_bits, int msaa_bits)
-{
-
-   GL_TH_ST(eng_window_new) thread_data_local, *thread_data = &thread_data_local, **thread_data_ptr;
-   void *thcmd_ref;
-
-   /* eng_window_new() is moved into the worker thread that minimizes driver issue with EGL use*/
-   if (!evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
-     {
-        return _orig_eng_window_new(evas,
-                                    einfo,
-                                    w,
-                                    h,
-                                    swap_mode,
-                                    depth_bits,
-                                    stencil_bits,
-                                    msaa_bits);
-     }
-
-   thread_data_ptr =
-      evas_gl_thread_cmd_create(EVAS_GL_THREAD_TYPE_GL, sizeof(GL_TH_ST(eng_window_new) *), &thcmd_ref);
-   *thread_data_ptr = thread_data;
-
-   thread_data->evas = evas;
-   thread_data->einfo = einfo;
-   thread_data->w = w;
-   thread_data->h = h;
-   thread_data->swap_mode = swap_mode;
-   thread_data->depth_bits = depth_bits;
-   thread_data->stencil_bits = stencil_bits;
-   thread_data->msaa_bits = msaa_bits;
-
-   evas_gl_thread_cmd_enqueue(thcmd_ref,
-                              GL_TH_CB(eng_window_new),
-                              EVAS_GL_THREAD_MODE_FINISH);
-
-   return thread_data->return_value;
-
-}
-
 void
-eng_window_use(Outbuf *gw)
-{
-   Eina_Bool force = EINA_FALSE;
-   Outbuf *wl_win;
-
-   wl_win = _tls_outbuf_get();
-
-   glsym_evas_gl_preload_render_lock(eng_preload_make_current, gw);
-   if ((gw) && (!gw->gl_context)) return;
-
-   if (wl_win)
-     {
-        if ((GL_TH(eglGetCurrentContext) != wl_win->egl_context[0])
-            || (GL_TH(eglGetCurrentDisplay) != wl_win->egl_disp)
-            || (GL_TH(eglGetCurrentSurface, EGL_READ) != wl_win->egl_surface[0])
-            || (GL_TH(eglGetCurrentSurface, EGL_DRAW) != wl_win->egl_surface[0]))
-          force = EINA_TRUE;
-     }
-
-   if ((wl_win != gw) || (force))
-     {
-        if (wl_win)
-          {
-             glsym_evas_gl_common_context_use(wl_win->gl_context);
-             glsym_evas_gl_common_context_flush(wl_win->gl_context);
-          }
-
-        _tls_outbuf_set(gw);
-        if (gw)
-          {
-             if (gw->egl_surface[0] != EGL_NO_SURFACE)
-               {
-                  SET_RESTORE_CONTEXT();
-                  if (GL_TH(eglMakeCurrent, gw->egl_disp, gw->egl_surface[0],
-                                     gw->egl_surface[0],
-                                     gw->egl_context[0]) == EGL_FALSE)
-                    ERR("eglMakeCurrent() failed!");
-               }
-          }
-     }
-
-   if ((gw) && (gw->gl_context))
-     {
-        glsym_evas_gl_common_context_use(gw->gl_context);
-        glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot,0);
-     }
-}
-
-void 
 eng_window_unsurf(Outbuf *gw)
 {
    if (!gw->surf) return;
@@ -500,13 +379,13 @@ eng_window_unsurf(Outbuf *gw)
    gw->surf = EINA_FALSE;
 }
 
-void 
+void
 eng_window_resurf(Outbuf *gw)
 {
    if (gw->surf) return;
    if (getenv("EVAS_GL_INFO")) printf("resurf %p\n", gw);
 
-   gw->egl_surface[0] = 
+   gw->egl_surface[0] =
      eglCreateWindowSurface(gw->egl_disp, gw->egl_config,
                             (EGLNativeWindowType)gw->win, NULL);
 
@@ -520,13 +399,13 @@ eng_window_resurf(Outbuf *gw)
    SET_RESTORE_CONTEXT();
    if (GL_TH(eglMakeCurrent, gw->egl_disp, gw->egl_surface[0], gw->egl_surface[0],
                       gw->egl_context[0]) == EGL_FALSE)
-     ERR("eglMakeCurrent() failed!");
+     ERR("eglMakeCurrent() fail. code=%#x", GL_TH(eglGetError));
 
    gw->surf = EINA_TRUE;
 }
 
-void 
-_orig_eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EINA_UNUSED)
+void
+eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EINA_UNUSED)
 {
   ob->w = w;
   ob->h = h;
@@ -579,60 +458,54 @@ _orig_eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth dep
     }
 }
 
-typedef struct
-{
-  Outbuf *ob;
-  int w;
-  int h;
-  int rot;
-  Outbuf_Depth depth;
-} GL_TH_ST(eng_outbuf_reconfigure);
-
-static void
-GL_TH_CB(eng_outbuf_reconfigure)(void *data)
-{
-   GL_TH_ST(eng_outbuf_reconfigure) *thread_param = *(void **)data;
-
-   _orig_eng_outbuf_reconfigure(thread_param->ob,
-                                thread_param->w,
-                                thread_param->h,
-                                thread_param->rot,
-                                thread_param->depth);
-}
-
 void
-eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EINA_UNUSED)
+eng_window_use(Outbuf *gw)
 {
+   Eina_Bool force = EINA_FALSE;
+   Outbuf *wl_win;
 
-   GL_TH_ST(eng_outbuf_reconfigure) thread_data_local, *thread_data = &thread_data_local, **thread_data_ptr;
-   void *thcmd_ref;
+   wl_win = _tls_outbuf_get();
 
-   /* eng_window_new() is moved into the worker thread that minimizes driver issue with EGL use*/
-   if (!evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
+   glsym_evas_gl_preload_render_lock(eng_preload_make_current, gw);
+   if ((gw) && (!gw->gl_context)) return;
+
+   if (wl_win)
      {
-       return _orig_eng_outbuf_reconfigure(ob,
-                                           w,
-                                           h,
-                                           rot,
-                                           depth);
+        if ((GL_TH(eglGetCurrentContext) != wl_win->egl_context[0])
+            || (GL_TH(eglGetCurrentDisplay) != wl_win->egl_disp)
+            || (GL_TH(eglGetCurrentSurface, EGL_READ) != wl_win->egl_surface[0])
+            || (GL_TH(eglGetCurrentSurface, EGL_DRAW) != wl_win->egl_surface[0]))
+          force = EINA_TRUE;
      }
 
-   thread_data_ptr =
-      evas_gl_thread_cmd_create(EVAS_GL_THREAD_TYPE_GL, sizeof(GL_TH_ST(eng_outbuf_reconfigure) *), &thcmd_ref);
-   *thread_data_ptr = thread_data;
+   if ((wl_win != gw) || (force))
+     {
+        if (wl_win)
+          {
+             glsym_evas_gl_common_context_use(wl_win->gl_context);
+             glsym_evas_gl_common_context_flush(wl_win->gl_context);
+          }
 
-   thread_data->ob = ob;
-   thread_data->w = w;
-   thread_data->h = h;
-   thread_data->rot = rot;
-   thread_data->depth = depth;
+        _tls_outbuf_set(gw);
+        if (gw)
+          {
+             if (gw->egl_surface[0] != EGL_NO_SURFACE)
+               {
+                  SET_RESTORE_CONTEXT();
+                  if (GL_TH(eglMakeCurrent, gw->egl_disp, gw->egl_surface[0],
+                                     gw->egl_surface[0],
+                                     gw->egl_context[0]) == EGL_FALSE)
+                    ERR("eglMakeCurrent() fail. code=%#x", GL_TH(eglGetError));
+               }
+          }
+     }
 
-   evas_gl_thread_cmd_enqueue(thcmd_ref,
-                              GL_TH_CB(eng_outbuf_reconfigure),
-                              EVAS_GL_THREAD_MODE_FINISH);
-
+   if ((gw) && (gw->gl_context))
+     {
+        glsym_evas_gl_common_context_use(gw->gl_context);
+        glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot,0);
+     }
 }
-
 
 int
 eng_outbuf_rotation_get(Outbuf *ob)
@@ -837,7 +710,7 @@ eng_gl_context_new(Outbuf *ob)
    if (!(ctx = calloc(1, sizeof(Context_3D)))) return NULL;
 
    ctx->context = 
-     eglCreateContext(ob->egl_disp, ob->egl_config, ob->egl_context[0], attrs);
+     GL_TH(eglCreateContext, ob->egl_disp, ob->egl_config, ob->egl_context[0], attrs);
    if (!ctx->context)
      {
         ERR("Could not create egl context %#x", GL_TH(eglGetError));
