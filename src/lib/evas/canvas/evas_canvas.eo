@@ -477,7 +477,7 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
             ]]
-            return: bool;
+            return: bool; [[$true if focused, $false otherwise]]
          }
       }
       @property changed {
