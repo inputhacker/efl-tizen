@@ -1346,6 +1346,8 @@ EAPI Eina_Iterator *edje_color_class_active_iterator_new(void);
 /**
  * @brief Iterates over all the color class provided by an Edje file.
  *
+ * @param f The mapped edje file.
+ *
  * @return an iterator of Edje_Color_Class provided by the Edje file.
  *
  * @since 1.14
@@ -1930,6 +1932,8 @@ EAPI Eina_Iterator *edje_size_class_active_iterator_new(void);
 /**
  * @brief Iterates over all size classes provided by an Edje file.
  *
+ * @param f The mapped edje file.
+ *
  * @return an iterator of Edje_Size_Class provided by the Edje file.
  *
  * @if MOBILE @since_tizen 3.0
@@ -2230,6 +2234,8 @@ EAPI void         edje_thaw                       (void);
 
 /**
  * @brief Sets Edje language.
+ *
+ * @param locale The locale specifier.
  *
  * This function sets the given language.
  *
