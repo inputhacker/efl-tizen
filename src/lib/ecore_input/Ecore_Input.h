@@ -85,6 +85,7 @@ extern "C" {
    typedef struct _Ecore_Event_Modifiers    Ecore_Event_Modifiers;
    typedef struct _Ecore_Event_Axis_Update  Ecore_Event_Axis_Update; /**< @since 1.13 */
    typedef struct _Ecore_Axis               Ecore_Axis; /**< @since 1.13 */
+   typedef struct _Ecore_Event_Device_Info  Ecore_Event_Device_Info;
    typedef struct _Ecore_Event_Joystick     Ecore_Event_Joystick; /**< @since 1.18 */
 
    /**
@@ -135,13 +136,6 @@ extern "C" {
         ECORE_COMPOSE_MIDDLE,
         ECORE_COMPOSE_DONE
      } Ecore_Compose_State;
-
-   typedef enum _Ecore_Device_Type
-     {
-        ECORE_DEVICE_POINTER = (1 << 0),
-        ECORE_DEVICE_KEYBOARD = (1 << 1),
-        ECORE_DEVICE_TOUCH = (1 << 2),
-     } Ecore_Device_Type;
 
    struct _Ecore_Event_Device_Info
      {
