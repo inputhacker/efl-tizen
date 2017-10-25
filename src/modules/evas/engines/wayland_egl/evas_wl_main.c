@@ -404,6 +404,7 @@ eng_window_resurf(Outbuf *gw)
    gw->surf = EINA_TRUE;
 }
 
+
 void
 eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EINA_UNUSED)
 {
@@ -448,14 +449,15 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
        * because the display server needs to calcuate the screen rotation value
        * from buffer_transform value.
        */
-      wl_egl_window_set_buffer_transform(ob->win, ob->info->info.rotation / 90);
-      wl_egl_window_set_window_transform(ob->win, ob->info->window_rotation / 90);
+      GL_TH(wl_egl_window_set_buffer_transform, ob->win, ob->info->info.rotation / 90);
+      GL_TH(wl_egl_window_set_window_transform, ob->win, ob->info->window_rotation / 90);
 
       if ((ob->info->info.rotation == 90) || (ob->info->info.rotation == 270))
         wl_egl_window_resize(ob->win, h, w, dx, dy);
       else
         wl_egl_window_resize(ob->win, w, h, dx, dy);
     }
+
 }
 
 void

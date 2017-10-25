@@ -27,7 +27,7 @@
 | EVAS GL | void | glAttachShader | GLuint program, GLuint shader | flush | noext |  |  |  | | | | | |
 | EVAS GL | void | glBindAttribLocation | GLuint program, GLuint index, const char* name | finish | noext | _mp_default, strlen(name), name |  |  | | | | | |
 | EVAS GL | void | glBindBuffer | GLenum target, GLuint buffer | finish | noext |  |  |  | | | | | |
-| EVAS GL | void | glBindFramebuffer | GLenum target, GLuint framebuffer | flush | ext |  |  |  | | | | | |
+| EVAS GL | void | glBindFramebuffer | GLenum target, GLuint framebuffer | finish | ext |  |  |  | | | | | |
 | EVAS GL | void | glBindRenderbuffer | GLenum target, GLuint renderbuffer | flush | noext |  |  |  | | | | | |
 | EVAS GL | void | glBindTexture | GLenum target, GLuint texture | flush | noext |  |  |  | | | | | |
 | EVAS GL | void | glBlendColor | GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha | flush | noext |  |  |  | | | | | |
@@ -71,8 +71,8 @@
 | EVAS GL | void | glEnableVertexAttribArray | GLuint index | finish | noext |  |  |  | | | | | |
 | EVAS GL | void | glFinish | void | finish | noext |  |  |  | | | | | |
 | EVAS GL | void | glFlush | void | finish | noext |  |  |  | | | | | |
-| EVAS GL | void | glFramebufferRenderbuffer | GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer | flush | noext |  |  |  | | | | | |
-| EVAS GL | void | glFramebufferTexture2D | GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level | flush | ext |  |  |  | | | | | |
+| EVAS GL | void | glFramebufferRenderbuffer | GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer | finish | noext |  |  |  | | | | | |
+| EVAS GL | void | glFramebufferTexture2D | GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level | finish | ext |  |  |  | | | | | |
 | EVAS GL | void | glFrontFace | GLenum mode | finish | noext |  |  |  | | | | | |
 | EVAS GL | void | glGenBuffers | GLsizei n, GLuint* buffers | finish | noext |  |  |  | | | | | |
 | EVAS GL | void | glGenerateMipmap | GLenum target | finish | noext |  |  |  | | | | | |
@@ -389,12 +389,12 @@
 | EVAS GL | void | glRenderbufferStorageOES | GLenum target, GLenum internalformat, GLsizei width, GLsizei height | flush | ext |  |  |  | | | | | |
 | EVAS GL | void | glGetRenderbufferParameterivOES | GLenum target, GLenum pname, GLint* params | finish | ext |  |  |  | | | | | |
 | EVAS GL | GLboolean | glIsFramebufferOES | GLuint framebuffer | finish | ext |  |  |  | | | | | |
-| EVAS GL | void | glBindFramebufferOES | GLenum target, GLuint framebuffer | flush | ext |  |  |  | | | | | |
+| EVAS GL | void | glBindFramebufferOES | GLenum target, GLuint framebuffer | finish | ext |  |  |  | | | | | |
 | EVAS GL | void | glDeleteFramebuffersOES | GLsizei n, const GLuint* framebuffers | flush | ext | _mp_delete_object, n * sizeof(GLuint), framebuffers |  |  | | | | | |
 | EVAS GL | void | glGenFramebuffersOES | GLsizei n, GLuint* framebuffers | finish | ext |  |  |  | | | | | |
 | EVAS GL | GLenum | glCheckFramebufferStatusOES | GLenum target | finish | ext |  |  |  | | | | | |
-| EVAS GL | void | glFramebufferRenderbufferOES | GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer | flush | ext |  |  |  | | | | | |
-| EVAS GL | void | glFramebufferTexture2DOES | GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level | flush | ext |  |  |  | | | | | |
+| EVAS GL | void | glFramebufferRenderbufferOES | GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer | finish | ext |  |  |  | | | | | |
+| EVAS GL | void | glFramebufferTexture2DOES | GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level | finish | ext |  |  |  | | | | | |
 | EVAS GL | void | glGetFramebufferAttachmentParameterivOES | GLenum target, GLenum attachment, GLenum pname, GLint* params | finish | ext |  |  |  | | | | | |
 | EVAS GL | void | glGenerateMipmapOES | GLenum target | finish | ext |  |  |  | | | | | |
 /* GL_OES_matrix_palette */
@@ -442,7 +442,7 @@
 | EVAS GL | void | glFlushMappedBufferRangeEXT | GLenum target, GLintptr offset, GLsizeiptr length | finish | ext |  |  |  | | | | | |
 /* GL_EXT_multisampled_render_to_texture */
 | EVAS GL | void | glRenderbufferStorageMultisampleEXT | GLenum a, GLsizei b, GLenum c, GLsizei d, GLsizei e | finish | ext |  |  |  | | | | | |
-| EVAS GL | void | glFramebufferTexture2DMultisampleEXT | GLenum a, GLenum b, GLenum c, GLuint d, GLint e, GLsizei f | flush | ext |  |  |  | | | | | |
+| EVAS GL | void | glFramebufferTexture2DMultisampleEXT | GLenum a, GLenum b, GLenum c, GLuint d, GLint e, GLsizei f | finish | ext |  |  |  | | | | | |
 
 /* GL_EXT_robustness */
 | EVAS GL | GLenum | glGetGraphicsResetStatusEXT | void | finish | ext |  |  |  | | | | | |
@@ -471,7 +471,7 @@
 | EVAS GL | void | glStartTilingQCOM | GLuint x, GLuint y, GLuint width, GLuint height, GLbitfield preserveMask | flush | ext |  |  |  | | | | | |
 | EVAS GL | void | glEndTilingQCOM | GLbitfield preserveMask | flush | ext |  |  |  | | | | | |
 
-| EVAS GL | void | glFramebufferTexture2DMultisample | GLenum a, GLenum b, GLenum c, GLuint d, GLint e, GLsizei f | flush | ext |  |  |  | | | | | |
+| EVAS GL | void | glFramebufferTexture2DMultisample | GLenum a, GLenum b, GLenum c, GLuint d, GLint e, GLsizei f | finish | ext |  |  |  | | | | | |
 
 # OpenGL-ES 3.0
 | EVAS GL | void | glBeginQuery | GLenum target, GLuint id | finish | ext |  |  |  | | | | | |
