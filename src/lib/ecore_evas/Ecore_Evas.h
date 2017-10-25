@@ -146,6 +146,7 @@ typedef enum _Ecore_Evas_Engine_Type
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 typedef enum _Ecore_Evas_Avoid_Damage_Type
 {
