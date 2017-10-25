@@ -22,6 +22,7 @@
 #include "eina_matrix.h"
 
 /**
+ * @internal
  * @file
  * @ender_group{Eina_Vector_Type}
  * @ender_group{Eina_Vector2}
@@ -31,6 +32,7 @@ typedef struct _Eina_Vector2 Eina_Vector2;
 
 /**
  * @}
+ * @internal
  * @defgroup Eina_Vector2 Vectors in floating point
  * @ingroup Eina_Basic
  * @brief Vector definition and operations
@@ -44,6 +46,7 @@ struct _Eina_Vector2
 };
 
 /**
+ * @internal
  * @brief Set parameters to vector.
  *
  * @param dst The resulting vector.
@@ -55,6 +58,7 @@ struct _Eina_Vector2
 static inline void eina_vector2_set(Eina_Vector2 *dst, double x, double y);
 
 /**
+ * @internal
  * @brief Set array to vector.
  *
  * @param dst The resulting vector.
@@ -67,6 +71,7 @@ static inline void eina_vector2_set(Eina_Vector2 *dst, double x, double y);
 static inline void eina_vector2_array_set(Eina_Vector2 *dst, const double *v);
 
 /**
+ * @internal
  * @brief Copy vector.
  *
  * @param dst The vector copy.
@@ -77,6 +82,7 @@ static inline void eina_vector2_array_set(Eina_Vector2 *dst, const double *v);
 static inline void eina_vector2_copy(Eina_Vector2 *dst, const Eina_Vector2 *src);
 
 /**
+ * @internal
  * @brief Make negative vector.
  *
  * @param out The resulting vector.
@@ -87,6 +93,7 @@ static inline void eina_vector2_copy(Eina_Vector2 *dst, const Eina_Vector2 *src)
 static inline void eina_vector2_negate(Eina_Vector2 *out, const Eina_Vector2 *v);
 
 /**
+ * @internal
  * @brief Add two vectors.
  *
  * @param out The resulting vector.
@@ -98,6 +105,7 @@ static inline void eina_vector2_negate(Eina_Vector2 *out, const Eina_Vector2 *v)
 static inline void eina_vector2_add(Eina_Vector2 *out, const Eina_Vector2 *a, const Eina_Vector2 *b);
 
 /**
+ * @internal
  * @brief Subtract two vectors
  *
  * @param out The resulting vector
@@ -109,6 +117,7 @@ static inline void eina_vector2_add(Eina_Vector2 *out, const Eina_Vector2 *a, co
 static inline void eina_vector2_subtract(Eina_Vector2 *out, const Eina_Vector2 *a, const Eina_Vector2 *b);
 
 /**
+ * @internal
  * @brief Scale vector.
  *
  * @param out The resulting vector.
@@ -120,6 +129,7 @@ static inline void eina_vector2_subtract(Eina_Vector2 *out, const Eina_Vector2 *
 static inline void eina_vector2_scale(Eina_Vector2 *out, const Eina_Vector2 *v, double scale);
 
 /**
+ * @internal
  * @brief Return the dot product of the two vectors.
  *
  * @param a The first member.
@@ -131,6 +141,7 @@ static inline void eina_vector2_scale(Eina_Vector2 *out, const Eina_Vector2 *v, 
 static inline double eina_vector2_dot_product(const Eina_Vector2 *a, const Eina_Vector2 *b);
 
 /**
+ * @internal
  * @brief Return the length of the given vector.
  *
  * @param v The vector.
@@ -141,6 +152,7 @@ static inline double eina_vector2_dot_product(const Eina_Vector2 *a, const Eina_
 static inline double eina_vector2_length_get(const Eina_Vector2 *v);
 
 /**
+ * @internal
  * @brief Return the length in square of the given vector.
  *
  * @param v The vector.
@@ -151,6 +163,7 @@ static inline double eina_vector2_length_get(const Eina_Vector2 *v);
 static inline double eina_vector2_length_square_get(const Eina_Vector2 *v);
 
 /**
+ * @internal
  * @brief Return the distance between of two vectors.
  *
  * @param a The first vector.
@@ -162,6 +175,7 @@ static inline double eina_vector2_length_square_get(const Eina_Vector2 *v);
 static inline double eina_vector2_distance_get(const Eina_Vector2 *a, const Eina_Vector2 *b);
 
 /**
+ * @internal
  * @brief Return the distance in square between of two vectors.
  *
  * @param a The first vector.
@@ -173,6 +187,7 @@ static inline double eina_vector2_distance_get(const Eina_Vector2 *a, const Eina
 static inline double eina_vector2_distance_square_get(const Eina_Vector2 *a, const Eina_Vector2 *b);
 
 /**
+ * @internal
  * @brief normalize vector.
  *
  * @param out The resulting vector.
@@ -183,6 +198,7 @@ static inline double eina_vector2_distance_square_get(const Eina_Vector2 *a, con
 static inline void eina_vector2_normalize(Eina_Vector2 *out, const Eina_Vector2 *v);
 
 /**
+ * @internal
  * @brief Transform vector.
  *
  * @param out The resulting vector.
@@ -194,6 +210,7 @@ static inline void eina_vector2_normalize(Eina_Vector2 *out, const Eina_Vector2 
 static inline void eina_vector2_transform(Eina_Vector2 *out, const Eina_Matrix2 *m, const Eina_Vector2 *v);
 
 /**
+ * @internal
  * @brief Homogeneous position transform vector.
  *
  * @param out The resulting vector.
@@ -205,6 +222,7 @@ static inline void eina_vector2_transform(Eina_Vector2 *out, const Eina_Matrix2 
 static inline void eina_vector2_homogeneous_position_transform(Eina_Vector2 *out, const Eina_Matrix3 *m, const Eina_Vector2 *v);
 
 /**
+ * @internal
  * @brief Homogeneous direction ransform vector.
  *
  * @param out The resulting vector.
