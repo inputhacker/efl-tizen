@@ -30,7 +30,9 @@ typedef Eo Ecore_Con_Url;
 /**
  * @ingroup Ecore_Con_Url_Group
  * @brief Controls the URL to send the request to.
- * @param[in] url The URL
+ * @param[in] obj The Given object
+ * @param[in] url the new URL
+ * @return #EINA_TRUE on success, #EINA_FALSE otherwise.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
@@ -41,6 +43,8 @@ EAPI Eina_Bool ecore_con_url_url_set(Ecore_Con_Url *obj, const char *url);
 /**
  * @ingroup Ecore_Con_Url_Group
  * @brief Controls the URL to send the request to.
+ * @param[in] obj The given object
+ * @return @c NULL on error, read-only URL string on success.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
