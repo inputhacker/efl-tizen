@@ -1720,6 +1720,12 @@ EAPI Ecore_Cocoa_Window *ecore_evas_cocoa_window_get(const Ecore_Evas *ee);
 EAPI Ecore_Evas     *ecore_evas_drm_new(const char *device, unsigned int parent, int x, int y, int w, int h);
 EAPI Ecore_Evas     *ecore_evas_gl_drm_new(const char *device, unsigned int parent, int x, int y, int w, int h); /** @since 1.12 */
 
+/**
+ * @brief Creates Ecore_Evas using gl_tbm backend.
+ * @param w The width of the Ecore_Evas to be created.
+ * @param h The height of the Ecore_Evas to be created.
+ * @return The new Ecore_Evas.
+ */
 EAPI Ecore_Evas     *ecore_evas_gl_tbm_new(int w, int h);
 EAPI Ecore_Evas     *ecore_evas_software_tbm_new(int w, int h);
 EAPI Ecore_Evas     *ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,void *(*alloc_func) (void *data, int w, int h),void (*free_func) (void *data, void *tbm_queue),const void *data);
