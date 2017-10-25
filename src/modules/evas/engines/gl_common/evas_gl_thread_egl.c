@@ -59,7 +59,6 @@ GL_TH_FN(eglGetError)(GL_TH_DP)
   thread_data_ptr =
       evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(eglGetError) *), &thcmd_ref);
   *thread_data_ptr = thread_data;
-  *thread_data_ptr = thread_data;
 
   thread_data->orig_func = orig_func;
 
@@ -1368,6 +1367,84 @@ GL_TH_FN(eglUnbindWaylandDisplayWL)(GL_TH_DP,  EGLDisplay  dpy,  void *wl_displa
                              EVAS_GL_THREAD_MODE_FINISH);
 
   return thread_data->return_value;
+}
+
+
+
+typedef struct
+{
+  GL_TH_FNTYPE(wl_egl_window_set_buffer_transform) orig_func;
+  void *egl_window;
+  int wl_output_transform;
+} GL_TH_ST(wl_egl_window_set_buffer_transform);
+
+static void
+GL_TH_CB(wl_egl_window_set_buffer_transform)(void *data)
+{
+  GL_TH_ST(wl_egl_window_set_buffer_transform) *thread_data = *(void **)data;
+
+  thread_data->orig_func(thread_data->egl_window, thread_data->wl_output_transform);
+}
+
+void
+GL_TH_FN(wl_egl_window_set_buffer_transform)(GL_TH_DP, void *egl_window, int wl_output_transform)
+{
+
+  GL_TH_ST(wl_egl_window_set_buffer_transform) thread_data_local, *thread_data = &thread_data_local, **thread_data_ptr;
+  void *thcmd_ref;
+
+  if (!evas_gl_thread_enabled(thread_type))
+    return ((GL_TH_FNTYPE(wl_egl_window_set_buffer_transform))orig_func)(egl_window, wl_output_transform);
+
+  thread_data_ptr =
+        evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(wl_egl_window_set_buffer_transform) *), &thcmd_ref);
+  *thread_data_ptr = thread_data;
+
+  thread_data->egl_window = egl_window;
+  thread_data->wl_output_transform = wl_output_transform;
+  thread_data->orig_func = orig_func;
+
+  evas_gl_thread_cmd_enqueue(thcmd_ref,
+                             GL_TH_CB(wl_egl_window_set_buffer_transform),
+                             EVAS_GL_THREAD_MODE_FINISH);
+}
+
+typedef struct
+{
+  GL_TH_FNTYPE(wl_egl_window_set_window_transform) orig_func;
+  void *egl_window;
+  int wl_output_transform;
+} GL_TH_ST(wl_egl_window_set_window_transform);
+
+static void
+GL_TH_CB(wl_egl_window_set_window_transform)(void *data)
+{
+  GL_TH_ST(wl_egl_window_set_window_transform) *thread_data = *(void **)data;
+
+  thread_data->orig_func(thread_data->egl_window, thread_data->wl_output_transform);
+}
+
+void
+GL_TH_FN(wl_egl_window_set_window_transform)(GL_TH_DP,  void *egl_window, int wl_output_transform)
+{
+
+  GL_TH_ST(wl_egl_window_set_window_transform) thread_data_local, *thread_data = &thread_data_local, **thread_data_ptr;
+  void *thcmd_ref;
+
+  if (!evas_gl_thread_enabled(thread_type))
+    return ((GL_TH_FNTYPE(wl_egl_window_set_window_transform))orig_func)(egl_window, wl_output_transform);
+
+  thread_data_ptr =
+        evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(wl_egl_window_set_window_transform) *), &thcmd_ref);
+  *thread_data_ptr = thread_data;
+
+  thread_data->egl_window = egl_window;
+  thread_data->wl_output_transform = wl_output_transform;
+  thread_data->orig_func = orig_func;
+
+  evas_gl_thread_cmd_enqueue(thcmd_ref,
+                             GL_TH_CB(wl_egl_window_set_window_transform),
+                             EVAS_GL_THREAD_MODE_FINISH);
 }
 
 

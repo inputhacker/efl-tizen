@@ -279,12 +279,8 @@ GL_TH_FN(glBindFramebuffer)(GL_TH_DP, GLenum target, GLuint framebuffer)
         return;
      }
    thread_data_ptr =
-      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glBindFramebuffer) *) + sizeof(GL_TH_ST(glBindFramebuffer)), &thcmd_ref);
-   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glBindFramebuffer) *));
-   thread_data = *thread_data_ptr;
-
-   if (!evas_gl_thread_force_finish())
-     thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glBindFramebuffer) *), &thcmd_ref);
+   *thread_data_ptr = thread_data;
 
    thread_data->target = target;
    thread_data->framebuffer = framebuffer;
@@ -2962,12 +2958,8 @@ GL_TH_FN(glFramebufferRenderbuffer)(GL_TH_DP, GLenum target, GLenum attachment, 
         return;
      }
    thread_data_ptr =
-      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferRenderbuffer) *) + sizeof(GL_TH_ST(glFramebufferRenderbuffer)), &thcmd_ref);
-   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glFramebufferRenderbuffer) *));
-   thread_data = *thread_data_ptr;
-
-   if (!evas_gl_thread_force_finish())
-     thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferRenderbuffer) *), &thcmd_ref);
+   *thread_data_ptr = thread_data;
 
    thread_data->target = target;
    thread_data->attachment = attachment;
@@ -3030,12 +3022,8 @@ GL_TH_FN(glFramebufferTexture2D)(GL_TH_DP, GLenum target, GLenum attachment, GLe
         return;
      }
    thread_data_ptr =
-      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferTexture2D) *) + sizeof(GL_TH_ST(glFramebufferTexture2D)), &thcmd_ref);
-   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glFramebufferTexture2D) *));
-   thread_data = *thread_data_ptr;
-
-   if (!evas_gl_thread_force_finish())
-     thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferTexture2D) *), &thcmd_ref);
+   *thread_data_ptr = thread_data;
 
    thread_data->target = target;
    thread_data->attachment = attachment;
@@ -20820,12 +20808,8 @@ GL_TH_FN(glBindFramebufferOES)(GL_TH_DP, GLenum target, GLuint framebuffer)
         return;
      }
    thread_data_ptr =
-      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glBindFramebufferOES) *) + sizeof(GL_TH_ST(glBindFramebufferOES)), &thcmd_ref);
-   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glBindFramebufferOES) *));
-   thread_data = *thread_data_ptr;
-
-   if (!evas_gl_thread_force_finish())
-     thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glBindFramebufferOES) *), &thcmd_ref);
+   *thread_data_ptr = thread_data;
 
    thread_data->target = target;
    thread_data->framebuffer = framebuffer;
@@ -21091,12 +21075,8 @@ GL_TH_FN(glFramebufferRenderbufferOES)(GL_TH_DP, GLenum target, GLenum attachmen
         return;
      }
    thread_data_ptr =
-      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferRenderbufferOES) *) + sizeof(GL_TH_ST(glFramebufferRenderbufferOES)), &thcmd_ref);
-   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glFramebufferRenderbufferOES) *));
-   thread_data = *thread_data_ptr;
-
-   if (!evas_gl_thread_force_finish())
-     thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferRenderbufferOES) *), &thcmd_ref);
+   *thread_data_ptr = thread_data;
 
    thread_data->target = target;
    thread_data->attachment = attachment;
@@ -21159,12 +21139,8 @@ GL_TH_FN(glFramebufferTexture2DOES)(GL_TH_DP, GLenum target, GLenum attachment, 
         return;
      }
    thread_data_ptr =
-      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferTexture2DOES) *) + sizeof(GL_TH_ST(glFramebufferTexture2DOES)), &thcmd_ref);
-   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glFramebufferTexture2DOES) *));
-   thread_data = *thread_data_ptr;
-
-   if (!evas_gl_thread_force_finish())
-     thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferTexture2DOES) *), &thcmd_ref);
+   *thread_data_ptr = thread_data;
 
    thread_data->target = target;
    thread_data->attachment = attachment;
@@ -23512,12 +23488,8 @@ GL_TH_FN(glFramebufferTexture2DMultisampleEXT)(GL_TH_DP, GLenum a, GLenum b, GLe
         return;
      }
    thread_data_ptr =
-      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferTexture2DMultisampleEXT) *) + sizeof(GL_TH_ST(glFramebufferTexture2DMultisampleEXT)), &thcmd_ref);
-   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glFramebufferTexture2DMultisampleEXT) *));
-   thread_data = *thread_data_ptr;
-
-   if (!evas_gl_thread_force_finish())
-     thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferTexture2DMultisampleEXT) *), &thcmd_ref);
+   *thread_data_ptr = thread_data;
 
    thread_data->a = a;
    thread_data->b = b;
@@ -24682,12 +24654,8 @@ GL_TH_FN(glFramebufferTexture2DMultisample)(GL_TH_DP, GLenum a, GLenum b, GLenum
         return;
      }
    thread_data_ptr =
-      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferTexture2DMultisample) *) + sizeof(GL_TH_ST(glFramebufferTexture2DMultisample)), &thcmd_ref);
-   *thread_data_ptr = (void *)((char *)thread_data_ptr + sizeof(GL_TH_ST(glFramebufferTexture2DMultisample) *));
-   thread_data = *thread_data_ptr;
-
-   if (!evas_gl_thread_force_finish())
-     thread_mode = EVAS_GL_THREAD_MODE_FLUSH;
+      evas_gl_thread_cmd_create(thread_type, sizeof(GL_TH_ST(glFramebufferTexture2DMultisample) *), &thcmd_ref);
+   *thread_data_ptr = thread_data;
 
    thread_data->a = a;
    thread_data->b = b;
