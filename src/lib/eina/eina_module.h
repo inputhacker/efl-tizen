@@ -233,6 +233,7 @@ EAPI const char *
  * @brief Defines if on module load we should expose all symbol
  *
  * @param module The module to turn off/on symbol to be exposed
+ * @param global @c ture to turn on symbol to be exposed, @c false otherwise
  * @since 1.11
  *
  * @if MOBILE @since_tizen 3.0
