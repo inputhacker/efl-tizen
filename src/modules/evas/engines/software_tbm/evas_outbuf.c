@@ -161,11 +161,12 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot EINA_UNUSED, Outbuf_De
       w,h);
 #endif
 
-   if ((ob->w != w) || (ob->h != h))
+   if ((ob->w != w) || (ob->h != h) || (ob->rotation != rot))
      {
         ob->w = w;
         ob->h = h;
-        tbm_surface_queue_reset(ob->priv.tbm_queue, w, h, TBM_FORMAT_ARGB8888);
+        ob->rotation = rot;
+        //tbm_surface_queue_reset(ob->priv.tbm_queue, w, h, TBM_FORMAT_ARGB8888);
      }
 }
 

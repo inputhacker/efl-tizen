@@ -35,7 +35,30 @@ _ecore_evas_tbm_free(Ecore_Evas *ee)
 }
 
 static void
-_ecore_evas_resize(Ecore_Evas *ee, int w, int h)
+_ecore_evas_tbm_callback_resize_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func)
+{
+   ee->func.fn_resize = func;
+}
+
+static void
+_ecore_evas_tbm_callback_move_set(Ecore_Evas *ee, Ecore_Evas_Event_Cb func)
+{
+   ee->func.fn_move = func;
+}
+
+static void
+_ecore_evas_tbm_move(Ecore_Evas *ee, int x, int y)
+{
+   ee->req.x = x;
+   ee->req.y = y;
+   if ((ee->x == x) && (ee->y == y)) return;
+   ee->x = x;
+   ee->y = y;
+   if (ee->func.fn_move) ee->func.fn_move(ee);
+}
+
+static void
+_ecore_evas_tbm_resize(Ecore_Evas *ee, int w, int h)
 {
    Ecore_Evas_Engine_Tbm_Data *tbm_data = ee->engine.data;
 
@@ -58,13 +81,170 @@ _ecore_evas_resize(Ecore_Evas *ee, int w, int h)
 }
 
 static void
-_ecore_evas_move_resize(Ecore_Evas *ee, int x EINA_UNUSED, int y EINA_UNUSED, int w, int h)
+_ecore_evas_tbm_move_resize(Ecore_Evas *ee, int x, int y, int w, int h)
 {
-   _ecore_evas_resize(ee, w, h);
+   if ((ee->x != x) || (ee->y != y))
+     _ecore_evas_tbm_move(ee, x, y);
+   if ((ee->w != w) || (ee->h != h))
+     _ecore_evas_tbm_resize(ee, w, h);
 }
 
 static void
-_ecore_evas_show(Ecore_Evas *ee)
+_ecore_evas_tbm_rotation_set(Ecore_Evas *ee, int rotation, int resize)
+{
+   int rot_dif;
+
+   if (ee->rotation == rotation) return;
+
+   /* calculate difference in rotation */
+   rot_dif = ee->rotation - rotation;
+   if (rot_dif < 0) rot_dif = -rot_dif;
+
+   /* check if rotation is just a flip */
+   if (rot_dif % 180)
+     {
+        int minw, minh, maxw, maxh;
+        int basew, baseh, stepw, steph;
+
+        /* check if we are rotating with resize */
+        if (!resize)
+          {
+             int fw, fh;
+             int ww, hh;
+
+             /* grab framespace width & height */
+             evas_output_framespace_get(ee->evas, NULL, NULL, &fw, &fh);
+
+             /* check for fullscreen */
+             if (!ee->prop.fullscreen && !ee->prop.maximized)
+               {
+
+               }
+             else
+               {
+                  /* resize the canvas based on rotation */
+                  if ((rotation == 0) || (rotation == 180))
+                    {
+                       /* resize the canvas */
+                       evas_output_size_set(ee->evas, ee->req.w, ee->req.h);
+                       evas_output_viewport_set(ee->evas, 0, 0,
+                                                ee->req.w, ee->req.h);
+                    }
+                  else
+                    {
+                       /* resize the canvas */
+                       evas_output_size_set(ee->evas, ee->req.h, ee->req.w);
+                       evas_output_viewport_set(ee->evas, 0, 0,
+                                                ee->req.h, ee->req.w);
+                    }
+               }
+
+             /* add canvas damage */
+             if (ECORE_EVAS_PORTRAIT(ee))
+               evas_damage_rectangle_add(ee->evas, 0, 0, ee->req.w, ee->req.h);
+             else
+               evas_damage_rectangle_add(ee->evas, 0, 0, ee->req.h, ee->req.w);
+             ww = ee->h;
+             hh = ee->w;
+             ee->w = ww;
+             ee->h = hh;
+             ee->req.w = ww;
+             ee->req.h = hh;
+          }
+        else
+          {
+             /* resize the canvas based on rotation */
+             if ((rotation == 0) || (rotation == 180))
+               {
+                  evas_output_size_set(ee->evas, ee->w, ee->h);
+                  evas_output_viewport_set(ee->evas, 0, 0, ee->w, ee->h);
+               }
+             else
+               {
+                  evas_output_size_set(ee->evas, ee->h, ee->w);
+                  evas_output_viewport_set(ee->evas, 0, 0, ee->h, ee->w);
+               }
+
+             /* call the ecore_evas' resize function */
+             if (ee->func.fn_resize) ee->func.fn_resize(ee);
+
+             /* add canvas damage */
+             if (ECORE_EVAS_PORTRAIT(ee))
+               evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+             else
+               evas_damage_rectangle_add(ee->evas, 0, 0, ee->h, ee->w);
+          }
+
+        /* get min, max, base, & step sizes */
+        ecore_evas_size_min_get(ee, &minw, &minh);
+        ecore_evas_size_max_get(ee, &maxw, &maxh);
+        ecore_evas_size_base_get(ee, &basew, &baseh);
+        ecore_evas_size_step_get(ee, &stepw, &steph);
+
+        /* record the current rotation of the ecore_evas */
+        ee->rotation = rotation;
+
+        /* reset min, max, base, & step sizes */
+        ecore_evas_size_min_set(ee, minh, minw);
+        ecore_evas_size_max_set(ee, maxh, maxw);
+        ecore_evas_size_base_set(ee, baseh, basew);
+        ecore_evas_size_step_set(ee, steph, stepw);
+
+        /* send a mouse_move process
+         *
+         * NB: Is This Really Needed ?
+         * Yes, it's required to update the mouse position, relatively to
+         * widgets. After a rotation change, e.g., the mouse might not be over
+         * a button anymore. */
+        _ecore_evas_mouse_move_process(ee, ee->mouse.x, ee->mouse.y,
+                                       ecore_loop_time_get());
+     }
+   else
+     {
+        /* record the current rotation of the ecore_evas */
+        ee->rotation = rotation;
+
+        /* send a mouse_move process
+         *
+         * NB: Is This Really Needed ? Yes, it's required to update the mouse
+         * position, relatively to widgets. */
+        _ecore_evas_mouse_move_process(ee, ee->mouse.x, ee->mouse.y,
+                                       ecore_loop_time_get());
+
+        /* call the ecore_evas' resize function */
+        if (ee->func.fn_resize) ee->func.fn_resize(ee);
+
+        /* add canvas damage */
+        if (ECORE_EVAS_PORTRAIT(ee))
+          evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+        else
+          evas_damage_rectangle_add(ee->evas, 0, 0, ee->h, ee->w);
+     }
+
+   if (!strcmp(ee->driver, "software_tbm"))
+     {
+        Evas_Engine_Info_Software_Tbm *einfo;
+        einfo = (Evas_Engine_Info_Software_Tbm *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+        einfo->info.rotation = rotation;
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+     }
+   else if (!strcmp(ee->driver, "gl_tbm"))
+     {
+        Evas_Engine_Info_GL_Tbm *einfo;
+        einfo = (Evas_Engine_Info_GL_Tbm *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+        einfo->info.rotation = rotation;
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+     }
+
+   if (ee->func.fn_state_change) ee->func.fn_state_change(ee);
+}
+
+static void
+_ecore_evas_tbm_show(Ecore_Evas *ee)
 {
    if (ee->prop.focused) return;
    ee->prop.focused = EINA_TRUE;
@@ -459,61 +639,61 @@ _ecore_evas_tbm_msg_send(Ecore_Evas *ee, int msg_domain, int msg_id, void *data,
 static Ecore_Evas_Engine_Func _ecore_tbm_engine_func =
 {
      _ecore_evas_tbm_free,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     _ecore_evas_resize,
-     _ecore_evas_move_resize,
-     NULL,
-     NULL,
-     _ecore_evas_show,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
+     _ecore_evas_tbm_callback_resize_set,
+     _ecore_evas_tbm_callback_move_set,
+     NULL, // fn_callback_show_set
+     NULL, // fn_callback_hide_set
+     NULL, // fn_callback_delete_request_set
+     NULL, // fn_callback_destroy_set
+     NULL, // fn_callback_focus_in_set
+     NULL, // fn_callback_focus_out_set
+     NULL, // fn_callback_mouse_in_set
+     NULL, // fn_callback_mouse_out_set
+     NULL, // fn_callback_sticky_set
+     NULL, // fn_callback_unsticky_set
+     NULL, // fn_callback_pre_render_set
+     NULL, // fn_callback_post_render_set
+     _ecore_evas_tbm_move,
+     NULL, // fn_managed_move
+     _ecore_evas_tbm_resize,
+     _ecore_evas_tbm_move_resize,
+     _ecore_evas_tbm_rotation_set,
+     NULL, // fn_shaped_set
+     _ecore_evas_tbm_show,
+     NULL, // fn_hide
+     NULL, // fn_raise
+     NULL, // fn_lower
+     NULL, // fn_activate
+     NULL, // fn_title_set
+     NULL, // fn_name_class_set
+     NULL, // fn_size_min_set
+     NULL, // fn_size_max_set
+     NULL, // fn_size_base_set
+     NULL, // fn_size_step_set
+     NULL, // fn_object_cursor_set
+     NULL, // fn_object_cursor_unset
+     NULL, // fn_layer_set
+     NULL, // fn_focus_set
+     NULL, // fn_iconified_set
+     NULL, // fn_borderless_set
+     NULL, // fn_override_set
+     NULL, // fn_maximized_set
+     NULL, // fn_fullscreen_set
+     NULL, // fn_avoid_damage_set
+     NULL, // fn_withdrawn_set
+     NULL, // fn_sticky_set
+     NULL, // fn_ignore_events_set
      _ecore_evas_tbm_alpha_set,
      NULL, //transparent
      NULL, // profiles_set
      _ecore_evas_tbm_profile_set,
 
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
-     NULL,
+     NULL, // fn_window_group_set
+     NULL, // fn_aspect_set
+     NULL, // fn_urgent_set
+     NULL, // fn_modal_set
+     NULL, // fn_demands_attention_set
+     NULL, // fn_focus_skip_set
 
      _ecore_evas_tbm_render,
      NULL, // screen_geometry_get

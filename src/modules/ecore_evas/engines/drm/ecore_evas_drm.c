@@ -1006,10 +1006,28 @@ _ecore_evas_drm_rotation_set(Ecore_Evas *ee, int rotation, int resize)
         if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
           ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
      }
+   else if (!strcmp(ee->driver, "drm_tbm"))
+     {
+        Evas_Engine_Info_Software_Tbm *einfo;
+        einfo = (Evas_Engine_Info_Software_Tbm *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+        einfo->info.rotation = rotation;
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+     }
    else if (!strcmp(ee->driver, "gl_drm"))
      {
         Evas_Engine_Info_GL_Drm *einfo;
         einfo = (Evas_Engine_Info_GL_Drm *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+        einfo->info.rotation = rotation;
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+     }
+   else if (!strcmp(ee->driver, "gl_drm_tbm"))
+     {
+        Evas_Engine_Info_GL_Tbm *einfo;
+        einfo = (Evas_Engine_Info_GL_Tbm *)evas_engine_info_get(ee->evas);
         if (!einfo) return;
         einfo->info.rotation = rotation;
         if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))

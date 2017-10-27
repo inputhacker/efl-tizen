@@ -339,7 +339,7 @@ eng_window_resurf(Outbuf *gw)
 void
 eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EINA_UNUSED)
 {
-   if (ob->w != w || ob->h != h)
+   if (ob->w != w || ob->h != h || ob->rot != rot)
      {
         ob->w = w;
         ob->h = h;
@@ -347,7 +347,7 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
         eng_window_use(ob);
         glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot,1);
 
-        tbm_surface_queue_reset(ob->tbm_queue, w, h, TBM_FORMAT_ARGB8888);
+        //tbm_surface_queue_reset(ob->tbm_queue, w, h, TBM_FORMAT_ARGB8888);
      }
 }
 
