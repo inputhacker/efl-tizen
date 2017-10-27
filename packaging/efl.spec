@@ -416,26 +416,26 @@ License: BSD-2-Clause and MIT
 %description -n ecore-avahi-devel
 Development files for ecore_avahi
 
-%package -n ecore-buffer
-Summary: Enlightened Core X interface library - buffer
-Requires: %{name}-data = %{version}-%{release}
-License: BSD-2-Clause and MIT
+#%package -n ecore-buffer
+#Summary: Enlightened Core X interface library - buffer
+#Requires: %{name}-data = %{version}-%{release}
+#License: BSD-2-Clause and MIT
 
-%description -n ecore-buffer
-The Ecore Buffer is an abstraction of graphic buffer.
-This library also provides simple mechanisms for sharing graphic buffer bet-
-ween processes using wayland socket. Ecore Buffer Queue is for this
-function, and it consists of two main object,
-The Ecore_Buffer_Consumer and the Ecore_Buffer_Provider.
+#%description -n ecore-buffer
+#The Ecore Buffer is an abstraction of graphic buffer.
+#This library also provides simple mechanisms for sharing graphic buffer bet-
+#ween processes using wayland socket. Ecore Buffer Queue is for this
+#function, and it consists of two main object,
+#The Ecore_Buffer_Consumer and the Ecore_Buffer_Provider.
 
-%package -n ecore-buffer-devel
-Summary:  Development components for the ecore_buffer package
-Group:    Graphics & UI Framework/Development
-Requires: ecore-buffer = %{version}-%{release}
-License: BSD-2-Clause and MIT
+#%package -n ecore-buffer-devel
+#Summary:  Development components for the ecore_buffer package
+#Group:    Graphics & UI Framework/Development
+#Requires: ecore-buffer = %{version}-%{release}
+#License: BSD-2-Clause and MIT
 
-%description -n ecore-buffer-devel
-Development files for ecore_buffer
+#%description -n ecore-buffer-devel
+#Development files for ecore_buffer
 
 %package -n ecore-con
 Summary: Enlightened Core X interface library - con
@@ -1050,7 +1050,6 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
     --disable-tslib \
 %if %{with wayland}
     --enable-wayland \
-    --enable-drm \
     --enable-egl \
     --with-opengl=es \
     --disable-rpath \
@@ -1066,7 +1065,6 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 %endif
     --disable-physics \
     --disable-cxx-bindings \
-    --enable-systemd \
     --enable-lua-old \
     --disable-gstreamer1 \
     --with-dictionaries-hyphen-dir=/usr/share/hyphen/ \
@@ -1074,8 +1072,11 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
     --disable-spectre \
     --disable-librsvg \
     --disable-libraw \
+    --disable-systemd \
     --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb
 
+#    --enable-systemd \
+#    --enable-drm \
 #    --enable-gl-drm \
 
 #%__make %{?_smp_mflags} --trace
@@ -1318,8 +1319,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore.so.*
-%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
-%exclude /usr/lib/debug/%{_libdir}/ecore/system/systemd/v-*/module.so.debug
+#%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
+#%exclude /usr/lib/debug/%{_libdir}/ecore/system/systemd/v-*/module.so.debug
 %{_datadir}/ecore/checkme
 
 %files -n ecore-devel
@@ -1356,19 +1357,19 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libecore_avahi.so
 %{_libdir}/pkgconfig/ecore-avahi*.pc
 
-%files -n ecore-buffer
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%license licenses/COPYING.BSD
-%{_libdir}/libecore_buffer.so.*
-%{_libdir}/ecore_buffer/modules/*/*/module.so
+#%files -n ecore-buffer
+#%manifest %{name}.manifest
+#%defattr(-,root,root,-)
+#%license licenses/COPYING.BSD
+#%{_libdir}/libecore_buffer.so.*
+#%{_libdir}/ecore_buffer/modules/*/*/module.so
 
-%files -n ecore-buffer-devel
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%{_includedir}/ecore-buffer*/*.h
-%{_libdir}/libecore_buffer.so
-%{_libdir}/pkgconfig/ecore-buffer*.pc
+#%files -n ecore-buffer-devel
+#%manifest %{name}.manifest
+#%defattr(-,root,root,-)
+#%{_includedir}/ecore-buffer*/*.h
+#%{_libdir}/libecore_buffer.so
+#%{_libdir}/pkgconfig/ecore-buffer*.pc
 
 %files -n ecore-con
 %manifest %{name}.manifest
