@@ -1,5 +1,6 @@
 class Evas.Grid (Evas.Smart_Clipped)
 {
+   [[Evas grid class]]
    legacy_prefix: evas_object_grid;
    eo_prefix: evas_obj_grid;
    methods {
@@ -29,7 +30,7 @@ class Evas.Grid (Evas.Smart_Clipped)
             ]]
          }
          values {
-            mirrored: bool; [[the mirrored mode to set.]]
+            mirrored: bool; [[$true if mirrored mode is set, $false otherwise]]
          }
       }
       @property size {
@@ -75,7 +76,7 @@ class Evas.Grid (Evas.Smart_Clipped)
 
               @since 1.1
             ]]
-            return: free(own(list<Evas.Object *> *), eina_list_free) @warn_unused;
+            return: free(own(list<Evas.Object *> *), eina_list_free) @warn_unused; [[Iterator to grid children]]
          }
       }
       accessor_new @const {
@@ -89,8 +90,7 @@ class Evas.Grid (Evas.Smart_Clipped)
 
            @since 1.1
          ]]
-         return: free(own(accessor<Evas.Object *> *), eina_accessor_free)
-            @warn_unused;
+         return: free(own(accessor<Evas.Object *> *), eina_accessor_free) @warn_unused; [[Accessor to children list]]
       }
       clear {
          [[Faster way to remove all child objects from a grid object.
@@ -103,7 +103,7 @@ class Evas.Grid (Evas.Smart_Clipped)
          ]]
 
          params {
-            @in clear: bool; [[if true, it will delete just removed children.]]
+            @in clear: bool; [[If $true, it will delete just removed children.]]
          }
       }
       iterator_new @const {
@@ -117,8 +117,7 @@ class Evas.Grid (Evas.Smart_Clipped)
 
            @since 1.1
          ]]
-         return: free(own(iterator<Evas.Object *> *), eina_iterator_free)
-            @warn_unused;
+         return: free(own(iterator<Evas.Object *> *), eina_iterator_free) @warn_unused; [[Iterator]]
       }
       add_to {
          [[Create a grid that is child of a given element parent.
@@ -132,7 +131,7 @@ class Evas.Grid (Evas.Smart_Clipped)
            @since 1.1
          ]]
 
-         return: Evas.Object * @warn_unused;
+         return: Evas.Object * @warn_unused; [[New child object]]
       }
       unpack {
          [[Remove child from grid.
@@ -150,7 +149,7 @@ class Evas.Grid (Evas.Smart_Clipped)
 
          return: bool; [[1 on success, 0 on failure.]]
          params {
-            @in child: Evas.Object * @nonull;
+            @in child: Evas.Object * @nonull; [[Child to be removed]]
          }
       }
       pack_get @const {

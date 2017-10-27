@@ -2,6 +2,7 @@ import evas_types;
 
 class Evas.Line (Evas.Object)
 {
+   [[Evas line class]]
    legacy_prefix: evas_object_line;
    eo_prefix: evas_obj_line;
    methods {
@@ -37,5 +38,4 @@ class Evas.Line (Evas.Object)
    implements {
       Eo.Base.constructor;
    }
-
 }

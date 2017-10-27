@@ -11,6 +11,7 @@ enum Evas.Object_Table.Homogeneous_Mode {
 
 class Evas.Table (Evas.Smart_Clipped)
 {
+   [[Evas table class]]
    legacy_prefix: evas_object_table;
    eo_prefix: evas_obj_table;
    methods {
@@ -70,7 +71,7 @@ class Evas.Table (Evas.Smart_Clipped)
             ]]
          }
          values {
-            homogeneous: Evas.Object_Table.Homogeneous_Mode;
+            homogeneous: Evas.Object_Table.Homogeneous_Mode; [[Table homogeneous mode]]
          }
       }
       @property align {
@@ -90,8 +91,8 @@ class Evas.Table (Evas.Smart_Clipped)
             ]]
          }
          values {
-            horizontal: double;
-            vertical: double;
+            horizontal: double; [[Horizontal alignment]]
+            vertical: double; [[Vertical alignment]]
          }
       }
       @property padding {
@@ -111,8 +112,8 @@ class Evas.Table (Evas.Smart_Clipped)
             ]]
          }
          values {
-            horizontal: Evas.Coord;
-            vertical: Evas.Coord;
+            horizontal: Evas.Coord; [[Horizontal padding]]
+            vertical: Evas.Coord; [[Vertical padding]]
          }
       }
       @property mirrored {
@@ -154,8 +155,8 @@ class Evas.Table (Evas.Smart_Clipped)
             ]]
          }
          values {
-            cols: int;
-            rows: int;
+            cols: int; [[Columns in table]]
+            rows: int; [[Rows in table]]
          }
       }
       @property children {
@@ -171,7 +172,7 @@ class Evas.Table (Evas.Smart_Clipped)
               \@elseif WEARABLE \@since_tizen 2.3.1
               \@endif
             ]]
-            return: free(own(list<Evas.Object *> *), eina_list_free) @warn_unused;
+            return: free(own(list<Evas.Object *> *), eina_list_free) @warn_unused; [[Children list]]
          }
       }
       @property child {
@@ -186,11 +187,11 @@ class Evas.Table (Evas.Smart_Clipped)
             ]]
          }
          keys {
-            col: ushort;
-            row: ushort;
+            col: ushort; [[Child column]]
+            row: ushort; [[Child row]]
          }
          values {
-            child: Evas.Object *;
+            child: Evas.Object *; [[Child object]]
          }
       }
       clear {
@@ -215,7 +216,7 @@ class Evas.Table (Evas.Smart_Clipped)
            \@endif
          ]]
          return: free(own(accessor<Evas.Object *> *), eina_accessor_free)
-            @warn_unused;
+            @warn_unused; [[Accessor to children list]]
       }
       iterator_new @const {
          [[Get an iterator to walk the list of children for the table.
@@ -227,7 +228,7 @@ class Evas.Table (Evas.Smart_Clipped)
            \@endif
          ]]
          return: free(own(iterator<Evas.Object *> *), eina_iterator_free)
-            @warn_unused;
+            @warn_unused; [[Iterator to children]]
       }
       add_to {
          [[Create a table that is child of a given element $parent.
@@ -237,7 +238,7 @@ class Evas.Table (Evas.Smart_Clipped)
            \@endif
          ]]
 
-         return: Evas.Object * @warn_unused;
+         return: Evas.Object * @warn_unused; [[Children table]]
       }
       pack_get @const {
          [[Get packing location of a child of table
@@ -251,10 +252,10 @@ class Evas.Table (Evas.Smart_Clipped)
          return: bool; [[$true on success, $false on failure.]]
          params {
             @in child: Evas.Object *; [[The child object to add.]]
-            @out col: ushort; [[pointer to store relative-horizontal position to place child.]]
-            @out row: ushort; [[pointer to store relative-vertical position to place child.]]
-            @out colspan: ushort; [[pointer to store how many relative-horizontal position to use for this child.]]
-            @out rowspan: ushort; [[pointer to store how many relative-vertical position to use for this child.]]
+            @out col: ushort; [[Pointer to store relative-horizontal position to place child.]]
+            @out row: ushort; [[Pointer to store relative-vertical position to place child.]]
+            @out colspan: ushort; [[Pointer to store how many relative-horizontal position to use for this child.]]
+            @out rowspan: ushort; [[Pointer to store how many relative-vertical position to use for this child.]]
          }
       }
       pack {
@@ -274,10 +275,10 @@ class Evas.Table (Evas.Smart_Clipped)
          return: bool; [[$true on success, $false on failure.]]
          params {
             @in child: Evas.Object * @nonull; [[The child object to add.]]
-            @in col: ushort; [[relative-horizontal position to place child.]]
-            @in row: ushort; [[relative-vertical position to place child.]]
-            @in colspan: ushort; [[how many relative-horizontal position to use for this child.]]
-            @in rowspan: ushort; [[how many relative-vertical position to use for this child.]]
+            @in col: ushort; [[Relative-horizontal position to place child.]]
+            @in row: ushort; [[Relative-vertical position to place child.]]
+            @in colspan: ushort; [[How many relative-horizontal position to use for this child.]]
+            @in rowspan: ushort; [[How many relative-vertical position to use for this child.]]
          }
       }
       unpack {
@@ -294,7 +295,7 @@ class Evas.Table (Evas.Smart_Clipped)
 
          return: bool; [[$true on success, $false on failure.]]
          params {
-            @in child: Evas.Object * @nonull;
+            @in child: Evas.Object * @nonull; [[Child to be removed]]
          }
       }
    }

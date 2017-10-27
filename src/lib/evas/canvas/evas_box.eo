@@ -1,5 +1,6 @@
 class Evas.Box (Evas.Smart_Clipped)
 {
+   [[Evas box class]]
    legacy_prefix: evas_object_box;
    eo_prefix: evas_obj_box;
    data: Evas_Object_Box_Data;
@@ -38,7 +39,7 @@ class Evas.Box (Evas.Smart_Clipped)
          }
          values {
             horizontal: double; [[The horizontal alignment, in pixels.]]
-            vertical: double; [[the vertical alignment, in pixels.]]
+            vertical: double; [[The vertical alignment, in pixels.]]
          }
       }
       @property padding {
@@ -66,7 +67,7 @@ class Evas.Box (Evas.Smart_Clipped)
          }
          values {
             horizontal: Evas.Coord; [[The horizontal padding, in pixels.]]
-            vertical: Evas.Coord; [[the vertical padding, in pixels.]]
+            vertical: Evas.Coord; [[The vertical padding, in pixels.]]
          }
       }
       @property layout {
@@ -150,8 +151,8 @@ class Evas.Box (Evas.Smart_Clipped)
            \@endif
          ]]
          params {
-              priv: Evas_Object_Box_Data *;
-              data: void *;
+              priv: Evas_Object_Box_Data *; [[Private data pointer]]
+              data: void *; [[Data pointer]]
          }
       }
       layout_vertical {
@@ -166,8 +167,8 @@ class Evas.Box (Evas.Smart_Clipped)
            \@endif
          ]]
          params {
-              priv: Evas_Object_Box_Data *;
-              data: void *;
+              priv: Evas_Object_Box_Data *; [[Private data pointer]]
+              data: void *; [[Data pointer]]
          }
       }
       layout_homogeneous_max_size_horizontal {
@@ -217,17 +218,17 @@ class Evas.Box (Evas.Smart_Clipped)
             \@endif
           ]]
          params {
-              priv: Evas_Object_Box_Data *;
-              data: void *;
+              priv: Evas_Object_Box_Data *; [[Private data pointer]]
+              data: void *; [[Data pointer]]
          }
 
       }
       internal_remove {
          [[No description supplied by the EAPI.]]
-         return: Evas.Object *;
+         return: Evas.Object *; [[New object with child removed]]
          legacy: null;
          params {
-            @in child: Evas.Object *;
+            @in child: Evas.Object *; [[Child object to be removed]]
          }
       }
       layout_flow_vertical {
@@ -242,15 +243,15 @@ class Evas.Box (Evas.Smart_Clipped)
            \@endif
          ]]
          params {
-              priv: Evas_Object_Box_Data *;
-              data: void *;
+              priv: Evas_Object_Box_Data *; [[Private data pointer]]
+              data: void *; [[Data pointer]]
          }
       }
       internal_option_free {
          [[No description supplied by the EAPI.]]
          legacy: null;
          params {
-            @in opt: Evas_Object_Box_Option *;
+            @in opt: Evas_Object_Box_Option *; [[Box option to be freed]]
          }
       }
       insert_after {
@@ -291,9 +292,9 @@ class Evas.Box (Evas.Smart_Clipped)
            \@endif
          ]]
 
-         return: bool; [[$true, on success, $false otherwise.]]
+         return: bool; [[$true on success, $false otherwise.]]
          params {
-            @in clear: bool; [[if true, it will delete just removed children.]]
+            @in clear: bool; [[If $true, it will delete just removed children.]]
          }
       }
       iterator_new @const {
@@ -409,9 +410,9 @@ class Evas.Box (Evas.Smart_Clipped)
       internal_append {
          [[No description supplied by the EAPI.]]
          legacy: null;
-         return: Evas_Object_Box_Option *;
+         return: Evas_Object_Box_Option *; [[Box option]]
          params {
-            @in child: Evas.Object *;
+            @in child: Evas.Object *; [[Child object to be appended]]
          }
       }
       option_property_vset {
@@ -436,9 +437,9 @@ class Evas.Box (Evas.Smart_Clipped)
       internal_remove_at {
          [[No description supplied by the EAPI.]]
          legacy: null;
-         return: Evas.Object *;
+         return: Evas.Object *; [[Canvas object]]
          params {
-            @in pos: uint;
+            @in pos: uint; [[Position of object to be removed]]
          }
       }
       remove_at {
@@ -488,10 +489,10 @@ class Evas.Box (Evas.Smart_Clipped)
       internal_insert_at {
          [[No description supplied by the EAPI.]]
          legacy: null;
-         return: Evas_Object_Box_Option *;
+         return: Evas_Object_Box_Option *; [[Box option]]
          params {
-            @in child: Evas.Object *;
-            @in pos: uint;
+            @in child: Evas.Object *; [[Child object to be inserted]]
+            @in pos: uint; [[Position where the object will be inserted]]
          }
       }
       insert_before {
@@ -544,10 +545,10 @@ class Evas.Box (Evas.Smart_Clipped)
       internal_insert_before {
          [[No description supplied by the EAPI.]]
          legacy: null;
-         return: Evas_Object_Box_Option *;
+         return: Evas_Object_Box_Option *; [[Box option]]
          params {
-            @in child: Evas.Object *;
-            @in reference: const(Evas.Object)*;
+            @in child: Evas.Object *; [[Object to be inserted]]
+            @in reference: const(Evas.Object)*; [[Reference where the object will be inserted]]
          }
       }
       layout_homogeneous_horizontal {
@@ -588,16 +589,16 @@ class Evas.Box (Evas.Smart_Clipped)
             \@endif
           ]]
          params {
-            @in priv: Evas_Object_Box_Data *;
-            @in data: void *;
+            @in priv: Evas_Object_Box_Data *; [[Private data pointer]]
+            @in data: void *; [[Data pointer]]
          }
       }
       internal_option_new {
          [[No description supplied by the EAPI.]]
          legacy: null;
-         return: Evas_Object_Box_Option*;
+         return: Evas_Object_Box_Option*; [[Box option]]
          params {
-            @in child: Evas.Object *;
+            @in child: Evas.Object *; [[New box object]]
          }
       }
       layout_homogeneous_max_size_vertical {
@@ -614,17 +615,17 @@ class Evas.Box (Evas.Smart_Clipped)
            \@endif
          ]]
          params {
-            @in priv: Evas_Object_Box_Data *;
-            @in data: void *;
+            @in priv: Evas_Object_Box_Data *; [[Private data pointer]]
+            @in data: void *; [[Data pointer]]
          }
       }
       internal_insert_after {
          [[No description supplied by the EAPI.]]
          legacy: null;
-         return: Evas_Object_Box_Option *;
+         return: Evas_Object_Box_Option *; [[Box option]]
          params {
-            @in child: Evas.Object *;
-            @in reference: const(Evas.Object)*;
+            @in child: Evas.Object *; [[Object to be inserted]]
+            @in reference: const(Evas.Object)*; [[Reference where the object will be inserted]]
          }
       }
       insert_at {
@@ -658,9 +659,9 @@ class Evas.Box (Evas.Smart_Clipped)
       internal_prepend {
          [[No description supplied by the EAPI.]]
          legacy: null;
-         return: Evas_Object_Box_Option*;
+         return: Evas_Object_Box_Option*; [[Box option]]
          params {
-            @in child: Evas.Object *;
+            @in child: Evas.Object *; [[Object to be prepended]]
          }
       }
       remove {
@@ -711,8 +712,8 @@ class Evas.Box (Evas.Smart_Clipped)
            \@endif
          ]]
          params {
-            @in priv: Evas_Object_Box_Data *;
-            @in data: void *;
+            @in priv: Evas_Object_Box_Data *; [[Private data pointer]]
+            @in data: void *; [[Data pointer]]
          }
       }
       layout_homogeneous_vertical {
@@ -728,8 +729,8 @@ class Evas.Box (Evas.Smart_Clipped)
            \@endif
          ]]
          params {
-              priv: Evas_Object_Box_Data *;
-              data: void *;
+              priv: Evas_Object_Box_Data *; [[Private data pointer]]
+              data: void *; [[Data pointer]]
          }
       }
       layout_flow_horizontal {
@@ -772,8 +773,8 @@ class Evas.Box (Evas.Smart_Clipped)
            \@endif
          ]]
          params {
-              priv: Evas_Object_Box_Data *;
-              data: void *;
+              priv: Evas_Object_Box_Data *; [[Private data pointer]]
+              data: void *; [[Data pointer]]
          }
 
       }
@@ -788,8 +789,8 @@ class Evas.Box (Evas.Smart_Clipped)
       Evas.Object_Smart.resize;
    }
    events {
-      child,added;
-      child,removed;
+      child,added; [[Called when a child object was added to the box]]
+      child,removed; [[Called when a child object was removed from the box]]
    }
 
 }
