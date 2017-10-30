@@ -520,9 +520,16 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
 
         ewd->wl.tz_clipboard =
            wl_registry_bind(registry, id, &tizen_clipboard_interface, client_version);
+
         if (ewd->wl.tz_clipboard)
           tizen_clipboard_add_listener(ewd->wl.tz_clipboard, &_tizen_clipboard_listener, ewd->wl.display);
      }
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+   else if (!strcmp(interface, "tizen_keyrouter"))
+     {
+        _ecore_wl2_keyrouter_setup(ewd, id, version);
+     }
+//
    //
 
 event:
@@ -826,6 +833,9 @@ _cb_sync_done(void *data, struct wl_callback *cb, uint32_t serial EINA_UNUSED)
    if (ewd->sync_done) return;
 
    ewd->sync_done = EINA_TRUE;
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+   ewd->sync_ref_count--;
+//
 
    _ecore_wl2_shell_bind(ewd);
 
@@ -843,6 +853,20 @@ static const struct wl_callback_listener _sync_listener =
 {
    _cb_sync_done
 };
+
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+EAPI void
+ecore_wl2_display_sync(Ecore_Wl2_Display *display)
+{
+   struct wl_callback *cb;
+
+   EINA_SAFETY_ON_NULL_RETURN(display);
+
+   display->sync_ref_count++;
+   cb = wl_display_sync(display->wl.display);
+   wl_callback_add_listener(cb, &_sync_listener, display);
+}
+//
 
 static void
 _ecore_wl2_display_sync_add(Ecore_Wl2_Display *ewd)
@@ -1036,6 +1060,38 @@ _ecore_wl2_display_sync_get(void)
 {
    return !_server_displays || !eina_hash_population(_server_displays);
 }
+
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+Ecore_Wl2_Display *
+ecore_wl2_connected_display_get(const char *name)
+{
+   Ecore_Wl2_Display * ewd;
+   const char *n;
+
+   if (!_client_displays) return NULL;
+
+   if (!name)
+     {
+        /* client wants to connect to default display */
+        n = getenv("WAYLAND_DISPLAY");
+        if (!n) n = "wayland-0";
+
+        /* we have a default wayland display */
+
+        /* check hash of cached client displays for this name */
+        ewd = eina_hash_find(_client_displays, n);
+     }
+   else
+     {
+        /* client wants to connect to specific display */
+
+        /* check hash of cached client displays for this name */
+        ewd = eina_hash_find(_client_displays, name);
+     }
+
+   return ewd;
+}
+//
 
 EAPI Ecore_Wl2_Display *
 ecore_wl2_display_connect(const char *name)

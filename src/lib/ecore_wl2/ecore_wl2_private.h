@@ -105,7 +105,9 @@ struct _Ecore_Wl2_Display
         struct tizen_effect *tz_effect;
         struct tizen_indicator *tz_indicator;
         struct tizen_clipboard *tz_clipboard;
+        struct tizen_keyrouter *tz_keyrouter;
         //
+
         int compositor_version;
      } wl;
 
@@ -129,6 +131,10 @@ struct _Ecore_Wl2_Display
    Eina_Bool sync_done : 1;
    Eina_Bool shell_done : 1;
    Eina_Bool recovering : 1;
+
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+   int sync_ref_count;
+//
 };
 
 struct _Ecore_Wl2_Subsurface
@@ -522,6 +528,10 @@ struct _Ecore_Wl2_Input
    Ecore_Event_Handler *dev_add_handler;
    Ecore_Event_Handler *dev_remove_handler;
    Eina_List *devices_list;
+
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+   Eina_Bool caps_update;
+//
 };
 
 typedef struct Ecore_Wl2_Event_Window_WWW
@@ -576,6 +586,27 @@ typedef struct _Ecore_Wl2_Surface
      } funcs;
 } Ecore_Wl2_Surface;
 
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+typedef struct _Ecore_Wl2_Keygrab_Info
+{
+   int key;
+   int mode;
+   int err;
+} Ecore_Wl2_Keygrab_Info;
+
+typedef struct _Ecore_Wl2_Keyungrab_Info
+{
+   int key;
+   int err;
+} Ecore_Wl2_Keyungrab_Info;
+
+typedef struct _Ecore_Wl2_Window_Keygrab_Info
+{
+   char *key;
+   Ecore_Wl2_Window_Keygrab_Mode mode;
+} Ecore_Wl2_Window_Keygrab_Info;
+//
+
 Ecore_Wl2_Window *_ecore_wl2_display_window_surface_find(Ecore_Wl2_Display *display, struct wl_surface *wl_surface);
 void _display_event_free(void *d, void *event EINA_UNUSED);
 
@@ -614,6 +645,11 @@ Eina_Bool _ecore_wl2_display_sync_get(void);
 void _ecore_wl2_buffer_test(Ecore_Wl2_Display *ewd);
 
 EAPI void ecore_wl2_window_weight_set(Ecore_Wl2_Window *window, double w, double h);
+
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+Ecore_Wl2_Display *ecore_wl2_connected_display_get(const char *name);
+void _ecore_wl2_keyrouter_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version);
+//
 
 EAPI extern int _ecore_wl2_event_window_www;
 EAPI extern int _ecore_wl2_event_window_www_drag;

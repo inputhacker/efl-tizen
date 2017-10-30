@@ -508,6 +508,19 @@ typedef struct _Ecore_Wl2_Event_Clipboard_Data_Selected
 } Ecore_Wl2_Event_Clipboard_Data_Selected;
 //
 
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+//this enum for keyrouter and client window side
+//keycode (8~255)
+typedef enum _Ecore_Wl2_Window_Keygrab_Mode
+{
+   ECORE_WL2_WINDOW_KEYGRAB_UNKNOWN = 0, /**< Unknown keygrab mode */
+   ECORE_WL2_WINDOW_KEYGRAB_SHARED = 1, /**< Getting the grabbed-key together with the other client windows */
+   ECORE_WL2_WINDOW_KEYGRAB_TOPMOST = 2, /**< Getting the grabbed-key only when window is top of the stack */
+   ECORE_WL2_WINDOW_KEYGRAB_OVERRIDE_EXCLUSIVE = 3, /**< Getting the grabbed-key exclusively regardless of window's position. Being overrided the grab by the other client window  */
+   ECORE_WL2_WINDOW_KEYGRAB_EXCLUSIVE = 4 /**< Getting the grabbed-key exclusively regardless of window's position */
+} Ecore_Wl2_Window_Keygrab_Mode;
+//
+
 typedef void (*Ecore_Wl2_Bind_Cb)(struct wl_client *client, void *data, uint32_t version, uint32_t id);
 typedef void (*Ecore_Wl2_Unbind_Cb)(struct wl_resource *resource);
 typedef void (*Ecore_Wl2_Frame_Cb)(Ecore_Wl2_Window *win, uint32_t timestamp, void *data);
@@ -2158,6 +2171,10 @@ EAPI int  ecore_wl2_surface_assign(Ecore_Wl2_Surface *surface);
 EAPI void ecore_wl2_surface_post(Ecore_Wl2_Surface *surface, Eina_Rectangle *rects, unsigned int count);
 EAPI void ecore_wl2_surface_flush(Ecore_Wl2_Surface *surface);
 EAPI void ecore_wl2_window_surface_flush(Ecore_Wl2_Window *window);
+
+// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+EAPI void ecore_wl2_display_sync(Ecore_Wl2_Display *display);
+//
 
 # endif
 
