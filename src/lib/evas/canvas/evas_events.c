@@ -80,6 +80,7 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
              *no_rep = 1;
              return in;
           }
+        if (evas_event_passes_through(eo_obj, obj)) continue;
         if (!obj->cur->visible) continue;
 
         if (EINA_UNLIKELY((!!obj->map) && (obj->map->cur.map)
@@ -109,7 +110,6 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
         if (!source)
           {
              if (evas_object_is_source_invisible(eo_obj, obj)) continue;
-             if (evas_event_passes_through(eo_obj, obj)) continue;
 
           }
         if ((obj->delete_me == 0) &&
