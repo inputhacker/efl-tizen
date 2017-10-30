@@ -65,6 +65,9 @@ EAPI size_t        eina_unicode_strnlen(const Eina_Unicode *ustr, int n) EINA_AR
 /**
  * @brief Same as the standard strdup just with Eina_Unicode instead of char.
  *
+ * @param text The text to duplicate.
+ * @return The duplicated string.
+ *
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
@@ -95,6 +98,10 @@ EAPI Eina_Unicode *eina_unicode_strndup(const Eina_Unicode *text, size_t n) EINA
 /**
  * @brief Same as the standard strcmp just with Eina_Unicode instead of char.
  *
+ * @param a The text to be compard.
+ * @param b The text to be compard.
+ * @return An integer value indicating the ordinal relation of @p a to @b.
+ *
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
@@ -104,6 +111,10 @@ EAPI int           eina_unicode_strcmp(const Eina_Unicode *a, const Eina_Unicode
 
 /**
  * @brief Same as the standard strcpy just with Eina_Unicode instead of char.
+ *
+ * @param dest The text which @p source is to be copied.
+ * @param source The text to copy from.
+ * @return @p dest is returned.
  *
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
@@ -115,6 +126,10 @@ EAPI Eina_Unicode *eina_unicode_strcpy(Eina_Unicode *dest, const Eina_Unicode *s
 /**
  * @brief Same as the standard strstr just with Eina_Unicode instead of char.
  *
+ * @param haystack The text to be searched.
+ * @param needle The text to search for.
+ * @return The substring of @p haystack which starts with @p needle
+ *         when @p needle is founded in @p haystack, or NULL is returned.
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
@@ -125,6 +140,10 @@ EAPI Eina_Unicode *eina_unicode_strstr(const Eina_Unicode *haystack, const Eina_
 /**
  * @brief Same as the standard strncpy just with Eina_Unicode instead of char.
  *
+ * @param dest The text which @p source is to be copied.
+ * @param source The text to copy from.
+ * @param n Maximum number of characters to be copied from @p source.
+ * @return @p dest is returned.
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
