@@ -100,7 +100,7 @@ EAPI Eina_Unicode *eina_unicode_strndup(const Eina_Unicode *text, size_t n) EINA
  *
  * @param a The text to be compard.
  * @param b The text to be compard.
- * @return An integer value indicating the ordinal relation of @p a to @b.
+ * @return An integer value indicating the ordinal relation of @p a to @p b.
  *
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
