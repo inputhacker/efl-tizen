@@ -418,26 +418,26 @@ License: BSD-2-Clause and MIT
 %description -n ecore-avahi-devel
 Development files for ecore_avahi
 
-#%package -n ecore-buffer
-#Summary: Enlightened Core X interface library - buffer
-#Requires: %{name}-data = %{version}-%{release}
-#License: BSD-2-Clause and MIT
+%package -n ecore-buffer
+Summary: Enlightened Core X interface library - buffer
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
 
-#%description -n ecore-buffer
-#The Ecore Buffer is an abstraction of graphic buffer.
-#This library also provides simple mechanisms for sharing graphic buffer bet-
-#ween processes using wayland socket. Ecore Buffer Queue is for this
-#function, and it consists of two main object,
-#The Ecore_Buffer_Consumer and the Ecore_Buffer_Provider.
+%description -n ecore-buffer
+The Ecore Buffer is an abstraction of graphic buffer.
+This library also provides simple mechanisms for sharing graphic buffer bet-
+ween processes using wayland socket. Ecore Buffer Queue is for this
+function, and it consists of two main object,
+The Ecore_Buffer_Consumer and the Ecore_Buffer_Provider.
 
-#%package -n ecore-buffer-devel
-#Summary:  Development components for the ecore_buffer package
-#Group:    Graphics & UI Framework/Development
-#Requires: ecore-buffer = %{version}-%{release}
-#License: BSD-2-Clause and MIT
+%package -n ecore-buffer-devel
+Summary:  Development components for the ecore_buffer package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-buffer = %{version}-%{release}
+License: BSD-2-Clause and MIT
 
-#%description -n ecore-buffer-devel
-#Development files for ecore_buffer
+%description -n ecore-buffer-devel
+Development files for ecore_buffer
 
 %package -n ecore-con
 Summary: Enlightened Core X interface library - con
@@ -1049,6 +1049,7 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
     --disable-gesture \
     --with-tests=none \
     --enable-fb \
+    --enable-ecore-buffer \
     --disable-tslib \
 %if %{with wayland}
     --enable-wayland \
@@ -1359,19 +1360,19 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libecore_avahi.so
 %{_libdir}/pkgconfig/ecore-avahi*.pc
 
-#%files -n ecore-buffer
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%license licenses/COPYING.BSD
-#%{_libdir}/libecore_buffer.so.*
-#%{_libdir}/ecore_buffer/modules/*/*/module.so
+%files -n ecore-buffer
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license licenses/COPYING.BSD
+%{_libdir}/libecore_buffer.so.*
+%{_libdir}/ecore_buffer/modules/*/*/module.so
 
-#%files -n ecore-buffer-devel
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_includedir}/ecore-buffer*/*.h
-#%{_libdir}/libecore_buffer.so
-#%{_libdir}/pkgconfig/ecore-buffer*.pc
+%files -n ecore-buffer-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-buffer*/*.h
+%{_libdir}/libecore_buffer.so
+%{_libdir}/pkgconfig/ecore-buffer*.pc
 
 %files -n ecore-con
 %manifest %{name}.manifest
