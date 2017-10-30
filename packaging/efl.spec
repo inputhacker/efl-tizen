@@ -116,6 +116,8 @@ BuildRequires:  pkgconfig(wayland-server)
 Provides: efl-data
 Obsoletes: efl-data
 
+%define _unpackaged_files_terminate_build 0
+%define _missing_doc_files_terminate_build 0
 
 %description
 EFL is a library collection providing various functionality used (not only) by
@@ -469,14 +471,14 @@ License: BSD-2-Clause and MIT
 %description -n ecore-drm
 Ecore_Drm provides a wrapper and functions for using libdrm.
 
-%package -n ecore-drm-devel
-Summary:  Development components for the ecore_drm package
-Group:    Graphics & UI Framework/Development
-Requires: ecore-drm = %{version}-%{release}
-License: BSD-2-Clause and MIT
+#%package -n ecore-drm-devel
+#Summary:  Development components for the ecore_drm package
+#Group:    Graphics & UI Framework/Development
+#Requires: ecore-drm = %{version}-%{release}
+#License: BSD-2-Clause and MIT
 
-%description -n ecore-drm-devel
-Development files for ecore_drm
+#%description -n ecore-drm-devel
+#Development files for ecore_drm
 
 %package -n ecore-evas
 Summary: Enlightened Core X interface library - evas
@@ -1493,18 +1495,18 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/pkgconfig/ecore-ipc.pc
 
 %if %{with wayland}
-%files -n ecore-drm
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%license licenses/COPYING.BSD
-%{_libdir}/libecore_drm.so.*
+#%files -n ecore-drm
+#%manifest %{name}.manifest
+#%defattr(-,root,root,-)
+#%license licenses/COPYING.BSD
+#%{_libdir}/libecore_drm.so.*
 
-%files -n ecore-drm-devel
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%{_includedir}/ecore-drm*/*.h
-%{_libdir}/libecore_drm.so
-%{_libdir}/pkgconfig/ecore-drm*.pc
+#%files -n ecore-drm-devel
+#%manifest %{name}.manifest
+#%defattr(-,root,root,-)
+#%{_includedir}/ecore-drm*/*.h
+#%{_libdir}/libecore_drm.so
+#%{_libdir}/pkgconfig/ecore-drm*.pc
 
 %files -n ecore-wayland
 %manifest %{name}.manifest
@@ -1600,7 +1602,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libedje.so.*
 %{_libdir}/edje/utils/*/*
 %{_datadir}/edje/include/edje.inc
-%{_datadir}/edje/images/*
+#%{_datadir}/edje/images/*
 %{_datadir}/mime/packages/edje.xml
 
 %files -n edje-tools
