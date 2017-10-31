@@ -216,10 +216,10 @@ layout_example.edc \
 codegen_example.edc \
 efl_ui_list_example.edc
 
-#EDJS = $(EDCS:%.edc=%.edj)
+EDJS = $(EDCS:%.edc=%.edj)
 
-#.edc.edj:
-#	$(AM_V_EDJ)$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
+.edc.edj:
+	$(AM_V_EDJ)$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
 .epc.epb:
 	$(AM_V_EPB)$(ELM_PREFS_CC) $< $@
@@ -248,12 +248,12 @@ CLEANFILES = \
 
 clean-local:
 	rm -f *.epb *.cfg *.cfg.bkp
-#	rm -f prefs_example_03.edj
+	rm -f prefs_example_03.edj
 
 ELEMENTARY_CODEGEN_FLAGS = --prefix=codegen_example
 
-#codegen_example_generated.c codegen_example_generated.h: codegen_example.edj
-#	$(AM_V_CODEGEN)$(ELEMENTARY_CODEGEN) $(ELEMENTARY_CODEGEN_FLAGS) $(<) elm/example/mylayout/default codegen_example_generated.c codegen_example_generated.h
+codegen_example_generated.c codegen_example_generated.h: codegen_example.edj
+	$(AM_V_CODEGEN)$(ELEMENTARY_CODEGEN) $(ELEMENTARY_CODEGEN_FLAGS) $(<) elm/example/mylayout/default codegen_example_generated.c codegen_example_generated.h
 
 BUILT_SOURCES = codegen_example_generated.c codegen_example_generated.h
 

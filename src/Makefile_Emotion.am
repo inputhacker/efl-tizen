@@ -286,14 +286,14 @@ tests_emotion_emotion_test_eo_LDADD = @USE_EDJE_LIBS@ @USE_EMOTION_LIBS@ @USE_EO
 tests_emotion_emotion_test_eo_DEPENDENCIES = @USE_EDJE_INTERNAL_LIBS@ @USE_EMOTION_INTERNAL_LIBS@ \
 @USE_EO_INTERNAL_LIBS@
 
-#tests/emotion/data/theme.edj: tests/emotion/data/theme.edc bin/edje/edje_cc${EXEEXT}
-#	$(AM_V_EDJ) \
+tests/emotion/data/theme.edj: tests/emotion/data/theme.edc bin/edje/edje_cc${EXEEXT}
+	$(AM_V_EDJ) \
 	$(MKDIR_P) tests/emotion/data; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) -id $(srcdir)/tests/emotion/data $< $@
 
 emotiondatafilesdir = $(datadir)/emotion/data
-#emotiondatafiles_DATA = tests/emotion/data/theme.edj
-#CLEANFILES += tests/emotion/data/theme.edj
+emotiondatafiles_DATA = tests/emotion/data/theme.edj
+CLEANFILES += tests/emotion/data/theme.edj
 
 endif
 endif

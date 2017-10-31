@@ -347,8 +347,8 @@ evas_vg_batman_SOURCES = evas-vg-batman.c
 evas_vg_batman_LDADD = $(ECORE_EVAS_COMMON_LDADD)
 evas_vg_batman_CPPFLAGS = $(ECORE_EVAS_COMMON_CPPFLAGS)
 
-#.edc.edj:
-#	$(AM_V_EDJ)$(EDJE_CC) $(EDJE_CC_FLAGS) $< $(builddir)/$(@F)
+.edc.edj:
+	$(AM_V_EDJ)$(EDJE_CC) $(EDJE_CC_FLAGS) $< $(builddir)/$(@F)
 
 EXTRA_PROGRAMS += evas_aspect_hints
 evas_aspect_hints_DEPS = $(srcdir)/aspect.edc
