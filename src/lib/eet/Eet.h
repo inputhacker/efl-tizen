@@ -491,7 +491,7 @@ typedef enum _Eet_File_Mode
 } Eet_File_Mode; /**< Modes that a file can be opened. */
 
 /**
- * @enum Eet_Image_Encoding
+ * @typedef Eet_Image_Encoding
  * Specify lossy encoding for image
  * @since 1.10
  */
@@ -505,7 +505,7 @@ typedef Emile_Image_Encoding Eet_Image_Encoding;
 #define EET_IMAGE_ETC1_ALPHA EMILE_IMAGE_ETC1_ALPHA
 
 /**
- * @enum Eet_Colorspace
+ * @typedef Eet_Colorspace
  * Specify colorspace to image
  * @since 1.10
  */
