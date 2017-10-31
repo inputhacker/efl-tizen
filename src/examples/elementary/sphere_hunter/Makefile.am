@@ -22,14 +22,14 @@ $(top_builddir)/src/lib/libelementary.la
 
 SRCS = evas_3d_sphere_hunter.c
 
-.edc.edj:
-	$(AM_V_EDJ)$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
+#.edc.edj:
+#	$(AM_V_EDJ)$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
 if EFL_BUILD_EXAMPLES
-files_DATA += $(SRCS) sphere_hunter.edc sphere_hunter.edj
+#files_DATA += $(SRCS) sphere_hunter.edc sphere_hunter.edj
 
-clean-local:
-	rm -f *.edj
+#clean-local:
+#	rm -f *.edj
 
 sphere_hunter_SOURCES = \
 	evas_3d_sphere_hunter.c

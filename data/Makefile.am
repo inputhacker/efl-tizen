@@ -89,11 +89,11 @@ ethumbfiles_DATA = ethumb/checkme
 EXTRA_DIST += $(ethumbfiles_DATA)
 
 ethumbframesdir = $(datadir)/ethumb/frames
-ethumbframes_DATA = ethumb/frames/default.edj
-CLEANFILES += ethumb/frames/default.edj
+#ethumbframes_DATA = ethumb/frames/default.edj
+#CLEANFILES += ethumb/frames/default.edj
 
-ethumb/frames/default.edj: ethumb/frames/default.edc
-	$(AM_V_EDJ) \
+#ethumb/frames/default.edj: ethumb/frames/default.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) ethumb/frames/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) -id $(srcdir)/ethumb/frames/ $< $@
 
@@ -120,13 +120,13 @@ EXTRA_DIST += $(eluafiles_DATA)
 # themes
 
 elementaryfilesdir = $(datadir)/elementary/themes
-elementaryfiles_DATA = elementary/themes/default.edj
-CLEANFILES += elementary/themes/default.edj
+#elementaryfiles_DATA = elementary/themes/default.edj
+#CLEANFILES += elementary/themes/default.edj
 
 include elementary/themes/Makefile.am
 
-elementary/themes/default.edj: elementary/themes/default.edc $(elementary_themes_files) $(elementary_fdo_files) $(top_builddir)/src/bin/edje/edje_cc${EXEEXT}
-	$(AM_V_EDJ) \
+#elementary/themes/default.edj: elementary/themes/default.edc $(elementary_themes_files) $(elementary_fdo_files) $(top_builddir)/src/bin/edje/edje_cc${EXEEXT}
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/themes/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $(EDJE_CC_ELM_FLAGS) $< $@
 
@@ -180,13 +180,13 @@ elementaryfdo_intl_128_DATA = $(elementary_fdo_intl_128_files)
 # edje_externals
 
 elementaryedje_externalsdir = $(datadir)/elementary/edje_externals
-elementaryedje_externals_DATA = elementary/edje_externals/icons.edj
-CLEANFILES += $(elementaryedje_externals_DATA)
+#elementaryedje_externals_DATA = elementary/edje_externals/icons.edj
+#CLEANFILES += $(elementaryedje_externals_DATA)
 
 include elementary/edje_externals/Makefile.am
 
-elementary/edje_externals/icons.edj: elementary/edje_externals/icons.edc
-	$(AM_V_EDJ) \
+#elementary/edje_externals/icons.edj: elementary/edje_externals/icons.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/edje_externals/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
@@ -208,76 +208,78 @@ include ../Makefile_Elm_Helpers.am
 
 elementaryobjectsdir = $(datadir)/elementary/objects
 elementaryobjects_DATA = \
-elementary/objects/test.edj \
-elementary/objects/test_external.edj \
-elementary/objects/test_masking.edj \
-elementary/objects/multip.edj \
-elementary/objects/cursors.edj \
-elementary/objects/font_preview.edj \
-elementary/objects/postit_ent.edj \
-elementary/objects/multibuttonentry.edj \
-elementary/objects/test_prefs.edj \
 elementary/objects/test_prefs.epb \
-elementary/objects/test_focus_style.edj \
-elementary/objects/test_tooltip.edj \
 $(NULL)
+
+#elementary/objects/test.edj \
+#elementary/objects/test_external.edj \
+#elementary/objects/test_masking.edj \
+#elementary/objects/multip.edj \
+#elementary/objects/cursors.edj \
+#elementary/objects/font_preview.edj \
+#elementary/objects/postit_ent.edj \
+#elementary/objects/multibuttonentry.edj \
+#elementary/objects/test_prefs.edj \
+#elementary/objects/test_focus_style.edj \
+#elementary/objects/test_tooltip.edj
+
 
 CLEANFILES += $(elementaryobjects_DATA)
 
 include elementary/objects/Makefile.am
 
-elementary/objects/test.edj: elementary/objects/test.edc
-	$(AM_V_EDJ) \
+#elementary/objects/test.edj: elementary/objects/test.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/test_external.edj: elementary/objects/test_external.edc
-	$(AM_V_EDJ) \
+#elementary/objects/test_external.edj: elementary/objects/test_external.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/test_masking.edj: elementary/objects/test_masking.edc
-	$(AM_V_EDJ) \
+#elementary/objects/test_masking.edj: elementary/objects/test_masking.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/multip.edj: elementary/objects/multip.edc
-	$(AM_V_EDJ) \
+#elementary/objects/multip.edj: elementary/objects/multip.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/cursors.edj: elementary/objects/cursors.edc
-	$(AM_V_EDJ) \
+#elementary/objects/cursors.edj: elementary/objects/cursors.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/font_preview.edj: elementary/objects/font_preview.edc
-	$(AM_V_EDJ) \
+#elementary/objects/font_preview.edj: elementary/objects/font_preview.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/postit_ent.edj: elementary/objects/postit_ent.edc
-	$(AM_V_EDJ) \
+#elementary/objects/postit_ent.edj: elementary/objects/postit_ent.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/multibuttonentry.edj: elementary/objects/multibuttonentry.edc
-	$(AM_V_EDJ) \
+#elementary/objects/multibuttonentry.edj: elementary/objects/multibuttonentry.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/test_prefs.edj: elementary/objects/test_prefs.edc
-	$(AM_V_EDJ) \
+#elementary/objects/test_prefs.edj: elementary/objects/test_prefs.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $< $@
 
-elementary/objects/test_focus_style.edj: elementary/objects/test_focus_style.edc
-	$(AM_V_EDJ) \
+#elementary/objects/test_focus_style.edj: elementary/objects/test_focus_style.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) -id $(top_srcdir)/data/elementary/themes/img $< $@
 
-elementary/objects/test_tooltip.edj: elementary/objects/test_tooltip.edc
-	$(AM_V_EDJ) \
+#elementary/objects/test_tooltip.edj: elementary/objects/test_tooltip.edc
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/objects/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) -id $(top_srcdir)/data/elementary/themes/img $< $@
 
