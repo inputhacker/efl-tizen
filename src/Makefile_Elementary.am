@@ -1118,11 +1118,11 @@ moduleprefspkg_LTLIBRARIES = modules/elementary/prefs/module.la
 EXTRA_DIST2 += modules/elementary/prefs/elm_prefs_swallow.edc
 
 prefs_filesdir = $(libdir)/elementary/modules/prefs/$(MODULE_ARCH)
-prefs_files_DATA = modules/elementary/prefs/elm_prefs_swallow.edj
-CLEANFILES += $(prefs_files_DATA)
+#prefs_files_DATA = modules/elementary/prefs/elm_prefs_swallow.edj
+#CLEANFILES += $(prefs_files_DATA)
 
-modules/elementary/prefs/elm_prefs_swallow.edj: modules/elementary/prefs/elm_prefs_swallow.edc bin/edje/edje_cc${EXEEXT}
-	$(AM_V_EDJ) \
+#modules/elementary/prefs/elm_prefs_swallow.edj: modules/elementary/prefs/elm_prefs_swallow.edc bin/edje/edje_cc${EXEEXT}
+#	$(AM_V_EDJ) \
 	$(MKDIR_P) modules/elementary/prefs/ ; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) -id $(top_srcdir)/src/modules/elementary/prefs/ $< $@
 
@@ -1455,7 +1455,7 @@ tests_elementary_elm_suite_CPPFLAGS = \
 	@ELEMENTARY_CFLAGS@
 
 tests_elementary_elm_suite_LDADD = @CHECK_LIBS@ @USE_ELEMENTARY_LIBS@
-tests_elementary_elm_suite_DEPENDENCIES = @USE_ELEMENTARY_INTERNAL_LIBS@ $(top_builddir)/data/elementary/objects/test.edj
+#tests_elementary_elm_suite_DEPENDENCIES = @USE_ELEMENTARY_INTERNAL_LIBS@ $(top_builddir)/data/elementary/objects/test.edj
 endif
 
 if HAVE_ELUA
