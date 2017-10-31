@@ -819,7 +819,7 @@
  * @endhtmlonly
  *
  * @image rtf ecore_con-client-server-example.png
- * @image latex ecore_con-client-server-example.eps width=\textwidth
+ * @image latex ecore_con-client-server-example.eps width=\\textwidth
  *
  * @note This example contains a serious security flaw: it doesn't check for the
  * size of data being received, thus allowing to the string to be exploited in
@@ -883,7 +883,7 @@
  * @endhtmlonly
  *
  * @image rtf ecore_con-client-server-example2.png
- * @image latex ecore_con-client-server-example2.eps width=\textwidth
+ * @image latex ecore_con-client-server-example2.eps width=\\textwidth
  *
  * @note This example contains a serious security flaw: it doesn't check for the
  * size of data being received, thus allowing to the string to be exploited in

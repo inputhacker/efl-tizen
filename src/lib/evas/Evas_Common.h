@@ -3153,13 +3153,13 @@ typedef void (*Evas_Object_Intercept_Clip_Unset_Cb)(void *data, Evas_Object *obj
  * <a href="image-borders.png">Full-size</a>
  * @endhtmlonly
  * @image rtf image-borders.png
- * @image latex image-borders.eps width=\textwidth
+ * @image latex image-borders.eps width=\\textwidth
  * @htmlonly
  * <img src="border-effect.png" style="max-width: 100%;" />
  * <a href="border-effect.png">Full-size</a>
  * @endhtmlonly
  * @image rtf border-effect.png
- * @image latex border-effect.eps width=\textwidth
+ * @image latex border-effect.eps width=\\textwidth
  *
  * @section Evas_Object_Image_Manipulation Manipulating pixels
  *
