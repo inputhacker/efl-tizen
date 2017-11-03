@@ -1038,6 +1038,8 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 %restore_fcommon
 %endif
 
+export XDG_RUNTIME_DIR="/tmp/"
+
 #%reconfigure \
 ./autogen.sh \
     --disable-static \
