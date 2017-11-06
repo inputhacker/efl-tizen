@@ -1051,7 +1051,6 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-gesture \
     --with-tests=none \
     --enable-fb \
-    --enable-ecore-buffer \
     --disable-tslib \
 %if %{with wayland}
     --enable-wayland \
@@ -1071,8 +1070,10 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-physics \
     --disable-cxx-bindings \
     --enable-lua-old \
+    --enable-ecore-buffer \
     --disable-gstreamer1 \
     --with-dictionaries-hyphen-dir=/usr/share/hyphen/ \
+    --disable-cserve \
     --disable-poppler \
     --disable-spectre \
     --disable-librsvg \
@@ -1285,15 +1286,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_bindir}/ecore_evas_*
-%{_bindir}/evas_cserve2_client
-%exclude %{_bindir}/evas_cserve2_debug
-%exclude %{_bindir}/evas_cserve2_shm_debug
-%exclude /usr/lib/debug/usr/bin/evas_cserve2_debug.debug
-%exclude /usr/lib/debug/usr/bin/evas_cserve2_shm_debug.debug
-%{_bindir}/evas_cserve2_usage
 %{_libdir}/evas/modules/*/*/*/module.so
 %{_libdir}/libevas.so.*
-%{_libdir}/evas/cserve2
 %{_datadir}/evas/checkme
 /usr/share/evas/filters/lua/*.lua
 
