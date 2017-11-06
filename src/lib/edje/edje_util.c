@@ -4005,7 +4005,7 @@ EOLIAN Eina_Bool
 _edje_object_parts_extends_calc(Eo *obj EINA_UNUSED, Edje *ed, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
 {
    Evas_Coord xx1 = INT_MAX, yy1 = INT_MAX;
-   Evas_Coord xx2 = 0, yy2 = 0;
+   Evas_Coord xx2 = 0, yy2 = 0, ww = 0, hh = 0;
    unsigned int i;
 
    if (!ed)
@@ -4044,10 +4044,13 @@ _edje_object_parts_extends_calc(Eo *obj EINA_UNUSED, Edje *ed, Evas_Coord *x, Ev
 
    ed->calc_only = EINA_FALSE;
 
+   if ((xx2 - xx1) > 0) ww = xx2 - xx1;
+   if ((yy2 - yy1) > 0) hh = yy2 - yy1;
+
    if (x) *x = xx1;
    if (y) *y = yy1;
-   if (w) *w = xx2 - xx1;
-   if (h) *h = yy2 - yy1;
+   if (w) *w = ww;
+   if (h) *h = hh;
 
    return EINA_TRUE;
 }
