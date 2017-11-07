@@ -1476,9 +1476,25 @@ _touch_cb_frame(void *data EINA_UNUSED, struct wl_touch *touch EINA_UNUSED)
 }
 
 static void
-_touch_cb_cancel(void *data EINA_UNUSED, struct wl_touch *tough EINA_UNUSED)
+_touch_cb_cancel(void *data, struct wl_touch *touch EINA_UNUSED)
 {
+//TIZEN_ONLY(20171107): generate mouse button cancel event
+   Ecore_Event_Mouse_Button *ev;
+   Ecore_Wl2_Input *input;
 
+   if (!(input = data)) return;
+   if (!input->focus.touch) return;
+
+   if (!(ev = calloc(1, sizeof(Ecore_Event_Mouse_Button)))) return;
+   EINA_SAFETY_ON_NULL_RETURN(ev);
+
+   ev->timestamp = (int)(ecore_time_get()*1000);
+   ev->same_screen = 1;
+   ev->window = input->focus.touch->id;
+   ev->event_window = ev->window;
+
+   ecore_event_add(ECORE_EVENT_MOUSE_BUTTON_CANCEL, ev, NULL, NULL);
+//
 }
 
 static const struct wl_touch_listener _touch_listener =
