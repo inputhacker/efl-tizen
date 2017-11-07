@@ -647,6 +647,7 @@ void _ecore_wl2_buffer_test(Ecore_Wl2_Display *ewd);
 EAPI void ecore_wl2_window_weight_set(Ecore_Wl2_Window *window, double w, double h);
 
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+int ecore_wl2_input_keycode_from_keysym(struct xkb_keymap *keymap, xkb_keysym_t keysym, xkb_keycode_t **keycodes);
 Ecore_Wl2_Display *ecore_wl2_connected_display_get(const char *name);
 void _ecore_wl2_keyrouter_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version);
 //

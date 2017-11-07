@@ -42,6 +42,9 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include "ecore_wl2_private.h"
+// TIZEN ONLY(20160223) : Add back/menu/home key conversion support
+#include <locale.h>
+//
 
 typedef struct _Ecore_Wl2_Mouse_Down_Info
 {
@@ -59,6 +62,18 @@ typedef struct _Ecore_Wl2_Mouse_Down_Info
 
 static Eina_Inlist *_ecore_wl2_mouse_down_info_list = NULL;
 
+// TIZEN ONLY(20160223) : Add back/menu/home key conversion support
+static double _tizen_api_version = 0.0;
+static int _back_key_lt_24 = 0;
+static int _menu_key_lt_24 = 0;
+static int _home_key_lt_24 = 0;
+static int _num_back_key_latest = 0;
+static int _num_menu_key_latest = 0;
+static int _num_home_key_latest = 0;
+static xkb_keycode_t *_back_key_latest = NULL;
+static xkb_keycode_t *_menu_key_latest = NULL;
+static xkb_keycode_t *_home_key_latest = NULL;
+//
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
 static Eina_Hash *_keygrabs = NULL;
 static int _ecore_wl2_keygrab_error = -1;
@@ -66,6 +81,164 @@ static struct wl_array _ecore_wl2_keygrab_result_list;
 //
 
 static void _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned int serial, unsigned int timestamp, unsigned int keycode, unsigned int state);
+
+// TIZEN ONLY(20160223) : Add back/menu/home key conversion support
+static int
+_ecore_wl2_input_convert_old_keys(unsigned int code)
+{
+   int i;
+
+   // TIZEN ONLY(20160608) : Add option for key conversion
+   const char *tmp;
+   tmp = getenv("ECORE_WL_INPUT_KEY_CONVERSION_DISABLE");
+   if (tmp && atoi(tmp)) return code;
+   //
+
+   for (i = 0; i < _num_back_key_latest; i++)
+     {
+        if (code == _back_key_latest[i])
+          {
+             return _back_key_lt_24;
+          }
+     }
+
+   for (i=0; i<_num_menu_key_latest; i++)
+     {
+        if (code == _menu_key_latest[i])
+          {
+             return _menu_key_lt_24;
+          }
+     }
+
+   for (i=0; i<_num_home_key_latest; i++)
+     {
+        if (code == _home_key_latest[i])
+          {
+             return _home_key_lt_24;
+          }
+     }
+
+   return code;
+}
+
+static void
+_ecore_wl2_input_key_conversion_clean_up(void)
+{
+   _back_key_lt_24 = 0;
+   _menu_key_lt_24 = 0;
+   _home_key_lt_24 = 0;
+
+   _num_back_key_latest = 0;
+   _num_menu_key_latest = 0;
+   _num_home_key_latest = 0;
+
+   if (_back_key_latest)
+     {
+        free(_back_key_latest);
+        _back_key_latest = NULL;
+     }
+   if (_menu_key_latest)
+     {
+        free(_menu_key_latest);
+        _menu_key_latest = NULL;
+     }
+   if (_home_key_latest)
+     {
+        free(_home_key_latest);
+        _home_key_latest = NULL;
+     }
+}
+
+static void
+_ecore_wl2_input_key_conversion_set(Ecore_Wl2_Input *input)
+{
+   char *temp;
+   xkb_keycode_t *keycodes = NULL;
+   static int retry_cnt = 0;
+
+   if ((_tizen_api_version < 0.0) || (_tizen_api_version > 0.0)) return;
+   EINA_SAFETY_ON_NULL_RETURN(input);
+   EINA_SAFETY_ON_NULL_RETURN(input->xkb.keymap);
+
+   temp = getenv("TIZEN_API_VERSION");
+
+   if (!temp)
+     {
+        _tizen_api_version = 0.0;
+        retry_cnt++;
+        if (retry_cnt > 20)
+          {
+             INF("No tizen api version.\n");
+             _tizen_api_version = -1.0;
+          }
+     }
+   else
+     {
+        setlocale(LC_NUMERIC, "C");
+        _tizen_api_version = atof(temp);
+        setlocale(LC_NUMERIC, "");
+        INF("TIZEN_API_VERSION: %lf, Environment variable: %s\n", _tizen_api_version, temp);
+        if (_tizen_api_version < 2.4)
+          {
+             _ecore_wl2_input_key_conversion_clean_up();
+
+             ecore_wl2_input_keycode_from_keysym(input->xkb.keymap,
+                xkb_keysym_from_name("XF86Stop", XKB_KEYSYM_NO_FLAGS), &keycodes);
+             if (!keycodes)
+               {
+                  ERR("There is no entry available for the old name of back key. No conversion will be done for back key.\n");
+               }
+             else
+               {
+                  _back_key_lt_24 = (int)keycodes[0];
+                  free(keycodes);
+                  keycodes = NULL;
+
+                  _num_back_key_latest  = ecore_wl2_input_keycode_from_keysym(input->xkb.keymap,
+                    xkb_keysym_from_name("XF86Back", XKB_KEYSYM_NO_FLAGS), &_back_key_latest);
+               }
+
+             ecore_wl2_input_keycode_from_keysym(input->xkb.keymap,
+                xkb_keysym_from_name("XF86Send", XKB_KEYSYM_NO_FLAGS), &keycodes);
+             if (!keycodes)
+               {
+                  ERR("There is no entry available for the old name of back key. No conversion will be done for menu key.\n");
+               }
+             else
+               {
+                  _menu_key_lt_24 = (int)keycodes[0];
+                  free(keycodes);
+                  keycodes = NULL;
+
+                  _num_menu_key_latest  = ecore_wl2_input_keycode_from_keysym(input->xkb.keymap,
+                    xkb_keysym_from_name("XF86Menu", XKB_KEYSYM_NO_FLAGS), &_menu_key_latest);
+               }
+
+             ecore_wl2_input_keycode_from_keysym(input->xkb.keymap,
+                xkb_keysym_from_name("XF86Phone", XKB_KEYSYM_NO_FLAGS), &keycodes);
+             if (!keycodes)
+               {
+                  ERR("There is no entry available for the old name of back key. No conversion will be done for home key.\n");
+               }
+             else
+               {
+                  _home_key_lt_24 = (int)keycodes[0];
+                  free(keycodes);
+                  keycodes = NULL;
+
+                  _num_home_key_latest  = ecore_wl2_input_keycode_from_keysym(input->xkb.keymap,
+                    xkb_keysym_from_name("XF86Home", XKB_KEYSYM_NO_FLAGS), &_home_key_latest);
+               }
+
+             if ((!_back_key_lt_24) && (!_menu_key_lt_24) && (!_home_key_lt_24)) _tizen_api_version = -1.0;
+          }
+        else
+          {
+             _ecore_wl2_input_key_conversion_clean_up();
+          }
+     }
+}
+//
 
 static Ecore_Wl2_Mouse_Down_Info *
 _ecore_wl2_input_mouse_down_info_get(int device)
@@ -902,6 +1075,10 @@ _keyboard_cb_keymap(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsign
         return;
      }
 
+// TIZEN ONLY(20160223) : Add back/menu/home key conversion support
+   _tizen_api_version = 0.0;
+//
+
    if (!(locale = getenv("LC_ALL")))
      if (!(locale = getenv("LC_CTYPE")))
        if (!(locale = getenv("LANG")))
@@ -1085,6 +1262,14 @@ _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned 
 
    /* xkb rules reflect X broken keycodes, so offset by 8 */
    code = keycode + 8;
+
+// TIZEN ONLY(20160223) : Add back/menu/home key conversion support
+   if (_tizen_api_version == 0.0) _ecore_wl2_input_key_conversion_set(input);
+
+// if it is one of the back/menu/home key and _tizen_api_version is less than 2.4.
+   if (0.0 < _tizen_api_version && _tizen_api_version < 2.4)
+      code = _ecore_wl2_input_convert_old_keys(code);
+//
 
    if (xkb_state_key_get_syms(input->xkb.state, code, &syms) == 1)
      sym = syms[0];
@@ -1438,6 +1623,9 @@ _seat_cb_capabilities(void *data, struct wl_seat *seat, enum wl_seat_capability 
 #endif
           wl_touch_destroy(input->wl.touch);
         input->wl.touch = NULL;
+// TIZEN ONLY(20160223) : Add back/menu/home key conversion support
+        _ecore_wl2_input_key_conversion_clean_up();
+//
      }
 
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
@@ -1889,7 +2077,7 @@ static void find_keycode(struct xkb_keymap *keymap, xkb_keycode_t key, void *dat
 
 //If there are several keycodes, ecore_wl only deals with first keycode.
 int
-ecore_wl2_keycode_from_keysym(struct xkb_keymap *keymap, xkb_keysym_t keysym, xkb_keycode_t **keycodes)
+ecore_wl2_input_keycode_from_keysym(struct xkb_keymap *keymap, xkb_keysym_t keysym, xkb_keycode_t **keycodes)
 {
    Keycode_Map found_keycodes = {0,};
    found_keycodes.keysym = keysym;
@@ -1900,8 +2088,6 @@ ecore_wl2_keycode_from_keysym(struct xkb_keymap *keymap, xkb_keysym_t keysym, xk
    *keycodes = found_keycodes.keycodes;
    INF("num of keycodes:%d ", found_keycodes.num_keycodes);
    return found_keycodes.num_keycodes;
-
-
 }
 
 EAPI Ecore_Wl2_Input *
@@ -2023,7 +2209,7 @@ ecore_wl2_window_keygrab_set(Ecore_Wl2_Window *win, const char *key, int mod EIN
                }
              INF("Finish keymap event");
 
-             num_keycodes = ecore_wl2_keycode_from_keysym(input->xkb.keymap, keysym, &keycodes);
+             num_keycodes = ecore_wl2_input_keycode_from_keysym(input->xkb.keymap, keysym, &keycodes);
           }
         else
           {
@@ -2115,7 +2301,7 @@ ecore_wl2_window_keygrab_unset(Ecore_Wl2_Window *win, const char *key, int mod E
 
    //We have to find the way to get keycode from keysym before keymap notify
    if ((input) && (input->xkb.keymap))
-     num_keycodes = ecore_wl2_keycode_from_keysym(input->xkb.keymap, keysym, &keycodes);
+     num_keycodes = ecore_wl2_input_keycode_from_keysym(input->xkb.keymap, keysym, &keycodes);
    else
      {
         WRN("Keymap is not ready");
@@ -2260,7 +2446,7 @@ EAPI Eina_List
              WRN("Keysym of key(\"%s\") doesn't exist", grab_info->key);
              continue;
           }
-        num_keycodes = ecore_wl2_keycode_from_keysym(input->xkb.keymap, keysym, &keycodes);
+        num_keycodes = ecore_wl2_input_keycode_from_keysym(input->xkb.keymap, keysym, &keycodes);
 
         if (num_keycodes == 0)
           {
@@ -2368,7 +2554,7 @@ EAPI Eina_List
              WRN("Keysym of key(\"%s\") doesn't exist", grab_info->key);
              continue;
           }
-        num_keycodes = ecore_wl2_keycode_from_keysym(input->xkb.keymap, keysym, &keycodes);
+        num_keycodes = ecore_wl2_input_keycode_from_keysym(input->xkb.keymap, keysym, &keycodes);
 
         if (num_keycodes == 0)
           {
