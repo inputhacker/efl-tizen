@@ -304,6 +304,19 @@ _ecore_main_win32_handler_del(Eo *obj,
                               Ecore_Win32_Handler *win32_handler);
 
 void       _ecore_main_content_clear(Efl_Loop_Data *pd);
+
+//TIZEN_ONLY: ecore: stabilize wayland event handling in multithread
+typedef struct _Ecore_Awake_Handler
+{
+   EINA_INLIST;
+   Ecore_Awake_Cb func;
+   void                *data;
+} Ecore_Awake_Handler;
+
+void _ecore_main_awake_handler_call(void);
+int _ecore_main_fdh_mark_active(fd_set *rfds, fd_set *wfds, fd_set *exfds);
+//
+
 void       _ecore_main_shutdown(void);
 
 #if defined (_WIN32) || defined (__lv2ppu__) || defined (HAVE_EXOTIC)

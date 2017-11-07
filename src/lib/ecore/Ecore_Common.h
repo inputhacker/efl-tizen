@@ -229,6 +229,13 @@ EAPI void ecore_main_loop_select_func_set(Ecore_Select_Function func);
  */
 EAPI Ecore_Select_Function ecore_main_loop_select_func_get(void);
 
+//TIZEN_ONLY: ecore: stabilize wayland event handling in multithread
+typedef void (*Ecore_Awake_Cb)(void *data);
+
+EAPI Eina_Bool ecore_main_awake_handler_add(Ecore_Awake_Cb func, void *data);
+EAPI void ecore_main_awake_handler_del(Ecore_Awake_Cb func);
+//
+
 /**
  * Requests ecore to integrate GLib's main loop.
  *

@@ -168,6 +168,26 @@ _ecore_glib_select__locked(GMainContext   *ctx,
    maxfds = (ecore_fds >= glib_fds) ? ecore_fds : glib_fds;
    ret = _ecore_glib_select_original(maxfds, rfds, wfds, efds, timeout);
 
+   //TIZEN_ONLY: ecore: stabilize wayland event handling in multithread
+   /* If select() returns 0, we expact rfds doesn't contains any fds. But even if
+    * select() returns 0, rfds sometimes contains a wayland fd. It makes wrong
+    * behavior.
+    */
+   if (ret > 0)
+     _ecore_main_fdh_mark_active(rfds, wfds, efds);
+
+   /* Once exit from select(), _ecore_main_awake_handler_call() should be called here
+    * to call wl_display_cancel_read() or wl_display_read_events().
+    * If not, deadlock can occur when g_main_context_dispatch calls a user callback
+    * and a user callback calls wl_display_roundtrip which make read_count +2 in one
+    * thread. Moreover, if the main thread sleeps to wait for the some events in
+    * g_main_context_dispatch() or _ecore_idle_enterer_call() function, and if another
+    * thread calls prepare_read(), deadlock also can occur in main thread because main
+    * thread sleeps and it can't call read_event() or cancel_event().
+    */
+   _ecore_main_awake_handler_call();
+   //
+
    ret = _ecore_glib_context_poll_to
        (_ecore_glib_fds, reqfds, rfds, wfds, efds, ret);
 
