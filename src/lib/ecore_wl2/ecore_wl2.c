@@ -53,6 +53,21 @@ EAPI int ECORE_WL2_EVENT_WINDOW_HIDE = 0;
 EAPI int ECORE_WL2_EVENT_WINDOW_ACTIVATE = 0;
 EAPI int ECORE_WL2_EVENT_WINDOW_DEACTIVATE = 0;
 EAPI int ECORE_WL2_EVENT_WINDOW_ICONIFY_STATE_CHANGE = 0;
+// TIZEN_ONLY(20171107): added wl events from ecore_wayland to ecore_wl2
+EAPI int ECORE_WL2_EVENT_WINDOW_VISIBILITY_CHANGE = 0;
+EAPI int ECORE_WL2_EVENT_WINDOW_PRE_VISIBILITY_CHANGE = 0;
+EAPI int ECORE_WL2_EVENT_WINDOW_LOWER = 0;
+EAPI int ECORE_WL2_EVENT_DND_POSITION = 0;
+EAPI int ECORE_WL2_EVENT_DND_OFFER = 0;
+EAPI int ECORE_WL2_EVENT_DATA_SOURCE_CANCELLED = 0;
+EAPI int ECORE_WL2_EVENT_SELECTION_DATA_READY = 0;
+EAPI int ECORE_WL2_EVENT_CONFORMANT_CHANGE = 0;
+EAPI int ECORE_WL2_EVENT_EFFECT_START = 0;
+EAPI int ECORE_WL2_EVENT_EFFECT_END = 0;
+EAPI int ECORE_WL2_EVENT_IGNORE_OUTPUT_TRANSFORM = 0;
+EAPI int ECORE_WL2_EVENT_INDICATOR_FLICK = 0;
+EAPI int ECORE_WL2_EVENT_CLIPBOARD_DATA_SELECTED = 0;
+//
 
 EAPI int _ecore_wl2_event_window_www = -1;
 EAPI int _ecore_wl2_event_window_www_drag = -1;
@@ -136,6 +151,21 @@ ecore_wl2_init(void)
         ECORE_WL2_EVENT_WINDOW_ACTIVATE = ecore_event_type_new();
         ECORE_WL2_EVENT_WINDOW_DEACTIVATE = ecore_event_type_new();
         ECORE_WL2_EVENT_WINDOW_ICONIFY_STATE_CHANGE = ecore_event_type_new();
+        // TIZEN_ONLY(20171107): added wl events from ecore_wayland to ecore_wl2
+        ECORE_WL2_EVENT_WINDOW_VISIBILITY_CHANGE = ecore_event_type_new();
+        ECORE_WL2_EVENT_WINDOW_PRE_VISIBILITY_CHANGE = ecore_event_type_new();
+        ECORE_WL2_EVENT_WINDOW_LOWER = ecore_event_type_new();
+        ECORE_WL2_EVENT_DND_POSITION = ecore_event_type_new();
+        ECORE_WL2_EVENT_DND_OFFER = ecore_event_type_new();
+        ECORE_WL2_EVENT_DATA_SOURCE_CANCELLED = ecore_event_type_new();
+        ECORE_WL2_EVENT_SELECTION_DATA_READY = ecore_event_type_new();
+        ECORE_WL2_EVENT_CONFORMANT_CHANGE = ecore_event_type_new();
+        ECORE_WL2_EVENT_EFFECT_START = ecore_event_type_new();
+        ECORE_WL2_EVENT_EFFECT_END = ecore_event_type_new();
+        ECORE_WL2_EVENT_IGNORE_OUTPUT_TRANSFORM = ecore_event_type_new();
+        ECORE_WL2_EVENT_INDICATOR_FLICK = ecore_event_type_new();
+        ECORE_WL2_EVENT_CLIPBOARD_DATA_SELECTED = ecore_event_type_new();
+        //
      }
    if (!no_session_recovery)
      no_session_recovery = !!getenv("EFL_NO_WAYLAND_SESSION_RECOVERY");
@@ -206,6 +236,19 @@ ecore_wl2_shutdown(void)
                           ECORE_WL2_EVENT_WINDOW_HIDE,
                           ECORE_WL2_EVENT_WINDOW_ACTIVATE,
                           ECORE_WL2_EVENT_WINDOW_DEACTIVATE,
+                          ECORE_WL2_EVENT_WINDOW_VISIBILITY_CHANGE,
+                          ECORE_WL2_EVENT_WINDOW_PRE_VISIBILITY_CHANGE,
+                          ECORE_WL2_EVENT_WINDOW_LOWER,
+                          ECORE_WL2_EVENT_DND_POSITION,
+                          ECORE_WL2_EVENT_DND_OFFER,
+                          ECORE_WL2_EVENT_DATA_SOURCE_CANCELLED,
+                          ECORE_WL2_EVENT_SELECTION_DATA_READY,
+                          ECORE_WL2_EVENT_CONFORMANT_CHANGE,
+                          ECORE_WL2_EVENT_EFFECT_START,
+                          ECORE_WL2_EVENT_EFFECT_END,
+                          ECORE_WL2_EVENT_IGNORE_OUTPUT_TRANSFORM,
+                          ECORE_WL2_EVENT_INDICATOR_FLICK,
+                          ECORE_WL2_EVENT_CLIPBOARD_DATA_SELECTED,
                           ECORE_WL2_EVENT_WINDOW_ICONIFY_STATE_CHANGE);
 
    /* shutdown Ecore_Event */

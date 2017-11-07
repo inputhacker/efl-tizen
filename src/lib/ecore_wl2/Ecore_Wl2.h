@@ -338,6 +338,67 @@ typedef enum _Ecore_Wl2_Window_Type
    ECORE_WL2_WINDOW_TYPE_LAST
 } Ecore_Wl2_Window_Type;
 
+// TIZEN_ONLY(20171107): added wl enumerations from ecore_wayland to ecore_wl2
+typedef enum _Ecore_Wl2_Window_Visibility_Type
+{
+   ECORE_WL2_WINDOW_VISIBILITY_TYPE_UNKNOWN = 0,
+   ECORE_WL2_WINDOW_VISIBILITY_TYPE_UNOBSCURED = 1,
+   ECORE_WL2_WINDOW_VISIBILITY_TYPE_PARTIALLY_OBSCURED = 2,
+   ECORE_WL2_WINDOW_VISIBILITY_TYPE_FULLY_OBSCURED = 3,
+   ECORE_WL2_WINDOW_VISIBILITY_TYPE_PRE_UNOBSCURED = 4,
+} Ecore_Wl2_Window_Visibility_Type;
+
+typedef enum _Ecore_Wl2_Window_Stack_Mode
+{
+   ECORE_WL2_WINDOW_STACK_NONE  = 0,
+   ECORE_WL2_WINDOW_STACK_ABOVE = 1,
+   ECORE_WL2_WINDOW_STACK_BELOW = 2,
+} Ecore_Wl2_Window_Stack_Mode;
+
+typedef enum _Ecore_Wl2_Conformant_Part_Type
+{
+   ECORE_WL2_INDICATOR_PART = 0,
+   ECORE_WL2_KEYBOARD_PART = 1,
+   ECORE_WL2_CLIPBOARD_PART = 2
+} Ecore_Wl2_Conformant_Part_Type;
+
+typedef enum _Ecore_Wl2_Virtual_Keyboard_State
+{
+   ECORE_WL2_VIRTUAL_KEYBOARD_STATE_UNKNOWN = 0,
+   ECORE_WL2_VIRTUAL_KEYBOARD_STATE_OFF,
+   ECORE_WL2_VIRTUAL_KEYBOARD_STATE_ON,
+} Ecore_Wl2_Virtual_Keyboard_State;
+
+typedef enum _Ecore_Wl2_Indicator_State
+{
+   ECORE_WL2_INDICATOR_STATE_UNKNOWN = 0,
+   ECORE_WL2_INDICATOR_STATE_OFF,
+   ECORE_WL2_INDICATOR_STATE_ON
+} Ecore_Wl2_Indicator_State;
+
+typedef enum _Ecore_Wl2_Indicator_Opacity_Mode
+{
+   ECORE_WL2_INDICATOR_OPACITY_UNKNOWN = 0,
+   ECORE_WL2_INDICATOR_OPAQUE,
+   ECORE_WL2_INDICATOR_TRANSLUCENT,
+   ECORE_WL2_INDICATOR_TRANSPARENT,
+   ECORE_WL2_INDICATOR_BG_TRANSPARENT,
+} Ecore_Wl2_Indicator_Opacity_Mode;
+
+typedef enum _Ecore_Wl2_Indicator_Visible_Type
+{
+   ECORE_WL2_INDICATOR_VISIBLE_TYPE_HIDDEN = 0,
+   ECORE_WL2_INDICATOR_VISIBLE_TYPE_SHOWN,
+} Ecore_Wl2_Indicator_Visible_Type;
+
+typedef enum _Ecore_Wl2_Clipboard_State
+{
+   ECORE_WL2_CLIPBOARD_STATE_UNKNOWN = 0,
+   ECORE_WL2_CLIPBOARD_STATE_OFF,
+   ECORE_WL2_CLIPBOARD_STATE_ON
+} Ecore_Wl2_Clipboard_State;
+//
+
 typedef struct _Ecore_Wl2_Event_Aux_Hint_Allowed
 {
    unsigned int win;
@@ -369,6 +430,83 @@ enum _Ecore_Wl2_Buffer_Type
    ECORE_WL2_BUFFER_SHM = 1,
    ECORE_WL2_BUFFER_DMABUF = 2
 };
+
+// TIZEN_ONLY(20171107): added wl evet structures from ecore_wayland to ecore_wl2
+typedef struct _Ecore_Wl2_Event_Window_Visibility_Change
+{
+   unsigned int win;
+   int          fully_obscured;
+} Ecore_Wl2_Event_Window_Visibility_Change;
+
+typedef struct _Ecore_Wl2_Event_Window_Pre_Visibility_Change
+{
+   unsigned int win;
+   Ecore_Wl2_Window_Visibility_Type type;
+   unsigned int option;
+} Ecore_Wl2_Event_Window_Pre_Visibility_Change;
+
+typedef struct _Ecore_Wl2_Event_Window_Lower
+{
+   unsigned int win;
+   unsigned int timestamp;
+} Ecore_Wl2_Event_Window_Lower;
+
+typedef struct _Ecore_Wl2_Event_Dnd_Position
+{
+   unsigned int win, source;
+   struct
+     {
+        int x, y;
+     } position;
+} Ecore_Wl2_Event_Dnd_Position;
+
+typedef struct _Ecore_Wl2_Event_Data_Source_Cancelled
+{
+   unsigned int win, source;
+} Ecore_Wl2_Event_Data_Source_Cancelled;
+
+typedef struct _Ecore_Wl2_Event_Selection_Data_Ready
+{
+   char *data;
+   int len;
+   Eina_Bool done;
+   char **types;
+   int num_types;
+   Ecore_Wl2_Selection_Type sel_type;
+} Ecore_Wl2_Event_Selection_Data_Ready;
+
+typedef struct _Ecore_Wl2_Event_Conformant_Change
+{
+   unsigned int win;
+   Ecore_Wl2_Conformant_Part_Type part_type;
+   Eina_Bool state;
+} Ecore_Wl2_Event_Conformant_Change;
+
+typedef struct _Ecore_Wl2_Event_Effect
+{
+   int win;
+   unsigned int type;
+} Ecore_Wl2_Event_Effect;
+typedef struct _Ecore_Wl2_Event_Effect Ecore_Wl2_Event_Effect_Start;
+typedef struct _Ecore_Wl2_Event_Effect Ecore_Wl2_Event_Effect_End;
+
+typedef struct _Ecore_Wl2_Event_Ignore_Output_Transform
+{
+   Ecore_Wl2_Window *win;
+   Eina_Bool ignore;
+} Ecore_Wl2_Event_Ignore_Output_Transform;
+
+typedef struct _Ecore_Wl2_Event_Indicator_Flick
+{
+   unsigned int win;
+   int type;
+} Ecore_Wl2_Event_Indicator_Flick;
+
+typedef struct _Ecore_Wl2_Event_Clipboard_Data_Selected
+{
+   unsigned int win;
+} Ecore_Wl2_Event_Clipboard_Data_Selected;
+//
 
 typedef void (*Ecore_Wl2_Bind_Cb)(struct wl_client *client, void *data, uint32_t version, uint32_t id);
 typedef void (*Ecore_Wl2_Unbind_Cb)(struct wl_resource *resource);
@@ -416,6 +554,21 @@ EAPI extern int ECORE_WL2_EVENT_WINDOW_HIDE; /** @since 1.20 */
 EAPI extern int ECORE_WL2_EVENT_WINDOW_ACTIVATE; /** @since 1.20 */
 EAPI extern int ECORE_WL2_EVENT_WINDOW_DEACTIVATE; /** @since 1.20 */
 EAPI extern int ECORE_WL2_EVENT_WINDOW_ICONIFY_STATE_CHANGE; /** @since 1.21 */
+// TIZEN_ONLY(20171107): added wl events from ecore_wayland to ecore_wl2
+EAPI extern int ECORE_WL2_EVENT_WINDOW_VISIBILITY_CHANGE;
+EAPI extern int ECORE_WL2_EVENT_WINDOW_PRE_VISIBILITY_CHANGE;
+EAPI extern int ECORE_WL2_EVENT_WINDOW_LOWER;
+EAPI extern int ECORE_WL2_EVENT_DND_POSITION;
+EAPI extern int ECORE_WL2_EVENT_DND_OFFER; /* @since 1.8, but NOT exist currenly */
+EAPI extern int ECORE_WL2_EVENT_DATA_SOURCE_CANCELLED; /* @since 1.7, but NOT exist currenly */
+EAPI extern int ECORE_WL2_EVENT_SELECTION_DATA_READY; /* @since 1.7, but NOT exist currenly */
+EAPI extern int ECORE_WL2_EVENT_CONFORMANT_CHANGE;
+EAPI extern int ECORE_WL2_EVENT_EFFECT_START;
+EAPI extern int ECORE_WL2_EVENT_EFFECT_END;
+EAPI extern int ECORE_WL2_EVENT_IGNORE_OUTPUT_TRANSFORM;
+EAPI extern int ECORE_WL2_EVENT_INDICATOR_FLICK;
+EAPI extern int ECORE_WL2_EVENT_CLIPBOARD_DATA_SELECTED;
+//
 
 /**
  * @file
