@@ -2197,6 +2197,9 @@ EAPI void ecore_wl2_window_surface_flush(Ecore_Wl2_Window *window);
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
 EAPI void ecore_wl2_display_sync(Ecore_Wl2_Display *display);
 //
+// TIZEN_ONLY(20171107): add ecore_wl2_window_input_get() EAPI
+EAPI Ecore_Wl2_Input *ecore_wl2_window_input_get(Ecore_Wl2_Window *win);
+//
 
 # endif
 

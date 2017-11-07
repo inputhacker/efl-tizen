@@ -1808,6 +1808,7 @@ ecore_wl2_window_buffer_attach(Ecore_Wl2_Window *win, void *buffer, int x, int y
      win->has_buffer = EINA_TRUE;
 }
 
+<<<<<<< 0f309f06c19227cc6445aff8550ae8d885d2a48a
 EAPI Eina_Bool
 ecore_wl2_window_resizing_get(Ecore_Wl2_Window *window)
 {
@@ -1856,3 +1857,21 @@ ecore_wl2_window_surface_flush(Ecore_Wl2_Window *window)
    if (!window->wl2_surface) return;
    ecore_wl2_surface_flush(window->wl2_surface);
 }
+
+// TIZEN_ONLY(20171107): add ecore_wl2_window_input_get() EAPI
+EAPI Ecore_Wl2_Input *
+ecore_wl2_window_input_get(Ecore_Wl2_Window *win)
+{
+   Ecore_Wl2_Input *input;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(win, NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(win->display, NULL);
+
+   EINA_INLIST_FOREACH(win->display->inputs, input)
+     {
+        if (input->focus.pointer) return input;
+     }
+
+   return NULL;
+}
+//
