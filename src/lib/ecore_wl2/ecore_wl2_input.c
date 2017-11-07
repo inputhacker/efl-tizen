@@ -1425,6 +1425,9 @@ _touch_cb_down(void *data, struct wl_touch *touch EINA_UNUSED, unsigned int seri
         input->grab.timestamp = timestamp;
      }
 
+// TIZEN_ONLY(20171107): always send move event when touch down event is occurred
+   _ecore_wl2_input_mouse_move_send(input, input->focus.touch, id);
+//
    _ecore_wl2_input_mouse_down_send(input, input->focus.touch, id,
                                     BTN_LEFT, timestamp);
 }
