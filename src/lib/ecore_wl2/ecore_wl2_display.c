@@ -216,6 +216,124 @@ static const struct efl_aux_hints_listener _aux_hints_listener =
    _aux_hints_aux_message,
 };
 
+// TIZEN_ONLY : To use tizen protocols
+static void
+_tizen_policy_cb_conformant(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t is_conformant)
+{
+}
+
+static void
+_tizen_policy_cb_conformant_area(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t conformant_part, uint32_t state, int32_t x, int32_t y, int32_t w, int32_t h)
+{
+}
+
+static void
+_tizen_policy_cb_notification_done(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, int32_t level EINA_UNUSED, uint32_t state EINA_UNUSED)
+{
+}
+
+static void
+_tizen_policy_cb_transient_for_done(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, uint32_t child_id EINA_UNUSED)
+{
+}
+
+static void
+_tizen_policy_cb_window_screen_mode_done(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, uint32_t mode EINA_UNUSED, uint32_t state EINA_UNUSED)
+{
+}
+
+static void
+_tizen_policy_cb_iconify_state_changed(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t iconified, uint32_t force)
+{
+}
+
+static void
+_tizen_policy_cb_supported_aux_hints(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, struct wl_array *hints, uint32_t num_hints)
+{
+}
+
+static void
+_tizen_policy_cb_allowed_aux_hint(void *data  EINA_UNUSED, struct tizen_policy *tizen_policy  EINA_UNUSED, struct wl_surface *surface_resource, int id)
+{
+}
+
+static void
+_tizen_policy_cb_aux_message(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, const char *key, const char *val, struct wl_array *options)
+{
+}
+
+static void
+_tizen_policy_cb_conformant_region(void *data, struct tizen_policy *tizen_policy, struct wl_surface *surface, uint32_t conformant_part, uint32_t state, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t serial)
+{
+}
+
+static const struct tizen_policy_listener _tizen_policy_listener =
+{
+   _tizen_policy_cb_conformant,
+   _tizen_policy_cb_conformant_area,
+   _tizen_policy_cb_notification_done,
+   _tizen_policy_cb_transient_for_done,
+   _tizen_policy_cb_window_screen_mode_done,
+   _tizen_policy_cb_iconify_state_changed,
+   _tizen_policy_cb_supported_aux_hints,
+   _tizen_policy_cb_allowed_aux_hint,
+   _tizen_policy_cb_aux_message,
+   _tizen_policy_cb_conformant_region,
+};
+
+static void
+_tizen_policy_ext_cb_active_angle(void *data EINA_UNUSED, struct tizen_policy_ext *tizen_policy_ext EINA_UNUSED, uint32_t angle)
+{
+}
+
+static const struct tizen_policy_ext_listener _tizen_policy_ext_listener =
+{
+   _tizen_policy_ext_cb_active_angle,
+};
+
+static void
+_tizen_effect_cb_start(void *data EINA_UNUSED, struct tizen_effect *tizen_effect EINA_UNUSED, struct wl_surface *surface_resource, unsigned int type)
+{
+}
+
+static void
+_tizen_effect_cb_end(void *data EINA_UNUSED, struct tizen_effect *tizen_effect EINA_UNUSED, struct wl_surface *surface_resource, unsigned int type)
+{
+}
+
+static const struct tizen_effect_listener _tizen_effect_listener =
+{
+   _tizen_effect_cb_start,
+   _tizen_effect_cb_end,
+};
+
+static void
+_tizen_indicator_cb_flick(void *data EINA_UNUSED, struct tizen_indicator *tizen_indicator EINA_UNUSED, struct wl_surface *surface_resource, int type)
+{
+}
+
+static const struct tizen_indicator_listener _tizen_indicator_listener =
+{
+   _tizen_indicator_cb_flick,
+};
+
+static void
+_tizen_clipboard_cb_data_selected(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, struct wl_surface *surface)
+{
+}
+
+static void
+_tizen_clipboard_cb_allowed_data_only(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, uint32_t allowed)
+{
+}
+
+static const struct tizen_clipboard_listener _tizen_clipboard_listener =
+{
+   _tizen_clipboard_cb_data_selected,
+   _tizen_clipboard_cb_allowed_data_only,
+};
+//
+
 static void
 _cb_global_event_free(void *data EINA_UNUSED, void *event)
 {
@@ -232,6 +350,9 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
 {
    Ecore_Wl2_Display *ewd;
    Ecore_Wl2_Event_Global *ev;
+   // TIZEN_ONLY
+   int client_version = 1;
+   //
 
    ewd = data;
 
@@ -346,6 +467,63 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
                  window->zxdg_surface, window->weight.w, window->weight.h);
           }
      }
+   // TIZEN_ONLY : To use tizen protocols
+   else if (!strcmp(interface, "tizen_policy"))
+     {
+        if (version >= 7)
+          client_version = 7;
+        else
+          client_version = version;
+
+        ewd->wl.tz_policy =
+           wl_registry_bind(registry, id, &tizen_policy_interface, client_version);
+        if (ewd->wl.tz_policy)
+          tizen_policy_add_listener(ewd->wl.tz_policy, &_tizen_policy_listener, ewd->wl.display);
+     }
+   else if (!strcmp(interface, "tizen_policy_ext"))
+     {
+        if (version >= 3)
+          client_version = 3;
+        else
+          client_version = version;
+
+        ewd->wl.tz_policy_ext =
+           wl_registry_bind(registry, id, &tizen_policy_ext_interface, client_version);
+        if (ewd->wl.tz_policy_ext)
+          tizen_policy_ext_add_listener(ewd->wl.tz_policy_ext, &_tizen_policy_ext_listener, ewd->wl.display);
+     }
+   else if (!strcmp(interface, "tizen_surface"))
+     {
+        ewd->wl.tz_surf =
+           wl_registry_bind(registry, id, &tizen_surface_interface, 1);
+     }
+   else if (!strcmp(interface, "tizen_effect"))
+     {
+        ewd->wl.tz_effect =
+           wl_registry_bind(registry, id, &tizen_effect_interface, 1);
+        if (ewd->wl.tz_effect)
+          tizen_effect_add_listener(ewd->wl.tz_effect, &_tizen_effect_listener, ewd->wl.display);
+     }
+   else if (!strcmp(interface, "tizen_indicator"))
+     {
+        ewd->wl.tz_indicator =
+           wl_registry_bind(registry, id, &tizen_indicator_interface, 1);
+        if (ewd->wl.tz_indicator)
+          tizen_indicator_add_listener(ewd->wl.tz_indicator, &_tizen_indicator_listener, ewd->wl.display);
+     }
+   else if (!strcmp(interface, "tizen_clipboard"))
+     {
+        if (version >= 2)
+          client_version = 2;
+        else
+          client_version = version;
+
+        ewd->wl.tz_clipboard =
+           wl_registry_bind(registry, id, &tizen_clipboard_interface, client_version);
+        if (ewd->wl.tz_clipboard)
+          tizen_clipboard_add_listener(ewd->wl.tz_clipboard, &_tizen_clipboard_listener, ewd->wl.display);
+     }
+   //
 
 event:
    /* allocate space for event structure */

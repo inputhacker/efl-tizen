@@ -83,8 +83,7 @@ Session.vim
 /src/bin/efl_wl/efl_wl_test_stack
 
 #wayland generated protocol - some legacy headers will be ignored
-*-protocol.h
-*-protocol.c
+pc/efl-wl.pc
 
 /build
 .cproject

@@ -15,6 +15,11 @@
 # include "xdg-shell-unstable-v6-client-protocol.h"
 # include "efl-aux-hints-client-protocol.h"
 
+// TIZEN_ONLY : To use tizen protocols
+# include <wayland-extension/tizen-extension-client-protocol.h>
+# include "tizen-policy-ext-client-protocol.h"
+//
+
 extern int _ecore_wl2_log_dom;
 extern Eina_Bool no_session_recovery;
 
@@ -93,6 +98,14 @@ struct _Ecore_Wl2_Display
         struct efl_aux_hints *efl_aux_hints;
         struct zwp_teamwork *teamwork;
         struct efl_hints *efl_hints;
+        // TIZEN_ONLY : To use tizen protocols
+        struct tizen_policy *tz_policy;
+        struct tizen_policy_ext *tz_policy_ext;
+        struct tizen_surface *tz_surf;
+        struct tizen_effect *tz_effect;
+        struct tizen_indicator *tz_indicator;
+        struct tizen_clipboard *tz_clipboard;
+        //
         int compositor_version;
      } wl;
 
