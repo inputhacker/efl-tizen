@@ -320,6 +320,7 @@ Requires: ecore-input-evas
 Requires: ecore-ipc
 %if %{with wayland}
 Requires: ecore-wayland
+Requires: ecore-wl2
 Requires: ecore-drm
 %endif
 %if %{with x}
@@ -350,6 +351,7 @@ Requires: ecore-input-evas-devel
 Requires: ecore-ipc-devel
 %if %{with wayland}
 Requires: ecore-wayland-devel
+Requires: ecore-wl2-devel
 Requires: ecore-drm-devel
 %endif
 %if %{with x}
@@ -653,6 +655,24 @@ License: BSD-2-Clause and MIT
 
 %description -n ecore-wayland-devel
 Development files for ecore_wayland
+
+%package -n ecore-wl2
+Summary: Ecore wayland interface library version 2 - wayland
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-wl2
+This is a glue/wrapper library to interface EFL to Wayland libraries
+to tie them into the Ecore main-loop and event queue.
+
+%package -n ecore-wl2-devel
+Summary:  Development components for the ecore_wl2 package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-wl2 = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-wl2-devel
+Development files for ecore_wl2
 
 %package -n ecore-x
 Summary: Enlightened Core X interface library - x
@@ -1519,6 +1539,19 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_includedir}/ecore-wayland-1/*.h
 %{_libdir}/libecore_wayland.so
 %{_libdir}/pkgconfig/ecore-wayland.pc
+
+%files -n ecore-wl2
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license licenses/COPYING.BSD
+%{_libdir}/libecore_wl2.so.*
+
+%files -n ecore-wl2-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/ecore-wl2-1/*.h
+%{_libdir}/libecore_wl2.so
+%{_libdir}/pkgconfig/ecore-wl2.pc
 %endif
 
 %if %{with x}
