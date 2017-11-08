@@ -759,6 +759,16 @@ ecore_wl2_window_transparent_set(Ecore_Wl2_Window *window, Eina_Bool transparent
      ecore_wl2_window_opaque_region_set(window, 0, 0, 0, 0);
 }
 
+// TIZEN_ONLY(20171108) : Get a window's transparent property
+EAPI Eina_Bool
+ecore_wl2_window_transparent_get(Ecore_Wl2_Window *window)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(window, EINA_FALSE);
+
+   return window->transparent;
+}
+//
+
 EAPI void
 ecore_wl2_window_opaque_region_set(Ecore_Wl2_Window *window, int x, int y, int w, int h)
 {
