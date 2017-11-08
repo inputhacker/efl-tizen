@@ -715,6 +715,13 @@ ecore_wl2_window_activate(Ecore_Wl2_Window *window)
    if (window->display->wl.tz_policy)
      tizen_policy_activate(window->display->wl.tz_policy, window->surface);
 }
+
+EAPI void
+ecore_wl2_window_parent_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window *parent)
+{
+   EINA_SAFETY_ON_NULL_RETURN(window);
+   window->parent = parent;
+}
 //
 
 EAPI Eina_Bool
