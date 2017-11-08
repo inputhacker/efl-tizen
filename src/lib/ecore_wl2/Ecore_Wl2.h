@@ -1230,6 +1230,10 @@ EAPI void ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool ico
  */
 EAPI void ecore_wl2_window_type_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window_Type type);
 
+// TIZEN_ONLY(20171108) : Get the type of a given window
+EAPI Ecore_Wl2_Window_Type ecore_wl2_window_type_get(Ecore_Wl2_Window *window);
+//
+
 /**
  * Find the output that a given window is on
  *

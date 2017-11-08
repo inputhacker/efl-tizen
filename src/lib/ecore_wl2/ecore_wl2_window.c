@@ -1071,6 +1071,15 @@ ecore_wl2_window_type_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window_Type type)
    window->type = type;
 }
 
+// TIZEN_ONLY(20171108) : Get the type of a given window
+EAPI Ecore_Wl2_Window_Type
+ecore_wl2_window_type_get(Ecore_Wl2_Window *window)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(window, ECORE_WL2_WINDOW_TYPE_NONE);
+   return window->type;
+}
+//
+
 EAPI void
 ecore_wl2_window_popup_input_set(Ecore_Wl2_Window *window, Ecore_Wl2_Input *input)
 {
