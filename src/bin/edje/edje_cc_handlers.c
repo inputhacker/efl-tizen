@@ -564,6 +564,14 @@ static void st_collections_group_noinherit_script(void);
 static void st_images_vector(void);
 static void _handle_vector_image(void);
 
+// TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+static void ob_plugins_plug(void);
+static void st_collections_plugins_plugin_name(void);
+static void st_collections_plugins_plugin_source(void);
+static void st_collections_plugins_plugin_param(void);
+#endif
+//
 /*****/
 
 #define STRDUP(x) eina_strdup(x)
@@ -723,6 +731,16 @@ New_Statement_Handler statement_handlers[] =
      TEXT_CLASS_STATEMENTS("collections.")
      SIZE_CLASS_STATEMENTS("collections.")
      {"collections.base_scale", st_collections_base_scale},
+// TIZEN_ONLY(20150110): Add plugins keyword.
+#ifdef PLUGIN
+     {"collections.plugins.plugin.name", st_collections_plugins_plugin_name},
+     {"collections.plugins.plugin.source", st_collections_plugins_plugin_source},
+     {"collections.plugins.plugin.param", st_collections_plugins_plugin_param},
+     {"collections.group.plugins.plugin.name", st_collections_plugins_plugin_name}, /* dup */
+     {"collections.group.plugins.plugin.source", st_collections_plugins_plugin_source}, /* dup */
+     {"collections.group.plugins.plugin.param", st_collections_plugins_plugin_param}, /* dup */
+#endif
+//
      {"collections.translation.file.locale", st_collections_group_translation_file_locale},
      {"collections.translation.file.source", st_collections_group_translation_file_source},
      {"collections.group.translation.file.locale", st_collections_group_translation_file_locale},
@@ -1433,6 +1451,14 @@ New_Object_Handler object_handlers[] =
      {"collections.text_classes.text_class", ob_text_class}, /* dup */
      {"collections.size_classes", NULL}, /* dup */
      {"collections.size_classes.size_class", ob_size_class}, /* dup */
+// TIZEN_ONLY(20150110): Add plugins keyword.
+#ifdef PLUGIN
+     {"collections.plugins", NULL}, /* dup */
+     {"collections.plugins.plugin", ob_plugins_plug}, /* dup */
+     {"collections.group.plugins", NULL}, /* dup */
+     {"collections.group.plugins.plugin", ob_plugins_plug}, /* dup */
+#endif
+//
      {"collections.sounds", NULL},
      {"collections.group.sounds", NULL}, /* dup */
      {"collections.sounds.sample", NULL},
@@ -2103,6 +2129,11 @@ _edje_program_copy(Edje_Program *ep, Edje_Program *ep2)
    ep->tween.v4 = ep2->tween.v4;
    ep->tween.use_duration_factor = ep2->tween.use_duration_factor;
    ep->sample_name = STRDUP(ep2->sample_name);
+// TIZEN_ONLY(20150110): Add plugins keyword.
+#ifdef PLUGIN
+   ep->plugin_name = STRDUP(ep2->plugin_name);
+#endif
+//
    ep->tone_name = STRDUP(ep2->tone_name);
    ep->duration = ep2->duration;
    ep->speed = ep2->speed;
@@ -4069,6 +4100,73 @@ st_collections_group_vibration_sample_name(void)
 
    check_arg_count(1);
 }
+
+////////////////////////////////////////////////////////////
+// TIZEN_ONLY(20150110): Add plugin keyword.
+////////////////////////////////////////////////////////////
+#ifdef PLUGIN
+static void
+ob_plugins_plug(void)
+{
+   Edje_Plugin *plug;
+
+   plug = mem_alloc(SZ(Edje_Plugin));
+   edje_file->plugins = eina_list_append(edje_file->plugins, plug);
+}
+
+static void
+st_collections_plugins_plugin_source(void)
+{
+   Edje_Plugin *plug;
+
+   check_arg_count(1);
+   plug = eina_list_data_get(eina_list_last(edje_file->plugins));
+   if (plug->source)
+     {
+        ERR("parse error %s:%i. There is already a basic source for the plugin: %s",
+            file_in, line - 1, plug->name);
+        exit(-1);
+     }
+   plug->source = parse_str(0);
+}
+
+static void
+st_collections_plugins_plugin_param(void)
+{
+   Edje_Plugin *plug;
+
+   check_arg_count(1);
+   plug = eina_list_data_get(eina_list_last(edje_file->plugins));
+   if (plug->param)
+     {
+        ERR("parse error %s:%i. There is already a basic param for the plugin: %s",
+            file_in, line - 1, plug->name);
+        exit(-1);
+     }
+   plug->param = parse_str(0);
+}
+
+static void
+st_collections_plugins_plugin_name(void)
+{
+   Edje_Plugin *plug, *tplug;
+   Eina_List *l;
+
+   check_arg_count(1);
+   plug = eina_list_data_get(eina_list_last(edje_file->plugins));
+   plug->name = parse_str(0);
+   EINA_LIST_FOREACH(edje_file->plugins, l, tplug)
+     {
+        if (plug->name && tplug->name && (plug != tplug) && (!strcmp(plug->name, tplug->name)))
+          {
+             ERR("parse error %s:%i. There is already a style named \"%s\"",
+                 file_in, line - 1, plug->name);
+             exit(-1);
+          }
+     }
+}
+#endif
+//////////////////////////////////////////////////////////////
 
 /**
     @page edcref
@@ -15339,6 +15437,9 @@ st_collections_group_programs_program_in(void)
         @li PARAM_COPY "src_part" "src_param" "dst_part" "dst_param"
         @li PARAM_SET "part" "param" "value"
         @li PLAY_SAMPLE "sample name" speed (channel)
+// TIZEN_ONLY(20150110): Add plugin keyword.
+        @li RUN_PLUGIN "plugin name"
+//
         @li PLAY_TONE "tone name" duration_in_seconds( Range 0.1 to 10.0 )
         @li PLAY_VIBRATION "sample name" repeat (repeat count)
         @li PHYSICS_IMPULSE 10 -23.4 0
@@ -15401,6 +15502,11 @@ st_collections_group_programs_program_action(void)
                            "PHYSICS_STOP", EDJE_ACTION_TYPE_PHYSICS_STOP,
                            "PHYSICS_ROT_SET", EDJE_ACTION_TYPE_PHYSICS_ROT_SET,
                            "PLAY_VIBRATION", EDJE_ACTION_TYPE_VIBRATION_SAMPLE,
+                           // TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+                           "RUN_PLUGIN", EDJE_ACTION_TYPE_RUN_PLUGIN,
+#endif
+                           //
                            NULL);
    if (ep->action == EDJE_ACTION_TYPE_STATE_SET)
      {
@@ -15475,6 +15581,14 @@ st_collections_group_programs_program_action(void)
           }
         ep->duration = parse_float_range(2, 0.1, 10.0);
      }
+// TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+  else if (ep->action == EDJE_ACTION_TYPE_RUN_PLUGIN)
+     {
+        ep->plugin_name = parse_str(1);
+     }
+#endif
+//
    else if (ep->action == EDJE_ACTION_TYPE_VIBRATION_SAMPLE)
      {
         ep->vibration_name = parse_str(1);
@@ -15586,6 +15700,13 @@ st_collections_group_programs_program_action(void)
       case EDJE_ACTION_TYPE_FOCUS_OBJECT:
         check_min_arg_count(1);
         break;
+// TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+      case EDJE_ACTION_TYPE_RUN_PLUGIN:
+        check_arg_count(2);
+        break;
+#endif
+//
       default:
 	check_arg_count(3);
      }

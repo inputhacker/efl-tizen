@@ -11057,6 +11057,10 @@ edje_edit_program_add(Evas_Object *obj, const char *name)
    epr->channel = EDJE_CHANNEL_EFFECT;
    epr->tone_name = NULL;
    epr->duration = 0.1;
+// TIZEN_ONLY(20170421): Add plugin keyword.
+#ifdef PLUGIN
+   epr->plugin_name = NULL;
+#endif
 
    //Update table_programs
    ed->collection->patterns.table_programs_size++;
@@ -11144,6 +11148,10 @@ edje_edit_program_del(Evas_Object *obj, const char *prog)
    _edje_if_string_free(ed, &epr->state2);
    _edje_if_string_free(ed, &epr->sample_name);
    _edje_if_string_free(ed, &epr->tone_name);
+// TIZEN_ONLY(20170421): Add plugin keyword.
+#ifdef PLUGIN
+   _edje_if_string_free(ed, &epr->plugin_name);
+#endif
 
    EINA_LIST_FREE(epr->targets, prt)
      free(prt);
@@ -11225,6 +11233,50 @@ edje_edit_program_stop_all(Evas_Object *obj)
 
    return EINA_TRUE;
 }
+
+// TIZEN_ONLY(20170421): Add plugin keyword.
+#ifdef PLUGIN
+EAPI Eina_List *
+edje_edit_plugins_list_get(Evas_Object *obj)
+{
+   Eina_List *plugins = NULL, *l;
+   Edje_Plugin *plg= NULL;
+
+   GET_ED_OR_RETURN(NULL);
+
+   if (!ed->file) return NULL;
+   if (!ed->file->plugins) return NULL;
+
+   EINA_LIST_FOREACH(ed->file->plugins, l, plg)
+     {
+        plugins = eina_list_append(plugins, eina_stringshare_add(plg->name));
+     }
+
+   return plugins;
+}
+
+EAPI const char *
+edje_edit_program_plugin_get(Evas_Object *obj, const char *prog)
+{
+   GET_EPR_OR_RETURN(NULL);
+
+   if (!epr->plugin_name) return NULL;
+   return eina_stringshare_add(epr->plugin_name);
+}
+
+EAPI Eina_Bool
+edje_edit_program_plugin_set(Evas_Object *obj, const char *prog, const char *name)
+{
+   GET_ED_OR_RETURN(EINA_FALSE);
+   GET_EPR_OR_RETURN(EINA_FALSE);
+
+   if (!name) return EINA_FALSE;
+
+   _edje_if_string_replace(ed, &epr->plugin_name, name);
+
+   return EINA_TRUE;
+}
+#endif
 
 EAPI Eina_Bool
 edje_edit_program_transition_state_set(Evas_Object *obj, const char *prog, double position)

@@ -8047,6 +8047,54 @@ EAPI Eina_Bool edje_edit_program_run(Evas_Object *obj, const char *prog);
  */
 EAPI Eina_Bool edje_edit_program_stop_all(Evas_Object *obj);
 
+// TIZEN_ONLY(20170421): Add plugin keyword.
+#ifdef PLUGIN
+
+/** Get the list of all plugins.
+ * Use edje_edit_string_list_free() when you don't need the list anymore.
+ *
+ * @param obj Object being edited.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ * @return A List containing all plugins found inside of given set in the edje file.
+ */
+EAPI Eina_List *
+edje_edit_plugins_list_get(Evas_Object *obj);
+
+/** Get plugin name of the program.
+ *
+ * @param obj Object being edited.
+ * @param prog The name of the program.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ * @return const char* plugin name on success, NULL otherwise.
+ */
+EAPI const char *
+edje_edit_program_plugin_get(Evas_Object *obj, const char *prog);
+/** Set plugin name of the program.
+ *
+ * @param obj Object being edited.
+ * @param prog The name of the program.
+ * @param name The name of the plugin.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ * @return @c EINA_TRUE in case of success, @c EINA_FALSE otherwise.
+ */
+EAPI Eina_Bool
+edje_edit_program_plugin_set(Evas_Object *obj, const char *prog, const char *name);
+#endif
+
+
+
 /**
  * @brief Sets parts into intermediate state of programs transition.
  *

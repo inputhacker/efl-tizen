@@ -564,6 +564,11 @@ struct _Edje_File
    Edje_Gfx_Filter_Directory      *filter_dir;
 
    Eina_List                      *styles;
+   // TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+   Eina_List                      *plugins;
+#endif
+   //
 
    Eina_List                      *color_tree;
    Eina_Hash                      *color_tree_hash;
@@ -724,6 +729,17 @@ struct _Edje_Model_Directory_Entry
    int   id; /* the id no. of the image */
 };
 
+// TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+struct _Edje_Plugin /*External Plugin*/
+{
+   const char *name;    /* the name of the plugin */
+   const char *source;  /* the source of the plugin */
+   const char *param;
+};
+#endif
+//
+
 struct _Edje_Sound_Sample /*Sound Sample*/
 {
    const char *name; /* the nominal name of the sound */
@@ -808,6 +824,11 @@ struct _Edje_Program /* a conditional program to be run */
    const char *source; /* if part that emitted this (name) matches this glob */
    const char *sample_name;
    const char *tone_name;
+   // TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+   const char *plugin_name;
+#endif
+   //
    const char *vibration_name;
    double      duration;
    double      speed;
@@ -2374,6 +2395,11 @@ EAPI void _edje_edd_shutdown(void);
 
 EAPI extern Eet_Data_Descriptor *_edje_edd_edje_file;
 EAPI extern Eet_Data_Descriptor *_edje_edd_edje_part_collection;
+// TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+EAPI extern Eet_Data_Descriptor *_edje_edd_edje_plugin;
+#endif
+//
 
 extern Eina_List       *_edje_animators;
 extern Eina_Inlist     *_edje_edjes;
@@ -3127,6 +3153,12 @@ void _animation_get(Eo *obj, void *_pd, va_list *list);
 
 void edje_signal_init(void);
 void edje_signal_shutdown(void);
+
+// TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+typedef Eina_Bool (*Edje_Module_Plugin_Run) (const Evas_Object *obj, const char *name, const char *param);
+#endif
+//
 
 Eina_Bool _edje_real_part_mouse_events_get(Edje *ed, Edje_Real_Part *rp);
 void _edje_real_part_mouse_events_set(Edje *ed, Edje_Real_Part *rp, Eina_Bool mouse_events);

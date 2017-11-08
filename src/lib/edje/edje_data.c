@@ -4,6 +4,11 @@ EAPI Eet_Data_Descriptor * _edje_edd_edje_file = NULL;
 EAPI Eet_Data_Descriptor * _edje_edd_edje_part_collection = NULL;
 
 Eet_Data_Descriptor *_edje_edd_edje_string = NULL;
+// TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+Eet_Data_Descriptor *_edje_edd_edje_plugin = NULL;
+#endif
+//
 Eet_Data_Descriptor *_edje_edd_edje_style = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_style_tag = NULL;
 Eet_Data_Descriptor *_edje_edd_edje_color_tree_node = NULL;
@@ -245,6 +250,11 @@ EAPI void
 _edje_edd_shutdown(void)
 {
    FREED(_edje_edd_edje_string);
+   // TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+   FREED(_edje_edd_edje_plugin);
+#endif
+   //
    FREED(_edje_edd_edje_style);
    FREED(_edje_edd_edje_style_tag);
    FREED(_edje_edd_edje_color_class);
@@ -556,6 +566,18 @@ _edje_edd_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_style, Edje_Style, "name", name, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_LIST(_edje_edd_edje_style, Edje_Style, "tags", tags, _edje_edd_edje_style_tag);
 
+   // TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+   /* Plugin */
+   EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Edje_Plugin);
+   _edje_edd_edje_plugin =
+     eet_data_descriptor_file_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_plugin, Edje_Plugin, "name", name, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_plugin, Edje_Plugin, "source", source, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_plugin, Edje_Plugin, "param", param, EET_T_STRING);
+#endif
+   //
+
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Edje_Color_Tree_Node);
    _edje_edd_edje_color_tree_node =
      eet_data_descriptor_file_new(&eddc);
@@ -617,6 +639,11 @@ _edje_edd_init(void)
    EET_DATA_DESCRIPTOR_ADD_SUB(_edje_edd_edje_file, Edje_File, "image_dir", image_dir, _edje_edd_edje_image_directory);
    EET_DATA_DESCRIPTOR_ADD_SUB(_edje_edd_edje_file, Edje_File, "model_dir", model_dir, _edje_edd_edje_model_directory);
    EET_DATA_DESCRIPTOR_ADD_SUB(_edje_edd_edje_file, Edje_File, "sound_dir", sound_dir, _edje_edd_edje_sound_directory);
+   // TIZEN_ONLY(20150110): Add plugin keyword.
+#ifdef PLUGIN
+   EET_DATA_DESCRIPTOR_ADD_LIST(_edje_edd_edje_file, Edje_File, "plugins", plugins, _edje_edd_edje_plugin);
+#endif
+   //
    EET_DATA_DESCRIPTOR_ADD_SUB(_edje_edd_edje_file, Edje_File, "mo_dir", mo_dir, _edje_edd_edje_mo_directory);
    EET_DATA_DESCRIPTOR_ADD_SUB(_edje_edd_edje_file, Edje_File, "filter_dir", filter_dir, _edje_edd_edje_filter_directory);
 
@@ -661,6 +688,9 @@ _edje_edd_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_program, Edje_Program, "in.range", in.range, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_program, Edje_Program, "action", action, EET_T_INT);
 
+   // TIZEN_ONLY(20150119): Fix to load module for plugin.
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_program, Edje_Program, "plugin_name", plugin_name, EET_T_STRING);
+   //
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_program, Edje_Program, "sample_name", sample_name, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_program, Edje_Program, "tone_name", tone_name, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_program, Edje_Program, "duration", duration, EET_T_DOUBLE);
