@@ -699,6 +699,22 @@ ecore_wl2_window_lower(Ecore_Wl2_Window *window)
           }
      }
 }
+
+EAPI void
+ecore_wl2_window_activate(Ecore_Wl2_Window *window)
+{
+   Eina_Bool iconic;
+
+   EINA_SAFETY_ON_NULL_RETURN(window);
+   EINA_SAFETY_ON_NULL_RETURN(window->display);
+
+   iconic = ecore_wl2_window_iconified_get(window);
+   if (iconic)
+     ecore_wl2_window_iconified_set(window, EINA_FALSE);
+
+   if (window->display->wl.tz_policy)
+     tizen_policy_activate(window->display->wl.tz_policy, window->surface);
+}
 //
 
 EAPI Eina_Bool
