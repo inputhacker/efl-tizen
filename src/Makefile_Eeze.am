@@ -133,16 +133,22 @@ bin_eeze_eeze_mount_eeze_mount_SOURCES = bin/eeze/eeze_mount/eeze_mount.c
 bin_eeze_eeze_mount_eeze_mount_CPPFLAGS = -I$(top_builddir)/src/lib/efl @EEZE_CFLAGS@
 bin_eeze_eeze_mount_eeze_mount_LDADD = @USE_EEZE_LIBS@
 bin_eeze_eeze_mount_eeze_mount_DEPENDENCIES = @USE_EEZE_INTERNAL_LIBS@
+bin_eeze_eeze_mount_eeze_mount_LDFLAGS = -pie
+bin_eeze_eeze_mount_eeze_mount_CFLAGS = -fPIE
 
 bin_eeze_eeze_umount_eeze_umount_SOURCES = bin/eeze/eeze_umount/eeze_umount.c
 bin_eeze_eeze_umount_eeze_umount_CPPFLAGS = -I$(top_builddir)/src/lib/efl @EEZE_CFLAGS@
 bin_eeze_eeze_umount_eeze_umount_LDADD = @USE_EEZE_LIBS@
 bin_eeze_eeze_umount_eeze_umount_DEPENDENCIES = @USE_EEZE_INTERNAL_LIBS@
+bin_eeze_eeze_umount_eeze_umount_LDFLAGS = -pie
+bin_eeze_eeze_umount_eeze_umount_CFLAGS = -fPIE
 
 bin_eeze_eeze_disk_ls_eeze_disk_ls_SOURCES = bin/eeze/eeze_disk_ls/eeze_disk_ls.c
 bin_eeze_eeze_disk_ls_eeze_disk_ls_CPPFLAGS = -I$(top_builddir)/src/lib/efl @EEZE_CFLAGS@
 bin_eeze_eeze_disk_ls_eeze_disk_ls_LDADD = @USE_EEZE_LIBS@
 bin_eeze_eeze_disk_ls_eeze_disk_ls_DEPENDENCIES = @USE_EEZE_INTERNAL_LIBS@
+bin_eeze_eeze_disk_ls_eeze_disk_ls_LDFLAGS = -pie
+bin_eeze_eeze_disk_ls_eeze_disk_ls_CFLAGS = -fPIE
 
 bin_eeze_eeze_scanner_eeze_scanner_SOURCES = \
 bin/eeze/eeze_scanner/eeze_scanner.c \

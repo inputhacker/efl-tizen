@@ -186,6 +186,8 @@ bin_edje_edje_cc_LDADD =  $(USE_EDJE_BIN_LIBS) @EDJE_LUA_LIBS@
 bin_edje_edje_cc_DEPENDENCIES = \
 @USE_EDJE_INTERNAL_LIBS@ \
 bin/edje/epp/epp$(EXEEXT) # epp is an artificial dependency because edje_cc will use it at runtime, so we be sure if we depend on edje_cc we get epp.
+bin_edje_edje_cc_LDFLAGS = -pie
+bin_edje_edje_cc_CFLAGS = -fPIE
 
 bin_edje_edje_decc_SOURCES = \
 bin/edje/edje_decc.c \
@@ -195,36 +197,50 @@ bin/edje/edje_cc_sources.c
 bin_edje_edje_decc_CPPFLAGS = -I$(top_builddir)/src/lib/efl $(EDJE_COMMON_CPPFLAGS)
 bin_edje_edje_decc_LDADD =  $(USE_EDJE_BIN_LIBS)
 bin_edje_edje_decc_DEPENDENCIES = @USE_EDJE_INTERNAL_LIBS@
+bin_edje_edje_decc_LDFLAGS = -pie
+bin_edje_edje_decc_CFLAGS = -fPIE
 
 bin_edje_edje_player_SOURCES = bin/edje/edje_player.c
 bin_edje_edje_player_CPPFLAGS = -I$(top_builddir)/src/lib/efl $(EDJE_COMMON_CPPFLAGS)
 bin_edje_edje_player_LDADD =  $(USE_EDJE_BIN_LIBS)
 bin_edje_edje_player_DEPENDENCIES = @USE_EDJE_INTERNAL_LIBS@
+bin_edje_edje_player_LDFLAGS = -pie
+bin_edje_edje_player_CFLAGS = -fPIE
 
 bin_edje_edje_inspector_SOURCES = bin/edje/edje_inspector.c
 bin_edje_edje_inspector_CPPFLAGS = -I$(top_builddir)/src/lib/efl $(EDJE_COMMON_CPPFLAGS)
 bin_edje_edje_inspector_LDADD =  $(USE_EDJE_BIN_LIBS)
 bin_edje_edje_inspector_DEPENDENCIES = @USE_EDJE_INTERNAL_LIBS@
+bin_edje_edje_inspector_LDFLAGS = -pie
+bin_edje_edje_inspector_CFLAGS = -fPIE
 
 bin_edje_edje_external_inspector_SOURCES = bin/edje/edje_external_inspector.c
 bin_edje_edje_external_inspector_CPPFLAGS = -I$(top_builddir)/src/lib/efl $(EDJE_COMMON_CPPFLAGS)
 bin_edje_edje_external_inspector_LDADD =  $(USE_EDJE_BIN_LIBS)
 bin_edje_edje_external_inspector_DEPENDENCIES = @USE_EDJE_INTERNAL_LIBS@
+bin_edje_edje_external_inspector_LDFLAGS = -pie
+bin_edje_edje_external_inspector_CFLAGS = -fPIE
 
 bin_edje_edje_codegen_SOURCES = bin/edje/edje_codegen.c
 bin_edje_edje_codegen_CPPFLAGS = -I$(top_builddir)/src/lib/efl $(EDJE_COMMON_CPPFLAGS)
 bin_edje_edje_codegen_LDADD =  $(USE_EDJE_BIN_LIBS)
 bin_edje_edje_codegen_DEPENDENCIES = @USE_EDJE_INTERNAL_LIBS@
+bin_edje_edje_codegen_LDFLAGS = -pie
+bin_edje_edje_codegen_CFLAGS = -fPIE
 
 bin_edje_edje_pick_SOURCES = bin/edje/edje_pick.c
 bin_edje_edje_pick_CPPFLAGS = -I$(top_builddir)/src/lib/efl $(EDJE_COMMON_CPPFLAGS)
 bin_edje_edje_pick_LDADD =  $(USE_EDJE_BIN_LIBS)
 bin_edje_edje_pick_DEPENDENCIES = @USE_EDJE_INTERNAL_LIBS@
+bin_edje_edje_pick_LDFLAGS = -pie
+bin_edje_edje_pick_CFLAGS = -fPIE
 
 bin_edje_edje_watch_SOURCES = bin/edje/edje_watch.c
 bin_edje_edje_watch_CPPFLAGS = -I$(top_builddir)/src/lib/efl $(EDJE_COMMON_CPPFLAGS)
 bin_edje_edje_watch_LDADD =  $(USE_EDJE_BIN_LIBS)
 bin_edje_edje_watch_DEPENDENCIES = @USE_EDJE_INTERNAL_LIBS@
+bin_edje_edje_watch_LDFLAGS = -pie
+bin_edje_edje_watch_CFLAGS = -fPIE
 
 # EPP (Edje's CPP)
 eppdir = $(libdir)/edje/utils/$(MODULE_ARCH)
@@ -270,6 +286,8 @@ bin_edje_epp_epp_CPPFLAGS += \
 -I$(top_builddir)/src/lib/evil
 bin_edje_epp_epp_LDADD = lib/evil/libevil.la
 endif
+bin_edje_epp_epp_LDFLAGS = -pie
+bin_edje_epp_epp_CFLAGS = -fPIE
 
 # TODO: why keep these?
 EXTRA_DIST2 += \

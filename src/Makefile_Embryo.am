@@ -59,6 +59,8 @@ else
 bin_embryo_embryo_cc_LDADD = @USE_EMBRYO_LIBS@
 endif
 bin_embryo_embryo_cc_DEPENDENCIES = @USE_EMBRYO_INTERNAL_LIBS@
+bin_embryo_embryo_cc_LDFLAGS = -pie
+bin_embryo_embryo_cc_CFLAGS = -fPIE
 
 EXTRA_DIST2 += \
 bin/embryo/embryo_cc_sc5.scp \
