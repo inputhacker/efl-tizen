@@ -159,4 +159,22 @@ _efl_access_component_focus_grab(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
    return evas_object_focus_get(obj);
 }
 
+//TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+EOLIAN static Eina_Bool
+_efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
+{
+   WRN("The %s object does not implement the \"component_highlight_grab\" function.",
+       efl_class_name_get(efl_class_get(obj)));
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
+_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
+{
+   WRN("The %s object does not implement the \"component_highlight_clear\" function.",
+       efl_class_name_get(efl_class_get(obj)));
+   return EINA_FALSE;
+}
+//
+
 #include "efl_access_component.eo.c"

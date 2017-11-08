@@ -163,6 +163,13 @@ enum Efl.Access.State_Type
    selectable_text, [[State: selectable text]]
    is_default, [[State: is default]]
    visited, [[State: visited]]
+   //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+   checkable, [[State: checkable]]
+   has_popup, [[State: has popup]]
+   read_only, [[State: read only]]
+   highlighted, [[State: highlighted]]
+   highlightable, [[State: highlightable]]
+   //
    last_defined,  [[Last enum entry sentinel]]
 }
 

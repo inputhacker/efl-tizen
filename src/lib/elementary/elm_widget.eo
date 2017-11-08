@@ -597,6 +597,11 @@ abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
       Efl.Access.parent { get; }
       Efl.Access.attributes { get; }
       Efl.Access.Component.focus_grab;
+      //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+      Efl.Access.Component.accessible_at_point_get;
+      Efl.Access.Component.highlight_grab;
+      Efl.Access.Component.highlight_clear;
+      //
       Efl.Ui.Focus.User.focus_manager { get; }
       Efl.Ui.Focus.User.focus_parent { get; }
       Efl.Ui.Focus.Object.focus_geometry { get; }

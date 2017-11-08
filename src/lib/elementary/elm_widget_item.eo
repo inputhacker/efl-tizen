@@ -546,5 +546,9 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
            Efl.Access.Component.alpha { get; }
            Efl.Access.Component.layer { get; }
            Efl.Access.Component.focus_grab;
+           //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+           Efl.Access.Component.highlight_grab;
+           Efl.Access.Component.highlight_clear;
+           //
       }
 }

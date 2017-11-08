@@ -3486,6 +3486,50 @@ _component_grab_focus(const Eldbus_Service_Interface *iface EINA_UNUSED, const E
    return ret;
 }
 
+//TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+static Eldbus_Message *
+_component_grab_highlight(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
+{
+   const char *obj_path = eldbus_message_path_get(msg);
+   Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
+   Eo *obj = _bridge_object_from_path(bridge, obj_path);
+   Eldbus_Message *ret;
+   Eina_Bool highlight = EINA_FALSE;
+
+   ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_COMPONENT_MIXIN, msg);
+
+   eo_do(obj, highlight = elm_interface_atspi_component_highlight_grab());
+
+   ret = eldbus_message_method_return_new(msg);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
+
+   eldbus_message_arguments_append(ret, "b", highlight);
+
+   return ret;
+}
+
+static Eldbus_Message *
+_component_clear_highlight(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
+{
+   const char *obj_path = eldbus_message_path_get(msg);
+   Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
+   Eo *obj = _bridge_object_from_path(bridge, obj_path);
+   Eldbus_Message *ret;
+   Eina_Bool highlight = EINA_FALSE;
+
+   ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_COMPONENT_MIXIN, msg);
+
+   eo_do(obj, highlight = elm_interface_atspi_component_highlight_clear());
+
+   ret = eldbus_message_method_return_new(msg);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
+
+   eldbus_message_arguments_append(ret, "b", highlight);
+
+   return ret;
+}
+//
+
 static Eldbus_Message *
 _component_get_alpha(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
 {

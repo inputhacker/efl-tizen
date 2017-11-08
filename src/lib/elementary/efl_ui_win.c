@@ -167,6 +167,15 @@ struct _Efl_Ui_Win_Data
       Eina_Bool    auto_animate : 1;
    } focus_highlight;
 
+   //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+   struct
+   {
+      Evas_Object *fobj; /*accessibility highlight edje object */
+      Evas_Object *target;
+      Eina_Bool enabled;
+   } accessibility_highlight;
+   //
+
    Evas_Object *icon;
    const char  *title;
    const char  *icon_name;
@@ -341,6 +350,10 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 
 static Eina_Bool _key_action_return(Evas_Object *obj, const char *params);
 static Eina_Bool _key_action_move(Evas_Object *obj, const char *params);
+//TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+static void _elm_win_accessibility_highlight_shutdown(Efl_Ui_Win_Data *sd);
+static void _elm_win_accessibility_highlight_update(Efl_Ui_Win_Data *sd);
+//
 
 static const Elm_Action key_actions[] = {
    {"return", _key_action_return},
@@ -2867,6 +2880,9 @@ _efl_ui_win_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Win_Data *sd)
      }
 
    _elm_win_focus_highlight_shutdown(sd);
+   //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+   _elm_win_accessibility_highlight_shutdown(sd);
+   //
    eina_stringshare_del(sd->focus_highlight.style);
 
    eina_stringshare_del(sd->title);
@@ -8590,6 +8606,170 @@ elm_win_available_profiles_set(Elm_Win *obj, const char **profiles, unsigned int
      }
    else efl_ui_win_wm_available_profiles_set(obj, NULL);
 }
+
+//TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+static void
+_elm_win_accessibility_highlight_obj_del(void *data,
+                                         Evas *e EINA_UNUSED,
+                                         Evas_Object *obj EINA_UNUSED,
+                                         void *event_info EINA_UNUSED)
+{
+   ELM_WIN_DATA_GET(data, sd);
+   _elm_win_accessibility_highlight_shutdown(sd);
+}
+
+static void
+_elm_win_accessibility_highlight_obj_move(void *data,
+                                          Evas *e EINA_UNUSED,
+                                          Evas_Object *obj EINA_UNUSED,
+                                          void *event_info EINA_UNUSED)
+{
+   ELM_WIN_DATA_GET(data, sd);
+   _elm_win_accessibility_highlight_update(sd);
+}
+
+static void
+_elm_win_accessibility_highlight_obj_resize(void *data,
+                                            Evas *e EINA_UNUSED,
+                                            Evas_Object *obj EINA_UNUSED,
+                                            void *event_info EINA_UNUSED)
+{
+   ELM_WIN_DATA_GET(data, sd);
+   _elm_win_accessibility_highlight_update(sd);
+}
+
+static void _elm_win_accessibility_highlight_callbacks_add(Efl_Ui_Win_Data *sd)
+{
+   Evas_Object *obj = sd->accessibility_highlight.target;
+   if (!obj) return;
+
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _elm_win_accessibility_highlight_obj_del, sd->obj);
+
+   if (efl_isa(obj, ELM_WIDGET_CLASS) && elm_widget_access_highlight_in_theme_get(obj))
+      return;
+
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_MOVE, _elm_win_accessibility_highlight_obj_move, sd->obj);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_RESIZE, _elm_win_accessibility_highlight_obj_resize, sd->obj);
+}
+
+static void _elm_win_accessibility_highlight_callbacks_del(Efl_Ui_Win_Data *sd)
+{
+   Evas_Object *obj = sd->accessibility_highlight.target;
+   if (!obj) return;
+
+   evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _elm_win_accessibility_highlight_obj_del, sd->obj);
+
+   if (efl_isa(obj, ELM_WIDGET_CLASS) && elm_widget_access_highlight_in_theme_get(obj))
+      return;
+
+   evas_object_event_callback_del_full(obj, EVAS_CALLBACK_MOVE, _elm_win_accessibility_highlight_obj_move, sd->obj);
+   evas_object_event_callback_del_full(obj, EVAS_CALLBACK_RESIZE, _elm_win_accessibility_highlight_obj_resize, sd->obj);
+}
+
+static void _elm_win_accessibility_highlight_init(Efl_Ui_Win_Data *sd)
+{
+   if (sd->accessibility_highlight.enabled) return;
+   sd->accessibility_highlight.enabled = EINA_TRUE;
+
+   sd->accessibility_highlight.fobj = edje_object_add(sd->evas);
+   elm_widget_theme_object_set(sd->obj, sd->accessibility_highlight.fobj, "access", "base", "default");
+}
+
+static void
+_elm_win_accessibility_highlight_visible_set(Efl_Ui_Win_Data *sd,
+Eina_Bool visible)
+{
+   Evas_Object *fobj = sd->accessibility_highlight.fobj;
+   Evas_Object *target = sd->accessibility_highlight.target;
+
+   if (!target) return;
+
+   if (efl_isa(target, ELM_WIDGET_CLASS) && elm_widget_access_highlight_in_theme_get(target))
+     {
+        if (visible)
+          elm_widget_signal_emit(target, "elm,action,access_highlight,show", "elm");
+        else
+          elm_widget_signal_emit(target, "elm,action,access_highlight,hide", "elm");
+        }
+   else
+     {
+        if (visible)
+          evas_object_show(fobj);
+        else
+          evas_object_hide(fobj);
+     }
+}
+
+static void
+_elm_win_accessibility_highlight_update(Efl_Ui_Win_Data *sd)
+{
+   Evas_Coord x, y, w, h;
+   Evas_Object *target = sd->accessibility_highlight.target;
+   Evas_Object *fobj = sd->accessibility_highlight.fobj;
+
+   if (!target) return;
+   if (efl_isa(target, ELM_WIDGET_CLASS) && elm_widget_access_highlight_in_theme_get(target))
+      return;
+
+   evas_object_geometry_get(target, &x, &y, &w, &h);
+   evas_object_move(fobj, x, y);
+   evas_object_resize(fobj, w, h);
+   evas_object_raise(fobj);
+}
+
+static void
+_elm_win_accessibility_highlight_target_set(Efl_Ui_Win_Data *sd, Evas_Object *target)
+{
+   Evas_Object *clip, *fobj = sd->accessibility_highlight.fobj;
+
+   if (sd->accessibility_highlight.target == target)
+      return;
+
+   _elm_win_accessibility_highlight_visible_set(sd, EINA_FALSE);
+   _elm_win_accessibility_highlight_callbacks_del(sd);
+
+   sd->accessibility_highlight.target = target;
+   if (!target) return;
+
+   clip = evas_object_clip_get(target);
+   if (clip) evas_object_clip_set(fobj, clip);
+
+   _elm_win_accessibility_highlight_callbacks_add(sd);
+   _elm_win_accessibility_highlight_update(sd);
+   _elm_win_accessibility_highlight_visible_set(sd, EINA_TRUE);
+}
+
+static void _elm_win_accessibility_highlight_shutdown(Efl_Ui_Win_Data *sd)
+{
+   if (!sd->accessibility_highlight.enabled) return;
+
+   _elm_win_accessibility_highlight_target_set(sd, NULL);
+   evas_object_del(sd->accessibility_highlight.fobj);
+   sd->accessibility_highlight.fobj = NULL;
+   sd->accessibility_highlight.enabled = EINA_FALSE;
+}
+
+void
+_elm_win_accessibility_highlight_set(Evas_Object *win, Evas_Object *obj)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(win, sd);
+
+   if (obj)
+      {
+         _elm_win_accessibility_highlight_init(sd);
+         _elm_win_accessibility_highlight_target_set(sd, obj);
+      }
+   else
+     _elm_win_accessibility_highlight_shutdown(sd);
+}
+
+Evas_Object*
+_elm_win_accessibility_highlight_get(Evas_Object *win)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(win, sd, NULL);
+   return sd->accessibility_highlight.target;
+}
+//
 
 // deprecated
 
