@@ -2849,3 +2849,23 @@ ecore_wl2_window_pointer_warp(Ecore_Wl2_Window *win, int x, int y)
    return EINA_TRUE;
 }
 //
+
+
+//TIZEN_ONLY: ecore_wl2: add ecore_wl_window_video_has
+EAPI void
+ecore_wl2_window_video_has_set(Ecore_Wl2_Window *window, Eina_Bool has)
+{
+   Ecore_Wl2_Display *display;
+   uint32_t ver;
+
+   EINA_SAFETY_ON_NULL_RETURN(window);
+
+   display = window->display;
+   if (!display->wl.tz_policy) return;
+
+   ver = wl_proxy_get_version((struct wl_proxy *)display->wl.tz_policy);
+
+   if (ver >= 7)
+     tizen_policy_has_video(display->wl.tz_policy, window->surface, has);
+}
+//

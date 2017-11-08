@@ -1564,6 +1564,10 @@ EAPI void ecore_wl2_window_floating_mode_set(Ecore_Wl2_Window *window, Eina_Bool
  */
 EAPI Eina_Bool ecore_wl2_window_floating_mode_get(Ecore_Wl2_Window *window);
 
+//TIZEN_ONLY: ecore_wl2: add ecore_wl_window_video_has
+EAPI void ecore_wl2_window_video_has(Ecore_Wl2_Window *window, Eina_Bool has);
+//
+
 /**
  * @defgroup Ecore_Wl2_Input_Group Wayland Library Input Functions
  * @ingroup Ecore_Wl2_Group
