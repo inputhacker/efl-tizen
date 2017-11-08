@@ -18,6 +18,9 @@ BuildRequires:  zlib-devel
 BuildRequires:  gettext-tools
 BuildRequires:  hyphen-devel
 BuildRequires:  coregl-devel
+BuildRequires:  gettext-devel
+BuildRequires:  doxygen
+BuildRequires:  python-devel
 
 %if %{with wayland}
 BuildRequires:  pkgconfig(gles20)
@@ -116,8 +119,7 @@ BuildRequires:  pkgconfig(wayland-server)
 Provides: efl-data
 Obsoletes: efl-data
 
-%define _unpackaged_files_terminate_build 0
-%define _missing_doc_files_terminate_build 0
+%define dbus_unavailable 1
 
 %description
 EFL is a library collection providing various functionality used (not only) by
@@ -305,7 +307,7 @@ Development files for evas
 ############ Ecore
 %package -n ecore
 Summary: Enlightened Core X interface library
-#Requires: ecore-core
+Requires: ecore-core
 Requires: ecore-audio
 Requires: ecore-avahi
 Requires: ecore-buffer
@@ -335,7 +337,7 @@ optimized, and convenient.
 %package -n ecore-devel
 Summary:  Development components for the ecore package
 Group:    Graphics & UI Framework/Development
-#Requires: ecore-core-devel
+Requires: ecore-core-devel
 Requires: ecore-audio-devel
 Requires: ecore-avahi-devel
 Requires: ecore-buffer-devel
@@ -360,26 +362,26 @@ License: BSD-2-Clause and MIT
 %description -n ecore-devel
 Development files for ecore
 
-#%package -n ecore-core
-#Summary:  Enlightened Core X interface library - core
-#Requires: %{name}-data = %{version}-%{release}
-#License: BSD-2-Clause and MIT
+%package -n ecore-core
+Summary:  Enlightened Core X interface library - core
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
 
-#%description -n ecore-core
-#This is the core main-loop, system events and execution layer. This
-#handles running the main loop, integrating with external data and
-#timing sources (the system clock, file descriptors, system signals),
-#and producing an event queue, walking that queue and dispatching
-#events to appropriate callbacks.
+%description -n ecore-core
+This is the core main-loop, system events and execution layer. This
+handles running the main loop, integrating with external data and
+timing sources (the system clock, file descriptors, system signals),
+and producing an event queue, walking that queue and dispatching
+events to appropriate callbacks.
 
-#%package -n ecore-core-devel
-#Summary:  Development components for the ecore-core package
-#Group:    Graphics & UI Framework/Development
-#Requires: ecore-core = %{version}-%{release}
-#License: BSD-2-Clause and MIT
+%package -n ecore-core-devel
+Summary:  Development components for the ecore-core package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-core = %{version}-%{release}
+License: BSD-2-Clause and MIT
 
-#%description -n ecore-core-devel
-#Development files for ecore-core
+%description -n ecore-core-devel
+Development files for ecore-core
 
 %package -n ecore-audio
 Summary: Enlightened Core X interface library - audio
@@ -471,14 +473,14 @@ License: BSD-2-Clause and MIT
 %description -n ecore-drm
 Ecore_Drm provides a wrapper and functions for using libdrm.
 
-#%package -n ecore-drm-devel
-#Summary:  Development components for the ecore_drm package
-#Group:    Graphics & UI Framework/Development
-#Requires: ecore-drm = %{version}-%{release}
-#License: BSD-2-Clause and MIT
+%package -n ecore-drm-devel
+Summary:  Development components for the ecore_drm package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-drm = %{version}-%{release}
+License: BSD-2-Clause and MIT
 
-#%description -n ecore-drm-devel
-#Development files for ecore_drm
+%description -n ecore-drm-devel
+Development files for ecore_drm
 
 %package -n ecore-evas
 Summary: Enlightened Core X interface library - evas
@@ -1035,6 +1037,130 @@ License: BSD-2-Clause
 Development files for elua
 
 
+%package -n elementary
+Summary: EFL toolkit for small touchscreens
+Group:    Graphics & UI Framework/Development
+License:        LGPL-2.1+ and CC-BY-SA-3.0
+
+%description -n elementary
+Elementary is a widget set. It is a new-style of widget set much more canvas
+object based than anything else. Why not ETK? Why not EWL? Well they both
+tend to veer away from the core of Evas, Ecore and Edje a lot to build their
+own worlds. Also I wanted something focused on embedded devices -
+specifically small touchscreens. Unlike GTK+ and Qt, 75% of the "widget set"
+is already embodied in a common core - Ecore, Edje, Evas etc. So this
+fine-grained library splitting means all of this is shared, just a new
+widget "personality" is on top. And that is... Elementary, my dear watson
+Elementary
+
+%package -n elementary-tizen
+Summary:        EFL toolkit for small touchscreens for Tizen devices
+Requires:       %{name}
+
+%description -n elementary-tizen
+Elementary is a widget set. It is a new-style of widget set much more canvas
+object based than anything else. Why not ETK? Why not EWL? Well they both
+tend to veer away from the core of Evas, Ecore and Edje a lot to build their
+own worlds. Also I wanted something focused on embedded devices -
+specifically small touchscreens. Unlike GTK+ and Qt, 75% of the "widget set"
+is already embodied in a common core - Ecore, Edje, Evas etc. So this
+fine-grained library splitting means all of this is shared, just a new
+widget "personality" is on top. And that is... Elementary, my dear watson.
+Elementary. This is an alternative package for Tizen devices that uses different
+set of source code.
+
+%package -n elementary-examples
+Summary:   EFL elementary examples
+
+%description -n elementary-examples
+EFL elementary examples
+
+%package -n elementary-tools
+Summary:   EFL elementary configuration and test apps
+
+%description -n elementary-tools
+EFL elementary configuration and test apps package
+
+%package -n elementary-devel
+Summary:        Development files for elementary
+Group:          Development/Libraries
+Requires:       %{name} = %{version}
+
+%description -n elementary-devel
+Development components for the elementary package
+
+%package -n elementary-theme
+Summary:        Default theme for elementary
+
+%description -n elementary-theme
+Default theme which provides various styles for elementary.
+
+%package -n elementary-locale
+Summary:        Translations and Locale for package %{name}
+Group: Translations
+AutoReqProv: 0
+
+%description -n elementary-locale
+This package provides translations for package %{name}.
+
+
+
+%package -n ecore-wl2
+Summary: Ecore_Wl2 provides a wrapper and convenience functions for using the Wayland protocol in implementing a window system.
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause
+# i am not sure that the license is correct
+
+%description -n ecore-wl2
+Ecore_Wl2 provides a wrapper and convenience functions for using the Wayland protocol in implementing a window system.
+
+%package -n ecore-wl2-devel
+Summary: Development files for ecore-wl2
+Group: Graphics & UI Framework/Development
+Requires: ecore-wl2 = %{version}-%{release}
+License: BSD-2-Clause
+
+%description -n ecore-wl2-devel
+Development files for ecore-wl2
+
+%package -n efl-wl
+Summary: EFL Wayland compositor widget
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause
+# i am not sure that the license is correct
+
+%description -n efl-wl
+EFL Wayland compositor widget
+
+%package -n efl-wl-devel
+Summary: Development components for the efl-wl package
+Group: Graphics & UI Framework/Development
+Requires: efl-wl = %{version}-%{release}
+License: BSD-2-Clause
+# i am not sure that the license is correct
+
+%description -n efl-wl-devel
+Development files for efl-wl
+
+%package -n elput
+Summary: Elput provides a wrapper and functions for using libinput
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause
+# i am not sure that the license is correct
+
+%description -n elput
+Elput provides a wrapper and functions for using libinput
+
+%package -n elput-devel
+Summary: Development components for the elput package
+Group: Graphics & UI Framework/Development
+Requires: elput = %{version}-%{release}
+License: BSD-2-Clause
+# i am not sure that the license is correct
+
+%description -n elput-devel
+Development files for elput
+
 %prep
 %setup -q
 cp %{SOURCE1001} .
@@ -1099,23 +1225,22 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-librsvg \
     --disable-libraw \
     --disable-systemd \
+    --disable-cserve \
     --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb
-
 #    --enable-systemd \
 #    --enable-drm \
 #    --enable-gl-drm \
 
-#%__make %{?_smp_mflags} --trace
-#%__make %{?_smp_mflags} --trace
-%__make --trace
+%__make %{?_smp_mflags} --trace
 
 %install
 %make_install
-#make datadir=%{buildroot}%{_datadir} install-examples
-rm -rf %{buildroot}%{_libdir}/ecore/system/upower
+#rm -rf %{buildroot}%{_libdir}/ecore/system/upower
+rm %{buildroot}/usr/share/ecore_x/checkme
 
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
+
 
 %post -n eina -p /sbin/ldconfig
 %postun -n eina -p /sbin/ldconfig
@@ -1135,9 +1260,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %post -n evas -p /sbin/ldconfig
 %postun -n evas -p /sbin/ldconfig
 
-%post -n ecore
-/sbin/ldconfig
-
+%post -n ecore -p /sbin/ldconfig
 %postun -n ecore -p /sbin/ldconfig
 
 %post -n eldbus -p /sbin/ldconfig
@@ -1173,6 +1296,27 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %post -n elocation -p /sbin/ldconfig
 %postun -n elocation -p /sbin/ldconfig
 
+%post -n ecore-wl2 -p /sbin/ldconfig
+%postun -n  ecore-wl2 -p /sbin/ldconfig
+
+%post -n elput -p /sbin/ldconfig
+%postun -n elput -p /sbin/ldconfig
+
+%post -n efl-wl -p /sbin/ldconfig
+%postun -n efl-wl -p /sbin/ldconfig
+
+%post -n elementary -p /sbin/ldconfig
+%postun -n elementary -p /sbin/ldconfig
+
+%post -n elementary-tizen
+mv %{_libdir}/libelementary.so.%{version}.mobile %{_libdir}/libelementary.so.%{version}
+/sbin/ldconfig
+
+%preun -n elementary-tizen
+mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}.mobile
+
+%postun -n elementary-tizen -p /sbin/ldconfig
+
 
 %files -n %{name}
 %manifest %{name}.manifest
@@ -1180,6 +1324,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %exclude %{_datadir}/locale/*/*/*.mo
 %license licenses/COPYING.LGPL
 %{_libdir}/libefl.so.*
+/usr/share/eolian/include/efl-1/*.eot
 %exclude %{_bindir}/efl_debug
 %exclude %{_bindir}/efl_debugd
 %exclude /usr/lib/debug/usr/bin/efl_debug.debug
@@ -1205,6 +1350,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %files -n eina-tools
 %manifest %{name}.manifest
 %{_bindir}/eina_btlog
+%exclude %{_bindir}/eina_modinfo
+%exclude %{_libdir}/debug/usr/bin/eina_modinfo.debug
 
 #%files -n eina-examples
 #%manifest %{name}.manifest
@@ -1268,6 +1415,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libeo.so.*
+%exclude %{_libdir}/libeo_dbg.so.*
+%exclude %{_libdir}/debug/usr/lib/libeo_dbg*
 
 #%files -n eo-examples
 #%manifest %{name}.manifest
@@ -1285,6 +1434,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_datadir}/gdb/auto-load/usr/lib*/*
 %{_libdir}/cmake/Eo/*.cmake
 %{_libdir}/cmake/EoCxx/*.cmake
+%exclude %{_libdir}/libeo_dbg.so*
+%exclude %{_bindir}/eo_debug
 /usr/share/eolian/include/eo-*1/*.eot
 
 %files -n ector
@@ -1292,6 +1443,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %license licenses/COPYING.FTL licenses/COPYING.GPL
 %{_libdir}/libector.so.*
+/usr/share/eolian/include/ector-1/*.eot
 
 %files -n ector-devel
 %manifest %{name}.manifest
@@ -1310,6 +1462,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libevas.so.*
 %{_datadir}/evas/checkme
 /usr/share/evas/filters/lua/*.lua
+%exclude %{_libdir}/evas/utils/*
+%exclude %{_libdir}/debug/usr/lib/evas/utils/*
 
 #%files -n evas-examples
 #%manifest %{name}.manifest
@@ -1327,22 +1481,25 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/cmake/Evas*/*.cmake
 /usr/share/eolian/include/evas-*1/*.eot
 
-#files -n ecore
-#license licenses/COPYING.BSD
-
-#files -n ecore-devel
-#{_libdir}/pkgconfig/ecore.pc
-
 %files -n ecore
+%license licenses/COPYING.BSD
+
+%files -n ecore-devel
+%{_libdir}/pkgconfig/ecore.pc
+
+%files -n ecore-core
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore.so.*
+/usr/share/eolian/include/ecore-1/*.eot
+%exclude %{_libdir}/ecore/system/upower/
+%exclude %{_libdir}/debug/usr/lib/ecore/system/upower/
 #%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
 #%exclude /usr/lib/debug/%{_libdir}/ecore/system/systemd/v-*/module.so.debug
 %{_datadir}/ecore/checkme
 
-%files -n ecore-devel
+%files -n ecore-core-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_includedir}/ecore-1/*.h
@@ -1382,6 +1539,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_buffer.so.*
 %{_libdir}/ecore_buffer/modules/*/*/module.so
+%exclude %{_libdir}/ecore_buffer/bin/
+%exclude %{_libdir}/debug/usr/lib/ecore_buffer/bin/
 
 %files -n ecore-buffer-devel
 %manifest %{name}.manifest
@@ -1396,6 +1555,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_con.so.*
 %{_tmpfilesdir}/efl.conf
+%exclude %{_libdir}/ecore_con/utils/v-1.20/efl_net_proxy_helper
+%exclude %{_libdir}/debug/usr/lib/ecore_con/utils/v-1.20/efl_net_proxy_helper*
 
 %files -n ecore-con-devel
 %manifest %{name}.manifest
@@ -1449,7 +1610,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_imf.so.*
-#%{_libdir}/ecore_imf/modules/*/*/module.so
+%{_libdir}/ecore_imf/modules/*/*/module.so
 %{_datadir}/ecore_imf/checkme
 
 %files -n ecore-imf-devel
@@ -1574,6 +1735,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %{_libdir}/libeldbus.so.*
 %{_bindir}/eldbus*
+/usr/share/eolian/include/eldbus-1/*.eot
 %license licenses/COPYING.LGPL
 
 #%files -n eldbus-examples
@@ -1663,7 +1825,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_bindir}/eeze_disk_ls
 %{_bindir}/eeze_mount
 %exclude %{_bindir}/eeze_scanner
-%exclude /usr/lib/debug/usr/bin/eeze_scanner.debug
+%exclude %{_bindir}/eeze_scanner_monitor
+%exclude /usr/lib/debug/usr/bin/eeze_scanner*
 %{_bindir}/eeze_umount
 %{_libdir}/eeze/modules/sensor/*/*/module.so
 %{_datadir}/eeze/checkme
@@ -1688,6 +1851,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libefreet_mime.so.*
 %{_libdir}/libefreet_trash.so.*
 %{_datadir}/efreet/*
+%exclude %{_libdir}/efreet/*/efreet_mime_cache_create
+%exclude %{_libdir}/debug/usr/lib/efreet/*/
 
 %files -n efreet-devel
 %manifest %{name}.manifest
@@ -1730,7 +1895,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libethumb.so.*
 %{_libdir}/libethumb_client.so.*
 %exclude %{_datadir}/dbus-1/services/org.enlightenment.Ethumb.service
-%exclude %{_userunitdir}/ethumb.service
+#%exclude %{_userunitdir}/ethumb.service
 %{_datadir}/ethumb/*
 %{_datadir}/ethumb_client/*
 #%{_datadir}/ethumb_client/*/*
@@ -1823,4 +1988,107 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %{_libdir}/cmake/Elua*/*.cmake
 
+%files -n ecore-wl2
+%manifest %{name}.manifest
+%license licenses/COPYING.BSD
+%defattr(-,root,root,-)
+%{_libdir}/libecore_wl2.so.*
+
+%files -n ecore-wl2-devel
+%manifest %{name}.manifest
+%license licenses/COPYING.BSD
+%defattr(-,root,root,-)
+%{_libdir}/libecore_wl2.so*
+%{_libdir}/pkgconfig/ecore-wl2.pc
+%{_includedir}/ecore-wl2-1/*.h
+
+%files -n efl-wl
+%manifest %{name}.manifest
+%license licenses/COPYING.BSD
+%defattr(-,root,root,-)
+%{_bindir}/efl_wl_test
+%{_bindir}/efl_wl_test_stack
+%{_libdir}/libefl_wl.so.*
+
+%files -n efl-wl-devel
+%manifest %{name}.manifest
+%license licenses/COPYING.BSD
+%defattr(-,root,root,-)
+%{_libdir}/libefl_wl.so*
+%{_libdir}/pkgconfig/efl-wl.pc
+%{_includedir}/efl-wl-1/*.h
+
+%files -n elput
+%manifest %{name}.manifest
+%license licenses/COPYING.BSD
+%defattr(-,root,root,-)
+%{_libdir}/libelput.so.*
+
+%files -n elput-devel
+%manifest %{name}.manifest
+%license licenses/COPYING.BSD
+%defattr(-,root,root,-)
+%{_libdir}/libelput.so*
+%{_libdir}/pkgconfig/elput.pc
+%{_includedir}/elput-1/*.h
+
+%files -n elementary
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license COPYING
+%{_bindir}/elementary_quicklaunch
+%{_bindir}/elementary_run
+%{_libdir}/edje/modules/elm/v-1.20/module.so
+%{_libdir}/libelementary.so.*
+%{_datadir}/elementary/edje_externals/*
+%{_datadir}/icons/elementary.png
+%exclude %{_libdir}/elementary/modules/
+%exclude %{_libdir}/debug/usr/lib/elementary/modules/
+%exclude %{_datadir}/elementary/config/
+##%exclude %{_libdir}/libelementary.so.%{version}.mobile
+##%{_tmpfilesdir}/elementary.conf
+
+%files -n elementary-tizen
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+#%{_libdir}/libelementary.so.%{version}.mobile
+
+%if ! %dbus_unavailable
+%files -n elementary-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_libdir}/elementary/examples/*
+%endif
+
+%files -n elementary-tools
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/applications/*
+%{_datadir}/elementary/images/*
+%{_datadir}/elementary/objects/*
+%{_bindir}/elementary_config
+%{_bindir}/elementary_test*
+%{_bindir}/elementary_codegen
+%{_bindir}/elm_prefs_cc
+
+%files -n elementary-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_includedir}/elementary-1/*.h*
+%{_datadir}/eolian/include/elementary-1/*.eo
+%{_libdir}/libelementary.so*
+%{_libdir}/pkgconfig/elementary.pc
+%{_libdir}/cmake/Elementary/ElementaryConfig.cmake
+%{_libdir}/cmake/Elementary/ElementaryConfigVersion.cmake
+/usr/share/eolian/include/elementary-*1/*.eot
+
+%files -n elementary-theme
+%manifest %{name}.manifest
+%{_datadir}/elementary/themes/*
+%exclude /usr/share/icons/Enlightenment-X
+%exclude /usr/share/elementary/test*
+
+#%files -n elementary-locale -f %{name}.lang
+#%license COPYING
+#%defattr(-,root,root,-)
 
