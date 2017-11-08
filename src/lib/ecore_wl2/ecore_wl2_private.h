@@ -281,6 +281,14 @@ struct _Ecore_Wl2_Window
         Ecore_Wl2_Indicator_Visible_Type type;
      } indicator;
    //
+
+   // TIZEN_ONLY(20171108) : keyboard information
+   struct
+     {
+        int x, y, w, h;
+        Ecore_Wl2_Virtual_Keyboard_State state;
+     } keyboard;
+   //
 };
 
 struct _Ecore_Wl2_Output

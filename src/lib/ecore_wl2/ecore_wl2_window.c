@@ -1492,6 +1492,52 @@ ecore_wl2_indicator_visible_type_get(Ecore_Wl2_Window *win)
 }
 //
 
+// TIZEN_ONLY(20171108) : add functions for keyboard
+EAPI void
+ecore_wl2_window_keyboard_geometry_set(Ecore_Wl2_Window *win, int x, int y, int w, int h)
+{
+   if(!win) return;
+
+   win->keyboard.x= x;
+   win->keyboard.y = y;
+   win->keyboard.w = w;
+   win->keyboard.h = h;
+}
+
+EAPI Eina_Bool
+ecore_wl2_window_keyboard_geometry_get(Ecore_Wl2_Window *win, int *x, int *y, int *w, int *h)
+{
+   if (!win) return EINA_FALSE;
+
+   if (x)
+     *x = win->keyboard.x;
+   if (y)
+     *y = win->keyboard.y;
+   if (w)
+     *w = win->keyboard.w;
+   if (h)
+     *h = win->keyboard.h;
+
+   return EINA_TRUE;
+}
+
+EAPI void
+ecore_wl2_window_keyboard_state_set(Ecore_Wl2_Window *win, Ecore_Wl2_Virtual_Keyboard_State state)
+{
+   if (!win) return;
+
+   win->keyboard.state = state;
+}
+
+EAPI Ecore_Wl2_Virtual_Keyboard_State
+ecore_wl2_window_keyboard_state_get(Ecore_Wl2_Window *win)
+{
+   if (!win) return EINA_FALSE;
+
+   return win->keyboard.state;
+}
+//
+
 EAPI void
 ecore_wl2_window_aspect_set(Ecore_Wl2_Window *window, int w, int h, unsigned int aspect)
 {

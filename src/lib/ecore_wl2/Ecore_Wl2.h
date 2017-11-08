@@ -1726,6 +1726,13 @@ EAPI void ecore_wl2_indicator_visible_type_set(Ecore_Wl2_Window *win, Ecore_Wl2_
 EAPI Ecore_Wl2_Indicator_Visible_Type ecore_wl2_indicator_visible_type_get(Ecore_Wl2_Window *win);
 //
 
+// TIZEN_ONLY(20171108) : add functions for keyboard
+EAPI void ecore_wl2_window_keyboard_geometry_set(Ecore_Wl2_Window *win, int x, int y, int w, int h);
+EAPI Eina_Bool ecore_wl2_window_keyboard_geometry_get(Ecore_Wl2_Window *win, int *x, int *y, int *w, int *h);
+EAPI void ecore_wl2_window_keyboard_state_set(Ecore_Wl2_Window *win, Ecore_Wl2_Virtual_Keyboard_State state);
+EAPI Ecore_Wl2_Virtual_Keyboard_State ecore_wl2_window_keyboard_state_get(Ecore_Wl2_Window *win);
+//
+
 /**
  * @defgroup Ecore_Wl2_Subsurface_Group Functions to manipulate subsurfaces.
  * @ingroup Ecore_Wl2_Group
