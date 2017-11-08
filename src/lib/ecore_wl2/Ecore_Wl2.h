@@ -1440,6 +1440,10 @@ EAPI void ecore_wl2_window_popup_input_set(Ecore_Wl2_Window *window, Ecore_Wl2_I
  */
 EAPI Eina_Bool ecore_wl2_window_shell_surface_exists(Ecore_Wl2_Window *win);
 
+// TIZEN_ONLY(171108) : get shell surface of a given window
+EAPI struct zxdg_surface_v6 *ecore_wl2_window_shell_surface_get(Ecore_Wl2_Window *window);
+//
+
 /** @since 1.17 */
 EAPI Ecore_Wl2_Display *ecore_wl2_window_display_get(const Ecore_Wl2_Window *window);
 

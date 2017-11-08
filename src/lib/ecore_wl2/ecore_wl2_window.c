@@ -1107,6 +1107,15 @@ ecore_wl2_window_shell_surface_exists(Ecore_Wl2_Window *window)
    return !!window->zxdg_surface;
 }
 
+// TIZEN_ONLY(171108) : get shell surface of a given window
+EAPI struct zxdg_surface_v6 *
+ecore_wl2_window_shell_surface_get(Ecore_Wl2_Window *window)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(window, NULL);
+   return window->zxdg_surface;
+}
+//
+
 EAPI Eina_Bool
 ecore_wl2_window_activated_get(const Ecore_Wl2_Window *window)
 {
