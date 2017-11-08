@@ -282,6 +282,14 @@ struct _Ecore_Wl2_Window
      } indicator;
    //
 
+   // TIZEN_ONLY(20171108) : clipboard information
+   struct
+     {
+        int x, y, w, h;
+        Ecore_Wl2_Clipboard_State state;
+     } clipboard;
+   //
+
    // TIZEN_ONLY(20171108) : keyboard information
    struct
      {

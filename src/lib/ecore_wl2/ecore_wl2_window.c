@@ -1492,6 +1492,72 @@ ecore_wl2_indicator_visible_type_get(Ecore_Wl2_Window *win)
 }
 //
 
+// TIZEN_ONLY(20171108) : add functions for clipboard
+EAPI void
+ecore_wl2_window_clipboard_geometry_set(Ecore_Wl2_Window *win, int x, int y, int w, int h)
+{
+   if(!win) return;
+
+   win->clipboard.x = x;
+   win->clipboard.y = y;
+   win->clipboard.w = w;
+   win->clipboard.h = h;
+}
+
+EAPI Eina_Bool
+ecore_wl2_window_clipboard_geometry_get(Ecore_Wl2_Window *win, int *x, int *y, int *w, int *h)
+{
+   if (!win) return EINA_FALSE;
+
+   if (x)
+     *x = win->clipboard.x;
+   if (y)
+     *y = win->clipboard.y;
+   if (w)
+     *w = win->clipboard.w;
+   if (h)
+     *h = win->clipboard.h;
+
+   return EINA_TRUE;
+}
+
+EAPI void
+ecore_wl2_window_clipboard_state_set(Ecore_Wl2_Window *win, Ecore_Wl2_Clipboard_State state)
+{
+   if (!win) return;
+
+   win->clipboard.state = state;
+}
+
+EAPI Ecore_Wl2_Clipboard_State
+ecore_wl2_window_clipboard_state_get(Ecore_Wl2_Window *win)
+{
+   if (!win) return EINA_FALSE;
+
+   return win->clipboard.state;
+}
+
+EAPI void
+ecore_wl2_clipboard_show(Ecore_Wl2_Window *win)
+{
+   if (!win) return;
+   if (!win->surface) return;
+   if (!win->display->wl.tz_clipboard) return;
+
+   tizen_clipboard_show(win->display->wl.tz_clipboard, win->surface);
+}
+
+EAPI void
+ecore_wl2_clipboard_hide(Ecore_Wl2_Window *win)
+{
+   if (!win) return;
+   if (!win->surface) return;
+   if (!win->display->wl.tz_clipboard) return;
+
+   tizen_clipboard_hide(win->display->wl.tz_clipboard, win->surface);
+}
+//
+
 // TIZEN_ONLY(20171108) : add functions for keyboard
 EAPI void
 ecore_wl2_window_keyboard_geometry_set(Ecore_Wl2_Window *win, int x, int y, int w, int h)
