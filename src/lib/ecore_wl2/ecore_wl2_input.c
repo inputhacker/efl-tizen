@@ -2058,7 +2058,7 @@ static const struct tizen_keyrouter_listener _tz_keyrouter_listener =
 //
 
 void
-_ecore_wl2_keyrouter_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version)
+_ecore_wl2_keyrouter_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version EINA_UNUSED)
 {
    ewd->wl.tz_keyrouter =
           wl_registry_bind(ewd->wl.registry, id, &tizen_keyrouter_interface, 1);
