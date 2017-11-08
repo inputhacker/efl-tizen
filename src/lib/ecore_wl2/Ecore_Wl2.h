@@ -1715,6 +1715,17 @@ EAPI uint32_t ecore_wl2_dnd_selection_set(Ecore_Wl2_Input *input, const char **t
  */
 EAPI uint32_t ecore_wl2_dnd_selection_clear(Ecore_Wl2_Input *input);
 
+// TIZEN_ONLY(20171108) : add functions for indicator
+EAPI void ecore_wl2_window_indicator_geometry_set(Ecore_Wl2_Window *win, int x, int y, int w, int h);
+EAPI Eina_Bool ecore_wl2_window_indicator_geometry_get(Ecore_Wl2_Window *win, int *x, int *y, int *w, int *h);
+EAPI void ecore_wl2_window_indicator_state_set(Ecore_Wl2_Window *win, Ecore_Wl2_Indicator_State state);
+EAPI Ecore_Wl2_Indicator_State ecore_wl2_window_indicator_state_get(Ecore_Wl2_Window *win);
+EAPI void ecore_wl2_window_indicator_opacity_set(Ecore_Wl2_Window *win, Ecore_Wl2_Indicator_Opacity_Mode mode);
+EAPI Ecore_Wl2_Indicator_Opacity_Mode ecore_wl2_window_indicator_opacity_get(Ecore_Wl2_Window *win);
+EAPI void ecore_wl2_indicator_visible_type_set(Ecore_Wl2_Window *win, Ecore_Wl2_Indicator_Visible_Type type);
+EAPI Ecore_Wl2_Indicator_Visible_Type ecore_wl2_indicator_visible_type_get(Ecore_Wl2_Window *win);
+//
+
 /**
  * @defgroup Ecore_Wl2_Subsurface_Group Functions to manipulate subsurfaces.
  * @ingroup Ecore_Wl2_Group

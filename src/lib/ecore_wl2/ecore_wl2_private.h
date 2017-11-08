@@ -271,6 +271,16 @@ struct _Ecore_Wl2_Window
      } wm_rot;
    Eina_Bool has_buffer : 1;
    Eina_Bool updating : 1;
+
+   // TIZEN_ONLY(20171108) : indicator information
+   struct
+     {
+        int x, y, w, h;
+        Ecore_Wl2_Indicator_State state;
+        Ecore_Wl2_Indicator_Opacity_Mode mode;
+        Ecore_Wl2_Indicator_Visible_Type type;
+     } indicator;
+   //
 };
 
 struct _Ecore_Wl2_Output
