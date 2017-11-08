@@ -1072,6 +1072,8 @@ export XDG_RUNTIME_DIR="/tmp/"
     --enable-lua-old \
     --enable-ecore-buffer \
     --disable-gstreamer1 \
+    --enable-harfbuzz \
+    --enable-hyphen \
     --with-dictionaries-hyphen-dir=/usr/share/hyphen/ \
     --disable-cserve \
     --disable-poppler \
