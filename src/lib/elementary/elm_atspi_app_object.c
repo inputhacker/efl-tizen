@@ -37,7 +37,13 @@ _elm_atspi_app_object_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_App
         if (!efl_isa(win, EFL_ACCESS_MIXIN))
           continue;
         type = efl_access_type_get(win);
+        /* TIZEN_ONLY(20171108): make atspi_proxy work
         if (type == EFL_ACCESS_TYPE_REGULAR)
+        */
+        //TIZEN_ONLY(20171108): make atspi_proxy work
+        if (type == EFL_ACCESS_TYPE_REGULAR &&
+            (elm_win_type_get(win) != ELM_WIN_SOCKET_IMAGE))
+        //
           accs = eina_list_append(accs, win);
      }
 

@@ -706,6 +706,13 @@ void                *_elm_icon_signal_callback_del(Evas_Object *obj,
                                                    const char *source,
                                                    Edje_Signal_Cb func_cb);
  void                _efl_ui_image_sizing_eval(Evas_Object *obj);
+//TIZEN_ONLY(20171108): make atspi_proxy work
+Eo*                  _elm_atspi_bridge_utils_proxy_create(Eo *parent, const char *svcname, int svcnum, Elm_Atspi_Proxy_Type type);
+void                 elm_atspi_bridge_utils_proxy_listen(Eo *proxy);
+void                 elm_atspi_bridge_utils_proxy_connect(Eo *proxy);
+void                 elm_atspi_bridge_utils_proxy_offset_set(Eo *proxy, int x, int y);
+Eina_Bool            _elm_atspi_bridge_plug_id_split(const char *plug_id, char **bus, char **path);
+//
 /* end of DEPRECATED */
 
 /* DO NOT USE THIS this is only for performance optimization! */

@@ -176,11 +176,30 @@ _elm_plug_connect(Eo *obj, void *sd EINA_UNUSED, const char *svcname, int svcnum
         ecore_evas_data_set(ee, PLUG_KEY, obj);
         ecore_evas_callback_delete_request_set(ee, _elm_plug_disconnected);
         ecore_evas_callback_resize_set(ee, _elm_plug_resized);
+
+        //TIZEN_ONLY(20171108): make atspi_proxy work
+        if (_elm_config->atspi_mode)
+          {
+             Eo *proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, svcnum, ELM_ATSPI_PROXY_TYPE_PLUG);
+             elm_atspi_bridge_utils_proxy_connect(proxy);
+          }
+        //
+
         return EINA_TRUE;
      }
 
    return EINA_FALSE;
 }
+
+//TIZEN_ONLY(20171108): make atspi_proxy work
+EOLIAN static Eina_List*
+_elm_plug_elm_interface_atspi_accessible_children_get(Eo *obj, void *sd EINA_UNUSED)
+{
+   Eina_List *ret;
+   ret = elm_interface_atspi_accessible_children_get(efl_super(obj, ELM_WIDGET_CLASS));
+   return ret;
+}
+//
 
 EOLIAN static void
 _elm_plug_class_constructor(Efl_Class *klass)

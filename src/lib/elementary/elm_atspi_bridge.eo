@@ -13,6 +13,19 @@ class Elm.Atspi.Bridge (Efl.Object)
             }
          }
       }
+      //TIZEN_ONLY(20171108): make atspi_proxy work
+      @property root {
+         get {
+            [[Get root object of accessible object hierarchy
+
+              \@internal
+            ]]
+            values {
+               return: Efl.Object;
+            }
+         }
+      }
+      //
    }
    implements {
       Efl.Object.constructor;

@@ -1,0 +1,51 @@
+enum Elm.Atspi.Proxy_Type
+{
+   SOCKET,
+   PLUG
+}
+
+class Elm.Atspi.Proxy (Elm.Widget)
+{
+   eo_prefix: elm_obj_atspi_proxy;
+   event_prefix: elm_atspi_proxy;
+   data: Elm_Atspi_Proxy_Data;
+   methods {
+      constructor {
+         [[ No description supplied by the EAPI.]]
+         params {
+            @in type: Elm.Atspi.Proxy_Type;
+         }
+      }
+      @property address {
+         set {
+         }
+         get {
+         }
+         values {
+            bus: string;
+            path: string;
+         }
+      }
+      @property type {
+         get {
+         }
+         values {
+            ret:Elm.Atspi.Proxy_Type;
+         }
+      }
+      address_get_retry_timer_add {
+      }
+   }
+   constructors {
+      .constructor;
+   }
+   implements {
+      Efl.Object.destructor;
+      Elm.Interface.Atspi_Accessible.children { get; }
+      Elm.Interface.Atspi_Accessible.parent { get; }
+   }
+   events {
+      connected;
+      disconnected;
+   }
+}

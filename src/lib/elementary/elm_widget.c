@@ -5313,6 +5313,39 @@ _elm_widget_efl_access_name_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
    return _elm_widget_accessible_plain_name_get(obj, ret);
 }
 
+//TIZEN_ONLY(20171108): make atspi_proxy work
+static void
+_proxy_widget_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Evas_Coord x, y;
+   Eo *proxy = data;
+
+   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
+   elm_atspi_bridge_utils_proxy_offset_set(proxy, x, y);
+}
+
+static void
+_on_widget_del(void *data, const Efl_Event *event)
+{
+   Eo *plug = data;
+   evas_object_event_callback_del_full(event->object, EVAS_CALLBACK_MOVE,
+                                       _proxy_widget_move_cb, plug);
+   efl_del(plug);
+}
+
+static void
+_on_proxy_connected_cb(void *data, const Efl_Event *event)
+{
+   Evas_Coord x, y;
+   Evas_Object *widget = data;
+
+   evas_object_geometry_get(widget, &x, &y, NULL, NULL);
+   elm_atspi_bridge_utils_proxy_offset_set(event->object, x, y);
+
+   evas_object_event_callback_add(widget, EVAS_CALLBACK_MOVE, _proxy_widget_move_cb, event->object);
+}
+//
+
 EOLIAN static Eina_List*
 _elm_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd)
 {
@@ -5322,6 +5355,34 @@ _elm_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *
 
    EINA_LIST_FOREACH(pd->subobjs, l, widget)
      {
+        //TIZEN_ONLY(20171108): make atspi_proxy work
+        const char *plug_id_2;
+        if ((plug_id_2 = evas_object_data_get(widget, "___PLUGID")) != NULL)
+          {
+             Eo *proxy;
+             char *svcname, *svcnum;
+
+             proxy = evas_object_data_get(widget, "__widget_proxy");
+             if (proxy)
+               {
+                  accs = eina_list_append(accs, proxy);
+                  continue;
+               }
+
+             if (_elm_atspi_bridge_plug_id_split(plug_id_2, &svcname, &svcnum))
+               {
+                  proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_PLUG);
+                  evas_object_data_set(widget, "__widget_proxy", proxy);
+                  efl_event_callback_add(widget, EFL_EVENT_DEL, _on_widget_del, proxy);
+                  efl_event_callback_add(proxy, ELM_ATSPI_PROXY_EVENT_CONNECTED,  _on_proxy_connected_cb, widget);
+                  elm_atspi_bridge_utils_proxy_connect(proxy);
+                  accs = eina_list_append(accs, proxy);
+                  free(svcname);
+                  free(svcnum);
+               }
+             continue;
+          }
+        //
         if (!elm_object_widget_check(widget)) continue;
         if (!efl_isa(widget, EFL_ACCESS_MIXIN)) continue;
         type = efl_access_type_get(widget);
@@ -6035,6 +6096,10 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
    Eo *child;
    Evas_Object *stack_item;
    Eo *compare_obj;
+   // TIZEN_ONLY(20160705) - enable atspi_proxy to work
+   Eo *proxy;
+   Evas_Coord px, py, pw, ph;
+   //
    int ee_x, ee_y;
 
    if (screen_coords)
@@ -6050,7 +6115,6 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
 
    /* Get evas_object stacked at given x,y coordinates starting from top */
    Eina_List *stack = evas_tree_objects_at_xy_get(evas_object_evas_get(obj), NULL, x, y);
-
    /* Foreach stacked object starting from top */
    EINA_LIST_FOREACH(stack, l, stack_item)
      {
@@ -6084,6 +6148,20 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
                         eina_list_free(stack);
                         return child;
                      }
+
+                   // TIZEN_ONLY(20160705) - enable atspi_proxy to work
+                   proxy = evas_object_data_get(smart_parent, "__widget_proxy");
+                   if (proxy)
+                     {
+                        evas_object_geometry_get(smart_parent, &px, &py, &pw, &ph);
+                        if (x >= px && x <= px + pw && y >= py && y <= py +ph)
+                          {
+                             eina_list_free(children);
+                             eina_list_free(stack);
+                             return proxy;
+                          }
+                     }
+                   //
                    smart_parent = evas_object_smart_parent_get(smart_parent);
                }
           }

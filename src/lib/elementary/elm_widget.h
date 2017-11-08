@@ -756,6 +756,10 @@ EAPI const char      *elm_widget_theme_element_get(const Evas_Object *obj);
 EAPI Eina_Bool        elm_widget_theme_style_set(Evas_Object *obj, const char *name);
 EAPI const char      *elm_widget_theme_style_get(const Evas_Object *obj);
 EAPI Efl_Ui_Theme_Apply elm_widget_element_update(Evas_Object *obj, Evas_Object *component, const char *name);
+//TIZEN_ONLY(20171108): make atspi_proxy work
+EAPI Eo*              _elm_atspi_bridge_utils_plug_create(Eo *parent, const char *svcname, int svcnum);
+EAPI Eo*              _elm_atspi_bridge_utils_socket_create(Eo *parent, const char *svcname, int svcnum);
+//
 
 /* debug function. don't use it unless you are tracking parenting issues */
 EAPI void             elm_widget_tree_dump(const Evas_Object *top);
