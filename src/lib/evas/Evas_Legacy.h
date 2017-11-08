@@ -773,6 +773,14 @@ EAPI void             evas_event_feed_multi_down(Evas *obj, int d, int x, int y,
 EAPI void             evas_event_feed_multi_move(Evas *obj, int d, int x, int y, double rad, double radx, double rady, double pres, double ang, double fx, double fy, unsigned int timestamp, const void *data);
 EAPI void             evas_event_feed_multi_up(Evas *obj, int d, int x, int y, double rad, double radx, double rady, double pres, double ang, double fx, double fy, Evas_Button_Flags flags, unsigned int timestamp, const void *data);
 
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+EAPI void             evas_event_feed_mouse_down_with_multi_info(Eo *eo_e, int b, Evas_Button_Flags flags, unsigned int timestamp, const void *data, double radius, double radius_x, double radius_y, double pressure, double angle);
+EAPI void             evas_event_feed_mouse_up_with_multi_info(Eo *eo_e, int b, Evas_Button_Flags flags, unsigned int timestamp, const void *data, double radius, double radius_x, double radius_y, double pressure, double angle);
+EAPI void             evas_event_input_mouse_move_with_multi_info(Eo *eo_e, int x, int y, unsigned int timestamp, const void *data, double radius, double radius_x, double radius_y, double pressure, double angle);
+EAPI void             evas_event_feed_mouse_move_with_multi_info(Eo *eo_e, int x, int y, unsigned int timestamp, const void *data, double radius, double radius_x, double radius_y, double pressure, double angle);
+//
+
+
 /**
  * @brief Key down event feed.
  *

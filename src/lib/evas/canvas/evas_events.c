@@ -1875,6 +1875,72 @@ evas_event_feed_mouse_up(Eo *eo_e, int b, Evas_Button_Flags flags, unsigned int 
    _canvas_event_feed_mouse_updown_legacy(eo_e, b, flags, timestamp, data, 0);
 }
 
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+static void
+_canvas_event_feed_mouse_updown_with_multi_info(Eo *eo_e, int b, Evas_Button_Flags flags,
+                                unsigned int timestamp, const void *data,
+                                Eina_Bool down, Efl_Input_Device *device,
+                                double radius, double radius_x, double radius_y,
+                                double pressure, double angle)
+{
+   Efl_Input_Pointer_Data *ev = NULL;
+   Efl_Input_Pointer *evt;
+   Evas_Public_Data *e;
+
+   e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+   if (!e) return;
+   EVAS_EVENT_FEED_SAFETY_CHECK(e);
+
+   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   if (!ev) return;
+
+   ev->data = (void *) data;
+   ev->timestamp = timestamp;
+   ev->device = efl_ref(device ? device : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   ev->action = down ? EFL_POINTER_ACTION_DOWN : EFL_POINTER_ACTION_UP;
+   ev->button = b;
+   ev->button_flags = flags;
+   ev->radius = radius;
+   ev->radius_x = radius_x;
+   ev->radius_y = radius_y;
+   ev->pressure = pressure;
+   ev->angle = angle;
+   //ev->window_pos = ?;
+   //ev->fake = 1;
+
+   if (down)
+     _canvas_event_feed_mouse_down_internal(e, ev);
+   else
+     _canvas_event_feed_mouse_up_internal(e, ev);
+
+   efl_del(evt);
+}
+
+static void
+_canvas_event_feed_mouse_updown_with_multi_info_legacy(Eo *eo_e, int b, Evas_Button_Flags flags,
+                                       unsigned int timestamp, const void *data,
+                                       Eina_Bool down,
+                                       double radius, double radius_x, double radius_y,
+                                       double pressure, double angle)
+{
+   _canvas_event_feed_mouse_updown_with_multi_info(eo_e, b, flags, timestamp, data, down, NULL, radius, radius_x, radius_y, pressure, angle);
+}
+
+EAPI void
+evas_event_feed_mouse_down_with_multi_info(Eo *eo_e, int b, Evas_Button_Flags flags, unsigned int timestamp, const void *data, double radius, double radius_x, double radius_y, double pressure, double angle)
+{
+   EINA_SAFETY_ON_FALSE_RETURN(efl_isa(eo_e, EVAS_CANVAS_CLASS));
+   _canvas_event_feed_mouse_updown_with_multi_info_legacy(eo_e, b, flags, timestamp, data, 1, radius, radius_x, radius_y, pressure, angle);
+}
+
+EAPI void
+evas_event_feed_mouse_up_with_multi_info(Eo *eo_e, int b, Evas_Button_Flags flags, unsigned int timestamp, const void *data, double radius, double radius_x, double radius_y, double pressure, double angle)
+{
+   EINA_SAFETY_ON_FALSE_RETURN(efl_isa(eo_e, EVAS_CANVAS_CLASS));
+   _canvas_event_feed_mouse_updown_with_multi_info_legacy(eo_e, b, flags, timestamp, data, 0, radius, radius_x, radius_y, pressure, angle);
+}
+//
+
 static void
 _canvas_event_feed_mouse_cancel_internal(Evas_Public_Data *e, Efl_Input_Pointer_Data *ev)
 {
@@ -2503,6 +2569,51 @@ evas_event_feed_mouse_move(Eo *eo_e, int x, int y, unsigned int timestamp, const
    Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
    _canvas_event_feed_mouse_move_legacy(eo_e, e, x, y, timestamp, data);
 }
+
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+static void
+_canvas_event_feed_mouse_move_with_multi_info_legacy(Evas *eo_e, Evas_Public_Data *e, int x, int y,
+                                     unsigned int timestamp, const void *data,
+                                     double radius, double radius_x, double radius_y, double pressure, double angle)
+{
+   Efl_Input_Pointer_Data *ev = NULL;
+   Efl_Input_Pointer *evt;
+
+   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   if (!ev) return;
+
+   ev->data = (void *) data;
+   ev->timestamp = timestamp;
+   ev->device = efl_ref(_evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   ev->cur.x = x;
+   ev->cur.y = y;
+   ev->radius = radius;
+   ev->radius_x = radius_x;
+   ev->radius_y = radius_y;
+   ev->pressure = pressure;
+   ev->angle = angle;
+
+   _canvas_event_feed_mouse_move_internal(e, ev);
+
+   efl_del(evt);
+}
+
+EAPI void
+evas_event_input_mouse_move_with_multi_info(Eo *eo_e, int x, int y, unsigned int timestamp, const void *data, double radius, double radius_x, double radius_y, double pressure, double angle)
+{
+   EINA_SAFETY_ON_FALSE_RETURN(efl_isa(eo_e, EVAS_CANVAS_CLASS));
+   Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+   _canvas_event_feed_mouse_move_with_multi_info_legacy(eo_e, e, x - e->framespace.x, y - e->framespace.y, timestamp, data, radius, radius_x, radius_y, pressure, angle);
+}
+
+EAPI void
+evas_event_feed_mouse_move_with_multi_info(Eo *eo_e, int x, int y, unsigned int timestamp, const void *data, double radius, double radius_x, double radius_y, double pressure, double angle)
+{
+   EINA_SAFETY_ON_FALSE_RETURN(efl_isa(eo_e, EVAS_CANVAS_CLASS));
+   Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+   _canvas_event_feed_mouse_move_with_multi_info_legacy(eo_e, e, x, y, timestamp, data, radius, radius_x, radius_y, pressure, angle);
+}
+//
 
 static void
 _canvas_event_feed_mouse_in_internal(Evas *eo_e, Efl_Input_Pointer_Data *ev)

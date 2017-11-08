@@ -24,6 +24,9 @@ struct _Ecore_Input_Window
    Ecore_Event_Multi_Move_Cb move_multi;
    Ecore_Event_Multi_Down_Cb down_multi;
    Ecore_Event_Multi_Up_Cb up_multi;
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+   Ecore_Event_Mouse_Move_With_Multi_Cb move_mouse_with_multi;
+//
    Ecore_Event_Direct_Input_Cb direct;
    int ignore_event;
 };
@@ -372,6 +375,42 @@ ecore_event_window_unregister(Ecore_Window id)
    eina_hash_del(_window_hash, &id, NULL);
 }
 
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+EAPI void
+ecore_event_window_register_with_multi(Ecore_Window id, void *window, Evas *evas,
+                            Ecore_Event_Mouse_Move_With_Multi_Cb move_mouse_with_multi,
+                            Ecore_Event_Multi_Move_Cb move_multi,
+                            Ecore_Event_Multi_Down_Cb down_multi,
+                            Ecore_Event_Multi_Up_Cb up_multi)
+{
+   Ecore_Input_Window *w;
+
+   w = calloc(1, sizeof(Ecore_Input_Window));
+   if (!w) return;
+
+   w->evas = evas;
+   w->window = window;
+   w->move_mouse_with_multi = move_mouse_with_multi;
+   w->move_multi = move_multi;
+   w->down_multi = down_multi;
+   w->up_multi = up_multi;
+   w->ignore_event = 0;
+
+   eina_hash_add(_window_hash, &id, w);
+
+   evas_key_modifier_add(evas, "Shift");
+   evas_key_modifier_add(evas, "Control");
+   evas_key_modifier_add(evas, "Alt");
+   evas_key_modifier_add(evas, "Meta");
+   evas_key_modifier_add(evas, "Hyper");
+   evas_key_modifier_add(evas, "Super");
+   evas_key_modifier_add(evas, "AltGr");
+   evas_key_lock_add(evas, "Caps_Lock");
+   evas_key_lock_add(evas, "Num_Lock");
+   evas_key_lock_add(evas, "Scroll_Lock");
+}
+//
+
 EAPI void
 _ecore_event_window_direct_cb_set(Ecore_Window id, Ecore_Event_Direct_Input_Cb fptr)
 {
@@ -539,8 +578,16 @@ _ecore_event_evas_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press pr
              if (!lookup->direct ||
                  !lookup->direct(lookup->window, ECORE_EVENT_MOUSE_BUTTON_DOWN, e))
                {
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+#if 0
                   evas_event_feed_mouse_down(lookup->evas, e->buttons, flags,
                                              e->timestamp, NULL);
+#endif
+                  evas_event_feed_mouse_down_with_multi_info(lookup->evas, e->buttons, flags,
+                                        e->timestamp, NULL,
+                                        e->multi.radius, e->multi.radius_x, e->multi.radius_y,
+                                        e->multi.pressure, e->multi.angle);
+//
                }
           }
         else
@@ -548,8 +595,16 @@ _ecore_event_evas_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press pr
              if (!lookup->direct ||
                  !lookup->direct(lookup->window, ECORE_EVENT_MOUSE_BUTTON_UP, e))
                {
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+#if 0
                   evas_event_feed_mouse_up(lookup->evas, e->buttons, flags,
                                            e->timestamp, NULL);
+#endif
+                  evas_event_feed_mouse_up_with_multi_info(lookup->evas, e->buttons, flags,
+                                      e->timestamp, NULL,
+                                      e->multi.radius, e->multi.radius_x, e->multi.radius_y,
+                                      e->multi.pressure, e->multi.angle);
+//
                }
           }
      }
@@ -619,11 +674,23 @@ ecore_event_evas_mouse_move(void *data EINA_UNUSED, int type EINA_UNUSED, void *
         if (!lookup->direct ||
             !lookup->direct(lookup->window, ECORE_EVENT_MOUSE_MOVE, e))
           {
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+#if 0
              if (lookup->move_mouse)
                lookup->move_mouse(lookup->window, e->x, e->y, e->timestamp);
              else
                 evas_event_input_mouse_move(lookup->evas, e->x, e->y, e->timestamp,
                                             NULL);
+#endif
+             if (lookup->move_mouse_with_multi)
+               lookup->move_mouse_with_multi(lookup->window, e->x, e->y, e->timestamp,
+                                             e->multi.radius, e->multi.radius_x, e->multi.radius_y, e->multi.pressure, e->multi.angle);
+             else if (lookup->move_mouse)
+               lookup->move_mouse(lookup->window, e->x, e->y, e->timestamp);
+             else
+               evas_event_input_mouse_move_with_multi_info(lookup->evas, e->x, e->y, e->timestamp, NULL,
+                                                           e->multi.radius, e->multi.radius_x, e->multi.radius_y,
+                                                           e->multi.pressure, e->multi.angle);
           }
      }
    else
@@ -697,7 +764,15 @@ _ecore_event_evas_mouse_io(Ecore_Event_Mouse_IO *e, Ecore_Event_IO io)
          break;
      }
 
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+#if 0
    lookup->move_mouse(lookup->window, e->x, e->y, e->timestamp);
+#endif
+   if (lookup->move_mouse_with_multi)
+     lookup->move_mouse_with_multi(lookup->window, e->x, e->y, e->timestamp, 0, 0, 0, 0, 0);
+   else if (lookup->move_mouse)
+     lookup->move_mouse(lookup->window, e->x, e->y, e->timestamp);
+//
    return ECORE_CALLBACK_PASS_ON;
 }
 

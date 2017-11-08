@@ -3544,6 +3544,121 @@ _ecore_evas_mouse_move_process(Ecore_Evas *ee, int x, int y, unsigned int timest
                                            EINA_TRUE);
 }
 
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+
+static void
+_ecore_evas_mouse_move_process_with_multi_info_internal(Ecore_Evas *ee,
+                                        Efl_Input_Device *pointer,
+                                        int x, int y, unsigned int timestamp,
+                                        double radius, double radius_x, double radius_y,
+                                        double pressure, double angle,
+                                        Eina_Bool feed)
+{
+   Efl_Input_Pointer_Data *ev;
+   Efl_Input_Pointer *evt;
+   Eina_Bool send_event = EINA_TRUE;
+   Ecore_Evas_Cursor *cursor;
+   Eo *seat;
+   int fx, fy, fw, fh, evt_x, evt_y;
+
+   evas_output_framespace_get(ee->evas, &fx, &fy, &fw, &fh);
+
+   if (pointer)
+     {
+        if (efl_input_device_type_get(pointer) != EFL_INPUT_DEVICE_TYPE_SEAT)
+          seat = efl_input_device_seat_get(pointer);
+        else seat = pointer;
+     }
+   else
+     {
+        pointer = evas_default_device_get(ee->evas, EFL_INPUT_DEVICE_TYPE_MOUSE);
+        seat = efl_input_device_seat_get(pointer);
+     }
+   if (efl_input_device_type_get(seat) != EFL_INPUT_DEVICE_TYPE_SEAT)
+     {
+        ERR("Could not find seat");
+        return;
+     }
+   cursor = eina_hash_find(ee->prop.cursors, &seat);
+   if (cursor)
+     {
+        cursor->pos_x = x;
+        cursor->pos_y = y;
+        if (cursor->object)
+          {
+             evas_object_show(cursor->object);
+             if (ee->rotation == 0)
+               evas_object_move(cursor->object,
+                                x - fx - cursor->hot.x,
+                                y - fy - cursor->hot.y);
+             else if (ee->rotation == 90)
+               evas_object_move(cursor->object,
+                                ee->h + fw - y - fx - 1 - cursor->hot.x,
+                                x - fy - cursor->hot.y);
+             else if (ee->rotation == 180)
+               evas_object_move(cursor->object,
+                                ee->w + fw - x - fx - 1 - cursor->hot.x,
+                                ee->h + fh - y - fy - 1 - cursor->hot.y);
+             else if (ee->rotation == 270)
+               evas_object_move(cursor->object,
+                                y - fx - cursor->hot.x,
+                                ee->w + fh - x - fy - 1 - cursor->hot.y);
+          }
+     }
+
+   if (!feed) return;
+   if (ee->rotation == 0)
+     {
+        evt_x = x - fx;
+        evt_y = y - fy;
+     }
+   else if (ee->rotation == 90)
+     {
+        evt_x = ee->h + fw - y - 1;
+        evt_y = x;
+     }
+   else if (ee->rotation == 180)
+     {
+        evt_x = ee->w + fw - x - 1;
+        evt_y = ee->h + fh - y - 1;
+     }
+   else if (ee->rotation == 270)
+     {
+        evt_x = y;
+        evt_y = ee->w + fh - x - 1;
+     }
+   else
+     send_event = EINA_FALSE;
+
+   if (!send_event) return;
+
+   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, ee->evas, (void **) &ev);
+   if (!evt) return;
+
+   ev->action = EFL_POINTER_ACTION_MOVE;
+   ev->device = efl_ref(pointer);
+   ev->timestamp = timestamp;
+   ev->cur.x = evt_x;
+   ev->cur.y = evt_y;
+   ev->radius = radius;
+   ev->radius_x = radius_x;
+   ev->radius_y = radius_y;
+   ev->pressure = pressure;
+   ev->angle = angle;
+   efl_input_pointer_finalize(evt);
+
+   efl_event_callback_legacy_call(ee->evas,
+                                  _event_description_get(ev->action), evt);
+   efl_del(evt);
+}
+
+EAPI void
+_ecore_evas_mouse_move_with_multi_info_process(Ecore_Evas *ee, int x, int y, unsigned int timestamp, double radius, double radius_x, double radius_y, double pressure, double angle)
+{
+   _ecore_evas_mouse_move_process_with_multi_info_internal(ee, NULL, x, y, timestamp, radius, radius_x, radius_y, pressure, angle, EINA_TRUE);
+}
+//
+
 EAPI void
 _ecore_evas_mouse_device_move_process(Ecore_Evas *ee, Efl_Input_Device *pointer,
                                       int x, int y, unsigned int timestamp)
@@ -3754,6 +3869,18 @@ ecore_evas_input_event_register(Ecore_Evas *ee)
                                (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
    _ecore_event_window_direct_cb_set((Ecore_Window)ee, _ecore_evas_input_direct_cb);
 }
+
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+EAPI void
+ecore_evas_input_event_register_with_multi(Ecore_Evas *ee)
+{
+   ecore_event_window_register_with_multi((Ecore_Window)ee, ee, ee->evas,
+                                          (Ecore_Event_Mouse_Move_With_Multi_Cb)_ecore_evas_mouse_move_with_multi_info_process,
+                                          (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process,
+                                          (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process,
+                                          (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
+}
+//
 
 EAPI void
 ecore_evas_input_event_unregister(Ecore_Evas *ee)

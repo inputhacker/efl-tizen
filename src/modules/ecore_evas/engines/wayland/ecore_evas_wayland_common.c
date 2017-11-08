@@ -2537,11 +2537,20 @@ _ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, i
    _ecore_evas_register(ee);
    ecore_evas_input_event_register(ee);
 
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
+#if 0
    ecore_event_window_register(ee->prop.window, ee, ee->evas,
                                (Ecore_Event_Mouse_Move_Cb)_ecore_evas_mouse_move_process,
                                (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process,
                                (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process,
                                (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
+#endif
+   ecore_event_window_register(ee->prop.window, ee, ee->evas,
+                               (Ecore_Event_Mouse_Move_Cb)_ecore_evas_mouse_move_with_multi_info_process,
+                               (Ecore_Event_Multi_Move_Cb)_ecore_evas_mouse_multi_move_process,
+                               (Ecore_Event_Multi_Down_Cb)_ecore_evas_mouse_multi_down_process,
+                               (Ecore_Event_Multi_Up_Cb)_ecore_evas_mouse_multi_up_process);
+//
    _ecore_event_window_direct_cb_set(ee->prop.window,
                                      _ecore_evas_input_direct_cb);
 
