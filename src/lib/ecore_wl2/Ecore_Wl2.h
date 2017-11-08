@@ -993,6 +993,10 @@ EAPI void ecore_wl2_window_resize(Ecore_Wl2_Window *window, Ecore_Wl2_Input *inp
  */
 EAPI void ecore_wl2_window_raise(Ecore_Wl2_Window *window);
 
+// TIZEN_ONLY(20171108): lower window function from ecore_wayland to ecore_wl2
+EAPI void ecore_wl2_window_lower(Ecore_Wl2_Window *window);
+//
+
 /**
  * Get if a given window is alpha
  *
