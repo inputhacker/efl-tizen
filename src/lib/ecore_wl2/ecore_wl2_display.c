@@ -868,6 +868,19 @@ ecore_wl2_display_sync(Ecore_Wl2_Display *display)
 }
 //
 
+//TIZEN_ONLY(20171108): add a new API to ecore_wl2_sync
+EAPI void
+ecore_wl2_sync(void)
+{
+   Ecore_Wl2_Display *ewd;
+
+   ewd = ecore_wl2_connected_display_get(NULL);
+   if (!ewd) return;
+
+   ecore_wl2_display_sync(ewd);
+}
+//
+
 static void
 _ecore_wl2_display_sync_add(Ecore_Wl2_Display *ewd)
 {
