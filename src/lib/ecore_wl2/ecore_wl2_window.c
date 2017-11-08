@@ -86,6 +86,13 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
      ev->states |= ECORE_WL2_WINDOW_STATE_MAXIMIZED;
 
    win->req_config = win->def_config;
+
+   // TIZEN_ONLY(20160323)
+   window->configured.w = w;
+   window->configured.h = h;
+   window->configured.edges = edges;
+   //
+
    ecore_event_add(ECORE_WL2_EVENT_WINDOW_CONFIGURE, ev, NULL, NULL);
 
    if (win->def_config.focused)
@@ -479,6 +486,14 @@ ecore_wl2_window_new(Ecore_Wl2_Display *display, Ecore_Wl2_Window *parent, int x
    win->opaque.y = y;
    win->opaque.w = w;
    win->opaque.h = h;
+
+   // TIZEN_ONLY(20160323)
+   win->configured.x = -99999; /* this is arbitary */
+   win->configured.y = -99999;
+   win->configured.w = w;
+   win->configured.h = h;
+   win->configured.edges = 0;
+   //
 
    win->pending.configure = EINA_TRUE;
    display->windows =
