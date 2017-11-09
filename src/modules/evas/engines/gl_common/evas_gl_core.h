@@ -71,7 +71,7 @@ Eina_Bool    evgl_safe_extension_get(const char *name, void **pfuncptr);
 
 int          evgl_direct_rendered(void);
 void         evgl_direct_override_get(Eina_Bool *override, Eina_Bool *force_off);
-void         evgl_direct_info_set(int win_w, int win_h, int rot,
+void         evgl_direct_info_set(int win_w, int win_h, int rot, unsigned int map_tex,
                                   int img_x, int img_y, int img_w, int img_h,
                                   int clip_x, int clip_y, int clip_w, int clip_h,
                                   int render_op, void *surface);

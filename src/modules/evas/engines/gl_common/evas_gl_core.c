@@ -2618,25 +2618,19 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
                }
              else
                {
-                  if (sfc->direct_override)
-                    {
-                       DBG("Not creating fallback surfaces even though it should. Use at OWN discretion!");
-                    }
-                  else
-                    {
-                       // Create internal buffers if not yet created
-                       if (!sfc->buffers_allocated)
-                         {
-                            if (dbg) DBG("Allocating buffers for sfc %p", sfc);
-                            if (!_surface_buffers_allocate(eng_data, sfc, sfc->w, sfc->h, ctx->version))
-                              {
-                                 ERR("Unable Create Specificed Surfaces.  Unsupported format!");
-                                 evas_gl_common_error_set(EVAS_GL_BAD_ALLOC);
-                                 return 0;
-                              }
-                            sfc->buffers_allocated = 1;
-                         }
-                    }
+                 // Create internal buffers if not yet created
+                 // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+                 if (!sfc->buffers_allocated)
+                   {
+                     if (dbg) DBG("Allocating buffers for sfc %p", sfc);
+                     if (!_surface_buffers_allocate(eng_data, sfc, sfc->w, sfc->h, ctx->version))
+                       {
+                         ERR("Unable Create Specificed Surfaces.  Unsupported format!");
+                         evas_gl_common_error_set(EVAS_GL_BAD_ALLOC);
+                         return 0;
+                       }
+                     sfc->buffers_allocated = 1;
+                   }
                }
           }
         else
@@ -2747,6 +2741,18 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
                }
              else
                {
+                 // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+                  if (rsc->direct.map_tex)
+                    {
+                       if (rsc->direct.partial.enabled)
+                         evgl_direct_partial_render_end();
+                      _framebuffer_bind(ctx->surface_fbo, ctx->version);
+                      ctx->current_fbo = ctx->surface_fbo;
+                      _texture_attach_2d(rsc->direct.map_tex, GL_COLOR_ATTACHMENT0, 0, sfc->msaa_samples, ctx->version);
+                      ctx->map_tex = rsc->direct.map_tex;
+                    }
+                  else
+                    {
                   // This is to transition from FBO rendering to direct rendering
                   glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curr_fbo);
                   if (ctx->surface_fbo == (GLuint)curr_fbo)
@@ -2773,6 +2779,9 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
                               }
                          }
                     }
+                  // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+                   ctx->map_tex = 0;
+                 }
                }
 
              rsc->direct.rendered = 1;
@@ -2815,23 +2824,17 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
              if ((ctx_changed) || (ctx->current_sfc != sfc) || (rsc->direct.rendered))
                {
                   sfc->current_ctx = ctx;
-                  if ((sfc->direct_mem_opt) && (sfc->direct_override))
-                    {
-                       DBG("Not creating fallback surfaces even though it should. Use at OWN discretion!");
-                    }
-                  else
-                    {
-                       // If it's transitioning from direct render to fbo render
-                       // Call end tiling
-                       if (rsc->direct.partial.enabled)
-                          evgl_direct_partial_render_end();
+                  // If it's transitioning from direct render to fbo render
+                  // Call end tiling
+                  // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+                  if (rsc->direct.partial.enabled)
+                    evgl_direct_partial_render_end();
 
-                       if (!_surface_buffers_fbo_set(sfc, ctx->surface_fbo, ctx->version))
-                         {
-                            ERR("Attaching buffers to context fbo failed. Engine: %p  Surface: %p Context FBO: %u", evgl_engine, sfc, ctx->surface_fbo);
-                            evas_gl_common_error_set(EVAS_GL_BAD_CONTEXT);
-                            return 0;
-                         }
+                  if (!_surface_buffers_fbo_set(sfc, ctx->surface_fbo, ctx->version))
+                    {
+                       ERR("Attaching buffers to context fbo failed. Engine: %p  Surface: %p Context FBO: %u", evgl_engine, sfc, ctx->surface_fbo);
+                       evas_gl_common_error_set(EVAS_GL_BAD_CONTEXT);
+                       return 0;
                     }
 
                   // Bind to the previously bound buffer
@@ -3048,7 +3051,7 @@ evgl_native_surface_direct_opts_get(Evas_Native_Surface *ns,
 }
 
 void
-evgl_direct_info_set(int win_w, int win_h, int rot,
+evgl_direct_info_set(int win_w, int win_h, int rot, unsigned int map_tex,
                      int img_x, int img_y, int img_w, int img_h,
                      int clip_x, int clip_y, int clip_w, int clip_h,
                      int render_op, void *surface)
@@ -3080,6 +3083,8 @@ evgl_direct_info_set(int win_w, int win_h, int rot,
         rsc->direct.win_w   = win_w;
         rsc->direct.win_h   = win_h;
         rsc->direct.rot     = rot;
+        // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        rsc->direct.map_tex = map_tex;
 
         rsc->direct.img.x   = img_x;
         rsc->direct.img.y   = img_y;
@@ -3109,6 +3114,8 @@ evgl_direct_info_clear(void)
 
    if (!(rsc=_evgl_tls_resource_get())) return;
 
+   // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+   rsc->direct.map_tex = 0;
    rsc->direct.enabled = EINA_FALSE;
 }
 

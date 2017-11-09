@@ -535,8 +535,8 @@ _evgl_gles1_glClear(GLbitfield mask)
    EVGL_FUNC_BEGIN();
    if (_evgl_direct_enabled())
      {
-        if (!(rsc->current_ctx->current_fbo))
-          //|| rsc->current_ctx->map_tex)
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex)
           {
              /* Skip glClear() if clearing with transparent color
               * Note: There will be side effects if the object itself is not
@@ -1041,8 +1041,8 @@ _evgl_gles1_glGetIntegerv(GLenum pname, GLint *params)
           }
 
         // Only need to handle it if it's directly rendering to the window
-        if (!(rsc->current_ctx->current_fbo))
-          //|| rsc->current_ctx->map_tex)
+        // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex)
           {
              if (pname == GL_SCISSOR_BOX)
                {
@@ -1492,8 +1492,8 @@ _evgl_gles1_glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
    EVGL_FUNC_BEGIN();
    if (_evgl_direct_enabled())
      {
-        if (!(rsc->current_ctx->current_fbo))
-          //|| rsc->current_ctx->map_tex)
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex)
           {
              compute_gl_coordinates(rsc->direct.win_w, rsc->direct.win_h,
                                     rsc->direct.rot, 1,
@@ -1590,8 +1590,8 @@ _evgl_gles1_glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 
    if (_evgl_direct_enabled())
      {
-        if (!(rsc->current_ctx->current_fbo))
-          //|| rsc->current_ctx->map_tex)
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex)
           {
              if ((ctx->direct_scissor) && (!ctx->scissor_enabled))
                {
@@ -1838,8 +1838,8 @@ _evgl_gles1_glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
    EVGL_FUNC_BEGIN();
    if (_evgl_direct_enabled())
      {
-        if (!(rsc->current_ctx->current_fbo))
-          //|| rsc->current_ctx->map_tex)
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex)
           {
              if ((!ctx->direct_scissor))
                {

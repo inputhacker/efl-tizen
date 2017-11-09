@@ -1174,6 +1174,7 @@ eng_image_draw(void *eng, void *data, void *context, void *surface, void *image,
    Evas_Engine_GL_Context *gl_context;
    Render_Output_GL_Generic *re = data;
    Evas_GL_Image *im = image;
+   Evas_GL_Image *surf = surface;
    Evas_Native_Surface *n;
 
    if (!im) return EINA_FALSE;
@@ -1184,9 +1185,17 @@ eng_image_draw(void *eng, void *data, void *context, void *surface, void *image,
 
    if (eng_gl_image_direct_get(re, image))
      {
+        int map_tex = 0;
         void *direct_surface = NULL;
 
         gl_context->dc = context;
+        // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (surface != gl_context->def_surface)
+          {
+             map_tex = surf->tex->pt->texture;
+             dst_y = gl_context->h - dst_y - dst_h;
+          }
+
         if ((gl_context->master_clip.enabled) &&
             (gl_context->master_clip.w > 0) &&
             (gl_context->master_clip.h > 0))
@@ -1204,9 +1213,11 @@ eng_image_draw(void *eng, void *data, void *context, void *surface, void *image,
           }
 
         // Set necessary info for direct rendering
+        // TIZEN_ONLY(20171110) : Direct rendering render to map fix
         evgl_direct_info_set(gl_context->w,
                              gl_context->h,
-                             gl_context->rot,
+                             map_tex?0:gl_context->rot,
+                             map_tex,
                              dst_x, dst_y, dst_w, dst_h,
                              gl_context->dc->clip.x,
                              gl_context->dc->clip.y,
@@ -1752,7 +1763,11 @@ eng_gl_surface_direct_renderable_get(void *eng, void *output, Evas_Native_Surfac
 
    gl_context = gl_generic_context_get(re, 0);
    if (gl_context->def_surface != sfc)
-     return EINA_FALSE;
+     {
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+       *override = EINA_FALSE;
+       return EINA_FALSE;
+     }
 
    return EINA_TRUE;
 }

@@ -96,7 +96,11 @@ _evgl_glBindFramebuffer(GLenum target, GLuint framebuffer)
           {
              if (_evgl_direct_enabled())
                {
-                  glBindFramebuffer(target, 0);
+                 // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+                   if (ctx->map_tex)
+                      glBindFramebuffer(target, ctx->current_fbo);
+                   else
+                      glBindFramebuffer(target, 0);
 
                   if (rsc->direct.partial.enabled)
                     {
@@ -535,7 +539,8 @@ _evgl_glClear(GLbitfield mask)
 
    if (_evgl_direct_enabled())
      {
-        if ((!(rsc->current_ctx->current_fbo) && rsc->current_ctx->version == EVAS_GL_GLES_2_X) ||
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (((!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex) && rsc->current_ctx->version == EVAS_GL_GLES_2_X) ||
             (!(rsc->current_ctx->current_draw_fbo) && rsc->current_ctx->version == EVAS_GL_GLES_3_X))
           {
              /* Skip glClear() if clearing with transparent color
@@ -948,7 +953,8 @@ _evgl_glGetFloatv(GLenum pname, GLfloat* params)
         if (ctx->version == EVAS_GL_GLES_2_X)
           {
              // Only need to handle it if it's directly rendering to the window
-             if (!(rsc->current_ctx->current_fbo))
+            // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+             if (!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex)
                {
                   if (pname == GL_SCISSOR_BOX)
                     {
@@ -969,7 +975,6 @@ _evgl_glGetFloatv(GLenum pname, GLfloat* params)
                             return;
                          }
                     }
-
                   // If it hasn't been initialized yet, return img object size
                   if ((pname == GL_SCISSOR_BOX) || (pname == GL_VIEWPORT))
                     {
@@ -1006,7 +1011,7 @@ _evgl_glGetFloatv(GLenum pname, GLfloat* params)
                          }
                     }
                   // If it hasn't been initialized yet, return img object size
-                  if (pname == GL_SCISSOR_BOX) //|| (pname == GL_VIEWPORT))
+                  if (pname == GL_SCISSOR_BOX) // || (pname == GL_VIEWPORT))
                     {
                        params[0] = (GLfloat)0.0;
                        params[1] = (GLfloat)0.0;
@@ -1029,13 +1034,16 @@ _evgl_glGetFloatv(GLenum pname, GLfloat* params)
           {
              if (pname == GL_FRAMEBUFFER_BINDING)
                {
-                  rsc = _evgl_tls_resource_get();
-                  ctx = rsc ? rsc->current_ctx : NULL;
-                  if (ctx)
-                    {
-                       *params = (GLfloat)ctx->current_fbo;
-                       return;
-                    }
+                 // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+//                 rsc = _evgl_tls_resource_get();
+//                 ctx = rsc ? rsc->current_ctx : NULL;
+//                 if (ctx)
+//                   {
+//                     *params = (GLfloat)ctx->current_fbo;
+//                     return;
+//                   }
+                 *params = (GLfloat)ctx->current_fbo;
+                 return;
                }
           }
         else if (ctx->version == EVAS_GL_GLES_3_X)
@@ -1197,38 +1205,45 @@ _evgl_glGetIntegerv(GLenum pname, GLint* params)
    if (_evgl_direct_enabled())
      {
         if (ctx->version == EVAS_GL_GLES_2_X)
-          {
-             // Only need to handle it if it's directly rendering to the window
-             if (!(rsc->current_ctx->current_fbo))
-               {
-                  if (pname == GL_SCISSOR_BOX)
-                    {
-                       if (ctx->scissor_updated)
-                         {
-                            memcpy(params, ctx->scissor_coord, sizeof(int)*4);
-                            return;
-                         }
-                    }
-                  else if (pname == GL_VIEWPORT)
-                    {
-                       if (ctx->viewport_updated)
-                         {
-                            memcpy(params, ctx->viewport_coord, sizeof(int)*4);
-                            return;
-                         }
-                    }
-
-                  // If it hasn't been initialized yet, return img object size
-                  if ((pname == GL_SCISSOR_BOX) || (pname == GL_VIEWPORT))
-                    {
-                       params[0] = 0;
-                       params[1] = 0;
-                       params[2] = (GLint)rsc->direct.img.w;
-                       params[3] = (GLint)rsc->direct.img.h;
-                       return;
-                    }
-               }
-          }
+           {
+            // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+            // Only need to handle it if it's directly rendering to the window
+            if (!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex)
+              {
+                if (pname == GL_SCISSOR_BOX)
+                  {
+                    if (ctx->scissor_updated)
+                      {
+                        memcpy(params, ctx->scissor_coord, sizeof(int)*4);
+                      }
+                    else
+                      {
+                        params[0] = 0;
+                        params[1] = 0;
+                        params[2] = (GLint)rsc->direct.img.w;
+                        params[3] = (GLint)rsc->direct.img.h;
+                      }
+                    return;
+                  }
+                else if (pname == GL_VIEWPORT)
+                  {
+                    if (ctx->viewport_updated)
+                      {
+                        memcpy(params, ctx->viewport_coord, sizeof(int)*4);
+                        return;
+                      }
+                  }
+                // If it hasn't been initialized yet, return img object size
+                else if (pname == GL_FRAMEBUFFER_BINDING)
+                  {
+                    if (rsc->current_ctx->map_tex)
+                      {
+                        params[0] = rsc->current_ctx->current_fbo;
+                        return;
+                      }
+                  }
+              }
+           }
         else if (ctx->version == EVAS_GL_GLES_3_X)
           {
              // Only need to handle it if it's directly rendering to the window
@@ -1251,7 +1266,7 @@ _evgl_glGetIntegerv(GLenum pname, GLint* params)
                          }
                     }
                   // If it hasn't been initialized yet, return img object size
-                  if (pname == GL_SCISSOR_BOX) //|| (pname == GL_VIEWPORT))
+                  if (pname == GL_SCISSOR_BOX) // || (pname == GL_VIEWPORT))
                     {
                        params[0] = 0;
                        params[1] = 0;
@@ -1274,13 +1289,8 @@ _evgl_glGetIntegerv(GLenum pname, GLint* params)
           {
              if (pname == GL_FRAMEBUFFER_BINDING)
                {
-                  rsc = _evgl_tls_resource_get();
-                  ctx = rsc ? rsc->current_ctx : NULL;
-                  if (ctx)
-                    {
-                       *params = ctx->current_fbo;
-                       return;
-                    }
+                   *params = ctx->current_fbo;
+                   return;
                }
           }
         else if (ctx->version == EVAS_GL_GLES_3_X)
@@ -1292,8 +1302,16 @@ _evgl_glGetIntegerv(GLenum pname, GLint* params)
                }
              else if (pname == GL_READ_FRAMEBUFFER_BINDING)
                {
-                  *params = ctx->current_read_fbo;
-                  return;
+                 // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+//                 rsc = _evgl_tls_resource_get();
+//                 ctx = rsc ? rsc->current_ctx : NULL;
+//                 if (ctx)
+//                   {
+//                     *params = ctx->current_fbo;
+//                     return;
+//                   }
+                 *params = ctx->current_read_fbo;
+                 return;
                }
              else if (pname == GL_READ_BUFFER)
                {
@@ -1476,8 +1494,8 @@ _evgl_glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum forma
 
    if (_evgl_direct_enabled())
      {
-
-        if ((!(rsc->current_ctx->current_fbo) && rsc->current_ctx->version == EVAS_GL_GLES_2_X) ||
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (((!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex) && rsc->current_ctx->version == EVAS_GL_GLES_2_X) ||
             (!(rsc->current_ctx->current_read_fbo) && rsc->current_ctx->version == EVAS_GL_GLES_3_X))
           {
              compute_gl_coordinates(rsc->direct.win_w, rsc->direct.win_h,
@@ -1530,7 +1548,8 @@ _evgl_glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 
    if (_evgl_direct_enabled())
      {
-        if ((!(rsc->current_ctx->current_fbo) && rsc->current_ctx->version == EVAS_GL_GLES_2_X) ||
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (((!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex) && rsc->current_ctx->version == EVAS_GL_GLES_2_X) ||
             (!(rsc->current_ctx->current_draw_fbo) && rsc->current_ctx->version == EVAS_GL_GLES_3_X))
           {
              // Direct rendering to canvas
@@ -1618,7 +1637,8 @@ _evgl_glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 
    if (_evgl_direct_enabled())
      {
-        if ((!(rsc->current_ctx->current_fbo) && rsc->current_ctx->version == EVAS_GL_GLES_2_X) ||
+       // TIZEN_ONLY(20171110) : Direct rendering render to map fix
+        if (((!(rsc->current_ctx->current_fbo) || rsc->current_ctx->map_tex) && rsc->current_ctx->version == EVAS_GL_GLES_2_X) ||
             (!(rsc->current_ctx->current_draw_fbo) && rsc->current_ctx->version == EVAS_GL_GLES_3_X))
           {
              if ((!ctx->direct_scissor))
