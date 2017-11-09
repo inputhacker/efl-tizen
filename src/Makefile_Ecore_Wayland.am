@@ -16,6 +16,7 @@ lib/ecore_wayland/ecore_wl_output.c \
 lib/ecore_wayland/ecore_wl_window.c \
 lib/ecore_wayland/ecore_wl_subsurf.c \
 lib/ecore_wayland/ecore_wl_private.h \
+lib/ecore_wayland/ecore_wl_tizen.c \
 lib/ecore_wayland/subsurface-protocol.c \
 lib/ecore_wayland/subsurface-client-protocol.h \
 lib/ecore_wayland/ivi-application-protocol.c \
