@@ -737,6 +737,16 @@ ecore_wl2_window_parent_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window *parent)
    EINA_SAFETY_ON_NULL_RETURN(window);
    window->parent = parent;
 }
+
+EAPI void
+ecore_wl2_window_stack_mode_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window_Stack_Mode mode)
+{
+   EINA_SAFETY_ON_NULL_RETURN(window);
+   EINA_SAFETY_ON_NULL_RETURN(window->display);
+
+   if ((window->surface) && (window->display->wl.tz_policy))
+     tizen_policy_set_stack_mode(window->display->wl.tz_policy, window->surface, mode);
+}
 //
 
 EAPI Eina_Bool

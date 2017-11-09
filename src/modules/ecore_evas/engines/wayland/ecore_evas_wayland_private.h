@@ -58,6 +58,14 @@ struct _Ecore_Evas_Engine_Wl_Data
         Ecore_Job *manual_mode_job;
      } wm_rot;
 
+   // TIZEN_ONLY(20160429)
+   struct
+     {
+        unsigned char above : 1;
+        unsigned char below : 1;
+     } state;
+   //
+
    Eina_Bool resizing : 1;
    Eina_Bool dragging : 1;
    Eina_Bool sync_done : 1;
