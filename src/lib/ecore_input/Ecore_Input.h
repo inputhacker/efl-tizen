@@ -58,6 +58,9 @@ extern "C" {
    EAPI extern int ECORE_EVENT_AXIS_UPDATE; /**< @since 1.13 */
    EAPI extern int ECORE_EVENT_MOUSE_BUTTON_CANCEL; /**< @since 1.15 */
    EAPI extern int ECORE_EVENT_JOYSTICK; /**< @since 1.18 */
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   EAPI extern int ECORE_EVENT_DETENT_ROTATE; //TIZEN ONLY
+   //
 
 #define ECORE_EVENT_MODIFIER_SHIFT      0x0001
 #define ECORE_EVENT_MODIFIER_CTRL       0x0002
@@ -86,6 +89,9 @@ extern "C" {
    typedef struct _Ecore_Event_Axis_Update  Ecore_Event_Axis_Update; /**< @since 1.13 */
    typedef struct _Ecore_Axis               Ecore_Axis; /**< @since 1.13 */
    typedef struct _Ecore_Event_Joystick     Ecore_Event_Joystick; /**< @since 1.18 */
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   typedef struct _Ecore_Event_Detent_Rotate Ecore_Event_Detent_Rotate; //TIZEN ONLY
+   //
 
    /**
     * @typedef Ecore_Event_Modifier
@@ -418,6 +424,19 @@ extern "C" {
 
         Eo *dev; /**< The Efl_Input_Device that originated the event @since 1.19 */
      };
+
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   typedef enum _Ecore_Detent_Direction
+     {
+        ECORE_DETENT_DIRECTION_CLOCKWISE,
+        ECORE_DETENT_DIRECTION_COUNTER_CLOCKWISE
+     } Ecore_Detent_Direction;
+   struct _Ecore_Event_Detent_Rotate
+     {
+        Ecore_Detent_Direction direction;
+        unsigned int timestamp;
+     };
+   //
 
    /**
     * Initializes the Ecore Event system.

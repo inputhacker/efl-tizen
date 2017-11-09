@@ -25,6 +25,10 @@ EAPI int ECORE_EVENT_MOUSE_OUT = 0;
 EAPI int ECORE_EVENT_AXIS_UPDATE = 0;
 EAPI int ECORE_EVENT_MOUSE_BUTTON_CANCEL = 0;
 EAPI int ECORE_EVENT_JOYSTICK = 0;
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+EAPI int ECORE_EVENT_DETENT_ROTATE = 0;
+//
+
 
 static int _ecore_event_init_count = 0;
 
@@ -58,6 +62,9 @@ ecore_event_init(void)
    ECORE_EVENT_AXIS_UPDATE = ecore_event_type_new();
    ECORE_EVENT_MOUSE_BUTTON_CANCEL = ecore_event_type_new();
    ECORE_EVENT_JOYSTICK = ecore_event_type_new();
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   ECORE_EVENT_DETENT_ROTATE = ecore_event_type_new();
+   //
 
    //TIZEN_ONLY(20170307) Remove warning message
    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -84,7 +91,11 @@ ecore_event_shutdown(void)
                           ECORE_EVENT_MOUSE_OUT,
                           ECORE_EVENT_AXIS_UPDATE,
                           ECORE_EVENT_MOUSE_BUTTON_CANCEL,
-                          ECORE_EVENT_JOYSTICK);
+                          ECORE_EVENT_JOYSTICK,
+                          // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+                          ECORE_EVENT_DETENT_ROTATE
+                          //
+                          );
    //TIZEN_ONLY(20170307) Remove warning message
    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
    ecore_input_joystick_shutdown();

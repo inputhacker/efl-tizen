@@ -239,6 +239,42 @@ _ecore_wl2_input_key_conversion_set(Ecore_Wl2_Input *input)
      }
 }
 //
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+static double
+_ecore_wl2_input_touch_radius_calc(double x, double y)
+{
+#define PI 3.14159265358979323846
+   return x*y*PI/4;
+}
+
+static void
+_ecore_wl2_input_touch_axis_process(Ecore_Wl2_Input *input, int id)
+{
+   if (id >= ECORE_WL2_TOUCH_MAX)
+      return;
+
+   if (input->touch.last_touch_axis.radius_x)
+     {
+        input->touch.touch_axis[id].radius_x = input->touch.last_touch_axis.radius_x;
+        input->touch.last_touch_axis.radius_x = 0.0;
+     }
+   if (input->touch.last_touch_axis.radius_y)
+     {
+        input->touch.touch_axis[id].radius_y = input->touch.last_touch_axis.radius_y;
+        input->touch.last_touch_axis.radius_y = 0.0;
+     }
+   if (input->touch.last_touch_axis.pressure)
+     {
+        input->touch.touch_axis[id].pressure = input->touch.last_touch_axis.pressure;
+        input->touch.last_touch_axis.pressure = 0.0;
+     }
+   if (input->touch.last_touch_axis.angle)
+     {
+        input->touch.touch_axis[id].angle = input->touch.last_touch_axis.angle;
+        input->touch.last_touch_axis.angle = 0.0;
+     }
+}
+//
 
 static Ecore_Wl2_Mouse_Down_Info *
 _ecore_wl2_input_mouse_down_info_get(int device)
@@ -280,6 +316,11 @@ _ecore_wl2_mouse_dev_get(Ecore_Wl2_Input *input, int window_id)
 {
    Ecore_Wl2_Input_Devices *devices;
 
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   if (input->devmgr.last_device_ptr && input->devmgr.last_device_ptr->eo_dev)
+     return efl_ref(input->devmgr.last_device_ptr->eo_dev);
+   //
+
    devices = _ecore_wl2_devices_get(input, window_id);
    if (devices && devices->pointer_dev)
      return efl_ref(devices->pointer_dev);
@@ -291,6 +332,11 @@ static Eo *
 _ecore_wl2_touch_dev_get(Ecore_Wl2_Input *input, int window_id)
 {
    Ecore_Wl2_Input_Devices *devices;
+
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   if (input->devmgr.last_device_touch && input->devmgr.last_device_touch->eo_dev)
+     return efl_ref(input->devmgr.last_device_touch->eo_dev);
+   //
 
    devices = _ecore_wl2_devices_get(input, window_id);
    if (devices && devices->touch_dev)
@@ -375,11 +421,28 @@ _ecore_wl2_input_mouse_move_send(Ecore_Wl2_Input *input, Ecore_Wl2_Window *windo
    ev->root.y = input->pointer.sy;
    ev->modifiers = input->keyboard.modifiers;
    ev->multi.device = device;
-   ev->multi.radius = 1;
-   ev->multi.radius_x = 1;
-   ev->multi.radius_y = 1;
-   ev->multi.pressure = 1.0;
-   ev->multi.angle = 0.0;
+
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   if (device >= ECORE_WL2_TOUCH_MAX)
+     {
+        ev->multi.radius = 1;
+        ev->multi.radius_x = 1;
+        ev->multi.radius_y = 1;
+        ev->multi.pressure = 1.0;
+        ev->multi.angle = 0.0;
+     }
+   else
+     {
+        ev->multi.radius =
+           _ecore_wl2_input_touch_radius_calc(input->touch.touch_axis[device].radius_x,
+                                             input->touch.touch_axis[device].radius_y);
+        ev->multi.radius_x = input->touch.touch_axis[device].radius_x;
+        ev->multi.radius_y = input->touch.touch_axis[device].radius_y;
+        ev->multi.pressure = input->touch.touch_axis[device].pressure;
+        ev->multi.angle = input->touch.touch_axis[device].angle;
+     }
+   //
+
    ev->multi.x = input->pointer.sx;
    ev->multi.y = input->pointer.sy;
    ev->multi.root.x = input->pointer.sx;
@@ -523,12 +586,26 @@ _ecore_wl2_input_mouse_down_send(Ecore_Wl2_Input *input, Ecore_Wl2_Window *windo
           info->triple_click = EINA_FALSE;
      }
 
-   ev->multi.device = device;
-   ev->multi.radius = 1;
-   ev->multi.radius_x = 1;
-   ev->multi.radius_y = 1;
-   ev->multi.pressure = 1.0;
-   ev->multi.angle = 0.0;
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   if (device >= ECORE_WL2_TOUCH_MAX)
+     {
+        ev->multi.radius = 1;
+        ev->multi.radius_x = 1;
+        ev->multi.radius_y = 1;
+        ev->multi.pressure = 1.0;
+        ev->multi.angle = 0.0;
+     }
+   else
+     {
+        ev->multi.radius =
+           _ecore_wl2_input_touch_radius_calc(input->touch.touch_axis[device].radius_x,
+                                             input->touch.touch_axis[device].radius_y);
+        ev->multi.radius_x = input->touch.touch_axis[device].radius_x;
+        ev->multi.radius_y = input->touch.touch_axis[device].radius_y;
+        ev->multi.pressure = input->touch.touch_axis[device].pressure;
+        ev->multi.angle = input->touch.touch_axis[device].angle;
+     }
+   //
    ev->multi.x = input->pointer.sx;
    ev->multi.y = input->pointer.sy;
    ev->multi.root.x = input->pointer.sx;
@@ -622,6 +699,17 @@ _ecore_wl2_input_mouse_up_send(Ecore_Wl2_Input *input, Ecore_Wl2_Window *window,
 
    ecore_event_add(ECORE_EVENT_MOUSE_BUTTON_UP, ev,
                    _input_event_cb_free, ev->dev);
+
+
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   if (device < ECORE_WL2_TOUCH_MAX)
+     {
+        input->touch.touch_axis[device].radius_x = 1.0;
+        input->touch.touch_axis[device].radius_y = 1.0;
+        input->touch.touch_axis[device].pressure = 1.0;
+        input->touch.touch_axis[device].angle = 0;
+     }
+   //
 }
 
 static void
@@ -791,6 +879,11 @@ static Eo *
 _ecore_wl2_keyboard_dev_get(Ecore_Wl2_Input *input, int window_id)
 {
    Ecore_Wl2_Input_Devices *devices;
+
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   if (input->devmgr.last_device_kbd && input->devmgr.last_device_kbd->eo_dev)
+     return efl_ref(input->devmgr.last_device_kbd->eo_dev);
+   //
 
    devices = _ecore_wl2_devices_get(input, window_id);
    if (devices && devices->keyboard_dev)
@@ -1416,6 +1509,9 @@ _touch_cb_down(void *data, struct wl_touch *touch EINA_UNUSED, unsigned int seri
    if (!window) return;
 
    input->focus.touch = window;
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   _ecore_wl2_input_touch_axis_process(input, id);
+   //
 
    _pointer_cb_enter(data, NULL, serial, surface, x, y);
 
@@ -1465,6 +1561,10 @@ _touch_cb_motion(void *data, struct wl_touch *touch EINA_UNUSED, unsigned int ti
    input->timestamp = timestamp;
    input->pointer.sx = wl_fixed_to_int(x);
    input->pointer.sy = wl_fixed_to_int(y);
+
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   _ecore_wl2_input_touch_axis_process(input, id);
+   //
 
    _ecore_wl2_input_mouse_move_send(input, input->focus.touch, id);
 }
@@ -1823,6 +1923,110 @@ _ecore_wl2_cb_device_event(void *data, int type, void *event)
    return ECORE_CALLBACK_PASS_ON;
 }
 
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+static void
+_ecore_wl2_input_device_last_device_set(Ecore_Wl2_Tizen_Input_Device *dev)
+{
+   Ecore_Wl2_Input *input = dev->input;
+
+   if (!input) return;
+
+   switch(dev->clas)
+     {
+      case EFL_INPUT_DEVICE_TYPE_MOUSE:
+         input->devmgr.last_device_ptr = dev;
+         break;
+      case EFL_INPUT_DEVICE_TYPE_KEYBOARD:
+         input->devmgr.last_device_kbd = dev;
+         break;
+      case EFL_INPUT_DEVICE_TYPE_TOUCH:
+         input->devmgr.last_device_touch = dev;
+         break;
+      default:
+         break;
+     }
+}
+
+static void
+_ecore_wl2_input_device_last_device_unset(Ecore_Wl2_Tizen_Input_Device *dev)
+{
+   Ecore_Wl2_Input *input = dev->input;
+
+   if (!input) return;
+
+   switch(dev->clas)
+     {
+      case EFL_INPUT_DEVICE_TYPE_MOUSE:
+         if (input->devmgr.last_device_ptr == dev)
+           input->devmgr.last_device_ptr = NULL;
+         break;
+      case EFL_INPUT_DEVICE_TYPE_KEYBOARD:
+         if (input->devmgr.last_device_kbd == dev)
+           input->devmgr.last_device_kbd = NULL;
+         break;
+      case EFL_INPUT_DEVICE_TYPE_TOUCH:
+         if (input->devmgr.last_device_touch == dev)
+           input->devmgr.last_device_touch = NULL;
+         break;
+      default:
+         break;
+     }
+}
+
+static Eina_Bool
+_ecore_wl2_cb_tizen_device_event(void *data, int type, void *event)
+{
+   Ecore_Wl2_Tizen_Input_Device *devs, *dev = NULL;;
+   Ecore_Wl2_Event_Tizen_Input_Device_Info *ev = event;
+   Ecore_Wl2_Display *ewd = data;
+   Ecore_Wl2_Input *input;
+   Eina_List *l;
+
+   input = ecore_wl2_input_default_input_get(ewd);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(input, ECORE_CALLBACK_PASS_ON);
+
+   EINA_LIST_FOREACH(input->devmgr.devices, l, devs)
+     {
+        if (!strncmp(devs->identifier, ev->identifier, strlen(ev->identifier)))
+          {
+             dev = devs;
+             break;
+          }
+     }
+
+   if (type == ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_ADDED)
+     {
+        if (!dev) return ECORE_CALLBACK_PASS_ON;
+        /* FIXME: If dev is not exist, this device is not originate from tizen_input_device.
+         *        How process this device? Ignore or Make a new device
+         */
+
+        dev->eo_dev = efl_ref(ev->dev);
+
+        return ECORE_CALLBACK_PASS_ON;
+     }
+   else if (type == ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_REMOVED)
+     {
+        if (!dev) return ECORE_CALLBACK_PASS_ON;
+        efl_unref(dev->eo_dev);
+        dev->eo_dev = NULL;
+
+        _ecore_wl2_input_device_last_device_unset(dev);
+
+        if (dev->tz_device) tizen_input_device_release(dev->tz_device);
+        if (dev->name) eina_stringshare_del(dev->name);
+        if (dev->identifier) eina_stringshare_del(dev->identifier);
+        dev->seat = NULL;
+
+        input->devmgr.devices = eina_list_remove(input->devmgr.devices, dev);
+        free(dev);
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+//
+
+
 void
 _ecore_wl2_input_add(Ecore_Wl2_Display *display, unsigned int id, unsigned int version)
 {
@@ -1860,6 +2064,16 @@ _ecore_wl2_input_add(Ecore_Wl2_Display *display, unsigned int id, unsigned int v
    input->dev_remove_handler =
      ecore_event_handler_add(ECORE_WL2_EVENT_DEVICE_REMOVED,
                              _ecore_wl2_cb_device_event, input);
+
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   input->tzdev_add_handler =
+     ecore_event_handler_add(ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_ADDED,
+                             _ecore_wl2_cb_tizen_device_event, display);
+
+   input->tzdev_remove_handler =
+     ecore_event_handler_add(ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_REMOVED,
+                             _ecore_wl2_cb_tizen_device_event, display);
+   //
 
    if (!display->wl.data_device_manager) return;
 
@@ -2624,6 +2838,221 @@ err:
    return error_keys;
 }
 //
+//
+
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+static void
+_ecore_wl2_input_device_info_free(void *data EINA_UNUSED, void *ev)
+{
+   Ecore_Wl2_Event_Tizen_Device_Info *e;
+
+   e = ev;
+   eina_stringshare_del(e->name);
+   eina_stringshare_del(e->identifier);
+   eina_stringshare_del(e->seatname);
+
+   free(e);
+}
+
+void
+_ecore_wl2_input_device_info_send(const char *name,  const char *identifier, Efl_Input_Device_Type clas, Efl_Input_Device_Subtype subclas, Eina_Bool flag)
+{
+   Ecore_Wl2_Event_Tizen_Device_Info *e;
+
+   if (!(e = calloc(1, sizeof(Ecore_Wl2_Event_Tizen_Device_Info)))) return;
+
+   e->name = eina_stringshare_add(name);
+   e->identifier = eina_stringshare_add(identifier);
+   e->seatname = eina_stringshare_add(name);
+   e->clas = clas;
+   e->subclas = subclas;
+
+   if (flag)
+     ecore_event_add(ECORE_WL2_EVENT_TIZEN_DEVICE_ADD, e, _ecore_wl2_input_device_info_free, NULL);
+   else
+     ecore_event_add(ECORE_WL2_EVENT_TIZEN_DEVICE_DEL, e, _ecore_wl2_input_device_info_free, NULL);
+}
+
+static void
+_ecore_wl2_input_device_info_broadcast(Ecore_Wl2_Input *input, const char *name, const char *identifier, Efl_Input_Device_Type clas, Efl_Input_Device_Subtype subclas, Eina_Bool flag)
+{
+   if (!name) return;
+   if (!input || !input->display) return;
+
+   _ecore_wl2_input_device_info_send(name, identifier, clas, subclas, flag);
+}
+
+static void
+_ecore_wl2_input_device_cb_device_info(void *data, struct tizen_input_device *tizen_input_device EINA_UNUSED, const char *name, uint32_t clas, uint32_t subclas, struct wl_array *axes EINA_UNUSED)
+{
+   Ecore_Wl2_Tizen_Input_Device *dev;
+
+   if (!(dev = data)) return;
+   dev->clas = (Efl_Input_Device_Type)clas;
+   dev->subclas = (Efl_Input_Device_Subtype)subclas;
+   dev->name = eina_stringshare_add(name);
+   _ecore_wl2_input_device_info_broadcast(dev->input, dev->name, dev->identifier, dev->clas, dev->subclas, EINA_TRUE);
+}
+
+static void
+_ecore_wl2_input_device_cb_event_device(void *data, struct tizen_input_device *tizen_input_device EINA_UNUSED, unsigned int serial EINA_UNUSED, const char *name EINA_UNUSED, uint32_t time EINA_UNUSED)
+{
+   Ecore_Wl2_Tizen_Input_Device *dev;
+
+   if (!(dev = data)) return;
+   if (!dev->identifier) return;
+   _ecore_wl2_input_device_last_device_set(dev);
+
+   return;
+}
+
+static void
+_ecore_wl2_input_detent_rotate_free(void *data EINA_UNUSED, void *ev)
+{
+   Ecore_Event_Detent_Rotate *e = ev;
+   free(e);
+}
+
+static void
+_ecore_wl2_input_device_cb_axis(void *data, struct tizen_input_device *tizen_input_device EINA_UNUSED, uint32_t axis_type, wl_fixed_t value)
+{
+   Ecore_Wl2_Input *input;
+   Ecore_Wl2_Tizen_Input_Device *dev;
+   double dvalue = wl_fixed_to_double(value);
+   Ecore_Event_Detent_Rotate *e;
+
+   dev = (Ecore_Wl2_Tizen_Input_Device *)data;
+   input = dev->input;
+
+   if (!input) return;
+
+   switch (axis_type)
+     {
+        case TIZEN_INPUT_DEVICE_AXIS_TYPE_RADIUS_X:
+           input->touch.last_touch_axis.radius_x = dvalue;
+           break;
+        case TIZEN_INPUT_DEVICE_AXIS_TYPE_RADIUS_Y:
+           input->touch.last_touch_axis.radius_y = dvalue;
+           break;
+        case TIZEN_INPUT_DEVICE_AXIS_TYPE_PRESSURE:
+           input->touch.last_touch_axis.pressure = dvalue;
+           break;
+        case TIZEN_INPUT_DEVICE_AXIS_TYPE_ANGLE:
+           input->touch.last_touch_axis.angle = dvalue;
+           break;
+        case TIZEN_INPUT_DEVICE_AXIS_TYPE_DETENT:
+           /* Do something after get detent event.
+            * value 1 is clockwise,
+            * value -1 is counterclockwise,
+            */
+           if (!(e = calloc(1, sizeof(Ecore_Event_Detent_Rotate))))
+             {
+                ERR("detent: cannot allocate memory");
+                return;
+             }
+           if (dvalue == 1)
+             e->direction = ECORE_DETENT_DIRECTION_CLOCKWISE;
+           else
+             e->direction = ECORE_DETENT_DIRECTION_COUNTER_CLOCKWISE;
+           e->timestamp = (int)(ecore_time_get() * 1000.0);
+           DBG("detent: dir: %d, time: %d", e->direction, e->timestamp);
+           ecore_event_add(ECORE_EVENT_DETENT_ROTATE, e, _ecore_wl2_input_detent_rotate_free, NULL);
+           break;
+        default:
+           WRN("Invalid type(%d) is ignored.\n", axis_type);
+           break;
+     }
+   return;
+}
+
+static const struct tizen_input_device_listener _tz_input_device_listener =
+{
+   _ecore_wl2_input_device_cb_device_info,
+   _ecore_wl2_input_device_cb_event_device,
+   _ecore_wl2_input_device_cb_axis,
+};
+
+static void
+_ecore_wl2_input_device_manager_cb_device_add(void *data, struct tizen_input_device_manager *tizen_input_device_manager EINA_UNUSED,
+                          unsigned int serial EINA_UNUSED, const char *identifier, struct tizen_input_device *device, struct wl_seat *seat)
+{
+   Ecore_Wl2_Display *ewd = (Ecore_Wl2_Display *)data;
+   Ecore_Wl2_Input *input;
+   Ecore_Wl2_Tizen_Input_Device *dev;
+
+   if (!ewd) return;
+   if ((!identifier) || (!device) || (!seat)) return;
+
+   input = wl_seat_get_user_data(seat);
+
+   if (!input) return;
+   if (!(dev = calloc(1, sizeof(Ecore_Wl2_Tizen_Input_Device)))) return;
+
+   dev->tz_device = device;
+   tizen_input_device_add_listener(dev->tz_device, &_tz_input_device_listener, dev);
+   dev->input = input;
+   dev->identifier = eina_stringshare_add(identifier);
+   dev->seat = seat;
+
+   input->devmgr.devices = eina_list_append(input->devmgr.devices, dev);
+}
+
+static void
+_ecore_wl2_input_device_manager_cb_device_remove(void *data, struct tizen_input_device_manager *tizen_input_device_manager EINA_UNUSED,
+                            unsigned int serial EINA_UNUSED, const char *identifier, struct tizen_input_device *device, struct wl_seat *seat)
+{
+   Ecore_Wl2_Display *ewd = (Ecore_Wl2_Display *)data;
+   Ecore_Wl2_Input *input;
+   Eina_List *l;
+   Ecore_Wl2_Tizen_Input_Device *dev;
+
+   if (!ewd) return;
+   if ((!identifier) || (!device) || (!seat)) return;
+
+   input = wl_seat_get_user_data(seat);
+
+   if (!input) return;
+
+   EINA_LIST_FOREACH(input->devmgr.devices, l, dev)
+     {
+        if (!dev->identifier) continue;
+        if ((!strcmp(dev->identifier, identifier)) && (seat == dev->seat) && (device == dev->tz_device))
+          {
+             _ecore_wl2_input_device_info_broadcast(dev->input, dev->name, dev->identifier, dev->clas, dev->subclas, EINA_FALSE);
+             break;
+          }
+     }
+}
+
+static void
+_ecore_wl2_input_device_manager_cb_error(void *data EINA_UNUSED, struct tizen_input_device_manager *tizen_input_device_manager EINA_UNUSED, uint32_t errorcode EINA_UNUSED)
+{
+   ;
+}
+
+static void
+_ecore_wl2_input_device_manager_cb_block_expired(void *data EINA_UNUSED, struct tizen_input_device_manager *tizen_input_device_manager EINA_UNUSED)
+{
+   ;
+}
+
+static const struct tizen_input_device_manager_listener _tz_input_device_mgr_listener =
+{
+   _ecore_wl2_input_device_manager_cb_device_add,
+   _ecore_wl2_input_device_manager_cb_device_remove,
+   _ecore_wl2_input_device_manager_cb_error,
+   _ecore_wl2_input_device_manager_cb_block_expired,
+};
+
+void
+_ecore_wl2_input_device_manager_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version EINA_UNUSED)
+{
+   ewd->wl.tz_input_device_manager =
+   wl_registry_bind(ewd->wl.registry, id, &tizen_input_device_manager_interface, 1);
+
+   tizen_input_device_manager_add_listener(ewd->wl.tz_input_device_manager,
+                                       &_tz_input_device_mgr_listener, ewd);
+}
 //
 
 EAPI void

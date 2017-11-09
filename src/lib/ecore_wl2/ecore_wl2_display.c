@@ -530,6 +530,13 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
         _ecore_wl2_keyrouter_setup(ewd, id, version);
      }
 //
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   else if (!strcmp(interface, "tizen_input_device_manager"))
+     {
+        _ecore_wl2_input_device_manager_setup(ewd, id, version);
+     }
+//
+
    //
 
 event:

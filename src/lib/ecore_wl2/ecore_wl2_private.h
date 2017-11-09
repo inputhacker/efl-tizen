@@ -106,6 +106,7 @@ struct _Ecore_Wl2_Display
         struct tizen_indicator *tz_indicator;
         struct tizen_clipboard *tz_clipboard;
         struct tizen_keyrouter *tz_keyrouter;
+        struct tizen_input_device_manager *tz_input_device_manager;
         //
 
         int compositor_version;
@@ -345,6 +346,29 @@ typedef struct _Ecore_Wl2_Dnd_Source
    unsigned int len;
 } Ecore_Wl2_Dnd_Source;
 
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+struct _Ecore_Wl2_Tizen_Input_Device
+{
+   struct tizen_input_device *tz_device;
+   Ecore_Wl2_Input *input;
+   const char *name;
+   const char *identifier;
+   Efl_Input_Device_Type clas;
+   Efl_Input_Device_Subtype subclas;
+   struct wl_seat *seat;
+   Eo *eo_dev;
+};
+
+typedef struct _Ecore_Wl2_Touch_Axis
+{
+   double radius_x;
+   double radius_y;
+   double pressure;
+   double angle;
+} Ecore_Wl2_Touch_Axis;
+
+#define ECORE_WL2_TOUCH_MAX 10
+//
 
 /** TODO: Refactor ALL Input code :(
  *
@@ -572,6 +596,23 @@ struct _Ecore_Wl2_Input
    Ecore_Event_Handler *dev_remove_handler;
    Eina_List *devices_list;
 
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   Ecore_Event_Handler *tzdev_add_handler;
+   Ecore_Event_Handler *tzdev_remove_handler;
+   struct
+     {
+        Eina_List *devices;
+        Ecore_Wl2_Tizen_Input_Device *last_device_ptr;
+        Ecore_Wl2_Tizen_Input_Device *last_device_touch;
+        Ecore_Wl2_Tizen_Input_Device *last_device_kbd;
+     } devmgr;
+   struct
+     {
+        Ecore_Wl2_Touch_Axis touch_axis[ECORE_WL2_TOUCH_MAX];
+        Ecore_Wl2_Touch_Axis last_touch_axis;
+     } touch;
+//
+
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
    Eina_Bool caps_update;
 //
@@ -692,7 +733,12 @@ EAPI void ecore_wl2_window_weight_set(Ecore_Wl2_Window *window, double w, double
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
 int ecore_wl2_input_keycode_from_keysym(struct xkb_keymap *keymap, xkb_keysym_t keysym, xkb_keycode_t **keycodes);
 Ecore_Wl2_Display *ecore_wl2_connected_display_get(const char *name);
+EAPI Ecore_Wl2_Input *ecore_wl2_input_default_input_get(const Ecore_Wl2_Display *ewd);
 void _ecore_wl2_keyrouter_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version);
+//
+
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+void _ecore_wl2_input_device_manager_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version);
 //
 
 EAPI extern int _ecore_wl2_event_window_www;

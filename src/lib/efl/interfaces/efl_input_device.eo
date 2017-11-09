@@ -14,6 +14,31 @@ enum Efl.Input.Device.Type
    gamepad,  [[A gamepad controller or joystick.]]
 }
 
+// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+enum Efl.Input.Device.Subtype
+{
+   [[General type of input device.
+
+     Legacy support since 1.8 as $Evas_Device_Subclass.
+   ]]
+   none,     [[Not a device.]]
+   finger,     [[The normal flat of your finger.]]
+   fingernail, [[A fingernai.]]
+   knuckle,    [[A Knuckle.]]
+   palm,    [[The palm of a users hand.]]
+   hand_size,      [[The side of your hand.]]
+   hand_flat,     [[The flat of your hand.]]
+   pen_tip,  [[The tip of a pen.]]
+   trackpad,  [[A trackpad style mouse.]]
+   trackpoint,  [[A trackpoint style mouse.]]
+   trackball,  [[A trackball style mouse.]]
+// TIZEN_ONLY(20170620): Add new device subclasses.
+   remocon,  [[A remote controller.]]
+   virtual_keyboard,  [[A virtual keyboard.]]
+//
+}
+//
+
 /* TODO: Add canvas property. Current problem is we need to return
          Efl.Ui.Win and not Evas:
   @property canvas { values { canvas: Efl.Canvas; } }

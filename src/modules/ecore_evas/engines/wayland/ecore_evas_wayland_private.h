@@ -47,6 +47,9 @@ struct _Ecore_Evas_Engine_Wl_Data
    uint32_t timestamp;
    Eina_List *devices_list;
    int cw, ch;
+   // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+   Eina_List *tz_devices_list;
+   //
 
    struct
      {
