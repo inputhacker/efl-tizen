@@ -1177,13 +1177,26 @@ _edje_edd_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.id_text_source", text.id_text_source, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.id_text_source_part", text.id_text_source_part, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsis", text.ellipsis, EET_T_DOUBLE);
-   //TIZEN_ONLY(20160923): introduction of text marquee
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.mode", text.ellipsize.mode, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.marquee_repeat_limit", text.ellipsize.marquee_repeat_limit, EET_T_INT);
-   //
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.filter", filter.code, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_LIST_STRING(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.filter_sources", filter.sources);
    EET_DATA_DESCRIPTOR_ADD_VAR_ARRAY(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.filter.data", filter.data, _edje_edd_edje_part_description_filter_data); // @since 1.15
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+    ***********************************************************************************/
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.fade_ellipsis", text.fade_ellipsis, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.mode", text.ellipsize.mode, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.marquee_repeat_limit", text.ellipsize.marquee_repeat_limit, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.align", text.ellipsize.align, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.marquee.type", text.ellipsize.marquee.type, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.marquee.loop_delay", text.ellipsize.marquee.loop_delay, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.marquee.speed", text.ellipsize.marquee.speed, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.marquee.duration", text.ellipsize.marquee.duration, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.normal.mode", text.ellipsize.normal.mode, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.fade.mode", text.ellipsize.fade.mode, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_text, Edje_Part_Description_Text, "text.ellipsize.marquee.mode", text.ellipsize.marquee.mode, EET_T_INT);
+   /*******
+    * END *
+    *******/
 
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Edje_Part_Description_Text);
    eddc.func.mem_free = mem_free_textblock;
@@ -1217,10 +1230,23 @@ _edje_edd_init(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.id_text_source", text.id_text_source, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.id_text_source_part", text.id_text_source_part, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsis", text.ellipsis, EET_T_DOUBLE);
-   //TIZEN_ONLY(20160923): introduction of text marquee
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+    ***********************************************************************************/
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.fade_ellipsis", text.fade_ellipsis, EET_T_DOUBLE);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.mode", text.ellipsize.mode, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.marquee_repeat_limit", text.ellipsize.marquee_repeat_limit, EET_T_INT);
-   //
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.align", text.ellipsize.align, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.marquee.type", text.ellipsize.marquee.type, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.marquee.loop_delay", text.ellipsize.marquee.loop_delay, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.marquee.speed", text.ellipsize.marquee.speed, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.marquee.duration", text.ellipsize.marquee.duration, EET_T_DOUBLE);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.normal.mode", text.ellipsize.normal.mode, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.fade.mode", text.ellipsize.fade.mode, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_edje_edd_edje_part_description_textblock, Edje_Part_Description_Text, "text.ellipsize.marquee.mode", text.ellipsize.marquee.mode, EET_T_INT);
+   /*******
+    * END *
+    *******/
 
    EET_EINA_FILE_DATA_DESCRIPTOR_CLASS_SET(&eddc, Edje_Part_Description_Box);
    eddc.func.mem_free = mem_free_box;

@@ -218,11 +218,11 @@ _edje_text_recalc_apply(Edje *ed, Edje_Real_Part *ep,
    Eina_Bool same_text = EINA_FALSE;
    FLOAT_T sc;
 
-   //TIZEN_ONLY(20160923): introduction of text marquee
-   //Necessary for state having EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE by default
+   /* TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+    * Necessary for state having EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE by default          */
    if (chosen_desc->text.ellipsize.mode == EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE)
      params->type.text->ellipsis = -1;
-   //
+   /* END */
 
    if ((ep->type != EDJE_RP_TYPE_TEXT) ||
        (!ep->typedata.text)) return;

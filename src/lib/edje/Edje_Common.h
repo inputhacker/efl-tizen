@@ -1325,19 +1325,62 @@ typedef enum _Edje_Text_Effect
    EDJE_TEXT_EFFECT_SHADOW_DIRECTION_RIGHT        = (0x7 << 4)  /**< right shadow direction value */
 } Edje_Text_Effect;
 
-//TIZEN_ONLY(20160923): introduction of text marquee
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+ ***********************************************************************************/
 typedef enum _Edje_Text_Ellipsize_Mode
 {
-   EDJE_TEXT_ELLIPSIZE_MODE_NONE       = 0,
-   EDJE_TEXT_ELLIPSIZE_MODE_START      = 1,
-   EDJE_TEXT_ELLIPSIZE_MODE_MIDDLE     = 2,
-   EDJE_TEXT_ELLIPSIZE_MODE_END        = 3,
-   EDJE_TEXT_ELLIPSIZE_MODE_FADE_START = 4,
-   EDJE_TEXT_ELLIPSIZE_MODE_FADE_END   = 5,
-   EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE    = 6,
-   EDJE_TEXT_ELLIPSIZE_MODE_LAST       = 7
+   EDJE_TEXT_ELLIPSIZE_MODE_NONE         = 0,
+   EDJE_TEXT_ELLIPSIZE_MODE_START        = 1, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_MIDDLE       = 2, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_END          = 3, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE_START   = 4, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE_END     = 5, /* Deprecated */
+   EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE      = 6,
+   EDJE_TEXT_ELLIPSIZE_MODE_NORMAL       = 7,
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE         = 8,
+   EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE = 9,
+   EDJE_TEXT_ELLIPSIZE_MODE_LAST         = 10
 } Edje_Text_Ellipsize_Mode;
-//
+
+typedef enum _Edje_Text_Ellipsize_Normal_Mode
+{
+   EDJE_TEXT_ELLIPSIZE_NORMAL_MODE_OFF = 0,
+   EDJE_TEXT_ELLIPSIZE_NORMAL_MODE_ON
+} Edje_Text_Ellipsize_Normal_Mode;
+
+typedef enum _Edje_Text_Ellipsize_Fade_Mode
+{
+   EDJE_TEXT_ELLIPSIZE_FADE_MODE_OFF = 0,
+   EDJE_TEXT_ELLIPSIZE_FADE_MODE_ON
+} Edje_Text_Ellipsize_Fade_Mode;
+
+typedef enum _Edje_Text_Ellipsize_Marquee_Mode
+{
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_OFF = 0,
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ON,
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ALWAYS
+} Edje_Text_Ellipsize_Marquee_Mode;
+
+typedef enum _Edje_Text_Ellipsize_Align
+{
+   EDJE_TEXT_ELLIPSIZE_ALIGN_END    = 0,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_START  = 1,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_RIGHT  = 2,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_LEFT   = 3,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_LOCALE = 4,
+   EDJE_TEXT_ELLIPSIZE_ALIGN_LAST   = 5
+} Edje_Text_Ellipsize_Align;
+
+typedef enum _Edje_Text_Ellipsize_Marquee_Type
+{
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_DEFAULT = 0,
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL    = 1,
+   EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_LAST    = 2
+} Edje_Text_Ellipsize_Marquee_Type;
+/*******
+ * END *
+ *******/
 
 /**
  * @typedef (*Edje_Text_Change_Cb)

@@ -1950,6 +1950,9 @@ _edje_file_del(Edje *ed)
                   eina_stringshare_del(rp->typedata.text->font);
                   eina_stringshare_del(rp->typedata.text->cache.in_str);
                   eina_stringshare_del(rp->typedata.text->cache.out_str);
+                  /* TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. */
+                  _edje_text_ellipsize_remove(rp);
+                  /* END */
                   free(rp->typedata.text);
                   rp->typedata.text = NULL;
                }

@@ -1465,14 +1465,38 @@ struct _Edje_Part_Description_Spec_Text
    unsigned char  max_x; /* if text size should be part max size */
    unsigned char  max_y; /* if text size should be part max size */
 
-   //TIZEN_ONLY(20160923): introduction of text marquee
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+    ***********************************************************************************/
+   double         fade_ellipsis;
+
    struct {
       Edje_Text_Ellipsize_Mode mode;
       int marquee_repeat_limit;
-      int marquee_repeat_count;
-      Evas_Coord_Point marquee_start_point;
+      int marquee_repeat_count;             /* Deprecated: Use loop_count in Edje_Real_Part_Text */
+      Evas_Coord_Point marquee_start_point; /* Deprecated: Use marquee_start_x, y in Edje_Real_Part_Text */
+
+      Edje_Text_Ellipsize_Align align;
+
+      struct {
+         Edje_Text_Ellipsize_Marquee_Type type;
+         double                           loop_delay;
+         double                           speed;
+         double                           duration;
+         Edje_Text_Ellipsize_Marquee_Mode mode;
+      } marquee;
+
+      struct {
+         Edje_Text_Ellipsize_Normal_Mode mode;
+      } normal;
+
+      struct {
+         Edje_Text_Ellipsize_Fade_Mode mode;
+      } fade;
    } ellipsize;
-   //
+   /*******
+    * END *
+    *******/
 };
 
 struct _Edje_Part_Description_Spec_Box
@@ -1992,6 +2016,48 @@ struct _Edje_Real_Part_Text
    const char            *style; // 4
    Edje_Position          offset; // 8
    short                  size; // 2
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+    ***********************************************************************************/
+   struct {
+      double                 duration; // 8
+   } marquee;
+
+   struct {
+      Evas_Object    *clipper_obj; // 4
+      float           halign;      // 4
+      float           valign;      // 4
+      int             text_w, text_h;
+      int             offset_x, offset_y;
+      Eina_Bool       is_normal;
+      Eina_Bool       is_fade;
+      Eina_Bool       is_marquee;
+
+      struct {
+         Evas_Object    *mask_obj;
+         Ecore_Animator *animator;
+         int             x, y, w, h;
+      } fade;
+
+      struct {
+         Edje           *edje;
+         Evas_Object    *proxy_obj;
+         Ecore_Animator *animator;
+         double          animator_prev_time;
+         double          sec_per_pixel;
+         int             orig_x, orig_y;
+         int             loop_count;
+         int             distance;
+
+         double          duration;
+         double          speed;
+      } marquee;
+   } ellipsize;
+   /*******
+    * END *
+    *******/
+
    struct {
       unsigned char       fit_x, fit_y; // 2
       short               in_size; // 2
@@ -2060,12 +2126,6 @@ struct _Edje_Real_Part
    unsigned short            state; // 2
 #endif
    char                      clicked_button; // 1
-   //TIZEN_ONLY(20160923): introduction of text marquee
-   double                    text_marquee_prev_time;
-   Ecore_Animator           *text_marquee_animator;
-   Ecore_Job                *text_marquee_job;
-   Evas_Object              *text_marquee_clipper;
-   //
    unsigned char             type; // 1
    Evas_Event_Flags          ignore_flags;
    Evas_Event_Flags          mask_flags;
@@ -2077,9 +2137,6 @@ struct _Edje_Real_Part
 #ifdef EDJE_CALC_CACHE
    Eina_Bool                 invalidate : 1; // 0
 #endif
-   //TIZEN_ONLY(20160923): introduction of text marquee
-   unsigned char             text_marquee_to_left : 1;
-   //
 }; // 128
 // WITH EDJE_CALC_CACHE: 407
 
@@ -3169,6 +3226,9 @@ Evas_Event_Flags _edje_real_part_ignore_flags_get(Edje *ed, Edje_Real_Part *rp);
 void _edje_real_part_ignore_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags ignore_flags);
 Evas_Event_Flags _edje_real_part_mask_flags_get(Edje *ed, Edje_Real_Part *rp);
 void _edje_real_part_mask_flags_set(Edje *ed, Edje_Real_Part *rp, Evas_Event_Flags mask_flags);
+/* TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. */
+void _edje_text_ellipsize_remove(Edje_Real_Part *ep);
+/* END */
 
 /* part drag apis */
 Edje_Drag_Dir _edje_object_part_drag_dir_get(Edje *ed, const char *part);

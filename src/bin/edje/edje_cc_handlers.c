@@ -418,10 +418,24 @@ static void st_collections_group_parts_part_description_text_align(void);
 static void st_collections_group_parts_part_description_text_source(void);
 static void st_collections_group_parts_part_description_text_text_source(void);
 static void st_collections_group_parts_part_description_text_ellipsis(void);
-//TIZEN_ONLY(20160923): introduction of text marquee
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+ ***********************************************************************************/
+static void st_collections_group_parts_part_description_text_fade_ellipsis(void); /* Legacy */
 static void st_collections_group_parts_part_description_text_ellipsize_mode(void);
 static void st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit(void);
-//
+static void st_collections_group_parts_part_description_text_ellipsize_align(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_type(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_loop(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_loop_delay(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_speed(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_duration(void);
+static void st_collections_group_parts_part_description_text_ellipsize_normal_mode(void);
+static void st_collections_group_parts_part_description_text_ellipsize_fade_mode(void);
+static void st_collections_group_parts_part_description_text_ellipsize_marquee_mode(void);
+/*******
+ * END *
+ *******/
 static void st_collections_group_parts_part_description_box_layout(void);
 static void st_collections_group_parts_part_description_box_align(void);
 static void st_collections_group_parts_part_description_box_padding(void);
@@ -949,11 +963,25 @@ New_Statement_Handler statement_handlers[] =
      {"collections.group.parts.part.description.text.fonts.font", st_fonts_font}, /* dup */
      {"collections.group.parts.part.description.text.elipsis", st_collections_group_parts_part_description_text_ellipsis},
      {"collections.group.parts.part.description.text.ellipsis", st_collections_group_parts_part_description_text_ellipsis},
-     //TIZEN_ONLY(20160923): introduction of text marquee
+     {"collections.group.parts.part.description.text.filter", st_collections_group_parts_part_description_filter_code}, /* dup */
+     /***********************************************************************************
+      * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+      ***********************************************************************************/
      {"collections.group.parts.part.description.text.ellipsize.mode", st_collections_group_parts_part_description_text_ellipsize_mode},
      {"collections.group.parts.part.description.text.ellipsize.marquee_repeat_limit", st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit},
-     //
-     {"collections.group.parts.part.description.text.filter", st_collections_group_parts_part_description_filter_code}, /* dup */
+     {"collections.group.parts.part.description.text.ellipsize.align", st_collections_group_parts_part_description_text_ellipsize_align},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.type", st_collections_group_parts_part_description_text_ellipsize_marquee_type},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.loop", st_collections_group_parts_part_description_text_ellipsize_marquee_loop},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.loop_delay", st_collections_group_parts_part_description_text_ellipsize_marquee_loop_delay},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.speed", st_collections_group_parts_part_description_text_ellipsize_marquee_speed},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.duration", st_collections_group_parts_part_description_text_ellipsize_marquee_duration},
+     {"collections.group.parts.part.description.text.ellipsize.normal.mode", st_collections_group_parts_part_description_text_ellipsize_normal_mode},
+     {"collections.group.parts.part.description.text.ellipsize.fade.mode", st_collections_group_parts_part_description_text_ellipsize_fade_mode},
+     {"collections.group.parts.part.description.text.ellipsize.marquee.mode", st_collections_group_parts_part_description_text_ellipsize_marquee_mode},
+     {"collections.group.parts.part.description.text.fade_ellipsis", st_collections_group_parts_part_description_text_fade_ellipsis}, /* Legacy */
+     /*******
+      * END * 
+      *******/
      {"collections.group.parts.part.description.box.layout", st_collections_group_parts_part_description_box_layout},
      {"collections.group.parts.part.description.box.align", st_collections_group_parts_part_description_box_align},
      {"collections.group.parts.part.description.box.padding", st_collections_group_parts_part_description_box_padding},
@@ -1551,8 +1579,17 @@ New_Object_Handler object_handlers[] =
      {"collections.group.parts.part.description.fill.origin", NULL},
      {"collections.group.parts.part.description.fill.size", NULL},
      {"collections.group.parts.part.description.text", NULL},
-     {"collections.group.parts.part.description.text.ellipsize", NULL},
      {"collections.group.parts.part.description.text.fonts", NULL}, /* dup */
+     /***********************************************************************************
+      * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+      ***********************************************************************************/
+     {"collections.group.parts.part.description.text.ellipsize", NULL},
+     {"collections.group.parts.part.description.text.ellipsize.marquee", NULL},
+     {"collections.group.parts.part.description.text.ellipsize.normal", NULL},
+     {"collections.group.parts.part.description.text.ellipsize.fade", NULL},
+     /*******
+      * END *
+      *******/
      {"collections.group.parts.part.description.images", NULL}, /* dup */
      {"collections.group.parts.part.description.images.set", ob_images_set}, /* dup */
      {"collections.group.parts.part.description.images.set.image", ob_images_set_image}, /* dup */
@@ -1787,9 +1824,10 @@ _edje_part_description_alloc(unsigned char type, const char *collection, const c
 	   ed->text.align.y = FROM_DOUBLE(0.5);
 	   ed->text.id_source = -1;
 	   ed->text.id_text_source = -1;
-           //TIZEN_ONLY(20160923): introduction of text marquee
+           /* TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. */
+           ed->text.fade_ellipsis = FROM_DOUBLE(0.0); /* Legacy */
            ed->text.ellipsize.marquee_repeat_limit = -1;
-           //
+           /* END */
 
 	   result = &ed->common;
 	   break;
@@ -8726,6 +8764,9 @@ st_collections_group_parts_part_description_inherit(void)
               _filter_copy(&ted->filter, &tparent->filter);
               data_queue_copied_part_nest_lookup(pc, &(tparent->text.id_source), &(ted->text.id_source), &ted->text.id_source_part);
               data_queue_copied_part_nest_lookup(pc, &(tparent->text.id_text_source), &(ted->text.id_text_source), &ted->text.id_text_source_part);
+              /* TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. */
+              ted->text.fade_ellipsis = tparent->text.fade_ellipsis;
+              /* END */
 
               break;
            }
@@ -11771,7 +11812,30 @@ st_collections_group_parts_part_description_text_ellipsis(void)
    ed->text.ellipsis = parse_float_range(0, -1.0, 1.0);
 }
 
-//TIZEN_ONLY(20160923): introduction of text marquee
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+ ***********************************************************************************/
+/* Legacy */
+static void
+st_collections_group_parts_part_description_text_fade_ellipsis(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.fade_ellipsis = parse_float_range(0, -1.0, 1.0) + 1.0;
+}
+
 static void
 st_collections_group_parts_part_description_text_ellipsize_mode(void)
 {
@@ -11819,7 +11883,214 @@ st_collections_group_parts_part_description_text_ellipsize_marquee_repeat_limit(
 
    ed->text.ellipsize.marquee_repeat_limit = parse_int_range(0, -1, 0x7fffffff);
 }
-//
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_align(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.align = parse_enum(0,
+                                         "END", EDJE_TEXT_ELLIPSIZE_ALIGN_END,
+                                         "START", EDJE_TEXT_ELLIPSIZE_ALIGN_START,
+                                         "RIGHT", EDJE_TEXT_ELLIPSIZE_ALIGN_RIGHT,
+                                         "LEFT", EDJE_TEXT_ELLIPSIZE_ALIGN_LEFT,
+                                         "LOCALE", EDJE_TEXT_ELLIPSIZE_ALIGN_LOCALE,
+                                         NULL);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_type(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee.type = parse_enum(0,
+                                                "DEFAULT", EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_DEFAULT,
+                                                "ROLL", EDJE_TEXT_ELLIPSIZE_MARQUEE_TYPE_ROLL,
+                                                NULL);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_loop(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee_repeat_limit = parse_int_range(0, -1, 0x7fffffff);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_loop_delay(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee.loop_delay = parse_float(0);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_speed(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee.speed = parse_float(0);
+   ed->text.ellipsize.marquee.duration = 0.0;
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_duration(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.marquee.duration = parse_float(0);
+   ed->text.ellipsize.marquee.speed = 0.0;
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_normal_mode(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.mode = 0;
+   ed->text.ellipsize.normal.mode = parse_enum(0,
+                                               "OFF", EDJE_TEXT_ELLIPSIZE_NORMAL_MODE_OFF,
+                                               "ON", EDJE_TEXT_ELLIPSIZE_NORMAL_MODE_ON,
+                                               NULL);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_fade_mode(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.mode = 0;
+   ed->text.ellipsize.fade.mode = parse_enum(0,
+                                             "OFF", EDJE_TEXT_ELLIPSIZE_FADE_MODE_OFF,
+                                             "ON", EDJE_TEXT_ELLIPSIZE_FADE_MODE_ON,
+                                             NULL);
+}
+
+static void
+st_collections_group_parts_part_description_text_ellipsize_marquee_mode(void)
+{
+   Edje_Part_Description_Text *ed;
+
+   check_arg_count(1);
+
+   if ((current_part->type != EDJE_PART_TYPE_TEXT) &&
+       (current_part->type != EDJE_PART_TYPE_TEXTBLOCK))
+     {
+        ERR("parse error %s:%i. text attributes in non-TEXT part.",
+            file_in, line - 1);
+        exit(-1);
+     }
+
+   ed = (Edje_Part_Description_Text*) current_desc;
+
+   ed->text.ellipsize.mode = 0;
+   ed->text.ellipsize.marquee.mode = parse_enum(0,
+                                                "OFF", EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_OFF,
+                                                "ON", EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ON,
+                                                "ALWAYS", EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ALWAYS,
+                                                NULL);
+}
+/*******/
+/* END */
+/*******/
+
 /** @edcsubsection{collections_group_parts_description_box,
  *                 Group.Parts.Part.Description.Box} */
 
