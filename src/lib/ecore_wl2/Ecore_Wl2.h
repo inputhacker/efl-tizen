@@ -1220,6 +1220,10 @@ EAPI Eina_Bool ecore_wl2_window_iconified_get(Ecore_Wl2_Window *window);
  */
 EAPI void ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool iconified);
 
+// TIZEN_ONLY(20151231) : handling iconic state on tizen
+EAPI void ecore_wl2_window_iconify_state_update(Ecore_Wl2_Window *window, Eina_Bool iconified, Eina_Bool send_event);
+//
+
 /**
  * Set the type of a given window
  *

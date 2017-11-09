@@ -1055,9 +1055,69 @@ ecore_wl2_window_iconified_get(Ecore_Wl2_Window *window)
    return window->set_config.minimized;
 }
 
+// TIZEN_ONLY(20151231) : handling iconic state on tizen
+static void
+_ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool iconified, Eina_Bool send_event)
+{
+   EINA_SAFETY_ON_NULL_RETURN(window);
+
+   iconified = !!iconified;
+   window->minimized = iconified;
+
+   if (iconified)
+     {
+        if ((window->surface) && (window->display->wl.tz_policy))
+          {
+             if (send_event)
+               tizen_policy_iconify(window->display->wl.tz_policy, window->surface);
+             window->iconified = EINA_TRUE;
+          }
+
+        else if (window->zxdg_toplevel)
+          zxdg_toplevel_v6_set_minimized(window->zxdg_toplevel);
+     }
+   else
+     {
+        if ((window->surface) && (window->display->wl.tz_policy))
+          {
+             if (send_event)
+               tizen_policy_uniconify(window->display->wl.tz_policy, window->surface);
+             window->iconified = EINA_FALSE;
+          }
+
+        else if (window->zxdg_toplevel)
+          {
+             struct wl_array states;
+             uint32_t *s;
+
+             wl_array_init(&states);
+             s = wl_array_add(&states, sizeof(*s));
+             *s = ZXDG_TOPLEVEL_V6_STATE_ACTIVATED;
+             _zxdg_toplevel_cb_configure(window, window->zxdg_toplevel,
+                                         window->geometry.w,
+                                         window->geometry.h, &states);
+             wl_array_release(&states);
+          }
+     }
+
+   if (send_event)
+     {
+        Ecore_Wl2_Event_Window_Iconify_State_Change *ev;
+
+        if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Iconify_State_Change)))) return;
+        ev->win = window->id;
+        ev->iconified = iconified;
+        ev->force = 0;
+        ecore_event_add(ECORE_WL2_EVENT_WINDOW_ICONIFY_STATE_CHANGE, ev, NULL, NULL);
+     }
+}
+//
+
 EAPI void
 ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool iconified)
 {
+   // TIZEN_ONLY(20151231) : handling iconic state on tizen
+   /*
    Eina_Bool prev;
 
    EINA_SAFETY_ON_NULL_RETURN(window);
@@ -1089,7 +1149,18 @@ ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool iconified)
              wl_array_release(&states);
           }
      }
+   */
+   _ecore_wl2_window_iconified_set(window, iconified, EINA_TRUE);
+   //
 }
+
+// TIZEN_ONLY(20151231) : handling iconic state on tizen
+EAPI void
+ecore_wl2_window_iconify_state_update(Ecore_Wl2_Window *window, Eina_Bool iconified, Eina_Bool send_event)
+{
+   _ecore_wl2_window_iconified_set(window, iconified, send_event);
+}
+//
 
 EAPI void
 ecore_wl2_window_type_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window_Type type)

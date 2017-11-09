@@ -32,6 +32,7 @@ static Eina_Array *_ecore_evas_wl_event_hdls;
 
 static void _ecore_evas_wayland_resize(Ecore_Evas *ee, int location);
 static void _ecore_evas_wl_common_rotation_set(Ecore_Evas *ee, int rotation, int resize);
+static void _ecore_evas_wl_common_iconified_set(Ecore_Evas *ee, Eina_Bool on);
 
 /* local functions */
 static void
@@ -1171,17 +1172,31 @@ _ecore_evas_wl_common_cb_iconify_state_change(void *data EINA_UNUSED, int type E
 {
    Ecore_Evas *ee;
    Ecore_Wl2_Event_Window_Iconify_State_Change *ev;
+   // TIZEN_ONLY(20151231) : handling iconic state on tizen
+   Ecore_Evas_Engine_Wl_Data *wdata;
+   //
 
    ev = event;
    ee = ecore_event_window_match(ev->win);
    if (!ee) return ECORE_CALLBACK_PASS_ON;
+   // TIZEN_ONLY(20151231) : handling iconic state on tizen
+   /*
    if (!ev->force) return ECORE_CALLBACK_PASS_ON;
+   */
+   //
    if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
 
    if (ee->prop.iconified == ev->iconified)
      return ECORE_CALLBACK_PASS_ON;
 
    ee->prop.iconified = ev->iconified;
+
+   // TIZEN_ONLY(20151231) : handling iconic state on tizen
+   wdata = ee->engine.data;
+   if (wdata && ev->force)
+     ecore_wl2_window_iconify_state_update(wdata->win, ev->iconified, EINA_FALSE);
+   //
+
    _ecore_evas_wl_common_state_update(ee);
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -1508,6 +1523,9 @@ _ecore_evas_wl_common_activate(Ecore_Evas *ee)
    if (!ee) return;
    wdata = ee->engine.data;
    ecore_evas_show(ee);
+
+   if (ee->prop.iconified)
+     _ecore_evas_wl_common_iconified_set(ee, EINA_FALSE);
 
    ecore_wl2_window_activate(wdata->win);
 }
