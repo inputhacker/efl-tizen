@@ -260,6 +260,10 @@ struct _Ecore_Wl2_Window
    Eina_Bool focus_skip : 1;
    Eina_Bool floating : 1;
 
+   // TIZEN_ONLY(20150703) : support conformant
+   Eina_Bool conformant : 1;
+   //
+
    Eina_Bool commit_pending : 1;
 
    struct

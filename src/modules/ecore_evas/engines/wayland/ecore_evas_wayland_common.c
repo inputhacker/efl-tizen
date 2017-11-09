@@ -1201,6 +1201,31 @@ _ecore_evas_wl_common_cb_iconify_state_change(void *data EINA_UNUSED, int type E
    return ECORE_CALLBACK_PASS_ON;
 }
 
+// TIZEN_ONLY(20150703) : support conformant
+static Eina_Bool
+_ecore_evas_wl_common_cb_conformant_change(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+{
+   Ecore_Evas *ee;
+   Ecore_Wl2_Event_Conformant_Change *ev;
+
+   ev = event;
+   ee = ecore_event_window_match(ev->win);
+   if (!ee) return ECORE_CALLBACK_PASS_ON;
+   if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
+
+   if ((ev->part_type == ECORE_WL2_INDICATOR_PART) && (ee->indicator_state != ev->state))
+     ee->indicator_state = ev->state;
+   else if ((ev->part_type == ECORE_WL2_KEYBOARD_PART) && (ee->keyboard_state != ev->state))
+     ee->keyboard_state = ev->state;
+   else if ((ev->part_type == ECORE_WL2_CLIPBOARD_PART) && (ee->clipboard_state != ev->state))
+     ee->clipboard_state = ev->state;
+
+   _ecore_evas_wl_common_state_update(ee);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+//
+
 static int
 _ecore_evas_wl_common_init(void)
 {
@@ -1283,6 +1308,12 @@ _ecore_evas_wl_common_init(void)
    h =
      ecore_event_handler_add(ECORE_WL2_EVENT_AUX_MESSAGE,
                              _ecore_evas_wl_common_cb_aux_message, NULL);
+   // TIZEN_ONLY(20150703) : support conformant
+   h =
+     ecore_event_handler_add(ECORE_WL2_EVENT_CONFORMANT_CHANGE,
+                             _ecore_evas_wl_common_cb_conformant_change, NULL);
+   eina_array_push(_ecore_evas_wl_event_hdls, h);
+   //
 
    ecore_event_evas_init();
 

@@ -1513,6 +1513,36 @@ ecore_wl2_window_floating_mode_get(Ecore_Wl2_Window *window)
    return window->floating;
 }
 
+// TIZEN_ONLY(20150703) : support conformant
+EAPI void
+ecore_wl2_window_conformant_set(Ecore_Wl2_Window *win, unsigned int is_conformant)
+{
+   if (!win) return;
+   if (!win->surface) return;
+   if (!win->display) return;
+   if (!win->display->wl.tz_policy) return;
+
+   if (is_conformant)
+     tizen_policy_set_conformant(win->display->wl.tz_policy, win->surface);
+   else
+     tizen_policy_unset_conformant(win->display->wl.tz_policy, win->surface);
+}
+
+EAPI Eina_Bool
+ecore_wl2_window_conformant_get(Ecore_Wl2_Window *win)
+{
+   if (!win) return 0;
+   if (!win->surface) return 0;
+   if (!win->display) return;
+   if (!win->display->wl.tz_policy) return;
+
+   tizen_policy_get_conformant(win->display->wl.tz_policy, win->surface);
+   ecore_wl2_display_sync(win->display);
+
+   return win->conformant;
+}
+//
+
 // TIZEN_ONLY(20171108) : add functions for indicator
 EAPI void
 ecore_wl2_window_indicator_geometry_set(Ecore_Wl2_Window *win, int x, int y, int w, int h)

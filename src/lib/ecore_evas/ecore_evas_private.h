@@ -378,6 +378,12 @@ struct _Ecore_Evas
    unsigned char animator_ticked : 1;
    unsigned char animator_ran : 1;
    unsigned char first_frame : 1;
+
+   // TIZEN_ONLY(20150703) : support conformant
+   Eina_Bool indicator_state : 1;
+   Eina_Bool keyboard_state : 1;
+   Eina_Bool clipboard_state : 1;
+   //
 };
 
 struct _Ecore_Evas_Aux_Hint

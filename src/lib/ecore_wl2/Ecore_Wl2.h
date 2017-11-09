@@ -1734,6 +1734,11 @@ EAPI uint32_t ecore_wl2_dnd_selection_set(Ecore_Wl2_Input *input, const char **t
  */
 EAPI uint32_t ecore_wl2_dnd_selection_clear(Ecore_Wl2_Input *input);
 
+// TIZEN_ONLY(20150703) : support conformant
+EAPI void ecore_wl2_window_conformant_set(Ecore_Wl2_Window *win, unsigned int is_conformant);
+EAPI Eina_Bool ecore_wl2_window_conformant_get(Ecore_Wl2_Window *win);
+//
+
 // TIZEN_ONLY(20171108) : add functions for indicator
 EAPI void ecore_wl2_window_indicator_geometry_set(Ecore_Wl2_Window *win, int x, int y, int w, int h);
 EAPI Eina_Bool ecore_wl2_window_indicator_geometry_get(Ecore_Wl2_Window *win, int *x, int *y, int *w, int *h);
