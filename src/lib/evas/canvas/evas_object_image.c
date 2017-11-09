@@ -3544,19 +3544,38 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                                          o->cur->smooth_scale,
                                          do_async);
                       else
-                        ENFN->image_draw(output,
-                                         context,
-                                         surface,
-                                         pixels,
-                                         0, 0,
-                                         imagew,
-                                         imageh,
-                                         obj->cur->geometry.x + o->cur->fill.x + x,
-                                         obj->cur->geometry.y + o->cur->fill.y + y,
-                                         o->cur->fill.w,
-                                         o->cur->fill.h,
-                                         o->cur->smooth_scale,
-                                         do_async);
+                        {
+                          if ((o->cur->border.l == 0) &&
+                              (o->cur->border.r == 0) &&
+                              (o->cur->border.t == 0) &&
+                              (o->cur->border.b == 0) &&
+                              (o->cur->border.fill != 0))
+                            {
+                              ENFN->image_draw(output, context, surface, pixels, 0, 0, imagew, imageh,
+                                               obj->cur->geometry.x + o->cur->fill.x + x, obj->cur->geometry.y + o->cur->fill.y + y,
+                                               o->cur->fill.w, o->cur->fill.h, o->cur->smooth_scale, do_async);
+                            }
+                          else
+                            {
+                              if ((o->cur->border.fill == EVAS_BORDER_FILL_SOLID) &&
+                                  (obj->cur->cache.clip.a == 255) &&
+                                  (!obj->clip.mask) &&
+                                  (obj->cur->render_op == EVAS_RENDER_BLEND))
+                                {
+                                  ENFN->context_render_op_set(output, context, EVAS_RENDER_COPY);
+                                  ENFN->image_draw(output, context, surface, pixels, 0, 0, imagew, imageh,
+                                                   obj->cur->geometry.x + o->cur->fill.x + x, obj->cur->geometry.y + o->cur->fill.y + y,
+                                                   o->cur->fill.w, o->cur->fill.h, o->cur->smooth_scale, do_async);
+                                  ENFN->context_render_op_set(output, context, obj->cur->render_op);
+                                }
+                              else
+                                {
+                                  ENFN->image_draw(output, context, surface, pixels, 0, 0, imagew, imageh,
+                                                   obj->cur->geometry.x + o->cur->fill.x + x, obj->cur->geometry.y + o->cur->fill.y + y,
+                                                   o->cur->fill.w, o->cur->fill.h, o->cur->smooth_scale, do_async);
+                                }
+                            }
+                        }
                       return;
                     }
                 }
