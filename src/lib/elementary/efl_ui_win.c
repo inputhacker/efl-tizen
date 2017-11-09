@@ -3217,6 +3217,49 @@ _elm_win_wl_cursor_set(Evas_Object *obj, const char *cursor)
         eina_iterator_free(it);
      }
 }
+
+static void
+_elm_win_wlwin_type_update(Efl_Ui_Win_Data *sd)
+{
+   Ecore_Wl2_Window_Type wtype;
+
+   if (!sd) return;
+   if (!sd->wl.win) return;
+   if (sd->type == ELM_WIN_FAKE) return;
+
+   switch (sd->type)
+     {
+      case ELM_WIN_BASIC:
+      case ELM_WIN_TOOLBAR:
+      case ELM_WIN_DESKTOP:
+        wtype = ECORE_WL2_WINDOW_TYPE_TOPLEVEL;
+        break;
+      case ELM_WIN_UTILITY:
+         wtype = ECORE_WL2_WINDOW_TYPE_UTILITY;
+         break;
+      case ELM_WIN_DIALOG_BASIC:
+        wtype = ECORE_WL2_WINDOW_TYPE_DIALOG;
+        break;
+      case ELM_WIN_DOCK:
+        wtype = ECORE_WL2_WINDOW_TYPE_DOCK;
+        break;
+      case ELM_WIN_SPLASH:
+        wtype = ECORE_WL2_WINDOW_TYPE_SPLASH;
+        break;
+      case ELM_WIN_TOOLTIP:
+      case ELM_WIN_COMBO:
+      case ELM_WIN_MENU:
+      case ELM_WIN_POPUP_MENU:
+        wtype = ECORE_WL2_WINDOW_TYPE_MENU;
+        break;
+      case ELM_WIN_DND:
+        wtype = ECORE_WL2_WINDOW_TYPE_DND;
+        break;
+      default:
+        wtype = ECORE_WL2_WINDOW_TYPE_NONE;
+     }
+   ecore_wl2_window_type_set(sd->wl.win, wtype);
+}
 #endif
 
 Ecore_Cocoa_Window *
@@ -5164,26 +5207,25 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
    _elm_win_wlwindow_get(sd);
    if (sd->wl.win)
      {
+//TIZEN_ONLY(20160720): Allowed changing type after initializing
+/*
         Ecore_Wl2_Window_Type wtype;
+*/
         sd->wl.configure_handler =
           ecore_event_handler_add(ECORE_WL2_EVENT_WINDOW_CONFIGURE, _elm_win_wl_configure, obj);
+//TIZEN_ONLY(20160720): Allowed changing type after initializing
+/*
         switch (sd->type)
           {
            case ELM_WIN_BASIC:
+           case ELM_WIN_DIALOG_BASIC:
            case ELM_WIN_NAVIFRAME_BASIC:
+           case ELM_WIN_SPLASH:
            case ELM_WIN_TOOLBAR:
            case ELM_WIN_UTILITY:
+           case ELM_WIN_DOCK:
            case ELM_WIN_DESKTOP:
              wtype = ECORE_WL2_WINDOW_TYPE_TOPLEVEL;
-             break;
-           case ELM_WIN_DIALOG_BASIC:
-             wtype = ECORE_WL2_WINDOW_TYPE_DIALOG;
-             break;
-           case ELM_WIN_DOCK:
-             wtype = ECORE_WL2_WINDOW_TYPE_DOCK;
-             break;
-           case ELM_WIN_SPLASH:
-             wtype = ECORE_WL2_WINDOW_TYPE_SPLASH;
              break;
            case ELM_WIN_TOOLTIP:
            case ELM_WIN_COMBO:
@@ -5198,6 +5240,9 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
              wtype = ECORE_WL2_WINDOW_TYPE_NONE;
           }
         ecore_wl2_window_type_set(sd->wl.win, wtype);
+*/
+        _elm_win_wlwin_type_update(sd);
+//
      }
    else if (sd->type == ELM_WIN_FAKE)
      {
@@ -5550,6 +5595,12 @@ _efl_ui_win_win_type_set(Eo *obj, Efl_Ui_Win_Data *sd, Efl_Ui_Win_Type type)
 {
    if (efl_finalized_get(obj))
      {
+// TIZEN_ONLY(20160720): Allowed changing type after initializing
+#ifdef HAVE_ELEMENTARY_WL2
+        if (sd->type != ELM_WIN_FAKE) sd->type = type;
+        _elm_win_wlwin_type_update(sd);
+#endif
+//
         ERR("This function is only allowed during construction.");
         return;
      }
