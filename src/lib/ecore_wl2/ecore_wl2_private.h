@@ -247,6 +247,10 @@ struct _Ecore_Wl2_Window
    Ecore_Wl2_Window_Configure_State def_config;
 
    Eina_Bool moving : 1;
+   //TODO: move the iconified into the Ecore_Wl2_Window_Configure_State structure.
+   // TIZEN_ONLY(20150822)
+   Eina_Bool iconified : 1;
+   //
    Eina_Bool alpha : 1;
    Eina_Bool transparent : 1;
 

@@ -1047,6 +1047,11 @@ ecore_wl2_window_iconified_get(Ecore_Wl2_Window *window)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(window, EINA_FALSE);
 
+   // TIZEN_ONLY(20150822)
+   if (window->display->wl.tz_policy)
+     return window->iconified;
+   else
+   //
    return window->set_config.minimized;
 }
 
