@@ -5170,14 +5170,20 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
         switch (sd->type)
           {
            case ELM_WIN_BASIC:
-           case ELM_WIN_DIALOG_BASIC:
            case ELM_WIN_NAVIFRAME_BASIC:
-           case ELM_WIN_SPLASH:
            case ELM_WIN_TOOLBAR:
            case ELM_WIN_UTILITY:
-           case ELM_WIN_DOCK:
            case ELM_WIN_DESKTOP:
              wtype = ECORE_WL2_WINDOW_TYPE_TOPLEVEL;
+             break;
+           case ELM_WIN_DIALOG_BASIC:
+             wtype = ECORE_WL2_WINDOW_TYPE_DIALOG;
+             break;
+           case ELM_WIN_DOCK:
+             wtype = ECORE_WL2_WINDOW_TYPE_DOCK;
+             break;
+           case ELM_WIN_SPLASH:
+             wtype = ECORE_WL2_WINDOW_TYPE_SPLASH;
              break;
            case ELM_WIN_TOOLTIP:
            case ELM_WIN_COMBO:
