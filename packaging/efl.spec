@@ -321,7 +321,6 @@ Requires: ecore-ipc
 %if %{with wayland}
 Requires: ecore-wayland
 Requires: ecore-wl2
-Requires: ecore-drm
 %endif
 %if %{with x}
 Requires: ecore-x
@@ -352,7 +351,6 @@ Requires: ecore-ipc-devel
 %if %{with wayland}
 Requires: ecore-wayland-devel
 Requires: ecore-wl2-devel
-Requires: ecore-drm-devel
 %endif
 %if %{with x}
 Requires: ecore-x-devel
