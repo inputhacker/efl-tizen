@@ -305,6 +305,31 @@ _bt_pressed(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    fflush(stdout);
 }
 
+static void
+_win_effect_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   const char *type_name;
+   Efl_Ui_Win_Effect_Type type = (Efl_Ui_Win_Effect_Type)(event_info);
+
+   switch (type)
+     {
+      case EFL_UI_WIN_EFFECT_TYPE_SHOW:
+         type_name = eina_stringshare_add("SHOW");
+         break;
+      case EFL_UI_WIN_EFFECT_TYPE_HIDE:
+         type_name = eina_stringshare_add("HIDE");
+         break;
+      case EFL_UI_WIN_EFFECT_TYPE_RESTACK:
+         type_name = eina_stringshare_add("RESTACK");
+         break;
+      default:
+         type_name = eina_stringshare_add("UNKNOWN");
+     }
+
+   printf("EFFECT: %s %s\n", type_name, (char *)data);
+   eina_stringshare_del(type_name);
+}
+
 void
 test_win_state(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
@@ -337,6 +362,8 @@ test_win_state(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event
    evas_object_smart_callback_add(win, "focus,in", _win_state_focus_cb, "focus,in");
    evas_object_smart_callback_add(win, "delete,request", _win_state_print_cb, "delete,request");
    evas_object_smart_callback_add(win, "wm,rotation,changed", _win_state_print_cb, "wm,rotation,changed");
+   evas_object_smart_callback_add(win, "effect,started", _win_effect_cb, "effect,started");
+   evas_object_smart_callback_add(win, "effect,done", _win_effect_cb, "effect,done");
    elm_win_autodel_set(win, EINA_TRUE);
 
    bg = elm_bg_add(win);

@@ -102,6 +102,10 @@ struct _Efl_Ui_Win_Data
       Ecore_Wl2_Window *win;
       Ecore_Event_Handler *configure_handler;
       Eina_Bool opaque_dirty : 1;
+      //TIZEN_ONLY(20171110): added signal for effect start and done
+      Ecore_Event_Handler *effect_start_handler;
+      Ecore_Event_Handler *effect_end_handler;
+      //
    } wl;
 #endif
 #ifdef HAVE_ELEMENTARY_COCOA
@@ -323,6 +327,10 @@ static const char SIG_INDICATOR_PROP_CHANGED[] = "indicator,prop,changed";
 static const char SIG_ROTATION_CHANGED[] = "rotation,changed";
 static const char SIG_PROFILE_CHANGED[] = "profile,changed";
 static const char SIG_WM_ROTATION_CHANGED[] = "wm,rotation,changed";
+//TIZEN_ONLY(20171110): added signal for effect start and done
+static const char SIG_EFFECT_STARTED[] = "effect,started";
+static const char SIG_EFFECT_DONE[] = "effect,done";
+//
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_DELETE_REQUEST, ""},
@@ -345,6 +353,8 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WM_ROTATION_CHANGED, ""},
    {SIG_WIDGET_FOCUSED, ""}, /**< handled by elm_widget */
    {SIG_WIDGET_UNFOCUSED, ""}, /**< handled by elm_widget */
+   {SIG_EFFECT_STARTED, ""},
+   {SIG_EFFECT_DONE, ""},
    {NULL, NULL}
 };
 
@@ -2860,6 +2870,10 @@ _efl_ui_win_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Win_Data *sd)
    if (sd->pointer.obj) evas_object_del(sd->pointer.obj);
    if (sd->pointer.ee) ecore_evas_free(sd->pointer.ee);
    sd->pointer.surf = NULL;
+   //TIZEN_ONLY(20171110): added signal for effect start and done
+   ecore_event_handler_del(sd->wl.effect_start_handler);
+   ecore_event_handler_del(sd->wl.effect_end_handler);
+   //
 #endif
 #ifdef HAVE_ELEMENTARY_WIN32
    ecore_event_handler_del(sd->win32.key_down_handler);
@@ -4301,6 +4315,41 @@ _elm_win_frame_pre_render(void *data, Evas *e EINA_UNUSED, void *ev EINA_UNUSED)
      _elm_win_opaque_update(sd, EINA_FALSE);
    sd->wl.opaque_dirty = 0;
 }
+
+//TIZEN_ONLY(20171110): added signal for effect start and done
+static Eina_Bool
+_elm_win_wl_effect_start(void *data, int type EINA_UNUSED, void *event)
+{
+   ELM_WIN_DATA_GET(data, sd);
+   Ecore_Wl2_Event_Effect_Start *e = event;
+
+   if (!sd->wl.win) return ECORE_CALLBACK_PASS_ON;
+
+   if ((ecore_wl2_window_id_get(sd->wl.win) != e->win))
+     return ECORE_CALLBACK_PASS_ON;
+
+   evas_object_smart_callback_call(data, SIG_EFFECT_STARTED, (void*)e->type);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_elm_win_wl_effect_end(void *data, int type EINA_UNUSED, void *event)
+{
+   ELM_WIN_DATA_GET(data, sd);
+   Ecore_Wl2_Event_Effect_Start *e = event;
+   unsigned int eff_type;
+
+   if (!sd->wl.win) return ECORE_CALLBACK_PASS_ON;
+
+   if ((ecore_wl2_window_id_get(sd->wl.win) != e->win))
+     return ECORE_CALLBACK_PASS_ON;
+
+     evas_object_smart_callback_call(data, SIG_EFFECT_DONE, (void*)e->type);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+//
 #endif
 
 static inline void
@@ -5191,6 +5240,20 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
             (ECORE_X_EVENT_WINDOW_PROPERTY, _elm_win_property_change, obj);
      }
 #endif
+#ifdef HAVE_ELEMENTARY_WL2
+      else if ((engine) &&
+               ((!strcmp(engine, ELM_WAYLAND_SHM)) ||
+                (!strcmp(engine, ELM_WAYLAND_EGL))))
+        {
+           //TIZEN_ONLY(20171110): added signal for effect start and done
+           sd->wl.effect_start_handler = ecore_event_handler_add
+              (ECORE_WL2_EVENT_EFFECT_START, _elm_win_wl_effect_start, obj);
+           sd->wl.effect_end_handler = ecore_event_handler_add
+              (ECORE_WL2_EVENT_EFFECT_END, _elm_win_wl_effect_end, obj);
+           //
+        }
+#endif
+
    else if ((engine) && (!strncmp(engine, "shot:", 5)))
      _shot_init(sd);
 
