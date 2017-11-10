@@ -692,6 +692,21 @@ ecore_wl2_window_raise(Ecore_Wl2_Window *window)
 }
 
 // TIZEN_ONLY(20171108): lower window function from ecore_wayland to ecore_wl2
+EAPI Ecore_Wl2_Window *
+ecore_wl2_window_surface_find(struct wl_surface *surface)
+{
+   Ecore_Wl2_Display *ewd;
+   Ecore_Wl2_Window *window;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(surface, NULL);
+
+   ewd = ecore_wl2_connected_display_get(NULL);
+   if (!ewd) return NULL;
+
+   window = ecore_wl2_display_window_find_by_surface(ewd, surface);
+   return window;
+}
+
 EAPI void
 ecore_wl2_window_lower(Ecore_Wl2_Window *window)
 {

@@ -1316,6 +1316,21 @@ ecore_wl2_display_window_find(Ecore_Wl2_Display *display, unsigned int id)
    return NULL;
 }
 
+// TIZEN_ONLY(20171110)
+EAPI Ecore_Wl2_Window *
+ecore_wl2_display_window_find_by_surface(Ecore_Wl2_Display *display, struct wl_surface *surface)
+{
+   Ecore_Wl2_Window *window;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(display, NULL);
+
+   EINA_INLIST_FOREACH(display->windows, window)
+     if (window->surface == surface) return window;
+
+   return NULL;
+}
+//
+
 EAPI struct wl_registry *
 ecore_wl2_display_registry_get(Ecore_Wl2_Display *display)
 {

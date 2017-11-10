@@ -827,6 +827,10 @@ EAPI Ecore_Wl2_Input *ecore_wl2_display_input_find_by_name(const Ecore_Wl2_Displ
  */
 EAPI Ecore_Wl2_Window *ecore_wl2_display_window_find(Ecore_Wl2_Display *display, unsigned int id);
 
+// TIZEN_ONLY(20171110)
+EAPI Ecore_Wl2_Window *ecore_wl2_display_window_find_by_surface(Ecore_Wl2_Display *display, struct wl_surface *surface);
+//
+
 /**
  * Retrieves the Wayland Registry used for the current Wayland display.
  *
@@ -994,6 +998,7 @@ EAPI void ecore_wl2_window_resize(Ecore_Wl2_Window *window, Ecore_Wl2_Input *inp
 EAPI void ecore_wl2_window_raise(Ecore_Wl2_Window *window);
 
 // TIZEN_ONLY(20171108): tizen window function
+EAPI Ecore_Wl2_Window *ecore_wl2_window_surface_find(struct wl_surface *surface);
 EAPI void ecore_wl2_window_lower(Ecore_Wl2_Window *window);
 EAPI void ecore_wl2_window_activate(Ecore_Wl2_Window *window);
 EAPI void ecore_wl2_window_parent_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window *parent);
