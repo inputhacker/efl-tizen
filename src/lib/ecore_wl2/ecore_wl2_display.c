@@ -1113,9 +1113,6 @@ _cb_sync_done(void *data, struct wl_callback *cb, uint32_t serial EINA_UNUSED)
    if (ewd->sync_done) return;
 
    ewd->sync_done = EINA_TRUE;
-// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
-   ewd->sync_ref_count--;
-//
 
    _ecore_wl2_shell_bind(ewd);
 
@@ -1134,17 +1131,112 @@ static const struct wl_callback_listener _sync_listener =
    _cb_sync_done
 };
 
-// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+// TIZEN_ONLY(20171110): wait until sync done is called in ecore_wl2_display_sync
+static void
+_cb_tz_sync_done(void *data, struct wl_callback *cb, uint32_t serial EINA_UNUSED)
+{
+   Ecore_Wl2_Display *ewd;
+
+   ewd = data;
+
+   ewd->sync_ref_count--;
+
+   wl_callback_destroy(cb);
+}
+
+static const struct wl_callback_listener _tz_sync_listener =
+{
+   _cb_tz_sync_done
+};
+
+static Eina_Bool
+_ecore_wl2_disconnected(int error)
+{
+   if (error == EPIPE ||
+       error == ECONNRESET)
+     return EINA_TRUE;
+
+   return EINA_FALSE;
+}
+
+static void
+_ecore_wl2_signal_exit(void)
+{
+   Ecore_Event_Signal_Exit *ev;
+
+   if (!(ev = calloc(1, sizeof(Ecore_Event_Signal_Exit))))
+     return;
+
+   ev->quit = 1;
+   ecore_event_add(ECORE_EVENT_SIGNAL_EXIT, ev, NULL, NULL);
+}
+
+static void
+_ecore_wl2_display_dispatch_error(Ecore_Wl2_Display *ewd)
+{
+   uint32_t ecode = 0, id = 0;
+   const struct wl_interface *intf = NULL;
+   int last_err;
+   char buffer[1024];
+   char *str;
+
+   /* write out message about protocol error */
+   ecode = wl_display_get_protocol_error(ewd->wl.display, &intf, &id);
+
+   if (intf)
+     ERR("Wayland Client: Got protocol error %u on interface %s"
+         " (object %u)\n", ecode, intf->name, id);
+
+   /* raise exit signal */
+   last_err = wl_display_get_error(ewd->wl.display);
+   if (_ecore_wl2_disconnected(errno) || _ecore_wl2_disconnected(last_err))
+     {
+        int _err = errno;
+        if (last_err) _err = last_err;
+        str = strerror_r(_err, buffer, sizeof(buffer));
+        ERR("Disconnected from a wayland compositor : error:(%d) %s(%s)", _err, buffer, str);
+        _ecore_wl2_signal_exit();
+        return;
+     }
+   else
+     {
+        str = strerror_r(errno, buffer, sizeof(buffer));
+        ERR("wayland socket error:(%d) %s(%s)", errno, buffer, str);
+        abort();
+     }
+}
+
 EAPI void
 ecore_wl2_display_sync(Ecore_Wl2_Display *display)
 {
    struct wl_callback *cb;
+   int last_dpy_err;
+   int ret;
 
    EINA_SAFETY_ON_NULL_RETURN(display);
+   EINA_SAFETY_ON_NULL_RETURN(display->wl.display);
 
    display->sync_ref_count++;
    cb = wl_display_sync(display->wl.display);
-   wl_callback_add_listener(cb, &_sync_listener, display);
+   wl_callback_add_listener(cb, &_tz_sync_listener, display);
+
+   while (display->sync_ref_count > 0)
+     {
+        last_dpy_err = wl_display_get_error(display->wl.display);
+        if (_ecore_wl2_disconnected(last_dpy_err))
+          {
+             errno = last_dpy_err;
+             ERR("Disconnected from a wayland compositor : %s", strerror(errno));
+             _ecore_wl2_signal_exit();
+             return;
+          }
+        ret = wl_display_dispatch(display->wl.display);
+        if ((ret < 0) && (errno != EAGAIN))
+          {
+             _ecore_wl2_display_dispatch_error(display);
+             break;
+          }
+     }
 }
 //
 
