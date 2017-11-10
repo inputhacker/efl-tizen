@@ -1110,7 +1110,7 @@ This package provides translations for package %{name}.
 Summary: Ecore_Wl2 provides a wrapper and convenience functions for using the Wayland protocol in implementing a window system.
 Requires: %{name}-data = %{version}-%{release}
 License: BSD-2-Clause
- i am not sure that the license is correct
+# i am not sure that the license is correct
 
 %description -n ecore-wl2
 Ecore_Wl2 provides a wrapper and convenience functions for using the Wayland protocol in implementing a window system.
