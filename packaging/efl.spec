@@ -656,23 +656,24 @@ License: BSD-2-Clause and MIT
 %description -n ecore-wayland-devel
 Development files for ecore_wayland
 
-%package -n ecore-wl2
-Summary: Ecore wayland interface library version 2 - wayland
-Requires: %{name}-data = %{version}-%{release}
-License: BSD-2-Clause and MIT
+#%package -n ecore-wl2
+#Summary: Ecore wayland interface library version 2 - wayland
+#Requires: %{name}-data = %{version}-%{release}
+#License: BSD-2-Clause and MIT
 
-%description -n ecore-wl2
-This is a glue/wrapper library to interface EFL to Wayland libraries
-to tie them into the Ecore main-loop and event queue.
 
-%package -n ecore-wl2-devel
-Summary:  Development components for the ecore_wl2 package
-Group:    Graphics & UI Framework/Development
-Requires: ecore-wl2 = %{version}-%{release}
-License: BSD-2-Clause and MIT
+#%description -n ecore-wl2
+#This is a glue/wrapper library to interface EFL to Wayland libraries
+#to tie them into the Ecore main-loop and event queue.
 
-%description -n ecore-wl2-devel
-Development files for ecore_wl2
+#%package -n ecore-wl2-devel
+#Summary:  Development components for the ecore_wl2 package
+#Group:    Graphics & UI Framework/Development
+#Requires: ecore-wl2 = %{version}-%{release}
+#License: BSD-2-Clause and MIT
+
+#%description -n ecore-wl2-devel
+#Development files for ecore_wl2
 
 %package -n ecore-x
 Summary: Enlightened Core X interface library - x
@@ -1109,7 +1110,7 @@ This package provides translations for package %{name}.
 Summary: Ecore_Wl2 provides a wrapper and convenience functions for using the Wayland protocol in implementing a window system.
 Requires: %{name}-data = %{version}-%{release}
 License: BSD-2-Clause
-# i am not sure that the license is correct
+ i am not sure that the license is correct
 
 %description -n ecore-wl2
 Ecore_Wl2 provides a wrapper and convenience functions for using the Wayland protocol in implementing a window system.
