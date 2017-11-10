@@ -334,8 +334,23 @@ _tizen_policy_cb_window_screen_mode_done(void *data EINA_UNUSED, struct tizen_po
 }
 
 static void
-_tizen_policy_cb_iconify_state_changed(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t iconified, uint32_t force)
+_tizen_policy_cb_iconify_state_changed(void *data, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface_resource, uint32_t iconified, uint32_t force)
 {
+   Ecore_Wl2_Display *ewd = data;
+   Ecore_Wl2_Window *win = NULL;
+   Ecore_Wl2_Event_Window_Iconify_State_Change *ev = NULL;
+
+   if (!surface_resource) return;
+
+   win = ecore_wl2_display_window_find_by_surface(ewd, surface_resource);
+   if (!win) return;
+
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Iconify_State_Change)))) return;
+   ev->win = win->id;
+   ev->iconified = iconified;
+   ev->force = force;
+
+   ecore_event_add(ECORE_WL2_EVENT_WINDOW_ICONIFY_STATE_CHANGE, ev, NULL, NULL);
 }
 
 static void
