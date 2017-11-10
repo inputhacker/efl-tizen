@@ -1546,10 +1546,10 @@ ecore_wl2_window_conformant_set(Ecore_Wl2_Window *win, unsigned int is_conforman
 EAPI Eina_Bool
 ecore_wl2_window_conformant_get(Ecore_Wl2_Window *win)
 {
-   if (!win) return 0;
-   if (!win->surface) return 0;
-   if (!win->display) return;
-   if (!win->display->wl.tz_policy) return;
+   if (!win) return EINA_FALSE;
+   if (!win->surface) return EINA_FALSE;
+   if (!win->display) return EINA_FALSE;
+   if (!win->display->wl.tz_policy) return EINA_FALSE;
 
    tizen_policy_get_conformant(win->display->wl.tz_policy, win->surface);
    ecore_wl2_display_sync(win->display);
