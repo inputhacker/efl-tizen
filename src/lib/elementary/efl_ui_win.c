@@ -4325,7 +4325,7 @@ _elm_win_wl_effect_start(void *data, int type EINA_UNUSED, void *event)
 
    if (!sd->wl.win) return ECORE_CALLBACK_PASS_ON;
 
-   if ((ecore_wl2_window_id_get(sd->wl.win) != e->win))
+   if (ecore_wl2_window_id_get(sd->wl.win) != e->win)
      return ECORE_CALLBACK_PASS_ON;
 
    evas_object_smart_callback_call(data, SIG_EFFECT_STARTED, (void*)e->type);
@@ -4342,10 +4342,10 @@ _elm_win_wl_effect_end(void *data, int type EINA_UNUSED, void *event)
 
    if (!sd->wl.win) return ECORE_CALLBACK_PASS_ON;
 
-   if ((ecore_wl2_window_id_get(sd->wl.win) != e->win))
+   if (ecore_wl2_window_id_get(sd->wl.win) != e->win)
      return ECORE_CALLBACK_PASS_ON;
 
-     evas_object_smart_callback_call(data, SIG_EFFECT_DONE, (void*)e->type);
+   evas_object_smart_callback_call(data, SIG_EFFECT_DONE, (void*)e->type);
 
    return ECORE_CALLBACK_PASS_ON;
 }

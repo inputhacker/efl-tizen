@@ -400,11 +400,35 @@ static const struct tizen_policy_ext_listener _tizen_policy_ext_listener =
 static void
 _tizen_effect_cb_start(void *data EINA_UNUSED, struct tizen_effect *tizen_effect EINA_UNUSED, struct wl_surface *surface_resource, unsigned int type)
 {
+   struct wl_surface *surface = surface_resource;
+   Ecore_Wl2_Window *win = NULL;
+   Ecore_Wl2_Event_Effect_Start *ev;
+
+   if (!surface) return;
+   win = ecore_wl2_window_surface_find(surface);
+   if (!win) return;
+
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Effect_Start)))) return;
+   ev->win = win->id;
+   ev->type = type;
+   ecore_event_add(ECORE_WL2_EVENT_EFFECT_START, ev, NULL, NULL);
 }
 
 static void
 _tizen_effect_cb_end(void *data EINA_UNUSED, struct tizen_effect *tizen_effect EINA_UNUSED, struct wl_surface *surface_resource, unsigned int type)
 {
+   struct wl_surface *surface = surface_resource;
+   Ecore_Wl2_Window *win = NULL;
+   Ecore_Wl2_Event_Effect_End *ev;
+
+   if (!surface) return;
+   win = ecore_wl2_window_surface_find(surface);
+   if (!win) return;
+
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Effect_End)))) return;
+   ev->win = win->id;
+   ev->type = type;
+   ecore_event_add(ECORE_WL2_EVENT_EFFECT_END, ev, NULL, NULL);
 }
 
 static const struct tizen_effect_listener _tizen_effect_listener =
