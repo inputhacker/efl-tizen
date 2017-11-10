@@ -111,7 +111,7 @@ _ecore_evas_wl_common_engine_info_rotation_set(Ecore_Evas *ee, Evas_Engine_Info 
      }
 }
 
-static void
+static Eina_Bool
 _ecore_evas_wl_common_rotate_update(Ecore_Evas *ee)
 {
    Ecore_Evas_Engine_Wl_Data *wdata;
@@ -130,9 +130,11 @@ _ecore_evas_wl_common_rotate_update(Ecore_Evas *ee)
    WRN("ignore_output_transform(%d) rotation(%d)", ecore_wl_window_ignore_output_transform_get(wdata->win), rotation);
 
    if (_ecore_evas_wl_common_engine_rotation_get(ee) == ((rotation + ee->rotation) % 360))
-     return;
+     return EINA_FALSE;
 
    _rotation_do(ee, ee->rotation, rotation, 0);
+
+   return EINA_TRUE;
 }
 
 static int 
@@ -507,6 +509,7 @@ _ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void
    Ecore_Wl_Event_Output_Transform *ev = event;
    Ecore_Evas_Engine_Wl_Data *wdata;
    Ecore_Wl_Output *output;
+   Eina_Bool changed;
 
    if (!ee) return ECORE_CALLBACK_PASS_ON;
    if (!(wdata = ee->engine.data)) return ECORE_CALLBACK_PASS_ON;
@@ -515,10 +518,10 @@ _ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void
    output = ecore_wl_window_output_find(wdata->win);
    if (output != ev->output) return ECORE_CALLBACK_PASS_ON;
 
-   _ecore_evas_wl_common_rotate_update(ee);
+   changed = _ecore_evas_wl_common_rotate_update(ee);
    evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
 
-   if (!ee->manual_render)
+   if (!ee->manual_render && changed)
      _ecore_evas_wl_common_render(ee);
 
    return ECORE_CALLBACK_PASS_ON;
@@ -528,13 +531,14 @@ static Eina_Bool
 _ecore_evas_wl_common_cb_ignore_output_transform(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
    Ecore_Evas *ee = data;
+   Eina_Bool changed;
 
    if (!ee) return ECORE_CALLBACK_PASS_ON;
 
-   _ecore_evas_wl_common_rotate_update(ee);
+   changed = _ecore_evas_wl_common_rotate_update(ee);
    evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
 
-   if (!ee->manual_render)
+   if (!ee->manual_render && changed)
      _ecore_evas_wl_common_render(ee);
 
    return ECORE_CALLBACK_PASS_ON;
