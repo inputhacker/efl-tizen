@@ -2232,6 +2232,38 @@ _ecore_evas_wayland_aux_hint_del(Ecore_Evas *ee, int id)
    ecore_wl2_window_aux_hint_del(wdata->win, id);
 }
 
+// TIZEN_ONLY(20160201) : support to handle input rectangle
+static void
+_ecore_evas_wayland_input_rect_set(Ecore_Evas *ee, Eina_Rectangle *input_rect)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+
+   if (!ee) return;
+   wdata = ee->engine.data;
+   ecore_wl2_window_input_rect_set(wdata->win, input_rect);
+}
+
+static void
+_ecore_evas_wayland_input_rect_add(Ecore_Evas *ee, Eina_Rectangle *input_rect)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+
+   if (!ee) return;
+   wdata = ee->engine.data;
+   ecore_wl2_window_input_rect_add(wdata->win, input_rect);
+}
+
+static void
+_ecore_evas_wayland_input_rect_subtract(Ecore_Evas *ee, Eina_Rectangle *input_rect)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+
+   if (!ee) return;
+   wdata = ee->engine.data;
+   ecore_wl2_window_input_rect_subtract(wdata->win, input_rect);
+}
+//
+
 static Ecore_Evas_Interface_Wayland *
 _ecore_evas_wl_interface_new(void)
 {
@@ -2251,6 +2283,11 @@ _ecore_evas_wl_interface_new(void)
    iface->aux_hint_add = _ecore_evas_wayland_aux_hint_add;
    iface->aux_hint_change = _ecore_evas_wayland_aux_hint_change;
    iface->aux_hint_del = _ecore_evas_wayland_aux_hint_del;
+   // TIZEN_ONLY(20160201) : support to handle input rectangle
+   iface->input_rect_set = _ecore_evas_wayland_input_rect_set;
+   iface->input_rect_add = _ecore_evas_wayland_input_rect_add;
+   iface->input_rect_subtract = _ecore_evas_wayland_input_rect_subtract;
+   //
 
    return iface;
 }

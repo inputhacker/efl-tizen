@@ -214,6 +214,9 @@ struct _Ecore_Wl2_Window
    Eina_Rectangle saved;
    Eina_Rectangle opaque;
    Eina_Rectangle input_rect;
+   // TIZEN_ONLY(20160201) : support to handle input rectangle
+   struct wl_region *input_region;
+   //
 
    // TIZEN_ONLY(20160323)
    struct

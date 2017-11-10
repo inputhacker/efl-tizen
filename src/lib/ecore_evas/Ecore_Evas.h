@@ -970,6 +970,12 @@ EAPI const char      *ecore_evas_aux_hint_val_get(const Ecore_Evas *ee, int id);
  */
 EAPI int              ecore_evas_aux_hint_id_get(const Ecore_Evas *ee, const char *hint);
 
+// TIZEN_ONLY(20160201) : support to handle input rectangle
+EAPI void             ecore_evas_input_rect_set(Ecore_Evas *ee, Eina_Rectangle *input_rect);
+EAPI void             ecore_evas_input_rect_add(Ecore_Evas *ee, Eina_Rectangle *input_rect);
+EAPI void             ecore_evas_input_rect_subtract(Ecore_Evas *ee, Eina_Rectangle *input_rect);
+//
+
 /**
  * @brief Sends message to parent ecore.
  *

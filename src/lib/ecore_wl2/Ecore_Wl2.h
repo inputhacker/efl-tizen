@@ -1088,6 +1088,12 @@ EAPI Eina_Bool ecore_wl2_window_transparent_get(Ecore_Wl2_Window *window);
  */
 EAPI void ecore_wl2_window_opaque_region_set(Ecore_Wl2_Window *window, int x, int y, int w, int h);
 
+// TIZEN_ONLY(20160201) : support to handle input rectangle
+EAPI void ecore_wl2_window_input_rect_set(Ecore_Wl2_Window *win, Eina_Rectangle *input_rect);
+EAPI void ecore_wl2_window_input_rect_add(Ecore_Wl2_Window *win, Eina_Rectangle *input_rect);
+EAPI void ecore_wl2_window_input_rect_subtract(Ecore_Wl2_Window *win, Eina_Rectangle *input_rect);
+//
+
 /**
  * Set the input region of the Ecore_Wl2_Window.
  *

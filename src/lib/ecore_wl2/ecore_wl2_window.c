@@ -633,6 +633,10 @@ ecore_wl2_window_free(Ecore_Wl2_Window *window)
    if (window->title) eina_stringshare_del(window->title);
    if (window->class) eina_stringshare_del(window->class);
    if (window->role) eina_stringshare_del(window->role);
+   // TIZEN_ONLY(20160201) : support to handle input rectangle
+   if (window->input_region) wl_region_destroy(window->input_region);
+   window->input_region = NULL;
+   //
 
    display->windows =
      eina_inlist_remove(display->windows, EINA_INLIST_GET(window));
@@ -864,6 +868,74 @@ ecore_wl2_window_opaque_region_set(Ecore_Wl2_Window *window, int x, int y, int w
    window->opaque_set = x || y || w || h;
    window->pending.opaque = EINA_TRUE;
 }
+
+// TIZEN_ONLY(20160201) : support to handle input rectangle
+EAPI void
+ecore_wl2_window_input_rect_set(Ecore_Wl2_Window *win, Eina_Rectangle *input_rect)
+{
+   if (!win) return;
+   if (!input_rect) return;
+   if (win->input_region)
+     {
+        wl_region_destroy(win->input_region);
+        win->input_region = NULL;
+     }
+
+   win->input_rect.x = input_rect->x;
+   win->input_rect.y = input_rect->y;
+   win->input_rect.w = input_rect->w;
+   win->input_rect.h = input_rect->h;
+
+   if (win->type != ECORE_WL2_WINDOW_TYPE_DND)
+     {
+        struct wl_region *region;
+        region = wl_compositor_create_region(win->display->wl.compositor);
+        if (!region) return;
+
+        wl_region_add(region, input_rect->x, input_rect->y, input_rect->w, input_rect->h);
+        wl_surface_set_input_region(win->surface, region);
+        wl_region_destroy(region);
+     }
+}
+
+EAPI void
+ecore_wl2_window_input_rect_add(Ecore_Wl2_Window *win, Eina_Rectangle *input_rect)
+{
+   if (!win) return;
+   if (!input_rect) return;
+   if (input_rect->x < 0 || input_rect->y < 0) return;
+
+   if (win->type != ECORE_WL2_WINDOW_TYPE_DND)
+     {
+        if (!win->input_region)
+          {
+             struct wl_region *region;
+             region = wl_compositor_create_region(win->display->wl.compositor);
+             if (!region) return;
+
+             win->input_region = region;
+          }
+
+        wl_region_add(win->input_region, input_rect->x, input_rect->y, input_rect->w, input_rect->h);
+        wl_surface_set_input_region(win->surface, win->input_region);
+     }
+}
+
+EAPI void
+ecore_wl2_window_input_rect_subtract(Ecore_Wl2_Window *win, Eina_Rectangle *input_rect)
+{
+   if (!win) return;
+   if (!input_rect) return;
+   if (input_rect->x < 0 || input_rect->y < 0) return;
+   if (!win->input_region) return;
+
+   if (win->type != ECORE_WL2_WINDOW_TYPE_DND)
+     {
+        wl_region_subtract(win->input_region, input_rect->x, input_rect->y, input_rect->w, input_rect->h);
+        wl_surface_set_input_region(win->surface, win->input_region);
+     }
+}
+//
 
 EAPI void
 ecore_wl2_window_input_region_set(Ecore_Wl2_Window *window, int x, int y, int w, int h)

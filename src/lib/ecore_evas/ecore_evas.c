@@ -2471,6 +2471,62 @@ ecore_evas_aux_hint_id_get(const Ecore_Evas *ee, const char *hint)
    return -1;
 }
 
+// TIZEN_ONLY(20160201) : support to handle input rectangle
+EAPI void
+ecore_evas_input_rect_set(Ecore_Evas *ee, Eina_Rectangle *input_rect)
+{
+   ECORE_EVAS_CHECK(ee);
+
+   if (!strncmp(ee->driver, "wayland", 7))
+     {
+        Ecore_Evas_Interface_Wayland *iface;
+        iface = (Ecore_Evas_Interface_Wayland *)_ecore_evas_interface_get(ee, "wayland");
+        EINA_SAFETY_ON_NULL_RETURN(iface);
+
+        if (iface->input_rect_set)
+          iface->input_rect_set(ee, input_rect);
+
+        return;
+     }
+}
+
+EAPI void
+ecore_evas_input_rect_add(Ecore_Evas *ee, Eina_Rectangle *input_rect)
+{
+   ECORE_EVAS_CHECK(ee);
+
+   if (!strncmp(ee->driver, "wayland", 7))
+     {
+        Ecore_Evas_Interface_Wayland *iface;
+        iface = (Ecore_Evas_Interface_Wayland *)_ecore_evas_interface_get(ee, "wayland");
+        EINA_SAFETY_ON_NULL_RETURN(iface);
+
+        if (iface->input_rect_add)
+          iface->input_rect_add(ee, input_rect);
+
+        return;
+     }
+}
+
+EAPI void
+ecore_evas_input_rect_subtract(Ecore_Evas *ee, Eina_Rectangle *input_rect)
+{
+   ECORE_EVAS_CHECK(ee);
+
+   if (!strncmp(ee->driver, "wayland", 7))
+     {
+        Ecore_Evas_Interface_Wayland *iface;
+        iface = (Ecore_Evas_Interface_Wayland *)_ecore_evas_interface_get(ee, "wayland");
+        EINA_SAFETY_ON_NULL_RETURN(iface);
+
+        if (iface->input_rect_subtract)
+          iface->input_rect_subtract(ee, input_rect);
+
+        return;
+     }
+}
+//
+
 EAPI void
 ecore_evas_fullscreen_set(Ecore_Evas *ee, Eina_Bool on)
 {

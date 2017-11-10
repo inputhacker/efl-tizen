@@ -17,6 +17,11 @@ struct _Ecore_Evas_Interface_Wayland
    void (*aux_hint_add)(Ecore_Evas *ee, int id, const char *hint, const char *val);
    void (*aux_hint_change)(Ecore_Evas *ee, int id, const char *val);
    void (*aux_hint_del)(Ecore_Evas *ee, int id);
+   // TIZEN_ONLY(20160201) : support to handle input rectangle
+   void (*input_rect_set)(Ecore_Evas *ee, Eina_Rectangle *input_rect);
+   void (*input_rect_add)(Ecore_Evas *ee, Eina_Rectangle *input_rect);
+   void (*input_rect_subtract)(Ecore_Evas *ee, Eina_Rectangle *input_rect);
+   //
 };
 
 #endif
