@@ -504,6 +504,13 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
              if (window->surface)
                tizen_policy_unset_focus_skip(window->display->wl.tz_policy, window->surface);
           }
+
+        if (window->floating)
+          {
+             if (window->surface)
+               tizen_policy_set_floating_mode(window->display->wl.tz_policy,
+                                              window->surface);
+          }
      }
 //
 
@@ -1770,6 +1777,18 @@ ecore_wl2_window_floating_mode_set(Ecore_Wl2_Window *window, Eina_Bool floating)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
    window->floating = floating;
+
+   // TIZEN_ONLY(20171112)
+   if ((window->surface) && (window->display->wl.tz_policy))
+     {
+        if (floating)
+          tizen_policy_set_floating_mode(window->display->wl.tz_policy,
+                                         window->surface);
+        else
+          tizen_policy_unset_floating_mode(window->display->wl.tz_policy,
+                                           window->surface);
+     }
+   //
 }
 
 EAPI Eina_Bool
