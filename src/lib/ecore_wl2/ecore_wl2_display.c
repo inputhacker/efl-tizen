@@ -478,7 +478,7 @@ _tizen_policy_cb_aux_message(void *data EINA_UNUSED, struct tizen_policy *tizen_
 }
 
 static void
-_tizen_policy_cb_conformant_region(void *data, struct tizen_policy *tizen_policy, struct wl_surface *surface, uint32_t conformant_part, uint32_t state, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t serial)
+_tizen_policy_cb_conformant_region(void *data EINA_UNUSED, struct tizen_policy *tizen_policy EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, uint32_t conformant_part EINA_UNUSED, uint32_t state EINA_UNUSED, int32_t x EINA_UNUSED, int32_t y EINA_UNUSED, int32_t w EINA_UNUSED, int32_t h EINA_UNUSED, uint32_t serial EINA_UNUSED)
 {
 }
 
@@ -497,7 +497,7 @@ static const struct tizen_policy_listener _tizen_policy_listener =
 };
 
 static void
-_tizen_policy_ext_cb_active_angle(void *data EINA_UNUSED, struct tizen_policy_ext *tizen_policy_ext EINA_UNUSED, uint32_t angle)
+_tizen_policy_ext_cb_active_angle(void *data EINA_UNUSED, struct tizen_policy_ext *tizen_policy_ext EINA_UNUSED, uint32_t angle EINA_UNUSED)
 {
 }
 
@@ -587,7 +587,7 @@ _tizen_clipboard_cb_data_selected(void *data, struct tizen_clipboard *tizen_clip
 }
 
 static void
-_tizen_clipboard_cb_allowed_data_only(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, uint32_t allowed)
+_tizen_clipboard_cb_allowed_data_only(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, uint32_t allowed EINA_UNUSED)
 {
 }
 
