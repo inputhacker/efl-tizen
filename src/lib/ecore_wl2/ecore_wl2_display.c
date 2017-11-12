@@ -570,8 +570,20 @@ static const struct tizen_indicator_listener _tizen_indicator_listener =
 };
 
 static void
-_tizen_clipboard_cb_data_selected(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, struct wl_surface *surface)
+_tizen_clipboard_cb_data_selected(void *data, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, struct wl_surface *surface)
 {
+   Ecore_Wl2_Window *win = NULL;
+   Ecore_Wl2_Display *ewd = data;
+   Ecore_Wl2_Event_Clipboard_Data_Selected *ev;
+
+   if (!surface) return;
+   win = _ecore_wl2_display_window_surface_find(ewd, surface);
+   if (!win) return;
+
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Clipboard_Data_Selected)))) return;
+   ev->win = win->id;
+
+   ecore_event_add(ECORE_WL2_EVENT_CLIPBOARD_DATA_SELECTED, ev, NULL, NULL);
 }
 
 static void
