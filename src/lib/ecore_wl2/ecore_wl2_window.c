@@ -486,6 +486,14 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
                                   window->geometry.x, window->geometry.y);
           }
 
+        if (window->role)
+          {
+             if (window->surface)
+               tizen_policy_set_role(window->display->wl.tz_policy,
+                                     window->surface,
+                                     window->role);
+          }
+
         if (window->focus_skip)
           {
              if (window->surface)
@@ -1750,6 +1758,11 @@ ecore_wl2_window_role_set(Ecore_Wl2_Window *window, const char *role)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
    eina_stringshare_replace(&window->role, role);
+
+   // TIZEN_ONLY(20171112)
+   if ((window->surface) && (window->display->wl.tz_policy))
+     tizen_policy_set_role(window->display->wl.tz_policy, window->surface, window->role);
+   //
 }
 
 EAPI void
