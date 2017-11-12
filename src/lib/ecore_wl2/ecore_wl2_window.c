@@ -485,6 +485,17 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
                tizen_position_set(window->tz_position,
                                   window->geometry.x, window->geometry.y);
           }
+
+        if (window->focus_skip)
+          {
+             if (window->surface)
+               tizen_policy_set_focus_skip(window->display->wl.tz_policy, window->surface);
+          }
+        else
+          {
+             if (window->surface)
+               tizen_policy_unset_focus_skip(window->display->wl.tz_policy, window->surface);
+          }
      }
 //
 
@@ -1710,6 +1721,20 @@ EAPI void
 ecore_wl2_window_focus_skip_set(Ecore_Wl2_Window *window, Eina_Bool focus_skip)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
+
+   // TIZEN_ONLY(20171112)
+   if (window->focus_skip != focus_skip)
+     {
+        if ((window->surface) && (window->display->wl.tz_policy))
+          {
+             if (focus_skip)
+               tizen_policy_set_focus_skip(window->display->wl.tz_policy, window->surface);
+             else
+               tizen_policy_unset_focus_skip(window->display->wl.tz_policy, window->surface);
+          }
+     }
+   //
+
    window->focus_skip = focus_skip;
 }
 
