@@ -1457,14 +1457,7 @@ ecore_wl2_display_window_find(Ecore_Wl2_Display *display, unsigned int id)
 EAPI Ecore_Wl2_Window *
 ecore_wl2_display_window_find_by_surface(Ecore_Wl2_Display *display, struct wl_surface *surface)
 {
-   Ecore_Wl2_Window *window;
-
-   EINA_SAFETY_ON_NULL_RETURN_VAL(display, NULL);
-
-   EINA_INLIST_FOREACH(display->windows, window)
-     if (window->surface == surface) return window;
-
-   return NULL;
+   return _ecore_wl2_display_window_surface_find(display, surface);
 }
 //
 
