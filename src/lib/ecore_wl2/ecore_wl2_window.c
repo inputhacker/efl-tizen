@@ -66,6 +66,11 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
 
    ev->win = win->id;
    ev->event_win = win->id;
+   
+// TIZEN_ONLY(20171112): support tizen_position
+   ev->x = window->geometry.x;
+   ev->y = window->geometry.y;
+//
 
    if ((win->set_config.geometry.w == win->def_config.geometry.w) &&
        (win->set_config.geometry.h == win->def_config.geometry.h))
@@ -87,11 +92,11 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
 
    win->req_config = win->def_config;
 
-   // TIZEN_ONLY(20160323)
+// TIZEN_ONLY(20160323)
    window->configured.w = w;
    window->configured.h = h;
    window->configured.edges = edges;
-   //
+//
 
    ecore_event_add(ECORE_WL2_EVENT_WINDOW_CONFIGURE, ev, NULL, NULL);
 
@@ -362,6 +367,33 @@ static const struct tizen_visibility_listener _tizen_visibility_listener =
    _tizen_visibility_cb_notify,
    _tizen_visibility_cb_changed,
 };
+
+static void
+_tizen_position_cb_changed(void *data, struct tizen_position *tizen_position EINA_UNUSED, int32_t x, int32_t y)
+{
+   Ecore_Wl2_Window *win;
+
+   if (!(win = data)) return;
+
+   win->configured.x = x;
+   win->configured.y = y;
+
+   if ((x != win->geometry.x) || (y != win->geometry.y))
+     {
+        ecore_wl2_window_geometry_set(win, x, y, win->geometry.w, win->geometry.h);
+        _ecore_wl2_window_configure_send(win,
+                                        win->configured.w,
+                                        win->configured.h,
+                                        win->configured.edges,
+                                        win->fullscreen,
+                                        win->maximized);
+     }
+}
+
+static const struct tizen_position_listener _tizen_position_listener =
+{
+   _tizen_position_cb_changed,
+};
 //
 
 void
@@ -425,7 +457,7 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
         ecore_wl2_window_commit(window, EINA_TRUE);
      }
 
-// TIZEN_ONLY(20150424) : tizen_visibility
+// TIZEN_ONLY(20171112) : support tizen protocols
    if (window->display->wl.tz_policy)
      {
         if (!window->tz_visibility)
@@ -437,6 +469,21 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
              tizen_visibility_add_listener(window->tz_visibility,
                                            &_tizen_visibility_listener,
                                            window);
+          }
+
+        if (!window->tz_position)
+          {
+
+             window->tz_position =
+               tizen_policy_get_position(window->display->wl.tz_policy,
+                                          window->surface);
+
+             if (!window->tz_position) return;
+             tizen_position_add_listener(window->tz_position,
+                                         &_tizen_position_listener, window);
+             if (window->surface)
+               tizen_position_set(window->tz_position,
+                                  window->geometry.x, window->geometry.y);
           }
      }
 //
@@ -629,9 +676,12 @@ ecore_wl2_window_hide(Ecore_Wl2_Window *window)
 
    _ecore_wl2_window_hide_send(window);
 
-   //TIZEN_ONLY(20150424) : tizen_visibility
+   // TIZEN_ONLY(20171112) : support tizen protocols
    if (window->tz_visibility) tizen_visibility_destroy(window->tz_visibility);
    window->tz_visibility = NULL;
+
+   if (window->tz_position) tizen_position_destroy(window->tz_position);
+   window->tz_position = NULL;
    //
 
    EINA_INLIST_FOREACH_SAFE(window->subsurfs, tmp, subsurf)
@@ -687,9 +737,12 @@ ecore_wl2_window_free(Ecore_Wl2_Window *window)
 
    _ecore_wl2_window_aux_hint_free(window);
 
-   //TIZEN_ONLY(20150424) : tizen_visibility
+   // TIZEN_ONLY(20171112) : support tizen protocols
    if (window->tz_visibility) tizen_visibility_destroy(window->tz_visibility);
    window->tz_visibility = NULL;
+
+   if (window->tz_position) tizen_position_destroy(window->tz_position);
+   window->tz_position = NULL;
    //
 
    if (window->callback) wl_callback_destroy(window->callback);
@@ -838,6 +891,21 @@ ecore_wl2_window_stack_mode_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window_Stack
 
    if ((window->surface) && (window->display->wl.tz_policy))
      tizen_policy_set_stack_mode(window->display->wl.tz_policy, window->surface, mode);
+}
+
+EAPI void
+ecore_wl2_window_position_set(Ecore_Wl2_Window *window, int x, int y)
+{
+   EINA_SAFETY_ON_NULL_RETURN(window);
+
+   window->geometry.x = x;
+   window->geometry.y = y;
+
+   if ((window->surface) && (window->tz_position))
+     {
+        if ((window->configured.x != x) || (window->configured.y != y))
+          tizen_position_set(window->tz_position, window->geometry.x, window->geometry.y);
+     }
 }
 //
 
