@@ -904,6 +904,15 @@ _ecore_wl2_display_globals_cleanup(Ecore_Wl2_Display *ewd)
    if (ewd->wl.efl_aux_hints) efl_aux_hints_destroy(ewd->wl.efl_aux_hints);
    if (ewd->wl.efl_hints) efl_hints_destroy(ewd->wl.efl_hints);
 
+// TIZEN_ONLY
+   if (ewd->wl.tz_policy) tizen_policy_destroy(ewd->wl.tz_policy);
+   if (ewd->wl.tz_policy_ext) tizen_policy_ext_destroy(ewd->wl.tz_policy_ext);
+   if (ewd->wl.tz_surf) tizen_surface_destroy(ewd->wl.tz_surf);
+   if (ewd->wl.tz_effect) tizen_effect_destroy(ewd->wl.tz_effect);
+   if (ewd->wl.tz_indicator) tizen_indicator_destroy(ewd->wl.tz_indicator);
+   if (ewd->wl.tz_clipboard) tizen_clipboard_destroy(ewd->wl.tz_clipboard);
+//
+
    if (ewd->wl.registry) wl_registry_destroy(ewd->wl.registry);
 }
 
