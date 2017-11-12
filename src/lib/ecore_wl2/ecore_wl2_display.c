@@ -547,8 +547,21 @@ static const struct tizen_effect_listener _tizen_effect_listener =
 };
 
 static void
-_tizen_indicator_cb_flick(void *data EINA_UNUSED, struct tizen_indicator *tizen_indicator EINA_UNUSED, struct wl_surface *surface_resource, int type)
+_tizen_indicator_cb_flick(void *data, struct tizen_indicator *tizen_indicator EINA_UNUSED, struct wl_surface *surface_resource, int type)
 {
+   Ecore_Wl2_Window *win = NULL;
+   Ecore_Wl2_Display *ewd = data;
+   Ecore_Wl2_Event_Indicator_Flick *ev;
+
+   if (!surface_resource) return;
+   win = _ecore_wl2_display_window_surface_find(ewd, surface_resource);
+   if (!win) return;
+
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Indicator_Flick)))) return;
+   ev->win = win->id;
+   ev->type = type;
+
+   ecore_event_add(ECORE_WL2_EVENT_INDICATOR_FLICK, ev, NULL, NULL);
 }
 
 static const struct tizen_indicator_listener _tizen_indicator_listener =
