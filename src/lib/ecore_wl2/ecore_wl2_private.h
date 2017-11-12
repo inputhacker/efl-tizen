@@ -205,6 +205,10 @@ struct _Ecore_Wl2_Window
    struct zxdg_toplevel_v6 *zxdg_toplevel;
    struct zxdg_popup_v6 *zxdg_popup;
 
+   // TIZEN_ONLY(20150424) : tizen_visibility
+   struct tizen_visibility *tz_visibility;
+   //
+
    Eina_Stringshare *uuid;
 
    void (*zxdg_configure_ack)(struct zxdg_surface_v6 *surface, uint32_t serial);

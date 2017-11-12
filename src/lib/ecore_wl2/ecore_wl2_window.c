@@ -317,6 +317,53 @@ _ecore_wl2_window_www_surface_init(Ecore_Wl2_Window *window)
                             window);
 }
 
+//TIZEN_ONLY(20150424) : tizen_visibility
+static void
+_tizen_visibility_cb_notify(void *data, struct tizen_visibility *tizen_visibility EINA_UNUSED, uint32_t visibility)
+{
+   Ecore_Wl2_Window *win;
+   Ecore_Wl2_Event_Window_Visibility_Change *ev;
+
+   if (!(win = data)) return;
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Visibility_Change)))) return;
+
+   ev->win = win->id;
+   if (visibility == TIZEN_VISIBILITY_VISIBILITY_FULLY_OBSCURED)
+     ev->fully_obscured = 1;
+   else
+     ev->fully_obscured = 0;
+
+   ecore_event_add(ECORE_WL2_EVENT_WINDOW_VISIBILITY_CHANGE, ev, NULL, NULL);
+}
+
+static void
+_tizen_visibility_cb_changed(void *data, struct tizen_visibility *tizen_visibility EINA_UNUSED, uint32_t type, uint32_t option)
+{
+   Ecore_Wl2_Window *win = (Ecore_Wl2_Window *)data;
+   Ecore_Wl2_Event_Window_Pre_Visibility_Change *ev;
+
+   EINA_SAFETY_ON_NULL_RETURN(win);
+
+   if (type == TIZEN_VISIBILITY_VISIBILITY_PRE_UNOBSCURED)
+     {
+        ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Pre_Visibility_Change));
+        EINA_SAFETY_ON_NULL_RETURN(ev);
+
+        ev->win = win->id;
+        ev->type = ECORE_WL2_WINDOW_VISIBILITY_TYPE_PRE_UNOBSCURED;
+        ev->option = option;
+
+        ecore_event_add(ECORE_WL2_EVENT_WINDOW_PRE_VISIBILITY_CHANGE, ev, NULL, NULL);
+     }
+}
+
+static const struct tizen_visibility_listener _tizen_visibility_listener =
+{
+   _tizen_visibility_cb_notify,
+   _tizen_visibility_cb_changed,
+};
+//
+
 void
 _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
 {
@@ -377,6 +424,22 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
 
         ecore_wl2_window_commit(window, EINA_TRUE);
      }
+
+// TIZEN_ONLY(20150424) : tizen_visibility
+   if (window->display->wl.tz_policy)
+     {
+        if (!window->tz_visibility)
+          {
+             window->tz_visibility =
+               tizen_policy_get_visibility(window->display->wl.tz_policy,
+                                            window->surface);
+             if (!window->tz_visibility) return;
+             tizen_visibility_add_listener(window->tz_visibility,
+                                           &_tizen_visibility_listener,
+                                           window);
+          }
+     }
+//
 
    if (window->display->wl.session_recovery)
      {
@@ -566,6 +629,11 @@ ecore_wl2_window_hide(Ecore_Wl2_Window *window)
 
    _ecore_wl2_window_hide_send(window);
 
+   //TIZEN_ONLY(20150424) : tizen_visibility
+   if (window->tz_visibility) tizen_visibility_destroy(window->tz_visibility);
+   window->tz_visibility = NULL;
+   //
+
    EINA_INLIST_FOREACH_SAFE(window->subsurfs, tmp, subsurf)
      _ecore_wl2_subsurf_unmap(subsurf);
 
@@ -618,6 +686,11 @@ ecore_wl2_window_free(Ecore_Wl2_Window *window)
      _ecore_wl2_subsurf_free(subsurf);
 
    _ecore_wl2_window_aux_hint_free(window);
+
+   //TIZEN_ONLY(20150424) : tizen_visibility
+   if (window->tz_visibility) tizen_visibility_destroy(window->tz_visibility);
+   window->tz_visibility = NULL;
+   //
 
    if (window->callback) wl_callback_destroy(window->callback);
    window->callback = NULL;
