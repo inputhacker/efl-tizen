@@ -22,8 +22,8 @@
 /*
  * Accessibility Bus info not defined in atspi-constants.h
  */
-#define A11Y_DBUS_NAME "org.a11y.Bus"
-#define A11Y_DBUS_PATH "/org/a11y/bus"
+ #define A11Y_DBUS_NAME "org.a11y.Bus"
+ #define A11Y_DBUS_PATH "/org/a11y/bus"
 #define A11Y_DBUS_INTERFACE "org.a11y.Bus"
 #define A11Y_DBUS_STATUS_INTERFACE "org.a11y.Status"
 #define ATSPI_DBUS_INTERFACE_EVENT_WINDOW "org.a11y.atspi.Event.Window"
@@ -464,6 +464,11 @@ static const struct atspi_state_desc elm_states_to_atspi_state[] = {
    { EFL_ACCESS_STATE_SELECTABLE_TEXT, ATSPI_STATE_SELECTABLE_TEXT, "selectable-text" },
    { EFL_ACCESS_STATE_IS_DEFAULT, ATSPI_STATE_IS_DEFAULT, "is-default" },
    { EFL_ACCESS_STATE_VISITED, ATSPI_STATE_VISITED, "visited" },
+   { EFL_ACCESS_STATE_CHECKABLE, ATSPI_STATE_CHECKABLE, "checkable" },
+   { EFL_ACCESS_STATE_HAS_POPUP, ATSPI_STATE_HAS_POPUP, "has-popup" },
+   { EFL_ACCESS_STATE_READ_ONLY, ATSPI_STATE_READ_ONLY, "read-only" },
+   { EFL_ACCESS_STATE_HIGHLIGHTED, ATSPI_STATE_HIGHLIGHTED, "highlighted" },
+   { EFL_ACCESS_STATE_HIGHLIGHTABLE, ATSPI_STATE_HIGHLIGHTABLE, "highlightable" },
    { EFL_ACCESS_STATE_LAST_DEFINED, ATSPI_STATE_LAST_DEFINED, "last-defined" },
 };
 
@@ -3793,7 +3798,7 @@ static const Eldbus_Method component_methods[] = {
    { "SetExtents", ELDBUS_ARGS({"i", "x"}, {"i", "y"}, {"i", "width"}, {"i", "height"}, {"u", "coord_type"}), ELDBUS_ARGS({"b", "result"}), _component_set_extends, 0 },
    { "SetPosition", ELDBUS_ARGS({"i", "x"}, {"i", "y"}, {"u", "coord_type"}), ELDBUS_ARGS({"b", "result"}), _component_set_position, 0 },
    { "SetSize", ELDBUS_ARGS({"i", "width"}, {"i", "height"}), ELDBUS_ARGS({"b", "result"}), _component_set_size, 0 },
-   //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+   // TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
    { "GrabHighlight", NULL, ELDBUS_ARGS({"b", "result"}), _component_grab_highlight, 0 },
    { "ClearHighlight", NULL, ELDBUS_ARGS({"b", "result"}), _component_clear_highlight, 0 },
    //
