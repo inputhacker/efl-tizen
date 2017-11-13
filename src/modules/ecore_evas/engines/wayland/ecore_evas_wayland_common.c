@@ -1325,6 +1325,29 @@ _ecore_evas_wl_common_cb_tizen_device_del(void *data EINA_UNUSED, int type EINA_
 
 //
 
+// TIZEN_ONLY(20160120): support visibility_change event
+static Eina_Bool
+_ecore_evas_wl_common_cb_window_visibility_change(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+{
+   Ecore_Evas *ee;
+   Ecore_Wl2_Event_Window_Visibility_Change *ev;
+
+   ev = event;
+   ee = ecore_event_window_match(ev->win);
+
+   if (!ee) return ECORE_CALLBACK_PASS_ON;
+   if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
+
+   if (ee->prop.obscured == ev->fully_obscured)
+     return ECORE_CALLBACK_PASS_ON;
+
+   ee->prop.obscured = ev->fully_obscured;
+   _ecore_evas_wl_common_state_update(ee);
+   return ECORE_CALLBACK_PASS_ON;
+
+}
+//
+
 static int
 _ecore_evas_wl_common_init(void)
 {
@@ -1420,6 +1443,11 @@ _ecore_evas_wl_common_init(void)
    _ecore_evas_wl_event_hdls[19] =
      ecore_event_handler_add(ECORE_WL2_EVENT_TIZEN_DEVICE_DEL,
                              _ecore_evas_wl_common_cb_tizen_device_del, NULL);
+   //
+   // TIZEN_ONLY(20160120): support visibility_change event
+   _ecore_evas_wl_event_hdls[20] =
+     ecore_event_handler_add(ECORE_WL2_EVENT_WINDOW_VISIBILITY_CHANGE,
+                             _ecore_evas_wl_common_cb_window_visibility_change, NULL);
    //
 
    ecore_event_evas_init();
@@ -2713,6 +2741,7 @@ _ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, i
    ee->prop.request_pos = EINA_FALSE;
    ee->prop.sticky = EINA_FALSE;
    ee->prop.withdrawn = EINA_TRUE;
+   ee->prop.obscured = EINA_TRUE; // TIZEN_ONLY(20160120): support visibility_change event
    ee->alpha = EINA_FALSE;
 
    /* Wayland egl engine can't async render */

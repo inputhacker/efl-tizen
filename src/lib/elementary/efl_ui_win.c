@@ -299,6 +299,10 @@ struct _Efl_Ui_Win_Data
    Eina_Bool    shown : 1;
    Eina_Bool    stack_base : 1;
    Eina_Bool    paused : 1;
+
+   // TIZEN_ONLY(20160120): support visibility_change event
+   Eina_Bool    obscured : 1;
+   //
 };
 
 struct _Input_Pointer_Iterator
@@ -331,6 +335,9 @@ static const char SIG_WM_ROTATION_CHANGED[] = "wm,rotation,changed";
 static const char SIG_EFFECT_STARTED[] = "effect,started";
 static const char SIG_EFFECT_DONE[] = "effect,done";
 //
+// TIZEN_ONLY(20160120): support visibility_change event
+static const char SIG_VISIBILITY_CHANGED[] = "visibility,changed";
+//
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_DELETE_REQUEST, ""},
@@ -355,6 +362,7 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WIDGET_UNFOCUSED, ""}, /**< handled by elm_widget */
    {SIG_EFFECT_STARTED, ""},
    {SIG_EFFECT_DONE, ""},
+   {SIG_VISIBILITY_CHANGED, ""},
    {NULL, NULL}
 };
 
@@ -1538,6 +1546,7 @@ _elm_win_state_change(Ecore_Evas *ee)
    Eina_Bool ch_maximized = EINA_FALSE;
    Eina_Bool ch_profile = EINA_FALSE;
    Eina_Bool ch_wm_rotation = EINA_FALSE;
+   Eina_Bool ch_visibility = EINA_FALSE;
    const char *profile;
 
    if (!sd) return;
@@ -1585,6 +1594,14 @@ _elm_win_state_change(Ecore_Evas *ee)
              ch_wm_rotation = EINA_TRUE;
           }
      }
+
+   // TIZEN_ONLY(20160120): support visibility_change event
+   if (sd->obscured != ecore_evas_obscured_get(sd->ee))
+     {
+        sd->obscured = ecore_evas_obscured_get(sd->ee);
+        ch_visibility = EINA_TRUE;
+     }
+   //
 
    _elm_win_state_eval_queue();
 
@@ -1672,20 +1689,12 @@ _elm_win_state_change(Ecore_Evas *ee)
           (obj, EFL_UI_WIN_EVENT_ROTATION_CHANGED, NULL);
         efl_event_callback_legacy_call
           (obj, EFL_UI_WIN_EVENT_WM_ROTATION_CHANGED, NULL);
-        if (_elm_config->atspi_mode)
-          {
-             Evas_Coord x = 0, y = 0, width = 0, height = 0;
-             elm_win_screen_size_get(obj, &x, &y, &width, &height);
-             if ((sd->rot == 0) || (sd->rot == 180))
-               {
-                  efl_access_bounds_changed_signal_emit(obj, x, y, width, height);
-               }
-             else
-               {
-                  efl_access_bounds_changed_signal_emit(obj, x, y, height, width);
-               }
-          }
      }
+
+   // TIZEN_ONLY(20160120): support visibility_change event
+   if (ch_visibility)
+     evas_object_smart_callback_call(obj, SIG_VISIBILITY_CHANGED, (void*)!sd->obscured);
+   //
 }
 
 EOLIAN static Eina_Bool

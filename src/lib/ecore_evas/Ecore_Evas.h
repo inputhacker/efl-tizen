@@ -3583,6 +3583,19 @@ EAPI Evas_Object *ecore_evas_extn_plug_new(Ecore_Evas *ee_target);
  */
 EAPI Eina_Bool ecore_evas_extn_plug_connect(Evas_Object *obj, const char *svcname, int svcnum, Eina_Bool svcsys);
 
+// TIZEN_ONLY(20160120): support visibility_change event
+/**
+ * @brief Query if the ecore evas is obscured or unobscured.
+ *
+ * @param ee The Ecore_Evas
+ * @return EINA_TRUE if the ecore evas is obscured, EINA_FALSE unobscured.
+ * @warning Support for this depends on the underlying windowing system.
+ *
+ * @since 1.16
+ */
+EAPI Eina_Bool ecore_evas_obscured_get(const Ecore_Evas *ee);
+//
+
 /**
  * @brief Retrieves the coordinates of the default mouse pointer.
  *
