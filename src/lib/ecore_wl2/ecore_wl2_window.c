@@ -396,6 +396,133 @@ static const struct tizen_position_listener _tizen_position_listener =
 };
 
 static void
+_tizen_rotation_preferred_angle_set(Ecore_Wl2_Window *window, int rot)
+{
+   enum tizen_rotation_angle tz_angle = TIZEN_ROTATION_ANGLE_NONE;
+
+   if (!window) return;
+
+   switch (rot)
+     {
+      case 0:
+         tz_angle = TIZEN_ROTATION_ANGLE_0;
+         break;
+      case 90:
+         tz_angle = TIZEN_ROTATION_ANGLE_90;
+         break;
+      case 180:
+         tz_angle = TIZEN_ROTATION_ANGLE_180;
+         break;
+      case 270:
+         tz_angle = TIZEN_ROTATION_ANGLE_270;
+         break;
+      default:
+         break;
+     }
+
+   if (window->tz_rotation)
+     tizen_rotation_set_preferred_angle(window->tz_rotation, (uint32_t)tz_angle);
+}
+
+static void
+_tizen_rotation_available_angles_set(Ecore_Wl2_Window *window, const int *rots, unsigned int count)
+{
+   uint32_t angles = 0;
+   unsigned int i = 0;
+
+   if (!window) return;
+
+   for (i = 0; i < count ; i++)
+     {
+        switch (rots[i])
+          {
+           case 0:
+              angles |= (uint32_t)TIZEN_ROTATION_ANGLE_0;
+              break;
+           case 90:
+              angles |= (uint32_t)TIZEN_ROTATION_ANGLE_90;
+              break;
+           case 180:
+              angles |= (uint32_t)TIZEN_ROTATION_ANGLE_180;
+              break;
+           case 270:
+              angles |= (uint32_t)TIZEN_ROTATION_ANGLE_270;
+              break;
+           default:
+              break;
+          }
+     }
+
+   if (window->tz_rotation)
+     tizen_rotation_set_available_angles(window->tz_rotation, angles);
+}
+
+static void
+_ecore_wl_window_cb_available_angles_done(void *data EINA_UNUSED, struct tizen_rotation *tizen_rotation EINA_UNUSED, uint32_t angles EINA_UNUSED)
+{
+   return;
+}
+
+static void
+_ecore_wl_window_cb_preferred_angle_done(void *data EINA_UNUSED, struct tizen_rotation *tizen_rotation EINA_UNUSED, uint32_t angle EINA_UNUSED)
+{
+   return;
+}
+
+static void
+_ecore_wl_window_cb_angle_change(void *data, struct tizen_rotation *tizen_rotation EINA_UNUSED, uint32_t angle, uint32_t serial)
+{
+   Ecore_Wl2_Window *win;
+   Ecore_Wl2_Event_Window_Rotation *ev;
+   int i = 0;
+
+   if (!(win = data)) return;
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Rotation)))) return;
+
+   win->wm_rot.serial = serial;
+
+   ev->win = win->id;
+   ev->w = win->configured.w;
+   ev->h = win->configured.h;
+
+   switch (angle)
+     {
+      case TIZEN_ROTATION_ANGLE_0:
+         ev->angle = 0;
+         break;
+      case TIZEN_ROTATION_ANGLE_90:
+         ev->angle = 90;
+         break;
+      case TIZEN_ROTATION_ANGLE_180:
+         ev->angle = 180;
+         break;
+      case TIZEN_ROTATION_ANGLE_270:
+         ev->angle = 270;
+         break;
+      default:
+         ev->angle = 0;
+         break;
+     }
+
+   i = ev->angle / 90;
+   if (win->wm_rot.geometry_hints[i].valid)
+     {
+        ev->w = win->wm_rot.geometry_hints[i].w;
+        ev->h = win->wm_rot.geometry_hints[i].h;
+     }
+
+   ecore_event_add(ECORE_WL2_EVENT_WINDOW_ROTATE, ev, NULL, NULL);
+   ecore_wl2_window_rotation_set(win, ev->angle);
+}
+
+static const struct tizen_rotation_listener _ecore_tizen_rotation_listener =
+{
+   _ecore_wl_window_cb_available_angles_done,
+   _ecore_wl_window_cb_preferred_angle_done,
+   _ecore_wl_window_cb_angle_change,
+};
+
+static void
 _tizen_resource_cb_resource_id(void *data, struct tizen_resource *tizen_resource EINA_UNUSED, uint32_t id)
 {
    Ecore_Wl2_Window *win;
@@ -535,6 +662,67 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
              if (window->surface)
                tizen_policy_set_floating_mode(window->display->wl.tz_policy,
                                               window->surface);
+          }
+     }
+
+   if (window->display->wl.tz_policy_ext && !window->tz_rotation)
+     {
+        int i = 0, x, y, w, h, rot;
+        enum tizen_rotation_angle angle = TIZEN_ROTATION_ANGLE_NONE;
+
+        window->tz_rotation =
+           tizen_policy_ext_get_rotation(window->display->wl.tz_policy_ext,
+                                         window->surface);
+        if (!window->tz_rotation) return;
+
+        tizen_rotation_add_listener(window->tz_rotation,
+                                    &_ecore_tizen_rotation_listener, window);
+
+        if (window->wm_rot.preferred_rot != TIZEN_ROTATION_ANGLE_NONE)
+          {
+             _tizen_rotation_preferred_angle_set(window, window->wm_rot.preferred_rot);
+          }
+
+        if (window->wm_rot.count)
+          {
+             _tizen_rotation_available_angles_set(window, window->wm_rot.available_rots, window->wm_rot.count);
+          }
+
+        rot = ecore_wl2_window_rotation_get(window);
+        for (i = 0; i <= 3; i++)
+          {
+             if (!window->wm_rot.geometry_hints[i].valid) continue;
+
+             x = window->wm_rot.geometry_hints[i].x;
+             y = window->wm_rot.geometry_hints[i].y;
+             w = window->wm_rot.geometry_hints[i].w;
+             h = window->wm_rot.geometry_hints[i].h;
+
+             switch (i)
+               {
+                case 0:
+                   angle = TIZEN_ROTATION_ANGLE_0;
+                   break;
+                case 1:
+                   angle = TIZEN_ROTATION_ANGLE_90;
+                   break;
+                case 2:
+                   angle = TIZEN_ROTATION_ANGLE_180;
+                   break;
+                case 3:
+                   angle = TIZEN_ROTATION_ANGLE_270;
+                   break;
+               }
+             tizen_rotation_set_geometry_hint(window->tz_rotation,
+                                              (uint32_t)angle, x, y, w, h);
+
+             if ((rot == (i * 90)) &&
+                 ((window->geometry.w != w) || (window->geometry.h != h)))
+               {
+                  _ecore_wl2_window_configure_send(window, w, h, 0,
+                                                   window->fullscreen,
+                                                   window->maximized);
+               }
           }
      }
 
@@ -745,6 +933,9 @@ ecore_wl2_window_hide(Ecore_Wl2_Window *window)
    if (window->tz_position) tizen_position_destroy(window->tz_position);
    window->tz_position = NULL;
 
+   if (window->tz_rotation) tizen_rotation_destroy(window->tz_rotation);
+   window->tz_rotation = NULL;
+
    if (window->tz_resource) tizen_resource_destroy(window->tz_resource);
    window->tz_resource = NULL;
    //
@@ -808,6 +999,9 @@ ecore_wl2_window_free(Ecore_Wl2_Window *window)
 
    if (window->tz_position) tizen_position_destroy(window->tz_position);
    window->tz_position = NULL;
+
+   if (window->tz_rotation) tizen_rotation_destroy(window->tz_rotation);
+   window->tz_rotation = NULL;
 
    if (window->tz_resource) tizen_resource_destroy(window->tz_resource);
    window->tz_resource = NULL;
@@ -1609,6 +1803,10 @@ ecore_wl2_window_preferred_rotation_set(Ecore_Wl2_Window *window, int rot)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
    window->wm_rot.preferred_rot = rot;
+
+   // TIZEN_ONLY
+   _tizen_rotation_preferred_angle_set(window, window->wm_rot.preferred_rot);
+   //
 }
 
 EAPI int
@@ -1622,6 +1820,10 @@ EAPI void
 ecore_wl2_window_available_rotations_set(Ecore_Wl2_Window *window, const int *rots, unsigned int count)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
+
+   // TIZEN_ONLY
+   _tizen_rotation_available_angles_set(window, rots, count);
+   //
    window->wm_rot.count = count;
    window->wm_rot.available_rots = (int *)rots;
 }
@@ -1718,6 +1920,11 @@ ecore_wl2_window_rotation_change_done_send(Ecore_Wl2_Window *window, int rot, in
 
    EINA_SAFETY_ON_NULL_RETURN(window);
 
+   // TIZEN_ONLY
+   if (window->tz_rotation)
+     tizen_rotation_ack_angle_change(window->tz_rotation, window->wm_rot.serial);
+   //
+
    ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Rotation_Change_Done));
    if (!ev) return;
 
@@ -1730,6 +1937,58 @@ ecore_wl2_window_rotation_change_done_send(Ecore_Wl2_Window *window, int rot, in
    ecore_event_add(ECORE_WL2_EVENT_WINDOW_ROTATION_CHANGE_DONE,
                    ev, NULL, NULL);
 }
+
+// TIZEN_ONLY
+EAPI void
+ecore_wl2_window_rotation_geometry_set(Ecore_Wl2_Window *win, int rot, int x, int y, int w, int h)
+{
+   int i = 0;
+   int rotation = 0;
+   enum tizen_rotation_angle angle = TIZEN_ROTATION_ANGLE_NONE;
+
+   if (!win) return;
+
+   if ((rot % 90 != 0) || (rot / 90 > 3) || (rot < 0)) return;
+
+   i = rot / 90;
+   win->wm_rot.geometry_hints[i].x = x;
+   win->wm_rot.geometry_hints[i].y = y;
+   win->wm_rot.geometry_hints[i].w = w;
+   win->wm_rot.geometry_hints[i].h = h;
+   win->wm_rot.geometry_hints[i].valid = EINA_TRUE;
+
+   if (!win->tz_rotation) return;
+   switch (rot)
+     {
+      case 0:
+         angle = TIZEN_ROTATION_ANGLE_0;
+         break;
+      case 90:
+         angle = TIZEN_ROTATION_ANGLE_90;
+         break;
+      case 180:
+         angle = TIZEN_ROTATION_ANGLE_180;
+         break;
+      case 270:
+         angle = TIZEN_ROTATION_ANGLE_270;
+         break;
+      default:
+         break;
+     }
+   tizen_rotation_set_geometry_hint(win->tz_rotation,
+                                    (uint32_t)angle, x, y, w, h);
+
+   rotation = ecore_wl2_window_rotation_get(win);
+   if ((rotation % 90 != 0) || (rotation / 90 > 3) || (rotation < 0)) return;
+   if ((i == (rotation / 90)) &&
+       ((win->geometry.w != w) || (win->geometry.h != h)))
+     {
+        _ecore_wl2_window_configure_send(win, w, h, 0,
+                                         win->fullscreen,
+                                         win->maximized);
+     }
+}
+//
 
 EAPI Eina_List *
 ecore_wl2_window_aux_hints_supported_get(Ecore_Wl2_Window *win)

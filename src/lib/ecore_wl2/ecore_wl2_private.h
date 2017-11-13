@@ -208,6 +208,7 @@ struct _Ecore_Wl2_Window
    // TIZEN_ONLY(20150424) : tizen_visibility
    struct tizen_visibility *tz_visibility;
    struct tizen_position *tz_position;
+   struct tizen_rotation *tz_rotation;
    struct tizen_resource *tz_resource;
    unsigned int resource_id;
    //
@@ -296,6 +297,14 @@ struct _Ecore_Wl2_Window
         int preferred_rot;
         int *available_rots;
         unsigned int count;
+        // TIZEN_ONLY
+        unsigned int serial;
+        struct
+          {
+             int x, y, w, h;
+             Eina_Bool valid : 1;
+          } geometry_hints[4];
+        //
      } wm_rot;
    Eina_Bool has_buffer : 1;
    Eina_Bool updating : 1;

@@ -687,6 +687,7 @@ _ecore_evas_wl_common_cb_window_rotate(void *data EINA_UNUSED, int type EINA_UNU
 {
    Ecore_Evas *ee;
    Ecore_Wl2_Event_Window_Rotation *ev;
+   Ecore_Evas_Engine_Wl_Data *wdata;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
@@ -694,7 +695,36 @@ _ecore_evas_wl_common_cb_window_rotate(void *data EINA_UNUSED, int type EINA_UNU
    ee = ecore_event_window_match(ev->win);
    if (!ee) return ECORE_CALLBACK_PASS_ON;
    if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
+
+   // TIZEN_ONLY
+   /*
    _ecore_evas_wl_common_rotation_set(ee, ev->rotation, ev->resize);
+   */
+   wdata = ee->engine.data;
+   if (!wdata) return ECORE_CALLBACK_PASS_ON;
+
+   if ((!ee->prop.wm_rot.supported) || (!ee->prop.wm_rot.app_set))
+     return ECORE_CALLBACK_PASS_ON;
+
+   wdata->wm_rot.request = 1;
+   wdata->wm_rot.done = 0;
+
+   if ((ee->w != ev->w) || (ee->h != ev->h))
+     {
+        _ecore_evas_wl_common_resize(ee, ev->w , ev->h);
+     }
+
+   if (ee->prop.wm_rot.manual_mode.set)
+     {
+        ee->prop.wm_rot.manual_mode.wait_for_done = EINA_TRUE;
+        _ecore_evas_wl_common_wm_rot_manual_rotation_done_timeout_update(ee);
+     }
+
+   _ecore_evas_wl_common_rotation_set(ee, ev->rotation, ev->resize);
+
+   wdata->wm_rot.done = 1;
+   //
+
    return ECORE_CALLBACK_PASS_ON;
 }
 
