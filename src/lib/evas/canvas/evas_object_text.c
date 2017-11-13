@@ -2359,6 +2359,24 @@ _evas_object_text_recalc(Evas_Object *eo_obj, Eina_Unicode *text)
 
    if (!text) text = eina_unicode_strdup(EINA_UNICODE_EMPTY_STRING);
 
+   /* TIZEN_ONLY(20171113): update paragraph direction before layouting its text */
+#ifdef BIDI_SUPPORT
+   if (o->inherit_paragraph_direction)
+     {
+        Evas_BiDi_Direction parent_dir = EVAS_BIDI_DIRECTION_NEUTRAL;
+
+        if (obj->smart.parent)
+          parent_dir = evas_object_paragraph_direction_get(obj->smart.parent);
+
+        if (parent_dir != o->paragraph_direction)
+          {
+             o->paragraph_direction = parent_dir;
+             o->changed_paragraph_direction = EINA_TRUE;
+          }
+     }
+#endif
+   /* END */
+
    _evas_object_text_layout(eo_obj, o, text);
 
    /* Calc ascent/descent. */
