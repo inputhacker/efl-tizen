@@ -1413,6 +1413,7 @@ EAPI void ecore_wl2_window_rotation_change_done_send(Ecore_Wl2_Window *window, i
 
 // TIZEN_ONLY
 EAPI void ecore_wl2_window_rotation_geometry_set(Ecore_Wl2_Window *win, int rot, int x, int y, int w, int h);
+EAPI void ecore_wl2_window_rotation_changed_callback_set(Ecore_Wl2_Window *win, void *data, void (*func)(Ecore_Wl2_Window *win, int rot, Eina_Bool resize, int w, int h, void *data));
 //
 
 /**

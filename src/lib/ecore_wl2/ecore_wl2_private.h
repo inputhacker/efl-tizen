@@ -334,6 +334,11 @@ struct _Ecore_Wl2_Window
         Ecore_Wl2_Virtual_Keyboard_State state;
      } keyboard;
    //
+
+   // TIZEN_ONLY(20161228) : tizen_rotation v2
+   void (*cb_rot_changed)(Ecore_Wl2_Window *win, int rot, Eina_Bool resize, int w, int h, void *data);
+   void *cb_rot_changed_data;
+   //
 };
 
 struct _Ecore_Wl2_Output

@@ -515,11 +515,37 @@ _ecore_wl_window_cb_angle_change(void *data, struct tizen_rotation *tizen_rotati
    ecore_wl2_window_rotation_set(win, ev->angle);
 }
 
+static void
+_ecore_wl_window_cb_angle_change_with_resize(void *data, struct tizen_rotation *tizen_rotation EINA_UNUSED, uint32_t angle, uint32_t serial, uint32_t width, uint32_t height)
+{
+   Ecore_Wl2_Window *win = (Ecore_Wl2_Window *)data;
+   int rot = 0;
+
+   EINA_SAFETY_ON_NULL_RETURN(win);
+   EINA_SAFETY_ON_NULL_RETURN(win->cb_rot_changed);
+
+   win->wm_rot.serial = serial;
+
+   switch (angle)
+     {
+       case TIZEN_ROTATION_ANGLE_0:   rot =   0; break;
+       case TIZEN_ROTATION_ANGLE_90:  rot =  90; break;
+       case TIZEN_ROTATION_ANGLE_180: rot = 180; break;
+       case TIZEN_ROTATION_ANGLE_270: rot = 270; break;
+       default:                       rot =   0; break;
+     }
+
+   ecore_wl2_window_rotation_set(win, rot);
+
+   win->cb_rot_changed(win, rot, 0, width, height, win->cb_rot_changed_data);
+}
+
 static const struct tizen_rotation_listener _ecore_tizen_rotation_listener =
 {
    _ecore_wl_window_cb_available_angles_done,
    _ecore_wl_window_cb_preferred_angle_done,
    _ecore_wl_window_cb_angle_change,
+   _ecore_wl_window_cb_angle_change_with_resize,
 };
 
 static void
@@ -1987,6 +2013,15 @@ ecore_wl2_window_rotation_geometry_set(Ecore_Wl2_Window *win, int rot, int x, in
                                          win->fullscreen,
                                          win->maximized);
      }
+}
+
+EAPI void
+ecore_wl2_window_rotation_changed_callback_set(Ecore_Wl2_Window *win, void *data, void (*func)(Ecore_Wl2_Window *win, int rot, Eina_Bool resize, int w, int h, void *data))
+{
+   if (!win) return;
+
+   win->cb_rot_changed = func;
+   win->cb_rot_changed_data = data;
 }
 //
 
