@@ -387,7 +387,7 @@ static int _elm_win_count = 0;
 
 static Eina_Bool _elm_win_auto_throttled = EINA_FALSE;
 
-static Ecore_Timer *_elm_win_state_eval_timer = NULL;
+static Ecore_Job *_elm_win_state_eval_job = NULL;
 
 static void _elm_win_legacy_init(Efl_Ui_Win_Data *sd);
 static void
@@ -519,7 +519,7 @@ _elm_win_state_eval(void *data EINA_UNUSED)
    int _elm_win_count_withdrawn = 0;
    Eina_Bool throttle = EINA_FALSE;
 
-   _elm_win_state_eval_timer = NULL;
+   _elm_win_state_eval_job = NULL;
 
    EINA_LIST_FOREACH(_elm_win_list, l, obj)
      {
@@ -648,8 +648,8 @@ _elm_win_flush_cache_and_exit(Eo *obj)
 static void
 _elm_win_state_eval_queue(void)
 {
-   if (_elm_win_state_eval_timer) ecore_timer_del(_elm_win_state_eval_timer);
-   _elm_win_state_eval_timer = ecore_timer_add(0.5, _elm_win_state_eval, NULL);
+   if (_elm_win_state_eval_job) ecore_job_del(_elm_win_state_eval_job);
+   _elm_win_state_eval_job = ecore_job_add(_elm_win_state_eval, NULL);
 }
 
 // example shot spec (wait 0.1 sec then save as my-window.png):
@@ -2338,10 +2338,10 @@ _efl_ui_win_show(Eo *obj, Efl_Ui_Win_Data *sd)
 
    if (do_eval)
      {
-        if (_elm_win_state_eval_timer)
+        if (_elm_win_state_eval_job)
           {
-             ecore_timer_del(_elm_win_state_eval_timer);
-             _elm_win_state_eval_timer = NULL;
+             ecore_job_del(_elm_win_state_eval_job);
+             _elm_win_state_eval_job = NULL;
           }
         _elm_win_state_eval(NULL);
      }
@@ -3666,7 +3666,7 @@ _elm_win_shutdown(void)
              _elm_win_list = eina_list_remove_list(_elm_win_list, _elm_win_list);
           }
      }
-   ELM_SAFE_FREE(_elm_win_state_eval_timer, ecore_timer_del);
+   ELM_SAFE_FREE(_elm_win_state_eval_job, ecore_job_del);
 }
 
 void
