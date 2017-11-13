@@ -300,6 +300,9 @@ typedef struct _Ecore_Wl2_Event_Window_Show
    unsigned int win;
    unsigned int parent_win;
    unsigned int event_win;
+   // TIZEN_ONLY
+   unsigned int data[4];
+   //
 } Ecore_Wl2_Event_Window_Show;
 
 typedef struct _Ecore_Wl2_Event_Window_Hide

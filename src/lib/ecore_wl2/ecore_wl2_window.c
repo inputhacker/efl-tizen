@@ -394,6 +394,31 @@ static const struct tizen_position_listener _tizen_position_listener =
 {
    _tizen_position_cb_changed,
 };
+
+static void
+_tizen_resource_cb_resource_id(void *data, struct tizen_resource *tizen_resource EINA_UNUSED, uint32_t id)
+{
+   Ecore_Wl2_Window *win;
+   Ecore_Wl2_Event_Window_Show *ev;
+
+   if (!(win = data)) return;
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Show)))) return;
+
+   ev->win = win->id;
+   if (win->parent)
+     ev->parent_win = win->parent->id;
+   else
+     ev->parent_win = 0;
+   ev->event_win = win->id;
+   ev->data[0] = (unsigned int)id;
+   win->resource_id = (unsigned int)id;
+   ecore_event_add(ECORE_WL2_EVENT_WINDOW_SHOW, ev, NULL, NULL);
+}
+
+static const struct tizen_resource_listener _tizen_resource_listener =
+{
+   _tizen_resource_cb_resource_id,
+};
 //
 
 void
@@ -511,6 +536,17 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
                tizen_policy_set_floating_mode(window->display->wl.tz_policy,
                                               window->surface);
           }
+     }
+
+   if (window->display->wl.tz_surf && !window->tz_resource)
+     {
+        window->tz_resource =
+          tizen_surface_get_tizen_resource(window->display->wl.tz_surf, window->surface);
+        if (!window->tz_resource) return;
+
+        tizen_resource_add_listener(window->tz_resource,
+                                    &_tizen_resource_listener, window);
+
      }
 //
 
@@ -708,6 +744,9 @@ ecore_wl2_window_hide(Ecore_Wl2_Window *window)
 
    if (window->tz_position) tizen_position_destroy(window->tz_position);
    window->tz_position = NULL;
+
+   if (window->tz_resource) tizen_resource_destroy(window->tz_resource);
+   window->tz_resource = NULL;
    //
 
    EINA_INLIST_FOREACH_SAFE(window->subsurfs, tmp, subsurf)
@@ -769,6 +808,9 @@ ecore_wl2_window_free(Ecore_Wl2_Window *window)
 
    if (window->tz_position) tizen_position_destroy(window->tz_position);
    window->tz_position = NULL;
+
+   if (window->tz_resource) tizen_resource_destroy(window->tz_resource);
+   window->tz_resource = NULL;
    //
 
    if (window->callback) wl_callback_destroy(window->callback);

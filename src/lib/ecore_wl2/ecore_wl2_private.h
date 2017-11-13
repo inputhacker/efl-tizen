@@ -208,6 +208,8 @@ struct _Ecore_Wl2_Window
    // TIZEN_ONLY(20150424) : tizen_visibility
    struct tizen_visibility *tz_visibility;
    struct tizen_position *tz_position;
+   struct tizen_resource *tz_resource;
+   unsigned int resource_id;
    //
 
    Eina_Stringshare *uuid;
