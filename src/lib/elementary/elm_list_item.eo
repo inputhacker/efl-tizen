@@ -117,5 +117,8 @@ class Elm.List.Item(Elm.Widget.Item)
            Elm.Widget.Item.part_content_unset;
            Efl.Access.name { get; }
            Efl.Access.state_set { get; }
+           //TIZEN_ONLY(20171114): list: enhance accessibility scroll and highlight
+           Efl.Access.Component.highlight_grab;
+           //
       }
 }

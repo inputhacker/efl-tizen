@@ -454,6 +454,9 @@ class Elm.List (Efl.Ui.Layout, Elm.Interface_Scrollable,
       Efl.Access.Selection.is_child_selected;
       Efl.Access.Selection.all_children_select;
       Efl.Access.Selection.clear;
+      //TIZEN_ONLY(20171114): list: enhance accessibility scroll and highlight
+      Elm.Interface_Scrollable.content_pos_set;
+      //
    }
    events {
       activated; [[Called when activated]]
