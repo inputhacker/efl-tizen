@@ -1,7 +1,9 @@
 #ifndef ELM_INTERFACE_ATSPI_WIDGET_ACTION_H
 #define ELM_INTERFACE_ATSPI_WIDGET_ACTION_H
 
-#ifdef EFL_BETA_API_SUPPORT
+// TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
+//#ifdef EFL_BETA_API_SUPPORT
+//
 
 struct _Efl_Access_Action_Data
 {
@@ -21,4 +23,6 @@ typedef struct _Efl_Access_Action_Data Efl_Access_Action_Data;
 #endif
 
 #endif
-#endif
+// TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
+//#endif
+//

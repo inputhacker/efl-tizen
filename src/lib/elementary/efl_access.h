@@ -1,7 +1,9 @@
 #ifndef EFL_ACCESS_H
 #define EFL_ACCESS_H
 
-#ifdef EFL_BETA_API_SUPPORT
+// TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
+//#ifdef EFL_BETA_API_SUPPORT
+//
 
 #ifdef EFL_EO_API_SUPPORT
 #include "efl_access.eo.h"
@@ -162,4 +164,6 @@ EAPI Efl_Access_Relation_Set efl_access_relation_set_clone(const Efl_Access_Rela
 #endif
 
 #endif
-#endif
+// TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
+//#endif
+//
