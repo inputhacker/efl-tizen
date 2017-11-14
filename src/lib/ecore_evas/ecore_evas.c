@@ -3719,8 +3719,7 @@ _ecore_evas_mouse_move_with_multi_info_process2(Ecore_Evas *ee, int x, int y, un
 {
    int fx, fy, fw, fh;
 
-   ee->mouse.x = x;
-   ee->mouse.y = y;
+   // TODO : set cursor position here if needed
 
    evas_output_framespace_get(ee->evas, &fx, &fy, &fw, &fh);
    if (ee->prop.cursor.object)
