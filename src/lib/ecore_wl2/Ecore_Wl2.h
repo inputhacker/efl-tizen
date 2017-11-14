@@ -2283,9 +2283,14 @@ EAPI void ecore_wl2_window_surface_flush(Ecore_Wl2_Window *window);
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
 EAPI void ecore_wl2_display_sync(Ecore_Wl2_Display *display);
 //
+
 // TIZEN_ONLY(20171107): add ecore_wl2_window_input_get() EAPI
 EAPI Ecore_Wl2_Input *ecore_wl2_window_input_get(Ecore_Wl2_Window *win);
 //
+// TIZEN_ONLY(20171114): support a pointer warp
+EAPI Eina_Bool ecore_wl2_window_pointer_warp(Ecore_Wl2_Window *win, int x, int y);
+//
+
 //TIZEN_ONLY(20171108): add a new API to ecore_wl2_sync
 EAPI void ecore_wl2_sync(void);
 //

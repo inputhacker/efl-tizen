@@ -2744,3 +2744,23 @@ ecore_wl2_window_input_get(Ecore_Wl2_Window *win)
    return NULL;
 }
 //
+
+// TIZEN_ONLY(20171114): support a pointer warp
+EAPI Eina_Bool
+ecore_wl2_window_pointer_warp(Ecore_Wl2_Window *win, int x, int y)
+{
+   Ecore_Wl2_Display *ewd;
+
+   /* FIXME: visible is not merged yet. */
+   //if (!win || !win->surface || !win->visible) return EINA_FALSE;
+   if (!win || !win->surface) return EINA_FALSE;
+
+   ewd = win->display;
+   if (!ewd || !ewd->wl.tz_input_device_manager) return EINA_FALSE;
+
+   tizen_input_device_manager_pointer_warp(ewd->wl.tz_input_device_manager,
+                                           win->surface, wl_fixed_from_int(x), wl_fixed_from_int(y));
+
+   return EINA_TRUE;
+}
+//

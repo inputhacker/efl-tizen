@@ -1637,6 +1637,24 @@ _ecore_evas_wl_common_pointer_xy_get(const Ecore_Evas *ee, Evas_Coord *x, Evas_C
    if (input) ecore_wl2_input_pointer_xy_get(input, x, y);
 }
 
+// TIZEN_ONLY(20171114): support a pointer warp
+static Eina_Bool
+_ecore_evas_wl_common_pointer_warp(const Ecore_Evas *ee, Evas_Coord x, Evas_Coord y)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+   Eina_Bool ret;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   if ((!ee) || (!ee->visible)) return EINA_FALSE;
+   wdata = ee->engine.data;
+   if(!wdata) return EINA_FALSE;
+
+   ret = ecore_wl2_window_pointer_warp(wdata->win, x, y);
+   return ret;
+}
+//
+
 static void
 _ecore_evas_wl_common_wm_rot_preferred_rotation_set(Ecore_Evas *ee, int rot)
 {
@@ -2825,7 +2843,9 @@ static Ecore_Evas_Engine_Func _ecore_wl_engine_func =
    NULL, // func msg send
 
    _ecore_evas_wl_common_pointer_xy_get,
-   NULL, // pointer_warp
+   // TIZEN_ONLY(20171114): support a pointer warp
+   _ecore_evas_wl_common_pointer_warp,
+   //
 
    _ecore_evas_wl_common_wm_rot_preferred_rotation_set,
    _ecore_evas_wl_common_wm_rot_available_rotations_set,
