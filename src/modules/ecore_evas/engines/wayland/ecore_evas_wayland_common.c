@@ -1651,11 +1651,15 @@ _ecore_evas_wl_common_free(Ecore_Evas *ee)
 }
 
 static void
-_ecore_evas_wl_common_move_resize(Ecore_Evas *ee, int x EINA_UNUSED, int y EINA_UNUSED, int w, int h)
+_ecore_evas_wl_common_move_resize(Ecore_Evas *ee, int x, int y, int w, int h)
 {
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
    if (!ee) return;
+// TIZEN_ONLY
+   if ((ee->x != x) || (ee->y != y))
+     _ecore_evas_wl_common_move(ee, x, y);
+//
    if ((ee->w != w) || (ee->h != h))
      _ecore_evas_wl_common_resize(ee, w, h);
 }
@@ -2951,7 +2955,7 @@ static Ecore_Evas_Engine_Func _ecore_wl_engine_func =
    NULL, // unsticky_set
    NULL, // pre_render_set
    NULL, // post_render_set
-   NULL,
+   _ecore_evas_wl_common_move,
    NULL, // managed_move
    _ecore_evas_wl_common_resize,
    _ecore_evas_wl_common_move_resize,
