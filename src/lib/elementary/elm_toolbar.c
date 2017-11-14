@@ -5,6 +5,9 @@
 #define EFL_UI_FOCUS_COMPOSITION_PROTECTED
 #define EFL_ACCESS_PROTECTED
 #define EFL_ACCESS_SELECTION_PROTECTED
+// TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items f919df709e670600fcea71c3001a5ce5221b61e0
+#define EFL_ACCESS_COMPONENT_PROTECTED
+//
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
 #define EFL_UI_TRANSLATABLE_PROTECTED
@@ -3939,6 +3942,24 @@ _elm_toolbar_efl_access_state_set_get(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSED)
 {
    return efl_access_state_set_get(efl_super(obj, ELM_TOOLBAR_CLASS));
 }
+
+// TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items f919df709e670600fcea71c3001a5ce5221b61e0
+
+EOLIAN static Eina_Bool
+_elm_toolbar_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Toolbar_Item_Data *it)
+{
+   elm_toolbar_item_show(eo_it, ELM_TOOLBAR_ITEM_SCROLLTO_IN);
+   elm_object_accessibility_highlight_set(VIEW(it), EINA_TRUE);
+   return EINA_TRUE;
+}
+
+EOLIAN static Eina_Bool
+_elm_toolbar_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_Toolbar_Item_Data *it)
+{
+   elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
+   return EINA_TRUE;
+}
+//
 
 EOLIAN int
 _elm_toolbar_efl_access_selection_selected_children_count_get(Eo *obj EINA_UNUSED, Elm_Toolbar_Data *pd)
