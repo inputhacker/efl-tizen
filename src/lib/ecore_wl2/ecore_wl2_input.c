@@ -3158,6 +3158,16 @@ ecore_wl2_input_pointer_set(Ecore_Wl2_Input *input, struct wl_surface *surface, 
    input->cursor.hot_x = hot_x;
    input->cursor.hot_y = hot_y;
 
+// TIZEN_ONLY(20170522) : set cursor role
+   if (input->display && input->display->wl.tz_policy)
+     {
+        if (input->cursor.surface)
+          {
+             tizen_policy_set_role(input->display->wl.tz_policy,
+                                   input->cursor.surface, "wl_pointer-cursor");
+          }
+     }
+//
    _ecore_wl2_input_cursor_update(input);
 }
 
