@@ -5153,7 +5153,10 @@ _plug_embedded_send(Eldbus_Connection *conn, Eo *proxy, const char *bus, const c
    if (!eldbus_message_arguments_append(msg, "s", obj_path))
      goto fail;
 
-   free(obj_path);
+   //TIZEN_ONLY(20171114) elm_atspi_bridge: fix double free issue (WGID:81393)
+   // free(obj_path);
+   ELM_SAFE_FREE(obj_path, free);
+   //
 
    if (!eldbus_connection_send(conn, msg, _embedded_reply_cb, proxy, 100))
      goto fail;
@@ -5163,7 +5166,10 @@ _plug_embedded_send(Eldbus_Connection *conn, Eo *proxy, const char *bus, const c
 fail:
    ERR("AT-SPI: Unable to send Embedded request.");
    if (msg) eldbus_message_unref(msg);
-   free(obj_path);
+   //TIZEN_ONLY(20171114) elm_atspi_bridge: fix double free issue (WGID:81393)
+   // free(obj_path);
+   ELM_SAFE_FREE(obj_path, free);
+   //
    efl_event_callback_call(proxy, ELM_ATSPI_PROXY_EVENT_DISCONNECTED, NULL);
 }
 
