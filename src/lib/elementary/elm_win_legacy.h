@@ -1322,3 +1322,17 @@ EAPI void elm_win_wm_rotation_available_rotations_set(Elm_Win *obj, const int *r
  * @ingroup Efl_Ui_Win
  */
 EAPI Eina_Bool elm_win_wm_rotation_available_rotations_get(const Elm_Win *obj, int **rotations, unsigned int *count);
+// TIZEN_ONLY(20160617) : add elm_win_active_win_orientation_get
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Gets the orientation of current active window on the screen.
+ * @remarks Support for this depends on the underlying windowing system.
+ *
+ * @param obj The window object
+ * @return The rotation of active window, in degrees (0-360) conter-clockwise.
+ *         otherwise @c -1 on failure
+ */
+EAPI int elm_win_active_win_orientation_get(Evas_Object *obj);
+//

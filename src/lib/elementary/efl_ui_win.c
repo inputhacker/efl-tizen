@@ -8956,6 +8956,24 @@ elm_win_teamwork_uri_open(Efl_Ui_Win *obj EINA_UNUSED, const char *uri EINA_UNUS
    ERR("Calling deprecrated function '%s'", __FUNCTION__);
 }
 
+// TIZEN_ONLY(20160617) : add elm_win_active_win_orientation_get
+EAPI int
+elm_win_active_win_orientation_get(Evas_Object *obj)
+{
+   int angle = -1;
+#ifdef HAVE_ELEMENTARY_WL2
+   Ecore_Wl2_Window *win = NULL;
+   if (obj)
+     {
+        ELM_WIN_DATA_GET(obj, sd);
+        if (sd)
+          win = sd->wl.win;
+     }
+   //angle = ecore_wl2_window_active_angle_get(win);
+#endif
+   return angle;
+}
+//
 // TIZEN_ONLY(20160126) : add elm_win_profiles_set
 EINA_DEPRECATED EAPI void
 elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_profiles)
