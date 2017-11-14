@@ -5417,6 +5417,35 @@ static Eina_List *_lines_split(Eina_List *children)
 }
 //
 
+//TIZEN_ONLY(20171114) atspi: integrate ewk_view with elementary accessibility
+static void
+_ewk_view_load_finished(Eo *plug,
+                        Evas_Object *obj,
+                        const char *addr)
+{
+   char *bus, *path;
+
+   if (addr && !evas_object_data_get(obj, "__plug_connected"))
+     {
+       if (_elm_atspi_bridge_plug_id_split(addr, &bus, &path))
+         {
+            elm_obj_atspi_proxy_address_set(plug, bus, path);
+            elm_atspi_bridge_utils_proxy_connect(plug);
+            evas_object_data_set(obj, "__plug_connected", (void*)1);
+            free(bus);
+            free(path);
+        }
+     }
+}
+
+static void
+_on_ewk_del(void *data, const Efl_Event *desc EINA_UNUSED)
+{
+   Eo *plug = data;
+   efl_del(plug);
+}
+//
+
 EOLIAN static Eina_List*
 _elm_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd)
 {
@@ -5426,6 +5455,29 @@ _elm_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *
 
    EINA_LIST_FOREACH(pd->subobjs, l, widget)
      {
+        //TIZEN_ONLY(20171114) atspi: integrate ewk_view with elementary accessibility
+        // Ugly Tizen hack to integrate AT-SPI2 accessibility provided by WebKit with
+        // elementary one. Due to problematic cross dependencies between Webkit
+        // and elementary, instead of directly using ewk API to integrate accessibility
+        // we use evas_object_data_set with pre defined key to share data
+        // between webkit and elemetary libraries.
+        const char *plug_id;
+        if ((plug_id = evas_object_data_get(widget, "__PlugID")) != NULL)
+          {
+             Eo *plug = evas_object_data_get(widget, "__ewk_proxy");
+             if (!plug)
+               {
+                  plug = efl_add(ELM_ATSPI_PROXY_CLASS, obj, elm_obj_atspi_proxy_constructor(efl_added, ELM_ATSPI_PROXY_TYPE_PLUG));
+                  evas_object_data_set(widget, "__ewk_proxy", plug);
+                  efl_event_callback_add(widget, EFL_EVENT_DEL, _on_ewk_del, plug);
+                  _ewk_view_load_finished(plug, widget, plug_id);
+               }
+             if (plug && evas_object_data_get(widget, "__plug_connected"))
+                accs = eina_list_append(accs, plug);
+             continue;
+          }
+        //
+
         //TIZEN_ONLY(20171108): make atspi_proxy work
         const char *plug_id_2;
         if ((plug_id_2 = evas_object_data_get(widget, "___PLUGID")) != NULL)
