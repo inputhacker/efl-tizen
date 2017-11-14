@@ -2465,6 +2465,44 @@ _evas_text_efl_text_font_font_bitmap_scalable_get(Eo *eo_obj EINA_UNUSED, Evas_T
 {
    return o->cur.bitmap_scalable;
 }
+/*********************************************************************************
+ * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+ *                       Edje textblock/text calculation/ellipsize feature.
+ *********************************************************************************/
+EAPI Evas_Coord
+evas_object_text_horiz_width_without_ellipsis_get(const Evas_Object *eo_obj)
+{
+   Evas_Text_Data *o;
+
+   MAGIC_CHECK(eo_obj, Evas_Object, MAGIC_OBJ);
+   return 0;
+   MAGIC_CHECK_END();
+
+   o = efl_data_scope_get(eo_obj, MY_CLASS);
+   if (!o) return 0;
+
+   if (!o->font) return 0;
+   if (!o->items) return 0;
+
+   return _evas_object_text_horiz_width_without_ellipsis_get(o);
+}
+
+EAPI Eina_Bool
+evas_object_text_ellipsis_status_get(const Evas_Object *eo_obj)
+{
+   Evas_Text_Data *o;
+
+   MAGIC_CHECK(eo_obj, Evas_Object, MAGIC_OBJ);
+   return EINA_FALSE;
+   MAGIC_CHECK_END();
+
+   o = efl_data_scope_get(eo_obj, MY_CLASS);
+   if (!o)
+     return EINA_FALSE;
+
+   return o->last_computed.ellipsis;
+}
+/* END */
 
 #define EVAS_TEXT_EXTRA_OPS \
    EFL_OBJECT_OP_FUNC(efl_dbg_info_get, _evas_text_efl_object_dbg_info_get)

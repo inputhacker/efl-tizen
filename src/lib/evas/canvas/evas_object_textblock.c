@@ -651,6 +651,16 @@ struct _Evas_Object_Textblock
       Eina_Hash                       *sources;
       Text_Item_Filter                *text_items; // inlist
    } gfx_filter;
+
+   /*********************************************************************************
+    * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+    *                       Edje textblock/text calculation/ellipsize feature.
+    *********************************************************************************/
+   double                              ellipsis;
+   Eina_Bool                           last_computed_ellipsis : 1;
+   Eina_Bool                           ellipsis_disabled : 1;
+   /* END */
+
    Eina_Bool                           redraw : 1;
    Eina_Bool                           changed : 1;
    Eina_Bool                           obstacle_changed : 1;
@@ -5474,6 +5484,13 @@ _layout_par_ellipsis_items(Ctxt *c, double ellip)
    if (exceed <= 0)
       return;
 
+   /*********************************************************************************
+    * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+    *                       Edje textblock/text calculation/ellipsize feature.
+    *********************************************************************************/
+   c->o->last_computed_ellipsis = EINA_TRUE;
+   /* END */
+
      {
         Evas_Object_Textblock_Item *first_it =
            _ITEM(eina_list_data_get(c->par->logical_items));
@@ -5578,10 +5595,20 @@ _layout_par(Ctxt *c)
      {
         /* Skip this paragraph if width is the same, there is no ellipsis
          * and we aren't just calculating. */
+        /*********************************************************************************
+         * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+         *                       Edje textblock/text calculation/ellipsize feature.
+         *********************************************************************************
         if (!c->par->text_node->is_new && !c->par->text_node->dirty &&
               !c->width_changed && c->par->lines &&
               !c->o->have_ellipsis && !c->o->obstacle_changed &&
               !c->o->wrap_changed)
+         */
+        if (!c->par->text_node->is_new && !c->par->text_node->dirty &&
+              !c->width_changed && c->par->lines &&
+              (!c->o->have_ellipsis || c->o->ellipsis_disabled) && !c->o->obstacle_changed &&
+              !c->o->wrap_changed)
+        /* END */
           {
              Evas_Object_Textblock_Line *ln;
              /* Update c->line_no */
@@ -5659,8 +5686,19 @@ _layout_par(Ctxt *c)
      {
         double ellip;
         ellip = it->format->ellipsis;
+        /*********************************************************************************
+         * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+         *                       Edje textblock/text calculation/ellipsize feature.
+         *********************************************************************************
         if ((0 <= ellip) && (ellip < 1.0) && c->line_no == 0)
            _layout_par_ellipsis_items(c, ellip);
+         */
+        if (c->o->ellipsis != -1.0)
+          ellip = c->o->ellipsis;
+
+        if (!c->o->ellipsis_disabled && (0 <= ellip) && (ellip < 1.0) && c->line_no == 0)
+          _layout_par_ellipsis_items(c, ellip);
+        /* END */
      }
 
    Eina_Bool item_preadv = EINA_FALSE;
@@ -5760,6 +5798,10 @@ _layout_par(Ctxt *c)
                   ellip_h_thresh = ascent + descent + maxasc + maxdesc;
                }
 
+             /*********************************************************************************
+              * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+              *                       Edje textblock/text calculation/ellipsize feature.
+              *********************************************************************************
              if ((EINA_DBL_EQ(it->format->ellipsis, 1.0)) && (c->h >= 0) &&
                  ((c->y + ellip_h_thresh >
                    c->h - c->o->style_pad.t - c->o->style_pad.b) ||
@@ -5771,6 +5813,22 @@ _layout_par(Ctxt *c)
                   ret = 1;
                   goto end;
                }
+              */
+             if (!c->o->ellipsis_disabled &&
+                 (EINA_DBL_EQ(it->format->ellipsis, 1.0)) && (c->h >= 0) &&
+                 ((c->y + ellip_h_thresh >
+                   c->h - c->o->style_pad.t - c->o->style_pad.b) ||
+                     (!it->format->wrap_word && !it->format->wrap_char &&
+                         !it->format->wrap_mixed && !it->format->wrap_hyphenation) ||
+                     !c->o->multiline))
+               {
+                  c->o->last_computed_ellipsis = EINA_TRUE;
+                  _layout_handle_ellipsis(c, it, i);
+                  ret = 1;
+                  goto end;
+               }
+             /* END */
+
              /* If we want to wrap and it's worth checking for wrapping
               * (i.e there's actually text). */
              else if (c->o->multiline &&
@@ -6731,6 +6789,12 @@ _relayout(const Evas_Object *eo_obj)
 {
    Evas_Object_Protected_Data *obj = efl_data_scope_get(eo_obj, EFL_CANVAS_OBJECT_CLASS);
    Efl_Canvas_Text_Data *o = efl_data_scope_get(eo_obj, MY_CLASS);
+   /*********************************************************************************
+    * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+    *                       Edje textblock/text calculation/ellipsize feature.
+    *********************************************************************************/
+   o->last_computed_ellipsis = EINA_FALSE;
+   /* END */
    _layout(eo_obj, obj->cur->geometry.w, obj->cur->geometry.h,
          &o->formatted.w, &o->formatted.h);
    o->formatted.valid = 1;
@@ -16262,5 +16326,107 @@ _efl_canvas_text_async_layout(Eo *eo_obj EINA_UNUSED, Efl_Canvas_Text_Data *o)
          NULL, ctx);
    return f;
 }
+
+/*********************************************************************************
+ * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+ *                       Edje textblock/text calculation/ellipsize feature.
+ *********************************************************************************/
+EAPI Eina_Bool
+evas_object_textblock_ellipsis_status_get(const Evas_Object *eo_obj)
+{
+   Efl_Canvas_Text_Data *o;
+
+   TB_HEAD_RETURN(EINA_FALSE);
+
+   o = efl_data_scope_get(eo_obj, MY_CLASS);
+
+   return o->last_computed_ellipsis;
+}
+
+EAPI void
+evas_object_textblock_ellipsis_disabled_set(Evas_Object *eo_obj,
+                                            Eina_Bool disabled)
+{
+   TB_HEAD();
+
+   if (o->ellipsis_disabled == disabled) return;
+
+   o->ellipsis_disabled = disabled;
+   _evas_textblock_invalidate_all(o);
+   _evas_textblock_changed(o, eo_obj);
+}
+
+EAPI Eina_Bool
+evas_object_textblock_ellipsis_disabled_get(Evas_Object *eo_obj)
+{
+   Efl_Canvas_Text_Data *o;
+
+   TB_HEAD_RETURN(EINA_FALSE);
+
+   o = efl_data_scope_get(eo_obj, MY_CLASS);
+
+   return o->ellipsis_disabled;
+}
+
+EAPI void
+evas_object_textblock_ellipsis_set(Evas_Object *eo_obj, double ellipsis)
+{
+   TB_HEAD();
+
+   if (o->ellipsis == ellipsis) return;
+
+   o->ellipsis = ellipsis;
+
+   _evas_textblock_invalidate_all(o);
+   _evas_textblock_changed(o, eo_obj);
+}
+
+EAPI double
+evas_object_textblock_ellipsis_get(const Evas_Object *eo_obj)
+{
+   Evas_Object_Textblock_Paragraph *par;
+   Evas_Object_Textblock_Item *it;
+   Efl_Canvas_Text_Data *o;
+   Eina_List *l;
+
+   TB_HEAD_RETURN(-1.0);
+
+   o = efl_data_scope_get(eo_obj, MY_CLASS);
+
+   if (o->ellipsis != -1.0)
+     return o->ellipsis;
+
+   EINA_INLIST_FOREACH(o->paragraphs, par)
+     {
+        EINA_LIST_FOREACH(par->logical_items, l, it)
+          {
+             if (it->format)
+               return it->format->ellipsis;
+          }
+     }
+
+   return -1.0;
+}
+
+EAPI Evas_BiDi_Direction
+evas_textblock_cursor_paragraph_direction_get(const Evas_Textblock_Cursor *cur)
+{
+   if (!cur) return EVAS_BIDI_DIRECTION_NEUTRAL;
+   if (!cur->node)
+     {
+        ERR("There is no node information on the given cursor: %p", cur);
+        return EVAS_BIDI_DIRECTION_NEUTRAL;
+     }
+   if (!cur->node->par)
+     {
+        ERR("There is no paragraph information on the given cursor: %p, node: %p", cur, cur->node);
+        return EVAS_BIDI_DIRECTION_NEUTRAL;
+     }
+
+   return cur->node->par->direction;
+}
+/*******/
+/* END */
+/*******/
 
 #include "canvas/efl_canvas_text.eo.c"

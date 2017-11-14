@@ -7925,6 +7925,75 @@ EAPI void evas_object_text_filter_program_set(Evas_Object *obj, const char *code
  */
 EAPI void evas_object_text_filter_source_set(Evas_Object *obj, const char *name, Evas_Object *source) EINA_DEPRECATED;
 
+/*********************************************************************************
+ * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
+ *                       Edje textblock/text calculation/ellipsize feature.
+ *********************************************************************************/
+/**
+ * @internal
+ */
+EAPI Evas_Coord                               evas_object_text_horiz_width_without_ellipsis_get(const Evas_Object *eo_obj) EINA_ARG_NONNULL(1);
+
+/**
+ * TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part.
+ * @internal
+ */
+EAPI Eina_Bool                                evas_object_text_ellipsis_status_get(const Evas_Object *eo_obj) EINA_ARG_NONNULL(1);
+
+/**
+ * @}
+ */
+
+/**
+ * @ingroup Evas_Object_Textblock
+ *
+ * @{
+ */
+
+/**
+ * TIZEN_ONLY(20160920): Add fade_ellipsis feature to TEXTBLOCK, TEXT part.
+ * @internal
+ */
+EAPI Eina_Bool                                evas_object_textblock_ellipsis_status_get(const Evas_Object *eo_obj) EINA_ARG_NONNULL(1);
+
+/**
+ * TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs
+ * @internal
+ */
+EAPI void
+evas_object_textblock_ellipsis_disabled_set(Evas_Object *eo_obj, Eina_Bool disabled);
+
+/**
+ * TIZEN_ONLY(20161011): add ellipsis_disabled_set/get APIs
+ * @internal
+ */
+EAPI Eina_Bool
+evas_object_textblock_ellipsis_disabled_get(Evas_Object *eo_obj);
+
+/**
+ * TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features.
+ * @internal
+ */
+EAPI void
+evas_object_textblock_ellipsis_set(Evas_Object *eo_obj, double ellipsis);
+
+/**
+ * TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features.
+ * @internal
+ */
+EAPI double
+evas_object_textblock_ellipsis_get(const Evas_Object *eo_obj);
+
+/**
+ * TIZEN_ONLY(20170703): Add ellipsize feature and refactory fade_ellipsis, marquee features.
+ * @internal
+ */
+EAPI Evas_BiDi_Direction
+evas_textblock_cursor_paragraph_direction_get(const Evas_Textblock_Cursor *cur);
+/*******
+ * END *
+ *******/
+
 #ifdef EFL_BETA_API_SUPPORT
 /**
  * Creates a new smart rectangle object on the given Evas @p e canvas.
