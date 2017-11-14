@@ -3624,6 +3624,15 @@ _elm_win_resize_objects_eval(Evas_Object *obj, Eina_Bool force_resize)
    sd->tmp_updating_hints = 0;
    _elm_win_size_hints_update(obj, sd);
 
+   // TIZEN_ONLY(20160216): if there are deferred resize job, do the job immediately
+   if (sd->deferred_resize_job)
+     {
+        ecore_job_del(sd->deferred_resize_job);
+        sd->deferred_resize_job = NULL;
+        _elm_win_resize_job(obj);
+     }
+   //
+
    evas_object_geometry_get(obj, NULL, NULL, &ow, &oh);
    w = ow;
    h = oh;
