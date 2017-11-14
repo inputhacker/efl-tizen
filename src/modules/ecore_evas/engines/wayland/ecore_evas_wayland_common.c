@@ -2121,6 +2121,17 @@ _ecore_evas_wl_common_render_flush_pre(void *data, Evas *evas, void *event EINA_
 
    ecore_wl2_window_update_begin(wdata->win);
 
+// TIZEN_ONLY(20160419) : to handle wm_rotation
+   if ((wdata->wm_rot.done) &&
+       (!ee->prop.wm_rot.manual_mode.set))
+     {
+        DBG("PendingRotation: client sends rotation change done to server");
+        wdata->wm_rot.request = 0;
+        wdata->wm_rot.done = 0;
+        ecore_wl2_window_rotation_change_done_send(wdata->win, ee->rotation, ee->w, ee->h);
+     }
+//
+
    /* Surviving bits of WWW - track interesting state we might want
     * to pass to clients to do client side effects
     */
