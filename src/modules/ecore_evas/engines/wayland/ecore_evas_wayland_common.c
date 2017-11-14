@@ -222,6 +222,31 @@ _ecore_evas_wl_common_cb_disconnect(void *data EINA_UNUSED, int type EINA_UNUSED
    return ECORE_CALLBACK_RENEW;
 }
 
+// TIZEN_ONLY(20160630)
+void
+_ecore_evas_wl_common_move(Ecore_Evas *ee, int x, int y)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   if (!ee) return;
+
+   wdata = ee->engine.data;
+   ee->req.x = x;
+   ee->req.y = y;
+
+   if ((ee->x != x) || (ee->y != y))
+     {
+        ee->x = x;
+        ee->y = y;
+        if (ee->func.fn_move) ee->func.fn_move(ee);
+     }
+
+   ecore_wl2_window_position_set(wdata->win, x, y);
+}
+//
+
 static void
 _ecore_evas_wl_common_resize(Ecore_Evas *ee, int w, int h)
 {
@@ -483,6 +508,9 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
    Ecore_Evas_Engine_Wl_Data *wdata;
    Ecore_Wl2_Event_Window_Configure *ev;
    int nw = 0, nh = 0, fw, fh, pfw, pfh;
+// TIZEN_ONLY(20160630)
+   int nx = 0, ny = 0;
+//
    Eina_Bool active, prev_max, prev_full, state_change = EINA_FALSE;
 
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
@@ -507,8 +535,13 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
    active = wdata->activated;
    wdata->activated = ecore_wl2_window_activated_get(wdata->win);
 
+// TIZEN_ONLY(20160630)
+/*
    nw = ev->w;
    nh = ev->h;
+*/
+   ecore_wl2_window_geometry_get(wdata->win, &nx, &ny, &nw, &nh);
+//
 
    pfw = fw = wdata->win->set_config.geometry.w - wdata->content.w;
    pfh = fh = wdata->win->set_config.geometry.h - wdata->content.h;
@@ -545,6 +578,11 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
 
    if (ee->prop.fullscreen || (ee->req.w != nw) || (ee->req.h != nh))
      {
+// TIZEN_ONLY(20160630)
+        if (ee->prop.fullscreen)
+          _ecore_evas_wl_common_move(ee, nx, ny);
+//
+
         if (ecore_wl2_window_resizing_get(wdata->win) || wdata->resizing)
           {
              if ((wdata->cw != nw) || (wdata->ch != nh))
@@ -555,6 +593,11 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
           _ecore_evas_wl_common_resize(ee, nw, nh);
      }
    wdata->resizing = ecore_wl2_window_resizing_get(wdata->win);
+
+// TIZEN_ONLY(20160630)
+   if ((ee->x != nx) || (ee->y != ny))
+     _ecore_evas_wl_common_move(ee, nx, ny);
+//
 
    if (ee->prop.wm_rot.supported)
      {
