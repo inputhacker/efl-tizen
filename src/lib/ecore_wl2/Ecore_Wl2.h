@@ -2300,6 +2300,10 @@ EAPI Eina_Bool ecore_wl2_window_pointer_warp(Ecore_Wl2_Window *win, int x, int y
 EAPI void ecore_wl2_sync(void);
 //
 
+//TIZEN_ONLY(20171115): support output transform
+EAPI Eina_Bool ecore_wl2_window_ignore_output_transform_get(Ecore_Wl2_Window *win);
+//
+
 # endif
 
 # undef EAPI

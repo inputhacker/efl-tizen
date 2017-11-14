@@ -51,6 +51,12 @@ struct _Ecore_Evas_Engine_Wl_Data
    Eina_List *tz_devices_list;
    //
 
+   //TIZEN_ONLY(20171115): support output transform
+   Ecore_Event_Handler *output_transform_hdl;
+   short output_rotation;
+   Ecore_Event_Handler *ignore_output_transform_hdl;
+   //
+
    struct
      {
         Eina_Bool supported : 1;

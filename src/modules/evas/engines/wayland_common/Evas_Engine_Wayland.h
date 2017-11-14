@@ -35,6 +35,10 @@ struct _Evas_Engine_Info_Wayland
    Eina_Bool drag_start : 1;
    Eina_Bool drag_stop : 1;
    Eina_Bool drag_ack : 1;
+
+   //TIZEN_ONLY(20171115): support output transform
+   int window_rotation;
+   //
 };
 
 #endif

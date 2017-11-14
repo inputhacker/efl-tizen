@@ -108,6 +108,9 @@ struct _Ecore_Wl2_Display
         struct tizen_keyrouter *tz_keyrouter;
         struct tizen_input_device_manager *tz_input_device_manager;
         //
+        //TIZEN_ONLY(20171115): support output transform
+        struct tizen_screen_rotation *tz_screen_rotation;
+        //
 
         int compositor_version;
      } wl;
@@ -261,6 +264,9 @@ struct _Ecore_Wl2_Window
    Ecore_Wl2_Window_Configure_State req_config;
    Ecore_Wl2_Window_Configure_State def_config;
 
+   //TIZEN_ONLY(20171115): support output transform
+   Eina_Bool ignore_output_transform : 1;
+   //
    Eina_Bool moving : 1;
    //TODO: move the iconified into the Ecore_Wl2_Window_Configure_State structure.
    // TIZEN_ONLY(20150822)
@@ -766,6 +772,10 @@ void _ecore_wl2_keyrouter_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigne
 
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
 void _ecore_wl2_input_device_manager_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version);
+//
+
+//TIZEN_ONLY(20171115): support output transform
+void _ecore_wl2_window_ignore_output_transform_set(Ecore_Wl2_Window *window, Eina_Bool ignore);
 //
 
 EAPI extern int _ecore_wl2_event_window_www;

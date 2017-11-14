@@ -41,6 +41,71 @@ static void _ecore_evas_wayland_resize(Ecore_Evas *ee, int location);
 static void _ecore_evas_wl_common_rotation_set(Ecore_Evas *ee, int rotation, int resize);
 static void _ecore_evas_wl_common_iconified_set(Ecore_Evas *ee, Eina_Bool on);
 
+//TIZEN_ONLY(20171115): support output transform
+static void _rotation_do(Ecore_Evas *ee, int rotation, int output_rotation, int resize);
+
+static int
+_ecore_evas_wl_common_engine_rotation_get(Ecore_Evas *ee)
+{
+   Evas_Engine_Info_Wayland *einfo;
+   einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
+   if (!einfo) return 0;
+   return einfo->info.rotation;
+}
+
+void
+_ecore_evas_wl_common_engine_info_rotation_set(Ecore_Evas *ee, Evas_Engine_Info *info)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata = ee->engine.data;
+
+   if (!strncmp(ee->driver, "wayland_shm", 11))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
+        Evas_Engine_Info_Wayland *einfo = (Evas_Engine_Info_Wayland *)info;
+        einfo->info.rotation = (ee->rotation + wdata->output_rotation) % 360;
+        ecore_wl2_window_buffer_transform_set(wdata->win, wdata->output_rotation / 90);
+        WRN("evas engine rotate: %d", einfo->info.rotation);
+#endif
+     }
+   else if (!strncmp(ee->driver, "wayland_egl", 11))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
+        Evas_Engine_Info_Wayland *einfo = (Evas_Engine_Info_Wayland *)info;
+        einfo->info.rotation = (ee->rotation + wdata->output_rotation) % 360;
+        /* the buffer transform information will be set in side of gl when rendering finish */
+        einfo->window_rotation = ee->rotation;
+        WRN("evas engine rotate: %d", einfo->info.rotation);
+#endif
+     }
+}
+
+static Eina_Bool
+_ecore_evas_wl_common_rotate_update(Ecore_Evas *ee)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+   int rotation;
+
+   wdata = ee->engine.data;
+
+   if (ecore_wl2_window_ignore_output_transform_get(wdata->win))
+     rotation = 0;
+   else
+     {
+        Ecore_Wl2_Output *output = ecore_wl2_window_output_find(wdata->win);
+        rotation = ecore_wl2_output_transform_get(output) * 90;
+     }
+
+   WRN("ignore_output_transform(%d) rotation(%d)", ecore_wl2_window_ignore_output_transform_get(wdata->win), rotation);
+
+   if (_ecore_evas_wl_common_engine_rotation_get(ee) == ((rotation + ee->rotation) % 360))
+     return EINA_FALSE;
+
+   _rotation_do(ee, ee->rotation, rotation, 0);
+
+   return EINA_TRUE;
+}
+//
+
 /* local functions */
 static void
 _anim_cb_tick(Ecore_Wl2_Window *win EINA_UNUSED, uint32_t timestamp EINA_UNUSED, void *data)
@@ -408,6 +473,10 @@ _ecore_evas_wl_common_resize(Ecore_Evas *ee, int w, int h)
           }
      }
 
+   //TIZEN_ONLY(20171115): support output transform
+   _ecore_evas_wl_common_rotate_update(ee);
+   //
+
    evas_output_size_get(ee->evas, &ow, &oh);
 
    if (ECORE_EVAS_PORTRAIT(ee) && ((ow != w) || (oh != h)))
@@ -634,6 +703,10 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
           }
      }
 
+   //TIZEN_ONLY(20171115): support output transform
+   _ecore_evas_wl_common_rotate_update(ee);
+   //
+
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -831,8 +904,17 @@ _mouse_move_dispatch(Ecore_Evas *ee)
    eina_iterator_free(itr);
 }
 
+//TIZEN_ONLY(20171115): support output transform
+/* ee->rotation shouldn't include the output rotation value. Therefore, we
+ * SHOULD handle the window rotation and output transform seperately.
+ * rotation: window rotation
+ * output_rotation: screen rotation
 static void
 _rotation_do(Ecore_Evas *ee, int rotation, int resize)
+ */
+static void
+_rotation_do(Ecore_Evas *ee, int rotation, int output_rotation, int resize)
+//
 {
    Evas_Engine_Info_Wayland *einfo;
    Ecore_Evas_Engine_Wl_Data *wdata;
@@ -856,7 +938,12 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
    ecore_wl2_window_rotation_set(wdata->win, rotation);
 
    /* check if rotation is just a flip */
+   //TIZEN_ONLY(20171115): support output transform
+   /*
    if (rot_dif != 180)
+    */
+   if (rot_dif % 180)
+   //
      {
         int minw, minh, maxw, maxh;
         int basew, baseh, stepw, steph;
@@ -871,7 +958,12 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
              evas_output_framespace_get(ee->evas, NULL, NULL, &fw, &fh);
 
              /* check for fullscreen */
+             //TIZEN_ONLY(20171115): support output transform
+             /*
              if (ee->prop.fullscreen)
+              */
+             if (ee->prop.fullscreen && !ee->prop.maximized)
+             //
                {
                   /* resize the canvas based on rotation */
                   if ((rotation == 0) || (rotation == 180))
@@ -934,6 +1026,9 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
 
         /* record the current rotation of the ecore_evas */
         ee->rotation = rotation;
+        //TIZEN_ONLY(20171115): support output transform
+        wdata->output_rotation = output_rotation;
+        //
 
         /* reset min, max, base, & step sizes */
         ecore_evas_size_min_set(ee, minh, minw);
@@ -953,6 +1048,9 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
      {
         /* record the current rotation of the ecore_evas */
         ee->rotation = rotation;
+        //TIZEN_ONLY(20171115): support output transform
+        wdata->output_rotation = output_rotation;
+        //
 
         /* send a mouse_move process
          *
@@ -969,6 +1067,37 @@ _rotation_do(Ecore_Evas *ee, int rotation, int resize)
         else
           evas_damage_rectangle_add(ee->evas, 0, 0, ee->h, ee->w);
      }
+
+   //TIZEN_ONLY(20171115): support output transform
+   if (!strcmp(ee->driver, "wayland_shm"))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
+        Evas_Engine_Info_Wayland *einfo;
+        einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
+
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+#endif
+     }
+   else if (!strcmp(ee->driver, "wayland_egl"))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
+        Evas_Engine_Info_Wayland *einfo;
+        einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
+
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+#endif
+     }
+
+   _ecore_evas_wl_common_state_update(ee);
+   //
 }
 
 static Eina_Bool
@@ -1630,6 +1759,13 @@ _ecore_evas_wl_common_free(Ecore_Evas *ee)
    wdata = ee->engine.data;
    ee_list = eina_list_remove(ee_list, ee);
 
+   //TIZEN_ONLY(20171115): support output transform
+   if (wdata->output_transform_hdl)
+     ecore_event_handler_del(wdata->output_transform_hdl);
+   if (wdata->ignore_output_transform_hdl)
+     ecore_event_handler_del(wdata->ignore_output_transform_hdl);
+   //
+
    eina_list_free(wdata->regen_objs);
    if (wdata->frame) ecore_wl2_window_frame_callback_del(wdata->frame);
    wdata->frame = NULL;
@@ -1948,7 +2084,12 @@ _ecore_evas_wl_common_wm_rot_cb_angle_changed(Ecore_Wl2_Window *win, int rot, Ei
         einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
         if (!einfo) return;
 
+        //TIZEN_ONLY(20171115): support output transform
+        /*
         einfo->info.rotation = rot;
+         */
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
+        //
 
         if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
           ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
@@ -1961,7 +2102,12 @@ _ecore_evas_wl_common_wm_rot_cb_angle_changed(Ecore_Wl2_Window *win, int rot, Ei
         einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
         if (!einfo) return;
 
+        //TIZEN_ONLY(20171115): support output transform
+        /*
         einfo->info.rotation = rot;
+         */
+        _ecore_evas_wl_common_engine_info_rotation_set(ee, (Evas_Engine_Info *)einfo);
+        //
 
         /* TIZEN_ONLY(20160728):
            wayland spec is not define whether wl_egl_window_create() can use null surface or not.
@@ -2396,7 +2542,12 @@ _ecore_evas_wl_common_render_updates(void *data, Evas *evas EINA_UNUSED, void *e
      }
    if (ee->delayed.rotation_changed)
      {
+        //TIZEN_ONLY(20171115): support output transform
+        /*
         _rotation_do(ee, ee->delayed.rotation, ee->delayed.rotation_resize);
+         */
+        Ecore_Evas_Engine_Wl_Data *wdata = ee->engine.data;
+        _rotation_do(ee, ee->delayed.rotation, wdata->output_rotation, ee->delayed.rotation_resize);
         ee->delayed.rotation_changed = EINA_FALSE;
      }
 }
@@ -2821,8 +2972,78 @@ _ecore_evas_wl_common_rotation_set(Ecore_Evas *ee, int rotation, int resize)
         ee->delayed.rotation_changed = EINA_TRUE;
      }
    else
+     //TIZEN_ONLY(20171115): support output transform
+     /*
      _rotation_do(ee, rotation, resize);
+      */
+     {
+        Ecore_Evas_Engine_Wl_Data *wdata = ee->engine.data;
+        _rotation_do(ee, rotation, wdata->output_rotation, resize);
+     }
 }
+
+//TIZEN_ONLY(20171115): support output transform
+static Eina_Bool
+_ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void *event)
+{
+   Ecore_Evas *ee = data;
+   Ecore_Wl2_Event_Output_Transform *ev = event;
+   Ecore_Evas_Engine_Wl_Data *wdata;
+   Ecore_Wl2_Output *output;
+   Eina_Bool changed;
+
+   if (!ee) return ECORE_CALLBACK_PASS_ON;
+   if (!(wdata = ee->engine.data)) return ECORE_CALLBACK_PASS_ON;
+   if (ecore_wl2_window_iconified_get(wdata->win)) return ECORE_CALLBACK_PASS_ON;
+
+   output = ecore_wl2_window_output_find(wdata->win);
+   if (output != ev->output) return ECORE_CALLBACK_PASS_ON;
+
+   changed = _ecore_evas_wl_common_rotate_update(ee);
+   evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+
+   if (!ee->manual_render && changed)
+     _ecore_evas_wl_common_render(ee);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ecore_evas_wl_common_cb_ignore_output_transform(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
+{
+   Ecore_Evas *ee = data;
+   Eina_Bool changed;
+
+   if (!ee) return ECORE_CALLBACK_PASS_ON;
+
+   changed = _ecore_evas_wl_common_rotate_update(ee);
+   evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+
+   if (!ee->manual_render && changed)
+     _ecore_evas_wl_common_render(ee);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static void
+_ecore_evas_wl_common_output_transform_register(Ecore_Evas *ee)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata = ee->engine.data;
+   Ecore_Wl2_Output *output;
+
+   if (wdata->output_transform_hdl) return;
+
+   output = ecore_wl2_window_output_find(wdata->win);
+   wdata->output_rotation = ecore_wl2_output_transform_get(output) * 90;
+
+   wdata->output_transform_hdl =
+     ecore_event_handler_add(ECORE_WL2_EVENT_OUTPUT_TRANSFORM,
+                             _ecore_evas_wl_common_cb_output_transform, ee);
+   wdata->ignore_output_transform_hdl =
+     ecore_event_handler_add(ECORE_WL2_EVENT_IGNORE_OUTPUT_TRANSFORM,
+                             _ecore_evas_wl_common_cb_ignore_output_transform, ee);
+}
+//
 
 static Eina_Bool
 _ee_cb_sync_done(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
@@ -3123,6 +3344,10 @@ _ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, i
    ee->prop.window = ecore_wl2_window_id_get(wdata->win);
    ee->prop.aux_hint.supported_list = ecore_wl2_window_aux_hints_supported_get(wdata->win);
    ecore_evas_aux_hint_add(ee, "wm.policy.win.msg.use", "1");
+
+   //TIZEN_ONLY(20171115): support output transform
+   _ecore_evas_wl_common_output_transform_register(ee);
+   //
 
    ee->evas = evas_new();
    evas_data_attach_set(ee->evas, ee);

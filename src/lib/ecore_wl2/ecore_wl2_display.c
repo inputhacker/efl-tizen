@@ -600,6 +600,32 @@ static const struct tizen_clipboard_listener _tizen_clipboard_listener =
 };
 //
 
+//TIZEN_ONLY(20171115): support output transform
+static void
+_tizen_screen_rotation_cb_ignore_output_transform(void *data EINA_UNUSED, struct tizen_screen_rotation *tizen_screen_rotation EINA_UNUSED, struct wl_surface *surface, uint32_t ignore)
+{
+   Ecore_Wl2_Window *win = NULL;
+   Ecore_Wl2_Event_Ignore_Output_Transform *ev;
+
+   if (!surface) return;
+   win = ecore_wl2_window_surface_find(surface);
+   if (!win) return;
+
+   _ecore_wl2_window_ignore_output_transform_set(win, ignore);
+
+   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Ignore_Output_Transform)))) return;
+
+   ev->win = win;
+   ev->ignore = (ignore) ? EINA_TRUE : EINA_FALSE;
+   ecore_event_add(ECORE_WL2_EVENT_IGNORE_OUTPUT_TRANSFORM, ev, NULL, NULL);
+}
+
+static const struct tizen_screen_rotation_listener _tizen_screen_rotation_listener =
+{
+   _tizen_screen_rotation_cb_ignore_output_transform,
+};
+//
+
 static void
 _cb_global_event_free(void *data EINA_UNUSED, void *event)
 {
@@ -802,6 +828,15 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
         _ecore_wl2_input_device_manager_setup(ewd, id, version);
      }
 //
+//TIZEN_ONLY(20171115): support output transform
+   else if (!strcmp(interface, "tizen_screen_rotation"))
+     {
+        ewd->wl.tz_screen_rotation =
+           wl_registry_bind(registry, id, &tizen_screen_rotation_interface, 1);
+        if (ewd->wl.tz_screen_rotation)
+          tizen_screen_rotation_add_listener(ewd->wl.tz_screen_rotation, &_tizen_screen_rotation_listener, ewd->wl.display);
+     }
+//
 
    //
 
@@ -913,6 +948,7 @@ _ecore_wl2_display_globals_cleanup(Ecore_Wl2_Display *ewd)
    if (ewd->wl.tz_effect) tizen_effect_destroy(ewd->wl.tz_effect);
    if (ewd->wl.tz_indicator) tizen_indicator_destroy(ewd->wl.tz_indicator);
    if (ewd->wl.tz_clipboard) tizen_clipboard_destroy(ewd->wl.tz_clipboard);
+   if (ewd->wl.tz_screen_rotation) tizen_screen_rotation_destroy(ewd->wl.tz_screen_rotation);
 //
 
    if (ewd->wl.registry) wl_registry_destroy(ewd->wl.registry);

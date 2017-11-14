@@ -349,6 +349,17 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
                dy = ah - h;
           }
 
+        //TIZEN_ONLY(20171115): support output transform
+        /* buffer_transform: screen rotation + window rotation
+         * window_transform: window rotation only
+         * We have to let the display server know the window rotation value
+         * because the display server needs to calcuate the screen rotation value
+         * from buffer_transform value.
+         */
+        wl_egl_window_set_buffer_transform(ob->win, ob->rot / 90);
+        wl_egl_window_set_window_transform(ob->win, ob->info->window_rotation / 90);
+        //
+
         if ((ob->rot == 90) || (ob->rot == 270))
           wl_egl_window_resize(ob->win, h, w, dx, dy);
         else

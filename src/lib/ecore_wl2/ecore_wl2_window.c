@@ -822,6 +822,11 @@ _ecore_wl2_window_surface_create(Ecore_Wl2_Window *window)
           }
         wl_surface_set_user_data(window->surface, window);
 
+        //TIZEN_ONLY(20171115): support output transform
+        if (window->display->wl.tz_screen_rotation)
+          tizen_screen_rotation_get_ignore_output_transform(window->display->wl.tz_screen_rotation, window->surface);
+        //
+
         window->surface_id =
           wl_proxy_get_id((struct wl_proxy *)window->surface);
         if (window->display->wl.efl_aux_hints)
@@ -897,6 +902,10 @@ ecore_wl2_window_new(Ecore_Wl2_Display *display, Ecore_Wl2_Window *parent, int x
    win->configured.w = w;
    win->configured.h = h;
    win->configured.edges = 0;
+   //
+
+   //TIZEN_ONLY(20171115): support output transform
+   win->ignore_output_transform = EINA_TRUE;
    //
 
    win->pending.configure = EINA_TRUE;
@@ -2867,5 +2876,21 @@ ecore_wl2_window_video_has_set(Ecore_Wl2_Window *window, Eina_Bool has)
 
    if (ver >= 7)
      tizen_policy_has_video(display->wl.tz_policy, window->surface, has);
+}
+//
+
+//TIZEN_ONLY(20171115): support output transform
+void
+_ecore_wl2_window_ignore_output_transform_set(Ecore_Wl2_Window *window, Eina_Bool ignore)
+{
+   if (!window) return;
+
+   window->ignore_output_transform = ignore;
+}
+
+EAPI Eina_Bool
+ecore_wl2_window_ignore_output_transform_get(Ecore_Wl2_Window *window)
+{
+   return window->ignore_output_transform;
 }
 //
