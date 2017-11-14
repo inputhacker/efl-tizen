@@ -1644,3 +1644,26 @@ EINA_DEPRECATED EAPI char *elm_access_external_info_get(const Evas_Object *obj);
 // elm_win
 EINA_DEPRECATED EAPI void elm_win_type_set(Evas_Object *obj, Elm_Win_Type type);
 EINA_DEPRECATED EAPI void elm_win_name_set(Evas_Object *obj, const char *name);
+
+// TIZEN_ONLY(20160126) : add elm_win_profiles_set
+/**
+ * @brief Sets the profile list of a window.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ *
+ * @param[in] obj The window object
+ * @param[in] profiles The list of profile names
+ * @param[in] num_profiles The number of profile names
+ *
+ * @ingroup Elm_Win
+ *
+ * @deprecated Deprecated since Tizen 2.4
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EINA_DEPRECATED EAPI void         elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_profiles);
+//

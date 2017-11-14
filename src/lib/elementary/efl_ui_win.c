@@ -8956,6 +8956,16 @@ elm_win_teamwork_uri_open(Efl_Ui_Win *obj EINA_UNUSED, const char *uri EINA_UNUS
    ERR("Calling deprecrated function '%s'", __FUNCTION__);
 }
 
+// TIZEN_ONLY(20160126) : add elm_win_profiles_set
+EINA_DEPRECATED EAPI void
+elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_profiles)
+{
+   ELM_WIN_CHECK(obj);
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd);
+
+   _elm_win_available_profiles_set(obj, sd, profiles, num_profiles);
+}
+//
 /* Internal EO APIs and hidden overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(efl_ui_win, Efl_Ui_Win_Data)
