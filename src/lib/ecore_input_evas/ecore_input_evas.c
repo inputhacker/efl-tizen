@@ -456,12 +456,20 @@ static Eina_Bool
 _ecore_event_evas_key(Ecore_Event_Key *e, Ecore_Event_Press press)
 {
    Ecore_Input_Window *lookup;
+   Eina_Bool evas_dev_pushed = EINA_FALSE;
 
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
    ecore_event_evas_seat_modifier_lock_update(lookup->evas,
                                               e->modifiers,
                                               efl_input_device_seat_get(e->dev));
+
+   if (e->dev)
+     {
+        evas_device_push(lookup->evas, e->dev);
+        evas_dev_pushed = EINA_TRUE;
+     }
+
    if (press == ECORE_DOWN)
      {
         if (!lookup->direct ||
@@ -493,6 +501,8 @@ _ecore_event_evas_key(Ecore_Event_Key *e, Ecore_Event_Press press)
           }
      }
 
+   if (evas_dev_pushed)
+     evas_device_pop(lookup->evas);
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -530,6 +540,7 @@ _ecore_event_evas_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press pr
    Ecore_Event_Last *eel;
    Ecore_Input_Window *lookup;
    Evas_Button_Flags flags = EVAS_BUTTON_NONE;
+   Eina_Bool evas_dev_pushed = EINA_FALSE;
 
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
@@ -566,6 +577,12 @@ _ecore_event_evas_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press pr
         ret = _ecore_event_evas_push_mouse_button(e, press);
         /* This ButtonEvent is worng */
         if (!ret) return ECORE_CALLBACK_PASS_ON;
+     }
+
+   if (e->dev)
+     {
+        evas_device_push(lookup->evas, e->dev);
+        evas_dev_pushed = EINA_TRUE;
      }
 
    if (e->multi.device == 0)
@@ -653,6 +670,9 @@ _ecore_event_evas_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press pr
                }
           }
      }
+
+   if (evas_dev_pushed)
+     evas_device_pop(lookup->evas);
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -661,10 +681,18 @@ ecore_event_evas_mouse_move(void *data EINA_UNUSED, int type EINA_UNUSED, void *
 {
    Ecore_Event_Mouse_Move *e;
    Ecore_Input_Window *lookup;
+   Eina_Bool evas_dev_pushed = EINA_FALSE;
 
    e = event;
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
+
+   if (e->dev)
+     {
+        evas_device_push(lookup->evas, e->dev);
+        evas_dev_pushed = EINA_TRUE;
+     }
+
    if (e->multi.device == 0)
      {
         _ecore_event_evas_push_mouse_move(e);
@@ -713,6 +741,9 @@ ecore_event_evas_mouse_move(void *data EINA_UNUSED, int type EINA_UNUSED, void *
                                            NULL);
           }
      }
+
+   if (evas_dev_pushed)
+     evas_device_pop(lookup->evas);
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -738,9 +769,17 @@ static Eina_Bool
 _ecore_event_evas_mouse_io(Ecore_Event_Mouse_IO *e, Ecore_Event_IO io)
 {
    Ecore_Input_Window *lookup;
+   Eina_Bool evas_dev_pushed = EINA_FALSE;
 
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
+
+   if (e->dev)
+     {
+        evas_device_push(lookup->evas, e->dev);
+        evas_dev_pushed = EINA_TRUE;
+     }
+
    ecore_event_evas_seat_modifier_lock_update(lookup->evas,
                                               e->modifiers,
                                               efl_input_device_seat_get(e->dev));
@@ -773,6 +812,9 @@ _ecore_event_evas_mouse_io(Ecore_Event_Mouse_IO *e, Ecore_Event_IO io)
    else if (lookup->move_mouse)
      lookup->move_mouse(lookup->window, e->x, e->y, e->timestamp);
 //
+
+   if (evas_dev_pushed)
+     evas_device_pop(lookup->evas);
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -793,10 +835,18 @@ ecore_event_evas_mouse_wheel(void *data EINA_UNUSED, int type EINA_UNUSED, void 
 {
    Ecore_Event_Mouse_Wheel *e;
    Ecore_Input_Window *lookup;
+   Eina_Bool evas_dev_pushed = EINA_FALSE;
 
    e = event;
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
+
+   if (e->dev)
+     {
+        evas_device_push(lookup->evas, e->dev);
+        evas_dev_pushed = EINA_TRUE;
+     }
+
    ecore_event_evas_seat_modifier_lock_update(lookup->evas, e->modifiers,
                                               efl_input_device_seat_get(e->dev));
    if (!lookup->direct ||
@@ -804,6 +854,9 @@ ecore_event_evas_mouse_wheel(void *data EINA_UNUSED, int type EINA_UNUSED, void 
      {
         evas_event_feed_mouse_wheel(lookup->evas, e->direction, e->z, e->timestamp, NULL);
      }
+
+   if (evas_dev_pushed)
+     evas_device_pop(lookup->evas);
 
    return ECORE_CALLBACK_PASS_ON;
 }
