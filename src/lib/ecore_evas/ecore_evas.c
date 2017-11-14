@@ -3749,6 +3749,7 @@ _ecore_evas_mouse_move_process_with_multi_info_internal(Ecore_Evas *ee,
    efl_del(evt);
 }
 
+// TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
 EAPI void
 _ecore_evas_mouse_move_with_multi_info_process(Ecore_Evas *ee, int x, int y, unsigned int timestamp, double radius, double radius_x, double radius_y, double pressure, double angle)
 {
@@ -3758,18 +3759,19 @@ _ecore_evas_mouse_move_with_multi_info_process(Ecore_Evas *ee, int x, int y, uns
 EAPI void
 _ecore_evas_mouse_move_with_multi_info_process2(Ecore_Evas *ee, int x, int y, unsigned int timestamp, double radius, double radius_x, double radius_y, double pressure, double angle)
 {
-   int fx, fy, fw, fh;
-
-   // TODO : set cursor position here if needed
-
-   evas_output_framespace_get(ee->evas, &fx, &fy, &fw, &fh);
-   if (ee->prop.cursor.object)
-     {
-        evas_object_show(ee->prop.cursor.object);
-        evas_object_move(ee->prop.cursor.object,
-                         x - fx - ee->prop.cursor.hot.x,
-                         y - fy - ee->prop.cursor.hot.y);
-     }
+   // TODO : set/update cursor position here if needed
+   /* FIXME
+    * int fx, fy, fw, fh;
+    *
+    * evas_output_framespace_get(ee->evas, &fx, &fy, &fw, &fh);
+    * if (ee->prop.cursor.object)
+    * {
+    *    evas_object_show(ee->prop.cursor.object);
+    *    evas_object_move(ee->prop.cursor.object,
+    *                     x - fx - ee->prop.cursor.hot.x,
+    *                     y - fy - ee->prop.cursor.hot.y);
+    * }
+    */
 
    evas_event_input_mouse_move_with_multi_info(ee->evas, x, y, timestamp, NULL, radius, radius_x, radius_y, pressure, angle);
 }
