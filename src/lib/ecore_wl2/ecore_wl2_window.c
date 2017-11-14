@@ -766,6 +766,20 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
                                     &_tizen_resource_listener, window);
 
      }
+
+   if (window->parent)
+     {
+        if (window->zxdg_surface && window->parent->zxdg_surface)
+          {
+             // already handled above code
+          }
+        else if (window->display->wl.tz_policy && window->surface && window->parent->surface)
+          {
+             uint32_t ver = wl_proxy_get_version((struct wl_proxy *)window->display->wl.tz_policy);
+             if (ver >= 3)
+               tizen_policy_set_parent(window->display->wl.tz_policy, window->surface, window->parent->surface);
+          }
+     }
 //
 
    if (window->display->wl.session_recovery)
@@ -1097,7 +1111,10 @@ EAPI void
 ecore_wl2_window_raise(Ecore_Wl2_Window *window)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
+   EINA_SAFETY_ON_NULL_RETURN(window->display);
 
+// TIZEN_ONLY(20171114)
+/*
    if (window->zxdg_toplevel)
      {
         struct wl_array states;
@@ -1111,6 +1128,10 @@ ecore_wl2_window_raise(Ecore_Wl2_Window *window)
                                     window->set_config.geometry.h, &states);
         wl_array_release(&states);
      }
+*/
+   if ((window->surface) && (window->display->wl.tz_policy))
+     tizen_policy_raise(window->display->wl.tz_policy, window->surface);
+//
 }
 
 // TIZEN_ONLY(20171108): lower window function from ecore_wayland to ecore_wl2
@@ -1173,6 +1194,31 @@ ecore_wl2_window_parent_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window *parent)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
    window->parent = parent;
+
+// TIZEN_ONLY(20171114)
+   if (window->parent)
+     {
+        if (window->zxdg_surface && window->parent->zxdg_surface)
+          {
+             struct zxdg_toplevel_v6 *ptop = NULL;
+
+             ptop = window->parent->zxdg_toplevel;
+             if (ptop)
+               zxdg_toplevel_v6_set_parent(window->zxdg_toplevel, ptop);
+          }
+        else if (window->display->wl.tz_policy && window->surface && window->parent->surface)
+          {
+             uint32_t ver = wl_proxy_get_version((struct wl_proxy *)window->display->wl.tz_policy);
+             if (ver >= 3)
+               tizen_policy_set_parent(window->display->wl.tz_policy, window->surface, window->parent->surface);
+          }
+     }
+   else
+     {
+        if (window->zxdg_surface)
+          zxdg_toplevel_v6_set_parent(window->zxdg_toplevel, NULL);
+     }
+//
 }
 
 EAPI void
@@ -1705,6 +1751,11 @@ ecore_wl2_window_type_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window_Type type)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
    window->type = type;
+
+// TIZEN_ONLY(20171114)
+   if ((window->surface) && (window->display->wl.tz_policy))
+     tizen_policy_set_type(window->display->wl.tz_policy, window->surface, (uint32_t)type);
+//
 }
 
 // TIZEN_ONLY(20171108) : Get the type of a given window
