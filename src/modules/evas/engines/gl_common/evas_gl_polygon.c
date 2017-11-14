@@ -262,10 +262,13 @@ evas_gl_common_poly_draw(Evas_Engine_GL_Context *gc, Evas_GL_Polygon *poly, int 
                   if (x0 < cx) x0 = cx;
                   if (x1 >= (cx + cw)) x1 = cx + cw - 1;
                   span = malloc(sizeof(RGBA_Span));
-                  spans = eina_inlist_append(spans, EINA_INLIST_GET(span));
-                  span->y = y;
-                  span->x = x0;
-                  span->w = (x1 - x0) + 1;
+                  if (span)
+                    {
+                      spans = eina_inlist_append(spans, EINA_INLIST_GET(span));
+                      span->y = y;
+                      span->x = x0;
+                      span->w = (x1 - x0) + 1;
+                    }
                }
              edges[j].x += edges[j].dx;
              edges[j + 1].x += edges[j + 1].dx;

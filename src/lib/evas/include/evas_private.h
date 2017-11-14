@@ -1515,6 +1515,9 @@ struct _Evas_Func
    void *(*ector_surface_cache_get)      (void *engine, void *key);
    void  (*ector_surface_cache_drop)     (void *engine, void *key);
 
+   // TIZEN_ONLY(20171114) : EvasGL Render Thread
+   void (*gl_get_pixels)                 (void *engine_data, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data, Evas_Object *o, void *image);
+
    Evas_Filter_Support (*gfx_filter_supports) (void *engine, Evas_Filter_Command *cmd);
    Eina_Bool (*gfx_filter_process)       (void *engine, Evas_Filter_Command *cmd);
 

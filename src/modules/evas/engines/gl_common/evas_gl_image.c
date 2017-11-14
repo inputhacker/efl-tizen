@@ -666,6 +666,8 @@ evas_gl_common_image_content_hint_set(Evas_GL_Image *im, int hint)
      {
         if ((!im->gc->shared->info.sec_image_map) &&
             ((!im->gc->shared->info.sec_tbm_surface) || (!im->gc->shared->info.egl_tbm_ext))) return;
+        Evas_GL_Texture *tex = evas_gl_common_texture_dynamic_new(im->gc, im);
+        if (!tex) return;
         if (im->cs.data)
           {
              if (!im->cs.no_free) free(im->cs.data);
@@ -694,7 +696,7 @@ evas_gl_common_image_content_hint_set(Evas_GL_Image *im, int hint)
              evas_gl_common_texture_free(im->tex, EINA_TRUE);
              im->tex = NULL;
           }
-        im->tex = evas_gl_common_texture_dynamic_new(im->gc, im);
+        im->tex = tex;
         im->tex_only = 1;
      }
    else
