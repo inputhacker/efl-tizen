@@ -118,6 +118,9 @@ _elm_bg_efl_object_constructor(Eo *obj, Elm_Bg_Data *_pd EINA_UNUSED)
    efl_access_type_set(obj, EFL_ACCESS_TYPE_DISABLED);
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
+   //TIZEN_ONLY (20171114) imporove object at xy get function
+   efl_access_role_set(obj, EFL_ACCESS_ROLE_REDUNDANT_OBJECT);
+   //
 
    return obj;
 }

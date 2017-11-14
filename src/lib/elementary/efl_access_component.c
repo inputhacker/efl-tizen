@@ -78,11 +78,18 @@ _efl_access_component_accessible_at_point_get(Eo *obj, void *_pd EINA_UNUSED, Ei
 
    children = efl_access_children_get(obj);
 
-   EINA_LIST_FOREACH(children, l, child)
+   //TIZEN_ONLY (20171114) imporove object at xy get function
+   EINA_LIST_REVERSE_FOREACH(children, l, child)
+   //
      {
         Eina_Bool contains;
         if (efl_isa(child, EFL_ACCESS_COMPONENT_MIXIN))
           {
+              //TIZEN_ONLY (20171114) imporove object at xy get function
+              Efl_Access_Role role = efl_access_role_get(child);
+              if (role == EFL_ACCESS_ROLE_REDUNDANT_OBJECT)
+                continue;
+              //
               contains = efl_access_component_contains(child, screen_coords, x, y);
               if (contains)
                 {
