@@ -11,5 +11,9 @@ class Elm.Access (Elm.Widget, Efl.Access.Widget.Action)
       Elm.Widget.on_focus_update;
       Efl.Access.Widget.Action.elm_actions { get; }
       Efl.Access.state_set { get; }
+      // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
+      Efl.Access.Component.highlight_grab;
+      Efl.Access.Component.highlight_clear;
+      //
    }
 }

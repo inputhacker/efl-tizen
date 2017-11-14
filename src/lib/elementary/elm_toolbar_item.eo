@@ -279,9 +279,9 @@ class Elm.Toolbar.Item(Elm.Widget.Item, Efl.Ui.Item, Efl.Ui.Focus.Object)
            Efl.Ui.Item.selected { get; set; }
            Efl.Ui.Item.prev { get; }
            Efl.Ui.Item.next { get; }
-// TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items f919df709e670600fcea71c3001a5ce5221b61e0
+           // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
            Efl.Access.Component.highlight_grab;
            Efl.Access.Component.highlight_clear;
-//
+           //
       }
 }

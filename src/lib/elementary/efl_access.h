@@ -12,20 +12,22 @@
 #include "efl_access.eo.legacy.h"
 #endif
 
+// TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
 /*
  * Sets a particilar state type for given state set.
  */
-#define STATE_TYPE_SET(state_set, type)   (state_set|= (1ULL << type))
+#define STATE_TYPE_SET(state_set, type)   (state_set |= ((Efl_Access_State_Set)1 << type))
 
 /**
  * Unsets a particilar state type for given state set.
  */
-#define STATE_TYPE_UNSET(state_set, type) (state_set &= ~(1ULL << type))
+#define STATE_TYPE_UNSET(state_set, type) (state_set &= ~((Efl_Access_State_Set)1 << type))
 
 /**
  * Gets value of a particilar state type for given state set.
  */
-#define STATE_TYPE_GET(state_set, type)   (state_set & (1ULL << type))
+#define STATE_TYPE_GET(state_set, type)   (state_set & ((Efl_Access_State_Set)1 << type))
+//
 
 /**
  * Free Efl_Access_Attributes_List

@@ -5,6 +5,10 @@
 #define EFL_ACCESS_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 
+// TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
+#define EFL_ACCESS_COMPONENT_PROTECTED
+//
+
 #include <Elementary.h>
 #include "elm_priv.h"
 
@@ -1536,6 +1540,28 @@ _elm_access_efl_access_state_set_get(Eo *obj, void *pd EINA_UNUSED)
 
    return ret;
 }
+
+// TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
+EOLIAN static Eina_Bool
+_elm_access_efl_access_component_highlight_grab(Eo *obj, void *pd EINA_UNUSED)
+{
+   if (!_access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT, NULL))
+     efl_access_component_highlight_grab(efl_super(obj, ELM_ACCESS_CLASS));
+
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   return EINA_TRUE;
+}
+
+EOLIAN static Eina_Bool
+_elm_access_efl_access_component_highlight_clear(Eo *obj, void *pd EINA_UNUSED)
+{
+   if (!_access_action_callback_call(obj, ELM_ACCESS_ACTION_UNHIGHLIGHT, NULL))
+     efl_access_component_highlight_clear(efl_super(obj, ELM_ACCESS_CLASS));
+
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+   return EINA_TRUE;
+}
+//
 
 /* Internal EO APIs and hidden overrides */
 

@@ -2140,12 +2140,16 @@ _elm_list_item_efl_access_name_get(Eo *eo_it, Elm_List_Item_Data *data)
    return _elm_widget_item_accessible_plain_name_get(eo_it, data->label);
 }
 
+
+
 //TIZEN_ONLY(20171114):  Region show on item elements fixed
 EOLIAN static Eina_Bool
 _elm_list_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_List_Item_Data *it)
 {
    elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
-
+   // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
+   efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+   //
    return EINA_TRUE;
 }
 //
@@ -3254,6 +3258,7 @@ _elm_list_efl_access_selection_child_deselect(Eo *obj EINA_UNUSED, Elm_List_Data
    return EINA_FALSE;
 }
 
+
 /* Standard widget overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_list, Elm_List_Data)
@@ -3391,6 +3396,9 @@ _elm_list_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_List_Item_Data
    else
      elm_list_item_show(eo_it);
 
+   // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
+   efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   //
    ret = efl_access_component_highlight_grab(efl_super(eo_it, ELM_LIST_ITEM_CLASS));
    return ret;
 }

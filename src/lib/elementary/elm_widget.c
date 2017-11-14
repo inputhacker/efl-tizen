@@ -4099,8 +4099,7 @@ _elm_widget_item_accessible_plain_name_get(Elm_Object_Item *item, const char* na
 }
 
 EOLIAN static Efl_Access_State_Set
-_elm_widget_item_efl_access_state_set_get(Eo *eo_item,
-                                                              Elm_Widget_Item_Data *item EINA_UNUSED)
+_elm_widget_item_efl_access_state_set_get(Eo *eo_item, Elm_Widget_Item_Data *item)
 {
    Efl_Access_State_Set states = 0;
 
@@ -4129,6 +4128,13 @@ _elm_widget_item_efl_access_state_set_get(Eo *eo_item,
    if (_elm_widget_item_onscreen_is(eo_item))
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
 
+   //TIZEN_ONLY(20170717) : expose highlight information on atspi
+   if (item->can_highlight)
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+
+   if (_elm_object_accessibility_currently_highlighted_get() == (void*)item->view)
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
+   //
    return states;
 }
 
@@ -5173,7 +5179,7 @@ _focus_event_changed(void *data EINA_UNUSED, const Efl_Event *event)
 }
 
 EOLIAN static Eo *
-_elm_widget_efl_object_constructor(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED)
+_elm_widget_efl_object_constructor(Eo *obj, Elm_Widget_Smart_Data *sd)
 {
    Eo *parent = NULL;
 
@@ -5192,6 +5198,9 @@ _elm_widget_efl_object_constructor(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSE
    sd->on_create = EINA_FALSE;
 
    efl_access_role_set(obj, EFL_ACCESS_ROLE_UNKNOWN);
+   //TIZEN_ONLY(20170717) : expose highlight information on atspi
+   sd->can_highlight = EINA_TRUE;
+   //
 
    efl_event_callback_add(obj, EFL_UI_FOCUS_OBJECT_EVENT_FOCUS_CHANGED, _focus_event_changed, NULL);
 
@@ -5484,8 +5493,9 @@ _elm_widget_efl_access_parent_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED
    return efl_isa(parent, EFL_ACCESS_MIXIN) ? parent : NULL;
 }
 
+
 EOLIAN static Efl_Access_State_Set
-_elm_widget_efl_access_state_set_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
+_elm_widget_efl_access_state_set_get(Eo *obj, Elm_Widget_Smart_Data *pd)
 {
    Efl_Access_State_Set states = 0;
 
@@ -5521,6 +5531,14 @@ _elm_widget_efl_access_state_set_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNU
         STATE_TYPE_SET(states, EFL_ACCESS_STATE_ENABLED);
         STATE_TYPE_SET(states, EFL_ACCESS_STATE_SENSITIVE);
      }
+
+   //TIZEN_ONLY(20170717) : expose highlight information on atspi
+   if (pd->can_highlight)
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+
+   if (_elm_object_accessibility_currently_highlighted_get() == (void*)pd->obj)
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
+   //
 
    return states;
 }

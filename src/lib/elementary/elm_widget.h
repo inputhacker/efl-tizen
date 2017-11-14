@@ -466,6 +466,9 @@ typedef struct _Elm_Widget_Smart_Data
    Eina_Bool                     provider_lookup : 1; /**< This is true when efl_provider_find is currently walking the tree */
    Eina_Bool                     legacy : 1; /**< Widget was created with a legacy API, not efl_add() */
    Eina_Bool                     has_shadow : 1;
+   ///TIZEN_ONLY(20170717) : expose highlight information on atspi
+   Eina_Bool                     can_highlight : 1; /**< true if widget have at-spi HIGHLIGHTABLE state */
+   ///
 } Elm_Widget_Smart_Data;
 
 typedef Elm_Widget_Smart_Data Efl_Ui_Widget_Data;
@@ -555,6 +558,9 @@ void                  _elm_win_focus_auto_hide(Evas_Object *obj);
 // Evas_Object          *_elm_win_accessibility_highlight_get(Evas_Object *win);
 // //
 void                  _elm_win_object_set_accessibility_highlight(Evas_Object *win, Evas_Object *obj);
+// TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
+void                 *_elm_object_accessibility_currently_highlighted_get();
+//
 
 EAPI void             _elm_access_clear(Elm_Access_Info *ac);
 EAPI void             _elm_access_text_set(Elm_Access_Info *ac, int type, const char *text);
@@ -639,6 +645,9 @@ struct _Elm_Widget_Item_Data
    Eina_Bool                      on_deletion : 1;
    Eina_Bool                      on_translate : 1;
    Eina_Bool                      still_in : 1;
+   ///TIZEN_ONLY(20170717) : expose highlight information on atspi
+   Eina_Bool                      can_highlight : 1; /**< true if widget have at-spi HIGHLIGHTABLE state */
+   ///
 };
 
 #define ELM_NEW(t) calloc(1, sizeof(t))

@@ -1043,18 +1043,40 @@ _item_tree_effect_before(Elm_Gen_Item *it)
 }
 
 static void
-_item_position(Elm_Gen_Item *it,
+_item_position(Elm_Gen_Item *eo_it,
                Evas_Object *view,
                Evas_Coord it_x,
                Evas_Coord it_y)
 {
-   if (!it) return;
+   if (!eo_it) return;
    if (!view) return;
-   ELM_GENLIST_DATA_GET_FROM_ITEM(it, sd);
+   ELM_GENLIST_DATA_GET_FROM_ITEM(eo_it, sd);
+
+   //TIZEN_ONLY(20160419) : expose highlight information on atspi
+   if ((void*)view == _elm_object_accessibility_currently_highlighted_get())
+     {
+        Elm_Genlist_Data * sd = eo_it->item->wsd;
+        int x,y,w,h;
+        evas_object_geometry_get(sd->obj, &x, &y, &w, &h);
+
+        Elm_Gen_Item * next_previous_item = NULL;
+        if ((it_y + eo_it->item->h/2) < y)
+          {
+             next_previous_item = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(eo_it)->next);
+          }
+        else if ((it_y + eo_it->item->h/2) > y + h)
+          {
+             next_previous_item = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(eo_it)->prev);
+          }
+
+        if (next_previous_item)
+          efl_access_component_highlight_grab(EO_OBJ(next_previous_item));
+     }
+   //
 
    evas_event_freeze
      (evas_object_evas_get(sd->obj));
-   evas_object_resize(view, it->item->w, it->item->h);
+   evas_object_resize(view, eo_it->item->w, eo_it->item->h);
    evas_object_move(view, it_x, it_y);
    evas_object_show(view);
    evas_event_thaw(evas_object_evas_get(sd->obj));

@@ -135,7 +135,7 @@ _conformant_part_sizing_eval(Evas_Object *obj,
    Ecore_Wl2_Window *wlwin;
 #endif
    //
-   Evas_Object *top;
+   Evas_Object *top = NULL;
    int sx = -1, sy = -1, sw = -1, sh = -1;
 
    ELM_CONFORMANT_DATA_GET(obj, sd);
