@@ -5770,6 +5770,7 @@ pc/evas-drm.pc
 pc/evas.pc
 pc/evas-cxx.pc
 pc/ecore.pc
+pc/ecore-core.pc
 pc/ecore-cxx.pc
 pc/ecore-con.pc
 pc/ecore-ipc.pc

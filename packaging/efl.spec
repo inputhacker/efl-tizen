@@ -1505,7 +1505,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %defattr(-,root,root,-)
 %{_includedir}/ecore-1/*.h
 %{_libdir}/libecore.so
-%{_libdir}/pkgconfig/ecore.pc
+%{_libdir}/pkgconfig/ecore-core.pc
 %{_libdir}/cmake/Ecore*/*.cmake
 
 %files -n ecore-audio
