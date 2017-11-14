@@ -34,6 +34,7 @@ static Eina_Array *_ecore_evas_wl_event_hdls;
 static Eina_Bool _enable_uniconify_force_render = EINA_FALSE;
 
 static void _ecore_evas_wl_common_damage_add(Ecore_Evas *ee);
+int _ecore_evas_wl_common_render(Ecore_Evas *ee);
 //
 
 static void _ecore_evas_wayland_resize(Ecore_Evas *ee, int location);
@@ -757,9 +758,7 @@ _ecore_evas_wl_common_cb_window_pending_rotate(Ecore_Evas *ee, Ecore_Wl2_Event_W
    //Server has responsibility to show frame even though app not call render when app turns on manual rotation render feature.
    //until server add the code, client create fake damage.
    _ecore_evas_wl_common_damage_add(ee);
-
-   // 20171114 : Not provided below function currently
-   //_ecore_evas_wl_common_render(ee);
+   _ecore_evas_wl_common_render(ee);
 
    ee->prop.wm_rot.pending_mode.wm_angle = ev->angle;
    return ECORE_CALLBACK_PASS_ON;
@@ -2385,6 +2384,18 @@ _ecore_evas_wl_common_render_updates(void *data, Evas *evas EINA_UNUSED, void *e
         ee->delayed.rotation_changed = EINA_FALSE;
      }
 }
+
+// TIZEN_ONLY
+int _ecore_evas_wl_common_render(Ecore_Evas *ee)
+{
+   int rend = 0;
+
+   // This function should be implemented.
+   if (!ee) return 0;
+
+   return rend;
+}
+//
 
 static Eina_Bool
 _ecore_evas_wl_common_prepare(Ecore_Evas *ee)
