@@ -110,6 +110,17 @@ _access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
    return NULL;
 }
 
+//TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
+static Eina_Bool _atspi_enabled()
+{
+    Eo *bridge = NULL;
+    Eina_Bool ret = EINA_FALSE;
+    if (_elm_config->atspi_mode && (bridge = _elm_atspi_bridge_get()))
+      ret = elm_obj_atspi_bridge_connected_get(bridge);
+    return ret;
+}
+//
+
 EOLIAN static Evas_Object*
 _elm_index_item_elm_widget_item_access_register(Eo *eo_item, Elm_Index_Item_Data *it)
 {
@@ -762,7 +773,7 @@ _sel_eval(Evas_Object *obj,
                        _elm_access_say(ret);
                     }
 
-                  if (om_closest) 
+                  if (om_closest)
                     efl_event_callback_legacy_call
                       (obj, ELM_INDEX_EVENT_CHANGED, EO_OBJ(om_closest));
                   else
@@ -1212,6 +1223,9 @@ _elm_index_efl_object_constructor(Eo *obj, Elm_Index_Data *_pd EINA_UNUSED)
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    efl_access_role_set(obj, EFL_ACCESS_ROLE_SCROLL_BAR);
+   //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
+   efl_access_name_set(obj, N_("Index"));
+   //
 
    return obj;
 }
@@ -1284,6 +1298,9 @@ _elm_index_item_selected_set(Eo *eo_it,
 
              edje_object_signal_emit(VIEW(it_inactive),
                                      "elm,state,inactive", "elm");
+             //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
+             if (_atspi_enabled()) elm_layout_signal_emit(obj, "elm,indicator,state,inactive", "elm");
+             //
              edje_object_message_signal_process(VIEW(it_inactive));
           }
 
@@ -1294,6 +1311,13 @@ _elm_index_item_selected_set(Eo *eo_it,
           it_active = it_sel;
 
         edje_object_signal_emit(VIEW(it_active), "elm,state,active", "elm");
+        //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
+        if (_atspi_enabled())
+          {
+            elm_layout_text_set(obj, "elm.text", strdup(it_sel->letter));
+            elm_layout_signal_emit(obj, "elm,indicator,state,active", "elm");
+          }
+        //
         edje_object_message_signal_process(VIEW(it_active));
 
         efl_event_callback_legacy_call
