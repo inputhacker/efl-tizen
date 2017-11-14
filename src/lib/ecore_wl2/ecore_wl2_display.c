@@ -497,8 +497,10 @@ static const struct tizen_policy_listener _tizen_policy_listener =
 };
 
 static void
-_tizen_policy_ext_cb_active_angle(void *data EINA_UNUSED, struct tizen_policy_ext *tizen_policy_ext EINA_UNUSED, uint32_t angle EINA_UNUSED)
+_tizen_policy_ext_cb_active_angle(void *data, struct tizen_policy_ext *tizen_policy_ext EINA_UNUSED, uint32_t angle)
 {
+   Ecore_Wl2_Display *ewd = data;
+   ewd->active_angle = angle;
 }
 
 static const struct tizen_policy_ext_listener _tizen_policy_ext_listener =

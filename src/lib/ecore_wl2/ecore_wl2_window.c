@@ -1245,6 +1245,22 @@ ecore_wl2_window_position_set(Ecore_Wl2_Window *window, int x, int y)
           tizen_position_set(window->tz_position, window->geometry.x, window->geometry.y);
      }
 }
+
+EAPI int
+ecore_wl2_window_active_angle_get(Ecore_Wl2_Window *window)
+{
+   struct wl_surface *surface = NULL;
+
+   if (window->display->wl.tz_policy_ext) return 0;
+
+   if (window)
+     surface = ecore_wl2_window_surface_get(window);
+
+   tizen_policy_ext_get_active_angle(window->display->wl.tz_policy_ext, surface);
+   ecore_wl2_display_sync(window->display);
+
+   return window->display->active_angle;
+}
 //
 
 EAPI Eina_Bool

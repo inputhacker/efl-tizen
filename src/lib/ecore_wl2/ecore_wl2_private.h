@@ -136,6 +136,9 @@ struct _Ecore_Wl2_Display
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
    int sync_ref_count;
 //
+// TIZEN_ONLY(20171114): active angle
+   int active_angle;
+//
 };
 
 struct _Ecore_Wl2_Subsurface
