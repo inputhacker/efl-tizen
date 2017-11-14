@@ -32,6 +32,8 @@ static Eina_Array *_ecore_evas_wl_event_hdls;
 
 // TIZEN_ONLY(20160617) : uniconify force render
 static Eina_Bool _enable_uniconify_force_render = EINA_FALSE;
+
+static void _ecore_evas_wl_common_damage_add(Ecore_Evas *ee);
 //
 
 static void _ecore_evas_wayland_resize(Ecore_Evas *ee, int location);
@@ -729,6 +731,41 @@ _ecore_evas_wl_common_cb_aux_hint_allowed(void *data  EINA_UNUSED, int type EINA
    return ECORE_CALLBACK_PASS_ON;
 }
 
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+static Eina_Bool
+_ecore_evas_wl_common_cb_window_pending_rotate(Ecore_Evas *ee, Ecore_Wl2_Event_Window_Rotation *ev)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+   DBG("PendingRotation: ecore_evas_wl pending rotation callback from WM");
+   DBG("PendingRotation: ecore_evas_wl angle app(%d) wm(%d)", ee->prop.wm_rot.pending_mode.app_angle, ee->prop.wm_rot.pending_mode.wm_angle);
+
+   wdata = ee->engine.data;
+   if (!wdata) return ECORE_CALLBACK_PASS_ON;
+
+   if ((!ee->prop.wm_rot.supported) || (!ee->prop.wm_rot.app_set))
+     return ECORE_CALLBACK_PASS_ON;
+
+//TODO: deal with the rotation difference between client and server
+//If app not set proper rotation, client cannot deal with the rotation properly.
+//Need to discuss this issue with server.
+
+
+   DBG("PendingRotation: ecore_evas_wl pend rotation");
+   //THIS IS HOTFIX: we need to negotiate rotation done protocol with display server.
+   ecore_wl2_window_rotation_change_done_send(wdata->win, ee->rotation, ee->w, ee->h);
+
+   //Server has responsibility to show frame even though app not call render when app turns on manual rotation render feature.
+   //until server add the code, client create fake damage.
+   _ecore_evas_wl_common_damage_add(ee);
+
+   // 20171114 : Not provided below function currently
+   //_ecore_evas_wl_common_render(ee);
+
+   ee->prop.wm_rot.pending_mode.wm_angle = ev->angle;
+   return ECORE_CALLBACK_PASS_ON;
+}
+//
+
 static Eina_Bool
 _ecore_evas_wl_common_cb_window_rotate(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
@@ -742,6 +779,12 @@ _ecore_evas_wl_common_cb_window_rotate(void *data EINA_UNUSED, int type EINA_UNU
    ee = ecore_event_window_match(ev->win);
    if (!ee) return ECORE_CALLBACK_PASS_ON;
    if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
+
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+   if (ee->prop.wm_rot.pending_mode.app_set)
+     return _ecore_evas_wl_common_cb_window_pending_rotate(ee, ev);
+   DBG("PendingRotation: ecore_evas_wl rotation callback from WM");
+//
 
    // TIZEN_ONLY
    /*
@@ -2691,6 +2734,46 @@ _ecore_evas_wl_common_transparent_set(Ecore_Evas *ee, int transparent)
    _ecore_evas_wayland_transparent_do(ee, transparent);
 }
 
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+void
+_ecore_evas_wl_common_app_rotation_set(Ecore_Evas *ee, int rotation, int resize)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+
+   DBG("PendingRotation: ecore_evas_wl app rotation_set rot=%d", rotation);
+
+   ecore_evas_data_set(ee, "pending_rotation", NULL);
+
+   if (!resize) return;
+
+   wdata = ee->engine.data;
+   if (!wdata) return;
+
+   if ((!ee->prop.wm_rot.supported) || (!ee->prop.wm_rot.app_set))
+     return;
+
+   DBG("RotationPending: ecore_evas_wl do rotation %d", rotation);
+   //wdata->wm_rot.request = 1;
+   //wdata->wm_rot.done = 0;
+   ee->prop.wm_rot.pending_mode.app_angle = rotation;
+
+   if (!strcmp(ee->driver, "wayland_shm"))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
+        _ecore_evas_wl_common_rotation_set(ee, rotation, 1);
+#endif
+     }
+   else if (!strcmp(ee->driver, "wayland_egl"))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
+        _ecore_evas_wl_common_rotation_set(ee, rotation, 1);
+#endif
+     }
+
+   //wdata->wm_rot.done = 1;
+}
+//
+
 static void
 _ecore_evas_wl_common_rotation_set(Ecore_Evas *ee, int rotation, int resize)
 {
@@ -2698,6 +2781,12 @@ _ecore_evas_wl_common_rotation_set(Ecore_Evas *ee, int rotation, int resize)
 
    if (ee->rotation == rotation) return;
 
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+   if (ecore_evas_data_get(ee, "pending_rotation"))
+     {
+        return _ecore_evas_wl_common_app_rotation_set(ee, rotation, resize);
+     }
+//
    if (ee->in_async_render)
      {
         ee->delayed.rotation = rotation;

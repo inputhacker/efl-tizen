@@ -1423,9 +1423,29 @@ ecore_evas_request_geometry_get(const Ecore_Evas *ee, int *x, int *y, int *w, in
      }
 }
 
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+/* TODO: We need time to set up the role of pending rotation between the server and client.
+ * and also need time to discuss this concept with opensource.
+ * so until that time, we are not open the new ecore_evas_XXX api.
+ */
+static void
+_ecore_evas_app_rotation_set(Ecore_Evas *ee, int rot, int resize)
+{
+   DBG("PendingRotation: ecore_evas app rotation_set rot=%d", rot);
+
+   IFC(ee, fn_rotation_set) (ee, rot, resize);
+   /* make sure everything gets redrawn */
+   evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+   evas_damage_rectangle_add(ee->evas, 0, 0, ee->h, ee->w);
+   IFE;
+}
+//
+
 EAPI void
 ecore_evas_rotation_set(Ecore_Evas *ee, int rot)
 {
+   DBG("PendingRotation: ecore_evas rotation_set rot=%d", rot);
+
    ECORE_EVAS_CHECK(ee);
    rot = rot % 360;
    while (rot < 0) rot += 360;
@@ -1439,9 +1459,17 @@ ecore_evas_rotation_set(Ecore_Evas *ee, int rot)
 EAPI void
 ecore_evas_rotation_with_resize_set(Ecore_Evas *ee, int rot)
 {
+   DBG("PendingRotation: ecore_evas rotation_set rot=%d", rot);
+
    ECORE_EVAS_CHECK(ee);
    rot = rot % 360;
    while (rot < 0) rot += 360;
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+   if (ecore_evas_data_get(ee, "pending_rotation"))
+     {
+        return _ecore_evas_app_rotation_set(ee, rot, 1);
+     }
+//
    IFC(ee, fn_rotation_set) (ee, rot, 1);
    /* make sure everything gets redrawn */
    evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
@@ -2283,6 +2311,19 @@ EAPI int
 ecore_evas_aux_hint_add(Ecore_Evas *ee, const char *hint, const char *val)
 {
    ECORE_EVAS_CHECK(ee, -1);
+
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+/* This is really hotfix.
+ * Until the new api is opened, we use aux_hint as pending rotation set.
+ * X don't need the pending rotation.
+*/
+
+   if(!strncmp(hint, "wm.policy.win.rot.render.nopending", strlen(hint)))
+     {
+        ee->prop.wm_rot.pending_mode.app_set = EINA_TRUE;
+        DBG("PendingRotation: ecore_evas rotation_pending_set sucess");
+     }
+//
 
    Eina_List *ll;
    char *supported_hint;

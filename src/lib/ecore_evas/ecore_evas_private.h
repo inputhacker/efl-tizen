@@ -269,6 +269,13 @@ struct _Ecore_Evas
             Eina_Bool    wait_for_done;
             Ecore_Timer *timer;
          } manual_mode;
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+         struct {
+            Eina_Bool    app_set;        // indicate that the app rotates the canvas, because it want to rotation effect, so ee pend the rotation until app finish.
+            int          app_angle;      // rotation value which is decided by the app
+            int          wm_angle;       // rotation value which is decided by the WM
+         } pending_mode;
+//
       } wm_rot;
       struct {
          Eina_List      *supported_list;
