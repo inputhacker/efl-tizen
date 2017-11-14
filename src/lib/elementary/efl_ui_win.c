@@ -412,6 +412,9 @@ static void _elm_win_frame_obj_update(Efl_Ui_Win_Data *sd);
 #ifdef HAVE_ELEMENTARY_X
 static void _elm_win_xwin_update(Efl_Ui_Win_Data *sd);
 #endif
+// TIZEN_ONLY(20160404)  skip_focus in case invoking elm_win_quickpanel_set
+static void _elm_win_focus_skip_set(Efl_Ui_Win_Data *sd, Eina_Bool skip);
+//
 
 EAPI double _elm_startup_time = 0;
 
@@ -1700,6 +1703,16 @@ _elm_win_state_change(Ecore_Evas *ee)
      evas_object_smart_callback_call(obj, SIG_VISIBILITY_CHANGED, (void*)!sd->obscured);
    //
 }
+
+// TIZEN_ONLY(20160404)  skip_focus in case invoking elm_win_quickpanel_set
+static void
+_elm_win_focus_skip_set(Efl_Ui_Win_Data *sd, Eina_Bool skip)
+{
+   if (!sd) return;
+   sd->skip_focus = skip;
+   TRAP(sd, focus_skip_set, skip);
+}
+//
 
 EOLIAN static Eina_Bool
 _efl_ui_win_elm_widget_on_focus_update(Eo *obj, Efl_Ui_Win_Data *sd, Elm_Object_Item *item EINA_UNUSED)
@@ -6692,8 +6705,9 @@ _efl_ui_win_efl_screen_screen_rotation_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data 
 EOLIAN static void
 _efl_ui_win_prop_focus_skip_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, Eina_Bool skip)
 {
-   sd->skip_focus = skip;
-   TRAP(sd, focus_skip_set, skip);
+   // TIZEN_ONLY(20160404)  skip_focus in case invoking elm_win_quickpanel_set
+   _elm_win_focus_skip_set(sd, skip);
+   //
 }
 
 EOLIAN static Eina_Bool
@@ -7663,6 +7677,11 @@ elm_win_quickpanel_set(Evas_Object *obj, Eina_Bool quickpanel)
 #else
    (void)sd;
    (void)quickpanel;
+#endif
+#ifdef HAVE_ELEMENTARY_WL2
+   // TIZEN_ONLY(20160404)  skip_focus in case invoking elm_win_quickpanel_set
+   _elm_win_focus_skip_set(sd, EINA_TRUE);
+   //
 #endif
 }
 
