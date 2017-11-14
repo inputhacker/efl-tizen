@@ -1842,6 +1842,18 @@ _ecore_evas_wl_common_raise(Ecore_Evas *ee)
    ecore_wl2_window_raise(wdata->win);
 }
 
+// TIZEN_ONLY(20150612) : support lower request
+void
+_ecore_evas_wl_common_lower(Ecore_Evas *ee)
+{
+   Ecore_Evas_Engine_Wl_Data *wdata;
+
+   if (!ee) return;
+   wdata = ee->engine.data;
+   ecore_wl2_window_lower(wdata->win);
+}
+//
+
 // TIZEN_ONLY(20150430) : support activate request
 void
 _ecore_evas_wl_common_activate(Ecore_Evas *ee)
@@ -2948,7 +2960,7 @@ static Ecore_Evas_Engine_Func _ecore_wl_engine_func =
    _ecore_evas_wl_common_show,
    _ecore_evas_wl_common_hide,
    _ecore_evas_wl_common_raise,
-   NULL, // lower
+   _ecore_evas_wl_common_lower,
    _ecore_evas_wl_common_activate,
    _ecore_evas_wl_common_title_set,
    _ecore_evas_wl_common_name_class_set,
