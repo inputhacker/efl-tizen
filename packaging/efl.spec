@@ -1989,20 +1989,6 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %defattr(-,root,root,-)
 %{_libdir}/cmake/Elua*/*.cmake
 
-%files -n ecore-wl2
-%manifest %{name}.manifest
-%license licenses/COPYING.BSD
-%defattr(-,root,root,-)
-%{_libdir}/libecore_wl2.so.*
-
-%files -n ecore-wl2-devel
-%manifest %{name}.manifest
-%license licenses/COPYING.BSD
-%defattr(-,root,root,-)
-%{_libdir}/libecore_wl2.so*
-%{_libdir}/pkgconfig/ecore-wl2.pc
-%{_includedir}/ecore-wl2-1/*.h
-
 %files -n efl-wl
 %manifest %{name}.manifest
 %license licenses/COPYING.BSD
