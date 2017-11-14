@@ -30,6 +30,10 @@ struct _EE_Wl_Device
 static int _ecore_evas_wl_init_count = 0;
 static Eina_Array *_ecore_evas_wl_event_hdls;
 
+// TIZEN_ONLY(20160617) : uniconify force render
+static Eina_Bool _enable_uniconify_force_render = EINA_FALSE;
+//
+
 static void _ecore_evas_wayland_resize(Ecore_Evas *ee, int location);
 static void _ecore_evas_wl_common_rotation_set(Ecore_Evas *ee, int rotation, int resize);
 static void _ecore_evas_wl_common_iconified_set(Ecore_Evas *ee, Eina_Bool on);
@@ -1197,6 +1201,21 @@ _ecore_evas_wl_common_cb_seat_capabilities_changed(void *d EINA_UNUSED, int t EI
    return ECORE_CALLBACK_PASS_ON;
 }
 
+// TIZEN_ONLY(20160617) : uniconify force render
+static void
+_ecore_evas_wl_common_damage_add(Ecore_Evas *ee)
+{
+   if ((!_enable_uniconify_force_render) ||
+       (ee->prop.iconified))
+     return;
+
+   /* add canvas damage
+    * redrawing canvas is necessary if evas engine destroy the buffer.
+    */
+   evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
+}
+//
+
 static Eina_Bool
 _ecore_evas_wl_common_cb_iconify_state_change(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
@@ -1228,6 +1247,10 @@ _ecore_evas_wl_common_cb_iconify_state_change(void *data EINA_UNUSED, int type E
    //
 
    _ecore_evas_wl_common_state_update(ee);
+
+// TIZEN_ONLY(20160617) : uniconify force render
+   _ecore_evas_wl_common_damage_add(ee);
+//
    return ECORE_CALLBACK_PASS_ON;
 }
 
@@ -1481,6 +1504,12 @@ _ecore_evas_wl_common_init(void)
    //
 
    ecore_event_evas_init();
+
+// TIZEN_ONLY(20160617) : uniconify force render
+   if ((getenv("EVAS_SHM_FLUSH")) ||
+       (getenv("ECORE_EVAS_DEICONIFY_RENDER_UPDATE")))
+     _enable_uniconify_force_render = EINA_TRUE;
+//
 
    return _ecore_evas_wl_init_count;
 }
@@ -2049,6 +2078,11 @@ _ecore_evas_wl_common_iconified_set(Ecore_Evas *ee, Eina_Bool on)
 
    wdata = ee->engine.data;
    ecore_wl2_window_iconified_set(wdata->win, on);
+
+// TIZEN_ONLY(20160617) : uniconify force render
+   _ecore_evas_wl_common_state_update(ee);
+   _ecore_evas_wl_common_damage_add(ee);
+//
 }
 
 static void
