@@ -8997,7 +8997,8 @@ elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_p
    ELM_WIN_CHECK(obj);
    ELM_WIN_DATA_GET_OR_RETURN(obj, sd);
 
-   _elm_win_available_profiles_set(obj, sd, profiles, num_profiles);
+   // TODO: may need to merge below eolian api
+   //_elm_win_available_profiles_set(obj, sd, profiles, num_profiles);
 }
 //
 /* Internal EO APIs and hidden overrides */
