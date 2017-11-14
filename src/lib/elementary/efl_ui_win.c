@@ -9026,7 +9026,6 @@ elm_win_active_win_orientation_get(Evas_Object *obj)
 EINA_DEPRECATED EAPI void
 elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_profiles)
 {
-   ELM_WIN_CHECK(obj);
    ELM_WIN_DATA_GET_OR_RETURN(obj, sd);
 
    // TODO: may need to merge below eolian api
