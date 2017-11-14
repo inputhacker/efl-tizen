@@ -5375,9 +5375,16 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
    sd->withdrawn = ecore_evas_withdrawn_get(sd->ee);
 
    if (sd->parent)
-     evas_object_event_callback_add
-       (sd->parent, EVAS_CALLBACK_DEL, _elm_win_on_parent_del, obj);
-
+     {
+// TIZEN_ONLY(20160315) set wayland parent window
+#ifdef HAVE_ELEMENTARY_WL2
+        if ((sd->type >= ELM_WIN_BASIC) && (sd->type <= ELM_WIN_DND))
+          ecore_wl2_window_parent_set(sd->wl.win, elm_win_wl_window_get(sd->parent));
+#endif
+//
+        evas_object_event_callback_add
+           (sd->parent, EVAS_CALLBACK_DEL, _elm_win_on_parent_del, obj);
+     }
    sd->evas = ecore_evas_get(sd->ee);
 
    evas_object_color_set(obj, 0, 0, 0, 0);
