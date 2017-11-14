@@ -5469,18 +5469,23 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
      evas_event_callback_add(sd->evas, EVAS_CALLBACK_RENDER_FLUSH_PRE, _elm_win_frame_pre_render, sd);
 #endif
 
-   //Prohibiting auto-rendering, until elm_win is shown.
-   if (_elm_config->auto_norender_withdrawn)
+   // TIZEN_ONLY (20151017) do not prohibit fake win's auto-render
+   if (type != ELM_WIN_FAKE)
      {
-        if (elm_win_withdrawn_get(obj))
+        //Prohibiting auto-rendering, until elm_win is shown.
+        if (_elm_config->auto_norender_withdrawn)
           {
-             if (!evas_object_data_get(obj, "__win_auto_norender"))
+             if (elm_win_withdrawn_get(obj))
                {
-                  elm_win_norender_push(obj);
-                  evas_object_data_set(obj, "__win_auto_norender", obj);
+                  if (!evas_object_data_get(obj, "__win_auto_norender"))
+                    {
+                       elm_win_norender_push(obj);
+                       evas_object_data_set(obj, "__win_auto_norender", obj);
+                    }
                }
           }
      }
+   //
 
 #ifdef ELM_DEBUG
    Evas_Modifier_Mask mask = evas_key_modifier_mask_get(sd->evas, "Control");
