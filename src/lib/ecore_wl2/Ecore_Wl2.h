@@ -1040,6 +1040,7 @@ EAPI void ecore_wl2_window_activate(Ecore_Wl2_Window *window);
 EAPI void ecore_wl2_window_parent_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window *parent);
 EAPI void ecore_wl2_window_stack_mode_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window_Stack_Mode mode);
 EAPI void ecore_wl2_window_position_set(Ecore_Wl2_Window *window, int x, int y);
+EAPI int ecore_wl2_window_active_angle_get(Ecore_Wl2_Window *window);
 //
 
 /**
