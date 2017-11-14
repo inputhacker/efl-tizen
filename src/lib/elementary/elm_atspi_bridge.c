@@ -5254,6 +5254,14 @@ _plug_address_discover(Eldbus_Connection *conn, Eo *proxy, const char *svc_bus, 
    Eldbus_Object *dobj;
    dobj = eldbus_object_get(conn, svc_bus, svc_path);
 
+   //TIZEN_ONLY(20171114) atspi: sanitize service name before creating bus
+   if (!dobj)
+     {
+       ERR("Unable to get eldbus object from: %s %s", svc_bus, svc_path);
+       return;
+     }
+   //
+
    Eldbus_Message *msg = eldbus_object_method_call_new(dobj, ELDBUS_FDO_INTERFACE_PROPERTIES, "Get");
    eldbus_message_arguments_append(msg, "ss", ELM_ATSPI_DBUS_INTERFACE_PROXY, "Object");
    eldbus_object_send(dobj, msg, _socket_addr_get_cb, proxy, 100);
@@ -5315,10 +5323,63 @@ EAPI void elm_atspi_bridge_utils_proxy_connect(Eo *proxy)
    _plug_connect(pd->a11y_bus, proxy);
 }
 
+//TIZEN_ONLY(20171114) atspi: sanitize service name before creating bus
+/**
+ * @brief Service name sanitizer according to specs:
+ * http://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-names
+ * http://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-marshaling-object-path
+ */
+static char *_sanitize_service_name(const char *name)
+{
+   char ret[256] = "\0";
+
+   if (!name) return NULL;
+
+   const char *tmp = name;
+   char *dst = ret;
+
+   // name element should not begin with digit. Swallow non-charater prefix
+   while ((*tmp != '\0') && !isalpha(*tmp)) tmp++;
+
+   // append rest of character valid charactes [A-Z][a-z][0-9]_
+   while ((*tmp != '\0') && (dst < &ret[sizeof(ret) - 1]))
+     {
+         if (isalpha(*tmp) || isdigit(*tmp) || (*tmp == '_'))
+           *dst++ = *tmp;
+         tmp++;
+     }
+
+   *++dst = '\0';
+   return strdup(ret);
+}
+//
+
 Eo* _elm_atspi_bridge_utils_proxy_create(Eo *parent, const char *svcname, int svcnum, Elm_Atspi_Proxy_Type type)
 {
    Eo *ret;
-   char bus[64], path[64];
+   //TIZEN_ONLY(20171114) atspi: sanitize service name before creating bus
+   char bus[256], path[256], *name;
+   int res;
+
+   name = _sanitize_service_name(svcname);
+   if (!name) return NULL;
+
+   res = snprintf(bus, sizeof(bus), "elm.atspi.proxy.socket.%s-%d", name, svcnum);
+   if (res < 0 || (res >= (int)sizeof(bus)))
+     {
+         free(name);
+         return NULL;
+     }
+
+   res = snprintf(path, sizeof(path), "/elm/atspi/proxy/socket/%s/%d", name, svcnum);
+   if (res < 0 || (res >= (int)sizeof(path)))
+     {
+         free(name);
+         return NULL;
+     }
+
+   free(name);
+   //
 
    ret = efl_add(ELM_ATSPI_PROXY_CLASS, parent, elm_obj_atspi_proxy_constructor(efl_added, type));
    if (!ret) return NULL;
