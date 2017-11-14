@@ -7019,6 +7019,14 @@ elm_win_floating_mode_set(Evas_Object *obj, Eina_Bool floating)
    floating = !!floating;
    if (floating == sd->floating) return;
    sd->floating = floating;
+#if HAVE_ELEMENTARY_WL2
+   _elm_win_wlwindow_get(sd);
+   if (sd->wl.win)
+     {
+        // TODO: frame style(csd) shall be applied refer to Eina_Bool floating
+        ecore_wl2_window_floating_mode_set(sd->wl.win, floating);
+     }
+#endif
 #ifdef HAVE_ELEMENTARY_X
    _internal_elm_win_xwindow_get(sd);
    if (sd->x.xwin)
