@@ -2079,8 +2079,10 @@ _ecore_evas_wl_common_iconified_set(Ecore_Evas *ee, Eina_Bool on)
    wdata = ee->engine.data;
    ecore_wl2_window_iconified_set(wdata->win, on);
 
-// TIZEN_ONLY(20160617) : uniconify force render
+// TIZEN_ONLY
    _ecore_evas_wl_common_state_update(ee);
+
+    /* 20160617 : uniconify force render */
    _ecore_evas_wl_common_damage_add(ee);
 //
 }
