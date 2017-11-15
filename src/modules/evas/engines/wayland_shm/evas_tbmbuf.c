@@ -385,6 +385,13 @@ _evas_tbmbuf_surface_assign(Surface *s)
    surface->wait_release = 0;
    if(!sym_tbm_surface_internal_get_user_data(surface->tbm_surface, KEY_WL_BUFFER, (void **)&buffer)) {
          buffer = sym_wayland_tbm_client_create_buffer(surface->tbm_client, surface->tbm_surface);
+         if (!buffer)
+           {
+             ERR("wayland_tbm_client_create_buffer is NULL");
+             sym_tbm_surface_internal_unref(surface->tbm_surface);
+             sym_tbm_surface_queue_release(surface->tbm_queue, surface->tbm_surface);
+             return 0;
+           }
 
          wl_proxy_set_queue((struct wl_proxy *)buffer, NULL);
 
