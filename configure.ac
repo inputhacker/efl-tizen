@@ -2529,6 +2529,18 @@ AC_ARG_ENABLE([ecore-buffer],
    ],
    [want_ecore_buffer="no"])
 
+# Tbm, TIZEN_ONLY(20171110) TBM Backend
+AC_ARG_ENABLE([tbm],
+   [AS_HELP_STRING([--enable-tbm],[Enable tbm. @<:@default=disabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_evas_engine_tbm="yes"
+    else
+       want_evas_engine_tbm="no"
+    fi
+   ],
+   [want_evas_engine_tbm="no"])
+
 # Image Loaders
 case "$host_os" in
    cegcc*|mingw32ce*)
@@ -2694,6 +2706,8 @@ EVAS_CHECK_ENGINE([wayland-shm], [${want_wayland}], [no], [Wayland Shm])
 EVAS_CHECK_ENGINE([drm], [${want_drm}], [no], [Drm])
 EVAS_CHECK_ENGINE([gl-drm], [${want_gl_drm}], [no], [OpenGL Drm])
 EVAS_CHECK_ENGINE([eglfs], [${want_eglfs}], [no], [OpenGL Fb])
+EVAS_CHECK_ENGINE([gl-tbm], [${want_evas_engine_tbm}], [no], [OpenGL Tbm])
+EVAS_CHECK_ENGINE([software-tbm], [${want_evas_engine_tbm}], [no], [Software Tbm])
 
 
 # Software Xlib
@@ -2810,6 +2824,7 @@ if test "x$have_evas_engine_gl_xlib" = "xyes" || \
    test "x$have_evas_engine_gl_sdl" = "xyes" || \
    test "x$have_evas_engine_gl_cocoa" = "xyes" || \
    test "x$have_evas_engine_gl_drm" = "xyes" || \
+   test "x$have_evas_engine_tbm" = "xyes" || \
    test "x$have_evas_engine_eglfs" = "xyes" || \
    test "x$have_evas_engine_wayland_egl" = "xyes"; then
    have_evas_engine_gl_common="yes"
@@ -2818,6 +2833,7 @@ if test "x$have_evas_engine_gl_xlib" = "xstatic" || \
    test "x$have_evas_engine_gl_sdl" = "xstatic" || \
    test "x$have_evas_engine_gl_cocoa" = "xstatic" || \
    test "x$have_evas_engine_gl_drm" = "xstatic" || \
+   test "x$have_evas_engine_tbm" = "xstatic" || \
    test "x$have_evas_engine_eglfs" = "xstatic" || \
    test "x$have_evas_engine_wayland_egl" = "xstatic"; then
    have_evas_engine_gl_common="yes"
@@ -3774,7 +3790,7 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_WL2], [efl])
 EFL_INTERNAL_DEPEND_PKG([ECORE_WL2], [eina])
 
 EFL_DEPEND_PKG([ECORE_WL2], [WAYLAND],
-   [wayland-server >= 1.11.0 wayland-client >= 1.11.0 xkbcommon >= 0.6.0] tizen-extension-client)
+   [wayland-server >= 1.11.0 wayland-client >= 1.11.0 xkbcommon >= 0.6.0] tizen-extension-client wayland-tbm-client libtdm-client)
 
 EFL_EVAL_PKGS([ECORE_WL2])
 
@@ -4561,6 +4577,7 @@ want_ecore_evas_software_gdi="${have_evas_engine_software_gdi}"
 want_ecore_evas_software_ddraw="${have_evas_engine_software_ddraw}"
 want_ecore_evas_gl_cocoa="${have_evas_engine_gl_cocoa}"
 want_ecore_evas_wayland_egl="${have_evas_engine_wayland_egl}"
+want_ecore_evas_tbm="${have_evas_engine_tbm}"
 want_ecore_evas_extn="yes"
 want_ecore_evas_drm="${have_evas_engine_drm}"
 
@@ -4609,8 +4626,21 @@ fi
 AM_CONDITIONAL([BUILD_ECORE_EVAS_SDL],
    [test "${build_ecore_evas_sdl}" = "yes"])
 
+PKG_CHECK_MODULES([TBM], [libtbm >= "1.1.0"],
+                  [have_tbm="yes"],
+                  [have_tbm="no"])
+
+build_ecore_evas_tbm="no"
+if test "x${have_tbm}" = "xyes" ; then
+   build_ecore_evas_tbm="yes"
+   AC_DEFINE(BUILD_ECORE_EVAS_TBM, 1, [Support for TBM Backend in Ecore_Evas])
+fi
+EFL_ADD_FEATURE([ECORE_EVAS], [tbm], [${build_ecore_evas_tbm}])
+
 ECORE_EVAS_MODULE([wayland-shm], [${want_wayland}])
 ECORE_EVAS_MODULE([wayland-egl], [${want_ecore_evas_wayland_egl}])
+ECORE_EVAS_MODULE([gl-tbm], [${want_ecore_evas_tbm}])
+ECORE_EVAS_MODULE([software-tbm], [${want_ecore_evas_tbm}])
 
 build_ecore_evas_wayland="no"
 if test "x${have_ecore_evas_wayland_shm}" = "xyes" || \
@@ -4668,6 +4698,7 @@ if test "x$have_ecore_evas_software_x11" = "xyes" || \
 fi
 
 AM_CONDITIONAL([BUILD_ECORE_EVAS_X11], [test "${build_ecore_evas_x11}" = "yes"])
+AM_CONDITIONAL([BUILD_ECORE_EVAS_TBM], [test "${build_ecore_evas_tbm}" = "yes"])
 
 build_ecore_evas_vnc="no"
 if test "${want_vnc_server}" = "yes" && \

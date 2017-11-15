@@ -113,6 +113,7 @@ EAPI void *_evas_native_tbm_surface_image_set(void *data, void *image, void *nat
 EAPI int _evas_native_tbm_surface_stride_get(void *data, void *native);
 EAPI int _evas_native_tbm_init(void);
 EAPI void _evas_native_tbm_shutdown(void);
+EAPI Evas_Colorspace _evas_native_tbm_surface_colorspace_get(void *data, void *native);
 
 void *_evas_native_dmabuf_surface_image_set(void *image, void *native);
 

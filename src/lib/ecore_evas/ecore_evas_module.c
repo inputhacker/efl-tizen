@@ -330,6 +330,14 @@ _ecore_evas_available_engines_get(void)
                        ADDENG("gl_drm");
 #endif
                     }
+/* TIZEN_ONLY(20171109): TBM Backend */
+                  else if (!strcmp(name, "tbm"))
+                    {
+#ifdef BUILD_ECORE_EVAS_TBM
+                       ADDENG("software_tbm");
+                       ADDENG("gl_tbm");
+#endif
+                    }
                }
              eina_strbuf_reset(buf);
           }

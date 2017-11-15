@@ -103,6 +103,10 @@ extern "C" {
 #define HAVE_ECORE_EVAS_WAYLAND_EGL 1
 #define HAVE_ECORE_EVAS_DRM 1
 #define HAVE_ECORE_EVAS_DRM_GL 1
+/* TIZEN_ONLY(20160330): TBM Backend */
+#define HAVE_ECORE_EVAS_TBM 1
+#define HAVE_ECORE_EVAS_SOFTWARE_TBM 1
+/* TIZEN_ONLY(20160330): TBM Backend */
 
 typedef enum _Ecore_Evas_Engine_Type
 {
@@ -130,7 +134,11 @@ typedef enum _Ecore_Evas_Engine_Type
    ECORE_EVAS_ENGINE_WAYLAND_SHM,
    ECORE_EVAS_ENGINE_WAYLAND_EGL,
    ECORE_EVAS_ENGINE_DRM,
-   ECORE_EVAS_ENGINE_OPENGL_DRM
+   ECORE_EVAS_ENGINE_OPENGL_DRM,
+    /* TIZEN_ONLY(20160330): TBM Backend */
+   ECORE_EVAS_ENGINE_OPENGL_TBM,
+   ECORE_EVAS_ENGINE_SOFTWARE_TBM
+    /* TIZEN_ONLY(20160330): TBM Backend */
 } Ecore_Evas_Engine_Type;
 
 /**
@@ -1753,6 +1761,15 @@ EAPI const void     *ecore_evas_buffer_pixels_get(Ecore_Evas *ee);
  * @since 1.13
  */
 EAPI Ecore_Evas *ecore_evas_buffer_ecore_evas_parent_get(Ecore_Evas *ee);
+
+/* TIZEN_ONLY(20160330): TBM Backend */
+EAPI Ecore_Evas     *ecore_evas_gl_tbm_new(int w, int h);
+EAPI Ecore_Evas     *ecore_evas_software_tbm_new(int w, int h);
+EAPI Ecore_Evas     *ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,void *(*alloc_func) (void *data, int w, int h),void (*free_func) (void *data, void *tbm_queue),const void *data);
+EAPI Ecore_Evas     *ecore_evas_tbm_ext_new(const char *engine, void *tbm_surf_queue, void* data);
+EAPI const void     *ecore_evas_tbm_pixels_acquire(Ecore_Evas *ee);
+EAPI void            ecore_evas_tbm_pixels_release(Ecore_Evas *ee);
+/* TIZEN_ONLY(20160330): TBM Backend */
 
 /**
  * @brief Creates a new @c Ecore_Evas canvas bound to the Evas

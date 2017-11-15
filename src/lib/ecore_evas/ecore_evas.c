@@ -580,7 +580,19 @@ ecore_evas_engine_type_supported_get(Ecore_Evas_Engine_Type engine)
 #else
         return EINA_FALSE;
 #endif
-
+/* TIZEN_ONLY(20160330): TBM Backend */
+   case ECORE_EVAS_ENGINE_OPENGL_TBM:
+#ifdef BUILD_ECORE_EVAS_TBM
+      return EINA_TRUE;
+#else
+      return EINA_FALSE;
+#endif
+   case ECORE_EVAS_ENGINE_SOFTWARE_TBM:
+#ifdef BUILD_ECORE_EVAS_TBM
+      return EINA_TRUE;
+#else
+      return EINA_FALSE;
+#endif
       default:
         return EINA_FALSE;
      };
@@ -1002,6 +1014,22 @@ _ecore_evas_constructor_ews(int x, int y, int w, int h, const char *extra_option
 }
 #endif
 
+/* TIZEN_ONLY(20160330): TBM Backend */
+#ifdef BUILD_ECORE_EVAS_TBM
+static Ecore_Evas *
+_ecore_evas_constructor_gl_tbm(int x EINA_UNUSED, int y EINA_UNUSED, int w, int h, const char *extra_options EINA_UNUSED)
+{
+   return ecore_evas_gl_tbm_new(w, h);
+}
+
+static Ecore_Evas *
+_ecore_evas_constructor_software_tbm(int x EINA_UNUSED, int y EINA_UNUSED, int w, int h, const char *extra_options EINA_UNUSED)
+{
+   return ecore_evas_software_tbm_new(w, h);
+}
+#endif
+/* TIZEN_ONLY(20160330): TBM Backend */
+
 /* note: keep sorted by priority, highest first */
 static const struct ecore_evas_engine _engines[] = {
   /* unix */
@@ -1024,6 +1052,12 @@ static const struct ecore_evas_engine _engines[] = {
 #ifdef BUILD_ECORE_EVAS_EWS
   {"ews", _ecore_evas_constructor_ews},
 #endif
+/* TIZEN_ONLY(20160330): TBM Backend */
+#ifdef BUILD_ECORE_EVAS_TBM
+  {"gl_tbm", _ecore_evas_constructor_gl_tbm},
+  {"software_tbm", _ecore_evas_constructor_software_tbm},
+#endif
+/* TIZEN_ONLY(20160330): TBM Backend */
   {NULL, NULL}
 };
 
@@ -4984,6 +5018,36 @@ ecore_evas_psl1ght_new(const char* name, int w, int h)
    return ee;
 }
 
+/* TIZEN_ONLY(20160330): TBM Backend */
+EAPI Ecore_Evas *
+ecore_evas_gl_tbm_new(int w, int h)
+{
+    Ecore_Evas *ee;
+    Ecore_Evas *(*new)(int, int);
+    Eina_Module *m = _ecore_evas_engine_load("gl_tbm");
+    EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+    new = eina_module_symbol_get(m, "ecore_evas_gl_tbm_new_internal");
+    EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
+
+    ee = new(w, h);
+    return ee;
+}
+
+EAPI Ecore_Evas *
+ecore_evas_software_tbm_new(int w, int h)
+{
+    Ecore_Evas *ee;
+    Ecore_Evas *(*new)(int, int);
+    Eina_Module *m = _ecore_evas_engine_load("software_tbm");
+    EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+    new = eina_module_symbol_get(m, "ecore_evas_software_tbm_new_internal");
+    EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
+
+    ee = new(w, h);
+    return ee;
+}
 
 /* new input model with eo:
  *  1. pass all events from ecore_input_evas through

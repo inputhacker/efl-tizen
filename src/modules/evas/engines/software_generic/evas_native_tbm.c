@@ -25,6 +25,7 @@
 #define TBM_FORMAT_RGBX8888	__tbm_fourcc_code('R', 'X', '2', '4') /* [31:0] R:G:B:x 8:8:8:8 little endian */
 #define TBM_FORMAT_RGBA8888	__tbm_fourcc_code('R', 'A', '2', '4') /* [31:0] R:G:B:A 8:8:8:8 little endian */
 #define TBM_FORMAT_BGRA8888	__tbm_fourcc_code('B', 'A', '2', '4') /* [31:0] B:G:R:A 8:8:8:8 little endian */
+#define TBM_FORMAT_XRGB8888 __tbm_fourcc_code('X', 'R', '2', '4') /* [31:0] x:R:G:B 8:8:8:8 little endian */
 #define TBM_FORMAT_NV12		__tbm_fourcc_code('N', 'V', '1', '2') /* 2x2 subsampled Cr:Cb plane */
 #define TBM_FORMAT_YUV420	__tbm_fourcc_code('Y', 'U', '1', '2') /* 2x2 subsampled Cb (1) and Cr (2) planes */
 #define TBM_FORMAT_YVU420	__tbm_fourcc_code('Y', 'V', '1', '2') /* 2x2 subsampled Cr (1) and Cb (2) planes */
@@ -373,4 +374,50 @@ _evas_native_tbm_surface_image_set(void *data EINA_UNUSED, void *image, void *na
         sym_tbm_surface_unmap(tbm_surf);
      }
    return im;
+}
+
+EAPI Evas_Colorspace
+_evas_native_tbm_surface_colorspace_get(void *data EINA_UNUSED, void *native)
+{
+   Evas_Native_Surface *ns = native;
+   tbm_surface_info_s info;
+   tbm_format format;
+   Evas_Colorspace cs;
+
+   if (!ns)
+     return -1;
+
+   if (sym_tbm_surface_get_info(ns->data.tbm.buffer, &info))
+     return -1;
+
+   format = info.format;
+
+   // Handle all possible format here :"(
+   switch (format)
+     {
+      case TBM_FORMAT_RGBA8888:
+      case TBM_FORMAT_RGBX8888:
+      case TBM_FORMAT_BGRA8888:
+      case TBM_FORMAT_ARGB8888:
+      case TBM_FORMAT_ABGR8888:
+      case TBM_FORMAT_XRGB8888:
+         cs = EVAS_COLORSPACE_ARGB8888;
+         break;
+         /* borrowing code from emotion here */
+      case TBM_FORMAT_YVU420: /* EVAS_COLORSPACE_YCBCR422P601_PL */
+         cs = EVAS_COLORSPACE_YCBCR422P601_PL;
+         break;
+      case TBM_FORMAT_YUV420: /* EVAS_COLORSPACE_YCBCR422P601_PL */
+         cs = EVAS_COLORSPACE_YCBCR422P601_PL;
+         break;
+      case TBM_FORMAT_NV12: /* EVAS_COLORSPACE_YCBCR420NV12601_PL */
+         cs = EVAS_COLORSPACE_YCBCR420NV12601_PL;
+         break;
+      default:
+         ERR("not supported format");
+         cs = EVAS_COLORSPACE_ARGB8888;
+         break;
+     }
+
+   return cs;
 }
