@@ -3720,11 +3720,7 @@ _elm_win_resize_objects_eval(Evas_Object *obj, Eina_Bool force_resize)
 
    // TIZEN_ONLY(20160216): if there are deferred resize job, do the job immediately
    if (sd->deferred_resize_job)
-     {
-        ecore_job_del(sd->deferred_resize_job);
-        sd->deferred_resize_job = NULL;
-        _elm_win_resize_job(obj);
-     }
+     _elm_win_resize_job(sd->obj);
    //
 
    evas_object_geometry_get(obj, NULL, NULL, &ow, &oh);
@@ -9101,7 +9097,7 @@ elm_win_active_win_orientation_get(Evas_Object *obj)
         if (sd)
           win = sd->wl.win;
      }
-   //angle = ecore_wl2_window_active_angle_get(win);
+   angle = ecore_wl2_window_active_angle_get(win);
 #endif
    return angle;
 }
@@ -9114,6 +9110,8 @@ elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_p
 
    // TODO: may need to merge below eolian api
    //_elm_win_available_profiles_set(obj, sd, profiles, num_profiles);
+   (void)profiles;
+   (void)num_profiles;
 }
 //
 

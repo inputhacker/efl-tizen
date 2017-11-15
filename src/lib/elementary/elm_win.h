@@ -95,6 +95,7 @@
  * @li "aux,msg,received" - an aux message received
  * @li "effect,started" - window effect has been started.
  * @li "effect,done" - window effect has been done.
+ * @li "launch,done" - window launch has been done.
  * @li "visibility,changed" - visibility of the window has been changed.
  *
  * Note that calling evas_object_show() after window contents creation is
