@@ -4095,14 +4095,16 @@ _elm_widget_item_efl_access_state_set_get(Eo *eo_item,
 {
    Efl_Access_State_Set states = 0;
 
-   //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
-   Evas_Object *win = elm_widget_top_get(item->widget);
-   if (win && efl_isa(win, EFL_UI_WIN_CLASS))
-     {
-        if (_elm_win_accessibility_highlight_get(win) == item->view)
-          STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
-     }
-   STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+   // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+   // //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+   // Evas_Object *win = elm_widget_top_get(item->widget);
+   // if (win && efl_isa(win, EFL_UI_WIN_CLASS))
+   //   {
+   //      if (_elm_win_accessibility_highlight_get(win) == item->view)
+   //        STATE_TYPE_SET(states, ELM_ATSPI_STATE_HIGHLIGHTED);
+   //   }
+   // STATE_TYPE_SET(states, ELM_ATSPI_STATE_HIGHLIGHTABLE);
+   // //
    //
 
    STATE_TYPE_SET(states, EFL_ACCESS_STATE_FOCUSABLE);
@@ -5421,14 +5423,16 @@ _elm_widget_efl_access_state_set_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNU
 
    states = efl_access_state_set_get(efl_super(obj, ELM_WIDGET_CLASS));
 
-   //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
-   Evas_Object *win = elm_widget_top_get(obj);
-   if (win && efl_isa(win, EFL_UI_WIN_CLASS))
-     {
-        if (_elm_win_accessibility_highlight_get(win) == obj)
-          STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
-     }
-   STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+   // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+   // //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+   // Evas_Object *win = elm_widget_top_get(obj);
+   // if (win && efl_isa(win, EFL_UI_WIN_CLASS))
+   //   {
+   //      if (_elm_win_accessibility_highlight_get(win) == obj)
+   //        STATE_TYPE_SET(states, ELM_ATSPI_STATE_HIGHLIGHTED);
+   //   }
+   // STATE_TYPE_SET(states, ELM_ATSPI_STATE_HIGHLIGHTABLE);
+   // //
    //
 
    if (evas_object_visible_get(obj))
@@ -5539,6 +5543,29 @@ _elm_widget_item_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, Elm_Widget
    elm_object_item_focus_set(obj, EINA_TRUE);
    return elm_object_item_focus_get(obj);
 }
+// TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+EOLIAN static Eina_Bool
+_elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Data *sd)
+{
+   Evas_Object *win = elm_widget_top_get(sd->widget);
+   if (win && efl_isa(win, EFL_UI_WIN_CLASS))
+     {
+        elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
+_elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_Data *sd)
+{
+   if (!obj) return EINA_FALSE;
+   elm_object_accessibility_highlight_set(sd->view, EINA_FALSE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+   return EINA_TRUE;
+}
+//
 
 EOLIAN static double
 _elm_widget_item_efl_access_component_alpha_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd EINA_UNUSED)
@@ -6171,35 +6198,37 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
    eina_list_free(stack);
    return NULL;
 }
-
-EOLIAN static Eina_Bool
-_elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Data *sd)
-{
-   Evas_Object *win = elm_widget_top_get(sd->widget);
-   if (win && efl_isa(win, EFL_UI_WIN_CLASS))
-     {
-        _elm_win_accessibility_highlight_set(win, sd->view);
-        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
-        return EINA_TRUE;
-     }
-   return EINA_FALSE;
-}
-
-EOLIAN static Eina_Bool
-_elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_Data *sd)
-{
-   Evas_Object *win = elm_widget_top_get(sd->widget);
-   if (win && efl_isa(win, EFL_UI_WIN_CLASS))
-     {
-        if (_elm_win_accessibility_highlight_get(win) != sd->view)
-          return EINA_TRUE;
-
-        _elm_win_accessibility_highlight_set(win, NULL);
-        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
-        return EINA_TRUE;
-     }
-   return EINA_FALSE;
-}
+// TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+// EOLIAN static Eina_Bool
+// _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Data *sd)
+// {
+//    Evas_Object *win = elm_widget_top_get(sd->widget);
+//    if (win && efl_isa(win, EFL_UI_WIN_CLASS))
+//      {
+//         _elm_win_accessibility_highlight_set(win, sd->view);
+//         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+//         return EINA_TRUE;
+//      }
+//    return EINA_FALSE;
+// }
+//
+//
+// EOLIAN static Eina_Bool
+// _elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_Data *sd)
+// {
+//    Evas_Object *win = elm_widget_top_get(sd->widget);
+//    if (win && efl_isa(win, EFL_UI_WIN_CLASS))
+//      {
+//         if (_elm_win_accessibility_highlight_get(win) != sd->view)
+//           return EINA_TRUE;
+//
+//         _elm_win_accessibility_highlight_set(win, NULL);
+//         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+//         return EINA_TRUE;
+//      }
+//    return EINA_FALSE;
+// }
+//
 
 EOLIAN static Eina_Bool
 _elm_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)

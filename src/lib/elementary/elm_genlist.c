@@ -8853,8 +8853,11 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
     delta_y = old_y - y;
 
     //check if highlighted item is genlist descendant
-    Evas_Object *win = elm_object_top_widget_get(obj);
-    Evas_Object *highlighted_obj = _elm_win_accessibility_highlight_get(win);
+    // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+    // Evas_Object *win = elm_object_top_widget_get(obj);
+    // Evas_Object *highlighted_obj = _elm_win_accessibility_highlight_get(win);
+    Evas_Object * highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
+    //
     Evas_Object *parent = highlighted_obj;
     if (efl_isa(highlighted_obj, ELM_WIDGET_CLASS))
       {

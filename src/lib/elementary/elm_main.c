@@ -34,6 +34,9 @@
 #endif
 
 static Elm_Version _version = { VMAJ, VMIN, VMIC, VREV };
+// TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+static void * _accessibility_currently_highlighted_obj = NULL;
+//
 EAPI Elm_Version *elm_version = &_version;
 
 void
@@ -416,6 +419,9 @@ elm_init(int argc, char **argv)
      ecore_event_handler_add(ECORE_EVENT_MEMORY_STATE, _sys_memory_changed, NULL);
    system_handlers[1] =
      ecore_event_handler_add(ECORE_EVENT_LOCALE_CHANGED, _sys_lang_changed, NULL);
+   // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+   _accessibility_currently_highlighted_obj = NULL;
+   //
 
    if (_elm_config->atspi_mode != ELM_ATSPI_MODE_OFF)
      _elm_atspi_bridge_init();
@@ -2076,6 +2082,14 @@ elm_object_focus_region_show_mode_set(Evas_Object *obj, Elm_Focus_Region_Show_Mo
    elm_widget_focus_region_show_mode_set(obj, mode);
 }
 
+// TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+void *
+_elm_object_accessibility_currently_highlighted_get()
+{
+   return _accessibility_currently_highlighted_obj;
+}
+//
+
 EAPI Elm_Focus_Region_Show_Mode
 elm_object_focus_region_show_mode_get(const Evas_Object *obj)
 {
@@ -2089,16 +2103,48 @@ elm_object_accessibility_highlight_set(Evas_Object *obj, Eina_Bool visible)
    EINA_SAFETY_ON_NULL_RETURN(obj);
    Evas_Object *win = NULL;
 
-   if (!elm_object_widget_check(obj))
-      return;
+   // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+   // if (!elm_object_widget_check(obj))
+   //    return;
+   if (elm_object_widget_check(obj))
+      win = elm_object_top_widget_get(obj);
+   else
+      win = elm_object_top_widget_get(elm_object_parent_widget_get(obj));
+   EINA_SAFETY_ON_NULL_RETURN(win);
 
-   win = elm_object_top_widget_get(obj);
-   if (!win || !efl_isa(win, EFL_UI_WIN_CLASS))
-      return;
+   // win = elm_object_top_widget_get(obj);
+   // if (!win || !efl_isa(win, EFL_UI_WIN_CLASS))
+   //    return;
+   if (_accessibility_currently_highlighted_obj == (void*)obj)
+     {
+        if (!visible)
+          _accessibility_currently_highlighted_obj = NULL;
+     }
+   else
+     {
+        if (visible)
+          _accessibility_currently_highlighted_obj = obj;
+     }
 
-   if (!visible && (obj == _elm_win_accessibility_highlight_get(win)))
-      _elm_win_accessibility_highlight_set(win, NULL);
-   else if (visible)
-      _elm_win_accessibility_highlight_set(win, obj);
+   if (visible)
+     {
+       if (elm_widget_access_highlight_in_theme_get(obj))
+          elm_widget_signal_emit(obj, "elm,action,access_highlight,show", "elm");
+       else
+          _elm_win_object_set_accessibility_highlight(win, obj);
+     }
+   else
+     {
+       if (elm_widget_access_highlight_in_theme_get(obj))
+          elm_widget_signal_emit(obj, "elm,action,access_highlight,hide", "elm");
+       else
+          _elm_win_object_set_accessibility_highlight(win, NULL);
+     }
+
+   // if (!visible && (obj == _elm_win_accessibility_highlight_get(win)))
+   //    _elm_win_accessibility_highlight_set(win, NULL);
+   // else if (visible)
+   //    _elm_win_accessibility_highlight_set(win, obj);
+   //
 }
 //
