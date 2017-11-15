@@ -1,6 +1,7 @@
 #include "evas_common_private.h" /* Also includes international specific stuff */
 #include "evas_private.h"
 #include "evas_blend_private.h"
+#include "evas_engine.h"
 #ifdef EVAS_CSERVE2
 #include "evas_cs2_private.h"
 #endif
@@ -1958,8 +1959,8 @@ eng_image_surface_noscale_new(void *engdata, int w, int h, int alpha)
    return eng_image_map_surface_new(engdata, w, h, alpha);
 }
 
-static void
-_image_flip_horizontal(DATA32 *pixels_out, const DATA32 *pixels_in,
+EAPI void
+_evas_image_flip_horizontal(DATA32 *pixels_out, const DATA32 *pixels_in,
                        int iw, int ih)
 {
    const unsigned int *pi1, *pi2;
@@ -1982,8 +1983,8 @@ _image_flip_horizontal(DATA32 *pixels_out, const DATA32 *pixels_in,
      }
 }
 
-static void
-_image_flip_vertical(DATA32 *pixels_out, const DATA32 *pixels_in,
+EAPI void
+_evas_image_flip_vertical(DATA32 *pixels_out, const DATA32 *pixels_in,
                      int iw, int ih)
 {
    const unsigned int *pi1, *pi2;
@@ -2006,8 +2007,8 @@ _image_flip_vertical(DATA32 *pixels_out, const DATA32 *pixels_in,
      }
 }
 
-static void
-_image_rotate_180(DATA32 *pixels_out, const DATA32 *pixels_in,
+EAPI void
+_evas_image_rotate_180(DATA32 *pixels_out, const DATA32 *pixels_in,
                   int iw, int ih)
 {
    const unsigned int *pi1, *pi2;
@@ -2028,8 +2029,8 @@ _image_rotate_180(DATA32 *pixels_out, const DATA32 *pixels_in,
      }
 }
 
-static void
-_image_rotate_90(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
+EAPI void
+_evas_image_rotate_90(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
 {
    int x, y, xx, yy, xx2, yy2;
 
@@ -2059,8 +2060,8 @@ _image_rotate_90(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
      }
 }
 
-static void
-_image_rotate_270(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
+EAPI void
+_evas_image_rotate_270(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
 {
    int x, y, xx, yy, xx2, yy2;
 
@@ -2090,8 +2091,8 @@ _image_rotate_270(DATA32 *pixels_out, const DATA32 *pixels_in, int iw, int ih)
      }
 }
 
-static void
-_image_flip_transpose(DATA32 *pixels_out, const DATA32 *pixels_in,
+EAPI void
+_evas_image_flip_transpose(DATA32 *pixels_out, const DATA32 *pixels_in,
                       int iw, int ih)
 {
    int x, y;
@@ -2113,8 +2114,8 @@ _image_flip_transpose(DATA32 *pixels_out, const DATA32 *pixels_in,
      }
 }
 
-static void
-_image_flip_transverse(DATA32 *pixels_out, const DATA32 *pixels_in,
+EAPI void
+_evas_image_flip_transverse(DATA32 *pixels_out, const DATA32 *pixels_in,
                        int iw, int ih)
 {
    int x, y;
@@ -2206,13 +2207,13 @@ eng_image_orient_set(void *data EINA_UNUSED, void *image, Evas_Image_Orient orie
               ERR("You shouldn't get this message, wrong orient value");
               goto on_error;
            case EVAS_IMAGE_ORIENT_90:
-              _image_rotate_90(pixels_out, pixels_in, im->w, im->h);
+              _evas_image_rotate_90(pixels_out, pixels_in, im->w, im->h);
               break;
            case EVAS_IMAGE_ORIENT_180:
-              _image_rotate_180(pixels_out, pixels_in, im->w, im->h);
+             _evas_image_rotate_180(pixels_out, pixels_in, im->w, im->h);
               break;
            case EVAS_IMAGE_ORIENT_270:
-              _image_rotate_270(pixels_out, pixels_in, im->w, im->h);
+             _evas_image_rotate_270(pixels_out, pixels_in, im->w, im->h);
               break;
            default:
               ERR("Wrong orient value");
@@ -2225,7 +2226,7 @@ eng_image_orient_set(void *data EINA_UNUSED, void *image, Evas_Image_Orient orie
              (orient == EVAS_IMAGE_ORIENT_NONE)))
      {
         // flip horizontally to get the new orientation
-        _image_flip_horizontal(pixels_out, pixels_in, im->w, im->h);
+       _evas_image_flip_horizontal(pixels_out, pixels_in, im->w, im->h);
      }
    else if (((im->orient == EVAS_IMAGE_ORIENT_NONE) &&
              (orient == EVAS_IMAGE_FLIP_VERTICAL)) ||
@@ -2233,7 +2234,7 @@ eng_image_orient_set(void *data EINA_UNUSED, void *image, Evas_Image_Orient orie
              (orient == EVAS_IMAGE_ORIENT_NONE)))
      {
         // flip vertically to get the new orientation
-        _image_flip_vertical(pixels_out, pixels_in, im->w, im->h);
+       _evas_image_flip_vertical(pixels_out, pixels_in, im->w, im->h);
      }
    else
      {
@@ -2252,25 +2253,25 @@ eng_image_orient_set(void *data EINA_UNUSED, void *image, Evas_Image_Orient orie
               memcpy(pixels_tmp, pixels_in, sizeof (unsigned int) * w * h);
               break;
            case EVAS_IMAGE_ORIENT_90:
-              _image_rotate_270(pixels_tmp, pixels_in, im->w, im->h);
+             _evas_image_rotate_270(pixels_tmp, pixels_in, im->w, im->h);
               break;
            case EVAS_IMAGE_ORIENT_180:
-              _image_rotate_180(pixels_tmp, pixels_in, im->w, im->h);
+             _evas_image_rotate_180(pixels_tmp, pixels_in, im->w, im->h);
               break;
            case EVAS_IMAGE_ORIENT_270:
-              _image_rotate_90(pixels_tmp, pixels_in, im->w, im->h);
+             _evas_image_rotate_90(pixels_tmp, pixels_in, im->w, im->h);
               break;
            case EVAS_IMAGE_FLIP_HORIZONTAL:
-              _image_flip_horizontal(pixels_tmp, pixels_in, im->w, im->h);
+             _evas_image_flip_horizontal(pixels_tmp, pixels_in, im->w, im->h);
               break;
            case EVAS_IMAGE_FLIP_VERTICAL:
-              _image_flip_vertical(pixels_tmp, pixels_in, im->w, im->h);
+             _evas_image_flip_vertical(pixels_tmp, pixels_in, im->w, im->h);
               break;
            case EVAS_IMAGE_FLIP_TRANSPOSE:
-              _image_flip_transpose(pixels_tmp, pixels_in, im->w, im->h);
+             _evas_image_flip_transpose(pixels_tmp, pixels_in, im->w, im->h);
               break;
            case EVAS_IMAGE_FLIP_TRANSVERSE:
-              _image_flip_transverse(pixels_tmp, pixels_in, im->w, im->h);
+             _evas_image_flip_transverse(pixels_tmp, pixels_in, im->w, im->h);
               break;
            default:
               ERR("Wrong orient value");
@@ -2286,25 +2287,25 @@ eng_image_orient_set(void *data EINA_UNUSED, void *image, Evas_Image_Orient orie
               memcpy(pixels_out, pixels_tmp, sizeof (unsigned int) * w * h);
               break;
            case EVAS_IMAGE_ORIENT_90:
-              _image_rotate_90(pixels_out, pixels_tmp, tw, th);
+             _evas_image_rotate_90(pixels_out, pixels_tmp, tw, th);
               break;
            case EVAS_IMAGE_ORIENT_180:
-              _image_rotate_180(pixels_out, pixels_tmp, tw, th);
+             _evas_image_rotate_180(pixels_out, pixels_tmp, tw, th);
               break;
            case EVAS_IMAGE_ORIENT_270:
-              _image_rotate_270(pixels_out, pixels_tmp, tw, th);
+             _evas_image_rotate_270(pixels_out, pixels_tmp, tw, th);
               break;
            case EVAS_IMAGE_FLIP_HORIZONTAL:
-              _image_flip_horizontal(pixels_out, pixels_tmp, tw, th);
+             _evas_image_flip_horizontal(pixels_out, pixels_tmp, tw, th);
               break;
            case EVAS_IMAGE_FLIP_VERTICAL:
-              _image_flip_vertical(pixels_out, pixels_tmp, tw, th);
+             _evas_image_flip_vertical(pixels_out, pixels_tmp, tw, th);
               break;
            case EVAS_IMAGE_FLIP_TRANSPOSE:
-              _image_flip_transpose(pixels_out, pixels_tmp, tw, th);
+             _evas_image_flip_transpose(pixels_out, pixels_tmp, tw, th);
               break;
            case EVAS_IMAGE_FLIP_TRANSVERSE:
-              _image_flip_transverse(pixels_out, pixels_tmp, tw, th);
+             _evas_image_flip_transverse(pixels_out, pixels_tmp, tw, th);
               break;
           }
 

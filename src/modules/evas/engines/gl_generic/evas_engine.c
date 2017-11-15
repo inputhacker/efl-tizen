@@ -16,6 +16,7 @@
 #include "../gl_common/evas_gl_common.h"
 
 #include "Evas_Engine_GL_Generic.h"
+#include "../software_generic/evas_engine.h"
 
 #ifdef EVAS_CSERVE2
 #include "evas_cs2_private.h"
@@ -706,7 +707,10 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
    Evas_Engine_GL_Context *gl_context;
    RGBA_Draw_Context *dc;
    int w, h;
+   void *pixels_in = NULL;
+   void *pixels_out = NULL;
 
+   if (!im1->im) return NULL;
 
    w = im1->w;
    h = im1->h;
@@ -720,6 +724,8 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
         h = im1->w;
      }
 
+   // TIZEN_ONLY(20171114) : image orient
+   /*
    if ((w * h) <= 0) return NULL;
 
    alpha = eng_image_alpha_get(re, im1);
@@ -755,6 +761,52 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
                               EVAS_COLORSPACE_ARGB8888, im2->im->image.data);
 
    eng_gl_surface_unlock(re, im2);
+   */
+
+   // TIZEN_ONLY(20171114) : image orient
+   im2 = evas_gl_common_image_new_from_copied_data(gl_context, w, h, im1->im->image.data, alpha, im1->cs.space);
+   if (!im2 || !im2->im) return NULL;
+   im2->rotated_orient = im1->orient;
+
+   pixels_in = im1->im->image.data;
+   pixels_out = im2->im->image.data;
+
+   if (!pixels_out || !pixels_in) {
+       return NULL;
+   }
+
+
+   switch(im1->orient)
+   {
+     case EVAS_IMAGE_ORIENT_0:
+       memcpy(pixels_out, pixels_in, sizeof (unsigned int) * im1->w * im1->h);
+       break;
+     case EVAS_IMAGE_ORIENT_90:
+       _evas_image_rotate_90(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_ORIENT_180:
+       _evas_image_rotate_180(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_ORIENT_270:
+       _evas_image_rotate_270(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_FLIP_HORIZONTAL:
+       _evas_image_flip_horizontal(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_FLIP_VERTICAL:
+       _evas_image_flip_vertical(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_FLIP_TRANSPOSE:
+       _evas_image_flip_transpose(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     case EVAS_IMAGE_FLIP_TRANSVERSE:
+       _evas_image_flip_transverse(pixels_out, pixels_in, im1->w, im1->h);
+       break;
+     default:
+       ERR("Wrong orient value");
+       return NULL;
+   }
+
    return im2;
 }
 
@@ -1083,18 +1135,99 @@ eng_image_data_put(void *engine, void *image, DATA32 *image_data)
 static void *
 eng_image_orient_set(void *engine, void *image, Evas_Image_Orient orient)
 {
+   Render_Engine_GL_Generic *re = engine;
    Evas_GL_Image *im;
-   Evas_GL_Image *im_new;
+   Evas_GL_Image *im_new = NULL;
+   void *pixels_in = NULL;
+   void *pixels_out = NULL;
 
    if (!image) return NULL;
    im = image;
-   if (im->orient == orient) return image;
+   if (im->orient == orient && !im->rotated_orient) return image;
 
    gl_generic_window_find(engine);
 
    evas_gl_common_image_update(im->gc, im);
 
-   im_new = evas_gl_common_image_new(im->gc, im->w, im->h, im->alpha, im->cs.space);
+   // TIZEN_ONLY(20171114) : image orient
+   if (im->im)
+     {
+       if (!im->im->image.data)
+         {
+#ifdef EVAS_CSERVE2
+           if (evas_cserve2_use_get() && evas_cache2_image_cached(&im->im->cache_entry))
+             evas_cache2_image_load_data(&im->im->cache_entry);
+           else
+#endif
+             evas_cache_image_load_data(&im->im->cache_entry);
+         }
+       evas_gl_common_image_alloc_ensure(im);
+
+       // If the image has already been rotated because of evas_object_image_data_get()
+       // undo the previous orientation
+       if (im->rotated_orient)
+         {
+           int w, h;
+           w = im->w;
+           h = im->h;
+
+           if (im->rotated_orient == EVAS_IMAGE_ORIENT_90 ||
+               im->rotated_orient == EVAS_IMAGE_ORIENT_270 ||
+               im->rotated_orient == EVAS_IMAGE_FLIP_TRANSPOSE ||
+               im->rotated_orient == EVAS_IMAGE_FLIP_TRANSVERSE)
+             {
+               w = im->h;
+               h = im->w;
+             }
+
+           im_new = evas_gl_common_image_new_from_copied_data(im->gc, w, h, im->im->image.data, im->alpha, im->cs.space);
+           if (!im_new) return im;
+
+           pixels_in = im->im->image.data;
+           pixels_out = im_new->im->image.data;
+
+           if (!pixels_out || !pixels_in) {
+               ERR("evas_test !pixels_out || !pixels_in goto error");
+               goto on_error;
+           }
+
+           switch(im->rotated_orient)
+           {
+             case EVAS_IMAGE_ORIENT_0:
+               memcpy(pixels_out, pixels_in, sizeof (unsigned int) * im->w * im->h);
+               break;
+             case EVAS_IMAGE_ORIENT_90:
+               _evas_image_rotate_270(pixels_out, pixels_in, im->w, im->h);
+               break;
+             case EVAS_IMAGE_ORIENT_180:
+               _evas_image_rotate_180(pixels_out, pixels_in, im->w, im->h);
+               break;
+             case EVAS_IMAGE_ORIENT_270:
+               _evas_image_rotate_90(pixels_out, pixels_in, im->w, im->h);
+               break;
+             case EVAS_IMAGE_FLIP_HORIZONTAL:
+               _evas_image_flip_horizontal(pixels_out, pixels_in, im->w, im->h);
+               break;
+             case EVAS_IMAGE_FLIP_VERTICAL:
+               _evas_image_flip_vertical(pixels_out, pixels_in, im->w, im->h);
+               break;
+             case EVAS_IMAGE_FLIP_TRANSPOSE:
+               _evas_image_flip_transpose(pixels_out, pixels_in, im->w, im->h);
+               break;
+             case EVAS_IMAGE_FLIP_TRANSVERSE:
+               _evas_image_flip_transverse(pixels_out, pixels_in, im->w, im->h);
+               break;
+             default:
+               ERR("Wrong orient value");
+               goto on_error;
+           }
+         }
+       else
+         {
+           im_new = evas_gl_common_image_new_from_copied_data(im->gc, im->w, im->h, im->im->image.data, im->alpha, im->cs.space);
+         }
+     } // TIZEN_ONLY(20171114) : image orient
+
    if (!im_new) return im;
 
    im_new->load_opts = im->load_opts;
@@ -1109,12 +1242,14 @@ eng_image_orient_set(void *engine, void *image, Evas_Image_Orient orient)
    im_new->cached = EINA_FALSE;
 
    im_new->orient = orient;
-   im_new->tex = im->tex;
-   im_new->tex->references++;
-   im_new->tex->pt->references++;
+   im_new->rotated_orient = EVAS_IMAGE_ORIENT_NONE;
 
    evas_gl_common_image_free(im);
    return im_new;
+
+on_error:
+   evas_gl_common_image_free(im_new);
+   return im;
 }
 
 static Evas_Image_Orient

@@ -491,6 +491,7 @@ struct _Evas_GL_Image
    Eina_Inlist       *maps; /* Evas_GL_Image_Data_Map */
 
    Evas_Image_Orient  orient;
+   Evas_Image_Orient rotated_orient; // TIZEN_ONLY(20171114) : image orient
    int                scale_hint, content_hint;
    int                csize;
 

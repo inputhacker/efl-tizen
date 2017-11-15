@@ -702,6 +702,8 @@ evas_object_image_data_get(const Eo *eo_obj, Eina_Bool for_writing)
    /* if we fail to get engine_data, we have to return NULL */
    if (!pixels || !data) goto error;
 
+   // TIZEN_ONLY(20171114) : image orient
+/*
    if (!tofree)
      {
         o->engine_data = pixels;
@@ -738,7 +740,38 @@ evas_object_image_data_get(const Eo *eo_obj, Eina_Bool for_writing)
         if (!eina_hash_add(hash, data, px_entry))
           goto error;
      }
+*/
 
+   // TIZEN_ONLY(20171114) : image orient
+   if (tofree)
+     {
+       ENFN->image_free(ENC, o->engine_data);
+       o->engine_data = pixels;
+
+       if (ENFN->image_scale_hint_set)
+         ENFN->image_scale_hint_set(ENC, o->engine_data, o->scale_hint);
+       if (ENFN->image_content_hint_set)
+         ENFN->image_content_hint_set(ENC, o->engine_data, o->content_hint);
+
+     }
+   else
+     {
+       o->engine_data = pixels;
+     }
+
+   if (ENFN->image_stride_get)
+     ENFN->image_stride_get(ENC, o->engine_data, &stride);
+   else
+     stride = o->cur->image.w * 4;
+
+   if (o->cur->image.stride != stride)
+     {
+        EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
+          state_write->image.stride = stride;
+        EINA_COW_IMAGE_STATE_WRITE_END(o, state_write);
+     }
+
+   o->pixels_checked_out++;
    if (for_writing)
      {
         o->written = EINA_TRUE;

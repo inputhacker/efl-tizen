@@ -744,6 +744,7 @@ $(evas_software_generic_eolian_h)
 if EVAS_STATIC_BUILD_SOFTWARE_GENERIC
 lib_evas_libevas_la_SOURCES += \
 modules/evas/engines/software_generic/evas_engine.c \
+modules/evas/engines/software_generic/evas_engine.h \
 modules/evas/engines/software_generic/Evas_Engine_Software_Generic.h \
 modules/evas/engines/software_generic/Evas_Engine_Software_Shared.h \
 modules/evas/engines/software_generic/evas_native_tbm.c \
@@ -766,6 +767,7 @@ $(install_enginesoftwaregenericpkgLTLIBRARIES): install-libLTLIBRARIES
 
 modules_evas_engines_software_generic_module_la_SOURCES = \
 modules/evas/engines/software_generic/evas_engine.c \
+modules/evas/engines/software_generic/evas_engine.h \
 modules/evas/engines/software_generic/Evas_Engine_Software_Generic.h \
 modules/evas/engines/software_generic/Evas_Engine_Software_Shared.h \
 modules/evas/engines/software_generic/evas_native_tbm.c \
