@@ -381,6 +381,8 @@ _evas_object_clip_set(Eo *eo_obj, Evas_Object_Protected_Data *obj, Evas_Object *
 
    evas_object_change(eo_clip, clip);
    evas_object_change(eo_obj, obj);
+   evas_object_update_bounding_box(eo_obj, obj);
+
    evas_object_clip_dirty(eo_obj, obj);
    evas_object_recalc_clippees(obj);
    if ((!obj->is_smart) &&
@@ -426,6 +428,8 @@ _evas_object_clip_unset(Eo *eo_obj, Evas_Object_Protected_Data *obj)
      }
    _evas_object_clip_unset_common(obj, EINA_FALSE);
    evas_object_change(eo_obj, obj);
+   evas_object_update_bounding_box(eo_obj, obj);
+
    evas_object_clip_dirty(eo_obj, obj);
    evas_object_recalc_clippees(obj);
    if ((!obj->is_smart) &&

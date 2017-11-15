@@ -91,7 +91,6 @@ _evas_event_object_list_raw_in_get(Evas *eo_e, Eina_List *in,
              if (obj->is_smart)
                {
                   Evas_Coord_Rectangle bounding_box = { 0, 0, 0, 0};
-
                   evas_object_smart_bounding_box_update(eo_obj, obj);
                   evas_object_smart_bounding_box_get(eo_obj, &bounding_box, NULL);
                   c = bounding_box;
