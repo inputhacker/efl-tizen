@@ -1815,6 +1815,7 @@ EAPI void ecore_wl2_window_clipboard_state_set(Ecore_Wl2_Window *win, Ecore_Wl2_
 EAPI Ecore_Wl2_Clipboard_State ecore_wl2_window_clipboard_state_get(Ecore_Wl2_Window *win);
 EAPI void ecore_wl2_clipboard_show(Ecore_Wl2_Window *win);
 EAPI void ecore_wl2_clipboard_hide(Ecore_Wl2_Window *win);
+EAPI Eina_Bool ecore_wl2_clipboard_data_only_set(Eina_Bool data_only);
 //
 
 // TIZEN_ONLY(20171108) : add functions for keyboard

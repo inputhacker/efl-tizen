@@ -2453,6 +2453,25 @@ ecore_wl2_clipboard_hide(Ecore_Wl2_Window *win)
 
    tizen_clipboard_hide(win->display->wl.tz_clipboard, win->surface);
 }
+
+EAPI Eina_Bool
+ecore_wl2_clipboard_data_only_set(Eina_Bool data_only)
+{
+   Ecore_Wl2_Display *ewd = NULL;
+   Ecore_Wl2_Input *input = NULL;
+
+   ewd = ecore_wl2_connected_display_get(NULL);
+   if (!ewd) return EINA_FALSE;
+   input = ecore_wl2_input_default_input_get(ewd);
+   if (!input) return EINA_FALSE;
+
+   if (!ewd->wl.tz_clipboard) return EINA_FALSE;
+
+   tizen_clipboard_set_data_only(ewd->wl.tz_clipboard, data_only);
+   ecore_wl2_display_sync(ewd);
+
+   return input->is_data_only;
+}
 //
 
 // TIZEN_ONLY(20171108) : add functions for keyboard

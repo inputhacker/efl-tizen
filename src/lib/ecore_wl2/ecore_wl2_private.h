@@ -620,6 +620,9 @@ struct _Ecore_Wl2_Input
       uint32_t enter_serial;
       Ecore_Window window_id;
    } drag, selection;
+// TIZEN_ONLY(20170227) : tizen clipboard v2
+   Eina_Bool is_data_only;
+//
 
    unsigned int seat_version;
    unsigned int id;

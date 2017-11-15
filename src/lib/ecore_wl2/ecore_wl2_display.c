@@ -589,8 +589,19 @@ _tizen_clipboard_cb_data_selected(void *data, struct tizen_clipboard *tizen_clip
 }
 
 static void
-_tizen_clipboard_cb_allowed_data_only(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, uint32_t allowed EINA_UNUSED)
+_tizen_clipboard_cb_allowed_data_only(void *data, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, uint32_t allowed)
 {
+   Ecore_Wl2_Display *ewd = NULL;
+   Ecore_Wl2_Input *input = NULL;
+
+   ewd = data;
+   input = ecore_wl2_input_default_input_get(ewd);
+   if (!input) return;
+
+   if (allowed)
+     input->is_data_only = EINA_TRUE;
+   else
+     input->is_data_only = EINA_FALSE;
 }
 
 static const struct tizen_clipboard_listener _tizen_clipboard_listener =
