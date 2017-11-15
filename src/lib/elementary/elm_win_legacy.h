@@ -1336,3 +1336,206 @@ EAPI Eina_Bool elm_win_wm_rotation_available_rotations_get(const Elm_Win *obj, i
  */
 EAPI int elm_win_active_win_orientation_get(Evas_Object *obj);
 //
+
+// TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Gets the list of supported auxiliary hint strings.
+ *
+ * @since 1.8
+ *
+ * @remarks Do not change the returned list of contents. Auxiliary hint
+ *          strings are internal and should be considered constants, do not free or
+ *          modify them.
+ * @remarks Support for this depends on the underlying windowing system.
+ *
+ * @remarks The window auxiliary hint is the value that is used to decide which action should
+ *          be made available to the user by the Windows Manager. If you want to set a specific hint
+ *          to your window, then you should check whether it exists in the supported auxiliary
+ *          hints that are registered in the root window by the Windows Manager. Once you have added
+ *          an auxiliary hint, you can get a new ID which is used to change the value and delete the hint.
+ *          The Windows Manager sends a response message to the application on receiving the auxiliary
+ *          hint change event.
+ *
+ * @param obj The window object
+ * @return The list of supported auxiliary hint strings
+ */
+EAPI const Eina_List      *elm_win_aux_hints_supported_get(const Evas_Object *obj);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Creates an auxiliary hint of the window.
+ *
+ * @since 1.8
+ *
+ * @remarks Support for this depends on the underlying windowing system.
+ *
+ * @param obj The window object
+ * @param hint The auxiliary hint string
+ * @param val The value string
+ * @return The ID of the created auxiliary hint,
+ *         otherwise @c -1 on failure
+ */
+EAPI int                   elm_win_aux_hint_add(Evas_Object *obj, const char *hint, const char *val);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Deletes an auxiliary hint of the window.
+ *
+ * @since 1.8
+ *
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param id The ID of the auxiliary hint
+ * @return @c EINA_TRUE if no error occurs,
+ *         otherwise @c EINA_FALSE
+ */
+EAPI Eina_Bool             elm_win_aux_hint_del(Evas_Object *obj, const int id);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Changes a value of the auxiliary hint.
+ *
+ * @since 1.8
+ *
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param id The auxiliary hint ID
+ * @param val The value string to be set
+ * @return @c EINA_TRUE if no error occurs,
+ *         otherwise @c EINA_FALSE
+ */
+EAPI Eina_Bool             elm_win_aux_hint_val_set(Evas_Object *obj, const int id, const char *val);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Gets a value of the auxiliary hint.
+ *
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param id The auxiliary hint ID
+ * @return The string value of the auxiliary hint ID,
+ *         otherwise @c NULL
+ */
+EAPI const char           *elm_win_aux_hint_val_get(Evas_Object *obj, int id);
+
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Gets an ID of the auxiliary hint string.
+ *
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param hint The auxiliary hint string
+ * @return The ID of the auxiliary hint,
+ *         otherwise @c -1 on failure
+ */
+EAPI int                   elm_win_aux_hint_id_get(Evas_Object *obj, const char *hint);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Sets an input rect of surface.
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param input_rect The rectangle of input to be set
+ */
+EAPI void                  elm_win_input_rect_set(Evas_Object *obj, Eina_Rectangle *input_rect);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Adds an input rect of surface.
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param input_rect The rectangle of input to be added
+ */
+EAPI void                  elm_win_input_rect_add(Evas_Object *obj, Eina_Rectangle *input_rect);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Subtracts an input rect of surface.
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param input_rect The rectangle of input to be subtracted
+ */
+EAPI void                  elm_win_input_rect_subtract(Evas_Object *obj, Eina_Rectangle *input_rect);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Gets the orientation of current active window on the screen.
+ * @remarks Support for this depends on the underlying windowing system.
+ *
+ * @param obj The window object
+ * @return The rotation of active window, in degrees (0-360) conter-clockwise.
+ *         otherwise @c -1 on failure
+ */
+EAPI int                   elm_win_active_win_orientation_get(Evas_Object *obj);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief A structure to store aux message information from the window manager.
+ * @remarks Support for this depends on the underlying windowing system.
+ *
+ */
+typedef struct _Elm_Win_Aux_Message Elm_Win_Aux_Message;
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Gets the key string from an aux message
+ * @remarks Support for this depends on the underlying windowing system.
+ *
+ * @param obj The window object
+ * @return Constant key string of the aux message. otherwise @c NULL on failure.
+ *         Do not use this return value after end of the aux message callback.
+ */
+EAPI const char       *elm_win_aux_msg_key_get(Evas_Object *obj, Elm_Win_Aux_Message *msg);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Gets the value string from an aux message
+ * @remarks Support for this depends on the underlying windowing system.
+ *
+ * @param obj The window object
+ * @return Constant value string of the aux message. otherwise @c NULL on failure.
+ *         Do not use this return value after end of the aux message callback.
+ */
+EAPI const char       *elm_win_aux_msg_val_get(Evas_Object *obj, Elm_Win_Aux_Message *msg);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Gets the list of option from an aux message
+ * @remarks Support for this depends on the underlying windowing system.
+ *
+ * @param obj The window object
+ * @return Constant list of option of the aux message. otherwise @c NULL on failure.
+ *         Do not use this return value after end of the aux message callback.
+ */
+EAPI const Eina_List  *elm_win_aux_msg_options_get(Evas_Object *obj, Elm_Win_Aux_Message *msg);
+// END of TIZEN_ONLY(20150722)

@@ -106,6 +106,9 @@ struct _Efl_Ui_Win_Data
       Ecore_Event_Handler *effect_start_handler;
       Ecore_Event_Handler *effect_end_handler;
       //
+      // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+      Ecore_Event_Handler *aux_msg_handler;
+      //
    } wl;
 #endif
 #ifdef HAVE_ELEMENTARY_COCOA
@@ -341,6 +344,11 @@ static const char SIG_VISIBILITY_CHANGED[] = "visibility,changed";
 //TIZEN_ONLY(20160704): added signal for launch
 static const char SIG_LAUNCH_DONE[] = "launch,done";
 //
+// TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+static const char SIG_AUX_HINT_ALLOWED[] = "aux,hint,allowed";
+static const char SIG_AUX_MESSAGE_RECEIVED[] = "aux,msg,received";
+//
+
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_DELETE_REQUEST, ""},
@@ -363,6 +371,8 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WM_ROTATION_CHANGED, ""},
    {SIG_WIDGET_FOCUSED, ""}, /**< handled by elm_widget */
    {SIG_WIDGET_UNFOCUSED, ""}, /**< handled by elm_widget */
+   {SIG_AUX_HINT_ALLOWED, ""},
+   {SIG_AUX_MESSAGE_RECEIVED, ""},
    {SIG_EFFECT_STARTED, ""},
    {SIG_EFFECT_DONE, ""},
    {SIG_LAUNCH_DONE, ""},
@@ -1554,6 +1564,9 @@ _elm_win_state_change(Ecore_Evas *ee)
    Eina_Bool ch_profile = EINA_FALSE;
    Eina_Bool ch_wm_rotation = EINA_FALSE;
    Eina_Bool ch_visibility = EINA_FALSE;
+   Eina_Bool ch_aux_hint = EINA_FALSE;
+   Eina_List *aux_hints = NULL;
+
    const char *profile;
 
    if (!sd) return;
@@ -1609,7 +1622,13 @@ _elm_win_state_change(Ecore_Evas *ee)
         ch_visibility = EINA_TRUE;
      }
    //
-
+   // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+   aux_hints = ecore_evas_aux_hints_allowed_get(sd->ee);
+   if (aux_hints)
+     {
+        ch_aux_hint = EINA_TRUE;
+     }
+   //
    _elm_win_state_eval_queue();
 
    if ((ch_withdrawn) || (ch_iconified))
@@ -1698,6 +1717,18 @@ _elm_win_state_change(Ecore_Evas *ee)
           (obj, EFL_UI_WIN_EVENT_WM_ROTATION_CHANGED, NULL);
      }
 
+   // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+   if (ch_aux_hint)
+     {
+        void *id;
+        Eina_List *l;
+        EINA_LIST_FOREACH(aux_hints, l, id)
+          {
+             evas_object_smart_callback_call(obj, SIG_AUX_HINT_ALLOWED, id);
+          }
+        eina_list_free(aux_hints);
+     }
+   //
    // TIZEN_ONLY(20160120): support visibility_change event
    if (ch_visibility)
      evas_object_smart_callback_call(obj, SIG_VISIBILITY_CHANGED, (void*)!sd->obscured);
@@ -2900,6 +2931,9 @@ _efl_ui_win_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Win_Data *sd)
    ecore_event_handler_del(sd->wl.effect_start_handler);
    ecore_event_handler_del(sd->wl.effect_end_handler);
    //
+   // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+   ecore_event_handler_del(sd->wl.aux_msg_handler);
+   //
 #endif
 #ifdef HAVE_ELEMENTARY_WIN32
    ecore_event_handler_del(sd->win32.key_down_handler);
@@ -3300,6 +3334,53 @@ _elm_win_wlwin_type_update(Efl_Ui_Win_Data *sd)
      }
    ecore_wl2_window_type_set(sd->wl.win, wtype);
 }
+
+// TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+struct _Elm_Win_Aux_Message
+{
+   const char *key;
+   const char *val;
+   Eina_List *options;
+};
+
+static Eina_Bool
+_elm_win_wl_aux_message(void *data, int type EINA_UNUSED, void *event)
+{
+   ELM_WIN_DATA_GET(data, sd);
+   Ecore_Wl2_Event_Aux_Message *ev = event;
+   Elm_Win_Aux_Message *msg = NULL;
+   const char *opt = NULL, *tmp = NULL;
+   Eina_List *l;
+
+   if (!sd->wl.win) return ECORE_CALLBACK_PASS_ON;
+
+   if ((ecore_wl2_window_id_get(sd->wl.win) != ev->win))
+     return ECORE_CALLBACK_PASS_ON;
+
+   msg = calloc(1, sizeof(*msg));
+   if (!msg) return ECORE_CALLBACK_PASS_ON;
+
+   msg->key = eina_stringshare_add(ev->key);
+   msg->val = eina_stringshare_add(ev->val);
+
+   EINA_LIST_FOREACH(ev->options, l, opt)
+     {
+        if (!opt) continue;
+        tmp = eina_stringshare_add(opt);
+        msg->options = eina_list_append(msg->options, tmp);
+     }
+
+   evas_object_smart_callback_call(sd->obj, SIG_AUX_MESSAGE_RECEIVED, (void*)msg);
+
+   eina_stringshare_del(msg->key);
+   eina_stringshare_del(msg->val);
+   EINA_LIST_FREE(msg->options, opt)
+      eina_stringshare_del(opt);
+   free(msg);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+// END of TIZEN_ONLY(20150722)
 #endif
 
 Ecore_Cocoa_Window *
@@ -5291,6 +5372,9 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
               (ECORE_WL2_EVENT_EFFECT_START, _elm_win_wl_effect_start, obj);
            sd->wl.effect_end_handler = ecore_event_handler_add
               (ECORE_WL2_EVENT_EFFECT_END, _elm_win_wl_effect_end, obj);
+           // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+           sd->wl.aux_msg_handler = ecore_event_handler_add
+              (ECORE_WL2_EVENT_AUX_MESSAGE, _elm_win_wl_aux_message, obj);
            //
         }
 #endif
@@ -9032,6 +9116,85 @@ elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_p
    //_elm_win_available_profiles_set(obj, sd, profiles, num_profiles);
 }
 //
+
+//////////////////////////////////////////////////////////////////
+// TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+EAPI const Eina_List *
+elm_win_aux_hints_supported_get(const Evas_Object *obj)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, NULL);
+   return ecore_evas_aux_hints_supported_get(sd->ee);
+}
+
+EAPI int
+elm_win_aux_hint_add(Evas_Object *obj, const char *hint, const char *val)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, -1);
+
+   return ecore_evas_aux_hint_add(sd->ee, hint, val);
+}
+
+EAPI Eina_Bool
+elm_win_aux_hint_del(Evas_Object *obj,
+                     const int    id)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
+   return ecore_evas_aux_hint_del(sd->ee, id);
+}
+
+EAPI Eina_Bool
+elm_win_aux_hint_val_set(Evas_Object *obj, const int id, const char *val)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
+   return ecore_evas_aux_hint_val_set(sd->ee, id, val);
+}
+
+EAPI const char *
+elm_win_aux_hint_val_get(Evas_Object *obj, int id)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
+   return ecore_evas_aux_hint_val_get(sd->ee, id);
+}
+
+EAPI int
+elm_win_aux_hint_id_get(Evas_Object *obj, const char *hint)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
+   return ecore_evas_aux_hint_id_get(sd->ee, hint);
+}
+
+EAPI const char *
+elm_win_aux_msg_key_get(Evas_Object *obj,
+                        Elm_Win_Aux_Message *msg)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, NULL);
+
+   if (!msg) return NULL;
+   return msg->key;
+}
+
+EAPI const char *
+elm_win_aux_msg_val_get(Evas_Object *obj,
+                        Elm_Win_Aux_Message *msg)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, NULL);
+
+   if (!msg) return NULL;
+   return msg->val;
+}
+
+EAPI const Eina_List *
+elm_win_aux_msg_options_get(Evas_Object *obj,
+                            Elm_Win_Aux_Message *msg)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, NULL);
+
+   if (!msg) return NULL;
+   return msg->options;
+}
+// END of TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
+//////////////////////////////////////////////////////////////////
+
 /* Internal EO APIs and hidden overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(efl_ui_win, Efl_Ui_Win_Data)
