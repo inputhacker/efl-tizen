@@ -863,7 +863,9 @@ _accessible_get_relation_set(const Eldbus_Service_Interface *iface EINA_UNUSED, 
         eldbus_message_iter_container_close(iter_struct, iter_array2);
         eldbus_message_iter_container_close(iter_array, iter_struct);
      }
-   efl_access_relation_set_free(rels);
+   //TIZEN_ONLY(20171115) Fixed the bugs and warnings in atspi relationship APIS
+   efl_access_relation_set_free(&rels);
+   //
    eldbus_message_iter_container_close(iter, iter_array);
 
    return ret;

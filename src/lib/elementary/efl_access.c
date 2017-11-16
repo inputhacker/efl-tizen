@@ -294,9 +294,14 @@ _efl_access_state_set_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
 }
 
 EOLIAN Efl_Access_Relation_Set
-_efl_access_relation_set_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
+_efl_access_relation_set_get(Eo *obj, Efl_Access_Data *pd EINA_UNUSED)
 {
-   return efl_access_relation_set_clone(pd->relations);
+   //TIZEN_ONLY(20171115) Fixed the bugs and warnings in atspi relationship APIS
+   //return efl_access_relation_set_clone(pd->relations);
+   WRN("The %s object does not implement the \"accessible_relation_set\" function.",
+       efl_class_name_get(efl_class_get(obj)));
+   return NULL;
+   //
 }
 
 EAPI void efl_access_attributes_list_free(Eina_List *list)
@@ -359,7 +364,7 @@ _efl_access_event_handler_add(Eo *class EINA_UNUSED, void *pd EINA_UNUSED, Efl_E
    return ret;
 }
 
-EOLIAN void 
+EOLIAN void
 _efl_access_event_handler_del(Eo *class EINA_UNUSED, void *pd EINA_UNUSED, Efl_Access_Event_Handler *handler)
 {
    Eina_List *l, *l2;
@@ -507,14 +512,15 @@ efl_access_relation_set_relation_type_remove(Efl_Access_Relation_Set *set, Efl_A
      }
 }
 
+//TIZEN_ONLY(20171115) Fixed the bugs and warnings in atspi relationship APIS
 EAPI void
-efl_access_relation_set_free(Efl_Access_Relation_Set set)
+efl_access_relation_set_free(Efl_Access_Relation_Set *set)
 {
    Efl_Access_Relation *rel;
    Eina_List *l;
    Eo *obj;
 
-   EINA_LIST_FREE(set, rel)
+   EINA_LIST_FREE(*set, rel)
      {
         EINA_LIST_FOREACH(rel->objects, l, obj)
            efl_event_callback_del(obj, EFL_EVENT_DEL, _on_rel_obj_del, set);
@@ -523,13 +529,13 @@ efl_access_relation_set_free(Efl_Access_Relation_Set set)
 }
 
 EAPI Efl_Access_Relation_Set
-efl_access_relation_set_clone(const Efl_Access_Relation_Set set)
+efl_access_relation_set_clone(const Efl_Access_Relation_Set *set)
 {
    Efl_Access_Relation_Set ret = NULL;
    Eina_List *l;
    Efl_Access_Relation *rel;
 
-   EINA_LIST_FOREACH(set, l, rel)
+   EINA_LIST_FOREACH(*set, l, rel)
      {
         Efl_Access_Relation *cpy = efl_access_relation_clone(rel);
         ret = eina_list_append(ret, cpy);
@@ -537,6 +543,7 @@ efl_access_relation_set_clone(const Efl_Access_Relation_Set set)
 
    return ret;
 }
+//
 
 EOLIAN static Eina_Bool
 _efl_access_relationship_append(Eo *obj EINA_UNUSED, Efl_Access_Data *sd, Efl_Access_Relation_Type type, const Efl_Access *relation_obj)
@@ -556,7 +563,9 @@ _efl_access_relationship_remove(Eo *obj EINA_UNUSED, Efl_Access_Data *sd, Efl_Ac
 EOLIAN static void
 _efl_access_relationships_clear(Eo *obj EINA_UNUSED, Efl_Access_Data *sd)
 {
-   efl_access_relation_set_free(sd->relations);
+   //TIZEN_ONLY(20171115) Fixed the bugs and warnings in atspi relationship APIS
+   efl_access_relation_set_free(&sd->relations);
+   //
    sd->relations = NULL;
 }
 
@@ -604,7 +613,7 @@ _efl_access_efl_object_destructor(Eo *obj, Efl_Access_Data *pd)
    eina_stringshare_del(pd->name);
    eina_stringshare_del(pd->description);
    eina_stringshare_del(pd->translation_domain);
-   efl_access_relation_set_free(pd->relations);
+   efl_access_relation_set_free(&pd->relations);
 
    efl_destructor(efl_super(obj, EFL_ACCESS_MIXIN));
 }
