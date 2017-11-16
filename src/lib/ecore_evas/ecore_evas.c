@@ -4920,6 +4920,26 @@ ecore_evas_gl_drm_new(const char *disp_name, unsigned int parent,
 }
 
 EAPI Ecore_Evas *
+ecore_evas_tbm_ext_new(const char *engine, void *tbm_surf_queue, void *data)
+{
+   Ecore_Evas *ee;
+   Ecore_Evas *(*new)(const char *, void *, void *);
+   Eina_Module *m = _ecore_evas_engine_load("tbm");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+   new = eina_module_symbol_get(m, "ecore_evas_tbm_ext_new_internal");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
+
+   ee = new(engine, tbm_surf_queue, data);
+   if (!_ecore_evas_cursors_init(ee))
+     {
+        ecore_evas_free(ee);
+        return NULL;
+     }
+   return ee;
+}
+
+EAPI Ecore_Evas *
 ecore_evas_software_gdi_new(Ecore_Win32_Window *parent,
 			    int                 x,
 			    int                 y,
