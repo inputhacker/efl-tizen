@@ -325,7 +325,8 @@ evas_gl_symbols(void *(*GetProcAddress)(const char *name), const char *extsn)
 // stuff. this is generic zero-copy textures for gl
 
    {
-      const char *egl_version = GL_TH(eglQueryString, GL_TH(eglGetCurrentDisplay), EGL_VERSION);
+      EGLDisplay curr_dpy = GL_TH(eglGetCurrentDisplay);
+      const char *egl_version = GL_TH(eglQueryString, curr_dpy, EGL_VERSION);
       int vmin = 1, vmaj = 0;
 
       if (!egl_version || (sscanf(egl_version, "%d.%d", &vmaj, &vmin) != 2))
