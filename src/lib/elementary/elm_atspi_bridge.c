@@ -2041,17 +2041,27 @@ _elm_atspi_bridge_plug_id_split(const char *plug_id, char **bus, char **path)
    Eina_Bool ret = EINA_FALSE;
    if (tokens == 2)
      {
-        if (bus) *bus = strdup(split[1]);
-        if (path) *path = strdup(split[2]);
-        ret = EINA_TRUE;
+        if (!split[0] || !split[1])
+          ret = EINA_FALSE;
+        else
+          {
+             if (bus) *bus = strdup(split[0]);
+             if (path) *path = strdup(split[1]);
+             ret = EINA_TRUE;
+          }
      }
    else if (tokens == 3)
      {
-        char buf[128];
-        snprintf(buf, sizeof(buf), ":%s", split[1]);
-        if (bus) *bus = strdup(buf);
-        if (path) *path = strdup(split[2]);
-        ret = EINA_TRUE;
+        if (!split[0] || !split[1] || !split[2])
+          ret = EINA_FALSE;
+        else
+          {
+             char buf[128];
+             snprintf(buf, sizeof(buf), "%s:%s",split[0], split[1]);
+             if (bus) *bus = strdup(buf);
+             if (path) *path = strdup(split[2]);
+             ret = EINA_TRUE;
+          }
      }
 
    free(split[0]);
