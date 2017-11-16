@@ -1709,6 +1709,13 @@ _elm_win_state_change(Ecore_Evas *ee)
         ELM_WIN_DATA_ALIVE_CHECK(obj, sd);
         _elm_win_xwin_update(sd);
 #endif
+
+//TIZEN_ONLY(20170912)
+        /* if there are deferred resize job, do the job immediately
+            before calling rotation change callback */
+        if (sd->deferred_resize_job)
+          _elm_win_resize_job(obj);
+//
         ELM_WIN_DATA_ALIVE_CHECK(obj, sd);
         efl_ui_widget_on_orientation_update(obj, sd->rot);
         efl_event_callback_legacy_call
