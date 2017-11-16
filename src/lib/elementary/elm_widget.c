@@ -51,6 +51,11 @@ const char SIG_WIDGET_UNFOCUSED[] = "unfocused";
 const char SIG_WIDGET_LANG_CHANGED[] = "language,changed";
 const char SIG_WIDGET_ACCESS_CHANGED[] = "access,changed";
 
+// TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
+const char SIG_WIDGET_ATSPI_HIGHLIGHTED[] = "atspi,highlighted";
+const char SIG_WIDGET_ATSPI_UNHIGHLIGHTED[] = "atspi,unhighlighted";
+//
+
 typedef struct _Elm_Event_Cb_Data         Elm_Event_Cb_Data;
 typedef struct _Elm_Label_Data            Elm_Label_Data;
 typedef struct _Elm_Translate_String_Data Elm_Translate_String_Data;
@@ -633,6 +638,10 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] =
    {SIG_WIDGET_UNFOCUSED, ""},
    {SIG_WIDGET_LANG_CHANGED, ""},
    {SIG_WIDGET_ACCESS_CHANGED, ""},
+   // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
+   {SIG_WIDGET_ATSPI_HIGHLIGHTED, ""},
+   {SIG_WIDGET_ATSPI_UNHIGHLIGHTED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -6235,6 +6244,9 @@ _elm_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Data *
 {
    elm_object_accessibility_highlight_set(obj, EINA_TRUE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
+   evas_object_smart_callback_call(obj, SIG_WIDGET_ATSPI_HIGHLIGHTED, NULL);
+   //
    return EINA_TRUE;
 }
 
@@ -6243,6 +6255,9 @@ _elm_widget_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Smart_Data 
 {
    elm_object_accessibility_highlight_set(obj, EINA_FALSE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+   // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
+   evas_object_smart_callback_call(obj, SIG_WIDGET_ATSPI_UNHIGHLIGHTED, NULL);
+   //
    return EINA_TRUE;
 }
 //
