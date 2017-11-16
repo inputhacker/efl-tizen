@@ -1,8 +1,6 @@
 #ifndef _EVAS_ENGINE_GL_TBM_H
 # define _EVAS_ENGINE_GL_TBM_H
 
-#include "../gl_generic/Evas_Engine_GL_Shared.h"
-
 # define EVAS_ENGINE_GL_TBM_SWAP_MODE_EXISTS 1
 
 typedef struct _Evas_Engine_Info_GL_Tbm Evas_Engine_Info_GL_Tbm;

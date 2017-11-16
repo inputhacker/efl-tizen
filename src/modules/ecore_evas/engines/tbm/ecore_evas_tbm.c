@@ -26,6 +26,8 @@
 #include <Evas_Engine_GL_Tbm.h>
 #include <dlfcn.h>
 
+#include "../../../evas/engines/gl_generic/Evas_Engine_GL_Shared.h"
+
 #ifdef EAPI
 # undef EAPI
 #endif
