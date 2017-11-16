@@ -818,7 +818,6 @@ ecore_evas_tbm_ext_new_internal(const char *engine, void *tbm_surf_queue, void* 
    rmethod = evas_render_method_lookup(driver_name);
     EINA_SAFETY_ON_TRUE_RETURN_VAL(rmethod == 0, NULL);
 
-
     ee = calloc(1, sizeof(Ecore_Evas));
     EINA_SAFETY_ON_NULL_RETURN_VAL(ee, NULL);
 
@@ -997,7 +996,7 @@ ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,
 
    ee->driver = driver_name;
 
-   iface = _ecore_evas_trm_interface_new();
+   iface = _ecore_evas_tbm_interface_new();
    ee->engine.ifaces = eina_list_append(ee->engine.ifaces, iface);
 
    if (w < 1) w = 1;
