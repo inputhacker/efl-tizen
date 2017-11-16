@@ -128,9 +128,14 @@ _conformant_part_sizing_eval(Evas_Object *obj,
 {
 #ifdef HAVE_ELEMENTARY_X
    Ecore_X_Window zone = 0;
-   Evas_Object *top;
    Ecore_X_Window xwin;
 #endif
+   // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+#ifdef HAVE_ELEMENTARY_WL2
+   Ecore_Wl2_Window *wlwin;
+#endif
+   //
+   Evas_Object *top;
    int sx = -1, sy = -1, sw = -1, sh = -1;
 
    ELM_CONFORMANT_DATA_GET(obj, sd);
@@ -156,6 +161,13 @@ _conformant_part_sizing_eval(Evas_Object *obj,
                sx = sy = sw = sh = 0;
           }
 #endif
+        // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+#ifdef HAVE_ELEMENTARY_WL2
+        wlwin = elm_win_wl_window_get(top);
+        if (wlwin)
+          ecore_wl2_window_indicator_geometry_get(wlwin, &sx, &sy, &sw, &sh);
+#endif
+        //
         if (((sd->rot == 90) || (sd->rot == 270)) && sd->landscape_indicator)
           _conformant_part_size_hints_set(obj, sd->landscape_indicator, sx, sy, sw, sh);
         else if (((sd->rot == 0) || (sd->rot == 180)) && sd->portrait_indicator)
@@ -182,9 +194,50 @@ _conformant_part_sizing_eval(Evas_Object *obj,
                }
           }
 #endif
+// TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+#ifdef HAVE_ELEMENTARY_WL2
+        int tx = -1, ty = -1, tw = -1, th = -1;
+
+        wlwin = elm_win_wl_window_get(top);
+        if (wlwin)
+          ecore_wl2_window_keyboard_geometry_get(wlwin, &tx, &ty, &tw, &th);
+        Evas_Coord ww = 0, wh = 0;
+        elm_win_screen_size_get(top, NULL, NULL, &ww, &wh);
+
+        if (sd->rot == 90)
+          {
+             sx = wh - ty - th;
+             sy = tx;
+             sw = th;
+             sh = tw;
+          }
+        else if (sd->rot == 180)
+          {
+             sx = ww - tx - tw;
+             sy = wh - ty - th;
+             sw = tw;
+             sh = th;
+          }
+        else if (sd->rot == 270)
+          {
+             sx = ty;
+             sy = ww - tx - tw;
+             sw = th;
+             sh = tw;
+          }
+        else
+          {
+             sx = tx;
+             sy = ty;
+             sw = tw;
+             sh = th;
+          }
+#endif
+        // END of TIZEN_ONLY(20150707)
+
         DBG("[KEYPAD]: size(%d,%d, %dx%d).", sx, sy, sw, sh);
         _conformant_part_size_hints_set
-          (obj, sd->virtualkeypad, sx, sy, sw, sh);
+           (obj, sd->virtualkeypad, sx, sy, sw, sh);
      }
 
    if (part_type & ELM_CONFORMANT_SOFTKEY_PART)
@@ -923,6 +976,21 @@ _on_prop_change(void *data,
 
 #endif
 
+// TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+static void
+_on_conformant_changed(void *data,
+                     Evas_Object *obj,
+                     void *event_info EINA_UNUSED)
+{
+   Conformant_Part_Type part_type;
+
+   part_type = (ELM_CONFORMANT_INDICATOR_PART |
+                ELM_CONFORMANT_VIRTUAL_KEYPAD_PART);
+
+   _conformant_part_sizing_eval(data, part_type);
+}
+// END of TIZEN_ONLY(20150707)
+
 EOLIAN static void
 _elm_conformant_efl_canvas_group_group_add(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED)
 {
@@ -1016,6 +1084,11 @@ _elm_conformant_efl_object_constructor(Eo *obj, Elm_Conformant_Data *sd)
 
    efl_event_callback_add(sd->win, EFL_UI_WIN_EVENT_INDICATOR_PROP_CHANGED, _on_indicator_mode_changed, obj);
    efl_event_callback_add(sd->win, EFL_UI_WIN_EVENT_ROTATION_CHANGED, _on_rotation_changed, obj);
+
+   // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+   evas_object_smart_callback_add
+     (sd->win, "conformant,changed", _on_conformant_changed, obj);
+   // END of TIZEN_ONLY(20150707)
 
    return obj;
 }

@@ -4,16 +4,13 @@
 
 #define EFL_ACCESS_PROTECTED
 #define EFL_ACCESS_COMPONENT_PROTECTED
-#define EFL_ACCESS_WIDGET_ACTION_PROTECTED
+#define ELM_INTERFACE_ATSPI_WIDGET_ACTION_PROTECTED
 #define EFL_INPUT_EVENT_PROTECTED
 #define EFL_GFX_SIZE_HINT_PROTECTED
 #define EFL_CANVAS_OBJECT_BETA
 #define EFL_CANVAS_OBJECT_PROTECTED
-#define EFL_UI_TRANSLATABLE_PROTECTED
 #define EFL_UI_WIN_INLINED_PROTECTED
-#define EFL_UI_FOCUS_OBJECT_PROTECTED
 #define EFL_UI_WIN_BETA
-#define EFL_CANVAS_BETA
 
 #include <Elementary.h>
 #include <Elementary_Cursor.h>
@@ -31,7 +28,6 @@
 
 #include "elm_part_helper.h"
 #include "efl_ui_win_part.eo.h"
-#include "elm_plug.eo.h"
 
 #define MY_CLASS EFL_UI_WIN_CLASS
 #define MY_CLASS_NAME "Efl.Ui.Win"
@@ -40,8 +36,6 @@
 #define FRAME_OBJ_THEME_MIN_VERSION 119
 
 static const Elm_Win_Trap *trap = NULL;
-
-static int _paused_windows = 0;
 
 #define TRAP(sd, name, ...)                                             \
   do                                                                    \
@@ -87,7 +81,6 @@ struct _Efl_Ui_Win_Data
    Evas_Object          *img_obj, *frame_obj;
    Eo /* wref */        *bg, *content;
    Evas_Object          *obj; /* The object itself */
-   Evas_Object          *indicator;
 #ifdef HAVE_ELEMENTARY_X
    struct
    {
@@ -127,6 +120,10 @@ struct _Efl_Ui_Win_Data
    Efl_Ui_Win_Type                   type;
    Efl_Ui_Win_Keyboard_Mode          kbdmode;
    Efl_Ui_Win_Indicator_Mode         indimode;
+// TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+   Eina_Rectangle kbd;
+   Eina_Rectangle ind;
+//
    struct
    {
       const char  *info;
@@ -348,7 +345,9 @@ static const char SIG_LAUNCH_DONE[] = "launch,done";
 static const char SIG_AUX_HINT_ALLOWED[] = "aux,hint,allowed";
 static const char SIG_AUX_MESSAGE_RECEIVED[] = "aux,msg,received";
 //
-
+// TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+static const char SIG_CONFORMANT_CHANGED[] = "conformant,changed";
+//
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_DELETE_REQUEST, ""},
@@ -371,6 +370,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WM_ROTATION_CHANGED, ""},
    {SIG_WIDGET_FOCUSED, ""}, /**< handled by elm_widget */
    {SIG_WIDGET_UNFOCUSED, ""}, /**< handled by elm_widget */
+// TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+   {SIG_CONFORMANT_CHANGED, ""},
+//
    {SIG_AUX_HINT_ALLOWED, ""},
    {SIG_AUX_MESSAGE_RECEIVED, ""},
    {SIG_EFFECT_STARTED, ""},
@@ -1563,6 +1565,9 @@ _elm_win_state_change(Ecore_Evas *ee)
    Eina_Bool ch_maximized = EINA_FALSE;
    Eina_Bool ch_profile = EINA_FALSE;
    Eina_Bool ch_wm_rotation = EINA_FALSE;
+// TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+   Eina_Bool ch_conformant  = EINA_FALSE;
+//
    Eina_Bool ch_visibility = EINA_FALSE;
    Eina_Bool ch_aux_hint = EINA_FALSE;
    Eina_List *aux_hints = NULL;
@@ -1629,6 +1634,44 @@ _elm_win_state_change(Ecore_Evas *ee)
         ch_aux_hint = EINA_TRUE;
      }
    //
+   // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+#ifdef HAVE_ELEMENTARY_WL2
+   int x = 0, y = 0, w = 0, h = 0;
+   if (sd->indmode != (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win))
+     {
+        sd->indmode = (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win);
+        ch_conformant = EINA_TRUE;
+
+     }
+   if (sd->kbdmode != (Elm_Win_Keyboard_Mode)ecore_wl2_window_keyboard_state_get(sd->wl.win))
+     {
+        sd->kbdmode = (Elm_Win_Keyboard_Mode)ecore_wl2_window_keyboard_state_get(sd->wl.win);
+        ch_conformant = EINA_TRUE;
+     }
+   if (ecore_wl2_window_indicator_geometry_get(sd->wl.win, &x, &y, &w, &h))
+     {
+        if ((sd->ind.x != x) || (sd->ind.y != y) || (sd->ind.w != w) || (sd->ind.h != h))
+          {
+             sd->ind.x = x;
+             sd->ind.y = y;
+             sd->ind.w = w;
+             sd->ind.h = h;
+             ch_conformant  = EINA_TRUE;
+          }
+     }
+   if (ecore_wl2_window_keyboard_geometry_get(sd->wl.win, &x, &y, &w, &h))
+     {
+        if ((sd->kbd.x != x) || (sd->kbd.y != y) || (sd->kbd.w != w) || (sd->kbd.h != h))
+          {
+             sd->kbd.x = x;
+             sd->kbd.y = y;
+             sd->kbd.w = w;
+             sd->kbd.h = h;
+             ch_conformant  = EINA_TRUE;
+          }
+     }
+#endif
+   // END of TIZEN_ONLY(20150707)
    _elm_win_state_eval_queue();
 
    if ((ch_withdrawn) || (ch_iconified))
@@ -1724,6 +1767,12 @@ _elm_win_state_change(Ecore_Evas *ee)
           (obj, EFL_UI_WIN_EVENT_WM_ROTATION_CHANGED, NULL);
      }
 
+   // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+   if (ch_conformant)
+     {
+        evas_object_smart_callback_call(obj, SIG_CONFORMANT_CHANGED, NULL);
+     }
+   //
    // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
    if (ch_aux_hint)
      {
@@ -3361,7 +3410,7 @@ _elm_win_wl_aux_message(void *data, int type EINA_UNUSED, void *event)
 
    if (!sd->wl.win) return ECORE_CALLBACK_PASS_ON;
 
-   if ((ecore_wl2_window_id_get(sd->wl.win) != ev->win))
+   if ((ecore_wl2_window_id_get(sd->wl.win) != (int)ev->win))
      return ECORE_CALLBACK_PASS_ON;
 
    msg = calloc(1, sizeof(*msg));
@@ -4444,7 +4493,7 @@ _elm_win_wl_effect_start(void *data, int type EINA_UNUSED, void *event)
 
    if (!sd->wl.win) return ECORE_CALLBACK_PASS_ON;
 
-   if (ecore_wl2_window_id_get(sd->wl.win) != e->win)
+   if (ecore_wl2_window_id_get(sd->wl.win) != (int)e->win)
      return ECORE_CALLBACK_PASS_ON;
 
    evas_object_smart_callback_call(data, SIG_EFFECT_STARTED, (void*)e->type);
@@ -4461,7 +4510,7 @@ _elm_win_wl_effect_end(void *data, int type EINA_UNUSED, void *event)
 
    if (!sd->wl.win) return ECORE_CALLBACK_PASS_ON;
 
-   if (ecore_wl2_window_id_get(sd->wl.win) != e->win)
+   if (ecore_wl2_window_id_get(sd->wl.win) != (int)e->win)
      return ECORE_CALLBACK_PASS_ON;
 
    /* TIZEN_ONLY(20160704): added signal for launch */
@@ -6888,8 +6937,8 @@ _elm_win_theme_internal(Eo *obj, Efl_Ui_Win_Data *sd)
    Eina_Bool ret = EINA_FALSE, prev_alpha;
    const char *s;
 
-   int_ret = elm_widget_theme_object_set(obj, sd->legacy.edje, "win", "base",
-                                       elm_widget_style_get(obj));
+   int_ret = _elm_theme_object_set(obj, sd->legacy.edje, "win", "base",
+                                   elm_widget_style_get(obj));
    if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
 
    edje_object_mirrored_set(sd->legacy.edje, efl_ui_mirrored_get(obj));
@@ -8037,6 +8086,12 @@ elm_win_conformant_set(Evas_Object *obj, Eina_Bool conformant)
    _internal_elm_win_xwindow_get(sd);
    if (sd->x.xwin)
      ecore_x_e_illume_conformant_set(sd->x.xwin, conformant);
+#elif HAVE_ELEMENTARY_WL2
+   // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+   _elm_win_wlwindow_get(sd);
+   if (sd->wl.win)
+     ecore_wl2_window_conformant_set(sd->wl.win, conformant);
+   //
 #else
    (void)sd;
    (void)conformant;
@@ -8053,6 +8108,12 @@ elm_win_conformant_get(const Evas_Object *obj)
    _internal_elm_win_xwindow_get(sd);
    if (sd->x.xwin)
      return ecore_x_e_illume_conformant_get(sd->x.xwin);
+#elif HAVE_ELEMENTARY_WL2
+   // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+   _elm_win_wlwindow_get(sd);
+   if (sd->wl.win)
+     return ecore_wl2_window_conformant_get(sd->wl.win);
+   //
 #else
    (void)sd;
 #endif

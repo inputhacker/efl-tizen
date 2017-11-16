@@ -91,6 +91,7 @@
  * @li "focused" : When the win has received focus. (since 1.8)
  * @li "unfocused" : When the win has lost focus. (since 1.8)
  * @li "theme,changed" - The theme was changed. (since 1.13)
+ * @li "conformant,changed" - conformant changed
  * @li "aux,hint,allowed" - an aux hint allowed
  * @li "aux,msg,received" - an aux message received
  * @li "effect,started" - window effect has been started.
