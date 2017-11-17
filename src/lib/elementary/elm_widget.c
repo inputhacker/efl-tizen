@@ -5615,14 +5615,36 @@ _elm_widget_item_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, Elm_Widget
 EOLIAN static Eina_Bool
 _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Data *sd)
 {
-   Evas_Object *win = elm_widget_top_get(sd->widget);
-   if (win && efl_isa(win, EFL_UI_WIN_CLASS))
+   // TIZEN_ONLY(20171117) Accessibility Highlight frame support for items
+   // Evas_Object *win = elm_widget_top_get(sd->widget);
+   // if (win && efl_isa(win, EFL_UI_WIN_CLASS))
+   //   {
+   //      elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
+   //      efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   //      return EINA_TRUE;
+   //   }
+   // return EINA_FALSE;
+
+   if (!obj) return EINA_FALSE;
+
+   Evas_Object *o = elm_object_parent_widget_get(sd->view);
+   if (_elm_scrollable_is(o))
      {
-        elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
-        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
-        return EINA_TRUE;
+        Evas_Coord bx, by, bw, bh;
+        Evas_Coord x, y, w, h;
+        Evas_Object *w1 = elm_object_parent_widget_get(o);
+        evas_object_geometry_get(sd->view, &x, &y, &w, &h);
+        evas_object_geometry_get(o, &bx, &by, &bw, &bh);
+        x -= bx;
+        y -= by;
+        elm_interface_scrollable_content_region_show(w1, x, y, w, h);
      }
-   return EINA_FALSE;
+
+   elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+
+   return EINA_TRUE;
+   //
 }
 
 EOLIAN static Eina_Bool
