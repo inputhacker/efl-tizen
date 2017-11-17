@@ -12,6 +12,8 @@ extern EAPI void _evas_canvas_image_data_regenerate(Eina_List *list);
 
 static const char *interface_wl_name = "wayland";
 static const int interface_wl_version = 1;
+// TIZEN_ONLY(20171120) : evas sw tbm_buf backend
+static struct wayland_tbm_client *tbm_client;
 
 Eina_List *ee_list;
 
@@ -1756,6 +1758,18 @@ _ecore_evas_wl_common_free(Ecore_Evas *ee)
 
    if (!ee) return;
 
+   // TIZEN_ONLY(20171120) : evas sw tbm_buf backend
+   if (!strcmp(ee->driver, "wayland_shm"))
+     {
+       Evas_Engine_Info_Wayland *einfo;
+       einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
+       if (einfo && einfo->info.tbm_client)
+         {
+           if (_ecore_evas_wl_init_count == 1)
+             wayland_tbm_client_deinit(einfo->info.tbm_client);
+         }
+     }
+
    wdata = ee->engine.data;
    ee_list = eina_list_remove(ee_list, ee);
 
@@ -3371,6 +3385,14 @@ _ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, i
              einfo->info.depth = 32;
              einfo->info.wl2_win = wdata->win;
              einfo->info.hidden = EINA_TRUE;
+
+             // TIZEN_ONLY(20171120) : evas sw tbm_buf backend
+             if (!strcmp(engine_name, "wayland_shm"))
+               {
+                 if (_ecore_evas_wl_init_count == 1)
+                   tbm_client = wayland_tbm_client_init(ecore_wl2_display_get(ewd));
+                 einfo->info.tbm_client = tbm_client;
+               }
 
              if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
                {

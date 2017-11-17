@@ -18,6 +18,11 @@ struct _Evas_Engine_Info_Wayland
         int depth, rotation, edges;
         Eina_Bool destination_alpha : 1;
         Eina_Bool hidden : 1;
+
+// TIZEN_ONLY(20171120) : evas sw tbm_buf backend
+        struct wayland_tbm_client *tbm_client;
+        void *tbm_queue;
+//
      } info;
 
    /* non-blocking or blocking mode */
