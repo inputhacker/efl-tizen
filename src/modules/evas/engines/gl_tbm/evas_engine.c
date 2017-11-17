@@ -942,7 +942,7 @@ _eng_swap_mode_get(void)
    return swap_mode;
 }
 
-static int
+static void *
 eng_output_setup(void *engine, void *info, unsigned int w, unsigned int h)
 {
    Render_Output_Swap_Mode swap_mode = MODE_FULL;
@@ -1048,11 +1048,11 @@ eng_output_setup(void *engine, void *info, unsigned int w, unsigned int h)
 
    eng_window_use(eng_get_ob(re));
 
-   return 1;
+   return re;
 
 ob_err:
    free(re);
-   return 0;
+   return NULL;
 }
 
 static int

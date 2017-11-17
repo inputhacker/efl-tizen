@@ -112,7 +112,7 @@ eng_output_info_setup(void *info)
    einfo->render_mode = EVAS_RENDER_MODE_BLOCKING;
 }
 
-static int
+static void *
 eng_output_setup(void *engine, void *info, unsigned int w, unsigned int h)
 {
    Evas_Engine_Info_Software_Tbm *einfo;
@@ -121,7 +121,7 @@ eng_output_setup(void *engine, void *info, unsigned int w, unsigned int h)
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
    /* try to cast to our engine info */
    if (!(einfo = (Evas_Engine_Info_Software_Tbm *)info))
-     return 0;
+     return NULL;
 
    /* if we have no engine data, assume we have not initialized yet */
    evas_common_init();
@@ -137,11 +137,11 @@ eng_output_setup(void *engine, void *info, unsigned int w, unsigned int h)
    else
      goto err;
 
-   return 1;
+   return re;
 
 err:
    evas_common_shutdown();
-   return 0;
+   return NULL;
 }
 
 static void
