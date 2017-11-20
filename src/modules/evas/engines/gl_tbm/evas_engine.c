@@ -133,6 +133,12 @@ static const char *evgl_eng_string_get(void *engine);
 static void *evgl_eng_proc_address_get(const char *name);
 static int evgl_eng_rotation_angle_get(void *engine);
 
+static inline Outbuf *
+eng_get_ob(Render_Engine *re)
+{
+   return re->generic.software.ob;
+}
+
 static void
 symbols(void)
 {
@@ -1455,7 +1461,7 @@ eng_image_native_set(void *engine, void *image, void *native)
    void *wlid, *wl_buf = NULL;
 
    if (!(re = (Render_Engine *)engine)) return NULL;
-   if (!(ob = eng_get_ob(re))) return NULL;
+   if (!(ob = gl_generic_any_output_get(re))) return NULL;
 
    ns = native;
 

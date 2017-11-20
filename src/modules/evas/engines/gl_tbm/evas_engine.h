@@ -147,12 +147,6 @@ Context_3D *eng_gl_context_new(Outbuf *win);
 void eng_gl_context_free(Context_3D *context);
 void eng_gl_context_use(Context_3D *context);
 
-static inline Outbuf *
-eng_get_ob(Render_Engine *re)
-{
-   return re->generic.software.ob;
-}
-
 static inline int
 _re_wincheck(Outbuf *ob)
 {
