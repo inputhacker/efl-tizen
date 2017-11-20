@@ -772,6 +772,10 @@ void *_elm_entry_signal_callback_del_legacy(Eo *obj, const char *emission, const
 
 void efl_ui_win_inlined_parent_set(Eo *obj, Efl_Canvas_Object *parent);
 
+// TIZEN_ONLY(20171120) Fix for: Accessibility Highlight Frame added
+void *_elm_object_accessibility_currently_highlighted_get();
+//
+
 /* Internal EO APIs */
 const Elm_Layout_Part_Alias_Description *elm_layout_content_aliases_get(const Eo *obj);
 const Elm_Layout_Part_Alias_Description *elm_layout_text_aliases_get(const Eo *obj);
