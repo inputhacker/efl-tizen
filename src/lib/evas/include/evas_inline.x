@@ -371,6 +371,11 @@ evas_object_clip_recalc(Evas_Object_Protected_Data *obj)
         cb = (cb * (nb + 1)) >> 8;
         ca = (ca * (na + 1)) >> 8;
      }
+   else
+     obj->clip.mask = NULL;
+
+   if (!EVAS_OBJECT_DATA_VALID(obj->clip.mask))
+     obj->clip.mask = NULL;
 
    if ((ca == 0 && obj->cur->render_op == EVAS_RENDER_BLEND) ||
        (cw <= 0) || (ch <= 0)) cvis = EINA_FALSE;
