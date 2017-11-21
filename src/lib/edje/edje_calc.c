@@ -1697,8 +1697,9 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                     {
                        /* text.min: 0 1
                         * text.max: X X */
-                       int temp_h;
+                       int temp_h = TO_INT(params->eval.h);
                        int temp_w = TO_INT(params->eval.w);
+                       int ow, oh;
 
                        if (min_calc_w > temp_w)
                          temp_w = min_calc_w;
@@ -1706,41 +1707,71 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                            maxw && (*maxw > -1) && (*maxw < temp_w))
                          temp_w = *maxw;
 
-                       if (!chosen_desc->text.max_y && maxh && (*maxh > -1))
+                       eo_do(ep->object,
+                             efl_gfx_size_get(&ow, &oh));
+
+                       /* If object's size is same with the target size,
+                        * get current text size and check it before resizing it huge.
+                        * It will improve calculation performance. */
+                       if ((ow == temp_w) && (oh == temp_h))
                          {
-                            /* text.min: 0 1
-                             * text.max: X 0
-                             * And there is a limit for height. */
-                            temp_h = *maxh;
-                         }
-                       else
-                         {
-                            /* text.min: 0 1
-                             * text.max: X 1
-                             * or
-                             * text.min: 0 1
-                             * text.max: X 0
-                             * And there is no a limit for height. */
-                            temp_h = INT_MAX / 10000;
+                            if (temp_w > 0)
+                              {
+                                 eo_do(ep->object,
+                                       evas_obj_textblock_size_formatted_get(&tw, &th));
+                                 tw += ins_l + ins_r;
+                                 th += ins_t + ins_b;
+                              }
+                            else
+                              {
+                                 eo_do(ep->object,
+                                       evas_obj_textblock_size_native_get(NULL, &th));
+
+                                 th += ins_t + ins_b;
+                              }
                          }
 
-                       /* If base width for calculation is 0,
-                        * don't get meaningless height for multiline */
-                       if (temp_w > 0)
+                       /* If previous calculation was performed based on wrong object size or
+                        * text was handled with ellipsis, do again. */
+                       if (((ow != temp_w) || (oh != temp_h) ||
+                            evas_object_textblock_ellipsis_status_get(ep->object)))
                          {
-                            eo_do(ep->object,
-                                  efl_gfx_size_set(temp_w, temp_h),
-                                  evas_obj_textblock_size_formatted_get(&tw, &th));
+                            if (!chosen_desc->text.max_y && maxh && (*maxh > -1))
+                              {
+                                 /* text.min: 0 1
+                                  * text.max: X 0
+                                  * And there is a limit for height. */
+                                 temp_h = *maxh;
+                              }
+                            else
+                              {
+                                 /* text.min: 0 1
+                                  * text.max: X 1
+                                  * or
+                                  * text.min: 0 1
+                                  * text.max: X 0
+                                  * And there is no a limit for height. */
+                                 temp_h = INT_MAX / 10000;
+                              }
 
-                            tw += ins_l + ins_r;
-                            th += ins_t + ins_b;
-                         }
-                       else
-                         {
-                            eo_do(ep->object,
-                                  evas_obj_textblock_size_native_get(NULL, &th));
+                            /* If base width for calculation is 0,
+                             * don't get meaningless height for multiline */
+                            if (temp_w > 0)
+                              {
+                                 eo_do(ep->object,
+                                       efl_gfx_size_set(temp_w, temp_h),
+                                       evas_obj_textblock_size_formatted_get(&tw, &th));
 
-                            th += ins_t + ins_b;
+                                 tw += ins_l + ins_r;
+                                 th += ins_t + ins_b;
+                              }
+                            else
+                              {
+                                 eo_do(ep->object,
+                                       evas_obj_textblock_size_native_get(NULL, &th));
+
+                                 th += ins_t + ins_b;
+                              }
                          }
                     }
                   else
