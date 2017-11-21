@@ -2224,13 +2224,14 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
    int yinvert = 0;
    Shader_Type shd_in = SHD_IMAGE;
    int tex_target = GL_TEXTURE_2D;
-
+   Evas_Native_Surface *ens = NULL; // TIZEN_ONLY(20171121) : support ROI mode (tbm rot, flip, ratio)
    if (tex->im)
      {
         if (tex->im->native.data)
           shd_in = SHD_IMAGENATIVE;
         if (tex->im->native.target == GL_TEXTURE_EXTERNAL_OES)
           tex_target = GL_TEXTURE_EXTERNAL_OES;
+        ens = tex->im->native.data; // TIZEN_ONLY(20171121) : support ROI mode (tbm rot, flip, ratio)
      }
 
    if (!!mtex)
@@ -2369,6 +2370,70 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
         SWAP(&sx, &sy, tmp);
      }
 
+
+   // TIZEN_ONLY(20171121) : support ROI mode (tbm rot, flip, ratio)
+   if ((tex->im) && (tex->im->native.data)
+        && (ens) && (ens->type == EVAS_NATIVE_SURFACE_TBM))
+      {
+         double tmp;
+
+         if (tex->im &&
+                (tex->im->native.flip == EVAS_IMAGE_FLIP_HORIZONTAL))
+             {
+                sx = tex->im->w - sw - sx;
+             }
+
+          if (tex->im->native.flip == EVAS_IMAGE_FLIP_VERTICAL)
+             {
+                sy = tex->im->h - sh - sy;
+             }
+
+          if (tex->im->native.flip == EVAS_IMAGE_FLIP_TRANSVERSE)
+             {
+                double tmp;
+
+                SWAP(&sw, &sh, tmp);
+                SWAP(&sx, &sy, tmp);
+
+                sx = tex->im->w - sw - sx;
+                sy = tex->im->h - sh - sy;
+             }
+
+         if (tex->im->native.rot == EVAS_IMAGE_ORIENT_90)
+            {
+               tmp = sx; sx = (tex->im->h - sy - sh) * tex->im->w / (double)tex->im->h;
+               sy = tmp * tex->im->h / (double)tex->im->w;
+
+               tmp = sw; sw = sh * tex->im->w / (double)tex->im->h;
+               sh = tmp * tex->im->h / (double)tex->im->w;
+            }
+
+         // both HORIZONTAL and VERTICAL flip
+         if (tex->im->native.rot == EVAS_IMAGE_ORIENT_180
+               || tex->im->native.flip == EVAS_IMAGE_ORIENT_180)
+            {
+               sx = tex->im->w - sw - sx;
+               sy = tex->im->h - sh - sy;
+            }
+
+         if (tex->im->native.rot == EVAS_IMAGE_ORIENT_270)
+            {
+               tmp = sy; sy = (tex->im->w - sx - sw) * tex->im->h / (double)tex->im->w;
+               sx = tmp * tex->im->w / (double)tex->im->h;
+
+               tmp = sw; sw = sh * tex->im->w / (double)tex->im->h;
+               sh = tmp * tex->im->h / (double)tex->im->w;
+            }
+
+         if (tex->im->native.flip == EVAS_IMAGE_FLIP_TRANSPOSE)
+            {
+               double tmp;
+
+               SWAP(&sw, &sh, tmp);
+               SWAP(&sx, &sy, tmp);
+            }
+      }
+
    ox1 = sx;
    oy1 = sy;
    ox2 = sx + sw;
@@ -2416,6 +2481,49 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
               break;
            default:
               ERR("Wrong orientation ! %i", tex->im->orient);
+          }
+     }
+   // TIZEN_ONLY(20171121) : support ROI mode (tbm rot, flip, ratio)
+   else if ((tex->im) && (tex->im->native.data)
+             && (ens) && (ens->type == EVAS_NATIVE_SURFACE_TBM))
+     {
+        switch (tex->im->native.rot)
+          {
+           case EVAS_IMAGE_ORIENT_NONE:
+              break;
+           case EVAS_IMAGE_ORIENT_90:
+              _rotate_270(&ox1, &oy1, &ox2, &oy2, &ox3, &oy3, &ox4, &oy4);
+              break;
+           case EVAS_IMAGE_ORIENT_180:
+              _rotate_180(&ox1, &oy1, &ox2, &oy2, &ox3, &oy3, &ox4, &oy4);
+              break;
+           case EVAS_IMAGE_ORIENT_270:
+              _rotate_90(&ox1, &oy1, &ox2, &oy2, &ox3, &oy3, &ox4, &oy4);
+              break;
+           default:
+              ERR("Wrong native rotation orientation ! %i", tex->im->native.rot);
+          }
+        switch (tex->im->native.flip)
+          {
+           case EVAS_IMAGE_ORIENT_NONE:
+              break;
+           case EVAS_IMAGE_ORIENT_180:
+              _rotate_180(&ox1, &oy1, &ox2, &oy2, &ox3, &oy3, &ox4, &oy4);
+              break;
+           case EVAS_IMAGE_FLIP_HORIZONTAL:
+              _flip_horizontal(&ox1, &oy1, &ox2, &oy2, &ox3, &oy3, &ox4, &oy4);
+              break;
+           case EVAS_IMAGE_FLIP_VERTICAL:
+              _flip_vertical(&ox1, &oy1, &ox2, &oy2, &ox3, &oy3, &ox4, &oy4);
+              break;
+           case EVAS_IMAGE_FLIP_TRANSVERSE:
+              _transverse(&ox1, &oy1, &ox2, &oy2, &ox3, &oy3, &ox4, &oy4);
+              break;
+           case EVAS_IMAGE_FLIP_TRANSPOSE:
+              _transpose(&ox1, &oy1, &ox2, &oy2, &ox3, &oy3, &ox4, &oy4);
+              break;
+           default:
+              ERR("Wrong native flip orientation ! %i", tex->im->native.flip);
           }
      }
 

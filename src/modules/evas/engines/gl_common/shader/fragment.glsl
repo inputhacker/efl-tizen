@@ -154,6 +154,9 @@ vec4 fetch_pixel(float ox, float oy)
    b = y + u;
    c = vec4(r, g, b, 1.0);
 
+#elif defined(SHD_EXTERNAL)
+   c = texture2D(tex, tex_c);
+
 #elif defined(SHD_SAM12) || defined(SHD_SAM21)
    vec4 col00 = texture2D(tex, coord + tex_s[0]).SWZ;
    vec4 col01 = texture2D(tex, coord + tex_s[1]).SWZ;
@@ -166,8 +169,8 @@ vec4 fetch_pixel(float ox, float oy)
    vec4 col11 = texture2D(tex, coord + tex_s[3]).SWZ;
    c = (col00 + col01 + col10 + col11) / div_s;
 
-#elif defined(SHD_TEX) || defined(SHD_EXTERNAL)
-   c = texture2D(tex, coord).SWZ;
+#elif defined(SHD_TEX)
+   c = texture2D(tex, tex_c).SWZ;
 
 #else
    c = vec4(1, 1, 1, 1);

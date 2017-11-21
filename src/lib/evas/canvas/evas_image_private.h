@@ -135,6 +135,7 @@ struct _Evas_Image_Data
    Eina_Bool         direct_render : 1;
    Eina_Bool         has_filter : 1;
    Eina_Bool         buffer_data_set : 1;
+   Eina_Bool         native_video : 1; // TIZEN_ONLY(20171121) : support ROI mode (tbm rot, flip, ratio)
    struct
    {
       Eina_Bool      video_move : 1;

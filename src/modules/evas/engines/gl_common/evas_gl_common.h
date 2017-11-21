@@ -479,6 +479,10 @@ struct _Evas_GL_Image
       Eina_Bool       yinvert : 1;
       Eina_Bool       mipmap  : 1;
       Eina_Bool       loose   : 1;
+      // TIZEN_ONLY(20171121) : support ROI mode (tbm rot, flip, ratio)
+      int             rot;
+      int             flip;
+      float           ratio;
    } native;
 
    struct {
