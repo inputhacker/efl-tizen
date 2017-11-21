@@ -1761,7 +1761,7 @@ eng_image_native_set(void *engine, void *image, void *native)
                n->ns_data.tbm.buffer = buffer;
 
                if (glsym_eglCreateImage)
-                 n->ns_data.tbm.surface = glsym_eglCreateImage(eng_get_ob(re)->egl_disp,
+                 n->ns_data.tbm.surface = glsym_eglCreateImage(ob->egl_disp,
                                                                EGL_NO_CONTEXT,
                                                                EGL_NATIVE_SURFACE_TIZEN,
                                                                (void *)buffer,
@@ -1769,7 +1769,7 @@ eng_image_native_set(void *engine, void *image, void *native)
                else
                  ERR("Try eglCreateImage on EGL with no support");
                if (!n->ns_data.tbm.surface)
-                 ERR("eglCreateImage() for %p failed", buffer);
+                 ERR("eglCreateImage() for %p failed, code=%#x", buffer, eglGetError());
                img->native.yinvert     = 1;
                img->native.loose       = 0;
                img->native.data        = n;
