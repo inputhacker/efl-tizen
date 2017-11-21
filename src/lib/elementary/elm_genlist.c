@@ -1055,7 +1055,6 @@ _item_position(Elm_Gen_Item *eo_it,
    //TIZEN_ONLY(20160419) : expose highlight information on atspi
    if ((void*)view == _elm_object_accessibility_currently_highlighted_get())
      {
-        Elm_Genlist_Data * sd = eo_it->item->wsd;
         int x,y,w,h;
         evas_object_geometry_get(sd->obj, &x, &y, &w, &h);
 
