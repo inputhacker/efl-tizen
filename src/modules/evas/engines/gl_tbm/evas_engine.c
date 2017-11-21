@@ -1683,6 +1683,8 @@ eng_image_native_set(void *engine, void *image, void *native)
 //                  img->native.yinvert = 1;
                   img->native.loose = 0;
                   img->native.data = n;
+                  img->native.disp = ob->egl_disp;
+                  img->native.shared = ob->gl_context->shared;
                   img->native.func.bind = _native_cb_bind;
                   img->native.func.unbind = _native_cb_unbind;
                   img->native.func.free = _native_cb_free;
@@ -1711,6 +1713,8 @@ eng_image_native_set(void *engine, void *image, void *native)
                   img->native.yinvert = 0;
                   img->native.loose = 0;
                   img->native.data = n;
+                  img->native.disp = ob->egl_disp;
+                  img->native.shared = ob->gl_context->shared;
                   img->native.func.bind = _native_cb_bind;
                   img->native.func.unbind = _native_cb_unbind;
                   img->native.func.free = _native_cb_free;
@@ -1737,6 +1741,8 @@ eng_image_native_set(void *engine, void *image, void *native)
                img->native.yinvert     = 0;
                img->native.loose       = 0;
                img->native.data        = n;
+               img->native.disp = ob->egl_disp;
+               img->native.shared = ob->gl_context->shared;
                img->native.func.bind   = _native_cb_bind;
                img->native.func.unbind = _native_cb_unbind;
                img->native.func.free   = _native_cb_free;
@@ -1767,17 +1773,34 @@ eng_image_native_set(void *engine, void *image, void *native)
                                                                (void *)buffer,
                                                                NULL);
                else
-                 ERR("Try eglCreateImage on EGL with no support");
+                 {
+                    ERR("Try eglCreateImage on EGL with no support");
+                    eina_hash_del(ob->gl_context->shared->native_tbm_hash,
+                                  &buffer, img);
+                    glsym_evas_gl_common_image_free(img);
+                    free(n);
+                    return NULL;
+                 }
                if (!n->ns_data.tbm.surface)
-                 ERR("eglCreateImage() for %p failed, code=%#x", buffer, eglGetError());
+                 {
+                    ERR("eglCreateImage() for %p failed, code=%#x", buffer, eglGetError());
+                    eina_hash_del(ob->gl_context->shared->native_tbm_hash,
+                                  &buffer, img);
+                    glsym_evas_gl_common_image_free(img);
+                    free(n);
+                    return NULL;
+                 }
                img->native.yinvert     = 1;
                img->native.loose       = 0;
                img->native.data        = n;
+               img->native.disp = ob->egl_disp;
+               img->native.shared = ob->gl_context->shared;
                img->native.func.bind   = _native_cb_bind;
                img->native.func.unbind = _native_cb_unbind;
                img->native.func.free   = _native_cb_free;
                img->native.target      = GL_TEXTURE_EXTERNAL_OES;
                img->native.mipmap      = 0;
+
                glsym_evas_gl_common_image_native_enable(img);
              }
          }
