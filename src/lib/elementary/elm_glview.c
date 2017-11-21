@@ -315,6 +315,11 @@ _elm_glview_efl_canvas_group_group_del(Eo *obj, Elm_Glview_Data *sd)
    if (sd->config) evas_gl_config_free(sd->config);
    if (sd->evasgl) evas_gl_free(sd->evasgl);
 
+   // TIZEN_ONLY(20171121) : initialize to NULL after free function
+   sd->context = NULL;
+   sd->config = NULL;
+   sd->evasgl = NULL;
+
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }
 
