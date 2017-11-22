@@ -38,7 +38,6 @@ EVAS_SMART_SUBCLASS_NEW(_smart_frame_type, _ecore_evas_wl_frame,
 /* local variables */
 static int _ecore_evas_wl_init_count = 0;
 static Ecore_Event_Handler *_ecore_evas_wl_event_hdls[10];
-static Eina_Bool _enable_uniconify_force_render = EINA_FALSE;
 
 static void _ecore_evas_wayland_resize(Ecore_Evas *ee, int location);
 
@@ -353,8 +352,7 @@ _ecore_evas_wl_common_cb_aux_hint_allowed(void *data  EINA_UNUSED, int type EINA
 static void
 _ecore_evas_wl_common_damage_add(Ecore_Evas *ee)
 {
-   if ((!_enable_uniconify_force_render) ||
-       (ee->prop.iconified))
+   if (ee->prop.iconified)
      return;
 
    /* add canvas damage
@@ -836,9 +834,6 @@ _ecore_evas_wl_common_init(void)
                              _ecore_evas_wl_common_cb_window_visibility_change, NULL);
 
    ecore_event_evas_init();
-
-   if (getenv("ECORE_EVAS_DEICONIFY_RENDER_UPDATE"))
-     _enable_uniconify_force_render = EINA_TRUE;
 
    return _ecore_evas_wl_init_count;
 }
