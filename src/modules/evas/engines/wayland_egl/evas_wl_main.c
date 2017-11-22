@@ -89,6 +89,9 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
    Eina_Bool blacklist = EINA_FALSE;
    struct wl_display *wl_disp;
 
+// TIZEN_ONLY(20171123) : bug fixed : using wl_surface
+   struct wl_surface *wl_surface;
+//
    /* try to allocate space for our window */
    if (!(gw = calloc(1, sizeof(Outbuf))))
      return NULL;
@@ -171,6 +174,36 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
         return NULL;
      }
 
+  // TIZEN_ONLY(20171123) : bug fixed : using wl_surface
+  wl_surface = ecore_wl2_window_surface_get(gw->wl2_win);
+  /* TIZEN_ONLY(20171123) : temporary patch */
+  if (gw->w < 1) gw->w = 1;
+  if (gw->h < 1) gw->h = 1;
+
+  if ((gw->rot == 0) || (gw->rot == 180))
+    gw->win = wl_egl_window_create(wl_surface, gw->w, gw->h);
+  else if ((gw->rot == 90) || (gw->rot == 270))
+    gw->win = wl_egl_window_create(wl_surface, gw->h, gw->w);
+
+  if (gw->win == NULL)
+    {
+      ERR("wl_egl_window_create() fail");
+      eng_window_free(gw);
+      return NULL;
+    }
+
+  gw->egl_surface =
+      eglCreateWindowSurface(gw->egl_disp, gw->egl_config,
+                             (EGLNativeWindowType)gw->win, NULL);
+  if (gw->egl_surface == EGL_NO_SURFACE)
+    {
+      ERR("eglCreateWindowSurface() fail for %p. code=%#x",
+          gw->win, eglGetError());
+      eng_window_free(gw);
+      return NULL;
+    }
+ // TIZEN_ONLY(20171123)
+
    context = _tls_context_get();
    gw->egl_context =
      GL_TH(eglCreateContext, gw->egl_disp, gw->egl_config, context, context_attrs);
@@ -184,8 +217,9 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
    if (context == EGL_NO_CONTEXT)
      _tls_context_set(gw->egl_context);
 
-   if (GL_TH(eglMakeCurrent, gw->egl_disp, EGL_NO_SURFACE,
-                 EGL_NO_SURFACE, gw->egl_context) == EGL_FALSE)
+  SET_RESTORE_CONTEXT();
+   if (GL_TH(eglMakeCurrent, gw->egl_disp, gw->egl_surface,
+                 gw->egl_surface, gw->egl_context) == EGL_FALSE)
      {
         ERR("eglMakeCurrent() fail. code=%#x", GL_TH(eglGetError));
         eng_window_free(gw);
@@ -237,8 +271,9 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
         gw->gl_context->eglctxt = gw->egl_context;
         eng_window_use(gw);
      }
-   if (w && h)
-     eng_window_resurf(gw);
+//* TIZEN_ONLY(20171123) : temporary patch */
+//   if (w && h)
+//     eng_window_resurf(gw);
    return gw;
 }
 
@@ -263,7 +298,8 @@ eng_window_free(Outbuf *gw)
         glsym_evas_gl_common_context_free(gw->gl_context);
      }
 
-   GL_TH(eglMakeCurrent, gw->egl_disp, EGL_NO_SURFACE, 
+   SET_RESTORE_CONTEXT();
+   GL_TH(eglMakeCurrent, gw->egl_disp, EGL_NO_SURFACE,
                   EGL_NO_SURFACE, EGL_NO_CONTEXT);
 
    if (gw->egl_context != context)
@@ -318,6 +354,7 @@ eng_window_use(Outbuf *gw)
           {
              if (gw->egl_surface != EGL_NO_SURFACE)
                {
+                  SET_RESTORE_CONTEXT();
                   if (GL_TH(eglMakeCurrent, gw->egl_disp, gw->egl_surface,
                                      gw->egl_surface,
                                      gw->egl_context) == EGL_FALSE)
@@ -348,6 +385,7 @@ eng_window_unsurf(Outbuf *gw)
 
    if (wl_win == gw)
      {
+        SET_RESTORE_CONTEXT();
         GL_TH(eglMakeCurrent, gw->egl_disp, EGL_NO_SURFACE,
                        EGL_NO_SURFACE, EGL_NO_CONTEXT);
         if (gw->egl_surface != EGL_NO_SURFACE)
@@ -375,6 +413,13 @@ eng_window_resurf(Outbuf *gw)
           gw->win = wl_egl_window_create(wls, gw->w, gw->h);
         else if ((gw->rot == 90) || (gw->rot == 270))
           gw->win = wl_egl_window_create(wls, gw->h, gw->w);
+// TIZEN_ONLY(20171123) : temporary patch */
+        if (gw->win == NULL)
+          {
+            ERR("wl_egl_window_create() fail");
+            return;
+          }
+//
      }
 
    gw->egl_surface =
@@ -387,6 +432,7 @@ eng_window_resurf(Outbuf *gw)
         return;
      }
 
+   SET_RESTORE_CONTEXT();
    if (GL_TH(eglMakeCurrent, gw->egl_disp, gw->egl_surface,
                       gw->egl_surface, gw->egl_context) == EGL_FALSE)
      {
@@ -696,7 +742,8 @@ eng_gl_context_free(Context_3D *ctx)
 void 
 eng_gl_context_use(Context_3D *ctx)
 {
-   if (GL_TH(eglMakeCurrent, ctx->display, ctx->surface, 
+   SET_RESTORE_CONTEXT();
+   if (GL_TH(eglMakeCurrent, ctx->display, ctx->surface,
                       ctx->surface, ctx->context) == EGL_FALSE)
      {
         ERR("eglMakeCurrent Failed: %#x", GL_TH(eglGetError));
