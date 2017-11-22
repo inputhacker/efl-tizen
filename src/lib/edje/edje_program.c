@@ -1769,7 +1769,11 @@ _edje_param_native_get(Edje *ed, Edje_Real_Part *rp, const char *name, Edje_Exte
                {
                   param->name = name;
                   param->type = EDJE_EXTERNAL_PARAM_TYPE_BOOL;
+                  /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
                   param->i = _edje_entry_select_allow_get(rp);
+                  */
+                  param->i = !_edje_entry_select_disable_get(rp);
+                  /* END */
                   return param;
                }
           }
@@ -1904,7 +1908,11 @@ _edje_param_native_set(Edje *ed, Edje_Real_Part *rp, const char *name, const Edj
                {
                   if (param->type != EDJE_EXTERNAL_PARAM_TYPE_BOOL)
                     return EINA_FALSE;
+                  /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API 
                   _edje_entry_select_allow_set(rp, param->i);
+                  */
+                  _edje_entry_select_disable_set(rp, !param->i);
+                  /* END */
                   return EINA_TRUE;
                }
           }

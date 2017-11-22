@@ -2185,6 +2185,23 @@ edje_object_part_text_select_allow_set(const Eo *obj, const char *part, Eina_Boo
      _edje_entry_select_allow_set(rp, allow);
 }
 
+/* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API */
+EAPI void
+edje_object_part_text_select_disable_set(const Eo *obj, const char *part, Eina_Bool disable)
+{
+   Edje_Real_Part *rp;
+   Edje *ed;
+
+   ed = _edje_fetch(obj);
+
+   if ((!ed) || (!part)) return;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return;
+   if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
+     _edje_entry_select_disable_set(rp, disable);
+}
+/* END */
+
 EAPI void
 edje_object_part_text_select_abort(const Eo *obj, const char *part)
 {

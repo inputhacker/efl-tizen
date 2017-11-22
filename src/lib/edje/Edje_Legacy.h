@@ -1411,6 +1411,24 @@ EAPI void edje_object_size_class_del(Evas_Object *obj, const char *size_class);
 EAPI void edje_object_part_text_select_allow_set(const Evas_Object *obj, const char *part, Eina_Bool allow);
 
 /**
+ * @brief Disable selection if the entry is an EXPLICIT selection mode type include keyboard input.
+ *
+ * The default is to not allow selection. This function only affects user
+ * selection, functions such as edje_object_part_text_select_all() and
+ * edje_object_part_text_select_none() are not affected.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ * @param[in] part The part name
+ * @param[in] disable true to disble, false otherwise
+ *
+ * @ingroup Edje_Object
+ */
+EAPI void edje_object_part_text_select_disable_set(const Edje_Object *obj, const char *part, Eina_Bool disable);
+
+/**
  * @brief Sets the RTL orientation for this object.
  *
  * @param[in] rtl New value of flag @c true/$false
