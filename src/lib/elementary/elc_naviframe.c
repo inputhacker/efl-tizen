@@ -1892,6 +1892,20 @@ _elm_naviframe_item_style_set(Eo *eo_item EINA_UNUSED,
    _item_style_set(nit, item_style);
    _item_signals_emit(nit);
    _item_title_enabled_update(nit, EINA_FALSE);
+
+   //TIZEN ONLY(20171122): expose title as at-spi object
+   if (_elm_config->atspi_mode)
+     {
+         Evas_Object *part = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(VIEW(nit)), TITLE_ACCESS_PART);
+         if (part)
+           {
+              Evas_Object *access = elm_access_object_register(part, VIEW(nit));
+              _elm_access_callback_set(_elm_access_info_get(access),
+                                       ELM_ACCESS_INFO, _access_info_cb, nit);
+              efl_access_role_set(access, EFL_ACCESS_ROLE_HEADING);
+           }
+     }
+   //
 }
 
 EOLIAN static const char *
