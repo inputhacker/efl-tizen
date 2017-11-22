@@ -1563,6 +1563,28 @@ _elm_access_efl_access_component_highlight_clear(Eo *obj, void *pd EINA_UNUSED)
 }
 //
 
+//TIZEN_ONLY(20171122) elm: add name and description to elm_access
+EOLIAN static const char*
+_elm_access_efl_access_name_get(Eo *obj, void *pd EINA_UNUSED)
+{
+   const char *ret = efl_access_name_get(efl_super(obj, MY_CLASS));
+   if (ret)
+     return ret;
+   else
+     return elm_access_info_get(obj, ELM_ACCESS_INFO);
+}
+
+EOLIAN static const char*
+_elm_access_efl_access_description_get(Eo *obj, void *pd EINA_UNUSED)
+{
+   const char *ret = efl_access_name_get(efl_super(obj, MY_CLASS));
+   if (ret)
+     return ret;
+   else
+     return elm_access_info_get(obj, ELM_ACCESS_CONTEXT_INFO);
+}
+//
+
 /* Internal EO APIs and hidden overrides */
 
 #define ELM_ACCESS_EXTRA_OPS \
