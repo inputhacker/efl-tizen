@@ -11,7 +11,7 @@ evas_gl_common_rect_draw(Evas_Engine_GL_Context *gc, int x, int y, int w, int h)
    Evas_GL_Texture *mtex = NULL;
 
    if ((w <= 0) || (h <= 0)) return;
-   if (!(RECTS_INTERSECT(x, y, w, h, 0, 0, gc->w, gc->h))) return;
+   if (!(RECTS_INTERSECT(x, y, w, h, 0, 0, gc->pipe[0].shader.surface->w, gc->pipe[0].shader.surface->h))) return;
    /* save out clip info */
    c = gc->dc->clip.use; cx = gc->dc->clip.x; cy = gc->dc->clip.y; cw = gc->dc->clip.w; ch = gc->dc->clip.h;
 
