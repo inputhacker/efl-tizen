@@ -5771,6 +5771,32 @@ _elm_gengrid_item_efl_ui_focus_object_prepare_logical(Eo *obj, Elm_Gen_Item *pd)
    efl_ui_focus_object_prepare_logical(efl_super(obj, ELM_GENGRID_ITEM_CLASS));
 }
 
+//TIZEN_ONLY(20171122) Fixed _accessible_set_parent for gengrid items
+EOLIAN Eina_List*
+_elm_gengrid_item_efl_access_children_get(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it)
+{
+   Eina_List *ret = NULL;
+   if (VIEW(it))
+     {
+        Eina_List *parts;
+        const char *key;
+        parts = elm_widget_stringlist_get(edje_object_data_get(VIEW(it), "contents"));
+
+        EINA_LIST_FREE(parts, key)
+          {
+             Evas_Object *part;
+             part = edje_object_part_swallow_get(VIEW(it), key);
+             if (part && efl_isa(part, EFL_ACCESS_MIXIN))
+               {
+                  ret = eina_list_append(ret, part);
+                  efl_access_parent_set(part, eo_it);
+               }
+          }
+     }
+   return ret;
+}
+//
+
 /* Standard widget overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_gengrid, Elm_Gengrid_Data)
