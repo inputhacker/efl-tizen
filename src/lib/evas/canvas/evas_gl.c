@@ -469,6 +469,8 @@ evas_gl_make_current(Evas_GL *evas_gl, Evas_GL_Surface *surf, Evas_GL_Context *c
    return EINA_FALSE;
    MAGIC_CHECK_END();
 
+   if (!evas_gl->magic) return EINA_FALSE;
+
    if ((surf) && (ctx))
      ret = (Eina_Bool)evas_gl->evas->engine.func->gl_make_current(evas_gl->evas->engine.data.output, surf->data, ctx->data);
    else if ((!surf) && (!ctx))
