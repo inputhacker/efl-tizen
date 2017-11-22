@@ -2016,6 +2016,13 @@ struct _Edje_Real_Part_Text
    const char            *style; // 4
    Edje_Position          offset; // 8
    short                  size; // 2
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: API for handling text properties of Edje                    *
+    ***********************************************************************************/
+   FLOAT_T                valign; // 4
+   /*******
+    * END *
+    *******/
 
    /***********************************************************************************
     * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *

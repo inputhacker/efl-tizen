@@ -557,7 +557,18 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                }
           }
 
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: API for handling text properties of Edje                    *
+         ***********************************************************************************
         evas_object_textblock_valign_set(ep->object, TO_DOUBLE(chosen_desc->text.align.y));
+         */
+        if (ep->typedata.text->valign != -1.0)
+          evas_object_textblock_valign_set(ep->object, TO_DOUBLE(ep->typedata.text->valign));
+        else
+          evas_object_textblock_valign_set(ep->object, TO_DOUBLE(chosen_desc->text.align.y));
+        /*******
+         * END *
+         *******/
      }
 }
 
