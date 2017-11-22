@@ -6,6 +6,7 @@
 #define EFL_ACCESS_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_LAYOUT_PROTECTED
+#define EFL_ACCESS_COMPONENT_PROTECTED
 
 #include <Elementary.h>
 
@@ -875,6 +876,38 @@ _elm_hover_efl_access_state_set_get(Eo *obj, Elm_Hover_Data *pd EINA_UNUSED)
    STATE_TYPE_SET(states, EFL_ACCESS_STATE_MODAL);
    return states;
 }
+
+//TIZEN_ONLY(20171122) elm: add highligh_grab and higlight_clear methods for hover
+EOLIAN static Eina_Bool
+_elm_hover_efl_access_component_highlight_grab(Eo *obj, Elm_Hover_Data *sd)
+{
+   ELM_HOVER_PARTS_FOREACH
+   {
+      if (sd->subs[i].obj)
+        {
+           elm_object_accessibility_highlight_set(sd->subs[i].obj, EINA_TRUE);
+           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+           break;
+        }
+   }
+   return EINA_TRUE;
+}
+
+EOLIAN static Eina_Bool
+_elm_hover_efl_access_component_highlight_clear(Eo *obj, Elm_Hover_Data *sd)
+{
+   ELM_HOVER_PARTS_FOREACH
+   {
+      if (sd->subs[i].obj)
+        {
+           elm_object_accessibility_highlight_set(sd->subs[i].obj, EINA_FALSE);
+           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+           break;
+        }
+   }
+   return EINA_TRUE;
+}
+//
 
 /* Efl.Part begin */
 
