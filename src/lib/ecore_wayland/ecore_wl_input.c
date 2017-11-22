@@ -256,14 +256,30 @@ _pointer_update_stop(Ecore_Wl_Input *input)
 EAPI void
 ecore_wl_input_pointer_set(Ecore_Wl_Input *input, struct wl_surface *surface, int hot_x, int hot_y)
 {
+   struct wl_buffer *buffer;
+   struct wl_cursor_image *cursor_image;
+
    LOGFN(__FILE__, __LINE__, __FUNCTION__);
 
    if (!input) return;
 
    _pointer_update_stop(input);
    if (input->pointer)
-     wl_pointer_set_cursor(input->pointer, input->pointer_enter_serial,
+     {
+        if ((input->cursor) && (input->cursor_surface))
+          cursor_image = input->cursor->images[input->cursor_current_index];
+        if (cursor_image)
+          {
+             if ((buffer = wl_cursor_image_get_buffer(cursor_image)))
+               {
+                  wl_surface_attach(surface, buffer, 0, 0);
+                  wl_surface_damage(surface, 0, 0, cursor_image->width, cursor_image->height);
+                  wl_surface_commit(surface);
+               }
+          }
+        wl_pointer_set_cursor(input->pointer, input->pointer_enter_serial,
                            surface, hot_x, hot_y);
+     }
 }
 
 EAPI void
