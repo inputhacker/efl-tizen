@@ -409,9 +409,6 @@ static const struct wl_registry_listener _shm_wl_registry_listener =
 static void
 _shm_tzsurf_shutdown(void)
 {
-   if (!getenv("EVAS_SHM_FLUSH"))
-     return;
-
    if (shmdat.wl.registry)
      {
         wl_registry_destroy(shmdat.wl.registry);
@@ -428,9 +425,6 @@ _shm_tzsurf_shutdown(void)
 static void
 _shm_tzsurf_init(struct wl_display *disp)
 {
-   if (!getenv("EVAS_SHM_FLUSH"))
-     return;
-
    shmdat.wl.queue = wl_display_create_queue(disp);
    shmdat.wl.registry = wl_display_get_registry(disp);
 

@@ -837,8 +837,7 @@ _ecore_evas_wl_common_init(void)
 
    ecore_event_evas_init();
 
-   if ((getenv("EVAS_SHM_FLUSH")) ||
-       (getenv("ECORE_EVAS_DEICONIFY_RENDER_UPDATE")))
+   if (getenv("ECORE_EVAS_DEICONIFY_RENDER_UPDATE"))
      _enable_uniconify_force_render = EINA_TRUE;
 
    return _ecore_evas_wl_init_count;
