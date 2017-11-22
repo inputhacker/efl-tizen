@@ -62,6 +62,17 @@ EINA_DEPRECATED EAPI Eina_Bool    elm_scrolled_entry_autosave_get(const Evas_Obj
 EINA_DEPRECATED EAPI void         elm_scrolled_entry_cnp_textonly_set(Evas_Object *obj, Eina_Bool textonly);
 EINA_DEPRECATED EAPI Eina_Bool    elm_scrolled_entry_cnp_textonly_get(Evas_Object *obj);
 
+// TIZEN_ONLY(20171122) deprecated: add Elm_Access_Sound_Type
+typedef enum
+{
+   ELM_ACCESS_SOUND_FIRST = -1,
+   ELM_ACCESS_SOUND_HIGHLIGHT,
+   ELM_ACCESS_SOUND_SCROLL,
+   ELM_ACCESS_SOUND_END,
+   ELM_ACCESS_SOUND_LAST
+} Elm_Access_Sound_Type;
+//
+
 /**
  * Convert a pixel coordinate (x,y) into a geographic coordinate
  * (longitude, latitude).
