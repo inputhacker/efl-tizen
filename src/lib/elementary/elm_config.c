@@ -472,7 +472,7 @@ _desc_init(void)
    ELM_CONFIG_LIST(D, T, color_overlays, _config_color_overlay_edd);
    ELM_CONFIG_LIST(D, T, color_palette, _config_color_palette_edd);
    ELM_CONFIG_VAL(D, T, softcursor_mode, T_UCHAR);
-   ELM_CONFIG_VAL(D, T, auto_norender_withdrawn, T_UCHAR);
+// ELM_CONFIG_VAL(D, T, auto_norender_withdrawn, T_UCHAR);
    ELM_CONFIG_VAL(D, T, auto_norender_iconified_same_as_withdrawn, T_UCHAR);
    ELM_CONFIG_VAL(D, T, auto_flush_withdrawn, T_UCHAR);
    ELM_CONFIG_VAL(D, T, auto_dump_withdrawn, T_UCHAR);
@@ -2752,7 +2752,7 @@ _env_get(void)
    s = getenv("ELM_AUTO_THROTTLE_AMOUNT");
    if (s) _elm_config->auto_throttle_amount = _elm_atof(s);
    s = getenv("ELM_AUTO_NORENDER_WITHDRAWN");
-   if (s) _elm_config->auto_norender_withdrawn = EINA_TRUE;
+// if (s) _elm_config->auto_norender_withdrawn = EINA_TRUE;
    s = getenv("ELM_AUTO_NORENDER_ICONIFIED_SAME_AS_WITHDRAWN");
    if (s) _elm_config->auto_norender_iconified_same_as_withdrawn = EINA_TRUE;
    s = getenv("ELM_AUTO_FLUSH_WITHDRAWN");
