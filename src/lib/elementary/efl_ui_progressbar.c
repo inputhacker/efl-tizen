@@ -780,6 +780,15 @@ elm_progressbar_unit_format_function_set(Evas_Object *obj, progressbar_func_type
                         _format_legacy_to_format_eo_free_cb);
 }
 
+//TIZEN_ONLY(20160603): added description_get API
+EOLIAN static const char*
+_efl_ui_progressbar_efl_access_description_get(Eo *obj, Efl_Ui_Progressbar_Data *pd EINA_UNUSED)
+{
+    const char *ret = elm_object_part_text_get(obj, "elm.text.status");
+    return ret ? strdup(ret) : NULL;
+}
+//
+
 EAPI void
 elm_progressbar_span_size_set(Evas_Object *obj, Evas_Coord size)
 {
