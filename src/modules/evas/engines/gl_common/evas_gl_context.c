@@ -1053,7 +1053,7 @@ evas_gl_common_context_newframe(Evas_Engine_GL_Context *gc)
         dbgflushnum = 0;
         if (getenv("EVAS_GL_DBG")) dbgflushnum = 1;
      }
-   if (dbgflushnum) printf("----prev-flushnum: %i -----------------------------------\n", gc->flushnum);
+   if (dbgflushnum) ERR("----prev-flushnum: %i -----------------------------------\n", gc->flushnum);
 //   fprintf(stderr, "------------------------\n");
 
    gc->flushnum = 0;
@@ -3795,8 +3795,9 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
              if (dbgflushnum == 1)
                {
                   const char *types[] =
-                  { "----", "RECT", "IMAG", "FONT", "YUV-", "YUY2", "NV12", "LINE", "PAIR", "EXTR", "MAP-" };
-                  printf("  DRAW#%3i %4i -> %p[%4ix%4i] @ %4ix%4i -{ tex %4i type %s }-\n",
+                  { "----", "RECT-", "LINE-", "FONT-", "IMAGE", "NATIV", "YUV--", "YUY2-", "NV12-",
+                    "YUV7-", "YUV27", "NV127", "A_PAIR", "MAP--" };
+                  ERR("  DRAW#%3i %4i -> %p[%4ix%4i] @ %4ix%4i -{ tex %4i type %s }-\n",
                          i,
                          gc->pipe[i].array.num / 6,
                          gc->pipe[0].shader.surface,
@@ -3893,7 +3894,7 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
    gc->state.top_pipe = 0;
    if (dbgflushnum == 1)
      {
-        if (pipe_done > 0) printf("DONE (pipes): %i\n", pipe_done);
+        if (pipe_done > 0) ERR("DONE (pipes): %i\n", pipe_done);
      }
    gc->havestuff = EINA_FALSE;
 }
