@@ -26,5 +26,6 @@ class Elm.Ctxpopup.Item(Elm.Widget.Item, Efl.Ui.Item, Efl.Access.Widget.Action)
         Efl.Ui.Item.prev { get; }
         Efl.Ui.Item.next { get; }
         Efl.Access.Widget.Action.elm_actions { get; }
+        Efl.Access.name { get; }
    }
 }

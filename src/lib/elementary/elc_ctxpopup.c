@@ -1280,6 +1280,9 @@ _elm_ctxpopup_item_efl_object_constructor(Eo *obj, Elm_Ctxpopup_Item_Data *it)
 {
    obj = efl_constructor(efl_super(obj, ELM_CTXPOPUP_ITEM_CLASS));
    it->base = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
+   //TIZEN ONLY(20150710)ctxpopup: Accessible methods for children_get, extents_get and item name_get
+   efl_access_role_set(obj, EFL_ACCESS_ROLE_LIST_ITEM);
+   //
 
    return obj;
 }
@@ -1581,6 +1584,35 @@ _elm_ctxpopup_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSE
    return ret;
 }
 
+//TIZEN ONLY(20150710): ctxpopup: Accessible methods for children_get, extents_get and item name_get
+EOLIAN static Eina_Rect
+_elm_ctxpopup_efl_access_component_extents_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Eina_Bool screen_coords)
+{
+   int ee_x, ee_y;
+   Eina_Rect r;
+
+   if (!sd->box)
+     {
+        r.x = -1;
+        r.y = -1;
+        r.w = -1;
+        r.h = -1;
+        return r;
+     }
+   r = efl_gfx_geometry_get(sd->box);
+
+   if (screen_coords)
+     {
+        Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(sd->box));
+        if (!ee) return r;
+        ecore_evas_geometry_get(ee, &ee_x, &ee_y, NULL, NULL);
+        r.x += ee_x;
+        r.y += ee_y;
+     }
+   return r;
+}
+//
+
 static Eina_Bool
 _item_access_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
 {
@@ -1622,6 +1654,14 @@ _elm_ctxpopup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Ctxp
         return EINA_TRUE;
      }
    return EINA_FALSE;
+}
+//
+
+//TIZEN ONLY(20150710)ctxpopup: Accessible methods for children_get, extents_get and item name_get
+EOLIAN static const char*
+_elm_ctxpopup_item_efl_access_name_get(Eo *eo_it EINA_UNUSED, Elm_Ctxpopup_Item_Data *item)
+{
+   return strdup(elm_object_item_text_get(item->list_item));
 }
 //
 

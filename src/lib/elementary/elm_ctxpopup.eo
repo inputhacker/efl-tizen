@@ -219,6 +219,7 @@ class Elm.Ctxpopup (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Efl.Access.Widget.Action,
       Efl.Access.Component.highlight_grab;
       Efl.Access.Component.highlight_clear;
       //
+      Efl.Access.Component.extents { get; }
    }
    events {
       dismissed; [[Called when context popup was dismissed]]
