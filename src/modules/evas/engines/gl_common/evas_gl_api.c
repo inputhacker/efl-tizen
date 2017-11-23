@@ -55,7 +55,7 @@ void _direct_rendering_check(const char *api)
 
    if (_evgl_not_in_pixel_get())
      {
-        CRI("\e[1;33m%s\e[m: This API is being called outside Pixel Get Callback Function.", api);
+        ERR("\e[1;33m%s\e[m: This API is being called outside Pixel Get Callback Function.", api);
      }
 }
 
