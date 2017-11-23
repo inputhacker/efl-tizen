@@ -115,6 +115,17 @@ eldbus_init(void)
         return 0;
      }
 
+   // TIZEN_ONLY(20171123): initialize ecore if want to use eldbus
+   if (!ecore_init())
+     {
+        ERR("Unable to initialize ecore");
+        eina_log_domain_unregister(_eldbus_log_dom);
+        _eldbus_log_dom = -1;
+        eina_shutdown();
+        return 0;
+     }
+   //
+
    eina_magic_string_set(ELDBUS_CONNECTION_MAGIC, "Eldbus_Connection");
    eina_magic_string_set(ELDBUS_MESSAGE_MAGIC, "Eldbus_Message");
    eina_magic_string_set(ELDBUS_SIGNAL_HANDLER_MAGIC, "Eldbus_Signal_Handler");
