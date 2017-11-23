@@ -68,7 +68,8 @@ ecore_event_init(void)
 
    //TIZEN_ONLY(20170307) Remove warning message
    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-   ecore_input_joystick_init();
+   if (getenv("ECORE_INPUT_ENABLE_JOYSTICK_INIT"))
+     ecore_input_joystick_init();
    #pragma GCC diagnostic pop
    //
 
