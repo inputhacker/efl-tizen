@@ -941,6 +941,15 @@ _item_new(Elm_Popup_Item_Data *it)
      }
 }
 
+//TIZEN ONLY(20150717): expose title as at-spi object
+static char *
+_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
+{
+   Elm_Popup_Data *priv = data;
+   return priv->title_text ? strdup(priv->title_text) : NULL;
+}
+//
+
 static Eina_Bool
 _title_text_set(Evas_Object *obj,
                 const char *text)
@@ -971,6 +980,29 @@ _title_text_set(Evas_Object *obj,
         _elm_access_text_set(_elm_access_info_get(ao), ELM_ACCESS_INFO, text);
      }
 
+   //TIZEN ONLY(20150717): expose title as at-spi object
+   if (_elm_config->atspi_mode)
+     {
+        if (sd->title_text)
+          {
+             ao = _access_object_get(obj, ACCESS_TITLE_PART);
+             if (!ao)
+               {
+                  ao = _elm_access_edje_object_part_object_register
+                        (obj, elm_layout_edje_get(sd->main_layout), ACCESS_TITLE_PART);
+                  efl_access_role_set(ao, EFL_ACCESS_ROLE_HEADING);
+                  _elm_access_callback_set(_elm_access_info_get(ao),
+                                            ELM_ACCESS_INFO, _access_info_cb, sd);
+               }
+          }
+        else
+          {
+                ao = _access_object_get(obj, ACCESS_TITLE_PART);
+                if (ao)
+                    _elm_access_object_unregister(ao, NULL);
+          }
+     }
+   //
    if (sd->title_text)
      elm_layout_signal_emit(sd->main_layout, "elm,state,title,text,visible", "elm");
    else
@@ -1836,6 +1868,30 @@ _elm_popup_efl_access_name_get(Eo *obj, Elm_Popup_Data *sd)
 
    return name;
 }
+
+//TIZEN ONLY(20150708): popup and ctxpopup accessibility highlight impementation
+EOLIAN static Eina_Bool
+_elm_popup_efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
+{
+   if (sd->scr)
+     {
+        elm_object_accessibility_highlight_set(sd->main_layout, EINA_TRUE);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
+_elm_popup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
+{
+   if (sd->scr)
+     {
+        elm_object_accessibility_highlight_set(sd->main_layout, EINA_FALSE);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+//
 
 /* Standard widget overrides */
 

@@ -179,6 +179,10 @@ class Elm.Popup (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Efl.Access.Widget.Action)
       Efl.Access.state_set { get; }
       Efl.Access.name { get; }
       Efl.Part.part;
+      //TIZEN ONLY(20150708): popup and ctxpopup accessibility highlight impementation
+      Efl.Access.Component.highlight_grab;
+      Efl.Access.Component.highlight_clear;
+      //
    }
    events {
       block,clicked; [[Called when popup was clicked]]

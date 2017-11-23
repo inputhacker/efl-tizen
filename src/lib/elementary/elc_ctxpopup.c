@@ -1601,6 +1601,30 @@ _elm_ctxpopup_item_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED,
    return &atspi_actions[0];
 }
 
+//TIZEN ONLY(20150708): popup and ctxpopup accessibility highlight impementation
+EOLIAN static Eina_Bool
+_elm_ctxpopup_efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+{
+   if (sd->box)
+     {
+        elm_object_accessibility_highlight_set(sd->box, EINA_TRUE);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
+_elm_ctxpopup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+{
+   if (sd->box)
+     {
+        elm_object_accessibility_highlight_set(sd->box, EINA_FALSE);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+//
+
 /* Internal EO APIs and hidden overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_ctxpopup, Elm_Ctxpopup_Data)
