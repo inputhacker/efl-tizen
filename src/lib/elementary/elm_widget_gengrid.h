@@ -138,6 +138,9 @@ struct _Elm_Gengrid_Data
                                                       * cache. */
    int                                   item_cache_count;
    int                                   item_cache_max;
+   //TIZEN_ONLY (20151009) : Accessibility: updated highlight change during gengrid scroll
+   Elm_Gen_Item                         *atspi_item_to_highlight;
+   //
 
    /* custom dimensions may be set for any item.
     * the logic for placing items requires that either item widths

@@ -571,6 +571,9 @@ class Elm.Gengrid (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
       Efl.Ui.Focus.Composition.prepare;
       Elm.Widget.focus_state_apply;
       Efl.Ui.Focus.Manager.setup_on_first_touch;
+      //TIZEN ONLY (20151009) : Accessibility: updated highlight change during gengrid scroll
+      Elm.Interface_Scrollable.content_pos_set;
+      //
    }
    events {
       realized; [[Called when gengrid realized]]
