@@ -201,6 +201,10 @@ class Elm.Index (Efl.Ui.Layout, Efl.Ui.Direction,
       Elm.Widget.on_access_update;
       Efl.Ui.Direction.direction { get; set; [[Only supports $vertical and $horizontal. Default is $vertical.]] }
       Efl.Access.children { get; }
+      //TIZEN ONLY(20160615): index accessibility highlight implementation
+      Efl.Access.Component.highlight_grab;
+      Efl.Access.Component.highlight_clear;
+      //
    }
    events {
       changed; [[Called when index changed]]

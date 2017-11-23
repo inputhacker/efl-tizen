@@ -1728,6 +1728,34 @@ _elm_index_item_efl_access_widget_action_elm_actions_get(Eo *eo_it EINA_UNUSED, 
    return &atspi_actions[0];
 }
 
+//TIZEN ONLY(20160615): index accessibility highlight implementation
+EOLIAN static Eina_Bool
+_elm_index_efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, Elm_Index_Data *sd)
+{
+   int level = sd->level;
+
+   if (sd->bx[level])
+     {
+        elm_object_accessibility_highlight_set(sd->bx[level], EINA_TRUE);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
+_elm_index_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Index_Data *sd)
+{
+   int level = sd->level;
+
+   if (sd->bx[level])
+     {
+        elm_object_accessibility_highlight_set(sd->bx[level], EINA_FALSE);
+        return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+//
+
 /* Internal EO APIs and hidden overrides */
 
 #define ELM_INDEX_EXTRA_OPS \
