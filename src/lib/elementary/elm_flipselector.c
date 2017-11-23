@@ -121,6 +121,14 @@ _update_view(Evas_Object *obj)
    elm_layout_text_set(obj, "elm.top", label ? label : "");
    elm_layout_text_set(obj, "elm.bottom", label ? label : "");
 
+   //TIZEN ONLY(2015090): expose flipselector top/bottom buttons for accessibility tree
+   elm_access_info_set(sd->access_top_button, ELM_ACCESS_INFO, label ? (char *)label : "");
+   elm_access_info_set(sd->access_top_button, ELM_ACCESS_CONTEXT_INFO,  E_("Decrease"));
+
+   elm_access_info_set(sd->access_bottom_button, ELM_ACCESS_INFO, label ? (char *)label : "");
+   elm_access_info_set(sd->access_bottom_button, ELM_ACCESS_CONTEXT_INFO, E_("Increase"));
+   //
+
    edje_object_message_signal_process(wd->resize_obj);
 }
 
@@ -235,6 +243,18 @@ _on_item_changed(Elm_Flipselector_Data *sd)
      item->func((void *)WIDGET_ITEM_DATA_GET(eo_item), WIDGET(item), eo_item);
    efl_event_callback_legacy_call
      (sd->obj, EFL_UI_EVENT_SELECTED, eo_item);
+
+
+   //TIZEN ONLY(2015090): expose flipselector top/bottom buttons for accessibility tree
+   if (_elm_config->atspi_mode)
+     {
+       elm_access_info_set(sd->access_top_button, ELM_ACCESS_INFO, (char *)item->label);
+       efl_access_name_changed_signal_emit(sd->access_top_button);
+
+       elm_access_info_set(sd->access_bottom_button, ELM_ACCESS_INFO, (char *)item->label);
+       efl_access_name_changed_signal_emit(sd->access_bottom_button);
+     }
+   //
 }
 
 static void
@@ -657,6 +677,24 @@ elm_flipselector_add(Evas_Object *parent)
    return elm_legacy_add(MY_CLASS, parent);
 }
 
+//TIZEN ONLY(2015090): expose flipselector top/bottom buttons for accessibility tree
+static Eina_Bool _activate_top_cb (void *data, Evas_Object *obj, Elm_Access_Action_Info *action_info)
+{
+   Elm_Flipselector_Data *sd = (Elm_Flipselector_Data*)data;
+   _flipselector_walk(sd);
+   _flip_up(sd);
+   _flipselector_unwalk(sd);
+}
+
+static Eina_Bool _activate_bottom_cb (void *data, Evas_Object *obj, Elm_Access_Action_Info *action_info)
+{
+   Elm_Flipselector_Data *sd = (Elm_Flipselector_Data*)data;
+   _flipselector_walk(sd);
+   _flip_down(sd);
+   _flipselector_unwalk(sd);
+}
+//
+
 EOLIAN static Eo *
 _elm_flipselector_efl_object_constructor(Eo *obj, Elm_Flipselector_Data *sd)
 {
@@ -665,6 +703,25 @@ _elm_flipselector_efl_object_constructor(Eo *obj, Elm_Flipselector_Data *sd)
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    efl_access_role_set(obj, EFL_ACCESS_ROLE_LIST);
+
+   //TIZEN ONLY(2015090): expose flipselector top/bottom buttons for accessibility tree
+    if (_elm_config->atspi_mode)
+      {
+         Evas_Object *btn1 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(obj), "top_clipper");
+         Evas_Object *btn2 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(obj), "bottom_clipper");
+         if (btn1 && btn2)
+           {
+              sd->access_top_button = elm_access_object_register(btn1, obj);
+              sd->access_bottom_button = elm_access_object_register(btn2, obj);
+
+              efl_access_role_set(sd->access_top_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
+              efl_access_role_set(sd->access_bottom_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
+
+              elm_access_action_cb_set(sd->access_top_button, ELM_ACCESS_ACTION_ACTIVATE, _activate_top_cb, sd);
+              elm_access_action_cb_set(sd->access_bottom_button, ELM_ACCESS_ACTION_ACTIVATE, _activate_bottom_cb, sd);
+           }
+      }
+    //
 
    return obj;
 }

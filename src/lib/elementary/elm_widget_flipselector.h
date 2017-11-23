@@ -43,6 +43,10 @@ struct _Elm_Flipselector_Data
    Eina_Bool             evaluating : 1;
    Eina_Bool             deleting : 1;
    Eina_Bool             need_update : 1;
+   //TIZEN ONLY(2015090): expose flipselector top/bottom buttons for accessibility tree
+   Evas_Object           *access_top_button;
+   Evas_Object           *access_bottom_button;
+   //
 };
 
 typedef struct _Elm_Flipselector_Item_Data       Elm_Flipselector_Item_Data;
