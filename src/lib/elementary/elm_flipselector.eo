@@ -167,6 +167,9 @@ class Elm.Flipselector (Efl.Ui.Layout, Efl.Ui.Range,
       Efl.Ui.Range.range_step { get; set; }
       Efl.Ui.Range.range_value { get; set; }
       Efl.Access.Widget.Action.elm_actions { get; }
+      //TIZEN_ONLY(20150716) : fix accessible_at_point getter
+      Efl.Access.Component.accessible_at_point_get;
+      //
    }
    events {
       underflowed; [[Called when flipselector is underflowed]]
