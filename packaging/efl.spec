@@ -1192,6 +1192,7 @@ export XDG_RUNTIME_DIR="/tmp/"
     --with-glib=always \
     --disable-xim \
     --disable-scim \
+    --disable-neon \
     --disable-wayland-text-input \
     --disable-gesture \
     --with-tests=none \
