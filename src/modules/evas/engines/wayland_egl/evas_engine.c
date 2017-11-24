@@ -64,6 +64,10 @@ Evas_GL_Preload_Render_Call glsym_evas_gl_preload_render_lock = NULL;
 Evas_GL_Preload_Render_Call glsym_evas_gl_preload_render_unlock = NULL;
 Evas_GL_Preload_Render_Call glsym_evas_gl_preload_render_relax = NULL;
 
+glsym_func_void     glsym_evas_gl_common_error_set = NULL;
+glsym_func_int      glsym_evas_gl_common_error_get = NULL;
+glsym_func_void_ptr glsym_evas_gl_common_current_context_get = NULL;
+
 void * (*glsym_eglGetProcAddress) (const char *a) = NULL;
 EGLImageKHR (*glsym_evas_gl_common_eglCreateImage)(EGLDisplay a, EGLContext b, EGLenum c, EGLClientBuffer d, const EGLAttrib *e) = NULL;
 int (*glsym_evas_gl_common_eglDestroyImage) (EGLDisplay a, void *b) = NULL;
@@ -135,6 +139,9 @@ symbols(void)
    LINK2GENERIC(eglGetProcAddress);
    LINK2GENERIC(evas_gl_common_eglCreateImage);
    LINK2GENERIC(evas_gl_common_eglDestroyImage);
+   LINK2GENERIC(evas_gl_common_error_get);
+   LINK2GENERIC(evas_gl_common_error_set);
+   LINK2GENERIC(evas_gl_common_current_context_get);
 
    done = EINA_TRUE;
 }
@@ -483,6 +490,100 @@ evgl_eng_rotation_angle_get(void *data)
    return 0;
 }
 
+
+static void *
+evgl_eng_pbuffer_surface_create(void *data, EVGL_Surface *sfc,
+                                const int *attrib_list)
+{
+   Render_Output_GL_Generic *re = data;
+
+   // TODO: Add support for surfaceless pbuffers (EGL_NO_TEXTURE)
+   // TODO: Add support for EGL_MIPMAP_TEXTURE??? (GLX doesn't support them)
+
+   if (attrib_list)
+     WRN("This PBuffer implementation does not support extra attributes yet");
+
+#ifdef GL_GLES
+   Evas_Engine_GL_Context *evasglctx;
+   int config_attrs[20];
+   int surface_attrs[20];
+   EGLSurface egl_sfc;
+   EGLConfig egl_cfg;
+   int num_config, i = 0;
+   EGLDisplay disp;
+   EGLContext ctx;
+
+   disp = re->window_egl_display_get(re->software.ob);
+   evasglctx = re->window_gl_context_get(re->software.ob);
+   ctx = evasglctx->eglctxt;
+
+   // It looks like eglMakeCurrent might fail if we use a different config from
+   // the actual display surface. This is weird.
+   i = 0;
+   config_attrs[i++] = EGL_CONFIG_ID;
+   config_attrs[i++] = 0;
+   config_attrs[i++] = EGL_NONE;
+   eglQueryContext(disp, ctx, EGL_CONFIG_ID, &config_attrs[1]);
+
+   num_config =0;
+   if (!eglChooseConfig(disp, config_attrs, &egl_cfg, 1, &num_config)
+       || (num_config < 1))
+     {
+        int err = eglGetError();
+        glsym_evas_gl_common_error_set(data, err - EGL_SUCCESS);
+        ERR("eglChooseConfig failed with error %x", err);
+        return NULL;
+     }
+
+   // Now, choose the config for the PBuffer
+   i = 0;
+   surface_attrs[i++] = EGL_WIDTH;
+   surface_attrs[i++] = sfc->w;
+   surface_attrs[i++] = EGL_HEIGHT;
+   surface_attrs[i++] = sfc->h;
+
+   surface_attrs[i++] = EGL_NONE;
+
+   egl_sfc = eglCreatePbufferSurface(disp, egl_cfg, surface_attrs);
+   if (!egl_sfc)
+     {
+        int err = eglGetError();
+        glsym_evas_gl_common_error_set(data, err - EGL_SUCCESS);
+        ERR("eglCreatePbufferSurface failed with error %x", err);
+        return NULL;
+     }
+
+   return egl_sfc;
+#endif
+}
+
+static int
+evgl_eng_pbuffer_surface_destroy(void *data, void *surface)
+{
+   /* EVGLINIT(re, 0); */
+   if (!data)
+     {
+        ERR("Invalid Render Engine Data!");
+        glsym_evas_gl_common_error_set(NULL, EVAS_GL_NOT_INITIALIZED);
+        return 0;
+     }
+
+   if (!surface)
+     {
+        ERR("Invalid surface.");
+        glsym_evas_gl_common_error_set(data, EVAS_GL_BAD_SURFACE);
+        return 0;
+     }
+
+#ifdef GL_GLES
+   Render_Engine *re = data;
+
+   eglDestroySurface(eng_get_ob(re)->egl_disp, (EGLSurface)surface);
+#endif
+
+   return 1;
+}
+
 static const EVGL_Interface evgl_funcs =
 {
    evgl_eng_display_get,
@@ -497,8 +598,8 @@ static const EVGL_Interface evgl_funcs =
    evgl_eng_proc_address_get,
    evgl_eng_string_get,
    evgl_eng_rotation_angle_get,
-   NULL, // PBuffer
-   NULL, // PBuffer
+   evgl_eng_pbuffer_surface_create,
+   evgl_eng_pbuffer_surface_destroy,
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
@@ -763,6 +864,15 @@ eng_output_dump(void *engine EINA_UNUSED, void *data)
    ob = eng_get_ob(re);
    if (ob) glsym_evas_gl_common_image_all_unload(ob->gl_context);
    _re_winfree(re);
+}
+
+static void *
+eng_gl_current_context_get(void *data EINA_UNUSED)
+{
+   EVGL_Context *ctx;
+
+   ctx = glsym_evas_gl_common_current_context_get();
+   return ctx;
 }
 
 static void
@@ -1411,6 +1521,8 @@ module_open(Evas_Module *em)
    ORD(image_native_set);
    ORD(image_native_init);
    ORD(image_native_shutdown);
+
+   ORD(gl_current_context_get);
 
    evas_gl_thread_link_init();
    symbols();
