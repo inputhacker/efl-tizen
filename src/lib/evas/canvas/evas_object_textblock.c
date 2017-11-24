@@ -2738,13 +2738,8 @@ _layout_format_ascent_descent_adjust(const Evas_Object *eo_obj,
           }
         descent += fmt->linegap * obj->cur->scale;
         descent += ((ascent + descent) * fmt->linerelgap);
-        /* TIZEN_ONLY(20170726): Support negative values for linegap
         if (*maxascent < ascent) *maxascent = ascent;
         if (*maxdescent < descent) *maxdescent = descent;
-         */
-        *maxascent = ascent;
-        *maxdescent = descent;
-        /* END */
         if (fmt->linefill > 0.0)
           {
              int dh;
@@ -2896,14 +2891,10 @@ _layout_item_ascent_descent_adjust(const Evas_Object *eo_obj,
           }
      }
     */
-   /* TIZEN_ONLY(20170726): Support negative values for linegap
    if (fmt) _layout_format_ascent_descent_adjust(eo_obj, &asc, &desc, fmt);
 
    if (asc > *ascent) *ascent = asc;
    if (desc > *descent) *descent = desc;
-    */
-   if (fmt) _layout_format_ascent_descent_adjust(eo_obj, ascent, descent, fmt);
-   /* END */
 }
 
 /**
