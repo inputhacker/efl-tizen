@@ -2774,17 +2774,11 @@ _layout_item_max_ascent_descent_calc(const Evas_Object *eo_obj,
          (position == TEXTBLOCK_POSITION_SINGLE))
      {
         Evas_Coord asc = 0;
-        /* TIZEN_ONLY(20170721): fixed to calc ascent/descent values with considering main font */
-        Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
-
-        *maxascent = ENFN->font_max_ascent_get(ENDT, it->format->font.font);
-        /* END */
 
         if (fi)
           {
              asc = evas_common_font_instance_max_ascent_get(fi);
           }
-        /* TIZEN_ONLY(20170721): fixed to calc ascent/descent values with considering main font
         else
           {
              Evas_Object_Protected_Data *obj =
@@ -2792,7 +2786,6 @@ _layout_item_max_ascent_descent_calc(const Evas_Object *eo_obj,
              asc = ENFN->font_max_ascent_get(ENDT,
                    it->format->font.font);
           }
-         */
 
         if (asc > *maxascent)
            *maxascent = asc;
@@ -2803,17 +2796,11 @@ _layout_item_max_ascent_descent_calc(const Evas_Object *eo_obj,
      {
         /* Calculate max descent. */
         Evas_Coord desc = 0;
-        /* TIZEN_ONLY(20170721): fixed to calc ascent/descent values with considering main font */
-        Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
-
-        *maxdescent = ENFN->font_max_descent_get(ENDT, it->format->font.font);
-        /* END */
 
         if (fi)
           {
              desc = evas_common_font_instance_max_descent_get(fi);
           }
-        /* TIZEN_ONLY(20170721): fixed to calc ascent/descent values with considering main font
         else
           {
              Evas_Object_Protected_Data *obj =
@@ -2821,7 +2808,6 @@ _layout_item_max_ascent_descent_calc(const Evas_Object *eo_obj,
              desc = ENFN->font_max_descent_get(ENDT,
                    it->format->font.font);
           }
-         */
 
         if (desc > *maxdescent)
            *maxdescent = desc;
@@ -2861,25 +2847,11 @@ _layout_item_ascent_descent_adjust(const Evas_Object *eo_obj,
           }
      }
 
-   /* TIZEN_ONLY(20170721): fixed to calc ascent/descent values with considering main font */
-   if (fmt)
-     {
-        Evas_Object_Protected_Data *obj =
-           eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
-        asc = ENFN->font_ascent_get(ENDT, fmt->font.font);
-        desc = ENFN->font_descent_get(ENDT, fmt->font.font);
-
-        if (asc > *ascent) *ascent = asc;
-        if (desc > *descent) *descent = desc;
-     }
-   /* END */
-
    if (fi)
      {
         asc = evas_common_font_instance_ascent_get(fi);
         desc = evas_common_font_instance_descent_get(fi);
      }
-   /* TIZEN_ONLY(20170721): fixed to calc ascent/descent values with considering main font
    else
      {
         if (fmt)
@@ -2890,7 +2862,6 @@ _layout_item_ascent_descent_adjust(const Evas_Object *eo_obj,
              desc = ENFN->font_descent_get(ENDT, fmt->font.font);
           }
      }
-    */
    if (fmt) _layout_format_ascent_descent_adjust(eo_obj, &asc, &desc, fmt);
 
    if (asc > *ascent) *ascent = asc;
