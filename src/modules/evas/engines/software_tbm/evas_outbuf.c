@@ -194,7 +194,7 @@ evas_outbuf_swap_mode_get(Outbuf *ob)
       mode = MODE_FULL;
    else
      {
-        if (ebuf_info->age < ob->priv.frame_age)
+        if (ebuf_info && (ebuf_info->age < ob->priv.frame_age))
           {
              unsigned int diff;
              diff = ob->priv.frame_age - ebuf_info->age;

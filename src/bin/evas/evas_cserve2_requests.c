@@ -284,7 +284,8 @@ cserve2_request_cancel_all(Slave_Request *req, Error_Type err)
 
    requests[req->type].waiting = eina_inlist_remove(
       requests[req->type].waiting, EINA_INLIST_GET(req));
-   req->funcs->msg_free(req->msg, req->data);
+   if (req->funcs && req->funcs->msg_free)
+     req->funcs->msg_free(req->msg, req->data);
    free(req);
 }
 

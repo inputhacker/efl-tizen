@@ -391,8 +391,8 @@ EOLIAN Evas_Object*
 _evas_canvas_object_top_get(Eo *eo_e EINA_UNUSED, Evas_Public_Data *e)
 {
    Evas_Object_Protected_Data *obj = NULL;
-   Eina_Inlist *list;
-   Evas_Layer *layer;
+   Eina_Inlist *list = NULL;
+   Evas_Layer *layer = NULL;
 
    list = EINA_INLIST_GET(e->layers);
    if (!list) return NULL;
