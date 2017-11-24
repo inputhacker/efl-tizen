@@ -989,7 +989,7 @@ _title_text_set(Evas_Object *obj,
              if (!ao)
                {
                   ao = _elm_access_edje_object_part_object_register
-                        (obj, elm_layout_edje_get(sd->main_layout), ACCESS_TITLE_PART);
+                        (sd->main_layout, elm_layout_edje_get(sd->main_layout), ACCESS_TITLE_PART);
                   efl_access_role_set(ao, EFL_ACCESS_ROLE_HEADING);
                   _elm_access_callback_set(_elm_access_info_get(ao),
                                             ELM_ACCESS_INFO, _access_info_cb, sd);
