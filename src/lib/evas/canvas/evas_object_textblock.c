@@ -2734,8 +2734,8 @@ _layout_format_ascent_descent_adjust(const Evas_Object *eo_obj,
           }
         descent += fmt->linegap * obj->cur->scale;
         descent += ((ascent + descent) * fmt->linerelgap);
-        if (*maxascent < ascent) *maxascent = ascent;
-        if (*maxdescent < descent) *maxdescent = descent;
+        *maxascent = ascent;
+        *maxdescent = descent;
         if (fmt->linefill > 0.0)
           {
              int dh;
@@ -2755,6 +2755,7 @@ _layout_item_max_ascent_descent_calc(const Evas_Object *eo_obj,
       Evas_Coord *maxascent, Evas_Coord *maxdescent,
       Evas_Object_Textblock_Item *it, Textblock_Position position)
 {
+   Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
    void *fi = NULL;
    *maxascent = *maxdescent = 0;
 
@@ -2771,20 +2772,13 @@ _layout_item_max_ascent_descent_calc(const Evas_Object *eo_obj,
      {
         Evas_Coord asc = 0;
 
+        *maxascent = ENFN->font_max_ascent_get(ENDT, it->format->font.font);
+
         if (fi)
-          {
-             asc = evas_common_font_instance_max_ascent_get(fi);
-          }
-        else
-          {
-             Evas_Object_Protected_Data *obj =
-                eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
-             asc = ENFN->font_max_ascent_get(ENDT,
-                   it->format->font.font);
-          }
+          asc = evas_common_font_instance_max_ascent_get(fi);
 
         if (asc > *maxascent)
-           *maxascent = asc;
+          *maxascent = asc;
      }
 
    if ((position == TEXTBLOCK_POSITION_END) ||
@@ -2793,20 +2787,13 @@ _layout_item_max_ascent_descent_calc(const Evas_Object *eo_obj,
         /* Calculate max descent. */
         Evas_Coord desc = 0;
 
+        *maxdescent = ENFN->font_max_descent_get(ENDT, it->format->font.font);
+
         if (fi)
-          {
-             desc = evas_common_font_instance_max_descent_get(fi);
-          }
-        else
-          {
-             Evas_Object_Protected_Data *obj =
-                eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
-             desc = ENFN->font_max_descent_get(ENDT,
-                   it->format->font.font);
-          }
+          desc = evas_common_font_instance_max_descent_get(fi);
 
         if (desc > *maxdescent)
-           *maxdescent = desc;
+          *maxdescent = desc;
      }
 }
 
@@ -2843,21 +2830,23 @@ _layout_item_ascent_descent_adjust(const Evas_Object *eo_obj,
           }
      }
 
+   if (fmt)
+     {
+        Evas_Object_Protected_Data *obj =
+           eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
+        asc = ENFN->font_ascent_get(ENDT, fmt->font.font);
+        desc = ENFN->font_descent_get(ENDT, fmt->font.font);
+     }
+
    if (fi)
      {
-        asc = evas_common_font_instance_ascent_get(fi);
-        desc = evas_common_font_instance_descent_get(fi);
+        int fi_asc = evas_common_font_instance_ascent_get(fi);
+        int fi_desc = evas_common_font_instance_descent_get(fi);
+
+        if (fi_asc > asc) asc = fi_asc;
+        if (fi_desc > desc) desc = fi_desc;
      }
-   else
-     {
-        if (fmt)
-          {
-             Evas_Object_Protected_Data *obj =
-               eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
-             asc = ENFN->font_ascent_get(ENDT, fmt->font.font);
-             desc = ENFN->font_descent_get(ENDT, fmt->font.font);
-          }
-     }
+
    if (fmt) _layout_format_ascent_descent_adjust(eo_obj, &asc, &desc, fmt);
 
    if (asc > *ascent) *ascent = asc;
