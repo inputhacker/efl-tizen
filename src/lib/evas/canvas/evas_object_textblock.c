@@ -2898,13 +2898,10 @@ _layout_item_ascent_descent_adjust(const Evas_Object *eo_obj,
     */
    /* TIZEN_ONLY(20170726): Support negative values for linegap
    if (fmt) _layout_format_ascent_descent_adjust(eo_obj, &asc, &desc, fmt);
-    */
-   /* END */
 
    if (asc > *ascent) *ascent = asc;
    if (desc > *descent) *descent = desc;
-
-   /* TIZEN_ONLY(20170726): Support negative values for linegap */
+    */
    if (fmt) _layout_format_ascent_descent_adjust(eo_obj, ascent, descent, fmt);
    /* END */
 }
