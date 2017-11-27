@@ -408,8 +408,21 @@ _sys_lang_changed(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA
 EAPI int
 elm_init(int argc, char **argv)
 {
+//TIZEN_ONLY(20160628):  Add Performance log for cold booting
+#ifdef ENABLE_TTRACE
+   traceBegin(TTRACE_TAG_EFL, "elm_init");
+#endif
+   //
    _elm_init_count++;
-   if (_elm_init_count > 1) return _elm_init_count;
+   if (_elm_init_count > 1)
+     {
+//TIZEN_ONLY(20160628):  Add Performance log for cold booting
+#ifdef ENABLE_TTRACE
+   traceEnd(TTRACE_TAG_EFL);
+#endif
+   //
+        return _elm_init_count;
+     }
    elm_quicklaunch_init(argc, argv);
    elm_quicklaunch_sub_init(argc, argv);
 
@@ -437,6 +450,11 @@ elm_init(int argc, char **argv)
        _efl_startup_time = _elm_startup_time;
    _elm_startup_time = _efl_startup_time;
 
+//TIZEN_ONLY(20160628):  Add Performance log for cold booting
+#ifdef ENABLE_TTRACE
+   traceEnd(TTRACE_TAG_EFL);
+#endif
+   //
    return _elm_init_count;
 }
 

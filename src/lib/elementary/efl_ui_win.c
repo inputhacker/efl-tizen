@@ -8785,6 +8785,11 @@ _fake_canvas_set(Evas_Object *obj, Ecore_Evas *oee)
 EAPI Evas_Object *
 elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
 {
+//TIZEN_ONLY(20160628):  Add Performance log for cold booting
+#ifdef ENABLE_TTRACE
+   traceBegin(TTRACE_TAG_EFL, "elm_win_add");
+#endif
+//
    const Efl_Class *klass = MY_CLASS;
 
    switch ((int) type)
@@ -8794,9 +8799,16 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
       default: break;
      }
 
-   return elm_legacy_add(klass, parent,
-                         efl_ui_win_name_set(efl_added, name),
-                         efl_ui_win_type_set(efl_added, type));
+   Evas_Object *obj = efl_add(klass, parent,
+                              efl_canvas_object_legacy_ctor(efl_added),
+                              efl_ui_win_name_set(efl_added, name),
+                              efl_ui_win_type_set(efl_added, type));
+//TIZEN_ONLY(20160628):  Add Performance log for cold booting
+#ifdef ENABLE_TTRACE
+   traceEnd(TTRACE_TAG_EFL);
+#endif
+//
+   return obj;
 }
 
 EAPI Evas_Object *
