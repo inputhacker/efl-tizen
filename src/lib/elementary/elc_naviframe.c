@@ -52,6 +52,9 @@ static void _on_item_back_btn_clicked(void *data, const Efl_Event *event);
 
 static Eina_Bool _key_action_top_item_get(Evas_Object *obj, const char *params);
 static Eina_Bool _key_action_item_pop(Evas_Object *obj, const char *params);
+//TIZEN ONLY(20151012): expose title as at-spi object
+static char * _access_info_cb(void *data, Evas_Object *obj EINA_UNUSED);
+//
 
 static const Elm_Action key_actions[] = {
    {"top_item_get", _key_action_top_item_get},
@@ -321,6 +324,68 @@ _item_signals_emit(Elm_Naviframe_Item_Data *it)
    _item_content_signals_emit(it);
 }
 
+//TIZEN ONLY(20151012): expose title as at-spi object
+static void
+_naviframe_atspi_bridge_on_connect_cb(void *data, const Efl_Event *event EINA_UNUSED)
+{
+   Elm_Naviframe_Item_Data *it = (Elm_Naviframe_Item_Data*)data;
+   Evas_Object *part;
+   Evas_Object *access;
+
+   part = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(VIEW(it)), TITLE_ACCESS_PART);
+   if (part)
+     {
+        access = elm_access_object_register(part, VIEW(it));
+        _elm_access_callback_set(_elm_access_info_get(access),
+                                 ELM_ACCESS_INFO, _access_info_cb, it);
+        efl_access_role_set(access, EFL_ACCESS_ROLE_HEADING);
+     }
+}
+
+static void
+_naviframe_atspi_bridge_on_disconnect_cb(void *data, const Efl_Event *event EINA_UNUSED)
+{
+   Elm_Naviframe_Item_Data *it = (Elm_Naviframe_Item_Data*)data;
+   Evas_Object *part;
+   part = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(VIEW(it)), TITLE_ACCESS_PART);
+   elm_access_object_unregister( part );
+}
+
+static void
+_unregister_naviframe_atspi_bridge_callbacks(Elm_Naviframe_Item_Data *it EINA_UNUSED)
+{
+   if (!_elm_config->atspi_mode) return;
+
+   Eo *bridge = _elm_atspi_bridge_get();
+   if (!bridge) return;
+
+   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _naviframe_atspi_bridge_on_connect_cb, NULL);
+   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _naviframe_atspi_bridge_on_disconnect_cb, NULL);
+
+}
+
+static void
+_atspi_expose_title(Elm_Naviframe_Item_Data *it)
+{
+   Eina_Bool connected = EINA_FALSE;
+
+   if (!_elm_config->atspi_mode) return;
+
+   Eo *bridge = _elm_atspi_bridge_get();
+   if (!bridge) return;
+
+   // If bridge is connected expose it now
+   connected = elm_obj_atspi_bridge_connected_get(bridge);
+   if (connected)
+     _naviframe_atspi_bridge_on_connect_cb(it, NULL);
+
+   // Register for bridge connect/disconnect
+   _unregister_naviframe_atspi_bridge_callbacks(it);
+   efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _naviframe_atspi_bridge_on_connect_cb, NULL);
+   efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _naviframe_atspi_bridge_on_disconnect_cb, NULL);
+}
+//
+
 /* FIXME: we need to handle the case when this function is called
  * during a transition */
 static void
@@ -356,6 +421,10 @@ _item_style_set(Elm_Naviframe_Item_Data *it,
 
    if (sd->freeze_events)
      evas_object_freeze_events_set(VIEW(it), EINA_FALSE);
+
+   //TIZEN ONLY(20151012): expose title as at-spi object
+   _atspi_expose_title(it);
+   //
 }
 
 static void
@@ -1451,6 +1520,10 @@ _elm_naviframe_efl_canvas_group_group_del(Eo *obj, Elm_Naviframe_Data *sd)
      elm_wdg_item_del(EO_OBJ(it));
 
    evas_object_del(sd->dummy_edje);
+
+   // TIZEN_ONLY(20151012): Unregister callbacks for ATSPI bridge enable/disable
+   _unregister_naviframe_atspi_bridge_callbacks(it);
+   //
 
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }
