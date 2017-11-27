@@ -81,6 +81,16 @@ struct _Outbuf
 
    Eina_Bool lost_back : 1;
    Eina_Bool surf : 1;
+
+   struct {
+      unsigned char depth_buffer_size;
+      unsigned char stencil_buffer_size;
+      unsigned char msaa;
+   } detected;
+
+   int depth_bits;
+   int stencil_bits;
+   int msaa_bits;
 };
 
 struct _Context_3D

@@ -751,8 +751,8 @@ eng_output_update(void *engine EINA_UNUSED, void *data, void *info, unsigned int
    wls = ecore_wl2_window_surface_get(inf->info.wl2_win);
    if (!wls && (ob->egl_surface != EGL_NO_SURFACE))
      {
-        eglDestroySurface(ob->egl_disp, ob->egl_surface);
-        eglMakeCurrent(ob->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE,
+       eglDestroySurface(ob->egl_disp, ob->egl_surface);
+       GL_TH(eglMakeCurrent, ob->egl_disp, EGL_NO_SURFACE, EGL_NO_SURFACE,
                        EGL_NO_CONTEXT);
         ob->egl_surface = EGL_NO_SURFACE;
         ob->wl2_win = NULL;

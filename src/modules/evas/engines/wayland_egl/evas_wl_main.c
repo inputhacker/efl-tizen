@@ -89,8 +89,11 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
    Eina_Bool blacklist = EINA_FALSE;
    struct wl_display *wl_disp;
 
-// TIZEN_ONLY(20171123) : bug fixed : using wl_surface
+//TIZEN_ONLY(20171123) : bug fixed : using wl_surface
    struct wl_surface *wl_surface;
+//
+//TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
+   int val = 0;
 //
    /* try to allocate space for our window */
    if (!(gw = calloc(1, sizeof(Outbuf))))
@@ -110,6 +113,11 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
    gw->alpha = einfo->info.destination_alpha;
    gw->rot = einfo->info.rotation;
 
+//TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
+   gw->depth_bits = einfo->depth_bits;
+   gw->stencil_bits = einfo->stencil_bits;
+   gw->msaa_bits = einfo->msaa_bits;
+//
    context_attrs[0] = EGL_CONTEXT_CLIENT_VERSION;
    context_attrs[1] = 2;
    context_attrs[2] = EGL_NONE;
@@ -128,13 +136,26 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
    config_attrs[n++] = 1;
    /* FIXME: end n900 breakage */
 # endif
-   config_attrs[n++] = EGL_ALPHA_SIZE;
-   config_attrs[n++] = gw->alpha;
-   config_attrs[n++] = EGL_DEPTH_SIZE;
-   config_attrs[n++] = 0;
-   config_attrs[n++] = EGL_STENCIL_SIZE;
-   config_attrs[n++] = 0;
-   config_attrs[n++] = EGL_NONE;
+  config_attrs[n++] = EGL_ALPHA_SIZE;
+  config_attrs[n++] = gw->alpha;
+  config_attrs[n++] = EGL_DEPTH_SIZE;
+//TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
+//  config_attrs[n++] = 0;
+  config_attrs[n++] = gw->depth_bits;
+//
+  config_attrs[n++] = EGL_STENCIL_SIZE;
+//TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
+//  config_attrs[n++] = 0;
+   config_attrs[n++] = gw->stencil_bits;
+   if (gw->msaa_bits > 0)
+     {
+        config_attrs[n++] = EGL_SAMPLE_BUFFERS;
+        config_attrs[n++] = 1;
+        config_attrs[n++] = EGL_SAMPLES;
+        config_attrs[n++] = gw->msaa_bits;
+     }
+//
+  config_attrs[n++] = EGL_NONE;
 
    /* FIXME: Remove this line as soon as eglGetDisplay() autodetection
     * gets fixed. Currently it is incorrectly detecting wl_display and
@@ -202,7 +223,7 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
       eng_window_free(gw);
       return NULL;
     }
- // TIZEN_ONLY(20171123)
+// TIZEN_ONLY(20171123)
 
    context = _tls_context_get();
    gw->egl_context =
@@ -258,23 +279,42 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
         return NULL;
      }
 
+//TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
+   eglGetConfigAttrib(gw->egl_disp, gw->egl_config, EGL_DEPTH_SIZE, &val);
+   gw->detected.depth_buffer_size = val;
+   DBG("Detected depth size %d", val);
+   eglGetConfigAttrib(gw->egl_disp, gw->egl_config, EGL_STENCIL_SIZE, &val);
+   gw->detected.stencil_buffer_size = val;
+   DBG("Detected stencil size %d", val);
+   eglGetConfigAttrib(gw->egl_disp, gw->egl_config, EGL_SAMPLES, &val);
+   gw->detected.msaa = val;
+   DBG("Detected msaa %d", val);
+//
+
    if (!gw->gl_context)
      {
         eng_gl_symbols(gw->egl_disp);
 
-        if (!(gw->gl_context = glsym_evas_gl_common_context_new()))
-          {
-             eng_window_free(gw);
-             return NULL;
-          }
-        gw->gl_context->egldisp = gw->egl_disp;
-        gw->gl_context->eglctxt = gw->egl_context;
-        eng_window_use(gw);
-     }
-//* TIZEN_ONLY(20171123) : temporary patch */
-//   if (w && h)
-//     eng_window_resurf(gw);
-   return gw;
+       if (!(gw->gl_context = glsym_evas_gl_common_context_new()))
+         {
+            eng_window_free(gw);
+            return NULL;
+         }
+       gw->gl_context->egldisp = gw->egl_disp;
+       gw->gl_context->eglctxt = gw->egl_context;
+       eng_window_use(gw);
+//TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
+       glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot);
+//
+    }
+
+/* TIZEN_ONLY(20171123) : temporary patch */
+//  if (w && h)
+//    eng_window_resurf(gw);
+//TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
+  gw->surf = EINA_TRUE;
+//
+  return gw;
 }
 
 void 
@@ -653,8 +693,10 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *surface_damage, Tilebuf_Rect *buffer_
    glsym_evas_gl_common_context_done(ob->gl_context);
    eglSwapInterval(ob->egl_disp, 0);
 
-   ecore_wl2_window_buffer_attach(ob->wl2_win, NULL, 0, 0, EINA_TRUE);
-   ecore_wl2_window_commit(ob->wl2_win, EINA_FALSE);
+// TIZEN_ONLY(20171127) : wayland_egl bug fixed
+//   ecore_wl2_window_buffer_attach(ob->wl2_win, NULL, 0, 0, EINA_TRUE);
+//   ecore_wl2_window_commit(ob->wl2_win, EINA_FALSE);
+//
 
    if ((glsym_eglSwapBuffersWithDamage) && (surface_damage) &&
        (ob->swap_mode != MODE_FULL))
@@ -683,7 +725,10 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *surface_damage, Tilebuf_Rect *buffer_
 
  end:
    glsym_evas_gl_preload_render_unlock(eng_preload_make_current, ob);
-   ecore_wl2_display_flush(ob->wl2_disp);
+
+// TIZEN_ONLY(20171127) : wayland_egl bug fixed
+//   ecore_wl2_display_flush(ob->wl2_disp);
+//
 }
 
 Evas_Engine_GL_Context *

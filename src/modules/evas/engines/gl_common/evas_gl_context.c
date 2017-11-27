@@ -788,9 +788,9 @@ _evas_gl_common_viewport_set(Evas_Engine_GL_Context *gc, int pipe)
    if (foc == 0)
      {
         if ((rot == 0) || (rot == 180))
-           glViewport(offx, offy, w, h);
+           GL_TH(glViewport, offx, offy, w, h);
         else
-           glViewport(offx, offy, h, w);
+           GL_TH(glViewport, offx, offy, h, w);
         // std matrix
         if (m == 1)
            matrix_ortho(gc->shared->proj,
