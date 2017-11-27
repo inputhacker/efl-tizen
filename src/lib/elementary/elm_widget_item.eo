@@ -190,7 +190,7 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
                      disable: bool; [[$true, if the widget item is disabled, $false if it's enabled (or on errors)]]
                 }
            }
-           access_order_get {
+           access_order_get @const {
                   [[Get highlight order
 
                     @since 1.8]]
