@@ -984,7 +984,11 @@ static void _elm_config_atspi_mode_set(Eina_Bool is_enabled)
 {
    _elm_config->priv.atspi_mode = EINA_TRUE;
    is_enabled = !!is_enabled;
-   if (_elm_config->atspi_mode == is_enabled) return;
+   // TIZEN_ONLY(20160721): enable atspi bridge on background apps
+   Eina_Bool connected = EINA_FALSE;
+   connected = elm_obj_atspi_bridge_connected_get(_elm_atspi_bridge_get());
+   if ((_elm_config->atspi_mode == is_enabled) && (connected == is_enabled)) return;
+   //
    _elm_config->atspi_mode = is_enabled;
 
    if (!is_enabled) _elm_atspi_bridge_shutdown();
@@ -2058,6 +2062,9 @@ _config_flush_get(void)
    _elm_recache();
    _elm_clouseau_reload();
    _elm_config_key_binding_hash();
+   // TIZEN_ONLY(20160721): enable atspi bridge on background apps
+   _elm_config_atspi_mode_set(_elm_config->atspi_mode);
+   //
    _elm_win_access(_elm_config->access_mode);
    ecore_event_add(ELM_EVENT_CONFIG_ALL_CHANGED, NULL, NULL, NULL);
 }
