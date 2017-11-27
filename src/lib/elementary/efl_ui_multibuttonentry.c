@@ -1411,6 +1411,15 @@ _box_layout_cb(Evas_Object *o,
      }
 }
 
+//TIZEN_ONLY(20160527) : expose label as at-spi object 
+static char *
+_label_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
+{
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(data, sd, NULL);
+   return strdup((char *)sd->label_str);
+}
+//
+
 static void
 _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
 {
@@ -1441,6 +1450,23 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
    // ACCESS
    if (_elm_config->access_mode == ELM_ACCESS_MODE_ON)
      _access_multibuttonentry_label_register(obj, EINA_TRUE);
+
+   //TIZEN_ONLY(20160527) : expose label as at-spi object
+   if (_elm_config->atspi_mode)
+     {
+        Evas_Object *label_obj;
+        label_obj = (Evas_Object *)edje_object_part_object_get(sd->label, "elm.text");
+        if (label_obj)
+          {
+             sd->label_access = elm_access_object_register(label_obj, obj);
+             _elm_access_callback_set(_elm_access_info_get(sd->label_access),
+                                      ELM_ACCESS_INFO, _label_access_info_cb, obj);
+             efl_access_role_set(sd->label_access, EFL_ACCESS_ROLE_HEADING);
+             evas_object_pass_events_set(label_obj, !_elm_config->atspi_mode);
+             evas_object_propagate_events_set(sd->label, !_elm_config->atspi_mode);
+          }
+     }
+   ///
 
    sd->entry = efl_add(EFL_UI_TEXT_CLASS, sd->box,
                        efl_text_multiline_set(efl_added, EINA_FALSE),
@@ -1986,11 +2012,17 @@ _efl_ui_multibuttonentry_class_constructor(Efl_Class *klass)
 }
 
 EOLIAN static Eina_List*
-_efl_ui_multibuttonentry_efl_access_children_get(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd)
+_elm_multibuttonentry_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Multibuttonentry_Data *sd)
 {
-   Eina_List *ret;
-   ret = efl_access_children_get(efl_super(obj, EFL_UI_MULTIBUTTONENTRY_CLASS));
-   return eina_list_merge(eina_list_clone(sd->items), ret);
+   Eina_List *ret = NULL;
+   //TIZEN_ONLY(20160527) : Improve MBE atspi support
+   if (sd->label && sd->label_packed)
+     ret = eina_list_append(ret, sd->label_access);
+   ret = eina_list_merge(ret, eina_list_clone(sd->items));
+   if (sd->editable && (sd->view_state != MULTIBUTTONENTRY_VIEW_SHRINK))
+     ret = eina_list_append(ret, sd->box);
+   //
+   return ret;
 }
 
 EOLIAN static const char*
@@ -2026,7 +2058,9 @@ static Eina_Bool
 _key_action_activate(Eo *obj, const char *params EINA_UNUSED)
 {
    ELM_MULTIBUTTONENTRY_ITEM_DATA_GET(obj, it);
-   elm_layout_signal_emit(VIEW(it), "mouse,clicked,1", "elm");
+   //TIZEN_ONLY(20160527) : Improve MBE atspi support
+   elm_layout_signal_emit(VIEW(it), "elm,action,click", "*");
+   //
    return EINA_TRUE;
 }
 
