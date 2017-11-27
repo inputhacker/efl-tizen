@@ -423,8 +423,6 @@ elm_init(int argc, char **argv)
    _accessibility_currently_highlighted_obj = NULL;
    //
 
-   if (_elm_config->atspi_mode != ELM_ATSPI_MODE_OFF)
-     _elm_atspi_bridge_init();
    if (!_elm_config->web_backend)
      _elm_config->web_backend = "none";
    if (!_elm_web_init(_elm_config->web_backend))
@@ -455,7 +453,6 @@ elm_shutdown(void)
    ecore_event_handler_del(system_handlers[1]);
 
    _elm_win_shutdown();
-   _elm_atspi_bridge_shutdown();
 
    while (_elm_win_deferred_free) ecore_main_loop_iterate();
 
@@ -1320,6 +1317,10 @@ elm_quicklaunch_exe_path_get(const char *exe, const char *cwd)
 EAPI void
 elm_run(void)
 {
+//TIZEN_ONLY(20171127): move atspi initialization to elm_run.
+   if (_elm_config->atspi_mode != ELM_ATSPI_MODE_OFF)
+     _elm_atspi_bridge_init();
+//
    ecore_main_loop_begin();
 }
 
@@ -1336,6 +1337,9 @@ _on_terminate(void *data EINA_UNUSED, const Efl_Event *ev EINA_UNUSED)
 EAPI void
 elm_exit(void)
 {
+//TIZEN_ONLY(20171127): move atspi initialization to elm_run.
+   _elm_atspi_bridge_shutdown();
+//
    efl_exit(0);
 }
 

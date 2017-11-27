@@ -4004,15 +4004,16 @@ _registered_listeners_get(void *data, const Eldbus_Message *msg, Eldbus_Pending 
         else _set_broadcast_flag(event, data);
      }
 
-   /* TIZEN_ONLY(20171108): make atspi_proxy work
-   if (!pd->connected)
-      efl_event_callback_legacy_call(data, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, NULL);
-   pd->connected = EINA_TRUE;
-   */
    //TIZEN_ONLY(20171108): make atspi_proxy work
    if (!pd->connected)
      {
+        Eo *root, *pr;
         pd->connected = EINA_TRUE;
+        efl_event_callback_legacy_call(data, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, NULL);
+
+        // buid cache
+        root = elm_obj_atspi_bridge_root_get(data);
+        _bridge_cache_build(data, root);
 
         // initialize pending proxy
         Eo *pr;
@@ -4642,9 +4643,6 @@ _a11y_bus_initialize(Eo *obj, const char *socket_addr)
 {
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(obj, pd);
 
-   //TIZEN_ONLY(20171108): make atspi_proxy work
-   Eo *root;
-   //
    pd->a11y_bus = eldbus_private_address_connection_get(socket_addr);
    if (!pd->a11y_bus)
      return;
@@ -4667,22 +4665,9 @@ _a11y_bus_initialize(Eo *obj, const char *socket_addr)
    if (!getenv("ELM_ATSPI_NO_EMBED"))
      _elm_atspi_bridge_app_register(obj);
 
-   // buid cache
-   root = elm_obj_atspi_bridge_root_get(obj);
-   _bridge_cache_build(obj, root);
-   //
-
    // register accessible object event listener
    pd->event_hdlr = efl_access_event_handler_add(EFL_ACCESS_MIXIN, _bridge_accessible_event_dispatch, obj);
 
-   //TIZEN_ONLY(20171108): make atspi_proxy work
-   // additionally register all socket objects and its descendants
-   EINA_LIST_FREE(pd->plug_queue, obj)
-   _plug_connect(pd->a11y_bus, obj);
-   EINA_LIST_FREE(pd->socket_queue, obj)
-   _socket_ifc_create(pd->a11y_bus, obj);
-   pd->plug_queue = pd->socket_queue = NULL;
-   //
 }
 
 static void

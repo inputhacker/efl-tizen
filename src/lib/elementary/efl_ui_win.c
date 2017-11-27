@@ -7379,56 +7379,10 @@ _elm_win_focus_auto_hide(Evas_Object *obj)
      }
 }
 
-static void
-_on_atspi_bus_connected(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
-{
-   Evas_Object *win;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(_elm_win_list, l, win)
-     {
-        /**
-         * Reemit accessibility events when AT-SPI2 connection is begin
-         * established. This assures that Assistive Technology clients will
-         * receive all org.a11y.window events and could keep track of active
-         * windows whithin system.
-         */
-        efl_access_window_created_signal_emit(win);
-        if (elm_win_focus_get(win))
-          {
-             Evas_Object *target;
-             efl_access_window_activated_signal_emit(win);
-             /** Reemit focused event to inform atspi clients about currently
-              * focused object **/
-             {
-                Efl_Ui_Focus_Manager *m;
-
-                m = win;
-
-                while (efl_ui_focus_manager_redirect_get(m))
-                  m = efl_ui_focus_manager_redirect_get(m);
-
-                target = efl_ui_focus_manager_focus_get(m);
-             }
-             if (target)
-               efl_access_state_changed_signal_emit(target, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
-          }
-        else
-          efl_access_window_deactivated_signal_emit(win);
-     }
-}
-
 EOLIAN static void
 _efl_ui_win_class_constructor(Efl_Class *klass)
 {
    evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
-
-   if (_elm_config->atspi_mode)
-     {
-        Eo *bridge = _elm_atspi_bridge_get();
-        if (bridge)
-           efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _on_atspi_bus_connected, NULL);
-     }
 }
 
 EOLIAN static void
