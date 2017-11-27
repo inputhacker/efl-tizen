@@ -1859,7 +1859,13 @@ _elm_win_state_change(Ecore_Evas *ee)
    //
    // TIZEN_ONLY(20160120): support visibility_change event
    if (ch_visibility)
-     evas_object_smart_callback_call(obj, SIG_VISIBILITY_CHANGED, (void*)!sd->obscured);
+     {
+        evas_object_smart_callback_call(obj, SIG_VISIBILITY_CHANGED, (void*)!sd->obscured);
+        //TIZEN_ONLY(20160701): add atspi window state visible change signal
+        if (_elm_config->atspi_mode)
+          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_VISIBLE, !sd->obscured);
+        //
+     }
    //
 }
 
