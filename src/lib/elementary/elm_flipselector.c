@@ -252,11 +252,17 @@ _on_item_changed(Elm_Flipselector_Data *sd)
    //TIZEN ONLY(2015090): expose flipselector top/bottom buttons for accessibility tree
    if (_elm_config->atspi_mode)
      {
-       elm_access_info_set(sd->access_top_button, ELM_ACCESS_INFO, (char *)item->label);
-       efl_access_name_changed_signal_emit(sd->access_top_button);
+       if (sd->access_top_button)
+         {
+            elm_access_info_set(sd->access_top_button, ELM_ACCESS_INFO, (char *)item->label);
+            efl_access_name_changed_signal_emit(sd->access_top_button);
+         }
 
-       elm_access_info_set(sd->access_bottom_button, ELM_ACCESS_INFO, (char *)item->label);
-       efl_access_name_changed_signal_emit(sd->access_bottom_button);
+       if (sd->access_bottom_button)
+         {
+            elm_access_info_set(sd->access_bottom_button, ELM_ACCESS_INFO, (char *)item->label);
+            efl_access_name_changed_signal_emit(sd->access_bottom_button);
+         }
      }
    //
 }
