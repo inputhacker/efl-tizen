@@ -149,6 +149,9 @@ _scroller_size_calc(Evas_Object *obj)
    const char *action_area_height;
 
    ELM_POPUP_DATA_GET(obj, sd);
+   /* TIZEN_ONLY(20160623):Apply popup compress mode UX */
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
+   /* END */
 
    if (!sd->scroll && !sd->items) return;
 
@@ -169,8 +172,35 @@ _scroller_size_calc(Evas_Object *obj)
                   / edje_object_base_scale_get(elm_layout_edje_get(sd->action_area));
      }
 
+   /* TIZEN_ONLY(20160623):Apply popup compress mode UX
    sd->max_sc_h = h - (h_title + h_action_area);
+   */
+   if ((sd->dispmode == EVAS_DISPLAY_MODE_COMPRESS) &&
+       ((wd->orient_mode == 90) || (wd->orient_mode == 270)))
+      sd->max_sc_h = h - h_action_area;
+   else
+      sd->max_sc_h = h - (h_title + h_action_area);
+   /* END */
 }
+
+/* TIZEN_ONLY(20160623):Apply popup compress mode UX */
+static void
+_on_obj_size_hints_changed(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
+                           Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Evas_Display_Mode dispmode;
+
+   ELM_POPUP_DATA_GET(obj, sd);
+
+   dispmode = evas_object_size_hint_display_mode_get(obj);
+   if (sd->dispmode == dispmode) return;
+
+   sd->dispmode = dispmode;
+
+   _scroller_size_calc(obj);
+   elm_layout_sizing_eval(obj);
+}
+/* END */
 
 static void
 _size_hints_changed_cb(void *data,
@@ -1539,6 +1569,13 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
      }
    /* END */
 
+
+   /* TIZEN_ONLY(20160623):Apply popup compress mode UX */
+   priv->dispmode = evas_object_size_hint_display_mode_get(obj);
+
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_CHANGED_SIZE_HINTS,
+                                  _on_obj_size_hints_changed, NULL);
+   /* END */
 
    elm_notify_align_set(priv->notify,
                         _elm_config->popup_horizontal_align,

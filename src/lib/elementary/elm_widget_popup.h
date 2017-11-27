@@ -53,6 +53,10 @@ struct _Elm_Popup_Data
    unsigned int          last_button_number;
    Evas_Coord            max_sc_h;
 
+   /* TIZEN_ONLY(20160623): Apply popup compress mode UX */
+   Evas_Display_Mode     dispmode;
+   /* END */
+
    Eina_Bool             visible : 1;
    Eina_Bool             scr_size_recalc : 1;
    Eina_Bool             scroll : 1;
