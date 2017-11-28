@@ -3849,6 +3849,9 @@ _elm_widget_item_efl_object_constructor(Eo *eo_item, Elm_Widget_Item_Data *item)
 
    item->widget = widget;
    item->eo_obj = eo_item;
+   //TIZEN_ONLY(20170717) : expose highlight information on atspi
+   item->can_highlight = EINA_TRUE;
+   //
    efl_event_callback_add(eo_item, EFL_EVENT_DEL, _efl_del_cb, NULL);
 
    return eo_item;
@@ -5388,17 +5391,27 @@ static int _sort_horizontally(const void *data1, const void *data2)
 static Eina_List *_lines_split(Eina_List *children)
 {
    Eo *c;
-   Eina_List *lines, *line;
+   Eina_List *lines, *line, *l;
    Evas_Coord yl, y, hl, h;
    lines = line = NULL;
 
    if (!children) return NULL;
 
-   evas_object_geometry_get(eina_list_data_get(children), NULL, &yl, NULL, &hl);
+   EINA_LIST_FOREACH(children, l, c)
+     {
+        evas_object_geometry_get(c, NULL, &yl, NULL, &hl);
+
+        /* remove child if its height == 0 */
+        if (hl != 0) break;
+     }
 
    EINA_LIST_FREE(children, c)
      {
         evas_object_geometry_get(c, NULL, &y, NULL, &h);
+
+        /* remove child if its height == 0 */
+        if (h == 0) continue;
+
         if ((yl + (int)(0.25 * hl)) >= y)
           {
              //same line
