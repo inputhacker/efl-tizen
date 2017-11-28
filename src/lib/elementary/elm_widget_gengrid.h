@@ -141,6 +141,9 @@ struct _Elm_Gengrid_Data
    //TIZEN_ONLY (20151009) : Accessibility: updated highlight change during gengrid scroll
    Elm_Gen_Item                         *atspi_item_to_highlight;
    //
+   //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+   Eina_List                            *atspi_children;
+   //
 
    /* custom dimensions may be set for any item.
     * the logic for placing items requires that either item widths

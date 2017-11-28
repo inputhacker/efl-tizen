@@ -106,6 +106,10 @@ static void _calc_job(void *data);
 static int _is_item_in_viewport(int viewport_x, int viewport_y, int viewport_w, int viewport_h,
                                 int obj_x, int obj_y, int obj_w, int obj_h);
 //
+//TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+static int _sort_items(const void *data1, const void *data2);
+static Eina_Bool _atspi_enabled();
+//
 
 static const Elm_Action key_actions[] = {
    {"move", _key_action_move},
@@ -2236,6 +2240,11 @@ _elm_gengrid_pan_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED, Elm_Gengr
 
    if (sd->focused_item)
      _elm_widget_focus_highlight_start(psd->wobj);
+
+   //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+   if (_atspi_enabled() && sd->horizontal)
+     sd->atspi_children = eina_list_sort(sd->atspi_children, eina_list_count(sd->atspi_children), _sort_items);
+   //
 }
 
 EOLIAN static void
@@ -4021,6 +4030,10 @@ _elm_gengrid_item_new(Elm_Gengrid_Data *sd,
      (!strcmp(it->itc->item_style, "group_index"));
    sd->item_count++;
 
+   //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+   sd->atspi_children = eina_list_append(sd->atspi_children, EO_OBJ(it));
+   //
+
    efl_ui_focus_composition_dirty(sd->obj);
 
   return it;
@@ -4214,6 +4227,11 @@ _elm_gengrid_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, Eina_Bo
    Elm_Gen_Item *it;
    Evas_Object *content = NULL;
    Eina_List *l;
+
+   //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+   if (sd->horizontal && is_atspi)
+     sd->atspi_children = eina_list_sort(sd->atspi_children, eina_list_count(sd->atspi_children), _sort_items);
+   //
 
    EINA_INLIST_FOREACH(sd->items, it)
      {
@@ -5697,14 +5715,36 @@ _elm_gengrid_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_G
    return &atspi_actions[0];
 }
 
+//TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+static int _sort_items(const void *data1, const void *data2)
+{
+   const Eo *eo_it1 = data1;
+   const Eo *eo_it2 = data2;
+   ELM_GENGRID_ITEM_DATA_GET(eo_it1, it_data1);
+   ELM_GENGRID_ITEM_DATA_GET(eo_it2, it_data2);
+
+   if (it_data1->y == it_data2->y)
+     return (it_data1->x <= it_data2->x) ? -1 : 1;
+   else
+     return (it_data1->y < it_data2->y) ? -1 : 1;
+}
+//
+
 EOLIAN Eina_List*
 _elm_gengrid_efl_access_children_get(Eo *obj, Elm_Gengrid_Data *sd)
 {
    Eina_List *ret = NULL, *ret2 = NULL;
    Elm_Gen_Item *it;
 
-   EINA_INLIST_FOREACH(sd->items, it)
-      ret = eina_list_append(ret, EO_OBJ(it));
+   //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+   if (sd->horizontal)
+     ret =  eina_list_clone(sd->atspi_children);
+   //
+   else
+     {
+        EINA_INLIST_FOREACH(sd->items, it)
+          ret = eina_list_append(ret, EO_OBJ(it));
+     }
 
    ret2 = efl_access_children_get(efl_super(obj, ELM_GENGRID_CLASS));
 
