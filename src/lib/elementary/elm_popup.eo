@@ -193,5 +193,8 @@ class Elm.Popup (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Efl.Access.Widget.Action)
       item,focused; [[Called when popup got focus]]
       item,unfocused; [[Called when popup lost focus]]
       dismissed; [[Called when popup was dismissed]]
+      /* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+      show,finished; [[Called when popup show animation is finished]]
+      /* END */
    }
 }

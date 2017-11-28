@@ -422,6 +422,17 @@ _elm_notify_efl_content_content_unset(Eo *obj, Elm_Notify_Data *sd)
    return _elm_notify_content_unset(obj, sd, NULL);
 }
 
+/* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+static void
+_show_finished_cb(void *data,
+                  Evas_Object *obj EINA_UNUSED,
+                  const char *emission EINA_UNUSED,
+                  const char *source EINA_UNUSED)
+{
+   efl_event_callback_legacy_call(data, ELM_NOTIFY_EVENT_SHOW_FINISHED, NULL);
+}
+/* END */
+
 static void
 _hide_finished_cb(void *data,
                   Evas_Object *obj EINA_UNUSED,
@@ -447,6 +458,10 @@ _elm_notify_efl_canvas_group_group_add(Eo *obj, Elm_Notify_Data *priv)
    priv->notify = edje_object_add(evas_object_evas_get(obj));
    evas_object_smart_member_add(priv->notify, obj);
 
+   /* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+   edje_object_signal_callback_add
+      (priv->notify, "elm,action,show,finished", "", _show_finished_cb, obj);
+   /* END */
    edje_object_signal_callback_add
       (priv->notify, "elm,action,hide,finished", "elm", _hide_finished_cb, obj);
 

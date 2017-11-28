@@ -48,6 +48,10 @@ static void _parent_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, v
 static void _block_clicked_cb(void *data, const Efl_Event *event);
 static void _timeout_cb(void *data, const Efl_Event *event);
 
+/* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+static void _show_finished_cb(void *data, const Efl_Event *event);
+/* END */
+
 static void _hide_effect_finished_cb(void *data, const Efl_Event *event);
 
 static const Elm_Action key_actions[] = {
@@ -58,6 +62,9 @@ static const Elm_Action key_actions[] = {
 EFL_CALLBACKS_ARRAY_DEFINE(_notify_cb,
    { ELM_NOTIFY_EVENT_BLOCK_CLICKED, _block_clicked_cb },
    { ELM_NOTIFY_EVENT_TIMEOUT, _timeout_cb },
+/* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+   { ELM_NOTIFY_EVENT_SHOW_FINISHED, _show_finished_cb },
+/* END */
    { ELM_NOTIFY_EVENT_DISMISSED, _hide_effect_finished_cb }
 );
 
@@ -109,6 +116,14 @@ _timeout_cb(void *data, const Efl_Event *event EINA_UNUSED)
    evas_object_hide(data);
    efl_event_callback_legacy_call(data, ELM_POPUP_EVENT_TIMEOUT, NULL);
 }
+
+/* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+static void
+_show_finished_cb(void *data, const Efl_Event *event EINA_UNUSED)
+{
+   efl_event_callback_legacy_call(data, ELM_POPUP_EVENT_SHOW_FINISHED, NULL);
+}
+/* END */
 
 static void
 _hide_effect_finished_cb(void *data, const Efl_Event *event EINA_UNUSED)
