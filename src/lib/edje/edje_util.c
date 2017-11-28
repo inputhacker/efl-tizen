@@ -2702,7 +2702,11 @@ _edje_object_part_text_cursor_geometry_get(Eo *obj EINA_UNUSED, Edje *ed, const 
    if (!rp) return;
    if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
      {
+        /* TIZEN_ONLY(20171128): add additional cursor function for improving performance
         _edje_entry_cursor_geometry_get(rp, x, y, w, h, NULL);
+         */
+        _edje_entry_cursor_geometry_get(rp, EDJE_CURSOR_MAIN, x, y, w, h, NULL);
+        /* END */
         if (x) *x -= ed->x;
         if (y) *y -= ed->y;
      }
@@ -2969,6 +2973,36 @@ _edje_object_part_text_cursor_coord_set(Eo *obj EINA_UNUSED, Edje *ed, const cha
 
    return EINA_FALSE;
 }
+
+/* TIZEN_ONLY(20171128): add additional cursor function for improving performance */
+EOLIAN void
+_edje_object_part_text_cursor_coord_get(Eo *obj EINA_UNUSED, Edje *ed, const char *part, Edje_Cursor cur, Evas_Coord *x, Evas_Coord *y)
+{
+   Edje_Real_Part *rp;
+
+   if ((!ed) || (!part)) return;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return;
+   if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
+     {
+        return _edje_entry_cursor_geometry_get(rp, cur, x, y, NULL, NULL, NULL);
+     }
+}
+
+EOLIAN void
+_edje_object_part_text_cursor_size_get(Eo *obj EINA_UNUSED, Edje *ed, const char *part, Edje_Cursor cur, Evas_Coord *w, Evas_Coord *h)
+{
+   Edje_Real_Part *rp;
+
+   if ((!ed) || (!part)) return;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return;
+   if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
+     {
+        return _edje_entry_cursor_geometry_get(rp, cur, NULL, NULL, w, h, NULL);
+     }
+}
+/* END */
 
 EOLIAN Eina_Bool
 _edje_object_part_text_cursor_is_format_get(Eo *obj EINA_UNUSED, Edje *ed, const char *part, Edje_Cursor cur)

@@ -91,6 +91,11 @@ struct _Item_Obj
    Evas_Object           *obj;
 };
 
+/* TIZEN_ONLY(20171128): add additional cursor function for improving performance */
+static Evas_Textblock_Cursor *
+_cursor_get(Edje_Real_Part *rp, Edje_Cursor cur);
+/* END */
+
 #ifdef HAVE_ECORE_IMF
 static void
 _preedit_clear(Entry *en)
@@ -3764,13 +3769,21 @@ _edje_entry_items_list(Edje_Real_Part *rp)
    return en->itemlist;
 }
 
+/* TIZEN_ONLY(20171128): add additional cursor function for improving performance
 void
 _edje_entry_cursor_geometry_get(Edje_Real_Part *rp, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_BiDi_Direction *cdir)
+ */
+void
+_edje_entry_cursor_geometry_get(Edje_Real_Part *rp, Edje_Cursor cur, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_BiDi_Direction *cdir)
+/* END */
 {
    Evas_Coord x, y, w, h, xx, yy, ww, hh;
    Entry *en;
    Evas_Textblock_Cursor_Type cur_type;
    Evas_BiDi_Direction dir;
+   /* TIZEN_ONLY(20171128): add additional cursor function for improving performance */
+   Evas_Textblock_Cursor *c = NULL;
+   /* END */
 
    if ((rp->type != EDJE_RP_TYPE_TEXT) ||
        (!rp->typedata.text)) return;
@@ -3788,10 +3801,19 @@ _edje_entry_cursor_geometry_get(Edje_Real_Part *rp, Evas_Coord *cx, Evas_Coord *
         cur_type = EVAS_TEXTBLOCK_CURSOR_UNDER;
      }
 
+   /* TIZEN_ONLY(20171128): add additional cursor function for improving performance */
+   c = _cursor_get(rp, cur);
+   if (!c) return;
+   /* END */
+
    x = y = w = h = -1;
    xx = yy = ww = hh = -1;
    evas_object_geometry_get(rp->object, &x, &y, &w, &h);
+   /* TIZEN_ONLY(20171128): add additional cursor function for improving performance
    evas_textblock_cursor_geometry_get(en->cursor, &xx, &yy, &ww, &hh, &dir, cur_type);
+    */
+   evas_textblock_cursor_geometry_get(c, &xx, &yy, &ww, &hh, &dir, cur_type);
+   /* END */
    if (ww < 1) ww = 1;
    if (rp->part->cursor_mode == EDJE_ENTRY_CURSOR_MODE_BEFORE)
      edje_object_size_min_restricted_calc(en->cursor_fg, &ww, NULL, ww, 0);
@@ -3819,7 +3841,7 @@ _edje_entry_cursor_on_mouse_geometry_get(Edje_Real_Part *rp, Evas_Coord *cx, Eva
 
    if (!en->cursor_on_mouse)
      {
-        _edje_entry_cursor_geometry_get(rp, cx, cy, cw, ch, cdir);
+        _edje_entry_cursor_geometry_get(rp, EDJE_CURSOR_MAIN, cx, cy, cw, ch, cdir);
      }
    else
      {
@@ -4876,7 +4898,11 @@ _edje_entry_imf_cursor_location_set(Entry *en)
    Evas_BiDi_Direction dir;
    if (!en || !en->rp || !en->imf_context) return;
 
+   /* TIZEN_ONLY(20171128): add additional cursor function for improving performance
    _edje_entry_cursor_geometry_get(en->rp, &cx, &cy, &cw, &ch, &dir);
+    */
+   _edje_entry_cursor_geometry_get(en->rp, EDJE_CURSOR_MAIN, &cx, &cy, &cw, &ch, &dir);
+   /* END */
    ecore_imf_context_cursor_location_set(en->imf_context, cx, cy, cw, ch);
    ecore_imf_context_bidi_direction_set(en->imf_context, (Ecore_IMF_BiDi_Direction)dir);
 #else

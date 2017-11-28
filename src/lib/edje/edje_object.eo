@@ -328,13 +328,45 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
 
             return: bool; [[$true on success, false on error.]]
          }
+         /* TIZEN_ONLY(20171128): add additional cursor function for improving performance
          values {
             part: const(char)*; [[The part containing the object.]]
             cur: Edje.Cursor; [[The cursor to adjust.]]
             x: Evas.Coord; [[X Coordinate.]]
             y: Evas.Coord; [[Y Coordinate.]]
          }
+          */
+         get {
+            [[Get a position of the given cursor
+
+              \@internal
+            ]]
+         }
+         keys {
+            part: const(char)*; [[The part containing the object.]]
+            cur: Edje.Cursor; [[The cursor to adjust.]]
+         }
+         values {
+            x: Evas.Coord; [[X Coordinate.]]
+            y: Evas.Coord; [[Y Coordinate.]]
+         }
+         /* END */
       }
+      /* TIZEN_ONLY(20171128): add additional cursor function for improving performance */
+      @property part_text_cursor_size @internal {
+         get {
+            [[Get a size of the given cursor]]
+         }
+         keys {
+            part: const(char)*; [[The part containing the object.]]
+            cur: Edje.Cursor; [[The cursor to adjust.]]
+         }
+         values {
+            w: Evas.Coord; [[Width.]]
+            h: Evas.Coord; [[Height.]]
+         }
+      }
+      /* END */
       @property part_text_cursor_end {
          set {
             [[Moves the cursor to the end of the text part.

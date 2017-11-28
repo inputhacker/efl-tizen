@@ -2787,7 +2787,11 @@ const Eina_List *_edje_entry_anchor_geometry_get(Edje_Real_Part *rp, const char 
 const Eina_List *_edje_entry_anchors_list(Edje_Real_Part *rp);
 Eina_Bool _edje_entry_item_geometry_get(Edje_Real_Part *rp, const char *item, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch);
 const Eina_List *_edje_entry_items_list(Edje_Real_Part *rp);
+/* TIZEN_ONLY(20171128): add additional cursor function for improving performance
 void _edje_entry_cursor_geometry_get(Edje_Real_Part *rp, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_BiDi_Direction *cdir);
+ */
+void _edje_entry_cursor_geometry_get(Edje_Real_Part *rp, Edje_Cursor cur, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_BiDi_Direction *cdir);
+/* END */
 /* TIZEN_ONLY(20161110): keep cursor position on mouse down and move */
 void _edje_entry_cursor_on_mouse_geometry_get(Edje_Real_Part *rp, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_BiDi_Direction *cdir);
 /* END */
