@@ -767,6 +767,9 @@ EAPI const char      *elm_widget_theme_element_get(const Evas_Object *obj);
 EAPI Eina_Bool        elm_widget_theme_style_set(Evas_Object *obj, const char *name);
 EAPI const char      *elm_widget_theme_style_get(const Evas_Object *obj);
 EAPI Efl_Ui_Theme_Apply elm_widget_element_update(Evas_Object *obj, Evas_Object *component, const char *name);
+//TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
+EAPI Evas_Object     *elm_widget_part_access_object_get(const Evas_Object *obj, const char *part);
+//
 //TIZEN_ONLY(20171108): make atspi_proxy work
 EAPI Eo*              _elm_atspi_bridge_utils_plug_create(Eo *parent, const char *svcname, int svcnum);
 EAPI Eo*              _elm_atspi_bridge_utils_socket_create(Eo *parent, const char *svcname, int svcnum);

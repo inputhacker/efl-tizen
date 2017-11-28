@@ -5816,6 +5816,15 @@ _elm_widget_focus_manager_create(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd 
    return NULL;
 }
 
+//TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
+EOLIAN static Evas_Object*
+_elm_widget_part_access_object_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, const char *part EINA_UNUSED)
+{
+   WRN("The %s widget does not implement the \"part_access_object_get\" functions.",
+       efl_class_name_get(efl_class_get(obj)));
+   return NULL;
+}
+//
 
 /* Legacy APIs */
 

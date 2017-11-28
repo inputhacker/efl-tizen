@@ -2104,6 +2104,14 @@ elm_object_focus_region_show_mode_set(Evas_Object *obj, Elm_Focus_Region_Show_Mo
    elm_widget_focus_region_show_mode_set(obj, mode);
 }
 
+//TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
+EAPI Evas_Object *elm_object_part_access_object_get(const Evas_Object *obj, const char *part)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
+   return elm_widget_part_access_object_get(obj, part);
+}
+//
+
 // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
 void *
 _elm_object_accessibility_currently_highlighted_get()

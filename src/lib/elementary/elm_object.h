@@ -192,6 +192,21 @@ EAPI void                         elm_object_access_info_set(Evas_Object *obj, c
  */
 EAPI const char *elm_object_access_info_get(Evas_Object *obj);
 
+//TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
+/**
+ * @brief Get the access object which is registered to part
+ *
+ * @param obj The object
+ * @param part The object's part name to get access object
+ *
+ * @ingroup Elm_General
+ *
+ * @if WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Evas_Object *elm_object_part_access_object_get(const Evas_Object *obj, const char *part);
+//
+
 /**
  * Get a named object from the children
  *

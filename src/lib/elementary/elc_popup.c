@@ -1551,6 +1551,14 @@ _key_action_escape(Evas_Object *obj, const char *params EINA_UNUSED)
    return EINA_TRUE;
 }
 
+//TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
+EOLIAN static Evas_Object*
+_elm_popup_elm_widget_part_access_object_get(const Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, const char *part)
+{
+   return _access_object_get(obj, part);
+}
+//
+
 EOLIAN static void
 _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
 {
