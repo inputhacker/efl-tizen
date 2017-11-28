@@ -8446,6 +8446,20 @@ _elm_genlist_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
    //TIZEN_ONLY(20160602) added name of group item
    Elm_Genlist_Item_Type genlist_item_type = elm_genlist_item_type_get(eo_it);
    //
+   //TIZEN ONLY (160609) : Added in order to read when group item contain checkbox, sub text and normal as per UX guide 0.3.
+   Eina_List *children = NULL, *l;
+   Eo *item;
+   Eina_Bool flag_contain_checkbox = EINA_FALSE;
+   children = efl_access_children_get(eo_it);
+   EINA_LIST_FOREACH(children, l, item)
+     {
+        if (efl_isa((item), EFL_UI_CHECK_CLASS))
+          {
+             flag_contain_checkbox = EINA_TRUE;
+             break;
+          }
+     }
+   //
 
    buf = eina_strbuf_new();
 
@@ -8454,53 +8468,6 @@ _elm_genlist_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
         Eina_List *texts;
         const char *key;
 
-        //TIZEN ONLY (160609) : Added in order to read when group item contain checkbox, sub text and normal as per UX guide 0.3.
-        Eina_Bool flag_contain_checkbox = EINA_FALSE;
-        Eina_Bool flag_group_index = EINA_FALSE;
-        Eina_Bool flag_group_title = EINA_FALSE;
-        Eina_Bool flag_sub_title = EINA_FALSE;
-
-        texts =
-           elm_widget_stringlist_get(edje_object_data_get(VIEW(it), "texts"));
-
-        EINA_LIST_FREE(texts, key)
-          {
-             char *str_markup = it->itc->func.text_get
-                ((void *)WIDGET_ITEM_DATA_GET(EO_OBJ(it)), WIDGET(it), key);
-             char *str_utf8 = _elm_util_mkup_to_text(str_markup);
-             free(str_markup);
-             if(str_utf8)
-               {
-                  free(str_utf8);
-                  if(elm_genlist_item_type_get(eo_it) == ELM_GENLIST_ITEM_GROUP || (genlist_item_type & ELM_GENLIST_ITEM_TREE))
-                    {
-                       Eina_List *child = NULL;
-                       child = efl_access_children_get(eo_it);
-                       for ( ; child != NULL; child = child->next)
-                         {
-                            if (EINA_UNLIKELY(!efl_isa((child), EFL_UI_CHECK_CLASS)))
-                              {
-                                 flag_contain_checkbox = EINA_TRUE;
-                                 break;
-                              }
-                         }
-                       if(!flag_contain_checkbox)
-                         {
-                            flag_group_index = EINA_TRUE;
-                            if(!strcmp(key, "elm.text"))
-                              {
-                                 flag_group_title = EINA_TRUE;
-                              }
-                            else if(!strcmp(key, "elm.text.end"))
-                              {
-                                 flag_sub_title = EINA_TRUE;
-                              }
-                        }
-                   }
-               }
-          }
-        //
-
         texts =
            elm_widget_stringlist_get(edje_object_data_get(VIEW(it), "texts"));
 
@@ -8512,34 +8479,19 @@ _elm_genlist_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
 
              free(str_markup);
 
-             //TIZEN ONLY (160609) : Added in order to read when group item contain checkbox, sub text and normal as per UX guide 0.3
              if (str_utf8)
                {
                   if (eina_strbuf_length_get(buf) > 0) eina_strbuf_append(buf, ", ");
                   eina_strbuf_append(buf, str_utf8);
                   free(str_utf8);
-
-                  if (!flag_contain_checkbox)
-                    {
-                       if (flag_group_title && !flag_sub_title)
-                         {
-                            eina_strbuf_append(buf,", group index");
-                         }
-                       else if(flag_group_title)
-                         {
-                            eina_strbuf_append(buf,", group index title");
-                            flag_group_title = EINA_FALSE;
-                         }
-                       else if(flag_sub_title)
-                         {
-                            eina_strbuf_append(buf,", subtext");
-                         }
-                    }
                }
-             //
-
           }
      }
+
+   //TIZEN ONLY (160609) : Added in order to read when group item contain checkbox, sub text and normal as per UX guide 0.3.
+   if (((genlist_item_type & ELM_GENLIST_ITEM_GROUP) || (genlist_item_type & ELM_GENLIST_ITEM_TREE)) && !flag_contain_checkbox)
+     eina_strbuf_append(buf,", header");
+   //
 
    accessible_name = eina_strbuf_string_steal(buf);
    eina_strbuf_free(buf);
