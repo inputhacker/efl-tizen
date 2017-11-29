@@ -720,6 +720,11 @@ _elm_popup_elm_layout_sizing_eval(Eo *obj, Elm_Popup_Data *sd)
         elm_popup_align_get(obj, &horizontal, &vertical);
         evas_object_geometry_get(sd->parent, NULL, NULL, &w, &h);
 
+        /* TIZEN_ONLY(20161117): fix content area height problem when vertical align fill is set */
+        if (sd->max_sc_h != -1)
+          h = sd->max_sc_h;
+        /* END */
+
         if (EINA_DBL_EQ(horizontal, ELM_NOTIFY_ALIGN_FILL))
           minw = w;
         if (EINA_DBL_EQ(vertical, ELM_NOTIFY_ALIGN_FILL))
