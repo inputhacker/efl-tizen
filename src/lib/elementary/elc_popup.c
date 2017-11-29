@@ -197,6 +197,9 @@ _scroller_size_calc(Evas_Object *obj)
    Evas_Coord h_title = 0;
    Evas_Coord h_action_area = 0;
    const char *action_area_height;
+   /* TIZEN_ONLY(20170202): fix popup max height */
+   Evas_Coord y, wy;
+   /* END */
 
    ELM_POPUP_DATA_GET(obj, sd);
    /* TIZEN_ONLY(20160623):Apply popup compress mode UX */
@@ -207,7 +210,16 @@ _scroller_size_calc(Evas_Object *obj)
 
    sd->scr_size_recalc = EINA_FALSE;
    sd->max_sc_h = -1;
+   /* TIZEN_ONLY(20170202): fix popup max height
+      adjust notify's height in case height of popup's parent is smaller than window's
+      and there is indicator below the popup
    evas_object_geometry_get(sd->notify, NULL, NULL, NULL, &h);
+   */
+   evas_object_geometry_get(sd->notify, NULL, &y, NULL, &h);
+
+   evas_object_geometry_get(elm_widget_top_get(sd->notify), NULL, &wy, NULL, NULL);
+   h += (y - wy);
+   /* END */
    if (sd->title_text || sd->title_icon)
      edje_object_part_geometry_get(elm_layout_edje_get(sd->main_layout),
                                    "elm.bg.title", NULL, NULL, NULL, &h_title);
