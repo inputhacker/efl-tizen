@@ -612,6 +612,9 @@ abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
       Efl.Access.Component.highlight_grab;
       Efl.Access.Component.highlight_clear;
       //
+      //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
+      Efl.Access.can_highlight { get; set; }
+      //
       Efl.Ui.Focus.User.focus_manager { get; }
       Efl.Ui.Focus.User.focus_parent { get; }
       Efl.Ui.Focus.Object.focus_geometry { get; }

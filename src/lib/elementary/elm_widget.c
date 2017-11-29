@@ -4134,6 +4134,8 @@ _elm_widget_item_efl_access_state_set_get(Eo *eo_item, Elm_Widget_Item_Data *ite
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
    if (item->can_highlight)
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+   else
+     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
 
    if (_elm_object_accessibility_currently_highlighted_get() == (void*)item->view)
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
@@ -5600,6 +5602,8 @@ _elm_widget_efl_access_state_set_get(Eo *obj, Elm_Widget_Smart_Data *pd)
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
    if (pd->can_highlight)
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+   else
+     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
 
    if (_elm_object_accessibility_currently_highlighted_get() == (void*)pd->obj)
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
@@ -5749,6 +5753,32 @@ _elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_D
    elm_object_accessibility_highlight_set(sd->view, EINA_FALSE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    return EINA_TRUE;
+}
+//
+
+//TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
+EOLIAN static void
+_elm_widget_efl_access_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Eina_Bool can_highlight)
+{
+   _pd->can_highlight = !!can_highlight;
+}
+
+EOLIAN static Eina_Bool
+_elm_widget_efl_access_can_highlight_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   return _pd->can_highlight;
+}
+
+EOLIAN static void
+_elm_widget_item_efl_access_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd, Eina_Bool can_highlight)
+{
+   _pd->can_highlight = !!can_highlight;
+}
+
+EOLIAN static Eina_Bool
+_elm_widget_item_efl_access_can_highlight_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
+{
+	return _pd->can_highlight;
 }
 //
 

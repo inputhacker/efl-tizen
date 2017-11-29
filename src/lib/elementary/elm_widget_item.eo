@@ -542,6 +542,9 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
            Efl.Object.destructor;
            Efl.Access.state_set { get; }
            Efl.Access.attributes { get; }
+          //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
+           Efl.Access.can_highlight { get; set; }
+          //
            Efl.Access.Component.extents { get; set; }
            Efl.Access.Component.alpha { get; }
            Efl.Access.Component.layer { get; }

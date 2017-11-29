@@ -403,6 +403,19 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
             states: Efl.Access.State_Set; [[Accessible state set]]
          }
       }
+      //TIZEN_ONLY(20160726): add API efl_access_can_highlight_set/get
+      @property can_highlight @protected {
+         get {
+            [[Gets highlightable of given widget.]]
+         }
+         set {
+            [[Sets highlightable to given widget.]]
+         }
+         values {
+            can_highlight: bool; [[If \@c true, the object is highlightable]]
+         }
+      }
+      //
       event_handler_add @class @protected {
          [[Register accessibility event listener]]
          params {
