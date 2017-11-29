@@ -767,6 +767,12 @@ _elm_popup_elm_layout_sizing_eval(Eo *obj, Elm_Popup_Data *sd)
 
         evas_object_size_hint_min_set(sd->content_area, minw, minh);
 
+        /* TIZEN_ONLY(20161107): supprot scrollable content */
+        //FIXME: genlist only now, it should be changed to support other scrollable.
+        if (sd->scrollable_content)
+          minh = sd->min_scrollable_content_h;
+        /* END */
+
         if (minh > sd->max_sc_h)
           evas_object_size_hint_min_set(sd->spacer, minw, sd->max_sc_h);
         else
@@ -1240,6 +1246,23 @@ _item_focus_change(void *data, const Efl_Event *event EINA_UNUSED)
      }
 }
 
+/* TIZEN_ONLY(20161107): support scrollable content */
+//FIXME: genlist only now, it should be changed to support other scrollable.
+static void
+_scrollable_content_loaded_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   ELM_POPUP_DATA_GET(data, sd);
+
+   Evas_Coord h;
+   elm_interface_scrollable_content_size_get(obj, NULL, &h);
+
+   sd->scrollable_content = EINA_TRUE;
+   sd->min_scrollable_content_h = h;
+
+   elm_layout_sizing_eval(data);
+}
+/* END */
+
 EOLIAN static Eo *
 _elm_popup_item_efl_object_constructor(Eo *eo_it, Elm_Popup_Item_Data *it)
 {
@@ -1417,6 +1440,10 @@ _content_text_set(Evas_Object *obj,
         _elm_access_text_set(_elm_access_info_get(ao), ELM_ACCESS_INFO, text);
      }
 
+   /* TIZEN_ONLY(20161107): support scrollable content */
+   //FIXME: genlist only now, it should be changed to support other scrollable.
+   sd->scrollable_content = EINA_FALSE;
+   /* END */
 end:
    return EINA_TRUE;
 }
@@ -1530,6 +1557,11 @@ _content_set(Evas_Object *obj,
 {
    ELM_POPUP_DATA_GET(obj, sd);
 
+   /* TIZEN_ONLY(20161107): support scrollable content */
+   //FIXME: genlist only now, it should be changed to support other scrollable.
+   sd->scrollable_content = EINA_FALSE;
+   /* END */
+
    if (sd->content && sd->content == content) return EINA_TRUE;
    if (sd->items)
      {
@@ -1549,6 +1581,12 @@ _content_set(Evas_Object *obj,
 
         evas_object_show(content);
         efl_content_set(efl_part(sd->content_area, CONTENT_PART), content);
+
+        /* TIZEN_ONLY(20161107): support scrollable content */
+        //FIXME: genlist only now, it should be changed to support other scrollable.
+        if (efl_isa(content, ELM_INTERFACE_SCROLLABLE_MIXIN))
+          evas_object_smart_callback_add(content, "loaded", _scrollable_content_loaded_cb, obj);
+        /* END */
 
         evas_object_event_callback_add
           (content, EVAS_CALLBACK_DEL, _on_content_del, obj);
@@ -1778,6 +1816,11 @@ _content_unset(Evas_Object *obj)
    content = efl_content_unset(efl_part(sd->content_area, CONTENT_PART));
    sd->content = NULL;
 
+   /* TIZEN_ONLY(20161107): support scrollable content */
+   //FIXME: genlist only now, it should be changed to support other scrollable.
+   sd->scrollable_content = EINA_FALSE;
+   /* END */
+
    elm_layout_sizing_eval(obj);
 
    return content;
@@ -1882,6 +1925,10 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
 
    /* TIZEN_ONLY(20160624): add a allow eval flag not to call another sizing eval during sizing eval */
    priv->allow_eval = EINA_TRUE;
+   /* END */
+   /* TIZEN_ONLY(20161107): support scrollable content */
+   //FIXME: genlist only now, it should be changed to support other scrollable.
+   priv->scrollable_content = EINA_FALSE;
    /* END */
 
    snprintf(style, sizeof(style), "popup/%s", elm_widget_style_get(obj));

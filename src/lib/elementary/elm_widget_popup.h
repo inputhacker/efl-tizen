@@ -68,6 +68,12 @@ struct _Elm_Popup_Data
    //TIZEN_ONLY(20160624): add a allow eval flag not to call another sizing eval during sizing eval
    Eina_Bool             allow_eval : 1;
    //
+
+   /* /TIZEN_ONLY(20161107): Supprot scrollable content */
+   //FIXME: genlist only now, it should be changed to support other scrollable.
+   Evas_Coord            min_scrollable_content_h;
+   Eina_Bool             scrollable_content: 1;
+   /* END */
 };
 
 typedef struct _Elm_Popup_Item_Data Elm_Popup_Item_Data;
