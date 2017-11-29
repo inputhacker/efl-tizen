@@ -48,6 +48,9 @@ struct _Elm_Popup_Data
    Evas_Object          *parent; /**< Pointer to remove _parent_resize_cb when popup is deleted. */
    Eina_List            *items;
    const char           *title_text;
+   /* TIZE_ONLY(20160922): add subtitle text code of popup */
+   const char           *subtitle_text;
+   /* END */
    Action_Area_Data     *buttons[ELM_POPUP_ACTION_BUTTON_MAX];
    Elm_Wrap_Type         content_text_wrap_type;
    unsigned int          last_button_number;

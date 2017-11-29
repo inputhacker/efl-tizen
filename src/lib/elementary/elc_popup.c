@@ -356,6 +356,9 @@ _elm_popup_efl_canvas_group_group_del(Eo *obj, Elm_Popup_Data *sd)
    ELM_SAFE_FREE(sd->scr, evas_object_del);
    ELM_SAFE_FREE(sd->content, evas_object_del);
    ELM_SAFE_FREE(sd->title_text, eina_stringshare_del);
+   /* TIZEN_ONLY(20160922): add subtitle text */
+   ELM_SAFE_FREE(sd->subtitle_text, eina_stringshare_del);
+   /* END */
 
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }
@@ -641,6 +644,13 @@ _elm_popup_elm_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
      }
    if (sd->title_icon)
      elm_layout_signal_emit(sd->main_layout, "elm,state,title,icon,visible", "elm");
+   /* TIZEN_ONLY(20160922): add subtitle text */
+   if (sd->subtitle_text)
+     {
+        elm_layout_text_set(sd->main_layout, "elm,text,subtitle", sd->subtitle_text);
+        elm_layout_signal_emit(sd->main_layout, "elm,state,subtitle,text,visible", "elm");
+     }
+   /* END */
 
    _populate_theme_scroll(sd);
    if (!sd->scroll && sd->theme_scroll)
@@ -1275,6 +1285,32 @@ _title_text_set(Evas_Object *obj,
    return EINA_TRUE;
 }
 
+/* TIZEN_ONLY(20160922): add subtitle text */
+static Eina_Bool
+_subtitle_text_set(Evas_Object *obj,
+                const char *text)
+{
+   ELM_POPUP_DATA_GET(obj, sd);
+
+   if (sd->subtitle_text == text) return EINA_TRUE;
+
+   eina_stringshare_replace(&sd->subtitle_text, text);
+
+   //bare edje here because we're inside the hook, already
+   edje_object_part_text_escaped_set
+     (elm_layout_edje_get(sd->main_layout), "elm.text.subtitle", text);
+
+   if (sd->subtitle_text)
+     elm_layout_signal_emit(sd->main_layout, "elm,state,subtitle,text,visible", "elm");
+   else
+     elm_layout_signal_emit(sd->main_layout, "elm,state,subtitle,text,hidden", "elm");
+
+   edje_object_message_signal_process(elm_layout_edje_get(sd->main_layout));
+
+   return EINA_TRUE;
+}
+/* END */
+
 static Eina_Bool
 _content_text_set(Evas_Object *obj,
                   const char *text)
@@ -1366,6 +1402,10 @@ _elm_popup_text_set(Eo *obj, Elm_Popup_Data *_pd, const char *part, const char *
      }
    else if (!strcmp(part, "title,text"))
      int_ret = _title_text_set(obj, label);
+   /* TIZEN_ONLY(20160922): add subtitle text */
+   else if(!strcmp(part, "subtitle,text"))
+     int_ret = _subtitle_text_set(obj, label);
+   /* END */
    else
      int_ret = elm_layout_text_set(_pd->main_layout, part, label);
 
@@ -1379,6 +1419,14 @@ _title_text_get(const Elm_Popup_Data *sd)
 {
    return sd->title_text;
 }
+
+/* TIZEN_ONLY(20160922): add subtitle text */
+static const char *
+_subtitle_text_get(const Elm_Popup_Data *sd)
+{
+   return sd->subtitle_text;
+}
+/* END */
 
 static const char *
 _content_text_get(const Elm_Popup_Data *sd)
@@ -1403,6 +1451,10 @@ _elm_popup_text_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *_pd, const char *part)
      text = _content_text_get(_pd);
    else if (!strcmp(part, "title,text"))
      text = _title_text_get(_pd);
+   /* TIZEN_ONLY(20160922): add subtitle text */
+   else if (!strcmp(part, "subtitle,text"))
+     text = _subtitle_text_get(_pd);
+   /* END */
    else
      text = elm_layout_text_get(_pd->main_layout, part);
 
