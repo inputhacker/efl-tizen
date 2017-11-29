@@ -157,6 +157,14 @@ _elm_notify_elm_widget_theme_apply(Eo *obj, Elm_Notify_Data *sd)
 
    _sizing_eval(obj);
 
+   /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
+   if (sd->show_finished)
+   {
+      elm_layout_signal_emit(sd->block_events, "elm,state,visible", "elm");
+      edje_object_signal_emit(sd->notify, "elm,state,visible", "elm");
+   }
+   /* END */
+
    return int_ret;
 }
 
@@ -429,6 +437,8 @@ _show_finished_cb(void *data,
                   const char *emission EINA_UNUSED,
                   const char *source EINA_UNUSED)
 {
+   ELM_NOTIFY_DATA_GET(data, sd);
+   sd->show_finished = EINA_TRUE;
    efl_event_callback_legacy_call(data, ELM_NOTIFY_EVENT_SHOW_FINISHED, NULL);
 }
 /* END */
@@ -445,6 +455,9 @@ _hide_finished_cb(void *data,
    if (!sd->allow_events) evas_object_hide(sd->block_events);
    efl_gfx_visible_set(efl_super(data, MY_CLASS), EINA_FALSE);
    efl_event_callback_legacy_call(data, ELM_NOTIFY_EVENT_DISMISSED, NULL);
+   /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
+   sd->show_finished = EINA_FALSE;
+   /* END */
 }
 
 EOLIAN static void
@@ -454,6 +467,10 @@ _elm_notify_efl_canvas_group_group_add(Eo *obj, Elm_Notify_Data *priv)
    elm_widget_sub_object_parent_add(obj);
 
    priv->allow_events = EINA_TRUE;
+
+   /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
+   priv->show_finished = EINA_FALSE;
+   /* END */
 
    priv->notify = edje_object_add(evas_object_evas_get(obj));
    evas_object_smart_member_add(priv->notify, obj);

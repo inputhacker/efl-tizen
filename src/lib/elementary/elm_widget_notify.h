@@ -38,6 +38,10 @@ struct _Elm_Notify_Data
    Eina_Bool                allow_events : 1;
    Eina_Bool                had_hidden : 1;
    Eina_Bool                in_timeout : 1;
+
+   /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
+   Eina_Bool                show_finished;
+   /* END */
 };
 
 /**
