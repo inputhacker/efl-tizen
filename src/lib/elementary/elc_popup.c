@@ -1640,7 +1640,27 @@ _elm_popup_content_set(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, const char *par
         _action_button_set(obj, content, i);
      }
    else
+   /* TIZEN_ONLY(20161206): support tizen custom signal (tizen_2.3)
      ret = efl_content_set(efl_part(_pd->main_layout, part), content);
+    */
+     {
+        if (strcmp("elm.swallow.icon", part) != 0 &&
+            strcmp("elm.swallow.end", part) != 0)
+          {
+             const char *type;
+             char buf[1024];
+             if (strncmp(part, "elm.swallow.", sizeof("elm.swallow.") - 1) == 0)
+               type = part + sizeof("elm.swallow.")-1;
+             else
+               type = part;
+
+             snprintf(buf, sizeof(buf), "elm,state,tizen,%s,show", type);
+             elm_layout_signal_emit(_pd->main_layout, buf, "elm");
+          }
+
+        ret = efl_content_set(efl_part(_pd->main_layout, part), content);
+     }
+   /* END */
 
    elm_layout_sizing_eval(obj);
 
@@ -1766,7 +1786,27 @@ _elm_popup_content_unset(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, const char *p
         _button_remove(obj, i, EINA_FALSE);
      }
    else
+   /* TIZEN_ONLY(20161206): support tizen custom signal (tizen_2.3)
      goto err;
+    */
+     {
+        if (strcmp("elm.swallow.icon", part) != 0 &&
+            strcmp("elm.swallow.end", part) != 0)
+          {
+             const char *type;
+             char buf[1024];
+             if (strncmp(part, "elm.swallow.", sizeof("elm.swallow.") - 1) == 0)
+               type = part + sizeof("elm.swallow.")-1;
+             else
+               type = part;
+
+             snprintf(buf, sizeof(buf), "elm,state,tizen,%s,hide", type);
+             elm_layout_signal_emit(_pd->main_layout, buf, "elm");
+          }
+
+        content = efl_content_unset(efl_part(_pd->main_layout, part));
+     }
+   /* END */
 
    return content;
 
