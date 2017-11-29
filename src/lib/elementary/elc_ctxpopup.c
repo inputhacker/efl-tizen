@@ -1563,6 +1563,30 @@ _elm_ctxpopup_item_init(Eo *eo_item,
    sd->dir = ELM_CTXPOPUP_DIRECTION_UNKNOWN;
 }
 
+//TIZEN ONLY(20160918): name interface added
+EOLIAN static const char*
+_elm_ctxpopup_efl_access_name_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
+{
+   Eina_Strbuf *buf;
+   const char *accessible_name = NULL;
+   const char *style = elm_widget_style_get(obj);
+
+   accessible_name = efl_access_name_get(efl_super(obj, ELM_CTXPOPUP_CLASS));
+   if (accessible_name) return accessible_name;
+
+   buf = eina_strbuf_new();
+   if (!strcmp(style, "more/default"))
+     eina_strbuf_append_printf(buf, "%s", N_("More menu popup"));
+   else
+     eina_strbuf_append_printf(buf, "%s", E_("Alert"));
+
+   accessible_name = _elm_widget_accessible_plain_name_get(obj, eina_strbuf_string_get(buf));
+   eina_strbuf_free(buf);
+
+   return accessible_name;
+}
+//
+
 EOLIAN static const Efl_Access_Action_Data*
 _elm_ctxpopup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd EINA_UNUSED)
 {
