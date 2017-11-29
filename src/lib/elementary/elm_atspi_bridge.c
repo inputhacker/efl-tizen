@@ -127,6 +127,9 @@ typedef struct _Elm_Atspi_Bridge_Data
    Evas_Point socket_offset;
    //
    Eina_Bool connected : 1;
+   // TIZEN_ONLY(20160802): do not handle events if the window is not activated
+   Eina_Bool window_activated : 1;
+   //
 } Elm_Atspi_Bridge_Data;
 
 
@@ -4068,6 +4071,13 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
    const char *type_desc;
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(data, pd);
 
+   // TIZEN_ONLY(20160802): do not handle events if the window is not activated
+   if ((state_data->type == EFL_ACCESS_STATE_ACTIVE) && efl_isa(event->object, EFL_UI_WIN_CLASS))
+     {
+        pd->window_activated = state_data->new_value;
+     }
+   //
+
    if (!STATE_TYPE_GET(pd->object_state_broadcast_mask, state_data->type))
      {
         efl_event_callback_stop(event->object);
@@ -4537,10 +4547,16 @@ _bridge_cache_build(Eo *bridge, void *obj)
         if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_ACTIVE))
           {
              efl_access_window_activated_signal_emit(obj);
+             // TIZEN_ONLY(20160802): do not handle events if the window is not activated
+             pd->window_activated = EINA_TRUE;
+             //
           }
         else
           {
              efl_access_window_deactivated_signal_emit(obj);
+             // TIZEN_ONLY(20160802): do not handle events if the window is not activated
+             pd->window_activated = EINA_FALSE;
+             //
           }
      }
    children = efl_access_children_get(obj);
@@ -4965,6 +4981,10 @@ _elm_atspi_bridge_key_filter(void *data, void *loop EINA_UNUSED, int type, void 
    Eo *bridge = data;
 
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(bridge, pd, EINA_TRUE);
+
+   // TIZEN_ONLY(20160802): do not handle events if the window is not activated
+   if (!pd->window_activated) return EINA_TRUE;
+   //
 
    if ((type != ECORE_EVENT_KEY_DOWN) && (type != ECORE_EVENT_KEY_UP)) return EINA_TRUE;
 
