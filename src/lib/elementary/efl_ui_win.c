@@ -2762,11 +2762,14 @@ _efl_ui_win_efl_canvas_seat_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, int id
 static void
 _elm_win_accessibility_highlight_obj_del(void *data,
                            Evas *e EINA_UNUSED,
-                           Evas_Object *obj EINA_UNUSED,
+                           Evas_Object *obj,
                            void *event_info EINA_UNUSED)
 {
    ELM_WIN_DATA_GET(data, sd);
-
+   // TIZEN_ONLY(20160805): set _accessibility_currently_highlighted_obj to NULL in object delete callback
+   /* set _accessibility_currently_highlighted_obj to NULL */
+   elm_object_accessibility_highlight_set(obj, EINA_FALSE);
+   //
    _elm_win_accessibility_highlight_hide(sd->obj);
 }
 

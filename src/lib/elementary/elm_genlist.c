@@ -8897,36 +8897,39 @@ static Eina_Bool _atspi_enabled()
 EOLIAN static void
 _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data *sid EINA_UNUSED, Evas_Coord x, Evas_Coord y, Eina_Bool sig)
 {
-    if (!_atspi_enabled())
-      {
-        elm_interface_scrollable_content_pos_set(efl_super(obj, MY_CLASS), x, y, sig);
-        return;
-      }
+   if (!_atspi_enabled())
+     {
+       elm_interface_scrollable_content_pos_set(efl_super(obj, MY_CLASS), x, y, sig);
+       return;
+     }
 
-    int old_x, old_y, delta_y;
-    elm_interface_scrollable_content_pos_get(efl_super(obj, MY_CLASS), &old_x, &old_y);
-    elm_interface_scrollable_content_pos_set(efl_super(obj, MY_CLASS), x, y, sig);
-    delta_y = old_y - y;
+   int old_x, old_y, delta_y;
+   elm_interface_scrollable_content_pos_get(efl_super(obj, MY_CLASS), &old_x, &old_y);
+   elm_interface_scrollable_content_pos_set(efl_super(obj, MY_CLASS), x, y, sig);
+   delta_y = old_y - y;
 
-    //check if highlighted item is genlist descendant
-    // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
-    // Evas_Object *win = elm_object_top_widget_get(obj);
-    // Evas_Object *highlighted_obj = _elm_win_accessibility_highlight_get(win);
-    Evas_Object * highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
-    //
-    Evas_Object *parent = highlighted_obj;
-    if (efl_isa(highlighted_obj, ELM_WIDGET_CLASS))
-      {
+   //check if highlighted item is genlist descendant
+   Evas_Object * highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
+   Evas_Object *parent = highlighted_obj;
+   if (efl_isa(highlighted_obj, ELM_WIDGET_CLASS))
+     {
         while ((parent = elm_widget_parent_get(parent)))
           if (parent == obj)
             break;
-      }
-    else if (efl_isa(highlighted_obj, EDJE_OBJECT_CLASS))
-      {
+     }
+   else if (efl_isa(highlighted_obj, EDJE_OBJECT_CLASS))
+     {
         while ((parent = evas_object_smart_parent_get(parent)))
           if (parent == obj)
             break;
-      }
+     }
+   // TIZEN_ONLY(20160805): set _accessibility_currently_highlighted_obj to NULL in object delete callback
+   else
+     {
+        WRN("Improper highlighted object: %p", highlighted_obj);
+        return;
+     }
+   //
     if (parent)
       {
         int obj_x, obj_y, w, h, hx, hy, hw, hh;

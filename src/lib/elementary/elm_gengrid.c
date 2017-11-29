@@ -5913,6 +5913,13 @@ _elm_gengrid_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Gengrid_Data 
           if (parent == obj)
             break;
      }
+   // TIZEN_ONLY(20160805): set _accessibility_currently_highlighted_obj to NULL in object delete callback
+   else
+     {
+        WRN("Improper highlighted object: %p", highlighted_obj);
+        return;
+     }
+    //
     if (parent)
       {
         int obj_x, obj_y, w, h, hx, hy, hw, hh;
