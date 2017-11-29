@@ -1486,24 +1486,30 @@ _access_atspi_action_do(Evas_Object *obj, const char *params)
 
    ret = EINA_FALSE;
    if (!strcmp(params, "highlight"))
-      ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT, NULL);
+     ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT, NULL);
    else if (!strcmp(params, "unhighlight"))
-      ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_UNHIGHLIGHT, NULL);
+     ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_UNHIGHLIGHT, NULL);
+   // TIZEN_ONLY(20160708) - support elm_access used for embedded toolkit
+   else if (!strcmp(params, "highlight,first"))
+     action_by = ELM_ACCESS_ACTION_HIGHLIGHT_NEXT;
+   else if (!strcmp(params, "highlight,last"))
+     action_by = ELM_ACCESS_ACTION_HIGHLIGHT_PREV;
+   //
    else if (!strcmp(params, "highlight,next"))
-      ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT_NEXT, NULL);
+     ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT_NEXT, NULL);
    else if (!strcmp(params, "highlight,prev"))
-      ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT_PREV, NULL);
+     ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT_PREV, NULL);
    else if (!strcmp(params, "activate"))
      {
         evas_object_smart_callback_call(obj, SIG_ACTIVATED, NULL);
         ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_ACTIVATE, NULL);
      }
    else if (!strcmp(params, "value,up"))
-      ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_UP, NULL);
+     ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_UP, NULL);
    else if (!strcmp(params, "value,down"))
-      ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_DOWN, NULL);
+     ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_DOWN, NULL);
    else if (!strcmp(params, "read"))
-      ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_READ, NULL);
+     ret = _access_action_callback_call(obj, ELM_ACCESS_ACTION_READ, NULL);
 
    return ret;
 }
@@ -1514,6 +1520,10 @@ _elm_access_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, void *
    static Efl_Access_Action_Data atspi_actions[] = {
           { "highlight", NULL, "highlight", _access_atspi_action_do},
           { "unhighlight", NULL, "unhighlight", _access_atspi_action_do},
+          // TIZEN_ONLY(20160708) - support elm_access used for embedded toolkit
+          { "highlight,first", NULL, "highlight,first", _access_atspi_action_do},
+          { "highlight,last", NULL, "highlight,last", _access_atspi_action_do},
+          //
           { "highlight,next", NULL, "highlight,next", _access_atspi_action_do},
           { "highlight,prev", NULL, "highlight,prev", _access_atspi_action_do},
           { "activate", NULL, "activate", _access_atspi_action_do},
@@ -1548,6 +1558,10 @@ _elm_access_efl_access_component_highlight_grab(Eo *obj, void *pd EINA_UNUSED)
    if (!_access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT, NULL))
      efl_access_component_highlight_grab(efl_super(obj, ELM_ACCESS_CLASS));
 
+   // TIZEN_ONLY(20160708) - support elm_access used for embedded toolkit
+   action_by = ELM_ACCESS_ACTION_FIRST;
+   //
+
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    return EINA_TRUE;
 }
@@ -1557,6 +1571,10 @@ _elm_access_efl_access_component_highlight_clear(Eo *obj, void *pd EINA_UNUSED)
 {
    if (!_access_action_callback_call(obj, ELM_ACCESS_ACTION_UNHIGHLIGHT, NULL))
      efl_access_component_highlight_clear(efl_super(obj, ELM_ACCESS_CLASS));
+
+   // TIZEN_ONLY(20160708) - support elm_access used for embedded toolkit
+   action_by = ELM_ACCESS_ACTION_FIRST;
+   //
 
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    return EINA_TRUE;
