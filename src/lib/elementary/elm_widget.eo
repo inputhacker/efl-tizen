@@ -16,7 +16,7 @@ struct Efl.Ui.Widget.Focus_State {
 /* ATTENTION: Rename to Efl.Ui.Widget is imminent. */
 abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
                      Efl.Access.Component, Efl.Ui.Focus.User, Efl.Part,
-                     Efl.Ui.Focus.Object, Efl.Ui.Base, Efl.Ui.Cursor,
+                     Efl.Ui.Focus.Object, Efl.Ui.Base, Efl.Ui.Cursor, Efl.Access.Widget.Action,
                      Efl.Ui.Translatable)
 {
    [[Elementary widget abstract class]]
@@ -614,6 +614,8 @@ abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
       //
       //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
       Efl.Access.can_highlight { get; set; }
+      //TIZEN_ONLY(20160527): widget: add AtspiAction interface to all widgets
+      Efl.Access.Widget.Action.elm_actions { get; }
       //
       Efl.Ui.Focus.User.focus_manager { get; }
       Efl.Ui.Focus.User.focus_parent { get; }
@@ -629,6 +631,10 @@ abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
    }
    events {
       moved; [[Called when widget moved]]
+      // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
+      atspi,highlighted;
+      atspi,unhighlighted;
+      //
       language,changed; [[Called when widget language changed]]
       access,changed; [[Called when accessibility changed]]
    }

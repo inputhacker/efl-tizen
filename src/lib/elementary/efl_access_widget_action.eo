@@ -23,4 +23,9 @@ mixin Efl.Access.Widget.Action (Efl.Access.Action)
       Efl.Access.Action.action_description { get; set; }
       Efl.Access.Action.actions { get; }
    }
+    //TIZEN_ONLY(20160614): add callbacks for reading state changed events: cancel/stop/skip
+   events {
+      reading,state,changed;
+   }
+   //
 }

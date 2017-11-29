@@ -5,7 +5,7 @@ type Elm_Tooltip_Item_Content_Cb: __undefined_type; [[Elementary tooltip item co
 type Elm_Object_Item_Signal_Cb: __undefined_type; [[Elementary object item signal callback type]]
 
 class Elm.Widget.Item(Efl.Object, Efl.Access,
-                      Efl.Access.Component)
+                      Efl.Access.Component, Efl.Access.Widget.Action)
 {
       [[Elementary widget item class]]
       eo_prefix: elm_wdg_item;
@@ -552,6 +552,9 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
            //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
            Efl.Access.Component.highlight_grab;
            Efl.Access.Component.highlight_clear;
+           //
+           //TIZEN_ONLY(20160527): widget: add AtspiAction interface to all widgets
+           Efl.Access.Widget.Action.elm_actions { get; }
            //
       }
 }

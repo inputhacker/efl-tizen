@@ -4,6 +4,7 @@
 
 #define EFL_ACCESS_PROTECTED
 #define EFL_ACCESS_COMPONENT_PROTECTED
+#define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_WIDGET_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
 #define EFL_CANVAS_OBJECT_BETA
@@ -6474,6 +6475,20 @@ _elm_widget_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Smart_Data 
    evas_object_smart_callback_call(obj, SIG_WIDGET_ATSPI_UNHIGHLIGHTED, NULL);
    //
    return EINA_TRUE;
+}
+//
+
+//TIZEN_ONLY(20160527): widget: add AtspiAction interface to all widgets and widget_items, add handlers for reading stopped/cancelled
+EOLIAN const Efl_Access_Action_Data *
+_elm_widget_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd EINA_UNUSED)
+{
+   return NULL;
+}
+
+EOLIAN const Efl_Access_Action_Data *
+_elm_widget_item_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *pd EINA_UNUSED)
+{
+   return NULL;
 }
 //
 
