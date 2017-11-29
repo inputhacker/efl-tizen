@@ -9025,7 +9025,7 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
   else
     sd->atspi_item_to_highlight = it;//it will be highlighted when realized
 
-  efl_event_callback_call(WIDGET(it), EFL_ACCESS_EVENT_ACTIVE_DESCENDANT_CHANGED, eo_it);
+  efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
 
   return ret;
 }
@@ -9038,7 +9038,7 @@ _elm_genlist_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Gen_Item *
   if (sd->atspi_item_to_highlight == it)
       sd->atspi_item_to_highlight = NULL;
 
-  efl_event_callback_call(WIDGET(it), EFL_ACCESS_EVENT_ACTIVE_DESCENDANT_CHANGED, eo_it);
+  efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
 
   ret = efl_access_component_highlight_clear(efl_super(eo_it, ELM_GENLIST_ITEM_CLASS));
   return ret;

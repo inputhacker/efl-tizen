@@ -5498,7 +5498,7 @@ _elm_gengrid_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
    //
 
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
-   efl_event_callback_call(WIDGET(it), EFL_ACCESS_EVENT_ACTIVE_DESCENDANT_CHANGED, eo_it);
+   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
    //
    return EINA_TRUE;
 }
@@ -5513,7 +5513,7 @@ _elm_gengrid_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, El
    //
    elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
-   efl_event_callback_call(WIDGET(it), EFL_ACCESS_EVENT_ACTIVE_DESCENDANT_CHANGED, eo_it);
+   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
    //
    return EINA_TRUE;
 }

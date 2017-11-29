@@ -3951,7 +3951,7 @@ _elm_toolbar_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Toolbar_Ite
    elm_toolbar_item_show(eo_it, ELM_TOOLBAR_ITEM_SCROLLTO_IN);
    elm_object_accessibility_highlight_set(VIEW(it), EINA_TRUE);
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
-   efl_event_callback_call(WIDGET(it), EFL_ACCESS_EVENT_ACTIVE_DESCENDANT_CHANGED, eo_it);
+   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
    //
    return EINA_TRUE;
 }
@@ -3961,7 +3961,7 @@ _elm_toolbar_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, El
 {
    elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
-   efl_event_callback_call(WIDGET(it), EFL_ACCESS_EVENT_ACTIVE_DESCENDANT_CHANGED, eo_it);
+   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
    //
    return EINA_TRUE;
 }
