@@ -606,6 +606,7 @@ _ecore_wl2_input_mouse_down_send(Ecore_Wl2_Input *input, Ecore_Wl2_Window *windo
         ev->multi.angle = input->touch.touch_axis[device].angle;
      }
    //
+   ev->multi.device = device;
    ev->multi.x = input->pointer.sx;
    ev->multi.y = input->pointer.sy;
    ev->multi.root.x = input->pointer.sx;
