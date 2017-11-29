@@ -20,6 +20,24 @@
 #define MY_CLASS_NAME "Elm_Popup"
 #define MY_CLASS_NAME_LEGACY "elm_popup"
 
+/* TIZEN_ONLY(20161109): check theme compatibility more precise
+   Naming rules of some parts in theme is changed in Tizen 3.0,
+   so popup must check theme compatibility more precise.
+
+    - notify style changes
+      Tizen 2.4 : "popup" -> Tizen 3.0 : "popup/default"
+      Tizen 2.4 : "toast" -> Tizen 3.0 : "popup/toast"
+
+    - content area & action area changes
+      Tizen 2.4 : "default" -> Tizen 3.0 : "popup/default"
+      Tizen 2.4 : "toast" -> Tizen 3.0 : "popup/toast"
+
+   For some third party app which customize 2.4 popup theme,
+   popup must check 4 styles according to the below style priority.
+ */
+#define STYLE_PRIORITY_COUNT 4
+/* END */
+
 static void _button_remove(Evas_Object *, int, Eina_Bool);
 
 static const char ACCESS_TITLE_PART[] = "access.title";
@@ -30,6 +48,10 @@ static const char SIG_BLOCK_CLICKED[] = "block,clicked";
 static const char SIG_TIMEOUT[] = "timeout";
 static const char SIG_ITEM_FOCUSED[] = "item,focused";
 static const char SIG_ITEM_UNFOCUSED[] = "item,unfocused";
+
+/* TIZEN_ONLY(20161109): check theme compatibility more precise */
+static const char STYLE_PRIORITY[4][15] = { "%s", "popup/%s", "default", "popup/default" };
+/* END */
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_BLOCK_CLICKED, ""},
@@ -53,6 +75,10 @@ static void _show_finished_cb(void *data, const Efl_Event *event);
 /* END */
 
 static void _hide_effect_finished_cb(void *data, const Efl_Event *event);
+
+/* TIZEN_ONLY(20161109): add internal style set function */
+static Efl_Ui_Theme_Apply _notify_style_set(Evas_Object *obj, const char *style);
+/* END */
 
 static const Elm_Action key_actions[] = {
    {"escape", _key_action_escape},
@@ -449,24 +475,29 @@ _elm_popup_elm_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
    Elm_Popup_Item_Data *it;
    Eina_List *elist;
    char buf[1024], style[1024];
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise */
+   int i;
+   /* END */
 
    _mirrored_set(obj, efl_ui_mirrored_get(obj));
 
    snprintf(style, sizeof(style), "popup/%s", elm_widget_style_get(obj));
-   /* TIZEN_ONLY(20160318): Support legacy group and swallow part names
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    elm_widget_style_set(sd->notify, style);
     */
      {
-        Eina_Bool ret;
+        Efl_Ui_Theme_Apply ret;
         const char *obj_style = elm_widget_style_get(obj);
 
         if (obj_style && !strcmp(obj_style, "default"))
-          ret = elm_widget_style_set(sd->notify, "popup");
+          ret = _notify_style_set(sd->notify, "popup");
         else
-          ret = elm_widget_style_set(sd->notify, obj_style);
+          ret = _notify_style_set(sd->notify, obj_style);
 
-        if (!ret)
-          elm_widget_style_set(sd->notify, style);
+        if (ret != EFL_UI_THEME_APPLY_SUCCESS)
+          if (_notify_style_set(sd->notify, style) != EFL_UI_THEME_APPLY_SUCCESS)
+            if (_notify_style_set(sd->notify, "popup") != EFL_UI_THEME_APPLY_SUCCESS)
+              _notify_style_set(sd->notify, "popup/default");
      }
    /* END */
 
@@ -476,26 +507,43 @@ _elm_popup_elm_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
 
    if (sd->action_area)
      {
+        /* TIZEN_ONLY(20161109): check theme compatibility more precise
         snprintf(buf, sizeof(buf), "buttons%i", sd->last_button_number);
-        /* TIZEN_ONLY(20160328): Support legacy groups
         if (!elm_layout_theme_set(sd->action_area, "popup", buf, style))
           CRI("Failed to set layout!");
          */
-        if (!(elm_layout_theme_set(sd->action_area, "popup", buf, elm_widget_style_get(obj)) ||
-              elm_layout_theme_set(sd->action_area, "popup", buf, style)))
+        snprintf(buf, sizeof(buf), "buttons%i", sd->last_button_number);
+        for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
+          {
+             snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
+             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+               break;
+          }
+        if (i == STYLE_PRIORITY_COUNT)
           CRI("Failed to set layout!");
         /* END */
      }
-   /* TIZEN_ONLY(20160328): Support legacy groups
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    if (!elm_layout_theme_set(sd->content_area, "popup", "content", style))
      CRI("Failed to set layout!");
     */
-   if (!(elm_layout_theme_set(sd->content_area, "popup", "content", elm_widget_style_get(obj)) ||
-         elm_layout_theme_set(sd->content_area, "popup", "content", style)))
+   for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
+     {
+        snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
+        if (efl_ui_layout_theme_set(sd->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_SUCCESS)
+          break;
+     }
+   if (i == STYLE_PRIORITY_COUNT)
      CRI("Failed to set layout!");
+   snprintf(style, sizeof(style), "popup/%s", elm_widget_style_get(obj));
    /* END */
    if (sd->text_content_obj)
-       elm_object_style_set(sd->text_content_obj, style);
+     /* TIZEN_ONLY(20161109): check theme compatibility more precise
+     elm_object_style_set(sd->text_content_obj, style);
+      */
+     if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_SUCCESS)
+       elm_widget_style_set(sd->text_content_obj, "popup/default");
+     /* END */
    else if (sd->items)
      {
         EINA_LIST_FOREACH(sd->items, elist, it)
@@ -772,16 +820,24 @@ _button_remove(Evas_Object *obj,
      }
    else
      {
+        /* TIZEN_ONLY(20161109): check theme compatibility more precise
         char style[1024];
 
         snprintf(style, sizeof(style), "popup/%s", elm_widget_style_get(obj));
         snprintf(buf, sizeof(buf), "buttons%i", sd->last_button_number);
-        /* TIZEN_ONLY(20160328): Support legacy groups
         if (!elm_layout_theme_set(sd->action_area, "popup", buf, style))
           CRI("Failed to set layout!");
          */
-        if (!(elm_layout_theme_set(sd->action_area, "popup", buf, elm_widget_style_get(obj)) ||
-              elm_layout_theme_set(sd->action_area, "popup", buf, style)))
+        char style[1024];
+
+        snprintf(buf, sizeof(buf), "buttons%i", sd->last_button_number);
+        for (i = 0 ; i < STYLE_PRIORITY_COUNT; i++)
+          {
+             snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
+             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+               break;
+          }
+        if (i == STYLE_PRIORITY_COUNT)
           CRI("Failed to set layout!");
         /* END */
      }
@@ -1172,7 +1228,12 @@ _content_text_set(Evas_Object *obj,
 
    sd->text_content_obj = elm_label_add(sd->content_area);
    snprintf(style, sizeof(style), "popup/%s", elm_widget_style_get(obj));
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    elm_object_style_set(sd->text_content_obj, style);
+    */
+   if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_SUCCESS)
+     elm_widget_style_set(sd->text_content_obj, "popup/default");
+   /* END */
 
    evas_object_event_callback_add
      (sd->text_content_obj, EVAS_CALLBACK_DEL, _on_text_content_del, obj);
@@ -1373,20 +1434,28 @@ _action_button_set(Evas_Object *obj,
         _visuals_set(obj);
      }
 
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    snprintf(buf, sizeof(buf), "buttons%i", sd->last_button_number);
    snprintf(style, sizeof(style), "popup/%s", elm_widget_style_get(obj));
-   /* TIZEN_ONLY(20160328): Support legacy groups
    if (!elm_layout_theme_set(sd->action_area, "popup", buf, style))
      CRI("Failed to set layout!");
     */
-   if (!(elm_layout_theme_set(sd->action_area, "popup", buf, elm_widget_style_get(obj)) ||
-         elm_layout_theme_set(sd->action_area, "popup", buf, style)))
+   snprintf(buf, sizeof(buf), "buttons%i", sd->last_button_number);
+   for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
+     {
+        snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
+        if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+          break;
+     }
+   if (i == STYLE_PRIORITY_COUNT)
      CRI("Failed to set layout!");
    /* END */
 
-   /* TIZEN_ONLY(20160318): Support legacy group and swallow part names
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    snprintf(buf, sizeof(buf), "elm.swallow.content.button%i", idx + 1);
+   */
    evas_object_show(sd->buttons[idx]->btn);
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    elm_object_part_content_set
      (sd->action_area, buf, sd->buttons[idx]->btn);
     */
@@ -1588,6 +1657,9 @@ EOLIAN static void
 _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
 {
    char style[1024];
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise */
+   int i;
+   /* END */
 
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
@@ -1595,20 +1667,29 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
    snprintf(style, sizeof(style), "popup/%s", elm_widget_style_get(obj));
 
    priv->notify = elm_notify_add(obj);
-   /* TIZEN_ONLY(20160328): Support legacy groups
+
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise */
+   elm_notify_align_set(priv->notify,
+                        _elm_config->popup_horizontal_align,
+                        _elm_config->popup_vertical_align);
+   /* END */
+
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    elm_object_style_set(priv->notify, style);
     */
      {
-        Eina_Bool ret;
+        Efl_Ui_Theme_Apply ret;
         const char *obj_style = elm_widget_style_get(obj);
 
         if (obj_style && !strcmp(obj_style, "default"))
-          ret = elm_widget_style_set(priv->notify, "popup");
+          ret = _notify_style_set(priv->notify, "popup");
         else
-          ret = elm_widget_style_set(priv->notify, obj_style);
+          ret = _notify_style_set(priv->notify, obj_style);
 
-        if (!ret)
-          elm_widget_style_set(priv->notify, style);
+        if (ret != EFL_UI_THEME_APPLY_SUCCESS)
+          if (_notify_style_set(priv->notify, style) != EFL_UI_THEME_APPLY_SUCCESS)
+            if (_notify_style_set(priv->notify, "popup") != EFL_UI_THEME_APPLY_SUCCESS)
+              _notify_style_set(priv->notify, "popup/default");
      }
    /* END */
 
@@ -1620,9 +1701,11 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
                                   _on_obj_size_hints_changed, NULL);
    /* END */
 
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    elm_notify_align_set(priv->notify,
                         _elm_config->popup_horizontal_align,
                         _elm_config->popup_vertical_align);
+   */
    elm_notify_allow_events_set(priv->notify, EINA_FALSE);
    evas_object_size_hint_weight_set
      (priv->notify, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1655,7 +1738,7 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
      (priv->main_layout, "elm,state,action_area,hidden", "elm", _layout_change_cb, NULL);
 
    priv->content_area = elm_layout_add(priv->main_layout);
-   /* TIZEN_ONLY(20160328): Support legacy groups
+   /* TIZEN_ONLY(20161109): check theme compatibility more precise
    if (!elm_layout_theme_set(priv->content_area, "popup", "content", style))
      CRI("Failed to set layout!");
    else
@@ -1663,13 +1746,18 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
         (priv->content_area, EVAS_CALLBACK_CHANGED_SIZE_HINTS,
          _size_hints_changed_cb, priv->main_layout);
     */
-   if (!(elm_layout_theme_set(priv->content_area, "popup", "content", elm_widget_style_get(obj)) ||
-         elm_layout_theme_set(priv->content_area, "popup", "content", style)))
+   for (i = 0 ; i < STYLE_PRIORITY_COUNT; i++)
+     {
+        snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
+        if (efl_ui_layout_theme_set(priv->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_SUCCESS)
+          break;
+     }
+   if (i == STYLE_PRIORITY_COUNT)
      CRI("Failed to set layout!");
    else
      evas_object_event_callback_add
         (priv->content_area, EVAS_CALLBACK_CHANGED_SIZE_HINTS,
-         _size_hints_changed_cb, priv->main_layout);
+         _size_hints_changed_cb, obj);
    /* END */
 
    priv->content_text_wrap_type = ELM_WRAP_MIXED;
@@ -2087,6 +2175,35 @@ _elm_popup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Popup_D
    return EINA_FALSE;
 }
 //
+
+/* TIZEN_ONLY(20161109): check theme compatibility more precise
+                         add internal style set function */
+static Efl_Ui_Theme_Apply
+_notify_style_set(Evas_Object *obj, const char *style)
+{
+   Efl_Ui_Theme_Apply ret = EFL_UI_THEME_APPLY_SUCCESS;
+
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_FAILED);
+
+   if (eina_stringshare_replace(&wd->style, style))
+     {
+        const Eina_List *l;
+        Elm_Tooltip *tt;
+        Elm_Cursor *cur;
+
+        if (wd->hover_obj) ret &= elm_widget_theme(wd->hover_obj);
+
+        EINA_LIST_FOREACH(wd->tooltips, l, tt)
+          elm_tooltip_theme(tt);
+        EINA_LIST_FOREACH(wd->cursors, l, cur)
+          elm_cursor_theme(cur);
+
+        ret &= elm_obj_widget_theme_apply(obj);
+     }
+
+   return ret;
+}
+/* END */
 
 /* Standard widget overrides */
 
