@@ -13,7 +13,9 @@ static Eina_Hash *_client_displays = NULL;
 static Eina_Bool _cb_connect_idle(void *data);
 static Eina_Bool _cb_connect_data(void *data, Ecore_Fd_Handler *hdl);
 static Eina_Bool _ecore_wl2_display_connect(Ecore_Wl2_Display *ewd, Eina_Bool sync);
-
+// TIZEN_ONLY(20171129): thread-safety for wl
+static void      _ecore_wl_cb_awake(void *data);
+// End of TIZEN_ONLY(20171129)
 static void _ecore_wl2_display_sync_add(Ecore_Wl2_Display *ewd);
 
 void
@@ -977,6 +979,9 @@ _recovery_timer_add(Ecore_Wl2_Display *ewd)
    ecore_idle_enterer_del(ewd->idle_enterer);
    ewd->idle_enterer = NULL;
 
+// TIZEN_ONLY(20171129): thread-safety for wl
+   ecore_main_awake_handler_del(_ecore_wl_cb_awake);
+// End of TIZEN_ONLY(20171129)
    ecore_main_fd_handler_del(ewd->fd_hdl);
    ewd->fd_hdl = NULL;
 
@@ -1024,36 +1029,79 @@ _begin_recovery_maybe(Ecore_Wl2_Display *ewd, int code)
      }
 }
 
+// TIZEN_ONLY(20171129): thread-safety for wl
+static void
+_ecore_wl_cb_pre_handle_data(void *data, Ecore_Fd_Handler *hdl EINA_UNUSED)
+{
+   Ecore_Wl2_Display *ewd = (Ecore_Wl2_Display *)data;
+
+   EINA_SAFETY_ON_NULL_RETURN(ewd);
+
+   if (ewd->prepare_read) return;
+
+   while (wl_display_prepare_read(ewd->wl.display) != 0)
+     wl_display_dispatch_pending(ewd->wl.display);
+
+   wl_display_flush(ewd->wl.display);
+
+   ewd->prepare_read = EINA_TRUE;
+}
+
+static void
+_ecore_wl_cb_awake(void *data)
+{
+   Ecore_Wl2_Display *ewd = (Ecore_Wl2_Display *)data;
+
+   EINA_SAFETY_ON_NULL_RETURN(ewd);
+   EINA_SAFETY_ON_NULL_RETURN(ewd->fd_hdl);
+
+   if (!ewd->prepare_read) return;
+
+   ewd->prepare_read = EINA_FALSE;
+
+   if (ecore_main_fd_handler_active_get(ewd->fd_hdl, ECORE_FD_READ))
+     wl_display_read_events(ewd->wl.display);
+   else
+     wl_display_cancel_read(ewd->wl.display);
+}
+// End of TIZEN_ONLY(20171129)
+
 static Eina_Bool
 _cb_connect_data(void *data, Ecore_Fd_Handler *hdl)
 {
-   Ecore_Wl2_Display *ewd = data;
-   int ret = 0, code;
+// TIZEN_ONLY(20171129): thread-safety for wl
+   Ecore_Wl2_Display *ewd = (Ecore_Wl2_Display *)data;
+   int ret = 0;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ewd, ECORE_CALLBACK_CANCEL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ewd->fd_hdl, ECORE_CALLBACK_CANCEL);
+
+   if (ecore_main_fd_handler_active_get(hdl, ECORE_FD_ERROR))
+     {
+        ERR("Received error on wayland display fd");
+        goto err;
+     }
 
    if (ecore_main_fd_handler_active_get(hdl, ECORE_FD_READ))
-     {
-        ret = wl_display_dispatch(ewd->wl.display);
-        code = errno;
-        if ((ret < 0) && (code != EAGAIN)) goto err;
-     }
-
-   if (ecore_main_fd_handler_active_get(hdl, ECORE_FD_WRITE))
+     ret = wl_display_dispatch_pending(ewd->wl.display);
+   else if (ecore_main_fd_handler_active_get(hdl, ECORE_FD_WRITE))
      {
         ret = wl_display_flush(ewd->wl.display);
-        code = errno;
-        if (ret >= 0)
+        if (ret == 0)
           ecore_main_fd_handler_active_set(hdl, ECORE_FD_READ);
-
-        if ((ret < 0) && (code != EAGAIN)) goto err;
      }
+
+   if ((ret < 0) && (errno != EAGAIN) && (errno != EINVAL))
+     goto err;
 
    return ECORE_CALLBACK_RENEW;
 
 err:
    ewd->fd_hdl = NULL;
-   _begin_recovery_maybe(ewd, code);
+   _begin_recovery_maybe(ewd, errno);
 
    return ECORE_CALLBACK_CANCEL;
+// End of TIZEN_ONLY(20171129)
 }
 
 static void
@@ -1353,7 +1401,12 @@ _ecore_wl2_display_connect(Ecore_Wl2_Display *ewd, Eina_Bool sync)
                                _cb_connect_data, ewd, NULL, NULL);
 
    ewd->idle_enterer = ecore_idle_enterer_add(_cb_connect_idle, ewd);
+// TIZEN_ONLY(20171129): thread-safety for wl
+   ecore_main_fd_handler_prepare_callback_set
+     (ewd->fd_hdl, _ecore_wl_cb_pre_handle_data, ewd);
 
+   ecore_main_awake_handler_add(_ecore_wl_cb_awake, ewd);
+// End of TIZEN_ONLY(20171129)
    _ecore_wl2_display_event(ewd, ECORE_WL2_EVENT_CONNECT);
    ecore_wl2_display_flush(ewd);
    return EINA_TRUE;
@@ -1377,6 +1430,10 @@ _ecore_wl2_display_cleanup(Ecore_Wl2_Display *ewd)
      _ecore_wl2_output_del(output);
 
    if (ewd->idle_enterer) ecore_idle_enterer_del(ewd->idle_enterer);
+
+// TIZEN_ONLY(20171129): thread-safety for wl
+   ecore_main_awake_handler_del(_ecore_wl_cb_awake);
+// End of TIZEN_ONLY(20171129)
 
    if (ewd->fd_hdl) ecore_main_fd_handler_del(ewd->fd_hdl);
 

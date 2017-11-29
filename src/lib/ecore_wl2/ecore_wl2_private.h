@@ -142,6 +142,9 @@ struct _Ecore_Wl2_Display
 // TIZEN_ONLY(20171114): active angle
    int active_angle;
 //
+// TIZEN_ONLY(20171129): thread-safety for wl
+   Eina_Bool prepare_read;
+// End of TIZEN_ONLY(20171129)
 };
 
 struct _Ecore_Wl2_Subsurface
