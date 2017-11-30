@@ -5838,8 +5838,9 @@ elm_drag_cancel(Evas_Object *obj)
    if (win)
      ecore_wl2_dnd_drag_end(_wl_default_seat_get(win, obj));
 #endif
-
+#ifdef HAVE_ELEMENTARY_X
 end:
+#endif
    ELM_SAFE_FREE(dragwin, evas_object_del);
    dragdonecb = NULL;
    dragacceptcb = NULL;
