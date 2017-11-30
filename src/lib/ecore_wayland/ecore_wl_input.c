@@ -1150,8 +1150,13 @@ _ecore_wl_input_cb_keyboard_key(void *data, struct wl_keyboard *keyboard EINA_UN
                                                            XKB_MOD_NAME_SHIFT),
                                      XKB_STATE_MODS_EFFECTIVE))
      {
+        /* TIZEN_ONLY(20171130): don't call tolower() for all keynames
         if (keyname[0] != '\0')
           keyname[0] = tolower(keyname[0]);
+         */
+        if (strlen(keyname) == 1)
+          keyname[0] = tolower(keyname[0]);
+        /* END */
      }
 
    memset(compose, 0, sizeof(compose));
