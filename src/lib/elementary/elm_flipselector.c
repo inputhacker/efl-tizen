@@ -55,9 +55,6 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {NULL, NULL}
 };
 
-// TIZEN_ONLY(20151012): Unregister callbacks for ATSPI bridge enable/disable
-static void _unregister_flipselector_atspi_bridge_callbacks(Elm_Flipselector_Data *sd);
-//
 static Eina_Bool _key_action_flip(Evas_Object *obj, const char *params);
 
 static const Elm_Action key_actions[] = {
@@ -677,10 +674,6 @@ _elm_flipselector_efl_canvas_group_group_del(Eo *obj, Elm_Flipselector_Data *sd)
    ecore_timer_del(sd->spin);
    ecore_job_del(sd->view_update);
 
-   // TIZEN_ONLY(20151012): Unregister callbacks for ATSPI bridge enable/disable
-   _unregister_flipselector_atspi_bridge_callbacks(sd);
-   //
-
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }
 
@@ -711,70 +704,36 @@ static Eina_Bool _activate_bottom_cb(void *data, Evas_Object *obj EINA_UNUSED, E
 }
 //
 
-//TIZEN ONLY(20151012): register callbacks for ATSPI bridge enable/disable
-static void
-_flipselector_atspi_bridge_on_connect_cb(void *data, const Efl_Event *event EINA_UNUSED)
-{
-   Elm_Flipselector_Data *sd = (Elm_Flipselector_Data*)data;
-   Evas_Object *btn1;
-   Evas_Object *btn2;
-   btn1 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "top_clipper");
-   btn2 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "bottom_clipper");
-   if (btn1 && btn2)
-     {
-        sd->access_top_button = elm_access_object_register(btn1, sd->obj);
-        sd->access_bottom_button = elm_access_object_register(btn2, sd->obj);
-
-        efl_access_role_set(sd->access_top_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
-        efl_access_role_set(sd->access_bottom_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
-
-        elm_access_action_cb_set(sd->access_top_button, ELM_ACCESS_ACTION_ACTIVATE, _activate_top_cb, sd);
-        elm_access_action_cb_set(sd->access_bottom_button, ELM_ACCESS_ACTION_ACTIVATE, _activate_bottom_cb, sd);
-     }
-}
-
-static void
-_flipselector_atspi_bridge_on_disconnect_cb(void *data, const Efl_Event *event EINA_UNUSED)
-{
-   Elm_Flipselector_Data *sd = (Elm_Flipselector_Data*)data;
-   elm_access_object_unregister(sd->access_top_button);
-   elm_access_object_unregister(sd->access_bottom_button);
-}
-
-static void
-_unregister_flipselector_atspi_bridge_callbacks(Elm_Flipselector_Data *sd)
-{
-   if (!_elm_config->atspi_mode) return;
-
-   Eo *bridge = _elm_atspi_bridge_get();
-   if (!bridge) return;
-
-   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _flipselector_atspi_bridge_on_connect_cb, NULL);
-   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _flipselector_atspi_bridge_on_connect_cb, NULL);
-}
-
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
 static void
 _atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd, Eina_Bool is_atspi)
 {
-   Eina_Bool connected = EINA_FALSE;
-
-   sd->access_top_button = NULL;
-   sd->access_bottom_button = NULL;
-
-   // UnRegister for ATSPI bridge enable/disable
-   _unregister_flipselector_atspi_bridge_callbacks(sd);
+   Evas_Object *btn1;
+   Evas_Object *btn2;
 
    if (is_atspi)
      {
-        // Expose flipselector buttons
-        Eo *bridge = _elm_atspi_bridge_get();
-        if (!bridge) return;
-        connected = elm_obj_atspi_bridge_connected_get(bridge);
-        if (connected)
-          _flipselector_atspi_bridge_on_connect_cb(sd, NULL);
+        btn1 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "top_clipper");
+        btn2 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "bottom_clipper");
+        if (btn1 && btn2)
+          {
+             sd->access_top_button = elm_access_object_register(btn1, sd->obj);
+             sd->access_bottom_button = elm_access_object_register(btn2, sd->obj);
 
-        efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _flipselector_atspi_bridge_on_connect_cb, NULL);
-        efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _flipselector_atspi_bridge_on_disconnect_cb, NULL);
+             efl_access_role_set(sd->access_top_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
+             efl_access_role_set(sd->access_bottom_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
+
+             elm_access_action_cb_set(sd->access_top_button, ELM_ACCESS_ACTION_ACTIVATE, _activate_top_cb, sd);
+             elm_access_action_cb_set(sd->access_bottom_button, ELM_ACCESS_ACTION_ACTIVATE, _activate_bottom_cb, sd);
+          }
+     }
+   else
+     {
+        elm_access_object_unregister(sd->access_top_button);
+        elm_access_object_unregister(sd->access_bottom_button);
+        sd->access_top_button = NULL;
+        sd->access_bottom_button = NULL;
      }
 }
 //
