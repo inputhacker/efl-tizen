@@ -1526,9 +1526,31 @@ _ecore_evas_wl_common_tizen_device_event_add(int type, Evas_Device *dev, Ecore_E
    EINA_SAFETY_ON_NULL_RETURN(ev);
 
    ev->dev = efl_ref(dev);
+   ev->name = evas_device_name_get(dev);
+   ev->identifier = evas_device_description_get(dev);
    ev->window_id = ee->prop.window;
 
    ecore_event_add(type, ev, NULL, dev);
+}
+
+static Evas_Device *
+_ecore_evas_wl_common_default_seat_get(Evas *evas)
+{
+   Eina_List *list, *l;
+   Evas_Device *device;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(evas, EINA_FALSE);
+
+   list = (Eina_List *)evas_device_list(evas, NULL);
+   EINA_LIST_FOREACH(list, l, device)
+     {
+        if ((evas_device_class_get(device) == EVAS_DEVICE_CLASS_SEAT) &&
+            !strncmp(evas_device_description_get(device), "Wayland seat", "Wayland seat"))
+          {
+             return device;
+          }
+     }
+   return NULL;
 }
 
 static Eina_Bool
@@ -1543,16 +1565,17 @@ _ecore_evas_wl_common_cb_tizen_device_add(void *data EINA_UNUSED, int type EINA_
    EINA_LIST_FOREACH(ee_list, l, ee)
      {
         Ecore_Evas_Engine_Wl_Data *wdata;
-        Evas_Device *device;
+        Evas_Device *device, *seat;
 
         wdata = ee->engine.data;
         if (ev->display != wdata->display) continue;
 
         if (_ecore_evas_wl_common_evas_device_find(ee->evas, ev->identifier)) continue;
+        seat = _ecore_evas_wl_common_default_seat_get(ee->evas);
 
         device = evas_device_add_full(ee->evas, ev->name,
                                            ev->identifier,
-                                           NULL, NULL,
+                                           seat, NULL,
                                            ev->clas,
                                            ev->subclas);
         _ecore_evas_wl_common_tizen_device_event_add(ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_ADDED, device, ee);

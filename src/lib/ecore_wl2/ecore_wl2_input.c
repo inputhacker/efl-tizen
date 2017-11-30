@@ -2893,12 +2893,13 @@ _ecore_wl2_input_device_info_free(void *data EINA_UNUSED, void *ev)
 }
 
 void
-_ecore_wl2_input_device_info_send(const char *name,  const char *identifier, Efl_Input_Device_Type clas, Efl_Input_Device_Subtype subclas, Eina_Bool flag)
+_ecore_wl2_input_device_info_send(Ecore_Wl2_Display *dpy, const char *name,  const char *identifier, Efl_Input_Device_Type clas, Efl_Input_Device_Subtype subclas, Eina_Bool flag)
 {
    Ecore_Wl2_Event_Tizen_Device_Info *e;
 
    if (!(e = calloc(1, sizeof(Ecore_Wl2_Event_Tizen_Device_Info)))) return;
 
+   e->display = dpy;
    e->name = eina_stringshare_add(name);
    e->identifier = eina_stringshare_add(identifier);
    e->seatname = eina_stringshare_add(name);
@@ -2917,7 +2918,7 @@ _ecore_wl2_input_device_info_broadcast(Ecore_Wl2_Input *input, const char *name,
    if (!name) return;
    if (!input || !input->display) return;
 
-   _ecore_wl2_input_device_info_send(name, identifier, clas, subclas, flag);
+   _ecore_wl2_input_device_info_send(input->display, name, identifier, clas, subclas, flag);
 }
 
 static void
@@ -2929,6 +2930,7 @@ _ecore_wl2_input_device_cb_device_info(void *data, struct tizen_input_device *ti
    dev->clas = (Efl_Input_Device_Type)clas;
    dev->subclas = (Efl_Input_Device_Subtype)subclas;
    dev->name = eina_stringshare_add(name);
+
    _ecore_wl2_input_device_info_broadcast(dev->input, dev->name, dev->identifier, dev->clas, dev->subclas, EINA_TRUE);
 }
 
