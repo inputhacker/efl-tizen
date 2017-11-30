@@ -2538,6 +2538,33 @@ _elm_list_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_List_Data *sd, Ei
      }
 }
 
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_list_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_List_Data *sd, Eina_Bool is_atspi)
+{
+   Eina_List *elist = NULL;
+   Elm_Object_Item *eo_it;
+
+   EINA_LIST_FOREACH(sd->items, elist, eo_it)
+     {
+        if (is_atspi)
+          {
+             ELM_LIST_ITEM_DATA_GET(eo_it, it);
+             if (it->icon) efl_access_parent_set(it->icon, eo_it);
+             if (it->end) efl_access_parent_set(it->end, eo_it);
+             efl_access_added(eo_it);
+             efl_access_children_changed_added_signal_emit(obj, eo_it);
+          }
+        else
+          {
+             efl_access_removed(eo_it);
+             efl_access_children_changed_del_signal_emit(obj, eo_it);
+          }
+     }
+}
+//
+
 EAPI Evas_Object *
 elm_list_add(Evas_Object *parent)
 {

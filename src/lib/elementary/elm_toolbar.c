@@ -2475,7 +2475,7 @@ _item_new(Evas_Object *obj,
      _item_select(it);
 
    if (_elm_config->atspi_mode)
-        efl_access_added(eo_it);
+     efl_access_added(eo_it);
 
    return it;
 }
@@ -2891,6 +2891,30 @@ _elm_toolbar_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Toolbar_Data *
    _elm_toolbar_smart_focus_next_enable = acs;
    _access_obj_process(sd, _elm_toolbar_smart_focus_next_enable);
 }
+
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_toolbar_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Toolbar_Data *sd, Eina_Bool is_atspi)
+{
+   Elm_Toolbar_Item_Data *it;
+
+   EINA_INLIST_FOREACH (sd->items, it)
+     {
+        if (is_atspi)
+          {
+             if (it->icon) efl_access_parent_set(it->icon, EO_OBJ(it));
+             efl_access_added(EO_OBJ(it));
+             efl_access_children_changed_added_signal_emit(obj, EO_OBJ(it));
+          }
+        else
+          {
+             efl_access_removed(EO_OBJ(it));
+             efl_access_children_changed_del_signal_emit(obj, EO_OBJ(it));
+          }
+     }
+}
+//
 
 static Eina_Rect
 _elm_toolbar_coordinates_adjust(Elm_Toolbar_Item_Data *it)

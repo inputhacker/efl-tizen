@@ -329,6 +329,10 @@ class Elm.Toolbar (Elm.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scrollabl
       Elm.Widget.focused_item { get; }
       Efl.Ui.Direction.direction { get; set; [[Only supports $vertical and $horizontal. Default is $horizontal.]] }
       Elm.Widget.focus_state_apply;
+      //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+      //register/unregister access objects accordingly.
+      Elm.Widget.atspi;
+      //
       Efl.Access.Widget.Action.elm_actions { get; }
       Efl.Access.children { get; }
       Efl.Access.state_set { get; }

@@ -747,11 +747,14 @@ _atspi_multibuttonentry_item_register(Evas_Object *obj,
    ELM_MULTIBUTTONENTRY_ITEM_DATA_GET(eo_item, item);
    if (is_atspi)
      {
-        efl_access_children_changed_added_signal_emit(obj, eo_item);
         efl_access_added(eo_item);
+        efl_access_children_changed_added_signal_emit(obj, eo_item);
      }
    else
-     efl_access_children_changed_del_signal_emit(obj, eo_item);
+     {
+        efl_access_removed(eo_item);
+        efl_access_children_changed_del_signal_emit(obj, eo_item);
+     }
 }
 //
 
