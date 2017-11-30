@@ -467,7 +467,7 @@ _flush_calendar_composite_elements(Evas_Object *obj, Elm_Calendar_Data *sd)
 static char *
 _localized_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
 {
-   if (data) return E_(data);
+   if (data) return data;
    return NULL;
 }
 
@@ -529,7 +529,7 @@ _atspi_expose_objects(Evas_Object *obj, Eina_Bool is_atspi)
                   efl_access_role_set(ao, EFL_ACCESS_ROLE_TABLE_CELL);
                   snprintf(day_s, sizeof(day_s), "%i", day++);
                   elm_access_info_set(ao, ELM_ACCESS_INFO, (const char*)day_s);
-                  elm_access_info_cb_set(ao, ELM_ACCESS_CONTEXT_INFO, _localized_access_info_cb, "calendar item");
+                  elm_access_info_cb_set(ao, ELM_ACCESS_CONTEXT_INFO, _localized_access_info_cb, E_("calendar item"));
                }
            }
      }

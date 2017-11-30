@@ -744,7 +744,6 @@ _atspi_multibuttonentry_item_register(Evas_Object *obj,
                                       Elm_Object_Item *eo_item,
                                       Eina_Bool is_atspi)
 {
-   ELM_MULTIBUTTONENTRY_ITEM_DATA_GET(eo_item, item);
    if (is_atspi)
      {
         efl_access_added(eo_item);
