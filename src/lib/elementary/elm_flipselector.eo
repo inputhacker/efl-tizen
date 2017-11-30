@@ -163,6 +163,10 @@ class Elm.Flipselector (Efl.Ui.Layout, Efl.Ui.Range,
       Efl.Object.constructor;
       Elm.Widget.theme_apply;
       Elm.Widget.widget_event;
+      //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+      //register/unregister access objects accordingly.
+      Elm.Widget.atspi;
+      //
       Efl.Ui.Range.range_min_max { get; set; }
       Efl.Ui.Range.range_step { get; set; }
       Efl.Ui.Range.range_value { get; set; }

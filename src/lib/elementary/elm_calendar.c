@@ -562,29 +562,27 @@ _unregister_atspi_calendar_bridge_callbacks(Evas_Object *obj)
    Eo *bridge = _elm_atspi_bridge_get();
    if (!bridge) return;
 
-   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _calendar_atspi_bridge_on_connect_cb, NULL);
-   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _calendar_atspi_bridge_on_connect_cb, NULL);
+   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _calendar_atspi_bridge_on_connect_cb, obj);
+   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _calendar_atspi_bridge_on_connect_cb, obj);
 }
 
 static void
-_register_smart_callbacks_for_calendar_buttons(Evas_Object *obj)
+_atspi_expose_objects(Evas_Object *obj, Eina_Bool is_atspi)
 {
    Eina_Bool connected = EINA_FALSE;
-
-   if (!_elm_config->atspi_mode) return;
-
-   Eo *bridge = _elm_atspi_bridge_get();
-   if (!bridge) return;
-
-   // If already connected register callendar buttons callbacks
-   connected = elm_obj_atspi_bridge_connected_get(bridge);
-   if (connected)
-     _calendar_atspi_bridge_on_connect_cb(obj, NULL);
-
    // Register bridge connect/disconnect
    _unregister_atspi_calendar_bridge_callbacks(obj);
-   efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _calendar_atspi_bridge_on_connect_cb, NULL);
-   efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _calendar_atspi_bridge_on_disconnect_cb, NULL);
+   if (is_atspi)
+     {
+        // If already connected register callendar buttons callbacks
+        Eo *bridge = _elm_atspi_bridge_get();
+        if (!bridge) return;
+        connected = elm_obj_atspi_bridge_connected_get(bridge);
+        if (connected)
+          _calendar_atspi_bridge_on_connect_cb(obj, NULL);
+        efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _calendar_atspi_bridge_on_connect_cb, obj);
+        efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _calendar_atspi_bridge_on_disconnect_cb, obj);
+     }
 }
 //
 
@@ -813,7 +811,8 @@ _populate(Evas_Object *obj)
    edje_object_message_signal_process(elm_layout_edje_get(obj));
 
    //TIZEN_ONLY(20151012): Register smart callbacks for calendar buttons.
-   _register_smart_callbacks_for_calendar_buttons(obj);
+   if (_elm_config->atspi_mode)
+     _atspi_expose_objects(obj, EINA_TRUE);
    //
 
    _flush_calendar_composite_elements(obj, sd);
@@ -1735,6 +1734,15 @@ _elm_calendar_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Calendar_Data
    _elm_calendar_smart_focus_next_enable = acs;
    _access_obj_process(obj, _elm_calendar_smart_focus_next_enable);
 }
+
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_calendar_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Calendar_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
+{
+   _atspi_expose_objects(obj, is_atspi);
+}
+//
 
 EAPI Evas_Object *
 elm_calendar_add(Evas_Object *parent)

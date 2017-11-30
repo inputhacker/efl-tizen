@@ -354,8 +354,6 @@ _naviframe_atspi_bridge_on_disconnect_cb(void *data, const Efl_Event *event EINA
 static void
 _unregister_naviframe_atspi_bridge_callbacks(Elm_Naviframe_Item_Data *it EINA_UNUSED)
 {
-   if (!_elm_config->atspi_mode) return;
-
    Eo *bridge = _elm_atspi_bridge_get();
    if (!bridge) return;
 
@@ -365,11 +363,11 @@ _unregister_naviframe_atspi_bridge_callbacks(Elm_Naviframe_Item_Data *it EINA_UN
 }
 
 static void
-_atspi_expose_title(Elm_Naviframe_Item_Data *it)
+_atspi_expose_title(Elm_Naviframe_Item_Data *it, Eina_Bool is_atspi)
 {
    Eina_Bool connected = EINA_FALSE;
-
-   if (!_elm_config->atspi_mode) return;
+   _unregister_naviframe_atspi_bridge_callbacks(it);
+   if (!is_atspi) return;
 
    Eo *bridge = _elm_atspi_bridge_get();
    if (!bridge) return;
@@ -423,7 +421,8 @@ _item_style_set(Elm_Naviframe_Item_Data *it,
      evas_object_freeze_events_set(VIEW(it), EINA_FALSE);
 
    //TIZEN ONLY(20151012): expose title as at-spi object
-   _atspi_expose_title(it);
+   if (_elm_config->atspi_mode)
+     _atspi_expose_title(it, EINA_TRUE);
    //
 }
 
@@ -1587,6 +1586,18 @@ _elm_naviframe_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Naviframe_Da
    EINA_INLIST_FOREACH(sd->stack, it)
      _access_obj_process(it, is_access);
 }
+
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_naviframe_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Naviframe_Data *sd, Eina_Bool is_atspi)
+{
+   Elm_Naviframe_Item_Data *it;
+
+   EINA_INLIST_FOREACH(sd->stack, it)
+     _atspi_expose_title(it, is_atspi);
+}
+//
 
 static void
 _schedule_deferred(Elm_Naviframe_Op *nfo, Elm_Naviframe_Data *sd)

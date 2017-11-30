@@ -4823,6 +4823,10 @@ _screen_reader_enabled_get(void *data, const Eldbus_Message *msg, Eldbus_Pending
      _a11y_connection_init(data);
    else
      DBG("AT-SPI2 stack not enabled.");
+   //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+   //register/unregister access objects accordingly.
+   _elm_win_atspi(is_enabled);
+   //
 }
 
 static void _bridge_object_register(Eo *bridge, Eo *obj)
@@ -5066,6 +5070,10 @@ _properties_changed_cb(void *data, Eldbus_Proxy *proxy EINA_UNUSED, void *event)
           _a11y_connection_init(bridge);
         else
           _a11y_connection_shutdown(bridge);
+        //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+         //register/unregister access objects accordingly.
+        _elm_win_atspi(val);
+        //
      }
 }
 

@@ -754,27 +754,37 @@ _unregister_flipselector_atspi_bridge_callbacks(Elm_Flipselector_Data *sd)
 }
 
 static void
-_atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd)
+_atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd, Eina_Bool is_atspi)
 {
    Eina_Bool connected = EINA_FALSE;
-
-   if (!_elm_config->atspi_mode) return;
-
-   Eo *bridge = _elm_atspi_bridge_get();
-   if (!bridge) return;
 
    sd->access_top_button = NULL;
    sd->access_bottom_button = NULL;
 
-   // Expose flipselector buttons
-   connected = elm_obj_atspi_bridge_connected_get(bridge);
-   if (connected)
-     _flipselector_atspi_bridge_on_connect_cb(sd, NULL);
-
-   // Register for ATSPI bridge enable/disable
+   // UnRegister for ATSPI bridge enable/disable
    _unregister_flipselector_atspi_bridge_callbacks(sd);
-   efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _flipselector_atspi_bridge_on_connect_cb, NULL);
-   efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _flipselector_atspi_bridge_on_disconnect_cb, NULL);
+
+   if (is_atspi)
+     {
+        // Expose flipselector buttons
+        Eo *bridge = _elm_atspi_bridge_get();
+        if (!bridge) return;
+        connected = elm_obj_atspi_bridge_connected_get(bridge);
+        if (connected)
+          _flipselector_atspi_bridge_on_connect_cb(sd, NULL);
+
+        efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _flipselector_atspi_bridge_on_connect_cb, NULL);
+        efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _flipselector_atspi_bridge_on_disconnect_cb, NULL);
+     }
+}
+//
+
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_flipselector_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, Eina_Bool is_atspi)
+{
+   _atspi_expose_flipselector_top_bottom(sd, is_atspi);
 }
 //
 
@@ -788,8 +798,9 @@ _elm_flipselector_efl_object_constructor(Eo *obj, Elm_Flipselector_Data *sd)
    efl_access_role_set(obj, EFL_ACCESS_ROLE_LIST);
 
    //TIZEN ONLY(20151012): expose flipselector top/bottom buttons for accessibility tree
-    _atspi_expose_flipselector_top_bottom(sd);
-    //
+   if (_elm_config->atspi_mode)
+     _atspi_expose_flipselector_top_bottom(sd, EINA_TRUE);
+   //
 
    return obj;
 }

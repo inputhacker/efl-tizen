@@ -236,6 +236,17 @@ abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
          legacy: null; /* FIXME: legacy API does extra work */
       }
 
+      //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+      //register/unregister access objects accordingly.
+      atspi {
+         [['Virtual' function on the widget being set access.]]
+         params {
+            @in is_atspi: bool;
+         }
+         legacy: null;
+      }
+      //
+
       /* Internal hooks. */
       widget_sub_object_add @protected {
          [[Virtual function handling sub objects being added.

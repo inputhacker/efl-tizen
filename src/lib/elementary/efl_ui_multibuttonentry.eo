@@ -166,6 +166,10 @@ class Efl.Ui.Multibuttonentry (Efl.Ui.Layout, Efl.Ui.Clickable, Efl.Ui.Format)
       Elm.Widget.on_access_update;
       Efl.Ui.Translatable.translation_update;
       Elm.Widget.widget_event;
+      //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+      //register/unregister access objects accordingly.
+      Elm.Widget.atspi;
+      //
       Efl.Access.children { get; }
       Efl.Part.part;
       Efl.Ui.Format.format_cb { set; }

@@ -655,6 +655,10 @@ struct _Elm_Widget_Item_Data
 EAPI Evas_Object     *elm_widget_add(Evas_Smart *, Evas_Object *);
 EAPI Eina_Bool        elm_widget_api_check(int ver);
 EAPI Eina_Bool        elm_widget_access(Evas_Object *obj, Eina_Bool is_access);
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EAPI Eina_Bool        elm_widget_atspi(Evas_Object *obj, Eina_Bool is_atspi);
+//
 EAPI Efl_Ui_Theme_Apply  elm_widget_theme(Evas_Object *obj);
 EAPI void             elm_widget_theme_specific(Evas_Object *obj, Elm_Theme *th, Eina_Bool force);
 EAPI void             elm_widget_on_show_region_hook_set(Evas_Object *obj, void *data, Efl_Ui_Scrollable_On_Show_Region func, Eina_Free_Cb data_free);

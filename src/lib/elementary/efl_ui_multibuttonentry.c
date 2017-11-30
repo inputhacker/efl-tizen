@@ -706,6 +706,55 @@ _access_multibuttonentry_item_register(Evas_Object *obj,
    evas_object_propagate_events_set(VIEW(item), !is_access);
 }
 
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+static char *
+_label_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
+{
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(data, sd, NULL);
+   return strdup((char *)sd->label_str);
+}
+
+static void
+_atspi_multibuttonentry_label_register(Evas_Object *obj, Eina_Bool is_atspi)
+{
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
+   Evas_Object *label_obj;
+   label_obj = (Evas_Object *)edje_object_part_object_get(sd->label, "elm.text");
+   if (label_obj)
+     {
+         if (is_atspi)
+           {
+              sd->label_access = elm_access_object_register(label_obj, obj);
+              _elm_access_callback_set(_elm_access_info_get(sd->label_access),
+                                       ELM_ACCESS_INFO, _label_access_info_cb, obj);
+              efl_access_role_set(sd->label_access, EFL_ACCESS_ROLE_HEADING);
+              evas_object_pass_events_set(label_obj, !_elm_config->atspi_mode);
+              evas_object_propagate_events_set(sd->label, !_elm_config->atspi_mode);
+           }
+         else
+           {
+              elm_access_object_unregister(label_obj);
+           }
+     }
+}
+
+static void
+_atspi_multibuttonentry_item_register(Evas_Object *obj,
+                                      Elm_Object_Item *eo_item,
+                                      Eina_Bool is_atspi)
+{
+   ELM_MULTIBUTTONENTRY_ITEM_DATA_GET(eo_item, item);
+   if (is_atspi)
+     {
+        efl_access_children_changed_added_signal_emit(obj, eo_item);
+        efl_access_added(eo_item);
+     }
+   else
+     efl_access_children_changed_del_signal_emit(obj, eo_item);
+}
+//
+
 EOLIAN static Eo *
 _elm_multibuttonentry_item_efl_object_constructor(Eo *eo_item, Elm_Multibuttonentry_Item_Data *item)
 {
@@ -919,11 +968,11 @@ _item_new(Efl_Ui_Multibuttonentry_Data *sd,
    efl_event_callback_legacy_call
      (obj, EFL_UI_MULTIBUTTONENTRY_EVENT_ITEM_ADDED, eo_item);
 
+   //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+   //register/unregister access objects accordingly.
    if (_elm_config->atspi_mode)
-     {
-        efl_access_children_changed_added_signal_emit(obj, eo_item);
-        efl_access_added(eo_item);
-     }
+     _atspi_multibuttonentry_item_register(obj, eo_item, EINA_TRUE);
+   //
 
    return eo_item;
 }
@@ -1411,15 +1460,6 @@ _box_layout_cb(Evas_Object *o,
      }
 }
 
-//TIZEN_ONLY(20160527) : expose label as at-spi object 
-static char *
-_label_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
-{
-   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(data, sd, NULL);
-   return strdup((char *)sd->label_str);
-}
-//
-
 static void
 _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
 {
@@ -1453,20 +1493,8 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
 
    //TIZEN_ONLY(20160527) : expose label as at-spi object
    if (_elm_config->atspi_mode)
-     {
-        Evas_Object *label_obj;
-        label_obj = (Evas_Object *)edje_object_part_object_get(sd->label, "elm.text");
-        if (label_obj)
-          {
-             sd->label_access = elm_access_object_register(label_obj, obj);
-             _elm_access_callback_set(_elm_access_info_get(sd->label_access),
-                                      ELM_ACCESS_INFO, _label_access_info_cb, obj);
-             efl_access_role_set(sd->label_access, EFL_ACCESS_ROLE_HEADING);
-             evas_object_pass_events_set(label_obj, !_elm_config->atspi_mode);
-             evas_object_propagate_events_set(sd->label, !_elm_config->atspi_mode);
-          }
-     }
-   ///
+     _atspi_multibuttonentry_label_register(obj, EINA_TRUE);
+   //
 
    sd->entry = efl_add(EFL_UI_TEXT_CLASS, sd->box,
                        efl_text_multiline_set(efl_added, EINA_FALSE),
@@ -1655,12 +1683,40 @@ _access_obj_process(Evas_Object *obj, Eina_Bool is_access)
      _access_multibuttonentry_item_register(obj, it, is_access);
 }
 
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+static void
+_atspi_obj_process(Evas_Object *obj, Eina_Bool is_atspi)
+{
+   Eina_List *l;
+   Elm_Object_Item *it;
+
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
+
+   /* label */
+   _atspi_multibuttonentry_label_register(obj, is_atspi);
+
+   /* items */
+   EINA_LIST_FOREACH(sd->items, l, it)
+     _atspi_multibuttonentry_item_register(obj, it, is_atspi);
+}
+//
+
 EOLIAN static void
 _efl_ui_multibuttonentry_elm_widget_on_access_update(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool acs)
 {
    _efl_ui_multibuttonentry_smart_focus_next_enable = acs;
    _access_obj_process(obj, _efl_ui_multibuttonentry_smart_focus_next_enable);
 }
+
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_multibuttonentry_elm_widget_atspi(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_atspi)
+{
+   _atspi_obj_process(obj, is_atspi);
+}
+//
 
 EAPI Evas_Object *
 elm_multibuttonentry_add(Evas_Object *parent)

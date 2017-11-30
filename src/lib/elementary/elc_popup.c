@@ -333,6 +333,54 @@ _mirrored_set(Evas_Object *obj,
      }
 }
 
+//TIZEN ONLY(20150717): expose title as at-spi object
+static char *
+_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
+{
+   Eina_Strbuf *buf;
+   Elm_Popup_Data *priv = data;
+   char *ret = NULL;
+   if (priv->title_text)
+     {
+        buf = eina_strbuf_new();
+        eina_strbuf_append_printf(buf, "%s, %s", priv->title_text, N_("Title"));
+        ret = eina_strbuf_string_steal(buf);
+        eina_strbuf_free(buf);
+        return strdup(ret);
+     }
+   return NULL;
+}
+//
+
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+static void
+_atspi_expose_title(Eo *obj, Eina_Bool is_atspi)
+{
+   Evas_Object *ao = NULL;
+   ELM_POPUP_DATA_GET(obj, sd);
+
+   if (sd->title_text && is_atspi)
+     {
+        ao = _access_object_get(obj, ACCESS_TITLE_PART);
+        if (!ao)
+          {
+             ao = _elm_access_edje_object_part_object_register
+                   (sd->main_layout, elm_layout_edje_get(sd->main_layout), ACCESS_TITLE_PART);
+             efl_access_role_set(ao, EFL_ACCESS_ROLE_HEADING);
+             _elm_access_callback_set(_elm_access_info_get(ao),
+                                       ELM_ACCESS_INFO, _access_info_cb, sd);
+          }
+     }
+   else
+     {
+        ao = _access_object_get(obj, ACCESS_TITLE_PART);
+        if (ao)
+          _elm_access_object_unregister(ao, NULL);
+     }
+}
+//
+
 static void
 _access_obj_process(Eo *obj, Eina_Bool is_access)
 {
@@ -1045,25 +1093,6 @@ _item_new(Elm_Popup_Item_Data *it)
      }
 }
 
-//TIZEN ONLY(20150717): expose title as at-spi object
-static char *
-_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
-{
-   Eina_Strbuf *buf;
-   Elm_Popup_Data *priv = data;
-   char *ret = NULL;
-   if (priv->title_text)
-     {
-        buf = eina_strbuf_new();
-        eina_strbuf_append_printf(buf, "%s, %s", priv->title_text, N_("Title"));
-        ret = eina_strbuf_string_steal(buf);
-        eina_strbuf_free(buf);
-        return strdup(ret);
-     }
-   return NULL;
-}
-//
-
 static Eina_Bool
 _title_text_set(Evas_Object *obj,
                 const char *text)
@@ -1096,27 +1125,8 @@ _title_text_set(Evas_Object *obj,
 
    //TIZEN ONLY(20150717): expose title as at-spi object
    if (_elm_config->atspi_mode)
-     {
-        if (sd->title_text)
-          {
-             ao = _access_object_get(obj, ACCESS_TITLE_PART);
-             if (!ao)
-               {
-                  ao = _elm_access_edje_object_part_object_register
-                        (sd->main_layout, elm_layout_edje_get(sd->main_layout), ACCESS_TITLE_PART);
-                  efl_access_role_set(ao, EFL_ACCESS_ROLE_HEADING);
-                  _elm_access_callback_set(_elm_access_info_get(ao),
-                                            ELM_ACCESS_INFO, _access_info_cb, sd);
-               }
-          }
-        else
-          {
-                ao = _access_object_get(obj, ACCESS_TITLE_PART);
-                if (ao)
-                    _elm_access_object_unregister(ao, NULL);
-          }
-     }
-   //
+     _atspi_expose_title(obj, EINA_TRUE);
+
    if (sd->title_text)
      elm_layout_signal_emit(sd->main_layout, "elm,state,title,text,visible", "elm");
    else
@@ -1718,6 +1728,15 @@ _elm_popup_elm_widget_on_access_update(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED,
 {
    _access_obj_process(obj, is_access);
 }
+
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_popup_elm_widget_atspi(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
+{
+   _atspi_expose_title(obj, is_atspi);
+}
+//
 
 EAPI Evas_Object *
 elm_popup_add(Evas_Object *parent)

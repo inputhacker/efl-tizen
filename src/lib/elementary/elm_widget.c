@@ -2890,6 +2890,33 @@ _elm_widget_access_info_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
    return sd->access_info;
 }
 
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EAPI Eina_Bool
+elm_widget_atspi(Evas_Object *obj,
+                  Eina_Bool is_atspi)
+{
+   const Eina_List *l;
+   Evas_Object *child;
+   Eina_Bool ret = EINA_TRUE;
+
+   API_ENTRY return EINA_FALSE;
+   EINA_LIST_FOREACH(sd->subobjs, l, child)
+     {
+        if (elm_widget_is(child))
+          ret &= elm_widget_atspi(child, is_atspi);
+     }
+   elm_obj_widget_atspi(obj, is_atspi);
+
+   return ret;
+}
+
+EOLIAN static void
+_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool is_atspi EINA_UNUSED)
+{
+}
+//
+
 EAPI Elm_Theme *
 elm_widget_theme_get(const Evas_Object *obj)
 {
