@@ -1372,7 +1372,8 @@ _ecore_wl2_display_connect(Ecore_Wl2_Display *ewd, Eina_Bool sync)
    ewd->wl.registry = wl_display_get_registry(ewd->wl.display);
    wl_registry_add_listener(ewd->wl.registry, &_registry_listener, ewd);
 
-   _ecore_wl2_display_sync_add(ewd);
+   cb = wl_display_sync(ewd->wl.display);
+   wl_callback_add_listener(cb, &_sync_listener, ewd);
 
    if (sync)
      {
@@ -1553,7 +1554,7 @@ _ecore_wl2_display_sync_get(void)
 }
 
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
-Ecore_Wl2_Display *
+EAPI Ecore_Wl2_Display *
 ecore_wl2_connected_display_get(const char *name)
 {
    Ecore_Wl2_Display * ewd;

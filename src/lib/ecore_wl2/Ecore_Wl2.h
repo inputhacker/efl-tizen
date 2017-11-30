@@ -2288,6 +2288,10 @@ EAPI void ecore_wl2_window_surface_flush(Ecore_Wl2_Window *window);
 
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
 EAPI void ecore_wl2_display_sync(Ecore_Wl2_Display *display);
+EAPI Ecore_Wl2_Display *ecore_wl2_connected_display_get(const char *name);
+EAPI Ecore_Wl2_Input *ecore_wl2_input_default_input_get(const Ecore_Wl2_Display *ewd);
+EAPI Eina_Bool ecore_wl2_window_keygrab_set(Ecore_Wl2_Window *win, const char *key, int mod EINA_UNUSED, int not_mod EINA_UNUSED, int priority EINA_UNUSED, Ecore_Wl2_Window_Keygrab_Mode grab_mode);
+EAPI Eina_Bool ecore_wl2_window_keygrab_unset(Ecore_Wl2_Window *win, const char *key, int mod EINA_UNUSED, int any_mod EINA_UNUSED);
 //
 
 // TIZEN_ONLY(20171107): add ecore_wl2_window_input_get() EAPI

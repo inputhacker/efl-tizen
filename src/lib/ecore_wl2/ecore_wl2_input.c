@@ -922,12 +922,23 @@ _ecore_wl2_input_key_send(Ecore_Wl2_Input *input, Ecore_Wl2_Window *window, xkb_
    strcpy((char *)ev->key, key);
    if (strlen(compose)) strcpy((char *)ev->compose, compose);
 
-   ev->window = window->id;
-   ev->event_window = window->id;
+   // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+   if (window)
+     {
+        ev->window = window->id;
+        ev->event_window = window->id;
+        ev->dev = _ecore_wl2_keyboard_dev_get(input, window->id);
+     }
+   else
+     {
+        ev->window = (uintptr_t)NULL;
+        ev->event_window = (uintptr_t)NULL;
+        ev->dev = _ecore_wl2_keyboard_dev_get(input, 0);
+     }
+   //
    ev->timestamp = timestamp;
    ev->modifiers = input->keyboard.modifiers;
    ev->keycode = code;
-   ev->dev = _ecore_wl2_keyboard_dev_get(input, window->id);
 
    /* DBG("Emitting Key event (%s,%s,%s,%s)\n", ev->keyname, ev->key, ev->compose, ev->string); */
 
@@ -1344,13 +1355,33 @@ _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned 
    unsigned int code;
    xkb_keysym_t sym = XKB_KEY_NoSymbol, sym_name = XKB_KEY_NoSymbol;
    const xkb_keysym_t *syms;
+   // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+   struct wl_surface *surface = NULL;
+   //
 
    input = data;
    if (!input) return;
 
    /* try to get the window which has keyboard focus */
    window = input->focus.keyboard;
-   if (!window) return;
+   // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
+   if (!window)
+     {
+        INF("window is not focused");
+        surface = (struct wl_surface *) eina_hash_find(_ecore_wl2_keygrab_hash_get(), &code);
+        if (surface)
+          {
+             window = ecore_wl2_window_surface_find(surface);
+             INF("keycode(%d) is grabbed in the window(%p)", code, window);
+          }
+        else
+          {
+             //key event callback can be called even though surface is not exist.
+             //TODO: Ecore_Event_Key have event_window info, so if (surface == NULL), we should generate proper window info
+             INF("surface is not exist");
+          }
+     }
+   //
 
    input->display->serial = serial;
 
@@ -2360,6 +2391,12 @@ _ecore_wl2_keygrab_hash_del(void *key)
    ret = eina_hash_del_by_key(_keygrabs, key);
 
    return ret;
+}
+
+Eina_Hash *
+_ecore_wl2_keygrab_hash_get(void)
+{
+   return _keygrabs;
 }
 
 //I'm not sure that keygrab function should be changed to Ecore_evas_XXX.
