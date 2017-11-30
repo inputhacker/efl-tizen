@@ -554,6 +554,10 @@ class Elm.Gengrid (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
       Elm.Widget.widget_event;
       Elm.Widget.focus_highlight_geometry { get; }
       Elm.Widget.focused_item { get; }
+      //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+      //register/unregister access objects accordingly.
+      Elm.Widget.atspi;
+      //
       Elm.Interface_Scrollable.item_loop_enabled { get; set; }
       Elm.Interface_Scrollable.bounce_allow { set; }
       Elm.Interface_Scrollable.policy { get; set; }

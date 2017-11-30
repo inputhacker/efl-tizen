@@ -1231,6 +1231,12 @@ _elm_gengrid_item_unrealize(Elm_Gen_Item *it,
 
    evas_event_thaw(evas_object_evas_get(WIDGET(it)));
    evas_event_thaw_eval(evas_object_evas_get(WIDGET(it)));
+
+   if (_elm_config->atspi_mode)
+     {
+        efl_access_removed(EO_OBJ(it));
+        efl_access_children_changed_del_signal_emit(WIDGET(it), EO_OBJ(it));
+     }
 }
 
 static void
@@ -1580,6 +1586,12 @@ _item_realize(Elm_Gen_Item *it)
 
    /* access */
    if (_elm_config->access_mode) _access_widget_item_register(it);
+
+   if (_elm_config->atspi_mode)
+     {
+        efl_access_added(EO_OBJ(it));
+        efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
+     }
 
    /* infate texts, contents and states of view object */
    _view_inflate(VIEW(it), it, &it->texts, &it->contents);
@@ -4194,6 +4206,38 @@ _elm_gengrid_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *
    _access_obj_process(sd, _elm_gengrid_smart_focus_next_enable);
 }
 
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_gengrid_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, Eina_Bool is_atspi)
+{
+   Elm_Gen_Item *it;
+   Evas_Object *content = NULL;
+   Eina_List *l;
+
+   EINA_INLIST_FOREACH(sd->items, it)
+     {
+        if (!it->realized) continue;
+        if (is_atspi)
+          {
+             efl_access_added(EO_OBJ(it));
+             efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
+             efl_access_name_changed_signal_emit(EO_OBJ(it));
+             EINA_LIST_FOREACH(it->contents, l, content)
+               {
+                  if (efl_isa(content, EFL_ACCESS_MIXIN))
+                    efl_access_parent_set(content, EO_OBJ(it));
+               }
+          }
+        else
+          {
+             efl_access_removed(EO_OBJ(it));
+             efl_access_children_changed_del_signal_emit(sd->obj, EO_OBJ(it));
+          }
+     }
+}
+//
+
 EAPI Evas_Object *
 elm_gengrid_add(Evas_Object *parent)
 {
@@ -4368,12 +4412,6 @@ _elm_gengrid_item_append(Eo *obj, Elm_Gengrid_Data *sd, const Elm_Gengrid_Item_C
    ecore_job_del(sd->calc_job);
    sd->calc_job = ecore_job_add(_calc_job, obj);
 
-   if (_elm_config->atspi_mode)
-     {
-        efl_access_added(EO_OBJ(it));
-        efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
-     }
-
    return EO_OBJ(it);
 }
 
@@ -4393,12 +4431,6 @@ _elm_gengrid_item_prepend(Eo *obj, Elm_Gengrid_Data *sd, const Elm_Gengrid_Item_
 
    ecore_job_del(sd->calc_job);
    sd->calc_job = ecore_job_add(_calc_job, obj);
-
-   if (_elm_config->atspi_mode)
-     {
-        efl_access_added(EO_OBJ(it));
-        efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
-     }
 
    return EO_OBJ(it);
 }

@@ -1863,7 +1863,10 @@ _item_realize(Elm_Gen_Item *it, const int index, Eina_Bool calc)
 
    //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
    if (_elm_config->atspi_mode)
-      efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
+     {
+        efl_access_added(EO_OBJ(it));
+        efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
+     }
    //
 
    /* access */
@@ -4827,12 +4830,6 @@ _item_queue(Elm_Genlist_Data *sd,
 //   evas_event_thaw_eval(evas_object_evas_get(sd->obj));
    evas_object_geometry_get(sd->obj, NULL, NULL, &w, NULL);
    if (w > 0) _requeue_idle_enterer(sd);
-
-   if (_elm_config->atspi_mode)
-     {
-        efl_access_added(EO_OBJ(it));
-        efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
-     }
 }
 
 /* If the application wants to know the relative item, use
@@ -5227,6 +5224,7 @@ _item_unrealize(Elm_Gen_Item *it)
 {
    Evas_Object *c;
    Eina_List *cache = NULL;
+   ELM_GENLIST_DATA_GET_FROM_ITEM(it, sd);
 
    EINA_LIST_FREE(it->item->flip_contents, c)
      evas_object_del(c);
@@ -5234,6 +5232,14 @@ _item_unrealize(Elm_Gen_Item *it)
    /* access */
    if (_elm_config->access_mode == ELM_ACCESS_MODE_ON)
      _elm_access_widget_item_unregister(it->base);
+
+   //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
+   if (_elm_config->atspi_mode)
+     {
+        efl_access_removed(EO_OBJ(it));
+        efl_access_children_changed_del_signal_emit(sd->obj, EO_OBJ(it));
+     }
+   //
 
    // unswallow VIEW(it) first then manipulate VIEW(it)
    _decorate_item_unrealize(it, EINA_FALSE);
@@ -5834,6 +5840,52 @@ _elm_genlist_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Genlist_Data *
    _elm_genlist_smart_focus_next_enable = acs;
    _access_obj_process(sd, _elm_genlist_smart_focus_next_enable);
 }
+
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_genlist_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Genlist_Data *sd, Eina_Bool is_atspi)
+{
+   Item_Block *itb;
+   Eina_Bool done = EINA_FALSE;
+   Evas_Object *content = NULL;
+
+   EINA_INLIST_FOREACH(sd->blocks, itb)
+     {
+        if (itb->realized)
+          {
+             Eina_List *l;
+             Elm_Gen_Item *it;
+
+             done = EINA_TRUE;
+             EINA_LIST_FOREACH(itb->items, l, it)
+               {
+                  if (!it->realized || it->hide) continue;
+                  if (is_atspi)
+                    {
+                       efl_access_added(EO_OBJ(it));
+                       efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
+                       EINA_LIST_FOREACH(it->contents, l, content)
+                         {
+                            if (efl_isa(content, EFL_ACCESS_MIXIN))
+                              {
+                                 efl_access_parent_set(content, EO_OBJ(it));
+                                 efl_access_children_changed_added_signal_emit(EO_OBJ(it), content);
+                              }
+                         }
+                       efl_access_name_changed_signal_emit(EO_OBJ(it));
+                    }
+                  else
+                    {
+                       efl_access_removed(EO_OBJ(it));
+                       efl_access_children_changed_del_signal_emit(sd->obj, EO_OBJ(it));
+                    }
+               }
+          }
+        else if (done) break;
+     }
+}
+//
 
 EAPI Evas_Object *
 elm_genlist_add(Evas_Object *parent)
