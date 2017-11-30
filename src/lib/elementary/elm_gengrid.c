@@ -5782,14 +5782,34 @@ EOLIAN Eina_Bool
 _elm_gengrid_efl_access_selection_child_select(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *pd, int child_index)
 {
    Elm_Gen_Item *item;
+   //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+   Eo *eo_item;
+   Eina_List *l;
+   //
    if (pd->select_mode != ELM_OBJECT_SELECT_MODE_NONE)
      {
-        EINA_INLIST_FOREACH(pd->items, item)
+        //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+        if (pd->horizontal)
           {
-             if (child_index-- == 0)
+             EINA_LIST_FOREACH(pd->atspi_children, l, eo_item)
                {
-                  elm_gengrid_item_selected_set(EO_OBJ(item), EINA_TRUE);
-                  return EINA_TRUE;
+                  if (child_index-- == 0)
+                    {
+                       elm_gengrid_item_selected_set(eo_item, EINA_TRUE);
+                       return EINA_TRUE;
+                    }
+               }
+          }
+        //
+        else
+          {
+             EINA_INLIST_FOREACH(pd->items, item)
+               {
+                  if (child_index-- == 0)
+                    {
+                       elm_gengrid_item_selected_set(EO_OBJ(item), EINA_TRUE);
+                       return EINA_TRUE;
+                    }
                }
           }
      }
@@ -5818,11 +5838,27 @@ _elm_gengrid_efl_access_selection_is_child_selected(Eo *obj EINA_UNUSED, Elm_Gen
 {
    Elm_Gen_Item *item;
 
-   EINA_INLIST_FOREACH(pd->items, item)
+   //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+   Eo *eo_item;
+   Eina_List *l;
+
+   if (pd->horizontal)
      {
-        if (child_index-- == 0)
+        EINA_LIST_FOREACH(pd->atspi_children, l, eo_item)
           {
-             return elm_gengrid_item_selected_get(EO_OBJ(item));
+             if (child_index-- == 0)
+               return elm_gengrid_item_selected_get(eo_item);
+          }
+     }
+   //
+   else
+     {
+        EINA_INLIST_FOREACH(pd->items, item)
+          {
+             if (child_index-- == 0)
+               {
+                  return elm_gengrid_item_selected_get(EO_OBJ(item));
+               }
           }
      }
    return EINA_FALSE;
@@ -5852,14 +5888,35 @@ EOLIAN Eina_Bool
 _elm_gengrid_efl_access_selection_child_deselect(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *pd, int child_index)
 {
    Elm_Gen_Item *item;
+   //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+   Eo *eo_item;
+   Eina_List *l;
+   //
+
    if (pd->select_mode != ELM_OBJECT_SELECT_MODE_NONE)
      {
-        EINA_INLIST_FOREACH(pd->items, item)
+        //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
+        if (pd->horizontal)
           {
-             if (child_index-- == 0)
+             EINA_LIST_FOREACH(pd->atspi_children, l, eo_item)
                {
-                  elm_gengrid_item_selected_set(EO_OBJ(item), EINA_FALSE);
-                  return EINA_TRUE;
+                  if (child_index-- == 0)
+                    {
+                       elm_gengrid_item_selected_set(eo_item, EINA_FALSE);
+                       return EINA_TRUE;
+                    }
+               }
+          }
+        //
+        else
+          {
+             EINA_INLIST_FOREACH(pd->items, item)
+               {
+                  if (child_index-- == 0)
+                    {
+                       elm_gengrid_item_selected_set(EO_OBJ(item), EINA_FALSE);
+                       return EINA_TRUE;
+                    }
                }
           }
      }
