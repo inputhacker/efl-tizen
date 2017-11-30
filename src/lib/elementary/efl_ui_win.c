@@ -5142,6 +5142,10 @@ _elm_win_need_frame_adjust(Efl_Ui_Win_Data *sd, const char *engine)
      sd->csd.need = EINA_FALSE;
    else
      sd->csd.need = sd->csd.wayland;
+//TIZEN_ONLY(20171201): Use win_no_border config temporarily.
+   if(_elm_config->win_no_border)
+     sd->csd.need = EINA_FALSE;
+//
 }
 
 static void

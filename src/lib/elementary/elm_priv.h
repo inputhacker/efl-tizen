@@ -354,6 +354,9 @@ struct _Elm_Config
 //   double        scroll_smooth_future_time;; // not used anymore
    double        scroll_smooth_time_window;
    double        scale;
+//TIZEN_ONLY(20171201): Use win_no_border config temporarily.
+   int           win_no_border;
+//
    int           bgpixmap;
    int           compositing;
    Eina_List    *font_dirs; // priv flags for Elm_Config_Flags -> up to here...

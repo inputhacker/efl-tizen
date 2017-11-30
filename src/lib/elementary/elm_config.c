@@ -413,6 +413,9 @@ _desc_init(void)
 //   ELM_CONFIG_VAL(D, T, scroll_smooth_future_time, T_DOUBLE); // not used anymore
    ELM_CONFIG_VAL(D, T, scroll_smooth_time_window, T_DOUBLE);
    ELM_CONFIG_VAL(D, T, scale, T_DOUBLE);
+//TIZEN_ONLY(20171201): Use win_no_border config temporarily.
+   ELM_CONFIG_VAL(D, T, win_no_border, T_INT);
+//
    ELM_CONFIG_VAL(D, T, bgpixmap, T_INT);
    ELM_CONFIG_VAL(D, T, compositing, T_INT);
    /* EET_DATA_DESCRIPTOR_ADD_LIST(D, T, "font_dirs", font_dirs, sub_edd); */
@@ -1734,6 +1737,9 @@ _config_load(void)
 //   _elm_config->scroll_smooth_future_time = 0.0; // not used anymore
    _elm_config->scroll_smooth_time_window = 0.15;
    _elm_config->scale = 1.0;
+//TIZEN_ONLY(20171201): Use win_no_border config temporarily.
+   _elm_config->win_no_border = 0;
+//
    _elm_config->bgpixmap = 0;
    _elm_config->compositing = 1;
    _elm_config->font_hinting = 2;
