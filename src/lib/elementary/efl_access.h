@@ -5,6 +5,13 @@
 //#ifdef EFL_BETA_API_SUPPORT
 //
 
+//TIZEN_ONLY(20190922): add name callback, description callback.
+/**
+ * ATSPI reading information callback
+ */
+typedef char *(*Efl_Access_Reading_Info_Cb)(void *data, Evas_Object *obj);
+//
+
 #ifdef EFL_EO_API_SUPPORT
 #include "efl_access.eo.h"
 #endif

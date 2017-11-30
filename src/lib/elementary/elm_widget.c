@@ -3913,6 +3913,8 @@ _elm_widget_item_efl_object_destructor(Eo *eo_item, Elm_Widget_Item_Data *item)
      }
    eina_hash_free(item->labels);
 
+   efl_access_description_cb_set(eo_item, NULL, NULL);
+   efl_access_name_cb_set(eo_item, NULL, NULL);
    efl_access_attributes_clear(eo_item);
    efl_access_removed(eo_item);
 
@@ -5261,6 +5263,8 @@ _elm_widget_efl_object_destructor(Eo *obj, Elm_Widget_Smart_Data *sd)
         efl_event_callback_del(sd->manager.provider, EFL_UI_FOCUS_USER_EVENT_MANAGER_CHANGED, _manager_changed_cb, obj);
         sd->manager.provider = NULL;
      }
+   efl_access_description_cb_set(obj, NULL, NULL);
+   efl_access_name_cb_set(obj, NULL, NULL);
    efl_access_attributes_clear(obj);
    efl_access_removed(obj);
    if (sd->logical.parent)

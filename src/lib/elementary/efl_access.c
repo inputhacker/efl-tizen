@@ -121,9 +121,22 @@ struct _Efl_Access_Event_Handler
    void *data;
 };
 
+//TIZEN_ONLY(20190922): add name callback, description callback.
+struct _Efl_Access_Reading_Info_Cb_Item
+{
+   Efl_Access_Reading_Info_Cb cb;
+   const void *data;
+};
+typedef struct _Efl_Access_Reading_Info_Cb_Item Efl_Access_Reading_Info_Cb_Item;
+//
+
 struct _Efl_Access_Data
 {
    Efl_Access_Relation_Set relations;
+   //TIZEN_ONLY(20190922): add name callback, description callback.
+   Efl_Access_Reading_Info_Cb_Item name_cb_item;
+   Efl_Access_Reading_Info_Cb_Item description_cb_item;
+   //
    Eina_List     *attr_list;
    const char    *name;
    const char    *description;
@@ -321,6 +334,18 @@ _efl_access_role_name_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
 EOLIAN const char *
 _efl_access_name_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd)
 {
+   //TIZEN_ONLY(20190922): add name callback, description callback.
+   char *ret = NULL;
+   if (pd->name_cb_item.cb)
+     ret = pd->name_cb_item.cb((void *)pd->name_cb_item.data, (Evas_Object *)obj);
+   if (ret)
+     {
+        eina_stringshare_replace(&pd->translation_domain, NULL);
+        pd->translation_domain = NULL;
+        eina_stringshare_replace(&pd->name, ret);
+        free(ret);
+     }
+   //
 #ifdef ENABLE_NLS
    if (pd->translation_domain)
      return dgettext(pd->translation_domain, pd->name);
@@ -334,8 +359,29 @@ _efl_access_name_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, const char *val)
    eina_stringshare_replace(&pd->name, val);
 }
 
+//TIZEN_ONLY(20190922): add name callback, description callback.
+EOLIAN static void
+_efl_access_name_cb_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, Efl_Access_Reading_Info_Cb name_cb, const void *data)
+{
+   pd->name_cb_item.cb = name_cb;
+   pd->name_cb_item.data = data;
+}
+//
+
 const char * _efl_access_description_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd)
 {
+   //TIZEN_ONLY(20190922): add name callback, description callback.
+   char *ret = NULL;
+   if (pd->description_cb_item.cb)
+     ret = pd->description_cb_item.cb((void *)pd->description_cb_item.data, (Evas_Object *)obj);
+   if (ret)
+     {
+        eina_stringshare_replace(&pd->translation_domain, NULL);
+        pd->translation_domain = NULL;
+        eina_stringshare_replace(&pd->description, ret);
+        free(ret);
+     }
+   //
 #ifdef ENABLE_NLS
    if (pd->translation_domain)
       return dgettext(pd->translation_domain, pd->description);
@@ -348,6 +394,15 @@ _efl_access_description_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, const char
 {
    eina_stringshare_replace(&pd->description, val);
 }
+
+//TIZEN_ONLY(20190922): add name callback, description callback.
+EOLIAN static void
+_efl_access_description_cb_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, Efl_Access_Reading_Info_Cb description_cb, const void *data)
+{
+   pd->description_cb_item.cb = description_cb;
+   pd->description_cb_item.data = data;
+}
+//
 
 EOLIAN static const char *
 _efl_access_localized_role_name_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)

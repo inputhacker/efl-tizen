@@ -1,5 +1,6 @@
 /* FIXME: This definitely shouldn't be here. */
 type Efl_Event_Cb: __undefined_type; [[Efl event callback type]]
+type Efl_Access_Reading_Info_Cb: __undefined_type; [[reading information callback]]
 
 enum Efl.Access.Type
 {
@@ -275,6 +276,17 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
             name: string; [[Accessible name]]
          }
       }
+      //TIZEN_ONLY(20190922): add name callback, description callback.
+      @property name_cb {
+         set {
+            [[Sets name information callback about widget.]]
+         }
+         values {
+            name_cb: Efl_Access_Reading_Info_Cb; [[reading information callback]]
+            data: const (void_ptr);
+         }
+      }
+      //
       @property relation_set @protected {
          [[Gets an all relations between accessible object and other accessible objects.]]
          get {
@@ -293,6 +305,17 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
             role: Efl.Access.Role; [[Accessible role]]
          }
       }
+      //TIZEN_ONLY(20190922): add name callback, description callback.
+      @property description_cb {
+         set {
+            [[Sets contextual information callback about widget.]]
+         }
+         values {
+            description_cb: Efl_Access_Reading_Info_Cb; [[reading information callback]]
+            data: const (void_ptr);
+         }
+      }
+      //
       @property children @protected {
          [[Gets object's accessible children.]]
          get {
