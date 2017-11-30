@@ -5419,6 +5419,14 @@ _scroll_animate_stop_cb(Evas_Object *obj,
                         void *data EINA_UNUSED)
 {
    efl_event_callback_legacy_call(obj, EFL_UI_EVENT_SCROLL_ANIM_STOP, NULL);
+   //TIZEN_ONLY: Let the screen-reader know when scroll animation ends
+   if (_elm_config->atspi_mode)
+     {
+        int x = 0, y = 0, w = 0, h = 0;
+        elm_interface_scrollable_content_region_get(obj, &x, &y, &w, &h);
+        efl_access_bounds_changed_signal_emit(obj, x, y, w, h);
+     }
+   //
 }
 
 static void
