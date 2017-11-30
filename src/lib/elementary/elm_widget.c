@@ -5463,14 +5463,21 @@ _on_ewk_del(void *data, const Efl_Event *desc EINA_UNUSED)
 //
 
 EOLIAN static Eina_List*
-_elm_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd)
+_elm_widget_efl_access_children_get(Eo *obj, Elm_Widget_Smart_Data *pd)
 {
    Eina_List *l, *accs = NULL;
    Evas_Object *widget;
    Efl_Access_Type type;
+   // TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
+   Eo *parent;
+   //
 
    EINA_LIST_FOREACH(pd->subobjs, l, widget)
      {
+        //TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
+        parent = efl_access_parent_get(widget);
+        if (parent && (parent != obj)) continue;
+
         //TIZEN_ONLY(20171114) atspi: integrate ewk_view with elementary accessibility
         // Ugly Tizen hack to integrate AT-SPI2 accessibility provided by WebKit with
         // elementary one. Due to problematic cross dependencies between Webkit
