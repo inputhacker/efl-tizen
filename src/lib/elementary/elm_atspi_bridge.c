@@ -3322,88 +3322,105 @@ _iter_interfaces_append(Eldbus_Message_Iter *iter, const Eo *obj)
 static Eina_Bool
 _cache_item_reference_append_cb(Eo *bridge, Eo *data, Eldbus_Message_Iter *iter_array)
 {
-  if (!efl_ref_get(data) || efl_destructed_is(data))
-    return EINA_TRUE;
+   if (!efl_ref_get(data) || efl_destructed_is(data))
+     return EINA_TRUE;
 
-  Eldbus_Message_Iter *iter_struct, *iter_sub_array;
-  Efl_Access_State_Set states;
-  Efl_Access_Role role;
-  Eo *root;
-  root = efl_access_root_get(EFL_ACCESS_MIXIN);
+   Eldbus_Message_Iter *iter_struct, *iter_sub_array;
+   Efl_Access_State_Set states;
+   Efl_Access_Role role;
+   Eo *root;
+   root = efl_access_root_get(EFL_ACCESS_MIXIN);
 
-  role = efl_access_role_get(data);
+   role = efl_access_role_get(data);
 
-  iter_struct = eldbus_message_iter_container_new(iter_array, 'r', NULL);
-  EINA_SAFETY_ON_NULL_RETURN_VAL(iter_struct, EINA_TRUE);
+   iter_struct = eldbus_message_iter_container_new(iter_array, 'r', NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(iter_struct, EINA_TRUE);
 
-  /* Marshall object path */
-  _bridge_iter_object_reference_append(bridge, iter_struct, data);
+   /* Marshall object path */
+   _bridge_iter_object_reference_append(bridge, iter_struct, data);
 
-  /* Marshall application */
-  _bridge_iter_object_reference_append(bridge, iter_struct, root);
+   /* Marshall application */
+   _bridge_iter_object_reference_append(bridge, iter_struct, root);
 
-  Eo *parent = NULL;
-  parent = efl_access_parent_get(data);
-  /* Marshall parent */
-  if ((!parent) && (EFL_ACCESS_ROLE_APPLICATION == role))
-    _object_desktop_reference_append(iter_struct);
-  else
-    _bridge_iter_object_reference_append(bridge, iter_struct, parent);
+   Eo *parent = NULL;
+   parent = efl_access_parent_get(data);
+   /* Marshall parent */
+   if ((!parent) && (EFL_ACCESS_ROLE_APPLICATION == role))
+     _object_desktop_reference_append(iter_struct);
+   else
+     _bridge_iter_object_reference_append(bridge, iter_struct, parent);
 
-  /* Marshall children  */
-  Eina_List *children_list = NULL, *l;
-  Eo *child;
+   /* Marshall children  */
+   Eina_List *children_list = NULL, *l;
+   Eo *child;
 
-  children_list = efl_access_children_get(data);
+   //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
+   Efl_Access_State_Set ss;
+   ss = efl_access_state_set_get(data);
+   //
+
+   //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
+   //children_list = efl_access_children_get(data);
+   //
+
   iter_sub_array = eldbus_message_iter_container_new(iter_struct, 'a', "(so)");
   EINA_SAFETY_ON_NULL_GOTO(iter_sub_array, fail);
-
+   //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
+   if (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_MANAGES_DESCENDANTS))
+     {
+        children_list = efl_access_children_get(data);
+   //
   EINA_LIST_FOREACH(children_list, l, child)
      _bridge_iter_object_reference_append(bridge, iter_sub_array, child);
-
+   //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
+        eina_list_free(children_list);
+     }
+   //
   eldbus_message_iter_container_close(iter_struct, iter_sub_array);
-  eina_list_free(children_list);
+   //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
+   //eina_list_free(children_list);
+   //
 
-  /* Marshall interfaces */
-  _iter_interfaces_append(iter_struct, data);
+   /* Marshall interfaces */
+   _iter_interfaces_append(iter_struct, data);
 
-  /* Marshall name */
-  const char *name = NULL;
-  name = efl_access_name_get(data);
-  if (!name)
-    name = "";
+   /* Marshall name */
+   const char *name = NULL;
+   name = efl_access_name_get(data);
+   if (!name)
+     name = "";
 
-  eldbus_message_iter_basic_append(iter_struct, 's', name);
+   eldbus_message_iter_basic_append(iter_struct, 's', name);
 
-  /* Marshall role */
-  eldbus_message_iter_basic_append(iter_struct, 'u', role);
+   /* Marshall role */
+   eldbus_message_iter_basic_append(iter_struct, 'u', role);
 
-  /* Marshall description */
-  const char* description = NULL;
-  description = efl_access_description_get(data);
-  if (!description)
-    description = "";
-  eldbus_message_iter_basic_append(iter_struct, 's', description);
+   /* Marshall description */
+   const char* description = NULL;
+   description = efl_access_description_get(data);
+   if (!description)
+     description = "";
+   eldbus_message_iter_basic_append(iter_struct, 's', description);
 
-  /* Marshall state set */
-  iter_sub_array = eldbus_message_iter_container_new(iter_struct, 'a', "u");
-  EINA_SAFETY_ON_NULL_GOTO(iter_sub_array, fail);
+   /* Marshall state set */
+   iter_sub_array = eldbus_message_iter_container_new(iter_struct, 'a', "u");
+   EINA_SAFETY_ON_NULL_GOTO(iter_sub_array, fail);
 
-  states = efl_access_state_set_get(data);
+   states = efl_access_state_set_get(data);
 
-  unsigned int s1 = states & 0xFFFFFFFF;
-  unsigned int s2 = (states >> 32) & 0xFFFFFFFF;
-  eldbus_message_iter_basic_append(iter_sub_array, 'u', s1);
-  eldbus_message_iter_basic_append(iter_sub_array, 'u', s2);
+   unsigned int s1 = states & 0xFFFFFFFF;
+   unsigned int s2 = (states >> 32) & 0xFFFFFFFF;
+   eldbus_message_iter_basic_append(iter_sub_array, 'u', s1);
+   eldbus_message_iter_basic_append(iter_sub_array, 'u', s2);
 
-  eldbus_message_iter_container_close(iter_struct, iter_sub_array);
-  eldbus_message_iter_container_close(iter_array, iter_struct);
+   eldbus_message_iter_container_close(iter_struct, iter_sub_array);
+   eldbus_message_iter_container_close(iter_array, iter_struct);
 
-  return EINA_TRUE;
+   return EINA_TRUE;
 
 fail:
-  if (iter_struct) eldbus_message_iter_del(iter_struct);
-  return EINA_TRUE;
+   if (iter_struct) eldbus_message_iter_del(iter_struct);
+   return EINA_TRUE;
 }
 
 static Eldbus_Message *

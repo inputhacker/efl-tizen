@@ -1861,6 +1861,11 @@ _item_realize(Elm_Gen_Item *it, const int index, Eina_Bool calc)
           it->item->nocache_once = EINA_FALSE;
      }
 
+   //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
+   if (_elm_config->atspi_mode)
+      efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
+   //
+
    /* access */
    if (_elm_config->access_mode) _access_widget_item_register(it);
 

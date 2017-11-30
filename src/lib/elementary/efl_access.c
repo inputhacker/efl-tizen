@@ -297,12 +297,14 @@ _efl_access_role_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
 }
 
 EOLIAN static void
-_efl_access_role_set(Eo *obj, Efl_Access_Data *pd EINA_UNUSED, Efl_Access_Role role)
+_efl_access_role_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, Efl_Access_Role role)
 {
    if (pd->role != role)
      {
         pd->role = role;
+        //TIZEN_ONLY(20160708) Do not send role changed signal - 10000 list items send 10000 IPC.
         efl_access_role_changed_signal_emit(obj);
+        //
      }
 }
 
