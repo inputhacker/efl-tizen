@@ -231,8 +231,6 @@ _ecore_evas_idle_enter(void *data EINA_UNUSED)
                   if ((!ee->animator_ticked) &&
                       (!ee->animator_ran))
                     {
-// TIZEN_ONLY
-#if 0
                        if (_ecore_evas_changes_get(ee))
                          {
                             if (!ee->animator_registered)
@@ -242,11 +240,6 @@ _ecore_evas_idle_enter(void *data EINA_UNUSED)
                               }
                          }
                        continue ;
-#else
-                       if (!_ecore_evas_changes_get(ee))
-                         continue;
-#endif
-//
                     }
                   ee->animator_ticked = EINA_FALSE;
                }
