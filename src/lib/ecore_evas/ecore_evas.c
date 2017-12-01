@@ -75,6 +75,10 @@ static const Efl_Event_Description *_event_description_get(Efl_Pointer_Action ac
 //RENDER_SYNC
 static int _ecore_evas_render_sync = 1;
 
+// TIZEN_ONLY(20171130) to prevent the render freeze
+static Eina_Bool _ee_idle_enter = EINA_FALSE;
+// End of TIZEN_ONLY(20171130)
+
 static void
 _ecore_evas_focus_out_dispatch(Ecore_Evas *ee, Efl_Input_Device *seat)
 {
@@ -137,8 +141,21 @@ _ecore_evas_idle_exiter(void *data EINA_UNUSED)
 {
    Ecore_Evas *ee;
 
+   // TIZEN_ONLY(20171130) to prevent the render freeze
+   _ee_idle_enter = EINA_FALSE;
+   // End of TIZEN_ONLY(20171130)
+
    EINA_INLIST_FOREACH(ecore_evases, ee)
-     ee->animator_ran = EINA_FALSE;
+     {
+        // TIZEN_ONLY(20171130) to prevent the render freeze
+        if (ee->animator_ticked_in_idler)
+          {
+             continue;
+          }
+        // End of TIZEN_ONLY(20171130)
+
+        ee->animator_ran = EINA_FALSE;
+     }
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -210,6 +227,10 @@ _ecore_evas_idle_enter(void *data EINA_UNUSED)
    double now = ecore_loop_time_get();
 #endif
 
+   // TIZEN_ONLY(20171130) to prevent the render freeze
+   _ee_idle_enter = EINA_TRUE;
+   // End of TIZEN_ONLY(20171130)
+
    if (!ecore_evases) return ECORE_CALLBACK_RENEW;
 
    if (_ecore_evas_fps_debug)
@@ -218,6 +239,10 @@ _ecore_evas_idle_enter(void *data EINA_UNUSED)
      }
    EINA_INLIST_FOREACH(ecore_evases, ee)
      {
+        // TIZEN_ONLY(20171130) to prevent the render freeze
+        ee->animator_ticked_in_idler = 0;
+        // End of TIZEN_ONLY(20171130)
+
         if (ee->manual_render)
           {
              if (ee->engine.func->fn_evas_changed)
@@ -3202,6 +3227,11 @@ ecore_evas_animator_tick(Ecore_Evas *ee, Eina_Rectangle *viewport, double loop_t
      }
 
    ecore_loop_time_set(loop_time);
+
+   // TIZEN_ONLY(20171130) to prevent the render freeze
+   if (_ee_idle_enter)
+     ee->animator_ticked_in_idler = 1;
+   // End of TIZEN_ONLY(20171130)
 
    ee->animator_ran = EINA_TRUE;
    efl_event_callback_call(ee->evas, EFL_EVENT_ANIMATOR_TICK, &a);

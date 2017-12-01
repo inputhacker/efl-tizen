@@ -392,6 +392,10 @@ struct _Ecore_Evas
    Eina_Bool keyboard_state : 1;
    Eina_Bool clipboard_state : 1;
    //
+
+   // TIZEN_ONLY(20171130) to prevent the render freeze
+   unsigned char animator_ticked_in_idler : 1;
+   // End of TIZEN_ONLY(20171130)
 };
 
 struct _Ecore_Evas_Aux_Hint
