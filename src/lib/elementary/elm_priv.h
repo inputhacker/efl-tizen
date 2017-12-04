@@ -766,6 +766,18 @@ _elm_dgettext(const char *string)
 
 #endif
 
+//TIZEN_ONLY(20160710): Expose access object only when brigde is connected.
+static inline Eina_Bool
+_elm_atspi_enabled()
+{
+    Eo *bridge = NULL;
+    Eina_Bool ret = EINA_FALSE;
+    if (_elm_config->atspi_mode && (bridge = _elm_atspi_bridge_get()))
+      ret = elm_obj_atspi_bridge_connected_get(bridge);
+    return ret;
+}
+//
+
 /* Used by the paste handler */
 void   _elm_entry_entry_paste(Evas_Object *obj, const char *entry);
 

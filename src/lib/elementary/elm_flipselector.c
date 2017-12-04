@@ -757,7 +757,7 @@ _elm_flipselector_efl_object_constructor(Eo *obj, Elm_Flipselector_Data *sd)
    efl_access_role_set(obj, EFL_ACCESS_ROLE_LIST);
 
    //TIZEN ONLY(20151012): expose flipselector top/bottom buttons for accessibility tree
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      _atspi_expose_flipselector_top_bottom(sd, EINA_TRUE);
    //
 

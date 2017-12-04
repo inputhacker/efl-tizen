@@ -973,7 +973,7 @@ _item_new(Efl_Ui_Multibuttonentry_Data *sd,
 
    //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
    //register/unregister access objects accordingly.
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      _atspi_multibuttonentry_item_register(obj, eo_item, EINA_TRUE);
    //
 
@@ -1495,7 +1495,7 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
      _access_multibuttonentry_label_register(obj, EINA_TRUE);
 
    //TIZEN_ONLY(20160527) : expose label as at-spi object
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      _atspi_multibuttonentry_label_register(obj, EINA_TRUE);
    //
 

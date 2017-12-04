@@ -382,7 +382,7 @@ _item_style_set(Elm_Naviframe_Item_Data *it,
      evas_object_freeze_events_set(VIEW(it), EINA_FALSE);
 
    //TIZEN ONLY(20151012): expose title as at-spi object
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      _atspi_expose_title(it, EINA_TRUE);
    //
 }

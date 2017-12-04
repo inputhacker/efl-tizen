@@ -773,7 +773,7 @@ _populate(Evas_Object *obj)
    edje_object_message_signal_process(elm_layout_edje_get(obj));
 
    //TIZEN_ONLY(20151012): Register smart callbacks for calendar buttons.
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      _atspi_expose_objects(obj, EINA_TRUE);
    //
 

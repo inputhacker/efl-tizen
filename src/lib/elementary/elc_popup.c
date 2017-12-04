@@ -1180,7 +1180,7 @@ _title_text_set(Evas_Object *obj,
      }
 
    //TIZEN ONLY(20150717): expose title as at-spi object
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      _atspi_expose_title(obj, EINA_TRUE);
 
    if (sd->title_text)
