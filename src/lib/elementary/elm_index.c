@@ -1780,6 +1780,21 @@ _elm_index_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Index_D
 }
 //
 
+//TIZEN_ONLY(20161006) : add highlighted state for index
+EOLIAN static Efl_Access_State_Set
+_elm_index_efl_access_state_set_get(Eo *obj, Elm_Index_Data *sd)
+{
+   Efl_Access_State_Set ret;
+   int level = sd->level;
+
+   ret = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+   if (sd->bx[level] && _elm_object_accessibility_currently_highlighted_get() == (void*)sd->bx[level])
+     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_HIGHLIGHTED);
+
+   return ret;
+}
+//
+
 /* Internal EO APIs and hidden overrides */
 
 #define ELM_INDEX_EXTRA_OPS \
