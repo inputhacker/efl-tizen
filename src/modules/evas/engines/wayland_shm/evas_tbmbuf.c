@@ -259,9 +259,8 @@ _evas_tbmbuf_buffer_unmap(Tbmbuf_Surface *surface)
 
 
 static void
-_evas_tbmbuf_surface_reconfigure(Surface *s, int dx EINA_UNUSED, int dy EINA_UNUSED, int w, int h, uint32_t flags EINA_UNUSED)
+_evas_tbmbuf_surface_reconfigure(Surface *s, int w, int h, uint32_t flags, Eina_Bool force)
 {
-
    Tbmbuf_Surface *surface;
 
    if (!s) return;
@@ -269,6 +268,10 @@ _evas_tbmbuf_surface_reconfigure(Surface *s, int dx EINA_UNUSED, int dy EINA_UNU
    surface = s->surf.tbm;
 
    if (!surface) return;
+
+   /* TIZEN_ONLY(20171204) : temporary patch */
+   if (w < 1) w = 1;
+   if (h < 1) h = 1;
 
    if ((w >= surface->w) && (w <= surface->stride / 4) && (h == surface->h))
       {
@@ -328,6 +331,7 @@ _evas_tbmbuf_surface_assign(Surface *s)
    Render_Output_Swap_Mode mode = MODE_FULL;
    tbm_buffer_info *tbuf_info = NULL;
    if (!s) return 0;
+
    surface = s->surf.tbm;
    if (!surface)
       {
@@ -484,7 +488,7 @@ static const struct wl_callback_listener frame_listener = {
 
 
 static void
-_evas_tbmbuf_surface_post(Surface *s, Eina_Rectangle *rects, unsigned int count)
+_evas_tbmbuf_surface_post(Surface *s, Eina_Rectangle *rects, unsigned int count, Eina_Bool hidden)
 {
    Tbmbuf_Surface *surface;
    struct wl_callback *frame_callback = NULL;
@@ -509,16 +513,19 @@ _evas_tbmbuf_surface_post(Surface *s, Eina_Rectangle *rects, unsigned int count)
    if (tbuf_info)
      tbuf_info->age = s->frame_age;
 
+   if (!hidden)
+     {
+       ecore_wl2_window_buffer_attach(s->info->info.wl2_win, buffer, 0, 0, EINA_FALSE);
 
-   wl_surface_attach(surface->wl_surface, buffer, 0, 0);
-   _evas_surface_damage(surface->wl_surface, surface->compositor_version,
-                        surface->w, surface->h, rects, count);
+       _evas_surface_damage(surface->wl_surface, surface->compositor_version,
+                            surface->w, surface->h, rects, count);
+     }
 
    frame_callback = wl_surface_frame(surface->wl_surface);
    wl_callback_add_listener(frame_callback, &frame_listener, surface->tbm_surface);
 
    sym_tbm_surface_internal_ref(surface->tbm_surface);
-   wl_surface_commit(surface->wl_surface);
+   ecore_wl2_window_commit(s->info->info.wl2_win, EINA_TRUE);
 
    sym_tbm_surface_internal_unref(surface->tbm_surface);
    sym_tbm_surface_queue_enqueue(surface->tbm_queue, surface->tbm_surface);
@@ -553,6 +560,12 @@ _evas_tbmbuf_surface_destroy(Surface *s)
 }
 
 Eina_Bool
+_evas_tbmbuf_surface_surface_set(Surface *s, struct wl_shm *wl_shm EINA_UNUSED, struct zwp_linux_dmabuf_v1 *wl_dmabuf)
+{
+   return EINA_TRUE;
+}
+
+Eina_Bool
 _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
 {
    Tbmbuf_Surface *surf = NULL;
@@ -568,6 +581,11 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
 
    surf->dx = 0;
    surf->dy = 0;
+
+   /* TIZEN_ONLY(20171204) : temporary patch */
+   if (w < 1) w = 1;
+   if (h < 1) h = 1;
+
    surf->w = w;
    surf->h = h;
    surf->wl_display = ecore_wl2_display_get(s->info->info.wl2_display);
@@ -616,6 +634,7 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
    s->funcs.data_get = _evas_tbmbuf_surface_data_get;
    s->funcs.assign = _evas_tbmbuf_surface_assign;
    s->funcs.post = _evas_tbmbuf_surface_post;
+   s->funcs.surface_set = _evas_tbmbuf_surface_surface_set;
 
 
 
