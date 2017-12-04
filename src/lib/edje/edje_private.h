@@ -1980,6 +1980,7 @@ struct _Edje_Real_Part_Text
 
          double          duration;
          double          speed;
+         Eina_Bool       always : 1;
       } marquee;
    } ellipsize;
    /* END */
