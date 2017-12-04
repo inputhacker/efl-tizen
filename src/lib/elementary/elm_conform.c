@@ -236,7 +236,7 @@ _conformant_part_sizing_eval(Evas_Object *obj,
         // END of TIZEN_ONLY(20150707)
 
         DBG("[KEYPAD]: size(%d,%d, %dx%d).", sx, sy, sw, sh);
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           {
              Evas_Object *access;
              access = evas_object_data_get(sd->virtualkeypad, "_part_access_obj");
@@ -279,55 +279,33 @@ _conformant_part_sizing_eval(Evas_Object *obj,
      }
 }
 
-//TIZEN ONLY(20160628): expose virtual keypad rect as at-spi object
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
 static void
-_conformant_atspi_bridge_on_connect_cb(void *data, const Efl_Event *event EINA_UNUSED)
+_atspi_expose_keypad_area(Evas_Object *obj, Eina_Bool is_atspi)
 {
-   ELM_CONFORMANT_DATA_GET(data, sd);
+   ELM_CONFORMANT_DATA_GET(obj, sd);
    Evas_Object *access;
 
    if (sd->virtualkeypad)
      {
-        access = elm_access_object_register(sd->virtualkeypad, data);
-        efl_access_role_set(access, EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW);
+        if (is_atspi)
+          {
+             access = elm_access_object_register(sd->virtualkeypad, obj);
+             efl_access_role_set(access, EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW);
+          }
+        else
+          elm_access_object_unregister(sd->virtualkeypad);
      }
 }
+//
 
-static void
-_conformant_atspi_bridge_on_disconnect_cb(void *data, const Efl_Event *event EINA_UNUSED)
+//TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+//register/unregister access objects accordingly.
+EOLIAN static void
+_elm_conformant_elm_widget_atspi(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
 {
-   ELM_CONFORMANT_DATA_GET(data, sd);
-   elm_access_object_unregister(sd->virtualkeypad);
-}
-
-static void
-_unregister_conformant_atspi_bridge_callbacks(Evas_Object *obj)
-{
-   if (!_elm_config->atspi_mode) return;
-
-   Eo *bridge = _elm_atspi_bridge_get();
-   if (!bridge) return;
-
-   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _conformant_atspi_bridge_on_connect_cb, obj);
-   efl_event_callback_del(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _conformant_atspi_bridge_on_disconnect_cb, obj);
-}
-
-static void
-_atspi_expose_keypad_area(Evas_Object *obj)
-{
-   Eina_Bool connected = EINA_FALSE;
-   Eo *bridge = _elm_atspi_bridge_get();
-   if (!bridge) return;
-
-   // If bridge is connected expose it now
-   connected = elm_obj_atspi_bridge_connected_get(bridge);
-   if (connected)
-     _conformant_atspi_bridge_on_connect_cb(obj, NULL);
-
-   // Register for bridge connect/disconnect
-   _unregister_conformant_atspi_bridge_callbacks(obj);
-   efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, _conformant_atspi_bridge_on_connect_cb, obj);
-   efl_event_callback_add(bridge, ELM_ATSPI_BRIDGE_EVENT_DISCONNECTED, _conformant_atspi_bridge_on_disconnect_cb, obj);
+   _atspi_expose_keypad_area(obj, is_atspi);
 }
 //
 
@@ -349,8 +327,8 @@ _conformant_parts_swallow(Evas_Object *obj)
              sd->virtualkeypad = evas_object_rectangle_add(e);
              elm_widget_sub_object_add(obj, sd->virtualkeypad);
              evas_object_size_hint_max_set(sd->virtualkeypad, -1, 0);
-             if (_elm_config->atspi_mode)
-               _atspi_expose_keypad_area(obj);
+             if (_elm_atspi_enabled())
+               _atspi_expose_keypad_area(obj, EINA_TRUE);
           }
         else
           _conformant_part_sizing_eval(obj, ELM_CONFORMANT_VIRTUAL_KEYPAD_PART);
@@ -1090,9 +1068,6 @@ _elm_conformant_efl_canvas_group_group_del(Eo *obj, Elm_Conformant_Data *sd)
 
    efl_event_callback_del(sd->win, EFL_UI_WIN_EVENT_INDICATOR_PROP_CHANGED, _on_indicator_mode_changed, obj);
    efl_event_callback_del(sd->win, EFL_UI_WIN_EVENT_ROTATION_CHANGED, _on_rotation_changed, obj);
-   // TIZEN_ONLY(20160628): Unregister callbacks for ATSPI bridge enable/disable
-   _unregister_conformant_atspi_bridge_callbacks(obj);
-   //
 
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }

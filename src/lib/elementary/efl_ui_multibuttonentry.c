@@ -488,7 +488,7 @@ _on_item_clicked(void *data,
 
    _item_select(WIDGET(it), it);
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(eo_it,
                                           EFL_ACCESS_STATE_CHECKED,
                                           EINA_TRUE);
@@ -652,7 +652,7 @@ EOLIAN static void
 _elm_multibuttonentry_item_efl_object_destructor(Eo *eo_it,
                                               Elm_Multibuttonentry_Item_Data *it)
 {
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_children_changed_del_signal_emit(WIDGET(it), eo_it);
    _item_del(it);
 

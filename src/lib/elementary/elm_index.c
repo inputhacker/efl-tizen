@@ -110,17 +110,6 @@ _access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
    return NULL;
 }
 
-//TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
-static Eina_Bool _atspi_enabled()
-{
-    Eo *bridge = NULL;
-    Eina_Bool ret = EINA_FALSE;
-    if (_elm_config->atspi_mode && (bridge = _elm_atspi_bridge_get()))
-      ret = elm_obj_atspi_bridge_connected_get(bridge);
-    return ret;
-}
-//
-
 EOLIAN static Evas_Object*
 _elm_index_item_elm_widget_item_access_register(Eo *eo_item, Elm_Index_Item_Data *it)
 {
@@ -1323,7 +1312,7 @@ _elm_index_item_selected_set(Eo *eo_it,
              edje_object_signal_emit(VIEW(it_inactive),
                                      "elm,state,inactive", "elm");
              //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
-             if (_atspi_enabled()) elm_layout_signal_emit(obj, "elm,indicator,state,inactive", "elm");
+             if (_elm_atspi_enabled()) elm_layout_signal_emit(obj, "elm,indicator,state,inactive", "elm");
              //
              edje_object_message_signal_process(VIEW(it_inactive));
           }
@@ -1336,7 +1325,7 @@ _elm_index_item_selected_set(Eo *eo_it,
 
         edje_object_signal_emit(VIEW(it_active), "elm,state,active", "elm");
         //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
-        if (_atspi_enabled())
+        if (_elm_atspi_enabled())
           {
             elm_layout_text_set(obj, "elm.text", strdup(it_sel->letter));
             elm_layout_signal_emit(obj, "elm,indicator,state,active", "elm");
@@ -1401,7 +1390,7 @@ _elm_index_item_append(Eo *obj, Elm_Index_Data *sd, const char *letter, Evas_Sma
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
    VIEW(it) = edje_object_add(evas_object_evas_get(obj));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_added(eo_item);
         efl_access_children_changed_added_signal_emit(obj, eo_item);
@@ -1423,7 +1412,7 @@ _elm_index_item_prepend(Eo *obj, Elm_Index_Data *sd, const char *letter, Evas_Sm
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
    VIEW(it) = edje_object_add(evas_object_evas_get(obj));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_added(eo_item);
         efl_access_children_changed_added_signal_emit(obj, eo_item);
@@ -1458,7 +1447,7 @@ _elm_index_item_insert_after(Eo *obj, Elm_Index_Data *sd, Elm_Object_Item *after
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
    VIEW(it) = edje_object_add(evas_object_evas_get(obj));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_added(eo_item);
         efl_access_children_changed_added_signal_emit(obj, eo_item);
@@ -1482,7 +1471,7 @@ _elm_index_item_insert_before(Eo *obj, Elm_Index_Data *sd, Elm_Object_Item *befo
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
    VIEW(it) = edje_object_add(evas_object_evas_get(obj));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_added(eo_item);
         efl_access_children_changed_added_signal_emit(obj, eo_item);
@@ -1526,7 +1515,7 @@ _elm_index_item_sorted_insert(Eo *obj, Elm_Index_Data *sd, const char *letter, E
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
    VIEW(it) = edje_object_add(evas_object_evas_get(obj));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_added(eo_item);
         efl_access_children_changed_added_signal_emit(obj, eo_item);

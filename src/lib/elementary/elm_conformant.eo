@@ -9,6 +9,10 @@ class Elm.Conformant (Efl.Ui.Layout)
       Efl.Object.constructor;
       Elm.Widget.widget_parent { set; }
       Elm.Widget.theme_apply;
+      //TIZEN_ONLY(20161012): When atspi mode is dynamically switched on/off,
+      //register/unregister access objects accordingly.
+      Elm.Widget.atspi;
+      //
    }
    events {
       virtualkeypad,state,on; [[Called when virtualkeypad was enabled]]

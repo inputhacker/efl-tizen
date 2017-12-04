@@ -164,7 +164,7 @@ _item_unselect(Elm_Toolbar_Item_Data *item)
    if (item->icon)
      elm_widget_signal_emit(item->icon, "elm,state,unselected", "elm");
    efl_event_callback_legacy_call(WIDGET(item), EFL_UI_EVENT_UNSELECTED, EO_OBJ(item));
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
     efl_access_state_changed_signal_emit(EO_OBJ(item), EFL_ACCESS_STATE_SELECTED, EINA_FALSE);
 }
 
@@ -641,7 +641,7 @@ _elm_toolbar_item_focused(Elm_Object_Item *eo_it)
      evas_object_raise(VIEW(it));
    efl_event_callback_legacy_call
      (obj, ELM_TOOLBAR_EVENT_ITEM_FOCUSED, EO_OBJ(it));
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
 }
 
@@ -668,7 +668,7 @@ _elm_toolbar_item_unfocused(Elm_Object_Item *eo_it)
    sd->focused_item = NULL;
    efl_event_callback_legacy_call
      (obj, ELM_TOOLBAR_EVENT_ITEM_UNFOCUSED, eo_it);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
 }
 
@@ -1078,7 +1078,7 @@ _item_select(Elm_Toolbar_Item_Data *it)
         if (it->func) it->func((void *)(WIDGET_ITEM_DATA_GET(EO_OBJ(it))), WIDGET(it), EO_OBJ(it));
      }
    efl_event_callback_legacy_call(obj, EFL_UI_EVENT_SELECTED, EO_OBJ(it));
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
     efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_SELECTED, EINA_TRUE);
 }
 
@@ -2405,7 +2405,7 @@ _item_new(Evas_Object *obj,
 
    icon_obj = elm_icon_add(VIEW(it));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
        if (icon_obj) efl_access_parent_set(icon_obj, eo_it);
 
    if (_elm_config->access_mode == ELM_ACCESS_MODE_ON)
@@ -2474,7 +2474,7 @@ _item_new(Evas_Object *obj,
    if ((!sd->items) && (sd->select_mode == ELM_OBJECT_SELECT_MODE_ALWAYS))
      _item_select(it);
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_added(eo_it);
 
    return it;

@@ -68,7 +68,7 @@ _state_set(Evas_Object *obj, Eina_Bool state, Eina_Bool activate)
              if (activate) elm_layout_signal_emit(obj, "elm,activate,radio,off", "elm");
              elm_layout_signal_emit(obj, "elm,state,radio,off", "elm");
           }
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           {
              if (sd->state)
                {

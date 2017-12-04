@@ -1144,7 +1144,7 @@ _elm_list_item_focused(Elm_Object_Item *eo_it)
      evas_object_raise(VIEW(it));
    efl_event_callback_legacy_call
      (WIDGET(it), ELM_LIST_EVENT_ITEM_FOCUSED, eo_it);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
 }
 
@@ -1171,7 +1171,7 @@ _elm_list_item_unfocused(Elm_Object_Item *eo_it)
 
    sd->focused_item = NULL;
    efl_event_callback_legacy_call(obj, ELM_LIST_EVENT_ITEM_UNFOCUSED, eo_it);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_FOCUSED, EINA_FALSE);
 }
 
@@ -1401,8 +1401,8 @@ call:
 
    if (it->func) it->func((void *)WIDGET_ITEM_DATA_GET(eo_it), WIDGET(it), eo_it);
    efl_event_callback_legacy_call(obj, EFL_UI_EVENT_SELECTED, eo_it);
-     if (_elm_config->atspi_mode)
-       efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_SELECTED, EINA_TRUE);
+   if (_elm_atspi_enabled())
+     efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_SELECTED, EINA_TRUE);
    sd->last_selected_item = eo_it;
 
    _elm_list_unwalk(obj, sd);
@@ -1471,7 +1471,7 @@ _item_unselect(Elm_List_Item_Data *it)
               (sd->select_mode == ELM_OBJECT_SELECT_MODE_NONE)))
           efl_event_callback_legacy_call
             (WIDGET(it), EFL_UI_EVENT_UNSELECTED, EO_OBJ(it));
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_SELECTED, EINA_FALSE);
      }
 
@@ -2330,11 +2330,11 @@ _item_new(Evas_Object *obj,
    VIEW(it) = edje_object_add(evas_object_evas_get(obj));
    edje_object_update_hints_set(VIEW(it), 1);
 
-   if (_elm_config->atspi_mode)
-   {
-       if (it->icon) efl_access_parent_set(it->icon, eo_it);
-       if (it->end) efl_access_parent_set(it->end, eo_it);
-   }
+   if (_elm_atspi_enabled())
+     {
+        if (it->icon) efl_access_parent_set(it->icon, eo_it);
+        if (it->end) efl_access_parent_set(it->end, eo_it);
+     }
 
    /* access */
    if (_elm_config->access_mode == ELM_ACCESS_MODE_ON)
@@ -2373,7 +2373,7 @@ _item_new(Evas_Object *obj,
         elm_widget_tree_unfocusable_set(it->end, EINA_TRUE);
      }
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_added(eo_it);
 
    return it;
@@ -2829,7 +2829,7 @@ _elm_list_item_append(Eo *obj, Elm_List_Data *sd, const char *label, Evas_Object
    it->node = eina_list_last(sd->items);
    elm_box_pack_end(sd->box, VIEW(it));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_children_changed_added_signal_emit(obj, EO_OBJ(it));
 
    return EO_OBJ(it);
@@ -2846,7 +2846,7 @@ _elm_list_item_prepend(Eo *obj, Elm_List_Data *sd, const char *label, Evas_Objec
    it->node = sd->items;
    elm_box_pack_start(sd->box, VIEW(it));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_children_changed_added_signal_emit(obj, EO_OBJ(it));
 
    return EO_OBJ(it);
@@ -2868,7 +2868,7 @@ _elm_list_item_insert_before(Eo *obj, Elm_List_Data *sd, Elm_Object_Item *eo_bef
    it->node = before_it->node->prev;
    elm_box_pack_before(sd->box, VIEW(it), VIEW(before_it));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_children_changed_added_signal_emit(obj, EO_OBJ(it));
 
    return EO_OBJ(it);
@@ -2890,7 +2890,7 @@ _elm_list_item_insert_after(Eo *obj, Elm_List_Data *sd, Elm_Object_Item *eo_afte
    it->node = after_it->node->next;
    elm_box_pack_after(sd->box, VIEW(it), VIEW(after_it));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_children_changed_added_signal_emit(obj, EO_OBJ(it));
 
    return EO_OBJ(it);
@@ -2921,7 +2921,7 @@ _elm_list_item_sorted_insert(Eo *obj, Elm_List_Data *sd, const char *label, Evas
         elm_box_pack_before(sd->box, VIEW(it), VIEW(before));
      }
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_children_changed_added_signal_emit(obj, EO_OBJ(it));
 
    return EO_OBJ(it);
@@ -3338,20 +3338,10 @@ static int _is_item_in_viewport(int viewport_y, int viewport_h, int obj_y, int o
     return 0;
 }
 
-static Eina_Bool _atspi_enabled()
-{
-   Eo *bridge = NULL;
-   Eina_Bool ret = EINA_FALSE;
-   if (_elm_config->atspi_mode && (bridge = _elm_atspi_bridge_get()))
-     ret = elm_obj_atspi_bridge_connected_get(bridge);
-
-   return ret;
-}
-
 EOLIAN static void
 _elm_list_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_List_Data *pd, Evas_Coord x, Evas_Coord y, Eina_Bool sig)
 {
-   if (!_atspi_enabled())
+   if (!_elm_atspi_enabled())
      {
        elm_interface_scrollable_content_pos_set(efl_super(obj, MY_CLASS), x, y, sig);
        return;

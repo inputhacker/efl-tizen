@@ -71,16 +71,6 @@ EFL_CALLBACKS_ARRAY_DEFINE(_inc_dec_button_cb,
 
 static void _access_increment_decrement_info_say(Evas_Object *obj,
                                                  Eina_Bool is_incremented);
-//TIZEN_ONLY(20160606): Forcefully setting highlight frame on spinner entry as on entry activation frame goes to window again.
-static Eina_Bool _atspi_enabled()
-{
-    Eo *bridge = NULL;
-    Eina_Bool ret = EINA_FALSE;
-    if (_elm_config->atspi_mode && (bridge = _elm_atspi_bridge_get()))
-      ret = elm_obj_atspi_bridge_connected_get(bridge);
-    return ret;
-}
-//
 
 static Eina_Bool
 _is_valid_digit(char x)
@@ -406,7 +396,7 @@ _entry_hide(Evas_Object *obj)
      sd->entry_reactivate = EINA_TRUE;
 
    //TIZEN_ONLY(20160606): Forcefully setting highlight frame on spinner entry as on entry activation frame goes to window again.
-   if (_atspi_enabled())
+   if (_elm_atspi_enabled())
      efl_access_component_highlight_clear(sd->ent);
    //
 
@@ -618,7 +608,7 @@ _entry_show_cb(void *data,
    elm_layout_signal_emit(data, "elm,state,button,inactive", "elm");
    evas_object_hide(sd->text_button);
    //TIZEN_ONLY(20160606): Forcefully setting highlight frame on spinner entry as on entry activation frame goes to window again.
-   if (_atspi_enabled())
+   if (_elm_atspi_enabled())
      efl_access_component_highlight_grab(obj);
    //
 }

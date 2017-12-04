@@ -880,7 +880,7 @@ _elm_widget_efl_gfx_visible_set(Eo *obj, Elm_Widget_Smart_Data *pd, Eina_Bool vi
      }
    eina_iterator_free(it);
 
-   if (!_elm_config->atspi_mode || pd->on_destroy)
+   if (!_elm_atspi_enabled() || pd->on_destroy)
      return;
 
    if (vis)
@@ -1503,7 +1503,7 @@ _elm_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Objec
 
         elm_widget_display_mode_set(sobj,
               evas_object_size_hint_display_mode_get(obj));
-        if (_elm_config->atspi_mode && !sd->on_create)
+        if (_elm_atspi_enabled() && !sd->on_create)
           {
              Efl_Access *aparent;
              aparent = efl_access_parent_get(sobj);
@@ -1581,7 +1581,7 @@ _elm_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Objec
                   parent = sdp->parent_obj;
                }
           }
-        if (_elm_config->atspi_mode && !sd->on_destroy)
+        if (_elm_atspi_enabled() && !sd->on_destroy)
           {
              Efl_Access *aparent;
              aparent = efl_access_parent_get(sobj);
@@ -5310,7 +5310,7 @@ _elm_widget_on_focus_update(Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Object_Item 
    if (!sd->resize_obj)
      evas_object_focus_set(obj, focused);
 
-   if (_elm_config->atspi_mode && !elm_widget_child_can_focus_get(obj))
+   if (_elm_atspi_enabled() && !elm_widget_child_can_focus_get(obj))
      efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, focused);
 
    return EINA_TRUE;

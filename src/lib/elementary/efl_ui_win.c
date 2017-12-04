@@ -1370,7 +1370,7 @@ _elm_win_focus_in(Ecore_Evas *ee)
    _elm_win_focus_highlight_reconfigure_job_start(sd);
    _elm_win_frame_style_update(sd, 0, 1);
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_window_activated_signal_emit(obj);
         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
@@ -1404,7 +1404,7 @@ _elm_win_focus_out(Ecore_Evas *ee)
    /* access */
    _elm_access_object_highlight_disable(evas_object_evas_get(obj));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_window_deactivated_signal_emit(obj);
         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_FALSE);
@@ -1754,13 +1754,13 @@ _elm_win_state_change(Ecore_Evas *ee)
         else if (sd->iconified)
           {
              efl_event_callback_legacy_call(obj, EFL_UI_WIN_EVENT_ICONIFIED, NULL);
-             if (_elm_config->atspi_mode)
+             if (_elm_atspi_enabled())
                efl_access_window_minimized_signal_emit(obj);
           }
         else
           {
              efl_event_callback_legacy_call(obj, EFL_UI_WIN_EVENT_NORMAL, NULL);
-             if (_elm_config->atspi_mode)
+             if (_elm_atspi_enabled())
                efl_access_window_restored_signal_emit(obj);
           }
      }
@@ -1801,13 +1801,13 @@ _elm_win_state_change(Ecore_Evas *ee)
         if (sd->maximized)
           {
              efl_event_callback_legacy_call(obj, EFL_UI_WIN_EVENT_MAXIMIZED, NULL);
-             if (_elm_config->atspi_mode)
+             if (_elm_atspi_enabled())
                efl_access_window_maximized_signal_emit(obj);
           }
         else
           {
              efl_event_callback_legacy_call(obj, EFL_UI_WIN_EVENT_UNMAXIMIZED, NULL);
-             if (_elm_config->atspi_mode)
+             if (_elm_atspi_enabled())
                efl_access_window_restored_signal_emit(obj);
           }
      }
@@ -1837,7 +1837,7 @@ _elm_win_state_change(Ecore_Evas *ee)
           (obj, EFL_UI_WIN_EVENT_ROTATION_CHANGED, NULL);
         efl_event_callback_legacy_call
           (obj, EFL_UI_WIN_EVENT_WM_ROTATION_CHANGED, NULL);
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           {
              Evas_Coord x = 0, y = 0, width = 0, height = 0;
              elm_win_screen_size_get(obj, &x, &y, &width, &height);
@@ -1875,7 +1875,7 @@ _elm_win_state_change(Ecore_Evas *ee)
      {
         evas_object_smart_callback_call(obj, SIG_VISIBILITY_CHANGED, (void*)!sd->obscured);
         //TIZEN_ONLY(20160701): add atspi window state visible change signal
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_VISIBLE, !sd->obscured);
         //
      }
@@ -2522,7 +2522,7 @@ _efl_ui_win_show(Eo *obj, Efl_Ui_Win_Data *sd)
 
    TRAP(sd, show);
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         Eo *root;
         efl_access_window_created_signal_emit(obj);
@@ -2584,7 +2584,7 @@ _efl_ui_win_hide(Eo *obj, Efl_Ui_Win_Data *sd)
      }
 #endif
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         Eo *root;
         root = efl_access_root_get(EFL_ACCESS_MIXIN);
@@ -3099,7 +3099,7 @@ _efl_ui_win_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Win_Data *sd)
 
    if (sd->autodel_clear) *(sd->autodel_clear) = -1;
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_window_destroyed_signal_emit(obj);
 
    _elm_win_list = eina_list_remove(_elm_win_list, obj);
@@ -3349,7 +3349,7 @@ _elm_win_delete_request(Ecore_Evas *ee)
    if (sd->autohide)
      evas_object_hide(obj);
    ELM_WIN_DATA_ALIVE_CHECK(obj, sd);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_window_destroyed_signal_emit(obj);
    ELM_WIN_DATA_ALIVE_CHECK(obj, sd);
    if (autodel) evas_object_del(obj);
@@ -5929,7 +5929,7 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
      }
 
    efl_access_role_set(obj, EFL_ACCESS_ROLE_WINDOW);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_window_created_signal_emit(obj);
 
    // attach config API
@@ -6810,7 +6810,7 @@ _win_rotate(Evas_Object *obj, Efl_Ui_Win_Data *sd, int rotation, Eina_Bool resiz
    efl_ui_widget_on_orientation_update(obj, rotation);
    efl_event_callback_legacy_call
      (obj, EFL_UI_WIN_EVENT_ROTATION_CHANGED, NULL);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         Evas_Coord x = 0, y = 0, width = 0, height = 0;
         elm_win_screen_size_get(obj, &x, &y, &width, &height);

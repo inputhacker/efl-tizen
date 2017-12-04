@@ -108,7 +108,6 @@ static int _is_item_in_viewport(int viewport_x, int viewport_y, int viewport_w, 
 //
 //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
 static int _sort_items(const void *data1, const void *data2);
-static Eina_Bool _atspi_enabled();
 //
 
 static const Elm_Action key_actions[] = {
@@ -717,7 +716,7 @@ _item_unselect(Elm_Gen_Item *it)
         sd->selected = eina_list_remove(sd->selected, eo_it);
         efl_event_callback_legacy_call
           (WIDGET(it), EFL_UI_EVENT_UNSELECTED, eo_it);
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_SELECTED, EINA_FALSE);
      }
 }
@@ -1023,7 +1022,7 @@ _item_text_realize(Elm_Gen_Item *it,
           {
              edje_object_part_text_set(target, key, "");
           }
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           efl_access_name_changed_signal_emit(EO_OBJ(it));
      }
 }
@@ -1236,7 +1235,7 @@ _elm_gengrid_item_unrealize(Elm_Gen_Item *it,
    evas_event_thaw(evas_object_evas_get(WIDGET(it)));
    evas_event_thaw_eval(evas_object_evas_get(WIDGET(it)));
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_removed(EO_OBJ(it));
         efl_access_children_changed_del_signal_emit(WIDGET(it), EO_OBJ(it));
@@ -1591,7 +1590,7 @@ _item_realize(Elm_Gen_Item *it)
    /* access */
    if (_elm_config->access_mode) _access_widget_item_register(it);
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         efl_access_added(EO_OBJ(it));
         efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
@@ -2242,7 +2241,7 @@ _elm_gengrid_pan_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED, Elm_Gengr
      _elm_widget_focus_highlight_start(psd->wobj);
 
    //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
-   if (_atspi_enabled() && sd->horizontal)
+   if (_elm_atspi_enabled() && sd->horizontal)
      sd->atspi_children = eina_list_sort(sd->atspi_children, eina_list_count(sd->atspi_children), _sort_items);
    //
 }
@@ -2344,7 +2343,7 @@ _elm_gengrid_item_focused(Elm_Object_Item *eo_it)
      }
 
    efl_event_callback_legacy_call(obj, ELM_GENGRID_EVENT_ITEM_FOCUSED, eo_it);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
 }
 
@@ -2374,7 +2373,7 @@ _elm_gengrid_item_unfocused(Elm_Object_Item *eo_it)
 
    sd->focused_item = NULL;
    efl_event_callback_legacy_call(obj, ELM_GENGRID_EVENT_ITEM_UNFOCUSED, eo_it);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_FOCUSED, EINA_FALSE);
 }
 
@@ -3968,7 +3967,7 @@ _item_select(Elm_Gen_Item *it)
    if (it->generation == sd->generation)
      {
         efl_event_callback_legacy_call(WIDGET(it), EFL_UI_EVENT_SELECTED, eo_it);
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_SELECTED, EINA_TRUE);
      }
 
@@ -6005,16 +6004,6 @@ _elm_gengrid_item_efl_access_children_get(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *i
 }
 //
 
-// TIZEN_ONLY (20151009) : Accessibility: updated highlight change during gengrid scroll
-static Eina_Bool _atspi_enabled()
-{
-    Eo *bridge = NULL;
-    Eina_Bool ret = EINA_FALSE;
-    if (_elm_config->atspi_mode && (bridge = _elm_atspi_bridge_get()))
-      ret = elm_obj_atspi_bridge_connected_get(bridge);
-    return ret;
-}
-
 static int _is_item_in_viewport(int viewport_x, int viewport_y, int viewport_w, int viewport_h,
                                 int obj_x, int obj_y, int obj_w, int obj_h)
 {
@@ -6032,7 +6021,7 @@ static int _is_item_in_viewport(int viewport_x, int viewport_y, int viewport_w, 
 EOLIAN static void
 _elm_gengrid_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Gengrid_Data *sd EINA_UNUSED, Evas_Coord x, Evas_Coord y, Eina_Bool sig)
 {
-   if (!_atspi_enabled())
+   if (!_elm_atspi_enabled())
      {
        elm_interface_scrollable_content_pos_set(efl_super(obj, MY_CLASS), x, y, sig);
        return;

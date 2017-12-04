@@ -400,14 +400,14 @@ _efl_ui_layout_elm_widget_on_focus_update(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_
      {
         elm_layout_signal_emit(obj, "elm,action,focus", "elm");
         evas_object_focus_set(wd->resize_obj, EINA_TRUE);
-        if (_elm_config->atspi_mode && !elm_widget_child_can_focus_get(obj))
+        if (_elm_atspi_enabled() && !elm_widget_child_can_focus_get(obj))
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
      }
    else
      {
         elm_layout_signal_emit(obj, "elm,action,unfocus", "elm");
         evas_object_focus_set(wd->resize_obj, EINA_FALSE);
-        if (_elm_config->atspi_mode && !elm_widget_child_can_focus_get(obj))
+        if (_elm_atspi_enabled() && !elm_widget_child_can_focus_get(obj))
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_FALSE);
      }
 

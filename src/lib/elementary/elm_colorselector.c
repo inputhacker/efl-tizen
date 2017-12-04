@@ -1738,10 +1738,10 @@ _item_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
    ELM_COLORSELECTOR_DATA_GET(WIDGET(item), sd);
 
    elm_object_signal_emit(VIEW(item), "elm,state,selected", "elm");
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(obj,
-                                                              EFL_ACCESS_STATE_CHECKED,
-                                                              EINA_TRUE);
+                                          EFL_ACCESS_STATE_CHECKED,
+                                          EINA_TRUE);
    elm_colorselector_color_set(WIDGET(item), item->color->r, item->color->g,
                                item->color->b, item->color->a);
    evas_object_smart_callback_call(WIDGET(item), SIG_COLOR_ITEM_SELECTED,

@@ -1267,7 +1267,7 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
         if (top && top_is_win && sd->input_panel_enable && !sd->input_panel_show_on_demand &&
             !edje_object_part_text_imf_context_get(sd->entry_edje, "elm.text"))
           elm_win_keyboard_mode_set(top, ELM_WIN_KEYBOARD_ON);
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
         _return_key_enabled_check(obj);
         _validate(obj);
@@ -1281,7 +1281,7 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
         if (top && top_is_win && sd->input_panel_enable &&
             !edje_object_part_text_imf_context_get(sd->entry_edje, "elm.text"))
           elm_win_keyboard_mode_set(top, ELM_WIN_KEYBOARD_OFF);
-        if (_elm_config->atspi_mode)
+        if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_FALSE);
 
         if (_elm_config->selection_clear_enable)
@@ -2189,7 +2189,7 @@ _entry_changed_user_signal_cb(void *data,
      {
         efl_event_callback_legacy_call(data, ELM_ENTRY_EVENT_CHANGED_USER, NULL);
      }
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         Efl_Access_Text_Change_Info atspi_info;
         if (edje_info && edje_info->insert)
@@ -2220,7 +2220,7 @@ _entry_preedit_changed_signal_cb(void *data,
                                   edje_object_signal_callback_extra_data_get();
    _entry_changed_handle(data, ELM_ENTRY_EVENT_PREEDIT_CHANGED);
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         Efl_Access_Text_Change_Info atspi_info;
         if (edje_info && edje_info->insert)
@@ -2315,7 +2315,7 @@ _entry_selection_changed_signal_cb(void *data,
    if (!_entry_win_is_wl(data))
      _selection_store(ELM_SEL_TYPE_PRIMARY, data);
    _update_selection_handler(data);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_event_emit(EFL_ACCESS_MIXIN, data, EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_SELECTION_CHANGED, NULL);
 }
 
@@ -2419,7 +2419,7 @@ _entry_cursor_changed_signal_cb(void *data,
 
    efl_event_callback_legacy_call(data, ELM_ENTRY_EVENT_CURSOR_CHANGED, NULL);
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_event_emit(EFL_ACCESS_MIXIN, data, EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_CARET_MOVED, NULL);
 }
 
@@ -2431,7 +2431,7 @@ _entry_cursor_changed_manual_signal_cb(void *data,
 {
    efl_event_callback_legacy_call
      (data, ELM_ENTRY_EVENT_CURSOR_CHANGED_MANUAL, NULL);
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      efl_access_event_emit(EFL_ACCESS_MIXIN, data, EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_CARET_MOVED, NULL);
 }
 

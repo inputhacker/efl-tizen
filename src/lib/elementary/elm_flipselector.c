@@ -247,7 +247,7 @@ _on_item_changed(Elm_Flipselector_Data *sd)
 
 
    //TIZEN ONLY(2015090): expose flipselector top/bottom buttons for accessibility tree
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
        if (sd->access_top_button)
          {
