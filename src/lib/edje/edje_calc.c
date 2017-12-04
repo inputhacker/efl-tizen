@@ -5419,6 +5419,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
  * 20170818: move Text, Textblock object based on its original position in smart move
  * 20170830: fix valign issue when slide_roll style.
  * 20170906: apply x/y offset to run marquee with short text
+ * 20171204: add text marquee always set/get APIs for internal usages
  *
  **********************************************************************************/
 #define EDJE_DEFAULT_FADE_IMAGE "edje_default_fade_image.png"
@@ -6492,7 +6493,8 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
      }
 
    /* Hide fade image if text is not exceed the given area. */
-   if ((chosen_desc->text.ellipsize.marquee.mode != EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ALWAYS) &&
+   if (((chosen_desc->text.ellipsize.marquee.mode != EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ALWAYS) &&
+        (!ep->typedata.text->ellipsize.marquee.always)) &&
        ((tw <= pf->final.w) && (th <= pf->final.h)))
      {
         if (ep->typedata.text->ellipsize.clipper_obj)

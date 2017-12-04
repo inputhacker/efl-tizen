@@ -3131,6 +3131,31 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       /* END */
+      /* TIZEN_ONLY(20171204): add text marquee always set/get APIs for internal usages */
+      @property part_text_marquee_always @internal {
+         set {
+            [[Sets the always mode for text's marquee.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+            ]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         get {
+            [[Gets the always mode for text's marquee.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+            ]]
+         }
+         keys {
+            part: const(char)*; [[The part name]]
+         }
+         values {
+            always: bool; [[The always mode]]
+         }
+      }
+      /* END */
    }
    implements {
       Eo.Base.constructor;
