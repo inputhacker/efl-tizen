@@ -1795,6 +1795,21 @@ _elm_index_efl_access_state_set_get(Eo *obj, Elm_Index_Data *sd)
 }
 //
 
+//TIZEN_ONLY(20161021) :atspi:Do not give highlightable state if index style is pagecontrol
+EOLIAN static Efl_Access_State_Set
+_elm_index_item_efl_access_state_set_get(Eo *eo_it, Elm_Index_Item_Data *sd)
+{
+   Efl_Access_State_Set ret;
+   const char *style = elm_widget_style_get(WIDGET(sd));
+
+   ret = efl_access_state_set_get(efl_super(eo_it, ELM_INDEX_ITEM_CLASS));
+   if (style && !strcmp(style, "pagecontrol"))
+     STATE_TYPE_UNSET(ret, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+
+   return ret;
+}
+//
+
 /* Internal EO APIs and hidden overrides */
 
 #define ELM_INDEX_EXTRA_OPS \

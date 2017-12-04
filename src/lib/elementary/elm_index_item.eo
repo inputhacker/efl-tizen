@@ -46,5 +46,8 @@ class Elm.Index.Item(Elm.Widget.Item, Efl.Access.Widget.Action)
         Elm.Widget.Item.access_register;
         Efl.Access.name { get; }
         Efl.Access.Widget.Action.elm_actions { get; }
+        //TIZEN_ONLY(20161021) : atspi:Do not give highlightable state if index style is pagecontrol
+        Efl.Access.state_set { get; }
+        //
    }
 }
