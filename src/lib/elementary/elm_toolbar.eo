@@ -349,6 +349,9 @@ class Elm.Toolbar (Elm.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scrollabl
       Efl.Ui.Menu.last_item { get; }
       Efl.Ui.Menu.items { get; }
       Efl.Ui.Focus.Composition.prepare;
+      //TIZEN_ONLY(20161019): toolbar: enhance accessibility scroll and highlight on toolbar items
+      Elm.Interface_Scrollable.content_pos_set;
+      //
    }
    events {
       item,focused; [[Called when toolbar item got focus]]

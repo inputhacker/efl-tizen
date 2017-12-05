@@ -4088,6 +4088,87 @@ _elm_toolbar_efl_canvas_group_group_calculate(Eo *obj, Elm_Toolbar_Data *pd EINA
    _sizing_eval(obj);
 }
 
+//TIZEN_ONLY(20161019): toolbar: enhance accessibility scroll and highlight on toolbar items
+static int _is_item_in_viewport(int viewport_x, int viewport_w, int obj_x, int obj_w)
+{
+    if ((obj_x + obj_w/2) < viewport_x)
+      return 1;
+    else if ((obj_x + obj_w/2) > viewport_x + viewport_w)
+      return -1;
+    return 0;
+}
+
+EOLIAN static void
+_elm_toolbar_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_Toolbar_Data *pd, Evas_Coord x, Evas_Coord y, Eina_Bool sig)
+{
+   if (!_elm_atspi_enabled())
+     {
+        elm_interface_scrollable_content_pos_set(efl_super(obj, MY_CLASS), x, y, sig);
+        return;
+     }
+
+   int old_x, old_y, delta_x;
+   elm_interface_scrollable_content_pos_get(efl_super(obj, MY_CLASS), &old_x, &old_y);
+   elm_interface_scrollable_content_pos_set(efl_super(obj, MY_CLASS), x, y, sig);
+   delta_x = old_x - x;
+   //check if highlighted item is list descendant
+   Evas_Object * highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
+   Evas_Object * parent = highlighted_obj;
+   if (efl_isa(highlighted_obj, ELM_WIDGET_CLASS))
+     {
+        while ((parent = elm_widget_parent_get(parent)))
+          if (parent == obj)
+            break;
+     }
+   else if (efl_isa(highlighted_obj, EDJE_OBJECT_CLASS))
+     {
+        while ((parent = evas_object_smart_parent_get(parent)))
+          if (parent == obj)
+            break;
+     }
+   else
+     {
+        WRN("Improper highlighted object: %p", highlighted_obj);
+        return;
+     }
+
+   if (parent)
+     {
+        int obj_x, obj_y, w, h, hx, hy, hw, hh;
+        evas_object_geometry_get(obj, &obj_x, &obj_y, &w, &h);
+        evas_object_geometry_get(highlighted_obj, &hx, &hy, &hw, &hh);
+        Elm_Toolbar_Item_Data *next_previous_item = NULL;
+        int viewport_position_result = _is_item_in_viewport(obj_x, w, hx, hw);
+        //only highlight if move direction is correct
+        //sometimes highlighted item is brought in and it does not fit viewport
+        //however content goes to the viewport position so soon it will
+        //meet _is_item_in_viewport condition
+        if ((viewport_position_result < 0 && delta_x > 0) ||
+           (viewport_position_result > 0 && delta_x < 0))
+          {
+             Elm_Toolbar_Item_Data* it_data;
+             Eina_Bool traverse_direction = viewport_position_result > 0;
+             it_data = traverse_direction ? ELM_TOOLBAR_ITEM_FROM_INLIST(pd->items): ELM_TOOLBAR_ITEM_FROM_INLIST(eina_inlist_last(pd->items));
+
+             while(it_data)
+              {
+                 next_previous_item = it_data;
+                 evas_object_geometry_get(VIEW(next_previous_item), &hx, &hy, &hw, &hh);
+
+                 if (_is_item_in_viewport(obj_x, w, hx, hw) == 0)
+                    break;
+
+                 next_previous_item = NULL;
+
+                 it_data = traverse_direction ? ELM_TOOLBAR_ITEM_FROM_INLIST(EINA_INLIST_GET(it_data)->next): ELM_TOOLBAR_ITEM_FROM_INLIST(EINA_INLIST_GET(it_data)->prev);
+              }
+          }
+        if (next_previous_item)
+           efl_access_component_highlight_grab(EO_OBJ(next_previous_item));
+     }
+}
+//
+
 /* Legacy deprecated functions */
 
 EAPI void
