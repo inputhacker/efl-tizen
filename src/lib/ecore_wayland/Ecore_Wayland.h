@@ -27,7 +27,9 @@
 #  define EAPI
 # endif
 
+/* TIZEN_ONLY(20171205) : turn off wayland warning until tizen finishs wayland2 changing job
 # warning The Ecore_Wayland library has been deprecated. Please use the Ecore_Wl2 library
+*/
 
 #ifdef __cplusplus
 extern "C" {
