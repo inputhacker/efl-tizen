@@ -3448,9 +3448,9 @@ _elm_list_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_List_Item_Data
      elm_list_item_show(eo_it);
 
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
+   elm_object_accessibility_highlight_set(VIEW(it), EINA_TRUE);
    efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    //
-   ret = efl_access_component_highlight_grab(efl_super(eo_it, ELM_LIST_ITEM_CLASS));
    return ret;
 }
 //
