@@ -130,6 +130,9 @@ typedef struct _Elm_Atspi_Bridge_Data
    // TIZEN_ONLY(20160802): do not handle events if the window is not activated
    Eina_Bool window_activated : 1;
    //
+   //TIZEN_ONLY(20161027) - Export elm_atspi_bridge_utils_is_screen_reader_enabled
+   Eina_Bool screen_reader_enabled : 1;
+   //
 } Elm_Atspi_Bridge_Data;
 
 
@@ -4827,6 +4830,9 @@ _screen_reader_enabled_get(void *data, const Eldbus_Message *msg, Eldbus_Pending
    //register/unregister access objects accordingly.
    _elm_win_atspi(is_enabled);
    //
+   //TIZEN_ONLY(20161027) - Export elm_atspi_bridge_utils_is_screen_reader_enabled
+   pd->screen_reader_enabled = !!is_enabled;
+   //
 }
 
 static void _bridge_object_register(Eo *bridge, Eo *obj)
@@ -5073,6 +5079,10 @@ _properties_changed_cb(void *data, Eldbus_Proxy *proxy EINA_UNUSED, void *event)
         //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
          //register/unregister access objects accordingly.
         _elm_win_atspi(val);
+        //
+        //TIZEN_ONLY(20161027) - Export elm_atspi_bridge_utils_is_screen_reader_enabled
+        ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(bridge, pd);
+        pd->screen_reader_enabled = !!val;
         //
      }
 }
@@ -5652,6 +5662,20 @@ elm_atspi_bridge_utils_say(const char* text,
       say_info->data = (void *)data;
    }
    eldbus_connection_send(pd->a11y_bus, msg, _on_read_command_call, say_info, -1);
+}
+//
+
+//TIZEN_ONLY(20161027) - Export elm_atspi_bridge_utils_is_screen_reader_enabled
+EAPI Eina_Bool elm_atspi_bridge_utils_is_screen_reader_enabled(void)
+{
+   Eo *bridge = _elm_atspi_bridge_get();
+   if (!bridge)
+     {
+        ERR("AT-SPI: Atspi bridge is not enabled.");
+        return EINA_FALSE;
+     }
+   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(bridge, pd, EINA_FALSE);
+   return pd->screen_reader_enabled;
 }
 //
 
