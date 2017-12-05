@@ -421,6 +421,11 @@ typedef struct _Elm_Widget_Smart_Data
    Eina_Inlist                  *translate_strings;
    Eina_List                    *focus_chain;
    Eina_List                    *event_cb;
+   const char                   *description; /**< Accessibility description */
+   //TIZEN_ONLY(20150731) : add i18n support for name and description
+   const char                   *atspi_translation_domain;
+   ///
+
    /* this is a hook to be set on-the-fly on widgets. this is code
     * handling the request of showing a specific region from an inner
     * widget (mainly issued by entries, on cursor moving) */
@@ -640,6 +645,10 @@ struct _Elm_Widget_Item_Data
    Eina_List                     *signals;
    Eina_Hash                     *labels;
    Evas_Object                   *track_obj;
+   const char                   *description; /**< Accessibility description */
+   //TIZEN_ONLY(20150731) : add i18n support for name and description
+   const char                   *atspi_translation_domain;
+   ///
 
    Eina_Bool                      disabled : 1;
    Eina_Bool                      on_deletion : 1;

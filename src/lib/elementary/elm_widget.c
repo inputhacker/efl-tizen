@@ -5370,6 +5370,54 @@ _elm_widget_efl_access_name_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
    return _elm_widget_accessible_plain_name_get(obj, ret);
 }
 
+//TIZEN_ONLY(20161111) add widget/widget_item description get/set
+EOLIAN void
+_elm_widget_efl_access_description_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data* _pd, const char *description)
+{
+   if (_pd->description)
+     eina_stringshare_del(_pd->description);
+
+   _pd->description = eina_stringshare_add(description);
+}
+
+EOLIAN static const char*
+_elm_widget_efl_access_description_get(Eo *obj, Elm_Widget_Smart_Data *_pd)
+{
+   const char *desc = NULL;
+   desc = efl_access_description_get(efl_super(obj, ELM_WIDGET_CLASS));
+   if (desc) return desc;
+
+#ifdef HAVE_GETTEXT
+   if (_pd->atspi_translation_domain)
+     return dgettext(_pd->atspi_translation_domain, _pd->description);
+#endif
+   return _pd->description;
+}
+
+EOLIAN void
+_elm_widget_item_efl_access_description_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd, const char *description)
+{
+   if (_pd->description)
+     eina_stringshare_del(_pd->description);
+
+   _pd->description = eina_stringshare_add(description);
+}
+
+EOLIAN const char*
+_elm_widget_item_efl_access_description_get(Eo *obj, Elm_Widget_Item_Data *_pd)
+{
+   const char *desc = NULL;
+   desc = efl_access_description_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
+   if (desc) return desc;
+
+#ifdef HAVE_GETTEXT
+   if (_pd->atspi_translation_domain)
+     return dgettext(_pd->atspi_translation_domain, _pd->description);
+#endif
+   return _pd->description;
+}
+//
+
 //TIZEN_ONLY(20171108): make atspi_proxy work
 static void
 _proxy_widget_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)

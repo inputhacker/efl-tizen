@@ -613,6 +613,9 @@ abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
       Efl.Canvas.Group.group_member_del;
       Efl.Canvas.Group.group_member_add;
       Efl.Access.name { get; }
+      //TIZEN_ONLY(20161111) add widget/widget_item description get/set
+      Efl.Access.description { get; set; }
+      //
       Efl.Access.state_set { get; }
       Efl.Access.children { get; }
       Efl.Access.parent { get; }
