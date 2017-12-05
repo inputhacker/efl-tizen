@@ -3412,7 +3412,10 @@ _elm_list_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_List
                }
            }
          if (next_previous_item)
-           efl_access_component_highlight_grab(EO_OBJ(next_previous_item));
+           {
+              elm_object_accessibility_highlight_set(EO_OBJ(next_previous_item), EINA_TRUE);
+              efl_access_active_descendant_changed_signal_emit(obj, EO_OBJ(next_previous_item));
+           }
      }
 }
 
