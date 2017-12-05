@@ -3,7 +3,7 @@ import eina_types;
 mixin Efl.Access.Component ()
 {
    [[AT-SPI component mixin]]
-   data: null;
+   data: Efl_Access_Component_Data;
    methods {
       @property size @protected @beta {
          [[Size of accessible widget.]]
@@ -115,6 +115,20 @@ mixin Efl.Access.Component ()
          legacy: elm_atspi_component_highlight_clear;
          //
          return: bool;
+      }
+      //
+      //TIZEN_ONLY(20161114): make atspi proxy work for more than two sockets created in one process
+      @property socket_offset @protected {
+         set {
+            [[Sets position of socket offset.]]
+         }
+         get {
+            [[Gets position of socket offset.]]
+         }
+         values {
+            x: int;
+            y: int;
+         }
       }
       //
    }

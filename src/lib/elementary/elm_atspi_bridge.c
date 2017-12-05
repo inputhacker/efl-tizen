@@ -2126,14 +2126,15 @@ static Eldbus_Message *
 _socket_offset_set(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
 {
    int x, y;
-   Eo *bridge = _elm_atspi_bridge_get();
-   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(bridge, pd, NULL);
+   Eo *parent;
+   Eo *obj = eldbus_service_object_data_get(iface, "_atspi_obj");
+   parent = efl_parent_get(obj);
+   Evas_Object *top = elm_object_top_widget_get(parent);
 
    if (!eldbus_message_arguments_get(msg, "ii", &x, &y))
      return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Invalid index type.");
 
-   pd->socket_offset.x = x;
-   pd->socket_offset.y = y;
+   efl_access_component_socket_offset_set(top, x, y);
 
    return eldbus_message_method_return_new(msg);
 }
@@ -3532,10 +3533,18 @@ _component_get_accessible_at_point(const Eldbus_Service_Interface *iface EINA_UN
    if (!eldbus_message_arguments_get(msg, "iiu", &x, &y, &coord_type))
      return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Invalid index type.");
 
+
    // TIZEN_ONLY(20160705) - enable atspi_proxy to work
-   x = x - pd->socket_offset.x;
-   y = y - pd->socket_offset.y;
+   Evas_Object *top = elm_object_top_widget_get(obj);
+   int sx = 0;
+   int sy = 0;
+
+   efl_access_component_socket_offset_get(top, &sx, &sy);
+
+   x = x - sx;
+   y = y - sy;
    //
+
 
    ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
@@ -5205,7 +5214,7 @@ static const Eldbus_Property proxy_properties[] = {
 };
 
 static const Eldbus_Service_Interface_Desc _proxy_iface_desc = {
-   ELM_ATSPI_DBUS_INTERFACE_PROXY, NULL, NULL, proxy_properties, NULL, NULL
+   ELM_ATSPI_DBUS_INTERFACE_PROXY, socket_methods, NULL, proxy_properties, NULL, NULL
 };
 
 static void _embedded_reply_cb(void *data, const Eldbus_Message *msg, Eldbus_Pending *pending EINA_UNUSED)
@@ -5265,44 +5274,6 @@ fail:
    efl_event_callback_call(proxy, ELM_ATSPI_PROXY_EVENT_DISCONNECTED, NULL);
 }
 
-// TIZEN_ONLY(20160705) - enable atspi_proxy to work
-static void
-_offset_set_reply_cb(void *data EINA_UNUSED, const Eldbus_Message *msg, Eldbus_Pending *pending EINA_UNUSED)
-{
-   const char *err, *txt;
-
-   if (eldbus_message_error_get(msg, &err, &txt))
-     {
-        ERR("AT-SPI: SetOffset method call failed: %s %s", err, txt);
-        return;
-     }
-}
-
-static void
-_plug_offset_set_send(Eldbus_Connection *conn, const char *bus, const char *path, int x, int y)
-{
-   Eldbus_Message *msg = NULL;
-
-   msg = eldbus_message_method_call_new(bus, path, ATSPI_DBUS_INTERFACE_SOCKET, "SetOffset");
-   if (!msg) goto fail;
-
-   if (!eldbus_message_arguments_append(msg, "i", x))
-     goto fail;
-
-   if (!eldbus_message_arguments_append(msg, "i", y))
-     goto fail;
-
-   if (!eldbus_connection_send(conn, msg, _offset_set_reply_cb, NULL, 100))
-     goto fail;
-
-   return;
-
-fail:
-   ERR("AT-SPI: Unable to send SetOffset request.");
-   if (msg) eldbus_message_unref(msg);
-}
-//
-
 static void _socket_addr_get_cb(void *data, const Eldbus_Message *msg, Eldbus_Pending *pending EINA_UNUSED)
 {
    Eo *proxy = data;
@@ -5323,7 +5294,7 @@ static void _socket_addr_get_cb(void *data, const Eldbus_Message *msg, Eldbus_Pe
    if (eldbus_message_error_get(msg, &err, &txt))
      {
         ERR("Unable to connect to socket: %s %s", err, txt);
-        goto fail;
+        goto retry;
      }
 
    iter = eldbus_message_iter_get(msg);
@@ -5353,6 +5324,10 @@ static void _socket_addr_get_cb(void *data, const Eldbus_Message *msg, Eldbus_Pe
 
 fail:
    efl_event_callback_call(proxy, ELM_ATSPI_PROXY_EVENT_DISCONNECTED, NULL);
+   return;
+
+retry:
+   elm_obj_atspi_proxy_address_get_retry_timer_add(proxy);
 }
 
 static void
@@ -5576,6 +5551,19 @@ EAPI void elm_atspi_bridge_utils_proxy_listen(Eo *proxy)
 //
 
 // TIZEN_ONLY(20160705) - enable atspi_proxy to work
+static void
+_offset_set_reply_cb(void *data EINA_UNUSED, const Eldbus_Message *msg, Eldbus_Pending *pending EINA_UNUSED)
+{
+   const char *err, *txt;
+
+   if (eldbus_message_error_get(msg, &err, &txt))
+     {
+        ERR("AT-SPI: SetOffset method call failed: %s %s", err, txt);
+        return;
+     }
+}
+
+// TIZEN_ONLY(20160705) - enable atspi_proxy to work
 void elm_atspi_bridge_utils_proxy_offset_set(Eo *proxy, int x, int y)
 {
    const char *bus, *path;
@@ -5586,13 +5574,28 @@ void elm_atspi_bridge_utils_proxy_offset_set(Eo *proxy, int x, int y)
 
    if (!pd->a11y_bus) return;
 
-   elm_obj_atspi_proxy_address_get(proxy, &bus, &path);
-   if (!bus || !path)
-     {
-        ERR("AT-SPI: Elm_Atspi_Proxy bus or path not set.");
-        return;
-     }
-   _plug_offset_set_send(pd->a11y_bus, bus, path, x, y);
+   bus = efl_key_data_get(proxy, "__svc_bus");
+   path = efl_key_data_get(proxy, "__svc_path");
+
+   Eldbus_Message *msg = NULL;
+
+   msg = eldbus_message_method_call_new(bus, path, ELM_ATSPI_DBUS_INTERFACE_PROXY, "SetOffset");
+   if (!msg) goto fail;
+
+   if (!eldbus_message_arguments_append(msg, "i", x))
+     goto fail;
+
+   if (!eldbus_message_arguments_append(msg, "i", y))
+     goto fail;
+
+   if (!eldbus_connection_send(pd->a11y_bus, msg, _offset_set_reply_cb, NULL, 100))
+     goto fail;
+
+   return;
+
+fail:
+   ERR("AT-SPI: Unable to send SetOffset request.");
+   if (msg) eldbus_message_unref(msg);
 }
 //
 

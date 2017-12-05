@@ -9,9 +9,18 @@
 
 #include "elm_priv.h"
 
+//TIZEN_ONLY(20161114): make atspi proxy work for more than two sockets created in one process
+struct _Efl_Access_Component_Data
+{
+   Evas_Point socket_offset;
+};
+
+typedef struct _Efl_Access_Component_Data Efl_Access_Component_Data;
+//
+
 
 EOLIAN static void
-_efl_access_component_position_get(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, Eina_Bool type, int *x, int *y)
+_efl_access_component_position_get(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED, Eina_Bool type, int *x, int *y)
 {
    Eina_Rect r;
 
@@ -21,7 +30,7 @@ _efl_access_component_position_get(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, E
 }
 
 EOLIAN static Eina_Bool
-_efl_access_component_position_set(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, Eina_Bool type, int x, int y)
+_efl_access_component_position_set(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED, Eina_Bool type, int x, int y)
 {
    Eina_Rect r;
 
@@ -32,7 +41,7 @@ _efl_access_component_position_set(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, E
 }
 
 EOLIAN static Eina_Bool
-_efl_access_component_size_set(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, int w, int h)
+_efl_access_component_size_set(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED, int w, int h)
 {
    Eina_Rect r;
 
@@ -43,7 +52,7 @@ _efl_access_component_size_set(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, int w
 }
 
 EOLIAN static void
-_efl_access_component_size_get(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, int *w, int *h)
+_efl_access_component_size_get(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED, int *w, int *h)
 {
    Eina_Rect r;
 
@@ -53,7 +62,7 @@ _efl_access_component_size_get(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, int *
 }
 
 EOLIAN static Eina_Bool
-_efl_access_component_contains(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, Eina_Bool type, int x, int y)
+_efl_access_component_contains(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED, Eina_Bool type, int x, int y)
 {
    Eina_Rect r;
 
@@ -62,7 +71,7 @@ _efl_access_component_contains(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED, Eina_
 }
 
 EOLIAN static double
-_efl_access_component_alpha_get(Eo *obj, void *_pd EINA_UNUSED)
+_efl_access_component_alpha_get(Eo *obj, Efl_Access_Component_Data *_pd EINA_UNUSED)
 {
    int alpha;
 
@@ -71,7 +80,7 @@ _efl_access_component_alpha_get(Eo *obj, void *_pd EINA_UNUSED)
 }
 
 EOLIAN static Eo *
-_efl_access_component_accessible_at_point_get(Eo *obj, void *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
+_efl_access_component_accessible_at_point_get(Eo *obj, Efl_Access_Component_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
 {
    Eina_List *l, *children;
    Eo *ret = NULL, *child;
@@ -104,7 +113,7 @@ _efl_access_component_accessible_at_point_get(Eo *obj, void *_pd EINA_UNUSED, Ei
 }
 
 EOLIAN static Eina_Rect
-_efl_access_component_extents_get(Eo *obj, void *_pd EINA_UNUSED, Eina_Bool screen_coords)
+_efl_access_component_extents_get(Eo *obj, Efl_Access_Component_Data *_pd EINA_UNUSED, Eina_Bool screen_coords)
 {
    Eina_Rect r;
 
@@ -124,7 +133,7 @@ _efl_access_component_extents_get(Eo *obj, void *_pd EINA_UNUSED, Eina_Bool scre
 }
 
 EOLIAN static Eina_Bool
-_efl_access_component_extents_set(Eo *obj, void *_pd EINA_UNUSED, Eina_Bool screen_coords, Eina_Rect r)
+_efl_access_component_extents_set(Eo *obj, Efl_Access_Component_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, Eina_Rect r)
 {
    int wx, wy;
 
@@ -146,20 +155,20 @@ _efl_access_component_extents_set(Eo *obj, void *_pd EINA_UNUSED, Eina_Bool scre
 }
 
 EOLIAN static int
-_efl_access_component_layer_get(Eo *obj, void *_pd EINA_UNUSED)
+_efl_access_component_layer_get(Eo *obj, Efl_Access_Component_Data *_pd EINA_UNUSED)
 {
    return evas_object_layer_get(obj);
 }
 
 EOLIAN static int
-_efl_access_component_z_order_get(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
+_efl_access_component_z_order_get(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED)
 {
    // Currently not used.
    return 0;
 }
 
 EOLIAN static Eina_Bool
-_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
+_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED)
 {
    evas_object_focus_set(obj, EINA_TRUE);
    return evas_object_focus_get(obj);
@@ -167,7 +176,7 @@ _efl_access_component_focus_grab(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
 
 //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
 EOLIAN static Eina_Bool
-_efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
+_efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED)
 {
    WRN("The %s object does not implement the \"component_highlight_grab\" function.",
        efl_class_name_get(efl_class_get(obj)));
@@ -175,11 +184,27 @@ _efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
 }
 
 EOLIAN static Eina_Bool
-_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, void *_pd EINA_UNUSED)
+_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED)
 {
    WRN("The %s object does not implement the \"component_highlight_clear\" function.",
        efl_class_name_get(efl_class_get(obj)));
    return EINA_FALSE;
+}
+//
+
+//TIZEN_ONLY(20161114): make atspi proxy work for more than two sockets created in one process
+EOLIAN static void
+_efl_access_component_socket_offset_set(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd, int x, int y)
+{
+   _pd->socket_offset.x = x;
+   _pd->socket_offset.y = y;
+}
+
+EOLIAN static void
+_efl_access_component_socket_offset_get(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd, int *x, int *y)
+{
+   *x = _pd->socket_offset.x;
+   *y = _pd->socket_offset.y;
 }
 //
 
