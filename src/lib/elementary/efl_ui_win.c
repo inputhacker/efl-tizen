@@ -4045,7 +4045,6 @@ _elm_win_access(Eina_Bool is_access)
 void
 _elm_win_atspi(Eina_Bool is_atspi)
 {
-   Evas *evas;
    const Eina_List *l;
    Evas_Object *obj;
    Evas_Object *fobj;
