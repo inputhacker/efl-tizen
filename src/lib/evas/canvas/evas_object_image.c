@@ -65,6 +65,8 @@ struct _Evas_Object_Image_Pixels
    struct {
       Evas_Object_Image_Pixels_Get_Cb  get_pixels;
       void                            *get_pixels_data;
+      Evas_Object_Image_Pixels_Get_Cb  noti_pixels;
+      void                            *noti_pixels_data;
    } func;
 
    Evas_Video_Surface video;
@@ -1865,6 +1867,19 @@ _evas_image_pixels_get_callback_set(Eo *eo_obj EINA_UNUSED, Evas_Image_Data *o, 
 }
 
 EOLIAN static void
+_evas_image_pixels_noti_callback_set(Eo *eo_obj EINA_UNUSED, Evas_Image_Data *o, Evas_Object_Image_Pixels_Get_Cb func, void *data)
+{
+   Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
+   evas_object_async_block(obj);
+   EINA_COW_PIXEL_WRITE_BEGIN(o, pixi_write)
+     {
+        pixi_write->func.noti_pixels = func;
+        pixi_write->func.noti_pixels_data = data;
+     }
+   EINA_COW_PIXEL_WRITE_END(o, pixi_write);
+}
+
+EOLIAN static void
 _evas_image_pixels_dirty_set(Eo *eo_obj, Evas_Image_Data *o, Eina_Bool dirty)
 {
    Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
@@ -3050,6 +3065,13 @@ evas_process_dirty_pixels(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, 
 {
    Eina_Bool direct_override = EINA_FALSE, direct_force_off = EINA_FALSE;
 
+   // notify the object when the engine_data exists
+   if (o->pixels->func.noti_pixels)
+     {
+        if (o->engine_data)
+          o->pixels->func.noti_pixels(o->pixels->func.noti_pixels_data, eo_obj);
+     }
+
    if (o->dirty_pixels)
      {
         if (o->pixels->func.get_pixels)
@@ -3117,7 +3139,7 @@ evas_process_dirty_pixels(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, 
                   if (ENFN->gl_get_pixels)
                     ENFN->gl_get_pixels(output, o->pixels->func.get_pixels, o->pixels->func.get_pixels_data, eo_obj, o->engine_data);
                   else
-                  o->pixels->func.get_pixels(o->pixels->func.get_pixels_data, eo_obj);
+                    o->pixels->func.get_pixels(o->pixels->func.get_pixels_data, eo_obj);
                   if (ENFN->gl_get_pixels_post)
                     ENFN->gl_get_pixels_post(output);
                }
