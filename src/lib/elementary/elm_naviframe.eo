@@ -152,6 +152,9 @@ class Elm.Naviframe (Efl.Ui.Layout, Efl.Access.Widget.Action)
       //register/unregister access objects accordingly.
       Elm.Widget.atspi;
       //
+      //TIZEN_ONLY(20161208): add API elm_object_part_access_object_get
+      Elm.Widget.part_access_object_get;
+      //
       Efl.Layout.Signal.signal_emit;
       Efl.Access.Widget.Action.elm_actions { get; }
       Elm.Widget.resize_object { set; }

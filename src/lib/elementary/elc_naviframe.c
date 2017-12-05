@@ -1400,6 +1400,20 @@ _on_obj_size_hints_changed(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
      _item_dispmode_set(it, dispmode);
 }
 
+
+//TIZEN_ONLY(20161208): add API elm_object_part_access_object_get
+EOLIAN static Evas_Object*
+_elm_naviframe_elm_widget_part_access_object_get(const Eo *obj, Elm_Naviframe_Data *_pd EINA_UNUSED, const char *part)
+{
+   Elm_Object_Item *eo_top_it = NULL;
+   eo_top_it = elm_naviframe_top_item_get(obj);
+   if (!eo_top_it) return NULL;
+
+   ELM_NAVIFRAME_ITEM_DATA_GET(eo_top_it, top_it);
+   return _access_object_get(top_it, part);
+}
+//
+
 EOLIAN static void
 _elm_naviframe_efl_canvas_group_group_add(Eo *obj, Elm_Naviframe_Data *priv)
 {
