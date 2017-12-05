@@ -5076,13 +5076,15 @@ _properties_changed_cb(void *data, Eldbus_Proxy *proxy EINA_UNUSED, void *event)
           _a11y_connection_init(bridge);
         else
           _a11y_connection_shutdown(bridge);
-        //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
-         //register/unregister access objects accordingly.
-        _elm_win_atspi(val);
-        //
+
         //TIZEN_ONLY(20161027) - Export elm_atspi_bridge_utils_is_screen_reader_enabled
         ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(bridge, pd);
         pd->screen_reader_enabled = !!val;
+        //
+
+        //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
+         //register/unregister access objects accordingly.
+        _elm_win_atspi(val);
         //
      }
 }

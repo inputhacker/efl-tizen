@@ -342,6 +342,9 @@ static const char SIG_WM_ROTATION_CHANGED[] = "wm,rotation,changed";
 static const char SIG_EFFECT_STARTED[] = "effect,started";
 static const char SIG_EFFECT_DONE[] = "effect,done";
 //
+//TIZEN_ONLY(20161028): add smart signal 'atspi,screen,reader,changed'
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
 // TIZEN_ONLY(20160120): support visibility_change event
 static const char SIG_VISIBILITY_CHANGED[] = "visibility,changed";
 //
@@ -385,6 +388,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_EFFECT_STARTED, ""},
    {SIG_EFFECT_DONE, ""},
    {SIG_LAUNCH_DONE, ""},
+   //TIZEN_ONLY(20161028): add smart signal 'atspi,screen,reader,changed'
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {SIG_VISIBILITY_CHANGED, ""},
    {NULL, NULL}
 };
@@ -4047,6 +4053,7 @@ _elm_win_atspi(Eina_Bool is_atspi)
    EINA_LIST_FOREACH(_elm_win_list, l, obj)
      {
         elm_widget_atspi(obj, is_atspi);
+        evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, NULL);
 
          /* floating orphan object. if there are A, B, C objects and user does
             as below, then there would be floating orphan objects.
