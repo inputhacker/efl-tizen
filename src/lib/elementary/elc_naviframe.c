@@ -2078,6 +2078,72 @@ _elm_naviframe_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm
    return &atspi_actions[0];
 }
 
+//TIZEN_ONLY(20161213) Using VIEW(item) for naviframe, naviframe item accessible information
+EOLIAN const char*
+_elm_naviframe_efl_access_name_get(Eo *eo, Elm_Naviframe_Data *pd EINA_UNUSED)
+{
+   const char *ret = NULL;
+   Elm_Object_Item *eo_top_it = NULL;
+
+   eo_top_it = elm_naviframe_top_item_get(eo);
+   if (eo_top_it)
+     {
+        ret = efl_access_name_get(eo_top_it);
+     }
+
+   return ret;
+}
+
+EOLIAN const char*
+_elm_naviframe_efl_access_description_get(Eo *eo, Elm_Naviframe_Data *pd EINA_UNUSED)
+{
+   const char *ret = NULL;
+   Elm_Object_Item *eo_top_it = NULL;
+
+   eo_top_it = elm_naviframe_top_item_get(eo);
+   if (eo_top_it)
+     {
+        ret = efl_access_description_get(eo_top_it);
+     }
+
+   return ret;
+}
+
+EOLIAN void
+_elm_naviframe_item_efl_access_name_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *name)
+{
+   efl_access_name_set(VIEW(nit), name);
+}
+
+EOLIAN const char*
+_elm_naviframe_item_efl_access_name_get(Eo *eo_item, Elm_Naviframe_Item_Data *nit)
+{
+   const char *ret = NULL;
+   ret = efl_access_name_get(efl_super(eo_item, ELM_NAVIFRAME_ITEM_CLASS));
+   if (ret) return ret;
+
+   ret = efl_access_name_get(VIEW(nit));
+   return ret;
+}
+
+EOLIAN void
+_elm_naviframe_item_efl_access_description_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *description)
+{
+   efl_access_description_set(VIEW(nit), description);
+}
+
+EOLIAN const char*
+_elm_naviframe_item_efl_access_description_get(Eo *eo_item, Elm_Naviframe_Item_Data *nit)
+{
+   const char *ret = NULL;
+   ret = efl_access_description_get(efl_super(eo_item, ELM_NAVIFRAME_ITEM_CLASS));
+   if (ret) return ret;
+
+   ret = efl_access_description_get(VIEW(nit));
+   return ret;
+}
+//
+
 /* Standard widget overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_naviframe, Elm_Naviframe_Data)
