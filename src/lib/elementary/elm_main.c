@@ -467,6 +467,11 @@ elm_shutdown(void)
    _elm_init_count--;
    if (_elm_init_count > 0) return _elm_init_count;
 
+   //TIZEN_ONLY(20170413) Handle exception calling elm_shutdown without elm_exit
+   if (_elm_config->atspi_mode != ELM_ATSPI_MODE_OFF)
+     _elm_atspi_bridge_shutdown();
+   //
+
    ecore_event_handler_del(system_handlers[0]);
    ecore_event_handler_del(system_handlers[1]);
 
@@ -1356,7 +1361,8 @@ EAPI void
 elm_exit(void)
 {
 //TIZEN_ONLY(20171127): move atspi initialization to elm_run.
-   _elm_atspi_bridge_shutdown();
+   if (_elm_config->atspi_mode != ELM_ATSPI_MODE_OFF)
+     _elm_atspi_bridge_shutdown();
 //
    efl_exit(0);
 }
