@@ -6174,7 +6174,8 @@ _edje_text_ellipsize_apply(Edje *ed, Edje_Real_Part *ep,
      }
 
    /* Hide fade image if text is not exceed the given area. */
-   if ((chosen_desc->text.ellipsize.marquee.mode != EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ALWAYS) &&
+   if (((chosen_desc->text.ellipsize.marquee.mode != EDJE_TEXT_ELLIPSIZE_MARQUEE_MODE_ALWAYS) &&
+        (!ep->typedata.text->ellipsize.marquee.always)) &&
        ((tw <= pf->final.w) && (th <= pf->final.h)))
      {
         if (ep->typedata.text->ellipsize.clipper_obj)

@@ -6409,6 +6409,50 @@ _edje_object_part_text_valign_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *
 
    return -1.0;
 }
+
+EOLIAN Eina_Bool
+_edje_object_part_text_marquee_always_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, Eina_Bool always)
+{
+   Edje_Real_Part *rp;
+
+   if (!part) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return EINA_FALSE;
+
+   if (rp->typedata.text)
+     {
+        if (rp->typedata.text->ellipsize.marquee.always == always)
+           return EINA_TRUE;
+
+        rp->typedata.text->ellipsize.marquee.always = always;
+
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
+EOLIAN Eina_Bool
+_edje_object_part_text_marquee_always_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
+{
+   Edje_Real_Part *rp;
+   Edje_Part_Description_Text *desc;
+
+   if (!part) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return EINA_FALSE;
+
+   if (rp->typedata.text)
+     return rp->typedata.text->ellipsize.marquee.always;
+
+   return EINA_FALSE;
+}
 /*******
  * END *
  *******/

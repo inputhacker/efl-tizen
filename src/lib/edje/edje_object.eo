@@ -502,6 +502,31 @@ class Edje.Object (Efl.Canvas.Group, Efl.File, Efl.Container, Efl.Part,
             speed: double; [[The speed. 0.0 for respect EDC's speed value.]]
          }
       }
+      @property part_text_marquee_always {
+         set {
+            [[Sets the always mode for text's marquee.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+              \@internal
+            ]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         get {
+            [[Gets the always mode for text's marquee.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+              \@internal
+            ]]
+         }
+         keys {
+            part: string; [[The part name]]
+         }
+         values {
+            always: bool; [[The always mode]]
+         }
+      }
       /*******
        * END *
        *******/
