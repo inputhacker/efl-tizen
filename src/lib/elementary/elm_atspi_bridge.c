@@ -5030,6 +5030,24 @@ _elm_atspi_bridge_key_filter(void *data, void *loop EINA_UNUSED, int type, void 
         pd->reemited_events = eina_list_remove(pd->reemited_events, event);
         return EINA_TRUE;
      }
+   // TIZEN_ONLY(20170118): Not handle events if keyboard is on
+   if (pd->root)
+     {
+        Eina_List *children, *l;
+        Evas_Object *child;
+        children = efl_access_children_get(pd->root);
+
+        EINA_LIST_FOREACH(children, l, child)
+          {
+             if (elm_widget_focus_get(child)) break;
+          }
+        eina_list_free(children);
+
+        Elm_Win_Keyboard_Mode mode;
+        mode = elm_win_keyboard_mode_get(child);
+        if (mode == ELM_WIN_KEYBOARD_ON) return EINA_TRUE;
+     }
+   //
 
    ke = _key_event_info_new(type, key_event, bridge);
    if (!ke) return EINA_TRUE;
