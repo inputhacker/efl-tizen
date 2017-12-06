@@ -61,6 +61,10 @@ extern "C" {
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
    EAPI extern int ECORE_EVENT_DETENT_ROTATE; //TIZEN ONLY
    //
+   // TIZEN_ONLY(20171206): add dummy functions for ecore_device API
+   EAPI extern int ECORE_EVENT_DEVICE_ADD;
+   EAPI extern int ECORE_EVENT_DEVICE_DEL;
+   //
 
 #define ECORE_EVENT_MODIFIER_SHIFT      0x0001
 #define ECORE_EVENT_MODIFIER_CTRL       0x0002
@@ -91,6 +95,9 @@ extern "C" {
    typedef struct _Ecore_Event_Joystick     Ecore_Event_Joystick; /**< @since 1.18 */
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
    typedef struct _Ecore_Event_Detent_Rotate Ecore_Event_Detent_Rotate; //TIZEN ONLY
+   //
+   // TIZEN_ONLY(20171206): add dummy functions for ecore_device API
+   typedef struct _Ecore_Event_Device_Info  Ecore_Event_Device_Info;
    //
 
    /**
@@ -141,6 +148,18 @@ extern "C" {
         ECORE_COMPOSE_MIDDLE,
         ECORE_COMPOSE_DONE
      } Ecore_Compose_State;
+
+   // TIZEN_ONLY(20171206): add dummy functions for ecore_device API
+   struct _Ecore_Event_Device_Info
+     {
+        Ecore_Window window;
+        const char *name;
+        const char *identifier;
+        const char *seatname;
+        Ecore_Device_Class clas;
+        Ecore_Device_Subclass subclas;
+     };
+   //
 
    /**
     * @struct _Ecore_Event_Joystic_Button

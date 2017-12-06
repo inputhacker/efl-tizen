@@ -94,6 +94,7 @@ set(SOURCES
   efl_loop_fd.c
   efl_loop_user.c
   efl_promise.c
+  ecore_device.c
 )
 
 # TODO: win32
