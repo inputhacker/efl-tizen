@@ -222,6 +222,9 @@ _evas_render_framespace_context_clip_clip(Evas_Public_Data *evas, void *ctx,
    ENFN->context_clip_clip(ENC, ctx, fx + ox, fy + oy, fw, fh);
 }
 
+//TIZEN_ONLY(20160624) : draw sky blue color bg before draw object. it is for debug.
+static int partial_render_debug=-1;
+
 static void
 _evas_render_cleanup(void)
 {
@@ -2941,6 +2944,23 @@ evas_render_updates_internal_loop(Evas *eo_e, Evas_Public_Data *evas,
    if (alpha)
      {
         ENFN->context_color_set(ENC, context, 0, 0, 0, 0);
+
+        //TIZEN_ONLY(20160624) : draw sky blue color bg before draw object. it is for debug.
+        if (partial_render_debug == -1)
+          {
+             if (getenv("EVAS_GL_PARTIAL_DEBUG")) partial_render_debug = 1;
+             else partial_render_debug = 0;
+          }
+
+        if(partial_render_debug==1)
+          {
+             INF("[EVAS_GL_PARTIAL_DEBUG] mode is ON . change default clear color to sky blue. ");
+             ENFN->context_color_set(ENC,
+                                          context,
+                                          50, 128, 255, 255);
+          }
+        //
+
         ENFN->context_multiplier_unset(ENC, context);
         ENFN->context_render_op_set(ENC, context, EVAS_RENDER_COPY);
         ENFN->rectangle_draw(ENC, output, context, surface, cx, cy, cw, ch, do_async);
