@@ -130,12 +130,24 @@ struct _Efl_Access_Reading_Info_Cb_Item
 typedef struct _Efl_Access_Reading_Info_Cb_Item Efl_Access_Reading_Info_Cb_Item;
 //
 
+//TIZEN_ONLY(20170405) Add gesture method to accessible interface
+struct _Efl_Access_Gesture_Cb_Item
+{
+   Efl_Access_Gesture_Cb cb;
+   const void *data;
+};
+typedef struct _Efl_Access_Gesture_Cb_Item Efl_Access_Gesture_Cb_Item;
+//
+
 struct _Efl_Access_Data
 {
    Efl_Access_Relation_Set relations;
    //TIZEN_ONLY(20190922): add name callback, description callback.
    Efl_Access_Reading_Info_Cb_Item name_cb_item;
    Efl_Access_Reading_Info_Cb_Item description_cb_item;
+   //
+   //TIZEN_ONLY(20170405) Add gesture method to accessible interface
+   Efl_Access_Gesture_Cb_Item gesture_cb_item;
    //
    Eina_List     *attr_list;
    const char    *name;
@@ -401,6 +413,24 @@ _efl_access_description_cb_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, Efl_Acc
 {
    pd->description_cb_item.cb = description_cb;
    pd->description_cb_item.data = data;
+}
+//
+
+//TIZEN_ONLY(20170405) Add gesture method to accessible interface
+EOLIAN static void
+_efl_access_gesture_cb_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, Efl_Access_Gesture_Cb gesture_cb, const void *data)
+{
+   pd->gesture_cb_item.cb = gesture_cb;
+   pd->gesture_cb_item.data = data;
+}
+
+EOLIAN static Eina_Bool
+_efl_access_gesture_do(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, Efl_Access_Gesture_Info gesture_info)
+{
+   Eina_Bool ret = EINA_FALSE;
+   if (pd->gesture_cb_item.cb)
+     ret = pd->gesture_cb_item.cb((void *)pd->gesture_cb_item.data, gesture_info, (Evas_Object *)obj);
+   return ret;
 }
 //
 

@@ -897,6 +897,40 @@ fail:
    return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "Unable to get relation set.");
 }
 
+//TIZEN_ONLY(20170405) Add gesture method to accessible interface
+static Eldbus_Message *
+_accessible_gesture_do(const Eldbus_Service_Interface *iface, const Eldbus_Message *msg)
+{
+   const char *obj_path = eldbus_message_path_get(msg);
+   Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
+   Eo *obj = _bridge_object_from_path(bridge, obj_path);
+   int type, x_beg, y_beg, x_end, y_end, state;
+   unsigned int event_time;
+   Eldbus_Message *ret;
+   Eina_Bool result = EINA_FALSE;
+
+   if (!eldbus_message_arguments_get(msg, "iiiiiiu", &type, &x_beg, &y_beg,
+                                     &x_end, &y_end, &state, &event_time))
+     return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Invalid index type.");
+
+   ret = eldbus_message_method_return_new(msg);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
+
+   Efl_Access_Gesture_Info gesture_info;
+   gesture_info.type = (Efl_Access_Gesture)type;
+   gesture_info.x_beg = x_beg;
+   gesture_info.y_beg = y_beg;
+   gesture_info.x_end = x_end;
+   gesture_info.y_end = y_end;
+   gesture_info.state = (Efl_Access_Gesture_State)state;
+   gesture_info.event_time = event_time;
+   result = efl_access_gesture_do(obj, gesture_info);
+   eldbus_message_arguments_append(ret, "b", result);
+
+   return ret;
+}
+//
+
 static const Eldbus_Method accessible_methods[] = {
    { "GetChildAtIndex", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"(so)", "Accessible"}), _accessible_child_at_index, 0 },
    { "GetChildren", NULL, ELDBUS_ARGS({"a(so)", "children"}), _accessible_get_children, 0 },
@@ -909,6 +943,13 @@ static const Eldbus_Method accessible_methods[] = {
    { "GetApplication", NULL, ELDBUS_ARGS({"(so)", NULL}), _accessible_get_application, 0},
    { "GetAttributes", NULL, ELDBUS_ARGS({"a{ss}", NULL}), _accessible_attributes_get, 0},
    { "GetInterfaces", NULL, ELDBUS_ARGS({"as", NULL}), _accessible_interfaces_get, 0},
+   //TIZEN_ONLY(20170405) Add gesture method to accessible interface
+   { "DoGesture",
+     ELDBUS_ARGS({"i", "type"}, {"i", "x_beg"}, {"i", "y_beg"},
+                 {"i", "x_end"}, {"i", "y_end"}, {"i", "state"},
+                 {"u", "event_time"}),
+     ELDBUS_ARGS({"b", "result"}), _accessible_gesture_do, 0 },
+   //
    { NULL, NULL, NULL, NULL, 0 }
 };
 

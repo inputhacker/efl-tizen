@@ -3915,6 +3915,9 @@ _elm_widget_item_efl_object_destructor(Eo *eo_item, Elm_Widget_Item_Data *item)
 
    efl_access_description_cb_set(eo_item, NULL, NULL);
    efl_access_name_cb_set(eo_item, NULL, NULL);
+   //TIZEN_ONLY(20170405) Add gesture method to accessible interface
+   efl_access_gesture_cb_set(eo_item, NULL, NULL);
+   //
    efl_access_attributes_clear(eo_item);
    efl_access_removed(eo_item);
 
@@ -5294,6 +5297,9 @@ _elm_widget_efl_object_destructor(Eo *obj, Elm_Widget_Smart_Data *sd)
      }
    efl_access_description_cb_set(obj, NULL, NULL);
    efl_access_name_cb_set(obj, NULL, NULL);
+   //TIZEN_ONLY(20170405) Add gesture method to accessible interface
+   efl_access_gesture_cb_set(obj, NULL, NULL);
+   //
    efl_access_attributes_clear(obj);
    efl_access_removed(obj);
    if (sd->logical.parent)

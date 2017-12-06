@@ -1,6 +1,7 @@
 /* FIXME: This definitely shouldn't be here. */
 type Efl_Event_Cb: __undefined_type; [[Efl event callback type]]
 type Efl_Access_Reading_Info_Cb: __undefined_type; [[reading information callback]]
+type Efl_Access_Gesture_Cb: __undefined_type; [[gesture callback]]
 
 enum Efl.Access.Type
 {
@@ -358,6 +359,103 @@ enum Elm.Atspi.Reading.Info.Type
 }
 //
 
+enum Efl.Access.Gesture
+{
+   one_finger_hover,
+   two_fingers_hover,
+   three_fingers_hover,
+   one_finger_flick_left,
+   one_finger_flick_right,
+   one_finger_flick_up,
+   one_finger_flick_down,
+   two_fingers_flick_left,
+   two_fingers_flick_right,
+   two_fingers_flick_up,
+   two_fingers_flick_down,
+   three_fingers_flick_left,
+   three_fingers_flick_right,
+   three_fingers_flick_up,
+   three_fingers_flick_down,
+   one_finger_single_tap,
+   one_finger_double_tap,
+   one_finger_triple_tap,
+   two_fingers_single_tap,
+   two_fingers_double_tap,
+   two_fingers_triple_tap,
+   three_fingers_single_tap,
+   three_fingers_double_tap,
+   three_fingers_triple_tap,
+   one_finger_flick_left_return,
+   one_finger_flick_right_return,
+   one_finger_flick_up_return,
+   one_finger_flick_down_return,
+   two_fingers_flick_left_return,
+   two_fingers_flick_right_return,
+   two_fingers_flick_up_return,
+   two_fingers_flick_down_return,
+   three_fingers_flick_left_return,
+   three_fingers_flick_right_return,
+   three_fingers_flick_up_return,
+   three_fingers_flick_down_return,
+}
+
+enum Efl.Access.Gesture.State
+{
+   start,
+   move,
+   end,
+   abort,
+}
+
+//TIZEN_ONLY(200171207): Keep backward compatability
+enum Elm.Atspi.Gesture
+{
+   one_finger_hover,
+   two_fingers_hover,
+   three_fingers_hover,
+   one_finger_flick_left,
+   one_finger_flick_right,
+   one_finger_flick_up,
+   one_finger_flick_down,
+   two_fingers_flick_left,
+   two_fingers_flick_right,
+   two_fingers_flick_up,
+   two_fingers_flick_down,
+   three_fingers_flick_left,
+   three_fingers_flick_right,
+   three_fingers_flick_up,
+   three_fingers_flick_down,
+   one_finger_single_tap,
+   one_finger_double_tap,
+   one_finger_triple_tap,
+   two_fingers_single_tap,
+   two_fingers_double_tap,
+   two_fingers_triple_tap,
+   three_fingers_single_tap,
+   three_fingers_double_tap,
+   three_fingers_triple_tap,
+   one_finger_flick_left_return,
+   one_finger_flick_right_return,
+   one_finger_flick_up_return,
+   one_finger_flick_down_return,
+   two_fingers_flick_left_return,
+   two_fingers_flick_right_return,
+   two_fingers_flick_up_return,
+   two_fingers_flick_down_return,
+   three_fingers_flick_left_return,
+   three_fingers_flick_right_return,
+   three_fingers_flick_up_return,
+   three_fingers_flick_down_return,
+}
+
+enum Elm.Atspi.Gesture.State
+{
+   start,
+   move,
+   end,
+   abort,
+}
+//
 type Efl.Access.State_Set: uint64; [[Accessibility object state set.]]
 
 struct Efl.Access.Event.Handler; [[Accessibility event listener]]
@@ -398,6 +496,30 @@ struct Efl.Access.Relation
    type: Efl.Access.Relation_Type; [[Relation type]]
    objects: list<Efl.Object>; [[List with relation objects]]
 }
+
+struct Efl.Access.Gesture.Info
+{
+   type: Efl.Access.Gesture; [[Gesture type]]
+   x_beg: int; [[start gesture x co-ordinate]]
+   y_beg: int; [[start gesture y co-ordinate]]
+   x_end: int; [[end gesture x co-ordinate]]
+   y_end: int; [[end gesture y co-ordinate]]
+   state: Efl.Access.Gesture.State; [[state of gesture]]
+   event_time: uint; [[gesture occurance time]]
+}
+
+//TIZEN_ONLY(200171207): Keep backward compatability
+struct Elm.Atspi.Gesture.Info
+{
+   type: Elm.Atspi.Gesture; [[Gesture type]]
+   x_beg: int; [[start gesture x co-ordinate]]
+   y_beg: int; [[start gesture y co-ordinate]]
+   x_end: int; [[end gesture x co-ordinate]]
+   y_end: int; [[end gesture y co-ordinate]]
+   state: Elm.Atspi.Gesture.State; [[state of gesture]]
+   event_time: uint; [[gesture occurance time]]
+}
+//
 
 type Efl.Access.Relation_Set: list<ptr(Efl.Access.Relation)>; [[Elementary Accessibility relation set type]]
 
@@ -466,6 +588,24 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
             description_cb: Efl_Access_Reading_Info_Cb; [[reading information callback]]
             data: const (void_ptr);
          }
+      }
+      //
+      //TIZEN_ONLY(20170405) Add gesture method to accessible interface
+      @property gesture_cb {
+         set {
+            [[Sets gesture callback to give widget.]]
+         }
+         values {
+            gesture_cb: Efl_Access_Gesture_Cb;
+            data: const (void_ptr);
+         }
+      }
+      gesture_do @protected {
+         [[Handles gesture on given widget.]]
+         params {
+            @in gesture_info: Efl.Access.Gesture.Info;
+         }
+         return: bool;
       }
       //
       @property children @protected {
@@ -612,7 +752,7 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
          }
       }
       event_emit @class @protected {
-      	 [[Emit event]]
+         [[Emit event]]
          //TIZEN_ONLY(200171207): Keep backward compatability
          legacy: null;
          //
