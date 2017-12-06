@@ -407,6 +407,45 @@ _atspi_expose_title(Eo *obj, Eina_Bool is_atspi)
 }
 //
 
+//TIZEN_ONLY(20170314): expose part-text as at-spi object
+static char *
+_access_name_set_cb(void *data, Evas_Object *obj EINA_UNUSED)
+{
+   char *text = data;
+   if (text)
+      return strdup(text);
+   return NULL;
+}
+
+static void
+_atspi_part_text_expose(Eo *obj, const char *part, Eina_Bool is_atspi)
+{
+   Evas_Object *ao = NULL;
+   ELM_POPUP_DATA_GET(obj, sd);
+   const char *text = NULL;
+   text = elm_layout_text_get(sd->main_layout, part);
+
+   if (text && is_atspi)
+     {
+        ao = _access_object_get(obj, part);
+        if (!ao)
+          {
+             ao = _elm_access_edje_object_part_object_register
+                   (sd->main_layout, elm_layout_edje_get(sd->main_layout), part);
+             efl_access_role_set(ao, EFL_ACCESS_ROLE_LABEL);
+             efl_access_name_cb_set(ao, _access_name_set_cb, text);
+          }
+     }
+   else
+     {
+        ao = _access_object_get(obj, part);
+        if (ao)
+          _elm_access_object_unregister(ao, NULL);
+     }
+}
+//
+
+
 static void
 _access_obj_process(Eo *obj, Eina_Bool is_access)
 {
@@ -538,12 +577,14 @@ _elm_popup_elm_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
    snprintf(style, sizeof(style), "popup/%s", elm_widget_style_get(obj));
    /* END */
    if (sd->text_content_obj)
-     /* TIZEN_ONLY(20161109): check theme compatibility more precise
-     elm_object_style_set(sd->text_content_obj, style);
-      */
-     if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_SUCCESS)
-       elm_widget_style_set(sd->text_content_obj, "popup/default");
-     /* END */
+     {
+        /* TIZEN_ONLY(20161109): check theme compatibility more precise
+        elm_object_style_set(sd->text_content_obj, style);
+        */
+        if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_SUCCESS)
+          elm_widget_style_set(sd->text_content_obj, "popup/default");
+        /* END */
+     }
    else if (sd->items)
      {
         EINA_LIST_FOREACH(sd->items, elist, it)
@@ -1277,7 +1318,12 @@ _elm_popup_text_set(Eo *obj, Elm_Popup_Data *_pd, const char *part, const char *
       return EINA_FALSE;
 
    if (!strcmp(part, "elm.text"))
-     int_ret = _content_text_set(obj, label);
+     {
+        int_ret = _content_text_set(obj, label);
+        //TIZEN_ONLY(20170314): expose part-text as at-spi object
+        _atspi_part_text_expose(obj, part, _elm_atspi_enabled());
+        //
+     }
    else if (!strcmp(part, "title,text"))
      int_ret = _title_text_set(obj, label);
    else
@@ -1823,6 +1869,9 @@ EOLIAN static void
 _elm_popup_elm_widget_atspi(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
 {
    _atspi_expose_title(obj, is_atspi);
+   //TIZEN_ONLY(20170314): expose part-text as at-spi object
+   _atspi_part_text_expose(obj, "elm.text", is_atspi);
+   //
 }
 //
 
