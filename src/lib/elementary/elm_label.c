@@ -180,7 +180,11 @@ _elm_label_horizontal_size_policy_update(Eo *obj, Elm_Label_Data *sd)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
+   /* TIZEN_ONLY(20161227): don't make ellipsis/slide label as expandable
    if (!sd->ellipsis && (sd->linewrap == ELM_WRAP_NONE))
+    */
+   if (!sd->ellipsis && (sd->linewrap == ELM_WRAP_NONE) && (sd->slide_mode == ELM_LABEL_SLIDE_MODE_NONE))
+   /* END */
      edje_object_signal_emit(wd->resize_obj, "elm,state,horizontal,expandable", "elm");
    else
      edje_object_signal_emit(wd->resize_obj, "elm,state,horizontal,fixed", "elm");
@@ -589,6 +593,11 @@ EOLIAN static void
 _elm_label_slide_mode_set(Eo *obj EINA_UNUSED, Elm_Label_Data *sd, Elm_Label_Slide_Mode mode)
 {
    sd->slide_mode = mode;
+
+   /* TIZEN_ONLY(20161227): don't make ellipsis/slide label as expandable */
+   _elm_label_horizontal_size_policy_update(obj, sd);
+   elm_layout_sizing_eval(obj);
+   /* END */
 }
 
 EOLIAN static Elm_Label_Slide_Mode
