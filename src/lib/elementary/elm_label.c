@@ -231,7 +231,33 @@ _elm_label_elm_layout_sizing_eval(Eo *obj, Elm_Label_Data *_pd EINA_UNUSED)
    else
      {
         evas_event_freeze(evas_object_evas_get(obj));
+
+        /* TIZEN_ONLY(20161130): fix to get proper minimum size from legacy label theme */
+        Eina_Bool min_x, min_y;
+        Eina_Bool policy_set_ret = EINA_FALSE;
+
+        if (!sd->ellipsis && (sd->slide_mode == ELM_LABEL_SLIDE_MODE_NONE) &&
+            edje_object_part_text_min_policy_get(wd->resize_obj, "elm.text", "default", &min_x, &min_y))
+          {
+             /* If min policy for width is 0, it couldn't be expanded.
+                It uses legacy theme. */
+             if (min_x == EINA_FALSE)
+               {
+                  /* Set min policy as singleline. */
+                  policy_set_ret = edje_object_part_text_min_policy_set(wd->resize_obj, "elm.text", "default", 1, 1);
+                  ERR("[text.min: %d %d] is set on elm.text part. You need to change it to [text.min: 1 1] if your label does not have any wrap mode.", min_x, min_y);
+               }
+          }
+        /* END */
+
         edje_object_size_min_calc(wd->resize_obj, &minw, &minh);
+
+        /* TIZEN_ONLY(20161130): fix to get proper minimum size from legacy label theme */
+        /* Restore min policy. */
+        if (policy_set_ret)
+          edje_object_part_text_min_policy_set(wd->resize_obj, "elm.text", "default", min_x, min_y);
+        /* END */
+
         if (sd->wrap_w > 0 && minw > sd->wrap_w) minw = sd->wrap_w;
         evas_object_size_hint_min_set(obj, minw, minh);
         /* TIZEN_ONLY(20161109): wrap width will work as min and max width */
