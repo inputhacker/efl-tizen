@@ -9083,13 +9083,34 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
           }
     }
 
-  if (VIEW(it))
-    ret = efl_access_component_highlight_grab(efl_super(eo_it, ELM_GENLIST_ITEM_CLASS));
-  else
-    sd->atspi_item_to_highlight = it;//it will be highlighted when realized
+   if (VIEW(it))
+     elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
+
+   ///TIZEN_ONLY(20170717) : expose highlight information on atspi
+   efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   ///
+
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
+   //
+
+   if (VIEW(it))
+     {
+        elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
+        //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
+        sd->currently_highlighted_item = it;
+        //
+     }
+   else
+     sd->atspi_item_to_highlight = it;//it will be highlighted when realized
 
   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
 
+  //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+  // If you call eo_do_super, then you do NOT have to call smart callback.
+  evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", eo_it);
+  //
   return ret;
 }
 
@@ -9104,6 +9125,10 @@ _elm_genlist_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Gen_Item *
   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
 
   ret = efl_access_component_highlight_clear(efl_super(eo_it, ELM_GENLIST_ITEM_CLASS));
+  //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+  // If you call eo_do_super, then you do NOT have to call smart callback.
+  evas_object_smart_callback_call(WIDGET(it), "atspi,unhighlighted", eo_it);
+  //
   return ret;
 }
 //

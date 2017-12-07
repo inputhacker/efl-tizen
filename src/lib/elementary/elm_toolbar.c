@@ -3977,6 +3977,10 @@ _elm_toolbar_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Toolbar_Ite
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
    efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
    //
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", eo_it);
+   //
    return EINA_TRUE;
 }
 
@@ -3986,6 +3990,10 @@ _elm_toolbar_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, El
    elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
    efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
+   //
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(WIDGET(it), "atspi,unhighlighted", eo_it);
    //
    return EINA_TRUE;
 }

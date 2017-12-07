@@ -5561,11 +5561,15 @@ _elm_gengrid_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
    efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
    //
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", eo_it);
+   //
    return EINA_TRUE;
 }
 
 EOLIAN static Eina_Bool
-_elm_gengrid_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it)
+_elm_gengrid_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Gen_Item *it)
 {
    //TIZEN_ONLY (20151009) : Accessibility: updated highlight change during gengrid scroll
    ELM_GENGRID_DATA_GET(WIDGET(it), sd);
@@ -5575,6 +5579,10 @@ _elm_gengrid_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, El
    elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
    efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
+   //
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(WIDGET(it), "atspi,unhighlighted", eo_it);
    //
    return EINA_TRUE;
 }

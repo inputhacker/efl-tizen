@@ -2164,8 +2164,6 @@ _elm_list_item_efl_access_name_get(Eo *eo_it, Elm_List_Item_Data *data)
    return _elm_widget_item_accessible_plain_name_get(eo_it, data->label);
 }
 
-
-
 //TIZEN_ONLY(20171114):  Region show on item elements fixed
 EOLIAN static Eina_Bool
 _elm_list_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_List_Item_Data *it)
@@ -2173,6 +2171,10 @@ _elm_list_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_L
    elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
    efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+   //
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(WIDGET(it), "atspi,unhighlighted", EO_OBJ(it));
    //
    return EINA_TRUE;
 }
@@ -3453,6 +3455,10 @@ _elm_list_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_List_Item_Data
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
    elm_object_accessibility_highlight_set(eo_it, EINA_TRUE);
    efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   //
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
    //
    return ret;
 }

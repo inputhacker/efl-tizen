@@ -1805,7 +1805,10 @@ _elm_index_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Index_Item_Da
      elm_layout_text_set(obj, "elm.text", strdup(sd->letter));
    elm_layout_signal_emit(obj, "elm,indicator,state,active", "elm");
    elm_object_accessibility_highlight_set(eo_it, EINA_TRUE);
-
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(obj, "atspi,highlighted", eo_it);
+   //
    return EINA_TRUE;
 }
 
@@ -1815,7 +1818,10 @@ _elm_index_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Index_Item_D
    Evas_Object *obj = WIDGET(sd);
    elm_layout_signal_emit(obj, "elm,indicator,state,inactive", "elm");
    elm_object_accessibility_highlight_set(eo_it, EINA_FALSE);
-
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call eo_do_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(obj, "atspi,unhighlighted", eo_it);
+   //
    return EINA_TRUE;
 }
 //
