@@ -262,6 +262,12 @@ _elm_label_horizontal_size_policy_update(Eo *obj, Elm_Label_Data *sd)
      edje_object_signal_emit(wd->resize_obj, "elm,state,horizontal,expandable", "elm");
    else
      edje_object_signal_emit(wd->resize_obj, "elm,state,horizontal,fixed", "elm");
+
+   if (sd->slide_mode == ELM_LABEL_SLIDE_MODE_ALWAYS)
+     edje_object_part_text_marquee_always_set(wd->resize_obj, "elm.text", EINA_TRUE);
+   else
+     edje_object_part_text_marquee_always_set(wd->resize_obj, "elm.text", EINA_FALSE);
+
    edje_object_message_signal_process(wd->resize_obj);
 }
 
