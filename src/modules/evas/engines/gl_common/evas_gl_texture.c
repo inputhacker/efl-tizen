@@ -907,6 +907,10 @@ _pool_tex_dynamic_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, i
            default: ERR("TBM: unknown format"); goto error;
           }
 
+        // FIXME: change tbm buffer format RGBA/BGRA to ARGB. this patch need to check with driver team.
+        if((buffer_format == TBM_FORMAT_RGBA8888)||(buffer_format == TBM_FORMAT_BGRA8888))
+          buffer_format = TBM_FORMAT_ARGB8888;
+
         pt->dyn.buffer = (void *)secsym_tbm_surface_create(pt->w, pt->h,
                                                            buffer_format);
         if (!pt->dyn.buffer) goto error;

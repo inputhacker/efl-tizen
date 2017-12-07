@@ -810,6 +810,7 @@ extern unsigned int   (*secsym_eglGetImageAttribSEC)         (void *a, void *b, 
 #define TBM_FORMAT_RGBA8888 __tbm_fourcc_code('R', 'A', '2', '4')
 #define TBM_FORMAT_BGRA8888 __tbm_fourcc_code('B', 'A', '2', '4')
 #define TBM_FORMAT_RGB888   __tbm_fourcc_code('R', 'G', '2', '4')
+#define TBM_FORMAT_ARGB8888  __tbm_fourcc_code('A', 'R', '2', '4')
 
 typedef struct _tbm_surface * tbm_surface_h;
 typedef uint32_t tbm_format;
