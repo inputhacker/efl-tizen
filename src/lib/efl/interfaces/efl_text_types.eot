@@ -4,7 +4,13 @@ enum Efl.Text.Bidirectional_Type {
    neutral = 0, [[Neutral text type, same as natural]]
    ltr, [[Left to right text type]]
    rtl, [[Right to left text type]]
+   /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
    inherit [[Inherit text type]]
+    */
+   inherit, [[Inherit text type]]
+   any_rtl [[\@internal EVAS_BIDI_DIRECTION_ANY_RTL is not made for public.
+             It should be opened to public when it is accepted to EFL upstream.]]
+   /* END */
 }
 
 struct Efl.Ui.Text.Change_Info {

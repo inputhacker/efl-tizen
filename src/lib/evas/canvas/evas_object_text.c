@@ -77,8 +77,13 @@ struct _Evas_Text_Data
    float                       ascent, descent;
    float                       max_ascent, max_descent;
 
+   /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
    Evas_BiDi_Direction         bidi_dir : 2;
    Evas_BiDi_Direction         paragraph_direction : 2;
+    */
+   Evas_BiDi_Direction         bidi_dir : 3;
+   Evas_BiDi_Direction         paragraph_direction : 3;
+   /* END */
    Eina_Bool                   inherit_paragraph_direction : 1;
    Eina_Bool                   changed_paragraph_direction : 1;
    Eina_Bool                   changed : 1;
@@ -747,6 +752,9 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
      {
         Evas_BiDi_Direction par_dir;
         EvasBiDiParType bidi_par_type;
+        /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API */
+        Eina_Bool is_any_rtl = EINA_FALSE;
+        /* END */
 
         par_dir = o->paragraph_direction;
 
@@ -758,13 +766,23 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
            case EVAS_BIDI_DIRECTION_RTL:
               bidi_par_type = EVAS_BIDI_PARAGRAPH_RTL;
               break;
+           /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API */
+           case EVAS_BIDI_DIRECTION_ANY_RTL:
+              is_any_rtl = EINA_TRUE;
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_NEUTRAL;
+			  break;
+           /* END */
            case EVAS_BIDI_DIRECTION_NEUTRAL:
            default:
               bidi_par_type = EVAS_BIDI_PARAGRAPH_NEUTRAL;
               break;
           }
 
+        /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
         o->bidi_par_props = evas_bidi_paragraph_props_get(text, len, segment_idxs, bidi_par_type);
+         */
+        o->bidi_par_props = evas_bidi_paragraph_props_get(text, len, segment_idxs, bidi_par_type, is_any_rtl);
+        /* END */
         is_bidi = !!o->bidi_par_props;
      }
 

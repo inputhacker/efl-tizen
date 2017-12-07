@@ -47,7 +47,11 @@ struct _Evas_Text_Props
 //   Eina_Bool prepare : 1;
 //   // +3 pad
 // ** the below saves 8 bytes (72 -> 64 on 64bit)
+   /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
    Evas_BiDi_Direction bidi_dir : 2; // 2 (enough for values)
+    */
+   Evas_BiDi_Direction bidi_dir : 3; // 3 (enough for values)
+   /* END */
    Evas_Script_Type script : 7; // cont (enough for values)
    Eina_Bool changed : 1; // cont (bool)
    Eina_Bool prepare : 1; // cont (bool)
@@ -85,7 +89,11 @@ struct _Evas_Text_Props_One
 //   Eina_Bool prepare : 1;
 //   // +3 pad
 // ** the below saves 8 bytes (72 -> 64 on 64bit)
+   /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
    Evas_BiDi_Direction bidi_dir : 2; // 2 (enough for values)
+    */
+   Evas_BiDi_Direction bidi_dir : 3; // 3 (enough for values)
+   /* END */
    Evas_Script_Type script : 7; // cont (enough for values)
    Eina_Bool changed : 1; // cont (bool)
    Eina_Bool prepare : 1; // cont (bool)

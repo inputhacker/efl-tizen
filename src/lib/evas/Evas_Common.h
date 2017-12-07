@@ -357,6 +357,9 @@ typedef Efl_Text_Bidirectional_Type        Evas_BiDi_Direction;
 #define EVAS_BIDI_DIRECTION_LTR            EFL_TEXT_BIDIRECTIONAL_TYPE_LTR
 #define EVAS_BIDI_DIRECTION_RTL            EFL_TEXT_BIDIRECTIONAL_TYPE_RTL
 #define EVAS_BIDI_DIRECTION_INHERIT        EFL_TEXT_BIDIRECTIONAL_TYPE_INHERIT
+/* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API */
+#define EVAS_BIDI_DIRECTION_ANY_RTL        EFL_TEXT_BIDIRECTIONAL_TYPE_ANY_RTL
+/* END */
 
 typedef Efl_Input_Object_Pointer_Mode      Evas_Object_Pointer_Mode;
 

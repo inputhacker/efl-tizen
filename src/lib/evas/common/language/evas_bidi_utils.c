@@ -225,9 +225,15 @@ evas_bidi_segment_idxs_get(const Eina_Unicode *str, const char *delim)
  * @param base_bidi The base BiDi direction of paragraph.
  * @return returns allocated paragraph props on success, NULL otherwise.
  */
+/* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
 Evas_BiDi_Paragraph_Props *
 evas_bidi_paragraph_props_get(const Eina_Unicode *eina_ustr, size_t len,
       int *segment_idxs, EvasBiDiParType base_bidi)
+ */
+Evas_BiDi_Paragraph_Props *
+evas_bidi_paragraph_props_get(const Eina_Unicode *eina_ustr, size_t len,
+      int *segment_idxs, EvasBiDiParType base_bidi, Eina_Bool is_any_rtl)
+/* END */
 {
    Evas_BiDi_Paragraph_Props *bidi_props = NULL;
    EvasBiDiCharType *char_types = NULL;
@@ -238,12 +244,26 @@ evas_bidi_paragraph_props_get(const Eina_Unicode *eina_ustr, size_t len,
    if (!eina_ustr)
       return NULL;
 
-   /* No need to handle bidi */
+   /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
+   // No need to handle bidi
    if (!evas_bidi_is_rtl_str(eina_ustr) &&
        (base_bidi != EVAS_BIDI_PARAGRAPH_RTL))
      {
         goto cleanup;
      }
+    */
+   if (evas_bidi_is_rtl_str(eina_ustr))
+     {
+        if (is_any_rtl)
+          base_bidi = EVAS_BIDI_PARAGRAPH_RTL;
+     }
+   else if (base_bidi != EVAS_BIDI_PARAGRAPH_RTL)
+     {
+        /* No need to handle bidi */
+        len = -1;
+        goto cleanup;
+     }
+   /* END */
 
    len = eina_unicode_strlen(eina_ustr);
    /* The size of fribidichar s different than eina_unicode, convert */

@@ -42,7 +42,11 @@ struct _Evas_Smart_Data
 
    unsigned short    recalculate_cycle;
 
+   /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API
    Evas_BiDi_Direction paragraph_direction : 2;
+    */
+   Evas_BiDi_Direction paragraph_direction : 3;
+   /* END */
    Eina_Bool         inherit_paragraph_direction : 1;
    Eina_Bool         deletions_waiting : 1;
    Eina_Bool         need_recalculate : 1;
