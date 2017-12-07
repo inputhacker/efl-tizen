@@ -502,6 +502,17 @@ _on_slide_end(void *data, Evas_Object *obj EINA_UNUSED,
    efl_event_callback_legacy_call(data, ELM_LABEL_EVENT_SLIDE_END, NULL);
 }
 
+// TIZEN_ONLY(20161101): add click event for label widget.
+static void
+_on_clicked_cb(void *data,
+               Evas_Object *obj EINA_UNUSED,
+               const char *emission EINA_UNUSED,
+               const char *source EINA_UNUSED)
+{
+   efl_event_callback_legacy_call(data, EFL_UI_EVENT_CLICKED, NULL);
+}
+//
+
 EOLIAN static void
 _elm_label_efl_canvas_group_group_add(Eo *obj, Elm_Label_Data *priv)
 {
@@ -526,6 +537,9 @@ _elm_label_efl_canvas_group_group_add(Eo *obj, Elm_Label_Data *priv)
 
    edje_object_signal_callback_add(wd->resize_obj, "elm,state,slide,end", "elm",
                                    _on_slide_end, obj);
+   // TIZEN_ONLY(20161101): add click event for label widget.
+   edje_object_signal_callback_add(wd->resize_obj, "mouse,clicked,*", "*", _on_clicked_cb, obj);
+   //
 
    /* access */
    elm_widget_can_focus_set(obj, _elm_config->access_mode);
