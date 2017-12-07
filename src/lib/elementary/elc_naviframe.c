@@ -1180,6 +1180,11 @@ _on_item_push_finished(void *data,
 
    evas_object_hide(VIEW(it));
 
+   //TIZEN_ONLY(20161122): add state_notify api
+   if (_elm_atspi_enabled())
+      efl_access_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+   //
+
    elm_object_signal_emit(VIEW(it), "elm,state,invisible", "elm");
 
    if (sd->freeze_events)
@@ -1196,8 +1201,9 @@ _on_item_pop_finished(void *data,
 {
    Elm_Naviframe_Item_Data *it = data;
    Elm_Object_Item *eo_prev_it = NULL;
+   Eo *widget = WIDGET(it);
 
-   ELM_NAVIFRAME_DATA_GET(WIDGET(it), sd);
+   ELM_NAVIFRAME_DATA_GET(widget, sd);
 
    eo_prev_it = elm_naviframe_top_item_get(WIDGET(it));
    if (eo_prev_it)
@@ -1212,6 +1218,18 @@ _on_item_pop_finished(void *data,
    sd->popping = eina_list_remove(sd->popping, it);
 
    elm_wdg_item_del(EO_OBJ(it));
+
+   //TIZEN_ONLY(20161122): add state_notify api
+   if (_elm_atspi_enabled())
+     {
+        Eo *eo_top = elm_naviframe_top_item_get(widget);
+        if (eo_top)
+          {
+             ELM_NAVIFRAME_ITEM_DATA_GET(eo_top, top);
+             efl_access_state_notify(VIEW(top), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+          }
+     }
+   //
 }
 
 /* "elm,state,new,pushed",

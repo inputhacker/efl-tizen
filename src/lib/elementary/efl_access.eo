@@ -695,6 +695,23 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
             }
          }
       }
+      //TIZEN_ONLY(20161122): add state_notify api
+      state_notify @protected {
+           [[ Notifies accessibility clients about current state of the
+              accessibile object.
+
+              Function limits information broadcast to clients to types
+              specified by state_types_mask parameter.
+
+              if recursive parameter is set, function will traverse all
+              accessible children and call state_notify function on them.
+           ]]
+           params {
+                @in state_types_mask: Efl.Access.State_Set;
+                @in recursive: bool;
+           }
+      }
+      //
    }
    implements {
       Efl.Object.destructor;

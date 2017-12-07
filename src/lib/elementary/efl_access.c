@@ -735,6 +735,50 @@ _efl_access_relationships_clear(Eo *obj EINA_UNUSED, Efl_Access_Data *sd)
    sd->relations = NULL;
 }
 
+//TIZEN_ONLY(20161122): add state_notify api
+/**
+ * Notify accessibility clients about current state of object
+ *
+ * @param mask bitfield with accessibilty field type values that should be
+ * notified.
+ */
+static void _elm_atspi_accessibility_state_notify(Eo *obj, Efl_Access_State_Set mask)
+{
+   Efl_Access_State_Set ss;
+   Efl_Access_State_Type type;
+
+   ss = efl_access_state_set_get(obj);
+
+   for (type = EFL_ACCESS_STATE_INVALID;
+        type < EFL_ACCESS_STATE_LAST_DEFINED;
+        type++)
+     {
+        if (STATE_TYPE_GET(mask, type))
+          {
+             efl_access_state_changed_signal_emit(
+                obj, type, STATE_TYPE_GET(ss, type) ? EINA_TRUE : EINA_FALSE);
+          }
+     }
+}
+
+EOLIAN void
+_efl_access_state_notify(Eo *obj, Efl_Access_Data *data EINA_UNUSED, Efl_Access_State_Set mask, Eina_Bool recursive)
+{
+   _elm_atspi_accessibility_state_notify(obj, mask);
+
+   if (recursive)
+     {
+        Efl_Access *child;
+        Eina_List *children;
+        children = efl_access_children_get(obj);
+        EINA_LIST_FREE(children, child)
+          {
+             efl_access_state_notify(child, mask, recursive);
+          }
+     }
+}
+//
+
 EOLIAN Eo*
 _efl_access_root_get(Eo *class EINA_UNUSED, void *pd EINA_UNUSED)
 {

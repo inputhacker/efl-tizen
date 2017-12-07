@@ -37,6 +37,11 @@ typedef char *(*Efl_Access_Reading_Info_Cb)(void *data, Evas_Object *obj);
 //
 
 /**
+ * @brief Creates access state using given type.
+ */
+#define ACCESS_STATE(type) ((Efl_Access_State_Set)1 << (type))
+
+/**
  * Free Efl_Access_Attributes_List
  */
 EAPI void efl_access_attributes_list_free(Eina_List *list);
