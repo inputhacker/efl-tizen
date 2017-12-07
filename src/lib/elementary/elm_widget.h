@@ -787,6 +787,10 @@ EAPI Evas_Object     *elm_widget_part_access_object_get(const Evas_Object *obj, 
 EAPI Eo*              _elm_atspi_bridge_utils_plug_create(Eo *parent, const char *svcname, int svcnum);
 EAPI Eo*              _elm_atspi_bridge_utils_socket_create(Eo *parent, const char *svcname, int svcnum);
 //
+//TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
+EAPI Eina_Bool        _elm_widget_highlightable(Evas_Object *widget);
+EAPI Eina_Bool        _elm_widget_item_highlightable(Elm_Object_Item *item);
+//
 
 /* debug function. don't use it unless you are tracking parenting issues */
 EAPI void             elm_widget_tree_dump(const Evas_Object *top);

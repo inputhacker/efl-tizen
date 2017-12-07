@@ -4131,6 +4131,35 @@ _elm_widget_item_accessible_plain_name_get(Elm_Object_Item *item, const char* na
    return id->accessible_name;
 }
 
+//TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
+EAPI Eina_Bool
+_elm_widget_item_highlightable(Elm_Object_Item *item)
+{
+   Elm_Widget_Item_Data *id = efl_data_scope_get(item, ELM_WIDGET_ITEM_CLASS);
+   if (!id) return EINA_FALSE;
+   if (!id->can_highlight) return EINA_FALSE;
+   Evas_Object *widget = id->widget;
+   Evas_Object *parent = widget;
+   Elm_Widget_Smart_Data *wd;
+   if (parent && efl_isa(parent, EFL_ACCESS_MIXIN))
+     {
+        wd = efl_data_scope_get(parent, ELM_WIDGET_CLASS);
+        if (!wd->can_highlight) return EINA_FALSE;
+     }
+   do
+     {
+        parent = elm_widget_parent_get(parent);
+        if (parent && efl_isa(parent, EFL_ACCESS_MIXIN))
+          {
+             wd = efl_data_scope_get(parent, ELM_WIDGET_CLASS);
+             if (!wd->can_highlight) return EINA_FALSE;
+          }
+     }
+   while (parent && (parent != elm_widget_top_get(widget)));
+   return EINA_TRUE;
+}
+//
+
 EOLIAN static Efl_Access_State_Set
 _elm_widget_item_efl_access_state_set_get(Eo *eo_item, Elm_Widget_Item_Data *item)
 {
@@ -4162,7 +4191,7 @@ _elm_widget_item_efl_access_state_set_get(Eo *eo_item, Elm_Widget_Item_Data *ite
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
 
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
-   if (item->can_highlight)
+   if (_elm_widget_item_highlightable(eo_item))
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
    else
      STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
@@ -5647,6 +5676,32 @@ _elm_widget_efl_access_parent_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED
    return efl_isa(parent, EFL_ACCESS_MIXIN) ? parent : NULL;
 }
 
+//TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
+EAPI Eina_Bool
+_elm_widget_highlightable(Evas_Object *obj)
+{
+   Elm_Widget_Smart_Data *wd = efl_data_scope_get(obj, ELM_WIDGET_CLASS);
+   if (!wd) return EINA_FALSE;
+   if (!wd->can_highlight) return EINA_FALSE;
+   Evas_Object *parent = elm_widget_parent_get(obj);
+   if (parent && efl_isa(parent, EFL_ACCESS_MIXIN))
+     {
+        wd = efl_data_scope_get(parent, ELM_WIDGET_CLASS);
+        if (!wd->can_highlight) return EINA_FALSE;
+     }
+   do
+     {
+        parent = elm_widget_parent_get(parent);
+        if (parent && efl_isa(parent, EFL_ACCESS_MIXIN))
+          {
+             wd = efl_data_scope_get(parent, ELM_WIDGET_CLASS);
+             if (!wd->can_highlight) return EINA_FALSE;
+          }
+     }
+   while (parent && (parent != elm_widget_top_get(obj)));
+   return EINA_TRUE;
+}
+//
 
 EOLIAN static Efl_Access_State_Set
 _elm_widget_efl_access_state_set_get(Eo *obj, Elm_Widget_Smart_Data *pd)
@@ -5687,7 +5742,7 @@ _elm_widget_efl_access_state_set_get(Eo *obj, Elm_Widget_Smart_Data *pd)
      }
 
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
-   if (pd->can_highlight)
+   if (_elm_widget_highlightable(obj))
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
    else
      STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
