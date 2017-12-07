@@ -62,6 +62,9 @@ struct _Evas_Text_Data
       Evas_Coord                w, h;
       int                       advance;
       int                       width_without_ellipsis;
+      /* TIZEN_ONLY(20170117): add width which includes advance */
+      int                       width;
+      /* END */
       Eina_Bool                 ellipsis;
    } last_computed;
 
@@ -370,6 +373,14 @@ _evas_object_text_horiz_advance_get(const Evas_Text_Data *o)
 {
    return o->last_computed.advance;
 }
+
+/* TIZEN_ONLY(20170117): add width which includes advance */
+static Evas_Coord
+_evas_object_text_horiz_width_get(const Evas_Text_Data *o)
+{
+   return o->last_computed.width;
+}
+/* END */
 
 static Evas_Coord
 _evas_object_text_vert_advance_get(const Evas_Object *obj EINA_UNUSED,
@@ -1019,15 +1030,49 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
    o->prev = o->cur;
 
    {
+      /* TIZEN_ONLY(20170117): add width which includes advance */
+      const Evas_Object_Text_Item *last_it = NULL;
+#ifdef BIDI_SUPPORT
+      size_t max_vpos = 0;
+#endif
+      /* END */
       Evas_Object_Text_Item *itr = o->items;
       advance = 0;
 
       while (itr)
         {
            advance += itr->adv;
+
+           /* TIZEN_ONLY(20170117): add width which includes advance */
+           if ((itr->w > 0) || (itr->adv > 0))
+             {
+#ifdef BIDI_SUPPORT
+                if (is_bidi)
+                  {
+                     if (!last_it || (itr->visual_pos >= max_vpos))
+                       {
+                          last_it = itr;
+                          max_vpos = itr->visual_pos;
+                       }
+                  }
+                else
+#endif
+                  {
+                     last_it = itr;
+                  }
+             }
+           /* END */
+
            itr = (Evas_Object_Text_Item *) EINA_INLIST_GET(itr)->next;
         }
       o->last_computed.advance = advance;
+
+      /* TIZEN_ONLY(20170117): add width which includes advance */
+      o->last_computed.width = advance;
+
+      if (last_it && (last_it->w > last_it->adv))
+        o->last_computed.width += last_it->w - last_it->adv;
+      /* END */
    }
 
    _evas_object_text_item_order(eo_obj, o);
@@ -2352,7 +2397,11 @@ _evas_object_text_recalc(Evas_Object *eo_obj, Eina_Unicode *text)
           {
              int min;
 
+             /* TIZEN_ONLY(20160305): Remove a whitespcae from the right end of ellipsized RTL text
              min = w + l + r < obj->cur->geometry.w || obj->cur->geometry.w == 0 ? w + l + r : obj->cur->geometry.w;
+              */
+             min = w + l + r < obj->cur->geometry.w || obj->cur->geometry.w == 0 ? w + l + r : _evas_object_text_horiz_width_get(o) + l + r;
+             /* END */
              efl_gfx_size_set(efl_super(eo_obj, MY_CLASS), EINA_SIZE2D(min,  h + t + b));
           }
         else
