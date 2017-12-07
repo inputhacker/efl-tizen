@@ -19,6 +19,11 @@
 #define COL_OBJECT(obj, sub) ARGB_JOIN(obj->sub->color.a, obj->sub->color.r, obj->sub->color.g, obj->sub->color.b)
 #define COL_JOIN(o, sub, color) ARGB_JOIN(o->sub.color.a, o->sub.color.r, o->sub.color.g, o->sub.color.b)
 
+/* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation */
+#define EVAS_TEXT_ITEM_SIZE(it) \
+   ((it->w > it->adv) ? it->w : it->adv)
+/* END */
+
 /* private magic number for text objects */
 static const char o_type[] = "text";
 
@@ -805,7 +810,11 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
                   script_len -= run_len;
                   len -= run_len;
 
+                  /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
                   if (it->w > 0)
+                   */
+                  if ((it->w > 0) || (it->adv > 0))
+                  /* END */
                     {
 #ifdef BIDI_SUPPORT
                        if (is_bidi)
@@ -826,8 +835,13 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
           }
 
         width = advance;
+        /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
         if (last_it)
           width += last_it->w - last_it->adv;
+         */
+        if (last_it && (last_it->w > last_it->adv))
+          width += last_it->w - last_it->adv;
+        /* END */
      }
    o->last_computed.width_without_ellipsis = width;
 
@@ -856,7 +870,11 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
                   start_ellip_it = _layout_ellipsis_item_new(obj, o);
                }
              o->last_computed.ellipsis_start = start_ellip_it;
+             /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
              ellip_frame -= start_ellip_it->w;
+              */
+             ellip_frame -= EVAS_TEXT_ITEM_SIZE(start_ellip_it);
+             /* END */
           }
         if (!EINA_DBL_EQ(o->cur.ellipsis, 1.0))
           {
@@ -872,7 +890,11 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
                   end_ellip_it = _layout_ellipsis_item_new(obj, o);
                }
              o->last_computed.ellipsis_end = end_ellip_it;
+             /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
              ellip_frame -= end_ellip_it->w;
+              */
+             ellip_frame -= EVAS_TEXT_ITEM_SIZE(end_ellip_it);
+             /* END */
           }
 
         /* The point where we should start from, going for the full
@@ -883,7 +905,11 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
              Evas_Object_Text_Item *itr = o->items;
              advance = 0;
 
+             /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
              while (itr && (advance + l + r + itr->w < ellipsis_coord))
+              */
+             while (itr && (advance + l + r + EVAS_TEXT_ITEM_SIZE(itr) < ellipsis_coord))
+             /* END */
                {
                   Eina_Inlist *itrn = EINA_INLIST_GET(itr)->next;
                   if ((itr != start_ellip_it) && (itr != end_ellip_it))
@@ -932,7 +958,11 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
                {
                   if (itr != end_ellip_it) /* was start_ellip_it */
                     {
+                       /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
                        if (advance + l + r + itr->w >= ellip_frame)
+                        */
+                       if (advance + l + r + EVAS_TEXT_ITEM_SIZE(itr) >= ellip_frame)
+                       /* END */
                          {
                             break;
                          }

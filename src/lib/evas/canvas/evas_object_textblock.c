@@ -114,6 +114,14 @@ static const char o_type[] = "textblock";
     ((ch) == _PARAGRAPH_SEPARATOR))
 /* END */
 
+/* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation */
+#define EVAS_TEXTBLOCK_ITEM_SIZE(it) \
+   ((it->w > it->adv) ? it->w : it->adv)
+
+#define EVAS_TEXTBLOCK_TEXT_ITEM_SIZE(ti) \
+   ((ti->parent.w > ti->parent.adv) ? ti->parent.w : ti->parent.adv)
+/* END */
+
 #ifdef CRI
 #undef CRI
 #endif
@@ -3923,7 +3931,12 @@ loop_advance:
         it->x = x;
         x += it->adv + obs_adv;
 
+        /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
         if ((it->w > 0) && ((it->x + it->w) > c->ln->w)) c->ln->w = it->x + it->w;
+         */
+        if ((it->x + EVAS_TEXTBLOCK_ITEM_SIZE(it)) > c->ln->w)
+          c->ln->w = it->x + EVAS_TEXTBLOCK_ITEM_SIZE(it);
+        /* END */
      }
 
    /* clear obstacle info for this line */
@@ -5296,7 +5309,8 @@ _layout_handle_ellipsis(Ctxt *c, Evas_Object_Textblock_Item *it, Eina_List *i)
 
    save_cx = c->x;
    temp_w = c->w;
-   ellip_w = ellip_ti->parent.w - ellip_ti->x_adjustment;
+  /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
+    ellip_w = ellip_ti->parent.w - ellip_ti->x_adjustment;
 #ifdef BIDI_SUPPORT
    // XXX: with RTL considerations in mind, we need to take max(adv, w) as the
    // line may be reordered in a way that the item placement will cause the
@@ -5306,6 +5320,9 @@ _layout_handle_ellipsis(Ctxt *c, Evas_Object_Textblock_Item *it, Eina_List *i)
         ellip_w = ellip_ti->parent.adv;
      }
 #endif
+    */
+   ellip_w = EVAS_TEXTBLOCK_TEXT_ITEM_SIZE(ellip_ti);
+   /* END */
    temp_w -= ellip_w;
 
    /* If there is no enough space for ellipsis item, remove all of items */
@@ -5378,9 +5395,15 @@ _layout_handle_ellipsis(Ctxt *c, Evas_Object_Textblock_Item *it, Eina_List *i)
              /* We need to renew ellipsis item.
               * Because, base format is changed to last_it.
               * We can't reuse it. */
+             /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
              temp_w += ellip_ti->parent.w;
              ellip_ti = _layout_ellipsis_item_new(c, last_it);
              temp_w -= ellip_ti->parent.w;
+              */
+             temp_w += EVAS_TEXTBLOCK_TEXT_ITEM_SIZE(ellip_ti);
+             ellip_ti = _layout_ellipsis_item_new(c, last_it);
+             temp_w -= EVAS_TEXTBLOCK_TEXT_ITEM_SIZE(ellip_ti);
+             /* END */
              c->x -= last_it->adv;
              if (c->x < 0)
                c->x = 0;
@@ -5439,12 +5462,22 @@ _calc_items_width(Ctxt *c)
    EINA_LIST_FOREACH(c->par->logical_items, i, it)
      {
         w += it->adv;
+        /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
         last_it = it;
+         */
+        if ((it->w > 0) || (it->adv > 0))
+          last_it = it;
+        /* END */
      }
 
    //reaching this point when it is the last item
+   /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
    if (last_it)
       w += last_it->w - last_it->adv;
+    */
+   if (last_it && (last_it->w > last_it->adv))
+      w += last_it->w - last_it->adv;
+   /* END */
    return w;
 }
 
@@ -5784,12 +5817,22 @@ _layout_par(Ctxt *c)
              EINA_INLIST_FOREACH(c->ln->items, vis_it)
                {
                   needed_w += vis_it->adv;
+                  /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
                   if (vis_it->w > 0)
                     last_it = vis_it;
+                   */
+                  if ((vis_it->w > 0) || (vis_it->adv > 0))
+                    last_it = vis_it;
+                  /* END */
                }
 
+             /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
              if (last_it)
                needed_w += last_it->w - last_it->adv;
+              */
+             if (last_it && (last_it->w > last_it->adv))
+               needed_w += last_it->w - last_it->adv;
+             /* END */
 
              /* Restore */
              c->ln->items = (Evas_Object_Textblock_Item *)
@@ -5799,7 +5842,13 @@ _layout_par(Ctxt *c)
         else
 #endif
           {
+             /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
              needed_w = c->x + it->w;
+              */
+             needed_w = c->x + it->adv;
+             if (it->w > it->adv)
+               needed_w += it->w - it->adv;
+             /* END */
           }
         /* END */
 
@@ -13132,13 +13181,23 @@ loop_advance:
         *w += it->adv;
 
         /* Update visible last item in the logical order */
+        /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
         if (!is_bidi && (it->w > 0))
            last_it = it;
+         */
+        if (!is_bidi && ((it->w > 0) || (it->adv > 0)))
+          last_it = it;
+        /* END */
      }
 
    /* rectify width of line using the last item */
+   /* TIZEN_ONLY(20161007): Apply the last character's advance for width calculation
    if (last_it)
       *w += last_it->w - last_it->adv;
+    */
+   if (last_it && (last_it->w > last_it->adv))
+     *w += last_it->w - last_it->adv;
+   /* END */
 }
 
 /* FIXME: doc */
