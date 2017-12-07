@@ -912,6 +912,25 @@ static const Eldbus_Method accessible_methods[] = {
    { NULL, NULL, NULL, NULL, 0 }
 };
 
+// TIZEN_ONLY(20171207): make sure object is visible before performing required atspi action
+static Eina_Bool
+_is_operation_permitted(Eo *obj)
+{
+   Efl_Access_State_Set states;
+   states = efl_access_state_set_get(obj);
+
+   if (!STATE_TYPE_GET(states, EFL_ACCESS_STATE_SHOWING)) return EINA_FALSE;
+
+   Eo *parent = obj;
+   while (parent)
+     {
+        if (evas_object_freeze_events_get(parent)) return EINA_FALSE;
+        parent = evas_object_smart_parent_get(parent);
+     }
+   return EINA_TRUE;
+}
+//
+
 static Eldbus_Message *
 _selection_selected_child_get(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
 {
@@ -949,7 +968,7 @@ _selection_child_select(const Eldbus_Service_Interface *iface, const Eldbus_Mess
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
    int idx;
    Eldbus_Message *ret;
-   Eina_Bool result;
+   Eina_Bool result = EINA_FALSE;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_SELECTION_INTERFACE, msg);
 
@@ -959,7 +978,8 @@ _selection_child_select(const Eldbus_Service_Interface *iface, const Eldbus_Mess
    ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
 
-   result = efl_access_selection_child_select(obj, idx);
+   if (_is_operation_permitted(obj))
+     result = efl_access_selection_child_select(obj, idx);
    eldbus_message_arguments_append(ret, "b", result);
 
    return ret;
@@ -973,7 +993,7 @@ _selection_selected_child_deselect(const Eldbus_Service_Interface *iface, const 
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
    int idx;
    Eldbus_Message *ret;
-   Eina_Bool result;
+   Eina_Bool result = EINA_FALSE;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_SELECTION_INTERFACE, msg);
 
@@ -983,7 +1003,8 @@ _selection_selected_child_deselect(const Eldbus_Service_Interface *iface, const 
    ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
 
-   result = efl_access_selection_selected_child_deselect(obj, idx);
+   if (_is_operation_permitted(obj))
+     result = efl_access_selection_selected_child_deselect(obj, idx);
    eldbus_message_arguments_append(ret, "b", result);
 
    return ret;
@@ -1020,14 +1041,15 @@ _selection_all_children_select(const Eldbus_Service_Interface *iface, const Eldb
    Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
    Eldbus_Message *ret;
-   Eina_Bool result;
+   Eina_Bool result = EINA_FALSE;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_SELECTION_INTERFACE, msg);
 
    ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
 
-   result = efl_access_selection_all_children_select(obj);
+   if (_is_operation_permitted(obj))
+     result = efl_access_selection_all_children_select(obj);
    eldbus_message_arguments_append(ret, "b", result);
 
    return ret;
@@ -1040,14 +1062,15 @@ _selection_clear(const Eldbus_Service_Interface *iface, const Eldbus_Message *ms
    Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
    Eldbus_Message *ret;
-   Eina_Bool result;
+   Eina_Bool result = EINA_FALSE;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_SELECTION_INTERFACE, msg);
 
    ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
 
-   result = efl_access_selection_clear(obj);
+   if (_is_operation_permitted(obj))
+     result = efl_access_selection_clear(obj);
    eldbus_message_arguments_append(ret, "b", result);
 
    return ret;
@@ -1061,7 +1084,7 @@ _selection_child_deselect(const Eldbus_Service_Interface *iface, const Eldbus_Me
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
    int idx;
    Eldbus_Message *ret;
-   Eina_Bool result;
+   Eina_Bool result = EINA_FALSE;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_SELECTION_INTERFACE, msg);
 
@@ -1071,7 +1094,8 @@ _selection_child_deselect(const Eldbus_Service_Interface *iface, const Eldbus_Me
    ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
 
-   result = efl_access_selection_child_deselect(obj, idx);
+   if (_is_operation_permitted(obj))
+     result = efl_access_selection_child_deselect(obj, idx);
    eldbus_message_arguments_append(ret, "b", result);
 
    return ret;
@@ -1237,7 +1261,7 @@ _action_action_do(const Eldbus_Service_Interface *iface, const Eldbus_Message *m
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
    int idx;
    Eldbus_Message *ret;
-   Eina_Bool result;
+   Eina_Bool result = EINA_FALSE;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_ACTION_MIXIN, msg);
 
@@ -1247,7 +1271,8 @@ _action_action_do(const Eldbus_Service_Interface *iface, const Eldbus_Message *m
    ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
 
-   result = efl_access_action_do(obj, idx);
+   if (_is_operation_permitted(obj))
+     result = efl_access_action_do(obj, idx);
    eldbus_message_arguments_append(ret, "b", result);
 
    return ret;
