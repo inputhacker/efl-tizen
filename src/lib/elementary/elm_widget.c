@@ -6602,35 +6602,7 @@ _elm_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Data *
    if(!_elm_atspi_enabled())
       return EINA_FALSE;
 
-   Evas_Coord sx, sy, sw, sh;
-   Evas_Coord x, y, w, h;
-   Evas_Object *parent, *scroll_parent;
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-   sx = sy = sw = sh = 0;
-   parent = evas_object_smart_parent_get(obj);
-   scroll_parent = evas_object_smart_parent_get(obj);
-   while (scroll_parent)
-     {
-        if (efl_isa(scroll_parent, ELM_INTERFACE_SCROLLABLE_MIXIN))
-          {
-             evas_object_geometry_get(parent, &sx, &sy, &sw, &sh);
-             x -= sx;
-             y -= sy;
-             switch (_elm_config->focus_autoscroll_mode)
-               {
-                case ELM_FOCUS_AUTOSCROLL_MODE_SHOW:
-                   elm_interface_scrollable_content_region_show(scroll_parent, x, y, w, h);
-                   break;
-                case ELM_FOCUS_AUTOSCROLL_MODE_BRING_IN:
-                   elm_interface_scrollable_region_bring_in(scroll_parent, x, y, w, h);
-                   break;
-                default:
-                   break;
-               }
-             break;
-          }
-        scroll_parent = evas_object_smart_parent_get(scroll_parent);
-     }
+   elm_widget_focus_region_show(obj);
    elm_object_accessibility_highlight_set(obj, EINA_TRUE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
