@@ -54,6 +54,12 @@ _recalc(void *data)
      evas_object_size_hint_min_set(data, 0, minh);
    else
      evas_object_size_hint_min_set(data, minw, minh);
+   /* TIZEN_ONLY(20161109): wrap width will work as min and max width */
+   if (sd->wrap_w > 0)
+     evas_object_size_hint_max_set(data, minw, -1);
+   else
+     evas_object_size_hint_max_set(data, -1, -1);
+   /* END */
 
    evas_event_thaw(evas_object_evas_get(data));
    evas_event_thaw_eval(evas_object_evas_get(data));
@@ -228,6 +234,9 @@ _elm_label_elm_layout_sizing_eval(Eo *obj, Elm_Label_Data *_pd EINA_UNUSED)
         edje_object_size_min_calc(wd->resize_obj, &minw, &minh);
         if (sd->wrap_w > 0 && minw > sd->wrap_w) minw = sd->wrap_w;
         evas_object_size_hint_min_set(obj, minw, minh);
+        /* TIZEN_ONLY(20161109): wrap width will work as min and max width */
+        evas_object_size_hint_max_set(obj, -1, -1);
+        /* END */
         evas_event_thaw(evas_object_evas_get(obj));
         evas_event_thaw_eval(evas_object_evas_get(obj));
      }
