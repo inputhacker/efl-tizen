@@ -571,54 +571,94 @@ evas_gl_common_shader_precompile_list(Evas_GL_Shared *shared)
 
    if (!shared) return NULL;
 
-   // rect
-   li = eina_list_append(li, P(BASEFLAG));
+   // if need to compile almost shaders during precompile, enable this enviroment
+   if (getenv("EVAS_GL_SHADER_PRECOMPILE_ALL"))
+     {
+        // rect
+        li = eina_list_append(li, P(BASEFLAG));
 
-   // text
-   for (mask = 0; mask <= 1; mask++)
-     for (masksam = SHD_SAM11; masksam < (mask ? SHD_SAM_LAST : 1); masksam++)
-       {
-          int           flags  = BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_ALPHA;
-          if (mask)     flags |= SHADER_FLAG_MASK;
-          if (masksam)  flags |= (1 << (SHADER_FLAG_MASKSAM_BITSHIFT + masksam - 1));
-          li = eina_list_append(li, P(flags));
-       }
+        // text
+        for (mask = 0; mask <= 1; mask++)
+          for (masksam = SHD_SAM11; masksam < (mask ? SHD_SAM_LAST : 1); masksam++)
+            {
+               int           flags  = BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_ALPHA;
+               if (mask)     flags |= SHADER_FLAG_MASK;
+               if (masksam)  flags |= (1 << (SHADER_FLAG_MASKSAM_BITSHIFT + masksam - 1));
+               li = eina_list_append(li, P(flags));
+            }
 
-   // images
-   for (mask = 0; mask <= 1; mask++)
-     for (masksam = SHD_SAM11; masksam < (mask ? SHD_SAM_LAST : 1); masksam++)
-       for (sam = SHD_SAM11; sam < SHD_SAM_LAST; sam++)
-         for (bgra = 0; bgra <= shared->info.bgra; bgra++)
-           for (img = 0; img <= 1; img++)
-             for (nomul = 0; nomul <= 1; nomul++)
-               for (afill = 0; afill <= (mask ? 0 : 1); afill++)
-                 {
-                    int           flags  = BASEFLAG | SHADER_FLAG_TEX;
-                    if (mask)     flags |= SHADER_FLAG_MASK;
-                    if (masksam)  flags |= (1 << (SHADER_FLAG_MASKSAM_BITSHIFT + masksam - 1));
-                    if (sam)      flags |= (1 << (SHADER_FLAG_SAM_BITSHIFT + sam - 1));
-                    if (bgra)     flags |= SHADER_FLAG_BGRA;
-                    if (img)      flags |= SHADER_FLAG_IMG;
-                    if (nomul)    flags |= SHADER_FLAG_NOMUL;
-                    if (afill)    flags |= SHADER_FLAG_AFILL;
-                    li = eina_list_append(li, P(flags));
-                 }
+        // images
+        for (mask = 0; mask <= 1; mask++)
+          for (masksam = SHD_SAM11; masksam < (mask ? SHD_SAM_LAST : 1); masksam++)
+            for (sam = SHD_SAM11; sam < SHD_SAM_LAST; sam++)
+              for (bgra = 0; bgra <= shared->info.bgra; bgra++)
+                for (img = 0; img <= 1; img++)
+                  for (nomul = 0; nomul <= 1; nomul++)
+                    for (afill = 0; afill <= (mask ? 0 : 1); afill++)
+                      {
+                         int           flags  = BASEFLAG | SHADER_FLAG_TEX;
+                         if (mask)     flags |= SHADER_FLAG_MASK;
+                         if (masksam)  flags |= (1 << (SHADER_FLAG_MASKSAM_BITSHIFT + masksam - 1));
+                         if (sam)      flags |= (1 << (SHADER_FLAG_SAM_BITSHIFT + sam - 1));
+                         if (bgra)     flags |= SHADER_FLAG_BGRA;
+                         if (img)      flags |= SHADER_FLAG_IMG;
+                         if (nomul)    flags |= SHADER_FLAG_NOMUL;
+                         if (afill)    flags |= SHADER_FLAG_AFILL;
+                         li = eina_list_append(li, P(flags));
+                      }
 
-   // yuv
-   for (yuv = SHADER_FLAG_YUV; yuv <= SHADER_FLAG_YUV_709; yuv *= 2)
-     for (mask = 0; mask <= 1; mask++)
-       for (masksam = SHD_SAM11; masksam < (mask ? SHD_SAM_LAST : 1); masksam++)
-         for (nomul = 0; nomul <= 1; nomul++)
-           {
-              int           flags  = BASEFLAG | SHADER_FLAG_TEX | yuv;
-              if (mask)     flags |= SHADER_FLAG_MASK;
-              if (masksam)  flags |= (1 << (SHADER_FLAG_MASKSAM_BITSHIFT + masksam - 1));
-              if (yuv == SHADER_FLAG_YUV_709) flags |= SHADER_FLAG_YUV;
-              if (nomul)    flags |= SHADER_FLAG_NOMUL;
-              li = eina_list_append(li, P(flags));
-           }
+        // yuv
+        for (yuv = SHADER_FLAG_YUV; yuv <= SHADER_FLAG_YUV_709; yuv *= 2)
+          for (mask = 0; mask <= 1; mask++)
+            for (masksam = SHD_SAM11; masksam < (mask ? SHD_SAM_LAST : 1); masksam++)
+              for (nomul = 0; nomul <= 1; nomul++)
+                {
+                   int           flags  = BASEFLAG | SHADER_FLAG_TEX | yuv;
+                   if (mask)     flags |= SHADER_FLAG_MASK;
+                   if (masksam)  flags |= (1 << (SHADER_FLAG_MASKSAM_BITSHIFT + masksam - 1));
+                   if (yuv == SHADER_FLAG_YUV_709) flags |= SHADER_FLAG_YUV;
+                   if (nomul)    flags |= SHADER_FLAG_NOMUL;
+                   li = eina_list_append(li, P(flags));
+                }
 
-   // rgb+a pair, external, and others will not be precompiled.
+         // rgb+a pair, external, and others will not be precompiled.
+        DBG("Built list of %d shaders to precompile", eina_list_count(li));
+        return li;
+     }
+
+   // To optimize first booting time, the precompiling's list are reduced.
+   // so base shaders are only included to the list.
+
+   /* most popular shaders */
+   const int BGRA = (shared->info.bgra ? SHADER_FLAG_BGRA : 0);
+   const int autoload[] = {
+      /* rect */ BASEFLAG,
+      /* text */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_ALPHA,
+      /* img1 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | BGRA,
+      /* img2 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | SHADER_FLAG_NOMUL | BGRA,
+   };
+
+   /* add popular shaders in application */
+   const int perf_shader_cnt = 9;
+   const int perf_load[] = {
+      /* SAM12 img1 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | SHADER_FLAG_SAM12 | BGRA,
+      /* SAM12 img2 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | SHADER_FLAG_SAM12 | SHADER_FLAG_NOMUL | BGRA,
+      /* SAM21 img1 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | SHADER_FLAG_SAM21 | BGRA,
+      /* SAM21 img2 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | SHADER_FLAG_SAM21 | SHADER_FLAG_NOMUL | BGRA,
+      /* SAM22 img1 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | SHADER_FLAG_SAM22 | BGRA,
+      /* SAM22 img2 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_IMG | SHADER_FLAG_SAM22 | SHADER_FLAG_NOMUL | BGRA,
+      /* TEX BGRA */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_NOMUL | BGRA,
+      /* EXTERNAL */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_EXTERNAL,
+      /* EXTERNAL2 */ BASEFLAG | SHADER_FLAG_TEX | SHADER_FLAG_EXTERNAL | SHADER_FLAG_NOMUL,
+   };
+
+   int i;
+   // Add to base shaders
+   for (i = 0; i < 4; i++)
+     li = eina_list_append(li, P(autoload[i]));
+
+   for (i = 0; i < perf_shader_cnt; i++)
+     li = eina_list_append(li, P(perf_load[i]));
 
    DBG("Built list of %d shaders to precompile", eina_list_count(li));
    return li;
