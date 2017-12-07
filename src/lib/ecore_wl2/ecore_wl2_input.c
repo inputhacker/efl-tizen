@@ -1545,13 +1545,26 @@ _touch_cb_down(void *data, struct wl_touch *touch EINA_UNUSED, unsigned int seri
    _ecore_wl2_input_touch_axis_process(input, id);
    //
 
-   _pointer_cb_enter(data, NULL, serial, surface, x, y);
+   // TIZEN_ONLY(20171207): do not send pointer enter about all of touch down
+   #if 0
+    _pointer_cb_enter(data, NULL, serial, surface, x, y);
+   #else
+
+   input->grab.count++;
 
    if ((!input->grab.window) && (input->focus.touch))
      {
+        _pointer_cb_enter(data, NULL, serial, surface, x, y);
         _ecore_wl2_input_grab(input, input->focus.touch, BTN_LEFT);
         input->grab.timestamp = timestamp;
      }
+   else
+     {
+        input->pointer.sx = wl_fixed_to_double(x);
+        input->pointer.sy = wl_fixed_to_double(y);
+     }
+   #endif
+   //
 
 // TIZEN_ONLY(20171107): always send move event when touch down event is occurred
    _ecore_wl2_input_mouse_move_send(input, input->focus.touch, id);
