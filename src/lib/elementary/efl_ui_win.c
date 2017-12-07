@@ -4052,7 +4052,7 @@ _elm_win_atspi(Eina_Bool is_atspi)
    EINA_LIST_FOREACH(_elm_win_list, l, obj)
      {
         elm_widget_atspi(obj, is_atspi);
-        evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, NULL);
+        evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
 
          /* floating orphan object. if there are A, B, C objects and user does
             as below, then there would be floating orphan objects.
