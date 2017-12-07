@@ -8,6 +8,9 @@
 #define ELM_LAYOUT_PROTECTED
 #define EFL_UI_FOCUS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
+// TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+#define EFL_ACCESS_COMPONENT_PROTECTED
+//
 
 #include <Elementary.h>
 #include <Elementary_Cursor.h>
@@ -102,6 +105,9 @@ struct _Mod_Api
 
 static void _create_selection_handlers(Evas_Object *obj, Elm_Entry_Data *sd);
 static void _magnifier_move(void *data);
+// TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+static void _atspi_expose_anchors(Eo *obj, Eina_Bool is_atspi);
+//
 
 static Evas_Object *
 _entry_win_get(Evas_Object *obj)
@@ -3261,6 +3267,11 @@ _elm_entry_text_set(Eo *obj, Elm_Entry_Data *sd, const char *part, const char *e
    else
      _elm_entry_guide_update(obj, EINA_FALSE);
 
+   // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+   if (_elm_atspi_enabled())
+     _atspi_expose_anchors(obj, EINA_TRUE);
+   //
+
    evas_event_thaw(evas_object_evas_get(obj));
    evas_event_thaw_eval(evas_object_evas_get(obj));
    return EINA_TRUE;
@@ -3689,6 +3700,10 @@ _elm_entry_efl_canvas_group_group_add(Eo *obj, Elm_Entry_Data *priv)
    priv->auto_save = EINA_TRUE;
    priv->editable = EINA_TRUE;
    priv->sel_allow = _elm_config->entry_select_allow;
+   // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+   priv->anchor_atspi_rects = NULL;
+   priv->anchor_highlight_rects = NULL;
+   //
 
    priv->drop_format = ELM_SEL_FORMAT_MARKUP | ELM_SEL_FORMAT_IMAGE;
    elm_drop_target_add(obj, priv->drop_format,
@@ -3871,6 +3886,31 @@ _create_selection_handlers(Evas_Object *obj, Elm_Entry_Data *sd)
    evas_object_show(handle);
 }
 
+// TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+static void
+_elm_entry_anchor_atspi_rects_clear(Evas_Object *obj)
+{
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   if (sd->anchor_atspi_rects)
+     {
+        Evas_Object *rect = NULL;
+        EINA_LIST_FREE(sd->anchor_atspi_rects, rect)
+          {
+             Evas_Object *access;
+             char *name;
+             access = elm_access_object_get(rect);
+             name = evas_object_data_del(access, "anchor_name");
+             free(name);
+
+             elm_access_object_unregister(rect);
+             evas_object_del(rect);
+          }
+        sd->anchor_atspi_rects = NULL;
+     }
+}
+//
+
 EOLIAN static void
 _elm_entry_efl_canvas_group_group_del(Eo *obj, Elm_Entry_Data *sd)
 {
@@ -3890,6 +3930,10 @@ _elm_entry_efl_canvas_group_group_del(Eo *obj, Elm_Entry_Data *sd)
 
    if (sd->scroll)
      elm_interface_scrollable_content_viewport_resize_cb_set(obj, NULL);
+
+   // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+   _elm_entry_anchor_atspi_rects_clear(obj);
+   //
 
    elm_entry_anchor_hover_end(obj);
    elm_entry_anchor_hover_parent_set(obj, NULL);
@@ -6068,6 +6112,439 @@ _elm_entry_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Ent
    };
    return &atspi_actions[0];
 }
+
+/////////////////////////////////////////////////////////////////
+// TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+/////////////////////////////////////////////////////////////////
+static void
+_entry_edje_move_resize(void *data, Evas *e, Evas_Object *obj EINA_UNUSED,
+                        void *event_info EINA_UNUSED)
+{
+   Evas_Object *entry = data;
+
+   Evas_Textblock_Rectangle *r;
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   const Eina_List *anchors_a, *l;
+   Eina_List *ll, *ll_next, *range = NULL;
+   Evas_Coord x, y;
+   unsigned int index = 0;
+
+   ELM_ENTRY_DATA_GET(entry, sd);
+
+   if (sd->anchor_highlight_rects)
+     {
+        Evas_Object *rect = NULL;
+        EINA_LIST_FREE(sd->anchor_highlight_rects, rect)
+          {
+             evas_object_del(rect);
+          }
+        sd->anchor_highlight_rects = NULL;
+     }
+
+   evas_object_geometry_get(sd->entry_edje, &x, &y, NULL, NULL);
+   anchors_a = evas_textblock_node_format_list_get(tb, "a");
+   if (anchors_a)
+     {
+        const Evas_Object_Textblock_Node_Format *node;
+        Evas_Textblock_Cursor *start, *end;
+
+        EINA_LIST_FOREACH(anchors_a, l, node)
+          {
+             start = evas_object_textblock_cursor_new(tb);
+             end = evas_object_textblock_cursor_new(tb);
+             evas_textblock_cursor_at_format_set(start, node);
+             evas_textblock_cursor_copy(start, end);
+
+             const char *s;
+             for (; node; node = evas_textblock_node_format_next_get(node))
+               {
+                  s = evas_textblock_node_format_text_get(node);
+                  if ((!strcmp(s, "- a")) || (!strcmp(s, "-a")))
+                    break;
+               }
+
+             if (node)
+               {
+                  unsigned int rindex = 0;
+                  Evas_Object *rect = NULL;
+                  Evas_Object *access = NULL;
+                  evas_textblock_cursor_at_format_set(end, node);
+
+                  range = evas_textblock_cursor_range_geometry_get(start, end);
+                  EINA_LIST_FOREACH_SAFE(range, ll, ll_next, r)
+                    {
+                       if (!rect)
+                         {
+                            rect = eina_list_nth(sd->anchor_atspi_rects, index);
+                            evas_object_move(rect, x + r->x, y + r->y);
+                            evas_object_resize(rect, r->w, r->h);
+                            index++;
+
+                            access = elm_access_object_get(rect);
+                         }
+
+                       if ((rindex > 0) &&
+                           (access == _elm_object_accessibility_currently_highlighted_get()))
+                         {
+                             rect = edje_object_add(e);
+                             _elm_theme_object_set(entry, rect,
+                               "accessibility_highlight", "top", "default");
+                             evas_object_repeat_events_set(rect, EINA_TRUE);
+                             evas_object_move(rect, x + r->x, y + r->y);
+                             evas_object_resize(rect, r->w, r->h);
+                             evas_object_show(rect);
+                             sd->anchor_highlight_rects =
+                               eina_list_append(sd->anchor_highlight_rects, rect);
+                         }
+
+                       free(r);
+                       range = eina_list_remove_list(range, ll);
+                       rindex++;
+                    }
+               }
+             evas_textblock_cursor_free(start);
+             evas_textblock_cursor_free(end);
+          }
+     }
+}
+
+static void
+_anchor_rect_highlighted_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Eo *entry;
+   entry = efl_access_parent_get(obj);
+   unsigned int dindex = (unsigned int)data;
+
+   Evas_Textblock_Rectangle *r;
+   Evas_Object *tb = elm_entry_textblock_get(entry);
+   Evas *e = evas_object_evas_get(entry);
+   const Eina_List *anchors_a, *l;
+   Eina_List *ll, *ll_next, *range = NULL;
+   Evas_Coord x, y;
+   unsigned int index = 0;
+   unsigned int rindex = 0; /* highlight rect index */
+
+   ELM_ENTRY_DATA_GET(entry, sd);
+
+   evas_object_geometry_get(sd->entry_edje, &x, &y, NULL, NULL);
+   anchors_a = evas_textblock_node_format_list_get(tb, "a");
+   if (anchors_a)
+     {
+        const Evas_Object_Textblock_Node_Format *node;
+        Evas_Textblock_Cursor *start, *end;
+
+        EINA_LIST_FOREACH(anchors_a, l, node)
+          {
+             if (index !=  dindex)
+               {
+                  index++;
+                  continue;
+               }
+
+             start = evas_object_textblock_cursor_new(tb);
+             end = evas_object_textblock_cursor_new(tb);
+             evas_textblock_cursor_at_format_set(start, node);
+             evas_textblock_cursor_copy(start, end);
+
+             const char *s;
+             for (; node; node = evas_textblock_node_format_next_get(node))
+               {
+                  s = evas_textblock_node_format_text_get(node);
+                  if ((!strcmp(s, "- a")) || (!strcmp(s, "-a")))
+                    break;
+               }
+
+             if (node)
+               {
+                  Evas_Object *rect = NULL;
+                  evas_textblock_cursor_at_format_set(end, node);
+
+                  range = evas_textblock_cursor_range_geometry_get(start, end);
+                  EINA_LIST_FOREACH_SAFE(range, ll, ll_next, r)
+                    {
+                       /* The first rect is covered by default */
+                       if (rindex > 0)
+                         {
+                            rect = edje_object_add(e);
+                             _elm_theme_object_set(entry, rect,
+                               "accessibility_highlight", "top", "default");
+                            evas_object_repeat_events_set(rect, EINA_TRUE);
+                            evas_object_move(rect, x + r->x, y + r->y);
+                            evas_object_resize(rect, r->w, r->h);
+                            evas_object_show(rect);
+                            sd->anchor_highlight_rects =
+                              eina_list_append(sd->anchor_highlight_rects, rect);
+                         }
+
+                       free(r);
+                       range = eina_list_remove_list(range, ll);
+                       rindex++;
+                    }
+               }
+             evas_textblock_cursor_free(start);
+             evas_textblock_cursor_free(end);
+             break;
+          }
+     }
+}
+
+static void
+_anchor_rect_unhighlighted_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Eo *entry;
+   entry = efl_access_parent_get(obj);
+
+   ELM_ENTRY_DATA_GET(entry, sd);
+
+   if (sd->anchor_highlight_rects)
+     {
+        Evas_Object *rect = NULL;
+        EINA_LIST_FREE(sd->anchor_highlight_rects, rect)
+          {
+             evas_object_del(rect);
+          }
+        sd->anchor_highlight_rects = NULL;
+     }
+}
+
+static void
+_anchor_rect_activated_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Elm_Entry_Anchor_Info ei;
+   Eo *entry;
+   entry = efl_access_parent_get(obj);
+
+   ELM_ENTRY_DATA_GET(entry, sd);
+
+   ei.button = 1;
+   ei.name = evas_object_data_get(obj, "anchor_name");
+   ei.x = ei.y = ei.w = ei.h = 0;
+
+   if (!sd->disabled)
+     evas_object_smart_callback_call(obj, SIG_ANCHOR_CLICKED, &ei);
+}
+
+static void
+_atspi_expose_anchors(Eo *obj, Eina_Bool is_atspi)
+{
+   Evas_Textblock_Rectangle *r;
+   Evas_Object *tb = elm_entry_textblock_get(obj);
+   Evas *e = evas_object_evas_get(obj);
+   const Eina_List *anchors_a, *l;
+   Eina_List *ll, *ll_next, *range = NULL;
+   Evas_Coord x, y;
+   unsigned int index = 0;
+
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   if (is_atspi)
+     {
+        evas_object_geometry_get(sd->entry_edje, &x, &y, NULL, NULL);
+
+        anchors_a = evas_textblock_node_format_list_get(tb, "a");
+        if (anchors_a)
+          {
+             _elm_entry_anchor_atspi_rects_clear(obj);
+
+             const Evas_Object_Textblock_Node_Format *node;
+             Evas_Textblock_Cursor *start, *end;
+
+             EINA_LIST_FOREACH(anchors_a, l, node)
+               {
+                  const char *s = evas_textblock_node_format_text_get(node);
+                  char *p, *name = NULL;
+
+                  p = strstr(s, "href=");
+                  if (p)
+                    {
+                       name = strdup(p + 5);
+                    }
+
+                  start = evas_object_textblock_cursor_new(tb);
+                  end = evas_object_textblock_cursor_new(tb);
+                  evas_textblock_cursor_at_format_set(start, node);
+                  evas_textblock_cursor_copy(start, end);
+
+                  for (; node; node = evas_textblock_node_format_next_get(node))
+                    {
+                       s = evas_textblock_node_format_text_get(node);
+                       if ((!strcmp(s, "- a")) || (!strcmp(s, "-a")))
+                         break;
+                    }
+
+                  if (node)
+                    {
+                       Evas_Object *rect = NULL;
+                       Evas_Object *ao = NULL;
+                       const char *text;
+
+                       evas_textblock_cursor_at_format_set(end, node);
+                       text = (const char *)evas_textblock_cursor_range_text_get(
+                          start, end, EVAS_TEXTBLOCK_TEXT_PLAIN);
+
+                       range = evas_textblock_cursor_range_geometry_get(start, end);
+                       EINA_LIST_FOREACH_SAFE(range, ll, ll_next, r)
+                         {
+                            if (!rect)
+                              {
+                                 rect = evas_object_rectangle_add(e);
+                                 evas_object_move(rect, x + r->x, y + r->y);
+                                 evas_object_resize(rect, r->w, r->h);
+                                 evas_object_color_set(rect, 0, 0, 0, 0);
+                                 evas_object_repeat_events_set(rect, EINA_TRUE);
+                                 evas_object_show(rect);
+                                 sd->anchor_atspi_rects =
+                                   eina_list_append(sd->anchor_atspi_rects, rect);
+
+                                 ao = elm_access_object_register(rect, obj);
+                                 efl_access_name_set(ao, text);
+                                 efl_access_reading_info_type_set(ao,
+                                         EFL_ACCESS_READING_INFO_TYPE_NAME);
+                                 evas_object_smart_callback_add(ao, "atspi,highlighted",
+                                            _anchor_rect_highlighted_cb, (void *)index);
+                                 evas_object_smart_callback_add(ao, "atspi,unhighlighted",
+                                            _anchor_rect_unhighlighted_cb, (void *)index);
+                                 evas_object_smart_callback_add(ao, "access,activated",
+                                                      _anchor_rect_activated_cb, NULL);
+                                 evas_object_data_set(ao, "anchor_name", name);
+                                 index++;
+                              }
+
+                            free(r);
+                            range = eina_list_remove_list(range, ll);
+                         }
+                    }
+                  else
+                    {
+                       free(name);
+                    }
+                  evas_textblock_cursor_free(start);
+                  evas_textblock_cursor_free(end);
+
+               }
+             evas_object_event_callback_del_full(sd->entry_edje, EVAS_CALLBACK_RESIZE,
+                                            _entry_edje_move_resize, obj);
+             evas_object_event_callback_del_full(sd->entry_edje, EVAS_CALLBACK_MOVE,
+                                            _entry_edje_move_resize, obj);
+             evas_object_event_callback_add(sd->entry_edje, EVAS_CALLBACK_RESIZE,
+                                       _entry_edje_move_resize, obj);
+             evas_object_event_callback_add(sd->entry_edje, EVAS_CALLBACK_MOVE,
+                                       _entry_edje_move_resize, obj);
+          }
+     }
+   else
+     {
+        _elm_entry_anchor_atspi_rects_clear(obj);
+     }
+}
+
+EOLIAN static void
+_elm_entry_elm_widget_atspi(Eo *obj, Elm_Entry_Data *sd EINA_UNUSED, Eina_Bool is_atspi)
+{
+   _atspi_expose_anchors(obj, is_atspi);
+   evas_object_smart_callback_call(obj, "atspi,screen,reader,changed", &is_atspi);
+}
+
+EOLIAN static Eina_List*
+_elm_entry_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
+{
+   Eina_List *l;
+   Eina_List *ret = NULL;
+   Evas_Object *rect = NULL;
+
+   if (!sd->editable)
+     {
+        EINA_LIST_FOREACH(sd->anchor_atspi_rects, l, rect)
+          ret = eina_list_append(ret, elm_access_object_get(rect));
+     }
+   return ret;
+}
+
+EOLIAN static Eo *
+_elm_entry_efl_access_component_accessible_at_point_get(Eo *obj,  Elm_Entry_Data *sd, Eina_Bool screen_coords, int px, int py)
+{
+   Evas_Textblock_Rectangle *r;
+   Evas_Object *tb = elm_entry_textblock_get(obj);
+   const Eina_List *anchors_a, *l;
+   Eina_List *ll, *ll_next, *range = NULL;
+   Evas_Coord x, y;
+   unsigned int index = 0;
+   Evas_Object *ret = NULL;
+
+   if (sd->editable) return NULL;
+
+   Ecore_Evas *ee;
+   int ee_x = 0;
+   int ee_y = 0;
+
+   if (screen_coords)
+     {
+        ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
+        if (!ee) return NULL;
+
+        ecore_evas_geometry_get(ee, &ee_x, &ee_y, NULL, NULL);
+        px -= ee_x;
+        py -= ee_y;
+     }
+
+   evas_object_geometry_get(sd->entry_edje, &x, &y, NULL, NULL);
+   anchors_a = evas_textblock_node_format_list_get(tb, "a");
+   if (anchors_a)
+     {
+        const Evas_Object_Textblock_Node_Format *node;
+        Evas_Textblock_Cursor *start, *end;
+
+        EINA_LIST_FOREACH(anchors_a, l, node)
+          {
+             start = evas_object_textblock_cursor_new(tb);
+             end = evas_object_textblock_cursor_new(tb);
+             evas_textblock_cursor_at_format_set(start, node);
+             evas_textblock_cursor_copy(start, end);
+
+             const char *s;
+             for (; node; node = evas_textblock_node_format_next_get(node))
+               {
+                  s = evas_textblock_node_format_text_get(node);
+                  if ((!strcmp(s, "- a")) || (!strcmp(s, "-a")))
+                    break;
+               }
+
+             if (node)
+               {
+                  unsigned int rindex = 0;
+                  Evas_Object *rect = NULL;
+                  Evas_Object *access = NULL;
+                  evas_textblock_cursor_at_format_set(end, node);
+
+                  range = evas_textblock_cursor_range_geometry_get(start, end);
+                  EINA_LIST_FOREACH_SAFE(range, ll, ll_next, r)
+                    {
+                       if (!rect)
+                         {
+                            rect = eina_list_nth(sd->anchor_atspi_rects, index);
+                            evas_object_move(rect, x + r->x, y + r->y);
+                            evas_object_resize(rect, r->w, r->h);
+                            index++;
+
+                            access = elm_access_object_get(rect);
+                         }
+
+                       if ((px > x + r->x) && (px < x + r->x + r->w) &&
+                           (py > y + r->y) && (py < y + r->y + r->h))
+                         ret = access;
+
+                       free(r);
+                       range = eina_list_remove_list(range, ll);
+                       rindex++;
+                    }
+               }
+             evas_textblock_cursor_free(start);
+             evas_textblock_cursor_free(end);
+          }
+     }
+   return ret;
+}
+/////////////////////////////////////////////////////////////////
 
 /* Efl.Part begin */
 

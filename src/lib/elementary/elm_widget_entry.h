@@ -81,6 +81,10 @@ struct _Elm_Entry_Data
         Evas_Object *hover; /**< hover object */
         const char  *hover_style; /**< style of a hover object */
      } anchor_hover;
+   // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+   Eina_List                            *anchor_atspi_rects;
+   Eina_List                            *anchor_highlight_rects;
+   //
 
    Elm_Cnp_Mode                          cnp_mode;
    Elm_Sel_Format                        drop_format;
