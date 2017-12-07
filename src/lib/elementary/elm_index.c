@@ -1311,9 +1311,6 @@ _elm_index_item_selected_set(Eo *eo_it,
 
              edje_object_signal_emit(VIEW(it_inactive),
                                      "elm,state,inactive", "elm");
-             //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
-             if (_elm_atspi_enabled()) elm_layout_signal_emit(obj, "elm,indicator,state,inactive", "elm");
-             //
              edje_object_message_signal_process(VIEW(it_inactive));
           }
 
@@ -1324,13 +1321,6 @@ _elm_index_item_selected_set(Eo *eo_it,
           it_active = it_sel;
 
         edje_object_signal_emit(VIEW(it_active), "elm,state,active", "elm");
-        //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
-        if (_elm_atspi_enabled())
-          {
-            elm_layout_text_set(obj, "elm.text", strdup(it_sel->letter));
-            elm_layout_signal_emit(obj, "elm,indicator,state,active", "elm");
-          }
-        //
         edje_object_message_signal_process(VIEW(it_active));
 
         efl_event_callback_legacy_call
@@ -1796,6 +1786,30 @@ _elm_index_item_efl_access_state_set_get(Eo *eo_it, Elm_Index_Item_Data *sd)
      STATE_TYPE_UNSET(ret, EFL_ACCESS_STATE_HIGHLIGHTABLE);
 
    return ret;
+}
+//
+
+//TIZEN ONLY(20161114): index item accessibility highlight implementation
+EOLIAN static Eina_Bool
+_elm_index_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Index_Item_Data *sd)
+{
+   Evas_Object *obj = WIDGET(sd);
+   if (sd->letter)
+     elm_layout_text_set(obj, "elm.text", strdup(sd->letter));
+   elm_layout_signal_emit(obj, "elm,indicator,state,active", "elm");
+   elm_object_accessibility_highlight_set(eo_it, EINA_TRUE);
+
+   return EINA_TRUE;
+}
+
+EOLIAN static Eina_Bool
+_elm_index_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Index_Item_Data *sd)
+{
+   Evas_Object *obj = WIDGET(sd);
+   elm_layout_signal_emit(obj, "elm,indicator,state,inactive", "elm");
+   elm_object_accessibility_highlight_set(eo_it, EINA_FALSE);
+
+   return EINA_TRUE;
 }
 //
 

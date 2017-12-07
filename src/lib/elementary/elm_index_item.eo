@@ -49,5 +49,9 @@ class Elm.Index.Item(Elm.Widget.Item, Efl.Access.Widget.Action)
         //TIZEN_ONLY(20161021) : atspi:Do not give highlightable state if index style is pagecontrol
         Efl.Access.state_set { get; }
         //
+        //TIZEN ONLY(20161114): index item accessibility highlight implementation
+        Efl.Access.Component.highlight_grab;
+        Efl.Access.Component.highlight_clear;
+        //
    }
 }
