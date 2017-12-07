@@ -222,6 +222,20 @@ _label_slide_change(Evas_Object *obj)
         msg->val[0] = sd->slide_duration;
 
         edje_object_message_send(wd->resize_obj, EDJE_MESSAGE_FLOAT_SET, 0, msg);
+
+        /* TIZEN_ONLY(20170804): set duration/speed for text marquee using internal functions */
+        if (sd->use_slide_speed)
+          {
+             edje_object_part_text_marquee_duration_set(wd->resize_obj, "elm.text", 0.0);
+             edje_object_part_text_marquee_speed_set(wd->resize_obj, "elm.text", sd->slide_speed);
+          }
+        else
+          {
+             edje_object_part_text_marquee_speed_set(wd->resize_obj, "elm.text", 0.0);
+             edje_object_part_text_marquee_duration_set(wd->resize_obj, "elm.text", sd->slide_duration);
+          }
+        /* END */
+
         edje_object_signal_emit(wd->resize_obj, "elm,state,slide,start", "elm");
      }
    //no slide effect.
