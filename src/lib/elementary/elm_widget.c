@@ -5619,26 +5619,6 @@ static Eina_List *_lines_split(Eina_List *children)
 
 //TIZEN_ONLY(20171114) atspi: integrate ewk_view with elementary accessibility
 static void
-_ewk_view_load_finished(Eo *plug,
-                        Evas_Object *obj,
-                        const char *addr)
-{
-   char *bus, *path;
-
-   if (addr && !evas_object_data_get(obj, "__plug_connected"))
-     {
-       if (_elm_atspi_bridge_plug_id_split(addr, &bus, &path))
-         {
-            elm_obj_atspi_proxy_address_set(plug, bus, path);
-            elm_atspi_bridge_utils_proxy_connect(plug);
-            evas_object_data_set(obj, "__plug_connected", (void*)1);
-            free(bus);
-            free(path);
-        }
-     }
-}
-
-static void
 _on_ewk_del(void *data, const Efl_Event *desc EINA_UNUSED)
 {
    Eo *plug = data;
@@ -5658,33 +5638,23 @@ _elm_widget_efl_access_children_get(Eo *obj, Elm_Widget_Smart_Data *pd)
 
    EINA_LIST_FOREACH(pd->subobjs, l, widget)
      {
-        //TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
-        parent = efl_access_parent_get(widget);
-        if (parent && (parent != obj)) continue;
-
-        //TIZEN_ONLY(20171114) atspi: integrate ewk_view with elementary accessibility
-        // Ugly Tizen hack to integrate AT-SPI2 accessibility provided by WebKit with
-        // elementary one. Due to problematic cross dependencies between Webkit
-        // and elementary, instead of directly using ewk API to integrate accessibility
-        // we use evas_object_data_set with pre defined key to share data
-        // between webkit and elemetary libraries.
-        const char *plug_id;
-        if ((plug_id = evas_object_data_get(widget, "__PlugID")) != NULL)
+        const char *type = evas_object_type_get(widget);
+        // TIZEN ONLY
+        // Ugly Tizen hack to integrate AT-SPI2 accessibility provided by WebKit/Chromium with elementary one.
+        // This wrapper class should be implemented in Webkit/Chromium EFL ports
+        if (type && (!strcmp(type, "EWebView") || !strcmp(type, "WebView")))
           {
-             Eo *plug = evas_object_data_get(widget, "__ewk_proxy");
-             if (!plug)
-               {
-                  plug = efl_add(ELM_ATSPI_PROXY_CLASS, obj, elm_obj_atspi_proxy_constructor(efl_added, ELM_ATSPI_PROXY_TYPE_PLUG));
-                  evas_object_data_set(widget, "__ewk_proxy", plug);
-                  efl_event_callback_add(widget, EFL_EVENT_DEL, _on_ewk_del, plug);
-                  _ewk_view_load_finished(plug, widget, plug_id);
-               }
-             if (plug && evas_object_data_get(widget, "__plug_connected"))
-                accs = eina_list_append(accs, plug);
-             continue;
+             elm_atspi_ewk_wrapper_a11y_init(obj, widget);
           }
-        //
-
+     }
+   EINA_LIST_FOREACH(pd->subobjs, l, widget)
+     {
+        // TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
+        if (efl_isa(widget, EFL_ACCESS_MIXIN))
+          {
+             parent = efl_access_parent_get(widget);
+             if (parent && (parent != obj)) continue;
+          }
         //TIZEN_ONLY(20171108): make atspi_proxy work
         const char *plug_id_2;
         if ((plug_id_2 = evas_object_data_get(widget, "___PLUGID")) != NULL)
@@ -6591,6 +6561,11 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
                {
                   Elm_Access_Info *info = _elm_access_info_get(child);
                   compare_obj = info->part_object;
+               }
+             /* In case of ewk wrapper object compare with internal ewk_view evas_object */
+             if (efl_isa(child, ELM_ATSPI_EWK_WRAPPER_CLASS))
+               {
+                  compare_obj = elm_atspi_ewk_wrapper_ewk_view_get(child);
                }
              /* If spacial eo children do not have backing evas_object continue with search */
              if (!compare_obj)

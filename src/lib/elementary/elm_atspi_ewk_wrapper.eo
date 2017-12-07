@@ -1,0 +1,36 @@
+class Elm.Atspi.Ewk_Wrapper (Efl.Object, Efl.Access, Efl.Access.Component)
+{
+   data: Elm_Atspi_Ewk_Wrapper_Data;
+   eo_prefix: elm_obj_atspi_ewk_wrapper;
+   legacy_prefix: elm_atspi_ewk_wrapper;
+   methods {
+      constructor {
+         params {
+             @in ewk: Efl.Object;
+         }
+      }
+      connection_init {
+      }
+      @property ewk_view {
+           get {
+           }
+           values {
+                ewk: Efl.Object;
+           }
+      }
+      a11y_init @class {
+            params {
+                @in parent: Efl.Object;
+                @in ewk: Efl.Object;
+            }
+      }
+   }
+   constructors {
+      .constructor;
+   }
+   implements {
+      Efl.Object.destructor;
+      Efl.Access.children { get; }
+      Efl.Access.Component.accessible_at_point_get;
+   }
+}

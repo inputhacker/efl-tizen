@@ -185,6 +185,7 @@ EAPI extern Elm_Version *elm_version;
 #include <elm_app.h>
 #include <elm_atspi_app_object.h>
 #include <elm_atspi_bridge.h>
+#include <elm_atspi_ewk_wrapper.h>
 //TIZEN_ONLY(20171108): make atspi_proxy work
 #include <elm_atspi_proxy.h>
 //
