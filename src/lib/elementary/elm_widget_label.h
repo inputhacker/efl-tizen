@@ -20,6 +20,9 @@ typedef struct _Elm_Label_Data Elm_Label_Data;
 struct _Elm_Label_Data
 {
    const char           *format;
+   /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages */
+   const char           *text_style_user;
+   /* END */
    double                slide_duration;
    double                slide_speed;
    Evas_Coord            lastw; /*<< lastly calculated resize object width.This is used to force the calculation on width changes. */

@@ -74,6 +74,66 @@ _label_format_set(Evas_Object *obj, const char *format)
      edje_object_part_text_style_user_pop(obj, "elm.text");
 }
 
+/* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages */
+#define LABEL_FORMAT_BUF_SIZE 1024
+
+static void
+_label_format_update(Evas_Object *edje_obj, Elm_Label_Data *sd)
+{
+   char buf[LABEL_FORMAT_BUF_SIZE] = { 0 };
+   const char *space = " ";
+   const char *default_tag_str = "DEFAULT='";
+   const char *default_tag_start = NULL;
+   int limit = 0;
+   int format_len = ((sd->format == NULL) ? 0 : strlen(sd->format));
+   int text_style_user_len = ((sd->text_style_user == NULL) ? 0 : strlen(sd->text_style_user));
+
+   DBG("format_update: original format - [%s], text style user - [%s]", sd->format, sd->text_style_user);
+
+   /* If there is no format text in sd->text_style_user, just set sd->format to label */
+   if (text_style_user_len == 0)
+     {
+        _label_format_set(edje_obj, sd->format);
+        return;
+     }
+
+   /* If there is format text in sd->format, put sd->format and a space character to buffer. */
+   if (format_len > 0)
+     {
+        limit = LABEL_FORMAT_BUF_SIZE - 1;
+
+        default_tag_start = strstr(sd->text_style_user, default_tag_str);
+        if (default_tag_start)
+          default_tag_start += strlen(default_tag_str);
+
+        /* Append format without "'" character from end of sd->format
+         * if there is default tag in text_style_user.
+         */
+        if (default_tag_start && ((format_len - 1) < limit))
+          limit = format_len - 1;
+
+        strncat(buf, sd->format, limit);
+
+        limit = sizeof(buf) - strlen(buf) - 1;
+        if (limit > 0)
+          strncat(buf, space, limit);
+     }
+
+   /* Append format text of test_style_user to buffer. */
+   limit = sizeof(buf) - strlen(buf) - 1;
+   if (limit > 0)
+     {
+        if (default_tag_start)
+          strncat(buf, default_tag_start, limit);
+        else
+          strncat(buf, sd->text_style_user, limit);
+     }
+
+   DBG("format_update: format result - [%s]", buf);
+   _label_format_set(edje_obj, buf);
+}
+/* END */
+
 static void
 _label_slide_change(Evas_Object *obj)
 {
@@ -205,7 +265,11 @@ _elm_label_elm_widget_theme_apply(Eo *obj, Elm_Label_Data *sd)
 
    _elm_label_horizontal_size_policy_update(obj, sd);
 
+   /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages
    _label_format_set(wd->resize_obj, sd->format);
+    */
+   _label_format_update(wd->resize_obj, sd);
+   /* END */
    _label_slide_change(obj);
 
    evas_event_thaw(evas_object_evas_get(obj));
@@ -379,7 +443,11 @@ _elm_label_text_set(Eo *obj, Elm_Label_Data *sd, const char *part, const char *l
    Eina_Bool int_ret = EINA_TRUE;
 
    if (!label) label = "";
+   /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages
    _label_format_set(wd->resize_obj, sd->format);
+    */
+   _label_format_update(wd->resize_obj, sd);
+   /* END */
 
    efl_text_markup_set(efl_part(efl_super(obj, MY_CLASS), part), label);
 
@@ -428,6 +496,9 @@ _elm_label_efl_canvas_group_group_add(Eo *obj, Elm_Label_Data *priv)
    priv->slide_duration = 10;
 
    priv->format = eina_stringshare_add("");
+   /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages */
+   priv->text_style_user = NULL;
+   /* END */
    _label_format_set(wd->resize_obj, priv->format);
 
    evas_object_event_callback_add(wd->resize_obj, EVAS_CALLBACK_RESIZE,
@@ -658,6 +729,34 @@ _elm_label_slide_duration_get(Eo *obj EINA_UNUSED, Elm_Label_Data *sd)
 {
    return sd->slide_duration;
 }
+
+/* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages */
+EOLIAN static void
+_elm_label_text_style_user_push(Eo *obj, Elm_Label_Data *sd, const char *style)
+{
+   if (!eina_stringshare_replace(&sd->text_style_user, style)) return;
+
+   elm_obj_widget_theme_apply(obj);
+}
+
+EOLIAN static void
+_elm_label_text_style_user_pop(Eo *obj, Elm_Label_Data *sd)
+{
+   if (sd->text_style_user)
+     {
+        eina_stringshare_del(sd->text_style_user);
+        sd->text_style_user = NULL;
+     }
+
+   elm_obj_widget_theme_apply(obj);
+}
+
+EOLIAN static const char *
+_elm_label_text_style_user_peek(const Eo *obj EINA_UNUSED, Elm_Label_Data *sd)
+{
+   return sd->text_style_user;
+}
+/* END */
 
 EOLIAN static void
 _elm_label_class_constructor(Efl_Class *klass)

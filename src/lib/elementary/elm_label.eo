@@ -120,6 +120,24 @@ class Elm.Label (Efl.Ui.Layout)
 
            See @.slide_mode.set.]]
       }
+      /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages */
+      text_style_user_push {
+         [[\@internal
+         ]]
+         params {
+            @in style: string; [[The style user to push.]]
+         }
+      }
+      text_style_user_pop {
+         [[\@internal
+         ]]
+      }
+      text_style_user_peek @const {
+         [[\@internal
+         ]]
+         return: string;
+      }
+      /* END */
    }
    implements {
       class.constructor;
