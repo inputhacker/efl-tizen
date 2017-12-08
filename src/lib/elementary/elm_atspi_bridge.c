@@ -4202,7 +4202,6 @@ static unsigned char _accept_object_check_role(accessibility_navigation_pointer_
        case ATSPI_ROLE_TOOL_BAR:
        case ATSPI_ROLE_REDUNDANT_OBJECT:
        case ATSPI_ROLE_COLOR_CHOOSER:
-       case ATSPI_ROLE_PANEL:
        case ATSPI_ROLE_TREE_TABLE:
        case ATSPI_ROLE_PAGE_TAB_LIST:
        case ATSPI_ROLE_PAGE_TAB:

@@ -135,6 +135,16 @@ _access_obj_process(Evas_Object *obj, Eina_Bool is_access)
      }
 }
 
+// TIZEN_ONLY(20170829): [atspi][panel] Adds accessibility support for the panel widget.
+static void
+_accessible_panel_hidden_set(Evas_Object* obj, Eina_Bool is_hidden)
+{
+   is_hidden = !!is_hidden;
+   efl_access_can_highlight_set(obj, !is_hidden);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, !is_hidden);
+}
+//
+
 static void
 _orient_set_do(Evas_Object *obj)
 {
@@ -337,6 +347,9 @@ _drawer_open(Evas_Object *obj, Evas_Coord w, Evas_Coord h, Eina_Bool anim)
    else
      elm_interface_scrollable_content_region_show
            (obj, x, y, w, h);
+   // TIZEN_ONLY(20170829): [atspi][panel] Adds accessibility support for the panel widget.
+   _accessible_panel_hidden_set(obj, EINA_FALSE);
+   //
 }
 
 static void
@@ -395,6 +408,9 @@ _drawer_close(Evas_Object *obj, Evas_Coord w, Evas_Coord h, Eina_Bool anim)
              elm_layout_signal_emit(sd->scr_ly, "elm,state,content,hidden", "elm");
           }
      }
+   // TIZEN_ONLY(20170829) : [atspi][panel] Adds accessibility support for the panel widget.
+   _accessible_panel_hidden_set(obj, EINA_TRUE);
+   //
 }
 
 static void
@@ -430,12 +446,18 @@ _panel_toggle(void *data EINA_UNUSED,
              elm_layout_signal_emit(obj, "elm,action,show", "elm");
              sd->hidden = EINA_FALSE;
              evas_object_repeat_events_set(obj, EINA_FALSE);
+             // TIZEN_ONLY(20170829) : [atspi][panel] Adds accessibility support for the panel widget.
+             _accessible_panel_hidden_set(obj, sd->hidden);
+             //
           }
         else
           {
              elm_layout_signal_emit(obj, "elm,action,hide", "elm");
              sd->hidden = EINA_TRUE;
              evas_object_repeat_events_set(obj, EINA_TRUE);
+             // TIZEN_ONLY(20170829) : [atspi][panel] Adds accessibility support for the panel widget.
+             _accessible_panel_hidden_set(obj, sd->hidden);
+             //
           }
 
         //if the panel is hidden, make this thing unfocusable
@@ -1419,6 +1441,24 @@ _elm_panel_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Pan
    };
    return &atspi_actions[0];
 }
+
+// TIZEN_ONLY(20170829) : [atspi][panel] Adds accessibility support for the panel widget.
+EOLIAN static Elm_Atspi_State_Set
+_elm_panel_efl_access_state_set_get(Eo *obj, Elm_Panel_Data *sd EINA_UNUSED)
+{
+   Elm_Access_State_Set ret;
+   ret = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+
+   if (!sd->hidden)
+      STATE_TYPE_SET(ret, EFL_ACCESS_STATE_SHOWING);
+   else
+      STATE_TYPE_UNSET(ret, EFL_ACCESS_STATE_SHOWING);
+
+   STATE_TYPE_SET(ret, EFL_ACCESS_STATE_MODAL);
+
+   return ret;
+}
+//
 
 /* Efl.Part begin */
 
