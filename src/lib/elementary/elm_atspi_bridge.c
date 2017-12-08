@@ -3636,6 +3636,12 @@ _component_get_accessible_at_point(const Eldbus_Service_Interface *iface EINA_UN
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_COMPONENT_MIXIN, msg);
 
+   // TIZEN_ONLY(20161213) - do not response if ecore evas is obscured
+   const Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
+   if (ecore_evas_obscured_get(ee))
+     return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "ecore evas is obscured.");
+   //
+
    if (!eldbus_message_arguments_get(msg, "iiu", &x, &y, &coord_type))
      return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Invalid index type.");
 
