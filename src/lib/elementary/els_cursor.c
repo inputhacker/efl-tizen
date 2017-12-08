@@ -546,7 +546,7 @@ _elm_cursor_cur_set(Elm_Cursor *cur)
                }
 #endif
 #ifdef HAVE_ELEMENTARY_WL2
-             cur->wl.win = elm_win_wl_window_get(top);
+             cur->wl.win = (Ecore_Wl2_Window *)elm_win_wl_window_get(top);
 #endif
 #ifdef HAVE_ELEMENTARY_WIN32
              cur->win32.win = elm_win_win32_window_get(top);

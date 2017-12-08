@@ -163,7 +163,9 @@ _conformant_part_sizing_eval(Evas_Object *obj,
 #endif
         // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
 #ifdef HAVE_ELEMENTARY_WL2
-        wlwin = elm_win_wl_window_get(top);
+//TIZEN_ONLY(20171208): fix build break by opensource temporarily until migration finish
+        wlwin = (Ecore_Wl2_Window *)elm_win_wl_window_get(top);
+//TIZEN_ONLY(20171208)
         if (wlwin)
           ecore_wl2_window_indicator_geometry_get(wlwin, &sx, &sy, &sw, &sh);
 #endif
@@ -197,8 +199,9 @@ _conformant_part_sizing_eval(Evas_Object *obj,
 // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
 #ifdef HAVE_ELEMENTARY_WL2
         int tx = -1, ty = -1, tw = -1, th = -1;
-
-        wlwin = elm_win_wl_window_get(top);
+//TIZEN_ONLY(20171208): fix build break by opensource temporarily until migration finish
+        wlwin = (Ecore_Wl2_Window *)elm_win_wl_window_get(top);
+//TIZEN_ONLY(20171208)
         if (wlwin)
           ecore_wl2_window_keyboard_geometry_get(wlwin, &tx, &ty, &tw, &th);
         Evas_Coord ww = 0, wh = 0;

@@ -3508,7 +3508,9 @@ _wl_elm_drag_start(Evas_Object *obj, Elm_Sel_Format format, const char *data,
    elm_win_borderless_set(dragwin, EINA_TRUE);
    elm_win_override_set(dragwin, EINA_TRUE);
 
-   win = elm_win_wl_window_get(dragwin);
+//TIZEN_ONLY(20171208): fix build break by opensource temporarily until migration finish
+   win = (Ecore_Wl2_Window *)elm_win_wl_window_get(dragwin);
+//
 
    if (createicon)
      {
@@ -3555,7 +3557,9 @@ _wl_elm_drag_start(Evas_Object *obj, Elm_Sel_Format format, const char *data,
         top = elm_widget_top_get(obj);
         if (!top) top = elm_widget_top_get(elm_widget_parent_widget_get(obj));
         if (top && (efl_isa(top, EFL_UI_WIN_CLASS)))
-          parent = elm_win_wl_window_get(top);
+//TIZEN_ONLY(20171208): fix build break by opensource temporarily until migration finish
+          parent = (Ecore_Wl2_Window *)elm_win_wl_window_get(top);
+//
      }
    if (!parent)
      {
@@ -4064,7 +4068,9 @@ _wl_elm_widget_window_get(const Evas_Object *obj)
         top = elm_widget_top_get(obj);
         if (!top) top = elm_widget_top_get(elm_widget_parent_widget_get(obj));
         if (top && (efl_isa(top, EFL_UI_WIN_CLASS)))
-            win = elm_win_wl_window_get(top);
+//TIZEN_ONLY(20171208): fix build break by opensource temporarily until migration finish
+          win = (Ecore_Wl2_Window *)elm_win_wl_window_get(top);
+//
      }
    if (!win)
      {

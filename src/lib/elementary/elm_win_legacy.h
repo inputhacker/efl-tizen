@@ -329,7 +329,10 @@ EAPI void                  elm_win_render(Evas_Object *obj);
  *
  * @ingroup Elm_Win
  */
-EAPI Ecore_Wl2_Window *elm_win_wl_window_get(const Evas_Object *obj);
+
+//TIZEN_ONLY(20171208) : fix build break by opensource temporarily until migration finish
+EAPI Ecore_Wl_Window *elm_win_wl_window_get(const Evas_Object *obj);
+//
 
 /* Windows specific call - returns NULL on non-Windows engines */
 /**
@@ -411,16 +414,6 @@ EAPI void elm_win_resize_object_del(Evas_Object *obj, Evas_Object *subobj);
  * @ingroup Elm_Win
  */
 EAPI Ecore_X_Window elm_win_xwindow_get(const Evas_Object *obj);
-
-/**
- * @brief Get the Ecore_Wl2_Window of an Evas_Object.
- *
- * @return The Ecore_Wl2_Window of @c obj.
- *
- * @ingroup Elm_Win
- */
-EAPI Ecore_Wl2_Window *elm_win_wl_window_get(const Evas_Object *obj);
-
 
 /**
  * @brief Get the Ecore_Win32_Window of an Evas_Object

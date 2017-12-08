@@ -5739,7 +5739,9 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
 // TIZEN_ONLY(20160315) set wayland parent window
 #ifdef HAVE_ELEMENTARY_WL2
         if ((sd->type >= ELM_WIN_BASIC) && (sd->type <= ELM_WIN_DND))
-          ecore_wl2_window_parent_set(sd->wl.win, elm_win_wl_window_get(sd->parent));
+//TIZEN_ONLY(20171208): fix build break by opensource temporarily until migration finish
+          ecore_wl2_window_parent_set(sd->wl.win, (Ecore_Wl2_Window *)elm_win_wl_window_get(sd->parent));
+//TIZEN_ONLY(20171208)
 #endif
 //
         evas_object_event_callback_add
@@ -7868,7 +7870,8 @@ elm_win_xwindow_get(const Evas_Object *obj)
    return 0;
 }
 
-EAPI Ecore_Wl2_Window *
+//TIZEN_ONLY(20171208): fix build break by opensource temporarily until migration finish
+EAPI Ecore_Wl_Window *
 elm_win_wl_window_get(const Evas_Object *obj)
 {
    Efl_Ui_Win_Data *sd = efl_data_scope_safe_get(obj, MY_CLASS);
@@ -7878,16 +7881,18 @@ elm_win_wl_window_get(const Evas_Object *obj)
    if (!evas_object_smart_type_check_ptr(obj, MY_CLASS_NAME_LEGACY))
      {
         Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
-        return _elm_ee_wlwin_get(ee);
+        return (Ecore_Wl_Window *)_elm_ee_wlwin_get(ee);
      }
 
 #if HAVE_ELEMENTARY_WL2
-   if (sd->wl.win) return sd->wl.win;
-   if (sd->parent) return elm_win_wl_window_get(sd->parent);
+   if (sd->wl.win) return (Ecore_Wl_Window *)sd->wl.win;
+   if (sd->parent) return (Ecore_Wl_Window *)elm_win_wl_window_get(sd->parent);
 #endif
 
    return NULL;
 }
+//TIZEN_ONLY(20171208)
+
 
 EAPI Ecore_Cocoa_Window *
 elm_win_cocoa_window_get(const Evas_Object *obj)
@@ -8733,8 +8738,9 @@ _elm_win_window_id_get(Efl_Ui_Win_Data *sd)
    if (sd->parent)
      {
         Ecore_Wl2_Window *parent;
-
-        parent = elm_win_wl_window_get(sd->parent);
+//TIZEN_ONLY(20171208): fix build break by opensource temporarily until migration finish
+        parent = (Ecore_Wl2_Window *)elm_win_wl_window_get(sd->parent);
+//TIZEN_ONLY(20171208)
         if (parent)
           return (Ecore_Window)ecore_wl2_window_id_get(parent);
      }
