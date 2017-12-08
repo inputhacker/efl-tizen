@@ -931,6 +931,311 @@ _accessible_gesture_do(const Eldbus_Service_Interface *iface, const Eldbus_Messa
 }
 //
 
+//TIZEN_ONLY(20170531): add "GetReadingMaterial" interface method
+static int
+_list_children_count_check(Eo *obj)
+{
+   int i;
+   int list_count = 0;
+   Eina_List *children;
+   Eo *child = NULL;
+   Efl_Access_Role role;
+
+   if (!obj)
+     return 0;
+
+   role = efl_access_role_get(obj);
+   if (role == EFL_ACCESS_ROLE_LIST)
+     {
+        int children_count = 0;
+        children = efl_access_children_get(obj);
+        children_count = eina_list_count(children);
+
+        for (i = 0; i < children_count; i++)
+          {
+             child = eina_list_nth(children, i);
+             role = efl_access_role_get(child);
+             if (role == EFL_ACCESS_ROLE_LIST_ITEM)
+               list_count++;
+          }
+        eina_list_free(children);
+     }
+
+   return list_count;
+}
+
+static int
+_list_children_count(Eo *obj)
+{
+   Eina_List *children;
+   int list_items_count = 0;
+   int children_count = 0;
+
+   children = efl_access_children_get(obj);
+   children_count = eina_list_count(children);
+
+   int i;
+   Eo *child = NULL;
+
+   list_items_count = _list_children_count_check(obj);
+   if (list_items_count > 0)
+     {
+        eina_list_free(children);
+        return list_items_count;
+     }
+
+   for (i = 0; i < children_count; i++)
+     {
+        child = eina_list_nth(children, i);
+        list_items_count = _list_children_count(child);
+        if (list_items_count > 0)
+          {
+             eina_list_free(children);
+             return list_items_count;
+          }
+     }
+
+   return 0;
+}
+
+static Eldbus_Message *
+_accessible_reading_material_get(const Eldbus_Service_Interface *iface, const Eldbus_Message *msg)
+{
+   Eldbus_Message *ret;
+   Eldbus_Message_Iter *iter, *iter_array, *iter_dict, *iter_entry;
+   Eina_List *attrs, *l, *children;
+   const char *name = NULL;
+   unsigned int s1, s2;
+   double value = 0;
+   double increment = 0;
+   double max_value = 0;
+   double min_value = 0;
+   int idx = 0;
+   int child_count = 0;
+   int selected_child_count = 0;
+   uint64_t atspi_states = 0;
+   Efl_Access_Role role;
+   Efl_Access_Attribute *attr;
+   Efl_Access_State_Set states;
+   Efl_Access_Relation_Set rels = NULL;
+   Efl_Access_Relation *rel;
+   Eo *relation_obj = NULL;
+   Eo *parent = NULL;
+   Eo *child = NULL;
+   Eina_Bool is_selected = EINA_FALSE;
+   AtspiRole atspi_role = ATSPI_ROLE_INVALID;
+
+   const char *obj_path = eldbus_message_path_get(msg);
+   Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
+   Eo *obj = _bridge_object_from_path(bridge, obj_path);
+
+   ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_MIXIN, msg);
+
+   ret = eldbus_message_method_return_new(msg);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
+
+   iter = eldbus_message_iter_get(ret);
+   /* attributes */
+   attrs = efl_access_attributes_get(obj);
+   iter_dict = eldbus_message_iter_container_new(iter, 'a', "{ss}");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(iter_dict, NULL);
+   EINA_LIST_FOREACH(attrs, l, attr)
+     {
+        iter_entry = eldbus_message_iter_container_new(iter_dict, 'e', NULL);
+        EINA_SAFETY_ON_NULL_RETURN_VAL(iter_entry, NULL);
+        eldbus_message_iter_arguments_append(iter_entry, "ss", attr->key, attr->value);
+        eldbus_message_iter_container_close(iter_dict, iter_entry);
+     }
+
+   eldbus_message_iter_container_close(iter, iter_dict);
+   efl_access_attributes_list_free(attrs);
+
+   /* name */
+   name = efl_access_name_get(obj);
+   if (!name)
+     name = "";
+   eldbus_message_iter_basic_append(iter, 's', name);
+
+   /* name - LABELED_BY relation */
+   rels = efl_access_relation_set_get(obj);
+   EINA_LIST_FOREACH(rels, l, rel)
+     {
+        if (rel->type == EFL_ACCESS_RELATION_LABELLED_BY)
+          {
+             int last_index = eina_list_count(rel->objects) - 1;
+             relation_obj = eina_list_nth(rel->objects, last_index);
+             break;
+          }
+     }
+   name = efl_access_name_get(relation_obj);
+   if (!name)
+     name = "";
+   eldbus_message_iter_basic_append(iter, 's', name);
+
+   /* name - text interface */
+   name = NULL;
+   if (efl_isa(obj, EFL_ACCESS_TEXT_INTERFACE))
+     {
+        int val;
+        val = efl_access_text_character_count_get(obj);
+        name = efl_access_text_get(obj, 0, val);
+     }
+   if (!name)
+     name = "";
+   eldbus_message_iter_basic_append(iter, 's', name);
+
+   /* role */
+   role = efl_access_role_get(obj);
+   atspi_role = role > EFL_ACCESS_ROLE_LAST_DEFINED ? ATSPI_ROLE_LAST_DEFINED : elm_roles_to_atspi_roles[role][1];
+   eldbus_message_iter_basic_append(iter, 'u', atspi_role);
+
+   /* states */
+   iter_array = eldbus_message_iter_container_new(iter, 'a', "u");
+   EINA_SAFETY_ON_NULL_GOTO(iter_array, fail);
+   states = efl_access_state_set_get(obj);
+   atspi_states = _elm_atspi_state_set_to_atspi_state_set(states);
+   s1 = atspi_states & 0xFFFFFFFF;
+   s2 = (atspi_states >> 32) & 0xFFFFFFFF;
+   eldbus_message_iter_basic_append(iter_array, 'u', s1);
+   eldbus_message_iter_basic_append(iter_array, 'u', s2);
+   eldbus_message_iter_container_close(iter, iter_array);
+
+   /* localized role name */
+   name = efl_access_localized_role_name_get(obj);
+   if (!name)
+     name = "";
+   eldbus_message_iter_basic_append(iter, 's', name);
+
+   /* child count */
+   l = efl_access_children_get(obj);
+   eldbus_message_iter_basic_append(iter, 'i', eina_list_count(l));
+   eina_list_free(l);
+
+   /* current value, increment, max, min */
+   value = 0;
+   increment = 0;
+   max_value = 0;
+   min_value = 0;
+   if (efl_isa(obj, EFL_ACCESS_VALUE_INTERFACE))
+     {
+        efl_access_value_and_text_get(obj, &value, NULL);
+        increment = efl_access_value_increment_get(obj);
+        efl_access_value_range_get(obj, &min_value, &max_value, NULL);
+     }
+   eldbus_message_iter_basic_append(iter, 'd', value);
+   eldbus_message_iter_basic_append(iter, 'd', increment);
+   eldbus_message_iter_basic_append(iter, 'd', max_value);
+   eldbus_message_iter_basic_append(iter, 'd', min_value);
+
+   /* description */
+   name = efl_access_description_get(obj);
+   if (!name)
+     name = "";
+   eldbus_message_iter_basic_append(iter, 's', name);
+
+   /* index in parent */
+   idx = efl_access_index_in_parent_get(obj);
+   eldbus_message_iter_basic_append(iter, 'i', idx);
+
+   /* is selected in parent */
+   parent = efl_access_parent_get(obj);
+   is_selected = efl_access_selection_is_child_selected(parent, idx);
+   eldbus_message_arguments_append(ret, "b", is_selected);
+
+   /* has checkbox child */
+   is_selected = EINA_FALSE;
+   children = efl_access_children_get(obj);
+   EINA_LIST_FOREACH(children, l, child)
+     {
+        if (efl_isa(child, EFL_UI_CHECK_CLASS))
+          {
+             is_selected = EINA_TRUE;
+             break;
+          }
+     }
+   eldbus_message_iter_basic_append(iter, 'b', is_selected);
+   eina_list_free(children);
+
+   /* list children count */
+   child_count = 0;
+   if (role == EFL_ACCESS_ROLE_DIALOG)
+     {
+        child_count = _list_children_count(obj);
+     }
+   eldbus_message_iter_basic_append(iter, 'i', child_count);
+
+   /* first selected child index */
+   idx = 0;
+   if (efl_isa(obj, ELM_INDEX_CLASS))
+     {
+        children = efl_access_children_get(obj);
+        EINA_LIST_FOREACH(children, l, child)
+          {
+             states = efl_access_state_set_get(child);
+             if (STATE_TYPE_GET(states, EFL_ACCESS_STATE_SELECTED))
+               break;
+             idx++;
+          }
+        eina_list_free(children);
+     }
+   eldbus_message_iter_basic_append(iter, 'i', idx);
+
+   /* parent */
+   role = EFL_ACCESS_ROLE_INVALID;
+   role = efl_access_role_get(obj);
+   if ((!parent) && (EFL_ACCESS_ROLE_APPLICATION == role))
+     _object_desktop_reference_append(iter);
+   else
+     _bridge_iter_object_reference_append(bridge, iter, parent);
+
+   /* parent - states */
+   iter_array = eldbus_message_iter_container_new(iter, 'a', "u");
+   EINA_SAFETY_ON_NULL_GOTO(iter_array, fail);
+   states = efl_access_state_set_get(parent);
+   atspi_states = _elm_atspi_state_set_to_atspi_state_set(states);
+   s1 = atspi_states & 0xFFFFFFFF;
+   s2 = (atspi_states >> 32) & 0xFFFFFFFF;
+   eldbus_message_iter_basic_append(iter_array, 'u', s1);
+   eldbus_message_iter_basic_append(iter_array, 'u', s2);
+   eldbus_message_iter_container_close(iter, iter_array);
+
+   /* parent - child count */
+   l = efl_access_children_get(parent);
+   eldbus_message_iter_basic_append(iter, 'i', eina_list_count(l));
+   eina_list_free(l);
+
+   /* parent - role */
+   role = efl_access_role_get(parent);
+   atspi_role = role > EFL_ACCESS_ROLE_LAST_DEFINED ? ATSPI_ROLE_LAST_DEFINED : elm_roles_to_atspi_roles[role][1];
+   eldbus_message_iter_basic_append(iter, 'u', atspi_role);
+
+   /* parent - child count */
+   selected_child_count = efl_access_selection_selected_children_count_get(parent);
+   eldbus_message_iter_basic_append(iter, 'i', selected_child_count);
+
+   /* relation object - DESCRIBED_BY */
+   relation_obj = NULL;
+   EINA_LIST_FOREACH(rels, l, rel)
+     {
+        if (rel->type == EFL_ACCESS_RELATION_DESCRIBED_BY)
+          {
+             int last_index = eina_list_count(rel->objects) - 1;
+             relation_obj = eina_list_nth(rel->objects, last_index);
+             break;
+          }
+     }
+   _bridge_iter_object_reference_append(bridge, iter, relation_obj);
+   efl_access_relation_set_free(&rels);
+
+   return ret;
+
+fail:
+   if (rels) efl_access_relation_set_free(&rels);
+   if (ret) eldbus_message_unref(ret);
+   return NULL;
+}
+//
+
 static const Eldbus_Method accessible_methods[] = {
    { "GetChildAtIndex", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"(so)", "Accessible"}), _accessible_child_at_index, 0 },
    { "GetChildren", NULL, ELDBUS_ARGS({"a(so)", "children"}), _accessible_get_children, 0 },
@@ -949,6 +1254,26 @@ static const Eldbus_Method accessible_methods[] = {
                  {"i", "x_end"}, {"i", "y_end"}, {"i", "state"},
                  {"u", "event_time"}),
      ELDBUS_ARGS({"b", "result"}), _accessible_gesture_do, 0 },
+   //
+   //
+   //TIZEN_ONLY(20170531): add "GetReadingMaterial" interface method
+   { "GetReadingMaterial",
+     NULL,
+     ELDBUS_ARGS({"a{ss}", "attributes"}, {"s", "name"},
+                 {"s", "labledByName"},{"s", "textIfceName"},
+                 {"u", "role"}, {"au", "stateSet"},
+                 {"s", "localizedName"}, {"i", "childCount"},
+                 {"d", "currentValue"},{"d", "minimumIncrement"},
+                 {"d", "maximumValue"},{"d", "minimumValue"},
+                 {"s", "description"}, {"i", "indexInParent"},
+                 {"b", "isSelectedInParent"}, {"b", "hasCheckboxChild"},
+                 {"i", "listChildrenCount"},
+                 {"i", "firstSelectedChildIndex"},
+                 {"(so)", "parent"}, {"au", "parentStateSet"},
+                 {"i", "parentChildCount"}, {"u", "parentRole"},
+                 {"i", "selectedChildCount"},
+                 {"(so)", "describecByObject"}),
+     _accessible_reading_material_get, 0},
    //
    { NULL, NULL, NULL, NULL, 0 }
 };
