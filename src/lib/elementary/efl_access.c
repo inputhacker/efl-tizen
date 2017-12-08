@@ -634,7 +634,7 @@ EAPI Eina_Bool
 efl_access_relation_set_relation_append(Efl_Access_Relation_Set *set, Efl_Access_Relation_Type type, const Eo *rel_obj)
 {
    Efl_Access_Relation *rel;
-   Eina_List *l;
+   Eina_List *l, *ll;
 
    if (!efl_isa(rel_obj, EFL_ACCESS_MIXIN))
      return EINA_FALSE;
@@ -643,10 +643,15 @@ efl_access_relation_set_relation_append(Efl_Access_Relation_Set *set, Efl_Access
      {
         if (rel->type == type)
           {
-             if (!eina_list_data_find(rel->objects, rel_obj))
+             ll = eina_list_data_find(rel->objects, rel_obj);
+             if (!ll)
                {
                   rel->objects = eina_list_append(rel->objects, rel_obj);
                   efl_event_callback_add((Eo *) rel_obj, EFL_EVENT_DEL, _on_rel_obj_del, set);
+               }
+             else
+               {
+                  rel->objects = eina_list_demote_list(rel->objects, ll);
                }
              return EINA_TRUE;
           }
