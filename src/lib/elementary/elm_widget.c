@@ -891,6 +891,25 @@ _elm_widget_efl_gfx_visible_set(Eo *obj, Elm_Widget_Smart_Data *pd, Eina_Bool vi
      }
    else
      {
+        //TIZEN_ONLY(20161223) check if the parent of highlighted object is hide
+        Eo *highlighted_obj;
+        highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
+        if (highlighted_obj && highlighted_obj != obj)
+          {
+             Eo *parent;
+             parent = efl_access_parent_get(highlighted_obj);
+             while (parent)
+               {
+                  if (parent == obj)
+                    {
+                       efl_access_state_changed_signal_emit(highlighted_obj, EFL_ACCESS_STATE_SHOWING, EINA_FALSE);
+                       efl_access_component_highlight_clear(highlighted_obj);
+                       break;
+                    }
+                  parent = efl_access_parent_get(parent);
+               }
+          }
+        //
         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, EINA_FALSE);
      }
 }
