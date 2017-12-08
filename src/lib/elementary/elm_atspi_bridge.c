@@ -1319,6 +1319,45 @@ _action_action_do(const Eldbus_Service_Interface *iface, const Eldbus_Message *m
    return ret;
 }
 
+static Eldbus_Message *
+_action_action_name_do(const Eldbus_Service_Interface *iface, const Eldbus_Message *msg)
+{
+   const char *obj_path = eldbus_message_path_get(msg);
+   Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
+   Eo *obj = _bridge_object_from_path(bridge, obj_path);
+   char *action_name;
+   int idx = 0;
+   Eina_List *actions;
+   const char *action;
+   Eldbus_Message *ret;
+   Eina_Bool result = EINA_FALSE;
+
+   ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_ACTION_MIXIN, msg);
+
+   if (!eldbus_message_arguments_get(msg, "s", &action_name))
+     return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Invalid index type.");
+
+   ret = eldbus_message_method_return_new(msg);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
+
+   actions = efl_access_action_actions_get(obj);
+   EINA_LIST_FREE(actions, action)
+     {
+        if (!result && action && !strcmp(action, action_name))
+          result = EINA_TRUE;
+
+        if (!result)
+          idx++;
+     }
+
+   if (result)
+     result = efl_access_action_do(obj, idx);
+
+   eldbus_message_arguments_append(ret, "b", result);
+
+   return ret;
+}
+
 static const Eldbus_Method action_methods[] = {
    { "GetDescription", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"s", "description"}), _action_description_get, 0 },
    { "GetName", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"s", "name"}), _action_name_get, 0 },
@@ -1326,6 +1365,7 @@ static const Eldbus_Method action_methods[] = {
    { "GetKeyBinding", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"s", "key"}), _action_key_binding_get, 0 },
    { "GetActions", NULL, ELDBUS_ARGS({"a(sss)", "actions"}), _action_actions_get, 0 },
    { "DoAction", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"b", "result"}), _action_action_do, 0 },
+   { "DoActionName", ELDBUS_ARGS({"s", "name"}), ELDBUS_ARGS({"b", "result"}), _action_action_name_do, 0 },
    { NULL, NULL, NULL, NULL, 0 }
 };
 
