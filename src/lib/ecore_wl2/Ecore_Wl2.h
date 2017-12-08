@@ -1696,6 +1696,19 @@ EAPI void ecore_wl2_input_pointer_set(Ecore_Wl2_Input *input, struct wl_surface 
  */
 EAPI void ecore_wl2_input_cursor_from_name_set(Ecore_Wl2_Input *input, const char *cursor);
 
+// TIZEN_ONLY(20171207): add functions to set client's custom cursors
+EAPI void ecore_wl2_input_pointer_set(Ecore_Wl2_Input *input, struct wl_surface *surface, int hot_x, int hot_y);
+EAPI struct wl_cursor *ecore_wl2_input_cursor_get(Ecore_Wl2_Input *input, const char *cursor_name);
+EAPI void ecore_wl2_input_cursor_size_set(Ecore_Wl2_Input *input, const int size);
+EAPI void ecore_wl2_input_cursor_theme_name_set(Ecore_Wl2_Input *input, const char *cursor_theme_name);
+EAPI void ecore_wl2_input_cursor_default_restore(Ecore_Wl2_Input *input);
+
+EAPI void ecore_wl2_window_pointer_set(Ecore_Wl2_Window *win, struct wl_surface *surface, int hot_x, int hot_y);
+EAPI void ecore_wl2_window_cursor_from_name_set(Ecore_Wl2_Window *win, const char *cursor_name);
+EAPI void ecore_wl2_window_cursor_default_restore(Ecore_Wl2_Window *win);
+//
+
+
 /**
  * @defgroup Ecore_Wl2_Dnd_Group Wayland Library Drag-n-Drop Functions
  * @ingroup Ecore_Wl2_Group

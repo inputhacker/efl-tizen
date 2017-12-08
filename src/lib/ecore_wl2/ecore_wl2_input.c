@@ -81,6 +81,9 @@ static struct wl_array _ecore_wl2_keygrab_result_list;
 //
 
 static void _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned int serial, unsigned int timestamp, unsigned int keycode, unsigned int state);
+// TIZEN_ONLY(20171207): add functions to set client's custom cursors
+static void _cb_pointer_frame(void *data, struct wl_callback *callback, unsigned int timestamp EINA_UNUSED);
+//
 
 // TIZEN ONLY(20160223) : Add back/menu/home key conversion support
 static int
@@ -992,10 +995,18 @@ _pointer_cb_enter(void *data, struct wl_pointer *pointer EINA_UNUSED, unsigned i
    input->pointer.sx = wl_fixed_to_double(sx);
    input->pointer.sy = wl_fixed_to_double(sy);
 
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   /* The cursor on the surface is undefined until we set it */
+   ecore_wl2_input_cursor_from_name_set(input, input->cursor.name);
+   //
+
    /* find the window which this surface belongs to */
    window = _ecore_wl2_display_window_surface_find(input->display, surface);
    if (!window) return;
 
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   window->pointer.device = input;
+   //
    input->focus.prev_pointer = NULL;
    input->focus.pointer = window;
 
@@ -1028,6 +1039,10 @@ _pointer_cb_leave(void *data, struct wl_pointer *pointer EINA_UNUSED, unsigned i
    /* find the window which this surface belongs to */
    window = _ecore_wl2_display_window_surface_find(input->display, surface);
    if (!window) return;
+
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   window->pointer.device = NULL;
+   //
 
    /* NB: Don't send a mouse out if we grabbed this window for moving */
    if ((window->moving) && (input->grab.window == window)) return;
@@ -1743,9 +1758,39 @@ _seat_cb_capabilities(void *data, struct wl_seat *seat, enum wl_seat_capability 
         input->wl.pointer = wl_seat_get_pointer(seat);
         wl_pointer_set_user_data(input->wl.pointer, input);
         wl_pointer_add_listener(input->wl.pointer, &_pointer_listener, input);
+
+        // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+        if (!input->cursor.surface)
+          {
+             input->cursor.surface =
+               wl_compositor_create_surface(input->display->wl.compositor);
+
+             if (input->cursor.surface)
+               {
+                  if (input->display->wl.tz_policy)
+                    {
+                       tizen_policy_set_role(input->display->wl.tz_policy,
+                                             input->cursor.surface, "wl_pointer-cursor");
+                    }
+               }
+          }
+        if (!input->cursor.theme)
+          {
+             input->cursor.theme =
+               wl_cursor_theme_load(input->cursor.theme_name, input->cursor.size,
+                                    input->display->wl.shm);
+          }
+        //
      }
    else if (!(caps & WL_SEAT_CAPABILITY_POINTER) && (input->wl.pointer))
      {
+        // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+        if (input->cursor.surface) wl_surface_destroy(input->cursor.surface);
+        input->cursor.surface = NULL;
+        if (input->cursor.theme)
+          wl_cursor_theme_destroy(input->cursor.theme);
+        input->cursor.theme = NULL;
+        //
 #ifdef WL_POINTER_RELEASE_SINCE_VERSION
         if (input->seat_version >= WL_POINTER_RELEASE_SINCE_VERSION)
           wl_pointer_release(input->wl.pointer);
@@ -1852,14 +1897,67 @@ static void
 _ecore_wl2_input_cursor_setup(Ecore_Wl2_Input *input)
 {
    char *tmp;
-
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   #if 0
    input->cursor.size = 32;
    tmp = getenv("ECORE_WL_CURSOR_SIZE");
    if (tmp) input->cursor.size = atoi(tmp);
 
    if (!input->cursor.name)
      input->cursor.name = eina_stringshare_add("left_ptr");
+   #else
+   unsigned int cursor_size;
+   char *cursor_theme_name;
+
+   tmp = getenv("ECORE_WL_CURSOR_SIZE");
+   if (tmp)
+     cursor_size = atoi(tmp);
+   else
+     cursor_size = 32;
+   ecore_wl2_input_cursor_size_set(input, cursor_size);
+
+   cursor_theme_name = getenv("ECORE_WL_CURSOR_THEME_NAME");
+   ecore_wl2_input_cursor_theme_name_set(input, cursor_theme_name);
+   #endif
+   //
 }
+
+// TIZEN_ONLY(20171207): add functions to set client's custom cursors
+static const struct wl_callback_listener _pointer_surface_listener =
+{
+   _cb_pointer_frame
+};
+
+static void
+_cb_pointer_frame(void *data, struct wl_callback *callback, unsigned int timestamp EINA_UNUSED)
+{
+   Ecore_Wl2_Input *input;
+
+   if (!(input = data)) return;
+
+   if (callback)
+     {
+        if (callback != input->cursor.frame_cb) return;
+        wl_callback_destroy(callback);
+        input->cursor.frame_cb = NULL;
+     }
+
+   if (!input->cursor.name)
+     {
+        ecore_wl2_input_pointer_set(input, NULL, 0, 0);
+        return;
+     }
+
+   if ((input->cursor.cursor->image_count > 1) && (!input->cursor.frame_cb))
+     {
+        input->cursor.frame_cb = wl_surface_frame(input->cursor.surface);
+        if (!input->cursor.frame_cb) return;
+
+        wl_callback_add_listener(input->cursor.frame_cb,
+                                 &_pointer_surface_listener, input);
+     }
+}
+//
 
 Eina_Bool
 _ecore_wl2_input_cursor_update(void *data)
@@ -1869,12 +1967,56 @@ _ecore_wl2_input_cursor_update(void *data)
    input = data;
    if (!input) return EINA_FALSE;
 
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   #if 0
    if (input->wl.pointer)
      wl_pointer_set_cursor(input->wl.pointer, input->pointer.enter_serial,
                            input->cursor.surface,
                            input->cursor.hot_x, input->cursor.hot_y);
 
    return ECORE_CALLBACK_RENEW;
+   #else
+   struct wl_cursor_image *cursor_image;
+   struct wl_buffer *buffer;
+   unsigned int delay;
+
+   if ((!input) || (!input->cursor.cursor) || (!input->cursor.surface))
+     return EINA_FALSE;
+
+   cursor_image = input->cursor.cursor->images[input->cursor.current_index];
+   if (!cursor_image) return ECORE_CALLBACK_RENEW;
+
+   if ((buffer = wl_cursor_image_get_buffer(cursor_image)))
+     {
+        ecore_wl2_input_pointer_set(input, input->cursor.surface,
+                                   cursor_image->hotspot_x,
+                                   cursor_image->hotspot_y);
+        wl_surface_attach(input->cursor.surface, buffer, 0, 0);
+        wl_surface_damage(input->cursor.surface, 0, 0,
+                          cursor_image->width, cursor_image->height);
+        wl_surface_commit(input->cursor.surface);
+
+        if ((input->cursor.cursor->image_count > 1) && (!input->cursor.frame_cb))
+          _cb_pointer_frame(input, NULL, 0);
+     }
+
+   if (input->cursor.cursor->image_count <= 1)
+     return ECORE_CALLBACK_CANCEL;
+
+   delay = cursor_image->delay;
+   input->cursor.current_index =
+      (input->cursor.current_index + 1) % input->cursor.cursor->image_count;
+
+   if (!input->cursor.timer)
+     input->cursor.timer =
+        ecore_timer_loop_add(delay / 1000.0,
+                             _ecore_wl2_input_cursor_update, input);
+   else
+     ecore_timer_interval_set(input->cursor.timer, delay / 1000.0);
+
+   return ECORE_CALLBACK_RENEW;
+   #endif
+   //
 }
 
 static void
@@ -3202,34 +3344,137 @@ ecore_wl2_input_seat_device_get(const Ecore_Wl2_Input *input, const Ecore_Wl2_Wi
    return devices ?  devices->seat_dev : NULL;
 }
 
+// TIZEN_ONLY(20171207): add functions to set client's custom cursors
+static void
+_pointer_update_stop(Ecore_Wl2_Input *input)
+{
+   if (!input->cursor.timer) return;
+
+   ecore_timer_del(input->cursor.timer);
+   input->cursor.timer = NULL;
+}
+//
+
 EAPI void
 ecore_wl2_input_pointer_set(Ecore_Wl2_Input *input, struct wl_surface *surface, int hot_x, int hot_y)
 {
    EINA_SAFETY_ON_NULL_RETURN(input);
 
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   _pointer_update_stop(input);
+   if (input->wl.pointer)
+     wl_pointer_set_cursor(input->wl.pointer, input->pointer.enter_serial,
+                           surface, hot_x, hot_y);
+   //
+
    input->cursor.surface = surface;
    input->cursor.hot_x = hot_x;
    input->cursor.hot_y = hot_y;
 
-// TIZEN_ONLY(20170522) : set cursor role
-   if (input->display && input->display->wl.tz_policy)
-     {
-        if (input->cursor.surface)
-          {
-             tizen_policy_set_role(input->display->wl.tz_policy,
-                                   input->cursor.surface, "wl_pointer-cursor");
-          }
-     }
-//
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   #if 0
    _ecore_wl2_input_cursor_update(input);
+   #endif
+   //
+}
+
+// TIZEN_ONLY(20171207): add functions to set client's custom cursors
+EAPI struct wl_cursor *
+ecore_wl2_input_cursor_get(Ecore_Wl2_Input *input, const char *cursor_name)
+{
+   if ((!input) || (!input->cursor.theme))
+     return NULL;
+
+   return wl_cursor_theme_get_cursor(input->cursor.theme,
+                                     cursor_name);
+}
+//
+
+EAPI void
+ecore_wl2_input_cursor_from_name_set(Ecore_Wl2_Input *input, const char *cursor_name)
+{
+   EINA_SAFETY_ON_NULL_RETURN(input);
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   #if 0
+   _ecore_wl2_input_cursor_set(input, cursor);
+   #else
+   struct wl_cursor *cursor;
+
+   /* No pointer device. Don't need to set cursor and update it */
+   if (!input->wl.pointer) return;
+
+   _pointer_update_stop(input);
+
+   eina_stringshare_replace(&input->cursor.name, cursor_name);
+
+   /* No cursor. Set to default Left Pointer */
+   if (!cursor_name)
+     eina_stringshare_replace(&input->cursor.name, "left_ptr");
+
+   /* try to get this cursor from the theme */
+   if (!(cursor = ecore_wl2_input_cursor_get(input, input->cursor.name)))
+     {
+        /* if the theme does not have this cursor, default to left pointer */
+        if (!(cursor = ecore_wl2_input_cursor_get(input, "left_ptr")))
+          return;
+     }
+
+   input->cursor.cursor = cursor;
+
+   if ((!cursor->images) || (!cursor->images[0]))
+     {
+        ecore_wl2_input_pointer_set(input, NULL, 0, 0);
+        return;
+     }
+
+   input->cursor.current_index = 0;
+
+   _ecore_wl2_input_cursor_update(input);
+   #endif
+}
+
+// TIZEN_ONLY(20171207): add functions to set client's custom cursors
+EAPI void
+ecore_wl2_input_cursor_size_set(Ecore_Wl2_Input *input, const int size)
+{
+   if (!input) return;
+
+   input->cursor.size = size;
+
+   EINA_SAFETY_ON_NULL_RETURN(input->display->wl.shm);
+
+   if (input->cursor.theme)
+     wl_cursor_theme_destroy(input->cursor.theme);
+
+   input->cursor.theme =
+     wl_cursor_theme_load(NULL, input->cursor.size, input->display->wl.shm);
 }
 
 EAPI void
-ecore_wl2_input_cursor_from_name_set(Ecore_Wl2_Input *input, const char *cursor)
+ecore_wl2_input_cursor_theme_name_set(Ecore_Wl2_Input *input, const char *cursor_theme_name)
 {
-   EINA_SAFETY_ON_NULL_RETURN(input);
-   _ecore_wl2_input_cursor_set(input, cursor);
+   if (!input) return;
+
+   eina_stringshare_replace(&input->cursor.theme_name, cursor_theme_name);
+
+   EINA_SAFETY_ON_NULL_RETURN(input->display->wl.shm);
+
+   if (input->cursor.theme)
+     wl_cursor_theme_destroy(input->cursor.theme);
+   input->cursor.theme =
+     wl_cursor_theme_load(input->cursor.theme_name, input->cursor.size,
+                          input->display->wl.shm);
 }
+
+EAPI void
+ecore_wl2_input_cursor_default_restore(Ecore_Wl2_Input *input)
+{
+   if (!input) return;
+
+   /* Restore to default wayland cursor */
+   ecore_wl2_input_cursor_from_name_set(input, "left_ptr");
+}
+//
 
 EAPI Eina_Bool
 ecore_wl2_input_pointer_xy_get(const Ecore_Wl2_Input *input, int *x, int *y)

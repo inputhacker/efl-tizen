@@ -2913,3 +2913,52 @@ ecore_wl2_window_ignore_output_transform_get(Ecore_Wl2_Window *window)
    return window->ignore_output_transform;
 }
 //
+
+// TIZEN_ONLY(20171207): add functions to set client's custom cursors
+EAPI void
+ecore_wl2_window_pointer_set(Ecore_Wl2_Window *win, struct wl_surface *surface, int hot_x, int hot_y)
+{
+   Ecore_Wl2_Input *input;
+
+   if (!win) return;
+
+   win->pointer.surface = surface;
+   win->pointer.hot_x = hot_x;
+   win->pointer.hot_y = hot_y;
+   win->pointer.set = EINA_TRUE;
+
+   if ((input = win->pointer.device))
+     ecore_wl2_input_pointer_set(input, surface, hot_x, hot_y);
+}
+
+EAPI void
+ecore_wl2_window_cursor_from_name_set(Ecore_Wl2_Window *win, const char *cursor_name)
+{
+   Ecore_Wl2_Input *input;
+
+   if (!win) return;
+
+   win->pointer.set = EINA_FALSE;
+
+   if (!(input = win->pointer.device))
+     return;
+
+   eina_stringshare_replace(&win->pointer.cursor_name, cursor_name);
+
+   if ((input->cursor.name) && (strcmp(input->cursor.name, win->pointer.cursor_name)))
+     ecore_wl2_input_cursor_from_name_set(input, cursor_name);
+}
+
+EAPI void
+ecore_wl2_window_cursor_default_restore(Ecore_Wl2_Window *win)
+{
+   Ecore_Wl2_Input *input;
+
+   if (!win) return;
+
+   win->pointer.set = EINA_FALSE;
+
+   if ((input = win->pointer.device))
+     ecore_wl2_input_cursor_default_restore(input);
+}
+//

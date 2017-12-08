@@ -351,6 +351,17 @@ struct _Ecore_Wl2_Window
    void (*cb_rot_changed)(Ecore_Wl2_Window *win, int rot, Eina_Bool resize, int w, int h, void *data);
    void *cb_rot_changed_data;
    //
+
+   // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+   struct
+     {
+        struct wl_surface *surface;
+        int hot_x, hot_y;
+        Eina_Bool set : 1;
+        Ecore_Wl2_Input *device;
+        const char *cursor_name;
+     } pointer;
+   //
 };
 
 struct _Ecore_Wl2_Output
@@ -559,6 +570,14 @@ struct _Ecore_Wl2_Input
         unsigned int size;
         struct wl_surface *surface;
         int hot_x, hot_y;
+        // TIZEN_ONLY(20171207): add functions to set client's custom cursors
+        struct wl_cursor *cursor;
+        struct wl_callback *frame_cb;
+        Ecore_Timer *timer;
+        unsigned int current_index;
+        const char *theme_name;
+        struct wl_cursor_theme *theme;
+        //
      } cursor;
 
    struct

@@ -3790,7 +3790,7 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_WL2], [efl])
 EFL_INTERNAL_DEPEND_PKG([ECORE_WL2], [eina])
 
 EFL_DEPEND_PKG([ECORE_WL2], [WAYLAND],
-   [wayland-server >= 1.11.0 wayland-client >= 1.11.0 xkbcommon >= 0.6.0] tizen-extension-client wayland-tbm-client libtdm-client)
+   [wayland-server >= 1.11.0 wayland-client >= 1.11.0 wayland-cursor >= 1.8.0 xkbcommon >= 0.6.0] tizen-extension-client wayland-tbm-client libtdm-client)
 
 EFL_EVAL_PKGS([ECORE_WL2])
 
@@ -6027,7 +6027,7 @@ echo "Ethumb..........: yes"
 echo "Ethumb_Client...: yes"
 echo "Elua............: $have_elua"
 echo "Elementary......: yes (${features_elementary})"
-echo 
+echo
 
 echo
 
