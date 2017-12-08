@@ -1807,7 +1807,7 @@ _format_command(Evas_Object *eo_obj, Evas_Object_Textblock_Format *fmt, const ch
           {
              fmt->halign_auto = EVAS_TEXTBLOCK_ALIGN_AUTO_NORMAL;
           }
-        if (len == 6 && !strcmp(param, "locale"))
+        else if (len == 6 && !strcmp(param, "locale"))
           {
              fmt->halign_auto = EVAS_TEXTBLOCK_ALIGN_AUTO_LOCALE;
           }
