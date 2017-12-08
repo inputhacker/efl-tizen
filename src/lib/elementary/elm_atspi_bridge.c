@@ -4213,6 +4213,38 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
      }
    //
 
+   // TIZEN_ONLY(20161209): reduce IPC of object:state-changed:showing
+   if ((state_data->type == EFL_ACCESS_STATE_SHOWING) ||
+       (state_data->type == EFL_ACCESS_STATE_VISIBLE))
+     {
+        Efl_Access_Role role = EFL_ACCESS_ROLE_INVALID;
+        Efl_Access_State_Set ss;
+
+        role = efl_access_role_get(event->object);
+        ss = efl_access_state_set_get(event->object);
+        if (state_data->new_value) /* Showing */
+          {
+             if ((role != EFL_ACCESS_ROLE_WINDOW) &&
+                 (role != EFL_ACCESS_ROLE_PAGE_TAB) &&
+                 (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_MODAL)))
+               {
+                  efl_event_callback_stop(event->object);
+                  return;
+               }
+          }
+        else /* Not Showing */
+          {
+             if ((role != EFL_ACCESS_ROLE_WINDOW) &&
+                 (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_MODAL)) &&
+                 (_elm_object_accessibility_currently_highlighted_get() != (void *)event->object))
+               {
+                  efl_event_callback_stop(event->object);
+                  return;
+               }
+          }
+     }
+   //
+
    if (!STATE_TYPE_GET(pd->object_state_broadcast_mask, state_data->type))
      {
         efl_event_callback_stop(event->object);
