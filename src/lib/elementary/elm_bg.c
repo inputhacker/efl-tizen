@@ -22,6 +22,10 @@ static const Elm_Layout_Part_Alias_Description _content_aliases[] =
    {NULL, NULL}
 };
 
+// TIZEN_ONLY(20160218): Improve launching performance.
+static Evas_Object *_precreated_bg_obj = NULL;
+//
+
 EOLIAN static void
 _elm_bg_elm_layout_sizing_eval(Eo *obj, Elm_Bg_Data *sd)
 {
@@ -104,6 +108,22 @@ _elm_bg_efl_canvas_group_group_add(Eo *obj, Elm_Bg_Data *priv)
    if (!elm_layout_theme_set(obj, "bg", "base", elm_widget_style_get(obj)))
      CRI("Failed to set layout!");
 }
+
+// TIZEN_ONLY(20160218): Improve launching performance.
+EAPI void
+elm_bg_precreated_object_set(Evas_Object *obj)
+{
+   INF("Set precreated obj(%p).", obj);
+   _precreated_bg_obj = obj;
+}
+
+EAPI Evas_Object *
+elm_bg_precreated_object_get(void)
+{
+   INF("Get precreated obj(%p).", _precreated_bg_obj);
+   return _precreated_bg_obj;
+}
+//
 
 EAPI Evas_Object *
 elm_bg_add(Evas_Object *parent)

@@ -163,4 +163,34 @@ EAPI Elm_Bg_Option elm_bg_option_get(const Evas_Object *obj);
   */
 EAPI void elm_bg_load_size_set(Evas_Object *obj, int w, int h);
 
+// TIZEN_ONLY(20160218): Improves launching performance.
+/**
+ * @internal
+ *
+ * Sets the precreated object.
+ *
+ * @param obj The background object
+ *
+ * @ingroup Elm_Bg
+ *
+ * @see elm_bg_precreated_object_get() for more details
+ * @since Tizen 2.4
+ */
+EAPI void elm_bg_precreated_object_set(Evas_Object *obj);
+
+/**
+ * @internal
+ *
+ * Gets the precreated object.
+ *
+ * @return The precreated background object
+ *
+ * @ingroup Elm_Bg
+ *
+ * @see elm_bg_precreated_object_set() for more details
+ * @since Tizen 2.4
+ */
+EAPI Evas_Object *elm_bg_precreated_object_get(void);
+//
+
 #include "efl_ui_bg.eo.legacy.h"

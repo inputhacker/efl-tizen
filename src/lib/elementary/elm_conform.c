@@ -49,6 +49,10 @@ static const Elm_Layout_Part_Alias_Description _content_aliases[] =
    {NULL, NULL}
 };
 
+// TIZEN_ONLY(20160218): Improve launching performance.
+static Evas_Object *_precreated_conform_obj = NULL;
+//
+
 /* Example of env vars:
  * ILLUME_KBD="0, 0, 800, 301"
  * ILLUME_IND="0, 0, 800, 32"
@@ -1097,6 +1101,22 @@ _elm_conformant_elm_widget_widget_parent_set(Eo *obj, Elm_Conformant_Data *sd, E
    (void)parent;
 #endif
 }
+
+// TIZEN_ONLY(20160218): Improve launching performance.
+EAPI void
+elm_conformant_precreated_object_set(Evas_Object *obj)
+{
+   INF("Set precreated obj(%p).", obj);
+   _precreated_conform_obj = obj;
+}
+
+EAPI Evas_Object *
+elm_conformant_precreated_object_get(void)
+{
+   INF("Get precreated obj(%p).", _precreated_conform_obj);
+   return _precreated_conform_obj;
+}
+//
 
 EAPI Evas_Object *
 elm_conformant_add(Evas_Object *parent)

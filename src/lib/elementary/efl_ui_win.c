@@ -416,6 +416,10 @@ int _elm_win_deferred_free = 0;
 static Eina_Bool _elm_win_throttle_ok = EINA_FALSE;
 static int _elm_win_count = 0;
 
+// TIZEN_ONLY(20160218): Improve launching performance.
+static Evas_Object *_precreated_win_obj = NULL;
+//
+
 static Eina_Bool _elm_win_auto_throttled = EINA_FALSE;
 
 static Ecore_Job *_elm_win_state_eval_job = NULL;
@@ -5087,6 +5091,22 @@ _elm_x_io_err(void *data EINA_UNUSED)
    elm_exit();
 }
 #endif
+
+// TIZEN_ONLY(20160218): Improve launching performance.
+EAPI void
+elm_win_precreated_object_set(Evas_Object *obj)
+{
+   INF("Set precreated obj(%p).", obj);
+   _precreated_win_obj = obj;
+}
+
+EAPI Evas_Object *
+elm_win_precreated_object_get(void)
+{
+   INF("Get precreated obj(%p).", _precreated_win_obj);
+   return _precreated_win_obj;
+}
+//
 
 static void
 _elm_win_cb_hide(void *data EINA_UNUSED,

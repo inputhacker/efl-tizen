@@ -1074,6 +1074,34 @@ EAPI void elm_win_fake_canvas_set(Evas_Object *obj, Ecore_Evas *oee) EINA_DEPREC
  */
 EAPI Ecore_Window          elm_win_window_id_get(const Evas_Object *obj);
 
+// TIZEN_ONLY(20160218): Improve launching performance.
+/**
+ * @internal
+ *
+ * Sets the precreated object.
+ *
+ * @param obj The window object
+ *
+ * @ingroup Elm_Win
+ * @see elm_win_precreated_object_get()
+ * @since Tizen 2.4
+ */
+EAPI void                  elm_win_precreated_object_set(Evas_Object *obj);
+
+/**
+ * @internal
+ *
+ * Gets the precreated object.
+ *
+ * @return The precreated window object
+ *
+ * @ingroup Elm_Win
+ * @see elm_win_precreated_object_set()
+ * @since Tizen 2.4
+ */
+EAPI Evas_Object          *elm_win_precreated_object_get(void);
+//
+
 /**
  * @brief Get the Main Menu of a window.
  *
