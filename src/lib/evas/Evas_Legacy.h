@@ -7994,6 +7994,46 @@ evas_textblock_cursor_paragraph_direction_get(const Evas_Textblock_Cursor *cur);
  * END *
  *******/
 
+/*******************************************************************
+ * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs. *
+ *******************************************************************/
+/**
+ * @internal
+ * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
+ * Set the position of the cursor according to the X and Y coordinates and text ligature.
+ *
+ * @param cur the cursor to set.
+ * @param x coord to set by.
+ * @param y coord to set by.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ */
+EAPI Eina_Bool                                evas_textblock_cursor_cluster_coord_set(Evas_Textblock_Cursor *cur, Evas_Coord x, Evas_Coord y) EINA_ARG_NONNULL(1);
+
+/**
+ * @internal
+ * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
+ * Advances 1 cluster forward.
+ * Cluster is an text ligature.
+ *
+ * @param cur the cursor to advance.
+ * @return @c EINA_TRUE on success @c EINA_FALSE otherwise.
+ */
+EAPI Eina_Bool                                evas_textblock_cursor_cluster_next(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
+
+/**
+ * @internal
+ * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
+ * Advances 1 cluster backward.
+ * Cluster is an text ligature.
+ *
+ * @param cur the cursor to advance.
+ * @return @c EINA_TRUE on success @c EINA_FALSE otherwise.
+ */
+EAPI Eina_Bool                                evas_textblock_cursor_cluster_prev(Evas_Textblock_Cursor *cur) EINA_ARG_NONNULL(1);
+/*******
+ * END *
+ *******/
+
 #ifdef EFL_BETA_API_SUPPORT
 /**
  * Creates a new smart rectangle object on the given Evas @p e canvas.

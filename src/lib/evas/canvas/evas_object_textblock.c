@@ -9389,8 +9389,11 @@ _efl_canvas_text_efl_text_cursor_cursor_word_end(Eo *eo_obj, Efl_Canvas_Text_Dat
    efl_event_callback_legacy_call(eo_obj, EFL_CANVAS_TEXT_EVENT_CURSOR_CHANGED, NULL);
 }
 
-EAPI Eina_Bool
-evas_textblock_cursor_char_next(Efl_Text_Cursor_Cursor *cur)
+/*******************************************************************
+ * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs. *
+ *******************************************************************/
+static Eina_Bool
+_evas_textblock_cursor_next(Evas_Textblock_Cursor *cur, Eina_Bool per_cluster)
 {
    int ind;
    const Eina_Unicode *text;
@@ -9402,7 +9405,70 @@ evas_textblock_cursor_char_next(Efl_Text_Cursor_Cursor *cur)
 
    ind = cur->pos;
    text = eina_ustrbuf_string_get(cur->node->unicode);
-   if (text[ind]) ind++;
+
+   if (text[ind])
+     {
+        if (per_cluster)
+          {
+             Evas_Object_Textblock_Paragraph *par = cur->node->par;
+
+             if (par)
+               {
+                  Eina_List *l;
+                  Evas_Object_Textblock_Item *it, *last_it = NULL;
+                  EINA_LIST_FOREACH(par->logical_items, l, it)
+                    {
+                       if (it->text_pos > cur->pos)
+                         {
+                            if (!last_it) last_it = it;
+                            break;
+                         }
+                       last_it = it;
+                    }
+
+                  if (last_it)
+                    {
+                       if ((last_it->type == EVAS_TEXTBLOCK_ITEM_TEXT) &&
+                           (CHECK_LANGUAGE_CLUSTER_AVAILABLE(_ITEM_TEXT(last_it)->text_props.script)))
+                         {
+                            size_t cluster_pos = 0;
+                            int i;
+
+                            cluster_pos = last_it->text_pos + (size_t)evas_common_text_props_cluster_next(
+                               &_ITEM_TEXT(last_it)->text_props, cur->pos - last_it->text_pos);
+
+                            if (cluster_pos == cur->pos)
+                              {
+                                 if (it)
+                                   {
+                                      cluster_pos = it->text_pos;
+                                   }
+                                 else
+                                   {
+                                      cluster_pos = eina_ustrbuf_length_get(cur->node->unicode);
+                                   }
+                              }
+
+                            /* Check cluster exception characters */
+                            for (i = cur->pos + 1; i < (int)cluster_pos; i++)
+                              {
+                                 if (text[i] && CHECK_CLUSTER_EXCEPTION_CHAR(text[i]))
+                                   {
+                                      cluster_pos = i;
+                                      break;
+                                   }
+                              }
+
+                            ind = cluster_pos;
+                         }
+                    }
+               }
+          }
+
+        if (ind <= (int)cur->pos)
+          ind = cur->pos + 1;
+     }
+
    /* Only allow pointing a null if it's the last paragraph.
     * because we don't have a PS there. */
    if (text[ind])
@@ -9412,7 +9478,7 @@ evas_textblock_cursor_char_next(Efl_Text_Cursor_Cursor *cur)
      }
    else
      {
-        if (!_evas_textblock_cursor_paragraph_next(cur))
+        if (!evas_textblock_cursor_paragraph_next(cur))
           {
              /* If we already were at the end, that means we don't have
               * where to go next we should return FALSE */
@@ -9429,6 +9495,280 @@ evas_textblock_cursor_char_next(Efl_Text_Cursor_Cursor *cur)
      }
 }
 
+static Eina_Bool
+_evas_textblock_cursor_prev(Evas_Textblock_Cursor *cur, Eina_Bool per_cluster)
+{
+   const Eina_Unicode *text;
+
+   if (!cur) return EINA_FALSE;
+   TB_NULL_CHECK(cur->node, EINA_FALSE);
+
+   text = eina_ustrbuf_string_get(cur->node->unicode);
+
+   if (cur->pos != 0)
+     {
+        if (per_cluster)
+          {
+             Evas_Object_Textblock_Paragraph *par = cur->node->par;
+
+             if (par)
+               {
+                  Eina_List *l;
+                  Evas_Object_Textblock_Item *it, *last_it = NULL;
+                  EINA_LIST_FOREACH(par->logical_items, l, it)
+                    {
+                       if (it->text_pos >= cur->pos)
+                         {
+                            if (!last_it) last_it = it;
+                            break;
+                         }
+                       last_it = it;
+                    }
+
+                  if (last_it)
+                    {
+                       if ((last_it->type == EVAS_TEXTBLOCK_ITEM_TEXT) &&
+                           (CHECK_LANGUAGE_CLUSTER_AVAILABLE(_ITEM_TEXT(last_it)->text_props.script)))
+                         {
+                            size_t cluster_temp = 0;
+                            size_t cluster_pos;
+                            int i = 0;
+
+                            cluster_pos = last_it->text_pos + (size_t)evas_common_text_props_cluster_prev(
+                               &_ITEM_TEXT(last_it)->text_props, cur->pos - last_it->text_pos);
+                            cluster_temp = cluster_pos;
+
+                            while ((cur->pos - i > last_it->text_pos) &&
+                                   (cluster_temp == cur->pos - i))
+                              {
+                                 cluster_pos--;
+                                 i++;
+                                 cluster_temp = last_it->text_pos + evas_common_text_props_cluster_prev(
+                                    &_ITEM_TEXT(last_it)->text_props, cur->pos - last_it->text_pos - i);
+                              }
+
+                            /* Check cluster exception characters */
+                            for (i = cur->pos - 1; i > (int)cluster_pos; i--)
+                              {
+                                 if (text[i] && CHECK_CLUSTER_EXCEPTION_CHAR(text[i]))
+                                   {
+                                      cluster_pos = i;
+                                      break;
+                                   }
+                              }
+
+                            cur->pos = cluster_pos;
+                            return EINA_TRUE;
+                         }
+                    }
+               }
+          }
+
+        cur->pos--;
+        return EINA_TRUE;
+     }
+   return evas_textblock_cursor_paragraph_prev(cur);
+}
+
+static Eina_Bool
+_evas_textblock_cursor_coord_set(Evas_Textblock_Cursor *cur, Evas_Coord x, Evas_Coord y, Eina_Bool per_cluster)
+{
+   Evas_Object_Textblock_Paragraph *found_par;
+   Evas_Object_Textblock_Line *ln;
+   Evas_Object_Textblock_Item *it = NULL;
+
+   if (!cur) return EINA_FALSE;
+   Evas_Object_Protected_Data *obj = efl_data_scope_get(cur->obj, EFL_CANVAS_OBJECT_CLASS);
+   evas_object_async_block(obj);
+   Efl_Canvas_Text_Data *o = efl_data_scope_get(cur->obj, MY_CLASS);
+
+   _relayout_if_needed(cur->obj, o);
+
+   x += o->style_pad.l;
+   y += o->style_pad.t;
+
+   found_par = _layout_find_paragraph_by_y(o, y);
+   if (found_par)
+     {
+        _layout_paragraph_render(o, found_par);
+        EINA_INLIST_FOREACH(found_par->lines, ln)
+          {
+             if (ln->par->y + ln->y > y) break;
+             if ((ln->par->y + ln->y <= y) && ((ln->par->y + ln->y + ln->h) > y))
+               {
+                  /* If before or after the line, go to start/end according
+                   * to paragraph direction. */
+                  if (x < ln->x)
+                    {
+                       cur->pos = ln->items->text_pos;
+                       cur->node = found_par->text_node;
+                       if (found_par->direction == EVAS_BIDI_DIRECTION_RTL)
+                         {
+                            evas_textblock_cursor_line_char_last(cur);
+                         }
+                       else
+                         {
+                            evas_textblock_cursor_line_char_first(cur);
+                         }
+                       return EINA_TRUE;
+                    }
+                  else if (x >= ln->x + ln->w)
+                    {
+                       cur->pos = ln->items->text_pos;
+                       cur->node = found_par->text_node;
+                       if (found_par->direction == EVAS_BIDI_DIRECTION_RTL)
+                         {
+                            evas_textblock_cursor_line_char_first(cur);
+                         }
+                       else
+                         {
+                            evas_textblock_cursor_line_char_last(cur);
+                         }
+                       return EINA_TRUE;
+                    }
+
+                  EINA_INLIST_FOREACH(ln->items, it)
+                    {
+                       if (((it->x + ln->x) <= x) && (((it->x + ln->x) + it->adv) > x))
+                         {
+                            if (it->type == EVAS_TEXTBLOCK_ITEM_TEXT)
+                              {
+                                 int pos;
+                                 int cx, cy, cw, ch;
+                                 Evas_Object_Textblock_Text_Item *ti;
+                                 ti = _ITEM_TEXT(it);
+
+                                 pos = -1;
+                                 if (ti->parent.format->font.font)
+                                   pos = ENFN->font_char_at_coords_get(
+                                         ENC,
+                                         ti->parent.format->font.font,
+                                         &ti->text_props,
+                                         x - it->x - ln->x, 0,
+                                         &cx, &cy, &cw, &ch);
+
+                                 if (pos < 0)
+                                   return EINA_FALSE;
+
+                                 while (per_cluster && (evas_common_text_props_index_find(&ti->text_props, pos) == -1) &&
+                                        CHECK_LANGUAGE_CLUSTER_AVAILABLE(ti->text_props.script))
+                                   pos--;
+
+                                 cur->pos = pos + it->text_pos;
+                                 cur->node = it->text_node;
+                                 return EINA_TRUE;
+                              }
+                            else
+                              {
+                                 Evas_Object_Textblock_Format_Item *fi;
+                                 fi = _ITEM_FORMAT(it);
+                                 /* Lets keep cur position half way for easy positioning */
+                                 if (x > (ln->x + it->x + (it->adv / 2)))
+                                   {
+                                      cur->pos = fi->parent.text_pos + 1;
+                                   }
+                                 else
+                                   {
+                                      cur->pos = fi->parent.text_pos;
+                                   }
+                                 cur->node = found_par->text_node;
+                                 return EINA_TRUE;
+                              }
+                         }
+                    }
+               }
+          }
+     }
+
+   if (o->paragraphs)
+     {
+        Evas_Object_Textblock_Line *first_line = o->paragraphs->lines;
+        if (y >= o->paragraphs->y + o->formatted.h)
+          {
+             /* If we are after the last paragraph, use the last position in the
+              * text. */
+             evas_textblock_cursor_paragraph_last(cur);
+             return EINA_TRUE;
+          }
+        else if (o->paragraphs && (y < (o->paragraphs->y + first_line->y)))
+          {
+             evas_textblock_cursor_paragraph_first(cur);
+             return EINA_TRUE;
+          }
+     }
+
+   return EINA_FALSE;
+}
+
+EAPI Eina_Bool
+evas_textblock_cursor_cluster_next(Evas_Textblock_Cursor *cur)
+{
+   return _evas_textblock_cursor_next(cur, EINA_TRUE);
+}
+
+EAPI Eina_Bool
+evas_textblock_cursor_cluster_prev(Evas_Textblock_Cursor *cur)
+{
+   return _evas_textblock_cursor_prev(cur, EINA_TRUE);
+}
+
+EAPI Eina_Bool
+evas_textblock_cursor_cluster_coord_set(Evas_Textblock_Cursor *cur, Evas_Coord x, Evas_Coord y)
+{
+   return _evas_textblock_cursor_coord_set(cur, x, y, EINA_TRUE);
+}
+/*******
+ * END *
+ *******/
+
+EAPI Eina_Bool
+evas_textblock_cursor_char_next(Efl_Text_Cursor_Cursor *cur)
+{
+   /*******************************************************************
+    * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs. *
+    *******************************************************************
+   int ind;
+   const Eina_Unicode *text;
+
+   if (!cur) return EINA_FALSE;
+   Evas_Object_Protected_Data *obj = efl_data_scope_get(cur->obj, EFL_CANVAS_OBJECT_CLASS);
+   evas_object_async_block(obj);
+   TB_NULL_CHECK(cur->node, EINA_FALSE);
+
+   ind = cur->pos;
+   text = eina_ustrbuf_string_get(cur->node->unicode);
+   if (text[ind]) ind++;
+   // Only allow pointing a null if it's the last paragraph.
+   // because we don't have a PS there.
+   if (text[ind])
+     {
+        cur->pos = ind;
+        return EINA_TRUE;
+     }
+   else
+     {
+        if (!_evas_textblock_cursor_paragraph_next(cur))
+          {
+             // If we already were at the end, that means we don't have
+             // where to go next we should return FALSE
+             if (cur->pos == (size_t) ind)
+               return EINA_FALSE;
+
+             cur->pos = ind;
+             return EINA_TRUE;
+          }
+        else
+          {
+             return EINA_TRUE;
+          }
+     }
+    */
+   return _evas_textblock_cursor_next(cur, EINA_FALSE);
+   /*******
+    * END *
+    *******/
+}
+
 EOLIAN static void
 _efl_canvas_text_efl_text_cursor_cursor_char_next(Eo *eo_obj, Efl_Canvas_Text_Data *o EINA_UNUSED, Efl_Text_Cursor_Cursor *cur)
 {
@@ -9440,7 +9780,9 @@ _efl_canvas_text_efl_text_cursor_cursor_char_next(Eo *eo_obj, Efl_Canvas_Text_Da
 static Eina_Bool
 _evas_textblock_cursor_char_prev(Efl_Text_Cursor_Cursor *cur)
 {
-
+   /*******************************************************************
+    * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs. *
+    *******************************************************************
    if (!cur) return EINA_FALSE;
    TB_NULL_CHECK(cur->node, EINA_FALSE);
 
@@ -9450,6 +9792,11 @@ _evas_textblock_cursor_char_prev(Efl_Text_Cursor_Cursor *cur)
         return EINA_TRUE;
      }
    return evas_textblock_cursor_paragraph_prev(cur);
+    */
+   return _evas_textblock_cursor_prev(cur, EINA_FALSE);
+   /*******
+    * END *
+    *******/
 }
 
 EAPI Eina_Bool
@@ -12157,6 +12504,9 @@ _efl_canvas_text_visible_range_get(Eo *eo_obj EINA_UNUSED,
 EAPI Eina_Bool
 evas_textblock_cursor_char_coord_set(Evas_Textblock_Cursor *cur,  Evas_Coord x, Evas_Coord y)
 {
+   /*******************************************************************
+    * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs. *
+    *******************************************************************
    Evas_Object_Textblock_Paragraph *found_par;
    Evas_Object_Textblock_Line *ln;
    Evas_Object_Textblock_Item *it = NULL;
@@ -12180,8 +12530,8 @@ evas_textblock_cursor_char_coord_set(Evas_Textblock_Cursor *cur,  Evas_Coord x, 
              if (ln->par->y + ln->y > y) break;
              if ((ln->par->y + ln->y <= y) && ((ln->par->y + ln->y + ln->h) > y))
                {
-                  /* If before or after the line, go to start/end according
-                   * to paragraph direction. */
+                  // If before or after the line, go to start/end according
+                  // to paragraph direction.
                   if (x < ln->x)
                     {
                        cur->pos = ln->items->text_pos;
@@ -12243,7 +12593,7 @@ evas_textblock_cursor_char_coord_set(Evas_Textblock_Cursor *cur,  Evas_Coord x, 
                               {
                                  Evas_Object_Textblock_Format_Item *fi;
                                  fi = _ITEM_FORMAT(it);
-                                 /* Lets keep cur position half way for easy positioning */
+                                 // Lets keep cur position half way for easy positioning
                                  if (x > (ln->x + it->x + (it->adv / 2)))
                                    {
                                       cur->pos = fi->parent.text_pos + 1;
@@ -12267,8 +12617,8 @@ evas_textblock_cursor_char_coord_set(Evas_Textblock_Cursor *cur,  Evas_Coord x, 
         Evas_Object_Textblock_Line *first_line = o->paragraphs->lines;
         if (y >= o->paragraphs->y + o->formatted.h)
           {
-             /* If we are after the last paragraph, use the last position in the
-              * text. */
+             // If we are after the last paragraph, use the last position in the
+             // text.
              evas_textblock_cursor_paragraph_last(cur);
              ret = EINA_TRUE;
              goto end;
@@ -12287,6 +12637,11 @@ end:
         efl_event_callback_legacy_call(cur->obj, EFL_CANVAS_TEXT_EVENT_CURSOR_CHANGED, NULL);
      }
    return ret;
+    */
+   return _evas_textblock_cursor_coord_set(cur, x, y, EINA_FALSE);
+   /*******
+    * END *
+    *******/
 }
 
 EOLIAN static void
@@ -12294,7 +12649,16 @@ _efl_canvas_text_efl_text_cursor_cursor_coord_set(Eo *eo_obj EINA_UNUSED, Efl_Ca
       Evas_Coord x, Evas_Coord y)
 {
    ASYNC_BLOCK;
+   /*******************************************************************
+    * TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs. *
+    *******************************************************************
    evas_textblock_cursor_char_coord_set(cur, x, y);
+    */
+   if (evas_textblock_cursor_char_coord_set(cur, x, y))
+     efl_event_callback_legacy_call(cur->obj, EFL_CANVAS_TEXT_EVENT_CURSOR_CHANGED, NULL);
+   /*******
+    * END *
+    *******/
 }
 
 EAPI int

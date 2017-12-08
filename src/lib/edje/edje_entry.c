@@ -539,7 +539,11 @@ _curs_jump_line(Evas_Textblock_Cursor *c, Evas_Object *o, Entry *en, int ln)
 
    if (!evas_object_textblock_line_number_geometry_get(o, ln, &lx, &ly, &lw, &lh))
      return EINA_FALSE;
+   /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
    if (evas_textblock_cursor_char_coord_set(c, cx, ly + (lh / 2)))
+    */
+   if (evas_textblock_cursor_cluster_coord_set(c, cx, ly + (lh / 2)))
+   /* END */
      return EINA_TRUE;
    evas_textblock_cursor_line_set(c, ln);
    if (cx < (lx + (lw / 2)))
@@ -1900,7 +1904,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
                     }
                }
           }
+        /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
         if (evas_textblock_cursor_char_prev(en->cursor))
+         */
+        if (evas_textblock_cursor_cluster_prev(en->cursor))
+        /* END */
           ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
 #if defined(__APPLE__) && defined(__MACH__)
         if (altgr) evas_textblock_cursor_word_start(en->cursor);
@@ -1956,7 +1964,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 #else
         if (control) evas_textblock_cursor_word_end(en->cursor);
 #endif
+        /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
         if (evas_textblock_cursor_char_next(en->cursor))
+         */
+        if (evas_textblock_cursor_cluster_next(en->cursor))
+        /* END */
           ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
         /* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API
         if (en->select_allow)
@@ -1978,7 +1990,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              // del to start of previous word
              _sel_start(en->cursor, rp->object, en);
 
+             /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
              evas_textblock_cursor_char_prev(en->cursor);
+              */
+             evas_textblock_cursor_cluster_prev(en->cursor);
+             /* END */
              evas_textblock_cursor_word_start(en->cursor);
 
              _sel_preextend(ed, en->cursor, rp->object, en);
@@ -2018,7 +2034,11 @@ _edje_key_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
              _sel_start(en->cursor, rp->object, en);
 
              evas_textblock_cursor_word_end(en->cursor);
+             /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
              evas_textblock_cursor_char_next(en->cursor);
+              */
+             evas_textblock_cursor_cluster_next(en->cursor);
+             /* END */
 
              _sel_extend(ed, en->cursor, rp->object, en);
 
@@ -2569,7 +2589,11 @@ _edje_cursor_char_coord_set(Edje_Real_Part *rp, Evas_Coord canvasx, Evas_Coord c
    evas_textblock_cursor_free(line_cur);
    /* No need to check return value if not able to set the char coord Textblock
     * will take care */
+   /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
    evas_textblock_cursor_char_coord_set(en->cursor, *cx, *cy);
+    */
+   evas_textblock_cursor_cluster_coord_set(en->cursor, *cx, *cy);
+   /* END */
 
    return tc;
 }
@@ -2671,7 +2695,11 @@ _edje_part_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
                   else
                     {
                        evas_textblock_cursor_word_end(en->cursor);
+                       /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
                        evas_textblock_cursor_char_next(en->cursor);
+                        */
+                       evas_textblock_cursor_cluster_next(en->cursor);
+                       /* END */
                     }
                   _sel_extend(en->ed, en->cursor, rp->object, en);
                }
@@ -2685,7 +2713,11 @@ _edje_part_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
                   evas_textblock_cursor_word_start(en->cursor);
                   _sel_start(en->cursor, rp->object, en);
                   evas_textblock_cursor_word_end(en->cursor);
+                  /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
                   evas_textblock_cursor_char_next(en->cursor);
+                   */
+                  evas_textblock_cursor_cluster_next(en->cursor);
+                  /* END */
                   _sel_extend(en->ed, en->cursor, rp->object, en);
                }
              goto end;
@@ -2893,7 +2925,11 @@ _edje_part_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
         evas_object_geometry_get(rp->object, &x, &y, &w, &h);
         cx = ev->cur.canvas.x - x;
         cy = ev->cur.canvas.y - y;
+        /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
         if (!evas_textblock_cursor_char_coord_set(en->cursor, cx, cy))
+         */
+        if (!evas_textblock_cursor_cluster_coord_set(en->cursor, cx, cy))
+        /* END */
           {
              Evas_Coord lx, ly, lw, lh;
 
@@ -2905,7 +2941,11 @@ _edje_part_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
                     {
                        evas_textblock_cursor_paragraph_first(en->cursor);
                        evas_textblock_cursor_line_geometry_get(en->cursor, &lx, &ly, &lw, &lh);
+                       /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
                        if (!evas_textblock_cursor_char_coord_set(en->cursor, cx, ly + (lh / 2)))
+                        */
+                       if (!evas_textblock_cursor_cluster_coord_set(en->cursor, cx, ly + (lh / 2)))
+                       /* END */
                          _curs_end(en->cursor, rp->object, en);
                     }
                }
@@ -4208,7 +4248,11 @@ _edje_text_cursor_next(Edje_Real_Part *rp, Efl_Text_Cursor_Cursor *c)
 
    _edje_entry_imf_context_reset(rp);
 
+   /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
    if (!evas_textblock_cursor_char_next(c))
+    */
+   if (!evas_textblock_cursor_cluster_next(c))
+   /* END */
      {
         return EINA_FALSE;
      }
@@ -4241,7 +4285,11 @@ _edje_text_cursor_prev(Edje_Real_Part *rp, Efl_Text_Cursor_Cursor *c)
 
    _edje_entry_imf_context_reset(rp);
 
+   /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
    if (!evas_textblock_cursor_char_prev(c))
+    */
+   if (!evas_textblock_cursor_cluster_prev(c))
+   /* END */
      {
         if (evas_textblock_cursor_paragraph_prev(c)) goto ok;
         else return EINA_FALSE;
@@ -4285,7 +4333,11 @@ _edje_text_cursor_up(Edje_Real_Part *rp, Efl_Text_Cursor_Cursor *c)
                                                        &lx, &ly, &lw, &lh))
      return EINA_FALSE;
    evas_textblock_cursor_char_geometry_get(c, &cx, &cy, &cw, &ch);
+   /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
    if (!evas_textblock_cursor_char_coord_set(c, cx, ly + (lh / 2)))
+    */
+   if (!evas_textblock_cursor_cluster_coord_set(c, cx, ly + (lh / 2)))
+   /* END */
      evas_textblock_cursor_line_char_last(c);
    _sel_update(en->ed, c, rp->object, rp->typedata.text->entry_data);
 
@@ -4324,7 +4376,11 @@ _edje_text_cursor_down(Edje_Real_Part *rp, Efl_Text_Cursor_Cursor *c)
                                                        &lx, &ly, &lw, &lh))
      return EINA_FALSE;
    evas_textblock_cursor_char_geometry_get(c, &cx, &cy, &cw, &ch);
+   /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
    if (!evas_textblock_cursor_char_coord_set(c, cx, ly + (lh / 2)))
+    */
+   if (!evas_textblock_cursor_cluster_coord_set(c, cx, ly + (lh / 2)))
+   /* END */
      evas_textblock_cursor_line_char_last(c);
 
    _sel_update(en->ed, c, rp->object, rp->typedata.text->entry_data);
@@ -4526,7 +4582,11 @@ _edje_text_cursor_coord_set(Edje_Real_Part *rp, Efl_Text_Cursor_Cursor *c,
              _edje_emit(en->ed, "selection,changed", rp->part->name);
           }
      }
+   /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
    return evas_textblock_cursor_char_coord_set(c, x, y);
+    */
+   return evas_textblock_cursor_cluster_coord_set(c, x, y);
+   /* END */
 }
 
 Eina_Bool
