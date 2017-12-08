@@ -4530,6 +4530,30 @@ _handle_listener_change(void *data, const Eldbus_Message *msg EINA_UNUSED)
    _registered_events_list_update(data);
 }
 
+//TIZEN_ONLY(20170802): handle "gesture_required" attribute
+static Eina_Bool
+_scroll_gesture_required_is(Eo *obj)
+{
+   Eina_Bool ret = EINA_FALSE;
+   Eina_List *l, *attr_list = NULL;
+   Efl_Access_Attribute *attr = NULL;
+
+   attr_list = efl_access_attributes_get(obj);
+   EINA_LIST_FOREACH(attr_list, l, attr)
+     {
+        if (!strcmp(attr->key, "gesture_required") && !strcmp(attr->value, "scroll"))
+          {
+             ret = EINA_TRUE;
+             break;
+          }
+     }
+   if (attr_list)
+     efl_access_attributes_list_free(attr_list);
+
+   return ret;
+}
+//
+
 static void
 _state_changed_signal_send(void *data, const Efl_Event *event)
 {
@@ -4590,9 +4614,15 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
      }
 
    type_desc = elm_states_to_atspi_state[state_data->type].name;
+   //TIZEN_ONLY(20170802): handle "gesture_required" attribute
+   unsigned int det2 = 0;
+   if ((state_data->type == EFL_ACCESS_STATE_HIGHLIGHTED) &&
+       (_scroll_gesture_required_is(event->object)))
+     det2++;
 
    _bridge_signal_send(data, event->object, ATSPI_DBUS_INTERFACE_EVENT_OBJECT,
-                       &_event_obj_signals[ATSPI_OBJECT_EVENT_STATE_CHANGED], type_desc, state_data->new_value, 0, NULL);
+                       &_event_obj_signals[ATSPI_OBJECT_EVENT_STATE_CHANGED], type_desc, state_data->new_value, det2, NULL);
+   //
 }
 
 static void
