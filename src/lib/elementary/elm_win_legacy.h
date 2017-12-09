@@ -28,7 +28,10 @@ typedef enum
   ELM_WIN_INDICATOR_OPACITY_UNKNOWN = 0, /** Unknown indicator opacity mode */
   ELM_WIN_INDICATOR_OPAQUE, /** Opacifies the indicator */
   ELM_WIN_INDICATOR_TRANSLUCENT, /** Be translucent the indicator */
-  ELM_WIN_INDICATOR_TRANSPARENT /** Transparentizes the indicator */
+  ELM_WIN_INDICATOR_TRANSPARENT, /** Transparentizes the indicator */
+//TIZEN_ONLY(20171209): migration build-fix app's build break
+  ELM_WIN_INDICATOR_BG_TRANSPARENT /** Bg Transparentizes the indicator */
+//
 } Elm_Win_Indicator_Opacity_Mode;
 
 /**
