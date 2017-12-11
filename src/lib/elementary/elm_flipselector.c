@@ -44,6 +44,10 @@
 static const char SIG_SELECTED[] = "selected";
 static const char SIG_UNDERFLOWED[] = "underflowed";
 static const char SIG_OVERFLOWED[] = "overflowed";
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
+
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_SELECTED, ""},
    {SIG_UNDERFLOWED, ""},
@@ -52,6 +56,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -744,6 +751,9 @@ EOLIAN static void
 _elm_flipselector_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, Eina_Bool is_atspi)
 {
    _atspi_expose_flipselector_top_bottom(sd, is_atspi);
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   //
 }
 //
 

@@ -71,6 +71,9 @@ class Efl.Ui.Layout (Elm.Widget, Efl.Part, Efl.Container, Efl.File,
       Efl.Ui.View.model { get; set; }
       Efl.Ui.Model.Connect.connect;
       Efl.Ui.Model.Factory.Connect.connect;
+      //TIZEN_ONLY(20161212): apply screen_reader_changed callback
+      Elm.Widget.atspi;
+      //
    }
    events {
       theme,changed; [[Called when theme changed]]

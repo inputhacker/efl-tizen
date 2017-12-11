@@ -33,12 +33,18 @@ static const char SIG_VIRTUALKEYPAD_STATE_ON[] = "virtualkeypad,state,on";
 static const char SIG_VIRTUALKEYPAD_STATE_OFF[] = "virtualkeypad,state,off";
 static const char SIG_CLIPBOARD_STATE_ON[] = "clipboard,state,on";
 static const char SIG_CLIPBOARD_STATE_OFF[] = "clipboard,state,off";
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_VIRTUALKEYPAD_STATE_ON, ""},
    {SIG_VIRTUALKEYPAD_STATE_OFF, ""},
    {SIG_CLIPBOARD_STATE_ON, ""},
    {SIG_CLIPBOARD_STATE_OFF, ""},
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -313,6 +319,9 @@ EOLIAN static void
 _elm_conformant_elm_widget_atspi(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
 {
    _atspi_expose_keypad_area(obj, is_atspi);
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   //
 }
 //
 

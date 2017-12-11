@@ -26,7 +26,9 @@ static Eina_Bool _efl_ui_layout_part_cursor_unset(Efl_Ui_Layout_Data *sd, const 
 static const char SIG_THEME_CHANGED[] = "theme,changed";
 const char SIG_LAYOUT_FOCUSED[] = "focused";
 const char SIG_LAYOUT_UNFOCUSED[] = "unfocused";
-
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
 const char SIGNAL_PREFIX[] = "signal/";
 
 /* smart callbacks coming from elm layout objects: */
@@ -36,6 +38,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_LAYOUT_UNFOCUSED, ""},
    {SIG_WIDGET_LANG_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -2546,6 +2551,14 @@ _efl_ui_layout_part_efl_ui_cursor_cursor_theme_search_enabled_get(Eo *obj, void 
    Efl_Ui_Layout_Data *sd = efl_data_scope_get(pd->obj, MY_CLASS);
    return !_efl_ui_layout_part_cursor_engine_only_get(sd, pd->part);
 }
+
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+EOLIAN static void
+_efl_ui_layout_elm_widget_atspi(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
+{
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+}
+//
 
 /* Efl.Ui.Layout.Part_Content */
 ELM_PART_OVERRIDE_CONTENT_GET_FULL(efl_ui_layout_part_content, efl_ui_layout, EFL_UI_LAYOUT, Efl_Ui_Layout_Data)

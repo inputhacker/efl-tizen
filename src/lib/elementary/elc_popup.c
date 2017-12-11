@@ -48,7 +48,9 @@ static const char SIG_BLOCK_CLICKED[] = "block,clicked";
 static const char SIG_TIMEOUT[] = "timeout";
 static const char SIG_ITEM_FOCUSED[] = "item,focused";
 static const char SIG_ITEM_UNFOCUSED[] = "item,unfocused";
-
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
 /* TIZEN_ONLY(20161109): check theme compatibility more precise */
 static const char STYLE_PRIORITY[4][15] = { "%s", "popup/%s", "default", "popup/default" };
 /* END */
@@ -62,6 +64,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -1874,6 +1879,9 @@ _elm_popup_elm_widget_atspi(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool 
    _atspi_expose_title(obj, is_atspi);
    //TIZEN_ONLY(20170314): expose part-text as at-spi object
    _atspi_part_text_expose(obj, "elm.text", is_atspi);
+   //
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
    //
 }
 //

@@ -42,6 +42,9 @@ static const char SIG_HIGHLIGHTED[] = "highlighted";
 static const char SIG_UNHIGHLIGHTED[] = "unhighlighted";
 static const char SIG_ITEM_FOCUSED[] = "item,focused";
 static const char SIG_ITEM_UNFOCUSED[] = "item,unfocused";
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_ACTIVATED, ""},
    {SIG_CLICKED_DOUBLE, ""},
@@ -62,6 +65,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -2575,6 +2581,9 @@ _elm_list_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_List_Data *sd, Eina_Bool is_
              efl_access_children_changed_del_signal_emit(obj, eo_it);
           }
      }
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   //
 }
 //
 

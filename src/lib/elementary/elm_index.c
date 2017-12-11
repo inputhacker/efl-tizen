@@ -26,6 +26,9 @@ static const char SIG_DELAY_CHANGED[] = "delay,changed";
 static const char SIG_SELECTED[] = "selected";
 static const char SIG_LEVEL_UP[] = "level,up";
 static const char SIG_LEVEL_DOWN[] = "level,down";
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, ""},
@@ -37,6 +40,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -1205,6 +1211,9 @@ _elm_index_elm_widget_atspi(Eo *obj, Elm_Index_Data *_pd, Eina_Bool is_atspi)
              efl_access_children_changed_del_signal_emit(obj, eo_it);
           }
      }
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   //
 }
 //
 

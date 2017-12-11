@@ -35,7 +35,9 @@ static const char SIG_UNFOCUSED[] = "unfocused";
 static const char SIG_EXPANDED[] = "expanded";
 static const char SIG_CONTRACTED[] = "contracted";
 static const char SIG_EXPAND_STATE_CHANGED[] = "expand,state,changed";
-
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_ITEM_SELECTED, ""},
    {SIG_ITEM_ADDED, ""},
@@ -48,6 +50,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_EXPANDED, ""},
    {SIG_CONTRACTED, ""},
    {SIG_EXPAND_STATE_CHANGED, ""},
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -1717,6 +1722,9 @@ EOLIAN static void
 _elm_multibuttonentry_elm_widget_atspi(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_atspi)
 {
    _atspi_obj_process(obj, is_atspi);
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   //
 }
 //
 

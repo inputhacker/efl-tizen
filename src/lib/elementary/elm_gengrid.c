@@ -80,6 +80,7 @@
    cmd(SIG_PRESSED, "pressed", "") \
    cmd(SIG_RELEASED, "released", "") \
    cmd(SIG_ITEM_REORDER_START, "item,reorder,anim,start", "") \
+   cmd(SIG_ATSPI_SCREEN_READER_CHANGED, "atspi,screen,reader,changed", "") \
    cmd(SIG_ITEM_REORDER_STOP, "item,reorder,anim,stop", "")
 
 ELM_PRIV_GENGRID_SIGNALS(ELM_PRIV_STATIC_VARIABLE_DECLARE);
@@ -90,6 +91,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
 
    {NULL, NULL}
 };
@@ -4256,6 +4260,9 @@ _elm_gengrid_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, Eina_Bo
              efl_access_children_changed_del_signal_emit(sd->obj, EO_OBJ(it));
           }
      }
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   //
 }
 //
 

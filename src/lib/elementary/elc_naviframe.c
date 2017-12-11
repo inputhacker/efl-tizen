@@ -35,6 +35,9 @@ static const char SIG_TRANSITION_FINISHED[] = "transition,finished";
 static const char SIG_TITLE_TRANSITION_FINISHED[] = "title,transition,finished";
 static const char SIG_TITLE_CLICKED[] = "title,clicked";
 static const char SIG_ITEM_ACTIVATED[] = "item,activated";
+//TIZEN_ONLY(20161213): apply screen_reader_changed callback
+static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
+//
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_TRANSITION_FINISHED, ""},
@@ -45,6 +48,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
    {SIG_ITEM_ACTIVATED, ""},
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
    {NULL, NULL}
 };
 
@@ -1592,6 +1598,9 @@ _elm_naviframe_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Naviframe_Data *sd, Ein
 
    EINA_INLIST_FOREACH(sd->stack, it)
      _atspi_expose_title(it, is_atspi);
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   //
 }
 //
 
