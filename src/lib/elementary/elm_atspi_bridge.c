@@ -180,7 +180,8 @@ static Eo * _bridge_object_from_path(Eo *bridge, const char *path);
 static void _bridge_iter_object_reference_append(Eo *bridge, Eldbus_Message_Iter *iter, const Eo *obj);
 static void _object_get_bus_name_and_path(Eo *bridge, const Eo *obj, const char **bus_name, const char **path);
 // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
-static Eo *_calculate_navigable_accessible_at_point(Eo *any_object, Eina_Bool coord_type, int x, int y);
+static Eo *_calculate_navigable_accessible_at_point(Eo *bridge, Eo *root, Eina_Bool coord_type, int x, int y);
+static Eo *_calculate_neighbor(Eo *bridge, Eo *root, Eo *current, Eina_Bool forward, int search_mode);
 //
 // utility functions
 static void _iter_interfaces_append(Eldbus_Message_Iter *iter, const Eo *obj);
@@ -950,6 +951,52 @@ _accessible_gesture_do(const Eldbus_Service_Interface *iface, const Eldbus_Messa
 
 // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
 static Eldbus_Message *
+_accessible_get_neighbor(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
+{
+   const char *start_path = eldbus_message_path_get(msg);
+   Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
+   // TIZEN_ONLY(20160705) - enable atspi_proxy to work
+   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(bridge, pd, NULL);
+   //
+   Eo *start = _bridge_object_from_path(bridge, start_path);
+   Eldbus_Message *ret;
+   Eldbus_Message_Iter *iter;
+   int direction, search_mode;
+
+   ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(start, EFL_ACCESS_MIXIN, msg);
+
+   char *root_path = "";
+   if (!eldbus_message_arguments_get(msg, "sii", &root_path, &direction, &search_mode))
+     return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Invalid index type.");
+
+   Eo *root = _bridge_object_from_path(bridge, root_path);
+
+   // TIZEN_ONLY(20161213) - do not response if ecore evas is obscured
+   const Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(root));
+   if (ecore_evas_obscured_get(ee))
+     return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "ecore evas is obscured.");
+   //
+
+   ret = eldbus_message_method_return_new(msg);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
+
+   iter = eldbus_message_iter_get(ret);
+
+   Eo *accessible = _calculate_neighbor(bridge, root, start, direction == 1, search_mode);
+   _bridge_iter_object_reference_append(bridge, iter, accessible);
+   _bridge_object_register(bridge, accessible);
+
+   const char *obj_bus_name = NULL, *ret_bus_name = NULL;
+   _object_get_bus_name_and_path(bridge, start, &obj_bus_name, NULL);
+   if (accessible) _object_get_bus_name_and_path(bridge, accessible, &ret_bus_name, NULL);
+
+   unsigned char recurse = obj_bus_name && ret_bus_name && strcmp(obj_bus_name, ret_bus_name) != 0;
+   eldbus_message_iter_basic_append(iter, 'y', recurse);
+   return ret;
+}
+
+// TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
+static Eldbus_Message *
 _accessible_get_navigable_at_point(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
 {
    const char *obj_path = eldbus_message_path_get(msg);
@@ -989,7 +1036,7 @@ _accessible_get_navigable_at_point(const Eldbus_Service_Interface *iface EINA_UN
    iter = eldbus_message_iter_get(ret);
 
    Eina_Bool type = coord_type == ATSPI_COORD_TYPE_SCREEN ? EINA_TRUE : EINA_FALSE;
-   Eo *accessible = _calculate_navigable_accessible_at_point(obj, type, x, y);
+   Eo *accessible = _calculate_navigable_accessible_at_point(bridge, obj, type, x, y);
    _bridge_iter_object_reference_append(bridge, iter, accessible);
    _bridge_object_register(bridge, accessible);
 
@@ -1311,6 +1358,7 @@ fail:
 static const Eldbus_Method accessible_methods[] = {
    // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
    { "GetNavigableAtPoint", ELDBUS_ARGS({"i", "x"}, {"i", "y"}, {"u", "coord_type"}), ELDBUS_ARGS({"(so)", "accessible"}), _accessible_get_navigable_at_point, 0 },
+   { "GetNeighbor", ELDBUS_ARGS({"s", "current"}, {"i", "direction"}, {"i", "force_next"}), ELDBUS_ARGS({"(so)y", "accessible"}), _accessible_get_neighbor, 0 },
    //
    { "GetChildAtIndex", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"(so)", "Accessible"}), _accessible_child_at_index, 0 },
    { "GetChildren", NULL, ELDBUS_ARGS({"a(so)", "children"}), _accessible_get_children, 0 },
@@ -4066,96 +4114,81 @@ _component_get_accessible_at_point(const Eldbus_Service_Interface *iface EINA_UN
 }
 
 // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
-static AtspiRole _object_get_role_impl(void *ptr)
-{
-   Elm_Atspi_Role role;
-   Eo *obj = (Eo*)ptr;
-   role = efl_access_role_get(obj);
-   return _efl_role_to_atspi_role(role);
-}
-
-static uint64_t _object_get_state_set_impl(void *ptr)
-{
-   Efl_Access_State_Set states;
-   Eo *obj = (Eo*)ptr;
-   states = efl_access_state_set_get(obj);
-   return _elm_atspi_state_set_to_atspi_state_set(states);
-}
-
-static void *_get_object_in_relation_by_type_impl(void *ptr, AtspiRelationType type)
-{
-   if (ptr)
-     {
-       const Eo *source = ptr;
-       Efl_Access_Relation_Set relations;
-       Efl_Access_Relation_Type expected_relation_type = _atspi_relation_to_elm_relation(type);
-       relations = efl_access_relation_set_get(source);
-       Efl_Access_Relation *rel;
-       Eina_List *l;
-       EINA_LIST_FOREACH(relations, l, rel)
-         {
-           if (rel->type == expected_relation_type) return rel->objects ? rel->objects->data : NULL;
-         }
-     }
-   return NULL;
-}
-
-static unsigned char _object_is_zero_size_impl(void *ptr)
-{
-   Eo *obj = (Eo*)ptr;
-   Eina_Rect r;
-   r = efl_access_component_extents_get(obj, EINA_TRUE);
-   return r.w == 0 || r.h == 0;
-}
-
-unsigned char _object_is_scrollable_impl(void *ptr)
-{
-   Eo *obj = (Eo*)ptr;
-   return efl_isa(obj, ELM_INTERFACE_SCROLLABLE_MIXIN);
-}
-
-void *_get_parent_impl(void *ptr)
-{
-   Eo *obj = (Eo*)ptr;
-   if (elm_widget_is(obj)) return elm_widget_parent_get(obj);
-   return elm_widget_parent_widget_get(obj);
-}
-
-void *_object_at_point_get_impl(void *ptr, int x, int y, unsigned char coordinates_are_screen_based)
-{
-   Eo *obj = (Eo*)ptr, *target;
-   target = efl_access_component_accessible_at_point_get(obj, coordinates_are_screen_based, x, y);
-   return target;
-}
-
-unsigned char _object_contains_impl(void *ptr, int x, int y, unsigned char coordinates_are_screen_based)
-{
-   Eo *obj = (Eo*)ptr;
-   Eina_Bool return_value;
-   return_value = efl_access_component_contains(obj, coordinates_are_screen_based, x, y);
-   return return_value ? 1 : 0;
-}
-
-unsigned char _object_is_proxy_impl(void *ptr)
-{
-   Eo *obj = (Eo*)ptr;
-   return efl_isa(obj, ELM_ATSPI_PROXY_CLASS) ? 1 : 0;
-}
 typedef struct {
-   AtspiRole (*object_get_role)(void *ptr);
-   uint64_t (*object_get_state_set)(void *ptr);
-   void *(*get_object_in_relation_by_type)(void *ptr, AtspiRelationType type);
-   unsigned char (*object_is_zero_size)(void *ptr);
-   void *(*get_parent)(void *ptr);
-   unsigned char (*object_is_scrollable)(void *ptr);
-   void *(*object_at_point_get)(void *ptr, int x, int y, unsigned char coordinates_are_screen_based);
-   unsigned char (*object_contains)(void *ptr, int x, int y, unsigned char coordinates_are_screen_based);
-   unsigned char (*object_is_proxy)(void *ptr);
+   void **objects;
+   unsigned int capacity;
+   unsigned int size;
+} vector;
+
+typedef enum {
+  NEIGHBOR_SEARCH_MODE_NORMAL = 0,
+  NEIGHBOR_SEARCH_MODE_RECURSE_FROM_ROOT = 1,
+  NEIGHBOR_SEARCH_MODE_CONTINUE_AFTER_FAILED_RECURSING = 2,
+} GetNeighborSearchMode;
+
+typedef struct accessibility_navigation_pointer_table {
+   AtspiRole (*object_get_role)(struct accessibility_navigation_pointer_table *t, void *ptr);
+   uint64_t (*object_get_state_set)(struct accessibility_navigation_pointer_table *t, void *ptr);
+   void *(*get_object_in_relation_by_type)(struct accessibility_navigation_pointer_table *t, void *ptr, AtspiRelationType type);
+   unsigned char (*object_is_zero_size)(struct accessibility_navigation_pointer_table *t, void *ptr);
+   void *(*get_parent)(struct accessibility_navigation_pointer_table *t, void *ptr);
+   unsigned char (*object_is_scrollable)(struct accessibility_navigation_pointer_table *t, void *ptr);
+   void *(*get_object_at_point)(struct accessibility_navigation_pointer_table *t, void *ptr, int x, int y, unsigned char coordinates_are_screen_based);
+   unsigned char (*object_contains)(struct accessibility_navigation_pointer_table *t, void *ptr, int x, int y, unsigned char coordinates_are_screen_based);
+   unsigned char (*object_is_proxy)(struct accessibility_navigation_pointer_table *t, void *ptr);
+   void (*get_children)(struct accessibility_navigation_pointer_table *t, void *ptr, vector *v);
 } accessibility_navigation_pointer_table;
 
+static vector vector_init(void)
+{
+   vector v;
+   v.objects = NULL;
+   v.capacity = 0;
+   v.size = 0;
+   return v;
+}
+
+static void vector_free(vector *v)
+{
+   free(v->objects);
+   v->objects = NULL;
+   v->capacity = 0;
+   v->size = 0;
+}
+static void vector_reserve(vector *v, unsigned int s)
+{
+   if (s > v->capacity)
+     {
+       v->objects = (void**)realloc(v->objects, sizeof(v->objects[0]) * s);
+       v->capacity = s;
+     }
+}
+
+static void vector_resize(vector *v, unsigned int s)
+{
+   vector_reserve(v, s);
+   v->size = s;
+}
+
+static void *vector_get(vector *v, unsigned int index)
+{
+   return v->objects[index];
+}
+
+static void vector_set(vector *v, unsigned int index, void *data)
+{
+   v->objects[index] = data;
+}
+
+static unsigned int vector_size(vector *v)
+{
+   return v->size;
+}
+
+#define CALL(fncname, ...) table->fncname(table, __VA_ARGS__)
 static unsigned char _accept_object_check_role(accessibility_navigation_pointer_table *table, void *obj)
 {
-   AtspiRole role = table->object_get_role(obj);
+   AtspiRole role = CALL(object_get_role, obj);
    switch (role)
      {
        case ATSPI_ROLE_APPLICATION:
@@ -4190,27 +4223,44 @@ static unsigned char _state_set_is_set(uint64_t state_set, AtspiStateType state)
    return (state_set & ((uint64_t)1 << (unsigned int)state)) != 0;
 }
 
+static unsigned char _object_is_defunct(accessibility_navigation_pointer_table *table, void *ptr)
+{
+   uint64_t states = CALL(object_get_state_set, ptr);
+   return _state_set_is_set(states, ATSPI_STATE_DEFUNCT);
+}
+
+static unsigned char _object_role_is_acceptable_when_navigating_next_prev(accessibility_navigation_pointer_table *table, void *obj)
+{
+   AtspiRole role = CALL(object_get_role, obj);
+   return role != ATSPI_ROLE_POPUP_MENU && role != ATSPI_ROLE_DIALOG;
+}
+
+static void *_get_object_in_relation_flow(accessibility_navigation_pointer_table *table, void *source, unsigned char forward)
+{
+    return CALL(get_object_in_relation_by_type, source, forward ? ATSPI_RELATION_FLOWS_TO : ATSPI_RELATION_FLOWS_FROM);
+}
+
 static unsigned char _object_is_item(accessibility_navigation_pointer_table *table, void *obj)
 {
-   AtspiRole role = table->object_get_role(obj);
+   AtspiRole role = CALL(object_get_role, obj);
    return role == ATSPI_ROLE_LIST_ITEM || role == ATSPI_ROLE_MENU_ITEM;
 }
 
 static unsigned char _object_is_highlightable(accessibility_navigation_pointer_table *table, void *obj)
 {
-   uint64_t state_set = table->object_get_state_set(obj);
+   uint64_t state_set = CALL(object_get_state_set, obj);
    return _state_set_is_set(state_set, ATSPI_STATE_HIGHLIGHTABLE);
 }
 
 static unsigned char _object_is_showing(accessibility_navigation_pointer_table *table, void *obj)
 {
-   uint64_t state_set = table->object_get_state_set(obj);
+   uint64_t state_set = CALL(object_get_state_set, obj);
    return _state_set_is_set(state_set, ATSPI_STATE_SHOWING);
 }
 
 static unsigned char _object_is_collapsed(accessibility_navigation_pointer_table *table, void *obj)
 {
-   uint64_t state_set = table->object_get_state_set(obj);
+   uint64_t state_set = CALL(object_get_state_set, obj);
    return
       _state_set_is_set(state_set, ATSPI_STATE_EXPANDABLE) &&
       !_state_set_is_set(state_set, ATSPI_STATE_EXPANDED);
@@ -4218,21 +4268,21 @@ static unsigned char _object_is_collapsed(accessibility_navigation_pointer_table
 
 static unsigned char _object_has_modal_state(accessibility_navigation_pointer_table *table, void *obj)
 {
-   uint64_t state_set = table->object_get_state_set(obj);
+   uint64_t state_set = CALL(object_get_state_set, obj);
    return _state_set_is_set(state_set, ATSPI_STATE_MODAL);
 }
 
 static unsigned char _object_is_zero_size(accessibility_navigation_pointer_table *table, void *obj)
 {
-   return table->object_is_zero_size(obj);
+   return CALL(object_is_zero_size, obj);
 }
 
 static void *_get_scrollable_parent(accessibility_navigation_pointer_table *table, void *obj)
 {
    while(obj)
      {
-       obj = table->get_parent(obj);
-       if (obj && table->object_is_scrollable(obj)) return obj;
+       obj = CALL(get_parent, obj);
+       if (obj && CALL(object_is_scrollable, obj)) return obj;
      }
    return NULL;
 }
@@ -4240,12 +4290,12 @@ static unsigned char _accept_object(accessibility_navigation_pointer_table *tabl
 {
    if (!obj) return 0;
    if (!_accept_object_check_role(table, obj)) return 0;
-   if (table->get_object_in_relation_by_type(obj, ATSPI_RELATION_CONTROLLED_BY) != NULL) return 0;
+   if (CALL(get_object_in_relation_by_type, obj, ATSPI_RELATION_CONTROLLED_BY) != NULL) return 0;
    if (!_object_is_highlightable(table, obj)) return 0;
 
    if (_get_scrollable_parent(table, obj) != NULL)
      {
-       void *parent = table->get_parent(obj);
+       void *parent = CALL(get_parent, obj);
 
        if (parent)
          {
@@ -4268,18 +4318,18 @@ static void *_calculate_navigable_accessible_at_point_impl(accessibility_navigat
    void *return_value = NULL;
    while (1)
      {
-       void *target = table->object_at_point_get(root, x, y, coordinates_are_screen_based);
+       void *target = CALL(get_object_at_point, root, x, y, coordinates_are_screen_based);
        if (!target) break;
 
        // always return proxy, so atspi lib can call on it again
-       if (table->object_is_proxy(target)) return target;
+       if (CALL(object_is_proxy, target)) return target;
 
        root = target;
-       void *relation_obj = table->get_object_in_relation_by_type(root, ATSPI_RELATION_CONTROLLED_BY);
+       void *relation_obj = CALL(get_object_in_relation_by_type, root, ATSPI_RELATION_CONTROLLED_BY);
        unsigned char contains = 0;
        if (relation_obj)
          {
-           contains = table->object_contains(relation_obj, x, y, coordinates_are_screen_based);
+           contains = CALL(object_contains, relation_obj, x, y, coordinates_are_screen_based);
            if (contains) root = relation_obj;
          }
 
@@ -4294,26 +4344,333 @@ static void *_calculate_navigable_accessible_at_point_impl(accessibility_navigat
    return return_value;
 }
 
-accessibility_navigation_pointer_table construct_accessibility_navigation_pointer_table(void)
+static void *_find_non_defunct_child(accessibility_navigation_pointer_table *table,
+            vector *objects, unsigned int current_index, unsigned char forward)
 {
-   accessibility_navigation_pointer_table table;
-#define INIT(n) table.n = _## n ## _impl
+   for(; current_index < vector_size(objects); forward ? ++current_index : --current_index)
+     {
+       void *n = vector_get(objects, current_index);
+       if (n && !_object_is_defunct(table, n)) return n;
+     }
+   return NULL;
+}
+
+static void *_directional_depth_first_search_try_non_defunct_child(accessibility_navigation_pointer_table *table,
+            void *node, vector *children, unsigned char forward)
+{
+   if (vector_size(children) > 0)
+     {
+       unsigned char is_showing = _get_scrollable_parent(table, node) == NULL ? _object_is_showing(table, node) : 1;
+       if (is_showing)
+         {
+           return _find_non_defunct_child(table, children, forward ? 0 : vector_size(children) - 1, forward);
+         }
+     }
+   return NULL;
+}
+
+static void *_get_next_non_defunct_sibling(accessibility_navigation_pointer_table *table,
+            void *obj, unsigned char forward)
+{
+   if (!obj) return NULL;
+   void *parent = CALL(get_parent, obj);
+   if (!parent) return NULL;
+
+   vector children = vector_init();
+   CALL(get_children, parent, &children);
+   if (vector_size(&children) == 0)
+     {
+       vector_free(&children);
+       return NULL;
+     }
+   unsigned int current = 0;
+   for(; current < vector_size(&children) && vector_get(&children, current) != obj; ++current) ;
+   if (current >= vector_size(&children))
+     {
+       vector_free(&children);
+       return NULL;
+     }
+   forward ? ++current : --current;
+   void *ret = _find_non_defunct_child(table, &children, current, forward);
+   vector_free(&children);
+   return ret;
+}
+
+static void *_directional_depth_first_search_try_non_defunct_sibling(accessibility_navigation_pointer_table *table,
+            unsigned char *all_children_visited_ptr, void *node, void *root, unsigned char forward)
+{
+   while(1)
+     {
+       void *sibling = _get_next_non_defunct_sibling(table, node, forward);
+       if (sibling != NULL)
+         {
+           node = sibling;
+           *all_children_visited_ptr = 0;
+           break;
+         }
+
+       // walk up...
+       node = CALL(get_parent, node);
+       if (node == NULL || node == root) return NULL;
+
+       // in backward traversing stop the walk up on parent
+       if (!forward) break;
+     }
+   return node;
+}
+
+typedef struct {
+    const void *key;
+    unsigned int current_search_size;
+    unsigned int counter;
+} cycle_detection_data;
+
+void cycle_detection_initialize(cycle_detection_data *data, const void *key)
+{
+   if (!data) return;
+   data->key = key;
+   data->current_search_size = 1;
+   data->counter = 1;
+}
+
+unsigned char cycle_detection_check_if_in_cycle(cycle_detection_data *data, const void *key)
+{
+   if (!data) return 1;
+   if (data->key == key) return 1;
+   if (--data->counter == 0)
+     {
+       data->current_search_size <<= 1;
+       if (data->current_search_size == 0) return 1;
+       data->counter = data->current_search_size;
+       data->key = key;
+     }
+   return 0;
+}
+
+static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *table, void *root, void *start, unsigned char forward, GetNeighborSearchMode search_mode)
+{
+   if (root && _object_is_defunct(table, root)) return NULL;
+   if (start && _object_is_defunct(table, start))
+     {
+       start = NULL;
+       forward = 1;
+     }
+   void *node = start ? start : root;
+   if (!node) return NULL;
+
+   // initialization of all-children-visited flag for start node - we assume
+   // that when we begin at start node and we navigate backward, then all children
+   // are visited, so navigation will ignore start's children and go to
+   // previous sibling available.
+   unsigned char all_children_visited = (search_mode != NEIGHBOR_SEARCH_MODE_RECURSE_FROM_ROOT && !forward);
+
+   // true, if starting element should be ignored. this is only used in rare case of
+   // recursive search failing to find an object.
+   // consider tree, where element A on bus BUS_A has child B on bus BUS_B. when going "next" from
+   // element A algorithm has to descend into BUS_B and search element B and its children. this is done
+   // by returning to our caller object B with special flag set (meaning - continue the search from B on bus BUS_B).
+   // if next object will be found there (on BUS_B), then search ends. but if not, then our caller will find it out
+   // and will call us again with object A and flag search_mode set to NEIGHBOR_SEARCH_MODE_CONTINUE_AFTER_FAILED_RECURSING.
+   // this flag means, that object A was already checked previously and we should skip it and its children.
+   unsigned char force_next = (search_mode == NEIGHBOR_SEARCH_MODE_CONTINUE_AFTER_FAILED_RECURSING);
+
+   cycle_detection_data cycle_detection;
+   cycle_detection_initialize(&cycle_detection, node);
+   while (node)
+     {
+       if (_object_is_defunct(table, node)) return NULL;
+
+       // always accept proxy object from different world
+       if (!force_next && CALL(object_is_proxy, node)) return node;
+
+       vector children = vector_init();
+       CALL(get_children, node, &children);
+
+       // do accept:
+       // 1. not start node
+       // 2. parent after all children in backward traversing
+       // 3. Nodes with roles: ATSPI_ROLE_PAGE_TAB, ATSPI_ROLE_POPUP_MENU and ATSPI_ROLE_DIALOG, only when looking for first or last element.
+       //    Objects with those roles shouldnt be reachable, when navigating next / prev.
+       unsigned char all_children_visited_or_moving_forward = (vector_size(&children) == 0 || forward || all_children_visited);
+       if (!force_next && node != start && all_children_visited_or_moving_forward && _accept_object(table, node))
+         {
+           if (start == NULL || _object_role_is_acceptable_when_navigating_next_prev(table, node))
+             {
+               vector_free(&children);
+               return node;
+             }
+         }
+
+       void *next_related_in_direction = !force_next ? _get_object_in_relation_flow(table, node, forward) : NULL;
+
+       if (next_related_in_direction && _object_is_defunct(table, next_related_in_direction))
+           next_related_in_direction = NULL;
+       unsigned char want_cycle_detection = 0;
+       if (next_related_in_direction)
+         {
+           node = next_related_in_direction;
+           want_cycle_detection = 1;
+         }
+       else {
+           void *child = !force_next && !all_children_visited ?
+                          _directional_depth_first_search_try_non_defunct_child(table, node, &children, forward) : NULL;
+           if (child != NULL) want_cycle_detection = 1;
+           else
+             {
+               if (!force_next && node == root)
+                 {
+                   vector_free(&children);
+                   return NULL;
+                 }
+               all_children_visited = 1;
+               child = _directional_depth_first_search_try_non_defunct_sibling(table, &all_children_visited, node, root, forward);
+             }
+           node = child;
+       }
+
+       force_next = 0;
+       if (want_cycle_detection && cycle_detection_check_if_in_cycle(&cycle_detection, node))
+         {
+           vector_free(&children);
+           return NULL;
+         }
+       vector_free(&children);
+     }
+   return NULL;
+}
+
+
+
+
+typedef struct accessibility_navigation_pointer_table_impl {
+  accessibility_navigation_pointer_table ptrs;
+  Eo *bridge;
+} accessibility_navigation_pointer_table_impl;
+
+static AtspiRole _object_get_role_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr)
+{
+   Elm_Atspi_Role role;
+   Eo *obj = (Eo*)ptr;
+   role = efl_access_role_get(obj);
+   return _efl_role_to_atspi_role(role);
+}
+
+static uint64_t _object_get_state_set_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr)
+{
+   Elm_Atspi_State_Set states;
+   Eo *obj = (Eo*)ptr;
+   states = efl_access_state_set_get(obj);
+   return _elm_atspi_state_set_to_atspi_state_set(states);
+}
+
+static void *_get_object_in_relation_by_type_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr, AtspiRelationType type)
+{
+   if (ptr)
+     {
+       const Eo *source = ptr;
+       Efl_Access_Relation_Set relations;
+       Efl_Access_Relation_Type expected_relation_type = _atspi_relation_to_elm_relation(type);
+       relations = efl_access_relation_set_get(source);
+       Efl_Access_Relation *rel;
+       Eina_List *l;
+       EINA_LIST_FOREACH(relations, l, rel)
+         {
+           if (rel->type == expected_relation_type) return rel->objects ? rel->objects->data : NULL;
+         }
+     }
+   return NULL;
+}
+
+static unsigned char _object_is_zero_size_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr)
+{
+   Eo *obj = (Eo*)ptr;
+   Eina_Rect r = efl_access_component_extents_get(obj, EINA_TRUE);
+   return r.w == 0 || r.h == 0;
+}
+
+unsigned char _object_is_scrollable_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr)
+{
+   Eo *obj = (Eo*)ptr;
+   return efl_isa(obj, ELM_INTERFACE_SCROLLABLE_MIXIN);
+}
+
+void *_get_parent_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr)
+{
+   Eo *obj = (Eo*)ptr, *ret_obj;
+   ret_obj = efl_access_parent_get(obj);
+   return ret_obj;
+}
+
+void *_get_object_at_point_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr, int x, int y, unsigned char coordinates_are_screen_based)
+{
+   Eo *obj = (Eo*)ptr, *target;
+   target = efl_access_component_accessible_at_point_get(obj, coordinates_are_screen_based, x, y);
+   return target;
+}
+
+unsigned char _object_contains_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr, int x, int y, unsigned char coordinates_are_screen_based)
+{
+   Eo *obj = (Eo*)ptr;
+   Eina_Bool return_value;
+   return_value = efl_access_component_contains(obj, coordinates_are_screen_based, x, y);
+   return return_value ? 1 : 0;
+}
+
+unsigned char _object_is_proxy_impl(struct accessibility_navigation_pointer_table *table_, void *obj)
+{
+   accessibility_navigation_pointer_table_impl *table = (accessibility_navigation_pointer_table_impl*)table_;
+   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(table->bridge, pd, 0);
+   const char *our_bus_name = eldbus_connection_unique_name_get(pd->a11y_bus);
+   const char *obj_bus_name;
+   _object_get_bus_name_and_path(table->bridge, (Eo*)obj, &obj_bus_name, NULL);
+   return our_bus_name && obj_bus_name && strcmp(our_bus_name, obj_bus_name) != 0;
+}
+
+void _get_children_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr, vector *v)
+{
+   Eina_List *l, *l2;
+   Eo *obj = (Eo*)ptr;
+   l = efl_access_children_get(obj);
+   vector_resize(v, eina_list_count(l));
+
+   void *dt;
+   unsigned int index = 0;
+   EINA_LIST_FOREACH(l, l2, dt)
+     {
+       vector_set(v, index, dt);
+       ++index;
+     }
+}
+
+accessibility_navigation_pointer_table_impl construct_accessibility_navigation_pointer_table(Eo *bridge)
+{
+   accessibility_navigation_pointer_table_impl table;
+#define INIT(n) table.ptrs.n = _## n ## _impl
    INIT(object_get_role);
    INIT(object_get_state_set);
    INIT(get_object_in_relation_by_type);
    INIT(object_is_zero_size);
    INIT(get_parent);
    INIT(object_is_scrollable);
-   INIT(object_at_point_get);
+   INIT(get_object_at_point);
    INIT(object_contains);
    INIT(object_is_proxy);
+   INIT(get_children);
 #undef INIT
+   table.bridge = bridge;
    return table;
 }
-static Eo *_calculate_navigable_accessible_at_point(Eo *root, Eina_Bool coord_type, int x, int y)
+static Eo *_calculate_navigable_accessible_at_point(Eo *bridge, Eo *root, Eina_Bool coord_type, int x, int y)
 {
-   accessibility_navigation_pointer_table table = construct_accessibility_navigation_pointer_table();
-   Eo *result = (Eo*)_calculate_navigable_accessible_at_point_impl(&table, root, x, y, coord_type ? 1 : 0);
+   accessibility_navigation_pointer_table_impl table = construct_accessibility_navigation_pointer_table(bridge);
+   Eo *result = (Eo*)_calculate_navigable_accessible_at_point_impl(&table.ptrs, root, x, y, coord_type ? 1 : 0);
+   return result;
+}
+
+static Eo *_calculate_neighbor(Eo *bridge, Eo *root, Eo *start, Eina_Bool forward, int search_mode)
+{
+   accessibility_navigation_pointer_table_impl table = construct_accessibility_navigation_pointer_table(bridge);
+   Eo *result = (Eo*)_calculate_neighbor_impl(&table.ptrs, root, start, forward ? 1 : 0, (GetNeighborSearchMode)search_mode);
    return result;
 }
 //
