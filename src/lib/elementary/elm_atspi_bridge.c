@@ -178,7 +178,10 @@ static const char * _path_from_object(const Eo *eo);
 static void _bridge_signal_send(Eo *bridge, Eo *obj, const char *ifc, const Eldbus_Signal *signal, const char *minor, unsigned int det1, unsigned int det2, const char *variant_sig, ...);
 static Eo * _bridge_object_from_path(Eo *bridge, const char *path);
 static void _bridge_iter_object_reference_append(Eo *bridge, Eldbus_Message_Iter *iter, const Eo *obj);
-
+static void _object_get_bus_name_and_path(Eo *bridge, const Eo *obj, const char **bus_name, const char **path);
+// TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
+static Eo *_calculate_navigable_accessible_at_point(Eo *any_object, Eina_Bool coord_type, int x, int y);
+//
 // utility functions
 static void _iter_interfaces_append(Eldbus_Message_Iter *iter, const Eo *obj);
 static Eina_Bool _elm_atspi_bridge_key_filter(void *data, void *loop, int type, void *event);
@@ -529,13 +532,27 @@ static AtspiRelationType _elm_relation_to_atspi_relation(Efl_Access_Relation_Typ
    return ATSPI_RELATION_NULL;
 }
 
+static Efl_Access_Relation_Type _atspi_relation_to_elm_relation(AtspiRelationType type)
+{
+   unsigned int i;
+   for(i = 0; i < sizeof(elm_relation_to_atspi_relation_mapping) / sizeof(elm_relation_to_atspi_relation_mapping[0]); ++i)
+     {
+       if (elm_relation_to_atspi_relation_mapping[i] == (int)type) return (Elm_Atspi_Relation_Type)i;
+     }
+   return EFL_ACCESS_RELATION_NULL;
+}
+
+static AtspiRole _efl_role_to_atspi_role(Efl_Access_Role role)
+{
+   return role > EFL_ACCESS_ROLE_LAST_DEFINED ? ATSPI_ROLE_LAST_DEFINED : elm_roles_to_atspi_roles[role][1];
+}
+
 static Eldbus_Message *
 _accessible_get_role(const Eldbus_Service_Interface *iface, const Eldbus_Message *msg)
 {
    const char *obj_path = eldbus_message_path_get(msg);
    Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
-   AtspiRole atspi_role = ATSPI_ROLE_INVALID;
    Efl_Access_Role role;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_MIXIN, msg);
@@ -545,7 +562,7 @@ _accessible_get_role(const Eldbus_Service_Interface *iface, const Eldbus_Message
    Eldbus_Message *ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
 
-   atspi_role = role > EFL_ACCESS_ROLE_LAST_DEFINED ? ATSPI_ROLE_LAST_DEFINED : elm_roles_to_atspi_roles[role][1];
+   AtspiRole atspi_role = _efl_role_to_atspi_role(role);
    eldbus_message_arguments_append(ret, "u", atspi_role);
    return ret;
 }
@@ -931,6 +948,61 @@ _accessible_gesture_do(const Eldbus_Service_Interface *iface, const Eldbus_Messa
 }
 //
 
+// TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
+static Eldbus_Message *
+_accessible_get_navigable_at_point(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
+{
+   const char *obj_path = eldbus_message_path_get(msg);
+   Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
+   // TIZEN_ONLY(20160705) - enable atspi_proxy to work
+   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(bridge, pd, NULL);
+   //
+   Eo *obj = _bridge_object_from_path(bridge, obj_path);
+   int x, y;
+   Eldbus_Message *ret;
+   AtspiCoordType coord_type;
+   Eldbus_Message_Iter *iter;
+
+   ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_MIXIN, msg);
+
+   // TIZEN_ONLY(20161213) - do not response if ecore evas is obscured
+   const Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
+   if (ecore_evas_obscured_get(ee))
+     return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "ecore evas is obscured.");
+   //
+
+   if (!eldbus_message_arguments_get(msg, "iiu", &x, &y, &coord_type))
+     return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.InvalidArgs", "Invalid index type.");
+
+   // TIZEN_ONLY(20160705) - enable atspi_proxy to work
+   Evas_Object *top = elm_object_top_widget_get(obj);
+   int sx = 0;
+   int sy = 0;
+   efl_access_component_socket_offset_get(top, &sx, &sy);
+   x = x - sx;
+   y = y - sy;
+   //
+
+   ret = eldbus_message_method_return_new(msg);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
+
+   iter = eldbus_message_iter_get(ret);
+
+   Eina_Bool type = coord_type == ATSPI_COORD_TYPE_SCREEN ? EINA_TRUE : EINA_FALSE;
+   Eo *accessible = _calculate_navigable_accessible_at_point(obj, type, x, y);
+   _bridge_iter_object_reference_append(bridge, iter, accessible);
+   _bridge_object_register(bridge, accessible);
+
+   const char *obj_bus_name = NULL, *ret_bus_name = NULL;
+   _object_get_bus_name_and_path(bridge, obj, &obj_bus_name, NULL);
+   if (accessible) _object_get_bus_name_and_path(bridge, accessible, &ret_bus_name, NULL);
+
+   unsigned char recurse = obj_bus_name && ret_bus_name && strcmp(obj_bus_name, ret_bus_name) != 0;
+   eldbus_message_iter_basic_append(iter, 'y', recurse);
+   return ret;
+}
+//
+
 //TIZEN_ONLY(20170531): add "GetReadingMaterial" interface method
 static int
 _list_children_count_check(Eo *obj)
@@ -1237,6 +1309,9 @@ fail:
 //
 
 static const Eldbus_Method accessible_methods[] = {
+   // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
+   { "GetNavigableAtPoint", ELDBUS_ARGS({"i", "x"}, {"i", "y"}, {"u", "coord_type"}), ELDBUS_ARGS({"(so)", "accessible"}), _accessible_get_navigable_at_point, 0 },
+   //
    { "GetChildAtIndex", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"(so)", "Accessible"}), _accessible_child_at_index, 0 },
    { "GetChildren", NULL, ELDBUS_ARGS({"a(so)", "children"}), _accessible_get_children, 0 },
    { "GetIndexInParent", NULL, ELDBUS_ARGS({"i", "index"}), _accessible_get_index_in_parent, 0 },
@@ -3671,44 +3746,39 @@ static const Eldbus_Service_Interface_Desc collection_iface_desc = {
 };
 
 static void
-_bridge_iter_object_reference_append(Eo *bridge, Eldbus_Message_Iter *iter, const Eo *obj)
+_object_get_bus_name_and_path(Eo *bridge, const Eo *obj, const char **bus_name, const char **path)
 {
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(bridge, pd);
-   Eldbus_Message_Iter *iter_struct = eldbus_message_iter_container_new(iter, 'r', NULL);
-   EINA_SAFETY_ON_NULL_RETURN(iter);
-   /* TIZEN_ONLY(20171108): make atspi_proxy work
-   const char *path = _path_from_object(obj);
-   eldbus_message_iter_basic_append(iter_struct, 's', eldbus_connection_unique_name_get(pd->a11y_bus));
-   eldbus_message_iter_basic_append(iter_struct, 'o', path);
-   eldbus_message_iter_container_close(iter, iter_struct);
-   */
-   //TIZEN_ONLY(20171108): make atspi_proxy work
+
+   // TIZEN_ONLY(20160705) - enable atspi_proxy to work
    if (efl_isa(obj, ELM_ATSPI_PROXY_CLASS))
      {
         const char *pbus = "", *ppath = ATSPI_DBUS_PATH_NULL;
         elm_obj_atspi_proxy_address_get(obj, &pbus, &ppath);
-        if (!pbus || !ppath)
+        if (pbus && ppath)
           {
-             ERR("Invalid proxy address! Address not set before connecting/listening?");
-             const char *path = _path_from_object(obj);
-             eldbus_message_iter_basic_append(iter_struct, 's', eldbus_connection_unique_name_get(pd->a11y_bus));
-             eldbus_message_iter_basic_append(iter_struct, 'o', path);
+            if (bus_name) *bus_name = pbus;
+            if (path) *path = ppath;
+             return;
           }
-        else
-          {
-             eldbus_message_iter_basic_append(iter_struct, 's', pbus);
-             eldbus_message_iter_basic_append(iter_struct, 'o', ppath);
-          }
+       DBG("Invalid proxy address! Address not set before connecting/listening. Or after proxy is removed.");
      }
-   else
-     {
-        const char *path = _path_from_object(obj);
-        eldbus_message_iter_basic_append(iter_struct, 's', eldbus_connection_unique_name_get(pd->a11y_bus));
-        eldbus_message_iter_basic_append(iter_struct, 'o', path);
-     }
-
-    eldbus_message_iter_container_close(iter, iter_struct);
+   if (bus_name) *bus_name = eldbus_connection_unique_name_get(pd->a11y_bus);
+   if (path) *path = _path_from_object(obj);
    //
+}
+
+static void
+_bridge_iter_object_reference_append(Eo *bridge, Eldbus_Message_Iter *iter, const Eo *obj)
+{
+   EINA_SAFETY_ON_NULL_RETURN(iter);
+
+   const char *pbus = NULL, *ppath = ATSPI_DBUS_PATH_NULL;
+   _object_get_bus_name_and_path(bridge, obj, &pbus, &ppath);
+   Eldbus_Message_Iter *iter_struct = eldbus_message_iter_container_new(iter, 'r', NULL);
+   eldbus_message_iter_basic_append(iter_struct, 's', pbus);
+   eldbus_message_iter_basic_append(iter_struct, 'o', ppath);
+   eldbus_message_iter_container_close(iter, iter_struct);
 }
 
 static void
@@ -3994,6 +4064,259 @@ _component_get_accessible_at_point(const Eldbus_Service_Interface *iface EINA_UN
 
    return ret;
 }
+
+// TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
+static AtspiRole _object_get_role_impl(void *ptr)
+{
+   Elm_Atspi_Role role;
+   Eo *obj = (Eo*)ptr;
+   role = efl_access_role_get(obj);
+   return _efl_role_to_atspi_role(role);
+}
+
+static uint64_t _object_get_state_set_impl(void *ptr)
+{
+   Efl_Access_State_Set states;
+   Eo *obj = (Eo*)ptr;
+   states = efl_access_state_set_get(obj);
+   return _elm_atspi_state_set_to_atspi_state_set(states);
+}
+
+static void *_get_object_in_relation_by_type_impl(void *ptr, AtspiRelationType type)
+{
+   if (ptr)
+     {
+       const Eo *source = ptr;
+       Efl_Access_Relation_Set relations;
+       Efl_Access_Relation_Type expected_relation_type = _atspi_relation_to_elm_relation(type);
+       relations = efl_access_relation_set_get(source);
+       Efl_Access_Relation *rel;
+       Eina_List *l;
+       EINA_LIST_FOREACH(relations, l, rel)
+         {
+           if (rel->type == expected_relation_type) return rel->objects ? rel->objects->data : NULL;
+         }
+     }
+   return NULL;
+}
+
+static unsigned char _object_is_zero_size_impl(void *ptr)
+{
+   Eo *obj = (Eo*)ptr;
+   Eina_Rect r;
+   r = efl_access_component_extents_get(obj, EINA_TRUE);
+   return r.w == 0 || r.h == 0;
+}
+
+unsigned char _object_is_scrollable_impl(void *ptr)
+{
+   Eo *obj = (Eo*)ptr;
+   return efl_isa(obj, ELM_INTERFACE_SCROLLABLE_MIXIN);
+}
+
+void *_get_parent_impl(void *ptr)
+{
+   Eo *obj = (Eo*)ptr;
+   if (elm_widget_is(obj)) return elm_widget_parent_get(obj);
+   return elm_widget_parent_widget_get(obj);
+}
+
+void *_object_at_point_get_impl(void *ptr, int x, int y, unsigned char coordinates_are_screen_based)
+{
+   Eo *obj = (Eo*)ptr, *target;
+   target = efl_access_component_accessible_at_point_get(obj, coordinates_are_screen_based, x, y);
+   return target;
+}
+
+unsigned char _object_contains_impl(void *ptr, int x, int y, unsigned char coordinates_are_screen_based)
+{
+   Eo *obj = (Eo*)ptr;
+   Eina_Bool return_value;
+   return_value = efl_access_component_contains(obj, coordinates_are_screen_based, x, y);
+   return return_value ? 1 : 0;
+}
+
+unsigned char _object_is_proxy_impl(void *ptr)
+{
+   Eo *obj = (Eo*)ptr;
+   return efl_isa(obj, ELM_ATSPI_PROXY_CLASS) ? 1 : 0;
+}
+typedef struct {
+   AtspiRole (*object_get_role)(void *ptr);
+   uint64_t (*object_get_state_set)(void *ptr);
+   void *(*get_object_in_relation_by_type)(void *ptr, AtspiRelationType type);
+   unsigned char (*object_is_zero_size)(void *ptr);
+   void *(*get_parent)(void *ptr);
+   unsigned char (*object_is_scrollable)(void *ptr);
+   void *(*object_at_point_get)(void *ptr, int x, int y, unsigned char coordinates_are_screen_based);
+   unsigned char (*object_contains)(void *ptr, int x, int y, unsigned char coordinates_are_screen_based);
+   unsigned char (*object_is_proxy)(void *ptr);
+} accessibility_navigation_pointer_table;
+
+static unsigned char _accept_object_check_role(accessibility_navigation_pointer_table *table, void *obj)
+{
+   AtspiRole role = table->object_get_role(obj);
+   switch (role)
+     {
+       case ATSPI_ROLE_APPLICATION:
+       case ATSPI_ROLE_FILLER:
+       case ATSPI_ROLE_SCROLL_PANE:
+       case ATSPI_ROLE_SPLIT_PANE:
+       case ATSPI_ROLE_WINDOW:
+       case ATSPI_ROLE_IMAGE:
+       case ATSPI_ROLE_LIST:
+       case ATSPI_ROLE_ICON:
+       case ATSPI_ROLE_TOOL_BAR:
+       case ATSPI_ROLE_REDUNDANT_OBJECT:
+       case ATSPI_ROLE_COLOR_CHOOSER:
+       case ATSPI_ROLE_PANEL:
+       case ATSPI_ROLE_TREE_TABLE:
+       case ATSPI_ROLE_PAGE_TAB_LIST:
+       case ATSPI_ROLE_PAGE_TAB:
+       case ATSPI_ROLE_SPIN_BUTTON:
+       case ATSPI_ROLE_INPUT_METHOD_WINDOW:
+       case ATSPI_ROLE_EMBEDDED:
+       case ATSPI_ROLE_INVALID:
+       case ATSPI_ROLE_NOTIFICATION:
+         return 0;
+       default:
+         break;
+     }
+   return 1;
+}
+
+static unsigned char _state_set_is_set(uint64_t state_set, AtspiStateType state)
+{
+   return (state_set & ((uint64_t)1 << (unsigned int)state)) != 0;
+}
+
+static unsigned char _object_is_item(accessibility_navigation_pointer_table *table, void *obj)
+{
+   AtspiRole role = table->object_get_role(obj);
+   return role == ATSPI_ROLE_LIST_ITEM || role == ATSPI_ROLE_MENU_ITEM;
+}
+
+static unsigned char _object_is_highlightable(accessibility_navigation_pointer_table *table, void *obj)
+{
+   uint64_t state_set = table->object_get_state_set(obj);
+   return _state_set_is_set(state_set, ATSPI_STATE_HIGHLIGHTABLE);
+}
+
+static unsigned char _object_is_showing(accessibility_navigation_pointer_table *table, void *obj)
+{
+   uint64_t state_set = table->object_get_state_set(obj);
+   return _state_set_is_set(state_set, ATSPI_STATE_SHOWING);
+}
+
+static unsigned char _object_is_collapsed(accessibility_navigation_pointer_table *table, void *obj)
+{
+   uint64_t state_set = table->object_get_state_set(obj);
+   return
+      _state_set_is_set(state_set, ATSPI_STATE_EXPANDABLE) &&
+      !_state_set_is_set(state_set, ATSPI_STATE_EXPANDED);
+}
+
+static unsigned char _object_has_modal_state(accessibility_navigation_pointer_table *table, void *obj)
+{
+   uint64_t state_set = table->object_get_state_set(obj);
+   return _state_set_is_set(state_set, ATSPI_STATE_MODAL);
+}
+
+static unsigned char _object_is_zero_size(accessibility_navigation_pointer_table *table, void *obj)
+{
+   return table->object_is_zero_size(obj);
+}
+
+static void *_get_scrollable_parent(accessibility_navigation_pointer_table *table, void *obj)
+{
+   while(obj)
+     {
+       obj = table->get_parent(obj);
+       if (obj && table->object_is_scrollable(obj)) return obj;
+     }
+   return NULL;
+}
+static unsigned char _accept_object(accessibility_navigation_pointer_table *table, void *obj)
+{
+   if (!obj) return 0;
+   if (!_accept_object_check_role(table, obj)) return 0;
+   if (table->get_object_in_relation_by_type(obj, ATSPI_RELATION_CONTROLLED_BY) != NULL) return 0;
+   if (!_object_is_highlightable(table, obj)) return 0;
+
+   if (_get_scrollable_parent(table, obj) != NULL)
+     {
+       void *parent = table->get_parent(obj);
+
+       if (parent)
+         {
+           return !_object_is_item(table, obj) || !_object_is_collapsed(table, parent);
+         }
+     }
+   else
+     {
+       if (_object_is_zero_size(table, obj)) return 0;
+       if (!_object_is_showing(table, obj)) return 0;
+     }
+   return 1;
+}
+
+static void *_calculate_navigable_accessible_at_point_impl(accessibility_navigation_pointer_table *table,
+          void *root, int x, int y, unsigned char coordinates_are_screen_based)
+{
+   if (!root) return NULL;
+
+   void *return_value = NULL;
+   while (1)
+     {
+       void *target = table->object_at_point_get(root, x, y, coordinates_are_screen_based);
+       if (!target) break;
+
+       // always return proxy, so atspi lib can call on it again
+       if (table->object_is_proxy(target)) return target;
+
+       root = target;
+       void *relation_obj = table->get_object_in_relation_by_type(root, ATSPI_RELATION_CONTROLLED_BY);
+       unsigned char contains = 0;
+       if (relation_obj)
+         {
+           contains = table->object_contains(relation_obj, x, y, coordinates_are_screen_based);
+           if (contains) root = relation_obj;
+         }
+
+       if (_accept_object(table, root))
+         {
+           return_value = root;
+           if (contains) break;
+         }
+     }
+
+   if (return_value && _object_has_modal_state(table, return_value)) return_value = NULL;
+   return return_value;
+}
+
+accessibility_navigation_pointer_table construct_accessibility_navigation_pointer_table(void)
+{
+   accessibility_navigation_pointer_table table;
+#define INIT(n) table.n = _## n ## _impl
+   INIT(object_get_role);
+   INIT(object_get_state_set);
+   INIT(get_object_in_relation_by_type);
+   INIT(object_is_zero_size);
+   INIT(get_parent);
+   INIT(object_is_scrollable);
+   INIT(object_at_point_get);
+   INIT(object_contains);
+   INIT(object_is_proxy);
+#undef INIT
+   return table;
+}
+static Eo *_calculate_navigable_accessible_at_point(Eo *root, Eina_Bool coord_type, int x, int y)
+{
+   accessibility_navigation_pointer_table table = construct_accessibility_navigation_pointer_table();
+   Eo *result = (Eo*)_calculate_navigable_accessible_at_point_impl(&table, root, x, y, coord_type ? 1 : 0);
+   return result;
+}
+//
 
 static Eldbus_Message *
 _component_get_extents(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
