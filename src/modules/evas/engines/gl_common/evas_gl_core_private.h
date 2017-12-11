@@ -598,6 +598,12 @@ struct _EVGL_Resource
         void *context;
    } stored;
 
+   // TIZEN_ONLY
+   // When evas_gl_make_current with NULL, then evas_gl_surface/context_destroy is called,
+   // memory leak occurs as texture and framebuffer.
+   // Because evas_gl_surface/context_destroy check rsc->current_ctx.
+   // To fix memory leak, keep current context to prev_ctx value.
+   EVGL_Context  *prev_ctx;
 };
 
 struct _EVGL_Engine

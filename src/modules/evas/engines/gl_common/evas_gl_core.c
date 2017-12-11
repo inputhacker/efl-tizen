@@ -2325,36 +2325,47 @@ evgl_surface_destroy(void *eng_data, EVGL_Surface *sfc)
 
    // Retrieve the resource object
    rsc = _evgl_tls_resource_get();
-   if (rsc && rsc->current_ctx)
+   if (rsc)
      {
-        // Make current to current context to destroy surface buffers
-        if (!_internal_resource_make_current(eng_data, sfc, rsc->current_ctx))
-          {
-             ERR("Error doing an internal resource make current");
-             return 0;
-          }
+        EVGL_Context* cur_context = NULL;
 
-        // Destroy created buffers
-        // TIZEN_ONLY(20171110) : fix GLES 1.1 FBO creating
-        if (!_surface_buffers_destroy(sfc, rsc->current_ctx->version))
-          {
-             ERR("Error deleting surface resources.");
-             return 0;
-          }
+        // TIZEN_ONLY : To fix memory leak
+        if (rsc->current_ctx)
+          cur_context = rsc->current_ctx;
+        else if (rsc->prev_ctx)
+          cur_context = rsc->prev_ctx;
 
-        if (rsc->current_ctx->current_sfc == sfc)
+        if (cur_context)
           {
-             if (evgl_engine->api_debug_mode)
+             // Make current to current context to destroy surface buffers
+             if (!_internal_resource_make_current(eng_data, sfc, cur_context))
                {
-                  ERR("The surface is still current before it's being destroyed.");
-                  ERR("Doing make_current(NULL, NULL)");
+                  ERR("Error doing an internal resource make current");
+                  return 0;
                }
-             else
+
+             // Destroy created buffers
+             if (!_surface_buffers_destroy(sfc, cur_context->version))
                {
-                  WRN("The surface is still current before it's being destroyed.");
-                  WRN("Doing make_current(NULL, NULL)");
+                  ERR("Error deleting surface resources.");
+                  return 0;
                }
-             evgl_make_current(eng_data, NULL, NULL);
+
+             //if (rsc->current_ctx->current_sfc == sfc)
+             if (cur_context->current_sfc == sfc)
+               {
+                  if (evgl_engine->api_debug_mode)
+                    {
+                       ERR("The surface is still current before it's being destroyed.");
+                       ERR("Doing make_current(NULL, NULL)");
+                    }
+                  else
+                    {
+                       WRN("The surface is still current before it's being destroyed.");
+                       WRN("Doing make_current(NULL, NULL)");
+                    }
+                  evgl_make_current(eng_data, NULL, NULL);
+               }
           }
      }
 
@@ -2511,6 +2522,7 @@ evgl_context_destroy(void *eng_data, EVGL_Context *ctx)
 {
    EVGL_Resource *rsc;
    Eina_Bool dbg;
+   EVGL_Context *cur_ctx = NULL;
 
    // Check the input
    if ((!evgl_engine) || (!ctx))
@@ -2529,7 +2541,13 @@ evgl_context_destroy(void *eng_data, EVGL_Context *ctx)
    if ((dbg = evgl_engine->api_debug_mode))
      DBG("Destroying context (eng = %p, ctx = %p)", eng_data, ctx);
 
-   if ((rsc->current_ctx) && (rsc->current_ctx == ctx))
+   // To fix memory leak
+   if (rsc->current_ctx)
+     cur_ctx = rsc->current_ctx;
+   else if (rsc->prev_ctx)
+     cur_ctx = rsc->prev_ctx;
+
+   if ((cur_ctx) && (cur_ctx == ctx))
      {
         if (evgl_engine->api_debug_mode)
           {
@@ -2561,16 +2579,28 @@ evgl_context_destroy(void *eng_data, EVGL_Context *ctx)
 
    // Retrieve the resource object
    rsc = _evgl_tls_resource_get();
-   if (rsc && rsc->current_ctx == ctx)
+   if (rsc)
      {
-        // Unset the currrent context
-        if (dbg) DBG("Calling make_current(NULL, NULL)");
-        if (!evgl_engine->funcs->make_current(eng_data, NULL, NULL, 0))
+        EVGL_Context *current_ctx = NULL;
+
+        if (rsc->current_ctx)
+          current_ctx = rsc->current_ctx;
+        else if (rsc->prev_ctx)
+          current_ctx = rsc->prev_ctx;
+
+        if (current_ctx)
           {
-             ERR("Error doing make_current(NULL, NULL).");
-             return 0;
-          }
+             // Unset the currrent context
+             if (dbg) DBG("Calling make_current(NULL, NULL)");
+             if (!evgl_engine->funcs->make_current(eng_data, NULL, NULL, 0))
+               {
+                  ERR("Error doing make_current(NULL, NULL).");
+                  return 0;
+               }
+           }
+        // To fix memory leak
         rsc->current_ctx = NULL;
+        rsc->prev_ctx = NULL;
      }
 
    // Destroy indirect rendering context
@@ -2675,6 +2705,11 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
         // FIXME -- What is this "FIXME" about?
         if (rsc->current_ctx)
           {
+             // TIZNE_ONLY 
+             // To fix memory leak,
+             // when evgl_surface_destroy or evgl_context_destroy is called
+             rsc->prev_ctx = rsc->current_ctx;
+
              rsc->current_ctx->current_sfc = NULL;
              rsc->current_ctx = NULL;
              rsc->current_eng = NULL;
@@ -2703,6 +2738,11 @@ evgl_make_current(void *eng_data, EVGL_Surface *sfc, EVGL_Context *ctx)
 
    rsc->current_ctx = ctx;
    rsc->current_eng = eng_data;
+
+   // TIZNE_ONLY 
+   // To fix memory leak,
+   // when evgl_surface_destroy or evgl_context_destroy is called
+   rsc->prev_ctx = NULL;
 
    // Check whether extensions are supported for the current context version
    // to use fbo & egl image passing to evas
