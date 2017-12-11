@@ -104,6 +104,7 @@
     cmd(SIG_PRESSED, "pressed", "") \
     cmd(SIG_RELEASED, "released", "") \
     cmd(SIG_CHANGED, "changed", "") \
+    cmd(SIG_WIDGET_ATSPI_HIGHLIGHTED, "atspi,highlighted", "") \
     cmd(SIG_FILTER_DONE, "filter,done", "")
 
 ELM_PRIV_GENLIST_SIGNALS(ELM_PRIV_STATIC_VARIABLE_DECLARE);
@@ -115,6 +116,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
 
+   //TIZEN_ONLY(20170724): grab highlight using unrealized item
+   {SIG_WIDGET_ATSPI_HIGHLIGHTED, ""},
+   //
    {NULL, NULL}
 };
 #undef ELM_PRIV_GENLIST_SIGNALS
@@ -151,6 +155,7 @@ static const char SIGNAL_GROUP_SINGLE[] = "elm,state,group,single";
 static const char SIGNAL_GROUP_FIRST[] = "elm,state,group,first";
 static const char SIGNAL_GROUP_LAST[] = "elm,state,group,last";
 static const char SIGNAL_GROUP_MIDDLE[] = "elm,state,group,middle";
+static const char SIGNAL_ITEM_HIGHLIGHTED[] = "elm,state,highlighted";
 
 static void _item_unrealize(Elm_Gen_Item *it);
 static Eina_Bool _item_select(Elm_Gen_Item *it);
@@ -2081,7 +2086,13 @@ _item_realize(Elm_Gen_Item *it, const int index, Eina_Bool calc)
    if (sd->atspi_item_to_highlight == it)
      {
        sd->atspi_item_to_highlight = NULL;
-       efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_GENLIST_ITEM_CLASS));
+       elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
+       //TIZEN_ONLY(20170724): grab highlight using unrealized item
+       efl_access_state_changed_signal_emit(EO_OBJ(it),
+                                    EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+       evas_object_smart_callback_call(WIDGET(it),
+         SIG_WIDGET_ATSPI_HIGHLIGHTED, EO_OBJ(it));
+       //
      }
    //
 }
@@ -9097,19 +9108,22 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
 
    if (VIEW(it))
      {
-        elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
         //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
         sd->currently_highlighted_item = it;
         //
      }
    else
-     sd->atspi_item_to_highlight = it;//it will be highlighted when realized
+     {
+        //TIZEN_ONLY(20170724): grab highlight using unrealized item
+        elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+        //
+        sd->atspi_item_to_highlight = it;//it will be highlighted when realized
+     }
 
   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
 
-  //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
-  // If you call eo_do_super, then you do NOT have to call smart callback.
-  evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", eo_it);
+  //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
+  edje_object_signal_emit(VIEW(it), SIGNAL_ITEM_HIGHLIGHTED, "elm");
   //
   return ret;
 }
