@@ -119,6 +119,9 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
               * text.max: X X */
              int temp_h = TO_INT(params->eval.h);
              int temp_w = TO_INT(params->eval.w);
+//TIZEN_ONLY(20171211): fix calculation for vertically expandable textblock without max height
+             int ow = 0, oh = 0;
+//
 
              if (min_calc_w > temp_w)
                temp_w = min_calc_w;
@@ -126,22 +129,25 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
                  maxw && (*maxw > -1) && (*maxw < temp_w))
                temp_w = *maxw;
 
+             /*
+              * TIZEN_ONLY(20171211): fix calculation for vertically expandable textblock without max height
+              *
              if (chosen_desc->text.max_y)
                {
-                  /* text.min: 0 1
-                   * text.max: X 1 */
+                  // text.min: 0 1
+                   * text.max: X 1 //
                   temp_h = INT_MAX / 10000;
                }
              else if (maxh && (*maxh > TO_INT(params->eval.h)))
                {
-                  /* text.min: 0 1
+                  // text.min: 0 1
                    * text.max: X 0
-                   * And there is a limit for height. */
+                   * And there is a limit for height. //
                   temp_h = *maxh;
                }
 
-             /* If base width for calculation is 0,
-              * don't get meaningless height for multiline */
+             // If base width for calculation is 0,
+              * don't get meaningless height for multiline //
              if (temp_w > 0)
                {
                   efl_gfx_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
@@ -156,6 +162,71 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
 
                   th += ins_t + ins_b;
                }
+             */
+             EINA_SIZE2D(ow, oh) = efl_gfx_size_get(ep->object);
+
+             /* If object's size is same with the target size,
+              * get current text size and check it before resizing it huge.
+              * It will improve calculation performance. */
+             if ((ow == temp_w) && (oh == temp_h))
+               {
+                  if (temp_w > 0)
+                    {
+                       efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
+                       tw += ins_l + ins_r;
+                       th += ins_t + ins_b;
+                    }
+                  else
+                    {
+                       efl_canvas_text_size_native_get(ep->object, NULL, &th);
+
+                       th += ins_t + ins_b;
+                    }
+               }
+
+             /* If previous calculation was performed based on wrong object size or
+              * text was handled with ellipsis, do again. */
+             if (((ow != temp_w) || (oh != temp_h) ||
+                  evas_object_textblock_ellipsis_status_get(ep->object)))
+               {
+                  if (!chosen_desc->text.max_y && maxh && (*maxh > -1))
+                    {
+                       /* text.min: 0 1
+                        * text.max: X 0
+                        * And there is a limit for height. */
+                       temp_h = *maxh;
+                    }
+                  else
+                    {
+                       /* text.min: 0 1
+                        * text.max: X 1
+                        * or
+                        * text.min: 0 1
+                        * text.max: X 0
+                        * And there is no a limit for height. */
+                       temp_h = INT_MAX / 10000;
+                    }
+
+                  /* If base width for calculation is 0,
+                   * don't get meaningless height for multiline */
+                  if (temp_w > 0)
+                    {
+                       efl_gfx_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
+                       efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
+
+                       tw += ins_l + ins_r;
+                       th += ins_t + ins_b;
+                    }
+                  else
+                    {
+                       efl_canvas_text_size_native_get(ep->object, NULL, &th);
+
+                       th += ins_t + ins_b;
+                    }
+               }
+             /*******
+              * END *
+              *******/
           }
         else
           {
