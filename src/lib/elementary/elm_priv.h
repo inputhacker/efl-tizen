@@ -852,4 +852,9 @@ efl_ui_dir_is_horizontal(Efl_Ui_Dir dir, Eina_Bool def_val)
 #undef EAPI
 #define EAPI
 
+//TIZEN_ONLY(20170411): Tizen Profile Runtime Configurability
+char tizen_util_probe_profile_wearable();
+#define TIZEN_PROFILE_WEARABLE tizen_util_probe_profile_wearable()
+//
+
 #endif

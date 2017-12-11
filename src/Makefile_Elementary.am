@@ -703,6 +703,7 @@ lib_elementary_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_focus_object.c \
 	lib/elementary/efl_ui_focus_manager_root_focus.c \
 	lib/elementary/efl_ui_textpath.c \
+	lib/elementary/tizen_util.c \
 	$(NULL)
 
 
