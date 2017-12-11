@@ -411,9 +411,9 @@ _atspi_expose_title(Eo *obj, Eina_Bool is_atspi)
 static char *
 _access_name_set_cb(void *data, Evas_Object *obj EINA_UNUSED)
 {
-   char *text = data;
-   if (text)
-      return strdup(text);
+   char *text = NULL;
+   if (data) text = _elm_util_mkup_to_text((char*)data);
+   if (text) return strdup(text);
    return NULL;
 }
 

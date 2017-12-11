@@ -7526,7 +7526,7 @@ _efl_ui_win_efl_access_name_get(Eo *obj, Efl_Ui_Win_Data *sd EINA_UNUSED)
    ret = efl_access_name_get(efl_super(obj, EFL_UI_WIN_CLASS));
    if (ret) return ret;
    const char *name = elm_win_title_get(obj);
-   return name;
+   return _elm_widget_accessible_plain_name_get(obj, name);
 }
 
 EOLIAN static Eina_Rect

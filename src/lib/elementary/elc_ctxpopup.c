@@ -1685,7 +1685,10 @@ _elm_ctxpopup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Ctxp
 EOLIAN static const char*
 _elm_ctxpopup_item_efl_access_name_get(Eo *eo_it EINA_UNUSED, Elm_Ctxpopup_Item_Data *item)
 {
-   return strdup(elm_object_item_text_get(item->list_item));
+   const char *ret;
+   ret = efl_access_name_get(efl_super(eo_it, ELM_CTXPOPUP_ITEM_CLASS));
+   if (ret) return ret;
+   return _elm_widget_item_accessible_plain_name_get(eo_it, elm_object_item_text_get(item->list_item));
 }
 //
 

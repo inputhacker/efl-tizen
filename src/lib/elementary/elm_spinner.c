@@ -1708,7 +1708,7 @@ _elm_spinner_efl_access_name_get(Eo *obj, Elm_Spinner_Data *sd)
      }
    else
      ret = elm_layout_text_get(obj, "elm.text");
-   return ret;
+   return _elm_widget_accessible_plain_name_get(obj, ret);
 }
 
 // A11Y Accessibility - END
