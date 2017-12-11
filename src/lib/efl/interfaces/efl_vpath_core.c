@@ -103,6 +103,9 @@ _efl_vpath_core_efl_object_constructor(Eo *obj, Efl_Vpath_Core_Data *pd)
    //   directory MUST be owned by the user, and he MUST be the only one
    //   having read and write access to it. Its Unix access mode MUST
    //   be 0700.
+   // TIZEN_ONLY: A temp patch for migration task
+   if (EINA_FALSE)
+   // TIZEN_ONLY
 #if defined(HAVE_GETUID) && defined(HAVE_GETEUID)
    if ((getuid() != geteuid()) || (!(s = getenv("XDG_RUNTIME_DIR"))))
 #else
