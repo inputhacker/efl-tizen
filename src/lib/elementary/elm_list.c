@@ -3338,9 +3338,9 @@ ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_list, Elm_List_Data)
 //TIZEN_ONLY(20171114): list: enhance accessibility scroll and highlight
 static int _is_item_in_viewport(int viewport_y, int viewport_h, int obj_y, int obj_h)
 {
-    if ((obj_y + obj_h/2) < viewport_y)
+    if ((obj_y + obj_h/2) <= viewport_y)
       return 1;
-    else if ((obj_y + obj_h/2) > viewport_y + viewport_h)
+    else if ((obj_y + obj_h/2) >= viewport_y + viewport_h)
       return -1;
     return 0;
 }
@@ -3433,10 +3433,14 @@ _elm_list_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_List
 EOLIAN static Eina_Bool
 _elm_list_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_List_Item_Data *it)
 {
-   Evas_Coord wy, wh, x, y, w, h, bx, by, bw, bh;
    ELM_LIST_DATA_GET_OR_RETURN_VAL(WIDGET(it), sd, EINA_FALSE);
-   Eina_Bool ret;
 
+#ifndef TIZEN_PROFILE_WEARABLE
+   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+   efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_LIST_ITEM_CLASS));
+   //
+#else
+   Evas_Coord wy, wh, x, y, w, h, bx, by, bw, bh;
    evas_object_geometry_get(WIDGET(it), NULL, &wy, NULL, &wh);
    evas_object_geometry_get(VIEW(it), &x, &y, &w, &h);
    int res = _is_item_in_viewport(wy, wh, y, h);
@@ -3465,11 +3469,9 @@ _elm_list_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_List_Item_Data
    elm_object_accessibility_highlight_set(eo_it, EINA_TRUE);
    efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    //
-   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
-   // If you call eo_do_super, then you do NOT have to call smart callback.
-   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
-   //
-   return ret;
+#endif
+
+   return EINA_TRUE;
 }
 //
 

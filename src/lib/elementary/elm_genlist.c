@@ -9058,50 +9058,33 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
 EOLIAN static Eina_Bool
 _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *it)
 {
-  ELM_GENLIST_DATA_GET(WIDGET(it), sd);
-  Eina_Bool ret = EINA_TRUE;
+   ELM_GENLIST_DATA_GET(WIDGET(it), sd);
 
-  // if item is realized check if in viewport
-  if (VIEW(it))
-    {
+#ifndef TIZEN_PROFILE_WEARABLE
+   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+   efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_GENLIST_ITEM_CLASS));
+   //
+#else
+   // if item is realized check if in viewport
+   if (VIEW(it))
+     {
         Evas_Coord wy, wh, y, h;
         evas_object_geometry_get(WIDGET(it), NULL, &wy, NULL, &wh);
         evas_object_geometry_get(VIEW(it), NULL, &y, NULL, &h);
-        int res = _is_item_in_viewport(wy, wh, y, h);
-        if (res > 0)
-          {
-            // new item is above current
-            elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_BOTTOM);
-          }
-        else if (res < 0)
-          {
-            // new item is below current
-            elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_TOP);
-          }
-        else
-          elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
-      }
-  else // if item is not realized we should search if we are over or below viewport
-    {
+        //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
+        elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+        //
+     }
+   else // if item is not realized we should search if we are over or below viewport
+     {
         Eina_List *realized;
-        int idx, top, bottom;
         realized = elm_genlist_realized_items_get(WIDGET(it));
         if (realized)
           {
-            // index of realized element on top of viewport
-            top = elm_obj_genlist_item_index_get(eina_list_nth(realized, 0));
-            // index of realized element on bottom of viewport
-            bottom = elm_obj_genlist_item_index_get(eina_list_last_data_get(realized));
-            idx = elm_obj_genlist_item_index_get(eo_it);
-            eina_list_free(realized);
-            if (idx < top)
-              elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_BOTTOM);
-            else if (idx > bottom)
-              elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_TOP);
-            else
-              elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+             elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+             eina_list_free(realized);
           }
-    }
+     }
 
    if (VIEW(it))
      elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
@@ -9114,6 +9097,7 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
    // If you call eo_do_super, then you do NOT have to call smart callback.
    evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
    //
+#endif
 
    if (VIEW(it))
      {
@@ -9123,18 +9107,18 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
      }
    else
      {
+#ifndef TIZEN_PROFILE_WEARABLE
         //TIZEN_ONLY(20170724): grab highlight using unrealized item
         elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
         //
+#endif
         sd->atspi_item_to_highlight = it;//it will be highlighted when realized
      }
 
-  efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
-
-  //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
-  edje_object_signal_emit(VIEW(it), SIGNAL_ITEM_HIGHLIGHTED, "elm");
-  //
-  return ret;
+   //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
+   edje_object_signal_emit(VIEW(it), SIGNAL_ITEM_HIGHLIGHTED, "elm");
+   //
+  return EINA_TRUE;
 }
 
 EOLIAN static Eina_Bool

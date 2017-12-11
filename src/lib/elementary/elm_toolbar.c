@@ -3982,13 +3982,8 @@ EOLIAN static Eina_Bool
 _elm_toolbar_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Toolbar_Item_Data *it)
 {
    elm_toolbar_item_show(eo_it, ELM_TOOLBAR_ITEM_SCROLLTO_IN);
-   elm_object_accessibility_highlight_set(VIEW(it), EINA_TRUE);
-   // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
-   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
-   //
-   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
-   // If you call eo_do_super, then you do NOT have to call smart callback.
-   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", eo_it);
+   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+   efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_TOOLBAR_ITEM_CLASS));
    //
    return EINA_TRUE;
 }

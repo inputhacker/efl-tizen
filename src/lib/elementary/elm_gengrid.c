@@ -5515,65 +5515,16 @@ _elm_gengrid_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
 
 //TIZEN_ONLY(20171114):  Region show on item elements fixed
 EOLIAN static Eina_Bool
-_elm_gengrid_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *it)
+_elm_gengrid_item_efl_access_component_highlight_grab(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it)
 {
    ELM_GENGRID_DATA_GET_OR_RETURN_VAL(WIDGET(it), sd, EINA_FALSE);
 
-   // if item is realized check if in viewport
-   if (VIEW(it))
-     {
-        Evas_Coord wx, wy, ww, wh, x, y, w, h;
-        evas_object_geometry_get(WIDGET(it), &wx, &wy, &ww, &wh);
-        evas_object_geometry_get(VIEW(it), &x, &y, &w, &h);
-        switch (_is_item_in_viewport(wx, wy, ww, wh, x, y, w, h))
-          {
-           case -1:
-           case -2:
-              elm_gengrid_item_show(eo_it, ELM_GENGRID_ITEM_SCROLLTO_TOP);
-              break;
-           case 1:
-           case 2:
-              elm_gengrid_item_show(eo_it, ELM_GENGRID_ITEM_SCROLLTO_BOTTOM);
-              break;
-           default:
-              elm_gengrid_item_show(eo_it, ELM_GENGRID_ITEM_SCROLLTO_IN);
-          }
-     }
-   else // if item is not realized we should search if we are over or below viewport
-     {
-        int idx, top, bottom;
-        Eina_List *realized = elm_gengrid_realized_items_get(WIDGET(it));
-        if (realized)
-          {
-             // index of realized element on top of viewport
-             top = elm_obj_gengrid_item_index_get(eina_list_nth(realized, 0));
-             // index of realized element on bottom of viewport
-             bottom = elm_obj_gengrid_item_index_get(eina_list_last_data_get(realized));
-             idx = elm_obj_gengrid_item_index_get(eo_it);
-             eina_list_free(realized);
-             if (idx < top)
-               elm_gengrid_item_show(eo_it, ELM_GENGRID_ITEM_SCROLLTO_BOTTOM);
-             else if (idx > bottom)
-               elm_gengrid_item_show(eo_it, ELM_GENGRID_ITEM_SCROLLTO_TOP);
-             else
-               elm_gengrid_item_show(eo_it, ELM_GENGRID_ITEM_SCROLLTO_IN);
-          }
-     }
+   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+   efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_GENGRID_ITEM_CLASS));
+   //
 
-   //TIZEN_ONLY (20151009) : Accessibility: updated highlight change during gengrid scroll
-   if (VIEW(it))
-     elm_object_accessibility_highlight_set(VIEW(it), EINA_TRUE);
-   else
+   if (!VIEW(it))
       sd->atspi_item_to_highlight = it;//it will be highlighted when realized
-   //
-
-   //TIZEN_ONLY(20170717) : expose highlight information on atspi
-   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
-   //
-   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
-   // If you call eo_do_super, then you do NOT have to call smart callback.
-   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", eo_it);
-   //
    return EINA_TRUE;
 }
 

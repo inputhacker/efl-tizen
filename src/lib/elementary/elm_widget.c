@@ -4182,6 +4182,46 @@ _elm_widget_item_highlightable(Elm_Object_Item *item)
 }
 //
 
+//TIZEN_ONLY(20170206): Add check the object is in the scroller content size
+Eina_Bool
+_accessible_object_on_scroll_is(Eo* obj)
+{
+   if(!obj) return EINA_FALSE;
+
+   Evas_Object *target = obj;
+   Evas_Object *parent = NULL;
+   Evas_Coord x, y, w, h, wx, wy, ww, wh, nx, ny;
+
+   evas_object_geometry_get(target, &x, &y ,&w, &h);
+
+   if (elm_widget_is(target))
+     parent = elm_widget_parent_get(target);
+   else
+     parent = elm_widget_parent_widget_get(target);
+
+   while (parent)
+     {
+        if (efl_isa(parent, ELM_INTERFACE_SCROLLABLE_MIXIN))
+          {
+             evas_object_geometry_get(parent, &wx, &wy, NULL, NULL);
+             elm_interface_scrollable_content_size_get(parent, &ww, &wh);
+             elm_interface_scrollable_content_pos_get(parent, &nx, &ny);
+             wx -= nx;
+             wy -= ny;
+
+             if (((wx < x) && (wx + ww < x)) || ((wx > x + w) && (wx + ww > x + w)) ||
+                 ((wy < y) && (wy + wh < y)) || ((wy > y + h) && (wy + wh > y + h)))
+               return EINA_FALSE;
+
+             break;
+          }
+        parent = elm_widget_parent_get(parent);
+     }
+
+   return EINA_TRUE;
+}
+//
+
 EOLIAN static Efl_Access_State_Set
 _elm_widget_item_efl_access_state_set_get(Eo *eo_item, Elm_Widget_Item_Data *item)
 {
@@ -4207,13 +4247,17 @@ _elm_widget_item_efl_access_state_set_get(Eo *eo_item, Elm_Widget_Item_Data *ite
      {
         STATE_TYPE_SET(states, EFL_ACCESS_STATE_ENABLED);
         STATE_TYPE_SET(states, EFL_ACCESS_STATE_SENSITIVE);
-        STATE_TYPE_SET(states, EFL_ACCESS_STATE_VISIBLE);
      }
    if (_elm_widget_item_onscreen_is(eo_item))
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
 
+   //TIZEN_ONLY(20170207) : [ATSPI] enhance expose highlight information on atspi
+   if (evas_object_visible_get(item->view))
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_VISIBLE);
+   //
+
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
-   if (_elm_widget_item_highlightable(eo_item))
+   if (_elm_widget_item_highlightable(eo_item) && _accessible_object_on_scroll_is(item->view))
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
    else
      STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
@@ -5886,34 +5930,17 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
    //   }
    // return EINA_FALSE;
 
+   if (!sd) return EINA_FALSE;
+   if (!sd->view) return EINA_FALSE;
+
+   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+   _accessible_highlight_region_show(sd->view);
+   //
+
+   if (!sd->eo_obj) return EINA_FALSE;
+   elm_object_accessibility_highlight_set(sd->eo_obj, EINA_TRUE);
    if (!obj) return EINA_FALSE;
 
-   Evas_Object *o = elm_object_parent_widget_get(sd->view);
-   if (_elm_scrollable_is(o))
-     {
-        Evas_Coord bx, by, bw, bh;
-        Evas_Coord x, y, w, h;
-        Evas_Object *w1 = elm_object_parent_widget_get(o);
-        evas_object_geometry_get(sd->view, &x, &y, &w, &h);
-        evas_object_geometry_get(o, &bx, &by, &bw, &bh);
-        x -= bx;
-        y -= by;
-        // TIZEN_ONLY(20171115): [PATCH] Fix for accessibility highlight
-        switch (_elm_config->focus_autoscroll_mode)
-          {
-           case ELM_FOCUS_AUTOSCROLL_MODE_SHOW:
-              elm_interface_scrollable_content_region_show(w1, x, y, w, h);
-              break;
-           case ELM_FOCUS_AUTOSCROLL_MODE_BRING_IN:
-              elm_interface_scrollable_region_bring_in(w1, x, y, w, h);
-              break;
-           default:
-              break;
-          }
-        //
-     }
-
-   elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_HIGHLIGHTED, obj);
@@ -6633,11 +6660,141 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
 // }
 //
 
+//TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+Eina_Bool
+_accessible_object_on_screen_is(Eo *obj, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h, Eina_Bool is_complete)
+{
+   if(!obj) return EINA_FALSE;
+
+   Evas_Object *target = obj;
+   Evas_Object *parent = NULL;
+   Evas_Coord px, py, sx, sy, sw, sh, ox, oy, ow, oh;
+
+   if (elm_widget_is(target))
+     parent = elm_widget_parent_get(target);
+   else
+     parent = elm_widget_parent_widget_get(target);
+
+   while (parent)
+     {
+        if (efl_isa(parent, ELM_INTERFACE_SCROLLABLE_MIXIN))
+          {
+             evas_object_geometry_get(parent, &sx, &sy, &sw, &sh);
+             px = ox = x;
+             py = oy = y;
+             ow = w;
+             oh = h;
+             ox = is_complete ? ox : ox + ow;
+             oy = is_complete ? oy : oy + oh;
+             ox = ox > sx ? ox : sx;
+             oy = oy > sy ? oy : sy;
+             ow = px + ow < sx + sw ? px + ow - ox : sx + sw - ox;
+             oh = py + oh < sy + sh ? py + oh - oy : sy + sh - oy;
+          }
+        if (ow <= 0 || oh <= 0)
+          return EINA_FALSE;
+
+        parent = elm_widget_parent_get(parent);
+     }
+   return EINA_TRUE;
+}
+
+Eina_List *
+_accessible_scrollable_parent_list_get(Eo *obj)
+{
+   if(!obj) return NULL;
+
+   Evas_Object *parent = NULL;
+   Eina_List *plist = NULL;
+
+   if (elm_widget_is(obj))
+     parent = elm_widget_parent_get(obj);
+   else
+     parent = elm_widget_parent_widget_get(obj);
+
+   while (parent)
+     {
+        if (_elm_scrollable_is(parent))
+          plist = eina_list_append(plist, parent);
+
+        parent = elm_widget_parent_get(parent);
+   }
+   return plist;
+}
+
+void
+_accessible_highlight_region_show(Eo* obj)
+{
+   if(!obj) return ;
+
+   Evas_Object *target = obj;
+   Evas_Object *parent = NULL;
+   Evas_Object *parent_sub = NULL;
+   Eina_List *plist, *plist_sub;
+   Eina_List *l, *l2;
+
+   Evas_Coord target_x, target_y, target_w, target_h;
+
+   evas_object_geometry_get(target, &target_x, &target_y, &target_w, &target_h);
+
+   plist = _accessible_scrollable_parent_list_get(target);
+   if(!plist) return ;
+   EINA_LIST_FOREACH(plist, l, parent)
+     {
+        if(!_accessible_object_on_screen_is(target, target_x, target_y, target_w, target_h, EINA_TRUE))
+          {
+             plist_sub = _accessible_scrollable_parent_list_get(parent);
+             plist_sub = eina_list_prepend(plist_sub, parent);
+             EINA_LIST_FOREACH(plist_sub, l2, parent_sub)
+               {
+                  Evas_Coord scroll_x, scroll_y;
+                  Evas_Coord scroll_x_back, scroll_y_back;
+                  Evas_Coord x, y, w, h;
+                  Evas_Coord px, py;
+
+                  elm_interface_scrollable_content_region_get(parent_sub, &scroll_x_back, &scroll_y_back, NULL, NULL);
+                  evas_object_geometry_get(parent_sub, &px, &py, NULL, NULL);
+                  x = target_x; y = target_y; w = target_w; h = target_h;
+
+                  x -= (px - scroll_x_back);
+                  y -= (py - scroll_y_back);
+                  switch (_elm_config->focus_autoscroll_mode)
+                    {
+                       case ELM_FOCUS_AUTOSCROLL_MODE_SHOW:
+                          elm_interface_scrollable_content_region_show(parent_sub, x, y, w, h);
+                          break;
+                       case ELM_FOCUS_AUTOSCROLL_MODE_BRING_IN:
+                          elm_interface_scrollable_region_bring_in(parent_sub, x, y, w, h);
+                          break;
+                       default:
+                          break;
+                    }
+                  elm_interface_scrollable_content_region_get(parent_sub, &scroll_x, &scroll_y, NULL, NULL);
+
+                  target_x -= (scroll_x - scroll_x_back);
+                  target_y -= (scroll_y - scroll_y_back);
+
+                  if(_accessible_object_on_screen_is(target, target_x, target_y, target_w, target_h, EINA_FALSE))
+                    break;
+               }
+             eina_list_free(plist_sub);
+          }
+     }
+
+   eina_list_free(plist);
+}
+//
+
 EOLIAN static Eina_Bool
 _elm_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
 {
+   if(!obj) return EINA_FALSE;
    if(!_elm_atspi_enabled())
       return EINA_FALSE;
+
+   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+   _accessible_highlight_region_show(obj);
+   //
 
    elm_widget_focus_region_show(obj);
    elm_object_accessibility_highlight_set(obj, EINA_TRUE);
