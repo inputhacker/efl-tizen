@@ -2177,19 +2177,16 @@ elm_object_accessibility_highlight_set(Evas_Object *obj, Eina_Bool visible)
           _accessibility_currently_highlighted_obj = obj;
      }
 
-   if (visible)
+   if (elm_widget_access_highlight_in_theme_get(obj))
      {
-       if (elm_widget_access_highlight_in_theme_get(obj))
+        if (visible)
           elm_widget_signal_emit(obj, "elm,action,access_highlight,show", "elm");
-       else
-          _elm_win_object_set_accessibility_highlight(win, obj);
+        else
+           elm_widget_signal_emit(obj, "elm,action,access_highlight,hide", "elm");
      }
    else
      {
-       if (elm_widget_access_highlight_in_theme_get(obj))
-          elm_widget_signal_emit(obj, "elm,action,access_highlight,hide", "elm");
-       else
-          _elm_win_object_set_accessibility_highlight(win, NULL);
+        _elm_win_object_set_accessibility_highlight(win, obj, visible);
      }
 
    // if (!visible && (obj == _elm_win_accessibility_highlight_get(win)))

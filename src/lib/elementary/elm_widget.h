@@ -562,7 +562,7 @@ void                  _elm_win_focus_auto_hide(Evas_Object *obj);
 // void                  _elm_win_accessibility_highlight_set(Evas_Object *win, Evas_Object *obj);
 // Evas_Object          *_elm_win_accessibility_highlight_get(Evas_Object *win);
 // //
-void                  _elm_win_object_set_accessibility_highlight(Evas_Object *win, Evas_Object *obj);
+void                  _elm_win_object_set_accessibility_highlight(Evas_Object *win, Evas_Object *obj, Eina_Bool visible);
 // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
 void                 *_elm_object_accessibility_currently_highlighted_get();
 //

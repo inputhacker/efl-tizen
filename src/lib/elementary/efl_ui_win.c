@@ -8729,22 +8729,21 @@ static void _elm_win_accessibility_highlight_callbacks_del(Efl_Ui_Win_Data *sd)
 }
 
 void
-_elm_win_object_set_accessibility_highlight(Evas_Object *win, Evas_Object *obj)
+_elm_win_object_set_accessibility_highlight(Evas_Object *win, Evas_Object *obj, Eina_Bool visible)
 {
    if (!win) return;
    ELM_WIN_DATA_GET(win, sd);
-   _elm_win_accessibility_highlight_hide(sd->obj);
-   // TIZEN_ONLY(20171117) Accessibility frame follows parent item on scroll event
-   _elm_win_accessibility_highlight_callbacks_del(sd);
-   //
-   if (obj)
+   if (visible || sd->accessibility_highlight.cur.target == obj)
+     {
+        _elm_win_accessibility_highlight_hide(sd->obj);
+        // TIZEN_ONLY(20171117) Accessibility frame follows parent item on scroll event
+        _elm_win_accessibility_highlight_callbacks_del(sd);
+        //
+     }
+   if (visible)
      {
          _elm_win_accessibility_highlight_init(sd, obj);
          _elm_win_accessibility_highlight_show(win);
-     }
-   else
-     {
-         _elm_win_accessibility_highlight_hide(win);
      }
 }
 //
