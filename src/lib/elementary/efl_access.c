@@ -137,6 +137,13 @@ struct _Efl_Access_Gesture_Cb_Item
    const void *data;
 };
 typedef struct _Efl_Access_Gesture_Cb_Item Efl_Access_Gesture_Cb_Item;
+
+struct _Elm_Atspi_Gesture_Cb_Item
+{
+   Elm_Atspi_Gesture_Cb cb;
+   const void *data;
+};
+typedef struct _Elm_Atspi_Gesture_Cb_Item Elm_Atspi_Gesture_Cb_Item;
 //
 
 struct _Efl_Access_Data
@@ -148,6 +155,7 @@ struct _Efl_Access_Data
    //
    //TIZEN_ONLY(20170405) Add gesture method to accessible interface
    Efl_Access_Gesture_Cb_Item gesture_cb_item;
+   Elm_Atspi_Gesture_Cb_Item legacy_gesture_cb_item;
    //
    Eina_List     *attr_list;
    const char    *name;
@@ -430,6 +438,20 @@ _efl_access_gesture_do(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, Efl_Access_Gest
    Eina_Bool ret = EINA_FALSE;
    if (pd->gesture_cb_item.cb)
      ret = pd->gesture_cb_item.cb((void *)pd->gesture_cb_item.data, gesture_info, (Evas_Object *)obj);
+
+   if (!ret && pd->legacy_gesture_cb_item.cb)
+     {
+        Elm_Atspi_Gesture_Info legacy_gesture_info;
+        legacy_gesture_info.type = (Elm_Atspi_Gesture_Type)gesture_info.type;
+        legacy_gesture_info.x_beg = gesture_info.x_beg;
+        legacy_gesture_info.y_beg = gesture_info.y_beg;
+        legacy_gesture_info.x_end = gesture_info.x_end;
+        legacy_gesture_info.y_end = gesture_info.y_end;
+        legacy_gesture_info.state = (Elm_Atspi_Gesture_State)gesture_info.state;
+        legacy_gesture_info.event_time = gesture_info.event_time;
+        ret = pd->legacy_gesture_cb_item.cb((void *)pd->legacy_gesture_cb_item.data, legacy_gesture_info, (Evas_Object *)obj);
+     }
+
    return ret;
 }
 //
@@ -873,5 +895,188 @@ _efl_access_shutdown(void)
 
    ELM_SAFE_DEL(root);
 }
+
+//TIZEN_ONLY(20171211): Keep Tizen Legacy API
+EAPI Eina_Bool
+elm_atspi_accessible_relationship_append(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Relation_Type type, const Elm_Interface_Atspi_Accessible *relation_object)
+{
+   return efl_access_relationship_append(obj, type, relation_object);
+}
+
+EAPI void
+elm_atspi_accessible_relationship_remove(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Relation_Type type, const Elm_Interface_Atspi_Accessible *relation_object)
+{
+   elm_atspi_accessible_relationship_remove(obj, type, relation_object);
+}
+
+EAPI const char *
+elm_atspi_accessible_translation_domain_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return elm_atspi_accessible_translation_domain_get(obj);
+}
+
+EAPI void
+elm_atspi_accessible_translation_domain_set(Elm_Interface_Atspi_Accessible *obj, const char *domain)
+{
+   efl_access_translation_domain_set(obj, domain);
+}
+
+EAPI const char *
+elm_atspi_accessible_localized_role_name_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_localized_role_name_get(obj);
+}
+
+EAPI void elm_atspi_accessible_name_set(Elm_Interface_Atspi_Accessible *obj, const char *name)
+{
+   efl_access_name_set(obj, name);
+}
+
+EAPI const char *
+elm_atspi_accessible_name_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_name_get(obj);
+}
+
+EAPI void
+elm_atspi_accessible_name_cb_set(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Reading_Info_Cb name_cb, const void *data)
+{
+   efl_access_name_cb_set(obj, name_cb, data);
+}
+
+EAPI Elm_Atspi_Relation_Set
+elm_atspi_accessible_relation_set_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_relation_set_get(obj);
+}
+
+EAPI void
+elm_atspi_accessible_role_set(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Role role)
+{
+   efl_access_role_set(obj, role);
+}
+
+EAPI Elm_Atspi_Role
+elm_atspi_accessible_role_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_role_get(obj);
+}
+
+EAPI Eina_List *elm_atspi_accessible_children_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_children_get(obj);
+}
+
+EAPI const char *
+elm_atspi_accessible_role_name_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_role_name_get(obj);
+}
+
+EAPI Eina_List *
+elm_atspi_accessible_attributes_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_attributes_get(obj);
+}
+
+EAPI void
+elm_atspi_accessible_reading_info_type_set(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Reading_Info_Type_Mask reading_info)
+{
+   efl_access_reading_info_type_set(obj, reading_info);
+}
+
+EAPI Elm_Atspi_Reading_Info_Type_Mask
+elm_atspi_accessible_reading_info_type_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_reading_info_type_get(obj);
+}
+
+EAPI int
+elm_atspi_accessible_index_in_parent_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_index_in_parent_get(obj);
+}
+
+EAPI void
+elm_atspi_accessible_description_set(Elm_Interface_Atspi_Accessible *obj, const char *description)
+{
+   efl_access_description_set(obj, description);
+}
+
+EAPI const char *
+elm_atspi_accessible_description_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_description_get(obj);
+}
+
+EAPI void
+elm_atspi_accessible_description_cb_set(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Reading_Info_Cb description_cb, const void *data)
+{
+   efl_access_description_cb_set(obj, description_cb, data);
+}
+
+EAPI void
+elm_atspi_accessible_gesture_cb_set(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Gesture_Cb gesture_cb, const void *data)
+{
+   Efl_Access_Data *sd = efl_data_scope_get(obj, ELM_ACCESS_CLASS);
+
+   sd->legacy_gesture_cb_item.cb = gesture_cb;
+   sd->legacy_gesture_cb_item.data = data;
+}
+
+EAPI void
+elm_atspi_accessible_parent_set(Elm_Interface_Atspi_Accessible *obj, Elm_Interface_Atspi_Accessible *parent)
+{
+   efl_access_parent_set(obj, parent);
+}
+
+EAPI Elm_Interface_Atspi_Accessible *
+elm_atspi_accessible_parent_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_parent_get(obj);
+}
+
+EAPI Elm_Atspi_State_Set
+elm_atspi_accessible_state_set_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_state_set_get(obj);
+}
+
+EAPI void
+elm_atspi_accessible_can_highlight_set(Elm_Interface_Atspi_Accessible *obj, Eina_Bool can_highlight)
+{
+   efl_access_can_highlight_set(obj, can_highlight);
+}
+
+EAPI Eina_Bool
+elm_atspi_accessible_can_highlight_get(const Elm_Interface_Atspi_Accessible *obj)
+{
+   return efl_access_can_highlight_get(obj);
+}
+
+EAPI void
+elm_atspi_accessible_attribute_append(Elm_Interface_Atspi_Accessible *obj, const char *key, const char *value)
+{
+   efl_access_attribute_append(obj, key, value);
+}
+
+EAPI void
+elm_atspi_accessible_attributes_clear(Elm_Interface_Atspi_Accessible *obj)
+{
+   efl_access_attributes_clear(obj);
+}
+
+EAPI void
+elm_atspi_accessible_relationships_clear(Elm_Interface_Atspi_Accessible *obj)
+{
+   efl_access_relationships_clear(obj);
+}
+
+EAPI void
+elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_State_Set state_types_mask, Eina_Bool recursive)
+{
+   efl_access_state_notify(obj, state_types_mask, recursive);
+}
+//
 
 #include "efl_access.eo.c"

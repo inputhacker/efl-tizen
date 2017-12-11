@@ -120,117 +120,6 @@ enum Efl.Access.Role
    last_defined,  [[Last enum entry sentinel]]
 }
 
-//TIZEN_ONLY(200171207): Keep backward compatability
-enum Elm.Atspi.Role
-{
-   [[Describes the role of an object visible to Accessibility Clients.]]
-   invalid, [[Role: invalid]]
-   accelerator_label, [[Role: accelerator label]]
-   alert, [[Role: alert]]
-   animation, [[Role: animation]]
-   arrow, [[Role: arrow]]
-   calendar, [[Role: calendar]]
-   canvas, [[Role: canvas]]
-   check_box, [[Role: check box]]
-   check_menu_item, [[Role: check menu item]]
-   color_chooser, [[Role: color chooser]]
-   column_header, [[Role: column header]]
-   combo_box, [[Role: combo box]]
-   date_editor, [[Role: data editor]]
-   desktop_icon, [[Role: desktop icon]]
-   desktop_frame, [[Role: desktop frame]]
-   dial, [[Role: dial]]
-   dialog, [[Role: dialog]]
-   directory_pane, [[Role: directory pane]]
-   drawing_area, [[Role: drawing area]]
-   file_chooser, [[Role: file chooser]]
-   filler, [[Role: filler]]
-   focus_traversable, [[Role: focus traversable]]
-   font_chooser, [[Role: font chooser]]
-   frame, [[Role: frame]]
-   glass_pane, [[Role: glass pane]]
-   html_container, [[Role: HTML container]]
-   icon, [[Role: icon]]
-   image, [[Role: image]]
-   internal_frame, [[Role: internal frame]]
-   label, [[Role: label]]
-   layered_pane, [[Role: layered pane]]
-   list, [[Role: list]]
-   list_item, [[Role: list item]]
-   menu, [[Role: menu]]
-   menu_bar, [[Role: menu bar]]
-   menu_item, [[Role: menu item]]
-   option_pane, [[Role: option pane]]
-   page_tab, [[Role: page tab]]
-   page_tab_list, [[Role: page tab list]]
-   panel, [[Role: panel]]
-   password_text, [[Role: password text]]
-   popup_menu, [[Role: popup menu]]
-   progress_bar, [[Role: progress bar]]
-   push_button, [[Role: push button]]
-   radio_button, [[Role: radio button]]
-   radio_menu_item, [[Role: radio menu item]]
-   root_pane, [[Role: root pane]]
-   row_header, [[Role: row header]]
-   scroll_bar, [[Role: scroll bar]]
-   scroll_pane, [[Role: scroll pane]]
-   separator, [[Role: separator]]
-   slider, [[Role: slider]]
-   spin_button, [[Role: spin button]]
-   split_pane, [[Role: split pane]]
-   status_bar, [[Role: status bar]]
-   table, [[Role: table]]
-   table_cell, [[Role: table cell]]
-   table_column_header, [[Role: table column header]]
-   table_row_header, [[Role: table row header]]
-   tearoff_menu_item, [[Role: tearoff menu item]]
-   terminal, [[Role: terminal]]
-   text, [[Role: text]]
-   toggle_button, [[Role: toggle button]]
-   tool_bar, [[Role: too bar]]
-   tool_tip, [[Role: tool tip]]
-   tree, [[Role: tree]]
-   tree_table, [[Role: tree table]]
-   unknown, [[Role: unknown]]
-   viewport, [[Role: viewport]]
-   window, [[Role: window]]
-   extended, [[Role: extended]]
-   header, [[Role: header]]
-   footer, [[Role: footer]]
-   paragraph, [[Role: paragraph]]
-   ruler, [[Role: ruler]]
-   application, [[Role: application]]
-   autocomplete, [[Role: autocomplete]]
-   editbar, [[Role: editbar]]
-   embedded, [[Role: embedded]]
-   entry, [[Role: entry]]
-   chart, [[Role: chart]]
-   caption, [[Role: caption]]
-   document_frame, [[Role: document frame]]
-   heading, [[Role: heading]]
-   page, [[Role: page]]
-   section, [[Role: section]]
-   redundant_object, [[Role: redundant object]]
-   form, [[Role: form]]
-   link, [[Role: link]]
-   input_method_window, [[Role: input method window]]
-   table_row, [[Role: table row]]
-   tree_item, [[Role: table item]]
-   document_spreadsheet, [[Role: document spreadsheet]]
-   document_presentation, [[Role: document presentation]]
-   document_text, [[Role: document text]]
-   document_web, [[Role: document web]]
-   document_email, [[Role: document email]]
-   comment, [[Role: comment]]
-   list_box, [[Role: list box]]
-   grouping, [[Role: grouping]]
-   image_map, [[Role: image map]]
-   notification, [[Role: notification]]
-   info_bar, [[Role: info bar]]
-   last_defined,  [[Last enum entry sentinel]]
-}
-//
-
 enum Efl.Access.State_Type
 {
    [[Describes a possible states of an object visible to accessibility clients.]]
@@ -312,33 +201,6 @@ enum Efl.Access.Relation_Type
    last_defined, [[Last enum entry sentinel]]
 }
 
-//TIZEN_ONLY(200171207): Keep backward compatability
-enum Elm.Atspi.Relation_Type
-{
-   [[Describes relation between two objects.]]
-   null, [[No relation]]
-   label_for, [[Label for relation]]
-   labelled_by, [[Labelled by relation]]
-   controller_for, [[Controller for relation]]
-   controlled_by, [[Controlled by relation]]
-   member_of, [[Member of relation]]
-   tooltip_for, [[Tooltip for relation]]
-   node_child_of, [[Node child of relation]]
-   node_parent_of, [[Node parent of relation]]
-   extended, [[Extended relation]]
-   flows_to, [[Flows to relation]]
-   flows_from, [[Flows from relation]]
-   subwindow_of, [[Subwindow of relation]]
-   embeds, [[Embeds relation]]
-   embedded_by, [[Embedded by relation]]
-   popup_for, [[Popup for relation]]
-   parent_window_of, [[Parent window of relation]]
-   description_for, [[Description for relation]]
-   described_by, [[Described by relation]]
-   last_defined, [[Last enum entry sentinel]]
-}
-//
-
 enum Efl.Access.Reading.Info.Type
 {
    [[The accessible Reading information type that can be read.]]
@@ -347,17 +209,6 @@ enum Efl.Access.Reading.Info.Type
    description = 1 << 2, [[description should be read.]]
    state = 1 << 3, [[State should be read.]]
 }
-
-//TIZEN_ONLY(200171207): Keep backward compatability
-enum Elm.Atspi.Reading.Info.Type
-{
-   [[The accessible Reading information type that can be read.]]
-   name = 1 << 0, [[Name should be read]]
-   role = 1 << 1, [[Role should be read]]
-   description = 1 << 2, [[description should be read.]]
-   state = 1 << 3, [[State should be read.]]
-}
-//
 
 enum Efl.Access.Gesture
 {
@@ -407,55 +258,6 @@ enum Efl.Access.Gesture.State
    abort,
 }
 
-//TIZEN_ONLY(200171207): Keep backward compatability
-enum Elm.Atspi.Gesture
-{
-   one_finger_hover,
-   two_fingers_hover,
-   three_fingers_hover,
-   one_finger_flick_left,
-   one_finger_flick_right,
-   one_finger_flick_up,
-   one_finger_flick_down,
-   two_fingers_flick_left,
-   two_fingers_flick_right,
-   two_fingers_flick_up,
-   two_fingers_flick_down,
-   three_fingers_flick_left,
-   three_fingers_flick_right,
-   three_fingers_flick_up,
-   three_fingers_flick_down,
-   one_finger_single_tap,
-   one_finger_double_tap,
-   one_finger_triple_tap,
-   two_fingers_single_tap,
-   two_fingers_double_tap,
-   two_fingers_triple_tap,
-   three_fingers_single_tap,
-   three_fingers_double_tap,
-   three_fingers_triple_tap,
-   one_finger_flick_left_return,
-   one_finger_flick_right_return,
-   one_finger_flick_up_return,
-   one_finger_flick_down_return,
-   two_fingers_flick_left_return,
-   two_fingers_flick_right_return,
-   two_fingers_flick_up_return,
-   two_fingers_flick_down_return,
-   three_fingers_flick_left_return,
-   three_fingers_flick_right_return,
-   three_fingers_flick_up_return,
-   three_fingers_flick_down_return,
-}
-
-enum Elm.Atspi.Gesture.State
-{
-   start,
-   move,
-   end,
-   abort,
-}
-//
 type Efl.Access.State_Set: uint64; [[Accessibility object state set.]]
 
 struct Efl.Access.Event.Handler; [[Accessibility event listener]]
@@ -508,27 +310,11 @@ struct Efl.Access.Gesture.Info
    event_time: uint; [[gesture occurance time]]
 }
 
-//TIZEN_ONLY(200171207): Keep backward compatability
-struct Elm.Atspi.Gesture.Info
-{
-   type: Elm.Atspi.Gesture; [[Gesture type]]
-   x_beg: int; [[start gesture x co-ordinate]]
-   y_beg: int; [[start gesture y co-ordinate]]
-   x_end: int; [[end gesture x co-ordinate]]
-   y_end: int; [[end gesture y co-ordinate]]
-   state: Elm.Atspi.Gesture.State; [[state of gesture]]
-   event_time: uint; [[gesture occurance time]]
-}
-//
-
 type Efl.Access.Relation_Set: list<ptr(Efl.Access.Relation)>; [[Elementary Accessibility relation set type]]
 
 mixin Efl.Access (Efl.Interface, Efl.Object)
 {
    [[Accessibility accessible mixin]]
-   //TIZEN_ONLY(200171207): Keep backward compatability
-   legacy_prefix: elm_atspi_accessible;
-   //
    eo_prefix: efl_access;
    data: Efl_Access_Data;
    methods {
@@ -733,9 +519,6 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       //
       event_handler_add @class @protected {
          [[Register accessibility event listener]]
-         //TIZEN_ONLY(200171207): Keep backward compatability
-         legacy: null;
-         //
          params {
               @in cb: Efl_Event_Cb; [[Callback]]
               @in data: void_ptr; [[Data]]
@@ -744,18 +527,12 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       }
       event_handler_del @class @protected {
          [[Deregister accessibility event listener]]
-         //TIZEN_ONLY(200171207): Keep backward compatability
-         legacy: null;
-         //
          params {
               @in handler: ptr(Efl.Access.Event.Handler); [[Event handler]]
          }
       }
       event_emit @class @protected {
          [[Emit event]]
-         //TIZEN_ONLY(200171207): Keep backward compatability
-         legacy: null;
-         //
          params {
             @in accessible: Efl.Access; [[Accessibility object.]]
             @in event: ptr(const(Efl.Event.Description)); [[Accessibility event type.]]

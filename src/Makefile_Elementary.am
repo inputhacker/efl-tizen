@@ -224,6 +224,7 @@ includesunstable_HEADERS = \
 	lib/elementary/elm_gen_common.h \
 	lib/elementary/elm_atspi_bridge.h \
 	lib/elementary/efl_access.h \
+	lib/elementary/efl_access_legacy.h \
 	lib/elementary/efl_access_text.h \
 	lib/elementary/efl_access_widget_action.h \
 	lib/elementary/efl_access_window.h \

@@ -22,7 +22,7 @@ typedef Eina_Bool (*Efl_Access_Gesture_Cb)(void *data, Efl_Access_Gesture_Info g
 #include "efl_access.eo.h"
 #endif
 #ifndef EFL_NOLEGACY_API_SUPPORT
-#include "efl_access.eo.legacy.h"
+#include "efl_access_legacy.h"
 #endif
 
 // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
