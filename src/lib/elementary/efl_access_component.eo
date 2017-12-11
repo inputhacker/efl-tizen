@@ -102,7 +102,11 @@ mixin Efl.Access.Component ()
       //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
       highlight_grab @protected {
          [[ Highlights accessible widget.
-         returns true if highlight grab has successed, false otherwise. ]]
+         returns true if highlight grab has successed, false otherwise.
+
+           \@if WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          //TIZEN_ONLY(20160721): atspi: provide highlight legacy API
          legacy: elm_atspi_component_highlight_grab;
          //
@@ -110,7 +114,11 @@ mixin Efl.Access.Component ()
       }
       highlight_clear @protected {
          [[ Clears highlight of accessible widget.
-         returns true if clear has successed, false otherwise. ]]
+         returns true if clear has successed, false otherwise.
+
+           \@if WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          //TIZEN_ONLY(20160721): atspi: provide highlight legacy API
          legacy: elm_atspi_component_highlight_clear;
          //

@@ -339,7 +339,11 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       //TIZEN_ONLY(20190922): add name callback, description callback.
       @property name_cb {
          set {
-            [[Sets name information callback about widget.]]
+            [[Sets name information callback about widget.
+
+              \@if WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             name_cb: Efl_Access_Reading_Info_Cb; [[reading information callback]]
@@ -368,18 +372,26 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       //TIZEN_ONLY(20190922): add name callback, description callback.
       @property description_cb {
          set {
-            [[Sets contextual information callback about widget.]]
+            [[Sets contextual information callback about widget.
+
+              \@if WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
-            description_cb: Efl_Access_Reading_Info_Cb; [[reading information callback]]
-            data: const (void_ptr);
+            description_cb: Efl_Access_Reading_Info_Cb; [[The function called to provide the accessible description.]]
+            data: const (void_ptr); [[The data passed to \@c description_cb.]]
          }
       }
       //
       //TIZEN_ONLY(20170405) Add gesture method to accessible interface
       @property gesture_cb {
          set {
-            [[Sets gesture callback to give widget.]]
+            [[Sets gesture callback to give widget.
+
+              \@if WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             gesture_cb: Efl_Access_Gesture_Cb;
@@ -419,7 +431,10 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
          }
       }
       attribute_append {
-         [[Add key-value pair identifying object extra attributes
+         [[Add key-value pair identifying widget extra attribute
+
+           \@if WEARABLE \@since_tizen 3.0
+           \@endif
          ]]
          params {
             @in key: string; [[The string key to give extra information]]
@@ -434,10 +449,18 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       }
       @property reading_info_type @protected {
          get {
-            [[Gets reading information types of an accessible object.]]
+            [[Gets reading information types of an accessible object.
+
+              \@if WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          set {
-            [[Sets reading information of an accessible object.]]
+            [[Sets reading information of an accessible object.
+
+              \@if WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
             reading_info: Efl.Access.Reading.Info.Type; [[Reading information types]]
@@ -507,13 +530,21 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       //TIZEN_ONLY(20160726): add API efl_access_can_highlight_set/get
       @property can_highlight @protected {
          get {
-            [[Gets highlightable of given widget.]]
+            [[Gets highlightable of given widget.
+
+              \@if WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          set {
-            [[Sets highlightable to given widget.]]
+            [[Sets highlightable to given widget.
+
+              \@if WEARABLE \@since_tizen 3.0
+              \@endif
+            ]]
          }
          values {
-            can_highlight: bool; [[If \@c true, the object is highlightable]]
+            can_highlight: bool; [[If \@c true, the object is highlightable.]]
          }
       }
       //
