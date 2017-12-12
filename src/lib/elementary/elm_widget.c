@@ -5912,7 +5912,6 @@ _elm_widget_item_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, Elm_Widget
    return elm_object_item_focus_get(obj);
 }
 
-
 //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
 EOLIAN static void
 _elm_widget_efl_access_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Eina_Bool can_highlight)
