@@ -949,6 +949,15 @@ EAPI Evas_GL                 *evas_gl_current_evas_gl_get (Evas_GL_Context **con
  * Evas_GL.h as these will conflict.
  *-----------------------------------------------------------------------*/
 
+#ifndef KHRONOS_SUPPORT_INT64
+typedef unsigned long long khronos_uint64_t;
+typedef signed long long   khronos_int64_t;
+#endif
+
+// Due to build conflicts on various platforms, we can't use GL[u]int64 directly
+typedef khronos_int64_t    EvasGLint64;
+typedef khronos_uint64_t   EvasGLuint64;
+
 #if !defined(__gl2_h_)
 # define __gl2_h_
 
@@ -976,6 +985,13 @@ typedef unsigned int     GLuint;
 typedef float            GLfloat;      // Changed khronos_float_t
 typedef float            GLclampf;     // Changed khronos_float_t
 typedef signed int       GLfixed;      // Changed khronos_int32_t
+
+/*
+ * Evas GL has two types to support 64 bit interger both EvasGL[u]int64 and GL[u]int64
+ * EvasGL[u]int64 is for backwards compatibility and GL[u]int64 is for native type.
+*/
+typedef khronos_int64_t  GLint64;
+typedef khronos_uint64_t GLuint64;
 
 /* OpenGL ES core versions */
 //#define GL_ES_VERSION_2_0                 1
