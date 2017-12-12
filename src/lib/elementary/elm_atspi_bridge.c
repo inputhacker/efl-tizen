@@ -4538,9 +4538,6 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
    return NULL;
 }
 
-
-
-
 typedef struct accessibility_navigation_pointer_table_impl {
   accessibility_navigation_pointer_table ptrs;
   Eo *bridge;
@@ -4548,7 +4545,7 @@ typedef struct accessibility_navigation_pointer_table_impl {
 
 static AtspiRole _object_get_role_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr)
 {
-   Elm_Atspi_Role role;
+   Efl_Access_Role role;
    Eo *obj = (Eo*)ptr;
    role = efl_access_role_get(obj);
    return _efl_role_to_atspi_role(role);
@@ -4556,7 +4553,7 @@ static AtspiRole _object_get_role_impl(struct accessibility_navigation_pointer_t
 
 static uint64_t _object_get_state_set_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr)
 {
-   Elm_Atspi_State_Set states;
+   Efl_Access_State_Set states;
    Eo *obj = (Eo*)ptr;
    states = efl_access_state_set_get(obj);
    return _elm_atspi_state_set_to_atspi_state_set(states);

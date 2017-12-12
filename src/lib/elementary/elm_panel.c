@@ -1443,10 +1443,10 @@ _elm_panel_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Pan
 }
 
 // TIZEN_ONLY(20170829) : [atspi][panel] Adds accessibility support for the panel widget.
-EOLIAN static Elm_Atspi_State_Set
+EOLIAN static Efl_Access_State_Set
 _elm_panel_efl_access_state_set_get(Eo *obj, Elm_Panel_Data *sd EINA_UNUSED)
 {
-   Elm_Access_State_Set ret;
+   Efl_Access_State_Set ret;
    ret = efl_access_state_set_get(efl_super(obj, MY_CLASS));
 
    if (!sd->hidden)
