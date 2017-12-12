@@ -6896,8 +6896,11 @@ elm_atspi_bridge_utils_say(const char* text,
    eldbus_message_iter_arguments_append(iter, "sb", text, discardable);
    if (func) {
       say_info = calloc(1, sizeof(Elm_Atspi_Say_Info));
-      say_info->func = func;
-      say_info->data = (void *)data;
+      if (say_info)
+        {
+           say_info->func = func;
+           say_info->data = (void *)data;
+        }
    }
    eldbus_connection_send(pd->a11y_bus, msg, _on_read_command_call, say_info, -1);
 }
