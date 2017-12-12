@@ -637,6 +637,12 @@ _elm_naviframe_item_efl_object_destructor(Eo *eo_item, Elm_Naviframe_Item_Data *
 
         elm_object_signal_emit(VIEW(prev_it), "elm,state,visible", "elm");
 
+        //TIZEN_ONLY(20171019): add state_notify api
+        if (_elm_atspi_enabled())
+          efl_access_state_notify(VIEW(prev_it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
+                                                 | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+        //
+
         efl_event_callback_legacy_call(WIDGET(prev_it), ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(prev_it));
      }
 
@@ -1218,20 +1224,6 @@ _on_item_pop_finished(void *data,
    sd->popping = eina_list_remove(sd->popping, it);
 
    elm_wdg_item_del(EO_OBJ(it));
-
-   //TIZEN_ONLY(20161122): add state_notify api
-   Eo *eo_top = elm_naviframe_top_item_get(widget);
-   if (eo_top)
-     {
-        ELM_NAVIFRAME_ITEM_DATA_GET(eo_top, top);
-        _elm_win_default_label_obj_append(VIEW(top));
-
-        if (_elm_atspi_enabled())
-          {
-             efl_access_state_notify(VIEW(top), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
-          }
-     }
-   //
 }
 
 /* "elm,state,new,pushed",
@@ -1257,15 +1249,23 @@ _on_item_show_finished(void *data,
 
    it->pushing = EINA_FALSE;
 
+   //TIZEN_ONLY(20161122): add state_notify api
+   if (EO_OBJ(it) == elm_naviframe_top_item_get(WIDGET(it)))
+     {
+        _elm_win_default_label_obj_append(VIEW(it));
+
+        if (_elm_atspi_enabled())
+          {
+             efl_access_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
+                                               | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+          }
+     }
+   //
+
    efl_event_callback_legacy_call(WIDGET(it), ELM_NAVIFRAME_EVENT_TRANSITION_FINISHED, EO_OBJ(it));
 
    if (EO_OBJ(it) == elm_naviframe_top_item_get(WIDGET(it)))
-     {
-        efl_event_callback_legacy_call(WIDGET(it), ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(it));
-        //TIZEN_ONLY(20170919): Handle default label object
-        _elm_win_default_label_obj_append(VIEW(it));
-        //
-     }
+     efl_event_callback_legacy_call(WIDGET(it), ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(it));
 }
 
 static void
@@ -1658,10 +1658,10 @@ _item_push_helper(Elm_Naviframe_Item_Data *item)
 
    if (!top_item)
      {
-        efl_event_callback_legacy_call(obj, ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(item));
         //TIZEN_ONLY(20170919): Handle default label object
         _elm_win_default_label_obj_append(VIEW(item));
         //
+        efl_event_callback_legacy_call(obj, ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(item));
      }
 }
 
@@ -1763,6 +1763,11 @@ _elm_naviframe_item_insert_after(Eo *obj, Elm_Naviframe_Data *sd, Elm_Object_Ite
         _resize_object_reset(obj, it);
         evas_object_show(VIEW(it));
         evas_object_hide(VIEW(after));
+        //TIZEN_ONLY(20171019): add state_notify api
+        if (_elm_atspi_enabled())
+          efl_access_state_notify(VIEW(after), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
+                                               | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+        //
         if (elm_object_focus_allow_get(VIEW(it)))
           elm_object_focus_set(VIEW(it), EINA_TRUE);
         else
@@ -1776,7 +1781,15 @@ _elm_naviframe_item_insert_after(Eo *obj, Elm_Naviframe_Data *sd, Elm_Object_Ite
    elm_layout_sizing_eval(obj);
 
    if (top_inserted)
-     efl_event_callback_legacy_call(obj, ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, eo_item);
+        {
+           //TIZEN_ONLY(20171019): Handle default label object
+           _elm_win_default_label_obj_append(VIEW(it));
+           if (_elm_atspi_enabled())
+             efl_access_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
+                                               | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+           //
+           efl_event_callback_legacy_call(obj, ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, eo_item);
+        }
 
    return eo_item;
 }
