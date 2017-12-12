@@ -1120,9 +1120,18 @@ static void *
 eng_gl_current_context_get(void *data EINA_UNUSED)
 {
    EVGL_Context *ctx;
+   EVGLNative_Context context;
 
    ctx = glsym_evas_gl_common_current_context_get();
-   return ctx;
+   if (!ctx)
+     return NULL;
+
+   context = glsym_evgl_current_native_context_get(ctx);
+
+   if (evas_eglGetCurrentContext() == context)
+     return ctx;
+
+   return NULL;
 }
 
 static int
