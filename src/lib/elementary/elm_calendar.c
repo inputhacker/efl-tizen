@@ -779,9 +779,11 @@ _populate(Evas_Object *obj)
    edje_object_message_signal_process(elm_layout_edje_get(obj));
 
    //TIZEN_ONLY(20151012): Register smart callbacks for calendar buttons.
-   if (_elm_atspi_enabled())
-     _atspi_expose_objects(obj, EINA_TRUE);
-   //
+    // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+    if (elm_atspi_bridge_utils_is_screen_reader_enabled())
+      _atspi_expose_objects(obj, EINA_TRUE);
+    //
+    //
 
    _flush_calendar_composite_elements(obj, sd);
 }
@@ -1701,14 +1703,16 @@ _elm_calendar_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Calendar_Data
 
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
+// TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_calendar_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Calendar_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
+_elm_calendar_elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Calendar_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
-   _atspi_expose_objects(obj, is_atspi);
+   _atspi_expose_objects(obj, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
-   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_screen_reader);
    //
 }
+//
 //
 
 EAPI Evas_Object *

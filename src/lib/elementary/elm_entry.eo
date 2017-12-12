@@ -854,7 +854,7 @@ class Elm.Entry (Efl.Ui.Layout, Elm.Interface_Scrollable, Efl.Ui.Clickable,
       Elm.Interface_Scrollable.policy { set; }
       Elm.Interface_Scrollable.bounce_allow { set; }
       // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
-      Elm.Widget.atspi;
+      Elm.Widget.screen_reader;
       //
       Efl.Access.children { get; }
       // TIZEN_ONLY(20170512): Support accessibility for entry anchors.

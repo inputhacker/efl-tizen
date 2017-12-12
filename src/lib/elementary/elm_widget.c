@@ -2912,8 +2912,8 @@ _elm_widget_access_info_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
 EAPI Eina_Bool
-elm_widget_atspi(Evas_Object *obj,
-                  Eina_Bool is_atspi)
+elm_widget_screen_reader(Evas_Object *obj,
+                  Eina_Bool is_screen_reader)
 {
    const Eina_List *l;
    Evas_Object *child;
@@ -2923,15 +2923,15 @@ elm_widget_atspi(Evas_Object *obj,
    EINA_LIST_FOREACH(sd->subobjs, l, child)
      {
         if (elm_widget_is(child))
-          ret &= elm_widget_atspi(child, is_atspi);
+          ret &= elm_widget_screen_reader(child, is_screen_reader);
      }
-   elm_obj_widget_atspi(obj, is_atspi);
+   elm_obj_widget_screen_reader(obj, is_screen_reader);
 
    return ret;
 }
 
 EOLIAN static void
-_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool is_atspi EINA_UNUSED)
+_elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader EINA_UNUSED)
 {
 }
 //

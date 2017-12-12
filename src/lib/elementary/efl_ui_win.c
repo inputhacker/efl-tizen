@@ -4049,7 +4049,7 @@ _elm_win_access(Eina_Bool is_access)
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
 void
-_elm_win_atspi(Eina_Bool is_atspi)
+_elm_win_screen_reader(Eina_Bool is_screen_reader)
 {
    const Eina_List *l;
    Evas_Object *obj;
@@ -4057,8 +4057,8 @@ _elm_win_atspi(Eina_Bool is_atspi)
 
    EINA_LIST_FOREACH(_elm_win_list, l, obj)
      {
-        elm_widget_atspi(obj, is_atspi);
-        evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+        elm_widget_screen_reader(obj, is_screen_reader);
+        evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, NULL);
 
          /* floating orphan object. if there are A, B, C objects and user does
             as below, then there would be floating orphan objects.
@@ -4077,11 +4077,11 @@ _elm_win_atspi(Eina_Bool is_atspi)
 
              if (elm_widget_is(fobj) && !elm_widget_parent_get(fobj))
                {
-                  elm_widget_atspi(fobj, is_atspi);
+                  elm_widget_screen_reader(fobj, is_screen_reader);
                }
           }
 
-        if (!is_atspi)
+        if (!is_screen_reader)
           {
              efl_access_component_highlight_clear(obj);
           }

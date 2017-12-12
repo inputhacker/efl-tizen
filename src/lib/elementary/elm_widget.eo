@@ -238,10 +238,10 @@ abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
 
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
       //register/unregister access objects accordingly.
-      atspi {
+      screen_reader {
          [['Virtual' function on the widget being set access.]]
          params {
-            @in is_atspi: bool;
+            @in is_screen_reader: bool;
          }
          legacy: null;
       }

@@ -315,14 +315,16 @@ _atspi_expose_keypad_area(Evas_Object *obj, Eina_Bool is_atspi)
 
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
+// TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_conformant_elm_widget_atspi(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
+_elm_conformant_elm_widget_screen_reader(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
-   _atspi_expose_keypad_area(obj, is_atspi);
+   _atspi_expose_keypad_area(obj, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
-   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_screen_reader);
    //
 }
+//
 //
 
 static void
@@ -343,8 +345,12 @@ _conformant_parts_swallow(Evas_Object *obj)
              sd->virtualkeypad = evas_object_rectangle_add(e);
              elm_widget_sub_object_add(obj, sd->virtualkeypad);
              evas_object_size_hint_max_set(sd->virtualkeypad, -1, 0);
-             if (_elm_atspi_enabled())
+             //TIZEN ONLY(20160628): expose virtual keypad rect as at-spi object
+             // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+             if (elm_atspi_bridge_utils_is_screen_reader_enabled())
                _atspi_expose_keypad_area(obj, EINA_TRUE);
+             //
+             //
           }
         else
           _conformant_part_sizing_eval(obj, ELM_CONFORMANT_VIRTUAL_KEYPAD_PART);

@@ -4228,22 +4228,23 @@ _elm_gengrid_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *
 
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
+// TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_gengrid_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, Eina_Bool is_atspi)
+_elm_gengrid_elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, Eina_Bool is_screen_reader)
 {
    Elm_Gen_Item *it;
    Evas_Object *content = NULL;
    Eina_List *l;
 
    //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
-   if (sd->horizontal && is_atspi)
+   if (sd->horizontal && is_screen_reader)
      sd->atspi_children = eina_list_sort(sd->atspi_children, eina_list_count(sd->atspi_children), _sort_items);
    //
 
    EINA_INLIST_FOREACH(sd->items, it)
      {
         if (!it->realized) continue;
-        if (is_atspi)
+        if (is_screen_reader)
           {
              efl_access_added(EO_OBJ(it));
              efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
@@ -4261,9 +4262,10 @@ _elm_gengrid_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, Eina_Bo
           }
      }
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
-   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_screen_reader);
    //
 }
+//
 //
 
 EAPI Evas_Object *

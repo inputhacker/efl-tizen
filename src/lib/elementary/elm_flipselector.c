@@ -714,12 +714,12 @@ static Eina_Bool _activate_bottom_cb(void *data, Evas_Object *obj EINA_UNUSED, E
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
 static void
-_atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd, Eina_Bool is_atspi)
+_atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd, Eina_Bool is_screen_reader)
 {
    Evas_Object *btn1;
    Evas_Object *btn2;
 
-   if (is_atspi)
+   if (is_screen_reader)
      {
         btn1 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "top_clipper");
         btn2 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "bottom_clipper");
@@ -748,11 +748,11 @@ _atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd, Eina_Bool is_at
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
 EOLIAN static void
-_elm_flipselector_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, Eina_Bool is_atspi)
+_elm_flipselector_elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, Eina_Bool is_screen_reader)
 {
-   _atspi_expose_flipselector_top_bottom(sd, is_atspi);
+   _atspi_expose_flipselector_top_bottom(sd, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
-   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_screen_reader);
    //
 }
 //
@@ -767,7 +767,7 @@ _elm_flipselector_efl_object_constructor(Eo *obj, Elm_Flipselector_Data *sd)
    efl_access_role_set(obj, EFL_ACCESS_ROLE_LIST);
 
    //TIZEN ONLY(20151012): expose flipselector top/bottom buttons for accessibility tree
-   if (_elm_atspi_enabled())
+   if (elm_atspi_bridge_utils_is_screen_reader_enabled())
      _atspi_expose_flipselector_top_bottom(sd, EINA_TRUE);
    //
 

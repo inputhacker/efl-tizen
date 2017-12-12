@@ -556,7 +556,9 @@ class Elm.Gengrid (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
       Elm.Widget.focused_item { get; }
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
       //register/unregister access objects accordingly.
-      Elm.Widget.atspi;
+      // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+      Elm.Widget.screen_reader;
+      //
       //
       Elm.Interface_Scrollable.item_loop_enabled { get; set; }
       Elm.Interface_Scrollable.bounce_allow { set; }

@@ -527,7 +527,7 @@ void                 _elm_win_rescale(Elm_Theme *th,
 void                 _elm_win_access(Eina_Bool is_access);
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
-void                 _elm_win_atspi(Eina_Bool is_atspi);
+void                 _elm_win_screen_reader(Eina_Bool is_screen_reader);
 //
 void                 _elm_win_translate(void);
 void                 _elm_win_focus_reconfigure(void);

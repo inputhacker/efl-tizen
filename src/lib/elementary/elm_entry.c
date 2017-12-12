@@ -106,7 +106,7 @@ struct _Mod_Api
 static void _create_selection_handlers(Evas_Object *obj, Elm_Entry_Data *sd);
 static void _magnifier_move(void *data);
 // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
-static void _atspi_expose_anchors(Eo *obj, Eina_Bool is_atspi);
+static void _atspi_expose_anchors(Eo *obj, Eina_Bool is_screen_reader);
 //
 
 static Evas_Object *
@@ -3268,7 +3268,7 @@ _elm_entry_text_set(Eo *obj, Elm_Entry_Data *sd, const char *part, const char *e
      _elm_entry_guide_update(obj, EINA_FALSE);
 
    // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
-   if (_elm_atspi_enabled())
+   if (elm_atspi_bridge_utils_is_screen_reader_enabled())
      _atspi_expose_anchors(obj, EINA_TRUE);
    //
 
@@ -6325,7 +6325,7 @@ _anchor_rect_activated_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_
 }
 
 static void
-_atspi_expose_anchors(Eo *obj, Eina_Bool is_atspi)
+_atspi_expose_anchors(Eo *obj, Eina_Bool is_screen_reader)
 {
    Evas_Textblock_Rectangle *r;
    Evas_Object *tb = elm_entry_textblock_get(obj);
@@ -6337,7 +6337,7 @@ _atspi_expose_anchors(Eo *obj, Eina_Bool is_atspi)
 
    ELM_ENTRY_DATA_GET(obj, sd);
 
-   if (is_atspi)
+   if (is_screen_reader)
      {
         evas_object_geometry_get(sd->entry_edje, &x, &y, NULL, NULL);
 
@@ -6439,10 +6439,10 @@ _atspi_expose_anchors(Eo *obj, Eina_Bool is_atspi)
 }
 
 EOLIAN static void
-_elm_entry_elm_widget_atspi(Eo *obj, Elm_Entry_Data *sd EINA_UNUSED, Eina_Bool is_atspi)
+_elm_entry_elm_widget_screen_reader(Eo *obj, Elm_Entry_Data *sd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
-   _atspi_expose_anchors(obj, is_atspi);
-   evas_object_smart_callback_call(obj, "atspi,screen,reader,changed", &is_atspi);
+   _atspi_expose_anchors(obj, is_screen_reader);
+   evas_object_smart_callback_call(obj, "atspi,screen,reader,changed", &is_screen_reader);
 }
 
 EOLIAN static Eina_List*

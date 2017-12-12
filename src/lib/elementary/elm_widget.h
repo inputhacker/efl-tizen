@@ -671,7 +671,7 @@ EAPI Eina_Bool        elm_widget_api_check(int ver);
 EAPI Eina_Bool        elm_widget_access(Evas_Object *obj, Eina_Bool is_access);
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
-EAPI Eina_Bool        elm_widget_atspi(Evas_Object *obj, Eina_Bool is_atspi);
+EAPI Eina_Bool        elm_widget_screen_reader(Evas_Object *obj, Eina_Bool is_screen_reader);
 //
 EAPI Efl_Ui_Theme_Apply  elm_widget_theme(Evas_Object *obj);
 EAPI void             elm_widget_theme_specific(Evas_Object *obj, Elm_Theme *th, Eina_Bool force);

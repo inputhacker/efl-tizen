@@ -26,6 +26,9 @@
  #define A11Y_DBUS_PATH "/org/a11y/bus"
 #define A11Y_DBUS_INTERFACE "org.a11y.Bus"
 #define A11Y_DBUS_STATUS_INTERFACE "org.a11y.Status"
+// TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+#define A11Y_DBUS_ENABLED_PROPERTY "IsEnabled"
+//
 #define ATSPI_DBUS_INTERFACE_EVENT_WINDOW "org.a11y.atspi.Event.Window"
 
 #define CACHE_ITEM_SIGNATURE "((so)(so)(so)a(so)assusau)"
@@ -5803,7 +5806,7 @@ _bridge_cache_build(Eo *bridge, void *obj)
      }
    children = efl_access_children_get(obj);
    EINA_LIST_FREE(children, child)
-      _bridge_cache_build(bridge, child);
+     _bridge_cache_build(bridge, child);
 }
 //
 
@@ -6044,20 +6047,50 @@ _screen_reader_enabled_get(void *data, const Eldbus_Message *msg, Eldbus_Pending
         return;
      }
 
-   if (is_enabled)
-     _a11y_connection_init(data);
-   else
-     DBG("AT-SPI2 stack not enabled.");
-
    //TIZEN_ONLY(20161027) - Export elm_atspi_bridge_utils_is_screen_reader_enabled
    pd->screen_reader_enabled = !!is_enabled;
    //
 
    //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
    //register/unregister access objects accordingly.
-   _elm_win_atspi(is_enabled);
+   // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+   _elm_win_screen_reader(is_enabled);
+   //
    //
 }
+
+// TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+static void
+_at_spi_client_enabled_get(void *data, const Eldbus_Message *msg, Eldbus_Pending *pending)
+{
+   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(data, pd);
+   const char *errname, *errmsg;
+   Eina_Bool is_enabled;
+   Eldbus_Message_Iter *variant;
+
+   pd->pending_requests = eina_list_remove(pd->pending_requests, pending);
+
+   if (eldbus_message_error_get(msg, &errname, &errmsg))
+     {
+        WRN("%s %s", errname, errmsg);
+        return;
+     }
+   if (!eldbus_message_arguments_get(msg, "v", &variant))
+     {
+        ERR("'" A11Y_DBUS_ENABLED_PROPERTY "' not packed into variant.");
+        return;
+     }
+   if (!eldbus_message_iter_arguments_get(variant, "b", &is_enabled))
+     {
+        ERR("Could not get '" A11Y_DBUS_ENABLED_PROPERTY "' boolean property");
+        return;
+     }
+   if (is_enabled)
+     _a11y_connection_init(data);
+   else
+     DBG("AT-SPI2 stack not enabled.");
+}
+//
 
 static void _bridge_object_register(Eo *bridge, Eo *obj)
 {
@@ -6314,10 +6347,6 @@ _properties_changed_cb(void *data, Eldbus_Proxy *proxy EINA_UNUSED, void *event)
              ERR("Unable to get ScreenReaderEnabled property value");
              return;
           }
-        if (val)
-          _a11y_connection_init(bridge);
-        else
-          _a11y_connection_shutdown(bridge);
 
         //TIZEN_ONLY(20161027) - Export elm_atspi_bridge_utils_is_screen_reader_enabled
         ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(bridge, pd);
@@ -6326,9 +6355,27 @@ _properties_changed_cb(void *data, Eldbus_Proxy *proxy EINA_UNUSED, void *event)
 
         //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
          //register/unregister access objects accordingly.
-        _elm_win_atspi(val);
+        // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+        _elm_win_screen_reader(val);
+        //
         //
      }
+   // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+   if (ev->name && !strcmp(ev->name, A11Y_DBUS_ENABLED_PROPERTY) &&
+       ifc && !strcmp(A11Y_DBUS_STATUS_INTERFACE, ifc))
+     {
+        if (!eina_value_get(ev->value, &val))
+          {
+             // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+             ERR("Unable to get " A11Y_DBUS_ENABLED_PROPERTY " property value");
+             return;
+          }
+        if (val)
+          _a11y_connection_init(bridge);
+        else
+          _a11y_connection_shutdown(bridge);
+     }
+   //
 }
 
 EOLIAN Efl_Object*
@@ -6362,6 +6409,15 @@ _elm_atspi_bridge_efl_object_constructor(Eo *obj, Elm_Atspi_Bridge_Data *pd)
         goto proxy_err;
      }
    pd->pending_requests = eina_list_append(pd->pending_requests, req);
+   // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+   if (!(req = eldbus_proxy_property_get(proxy, A11Y_DBUS_ENABLED_PROPERTY, _at_spi_client_enabled_get, obj)))
+     {
+        ERR("Could not send PropertyGet request");
+        goto proxy_err;
+     }
+
+   pd->pending_requests = eina_list_append(pd->pending_requests, req);
+   //
 
    eldbus_proxy_properties_monitor(proxy, EINA_TRUE);
    eldbus_proxy_event_callback_add(proxy, ELDBUS_PROXY_EVENT_PROPERTY_CHANGED,

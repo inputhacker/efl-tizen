@@ -388,7 +388,7 @@ _item_style_set(Elm_Naviframe_Item_Data *it,
      evas_object_freeze_events_set(VIEW(it), EINA_FALSE);
 
    //TIZEN ONLY(20151012): expose title as at-spi object
-   if (_elm_atspi_enabled())
+   if (elm_atspi_bridge_utils_is_screen_reader_enabled())
      _atspi_expose_title(it, EINA_TRUE);
    //
 }
@@ -1591,17 +1591,19 @@ _elm_naviframe_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Naviframe_Da
 
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
+// TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_naviframe_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Naviframe_Data *sd, Eina_Bool is_atspi)
+_elm_naviframe_elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Naviframe_Data *sd, Eina_Bool is_screen_reader)
 {
    Elm_Naviframe_Item_Data *it;
 
    EINA_INLIST_FOREACH(sd->stack, it)
-     _atspi_expose_title(it, is_atspi);
+     _atspi_expose_title(it, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
-   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_screen_reader);
    //
 }
+//
 //
 
 static void

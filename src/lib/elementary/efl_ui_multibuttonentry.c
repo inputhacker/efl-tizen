@@ -1718,14 +1718,16 @@ _efl_ui_multibuttonentry_elm_widget_on_access_update(Eo *obj, Efl_Ui_Multibutton
 
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
+// TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_multibuttonentry_elm_widget_atspi(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_atspi)
+_elm_multibuttonentry_elm_widget_screen_reader(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
-   _atspi_obj_process(obj, is_atspi);
+   _atspi_obj_process(obj, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
-   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_screen_reader);
    //
 }
+//
 //
 
 EAPI Evas_Object *

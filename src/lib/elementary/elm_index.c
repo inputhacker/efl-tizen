@@ -1193,14 +1193,14 @@ _elm_index_elm_widget_on_access_update(Eo *obj, Elm_Index_Data *_pd EINA_UNUSED,
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
 EOLIAN static void
-_elm_index_elm_widget_atspi(Eo *obj, Elm_Index_Data *_pd, Eina_Bool is_atspi)
+_elm_index_elm_widget_screen_reader(Eo *obj, Elm_Index_Data *_pd, Eina_Bool is_screen_reader)
 {
    Eina_List *elist = NULL;
    Elm_Object_Item *eo_it;
 
    EINA_LIST_FOREACH(_pd->items, elist, eo_it)
      {
-        if (is_atspi)
+        if (is_screen_reader)
           {
              efl_access_added(eo_it);
              efl_access_children_changed_added_signal_emit(obj, eo_it);
@@ -1212,7 +1212,7 @@ _elm_index_elm_widget_atspi(Eo *obj, Elm_Index_Data *_pd, Eina_Bool is_atspi)
           }
      }
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
-   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
+   evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_screen_reader);
    //
 }
 //
