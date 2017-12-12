@@ -6465,7 +6465,7 @@ static void _embedded_reply_cb(void *data, const Eldbus_Message *msg, Eldbus_Pen
 
    parent = efl_parent_get(proxy);
    if (parent)
-     efl_access_children_changed_added_signal_emit(parent, proxy)
+     efl_access_children_changed_added_signal_emit(parent, proxy);
 }
 
 static void

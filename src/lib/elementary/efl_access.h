@@ -144,20 +144,30 @@ EAPI Efl_Access_Relation_Set efl_access_relation_set_clone(const Efl_Access_Rela
 /**
  * Emits Accessible 'ChildrenChanged' signal with added child as argument.
  */
+//TIZEN_ONLY(20170923) Block event which is not interested in
+#define efl_access_children_changed_added_signal_emit(obj, child) ((void)0)/* Empty */
+/*
 #define efl_access_children_changed_added_signal_emit(obj, child) \
    do { \
       Efl_Access_Event_Children_Changed_Data atspi_data = { EINA_TRUE, child }; \
    efl_access_event_emit(EFL_ACCESS_MIXIN, obj, EFL_ACCESS_EVENT_CHILDREN_CHANGED, &atspi_data); \
    } while(0);
+*/
+//
 
 /**
  * Emits Accessible 'ChildrenChanged' signal with deleted child as argument.
  */
+//TIZEN_ONLY(20170923) Block event which is not interested in
+#define efl_access_children_changed_del_signal_emit(obj, child) ((void)0)/* Empty */
+/*
 #define efl_access_children_changed_del_signal_emit(obj, child) \
    do { \
       Efl_Access_Event_Children_Changed_Data atspi_data = { EINA_FALSE, child }; \
       efl_access_event_emit(EFL_ACCESS_MIXIN, obj, EFL_ACCESS_EVENT_CHILDREN_CHANGED, &atspi_data); \
    } while(0);
+*/
+//
 
 /**
  * Emits Accessible 'ActiveDescendantChanged' signal.
@@ -174,14 +184,24 @@ EAPI Efl_Access_Relation_Set efl_access_relation_set_clone(const Efl_Access_Rela
 /**
  * Emits Accessible 'AddAccessible' signal.
  */
+//TIZEN_ONLY(20170923) Block event which is not interested in
+#define efl_access_added(obj) ((void)0)/* Empty */
+/*
 #define efl_access_added(obj) \
    efl_access_event_emit(EFL_ACCESS_MIXIN, obj, EFL_ACCESS_EVENT_ADDED, NULL);
+*/
+//
 
 /**
  * Emits Accessible 'RemoveAccessible' signal.
  */
+//TIZEN_ONLY(20170923) Block event which is not interested in
+#define efl_access_removed(obj) ((void)0)/* Empty */
+/*
 #define efl_access_removed(obj) \
    efl_access_event_emit(EFL_ACCESS_MIXIN, obj, EFL_ACCESS_EVENT_REMOVED, NULL);
+*/
+//
 
 #endif
 
