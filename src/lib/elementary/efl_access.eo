@@ -673,5 +673,6 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       active,descendant,changed; [[Called when active state of descendant has changed]]
       added; [[Called when item was added]]
       removed; [[Called when item was removed]]
+      move,outed;
    }
 }

@@ -182,6 +182,13 @@ struct _Efl_Ui_Win_Data
       struct
       {
          Evas_Object *target;
+         //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+         int x;
+         int y;
+         int w;
+         int h;
+         Eina_Bool need_moved;
+         //
       } cur, prev;
 
    } accessibility_highlight;
@@ -1179,11 +1186,49 @@ _elm_win_accessibility_highlight_simple_setup(Efl_Ui_Win_Data *sd,
    Evas_Object *clip, *target = sd->accessibility_highlight.cur.target;
    //
    Evas_Coord x, y, w, h;
+   //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+   Evas_Coord ox, oy;
+   Efl_Access_Role role;
+   //
 
    evas_object_geometry_get(target, &x, &y, &w, &h);
 
+   //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+   evas_object_geometry_get(target, &ox, &oy, NULL, NULL);
+
+   if (((w < 0 && ox > sd->accessibility_highlight.cur.x) || (h < 0 && oy < sd->accessibility_highlight.cur.y))
+     && sd->accessibility_highlight.cur.need_moved
+     && efl_isa(target, EFL_ACCESS_MIXIN))
+     {
+        role = efl_access_role_get(target);
+        if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM)
+          {
+             efl_access_move_outed_signal_emit(target, EFL_ACCESS_MOVE_OUTED_TOP_LEFT);
+             sd->accessibility_highlight.cur.need_moved = EINA_FALSE;
+             return ;
+          }
+     }
+   else if (((w < 0 && ox < sd->accessibility_highlight.cur.x) || (h < 0 && oy > sd->accessibility_highlight.cur.y))
+           && sd->accessibility_highlight.cur.need_moved
+           && efl_isa(target, EFL_ACCESS_MIXIN))
+     {
+        role = efl_access_role_get(target);
+        if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM)
+          {
+             efl_access_move_outed_signal_emit(target, EFL_ACCESS_MOVE_OUTED_BOTTOM_RIGHT);
+             sd->accessibility_highlight.cur.need_moved = EINA_FALSE;
+             return ;
+          }
+     }
+   //
+
    evas_object_move(obj, x, y);
    evas_object_resize(obj, w, h);
+
+   //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+   sd->accessibility_highlight.cur.x = ox;
+   sd->accessibility_highlight.cur.y = oy;
+   //
 
    // TIZEN_ONLY(20171117) Accessibility frame follows parent item on scroll event
    clip = evas_object_clip_get(target);
@@ -8746,6 +8791,9 @@ _elm_win_object_set_accessibility_highlight(Evas_Object *win, Evas_Object *obj, 
      {
          _elm_win_accessibility_highlight_init(sd, obj);
          _elm_win_accessibility_highlight_show(win);
+         //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+         sd->accessibility_highlight.cur.need_moved = EINA_TRUE;
+         //
      }
 }
 //

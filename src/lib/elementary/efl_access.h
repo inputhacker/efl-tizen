@@ -47,6 +47,17 @@ typedef Eina_Bool (*Efl_Access_Gesture_Cb)(void *data, Efl_Access_Gesture_Info g
  */
 #define ACCESS_STATE(type) ((Efl_Access_State_Set)1 << (type))
 
+//TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+enum _Efl_Access_Move_Outed_Type {
+     EFL_ACCESS_MOVE_OUTED_NULL,
+     EFL_ACCESS_MOVE_OUTED_TOP_LEFT,
+     EFL_ACCESS_MOVE_OUTED_BOTTOM_RIGHT,
+     EFL_ACCESS_MOVE_OUTED_LAST_DEFINDED
+};
+
+typedef enum _Efl_Access_Move_Outed_Type Efl_Access_Move_Outed_Type;
+//
+
 /**
  * Free Efl_Access_Attributes_List
  */
@@ -110,6 +121,17 @@ EAPI Efl_Access_Relation_Set efl_access_relation_set_clone(const Efl_Access_Rela
          Efl_Access_Event_Geometry_Changed_Data evinfo = { x, y, width, height }; \
          efl_access_event_emit(EFL_ACCESS_MIXIN, obj, EFL_ACCESS_EVENT_BOUNDS_CHANGED, (void*)&evinfo); \
    } while(0);
+
+//TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+/**
+ * Emits ATSPI 'MoveOuted' dbus signal.
+ */
+#define efl_access_move_outed_signal_emit(obj, type) \
+   do { \
+         Efl_Access_Move_Outed_Type evinfo = type; \
+         efl_access_event_emit(EFL_ACCESS_MIXIN, obj, EFL_ACCESS_EVENT_MOVE_OUTED, (void*)&evinfo); \
+   } while(0);
+//
 
 /**
  * Emits Accessible 'PropertyChanged' signal for 'Name' property.

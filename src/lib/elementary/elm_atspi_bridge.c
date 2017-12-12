@@ -170,6 +170,9 @@ static void _text_text_inserted_send(void *data, const Efl_Event *event);
 static void _text_text_removed_send(void *data, const Efl_Event *event);
 static void _text_caret_moved_send(void *data, const Efl_Event *event);
 static void _text_selection_changed_send(void *data, const Efl_Event *event);
+//TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+static void _move_outed_signal_send(void *data, const Efl_Event *event);
+//
 
 // bridge private methods
 //TIZEN_ONLY(20171108): make atspi_proxy work
@@ -223,7 +226,10 @@ static const Elm_Atspi_Bridge_Event_Handler event_handlers[] = {
    { EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_CARET_MOVED, _text_caret_moved_send },
    { EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_INSERTED, _text_text_inserted_send },
    { EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_REMOVED, _text_text_removed_send },
-   { EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_SELECTION_CHANGED, _text_selection_changed_send }
+   { EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_SELECTION_CHANGED, _text_selection_changed_send },
+   //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+   { EFL_ACCESS_EVENT_MOVE_OUTED, _move_outed_signal_send}
+   //
 };
 
 enum _Atspi_Object_Child_Event_Type
@@ -264,6 +270,9 @@ enum _Atspi_Object_Signals {
    ATSPI_OBJECT_EVENT_TEXT_ATTRIBUTES_CHANGED,
    ATSPI_OBJECT_EVENT_TEXT_CARET_MOVED,
    ATSPI_OBJECT_EVENT_ATTRIBUTES_CHANGED,
+   //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+   ATSPI_OBJECT_EVENT_MOVE_OUTED
+   //
 };
 
 enum _Atspi_Window_Signals
@@ -311,6 +320,9 @@ static const Eldbus_Signal _event_obj_signals[] = {
    [ATSPI_OBJECT_EVENT_TEXT_ATTRIBUTES_CHANGED] = {"TextAttributesChanged", ELDBUS_ARGS({"siiv(so)", NULL}), 0},
    [ATSPI_OBJECT_EVENT_TEXT_CARET_MOVED] = {"TextCaretMoved", ELDBUS_ARGS({"siiv(so)", NULL}), 0},
    [ATSPI_OBJECT_EVENT_ATTRIBUTES_CHANGED] = {"AttributesChanged", ELDBUS_ARGS({"siiv(so)", NULL}), 0},
+   //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+   [ATSPI_OBJECT_EVENT_MOVE_OUTED] = {"MoveOuted", ELDBUS_ARGS({"siiv(i)", NULL}), 0},
+   //
    {NULL, ELDBUS_ARGS({NULL, NULL}), 0}
 };
 
@@ -5147,6 +5159,10 @@ _set_broadcast_flag(const char *event, Eo *bridge)
           STATE_TYPE_SET(pd->object_broadcast_mask, ATSPI_OBJECT_EVENT_SELECTION_CHANGED);
         else if (!strcmp(tokens[1], "BoundsChanged"))
           STATE_TYPE_SET(pd->object_broadcast_mask, ATSPI_OBJECT_EVENT_BOUNDS_CHANGED);
+        //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+        else if (!strcmp(tokens[1], "MoveOuted"))
+          STATE_TYPE_SET(pd->object_broadcast_mask, ATSPI_OBJECT_EVENT_MOVE_OUTED);
+        //
      }
    else if (!strcmp(tokens[0], "Window"))
      {
@@ -5478,6 +5494,24 @@ _children_changed_signal_send(void *data, const Efl_Event *event)
                        &_event_obj_signals[ATSPI_OBJECT_EVENT_CHILDREN_CHANGED], atspi_desc,
                        idx, 0, "(so)", eldbus_connection_unique_name_get(pd->a11y_bus), ev_data->child);
 }
+
+//TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
+static void
+_move_outed_signal_send(void *data, const Efl_Event *event)
+{
+   const Efl_Access_Move_Outed_Type *type = event->info;
+
+   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(data, pd);
+
+   if (!STATE_TYPE_GET(pd->object_broadcast_mask, ATSPI_OBJECT_EVENT_MOVE_OUTED))
+     {
+        efl_event_callback_stop(event->object);
+        return;
+     }
+   _bridge_signal_send(data, event->object, ATSPI_DBUS_INTERFACE_EVENT_OBJECT,
+                       &_event_obj_signals[ATSPI_OBJECT_EVENT_MOVE_OUTED], "", *type, 0, NULL, NULL);
+}
+//
 
 static void
 _window_signal_send(void *data, const Efl_Event *event)
