@@ -2093,6 +2093,14 @@ elm_layout_add(Evas_Object *parent)
    return elm_legacy_add(MY_CLASS, parent);
 }
 
+//TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
+static void
+_widget_created_cb(void *data EINA_UNUSED, Evas_Object *obj, void *ev EINA_UNUSED)
+{
+   elm_widget_atspi_plug_type_proxy_get(obj);
+}
+//
+
 EOLIAN static Eo *
 _efl_ui_layout_efl_object_constructor(Eo *obj, Efl_Ui_Layout_Data *sd)
 {
@@ -2101,6 +2109,12 @@ _efl_ui_layout_efl_object_constructor(Eo *obj, Efl_Ui_Layout_Data *sd)
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    efl_access_role_set(obj, EFL_ACCESS_ROLE_FILLER);
+
+   //TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
+   /* FIXME: This makes dependency on screen-connector. The screen-connector
+      should use new API to handle atspi proxy connection at runtime. */
+   evas_object_smart_callback_add(obj, "widget,created", _widget_created_cb, NULL);
+   //
 
    return obj;
 }

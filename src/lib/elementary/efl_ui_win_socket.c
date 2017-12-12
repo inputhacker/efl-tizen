@@ -101,23 +101,13 @@ _efl_ui_win_socket_efl_gfx_visible_set(Eo *obj, Efl_Ui_Win_Socket_Data *sd EINA_
    efl_gfx_visible_set(efl_super(obj, EFL_UI_WIN_SOCKET_CLASS), vis);
 
    // TIZEN_ONLY(20160705) - enable atspi_proxy to work
-    /* _elm_atspi_enabled() is not necessary, because it could be disconnected at this point */
-   if (_elm_config->atspi_mode)
+   if (vis)
      {
-        const char *plug_id_2;
-        if (vis)
+        if (_elm_atspi_enabled())
           {
-             if ((plug_id_2 = evas_object_data_get(obj, "___PLUGID")) != NULL)
-               {
-                  char *svcname, *svcnum;
-                  if (!sd->socket_proxy && _elm_atspi_bridge_plug_id_split(plug_id_2, &svcname, &svcnum))
-                    {
-                       sd->socket_proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_SOCKET);
-                       elm_atspi_bridge_utils_proxy_listen(sd->socket_proxy);
-                       free(svcname);
-                       free(svcnum);
-                    }
-               }
+             //TIZEN_ONLY(20170613) -listen if atspi is enabled
+             _access_socket_proxy_listen(obj);
+             //
           }
      }
    //

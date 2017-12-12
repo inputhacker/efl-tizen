@@ -4180,6 +4180,30 @@ _elm_win_atspi(Eina_Bool is_atspi)
 {
    const Eina_List *l;
    Evas_Object *obj;
+
+   EINA_LIST_FOREACH(_elm_win_list, l, obj)
+     {
+        elm_widget_atspi(obj, is_atspi);
+
+        if (!is_atspi)
+          {
+             _access_socket_proxy_unref(obj);
+          }
+        else
+          {
+             _access_socket_proxy_listen(obj);
+          }
+     }
+}
+//
+//
+//
+
+void
+_elm_win_atspi(Eina_Bool is_atspi)
+{
+   const Eina_List *l;
+   Evas_Object *obj;
    Efl_Access_State_Set ss;
 
    EINA_LIST_FOREACH(_elm_win_list, l, obj)

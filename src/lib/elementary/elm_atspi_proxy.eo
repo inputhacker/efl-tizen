@@ -43,6 +43,7 @@ class Elm.Atspi.Proxy (Elm.Widget)
       Efl.Object.destructor;
       Efl.Access.children { get; }
       Efl.Access.parent { get; }
+      Elm.Widget.atspi;
    }
    events {
       connected;
