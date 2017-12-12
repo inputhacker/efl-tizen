@@ -2556,6 +2556,7 @@ _efl_ui_layout_part_efl_ui_cursor_cursor_theme_search_enabled_get(Eo *obj, void 
 EOLIAN static void
 _efl_ui_layout_elm_widget_atspi(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
 {
+   EINA_SAFETY_ON_NULL_RETURN(obj);
    evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_atspi);
 }
 //
