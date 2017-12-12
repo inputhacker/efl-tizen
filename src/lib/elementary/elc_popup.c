@@ -147,9 +147,6 @@ _timeout_cb(void *data, const Efl_Event *event EINA_UNUSED)
 static void
 _show_finished_cb(void *data, const Efl_Event *event EINA_UNUSED)
 {
-   //TIZEN_ONLY(20170919): Handle default label object
-   _elm_win_default_label_obj_append(data);
-   //
    efl_event_callback_legacy_call(data, ELM_POPUP_EVENT_SHOW_FINISHED, NULL);
 }
 /* END */
@@ -181,6 +178,9 @@ _on_show(void *data EINA_UNUSED,
          Evas_Object *obj,
          void *event_info EINA_UNUSED)
 {
+   //TIZEN_ONLY(20170919): Handle default label object
+   _elm_win_default_label_obj_append(data);
+   //
    elm_object_focus_set(obj, EINA_TRUE);
 }
 
