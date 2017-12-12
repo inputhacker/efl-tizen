@@ -1,4 +1,4 @@
-%bcond_with wayland
+%bcond_without wayland
 %bcond_with x
 
 Name:           efl
@@ -17,10 +17,10 @@ BuildRequires:  pkgconfig(libinput)
 BuildRequires:  zlib-devel
 BuildRequires:  gettext-tools
 BuildRequires:  hyphen-devel
-BuildRequires:  coregl-devel
-BuildRequires:  gettext-devel
-BuildRequires:  doxygen
-BuildRequires:  python-devel
+#BuildRequires:  coregl-devel
+#BuildRequires:  gettext-devel
+#BuildRequires:  doxygen
+#BuildRequires:  python-devel
 
 %if %{with wayland}
 BuildRequires:  pkgconfig(gles20)
@@ -1185,10 +1185,9 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 
 export XDG_RUNTIME_DIR="/tmp/"
 
-#%reconfigure \
-./autogen.sh \
+%autogen \
     --disable-static \
-    --enable-ecore-wayland \
+    --disable-doc \
     --with-glib=always \
     --disable-xim \
     --disable-scim \
@@ -1199,6 +1198,7 @@ export XDG_RUNTIME_DIR="/tmp/"
     --enable-fb \
     --disable-tslib \
 %if %{with wayland}
+    --enable-ecore-wayland \
     --enable-wayland \
     --enable-egl \
     --with-opengl=es \
@@ -1436,7 +1436,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %{_datadir}/gdb/auto-load/usr/lib*/*
 %{_libdir}/cmake/Eo/*.cmake
 %{_libdir}/cmake/EoCxx/*.cmake
-%exclude %{_libdir}/libeo_dbg.so*
+%exclude %{_libdir}/libeo_dbg.so
 %exclude %{_bindir}/eo_debug
 /usr/share/eolian/include/eo-*1/*.eot
 
@@ -1956,7 +1956,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %{_includedir}/eolian-*1/*.h*
 #%{_includedir}/eolian-*1/*/*.h*
 %{_datadir}/eolian/include/*/*.eo
-%{_libdir}/libeolian.so*
+%{_libdir}/libeolian.so
 %{_libdir}/cmake/Eolian*/*.cmake
 
 #%files -n eolian-examples
@@ -1977,7 +1977,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %defattr(-,root,root,-)
 %{_includedir}/elocation-*1/*.h*
 %{_libdir}/pkgconfig/elocation.pc
-%{_libdir}/libelocation.so*
+%{_libdir}/libelocation.so
 
 %files -n elua
 %manifest %{name}.manifest
@@ -2002,7 +2002,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %manifest %{name}.manifest
 %license licenses/COPYING.BSD
 %defattr(-,root,root,-)
-%{_libdir}/libefl_wl.so*
+%{_libdir}/libefl_wl.so
 %{_libdir}/pkgconfig/efl-wl.pc
 %{_includedir}/efl-wl-1/*.h
 
@@ -2016,7 +2016,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %manifest %{name}.manifest
 %license licenses/COPYING.BSD
 %defattr(-,root,root,-)
-%{_libdir}/libelput.so*
+%{_libdir}/libelput.so
 %{_libdir}/pkgconfig/elput.pc
 %{_includedir}/elput-1/*.h
 
@@ -2064,7 +2064,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %defattr(-,root,root,-)
 %{_includedir}/elementary-1/*.h*
 %{_datadir}/eolian/include/elementary-1/*.eo
-%{_libdir}/libelementary.so*
+%{_libdir}/libelementary.so
 %{_libdir}/pkgconfig/elementary.pc
 %{_libdir}/cmake/Elementary/ElementaryConfig.cmake
 %{_libdir}/cmake/Elementary/ElementaryConfigVersion.cmake
