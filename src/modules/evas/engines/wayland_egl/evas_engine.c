@@ -370,13 +370,20 @@ evgl_eng_native_window_create(void *data)
    struct wl_egl_window *win;
    struct wl_surface *wls;
 
-   if (!(re = (Render_Engine *)data)) return NULL;
+   if (!(re = (Render_Engine *)data))
+     {
+        ERR("Invalid Render Engine Data!");
+        glsym_evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+        return NULL;
+     }
+
    if (!(ob = eng_get_ob(re))) return NULL;
 
    wls = ecore_wl2_window_surface_get(ob->info->info.wl2_win);
    if (!(win = wl_egl_window_create(wls, 1, 1)))
      {
         ERR("Could not create wl_egl window");
+        glsym_evas_gl_common_error_set(EVAS_GL_BAD_DISPLAY);
         return NULL;
      }
 
@@ -388,8 +395,19 @@ evgl_eng_native_window_destroy(void *data, void *win)
 {
    Render_Engine *re;
 
-   if (!(re = (Render_Engine *)data)) return 0;
-   if (!win) return 0;
+   if (!(re = (Render_Engine *)data))
+     {
+        ERR("Invalid Render Engine Data!");
+        glsym_evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+        return 0;
+     }
+
+   if (!win)
+     {
+        ERR("Inavlid native surface.");
+        glsym_evas_gl_common_error_set(EVAS_GL_BAD_NATIVE_WINDOW);
+        return 0;
+     }
 
    wl_egl_window_destroy((struct wl_egl_window *)win);
    win = NULL;
@@ -404,7 +422,13 @@ evgl_eng_window_surface_create(void *data, void *win)
    Outbuf *ob;
    EGLSurface surface = EGL_NO_SURFACE;
 
-   if (!(re = (Render_Engine *)data)) return NULL;
+   if (!(re = (Render_Engine *)data))
+     {
+        ERR("Invalid Render Engine Data!");
+        glsym_evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+        return NULL;
+     }
+
    if (!(ob = eng_get_ob(re))) return NULL;
 
    surface = EVGL_TH(eglCreateWindowSurface, ob->egl_disp, ob->egl_config,
@@ -425,9 +449,20 @@ evgl_eng_window_surface_destroy(void *data, void *surface)
    Render_Engine *re;
    Outbuf *ob;
 
-   if (!(re = (Render_Engine *)data)) return 0;
+   if (!(re = (Render_Engine *)data))
+     {
+        ERR("Invalid Render Engine Data!");
+        glsym_evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+        return 0;
+     }
+
    if (!(ob = eng_get_ob(re))) return 0;
-   if (!surface) return 0;
+   if (!surface)
+     {
+        ERR("Invalid surface.");
+        glsym_evas_gl_common_error_set(EVAS_GL_BAD_SURFACE);
+        return 0;
+     }
 
    EVGL_TH(eglDestroySurface, ob->egl_disp, (EGLSurface)surface);
    return 1;
@@ -525,9 +560,20 @@ evgl_eng_context_destroy(void *data, void *ctxt)
    Render_Engine *re;
    Outbuf *ob;
 
-   if (!(re = (Render_Engine *)data)) return 0;
+   if (!(re = (Render_Engine *)data))
+     {
+        ERR("Invalid Render Input Data. Engine: %p", data);
+        glsym_evas_gl_common_error_set(data, EVAS_GL_NOT_INITIALIZED);
+        return 0;
+     }
+
    if (!(ob = eng_get_ob(re))) return 0;
-   if (!ctxt) return 0;
+   if (!ctxt)
+     {
+        ERR("Invalid Render Input Data. Context: %p", ctxt);
+        glsym_evas_gl_common_error_set(data, EVAS_GL_BAD_CONTEXT);
+        return 0;
+     }
 
    EVGL_TH(eglDestroyContext, ob->egl_disp, (EGLContext)ctxt);
    return 1;
@@ -542,7 +588,13 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
    EGLSurface surf;
    int ret = 0;
 
-   if (!(re = (Render_Engine *)data)) return 0;
+   if (!(re = (Render_Engine *)data))
+     {
+        ERR("Invalid Render Engine Data!");
+        glsym_evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+        return 0;
+     }
+
    if (!(ob = eng_get_ob(re))) return 0;
 
    ctx = (EGLContext)ctxt;
@@ -556,6 +608,7 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
         if (!ret)
           {
              int err = EVGL_TH(eglGetError);
+             glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
              ERR("eglMakeCurrent() failed! Error Code=%#x", err);
              return 0;
           }
@@ -572,6 +625,7 @@ evgl_eng_make_current(void *data, void *surface, void *ctxt, int flush)
         if (!ret)
           {
              int err = EVGL_TH(eglGetError);
+             glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
              ERR("eglMakeCurrent() failed! Error Code=%#x", err);
              return 0;
           }
@@ -593,7 +647,13 @@ evgl_eng_string_get(void *data)
    Render_Engine *re;
    Outbuf *ob;
 
-   if (!(re = (Render_Engine *)data)) return NULL;
+   if (!(re = (Render_Engine *)data))
+     {
+        ERR("Invalid Render Engine Data!");
+        glsym_evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+        return NULL;
+     }
+
    if (!(ob = eng_get_ob(re))) return NULL;
 
    return EVGL_TH(eglQueryString, ob->egl_disp, EGL_EXTENSIONS);
@@ -605,13 +665,21 @@ evgl_eng_rotation_angle_get(void *data)
    Render_Engine *re;
    Outbuf *ob;
 
-   if (!(re = (Render_Engine *)data)) return 0;
-   if (!(ob = eng_get_ob(re))) return 0;
+   if (!(re = (Render_Engine *)data))
+     {
+        ERR("Invalid Render Engine Data!");
+        glsym_evas_gl_common_error_set(EVAS_GL_NOT_INITIALIZED);
+        return 0;
+     }   if (!(ob = eng_get_ob(re))) return 0;
 
    if (ob->gl_context)
      return ob->gl_context->rot;
-
-   return 0;
+   else
+     {
+        ERR("Unable to retrieve rotation angle.");
+        glsym_evas_gl_common_error_set(EVAS_GL_BAD_CONTEXT);
+        return 0;
+     }
 }
 
 
@@ -1049,6 +1117,21 @@ eng_gl_current_context_get(void *data EINA_UNUSED)
    return ctx;
 }
 
+static int
+eng_gl_error_get(void *data)
+{
+   int err;
+
+   if ((err = glsym_evas_gl_common_error_get(data)) != EVAS_GL_SUCCESS)
+     goto end;
+
+   err = eglGetError() - EGL_SUCCESS;
+
+end:
+   glsym_evas_gl_common_error_set(data, EVAS_GL_SUCCESS);
+   return err;
+}
+
 static void
 _native_cb_bind(void *image)
 {
@@ -1172,7 +1255,10 @@ _native_cb_free(void *image)
                   glsym_evas_gl_common_eglDestroyImage(img->native.disp,
                                                        n->ns_data.wl_surface.surface);
                   if ((err = GL_TH(eglGetError)) != EGL_SUCCESS)
-                    ERR("eglDestroyImage() failed.");
+                    {
+                       ERR("eglDestroyImage() failed.");
+                       glsym_evas_gl_common_error_set(err - EGL_SUCCESS);
+                    }
                }
              else
                ERR("Try eglDestroyImage on EGL with  no support");
@@ -1697,6 +1783,7 @@ module_open(Evas_Module *em)
    ORD(image_native_shutdown);
 
    ORD(gl_current_context_get);
+   ORD(gl_error_get);
 
    evas_gl_thread_link_init();
    symbols();
