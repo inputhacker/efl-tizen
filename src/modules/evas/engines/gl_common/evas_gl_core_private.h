@@ -354,6 +354,10 @@ struct _EVGL_Interface
    // Check native window surface config for Evas GL Direct Rendering
    void        (*native_win_surface_config_get)(void *data, int *win_depth, int *win_stencil, int *win_msaa);
 
+   //TIZEN_ONLY(20161121) Support PreRotation
+   int         (*native_win_prerotation_set)(void *data);
+
+
    // TIZEN_ONLY(20171206) : Disable Partial Rendering On EvasGL
    // partial rendering enable
    void        (*partial_rendering_enable)();

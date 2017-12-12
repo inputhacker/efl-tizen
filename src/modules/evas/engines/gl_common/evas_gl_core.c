@@ -1650,6 +1650,16 @@ try_again:
 
              // Extra flags for render thread // TIZEN_ONLY(20171114) : EvasGL Render Thread
              sfc->thread_rendering = !!(cfg->options_bits & EVAS_GL_OPTIONS_THREAD);
+            //TIZEN_ONLY(20161121)
+             // Pre-rotation should be enabled only when direct rendering is set but client side rotation is not set
+             if ((sfc->direct_fb_opt) &&
+                 (!sfc->client_side_rotation) &&
+                 (evgl_engine->funcs->native_win_prerotation_set))
+               {
+                  if (!evgl_engine->funcs->native_win_prerotation_set(eng_data))
+                    DBG("Prerotation does not work");
+               }
+             //
 
              cfg_index = i;
              break;

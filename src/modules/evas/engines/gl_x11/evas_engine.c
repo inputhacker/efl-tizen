@@ -1261,6 +1261,7 @@ static const EVGL_Interface evgl_funcs =
    evgl_eng_indirect_surface_destroy,
    evgl_eng_gles_context_create,
    evgl_eng_native_win_surface_config_get,
+   NULL, // native_win_prerotation_set
    NULL, //partial_rendering_enable
    NULL, //partial_rendering_disable
 };

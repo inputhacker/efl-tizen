@@ -392,6 +392,10 @@ struct _Evas_Engine_GL_Context
 
    GLuint preserve_bit;
    int    gles_version;
+
+   //TIZEN_ONLY(20161121)
+   // If set, the driver will rotate the buffer itself
+   Eina_Bool pre_rotated : 1;
 };
 
 struct _Evas_GL_Texture_Pool
