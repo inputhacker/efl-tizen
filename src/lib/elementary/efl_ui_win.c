@@ -186,7 +186,9 @@ struct _Efl_Ui_Win_Data
 
    } accessibility_highlight;
    //
-
+   //TIZEN_ONLY(20170919): Handle default label object
+   Eina_List *default_label_objs;
+   //
    Evas_Object *icon;
    const char  *title;
    const char  *icon_name;
@@ -8745,6 +8747,103 @@ _elm_win_object_set_accessibility_highlight(Evas_Object *win, Evas_Object *obj, 
          _elm_win_accessibility_highlight_init(sd, obj);
          _elm_win_accessibility_highlight_show(win);
      }
+}
+//
+
+//TIZEN_ONLY(20170919): Handle default label object
+static void
+_default_label_obj_del_cb (void *data,
+                           Evas *e EINA_UNUSED,
+                           Evas_Object *obj,
+                           void *event_info EINA_UNUSED)
+{
+   ELM_WIN_DATA_GET(data, sd);
+   if (!sd) return;
+
+   sd->default_label_objs = eina_list_remove(sd->default_label_objs, obj);
+}
+
+static int _sort_parent_child_order(const void *data1, const void *data2)
+{
+   if (data1)
+     {
+        Eo *parent;
+        parent = efl_access_parent_get(data1);
+        while (parent)
+          {
+             if (parent == data2) return 1;
+             parent = efl_access_parent_get(parent);
+          }
+     }
+   return -1;
+}
+
+void
+_elm_win_default_label_obj_append(Evas_Object *default_label_obj)
+{
+   if (!default_label_obj) return;
+
+   Evas_Object *win = elm_widget_top_get(default_label_obj);
+   if (!win || !efl_isa(win, EFL_UI_WIN_CLASS))
+     {
+        WRN("The top object of %s is not a window.",
+            efl_class_name_get(efl_class_get(default_label_obj)));
+        return;
+     }
+
+   ELM_WIN_DATA_GET(win, sd);
+   if (!sd) return;
+
+   if (eina_list_data_find(sd->default_label_objs, default_label_obj))
+     {
+        sd->default_label_objs =
+          eina_list_remove(sd->default_label_objs, default_label_obj);
+        evas_object_event_callback_del_full(default_label_obj, EVAS_CALLBACK_DEL,
+                                            _default_label_obj_del_cb, win);
+     }
+
+   evas_object_event_callback_add(default_label_obj, EVAS_CALLBACK_DEL,
+                                  _default_label_obj_del_cb, win);
+   sd->default_label_objs =
+     eina_list_append(sd->default_label_objs, default_label_obj);
+
+   sd->default_label_objs =
+     eina_list_sort(sd->default_label_objs, -1, _sort_parent_child_order);
+}
+
+void
+_elm_win_default_label_obj_remove(Evas_Object *default_label_obj)
+{
+   if (!default_label_obj) return;
+
+   Evas_Object *win = elm_widget_top_get(default_label_obj);
+   if (!win || !efl_isa(win, EFL_UI_WIN_CLASS))
+     {
+        WRN("The top object of %s is not a window.",
+            efl_class_name_get(efl_class_get(default_label_obj)));
+        return;
+     }
+
+   ELM_WIN_DATA_GET(win, sd);
+   if (!sd) return;
+
+   if (eina_list_data_find(sd->default_label_objs, default_label_obj))
+     {
+        sd->default_label_objs =
+          eina_list_remove(sd->default_label_objs, default_label_obj);
+        evas_object_event_callback_del_full(default_label_obj, EVAS_CALLBACK_DEL,
+                                            _default_label_obj_del_cb, win);
+     }
+}
+
+Evas_Object *
+_elm_win_default_label_obj_get(Evas_Object *obj)
+{
+   if (!obj) return NULL;
+   ELM_WIN_DATA_GET(obj, sd);
+   if (!sd) return NULL;
+
+   return eina_list_last_data_get(sd->default_label_objs);
 }
 //
 

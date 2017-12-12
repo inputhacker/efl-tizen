@@ -142,6 +142,10 @@ _accessible_panel_hidden_set(Evas_Object* obj, Eina_Bool is_hidden)
    is_hidden = !!is_hidden;
    efl_access_can_highlight_set(obj, !is_hidden);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, !is_hidden);
+   if (is_hidden)
+     _elm_win_default_label_obj_remove(obj);
+   else
+     _elm_win_default_label_obj_append(obj);
 }
 //
 

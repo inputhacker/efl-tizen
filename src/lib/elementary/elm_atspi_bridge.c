@@ -1355,6 +1355,39 @@ fail:
 }
 //
 
+//TIZEN_ONLY(20170919): Handle default label object
+static Eldbus_Message *
+_accessible_default_label_info_get(const Eldbus_Service_Interface *iface, const Eldbus_Message *msg)
+{
+   Eldbus_Message *ret;
+   Eldbus_Message_Iter *iter;
+   const char *obj_path = eldbus_message_path_get(msg);
+   Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
+   Eo *obj = _bridge_object_from_path(bridge, obj_path);
+   Eo *default_label_obj;
+   Efl_Access_Role role;
+   AtspiRole atspi_role = ATSPI_ROLE_INVALID;
+
+   ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_MIXIN, msg);
+
+   ret = eldbus_message_method_return_new(msg);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
+
+   iter = eldbus_message_iter_get(ret);
+
+    default_label_obj = _elm_win_default_label_obj_get(obj);
+    if (!default_label_obj) default_label_obj = obj;
+   _bridge_iter_object_reference_append(bridge, iter, default_label_obj);
+   _bridge_object_register(bridge, default_label_obj);
+
+   role = efl_access_role_get(default_label_obj);
+   atspi_role = role > EFL_ACCESS_ROLE_LAST_DEFINED ? ATSPI_ROLE_LAST_DEFINED : elm_roles_to_atspi_roles[role][1];
+   eldbus_message_iter_basic_append(iter, 'u', atspi_role);
+
+   return ret;
+}
+//
+
 static const Eldbus_Method accessible_methods[] = {
    // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
    { "GetNavigableAtPoint", ELDBUS_ARGS({"i", "x"}, {"i", "y"}, {"u", "coord_type"}), ELDBUS_ARGS({"(so)", "accessible"}), _accessible_get_navigable_at_point, 0 },
@@ -1397,6 +1430,11 @@ static const Eldbus_Method accessible_methods[] = {
                  {"i", "selectedChildCount"},
                  {"(so)", "describecByObject"}),
      _accessible_reading_material_get, 0},
+   //
+   //TIZEN_ONLY(20170919): Handle default label object
+   { "GetDefaultLabelInfo",
+     NULL, ELDBUS_ARGS({"(so)", "defaultLabelObject"}, {"u", "defaultLabelRole"}),
+     _accessible_default_label_info_get, 0},
    //
    { NULL, NULL, NULL, NULL, 0 }
 };

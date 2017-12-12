@@ -147,6 +147,9 @@ _timeout_cb(void *data, const Efl_Event *event EINA_UNUSED)
 static void
 _show_finished_cb(void *data, const Efl_Event *event EINA_UNUSED)
 {
+   //TIZEN_ONLY(20170919): Handle default label object
+   _elm_win_default_label_obj_append(data);
+   //
    efl_event_callback_legacy_call(data, ELM_POPUP_EVENT_SHOW_FINISHED, NULL);
 }
 /* END */
@@ -2132,8 +2135,11 @@ _elm_popup_scrollable_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *pd)
 }
 
 EOLIAN static void
-_elm_popup_dismiss(Eo *obj EINA_UNUSED, Elm_Popup_Data *pd)
+_elm_popup_dismiss(Eo *obj, Elm_Popup_Data *pd)
 {
+   //TIZEN_ONLY(20170919): Handle default label object
+   _elm_win_default_label_obj_remove(obj);
+   //
    elm_layout_signal_emit(pd->main_layout, "elm,state,hide", "elm");
    elm_notify_dismiss(pd->notify);
 }

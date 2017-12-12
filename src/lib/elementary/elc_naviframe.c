@@ -1220,12 +1220,14 @@ _on_item_pop_finished(void *data,
    elm_wdg_item_del(EO_OBJ(it));
 
    //TIZEN_ONLY(20161122): add state_notify api
-   if (_elm_atspi_enabled())
+   Eo *eo_top = elm_naviframe_top_item_get(widget);
+   if (eo_top)
      {
-        Eo *eo_top = elm_naviframe_top_item_get(widget);
-        if (eo_top)
+        ELM_NAVIFRAME_ITEM_DATA_GET(eo_top, top);
+        _elm_win_default_label_obj_append(VIEW(top));
+
+        if (_elm_atspi_enabled())
           {
-             ELM_NAVIFRAME_ITEM_DATA_GET(eo_top, top);
              efl_access_state_notify(VIEW(top), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
           }
      }
@@ -1258,7 +1260,12 @@ _on_item_show_finished(void *data,
    efl_event_callback_legacy_call(WIDGET(it), ELM_NAVIFRAME_EVENT_TRANSITION_FINISHED, EO_OBJ(it));
 
    if (EO_OBJ(it) == elm_naviframe_top_item_get(WIDGET(it)))
-     efl_event_callback_legacy_call(WIDGET(it), ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(it));
+     {
+        efl_event_callback_legacy_call(WIDGET(it), ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(it));
+        //TIZEN_ONLY(20170919): Handle default label object
+        _elm_win_default_label_obj_append(VIEW(it));
+        //
+     }
 }
 
 static void
@@ -1650,7 +1657,12 @@ _item_push_helper(Elm_Naviframe_Item_Data *item)
    elm_layout_sizing_eval(obj);
 
    if (!top_item)
-     efl_event_callback_legacy_call(obj, ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(item));
+     {
+        efl_event_callback_legacy_call(obj, ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(item));
+        //TIZEN_ONLY(20170919): Handle default label object
+        _elm_win_default_label_obj_append(VIEW(item));
+        //
+     }
 }
 
 EAPI Evas_Object *
