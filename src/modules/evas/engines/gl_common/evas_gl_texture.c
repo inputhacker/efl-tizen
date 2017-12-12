@@ -515,7 +515,7 @@ _pool_tex_alloc(Evas_GL_Texture_Pool *pt, int w, int h, int *u, int *v)
 }
 
 static Evas_GL_Texture_Pool *
-_pool_tex_find(Evas_Engine_GL_Context *gc, int w, int h,
+_pool_tex_find(Evas_Engine_GL_Context *gc, int w, int h, int wpadding, int hpadding,
                GLenum intformat, GLenum format, int *u, int *v,
                Eina_Rectangle **apt, int atlas_w, Eina_Bool disable_atlas)
 {
@@ -524,6 +524,8 @@ _pool_tex_find(Evas_Engine_GL_Context *gc, int w, int h,
    int th2;
    int pool_h;
    /*Return texture unit without atlas*/
+   w += wpadding;
+   h += hpadding;
    if (disable_atlas)
      {
         pt = _pool_tex_new(gc, w, h, intformat, format);
@@ -578,7 +580,7 @@ evas_gl_common_texture_new(Evas_Engine_GL_Context *gc, RGBA_Image *im, Eina_Bool
 {
    Evas_GL_Texture *tex;
    GLsizei w, h;
-   int u = 0, v = 0, xoffset = 1, yoffset = 1;
+   int u = 0, v = 0, xoffset = 1, yoffset = 1, wpadding = 3, hpadding = 3;
    int lformat;
 
    lformat = _evas_gl_texture_search_format(im->cache_entry.flags.alpha, gc->shared->info.bgra, im->cache_entry.space);
@@ -601,6 +603,8 @@ evas_gl_common_texture_new(Evas_Engine_GL_Context *gc, RGBA_Image *im, Eina_Bool
         EINA_SAFETY_ON_FALSE_RETURN_VAL(!(w & 0x3) && !(h & 0x3), NULL);
         xoffset = im->cache_entry.borders.l;
         yoffset = im->cache_entry.borders.t;
+        wpadding = 0;
+        hpadding = 0;
         break;
       case EVAS_COLORSPACE_ETC1_ALPHA:
         return evas_gl_common_texture_rgb_a_pair_new(gc, im);
@@ -616,8 +620,8 @@ evas_gl_common_texture_new(Evas_Engine_GL_Context *gc, RGBA_Image *im, Eina_Bool
         else
           {
              /*One pixel gap and two pixels for duplicated borders*/
-             w = im->cache_entry.w + 3;
-             h = im->cache_entry.h + 3;
+             w = im->cache_entry.w;
+             h = im->cache_entry.h;
           }
         break;
      }
@@ -626,7 +630,7 @@ evas_gl_common_texture_new(Evas_Engine_GL_Context *gc, RGBA_Image *im, Eina_Bool
                                       im->cache_entry.flags.alpha);
    if (!tex) return NULL;
 
-   tex->pt = _pool_tex_find(gc, w, h,
+   tex->pt = _pool_tex_find(gc, w, h, wpadding, hpadding,
                             *matching_format[lformat].intformat,
                             *matching_format[lformat].format,
                             &u, &v, &tex->apt,
@@ -1251,112 +1255,160 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
      GL_TH(glPixelStorei, GL_UNPACK_ROW_LENGTH, 0);
    GL_TH(glPixelStorei, GL_UNPACK_ALIGNMENT, bytes_count);
 
-//   printf("tex upload %ix%i\n", im->cache_entry.w, im->cache_entry.h);
-   //  +-+
-   //  +-+
-   //
-   _tex_sub_2d(tex->gc, tex->x, tex->y,
-               im->cache_entry.w, im->cache_entry.h,
-               fmt, tex->pt->dataformat,
-               im->image.data);
-   //  xxx
-   //  xxx
-   //  ---
-   _tex_sub_2d(tex->gc, tex->x, tex->y + im->cache_entry.h,
-               im->cache_entry.w, 1,
-               fmt, tex->pt->dataformat,
-               im->image.data8 + (((im->cache_entry.h - 1) * im->cache_entry.w)) * bytes_count);
-   //  xxx
-   //  xxx
-   // o
-   _tex_sub_2d(tex->gc, tex->x - 1, tex->y + im->cache_entry.h,
-               1, 1,
-               fmt, tex->pt->dataformat,
-               im->image.data8 + (((im->cache_entry.h - 1) * im->cache_entry.w)) * bytes_count);
-   //  xxx
-   //  xxx
-   //     o
-   _tex_sub_2d(tex->gc, tex->x + im->cache_entry.w, tex->y + im->cache_entry.h,
-               1, 1,
-               fmt, tex->pt->dataformat,
-               im->image.data8 + (im->cache_entry.h * im->cache_entry.w - 1) * bytes_count);
-   //2D packing
-   // ---
-   // xxx
-   // xxx
-   _tex_sub_2d(tex->gc, tex->x, tex->y - 1,
-               im->cache_entry.w, 1,
-               fmt, tex->pt->dataformat,
-               im->image.data);
-   // o
-   //  xxx
-   //  xxx
-   _tex_sub_2d(tex->gc, tex->x - 1, tex->y - 1,
-               1, 1,
-               fmt, tex->pt->dataformat,
-               im->image.data);
-   //    o
-   // xxx
-   // xxx
-   _tex_sub_2d(tex->gc, tex->x + im->cache_entry.w, tex->y - 1,
-               1, 1,
-               fmt, tex->pt->dataformat,
-               im->image.data8 + (im->cache_entry.w - 1) * bytes_count);
-   if (tex->gc->shared->info.unpack_row_length)
+   if ((tex->gc->shared->info.tune.atlas.max_memcpy_size > (int)im->cache_entry.w) &&
+           (tex->gc->shared->info.tune.atlas.max_memcpy_size > (int)im->cache_entry.h))
      {
-        GL_TH(glPixelStorei, GL_UNPACK_ROW_LENGTH, im->cache_entry.w);
-        // |xxx
-        // |xxx
-        //
-        _tex_sub_2d(tex->gc, tex->x - 1, tex->y,
-                    1, im->cache_entry.h,
-                    fmt, tex->pt->dataformat,
-                    im->image.data);
-        //  xxx|
-        //  xxx|
-        //
-        _tex_sub_2d(tex->gc, tex->x + im->cache_entry.w, tex->y,
-                    1, im->cache_entry.h,
-                    fmt, tex->pt->dataformat,
-                    im->image.data8 + (im->cache_entry.w - 1) * bytes_count);
-        //glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+        int sw, sh, dw, dh;
+
+        dw = im->cache_entry.w + 2;
+        dh = im->cache_entry.h + 2;
+        sw = im->cache_entry.w;
+        sh = im->cache_entry.h;
+        DATA32 * temp = malloc (dw * dh * bytes_count);
+        if(!temp)
+          {
+             ERR("memory allocation is failed..");
+             return;
+          }
+        DATA8 *dp = (DATA8 *) temp;
+        DATA8 *sp = (DATA8 *) im->image.data;
+        int i;
+
+        dp += (dw * bytes_count);
+        for(i = 0 ; i < sh ; i ++)
+          {
+             // oxxxx
+             memcpy(dp, sp, bytes_count);
+             dp += bytes_count;
+             // xooox
+             memcpy(dp, sp, sw * bytes_count);
+             dp += (sw * bytes_count);
+             sp += ((sw - 1) * bytes_count);
+             // xxxxo
+             memcpy(dp, sp, bytes_count);
+             dp += bytes_count;
+             sp += bytes_count;
+           }
+
+        // xxxxx
+        // ooooo
+        memcpy(dp, dp - (dw * bytes_count), dw * bytes_count);
+
+        dp =  (DATA8 *) temp;
+        // ooooo
+        // xxxxx
+        memcpy(dp, dp + (dw * bytes_count), dw * bytes_count);
+        _tex_sub_2d(tex->gc, tex->x - 1, tex->y - 1, dw, dh, fmt, tex->pt->dataformat, temp);
+        free(temp);
      }
    else
      {
-        DATA8 *tpix, *ps, *pd;
-        int i;
+        // +-+
+        // +-+
+        //
+        _tex_sub_2d(tex->gc, tex->x, tex->y,
+                    im->cache_entry.w, im->cache_entry.h,
+                    fmt, tex->pt->dataformat,
+                    im->image.data);
 
-        tpix = alloca(im->cache_entry.h * bytes_count);
-        pd = tpix;
-        ps = im->image.data8;
-        for (i = 0; i < (int)im->cache_entry.h; i++)
-          {
-             memcpy(pd, ps, bytes_count);
-             pd += bytes_count;
-             ps += im->cache_entry.w * bytes_count;
-          }
-        // |xxx
-        // |xxx
-        //
-        _tex_sub_2d(tex->gc, tex->x - 1, tex->y,
-                    1, im->cache_entry.h,
+        //  xxx
+        //  xxx
+        //  ---
+        _tex_sub_2d(tex->gc, tex->x, tex->y + im->cache_entry.h,
+                    im->cache_entry.w, 1,
                     fmt, tex->pt->dataformat,
-                    tpix);
-        pd = tpix;
-        ps = im->image.data8 + (im->cache_entry.w - 1) * bytes_count;
-        for (i = 0; i < (int)im->cache_entry.h; i++)
-          {
-             memcpy(pd, ps, bytes_count);
-             pd += bytes_count;
-             ps += im->cache_entry.w * bytes_count;
-          }
-        //  xxx|
-        //  xxx|
-        //
-        _tex_sub_2d(tex->gc, tex->x + im->cache_entry.w, tex->y,
-                    1, im->cache_entry.h,
+               im->image.data8 + (((im->cache_entry.h - 1) * im->cache_entry.w)) * bytes_count);
+        //  xxx
+        //  xxx
+        // o
+        _tex_sub_2d(tex->gc, tex->x - 1, tex->y + im->cache_entry.h,
+                    1, 1,
                     fmt, tex->pt->dataformat,
-                    tpix);
+               im->image.data8 + (((im->cache_entry.h - 1) * im->cache_entry.w)) * bytes_count);
+        //  xxx
+        //  xxx
+        // o
+        _tex_sub_2d(tex->gc, tex->x + im->cache_entry.w, tex->y + im->cache_entry.h,
+                    1, 1,
+                    fmt, tex->pt->dataformat,
+               im->image.data8 + (im->cache_entry.h * im->cache_entry.w - 1) * bytes_count);
+        //2D packing
+        // ---
+        // xxx
+        // xxx
+        _tex_sub_2d(tex->gc, tex->x, tex->y - 1,
+                    im->cache_entry.w, 1,
+                    fmt, tex->pt->dataformat,
+                    im->image.data);
+        // o
+        //  xxx
+        //  xxx
+        _tex_sub_2d(tex->gc, tex->x - 1, tex->y - 1,
+                    1, 1,
+                    fmt, tex->pt->dataformat,
+                    im->image.data);
+        //    o
+        // xxx
+        // xxx
+        _tex_sub_2d(tex->gc, tex->x + im->cache_entry.w, tex->y - 1,
+                    1, 1,
+                    fmt, tex->pt->dataformat,
+                    im->image.data8 + (im->cache_entry.w - 1) * bytes_count);
+        if (tex->gc->shared->info.unpack_row_length)
+          {
+        GL_TH(glPixelStorei, GL_UNPACK_ROW_LENGTH, im->cache_entry.w);
+            // |xxx
+            // |xxx
+            //
+            _tex_sub_2d(tex->gc, tex->x - 1, tex->y,
+                        1, im->cache_entry.h,
+                        fmt, tex->pt->dataformat,
+                        im->image.data);
+            //  xxx|
+            //  xxx|
+            //
+            _tex_sub_2d(tex->gc, tex->x + im->cache_entry.w, tex->y,
+                        1, im->cache_entry.h,
+                        fmt, tex->pt->dataformat,
+                    im->image.data8 + (im->cache_entry.w - 1) * bytes_count);
+          }
+        else
+          {
+            DATA8 *tpix, *ps, *pd;
+            int i;
+
+            tpix = alloca(im->cache_entry.h * bytes_count);
+            pd = tpix;
+            ps = im->image.data8;
+            for (i = 0; i < (int)im->cache_entry.h; i++)
+              {
+                 memcpy(pd, ps, bytes_count);
+                 pd += bytes_count;
+                 ps += im->cache_entry.w * bytes_count;
+              }
+            // |xxx
+            // |xxx
+            //
+            _tex_sub_2d(tex->gc, tex->x - 1, tex->y,
+                        1, im->cache_entry.h,
+                        fmt, tex->pt->dataformat,
+                        tpix);
+            pd = tpix;
+            ps = im->image.data8 + (im->cache_entry.w - 1) * bytes_count;
+            for (i = 0; i < (int)im->cache_entry.h; i++)
+              {
+                 memcpy(pd, ps, bytes_count);
+                 pd += bytes_count;
+                 ps += im->cache_entry.w * bytes_count;
+              }
+            //  xxx|
+            //  xxx|
+            //
+            _tex_sub_2d(tex->gc, tex->x + im->cache_entry.w, tex->y,
+                        1, im->cache_entry.h,
+                        fmt, tex->pt->dataformat,
+                        tpix);
+          }
      }
    //GL_TH(glPixelStorei, GL_UNPACK_ALIGNMENT, 4);
    if (tex->pt->texture != tex->gc->state.current.cur_tex)
@@ -1563,7 +1615,7 @@ evas_gl_common_texture_update(Evas_GL_Texture *tex, RGBA_Image *im)
         lformat = _evas_gl_texture_search_format(tex->alpha, tex->gc->shared->info.bgra, im->cache_entry.space);
         if (lformat < 0) return;
 
-        tex->ptt = _pool_tex_find(tex->gc, EVAS_GL_TILE_SIZE, EVAS_GL_TILE_SIZE,
+        tex->ptt = _pool_tex_find(tex->gc, EVAS_GL_TILE_SIZE, EVAS_GL_TILE_SIZE, 0, 0,
                                   *matching_format[lformat].intformat,
                                   *matching_format[lformat].format,
                                   &u, &v, &tex->aptt,
@@ -1709,7 +1761,7 @@ evas_gl_common_texture_alpha_new(Evas_Engine_GL_Context *gc, DATA8 *pixels,
    tex = evas_gl_common_texture_alloc(gc, w, h, EINA_FALSE);
    if (!tex) return NULL;
 
-   tex->pt = _pool_tex_find(gc, w + 3, fh, alpha_ifmt, alpha_fmt, &u, &v,
+   tex->pt = _pool_tex_find(gc, w, fh, 3, 0, alpha_ifmt, alpha_fmt, &u, &v,
                             &tex->apt,
                             gc->shared->info.tune.atlas.max_alloc_alpha_size, EINA_FALSE);
    if (!tex->pt)
