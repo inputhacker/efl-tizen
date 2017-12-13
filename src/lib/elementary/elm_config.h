@@ -2161,6 +2161,16 @@ EAPI void elm_config_web_backend_set(const char *backend);
  */
 EAPI const char *elm_config_web_backend_get(void);
 
+/* TIZEN_ONLY(20171213) :
+ * Add backwards compatability implementation for elm_scale_get and elm_scale_set
+ * to allow running unmodified Tizen applications on a new drop of elementary
+ */
+EAPI double elm_scale_get(void);
+EAPI void   elm_scale_set(double scale);
+EAPI Evas_Coord elm_finger_size_get(void);
+EAPI void       elm_finger_size_set(Evas_Coord size);
+//
+
 /**
  * Get whether the system is offline
  *

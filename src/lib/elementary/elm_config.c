@@ -4708,6 +4708,35 @@ _elm_config_shutdown(void)
    ELM_SAFE_FREE(_elm_key_bindings, eina_hash_free);
 }
 
+/* TIZEN_ONLY(20171213) :
+ * Add backwards compatability implementation for elm_scale_get/set and elm_finger_size_get/set
+ * to allow running unmodified Tizen applications on a new drop of elementary
+ */
+
+EAPI double
+elm_scale_get(void)
+{
+   return elm_config_scale_get();
+}
+
+EAPI void
+elm_scale_set(double scale)
+{
+   elm_config_scale_set(scale);
+}
+
+EAPI Evas_Coord
+elm_finger_size_get(void)
+{
+   return elm_config_finger_size_get();
+}
+
+EAPI void
+elm_finger_size_set(Evas_Coord size)
+{
+   elm_config_finger_size_set(size);
+}
+//
 
 /* Efl.Config implementation */
 
