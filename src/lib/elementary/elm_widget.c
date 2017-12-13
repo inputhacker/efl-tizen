@@ -6599,6 +6599,15 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
                {
                   Elm_Widget_Item_Data *id = efl_data_scope_get(child, ELM_WIDGET_ITEM_CLASS);
                   compare_obj = id->view;
+#ifdef TIZEN_PROFILE_WEARABLE
+                  Eo* it_view = evas_object_image_source_get(stack_item);
+                  if (it_view && it_view == compare_obj)
+                    {
+                       eina_list_free(children);
+                       eina_list_free(stack);
+                       return child;
+                    }
+#endif
                }
              /* In case of access object compare should be 'wrapped' evas_object */
              if (efl_isa(child, ELM_ACCESS_CLASS))
