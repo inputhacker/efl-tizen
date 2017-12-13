@@ -3933,10 +3933,6 @@ _evgl_api_gles3_get(Evas_GL_API *funcs, void *(*get_proc_address)(const char *),
    if (!_evgl_gles3_api_init(minor_version, get_proc_address))
       return;
 
-   // Hack for NVIDIA. See also evas_gl_core.c:_context_ext_check()
-   if (!_gles3_api.glVertexBindingDivisor)
-     effective_minor = 0;
-
    if (debug)
      _debug_gles3_api_get(funcs, effective_minor);
    else
