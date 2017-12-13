@@ -6604,6 +6604,7 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
              if (efl_isa(child, ELM_ACCESS_CLASS))
                {
                    Elm_Access_Info *info = _elm_access_info_get(child);
+                   if (!info) continue;
                    compare_obj = info->part_object;
                 }
              /* In case of widget is registerd by elm_access_object_register */
