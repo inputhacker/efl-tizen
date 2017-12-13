@@ -3210,7 +3210,10 @@ typedef struct _Ecore_Job Ecore_Job;    /**< A job handle */
  *
  * @{
  */
- typedef struct _Ecore_Device                 Ecore_Device; /**< A handle for an device */
+//TIZNE_ONLY(20171214): migration build fix.
+//typedef struct _Ecore_Device                 Ecore_Device; /**< A handle for an device */
+typedef Eo                 Ecore_Device; /**< A handle for an device */
+//
 
 /**
   * @typedef Ecore_Device_Class
