@@ -6556,6 +6556,28 @@ _is_ancestor_of(Evas_Object *smart_parent, Evas_Object *obj)
    return ret;
 }
 
+static Eina_Bool
+_is_acceptable_leaf(Eo *obj)
+{
+   Efl_Access_Role role;
+   Eina_List *children;
+
+   role = efl_access_role_get(obj);
+   switch (role)
+     {
+       case EFL_ACCESS_ROLE_IMAGE:
+       case EFL_ACCESS_ROLE_ICON:
+         children = efl_access_children_get(obj);
+         if (!children) return EINA_FALSE;
+         break;
+
+       default:
+         break;
+     }
+
+   return EINA_TRUE;
+}
+
 static Eo *
 _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
 {
@@ -6574,7 +6596,7 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
 
    EINA_LIST_FOREACH(children, l2, child)
      {
-        if (_is_inside(child, x, y))
+        if (_is_inside(child, x, y) && _is_acceptable_leaf(child))
           valid_children = eina_list_append(valid_children, child);
      }
 
