@@ -4362,16 +4362,34 @@ static unsigned char _accept_object(accessibility_navigation_pointer_table *tabl
    return 1;
 }
 
+/* The target cannot be a parent of root */
+static Eina_Bool _target_validation_check(Eo *target, Eo *root)
+{
+   Eo *parent;
+   parent = efl_access_parent_get(root);
+
+   while (parent)
+     {
+        if (parent == target) return EINA_FALSE;
+        parent = efl_access_parent_get(parent);
+     }
+
+   return EINA_TRUE;
+}
+
 static void *_calculate_navigable_accessible_at_point_impl(accessibility_navigation_pointer_table *table,
           void *root, int x, int y, unsigned char coordinates_are_screen_based)
 {
    if (!root) return NULL;
+   void *prev_root = root;
 
    void *return_value = NULL;
    while (1)
      {
        void *target = CALL(get_object_at_point, root, x, y, coordinates_are_screen_based);
        if (!target) break;
+       if (target == root || target == prev_root) break;
+       if (!_target_validation_check(target, root)) break;
 
        // always return proxy, so atspi lib can call on it again
        if (CALL(object_is_proxy, target)) return target;

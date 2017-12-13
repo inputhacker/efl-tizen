@@ -6557,18 +6557,26 @@ _is_ancestor_of(Evas_Object *smart_parent, Evas_Object *obj)
 }
 
 static Eina_Bool
-_is_acceptable_leaf(Eo *obj)
+_acceptable_child_is(Eo *obj)
 {
    Efl_Access_Role role;
    Eina_List *children;
+   Efl_Access_State_Set ss;
 
    role = efl_access_role_get(obj);
    switch (role)
      {
        case EFL_ACCESS_ROLE_IMAGE:
        case EFL_ACCESS_ROLE_ICON:
+       /* remove unacceptable leaf node */
          children = efl_access_children_get(obj);
          if (!children) return EINA_FALSE;
+         break;
+
+       case EFL_ACCESS_ROLE_PANEL:
+         /* remove closed panel fron children list */
+         ss = efl_access_state_set_get(obj);
+         if (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_SHOWING)) return EINA_FALSE;
          break;
 
        default:
@@ -6596,7 +6604,7 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
 
    EINA_LIST_FOREACH(children, l2, child)
      {
-        if (_is_inside(child, x, y) && _is_acceptable_leaf(child))
+        if (_is_inside(child, x, y) && _acceptable_child_is(child))
           valid_children = eina_list_append(valid_children, child);
      }
 
@@ -6734,6 +6742,11 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
         Evas_Object *smart_parent = stack_item;
         while (smart_parent)
           {
+             /* If parent equals to obj, it is not necessary to go upper.
+                So the top down logic would be better than NULL return. */
+             if (smart_parent == obj)
+               return _accessible_at_point_top_down_get(obj, _pd, screen_coords, x, y);
+
              Evas_Object *ao = elm_access_object_get(smart_parent);
              if (ao) return ao;
 
