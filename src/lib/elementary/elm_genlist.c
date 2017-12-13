@@ -8951,6 +8951,36 @@ _elm_genlist_elm_widget_focus_state_apply(Eo *obj, Elm_Genlist_Data *pd EINA_UNU
    return efl_ui_widget_focus_state_apply(efl_super(obj, MY_CLASS), current_state, configured_state, obj);
 }
 
+//Tizen Only(20170113) : Below Legacy APIs are Mobile Only Feature
+EAPI void
+elm_genlist_realization_mode_set(Evas_Object *obj EINA_UNUSED, Eina_Bool mode EINA_UNUSED)
+{
+   // Mobile Only Feature;
+   return;
+}
+
+EAPI Eina_Bool
+elm_genlist_realization_mode_get(Evas_Object *obj EINA_UNUSED)
+{
+   // Mobile Only Feature;
+   return EINA_FALSE;
+}
+
+EAPI void
+elm_genlist_item_reorder_start(Elm_Object_Item *item EINA_UNUSED)
+{
+   // Mobile Only Feature;
+   return;
+}
+
+EAPI void
+elm_genlist_item_reorder_stop(Elm_Object_Item *item EINA_UNUSED)
+{
+   // Mobile Only Feature;
+   return;
+}
+//
+
 /* Standard widget overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_genlist, Elm_Genlist_Data)
