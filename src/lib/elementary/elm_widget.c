@@ -6515,11 +6515,87 @@ ELM_PART_TEXT_DEFAULT_GET(elm_widget, NULL)
    EFL_OBJECT_OP_FUNC(efl_canvas_object_legacy_ctor, _elm_widget_legacy_ctor), \
    EFL_OBJECT_OP_FUNC(efl_dbg_info_get, _elm_widget_efl_object_dbg_info_get)
 
-//TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
-EOLIAN static Eo *
-_elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
+//TIZEN_ONLY(20160329): widget: improve accessibile_at_point getter (a8aff0423202b9a55dbb3843205875226678fbd6)
+static void
+_coordinate_system_based_point_translate(Eo *obj, Eina_Bool screen_coords, int *x, int *y)
 {
-   Eina_List *l, *l2, *children;
+   Ecore_Evas *ee;
+   int ee_x = 0;
+   int ee_y = 0;
+
+   if (screen_coords)
+     {
+        ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
+        if (!ee) return;
+
+        ecore_evas_geometry_get(ee, &ee_x, &ee_y, NULL, NULL);
+        *x -= ee_x;
+        *y -= ee_y;
+     }
+}
+
+static Evas_Object *
+_parent_get(Evas_Object *obj)
+{
+   Evas_Object *parent;
+
+   parent = evas_object_smart_parent_get(obj);
+   if (!parent)
+     {
+        if (strcmp("Efl_Ui_Win", efl_class_name_get(efl_class_get(obj))))
+          parent = elm_widget_parent_get(obj);
+     }
+
+   return parent;
+}
+
+static Eina_Bool
+_is_inside(Evas_Object *obj, int x, int y)
+{
+   Eina_Bool ret = EINA_TRUE;
+   Evas_Coord cx = 0;
+   Evas_Coord cy = 0;
+   Evas_Coord cw = 0;
+   Evas_Coord ch = 0;
+   if (efl_isa(obj, ELM_WIDGET_ITEM_CLASS))
+     {
+        Elm_Widget_Item_Data *id = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
+        evas_object_geometry_get(id->view, &cx, &cy, &cw, &ch);
+     }
+   else
+     evas_object_geometry_get(obj, &cx, &cy, &cw, &ch);
+
+   /* check the point is out of bound */
+   if (x < cx || x > cx + cw || y < cy || y > cy + ch)
+     {
+        ret = EINA_FALSE;
+     }
+   return ret;
+}
+
+static Eina_Bool
+_is_ancestor_of(Evas_Object *smart_parent, Evas_Object *obj)
+{
+   Eina_Bool ret = EINA_FALSE;
+   Evas_Object *parent = elm_widget_parent_get(obj);
+   while (parent)
+     {
+        /* No need to check more, the smart_parent is parent of obj */
+        if (smart_parent == parent)
+          {
+             ret = EINA_TRUE;
+             break;
+          }
+        parent = elm_widget_parent_get(parent);
+     }
+
+   return ret;
+}
+
+static Eo *
+_accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
+{
+   Eina_List *l, *l2, *children, *valid_children = NULL;
    Eo *child;
    Evas_Object *stack_item;
    Eo *compare_obj;
@@ -6527,27 +6603,31 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
    Eo *proxy;
    Evas_Coord px, py, pw, ph;
    //
-   int ee_x, ee_y;
 
-   if (screen_coords)
-     {
-        Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
-        if (!ee) return NULL;
-        ecore_evas_geometry_get(ee, &ee_x, &ee_y, NULL, NULL);
-        x -= ee_x;
-        y -= ee_y;
-     }
+   _coordinate_system_based_point_translate(obj, screen_coords, &x, &y);
 
    children = efl_access_children_get(obj);
 
+   EINA_LIST_FOREACH(children, l2, child)
+     {
+        if (_is_inside(child, x, y))
+          valid_children = eina_list_append(valid_children, child);
+     }
    /* Get evas_object stacked at given x,y coordinates starting from top */
    Eina_List *stack = evas_tree_objects_at_xy_get(evas_object_evas_get(obj), NULL, x, y);
    /* Foreach stacked object starting from top */
    EINA_LIST_FOREACH(stack, l, stack_item)
      {
-        /* Foreach at-spi children traverse stack_item evas_objects hierarchy */
-        EINA_LIST_FOREACH(children, l2, child)
+        /* Foreach at-spi valid children traverse stack_item evas_objects hierarchy */
+        EINA_LIST_FOREACH(valid_children, l2, child)
           {
+             Efl_Access_Role role;
+             role = efl_access_role_get(child);
+             if (role == EFL_ACCESS_ROLE_REDUNDANT_OBJECT)
+               {
+                  /* The redundant object ignores */
+                  continue;
+               }
              /* Compare object used to compare with stacked evas objects */
              compare_obj = child;
              /* In case of widget_items compare should be different then elm_widget_ item  object */
@@ -6559,14 +6639,22 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
              /* In case of access object compare should be 'wrapped' evas_object */
              if (efl_isa(child, ELM_ACCESS_CLASS))
                {
-                  Elm_Access_Info *info = _elm_access_info_get(child);
+                   Elm_Access_Info *info = _elm_access_info_get(child);
+                   compare_obj = info->part_object;
+                }
+             /* In case of widget is registerd by elm_access_object_register */
+             Elm_Access_Info *info = _elm_access_info_get(child);
+             if (info && info->part_object)
+               {
                   compare_obj = info->part_object;
                }
+
              /* In case of ewk wrapper object compare with internal ewk_view evas_object */
              if (efl_isa(child, ELM_ATSPI_EWK_WRAPPER_CLASS))
                {
                   compare_obj = elm_atspi_ewk_wrapper_ewk_view_get(child);
                }
+
              /* If spacial eo children do not have backing evas_object continue with search */
              if (!compare_obj)
                continue;
@@ -6594,12 +6682,80 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
                           }
                      }
                    //
-                   smart_parent = evas_object_smart_parent_get(smart_parent);
+
+                   smart_parent = _parent_get(smart_parent);
+                   if (_is_ancestor_of(smart_parent, obj)) break;
                }
           }
      }
 
    eina_list_free(children);
+   eina_list_free(stack);
+   return NULL;
+}
+
+static int _sort_by_repeat_events(const void *data1, const void *data2)
+{
+   Eina_Bool repeat1, repeat2;
+
+   repeat1 = evas_object_repeat_events_get(data1);
+   repeat2 = evas_object_repeat_events_get(data2);
+
+   if (repeat1 != repeat2 && repeat1 == EINA_TRUE) return 1;
+   return -1;
+}
+
+//TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+EOLIAN static Eo *
+_elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
+{
+   Eina_List *l;
+   Evas_Object *stack_item;
+
+   if(strcmp("Efl_Ui_Win", efl_class_name_get(efl_class_get(obj))))
+     return _accessible_at_point_top_down_get(obj, _pd, screen_coords, x, y);
+
+   _coordinate_system_based_point_translate(obj, screen_coords, &x, &y);
+
+   Eina_List *stack = evas_tree_objects_at_xy_get(evas_object_evas_get(obj), NULL, x, y);
+   stack = eina_list_sort(stack, -1, _sort_by_repeat_events);
+
+   EINA_LIST_FOREACH(stack, l, stack_item)
+     {
+        Evas_Object *smart_parent = stack_item;
+        while (smart_parent)
+          {
+             Evas_Object *ao = elm_access_object_get(smart_parent);
+             if (ao) return ao;
+
+             if (efl_isa(smart_parent, EFL_ACCESS_MIXIN))
+               {
+                  Eina_Bool acceptable = EINA_FALSE;
+
+                  Efl_Access_Role role;
+                  role = efl_access_role_get(smart_parent);
+                  switch (role)
+                    {
+                       case EFL_ACCESS_ROLE_FILLER: /* ex: View of colorselector item is layout */
+                       case EFL_ACCESS_ROLE_ICON:
+                       case EFL_ACCESS_ROLE_IMAGE:
+                       case EFL_ACCESS_ROLE_REDUNDANT_OBJECT:
+                       case EFL_ACCESS_ROLE_WINDOW:
+                         DBG("Go for parent: %s (%p)\n", evas_object_type_get(smart_parent), smart_parent);
+                         break;
+
+                       default:
+                         acceptable = EINA_TRUE;
+                         break;
+                    }
+
+                  if (acceptable) return smart_parent;
+               }
+
+             smart_parent = _parent_get(smart_parent);
+          }
+     }
+
    eina_list_free(stack);
    return NULL;
 }
