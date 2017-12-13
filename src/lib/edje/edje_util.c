@@ -2740,20 +2740,6 @@ _edje_object_part_text_select_allow_set(Eo *obj EINA_UNUSED, Edje *ed, const cha
      _edje_entry_select_allow_set(rp, allow);
 }
 
-/* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API */
-EOLIAN void
-_edje_object_part_text_select_disable_set(Eo *obj EINA_UNUSED, Edje *ed, const char *part, Eina_Bool disable)
-{
-   Edje_Real_Part *rp;
-
-   if ((!ed) || (!part)) return;
-   rp = _edje_real_part_recursive_get(&ed, part);
-   if (!rp) return;
-   if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
-     _edje_entry_select_disable_set(rp, disable);
-}
-/* END */
-
 EOLIAN void
 _edje_object_part_text_select_abort(Eo *obj EINA_UNUSED, Edje *ed, const char *part)
 {

@@ -2794,10 +2794,6 @@ void _edje_entry_cursor_on_mouse_geometry_get(Edje_Real_Part *rp, Evas_Coord *cx
 void _edje_entry_user_insert(Edje_Real_Part *rp, const char *text);
 void _edje_entry_select_allow_set(Edje_Real_Part *rp, Eina_Bool allow);
 Eina_Bool _edje_entry_select_allow_get(const Edje_Real_Part *rp);
-/* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API */
-void _edje_entry_select_disable_set(Edje_Real_Part *rp, Eina_Bool disable);
-Eina_Bool _edje_entry_select_disable_get(const Edje_Real_Part *rp);
-/* END */
 void _edje_entry_select_abort(Edje_Real_Part *rp);
 void *_edje_entry_imf_context_get(Edje_Real_Part *rp);
 Eina_Bool _edje_entry_cursor_next(Edje_Real_Part *rp, Edje_Cursor cur);
@@ -2972,9 +2968,6 @@ void _part_text_item_geometry_get(Eo *obj, void *_pd, va_list *list);
 void _part_text_cursor_geometry_get(Eo *obj, void *_pd, va_list *list);
 void _part_text_user_insert(Eo *obj, void *_pd, va_list *list);
 void _part_text_select_allow_set(Eo *obj, void *_pd, va_list *list);
-/* TIZEN_ONLY(20161031): Add edje_object_part_text_select_disable_set API */
-void _part_text_select_disable_set(Eo *obj, void *_pd, va_list *list);
-/* END */
 void _part_text_select_abort(Eo *obj, void *_pd, va_list *list);
 void _part_text_select_begin(Eo *obj, void *_pd, va_list *list);
 void _part_text_select_extend(Eo *obj, void *_pd, va_list *list);
