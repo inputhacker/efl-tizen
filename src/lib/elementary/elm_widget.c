@@ -4153,31 +4153,44 @@ _elm_widget_item_accessible_plain_name_get(Elm_Object_Item *item, const char* na
    return id->accessible_name;
 }
 
+//TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
+static Eina_Bool
+_elm_widget_can_highlight_get_by_class(Eo *obj)
+{
+   if (efl_isa(obj, ELM_WIDGET_ITEM_CLASS))
+     {
+        Elm_Widget_Item_Data *id = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
+        if (!id) return EINA_FALSE;
+        if (!id->can_highlight) return EINA_FALSE;
+     }
+   else
+     {
+        Elm_Widget_Smart_Data *wd = efl_data_scope_get(obj, ELM_WIDGET_CLASS);
+        if (!wd) return EINA_FALSE;
+        if (!wd->can_highlight) return EINA_FALSE;
+     }
+   return EINA_TRUE;
+}
+//
+
 //TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
 EAPI Eina_Bool
 _elm_widget_item_highlightable(Elm_Object_Item *item)
 {
+   Eo *parent;
+
    Elm_Widget_Item_Data *id = efl_data_scope_get(item, ELM_WIDGET_ITEM_CLASS);
    if (!id) return EINA_FALSE;
    if (!id->can_highlight) return EINA_FALSE;
-   Evas_Object *widget = id->widget;
-   Evas_Object *parent = widget;
-   Elm_Widget_Smart_Data *wd;
-   if (parent && efl_isa(parent, EFL_ACCESS_MIXIN))
+
+   parent = efl_access_parent_get(item);
+   while (parent && !efl_isa(parent, ELM_ATSPI_APP_OBJECT_CLASS))
      {
-        wd = efl_data_scope_get(parent, ELM_WIDGET_CLASS);
-        if (!wd->can_highlight) return EINA_FALSE;
+        //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
+        if (!_elm_widget_can_highlight_get_by_class(parent)) return EINA_FALSE;
+        //
+        parent = efl_access_parent_get(parent);
      }
-   do
-     {
-        parent = elm_widget_parent_get(parent);
-        if (parent && efl_isa(parent, EFL_ACCESS_MIXIN))
-          {
-             wd = efl_data_scope_get(parent, ELM_WIDGET_CLASS);
-             if (!wd->can_highlight) return EINA_FALSE;
-          }
-     }
-   while (parent && (parent != elm_widget_top_get(widget)));
    return EINA_TRUE;
 }
 //
@@ -5726,25 +5739,20 @@ _elm_widget_efl_access_parent_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED
 EAPI Eina_Bool
 _elm_widget_highlightable(Evas_Object *obj)
 {
+   Eo *parent;
+
    Elm_Widget_Smart_Data *wd = efl_data_scope_get(obj, ELM_WIDGET_CLASS);
    if (!wd) return EINA_FALSE;
    if (!wd->can_highlight) return EINA_FALSE;
-   Evas_Object *parent = elm_widget_parent_get(obj);
-   if (parent && efl_isa(parent, EFL_ACCESS_MIXIN))
+
+   parent = efl_access_parent_get(obj);
+   while (parent && !efl_isa(parent, ELM_ATSPI_APP_OBJECT_CLASS))
      {
-        wd = efl_data_scope_get(parent, ELM_WIDGET_CLASS);
-        if (!wd->can_highlight) return EINA_FALSE;
+        //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
+        if (!_elm_widget_can_highlight_get_by_class(parent)) return EINA_FALSE;
+        //
+        parent = efl_access_parent_get(parent);
      }
-   do
-     {
-        parent = elm_widget_parent_get(parent);
-        if (parent && efl_isa(parent, EFL_ACCESS_MIXIN))
-          {
-             wd = efl_data_scope_get(parent, ELM_WIDGET_CLASS);
-             if (!wd->can_highlight) return EINA_FALSE;
-          }
-     }
-   while (parent && (parent != elm_widget_top_get(obj)));
    return EINA_TRUE;
 }
 //
@@ -5886,51 +5894,7 @@ _elm_widget_item_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, Elm_Widget
    elm_object_item_focus_set(obj, EINA_TRUE);
    return elm_object_item_focus_get(obj);
 }
-// TIZEN_ONLY(20171114) Accessibility Highlight Frame added
-EOLIAN static Eina_Bool
-_elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Data *sd)
-{
-   // TIZEN_ONLY(20171117) Accessibility Highlight frame support for items
-   // Evas_Object *win = elm_widget_top_get(sd->widget);
-   // if (win && efl_isa(win, EFL_UI_WIN_CLASS))
-   //   {
-   //      elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
-   //      efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
-   //      return EINA_TRUE;
-   //   }
-   // return EINA_FALSE;
 
-   if (!sd) return EINA_FALSE;
-   if (!sd->view) return EINA_FALSE;
-
-   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
-   _accessible_highlight_region_show(sd->view);
-   //
-
-   if (!sd->eo_obj) return EINA_FALSE;
-   elm_object_accessibility_highlight_set(sd->eo_obj, EINA_TRUE);
-   if (!obj) return EINA_FALSE;
-
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
-   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
-   evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_HIGHLIGHTED, obj);
-   //
-   return EINA_TRUE;
-   //
-}
-
-EOLIAN static Eina_Bool
-_elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_Data *sd)
-{
-   if (!obj) return EINA_FALSE;
-   elm_object_accessibility_highlight_set(sd->view, EINA_FALSE);
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
-   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
-   evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_UNHIGHLIGHTED, obj);
-   //
-   return EINA_TRUE;
-}
-//
 
 //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
 EOLIAN static void
@@ -6943,6 +6907,52 @@ _elm_widget_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Smart_Data 
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
    evas_object_smart_callback_call(obj, SIG_WIDGET_ATSPI_UNHIGHLIGHTED, NULL);
+   //
+   return EINA_TRUE;
+}
+//
+
+// TIZEN_ONLY(20171114) Accessibility Highlight Frame added
+EOLIAN static Eina_Bool
+_elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Data *sd)
+{
+   // TIZEN_ONLY(20171117) Accessibility Highlight frame support for items
+   // Evas_Object *win = elm_widget_top_get(sd->widget);
+   // if (win && efl_isa(win, EFL_UI_WIN_CLASS))
+   //   {
+   //      elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
+   //      efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   //      return EINA_TRUE;
+   //   }
+   // return EINA_FALSE;
+
+   if (!sd) return EINA_FALSE;
+   if (!sd->view) return EINA_FALSE;
+
+   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+   _accessible_highlight_region_show(sd->view);
+   //
+
+   if (!sd->eo_obj) return EINA_FALSE;
+   elm_object_accessibility_highlight_set(sd->eo_obj, EINA_TRUE);
+   if (!obj) return EINA_FALSE;
+
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_HIGHLIGHTED, obj);
+   //
+   return EINA_TRUE;
+   //
+}
+
+EOLIAN static Eina_Bool
+_elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_Data *sd)
+{
+   if (!obj) return EINA_FALSE;
+   elm_object_accessibility_highlight_set(sd->view, EINA_FALSE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_UNHIGHLIGHTED, obj);
    //
    return EINA_TRUE;
 }
