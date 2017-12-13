@@ -1475,18 +1475,11 @@ _evgl_glGetString(GLenum name)
    EVGL_Resource *rsc;
    EVGL_Context *ctx;
 
-   /* We wrap two values here:
-    *
-    * VERSION: Since OpenGL ES 3 is not supported yet*, we return OpenGL ES 2.0
-    *   The string is not modified on desktop GL (eg. 4.4.0 NVIDIA 343.22)
-    *   GLES 3 support is not exposed because apps can't use GLES 3 core
-    *   functions yet.
+   /* We wrap a value here:
     *
     * EXTENSIONS: This should return only the list of GL extensions supported
     *   by Evas GL. This means as many extensions as possible should be
     *   added to the whitelist.
-    *
-    * *: GLES 3.0/3.1 is not fully supported... we also have buggy drivers!
     */
 
    /*
@@ -1520,14 +1513,6 @@ _evgl_glGetString(GLenum name)
         ret = (const char *) EVGL_TH(glGetString, GL_SHADING_LANGUAGE_VERSION);
         if (!ret) return NULL;
 #ifdef GL_GLES
-        // FIXME: We probably shouldn't wrap anything for EGL
-        if (ret[18] != '1')
-          {
-             // We try not to remove the vendor fluff
-             snprintf(_glsl, sizeof(_glsl), "OpenGL ES GLSL ES 1.00 Evas GL (%s)", ret + 18);
-             _glsl[sizeof(_glsl) - 1] = '\0';
-             return (const GLubyte *) _glsl;
-          }
         return (const GLubyte *) ret;
 #else
         // Desktop GL, we still keep the official name
