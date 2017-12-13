@@ -6577,6 +6577,17 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
         if (_is_inside(child, x, y))
           valid_children = eina_list_append(valid_children, child);
      }
+
+   /* If there is only one valid child at point, then return it.
+      The evas_tree_objects_at_xy_get could not find proper object,
+      if application does not have well aligned objects. */
+   if (eina_list_count(valid_children) == 1)
+     {
+        eina_list_free(children);
+        child = eina_list_nth(valid_children, 0);
+        return child;
+     }
+
    /* Get evas_object stacked at given x,y coordinates starting from top */
    Eina_List *stack = evas_tree_objects_at_xy_get(evas_object_evas_get(obj), NULL, x, y);
    /* Foreach stacked object starting from top */
