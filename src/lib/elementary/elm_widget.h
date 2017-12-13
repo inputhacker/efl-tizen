@@ -474,6 +474,9 @@ typedef struct _Elm_Widget_Smart_Data
    ///TIZEN_ONLY(20170717) : expose highlight information on atspi
    Eina_Bool                     can_highlight : 1; /**< true if widget have at-spi HIGHLIGHTABLE state */
    ///
+   //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+   Eina_Bool                     highlight_grabbing : 1;
+   //
 } Elm_Widget_Smart_Data;
 
 typedef Elm_Widget_Smart_Data Efl_Ui_Widget_Data;
@@ -570,6 +573,11 @@ Evas_Object          *_elm_win_default_label_obj_get(Evas_Object *obj);
 //
 // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
 void                 *_elm_object_accessibility_currently_highlighted_get();
+//
+
+//TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+Eina_Bool _elm_widget_accessibility_highlight_grabbing_get(Eo *obj);
+void _elm_widget_accessibility_highlight_grabbing_set(Eo *obj, Eina_Bool grabbing);
 //
 
 EAPI void             _elm_access_clear(Elm_Access_Info *ac);

@@ -1195,29 +1195,33 @@ _elm_win_accessibility_highlight_simple_setup(Efl_Ui_Win_Data *sd,
 
    //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
    evas_object_geometry_get(target, &ox, &oy, NULL, NULL);
-
-   if (((w < 0 && ox > sd->accessibility_highlight.cur.x) || (h < 0 && oy < sd->accessibility_highlight.cur.y))
-     && sd->accessibility_highlight.cur.need_moved
-     && efl_isa(target, EFL_ACCESS_MIXIN))
+   //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+   if (!_elm_widget_accessibility_highlight_grabbing_get(target))
+   //
      {
-        role = efl_access_role_get(target);
-        if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM)
-          {
-             efl_access_move_outed_signal_emit(target, EFL_ACCESS_MOVE_OUTED_TOP_LEFT);
-             sd->accessibility_highlight.cur.need_moved = EINA_FALSE;
-             return ;
-          }
-     }
-   else if (((w < 0 && ox < sd->accessibility_highlight.cur.x) || (h < 0 && oy > sd->accessibility_highlight.cur.y))
+        if (((w < 0 && ox > sd->accessibility_highlight.cur.x) || (h < 0 && oy < sd->accessibility_highlight.cur.y))
            && sd->accessibility_highlight.cur.need_moved
            && efl_isa(target, EFL_ACCESS_MIXIN))
-     {
-        role = efl_access_role_get(target);
-        if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM)
           {
-             efl_access_move_outed_signal_emit(target, EFL_ACCESS_MOVE_OUTED_BOTTOM_RIGHT);
-             sd->accessibility_highlight.cur.need_moved = EINA_FALSE;
-             return ;
+             role = efl_access_role_get(target);
+             if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM)
+               {
+                  efl_access_move_outed_signal_emit(target, EFL_ACCESS_MOVE_OUTED_TOP_LEFT);
+                  sd->accessibility_highlight.cur.need_moved = EINA_FALSE;
+                  return;
+               }
+          }
+        else if (((w < 0 && ox < sd->accessibility_highlight.cur.x) || (h < 0 && oy > sd->accessibility_highlight.cur.y))
+            && sd->accessibility_highlight.cur.need_moved
+            && efl_isa(target, EFL_ACCESS_MIXIN))
+          {
+             role = efl_access_role_get(target);
+             if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM)
+               {
+                  efl_access_move_outed_signal_emit(target, EFL_ACCESS_MOVE_OUTED_BOTTOM_RIGHT);
+                  sd->accessibility_highlight.cur.need_moved = EINA_FALSE;
+                  return ;
+               }
           }
      }
    //

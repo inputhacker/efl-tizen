@@ -6903,12 +6903,32 @@ _accessible_highlight_region_show(Eo* obj)
 }
 //
 
+//TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+Eina_Bool
+_elm_widget_accessibility_highlight_grabbing_get(Eo *obj)
+{
+   ELM_WIDGET_DATA_GET(obj, wd);
+   return wd->highlight_grabbing;
+}
+
+void
+_elm_widget_accessibility_highlight_grabbing_set(Eo *obj, Eina_Bool grabbing)
+{
+   ELM_WIDGET_DATA_GET(obj, wd);
+   wd->highlight_grabbing = grabbing;
+}
+//
+
 EOLIAN static Eina_Bool
 _elm_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
 {
    if(!obj) return EINA_FALSE;
    if(!_elm_atspi_enabled())
       return EINA_FALSE;
+
+   //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+   _elm_widget_accessibility_highlight_grabbing_set(obj, EINA_TRUE);
+   //
 
    //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
    _accessible_highlight_region_show(obj);
@@ -6917,8 +6937,13 @@ _elm_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Data *
    elm_widget_focus_region_show(obj);
    elm_object_accessibility_highlight_set(obj, EINA_TRUE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+
    // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
    evas_object_smart_callback_call(obj, SIG_WIDGET_ATSPI_HIGHLIGHTED, NULL);
+   //
+
+   //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+   _elm_widget_accessibility_highlight_grabbing_set(obj, EINA_FALSE);
    //
    return EINA_TRUE;
 }
@@ -6952,6 +6977,10 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
    if (!sd) return EINA_FALSE;
    if (!sd->view) return EINA_FALSE;
 
+   //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+   _elm_widget_accessibility_highlight_grabbing_set(obj, EINA_TRUE);
+   //
+
    //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
    _accessible_highlight_region_show(sd->view);
    //
@@ -6964,6 +6993,11 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_HIGHLIGHTED, obj);
    //
+
+   //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+    _elm_widget_accessibility_highlight_grabbing_set(obj, EINA_FALSE);
+    //
+
    return EINA_TRUE;
    //
 }
