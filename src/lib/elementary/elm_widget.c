@@ -6607,10 +6607,12 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
                    compare_obj = info->part_object;
                 }
              /* In case of widget is registerd by elm_access_object_register */
-             Elm_Access_Info *info = _elm_access_info_get(child);
-             if (info && info->part_object)
+             Evas_Object *ao = elm_access_object_get(child);
+             if (ao)
                {
-                  compare_obj = info->part_object;
+                  eina_list_free(children);
+                  eina_list_free(stack);
+                  return ao;
                }
 
              /* In case of ewk wrapper object compare with internal ewk_view evas_object */
