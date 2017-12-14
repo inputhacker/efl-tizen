@@ -1411,8 +1411,8 @@ EAPI int                   eina_list_data_idx(const Eina_List *list, void *data)
  *          For destructive operations such as this, consider
  *          using EINA_LIST_FOREACH_SAFE().
  */
-//TIZEN_ONLY(20171214): fix old-style casting warning in cplusplus
-#if !defined(__cplusplus)
+//TIZEN_ONLY(20171214): use old EINA_LIST_FOREACH for c++ casting warning
+/*
 #define EINA_LIST_FOREACH(list, l, _data)\
   for (l = list,                         \
        _data = eina_list_data_get(l),    \
@@ -1423,18 +1423,13 @@ EAPI int                   eina_list_data_idx(const Eina_List *list, void *data)
        l = eina_list_next(l),            \
        _data = eina_list_data_get(l),    \
        l ? (EINA_PREFETCH(((Eina_List *)l)->next), EINA_PREFETCH(_data)) : EINA_PREFETCH(l))
-#else
-#define EINA_LIST_FOREACH(list, l, _data)\
+*/
+#define EINA_LIST_FOREACH(list, l, data) \
   for (l = list,                         \
-       _data = eina_list_data_get(l),    \
-       l ? (EINA_PREFETCH((static_cast<Eina_List *>(l))->next), EINA_PREFETCH(_data)) : EINA_PREFETCH(l); \
-                                         \
+       data = eina_list_data_get(l);     \
        l;                                \
-                                         \
        l = eina_list_next(l),            \
-       _data = eina_list_data_get(l),    \
-       l ? (EINA_PREFETCH((static_cast<Eina_List *>(l))->next), EINA_PREFETCH(_data)) : EINA_PREFETCH(l))
-#endif
+       data = eina_list_data_get(l))
 //
 
 /**
