@@ -210,7 +210,9 @@ eng_image_native_set(void *engine EINA_UNUSED, void *image, void *native)
 {
    Evas_Native_Surface *ns = native;
    Image_Entry *ie = image;
-   RGBA_Image *im = image, *im2;
+   //TIZEN_ONLY : fix to build warning
+   RGBA_Image *im = image;
+   RGBA_Image *im2 = NULL;
    int stride;
 
    if (!im || !ns) return im;

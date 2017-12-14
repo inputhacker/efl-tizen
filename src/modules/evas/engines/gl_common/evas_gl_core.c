@@ -1529,6 +1529,8 @@ _internal_config_set(void *eng_data, EVGL_Surface *sfc, Evas_GL_Context_Version 
    int color_bit = 0, depth_bit = 0, stencil_bit = 0, msaa_samples = 0;
    int depth_size = 0;
    int native_win_depth = 0, native_win_stencil = 0, native_win_msaa = 0;
+   // TIZEN_ONLY : prohibit to initialize with native data continuously
+   int updated_by_wincfg = 0;
    Evas_GL_Config *cfg = &sfc->cfg;
    int caps_idx = version - 1;
 
@@ -1634,7 +1636,7 @@ try_again:
                   // When direct rendering is enabled, FBO configuration should match
                   // window surface configuration as FBO will be used in fallback cases.
                   // So we search again for the formats that match window surface's.
-                  if (sfc->direct_fb_opt &&
+                  if (sfc->direct_fb_opt && !updated_by_wincfg &&
                       ((native_win_depth != depth_size) ||
                        (native_win_stencil != stencil_bit) ||
                        (native_win_msaa != msaa_samples)))
@@ -1644,6 +1646,8 @@ try_again:
                        depth_size = native_win_depth;
                        stencil_bit = native_win_stencil;
                        msaa_samples = native_win_msaa;
+                       // TIZEN_ONLY : prohibit to initialize with native data continuously
+                       updated_by_wincfg = 1;
                        goto try_again;
                     }
                }
