@@ -584,7 +584,41 @@ static int get_lb_result_lookup(
 
     assert(lbpCtx->lbcCur <= LBP_CB);
     assert(lbpCtx->lbcNew <= LBP_CB);
+    /* TIZEN_ONLY(20161212): Fix for Hangul word wrap
     switch (baTable[lbpCtx->lbcCur - 1][lbpCtx->lbcNew - 1])
+     */
+    enum LineBreakClass lbcCur, lbcNew;
+
+    switch (lbpCtx->lbcCur)
+    {
+    case LBP_H2:        /**< Hangul LV */
+    case LBP_H3:        /**< Hangul LVT */
+    case LBP_JL:        /**< Hangul L Jamo */
+    case LBP_JV:        /**< Hangul V Jamo */
+    case LBP_JT:        /**< Hangul T Jamo */
+        lbcCur = LBP_AL;
+        break;
+    default:
+        lbcCur = lbpCtx->lbcCur;
+        break;
+    }
+
+    switch (lbpCtx->lbcNew)
+    {
+    case LBP_H2:        /**< Hangul LV */
+    case LBP_H3:        /**< Hangul LVT */
+    case LBP_JL:        /**< Hangul L Jamo */
+    case LBP_JV:        /**< Hangul V Jamo */
+    case LBP_JT:        /**< Hangul T Jamo */
+        lbcNew = LBP_AL;
+        break;
+    default:
+        lbcNew = lbpCtx->lbcNew;
+        break;
+    }
+
+    switch (baTable[lbcCur - 1][lbcNew - 1])
+    /* END */
     {
     case DIR_BRK:
         brk = LINEBREAK_ALLOWBREAK;
