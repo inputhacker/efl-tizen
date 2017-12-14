@@ -1612,7 +1612,8 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_imf.so.*
-%{_libdir}/ecore_imf/modules/*/*/module.so
+%exclude %{_libdir}/ecore_imf/modules/*/*/module.so
+%exclude /usr/lib/debug/%{_libdir}/ecore_imf/modules/*/*/module.so.debug
 %{_datadir}/ecore_imf/checkme
 
 %files -n ecore-imf-devel
