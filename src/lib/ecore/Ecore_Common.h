@@ -1,6 +1,10 @@
 #ifndef _ECORE_COMMON_H
 #define _ECORE_COMMON_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <Efl_Config.h>
 
 /**
@@ -3436,6 +3440,10 @@ typedef void (*Ecore_Thread_Future_Cb)(const void *data, Eo *promise, Ecore_Thre
 
 EAPI Efl_Future *ecore_thread_future_run(Ecore_Thread_Future_Cb heavy, const void *data, Eina_Free_Cb free_cb);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif

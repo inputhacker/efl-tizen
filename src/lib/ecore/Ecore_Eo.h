@@ -1,6 +1,10 @@
 #ifndef _ECORE_EO_H
 #define _ECORE_EO_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* This include has been added to support Eo in Ecore */
 #include <Eo.h>
 
@@ -153,5 +157,9 @@ EAPI Efl_Future *efl_future_iterator_race(Eina_Iterator *it);
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

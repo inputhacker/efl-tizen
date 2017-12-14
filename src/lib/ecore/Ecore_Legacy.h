@@ -1,6 +1,10 @@
 #ifndef _ECORE_LEGACY_H
 #define _ECORE_LEGACY_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @ingroup Ecore_Poller_Group
  *
@@ -390,5 +394,9 @@ EAPI void *ecore_job_del(Ecore_Job *obj);
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
