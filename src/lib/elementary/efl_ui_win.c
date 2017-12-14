@@ -9529,6 +9529,29 @@ elm_win_teamwork_uri_open(Efl_Ui_Win *obj EINA_UNUSED, const char *uri EINA_UNUS
    ERR("Calling deprecrated function '%s'", __FUNCTION__);
 }
 
+// TIZEN_ONLY(20160216) : elm_win_input_rect_set/add/subtract added
+EAPI void
+elm_win_input_rect_set(Evas_Object *obj, Eina_Rectangle *input_rect)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd);
+   TRAP(sd, input_rect_set, input_rect);
+}
+
+EAPI void
+elm_win_input_rect_add(Evas_Object *obj, Eina_Rectangle *input_rect)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd);
+   TRAP(sd, input_rect_add, input_rect);
+}
+
+EAPI void
+elm_win_input_rect_subtract(Evas_Object *obj, Eina_Rectangle *input_rect)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd);
+   TRAP(sd, input_rect_subtract, input_rect);
+}
+//
+
 // TIZEN_ONLY(20160617) : add elm_win_active_win_orientation_get
 EAPI int
 elm_win_active_win_orientation_get(Evas_Object *obj)

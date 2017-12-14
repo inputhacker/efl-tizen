@@ -1288,6 +1288,41 @@ EAPI Eina_Bool elm_win_focus_highlight_animate_get(const Elm_Win *obj);
  */
 EAPI void elm_win_raise(Elm_Win *obj);
 
+// TIZEN_ONLY(20160216): elm_win_input_rect_set/add/subtract added
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Sets an input rect of surface.
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param input_rect The rectangle of input to be set
+ */
+EAPI void                  elm_win_input_rect_set(Evas_Object *obj, Eina_Rectangle *input_rect);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Adds an input rect of surface.
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param input_rect The rectangle of input to be added
+ */
+EAPI void                  elm_win_input_rect_add(Evas_Object *obj, Eina_Rectangle *input_rect);
+
+/**
+ * @internal
+ * @remarks Tizen only feature
+ *
+ * @brief Subtracts an input rect of surface.
+ * @remarks Support for this depends on the underlying windowing system.
+ * @param obj The window object
+ * @param input_rect The rectangle of input to be subtracted
+ */
+EAPI void                  elm_win_input_rect_subtract(Evas_Object *obj, Eina_Rectangle *input_rect);
+//
+
 /**
  * @brief Set the array of available profiles to a window.
  *

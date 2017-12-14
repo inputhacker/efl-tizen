@@ -55,6 +55,11 @@ struct _Elm_Win_Trap
    Eina_Bool (*title_set)(void *data, Evas_Object *o, const char *t);
    Eina_Bool (*urgent_set)(void *data, Evas_Object *o, Eina_Bool urgent);
    Eina_Bool (*withdrawn_set)(void *data, Evas_Object *o, Eina_Bool withdrawn);
+// TIZEN_ONLY(20160216) : elm_win_input_rect_set/add/subtract added
+   Eina_Bool (*input_rect_set)(void *data, Evas_Object *o, Eina_Rectangle *input_rect);
+   Eina_Bool (*input_rect_add)(void *data, Evas_Object *o, Eina_Rectangle *input_rect);
+   Eina_Bool (*input_rect_subtract)(void *data, Evas_Object *o, Eina_Rectangle *input_rect);
+//
 };
 
 /**
