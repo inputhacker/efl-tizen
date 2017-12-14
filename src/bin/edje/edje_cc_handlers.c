@@ -11895,6 +11895,9 @@ st_collections_group_parts_part_description_text_ellipsize_mode(void)
                                        "FADE_START", EDJE_TEXT_ELLIPSIZE_MODE_FADE_START,
                                        "FADE_END", EDJE_TEXT_ELLIPSIZE_MODE_FADE_END,
                                        "MARQUEE", EDJE_TEXT_ELLIPSIZE_MODE_MARQUEE,
+                                       "NORMAL", EDJE_TEXT_ELLIPSIZE_MODE_NORMAL,
+                                       "FADE", EDJE_TEXT_ELLIPSIZE_MODE_FADE,
+                                       "FADE_MARQUEE", EDJE_TEXT_ELLIPSIZE_MODE_FADE_MARQUEE,
                                        NULL);
 }
 
