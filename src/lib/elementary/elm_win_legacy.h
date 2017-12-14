@@ -1288,41 +1288,6 @@ EAPI Eina_Bool elm_win_focus_highlight_animate_get(const Elm_Win *obj);
  */
 EAPI void elm_win_raise(Elm_Win *obj);
 
-// TIZEN_ONLY(20160216): elm_win_input_rect_set/add/subtract added
-/**
- * @internal
- * @remarks Tizen only feature
- *
- * @brief Sets an input rect of surface.
- * @remarks Support for this depends on the underlying windowing system.
- * @param obj The window object
- * @param input_rect The rectangle of input to be set
- */
-EAPI void                  elm_win_input_rect_set(Evas_Object *obj, Eina_Rectangle *input_rect);
-
-/**
- * @internal
- * @remarks Tizen only feature
- *
- * @brief Adds an input rect of surface.
- * @remarks Support for this depends on the underlying windowing system.
- * @param obj The window object
- * @param input_rect The rectangle of input to be added
- */
-EAPI void                  elm_win_input_rect_add(Evas_Object *obj, Eina_Rectangle *input_rect);
-
-/**
- * @internal
- * @remarks Tizen only feature
- *
- * @brief Subtracts an input rect of surface.
- * @remarks Support for this depends on the underlying windowing system.
- * @param obj The window object
- * @param input_rect The rectangle of input to be subtracted
- */
-EAPI void                  elm_win_input_rect_subtract(Evas_Object *obj, Eina_Rectangle *input_rect);
-//
-
 /**
  * @brief Set the array of available profiles to a window.
  *
@@ -1598,3 +1563,26 @@ EAPI const char       *elm_win_aux_msg_val_get(Evas_Object *obj, Elm_Win_Aux_Mes
  */
 EAPI const Eina_List  *elm_win_aux_msg_options_get(Evas_Object *obj, Elm_Win_Aux_Message *msg);
 // END of TIZEN_ONLY(20150722)
+
+//TIZEN_ONLY(20171214): tizen need to change win type after win creating
+/**
+ * @brief The type of the window.
+ *
+ * It is a hint of how the Window Manager should handle it.
+ *
+ * The window type is a constructing property that need to be set at creation
+ * within @ref eo_add.
+ *
+ * @note Once set, it can NOT be modified afterward.
+ *
+ * Can only be used at creation time, within @ref eo_add.
+ *
+ * @if MOBILE @since_tizen 3.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ *
+ * @param[in] obj The object.
+ * @param[in] type Window type
+ *
+ * @ingroup Elm_Win
+ */
+EAPI void elm_win_type_set(Evas_Object *obj, Elm_Win_Type type);
+//

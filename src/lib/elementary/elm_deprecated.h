@@ -1653,7 +1653,9 @@ EINA_DEPRECATED EAPI void elm_access_external_info_set(Evas_Object *obj, const c
 EINA_DEPRECATED EAPI char *elm_access_external_info_get(const Evas_Object *obj);
 
 // elm_win
+/*TIZEN_ONLY(20171214): tizen need to change win type after win creating
 EINA_DEPRECATED EAPI void elm_win_type_set(Evas_Object *obj, Elm_Win_Type type);
+*/
 EINA_DEPRECATED EAPI void elm_win_name_set(Evas_Object *obj, const char *name);
 
 // TIZEN_ONLY(20160126) : add elm_win_profiles_set
