@@ -1086,7 +1086,6 @@ _ecore_main_loop_clear(Eo *obj, Efl_Loop_Data *pd)
           }
 #endif
      }
-#ifdef HAVE_EPOLL
    if (pd->epoll_fd >= 0)
      {
         close(pd->epoll_fd);
@@ -1097,7 +1096,6 @@ _ecore_main_loop_clear(Eo *obj, Efl_Loop_Data *pd)
         close(pd->timer_fd);
         pd->timer_fd = -1;
      }
-#endif
 }
 
 void
@@ -1114,9 +1112,7 @@ _ecore_main_loop_shutdown(void)
    if (!ML_OBJ) return;
    _ecore_main_loop_clear(ML_OBJ, ML_DAT);
 // XXX: this seemingly closes fd's it shouldn't.... :( fd 0?
-//   efl_del(ML_OBJ);
-   ML_OBJ = NULL;
-   ML_DAT = NULL;
+   efl_del(ML_OBJ);
 }
 
 void
