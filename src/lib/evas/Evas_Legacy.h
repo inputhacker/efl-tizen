@@ -1,6 +1,10 @@
 #ifndef _EVAS_H
 # error You shall not include this header directly
 #endif
+//TIZEN_ONLY(20171215): add heder define
+#ifndef _EVAS_LEGACY_H
+#define _EVAS_LEGACY_H
+//
 
 /**
  * @ingroup Evas_Canvas
@@ -8060,3 +8064,7 @@ EAPI Eina_Bool                                evas_textblock_cursor_cluster_prev
 EAPI Evas_Object *evas_object_event_grabber_add(Evas *e);
 #include "canvas/efl_canvas_object_event_grabber.eo.legacy.h"
 #endif
+
+//TIZEN_ONLY(20171215): add heder define
+#endif
+//
