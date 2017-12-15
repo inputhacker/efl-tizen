@@ -80,6 +80,8 @@ typedef enum {
    TBM_SURFACE_QUEUE_ERROR_EMPTY = -3,
    TBM_SURFACE_QUEUE_ERROR_INVALID_PARAMETER = -4,
    TBM_SURFACE_QUEUE_ERROR_SURFACE_ALLOC_FAILED = -5,
+   TBM_SURFACE_QUEUE_ERROR_ALREADY_EXIST = -6,
+   TBM_SURFACE_QUEUE_ERROR_UNKNOWN_SURFACE = -7,
 } tbm_surface_queue_error_e;
 
 typedef struct _Tbmbuf_Surface Tbmbuf_Surface;
@@ -316,10 +318,17 @@ buffer_release(void *data, struct wl_buffer *buffer EINA_UNUSED)
    if (!data) return;
    void *tbm_queue = NULL;
    tbm_surface_h tbm_surface = data;
+   tbm_surface_queue_error_e tsq_err = TBM_SURFACE_QUEUE_ERROR_NONE;
+
    sym_tbm_surface_internal_get_user_data(tbm_surface, KEY_WINDOW, (void **)&tbm_queue);
-   sym_tbm_surface_internal_unref(tbm_surface);
    if (tbm_queue)
-      sym_tbm_surface_queue_release(tbm_queue, tbm_surface);
+     {
+        tsq_err = sym_tbm_surface_queue_release(tbm_queue, tbm_surface);
+        if (tsq_err != TBM_SURFACE_QUEUE_ERROR_ALREADY_EXIST)
+          sym_tbm_surface_internal_unref(tbm_surface);
+     }
+   else
+     sym_tbm_surface_internal_unref(tbm_surface);
 }
 
 static void
