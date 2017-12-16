@@ -5,6 +5,47 @@
 #include "ecore_wl2_private.h"
 #include "efl-hints-client-protocol.h"
 
+//TIZEN_ONLY(20171216): add ecore_wl2_window_find
+/* local variables */
+static Eina_Hash *_windows = NULL;
+
+/* internal functions */
+void
+_ecore_wl2_window_init(void)
+{
+   if (!_windows)
+     _windows = eina_hash_string_superfast_new(NULL);
+}
+
+void
+_ecore_wl2_window_shutdown(void)
+{
+   eina_hash_free(_windows);
+   _windows = NULL;
+}
+
+static char *
+_ecore_wl2_window_id_str_get(int win_id)
+{
+   const char *vals = "qWeRtYuIoP5$&<~";
+   static char id[9];
+   unsigned int val;
+
+   val = (unsigned int)win_id;
+   id[0] = vals[(val >> 28) & 0xf];
+   id[1] = vals[(val >> 24) & 0xf];
+   id[2] = vals[(val >> 20) & 0xf];
+   id[3] = vals[(val >> 16) & 0xf];
+   id[4] = vals[(val >> 12) & 0xf];
+   id[5] = vals[(val >> 8) & 0xf];
+   id[6] = vals[(val >> 4) & 0xf];
+   id[7] = vals[(val) & 0xf];
+   id[8] = 0;
+
+   return id;
+}
+//
+
 void
 _ecore_wl2_window_semi_free(Ecore_Wl2_Window *window)
 {
@@ -914,6 +955,10 @@ ecore_wl2_window_new(Ecore_Wl2_Display *display, Ecore_Wl2_Window *parent, int x
 
    _ecore_wl2_window_surface_create(win);
 
+//TIZEN_ONLY(20171216): add ecore_wl2_window_find
+   eina_hash_add(_windows, _ecore_wl2_window_id_str_get(win->id), win);
+//
+
    return win;
 }
 
@@ -1035,6 +1080,10 @@ ecore_wl2_window_free(Ecore_Wl2_Window *window)
    Eina_Inlist *tmp;
 
    EINA_SAFETY_ON_NULL_RETURN(window);
+
+//TIZEN_ONLY(20171216): add ecore_wl2_window_find
+   eina_hash_del(_windows, _ecore_wl2_window_id_str_get(window->id), window);
+//
 
    display = window->display;
 
@@ -1774,6 +1823,18 @@ EAPI void
 ecore_wl2_window_iconify_state_update(Ecore_Wl2_Window *window, Eina_Bool iconified, Eina_Bool send_event)
 {
    _ecore_wl2_window_iconified_set(window, iconified, send_event);
+}
+//
+
+//TIZEN_ONLY(20171216): add ecore_wl2_window_find
+EAPI Ecore_Wl2_Window *
+ecore_wl2_window_find(unsigned int id)
+{
+   Ecore_Wl2_Window *win = NULL;
+
+   if (!_windows) return NULL;
+   win = eina_hash_find(_windows, _ecore_wl2_window_id_str_get(id));
+   return win;
 }
 //
 

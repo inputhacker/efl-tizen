@@ -182,6 +182,10 @@ ecore_wl2_init(void)
    if (!no_session_recovery)
      no_session_recovery = !!getenv("EFL_NO_WAYLAND_SESSION_RECOVERY");
 
+//TIZEN_ONLY(20171216): add ecore_wl2_window_find
+   _ecore_wl2_window_init();
+//
+
    return _ecore_wl2_init_count;
 
 ecore_event_err:
@@ -204,6 +208,10 @@ ecore_wl2_shutdown(void)
         ERR("Ecore_Wl2 shutdown called without Ecore_Wl2 Init");
         return 0;
      }
+
+//TIZEN_ONLY(20171216): add ecore_wl2_window_find
+   _ecore_wl2_window_shutdown();
+//
 
    if (--_ecore_wl2_init_count != 0) return _ecore_wl2_init_count;
 

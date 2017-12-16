@@ -1043,6 +1043,10 @@ EAPI void ecore_wl2_window_position_set(Ecore_Wl2_Window *window, int x, int y);
 EAPI int ecore_wl2_window_active_angle_get(Ecore_Wl2_Window *window);
 //
 
+//TIZEN_ONLY(20171216): add ecore_wl2_window_find
+EAPI Ecore_Wl2_Window *ecore_wl2_window_find(unsigned int id);
+//
+
 /**
  * Get if a given window is alpha
  *

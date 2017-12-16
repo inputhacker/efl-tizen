@@ -802,6 +802,11 @@ void _ecore_wl2_input_device_manager_setup(Ecore_Wl2_Display *ewd, unsigned int 
 void _ecore_wl2_window_ignore_output_transform_set(Ecore_Wl2_Window *window, Eina_Bool ignore);
 //
 
+//TIZEN_ONLY(20171216): add ecore_wl2_window_find
+void _ecore_wl2_window_init(void);
+void _ecore_wl2_window_shutdown(void);
+//
+
 EAPI extern int _ecore_wl2_event_window_www;
 EAPI extern int _ecore_wl2_event_window_www_drag;
 
