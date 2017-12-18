@@ -774,7 +774,22 @@ static Ecore_Evas_Engine_Func _ecore_tbm_engine_func =
      NULL, // wm_rot_manual_rotation_done_set
      NULL, // wm_rot_manual_rotation_done
 
-     NULL  // aux_hints_set
+     NULL, // aux_hints_set
+
+     NULL, // fn_animator_register
+     NULL, // fn_animator_unregister
+
+     NULL, // fn_evas_changed
+     NULL, //fn_focus_device_set
+     NULL, //fn_callback_focus_device_in_set
+     NULL, //fn_callback_focus_device_out_set
+     NULL, //fn_callback_device_mouse_in_set
+     NULL, //fn_callback_device_mouse_out_set
+     NULL, //fn_pointer_device_xy_get
+     NULL, //fn_prepare
+     NULL, //fn_last_tick_get
+     //TIZEN_ONLY(20171218) : Add to free evas engine rsc before free evas
+     NULL, //fn_evas_engine_rsc_free
 };
 
 static void *

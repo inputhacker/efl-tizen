@@ -3558,6 +3558,10 @@ _ecore_evas_free(Ecore_Evas *ee)
    efl_event_callback_array_del(ee->evas, _ecore_evas_device_cbs(), ee);
    eina_hash_free(ee->prop.cursors);
    ee->prop.cursors = NULL;
+   //TIZEN_ONLY(20171218) : Add to free evas engine rsc before free evas
+   if (ee->engine.func->fn_evas_engine_rsc_free)
+     ee->engine.func->fn_evas_engine_rsc_free(ee);
+   //
    evas_free(ee->evas);
    ee->evas = NULL;
    ECORE_MAGIC_SET(ee, ECORE_MAGIC_NONE);

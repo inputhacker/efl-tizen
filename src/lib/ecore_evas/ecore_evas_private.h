@@ -171,6 +171,9 @@ struct _Ecore_Evas_Engine_Func
    Eina_Bool (*fn_prepare)(Ecore_Evas *ee);
 
    double (*fn_last_tick_get)(Ecore_Evas *ee);
+
+   //TIZEN_ONLY : Evas Engine Resource Free
+   void (*fn_evas_engine_rsc_free) (Ecore_Evas *ee);
 };
 
 struct _Ecore_Evas_Interface

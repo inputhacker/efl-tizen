@@ -3813,6 +3813,8 @@ static Ecore_Evas_Engine_Func _ecore_x_engine_func =
    NULL, //fn_pointer_device_xy_get
    NULL, //fn_prepare
    NULL, //fn_last_tick_get
+   //TIZEN_ONLY(20171218) : Add to free evas engine rsc before free evas
+   NULL, //fn_evas_engine_rsc_free
 };
 
 /*

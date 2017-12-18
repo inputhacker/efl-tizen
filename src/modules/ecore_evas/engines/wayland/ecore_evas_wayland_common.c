@@ -1784,6 +1784,7 @@ _ecore_evas_wl_common_free(Ecore_Evas *ee)
 
    if (!ee) return;
 
+#if 0
    // TIZEN_ONLY(20171120) : evas sw tbm_buf backend
    if (!strcmp(ee->driver, "wayland_shm"))
      {
@@ -1795,6 +1796,7 @@ _ecore_evas_wl_common_free(Ecore_Evas *ee)
              wayland_tbm_client_deinit(einfo->info.tbm_client);
          }
      }
+#endif
 
    wdata = ee->engine.data;
    ee_list = eina_list_remove(ee_list, ee);
@@ -3085,6 +3087,25 @@ _ecore_evas_wl_common_output_transform_register(Ecore_Evas *ee)
 }
 //
 
+//TIZEN_ONLY(20171218) : Add to free evas engine rsc before free evas
+static void
+_ecore_evas_wl_common_evas_engine_rsc_free(Ecore_Evas *ee)
+{
+    if (!ee) return;
+
+    // evas sw tbm_buf backend
+    if (!strcmp(ee->driver, "wayland_shm"))
+      {
+        Evas_Engine_Info_Wayland *einfo;
+        einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
+        if (einfo && einfo->info.tbm_client)
+          {
+            if (_ecore_evas_wl_init_count == 1)
+              wayland_tbm_client_deinit(einfo->info.tbm_client);
+          }
+      }
+}
+
 static Eina_Bool
 _ee_cb_sync_done(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
@@ -3286,6 +3307,8 @@ static Ecore_Evas_Engine_Func _ecore_wl_engine_func =
    _ecore_evas_wl_common_pointer_device_xy_get,
    _ecore_evas_wl_common_prepare,
    NULL, //fn_last_tick_get
+   //TIZEN_ONLY(20171218) : Add to free evas engine rsc before free evas
+   _ecore_evas_wl_common_evas_engine_rsc_free,
 };
 
 Ecore_Evas *
