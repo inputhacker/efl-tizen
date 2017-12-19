@@ -2985,7 +2985,9 @@ _edje_object_part_text_cursor_coord_get(Eo *obj EINA_UNUSED, Edje *ed, const cha
    if (!rp) return;
    if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
      {
-        return _edje_entry_cursor_geometry_get(rp, cur, x, y, NULL, NULL, NULL);
+        _edje_entry_cursor_geometry_get(rp, cur, x, y, NULL, NULL, NULL);
+        if (x) *x -= ed->x;
+        if (y) *y -= ed->y;
      }
 }
 
@@ -2999,7 +3001,7 @@ _edje_object_part_text_cursor_size_get(Eo *obj EINA_UNUSED, Edje *ed, const char
    if (!rp) return;
    if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
      {
-        return _edje_entry_cursor_geometry_get(rp, cur, NULL, NULL, w, h, NULL);
+        _edje_entry_cursor_geometry_get(rp, cur, NULL, NULL, w, h, NULL);
      }
 }
 /* END */
