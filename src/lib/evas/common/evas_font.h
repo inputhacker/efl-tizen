@@ -21,6 +21,8 @@ typedef unsigned long long    DATA64;
 #include <Eina.h>
 #include "evas_text_utils.h"
 
+#include "evas_text_utils.h"
+
 #ifdef EAPI
 # undef EAPI
 #endif
@@ -54,6 +56,7 @@ typedef unsigned long long    DATA64;
 #define LKT(x) eina_lock_take_try(&(x))
 #define LKU(x) eina_lock_release(&(x))
 #define LKDBG(x) eina_lock_debug(&(x))
+
 
 
 enum _Evas_Font_Style
