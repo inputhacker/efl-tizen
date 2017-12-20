@@ -516,3 +516,11 @@ _evas_device_top_get(const Evas *eo_e)
    if (num < 1) return NULL;
    return eina_array_data_get(e->cur_device, num - 1);
 }
+
+//TIZEN_ONLY(20171220): send a hw device for pointer events
+EAPI Evas_Device *
+evas_device_top_get(const Evas *eo_e)
+{
+   return _evas_device_top_get(eo_e);
+}
+//

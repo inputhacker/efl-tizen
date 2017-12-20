@@ -3734,6 +3734,8 @@ _ecore_evas_mouse_move_process_with_multi_info_internal(Ecore_Evas *ee,
 
    evas_output_framespace_get(ee->evas, &fx, &fy, &fw, &fh);
 
+   if (!pointer) pointer = evas_device_top_get(ee->evas);
+
    if (pointer)
      {
         if (efl_input_device_type_get(pointer) != EFL_INPUT_DEVICE_TYPE_SEAT)
@@ -3846,6 +3848,8 @@ _ecore_evas_mouse_move_process_with_multi_info_internal2(Ecore_Evas *ee,
    int fx, fy, fw, fh, evt_x, evt_y;
 
    evas_output_framespace_get(ee->evas, &fx, &fy, &fw, &fh);
+
+   if (!pointer) pointer = evas_device_top_get(ee->evas);
 
    if (pointer)
      {

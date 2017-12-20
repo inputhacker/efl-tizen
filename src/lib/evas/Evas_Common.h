@@ -1218,6 +1218,10 @@ EAPI void evas_device_emulation_source_set(Evas_Device *dev, Evas_Device *src);
  */
 EAPI const Evas_Device *evas_device_emulation_source_get(const Evas_Device *dev);
 
+//TIZEN_ONLY(20171220): send a hw device for pointer events
+EAPI Evas_Device *evas_device_top_get(const Evas *eo_e);
+//
+
 /**
  * @}
  */
