@@ -4180,11 +4180,10 @@ _elm_win_atspi(Eina_Bool is_atspi)
 {
    const Eina_List *l;
    Evas_Object *obj;
+   Efl_Access_State_Set ss;
 
    EINA_LIST_FOREACH(_elm_win_list, l, obj)
      {
-        elm_widget_atspi(obj, is_atspi);
-
         if (!is_atspi)
           {
              _access_socket_proxy_unref(obj);
@@ -4192,7 +4191,14 @@ _elm_win_atspi(Eina_Bool is_atspi)
         else
           {
              _access_socket_proxy_listen(obj);
+             ss = efl_access_state_set_get(obj);
+             if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_ACTIVE))
+               {
+                  efl_access_window_activated_signal_emit(obj);
+                  efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
+               }
           }
+        elm_widget_atspi(obj, is_atspi);
      }
 }
 //
