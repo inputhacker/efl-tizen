@@ -4197,6 +4197,16 @@ _elm_win_atspi(Eina_Bool is_atspi)
                   efl_access_window_activated_signal_emit(obj);
                   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
                }
+             else
+               {
+                  Efl_Access_Role role;
+                  role = efl_access_role_get(obj);
+                  if (role == EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW)
+                    {
+                       efl_access_window_activated_signal_emit(obj);
+                       efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
+                    }
+               }
           }
         elm_widget_atspi(obj, is_atspi);
      }
