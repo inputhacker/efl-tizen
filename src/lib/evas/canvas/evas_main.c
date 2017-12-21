@@ -1051,7 +1051,8 @@ evas_output_method_set(Evas *eo_e, int render_method)
                           eina_streq(em->definition->name, "wayland_egl") ||
                           eina_streq(em->definition->name, "drm") ||
                           eina_streq(em->definition->name, "gl_tbm") ||
-                          eina_streq(em->definition->name, "gl_drm")))
+                          eina_streq(em->definition->name, "gl_drm") ||
+                          eina_streq(em->definition->name, "software_tbm")))
      {
         Evas_Pointer_Seat *pseat = calloc(1, sizeof(Evas_Pointer_Seat));
         e->seats = eina_inlist_append(e->seats, EINA_INLIST_GET(pseat));
