@@ -1729,17 +1729,20 @@ _ecore_evas_wl_common_init(void)
    eina_array_push(_ecore_evas_wl_event_hdls, h);
    //
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
-   _ecore_evas_wl_event_hdls[18] =
+   h =
      ecore_event_handler_add(ECORE_WL2_EVENT_TIZEN_DEVICE_ADD,
                              _ecore_evas_wl_common_cb_tizen_device_add, NULL);
-   _ecore_evas_wl_event_hdls[19] =
+   eina_array_push(_ecore_evas_wl_event_hdls, h);
+   h =
      ecore_event_handler_add(ECORE_WL2_EVENT_TIZEN_DEVICE_DEL,
                              _ecore_evas_wl_common_cb_tizen_device_del, NULL);
+   eina_array_push(_ecore_evas_wl_event_hdls, h);
    //
    // TIZEN_ONLY(20160120): support visibility_change event
-   _ecore_evas_wl_event_hdls[20] =
+   h =
      ecore_event_handler_add(ECORE_WL2_EVENT_WINDOW_VISIBILITY_CHANGE,
                              _ecore_evas_wl_common_cb_window_visibility_change, NULL);
+   eina_array_push(_ecore_evas_wl_event_hdls, h);
    //
 
    ecore_event_evas_init();

@@ -109,8 +109,8 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
    ev->event_win = win->id;
    
 // TIZEN_ONLY(20171112): support tizen_position
-   ev->x = window->geometry.x;
-   ev->y = window->geometry.y;
+   ev->x = win->saved.x;
+   ev->y = win->saved.y;
 //
 
    if ((win->set_config.geometry.w == win->def_config.geometry.w) &&
@@ -134,9 +134,10 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
    win->req_config = win->def_config;
 
 // TIZEN_ONLY(20160323)
-   window->configured.w = w;
-   window->configured.h = h;
-   window->configured.edges = edges;
+// TODO: should fix this code base on opensource
+   win->configured.w = win->saved.w;
+   win->configured.h = win->saved.h;
+   win->configured.edges = ev->edges;
 //
 
    ecore_event_add(ECORE_WL2_EVENT_WINDOW_CONFIGURE, ev, NULL, NULL);
@@ -418,16 +419,11 @@ _tizen_position_cb_changed(void *data, struct tizen_position *tizen_position EIN
 
    win->configured.x = x;
    win->configured.y = y;
-
-   if ((x != win->geometry.x) || (y != win->geometry.y))
+//TODO: check win->saved and win->geometry is same.
+   if ((x != win->saved.x) || (y != win->saved.y))
      {
-        ecore_wl2_window_geometry_set(win, x, y, win->geometry.w, win->geometry.h);
-        _ecore_wl2_window_configure_send(win,
-                                        win->configured.w,
-                                        win->configured.h,
-                                        win->configured.edges,
-                                        win->fullscreen,
-                                        win->maximized);
+        ecore_wl2_window_geometry_set(win, x, y, win->saved.w, win->saved.h);
+        _ecore_wl2_window_configure_send(win);
      }
 }
 
@@ -706,7 +702,7 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
                                          &_tizen_position_listener, window);
              if (window->surface)
                tizen_position_set(window->tz_position,
-                                  window->geometry.x, window->geometry.y);
+                                  window->saved.x, window->saved.y);
           }
 
         if (window->role)
@@ -788,11 +784,9 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
                                               (uint32_t)angle, x, y, w, h);
 
              if ((rot == (i * 90)) &&
-                 ((window->geometry.w != w) || (window->geometry.h != h)))
+                 ((window->saved.w != w) || (window->saved.h != h)))
                {
-                  _ecore_wl2_window_configure_send(window, w, h, 0,
-                                                   window->fullscreen,
-                                                   window->maximized);
+                  _ecore_wl2_window_configure_send(window);
                }
           }
      }
@@ -1294,13 +1288,13 @@ ecore_wl2_window_position_set(Ecore_Wl2_Window *window, int x, int y)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
 
-   window->geometry.x = x;
-   window->geometry.y = y;
+   window->saved.x = x;
+   window->saved.y = y;
 
    if ((window->surface) && (window->tz_position))
      {
         if ((window->configured.x != x) || (window->configured.y != y))
-          tizen_position_set(window->tz_position, window->geometry.x, window->geometry.y);
+          tizen_position_set(window->tz_position, window->saved.x, window->saved.y);
      }
 }
 
@@ -1584,8 +1578,7 @@ ecore_wl2_window_maximized_set(Ecore_Wl2_Window *window, Eina_Bool maximized)
         if (window->zxdg_toplevel)
           zxdg_toplevel_v6_unset_maximized(window->zxdg_toplevel);
 //TIZEN_ONLY(20150625)
-        _ecore_wl2_window_configure_send(window, window->saved.w, window->saved.h,
-                                         0, window->fullscreen, window->maximized);
+        _ecore_wl2_window_configure_send(window);
 //
      }
    ecore_wl2_display_flush(window->display);
@@ -1630,8 +1623,7 @@ ecore_wl2_window_fullscreen_set(Ecore_Wl2_Window *window, Eina_Bool fullscreen)
         if (window->zxdg_toplevel)
           zxdg_toplevel_v6_unset_fullscreen(window->zxdg_toplevel);
 //TIZEN_ONLY(20150625)
-        _ecore_wl2_window_configure_send(window, window->saved.w, window->saved.h,
-                                         0, window->fullscreen, window->maximized);
+        _ecore_wl2_window_configure_send(window);
 //
      }
    ecore_wl2_display_flush(window->display);
@@ -1723,10 +1715,15 @@ ecore_wl2_window_iconified_get(Ecore_Wl2_Window *window)
 static void
 _ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool iconified, Eina_Bool send_event)
 {
+   Eina_Bool prev;
+
    EINA_SAFETY_ON_NULL_RETURN(window);
 
+   prev = window->set_config.minimized;
    iconified = !!iconified;
-   window->minimized = iconified;
+   if (prev == iconified) return;
+
+   window->set_config.minimized = iconified;
 
    if (iconified)
      {
@@ -1758,8 +1755,8 @@ _ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool iconified, E
              s = wl_array_add(&states, sizeof(*s));
              *s = ZXDG_TOPLEVEL_V6_STATE_ACTIVATED;
              _zxdg_toplevel_cb_configure(window, window->zxdg_toplevel,
-                                         window->geometry.w,
-                                         window->geometry.h, &states);
+                                         window->saved.w,
+                                         window->saved.h, &states);
              wl_array_release(&states);
           }
      }
@@ -2162,11 +2159,9 @@ ecore_wl2_window_rotation_geometry_set(Ecore_Wl2_Window *win, int rot, int x, in
    rotation = ecore_wl2_window_rotation_get(win);
    if ((rotation % 90 != 0) || (rotation / 90 > 3) || (rotation < 0)) return;
    if ((i == (rotation / 90)) &&
-       ((win->geometry.w != w) || (win->geometry.h != h)))
+       ((win->saved.w != w) || (win->saved.h != h)))
      {
-        _ecore_wl2_window_configure_send(win, w, h, 0,
-                                         win->fullscreen,
-                                         win->maximized);
+        _ecore_wl2_window_configure_send(win);
      }
 }
 
@@ -2851,7 +2846,6 @@ ecore_wl2_window_buffer_attach(Ecore_Wl2_Window *win, void *buffer, int x, int y
      win->has_buffer = EINA_TRUE;
 }
 
-<<<<<<< 0f309f06c19227cc6445aff8550ae8d885d2a48a
 EAPI Eina_Bool
 ecore_wl2_window_resizing_get(Ecore_Wl2_Window *window)
 {
