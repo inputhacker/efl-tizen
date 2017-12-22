@@ -572,13 +572,17 @@ _ecore_main_fdh_mark_active(fd_set *rfds, fd_set *wfds, fd_set *exfds)
 
    need_fdh_mark_active = EINA_FALSE;
 
+   Eo *obj = ML_OBJ;
+   Efl_Loop_Data *pd = ML_DAT;
+
 #ifdef HAVE_EPOLL
-   if (HAVE_EPOLL && epoll_fd >= 0)
-     ret = _ecore_main_fdh_epoll_mark_active();
+
+   if (HAVE_EPOLL && pd->epoll_fd >= 0)
+     ret = _ecore_main_fdh_epoll_mark_active(obj, pd);
    else
 #endif
      {
-        EINA_INLIST_FOREACH(fd_handlers, fdh)
+        EINA_INLIST_FOREACH(pd->fd_handlers, fdh)
           {
              if (!fdh->delete_me)
                {
@@ -588,13 +592,13 @@ _ecore_main_fdh_mark_active(fd_set *rfds, fd_set *wfds, fd_set *exfds)
                     fdh->write_active = EINA_TRUE;
                   if (FD_ISSET(fdh->fd, exfds))
                     fdh->error_active = EINA_TRUE;
-                  _ecore_try_add_to_call_list(fdh);
+                  _ecore_try_add_to_call_list(obj, pd, fdh);
                   if (fdh->read_active || fdh->write_active || fdh->error_active)
                     ret++;
                }
           }
      }
-   EINA_LIST_FOREACH(file_fd_handlers, l, fdh)
+   EINA_LIST_FOREACH(pd->file_fd_handlers, l, fdh)
      {
         if (!fdh->delete_me)
           {
@@ -604,7 +608,7 @@ _ecore_main_fdh_mark_active(fd_set *rfds, fd_set *wfds, fd_set *exfds)
                fdh->write_active = EINA_TRUE;
              if (FD_ISSET(fdh->fd, exfds))
                fdh->error_active = EINA_TRUE;
-             _ecore_try_add_to_call_list(fdh);
+             _ecore_try_add_to_call_list(obj, pd, fdh);
              if (fdh->read_active || fdh->write_active || fdh->error_active)
                ret++;
           }
