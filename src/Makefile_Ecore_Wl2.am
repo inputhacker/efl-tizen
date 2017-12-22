@@ -15,6 +15,8 @@ lib/ecore_wl2/ecore_wl2_input.c \
 lib/ecore_wl2/ecore_wl2_output.c \
 lib/ecore_wl2/ecore_wl2_display.c \
 lib/ecore_wl2/ecore_wl2.c \
+lib/ecore_wl2/tizen-policy-ext-client-protocol.h \
+lib/ecore_wl2/tizen-policy-ext-protocol.c \
 lib/ecore_wl2/ecore_wl2_private.h \
 lib/ecore_wl2/ecore_wl2_buffer.c \
 lib/ecore_wl2/ecore_wl2_surface.c \
@@ -27,8 +29,7 @@ static_libs/libdrm/i915_drm.h \
 static_libs/libdrm/intel_bufmgr.h \
 static_libs/libdrm/vc4_drm.h \
 static_libs/libdrm/LICENSE
-lib/ecore_wl2/tizen-policy-ext-client-protocol.h \
-lib/ecore_wl2/tizen-policy-ext-protocol.c \
+
 
 nodist_lib_ecore_wl2_libecore_wl2_la_SOURCES = \
 lib/ecore_wl2/efl-aux-hints-protocol.c \
