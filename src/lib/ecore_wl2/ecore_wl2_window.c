@@ -223,6 +223,18 @@ _zxdg_toplevel_cb_configure(void *data, struct zxdg_toplevel_v6 *zxdg_toplevel E
              break;
           }
      }
+
+   if ((!width) && (!height) && (!win->fullscreen) && (!win->maximized) &&
+            ((win->fullscreen != fs) || (win->maximized != max)))
+     width = win->saved.w, height = win->saved.h;
+
+   _ecore_wl2_window_configure_send(win, width, height, !!win->resizing,
+                                    win->fullscreen, win->maximized);
+
+   if (win->focused)
+     _ecore_wl2_window_activate_send(win);
+   else
+     _ecore_wl2_window_deactivate_send(win);
 }
 
 static void
