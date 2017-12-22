@@ -884,7 +884,7 @@ _ecore_evas_wl_common_cb_window_rotate(void *data EINA_UNUSED, int type EINA_UNU
         _ecore_evas_wl_common_wm_rot_manual_rotation_done_timeout_update(ee);
      }
 
-   _ecore_evas_wl_common_rotation_set(ee, ev->rotation, ev->resize);
+   _ecore_evas_wl_common_rotation_set(ee, ev->angle, 1);
 
    wdata->wm_rot.done = 1;
    //
