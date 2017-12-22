@@ -3017,21 +3017,3 @@ ecore_wl2_window_cursor_default_restore(Ecore_Wl2_Window *win)
      ecore_wl2_input_cursor_default_restore(input);
 }
 //
-
-EAPI void
-ecore_wl2_window_update_size(Ecore_Wl2_Window *win, int w, int h)
-{
-   if (!win) return;
-   win->configured.w = w;
-   win->configured.h = h;
-   win->configured.edges = 0;
-   if ((!ecore_wl2_window_maximized_get(win)) && (!win->fullscreen))
-     {
-        win->saved.w = w;
-        win->saved.h = h;
-     }
-
-   if (win->zxdg_toplevel)
-     zxdg_surface_v6_set_window_geometry(win->zxdg_surface, win->configured.x, win->configured.y, w, h);
-}
-
