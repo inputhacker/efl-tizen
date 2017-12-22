@@ -3467,13 +3467,15 @@ _ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, i
         goto eng_err;
      }
 
-   _ecore_evas_wl_common_wm_rotation_protocol_set(ee);
+   // TIZEN_ONLY(20161228) : tizen_rotation v2
+      if (wdata->win)
+        ecore_wl2_window_rotation_changed_callback_set
+          (wdata->win, ee, _ecore_evas_wl_common_wm_rot_cb_angle_changed);
+      if (ewd->wl.tz_policy_ext)
+        ecore_wl2_window_wm_rotation_supported_set(wdata->win, EINA_TRUE);
+   //
 
-// TIZEN_ONLY(20161228) : tizen_rotation v2
-   if (wdata->win)
-     ecore_wl2_window_rotation_changed_callback_set
-       (wdata->win, ee, _ecore_evas_wl_common_wm_rot_cb_angle_changed);
-//
+   _ecore_evas_wl_common_wm_rotation_protocol_set(ee);
 
    _ecore_evas_register(ee);
    ecore_evas_input_event_register(ee);
