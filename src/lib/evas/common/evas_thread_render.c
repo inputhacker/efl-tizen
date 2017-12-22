@@ -335,43 +335,6 @@ out:
   return NULL;
 }
 
-static void
-evas_thread_fork_reset(void *data EINA_UNUSED)
-{
-   if (!eina_lock_new(&evas_thread_queue_lock))
-     {
-        CRI("Could not create draw thread lock (%m)");
-        goto on_error;
-     }
-   if (!eina_condition_new(&evas_thread_queue_condition, &evas_thread_queue_lock))
-     {
-        CRI("Could not create draw thread condition (%m)");
-        goto on_error;
-     }
-
-   if (!eina_thread_create(&evas_thread_worker, EINA_THREAD_NORMAL, -1,
-                           evas_thread_worker_func, NULL))
-     {
-        CRI("Could not recreate draw thread.");
-        goto on_error;
-     }
-
-   return ;
-
- on_error:
-   eina_lock_free(&evas_thread_queue_lock);
-   eina_condition_free(&evas_thread_queue_condition);
-
-   evas_thread_worker = 0;
-
-   free(evas_thread_queue_cache);
-   evas_thread_queue_cache = NULL;
-   evas_thread_queue_cache_max = 0;
-   eina_inarray_flush(&evas_thread_queue);
-
-   eina_threads_shutdown();
-}
-
 static Eina_Bool
 evas_thread_init(Evas_Thread *ev_thread, const char *thread_name)
 {
