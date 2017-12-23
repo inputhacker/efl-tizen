@@ -22,6 +22,11 @@ typedef struct
    //
 } Efl_Ui_Win_Socket_Data;
 
+//TIZEN_ONLY(20170613) -listen if access mode is enabled
+#define EFL_UI_WIN_SOCKET_DATA_GET(o, sd) \
+   Efl_Ui_Win_Socket_Data * sd = efl_data_scope_get(o, MY_CLASS)
+//
+
 EOLIAN static Efl_Object *
 _efl_ui_win_socket_efl_object_finalize(Eo *obj, Efl_Ui_Win_Socket_Data *pd EINA_UNUSED)
 {
@@ -44,7 +49,7 @@ _efl_ui_win_socket_socket_listen(Eo *obj, Efl_Ui_Win_Socket_Data *pd EINA_UNUSED
    if (!ecore_evas_extn_socket_listen(ee, svcname, svcnum, svcsys))
      return EINA_FALSE;
 
-   if (_elm_config->atspi_mode)
+   if (_elm_atspi_enabled())
      {
         if (pd->socket_proxy)
           efl_unref(pd->socket_proxy);
@@ -56,27 +61,56 @@ _efl_ui_win_socket_socket_listen(Eo *obj, Efl_Ui_Win_Socket_Data *pd EINA_UNUSED
    //
 }
 
+//TIZEN_ONLY(20170613) -listen if access mode is enabled
+void
+_access_socket_proxy_listen(Eo * obj)
+{
+   EFL_UI_WIN_SOCKET_DATA_GET(obj, sd);
+   const char *plug_id;
+
+   if ((plug_id = evas_object_data_get(obj, "___PLUGID")) != NULL)
+     {
+        char *svcname, *svcnum;
+        if (!sd->socket_proxy && _elm_atspi_bridge_plug_id_split(plug_id, &svcname, &svcnum))
+          {
+             sd->socket_proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_SOCKET);
+             elm_atspi_bridge_utils_proxy_listen(sd->socket_proxy);
+             free(svcname);
+             free(svcnum);
+          }
+     }
+}
+
+
+void
+_access_socket_proxy_unref(Eo * obj)
+{
+   EFL_UI_WIN_SOCKET_DATA_GET(obj, sd);
+   if (sd->socket_proxy)
+     {
+        efl_unref(sd->socket_proxy);
+        sd->socket_proxy = NULL;
+     }
+}
+//
+
 //TIZEN_ONLY(20171108): make atspi_proxy work
 EOLIAN static void
-_efl_ui_win_socket_efl_gfx_visible_set(Eo *obj, Efl_Ui_Win_Socket_Data *sd, Eina_Bool vis)
+_efl_ui_win_socket_efl_gfx_visible_set(Eo *obj, Efl_Ui_Win_Socket_Data *sd EINA_UNUSED, Eina_Bool vis)
 {
    efl_gfx_visible_set(efl_super(obj, EFL_UI_WIN_SOCKET_CLASS), vis);
 
-   const char *plug_id_2;
+   // TIZEN_ONLY(20160705) - enable atspi_proxy to work
    if (vis)
      {
-        if ((plug_id_2 = evas_object_data_get(obj, "___PLUGID")) != NULL)
+        if (_elm_atspi_enabled())
           {
-             char *svcname, *svcnum;
-             if (!sd->socket_proxy && _elm_atspi_bridge_plug_id_split(plug_id_2, &svcname, &svcnum))
-               {
-                  sd->socket_proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_SOCKET);
-                  elm_atspi_bridge_utils_proxy_listen(sd->socket_proxy);
-                  free(svcname);
-                  free(svcnum);
-               }
+             //TIZEN_ONLY(20170613) -listen if atspi is enabled
+             _access_socket_proxy_listen(obj);
+             //
           }
      }
+   //
 }
 
 EOLIAN static Eo*

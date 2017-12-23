@@ -6359,7 +6359,7 @@ _elm_atspi_bridge_key_filter(void *data, void *loop EINA_UNUSED, int type, void 
 
         EINA_LIST_FOREACH(children, l, child)
           {
-             if (elm_widget_focus_get(child)) break;
+             if (efl_ui_focus_object_focus_get(child)) break;
           }
         eina_list_free(children);
 

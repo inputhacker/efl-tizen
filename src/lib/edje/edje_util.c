@@ -6302,7 +6302,7 @@ edje_object_part_text_get(const Edje_Object *obj, const char *part)
  * TIZEN_ONLY_FEATURE: API for handling text properties of Edje                    *
  ***********************************************************************************/
 EOLIAN Eina_Bool
-_edje_object_part_text_min_policy_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, const char *state_name, Eina_Bool min_x, Eina_Bool min_y)
+_efl_canvas_layout_part_text_min_policy_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, const char *state_name, Eina_Bool min_x, Eina_Bool min_y)
 {
    Edje_Real_Part *rp;
    Edje_Part_Description_Text *desc;
@@ -6326,7 +6326,7 @@ _edje_object_part_text_min_policy_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const ch
 }
 
 EOLIAN Eina_Bool
-_edje_object_part_text_min_policy_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, const char *state_name, Eina_Bool *min_x, Eina_Bool *min_y)
+_efl_canvas_layout_part_text_min_policy_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, const char *state_name, Eina_Bool *min_x, Eina_Bool *min_y)
 {
    Edje_Real_Part *rp;
    Edje_Part_Description_Text *desc;
@@ -6350,7 +6350,7 @@ _edje_object_part_text_min_policy_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const ch
 }
 
 EOLIAN Eina_Bool
-_edje_object_part_text_valign_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double valign)
+_efl_canvas_layout_part_text_valign_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double valign)
 {
    Edje_Real_Part *rp;
    Edje_Part_Description_Text *desc;
@@ -6382,7 +6382,7 @@ _edje_object_part_text_valign_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *
 }
 
 EOLIAN double
-_edje_object_part_text_valign_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
+_efl_canvas_layout_part_text_valign_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
 {
    Edje_Real_Part *rp;
    Edje_Part_Description_Text *desc;
@@ -6409,50 +6409,6 @@ _edje_object_part_text_valign_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *
 
    return -1.0;
 }
-
-EOLIAN Eina_Bool
-_edje_object_part_text_marquee_always_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, Eina_Bool always)
-{
-   Edje_Real_Part *rp;
-
-   if (!part) return EINA_FALSE;
-   rp = _edje_real_part_recursive_get(&ed, part);
-   if (!rp) return EINA_FALSE;
-   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
-       (rp->part->type != EDJE_PART_TYPE_TEXT))
-     return EINA_FALSE;
-
-   if (rp->typedata.text)
-     {
-        if (rp->typedata.text->ellipsize.marquee.always == always)
-           return EINA_TRUE;
-
-        rp->typedata.text->ellipsize.marquee.always = always;
-
-        return EINA_TRUE;
-     }
-
-   return EINA_FALSE;
-}
-
-EOLIAN Eina_Bool
-_edje_object_part_text_marquee_always_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
-{
-   Edje_Real_Part *rp;
-   Edje_Part_Description_Text *desc;
-
-   if (!part) return EINA_FALSE;
-   rp = _edje_real_part_recursive_get(&ed, part);
-   if (!rp) return EINA_FALSE;
-   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
-       (rp->part->type != EDJE_PART_TYPE_TEXT))
-     return EINA_FALSE;
-
-   if (rp->typedata.text)
-     return rp->typedata.text->ellipsize.marquee.always;
-
-   return EINA_FALSE;
-}
 /*******
  * END *
  *******/
@@ -6461,7 +6417,7 @@ _edje_object_part_text_marquee_always_get(Eo *eo_obj EINA_UNUSED, Edje *ed, cons
  * TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
  ***********************************************************************************/
 EOLIAN Eina_Bool
-_edje_object_part_text_marquee_duration_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double duration)
+_efl_canvas_layout_part_text_marquee_duration_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double duration)
 {
    Edje_Real_Part *rp;
 
@@ -6483,7 +6439,7 @@ _edje_object_part_text_marquee_duration_set(Eo *eo_obj EINA_UNUSED, Edje *ed, co
 }
 
 EOLIAN double
-_edje_object_part_text_marquee_duration_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
+_efl_canvas_layout_part_text_marquee_duration_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
 {
    Edje_Real_Part *rp;
    Edje_Part_Description_Text *desc;
@@ -6512,7 +6468,7 @@ _edje_object_part_text_marquee_duration_get(Eo *eo_obj EINA_UNUSED, Edje *ed, co
 }
 
 EOLIAN Eina_Bool
-_edje_object_part_text_marquee_speed_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double speed)
+_efl_canvas_layout_part_text_marquee_speed_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double speed)
 {
    Edje_Real_Part *rp;
 
@@ -6534,7 +6490,7 @@ _edje_object_part_text_marquee_speed_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const
 }
 
 EOLIAN double
-_edje_object_part_text_marquee_speed_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
+_efl_canvas_layout_part_text_marquee_speed_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
 {
    Edje_Real_Part *rp;
    Edje_Part_Description_Text *desc;
@@ -6560,6 +6516,50 @@ _edje_object_part_text_marquee_speed_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const
      }
 
    return -1.0;
+}
+
+EOLIAN Eina_Bool
+_efl_canvas_layout_part_text_marquee_always_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, Eina_Bool always)
+{
+   Edje_Real_Part *rp;
+
+   if (!part) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return EINA_FALSE;
+
+   if (rp->typedata.text)
+     {
+        if (rp->typedata.text->ellipsize.marquee.always == always)
+           return EINA_TRUE;
+
+        rp->typedata.text->ellipsize.marquee.always = always;
+
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
+EOLIAN Eina_Bool
+_efl_canvas_layout_part_text_marquee_always_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
+{
+   Edje_Real_Part *rp;
+   Edje_Part_Description_Text *desc;
+
+   if (!part) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) &&
+       (rp->part->type != EDJE_PART_TYPE_TEXT))
+     return EINA_FALSE;
+
+   if (rp->typedata.text)
+     return rp->typedata.text->ellipsize.marquee.always;
+
+   return EINA_FALSE;
 }
 /*******
  * END *

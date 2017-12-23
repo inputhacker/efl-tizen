@@ -1891,6 +1891,20 @@ _elm_popup_elm_widget_screen_reader(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Ei
    evas_object_smart_callback_call(obj, SIG_ATSPI_SCREEN_READER_CHANGED, &is_screen_reader);
    //
 }
+
+EOLIAN static void
+_elm_popup_elm_widget_atspi(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
+{
+   Efl_Access_State_Set ss;
+
+   if (!is_atspi) return;
+
+   ss = efl_access_state_set_get(obj);
+   if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_SHOWING))
+     {
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, EINA_TRUE);
+     }
+}
 //
 //
 

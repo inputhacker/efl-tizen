@@ -2925,7 +2925,7 @@ elm_widget_screen_reader(Evas_Object *obj,
         if (elm_widget_is(child))
           ret &= elm_widget_screen_reader(child, is_screen_reader);
      }
-   elm_obj_widget_screen_reader(obj, is_screen_reader);
+   efl_ui_widget_screen_reader(obj, is_screen_reader);
 
    return ret;
 }
@@ -2934,6 +2934,33 @@ EOLIAN static void
 _elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader EINA_UNUSED)
 {
 }
+//
+
+//TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
+EAPI Eina_Bool
+elm_widget_atspi(Evas_Object *obj, Eina_Bool is_atspi)
+{
+   Eina_List *l, *children;
+   Evas_Object *child;
+   Eina_Bool ret = EINA_TRUE;
+
+   API_ENTRY return EINA_FALSE;
+   children = efl_access_children_get(obj);
+   EINA_LIST_FOREACH(children, l, child)
+     {
+        ret &= elm_widget_atspi(child, is_atspi);
+     }
+   efl_ui_widget_atspi(obj, is_atspi);
+
+   return ret;
+}
+
+EOLIAN static void
+_elm_widget_atspi(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool is_atspi EINA_UNUSED)
+{
+}
+//
+//
 //
 
 EAPI Elm_Theme *
@@ -5488,54 +5515,6 @@ _elm_widget_efl_access_name_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
    return _elm_widget_accessible_plain_name_get(obj, ret);
 }
 
-//TIZEN_ONLY(20161111) add widget/widget_item description get/set
-EOLIAN void
-_elm_widget_efl_access_description_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data* _pd, const char *description)
-{
-   if (_pd->description)
-     eina_stringshare_del(_pd->description);
-
-   _pd->description = eina_stringshare_add(description);
-}
-
-EOLIAN static const char*
-_elm_widget_efl_access_description_get(Eo *obj, Elm_Widget_Smart_Data *_pd)
-{
-   const char *desc = NULL;
-   desc = efl_access_description_get(efl_super(obj, ELM_WIDGET_CLASS));
-   if (desc) return desc;
-
-#ifdef HAVE_GETTEXT
-   if (_pd->atspi_translation_domain)
-     return dgettext(_pd->atspi_translation_domain, _pd->description);
-#endif
-   return _pd->description;
-}
-
-EOLIAN void
-_elm_widget_item_efl_access_description_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd, const char *description)
-{
-   if (_pd->description)
-     eina_stringshare_del(_pd->description);
-
-   _pd->description = eina_stringshare_add(description);
-}
-
-EOLIAN const char*
-_elm_widget_item_efl_access_description_get(Eo *obj, Elm_Widget_Item_Data *_pd)
-{
-   const char *desc = NULL;
-   desc = efl_access_description_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
-   if (desc) return desc;
-
-#ifdef HAVE_GETTEXT
-   if (_pd->atspi_translation_domain)
-     return dgettext(_pd->atspi_translation_domain, _pd->description);
-#endif
-   return _pd->description;
-}
-//
-
 //TIZEN_ONLY(20171108): make atspi_proxy work
 static void
 _proxy_widget_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
@@ -5639,6 +5618,58 @@ _on_ewk_del(void *data, const Efl_Event *desc EINA_UNUSED)
 }
 //
 
+//TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
+static Eo *
+_plug_type_proxy_get(Eo *obj, Evas_Object *widget)
+{
+   Eo *proxy = NULL;
+   const char *plug_id;
+   char *svcname, *svcnum;
+
+   if ((plug_id = evas_object_data_get(widget, "___PLUGID")) != NULL)
+     {
+        // TIZEN_ONLY(20160930) : endless recursion fix
+        efl_access_attribute_append(efl_super(obj, MY_CLASS), "___PlugID", plug_id);
+
+        proxy = evas_object_data_get(widget, "__widget_proxy");
+        if (proxy) return proxy;
+
+        if (_elm_atspi_bridge_plug_id_split(plug_id, &svcname, &svcnum))
+          {
+             proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_PLUG);
+             evas_object_data_set(widget, "__widget_proxy", proxy);
+             efl_event_callback_add(widget, EFL_EVENT_DEL, _on_widget_del, proxy);
+             efl_event_callback_add(proxy, ELM_ATSPI_PROXY_EVENT_CONNECTED, _on_proxy_connected_cb, widget);
+             elm_atspi_bridge_utils_proxy_connect(proxy);
+             free(svcname);
+             free(svcnum);
+          }
+     }
+
+   return proxy;
+}
+
+EAPI Eo *
+elm_widget_atspi_plug_type_proxy_get(Evas_Object *obj)
+{
+   Elm_Widget_Smart_Data *wd;
+   Evas_Object *widget;
+   Eina_List *l;
+
+   wd = efl_data_scope_get(obj, ELM_WIDGET_CLASS);
+   if (!wd) return NULL;
+
+   Eo *proxy = NULL;
+   EINA_LIST_FOREACH(wd->subobjs, l, widget)
+     {
+        if (evas_object_data_get(widget, "___PLUGID"))
+           proxy = _plug_type_proxy_get(obj, widget);
+        if (proxy) break;
+     }
+   return proxy;
+}
+//
+
 EOLIAN static Eina_List*
 _elm_widget_efl_access_children_get(Eo *obj, Elm_Widget_Smart_Data *pd)
 {
@@ -5660,6 +5691,7 @@ _elm_widget_efl_access_children_get(Eo *obj, Elm_Widget_Smart_Data *pd)
              elm_atspi_ewk_wrapper_a11y_init(obj, widget);
           }
      }
+   Eo *proxy = NULL;
    EINA_LIST_FOREACH(pd->subobjs, l, widget)
      {
         // TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
@@ -5668,34 +5700,19 @@ _elm_widget_efl_access_children_get(Eo *obj, Elm_Widget_Smart_Data *pd)
              parent = efl_access_parent_get(widget);
              if (parent && (parent != obj)) continue;
           }
-        //TIZEN_ONLY(20171108): make atspi_proxy work
-        const char *plug_id_2;
-        if ((plug_id_2 = evas_object_data_get(widget, "___PLUGID")) != NULL)
+        // TIZEN_ONLY(20160705) - enable atspi_proxy to work
+        /* This assumes that only one proxy exists in obj */
+        if (!proxy)
           {
-             Eo *proxy;
-             char *svcname, *svcnum;
-
-             proxy = evas_object_data_get(widget, "__widget_proxy");
+             proxy = _plug_type_proxy_get(obj, widget);
              if (proxy)
                {
                   accs = eina_list_append(accs, proxy);
                   continue;
                }
-
-             if (_elm_atspi_bridge_plug_id_split(plug_id_2, &svcname, &svcnum))
-               {
-                  proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_PLUG);
-                  evas_object_data_set(widget, "__widget_proxy", proxy);
-                  efl_event_callback_add(widget, EFL_EVENT_DEL, _on_widget_del, proxy);
-                  efl_event_callback_add(proxy, ELM_ATSPI_PROXY_EVENT_CONNECTED,  _on_proxy_connected_cb, widget);
-                  elm_atspi_bridge_utils_proxy_connect(proxy);
-                  accs = eina_list_append(accs, proxy);
-                  free(svcname);
-                  free(svcnum);
-               }
-             continue;
           }
         //
+        // TIZEN ONLY - END
         if (!elm_object_widget_check(widget)) continue;
         if (!efl_isa(widget, EFL_ACCESS_MIXIN)) continue;
         type = efl_access_type_get(widget);
@@ -6586,6 +6603,92 @@ _acceptable_child_is(Eo *obj)
    return EINA_TRUE;
 }
 
+static int _sort_by_size(const void *data1, const void *data2)
+{
+   Evas_Coord w, h;
+   Evas_Coord w2, h2;
+
+   evas_object_geometry_get(data1, NULL, NULL, &w, &h);
+   evas_object_geometry_get(data2, NULL, NULL, &w2, &h2);
+
+   if ((w * h) > (w2 * h2)) return 1;
+   return -1;
+}
+
+Eina_Bool
+_elm_widget_atspi_role_acceptable_check(Eo *obj)
+{
+   Efl_Access_Role role;
+   role = efl_access_role_get(obj);
+
+   switch (role)
+     {
+       case EFL_ACCESS_ROLE_APPLICATION:
+       case EFL_ACCESS_ROLE_FILLER:
+       case EFL_ACCESS_ROLE_SCROLL_PANE:
+       case EFL_ACCESS_ROLE_SPLIT_PANE:
+       case EFL_ACCESS_ROLE_WINDOW:
+       case EFL_ACCESS_ROLE_IMAGE:
+       case EFL_ACCESS_ROLE_LIST:
+       case EFL_ACCESS_ROLE_ICON:
+       case EFL_ACCESS_ROLE_TOOL_BAR:
+       case EFL_ACCESS_ROLE_REDUNDANT_OBJECT:
+       case EFL_ACCESS_ROLE_COLOR_CHOOSER:
+       case EFL_ACCESS_ROLE_TREE_TABLE:
+       case EFL_ACCESS_ROLE_PAGE_TAB_LIST:
+       case EFL_ACCESS_ROLE_PAGE_TAB:
+       case EFL_ACCESS_ROLE_SPIN_BUTTON:
+       case EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW:
+       case EFL_ACCESS_ROLE_EMBEDDED:
+       case EFL_ACCESS_ROLE_INVALID:
+       case EFL_ACCESS_ROLE_NOTIFICATION:
+         return EINA_FALSE;
+       default:
+         break;
+     }
+
+   return EINA_TRUE;
+}
+
+static Eo *
+_child_object_at_point_get(Eo *obj, int x, int y)
+{
+   Eina_List *l, *l_next, *children, *valid_children = NULL;
+   Eo *child;
+   Eo *target;
+   int count;
+
+   children = efl_access_children_get(obj);
+
+   EINA_LIST_FOREACH(children, l, child)
+     {
+        if (_is_inside(child, x, y))
+          valid_children = eina_list_append(valid_children, child);
+     }
+
+   EINA_LIST_FOREACH_SAFE(valid_children, l, l_next, child)
+     {
+        children = efl_access_children_get(child);
+
+        /* do not use unacceptable leaf node */
+        if (!_elm_widget_atspi_role_acceptable_check(child) &&
+            eina_list_count(children) == 0)
+          valid_children = eina_list_remove_list(valid_children, l);
+     }
+
+   count = eina_list_count(valid_children);
+   if (count > 0)
+     {
+        valid_children = eina_list_sort(valid_children, -1, _sort_by_size);
+        target = eina_list_nth(valid_children, 0);
+
+        return _child_object_at_point_get(target, x, y);
+     }
+
+   return obj;
+}
+
+
 static Eo *
 _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
 {
@@ -6722,6 +6825,22 @@ static int _sort_by_repeat_events(const void *data1, const void *data2)
    return -1;
 }
 
+static Eo *_item_at_point_get(Evas_Object *obj, int x, int y)
+{
+   Eo *child;
+   Eina_List *l, *children;
+
+   children = efl_access_children_get(obj);
+
+   EINA_LIST_FOREACH(children, l, child)
+     {
+        if (_is_inside(child, x, y)) return child;
+     }
+
+   ERR("No child at point (%d, %d) on object %p", x, y, obj);
+   return NULL;
+}
+
 //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
 EOLIAN static Eo *
 _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
@@ -6753,6 +6872,7 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
              if (efl_isa(smart_parent, EFL_ACCESS_MIXIN))
                {
                   Eina_Bool acceptable = EINA_FALSE;
+                  Eo *item_child;
 
                   Efl_Access_Role role;
                   role = efl_access_role_get(smart_parent);
@@ -6765,7 +6885,16 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
                        case EFL_ACCESS_ROLE_WINDOW:
                          DBG("Go for parent: %s (%p)\n", evas_object_type_get(smart_parent), smart_parent);
                          break;
-
+                       case EFL_ACCESS_ROLE_LIST:
+                           item_child = _item_at_point_get(smart_parent, x, y);
+    #ifdef TIZEN_PROFILE_WEARABLE
+                             {
+                                item_child = _child_object_at_point_get(item_child, x, y);
+                                return item_child;
+                             }
+    #endif
+                           return item_child;
+                         break;
                        default:
                          acceptable = EINA_TRUE;
                          break;
@@ -6779,7 +6908,7 @@ _elm_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Sma
      }
 
    eina_list_free(stack);
-   return NULL;
+   return _accessible_at_point_top_down_get(obj, _pd, screen_coords, x, y);
 }
 // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
 // EOLIAN static Eina_Bool

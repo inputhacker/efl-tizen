@@ -569,7 +569,7 @@ _elm_win_apply_alpha(Eo *obj, Efl_Ui_Win_Data *sd)
      }
 }
 
-static Eina_Bool
+static void
 _elm_win_state_eval(void *data EINA_UNUSED)
 {
    Eina_List *l;
@@ -671,7 +671,6 @@ _elm_win_state_eval(void *data EINA_UNUSED)
           }
      }
    _win_noblank_eval();
-   return EINA_FALSE;
 }
 
 static Eina_Bool
@@ -1793,9 +1792,9 @@ _elm_win_state_change(Ecore_Evas *ee)
    // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
 #ifdef HAVE_ELEMENTARY_WL2
    int x = 0, y = 0, w = 0, h = 0;
-   if (sd->indmode != (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win))
+   if (sd->legacy.indmode != (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win))
      {
-        sd->indmode = (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win);
+        sd->legacy.indmode = (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win);
         ch_conformant = EINA_TRUE;
 
      }
@@ -3619,7 +3618,7 @@ _elm_win_wlwin_type_update(Efl_Ui_Win_Data *sd)
       case ELM_WIN_COMBO:
       case ELM_WIN_MENU:
       case ELM_WIN_POPUP_MENU:
-        wtype = ECORE_WL2_WI// TIZEN_ONLY(20150722):NDOW_TYPE_MENU;
+        wtype = ECORE_WL2_WINDOW_TYPE_MENU;
         break;
       case ELM_WIN_DND:
         wtype = ECORE_WL2_WINDOW_TYPE_DND;

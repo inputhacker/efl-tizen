@@ -24,23 +24,21 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 };
 
 static void
-_focus_order_flush(Eo *obj, Elm_Box_Data *pd EINA_UNUSED)
+_elm_box_efl_ui_focus_composition_prepare(Eo *obj, Elm_Box_Data *pd EINA_UNUSED)
 {
+   Eina_List *n, *nn;
+   Elm_Widget *elem;
+
    Elm_Widget_Smart_Data *wpd = efl_data_scope_get(obj, ELM_WIDGET_CLASS);
-   if (wpd->focus.manager)
+   Eina_List *order = evas_object_box_children_get(wpd->resize_obj);
+
+   EINA_LIST_FOREACH_SAFE(order, n, nn, elem)
      {
-        Eina_List *order = evas_object_box_children_get(wpd->resize_obj);
-
-        efl_ui_focus_manager_calc_update_order(wpd->focus.manager, obj, order);
-        eina_list_free(order);
+        if (!efl_isa(elem, ELM_WIDGET_CLASS))
+          order = eina_list_remove(order, elem);
      }
-}
 
-static void *
-_elm_box_list_data_get(const Eina_List *list)
-{
-   Evas_Object_Box_Option *opt = eina_list_data_get(list);
-   return opt->obj;
+   efl_ui_focus_composition_elements_set(obj, order);
 }
 
 static void
