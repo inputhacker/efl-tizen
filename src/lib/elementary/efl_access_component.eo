@@ -100,7 +100,7 @@ mixin Efl.Access.Component ()
          return: Efl.Object; [[Top component object at given coordinate]]
       }
       //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
-      highlight_grab @protected {
+      highlight_grab @protected @beta {
          [[ Highlights accessible widget.
          returns true if highlight grab has successed, false otherwise.
 
@@ -112,7 +112,7 @@ mixin Efl.Access.Component ()
          //
          return: bool;
       }
-      highlight_clear @protected {
+      highlight_clear @protected @beta {
          [[ Clears highlight of accessible widget.
          returns true if clear has successed, false otherwise.
 
@@ -126,7 +126,7 @@ mixin Efl.Access.Component ()
       }
       //
       //TIZEN_ONLY(20161114): make atspi proxy work for more than two sockets created in one process
-      @property socket_offset @protected {
+      @property socket_offset @protected @beta {
          set {
             [[Sets position of socket offset.]]
          }

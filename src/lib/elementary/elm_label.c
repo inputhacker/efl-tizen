@@ -770,7 +770,7 @@ _elm_label_text_style_user_push(Eo *obj, Elm_Label_Data *sd, const char *style)
 {
    if (!eina_stringshare_replace(&sd->text_style_user, style)) return;
 
-   elm_obj_widget_theme_apply(obj);
+   efl_ui_widget_theme_apply(obj);
 }
 
 EOLIAN static void
@@ -782,7 +782,7 @@ _elm_label_text_style_user_pop(Eo *obj, Elm_Label_Data *sd)
         sd->text_style_user = NULL;
      }
 
-   elm_obj_widget_theme_apply(obj);
+   efl_ui_widget_theme_apply(obj);
 }
 
 EOLIAN static const char *

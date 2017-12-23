@@ -169,7 +169,7 @@ _elm_atspi_ewk_wrapper_a11y_init(Eo *obj EINA_UNUSED, void *pd EINA_UNUSED,
         // In order to avoid situation when ewk a11y may be accessed from different
         // a11y node we check if reparenting occured and reset wrapper parent
         if (parent != elm_widget_parent_get(wrapper)) {
-          elm_obj_widget_sub_object_add(parent, wrapper);
+          elm_widget_sub_object_add(parent, wrapper);
         }
    }
    elm_atspi_ewk_wrapper_connection_init(wrapper);

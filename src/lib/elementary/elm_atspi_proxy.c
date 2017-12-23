@@ -7,6 +7,9 @@
 #include <Elementary.h>
 #include "elm_widget.h"
 #include "elm_priv.h"
+//TIZEN_ONLY(20171222): include headerfile for eo info
+#include "elm_widget_ctxpopup.h"
+//
 
 
 static Eina_List *_socket_list;
@@ -160,6 +163,16 @@ Eina_List*
 _elm_atspi_proxy_socket_list_get(void)
 {
    return eina_list_clone(_socket_list);
+}
+
+EOLIAN static void
+_elm_atspi_proxy_elm_widget_atspi(Eo *obj, Elm_Atspi_Proxy_Data *_pd, Eina_Bool is_atspi)
+{
+   EINA_SAFETY_ON_NULL_RETURN(obj);
+   if (is_atspi && _pd->type == ELM_ATSPI_PROXY_TYPE_PLUG)
+     {
+        elm_atspi_bridge_utils_proxy_connect(obj);
+     }
 }
 
 #include "elm_atspi_proxy.eo.c"

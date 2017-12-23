@@ -3977,7 +3977,6 @@ _elm_toolbar_efl_access_state_set_get(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSED)
 }
 
 // TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items f919df709e670600fcea71c3001a5ce5221b61e0
-
 EOLIAN static Eina_Bool
 _elm_toolbar_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Toolbar_Item_Data *it)
 {

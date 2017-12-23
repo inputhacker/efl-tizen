@@ -7,6 +7,7 @@
 #define ELM_WIDGET_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
 #define EFL_UI_TRANSLATABLE_PROTECTED
+#define EFL_ACCESS_COMPONENT_PROTECTED
 
 #include <Elementary.h>
 #include "elm_priv.h"
@@ -2268,7 +2269,7 @@ _notify_style_set(Evas_Object *obj, const char *style)
         EINA_LIST_FOREACH(wd->cursors, l, cur)
           elm_cursor_theme(cur);
 
-        ret &= elm_obj_widget_theme_apply(obj);
+        ret &= efl_ui_widget_theme_apply(obj);
      }
 
    return ret;

@@ -18,12 +18,15 @@
 #include <stdint.h>
 #include <Elementary.h>
 #include "elm_priv.h"
+//TIZEN_ONLY(20171222): include eo info header for class check
+#include "elm_widget_index.h"
+//
 
 /*
  * Accessibility Bus info not defined in atspi-constants.h
  */
- #define A11Y_DBUS_NAME "org.a11y.Bus"
- #define A11Y_DBUS_PATH "/org/a11y/bus"
+#define A11Y_DBUS_NAME "org.a11y.Bus"
+#define A11Y_DBUS_PATH "/org/a11y/bus"
 #define A11Y_DBUS_INTERFACE "org.a11y.Bus"
 #define A11Y_DBUS_STATUS_INTERFACE "org.a11y.Status"
 // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
@@ -231,6 +234,15 @@ static const Elm_Atspi_Bridge_Event_Handler event_handlers[] = {
    { EFL_ACCESS_EVENT_MOVE_OUTED, _move_outed_signal_send}
    //
 };
+
+//TIZEN_ONLY(20170925) atspi: send detail value for window activated signal
+enum
+{
+  EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_ENABLED = 0,
+  EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_DISABLED = 1 << 0,
+  EFL_ACCESS_WINDOW_ACTIVATE_INFO_KEYBOARD = 1 << 1,
+};
+//
 
 enum _Atspi_Object_Child_Event_Type
 {
@@ -3928,8 +3940,8 @@ _iter_interfaces_append(Eldbus_Message_Iter *iter, const Eo *obj)
 static Eina_Bool
 _cache_item_reference_append_cb(Eo *bridge, Eo *data, Eldbus_Message_Iter *iter_array)
 {
-   if (!efl_ref_get(data) || efl_destructed_is(data))
-     return EINA_TRUE;
+  if (!efl_ref_count(data) || efl_destructed_is(data))
+    return EINA_TRUE;
 
    Eldbus_Message_Iter *iter_struct, *iter_sub_array;
    Efl_Access_State_Set states;
@@ -3987,46 +3999,46 @@ _cache_item_reference_append_cb(Eo *bridge, Eo *data, Eldbus_Message_Iter *iter_
    //eina_list_free(children_list);
    //
 
-   /* Marshall interfaces */
-   _iter_interfaces_append(iter_struct, data);
+  /* Marshall interfaces */
+  _iter_interfaces_append(iter_struct, data);
 
-   /* Marshall name */
-   const char *name = NULL;
-   name = efl_access_name_get(data);
-   if (!name)
-     name = "";
+  /* Marshall name */
+  const char *name = NULL;
+  name = efl_access_name_get(data);
+  if (!name)
+    name = "";
 
-   eldbus_message_iter_basic_append(iter_struct, 's', name);
+  eldbus_message_iter_basic_append(iter_struct, 's', name);
 
-   /* Marshall role */
-   eldbus_message_iter_basic_append(iter_struct, 'u', role);
+  /* Marshall role */
+  eldbus_message_iter_basic_append(iter_struct, 'u', role);
 
-   /* Marshall description */
-   const char* description = NULL;
-   description = efl_access_description_get(data);
-   if (!description)
-     description = "";
-   eldbus_message_iter_basic_append(iter_struct, 's', description);
+  /* Marshall description */
+  const char* description = NULL;
+  description = efl_access_description_get(data);
+  if (!description)
+    description = "";
+  eldbus_message_iter_basic_append(iter_struct, 's', description);
 
-   /* Marshall state set */
-   iter_sub_array = eldbus_message_iter_container_new(iter_struct, 'a', "u");
-   EINA_SAFETY_ON_NULL_GOTO(iter_sub_array, fail);
+  /* Marshall state set */
+  iter_sub_array = eldbus_message_iter_container_new(iter_struct, 'a', "u");
+  EINA_SAFETY_ON_NULL_GOTO(iter_sub_array, fail);
 
-   states = efl_access_state_set_get(data);
+  states = efl_access_state_set_get(data);
 
-   unsigned int s1 = states & 0xFFFFFFFF;
-   unsigned int s2 = (states >> 32) & 0xFFFFFFFF;
-   eldbus_message_iter_basic_append(iter_sub_array, 'u', s1);
-   eldbus_message_iter_basic_append(iter_sub_array, 'u', s2);
+  unsigned int s1 = states & 0xFFFFFFFF;
+  unsigned int s2 = (states >> 32) & 0xFFFFFFFF;
+  eldbus_message_iter_basic_append(iter_sub_array, 'u', s1);
+  eldbus_message_iter_basic_append(iter_sub_array, 'u', s2);
 
-   eldbus_message_iter_container_close(iter_struct, iter_sub_array);
-   eldbus_message_iter_container_close(iter_array, iter_struct);
+  eldbus_message_iter_container_close(iter_struct, iter_sub_array);
+  eldbus_message_iter_container_close(iter_array, iter_struct);
 
-   return EINA_TRUE;
+  return EINA_TRUE;
 
 fail:
-   if (iter_struct) eldbus_message_iter_del(iter_struct);
-   return EINA_TRUE;
+  if (iter_struct) eldbus_message_iter_del(iter_struct);
+  return EINA_TRUE;
 }
 
 static Eldbus_Message *
@@ -4241,33 +4253,7 @@ static unsigned int vector_size(vector *v)
 #define CALL(fncname, ...) table->fncname(table, __VA_ARGS__)
 static unsigned char _accept_object_check_role(accessibility_navigation_pointer_table *table, void *obj)
 {
-   AtspiRole role = CALL(object_get_role, obj);
-   switch (role)
-     {
-       case ATSPI_ROLE_APPLICATION:
-       case ATSPI_ROLE_FILLER:
-       case ATSPI_ROLE_SCROLL_PANE:
-       case ATSPI_ROLE_SPLIT_PANE:
-       case ATSPI_ROLE_WINDOW:
-       case ATSPI_ROLE_IMAGE:
-       case ATSPI_ROLE_LIST:
-       case ATSPI_ROLE_ICON:
-       case ATSPI_ROLE_TOOL_BAR:
-       case ATSPI_ROLE_REDUNDANT_OBJECT:
-       case ATSPI_ROLE_COLOR_CHOOSER:
-       case ATSPI_ROLE_TREE_TABLE:
-       case ATSPI_ROLE_PAGE_TAB_LIST:
-       case ATSPI_ROLE_PAGE_TAB:
-       case ATSPI_ROLE_SPIN_BUTTON:
-       case ATSPI_ROLE_INPUT_METHOD_WINDOW:
-       case ATSPI_ROLE_EMBEDDED:
-       case ATSPI_ROLE_INVALID:
-       case ATSPI_ROLE_NOTIFICATION:
-         return 0;
-       default:
-         break;
-     }
-   return 1;
+   return _elm_widget_atspi_role_acceptable_check(obj);
 }
 
 static unsigned char _state_set_is_set(uint64_t state_set, AtspiStateType state)
@@ -5244,15 +5230,17 @@ _registered_listeners_get(void *data, const Eldbus_Message *msg, Eldbus_Pending 
    if (!pd->connected)
      {
         Eo *root, *pr;
+        //TIZEN_ONLY(20170910) atspi: emit signal after atspi bridge is connected
         pd->connected = EINA_TRUE;
         efl_event_callback_legacy_call(data, ELM_ATSPI_BRIDGE_EVENT_CONNECTED, NULL);
+        _elm_win_atspi(EINA_TRUE);
+        //
 
         // buid cache
         root = elm_obj_atspi_bridge_root_get(data);
         _bridge_cache_build(data, root);
 
         // initialize pending proxy
-        Eo *pr;
         EINA_LIST_FREE(pd->socket_queue, pr)
            _socket_ifc_create(pd->a11y_bus, pr);
         EINA_LIST_FREE(pd->plug_queue, pr)
@@ -5531,6 +5519,33 @@ _move_outed_signal_send(void *data, const Efl_Event *event)
 }
 //
 
+static unsigned int
+_window_activated_detail_value_add(Eo *obj)
+{
+   unsigned int ret = EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_ENABLED;
+   Eina_List *l, *attr_list = NULL;
+   Efl_Access_Attribute *attr = NULL;
+
+   attr_list = efl_access_attributes_get(obj);
+   EINA_LIST_FOREACH(attr_list, l, attr)
+     {
+        if (!strcmp(attr->key, "default_label") && !strcmp(attr->value, "disabled"))
+          {
+             ret |= EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_DISABLED;
+             break;
+          }
+     }
+   if (attr_list)
+     efl_access_attributes_list_free(attr_list);
+
+   Efl_Access_Role role = EFL_ACCESS_ROLE_INVALID;
+   role = efl_access_role_get(obj);
+   if (role == EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW)
+     ret |= EFL_ACCESS_WINDOW_ACTIVATE_INFO_KEYBOARD;
+
+   return ret;
+}
+
 static void
 _window_signal_send(void *data, const Efl_Event *event)
 {
@@ -5570,9 +5585,14 @@ _window_signal_send(void *data, const Efl_Event *event)
         efl_event_callback_stop(event->object);
         return;
      }
+   //TIZEN_ONLY(20170925) atspi: send detail value for window activated signal
+   unsigned int det1 = 0;
+   if (event->desc == EFL_ACCESS_WINDOW_EVENT_WINDOW_ACTIVATED)
+     det1 = _window_activated_detail_value_add(event->object);
+   //
 
    _bridge_signal_send(data, event->object, ATSPI_DBUS_INTERFACE_EVENT_WINDOW,
-                       &_window_obj_signals[type], "", 0, 0, "i", 0);
+                       &_window_obj_signals[type], "", det1, 0, "i", 0);
 }
 
 static void
@@ -5843,14 +5863,12 @@ _bridge_cache_build(Eo *bridge, void *obj)
      {
         if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_ACTIVE))
           {
-             efl_access_window_activated_signal_emit(obj);
              // TIZEN_ONLY(20160802): do not handle events if the window is not activated
              pd->window_activated = EINA_TRUE;
              //
           }
         else
           {
-             efl_access_window_deactivated_signal_emit(obj);
              // TIZEN_ONLY(20160802): do not handle events if the window is not activated
              pd->window_activated = EINA_FALSE;
              //
@@ -6140,7 +6158,10 @@ _at_spi_client_enabled_get(void *data, const Eldbus_Message *msg, Eldbus_Pending
    if (is_enabled)
      _a11y_connection_init(data);
    else
-     DBG("AT-SPI2 stack not enabled.");
+     {
+        _elm_win_atspi(is_enabled);
+        DBG("AT-SPI2 stack not enabled.");
+     }
 }
 //
 
@@ -6189,7 +6210,6 @@ _elm_atspi_bridge_shutdown(void)
    if (_a11y_socket_address)
      eina_stringshare_del(_a11y_socket_address);
    _a11y_socket_address = NULL;
-   //
    _efl_access_shutdown();
 }
 
@@ -6422,10 +6442,16 @@ _properties_changed_cb(void *data, Eldbus_Proxy *proxy EINA_UNUSED, void *event)
              ERR("Unable to get " A11Y_DBUS_ENABLED_PROPERTY " property value");
              return;
           }
+
+        _elm_win_atspi(val);
+
         if (val)
           _a11y_connection_init(bridge);
         else
-          _a11y_connection_shutdown(bridge);
+          {
+             _elm_win_atspi(EINA_FALSE);
+             _a11y_connection_shutdown(bridge);
+          }
      }
    //
 }

@@ -9,8 +9,11 @@
 #define EFL_GFX_SIZE_HINT_PROTECTED
 #define EFL_CANVAS_OBJECT_BETA
 #define EFL_CANVAS_OBJECT_PROTECTED
+#define EFL_UI_TRANSLATABLE_PROTECTED
 #define EFL_UI_WIN_INLINED_PROTECTED
+#define EFL_UI_FOCUS_OBJECT_PROTECTED
 #define EFL_UI_WIN_BETA
+#define EFL_CANVAS_BETA
 
 #include <Elementary.h>
 #include <Elementary_Cursor.h>
@@ -28,6 +31,7 @@
 
 #include "elm_part_helper.h"
 #include "efl_ui_win_part.eo.h"
+#include "elm_plug.eo.h"
 
 #define MY_CLASS EFL_UI_WIN_CLASS
 #define MY_CLASS_NAME "Efl.Ui.Win"
@@ -36,6 +40,8 @@
 #define FRAME_OBJ_THEME_MIN_VERSION 119
 
 static const Elm_Win_Trap *trap = NULL;
+
+static int _paused_windows = 0;
 
 #define TRAP(sd, name, ...)                                             \
   do                                                                    \
@@ -81,6 +87,7 @@ struct _Efl_Ui_Win_Data
    Evas_Object          *img_obj, *frame_obj;
    Eo /* wref */        *bg, *content;
    Evas_Object          *obj; /* The object itself */
+   Evas_Object          *indicator;
 #ifdef HAVE_ELEMENTARY_X
    struct
    {
@@ -391,16 +398,18 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_WIDGET_UNFOCUSED, ""}, /**< handled by elm_widget */
 // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
    {SIG_CONFORMANT_CHANGED, ""},
-//
    {SIG_AUX_HINT_ALLOWED, ""},
    {SIG_AUX_MESSAGE_RECEIVED, ""},
    {SIG_EFFECT_STARTED, ""},
    {SIG_EFFECT_DONE, ""},
    {SIG_LAUNCH_DONE, ""},
-   //TIZEN_ONLY(20161028): add smart signal 'atspi,screen,reader,changed'
+//
+//TIZEN_ONLY(20161028): add smart signal 'atspi,screen,reader,changed'
    {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
-   //
+//
+// TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
    {SIG_VISIBILITY_CHANGED, ""},
+//
    {NULL, NULL}
 };
 
@@ -431,7 +440,11 @@ static Evas_Object *_precreated_win_obj = NULL;
 
 static Eina_Bool _elm_win_auto_throttled = EINA_FALSE;
 
+/*TIZEN_ONLY(20171113):Use ecore_job instead of ecore_timer
+static Ecore_Timer *_elm_win_state_eval_timer = NULL;
+*/
 static Ecore_Job *_elm_win_state_eval_job = NULL;
+//
 
 static void _elm_win_legacy_init(Efl_Ui_Win_Data *sd);
 static void
@@ -556,7 +569,7 @@ _elm_win_apply_alpha(Eo *obj, Efl_Ui_Win_Data *sd)
      }
 }
 
-static void
+static Eina_Bool
 _elm_win_state_eval(void *data EINA_UNUSED)
 {
    Eina_List *l;
@@ -566,7 +579,11 @@ _elm_win_state_eval(void *data EINA_UNUSED)
    int _elm_win_count_withdrawn = 0;
    Eina_Bool throttle = EINA_FALSE;
 
+/*TIZEN_ONLY(20171113):Use ecore_job instead of ecore_timer
+   _elm_win_state_eval_timer = NULL;
+*/
    _elm_win_state_eval_job = NULL;
+//
 
    EINA_LIST_FOREACH(_elm_win_list, l, obj)
      {
@@ -654,6 +671,7 @@ _elm_win_state_eval(void *data EINA_UNUSED)
           }
      }
    _win_noblank_eval();
+   return EINA_FALSE;
 }
 
 static Eina_Bool
@@ -694,8 +712,13 @@ _elm_win_flush_cache_and_exit(Eo *obj)
 static void
 _elm_win_state_eval_queue(void)
 {
+/*TIZEN_ONLY(20171113):Use ecore_job instead of ecore_timer
+  if (_elm_win_state_eval_timer) ecore_timer_del(_elm_win_state_eval_timer);
+   _elm_win_state_eval_timer = ecore_timer_add(0.5, _elm_win_state_eval, NULL);
+*/
    if (_elm_win_state_eval_job) ecore_job_del(_elm_win_state_eval_job);
    _elm_win_state_eval_job = ecore_job_add(_elm_win_state_eval, NULL);
+//
 }
 
 // example shot spec (wait 0.1 sec then save as my-window.png):
@@ -1700,10 +1723,10 @@ _elm_win_state_change(Ecore_Evas *ee)
    Eina_Bool ch_wm_rotation = EINA_FALSE;
 // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
    Eina_Bool ch_conformant  = EINA_FALSE;
-//
    Eina_Bool ch_visibility = EINA_FALSE;
    Eina_Bool ch_aux_hint = EINA_FALSE;
    Eina_List *aux_hints = NULL;
+//
 
    const char *profile;
 
@@ -2594,11 +2617,19 @@ _efl_ui_win_show(Eo *obj, Efl_Ui_Win_Data *sd)
 
    if (do_eval)
      {
+/*TIZEN_ONLY(20171113):Use ecore_job instead of ecore_timer
+        if (_elm_win_state_eval_timer)
+          {
+             ecore_timer_del(_elm_win_state_eval_timer);
+             _elm_win_state_eval_timer = NULL;
+          }
+*/
         if (_elm_win_state_eval_job)
           {
              ecore_job_del(_elm_win_state_eval_job);
              _elm_win_state_eval_job = NULL;
           }
+//
         _elm_win_state_eval(NULL);
      }
    if (sd->shot.info) _shot_handle(sd);
@@ -3555,6 +3586,7 @@ _elm_win_wl_cursor_set(Evas_Object *obj, const char *cursor)
      }
 }
 
+// TIZEN_ONLY(20171109):allow changing window type after initializing
 static void
 _elm_win_wlwin_type_update(Efl_Ui_Win_Data *sd)
 {
@@ -3587,7 +3619,7 @@ _elm_win_wlwin_type_update(Efl_Ui_Win_Data *sd)
       case ELM_WIN_COMBO:
       case ELM_WIN_MENU:
       case ELM_WIN_POPUP_MENU:
-        wtype = ECORE_WL2_WINDOW_TYPE_MENU;
+        wtype = ECORE_WL2_WI// TIZEN_ONLY(20150722):NDOW_TYPE_MENU;
         break;
       case ELM_WIN_DND:
         wtype = ECORE_WL2_WINDOW_TYPE_DND;
@@ -3597,6 +3629,7 @@ _elm_win_wlwin_type_update(Efl_Ui_Win_Data *sd)
      }
    ecore_wl2_window_type_set(sd->wl.win, wtype);
 }
+//
 
 // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
 struct _Elm_Win_Aux_Message
@@ -4032,7 +4065,11 @@ _elm_win_shutdown(void)
              _elm_win_list = eina_list_remove_list(_elm_win_list, _elm_win_list);
           }
      }
+/*TIZEN_ONLY(20171113):Use ecore_job instead of ecore_timer
+   ELM_SAFE_FREE(_elm_win_state_eval_timer, ecore_timer_del);
+*/
    ELM_SAFE_FREE(_elm_win_state_eval_job, ecore_job_del);
+//
 }
 
 void
@@ -4136,6 +4173,47 @@ _elm_win_screen_reader(Eina_Bool is_screen_reader)
           }
      }
 }
+//
+
+//TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
+void
+_elm_win_atspi(Eina_Bool is_atspi)
+{
+   const Eina_List *l;
+   Evas_Object *obj;
+   Efl_Access_State_Set ss;
+
+   EINA_LIST_FOREACH(_elm_win_list, l, obj)
+     {
+        if (!is_atspi)
+          {
+             _access_socket_proxy_unref(obj);
+          }
+        else
+          {
+             _access_socket_proxy_listen(obj);
+             ss = efl_access_state_set_get(obj);
+             if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_ACTIVE))
+               {
+                  efl_access_window_activated_signal_emit(obj);
+                  efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
+               }
+             else
+               {
+                  Efl_Access_Role role;
+                  role = efl_access_role_get(obj);
+                  if (role == EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW)
+                    {
+                       efl_access_window_activated_signal_emit(obj);
+                       efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
+                    }
+               }
+          }
+        elm_widget_atspi(obj, is_atspi);
+     }
+}
+//
+//
 //
 
 void
@@ -5885,7 +5963,7 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
      evas_event_callback_add(sd->evas, EVAS_CALLBACK_RENDER_FLUSH_PRE, _elm_win_frame_pre_render, sd);
 #endif
 
-   // TIZEN_ONLY (20151017) do not prohibit fake win's auto-render
+// TIZEN_ONLY (20151017) do not prohibit fake win's auto-render
    if (type != ELM_WIN_FAKE)
      {
         //Prohibiting auto-rendering, until elm_win is shown.
@@ -5901,7 +5979,7 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
                }
           }
      }
-   //
+ //
 
 #ifdef ELM_DEBUG
    Evas_Modifier_Mask mask = evas_key_modifier_mask_get(sd->evas, "Control");
@@ -7217,8 +7295,8 @@ _elm_win_theme_internal(Eo *obj, Efl_Ui_Win_Data *sd)
    Eina_Bool ret = EINA_FALSE, prev_alpha;
    const char *s;
 
-   int_ret = _elm_theme_object_set(obj, sd->legacy.edje, "win", "base",
-                                   elm_widget_style_get(obj));
+   int_ret = elm_widget_theme_object_set(obj, sd->legacy.edje, "win", "base",
+                                       elm_widget_style_get(obj));
    if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
 
    edje_object_mirrored_set(sd->legacy.edje, efl_ui_mirrored_get(obj));
@@ -7440,6 +7518,7 @@ elm_win_floating_mode_set(Evas_Object *obj, Eina_Bool floating)
    floating = !!floating;
    if (floating == sd->floating) return;
    sd->floating = floating;
+//TIZEN_ONLY(20171114): implement elm_win_floating_mode_set on wayland
 #if HAVE_ELEMENTARY_WL2
    _elm_win_wlwindow_get(sd);
    if (sd->wl.win)
@@ -7448,6 +7527,7 @@ elm_win_floating_mode_set(Evas_Object *obj, Eina_Bool floating)
         ecore_wl2_window_floating_mode_set(sd->wl.win, floating);
      }
 #endif
+//
 #ifdef HAVE_ELEMENTARY_X
    _internal_elm_win_xwindow_get(sd);
    if (sd->x.xwin)
@@ -9040,10 +9120,10 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
       default: break;
      }
 
-   Evas_Object *obj = efl_add(klass, parent,
-                              efl_canvas_object_legacy_ctor(efl_added),
-                              efl_ui_win_name_set(efl_added, name),
-                              efl_ui_win_type_set(efl_added, type));
+   Evas_Object *obj = elm_legacy_add(klass, parent,
+                         efl_ui_win_name_set(efl_added, name),
+                         efl_ui_win_type_set(efl_added, type));
+
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
    traceEnd(TTRACE_TAG_EFL);

@@ -421,11 +421,6 @@ typedef struct _Elm_Widget_Smart_Data
    Eina_Inlist                  *translate_strings;
    Eina_List                    *focus_chain;
    Eina_List                    *event_cb;
-   const char                   *description; /**< Accessibility description */
-   //TIZEN_ONLY(20150731) : add i18n support for name and description
-   const char                   *atspi_translation_domain;
-   ///
-
    /* this is a hook to be set on-the-fly on widgets. this is code
     * handling the request of showing a specific region from an inner
     * widget (mainly issued by entries, on cursor moving) */
@@ -658,10 +653,6 @@ struct _Elm_Widget_Item_Data
    Eina_List                     *signals;
    Eina_Hash                     *labels;
    Evas_Object                   *track_obj;
-   const char                   *description; /**< Accessibility description */
-   //TIZEN_ONLY(20150731) : add i18n support for name and description
-   const char                   *atspi_translation_domain;
-   ///
 
    Eina_Bool                      disabled : 1;
    Eina_Bool                      on_deletion : 1;
@@ -679,7 +670,13 @@ EAPI Eina_Bool        elm_widget_api_check(int ver);
 EAPI Eina_Bool        elm_widget_access(Evas_Object *obj, Eina_Bool is_access);
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
-EAPI Eina_Bool        elm_widget_screen_reader(Evas_Object *obj, Eina_Bool is_screen_reader);
+// TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
+EAPI Eina_Bool        elm_widget_screen_reader(Evas_Object *obj, Eina_Bool is_access);
+EAPI Eina_Bool        elm_widget_atspi(Evas_Object *obj, Eina_Bool is_atspi);
+//TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
+EAPI Eo              *elm_widget_atspi_plug_type_proxy_get(Evas_Object *obj);
+//
+//
 //
 EAPI Efl_Ui_Theme_Apply  elm_widget_theme(Evas_Object *obj);
 EAPI void             elm_widget_theme_specific(Evas_Object *obj, Elm_Theme *th, Eina_Bool force);
@@ -812,6 +809,10 @@ EAPI Eina_Bool        _elm_widget_onscreen_is(Evas_Object *widget);
 EAPI Eina_Bool        _elm_widget_item_onscreen_is(Elm_Object_Item *item);
 const char*           _elm_widget_accessible_plain_name_get(Evas_Object *obj, const char* name);
 const char*           _elm_widget_item_accessible_plain_name_get(Elm_Object_Item *item, const char* name);
+
+//TIZEN_ONLY(20170905): find valid child of list item
+Eina_Bool _elm_widget_atspi_role_acceptable_check(Eo *obj);
+//
 
 Efl_Canvas_Object *   _efl_ui_widget_bg_get(Elm_Widget *obj);
 

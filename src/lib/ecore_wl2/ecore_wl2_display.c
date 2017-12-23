@@ -1372,8 +1372,7 @@ _ecore_wl2_display_connect(Ecore_Wl2_Display *ewd, Eina_Bool sync)
    ewd->wl.registry = wl_display_get_registry(ewd->wl.display);
    wl_registry_add_listener(ewd->wl.registry, &_registry_listener, ewd);
 
-   cb = wl_display_sync(ewd->wl.display);
-   wl_callback_add_listener(cb, &_sync_listener, ewd);
+   _ecore_wl2_display_sync_add(ewd);
 
    if (sync)
      {

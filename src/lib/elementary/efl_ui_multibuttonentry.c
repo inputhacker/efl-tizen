@@ -716,14 +716,14 @@ _access_multibuttonentry_item_register(Evas_Object *obj,
 static char *
 _label_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
 {
-   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(data, sd, NULL);
+   EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(data, sd, NULL);
    return strdup((char *)sd->label_str);
 }
 
 static void
 _atspi_multibuttonentry_label_register(Evas_Object *obj, Eina_Bool is_atspi)
 {
-   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
+   EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
    Evas_Object *label_obj;
    label_obj = (Evas_Object *)edje_object_part_object_get(sd->label, "elm.text");
    if (label_obj)
@@ -1698,7 +1698,7 @@ _atspi_obj_process(Evas_Object *obj, Eina_Bool is_atspi)
    Eina_List *l;
    Elm_Object_Item *it;
 
-   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
+   EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
 
    /* label */
    _atspi_multibuttonentry_label_register(obj, is_atspi);
@@ -1720,7 +1720,7 @@ _efl_ui_multibuttonentry_elm_widget_on_access_update(Eo *obj, Efl_Ui_Multibutton
 //register/unregister access objects accordingly.
 // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_multibuttonentry_elm_widget_screen_reader(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_screen_reader)
+_efl_ui_multibuttonentry_elm_widget_screen_reader(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
    _atspi_obj_process(obj, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
@@ -2080,7 +2080,7 @@ _efl_ui_multibuttonentry_class_constructor(Efl_Class *klass)
 }
 
 EOLIAN static Eina_List*
-_elm_multibuttonentry_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Multibuttonentry_Data *sd)
+_efl_ui_multibuttonentry_efl_access_children_get(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd)
 {
    Eina_List *ret = NULL;
    //TIZEN_ONLY(20160527) : Improve MBE atspi support
