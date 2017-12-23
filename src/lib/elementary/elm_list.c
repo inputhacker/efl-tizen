@@ -3372,14 +3372,12 @@ _elm_list_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_List
            if (parent == obj)
              break;
      }
-/*TIZEN_ONLY(20171222): fix build error temporarly
-   else if (efl_isa(highlighted_obj, EDJE_OBJECT_CLASS))
+   else if (efl_isa(highlighted_obj, EFL_CANVAS_LAYOUT_CLASS))
      {
          while ((parent = evas_object_smart_parent_get(parent)))
            if (parent == obj)
              break;
      }
-*/
    // TIZEN_ONLY(20160805): set _accessibility_currently_highlighted_obj to NULL in object delete callback
    else
      {
