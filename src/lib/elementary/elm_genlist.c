@@ -159,7 +159,6 @@ static const char SIGNAL_GROUP_SINGLE[] = "elm,state,group,single";
 static const char SIGNAL_GROUP_FIRST[] = "elm,state,group,first";
 static const char SIGNAL_GROUP_LAST[] = "elm,state,group,last";
 static const char SIGNAL_GROUP_MIDDLE[] = "elm,state,group,middle";
-static const char SIGNAL_ITEM_HIGHLIGHTED[] = "elm,state,highlighted";
 
 static void _item_unrealize(Elm_Gen_Item *it);
 static Eina_Bool _item_select(Elm_Gen_Item *it);
@@ -9027,12 +9026,14 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
           if (parent == obj)
             break;
      }
+/*TIZEN_ONLY(20171222): fix build error temporarly
    else if (efl_isa(highlighted_obj, EDJE_OBJECT_CLASS))
      {
         while ((parent = evas_object_smart_parent_get(parent)))
           if (parent == obj)
             break;
      }
+*/
    // TIZEN_ONLY(20160805): set _accessibility_currently_highlighted_obj to NULL in object delete callback
    else
      {
@@ -9141,9 +9142,10 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
         sd->atspi_item_to_highlight = it;//it will be highlighted when realized
      }
 
-   //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
-   edje_object_signal_emit(VIEW(it), SIGNAL_ITEM_HIGHLIGHTED, "elm");
-   //
+  //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+  // If you call eo_do_super, then you do NOT have to call smart callback.
+  evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", eo_it);
+  //
   return EINA_TRUE;
 }
 
