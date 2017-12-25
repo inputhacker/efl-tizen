@@ -1096,12 +1096,12 @@ Summary:        Default theme for elementary
 %description -n elementary-theme
 Default theme which provides various styles for elementary.
 
-%package -n elementary-locale
+%package -n efl-locale
 Summary:        Translations and Locale for package %{name}
 Group: Translations
 AutoReqProv: 0
 
-%description -n elementary-locale
+%description -n efl-locale
 This package provides translations for package %{name}.
 
 
@@ -1243,6 +1243,7 @@ rm %{buildroot}/usr/share/ecore_x/checkme
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
+%find_lang %{name}
 
 %post -n eina -p /sbin/ldconfig
 %postun -n eina -p /sbin/ldconfig
@@ -1323,7 +1324,6 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %files -n %{name}
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%exclude %{_datadir}/locale/*/*/*.mo
 %license licenses/COPYING.LGPL
 %{_libdir}/libefl.so.*
 /usr/share/eolian/include/efl-1/*.eot
@@ -2082,7 +2082,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %exclude /usr/share/icons/Enlightenment-X
 %exclude /usr/share/elementary/test*
 
-#%files -n elementary-locale -f %{name}.lang
-#%license COPYING
-#%defattr(-,root,root,-)
+%files -n efl-locale -f %{name}.lang
+%license COPYING
+%defattr(-,root,root,-)
 
