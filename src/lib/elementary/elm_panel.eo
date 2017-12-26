@@ -9,6 +9,9 @@ enum Elm.Panel.Orient
 }
 
 class Elm.Panel (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Elm.Interface_Scrollable,
+                 // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
+                 Efl.Orientation,
+                 //
                  Efl.Access.Widget.Action)
 {
    [[Elementary panel class]]
@@ -78,6 +81,9 @@ class Elm.Panel (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Elm.Interface_Scrollable,
       Efl.Object.constructor;
       Efl.Gfx.position { set; }
       Efl.Gfx.size { set; }
+      // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
+      Efl.Orientation.orientation { set; }
+      //
       Efl.Canvas.Group.group_member_add;
       Elm.Widget.theme_apply;
       Elm.Widget.on_disabled_update;

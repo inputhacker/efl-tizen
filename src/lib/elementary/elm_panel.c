@@ -836,6 +836,12 @@ _elm_panel_efl_canvas_group_group_add(Eo *obj, Elm_Panel_Data *priv)
    elm_widget_can_focus_set(obj, EINA_TRUE);
 
    priv->panel_edje = wd->resize_obj;
+   // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
+   if ((elm_win_rotation_get(elm_widget_top_get(obj)) == 90) || (elm_win_rotation_get(elm_widget_top_get(obj)) == 270))
+     priv->content_size_ratio = 0.45;
+   else
+     priv->content_size_ratio = 0.80;
+   //
 
    efl_ui_widget_theme_apply(obj);
 
@@ -957,6 +963,28 @@ _elm_panel_efl_canvas_group_group_member_add(Eo *obj, Elm_Panel_Data *sd, Evas_O
    if (sd->hit_rect) evas_object_raise(sd->hit_rect);
 }
 
+// TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
+EOLIAN static void
+_elm_panel_efl_orientation_orientation_set(Eo *obj, Elm_Panel_Data *sd, Efl_Orient orient)
+{
+   if (!sd->content_size_manual_set)
+     {
+        if (orient == EFL_ORIENT_90 || orient == EFL_ORIENT_270)
+          sd->content_size_ratio = 0.45;
+        else
+          sd->content_size_ratio = 0.80;
+     }
+
+   if (sd->scrollable)
+     {
+        Evas_Coord w, h;
+        evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+
+        _scrollable_layout_resize(obj, sd, w, h);
+     }
+}
+//
+
 EOLIAN static void
 _elm_panel_elm_widget_on_access_update(Eo *obj, Elm_Panel_Data *_pd, Eina_Bool is_access)
 {
@@ -1032,7 +1060,13 @@ _elm_panel_orient_set(Eo *obj, Elm_Panel_Data *sd, Elm_Panel_Orient orient)
              elm_layout_signal_emit(sd->scr_ly, "elm,state,content,hidden", "elm");
           }
 
-        elm_panel_scrollable_content_size_set(obj, sd->content_size_ratio);
+        // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
+        //elm_panel_scrollable_content_size_set(obj, sd->content_size_ratio);
+        Evas_Coord w, h;
+        evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+
+        _scrollable_layout_resize(obj, sd, w, h);
+        //
      }
    else
      _orient_set_do(obj);
@@ -1293,6 +1327,9 @@ _elm_panel_scrollable_content_size_set(Eo *obj, Elm_Panel_Data *sd, double ratio
    else if (ratio > 1.0) ratio = 1.0;
 
    sd->content_size_ratio = ratio;
+   // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
+   sd->content_size_manual_set = EINA_TRUE;
+   //
 
    if (sd->scrollable)
      {
@@ -1378,6 +1415,13 @@ _elm_panel_scrollable_set(Eo *obj, Elm_Panel_Data *sd, Eina_Bool scrollable)
         sd->freeze = EINA_TRUE;
         elm_layout_content_set(sd->scr_ly, "elm.swallow.content", sd->bx);
         if (sd->content) elm_widget_sub_object_add(sd->scr_ly, sd->content);
+
+        // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
+        Evas_Coord w, h;
+        evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+
+        _scrollable_layout_resize(obj, sd, w, h);
+        //
 
         switch (sd->orient)
           {
