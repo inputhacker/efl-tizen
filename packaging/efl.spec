@@ -1341,6 +1341,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %{_libdir}/cmake/Efl*/*.cmake
 %{_libdir}/libefl.so
 %{_libdir}/pkgconfig/efl*.pc
+%exclude %{_includedir}/efl-cxx-1/*.hh
 
 %files -n eina
 %manifest %{name}.manifest
@@ -1508,6 +1509,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %{_libdir}/libecore.so
 %{_libdir}/pkgconfig/ecore-core.pc
 %{_libdir}/cmake/Ecore*/*.cmake
+%exclude %{_includedir}/ecore-cxx-1/*.hh
 
 %files -n ecore-audio
 %manifest %{name}.manifest
@@ -1789,6 +1791,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %{_libdir}/libeio.so
 %{_libdir}/pkgconfig/eio*.pc
 %{_libdir}/cmake/Eio*/*.cmake
+%exclude %{_includedir}/eio-cxx-1/*.hh
 
 %files -n edje
 %manifest %{name}.manifest
@@ -1959,6 +1962,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %{_datadir}/eolian/include/*/*.eo
 %{_libdir}/libeolian.so
 %{_libdir}/cmake/Eolian*/*.cmake
+%exclude %{_includedir}/eolian-cxx-1/grammar/*.hpp
 
 #%files -n eolian-examples
 #%{_datadir}/eolian_*/examples/*
@@ -2070,6 +2074,7 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %{_libdir}/cmake/Elementary/ElementaryConfig.cmake
 %{_libdir}/cmake/Elementary/ElementaryConfigVersion.cmake
 /usr/share/eolian/include/elementary-*1/*.eot
+%exclude %{_includedir}/elementary-cxx-1/*.hh
 
 %files -n elementary-theme
 %manifest %{name}.manifest
