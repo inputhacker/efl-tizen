@@ -100,7 +100,7 @@ mixin Efl.Access.Component ()
          return: Efl.Object; [[Top component object at given coordinate]]
       }
       //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
-      highlight_grab @protected @beta {
+      highlight_grab @protected {
          [[ Highlights accessible widget.
          returns true if highlight grab has successed, false otherwise.
 
@@ -112,7 +112,7 @@ mixin Efl.Access.Component ()
          //
          return: bool;
       }
-      highlight_clear @protected @beta {
+      highlight_clear @protected {
          [[ Clears highlight of accessible widget.
          returns true if clear has successed, false otherwise.
 
