@@ -551,16 +551,19 @@ _grid_create(Evas_Object *obj)
 
         return NULL;
      }
-   if (sd->do_region)
+
+/* TIZEN_ONLY(20160712): create 1x1 grid default */
+   /*if (sd->do_region)
      {
         g->gw = (g->w + g->tsize - 1) / g->tsize;
         g->gh = (g->h + g->tsize - 1) / g->tsize;
      }
-   else
+   else*/
      {
         g->gw = 1;
         g->gh = 1;
      }
+/* END */
 
    g->grid = calloc(1, sizeof(Efl_Ui_Image_Zoomable_Grid_Item) * g->gw * g->gh);
    if (!g->grid)
