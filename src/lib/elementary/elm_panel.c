@@ -1359,6 +1359,9 @@ _elm_panel_scrollable_set(Eo *obj, Elm_Panel_Data *sd, Eina_Bool scrollable)
 
         elm_widget_resize_object_set(obj, NULL);
         elm_widget_sub_object_add(obj, sd->panel_edje);
+        // TIZEN_ONLY(20171109): show and hide necessary object when scrollable is set
+        evas_object_hide(sd->panel_edje);
+        //
 
         if (!sd->scr_edje)
           {
@@ -1378,6 +1381,9 @@ _elm_panel_scrollable_set(Eo *obj, Elm_Panel_Data *sd, Eina_Bool scrollable)
           }
 
         elm_widget_resize_object_set(obj, sd->scr_edje);
+        // TIZEN_ONLY(20171109): show and hide necessary object when scrollable is set
+        evas_object_show(sd->scr_edje);
+        //
 
         if (!sd->hit_rect)
           {
@@ -1412,6 +1418,9 @@ _elm_panel_scrollable_set(Eo *obj, Elm_Panel_Data *sd, Eina_Bool scrollable)
           }
 
         elm_interface_scrollable_content_set(obj, sd->scr_ly);
+        // TIZEN_ONLY(20171109): show and hide necessary object when scrollable is set
+        evas_object_show(sd->scr_ly);
+        //
         sd->freeze = EINA_TRUE;
         elm_layout_content_set(sd->scr_ly, "elm.swallow.content", sd->bx);
         if (sd->content) elm_widget_sub_object_add(sd->scr_ly, sd->content);
@@ -1465,10 +1474,19 @@ _elm_panel_scrollable_set(Eo *obj, Elm_Panel_Data *sd, Eina_Bool scrollable)
 
         elm_widget_resize_object_set(obj, NULL);
         elm_widget_sub_object_add(obj, sd->scr_edje);
+        // TIZEN_ONLY(20171109): show and hide necessary object when scrollable is set
+        evas_object_hide(sd->scr_edje);
+        //
 
         elm_widget_resize_object_set(obj, sd->panel_edje);
+        // TIZEN_ONLY(20171109): show and hide necessary object when scrollable is set
+        evas_object_show(sd->panel_edje);
+        //
 
         elm_layout_content_unset(sd->scr_ly, "elm.swallow.content");
+        // TIZEN_ONLY(20171109): show and hide necessary object when scrollable is set
+        evas_object_hide(sd->scr_ly);
+        //
         elm_layout_content_set(obj, "elm.swallow.content", sd->bx);
         if (sd->content) elm_widget_sub_object_add(obj, sd->content);
      }
