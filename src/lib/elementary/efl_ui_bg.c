@@ -22,6 +22,10 @@ static const Elm_Layout_Part_Alias_Description _content_aliases[] =
    {NULL, NULL}
 };
 
+// TIZEN_ONLY(20160218): Improve launching performance.
+static Evas_Object *_precreated_bg_obj = NULL;
+//
+
 EOLIAN static void
 _efl_ui_bg_elm_layout_sizing_eval(Eo *obj, Efl_Ui_Bg_Data *sd)
 {
@@ -120,6 +124,22 @@ _efl_ui_bg_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Bg_Data *priv)
    elm_layout_content_set(obj, "elm.swallow.rectangle", priv->rect);
 }
 
+// TIZEN_ONLY(20160218): Improve launching performance.
+EAPI void
+elm_bg_precreated_object_set(Evas_Object *obj)
+{
+   INF("Set precreated obj(%p).", obj);
+   _precreated_bg_obj = obj;
+}
+
+EAPI Evas_Object *
+elm_bg_precreated_object_get(void)
+{
+   INF("Get precreated obj(%p).", _precreated_bg_obj);
+   return _precreated_bg_obj;
+}
+//
+
 EAPI Evas_Object *
 elm_bg_add(Evas_Object *parent)
 {
@@ -133,6 +153,10 @@ _efl_ui_bg_efl_object_constructor(Eo *obj, Efl_Ui_Bg_Data *_pd EINA_UNUSED)
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    efl_access_type_set(obj, EFL_ACCESS_TYPE_DISABLED);
+
+   //TIZEN_ONLY (20171114) imporove object at xy get function
+   efl_access_role_set(obj, EFL_ACCESS_ROLE_REDUNDANT_OBJECT);
+   //
 
    efl_ui_widget_focus_allow_set(obj, EINA_FALSE);
 
