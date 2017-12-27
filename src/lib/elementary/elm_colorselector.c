@@ -1962,10 +1962,15 @@ _elm_colorselector_efl_canvas_group_group_add(Eo *obj, Elm_Colorselector_Data *p
    _create_colorpalette(obj);
 
    _create_colorcomponents(obj);
-
+   /* TIZEN_ONLY(20160722) : change default mode to enhance performance
    elm_layout_signal_emit(obj, "elm,state,both", "elm");
 
    priv->mode = ELM_COLORSELECTOR_BOTH;
+   */
+   elm_layout_signal_emit(obj, "elm,state,palette", "elm");
+
+   priv->mode = ELM_COLORSELECTOR_PALETTE;
+   /* END */
    priv->focused = ELM_COLORSELECTOR_PALETTE;
    priv->sel_color_type = HUE;
    priv->selected = NULL;
