@@ -224,14 +224,15 @@ _zxdg_toplevel_cb_configure(void *data, struct zxdg_toplevel_v6 *zxdg_toplevel E
           }
      }
 
-   if ((!width) && (!height) && (!win->fullscreen) && (!win->maximized) &&
-            ((win->fullscreen != fs) || (win->maximized != max)))
+   if ((!width) && (!height) && (!win->def_config.fullscreen) && (!win->def_config.maximized) &&
+            ((win->def_config.fullscreen != win->set_config.fullscreen) || (win->def_config.maximized != win->set_config.maximized)))
      width = win->saved.w, height = win->saved.h;
 
-   _ecore_wl2_window_configure_send(win, width, height, !!win->resizing,
-                                    win->fullscreen, win->maximized);
+   _ecore_wl2_window_configure_send(win);
+   //, width, height, !!win->def_config.resizing,
+   //                                 win->def_config.fullscreen, win->def_config.maximized);
 
-   if (win->focused)
+   if (win->def_config.focused)
      _ecore_wl2_window_activate_send(win);
    else
      _ecore_wl2_window_deactivate_send(win);
