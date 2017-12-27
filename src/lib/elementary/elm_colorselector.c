@@ -1774,16 +1774,20 @@ _elm_color_item_elm_widget_item_signal_emit(Eo *eo_it EINA_UNUSED,
 static Eina_Bool
 _item_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
 {
-   Eina_List *l;
+   // TIZEN_ONLY(20170719): item selection procedure is handled by _on_color_selected()
+   /*Eina_List *l;
    ELM_COLOR_ITEM_DATA_GET(obj, item);
-   ELM_COLORSELECTOR_DATA_GET(WIDGET(item), sd);
+   ELM_COLORSELECTOR_DATA_GET(WIDGET(item), sd);*/
+   ELM_COLOR_ITEM_DATA_GET(obj, item);
+   //
 
    elm_object_signal_emit(VIEW(item), "elm,state,selected", "elm");
    if (_elm_atspi_enabled())
      efl_access_state_changed_signal_emit(obj,
                                           EFL_ACCESS_STATE_CHECKED,
                                           EINA_TRUE);
-   elm_colorselector_color_set(WIDGET(item), item->color->r, item->color->g,
+   // TIZEN_ONLY(20170719): item selection procedure is handled by _on_color_selected()
+   /*elm_colorselector_color_set(WIDGET(item), item->color->r, item->color->g,
                                item->color->b, item->color->a);
    evas_object_smart_callback_call(WIDGET(item), SIG_COLOR_ITEM_SELECTED,
                                    EO_OBJ(item));
@@ -1800,7 +1804,8 @@ _item_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
         ELM_COLOR_ITEM_DATA_GET(eo_temp_item, temp_item);
         if (item == temp_item) sd->selected = l;
      }
-   sd->focused = ELM_COLORSELECTOR_PALETTE;
+   sd->focused = ELM_COLORSELECTOR_PALETTE;*/
+   //
 
    return EINA_TRUE;
 }
@@ -2574,7 +2579,8 @@ _elm_color_item_selected_set(Eo *eo_item,
    if (selected)
      {
         elm_object_signal_emit(VIEW(item), "elm,state,selected", "elm");
-        elm_colorselector_color_set(WIDGET(item), item->color->r, item->color->g,
+        // TIZEN_ONLY(20170719): item selection procedure is handled by _on_color_selected()
+        /*elm_colorselector_color_set(WIDGET(item), item->color->r, item->color->g,
                                     item->color->b, item->color->a);
         if (eo_temp_item)
           {
@@ -2587,7 +2593,10 @@ _elm_color_item_selected_set(Eo *eo_item,
 
         elm_object_signal_emit(VIEW(item), "elm,anim,activate", "elm");
         efl_event_callback_legacy_call
-          (WIDGET(item), ELM_COLORSELECTOR_EVENT_COLOR_ITEM_SELECTED, eo_item);
+          (WIDGET(item), ELM_COLORSELECTOR_EVENT_COLOR_ITEM_SELECTED, eo_item);*/
+
+        elm_object_signal_emit(VIEW(item), "elm,anim,activate", "elm");
+        //
      }
 }
 
