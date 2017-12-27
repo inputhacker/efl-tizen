@@ -190,6 +190,9 @@ static const Elm_Color_Name _color_name[] = {
 
 static Eina_Bool _key_action_move(Evas_Object *obj, const char *params);
 static Eina_Bool _key_action_activate(Evas_Object *obj, const char *params);
+// TIZEN_ONLY(20170719): support marking change when color set on ELM_COLORSELECTOR_PALETTE mode only
+static void _unselect_selected_item(Elm_Colorselector_Data *sd);
+//
 
 static const Elm_Action key_actions[] = {
    {"move", _key_action_move},
@@ -618,6 +621,11 @@ _colors_set(Evas_Object *obj,
             int a,
             Eina_Bool mode_change)
 {
+   // TIZEN_ONLY(20170719): support marking change when color set on ELM_COLORSELECTOR_PALETTE mode only
+   Eina_List *elist;
+   Elm_Object_Item *eo_item, *eo_temp_item;
+   Eina_Bool matched = EINA_FALSE;
+   //
    double x, y;
 
    ELM_COLORSELECTOR_DATA_GET(obj, sd);
@@ -663,6 +671,38 @@ _colors_set(Evas_Object *obj,
      }
    if ((sd->mode == ELM_COLORSELECTOR_ALL) || (sd->mode == ELM_COLORSELECTOR_PICKER))
      _color_picker_init(sd);
+   // TIZEN_ONLY(20170719): support marking change when color set on ELM_COLORSELECTOR_PALETTE mode only
+   if (sd->mode == ELM_COLORSELECTOR_PALETTE)
+     {
+        eo_temp_item = eina_list_data_get(sd->selected);
+
+        EINA_LIST_FOREACH(sd->items, elist, eo_item)
+          {
+             ELM_COLOR_ITEM_DATA_GET(eo_item, item);
+             if ((eo_item != eo_temp_item) &&
+                 (sd->r == (int)item->color->r) &&
+                 (sd->g == (int)item->color->g) &&
+                 (sd->b == (int)item->color->b) &&
+                 (sd->a == (int)item->color->a))
+               {
+                  matched = EINA_TRUE;
+                  elm_object_signal_emit(VIEW(item), "elm,state,selected", "elm");
+                  break;
+               }
+          }
+        if (sd->selected && !matched)
+          {
+             ELM_COLOR_ITEM_DATA_GET(eo_temp_item, item);
+             if ((sd->r != (int)item->color->r) ||
+                 (sd->g != (int)item->color->g) ||
+                 (sd->b != (int)item->color->b) ||
+                 (sd->a != (int)item->color->a))
+               {
+                  _unselect_selected_item(sd);
+               }
+          }
+     }
+   //
    if (!mode_change)
      efl_event_callback_legacy_call(obj, ELM_COLORSELECTOR_EVENT_CHANGED, NULL);
 }
