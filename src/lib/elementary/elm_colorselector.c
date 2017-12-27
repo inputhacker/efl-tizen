@@ -1923,7 +1923,11 @@ _create_colorpalette(Evas_Object *obj)
 
    scale = efl_gfx_scale_get(obj) * elm_config_scale_get() / edje_object_base_scale_get(wd->resize_obj);
    efl_pack_padding_set(sd->palette_box, h_pad * scale, v_pad * scale, 0);
+   /* TIZEN_ONLY(20161117): Fix palette align issue
    efl_pack_align_set(sd->palette_box, 0.0, 0.0);
+   */
+   efl_pack_align_set(sd->palette_box, 0.5, 0.5);
+   /* END */
    if (!elm_layout_content_set(obj, "elm.palette", sd->palette_box))
      elm_layout_content_set(obj, "palette", sd->palette_box);
    sd->palette_name = eina_stringshare_add("default");
