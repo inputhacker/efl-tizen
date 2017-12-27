@@ -246,14 +246,6 @@ abstract Elm.Widget (Efl.Canvas.Group, Efl.Access,
          }
          legacy: null;
       }
-      //TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
-      atspi {
-         [['Virtual' function on the widget being set atspi.]]
-         params {
-            @in is_atspi: bool;
-         }
-         legacy: null;
-      }
       //
       //TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
       atspi {
