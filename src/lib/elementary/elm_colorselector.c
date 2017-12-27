@@ -2634,6 +2634,8 @@ _elm_color_item_selected_set(Eo *eo_item,
         elm_object_signal_emit(VIEW(item), "elm,anim,activate", "elm");
         efl_event_callback_legacy_call
           (WIDGET(item), ELM_COLORSELECTOR_EVENT_COLOR_ITEM_SELECTED, eo_item);*/
+        EINA_LIST_FOREACH(sd->items, l, eo_temp_item)
+          if (eo_item == eo_temp_item) sd->selected = l;
 
         elm_object_signal_emit(VIEW(item), "elm,anim,activate", "elm");
         //
