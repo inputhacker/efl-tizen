@@ -3347,6 +3347,11 @@ _ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, i
 
    ee->driver = engine_name;
    if (disp_name) ee->name = strdup(disp_name);
+   
+//TIZEN_ONLY(20171228): set default size of ecore_evas
+   if (w < 1) w = 1;
+   if (h < 1) h = 1;
+//
 
    ee->w = w;
    ee->h = h;
