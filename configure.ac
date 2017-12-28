@@ -3141,7 +3141,7 @@ EFL_INTERNAL_DEPEND_PKG([ECORE_WAYLAND], [eo])
 EFL_INTERNAL_DEPEND_PKG([ECORE_WAYLAND], [eina])
 
 EFL_DEPEND_PKG([ECORE_WAYLAND], [WAYLAND],
-   [wayland-client >= 1.3.0 wayland-cursor >= 1.3.0 xkbcommon >= 0.3.0 xdg-shell-client text-client tizen-extension-client wayland-tbm-client libtdm-client])
+   [wayland-client >= 1.3.0 wayland-cursor >= 1.3.0 xkbcommon >= 0.3.0 xdg-shell-client text-client tizen-extension-client tizen-surface-client wayland-tbm-client libtdm-client])
 
 EFL_EVAL_PKGS([ECORE_WAYLAND])
 
