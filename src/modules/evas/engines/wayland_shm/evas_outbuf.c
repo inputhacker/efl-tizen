@@ -27,9 +27,33 @@ _evas_outbuf_setup(int w, int h, Evas_Engine_Info_Wayland *info)
    ob->depth = info->info.depth;
    ob->priv.destination_alpha = info->info.destination_alpha;
    ob->ewd = ecore_wl2_window_display_get(info->info.wl2_win);
+   ob->surface = NULL;
 
-   ob->surface = ecore_wl2_surface_create(info->info.wl2_win,
-                                          ob->priv.destination_alpha);
+   // TIZEN_ONLY(20171226) : evas tbm_buf backend
+   if (!getenv("EVAS_WAYLAND_USE_SHMBUF"))
+     {
+       int sw = 0;
+       int sh = 0;
+       /* try to create the outbuf surface */
+       if ((ob->rotation == 0) || (ob->rotation == 180))
+         {
+           sw = w;
+           sh = h;
+         }
+       else if ((ob->rotation == 90) || (ob->rotation == 270))
+         {
+           sw = h;
+           sh = w;
+         }
+       ob->surface = ecore_wl2_tbmbuf_surface_create(info->info.wl2_win, ob->priv.destination_alpha, info->info.tbm_client, sw, sh, 3);
+     }
+   // fallback
+   if (!ob->surface)
+     {
+       ob->surface = ecore_wl2_surface_create(info->info.wl2_win,
+                                              ob->priv.destination_alpha);
+     }
+
    if (!ob->surface) goto surf_err;
 
    eina_array_step_set(&ob->priv.onebuf_regions, sizeof(Eina_Array), 8);

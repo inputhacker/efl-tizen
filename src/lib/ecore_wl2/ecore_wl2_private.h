@@ -20,6 +20,12 @@
 # include "tizen-policy-ext-client-protocol.h"
 //
 
+// TIZEN_ONLY(20171226) : evas tbm_buf backend
+#include <tbm_bufmgr.h>
+#include <tbm_surface.h>
+#include <tbm_surface_queue.h>
+//
+
 extern int _ecore_wl2_log_dom;
 extern Eina_Bool no_session_recovery;
 
@@ -700,6 +706,20 @@ typedef struct _Buffer_Handle Buffer_Handle;
 typedef struct _Ecore_Wl2_Buffer
 {
    struct wl_buffer *wl_buffer;
+   // TIZEN_ONLY(20171226) : evas tbm_buf backend
+   struct wl_display *wl_display;
+   struct wl_surface *wl_surface;
+   struct wl_registry *registry;
+   struct wayland_tbm_client *tbm_client;
+   tbm_surface_h tbm_surface;
+   tbm_surface_info_s tbm_info;
+   void *tbm_queue;
+   int wait_release;
+   Eina_Bool resize : 1;
+   int compositor_version;
+   int frame_age;
+   // TIZEN_ONLY(20171226) : evas tbm_buf backend
+
    int size;
    int w, h;
    int age;
@@ -732,6 +752,7 @@ typedef struct _Ecore_Wl2_Surface
         void (*post)(Ecore_Wl2_Surface *surface, Eina_Rectangle *rects, unsigned int count);
         void (*flush)(Ecore_Wl2_Surface *surface);
      } funcs;
+   unsigned int frame_age;  // TIZEN_ONLY(20171226) : evas tbm_buf backend
 } Ecore_Wl2_Surface;
 
 Ecore_Wl2_Window *_ecore_wl2_display_window_surface_find(Ecore_Wl2_Display *display, struct wl_surface *wl_surface);
