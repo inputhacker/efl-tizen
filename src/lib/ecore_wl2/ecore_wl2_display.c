@@ -783,7 +783,7 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
         ewd->wl.tz_policy =
            wl_registry_bind(registry, id, &tizen_policy_interface, client_version);
         if (ewd->wl.tz_policy)
-          tizen_policy_add_listener(ewd->wl.tz_policy, &_tizen_policy_listener, ewd->wl.display);
+          tizen_policy_add_listener(ewd->wl.tz_policy, &_tizen_policy_listener, ewd);
      }
    else if (!strcmp(interface, "tizen_policy_ext"))
      {
@@ -795,7 +795,7 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
         ewd->wl.tz_policy_ext =
            wl_registry_bind(registry, id, &tizen_policy_ext_interface, client_version);
         if (ewd->wl.tz_policy_ext)
-          tizen_policy_ext_add_listener(ewd->wl.tz_policy_ext, &_tizen_policy_ext_listener, ewd->wl.display);
+          tizen_policy_ext_add_listener(ewd->wl.tz_policy_ext, &_tizen_policy_ext_listener, ewd);
      }
    else if (!strcmp(interface, "tizen_surface"))
      {
@@ -814,7 +814,7 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
         ewd->wl.tz_indicator =
            wl_registry_bind(registry, id, &tizen_indicator_interface, 1);
         if (ewd->wl.tz_indicator)
-          tizen_indicator_add_listener(ewd->wl.tz_indicator, &_tizen_indicator_listener, ewd->wl.display);
+          tizen_indicator_add_listener(ewd->wl.tz_indicator, &_tizen_indicator_listener, ewd);
      }
    else if (!strcmp(interface, "tizen_clipboard"))
      {
@@ -827,7 +827,7 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
            wl_registry_bind(registry, id, &tizen_clipboard_interface, client_version);
 
         if (ewd->wl.tz_clipboard)
-          tizen_clipboard_add_listener(ewd->wl.tz_clipboard, &_tizen_clipboard_listener, ewd->wl.display);
+          tizen_clipboard_add_listener(ewd->wl.tz_clipboard, &_tizen_clipboard_listener, ewd);
      }
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
    else if (!strcmp(interface, "tizen_keyrouter"))
