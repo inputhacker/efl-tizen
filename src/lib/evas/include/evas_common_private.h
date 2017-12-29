@@ -460,8 +460,35 @@ typedef void (*Evas_Engine_Thread_Task_Cb)(void *engine_data, Image_Entry *ie, v
 #ifdef EVAS_CSERVE2
 #include "../cache2/evas_cache2.h"
 #endif
-
 #include "../common/evas_font_draw.h"
+//TIZEN_ONLY(20171219): Fix undefined error
+//This code should be removed after open source fixs the ploblem
+#ifdef EAPI
+# undef EAPI
+#endif
+
+#ifdef _WIN32
+# ifdef EFL_EVAS_BUILD
+#  ifdef DLL_EXPORT
+#   define EAPI __declspec(dllexport)
+#  else
+#   define EAPI
+#  endif /* ! DLL_EXPORT */
+# else
+#  define EAPI __declspec(dllimport)
+# endif /* ! EFL_EVAS_BUILD */
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
+# else
+#  define EAPI
+# endif
+#endif /* ! _WIN32 */
+//
 
 /*****************************************************************************/
 
