@@ -2664,6 +2664,41 @@ elm_widget_scroll_freeze_get(const Eo *obj)
    return sd->scroll_freeze;
 }
 
+// TIZEN_ONLY(20150705): Genlist item align feature
+EAPI void
+elm_widget_scroll_item_align_enabled_set(Evas_Object *obj,
+                                        Eina_Bool scroll_item_align_enable)
+{
+   API_ENTRY return;
+   if (sd->scroll_item_align_enable == scroll_item_align_enable) return;
+   sd->scroll_item_align_enable = scroll_item_align_enable;
+}
+
+EAPI Eina_Bool
+elm_widget_scroll_item_align_enabled_get(const Evas_Object *obj)
+{
+   API_ENTRY return EINA_FALSE;
+   return sd->scroll_item_align_enable;
+}
+
+EAPI void
+elm_widget_scroll_item_valign_set(Evas_Object *obj,
+                                  const char *scroll_item_valign)
+{
+   API_ENTRY return;
+   if (sd->scroll_item_valign) eina_stringshare_del(sd->scroll_item_valign);
+   if (!scroll_item_valign) sd->scroll_item_valign = NULL;
+   else sd->scroll_item_valign = eina_stringshare_add(scroll_item_valign);
+}
+
+EAPI const char*
+elm_widget_scroll_item_valign_get(const Evas_Object *obj)
+{
+   API_ENTRY return NULL;
+   return sd->scroll_item_valign;
+}
+//
+
 EOLIAN static void
 _efl_ui_widget_efl_gfx_scale_set(Eo *obj, Elm_Widget_Smart_Data *sd, double scale)
 {

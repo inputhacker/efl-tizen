@@ -18,11 +18,17 @@ class Elm.Ctxpopup.Item(Elm.Widget.Item, Efl.Ui.Item, Efl.Access.Widget.Action)
         Elm.Widget.Item.disable;
         Elm.Widget.Item.signal_emit;
         Elm.Widget.Item.del_pre;
+        Elm.Widget.Item.style { get; set; } // TIZEN_ONLY(20170116): merge eo & header files for different profiles
         Elm.Widget.Item.part_text { get; set; }
         Elm.Widget.Item.part_content { get; set; }
         Elm.Widget.Item.part_content_unset;
         Elm.Widget.Item.focus { get; set; }
-        Efl.Ui.Item.selected { get; set; }
+        // TIZEN_ONLY(20170116): merge eo & header files for different profiles
+        Efl.Access.state_set { get; }
+        //
+        // TIZEN_ONLY(20180112): remove Efl.Ui.Item.selected
+        //Efl.Ui.Item.selected { get; set; }
+        //
         Efl.Ui.Item.prev { get; }
         Efl.Ui.Item.next { get; }
         Efl.Access.Widget.Action.elm_actions { get; }

@@ -412,6 +412,9 @@ typedef struct _Elm_Widget_Smart_Data
    const char                   *style;
    const char                   *access_info;
    const char                   *accessible_name;
+// TIZEN_ONLY(20150705): Genlist item align feature
+   const char                    *scroll_item_valign;
+//
    unsigned int                  focus_order;
    Eina_Bool                     focus_order_on_calc;
 
@@ -484,6 +487,9 @@ typedef struct _Elm_Widget_Smart_Data
    //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
    Eina_Bool                     highlight_grabbing : 1;
    //
+// TIZEN_ONLY(20150705): Genlist item align feature
+   Eina_Bool                     scroll_item_align_enable : 1;
+//
 } Elm_Widget_Smart_Data;
 
 typedef Elm_Widget_Smart_Data Efl_Ui_Widget_Data;

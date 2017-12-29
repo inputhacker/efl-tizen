@@ -1056,7 +1056,7 @@ Elementary
 
 %package -n elementary-tizen
 Summary:        EFL toolkit for small touchscreens for Tizen devices
-Requires:       %{name}
+Requires:       elementary
 
 %description -n elementary-tizen
 Elementary is a widget set. It is a new-style of widget set much more canvas
@@ -1086,6 +1086,7 @@ EFL elementary configuration and test apps package
 Summary:        Development files for elementary
 Group:          Development/Libraries
 Requires:       %{name} = %{version}
+Recommends:     elementary
 
 %description -n elementary-devel
 Development components for the elementary package
@@ -1312,11 +1313,14 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %postun -n elementary -p /sbin/ldconfig
 
 %post -n elementary-tizen
-mv %{_libdir}/libelementary.so.%{version}.mobile %{_libdir}/libelementary.so.%{version}
-/sbin/ldconfig
+rm -f %{_libdir}/libelementary.so.1
+#ln -sf %{_libdir}/libelementary.so.1.99.100 %{_libdir}/libelementary.so.1
+ldconfig -l %{_libdir}/libelementary.so.1.99.100
 
 %preun -n elementary-tizen
-mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}.mobile
+rm -f %{_libdir}/libelementary.so.1
+#ln -sf %{_libdir}/libelementary.so.1.20.* %{_libdir}/libelementary.so.1
+ldconfig -l %{_libdir}/libelementary.so.1.20.*
 
 %postun -n elementary-tizen -p /sbin/ldconfig
 
@@ -2032,19 +2036,19 @@ mv %{_libdir}/libelementary.so.%{version} %{_libdir}/libelementary.so.%{version}
 %{_bindir}/elementary_quicklaunch
 %{_bindir}/elementary_run
 %{_libdir}/edje/modules/elm/v-1.20/module.so
-%{_libdir}/libelementary.so.*
+%{_libdir}/libelementary.so.1
+%{_libdir}/libelementary.so.1.20.*
 %{_datadir}/elementary/edje_externals/*
 %{_datadir}/icons/elementary.png
 %exclude %{_libdir}/elementary/modules/
 %exclude %{_libdir}/debug/usr/lib/elementary/modules/
 %exclude %{_datadir}/elementary/config/
-##%exclude %{_libdir}/libelementary.so.%{version}.mobile
 ##%{_tmpfilesdir}/elementary.conf
 
 %files -n elementary-tizen
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-#%{_libdir}/libelementary.so.%{version}.mobile
+%{_libdir}/libelementary.so.1.99.*
 
 %if ! %dbus_unavailable
 %files -n elementary-examples

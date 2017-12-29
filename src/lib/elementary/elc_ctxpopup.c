@@ -917,6 +917,25 @@ _bg_clicked_cb(void *data,
      _hide_signals_emit(data, sd->dir);
 }
 
+// TIZEN_ONLY(20170116): merge eo & header files for different profiles
+EOLIAN static void
+_elm_ctxpopup_item_elm_widget_item_style_set(Eo *eo_item EINA_UNUSED,
+                                             Elm_Ctxpopup_Item_Data *item,
+                                             const char *style)
+{
+   ELM_CTXPOPUP_DATA_GET(WIDGET(item), sd);
+
+   eina_stringshare_replace(&item->style, style);
+}
+
+EOLIAN static const char *
+_elm_ctxpopup_item_elm_widget_item_style_get(Eo *eo_it EINA_UNUSED,
+                                             Elm_Ctxpopup_Item_Data *item)
+{
+   return item->style;
+}
+//
+
 static void
 _on_show(void *data EINA_UNUSED,
          Evas *e EINA_UNUSED,
@@ -1483,6 +1502,8 @@ _elm_ctxpopup_efl_ui_menu_last_item_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *
    return eina_list_data_get(eina_list_last(sd->items));
 }
 
+// TIZEN_ONLY(20180112): remove item selected function
+/*
 EOLIAN static Elm_Object_Item*
 _elm_ctxpopup_efl_ui_menu_selected_item_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
@@ -1497,7 +1518,11 @@ _elm_ctxpopup_efl_ui_menu_selected_item_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Da
 
    return NULL;
 }
+*/
+//
 
+// TIZEN_ONLY(20180112): remove focused item get function
+/*
 EOLIAN static Elm_Object_Item*
 _elm_ctxpopup_efl_ui_widget_focused_item_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
@@ -1505,6 +1530,8 @@ _elm_ctxpopup_efl_ui_widget_focused_item_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_D
 
    return elm_object_focused_item_get(sd->list);
 }
+*/
+//
 
 EOLIAN static Elm_Object_Item*
 _elm_ctxpopup_item_prepend(Eo *obj, Elm_Ctxpopup_Data *sd, const char *label, Evas_Object *icon, Evas_Smart_Cb func, const void *data)
@@ -1561,6 +1588,8 @@ _elm_ctxpopup_item_efl_ui_item_next_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_It
    return NULL;
 }
 
+// TIZEN_ONLY(20180112): remove item selected function
+/*
 EOLIAN static void
 _elm_ctxpopup_item_efl_ui_item_selected_set(Eo *eo_item EINA_UNUSED,
                                             Elm_Ctxpopup_Item_Data *item,
@@ -1589,6 +1618,8 @@ _elm_ctxpopup_item_efl_ui_item_selected_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopu
 {
    return item->selected;
 }
+*/
+//
 
 EOLIAN static void
 _elm_ctxpopup_item_init(Eo *eo_item,
@@ -1660,6 +1691,40 @@ _elm_ctxpopup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_
    };
    return &atspi_actions[0];
 }
+
+// TIZEN_ONLY(20180112): add state set get for ctxpopu item
+EOLIAN static Efl_Access_State_Set
+_elm_ctxpopup_item_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Item_Data *it)
+{
+   Efl_Access_State_Set states;
+   Eina_Rectangle r1, r2;
+   Eina_Bool is_showing = EINA_FALSE;
+
+   states = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+
+   // evaluate showing state
+   if (VIEW(it) &&
+       WIDGET(it) &&
+       evas_object_visible_get(VIEW(it)) &&
+       _elm_widget_onscreen_is(WIDGET(it)))
+     {
+        ELM_CTXPOPUP_DATA_GET(WIDGET(it), sd);
+
+        evas_object_geometry_get(VIEW(it), &r1.x, &r1.y, &r1.w, &r1.h);
+        evas_object_geometry_get(sd->box, &r2.x, &r2.y, &r2.w, &r2.h);
+
+        if (eina_rectangles_intersect(&r1, &r2))
+          is_showing = EINA_TRUE;
+     }
+
+   if (is_showing)
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
+   else
+     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_SHOWING);
+
+   return states;
+}
+//
 
 EOLIAN static Efl_Access_State_Set
 _elm_ctxpopup_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)

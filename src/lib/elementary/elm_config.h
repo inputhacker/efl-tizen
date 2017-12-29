@@ -795,6 +795,68 @@ EAPI double       elm_config_scroll_thumbscroll_acceleration_weight_get(void);
  */
 EAPI void         elm_config_scroll_thumbscroll_acceleration_weight_set(double weight);
 
+// TIZEN_ONLY(20150705): Genlist item align feature
+/**
+ * @brief Sets the scroll item align enable.
+ *
+ * @since_tizen 2.3.1
+ *
+ * @param[in] enable The scroll item align state
+ *
+ * @see elm_config_scroll_item_align_enabled_get()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI void elm_config_scroll_item_align_enabled_set(Eina_Bool enable);
+
+/**
+ * @brief Sets the scroll item align enable.
+ *
+ * @since_tizen 2.3.1
+ *
+ * @return The scroll item align state.
+ *
+ * @see elm_config_scroll_item_align_enabled_set()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI Eina_Bool elm_config_scroll_item_align_enabled_get(void);
+
+/**
+ * @brief Sets the scroll item vertical align.
+ *
+ * @since_tizen 2.3.1
+ *
+ * @param[in] scroll_item_valign The position name.
+ *
+ * @see elm_config_scroll_item_valign_get()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI void elm_config_scroll_item_valign_set(const char *scroll_item_valign);
+
+/**
+ * @brief Sets the scroll item vertical align.
+ *
+ * @since_tizen 2.3.1
+ *
+ * @return The scroll item vertical align name.
+ *
+ * @see elm_config_scroll_item_valign_set()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI const char *elm_config_scroll_item_valign_get(void);
+//
+
 /**
  * Get focus auto scroll mode.
  *

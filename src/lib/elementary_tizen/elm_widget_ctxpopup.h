@@ -1,7 +1,9 @@
 #ifndef ELM_WIDGET_CTXPOPUP_H
 #define ELM_WIDGET_CTXPOPUP_H
 
-#include "elm_widget_layout.h"
+#include "../elementary/elm_widget_layout.h"
+
+#define MAX_ITEMS_PER_VIEWPORT 8
 
 /* DO NOT USE THIS HEADER UNLESS YOU ARE PREPARED FOR BREAKING OF YOUR
  * CODE. THIS IS ELEMENTARY'S INTERNAL WIDGET API (for now) AND IS NOT
@@ -10,12 +12,13 @@
  */
 
 /**
+ * @internal
  * @addtogroup Widget
  * @{
  *
  * @section elm-ctxpopup-class The Elementary Ctxpopup Class
  *
- * Elementary, besides having the @ref Ctxpopup widget, exposes its
+ * Elementary, besides having the @ref Elm_Ctxpopup widget, exposes its
  * foundation -- the Elementary Ctxpopup Class -- in order to create other
  * widgets which are a ctxpopup with some more logic on top.
  */
@@ -30,7 +33,10 @@ struct _Elm_Ctxpopup_Item_Data
 {
    Elm_Widget_Item_Data *base;
 
-   Elm_Object_Item *list_item;
+   const char   *label;
+   Evas_Object  *icon;
+   Evas_Object  *btn;
+   Eina_Stringshare *style;
 
    struct
      {
@@ -38,33 +44,32 @@ struct _Elm_Ctxpopup_Item_Data
         const void    *org_data;
         Evas_Object   *cobj;
      } wcb;
-
-   // TIZEN_ONLY(20170116): merge eo & header files for different profiles
-   Eina_Stringshare *style;
-
-   Eina_Bool      selected : 1;
 };
 
 struct _Elm_Ctxpopup_Data
 {
    Evas_Object           *parent;
-   Evas_Object           *list;
    Evas_Object           *box;
-   Eina_List             *items;
 
+   Evas_Object           *layout;
    Evas_Object           *arrow;
+   Evas_Object           *scr;
    Evas_Object           *bg;
    Evas_Object           *content;
+   Eina_List             *items;
 
    Elm_Ctxpopup_Direction dir;
    Elm_Ctxpopup_Direction dir_priority[4];
 
-   Eina_Bool              list_visible : 1;
+   int                    multi_down;
+
    Eina_Bool              horizontal : 1;
-   Eina_Bool              finished : 1;
-   Eina_Bool              emitted : 1;
    Eina_Bool              visible : 1;
-   Eina_Bool              auto_hide : 1; /**< auto hide mode triggered by ctxpopup policy*/
+   Eina_Bool              auto_hide : 1;
+   Eina_Bool              mouse_down : 1;
+//******************** TIZEN Only
+   Eina_Bool              pressed : 1;
+//****************************
 };
 
 /**
@@ -72,7 +77,7 @@ struct _Elm_Ctxpopup_Data
  */
 
 #define ELM_CTXPOPUP_DATA_GET(o, sd) \
-  Elm_Ctxpopup_Data * sd = efl_data_scope_get(o, ELM_CTXPOPUP_CLASS)
+  Elm_Ctxpopup_Data * sd = eo_data_scope_get(o, ELM_CTXPOPUP_CLASS)
 
 #define ELM_CTXPOPUP_DATA_GET_OR_RETURN(o, ptr)      \
   ELM_CTXPOPUP_DATA_GET(o, ptr);                     \
@@ -93,7 +98,7 @@ struct _Elm_Ctxpopup_Data
     }
 
 #define ELM_CTXPOPUP_CHECK(obj)                              \
-  if (EINA_UNLIKELY(!efl_isa((obj), ELM_CTXPOPUP_CLASS))) \
+  if (EINA_UNLIKELY(!eo_isa((obj), ELM_CTXPOPUP_CLASS))) \
     return
 
 #define ELM_CTXPOPUP_ITEM_CHECK_OR_RETURN(it, ...)                 \
@@ -101,6 +106,6 @@ struct _Elm_Ctxpopup_Data
   ELM_CTXPOPUP_CHECK(it->base->widget) __VA_ARGS__;
 
 #define ELM_CTXPOPUP_ITEM_DATA_GET(o, sd) \
-  Elm_Ctxpopup_Item_Data *sd = efl_data_scope_get(o, ELM_CTXPOPUP_ITEM_CLASS)
+  Elm_Ctxpopup_Item_Data *sd = eo_data_scope_get(o, ELM_CTXPOPUP_ITEM_CLASS)
 
 #endif

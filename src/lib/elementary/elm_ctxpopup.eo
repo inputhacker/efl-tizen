@@ -207,8 +207,12 @@ class Elm.Ctxpopup (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Efl.Access.Widget.Action,
       Efl.Ui.Translatable.translation_update;
       Efl.Ui.Widget.theme_apply;
       Efl.Ui.Widget.widget_event;
-      Efl.Ui.Widget.focused_item { get; }
-      Efl.Ui.Menu.selected_item { get; }
+      // TIZEN_ONLY(20180112): remove focused item get function
+      // Efl.Ui.Widget.focused_item { get; }
+      //
+      // TIZEN_ONLY(20180112): remove item selected function
+      // Efl.Ui.Menu.selected_item { get; }
+      //
       Efl.Ui.Menu.first_item { get; }
       Efl.Ui.Menu.last_item { get; }
       Efl.Ui.Menu.items { get; }

@@ -515,6 +515,10 @@ _desc_init(void)
    ELM_CONFIG_VAL(D, T, entry_select_allow, T_UCHAR);
    ELM_CONFIG_VAL(D, T, offline, T_UCHAR);
    ELM_CONFIG_VAL(D, T, powersave, T_INT);
+   // TIZEN_ONLY(20150705): Genlist item align feature
+   ELM_CONFIG_VAL(D, T, scroll_item_align_enable, T_UCHAR);
+   ELM_CONFIG_VAL(D, T, scroll_item_valign, T_STRING);
+   //
 #undef T
 #undef D
 #undef T_INT
@@ -1838,6 +1842,10 @@ _config_load(void)
    _elm_config->language_auto_mirrored = EINA_TRUE;
    //
    _elm_config->entry_select_allow = EINA_TRUE;
+   // TIZEN_ONLY(20150705): Genlist item align feature
+   _elm_config->scroll_item_align_enable = EINA_FALSE;
+   _elm_config->scroll_item_valign = eina_stringshare_add("center");
+   //
    _env_get();
 }
 
@@ -3844,6 +3852,46 @@ elm_config_slider_indicator_visible_mode_get(void)
 {
     return _elm_config->slider_indicator_visible_mode;
 }
+
+// TIZEN_ONLY(20150705): Genlist item align feature
+EAPI void
+elm_config_scroll_item_align_enabled_set(Eina_Bool enable)
+{
+   _elm_config->scroll_item_align_enable = !!enable;
+}
+
+EAPI Eina_Bool
+elm_config_scroll_item_align_enabled_get(void)
+{
+   return _elm_config->scroll_item_align_enable;
+}
+
+void
+_elm_config_scroll_item_valign_set(const char *scroll_item_valign)
+{
+   if (_elm_config->scroll_item_valign &&
+         strcmp(_elm_config->scroll_item_valign, scroll_item_valign))
+     {
+        eina_stringshare_del(_elm_config->scroll_item_valign);
+     }
+
+   _elm_config->scroll_item_valign = eina_stringshare_add(scroll_item_valign);
+}
+
+EAPI void
+elm_config_scroll_item_valign_set(const char *scroll_item_valign)
+{
+   EINA_SAFETY_ON_NULL_RETURN(scroll_item_valign);
+
+   _elm_config_scroll_item_valign_set(scroll_item_valign);
+}
+
+EAPI const char *
+elm_config_scroll_item_valign_get(void)
+{
+   return _elm_config->scroll_item_valign;
+}
+//
 
 EAPI void
 elm_config_focus_autoscroll_mode_set(Elm_Focus_Autoscroll_Mode mode)
