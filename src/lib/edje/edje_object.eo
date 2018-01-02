@@ -3093,6 +3093,30 @@ class Edje.Object (Evas.Smart_Clipped, Efl.File)
          }
       }
       /* END */
+      /* TIZEN_ONLY(20180102): add part_valign property for internal usage */
+      @property part_valign @internal {
+         set {
+            [[Sets the valign for a common description.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+            ]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         get {
+            [[Gets the valign for a common description.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+            ]]
+         }
+         keys {
+            part: const(char)*; [[The part name]]
+         }
+         values {
+            valign: double; [[The valign 0.0~1.0. -1.0 for respect EDC's align value.]]
+         }
+      }
       /* TIZEN_ONLY(20170801): add text marquee duration set/get APIs for internal usages */
       @property part_text_marquee_duration @internal {
          set {

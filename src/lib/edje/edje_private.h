@@ -2058,6 +2058,9 @@ struct _Edje_Real_Part
       Edje_Real_Part_Vector    *vector;
    } typedata; // 4
    FLOAT_T                   description_pos; // 8
+   /* TIZEN_ONLY(20180102): add part_valign property for internal usage */
+   FLOAT_T                   valign; // 8
+   /* END */
    Edje_Rectangle            req; // 16
    int                       x, y, w, h; // 16
    int                       clicked_button; // 4
