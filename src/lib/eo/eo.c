@@ -1207,29 +1207,6 @@ _eo_class_isa_func(Eo *eo_id EINA_UNUSED, void *class_data EINA_UNUSED, va_list 
    /* Do nonthing. */
 }
 
-//TIZEN_ONLY(20171206): add log for deadlock issue.
-static void getprocname(int pid, char *name)
-{
-   if (name)
-     {
-        sprintf(name, "/proc/%d/cmdline", pid);
-        FILE* f = fopen(name,"r");
-        if (f)
-          {
-             size_t size;
-             size = fread(name, sizeof(char), 50, f);
-             if (size > 0)
-               {
-                  if ('\n' == name[size-1])
-                    name[size-1] = '\0';
-               }
-             fclose(f);
-          }
-     }
-   return name;
-}
-//
-
 EAPI const Eo_Class *
 eo_class_new(const Eo_Class_Description *desc, const Eo_Class *parent_id, ...)
 {
@@ -1242,7 +1219,6 @@ eo_class_new(const Eo_Class_Description *desc, const Eo_Class *parent_id, ...)
    EINA_SAFETY_ON_NULL_RETURN_VAL(desc->name, NULL);
 
    _Eo_Class *parent = _eo_class_pointer_get(parent_id);
-   char *procname;
 
 #ifndef HAVE_EO_ID
    if (parent && !EINA_MAGIC_CHECK((Eo_Header *) parent, EO_CLASS_EINA_MAGIC))
@@ -1487,15 +1463,6 @@ eo_class_new(const Eo_Class_Description *desc, const Eo_Class *parent_id, ...)
 
    eina_lock_take(&_eo_class_creation_lock);
 
-   //TIZEN_ONLY(20171206): add log for deadlock issue.
-   if (!strcmp(desc->name, "Ecore_Timer"))
-     {
-        procname = (char *)calloc(50, sizeof(char));
-        getprocname(getpid(), procname);
-        ERR("%s %lu SPINLOCK timer    take %p value %d", procname, pthread_self(), &_eo_class_creation_lock, _eo_class_creation_lock);
-        free(procname);
-     }
-   //
    klass->header.id = ++_eo_classes_last_id | MASK_CLASS_TAG;
      {
         /* FIXME: Handle errors. */
@@ -1511,16 +1478,6 @@ eo_class_new(const Eo_Class_Description *desc, const Eo_Class *parent_id, ...)
         _eo_classes[_UNMASK_ID(klass->header.id) - 1] = klass;
      }
    eina_lock_release(&_eo_class_creation_lock);
-
-   //TIZEN_ONLY(20171206): add log for deadlock issue.
-   if (!strcmp(desc->name, "Ecore_Timer"))
-     {
-        procname = (char *)calloc(50, sizeof(char));
-        getprocname(getpid(), procname);
-        ERR("%s %lu SPINLOCK timer release %p value %d", procname, pthread_self(), &_eo_class_creation_lock, _eo_class_creation_lock);
-        free(procname);
-     }
-   //
 
    _eo_class_constructor(klass);
 
