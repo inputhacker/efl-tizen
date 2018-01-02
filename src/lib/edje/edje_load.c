@@ -668,6 +668,9 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
                     }
 
                   memset(rp, 0, sizeof (Edje_Real_Part));
+                  /* TIZEN_ONLY(20180102): add part_valign property for internal usage */
+                  rp->valign = -1.0;
+                  /* END */
 
                   rp->param1.p.map = eina_cow_alloc(_edje_calc_params_map_cow);
 #ifdef HAVE_EPHYSICS
