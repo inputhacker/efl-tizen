@@ -33,8 +33,6 @@ static int _ecore_evas_wl_init_count = 0;
 static Eina_Array *_ecore_evas_wl_event_hdls;
 
 // TIZEN_ONLY(20160617) : uniconify force render
-static Eina_Bool _enable_uniconify_force_render = EINA_FALSE;
-
 static void _ecore_evas_wl_common_damage_add(Ecore_Evas *ee);
 int _ecore_evas_wl_common_render(Ecore_Evas *ee);
 //
@@ -1421,8 +1419,7 @@ _ecore_evas_wl_common_cb_seat_capabilities_changed(void *d EINA_UNUSED, int t EI
 static void
 _ecore_evas_wl_common_damage_add(Ecore_Evas *ee)
 {
-   if ((!_enable_uniconify_force_render) ||
-       (ee->prop.iconified))
+   if (ee->prop.iconified)
      return;
 
    /* add canvas damage
@@ -1746,11 +1743,6 @@ _ecore_evas_wl_common_init(void)
    //
 
    ecore_event_evas_init();
-
-// TIZEN_ONLY(20160617) : uniconify force render
-   if (getenv("ECORE_EVAS_DEICONIFY_RENDER_UPDATE"))
-     _enable_uniconify_force_render = EINA_TRUE;
-//
 
    return _ecore_evas_wl_init_count;
 }
