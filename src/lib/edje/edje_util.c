@@ -3452,10 +3452,14 @@ _efl_canvas_layout_efl_layout_calc_calc_size_min(Eo *obj EINA_UNUSED, Edje *ed, 
     * To keep backward compatibility, legacy_calc will be used for old version of EDJ files.
     * With enabling legacy_calc, You can't see proper min/max result accroding to documents.
     */
+   /* TIZEN_ONLY(20180103): don't run legacy calculation for Textblock parts
    if (!ed->file || ((ed->file->efl_version.major >= 1) && (ed->file->efl_version.minor >= 19)))
      legacy_calc = EINA_FALSE;
    else
      legacy_calc = EINA_TRUE;
+    */
+   legacy_calc = EINA_FALSE;
+   /* END */
 
    //Simulate object minimum size.
    ed->calc_only = EINA_TRUE;

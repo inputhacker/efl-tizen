@@ -610,6 +610,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                   evas_object_textblock_text_markup_set(ep->object, text);
                }
 
+             /* TIZEN_ONLY(20180103): don't run legacy calculation for Textblock parts
              if ((ed->file->efl_version.major >= 1) && (ed->file->efl_version.minor >= 19))
                {
                   _edje_part_recalc_single_textblock_min_max_calc(ep,
@@ -626,6 +627,13 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                                                                          minw, minh,
                                                                          maxw, maxh);
                }
+              */
+             _edje_part_recalc_single_textblock_min_max_calc(ep,
+                                                             chosen_desc,
+                                                             params,
+                                                             minw, minh,
+                                                             maxw, maxh);
+             /* END */
           }
 
         /***********************************************************************************
