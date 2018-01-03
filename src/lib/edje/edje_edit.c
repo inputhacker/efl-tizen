@@ -3259,6 +3259,13 @@ _edje_edit_real_part_add(Evas_Object *obj, const char *name, Edje_Part_Type type
         rp->type = EDJE_RP_TYPE_TEXT;
         rp->typedata.text = calloc(1, sizeof(Edje_Real_Part_Text));
         rp->object = evas_object_textblock_add(ed->base.evas);
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: API for handling text properties of Edje                    *
+         ***********************************************************************************/
+        if (rp->typedata.text) rp->typedata.text->valign = -1.0;
+        /*******
+         * END *
+         *******/
      }
    else if (ep->type == EDJE_PART_TYPE_BOX)
      {

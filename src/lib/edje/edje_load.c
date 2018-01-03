@@ -970,6 +970,14 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
                        rp->type = EDJE_RP_TYPE_TEXT;
                        rp->typedata.text = calloc(1, sizeof(Edje_Real_Part_Text));
                        if (!rp->typedata.text) memerr = EINA_TRUE;
+                       /***********************************************************************************
+                        * TIZEN_ONLY_FEATURE: API for handling text properties of Edje                    *
+                        ***********************************************************************************/
+                       else rp->typedata.text->valign = -1.0;
+                       /*******
+                        * END *
+                        *******/
+
                        break;
 
                      case EDJE_PART_TYPE_GROUP:
