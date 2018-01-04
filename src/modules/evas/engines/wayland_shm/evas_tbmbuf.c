@@ -8,7 +8,7 @@
 #include <dlfcn.h>
 #include <wayland-client.h>
 
-#include <wayland-extension/tizen-surface-client-protocol.h>
+#include "tizen-surface-client.h"
 
 #define KEY_WINDOW (unsigned long)(&key_window)
 #define KEY_WL_BUFFER (unsigned long)(&key_wl_buffer)

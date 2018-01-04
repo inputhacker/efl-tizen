@@ -3,7 +3,7 @@
 #include "evas_engine.h"
 #include <sys/mman.h>
 
-#include <wayland-extension/tizen-surface-client-protocol.h>
+#include "tizen-surface-client.h"
 
 typedef struct _Shm_Pool Shm_Pool;
 struct _Shm_Pool
