@@ -124,6 +124,9 @@ typedef struct _Elm_Gen_Item_Class
                                         * NULL if you don't care. Currently
                                         * it's used only in genlist. */
   Elm_Gen_Item_Class_Functions func; /**< Set of callbacks */
+// TIZEN ONLY(20160630): Support homogeneous mode in item class.
+   Eina_Bool     homogeneous : 1;
+//
 } Elm_Gen_Item_Class;
 
 /** See @ref Elm_Gen_Item_Class. */

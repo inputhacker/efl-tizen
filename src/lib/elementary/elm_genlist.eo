@@ -25,10 +25,19 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               items' callbacks are called only when the item is needed.
 
               Note: This also works well with group index.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get whether the homogeneous mode is enabled.]]
+            [[Get whether the homogeneous mode is enabled.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             homogeneous: bool; [[Assume the items within the genlist are of
@@ -47,10 +56,19 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               be called. #ELM_OBJECT_SELECT_MODE_NONE will turn off the
               ability to select items entirely and they will neither appear
               selected nor call selected callback functions.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get the genlist select mode.]]
+            [[Get the genlist select mode.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             mode: Elm.Object.Select_Mode(Elm.Object.Select_Mode.max); [[The select mode.]]
@@ -86,10 +104,19 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               Warning: If you set the longpress timeout value with this API,
               your genlist will not be affected by the longpress value of
               elementary config value later.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get the timeout in seconds for the longpress event.]]
+            [[Get the timeout in seconds for the longpress event.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             timeout: double; [[Timeout in seconds. Default is elm config value (1.0).]]
@@ -102,10 +129,19 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               This enables ($true) or disables ($false) multi-selection in
               the list. This allows more than 1 item to be selected. To
               retrieve the list of selected items, use @.selected_items.get.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get if multi-selection in genlist is enabled or disabled.]]
+            [[Get if multi-selection in genlist is enabled or disabled.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             multi: bool; [[Multi-select enable/disable. Default is disabled.]]
@@ -118,10 +154,19 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               After turning on the reorder mode, longpress on normal item
               will trigger reordering of the item. You can move the item
               up and down. However, reorder does not work with group item.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get the reorder mode.]]
+            [[Get the reorder mode.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             reorder_mode: bool; [[The reorder mode.]]
@@ -182,10 +227,19 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               lists, so unless you know you will have a lot of objects
               visible in the screen at the same time, don't try to
               change this.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get the maximum number of items within an item block.]]
+            [[Get the maximum number of items within an item block.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             count: int; [[Maximum number of items within an item block. Default is 32.]]
@@ -209,11 +263,19 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               called.
 
               Highlight is enabled by default.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
             [[Get whether the genlist items' should be highlighted when
               item selected.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          values {
@@ -249,10 +311,19 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               in genlist which can be on the flying resizable (such as
               TEXTBLOCK). If then, some dynamic esizable objects in
               genlist would not diplayed properly.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
          }
          get {
-            [[Get the horizontal stretching mode.]]
+            [[Get the horizontal stretching mode.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
+            ]]
          }
          values {
             mode: Elm.List.Mode(Elm.List.Mode.last); [[The mode to use (one of @Elm.List.Mode.scroll or @Elm.List.Mode.limit).]]
@@ -279,6 +350,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               @.selected_items.get for when multi-selection is used).
 
               If no item is selected, $null is returned.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: Elm.Widget.Item; [[The selected item, or $null if none is selected.]]
          }
@@ -291,6 +366,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
               If filter is set on genlist, it returns
               the first filtered item in the list.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: Elm.Widget.Item; [[The first item or $null.]]
          }
@@ -304,6 +383,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
               freed by the caller when done with \@ref eina_list_free. The
               item pointers in the list are only valid so long as those
               items are not deleted or the genlist is not deleted.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: list<ptr(Elm_Gen_Item)> @owned @warn_unused; [[List of realized items]]
          }
@@ -322,6 +405,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
               Note: If not in multi-select mode, consider using function
               @.selected_item.get instead.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: const(list<Elm.Widget.Item>); [[List of selected items]]
          }
@@ -334,6 +421,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
               If filter is set to genlist, it returns
               last filtered item in the list.
+
+              \@if MOBILE \@since_tizen 2.3
+              \@elseif WEARABLE \@since_tizen 2.3.1
+              \@endif
             ]]
             return: Elm.Widget.Item; [[Last item in list]]
          }
@@ -343,6 +434,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
            This inserts an item before another in the list. It will be in
            the same tree level or group as the item it is inserted before.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: Elm.Widget.Item; [[Handle to inserted item]]
          params {
@@ -364,6 +459,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
            desired to be reflected.
 
            To update just one item, use \@ref elm_genlist_item_update.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       item_insert_after {
@@ -371,6 +470,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
            This inserts an item after another in the list. It will be in the
            same tree level or group as the item it is inserted after.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: Elm.Widget.Item; [[Handle to inserted item]]
          params {
@@ -395,6 +498,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
            as an item (no item found there), then posret may indicate -1 or
            1 based if the coordinate is above or below all items
            respectively in the genlist.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: Elm.Widget.Item; [[Item at position]]
          params {
@@ -443,6 +550,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
            This behavior is O(1) and includes items which may or may not
            be realized.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: uint; [[Item in list]]
       }
@@ -451,6 +562,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
            This adds an item to the beginning of the list or beginning of
            the children of the parent if given.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: Elm.Widget.Item; [[Handle to prepended item]]
          params {
@@ -466,6 +581,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
          [[Remove all items from a given genlist widget.
 
            This removes (and deletes) all items in $obj, leaving it empty.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
       }
       item_append {
@@ -473,6 +592,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
            This adds the given item to the end of the list or the end of
            the children list if the $parent is given.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: Elm.Widget.Item; [[Handle to appended item]]
          params {
@@ -490,6 +613,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
            This inserts an item in the genlist based on user defined
            comparison function. The two arguments passed to the function
            $func are genlist item handles to compare.
+
+           \@if MOBILE \@since_tizen 2.3
+           \@elseif WEARABLE \@since_tizen 2.3.1
+           \@endif
          ]]
          return: Elm.Widget.Item; [[Handle to inserted item]]
          params {

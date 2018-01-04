@@ -159,6 +159,8 @@ static const char SIGNAL_GROUP_SINGLE[] = "elm,state,group,single";
 static const char SIGNAL_GROUP_FIRST[] = "elm,state,group,first";
 static const char SIGNAL_GROUP_LAST[] = "elm,state,group,last";
 static const char SIGNAL_GROUP_MIDDLE[] = "elm,state,group,middle";
+//Tizen Only(20160307)
+static const char SIGNAL_DEFAULT[] = "elm,state,default";
 
 static void _item_unrealize(Elm_Gen_Item *it);
 static Eina_Bool _item_select(Elm_Gen_Item *it);
@@ -281,6 +283,14 @@ _elm_genlist_pan_elm_pan_content_size_get(Eo *obj EINA_UNUSED, Elm_Genlist_Pan_D
    if (h) *h = psd->wsd->minh;
 }
 
+//Tizen Only(20170113)
+EOLIAN static void
+_elm_genlist_pan_elm_pan_pos_adjust(Eo *obj EINA_UNUSED, Elm_Genlist_Pan_Data *psd EINA_UNUSED, Evas_Coord *x EINA_UNUSED, Evas_Coord *y EINA_UNUSED)
+{
+   return;
+}
+//
+
 EOLIAN static void
 _elm_genlist_pan_efl_canvas_group_group_del(Eo *obj, Elm_Genlist_Pan_Data *psd)
 {
@@ -322,7 +332,8 @@ _elm_genlist_pan_efl_gfx_size_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Size2
 
    old = efl_gfx_size_get(obj);
    if ((old.w == size.w) && (old.h == size.h)) goto super; // should already be intercepted above
-   if ((sd->mode == ELM_LIST_COMPRESS) && (old.w != size.w))
+   //TIZEN ONLY(20170512): list scroll should be expanded at least as much as genlist width size.
+   if ((sd->mode == ELM_LIST_COMPRESS || sd->mode == ELM_LIST_SCROLL) && (old.w != size.w))
      {
         /* fix me later */
         ecore_job_del(psd->resize_job);
@@ -377,6 +388,9 @@ _item_text_realize(Elm_Gen_Item *it,
         else
           {
              edje_object_part_text_set(target, key, "");
+             //TIZEN_ONLY(20180104): call hidden signal when it is not visible
+             snprintf(buf, sizeof(buf), "elm,state,%s,hidden", key);
+             edje_object_signal_emit(target, buf, "elm");
           }
         if (_elm_atspi_enabled())
           efl_access_name_changed_signal_emit(EO_OBJ(it));
@@ -448,9 +462,15 @@ _item_content_realize(Elm_Gen_Item *it,
              if (it->itc->func.content_get)
                content = it->itc->func.content_get
                   ((void *)WIDGET_ITEM_DATA_GET(EO_OBJ(it)), WIDGET(it), key);
-             if (!content) goto out;
-          }
+             if (!content)
+               {
 
+                  //TIZEN_ONLY(20180104): call hidden signal when it is not visible
+                  snprintf(buf, sizeof(buf), "elm,state,%s,hidden", key);
+                  edje_object_signal_emit(target, buf, "elm");
+                  goto out;
+               }
+          }
         if (content != old)
           {
              eina_hash_add(sd->content_item_map, &content, it->base->eo_obj);
@@ -528,12 +548,12 @@ _item_state_realize(Elm_Gen_Item *it, Evas_Object *target, const char *parts)
 /**
  * Apply the right style for the created item view.
  */
-static void
-_view_style_update(Elm_Gen_Item *it, Evas_Object *view, const char *style)
+// TIZEN_ONLY(20150622): update genlist style set
+static Eina_Bool
+_view_style_find(Elm_Gen_Item *it, Evas_Object *view, const char *style)
 {
    char buf[1024];
-   const char *stacking_even;
-   const char *stacking;
+   char buf2[1024];
    ELM_GENLIST_DATA_GET_FROM_ITEM(it, sd);
 
    // FIXME:  There exists
@@ -565,11 +585,33 @@ _view_style_update(Elm_Gen_Item *it, Evas_Object *view, const char *style)
                     sd->mode == ELM_LIST_COMPRESS ? "_compress" :
                     "",style ? : "default");
      }
-
    Efl_Ui_Theme_Apply th_ret =
       elm_widget_theme_object_set(WIDGET(it), view, "genlist", buf,
                                   elm_widget_style_get(WIDGET(it)));
    if (th_ret == EFL_UI_THEME_APPLY_FAILED)
+     {
+       //TIZEN_ONLY: Fallback to deafult style when first style set failed.
+       snprintf(buf2, sizeof(buf2), "item/%s", style ? : "default");
+       ERR("%s is not a valid genlist item style. fallback to %s", buf, buf2);
+       if (!strcmp(buf, buf2)) return EINA_FALSE;
+       th_ret = elm_widget_theme_object_set(WIDGET(it), view, "genlist", buf2,
+                                            elm_widget_style_get(WIDGET(it)));
+       if (th_ret == EFL_UI_THEME_APPLY_FAILED) return EINA_FALSE;
+    }
+
+  return EINA_TRUE;
+}
+//
+
+static void
+_view_style_update(Elm_Gen_Item *it, Evas_Object *view, const char *style)
+{
+   const char *stacking_even;
+   const char *stacking;
+
+   // TIZEN_ONLY(20150622): update genlist style set
+   if (!_view_style_find(it, view, style))
+   //
      {
         ERR("%s is not a valid genlist item style. "
             "Automatically falls back into default style.",
@@ -792,7 +834,8 @@ _calc_job(void *data)
         itb->show_me = EINA_FALSE;
         if (chb)
           {
-             if (itb->realized) _item_block_unrealize(itb);
+             // TIZEN_ONLY(20170106): Fix focus flicking issue when item is prepended
+             if (itb->realized) _item_block_recalc(itb, in, EINA_FALSE);
           }
         if ((itb->changed) || ((itb->must_recalc) && (!did_must_recalc)))
           {
@@ -840,6 +883,9 @@ _calc_job(void *data)
              itb->w = itb->minw;
           }
      }
+
+   // TIZEN_ONLY(20170106): Fix focus flicking issue when item is prepended
+   /*
    if ((chb) && (EINA_INLIST_GET(chb)->next))
      {
         EINA_INLIST_FOREACH(EINA_INLIST_GET(chb)->next, itb)
@@ -847,6 +893,7 @@ _calc_job(void *data)
              if (itb->realized) _item_block_unrealize(itb);
           }
      }
+   */
    sd->realminw = minw;
    if (minw < sd->w) minw = sd->w;
    if ((minw != sd->minw) || (minh != sd->minh))
@@ -935,8 +982,8 @@ _elm_genlist_elm_layout_sizing_eval(Eo *obj, Elm_Genlist_Data *sd)
    evas_object_size_hint_max_get(obj, &maxw, &maxh);
 
    edje_object_size_min_calc(wd->resize_obj, &vmw, &vmh);
-
-   if (sd->mode == ELM_LIST_COMPRESS)
+   //TIZEN ONLY(20170512): list scroll should be expanded at least as much as genlist width size.
+   if (sd->mode == ELM_LIST_COMPRESS || sd->mode == ELM_LIST_SCROLL)
      {
         Evas_Coord vw = 0, vh = 0;
 
@@ -1653,6 +1700,9 @@ _item_cache_add(Elm_Gen_Item *it, Eina_List *contents)
        (elm_widget_focus_highlight_enabled_get(obj) || _elm_config->win_auto_focus_enable))
      edje_object_signal_emit(itc->base_view, SIGNAL_UNFOCUSED, "elm");
 
+   //Tizen Only(20160307)
+   edje_object_signal_emit(itc->base_view, SIGNAL_DEFAULT, "elm");
+
    ELM_SAFE_FREE(it->long_timer, ecore_timer_del);
    ELM_SAFE_FREE(it->item->swipe_timer, ecore_timer_del);
 
@@ -1940,7 +1990,8 @@ _item_realize(Elm_Gen_Item *it, const int index, Eina_Bool calc)
 
    size = eina_hash_find(sd->size_caches, &(it->itc));
    /* homogeneous genlist shortcut */
-   if ((calc) && (sd->homogeneous) && (!it->item->mincalcd) && size)
+   // TIZEN ONLY(20160630): Support homogeneous mode in item class.
+   if ((calc) && (sd->homogeneous || it->itc->homogeneous) && (!it->item->mincalcd) && size)
      {
         it->item->w = it->item->minw = size->minw;
         it->item->h = it->item->minh = size->minh;
@@ -1970,7 +2021,8 @@ _item_realize(Elm_Gen_Item *it, const int index, Eina_Bool calc)
 
         if (!it->item->mincalcd)
           {
-             if (sd->homogeneous && size)
+             // TIZEN ONLY(20160630): Support homogeneous mode in item class.
+             if ((sd->homogeneous || it->itc->homogeneous) && size)
                {
                   it->item->w = it->item->minw = size->minw;
                   it->item->h = it->item->minh = size->minh;
@@ -1989,11 +2041,17 @@ _item_realize(Elm_Gen_Item *it, const int index, Eina_Bool calc)
                   // Process signal for proper size calc with text and content visible.
                   edje_object_message_signal_process(VIEW(it));
                   edje_object_size_min_restricted_calc(VIEW(it), &mw, &mh, mw, mh);
+                  // TIZEN_ONLY(20170512): list scroll should be expanded at least as much as genlist width size.
+                  if (sd->mode == ELM_LIST_COMPRESS ||
+                      (sd->mode == ELM_LIST_SCROLL && mw < sd->prev_viewport_w))
+                    mw = sd->prev_viewport_w;
+                  //
                   it->item->w = it->item->minw = mw;
                   it->item->h = it->item->minh = mh;
                   it->item->mincalcd = EINA_TRUE;
 
-                  if (sd->homogeneous)
+                  // TIZEN ONLY(20160630): Support homogeneous mode in item class.
+                  if (sd->homogeneous || it->itc->homogeneous)
                     {
                        if (size)
                          eina_hash_del_by_key(sd->size_caches, &(it->itc));
@@ -2667,6 +2725,24 @@ _elm_genlist_pan_efl_canvas_group_group_calculate(Eo *obj, Elm_Genlist_Pan_Data 
        (sd->move_effect_mode == ELM_GENLIST_TREE_EFFECT_NONE))
      _item_auto_scroll(sd);
 
+   // TIZEN_ONLY(20160907)
+   // FIXME: There are issue about wrong list positioning in prepend cases.
+   // To prevent the issue, allocate repositioning in group calculate.
+   if (sd->prepend_items)
+     {
+        Evas_Coord prepend_h = 0;
+        Elm_Gen_Item *tmp = NULL;
+        EINA_LIST_FREE(sd->prepend_items, tmp)
+          {
+             prepend_h += tmp->item->minh;
+          }
+
+        elm_interface_scrollable_content_pos_get((sd)->obj, &vx, &vy);
+        elm_interface_scrollable_content_viewport_geometry_get((sd)->obj, NULL, NULL, &vw, &vh);
+        /* Set adjusted position as prepended items height */
+        elm_interface_scrollable_content_region_show((sd)->obj, vx, vy + prepend_h, vw, vh);
+     }
+
    elm_interface_scrollable_content_pos_get((sd)->obj, &vx, &vy);
    elm_interface_scrollable_content_viewport_geometry_get
          ((sd)->obj, NULL, NULL, &vw, &vh);
@@ -2867,7 +2943,8 @@ _elm_genlist_item_focused(Elm_Object_Item *eo_it)
        (elm_wdg_item_disabled_get(eo_it)))
      return;
 
-   if (it != sd->pin_item)
+   //TIZEN_ONLY(20161209): Do not autoscroll if scroll to item is exist
+   if (it != sd->pin_item && (!sd->show_item))
      {
         switch (_elm_config->focus_autoscroll_mode)
           {
@@ -2883,6 +2960,7 @@ _elm_genlist_item_focused(Elm_Object_Item *eo_it)
               break;
           }
      }
+   //
 
    sd->focused_item = eo_it;
 
@@ -4726,6 +4804,10 @@ _item_process_post(Elm_Genlist_Data *sd, Elm_Gen_Item *it)
     */
    if (sd->selected && it->item->before && !it->hide)
      {
+        //TIZEN_ONLY(20160907)
+        //FIXME: There are issue about wrong list positioning in prepend cases.
+        // To prevent the issue, allocate repositioning in smart calculate.
+#if 0
         int y = 0, h;
         Elm_Object_Item *eo_it2;
 
@@ -4743,6 +4825,9 @@ _item_process_post(Elm_Genlist_Data *sd, Elm_Gen_Item *it)
         else
            elm_interface_scrollable_content_region_show
             (sd->obj, it->x + it->item->block->x, y + it->item->h, it->item->block->w, h);
+
+#endif
+        sd->prepend_items = eina_list_append(sd->prepend_items, it);
      }
 }
 
@@ -4833,8 +4918,9 @@ _item_queue(Elm_Genlist_Data *sd,
         ELM_SAFE_FREE(sd->queue_idle_enterer, ecore_idle_enterer_del);
         _queue_process(sd);
      }
+   // TIZEN ONLY(20160630): Support homogeneous mode in item class.
    while ((sd->queue) && (sd->blocks) &&
-          (sd->homogeneous) && (sd->mode == ELM_LIST_COMPRESS))
+          ((sd->homogeneous) || it->itc->homogeneous) && (sd->mode == ELM_LIST_COMPRESS))
      {
         ELM_SAFE_FREE(sd->queue_idle_enterer, ecore_idle_enterer_del);
         _queue_process(sd);
@@ -5298,10 +5384,12 @@ _item_block_recalc(Item_Block *itb, const int blk_idx, Eina_Bool qadd)
           }
         if (!itb->realized)
           {
-             if (itb->sd->homogeneous &&
+             // TIZEN ONLY(20160630): Support homogeneous mode in item class.
+             if ((itb->sd->homogeneous || it->itc->homogeneous) &&
                  ((!size) || it->itc != size->itc))
                size = eina_hash_find(itb->sd->size_caches, &(it->itc));
-             if (qadd || (itb->sd->homogeneous && !size))
+             // TIZEN ONLY(20160630): Support homogeneous mode in item class.
+             if (qadd || ((itb->sd->homogeneous || it->itc->homogeneous) && !size))
                {
                   if (!it->item->mincalcd) changed = EINA_TRUE;
                   if (changed)
@@ -5321,7 +5409,8 @@ _item_block_recalc(Item_Block *itb, const int blk_idx, Eina_Bool qadd)
                }
              else
                {
-                  if ((itb->sd->homogeneous) && size &&
+                  // TIZEN ONLY(20160630): Support homogeneous mode in item class.
+                  if ((itb->sd->homogeneous || it->itc->homogeneous) && size &&
                       (it->item->expanded_depth == size->expanded_depth) &&
                       (itb->sd->mode == ELM_LIST_COMPRESS))
                     {
@@ -5640,7 +5729,19 @@ _elm_genlist_looping_up_cb(void *data,
 
    Elm_Object_Item *eo_it = elm_genlist_last_item_get(genlist);
 
-   elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   // TIZEN_ONLY(20150629): add checking item bring in enable on item looping
+   switch (_elm_config->focus_autoscroll_mode)
+     {
+      case ELM_FOCUS_AUTOSCROLL_MODE_SHOW:
+         elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+         break;
+      case ELM_FOCUS_AUTOSCROLL_MODE_BRING_IN:
+         elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+         break;
+      default:
+         break;
+     }
+   //
    elm_layout_signal_emit(genlist, "elm,action,looping,up,end", "elm");
    sd->item_looping_on = EINA_FALSE;
 
@@ -5662,7 +5763,19 @@ _elm_genlist_looping_down_cb(void *data,
 
    Elm_Object_Item *eo_it = elm_genlist_first_item_get(genlist);
 
-   elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+   // TIZEN_ONLY(20150629): add checking item bring in enable on item looping
+   switch (_elm_config->focus_autoscroll_mode)
+     {
+      case ELM_FOCUS_AUTOSCROLL_MODE_SHOW:
+         elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+         break;
+      case ELM_FOCUS_AUTOSCROLL_MODE_BRING_IN:
+         elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+         break;
+      default:
+         break;
+     }
+   //
    elm_layout_signal_emit(genlist, "elm,action,looping,down,end", "elm");
    sd->item_looping_on = EINA_FALSE;
 
@@ -7226,8 +7339,10 @@ _elm_genlist_item_coordinates_calc(Elm_Gen_Item *it,
          return EINA_FALSE;
      }
 
-   //Can't goto the item right now. Reserve it instead.
-   if (sd->queue || !(sd->homogeneous && (sd->mode == ELM_LIST_COMPRESS)))
+   // TIZEN ONLY(20160630): Support homogeneous mode in item class.
+   if ((sd->queue) || (it->item->block->w < 1) ||
+       (!((sd->homogeneous || it->itc->homogeneous) &&
+          (sd->mode == ELM_LIST_COMPRESS))))
      {
         if ((it->item->queued) || (!it->item->mincalcd) || (sd->queue))
           deferred_show = EINA_TRUE;
@@ -8466,7 +8581,8 @@ _elm_genlist_item_select_mode_set(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it,
         sd->update_job = ecore_job_add(_update_job, sd->obj);
 
         // reset homogeneous item size
-        if (sd->homogeneous)
+        // TIZEN ONLY(20160630): Support homogeneous mode in item class.
+        if (sd->homogeneous || it->itc->homogeneous)
           {
              Item_Size *size =
                 eina_hash_find(sd->size_caches, &(it->itc));

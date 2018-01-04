@@ -55,6 +55,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
 
                        If filter is set on genlist, this returns the filtered
                        item placed before $item in the list.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -76,6 +80,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                        If a item has subitems, and it have expand all subitems
                        will be ignore, and will get the next item in the same
                        level.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -89,6 +97,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                        This returns the item that was specified as parent
                        of the item $it on \@ref elm_genlist_item_append
                        and insertion related functions.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -111,7 +123,12 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
            }
            @property selected {
                 get {
-                     [[Get whether a given genlist item is selected or not.]]
+                     [[Get whether a given genlist item is selected or not.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
+                     ]]
                 }
                 set {
                      [[Set whether a given genlist item is selected or not
@@ -120,6 +137,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                       selection is not enabled on the containing genlist
                       and $selected is $true, any other previously selected
                       items will get unselected in favor of this new one.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -131,6 +152,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                      [[Get the expanded state of an item
 
                        This gets the expanded state of an item.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 set {
@@ -148,6 +173,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                        of this item (if it is a parent). You must manually
                        delete and create them on the callbacks of
                        the "expanded" or "contracted" signals.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -156,7 +185,12 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
            }
            @property expanded_depth {
                 get {
-                     [[Get the depth of expanded item.]]
+                     [[Get the depth of expanded item.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
+                     ]]
                 }
                 values {
                      depth: int; [[The depth of expanded item.]]
@@ -169,6 +203,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                        This returns the Genlist_Item_Class for the given item.
                        It can be used to examine the function pointers and
                        item_style.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -180,6 +218,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                      [[Get the index of the item. It is only valid once displayed.
 
                        The index start from 1.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -225,6 +267,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                      [[Get the genlist item's select mode.
 
                        It's ELM_OBJECT_SELECT_MODE_MAX on failure.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 set {
@@ -251,6 +297,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                        some touch or small screen devices. So it is
                        enabled, the item can be shrink than predefined
                        finger-size value. And the item will be updated.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -264,6 +314,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                        This function returns the item's type. Normally the
                        item's type. If it failed, return value is
                        ELM_GENLIST_ITEM_MAX.
+
+                       \@if MOBILE \@since_tizen 2.3
+                       \@elseif WEARABLE \@since_tizen 2.3.1
+                       \@endif
                      ]]
                 }
                 values {
@@ -307,13 +361,27 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
 
                   This removes all items that are children (and their
                   descendants) of the given item $it.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
                 ]]
            }
            promote {
-                [[Promote an item to the top of the list.]]
+                [[Promote an item to the top of the list.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
+                ]]
            }
            demote {
-                [[Demote an item to the end of the list.]]
+                [[Demote an item to the end of the list.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
+                ]]
            }
            show {
                 [[Show the portion of a genlist's internal list containing
@@ -322,6 +390,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                   This causes genlist to jump to the given item $it and
                   show it (by jumping to that position), if it is not
                   fully visible.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
                 ]]
                 params {
                      @in type: Elm.Genlist.Item.Scrollto_Type; [[The position to bring in, the given item to.
@@ -336,6 +408,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                   show it (by animatedly scrolling), if it is not fully
                   visible. This may use animation and take a some time
                   to do so.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
                 ]]
                 params {
                      @in type: Elm.Genlist.Item.Scrollto_Type; [[The position to bring in, the given item to.
@@ -349,6 +425,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                   in the item, meaning that they will no longer be managed
                   by genlist and are floating "orphans" that can be re-used
                   elsewhere if the user wants to.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
                 ]]
                 params {
                      @out l: list<Efl.Canvas.Object> @owned; [[The contents list to return.]]
@@ -371,6 +451,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                   because edje_object is deleted and created again by this
                   API. If you want to avoid this, please use
                   \@ref elm_genlist_item_fields_update.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
                 ]]
            }
            fields_update {
@@ -385,6 +469,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
 
                   Use \@ref elm_genlist_realized_items_update to update an
                   item's all property.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
                 ]]
                 params {
                      @in parts: string; [[The name of item's part.]]
@@ -397,6 +485,10 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
                   This sets another class of the item, changing the way
                   that it is displayed. After changing the item class
                   @.update is called on the item $it.
+
+                  \@if MOBILE \@since_tizen 2.3
+                  \@elseif WEARABLE \@since_tizen 2.3.1
+                  \@endif
                 ]]
                 params {
                      @cref itc: Elm.Genlist.Item.Class; [[The item class for the item.]]
