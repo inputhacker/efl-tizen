@@ -6214,6 +6214,12 @@ _efl_ui_win_win_type_set(Eo *obj, Efl_Ui_Win_Data *sd, Efl_Ui_Win_Type type)
 #ifdef HAVE_ELEMENTARY_WL2
         if (sd->type != ELM_WIN_FAKE) sd->type = type;
         _elm_win_wlwin_type_update(sd);
+//TIZEN_ONLY(20161208): supported floating window
+        if (type != ELM_WIN_BASIC)
+          edje_object_signal_emit(sd->legacy.edje, "elm,state,floating,on", "elm");
+        else
+          edje_object_signal_emit(sd->legacy.edje, "elm,state,floating,off", "elm");
+//TIZEN_ONLY(20161208)
 #endif
 //
         ERR("This function is only allowed during construction.");
@@ -7528,6 +7534,13 @@ elm_win_floating_mode_set(Evas_Object *obj, Eina_Bool floating)
    _elm_win_wlwindow_get(sd);
    if (sd->wl.win)
      {
+//TIZEN_ONLY(20161208): supported floating window
+        if (floating)
+          edje_object_signal_emit(sd->legacy.edje, "elm,state,floating,on", "elm");
+        else
+          edje_object_signal_emit(sd->legacy.edje, "elm,state,floating,off", "elm");
+//
+
         // TODO: frame style(csd) shall be applied refer to Eina_Bool floating
         ecore_wl2_window_floating_mode_set(sd->wl.win, floating);
      }
@@ -9238,6 +9251,11 @@ _elm_win_legacy_init(Efl_Ui_Win_Data *sd)
 {
    sd->legacy.edje = edje_object_add(sd->evas);
    _elm_win_theme_internal(sd->obj, sd);
+   
+//TIZEN_ONLY(20161208): supported floating window
+   if (sd->type != ELM_WIN_BASIC)
+     edje_object_signal_emit(sd->legacy.edje, "elm,state,floating,on", "elm");
+//
 
    sd->legacy.box = evas_object_box_add(sd->evas);
    evas_object_box_layout_set(sd->legacy.box, _window_layout_stack, sd->obj, NULL);
