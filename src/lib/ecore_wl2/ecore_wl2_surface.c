@@ -233,8 +233,14 @@ ecore_wl2_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha)
      types |= ECORE_WL2_BUFFER_DMABUF;
 
    out->alpha = alpha;
+//TIZEN_ONLY(20180105): tizen don't allow the zero size buffer creation
+   out->w = 1;
+   out->h = 1;
+   /*
    out->w = 0;
    out->h = 0;
+   */
+//
 
    /* create surface buffers */
    if (!ecore_wl2_buffer_init(ewd, types)) goto err;
