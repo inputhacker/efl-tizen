@@ -6029,6 +6029,8 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
    _elm_win_apply_alpha(obj, sd);
 
 #ifdef HAVE_ELEMENTARY_WL2
+//TIZEN_ONLY(20180106): disable pointer window
+/*
    if ((type != ELM_WIN_FAKE) && (type != ELM_WIN_INLINED_IMAGE))
      {
         if ((engine) &&
@@ -6051,6 +6053,8 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
                                        ECORE_WL2_WINDOW_TYPE_NONE);
           }
      }
+*/
+//
 #endif
 
    /* do not append to list; all windows render as black rects */
