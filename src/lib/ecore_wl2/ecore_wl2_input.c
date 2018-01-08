@@ -314,14 +314,37 @@ _ecore_wl2_devices_get(const Ecore_Wl2_Input *input, int window_id)
    return NULL;
 }
 
+// TIZEN_ONLY(20180108): maintain a device list for each window
+static Eo *
+_ecore_wl2_tizen_devices_get(Ecore_Wl2_Tizen_Input_Device *tz_device, int window_id)
+{
+   Ecore_Wl2_Tizen_Input_Eo_Device *tz_dev;
+   Eina_List *l;
+
+   if (tz_device) return NULL;
+
+   EINA_LIST_FOREACH(tz_device->devices, l, tz_dev)
+     {
+        if (tz_dev->window_id == window_id)
+          return tz_dev->eo_dev;
+     }
+
+   return NULL;
+}
+//
+
 static Eo *
 _ecore_wl2_mouse_dev_get(Ecore_Wl2_Input *input, int window_id)
 {
    Ecore_Wl2_Input_Devices *devices;
-
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
-   if (input->devmgr.last_device_ptr && input->devmgr.last_device_ptr->eo_dev)
-     return efl_ref(input->devmgr.last_device_ptr->eo_dev);
+   Eo *dev;
+
+   if (input->devmgr.last_device_ptr)
+     {
+        dev = _ecore_wl2_tizen_devices_get(input->devmgr.last_device_ptr, window_id);
+        if (dev) return efl_ref(dev);
+     }
    //
 
    devices = _ecore_wl2_devices_get(input, window_id);
@@ -335,10 +358,14 @@ static Eo *
 _ecore_wl2_touch_dev_get(Ecore_Wl2_Input *input, int window_id)
 {
    Ecore_Wl2_Input_Devices *devices;
-
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
-   if (input->devmgr.last_device_touch && input->devmgr.last_device_touch->eo_dev)
-     return efl_ref(input->devmgr.last_device_touch->eo_dev);
+   Eo *dev;
+
+   if (input->devmgr.last_device_touch)
+     {
+        dev = _ecore_wl2_tizen_devices_get(input->devmgr.last_device_touch, window_id);
+        if (dev) return efl_ref(dev);
+     }
    //
 
    devices = _ecore_wl2_devices_get(input, window_id);
@@ -883,10 +910,14 @@ static Eo *
 _ecore_wl2_keyboard_dev_get(Ecore_Wl2_Input *input, int window_id)
 {
    Ecore_Wl2_Input_Devices *devices;
-
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
-   if (input->devmgr.last_device_kbd && input->devmgr.last_device_kbd->eo_dev)
-     return efl_ref(input->devmgr.last_device_kbd->eo_dev);
+   Eo *dev;
+
+   if (input->devmgr.last_device_kbd)
+     {
+        dev = _ecore_wl2_tizen_devices_get(input->devmgr.last_device_kbd, window_id);
+        if (dev) return efl_ref(dev);
+     }
    //
 
    devices = _ecore_wl2_devices_get(input, window_id);
@@ -2167,7 +2198,8 @@ _ecore_wl2_cb_tizen_device_event(void *data, int type, void *event)
    Ecore_Wl2_Event_Tizen_Input_Device_Info *ev = event;
    Ecore_Wl2_Display *ewd = data;
    Ecore_Wl2_Input *input;
-   Eina_List *l;
+   Ecore_Wl2_Tizen_Input_Eo_Device *eo_dev;
+   Eina_List *l, *l_next;
 
    input = ecore_wl2_input_default_input_get(ewd);
    EINA_SAFETY_ON_NULL_RETURN_VAL(input, ECORE_CALLBACK_PASS_ON);
@@ -2188,25 +2220,50 @@ _ecore_wl2_cb_tizen_device_event(void *data, int type, void *event)
          *        How process this device? Ignore or Make a new device
          */
 
-        dev->eo_dev = efl_ref(ev->dev);
+        EINA_LIST_FOREACH(dev->devices, l, eo_dev)
+          {
+             if (eo_dev->eo_dev == ev->dev)
+               return ECORE_CALLBACK_PASS_ON;
+          }
+
+        eo_dev = (Ecore_Wl2_Tizen_Input_Eo_Device *)calloc(1, sizeof(Ecore_Wl2_Tizen_Input_Eo_Device));
+        if (!eo_dev) return ECORE_CALLBACK_PASS_ON;
+
+        eo_dev->eo_dev = efl_ref(ev->dev);
+        eo_dev->window_id = ev->window_id;
+
+        dev->devices = eina_list_append(dev->devices, eo_dev);
 
         return ECORE_CALLBACK_PASS_ON;
      }
    else if (type == ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_REMOVED)
      {
         if (!dev) return ECORE_CALLBACK_PASS_ON;
-        efl_unref(dev->eo_dev);
-        dev->eo_dev = NULL;
 
-        _ecore_wl2_input_device_last_device_unset(dev);
+        EINA_LIST_FOREACH_SAFE(dev->devices, l, l_next, eo_dev)
+          {
+             if (eo_dev->eo_dev == ev->dev)
+               {
+                  efl_unref(eo_dev->eo_dev);
+                  eo_dev->eo_dev = NULL;
+                  dev->devices = eina_list_remove_list(dev->devices, l);
+                  free(eo_dev);
+                  break;
+               }
+          }
 
-        if (dev->tz_device) tizen_input_device_release(dev->tz_device);
-        if (dev->name) eina_stringshare_del(dev->name);
-        if (dev->identifier) eina_stringshare_del(dev->identifier);
-        dev->seat = NULL;
+        if (eina_list_count(dev->devices) == 0)
+          {
+             _ecore_wl2_input_device_last_device_unset(dev);
 
-        input->devmgr.devices = eina_list_remove(input->devmgr.devices, dev);
-        free(dev);
+             if (dev->tz_device) tizen_input_device_release(dev->tz_device);
+             if (dev->name) eina_stringshare_del(dev->name);
+             if (dev->identifier) eina_stringshare_del(dev->identifier);
+             dev->seat = NULL;
+
+             input->devmgr.devices = eina_list_remove(input->devmgr.devices, dev);
+             free(dev);
+          }
      }
 
    return ECORE_CALLBACK_PASS_ON;

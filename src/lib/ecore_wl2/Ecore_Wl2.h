@@ -46,6 +46,7 @@ typedef struct _Ecore_Wl2_Touch Ecore_Wl2_Touch;
 typedef struct _Ecore_Wl2_Offer Ecore_Wl2_Offer;
 typedef struct _Ecore_Wl2_Surface Ecore_Wl2_Surface;
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+typedef struct _Ecore_Wl2_Tizen_Input_Eo_Device Ecore_Wl2_Tizen_Input_Eo_Device;
 typedef struct _Ecore_Wl2_Tizen_Input_Device Ecore_Wl2_Tizen_Input_Device;
 
 //

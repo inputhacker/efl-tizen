@@ -394,6 +394,12 @@ typedef struct _Ecore_Wl2_Dnd_Source
 } Ecore_Wl2_Dnd_Source;
 
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
+struct _Ecore_Wl2_Tizen_Input_Eo_Device
+{
+   int window_id;
+   Eo *eo_dev;
+};
+
 struct _Ecore_Wl2_Tizen_Input_Device
 {
    struct tizen_input_device *tz_device;
@@ -403,7 +409,7 @@ struct _Ecore_Wl2_Tizen_Input_Device
    Efl_Input_Device_Type clas;
    Efl_Input_Device_Subtype subclas;
    struct wl_seat *seat;
-   Eo *eo_dev;
+   Eina_List *devices;
 };
 
 typedef struct _Ecore_Wl2_Touch_Axis
