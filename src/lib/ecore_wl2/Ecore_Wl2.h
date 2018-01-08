@@ -2309,6 +2309,8 @@ EAPI Ecore_Wl2_Input *ecore_wl2_input_default_input_get(const Ecore_Wl2_Display 
 EAPI Eina_Bool ecore_wl2_window_keygrab_set(Ecore_Wl2_Window *win, const char *key, int mod EINA_UNUSED, int not_mod EINA_UNUSED, int priority EINA_UNUSED, Ecore_Wl2_Window_Keygrab_Mode grab_mode);
 EAPI Eina_Bool ecore_wl2_window_keygrab_unset(Ecore_Wl2_Window *win, const char *key, int mod EINA_UNUSED, int any_mod EINA_UNUSED);
 //
+EAPI Eina_List *ecore_wl2_window_keygrab_list_set(Ecore_Wl2_Window *win, Eina_List *infos);
+EAPI Eina_List *ecore_wl2_window_keygrab_list_unset(Ecore_Wl2_Window *win, Eina_List *infos);
 
 // TIZEN_ONLY(20171107): add ecore_wl2_window_input_get() EAPI
 EAPI Ecore_Wl2_Input *ecore_wl2_window_input_get(Ecore_Wl2_Window *win);
