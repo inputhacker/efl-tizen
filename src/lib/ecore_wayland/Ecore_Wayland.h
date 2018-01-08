@@ -1484,7 +1484,7 @@ EAPI Eina_Bool ecore_wl_keyboard_repeat_info_set(double rate, double delay);
  * @return false on error, true otherwise.
  */
 EAPI Eina_Bool ecore_wl_keyboard_repeat_info_get(double *rate, double *delay);
-/
+//
 
 EAPI void ecore_wl_window_conformant_set(Ecore_Wl_Window *win, unsigned int is_conformant);
 EAPI Eina_Bool ecore_wl_window_conformant_get(Ecore_Wl_Window *win);
