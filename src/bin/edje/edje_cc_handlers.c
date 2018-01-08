@@ -544,7 +544,7 @@ static void st_images_vector(void);
 static void _handle_vector_image(void);
 
 // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
 static void ob_plugins_plug(void);
 static void st_collections_plugins_plugin_name(void);
 static void st_collections_plugins_plugin_source(void);
@@ -702,7 +702,7 @@ New_Statement_Handler statement_handlers[] =
      SIZE_CLASS_STATEMENTS("collections.")
      {"collections.base_scale", st_collections_base_scale},
 // TIZEN_ONLY(20150110): Add plugins keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
      {"collections.plugins.plugin.name", st_collections_plugins_plugin_name},
      {"collections.plugins.plugin.source", st_collections_plugins_plugin_source},
      {"collections.plugins.plugin.param", st_collections_plugins_plugin_param},
@@ -1235,7 +1235,7 @@ New_Object_Handler object_handlers[] =
      {"collections.size_classes", NULL}, /* dup */
      {"collections.size_classes.size_class", ob_size_class}, /* dup */
 // TIZEN_ONLY(20150110): Add plugins keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
      {"collections.plugins", NULL}, /* dup */
      {"collections.plugins.plugin", ob_plugins_plug}, /* dup */
      {"collections.group.plugins", NULL}, /* dup */
@@ -1759,7 +1759,7 @@ _edje_program_copy(Edje_Program *ep, Edje_Program *ep2)
    ep->tween.use_duration_factor = ep2->tween.use_duration_factor;
    ep->sample_name = STRDUP(ep2->sample_name);
 // TIZEN_ONLY(20150110): Add plugins keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
    ep->plugin_name = STRDUP(ep2->plugin_name);
 #endif
 //
@@ -3478,7 +3478,7 @@ st_collections_group_vibration_sample_name(void)
 ////////////////////////////////////////////////////////////
 // TIZEN_ONLY(20150110): Add plugin keyword.
 ////////////////////////////////////////////////////////////
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
 static void
 ob_plugins_plug(void)
 {
@@ -13813,7 +13813,7 @@ st_collections_group_programs_program_action(void)
                            "PHYSICS_ROT_SET", EDJE_ACTION_TYPE_PHYSICS_ROT_SET,
                            "PLAY_VIBRATION", EDJE_ACTION_TYPE_VIBRATION_SAMPLE,
                            // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
                            "RUN_PLUGIN", EDJE_ACTION_TYPE_RUN_PLUGIN,
 #endif
                            //
@@ -13884,7 +13884,7 @@ st_collections_group_programs_program_action(void)
         ep->duration = parse_float_range(2, 0.1, 10.0);
      }
 // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
   else if (ep->action == EDJE_ACTION_TYPE_RUN_PLUGIN)
      {
         ep->plugin_name = parse_str(1);
@@ -14001,7 +14001,7 @@ st_collections_group_programs_program_action(void)
         check_min_arg_count(2);
         break;
 // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
       case EDJE_ACTION_TYPE_RUN_PLUGIN:
         check_arg_count(2);
         break;

@@ -323,7 +323,7 @@ typedef struct _Edje_Model_Directory                 Edje_Model_Directory;
 typedef struct _Edje_Model_Directory_Entry           Edje_Model_Directory_Entry;
 typedef struct _Edje_Limit                           Edje_Limit;
 // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
 typedef struct _Edje_Plugin                          Edje_Plugin;
 #endif
 //
@@ -551,7 +551,7 @@ struct _Edje_File
 
    Eina_List                      *styles;
    // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
    Eina_List                      *plugins;
 #endif
    //
@@ -705,7 +705,7 @@ struct _Edje_Model_Directory_Entry
 };
 
 // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
 struct _Edje_Plugin /*External Plugin*/
 {
    const char *name;    /* the name of the plugin */
@@ -792,7 +792,7 @@ struct _Edje_Program /* a conditional program to be run */
    const char *sample_name;
    const char *tone_name;
    // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
    const char *plugin_name;
 #endif
    //
@@ -2374,7 +2374,7 @@ EAPI void _edje_edd_shutdown(void);
 EAPI extern Eet_Data_Descriptor *_edje_edd_edje_file;
 EAPI extern Eet_Data_Descriptor *_edje_edd_edje_part_collection;
 // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
 EAPI extern Eet_Data_Descriptor *_edje_edd_edje_plugin;
 #endif
 //
@@ -3099,7 +3099,7 @@ void edje_signal_init(void);
 void edje_signal_shutdown(void);
 
 // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
 typedef Eina_Bool (*Edje_Module_Plugin_Run) (const Evas_Object *obj, const char *name, const char *param);
 #endif
 //
