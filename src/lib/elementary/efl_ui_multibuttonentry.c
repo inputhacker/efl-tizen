@@ -96,7 +96,7 @@ _format_count(int count, void *data EINA_UNUSED)
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_efl_ui_multibuttonentry_elm_widget_theme_apply(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd)
+_efl_ui_multibuttonentry_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd)
 {
    const char *str;
    int hpad = 0, vpad = 0;
@@ -987,7 +987,7 @@ _item_new(Efl_Ui_Multibuttonentry_Data *sd,
 //FIXME: having an empty event handling function and reacting on Evas
 //events on specific objects is crazy, someone should fix that.
 EOLIAN static Eina_Bool
-_efl_ui_multibuttonentry_elm_widget_widget_event(Eo *obj EINA_UNUSED, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, const Efl_Event *eo_event EINA_UNUSED, Evas_Object *src EINA_UNUSED)
+_efl_ui_multibuttonentry_efl_ui_widget_widget_event(Eo *obj EINA_UNUSED, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, const Efl_Event *eo_event EINA_UNUSED, Evas_Object *src EINA_UNUSED)
 {
    // ACCESS
    if (_elm_config->access_mode == ELM_ACCESS_MODE_ON) return EINA_FALSE;
@@ -1742,7 +1742,7 @@ _atspi_obj_process(Evas_Object *obj, Eina_Bool is_atspi)
 //
 
 EOLIAN static void
-_efl_ui_multibuttonentry_elm_widget_on_access_update(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool acs)
+_efl_ui_multibuttonentry_efl_ui_widget_on_access_update(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool acs)
 {
    _efl_ui_multibuttonentry_smart_focus_next_enable = acs;
    _access_obj_process(obj, _efl_ui_multibuttonentry_smart_focus_next_enable);
@@ -1752,7 +1752,7 @@ _efl_ui_multibuttonentry_elm_widget_on_access_update(Eo *obj, Efl_Ui_Multibutton
 //register/unregister access objects accordingly.
 // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_efl_ui_multibuttonentry_elm_widget_screen_reader(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_screen_reader)
+_efl_ui_multibuttonentry_efl_ui_widget_screen_reader(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
    _atspi_obj_process(obj, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
@@ -1778,12 +1778,12 @@ _legacy_focused(void *data, const Efl_Event *ev)
 
    new_focus = efl_ui_focus_manager_focus_get(ev->object);
 
-   if (efl_isa(ev->info, ELM_WIDGET_CLASS) && elm_widget_parent_get(ev->info) == pd->box)
+   if (efl_isa(ev->info, EFL_UI_WIDGET_CLASS) && elm_widget_parent_get(ev->info) == pd->box)
      {
         meaningful_focus_out = EINA_TRUE;
      }
 
-   if (efl_isa(new_focus, ELM_WIDGET_CLASS) && elm_widget_parent_get(new_focus) == pd->box)
+   if (efl_isa(new_focus, EFL_UI_WIDGET_CLASS) && elm_widget_parent_get(new_focus) == pd->box)
      {
         meaningful_focus_in = EINA_TRUE;
      }

@@ -1976,7 +1976,7 @@ _elm_win_focus_skip_set(Efl_Ui_Win_Data *sd, Eina_Bool skip)
 //
 
 EOLIAN static Eina_Bool
-_efl_ui_win_elm_widget_on_focus_update(Eo *obj, Efl_Ui_Win_Data *sd, Elm_Object_Item *item EINA_UNUSED)
+_efl_ui_win_efl_ui_widget_on_focus_update(Eo *obj, Efl_Ui_Win_Data *sd, Elm_Object_Item *item EINA_UNUSED)
 {
    if (!efl_ui_widget_on_focus_update(efl_super(obj, MY_CLASS), NULL))
      return EINA_TRUE;
@@ -6158,7 +6158,7 @@ _efl_ui_win_efl_canvas_object_legacy_ctor(Eo *obj, Efl_Ui_Win_Data *sd)
 }
 
 EOLIAN static Efl_Ui_Focus_Manager*
-_efl_ui_win_elm_widget_focus_manager_create(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *pd EINA_UNUSED, Efl_Ui_Focus_Object *root)
+_efl_ui_win_efl_ui_widget_focus_manager_create(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *pd EINA_UNUSED, Efl_Ui_Focus_Object *root)
 {
    Efl_Ui_Focus_Manager *manager;
 
@@ -7294,7 +7294,7 @@ _efl_ui_win_keygrab_unset(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, const char *
 }
 
 EOLIAN static void
-_efl_ui_win_elm_widget_focus_highlight_enabled_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, Eina_Bool enabled)
+_efl_ui_win_efl_ui_widget_focus_highlight_enabled_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, Eina_Bool enabled)
 {
    // Do not call efl_super() here. Only Win handles this property.
    enabled = !!enabled;
@@ -7310,7 +7310,7 @@ _efl_ui_win_elm_widget_focus_highlight_enabled_set(Eo *obj EINA_UNUSED, Efl_Ui_W
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_win_elm_widget_focus_highlight_enabled_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd)
+_efl_ui_win_efl_ui_widget_focus_highlight_enabled_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd)
 {
    // Do not call efl_super() here. Only Win handles this property.
    return sd->focus_highlight.enabled;
@@ -7346,7 +7346,7 @@ _elm_win_theme_internal(Eo *obj, Efl_Ui_Win_Data *sd)
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_efl_ui_win_elm_widget_theme_apply(Eo *obj, Efl_Ui_Win_Data *sd)
+_efl_ui_win_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Win_Data *sd)
 {
    Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
@@ -7362,7 +7362,7 @@ _efl_ui_win_elm_widget_theme_apply(Eo *obj, Efl_Ui_Win_Data *sd)
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_win_elm_widget_focus_highlight_style_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, const char *style)
+_efl_ui_win_efl_ui_widget_focus_highlight_style_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, const char *style)
 {
    // Do not call efl_super() here. Only Win handles this property.
    if (!eina_stringshare_replace(&sd->focus_highlight.style, style))
@@ -7374,14 +7374,14 @@ _efl_ui_win_elm_widget_focus_highlight_style_set(Eo *obj EINA_UNUSED, Efl_Ui_Win
 }
 
 EOLIAN static const char*
-_efl_ui_win_elm_widget_focus_highlight_style_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd)
+_efl_ui_win_efl_ui_widget_focus_highlight_style_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd)
 {
    // Do not call efl_super() here. Only Win handles this property.
    return sd->focus_highlight.style;
 }
 
 EOLIAN static void
-_efl_ui_win_elm_widget_focus_highlight_animate_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, Eina_Bool animate)
+_efl_ui_win_efl_ui_widget_focus_highlight_animate_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, Eina_Bool animate)
 {
    // Do not call efl_super() here. Only Win handles this property.
    animate = !!animate;
@@ -7394,7 +7394,7 @@ _efl_ui_win_elm_widget_focus_highlight_animate_set(Eo *obj EINA_UNUSED, Efl_Ui_W
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_win_elm_widget_focus_highlight_animate_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd)
+_efl_ui_win_efl_ui_widget_focus_highlight_animate_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd)
 {
    // Do not call efl_super() here. Only Win handles this property.
    return sd->focus_highlight.animate;
@@ -7794,7 +7794,7 @@ _elm_win_bg_must_swallow(Efl_Ui_Win_Data *sd)
         sd->legacy.bg_must_swallow_init = 1;
 
         bg = elm_bg_add(sd->obj);
-        wd = efl_data_scope_get(bg, ELM_WIDGET_CLASS);
+        wd = efl_data_scope_get(bg, EFL_UI_WIDGET_CLASS);
         if (wd)
           {
              version = edje_object_data_get(wd->resize_obj, "version");
@@ -8884,7 +8884,7 @@ static void _elm_win_accessibility_highlight_callbacks_del(Efl_Ui_Win_Data *sd)
 
    evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _elm_win_accessibility_highlight_obj_del, sd->obj);
 
-   if (efl_isa(obj, ELM_WIDGET_CLASS) && elm_widget_access_highlight_in_theme_get(obj))
+   if (efl_isa(obj, EFL_UI_WIDGET_CLASS) && elm_widget_access_highlight_in_theme_get(obj))
       return;
 
    evas_object_event_callback_del_full(obj, EVAS_CALLBACK_MOVE, _elm_win_accessibility_highlight_obj_move, sd->obj);

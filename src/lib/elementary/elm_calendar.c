@@ -993,7 +993,7 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_elm_calendar_elm_widget_theme_apply(Eo *obj, Elm_Calendar_Data *sd)
+_elm_calendar_efl_ui_widget_theme_apply(Eo *obj, Elm_Calendar_Data *sd)
 {
    Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
 
@@ -1520,7 +1520,7 @@ _key_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
 }
 
 EOLIAN static Eina_Bool
-_elm_calendar_elm_widget_on_focus_update(Eo *obj, Elm_Calendar_Data *sd, Elm_Object_Item *item EINA_UNUSED)
+_elm_calendar_efl_ui_widget_on_focus_update(Eo *obj, Elm_Calendar_Data *sd, Elm_Object_Item *item EINA_UNUSED)
 {
    Eina_Bool int_ret = EINA_FALSE;
 
@@ -1727,7 +1727,7 @@ _access_obj_process(Evas_Object *obj, Eina_Bool is_access)
 }
 
 EOLIAN static void
-_elm_calendar_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Calendar_Data *_pd EINA_UNUSED, Eina_Bool acs)
+_elm_calendar_efl_ui_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Calendar_Data *_pd EINA_UNUSED, Eina_Bool acs)
 {
    _elm_calendar_smart_focus_next_enable = acs;
    _access_obj_process(obj, _elm_calendar_smart_focus_next_enable);
@@ -1737,7 +1737,7 @@ _elm_calendar_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Calendar_Data
 //register/unregister access objects accordingly.
 // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_calendar_elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Calendar_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader)
+_elm_calendar_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Calendar_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
    _atspi_expose_objects(obj, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback

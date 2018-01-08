@@ -546,7 +546,7 @@ _populate_theme_scroll(Elm_Popup_Data *sd)
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_elm_popup_elm_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
+_elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
 {
    Elm_Popup_Item_Data *it;
    Eina_List *elist;
@@ -804,7 +804,7 @@ _elm_popup_efl_layout_signal_signal_emit(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd
 }
 
 EOLIAN static Eina_Bool
-_elm_popup_elm_widget_widget_sub_object_del(Eo *obj, Elm_Popup_Data *sd, Evas_Object *sobj)
+_elm_popup_efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Popup_Data *sd, Evas_Object *sobj)
 {
    Elm_Popup_Item_Data *it;
    Eina_Bool int_ret = EINA_FALSE;
@@ -1930,7 +1930,7 @@ _key_action_escape(Evas_Object *obj, const char *params EINA_UNUSED)
 
 //TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
 EOLIAN static Evas_Object*
-_elm_popup_elm_widget_part_access_object_get(const Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, const char *part)
+_elm_popup_efl_ui_widget_part_access_object_get(const Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, const char *part)
 {
    return _access_object_get(obj, part);
 }
@@ -2109,7 +2109,7 @@ _parent_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_i
 }
 
 EOLIAN static void
-_elm_popup_elm_widget_widget_parent_set(Eo *obj, Elm_Popup_Data *sd, Evas_Object *parent)
+_elm_popup_efl_ui_widget_widget_parent_set(Eo *obj, Elm_Popup_Data *sd, Evas_Object *parent)
 {
    Evas_Coord x, y, w, h;
    evas_object_geometry_get(parent, &x, &y, &w, &h);
@@ -2128,7 +2128,7 @@ _elm_popup_elm_widget_widget_parent_set(Eo *obj, Elm_Popup_Data *sd, Evas_Object
 }
 
 EOLIAN static void
-_elm_popup_elm_widget_on_access_update(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_access)
+_elm_popup_efl_ui_widget_on_access_update(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_access)
 {
    _access_obj_process(obj, is_access);
 }
@@ -2137,7 +2137,7 @@ _elm_popup_elm_widget_on_access_update(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED,
 //register/unregister access objects accordingly.
 // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_popup_elm_widget_screen_reader(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader)
+_elm_popup_efl_ui_widget_screen_reader(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
    _atspi_expose_title(obj, is_screen_reader);
    //TIZEN_ONLY(20170314): expose part-text as at-spi object
@@ -2149,7 +2149,7 @@ _elm_popup_elm_widget_screen_reader(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Ei
 }
 
 EOLIAN static void
-_elm_popup_elm_widget_atspi(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
+_elm_popup_efl_ui_widget_atspi(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bool is_atspi)
 {
    Efl_Access_State_Set ss;
 

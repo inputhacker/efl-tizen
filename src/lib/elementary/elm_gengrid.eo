@@ -548,16 +548,16 @@ class Elm.Gengrid (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
       Efl.Gfx.position { set; }
       Efl.Gfx.size { set; }
       Efl.Canvas.Group.group_member_add;
-      Elm.Widget.theme_apply;
-      Elm.Widget.on_access_update;
-      Elm.Widget.interest_region { get; }
-      Elm.Widget.widget_event;
-      Elm.Widget.focus_highlight_geometry { get; }
-      Elm.Widget.focused_item { get; }
+      Efl.Ui.Widget.theme_apply;
+      Efl.Ui.Widget.on_access_update;
+      Efl.Ui.Widget.interest_region { get; }
+      Efl.Ui.Widget.widget_event;
+      Efl.Ui.Widget.focus_highlight_geometry { get; }
+      Efl.Ui.Widget.focused_item { get; }
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
       //register/unregister access objects accordingly.
       // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
-      Elm.Widget.screen_reader;
+      Efl.Ui.Widget.screen_reader;
       //
       //
       Elm.Interface_Scrollable.item_loop_enabled { get; set; }
@@ -575,7 +575,7 @@ class Elm.Gengrid (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
       Efl.Access.Selection.all_children_select;
       Efl.Access.Selection.clear;
       Efl.Ui.Focus.Composition.prepare;
-      Elm.Widget.focus_state_apply;
+      Efl.Ui.Widget.focus_state_apply;
       Efl.Ui.Focus.Manager.setup_on_first_touch;
       //TIZEN ONLY (20151009) : Accessibility: updated highlight change during gengrid scroll
       Elm.Interface_Scrollable.content_pos_set;

@@ -166,7 +166,7 @@ _elm_atspi_proxy_socket_list_get(void)
 }
 
 EOLIAN static void
-_elm_atspi_proxy_elm_widget_atspi(Eo *obj, Elm_Atspi_Proxy_Data *_pd, Eina_Bool is_atspi)
+_elm_atspi_proxy_efl_ui_widget_atspi(Eo *obj, Elm_Atspi_Proxy_Data *_pd, Eina_Bool is_atspi)
 {
    EINA_SAFETY_ON_NULL_RETURN(obj);
    if (is_atspi && _pd->type == ELM_ATSPI_PROXY_TYPE_PLUG)

@@ -385,7 +385,7 @@ _item_new(Evas_Object *obj,
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_elm_flipselector_elm_widget_theme_apply(Eo *obj, Elm_Flipselector_Data *sd)
+_elm_flipselector_efl_ui_widget_theme_apply(Eo *obj, Elm_Flipselector_Data *sd)
 {
    const char *max_len;
 
@@ -748,7 +748,7 @@ _atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd, Eina_Bool is_sc
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
 EOLIAN static void
-_elm_flipselector_elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, Eina_Bool is_screen_reader)
+_elm_flipselector_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, Eina_Bool is_screen_reader)
 {
    _atspi_expose_flipselector_top_bottom(sd, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback

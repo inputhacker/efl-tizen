@@ -69,7 +69,7 @@ static const Elm_Action key_actions[] = {
 };
 
 EOLIAN static void
-_elm_naviframe_elm_widget_resize_object_set(Eo *obj, Elm_Naviframe_Data *pd EINA_UNUSED,
+_elm_naviframe_efl_ui_widget_resize_object_set(Eo *obj, Elm_Naviframe_Data *pd EINA_UNUSED,
                                             Efl_Canvas_Object *sobj)
 {
    if (!sobj || !efl_finalized_get(obj)) goto super;
@@ -427,7 +427,7 @@ _item_title_enabled_update(Elm_Naviframe_Item_Data *nit, Eina_Bool transition)
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_elm_naviframe_elm_widget_theme_apply(Eo *obj, Elm_Naviframe_Data *sd)
+_elm_naviframe_efl_ui_widget_theme_apply(Eo *obj, Elm_Naviframe_Data *sd)
 {
    Elm_Naviframe_Item_Data *it;
    const char *style = NULL, *sstyle = NULL;
@@ -1442,7 +1442,7 @@ _on_obj_size_hints_changed(void *data EINA_UNUSED, Evas *e EINA_UNUSED,
 
 //TIZEN_ONLY(20161208): add API elm_object_part_access_object_get
 EOLIAN static Evas_Object*
-_elm_naviframe_elm_widget_part_access_object_get(const Eo *obj, Elm_Naviframe_Data *_pd EINA_UNUSED, const char *part)
+_elm_naviframe_efl_ui_widget_part_access_object_get(const Eo *obj, Elm_Naviframe_Data *_pd EINA_UNUSED, const char *part)
 {
    Elm_Object_Item *eo_top_it = NULL;
    eo_top_it = elm_naviframe_top_item_get(obj);
@@ -1589,7 +1589,7 @@ _key_action_item_pop(Evas_Object *obj, const char *params EINA_UNUSED)
 }
 
 EOLIAN static void
-_elm_naviframe_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Naviframe_Data *sd, Eina_Bool is_access)
+_elm_naviframe_efl_ui_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Naviframe_Data *sd, Eina_Bool is_access)
 {
    Elm_Naviframe_Item_Data *it;
 
@@ -1601,7 +1601,7 @@ _elm_naviframe_elm_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Naviframe_Da
 //register/unregister access objects accordingly.
 // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_naviframe_elm_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Naviframe_Data *sd, Eina_Bool is_screen_reader)
+_elm_naviframe_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Naviframe_Data *sd, Eina_Bool is_screen_reader)
 {
    Elm_Naviframe_Item_Data *it;
 

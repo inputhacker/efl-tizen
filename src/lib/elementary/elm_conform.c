@@ -317,7 +317,7 @@ _atspi_expose_keypad_area(Evas_Object *obj, Eina_Bool is_atspi)
 //register/unregister access objects accordingly.
 // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_elm_conformant_elm_widget_screen_reader(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader)
+_elm_conformant_efl_ui_widget_screen_reader(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
    _atspi_expose_keypad_area(obj, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
@@ -688,7 +688,7 @@ _on_rotation_changed(void *data, const Efl_Event *event EINA_UNUSED)
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_elm_conformant_elm_widget_theme_apply(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED)
+_elm_conformant_efl_ui_widget_theme_apply(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED)
 {
    Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
 
@@ -1095,7 +1095,7 @@ _elm_conformant_efl_canvas_group_group_del(Eo *obj, Elm_Conformant_Data *sd)
 }
 
 EOLIAN static void
-_elm_conformant_elm_widget_widget_parent_set(Eo *obj, Elm_Conformant_Data *sd, Evas_Object *parent)
+_elm_conformant_efl_ui_widget_widget_parent_set(Eo *obj, Elm_Conformant_Data *sd, Evas_Object *parent)
 {
 #ifdef HAVE_ELEMENTARY_X
    Evas_Object *top = elm_widget_top_get(parent);

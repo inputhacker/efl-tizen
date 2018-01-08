@@ -4,7 +4,7 @@ enum Elm.Atspi.Proxy_Type
    PLUG
 }
 
-class Elm.Atspi.Proxy (Elm.Widget)
+class Elm.Atspi.Proxy (Efl.Ui.Widget)
 {
    eo_prefix: elm_obj_atspi_proxy;
    event_prefix: elm_atspi_proxy;
@@ -43,7 +43,7 @@ class Elm.Atspi.Proxy (Elm.Widget)
       Efl.Object.destructor;
       Efl.Access.children { get; }
       Efl.Access.parent { get; }
-      Elm.Widget.atspi;
+      Efl.Ui.Widget.atspi;
    }
    events {
       connected;
