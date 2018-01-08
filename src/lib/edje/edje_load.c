@@ -1825,7 +1825,7 @@ _edje_file_free(Edje_File *edf)
      }
 
    // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
    Edje_Plugin *plugin;
    EINA_LIST_FREE(edf->plugins, plugin)
      {
@@ -1902,7 +1902,7 @@ _edje_program_free(Edje_Program *pr, Eina_Bool free_strings)
         if (pr->sample_name) eina_stringshare_del(pr->sample_name);
         if (pr->tone_name) eina_stringshare_del(pr->tone_name);
         // TIZEN_ONLY(20150110): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
         if (pr->plugin_name) eina_stringshare_del(pr->plugin_name);
 #endif
         //
