@@ -728,27 +728,6 @@ typedef struct _Ecore_Wl2_Surface
      } funcs;
 } Ecore_Wl2_Surface;
 
-// TIZEN_ONLY(20171107): support a tizen_keyrouter interface
-typedef struct _Ecore_Wl2_Keygrab_Info
-{
-   int key;
-   int mode;
-   int err;
-} Ecore_Wl2_Keygrab_Info;
-
-typedef struct _Ecore_Wl2_Keyungrab_Info
-{
-   int key;
-   int err;
-} Ecore_Wl2_Keyungrab_Info;
-
-typedef struct _Ecore_Wl2_Window_Keygrab_Info
-{
-   char *key;
-   Ecore_Wl2_Window_Keygrab_Mode mode;
-} Ecore_Wl2_Window_Keygrab_Info;
-//
-
 Ecore_Wl2_Window *_ecore_wl2_display_window_surface_find(Ecore_Wl2_Display *display, struct wl_surface *wl_surface);
 void _display_event_free(void *d, void *event EINA_UNUSED);
 

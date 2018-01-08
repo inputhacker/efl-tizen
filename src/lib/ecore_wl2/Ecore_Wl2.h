@@ -528,6 +528,25 @@ typedef enum _Ecore_Wl2_Window_Keygrab_Mode
    ECORE_WL2_WINDOW_KEYGRAB_OVERRIDE_EXCLUSIVE = 3, /**< Getting the grabbed-key exclusively regardless of window's position. Being overrided the grab by the other client window  */
    ECORE_WL2_WINDOW_KEYGRAB_EXCLUSIVE = 4 /**< Getting the grabbed-key exclusively regardless of window's position */
 } Ecore_Wl2_Window_Keygrab_Mode;
+
+typedef struct _Ecore_Wl2_Keygrab_Info
+{
+   int key;
+   int mode;
+   int err;
+} Ecore_Wl2_Keygrab_Info;
+
+typedef struct _Ecore_Wl2_Keyungrab_Info
+{
+   int key;
+   int err;
+} Ecore_Wl2_Keyungrab_Info;
+
+typedef struct _Ecore_Wl2_Window_Keygrab_Info
+{
+   char *key;
+   Ecore_Wl2_Window_Keygrab_Mode mode;
+} Ecore_Wl2_Window_Keygrab_Info;
 //
 
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
