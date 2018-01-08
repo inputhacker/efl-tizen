@@ -2280,6 +2280,33 @@ ecore_wl_clipboard_data_only_set(Eina_Bool data_only)
    return _ecore_wl_disp->input->is_data_only;
 }
 
+//TIZEN_ONLY(20180108): add keyboard repeat info set/get API.
+EAPI Eina_Bool
+ecore_wl_keyboard_repeat_info_set(double rate, double delay)
+{
+   if (!_ecore_wl_disp) return EINA_FALSE;
+   if (!_ecore_wl_disp->input) return EINA_FALSE;
+
+   _ecore_wl_disp->input->repeat.changed = EINA_TRUE;
+   _ecore_wl_disp->input->repeat.rate = rate;
+   _ecore_wl_disp->input->repeat.delay = delay;
+
+   return EINA_TRUE;
+}
+
+EAPI Eina_Bool
+ecore_wl_keyboard_repeat_info_get(double *rate, double *delay)
+{
+   if (!_ecore_wl_disp) return EINA_FALSE;
+   if (!_ecore_wl_disp->input) return EINA_FALSE;
+
+   if (rate) *rate = _ecore_wl_disp->input->repeat.rate;
+   if (delay) *delay = _ecore_wl_disp->input->repeat.delay;
+
+   return EINA_TRUE;
+}
+//
+
 static void
 _ecore_wl_cb_clipboard_data_selected(void *data EINA_UNUSED, struct tizen_clipboard *tizen_clipboard EINA_UNUSED, struct wl_surface *surface)
 {

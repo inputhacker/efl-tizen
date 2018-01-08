@@ -346,6 +346,9 @@ struct _Ecore_Wl_Input
         unsigned int sym, key, time;
         double rate, delay;
         Eina_Bool enabled : 1;
+        //TIZEN_ONLY(20180108): add keyboard repeat info set/get API.
+        Eina_Bool changed : 1;
+        //
      } repeat;
 
    unsigned int seat_version;
