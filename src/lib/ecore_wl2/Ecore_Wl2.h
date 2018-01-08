@@ -24,9 +24,9 @@
 #  define EAPI
 # endif
 
-/* # ifdef __cplusplus */
-/* extern "C" { */
-/* # endif */
+# ifdef __cplusplus
+extern "C" {
+# endif
 
 # ifdef EFL_BETA_API_SUPPORT
 
@@ -433,13 +433,12 @@ typedef struct Ecore_Wl2_Event_Aux_Message
 
 typedef struct _Ecore_Wl2_Buffer Ecore_Wl2_Buffer;
 
-typedef enum _Ecore_Wl2_Buffer_Type Ecore_Wl2_Buffer_Type;
-enum _Ecore_Wl2_Buffer_Type
+typedef enum _Ecore_Wl2_Buffer_Type
 {
    ECORE_WL2_BUFFER_NONE = 0,
    ECORE_WL2_BUFFER_SHM = 1,
    ECORE_WL2_BUFFER_DMABUF = 2
-};
+} Ecore_Wl2_Buffer_Type;
 
 // TIZEN_ONLY(20171107): added wl evet structures from ecore_wayland to ecore_wl2
 typedef struct _Ecore_Wl2_Event_Window_Visibility_Change
@@ -2331,8 +2330,8 @@ EAPI Eina_Bool ecore_wl2_window_ignore_output_transform_get(Ecore_Wl2_Window *wi
 # undef EAPI
 # define EAPI
 
-/* # ifdef __cplusplus */
-/* } */
-/* # endif */
+# ifdef __cplusplus
+}
+# endif
 
 #endif
