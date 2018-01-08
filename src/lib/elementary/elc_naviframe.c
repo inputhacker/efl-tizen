@@ -1373,6 +1373,14 @@ _item_new(Evas_Object *obj,
         const char *prev_title = prev_it->title_label;
         prev_btn = _back_btn_new(obj, prev_title);
         it->auto_pushed_btn = prev_btn;
+
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        _elm_widget_color_class_parent_set(it->auto_pushed_btn, VIEW(it));
+        /*******
+         * END *
+         *******/
      }
 
    if (prev_btn)

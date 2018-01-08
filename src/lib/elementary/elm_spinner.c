@@ -648,6 +648,14 @@ _toggle_entry(Evas_Object *obj)
                elm_entry_markup_filter_append(sd->ent, _min_max_validity_filter, obj);
              efl_event_callback_add
                 (sd->ent, ELM_ENTRY_EVENT_ACTIVATED, _entry_activated_cb, obj);
+
+             /***********************************************************************************
+              * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+              ***********************************************************************************/
+             _elm_widget_color_class_parent_set(sd->ent, obj);
+             /*******
+              * END *
+              *******/
           }
         if (!sd->button_layout)
           {
@@ -1249,6 +1257,16 @@ _elm_spinner_efl_canvas_group_group_add(Eo *obj, Elm_Spinner_Data *priv)
 
            efl_ui_focus_composition_elements_set(obj, items);
         }
+
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        _elm_widget_color_class_parent_set(priv->inc_button, obj);
+        _elm_widget_color_class_parent_set(priv->text_button, obj);
+        _elm_widget_color_class_parent_set(priv->dec_button, obj);
+        /*******
+         * END *
+         *******/
      }
    else
      {

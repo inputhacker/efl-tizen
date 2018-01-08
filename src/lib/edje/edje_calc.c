@@ -2655,8 +2655,17 @@ _edje_part_recalc_single(Edje *ed,
    /* colors */
    if (ep->part->type != EDJE_PART_TYPE_SPACER)
      {
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************
         if ((desc->color_class) && (*desc->color_class))
           cc = _edje_color_class_recursive_find(ed, desc->color_class);
+         */
+        if ((desc->color_class) && (*desc->color_class))
+          cc = _edje_color_class_recursive_find(ed, ed->file, desc->color_class);
+        /*******
+         * END *
+         *******/
 
         if (cc)
           {

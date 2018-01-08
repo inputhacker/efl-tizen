@@ -1080,6 +1080,15 @@ _elm_ctxpopup_efl_canvas_group_group_add(Eo *obj, Elm_Ctxpopup_Data *priv)
      (obj, priv->arrow, "ctxpopup", "arrow", "default");
    evas_object_smart_member_add(priv->arrow, obj);
 
+   /***********************************************************************************
+	* TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+	***********************************************************************************/
+   _elm_widget_color_class_parent_set(priv->bg, obj);
+   _elm_widget_color_class_parent_set(priv->arrow, obj);
+   /*******
+	* END *
+	*******/
+
    priv->dir_priority[0] = ELM_CTXPOPUP_DIRECTION_UP;
    priv->dir_priority[1] = ELM_CTXPOPUP_DIRECTION_LEFT;
    priv->dir_priority[2] = ELM_CTXPOPUP_DIRECTION_RIGHT;
@@ -1561,6 +1570,14 @@ _elm_ctxpopup_item_init(Eo *eo_item,
         evas_object_event_callback_add
           (sd->list, EVAS_CALLBACK_RESIZE, _list_resize_cb, obj);
         elm_layout_content_set(obj, "default", sd->list);
+
+		/***********************************************************************************
+		 * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+		 ***********************************************************************************/
+        _elm_widget_color_class_parent_set(sd->list, obj);
+		/*******
+		 * END *
+		 *******/
      }
 
    item->wcb.org_func_cb = func;

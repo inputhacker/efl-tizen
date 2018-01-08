@@ -1007,6 +1007,15 @@ _create_scroller(Evas_Object *obj)
 
    //Scroller
    sd->scr = elm_scroller_add(sd->tbl);
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(sd->scr, obj);
+   /*******
+    * END *
+    *******/
+
    /* TIZEN_ONLY(20160318): Support legacy group and swallow part names
    if (!sd->scroll)
      {
@@ -1410,6 +1419,13 @@ _content_text_set(Evas_Object *obj,
    if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_SUCCESS)
      elm_widget_style_set(sd->text_content_obj, "popup/default");
    /* END */
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(sd->text_content_obj, obj);
+   /*******
+    * END *
+    *******/
 
    evas_object_event_callback_add
      (sd->text_content_obj, EVAS_CALLBACK_DEL, _on_text_content_del, obj);
@@ -1646,6 +1662,14 @@ _action_button_set(Evas_Object *obj,
         efl_content_set(efl_part(sd->main_layout, "elm.swallow.action_area"), sd->action_area);
 
         _visuals_set(obj);
+
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        _elm_widget_color_class_parent_set(sd->action_area, obj);
+        /*******
+         * END *
+         *******/
      }
 
    /* TIZEN_ONLY(20161109): check theme compatibility more precise
@@ -1935,6 +1959,14 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
 
    priv->notify = elm_notify_add(obj);
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(priv->notify, obj);
+   /*******
+    * END *
+    *******/
+
    /* TIZEN_ONLY(20161109): check theme compatibility more precise */
    elm_notify_align_set(priv->notify,
                         _elm_config->popup_horizontal_align,
@@ -1989,6 +2021,14 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
                              elm_widget_style_get(obj)))
      CRI("Failed to set layout!");
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(priv->main_layout, obj);
+   /*******
+    * END *
+    *******/
+
    elm_object_content_set(priv->notify, priv->main_layout);
 
    evas_object_event_callback_add(obj, EVAS_CALLBACK_SHOW, _on_show, NULL);
@@ -2005,6 +2045,15 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
      (priv->main_layout, "elm,state,action_area,hidden", "elm", _layout_change_cb, NULL);
 
    priv->content_area = elm_layout_add(priv->main_layout);
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(priv->content_area, obj);
+   /*******
+    * END *
+    *******/
+
    /* TIZEN_ONLY(20161109): check theme compatibility more precise
    if (!elm_layout_theme_set(priv->content_area, "popup", "content", style))
      CRI("Failed to set layout!");

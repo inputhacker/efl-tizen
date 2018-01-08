@@ -61,6 +61,45 @@ static void      _edje_child_remove(Edje *ed, Edje_Real_Part *rp, Evas_Object *c
 
 Edje_Real_Part  *_edje_real_part_recursive_get_helper(Edje **ed, char **path);
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+static void
+_edje_color_class_children_update(Edje *ed, const char *color_class)
+{
+   Evas_Object *child;
+   Eina_List *l;
+
+   if (!ed) return;
+
+   EINA_LIST_FOREACH(ed->cc_children, l, child)
+     {
+        Edje *cc_child_ed = _edje_fetch(child);
+
+        if (!cc_child_ed) continue;
+
+        cc_child_ed->dirty = EINA_TRUE;
+        cc_child_ed->recalc_call = EINA_TRUE;
+#ifdef EDJE_CALC_CACHE
+        cc_child_ed->all_part_change = EINA_TRUE;
+#endif
+        if (color_class)
+          {
+             _edje_textblock_styles_color_class_cache_free(cc_child_ed, color_class);
+             _edje_textblock_style_all_update(cc_child_ed, EINA_FALSE);
+          }
+        else
+          {
+             _edje_textblock_style_all_update(cc_child_ed, EINA_TRUE);
+          }
+
+        _edje_recalc(cc_child_ed);
+     }
+}
+/*******
+ * END *
+ *******/
+
 static Edje_User_Defined *
 _edje_user_definition_new(Edje_User_Defined_Type type, const char *part, Edje *ed)
 {
@@ -662,8 +701,22 @@ _edje_global_efl_gfx_color_class_color_class_set(Eo *obj EINA_UNUSED, void *pd E
 
    int_ret = _edje_color_class_set_internal(_edje_color_class_hash, color_class, layer, r, g, b, a, &need_update);
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************
    if ((int_ret) && (need_update))
      efl_observable_observers_update(_edje_color_class_member, color_class, "color_class,set");
+    */
+   if ((int_ret) && (need_update))
+     {
+        _edje_file_textblock_styles_color_class_cache_free(color_class);
+        _edje_file_textblock_styles_cache_update();
+
+        efl_observable_observers_update(_edje_color_class_member, color_class, "color_class,set");
+     }
+   /*******
+    * END *
+    *******/
 
    return int_ret;
 }
@@ -713,6 +766,15 @@ _edje_global_efl_gfx_color_class_color_class_del(Eo *obj EINA_UNUSED, void *pd E
    eina_hash_del(_edje_color_class_hash, color_class, cc);
    eina_stringshare_del(cc->name);
    free(cc);
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _edje_file_textblock_styles_color_class_cache_free(color_class);
+   _edje_file_textblock_styles_cache_update();
+   /*******
+    * END *
+    *******/
 
    efl_observable_observers_update(_edje_color_class_member, color_class, "color_class,del");
 }
@@ -867,8 +929,25 @@ _efl_canvas_layout_efl_gfx_color_class_color_class_set(Eo *obj EINA_UNUSED, Edje
                                        color_class, layer, r, g, b, a);
           }
 
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        _edje_textblock_styles_color_class_cache_free(ed, color_class);
+        _edje_textblock_style_all_update(ed, EINA_FALSE);
+        /*******
+         * END *
+         *******/
+
         _edje_recalc(ed);
         _edje_emit(ed, "color_class,set", color_class);
+
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        _edje_color_class_children_update(ed, color_class);
+        /*******
+         * END *
+         *******/
      }
 
    return int_ret;
@@ -926,6 +1005,16 @@ _efl_canvas_layout_efl_gfx_color_class_color_class_del(Eo *obj EINA_UNUSED, Edje
 
    if (!color_class) return;
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   /* _edje_textblock_styles_color_class_cache_free() should be called before
+    * deleting color_class from the hash. */
+   _edje_textblock_styles_color_class_cache_free(ed, color_class);
+   /*******
+    * END *
+    *******/
+
    eina_hash_del(ed->color_classes, color_class, cc);
 
    for (i = 0; i < ed->table_parts_size; i++)
@@ -945,8 +1034,25 @@ _efl_canvas_layout_efl_gfx_color_class_color_class_del(Eo *obj EINA_UNUSED, Edje
 #ifdef EDJE_CALC_CACHE
    ed->all_part_change = EINA_TRUE;
 #endif
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _edje_textblock_style_all_update(ed, EINA_FALSE);
+   /*******
+    * END *
+    *******/
+
    _edje_recalc(ed);
    _edje_emit(ed, "color_class,del", color_class);
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _edje_color_class_children_update(ed, color_class);
+   /*******
+    * END *
+    *******/
 }
 
 EAPI Eina_Bool
@@ -989,6 +1095,15 @@ _efl_canvas_layout_efl_gfx_color_class_color_class_clear(Eo *obj EINA_UNUSED, Ed
 #ifdef EDJE_CALC_CACHE
    ed->all_part_change = EINA_TRUE;
 #endif
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _edje_textblock_style_all_update(ed, EINA_TRUE);
+   /*******
+    * END *
+    *******/
+
    _edje_recalc(ed);
 
    EINA_LIST_FREE(fdata.list, color_class)
@@ -996,6 +1111,14 @@ _efl_canvas_layout_efl_gfx_color_class_color_class_clear(Eo *obj EINA_UNUSED, Ed
         _edje_emit(ed, "color_class,del", color_class);
         free(color_class);
      }
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _edje_color_class_children_update(ed, NULL);
+   /*******
+    * END *
+    *******/
 }
 
 typedef struct _Edje_File_Color_Class_Iterator Edje_File_Color_Class_Iterator;
@@ -1117,6 +1240,15 @@ _edje_global_efl_gfx_text_class_text_class_set(Eo *obj EINA_UNUSED, void *pd EIN
         tc->size = size;
      }
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _edje_file_textblock_styles_text_class_cache_free(text_class);
+   _edje_file_textblock_styles_cache_update();
+   /*******
+    * END *
+    *******/
+
    /* Tell all members of the text class to recalc */
    efl_observable_observers_update(_edje_text_class_member, text_class, NULL);
 
@@ -1174,6 +1306,15 @@ _edje_global_efl_gfx_text_class_text_class_del(Eo *obj EINA_UNUSED, void *pd EIN
    eina_stringshare_del(tc->name);
    eina_stringshare_del(tc->font);
    free(tc);
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _edje_file_textblock_styles_text_class_cache_free(text_class);
+   _edje_file_textblock_styles_cache_update();
+   /*******
+    * END *
+    *******/
 
    efl_observable_observers_update(_edje_text_class_member, text_class, NULL);
 }
@@ -5425,6 +5566,9 @@ _edje_hash_find_helper(const Eina_Hash *hash, const char *key)
    return data;
 }
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************
 Edje_Color_Class *
 _edje_color_class_find(const Edje *ed, const char *color_class)
 {
@@ -5432,8 +5576,58 @@ _edje_color_class_find(const Edje *ed, const char *color_class)
 
    if ((!ed) || (!color_class)) return NULL;
 
-   /* first look through the object scope */
+   // first look through the object scope //
    cc = eina_hash_find(ed->color_classes, color_class);
+   if (cc) return cc;
+
+   // next look through the global scope //
+   cc = eina_hash_find(_edje_color_class_hash, color_class);
+   if (cc) return cc;
+
+   // finally, look through the file scope //
+   if (ed->file)
+     cc = eina_hash_find(ed->file->color_hash, color_class);
+   if (cc) return cc;
+
+   return NULL;
+}
+ */
+/* Get Edje_Color_Class from the most near ancestor */
+static Edje_Color_Class *
+_edje_color_class_parent_find(const Edje *ed, const char *color_class,
+                              void *(*hash_find_func)(const Eina_Hash *hash, const void *key))
+{
+   Edje *cc_parent_ed;
+   Edje_Color_Class *cc = NULL;
+
+   if (!ed || !color_class || !hash_find_func) return NULL;
+
+   cc_parent_ed = _edje_fetch(ed->cc_parent);
+
+   while(cc_parent_ed)
+     {
+        cc = hash_find_func(cc_parent_ed->color_classes, color_class);
+        if (cc) return cc;
+
+        cc_parent_ed = _edje_fetch(cc_parent_ed->cc_parent);
+     }
+
+   return NULL;
+}
+
+Edje_Color_Class *
+_edje_color_class_find(const Edje *ed, const char *color_class)
+{
+   Edje_Color_Class *cc = NULL;
+
+   if (!color_class) return NULL;
+
+   /* first look through the object scope */
+   if (ed) cc = eina_hash_find(ed->color_classes, color_class);
+   if (cc) return cc;
+
+   /* next look through the color class parent scope */
+   if (ed) cc = _edje_color_class_parent_find(ed, color_class, eina_hash_find);
    if (cc) return cc;
 
    /* next look through the global scope */
@@ -5441,12 +5635,15 @@ _edje_color_class_find(const Edje *ed, const char *color_class)
    if (cc) return cc;
 
    /* finally, look through the file scope */
-   if (ed->file)
+   if (ed && ed->file)
      cc = eina_hash_find(ed->file->color_hash, color_class);
    if (cc) return cc;
 
    return NULL;
 }
+/*******
+ * END *
+ *******/
 
 Edje_Color_Class *
 _edje_color_class_recursive_find_helper(const Edje *ed, Eina_Hash *hash, const char *color_class)
@@ -5457,7 +5654,15 @@ _edje_color_class_recursive_find_helper(const Edje *ed, Eina_Hash *hash, const c
 
    cc = _edje_hash_find_helper(hash, color_class);
    if (cc) return cc;
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************
    else if (ed->file)
+    */
+   else if (ed && ed->file)
+   /*******
+    * END *
+    *******/
      {
         parent = color_class;
         while ((ctn = eina_hash_find(ed->file->color_tree_hash, parent)))
@@ -5470,6 +5675,9 @@ _edje_color_class_recursive_find_helper(const Edje *ed, Eina_Hash *hash, const c
    return NULL;
 }
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************
 Edje_Color_Class *
 _edje_color_class_recursive_find(const Edje *ed, const char *color_class)
 {
@@ -5477,21 +5685,73 @@ _edje_color_class_recursive_find(const Edje *ed, const char *color_class)
 
    if ((!ed) || (!color_class)) return NULL;
 
-   /* first look through the object scope */
+   // first look through the object scope //
    cc = _edje_color_class_recursive_find_helper(ed, ed->color_classes, color_class);
    if (cc) return cc;
 
-   /* next look through the global scope */
+   // next look through the global scope //
    cc = _edje_color_class_recursive_find_helper(ed, _edje_color_class_hash, color_class);
    if (cc) return cc;
 
-   /* finally, look through the file scope */
+   // finally, look through the file scope //
    if (ed->file)
      cc = _edje_color_class_recursive_find_helper(ed, ed->file->color_hash, color_class);
    if (cc) return cc;
 
    return NULL;
 }
+ */
+/* Get Edje_Color_Class from the most near ancestor */
+static Edje_Color_Class *
+_edje_color_class_parent_recursive_find(const Edje *ed, const char *color_class)
+{
+   Edje *cc_parent_ed;
+   Edje_Color_Class *cc = NULL;
+
+   if (!ed) return NULL;
+
+   cc_parent_ed = _edje_fetch(ed->cc_parent);
+
+   while(cc_parent_ed)
+     {
+        cc = _edje_color_class_recursive_find_helper(cc_parent_ed, cc_parent_ed->color_classes, color_class);
+        if (cc) return cc;
+
+        cc_parent_ed = _edje_fetch(cc_parent_ed->cc_parent);
+     }
+
+   return NULL;
+}
+
+Edje_Color_Class *
+_edje_color_class_recursive_find(const Edje *ed, const Edje_File *edf, const char *color_class)
+{
+   Edje_Color_Class *cc = NULL;
+
+   if (!color_class) return NULL;
+
+   /* first look through the object scope */
+   if (ed) cc = _edje_color_class_recursive_find_helper(ed, ed->color_classes, color_class);
+   if (cc) return cc;
+
+   /* TIZEN_ONLY(20161025): Add color class parent-child relationship with APIs */
+   if (ed) cc = _edje_color_class_parent_recursive_find(ed, color_class);
+   if (cc) return cc;
+   /* END */
+
+   /* next look through the global scope */
+   cc = _edje_color_class_recursive_find_helper(ed, _edje_color_class_hash, color_class);
+   if (cc) return cc;
+
+   /* finally, look through the file scope */
+   if (edf) cc = _edje_color_class_recursive_find_helper(ed, edf->color_hash, color_class);
+   if (cc) return cc;
+
+   return NULL;
+}
+/*******
+ * END *
+ *******/
 
 static Eina_Bool
 color_class_hash_list_free(const Eina_Hash *hash EINA_UNUSED, const void *key EINA_UNUSED, void *data, void *fdata EINA_UNUSED)
@@ -5526,6 +5786,9 @@ _edje_color_class_on_del(Edje *ed, Edje_Part *ep)
        efl_observable_observer_del(_edje_color_class_member, ep->other.desc[i]->color_class, ed->obj);
 }
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************
 Edje_Text_Class *
 _edje_text_class_find(Edje *ed, const char *text_class)
 {
@@ -5533,8 +5796,31 @@ _edje_text_class_find(Edje *ed, const char *text_class)
 
    if ((!ed) || (!text_class)) return NULL;
 
-   /* first look through the object scope */
+   // first look through the object scope //
    tc = eina_hash_find(ed->text_classes, text_class);
+   if (tc) return tc;
+
+   // next look through the global scope //
+   tc = eina_hash_find(_edje_text_class_hash, text_class);
+   if (tc) return tc;
+
+   // finally, look through the file scope //
+   if (ed->file)
+     tc = eina_hash_find(ed->file->text_hash, text_class);
+   if (tc) return tc;
+
+   return NULL;
+}
+ */
+Edje_Text_Class *
+_edje_text_class_find(Edje *ed, const char *text_class)
+{
+   Edje_Text_Class *tc = NULL;
+
+   if (!text_class) return NULL;
+
+   /* first look through the object scope */
+   if (ed) tc = eina_hash_find(ed->text_classes, text_class);
    if (tc) return tc;
 
    /* next look through the global scope */
@@ -5542,12 +5828,15 @@ _edje_text_class_find(Edje *ed, const char *text_class)
    if (tc) return tc;
 
    /* finally, look through the file scope */
-   if (ed->file)
+   if (ed && ed->file)
      tc = eina_hash_find(ed->file->text_hash, text_class);
    if (tc) return tc;
 
    return NULL;
 }
+/*******
+ * END *
+ *******/
 
 static Eina_Bool
 text_class_hash_list_free(const Eina_Hash *hash EINA_UNUSED, const void *key EINA_UNUSED, void *data, void *fdata EINA_UNUSED)
@@ -6564,6 +6853,99 @@ _efl_canvas_layout_part_text_marquee_always_get(Eo *eo_obj EINA_UNUSED, Edje *ed
      return rp->typedata.text->ellipsize.marquee.always;
 
    return EINA_FALSE;
+}
+/*******
+ * END *
+ *******/
+
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+static void
+_edje_object_color_class_parent_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Evas_Object *child;
+   Eina_List *l, *ll;
+   Edje *ed = _edje_fetch(obj);
+
+   if (!ed) return;
+
+   EINA_LIST_FOREACH_SAFE(ed->cc_children, l, ll, child)
+      edje_object_color_class_parent_unset(child);
+}
+
+static void
+_edje_object_color_class_child_del_cb(void *data EINA_UNUSED, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Edje *ed = _edje_fetch(obj);
+
+   if (!ed) return;
+
+   edje_object_color_class_parent_unset(obj);
+}
+
+static void
+_edje_object_color_class_child_add(Evas_Object *obj, Evas_Object *child)
+{
+   Edje *ed = _edje_fetch(obj);
+
+   if (!ed) return;
+
+   if (!ed->cc_children)
+     evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _edje_object_color_class_parent_del_cb, NULL);
+
+   ed->cc_children = eina_list_append(ed->cc_children, child);
+}
+
+static void
+_edje_object_color_class_child_remove(Evas_Object *obj, Evas_Object *child)
+{
+   Edje *ed = _edje_fetch(obj);
+
+   if (!ed) return;
+
+   ed->cc_children = eina_list_remove(ed->cc_children, child);
+
+   if (!ed->cc_children)
+     evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _edje_object_color_class_parent_del_cb, NULL);
+}
+
+EOLIAN void
+_efl_canvas_layout_color_class_parent_set(Eo *obj, Edje *ed, Efl_Object *parent)
+{
+   if (!parent) return;
+
+   if (ed->cc_parent) _edje_object_color_class_child_remove(ed->cc_parent, obj);
+
+   if (!ed->cc_parent)
+     evas_object_event_callback_add(obj, EVAS_CALLBACK_DEL, _edje_object_color_class_child_del_cb, NULL);
+
+   ed->cc_parent = parent;
+   _edje_object_color_class_child_add(parent, obj);
+
+   ed->dirty = EINA_TRUE;
+   ed->recalc_call = EINA_TRUE;
+#ifdef EDJE_CALC_CACHE
+   ed->all_part_change = EINA_TRUE;
+#endif
+   _edje_textblock_style_all_update(ed, EINA_TRUE);
+   _edje_recalc(ed);
+}
+
+EOLIAN void
+_efl_canvas_layout_color_class_parent_unset(Eo *obj, Edje *ed)
+{
+   if (ed->cc_parent) _edje_object_color_class_child_remove(ed->cc_parent, obj);
+   ed->cc_parent = NULL;
+   evas_object_event_callback_del_full(obj, EVAS_CALLBACK_DEL, _edje_object_color_class_child_del_cb, NULL);
+
+   ed->dirty = EINA_TRUE;
+   ed->recalc_call = EINA_TRUE;
+#ifdef EDJE_CALC_CACHE
+   ed->all_part_change = EINA_TRUE;
+#endif
+   _edje_textblock_style_all_update(ed, EINA_TRUE);
+   _edje_recalc(ed);
 }
 /*******
  * END *

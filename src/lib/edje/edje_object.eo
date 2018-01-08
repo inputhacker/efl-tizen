@@ -530,6 +530,33 @@ class Edje.Object (Efl.Canvas.Group, Efl.File, Efl.Container, Efl.Part,
       /*******
        * END *
        *******/
+      /***********************************************************************************
+       * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+       ***********************************************************************************/
+      color_class_parent_set {
+         [[Sets the parent object for color class.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+           \@internal
+         ]]
+         params {
+            @in parent: Efl.Object @nonull; [[The parent object for color class]]
+         }
+      }
+      color_class_parent_unset {
+         [[Unsets the parent object for color class.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+           \@internal
+         ]]
+      }
+      /*******
+       * END *
+       *******/
    }
    implements {
       Efl.Gfx.visible { set; }

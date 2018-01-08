@@ -862,4 +862,13 @@ char tizen_util_probe_profile_wearable();
 #define TIZEN_PROFILE_WEARABLE tizen_util_probe_profile_wearable()
 //
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+void _elm_widget_color_class_parent_set(Evas_Object *obj, Evas_Object *parent);
+void _elm_widget_color_class_parent_unset(Evas_Object *obj);
+/*******
+ * END *
+ *******/
+
 #endif

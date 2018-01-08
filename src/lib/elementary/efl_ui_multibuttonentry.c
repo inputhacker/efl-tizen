@@ -1299,6 +1299,14 @@ _guide_text_set(Evas_Object *obj,
           (sd->guide_text, EVAS_HINT_FILL, EVAS_HINT_FILL);
         edje_object_part_text_escaped_set(sd->guide_text, "elm.text", str);
         _view_update(sd);
+
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        _elm_widget_color_class_parent_set(sd->guide_text, obj);
+        /*******
+         * END *
+         *******/
      }
 }
 
@@ -1494,6 +1502,14 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
    if (!sd->label) return;
    elm_widget_element_update(obj, sd->label, PART_NAME_LABEL);
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(sd->label, obj);
+   /*******
+    * END *
+    *******/
+
    // ACCESS
    if (_elm_config->access_mode == ELM_ACCESS_MODE_ON)
      _access_multibuttonentry_label_register(obj, EINA_TRUE);
@@ -1511,6 +1527,14 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
                        efl_ui_text_interactive_editable_set(efl_added, EINA_TRUE),
                        efl_composite_attach(obj, efl_added));
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(sd->entry, obj);
+   /*******
+    * END *
+    *******/
+
    evas_object_size_hint_min_set(sd->entry, MIN_W_ENTRY, 0);
    evas_object_size_hint_weight_set
      (sd->entry, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
@@ -1526,6 +1550,14 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
         sd->end = edje_object_add(evas_object_evas_get(obj));
         if (!sd->end) return;
         elm_widget_element_update(obj, sd->end, PART_NAME_CLOSED_BUTTON);
+
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        _elm_widget_color_class_parent_set(sd->end, obj);
+        /*******
+         * END *
+         *******/
 
         edje_object_size_min_calc(sd->end, &button_min_width, &button_min_height);
         elm_coords_finger_size_adjust(1, &button_min_width, 1, &button_min_height);

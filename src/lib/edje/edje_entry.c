@@ -746,6 +746,13 @@ _sel_update(Edje *ed, Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entr
                        evas_object_show(ob);
                        sel->obj_bg = ob;
                        _edje_subobj_register(ed, sel->obj_bg);
+                       /***********************************************************************************
+                        * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+                        ***********************************************************************************/
+                       edje_object_color_class_parent_set(sel->obj_bg, ed->obj);
+                       /*******
+                        * END *
+                        *******/
                     }
 
                   if (en->rp->part->source2)
@@ -759,6 +766,13 @@ _sel_update(Edje *ed, Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entr
                        evas_object_show(ob);
                        sel->obj_fg = ob;
                        _edje_subobj_register(ed, sel->obj_fg);
+                       /***********************************************************************************
+                        * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+                        ***********************************************************************************/
+                       edje_object_color_class_parent_set(sel->obj_fg, ed->obj);
+                       /*******
+                        * END *
+                        *******/
                     }
                }
              else
@@ -1264,6 +1278,13 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
                             evas_object_pass_events_set(ob, EINA_TRUE);
                             sel->obj_bg = ob;
                             _edje_subobj_register(ed, sel->obj_bg);
+                            /***********************************************************************************
+                             * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+                             ***********************************************************************************/
+                            edje_object_color_class_parent_set(sel->obj_bg, ed->obj);
+                            /*******
+                             * END *
+                             *******/
                          }
 
                        if (en->rp->part->source6)
@@ -1276,6 +1297,13 @@ _anchors_update(Evas_Textblock_Cursor *c EINA_UNUSED, Evas_Object *o, Entry *en)
                             evas_object_pass_events_set(ob, EINA_TRUE);
                             sel->obj_fg = ob;
                             _edje_subobj_register(ed, sel->obj_fg);
+                            /***********************************************************************************
+                             * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+                             ***********************************************************************************/
+                            edje_object_color_class_parent_set(sel->obj_fg, ed->obj);
+                            /*******
+                             * END *
+                             *******/
                          }
 
                        ob = evas_object_rectangle_add(ed->base.evas);
@@ -3147,6 +3175,13 @@ _edje_entry_real_part_init(Edje *ed, Edje_Real_Part *rp, Ecore_IMF_Context *ic)
         evas_object_clip_set(en->cursor_bg, evas_object_clip_get(rp->object));
         evas_object_pass_events_set(en->cursor_bg, EINA_TRUE);
         _edje_subobj_register(ed, en->cursor_bg);
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        edje_object_color_class_parent_set(en->cursor_bg, ed->obj);
+        /*******
+         * END *
+         *******/
      }
    if (rp->part->source4)
      {
@@ -3157,6 +3192,13 @@ _edje_entry_real_part_init(Edje *ed, Edje_Real_Part *rp, Ecore_IMF_Context *ic)
         evas_object_clip_set(en->cursor_fg, evas_object_clip_get(rp->object));
         evas_object_pass_events_set(en->cursor_fg, EINA_TRUE);
         _edje_subobj_register(ed, en->cursor_fg);
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************/
+        edje_object_color_class_parent_set(en->cursor_fg, ed->obj);
+        /*******
+         * END *
+         *******/
 
         /* A proxy to the main cursor. */
         if (rp->part->cursor_mode == EDJE_ENTRY_CURSOR_MODE_BEFORE)
@@ -3168,6 +3210,13 @@ _edje_entry_real_part_init(Edje *ed, Edje_Real_Part *rp, Ecore_IMF_Context *ic)
              evas_object_clip_set(en->cursor_fg2, evas_object_clip_get(rp->object));
              evas_object_pass_events_set(en->cursor_fg2, EINA_TRUE);
              _edje_subobj_register(ed, en->cursor_fg2);
+             /***********************************************************************************
+              * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+              ***********************************************************************************/
+             edje_object_color_class_parent_set(en->cursor_fg2, ed->obj);
+             /*******
+              * END *
+              *******/
           }
      }
 

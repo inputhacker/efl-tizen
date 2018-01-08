@@ -633,6 +633,17 @@ struct _Edje_Style_Tag
    const char                     *font;
    const char                     *text_class;
    double                          font_size;
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   const char                     *color_class;
+   const char                     *color;
+   const char                     *outline_color;
+   const char                     *shadow_color;
+   /*******
+    * END *
+    *******/
 };
 
 /*----------*/
@@ -1750,6 +1761,16 @@ struct _Edje
 
    Eina_List            *groups;
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   Eina_List            *styles;
+   Evas_Object          *cc_parent;
+   Eina_List            *cc_children;
+   /*******
+    * END *
+    *******/
+
    Edje_Perspective     *persp;
 
    Ecore_Animator       *animator;
@@ -2673,7 +2694,15 @@ Edje_Real_Part   *_edje_real_part_get(const Edje *ed, const char *part);
 Edje_Real_Part   *_edje_real_part_recursive_get(Edje **ed, const char *part);
 Edje_Color_Class *_edje_color_class_find(const Edje *ed, const char *color_class);
 // The color_class has to be a pointer to an Eet owned string.
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************
 Edje_Color_Class *_edje_color_class_recursive_find(const Edje *ed, const char *color_class);
+ */
+Edje_Color_Class *_edje_color_class_recursive_find(const Edje *ed, const Edje_File *edf, const char *color_class);
+/*******
+ * END *
+ *******/
 void              _edje_color_class_on_del(Edje *ed, Edje_Part *ep);
 void              _edje_color_class_hash_free(void);
 
@@ -2793,8 +2822,22 @@ void          _edje_message_del             (Edje *ed);
 
 void _edje_textblock_styles_add(Edje *ed, Edje_Real_Part *ep);
 void _edje_textblock_styles_del(Edje *ed, Edje_Part *pt);
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************
 void _edje_textblock_styles_cache_free(Edje *ed, const char *text_class);
 void _edje_textblock_style_all_update(Edje *ed);
+ */
+void _edje_file_textblock_styles_color_class_cache_free(const char *class_name);
+void _edje_file_textblock_styles_text_class_cache_free(const char *class_name);
+void _edje_file_textblock_styles_cache_update(void);
+void _edje_file_textblock_style_all_update(Edje_File *edf);
+void _edje_textblock_styles_color_class_cache_free(Edje *ed, const char *class_name);
+void _edje_textblock_styles_text_class_cache_free(Edje *ed, const char *class_name);
+void _edje_textblock_style_all_update(Edje *ed, Eina_Bool force);
+/*******
+ * END *
+ *******/
 void _edje_textblock_style_parse_and_fix(Edje_File *edf);
 void _edje_textblock_style_cleanup(Edje_File *edf);
 Edje_File *_edje_cache_file_coll_open(const Eina_File *file, const char *coll, int *error_ret, Edje_Part_Collection **edc_ret, Edje *ed);

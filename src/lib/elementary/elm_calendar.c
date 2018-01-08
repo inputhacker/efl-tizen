@@ -864,6 +864,14 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
              elm_button_autorepeat_gap_timeout_set(sd->dec_btn_month, 0.2);
              evas_object_smart_callback_add(sd->dec_btn_month, "clicked", _button_widget_month_dec_start_click, obj);
              evas_object_smart_callback_add(sd->dec_btn_month, "repeated", _button_widget_month_dec_start, obj);
+
+             /***********************************************************************************
+              * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+              ***********************************************************************************/
+             _elm_widget_color_class_parent_set(sd->dec_btn_month, obj);
+             /*******
+              * END *
+              *******/
           }
 
         elm_object_style_set(sd->dec_btn_month, left_buf);
@@ -892,6 +900,14 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
              elm_button_autorepeat_gap_timeout_set(sd->inc_btn_month, 0.2);
              evas_object_smart_callback_add(sd->inc_btn_month, "clicked", _button_widget_month_inc_start_click, obj);
              evas_object_smart_callback_add(sd->inc_btn_month, "repeated", _button_widget_month_inc_start, obj);
+
+             /***********************************************************************************
+              * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+              ***********************************************************************************/
+             _elm_widget_color_class_parent_set(sd->inc_btn_month, obj);
+             /*******
+              * END *
+              *******/
           }
 
         elm_object_style_set(sd->inc_btn_month, right_buf);
@@ -920,6 +936,14 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
              elm_button_autorepeat_gap_timeout_set(sd->dec_btn_year, 0.2);
              evas_object_smart_callback_add(sd->dec_btn_year, "clicked", _button_widget_year_dec_start_click, obj);
              evas_object_smart_callback_add(sd->dec_btn_year, "repeated", _button_widget_year_dec_start, obj);
+
+             /***********************************************************************************
+              * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+              ***********************************************************************************/
+             _elm_widget_color_class_parent_set(sd->dec_btn_year, obj);
+             /*******
+              * END *
+              *******/
          }
 
         elm_object_style_set(sd->dec_btn_year, left_buf);
@@ -948,6 +972,14 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
              elm_button_autorepeat_gap_timeout_set(sd->inc_btn_year, 0.2);
              evas_object_smart_callback_add(sd->inc_btn_year, "clicked", _button_widget_year_inc_start_click, obj);
              evas_object_smart_callback_add(sd->inc_btn_year, "repeated", _button_widget_year_inc_start, obj);
+
+             /***********************************************************************************
+              * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+              ***********************************************************************************/
+             _elm_widget_color_class_parent_set(sd->inc_btn_year, obj);
+             /*******
+              * END *
+              *******/
           }
 
         elm_object_style_set(sd->inc_btn_year, right_buf);

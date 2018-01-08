@@ -1799,6 +1799,14 @@ _magnifier_create(void *data)
    _elm_theme_object_set(data, sd->mgf_bg, "entry", "magnifier", "default");
    evas_object_show(sd->mgf_bg);
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(sd->mgf_bg, sd->entry_edje);
+   /*******
+    * END *
+    *******/
+
    //Proxy
    sd->mgf_proxy = evas_object_image_add(e);
    evas_object_event_callback_add(sd->mgf_proxy, EVAS_CALLBACK_RESIZE,
@@ -3884,6 +3892,15 @@ _create_selection_handlers(Evas_Object *obj, Elm_Entry_Data *sd)
    evas_object_event_callback_add(handle, EVAS_CALLBACK_MOUSE_UP,
                                   _end_handler_mouse_up_cb, obj);
    evas_object_show(handle);
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(sd->start_handler, sd->entry_edje);
+   _elm_widget_color_class_parent_set(sd->end_handler, sd->entry_edje);
+   /*******
+    * END *
+    *******/
 }
 
 // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
@@ -5070,6 +5087,14 @@ _elm_entry_scrollable_set(Eo *obj, Elm_Entry_Data *sd, Eina_Bool scroll)
                (sd->scr_edje, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
              evas_object_propagate_events_set(sd->scr_edje, EINA_TRUE);
+
+             /***********************************************************************************
+              * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+              ***********************************************************************************/
+             _elm_widget_color_class_parent_set(sd->scr_edje, sd->entry_edje);
+             /*******
+              * END *
+              *******/
           }
 
         elm_widget_resize_object_set(obj, sd->scr_edje);

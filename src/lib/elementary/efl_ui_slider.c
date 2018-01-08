@@ -695,6 +695,14 @@ _popup_add(Efl_Ui_Slider_Data *sd, Eo *obj, Evas_Object **popup,
    edje_object_signal_callback_add(*popup, "elm,popup,hide,done", "elm",
                                    _popup_hide_done, obj);
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   _elm_widget_color_class_parent_set(*popup, obj);
+   /*******
+	* END *
+	*******/
+
    _popup_update(obj, sd, *popup);
 
    /* create a rectangle to track position+size of the dragable */

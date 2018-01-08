@@ -861,6 +861,14 @@ _efl_ui_clock_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Clock_Data *priv)
                {
                   field = priv->field_list + idx;
                   field->item_obj = dt_mod->field_create(priv->mod_data, idx);
+
+                  /***********************************************************************************
+                   * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+                   ***********************************************************************************/
+                  _elm_widget_color_class_parent_set(field->item_obj, obj);
+                  /*******
+                   * END *
+                   *******/
                }
           }
      }

@@ -495,6 +495,9 @@ _efl_canvas_layout_efl_observer_update(Eo *obj EINA_UNUSED, Edje *ed, Efl_Object
    ed->dirty = EINA_TRUE;
    ed->recalc_call = EINA_TRUE;
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************
    if ((obs == _edje_color_class_member) || (obs == _edje_size_class_member))
      {
 #ifdef EDJE_CALC_CACHE
@@ -509,6 +512,33 @@ _efl_canvas_layout_efl_observer_update(Eo *obj EINA_UNUSED, Edje *ed, Efl_Object
         ed->text_part_change = EINA_TRUE;
 #endif
      }
+    */
+   if (obs == _edje_size_class_member)
+     {
+#ifdef EDJE_CALC_CACHE
+        ed->all_part_change = EINA_TRUE;
+#endif
+     }
+   else if (obs == _edje_text_class_member)
+     {
+        _edje_textblock_styles_text_class_cache_free(ed, key);
+        _edje_textblock_style_all_update(ed, EINA_FALSE);
+#ifdef EDJE_CALC_CACHE
+        ed->text_part_change = EINA_TRUE;
+#endif
+     }
+   else if (obs == _edje_color_class_member)
+     {
+        _edje_textblock_styles_color_class_cache_free(ed, key);
+        _edje_textblock_style_all_update(ed, EINA_FALSE);
+#ifdef EDJE_CALC_CACHE
+        ed->text_part_change = EINA_TRUE;
+        ed->all_part_change = EINA_TRUE;
+#endif
+     }
+   /*******
+    * END *
+    *******/
 
    _edje_recalc(ed);
 

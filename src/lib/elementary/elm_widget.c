@@ -7191,6 +7191,51 @@ _elm_widget_item_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, E
 }
 //
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+void
+_elm_widget_color_class_parent_set(Evas_Object *obj, Evas_Object *parent)
+{
+   Evas_Object *edje = NULL, *parent_edje = NULL;
+
+   if (!obj || !parent) return;
+
+   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+     edje =  elm_layout_edje_get(obj);
+   else if (efl_isa(obj, EFL_CANVAS_LAYOUT_CLASS))
+     edje = obj;
+
+   if (efl_isa(parent, EFL_UI_LAYOUT_CLASS))
+     parent_edje =  elm_layout_edje_get(parent);
+   else if (efl_isa(parent, EFL_CANVAS_LAYOUT_CLASS))
+     parent_edje = parent;
+
+   if (!edje || !parent_edje) return;
+
+   edje_object_color_class_parent_set(edje, parent_edje);
+}
+
+void
+_elm_widget_color_class_parent_unset(Evas_Object *obj)
+{
+   Evas_Object *edje = NULL;
+
+   if (!obj) return;
+
+   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+     edje =  elm_layout_edje_get(obj);
+   else if (efl_isa(obj, EFL_CANVAS_LAYOUT_CLASS))
+     edje = obj;
+
+   if (!edje) return;
+
+   edje_object_color_class_parent_unset(edje);
+}
+/*******
+ * END *
+ *******/
+
 #include "elm_widget_item.eo.c"
 #include "elm_widget.eo.c"
 

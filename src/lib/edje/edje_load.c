@@ -819,7 +819,15 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
           edje_module_load(ed->file->external_dir->entries[i].entry);
      }
 
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************
    _edje_textblock_style_all_update(ed);
+    */
+   _edje_file_textblock_style_all_update(ed->file);
+   /*******
+    * END *
+    *******/
 
    ed->has_entries = EINA_FALSE;
    if (ed->file && ed->file->mo_dir)
