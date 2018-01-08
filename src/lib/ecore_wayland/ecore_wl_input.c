@@ -485,6 +485,9 @@ _ecore_wl_input_add(Ecore_Wl_Display *ewd, unsigned int id)
    input->touch_focus = NULL;
 
    input->repeat.enabled = EINA_TRUE;
+   //TIZEN_ONLY(20180108): add keyboard repeat info set/get API.
+   input->repeat.changed = EINA_FALSE;
+   //
    input->repeat.rate = 0.025;
    input->repeat.delay = 0.4;
 
@@ -1285,8 +1288,12 @@ _ecore_wl_input_cb_keyboard_repeat_setup(void *data, struct wl_keyboard *keyboar
    else
      input->repeat.enabled = EINA_TRUE;
 
-   input->repeat.rate = (rate / 1000.0);
-   input->repeat.delay = (delay / 1000.0);
+   //TIZEN_ONLY(20180108): add keyboard repeat info set/get API.
+   if (!input->repeat.changed)
+     {
+        input->repeat.rate = (rate / 1000.0);
+        input->repeat.delay = (delay / 1000.0);
+     }
 }
 
 static Eina_Bool

@@ -1462,6 +1462,30 @@ EAPI Eina_List *ecore_wl_window_keygrab_list_set(Ecore_Wl_Window *win, Eina_List
  */
 EAPI Eina_List *ecore_wl_window_keygrab_list_unset(Ecore_Wl_Window *win, Eina_List *infos);
 
+//TIZEN_ONLY(20180108): add keyboard repeat info set/get API.
+/**
+ *
+ * @brief Sets keyboard repeat infomation.
+ *
+ * @param rate key repeat rate value.
+ * @param delay key repeat delay value.
+ *
+ * @return false on error, true otherwise.
+ */
+EAPI Eina_Bool ecore_wl_keyboard_repeat_info_set(double rate, double delay);
+
+/**
+ *
+ * @brief Gets keyboard repeat infomation.
+ *
+ * @param rate key repeat rate value.
+ * @param delay key repeat delay value.
+ *
+ * @return false on error, true otherwise.
+ */
+EAPI Eina_Bool ecore_wl_keyboard_repeat_info_get(double *rate, double *delay);
+/
+
 EAPI void ecore_wl_window_conformant_set(Ecore_Wl_Window *win, unsigned int is_conformant);
 EAPI Eina_Bool ecore_wl_window_conformant_get(Ecore_Wl_Window *win);
 
