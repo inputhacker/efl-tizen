@@ -8048,7 +8048,7 @@ EAPI Eina_Bool edje_edit_program_run(Evas_Object *obj, const char *prog);
 EAPI Eina_Bool edje_edit_program_stop_all(Evas_Object *obj);
 
 // TIZEN_ONLY(20170421): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
 
 /** Get the list of all plugins.
  * Use edje_edit_string_list_free() when you don't need the list anymore.

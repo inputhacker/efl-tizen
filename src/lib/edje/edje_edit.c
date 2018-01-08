@@ -11065,7 +11065,7 @@ edje_edit_program_add(Evas_Object *obj, const char *name)
    epr->tone_name = NULL;
    epr->duration = 0.1;
 // TIZEN_ONLY(20170421): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
    epr->plugin_name = NULL;
 #endif
 
@@ -11156,7 +11156,7 @@ edje_edit_program_del(Evas_Object *obj, const char *prog)
    _edje_if_string_free(ed, &epr->sample_name);
    _edje_if_string_free(ed, &epr->tone_name);
 // TIZEN_ONLY(20170421): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
    _edje_if_string_free(ed, &epr->plugin_name);
 #endif
 
@@ -11242,7 +11242,7 @@ edje_edit_program_stop_all(Evas_Object *obj)
 }
 
 // TIZEN_ONLY(20170421): Add plugin keyword.
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
 EAPI Eina_List *
 edje_edit_plugins_list_get(Evas_Object *obj)
 {

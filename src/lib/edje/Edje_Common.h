@@ -1915,7 +1915,7 @@ typedef enum _Edje_Tween_Mode
 } Edje_Tween_Mode;
 
 // TIZEN_ONLY(20150110): Add plugin keyword.
-#define PLUGIN
+#define EDJE_TIZEN_PLUGIN
 //
 
 /**
@@ -1954,7 +1954,7 @@ typedef enum _Edje_Action_Type
    // TIZEN_ONLY(20150110): Add plugin keyword.
    //EDJE_ACTION_TYPE_MO                       = 25, /**< @since 1.15 @brief Mo action value */
    //EDJE_ACTION_TYPE_LAST                     = 26  /**< Last action value */
-#ifdef PLUGIN
+#ifdef EDJE_TIZEN_PLUGIN
    EDJE_ACTION_TYPE_RUN_PLUGIN               = 25,
    EDJE_ACTION_TYPE_MO                       = 26, /**< @since 1.15 @brief Mo action value */
    EDJE_ACTION_TYPE_LAST                     = 27
