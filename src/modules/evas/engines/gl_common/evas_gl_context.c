@@ -643,6 +643,11 @@ evas_gl_common_context_new(void)
 
    gc->references = 1;
 
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   gc->gamma_texture_ref  = 0;
+   gc->gamma_texture = 0;
+   //
+
    _evas_gl_common_context = gc;
 
    for (i = 0; i < MAX_PIPES; i++)
@@ -990,6 +995,13 @@ evas_gl_common_context_free(Evas_Engine_GL_Context *gc)
    while (gc->font_glyph_images)
      evas_gl_common_image_free(gc->font_glyph_images->data);
    /* END */
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   if(gc->gamma_texture_ref > 0)
+     {
+        GL_TH(glDeleteTextures, 1, &(gc->gamma_texture));
+     }
+   //
 
    if ((gc->shared) && (gc->shared->references == 0))
      {
@@ -1592,6 +1604,19 @@ _evas_gl_common_context_push(Shader_Type rtype,
              goto again;
           }
      }
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   if((tex) && (tex->im) &&(tex->im->hdr_convert.hdr_conv_flag>0))
+     {
+         if (gc->pipe[pn].array.hdr_tex != tex->im->hdr_convert.texture)
+          {
+             shader_array_flush(gc);
+             pn = gc->state.top_pipe;
+             gc->pipe[pn].array.hdr_tex = tex->im->hdr_convert.texture;
+             goto again;
+          }
+     }
+   //
 #else
    if (!((gc->pipe[pn].region.type == rtype)
          && (!tex || gc->pipe[pn].shader.cur_tex == current_tex)
@@ -3821,6 +3846,15 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
              gc->pipe[i].array.im = NULL;
           }
 
+        // TIZEN_ONLY(20180112): support for HDR Converting
+        if(gc->pipe[i].array.hdr_tex)
+          {
+             INF("Use HDR Converting  (hdr tex: %d)",gc->pipe[i].array.hdr_tex);
+             GL_TH(glActiveTexture, GL_TEXTURE0 + 1);
+             GL_TH(glBindTexture, GL_TEXTURE_2D, gc->pipe[i].array.hdr_tex);
+             GL_TH(glActiveTexture, GL_TEXTURE0);
+          }
+        //
         gc->state.current.prog      = gc->pipe[i].shader.prog;
         gc->state.current.cur_tex   = gc->pipe[i].shader.cur_tex;
         gc->state.current.cur_texm  = gc->pipe[i].shader.cur_texm;
@@ -3877,6 +3911,7 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
         gc->pipe[i].array.texsam = NULL;
         gc->pipe[i].array.mask = NULL;
         gc->pipe[i].array.masksam = NULL;
+        gc->pipe[i].array.hdr_tex = 0; // TIZEN_ONLY(20180112): support for HDR Converting
 
         gc->pipe[i].array.num = 0;
         gc->pipe[i].array.alloc = 0;

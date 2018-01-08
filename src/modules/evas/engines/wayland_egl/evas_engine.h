@@ -96,6 +96,17 @@ struct _Outbuf
 
    //TIZEN_ONLY(20161121) : Support PreRotation
    int support_pre_rotation;
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   struct {
+   // 1:sdr to hdr with matrix
+   // 2:hdr to sdr with matrix
+   // 3:hdr to sdr without matrix
+      int              flag;
+      void             *gamma;
+      GLuint           gTexture;
+   } hdr;
+   //
 };
 
 struct _Context_3D

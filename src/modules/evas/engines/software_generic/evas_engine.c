@@ -4364,7 +4364,13 @@ static Evas_Func func =
      eng_ector_surface_cache_set,
      eng_ector_surface_cache_get,
    /* FUTURE software generic calls go here */
-     NULL //gl_prerotation_unset
+     NULL, //gl_prerotation_unset,
+     // TIZEN_ONLY(20180112): support for HDR Converting
+     NULL, //image_hdr_conv_get
+     NULL, //image_hdr_conv_set
+     NULL, //hdr_conv_gamma_get
+     NULL //hdr_conv_gamma_set
+     //
 };
 
 

@@ -1485,6 +1485,13 @@ struct _Evas_Func
 
    // Unset PreRotation
    void (*gl_prerotation_unset)          (void *data);
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   void  (*image_hdr_conv_get)            (void *data, void *image, Eina_Bool *hdr_conv, void **e_gamma);
+   void  (*image_hdr_conv_set)            (void *data, void *image, Eina_Bool hdr_conv);
+   void  (*hdr_conv_gamma_get)            (void *data, int *hdr_conv, void **gamma);
+   void  (*hdr_conv_gamma_set)            (void *data, int hdr_conv, void *gamma);
+   //
 };
 
 struct _Evas_Image_Save_Func

@@ -39,8 +39,13 @@ typedef enum {
    SHADER_FLAG_NOMUL             = (1 << 17),
    SHADER_FLAG_ALPHA             = (1 << 18),
    SHADER_FLAG_RGB_A_PAIR        = (1 << 19),
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   SHADER_FLAG_SDR2HDR           = (1 << 20),
+   SHADER_FLAG_HDR2SDR           = (1 << 21),
+   SHADER_FLAG_ONLYGAMMA           = ( 1 << 22),
+   //
 } Shader_Flag;
-#define SHADER_FLAG_COUNT 20
+#define SHADER_FLAG_COUNT 23
 
 static const char *_shader_flags[SHADER_FLAG_COUNT] = {
    "TEX",
@@ -62,7 +67,12 @@ static const char *_shader_flags[SHADER_FLAG_COUNT] = {
    "AFILL",
    "NOMUL",
    "ALPHA",
-   "RGB_A_PAIR"
+   "RGB_A_PAIR",
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   "SDR2HDR",
+   "HDR2SDR",
+   "ONLYGAMMA"
+   //
 };
 
 static Eina_Bool compiler_released = EINA_FALSE;
@@ -912,6 +922,27 @@ evas_gl_common_shader_flags_get(Evas_GL_Shared *shared, Shader_Type type,
                     flags |= SHADER_FLAG_AFILL;
                }
           }
+
+        // TIZEN_ONLY(20180112): support for HDR Converting
+        if (tex->im)
+          {
+             if (tex->im->hdr_convert.hdr_conv_flag == 1)
+               {
+                 flags |= SHADER_FLAG_SDR2HDR;
+                 INF("Add shader >> SHADER_FLAG_SDR2HDR");
+               }
+             else if (tex->im->hdr_convert.hdr_conv_flag == 2)
+               {
+                 flags |= SHADER_FLAG_HDR2SDR;
+                 INF("Add shader >> SHADER_FLAG_HDR2SDR");
+               }
+            else if (tex->im->hdr_convert.hdr_conv_flag == 3)
+              {
+                flags |= SHADER_FLAG_ONLYGAMMA;
+                INF("Add shader >> SHADER_FLAG_ONLYGAMMA");
+              }
+          }
+        //
      }
 //
 
@@ -941,6 +972,11 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
       { "texu", 0 },
       { "texv", 0 },
       { "texuv", 0 },
+      // TIZEN_ONLY(20180112): support for HDR Converting
+      { "s2h_texg", 0 },
+      { "h2s_texg", 0 },
+      { "only_texg", 0 },
+      //
       { NULL, 0 }
    };
    Eina_Bool hastex = 0;
@@ -975,6 +1011,23 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
         textures[5].enabled = 1;
         hastex = 1;
      }
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   else if (p->flags & SHADER_FLAG_SDR2HDR)
+     {
+        textures[6].enabled = 1;
+        hastex = 1;
+     }
+   else if (p->flags & SHADER_FLAG_HDR2SDR)
+     {
+        textures[7].enabled = 1;
+        hastex = 1;
+     }
+   else if (p->flags & SHADER_FLAG_ONLYGAMMA)
+    {
+       textures[8].enabled = 1;
+       hastex = 1;
+    }
+   //
 
    if (hastex)
      {

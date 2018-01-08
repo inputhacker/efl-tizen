@@ -1281,7 +1281,6 @@ eng_image_draw(void *data, void *context, void *surface, void *image, int src_x,
                                   dst_x, dst_y, dst_w, dst_h,
                                   smooth);
      }
-
    return EINA_FALSE;
 }
 

@@ -333,6 +333,10 @@ struct _Evas_Engine_GL_Context
          GLuint buffer;
          int buffer_alloc;
          int buffer_use;
+
+         // TIZEN_ONLY(20180112): support for HDR Converting
+         GLuint       hdr_tex;
+         //
       } array;
    } pipe[MAX_PIPES];
 
@@ -361,6 +365,11 @@ struct _Evas_Engine_GL_Context
    //TIZEN_ONLY(20161121)
    // If set, the driver will rotate the buffer itself
    Eina_Bool pre_rotated : 1;
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   int gamma_texture_ref;
+   GLuint gamma_texture;
+   //
 };
 
 struct _Evas_GL_Texture_Pool
@@ -482,6 +491,14 @@ struct _Evas_GL_Image
    unsigned char    direct : 1; // evas gl direct renderable
    /*Disable generate atlas for texture unit, EINA_FALSE by default*/
    Eina_Bool        disable_atlas : 1;
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   struct {
+   GLuint           texture;
+   unsigned char    *gamma;
+   int hdr_conv_flag;
+   } hdr_convert;
+   //
 };
 
 struct _Evas_GL_Font_Texture
@@ -546,6 +563,9 @@ void              evas_gl_common_surface_cache_set(void *key, void *surface);
 void             *evas_gl_common_surface_cache_get(void *key);
 EAPI void         evas_gl_common_surface_cache_dump(void);
 
+// TIZEN_ONLY(20180112): support for HDR Converting
+EAPI void              evas_gl_common_texture_hdr_update(Evas_GL_Image *im);
+//
 typedef int (*Evas_GL_Preload)(void);
 typedef void (*Evas_GL_Common_Image_Call)(Evas_GL_Image *im);
 typedef void (*Evas_GL_Common_Context_Call)(Evas_Engine_GL_Context *gc);

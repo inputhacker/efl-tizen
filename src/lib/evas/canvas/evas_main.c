@@ -17,6 +17,9 @@ EAPI int lockmax = 0;
 static int _evas_init_count = 0;
 int _evas_log_dom_global = -1;
 
+//TIZEN_ONLY: check HDR convert support
+int _hdr_convert_support = -1;
+
 EAPI int
 evas_init(void)
 {
@@ -79,6 +82,7 @@ evas_init(void)
       env = getenv("EVAS_CSERVE2");
       if (env && atoi(env)) evas_cserve2_shutdown();
    }
+
    evas_async_events_shutdown();
 #endif
  shutdown_module:
@@ -728,5 +732,56 @@ evas_language_reinit(void)
 {
    evas_common_language_reinit();
 }
+
+EAPI void
+evas_render_hdr_gamma_set(Evas* evas, int flag, void *gamma)
+{
+   // if not setting hdr flag, get environment
+   if( _hdr_convert_support == -1)
+     {
+        // HDR
+        const char *support;
+        support = getenv("EVAS_HDR_SUPPORT");
+        if (support && atoi(support))
+          {
+             INF("EVAS_HDR_SUPPORT is enabled");
+             _hdr_convert_support= 1;
+          }
+        else
+           _hdr_convert_support = 0;
+     }
+
+   if( _hdr_convert_support <= 0)
+     {
+        INF("Not support HDR");
+        return;
+     }
+
+   MAGIC_CHECK(evas, Evas, MAGIC_EVAS);
+   return;
+   MAGIC_CHECK_END();
+   Evas_Public_Data *e = eo_data_scope_get(evas, EVAS_CANVAS_CLASS);
+   EINA_SAFETY_ON_NULL_RETURN(e);
+   EINA_SAFETY_ON_NULL_RETURN(e->engine.func);
+
+   if (e->engine.func->hdr_conv_gamma_set && e->engine.data.output)
+     e->engine.func->hdr_conv_gamma_set(e->engine.data.output, flag, gamma);
+}
+
+EAPI void
+evas_render_hdr_gamma_unset(Evas* evas)
+{
+   MAGIC_CHECK(evas, Evas, MAGIC_EVAS);
+   return;
+   MAGIC_CHECK_END();
+   Evas_Public_Data *e = eo_data_scope_get(evas, EVAS_CANVAS_CLASS);
+   EINA_SAFETY_ON_NULL_RETURN(e);
+   EINA_SAFETY_ON_NULL_RETURN(e->engine.func);
+
+   if (e->engine.func->hdr_conv_gamma_set && e->engine.data.output)
+     e->engine.func->hdr_conv_gamma_set(e->engine.data.output, 0, NULL);
+
+}
+//
 
 #include "canvas/evas_canvas.eo.c"

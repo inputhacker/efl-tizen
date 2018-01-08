@@ -74,6 +74,59 @@ varying vec2 masktex_s[4];
 # endif
 #endif
 
+#ifdef SHD_SDR2HDR
+uniform sampler2D s2h_texg;
+vec4 sdr2hdr(vec4 x)
+{
+   vec4 y;
+   if (x.a > 0.0) x.rgb = x.rgb / x.a;
+   y.a = x.a;
+   y.r = 0.627504 * x.r + 0.329275 * x.g + 0.043303 * x.b;
+   y.g = 0.069108 * x.r + 0.919519 * x.g + 0.011360 * x.b;
+   y.b = 0.016394 * x.r + 0.088011 * x.g + 0.895380 * x.b;
+   y.r = texture2D(s2h_texg, vec2(y.r,0)).a;
+   y.g = texture2D(s2h_texg, vec2(y.g,0)).a;
+   y.b = texture2D(s2h_texg, vec2(y.b,0)).a;
+   if (y.a > 0.0) y.rgb = y.rgb * y.a;
+   return y;
+}
+#endif
+
+#ifdef SHD_HDR2SDR
+uniform sampler2D h2s_texg;
+vec4 hdr2sdr(vec4 x)
+{
+   vec4 y;
+   if (x.a > 0.0) x.rgb = x.rgb / x.a;
+   y.a = x.a;
+   y.r = 1.660227 * x.r - 0.587548 * x.g - 0.072838 * x.b;
+   y.g = 1.132900 * x.g - 0.008349 * x.b - 0.124550 * x.r;
+   y.b = 1.132180 * x.b - 0.016881 * x.r - 0.115299 * x.g;
+   y.r = texture2D(h2s_texg, vec2(y.r,0)).a;
+   y.g = texture2D(h2s_texg, vec2(y.g,0)).a;
+   y.b = texture2D(h2s_texg, vec2(y.b,0)).a;
+   if (y.a > 0.0) y.rgb = y.rgb * y.a;
+   return y;
+}
+#endif
+
+#ifdef SHD_ONLYGAMMA
+uniform sampler2D only_texg;
+vec4 onlygamma(vec4 x)
+{
+   vec4 y;
+   if (x.a > 0.0) x.rgb = x.rgb / x.a;
+   y.a = x.a;
+   y.r = x.r;
+   y.g = x.g;
+   y.b = x.b;
+   y.r = texture2D(only_texg, vec2(y.r,0)).a;
+   y.g = texture2D(only_texg, vec2(y.g,0)).a;
+   y.b = texture2D(only_texg, vec2(y.b,0)).a;
+   if (y.a > 0.0) y.rgb = y.rgb * y.a;
+     return y;
+}
+
 void main()
 {
    vec4 c;
@@ -132,6 +185,39 @@ void main()
 
 #else
    c = vec4(1, 1, 1, 1);
+#endif
+
+#ifdef SHD_SDR2HDR
+#if defined(SHD_YUV) || defined(SHD_NV12) || defined(SHD_YUY2) || defined(SHD_EXTERNAL)
+   c = sdr2hdr(c);
+#elif defined(SHD_SAM12) || defined(SHD_SAM21) || defined(SHD_SAM22) || defined(SHD_TEX)
+   c = sdr2hdr(c);
+#endif
+#ifndef SHD_NOMUL
+   col = sdr2hdr(col);
+#endif
+#endif
+
+#ifdef SHD_HDR2SDR
+#if defined(SHD_YUV) || defined(SHD_NV12) || defined(SHD_YUY2) || defined(SHD_EXTERNAL)
+   c = hdr2sdr(c);
+#elif defined(SHD_SAM12) || defined(SHD_SAM21) || defined(SHD_SAM22) || defined(SHD_TEX)
+   c = hdr2sdr(c);
+#endif
+#ifndef SHD_NOMUL
+   col = hdr2sdr(col);
+#endif
+#endif
+
+#ifdef SHD_ONLYGAMMA
+#if defined(SHD_YUV) || defined(SHD_NV12) || defined(SHD_YUY2) || defined(SHD_EXTERNAL)
+   c = onlygamma(c);
+#elif defined(SHD_SAM12) || defined(SHD_SAM21) || defined(SHD_SAM22) || defined(SHD_TEX)
+   c = onlygamma(c);
+#endif
+#ifndef SHD_NOMUL
+   col = onlygamma(col);
+#endif
 #endif
 
 #ifdef SHD_MASK

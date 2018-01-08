@@ -1135,6 +1135,53 @@ evas_gl_common_texture_dynamic_new(Evas_Engine_GL_Context *gc, Evas_GL_Image *im
    return tex;
 }
 
+// TIZEN_ONLY(20180112): support for HDR Converting
+EAPI void
+evas_gl_common_texture_hdr_update(Evas_GL_Image *im)
+{
+   unsigned char* gamma = NULL;
+
+   // Delete texture if already create
+   if(im->hdr_convert.texture)
+   {
+      im->gc->gamma_texture_ref--;
+      INF("HDR disable (hdr tex: %d, ref:%d)",im->gc->gamma_texture,im->gc->gamma_texture_ref);
+      if(im->gc->gamma_texture_ref <  0) im->gc->gamma_texture_ref = 0;
+      if(im->gc->gamma_texture_ref == 0)
+         {
+            INF("Free HDR Texture[%d] when hdr update ",im->gc->gamma_texture);
+            GL_TH(glDeleteTextures, 1, &(im->gc->gamma_texture));
+            im->gc->gamma_texture = 0;
+         }
+      im->hdr_convert.texture = 0;
+   }
+
+   if(im->hdr_convert.hdr_conv_flag > 0)
+      {
+         if (im->hdr_convert.gamma) 
+            gamma = im->hdr_convert.gamma;
+
+         if(im->gc->gamma_texture_ref < 0) im->gc->gamma_texture_ref = 0;
+         if(im->gc->gamma_texture_ref == 0)
+            {
+               GL_TH(glGenTextures, 1, &(im->gc->gamma_texture));
+               INF("Gen HDR Texture[%d] when hdr update ",im->gc->gamma_texture);
+            }
+          im->hdr_convert.texture = im->gc->gamma_texture;
+          GL_TH(glActiveTexture,GL_TEXTURE0 + 1);
+          GL_TH(glBindTexture, GL_TEXTURE_2D, im->hdr_convert.texture );
+          GL_TH(glTexImage2D, GL_TEXTURE_2D, 0, GL_ALPHA, 256, 1, 0, GL_ALPHA, GL_UNSIGNED_BYTE, (void*)gamma);
+          GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+          GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+          GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+          GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+          GL_TH(glActiveTexture, GL_TEXTURE0);
+          im->gc->gamma_texture_ref++;
+          INF("HDR enable  (hdr tex: %d, ref:%d)",im->gc->gamma_texture,im->gc->gamma_texture_ref);
+      }
+}
+//
+
 void
 evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int bytes_count)
 {

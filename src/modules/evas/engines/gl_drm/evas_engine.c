@@ -44,6 +44,9 @@ Evas_GL_Common_Image_Call glsym_evas_gl_common_image_unref = NULL;
 Evas_GL_Common_Image_Call glsym_evas_gl_common_image_free = NULL;
 Evas_GL_Common_Image_Call glsym_evas_gl_common_image_native_disable = NULL;
 Evas_GL_Common_Image_Call glsym_evas_gl_common_image_native_enable = NULL;
+// TIZEN_ONLY(20180112): support for HDR Converting
+Evas_GL_Common_Image_Call glsym_evas_gl_common_texture_hdr_update = NULL;
+//
 Evas_GL_Common_Image_New_From_Data glsym_evas_gl_common_image_new_from_data = NULL;
 Evas_GL_Common_Context_Call glsym_evas_gl_common_image_all_unload = NULL;
 Evas_GL_Preload glsym_evas_gl_preload_init = NULL;
@@ -199,6 +202,9 @@ gl_symbols(void)
    LINK2GENERIC(evgl_native_surface_buffer_get);
    LINK2GENERIC(evgl_engine_shutdown);
    LINK2GENERIC(evas_gl_symbols);
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   LINK2GENERIC(evas_gl_common_texture_hdr_update);
+   //
 
 #define FINDSYM(dst, sym, typ) \
    if (glsym_eglGetProcAddress) { \
@@ -1476,6 +1482,101 @@ eng_image_native_set(void *data, void *image, void *native)
    return img;
 }
 
+// TIZEN_ONLY(20180112): support for HDR Converting
+static void
+eng_image_hdr_conv_get(void *data EINA_UNUSED, void *image, Eina_Bool *hdr_conv, void **e_gamma)
+{
+   Evas_GL_Image *im = image;
+   if (!im) return;
+   if (e_gamma) *e_gamma = im->hdr_convert.gamma;
+
+   if (im->hdr_convert.hdr_conv_flag > 0)
+     *hdr_conv = EINA_TRUE;
+   else
+     *hdr_conv = EINA_FALSE;
+}
+
+static void
+eng_image_hdr_conv_set(void *data, void *image, Eina_Bool hdr_conv)
+{
+   Evas_GL_Image *im = image;
+   Render_Engine *re;
+   Outbuf *ob;
+
+   re = (Render_Engine *)data;
+   if (!re) return;
+
+   ob = eng_get_ob(re);
+   if (!ob) return;
+
+   if (!im) return;
+
+   // Init
+   im->hdr_convert.hdr_conv_flag = 0;
+   im->hdr_convert.gamma = NULL;
+
+   if (hdr_conv == EINA_TRUE)
+     {
+        if (!ob->hdr.gamma || ob->hdr.flag == 0)
+          {
+             ERR("gamma and hbr flag is Invalid");
+             return;
+          }
+        im->hdr_convert.hdr_conv_flag = ob->hdr.flag;
+        im->hdr_convert.gamma = ob->hdr.gamma;
+     }
+   glsym_evas_gl_common_texture_hdr_update(im);
+   ob->hdr.gTexture = im->hdr_convert.texture;
+}
+
+static void
+eng_hdr_conv_gamma_get(void *data, int *hdr_conv, void **gamma)
+{
+   Render_Engine *re;
+   Outbuf *ob;
+
+   re = (Render_Engine *)data;
+   if (!re) return;
+
+   ob = eng_get_ob(re);
+   if (!ob) return;
+
+   *hdr_conv = ob->hdr.flag;
+   if (gamma) *gamma = ob->hdr.gamma;
+}
+
+static void
+eng_hdr_conv_gamma_set(void *data, int flag, void *gamma)
+{
+   Render_Engine *re;
+   Outbuf *ob;
+
+   re = (Render_Engine *)data;
+   if (!re) return;
+
+   ob = eng_get_ob(re);
+   if (!ob) return;
+
+   ob->hdr.flag = 0;
+   if (flag > 0)
+     {
+      if (!gamma)
+        {
+           ERR("invalid hdr gamma tatble!!!");
+           return;
+        }
+
+        ob->hdr.flag = flag;
+        ob->hdr.gamma = gamma;
+     }
+   else if (!gamma && !flag)
+     {
+        ob->hdr.flag = 0;
+        ob->hdr.gamma = NULL;
+     }
+}
+//
+
 /* module api functions */
 static int
 module_open(Evas_Module *em)
@@ -1519,6 +1620,13 @@ module_open(Evas_Module *em)
    EVAS_API_OVERRIDE(output_dump, &func, eng_);
    EVAS_API_OVERRIDE(image_native_set, &func, eng_);
    EVAS_API_OVERRIDE(output_copy, &func, eng_);
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   EVAS_API_OVERRIDE(image_hdr_conv_get, &func, eng_);
+   EVAS_API_OVERRIDE(image_hdr_conv_set, &func, eng_);
+   EVAS_API_OVERRIDE(hdr_conv_gamma_get, &func, eng_);
+   EVAS_API_OVERRIDE(hdr_conv_gamma_set, &func, eng_);
+   //
 
    /* Mesa's EGL driver loads wayland egl by default. (called by eglGetProcaddr() )
     * implicit env set (EGL_PLATFORM=drm) prevent that. */

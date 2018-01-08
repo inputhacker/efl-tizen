@@ -118,6 +118,17 @@ struct _Outbuf
    Eina_Bool lost_back : 1;
    Eina_Bool surf : 1;
    Eina_Bool drew : 1;
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   struct {
+    // 1:sdr to hdr with matrix
+    // 2:hdr to sdr with matrix
+    // 3:hdr to sdr without matrix
+    int              flag;
+    void             *gamma;
+    GLuint           gTexture;
+   } hdr;
+   //
 };
 
 Eina_Bool eng_gbm_init(Evas_Engine_Info_GL_Drm *info);

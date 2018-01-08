@@ -722,6 +722,20 @@ evas_gl_common_image_free(Evas_GL_Image *im)
      {
         if (_evas_gl_image_cache_add(im)) return;
      }
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   if(im->hdr_convert.texture)
+      {
+         im->gc->gamma_texture_ref--;
+         if(im->gc->gamma_texture_ref == 0)
+         {
+            GL_TH(glDeleteTextures, 1, &(im->gc->gamma_texture));
+            INF("Free HDR Texture[%d] when image free ",im->gc->gamma_texture);
+         }
+         im->hdr_convert.hdr_conv_flag = 0;
+         im->hdr_convert.texture = 0;
+      }
+   //
    if (im->tex) evas_gl_common_texture_free(im->tex, EINA_TRUE);
    if (im->im)
      {

@@ -3617,6 +3617,31 @@ EAPI Eina_Bool evas_object_image_pixels_import(Evas_Object *obj, Evas_Pixel_Impo
  */
 EAPI void evas_object_image_reload(Evas_Object *obj) EINA_DEPRECATED;
 
+/**
+ * TIZEN_ONLY: Add hdr_gamma_set feature to Evas part.
+ * @internal
+ */
+EAPI void evas_render_hdr_gamma_set(Evas* evas, int hdr_flag, void *gamma);
+
+/**
+ * TIZEN_ONLY: Add hdr_gamma_unset feature to Evas part.
+ * @internal
+ */
+EAPI void evas_render_hdr_gamma_unset(Evas* evas);
+
+
+/**
+ * TIZEN_ONLY: Add hdr_conversion_set feature to Image part.
+ * @internal
+ */
+EAPI void evas_object_image_hdr_conversion_set(Evas_Object *obj, Eina_Bool flag);
+
+/**
+ * TIZEN_ONLY: Add hdr_conversion_unset feature to Image part.
+ * @internal
+ */
+EAPI Eina_Bool evas_object_image_hdr_conversion_get(Evas_Object *obj);
+
 #include "canvas/evas_image.eo.legacy.h"
 
 /**

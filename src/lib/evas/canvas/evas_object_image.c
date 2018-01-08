@@ -103,6 +103,10 @@ struct _Evas_Object_Image_State
    Eina_Bool      opaque_valid : 1;
    Eina_Bool      opaque : 1;
    Eina_Bool      mmaped_source : 1;
+
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   Eina_Bool      hdr_flag : 1;
+   //
 };
 
 struct _Evas_Object_Image
@@ -201,6 +205,10 @@ static void _proxy_error(Evas_Object *proxy, void *context, void *output, void *
 static void _3d_render(Evas *eo_e, Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, Evas_Image_Data *o, Evas_Canvas3D_Scene *scene);
 static void _3d_set(Evas_Object *eo_obj, Evas_Canvas3D_Scene *scene);
 static void _3d_unset(Evas_Object *eo_obj, Evas_Object_Protected_Data *image, Evas_Image_Data *o);
+
+// TIZEN_ONLY(20180112): support for HDR Converting
+static void _evas_object_image_hdr_conv_update(Evas_Object_Protected_Data *obj, Evas_Image_Data *o, void *output, void *image);
+//
 
 static const Evas_Object_Func object_func =
 {
@@ -3000,6 +3008,10 @@ _draw_image(Evas_Object_Protected_Data *obj,
 {
    Eina_Bool async_unref;
 
+   // TIZEN_ONLY(20180112): support for HDR Converting
+   Evas_Image_Data *o = obj->private_data;
+   _evas_object_image_hdr_conv_update(obj, o, data, image);
+   //
    async_unref = ENFN->image_draw(data, context, surface,
                                   image, src_x, src_y,
                                   src_w, src_h, dst_x,
@@ -3434,6 +3446,10 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                   if (ns && (ns->type == EVAS_NATIVE_SURFACE_TBM))
                     {
                       float ratio = ns->data.tbm.ratio;
+
+                      // TIZEN_ONLY(20180112): support for HDR Converting
+                      _evas_object_image_hdr_conv_update(obj, o, output, pixels);
+                     //
 
                       if (ratio > 0.01f || ratio == -1)
                         {
@@ -5085,6 +5101,77 @@ _evas_image_efl_gfx_filter_program_set(Eo *obj, Evas_Image_Data *pd EINA_UNUSED,
    pd->has_filter = (code != NULL);
    eo_do_super(obj, MY_CLASS, efl_gfx_filter_program_set(code, name));
 }
+
+// TIZEN_ONLY(20180112): support for HDR Converting
+static void
+_evas_object_image_hdr_conv_update(Evas_Object_Protected_Data *obj, Evas_Image_Data *o, void *output, void *image)
+{
+   if (!obj || !o || !o->cur) return;
+   if (!output || !image) return;
+
+   if (o->cur->hdr_flag == EINA_TRUE)
+     {
+        void     *evas_hgamma = NULL;
+        int       evas_hflag = 0;
+        void     *im_hgamma = NULL;
+        Eina_Bool im_hfalg = 0;
+
+        if (ENFN->hdr_conv_gamma_get)
+          ENFN->hdr_conv_gamma_get(output, &evas_hflag, &evas_hgamma);
+
+        if (evas_hflag > 0 && evas_hgamma != NULL)
+          {
+             if (ENFN->image_hdr_conv_get)
+               ENFN->image_hdr_conv_get(output, image, &im_hfalg, &im_hgamma);
+
+             if ((evas_hgamma != im_hgamma)
+                  && ENFN->image_hdr_conv_set)
+               ENFN->image_hdr_conv_set(output, image, EINA_TRUE);
+          }
+      }
+}
+
+EAPI void
+evas_object_image_hdr_conversion_set(Evas_Object *eo_obj, Eina_Bool flag)
+{
+   Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
+   Evas_Image_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
+   evas_object_async_block(obj);
+
+   _evas_object_image_cleanup(eo_obj, obj, o);
+
+   int       evas_hflag = 0;
+   void     *evas_hgamma = NULL;
+
+   if (ENFN->hdr_conv_gamma_get)
+     ENFN->hdr_conv_gamma_get(ENDT, &evas_hflag, &evas_hgamma);
+
+   if(evas_hgamma == NULL)
+     {
+        INF("Gamma Table is NULL, so we can't set hdr conversion");
+     }
+   else
+     {
+        EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
+          state_write->hdr_flag = flag;
+        EINA_COW_IMAGE_STATE_WRITE_END(o, state_write);
+        if (o->engine_data && ENFN->image_hdr_conv_set)
+          ENFN->image_hdr_conv_set(ENDT, o->engine_data, flag);
+
+        o->written = EINA_TRUE;
+     }
+}
+
+EAPI Eina_Bool
+evas_object_image_hdr_conversion_get(Evas_Object *eo_obj)
+{
+   Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
+   Evas_Image_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
+   evas_object_async_block(obj);
+
+   return o->cur->hdr_flag;
+}
+//
 
 #include "canvas/evas_image.eo.c"
 
