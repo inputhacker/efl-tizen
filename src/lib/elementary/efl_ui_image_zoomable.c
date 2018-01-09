@@ -159,7 +159,12 @@ _efl_ui_image_zoomable_pan_efl_gfx_position_set(Eo *obj, Efl_Ui_Image_Zoomable_P
    efl_gfx_position_set(efl_super(obj, MY_PAN_CLASS), pos);
 
    ecore_job_del(psd->wsd->calc_job);
+   //TIZEN ONLY (20150911): Many job based calculation should be fixed together in the upstream.
+   /*
    psd->wsd->calc_job = ecore_job_add(_calc_job_cb, psd->wobj);
+   */
+   _calc_job_cb(psd->wobj);
+   //////
 }
 
 EOLIAN static void
@@ -172,7 +177,12 @@ _efl_ui_image_zoomable_pan_efl_gfx_size_set(Eo *obj, Efl_Ui_Image_Zoomable_Pan_D
 
    psd->wsd->resized = EINA_TRUE;
    ecore_job_del(psd->wsd->calc_job);
+   //TIZEN ONLY (20150911): Many job based calculation should be fixed together in the upstream.
+   /*
    psd->wsd->calc_job = ecore_job_add(_calc_job_cb, psd->wobj);
+   */
+   _calc_job_cb(psd->wobj);
+   //////
 }
 
 static void
