@@ -327,6 +327,7 @@ struct _Elm_Config_Flags
    Eina_Bool gl_msaa : 1;
    Eina_Bool icon_theme : 1;
    Eina_Bool entry_select_allow : 1; // unused
+   Eina_Bool drag_anim_duration : 1;
 };
 
 struct _Elm_Config
@@ -470,6 +471,7 @@ struct _Elm_Config
    unsigned char entry_select_allow;
    Eina_Bool     offline;
    int  powersave;
+   double        drag_anim_duration;
 // TIZEN_ONLY(20150705): Genlist item align feature
    Eina_Bool     scroll_item_align_enable;
    const char   *scroll_item_valign;

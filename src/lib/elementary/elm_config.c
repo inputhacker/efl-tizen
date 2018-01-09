@@ -535,6 +535,7 @@ _desc_init(void)
    ELM_CONFIG_VAL(D, T, entry_select_allow, T_UCHAR);
    ELM_CONFIG_VAL(D, T, offline, T_UCHAR);
    ELM_CONFIG_VAL(D, T, powersave, T_INT);
+   ELM_CONFIG_VAL(D, T, drag_anim_duration, T_DOUBLE);
    // TIZEN_ONLY(20150705): Genlist item align feature
    ELM_CONFIG_VAL(D, T, scroll_item_align_enable, T_UCHAR);
    ELM_CONFIG_VAL(D, T, scroll_item_valign, T_STRING);
@@ -1928,6 +1929,7 @@ _config_load(void)
    _elm_config->language_auto_mirrored = EINA_TRUE;
    //
    _elm_config->entry_select_allow = EINA_TRUE;
+   _elm_config->drag_anim_duration = 0.0;
    // TIZEN_ONLY(20150705): Genlist item align feature
    _elm_config->scroll_item_align_enable = EINA_FALSE;
    _elm_config->scroll_item_valign = eina_stringshare_add("center");
@@ -2132,6 +2134,7 @@ _elm_config_reload_do(void)
         KEEP_VAL(gl_msaa);
         KEEP_STR(icon_theme);
         KEEP_VAL(entry_select_allow);
+        KEEP_VAL(drag_anim_duration);
 
         _elm_config->priv = prev_config->priv;
         _config_free(prev_config);
@@ -2948,6 +2951,9 @@ _env_get(void)
    if (s) _elm_config->popup_vertical_align = _elm_atof(s);
    s = getenv("ELM_POPUP_SCROLLABLE");
    if (s) _elm_config->popup_scrollable = atoi(s);
+
+   s = getenv("EFL_UI_DND_DRAG_ANIM_DURATION");
+   if (s) _elm_config->drag_anim_duration = _elm_atof(s);
 }
 
 static void
@@ -4877,6 +4883,20 @@ elm_config_powersave_set(int set)
    _elm_config->powersave = set;
 }
 
+EAPI double
+elm_config_drag_anim_duration_get(void)
+{
+   if (!_elm_config) return 0.0;
+   return _elm_config->drag_anim_duration;
+}
+
+EAPI void
+elm_config_drag_anim_duration_set(double set)
+{
+   if (!_elm_config) return;
+   _elm_config->drag_anim_duration = set;
+}
+
 void
 _elm_config_profile_set(const char *profile)
 {
@@ -5343,6 +5363,7 @@ _efl_config_global_efl_config_config_get(Eo *obj EINA_UNUSED, void *_pd EINA_UNU
    CONFIG_GETS(web_backend);
    CONFIG_GETB(offline);
    CONFIG_GETI(powersave);
+   CONFIG_GETD(drag_anim_duration);
 
    const size_t len = sizeof("audio_mute") - 1;
    if (!strncmp(name, "audio_mute", len))
