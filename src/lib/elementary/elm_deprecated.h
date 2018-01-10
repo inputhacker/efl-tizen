@@ -1652,6 +1652,21 @@ EINA_DEPRECATED EAPI const char *elm_fileselector_entry_selected_get(const Evas_
 EINA_DEPRECATED EAPI void elm_access_external_info_set(Evas_Object *obj, const char *text);
 EINA_DEPRECATED EAPI char *elm_access_external_info_get(const Evas_Object *obj);
 
+/**
+ * @deprecated Deprecated since 2.4.
+ * @ingroup Elm_Ctxpopup
+ *
+ * @param[in] obj The object.
+ * @param[in] direction The direction to check available to show ctxpopup.
+ *
+ * @return EINA_TRUE if object is available to show with @p direction.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EINA_DEPRECATED EAPI Eina_Bool elm_ctxpopup_direction_available_get(Evas_Object *obj, Elm_Ctxpopup_Direction direction);
+
 // elm_win
 /*TIZEN_ONLY(20171214): tizen need to change win type after win creating
 EINA_DEPRECATED EAPI void elm_win_type_set(Evas_Object *obj, Elm_Win_Type type);
