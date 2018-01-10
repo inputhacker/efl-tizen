@@ -389,6 +389,10 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
          set {
             [[Sets gesture callback to give widget.
 
+              Warning: Please do not abuse this API. The purpose of this API is
+              to support special application such as screen-reader guidance.
+              Before using this API, please check if there is another way.
+
               \@if WEARABLE \@since_tizen 3.0
               \@endif
             ]]
