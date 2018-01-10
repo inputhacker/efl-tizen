@@ -5981,13 +5981,13 @@ _elm_genlist_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Genlist_Data *
    Item_Block *itb;
    Eina_Bool done = EINA_FALSE;
    Evas_Object *content = NULL;
+   Eina_List *l, *ll;
+   Elm_Gen_Item *it;
 
    EINA_INLIST_FOREACH(sd->blocks, itb)
      {
         if (itb->realized)
           {
-             Eina_List *l;
-             Elm_Gen_Item *it;
 
              done = EINA_TRUE;
              EINA_LIST_FOREACH(itb->items, l, it)
@@ -5997,7 +5997,7 @@ _elm_genlist_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Genlist_Data *
                     {
                        efl_access_added(EO_OBJ(it));
                        efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
-                       EINA_LIST_FOREACH(it->contents, l, content)
+                       EINA_LIST_FOREACH(it->contents, ll, content)
                          {
                             if (efl_isa(content, EFL_ACCESS_MIXIN))
                               {
