@@ -6875,15 +6875,16 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
                {
                   Elm_Widget_Item_Data *id = efl_data_scope_get(child, ELM_WIDGET_ITEM_CLASS);
                   compare_obj = id->view;
-#ifdef TIZEN_PROFILE_WEARABLE
-                  Eo* it_view = evas_object_image_source_get(stack_item);
-                  if (it_view && it_view == compare_obj)
+                  if (TIZEN_PROFILE_WEARABLE)
                     {
-                       eina_list_free(children);
-                       eina_list_free(stack);
-                       return child;
+                       Eo* it_view = evas_object_image_source_get(stack_item);
+                       if (it_view && it_view == compare_obj)
+                         {
+                            eina_list_free(children);
+                            eina_list_free(stack);
+                            return child;
+                         }
                     }
-#endif
                }
              /* In case of access object compare should be 'wrapped' evas_object */
              if (efl_isa(child, ELM_ACCESS_CLASS))
@@ -7031,12 +7032,11 @@ _efl_ui_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_
                          break;
                        case EFL_ACCESS_ROLE_LIST:
                            item_child = _item_at_point_get(smart_parent, x, y);
-    #ifdef TIZEN_PROFILE_WEARABLE
+                           if (TIZEN_PROFILE_WEARABLE)
                              {
                                 item_child = _child_object_at_point_get(item_child, x, y);
                                 return item_child;
                              }
-    #endif
                            return item_child;
                          break;
                        default:

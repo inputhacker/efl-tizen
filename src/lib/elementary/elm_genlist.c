@@ -9192,40 +9192,43 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
 {
    ELM_GENLIST_DATA_GET(WIDGET(it), sd);
 
-#ifndef TIZEN_PROFILE_WEARABLE
-   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
-   efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_GENLIST_ITEM_CLASS));
-   //
-#else
-   // TIZEN_ONLY(20171011) : atspi : Do not center align when genlist item is highlighted in wearable profile
-   //FIXME : First, last item is called centered because it may not have a proxy image.
-   //        This part will be revised in the next version.
-   Eina_List *realized = elm_genlist_realized_items_get(WIDGET(it));
-   if (VIEW(it) || realized)
+   if (!TIZEN_PROFILE_WEARABLE)
      {
-        Elm_Object_Item *first_it = elm_genlist_first_item_get(WIDGET(it));
-        Elm_Object_Item *last_it = elm_genlist_last_item_get(WIDGET(it));
-        if (first_it == eo_it || last_it == eo_it)
-          elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
-        else
-          elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
-      }
-   if (realized)
-     eina_list_free(realized);
-   //
+        //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+        efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_GENLIST_ITEM_CLASS));
+        //
+     }
+   else
+     {
+        // TIZEN_ONLY(20171011) : atspi : Do not center align when genlist item is highlighted in wearable profile
+        //FIXME : First, last item is called centered because it may not have a proxy image.
+        //        This part will be revised in the next version.
+        Eina_List *realized = elm_genlist_realized_items_get(WIDGET(it));
+        if (VIEW(it) || realized)
+         {
+            Elm_Object_Item *first_it = elm_genlist_first_item_get(WIDGET(it));
+            Elm_Object_Item *last_it = elm_genlist_last_item_get(WIDGET(it));
+            if (first_it == eo_it || last_it == eo_it)
+              elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+            else
+              elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+          }
+        if (realized)
+         eina_list_free(realized);
+        //
 
-   if (VIEW(it))
-     elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
+        if (VIEW(it))
+         elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
 
-   ///TIZEN_ONLY(20170717) : expose highlight information on atspi
-   efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
-   ///
+        ///TIZEN_ONLY(20170717) : expose highlight information on atspi
+        efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+        ///
 
-   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
-   // If you call eo_do_super, then you do NOT have to call smart callback.
-   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
-   //
-#endif
+        //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+        // If you call eo_do_super, then you do NOT have to call smart callback.
+        evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
+        //
+     }
 
    if (VIEW(it))
      {
@@ -9235,11 +9238,13 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
      }
    else
      {
-#ifndef TIZEN_PROFILE_WEARABLE
-        //TIZEN_ONLY(20170724): grab highlight using unrealized item
-        elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
-        //
-#endif
+        
+        if (!TIZEN_PROFILE_WEARABLE)
+          {
+            //TIZEN_ONLY(20170724): grab highlight using unrealized item
+            elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
+            //
+          }
         sd->atspi_item_to_highlight = it;//it will be highlighted when realized
      }
 

@@ -3435,41 +3435,44 @@ _elm_list_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_List_Item_Data
 {
    ELM_LIST_DATA_GET_OR_RETURN_VAL(WIDGET(it), sd, EINA_FALSE);
 
-#ifndef TIZEN_PROFILE_WEARABLE
-   //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
-   efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_LIST_ITEM_CLASS));
-   //
-#else
-   Evas_Coord wy, wh, x, y, w, h, bx, by, bw, bh;
-   evas_object_geometry_get(WIDGET(it), NULL, &wy, NULL, &wh);
-   evas_object_geometry_get(VIEW(it), &x, &y, &w, &h);
-   int res = _is_item_in_viewport(wy, wh, y, h);
-
-   if (res != 0)
+   if (!TIZEN_PROFILE_WEARABLE)
      {
-         evas_object_geometry_get(sd->box, &bx, &by, &bw, &bh);
-         evas_smart_objects_calculate(evas_object_evas_get(sd->box));
-         x -= bx;
-         y -= by;
-         if (res > 0)
-           {
-             y -= wh - h;
-             elm_interface_scrollable_content_region_show(WIDGET(it), x, y, w, h);
-           }
-         else if (res < 0)
-           {
-             y += wh - h;
-             elm_interface_scrollable_content_region_show(WIDGET(it), x, y, w, h);
-           }
+        //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+        efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_LIST_ITEM_CLASS));
+        //
      }
    else
-     elm_list_item_show(eo_it);
+     {
+        Evas_Coord wy, wh, x, y, w, h, bx, by, bw, bh;
+        evas_object_geometry_get(WIDGET(it), NULL, &wy, NULL, &wh);
+        evas_object_geometry_get(VIEW(it), &x, &y, &w, &h);
+        int res = _is_item_in_viewport(wy, wh, y, h);
 
-   // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
-   elm_object_accessibility_highlight_set(eo_it, EINA_TRUE);
-   efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
-   //
-#endif
+        if (res != 0)
+         {
+             evas_object_geometry_get(sd->box, &bx, &by, &bw, &bh);
+             evas_smart_objects_calculate(evas_object_evas_get(sd->box));
+             x -= bx;
+             y -= by;
+             if (res > 0)
+               {
+                 y -= wh - h;
+                 elm_interface_scrollable_content_region_show(WIDGET(it), x, y, w, h);
+               }
+             else if (res < 0)
+               {
+                 y += wh - h;
+                 elm_interface_scrollable_content_region_show(WIDGET(it), x, y, w, h);
+               }
+         }
+        else
+         elm_list_item_show(eo_it);
+
+        // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
+        elm_object_accessibility_highlight_set(eo_it, EINA_TRUE);
+        efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+        //
+     }
 
    return EINA_TRUE;
 }
