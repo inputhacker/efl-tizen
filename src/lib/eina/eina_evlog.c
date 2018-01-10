@@ -24,6 +24,12 @@
 #include "eina_evlog.h"
 #include "eina_debug.h"
 
+// TIZEN_ONLY(20160401): TTRACE
+#ifdef ENABLE_TTRACE
+#include <ttrace.h>
+#endif
+// TIZEN_ONLY(20160401): TTRACE
+
 #ifdef _WIN32
 # include <Evil.h>
 #endif
@@ -171,6 +177,17 @@ eina_evlog(const char *event, void *obj, double srctime, const char *detail)
    strcpy(strings + sizeof(Eina_Evlog_Item), event);
    if (detail_offset > 0) strcpy(strings + detail_offset, detail);
    eina_spinlock_release(&_evlog_lock);
+
+// TIZEN_ONLY(20160401): TTRACE
+#ifdef ENABLE_TTRACE
+#ifndef TIZEN_PROFILE_TV
+   if(!strncmp(event, "+", 1))
+     traceBegin(TTRACE_TAG_GRAPHICS, event + 1);
+   else if(!strncmp(event, "-", 1))
+     traceEnd(TTRACE_TAG_GRAPHICS);
+#endif
+#endif
+// TIZEN_ONLY(20160401): TTRACE
 }
 
 EAPI Eina_Evlog_Buf *

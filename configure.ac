@@ -4008,6 +4008,13 @@ EFL_ADD_LIBS([ECORE_DRM2], [-ldl])
 
 EFL_EVAL_PKGS([ECORE_DRM2])
 
+# Check for ttrace
+PKG_CHECK_MODULES(TTRACE,
+                  [ttrace],
+                  [have_ttrace="yes"], [have_ttrace="no"])
+if test "x$have_ttrace" = "xyes"; then
+   AC_DEFINE(ENABLE_TTRACE, 1, [ttrace available])
+fi
 ### Checks for header files
 
 ### Checks for types
