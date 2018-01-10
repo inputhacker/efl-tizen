@@ -467,8 +467,14 @@ EAPI void *elm_win_trap_data_get(const Evas_Object *obj);
  * @param[in] override If true, the window is overridden.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI void elm_win_override_set(Evas_Object *obj, Eina_Bool override);
+EINA_DEPRECATED EAPI void elm_win_override_set(Evas_Object *obj, Eina_Bool override);
 
 /**
  * @brief Get the override state of a window.
@@ -476,8 +482,14 @@ EAPI void elm_win_override_set(Evas_Object *obj, Eina_Bool override);
  * @return If true, the window is overridden.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI Eina_Bool elm_win_override_get(const Evas_Object *obj);
+EINA_DEPRECATED EAPI Eina_Bool elm_win_override_get(const Evas_Object *obj);
 
 /**
  * @brief Lower a window object.
@@ -500,8 +512,14 @@ EAPI void elm_win_lower(Evas_Object *obj);
  * @param[in] quickpanel The quickpanel flag.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI void elm_win_quickpanel_set(Evas_Object *obj, Eina_Bool quickpanel);
+EINA_DEPRECATED EAPI void elm_win_quickpanel_set(Evas_Object *obj, Eina_Bool quickpanel);
 
 /**
  * @brief Get if this window is a quickpanel or not.
@@ -509,16 +527,28 @@ EAPI void elm_win_quickpanel_set(Evas_Object *obj, Eina_Bool quickpanel);
  * @return The quickpanel flag.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI Eina_Bool elm_win_quickpanel_get(const Evas_Object *obj);
+EINA_DEPRECATED EAPI Eina_Bool elm_win_quickpanel_get(const Evas_Object *obj);
 /**
  * @brief Set which zone this quickpanel should appear in.
  *
  * @param[in] zone The requested zone for this quickpanel.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI void elm_win_quickpanel_zone_set(Evas_Object *obj, int zone);
+EINA_DEPRECATED EAPI void elm_win_quickpanel_zone_set(Evas_Object *obj, int zone);
 
 /**
  * @brief Get which zone this quickpanel should appear in.
@@ -526,16 +556,28 @@ EAPI void elm_win_quickpanel_zone_set(Evas_Object *obj, int zone);
  * @return The requested zone for this quickpanel.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI int elm_win_quickpanel_zone_get(const Evas_Object *obj);
+EINA_DEPRECATED EAPI int elm_win_quickpanel_zone_get(const Evas_Object *obj);
 /**
  * @brief Set the major priority of a quickpanel window.
  *
  * @param[in] priority The major priority for this quickpanel or -1.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI void elm_win_quickpanel_priority_major_set(Evas_Object *obj, int priority);
+EINA_DEPRECATED EAPI void elm_win_quickpanel_priority_major_set(Evas_Object *obj, int priority);
 
 /**
  * @brief Get the major priority of a quickpanel window.
@@ -543,8 +585,14 @@ EAPI void elm_win_quickpanel_priority_major_set(Evas_Object *obj, int priority);
  * @return The major priority for this quickpanel or -1.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI int elm_win_quickpanel_priority_major_get(const Evas_Object *obj);
+EINA_DEPRECATED EAPI int elm_win_quickpanel_priority_major_get(const Evas_Object *obj);
 
 /**
  * @brief Set the minor priority of a quickpanel window.
@@ -552,8 +600,14 @@ EAPI int elm_win_quickpanel_priority_major_get(const Evas_Object *obj);
  * @param[in] priority The minor priority for this quickpanel.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI void elm_win_quickpanel_priority_minor_set(Evas_Object *obj, int priority);
+EINA_DEPRECATED EAPI void elm_win_quickpanel_priority_minor_set(Evas_Object *obj, int priority);
 
 /**
  * @brief Get the minor priority of a quickpanel window.
@@ -561,8 +615,14 @@ EAPI void elm_win_quickpanel_priority_minor_set(Evas_Object *obj, int priority);
  * @return The minor priority for this quickpanel.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI int elm_win_quickpanel_priority_minor_get(const Evas_Object *obj);
+EINA_DEPRECATED EAPI int elm_win_quickpanel_priority_minor_get(const Evas_Object *obj);
 
 /**
  * @brief Sets the indicator mode of the window.
@@ -606,8 +666,14 @@ EAPI Elm_Win_Indicator_Opacity_Mode elm_win_indicator_opacity_get(const Evas_Obj
  * @param[in] mode If true, the window is a virtual keyboard..
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI void elm_win_keyboard_win_set(Evas_Object *obj, Eina_Bool is_keyboard);
+EINA_DEPRECATED EAPI void elm_win_keyboard_win_set(Evas_Object *obj, Eina_Bool is_keyboard);
 
 /**
  * @brief Get whether the window is a keyboard
@@ -615,8 +681,14 @@ EAPI void elm_win_keyboard_win_set(Evas_Object *obj, Eina_Bool is_keyboard);
  * @return The mode, If true, the window is a virtual keyboard..
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI Eina_Bool elm_win_keyboard_win_get(const Evas_Object *obj);
+EINA_DEPRECATED EAPI Eina_Bool elm_win_keyboard_win_get(const Evas_Object *obj);
 
 /**
  * @brief Set if this window is an illume conformant window.
@@ -889,8 +961,14 @@ EAPI Eina_Bool elm_win_modal_get(const Evas_Object *obj);
  * @param[in] shaped If @c true, the window is shaped.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI void elm_win_shaped_set(Evas_Object *obj, Eina_Bool shaped);
+EINA_DEPRECATED EAPI void elm_win_shaped_set(Evas_Object *obj, Eina_Bool shaped);
 
 /**
  * @brief Get the shaped state of a window.
@@ -898,8 +976,14 @@ EAPI void elm_win_shaped_set(Evas_Object *obj, Eina_Bool shaped);
  * @return If @c true, the window is shaped.
  *
  * @ingroup Elm_Win
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ * @deprecated Deprecated since Tizen 2.4
+ *
  */
-EAPI Eina_Bool elm_win_shaped_get(const Evas_Object *obj);
+EINA_DEPRECATED EAPI Eina_Bool elm_win_shaped_get(const Evas_Object *obj);
 
 /**
  * @brief Set the title of the window.

@@ -197,7 +197,7 @@ EAPI void      elm_exit(void);
 /**
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI void      elm_quicklaunch_mode_set(Eina_Bool ql_on);
+EINA_DEPRECATED EAPI void      elm_quicklaunch_mode_set(Eina_Bool ql_on);
 
 /**
  * Exposed symbol used only by macros and should not be used by apps
