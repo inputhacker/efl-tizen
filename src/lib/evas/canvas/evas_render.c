@@ -3183,6 +3183,14 @@ evas_render_updates_internal(Evas *eo_e,
         goto nothing2render;
      }
 
+//TIZEN_ONLY(20160511) : Do not render if the output size is 1 x 1.
+   if ((e->output.w == 1) && (e->output.h == 1))
+     {
+        INF("[[manual_render_dbg]--- SKIP RENDER EVAS (size: 1x1)");
+        return EINA_FALSE;
+     }
+//
+
    if (e->rendering)
      {
         if (do_async)
