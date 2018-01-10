@@ -4290,6 +4290,12 @@ static unsigned char _object_is_highlightable(accessibility_navigation_pointer_t
    return _state_set_is_set(state_set, ATSPI_STATE_HIGHLIGHTABLE);
 }
 
+static unsigned char _object_is_visible(accessibility_navigation_pointer_table *table, void *obj)
+{
+   uint64_t state_set = CALL(object_get_state_set, obj);
+   return _state_set_is_set(state_set, ATSPI_STATE_VISIBLE);
+}
+
 static unsigned char _object_is_showing(accessibility_navigation_pointer_table *table, void *obj)
 {
    uint64_t state_set = CALL(object_get_state_set, obj);
@@ -4327,6 +4333,7 @@ static void *_get_scrollable_parent(accessibility_navigation_pointer_table *tabl
 static unsigned char _accept_object(accessibility_navigation_pointer_table *table, void *obj)
 {
    if (!obj) return 0;
+   if (!_object_is_visible(table, obj)) return 0;
    if (!_accept_object_check_role(table, obj)) return 0;
    if (CALL(get_object_in_relation_by_type, obj, ATSPI_RELATION_CONTROLLED_BY) != NULL) return 0;
    if (!_object_is_highlightable(table, obj)) return 0;
