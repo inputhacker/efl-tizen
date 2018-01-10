@@ -4635,7 +4635,11 @@ static void *_get_object_in_relation_by_type_impl(struct accessibility_navigatio
        Eina_List *l;
        EINA_LIST_FOREACH(relations, l, rel)
          {
-           if (rel->type == expected_relation_type) return rel->objects ? rel->objects->data : NULL;
+           if (rel->type == expected_relation_type)
+             {
+                Eina_List *last = eina_list_last(rel->objects);
+                return eina_list_data_get(last);
+             }
          }
      }
    return NULL;
