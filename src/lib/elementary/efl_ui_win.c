@@ -1137,6 +1137,7 @@ _elm_win_accessibility_highlight_visible_set(Efl_Ui_Win_Data *sd,
      }
    else
      {
+        evas_object_smart_member_del(fobj);
         evas_object_hide(fobj);
         evas_object_del(fobj);
      }
@@ -1205,7 +1206,7 @@ _elm_win_accessibility_highlight_simple_setup(Efl_Ui_Win_Data *sd,
 {
    // TIZEN_ONLY(20171117) Accessibility frame follows parent item on scroll event
    // Evas_Object *target = sd->accessibility_highlight.cur.target;
-   Evas_Object *clip, *target = sd->accessibility_highlight.cur.target;
+   Evas_Object *target = sd->accessibility_highlight.cur.target;
    //
    Evas_Coord x, y, w, h;
    //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
@@ -1256,10 +1257,7 @@ _elm_win_accessibility_highlight_simple_setup(Efl_Ui_Win_Data *sd,
    sd->accessibility_highlight.cur.y = oy;
    //
 
-   // TIZEN_ONLY(20171117) Accessibility frame follows parent item on scroll event
-   clip = evas_object_clip_get(target);
-   if (clip) evas_object_clip_set(obj, clip);
-   //
+   evas_object_smart_member_add(obj, target);
 }
 //
 
@@ -9282,7 +9280,7 @@ _elm_win_legacy_init(Efl_Ui_Win_Data *sd)
 {
    sd->legacy.edje = edje_object_add(sd->evas);
    _elm_win_theme_internal(sd->obj, sd);
-   
+
 //TIZEN_ONLY(20161208): supported floating window
    if (sd->type != ELM_WIN_BASIC)
      edje_object_signal_emit(sd->legacy.edje, "elm,state,floating,on", "elm");
