@@ -312,7 +312,10 @@ _elm_label_elm_layout_sizing_eval(Eo *obj, Elm_Label_Data *_pd EINA_UNUSED)
    if (sd->linewrap)
      {
         evas_object_geometry_get(wd->resize_obj, NULL, NULL, &resw, &resh);
-        if (resw == sd->lastw) return;
+        // TIZEN_ONLY(20161103): If a width is 0, Do not calc for the Multi-line
+        //if (resw == sd->lastw) return;
+        if ((resw == sd->lastw) || ((resw == 0) && (sd->wrap_w <= 0))) return;
+        //
         sd->lastw = resw;
         _recalc(obj);
      }
