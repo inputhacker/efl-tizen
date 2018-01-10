@@ -450,14 +450,16 @@ _hide_finished_cb(void *data,
                   const char *source EINA_UNUSED)
 {
    ELM_NOTIFY_DATA_GET(data, sd);
+
+   /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
+   sd->show_finished = EINA_FALSE;
+   /* END */
+
    sd->had_hidden = EINA_TRUE;
    evas_object_hide(sd->notify);
    if (!sd->allow_events) evas_object_hide(sd->block_events);
    efl_gfx_visible_set(efl_super(data, MY_CLASS), EINA_FALSE);
    efl_event_callback_legacy_call(data, ELM_NOTIFY_EVENT_DISMISSED, NULL);
-   /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
-   sd->show_finished = EINA_FALSE;
-   /* END */
 }
 
 EOLIAN static void
