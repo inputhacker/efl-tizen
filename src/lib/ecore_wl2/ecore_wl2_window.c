@@ -2949,7 +2949,7 @@ ecore_wl2_window_pointer_warp(Ecore_Wl2_Window *win, int x, int y)
 
 //TIZEN_ONLY: ecore_wl2: add ecore_wl_window_video_has
 EAPI void
-ecore_wl2_window_video_has_set(Ecore_Wl2_Window *window, Eina_Bool has)
+ecore_wl2_window_video_has(Ecore_Wl2_Window *window, Eina_Bool has)
 {
    Ecore_Wl2_Display *display;
    uint32_t ver;
