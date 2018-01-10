@@ -684,6 +684,23 @@ static void _evas_textblock_cursors_set_node(Evas_Textblock_Data *o, const Evas_
 #include "evas_textblock_hyphenation.x"
 #endif
 
+/* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+static int
+_item_negative_inset_get(Evas_Object_Textblock_Item *it)
+{
+   int ret = 0;
+
+   if (it && (it->type == EVAS_TEXTBLOCK_ITEM_TEXT))
+     {
+        ret = _ITEM_TEXT(it)->inset;
+
+        if (ret > 0) ret = 0;
+     }
+
+   return ret;
+}
+/* END */
+
 /** selection iterator */
 /**
   * @internal
@@ -3686,6 +3703,10 @@ loop_advance:
         /* END */
      }
 
+   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+   c->ln->w -= _item_negative_inset_get(c->ln->items);
+   /* END */
+
    /* clear obstacle info for this line */
    EINA_LIST_FREE(c->obs_infos, obs_info)
      {
@@ -5453,6 +5474,13 @@ _layout_par(Ctxt *c)
                needed_w += it->w - it->adv;
              /* END */
           }
+        /* END */
+
+        /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+        if (c->ln->items)
+          needed_w -= _item_negative_inset_get(c->ln->items);
+        else
+          needed_w -= _item_negative_inset_get(it);
         /* END */
 
         if (handle_obstacles && !obs)
@@ -12640,6 +12668,9 @@ _size_native_calc_line_finalize(const Evas_Object *eo_obj,
    Evas_Object_Textblock_Item *it, *last_it = NULL;
    Eina_List *i;
    Eina_Bool is_bidi = EINA_FALSE;
+   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+   Evas_Object_Textblock_Item *first_it = NULL;
+   /* END */
 
    it = eina_list_data_get(items);
    *w = 0;
@@ -12715,6 +12746,11 @@ loop_advance:
         if (!is_bidi && ((it->w > 0) || (it->adv > 0)))
           last_it = it;
         /* END */
+
+        /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+        if (!first_it)
+          first_it = it;
+        /* END */
      }
 
    /* rectify width of line using the last item */
@@ -12724,6 +12760,10 @@ loop_advance:
     */
    if (last_it && (last_it->w > last_it->adv))
      *w += last_it->w - last_it->adv;
+   /* END */
+
+   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+   *w -= _item_negative_inset_get(first_it);
    /* END */
 }
 
@@ -13052,6 +13092,9 @@ evas_object_textblock_render(Evas_Object *eo_obj EINA_UNUSED,
              EINA_INLIST_FOREACH(ln->items, itr) \
                { \
                   Evas_Coord yoff; \
+                  /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */ \
+                  int inset = _item_negative_inset_get(ln->items); \
+                  /* END */ \
                   yoff = ln->baseline; \
                   if (itr->format->valign != -1.0) \
                     { \
@@ -13115,7 +13158,11 @@ evas_object_textblock_render(Evas_Object *eo_obj EINA_UNUSED,
    if (ti->parent.format->font.font)                                    \
      evas_font_draw_async_check(obj, output, context, surface,          \
         ti->parent.format->font.font,                                   \
+        /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. \
         obj->cur->geometry.x + ln->x + ti->parent.x + x + (ox),          \
+         */ \
+        obj->cur->geometry.x + ln->x + ti->parent.x + x + (ox) - inset,          \
+        /* END */ \
         obj->cur->geometry.y + ln->par->y + ln->y + yoff + y + (oy),     \
         ti->parent.w, ti->parent.h, ti->parent.w, ti->parent.h,         \
         &ti->text_props, do_async);
@@ -13137,7 +13184,11 @@ evas_object_textblock_render(Evas_Object *eo_obj EINA_UNUSED,
         ENFN->rectangle_draw(output,                                    \
                              context,                                   \
                              surface,                                   \
+                             /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. \
                              obj->cur->geometry.x + ln->x + x + (ox),   \
+                              */ \
+                             obj->cur->geometry.x + ln->x + x + (ox) - inset,   \
+                             /* END */ \
                              obj->cur->geometry.y + ln->par->y + ln->y + y + (oy), \
                              (ow),                                      \
                              (oh),                                      \
@@ -13294,6 +13345,10 @@ evas_object_textblock_render(Evas_Object *eo_obj EINA_UNUSED,
           }
         if (haveshad)
           {
+             /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+             int inset = _item_negative_inset_get(ln->items);
+             /* END */
+
              if (shad_dst > 0)
                {
                   switch (ti->parent.format->style & EVAS_TEXT_STYLE_MASK_SHADOW_DIRECTION)
@@ -13374,6 +13429,10 @@ evas_object_textblock_render(Evas_Object *eo_obj EINA_UNUSED,
 
         if ((ti->parent.format->style & EVAS_TEXT_STYLE_MASK_BASIC) == EVAS_TEXT_STYLE_GLOW)
           {
+             /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+             int inset = _item_negative_inset_get(ln->items);
+             /* END */
+
              for (j = 0; j < 5; j++)
                {
                   for (i = 0; i < 5; i++)
@@ -13409,6 +13468,9 @@ evas_object_textblock_render(Evas_Object *eo_obj EINA_UNUSED,
             ((ti->parent.format->style & EVAS_TEXT_STYLE_MASK_BASIC) == EVAS_TEXT_STYLE_OUTLINE_SHADOW) ||
             ((ti->parent.format->style & EVAS_TEXT_STYLE_MASK_BASIC) == EVAS_TEXT_STYLE_OUTLINE_SOFT_SHADOW))
           {
+             /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+             int inset = _item_negative_inset_get(ln->items);
+             /* END */
              COLOR_SET(outline);
              DRAW_TEXT(-1, 0);
              DRAW_TEXT(1, 0);
@@ -13417,6 +13479,10 @@ evas_object_textblock_render(Evas_Object *eo_obj EINA_UNUSED,
           }
         else if (ti->parent.format->style == EVAS_TEXT_STYLE_SOFT_OUTLINE)
           {
+             /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+             int inset = _item_negative_inset_get(ln->items);
+             /* END */
+
              for (j = 0; j < 5; j++)
                {
                   for (i = 0; i < 5; i++)
