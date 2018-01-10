@@ -21,6 +21,10 @@ static const Elm_Layout_Part_Alias_Description _content_aliases[] =
    {NULL, NULL}
 };
 
+// TIZEN_ONLY(20160218): Improve launching performance
+static Evas_Object *_precreated_bg_obj = NULL;
+//
+
 EAPI Evas_Object *
 elm_bg_add(Evas_Object *parent)
 {
@@ -233,6 +237,22 @@ _efl_ui_bg_widget_efl_file_mmap_get(Eo *obj EINA_UNUSED, Efl_Ui_Bg_Widget_Data *
 {
    efl_file_mmap_get(sd->img, file, key);
 }
+
+// TIZEN_ONLY(20160218): Improve launching performance.
+EAPI void
+elm_bg_precreated_object_set(Evas_Object *obj)
+{
+      INF("Set precreated obj(%p).", obj);
+         _precreated_bg_obj = obj;
+}
+
+EAPI Evas_Object *
+elm_bg_precreated_object_get(void)
+{
+      INF("Get precreated obj(%p).", _precreated_bg_obj);
+         return _precreated_bg_obj;
+}
+//
 
 /* Internal EO APIs and hidden overrides */
 
