@@ -29,6 +29,7 @@ BuildRequires:  pkgconfig(wayland-tbm-client)
 BuildRequires:  pkgconfig(wayland-tbm-server)
 BuildRequires:  pkgconfig(tizen-extension-client)
 BuildRequires:  pkgconfig(tizen-remote-surface-client)
+BuildRequires:  pkgconfig(tizen-surface-client)
 Requires:       libwayland-extension-client
 %endif
 

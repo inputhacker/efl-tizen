@@ -1389,7 +1389,8 @@ AC_ARG_ENABLE([wayland],
    [want_wayland="no"])
 
 if test "${want_wayland}" = "yes"; then
-   EFL_PKG_CHECK_STRICT([wayland-client >= 1.7.0])
+   EFL_PKG_CHECK_STRICT([wayland-client >= 1.7.0 tizen-surface-client])
+   EFL_DEPEND_PKG([EVAS],[WAYLAND],[tizen-surface-client])
 fi
 
 # Wayland IVI-Shell
