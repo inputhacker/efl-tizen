@@ -544,30 +544,27 @@ efl_draw_argb_premul(uint32_t *data, unsigned int len)
         uint8x8_t mask_0x01 = vdup_n_u8(1);
         uint8x8_t mask_0xff = vdup_n_u8(255);
         uint8x8_t cmp;
-        uint64x1_t tmp;
 
         while (data <= de - 8)
           {
              uint8x8x4_t rgba = vld4_u8((uint8_t *) data);
 
-             cmp = vand_u8(vorr_u8(vceq_u8(rgba.val[3], mask_0xff),
-                                   vceq_u8(rgba.val[3], mask_0x00)),
-                           mask_0x01);
-             tmp = vpaddl_u32(vpaddl_u16(vpaddl_u8(cmp)));
-             nas += vget_lane_u32(vreinterpret_u32_u64(tmp), 0);
+/* TIZEN_ONLY(20180111): Revert commit 1e33454772183563e0d2ffca6c961ff5822392ef.
+   This patch makes blending issue with image mask */
+             cmp = vand_u8(vorr_u8(
+                   vceq_u8(rgba.val[3], mask_0xff),
+                   vceq_u8(rgba.val[3], mask_0x00)
+                   ), mask_0x01);
+             nas += vpaddl_u32(vpaddl_u16(vpaddl_u8(cmp)));
 
              uint16x8x4_t lrgba;
              lrgba.val[0] = vmovl_u8(rgba.val[0]);
              lrgba.val[1] = vmovl_u8(rgba.val[1]);
              lrgba.val[2] = vmovl_u8(rgba.val[2]);
-             lrgba.val[3] = vaddl_u8(rgba.val[3], mask_0x01);
 
-             rgba.val[0] = vshrn_n_u16(vmlaq_u16(lrgba.val[0], lrgba.val[0],
-                                                 lrgba.val[3]), 8);
-             rgba.val[1] = vshrn_n_u16(vmlaq_u16(lrgba.val[1], lrgba.val[1],
-                                                 lrgba.val[3]), 8);
-             rgba.val[2] = vshrn_n_u16(vmlaq_u16(lrgba.val[2], lrgba.val[2],
-                                                 lrgba.val[3]), 8);
+             rgba.val[0] = vshrn_n_u16(vmlal_u8(lrgba.val[0], rgba.val[0], rgba.val[3]), 8);
+             rgba.val[1] = vshrn_n_u16(vmlal_u8(lrgba.val[1], rgba.val[1], rgba.val[3]), 8);
+             rgba.val[2] = vshrn_n_u16(vmlal_u8(lrgba.val[2], rgba.val[2], rgba.val[3]), 8);
              vst4_u8((uint8_t *) data, rgba);
              data += 8;
           }
