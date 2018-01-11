@@ -2255,8 +2255,18 @@ edje_object_part_text_selection_get(const Eo *obj, const char *part)
    if ((!ed) || (!part)) return NULL;
    rp = _edje_real_part_recursive_get(&ed, part);
    if (!rp) return NULL;
+
+   /************************************************************************************
+    * TIZEN_ONLY(20150128): Add evas_textblock_cursor_range_text_valid_markup_get API. *
+    ************************************************************************************
    if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
      return _edje_entry_selection_get(rp);
+    */
+   if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
+     return _edje_entry_selection_valid_markup_get(rp);
+   /*******
+    * END *
+    *******/
 
    return NULL;
 }
