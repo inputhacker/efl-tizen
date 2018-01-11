@@ -3992,7 +3992,7 @@ _elm_toolbar_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, El
 {
    elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_FALSE);
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
-   efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
+   efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    //
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    // If you call eo_do_super, then you do NOT have to call smart callback.
@@ -4183,7 +4183,7 @@ _elm_toolbar_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_T
         if (next_previous_item)
           {
              elm_object_accessibility_highlight_set(EO_OBJ(next_previous_item), EINA_TRUE);
-             efl_access_active_descendant_changed_signal_emit(obj, EO_OBJ(next_previous_item));
+             efl_access_state_changed_signal_emit(EO_OBJ(next_previous_item), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
           }
      }
 }

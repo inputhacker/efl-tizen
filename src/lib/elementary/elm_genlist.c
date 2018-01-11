@@ -9182,7 +9182,7 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
         if (next_previous_item)
           {
              elm_object_accessibility_highlight_set(EO_OBJ(next_previous_item), EINA_TRUE);
-             efl_access_active_descendant_changed_signal_emit(obj, EO_OBJ(next_previous_item));
+             efl_access_state_changed_signal_emit(EO_OBJ(next_previous_item), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
           }
       }
 }
@@ -9258,7 +9258,9 @@ _elm_genlist_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Gen_Item *
   if (sd->atspi_item_to_highlight == it)
       sd->atspi_item_to_highlight = NULL;
 
-  efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
+  ///TIZEN_ONLY(20170717) : expose highlight information on atspi
+  efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+  //
 
   ret = efl_access_component_highlight_clear(efl_super(eo_it, ELM_GENLIST_ITEM_CLASS));
   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item

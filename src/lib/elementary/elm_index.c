@@ -1749,6 +1749,7 @@ _elm_index_efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, Elm_Index_Da
    if (sd->bx[level])
      {
         elm_object_accessibility_highlight_set(sd->bx[level], EINA_TRUE);
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
         return EINA_TRUE;
      }
    return EINA_FALSE;
@@ -1762,6 +1763,7 @@ _elm_index_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Index_D
    if (sd->bx[level])
      {
         elm_object_accessibility_highlight_set(sd->bx[level], EINA_FALSE);
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
         return EINA_TRUE;
      }
    return EINA_FALSE;
@@ -1814,6 +1816,7 @@ _elm_index_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Index_Item_Da
      elm_layout_text_set(obj, "elm.text", strdup(sd->letter));
    elm_layout_signal_emit(obj, "elm,indicator,state,active", "elm");
    elm_object_accessibility_highlight_set(eo_it, EINA_TRUE);
+   efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    // If you call eo_do_super, then you do NOT have to call smart callback.
    evas_object_smart_callback_call(obj, "atspi,highlighted", eo_it);
@@ -1827,6 +1830,7 @@ _elm_index_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Index_Item_D
    Evas_Object *obj = WIDGET(sd);
    elm_layout_signal_emit(obj, "elm,indicator,state,inactive", "elm");
    elm_object_accessibility_highlight_set(eo_it, EINA_FALSE);
+   efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    // If you call eo_do_super, then you do NOT have to call smart callback.
    evas_object_smart_callback_call(obj, "atspi,unhighlighted", eo_it);
