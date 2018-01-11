@@ -942,6 +942,11 @@ _on_show(void *data EINA_UNUSED,
          * that seems to be spread all over Elementary.
          */
         //elm_object_focus_set(sd->list, EINA_TRUE);
+
+        /* TIZEN_ONLY(20170412): add focus set temporarily, because ctxpopup can't get focus
+           if efl opensource fix it, that fix patch must replace this patch. */
+        elm_object_focus_set(sd->list, EINA_TRUE);
+        /* END */
         return;
      }
 
