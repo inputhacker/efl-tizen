@@ -1221,6 +1221,13 @@ _elm_spinner_efl_canvas_group_group_add(Eo *obj, Elm_Spinner_Data *priv)
    if (sd->button_layout)
      {
         priv->inc_button = elm_button_add(obj);
+
+        /* TIZEN_ONLY(20161115): apply UI Mirroring for Tizen 3.0 UX.
+           buttons inside a spinner are not mirrored */
+        elm_object_mirrored_automatic_set(priv->inc_button, EINA_FALSE);
+        elm_object_mirrored_set(priv->inc_button, EINA_FALSE);
+        /* END */
+
         elm_object_style_set(priv->inc_button, "spinner/increase/default");
 
         efl_event_callback_array_add(priv->inc_button, _inc_dec_button_cb(), obj);
@@ -1229,6 +1236,13 @@ _elm_spinner_efl_canvas_group_group_add(Eo *obj, Elm_Spinner_Data *priv)
         elm_widget_sub_object_add(obj, priv->inc_button);
 
         priv->text_button = elm_button_add(obj);
+
+        /* TIZEN_ONLY(20161115): apply UI Mirroring for Tizen 3.0 UX.
+           buttons inside a spinner are not mirrored */
+        elm_object_mirrored_automatic_set(priv->text_button, EINA_FALSE);
+        elm_object_mirrored_set(priv->text_button, EINA_FALSE);
+        /* END */
+
         elm_object_style_set(priv->text_button, "spinner/default");
 
         efl_event_callback_add
@@ -1241,6 +1255,13 @@ _elm_spinner_efl_canvas_group_group_add(Eo *obj, Elm_Spinner_Data *priv)
         elm_widget_sub_object_add(obj, priv->text_button);
 
         priv->dec_button = elm_button_add(obj);
+
+        /* TIZEN_ONLY(20161115): apply UI Mirroring for Tizen 3.0 UX.
+           buttons inside a spinner are not mirrored */
+        elm_object_mirrored_automatic_set(priv->dec_button, EINA_FALSE);
+        elm_object_mirrored_set(priv->dec_button, EINA_FALSE);
+        /* END */
+
         elm_object_style_set(priv->dec_button, "spinner/decrease/default");
 
         efl_event_callback_array_add(priv->dec_button, _inc_dec_button_cb(), obj);
