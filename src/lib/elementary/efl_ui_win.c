@@ -3321,6 +3321,19 @@ _elm_win_obj_intercept_show(void *data,
    if (sd->pointer.obj) evas_object_show(sd->pointer.obj);
 
    evas_object_show(obj);
+
+/* TIZEN_ONLY: ecore_evas_input_rect_set api is exist only in tizen */
+#ifdef HAVE_ELEMENTARY_WL2
+   int x, y, w, h;
+   Eina_Rectangle input_rect = { -1, -1, 1, 1 };
+
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
+   ecore_wl_window_opaque_region_set(sd->wl.win, x, y, w, h);
+
+   if (sd->type == ELM_WIN_TOOLTIP)
+     ecore_evas_input_rect_set(sd->ee, &input_rect);
+#endif
+
 #ifdef ELEMENTARY_X
    if (sd->type == ELM_WIN_TOOLTIP)
      ecore_x_window_shape_input_rectangle_set(sd->x.xwin, 0, 0, 0, 0);
