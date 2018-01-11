@@ -2830,7 +2830,7 @@ _elm_color_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Color_Item_Da
 {
    elm_genlist_item_show(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
 
-   elm_object_accessibility_highlight_set(VIEW(it), EINA_TRUE);
+   elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
 
    efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
@@ -2843,7 +2843,7 @@ _elm_color_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Color_Item_Da
 EOLIAN static Eina_Bool
 _elm_color_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_Color_Item_Data *it)
 {
-   elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
+   elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_FALSE);
    efl_access_state_changed_signal_emit(eo_it, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    // If you call eo_do_super, then you do NOT have to call smart callback.

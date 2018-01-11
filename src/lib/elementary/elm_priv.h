@@ -729,6 +729,7 @@ Eo*                  _elm_atspi_bridge_utils_proxy_create(Eo *parent, const char
 void                 elm_atspi_bridge_utils_proxy_listen(Eo *proxy);
 void                 elm_atspi_bridge_utils_proxy_connect(Eo *proxy);
 void                 elm_atspi_bridge_utils_proxy_offset_set(Eo *proxy, int x, int y);
+void                 elm_object_accessibility_highlight_set(void *obj, Eina_Bool val);
 Eina_Bool            _elm_atspi_bridge_plug_id_split(const char *plug_id, char **bus, char **path);
 //TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
 void                 _access_socket_proxy_listen(Eo * obj);

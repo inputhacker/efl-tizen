@@ -2132,7 +2132,7 @@ EAPI Evas_Object *elm_object_part_access_object_get(const Evas_Object *obj, cons
 
 // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
 void *
-_elm_object_accessibility_currently_highlighted_get()
+_elm_object_accessibility_currently_highlighted_get(void)
 {
    return _accessibility_currently_highlighted_obj;
 }
@@ -2146,18 +2146,27 @@ elm_object_focus_region_show_mode_get(const Evas_Object *obj)
 
 //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
 EAPI void
-elm_object_accessibility_highlight_set(Evas_Object *obj, Eina_Bool visible)
+elm_object_accessibility_highlight_set(void *obj, Eina_Bool visible)
 {
    EINA_SAFETY_ON_NULL_RETURN(obj);
    Evas_Object *win = NULL;
+   Evas_Object *target = NULL;
+
+   if (efl_isa(obj, ELM_WIDGET_ITEM_CLASS))
+     {
+        Elm_Widget_Item_Data *id = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
+        target = id->view;
+     }
+   else
+     target = obj;
 
    // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
    // if (!elm_object_widget_check(obj))
    //    return;
-   if (elm_object_widget_check(obj))
-      win = elm_object_top_widget_get(obj);
+   if (elm_object_widget_check(target))
+      win = elm_object_top_widget_get(target);
    else
-      win = elm_object_top_widget_get(elm_object_parent_widget_get(obj));
+      win = elm_object_top_widget_get(elm_object_parent_widget_get(target));
    EINA_SAFETY_ON_NULL_RETURN(win);
 
    // win = elm_object_top_widget_get(obj);
@@ -2174,16 +2183,20 @@ elm_object_accessibility_highlight_set(Evas_Object *obj, Eina_Bool visible)
           _accessibility_currently_highlighted_obj = obj;
      }
 
-   if (elm_widget_access_highlight_in_theme_get(obj))
+   if (efl_isa(target, EFL_UI_LAYOUT_CLASS) && elm_widget_access_highlight_in_theme_get(target))
      {
-        if (visible)
-          elm_widget_signal_emit(obj, "elm,action,access_highlight,show", "elm");
-        else
-           elm_widget_signal_emit(obj, "elm,action,access_highlight,hide", "elm");
+       if (visible)
+         {
+           elm_widget_signal_emit(target, "elm,action,access_highlight,show", "elm");
+         }
+       else
+         {
+           elm_widget_signal_emit(target, "elm,action,access_highlight,hide", "elm");
+         }
      }
    else
      {
-        _elm_win_object_set_accessibility_highlight(win, obj, visible);
+        _elm_win_object_set_accessibility_highlight(win, target, visible);
      }
 
    // if (!visible && (obj == _elm_win_accessibility_highlight_get(win)))

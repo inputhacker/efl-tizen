@@ -3990,7 +3990,7 @@ _elm_toolbar_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Toolbar_Ite
 EOLIAN static Eina_Bool
 _elm_toolbar_item_efl_access_component_highlight_clear(Eo *eo_it EINA_UNUSED, Elm_Toolbar_Item_Data *it)
 {
-   elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
+   elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_FALSE);
    // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
    efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
    //
@@ -4124,6 +4124,12 @@ _elm_toolbar_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_T
    delta_x = old_x - x;
    //check if highlighted item is list descendant
    Evas_Object * highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
+   if (efl_isa(highlighted_obj, ELM_WIDGET_ITEM_CLASS))
+     {
+        Elm_Widget_Item_Data *id = efl_data_scope_get(highlighted_obj, ELM_WIDGET_ITEM_CLASS);
+        highlighted_obj = id->view;
+     }
+
    Evas_Object * parent = highlighted_obj;
    if (efl_isa(highlighted_obj, EFL_UI_WIDGET_CLASS))
      {

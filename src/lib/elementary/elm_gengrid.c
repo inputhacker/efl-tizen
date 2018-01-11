@@ -1669,7 +1669,7 @@ _item_realize(Elm_Gen_Item *it)
    if (sd->atspi_item_to_highlight == it)
      {
         sd->atspi_item_to_highlight = NULL;
-        elm_object_accessibility_highlight_set(VIEW(it), EINA_TRUE);
+        elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
      }
    //
 }
@@ -5537,7 +5537,7 @@ _elm_gengrid_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Gen_Item *
    if (sd->atspi_item_to_highlight == it)
      sd->atspi_item_to_highlight = NULL;
    //
-   elm_object_accessibility_highlight_set(VIEW(it), EINA_FALSE);
+   elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_FALSE);
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
    efl_access_active_descendant_changed_signal_emit(WIDGET(it), eo_it);
    //
