@@ -12043,6 +12043,10 @@ _edje_program_afters_get(Evas_Object *obj, Edje_Program *epr)
      {
         Edje_Program *p = NULL;
 
+        /* TIZEN_ONLY: fix segmentation fault in case of array index is out of bound */
+        if (a->id < 0) continue;
+        /* END */
+
         p = ed->collection->patterns.table_programs[a->id % ed->collection->patterns.table_programs_size];
         if (p && p->name)
           {
