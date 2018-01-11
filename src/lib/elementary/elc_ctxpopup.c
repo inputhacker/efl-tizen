@@ -947,6 +947,14 @@ _on_show(void *data EINA_UNUSED,
            if efl opensource fix it, that fix patch must replace this patch. */
         elm_object_focus_set(sd->list, EINA_TRUE);
         /* END */
+
+        /* TIZEN_ONLY(20170410): add list_visible and emitted flag set value
+           if ctxpopup dismiss and show again, below two value set FALSE and TRUE,
+           so show_signals_emit is blocked
+         */
+        sd->list_visible = EINA_TRUE;
+        sd->emitted = EINA_FALSE;
+        /* END */
         return;
      }
 
