@@ -31,6 +31,13 @@ struct _Entry
    Evas_Textblock_Cursor *sel_start, *sel_end;
    Evas_Textblock_Cursor *cursor_user, *cursor_user_extra;
    Evas_Textblock_Cursor *preedit_start, *preedit_end;
+   /*********************************************************************
+    * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+    *********************************************************************/
+   Evas_Textblock_Cursor *cursor_on_mouse;
+   /*******
+    * END *
+    *******/
    Ecore_Timer           *pw_timer;
    Eina_List             *sel;
    Eina_List             *anchors;
@@ -2762,6 +2769,16 @@ _edje_part_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
      }
    tc = _edje_cursor_char_coord_set(rp, ev->canvas.x, ev->canvas.y, &cx, &cy);
 
+   /*********************************************************************
+    * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+    *********************************************************************/
+   if (!en->cursor_on_mouse)
+     en->cursor_on_mouse = evas_object_textblock_cursor_new(rp->object);
+   evas_textblock_cursor_cluster_coord_set(en->cursor_on_mouse, cx, cy);
+   /*******
+    * END *
+    *******/
+
    if (dosel)
      {
         if ((en->have_selection) &&
@@ -2855,14 +2872,39 @@ _edje_part_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UN
 
    if ((!ev) || (ev->button != 1)) return;
    if (!rp) return;
+
+   /*********************************************************************
+    * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+    *********************************************************************
    if (ev->flags & EVAS_BUTTON_TRIPLE_CLICK) return;
    if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK) return;
+    */
+   /*******
+    * END *
+    *******/
+
    if ((rp->type != EDJE_RP_TYPE_TEXT) ||
        (!rp->typedata.text)) return;
    en = rp->typedata.text->entry_data;
    if ((!en) || (rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) ||
        (rp->part->entry_mode < EDJE_ENTRY_EDIT_MODE_SELECTABLE))
      return;
+
+   /*********************************************************************
+    * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+    *********************************************************************/
+   if (en->cursor_on_mouse)
+     {
+        evas_textblock_cursor_free(en->cursor_on_mouse);
+        en->cursor_on_mouse = NULL;
+     }
+
+   if (ev->flags & EVAS_BUTTON_TRIPLE_CLICK) return;
+   if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK) return;
+   if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
+   /*******
+    * END *
+    *******/
 
    /* We don't check for ON_HOLD because we'd like to end selection anyway when
     * mouse is up, even if it's held. */
@@ -2943,6 +2985,19 @@ _edje_part_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
        (rp->part->entry_mode < EDJE_ENTRY_EDIT_MODE_SELECTABLE))
      return;
 
+   /*********************************************************************
+    * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+    *********************************************************************/
+   evas_object_geometry_get(rp->object, &x, &y, &w, &h);
+   cx = ev->cur.canvas.x - x;
+   cy = ev->cur.canvas.y - y;
+
+   if (en->cursor_on_mouse)
+     evas_textblock_cursor_cluster_coord_set(en->cursor_on_mouse, cx, cy);
+   /*******
+    * END *
+    *******/
+
 #ifdef HAVE_ECORE_IMF
    if (en->imf_context)
      {
@@ -2959,9 +3014,18 @@ _edje_part_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
      {
         tc = evas_object_textblock_cursor_new(rp->object);
         evas_textblock_cursor_copy(en->cursor, tc);
+
+        /*********************************************************************
+         * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+         *********************************************************************
         evas_object_geometry_get(rp->object, &x, &y, &w, &h);
         cx = ev->cur.canvas.x - x;
         cy = ev->cur.canvas.y - y;
+         */
+        /*******
+         * END *
+         *******/
+
         /* TIZEN_ONLY(20150127): Add evas_textblock_cursor_cluster_* APIs.
         if (!evas_textblock_cursor_char_coord_set(en->cursor, cx, cy))
          */
@@ -3863,6 +3927,59 @@ _edje_entry_cursor_geometry_get(Edje_Real_Part *rp, Edje_Cursor cur, Evas_Coord 
    if (ch) *ch = hh;
    if (cdir) *cdir = dir;
 }
+
+/*********************************************************************
+ * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+ *********************************************************************/
+void
+_edje_entry_cursor_on_mouse_geometry_get(Edje_Real_Part *rp, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_BiDi_Direction *cdir)
+{
+   Evas_Coord x, y, w, h, xx, yy, ww, hh;
+   Entry *en;
+   Evas_Textblock_Cursor_Type cur_type;
+   Evas_BiDi_Direction dir;
+
+   if ((rp->type != EDJE_RP_TYPE_TEXT) ||
+       (!rp->typedata.text)) return;
+   en = rp->typedata.text->entry_data;
+   if (!en) return;
+
+   if (!en->cursor_on_mouse)
+     {
+        _edje_entry_cursor_geometry_get(rp, EDJE_CURSOR_MAIN, cx, cy, cw, ch, cdir);
+     }
+   else
+     {
+        switch (rp->part->cursor_mode)
+          {
+           case EDJE_ENTRY_CURSOR_MODE_BEFORE:
+              cur_type = EVAS_TEXTBLOCK_CURSOR_BEFORE;
+              break;
+
+           case EDJE_ENTRY_CURSOR_MODE_UNDER:
+              /* no break for a reason */
+           default:
+              cur_type = EVAS_TEXTBLOCK_CURSOR_UNDER;
+          }
+
+        x = y = w = h = -1;
+        xx = yy = ww = hh = -1;
+        evas_object_geometry_get(rp->object, &x, &y, &w, &h);
+        evas_textblock_cursor_geometry_get(en->cursor_on_mouse, &xx, &yy, &ww, &hh, &dir, cur_type);
+        if (ww < 1) ww = 1;
+        if (rp->part->cursor_mode == EDJE_ENTRY_CURSOR_MODE_BEFORE)
+          edje_object_size_min_restricted_calc(en->cursor_fg, &ww, NULL, ww, 0);
+        if (hh < 1) hh = 1;
+        if (cx) *cx = x + xx;
+        if (cy) *cy = y + yy;
+        if (cw) *cw = ww;
+        if (ch) *ch = hh;
+        if (cdir) *cdir = dir;
+     }
+}
+/*******
+ * END *
+ *******/
 
 void
 _edje_entry_user_insert(Edje_Real_Part *rp, const char *text)

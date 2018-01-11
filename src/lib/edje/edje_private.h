@@ -2990,6 +2990,13 @@ void _edje_entry_cursor_geometry_get(Edje_Real_Part *rp, Edje_Cursor cur, Evas_C
 /*******
  * END *
  *******/
+/*********************************************************************
+ * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+ *********************************************************************/
+void _edje_entry_cursor_on_mouse_geometry_get(Edje_Real_Part *rp, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch, Evas_BiDi_Direction *cdir);
+/*******
+ * END *
+ *******/
 void _edje_entry_user_insert(Edje_Real_Part *rp, const char *text);
 void _edje_entry_select_allow_set(Edje_Real_Part *rp, Eina_Bool allow);
 Eina_Bool _edje_entry_select_allow_get(const Edje_Real_Part *rp);

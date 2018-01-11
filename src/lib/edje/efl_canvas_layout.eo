@@ -325,6 +325,29 @@ class Efl.Canvas.Layout (Efl.Canvas.Group, Efl.File, Efl.Container, Efl.Part,
       /*******
        * END *
        *******/
+      /*********************************************************************
+       * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+       *********************************************************************/
+      part_text_cursor_on_mouse_geometry_get @const {
+         [[Returns the cursor geometry of the part relative to the edje
+           object. The cursor geometry is kept in mouse down and move.
+
+           \@internal
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
+         params {
+            @in part: string; [[The part name]]
+            @out x: int;      [[Cursor X position]]
+            @out y: int;      [[Cursor Y position]]
+            @out w: int;      [[Cursor width]]
+            @out h: int;      [[Cursor height]]
+         }
+      }
+      /*******
+       * END *
+       *******/
    }
    implements {
       Efl.Gfx.visible { set; }
