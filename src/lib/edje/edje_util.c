@@ -6951,4 +6951,52 @@ _efl_canvas_layout_color_class_parent_unset(Eo *obj, Edje *ed)
  * END *
  *******/
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+ ***********************************************************************************/
+EOLIAN Eina_Bool
+_efl_canvas_layout_part_valign_set(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part, double valign)
+{
+   Edje_Real_Part *rp;
+   FLOAT_T va;
+
+   if (!part) return EINA_FALSE;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return EINA_FALSE;
+
+   va = FROM_DOUBLE(valign);
+
+   if (rp->valign != va)
+     {
+        rp->valign = va;
+
+        ed->dirty = EINA_TRUE;
+        ed->recalc_call = EINA_TRUE;
+#ifdef EDJE_CALC_CACHE
+        ed->all_part_change = EINA_TRUE;
+#endif
+        _edje_recalc(ed);
+     }
+
+   return EINA_TRUE;
+}
+
+EOLIAN double
+_efl_canvas_layout_part_valign_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
+{
+   Edje_Real_Part *rp;
+
+   if (!part) return -1.0;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return -1.0;
+
+   if (rp->valign == -1.0)
+     return TO_DOUBLE(rp->chosen_description->align.y);
+
+   return TO_DOUBLE(rp->valign);
+}
+/*******
+ * END *
+ *******/
+
 /* vim:set ts=8 sw=3 sts=3 expandtab cino=>5n-2f0^-2{2(0W1st0 :*/

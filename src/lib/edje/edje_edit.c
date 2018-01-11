@@ -3183,6 +3183,13 @@ _edje_edit_real_part_add(Evas_Object *obj, const char *name, Edje_Part_Type type
         return EINA_FALSE;
      }
    memset(rp, 0, sizeof(Edje_Real_Part));
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+    ***********************************************************************************/
+   rp->valign = -1.0;
+   /*******
+    * END *
+    *******/
 
    /* Init Edje_Part */
    pc = ed->collection;

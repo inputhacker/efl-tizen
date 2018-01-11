@@ -1418,15 +1418,37 @@ _edje_part_recalc_single_aspect(Edje *ed,
    params->eval.x = ADD(want_x,
                         MUL(SUB(want_w, params->eval.w),
                             desc->align.x));
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+    ***********************************************************************************/
+   if (ep->valign != -1.0)
+     params->eval.y = ADD(want_y,
+                          MUL(SUB(want_h, params->eval.h),
+                              ep->valign));
+   else
+   /*******
+    * END *
+    *******/
    params->eval.y = ADD(want_y,
                         MUL(SUB(want_h, params->eval.h),
                             desc->align.y));
    return apref;
 }
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+ ***********************************************************************************
 static void
 _edje_part_recalc_single_step(Edje_Part_Description_Common *desc,
                               Edje_Calc_Params *params)
+ */
+static void
+_edje_part_recalc_single_step(Edje_Real_Part *ep,
+                              Edje_Part_Description_Common *desc,
+                              Edje_Calc_Params *params)
+/*******
+ * END *
+ *******/
 {
    if (desc->step.x > 0)
      {
@@ -1451,6 +1473,15 @@ _edje_part_recalc_single_step(Edje_Part_Description_Common *desc,
         new_h = desc->step.y * steps;
         if (params->eval.h > FROM_INT(new_h))
           {
+             /***********************************************************************************
+              * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+              ***********************************************************************************/
+             if (ep->valign != -1.0)
+               params->eval.y = ADD(params->eval.y, SCALE(ep->valign, SUB(params->eval.h, FROM_INT(new_h))));
+             else
+             /*******
+              * END *
+              *******/
              params->eval.y = ADD(params->eval.y, SCALE(desc->align.y, SUB(params->eval.h, FROM_INT(new_h))));
              params->eval.h = FROM_INT(new_h);
           }
@@ -1729,11 +1760,24 @@ _edje_part_recalc_single_min_length(FLOAT_T align, FLOAT_T *start, FLOAT_T *leng
      }
 }
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+ ***********************************************************************************
 static void
 _edje_part_recalc_single_min(Edje_Part_Description_Common *desc,
                              Edje_Calc_Params *params,
                              int minw, int minh,
                              Edje_Internal_Aspect aspect)
+ */
+static void
+_edje_part_recalc_single_min(Edje_Real_Part *ep,
+                             Edje_Part_Description_Common *desc,
+                             Edje_Calc_Params *params,
+                             int minw, int minh,
+                             Edje_Internal_Aspect aspect)
+/*******
+ * END *
+ *******/
 {
    FLOAT_T tmp;
    FLOAT_T w;
@@ -1786,6 +1830,15 @@ _edje_part_recalc_single_min(Edje_Part_Description_Common *desc,
      }
 
    _edje_part_recalc_single_min_length(desc->align.x, &params->eval.x, &params->eval.w, minw);
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+    ***********************************************************************************/
+   if (ep->valign != -1.0)
+     _edje_part_recalc_single_min_length(ep->valign, &params->eval.y, &params->eval.h, minh);
+   else
+   /*******
+    * END *
+    *******/
    _edje_part_recalc_single_min_length(desc->align.y, &params->eval.y, &params->eval.h, minh);
 }
 
@@ -1802,11 +1855,24 @@ _edje_part_recalc_single_max_length(FLOAT_T align, FLOAT_T *start, FLOAT_T *leng
      }
 }
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+ ***********************************************************************************
 static void
 _edje_part_recalc_single_max(Edje_Part_Description_Common *desc,
                              Edje_Calc_Params *params,
                              int maxw, int maxh,
                              Edje_Internal_Aspect aspect)
+ */
+static void
+_edje_part_recalc_single_max(Edje_Real_Part *ep,
+                             Edje_Part_Description_Common *desc,
+                             Edje_Calc_Params *params,
+                             int maxw, int maxh,
+                             Edje_Internal_Aspect aspect)
+/*******
+ * END *
+ *******/
 {
    FLOAT_T tmp;
    FLOAT_T w;
@@ -1859,6 +1925,15 @@ _edje_part_recalc_single_max(Edje_Part_Description_Common *desc,
      }
 
    _edje_part_recalc_single_max_length(desc->align.x, &params->eval.x, &params->eval.w, maxw);
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+    ***********************************************************************************/
+   if (ep->valign != -1.0)
+     _edje_part_recalc_single_max_length(ep->valign, &params->eval.y, &params->eval.h, maxh);
+   else
+   /*******
+    * END *
+    *******/
    _edje_part_recalc_single_max_length(desc->align.y, &params->eval.y, &params->eval.h, maxh);
 }
 
@@ -2626,7 +2701,15 @@ _edje_part_recalc_single(Edje *ed,
    apref = _edje_part_recalc_single_aspect(ed, ep, desc, params, &minw, &minh, &maxw, &maxh, pos);
 
    /* size step */
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+    ***********************************************************************************
    _edje_part_recalc_single_step(desc, params);
+    */
+   _edje_part_recalc_single_step(ep, desc, params);
+   /*******
+    * END *
+    *******/
 
    /* check whether this part has fixed value or not*/
    if ((rel1_to_x == rel2_to_x) &&
@@ -2926,11 +3009,23 @@ _edje_part_recalc_single(Edje *ed,
    params->req.w = TO_INT(params->eval.w);
    params->req.h = TO_INT(params->eval.h);
 
-   /* adjust for min size */
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+    ***********************************************************************************
+   // adjust for min size //
    _edje_part_recalc_single_min(desc, params, minw, minh, apref);
 
-   /* adjust for max size */
+   // adjust for max size //
    _edje_part_recalc_single_max(desc, params, maxw, maxh, apref);
+    */
+   /* adjust for min size */
+   _edje_part_recalc_single_min(ep, desc, params, minw, minh, apref);
+
+   /* adjust for max size */
+   _edje_part_recalc_single_max(ep, desc, params, maxw, maxh, apref);
+   /*******
+    * END *
+    *******/
 
    /* take care of dragable part */
    if (ep->drag)

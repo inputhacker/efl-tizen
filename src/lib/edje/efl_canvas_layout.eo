@@ -264,6 +264,37 @@ class Efl.Canvas.Layout (Efl.Canvas.Group, Efl.File, Efl.Container, Efl.Part,
       /*******
        * END *
        *******/
+      /***********************************************************************************
+       * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+       ***********************************************************************************/
+      @property part_valign {
+         set {
+            [[Sets the valign for a common description.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+              \@internal
+            ]]
+            return: bool; [[$true, on success or $false, on error]]
+         }
+         get {
+            [[Gets the valign for a common description.
+
+              Do not use this API without understanding whats going on.
+              It is made for internal usage.
+              \@internal
+            ]]
+         }
+         keys {
+            part: string; [[The part name]]
+         }
+         values {
+            valign: double; [[The valign 0.0~1.0. -1.0 for respect EDC's align value.]]
+         }
+      }
+      /*******
+       * END *
+       *******/
    }
    implements {
       Efl.Gfx.visible { set; }

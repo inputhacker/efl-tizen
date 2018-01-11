@@ -2143,6 +2143,13 @@ struct _Edje_Real_Part
       Edje_Real_Part_Swallow   *swallow;
    } typedata; // 4
    FLOAT_T                   description_pos; // 8
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+    ***********************************************************************************/
+   FLOAT_T                   valign; // 8
+   /*******
+    * END *
+    *******/
    Edje_Rectangle            req; // 16
    union {
       struct {
