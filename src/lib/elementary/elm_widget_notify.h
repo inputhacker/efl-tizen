@@ -42,6 +42,9 @@ struct _Elm_Notify_Data
    /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
    Eina_Bool                show_finished;
    /* END */
+   /* TIZEN_ONLY(20170107): finish the hiding forcibly if get interrupt */
+   Eina_Bool                hide_ongoing;
+   /* END */
 };
 
 /**

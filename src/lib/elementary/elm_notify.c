@@ -180,6 +180,11 @@ _elm_notify_efl_ui_widget_theme_apply(Eo *obj, Elm_Notify_Data *sd)
    _notify_visuals_set(obj);
    /* END */
 
+   /* TIZEN_ONLY(20170107): finish the hiding forcibly if get interrupt */
+   if (sd->hide_ongoing)
+     edje_object_signal_emit(sd->notify, "elm,action,hide,finished", "elm");
+   /* END */
+
    return int_ret;
 }
 
@@ -318,6 +323,15 @@ _elm_notify_show(Eo *obj, Elm_Notify_Data *sd)
 {
    sd->had_hidden = EINA_FALSE;
    sd->in_timeout = EINA_FALSE;
+   /* TIZEN_ONLY(20170107): finish the hiding forcibly if get interrupt */
+   if (sd->hide_ongoing)
+     {
+        sd->hide_ongoing = EINA_FALSE;
+        efl_gfx_visible_set(efl_super(obj, MY_CLASS), EINA_FALSE);
+        evas_object_hide(sd->notify);
+        if (!sd->allow_events) evas_object_hide(sd->block_events);
+     }
+   /* END */
    efl_gfx_visible_set(efl_super(obj, MY_CLASS), EINA_TRUE);
 
    evas_object_show(sd->notify);
@@ -339,6 +353,10 @@ _elm_notify_hide(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
      {
         if (!sd->in_timeout)
           {
+             //TIZEN_ONLY(20170107): finish the hiding forcibly if get interrupt
+             if (sd->hide_ongoing) return;
+             sd->hide_ongoing = EINA_TRUE;
+             //
              elm_layout_signal_emit(sd->block_events, "elm,state,hide", "elm");
              edje_object_signal_emit(sd->notify, "elm,state,hide", "elm");
           }
@@ -466,6 +484,12 @@ _hide_finished_cb(void *data,
 {
    ELM_NOTIFY_DATA_GET(data, sd);
 
+   /* TIZEN_ONLY(20170107): finish the hiding forcibly if get interrupt */
+   if (!sd->hide_ongoing) return;
+
+   sd->hide_ongoing = EINA_FALSE;
+   /* END */
+
    /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
    sd->show_finished = EINA_FALSE;
    /* END */
@@ -487,6 +511,10 @@ _elm_notify_efl_canvas_group_group_add(Eo *obj, Elm_Notify_Data *priv)
 
    /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
    priv->show_finished = EINA_FALSE;
+   /* END */
+
+   /* TIZEN_ONLY(20170107): finish the hiding forcibly if get interrupt */
+   priv->hide_ongoing = EINA_FALSE;
    /* END */
 
    priv->notify = edje_object_add(evas_object_evas_get(obj));
@@ -734,11 +762,20 @@ _elm_notify_align_set(Eo *obj, Elm_Notify_Data *sd, double horizontal, double ve
 EOLIAN static void
 _elm_notify_dismiss(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
 {
+   /* TIZEN_ONLY(20170107): finish the hiding forcibly if get interrupt */
+   if (sd->hide_ongoing) return;
+   sd->hide_ongoing = EINA_TRUE;
+   /* END */
+
    //TIZEN_ONLY(20170801): block_events must be checked it is null or not null
    //elm_layout_signal_emit(sd->block_events, "elm,state,hide", "elm");
    if (!sd->allow_events) elm_layout_signal_emit(sd->block_events, "elm,state,hide", "elm");
    //END
    edje_object_signal_emit(sd->notify, "elm,state,hide", "elm");
+
+   /* TIZEN_ONLY(20170411): cancel timer when dismiss notify */
+   ELM_SAFE_FREE(sd->timer, ecore_timer_del);
+   /* END */
 }
 
 
