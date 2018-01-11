@@ -226,6 +226,41 @@ _bt_win_center_cb(void *data, Evas_Object *obj EINA_UNUSED,
    elm_win_center(data, EINA_TRUE, EINA_TRUE);
 }
 
+/* TIZEN_ONLY(20180111): ++ added buttons for switching floating*/
+static void
+_bt_win_floating_mode_set_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                             void *event_info EINA_UNUSED)
+{
+   Eina_Bool current = EINA_FALSE;
+   Evas_Object *win = data;
+
+   current = elm_win_floating_mode_get(win);
+   if (current) return;
+
+   printf("Set floating mode for window.\n");
+   elm_win_floating_mode_set(win, EINA_TRUE);
+   if (!current)
+     {
+        evas_object_move(win, 100, 100);
+        evas_object_resize(win, 500, 500);
+     }
+}
+
+static void
+_bt_win_floating_mode_unset_cb(void *data, Evas_Object *obj EINA_UNUSED,
+                               void *event_info EINA_UNUSED)
+{
+   Eina_Bool current = EINA_FALSE;
+   Evas_Object *win = data;
+
+   current = elm_win_floating_mode_get(win);
+   if (!current) return;
+
+   printf("Unset floating mode for window.\n");
+   elm_win_floating_mode_set(win, EINA_FALSE);
+}
+/* TIZEN_ONLY(20180111): -- added buttons for switching floating*/
+
 static void
 _win_state_print_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
@@ -469,6 +504,35 @@ test_win_state(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event
 
    elm_box_pack_end(bx, bx2);
    evas_object_show(bx2);
+
+/* TIZEN_ONLY(20180111): ++ added-buttons-for-switching-floating*/
+   bx2 = elm_box_add(win);
+   elm_box_horizontal_set(bx2, EINA_TRUE);
+   elm_box_homogeneous_set(bx2, EINA_TRUE);
+   evas_object_size_hint_weight_set(bx2, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_fill_set(bx2, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   bt = elm_button_add(win);
+   elm_object_text_set(bt, "floating mode set");
+   evas_object_smart_callback_add(bt, "clicked",
+                                  _bt_win_floating_mode_set_cb, win);
+   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_fill_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(bx2, bt);
+   evas_object_show(bt);
+
+   bt = elm_button_add(win);
+   elm_object_text_set(bt, "floating mode unset");
+   evas_object_smart_callback_add(bt, "clicked",
+                                  _bt_win_floating_mode_unset_cb, win);
+   evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
+   evas_object_size_hint_fill_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(bx2, bt);
+   evas_object_show(bt);
+
+   elm_box_pack_end(bx, bx2);
+   evas_object_show(bx2);
+/* TIZEN_ONLY(20180111): -- added-buttons-for-switching-floating*/
 
    bx2 = elm_box_add(win);
    elm_box_horizontal_set(bx2, EINA_TRUE);
