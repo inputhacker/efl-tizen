@@ -324,6 +324,9 @@ _drawer_open(Evas_Object *obj, Evas_Coord w, Evas_Coord h, Eina_Bool anim)
               (obj, EFL_UI_SCROLL_BLOCK_NONE);
         sd->freeze = EINA_FALSE;
         elm_layout_signal_emit(sd->scr_ly, "elm,state,content,visible", "elm");
+        // TIZEN_ONLY(20170613): emit signal when panel becomes draggable
+        elm_object_signal_emit(obj, "elm,state,unhold", "elm");
+        //
      }
 
    switch (sd->orient)
@@ -394,6 +397,9 @@ _drawer_close(Evas_Object *obj, Evas_Coord w, Evas_Coord h, Eina_Bool anim)
                    (obj, EFL_UI_SCROLL_BLOCK_NONE);
              sd->freeze = EINA_FALSE;
              elm_layout_signal_emit(sd->scr_ly, "elm,state,content,visible", "elm");
+             // TIZEN_ONLY(20170613): emit signal when panel becomes draggable
+             elm_object_signal_emit(obj, "elm,state,unhold", "elm");
+             //
           }
         elm_interface_scrollable_region_bring_in(obj, x, y, w, h);
      }
@@ -410,6 +416,9 @@ _drawer_close(Evas_Object *obj, Evas_Coord w, Evas_Coord h, Eina_Bool anim)
                      (obj, EFL_UI_SCROLL_BLOCK_VERTICAL);
              sd->freeze = EINA_TRUE;
              elm_layout_signal_emit(sd->scr_ly, "elm,state,content,hidden", "elm");
+             // TIZEN_ONLY(20170613): emit signal when panel is hidden
+             elm_object_signal_emit(obj, "elm,state,hold", "elm");
+             //
           }
      }
    // TIZEN_ONLY(20170829) : [atspi][panel] Adds accessibility support for the panel widget.
@@ -545,6 +554,9 @@ _timer_cb(void *data)
               (obj, EFL_UI_SCROLL_BLOCK_NONE);
         sd->freeze = EINA_FALSE;
         elm_layout_signal_emit(sd->scr_ly, "elm,state,content,visible", "elm");
+        // TIZEN_ONLY(20170613): emit signal when panel becomes draggable
+        elm_object_signal_emit(obj, "elm,state,unhold", "elm");
+        //
         evas_object_geometry_get(obj, NULL, NULL, &w, &h);
         _handler_open(obj, w, h);
      }
@@ -653,6 +665,9 @@ _on_mouse_move(void *data,
                  (obj, EFL_UI_SCROLL_BLOCK_NONE);
               sd->freeze = EINA_FALSE;
               elm_layout_signal_emit(sd->scr_ly, "elm,state,content,visible", "elm");
+              // TIZEN_ONLY(20170613): emit signal when panel becomes draggable
+              elm_object_signal_emit(obj, "elm,state,unhold", "elm");
+              //
            }
          break;
       case ELM_PANEL_ORIENT_BOTTOM:
@@ -662,6 +677,9 @@ _on_mouse_move(void *data,
                  (obj, EFL_UI_SCROLL_BLOCK_NONE);
               sd->freeze = EINA_FALSE;
               elm_layout_signal_emit(sd->scr_ly, "elm,state,content,visible", "elm");
+              // TIZEN_ONLY(20170613): emit signal when panel becomes draggable
+              elm_object_signal_emit(obj, "elm,state,unhold", "elm");
+              //
            }
          break;
       case ELM_PANEL_ORIENT_LEFT:
@@ -672,6 +690,9 @@ _on_mouse_move(void *data,
                  (obj, EFL_UI_SCROLL_BLOCK_NONE);
               sd->freeze = EINA_FALSE;
               elm_layout_signal_emit(sd->scr_ly, "elm,state,content,visible", "elm");
+              // TIZEN_ONLY(20170613): emit signal when panel becomes draggable
+              elm_object_signal_emit(obj, "elm,state,unhold", "elm");
+              //
            }
          break;
       case ELM_PANEL_ORIENT_RIGHT:
@@ -682,6 +703,9 @@ _on_mouse_move(void *data,
                  (obj, EFL_UI_SCROLL_BLOCK_NONE);
               sd->freeze = EINA_FALSE;
               elm_layout_signal_emit(sd->scr_ly, "elm,state,content,visible", "elm");
+              // TIZEN_ONLY(20170613): emit signal when panel becomes draggable
+              elm_object_signal_emit(obj, "elm,state,unhold", "elm");
+              //
            }
          break;
      }
@@ -1058,6 +1082,9 @@ _elm_panel_orient_set(Eo *obj, Elm_Panel_Data *sd, Elm_Panel_Orient orient)
 
              sd->freeze = EINA_TRUE;
              elm_layout_signal_emit(sd->scr_ly, "elm,state,content,hidden", "elm");
+             // TIZEN_ONLY(20170613): emit signal when panel is hidden
+             elm_object_signal_emit(obj, "elm,state,hold", "elm");
+             //
           }
 
         // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
@@ -1205,6 +1232,9 @@ _anim_stop_cb(Evas_Object *obj, void *data EINA_UNUSED)
                 (obj, EFL_UI_SCROLL_BLOCK_VERTICAL);
         sd->freeze = EINA_TRUE;
         elm_layout_signal_emit(sd->scr_ly, "elm,state,content,hidden", "elm");
+        // TIZEN_ONLY(20170613): emit signal when panel is hidden
+        elm_object_signal_emit(obj, "elm,state,hold", "elm");
+        //
 
         elm_interface_scrollable_single_direction_set
               (obj, ELM_SCROLLER_SINGLE_DIRECTION_NONE);
@@ -1235,6 +1265,9 @@ _scroll_cb(Evas_Object *obj, void *data EINA_UNUSED)
               (obj, EFL_UI_SCROLL_BLOCK_NONE);
         sd->freeze = EINA_FALSE;
         elm_layout_signal_emit(sd->scr_ly, "elm,state,content,visible", "elm");
+        // TIZEN_ONLY(20170613): emit signal when panel becomes draggable
+        elm_object_signal_emit(obj, "elm,state,unhold", "elm");
+        //
      }
 
    elm_interface_scrollable_content_pos_get(obj, &x, &y);
