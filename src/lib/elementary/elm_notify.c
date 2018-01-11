@@ -44,8 +44,14 @@ _notify_theme_apply(Evas_Object *obj)
    const char *style = elm_widget_style_get(obj);
    const char *position;
    double ax, ay;
+   /* TIZEN_ONLY(170621): support multiscale problem on TM2 */
+   Efl_Ui_Theme_Apply ret = EFL_UI_THEME_APPLY_FAILED;
+   /* END */
 
    ELM_NOTIFY_DATA_GET(obj, sd);
+   /* TIZEN_ONLY(170621): support multiscale problem on TM2 */
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, ret);
+   /* END */
 
    ax = sd->horizontal_align;
    ay = sd->vertical_align;
@@ -78,7 +84,20 @@ _notify_theme_apply(Evas_Object *obj)
           position = "center";
      }
 
+   /* TIZEN_ONLY(170621): support multiscale problem on TM2
    return elm_widget_theme_object_set(obj, sd->notify, "notify", position, style);
+    */
+   ret = elm_widget_theme_object_set(obj, sd->notify, "notify", position, style);
+
+   if (wd->orient_mode != -1)
+     {
+        char buf[128];
+        snprintf(buf, sizeof(buf), "elm,state,orient,%d", wd->orient_mode);
+        edje_object_signal_emit(sd->notify, buf, "elm");
+     }
+
+   return ret;
+   /* END */
 }
 
 /**
@@ -787,6 +806,21 @@ _elm_notify_align_get(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd, double *horizont
    if (vertical)
      *vertical = sd->vertical_align;
 }
+
+/* TIZEN_ONLY(170621): support multiscale problem on TM2 */
+EOLIAN static void
+_elm_notify_efl_ui_widget_on_orientation_update(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd, int orient_mode)
+{
+   efl_ui_widget_on_orientation_update(efl_super(obj, MY_CLASS), orient_mode);
+
+   if (orient_mode != -1)
+     {
+        char buf[128];
+        snprintf(buf, sizeof(buf), "elm,state,orient,%d", orient_mode);
+        edje_object_signal_emit(sd->notify, buf, "elm");
+     }
+}
+/* END */
 
 static void
 _elm_notify_class_constructor(Efl_Class *klass)

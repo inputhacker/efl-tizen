@@ -89,6 +89,9 @@ class Elm.Notify (Efl.Ui.Widget, Efl.Ui.Focus.Layer, Efl.Content, Efl.Part)
       Efl.Content.content { get; set; }
       Efl.Content.content_unset;
       Efl.Part.part;
+      /* TIZEN_ONLY(170621): support multiscale problem on TM2 */
+      Efl.Ui.Widget.on_orientation_update;
+      /* END */
    }
    events {
       block,clicked; [[Called when block was clicked]]
