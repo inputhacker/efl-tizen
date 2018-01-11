@@ -1346,6 +1346,11 @@ _elm_ctxpopup_item_insert_before(Eo *obj, Elm_Ctxpopup_Data *sd, Elm_Object_Item
 
    if (sd->visible) elm_layout_sizing_eval(obj);
 
+   /* TIZEN_ONLY(20170417): add color_class parent-child relationship */
+   Elm_Widget_Item_Data *wd = efl_data_scope_get(item->list_item, ELM_WIDGET_ITEM_CLASS);
+   VIEW(item) = wd->view;
+   /* END */
+
    return eo_item;
 }
 
@@ -1372,6 +1377,11 @@ _elm_ctxpopup_item_insert_after(Eo *obj, Elm_Ctxpopup_Data *sd, Elm_Object_Item 
 
    if (sd->visible) elm_layout_sizing_eval(obj);
 
+   /* TIZEN_ONLY(20170417): add color_class parent-child relationship */
+   Elm_Widget_Item_Data *wd = efl_data_scope_get(item->list_item, ELM_WIDGET_ITEM_CLASS);
+   VIEW(item) = wd->view;
+   /* END */
+
    return eo_item;
 }
 
@@ -1391,6 +1401,11 @@ _elm_ctxpopup_item_append(Eo *obj, Elm_Ctxpopup_Data *sd, const char *label, Eva
    sd->items = eina_list_append(sd->items, eo_item);
 
    if (sd->visible) elm_layout_sizing_eval(obj);
+
+   /* TIZEN_ONLY(20170417): add color_class parent-child relationship */
+   Elm_Widget_Item_Data *wd = efl_data_scope_get(item->list_item, ELM_WIDGET_ITEM_CLASS);
+   VIEW(item) = wd->view;
+   /* END */
 
    return eo_item;
 }
@@ -1507,6 +1522,11 @@ _elm_ctxpopup_item_prepend(Eo *obj, Elm_Ctxpopup_Data *sd, const char *label, Ev
    sd->items = eina_list_prepend(sd->items, eo_item);
 
    if (sd->visible) elm_layout_sizing_eval(obj);
+
+   /* TIZEN_ONLY(20170417): add color_class parent-child relationship */
+   Elm_Widget_Item_Data *wd = efl_data_scope_get(item->list_item, ELM_WIDGET_ITEM_CLASS);
+   VIEW(item) = wd->view;
+   /* END */
 
    return eo_item;
 }
