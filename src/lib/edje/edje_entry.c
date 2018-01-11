@@ -4961,12 +4961,30 @@ _edje_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx EINA_
 
    if (cursor_pos)
      {
+        /* TIZEN_ONLY(20161227): fix to get start position of selection from surrounding_cb
         if (en->have_selection && en->sel_start)
           *cursor_pos = evas_textblock_cursor_pos_get(en->sel_start);
         else if (en->cursor)
           *cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
         else
           *cursor_pos = 0;
+         */
+        if (en->have_selection)
+          {
+             if (evas_textblock_cursor_compare(en->sel_start, en->sel_end) < 0)
+               *cursor_pos = evas_textblock_cursor_pos_get(en->sel_start);
+             else
+               *cursor_pos = evas_textblock_cursor_pos_get(en->sel_end);
+          }
+        else if (en->cursor)
+          {
+             *cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
+          }
+        else
+          {
+             *cursor_pos = 0;
+          }
+        /* END */
      }
 
    return EINA_TRUE;
@@ -5242,6 +5260,26 @@ _edje_entry_imf_event_delete_surrounding_cb(void *data, Ecore_IMF_Context *ctx E
    if ((!en) || (rp->part->type != EDJE_PART_TYPE_TEXTBLOCK) ||
        (rp->part->entry_mode < EDJE_ENTRY_EDIT_MODE_SELECTABLE))
      return;
+
+   /* TIZEN_ONLY(20161227): fix to get start position of selection from surrounding_cb
+   cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
+    */
+   if (en->have_selection)
+     {
+        if (evas_textblock_cursor_compare(en->sel_start, en->sel_end) < 0)
+          cursor_pos = evas_textblock_cursor_pos_get(en->sel_start);
+        else
+          cursor_pos = evas_textblock_cursor_pos_get(en->sel_end);
+     }
+   else if (en->cursor)
+     {
+        cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
+     }
+   else
+     {
+        cursor_pos = 0;
+     }
+   /* END */
 
    cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
 
