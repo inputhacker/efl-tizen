@@ -415,6 +415,13 @@ typedef struct _Elm_Widget_Smart_Data
    unsigned int                  focus_order;
    Eina_Bool                     focus_order_on_calc;
 
+   int                          role;         /**< Accessibility role */
+   const char                   *description; /**< Accessibility description */
+   //Eo                           *atspi_custom_parent; /**< Accessibility parent if different then parent_obj */
+   //TIZEN_ONLY(20150731) : add i18n support for name and description
+   const char                   *atspi_translation_domain;
+   ///
+
    int                           child_drag_x_locked;
    int                           child_drag_y_locked;
 
@@ -654,6 +661,13 @@ struct _Elm_Widget_Item_Data
    Eina_List                     *signals;
    Eina_Hash                     *labels;
    Evas_Object                   *track_obj;
+
+   /**< A11Y info */
+   const char                    *description;
+   int                            role;
+   //TIZEN_ONLY(20150731) : add i18n support for name and description
+   const char                    *atspi_translation_domain;
+   ///
 
    Eina_Bool                      disabled : 1;
    Eina_Bool                      on_deletion : 1;

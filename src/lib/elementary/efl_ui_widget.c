@@ -5514,6 +5514,31 @@ _efl_ui_widget_efl_access_name_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUS
    return _elm_widget_accessible_plain_name_get(obj, ret);
 }
 
+//TIZEN_ONLY(20161111) add widget/widget_item description get/set
+EOLIAN void
+_efl_ui_widget_efl_access_description_set(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data* _pd, const char *description)
+{
+   if (_pd->description)
+     eina_stringshare_del(_pd->description);
+
+   _pd->description = eina_stringshare_add(description);
+}
+
+EOLIAN static const char*
+_efl_ui_widget_efl_access_description_get(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *_pd EINA_UNUSED)
+{
+   const char *ret = NULL;
+   ret = efl_access_description_get(obj);
+   if (ret) return ret;
+
+#ifdef HAVE_GETTEXT
+   if (_pd->atspi_translation_domain)
+     return dgettext(_pd->atspi_translation_domain, _pd->description);
+#endif
+   return _pd->description;
+}
+//
+
 //TIZEN_ONLY(20171108): make atspi_proxy work
 static void
 _proxy_widget_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
@@ -5544,6 +5569,31 @@ _on_proxy_connected_cb(void *data, const Efl_Event *event)
    elm_atspi_bridge_utils_proxy_offset_set(event->object, x, y);
 
    evas_object_event_callback_add(widget, EVAS_CALLBACK_MOVE, _proxy_widget_move_cb, event->object);
+}
+//
+
+//TIZEN_ONLY(20161111) add widget/widget_item description get/set
+EOLIAN void
+_elm_widget_item_efl_access_description_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd EINA_UNUSED, const char *description)
+{
+   if (_pd->description)
+     eina_stringshare_del(_pd->description);
+
+   _pd->description = eina_stringshare_add(description);
+}
+
+EOLIAN const char*
+_elm_widget_item_efl_access_description_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
+{
+   const char *ret = NULL;
+   ret = efl_access_description_get(obj);
+   if (ret) return ret;
+
+#ifdef HAVE_GETTEXT
+   if (_pd->atspi_translation_domain)
+     return dgettext(_pd->atspi_translation_domain, _pd->description);
+#endif
+   return _pd->description;
 }
 //
 
