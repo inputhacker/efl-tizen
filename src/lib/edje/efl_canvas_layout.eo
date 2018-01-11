@@ -295,6 +295,36 @@ class Efl.Canvas.Layout (Efl.Canvas.Group, Efl.File, Efl.Container, Efl.Part,
       /*******
        * END *
        *******/
+      /**********************************************************************************
+       * TIZEN_ONLY(20171128): add additional cursor function for improving performance *
+       **********************************************************************************/
+      part_text_cursor_coord_get {
+         [[Get a position of the given cursor
+
+           \@internal
+         ]]
+         params {
+            @in part: string; [[The part name]]
+            @in cur: Edje.Cursor; [[cursor type]]
+            @out x: int; [[w]]
+            @out y: int; [[h]]
+         }
+      }
+      part_text_cursor_size_get {
+         [[Get a size of the given cursor
+
+           \@internal
+         ]]
+         params {
+            @in part: string; [[The part name]]
+            @in cur: Edje.Cursor; [[cursor type]]
+            @out w: int; [[w]]
+            @out h: int; [[h]]
+         }
+      }
+      /*******
+       * END *
+       *******/
    }
    implements {
       Efl.Gfx.visible { set; }

@@ -179,7 +179,15 @@ _efl_canvas_layout_part_text_efl_text_cursor_cursor_geometry_get(Eo *obj,
    PROXY_DATA_GET(obj, pd);
    if (pd->rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
      {
+        /**********************************************************************************
+         * TIZEN_ONLY(20171128): add additional cursor function for improving performance *
+         **********************************************************************************
         _edje_entry_cursor_geometry_get(pd->rp, cx, cy, cw, ch, NULL);
+         */
+        _edje_entry_cursor_geometry_get(pd->rp, EDJE_CURSOR_MAIN, cx, cy, cw, ch, NULL);
+        /*******
+         * END *
+         *******/
         if (cx) *cx -= pd->ed->x;
         if (cy) *cy -= pd->ed->y;
      }

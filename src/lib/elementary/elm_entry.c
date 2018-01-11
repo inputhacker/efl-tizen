@@ -492,10 +492,21 @@ _update_selection_handler(Evas_Object *obj)
 {
    ELM_ENTRY_DATA_GET(obj, sd);
 
+   /**********************************************************************************
+    * TIZEN_ONLY(20171128): add additional cursor function for improving performance *
+    **********************************************************************************
    Evas_Coord sx, sy, sh;
    Evas_Coord ent_x, ent_y;
    Evas_Coord ex, ey, eh;
    int start_pos, end_pos, last_pos;
+    */
+   Evas_Coord sx, sy, sw, sh;
+   Evas_Coord ent_x, ent_y;
+   Evas_Coord ex, ey, ew, eh;
+   int start_pos, end_pos;
+   /*******
+    * END *
+    *******/
 
    if (!sd->sel_handler_disabled)
      {
@@ -513,6 +524,9 @@ _update_selection_handler(Evas_Object *obj)
            (sd->entry_edje, "elm.text", EDJE_CURSOR_SELECTION_END);
 
         evas_object_geometry_get(sd->entry_edje, &ent_x, &ent_y, NULL, NULL);
+        /**********************************************************************************
+         * TIZEN_ONLY(20171128): add additional cursor function for improving performance *
+         **********************************************************************************
         last_pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
                                                         EDJE_CURSOR_MAIN);
         edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
@@ -525,6 +539,19 @@ _update_selection_handler(Evas_Object *obj)
                                                   &ex, &ey, NULL, &eh);
         edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
                                              EDJE_CURSOR_MAIN, last_pos);
+         */
+        edje_object_part_text_cursor_coord_get(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_SELECTION_BEGIN, &sx, &sy);
+        edje_object_part_text_cursor_size_get(sd->entry_edje, "elm.text",
+                                              EDJE_CURSOR_SELECTION_BEGIN, &sw, &sh);
+        edje_object_part_text_cursor_coord_get(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_SELECTION_END, &ex, &ey);
+        edje_object_part_text_cursor_size_get(sd->entry_edje, "elm.text",
+                                              EDJE_CURSOR_SELECTION_END, &ew, &eh);
+        /*******
+         * END *
+         *******/
+
         if (start_pos < end_pos)
           {
              hx = ent_x + sx;
