@@ -8650,20 +8650,6 @@ _elm_genlist_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
    //TIZEN_ONLY(20160602) added name of group item
    Elm_Genlist_Item_Type genlist_item_type = elm_genlist_item_type_get(eo_it);
    //
-   //TIZEN ONLY (160609) : Added in order to read when group item contain checkbox, sub text and normal as per UX guide 0.3.
-   Eina_List *children = NULL, *l;
-   Eo *item;
-   Eina_Bool flag_contain_checkbox = EINA_FALSE;
-   children = efl_access_children_get(eo_it);
-   EINA_LIST_FOREACH(children, l, item)
-     {
-        if (efl_isa((item), EFL_UI_CHECK_CLASS))
-          {
-             flag_contain_checkbox = EINA_TRUE;
-             break;
-          }
-     }
-   //
 
    buf = eina_strbuf_new();
 
@@ -8691,11 +8677,6 @@ _elm_genlist_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
                }
           }
      }
-
-   //TIZEN ONLY (160609) : Added in order to read when group item contain checkbox, sub text and normal as per UX guide 0.3.
-   if (((genlist_item_type & ELM_GENLIST_ITEM_GROUP) || (genlist_item_type & ELM_GENLIST_ITEM_TREE)) && !flag_contain_checkbox)
-     eina_strbuf_append(buf,", header");
-   //
 
    accessible_name = eina_strbuf_string_steal(buf);
    eina_strbuf_free(buf);
@@ -9026,7 +9007,7 @@ _elm_genlist_efl_object_provider_find(const Eo *obj, Elm_Genlist_Data *pd, const
    return efl_provider_find(efl_super(obj, ELM_GENLIST_CLASS), klass);
 }
 
-EOLIAN static void 
+EOLIAN static void
 _elm_genlist_efl_ui_focus_composition_prepare(Eo *obj, Elm_Genlist_Data *pd)
 {
    Elm_Gen_Item *item;
@@ -9043,7 +9024,7 @@ _elm_genlist_efl_ui_focus_composition_prepare(Eo *obj, Elm_Genlist_Data *pd)
    efl_ui_focus_composition_elements_set(obj, order);
 }
 
-EOLIAN static void 
+EOLIAN static void
 _elm_genlist_item_efl_ui_focus_object_prepare_logical(Eo *obj, Elm_Gen_Item *pd)
 {
    Eina_List *n;
@@ -9060,7 +9041,7 @@ _elm_genlist_item_efl_ui_focus_object_prepare_logical(Eo *obj, Elm_Gen_Item *pd)
    efl_ui_focus_object_prepare_logical(efl_super(obj, ELM_GENLIST_ITEM_CLASS));
 }
 
-EOLIAN static Eina_Bool 
+EOLIAN static Eina_Bool
 _elm_genlist_efl_ui_widget_focus_state_apply(Eo *obj, Elm_Genlist_Data *pd EINA_UNUSED, Efl_Ui_Widget_Focus_State current_state, Efl_Ui_Widget_Focus_State *configured_state, Efl_Ui_Widget *redirect EINA_UNUSED)
 {
    return efl_ui_widget_focus_state_apply(efl_super(obj, MY_CLASS), current_state, configured_state, obj);
