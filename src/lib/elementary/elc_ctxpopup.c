@@ -553,7 +553,13 @@ _elm_ctxpopup_elm_layout_sizing_eval(Eo *obj, Elm_Ctxpopup_Data *sd)
    if ((sd->list) && (sd->list_visible))
      {
         evas_object_geometry_get(sd->list, 0, 0, &list_size.x, &list_size.y);
+        /* TIZEN_ONLY(20170413): fix sizing eval problem
+           When list size is same with ctxpopup base part,
+           list doesn't need to change to compress mode
         if ((list_size.x >= rect.w) || (list_size.y >= rect.h))
+        */
+        if ((list_size.x > rect.w) || (list_size.y > rect.h))
+        /* END */
           {
              elm_list_mode_set(sd->list, ELM_LIST_COMPRESS);
              evas_object_size_hint_min_set(obj, list_size.x, list_size.y);
