@@ -19,6 +19,25 @@
 #define MY_CLASS_NAME "Elm_Notify"
 #define MY_CLASS_NAME_LEGACY "elm_notify"
 
+//TIZEN_ONLY(20170801): to manage show and animation state
+static void
+_notify_visuals_set(Evas_Object *obj)
+{
+   ELM_NOTIFY_DATA_GET(obj, sd);
+
+   if (sd->show_finished)
+   {
+      if (!sd->allow_events) elm_layout_signal_emit(sd->block_events, "elm,state,visible", "elm");
+      edje_object_signal_emit(sd->notify, "elm,state,visible", "elm");
+   }
+   else if (evas_object_visible_get(obj))
+   {
+       if (!sd->allow_events) elm_layout_signal_emit(sd->block_events, "elm,state,show,animation", "elm");
+       edje_object_signal_emit(sd->notify, "elm,state,show,animation", "elm");
+   }
+}
+//END
+
 static Efl_Ui_Theme_Apply
 _notify_theme_apply(Evas_Object *obj)
 {
@@ -158,11 +177,7 @@ _elm_notify_efl_ui_widget_theme_apply(Eo *obj, Elm_Notify_Data *sd)
    _sizing_eval(obj);
 
    /* TIZEN_ONLY(20161018): fix theme apply problem by font/language change */
-   if (sd->show_finished)
-   {
-      elm_layout_signal_emit(sd->block_events, "elm,state,visible", "elm");
-      edje_object_signal_emit(sd->notify, "elm,state,visible", "elm");
-   }
+   _notify_visuals_set(obj);
    /* END */
 
    return int_ret;
@@ -710,12 +725,19 @@ _elm_notify_align_set(Eo *obj, Elm_Notify_Data *sd, double horizontal, double ve
 
    _notify_theme_apply(obj);
    _calc(obj);
+
+   /* TIZEN_ONLY(20170329): add signal emit after align set */
+   _notify_visuals_set(obj);
+   /* END */
 }
 
 EOLIAN static void
 _elm_notify_dismiss(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
 {
-   elm_layout_signal_emit(sd->block_events, "elm,state,hide", "elm");
+   //TIZEN_ONLY(20170801): block_events must be checked it is null or not null
+   //elm_layout_signal_emit(sd->block_events, "elm,state,hide", "elm");
+   if (!sd->allow_events) elm_layout_signal_emit(sd->block_events, "elm,state,hide", "elm");
+   //END
    edje_object_signal_emit(sd->notify, "elm,state,hide", "elm");
 }
 
