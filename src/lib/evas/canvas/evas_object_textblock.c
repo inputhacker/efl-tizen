@@ -3015,7 +3015,9 @@ _layout_update_bidi_props(const Evas_Textblock_Data *o,
               break;
            /* TIZEN_ONLY(20170216): add EVAS_BIDI_DIRECTION_ANY_RTL for evas_object_paragraph_direction_set API */
            case EVAS_BIDI_DIRECTION_ANY_RTL:
+              bidi_par_type = EVAS_BIDI_PARAGRAPH_NEUTRAL;
               is_any_rtl = EINA_TRUE;
+              break;
            /* END */
            case EVAS_BIDI_DIRECTION_NEUTRAL:
            default:
