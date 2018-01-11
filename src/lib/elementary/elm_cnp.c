@@ -37,8 +37,8 @@ enum
    CNP_ATOM_image_tga,
    CNP_ATOM_image_ppm,
    CNP_ATOM_XELM,
-//   CNP_ATOM_text_html_utf8,
-//   CNP_ATOM_text_html,
+   CNP_ATOM_text_html_utf8,
+   CNP_ATOM_text_html,
    CNP_ATOM_UTF8STRING,
    CNP_ATOM_STRING,
    CNP_ATOM_COMPOUND_TEXT,
@@ -272,6 +272,7 @@ static Eina_Bool _wl_data_preparer_uri(Wl_Cnp_Selection *sel, Elm_Selection_Data
 static Eina_Bool _wl_data_preparer_vcard(Wl_Cnp_Selection *sel, Elm_Selection_Data *ddata, Ecore_Wl2_Event_Offer_Data_Ready *ev, Tmp_Info **tmp_info);
 static Eina_Bool _wl_data_preparer_image(Wl_Cnp_Selection *sel, Elm_Selection_Data *ddata, Ecore_Wl2_Event_Offer_Data_Ready *ev, Tmp_Info **tmp_info);
 static Eina_Bool _wl_data_preparer_text(Wl_Cnp_Selection *sel, Elm_Selection_Data *ddata, Ecore_Wl2_Event_Offer_Data_Ready *ev, Tmp_Info **tmp_info);
+static Eina_Bool _wl_data_preparer_handler_html(Wl_Cnp_Selection *sel, Elm_Selection_Data *ddata, Ecore_Wl2_Event_Offer_Data_Ready *ev, Tmp_Info **tmp_info);
 #endif
 
 struct _Cnp_Atom
@@ -617,7 +618,6 @@ static Cnp_Atom _atoms[CNP_N_ATOMS] = {
         .wl_data_preparer = _wl_data_preparer_image,
 #endif
    },
-/*
    ARRAYINIT(CNP_ATOM_text_html_utf8) {
       .name = "text/html;charset=utf-8",
       .formats = ELM_SEL_FORMAT_HTML,
@@ -643,7 +643,6 @@ static Cnp_Atom _atoms[CNP_N_ATOMS] = {
         .wl_data_preparer = _wl_data_preparer_handler_html,
 #endif
    },
- */
    ARRAYINIT(CNP_ATOM_UTF8STRING) {
         .name = "UTF8_STRING",
         .formats = ELM_SEL_FORMAT_TEXT | ELM_SEL_FORMAT_MARKUP | ELM_SEL_FORMAT_HTML,
@@ -2870,6 +2869,19 @@ _wl_data_preparer_text(Wl_Cnp_Selection *sel, Elm_Selection_Data *ddata, Ecore_W
    cnp_debug("In\n");
 
    ddata->format = ELM_SEL_FORMAT_TEXT;
+   ddata->data = eina_memdup((unsigned char *)ev->data, ev->len, EINA_TRUE);
+   ddata->len = ev->len;
+   ddata->action = sel->action;
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+_wl_data_preparer_handler_html(Wl_Cnp_Selection *sel, Elm_Selection_Data *ddata, Ecore_Wl2_Event_Offer_Data_Ready *ev, Tmp_Info **tmp_info EINA_UNUSED)
+{
+   cnp_debug("In\n");
+
+   ddata->format = ELM_SEL_FORMAT_HTML;
    ddata->data = eina_memdup((unsigned char *)ev->data, ev->len, EINA_TRUE);
    ddata->len = ev->len;
    ddata->action = sel->action;
