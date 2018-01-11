@@ -759,6 +759,9 @@ evas_font_load(const Eina_List *font_paths, int hinting, Evas_Font_Description *
                               }
                          }
 
+/* TIZEN_ONLY(20170820): Fix to use fontconfig when there is a global_font_path */
+#ifndef HAVE_FONTCONFIG
+/* END */
                        if (!font)
                          {
                             EINA_LIST_FOREACH(global_font_path, ll, dir)
@@ -773,6 +776,9 @@ evas_font_load(const Eina_List *font_paths, int hinting, Evas_Font_Description *
                                    }
                               }
                          }
+/* TIZEN_ONLY(20170820): Fix to use fontconfig when there is a global_font_path */
+#endif
+/* END */
                     }
                }
           }
