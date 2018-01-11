@@ -3122,6 +3122,11 @@ _wl_selection_receive(void *data, int type EINA_UNUSED, void *event)
 
    ecore_event_handler_del(ready->handler);
    free(data);
+
+   //TIZEN_ONLY(20161124): skip other process's receive event
+   sel->requestwidget = NULL;
+   //
+
    return ECORE_CALLBACK_CANCEL;
 }
 
@@ -3315,6 +3320,11 @@ _wl_selection_send(void *data, int type EINA_UNUSED, void *event)
    buf = data_ret;
    cnp_debug("write: %s", buf);
 
+   //TIZEN_ONLY(20161124): skip other process's send event
+   if (buf == NULL)
+     return ECORE_CALLBACK_PASS_ON;
+   //
+
    while (len_written < len_ret)
      {
         ret = write(ev->fd, buf, len_remained);
@@ -3324,6 +3334,11 @@ _wl_selection_send(void *data, int type EINA_UNUSED, void *event)
         len_remained -= ret;
      }
    free(data_ret);
+
+   //TIZEN_ONLY(20161124): skip other process's send event
+   ELM_SAFE_FREE(sel->selbuf, free);
+   sel->buflen = 0;
+   //
 
    close(ev->fd);
    return ECORE_CALLBACK_PASS_ON;
