@@ -1394,6 +1394,23 @@ _elm_spinner_efl_ui_widget_theme_apply(Eo *obj, Elm_Spinner_Data *sd)
    return EFL_UI_THEME_APPLY_SUCCESS;
 }
 
+/* TIZEN_ONLY(20161111, 20180111)
+ *  (20161111): apply UI Mirroring for Tizen 3.0 UX
+ *  (20180111): change from Elm.Widget.mirrored to Efl.Ui.Base.mirrored
+ */
+EOLIAN static Eina_Bool
+_elm_spinner_efl_ui_base_mirrored_get(Eo *obj EINA_UNUSED, Elm_Spinner_Data *_pd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+
+EOLIAN static void
+_elm_spinner_efl_ui_base_mirrored_set(Eo *obj EINA_UNUSED, Elm_Spinner_Data *_pd EINA_UNUSED, Eina_Bool mirrored EINA_UNUSED)
+{
+   return;
+}
+/* END */
+
 static Eina_Bool _elm_spinner_smart_focus_next_enable = EINA_FALSE;
 
 EOLIAN static void
