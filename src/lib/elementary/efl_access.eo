@@ -352,18 +352,19 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       }
       //
       @property relation_set @protected @beta {
-         [[Gets an all relations between accessible object and other accessible objects.]]
          get {
+            [[Gets an all relations between accessible object and other accessible objects.]]
          }
          values {
             relations: Efl.Access.Relation_Set; [[Accessible relation set]]
          }
       }
       @property role @beta {
-         [[The role of the object in accessibility domain.]]
          get {
+            [[The role of the object in accessibility domain.]]
          }
          set {
+            [[Sets the role of the object in accessibility domain.]]
          }
          values {
             role: Efl.Access.Role; [[Accessible role]]
@@ -411,8 +412,8 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
       }
       //
       @property children @protected @beta {
-         [[Gets object's accessible children.]]
          get {
+            [[Gets object's accessible children.]]
          }
          values {
             children: list<Efl.Access> @owned; [[List of widget's children]]
@@ -427,8 +428,8 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
          }
       }
       @property attributes @protected @beta {
-         [[Gets key-value pairs indentifying object extra attributes. Must be free by a user.]]
          get {
+            [[Gets key-value pairs indentifying object extra attributes. Must be free by a user.]]
          }
          values {
             attributes: list<ptr(Efl.Access.Attribute) @owned> @owned; [[List of object attributes, Must be freed by the user]]
@@ -479,28 +480,30 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
          }
       }
       @property description @beta {
-         [[Contextual information about object.]]
          get {
+            [[Gets contextual information about object.]]
          }
          set {
+            [[Sets widget contextual information.]]
          }
          values {
             description: string; [[Accessible contextual information]]
          }
       }
       @property parent @beta {
-         [[Object's accessible parent.]]
          get {
+            [[Gets object's accessible parent.]]
          }
          set {
+            [[Sets object's accessible parent.]]
          }
          values {
             parent: Efl.Access; [[Accessible parent]]
          }
       }
       @property state_set @protected @beta {
-         [[Gets set describing object accessible states.]]
          get {
+            [[Gets set describing object accessible states.]]
          }
          values {
             states: Efl.Access.State_Set; [[Accessible state set]]
