@@ -141,6 +141,9 @@ _img_new(Evas_Object *obj)
 
    img = evas_object_image_add(evas_object_evas_get(obj));
    evas_object_image_scale_hint_set(img, EVAS_IMAGE_SCALE_HINT_STATIC);
+   // TIZEN_ONLY(20161111): Preserve backward compatibility with Tizen 2.4.
+   evas_object_repeat_events_set(img, EINA_TRUE);
+   //
    evas_object_event_callback_add
      (img, EVAS_CALLBACK_IMAGE_PRELOADED, _on_image_preloaded, sd);
 
