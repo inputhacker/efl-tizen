@@ -4234,6 +4234,16 @@ _elm_win_translate(void)
 
    EINA_LIST_FOREACH(_elm_win_list, l, obj)
      efl_ui_translatable_translation_update(obj);
+
+   //TIZEN_ONLY(20161202): Temporary code - Apply mirroring in _elm_win_translate()
+   if (_elm_config && _elm_config->language_auto_mirrored)
+     {
+        if (!strcmp(E_("default:LTR"), "default:RTL"))
+          elm_config_mirrored_set(EINA_TRUE);
+        else
+          elm_config_mirrored_set(EINA_FALSE);
+     }
+   //
 }
 
 void
@@ -9159,6 +9169,16 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
 #endif
 //
    const Efl_Class *klass = MY_CLASS;
+
+//TIZEN_ONLY(20161202): Temporary code - Apply mirroring in elm_win_add()
+   if (_elm_config && _elm_config->language_auto_mirrored)
+     {
+        if (!strcmp(E_("default:LTR"), "default:RTL"))
+          elm_config_mirrored_set(EINA_TRUE);
+        else
+          elm_config_mirrored_set(EINA_FALSE);
+     }
+//
 
    switch ((int) type)
      {

@@ -1762,6 +1762,28 @@ EAPI Eina_Bool elm_config_mirrored_get(void);
  */
 EAPI void      elm_config_mirrored_set(Eina_Bool mirrored);
 
+// TIZEN_ONLY(20161202): Getter and setter of auto mirroring config
+/**
+ * Get the system auto mirrored mode.
+ * This determines whether the mirrored mode is determined automatically by the locale or not.
+ *
+ * @return @c EINA_TRUE if mirrored is set, @c EINA_FALSE otherwise
+ *
+ * @since_tizen 4.0
+ */
+EAPI Eina_Bool elm_config_language_auto_mirrored_get(void);
+
+/**
+ * Set the system auto mirrored mode.
+ * This determines whether the mirrored mode is determined automatically by the locale or not.
+ *
+ * @param mirrored @c EINA_TRUE to set auto mirrored mode, @c EINA_FALSE to unset it.
+ *
+ * @since_tizen 4.0
+ */
+EAPI void      elm_config_language_auto_mirrored_set(Eina_Bool auto_mirrored);
+//
+
 /**
  * Get the clouseau state. @c EINA_TRUE if clouseau was tried to be run.
  *

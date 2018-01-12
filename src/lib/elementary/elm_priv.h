@@ -461,6 +461,10 @@ struct _Elm_Config
    int           gl_depth;
    int           gl_stencil;
    int           gl_msaa;
+// TIZEN_ONLY(20161202): This config is for applying UI mirroring
+//                       automatically according to language setting
+   Eina_Bool     language_auto_mirrored;
+//
    const char   *icon_theme;
    unsigned char entry_select_allow;
    Eina_Bool     offline;

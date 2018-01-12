@@ -507,6 +507,10 @@ _desc_init(void)
    ELM_CONFIG_VAL(D, T, popup_vertical_align, T_DOUBLE);
    ELM_CONFIG_VAL(D, T, popup_scrollable, T_UCHAR);
    ELM_CONFIG_VAL(D, T, spinner_min_max_filter_enable, T_UCHAR);
+   // TIZEN_ONLY(20161202): This config is for applying UI mirroring
+   //                       automatically according to language setting
+   ELM_CONFIG_VAL(D, T, language_auto_mirrored, T_UCHAR);
+   //
    ELM_CONFIG_VAL(D, T, icon_theme, T_STRING);
    ELM_CONFIG_VAL(D, T, entry_select_allow, T_UCHAR);
    ELM_CONFIG_VAL(D, T, offline, T_UCHAR);
@@ -1830,6 +1834,9 @@ _config_load(void)
    _elm_config->popup_vertical_align = 0.5;
    _elm_config->icon_theme = eina_stringshare_add(ELM_CONFIG_ICON_THEME_ELEMENTARY);
    _elm_config->popup_scrollable = EINA_FALSE;
+   // TIZEN_ONLY(20161202): Enable auto mirroring by default
+   _elm_config->language_auto_mirrored = EINA_TRUE;
+   //
    _elm_config->entry_select_allow = EINA_TRUE;
    _env_get();
 }
@@ -2894,6 +2901,23 @@ elm_config_mirrored_set(Eina_Bool mirrored)
    _elm_config->is_mirrored = mirrored;
    _elm_rescale();
 }
+
+// TIZEN_ONLY(20161202): Getter and setter of auto mirroring config
+EAPI Eina_Bool
+elm_config_language_auto_mirrored_get(void)
+{
+   return _elm_config->language_auto_mirrored;
+}
+
+EAPI void
+elm_config_language_auto_mirrored_set(Eina_Bool automatic)
+{
+   automatic = !!automatic;
+   if (_elm_config->language_auto_mirrored == automatic) return;
+   _elm_config->language_auto_mirrored = automatic;
+   _elm_rescale();
+}
+//
 
 EAPI Eina_Bool
 elm_config_cursor_engine_only_get(void)
