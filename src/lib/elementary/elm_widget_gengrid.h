@@ -53,7 +53,9 @@ struct _Elm_Gengrid_Data
    Eina_Hash                            *content_item_map;
    Eo                                   *provider;
 
-   Ecore_Job                            *calc_job;
+   //TIZEN_ONLY(20160511) : Remove job for fixing calculate timing issue.
+   // Ecore_Job                            *calc_job;
+   //
    int                                   walking;
    int                                   item_width, item_height;
    int                                   group_item_width, group_item_height;
@@ -132,6 +134,9 @@ struct _Elm_Gengrid_Data
    Eina_Bool                             wheel_disabled : 1; /**< a flag that shows mouse wheel is disabled or not. */
    /**< value whether item loop feature is enabled or not. */
    Eina_Bool                             item_loop_enable : 1;
+//TIZEN_ONLY(20160511) : Remove job for fixing calculate timing issue.
+   Eina_Bool                             calc_done : 1;
+//
 
    Eina_Inlist                          *item_cache; /* an inlist of
                                                       * edje object it
@@ -143,6 +148,9 @@ struct _Elm_Gengrid_Data
    //
    //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
    Eina_List                            *atspi_children;
+   //
+   //TIZEN_ONLY(20161114) : Refactoring Gengrid Index Position
+   Eina_Bool                             position_update;
    //
 
    /* custom dimensions may be set for any item.
