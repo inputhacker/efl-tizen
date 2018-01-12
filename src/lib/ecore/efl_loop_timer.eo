@@ -12,9 +12,11 @@ class Efl.Loop.Timer (Efl.Loop.Consumer)
       @property interval {
          [[Interval the timer ticks on.]]
          set {
-            [[If set during a timer call this will affect the next interval.]]
+            [[Changes the interval the timer ticks off. If set during
+            a timer call this will affect the next interval.]]
          }
          get {
+            [[Gets the interval the timer ticks on.]]
          }
          values {
             in: double(-1.0); [[The new interval in seconds]]
@@ -23,6 +25,7 @@ class Efl.Loop.Timer (Efl.Loop.Consumer)
       @property pending {
          [[Pending time regarding a timer.]]
          get {
+            [[Gets the pending time regarding a timer.]]
             return: double; [[Pending time]]
          }
       }
