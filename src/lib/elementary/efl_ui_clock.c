@@ -838,6 +838,10 @@ _efl_ui_clock_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Clock_Data *priv)
                                        elm_widget_theme_style_get(obj)))
      CRI("Failed to set layout!");
 
+   /* TIZEN_ONLY(20180111): elm_widget_can_focus_set before module init for support TV UX */
+   elm_widget_can_focus_set(obj, EINA_TRUE);
+   //
+
    // module - initialise module for clock
    if (!dt_mod) dt_mod = _dt_mod_init();
    if (dt_mod)
@@ -880,7 +884,9 @@ _efl_ui_clock_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Clock_Data *priv)
    _reload_format(obj);
    _ticker(obj);
 
-   elm_widget_can_focus_set(obj, EINA_TRUE);
+   /* TIZEN_ONLY(20180111): elm_widget_can_focus_set before module init for support TV UX */
+   //elm_widget_can_focus_set(obj, EINA_TRUE);
+   //
 
    priv->freeze_sizing = EINA_FALSE;
    elm_layout_sizing_eval(obj);
