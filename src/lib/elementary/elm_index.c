@@ -359,7 +359,10 @@ _index_box_auto_fill(Evas_Object *obj,
           }
 
         if (skip > 0)
-          edje_object_part_text_escaped_set(o, "elm.text", "*");
+          //TIZEN_ONLY(20150922): Using unicode for * character in tizen.
+          //edje_object_part_text_escaped_set(o, "elm.text", "*");
+          edje_object_part_text_escaped_set(o, "elm.text", "\u2217");
+          //
         else
           edje_object_part_text_escaped_set(o, "elm.text", it->letter);
         edje_object_size_min_restricted_calc(o, &mw, &mh, 0, 0);
