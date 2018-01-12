@@ -25,7 +25,7 @@ enum Elm.Toolbar.Shrink_Mode
 
 class Elm.Toolbar (Efl.Ui.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scrollable, Efl.Ui.Direction,
                    Efl.Access.Widget.Action, Efl.Access.Selection,
-                   Efl.Ui.Clickable, Efl.Ui.Selectable, Efl.Ui.Menu)
+                   Efl.Ui.Clickable, Efl.Ui.Selectable, Efl.Ui.Menu, Efl.Orientation)
 {
    [[Elementary toolbar class]]
    legacy_prefix: elm_toolbar;
@@ -37,8 +37,18 @@ class Elm.Toolbar (Efl.Ui.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
            This will enable the homogeneous mode where items are of the same size.]]
          set {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          get {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          values {
             homogeneous: bool; [[Assume the items within the toolbar are of the same size (true = on, false = off). Default is $false.]]
@@ -53,8 +63,18 @@ class Elm.Toolbar (Efl.Ui.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
            Centered items by default.]]
          set {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          get {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          values {
             align: double; [[The new alignment, a float between 0.0 and 1.0.]]
@@ -73,8 +93,18 @@ class Elm.Toolbar (Efl.Ui.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
            entirely and they will neither appear selected nor call selected
            callback functions.]]
          set {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          get {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          values {
             mode: Elm.Object.Select_Mode(Elm.Object.Select_Mode.max); [[The select mode If getting mode fails, it returns #ELM_OBJECT_SELECT_MODE_MAX]]
@@ -85,8 +115,18 @@ class Elm.Toolbar (Efl.Ui.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
 
            Note: Default value is $32. It reads value from elm config.]]
          set {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          get {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          values {
             icon_size: int; [[The icon size in pixels]]
@@ -114,8 +154,18 @@ class Elm.Toolbar (Efl.Ui.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
            Warning: This function's behavior will clash with those of
            elm_scroller_policy_set(), so use either one of them, but not both.]]
          set {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          get {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          values {
             shrink_mode: Elm.Toolbar.Shrink_Mode; [[Toolbar's items display behavior]]
@@ -132,8 +182,18 @@ class Elm.Toolbar (Efl.Ui.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
            See: elm_menu_parent_set() for details.
            See: elm_toolbar_item_menu_set() for details.]]
          set {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          get {
+            [[\@MOBILE_ONLY
+
+              \@if MOBILE \@since_tizen 2.3
+              \@endif
+            ]]
          }
          values {
             parent: Efl.Canvas.Object; [[The parent of the menu objects.]]
@@ -327,6 +387,9 @@ class Elm.Toolbar (Efl.Ui.Widget, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
       Efl.Ui.Widget.widget_event;
       Efl.Ui.Widget.focus_highlight_geometry { get; }
       Efl.Ui.Widget.focused_item { get; }
+      // //TIZEN_ONLY(20150625): fix item resize issue.
+      Efl.Orientation.orientation { set; }
+      //
       Efl.Ui.Direction.direction { get; set; [[Only supports $vertical and $horizontal. Default is $horizontal.]] }
       Efl.Ui.Widget.focus_state_apply;
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,

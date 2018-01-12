@@ -255,6 +255,10 @@ _mirrored_set(Evas_Object *obj,
 
    ELM_TOOLBAR_DATA_GET(obj, sd);
 
+   /* TIZEN_ONLY(20170214): Added for mirroring of navigationbar */
+   elm_interface_scrollable_mirrored_set(obj, mirrored);
+   /* END */
+
    EINA_INLIST_FOREACH(sd->items, it)
      _item_mirrored_set(obj, it, mirrored);
    if (sd->more_item)
@@ -562,7 +566,12 @@ _resize_job(void *data)
         EINA_INLIST_FOREACH(sd->items, it)
           {
              if (it->selected)
-               _item_show(it);
+               {
+                  // TIZEN_ONLY(20170403): Initialize scroll region when toolbar is resized.
+                  elm_interface_scrollable_page_show(WIDGET(it), 0, 0);
+                  //
+                  _item_show(it);
+               }
              evas_object_show(VIEW(it));
           }
      }
@@ -1517,6 +1526,39 @@ _elm_toolbar_efl_ui_widget_theme_apply(Eo *obj, Elm_Toolbar_Data *sd)
 
    return int_ret;
 }
+
+// TIZEN_ONLY(20150625): fix item resize issue.
+EOLIAN static void
+_elm_toolbar_efl_orientation_orientation_set(Eo *obj, Elm_Toolbar_Data *sd, Efl_Orient orient)
+{
+   Elm_Toolbar_Item_Data *it;
+   Evas_Object *edje;
+
+   if (orient != -1)
+     {
+        char buf[128];
+        Evas_Coord mw, mh;
+
+        snprintf(buf, sizeof(buf), "elm,state,orient,%d", orient);
+        EINA_INLIST_FOREACH(sd->items, it)
+          {
+             edje = elm_layout_edje_get(VIEW(it));
+             edje_object_signal_emit(edje, buf, "elm");
+             edje_object_message_signal_process(edje);
+             edje_object_size_min_restricted_calc(edje, &mw, &mh, -1, -1);
+
+
+             if (!it->separator && !it->object)
+               elm_coords_finger_size_adjust(1, &mw, 1, &mh);
+
+             evas_object_size_hint_min_set(edje, mw, mh);
+             evas_object_size_hint_max_set(edje, -1, -1);
+          }
+     }
+
+   efl_orientation_set(obj, orient);
+}
+//
 
 static void
 _elm_toolbar_item_label_update(Elm_Toolbar_Item_Data *item)
@@ -3403,7 +3445,10 @@ _elm_toolbar_shrink_mode_set(Eo *obj, Elm_Toolbar_Data *sd, Elm_Toolbar_Shrink_M
         elm_toolbar_homogeneous_set(obj, EINA_FALSE);
         elm_interface_scrollable_policy_set
               (obj, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-        sd->more_item = _item_new(obj, "go-down", "More", NULL, NULL);
+        /* TIZEN_ONLY(20170307): Reduces unnecessary search cost. "more_menu" is not used. */
+        //sd->more_item = _item_new(obj, "go-down", "More", NULL, NULL);
+        sd->more_item = _item_new(obj, NULL, NULL, NULL, NULL);
+        /* END */
         _resizing_eval_item(sd->more_item);
      }
    else if (shrink_mode == ELM_TOOLBAR_SHRINK_HIDE)
@@ -3417,7 +3462,10 @@ _elm_toolbar_shrink_mode_set(Eo *obj, Elm_Toolbar_Data *sd, Elm_Toolbar_Shrink_M
         elm_toolbar_homogeneous_set(obj, EINA_FALSE);
         elm_interface_scrollable_policy_set
               (obj, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
-        sd->more_item = _item_new(obj, "go-down", "More", NULL, NULL);
+        /* TIZEN_ONLY(20170307): Reduces unnecessary search cost. "more_menu" is not used. */
+        //sd->more_item = _item_new(obj, "go-down", "More", NULL, NULL);
+        sd->more_item = _item_new(obj, NULL, NULL, NULL, NULL);
+        /* END */
         _resizing_eval_item(sd->more_item);
      }
    else if (shrink_mode == ELM_TOOLBAR_SHRINK_SCROLL)
