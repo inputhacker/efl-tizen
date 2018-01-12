@@ -629,6 +629,7 @@ _efl_ui_progressbar_efl_access_value_value_and_text_get(Eo *obj EINA_UNUSED, Efl
    if (value) *value = _pd->val;
 }
 
+
 //TIZEN_ONLY(20160603): added description_get API
 EOLIAN static const char*
 _efl_ui_progressbar_efl_access_description_get(Eo *obj, Efl_Ui_Progressbar_Data *pd EINA_UNUSED)
@@ -637,6 +638,21 @@ _efl_ui_progressbar_efl_access_description_get(Eo *obj, Efl_Ui_Progressbar_Data 
     return ret ? strdup(ret) : NULL;
 }
 //
+
+//TIZEN_ONLY(20161109): apply UI Mirroring for Tizen 3.0 UX
+EOLIAN static Eina_Bool
+_efl_ui_progressbar_efl_ui_base_mirrored_get(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *_pd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+//
+
+//TIZEN_ONLY(20161109): apply UI Mirroring for Tizen 3.0 UX
+EOLIAN static void
+_efl_ui_progressbar_efl_ui_base_mirrored_set(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *_pd EINA_UNUSED, Eina_Bool mirrored EINA_UNUSED)
+{
+   return;
+}
 
 #include "efl_ui_progressbar_part.eo.c"
 
