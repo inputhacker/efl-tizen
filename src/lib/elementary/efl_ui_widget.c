@@ -7096,6 +7096,10 @@ _accessible_object_on_screen_is(Eo *obj, Evas_Coord x, Evas_Coord y, Evas_Coord 
    Evas_Object *parent = NULL;
    Evas_Coord px, py, sx, sy, sw, sh, ox, oy, ow, oh;
 
+   /* uninitialized data could be read */
+   ow = 0;
+   oh = 0;
+
    if (elm_widget_is(target))
      parent = elm_widget_parent_get(target);
    else
