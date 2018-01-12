@@ -263,7 +263,8 @@ lib_LTLIBRARIES += lib/elementary/libelementary.la
 includes_HEADERS = \
 lib/elementary/Elementary.h \
 lib/elementary/Elementary_Options.h \
-lib/elementary/Elementary_Cursor.h
+lib/elementary/Elementary_Cursor.h \
+lib/elementary/Elementary_GL_Helpers.h
 includesdir = $(includedir)/elementary-@VMAJ@
 
 includesunstable_HEADERS = \
