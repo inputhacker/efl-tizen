@@ -6948,12 +6948,24 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
 
 static int _sort_by_repeat_events(const void *data1, const void *data2)
 {
+   Evas_Object *ao1, *ao2;
    Eina_Bool repeat1, repeat2;
+
+   ao1 = elm_access_object_get(data1);
+   ao2 = elm_access_object_get(data2);
 
    repeat1 = evas_object_repeat_events_get(data1);
    repeat2 = evas_object_repeat_events_get(data2);
 
-   if (repeat1 != repeat2 && repeat1 == EINA_TRUE) return 1;
+   if (repeat1 != repeat2)
+     {
+        if (repeat1 && !ao1) return 1;
+     }
+   else
+     {
+        if (repeat1 && !ao1 && ao2) return 1;
+     }
+
    return -1;
 }
 
