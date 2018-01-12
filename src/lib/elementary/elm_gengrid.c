@@ -2104,6 +2104,8 @@ _item_place(Elm_Gen_Item *it,
                   item->moving = EINA_FALSE;
                }
           }
+        //TIZEN_ONLY(20170131): Group on Top Feature is not tizen UI.
+        /*
         if (!it->group)
           {
              evas_object_move(VIEW(it), x, y);
@@ -2111,6 +2113,10 @@ _item_place(Elm_Gen_Item *it,
           }
         else
           item->group_realized = EINA_TRUE;
+        */
+        evas_object_move(VIEW(it), x, y);
+        evas_object_resize(VIEW(it), iw, ih);
+        item->group_realized = EINA_TRUE;
      }
    else
      {
@@ -2153,9 +2159,12 @@ _group_item_place(Elm_Gengrid_Pan_Data *psd)
                   efl_event_callback_legacy_call
                     (WIDGET(it), ELM_GENGRID_EVENT_REALIZED, EO_OBJ(it));
                }
+             //TIZEN_ONLY(20170131): Group on Top Feature is not tizen UI.
+             /*
              evas_object_move
                (VIEW(it), GG_IT(it)->gx,
                GG_IT(it)->gy);
+             */
              evas_object_resize(VIEW(it), iw, ih);
              evas_object_raise(VIEW(it));
           }
