@@ -296,6 +296,7 @@ _notify_resize_cb(void *data,
 
    ELM_POPUP_CHECK(popup);
 
+   _scroller_size_calc(popup);
    elm_layout_sizing_eval(popup);
 }
 
