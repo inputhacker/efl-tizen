@@ -5962,28 +5962,51 @@ _elm_widget_item_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, Elm_Widget
 }
 
 //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
+static Eina_Bool
+_children_highlight_check(Eo *obj)
+{
+   Eina_List *children, *l;
+   Eo *child;
+
+   if (_elm_object_accessibility_currently_highlighted_get() == (void *)obj)
+     {
+        efl_access_component_highlight_clear(obj);
+        return EINA_TRUE;
+     }
+
+   children = efl_access_children_get(obj);
+   EINA_LIST_FOREACH(children, l, child)
+     {
+        if (_children_highlight_check(child)) return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
 EOLIAN static void
 _efl_ui_widget_efl_access_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Eina_Bool can_highlight)
 {
+   if (!can_highlight) _children_highlight_check(obj);
    _pd->can_highlight = !!can_highlight;
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_widget_efl_access_can_highlight_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+_efl_ui_widget_efl_access_can_highlight_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
 {
-   return _pd->can_highlight;
+   return _elm_widget_highlightable(obj);
 }
 
 EOLIAN static void
 _elm_widget_item_efl_access_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd, Eina_Bool can_highlight)
 {
+   if (!can_highlight) _children_highlight_check(obj);
    _pd->can_highlight = !!can_highlight;
 }
 
 EOLIAN static Eina_Bool
-_elm_widget_item_efl_access_can_highlight_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
+_elm_widget_item_efl_access_can_highlight_get(Eo *obj, Elm_Widget_Item_Data *_pd EINA_UNUSED)
 {
-	return _pd->can_highlight;
+   return _elm_widget_item_highlightable(obj);
 }
 //
 
