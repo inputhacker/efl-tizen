@@ -505,6 +505,7 @@ arrange_text:
       FLOAT_T align_x;
       if (params->type.text->align.x < FROM_INT(0))
         {
+           /* TIZEN_ONLY(20170216): Apply align according to paragraph_direction
            if (evas_object_text_direction_get(ep->object) ==
                EVAS_BIDI_DIRECTION_RTL)
              {
@@ -514,6 +515,29 @@ arrange_text:
              {
                 align_x = FROM_INT(0);
              }
+            */
+           if (evas_object_paragraph_direction_get(ep->object) == EVAS_BIDI_DIRECTION_LTR)
+             {
+                align_x = FROM_INT(0);
+             }
+           else if ((evas_object_paragraph_direction_get(ep->object) == EVAS_BIDI_DIRECTION_RTL) ||
+                    (evas_object_paragraph_direction_get(ep->object) == EVAS_BIDI_DIRECTION_ANY_RTL))
+             {
+                align_x = FROM_INT(1);
+             }
+           else
+             {
+                if (evas_object_text_direction_get(ep->object) ==
+                    EVAS_BIDI_DIRECTION_RTL)
+                  {
+                     align_x = FROM_INT(1);
+                  }
+                else
+                  {
+                     align_x = FROM_INT(0);
+                  }
+             }
+           /* END */
         }
       else
         {

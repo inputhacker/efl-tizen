@@ -3608,6 +3608,14 @@ _layout_line_align_get(Ctxt *c)
 #ifdef BIDI_SUPPORT
    if ((c->align_auto == EVAS_TEXTBLOCK_ALIGN_AUTO_NORMAL) && c->ln)
      {
+        /* TIZEN_ONLY(20170216): Apply align according to paragraph_direction */
+        if (c->o->paragraph_direction == EVAS_BIDI_DIRECTION_LTR)
+          return 0.0;
+        else if ((c->o->paragraph_direction == EVAS_BIDI_DIRECTION_RTL) ||
+                 (c->o->paragraph_direction == EVAS_BIDI_DIRECTION_ANY_RTL))
+          return 1.0;
+        /* END */
+
         if (c->ln->items && c->ln->items->text_node &&
               (c->ln->par->direction == EVAS_BIDI_DIRECTION_RTL))
           {
