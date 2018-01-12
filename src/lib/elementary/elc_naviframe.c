@@ -773,6 +773,14 @@ _item_title_prev_btn_set(Elm_Naviframe_Item_Data *it,
    evas_object_event_callback_add
      (btn, EVAS_CALLBACK_DEL, _item_title_prev_btn_del_cb, it);
 
+   //TIZEN ONLY(20161207): add reading text of back button
+   if (!elm_layout_text_get(btn, NULL))
+     {
+        if(_elm_config->atspi_mode)
+          efl_access_name_set(btn, N_("Navigate back"));
+     }
+   //
+
    //FIXME: set back button callback here after elm 2.0
 }
 
@@ -1466,6 +1474,10 @@ _item_new(Evas_Object *obj,
                       _access_prev_btn_info_cb, it);
                }
           }
+        //TIZEN ONLY(20161207): add reading text of back button
+        if(_elm_config->atspi_mode)
+          efl_access_name_set(prev_btn, N_("Navigate back"));
+        //
      }
 
    if (next_btn)
