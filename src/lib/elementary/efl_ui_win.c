@@ -9186,6 +9186,25 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
       case ELM_WIN_SOCKET_IMAGE: klass = EFL_UI_WIN_SOCKET_CLASS; break;
       default: break;
      }
+// TIZEN_ONLY(20160218): Improve launching performance.
+   if (_precreated_win_obj)
+     {
+        ELM_WIN_DATA_GET(_precreated_win_obj, sd);
+
+        if (sd)
+          {
+             if ((sd->type == type) && (sd->parent == parent))
+               {
+                  Evas_Object *tmp = _precreated_win_obj;
+                  TRAP(sd, name_class_set, name, _elm_appname);
+                  _precreated_win_obj = NULL;
+                  INF("Return precreated obj(%p).", tmp);
+
+                  return tmp;
+               }
+          }
+     }
+//
 
    Evas_Object *obj = elm_legacy_add(klass, parent,
                          efl_ui_win_name_set(efl_added, name),

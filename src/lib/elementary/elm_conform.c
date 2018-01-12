@@ -1137,6 +1137,24 @@ EAPI Evas_Object *
 elm_conformant_add(Evas_Object *parent)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
+// TIZEN_ONLY(20160218): Improve launching performance.
+   if (_precreated_conform_obj)
+     {
+        Evas_Object *par_obj = elm_widget_parent_get(_precreated_conform_obj);
+
+        if (par_obj == parent)
+          {
+             Evas_Object *above_obj = evas_object_above_get(_precreated_conform_obj);
+             if (above_obj)
+               evas_object_raise(_precreated_conform_obj);
+
+             Evas_Object *tmp = _precreated_conform_obj;
+             _precreated_conform_obj = NULL;
+             INF("Return precreated obj(%p).", tmp);
+             return tmp;
+          }
+     }
+//
    return elm_legacy_add(MY_CLASS, parent);
 }
 
