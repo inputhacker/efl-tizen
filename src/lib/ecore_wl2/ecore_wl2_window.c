@@ -628,68 +628,18 @@ static const struct tizen_resource_listener _tizen_resource_listener =
 };
 //
 
-void
-_ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
-{
-   if (!window->surface) return;
-   if ((window->display->wl.zxdg_shell) && (!window->zxdg_surface))
-     {
-        window->zxdg_surface =
-          zxdg_shell_v6_get_xdg_surface(window->display->wl.zxdg_shell,
-                                        window->surface);
-        zxdg_surface_v6_set_user_data(window->zxdg_surface, window);
-        zxdg_surface_v6_add_listener(window->zxdg_surface,
-                                     &_zxdg_surface_listener, window);
-
-        window->zxdg_configure_ack = zxdg_surface_v6_ack_configure;
-        window->pending.configure = EINA_TRUE;
-        if (window->display->wl.efl_hints)
-          {
-             if (window->aspect.set)
-               efl_hints_set_aspect(window->display->wl.efl_hints, window->zxdg_surface,
-                 window->aspect.w, window->aspect.h, window->aspect.aspect);
-             if (window->weight.set)
-               efl_hints_set_weight(window->display->wl.efl_hints, window->zxdg_surface,
-                 window->weight.w, window->weight.h);
-          }
-
-        if (window->type == ECORE_WL2_WINDOW_TYPE_MENU)
-          _ecore_wl2_window_zxdg_popup_create(window);
-        else
-          {
-             struct zxdg_toplevel_v6 *ptop = NULL;
-
-             window->zxdg_toplevel =
-               zxdg_surface_v6_get_toplevel(window->zxdg_surface);
-             zxdg_toplevel_v6_set_user_data(window->zxdg_toplevel, window);
-             zxdg_toplevel_v6_add_listener(window->zxdg_toplevel,
-                                           &_zxdg_toplevel_listener, window);
-
-             if (window->title)
-               zxdg_toplevel_v6_set_title(window->zxdg_toplevel, window->title);
-             if (window->class)
-               zxdg_toplevel_v6_set_app_id(window->zxdg_toplevel, window->class);
-
-             window->zxdg_set_min_size = zxdg_toplevel_v6_set_min_size;
-             window->zxdg_set_max_size = zxdg_toplevel_v6_set_max_size;
-
-             if (window->parent)
-               ptop = window->parent->zxdg_toplevel;
-
-             if (ptop)
-               zxdg_toplevel_v6_set_parent(window->zxdg_toplevel, ptop);
-
-             if (window->set_config.maximized)
-               zxdg_toplevel_v6_set_maximized(window->zxdg_toplevel);
-
-             if (window->set_config.fullscreen)
-               zxdg_toplevel_v6_set_fullscreen(window->zxdg_toplevel, NULL);
-          }
-
-        ecore_wl2_window_commit(window, EINA_TRUE);
-     }
 
 // TIZEN_ONLY(20171112) : support tizen protocols
+// to initialize wayland tizen extention protocols after surface creation
+// such as tizen_policy, tizen_position, tizen_rotation, tizen_resource
+// and handle transient parent(by tizen_policy) for surfaces without shell or xdg_shell
+void
+_ecore_wl2_window_tz_ext_init(Ecore_Wl2_Window *window)
+{
+   if (!window) return;
+   if (!window->surface) return;
+   if (!window->display) return;
+
    if (window->display->wl.tz_policy)
      {
         if (!window->tz_visibility)
@@ -828,7 +778,69 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
                tizen_policy_set_parent(window->display->wl.tz_policy, window->surface, window->parent->surface);
           }
      }
-//
+}
+// END of TIZEN_ONLY(20171112) : support tizen protocols
+
+void
+_ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
+{
+   if (!window->surface) return;
+   if ((window->display->wl.zxdg_shell) && (!window->zxdg_surface))
+     {
+        window->zxdg_surface =
+          zxdg_shell_v6_get_xdg_surface(window->display->wl.zxdg_shell,
+                                        window->surface);
+        zxdg_surface_v6_set_user_data(window->zxdg_surface, window);
+        zxdg_surface_v6_add_listener(window->zxdg_surface,
+                                     &_zxdg_surface_listener, window);
+
+        window->zxdg_configure_ack = zxdg_surface_v6_ack_configure;
+        window->pending.configure = EINA_TRUE;
+        if (window->display->wl.efl_hints)
+          {
+             if (window->aspect.set)
+               efl_hints_set_aspect(window->display->wl.efl_hints, window->zxdg_surface,
+                 window->aspect.w, window->aspect.h, window->aspect.aspect);
+             if (window->weight.set)
+               efl_hints_set_weight(window->display->wl.efl_hints, window->zxdg_surface,
+                 window->weight.w, window->weight.h);
+          }
+
+        if (window->type == ECORE_WL2_WINDOW_TYPE_MENU)
+          _ecore_wl2_window_zxdg_popup_create(window);
+        else
+          {
+             struct zxdg_toplevel_v6 *ptop = NULL;
+
+             window->zxdg_toplevel =
+               zxdg_surface_v6_get_toplevel(window->zxdg_surface);
+             zxdg_toplevel_v6_set_user_data(window->zxdg_toplevel, window);
+             zxdg_toplevel_v6_add_listener(window->zxdg_toplevel,
+                                           &_zxdg_toplevel_listener, window);
+
+             if (window->title)
+               zxdg_toplevel_v6_set_title(window->zxdg_toplevel, window->title);
+             if (window->class)
+               zxdg_toplevel_v6_set_app_id(window->zxdg_toplevel, window->class);
+
+             window->zxdg_set_min_size = zxdg_toplevel_v6_set_min_size;
+             window->zxdg_set_max_size = zxdg_toplevel_v6_set_max_size;
+
+             if (window->parent)
+               ptop = window->parent->zxdg_toplevel;
+
+             if (ptop)
+               zxdg_toplevel_v6_set_parent(window->zxdg_toplevel, ptop);
+
+             if (window->set_config.maximized)
+               zxdg_toplevel_v6_set_maximized(window->zxdg_toplevel);
+
+             if (window->set_config.fullscreen)
+               zxdg_toplevel_v6_set_fullscreen(window->zxdg_toplevel, NULL);
+          }
+
+        ecore_wl2_window_commit(window, EINA_TRUE);
+     }
 
    if (window->display->wl.session_recovery)
      {
@@ -1014,11 +1026,15 @@ ecore_wl2_window_show(Ecore_Wl2_Window *window)
        (window->type != ECORE_WL2_WINDOW_TYPE_NONE))
      {
         _ecore_wl2_window_shell_surface_init(window);
+        _ecore_wl2_window_tz_ext_init(window);  // TIZEN_ONLY(20171112) : support tizen protocols after surface creation
         _ecore_wl2_window_www_surface_init(window);
         _ecore_wl2_window_show_send(window);
      }
    else
-     _configure_complete(window);
+     {
+        _ecore_wl2_window_tz_ext_init(window); // TIZEN_ONLY(20171112) : support tizen protocols after surface creation
+        _configure_complete(window);
+     }
 }
 
 EAPI void
