@@ -3966,6 +3966,11 @@ _elm_widget_item_efl_object_destructor(Eo *eo_item, Elm_Widget_Item_Data *item)
    efl_access_attributes_clear(eo_item);
    efl_access_removed(eo_item);
 
+   // TIZEN_ONLY(20150709) : atspi relations api
+   if (item->atspi_custom_relations)
+     efl_access_relation_set_free(&item->atspi_custom_relations);
+   //
+
    EINA_MAGIC_SET(item, EINA_MAGIC_NONE);
 
    efl_destructor(efl_super(eo_item, ELM_WIDGET_ITEM_CLASS));
@@ -5410,6 +5415,11 @@ _efl_ui_widget_efl_object_destructor(Eo *obj, Elm_Widget_Smart_Data *sd)
         sd->logical.parent = NULL;
      }
 
+   // TIZEN_ONLY(20150709) : atspi relations api
+   if (sd->atspi_custom_relations)
+     efl_access_relation_set_free(&sd->atspi_custom_relations);
+   //
+
    sd->on_destroy = EINA_TRUE;
    efl_destructor(efl_super(obj, EFL_UI_WIDGET_CLASS));
    sd->on_destroy = EINA_FALSE;
@@ -5901,6 +5911,57 @@ _efl_ui_widget_efl_access_attributes_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA
 
    return attr_list;
 }
+
+// TIZEN_ONLY(20150709) : atspi relations api
+EOLIAN static Efl_Access_Relation_Set
+_efl_ui_widget_efl_access_relation_set_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
+{
+   return efl_access_relation_set_clone(&sd->atspi_custom_relations);
+}
+EOLIAN static Eina_Bool
+_efl_ui_widget_efl_access_relationship_append(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
+{
+   return efl_access_relationship_append(&sd->atspi_custom_relations, type, relation_obj);
+}
+
+EOLIAN static void
+_efl_ui_widget_efl_access_relationship_remove(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
+{
+   efl_access_relationship_remove(&sd->atspi_custom_relations, type, relation_obj);
+}
+
+EOLIAN static void
+_efl_ui_widget_efl_access_relationships_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
+{
+   efl_access_relation_set_free(&sd->atspi_custom_relations);
+   sd->atspi_custom_relations = NULL;
+}
+
+EOLIAN static Elm_Atspi_Relation_Set
+_elm_widget_item_efl_access_relation_set_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd)
+{
+   return efl_access_relation_set_clone(&sd->atspi_custom_relations);
+}
+
+EOLIAN static Eina_Bool
+_elm_widget_item_efl_access_relationship_append(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
+{
+   return efl_access_relationship_append(&sd->atspi_custom_relations, type, relation_obj);
+}
+
+EOLIAN static void
+_elm_widget_item_efl_access_relationship_remove(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
+{
+   efl_access_relationship_remove(&sd->atspi_custom_relations, type, relation_obj);
+}
+
+EOLIAN static void
+_elm_widget_item_efl_access_relationships_clear(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd)
+{
+   efl_access_relation_set_free(&sd->atspi_custom_relations);
+   sd->atspi_custom_relations = NULL;
+}
+//////////////////////////////
 
 EOLIAN static Eina_List *
 _elm_widget_item_efl_access_attributes_get(Eo *eo_item, Elm_Widget_Item_Data *pd  EINA_UNUSED)
