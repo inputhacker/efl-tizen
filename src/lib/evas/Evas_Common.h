@@ -327,10 +327,10 @@ typedef enum
   EVAS_DEVICE_SUBCLASS_PEN_TIP, /**< The tip of a pen. */
   EVAS_DEVICE_SUBCLASS_TRACKPAD, /**< A trackpad style mouse. */
   EVAS_DEVICE_SUBCLASS_TRACKPOINT, /**< A trackpoint style mouse. */
-  EVAS_DEVICE_SUBCLASS_TRACKBALL /**< A trackball style mouse. */
+  EVAS_DEVICE_SUBCLASS_TRACKBALL, /**< A trackball style mouse. */
 // TIZEN_ONLY(20170620): Add new device subclasses.
-   EVAS_DEVICE_SUBCLASS_REMOCON, /**< A remote controller @since_tizen 4.0 */
-   EVAS_DEVICE_SUBCLASS_VIRTUAL_KEYBOARD /**< A virtual keyboard @since_tizen 4.0*/
+  EVAS_DEVICE_SUBCLASS_REMOCON, /**< A remote controller @since_tizen 4.0 */
+  EVAS_DEVICE_SUBCLASS_VIRTUAL_KEYBOARD /**< A virtual keyboard @since_tizen 4.0*/
 //
 } Evas_Device_Subclass;
 
