@@ -1352,7 +1352,9 @@ _keyboard_cb_repeat(void *data)
    window = input->focus.keyboard;
    if (!window) goto out;
 */
+   input->repeat.time += (int)(input->repeat.rate * 1000.0);
 //
+
    _ecore_wl2_input_key_send(input, input->focus.keyboard,
                              input->repeat.sym, input->repeat.sym_name,
                              input->repeat.key + 8,
