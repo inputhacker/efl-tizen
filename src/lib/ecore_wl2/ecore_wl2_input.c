@@ -1343,8 +1343,6 @@ _keyboard_cb_repeat(void *data)
    input = data;
    if (!input) return ECORE_CALLBACK_RENEW;
 
-// TIZEN_ONLY(20160610): fix key repeat condition.
-/*
    window = input->focus.keyboard;
    if (!window) goto out;
 
@@ -1359,14 +1357,6 @@ _keyboard_cb_repeat(void *data)
         ecore_timer_interval_set(input->repeat.timer, input->repeat.rate);
         input->repeat.repeating = EINA_TRUE;
      }
-*/
-   _ecore_wl2_input_key_send(input, input->focus.keyboard,
-                             input->repeat.sym, input->repeat.sym_name,
-                             input->repeat.key + 8,
-                             WL_KEYBOARD_KEY_STATE_PRESSED,
-                             input->repeat.time);
-//
-
    return ECORE_CALLBACK_RENEW;
 
 out:
