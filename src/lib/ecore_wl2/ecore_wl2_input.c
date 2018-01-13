@@ -1318,11 +1318,15 @@ _keyboard_cb_leave(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigne
 
    input->display->serial = serial;
 
+// TIZEN_ONLY(20160615): Fix key repeat logic. 
+/*
    input->repeat.sym = 0;
    input->repeat.key = 0;
    input->repeat.time = 0;
    if (input->repeat.timer) ecore_timer_del(input->repeat.timer);
    input->repeat.timer = NULL;
+*/
+//
    window = _ecore_wl2_display_window_surface_find(input->display, surface);
    if (window)
      {
