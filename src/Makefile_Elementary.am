@@ -766,6 +766,7 @@ lib_elementary_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_scroller.c \
 	lib/elementary/efl_ui_scroll_manager.c \
 	lib/elementary/efl_ui_pan.c \
+	lib/elementary/tizen_vector.c \
 	$(NULL)
 
 
