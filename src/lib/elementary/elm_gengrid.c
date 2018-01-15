@@ -2279,6 +2279,9 @@ _elm_gengrid_pan_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED, Elm_Gengr
    //
    if (!sd->nmax) return;
 
+   //TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid.
+   sd->is_append = EINA_FALSE;
+   //
    sd->reorder_item_changed = EINA_FALSE;
 
    EINA_INLIST_FOREACH(sd->items, it)
@@ -4566,6 +4569,9 @@ EOLIAN static Elm_Object_Item*
 _elm_gengrid_item_append(Eo *obj, Elm_Gengrid_Data *sd, const Elm_Gengrid_Item_Class *itc, const void *data, Evas_Smart_Cb func, const void *func_data)
 {
    Elm_Gen_Item *it;
+   //TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid.
+   int pos_x, pos_y, min_x, min_y;
+   //
 
    it = _elm_gengrid_item_new(sd, itc, data, func, func_data);
    if (!it) return NULL;
@@ -4583,6 +4589,13 @@ _elm_gengrid_item_append(Eo *obj, Elm_Gengrid_Data *sd, const Elm_Gengrid_Item_C
    //ecore_job_del(sd->calc_job);
    //sd->calc_job = ecore_job_add(_calc_job, obj);
 
+   //TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid.
+   sd->is_append = EINA_TRUE;
+   elm_obj_pan_pos_get(sd->pan_obj, &pos_x, &pos_y);
+   elm_obj_pan_pos_min_get(sd->pan_obj, &min_x, &min_y);
+   sd->top_to_x = pos_x - min_x;
+   sd->top_to_y = pos_y - min_y;
+   //
    return EO_OBJ(it);
 }
 
@@ -4638,7 +4651,6 @@ _elm_gengrid_item_insert_before(Eo *obj, Elm_Gengrid_Data *sd, const Elm_Gengrid
    //ecore_job_del(sd->calc_job);
    //sd->calc_job = ecore_job_add(_calc_job, obj);
    //
-
    return EO_OBJ(it);
 }
 
@@ -4646,6 +4658,9 @@ EOLIAN static Elm_Object_Item*
 _elm_gengrid_item_insert_after(Eo *obj, Elm_Gengrid_Data *sd, const Elm_Gengrid_Item_Class *itc, const void *data, Elm_Object_Item *eo_relative, Evas_Smart_Cb func, const void *func_data)
 {
    Elm_Gen_Item *it;
+   //TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid.
+   int pos_x, pos_y, min_x, min_y;
+   //
    Eina_Inlist *tmp;
    EINA_SAFETY_ON_NULL_RETURN_VAL(eo_relative, NULL);
    ELM_GENGRID_ITEM_DATA_GET(eo_relative, relative);
@@ -4669,6 +4684,14 @@ _elm_gengrid_item_insert_after(Eo *obj, Elm_Gengrid_Data *sd, const Elm_Gengrid_
    evas_object_smart_changed(sd->pan_obj);
    //ecore_job_del(sd->calc_job);
    //sd->calc_job = ecore_job_add(_calc_job, obj);
+   //
+
+   //TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid.
+   sd->is_append = EINA_TRUE;
+   elm_obj_pan_pos_get(sd->pan_obj, &pos_x, &pos_y);
+   elm_obj_pan_pos_min_get(sd->pan_obj, &min_x, &min_y);
+   sd->top_to_x = pos_x - min_x;
+   sd->top_to_y = pos_y - min_y;
    //
 
    return EO_OBJ(it);
@@ -5682,6 +5705,83 @@ _elm_gengrid_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
    free(accessible_name);
    return it->base->accessible_name;
 }
+
+//TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid.
+EOLIAN static void
+_elm_gengrid_elm_interface_scrollable_wanted_region_set(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, int x EINA_UNUSED, int y EINA_UNUSED)
+{
+   if (sd->is_append)
+     {
+        Evas_Coord pan_x, pan_y;
+        Evas_Coord minx, miny;
+        Evas_Coord set_x, set_y;
+
+        elm_obj_pan_pos_get(sd->pan_obj, &pan_x, &pan_y);
+        elm_obj_pan_pos_min_get(sd->pan_obj, &minx, &miny);
+
+        if (sd->horizontal)
+          {
+             set_x = minx + sd->top_to_x;
+             elm_interface_scrollable_content_pos_set(sd->obj, set_x, pan_y, EINA_TRUE);
+          }
+        else
+          {
+             set_y = miny + sd->top_to_y;
+             elm_interface_scrollable_content_pos_set(sd->obj, pan_x, set_y, EINA_TRUE);
+          }
+     }
+}
+//
+
+//TIZEN_ONLY(20150909) : Use the specific bar_chagnged_bar_pos_adjust func only for gengrid.
+static double
+_round(double value, int pos)
+{
+   double temp;
+
+   temp = value * pow( 10, pos );
+   temp = floor( temp + 0.5 );
+   temp *= pow( 10, -pos );
+
+   return temp;
+}
+
+EOLIAN static void
+_elm_gengrid_elm_interface_scrollable_custom_pan_pos_adjust(Eo *obj, Elm_Gengrid_Data *sd, int *x, int *y)
+{
+   Evas_Coord mx, my, minx, miny;
+   double vx, vy;
+
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
+
+   elm_obj_pan_pos_max_get(sd->pan_obj, &mx, &my);
+   elm_obj_pan_pos_min_get(sd->pan_obj, &minx, &miny);
+   elm_obj_pan_pos_get(sd->pan_obj, x, y);
+
+   if (edje_object_part_exists(wd->resize_obj, "elm.dragable.hbar"))
+     {
+        edje_object_part_drag_value_get
+           (wd->resize_obj, "elm.dragable.hbar", &vx, NULL);
+        *x = _round(vx * (double)mx + minx, 1);
+     }
+   else
+     {
+        if (*x > mx) *x = mx;
+        else if (*x < minx) *x = minx;
+     }
+   if (edje_object_part_exists(wd->resize_obj, "elm.dragable.vbar"))
+     {
+        edje_object_part_drag_value_get
+           (wd->resize_obj, "elm.dragable.vbar", NULL, &vy);
+        *y = _round(vy * (double)my + miny, 1);
+     }
+   else
+     {
+        if (*y > my) *y = my;
+        else if (*y < miny) *y = miny;
+     }
+}
+//
 
 //TIZEN_ONLY(20171114):  Region show on item elements fixed
 EOLIAN static Eina_Bool

@@ -580,6 +580,11 @@ class Elm.Gengrid (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
       //TIZEN ONLY (20151009) : Accessibility: updated highlight change during gengrid scroll
       Elm.Interface_Scrollable.content_pos_set;
       //
+      // TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid. */
+      Elm.Interface_Scrollable.wanted_region_set;
+      //
+      /* TIZEN_ONLY(20150909) : Use the specific bar_chagnged_bar_pos_adjust func only for gengrid. */
+      Elm.Interface_Scrollable.custom_pan_pos_adjust;
    }
    events {
       realized; [[Called when gengrid realized]]

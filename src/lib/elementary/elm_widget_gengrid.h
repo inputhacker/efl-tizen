@@ -152,7 +152,10 @@ struct _Elm_Gengrid_Data
    //TIZEN_ONLY(20161114) : Refactoring Gengrid Index Position
    Eina_Bool                             position_update;
    //
-
+   //TIZEN_ONLY(20150825) : Use the specific wanted_region_set func only for gengrid.
+   Evas_Coord                            top_to_x, top_to_y;
+   Eina_Bool                             is_append : 1;
+   //
    /* custom dimensions may be set for any item.
     * the logic for placing items requires that either item widths
     * for horizontal gengrid or item height for vertical gengrid
