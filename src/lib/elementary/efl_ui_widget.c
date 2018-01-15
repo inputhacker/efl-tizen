@@ -7087,6 +7087,42 @@ _efl_ui_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_
 //
 
 //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
+void
+_elm_widget_showing_geometry_get(Eo *obj, int *x, int *y, int *w, int *h)
+{
+   Evas_Object *parent;
+   Evas_Coord px, py, sx, sy, sw, sh;
+
+   *x = 0;
+   *y = 0;
+   *w = 0;
+   *h = 0;
+
+   if (!obj) return;
+
+   evas_object_geometry_get(obj, x, y, w, h);
+
+   if (elm_widget_is(obj))
+     parent = elm_widget_parent_get(obj);
+   else
+     parent = elm_widget_parent_widget_get(obj);
+
+   while (parent)
+     {
+        if (efl_isa(parent, ELM_INTERFACE_SCROLLABLE_MIXIN))
+          {
+             evas_object_geometry_get(parent, &sx, &sy, &sw, &sh);
+             px = *x;
+             py = *y;
+             *x = *x > sx ? *x : sx;
+             *y = *y > sy ? *y : sy;
+             *w = px + *w < sx + sw ? px + *w - *x : sx + sw - *x;
+             *h = py + *h < sy + sh ? py + *h - *y : sy + sh - *y;
+          }
+        parent = elm_widget_parent_get(parent);
+     }
+}
+
 Eina_Bool
 _accessible_object_on_screen_is(Eo *obj, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h, Eina_Bool is_complete)
 {

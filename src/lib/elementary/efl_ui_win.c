@@ -1214,7 +1214,7 @@ _elm_win_accessibility_highlight_simple_setup(Efl_Ui_Win_Data *sd,
    Efl_Access_Role role;
    //
 
-   evas_object_geometry_get(target, &x, &y, &w, &h);
+   _elm_widget_showing_geometry_get(target, &x, &y, &w, &h);
 
    //TIZEN_ONLY(20160623): atspi: moved highlight when object is out of screen
    evas_object_geometry_get(target, &ox, &oy, NULL, NULL);

@@ -6169,7 +6169,35 @@ _elm_entry_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Ent
 // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
 /////////////////////////////////////////////////////////////////
 static void
-_entry_edje_move_resize(void *data, Evas *e, Evas_Object *obj EINA_UNUSED,
+_anchor_highlight_rect_append(Eo *obj, Evas_Textblock_Rectangle *r)
+{
+   Evas_Coord x, y;
+   Evas_Coord sx, sy, sw, sh;
+   Evas_Object *rect = NULL;
+   Evas *e = evas_object_evas_get(obj);
+
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   evas_object_geometry_get(sd->entry_edje, &x, &y, NULL, NULL);
+
+   rect = edje_object_add(e);
+    _elm_theme_object_set(obj, rect,
+      "accessibility_highlight", "top", "default");
+   evas_object_smart_member_add(rect, obj);
+   evas_object_repeat_events_set(rect, EINA_TRUE);
+   evas_object_move(rect, x + r->x, y + r->y);
+   evas_object_resize(rect, r->w, r->h);
+   _elm_widget_showing_geometry_get(rect, &sx, &sy, &sw, &sh);
+   evas_object_move(rect, sx, sy);
+   evas_object_resize(rect, sw, sh);
+   evas_object_show(rect);
+   sd->anchor_highlight_rects =
+     eina_list_append(sd->anchor_highlight_rects, rect);
+}
+
+static void
+_entry_edje_move_resize(void *data, Evas *e EINA_UNUSED,
+                        Evas_Object *obj EINA_UNUSED,
                         void *event_info EINA_UNUSED)
 {
    Evas_Object *entry = data;
@@ -6237,17 +6265,7 @@ _entry_edje_move_resize(void *data, Evas *e, Evas_Object *obj EINA_UNUSED,
 
                        if ((rindex > 0) &&
                            (access == _elm_object_accessibility_currently_highlighted_get()))
-                         {
-                             rect = edje_object_add(e);
-                             _elm_theme_object_set(entry, rect,
-                               "accessibility_highlight", "top", "default");
-                             evas_object_repeat_events_set(rect, EINA_TRUE);
-                             evas_object_move(rect, x + r->x, y + r->y);
-                             evas_object_resize(rect, r->w, r->h);
-                             evas_object_show(rect);
-                             sd->anchor_highlight_rects =
-                               eina_list_append(sd->anchor_highlight_rects, rect);
-                         }
+                         _anchor_highlight_rect_append(entry, r);
 
                        free(r);
                        range = eina_list_remove_list(range, ll);
@@ -6269,16 +6287,12 @@ _anchor_rect_highlighted_cb(void *data, Evas_Object *obj, void *event_info EINA_
 
    Evas_Textblock_Rectangle *r;
    Evas_Object *tb = elm_entry_textblock_get(entry);
-   Evas *e = evas_object_evas_get(entry);
    const Eina_List *anchors_a, *l;
    Eina_List *ll, *ll_next, *range = NULL;
-   Evas_Coord x, y;
    unsigned int index = 0;
    unsigned int rindex = 0; /* highlight rect index */
 
-   ELM_ENTRY_DATA_GET(entry, sd);
 
-   evas_object_geometry_get(sd->entry_edje, &x, &y, NULL, NULL);
    anchors_a = evas_textblock_node_format_list_get(tb, "a");
    if (anchors_a)
      {
@@ -6308,7 +6322,6 @@ _anchor_rect_highlighted_cb(void *data, Evas_Object *obj, void *event_info EINA_
 
              if (node)
                {
-                  Evas_Object *rect = NULL;
                   evas_textblock_cursor_at_format_set(end, node);
 
                   range = evas_textblock_cursor_range_geometry_get(start, end);
@@ -6316,17 +6329,7 @@ _anchor_rect_highlighted_cb(void *data, Evas_Object *obj, void *event_info EINA_
                     {
                        /* The first rect is covered by default */
                        if (rindex > 0)
-                         {
-                            rect = edje_object_add(e);
-                             _elm_theme_object_set(entry, rect,
-                               "accessibility_highlight", "top", "default");
-                            evas_object_repeat_events_set(rect, EINA_TRUE);
-                            evas_object_move(rect, x + r->x, y + r->y);
-                            evas_object_resize(rect, r->w, r->h);
-                            evas_object_show(rect);
-                            sd->anchor_highlight_rects =
-                              eina_list_append(sd->anchor_highlight_rects, rect);
-                         }
+                         _anchor_highlight_rect_append(entry, r);
 
                        free(r);
                        range = eina_list_remove_list(range, ll);
@@ -6341,7 +6344,8 @@ _anchor_rect_highlighted_cb(void *data, Evas_Object *obj, void *event_info EINA_
 }
 
 static void
-_anchor_rect_unhighlighted_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+_anchor_rect_unhighlighted_cb(void *data EINA_UNUSED, Evas_Object *obj,
+                              void *event_info EINA_UNUSED)
 {
    Eo *entry;
    entry = efl_access_parent_get(obj);

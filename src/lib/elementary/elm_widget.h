@@ -581,7 +581,7 @@ Evas_Object          *_elm_win_default_label_obj_get(Evas_Object *obj);
 // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
 void                 *_elm_object_accessibility_currently_highlighted_get();
 //
-
+void                  _elm_widget_showing_geometry_get(Eo *obj, int *x, int *y, int *w, int *h);
 //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
 Eina_Bool _elm_widget_accessibility_highlight_grabbing_get(Eo *obj);
 void _elm_widget_accessibility_highlight_grabbing_set(Eo *obj, Eina_Bool grabbing);
