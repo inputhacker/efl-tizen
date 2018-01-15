@@ -1724,6 +1724,10 @@ EAPI Eina_Iterator *edje_mmap_text_class_iterator_new(Eina_File *f);
  * @see edje_size_class_get().
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool    edje_size_class_set             (const char *size_class, Evas_Coord minw, Evas_Coord minh, Evas_Coord maxw, Evas_Coord maxh);
 
@@ -1742,6 +1746,10 @@ EAPI Eina_Bool    edje_size_class_set             (const char *size_class, Evas_
  * size class.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool    edje_size_class_get             (const char *size_class, Evas_Coord *minw, Evas_Coord *minh, Evas_Coord *maxw, Evas_Coord *maxh);
 
@@ -1754,6 +1762,10 @@ EAPI Eina_Bool    edje_size_class_get             (const char *size_class, Evas_
  * specified size class.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_size_class_del             (const char *size_class);
 
@@ -1767,6 +1779,10 @@ EAPI void         edje_size_class_del             (const char *size_class);
  * process.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_List   *edje_size_class_list            (void);
 
@@ -1779,6 +1795,10 @@ EAPI Eina_List   *edje_size_class_list            (void);
  * an application.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *edje_size_class_active_iterator_new(void);
 
@@ -1790,6 +1810,10 @@ EAPI Eina_Iterator *edje_size_class_active_iterator_new(void);
  * @return an iterator of Edje_Size_Class provided by the Edje file.
  *
  * @since 1.17
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *edje_mmap_size_class_iterator_new(Eina_File *f);
 
