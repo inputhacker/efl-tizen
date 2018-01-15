@@ -45,7 +45,7 @@ typedef struct _Eldbus_Connection_Context_NOC_Cb
    Eldbus_Name_Owner_Changed_Cb cb;
    const void                 *cb_data;
    Eina_Bool                   deleted : 1;
-   Ecore_Idle_Enterer         *idle_enterer;
+   Ecore_Idler                *idler;
    Eina_Bool                   allow_initial : 1;
 } Eldbus_Connection_Context_NOC_Cb;
 
@@ -771,7 +771,7 @@ cb_timeout_toggle(DBusTimeout *timeout, void *data EINA_UNUSED)
 }
 
 static Eina_Bool
-eldbus_idle_enterer(void *data)
+eldbus_idler(void *data)
 {
    Eldbus_Connection *conn = data;
 
@@ -781,22 +781,15 @@ eldbus_idle_enterer(void *data)
    if (dbus_connection_get_dispatch_status(conn->dbus_conn) ==
        DBUS_DISPATCH_COMPLETE)
      {
-        DBG("Connection@%p: Dispatch complete, idle_enterer@%p finishing",
-            conn, conn->idle_enterer);
-        conn->idle_enterer = NULL;
+        DBG("Connection@%p: Dispatch complete, idler@%p finishing",
+            conn, conn->idler);
+        conn->idler = NULL;
         return ECORE_CALLBACK_CANCEL;
      }
    DBG("Connection@%p: Dispatching", conn);
    eldbus_init();
    eldbus_connection_ref(conn);
-
-   DBusDispatchStatus status;
-   do
-     {
-        status = dbus_connection_dispatch(conn->dbus_conn);
-     }
-   while(status == DBUS_DISPATCH_DATA_REMAINS);
-
+   dbus_connection_dispatch(conn->dbus_conn);
    eldbus_connection_unref(conn);
    eldbus_shutdown();
    return ECORE_CALLBACK_RENEW;
@@ -815,19 +808,19 @@ cb_dispatch_status(DBusConnection *dbus_conn EINA_UNUSED, DBusDispatchStatus new
 
    DBG("Connection@%p: Dispatch status: %d", conn, new_status);
 
-   if ((new_status == DBUS_DISPATCH_DATA_REMAINS) && (!conn->idle_enterer))
+   if ((new_status == DBUS_DISPATCH_DATA_REMAINS) && (!conn->idler))
      {
-        conn->idle_enterer = ecore_idle_enterer_add(eldbus_idle_enterer, conn);
-        DBG("Connection@%p: Adding idle_enterer@%p to handle remaining dispatch data",
-            conn, conn->idle_enterer);
+        conn->idler = ecore_idler_add(eldbus_idler, conn);
+        DBG("Connection@%p: Adding idler@%p to handle remaining dispatch data",
+            conn, conn->idler);
      }
-   else if ((new_status != DBUS_DISPATCH_DATA_REMAINS) && (conn->idle_enterer))
+   else if ((new_status != DBUS_DISPATCH_DATA_REMAINS) && (conn->idler))
      {
-        DBG("Connection@%p: No remaining dispatch data, clearing idle_enterer@%p",
-            conn, conn->idle_enterer);
+        DBG("Connection@%p: No remaining dispatch data, clearing idler@%p",
+            conn, conn->idler);
 
-        ecore_idle_enterer_del(conn->idle_enterer);
-        conn->idle_enterer = NULL;
+        ecore_idler_del(conn->idler);
+        conn->idler = NULL;
      }
 }
 
@@ -1263,7 +1256,7 @@ _eldbus_connection_free(Eldbus_Connection *conn)
 
    eldbus_data_del_all(&conn->data);
 
-   if (conn->idle_enterer) ecore_idle_enterer_del(conn->idle_enterer);
+   if (conn->idler) ecore_idler_del(conn->idler);
    if (conn->type && conn->shared)
      {
         if (conn->type == ELDBUS_CONNECTION_TYPE_ADDRESS)
@@ -1361,7 +1354,7 @@ dispach_name_owner_cb(void *context)
    dispatch_name_owner_data *data = context;
    data->ctx->cb((void *)data->ctx->cb_data, data->cn->name, "",
                  data->cn->unique_id);
-   data->ctx->idle_enterer = NULL;
+   data->ctx->idler = NULL;
    free(data);
    return ECORE_CALLBACK_CANCEL;
 }
@@ -1393,7 +1386,7 @@ eldbus_name_owner_changed_callback_add(Eldbus_Connection *conn, const char *bus,
         EINA_SAFETY_ON_NULL_RETURN(dispatch_data);
         dispatch_data->cn = cn;
         dispatch_data->ctx = ctx;
-        ctx->idle_enterer = ecore_idle_enterer_add(dispach_name_owner_cb, dispatch_data);
+        ctx->idler = ecore_idler_add(dispach_name_owner_cb, dispatch_data);
      }
    return;
 
@@ -1436,10 +1429,10 @@ eldbus_name_owner_changed_callback_del(Eldbus_Connection *conn, const char *bus,
 
    cn->event_handlers.list = eina_inlist_remove(cn->event_handlers.list,
                                                 EINA_INLIST_GET(found));
-   if (found->idle_enterer)
+   if (found->idler)
      {
         dispatch_name_owner_data *data;
-        data = ecore_idle_enterer_del(found->idle_enterer);
+        data = ecore_idler_del(found->idler);
         free(data);
      }
    free(found);
