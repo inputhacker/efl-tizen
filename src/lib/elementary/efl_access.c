@@ -162,7 +162,7 @@ struct _Efl_Access_Data
    const char    *description;
    const char    *translation_domain;
    Efl_Access_Role role;
-   Efl_Access_Reading_Info_Type reading_info;
+   Efl_Access_Reading_Info_Type_Mask reading_info;
    Efl_Access_Type type: 2;
 };
 
@@ -288,7 +288,7 @@ EOLIAN static void _efl_access_attributes_clear(Eo *obj EINA_UNUSED, Efl_Access_
 }
 
 EOLIAN static void
-_efl_access_reading_info_type_set(Eo *obj, Efl_Access_Data *pd, Efl_Access_Reading_Info_Type reading_info)
+_efl_access_reading_info_type_set(Eo *obj, Efl_Access_Data *pd, Efl_Access_Reading_Info_Type_Mask reading_info)
 {
    Eina_Strbuf *buf = NULL;
    pd->reading_info = reading_info;
@@ -317,7 +317,7 @@ _efl_access_reading_info_type_set(Eo *obj, Efl_Access_Data *pd, Efl_Access_Readi
    eina_strbuf_free(buf);
 }
 
-EOLIAN Efl_Access_Reading_Info_Type
+EOLIAN Efl_Access_Reading_Info_Type_Mask
 _efl_access_reading_info_type_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd)
 {
    return pd->reading_info;
@@ -982,13 +982,13 @@ elm_atspi_accessible_attributes_get(const Elm_Interface_Atspi_Accessible *obj)
 EAPI void
 elm_atspi_accessible_reading_info_type_set(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Reading_Info_Type_Mask reading_info)
 {
-   efl_access_reading_info_type_set(obj, reading_info);
+   efl_access_reading_info_type_set(obj, (Efl_Access_Reading_Info_Type_Mask)reading_info);
 }
 
 EAPI Elm_Atspi_Reading_Info_Type_Mask
 elm_atspi_accessible_reading_info_type_get(const Elm_Interface_Atspi_Accessible *obj)
 {
-   return efl_access_reading_info_type_get(obj);
+   return (Elm_Atspi_Reading_Info_Type_Mask)efl_access_reading_info_type_get(obj);
 }
 
 EAPI int
