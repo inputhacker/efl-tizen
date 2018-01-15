@@ -6602,6 +6602,119 @@ _elm_entry_efl_access_component_accessible_at_point_get(Eo *obj,  Elm_Entry_Data
 }
 /////////////////////////////////////////////////////////////////
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+/**
+ * The resize object of elm_entry could be switch entry_edje into scr_edje
+ * when only elm_entry is scrollable.
+ * So, we need to update color_class only for entry_edje.
+ **/
+/* Internal EO API override */
+static Eina_Bool
+_elm_entry_elm_widget_class_color_set(Eo *obj, Elm_Entry_Data *sd, const char *color_class, int r, int g, int b, int a)
+{
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_set_internal(obj, sd->entry_edje, color_class,
+                                                   r, g, b, a,
+                                                   -1, -1, -1, -1,
+                                                   -1, -1, -1, -1);
+
+   return int_ret;
+}
+
+/* Internal EO API override */
+static Eina_Bool
+_elm_entry_elm_widget_class_color_get(Eo *obj, Elm_Entry_Data *sd, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_get_internal(obj, sd->entry_edje, color_class,
+                                                   r, g, b, a,
+                                                   NULL, NULL, NULL, NULL,
+                                                   NULL, NULL, NULL, NULL);
+
+   return int_ret;
+}
+
+/* Internal EO API override */
+static Eina_Bool
+_elm_entry_elm_widget_class_color2_set(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd, const char *color_class, int r, int g, int b, int a)
+{
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_set_internal(obj, sd->entry_edje, color_class,
+                                                   -1, -1, -1, -1,
+                                                   r, g, b, a,
+                                                   -1, -1, -1, -1);
+
+   return int_ret;
+}
+
+/* Internal EO API override */
+static Eina_Bool
+_elm_entry_elm_widget_class_color2_get(Eo *obj, Elm_Entry_Data *sd, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_get_internal(obj, sd->entry_edje, color_class,
+                                                   NULL, NULL, NULL, NULL,
+                                                   r, g, b, a,
+                                                   NULL, NULL, NULL, NULL);
+
+   return int_ret;
+}
+
+/* Internal EO API override */
+static Eina_Bool
+_elm_entry_elm_widget_class_color3_set(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd, const char *color_class, int r, int g, int b, int a)
+{
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_set_internal(obj, sd->entry_edje, color_class,
+                                                   -1, -1, -1, -1,
+                                                   -1, -1, -1, -1,
+                                                   r, g, b, a);
+
+   return int_ret;
+}
+
+/* Internal EO API override */
+static Eina_Bool
+_elm_entry_elm_widget_class_color3_get(Eo *obj, Elm_Entry_Data *sd, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_get_internal(obj, sd->entry_edje, color_class,
+                                                   NULL, NULL, NULL, NULL,
+                                                   NULL, NULL, NULL, NULL,
+                                                   r, g, b, a);
+
+   return int_ret;
+}
+
+/* Internal EO API override */
+static void
+_elm_entry_elm_widget_class_color_del(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd, const char *color_class)
+{
+   Eina_Stringshare *buf;
+
+   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);
+   edje_object_color_class_del(sd->entry_edje, buf);
+   eina_stringshare_del(buf);
+}
+
+/* Internal EO API override */
+static void
+_elm_entry_elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
+{
+   edje_object_color_class_clear(sd->entry_edje);
+}
+/*******
+ * END *
+ *******/
+
 /* Efl.Part begin */
 
 ELM_PART_OVERRIDE(elm_entry, ELM_ENTRY, Elm_Entry_Data)
@@ -6624,6 +6737,20 @@ ELM_LAYOUT_TEXT_ALIASES_IMPLEMENT(MY_CLASS_PFX)
    EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_entry), \
    ELM_LAYOUT_CONTENT_ALIASES_OPS(MY_CLASS_PFX), \
    ELM_LAYOUT_TEXT_ALIASES_OPS(MY_CLASS_PFX), \
-   ELM_LAYOUT_SIZING_EVAL_OPS(elm_entry)
+   ELM_LAYOUT_SIZING_EVAL_OPS(elm_entry), \
+   /*********************************************************************************** \
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         * \
+    ***********************************************************************************/\
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_set, _elm_entry_elm_widget_class_color_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_get, _elm_entry_elm_widget_class_color_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color2_set, _elm_entry_elm_widget_class_color2_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color2_get, _elm_entry_elm_widget_class_color2_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color3_set, _elm_entry_elm_widget_class_color3_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color3_get, _elm_entry_elm_widget_class_color3_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_del, _elm_entry_elm_widget_class_color_del), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_clear, _elm_entry_elm_widget_class_color_clear)
+   /*******
+    * END *
+    *******/
 
 #include "elm_entry.eo.c"

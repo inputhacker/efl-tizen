@@ -1535,6 +1535,15 @@ _item_unrealize_cb(Elm_Gen_Item *it)
         EINA_LIST_FREE(cache, c)
           evas_object_del(c);
      }
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   if (it->base->color_classes)
+     edje_object_color_class_clear(VIEW(it));
+   /*******
+    * END *
+    *******/
 }
 
 static char *
@@ -1649,6 +1658,15 @@ _item_realize(Elm_Gen_Item *it)
         if (it->item->nocache_once)
           it->item->nocache_once = EINA_FALSE;
      }
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   if (it->base->color_classes)
+     _elm_widget_item_color_class_update(it->base);
+   /*******
+    * END *
+    *******/
 
    if (it->spacer && edje_object_part_exists(VIEW(it), "elm.swallow.pad"))
      {

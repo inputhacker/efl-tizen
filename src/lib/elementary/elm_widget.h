@@ -681,6 +681,13 @@ struct _Elm_Widget_Item_Data
    //TIZEN_ONLY(20150709) add relations atpi
    Elm_Atspi_Relation_Set        atspi_custom_relations; /**< Developer-defined accessiblity relations */
    ///////////////////////////////////
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
+   Eina_Hash                     *color_classes;
+   /*******
+    * END *
+    *******/
 
    Eina_Bool                      disabled : 1;
    Eina_Bool                      on_deletion : 1;
@@ -905,6 +912,14 @@ _elm_widget_sub_object_redirect_to_top(Evas_Object *obj, Evas_Object *sobj)
    return ret;
 }
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+Eina_Bool _elm_widget_item_color_class_update(Elm_Widget_Item_Data *sd);
+/*******
+ * END *
+ *******/
+
 /* Internal hack to mark legacy objects as such before construction.
  * No need for TLS: Only UI objects created in the main loop matter. */
 EAPI extern Eina_Bool _elm_legacy_add;
@@ -943,7 +958,6 @@ EAPI Eina_Bool _elm_layout_part_aliasing_eval(const Evas_Object *obj,
 /* Internal EO APIs */
 const char *efl_ui_widget_default_content_part_get(const Eo *obj);
 const char *efl_ui_widget_default_text_part_get(const Eo *obj);
-
 
 #define ELM_WIDGET_ITEM_PROTECTED
 #include "elm_widget_item.eo.h"

@@ -2239,7 +2239,10 @@ elm_object_accessibility_highlight_set(void *obj, Eina_Bool visible)
 }
 //
 
-//TIZEN_ONLY(20160926): add customization interface
+
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
 EAPI Eina_Bool
 elm_color_class_color_set(const char *color_class, int r, int g, int b, int a)
 {
@@ -2258,10 +2261,12 @@ EAPI Eina_Bool
 elm_color_class_color_get(const char *color_class, int *r, int *g, int *b, int *a)
 {
    Eina_Bool int_ret = EINA_FALSE;
+   int alpha = 0;
 
-   int_ret = edje_color_class_get(color_class, r, g, b, a, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   int_ret = edje_color_class_get(color_class, r, g, b, &alpha, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+   if (a) *a = alpha;
 
-   _elm_color_premul(*a, r, g, b);
+   _elm_color_premul(alpha, r, g, b);
 
    return int_ret;
 }
@@ -2284,10 +2289,12 @@ EAPI Eina_Bool
 elm_color_class_color2_get(const char *color_class, int *r, int *g, int *b, int *a)
 {
    Eina_Bool int_ret = EINA_FALSE;
+   int alpha = 0;
 
-   int_ret = edje_color_class_get(color_class, NULL, NULL, NULL, NULL, r, g, b, a, NULL, NULL, NULL, NULL);
+   int_ret = edje_color_class_get(color_class, NULL, NULL, NULL, NULL, r, g, b, &alpha, NULL, NULL, NULL, NULL);
+   if (a) *a = alpha;
 
-   _elm_color_premul(*a, r, g, b);
+   _elm_color_premul(alpha, r, g, b);
 
    return int_ret;
 }
@@ -2310,48 +2317,69 @@ EAPI Eina_Bool
 elm_color_class_color3_get(const char *color_class, int *r, int *g, int *b, int *a)
 {
    Eina_Bool int_ret = EINA_FALSE;
+   int alpha = 0;
 
-   int_ret = edje_color_class_get(color_class, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, r, g, b, a);
+   int_ret = edje_color_class_get(color_class, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, r, g, b, &alpha);
+   if (a) *a = alpha;
 
-   _elm_color_premul(*a, r, g, b);
+   _elm_color_premul(alpha, r, g, b);
 
    return int_ret;
+}
+
+EAPI void
+elm_color_class_del(const char *color_class)
+{
+   edje_color_class_del(color_class);
 }
 
 EAPI Eina_Bool
 elm_object_color_class_color_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a)
 {
-   return elm_object_color_class_color_set(obj, color_class, r, g, b, a);
+   return elm_widget_class_color_set(obj, color_class, r, g, b, a);
 }
 
 EAPI Eina_Bool
 elm_object_color_class_color_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a)
 {
-   return elm_object_color_class_color_get(obj, color_class, r, g, b, a);
+   return elm_widget_class_color_get(obj, color_class, r, g, b, a);
 }
 
 EAPI Eina_Bool
 elm_object_color_class_color2_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a)
 {
-   return elm_object_color_class_color2_set(obj, color_class, r, g, b, a);
+   return elm_widget_class_color2_set(obj, color_class, r, g, b, a);
 }
 
 EAPI Eina_Bool
 elm_object_color_class_color2_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a)
 {
-   return elm_object_color_class_color2_get(obj, color_class, r, g, b, a);
+   return elm_widget_class_color2_get(obj, color_class, r, g, b, a);
 }
 
 EAPI Eina_Bool
 elm_object_color_class_color3_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a)
 {
-   return elm_object_color_class_color3_set(obj, color_class, r, g, b, a);
+   return elm_widget_class_color3_set(obj, color_class, r, g, b, a);
 }
 
 EAPI Eina_Bool
 elm_object_color_class_color3_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a)
 {
-   return elm_object_color_class_color3_get(obj, color_class, r, g, b, a);
+   return elm_widget_class_color3_get(obj, color_class, r, g, b, a);
 }
-//
 
+EAPI void
+elm_object_color_class_del(Evas_Object *obj, const char *color_class)
+{
+   return elm_widget_class_color_del(obj, color_class);
+}
+
+EAPI void
+elm_object_color_class_clear(Evas_Object *obj)
+{
+   return elm_widget_class_color_clear(obj);
+}
+/*******
+ * END *
+ *******/

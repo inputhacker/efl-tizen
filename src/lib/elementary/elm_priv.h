@@ -807,44 +807,6 @@ void   _elm_entry_entry_paste(Evas_Object *obj, const char *entry);
 
 double _elm_atof(const char *s);
 
-//TIZEN_ONLY(20160926): add customization interface
-#define _DIV_0xFF(x) ((x+1+((x+1)>>8))>>8)
-static inline void _elm_color_premul(int a, int *r, int *g, int *b)
-{
-   if (a == 0xff)
-     {
-        return;
-     }
-   else if (a == 0)
-     {
-        if (r) *r = 0;
-        if (g) *g = 0;
-        if (b) *b = 0;
-     }
-   else
-     {
-        if (r) *r = _DIV_0xFF((*r) * a);
-        if (g) *g = _DIV_0xFF((*g) * a);
-        if (b) *b = _DIV_0xFF((*b) * a);
-     }
-}
-
-static inline void _elm_color_unpremul(int a, int *r, int *g, int *b)
-{
-   if ((a == 0xff) || (a == 0))
-     {
-        return;
-     }
-   else
-     {
-        if (r) *r = (*r) * 255 / a;
-        if (g) *g = (*g) * 255 / a;
-        if (b) *b = (*b) * 255 / a;
-     }
-}
-#undef _DIV_0xFF
-//
-
 // elm_layout and elm_entry LEGACY signal API (returned the user data pointer)
 void _elm_layout_signal_callback_add_legacy(Eo *obj, Eo *edje, Eina_List **p_edje_signals, const char *emission, const char *source, Edje_Signal_Cb func, void *data);
 void *_elm_layout_signal_callback_del_legacy(Eo *obj, Eo *edje, Eina_List **p_edje_signals, const char *emission, const char *source, Edje_Signal_Cb func);
@@ -923,8 +885,64 @@ char tizen_util_probe_profile_wearable();
 /***********************************************************************************
  * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
  ***********************************************************************************/
+
+#define _DIV_0xFF(x) ((x+1+((x+1)>>8))>>8)
+static inline void _elm_color_premul(int a, int *r, int *g, int *b)
+{
+   if (a == 0xff)
+     {
+        return;
+     }
+   else if (a == 0)
+     {
+        if (r) *r = 0;
+        if (g) *g = 0;
+        if (b) *b = 0;
+     }
+   else
+     {
+        if (r) *r = _DIV_0xFF((*r) * a);
+        if (g) *g = _DIV_0xFF((*g) * a);
+        if (b) *b = _DIV_0xFF((*b) * a);
+     }
+}
+
+static inline void _elm_color_unpremul(int a, int *r, int *g, int *b)
+{
+   if ((a == 0xff) || (a == 0))
+     {
+        return;
+     }
+   else
+     {
+        if (r) *r = (*r) * 255 / a;
+        if (g) *g = (*g) * 255 / a;
+        if (b) *b = (*b) * 255 / a;
+     }
+}
+#undef _DIV_0xFF
+
+Eina_Stringshare *_elm_widget_edje_class_get(const Efl_Class *klass, const char *style, const char *part);
+Eina_Bool _elm_widget_item_color_class_update(Elm_Widget_Item_Data *sd);
+Eina_Bool _elm_widget_color_class_set_internal(Evas_Object *obj, Evas_Object *edje, const char *color_class,
+                                               int r, int g, int b, int a,
+                                               int r2, int g2, int b2, int a2,
+                                               int r3, int g3, int b3, int a3);
+Eina_Bool _elm_widget_color_class_get_internal(Evas_Object *obj, Evas_Object *edje, const char *color_class,
+                                               int *r, int *g, int *b, int *a,
+                                               int *r2, int *g2, int *b2, int *a2,
+                                               int *r3, int *g3, int *b3, int *a3);
 void _elm_widget_color_class_parent_set(Evas_Object *obj, Evas_Object *parent);
 void _elm_widget_color_class_parent_unset(Evas_Object *obj);
+
+EAPI Eina_Bool elm_widget_class_color_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a);
+EAPI Eina_Bool elm_widget_class_color_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a);
+EAPI Eina_Bool elm_widget_class_color2_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a);
+EAPI Eina_Bool elm_widget_class_color2_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a);
+EAPI Eina_Bool elm_widget_class_color3_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a);
+EAPI Eina_Bool elm_widget_class_color3_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a);
+EAPI void elm_widget_class_color_del(Evas_Object *obj, const char *color_class);
+EAPI void elm_widget_class_color_clear(Evas_Object *obj);
 /*******
  * END *
  *******/

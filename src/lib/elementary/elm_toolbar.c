@@ -4357,6 +4357,128 @@ _elm_toolbar_efl_ui_focus_composition_prepare(Eo *obj, Elm_Toolbar_Data *pd)
    efl_ui_focus_composition_elements_set(obj, order);
 }
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+/** 
+ * elm_widget_class_color_set is applicable only to LAYOUT class.
+ * Since elm_toolbar does not inherit elm_layout,
+ * this needs to be implemented.
+ **/
+/* Internal EO API Override */
+static Eina_Bool
+_elm_toolbar_elm_widget_class_color_set(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSED, const char *color_class, int r, int g, int b, int a)
+{
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_set_internal(obj, wd->resize_obj, color_class,
+                                                   r, g, b, a,
+                                                   -1, -1, -1, -1,
+                                                   -1, -1, -1, -1);
+
+   return int_ret;
+}
+
+/* Internal EO API Override */
+static Eina_Bool
+_elm_toolbar_elm_widget_class_color_get(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSED, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_get_internal(obj, wd->resize_obj, color_class,
+                                                   r, g, b, a,
+                                                   NULL, NULL, NULL, NULL,
+                                                   NULL, NULL, NULL, NULL);
+
+   return int_ret;
+}
+
+/* Internal EO API Override */
+static Eina_Bool
+_elm_toolbar_elm_widget_class_color2_set(Eo *obj EINA_UNUSED, Elm_Toolbar_Data *sd EINA_UNUSED, const char *color_class, int r, int g, int b, int a)
+{
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_set_internal(obj, wd->resize_obj, color_class,
+                                                   -1, -1, -1, -1,
+                                                   r, g, b, a,
+                                                   -1, -1, -1, -1);
+
+   return int_ret;
+}
+
+/* Internal EO API Override */
+static Eina_Bool
+_elm_toolbar_elm_widget_class_color2_get(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSED, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_get_internal(obj, wd->resize_obj, color_class,
+                                                   NULL, NULL, NULL, NULL,
+                                                   r, g, b, a,
+                                                   NULL, NULL, NULL, NULL);
+
+   return int_ret;
+}
+
+/* Internal EO API Override */
+static Eina_Bool
+_elm_toolbar_elm_widget_class_color3_set(Eo *obj EINA_UNUSED, Elm_Toolbar_Data *sd EINA_UNUSED, const char *color_class, int r, int g, int b, int a)
+{
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_set_internal(obj, wd->resize_obj, color_class,
+                                                   -1, -1, -1, -1,
+                                                   -1, -1, -1, -1,
+                                                   r, g, b, a);
+
+   return int_ret;
+}
+
+/* Internal EO API Override */
+static Eina_Bool
+_elm_toolbar_elm_widget_class_color3_get(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSED, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
+   Eina_Bool int_ret = EINA_TRUE;
+
+   int_ret &= _elm_widget_color_class_get_internal(obj, wd->resize_obj, color_class,
+                                                   NULL, NULL, NULL, NULL,
+                                                   NULL, NULL, NULL, NULL,
+                                                   r, g, b, a);
+
+   return int_ret;
+}
+
+/* Internal EO API override */
+static void
+_elm_toolbar_elm_widget_class_color_del(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSED, const char *color_class)
+{
+   Eina_Stringshare *buf;
+
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
+
+   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);
+   edje_object_color_class_del(wd->resize_obj, buf);
+   eina_stringshare_del(buf);
+}
+
+/* Internal EO API override */
+static void
+_elm_toolbar_elm_widget_class_color_clear(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSED)
+{
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
+
+   edje_object_color_class_clear(wd->resize_obj);
+}
+/*******
+ * END *
+ *******/
 
 /* Standard widget overrides */
 
@@ -4365,7 +4487,21 @@ ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_toolbar, Elm_Toolbar_Data)
 /* Internal EO APIs and hidden overrides */
 
 #define ELM_TOOLBAR_EXTRA_OPS \
-   EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_toolbar)
+   EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_toolbar), \
+   /*********************************************************************************** \
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         * \
+    ***********************************************************************************/\
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_set, _elm_toolbar_elm_widget_class_color_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_get, _elm_toolbar_elm_widget_class_color_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color2_set, _elm_toolbar_elm_widget_class_color2_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color2_get, _elm_toolbar_elm_widget_class_color2_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color3_set, _elm_toolbar_elm_widget_class_color3_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color3_get, _elm_toolbar_elm_widget_class_color3_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_del, _elm_toolbar_elm_widget_class_color_del), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_clear, _elm_toolbar_elm_widget_class_color_clear)
+   /*******
+    * END *
+    *******/
 
 #include "elm_toolbar.eo.c"
 #include "elm_toolbar_item.eo.c"
