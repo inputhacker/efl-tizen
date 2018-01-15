@@ -1234,7 +1234,10 @@ export XDG_RUNTIME_DIR="/tmp/"
 #    --enable-drm \
 #    --enable-gl-drm \
 
-%__make %{?_smp_mflags} --trace
+%__make %{?_smp_mflags} --trace \
+2>&1 | sed \
+-e 's%^.*: error: .*$%\x1b[37;41m&\x1b[m%' \
+-e 's%^.*: warning: .*$%\x1b[30;43m&\x1b[m%'
 
 %install
 %make_install
