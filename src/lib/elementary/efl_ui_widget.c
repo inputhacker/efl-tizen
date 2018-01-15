@@ -4269,7 +4269,7 @@ _accessible_object_on_scroll_is(Eo* obj)
 
    Evas_Object *target = obj;
    Evas_Object *parent = NULL;
-   Evas_Coord x, y, w, h, wx, wy, ww, wh, nx, ny;
+   Evas_Coord x, y, w, h, wx, wy, ww = 0, wh = 0, nx = 0, ny = 0;
 
    evas_object_geometry_get(target, &x, &y ,&w, &h);
 
@@ -4285,6 +4285,15 @@ _accessible_object_on_scroll_is(Eo* obj)
              evas_object_geometry_get(parent, &wx, &wy, NULL, NULL);
              elm_interface_scrollable_content_size_get(parent, &ww, &wh);
              elm_interface_scrollable_content_pos_get(parent, &nx, &ny);
+
+             /* widget implements scrollable interface but does not use scoller
+                in this case, use widget geometry */
+             if (ww == 0 || wh == 0)
+               {
+                  INF("%s is zero sized scrollable content", efl_class_name_get(efl_class_get(parent)));
+                  evas_object_geometry_get(parent, NULL, NULL, &ww, &wh);
+               }
+
              wx -= nx;
              wy -= ny;
 
@@ -7226,7 +7235,7 @@ _accessible_scrollable_parent_list_get(Eo *obj)
 void
 _accessible_highlight_region_show(Eo* obj)
 {
-   if(!obj) return ;
+   if (!obj) return ;
 
    Evas_Object *target = obj;
    Evas_Object *parent = NULL;
@@ -7239,7 +7248,7 @@ _accessible_highlight_region_show(Eo* obj)
    evas_object_geometry_get(target, &target_x, &target_y, &target_w, &target_h);
 
    plist = _accessible_scrollable_parent_list_get(target);
-   if(!plist) return ;
+   if (!plist) return ;
    EINA_LIST_FOREACH(plist, l, parent)
      {
         if(!_accessible_object_on_screen_is(target, target_x, target_y, target_w, target_h, EINA_TRUE))
@@ -7248,8 +7257,8 @@ _accessible_highlight_region_show(Eo* obj)
              plist_sub = eina_list_prepend(plist_sub, parent);
              EINA_LIST_FOREACH(plist_sub, l2, parent_sub)
                {
-                  Evas_Coord scroll_x, scroll_y;
-                  Evas_Coord scroll_x_back, scroll_y_back;
+                  Evas_Coord scroll_x = 0, scroll_y = 0;
+                  Evas_Coord scroll_x_back = 0, scroll_y_back = 0;
                   Evas_Coord x, y, w, h;
                   Evas_Coord px, py;
 

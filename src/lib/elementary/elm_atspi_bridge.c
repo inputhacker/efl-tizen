@@ -4179,12 +4179,6 @@ _component_get_accessible_at_point(const Eldbus_Service_Interface *iface EINA_UN
 }
 
 // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
-typedef struct {
-   void **objects;
-   unsigned int capacity;
-   unsigned int size;
-} vector;
-
 typedef enum {
   NEIGHBOR_SEARCH_MODE_NORMAL = 0,
   NEIGHBOR_SEARCH_MODE_RECURSE_FROM_ROOT = 1,
@@ -4201,54 +4195,7 @@ typedef struct accessibility_navigation_pointer_table {
    void *(*get_object_at_point)(struct accessibility_navigation_pointer_table *t, void *ptr, int x, int y, unsigned char coordinates_are_screen_based);
    unsigned char (*object_contains)(struct accessibility_navigation_pointer_table *t, void *ptr, int x, int y, unsigned char coordinates_are_screen_based);
    unsigned char (*object_is_proxy)(struct accessibility_navigation_pointer_table *t, void *ptr);
-   void (*get_children)(struct accessibility_navigation_pointer_table *t, void *ptr, vector *v);
 } accessibility_navigation_pointer_table;
-
-static vector vector_init(void)
-{
-   vector v;
-   v.objects = NULL;
-   v.capacity = 0;
-   v.size = 0;
-   return v;
-}
-
-static void vector_free(vector *v)
-{
-   free(v->objects);
-   v->objects = NULL;
-   v->capacity = 0;
-   v->size = 0;
-}
-static void vector_reserve(vector *v, unsigned int s)
-{
-   if (s > v->capacity)
-     {
-       v->objects = (void**)realloc(v->objects, sizeof(v->objects[0]) * s);
-       v->capacity = s;
-     }
-}
-
-static void vector_resize(vector *v, unsigned int s)
-{
-   vector_reserve(v, s);
-   v->size = s;
-}
-
-static void *vector_get(vector *v, unsigned int index)
-{
-   return v->objects[index];
-}
-
-static void vector_set(vector *v, unsigned int index, void *data)
-{
-   v->objects[index] = data;
-}
-
-static unsigned int vector_size(vector *v)
-{
-   return v->size;
-}
 
 #define CALL(fncname, ...) table->fncname(table, __VA_ARGS__)
 static unsigned char _accept_object_check_role(accessibility_navigation_pointer_table *table, void *obj)
@@ -4408,63 +4355,174 @@ static void *_calculate_navigable_accessible_at_point_impl(accessibility_navigat
 }
 
 static void *_find_non_defunct_child(accessibility_navigation_pointer_table *table,
-            vector *objects, unsigned int current_index, unsigned char forward)
+            Eina_List *children, unsigned int current_index, unsigned char forward)
 {
-   for(; current_index < vector_size(objects); forward ? ++current_index : --current_index)
+   unsigned int children_count = eina_list_count(children);
+   for(; current_index < children_count; forward ? ++current_index : --current_index)
      {
-       void *n = vector_get(objects, current_index);
+       void *n = eina_list_nth(children, current_index);
        if (n && !_object_is_defunct(table, n)) return n;
      }
    return NULL;
 }
 
 static void *_directional_depth_first_search_try_non_defunct_child(accessibility_navigation_pointer_table *table,
-            void *node, vector *children, unsigned char forward)
+            void *node, Eina_List *children, unsigned char forward)
 {
-   if (vector_size(children) > 0)
+   unsigned int children_count = eina_list_count(children);
+   if (children_count > 0)
      {
        unsigned char is_showing = _get_scrollable_parent(table, node) == NULL ? _object_is_showing(table, node) : 1;
        if (is_showing)
          {
-           return _find_non_defunct_child(table, children, forward ? 0 : vector_size(children) - 1, forward);
+           return _find_non_defunct_child(table, children, forward ? 0 : children_count - 1, forward);
          }
      }
    return NULL;
 }
 
+static Eina_List *_scrollable_parent_list_get(Eo *obj)
+{
+   Eina_List *ret = NULL;
+   Eo *parent;
+
+   if (obj)
+     {
+        parent = efl_access_parent_get(obj);
+        while (parent)
+          {
+             if (efl_isa(parent, ELM_INTERFACE_SCROLLABLE_MIXIN))
+               {
+                  ret = eina_list_append(ret, parent);
+               }
+             parent = efl_access_parent_get(parent);
+          }
+     }
+
+   return ret;
+}
+
+static void _viewport_geometry_get(Eo *obj, int *x, int *y, int *w, int *h)
+{
+   elm_interface_scrollable_content_viewport_geometry_get(obj, x, y, w, h);
+   /* widget implements scrollable interface but does not use scoller
+      in this case, use widget geometry */
+   if (*w == 0 || *h == 0)
+     {
+        INF("%s is zero sized content viewport", efl_class_name_get(efl_class_get(obj)));
+        Eina_Rect r = efl_access_component_extents_get(obj, EINA_FALSE);
+        *x = r.x;
+        *y = r.y;
+        *w = r.w;
+        *h = r.h;
+     }
+}
+
+static Eina_Bool
+_new_scrollable_parent_viewport_geometry_get(Eo *node, Eo *start,
+                                             int *x, int *y, int *w, int *h)
+{
+   Eina_Bool ret = EINA_FALSE;
+   Eina_List *n_spl;
+   Eina_List *s_spl;
+
+   n_spl = _scrollable_parent_list_get(node);
+   s_spl = _scrollable_parent_list_get(start);
+
+   Eo *sp;
+   Eina_List *l;
+   EINA_LIST_FOREACH(s_spl, l, sp)
+     {
+        n_spl = eina_list_remove(n_spl, sp);
+     }
+
+   Evas_Coord sx = 0, sy = 0, sw = 0, sh = 0;
+
+   unsigned int count = eina_list_count(n_spl);
+   if (count > 0)
+     {
+        sp = eina_list_nth(n_spl, count - 1);
+        _viewport_geometry_get(sp, &sx, &sy, &sw, &sh);
+        ret = EINA_TRUE;
+     }
+
+   *x = sx;
+   *y = sy;
+   *w = sw;
+   *h = sh;
+
+   return ret;
+}
+
+static Eina_List *_valid_children_get(Eina_List *children, Eo *start)
+{
+   Eo *child = NULL;
+   child = eina_list_nth(children, 0);
+
+   if (child)
+     {
+        Evas_Coord x = 0, y = 0, w = 0, h = 0;
+        Evas_Coord sx = 0, sy = 0, sw = 0, sh = 0;
+
+        if (_new_scrollable_parent_viewport_geometry_get(child, start,
+                                                   &sx, &sy, &sw, &sh))
+          {
+             Eina_List *l, *l_next;
+             EINA_LIST_FOREACH_SAFE(children, l, l_next, child)
+               {
+                  Eina_Rect r = efl_access_component_extents_get(child, EINA_FALSE);
+                  x = r.x;
+                  y = r.y;
+                  w = r.w;
+                  h = r.h;
+                  if (w == 0 || h == 0 ||
+                      !ELM_RECTS_INTERSECT(x, y, w, h, sx, sy, sw, sh))
+                     children = eina_list_remove_list(children, l);
+               }
+          }
+     }
+   return children;
+}
+
 static void *_get_next_non_defunct_sibling(accessibility_navigation_pointer_table *table,
-            void *obj, unsigned char forward)
+            void *obj, void *start, unsigned char forward)
 {
    if (!obj) return NULL;
    void *parent = CALL(get_parent, obj);
    if (!parent) return NULL;
 
-   vector children = vector_init();
-   CALL(get_children, parent, &children);
-   if (vector_size(&children) == 0)
+   Eina_List *children;
+   children = efl_access_children_get(parent);
+   children = _valid_children_get(children, start);
+
+   unsigned int children_count = eina_list_count(children);
+   if (children_count == 0)
      {
-       vector_free(&children);
-       return NULL;
+        eina_list_free(children);
+        return NULL;
      }
    unsigned int current = 0;
-   for(; current < vector_size(&children) && vector_get(&children, current) != obj; ++current) ;
-   if (current >= vector_size(&children))
+   for(; current < children_count && eina_list_nth(children, current) != obj; ++current) ;
+   if (current >= children_count)
      {
-       vector_free(&children);
-       return NULL;
+        eina_list_free(children);
+        return NULL;
      }
    forward ? ++current : --current;
-   void *ret = _find_non_defunct_child(table, &children, current, forward);
-   vector_free(&children);
+   void *ret = _find_non_defunct_child(table, children, current, forward);
+   eina_list_free(children);
    return ret;
 }
 
-static void *_directional_depth_first_search_try_non_defunct_sibling(accessibility_navigation_pointer_table *table,
-            unsigned char *all_children_visited_ptr, void *node, void *root, unsigned char forward)
+static void *
+_directional_depth_first_search_try_non_defunct_sibling(accessibility_navigation_pointer_table *table,
+                                                              unsigned char *all_children_visited_ptr,
+                                                                  void *node, void *start, void *root,
+                                                                                unsigned char forward)
 {
    while(1)
      {
-       void *sibling = _get_next_non_defunct_sibling(table, node, forward);
+       void *sibling = _get_next_non_defunct_sibling(table, node, start, forward);
        if (sibling != NULL)
          {
            node = sibling;
@@ -4546,21 +4604,23 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
        // always accept proxy object from different world
        if (!force_next && CALL(object_is_proxy, node)) return node;
 
-       vector children = vector_init();
-       CALL(get_children, node, &children);
+       Eina_List *children;
+       children = efl_access_children_get(node);
+       children = _valid_children_get(children, start);
 
        // do accept:
        // 1. not start node
        // 2. parent after all children in backward traversing
        // 3. Nodes with roles: ATSPI_ROLE_PAGE_TAB, ATSPI_ROLE_POPUP_MENU and ATSPI_ROLE_DIALOG, only when looking for first or last element.
        //    Objects with those roles shouldnt be reachable, when navigating next / prev.
-       unsigned char all_children_visited_or_moving_forward = (vector_size(&children) == 0 || forward || all_children_visited);
-       if (!force_next && node != start && all_children_visited_or_moving_forward && _accept_object(table, node))
+       unsigned char all_children_visited_or_moving_forward = (eina_list_count(children) == 0 || forward || all_children_visited);
+       if (!force_next && node != start && all_children_visited_or_moving_forward &&
+           _accept_object(table, node))
          {
            if (start == NULL || _object_role_is_acceptable_when_navigating_next_prev(table, node))
              {
-               vector_free(&children);
-               return node;
+                eina_list_free(children);
+                return node;
              }
          }
 
@@ -4576,17 +4636,17 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
          }
        else {
            void *child = !force_next && !all_children_visited ?
-                          _directional_depth_first_search_try_non_defunct_child(table, node, &children, forward) : NULL;
+                          _directional_depth_first_search_try_non_defunct_child(table, node, children, forward) : NULL;
            if (child != NULL) want_cycle_detection = 1;
            else
              {
                if (!force_next && node == root)
                  {
-                   vector_free(&children);
-                   return NULL;
+                    eina_list_free(children);
+                    return NULL;
                  }
                all_children_visited = 1;
-               child = _directional_depth_first_search_try_non_defunct_sibling(table, &all_children_visited, node, root, forward);
+               child = _directional_depth_first_search_try_non_defunct_sibling(table, &all_children_visited, node, start, root, forward);
              }
            node = child;
        }
@@ -4594,10 +4654,10 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
        force_next = 0;
        if (want_cycle_detection && cycle_detection_check_if_in_cycle(&cycle_detection, node))
          {
-           vector_free(&children);
-           return NULL;
+            eina_list_free(children);
+            return NULL;
          }
-       vector_free(&children);
+       eina_list_free(children);
      }
    return NULL;
 }
@@ -4690,22 +4750,6 @@ unsigned char _object_is_proxy_impl(struct accessibility_navigation_pointer_tabl
    return our_bus_name && obj_bus_name && strcmp(our_bus_name, obj_bus_name) != 0;
 }
 
-void _get_children_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr, vector *v)
-{
-   Eina_List *l, *l2;
-   Eo *obj = (Eo*)ptr;
-   l = efl_access_children_get(obj);
-   vector_resize(v, eina_list_count(l));
-
-   void *dt;
-   unsigned int index = 0;
-   EINA_LIST_FOREACH(l, l2, dt)
-     {
-       vector_set(v, index, dt);
-       ++index;
-     }
-}
-
 accessibility_navigation_pointer_table_impl construct_accessibility_navigation_pointer_table(Eo *bridge)
 {
    accessibility_navigation_pointer_table_impl table;
@@ -4719,7 +4763,6 @@ accessibility_navigation_pointer_table_impl construct_accessibility_navigation_p
    INIT(get_object_at_point);
    INIT(object_contains);
    INIT(object_is_proxy);
-   INIT(get_children);
 #undef INIT
    table.bridge = bridge;
    return table;
@@ -4728,6 +4771,7 @@ static Eo *_calculate_navigable_accessible_at_point(Eo *bridge, Eo *root, Eina_B
 {
    accessibility_navigation_pointer_table_impl table = construct_accessibility_navigation_pointer_table(bridge);
    Eo *result = (Eo*)_calculate_navigable_accessible_at_point_impl(&table.ptrs, root, x, y, coord_type ? 1 : 0);
+
    return result;
 }
 
