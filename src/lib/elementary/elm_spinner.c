@@ -32,6 +32,9 @@ static const char SIG_DRAG_STOP[] = "spinner,drag,stop";
 static const char SIG_DELAY_CHANGED[] = "delay,changed";
 static const char SIG_MIN_REACHED[] = "min,reached";
 static const char SIG_MAX_REACHED[] = "max,reached";
+//TIZEN_ONLY(20160419): Spinner entry changed callback support for datetime UX.
+static const char SIG_ENTRY_CHANGED[] = "entry,changed";
+//
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, ""},
@@ -40,6 +43,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_DRAG_STOP, ""},
    {SIG_MIN_REACHED, ""},
    {SIG_MAX_REACHED, ""},
+   //TIZEN_ONLY(20160419): Spinner entry changed callback support for datetime UX.
+   {SIG_ENTRY_CHANGED, ""},
+   //
    {SIG_WIDGET_LANG_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
@@ -466,6 +472,36 @@ _decimal_points_get(const char *label)
    return atoi(result);
 }
 
+//TIZEN_ONLY(20160419): Spinner entry changed callback support for datetime UX.
+static void
+_entry_changed_user_cb(void *data, const Efl_Event *event)
+
+{
+   Evas_Object *spinner;
+   const char *str;
+   int len, max_len;
+   double min, max, val;
+
+   spinner = data;
+   str = elm_object_text_get(event->object);
+   len = strlen(str);
+   if (len < 1) return;
+   val = atof(str);
+   elm_spinner_min_max_get(spinner, &min, &max);
+   max_len = log10(abs(max)) + 1;
+   if (max_len == len)
+     {
+        val = (val < min) ? min : (val > max ? max : val);
+        elm_spinner_value_set(spinner, val);
+        _label_write(spinner);
+        elm_entry_cursor_end_set(event->object);
+        str = elm_object_text_get(event->object);
+     }
+
+   efl_event_callback_legacy_call(spinner, ELM_SPINNER_EVENT_ENTRY_CHANGED, (void *)str);
+}
+//
+
 static void
 _invalid_input_validity_filter(void *data EINA_UNUSED, Evas_Object *obj, char **text)
 {
@@ -557,7 +593,7 @@ _min_max_validity_filter(void *data, Evas_Object *obj, char **text)
    const char *str, *point;
    char *insert, *new_str = NULL;
    double val;
-   int max_len, len;
+   int max_len = 0, len;
 
    EINA_SAFETY_ON_NULL_RETURN(data);
    EINA_SAFETY_ON_NULL_RETURN(obj);
@@ -571,14 +607,9 @@ _min_max_validity_filter(void *data, Evas_Object *obj, char **text)
    insert = *text;
    new_str = _text_insert(str, insert, elm_entry_cursor_pos_get(obj));
    if (!new_str) return;
-   max_len = log10(fabs(sd->val_max)) + 1;
+   if (strchr(new_str, '-')) max_len++;
 
-   if (sd->format_type == SPINNER_FORMAT_INT)
-     {
-        len = strlen(new_str);
-        if (len < max_len) goto end;
-     }
-   else if (sd->format_type == SPINNER_FORMAT_FLOAT)
+   if (sd->format_type == SPINNER_FORMAT_FLOAT)
      {
         point = strchr(new_str, '.');
         if (point)
@@ -590,6 +621,12 @@ _min_max_validity_filter(void *data, Evas_Object *obj, char **text)
                }
           }
      }
+
+   max_len += (fabs(sd->val_max) > fabs(sd->val_min)) ?
+               (log10(fabs(sd->val_max)) + 1) : (log10(fabs(sd->val_min)) + 1);
+
+   len = strlen(new_str);
+   if (len < max_len) goto end;
 
    val = strtod(new_str, NULL);
    if ((val < sd->val_min) || (val > sd->val_max))
@@ -637,14 +674,27 @@ _toggle_entry(Evas_Object *obj)
         if (!sd->ent)
           {
              sd->ent = elm_entry_add(obj);
+             /* TIZEN_ONLY(20161031): apply color_class parent-child relationship to all widgets */
+             _elm_widget_color_class_parent_set(sd->ent, obj);
+             /* END */
              Eina_Strbuf *buf = eina_strbuf_new();
              eina_strbuf_append_printf(buf, "spinner/%s", elm_widget_style_get(obj));
              elm_widget_style_set(sd->ent, eina_strbuf_string_get(buf));
              eina_strbuf_free(buf);
+             //TIZEN_ONLY(20160419): Apply default properties for entry widget in the spinner.
+             elm_entry_context_menu_disabled_set(sd->ent, EINA_TRUE);
+             elm_entry_input_panel_layout_set(sd->ent, ELM_INPUT_PANEL_LAYOUT_NUMBERONLY);
+             elm_entry_cnp_mode_set(sd->ent, ELM_CNP_MODE_PLAINTEXT);
+             elm_entry_prediction_allow_set(sd->ent, EINA_FALSE);
+             //
              if (sd->button_layout)
                {
                   evas_object_event_callback_add
                     (sd->ent, EVAS_CALLBACK_SHOW, _entry_show_cb, obj);
+                  //TIZEN_ONLY(20160419): Spinner entry changed callback support for datetime UX.
+                  efl_event_callback_add
+                     (sd->ent, ELM_ENTRY_EVENT_CHANGED_USER, _entry_changed_user_cb, obj);
+                  //
                }
              elm_entry_single_line_set(sd->ent, EINA_TRUE);
              elm_layout_content_set(obj, "elm.swallow.entry", sd->ent);
@@ -712,11 +762,14 @@ _spin_value(void *data)
         real_speed = sd->spin_speed > 0 ? sd->round : -sd->round;
      }
 
+   //TIZEN_ONLY(20160419): This is not SPIN UX.
+   /*
    sd->interval = sd->interval / 1.05;
 
    // spin_timer does not exist when _spin_value() is called from wheel event
    if (sd->spin_timer)
      ecore_timer_interval_set(sd->spin_timer, sd->interval);
+   */
    if (_value_set(data, sd->val + real_speed)) _label_write(data);
 
    return ECORE_CALLBACK_RENEW;
@@ -730,7 +783,11 @@ _val_inc_dec_start(void *data)
    sd->interval = sd->first_interval;
    sd->spin_speed = sd->inc_btn_activated ? sd->step : -sd->step;
    sd->longpress_timer = NULL;
-   ecore_timer_del(sd->spin_timer);
+   //TIZEN_ONLY(20160419): This is not SPIN UX.
+   //ecore_timer_del(sd->spin_timer);
+   elm_layout_signal_emit(data, "elm,action,longpress", "elm");
+   if (sd->spin_timer) ecore_timer_del(sd->spin_timer);
+   //
    sd->spin_timer = ecore_timer_add(sd->interval, _spin_value, data);
    _spin_value(data);
 
@@ -760,43 +817,6 @@ _key_action_toggle(Evas_Object *obj, const char *params EINA_UNUSED)
    else if (sd->entry_visible) _entry_toggle_cb(NULL, obj, NULL, NULL);
 
    return EINA_FALSE;
-}
-
-EOLIAN static Eina_Bool
-_elm_spinner_efl_ui_widget_widget_event(Eo *obj, Elm_Spinner_Data *sd EINA_UNUSED, const Efl_Event *eo_event, Evas_Object *src EINA_UNUSED)
-{
-   Eo *ev = eo_event->info;
-
-   if (efl_input_processed_get(ev)) return EINA_FALSE;
-   if (eo_event->desc == EFL_EVENT_KEY_DOWN)
-     {
-        if (sd->spin_timer) _spin_stop(obj);
-        else return EINA_FALSE;
-     }
-   else if (eo_event->desc == EFL_EVENT_KEY_UP)
-     {
-        if (sd->spin_timer) _spin_stop(obj);
-        else return EINA_FALSE;
-     }
-   else if (eo_event->desc == EFL_EVENT_POINTER_WHEEL)
-     {
-        sd->interval = sd->first_interval;
-        if (efl_input_pointer_wheel_delta_get(ev) < 0)
-          {
-             sd->spin_speed = sd->step;
-             elm_layout_signal_emit(obj, "elm,right,anim,activate", "elm");
-          }
-        else
-          {
-             sd->spin_speed = -sd->step;
-             elm_layout_signal_emit(obj, "elm,left,anim,activate", "elm");
-          }
-        _spin_value(obj);
-     }
-   else return EINA_FALSE;
-
-   efl_input_processed_set(ev, EINA_TRUE);
-   return EINA_TRUE;
 }
 
 static void
@@ -853,6 +873,67 @@ _button_inc_dec_stop_cb(void *data,
      }
 
    _spin_stop(data);
+}
+
+EOLIAN static Eina_Bool
+_elm_spinner_efl_ui_widget_widget_event(Eo *obj, Elm_Spinner_Data *sd, const Efl_Event *eo_event, Evas_Object *src EINA_UNUSED)
+{
+   Eo *ev = eo_event->info;
+   if (efl_input_processed_get(ev)) return EINA_FALSE;
+
+   //TIZEN_ONLY(20170418): Support Tv 4.0 UX.
+   if ((!sd->button_layout) || (!elm_object_focus_allow_get(sd->inc_button)))
+     {
+        if ((eo_event->desc == EFL_EVENT_KEY_DOWN))
+          {
+             if (!strcmp(((Evas_Event_Key_Down *)ev)->key, "Up"))
+               {
+                  _button_inc_dec_start_cb(obj, obj, "elm,action,increment,start", NULL);
+                  efl_input_processed_set(ev, EINA_TRUE);
+                  return EINA_TRUE;
+               }
+             if (!strcmp(((Evas_Event_Key_Down *)ev)->key, "Down"))
+               {
+                  _button_inc_dec_start_cb(obj, obj, "elm,action,decrement,start", NULL);
+                  efl_input_processed_set(ev, EINA_TRUE);
+                  return EINA_TRUE;
+               }
+          }
+        else if ((eo_event->desc == EFL_EVENT_KEY_UP))
+          {
+             _button_inc_dec_stop_cb(obj, obj, NULL, NULL);
+          }
+     }
+   //
+   if (eo_event->desc == EFL_EVENT_KEY_DOWN)
+     {
+        if (sd->spin_timer) _spin_stop(obj);
+        else return EINA_FALSE;
+     }
+   else if (eo_event->desc == EFL_EVENT_KEY_UP)
+     {
+        if (sd->spin_timer) _spin_stop(obj);
+        else return EINA_FALSE;
+     }
+   else if (eo_event->desc == EFL_EVENT_POINTER_WHEEL)
+     {
+        sd->interval = sd->first_interval;
+        if (efl_input_pointer_wheel_delta_get(ev) < 0)
+          {
+             sd->spin_speed = sd->step;
+             elm_layout_signal_emit(obj, "elm,right,anim,activate", "elm");
+          }
+        else
+          {
+             sd->spin_speed = -sd->step;
+             elm_layout_signal_emit(obj, "elm,left,anim,activate", "elm");
+          }
+        _spin_value(obj);
+     }
+   else return EINA_FALSE;
+
+   efl_input_processed_set(ev, EINA_TRUE);
+   return EINA_TRUE;
 }
 
 static void
@@ -967,6 +1048,7 @@ _elm_spinner_efl_ui_widget_on_focus_update(Eo *obj, Elm_Spinner_Data *sd, Elm_Ob
      {
         ELM_SAFE_FREE(sd->delay_change_timer, ecore_timer_del);
         ELM_SAFE_FREE(sd->spin_timer, ecore_timer_del);
+        ELM_SAFE_FREE(sd->longpress_timer, ecore_timer_del);
      }
    else
      {
@@ -1208,6 +1290,9 @@ _elm_spinner_efl_canvas_group_group_add(Eo *obj, Elm_Spinner_Data *priv)
    priv->val_max = 100.0;
    priv->step = 1.0;
    priv->first_interval = 0.85;
+   //TIZEN_ONLY(20160419): Maintain compatibility.
+   priv->editable = EINA_TRUE;
+   //
 
    if (!elm_layout_theme_set(obj, "spinner", "base",
                              elm_widget_style_get(obj)))
@@ -1261,7 +1346,6 @@ _elm_spinner_efl_canvas_group_group_add(Eo *obj, Elm_Spinner_Data *priv)
         elm_widget_sub_object_add(obj, priv->text_button);
 
         priv->dec_button = elm_button_add(obj);
-
         /* TIZEN_ONLY(20161115): apply UI Mirroring for Tizen 3.0 UX.
            buttons inside a spinner are not mirrored */
         elm_object_mirrored_automatic_set(priv->dec_button, EINA_FALSE);
@@ -1483,18 +1567,20 @@ _elm_spinner_efl_object_constructor(Eo *obj, Elm_Spinner_Data *_pd EINA_UNUSED)
 EOLIAN static void
 _elm_spinner_label_format_set(Eo *obj, Elm_Spinner_Data *sd, const char *fmt)
 {
-   Elm_Spinner_Format_Type type;
+   Elm_Spinner_Format_Type type = SPINNER_FORMAT_INVALID;
 
-   if (!fmt) fmt = "%.0f";
-   type = _is_label_format_integer(fmt);
-   if (type == SPINNER_FORMAT_INVALID)
+   if (fmt)
      {
-        ERR("format:\"%s\" is invalid, cannot be set", fmt);
-        return;
-     }
-   else if (type == SPINNER_FORMAT_FLOAT)
-     {
-        sd->decimal_points = _decimal_points_get(fmt);
+        type = _is_label_format_integer(fmt);
+        if (type == SPINNER_FORMAT_INVALID)
+          {
+             ERR("format:\"%s\" is invalid, cannot be set", fmt);
+             return;
+          }
+        else if (type == SPINNER_FORMAT_FLOAT)
+          {
+             sd->decimal_points = _decimal_points_get(fmt);
+          }
      }
 
    eina_stringshare_replace(&sd->label, fmt);
@@ -1524,6 +1610,9 @@ _elm_spinner_efl_ui_range_range_min_max_set(Eo *obj, Elm_Spinner_Data *sd, doubl
 
    _val_set(obj);
    _label_write(obj);
+   //TIZEN_ONLY(20160419): Added entry filter feature.
+   _entry_accept_filter_add(obj);
+   //
 }
 
 EOLIAN static void
@@ -1566,6 +1655,9 @@ _elm_spinner_efl_ui_range_range_value_set(Eo *obj, Elm_Spinner_Data *sd, double 
 
    _val_set(obj);
    _label_write(obj);
+   //TIZEN_ONLY(20160419): Changed smart callback call for value update.
+   efl_event_callback_legacy_call(obj, ELM_SPINNER_EVENT_CHANGED, NULL);
+   //
 }
 
 EOLIAN static double
@@ -1657,6 +1749,12 @@ EOLIAN static void
 _elm_spinner_editable_set(Eo *obj EINA_UNUSED, Elm_Spinner_Data *sd, Eina_Bool editable)
 {
    sd->editable = editable;
+   //TIZEN_ONLY(20161222): disable touch sound for uneditable mode
+   if (sd->editable)
+     elm_layout_signal_emit(sd->text_button, "elm,state,entry,editable", "elm");
+   else
+     elm_layout_signal_emit(sd->text_button, "elm,state,entry,uneditable", "elm");
+   //
 }
 
 EOLIAN static Eina_Bool

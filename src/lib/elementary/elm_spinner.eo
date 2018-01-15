@@ -196,5 +196,8 @@ class Elm.Spinner (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Focus.Composition,
       spinner,drag,stop; [[Called when spinner drag stopped]]
       min,reached; [[Called when spinner value reached min]]
       max,reached; [[Called when spinner value reached max]]
+      //TIZEN_ONLY(20160419): Spinner entry changed callback support for datetime UX.
+      entry,changed; [[Called when entry value changed]]
+      //
    }
 }
