@@ -376,22 +376,10 @@ class Efl.Ui.Win (Efl.Ui.Widget, Efl.Canvas, Efl.Canvas.Pointer, Efl.Access.Wind
       }
       @property fullscreen {
          set {
-            [[Set the fullscreen state of a window.
-
-              \@if MOBILE \@since_tizen 2.3
-              \@elseif WEARABLE \@since_tizen 2.3.1
-              \@endif
-              \@deprecated Deprecated since Tizen 2.4
-            ]]
+            [[Set the fullscreen state of a window.]]
          }
          get {
-            [[Get the fullscreen state of a window.
-
-              \@if MOBILE \@since_tizen 2.3
-              \@elseif WEARABLE \@since_tizen 2.3.1
-              \@endif
-              \@deprecated Deprecated since Tizen 2.4
-            ]]
+            [[Get the fullscreen state of a window.]]
          }
          values {
             fullscreen: bool; [[If $true, the window is fullscreen.]]
@@ -404,21 +392,10 @@ class Efl.Ui.Win (Efl.Ui.Widget, Efl.Canvas, Efl.Canvas.Pointer, Efl.Access.Wind
               Hints the Window Manager that the window in $obj should be
               left fixed at its position even when the virtual desktop
               it's on moves or changes.
-
-              \@if MOBILE \@since_tizen 2.3
-              \@elseif WEARABLE \@since_tizen 2.3.1
-              \@endif
-              \@deprecated Deprecated since Tizen 2.4
             ]]
          }
          get {
-            [[Get the sticky state of the window.
-
-              \@if MOBILE \@since_tizen 2.3
-              \@elseif WEARABLE \@since_tizen 2.3.1
-              \@endif
-              \@deprecated Deprecated since Tizen 2.4
-            ]]
+            [[Get the sticky state of the window.]]
          }
          values {
             sticky: bool; [[If $true, the window's sticky state is enabled.]]
@@ -724,12 +701,6 @@ class Efl.Ui.Win (Efl.Ui.Widget, Efl.Canvas, Efl.Canvas.Pointer, Efl.Access.Wind
            Note: This is just a request that a Window Manager may ignore,
            so calling this function does not ensure in any way that the
            window will be centered afterwards.
-
-           \@if MOBILE \@since_tizen 2.3
-           \@elseif WEARABLE \@since_tizen 2.3.1
-           \@endif
-           \@deprecated Deprecated since Tizen 2.4
-
          ]]
          params {
             @in h: bool; [[If $true, center horizontally. If $false, do not change horizontal location.]]
