@@ -1,3 +1,5 @@
+#ifndef _WIN32
+#ifndef __APPLE__
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -648,3 +650,5 @@ ecore_input_joystick_name_get(int index)
 #endif
    return NULL;
 }
+#endif
+#endif
