@@ -4317,8 +4317,18 @@ _edje_entry_input_hint_set(Edje_Real_Part *rp, Edje_Input_Hints input_hints)
    en = rp->typedata.text->entry_data;
    if (!en) return;
 #ifdef HAVE_ECORE_IMF
+   /* TIZEN_ONLY(20170629): set imf context input hint with MULTILINE if current entry is multiline
    if (en->imf_context)
      ecore_imf_context_input_hint_set(en->imf_context, (Ecore_IMF_Input_Hints)input_hints);
+    */
+   if (en->imf_context)
+     {
+        if (rp->part->multiline)
+          ecore_imf_context_input_hint_set(en->imf_context, (Ecore_IMF_Input_Hints)input_hints | ECORE_IMF_INPUT_HINT_MULTILINE);
+        else
+          ecore_imf_context_input_hint_set(en->imf_context, (Ecore_IMF_Input_Hints)input_hints);
+     }
+   /* END */
 #else
    (void)input_hints;
 #endif
