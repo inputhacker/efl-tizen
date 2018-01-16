@@ -2787,7 +2787,7 @@ _is_item_in_viewport(int viewport_y, int viewport_h, int obj_y, int obj_h)
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_item_elm_interface_atspi_component_highlight_grab(Eo *eo_it, Elm_Ctxpopup_Item_Data *it)
+_elm_ctxpopup_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Ctxpopup_Item_Data *it)
 {
    Evas_Coord wy, wh, x, y, w, h, bx, by;
    ELM_CTXPOPUP_DATA_GET_OR_RETURN_VAL(WIDGET(it), sd, EINA_FALSE);
@@ -2824,7 +2824,7 @@ _elm_ctxpopup_item_elm_interface_atspi_component_highlight_grab(Eo *eo_it, Elm_C
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_item_elm_interface_atspi_component_highlight_clear(Eo *eo_it, Elm_Ctxpopup_Item_Data *it EINA_UNUSED)
+_elm_ctxpopup_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Ctxpopup_Item_Data *it EINA_UNUSED)
 {
    elm_object_accessibility_highlight_set(eo_it, EINA_FALSE);
    elm_interface_atspi_accessible_state_changed_signal_emit(eo_it, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_FALSE);

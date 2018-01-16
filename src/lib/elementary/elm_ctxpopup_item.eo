@@ -33,5 +33,11 @@ class Elm.Ctxpopup.Item(Elm.Widget.Item, Efl.Ui.Item, Efl.Access.Widget.Action)
         Efl.Ui.Item.next { get; }
         Efl.Access.Widget.Action.elm_actions { get; }
         Efl.Access.name { get; }
+        // TIZEN_ONLY(20170116): merge eo & header files for different profiles
+        //  TIZEN ONLY(20161014) : Accessibility: scroll the content when highlight frame goes out of view port
+        Efl.Access.Component.highlight_grab;
+        Efl.Access.Component.highlight_clear;
+        //
+        //
    }
 }
