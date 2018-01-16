@@ -4454,8 +4454,15 @@ _new_scrollable_parent_viewport_geometry_get(Eo *node, Eo *start,
    return ret;
 }
 
-static Eina_List *_valid_children_get(Eina_List *children, Eo *start)
+static Eina_List *_valid_children_get(Eina_List *children, Eo *start, Eo *root)
 {
+   /* condition to find first(last) object regardless of scrollable parent.
+      looping navigation does not care scrollable parent.
+      1. currently highlighted object exists
+      2. both start and root are same */
+   Eo *current = _elm_object_accessibility_currently_highlighted_get();
+   if (current && start == root) return children;
+
    Eo *child = NULL;
    child = eina_list_nth(children, 0);
 
@@ -4485,7 +4492,7 @@ static Eina_List *_valid_children_get(Eina_List *children, Eo *start)
 }
 
 static void *_get_next_non_defunct_sibling(accessibility_navigation_pointer_table *table,
-            void *obj, void *start, unsigned char forward)
+            void *obj, void *start, void *root, unsigned char forward)
 {
    if (!obj) return NULL;
    void *parent = CALL(get_parent, obj);
@@ -4493,7 +4500,7 @@ static void *_get_next_non_defunct_sibling(accessibility_navigation_pointer_tabl
 
    Eina_List *children;
    children = efl_access_children_get(parent);
-   children = _valid_children_get(children, start);
+   children = _valid_children_get(children, start, root);
 
    unsigned int children_count = eina_list_count(children);
    if (children_count == 0)
@@ -4522,7 +4529,7 @@ _directional_depth_first_search_try_non_defunct_sibling(accessibility_navigation
 {
    while(1)
      {
-       void *sibling = _get_next_non_defunct_sibling(table, node, start, forward);
+       void *sibling = _get_next_non_defunct_sibling(table, node, start, root, forward);
        if (sibling != NULL)
          {
            node = sibling;
@@ -4606,7 +4613,7 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
 
        Eina_List *children;
        children = efl_access_children_get(node);
-       children = _valid_children_get(children, start);
+       children = _valid_children_get(children, start, root);
 
        // do accept:
        // 1. not start node
@@ -4614,8 +4621,7 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
        // 3. Nodes with roles: ATSPI_ROLE_PAGE_TAB, ATSPI_ROLE_POPUP_MENU and ATSPI_ROLE_DIALOG, only when looking for first or last element.
        //    Objects with those roles shouldnt be reachable, when navigating next / prev.
        unsigned char all_children_visited_or_moving_forward = (eina_list_count(children) == 0 || forward || all_children_visited);
-       if (!force_next && node != start && all_children_visited_or_moving_forward &&
-           _accept_object(table, node))
+       if (!force_next && node != start && all_children_visited_or_moving_forward && _accept_object(table, node))
          {
            if (start == NULL || _object_role_is_acceptable_when_navigating_next_prev(table, node))
              {

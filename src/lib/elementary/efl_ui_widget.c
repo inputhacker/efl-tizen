@@ -4274,7 +4274,11 @@ _elm_widget_item_highlightable(Elm_Object_Item *item)
 Eina_Bool
 _accessible_object_on_scroll_is(Eo* obj)
 {
-   if(!obj) return EINA_FALSE;
+   /* in case of genlist item, the item->view is NULL if item is unrealized.
+      this function is used to check if obj could have HIGHLIGHTABLE or not.
+      the unrealized genlist item should have HIGHLIGHTABLE state.
+      so if obj is NULL return EINA_TRUE */
+   if(!obj) return EINA_TRUE;
 
    Evas_Object *target = obj;
    Evas_Object *parent = NULL;
@@ -4349,7 +4353,9 @@ _elm_widget_item_efl_access_state_set_get(Eo *eo_item, Elm_Widget_Item_Data *ite
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
 
    //TIZEN_ONLY(20170207) : [ATSPI] enhance expose highlight information on atspi
-   if (evas_object_visible_get(item->view))
+   /* unrealized genlist item does not have item->view,
+      and item cannot change its visibility, only widget can change the visibility */
+   if (evas_object_visible_get(item->widget))
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_VISIBLE);
    //
 
