@@ -4338,14 +4338,25 @@ Edje_Input_Hints
 _edje_entry_input_hint_get(const Edje_Real_Part *rp)
 {
    Entry *en;
+   /* TIZEN_ONLY(20170704): remove MULTILINE hints from input_hint_get function */
+   Ecore_IMF_Input_Hints ret;
+   /* END */
 
    if ((rp->type != EDJE_RP_TYPE_TEXT) ||
        (!rp->typedata.text)) return EDJE_INPUT_HINT_NONE;
    en = rp->typedata.text->entry_data;
    if (!en) return EDJE_INPUT_HINT_NONE;
 #ifdef HAVE_ECORE_IMF
+   /* TIZEN_ONLY(20170704): remove MULTILINE hints from input_hint_get function
    if (en->imf_context)
      return (Edje_Input_Hints)ecore_imf_context_input_hint_get(en->imf_context);
+    */
+   if (en->imf_context)
+     {
+        ret = ecore_imf_context_input_hint_get(en->imf_context) & ~ECORE_IMF_INPUT_HINT_MULTILINE;
+        return (Edje_Input_Hints)ret;
+     }
+   /* END */
 #endif
 
    return EDJE_INPUT_HINT_NONE;
