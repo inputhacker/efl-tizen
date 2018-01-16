@@ -3326,7 +3326,7 @@ _elm_win_obj_intercept_show(void *data,
    Eina_Rectangle input_rect = { -1, -1, 1, 1 };
 
    evas_object_geometry_get(obj, &x, &y, &w, &h);
-   ecore_wl_window_opaque_region_set(sd->wl.win, x, y, w, h);
+   ecore_wl2_window_opaque_region_set(sd->wl.win, x, y, w, h);
 
    if (sd->type == ELM_WIN_TOOLTIP)
      ecore_evas_input_rect_set(sd->ee, &input_rect);
