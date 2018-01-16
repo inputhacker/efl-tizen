@@ -106,6 +106,9 @@ struct _Efl_Ui_Win_Data
       Ecore_Event_Handler *effect_start_handler;
       Ecore_Event_Handler *effect_end_handler;
       //
+      // TIZEN_ONLY(20160801): indicator implementation
+      Ecore_Event_Handler *indicator_flick_handler;
+      //
       // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
       Ecore_Event_Handler *aux_msg_handler;
       //
@@ -354,7 +357,12 @@ static const char SIG_INDICATOR_PROP_CHANGED[] = "indicator,prop,changed";
 static const char SIG_ROTATION_CHANGED[] = "rotation,changed";
 static const char SIG_PROFILE_CHANGED[] = "profile,changed";
 static const char SIG_WM_ROTATION_CHANGED[] = "wm,rotation,changed";
-//TIZEN_ONLY(20171110): added signal for effect start and done
+
+// TIZEN_ONLY(20160801): indicator implementation
+#ifdef HAVE_ELEMENTARY_WL2
+static const char SIG_INDICATOR_FLICK_DONE[] = "indicator,flick,done";
+#endif
+//
 static const char SIG_EFFECT_STARTED[] = "effect,started";
 static const char SIG_EFFECT_DONE[] = "effect,done";
 //
@@ -3220,6 +3228,9 @@ _efl_ui_win_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Win_Data *sd)
    ecore_event_handler_del(sd->wl.effect_start_handler);
    ecore_event_handler_del(sd->wl.effect_end_handler);
    //
+   // TIZEN_ONLY(20160801): indicator implementation
+   ecore_event_handler_del(sd->wl.indicator_flick_handler);
+   //
    // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
    ecore_event_handler_del(sd->wl.aux_msg_handler);
    //
@@ -5263,6 +5274,18 @@ elm_win_precreated_object_get(void)
 }
 //
 
+// TIZEN_ONLY(20160728): Indicator Implementation
+#ifdef HAVE_ELEMENTARY_WL2
+static Eina_Bool
+_elm_win_wl_indicator_flick(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
+{
+   ELM_WIN_DATA_GET(data, sd);
+   evas_object_smart_callback_call(sd->obj, SIG_INDICATOR_FLICK_DONE, NULL);
+   return ECORE_CALLBACK_PASS_ON;
+}
+#endif
+// END
+
 static void
 _elm_win_cb_hide(void *data EINA_UNUSED,
                  Evas *e EINA_UNUSED,
@@ -5814,6 +5837,10 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
               (ECORE_WL2_EVENT_EFFECT_START, _elm_win_wl_effect_start, obj);
            sd->wl.effect_end_handler = ecore_event_handler_add
               (ECORE_WL2_EVENT_EFFECT_END, _elm_win_wl_effect_end, obj);
+           // TIZEN_ONLY(20160801): indicator implementation
+           sd->wl.indicator_flick_handler = ecore_event_handler_add
+              (ECORE_WL2_EVENT_INDICATOR_FLICK, _elm_win_wl_indicator_flick, obj);
+           // END
            // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
            sd->wl.aux_msg_handler = ecore_event_handler_add
               (ECORE_WL2_EVENT_AUX_MESSAGE, _elm_win_wl_aux_message, obj);
@@ -5926,6 +5953,14 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
         evas_object_event_callback_add
            (sd->parent, EVAS_CALLBACK_DEL, _elm_win_on_parent_del, obj);
      }
+
+// TIZEN_ONLY(20161114): Sync the state of indicator with window manager
+#ifdef HAVE_ELEMENTARY_WL2
+   if (sd->wl.win)
+     ecore_wl2_indicator_visible_type_set(sd->wl.win, ECORE_WL2_INDICATOR_VISIBLE_TYPE_SHOWN);
+#endif
+// END
+
    sd->evas = ecore_evas_get(sd->ee);
 
    evas_object_color_set(obj, 0, 0, 0, 0);

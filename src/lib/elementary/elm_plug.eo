@@ -42,5 +42,6 @@ class Elm.Plug (Efl.Ui.Widget, Efl.Ui.Clickable)
    events {
       image,deleted; [[Called when image was deleted]]
       image,resized; [[Called when image was resized]]
+      message,received;
    }
 }

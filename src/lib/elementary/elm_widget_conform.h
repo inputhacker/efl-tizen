@@ -51,8 +51,20 @@ struct _Elm_Conformant_Data
    Ecore_Timer                   *land_indi_timer;
    Ecore_Timer                   *port_indi_timer;
 
+   //TIZEN_ONLY(20160728) : indicator opacity mode implementation//
+   Ecore_Timer                   *indicator_effect_timer;
+   Eina_Bool                      on_indicator_effect : 1;
+   //END
+   //TIZEN_ONLY(20161220) : quickpanel visibility//
+   int                           quickpanel_state;
+   //END
+
    int                            rot;
    Eina_Bool                      win_hidden;
+   //TIZEN_ONLY(20161220) : quickpanel visibility
+   Evas_Object                   *indicator;
+   Ecore_Timer                   *indi_timer;
+   //END
 };
 
 /* Enum to identify conformant swallow parts */
@@ -64,6 +76,34 @@ enum _Conformant_Part_Type
    ELM_CONFORMANT_VIRTUAL_KEYPAD_PART = 4,
    ELM_CONFORMANT_CLIPBOARD_PART    = 8
 };
+
+
+// TIZEN_ONLY(20161208): Support quickpanel callback
+typedef void (*quickpanel_callback_cb)(int event_type, void *event_info, void *user_data);
+
+typedef enum _Conformant_Quickpanel_Event Conformant_Quickpanel_Event;
+enum _Conformant_Quickpanel_Event
+{
+   CONFORM_QUICKPANEL_EVENT_UNKNOWN,
+   CONFORM_QUICKPANEL_EVENT_VISIBILITY_CHANGED,
+};
+
+typedef enum _Conformant_Quickpanel_State Conformant_Quickpanel_State;
+enum _Conformant_Quickpanel_State
+{
+   CONFORM_QUICKPANEL_STATE_VISIBILITY_UNKNOWN,         // Unknown state
+   CONFORM_QUICKPANEL_STATE_VISIBILITY_SHOWN,           // Shown state
+   CONFORM_QUICKPANEL_STATE_VISIBILITY_HIDDEN,          // Hidden state
+   CONFORM_QUICKPANEL_STATE_VISIBILITY_PARTIALY_SHOWN,  // Partialy shown state (Quickpanel is dragging now)
+};
+
+typedef struct _Elm_Conformant_Mod_Api Elm_Conformant_Mod_Api;
+struct _Elm_Conformant_Mod_Api
+{
+   void (*quickpanel_callback_add)(Evas_Object *win, int event_type, quickpanel_callback_cb callback_cb, void *user_data);
+   void (*quickpanel_event_visible_get)(void *event_info, void *visible);
+};
+// END
 
 /**
  * @}

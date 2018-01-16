@@ -25,6 +25,24 @@
  *
  */
 
+//TIZEN_ONLY(20170104): add plug message feature
+/**
+ * @typedef Elm_Plug_Message
+ *
+ * @brief The structure type holding the message
+ *        which elm plug received from ecore evas
+ *
+ */
+struct _Elm_Plug_Message
+{
+   int msg_domain;
+   int msg_id;
+   void *data;
+   int size;
+};
+typedef struct _Elm_Plug_Message Elm_Plug_Message;
+//
+
 
 /**
  * @addtogroup Plug

@@ -82,6 +82,8 @@ enum Efl.Ui.Win.Indicator_Mode
    bg_opaque, [[The indicator icon is opaque, as is the indicator background.
                 The content of window is located at the end of the indicator.
                 The area of indicator and window content are not overlapped]]
+   translucent, [[Be translucent the indicator]]
+   transparent, [[Transparentizes the indicator]]
    bg_transparent, [[The icon of indicator is opaque, but the background is transparent.
                      The content of window is located under the indicator in Z-order.
                      The area of indicator and window content are overlapped]]
