@@ -3124,7 +3124,7 @@ _wl_selection_receive(void *data, int type EINA_UNUSED, void *event)
    free(data);
 
    //TIZEN_ONLY(20161124): skip other process's receive event
-   sel->requestwidget = NULL;
+   ready->requestwidget = NULL;
    //
 
    return ECORE_CALLBACK_CANCEL;
