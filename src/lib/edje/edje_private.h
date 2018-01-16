@@ -3047,6 +3047,14 @@ void _edje_entry_input_panel_show_on_demand_set(Edje_Real_Part *rp, Eina_Bool on
 Eina_Bool _edje_entry_input_panel_show_on_demand_get(Edje_Real_Part *rp);
 void _edje_entry_prediction_hint_set(Edje_Real_Part *rp, const char *prediction_hint);
 Eina_Bool _edje_entry_hide_visible_password(Edje *edje, Edje_Real_Part *rp);
+/****************************************************************************************************
+ * TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements. *
+ ****************************************************************************************************/
+void _edje_entry_freeze(Edje_Real_Part *rp);
+void _edje_entry_thaw(Edje_Real_Part *rp);
+/*******
+ * END *
+ *******/
 
 void _edje_external_init(void);
 void _edje_external_shutdown(void);

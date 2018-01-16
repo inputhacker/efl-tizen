@@ -67,6 +67,14 @@ struct _Entry
    Eina_Bool              commit_cancel : 1; // For skipping useless commit
    Ecore_IMF_Context     *imf_context;
 #endif
+
+   /****************************************************************************************************
+    * TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements. *
+    ****************************************************************************************************/
+   Eina_Bool freeze : 1;
+   /*******
+    * END *
+    *******/
 };
 
 struct _Sel
@@ -3602,9 +3610,22 @@ _edje_entry_text_markup_set(Edje_Real_Part *rp, const char *text)
 
    _anchors_get(en->cursor, rp->object, en);
    _edje_emit(en->ed, "entry,changed", rp->part->name);
+
+   /****************************************************************************************************
+    * TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements. *
+    ****************************************************************************************************
    _edje_entry_imf_cursor_info_set(en);
 
    _edje_entry_real_part_configure(en->ed, rp);
+    */
+   if (!en->freeze)
+     {
+        _edje_entry_imf_cursor_info_set(en);
+        _edje_entry_real_part_configure(en->ed, rp);
+     }
+   /*******
+    * END *
+    *******/
 #if 0
    /* Don't emit cursor changed cause it didn't. It's just init to 0. */
    _edje_emit(en->ed, "cursor,changed", rp->part->name);
@@ -3667,7 +3688,16 @@ _edje_entry_set_cursor_start(Edje_Real_Part *rp)
    if (!en) return;
    _curs_start(en->cursor, rp->object, en);
 
+   /****************************************************************************************************
+    * TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements. *
+    ****************************************************************************************************
    _edje_entry_imf_cursor_info_set(en);
+    */
+   if (!en->freeze)
+     _edje_entry_imf_cursor_info_set(en);
+   /*******
+    * END *
+    *******/
 }
 
 void
@@ -4900,9 +4930,22 @@ _edje_text_cursor_pos_set(Edje_Real_Part *rp, Efl_Text_Cursor_Cursor *c, int pos
    evas_textblock_cursor_pos_set(c, pos);
    _sel_update(en->ed, c, rp->object, rp->typedata.text->entry_data);
 
+   /****************************************************************************************************
+    * TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements. *
+    ****************************************************************************************************
    _edje_entry_imf_cursor_info_set(en);
    _edje_emit(en->ed, "cursor,changed", rp->part->name);
    _edje_entry_real_part_configure(en->ed, rp);
+    */
+   _edje_emit(en->ed, "cursor,changed", rp->part->name);
+   if (!en->freeze)
+     {
+        _edje_entry_imf_cursor_info_set(en);
+        _edje_entry_real_part_configure(en->ed, rp);
+     }
+   /*******
+    * END *
+    *******/
 }
 
 void
@@ -5590,5 +5633,40 @@ _edje_text_cursor_get(Edje_Real_Part *rp, Edje_Cursor cur)
 {
    return _cursor_get(rp, cur);
 }
+
+/****************************************************************************************************
+ * TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements. *
+ ****************************************************************************************************/
+void _edje_entry_freeze(Edje_Real_Part *rp)
+{
+   Entry *en = NULL;
+
+   if ((rp->type != EDJE_RP_TYPE_TEXT) ||
+       (!rp->typedata.text)) return;
+
+   en = rp->typedata.text->entry_data;
+   if (!en) return;
+
+   en->freeze = EINA_TRUE;
+}
+
+void _edje_entry_thaw(Edje_Real_Part *rp)
+{
+   Entry *en = NULL;
+
+   if ((rp->type != EDJE_RP_TYPE_TEXT) ||
+       (!rp->typedata.text)) return;
+
+   en = rp->typedata.text->entry_data;
+   if (!en) return;
+
+   en->freeze = EINA_FALSE;
+
+   _edje_entry_imf_cursor_info_set(en);
+   _edje_entry_real_part_configure(en->ed, rp);
+}
+/*******
+ * END *
+ *******/
 
 /* vim:set ts=8 sw=3 sts=3 expandtab cino=>5n-2f0^-2{2(0W1st0 :*/

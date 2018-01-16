@@ -7087,4 +7087,43 @@ _efl_canvas_layout_part_text_cursor_on_mouse_geometry_get(Eo *obj EINA_UNUSED, E
  * END *
  *******/
 
+/****************************************************************************************************
+ * TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements. *
+ ****************************************************************************************************/
+EAPI void
+edje_object_part_text_freeze(Evas_Object *obj, const char *part)
+{
+   Edje *ed;
+   Edje_Real_Part *rp;
+
+   ed = _edje_fetch(obj);
+   if ((!ed) || (!part)) return;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK)) return;
+   if (rp->part->entry_mode <= EDJE_ENTRY_EDIT_MODE_NONE) return;
+
+   _edje_entry_freeze(rp);
+}
+
+EAPI void
+edje_object_part_text_thaw(Evas_Object *obj, const char *part)
+{
+   Edje *ed;
+   Edje_Real_Part *rp;
+
+   ed = _edje_fetch(obj);
+   if ((!ed) || (!part)) return;
+   rp = _edje_real_part_recursive_get(&ed, part);
+   if (!rp) return;
+   if ((rp->part->type != EDJE_PART_TYPE_TEXTBLOCK)) return;
+   if (rp->part->entry_mode <= EDJE_ENTRY_EDIT_MODE_NONE) return;
+
+   _edje_entry_thaw(rp);
+}
+/*******
+ * END *
+ *******/
+
+
 /* vim:set ts=8 sw=3 sts=3 expandtab cino=>5n-2f0^-2{2(0W1st0 :*/
