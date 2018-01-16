@@ -46,6 +46,7 @@ struct _Elm_Panel_Data
    Eina_Bool                             delete_me : 1;
    Eina_Bool                             scrollable : 1;
    Eina_Bool                             freeze: 1;
+   Eina_Bool                             callback_added: 1;
    // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
    Eina_Bool                             content_size_manual_set: 1;
    //
