@@ -22,7 +22,7 @@
  * interface, so that all (non-deprecated) functions for the base @ref
  * Scroller widget also work for map objects.
  *
- * Smart callbacks one can listen to:
+ * Smart callbacks one can listen for:
  * - @c "clicked" - This is called when a user has clicked the map without
  *                  dragging around.
  * - @c "clicked,double" - This is called when a user has double-clicked

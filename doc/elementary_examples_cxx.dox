@@ -4508,7 +4508,7 @@
  * @skip slider
  * @until visibility
 
- * Finally the last slider will exemplify how to listen to slider's
+ * Finally the last slider will exemplify how to listen for slider's
  * signals, <tt> changed </tt> and <tt> delay,changed </tt>. First we
  * need to implement callback functions that will simply print
  * slider's value, using lambda again:
@@ -4789,7 +4789,7 @@
  * @skip spinner
  * @until visibility
  
- * Finally the last widget will exemplify how to listen to widget's
+ * Finally the last widget will exemplify how to listen for widget's
  * signals, <tt> changed </tt> and <tt> delay_changed </tt>.
 
  * We start the same way as previously, creating spinner, setting

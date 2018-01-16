@@ -124,7 +124,7 @@ class Elm.Gesture_Layer (Efl.Ui.Widget)
            widget's target).
 
            A gesture layer's target may be any Evas object. This object
-           will be used to listen to mouse and key events.
+           will be used to listen for mouse and key events.
          ]]
          return: bool; [[$true on success, $false otherwise.]]
          params {

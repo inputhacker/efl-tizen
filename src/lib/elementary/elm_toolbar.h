@@ -23,7 +23,7 @@
  * interface, so that all (non-deprecated) functions for the base
  * @ref Scroller widget also work for toolbars (since 1.8)
  *
- * Smart callbacks one can listen to:
+ * Smart callbacks one can listen for:
  * - @c "clicked" - when the user clicks on a toolbar item and becomes
  *                  selected.
  * - @c "longpressed" - when the toolbar is pressed for a certain

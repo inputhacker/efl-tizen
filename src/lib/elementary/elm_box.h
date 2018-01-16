@@ -50,7 +50,7 @@
  * how the widget will be placed within that space using
  * evas_object_size_hint_align_set(). By default, this value will be 0.5
  * for both axis, meaning the object will be centered, but any value from
- * 0.0 (left or top, for the @c x and @c y axis, respectively) to 1.0
+ * 0.0 (left or top, for the @c x and @c y axes, respectively) to 1.0
  * (right or bottom) can be used. The special value EVAS_HINT_FILL, which
  * is -1.0, means the object will be resized to fill the entire space it
  * was allocated.

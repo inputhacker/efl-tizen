@@ -5,7 +5,7 @@
  * @image html index_inheritance_tree.png
  * @image latex index_inheritance_tree.eps
  *
- * An index widget gives you an index for fast access to whichever
+ * An index widget gives you an index for quick access to whichever
  * group of other UI items one might have. It's a list of text
  * items (usually letters, for alphabetically ordered access).
  *

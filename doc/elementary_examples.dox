@@ -1484,7 +1484,7 @@
  * @skipline elm_spinner_add
  * @until evas_object_show
  *
- * Finally the last widget will exemplify how to listen to widget's signals,
+ * Finally the last widget will exemplify how to listen for widget's signals,
  * <tt> changed </tt> and <tt> delay,changed </tt>. First we need to
  * implement callback functions that will simply print spinner's value:
  * @dontinclude spinner_example.c
@@ -1582,7 +1582,7 @@
  * @dontinclude slider_example.c
  * @skipline elm_slider_horizontal_set
  *
- * Finally the last widget will exemplify how to listen to widget's signals,
+ * Finally the last widget will exemplify how to listen for widget's signals,
  * <tt> changed </tt> and <tt> delay,changed </tt>. First we need to
  * implement callback functions that will simply print slider's value:
  * @dontinclude slider_example.c
