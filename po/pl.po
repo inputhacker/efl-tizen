@@ -314,10 +314,6 @@ msgstr "Tytuł okienka"
 msgid "Popup Body Text"
 msgstr "Treść główna okienka"
 
-#: src/lib/elementary/elc_popup.c:1820
-msgid "Alert"
-msgstr ""
-
 #: src/lib/elementary/elm_bubble.c:162
 msgid "Bubble"
 msgstr "Bąbelek"
@@ -577,3 +573,203 @@ msgstr "Nie wybrany"
 #: src/lib/elementary/elm_toolbar.c:2347
 msgid "Toolbar Item"
 msgstr "Pasek narzędzi"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c:367
+#: src/modules/datetime_input_popup/datetime_input_popup.c:1258
+msgid "AM"
+msgstr "AM"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c:370
+#: src/modules/datetime_input_popup/datetime_input_popup.c:1260
+msgid "PM"
+msgstr "PM"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c:983
+msgid "Set"
+msgstr "Ustaw"
+
+#: src/modules/copypasteUI_ctxpopup/copypaste.c
+msgid "Translate"
+msgstr "Tłumacz"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c
+msgid "flick up and down to adjust %s or double tap to open keyboard"
+msgstr "Potrząśnij w górę i w dół, aby dostosować %s lub dotknij dwukrotnie, aby otworzyć klawiaturę."
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c
+msgid "Double tap to change"
+msgstr "Dotknij dwukrotnie, aby zmienić."
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c:375
+msgid "Set date"
+msgstr "Ustaw datę"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c:384
+msgid "Set time"
+msgstr "Ustaw godzinę"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c
+msgid "IDS_ACCS_BODY_PD_M_DAY"
+msgstr "%d"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c
+msgid "IDS_ACCS_BODY_PD_M_YEAR"
+msgstr "%Y"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c
+msgid "IDS_ACCS_BODY_PD_M_24HOUR"
+msgstr "%H"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c
+msgid "IDS_ACCS_BODY_PD_M_12HOUR"
+msgstr "%I"
+
+#: src/modules/datetime_input_popup/datetime_input_popup.c
+msgid "IDS_ACCS_BODY_PD_M_MINUTES"
+msgstr "%M"
+
+#: src/lib/elm_win.c
+msgid "Portrait Mode"
+msgstr "Orientacja pionowa"
+
+#: src/lib/elm_win.c
+msgid "Landscape Mode"
+msgstr "Orientacja pozioma"
+
+#: src/lib/elm_index.c
+msgid "Double tap to enable fast scrolling"
+msgstr "Dotknij dwukrotnie, aby włączyć szybkie przewijanie."
+
+#: src/lib/elm_entry.c
+msgid "Editing"
+msgstr "Trwa edytowanie."
+
+#: src/lib/elm_entry.c
+msgid "Flick up and down to adjust the position"
+msgstr "Potrząśnij w górę i w dół, aby dostosować położenie."
+
+#: src/lib/elm_entry.c
+msgid "%d characters"
+msgstr "Znaków: %d."
+
+#: src/lib/elc_ctxpopup.c
+msgid "Contextual popup"
+msgstr "Wyskakujące okno kontekstowe"
+
+#: src/lib/elc_ctxpopup.c
+msgid "Double tap to close popup"
+msgstr "Dotknij dwukrotnie, aby zamknąć wyskakujące okno."
+
+#: src/lib/elc_popup.c
+msgid "Central popup"
+msgstr "Środkowe wyskakujące okno"
+
+#: src/lib/elc_popup.c
+msgid "Double tap to close it"
+msgstr "Dotknij dwukrotnie, aby je zamknąć."
+
+#: src/lib/elm_panel.c
+msgid "A drawer is open"
+msgstr "Komoda jest otwarta."
+
+#: src/lib/elm_panel.c
+msgid "Double tap to close drawer menu"
+msgstr "Dotknij dwukrotnie, aby zamknąć menu rozwijane."
+
+#: src/lib/elm_entry.c
+msgid "Cursor at beginning of text"
+msgstr "Kursor na początku tekstu"
+
+#: src/lib/elm_entry.c
+msgid "Cursor at end of text"
+msgstr "Kursor na końcu tekstu"
+
+msgid "tap to change"
+msgstr "Dotknij, aby zmienić tryb."
+
+msgid "date"
+msgstr "Data"
+
+msgid "hour"
+msgstr "godz."
+
+msgid "minute"
+msgstr "min"
+
+msgid "month"
+msgstr "miesiąc"
+
+msgid "year"
+msgstr "rok"
+
+msgid "IDS_ST_BODY_P1SD_OF_P2SD_TTS"
+msgstr "%1$d z %2$d."
+
+msgid "IDS_COM_BODY_DECREASE_DAY"
+msgstr "Dzień wcześniej"
+
+msgid "IDS_COM_BODY_DECREASE_HOUR"
+msgstr "Godzina wcześniej"
+
+msgid "IDS_COM_BODY_DECREASE_MINUTE"
+msgstr "Minuta wcześniej"
+
+msgid "IDS_COM_BODY_DECREASE_MONTH"
+msgstr "Miesiąc wcześniej"
+
+msgid "IDS_COM_BODY_DECREASE_YEAR"
+msgstr "Rok wcześniej"
+
+msgid "IDS_COM_BODY_INCREASE_DAY"
+msgstr "Dzień później"
+
+msgid "IDS_COM_BODY_INCREASE_HOUR"
+msgstr "Godzina później"
+
+msgid "IDS_COM_BODY_INCREASE_MINUTE"
+msgstr "Minuta później"
+
+msgid "IDS_COM_BODY_INCREASE_MONTH"
+msgstr "Miesiąc później"
+
+msgid "IDS_COM_BODY_INCREASE_YEAR"
+msgstr "Rok później"
+
+msgid "IDS_IDLE_BODY_TAP_TO_CHANGE"
+msgstr "Dotknij, aby zmienić."
+
+msgid "IDS_COM_BODY_SELECT_ALL"
+msgstr "Zaznacz wszystko"
+
+msgid "IDS_COM_BODY_COPY"
+msgstr "Kopiuj"
+
+msgid "IDS_COM_SK_SELECT"
+msgstr "Wybierz"
+
+msgid "IDS_COM_BODY_CUT"
+msgstr "Wytnij"
+
+msgid "IDS_COM_BODY_PASTE"
+msgstr "Wklej"
+
+msgid "IDS_COM_BODY_CLIPBOARD"
+msgstr "Schowek"
+
+msgid "WDS_ST_OPT_DAY_ABB"
+msgstr "dd"
+
+msgid "WDS_ST_OPT_HRS_ABB"
+msgstr "gg"
+
+msgid "WDS_ST_OPT_MINS_ABB"
+msgstr "mm"
+
+msgid "WDS_ST_OPT_MONTH_ABB"
+msgstr "mm"
+
+msgid "WDS_ST_OPT_YEAR_ABB"
+msgstr "rr"
+
+msgid "Alert"
+msgstr "Alert"

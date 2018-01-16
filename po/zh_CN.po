@@ -312,10 +312,6 @@ msgstr ""
 msgid "Popup Body Text"
 msgstr ""
 
-#: src/lib/elementary/elc_popup.c:1820
-msgid "Alert"
-msgstr ""
-
 #: src/lib/elementary/elm_bubble.c:162
 msgid "Bubble"
 msgstr "气泡"
@@ -585,3 +581,40 @@ msgstr "工具栏项目"
 
 #~ msgid "List Item"
 #~ msgstr "列表条目"
+
+
+msgid "IDS_COM_BODY_SELECT_ALL"
+msgstr "全选"
+
+msgid "IDS_COM_BODY_COPY"
+msgstr "复制"
+
+msgid "IDS_COM_SK_SELECT"
+msgstr "选择"
+
+msgid "IDS_COM_BODY_CUT"
+msgstr "剪切"
+
+msgid "IDS_COM_BODY_PASTE"
+msgstr "粘贴"
+
+msgid "IDS_COM_BODY_CLIPBOARD"
+msgstr "剪贴板"
+
+msgid "WDS_ST_OPT_DAY_ABB"
+msgstr "日"
+
+msgid "WDS_ST_OPT_HRS_ABB"
+msgstr "时"
+
+msgid "WDS_ST_OPT_MINS_ABB"
+msgstr "分"
+
+msgid "WDS_ST_OPT_MONTH_ABB"
+msgstr "月"
+
+msgid "WDS_ST_OPT_YEAR_ABB"
+msgstr "年"
+
+msgid "Alert"
+msgstr "提示"

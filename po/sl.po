@@ -311,10 +311,6 @@ msgstr "Naslov pojavnika"
 msgid "Popup Body Text"
 msgstr "Besedilo telesa pojavnika"
 
-#: src/lib/elementary/elc_popup.c:1820
-msgid "Alert"
-msgstr ""
-
 #: src/lib/elementary/elm_bubble.c:162
 msgid "Bubble"
 msgstr "Mehurček"
@@ -573,3 +569,90 @@ msgstr "Neizbrano"
 #: src/lib/elementary/elm_toolbar.c:2347
 msgid "Toolbar Item"
 msgstr "Predmet orodne vrstice"
+
+msgid "date"
+msgstr "Datum"
+
+msgid "hour"
+msgstr "ura"
+
+msgid "minute"
+msgstr "minuta"
+
+msgid "month"
+msgstr "mesec"
+
+msgid "year"
+msgstr "leto"
+
+msgid "IDS_ST_BODY_P1SD_OF_P2SD_TTS"
+msgstr "%1$d od %2$d."
+
+msgid "IDS_COM_BODY_DECREASE_DAY"
+msgstr "Zmanjšaj dan"
+
+msgid "IDS_COM_BODY_DECREASE_HOUR"
+msgstr "Zmanjšaj uro"
+
+msgid "IDS_COM_BODY_DECREASE_MINUTE"
+msgstr "Zmanjšaj minute"
+
+msgid "IDS_COM_BODY_DECREASE_MONTH"
+msgstr "Zmanjšaj mesec"
+
+msgid "IDS_COM_BODY_DECREASE_YEAR"
+msgstr "Zmanjšaj leto"
+
+msgid "IDS_COM_BODY_INCREASE_DAY"
+msgstr "Povečaj dan"
+
+msgid "IDS_COM_BODY_INCREASE_HOUR"
+msgstr "Povečaj uro"
+
+msgid "IDS_COM_BODY_INCREASE_MINUTE"
+msgstr "Povečaj minute"
+
+msgid "IDS_COM_BODY_INCREASE_MONTH"
+msgstr "Povečaj mesec"
+
+msgid "IDS_COM_BODY_INCREASE_YEAR"
+msgstr "Povečaj leto"
+
+msgid "IDS_IDLE_BODY_TAP_TO_CHANGE"
+msgstr "Pritisnite za spremembo."
+
+msgid "IDS_COM_BODY_SELECT_ALL"
+msgstr "Izberi vse"
+
+msgid "IDS_COM_BODY_COPY"
+msgstr "Kopiraj"
+
+msgid "IDS_COM_SK_SELECT"
+msgstr "Izberi"
+
+msgid "IDS_COM_BODY_CUT"
+msgstr "Izreži"
+
+msgid "IDS_COM_BODY_PASTE"
+msgstr "Prilepi"
+
+msgid "IDS_COM_BODY_CLIPBOARD"
+msgstr "Odložišče"
+
+msgid "WDS_ST_OPT_DAY_ABB"
+msgstr "Dan"
+
+msgid "WDS_ST_OPT_HRS_ABB"
+msgstr "Ur"
+
+msgid "WDS_ST_OPT_MINS_ABB"
+msgstr "Minut"
+
+msgid "WDS_ST_OPT_MONTH_ABB"
+msgstr "Mesec"
+
+msgid "WDS_ST_OPT_YEAR_ABB"
+msgstr "Leto"
+
+msgid "Alert"
+msgstr "Opozorilo"
