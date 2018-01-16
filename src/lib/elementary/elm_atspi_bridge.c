@@ -1114,7 +1114,7 @@ _accessible_get_navigable_at_point(const Eldbus_Service_Interface *iface EINA_UN
 
    /* Send deputy */
    _bridge_iter_object_reference_append(bridge, iter, deputy);
-   _bridge_object_register(bridge, deputy);
+   if (deputy) _bridge_object_register(bridge, deputy);
 
    return ret;
 }
@@ -1328,7 +1328,11 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
 
    /* is selected in parent */
    parent = efl_access_parent_get(obj);
-   is_selected = efl_access_selection_is_child_selected(parent, idx);
+   if (efl_isa(parent, EFL_ACCESS_SELECTION_INTERFACE))
+     {
+        is_selected = efl_access_selection_is_child_selected(parent, idx);
+     }
+
    eldbus_message_arguments_append(ret, "b", is_selected);
 
    /* has checkbox child */
