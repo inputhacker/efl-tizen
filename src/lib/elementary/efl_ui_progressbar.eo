@@ -1,5 +1,6 @@
 class Efl.Ui.Progressbar (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Format,
-                          Efl.Ui.Direction, Efl.Access.Value)
+                          Efl.Ui.Direction, Efl.Access.Value,
+                          Efl.Text, Efl.Content)
 {
    [[Elementary progressbar class]]
    methods {
@@ -60,6 +61,9 @@ class Efl.Ui.Progressbar (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Format,
       Efl.Ui.Direction.direction { get; set; }
       Efl.Ui.Format.format_cb { set; }
       Efl.Part.part;
+      Efl.Text.text { get; set; }
+      Efl.Content.content { get; set; }
+      Efl.Content.content_unset;
       Efl.Access.Value.value_and_text { get; }
       //TIZEN_ONLY(20160603): added description_get API
       Efl.Access.description { get; }
