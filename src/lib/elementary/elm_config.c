@@ -181,6 +181,26 @@ static void        _color_overlays_cancel(void);
 #define ELM_CONFIG_LIST(edd, type, member, eddtype) \
   EET_DATA_DESCRIPTOR_ADD_LIST(edd, type, #member, member, eddtype)
 
+/**************************************************************
+ * TIZEN_ONLY_FEATURE: support lazy mount of user data area   *
+ **************************************************************/
+/**
+ * elm_config would access to user home directory to save their info
+ * However, elm_config couldn't accesss to that path because
+ * user data area could not be mounted (lazy mount applied)
+ *
+ * elm_config monitors a file(TIZEN_MOUNT_CHECK_PATH) which is created
+ * after mounting. then if it doesn't exist, elm_config will access to
+ * the fallback path based on TIZEN_UNMOUNT_FALLBACK_BASE_DIR
+ **/
+#define TIZEN_MOUNT_CHECK_PATH eina_environment_home_get()
+#define TIZEN_UNMOUNT_FALLBACK_BASE_DIR "/opt"
+
+typedef size_t (*Elm_Config_Snprintf_Func)(char *dst, size_t size, const char *fmt, ...);
+/*******
+ * END *
+ *******/
+
 static void
 _elm_font_overlays_del_free(void)
 {
@@ -617,6 +637,54 @@ end:
    return off;
 }
 
+/**************************************************************
+ * TIZEN_ONLY_FEATURE: support lazy mount of user data area   *
+ **************************************************************/
+static size_t
+_elm_config_user_fallback_dir(char       *dst,
+                              size_t      size)
+{
+   size_t len = 0, off = 0;
+   len = snprintf(dst + off, size - off, "%s", TIZEN_UNMOUNT_FALLBACK_BASE_DIR);
+   if (len >= size - off) return off ;
+   off += len;
+   len = snprintf(dst + off, size - off, "/%s", ELEMENTARY_BASE_DIR);
+   if (len >= size - off) return off ;
+   off += len;
+#if defined(HAVE_GETUID)
+   len = snprintf(dst + off, size - off, "/%d", getuid());
+   if (len >= size - off) return off ;
+   off += len;
+#endif
+   return off ;
+}
+
+static Eina_Bool
+_user_data_path_mounted()
+{
+   return ecore_file_is_dir(TIZEN_MOUNT_CHECK_PATH);
+}
+
+size_t
+_elm_config_user_fallback_dir_snprintf(char *dst, size_t size, const char *fmt, ...)
+{
+   size_t user_dir_len = 0, off = 0;
+   va_list ap;
+
+   user_dir_len = _elm_config_user_fallback_dir(dst, size);
+   off = user_dir_len + 1;
+   if (off >= size) return off;
+   dst[user_dir_len] = '/';
+   va_start(ap, fmt);
+   off += vsnprintf(dst + off, size - off, fmt, ap);
+   va_end(ap);
+
+   return off;
+}
+/*******
+ * END *
+ *******/
+
 size_t
 _elm_config_user_dir_snprintf(char       *dst,
                               size_t      size,
@@ -627,6 +695,24 @@ _elm_config_user_dir_snprintf(char       *dst,
    va_list ap;
    Efl_Vpath_File *file_obj;
    static int use_xdg_config = -1;
+
+   /**************************************************************
+    * TIZEN_ONLY_FEATURE: support lazy mount of user data area   *
+    **************************************************************/
+   if (!_user_data_path_mounted())
+     {
+        user_dir_len = _elm_config_user_fallback_dir(dst, size);
+        off = user_dir_len + 1;
+        if (off >= size) return off;
+        dst[user_dir_len] = '/';
+        va_start(ap, fmt);
+        off += vsnprintf(dst + off, size - off, fmt, ap);
+        va_end(ap);
+        return off;
+     }
+   /*******
+    * END *
+    *******/
 
    if (use_xdg_config == -1)
      {
@@ -2214,8 +2300,17 @@ err:
    return EINA_FALSE;
 }
 
+/**************************************************************
+ * TIZEN_ONLY_FEATURE: support lazy mount of user data area   *
+ **************************************************************
 Eina_Bool
 _elm_config_save(Elm_Config *cfg, const char *profile)
+ */
+Eina_Bool
+_elm_config_save_internal(Elm_Config *cfg, const char *profile, Elm_Config_Snprintf_Func snprintf_func)
+/*******
+ * END *
+ *******/
 {
    char buf[4096], buf2[4096];
    int ok = 0, ret;
@@ -2223,7 +2318,15 @@ _elm_config_save(Elm_Config *cfg, const char *profile)
    Eet_File *ef;
    size_t len;
 
+   /**************************************************************
+    * TIZEN_ONLY_FEATURE: support lazy mount of user data area   *
+    **************************************************************
    len = _elm_config_user_dir_snprintf(buf, sizeof(buf), "themes/");
+    */
+   len = snprintf_func(buf, sizeof(buf), "themes/");
+   /*******
+    * END *
+    *******/
    if (len + 1 >= sizeof(buf))
      return EINA_FALSE;
 
@@ -2235,8 +2338,17 @@ _elm_config_save(Elm_Config *cfg, const char *profile)
         return EINA_FALSE;
      }
 
+   /**************************************************************
+    * TIZEN_ONLY_FEATURE: support lazy mount of user data area   *
+    **************************************************************
    len = _elm_config_user_dir_snprintf(buf, sizeof(buf), "config/%s",
                                        profile ? profile : _elm_profile);
+    */
+   len = snprintf_func(buf, sizeof(buf), "config/%s",
+                      profile ? profile : _elm_profile);
+   /*******
+    * END *
+    *******/
    if (len + 1 >= sizeof(buf))
      return EINA_FALSE;
 
@@ -2299,6 +2411,23 @@ err:
    ecore_file_unlink(buf2);
    return EINA_FALSE;
 }
+
+/**************************************************************
+ * TIZEN_ONLY_FEATURE: support lazy mount of user data area   *
+ **************************************************************/
+Eina_Bool
+_elm_config_save(Elm_Config *cfg, const char *profile)
+{
+   Eina_Bool ret = EINA_TRUE;
+
+   ret &= _elm_config_save_internal(cfg, profile, _elm_config_user_dir_snprintf);
+   ret &= _elm_config_save_internal(cfg, profile, _elm_config_user_fallback_dir_snprintf);
+
+   return ret;
+}
+/*******
+ * END *
+ *******/
 
 // those widgets changed name over time, breaking key bindings
 typedef struct _Widget_Class_Name_Map {
