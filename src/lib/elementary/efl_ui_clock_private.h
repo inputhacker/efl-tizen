@@ -51,6 +51,12 @@ struct _Efl_Ui_Clock_Module_Data
                                    int *range_max);
    const char  *(*field_format_get)(Evas_Object * obj,
                                     Efl_Ui_Clock_Type field_type);
+   //TIZEN_ONLY(20151218): Support Mobile UX
+   Eina_Bool    (*field_location_get)(Evas_Object *obj,
+                                    Efl_Ui_Clock_Type field_type,
+                                    int *loc);
+   Eina_List   *(*fields_sorted_get)(Evas_Object *obj);
+   //
 };
 
 struct _Clock_Field
@@ -78,6 +84,12 @@ struct _Clock_Mod_Api
    void                      (*field_value_display)(Efl_Ui_Clock_Module_Data
                                                     *mdata,
                                                     Evas_Object *obj);
+   //TIZEN_ONLY(20151218): Support Mobile UX
+   void                      (*field_format_changed)(Efl_Ui_Clock_Module_Data
+                                                     *mdata,
+                                                     Evas_Object *obj);
+   //
+
 };
 
 struct _Efl_Ui_Clock_Data

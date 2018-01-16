@@ -112,6 +112,11 @@ _dt_mod_init()
      _elm_module_symbol_get(mod, "field_create");
    ((Clock_Mod_Api *)(mod->api))->field_value_display =
      _elm_module_symbol_get(mod, "field_value_display");
+   //TIZEN_ONLY(20151218): Support Mobile UX
+   ((Clock_Mod_Api *)(mod->api))->field_format_changed =
+     _elm_module_symbol_get(mod, "field_format_changed");
+   //
+
 
    return mod->api;
 }
@@ -249,6 +254,11 @@ _field_list_arrange(Evas_Object *obj)
 
    freeze = sd->freeze_sizing;
    sd->freeze_sizing = EINA_TRUE;
+
+   //////////////////////////////////////////////////////////////////////////////
+   //TIZEN_ONLY(20150225): Open source datetime code doesn't consider dynamically
+   //                      field sequence changing case.
+   /*
    for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
      {
         field = sd->field_list + idx;
@@ -262,6 +272,26 @@ _field_list_arrange(Evas_Object *obj)
         else
           evas_object_hide(elm_layout_content_unset(obj, buf));
      }
+   */
+   // remove all the content widget from the layout
+   for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
+     {
+        snprintf(buf, sizeof(buf), EDC_PART_FIELD_STR, idx);
+        elm_layout_content_unset(obj, buf);
+     }
+   // set as content widget or hide it depending on location
+   for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
+     {
+        field = sd->field_list + idx;
+        snprintf(buf, sizeof(buf), EDC_PART_FIELD_STR, field->location);
+
+        if (field->visible && field->fmt_exist)
+          elm_layout_content_set(obj, buf, field->item_obj);
+        else
+          evas_object_hide(field->item_obj);
+     }
+   //////////////////////////////////////////////////////////////////////////////
+
    sd->freeze_sizing = freeze;
 
    elm_layout_sizing_eval(obj);
@@ -274,6 +304,9 @@ _parse_format(Evas_Object *obj,
 {
    Eina_Bool fmt_parsing = EINA_FALSE, sep_parsing = EINA_FALSE,
              sep_lookup = EINA_FALSE;
+   //TIZEN_ONLY(20151216) - swap format locations to support some locale.
+   Eina_Bool location_swap = EINA_FALSE;
+   //
    unsigned int len = 0, idx = 0, location = 0;
    char separator[MAX_SEPARATOR_LEN];
    Clock_Field *field = NULL;
@@ -291,6 +324,14 @@ _parse_format(Evas_Object *obj,
                   continue;
                }
              fmt_parsing = EINA_FALSE;
+
+             //TIZEN_ONLY(20151216) - swap format locations to support some locale.
+             if (location == 0 &&
+                 (strchr(mapping[EFL_UI_CLOCK_TYPE_HOUR].fmt_char, cur) ||
+                  strchr(mapping[EFL_UI_CLOCK_TYPE_MINUTE].fmt_char, cur) ||
+                  strchr(mapping[EFL_UI_CLOCK_TYPE_AMPM].fmt_char, cur)))
+               location_swap = EINA_TRUE;
+             //
              for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
                {
                   if (strchr(mapping[idx].fmt_char, cur))
@@ -328,9 +369,50 @@ _parse_format(Evas_Object *obj,
         sep_lookup = EINA_FALSE;
         fmt_ptr++;
      }
+
+   //TIZEN_ONLY(20151216) - swap format locations to support some locale.
+   if (location_swap)
+     {
+        int time_fmt_count;
+
+        time_fmt_count = location - EFL_UI_CLOCK_TYPE_HOUR;
+        for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
+          {
+             field = sd->field_list + idx;
+             /* ignore the fields already disabled
+              * valid formats, means already ignore. */
+             if (field->location == -1) continue;
+             if (idx < EFL_UI_CLOCK_TYPE_HOUR)
+               field->location -= time_fmt_count;
+             else
+               field->location += EFL_UI_CLOCK_TYPE_HOUR;
+          }
+     }
+   //
+
    // return the number of valid fields parsed.
    return location;
 }
+
+// TIZEN_ONLY(20151218): Support Mobile UX
+static void
+_notify_format_change(Evas_Object *obj)
+{
+   Clock_Field *field;
+   unsigned int idx = 0;
+
+   EFL_UI_CLOCK_DATA_GET(obj, sd);
+
+   if (!dt_mod || !dt_mod->field_format_changed) return;
+
+   for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
+     {
+        field = sd->field_list + idx;
+        if (field->item_obj)
+          dt_mod->field_format_changed(sd->mod_data, field->item_obj);
+     }
+}
+//
 
 static void
 _reload_format(Evas_Object *obj)
@@ -406,6 +488,10 @@ _reload_format(Evas_Object *obj)
 
    edje_object_message_signal_process(wd->resize_obj);
    _field_list_arrange(obj);
+
+   //TIZEN_ONLY(20151218): Support Mobile UX
+   _notify_format_change(obj);
+   //
 }
 
 EOLIAN static void
@@ -771,6 +857,50 @@ _field_list_init(Evas_Object *obj)
      }
 }
 
+//TIZEN_ONLY(20151218): Support Mobile UX
+static Eina_Bool
+_field_location_get(Evas_Object *obj, Efl_Ui_Clock_Type field_type,
+                    int *loc)
+{
+   Clock_Field *field;
+
+   EFL_UI_CLOCK_DATA_GET(obj, sd);
+
+   field = sd->field_list + field_type;
+   if (!field) return EINA_FALSE;
+
+   if (loc) *loc = field->location;
+
+   return (field->fmt_exist && field->visible);
+}
+
+static Eina_List *
+_fields_sorted_get(Evas_Object *obj)
+{
+   Eina_List *items = NULL;
+   Clock_Field *field;
+   unsigned int idx;
+   Clock_Field *sorted_fields[EFL_UI_CLOCK_TYPE_COUNT];
+
+   EFL_UI_CLOCK_DATA_GET(obj, sd);
+
+   for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
+     {
+        field = sd->field_list + idx;
+        sorted_fields[field->location] = field;
+     }
+
+   for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
+     {
+        field = sorted_fields[idx];
+        if (field->fmt_exist && field->visible)
+          items = eina_list_append(items, field->item_obj);
+     }
+
+   return items;
+}
+//
+
 static char *
 _access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
 {
@@ -856,6 +986,10 @@ _efl_ui_clock_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Clock_Data *priv)
                   priv->mod_data->base = obj;
                   priv->mod_data->field_limit_get = _field_limit_get;
                   priv->mod_data->field_format_get = _field_format_get;
+                  //TIZEN_ONLY(20151218): Support Mobile UX
+                  priv->mod_data->field_location_get = _field_location_get;
+                  priv->mod_data->fields_sorted_get = _fields_sorted_get;
+                  //
                }
           }
 
