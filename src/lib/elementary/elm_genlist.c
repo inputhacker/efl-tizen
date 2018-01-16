@@ -285,7 +285,7 @@ _elm_genlist_pan_elm_pan_content_size_get(Eo *obj EINA_UNUSED, Elm_Genlist_Pan_D
 
 //Tizen Only(20170113)
 EOLIAN static void
-_elm_genlist_pan_elm_pan_pos_adjust(Eo *obj EINA_UNUSED, Elm_Genlist_Pan_Data *psd EINA_UNUSED, Evas_Coord *x EINA_UNUSED, Evas_Coord *y EINA_UNUSED)
+_elm_genlist_pan_elm_pan_pos_adjust(Eo *obj EINA_UNUSED, Elm_Genlist_Pan_Data *psd EINA_UNUSED, int *x EINA_UNUSED, int *y EINA_UNUSED)
 {
    return;
 }

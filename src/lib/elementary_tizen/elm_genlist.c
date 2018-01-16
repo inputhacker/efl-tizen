@@ -509,7 +509,7 @@ _adjust_item_align(Elm_Gen_Item *it)
 }
 
 EOLIAN static void
-_elm_genlist_pan_elm_pan_pos_adjust(Eo *obj EINA_UNUSED, Elm_Genlist_Pan_Data *psd, Evas_Coord *x EINA_UNUSED, Evas_Coord *y)
+_elm_genlist_pan_elm_pan_pos_adjust(Eo *obj EINA_UNUSED, Elm_Genlist_Pan_Data *psd, int *x EINA_UNUSED, int *y)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(psd->wobj, wd);
    Elm_Genlist_Data *sd = psd->wsd;

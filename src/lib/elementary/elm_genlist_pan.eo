@@ -14,6 +14,7 @@ class Elm.Genlist.Pan (Elm.Pan)
       Elm.Pan.pos { get; set; }
       Elm.Pan.pos_min { get; }
       Elm.Pan.pos_max { get; }
+      Elm.Pan.pos_adjust;
    }
    events {
       item,focused; [[Called when item got focus]]
