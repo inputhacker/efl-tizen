@@ -4593,6 +4593,9 @@ _elm_config_reload(void)
    _elm_config->translate = translate;
 
    _config_apply();
+   /* TIZEN_ONLY(20170105): reinitialize fontconfig for checking newly installed font */
+   evas_font_reinit();
+   /* END */
    _elm_config_font_overlay_apply();
    _elm_config_color_overlay_apply();
 #define CMP(x) (p##x != _elm_config->x)
