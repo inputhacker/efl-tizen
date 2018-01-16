@@ -1,3 +1,9 @@
+/**
+ * @defgroup Elm_Interface_Atspi_Accessible Atspi Accessible
+ * @ingroup elm_accessibility_group
+ * @{
+ */
+
 typedef Eo Elm_Interface_Atspi_Accessible;
 
 enum _Elm_Atspi_Role
@@ -790,3 +796,7 @@ EAPI void elm_atspi_accessible_relationships_clear(Elm_Interface_Atspi_Accessibl
 EAPI void elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_State_Set state_types_mask, Eina_Bool recursive);
 
 #include "efl_access.eo.legacy.h"
+
+/**
+ * @}
+ */

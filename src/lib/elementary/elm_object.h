@@ -199,7 +199,7 @@ EAPI const char *elm_object_access_info_get(Evas_Object *obj);
  * @param obj The object
  * @param part The object's part name to register
  *
- * @ingroup General
+ * @ingroup Elm_General
  *
  * @if WEARABLE @since_tizen 3.0
  * @endif

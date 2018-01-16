@@ -6,7 +6,19 @@
 #include "elm_atspi_bridge.eo.legacy.h"
 #endif
 #endif
+/**
+ * @defgroup Elm_Atspi_Bridge Atspi Bridge
+ * @ingroup elm_accessibility_group
+ */
 //TIZEN_ONLY(20160527) - Add direct reading feature
+/**
+ * This callback type is used to provide reading status information.
+ * @param data The data specified as the last param when setting this callback
+ * @param say_signal The signal decribes reading status information
+ * @see elm_atspi_bridge_utils_say
+ * @ingroup Elm_Atspi_Bridge
+ * @if MOBILE @since_tizen 4.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ */
 typedef void (*Elm_Atspi_Say_Signal_Cb)(void *data, const char *say_signal);
 /**
  * @brief Reads given text by screen reader
@@ -23,7 +35,7 @@ typedef void (*Elm_Atspi_Say_Signal_Cb)(void *data, const char *say_signal);
  * “ReadingSkipped”
  * @param data The user data to be passed to the callback function
  *
- * @ingoup Elm_Atspi_Bridge
+ * @ingroup Elm_Atspi_Bridge
  *
  * @if WEARABLE @since_tizen 3.0
  * @endif
@@ -34,8 +46,9 @@ EAPI void elm_atspi_bridge_utils_say(const char* text,
                                      const void *data);
 //
 //TIZEN_ONLY(20161027) - Export elm_atspi_bridge_utils_is_screen_reader_enabled
-/** Determines if screen reader is enabled
- *
+/**
+ * @internal
+ * Determines if screen reader is enabled
  * @ingroup Elm_Atspi_Bridge
  */
 EAPI Eina_Bool elm_atspi_bridge_utils_is_screen_reader_enabled(void);

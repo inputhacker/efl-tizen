@@ -1,5 +1,28 @@
 /**
- * @page elementary_main
+ * @defgroup Elementary Elementary
+ * @ingroup EFL
+ *
+ * @brief Elementary provide a VERY SIMPLE Toolkit.
+ *
+ * See @ref Elementary for more details.
+ *
+ * @defgroup elm_infra_group Elementary Infrastructure
+ * @ingroup Elementary
+ * @brief This contains infrastructure modules that facilitate the use of widgets.
+ *
+ * @defgroup elm_accessibility_group Accessibility
+ * @ingroup elm_infra_group
+ *
+ * @defgroup elm_container_group Elementary Containers
+ * @ingroup Elementary
+ * @brief Elementary is about displaying its widgets in a nice layout, for this
+ *        purpose it provides a number of containers.
+ *
+ * @defgroup elm_widget_group Elementary Widgets
+ * @ingroup Elementary
+ * @brief This contains basic elementary widgets.
+ *
+ * @page Elementary
  * @image html  elementary.png
  * @version @VMAJ@.@VMIN@.@VMIC@
  * @date 2008-2014

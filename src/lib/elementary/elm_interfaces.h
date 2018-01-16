@@ -27,7 +27,15 @@
 //#ifdef EFL_BETA_API_SUPPORT
 //
 #include "efl_access_action.eo.legacy.h"
+/**
+ * @defgroup Elm_Interface_Atspi_Component Atspi Component
+ * @ingroup elm_accessibility_group
+ * @{
+ */
 #include "efl_access_component.eo.legacy.h"
+/**
+ * @}
+ */
 #include "efl_access_editable_text.eo.legacy.h"
 #include "efl_access_image.eo.legacy.h"
 #include "efl_access_selection.eo.legacy.h"
