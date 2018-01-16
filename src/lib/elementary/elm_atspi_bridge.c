@@ -999,9 +999,12 @@ _accessible_get_neighbor(const Eldbus_Service_Interface *iface EINA_UNUSED, cons
    Eo *root = _bridge_object_from_path(bridge, root_path);
 
    // TIZEN_ONLY(20161213) - do not response if ecore evas is obscured
-   const Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(root));
-   if (ecore_evas_obscured_get(ee))
-     return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "ecore evas is obscured.");
+   if (root)
+     {
+        const Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(root));
+        if (ecore_evas_obscured_get(ee))
+          return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "ecore evas is obscured.");
+     }
    //
 
    ret = eldbus_message_method_return_new(msg);
@@ -1064,6 +1067,41 @@ _accessible_get_navigable_at_point(const Eldbus_Service_Interface *iface EINA_UN
 
    Eina_Bool type = coord_type == ATSPI_COORD_TYPE_SCREEN ? EINA_TRUE : EINA_FALSE;
    Eo *accessible = _calculate_navigable_accessible_at_point(bridge, obj, type, x, y);
+
+   /* Check deputy */
+   Eo *deputy = NULL;
+   if (accessible && efl_isa(accessible, ELM_ACCESS_CLASS))
+     {
+        Evas_Object *parent = elm_widget_parent_get(accessible);
+
+        Elm_Widget_Smart_Data *wd;
+        wd = efl_data_scope_get(parent, EFL_UI_WIDGET_CLASS);
+        if (wd)
+          {
+             Eina_List *l;
+             Evas_Object *widget;
+
+             EINA_LIST_FOREACH(wd->subobjs, l, widget)
+               {
+                  Eo *proxy;
+
+                  proxy = evas_object_data_get(widget, "__widget_proxy");
+                  if (proxy)
+                    {
+                       int px, py, pw, ph;
+                       evas_object_geometry_get(widget, &px, &py, &pw, &ph);
+                       if (x >= px && x <= px + pw && y >= py && y <= py +ph)
+                         {
+                            /* proxy is also selectable */
+                            deputy = accessible;
+                            accessible = proxy;
+                            break;
+                         }
+                    }
+               }
+          }
+     }
+
    _bridge_iter_object_reference_append(bridge, iter, accessible);
    _bridge_object_register(bridge, accessible);
 
@@ -1073,6 +1111,11 @@ _accessible_get_navigable_at_point(const Eldbus_Service_Interface *iface EINA_UN
 
    unsigned char recurse = obj_bus_name && ret_bus_name && strcmp(obj_bus_name, ret_bus_name) != 0;
    eldbus_message_iter_basic_append(iter, 'y', recurse);
+
+   /* Send deputy */
+   _bridge_iter_object_reference_append(bridge, iter, deputy);
+   _bridge_object_register(bridge, deputy);
+
    return ret;
 }
 //
@@ -1417,7 +1460,7 @@ _accessible_default_label_info_get(const Eldbus_Service_Interface *iface, const 
 
 static const Eldbus_Method accessible_methods[] = {
    // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
-   { "GetNavigableAtPoint", ELDBUS_ARGS({"i", "x"}, {"i", "y"}, {"u", "coord_type"}), ELDBUS_ARGS({"(so)", "accessible"}), _accessible_get_navigable_at_point, 0 },
+   { "GetNavigableAtPoint", ELDBUS_ARGS({"i", "x"}, {"i", "y"}, {"u", "coord_type"}), ELDBUS_ARGS({"(so)y", "accessible"}, {"(so)", "deputy"}), _accessible_get_navigable_at_point, 0 },
    { "GetNeighbor", ELDBUS_ARGS({"s", "current"}, {"i", "direction"}, {"i", "force_next"}), ELDBUS_ARGS({"(so)y", "accessible"}), _accessible_get_neighbor, 0 },
    //
    { "GetChildAtIndex", ELDBUS_ARGS({"i", "index"}), ELDBUS_ARGS({"(so)", "Accessible"}), _accessible_child_at_index, 0 },
