@@ -33,6 +33,11 @@ static const char MONTH_ACCESS_PART[] = "month_text.access";
 static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,changed";
 //
 
+//TIZEN_ONLY(20170322): Using icu lib to support languages which not support
+//                      in strftime().
+static Calendar_Mod_Api *cal_mod = NULL;
+//
+
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_CHANGED, ""},
    {SIG_DISPLAY_CHANGED, ""},
@@ -92,10 +97,99 @@ _button_widget_year_dec_start(void *data,
                               Evas_Object *obj EINA_UNUSED,
                               void *event_info EINA_UNUSED);
 
+//TIZEN_ONLY(20170322): Using icu lib to support languages which not support
+//                      in strftime().
+static Calendar_Mod_Api *
+_cal_mod_init()
+{
+   Elm_Module *mod = NULL;
+
+   if (!(mod = _elm_module_find_as("calendar/api"))) return NULL;
+
+   mod->api = malloc(sizeof(Calendar_Mod_Api));
+   if (!mod->api) return NULL;
+
+   ((Calendar_Mod_Api *)(mod->api))->string_get =
+     _elm_module_symbol_get(mod, "string_get");
+
+   return mod->api;
+}
+
+static Eina_Tmpstr *
+_eina_tmpstr_strftime(const char *format, struct tm *tm)
+{
+   const size_t flen = strlen(format);
+   size_t buflen = 16; // An arbitrary starting size
+   char *buf = NULL;
+
+#ifndef HAVE_ELEMENTARY_WIN32
+#ifndef HAVE_ELEMENTARY_COCOA
+#ifdef ENABLE_NLS
+   if (cal_mod && cal_mod->string_get)
+     buf = cal_mod->string_get(format, tm);
+
+   if (buf)
+     {
+        size_t len;
+        Eina_Tmpstr *r;
+
+        len = strlen(buf);
+
+        r = eina_tmpstr_add_length(buf, len + 1);
+        free(buf);
+        return r;
+     }
+#endif
+#endif
+#endif
+
+   do {
+      char *tmp;
+      size_t len;
+
+      tmp = realloc(buf, buflen * sizeof(char));
+      if (!tmp) goto on_error;
+      buf = tmp;
+
+      len = strftime(buf, buflen, format, tm);
+      // Check if we have the expected result and return it.
+      if ((len > 0 && len < buflen) || (len == 0 && flen == 0))
+        {
+           Eina_Tmpstr *r;
+
+           r = eina_tmpstr_add_length(buf, len + 1);
+           free(buf);
+           return r;
+        }
+
+      /* Possibly buf overflowed - try again with a bigger buffer */
+      buflen <<= 1; // multiply buffer size by 2
+   } while (buflen < 128 * flen);
+
+ on_error:
+   free(buf);
+   return NULL;
+}
+
+static char *
+_eina_tmpstr_steal(Eina_Tmpstr *s)
+{
+   char *r = s ? strdup(s) : NULL;
+   eina_tmpstr_del(s);
+   return r;
+}
+//
+
 static Eina_Bool _key_action_activate(Evas_Object *obj, const char *params);
+//TIZEN_ONLY(20161123): Support Focused UI.
+static Eina_Bool _key_action_move(Evas_Object *obj, const char *params);
+//
 
 static const Elm_Action key_actions[] = {
    {"activate", _key_action_activate},
+   //TIZEN_ONLY(20161123): Support Focused UI.
+   {"move", _key_action_move},
+   //
    {NULL, NULL}
 };
 
@@ -186,7 +280,10 @@ _select(Evas_Object *obj,
 
    ELM_CALENDAR_DATA_GET(obj, sd);
 
+   //TIZEN_ONLY(20161123): Support Focused UI.
+   //sd->selected_it = selected;
    sd->focused_it = sd->selected_it = selected;
+   //
    snprintf(emission, sizeof(emission), "cit_%i,selected", selected);
    elm_layout_signal_emit(obj, emission, "elm");
 }
@@ -220,6 +317,7 @@ _enable(Elm_Calendar_Data *sd,
 
    snprintf(emission, sizeof(emission), "cit_%i,enable", it);
    elm_layout_signal_emit(sd->obj, emission, "elm");
+   sd->today_it = it;
 }
 
 static inline void
@@ -230,24 +328,34 @@ _disable(Elm_Calendar_Data *sd,
 
    snprintf(emission, sizeof(emission), "cit_%i,disable", it);
    elm_layout_signal_emit(sd->obj, emission, "elm");
+   sd->today_it = it;
 }
 
 static char *
 _format_month_year(struct tm *selected_time)
 {
-   return eina_strftime(E_("%B %Y"), selected_time);
+   //TIZEN_ONLY(20170322): Using icu lib to support languages which not support in strftime().
+   return _eina_tmpstr_steal(_eina_tmpstr_strftime(E_("%B %Y"), selected_time));
+   //return eina_strftime(E_("%B %Y"), selected_time);
+   //
 }
 
 static char *
 _format_month(struct tm *selected_time)
 {
-   return eina_strftime(E_("%B"), selected_time);
+   //TIZEN_ONLY(20170322): Using icu lib to support languages which not support in strftime().
+   return _eina_tmpstr_steal(_eina_tmpstr_strftime(E_("%B"), selected_time));
+   //return eina_strftime(E_("%B"), selected_time);
+   //
 }
 
 static char *
 _format_year(struct tm *selected_time)
 {
-   return eina_strftime(E_("%Y"), selected_time);
+   //TIZEN_ONLY(20170322): Using icu lib to support languages which not support in strftime().
+   return _eina_tmpstr_steal(_eina_tmpstr_strftime(E_("%Y"), selected_time));
+   //return eina_strftime(E_("%Y"), selected_time);
+   //
 }
 
 static inline void
@@ -553,6 +661,7 @@ _atspi_expose_objects(Evas_Object *obj, Eina_Bool is_atspi)
           }
      }
 }
+//
 
 static void
 _populate(Evas_Object *obj)
@@ -807,12 +916,19 @@ _set_headers(Evas_Object *obj)
         t->tm_wday = 0;
         for (i = 0; i < ELM_DAY_LAST; i++)
           {
-             char *buf;
-             buf = eina_strftime("%a", t);
+             //TIZEN_ONLY(20170517): To use ICU get name of days.
+             Eina_Tmpstr *buf;
+             buf = _eina_tmpstr_strftime("%a", t);
+             //char *buf;
+             //buf = eina_strftime("%a", t);
+             //
              if (buf)
                {
                   sd->weekdays[i] = eina_stringshare_add(buf);
-                  free(buf);
+                  //TIZEN_ONLY(20170517): To use ICU get name of days.
+                  eina_tmpstr_del(buf);
+                  //free(buf);
+                  //
                }
              else
                {
@@ -859,6 +975,9 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
         if (!sd->dec_btn_month)
           {
              sd->dec_btn_month = elm_button_add(obj);
+             //TIZEN_ONLY(20161123): Support Focused UI.
+             elm_widget_can_focus_set(sd->dec_btn_month, EINA_TRUE);
+             //
              elm_button_autorepeat_set(sd->dec_btn_month, EINA_TRUE);
              elm_button_autorepeat_initial_timeout_set(sd->dec_btn_month, 0.5);
              elm_button_autorepeat_gap_timeout_set(sd->dec_btn_month, 0.2);
@@ -895,6 +1014,9 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
         if (!sd->inc_btn_month)
           {
              sd->inc_btn_month = elm_button_add(obj);
+             //TIZEN_ONLY(20161123): Support Focused UI.
+             elm_widget_can_focus_set(sd->inc_btn_month, EINA_TRUE);
+             //
              elm_button_autorepeat_set(sd->inc_btn_month, EINA_TRUE);
              elm_button_autorepeat_initial_timeout_set(sd->inc_btn_month, 0.5);
              elm_button_autorepeat_gap_timeout_set(sd->inc_btn_month, 0.2);
@@ -931,6 +1053,9 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
         if (!sd->dec_btn_year)
           {
              sd->dec_btn_year = elm_button_add(obj);
+             //TIZEN_ONLY(20161123): Support Focused UI.
+             elm_widget_can_focus_set(sd->dec_btn_year, EINA_TRUE);
+             //
              elm_button_autorepeat_set(sd->dec_btn_year, EINA_TRUE);
              elm_button_autorepeat_initial_timeout_set(sd->dec_btn_year, 0.5);
              elm_button_autorepeat_gap_timeout_set(sd->dec_btn_year, 0.2);
@@ -967,6 +1092,9 @@ _spinner_buttons_add(Evas_Object *obj, Elm_Calendar_Data *sd)
         if (!sd->inc_btn_year)
           {
              sd->inc_btn_year = elm_button_add(obj);
+             //TIZEN_ONLY(20161123): Support Focused UI.
+             elm_widget_can_focus_set(sd->inc_btn_year, EINA_TRUE);
+             //
              elm_button_autorepeat_set(sd->inc_btn_year, EINA_TRUE);
              elm_button_autorepeat_initial_timeout_set(sd->inc_btn_year, 0.5);
              elm_button_autorepeat_gap_timeout_set(sd->inc_btn_year, 0.2);
@@ -1519,6 +1647,241 @@ _key_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
    return EINA_TRUE;
 }
 
+//TIZEN_ONLY(20161123): Support Focused UI.
+static Eina_Bool
+_key_action_move(Evas_Object *obj, const char *params)
+{
+   ELM_CALENDAR_DATA_GET(obj, sd);
+   const char *dir = params;
+   Eina_Bool ret;
+
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
+
+   _elm_widget_focus_auto_show(obj);
+   if (!strcmp(dir, "prior"))
+     {
+        if (_update_data(obj, EINA_TRUE, -1)) _populate(obj);
+     }
+   else if (!strcmp(dir, "next"))
+     {
+        if (_update_data(obj, EINA_TRUE, 1)) _populate(obj);
+     }
+   else if ((sd->select_mode != ELM_CALENDAR_SELECT_MODE_NONE)
+            && ((sd->select_mode != ELM_CALENDAR_SELECT_MODE_ONDEMAND)
+                || (sd->selected)))
+     {
+        if (!strcmp(dir, "left"))
+          {
+             if ((sd->select_mode != ELM_CALENDAR_SELECT_MODE_ONDEMAND)
+                 || ((sd->shown_time.tm_year == sd->selected_time.tm_year)
+                     && (sd->shown_time.tm_mon == sd->selected_time.tm_mon)))
+               {
+                  //Double spinner case.
+                  if (edje_object_part_exists(wd->resize_obj, ELM_CALENDAR_BUTTON_YEAR_RIGHT))
+                    {
+                       if (elm_object_focus_get(sd->inc_btn_year))
+                         {
+                            elm_object_focus_set(sd->dec_btn_year, EINA_TRUE);
+                            return EINA_TRUE;
+                         }
+                       else if (elm_object_focus_get(sd->dec_btn_year))
+                         {
+                            elm_object_focus_set(sd->inc_btn_month, EINA_TRUE);
+                            return EINA_TRUE;
+                         }
+                    }
+
+                  //Give focus to dec_btn_month when left key down on the inc_btn_month.
+                  //Leave focus, if key down on dec_btn_month.
+                  if (elm_object_focus_get(sd->inc_btn_month))
+                    {
+                       elm_object_focus_set(sd->dec_btn_month, EINA_TRUE);
+                       return EINA_TRUE;
+                    }
+                  else if (elm_object_focus_get(sd->dec_btn_month)) return EINA_FALSE;
+
+                  //If key move from the left edge of the calendar,
+                  //Leave the focus policy on window.
+                  if (sd->focused_it % ELM_DAY_LAST == 0)
+                    return EINA_FALSE;
+
+                  //Focus on the day before the day.
+                  ret = _update_focused_it(obj, sd->focused_it - 1);
+                  if (!ret) return EINA_FALSE;
+               }
+          }
+        else if (!strcmp(dir, "right"))
+          {
+             if ((sd->select_mode != ELM_CALENDAR_SELECT_MODE_ONDEMAND)
+                 || ((sd->shown_time.tm_year == sd->selected_time.tm_year)
+                     && (sd->shown_time.tm_mon == sd->selected_time.tm_mon)))
+               {
+                  //Double spinner case.
+                  if (edje_object_part_exists(wd->resize_obj, ELM_CALENDAR_BUTTON_YEAR_RIGHT))
+                    {
+                       if (elm_object_focus_get(sd->inc_btn_year)) return EINA_FALSE;
+                       else if (elm_object_focus_get(sd->dec_btn_year))
+                         {
+                            elm_object_focus_set(sd->inc_btn_year, EINA_TRUE);
+                            return EINA_TRUE;
+                         }
+                       else if (elm_object_focus_get(sd->inc_btn_month))
+                         {
+                            elm_object_focus_set(sd->dec_btn_year, EINA_TRUE);
+                            return EINA_TRUE;
+                         }
+                    }
+
+                  //Give focus to inc_btn_month when right key down on the dec_btn_month.
+                  if (elm_object_focus_get(sd->dec_btn_month))
+                    {
+                       elm_object_focus_set(sd->inc_btn_month, EINA_TRUE);
+                       return EINA_TRUE;
+                    }
+                  else if (elm_object_focus_get(sd->inc_btn_month)) return EINA_FALSE;
+
+                  //If key move from the right edge of the calendar,
+                  //Leave the focus policy on window.
+                  if (sd->focused_it % ELM_DAY_LAST == ELM_DAY_LAST - 1)
+                    return EINA_FALSE;
+
+                  //Focus on the day after the day.
+                  ret = _update_focused_it(obj, sd->focused_it + 1);
+                  if (!ret) return EINA_FALSE;
+               }
+          }
+        else if (!strcmp(dir, "up"))
+          {
+             if ((sd->select_mode != ELM_CALENDAR_SELECT_MODE_ONDEMAND)
+                 || ((sd->shown_time.tm_year == sd->selected_time.tm_year)
+                     && (sd->shown_time.tm_mon == sd->selected_time.tm_mon)))
+               {
+                  //double spinner case.
+                  if (edje_object_part_exists(wd->resize_obj, ELM_CALENDAR_BUTTON_YEAR_RIGHT))
+                    {
+                       if (elm_object_focus_get(sd->inc_btn_year))
+                         {
+                            elm_object_focus_set(sd->inc_btn_year, EINA_FALSE);
+                            return EINA_FALSE;
+                         }
+                       else if (elm_object_focus_get(sd->dec_btn_year))
+                         {
+                            elm_object_focus_set(sd->dec_btn_year, EINA_FALSE);
+                            return EINA_FALSE;
+                         }
+                    }
+
+                  //If the dec_btn_month, or inc_btn_month has focus.
+                  //Focus unset and leave the focus policy on window.
+                  if (elm_object_focus_get(sd->dec_btn_month))
+                    {
+                       elm_object_focus_set(sd->dec_btn_month, EINA_FALSE);
+                       return EINA_FALSE;
+                    }
+                  else if (elm_object_focus_get(sd->inc_btn_month))
+                    {
+                       elm_object_focus_set(sd->inc_btn_month, EINA_FALSE);
+                       return EINA_FALSE;
+                    }
+
+                  //If the focus item is the first week of month.
+                  if (sd->focused_it >= 0 && sd->focused_it < ELM_DAY_LAST)
+                    {
+                       //Give focus to inc_btn_month(right side located button)
+                       //If the focused item is smaller than 4.
+                       //Otherwise, give focus to dec_btn_month.
+                       if (sd->focused_it > (ELM_DAY_LAST / 2))
+                         //Double spinner case.
+                         if (edje_object_part_exists(wd->resize_obj, ELM_CALENDAR_BUTTON_YEAR_RIGHT))
+                           elm_object_focus_set(sd->inc_btn_year, EINA_TRUE);
+                         else
+                           elm_object_focus_set(sd->inc_btn_month, EINA_TRUE);
+                       else
+                         elm_object_focus_set(sd->dec_btn_month, EINA_TRUE);
+
+                       _update_unfocused_it(obj, sd->focused_it);
+                       return EINA_TRUE;
+                    }
+
+                  //Focus on the last week day.
+                  ret = _update_focused_it(obj, sd->focused_it - ELM_DAY_LAST);
+                  if (!ret)
+                    {
+                       //If focused day is not available(not belongs to current month)
+                       //Take a focus from item and give the focus to suitable button.
+                       if (sd->focused_it >= ELM_DAY_LAST && sd->focused_it < (ELM_DAY_LAST * 2))
+                         {
+                            if (sd->focused_it > (ELM_DAY_LAST + (ELM_DAY_LAST / 2)))
+                              //Double spinner case.
+                              if (edje_object_part_exists(wd->resize_obj, ELM_CALENDAR_BUTTON_YEAR_RIGHT))
+                                elm_object_focus_set(sd->inc_btn_year, EINA_TRUE);
+                              else
+                                elm_object_focus_set(sd->inc_btn_month, EINA_TRUE);
+                            else
+                              elm_object_focus_set(sd->dec_btn_month, EINA_TRUE);
+
+                            _update_unfocused_it(obj, sd->focused_it);
+                            return EINA_TRUE;
+                         }
+                    }
+               }
+          }
+        else if (!strcmp(dir, "down"))
+          {
+             if ((sd->select_mode != ELM_CALENDAR_SELECT_MODE_ONDEMAND)
+                 || ((sd->shown_time.tm_year == sd->selected_time.tm_year)
+                     && (sd->shown_time.tm_mon == sd->selected_time.tm_mon)))
+               {
+                  //double spinner case.
+                  if (edje_object_part_exists(wd->resize_obj, ELM_CALENDAR_BUTTON_YEAR_RIGHT))
+                    {
+                       if (elm_object_focus_get(sd->inc_btn_year))
+                         {
+                            elm_object_focus_set(sd->inc_btn_year, EINA_FALSE);
+                            evas_object_focus_set(obj, EINA_TRUE);
+                            _update_focused_it(obj, (ELM_DAY_LAST - 1));
+                            return EINA_TRUE;
+                         }
+                       else if (elm_object_focus_get(sd->dec_btn_year))
+                         {
+                            elm_object_focus_set(sd->dec_btn_year, EINA_FALSE);
+                            evas_object_focus_set(obj, EINA_TRUE);
+                            _update_focused_it(obj, sd->first_day_it);
+                            return EINA_TRUE;
+                         }
+                    }
+
+                  //If the XXX_btn_month has focus.
+                  //Set as false to button focus and give to focus to first item of the calendar.
+                  //Otherwise, Give the focus to last day of first week of calendar.
+                  if (elm_object_focus_get(sd->dec_btn_month))
+                    {
+                       elm_object_focus_set(sd->dec_btn_month, EINA_FALSE);
+                       evas_object_focus_set(obj, EINA_TRUE);
+                       _update_focused_it(obj, sd->first_day_it);
+                       return EINA_TRUE;
+                    }
+                  else if(elm_object_focus_get(sd->inc_btn_month))
+                    {
+                       elm_object_focus_set(sd->inc_btn_month, EINA_FALSE);
+                       evas_object_focus_set(obj, EINA_TRUE);
+                       _update_focused_it(obj, (ELM_DAY_LAST - 1));
+                       return EINA_TRUE;
+                    }
+
+                  //Focus on the next week day.
+                  ret = _update_focused_it(obj, sd->focused_it + ELM_DAY_LAST);
+                  if (!ret) return EINA_FALSE;
+               }
+          }
+        else return EINA_FALSE;
+     }
+   else return EINA_FALSE;
+
+   return EINA_TRUE;
+}
+//
+
 EOLIAN static Eina_Bool
 _elm_calendar_efl_ui_widget_on_focus_update(Eo *obj, Elm_Calendar_Data *sd, Elm_Object_Item *item EINA_UNUSED)
 {
@@ -1610,6 +1973,11 @@ _elm_calendar_efl_canvas_group_group_add(Eo *obj, Elm_Calendar_Data *priv)
    edje_object_signal_callback_add
       (wd->resize_obj, "load", "*",
        _style_changed, obj);
+
+   //TIZEN_ONLY(20170322): Using icu lib to support languages which not support
+   //                      in strftime().
+   if (!cal_mod) cal_mod = _cal_mod_init();
+   //
 
    current_time = time(NULL);
    localtime_r(&current_time, &priv->shown_time);

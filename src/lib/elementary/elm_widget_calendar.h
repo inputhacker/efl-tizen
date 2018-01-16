@@ -25,6 +25,11 @@
  */
 typedef struct _Elm_Calendar_Data Elm_Calendar_Data;
 
+//TIZEN_ONLY(20170322): Using icu lib to support languages which not support
+//                      in strftime().
+typedef struct _Calendar_Mod_Api  Calendar_Mod_Api;
+//
+
 typedef enum _Day_Color // EINA_DEPRECATED
 {
    DAY_WEEKDAY = 0,
@@ -65,6 +70,15 @@ struct _Elm_Calendar_Data
    Eina_Bool                month_repeated : 1;
    Eina_Bool                year_repeated : 1;
 };
+
+//TIZEN_ONLY(20170322): Using icu lib to support languages which not support
+//                      in strftime().
+struct _Calendar_Mod_Api
+{
+   char                    *(*string_get)(const char *format, struct tm *tm);
+};
+//
+
 
 struct _Elm_Calendar_Mark
 {
