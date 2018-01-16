@@ -104,7 +104,8 @@ mixin Efl.Access.Component ()
          [[ Highlights accessible widget.
          returns true if highlight grab has successed, false otherwise.
 
-           \@if WEARABLE \@since_tizen 3.0
+           \@if MOBILE \@since_tizen 4.0
+           \@elseif WEARABLE \@since_tizen 3.0
            \@endif
          ]]
          //TIZEN_ONLY(20160721): atspi: provide highlight legacy API
@@ -116,7 +117,8 @@ mixin Efl.Access.Component ()
          [[ Clears highlight of accessible widget.
          returns true if clear has successed, false otherwise.
 
-           \@if WEARABLE \@since_tizen 3.0
+           \@if MOBILE \@since_tizen 4.0
+           \@elseif WEARABLE \@since_tizen 3.0
            \@endif
          ]]
          //TIZEN_ONLY(20160721): atspi: provide highlight legacy API

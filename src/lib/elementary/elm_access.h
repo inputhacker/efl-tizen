@@ -105,13 +105,14 @@ typedef void (*Elm_Access_Activate_Cb)(void *data, Evas_Object *part_obj, Elm_Ob
  * @brief Register evas object as an accessible object.
  * @since 1.8
  *
- * @param obj The evas object to register as an accessible object.
+ * @param obj The evas object to register as an accessible object
  * @param parent The elementary object which is used for creating
- * accessible object.
+ * accessible object
  *
  * @ingroup Access
  *
- * @if WEARABLE @since_tizen 3.0
+ * @if MOBILE @since_tizen 4.0
+ * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
 EAPI Evas_Object *elm_access_object_register(Evas_Object *obj, Evas_Object *parent);
@@ -120,11 +121,12 @@ EAPI Evas_Object *elm_access_object_register(Evas_Object *obj, Evas_Object *pare
  * @brief Unregister accessible object.
  * @since 1.8
  *
- * @param obj The Evas object to unregister accessible object.
+ * @param obj The Evas object to unregister accessible object
  *
  * @ingroup Access
  *
- * @if WEARABLE @since_tizen 3.0
+ * @if MOBILE @since_tizen 4.0
+ * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
 EAPI void elm_access_object_unregister(Evas_Object *obj);
@@ -133,12 +135,13 @@ EAPI void elm_access_object_unregister(Evas_Object *obj);
  * @brief Get an accessible object of the evas object.
  * @since 1.8
  *
- * @param obj The evas object.
+ * @param obj The evas object
  * @return Accessible object of the evas object or NULL for any error
  *
  * @ingroup Access
  *
- * @if WEARABLE @since_tizen 3.0
+ * @if MOBILE @since_tizen 4.0
+ * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
 EAPI Evas_Object *elm_access_object_get(const Evas_Object *obj);

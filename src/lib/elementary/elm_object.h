@@ -201,7 +201,8 @@ EAPI const char *elm_object_access_info_get(Evas_Object *obj);
  *
  * @ingroup Elm_General
  *
- * @if WEARABLE @since_tizen 3.0
+ * @if MOBILE @since_tizen 4.0
+ * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
 EAPI Evas_Object *elm_object_part_access_register(Evas_Object *obj, const char *part);
@@ -216,7 +217,8 @@ EAPI Evas_Object *elm_object_part_access_register(Evas_Object *obj, const char *
  *
  * @ingroup General
  *
- * @if WEARABLE @since_tizen 3.0
+ * @if MOBILE @since_tizen 4.0
+ * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
 EAPI Evas_Object *elm_object_part_access_object_get(const Evas_Object *obj, const char *part);

@@ -37,7 +37,8 @@ typedef void (*Elm_Atspi_Say_Signal_Cb)(void *data, const char *say_signal);
  *
  * @ingroup Elm_Atspi_Bridge
  *
- * @if WEARABLE @since_tizen 3.0
+ * @if MOBILE @since_tizen 4.0
+ * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
 EAPI void elm_atspi_bridge_utils_say(const char* text,
