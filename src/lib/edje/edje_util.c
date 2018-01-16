@@ -3622,7 +3622,17 @@ _efl_canvas_layout_efl_layout_calc_calc_parts_extends(Eo *obj EINA_UNUSED, Edje 
 EOLIAN Eina_Size2D
 _efl_canvas_layout_efl_layout_calc_calc_size_min(Eo *obj EINA_UNUSED, Edje *ed, Eina_Size2D restricted)
 {
+   /* TIZEN_ONLY(20160708): Add 4000x4000 size limit with reduced loop count restriction
+      The calc loop restriction [255] can cause error from
+      evas_object_smart_need_recalculate_set() function.
+      It also has [255] restriction for recalculate cycle.
+      So, we need to reduce calc loop restriction for
+      reducing *_need_recalculate_set() function call.
    const int CALC_COUNT_LIMIT = 255;
+    */
+   const int CALC_COUNT_LIMIT = 32;
+   const int MIN_LIMIT = 4000;
+   /* END */
 
    Evas_Coord orig_w, orig_h; //original edje size
    int max_over_w, max_over_h;  //maximum over-calculated size.
@@ -3778,7 +3788,12 @@ again:
              if (ed->h < restricted.h) ed->h = restricted.h;
           }
 
+        /* TIZEN_ONLY(20160708): Add 4000x4000 size limit with reduced loop count restriction
         if (reset_max && (calc_count > CALC_COUNT_LIMIT))
+         */
+        if (reset_max && (calc_count > CALC_COUNT_LIMIT) &&
+            ((ed->w > MIN_LIMIT) || (ed->h > MIN_LIMIT)))
+        /* END */
           {
              if (legacy_calc)
                {
