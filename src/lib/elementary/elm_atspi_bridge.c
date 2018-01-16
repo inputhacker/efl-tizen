@@ -4226,6 +4226,7 @@ typedef enum {
   NEIGHBOR_SEARCH_MODE_NORMAL = 0,
   NEIGHBOR_SEARCH_MODE_RECURSE_FROM_ROOT = 1,
   NEIGHBOR_SEARCH_MODE_CONTINUE_AFTER_FAILED_RECURSING = 2,
+  NEIGHBOR_SEARCH_MODE_RECURSE_TO_OUTSIDE = 3,
 } GetNeighborSearchMode;
 
 typedef struct accessibility_navigation_pointer_table {
@@ -4618,6 +4619,86 @@ unsigned char cycle_detection_check_if_in_cycle(cycle_detection_data *data, cons
    return 0;
 }
 
+static Eina_Bool
+_deputy_is(Eo *obj)
+{
+   if (efl_isa(obj, ELM_ACCESS_CLASS))
+     {
+        Elm_Access_Info *info;
+
+        info = _elm_access_info_get(obj);
+        if (info && efl_isa(info->part_object, EFL_UI_LAYOUT_CLASS))
+          {
+             Eina_List *attrs, *l;
+             Efl_Access_Attribute *attr;
+
+             attrs = efl_access_attributes_get(info->part_object);
+             EINA_LIST_FOREACH(attrs, l, attr)
+               {
+                  if (!strcmp(attr->key, "___PlugID"))
+                    {
+                       efl_access_attributes_list_free(attrs);
+                       return EINA_TRUE;
+                    }
+               }
+             efl_access_attributes_list_free(attrs);
+          }
+     }
+   return EINA_FALSE;
+}
+
+static Eo *
+_proxy_in_parent_get(Eo *obj)
+{
+   Eina_List *l;
+   Eo *proxy = NULL;
+   Eina_List *children_list = NULL;
+   children_list = efl_access_children_get(obj);
+
+   Evas_Object *child;
+   EINA_LIST_FOREACH(children_list, l, child)
+     {
+        if (efl_isa(child, ELM_ATSPI_PROXY_CLASS))
+          {
+             proxy = child;
+             break;
+          }
+     }
+   eina_list_free(children_list);
+
+   return proxy;
+}
+
+static Eo *
+_deputy_of_proxy_in_parent_get(Eo *obj)
+{
+   Eina_List *l;
+   Eo *deputy = NULL;
+   Eina_List *children_list = NULL;
+   children_list = efl_access_children_get(obj);
+
+   unsigned int index = 0;
+   Evas_Object *child;
+   EINA_LIST_FOREACH(children_list, l, child)
+     {
+        if (efl_isa(child, ELM_ATSPI_PROXY_CLASS))
+          {
+             if (index == 0)
+               {
+                  WRN("Proxy does not have deputy object");
+                  break;
+               }
+
+             deputy = eina_list_nth(children_list, index - 1);
+             break;
+          }
+        index++;
+     }
+   eina_list_free(children_list);
+
+   return deputy;
+}
+
 static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *table, void *root, void *start, unsigned char forward, GetNeighborSearchMode search_mode)
 {
    if (root && _object_is_defunct(table, root)) return NULL;
@@ -4626,6 +4707,14 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
        start = NULL;
        forward = 1;
      }
+
+   if (search_mode == NEIGHBOR_SEARCH_MODE_RECURSE_TO_OUTSIDE)
+     {
+        /* This only works if we navigate backward, and it is not possible to
+           find in embedded process. In this case the deputy should be used */
+        return _deputy_of_proxy_in_parent_get(start);
+     }
+
    void *node = start ? start : root;
    if (!node) return NULL;
 
@@ -4675,11 +4764,48 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
 
        void *next_related_in_direction = !force_next ? _get_object_in_relation_flow(table, node, forward) : NULL;
 
+       /* force_next means that the search_mode is NEIGHBOR_SEARCH_MODE_CONTINUE_AFTER_FAILED_RECURSING
+          in this case the node is elm_layout which is parent of proxy object.
+          There is an access object working for the proxy object, and the access
+          object could have relation information. This relation information should
+          be checked first before using the elm_layout as a node. */
+       if (force_next && forward)
+         {
+            Eo *deputy;
+            deputy = _deputy_of_proxy_in_parent_get(node);
+            next_related_in_direction =
+              _get_object_in_relation_flow(table, deputy, forward);
+         }
+
        if (next_related_in_direction && _object_is_defunct(table, next_related_in_direction))
            next_related_in_direction = NULL;
        unsigned char want_cycle_detection = 0;
        if (next_related_in_direction)
          {
+           /* Check next_related_in_direction is deputy object */
+           Eo *parent;
+           if (!forward)
+             {
+                /* If the prev object is deputy, then go to inside of its proxy first */
+                if (_deputy_is(next_related_in_direction))
+                  {
+                     parent = efl_ui_widget_parent_get(next_related_in_direction);
+                     next_related_in_direction =
+                       _proxy_in_parent_get(parent);
+                  }
+             }
+           else
+             {
+                /* If current object is deputy, and it has relation next object,
+                   then do not use the relation next object, and use proxy first */
+                if (_deputy_is(node))
+                  {
+                     parent = efl_ui_widget_parent_get(node);
+                     next_related_in_direction =
+                       _proxy_in_parent_get(parent);
+                  }
+             }
+
            node = next_related_in_direction;
            want_cycle_detection = 1;
          }

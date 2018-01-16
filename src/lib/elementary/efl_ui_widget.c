@@ -5797,6 +5797,7 @@ _efl_ui_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Dat
    // TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
    Eo *parent;
    //
+   Eo *proxy = NULL;
 
    EINA_LIST_FOREACH(pd->subobjs, l, widget)
      {
@@ -5809,7 +5810,6 @@ _efl_ui_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Dat
              elm_atspi_ewk_wrapper_a11y_init(obj, widget);
           }
      }
-   Eo *proxy = NULL;
    EINA_LIST_FOREACH(pd->subobjs, l, widget)
      {
         // TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
@@ -5852,6 +5852,31 @@ _efl_ui_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Dat
    EINA_LIST_FREE(lines, line)
      accs = eina_list_merge(accs, eina_list_sort(line, -1, _sort_horizontally));
    //
+
+  if (proxy)
+    {
+       Eo *deputy = NULL;
+       accs = eina_list_remove(accs, proxy);
+       EINA_LIST_FOREACH(accs, l, widget)
+         {
+             if (efl_isa(widget, ELM_ACCESS_CLASS))
+               {
+                  Elm_Access_Info *info = _elm_access_info_get(widget);
+                  if (!info) continue;
+                  if (obj == info->part_object)
+                    {
+                       deputy = widget;
+                       break;
+                    }
+               }
+         }
+
+       if (deputy)
+         {
+            accs = eina_list_append_relative(accs, proxy, deputy);
+         }
+    }
+
    return accs;
 }
 
