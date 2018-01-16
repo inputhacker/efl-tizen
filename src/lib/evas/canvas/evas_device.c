@@ -524,3 +524,29 @@ evas_device_top_get(const Evas *eo_e)
    return _evas_device_top_get(eo_e);
 }
 //
+
+EAPI Evas_Device *
+evas_device_default_get(const Evas *eo_e, Evas_Device_Class clas)
+{
+   Evas_Public_Data *e;
+
+   SAFETY_CHECK(eo_e, EVAS_CANVAS_CLASS, NULL);
+
+   e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+
+   if (clas == EVAS_DEVICE_CLASS_SEAT)
+     {
+        return e->default_seat;
+     }
+   else if (clas == EVAS_DEVICE_CLASS_KEYBOARD)
+     {
+        return e->default_keyboard;
+     }
+   else if (clas == EVAS_DEVICE_CLASS_MOUSE ||
+            clas == EVAS_DEVICE_CLASS_TOUCH)
+     {
+        return e->default_mouse;
+     }
+
+   return NULL;
+}

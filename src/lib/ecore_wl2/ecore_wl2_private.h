@@ -412,10 +412,10 @@ struct _Ecore_Wl2_Tizen_Input_Device
    Ecore_Wl2_Input *input;
    const char *name;
    const char *identifier;
-   Efl_Input_Device_Type clas;
-   Efl_Input_Device_Subtype subclas;
+   Ecore_Device_Class clas;
+   Ecore_Device_Subclass subclas;
    struct wl_seat *seat;
-   Eina_List *devices;
+   Ecore_Device *device;
 };
 
 typedef struct _Ecore_Wl2_Touch_Axis

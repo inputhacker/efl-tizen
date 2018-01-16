@@ -68,6 +68,10 @@ ecore_event_init(void)
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
    ECORE_EVENT_DETENT_ROTATE = ecore_event_type_new();
    //
+   // TIZEN_ONLY(20180118): support a Ecore_Device
+   ECORE_EVENT_DEVICE_ADD = ecore_event_type_new();
+   ECORE_EVENT_DEVICE_DEL = ecore_event_type_new();
+   //
 
    //TIZEN_ONLY(20170307) Remove warning message
    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -97,7 +101,11 @@ ecore_event_shutdown(void)
                           ECORE_EVENT_MOUSE_BUTTON_CANCEL,
                           ECORE_EVENT_JOYSTICK,
                           // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
-                          ECORE_EVENT_DETENT_ROTATE
+                          ECORE_EVENT_DETENT_ROTATE,
+                          //
+                          // TIZEN_ONLY(20180118): support a Ecore_Device
+                          ECORE_EVENT_DEVICE_ADD,
+                          ECORE_EVENT_DEVICE_DEL
                           //
                           );
    //TIZEN_ONLY(20170307) Remove warning message

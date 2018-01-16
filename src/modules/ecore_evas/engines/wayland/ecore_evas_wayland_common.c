@@ -1514,22 +1514,6 @@ _ecore_evas_wl_common_evas_device_find(Evas *evas, const char *identifier)
    return EINA_FALSE;
 }
 
-static void
-_ecore_evas_wl_common_tizen_device_event_add(int type, Evas_Device *dev, Ecore_Evas *ee)
-{
-   Ecore_Wl2_Event_Tizen_Input_Device_Info *ev;
-
-   ev = calloc(1, sizeof(Ecore_Wl2_Event_Tizen_Input_Device_Info));
-   EINA_SAFETY_ON_NULL_RETURN(ev);
-
-   ev->dev = efl_ref(dev);
-   ev->name = evas_device_name_get(dev);
-   ev->identifier = evas_device_description_get(dev);
-   ev->window_id = ee->prop.window;
-
-   ecore_event_add(type, ev, NULL, dev);
-}
-
 static Evas_Device *
 _ecore_evas_wl_common_default_seat_get(Evas *evas)
 {
@@ -1575,7 +1559,6 @@ _ecore_evas_wl_common_cb_tizen_device_add(void *data EINA_UNUSED, int type EINA_
                                            seat, NULL,
                                            ev->clas,
                                            ev->subclas);
-        _ecore_evas_wl_common_tizen_device_event_add(ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_ADDED, device, ee);
      }
 
    return ECORE_CALLBACK_PASS_ON;
@@ -1603,7 +1586,6 @@ _ecore_evas_wl_common_cb_tizen_device_del(void *data EINA_UNUSED, int type EINA_
           {
              if (!strncmp(evas_device_description_get(device), ev->identifier, strlen(ev->identifier)))
                {
-                  _ecore_evas_wl_common_tizen_device_event_add(ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_REMOVED, device, ee);
                   evas_device_del(device);
                }
           }
