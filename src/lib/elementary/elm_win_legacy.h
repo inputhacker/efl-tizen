@@ -183,7 +183,7 @@ EAPI Evas_Object          *elm_win_util_standard_add(const char *name, const cha
 EAPI Evas_Object          *elm_win_util_dialog_add(Evas_Object *parent, const char *name, const char *title);
 
 /**
- * @brief Set the window's autodel state.
+ * @brief Sets the window's autodel state.
  *
  * When closing the window in any way outside of the program control, like
  * pressing the X button in the titlebar or using a command from the Window
@@ -205,7 +205,7 @@ EAPI Evas_Object          *elm_win_util_dialog_add(Evas_Object *parent, const ch
 EAPI void elm_win_autodel_set(Evas_Object *obj, Eina_Bool autodel);
 
 /**
- * @brief Get the window's autodel state.
+ * @brief Gets the window's autodel state.
  *
  * @param[in] obj The object.
  *
@@ -216,7 +216,7 @@ EAPI void elm_win_autodel_set(Evas_Object *obj, Eina_Bool autodel);
 EAPI Eina_Bool elm_win_autodel_get(const Evas_Object *obj);
 
 /**
- * Set the floating mode of a window.
+ * @brief Sets the floating mode of a window.
  *
  * @param obj The window object
  * @param floating If true, the window is floating mode
@@ -234,7 +234,7 @@ EAPI Eina_Bool elm_win_autodel_get(const Evas_Object *obj);
 EAPI void                  elm_win_floating_mode_set(Evas_Object *obj, Eina_Bool floating);
 
 /**
- * Get the floating mode of a window.
+ * @brief Gets the floating mode of a window.
  *
  * @param obj The window object
  * @return If true, the window is floating mode
@@ -321,7 +321,7 @@ EAPI void                  elm_win_render(Evas_Object *obj);
 
 /* Wayland specific call - returns NULL on non-Wayland engines */
 /**
- * Get the Ecore_Wl_Window of an Evas_Object
+ * @brief Gets the Ecore_Wl_Window of an Evas_Object
  *
  * Do not use this function if you'd like your application/library be portable.
  * You have been warned.
@@ -339,7 +339,7 @@ EAPI Ecore_Wl_Window *elm_win_wl_window_get(const Evas_Object *obj);
 
 /* Windows specific call - returns NULL on non-Windows engines */
 /**
- * Get the Ecore_Win32_Window of an Evas_Object
+ * @brief Gets the Ecore_Win32_Window of an Evas_Object
  *
  * Do not use this function if you'd like your application/library be portable.
  * You have been warned.
@@ -355,7 +355,7 @@ EAPI Ecore_Wl_Window *elm_win_wl_window_get(const Evas_Object *obj);
 EAPI Ecore_Win32_Window *elm_win_win32_window_get(const Evas_Object *obj);
 
 /**
- * Set the preferred rotation value.
+ * @brief Sets the preferred rotation value.
  *
  * This function is used to set the orientation of window @p obj to spicific angle fixed.
  *
@@ -371,7 +371,7 @@ EAPI Ecore_Win32_Window *elm_win_win32_window_get(const Evas_Object *obj);
 EAPI void                  elm_win_wm_rotation_preferred_rotation_set(Evas_Object *obj, int rotation);
 
 /**
- * @brief Add @c subobj as a resize object of window @c obj.
+ * @brief Adds @c subobj as a resize object of window @c obj.
  *
  * Setting an object as a resize object of the window means that the @c subobj
  * child's size and position will be controlled by the window directly. That
@@ -399,7 +399,7 @@ EAPI void                  elm_win_wm_rotation_preferred_rotation_set(Evas_Objec
 EAPI void elm_win_resize_object_add(Evas_Object *obj, Evas_Object *subobj);
 
 /**
- * @brief Delete @c subobj as a resize object of window @c obj.
+ * @brief Deletes @c subobj as a resize object of window @c obj.
  *
  * This function removes the object @c subobj from the resize objects of the
  * window @c obj. It will not delete the object itself, which will be left
@@ -412,14 +412,15 @@ EAPI void elm_win_resize_object_add(Evas_Object *obj, Evas_Object *subobj);
  */
 EAPI void elm_win_resize_object_del(Evas_Object *obj, Evas_Object *subobj);
 
-/** Get the Ecore_X_Window of an Evas_Object.
+/**
+ * @brief Gets the Ecore_X_Window of an Evas_Object.
  *
  * @ingroup Elm_Win
  */
 EAPI Ecore_X_Window elm_win_xwindow_get(const Evas_Object *obj);
 
 /**
- * @brief Get the Ecore_Win32_Window of an Evas_Object
+ * @brief Gets the Ecore_Win32_Window of an Evas_Object
  *
  * @return The Ecore_Win32_Window of @c obj.
  *
@@ -430,7 +431,7 @@ EAPI Ecore_X_Window elm_win_xwindow_get(const Evas_Object *obj);
 EAPI Ecore_Win32_Window *elm_win_win32_window_get(const Evas_Object *obj);
 
 /**
- * @brief Get the Ecore_Cocoa_Window of an Efl.Canvas.Object.
+ * @brief Gets the Ecore_Cocoa_Window of an Efl.Canvas.Object.
  *
  * @return The Ecore_Cocoa_Window of @c obj.
  *
@@ -441,7 +442,7 @@ EAPI Ecore_Win32_Window *elm_win_win32_window_get(const Evas_Object *obj);
 EAPI Ecore_Cocoa_Window *elm_win_cocoa_window_get(const Evas_Object *obj);
 
 /**
- * @brief Get the trap data associated with a window.
+ * @brief Gets the trap data associated with a window.
  *
  * @return The trap data of the window.
  *
@@ -452,7 +453,7 @@ EAPI Ecore_Cocoa_Window *elm_win_cocoa_window_get(const Evas_Object *obj);
 EAPI void *elm_win_trap_data_get(const Evas_Object *obj);
 
 /**
- * @brief Set the override state of a window.
+ * @brief Sets the override state of a window.
  *
  * A window with @c override set to true will not be managed by the Window
  * Manager. This means that no decorations of any kind will be shown for it,
@@ -471,7 +472,7 @@ EAPI void *elm_win_trap_data_get(const Evas_Object *obj);
 EAPI void elm_win_override_set(Evas_Object *obj, Eina_Bool override);
 
 /**
- * @brief Get the override state of a window.
+ * @brief Gets the override state of a window.
  *
  * @return If true, the window is overridden.
  *
@@ -480,7 +481,7 @@ EAPI void elm_win_override_set(Evas_Object *obj, Eina_Bool override);
 EAPI Eina_Bool elm_win_override_get(const Evas_Object *obj);
 
 /**
- * @brief Lower a window object.
+ * @brief Lowers a window object.
  *
  * Places the window pointed by @c obj at the bottom of the stack, so that no
  * other window is covered by it.
@@ -493,7 +494,7 @@ EAPI Eina_Bool elm_win_override_get(const Evas_Object *obj);
 EAPI void elm_win_lower(Evas_Object *obj);
 
 /**
- * @brief Set a window to be an illume quickpanel window.
+ * @brief Sets a window to be an illume quickpanel window.
  *
  * By default window objects are not quickpanel windows.
  *
@@ -504,7 +505,7 @@ EAPI void elm_win_lower(Evas_Object *obj);
 EAPI void elm_win_quickpanel_set(Evas_Object *obj, Eina_Bool quickpanel);
 
 /**
- * @brief Get if this window is a quickpanel or not.
+ * @brief Gets if this window is a quickpanel or not.
  *
  * @return The quickpanel flag.
  *
@@ -512,7 +513,7 @@ EAPI void elm_win_quickpanel_set(Evas_Object *obj, Eina_Bool quickpanel);
  */
 EAPI Eina_Bool elm_win_quickpanel_get(const Evas_Object *obj);
 /**
- * @brief Set which zone this quickpanel should appear in.
+ * @brief Sets which zone this quickpanel should appear in.
  *
  * @param[in] zone The requested zone for this quickpanel.
  *
@@ -521,7 +522,7 @@ EAPI Eina_Bool elm_win_quickpanel_get(const Evas_Object *obj);
 EAPI void elm_win_quickpanel_zone_set(Evas_Object *obj, int zone);
 
 /**
- * @brief Get which zone this quickpanel should appear in.
+ * @brief Gets which zone this quickpanel should appear in.
  *
  * @return The requested zone for this quickpanel.
  *
@@ -529,7 +530,7 @@ EAPI void elm_win_quickpanel_zone_set(Evas_Object *obj, int zone);
  */
 EAPI int elm_win_quickpanel_zone_get(const Evas_Object *obj);
 /**
- * @brief Set the major priority of a quickpanel window.
+ * @brief Sets the major priority of a quickpanel window.
  *
  * @param[in] priority The major priority for this quickpanel or -1.
  *
@@ -538,7 +539,7 @@ EAPI int elm_win_quickpanel_zone_get(const Evas_Object *obj);
 EAPI void elm_win_quickpanel_priority_major_set(Evas_Object *obj, int priority);
 
 /**
- * @brief Get the major priority of a quickpanel window.
+ * @brief Gets the major priority of a quickpanel window.
  *
  * @return The major priority for this quickpanel or -1.
  *
@@ -547,7 +548,7 @@ EAPI void elm_win_quickpanel_priority_major_set(Evas_Object *obj, int priority);
 EAPI int elm_win_quickpanel_priority_major_get(const Evas_Object *obj);
 
 /**
- * @brief Set the minor priority of a quickpanel window.
+ * @brief Sets the minor priority of a quickpanel window.
  *
  * @param[in] priority The minor priority for this quickpanel.
  *
@@ -556,7 +557,7 @@ EAPI int elm_win_quickpanel_priority_major_get(const Evas_Object *obj);
 EAPI void elm_win_quickpanel_priority_minor_set(Evas_Object *obj, int priority);
 
 /**
- * @brief Get the minor priority of a quickpanel window.
+ * @brief Gets the minor priority of a quickpanel window.
  *
  * @return The minor priority for this quickpanel.
  *
@@ -574,7 +575,7 @@ EAPI int elm_win_quickpanel_priority_minor_get(const Evas_Object *obj);
 EAPI void elm_win_indicator_mode_set(Evas_Object *obj, Elm_Win_Indicator_Mode mode);
 
 /**
- * @brief Get the indicator mode of the window.
+ * @brief Gets the indicator mode of the window.
  *
  * @return The mode, one of #Elm_Win_Indicator_Mode.
  *
@@ -592,7 +593,7 @@ EAPI Elm_Win_Indicator_Mode elm_win_indicator_mode_get(const Evas_Object *obj);
 EAPI void elm_win_indicator_opacity_set(Evas_Object *obj, Elm_Win_Indicator_Opacity_Mode mode);
 
 /**
- * @brief Get the indicator opacity mode of the window.
+ * @brief Gets the indicator opacity mode of the window.
  *
  * @return The mode, one of #Elm_Win_Indicator_Opacity_Mode.
  *
@@ -610,7 +611,7 @@ EAPI Elm_Win_Indicator_Opacity_Mode elm_win_indicator_opacity_get(const Evas_Obj
 EAPI void elm_win_keyboard_win_set(Evas_Object *obj, Eina_Bool is_keyboard);
 
 /**
- * @brief Get whether the window is a keyboard
+ * @brief Gets whether the window is a keyboard
  *
  * @return The mode, If true, the window is a virtual keyboard..
  *
@@ -619,7 +620,7 @@ EAPI void elm_win_keyboard_win_set(Evas_Object *obj, Eina_Bool is_keyboard);
 EAPI Eina_Bool elm_win_keyboard_win_get(const Evas_Object *obj);
 
 /**
- * @brief Set if this window is an illume conformant window.
+ * @brief Sets if this window is an illume conformant window.
  *
  * @param[in] conformant The conformant flag.
  *
@@ -628,7 +629,7 @@ EAPI Eina_Bool elm_win_keyboard_win_get(const Evas_Object *obj);
 EAPI void elm_win_conformant_set(Evas_Object *obj, Eina_Bool conformant);
 
 /**
- * @brief Get if this window is an illume conformant window.
+ * @brief Gets if this window is an illume conformant window.
  *
  * @return The conformant flag.
  *
@@ -637,7 +638,7 @@ EAPI void elm_win_conformant_set(Evas_Object *obj, Eina_Bool conformant);
 EAPI Eina_Bool elm_win_conformant_get(const Evas_Object *obj);
 
 /**
- * @brief Set the manual rotation done mode.
+ * @brief Sets the manual rotation done mode.
  *
  * This function is used to set or reset the manual rotation done mode. the
  * message of rotation done is sent to WM after rendering its canvas in
@@ -653,7 +654,7 @@ EAPI Eina_Bool elm_win_conformant_get(const Evas_Object *obj);
 EAPI void elm_win_wm_rotation_manual_rotation_done_set(Evas_Object *obj, Eina_Bool set);
 
 /**
- * @brief Get the state of manual rotation done mode.
+ * @brief Gets the state of manual rotation done mode.
  *
  * This function is used to get the state of manual rotation done mode.
  *
@@ -677,7 +678,7 @@ EAPI Eina_Bool elm_win_wm_rotation_manual_rotation_done_get(const Evas_Object *o
 EAPI void elm_win_wm_rotation_manual_rotation_done(Evas_Object *obj);
 
 /**
- * @brief Set the rotation of the window.
+ * @brief Sets the rotation of the window.
  *
  * Most engines only work with multiples of 90.
  *
@@ -694,7 +695,7 @@ EAPI void elm_win_wm_rotation_manual_rotation_done(Evas_Object *obj);
 EAPI void elm_win_rotation_set(Evas_Object *obj, int rotation);
 
 /**
- * @brief Get the rotation of the window.
+ * @brief Gets the rotation of the window.
  *
  * @return The rotation of the window, in degrees (0-360), counter-clockwise.
  *
@@ -716,7 +717,7 @@ EAPI int elm_win_rotation_get(const Evas_Object *obj);
 EAPI void elm_win_rotation_with_resize_set(Evas_Object *obj, int rotation);
 
 /**
- * @brief Query whether window manager supports window rotation or not.
+ * @brief Queries whether window manager supports window rotation or not.
  *
  * The window manager rotation allows the WM to controls the rotation of
  * application windows. It is designed to support synchronized rotation for the
@@ -732,7 +733,7 @@ EAPI void elm_win_rotation_with_resize_set(Evas_Object *obj, int rotation);
 EAPI Eina_Bool elm_win_wm_rotation_supported_get(const Evas_Object *obj);
 
 /**
- * @brief Get the preferred rotation value.
+ * @brief Gets the preferred rotation value.
  *
  * This function is used to get the preferred rotation value.
  *
@@ -747,7 +748,7 @@ EAPI int elm_win_wm_rotation_preferred_rotation_get(const Evas_Object *obj);
 
 
 /**
- * @brief Get the screen position of a window.
+ * @brief Gets the screen position of a window.
  *
  * @param[out] x The int to store the x coordinate to.
  * @param[out] y The int to store the y coordinate to.
@@ -757,7 +758,7 @@ EAPI int elm_win_wm_rotation_preferred_rotation_get(const Evas_Object *obj);
 EAPI void elm_win_screen_position_get(const Evas_Object *obj, int *x, int *y);
 
 /**
- * @brief Get screen geometry details for the screen that a window is on.
+ * @brief Gets screen geometry details for the screen that a window is on.
  *
  * @param[out] x Where to return the horizontal offset value. May be @c null.
  * @param[out] y Where to return the vertical offset value. May be @c null.
@@ -769,7 +770,7 @@ EAPI void elm_win_screen_position_get(const Evas_Object *obj, int *x, int *y);
 EAPI void elm_win_screen_size_get(const Evas_Object *obj, int *x, int *y, int *w, int *h);
 
 /**
- * @brief Get screen dpi for the screen that a window is on.
+ * @brief Gets screen dpi for the screen that a window is on.
  *
  * @param[out] xdpi Pointer to value to store return horizontal dpi. May be
  * @c null.
@@ -783,7 +784,7 @@ EAPI void elm_win_screen_size_get(const Evas_Object *obj, int *x, int *y, int *w
 EAPI void elm_win_screen_dpi_get(const Evas_Object *obj, int *xdpi, int *ydpi);
 
 /**
- * @brief Set the icon name of the window.
+ * @brief Sets the icon name of the window.
  *
  * @param[in] icon_name The icon name to set.
  *
@@ -792,7 +793,7 @@ EAPI void elm_win_screen_dpi_get(const Evas_Object *obj, int *xdpi, int *ydpi);
 EAPI void elm_win_icon_name_set(Evas_Object *obj, const char *icon_name);
 
 /**
- * @brief Get the icon name of the window.
+ * @brief Gets the icon name of the window.
  *
  * The returned string is an internal one and should not be freed or modified.
  * It will also be invalid if a new icon name is set or if the window is
@@ -805,7 +806,7 @@ EAPI void elm_win_icon_name_set(Evas_Object *obj, const char *icon_name);
 EAPI const char *elm_win_icon_name_get(const Evas_Object *obj);
 
 /**
- * @brief Set the withdrawn state of a window.
+ * @brief Sets the withdrawn state of a window.
  *
  * @param[in] withdrawn If true, the window is withdrawn.
  *
@@ -814,7 +815,7 @@ EAPI const char *elm_win_icon_name_get(const Evas_Object *obj);
 EAPI void elm_win_withdrawn_set(Evas_Object *obj, Eina_Bool withdrawn);
 
 /**
- * @brief Get the withdrawn state of a window.
+ * @brief Gets the withdrawn state of a window.
  *
  * @return If true, the window is withdrawn.
  *
@@ -823,7 +824,7 @@ EAPI void elm_win_withdrawn_set(Evas_Object *obj, Eina_Bool withdrawn);
 EAPI Eina_Bool elm_win_withdrawn_get(const Evas_Object *obj);
 
 /**
- * @brief Set the urgent state of a window.
+ * @brief Sets the urgent state of a window.
  *
  * @param[in] urgent If true, the window is urgent.
  *
@@ -832,7 +833,7 @@ EAPI Eina_Bool elm_win_withdrawn_get(const Evas_Object *obj);
 EAPI void elm_win_urgent_set(Evas_Object *obj, Eina_Bool urgent);
 
 /**
- * @brief Get the urgent state of a window.
+ * @brief Gets the urgent state of a window.
  *
  * @return If true, the window is urgent.
  *
@@ -841,7 +842,7 @@ EAPI void elm_win_urgent_set(Evas_Object *obj, Eina_Bool urgent);
 EAPI Eina_Bool elm_win_urgent_get(const Evas_Object *obj);
 
 /**
- * @brief Set the demand_attention state of a window.
+ * @brief Sets the demand_attention state of a window.
  *
  * @param[in] demand_attention If true, the window is demand_attention.
  *
@@ -850,7 +851,7 @@ EAPI Eina_Bool elm_win_urgent_get(const Evas_Object *obj);
 EAPI void elm_win_demand_attention_set(Evas_Object *obj, Eina_Bool demand_attention);
 
 /**
- * @brief Get the demand_attention state of a window.
+ * @brief Gets the demand_attention state of a window.
  *
  * @return If true, the window is demand_attention.
  *
@@ -859,7 +860,7 @@ EAPI void elm_win_demand_attention_set(Evas_Object *obj, Eina_Bool demand_attent
 EAPI Eina_Bool elm_win_demand_attention_get(const Evas_Object *obj);
 
 /**
- * @brief Set the modal state of a window.
+ * @brief Sets the modal state of a window.
  *
  * @param[in] modal If true, the window is modal.
  *
@@ -868,7 +869,7 @@ EAPI Eina_Bool elm_win_demand_attention_get(const Evas_Object *obj);
 EAPI void elm_win_modal_set(Evas_Object *obj, Eina_Bool modal);
 
 /**
- * @brief Get the modal state of a window.
+ * @brief Gets the modal state of a window.
  *
  * @return If true, the window is modal.
  *
@@ -877,7 +878,7 @@ EAPI void elm_win_modal_set(Evas_Object *obj, Eina_Bool modal);
 EAPI Eina_Bool elm_win_modal_get(const Evas_Object *obj);
 
 /**
- * @brief Set the shaped state of a window.
+ * @brief Sets the shaped state of a window.
  *
  * Shaped windows, when supported, will render the parts of the window that has
  * no content, transparent.
@@ -893,7 +894,7 @@ EAPI Eina_Bool elm_win_modal_get(const Evas_Object *obj);
 EAPI void elm_win_shaped_set(Evas_Object *obj, Eina_Bool shaped);
 
 /**
- * @brief Get the shaped state of a window.
+ * @brief Gets the shaped state of a window.
  *
  * @return If @c true, the window is shaped.
  *
@@ -902,7 +903,7 @@ EAPI void elm_win_shaped_set(Evas_Object *obj, Eina_Bool shaped);
 EAPI Eina_Bool elm_win_shaped_get(const Evas_Object *obj);
 
 /**
- * @brief Set the title of the window.
+ * @brief Sets the title of the window.
  *
  * @param[in] title The title.
  *
@@ -911,7 +912,7 @@ EAPI Eina_Bool elm_win_shaped_get(const Evas_Object *obj);
 EAPI void elm_win_title_set(Evas_Object *obj, const char *title);
 
 /**
- * @brief Get the title of the window.
+ * @brief Gets the title of the window.
  *
  * The returned string is an internal one and should not be freed or modified.
  * It will also be invalid if a new title is set or if the window is destroyed.
@@ -923,7 +924,7 @@ EAPI void elm_win_title_set(Evas_Object *obj, const char *title);
 EAPI const char *elm_win_title_get(const Evas_Object *obj);
 
 /**
- * @brief Set the base window size used with stepping calculation
+ * @brief Sets the base window size used with stepping calculation
  *
  * Base size + stepping is what is calculated for window sizing restrictions.
  *
@@ -937,7 +938,7 @@ EAPI const char *elm_win_title_get(const Evas_Object *obj);
 EAPI void elm_win_size_base_set(Evas_Object *obj, int w, int h);
 
 /**
- * @brief Get the base size of a window.
+ * @brief Gets the base size of a window.
  *
  * @param[out] w The base width.
  * @param[out] h The base height.
@@ -949,7 +950,7 @@ EAPI void elm_win_size_base_set(Evas_Object *obj, int w, int h);
 EAPI void elm_win_size_base_get(const Evas_Object *obj, int *w, int *h);
 
 /**
- * @brief Set the window stepping used with sizing calculation.
+ * @brief Sets the window stepping used with sizing calculation.
  *
  * Base size + stepping is what is calculated for window sizing restrictions.
  *
@@ -963,7 +964,7 @@ EAPI void elm_win_size_base_get(const Evas_Object *obj, int *w, int *h);
 EAPI void elm_win_size_step_set(Evas_Object *obj, int w, int h);
 
 /**
- * @brief Get the stepping of a window.
+ * @brief Gets the stepping of a window.
  *
  * @param[out] w The stepping width (0 disables).
  * @param[out] h The stepping height (0 disables).
@@ -975,7 +976,7 @@ EAPI void elm_win_size_step_set(Evas_Object *obj, int w, int h);
 EAPI void elm_win_size_step_get(const Evas_Object *obj, int *w, int *h);
 
 /**
- * @brief Send a command to the windowing environment
+ * @brief Sends a command to the windowing environment
  *
  * This is intended to work in touchscreen or small screen device environments
  * where there is a more simplistic window management policy in place. This
@@ -990,7 +991,7 @@ EAPI void elm_win_size_step_get(const Evas_Object *obj, int *w, int *h);
 EAPI void elm_win_illume_command_send(Evas_Object *obj, Elm_Illume_Command command, void *params);
 
 /**
- * @brief Set the profile of a window.
+ * @brief Sets the profile of a window.
  *
  * @param[in] profile The string value of a window profile.
  *
@@ -1001,7 +1002,7 @@ EAPI void elm_win_illume_command_send(Evas_Object *obj, Elm_Illume_Command comma
 EAPI void elm_win_profile_set(Evas_Object *obj, const char *profile);
 
 /**
- * @brief Get the profile of a window.
+ * @brief Gets the profile of a window.
  *
  * @return The string value of a window profile.
  *
@@ -1012,7 +1013,7 @@ EAPI void elm_win_profile_set(Evas_Object *obj, const char *profile);
 EAPI const char *elm_win_profile_get(const Evas_Object *obj);
 
 /**
- * @brief Set the layer of the window.
+ * @brief Sets the layer of the window.
  *
  * What this means exactly will depend on the underlying engine used.
  *
@@ -1028,7 +1029,7 @@ EAPI const char *elm_win_profile_get(const Evas_Object *obj);
 EAPI void elm_win_layer_set(Evas_Object *obj, int layer);
 
 /**
- * @brief Get the layer of the window.
+ * @brief Gets the layer of the window.
  *
  * @return The layer of the window.
  *
@@ -1037,7 +1038,7 @@ EAPI void elm_win_layer_set(Evas_Object *obj, int layer);
 EAPI int elm_win_layer_get(const Evas_Object *obj);
 
 /**
- * @brief Get the inlined image object handle
+ * @brief Gets the inlined image object handle
  *
  * When you create a window with elm_win_add() of type #ELM_WIN_INLINED_IMAGE,
  * then the window is in fact an evas image object inlined in the parent
@@ -1063,7 +1064,7 @@ EAPI Evas_Object *elm_win_inlined_image_object_get(const Evas_Object *obj);
 EAPI void elm_win_fake_canvas_set(Evas_Object *obj, Ecore_Evas *oee) EINA_DEPRECATED;
 
 /**
- * Get the Ecore_Window of an Evas_Object
+ * @brief Gets the Ecore_Window of an Evas_Object
  *
  * When Elementary is using a Wayland engine, this function will return the surface id of the elm window's surface.
  *
@@ -1074,6 +1075,10 @@ EAPI void elm_win_fake_canvas_set(Evas_Object *obj, Ecore_Evas *oee) EINA_DEPREC
  * @since 1.8
  * @note Unless you are getting the window id for the purpose of communicating between client<->compositor over dbus,
  * this is definitely not the function you are looking for.
+ *
+ * @if MOBILE @since_tizen 4.0
+ * @elseif WEARABLE @since_tizen 4.0
+ * @endif
  */
 EAPI Ecore_Window          elm_win_window_id_get(const Evas_Object *obj);
 
@@ -1081,7 +1086,7 @@ EAPI Ecore_Window          elm_win_window_id_get(const Evas_Object *obj);
 /**
  * @internal
  *
- * Sets the precreated object.
+ * @brief Sets the precreated object.
  *
  * @param obj The window object
  *
@@ -1094,7 +1099,7 @@ EAPI void                  elm_win_precreated_object_set(Evas_Object *obj);
 /**
  * @internal
  *
- * Gets the precreated object.
+ * @brief Gets the precreated object.
  *
  * @return The precreated window object
  *
@@ -1106,7 +1111,7 @@ EAPI Evas_Object          *elm_win_precreated_object_get(void);
 //
 
 /**
- * @brief Get the Main Menu of a window.
+ * @brief Gets the Main Menu of a window.
  *
  * @return The Main Menu of the window ($null on error).
  *
@@ -1124,7 +1129,7 @@ EAPI Evas_Object *elm_win_main_menu_get(Evas_Object *obj);
 EAPI void elm_win_keyboard_mode_set(Elm_Win *obj, Elm_Win_Keyboard_Mode mode);
 
 /**
- * @brief Get the keyboard mode of the window.
+ * @brief Gets the keyboard mode of the window.
  *
  * @return The mode, one of #Elm_Win_Keyboard_Mode.
  *
@@ -1133,7 +1138,7 @@ EAPI void elm_win_keyboard_mode_set(Elm_Win *obj, Elm_Win_Keyboard_Mode mode);
 EAPI Elm_Win_Keyboard_Mode elm_win_keyboard_mode_get(const Elm_Win *obj);
 
 /**
- * @brief Set the aspect ratio of a window.
+ * @brief Sets the aspect ratio of a window.
  *
  * @param[in] aspect If 0, the window has no aspect limits, otherwise it is
  * width divided by height.
@@ -1141,7 +1146,7 @@ EAPI Elm_Win_Keyboard_Mode elm_win_keyboard_mode_get(const Elm_Win *obj);
 EAPI void elm_win_aspect_set(Elm_Win *obj, double aspect);
 
 /**
- * @brief Get the aspect ratio of a window.
+ * @brief Gets the aspect ratio of a window.
  *
  * @return If 0, the window has no aspect limits, otherwise it is width divided
  * by height.
@@ -1149,7 +1154,7 @@ EAPI void elm_win_aspect_set(Elm_Win *obj, double aspect);
 EAPI double elm_win_aspect_get(const Elm_Win *obj);
 
 /**
- * @brief Set keygrab value of the window
+ * @brief Sets keygrab value of the window
  *
  * This function grabs the @c key of window using @c grab_mode.
  *
@@ -1167,7 +1172,7 @@ EAPI double elm_win_aspect_get(const Elm_Win *obj);
 EAPI Eina_Bool elm_win_keygrab_set(Elm_Win *obj, const char *key, Evas_Modifier_Mask modifiers, Evas_Modifier_Mask not_modifiers, int priority, Elm_Win_Keygrab_Mode grab_mode);
 
 /**
- * @brief Unset keygrab value of the window
+ * @brief Unsets keygrab value of the window
  *
  * This function unset keygrab value. Ungrab @c key of window.
  *
@@ -1182,7 +1187,7 @@ EAPI Eina_Bool elm_win_keygrab_set(Elm_Win *obj, const char *key, Evas_Modifier_
 EAPI Eina_Bool elm_win_keygrab_unset(Elm_Win *obj, const char *key, Evas_Modifier_Mask modifiers, Evas_Modifier_Mask not_modifiers);
 
 /**
- * @brief Get the elm_win object from any child object
+ * @brief Gets the elm_win object from any child object
  * 
  * @return The elm_win, or @c NULL on failure
  * @since 1.20
@@ -1190,7 +1195,7 @@ EAPI Eina_Bool elm_win_keygrab_unset(Elm_Win *obj, const char *key, Evas_Modifie
 EAPI Evas_Object *elm_win_get(Evas_Object *obj);
 
 /**
- * @brief Create a socket to provide the service for Plug widget.
+ * @brief Creates a socket to provide the service for Plug widget.
  *
  * @param[in] svcname The name of the service to be advertised. Eensure that it
  * is unique (when combined with @c svcnum) otherwise creation may fail.
@@ -1207,7 +1212,7 @@ EAPI Evas_Object *elm_win_get(Evas_Object *obj);
 EAPI Eina_Bool elm_win_socket_listen(Elm_Win *obj, const char *svcname, int svcnum, Eina_Bool svcsys);
 
 /**
- * @brief Get whether a window has focus.
+ * @brief Gets whether a window has focus.
  *
  * @return @c true if window has focus, @c false otherwise
  *
@@ -1216,7 +1221,7 @@ EAPI Eina_Bool elm_win_socket_listen(Elm_Win *obj, const char *svcname, int svcn
 EAPI Eina_Bool elm_win_focus_get(const Elm_Win *obj);
 
 /**
- * @brief Set the style for the focus highlight on this window.
+ * @brief Sets the style for the focus highlight on this window.
  *
  * Sets the style to use for theming the highlight of focused objects on the
  * given window. If @c style is NULL, the default will be used.
@@ -1228,7 +1233,7 @@ EAPI Eina_Bool elm_win_focus_get(const Elm_Win *obj);
 EAPI void elm_win_focus_highlight_style_set(Elm_Win *obj, const char *style);
 
 /**
- * @brief Get the style set for the focus highlight object.
+ * @brief Gets the style set for the focus highlight object.
  *
  * @return The style or @c null if none.
  *
@@ -1237,7 +1242,7 @@ EAPI void elm_win_focus_highlight_style_set(Elm_Win *obj, const char *style);
 EAPI const char *elm_win_focus_highlight_style_get(const Elm_Win *obj);
 
 /**
- * @brief Set the enabled status for the focus highlight in a window.
+ * @brief Sets the enabled status for the focus highlight in a window.
  *
  * This function will enable or disable the focus highlight only for the given
  * window, regardless of the global setting for it.
@@ -1249,7 +1254,7 @@ EAPI const char *elm_win_focus_highlight_style_get(const Elm_Win *obj);
 EAPI void elm_win_focus_highlight_enabled_set(Elm_Win *obj, Eina_Bool enabled);
 
 /**
- * @brief Get the enabled value of the focus highlight for this window.
+ * @brief Gets the enabled value of the focus highlight for this window.
  *
  * @return The enabled value for the highlight.
  *
@@ -1258,7 +1263,7 @@ EAPI void elm_win_focus_highlight_enabled_set(Elm_Win *obj, Eina_Bool enabled);
 EAPI Eina_Bool elm_win_focus_highlight_enabled_get(const Elm_Win *obj);
 
 /**
- * @brief Set the animate status for the focus highlight for this window.
+ * @brief Sets the animate status for the focus highlight for this window.
  *
  * This function will enable or disable the animation of focus highlight only
  * for the given window, rof the global setting for it.
@@ -1270,7 +1275,7 @@ EAPI Eina_Bool elm_win_focus_highlight_enabled_get(const Elm_Win *obj);
 EAPI void elm_win_focus_highlight_animate_set(Elm_Win *obj, Eina_Bool animate);
 
 /**
- * @brief Get the animate value of the focus highlight for this window.
+ * @brief Gets the animate value of the focus highlight for this window.
  *
  * @return The enabled value for the highlight animation.
  *
@@ -1279,7 +1284,7 @@ EAPI void elm_win_focus_highlight_animate_set(Elm_Win *obj, Eina_Bool animate);
 EAPI Eina_Bool elm_win_focus_highlight_animate_get(const Elm_Win *obj);
 
 /**
- * @brief Raise a window object.
+ * @brief Raises a window object.
  *
  * Places the window pointed by @c obj at the top of the stack, so that it's
  * not covered by any other window.
@@ -1289,7 +1294,7 @@ EAPI Eina_Bool elm_win_focus_highlight_animate_get(const Elm_Win *obj);
 EAPI void elm_win_raise(Elm_Win *obj);
 
 /**
- * @brief Set the array of available profiles to a window.
+ * @brief Sets the array of available profiles to a window.
  *
  * @param[in] profiles The string array of available profiles.
  * @param[in] count The number of members in profiles.
@@ -1301,7 +1306,7 @@ EAPI void elm_win_raise(Elm_Win *obj);
 EAPI void elm_win_available_profiles_set(Elm_Win *obj, const char **profiles, unsigned int count);
 
 /**
- * @brief Get the array of available profiles of a window.
+ * @brief Gets the array of available profiles of a window.
  *
  * @param[out] profiles The string array of available profiles.
  * @param[out] count The number of members in profiles.
@@ -1315,7 +1320,7 @@ EAPI void elm_win_available_profiles_set(Elm_Win *obj, const char **profiles, un
 EAPI Eina_Bool elm_win_available_profiles_get(const Elm_Win *obj, char ***profiles, unsigned int *count);
 
 /**
- * @brief Set the array of available window rotations.
+ * @brief Sets the array of available window rotations.
  *
  * This function is used to set the available rotations to give the hints to
  * WM. WM will refer this hints and set the orientation window properly.
@@ -1331,7 +1336,7 @@ EAPI Eina_Bool elm_win_available_profiles_get(const Elm_Win *obj, char ***profil
 EAPI void elm_win_wm_rotation_available_rotations_set(Elm_Win *obj, const int *rotations, unsigned int count);
 
 /**
- * @brief Get the array of available window rotations.
+ * @brief Gets the array of available window rotations.
  *
  * This function is used to get the available rotations.
  *
