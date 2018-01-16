@@ -5,7 +5,6 @@
 #include "Elementary.h"
 
 #define ELEMENTARY_BUILD
-#undef ELM_MODULE_HELPER_H
 #include "private.h"
 
 /* including declaration of each prefs item implementation iface struct */

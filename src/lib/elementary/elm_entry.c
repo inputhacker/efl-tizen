@@ -16,6 +16,13 @@
 #include <Elementary_Cursor.h>
 #include "elm_priv.h"
 #include "elm_widget_entry.h"
+/*************************************************************
+ * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+ *************************************************************/
+#include "elm_module_helper.h"
+/*******
+ * END *
+ *******/
 
 #include "elm_entry_part.eo.h"
 #include "elm_part_helper.h"
@@ -101,6 +108,18 @@ struct _Mod_Api
    void (*obj_hook)(Evas_Object *obj);
    void (*obj_unhook)(Evas_Object *obj);
    void (*obj_longpress)(Evas_Object *obj);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   void (*obj_hidemenu) (Evas_Object *obj);
+   void (*obj_mouseup) (Evas_Object *obj);
+   void (*obj_update_popup_pos) (Evas_Object *obj);
+   Eina_Bool (*obj_popup_showing_get) (Evas_Object *obj);
+   void (*obj_hide_clipboard) (Evas_Object *obj);
+   /*******
+    * END *
+    *******/
 };
 
 static void _create_selection_handlers(Evas_Object *obj, Elm_Entry_Data *sd);
@@ -108,6 +127,42 @@ static void _magnifier_move(void *data);
 // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
 static void _atspi_expose_anchors(Eo *obj, Eina_Bool is_screen_reader);
 //
+
+/*************************************************************
+ * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+ *************************************************************/
+/* Put declations of TIZEN_ONLY internal functions here */
+#ifdef HAVE_ELEMENTARY_WAYLAND
+static void _cbhm_on_name_owner_changed(void *data EINA_UNUSED, const char *bus, const char *old_id EINA_UNUSED, const char *new_id);
+static void _on_item_clicked(void *data, const Eldbus_Message *msg EINA_UNUSED);
+static void _cbhm_eldbus_init(Evas_Object *obj);
+static void _cbhm_eldbus_deinit(Evas_Object *obj);
+static void _init_eldbus_job(Evas_Object *obj);
+#endif
+static Evas_Coord_Rectangle _layout_region_get(Evas_Object *obj);
+static inline Eina_Iterator *_selection_range_geometry_get(Evas_Object *obj);
+static Evas_Coord_Rectangle _selection_geometry_get(Evas_Object *obj);
+static Eina_Bool _hit_selection_check(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+static Evas_Object *_entry_icon_create_cb(void *data, Evas_Object *parent, Evas_Coord *xoff, Evas_Coord *yoff);
+static Eina_Bool _cursor_handler_long_press_cb(void *data);
+static void _cursor_handler_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
+static void _cursor_handler_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
+static void _cursor_handler_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info);
+static void _create_cursor_handler(Evas_Object *obj, Elm_Entry_Data *sd);
+static void _update_cursor_handler(Evas_Object *obj, Elm_Entry_Data *sd);
+static void _select_all(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
+static void _adjust_eol_cursor(Evas_Object *obj);
+static Eina_Bool _cursor_coordinate_check(Evas_Object *obj, Evas_Coord canvasx);
+static void _cursor_down_pos_set(Evas_Object *obj);
+static void _select_word(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED);
+static void _keep_selection(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED);
+static void _paste_translation(void *data, Evas_Object *obj, void *event_info);
+static void _is_selected_all(void *data, Evas_Object *obj, void *event_info EINA_UNUSED);
+static void _sel_handler_update_job_cb(void *data);
+static void _cursor_handler_update_job_cb(void *data);
+/*******
+ * END *
+ *******/
 
 static Evas_Object *
 _entry_win_get(Evas_Object *obj)
@@ -136,6 +191,24 @@ _module_find(Evas_Object *obj EINA_UNUSED)
      _elm_module_symbol_get(m, "obj_unhook");
    ((Mod_Api *)(m->api))->obj_longpress = // called on long press menu
      _elm_module_symbol_get(m, "obj_longpress");
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   ((Mod_Api *)(m->api))->obj_hidemenu = // called on hide menu
+     _elm_module_symbol_get(m, "obj_hidemenu");
+   ((Mod_Api *)(m->api))->obj_mouseup = // called on mouseup
+     _elm_module_symbol_get(m, "obj_mouseup");
+   ((Mod_Api *)(m->api))->obj_update_popup_pos = //in update selection handler
+      _elm_module_symbol_get(m, "obj_update_popup_pos");
+   ((Mod_Api *)(m->api))->obj_popup_showing_get = // check cnp popup showing status
+      _elm_module_symbol_get(m, "obj_popup_showing_get");
+   ((Mod_Api *)(m->api))->obj_hide_clipboard = // hide cbhm clipboard
+      _elm_module_symbol_get(m, "obj_hide_clipboard");
+   /*******
+    * END *
+    *******/
+
 ok: // ok - return api
    return m->api;
 }
@@ -443,14 +516,46 @@ _hide_selection_handler(Evas_Object *obj)
 
    if (sd->start_handler_shown)
      {
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************
         edje_object_signal_emit(sd->start_handler, "elm,handler,hide", "elm");
+         */
+        evas_object_hide(sd->start_handler);
+        /*******
+         * END *
+         *******/
+
         sd->start_handler_shown = EINA_FALSE;
      }
    if (sd->end_handler_shown)
      {
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************
         edje_object_signal_emit(sd->end_handler, "elm,handler,hide", "elm");
+         */
+        evas_object_hide(sd->end_handler);
+        /*******
+         * END *
+         *******/
+
         sd->end_handler_shown = EINA_FALSE;
      }
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* selection handler should not be updated
+    * after hiding handlers. */
+   if (sd->sel_handler_update_job)
+     {
+        ecore_job_del(sd->sel_handler_update_job);
+        sd->sel_handler_update_job = NULL;
+     }
+   /*******
+    * END *
+    *******/
 }
 
 static Eina_Rectangle *
@@ -508,16 +613,44 @@ _update_selection_handler(Evas_Object *obj)
     * END *
     *******/
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
    if (!sd->sel_handler_disabled)
+    */
+   if ((!sd->sel_handler_disabled) && ((!evas_object_visible_get(sd->mgf_bg)) ||
+                                       (sd->start_handler_down || sd->end_handler_down)))
+   /*******
+    * END *
+    *******/
      {
         Eina_Rectangle *rect;
         Evas_Coord hx, hy;
         Eina_Bool hidden = EINA_FALSE;
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+        Evas_Coord_Rectangle layrect;
+        Evas_Coord hh;
+        /*******
+         * END *
+         *******/
 
         if (!sd->start_handler)
           _create_selection_handlers(obj, sd);
 
         rect = _viewport_region_get(obj);
+
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+        /* Show sel handler on top */
+        layrect = _layout_region_get(obj);
+        edje_object_parts_extends_calc(sd->start_handler, NULL, NULL, NULL, &hh);
+        /*******
+         * END *
+         *******/
+
         start_pos = edje_object_part_text_cursor_pos_get
            (sd->entry_edje, "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
         end_pos = edje_object_part_text_cursor_pos_get
@@ -564,6 +697,53 @@ _update_selection_handler(Evas_Object *obj)
              hy = ent_y + ey + eh;
              evas_object_move(sd->start_handler, hx, hy);
           }
+
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+        Evas_Coord handler_width;
+
+        /* Show start sel handler on top by default */
+        edje_object_part_geometry_get(sd->start_handler, "handle",
+                                          NULL, NULL, &handler_width, NULL);
+        if (ent_y + sy - hh < layrect.y || ent_y + sy < rect->y)
+          {
+             hy--;
+             if ((hx + sw <= layrect.x + handler_width) && (hx + sw <= rect->x + handler_width))
+               {
+                  edje_object_signal_emit(sd->start_handler, "elm,state,bottom,reversed", "elm");
+               }
+             else
+               {
+                  edje_object_signal_emit(sd->start_handler, "elm,state,bottom", "elm");
+               }
+          }
+        else
+          {
+             if ((hx + ew <= layrect.x + handler_width) && (hx + ew <= rect->x + handler_width))
+               {
+                  edje_object_signal_emit(sd->start_handler, "elm,state,top,reversed", "elm");
+               }
+             else
+               {
+                  edje_object_signal_emit(sd->start_handler, "elm,state,top", "elm");
+               }
+             if (start_pos < end_pos)
+               {
+                  hy = hy - sh;
+               }
+             else
+               {
+                  hy = hy - eh;
+               }
+             evas_object_move(sd->start_handler, hx, hy);
+          }
+
+        edje_object_message_signal_process(sd->start_handler);
+        /*******
+         * END *
+         *******/
+
         if (!eina_rectangle_xcoord_inside(rect, hx) ||
             !eina_rectangle_ycoord_inside(rect, hy))
           {
@@ -571,14 +751,32 @@ _update_selection_handler(Evas_Object *obj)
           }
         if (!sd->start_handler_shown && !hidden)
           {
+             /*************************************************************
+              * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+              *************************************************************
              edje_object_signal_emit(sd->start_handler,
                                      "elm,handler,show", "elm");
+              */
+             evas_object_show(sd->start_handler);
+             /*******
+              * END *
+              *******/
+
              sd->start_handler_shown = EINA_TRUE;
           }
         else if (sd->start_handler_shown && hidden)
           {
+             /*************************************************************
+              * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+              *************************************************************
              edje_object_signal_emit(sd->start_handler,
                                      "elm,handler,hide", "elm");
+              */
+             evas_object_hide(sd->start_handler);
+             /*******
+              * END *
+              *******/
+
              sd->start_handler_shown = EINA_FALSE;
           }
 
@@ -595,6 +793,52 @@ _update_selection_handler(Evas_Object *obj)
              hy = ent_y + sy + sh;
              evas_object_move(sd->end_handler, hx, hy);
           }
+
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+        /* Show sel handler on top */
+        edje_object_part_geometry_get(sd->end_handler, "handle",
+                                          NULL, NULL, &handler_width, NULL);
+        if (hy + hh > layrect.y + layrect.h)
+          {
+             if ((hx + ew >= layrect.x + layrect.w - handler_width) &&
+                                     (hx +ew >= rect->x + rect->w - handler_width))
+               {
+                  edje_object_signal_emit(sd->end_handler, "elm,state,top,reversed", "elm");
+               }
+             else
+               {
+                  edje_object_signal_emit(sd->end_handler, "elm,state,top", "elm");
+               }
+             if (start_pos < end_pos)
+               {
+                  hy = hy - eh;
+               }
+             else
+               {
+                  hy = hy - sh;
+               }
+             evas_object_move(sd->end_handler, hx, hy);
+          }
+        else
+          {
+             hy--;
+             if ((hx + sw >= layrect.x + layrect.w - handler_width) &&
+                                (hx + sw >= rect->x + rect->w - handler_width))
+               {
+                  edje_object_signal_emit(sd->end_handler, "elm,state,bottom,reversed", "elm");
+               }
+             else
+               {
+                  edje_object_signal_emit(sd->end_handler, "elm,state,bottom", "elm");
+               }
+          }
+        edje_object_message_signal_process(sd->end_handler);
+        /*******
+         * END *
+         *******/
+
         if (!eina_rectangle_xcoord_inside(rect, hx) ||
             !eina_rectangle_ycoord_inside(rect, hy))
           {
@@ -602,14 +846,32 @@ _update_selection_handler(Evas_Object *obj)
           }
         if (!sd->end_handler_shown && !hidden)
           {
+             /*************************************************************
+              * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+              *************************************************************
              edje_object_signal_emit(sd->end_handler,
                                      "elm,handler,show", "elm");
+              */
+             evas_object_show(sd->end_handler);
+             /*******
+              * END *
+              *******/
+
              sd->end_handler_shown = EINA_TRUE;
           }
         else if (sd->end_handler_shown && hidden)
           {
+             /*************************************************************
+              * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+              *************************************************************
              edje_object_signal_emit(sd->end_handler,
                                      "elm,handler,hide", "elm");
+              */
+             evas_object_hide(sd->end_handler);
+             /*******
+              * END *
+              *******/
+
              sd->end_handler_shown = EINA_FALSE;
           }
         eina_rectangle_free(rect);
@@ -618,17 +880,55 @@ _update_selection_handler(Evas_Object *obj)
      {
         if (sd->start_handler_shown)
           {
+             /*************************************************************
+              * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+              *************************************************************
              edje_object_signal_emit(sd->start_handler,
                                      "elm,handler,hide", "elm");
+              */
+             evas_object_hide(sd->start_handler);
+             /*******
+              * END *
+              *******/
+
              sd->start_handler_shown = EINA_FALSE;
           }
         if (sd->end_handler_shown)
           {
+             /*************************************************************
+              * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+              *************************************************************
              edje_object_signal_emit(sd->end_handler,
                                      "elm,handler,hide", "elm");
+              */
+             evas_object_hide(sd->end_handler);
+             /*******
+              * END *
+              *******/
+
              sd->end_handler_shown = EINA_FALSE;
           }
      }
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   if (sd->cursor_handler_shown)
+     {
+        evas_object_hide(sd->cursor_handler);
+        sd->cursor_handler_shown = EINA_FALSE;
+     }
+
+   /* Update Copy & Paste popup's position */
+   if ((sd->api) && (sd->api->obj_update_popup_pos) &&
+       (!sd->start_handler_down) && (!sd->end_handler_down) &&
+       (!sd->cursor_handler_down))
+     {
+        sd->api->obj_update_popup_pos(obj);
+     }
+   /*******
+    * END *
+    *******/
 }
 
 static const char *
@@ -1320,9 +1620,33 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
         _return_key_enabled_check(obj);
         _validate(obj);
+
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+#ifdef HAVE_ELEMENTARY_WAYLAND
+        /* Send focused entry type to CBHM */
+        if (sd->cnp_mode == ELM_CNP_MODE_PLAINTEXT)
+          eldbus_proxy_call(sd->cbhm_proxy, "CbhmSetInputTextType", NULL, NULL, -1, "s", "text");
+        else
+          eldbus_proxy_call(sd->cbhm_proxy, "CbhmSetInputTextType", NULL, NULL, -1, "s", "image");
+#endif /* HAVE_ELEMENTARY_WAYLAND */
+        /*******
+         * END *
+         *******/
      }
    else
      {
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+        /* Hide CBHM */
+        if ((sd->api) && (sd->api->obj_hide_clipboard))
+          sd->api->obj_hide_clipboard(obj);
+        /*******
+         * END *
+         *******/
+
         edje_object_signal_emit(sd->entry_edje, "elm,action,unfocus", "elm");
         if (sd->scroll)
           edje_object_signal_emit(sd->scr_edje, "elm,action,unfocus", "elm");
@@ -1332,6 +1656,22 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
           elm_win_keyboard_mode_set(top, ELM_WIN_KEYBOARD_OFF);
         if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_FALSE);
+
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+        if (sd->cursor_handler_shown)
+          {
+             evas_object_hide(sd->cursor_handler);
+             sd->cursor_handler_shown = EINA_FALSE;
+
+             if (sd->cursor_handler_update_job)
+               ecore_job_del(sd->cursor_handler_update_job);
+             sd->cursor_handler_update_job = NULL;
+          }
+        /*******
+         * END *
+         *******/
 
         if (_elm_config->selection_clear_enable)
           {
@@ -1464,7 +1804,15 @@ _hover_dismissed_cb(void *data, const Efl_Event *event EINA_UNUSED)
    if (sd->hoversel) evas_object_hide(sd->hoversel);
    if (sd->sel_mode)
      {
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************
         if (!_elm_config->desktop_entry)
+         */
+        if (sd->sel_allow && !_elm_config->desktop_entry)
+        /*******
+         * END *
+         *******/
           {
              if (!sd->password)
                edje_object_part_text_select_allow_set
@@ -1714,6 +2062,26 @@ _menu_call(Evas_Object *obj)
 
    if ((sd->api) && (sd->api->obj_longpress))
      {
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+        /* CBHM client for multi entry */
+#ifdef HAVE_ELEMENTARY_WAYLAND
+        if (!sd->cbhm_init_done)
+          {
+             if (sd->cbhm_init_job)
+               {
+                  ecore_job_del(sd->cbhm_init_job);
+                  sd->cbhm_init_job = NULL;
+               }
+
+             _cbhm_eldbus_init(obj);
+          }
+#endif
+        /*******
+         * END *
+         *******/
+
         sd->api->obj_longpress(obj);
      }
    else if (sd->context_menu)
@@ -1984,19 +2352,122 @@ _long_press_cb(void *data)
 {
    ELM_ENTRY_DATA_GET(data, sd);
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
    if (_elm_config->magnifier_enable)
      {
         _magnifier_create(data);
         _magnifier_show(data);
         _magnifier_move(data);
      }
-   /* Context menu will not appear if context menu disabled is set
-    * as false on a long press callback */
+   // Context menu will not appear if context menu disabled is set
+    * as false on a long press callback //
    else if (!_elm_config->context_menu_disabled &&
             (!_elm_config->desktop_entry))
      _menu_call(data);
 
    sd->long_pressed = EINA_TRUE;
+    */
+   Eina_Bool hit_selection = EINA_FALSE;
+
+   sd->long_pressed = EINA_TRUE;
+   sd->long_pressing = EINA_TRUE;
+   if (sd->cursor_handler_shown)
+     {
+        evas_object_hide(sd->cursor_handler);
+        sd->cursor_handler_shown = EINA_FALSE;
+     }
+   hit_selection = _hit_selection_check(data, sd->downx, sd->downy);
+
+   if (!hit_selection)
+     {
+        sd->drag_started = EINA_FALSE;
+     }
+   else if (!sd->password)
+     {
+        const char *sel =
+           edje_object_part_text_selection_get(sd->entry_edje, "elm.text");
+
+        if ((sel) && (sel[0]))
+          {
+             sd->drag_started = EINA_TRUE;
+             elm_drag_start(data, ELM_SEL_FORMAT_TEXT,
+                            sel,
+                            ELM_XDND_ACTION_COPY,
+                            _entry_icon_create_cb, data,
+                            NULL, /*Elm_Drag_Pos dragpos*/
+                            NULL, /*void *dragdata*/
+                            NULL, /*Elm_Drag_Accept acceptcb*/
+                            NULL, /*void *acceptdata*/
+                            NULL, /*Elm_Drag_Done dragdone*/
+                            NULL); /*void *donecbdata*/
+             _hover_cancel_cb(data, NULL, NULL);
+             elm_widget_scroll_freeze_push(data);
+          }
+     }
+
+   if (!sd->drag_started)
+     {
+        if (_elm_config->magnifier_enable)
+          {
+             if ((sd->api) && (sd->api->obj_hidemenu))
+               sd->api->obj_hidemenu(data);
+
+             if (sd->has_text)
+               {
+                  /* Keep selection over text only */
+                  if (_cursor_coordinate_check(data, sd->downx))
+                    {
+                       Evas_Coord cx, cy, cw, ch;
+                       Evas_Coord ex, ey;
+
+                       _cursor_down_pos_set(data);
+                       _magnifier_create(data);
+                       _magnifier_show(data);
+
+                       evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
+                       edje_object_part_text_cursor_geometry_get(sd->entry_edje,
+                                                       "elm.text", &cx, &cy, &cw, &ch);
+                       _magnifier_move(data);
+
+                       /* Do select word */
+                       _select_word(data, NULL, NULL);
+                       edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                                       EDJE_CURSOR_MAIN, sd->cursor_move_pos);
+                    }
+               }
+          }
+        else if (sd->has_text)
+          {
+             /* Enable word selection when magnifier is disabled */
+             if ((sd->api) && (sd->api->obj_hidemenu))
+               sd->api->obj_hidemenu(data);
+             _cursor_down_pos_set(data);
+             if (_cursor_coordinate_check(data, sd->downx))
+               {
+                  _select_word(data, NULL, NULL);
+                  elm_widget_scroll_freeze_push(data);
+               }
+             if (!TIZEN_PROFILE_WEARABLE)
+               {
+                  if (!_elm_config->context_menu_disabled &&
+                      !_elm_config->desktop_entry)
+                    {
+                       _menu_call(data);
+                    }
+               }
+          }
+        /* Context menu will not appear if context menu disabled is set
+         * as false on a long press callback */
+        else if (!TIZEN_PROFILE_WEARABLE &&
+                 !_elm_config->context_menu_disabled &&
+                 !_elm_config->desktop_entry)
+          _menu_call(data);
+     }
+   /*******
+    * END *
+    *******/
 
    sd->longpress_timer = NULL;
    efl_event_callback_legacy_call
@@ -2014,8 +2485,27 @@ _key_down_cb(void *data,
    Evas_Event_Key_Down *ev = event_info;
    /* First check if context menu disabled is false or not, and
     * then check for key id */
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
    if ((!_elm_config->context_menu_disabled) && !strcmp(ev->key, "Menu"))
      _menu_call(data);
+    */
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   if ((sd->api) && (sd->api->obj_hidemenu) && (!sd->sel_mode))
+     sd->api->obj_hidemenu(data);
+
+   /* First check if context menu disabled is false or not, and
+    * then check for key id */
+   if (!TIZEN_PROFILE_WEARABLE)
+     {
+        if ((!_elm_config->context_menu_disabled) && !strcmp(ev->key, "Menu"))
+          _menu_call(data);
+     }
+   /*******
+    * END *
+    *******/
 }
 
 static void
@@ -2047,7 +2537,15 @@ _mouse_down_cb(void *data,
         if (_elm_config->desktop_entry)
           {
              sd->use_down = 1;
+             /*************************************************************
+              * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+              *************************************************************
              _menu_call(data);
+              */
+             if (!TIZEN_PROFILE_WEARABLE) _menu_call(data);
+             /*******
+              * END *
+              *******/
           }
      }
 }
@@ -2071,6 +2569,9 @@ _mouse_up_cb(void *data,
         /* Since context menu disabled flag was checked at long press start while mouse
          * down, hence the same should be checked at mouse up from a long press
          * as well */
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************
         if ((sd->long_pressed) && (_elm_config->magnifier_enable))
           {
              _magnifier_hide(data);
@@ -2079,6 +2580,54 @@ _mouse_up_cb(void *data,
                   _menu_call(data);
                }
           }
+         */
+        /* For selection clear on mouse up */
+        if (sd->long_pressed && elm_widget_scroll_freeze_get(data))
+          elm_widget_scroll_freeze_pop(data);
+
+        sd->long_pressing = EINA_FALSE;
+        if (ev->flags & EVAS_BUTTON_TRIPLE_CLICK) return;
+        if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK) return;
+        if (ev->event_flags & EVAS_EVENT_FLAG_ON_HOLD) return;
+        if (!_elm_config->desktop_entry && sd->have_selection && !sd->long_pressed)
+          {
+             elm_entry_select_none(data);
+             _create_cursor_handler(data, sd);
+             _update_cursor_handler(data, sd);
+             evas_object_show(sd->cursor_handler);
+             sd->cursor_handler_shown = EINA_TRUE;
+          }
+
+        /* Enable word selection when magnifier is disabled */
+        if (sd->long_pressed)
+          {
+             Eina_Bool popup_showing = EINA_FALSE;
+
+             if (_elm_config->magnifier_enable)
+               _magnifier_hide(data);
+
+             if (sd->have_selection)
+               {
+				   if (efl_ui_focus_object_focus_get(data))
+                    _update_selection_handler(data);
+                  else
+                    elm_entry_select_none(data);
+               }
+
+             if (!TIZEN_PROFILE_WEARABLE)
+               {
+                  if ((sd->api) && (sd->api->obj_popup_showing_get))
+                    popup_showing = sd->api->obj_popup_showing_get(data);
+                  if ((!_elm_config->context_menu_disabled) &&
+                      (!popup_showing))
+                    {
+                       _menu_call(data);
+                    }
+               }
+          }
+        /*******
+         * END *
+         *******/
         else
           {
              top = elm_widget_top_get(data);
@@ -2091,7 +2640,50 @@ _mouse_up_cb(void *data,
                       !edje_object_part_text_imf_context_get(sd->entry_edje, "elm.text"))
                     elm_win_keyboard_mode_set(top, ELM_WIN_KEYBOARD_ON);
                }
+
+             /*************************************************************
+              * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+              *************************************************************/
+             if (sd->editable && efl_ui_focus_object_focus_get(data) &&
+                 (!sd->have_selection) && (sd->has_text))
+               {
+                  Evas_Coord dx, dy;
+
+                  dx = sd->downx - ev->canvas.x;
+                  dx *= dx;
+                  dy = sd->downy - ev->canvas.y;
+                  dy *= dy;
+                  if ((dx + dy) <=
+                      ((_elm_config->finger_size / 2) *
+                       (_elm_config->finger_size / 2)))
+                    {
+                       _create_cursor_handler(data, sd);
+                       _update_cursor_handler(data, sd);
+                       evas_object_show(sd->cursor_handler);
+                       sd->cursor_handler_shown = EINA_TRUE;
+                    }
+                  else if (sd->cursor_handler_shown)
+                    {
+                       evas_object_hide(sd->cursor_handler);
+                       sd->cursor_handler_shown = EINA_FALSE;
+                    }
+               }
+             /*******
+              * END *
+              *******/
           }
+
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************/
+        if (sd->drag_started)
+          {
+             elm_widget_scroll_freeze_pop(data);
+             sd->drag_started = EINA_FALSE;
+          }
+        /*******
+         * END *
+         *******/
      }
   /* Since context menu disabled flag was checked at mouse right key down,
    * hence the same should be stopped at mouse up of right key as well */
@@ -2116,6 +2708,9 @@ _mouse_move_cb(void *data,
    if (sd->disabled) return;
    if (ev->buttons == 1)
      {
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************
         if ((sd->long_pressed) && (_elm_config->magnifier_enable))
           {
              Evas_Coord x, y;
@@ -2135,6 +2730,70 @@ _mouse_move_cb(void *data,
 
              _magnifier_move(data);
           }
+         */
+        if ((sd->long_pressed) && (!sd->drag_started))
+          {
+             Evas_Coord cury;
+             const Evas_Object *tb = NULL;
+             Evas_Textblock_Cursor *tc;
+             Evas_Coord fy = 0, fh = 0, ly = 0, lh = 0;
+             Evas_Coord x, y;
+             Eina_Bool rv;
+
+             evas_object_geometry_get(sd->entry_edje, &x, &y, NULL, NULL);
+
+             /* For easy movement in single line */
+             tb = edje_object_part_object_get(sd->entry_edje, "elm.text");
+             tc = evas_object_textblock_cursor_new(tb);
+             evas_textblock_cursor_paragraph_first(tc);
+             evas_textblock_cursor_line_geometry_get(tc, NULL, &fy, NULL, &fh);
+             evas_textblock_cursor_paragraph_last(tc);
+             evas_textblock_cursor_line_geometry_get(tc, NULL, &ly, NULL, &lh);
+             evas_textblock_cursor_free(tc);
+             cury = ev->cur.canvas.y - y;
+
+             if (cury < fy + fh / 2) cury = fy + fh / 2;
+             if (cury > ly + lh) cury = ly + lh - 1;
+
+             rv = edje_object_part_text_cursor_coord_set
+               (sd->entry_edje, "elm.text", EDJE_CURSOR_USER,
+               ev->cur.canvas.x - x, cury);
+
+             if (rv)
+               {
+                  edje_object_part_text_cursor_copy
+                    (sd->entry_edje, "elm.text", EDJE_CURSOR_USER, EDJE_CURSOR_MAIN);
+               }
+             else
+               WRN("Warning: Cannot move cursor");
+
+             /* Keep selection over text only */
+             if (_cursor_coordinate_check(data, ev->cur.canvas.x))
+               {
+                  if ((sd->has_text) && (_elm_config->magnifier_enable))
+                    {
+                       Evas_Coord cx, cy, cw, ch;
+                       edje_object_part_text_cursor_geometry_get(sd->entry_edje,
+                                                       "elm.text", &cx, &cy, &cw, &ch);
+                       _magnifier_move(data);
+                    }
+
+                  /* Do select word */
+                  int cur_pos = edje_object_part_text_cursor_pos_get
+                                       (sd->entry_edje, "elm.text", EDJE_CURSOR_MAIN);
+                  if (cur_pos != sd->cursor_move_pos)
+                    {
+                       /* Hide ctxpopup during long press and drag */
+                       if ((sd->api) && (sd->api->obj_hidemenu))
+                         sd->api->obj_hidemenu(data);
+
+                       _select_word(data, NULL, NULL);
+                    }
+               }
+          }
+        /*******
+         * END *
+         *******/
      }
    if (!sd->sel_mode)
      {
@@ -2184,6 +2843,39 @@ _entry_changed_handle(void *data,
 
    ELM_ENTRY_DATA_GET(data, sd);
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* feature: remove mgf, popup, handlers if entry changed */
+   if (sd->cursor_handler_down || sd->start_handler_down ||
+       sd->end_handler_down || sd->long_pressed)
+     {
+        if (sd->cursor_handler_down)
+          sd->cursor_handler_down = EINA_FALSE;
+        else if (sd->start_handler_down)
+          sd->start_handler_down = EINA_FALSE;
+        else if (sd->end_handler_down)
+          sd->end_handler_down = EINA_FALSE;
+        else if (sd->long_pressed)
+          sd->long_pressed = EINA_FALSE;
+        if (_elm_config->magnifier_enable)
+          {
+             if (sd->has_text)
+               _magnifier_hide(data);
+          }
+     }
+   else if (sd->longpress_timer)
+     {
+        ELM_SAFE_FREE(sd->longpress_timer, ecore_timer_del);
+
+        /* Renew longpress timer when entry is changed. */
+        sd->longpress_timer = ecore_timer_add
+           (_elm_config->longpress_timeout, _long_press_cb, data);
+     }
+   /*******
+    * END *
+    *******/
+
    evas_event_freeze(evas_object_evas_get(data));
    sd->changed = EINA_TRUE;
    /* Reset the size hints which are no more relevant. Keep the
@@ -2210,6 +2902,22 @@ _entry_changed_handle(void *data,
         else
           _elm_entry_guide_update(data, EINA_FALSE);
      }
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   if ((sd->api) && (sd->api->obj_hidemenu))
+     sd->api->obj_hidemenu(data);
+
+   if (sd->cursor_handler_shown)
+     {
+        evas_object_hide(sd->cursor_handler);
+        sd->cursor_handler_shown = EINA_FALSE;
+     }
+   /*******
+    * END *
+    *******/
+
    _validate(data);
 
    /* callback - this could call callbacks that delete the
@@ -2348,6 +3056,17 @@ _entry_selection_none_signal_cb(void *data,
                                 const char *source EINA_UNUSED)
 {
    elm_entry_select_none(data);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   if ((sd->api) && (sd->api->obj_hidemenu))
+     sd->api->obj_hidemenu(data);
+   /*******
+    * END *
+    *******/
 }
 
 static inline Eina_Bool
@@ -2386,6 +3105,18 @@ _entry_selection_cleared_signal_cb(void *data,
 
    if (!sd->have_selection) return;
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   if (!sd->long_pressing)
+     {
+        if ((sd->api) && (sd->api->obj_hidemenu))
+          sd->api->obj_hidemenu(data);
+     }
+   /*******
+    * END *
+    *******/
+
    sd->have_selection = EINA_FALSE;
    efl_event_callback_legacy_call
      (data, EFL_UI_EVENT_SELECTION_CLEARED, NULL);
@@ -2405,6 +3136,27 @@ _entry_selection_cleared_signal_cb(void *data,
              elm_object_cnp_selection_clear(data, ELM_SEL_TYPE_PRIMARY);
           }
      }
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   else
+     {
+        /* When primary type does not exist */
+        if (sd->cut_sel)
+          {
+             elm_cnp_selection_loss_callback_set(data, ELM_SEL_TYPE_PRIMARY, _selection_clear, data);
+
+             ELM_SAFE_FREE(sd->cut_sel, eina_stringshare_del);
+          }
+        else if (!sd->drag_started)
+          {
+             elm_object_cnp_selection_clear(data, ELM_SEL_TYPE_PRIMARY);
+          }
+     }
+   /*******
+    * END *
+    *******/
+
    _hide_selection_handler(data);
 }
 
@@ -2490,6 +3242,20 @@ _entry_cursor_changed_manual_signal_cb(void *data,
      (data, ELM_ENTRY_EVENT_CURSOR_CHANGED_MANUAL, NULL);
    if (_elm_atspi_enabled())
      efl_access_event_emit(EFL_ACCESS_MIXIN, data, EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_CARET_MOVED, NULL);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* Update cursor handler when cursor pos changes */
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   if (sd->cursor_handler_shown)
+     {
+        _update_cursor_handler(data, sd);
+     }
+   /*******
+    * END *
+    *******/
 }
 
 static void
@@ -2784,6 +3550,27 @@ _entry_mouse_double_signal_cb(void *data,
                               const char *emission EINA_UNUSED,
                               const char *source EINA_UNUSED)
 {
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   const char *text;
+
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   if (sd->disabled) return;
+
+   text = edje_object_part_text_get(sd->entry_edje, "elm.text");
+
+   if ((!_elm_config->desktop_entry) &&
+       (text) && (text[0] != '\0'))
+     {
+        _cursor_down_pos_set(data);
+        _select_word(data, NULL, NULL);
+     }
+   /*******
+    * END *
+    *******/
+
    efl_event_callback_legacy_call
      (data, EFL_UI_EVENT_CLICKED_DOUBLE, NULL);
 }
@@ -3432,6 +4219,11 @@ buf_free:
    return ret;
 }
 
+/*************************************************************
+ * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+ *************************************************************
+ * Selection is allowed for password mode entry.
+ * The following function is not used in any place.
 static void
 _entry_selection_callbacks_unregister(Evas_Object *obj)
 {
@@ -3462,6 +4254,10 @@ _entry_selection_callbacks_unregister(Evas_Object *obj)
      (sd->entry_edje, "entry,cut,notify", "elm.text",
      _entry_cut_notify_signal_cb, obj);
 }
+ */
+/*******
+ * END *
+ *******/
 
 static void
 _entry_selection_callbacks_register(Evas_Object *obj)
@@ -3515,6 +4311,16 @@ _elm_entry_resize_internal(Evas_Object *obj)
      }
 
    if (sd->hoversel) _hoversel_position(obj);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* Show cursor handler on resize */
+   if (sd->cursor_handler_shown)
+     _update_cursor_handler(obj, sd);
+   /*******
+    * END *
+    *******/
 }
 
 static void
@@ -3567,6 +4373,18 @@ _start_handler_mouse_down_cb(void *data,
    Evas_Event_Mouse_Down *ev = event_info;
    int start_pos, end_pos, main_pos, pos;
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   if ((sd->api) && (sd->api->obj_hidemenu))
+     sd->api->obj_hidemenu(data);
+   if (sd->sel_allow && !_elm_config->desktop_entry)
+        edje_object_part_text_select_allow_set(sd->entry_edje, "elm.text",
+                                               EINA_TRUE);
+   /*******
+    * END *
+    *******/
+
    sd->start_handler_down = EINA_TRUE;
    start_pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
                                               EDJE_CURSOR_SELECTION_BEGIN);
@@ -3596,16 +4414,86 @@ _start_handler_mouse_up_cb(void *data,
                            Evas_Object *obj EINA_UNUSED,
                            void *event_info EINA_UNUSED)
 {
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   int start_pos, end_pos;
+   Eina_Bool hidden = EINA_FALSE;
+   int pos1 = 0, pos2 = 0;
+   /*******
+    * END *
+    *******/
+
    ELM_ENTRY_DATA_GET(data, sd);
 
    sd->start_handler_down = EINA_FALSE;
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* feature: remove mgf, popup, handlers if entry changed */
+   start_pos = edje_object_part_text_cursor_pos_get
+      (sd->entry_edje, "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
+   end_pos = edje_object_part_text_cursor_pos_get
+      (sd->entry_edje, "elm.text", EDJE_CURSOR_SELECTION_END);
+   if (start_pos < end_pos)
+     {
+        if (!sd->start_handler_shown)
+          hidden = EINA_TRUE;
+     }
+   else
+     {
+        if (!sd->end_handler_shown)
+          hidden = EINA_TRUE;
+     }
+
+   if (hidden)
+     {
+        if (!_elm_config->desktop_entry)
+          edje_object_part_text_select_allow_set(sd->entry_edje, "elm.text",
+                                                 EINA_FALSE);
+        return;
+     }
+
+   /* Keep at least one character in selection */
+   pos1 = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_SELECTION_BEGIN);
+   pos2 = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_SELECTION_END);
+   if (pos1 > pos2)
+     {
+        edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                             EDJE_CURSOR_SELECTION_BEGIN, pos2);
+        edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                             EDJE_CURSOR_SELECTION_END, pos1);
+     }
+   /*******
+    * END *
+    *******/
+
    if (_elm_config->magnifier_enable)
      _magnifier_hide(data);
    /* Context menu should not appear, even in case of selector mode, if the
     * flag is false (disabled) */
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
    if ((!_elm_config->context_menu_disabled) &&
        (!_elm_config->desktop_entry) && (sd->long_pressed))
      _menu_call(data);
+    */
+   if (!TIZEN_PROFILE_WEARABLE)
+     {
+        if ((!_elm_config->context_menu_disabled) &&
+            (!_elm_config->desktop_entry))
+          _menu_call(data);
+     }
+   if (!_elm_config->desktop_entry)
+        edje_object_part_text_select_allow_set(sd->entry_edje, "elm.text",
+                                               EINA_FALSE);
+   /*******
+    * END *
+    *******/
 }
 
 static void
@@ -3614,6 +4502,17 @@ _start_handler_mouse_move_cb(void *data,
                              Evas_Object *obj EINA_UNUSED,
                              void *event_info)
 {
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   const Evas_Object *tb = NULL;
+   Evas_Textblock_Cursor *tc;
+   Evas_Coord fy = 0, fh = 0, ly = 0, lh = 0;
+   Edje_Cursor cursor;
+   /*******
+    * END *
+    *******/
+
    ELM_ENTRY_DATA_GET(data, sd);
 
    if (!sd->start_handler_down) return;
@@ -3622,15 +4521,75 @@ _start_handler_mouse_move_cb(void *data,
    Evas_Coord cx, cy;
    int pos;
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* feature: remove mgf, popup, handlers if entry changed */
+   if (!sd->start_handler_shown)
+     {
+        ELM_SAFE_FREE(sd->longpress_timer, ecore_timer_del);
+        sd->long_pressed = EINA_FALSE;
+        return;
+     }
+   /*******
+    * END *
+    *******/
+
    evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
    cx = ev->cur.canvas.x - sd->ox - ex;
    cy = ev->cur.canvas.y - sd->oy - ey;
    if (cx <= 0) cx = 1;
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* For easy movement in single line */
+   tb = edje_object_part_object_get(sd->entry_edje, "elm.text");
+   tc = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_paragraph_first(tc);
+   evas_textblock_cursor_line_geometry_get(tc, NULL, &fy, NULL, &fh);
+   evas_textblock_cursor_paragraph_last(tc);
+   evas_textblock_cursor_line_geometry_get(tc, NULL, &ly, NULL, &lh);
+   evas_textblock_cursor_free(tc);
+
+   if (cy < fy + fh / 2) cy = fy + fh / 2;
+   else if (cy > ly + lh) cy = ly + lh - 1;
+   /*******
+    * END *
+    *******/
+
    edje_object_part_text_cursor_coord_set(sd->entry_edje, "elm.text",
                                         sd->sel_handler_cursor, cx, cy);
    pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
                                                sd->sel_handler_cursor);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* Keep at least one character in selection */
+   if (sd->sel_handler_cursor == EDJE_CURSOR_SELECTION_END)
+     cursor = EDJE_CURSOR_SELECTION_BEGIN;
+   else
+     cursor = EDJE_CURSOR_SELECTION_END;
+   int pos1 = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text", cursor);
+   if (pos == pos1)
+     {
+        pos++;
+        edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                             sd->sel_handler_cursor, pos);
+        pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                                   sd->sel_handler_cursor);
+        if (pos == pos1)
+          {
+             pos--;
+             edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                                  sd->sel_handler_cursor, pos);
+          }
+     }
+   /*******
+    * END *
+    *******/
+
    edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
                                         EDJE_CURSOR_MAIN, pos);
    ELM_SAFE_FREE(sd->longpress_timer, ecore_timer_del);
@@ -3649,6 +4608,19 @@ _end_handler_mouse_down_cb(void *data,
 
    Evas_Event_Mouse_Down *ev = event_info;
    int pos, start_pos, end_pos, main_pos;
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   if ((sd->api) && (sd->api->obj_hidemenu))
+     sd->api->obj_hidemenu(data);
+
+   if (sd->sel_allow && !_elm_config->desktop_entry)
+        edje_object_part_text_select_allow_set(sd->entry_edje, "elm.text",
+                                               EINA_TRUE);
+   /*******
+    * END *
+    *******/
 
    sd->end_handler_down = EINA_TRUE;
    start_pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
@@ -3679,16 +4651,86 @@ _end_handler_mouse_up_cb(void *data,
                          Evas_Object *obj EINA_UNUSED,
                          void *event_info EINA_UNUSED)
 {
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   int start_pos, end_pos;
+   Eina_Bool hidden = EINA_FALSE;
+   int pos1 = 0, pos2 = 0;
+   /*******
+    * END *
+    *******/
+
    ELM_ENTRY_DATA_GET(data, sd);
 
    sd->end_handler_down = EINA_FALSE;
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* feature: remove mgf, popup, handlers if entry changed */
+   start_pos = edje_object_part_text_cursor_pos_get
+      (sd->entry_edje, "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
+   end_pos = edje_object_part_text_cursor_pos_get
+      (sd->entry_edje, "elm.text", EDJE_CURSOR_SELECTION_END);
+   if (start_pos < end_pos)
+     {
+        if (!sd->end_handler_shown)
+          hidden = EINA_TRUE;
+     }
+   else
+     {
+        if (!sd->start_handler_shown)
+          hidden = EINA_TRUE;
+     }
+
+   if (hidden)
+     {
+        if (!_elm_config->desktop_entry)
+          edje_object_part_text_select_allow_set(sd->entry_edje, "elm.text",
+                                                 EINA_FALSE);
+        return;
+     }
+
+   /* Keep at least one character in selection */
+   pos1 = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_SELECTION_BEGIN);
+   pos2 = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_SELECTION_END);
+   if (pos1 > pos2)
+     {
+        edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                             EDJE_CURSOR_SELECTION_BEGIN, pos2);
+        edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                             EDJE_CURSOR_SELECTION_END, pos1);
+     }
+   /*******
+    * END *
+    *******/
+
    if (_elm_config->magnifier_enable)
      _magnifier_hide(data);
    /* Context menu appear was checked in case of selector start, and hence
     * the same should be checked at selector end as well */
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
    if ((!_elm_config->context_menu_disabled) &&
        (!_elm_config->desktop_entry) && (sd->long_pressed))
      _menu_call(data);
+    */
+   if (!TIZEN_PROFILE_WEARABLE)
+     {
+        if ((!_elm_config->context_menu_disabled) &&
+            (!_elm_config->desktop_entry))
+          _menu_call(data);
+     }
+   if (!_elm_config->desktop_entry)
+        edje_object_part_text_select_allow_set(sd->entry_edje, "elm.text",
+                                               EINA_FALSE);
+   /*******
+    * END *
+    *******/
 }
 
 static void
@@ -3697,6 +4739,17 @@ _end_handler_mouse_move_cb(void *data,
                            Evas_Object *obj EINA_UNUSED,
                            void *event_info)
 {
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   const Evas_Object *tb = NULL;
+   Evas_Textblock_Cursor *tc;
+   Evas_Coord fy = 0, fh = 0, ly = 0, lh = 0;
+   Edje_Cursor cursor;
+   /*******
+    * END *
+    *******/
+
    ELM_ENTRY_DATA_GET(data, sd);
 
    if (!sd->end_handler_down) return;
@@ -3705,15 +4758,70 @@ _end_handler_mouse_move_cb(void *data,
    Evas_Coord cx, cy;
    int pos;
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* feature: remove mgf, popup, handlers if entry changed */
+   if (!sd->end_handler_shown)
+     {
+        ELM_SAFE_FREE(sd->longpress_timer, ecore_timer_del);
+        sd->long_pressed = EINA_FALSE;
+        return;
+     }
+   /*******
+    * END *
+    *******/
+
    evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
    cx = ev->cur.canvas.x - sd->ox - ex;
    cy = ev->cur.canvas.y - sd->oy - ey;
    if (cx <= 0) cx = 1;
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* For eash movement in single line */
+   tb = edje_object_part_object_get(sd->entry_edje, "elm.text");
+   tc = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_paragraph_first(tc);
+   evas_textblock_cursor_line_geometry_get(tc, NULL, &fy, NULL, &fh);
+   evas_textblock_cursor_paragraph_last(tc);
+   evas_textblock_cursor_line_geometry_get(tc, NULL, &ly, NULL, &lh);
+   evas_textblock_cursor_free(tc);
+
+   if (cy < fy + fh / 2) cy = fy + fh / 2;
+   if (cy > ly + lh) cy = ly + lh - 1;
+   /*******
+    * END *
+    *******/
+
    edje_object_part_text_cursor_coord_set(sd->entry_edje, "elm.text",
                                           sd->sel_handler_cursor, cx, cy);
    pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
                                               sd->sel_handler_cursor);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* Keep at least one character in selection */
+   if (sd->sel_handler_cursor == EDJE_CURSOR_SELECTION_END)
+     cursor = EDJE_CURSOR_SELECTION_BEGIN;
+   else
+     cursor = EDJE_CURSOR_SELECTION_END;
+   int pos1 = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text", cursor);
+   if (pos == pos1)
+     {
+        if (pos > 0)
+          pos--;
+        else
+          pos++;
+        edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                             EDJE_CURSOR_SELECTION_END, pos);
+     }
+   /*******
+    * END *
+    *******/
+
    edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
                                         EDJE_CURSOR_MAIN, pos);
    ELM_SAFE_FREE(sd->longpress_timer, ecore_timer_del);
@@ -3884,10 +4992,24 @@ _elm_entry_efl_canvas_group_group_add(Eo *obj, Elm_Entry_Data *priv)
 
    entries = eina_list_prepend(entries, obj);
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
    // module - find module for entry
    priv->api = _module_find(obj);
    // if found - hook in
    if ((priv->api) && (priv->api->obj_hook)) priv->api->obj_hook(obj);
+    */
+   if (!TIZEN_PROFILE_WEARABLE)
+     {
+        // module - find module for entry
+        priv->api = _module_find(obj);
+        // if found - hook in
+        if ((priv->api) && (priv->api->obj_hook)) priv->api->obj_hook(obj);
+     }
+   /*******
+    * END *
+    *******/
 
    _mirrored_set(obj, efl_ui_mirrored_get(obj));
 
@@ -3903,6 +5025,19 @@ _elm_entry_efl_canvas_group_group_add(Eo *obj, Elm_Entry_Data *priv)
    if (_elm_config->desktop_entry)
      priv->sel_handler_disabled = EINA_TRUE;
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   priv->cursor_handler_shown = EINA_FALSE;
+
+#ifdef HAVE_ELEMENTARY_WAYLAND
+   priv->cbhm_init_done = EINA_FALSE;
+   priv->cbhm_init_job = ecore_job_add((Ecore_Cb)_init_eldbus_job, obj);
+#endif
+   /*******
+    * END *
+    *******/
+
    edje_object_signal_callback_add
       (priv->entry_edje, "size,eval", "elm",
        _entry_on_size_evaluate_signal, obj);
@@ -3917,6 +5052,17 @@ _create_selection_handlers(Evas_Object *obj, Elm_Entry_Data *sd)
    handle = edje_object_add(evas_object_evas_get(obj));
    sd->start_handler = handle;
    _elm_theme_object_set(obj, handle, "entry", "handler/start", style);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   edje_object_signal_emit(handle, "edje,focus,in", "edje");
+   edje_object_signal_emit(handle, "elm,state,bottom", "elm");
+   sd->start_handler_shown = EINA_TRUE;
+   /*******
+    * END *
+    *******/
+
    evas_object_event_callback_add(handle, EVAS_CALLBACK_MOUSE_DOWN,
                                   _start_handler_mouse_down_cb, obj);
    evas_object_event_callback_add(handle, EVAS_CALLBACK_MOUSE_MOVE,
@@ -3928,6 +5074,17 @@ _create_selection_handlers(Evas_Object *obj, Elm_Entry_Data *sd)
    handle = edje_object_add(evas_object_evas_get(obj));
    sd->end_handler = handle;
    _elm_theme_object_set(obj, handle, "entry", "handler/end", style);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   edje_object_signal_emit(handle, "edje,focus,in", "edje");
+   edje_object_signal_emit(handle, "elm,state,bottom", "elm");
+   sd->end_handler_shown = EINA_TRUE;
+   /*******
+    * END *
+    *******/
+
    evas_object_event_callback_add(handle, EVAS_CALLBACK_MOUSE_DOWN,
                                   _end_handler_mouse_down_cb, obj);
    evas_object_event_callback_add(handle, EVAS_CALLBACK_MOUSE_MOVE,
@@ -4055,6 +5212,29 @@ _elm_entry_efl_canvas_group_group_del(Eo *obj, Elm_Entry_Data *sd)
         evas_object_del(sd->end_handler);
      }
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* Clear cursor handler */
+   if (sd->cursor_handler)
+     {
+        evas_object_del(sd->cursor_handler);
+     }
+
+   /* Use job to get correct parent's gometry */
+   if (sd->sel_handler_update_job)
+     ecore_job_del(sd->sel_handler_update_job);
+   if (sd->cursor_handler_update_job)
+     ecore_job_del(sd->cursor_handler_update_job);
+
+   /* For supporting CBHM client for multiple entry object */
+#ifdef HAVE_ELEMENTARY_WAYLAND
+   _cbhm_eldbus_deinit(obj);
+#endif
+   /*******
+    * END *
+    *******/
+
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }
 
@@ -4069,8 +5249,35 @@ _elm_entry_efl_gfx_position_set(Eo *obj, Elm_Entry_Data *sd, Eina_Position2D pos
 
    if (sd->hoversel) _hoversel_position(obj);
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
    if (edje_object_part_text_selection_get(sd->entry_edje, "elm.text"))
      _update_selection_handler(obj);
+    */
+   if (edje_object_part_text_selection_get(sd->entry_edje, "elm.text"))
+   {
+     _update_selection_handler(obj);
+
+     /* Use job functions to get correct parent's geometry */
+     if (sd->sel_handler_update_job)
+       ecore_job_del(sd->sel_handler_update_job);
+     sd->sel_handler_update_job =
+        ecore_job_add(_sel_handler_update_job_cb, obj);
+   }
+
+   /* Update cursor handler */
+   if (sd->cursor_handler_shown)
+     {
+        _update_cursor_handler(obj, sd);
+        if (sd->cursor_handler_update_job)
+          ecore_job_del(sd->cursor_handler_update_job);
+        sd->cursor_handler_update_job =
+           ecore_job_add(_cursor_handler_update_job_cb, obj);
+     }
+   /*******
+    * END *
+    *******/
 }
 
 EOLIAN static void
@@ -4080,8 +5287,25 @@ _elm_entry_efl_gfx_size_set(Eo *obj, Elm_Entry_Data *sd, Eina_Size2D sz)
      return;
 
    efl_gfx_size_set(sd->hit_rect, sz);
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
    if (sd->have_selection)
      _update_selection_handler(obj);
+    */
+   if (sd->have_selection)
+     {
+        _update_selection_handler(obj);
+
+        /* Use job functions to get correct parent's geometry */
+        if (sd->sel_handler_update_job)
+          ecore_job_del(sd->sel_handler_update_job);
+        sd->sel_handler_update_job =
+           ecore_job_add(_sel_handler_update_job_cb, obj);
+     }
+   /*******
+    * END *
+    *******/
 
    efl_gfx_size_set(efl_super(obj, MY_CLASS), sz);
 }
@@ -4229,7 +5453,16 @@ _elm_entry_password_set(Eo *obj, Elm_Entry_Data *sd, Eina_Bool password)
         sd->single_line = EINA_TRUE;
         sd->line_wrap = ELM_WRAP_NONE;
         elm_entry_input_hint_set(obj, ((sd->input_hints & ~ELM_INPUT_HINT_AUTO_COMPLETE) | ELM_INPUT_HINT_SENSITIVE_DATA));
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************
+         * Selection is allowed for password mode in Tizen.
+         * So, you don't need unregister selection callbacks in password mode
         _entry_selection_callbacks_unregister(obj);
+         */
+        /*******
+         * END *
+         *******/
         efl_access_role_set(obj, EFL_ACCESS_ROLE_PASSWORD_TEXT);
      }
    else
@@ -4242,7 +5475,16 @@ _elm_entry_password_set(Eo *obj, Elm_Entry_Data *sd, Eina_Bool password)
                             _dnd_drop_cb, NULL);
 
         elm_entry_input_hint_set(obj, ((sd->input_hints | ELM_INPUT_HINT_AUTO_COMPLETE) & ~ELM_INPUT_HINT_SENSITIVE_DATA));
+        /*************************************************************
+         * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+         *************************************************************
+         * Selection is allowed for password mode in Tizen.
+         * So, you don't need re-register selection callbacks in non-password mode
         _entry_selection_callbacks_register(obj);
+         */
+        /*******
+         * END *
+         *******/
         efl_access_role_set(obj, EFL_ACCESS_ROLE_ENTRY);
      }
 
@@ -4394,7 +5636,12 @@ _elm_entry_editable_get(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
 EOLIAN static void
 _elm_entry_select_none(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
 {
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
+    * Selection is allowed for password mode in Tizen.
    if ((sd->password)) return;
+    */
    if (sd->sel_mode)
      {
         sd->sel_mode = EINA_FALSE;
@@ -4403,11 +5650,16 @@ _elm_entry_select_none(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
             (sd->entry_edje, "elm.text", EINA_FALSE);
         edje_object_signal_emit(sd->entry_edje, "elm,state,select,off", "elm");
      }
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
+    * obj_hidemenu() is getting called from _entry_selection_cleared_signal_cb()
    if (sd->have_selection)
      efl_event_callback_legacy_call
        (obj, EFL_UI_EVENT_SELECTION_CLEARED, NULL);
 
    sd->have_selection = EINA_FALSE;
+    */
    edje_object_part_text_select_none(sd->entry_edje, "elm.text");
 
    _hide_selection_handler(obj);
@@ -4417,7 +5669,12 @@ EOLIAN static void
 _elm_entry_select_all(Eo *obj, Elm_Entry_Data *sd)
 {
    if (elm_entry_is_empty(obj)) return;
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
+    * Selection is allowed for password mode in Tizen.
    if ((sd->password)) return;
+    */
    if (sd->sel_mode)
      {
         sd->sel_mode = EINA_FALSE;
@@ -4433,7 +5690,12 @@ EOLIAN static void
 _elm_entry_select_region_set(Eo *obj, Elm_Entry_Data *sd, int start, int end)
 {
    if (elm_entry_is_empty(obj)) return;
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************
+    * Selection is allowed for password mode in Tizen.
    if ((sd->password)) return;
+    */
    if (sd->sel_mode)
      {
         sd->sel_mode = EINA_FALSE;
@@ -5099,6 +6361,26 @@ _scroll_cb(Evas_Object *obj, void *data EINA_UNUSED)
 
    if (sd->have_selection)
      _update_selection_handler(obj);
+
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   /* Update cursor handler */
+   if (sd->cursor_handler_shown)
+     {
+        if (!sd->cursor_handler_down)
+          {
+             evas_object_hide(sd->cursor_handler);
+             sd->cursor_handler_shown = EINA_FALSE;
+          }
+        else
+          {
+             _update_cursor_handler(obj, sd);
+          }
+    }
+   /*******
+    * END *
+    *******/
 }
 
 EOLIAN static void
@@ -6730,6 +8012,782 @@ _elm_entry_elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
 /*******
  * END *
  *******/
+
+/****************************************************************************
+ * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM
+ * 20150129: Add more control when drop happens.
+ * 20150129: Add drag feature.
+ * 20150201: Add cursor handler.
+ * 20150205: Add support for CopyPaste module.
+ * 20150807: Apply user stye in drag and drop
+ * 20150811: Apply scale in drag and drop
+ * 20150820: Adjust end of line cursor to prevent zero selection
+ * 20150829: Keep selection over text only on long press and move
+ * 20150909: Update cursor position on mouse up, not mouse down (with edje)
+ * 20151012: Modify scale in drag and drop
+ * 20160915: Hide cbhm when unfocus.
+ ****************************************************************************/
+
+/* cbhm client for multi entry */
+#ifdef HAVE_ELEMENTARY_WAYLAND
+#define CBHM_DBUS_OBJPATH "/org/tizen/cbhm/dbus"
+#ifndef CBHM_DBUS_INTERFACE
+#define CBHM_DBUS_INTERFACE "org.tizen.cbhm.dbus"
+#endif /* CBHM_DBUS_INTERFACE */
+
+static void
+_cbhm_on_name_owner_changed(void *data EINA_UNUSED, const char *bus,
+                            const char *old_id EINA_UNUSED, const char *new_id)
+{
+   if ((!new_id || (new_id[0] == '\0'))
+       && strncmp(CBHM_DBUS_INTERFACE, bus, strlen(CBHM_DBUS_INTERFACE)))
+     {
+        ERR("cbhm daemon lost owner");
+     }
+}
+
+static void
+_on_item_clicked(void *data, const Eldbus_Message *msg EINA_UNUSED)
+{
+   Evas_Object *obj = data;
+   if (!data)
+     {
+        return;
+     }
+
+   if (elm_object_focus_get(obj))
+     _paste_cb(obj, NULL, NULL);
+}
+
+static void
+_cbhm_eldbus_init(Evas_Object *obj)
+{
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   Eldbus_Object *eldbus_obj;
+
+   if (!sd->cbhm_proxy)
+     {
+        elm_need_eldbus();
+        sd->cbhm_conn = eldbus_connection_get(ELDBUS_CONNECTION_TYPE_SESSION);
+        eldbus_obj = eldbus_object_get(sd->cbhm_conn, CBHM_DBUS_INTERFACE, CBHM_DBUS_OBJPATH);
+        sd->cbhm_proxy = eldbus_proxy_get(eldbus_obj, CBHM_DBUS_INTERFACE);
+        eldbus_name_owner_changed_callback_add(sd->cbhm_conn, CBHM_DBUS_INTERFACE,
+              _cbhm_on_name_owner_changed, sd->cbhm_conn, EINA_TRUE);
+     }
+   eldbus_proxy_signal_handler_add(sd->cbhm_proxy, "ItemClicked", _on_item_clicked, obj);
+}
+
+static void
+_cbhm_eldbus_deinit(Evas_Object *obj)
+{
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   if (sd->cbhm_init_job)
+     {
+        ecore_job_del(sd->cbhm_init_job);
+        sd->cbhm_init_job = NULL;
+     }
+
+   if (sd->cbhm_conn)
+     {
+        eldbus_connection_unref(sd->cbhm_conn);
+        sd->cbhm_conn = NULL;
+     }
+   sd->cbhm_proxy = NULL;
+}
+
+static void
+_init_eldbus_job(Evas_Object *obj)
+{
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   _cbhm_eldbus_init(obj);
+   /* If entry got focused by the time job has not initiated the dbus */
+   if (efl_ui_focus_object_focus_get(obj))
+     {
+        if (sd->cnp_mode != ELM_CNP_MODE_MARKUP)
+          eldbus_proxy_call(sd->cbhm_proxy, "CbhmSetInputTextType", NULL, NULL, -1, "s", "text");
+        else
+          eldbus_proxy_call(sd->cbhm_proxy, "CbhmSetInputTextType", NULL, NULL, -1, "s", "image");
+     }
+   sd->cbhm_init_done = EINA_TRUE;
+   sd->cbhm_init_job = NULL;
+}
+#endif
+
+static Evas_Coord_Rectangle
+_layout_region_get(Evas_Object *obj)
+{
+   Evas_Coord_Rectangle r;
+   Evas_Object *child = NULL, *parent = NULL;
+
+   r.x = r.y = r.w = r.h = -1;
+   if (!obj || !elm_widget_type_get(obj)) return r;
+
+   child = obj;
+   parent = elm_widget_parent_get(obj);
+   while (parent)
+     {
+        const char *wt = elm_widget_type_get(parent);
+        if (wt && !strcmp(wt, "Elm_Conformant"))
+          {
+             evas_object_geometry_get(child, &r.x, &r.y, &r.w, &r.h);
+             return r;
+          }
+        child = parent;
+        parent = elm_widget_parent_get(parent);
+     }
+   return r;
+}
+
+static inline Eina_Iterator *
+_selection_range_geometry_get(Evas_Object *obj)
+{
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   Eina_Iterator *range = NULL;
+   Evas_Coord start_pos, end_pos;
+   Evas_Textblock_Cursor *start_cur = NULL, *end_cur = NULL;
+   const Evas_Object *tb = NULL;
+
+   start_pos = edje_object_part_text_cursor_pos_get(sd->entry_edje,
+                          "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
+   end_pos = edje_object_part_text_cursor_pos_get(sd->entry_edje,
+                          "elm.text", EDJE_CURSOR_SELECTION_END);
+   tb = edje_object_part_object_get(sd->entry_edje, "elm.text");
+   start_cur = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_pos_set(start_cur, start_pos);
+   end_cur = evas_object_textblock_cursor_new(tb);
+   evas_textblock_cursor_pos_set(end_cur, end_pos);
+
+   range = evas_textblock_cursor_range_simple_geometry_get(
+                                       start_cur, end_cur);
+
+   evas_textblock_cursor_free(start_cur);
+   evas_textblock_cursor_free(end_cur);
+
+   return range;
+}
+
+static Evas_Coord_Rectangle
+_selection_geometry_get(Evas_Object *obj)
+{
+   Evas_Coord_Rectangle rect;
+   Eina_Iterator *range = NULL;
+   Evas_Textblock_Rectangle *r = NULL;
+   Evas_Coord min_x = 0, min_y = 0, max_x = 0, max_y = 0;
+   Evas_Coord xo = 0, yo = 0;
+   int i = 0;
+
+   ELM_ENTRY_DATA_GET(obj, sd);
+   evas_object_geometry_get(edje_object_part_object_get
+                            (sd->entry_edje, "elm.text"),
+                            &xo, &yo, NULL, NULL);
+   range = _selection_range_geometry_get(obj);
+   EINA_ITERATOR_FOREACH(range, r)
+     {
+        if (i == 0)
+          {
+             min_x = r->x;
+             min_y = r->y;
+          }
+        if (r->x < min_x) min_x = r->x;
+        if (r->y < min_y) min_y = r->y;
+        if ((r->x + r->w) > max_x)
+          max_x = r->x + r->w;
+        if ((r->y + r->h) > max_y)
+          max_y = r->y + r->h;
+        i++;
+     }
+   eina_iterator_free(range);
+
+   rect.x = min_x + xo;
+   rect.y = min_y + yo;
+   rect.w = max_x - min_x;
+   rect.h = max_y - min_y;
+
+   return rect;
+}
+
+static Eina_Bool
+_hit_selection_check(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
+{
+   Eina_Iterator *range = NULL;
+   Evas_Textblock_Rectangle *r = NULL;
+   Eina_Bool hit = EINA_FALSE;
+   Evas_Coord xo = 0, yo = 0;
+
+   ELM_ENTRY_DATA_GET(obj, sd);
+   evas_object_geometry_get(edje_object_part_object_get
+                            (sd->entry_edje, "elm.text"),
+                            &xo, &yo, NULL, NULL);
+   x -= xo;
+   y -= yo;
+   range = _selection_range_geometry_get(obj);
+   EINA_ITERATOR_FOREACH(range, r)
+     {
+        if ((x >= r->x) && (x <= r->x + r->w) &&
+            (y >= r->y) && (y <= r->y + r->h))
+          {
+             hit = EINA_TRUE;
+             break;
+          }
+     }
+   eina_iterator_free(range);
+
+   return hit;
+}
+
+static Evas_Object *
+_entry_icon_create_cb(void *data, Evas_Object *parent, Evas_Coord *xoff, Evas_Coord *yoff)
+{
+   int xm, ym;
+   Evas_Object *icon;
+   int r, g, b, a;
+   const char *text;
+   Evas_Coord margin_w = 0, margin_h = 0;
+   Evas_Coord_Rectangle rect;
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   icon = evas_object_textblock_add(evas_object_evas_get(parent));
+   text = edje_object_part_text_selection_get(sd->entry_edje, "elm.text");
+
+   evas_object_color_get(data, &r, &g, &b, &a);
+   evas_object_color_set(icon, r, g, b, a);
+
+   /* Copy style */
+   Evas_Textblock_Style *tb_style =
+      (Evas_Textblock_Style *)evas_object_textblock_style_get
+                              (elm_entry_textblock_get(data));
+   evas_object_textblock_style_set(icon, tb_style);
+
+   Evas_Textblock_Style *tb_style_user =
+      (Evas_Textblock_Style *)evas_object_textblock_style_user_peek
+                              (elm_entry_textblock_get(data));
+   if (tb_style_user)
+     {
+        const char *tb_style_text;
+        tb_style_text = evas_textblock_style_get(tb_style_user);
+        tb_style_user = evas_textblock_style_new();
+        evas_textblock_style_set(tb_style_user, tb_style_text);
+        evas_object_textblock_style_user_push(icon, tb_style_user);
+        evas_textblock_style_free(tb_style_user);
+     }
+
+   evas_object_scale_set(icon,
+         elm_config_scale_get()
+         * elm_object_scale_get(data)
+         / edje_object_base_scale_get(sd->entry_edje));
+
+   evas_object_textblock_size_formatted_get(icon, &margin_w, &margin_h);
+   evas_object_textblock_text_markup_set(icon, text);
+
+   rect = _selection_geometry_get(data);
+
+   evas_object_size_hint_weight_set(icon, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(icon, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_move(icon, rect.x, rect.y);
+   evas_object_resize(icon, rect.w + margin_w, rect.h + margin_h);
+   evas_object_show(icon);
+
+   evas_pointer_canvas_xy_get(evas_object_evas_get(data), &xm, &ym);
+   if (xoff) *xoff = xm - (rect.w / 2);
+   if (yoff) *yoff = ym - (rect.h / 2);
+
+   return icon;
+}
+
+static Eina_Bool
+_cursor_handler_long_press_cb(void *data)
+{
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   Evas_Coord ex, ey;
+   Evas_Coord cx, cy, cw, ch;
+
+   edje_object_part_text_cursor_geometry_get(sd->entry_edje, "elm.text",
+                                             &cx, &cy, &cw, &ch);
+   evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
+   if (sd->has_text)
+     {
+        _magnifier_create(data);
+        _magnifier_show(data);
+        _magnifier_move(data);
+     }
+   sd->cursor_handler_longpress_timer = NULL;
+
+   return ECORE_CALLBACK_CANCEL;
+}
+
+static void
+_cursor_handler_mouse_down_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   Evas_Event_Mouse_Down *ev = event_info;
+   Evas_Coord ex, ey;
+   Evas_Coord cx, cy, cw, ch;
+
+   if ((sd->api) && (sd->api->obj_hidemenu))
+     sd->api->obj_hidemenu(data);
+   sd->cursor_handler_down = EINA_TRUE;
+   edje_object_part_text_cursor_geometry_get(sd->entry_edje, "elm.text",
+                                             &cx, &cy, &cw, &ch);
+   evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
+   sd->ox = ev->canvas.x - (ex + cx + (cw / 2));
+   sd->oy = ev->canvas.y - (ey + cy + (ch / 2));
+   if (_elm_config->magnifier_enable)
+     {
+        sd->cursor_handler_down_pos = sd->cursor_pos;
+
+        ELM_SAFE_FREE(sd->cursor_handler_longpress_timer, ecore_timer_del);
+        sd->cursor_handler_longpress_timer = ecore_timer_add
+          (_elm_config->longpress_timeout, _cursor_handler_long_press_cb, data);
+
+     }
+}
+
+static void
+_cursor_handler_mouse_up_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+{
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   if (!sd->cursor_handler_down) return;
+
+   ELM_SAFE_FREE(sd->cursor_handler_longpress_timer, ecore_timer_del);
+   sd->cursor_handler_down = EINA_FALSE;
+   if (_elm_config->magnifier_enable)
+     _magnifier_hide(data);
+   if (!TIZEN_PROFILE_WEARABLE)
+     {
+        if ((!_elm_config->context_menu_disabled) &&
+            (!_elm_config->desktop_entry))
+          _menu_call(data);
+     }
+}
+
+static void
+_cursor_handler_mouse_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   Evas_Event_Mouse_Move *ev = event_info;
+   Evas_Coord ex, ey;
+   Evas_Coord cx, cy, cw, ch, chx, chy, chh;
+   Evas_Coord lh, th;
+   const Evas_Object *tb;
+   Evas_Textblock_Cursor *cur;
+   Evas_Coord_Rectangle layrect;
+   int pos = 0;
+
+   if (!sd->cursor_handler_down) return;
+   pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_MAIN);
+   tb = edje_object_part_object_get(sd->entry_edje, "elm.text");
+   evas_object_textblock_size_formatted_get(tb, NULL, &th);
+   cur = evas_object_textblock_cursor_new((Evas_Object *)tb);
+   evas_textblock_cursor_pos_set(cur, pos);
+   evas_textblock_cursor_line_geometry_get(cur, NULL, NULL, NULL, &lh);
+   evas_textblock_cursor_free(cur);
+
+   evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
+   cx = ev->cur.canvas.x - sd->ox - ex;
+   cy = ev->cur.canvas.y - sd->oy - ey;
+   if (cx <= 0) cx = 1;
+   if (cy < (lh / 2)) cy = lh / 2;
+   if (cy >= th) cy = th - 1;
+
+   edje_object_part_text_cursor_coord_set(sd->entry_edje, "elm.text",
+                                          EDJE_CURSOR_USER, cx, cy);
+   pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                              EDJE_CURSOR_USER);
+   edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                        EDJE_CURSOR_MAIN, pos);
+
+   evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
+   edje_object_part_text_cursor_geometry_get(sd->entry_edje, "elm.text",
+                                             &cx, &cy, &cw, &ch);
+   chx = ex + cx + (cw / 2);
+   chy = ey + cy + ch;
+   evas_object_move(sd->cursor_handler, chx, chy);
+   layrect = _layout_region_get(data);
+   edje_object_parts_extends_calc(sd->cursor_handler, NULL, NULL, NULL, &chh);
+   if (chy + chh > layrect.y + layrect.h)
+     {
+        evas_object_move(sd->cursor_handler, chx, chy - ch);
+        edje_object_signal_emit(sd->cursor_handler, "edje,cursor,handle,top", "edje");
+     }
+   else
+     {
+        edje_object_signal_emit(sd->cursor_handler, "edje,cursor,handle,show", "edje");
+     }
+   edje_object_message_signal_process(sd->cursor_handler);
+
+   if (_elm_config->magnifier_enable)
+     {
+        if (sd->has_text)
+          {
+             if (sd->cursor_handler_down_pos != sd->cursor_pos)
+               {
+                  if (sd->cursor_handler_longpress_timer)
+                    {
+                       ELM_SAFE_FREE(sd->cursor_handler_longpress_timer, ecore_timer_del);
+                       _magnifier_create(data);
+                       _magnifier_show(data);
+                    }
+                  _magnifier_move(data);
+               }
+          }
+     }
+}
+
+static void
+_create_cursor_handler(Evas_Object *obj, Elm_Entry_Data *sd)
+{
+   if (sd->cursor_handler) return;
+   Evas_Object *handle;
+
+   handle = edje_object_add(evas_object_evas_get(obj));
+   sd->cursor_handler = handle;
+   _elm_theme_object_set(obj, handle, "entry", "cursor_handle", "default");
+   evas_object_event_callback_add(handle, EVAS_CALLBACK_MOUSE_DOWN,
+                                  _cursor_handler_mouse_down_cb, obj);
+   evas_object_event_callback_add(handle, EVAS_CALLBACK_MOUSE_MOVE,
+                                  _cursor_handler_mouse_move_cb, obj);
+   evas_object_event_callback_add(handle, EVAS_CALLBACK_MOUSE_UP,
+                                  _cursor_handler_mouse_up_cb, obj);
+   evas_object_layer_set(handle, EVAS_LAYER_MAX - 1);
+
+   /* For supporting Tizen 2.3 theme */
+   edje_object_signal_emit(handle, "edje,cursor,handle,show", "edje");
+
+   /* Apply color_class parent-child relationship */
+   _elm_widget_color_class_parent_set(handle, sd->entry_edje);
+}
+
+static void
+_update_cursor_handler(Evas_Object *obj, Elm_Entry_Data *sd)
+{
+   Evas_Coord ex, ey;
+   Evas_Coord cx, cy, cw, ch, chx, chy, chh;
+   Evas_Coord_Rectangle layrect;
+   Eina_Rectangle *rect;
+
+   evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
+   edje_object_part_text_cursor_geometry_get(sd->entry_edje, "elm.text",
+                                             &cx, &cy, &cw, &ch);
+   chx = ex + cx + (cw / 2);
+   chy = ey + cy + ch;
+   evas_object_move(sd->cursor_handler, chx, chy);
+   layrect = _layout_region_get(obj);
+   edje_object_parts_extends_calc(sd->cursor_handler, NULL, NULL, NULL, &chh);
+   if (chy + chh > layrect.y + layrect.h)
+     {
+        evas_object_move(sd->cursor_handler, chx, chy - ch);
+        edje_object_signal_emit(sd->cursor_handler, "edje,cursor,handle,top", "edje");
+     }
+   else
+     {
+        edje_object_signal_emit(sd->cursor_handler, "edje,cursor,handle,show", "edje");
+     }
+   edje_object_message_signal_process(sd->cursor_handler);
+
+   rect = _viewport_region_get(obj);
+   if (!eina_rectangle_xcoord_inside(rect, chx) ||
+       !eina_rectangle_ycoord_inside(rect, chy))
+     {
+        evas_object_hide(sd->cursor_handler);
+     }
+   else
+     {
+        evas_object_show(sd->cursor_handler);
+     }
+}
+
+static void
+_select_all(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+{
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   /* disable text selection by user interaction
+	* if elm_entry_select_allow_set() is called with EINA_FALSE */
+   if (!sd->sel_allow) return;
+
+   sd->sel_mode = EINA_TRUE;
+
+   if (edje_object_part_text_selection_get(sd->entry_edje, "elm.text") == NULL)
+     {
+        edje_object_part_text_select_none(sd->entry_edje, "elm.text");
+        edje_object_signal_emit(sd->entry_edje, "elm,state,select,on", "elm");
+        edje_object_part_text_select_all(sd->entry_edje, "elm.text");
+     }
+   else
+     {
+        edje_object_part_text_cursor_begin_set(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_SELECTION_BEGIN);
+        edje_object_part_text_cursor_begin_set(sd->entry_edje, "elm.text",
+                                               EDJE_CURSOR_SELECTION_END);
+        edje_object_part_text_cursor_end_set(sd->entry_edje, "elm.text",
+                                             EDJE_CURSOR_MAIN);
+        edje_object_part_text_select_extend(sd->entry_edje, "elm.text");
+     }
+   sd->have_selection = EINA_TRUE;
+   if (!TIZEN_PROFILE_WEARABLE) _menu_call(data);
+}
+
+static void
+_adjust_eol_cursor(Evas_Object *obj)
+{
+   const Evas_Object *tb = NULL;
+   Evas_Textblock_Cursor *c = NULL;
+   Eina_Bool eol;
+
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   tb = edje_object_part_object_get(sd->entry_edje, "elm.text");
+   c = evas_object_textblock_cursor_get(tb);
+   eol = evas_textblock_cursor_eol_get(c);
+   if (eol)
+     {
+        Evas_Textblock_Cursor *cp;
+        Evas_Coord ly, lpy;
+
+        cp = evas_object_textblock_cursor_new(tb);
+        evas_textblock_cursor_copy(c, cp);
+        evas_textblock_cursor_cluster_prev(cp);
+        evas_textblock_cursor_line_geometry_get(c, NULL, &ly, NULL, NULL);
+        evas_textblock_cursor_line_geometry_get(cp, NULL, &lpy, NULL, NULL);
+        if (ly != lpy)
+          evas_textblock_cursor_cluster_prev(c);
+        evas_textblock_cursor_free(cp);
+     }
+}
+
+static Eina_Bool
+_cursor_coordinate_check(Evas_Object *obj, Evas_Coord canvasx)
+{
+   const Evas_Object *tb = NULL;
+   const Evas_Textblock_Cursor *c = NULL;
+   Evas_Coord x, cx, clx = 0, clw = 0;
+
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   tb = edje_object_part_object_get(sd->entry_edje, "elm.text");
+   c = evas_object_textblock_cursor_get(tb);
+   evas_object_geometry_get(tb, &x, NULL, NULL, NULL);
+   evas_textblock_cursor_line_geometry_get(c, &clx, NULL, &clw, NULL);
+   cx = canvasx - x;
+
+   if ((cx < clx) || (cx > (clx + clw)))
+     {
+        return EINA_FALSE;
+     }
+   else
+     {
+        return EINA_TRUE;
+     }
+}
+
+static void
+_cursor_down_pos_set(Evas_Object *obj)
+{
+   Evas_Coord ex, ey, cx, cy;
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   evas_object_geometry_get(sd->entry_edje, &ex, &ey, NULL, NULL);
+   cx = sd->downx - ex;
+   cy = sd->downy - ey;
+   edje_object_part_text_cursor_coord_set(sd->entry_edje, "elm.text",
+                                          EDJE_CURSOR_MAIN, cx, cy);
+}
+
+static void
+_select_word(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+{
+   if (TIZEN_PROFILE_WEARABLE) return;
+
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   const Evas_Object *tb = NULL;
+   Evas_Textblock_Cursor *cur = NULL;
+   int pos = 0;
+
+   /* disable text selection by user interaction
+    * if elm_entry_select_allow_set() is called with EINA_FALSE */
+   if (!sd->sel_allow) return;
+
+   sd->sel_mode = EINA_TRUE;
+
+   _adjust_eol_cursor(data);
+
+   if (!_elm_config->desktop_entry)
+        edje_object_part_text_select_allow_set(sd->entry_edje, "elm.text",
+                                               EINA_TRUE);
+   edje_object_signal_emit(sd->entry_edje, "elm,state,select,on", "elm");
+
+   tb = edje_object_part_object_get(sd->entry_edje, "elm.text");
+   cur = evas_object_textblock_cursor_new(tb);
+   pos = edje_object_part_text_cursor_pos_get(sd->entry_edje,
+                                              "elm.text", EDJE_CURSOR_MAIN);
+   sd->cursor_move_pos = edje_object_part_text_cursor_pos_get
+               (sd->entry_edje, "elm.text", EDJE_CURSOR_MAIN);
+   evas_textblock_cursor_pos_set(cur, pos);
+   evas_textblock_cursor_word_start(cur);
+   pos = evas_textblock_cursor_pos_get(cur);
+   edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                        EDJE_CURSOR_MAIN, pos);
+   edje_object_part_text_select_begin(sd->entry_edje, "elm.text");
+   evas_textblock_cursor_word_end(cur);
+   if (!evas_textblock_cursor_eol_get(cur))
+     {
+        evas_textblock_cursor_char_next(cur);
+     }
+   pos = evas_textblock_cursor_pos_get(cur);
+   edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                        EDJE_CURSOR_MAIN, pos);
+   edje_object_part_text_select_extend(sd->entry_edje, "elm.text");
+   evas_textblock_cursor_free(cur);
+
+   if (edje_object_part_text_selection_get(sd->entry_edje, "elm.text"))
+     sd->have_selection = EINA_TRUE;
+   if ((!_elm_config->context_menu_disabled) &&
+       (!sd->long_pressed || event_info))
+     _menu_call(data);
+   if (!_elm_config->desktop_entry)
+        edje_object_part_text_select_allow_set(sd->entry_edje, "elm.text",
+                                               EINA_FALSE);
+}
+
+static void
+_keep_selection(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   sd->start_sel_pos = edje_object_part_text_cursor_pos_get(sd->entry_edje,
+                                  "elm.text", EDJE_CURSOR_SELECTION_BEGIN);
+   sd->end_sel_pos = edje_object_part_text_cursor_pos_get(sd->entry_edje,
+                                  "elm.text", EDJE_CURSOR_SELECTION_END);
+}
+
+static void
+_paste_translation(void *data, Evas_Object *obj, void *event_info)
+{
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   elm_entry_cursor_pos_set(obj, sd->start_sel_pos);
+   elm_entry_cursor_selection_begin(obj);
+   elm_entry_cursor_pos_set(obj, sd->end_sel_pos);
+   elm_entry_cursor_selection_end(obj);
+   if (data)
+     _elm_entry_entry_paste(obj, data);
+   if ((data) && (event_info))
+     _elm_entry_entry_paste(obj, " ");
+   if (event_info)
+     _elm_entry_entry_paste(obj, event_info);
+}
+
+static void
+_is_selected_all(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   if ((!data) || (!obj)) return;
+   ELM_ENTRY_DATA_GET(obj, sd);
+   int pos = 0;
+   Eina_Bool *ret = (Eina_Bool *)data;
+
+   pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                              EDJE_CURSOR_SELECTION_BEGIN);
+   edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                        EDJE_CURSOR_USER, pos);
+   if (edje_object_part_text_cursor_prev(sd->entry_edje, "elm.text",
+                                         EDJE_CURSOR_USER))
+     {
+        *ret = EINA_FALSE;
+        return;
+     }
+   else
+     {
+        pos = edje_object_part_text_cursor_pos_get(sd->entry_edje, "elm.text",
+                                                   EDJE_CURSOR_SELECTION_END);
+        edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
+                                             EDJE_CURSOR_USER, pos);
+        if (edje_object_part_text_cursor_next(sd->entry_edje, "elm.text",
+                                              EDJE_CURSOR_USER))
+          {
+             *ret = EINA_FALSE;
+             return;
+          }
+     }
+   *ret = EINA_TRUE;
+}
+
+EAPI void elm_entry_extension_module_data_get(Evas_Object *obj, Elm_Entry_Extension_data *ext_mod)
+{
+   ELM_ENTRY_DATA_GET(obj, sd);
+
+   ext_mod->cancel = _hover_cancel_cb;
+   ext_mod->copy = _copy_cb;
+   ext_mod->cut = _cut_cb;
+   ext_mod->paste = _paste_cb;
+   ext_mod->select = _select_word;
+   ext_mod->selectall = _select_all;
+   ext_mod->ent = sd->entry_edje;
+   ext_mod->items = sd->items;
+   ext_mod->editable = sd->editable;
+   ext_mod->have_selection = sd->have_selection;
+   ext_mod->password = sd->password;
+   ext_mod->selmode = sd->sel_mode;
+   ext_mod->context_menu = sd->context_menu;
+   ext_mod->cnp_mode = sd->cnp_mode;
+   ext_mod->_elm_config = _elm_config;
+   ext_mod->viewport_rect = _viewport_region_get(obj);
+   ext_mod->selection_rect = _selection_geometry_get(obj);
+   ext_mod->keep_selection = _keep_selection;
+   ext_mod->paste_translation = _paste_translation;
+   ext_mod->is_selected_all = _is_selected_all;
+   ext_mod->start_handler = sd->start_handler;
+   ext_mod->end_handler = sd->end_handler;
+   ext_mod->cursor_handler = sd->cursor_handler;
+   ext_mod->cursor_handler_shown = sd->cursor_handler_shown;
+   ext_mod->ent_scroll = sd->scroll;
+
+   /* cbhm client for multi entry */
+#ifdef HAVE_ELEMENTARY_WAYLAND
+   ext_mod->cbhm_proxy = sd->cbhm_proxy;
+#endif
+
+   /* Add entry_edje to set color class parent relation to copypaste popup */
+   ext_mod->entry_edje = sd->entry_edje;
+
+   /* Check wearable profile */
+   ext_mod->profile_wear = TIZEN_PROFILE_WEARABLE;
+}
+
+/* Use these job functions to get correct parent's gometry */
+static void
+_sel_handler_update_job_cb(void *data)
+{
+   Evas_Object *obj = data;
+
+   ELM_ENTRY_DATA_GET(obj, sd);
+   sd->sel_handler_update_job = NULL;
+   _update_selection_handler(obj);
+}
+
+static void
+_cursor_handler_update_job_cb(void *data)
+{
+   Evas_Object *obj = data;
+
+   ELM_ENTRY_DATA_GET(obj, sd);
+   sd->cursor_handler_update_job = NULL;
+   _update_cursor_handler(obj, sd);
+}
+
+/****************************
+ * TIZEN_ONLY_FEATURE : END *
+ ****************************/
+
 
 /* Efl.Part begin */
 

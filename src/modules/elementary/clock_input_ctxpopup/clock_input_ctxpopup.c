@@ -10,7 +10,6 @@
 #include "elm_ctxpopup.eo.h"
 
 #define ELEMENTARY_BUILD
-#undef ELM_MODULE_HELPER_H
 #include "elm_module_helper.h"
 
 #define CLOCK_FIELD_COUNT       8

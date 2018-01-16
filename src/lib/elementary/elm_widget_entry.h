@@ -89,6 +89,30 @@ struct _Elm_Entry_Data
    Elm_Cnp_Mode                          cnp_mode;
    Elm_Sel_Format                        drop_format;
 
+   /*************************************************************
+    * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
+    *************************************************************/
+   Evas_Object                          *cursor_handler;
+   Ecore_Job                            *sel_handler_update_job;
+   Ecore_Job                            *cursor_handler_update_job;
+   Ecore_Timer                          *cursor_handler_longpress_timer;
+   int                                   start_sel_pos, end_sel_pos;
+   int                                   cursor_move_pos;
+   int                                   cursor_handler_down_pos;
+   Eina_Bool                             drag_started : 1;
+   Eina_Bool                             cursor_handler_down : 1;
+   Eina_Bool                             cursor_handler_shown : 1;
+   Eina_Bool                             long_pressing : 1;
+#ifdef HAVE_ELEMENTARY_WAYLAND
+   Ecore_Job                            *cbhm_init_job;
+   Eina_Bool                             cbhm_init_done : 1;
+   Eldbus_Proxy                         *cbhm_proxy;
+   Eldbus_Connection                    *cbhm_conn;
+#endif
+   /*******
+    * END *
+    *******/
+
    Eina_Bool                             input_panel_return_key_disabled : 1;
    Eina_Bool                             drag_selection_asked : 1;
    Eina_Bool                             sel_handler_disabled : 1;

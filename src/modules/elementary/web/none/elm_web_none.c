@@ -10,7 +10,6 @@
 #include "elm_widget_web.h"
 
 #define ELEMENTARY_BUILD
-#undef ELM_MODULE_HELPER_H
 #include "elm_module_helper.h"
 #include "elm_web_none.eo.h"
 
