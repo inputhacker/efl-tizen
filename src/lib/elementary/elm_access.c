@@ -205,6 +205,7 @@ _access_shutdown(void)
 
    /* _elm_module_unload(); could access m->api and try to free(); */
    ELM_SAFE_FREE(m->api, free);
+   m->api = NULL;
    mapi = NULL;
 }
 
