@@ -92,6 +92,28 @@ _elm_plug_efl_ui_widget_theme_apply(Eo *obj, void *sd EINA_UNUSED)
    return int_ret;
 }
 
+//TIZEN_ONLY(20170104): add plug message feature.
+static void
+_elm_plug_ecore_evas_msg_handle(Ecore_Evas *ee, int msg_domain, int msg_id, void *data, int size)
+{
+   Evas_Object *plug;
+   Elm_Plug_Message pm;
+
+   if (!data) return;
+   DBG("Elm plug receive msg from socket ee=%p msg_domain=%x msg_id=%x size=%d", ee, msg_domain, msg_id, size);
+   //get plug object form ee
+   plug = (Evas_Object *)ecore_evas_data_get(ee, PLUG_KEY);
+   EINA_SAFETY_ON_NULL_RETURN(plug);
+
+   pm.msg_domain = msg_domain;
+   pm.msg_id = msg_id;
+   pm.data = data;
+   pm.size = size;
+
+   efl_event_callback_call(plug, ELM_PLUG_EVENT_MESSAGE_RECEIVED, &pm);
+}
+//
+
 static void
 _on_mouse_up(void *data,
              Evas *e EINA_UNUSED,
@@ -176,6 +198,9 @@ _elm_plug_connect(Eo *obj, void *sd EINA_UNUSED, const char *svcname, int svcnum
         ecore_evas_data_set(ee, PLUG_KEY, obj);
         ecore_evas_callback_delete_request_set(ee, _elm_plug_disconnected);
         ecore_evas_callback_resize_set(ee, _elm_plug_resized);
+        //TIZEN_ONLY(20170104): add plug message feature.
+        ecore_evas_callback_msg_handle_set(ee, _elm_plug_ecore_evas_msg_handle);
+        //
 
         //TIZEN_ONLY(20171108): make atspi_proxy work
         if (_elm_config->atspi_mode)
