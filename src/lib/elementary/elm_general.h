@@ -195,44 +195,52 @@ EAPI void      elm_run(void);
 EAPI void      elm_exit(void);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI void      elm_quicklaunch_mode_set(Eina_Bool ql_on);
+EINA_DEPRECATED EAPI void      elm_quicklaunch_mode_set(Eina_Bool ql_on);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI Eina_Bool elm_quicklaunch_mode_get(void);
+EINA_DEPRECATED EAPI Eina_Bool elm_quicklaunch_mode_get(void);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI int       elm_quicklaunch_init(int argc, char **argv);
+EINA_DEPRECATED EAPI int       elm_quicklaunch_init(int argc, char **argv);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI int       elm_quicklaunch_sub_init(int argc, char **argv);
+EINA_DEPRECATED EAPI int       elm_quicklaunch_sub_init(int argc, char **argv);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI int       elm_quicklaunch_sub_shutdown(void);
+EINA_DEPRECATED EAPI int       elm_quicklaunch_sub_shutdown(void);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI int       elm_quicklaunch_shutdown(void);
+EINA_DEPRECATED EAPI int       elm_quicklaunch_shutdown(void);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI void      elm_quicklaunch_seed(void);
+EINA_DEPRECATED EAPI void      elm_quicklaunch_seed(void);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI Eina_Bool elm_quicklaunch_prepare(int argc, char **argv, const char *cwd);
+EINA_DEPRECATED EAPI Eina_Bool elm_quicklaunch_prepare(int argc, char **argv, const char *cwd);
 
 /**
  * Exposed symbol used only by macros and should not be used by apps
@@ -240,24 +248,28 @@ EAPI Eina_Bool elm_quicklaunch_prepare(int argc, char **argv, const char *cwd);
 EAPI Eina_Bool efl_quicklaunch_prepare(int argc, char **argv, const char *cwd);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI Eina_Bool elm_quicklaunch_fork(int argc, char **argv, char *cwd, void (*postfork_func) (void *data), void *postfork_data);
+EINA_DEPRECATED EAPI Eina_Bool elm_quicklaunch_fork(int argc, char **argv, char *cwd, void (*postfork_func) (void *data), void *postfork_data);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI void      elm_quicklaunch_cleanup(void);
+EINA_DEPRECATED EAPI void      elm_quicklaunch_cleanup(void);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI int       elm_quicklaunch_fallback(int argc, char **argv);
+EINA_DEPRECATED EAPI int       elm_quicklaunch_fallback(int argc, char **argv);
 
 /**
+ * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EAPI char     *elm_quicklaunch_exe_path_get(const char *exe, const char *cwd);
+EINA_DEPRECATED EAPI char     *elm_quicklaunch_exe_path_get(const char *exe, const char *cwd);
 
 /**
  * Set a new policy's value (for a given policy group/identifier).

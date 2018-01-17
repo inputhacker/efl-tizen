@@ -34,6 +34,7 @@ EAPI Evas_Object                  *elm_gengrid_add(Evas_Object *parent);
 EAPI Elm_Object_Item *elm_gengrid_nth_item_get(const Evas_Object *obj, unsigned int nth);
 
 /**
+ * @deprecated Deprecated since 2.4. Use elm_scroller_page_show() instead.
  * Show a specific virtual region within the gengrid content object by page number.
  *
  * @param obj The gengrid object
@@ -52,8 +53,6 @@ EAPI Elm_Object_Item *elm_gengrid_nth_item_get(const Evas_Object *obj, unsigned 
  * elm_gengrid_current_page_get(sc, &h_page, &v_page);
  * elm_gengrid_page_show(sc, h_page + 1, v_page);
  * @endcode
- *
- * @deprecated Use elm_scroller_page_show() instead.
  *
  * @see elm_scroller_page_bring_in()
  */
