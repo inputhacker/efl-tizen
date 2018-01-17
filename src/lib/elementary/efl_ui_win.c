@@ -9282,11 +9282,13 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
 
         if (sd)
           {
-             if ((sd->type == type) && (sd->parent == parent))
+             if (sd->parent == parent)
                {
                   Evas_Object *tmp = _precreated_win_obj;
                   TRAP(sd, name_class_set, name, _elm_appname);
                   _precreated_win_obj = NULL;
+                  if (sd->type != type)
+                    efl_ui_win_type_set(tmp, type);
                   INF("Return precreated obj(%p).", tmp);
 
                   /* TIZEN_ONLY(20180117): Apply paragraph direction according to locale */
