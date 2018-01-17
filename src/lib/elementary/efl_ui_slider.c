@@ -1145,7 +1145,7 @@ _efl_ui_slider_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Slider_Data *priv)
    elm_widget_sub_object_parent_add(obj);
 
    priv->dir = EFL_UI_DIR_RIGHT;
-   priv->indicator_show = EINA_TRUE;
+   priv->indicator_show = EINA_FALSE;
    priv->indicator_visible_mode = elm_config_slider_indicator_visible_mode_get();
    priv->val_max = 1.0;
    //TODO: customize this time duration from api or theme data.

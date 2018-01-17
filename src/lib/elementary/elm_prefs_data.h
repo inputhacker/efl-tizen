@@ -1,4 +1,5 @@
 /**
+ * @internal
  * @defgroup Elm_Prefs Elementary Prefs
  * @ingroup Elementary
  *
