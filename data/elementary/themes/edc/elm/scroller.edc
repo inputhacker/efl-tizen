@@ -1143,7 +1143,6 @@ group { name: "elm/scroller/base/default";
       program {
          signal: "mouse,down,1*"; source: "elm.dragable.vbar";
          action: STATE_SET "clicked" 0.0;
-         target: "elm.dragable.vbar";
          target: "shadow_vbar";
          target: "glow_vbar";
          target: "center_glow_vbar";
@@ -1155,7 +1154,6 @@ group { name: "elm/scroller/base/default";
       program {
          signal: "mouse,up,1"; source: "elm.dragable.vbar";
          action: STATE_SET "default" 0.0;
-         target: "elm.dragable.vbar";
          target: "shadow_vbar";
          target: "glow_vbar";
          target: "center_glow_vbar";
@@ -1167,7 +1165,6 @@ group { name: "elm/scroller/base/default";
       program {
          signal: "mouse,down,1*"; source: "elm.dragable.hbar";
          action: STATE_SET "clicked" 0.0;
-         target: "elm.dragable.hbar";
          target: "shadow_hbar";
          target: "glow_hbar";
          target: "center_glow_hbar";
@@ -1179,7 +1176,6 @@ group { name: "elm/scroller/base/default";
       program {
          signal: "mouse,up,1"; source: "elm.dragable.hbar";
          action: STATE_SET "default" 0.0;
-         target: "elm.dragable.hbar";
          target: "shadow_hbar";
          target: "glow_hbar";
          target: "center_glow_hbar";
