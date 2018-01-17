@@ -1719,6 +1719,7 @@ _elm_win_state_change(Ecore_Evas *ee)
 {
    Efl_Ui_Win_Data *sd = _elm_win_associate_get(ee);
    Evas_Object *obj;
+   int w, h;
    Eina_Bool ch_withdrawn = EINA_FALSE;
    Eina_Bool ch_sticky = EINA_FALSE;
    Eina_Bool ch_iconified = EINA_FALSE;
@@ -1797,7 +1798,7 @@ _elm_win_state_change(Ecore_Evas *ee)
    //
    // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
 #ifdef HAVE_ELEMENTARY_WL2
-   int x = 0, y = 0, w = 0, h = 0;
+   int x = 0, y = 0;
    if (sd->legacy.indmode != (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win))
      {
         sd->legacy.indmode = (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win);
@@ -8137,6 +8138,8 @@ elm_win_xwindow_get(const Evas_Object *obj)
 #ifdef HAVE_ELEMENTARY_X
    if (sd->x.xwin) return sd->x.xwin;
    if (sd->parent) return elm_win_xwindow_get(sd->parent);
+#else
+   (void)sd;
 #endif
    return 0;
 }
@@ -9179,10 +9182,10 @@ elm_win_main_menu_get(Evas_Object *obj)
    _elm_menu_menu_bar_set(sd->main_menu, EINA_TRUE);
 
 #ifdef HAVE_ELEMENTARY_X
-   if (!_elm_config->disable_external_menu && sd->x.xwin) use_dbus = EINA_TRUE;
-#endif
+   Eina_Bool use_dbus = EINA_FALSE;
 
-#ifdef HAVE_ELEMENTARY_X
+   if (!_elm_config->disable_external_menu && sd->x.xwin) use_dbus = EINA_TRUE;
+
    if (use_dbus && _elm_dbus_menu_register(sd->main_menu))
      {
         _elm_dbus_menu_app_menu_register(sd->x.xwin, sd->main_menu,

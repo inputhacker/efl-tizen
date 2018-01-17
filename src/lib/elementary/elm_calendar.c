@@ -473,7 +473,7 @@ _flush_calendar_composite_elements(Evas_Object *obj, Elm_Calendar_Data *sd)
 static char *
 _localized_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
 {
-   if (data) return data;
+   if (data) return ((char *)E_(data));
    return NULL;
 }
 
@@ -510,7 +510,7 @@ _atspi_expose_objects(Evas_Object *obj, Eina_Bool is_atspi)
    if (is_atspi)
      {
         //TIZEN_ONLY(20160720): Exposing calendar's month name in accessibility tree.
-        Evas_Object *part, *access;
+        Evas_Object *part;
         part = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(obj), MONTH_ACCESS_PART);
         elm_access_object_unregister(part);
         if (part)

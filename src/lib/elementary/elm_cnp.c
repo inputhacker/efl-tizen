@@ -3095,6 +3095,7 @@ _wl_selection_receive(void *data, int type EINA_UNUSED, void *event)
         sdata.x = sdata.y = 0;
         sdata.format = ready->format;
         sdata.data = ev->data;
+        cnp_debug("selected format(%d), data(%s)", sdata.format, (char *)sdata.data);
         sdata.len = ev->len;
         sdata.action = _wl_to_elm(ecore_wl2_offer_action_get(ready->offer));
         ready->drop_cb(ready->drop_cb_data,

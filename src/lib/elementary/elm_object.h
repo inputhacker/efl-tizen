@@ -630,8 +630,6 @@ EAPI const char* elm_object_scroll_item_valign_get(const Evas_Object *obj);
  * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
  ***********************************************************************************/
 /**
- * @internal
- *
  * @brief Set the color of color class for the Elementary widgets.
  *
  * @note These color values are expected to be premultiplied by @p a.
@@ -646,12 +644,14 @@ EAPI const char* elm_object_scroll_item_valign_get(const Evas_Object *obj);
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_color_class_color_set(const char *color_class, int r, int g, int b, int a);
 
 /**
- * @internal
- *
  * @brief Get the color of color class for the Elementary widgets.
  *
  * @note These color values are expected to be premultiplied by @p a.
@@ -666,12 +666,14 @@ EAPI Eina_Bool        elm_color_class_color_set(const char *color_class, int r, 
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_color_class_color_get(const char *color_class, int *r, int *g, int *b, int *a);
 
 /**
- * @internal
- *
  * @brief Set the second color of color class for the Elementary widgets.
  *
  * The second color is commonly used for outline of text.
@@ -687,12 +689,14 @@ EAPI Eina_Bool        elm_color_class_color_get(const char *color_class, int *r,
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_color_class_color2_set(const char *color_class, int r, int g, int b, int a);
 
 /**
- * @internal
- *
  * @brief Get the second color of color class for the Elementary widgets.
  *
  * The second color is commonly used for outline of text.
@@ -708,12 +712,14 @@ EAPI Eina_Bool        elm_color_class_color2_set(const char *color_class, int r,
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_color_class_color2_get(const char *color_class, int *r, int *g, int *b, int *a);
 
 /**
- * @internal
- *
  * @brief Set the third color of color class for the Elementary widgets.
  *
  * The third color is commonly used for shadow of text.
@@ -729,12 +735,14 @@ EAPI Eina_Bool        elm_color_class_color2_get(const char *color_class, int *r
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_color_class_color3_set(const char *color_class, int r, int g, int b, int a);
 
 /**
- * @internal
- *
  * @brief Get the third color of color class for the Elementary widgets.
  *
  * The third color is commonly used for shadow of text.
@@ -750,12 +758,14 @@ EAPI Eina_Bool        elm_color_class_color3_set(const char *color_class, int r,
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_color_class_color3_get(const char *color_class, int *r, int *g, int *b, int *a);
 
 /**
- * @internal
- *
  * @brief Set the color of color class for a given widget.
  *
  * @note These color values are expected to be premultiplied by @p a.
@@ -770,12 +780,14 @@ EAPI Eina_Bool        elm_color_class_color3_get(const char *color_class, int *r
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_object_color_class_color_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a);
 
 /**
- * @internal
- *
  * @brief Get the color of color class for a given widget.
  *
  * @note These color values are expected to be premultiplied by @p a.
@@ -790,12 +802,14 @@ EAPI Eina_Bool        elm_object_color_class_color_set(Evas_Object *obj, const c
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_object_color_class_color_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a);
 
 /**
- * @internal
- *
  * @brief Set the second color of color class for a given widget.
  *
  * The second color is commonly used for outline of text.
@@ -812,12 +826,14 @@ EAPI Eina_Bool        elm_object_color_class_color_get(Evas_Object *obj, const c
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_object_color_class_color2_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a);
 
 /**
- * @internal
- *
  * @brief Get the second color of color class for a given widget.
  *
  * The second color is commonly used for outline of text.
@@ -834,12 +850,14 @@ EAPI Eina_Bool        elm_object_color_class_color2_set(Evas_Object *obj, const 
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_object_color_class_color2_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a);
 
 /**
- * @internal
- *
  * @brief Set the third color of color class for a given widget.
  *
  * The third color is commonly used for shadow of text.
@@ -856,12 +874,14 @@ EAPI Eina_Bool        elm_object_color_class_color2_get(Evas_Object *obj, const 
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_object_color_class_color3_set(Evas_Object *obj, const char *color_class, int r, int g, int b, int a);
 
 /**
- * @internal
- *
  * @brief Get the third color of color class for a given widget.
  *
  * The third color is commonly used for shadow of text.
@@ -878,6 +898,10 @@ EAPI Eina_Bool        elm_object_color_class_color3_set(Evas_Object *obj, const 
  * @since 1.19
  *
  * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool        elm_object_color_class_color3_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a);
 /*******

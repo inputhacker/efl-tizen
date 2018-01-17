@@ -420,6 +420,12 @@ _entry_value_apply(Evas_Object *obj)
    str = elm_object_text_get(sd->ent);
    if (!str) return;
 
+   //TIZEN_ONLY(20161007): If user set special value as number. spinner value
+   //                      should not set as special value.
+   const char *special_value = elm_spinner_special_value_get(obj, sd->val);
+   if (special_value && !strcmp(special_value, str)) return;
+   //
+
    val = strtod(str, &end);
    if (((*end != '\0') && (!isspace(*end))) || (fabs(val - sd->val) < DBL_EPSILON)) return;
    elm_spinner_value_set(obj, val);
