@@ -90,6 +90,9 @@ _access_object_get(const Evas_Object *obj, const char* part)
    return ao;
 }
 
+/**
+ * to fix error, disable below code temporarily
+ *
 EOLIAN static Eina_Bool
 _elm_ctxpopup_elm_widget_focus_next(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
@@ -106,7 +109,7 @@ _elm_ctxpopup_elm_widget_focus_next(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, 
         ao = _access_object_get(obj, ACCESS_OUTLINE_PART);
         if (ao) items = eina_list_append(items, ao);
 
-        /* scroller exists when ctxpopup has an item */
+        // scroller exists when ctxpopup has an item
         if (sd->scr)
            items = eina_list_append(items, sd->scr);
         else
@@ -182,6 +185,7 @@ _key_action_move(Evas_Object *obj, const char *params)
 
    return EINA_TRUE;
 }
+ */
 
 static void
 _x_pos_adjust(Evas_Coord_Point *pos,
@@ -232,7 +236,7 @@ _item_select_cb(void *data,
    if (elm_wdg_item_disabled_get(EO_OBJ(item)))
      {
         if (_elm_config->access_mode)
-          elm_access_say(E_("Disabled"));
+          _elm_access_say(E_("Disabled"));
         return;
      }
 
@@ -388,7 +392,7 @@ _item_theme_set(Elm_Ctxpopup_Item_Data *item,
    if (!sd) return;
 
    VIEW(item) = edje_object_add(evas_object_evas_get(sd->box));
-   edje_object_mirrored_set(VIEW(item), elm_widget_mirrored_get(WIDGET(item)));
+   edje_object_mirrored_set(VIEW(item), efl_ui_mirrored_get(WIDGET(item)));
    _elm_theme_object_set(WIDGET(item), VIEW(item), "ctxpopup", group_name,
                          elm_widget_style_get(WIDGET(item)));
    evas_object_size_hint_align_set(VIEW(item), EVAS_HINT_FILL, EVAS_HINT_FILL);
@@ -557,7 +561,7 @@ _base_geometry_calc(Evas_Object *obj,
    /* END */
 
    win = elm_object_top_widget_get(obj);
-   if ((win) && (!eo_isa(win, EFL_UI_WIN_CLASS)))
+   if ((win) && (!efl_isa(win, EFL_UI_WIN_CLASS)))
      win = NULL;
 
    //recalc the edje
@@ -773,7 +777,7 @@ _arrow_update(Evas_Object *obj,
         edje_object_signal_emit(sd->arrow, "elm,state,left", "elm");
         edje_object_part_swallow
            (wd->resize_obj,
-            (elm_widget_mirrored_get(obj) ? "elm.swallow.arrow_right" :
+            (efl_ui_mirrored_get(obj) ? "elm.swallow.arrow_right" :
              "elm.swallow.arrow_left"), sd->arrow);
 
         if (base_size.h > 0)
@@ -787,7 +791,7 @@ _arrow_update(Evas_Object *obj,
              drag = (double)(y) / (double)(base_size.h - (arrow_size.h + shadow_right_bottom.h + shadow_left_top.h + (arrow_padding.h * 2)));
              edje_object_part_drag_value_set
                 (wd->resize_obj,
-                 (elm_widget_mirrored_get(obj) ? "elm.swallow.arrow_right" :
+                 (efl_ui_mirrored_get(obj) ? "elm.swallow.arrow_right" :
                   "elm.swallow.arrow_left"), 1, drag);
           }
         break;
@@ -796,7 +800,7 @@ _arrow_update(Evas_Object *obj,
         edje_object_signal_emit(sd->arrow, "elm,state,right", "elm");
         edje_object_part_swallow
            (wd->resize_obj,
-            (elm_widget_mirrored_get(obj) ? "elm.swallow.arrow_left" :
+            (efl_ui_mirrored_get(obj) ? "elm.swallow.arrow_left" :
              "elm.swallow.arrow_right"), sd->arrow);
 
         if (base_size.h > 0)
@@ -810,7 +814,7 @@ _arrow_update(Evas_Object *obj,
              drag = (double)(y) / (double)(base_size.h - (arrow_size.h + shadow_right_bottom.h + shadow_left_top.h + (arrow_padding.h * 2)));
              edje_object_part_drag_value_set
                 (wd->resize_obj,
-                 (elm_widget_mirrored_get(obj) ? "elm.swallow.arrow_left" :
+                 (efl_ui_mirrored_get(obj) ? "elm.swallow.arrow_left" :
                   "elm.swallow.arrow_right"), 0, drag);
           }
         break;
@@ -880,12 +884,12 @@ _show_signals_emit(Evas_Object *obj,
         break;
 
       case ELM_CTXPOPUP_DIRECTION_LEFT:
-        edje_object_signal_emit(sd->layout, (elm_widget_mirrored_get(obj) ? "elm,state,show,right" :
+        edje_object_signal_emit(sd->layout, (efl_ui_mirrored_get(obj) ? "elm,state,show,right" :
                "elm,state,show,left"), "elm");
         break;
 
       case ELM_CTXPOPUP_DIRECTION_RIGHT:
-        edje_object_signal_emit(sd->layout, (elm_widget_mirrored_get(obj) ? "elm,state,show,left" :
+        edje_object_signal_emit(sd->layout, (efl_ui_mirrored_get(obj) ? "elm,state,show,left" :
                "elm,state,show,right"), "elm");
         break;
 
@@ -915,12 +919,12 @@ _visible_signals_emit(Evas_Object *obj,
         break;
 
       case ELM_CTXPOPUP_DIRECTION_LEFT:
-        edje_object_signal_emit(sd->layout, (elm_widget_mirrored_get(obj) ? "elm,state,visible,right" :
+        edje_object_signal_emit(sd->layout, (efl_ui_mirrored_get(obj) ? "elm,state,visible,right" :
                "elm,state,visible,left"), "elm");
         break;
 
       case ELM_CTXPOPUP_DIRECTION_RIGHT:
-        edje_object_signal_emit(sd->layout, (elm_widget_mirrored_get(obj) ? "elm,state,visible,left" :
+        edje_object_signal_emit(sd->layout, (efl_ui_mirrored_get(obj) ? "elm,state,visible,left" :
                "elm,state,visible,right"), "elm");
         break;
 
@@ -950,12 +954,12 @@ _hide_signals_emit(Evas_Object *obj,
         break;
 
       case ELM_CTXPOPUP_DIRECTION_LEFT:
-        edje_object_signal_emit(sd->layout, (elm_widget_mirrored_get(obj) ? "elm,state,hide,right" :
+        edje_object_signal_emit(sd->layout, (efl_ui_mirrored_get(obj) ? "elm,state,hide,right" :
                "elm,state,hide,left"), "elm");
         break;
 
       case ELM_CTXPOPUP_DIRECTION_RIGHT:
-        edje_object_signal_emit(sd->layout, (elm_widget_mirrored_get(obj) ? "elm,state,hide,left" :
+        edje_object_signal_emit(sd->layout, (efl_ui_mirrored_get(obj) ? "elm,state,hide,left" :
                "elm,state,hide,right"), "elm");
         break;
 
@@ -1016,11 +1020,13 @@ _base_shift_by_arrow(Evas_Object *obj,
      }
 }
 
+/* disable temporarily
 EOLIAN static Eina_Bool
 _elm_ctxpopup_elm_layout_sub_object_add_enable(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *_pd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
+*/
 
 EOLIAN static Eina_Bool
 _elm_ctxpopup_efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Ctxpopup_Data *_pd EINA_UNUSED, Evas_Object *sobj)
@@ -1276,6 +1282,9 @@ _mirrored_set(Evas_Object *obj, Eina_Bool rtl)
    edje_object_mirrored_set(wd->resize_obj, rtl);
 }
 
+/**
+ * disable this code temporarily
+ *
 EOLIAN static Eina_Bool
 _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *src EINA_UNUSED, Evas_Callback_Type type, void *event_info)
 {
@@ -1305,7 +1314,7 @@ _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *s
         else
           dir = ELM_FOCUS_NEXT;
 
-        ret = elm_widget_focus_next_get(sd->box, dir, &target, &target_item);
+        ret = efl_ui_widget_focus_next_get(sd->box, dir, &target, &target_item);
         if (ret) elm_widget_focus_steal(target, target_item);
 
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
@@ -1367,13 +1376,14 @@ _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *s
    //if (strcmp(ev->keyname, "Escape")) return EINA_FALSE;
    return EINA_FALSE;
 
-/*
+//
    _hide_signals_emit(obj, sd->dir);
 
    ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
    return EINA_TRUE;
-*/
+//
 }
+*/
 
 //FIXME: lost the content size when theme hook is called.
 EOLIAN static Efl_Ui_Theme_Apply
@@ -1391,7 +1401,7 @@ _elm_ctxpopup_efl_ui_widget_theme_apply(Eo *obj, Elm_Ctxpopup_Data *sd)
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
    if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
 
-   rtl = elm_widget_mirrored_get(obj);
+   rtl = efl_ui_mirrored_get(obj);
 
    elm_widget_theme_object_set
      (obj, sd->bg, "ctxpopup", "bg", elm_widget_style_get(obj));
@@ -1550,7 +1560,7 @@ _elm_ctxpopup_content_get(Eo *obj, Elm_Ctxpopup_Data *sd, const char *part)
 }
 
 static Evas_Object*
-_elm_ctxpopup_elm_content_unset(Eo *obj, Elm_Ctxpopup_Data *sd, const char *part)
+_elm_ctxpopup_content_unset(Eo *obj, Elm_Ctxpopup_Data *sd, const char *part)
 {
    Evas_Object *content = NULL;
 
@@ -2080,7 +2090,7 @@ _elm_ctxpopup_efl_canvas_group_group_add(Eo *obj, Elm_Ctxpopup_Data *priv)
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOVE, _on_move, NULL);
    evas_object_event_callback_add(obj, EVAS_CALLBACK_CHANGED_SIZE_HINTS, _size_hints_changed_cb, NULL);
 
-   _mirrored_set(obj, elm_widget_mirrored_get(obj));
+   _mirrored_set(obj, efl_ui_mirrored_get(obj));
 
    elm_widget_can_focus_set(obj, EINA_TRUE);
    elm_ctxpopup_hover_parent_set(obj, elm_object_parent_widget_get(obj));
@@ -2163,7 +2173,7 @@ EAPI Evas_Object *
 elm_ctxpopup_add(Evas_Object *parent)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
-   Evas_Object *obj = eo_add(MY_CLASS, parent);
+   Evas_Object *obj = elm_legacy_add(MY_CLASS, parent);
 
    /* access: parent could be any object such as elm_list which does
       not know elc_ctxpopup as its child object in the focus_next(); */
@@ -2315,9 +2325,9 @@ EOLIAN static Eo *
 _elm_ctxpopup_item_efl_object_constructor(Eo *obj, Elm_Ctxpopup_Item_Data *it)
 {
    obj = efl_constructor(efl_super(obj, ELM_CTXPOPUP_ITEM_CLASS));
-   it->base = eo_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
+   it->base = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
 //TIZEN ONLY(20150710)ctxpopup: Accessible methods for children_get, extents_get and item name_get
-   elm_interface_atspi_accessible_role_set(EFL_ACCESS_ROLE_MENU_ITEM);
+   efl_access_role_set(obj, EFL_ACCESS_ROLE_MENU_ITEM);
 //
    return obj;
 }
@@ -2533,7 +2543,7 @@ _elm_ctxpopup_auto_hide_disabled_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 EOLIAN static Eina_Iterator*
 _elm_ctxpopup_efl_ui_menu_items_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
-   return sd->items;
+   return eina_list_iterator_new(sd->items);
 }
 
 EOLIAN static Elm_Object_Item*
@@ -2629,6 +2639,7 @@ _elm_ctxpopup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_
 {
    static Efl_Access_Action_Data atspi_actions[] = {
           { "escape", "escape", NULL, _key_action_escape},
+          /* to fix error, disable below code temporarily
           { "move,previous", "move", "previous", _key_action_move},
           { "move,next", "move", "next", _key_action_move},
           { "move,left", "move", "left", _key_action_move},
@@ -2636,6 +2647,7 @@ _elm_ctxpopup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_
           { "move,up", "move", "up", _key_action_move},
           { "move,down", "move", "down", _key_action_move},
           { NULL, NULL, NULL, NULL }
+          */
    };
    return &atspi_actions[0];
 }
@@ -2658,7 +2670,7 @@ _elm_ctxpopup_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd)
 
 //TIZEN ONLY(20150710): ctxpopup: Accessible methods for children_get, extents_get and item name_get
 EOLIAN Eina_List*
-_elm_ctxpopup_elm_interface_atspi_accessible_children_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_efl_access_children_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    Eina_List *ret = NULL;
    Eina_List *l = NULL;
@@ -2706,7 +2718,7 @@ _elm_ctxpopup_efl_access_component_highlight_grab(Eo *obj EINA_UNUSED, Elm_Ctxpo
      {
         elm_object_accessibility_highlight_set(sd->scr, EINA_TRUE);
         ///TIZEN_ONLY(20170717) : expose highlight information on atspi
-        elm_interface_atspi_accessible_state_changed_signal_emit(obj, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
+        efl_access_state_changed_signal_emit(obj, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
         ///
         return EINA_TRUE;
      }
@@ -2720,7 +2732,7 @@ _elm_ctxpopup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Ctxp
      {
         elm_object_accessibility_highlight_set(sd->scr, EINA_FALSE);
         ///TIZEN_ONLY(20170717) : expose highlight information on atspi
-        elm_interface_atspi_accessible_state_changed_signal_emit(obj, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_FALSE);
+        efl_access_state_changed_signal_emit(obj, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_FALSE);
         ///
         return EINA_TRUE;
      }
@@ -2815,7 +2827,7 @@ _elm_ctxpopup_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Ctxpopup_I
      }
 
    elm_object_accessibility_highlight_set(eo_it, EINA_TRUE);
-   elm_interface_atspi_accessible_state_changed_signal_emit(eo_it, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
+   efl_access_state_changed_signal_emit(eo_it, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    // If you call eo_do_super, then you do NOT have to call smart callback.
    evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
@@ -2827,7 +2839,7 @@ EOLIAN static Eina_Bool
 _elm_ctxpopup_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Ctxpopup_Item_Data *it EINA_UNUSED)
 {
    elm_object_accessibility_highlight_set(eo_it, EINA_FALSE);
-   elm_interface_atspi_accessible_state_changed_signal_emit(eo_it, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_FALSE);
+   efl_access_state_changed_signal_emit(eo_it, ELM_ATSPI_STATE_HIGHLIGHTED, EINA_FALSE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    // If you call eo_do_super, then you do NOT have to call smart callback.
    evas_object_smart_callback_call(WIDGET(it), "atspi,unhighlighted", EO_OBJ(it));
@@ -2844,21 +2856,21 @@ _content_move_down_cb(void *data, Evas_Object *obj, void *ev EINA_UNUSED)
    Elm_Ctxpopup_Item_Data *it_data;
    Evas_Object *highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
 
-   if (eo_isa(highlighted_obj, ELM_WIDGET_ITEM_CLASS))
+   if (efl_isa(highlighted_obj, ELM_WIDGET_ITEM_CLASS))
      {
-        Elm_Widget_Item_Data *id = eo_data_scope_get(highlighted_obj, ELM_WIDGET_ITEM_CLASS);
+        Elm_Widget_Item_Data *id = efl_data_scope_get(highlighted_obj, ELM_WIDGET_ITEM_CLASS);
         highlighted_obj = id->view;
      }
 
    Evas_Object *parent = highlighted_obj;
 
-   if (eo_isa(highlighted_obj, EFL_UI_WIDGET_CLASS))
+   if (efl_isa(highlighted_obj, EFL_UI_WIDGET_CLASS))
      {
         while ((parent = elm_widget_parent_get(parent)))
           if (parent == obj)
             break;
      }
-   else if (eo_isa(highlighted_obj, EFL_CANVAS_LAYOUT_CLASS))
+   else if (efl_isa(highlighted_obj, EFL_CANVAS_LAYOUT_CLASS))
      {
         while ((parent = evas_object_smart_parent_get(parent)))
           if (parent == obj)
@@ -2899,7 +2911,7 @@ _content_move_down_cb(void *data, Evas_Object *obj, void *ev EINA_UNUSED)
         if (next_previous_item)
           {
              elm_object_accessibility_highlight_set(EO_OBJ(next_previous_item), EINA_TRUE);
-             elm_interface_atspi_accessible_state_changed_signal_emit(EO_OBJ(next_previous_item), ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
+             efl_access_state_changed_signal_emit(EO_OBJ(next_previous_item), ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
           }
      }
 
@@ -2914,21 +2926,21 @@ _content_move_up_cb(void *data, Evas_Object *obj, void *ev EINA_UNUSED)
    Elm_Ctxpopup_Item_Data *it_data;
    Evas_Object *highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
 
-   if (eo_isa(highlighted_obj, ELM_WIDGET_ITEM_CLASS))
+   if (efl_isa(highlighted_obj, ELM_WIDGET_ITEM_CLASS))
      {
-        Elm_Widget_Item_Data *id = eo_data_scope_get(highlighted_obj, ELM_WIDGET_ITEM_CLASS);
+        Elm_Widget_Item_Data *id = efl_data_scope_get(highlighted_obj, ELM_WIDGET_ITEM_CLASS);
         highlighted_obj = id->view;
      }
 
    Evas_Object *parent = highlighted_obj;
 
-   if (eo_isa(highlighted_obj, EFL_UI_WIDGET_CLASS))
+   if (efl_isa(highlighted_obj, EFL_UI_WIDGET_CLASS))
      {
         while ((parent = elm_widget_parent_get(parent)))
           if (parent == obj)
             break;
      }
-   else if (eo_isa(highlighted_obj, EFL_CANVAS_LAYOUT_CLASS))
+   else if (efl_isa(highlighted_obj, EFL_CANVAS_LAYOUT_CLASS))
      {
         while ((parent = evas_object_smart_parent_get(parent)))
           if (parent == obj)
@@ -2969,7 +2981,7 @@ _content_move_up_cb(void *data, Evas_Object *obj, void *ev EINA_UNUSED)
         if (next_previous_item)
           {
              elm_object_accessibility_highlight_set(EO_OBJ(next_previous_item), EINA_TRUE);
-             elm_interface_atspi_accessible_state_changed_signal_emit(EO_OBJ(next_previous_item), ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
+             efl_access_state_changed_signal_emit(EO_OBJ(next_previous_item), ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
           }
      }
 
