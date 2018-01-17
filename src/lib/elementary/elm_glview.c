@@ -119,7 +119,7 @@ _render_cb(void *obj, const Efl_Event *event EINA_UNUSED)
    // Do a make current
    if (!evas_gl_make_current(sd->evasgl, sd->surface, sd->context))
      {
-        ERR("Failed doing make current.\n");
+        ERR("Failed doing make current.");
         goto on_error;
      }
 
@@ -159,7 +159,7 @@ _render_cb(void *obj, const Efl_Event *event EINA_UNUSED)
      }
    else
      {
-        ERR("Invalid Render Policy.\n");
+        ERR("Invalid Render Policy.");
         goto on_error;
      }
 
@@ -215,7 +215,7 @@ _set_render_policy_callback(Evas_Object *obj)
         break;
 
       default:
-        ERR("Invalid Render Policy.\n");
+        ERR("Invalid Render Policy.");
         return;
      }
 }
@@ -242,8 +242,7 @@ _elm_glview_constructor(Eo *obj, Elm_Glview_Data *priv)
    priv->evasgl = evas_gl_new(evas_object_evas_get(obj));
    if (!priv->evasgl)
      {
-        ERR("Failed Creating an Evas GL Object.\n");
-
+        ERR("Failed Creating an Evas GL Object.");
         return;
      }
 
@@ -251,8 +250,7 @@ _elm_glview_constructor(Eo *obj, Elm_Glview_Data *priv)
    priv->config = evas_gl_config_new();
    if (!priv->config)
      {
-        ERR("Failed Creating a Config Object.\n");
-
+        ERR("Failed Creating a Config Object.");
         evas_gl_free(priv->evasgl);
         priv->evasgl = NULL;
         return;
@@ -279,8 +277,7 @@ _elm_glview_constructor(Eo *obj, Elm_Glview_Data *priv)
      priv->context = evas_gl_context_version_create(priv->evasgl, NULL, priv->gles_version);
    if (!priv->context)
      {
-        ERR("Error Creating an Evas_GL Context.\n");
-
+        ERR("Error Creating an Evas_GL Context.");
         ELM_SAFE_FREE(priv->config, evas_gl_config_free);
         ELM_SAFE_FREE(priv->evasgl, evas_gl_free);
         return;
@@ -485,7 +482,7 @@ _elm_glview_resize_policy_set(Eo *obj, Elm_Glview_Data *sd, Elm_GLView_Resize_Po
         return EINA_TRUE;
 
       default:
-        ERR("Invalid Scale Policy.\n");
+        ERR("Invalid Scale Policy.");
         return EINA_FALSE;
      }
 
@@ -498,7 +495,7 @@ _elm_glview_render_policy_set(Eo *obj, Elm_Glview_Data *sd, Elm_GLView_Render_Po
    if ((policy != ELM_GLVIEW_RENDER_POLICY_ON_DEMAND) &&
        (policy != ELM_GLVIEW_RENDER_POLICY_ALWAYS))
      {
-        ERR("Invalid Render Policy.\n");
+        ERR("Invalid Render Policy.");
         return EINA_FALSE;
      }
 
