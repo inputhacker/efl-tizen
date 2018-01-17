@@ -28,7 +28,17 @@
 #include <Ecore_Evas.h>
 #include <Ecore_Input.h>
 #include <Ecore_Ipc.h>
-
+#ifdef BUILD_TIZEN_REMOTE_SURFACE
+# include <wayland-extension/tizen-remote-surface-client-protocol.h>
+# include <wayland-tbm-client.h>
+# include <Ecore_Wayland.h>
+# include <tbm_surface.h>
+# include <tbm_surface_internal.h>
+//# include <Evas_Engine_Wayland_Egl.h>
+//# include <Evas_Engine_Wayland_Shm.h>
+# include <Evas_Engine_Wayland.h>
+# include <Ecore_Input_Evas.h>
+#endif
 #include "ecore_private.h" // FIXME: Because of ECORE_MAGIC
 #include "ecore_evas_private.h"
 #include "ecore_evas_buffer.h"
@@ -76,7 +86,8 @@ enum // opcodes
    OP_EV_KEY_DOWN,
    OP_EV_HOLD,
    OP_MSG_PARENT,
-   OP_MSG
+   OP_MSG,
+   OP_GL_REF,
 };
 
 enum
@@ -91,6 +102,13 @@ enum
    MOD_NUM    = (1 << 7),
    MOD_SCROLL = (1 << 8),
 };
+
+enum {
+   EXTN_TYPE_NONE = 0, /* not set yet */
+   EXTN_TYPE_SHM , /* shared memory-based buffer backend */
+   EXTN_TYPE_WAYLAND_EGL,      /* wayland_egl backend  */
+};
+
 
 typedef struct _Ipc_Data_Resize Ipc_Data_Resize;
 typedef struct _Ipc_Data_Update Ipc_Data_Update;
