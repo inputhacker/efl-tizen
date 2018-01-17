@@ -85,6 +85,9 @@ struct _Efl_Ui_Multibuttonentry_Data
    //Tizen only(20160531) get access object
    Evas_Object                        *label_access;
    //
+   //TIZEN_ONLY(20170222): Support Tizen UX. (divider hide)
+   Evas_Object                        *last_it;
+   //
 
    Eina_List                          *items;
    Eina_List                          *filter_list;

@@ -59,7 +59,9 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
 static const char PART_NAME_BUTTON[] = "btn";
 static const char PART_NAME_GUIDE_TEXT[] = "guidetext";
 static const char PART_NAME_LABEL[] = "label";
-static const char PART_NAME_CLOSED_BUTTON[] = "closedbutton";
+//TIZEN_ONLY(20150429): "Closedbutton" name is only for upstream.
+//static const char PART_NAME_CLOSED_BUTTON[] = "closedbutton";
+static const char PART_NAME_NUMBER[] = "number";
 
 static Eina_Bool _efl_ui_multibuttonentry_smart_focus_next_enable = EINA_FALSE;
 static Eina_Bool _efl_ui_multibuttonentry_smart_focus_direction_enable = EINA_TRUE;
@@ -125,8 +127,22 @@ _efl_ui_multibuttonentry_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Multibuttonen
      }
 
    elm_widget_element_update(obj, sd->label, PART_NAME_LABEL);
-   elm_widget_element_update(obj, sd->end, PART_NAME_CLOSED_BUTTON);
+   //TIZEN_ONLY(20150429): "Closedbutton" name is only for upstream.
+   //elm_widget_element_update(obj, sd->end, PART_NAME_CLOSED_BUTTON);
+   elm_widget_element_update(obj, sd->end, PART_NAME_NUMBER);
+   //
    elm_widget_element_update(obj, sd->guide_text, PART_NAME_GUIDE_TEXT);
+
+   /* TIZEN_ONLY(20161102): apply widget's style to internal entry widget */
+   if (sd->entry)
+     {
+        Eina_Strbuf *buf = eina_strbuf_new();
+        eina_strbuf_append_printf(buf, "multibuttonentry/%s", elm_widget_style_get(obj));
+        if (elm_object_style_set(sd->entry, eina_strbuf_string_get(buf)) != EFL_UI_THEME_APPLY_SUCCESS)
+          elm_object_style_set(sd->entry, "multibuttonentry/default");
+        eina_strbuf_free(buf);
+     }
+   /* END */
 
    elm_layout_sizing_eval(obj);
 
@@ -270,8 +286,16 @@ _shrink_mode_set(Evas_Object *obj,
                   elm_box_pack_end(sd->box, sd->end);
                   evas_object_show(sd->end);
 
+                  //TIZEN_ONLY(20170222): Support Tizen UX. (divider hide)
+                  elm_layout_signal_emit(sd->last_it, "elm,state,shrink,on", "elm");
+                  //
+
                   break;
                }
+
+             //TIZEN_ONLY(20170222): Support Tizen UX. (divider hide)
+             sd->last_it = VIEW(item);
+             //
           }
 
         if (sd->view_state != MULTIBUTTONENTRY_VIEW_SHRINK)
@@ -308,6 +332,10 @@ _shrink_mode_set(Evas_Object *obj,
              evas_object_show(VIEW(item));
              item->visible = EINA_TRUE;
           }
+
+        //TIZEN_ONLY(20170222): Support Tizen UX. (divider hide)
+        elm_layout_signal_emit(sd->last_it, "elm,state,shrink,off", "elm");
+        //
 
         if (sd->view_state == MULTIBUTTONENTRY_VIEW_SHRINK)
           {
@@ -745,8 +773,8 @@ _atspi_multibuttonentry_label_register(Evas_Object *obj, Eina_Bool is_atspi)
 }
 
 static void
-_atspi_multibuttonentry_item_register(Evas_Object *obj,
-                                      Elm_Object_Item *eo_item,
+_atspi_multibuttonentry_item_register(Evas_Object *obj EINA_UNUSED,
+                                      Elm_Object_Item *eo_item EINA_UNUSED,
                                       Eina_Bool is_atspi)
 {
    if (is_atspi)
@@ -1225,8 +1253,12 @@ _callbacks_register(Evas_Object *obj)
    EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
+   //TIZEN_ONLY(20160524): Layout click signal change.
+   //elm_layout_signal_callback_add
+   //  (obj, "mouse,clicked,1", "*", _mouse_clicked_signal_cb, NULL);
    elm_layout_signal_callback_add
-     (obj, "mouse,clicked,1", "*", _mouse_clicked_signal_cb, NULL);
+     (obj, "elm,action,click", "*", _mouse_clicked_signal_cb, NULL);
+   //
 
    evas_object_event_callback_add
      (wd->resize_obj, EVAS_CALLBACK_KEY_DOWN,
@@ -1527,6 +1559,11 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
                        efl_ui_text_interactive_editable_set(efl_added, EINA_TRUE),
                        efl_composite_attach(obj, efl_added));
 
+   //TIZEN_ONLY(20160425): Entry property set for mobile UX.
+   elm_object_style_set(sd->entry, "multibuttonentry/default");
+   elm_entry_scrollable_set(sd->entry, EINA_TRUE);
+   //
+
    /***********************************************************************************
     * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
     ***********************************************************************************/
@@ -1549,7 +1586,9 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
 
         sd->end = edje_object_add(evas_object_evas_get(obj));
         if (!sd->end) return;
-        elm_widget_element_update(obj, sd->end, PART_NAME_CLOSED_BUTTON);
+        //elm_widget_element_update(obj, sd->end, PART_NAME_CLOSED_BUTTON);
+        elm_widget_element_update(obj, sd->end, PART_NAME_NUMBER);
+        //
 
         /***********************************************************************************
          * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
@@ -2112,7 +2151,7 @@ _efl_ui_multibuttonentry_class_constructor(Efl_Class *klass)
 }
 
 EOLIAN static Eina_List*
-_efl_ui_multibuttonentry_efl_access_children_get(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd)
+_efl_ui_multibuttonentry_efl_access_children_get(Eo *obj EINA_UNUSED, Efl_Ui_Multibuttonentry_Data *sd)
 {
    Eina_List *ret = NULL;
    //TIZEN_ONLY(20160527) : Improve MBE atspi support
