@@ -96,6 +96,7 @@ _ecore_wl2_output_add(Ecore_Wl2_Display *display, unsigned int id)
      eina_inlist_append(display->outputs, EINA_INLIST_GET(output));
 
    wl_output_add_listener(output->wl_output, &_output_listener, output);
+   ecore_wl2_display_flush(display);
 
 //TIZEN_ONLY: ecore_wl2: dispatch the output geometry event
    wl_display_roundtrip(display->wl.display);

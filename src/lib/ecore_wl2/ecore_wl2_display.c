@@ -61,9 +61,10 @@ static const struct zwp_linux_dmabuf_v1_listener _dmabuf_listener =
 };
 
 static void
-_xdg_shell_cb_ping(void *data EINA_UNUSED, struct xdg_wm_base *shell, uint32_t serial)
+_xdg_shell_cb_ping(void *data, struct xdg_wm_base *shell, uint32_t serial)
 {
    xdg_wm_base_pong(shell, serial);
+   ecore_wl2_display_flush(data);
 }
 
 static const struct xdg_wm_base_listener _xdg_shell_listener =
@@ -72,9 +73,10 @@ static const struct xdg_wm_base_listener _xdg_shell_listener =
 };
 
 static void
-_zxdg_shell_cb_ping(void *data EINA_UNUSED, struct zxdg_shell_v6 *shell, uint32_t serial)
+_zxdg_shell_cb_ping(void *data, struct zxdg_shell_v6 *shell, uint32_t serial)
 {
    zxdg_shell_v6_pong(shell, serial);
+   ecore_wl2_display_flush(data);
 }
 
 static const struct zxdg_shell_v6_listener _zxdg_shell_listener =
@@ -863,6 +865,7 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
 //
 
    //
+   ecore_wl2_display_flush(ewd);
 
 event:
    /* allocate space for event structure */
@@ -1210,7 +1213,7 @@ _ecore_wl2_shell_bind(Ecore_Wl2_Display *ewd)
           wl_registry_bind(ewd->wl.registry, global->id,
                            &xdg_wm_base_interface, 1);
         xdg_wm_base_add_listener(ewd->wl.xdg_wm_base,
-                                   &_xdg_shell_listener, NULL);
+                                   &_xdg_shell_listener, ewd);
         ewd->shell_done = EINA_TRUE;
      }
    else if (!strcmp(global->interface, "zxdg_shell_v6"))
@@ -1219,9 +1222,10 @@ _ecore_wl2_shell_bind(Ecore_Wl2_Display *ewd)
           wl_registry_bind(ewd->wl.registry, global->id,
                            &zxdg_shell_v6_interface, 1);
         zxdg_shell_v6_add_listener(ewd->wl.zxdg_shell,
-                                   &_zxdg_shell_listener, NULL);
+                                   &_zxdg_shell_listener, ewd);
         ewd->shell_done = EINA_TRUE;
      }
+   ecore_wl2_display_flush(ewd);
 }
 
 static void
@@ -1433,7 +1437,6 @@ _ecore_wl2_display_connect(Ecore_Wl2_Display *ewd, Eina_Bool sync)
    ecore_main_awake_handler_add(_ecore_wl_cb_awake, ewd);
 // End of TIZEN_ONLY(20171129)
    _ecore_wl2_display_event(ewd, ECORE_WL2_EVENT_CONNECT);
-   ecore_wl2_display_flush(ewd);
    return EINA_TRUE;
 }
 
