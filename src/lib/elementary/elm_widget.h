@@ -433,7 +433,7 @@ typedef struct _Elm_Widget_Smart_Data
    Eina_List                    *event_cb;
 
    //TIZEN_ONLY(20150709) add relations atpi
-   Elm_Atspi_Relation_Set       atspi_custom_relations; /**< Developer-defined accessiblity relations */
+   Efl_Access_Relation_Set       atspi_custom_relations; /**< Developer-defined accessiblity relations */
    ///////////////////////////////////
 
    /* this is a hook to be set on-the-fly on widgets. this is code
@@ -688,7 +688,7 @@ struct _Elm_Widget_Item_Data
    const char                    *atspi_translation_domain;
    ///
    //TIZEN_ONLY(20150709) add relations atpi
-   Elm_Atspi_Relation_Set        atspi_custom_relations; /**< Developer-defined accessiblity relations */
+   Efl_Access_Relation_Set        atspi_custom_relations; /**< Developer-defined accessiblity relations */
    ///////////////////////////////////
    /***********************************************************************************
     * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
