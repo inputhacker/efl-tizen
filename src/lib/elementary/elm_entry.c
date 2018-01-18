@@ -1266,8 +1266,30 @@ _elm_entry_efl_ui_widget_theme_apply(Eo *obj, Elm_Entry_Data *sd)
    edje_object_part_text_style_user_push(sd->entry_edje, "elm.text", stl_user);
    eina_stringshare_del(stl_user);
 
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************/
+   /* Store current cursor position to prevent cursor position initialization issue. */
+   int cursor_pos = sd->cursor_pos;
+   /*******
+    * END *
+    *******/
+
    elm_object_text_set(obj, t);
    eina_stringshare_del(t);
+
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************/
+   /* Fix cursor position initialization issues when theme is changed */
+   if (sd->cursor_pos != cursor_pos)
+     {
+        sd->cursor_pos = cursor_pos;
+        edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text", EDJE_CURSOR_MAIN, cursor_pos);
+     }
+   /*******
+    * END *
+    *******/
 
    if (elm_widget_disabled_get(obj))
      edje_object_signal_emit(sd->entry_edje, "elm,state,disabled", "elm");
@@ -1394,7 +1416,28 @@ _cursor_geometry_recalc(Evas_Object *obj)
              sd->cur_changed = EINA_FALSE;
              edje_object_part_text_cursor_geometry_get
                (sd->entry_edje, "elm.text", &sr.x, &sr.y, &sr.w, &sr.h);
+
+             /*****************************************************************************
+              * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+              *****************************************************************************
              elm_widget_show_region_set(obj, sr, EINA_FALSE);
+              */
+#ifdef SDK_TOOLS
+             /* Show region when cursor geometry is
+              * recalculated without focus for Tizen SDK tools on desktop.
+              * Because, in SDK tools, focus feature is not working. */
+             elm_widget_show_region_set(obj, sr, EINA_FALSE);
+#else
+             /* Only focused entry should show region to
+              * prevent unexpected region change. */
+             if (efl_ui_focus_object_focus_get(obj))
+               elm_widget_show_region_set(obj, sr, EINA_FALSE);
+             else
+               elm_interface_scrollable_content_region_show(obj, sr.x, sr.y, sr.w, sr.h);
+#endif
+             /*******
+              * END *
+              *******/
           }
      }
    else
@@ -1404,6 +1447,14 @@ _cursor_geometry_recalc(Evas_Object *obj)
 static void
 _deferred_recalc_job(void *data)
 {
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************
+    * Fix multiline entry calculation deferred issue.
+    * In Tizen, some containers do not allow deferred calculation.
+    * They don't update after initial calculation even if its content's size is
+    * updated. Because of performance.
+    * Actually, calculate widget's size in job is really bad. It ruins code consistency.
    Evas_Coord minh = -1, resw = -1, minw = -1, fw = 0, fh = 0;
 
    ELM_ENTRY_DATA_GET(data, sd);
@@ -1414,9 +1465,9 @@ _deferred_recalc_job(void *data)
    edje_object_size_min_restricted_calc(sd->entry_edje, &minw, &minh, resw, 0);
    elm_coords_finger_size_adjust(1, &minw, 1, &minh);
 
-   /* This is a hack to workaround the way min size hints are treated.
+   // This is a hack to workaround the way min size hints are treated.
     * If the minimum width is smaller than the restricted width, it
-    * means the minimum doesn't matter. */
+    * means the minimum doesn't matter. //
    if (minw <= resw)
      {
         Evas_Coord ominw = -1;
@@ -1458,6 +1509,13 @@ _deferred_recalc_job(void *data)
              evas_object_size_hint_max_set(data, -1, -1);
           }
      }
+    */
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   sd->deferred_recalc_job = NULL;
+   /*******
+    * END *
+    *******/
 
    if (sd->deferred_cur)
      {
@@ -1468,7 +1526,27 @@ _deferred_recalc_job(void *data)
              sd->cur_changed = EINA_FALSE;
              edje_object_part_text_cursor_geometry_get
                (sd->entry_edje, "elm.text", &sr.x, &sr.y, &sr.w, &sr.h);
+             /*****************************************************************************
+              * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+              *****************************************************************************
              elm_widget_show_region_set(data, sr, EINA_FALSE);
+              */
+#ifdef SDK_TOOLS
+             /* Show region when cursor geometry is
+              * recalculated without focus for Tizen SDK tools on desktop.
+              * Because, in SDK tools, focus feature is not working. */
+             elm_widget_show_region_set(data, sr, EINA_FALSE);
+#else
+             /* Only focused entry should show region to
+              * prevent unexpected region change. */
+             if (efl_ui_focus_object_focus_get(data))
+               elm_widget_show_region_set(data, sr, EINA_FALSE);
+             else
+               elm_interface_scrollable_content_region_show(data, sr.x, sr.y, sr.w, sr.h);
+#endif
+             /*******
+              * END *
+              *******/
           }
      }
 }
@@ -1549,6 +1627,36 @@ _elm_entry_elm_layout_sizing_eval(Eo *obj, Elm_Entry_Data *sd)
           }
         else
           {
+             /*****************************************************************************
+              * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+              *****************************************************************************/
+             /* Fix multiline entry calculation deferred issue. */
+             if (resw > 0)
+               {
+                  Evas_Coord fw;
+
+                  edje_object_size_min_restricted_calc(sd->entry_edje, &minw, &minh, resw, 0);
+                  elm_coords_finger_size_adjust(1, &minw, 1, &minh);
+
+                  if (minw <= resw)
+                    {
+                       Evas_Coord ominw = -1;
+
+                       evas_object_size_hint_combined_min_get(obj, &ominw, NULL);
+                       minw = ominw;
+                    }
+
+                  sd->ent_mw = minw;
+                  sd->ent_mh = minh;
+
+                  elm_coords_finger_size_adjust(1, &fw, 1, &minh);
+                  evas_object_size_hint_min_set(obj, fw, minh);
+                  evas_object_size_hint_max_set(obj, -1, -1);
+               }
+             /*******
+              * END *
+              *******/
+
              ecore_job_del(sd->deferred_recalc_job);
              sd->deferred_recalc_job =
                ecore_job_add(_deferred_recalc_job, obj);
@@ -4377,6 +4485,26 @@ _elm_entry_resize_internal(Evas_Object *obj)
      }
 
    if (sd->hoversel) _hoversel_position(obj);
+
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************/
+   /* Update show region geometry when entry is resized
+    * Update show region geometry if current resize event is
+    * occured during processing elm_widget_show_region_set() function. */
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
+
+   if (wd->on_show_region_set)
+     {
+        Eina_Rect sr = {};
+
+        edje_object_part_text_cursor_geometry_get
+           (sd->entry_edje, "elm.text", &sr.x, &sr.y, &sr.w, &sr.h);
+        elm_widget_show_region_set(obj, sr, EINA_FALSE);
+     }
+   /*******
+    * END *
+    *******/
 
    /*************************************************************
     * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
@@ -8857,6 +8985,24 @@ _cursor_handler_update_job_cb(void *data)
 /****************************
  * TIZEN_ONLY_FEATURE : END *
  ****************************/
+
+/*****************************************************************************
+ * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+ *****************************************************************************/
+/* Return cursor geometry for show region geometry everytime */
+EOLIAN static Eina_Rect
+_elm_entry_efl_ui_widget_show_region_get(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
+{
+   Eina_Rect sr = {};
+
+   edje_object_part_text_cursor_geometry_get
+      (sd->entry_edje, "elm.text", &sr.x, &sr.y, &sr.w, &sr.h);
+
+   return sr;
+}
+/*******
+ * END *
+ *******/
 
 
 /* Efl.Part begin */

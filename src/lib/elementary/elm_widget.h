@@ -499,6 +499,15 @@ typedef struct _Elm_Widget_Smart_Data
 // TIZEN_ONLY(20150705): Genlist item align feature
    Eina_Bool                     scroll_item_align_enable : 1;
 //
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************/
+   /* Update show region geometry when entry is resized.
+    * This flag will be used for blocking nested show region calls. */
+   Eina_Bool                     on_show_region_set: 1;
+   /*******
+    * END *
+    *******/
 } Elm_Widget_Smart_Data;
 
 typedef Elm_Widget_Smart_Data Efl_Ui_Widget_Data;

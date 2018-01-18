@@ -887,6 +887,13 @@ class Elm.Entry (Efl.Ui.Layout, Elm.Interface_Scrollable, Efl.Ui.Clickable,
       Efl.Access.Widget.Action.elm_actions { get; }
       Efl.File.file { get; set; }
       Efl.Part.part;
+      /*****************************************************************************
+       * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+       *****************************************************************************/
+      Efl.Ui.Widget.show_region { get; }
+      /*******
+       * END *
+       *******/
    }
    events {
       activated; [[Called when entry got activated]]

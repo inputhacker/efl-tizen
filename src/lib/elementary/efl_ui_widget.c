@@ -2522,11 +2522,39 @@ _efl_ui_widget_show_region_set(Eo *obj, Elm_Widget_Smart_Data *sd, Eina_Rect sr,
    Evas_Object *parent_obj, *child_obj;
    Evas_Coord px, py, cx, cy, nx = 0, ny = 0;
 
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************
+    * Move this code to the below to update show region geometry properly.
    evas_smart_objects_calculate(evas_object_evas_get(obj));
+    */
+   /*******
+    * END *
+    *******/
 
    if (!forceshow && eina_rectangle_equal(&sr.rect, &sd->show_region.rect)) return;
 
    sd->show_region = sr;
+
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************/
+   /* Block nested call for evas_smart_objects_calculate() and region showing works */
+   if (sd->on_show_region_set) return;
+
+   sd->on_show_region_set = EINA_TRUE;
+
+   evas_smart_objects_calculate(evas_object_evas_get(obj));
+
+   sd->on_show_region_set = EINA_FALSE;
+
+   /* show_region geometry could be changed during processing elm_widget_show_region_set().
+      evas_smart_objects_calculate() can trigger nested show_region_set calls */
+   sr = sd->show_region;
+   /*******
+    * END *
+    *******/
+
    if (sd->on_show_region)
      {
         sd->on_show_region(sd->on_show_region_data, obj, sr);
