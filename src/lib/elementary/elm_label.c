@@ -621,7 +621,11 @@ _elm_label_line_wrap_set(Eo *obj, Elm_Label_Data *sd, Elm_Wrap_Type wrap)
    if (_stringshare_key_value_replace(&sd->format, "wrap", wrap_str, 0) == 0)
      {
         sd->lastw = -1;
+        /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages
         _label_format_set(wd->resize_obj, sd->format);
+         */
+        _label_format_update(wd->resize_obj, sd);
+        /* END */
         elm_layout_sizing_eval(obj);
      }
 }
@@ -641,8 +645,14 @@ _elm_label_wrap_width_set(Eo *obj, Elm_Label_Data *sd, Evas_Coord w)
 
    if (sd->wrap_w == w) return;
 
+   /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages
    if (sd->ellipsis)
      _label_format_set(wd->resize_obj, sd->format);
+    */
+   if (sd->ellipsis)
+     _label_format_update(wd->resize_obj, sd);
+   /* END */
+
    sd->wrap_w = w;
    sd->lastw = -1;
 
@@ -685,7 +695,11 @@ _elm_label_ellipsis_set(Eo *obj, Elm_Label_Data *sd, Eina_Bool ellipsis)
          (&sd->format, "ellipsis", eina_strbuf_string_get
            (fontbuf), removeflag) == 0)
      {
+        /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages
         _label_format_set(wd->resize_obj, sd->format);
+         */
+        _label_format_update(wd->resize_obj, sd);
+        /* END */
         elm_layout_sizing_eval(obj);
      }
    eina_strbuf_free(fontbuf);
