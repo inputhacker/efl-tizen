@@ -2525,6 +2525,20 @@ _elm_calendar_class_constructor(Efl_Class *klass)
       _elm_calendar_smart_focus_next_enable = EINA_TRUE;
 }
 
+//TIZEN_ONLY(20161111): Apply UI Mirroring for Tizen 3.0 UX
+EOLIAN static Eina_Bool
+_elm_calendar_efl_ui_base_mirrored_get(Eo *obj EINA_UNUSED, Elm_Calendar_Data *sd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+
+EOLIAN static void
+_elm_calendar_efl_ui_base_mirrored_set(Eo *obj EINA_UNUSED, Elm_Calendar_Data *sd EINA_UNUSED, Eina_Bool mirrored EINA_UNUSED)
+{
+   return;
+}
+//
+
 EOLIAN static const Efl_Access_Action_Data*
 _elm_calendar_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Calendar_Data *sd EINA_UNUSED)
 {
