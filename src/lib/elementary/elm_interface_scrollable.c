@@ -1495,6 +1495,9 @@ _elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Scrollable_Smart_Interfac
 {
    Evas_Coord mx = 0, my = 0, px = 0, py = 0, spx = 0, spy = 0, minx = 0, miny = 0;
    Evas_Coord cw = 0, ch = 0, pw = 0, ph = 0;
+   // TIZEN_ONLY(20160624): Overscroll effect
+   Evas_Coord ww = 0, wh = 0;
+   //
    double vx, vy;
 
 
@@ -1506,6 +1509,9 @@ _elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Scrollable_Smart_Interfac
    elm_obj_pan_content_size_get(sid->pan_obj, &cw, &ch);
    elm_obj_pan_pos_get(sid->pan_obj, &px, &py);
    evas_object_geometry_get(sid->pan_obj, NULL, NULL, &pw, &ph);
+   // TIZEN_ONLY(20160624): Overscroll effect
+   elm_interface_scrollable_content_viewport_geometry_get(obj, NULL, NULL, &ww, &wh);
+   //
 
    if (_paging_is_enabled(sid))
      {
@@ -1539,7 +1545,25 @@ _elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Scrollable_Smart_Interfac
         if (y < 0) y = ch + (y % ch);
         else if (y >= ch) y = (y % ch);
      }
-
+   // TIZEN_ONLY(20160624): Overscroll effect
+   if (sig)
+     {
+        if (cw > ww)
+          {
+             if (x < minx)
+               edje_object_signal_emit(sid->edje_obj, "elm,edge,left", "elm");
+             if (!sid->loop_h && (x - minx) > mx)
+               edje_object_signal_emit(sid->edje_obj, "elm,edge,right", "elm");
+          }
+        if (ch > wh)
+          {
+             if (y < miny)
+               edje_object_signal_emit(sid->edje_obj, "elm,edge,top", "elm");
+             if (!sid->loop_v && (y - miny) > my)
+               edje_object_signal_emit(sid->edje_obj, "elm,edge,bottom", "elm");
+          }
+     }
+   //
    if (!_elm_config->thumbscroll_bounce_enable)
      {
 
@@ -1643,13 +1667,15 @@ _elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Scrollable_Smart_Interfac
                {
                   if (sid->cb_func.edge_left)
                     sid->cb_func.edge_left(obj, NULL);
-                  edje_object_signal_emit(sid->edje_obj, "elm,edge,left", "elm");
+                  // TIZEN_ONLY(20160624): Overscroll effect
+                  // edje_object_signal_emit(sid->edje_obj, "elm,edge,left", "elm");
                }
              if (x == (mx + minx))
                {
                   if (sid->cb_func.edge_right)
                     sid->cb_func.edge_right(obj, NULL);
-                  edje_object_signal_emit(sid->edje_obj, "elm,edge,right", "elm");
+                  // TIZEN_ONLY(20160624): Overscroll effect
+                  //edje_object_signal_emit(sid->edje_obj, "elm,edge,right", "elm");
                }
           }
         if (y != py)
@@ -1658,13 +1684,15 @@ _elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Scrollable_Smart_Interfac
                {
                   if (sid->cb_func.edge_top)
                     sid->cb_func.edge_top(obj, NULL);
-                  edje_object_signal_emit(sid->edje_obj, "elm,edge,top", "elm");
+                  // TIZEN_ONLY(20160624): Overscroll effect
+                  //edje_object_signal_emit(sid->edje_obj, "elm,edge,top", "elm");
                }
              if (y == my + miny)
                {
                   if (sid->cb_func.edge_bottom)
                     sid->cb_func.edge_bottom(obj, NULL);
-                  edje_object_signal_emit(sid->edje_obj, "elm,edge,bottom", "elm");
+                  // TIZEN_ONLY(20160624): Overscroll effect
+                  // edje_object_signal_emit(sid->edje_obj, "elm,edge,bottom", "elm");
                }
           }
      }
@@ -2538,6 +2566,9 @@ _elm_scroll_mouse_up_event_cb(void *data,
 
    if (ev->button == 1)
      {
+        // TIZEN_ONLY(20160624): Overscroll effect
+        edje_object_signal_emit(sid->edje_obj, "elm,state,mouse,up", "elm");
+        //
         if (sid->down.onhold_animator)
           {
              ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.onhold_animator, _elm_scroll_on_hold_animator, sid);
@@ -2864,6 +2895,9 @@ _elm_scroll_mouse_down_event_cb(void *data,
      }
    if (ev->button == 1)
      {
+        // TIZEN_ONLY(20160624): Overscroll effect
+        edje_object_signal_emit(sid->edje_obj, "elm,state,mouse,down", "elm");
+        //
         sid->down.hist.est_timestamp_diff =
           ecore_loop_time_get() - ((double)ev->timestamp / 1000.0);
         sid->down.hist.tadd = 0.0;
@@ -3290,6 +3324,9 @@ _elm_scroll_mouse_move_event_cb(void *data,
 
    if (!sid->down.now) return;
 
+   // TIZEN_ONLY(20160624): Overscroll effect
+   edje_object_signal_emit(sid->edje_obj, "elm,state,mouse,move", "elm");
+   //
    if ((sid->scrollto.x.animator) && (!sid->hold) && (!sid->freeze) &&
        !(sid->block & EFL_UI_SCROLL_BLOCK_HORIZONTAL))
      {
