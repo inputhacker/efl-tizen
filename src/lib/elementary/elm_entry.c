@@ -381,10 +381,23 @@ _elm_entry_guide_update(Evas_Object *obj,
 {
    ELM_ENTRY_DATA_GET(obj, sd);
 
+   /* TIZEN_ONLY(20160502): Show/Hide guide text immediately.
    if ((has_text) && (!sd->has_text))
      edje_object_signal_emit(sd->entry_edje, "elm,guide,disabled", "elm");
    else if ((!has_text) && (sd->has_text))
      edje_object_signal_emit(sd->entry_edje, "elm,guide,enabled", "elm");
+    */
+   if ((has_text) && (!sd->has_text))
+     {
+        edje_object_signal_emit(sd->entry_edje, "elm,guide,disabled", "elm");
+        edje_object_message_signal_process(sd->entry_edje);
+     }
+   else if ((!has_text) && (sd->has_text))
+     {
+        edje_object_signal_emit(sd->entry_edje, "elm,guide,enabled", "elm");
+        edje_object_message_signal_process(sd->entry_edje);
+     }
+   /* END */
 
    sd->has_text = has_text;
 }
@@ -4089,6 +4102,17 @@ _elm_entry_text_set(Eo *obj, Elm_Entry_Data *sd, const char *part, const char *e
      }
 
    len = strlen(entry);
+
+   /* TIZEN_ONLY(20160502): Show/Hide guide text immediately.
+    * It is moved here for preventing to process "entry,changed" signal.
+    * Since, edje_object_message_signal_process() is called in _elm_entry_guide_update(),
+    * it causes size calculation issues in other widgets: elm_spinner. */
+   if (len > 0)
+     _elm_entry_guide_update(obj, EINA_TRUE);
+   else
+     _elm_entry_guide_update(obj, EINA_FALSE);
+   /* END */
+
    if (sd->append_text_left)
      {
         free(sd->append_text_left);
@@ -4101,10 +4125,13 @@ _elm_entry_text_set(Eo *obj, Elm_Entry_Data *sd, const char *part, const char *e
    edje_object_part_text_set(sd->entry_edje, "elm.text", "");
    _entry_text_append(obj, entry, EINA_TRUE);
 
+   /* TIZEN_ONLY(20160502): Show/Hide guide text immediately.
    if (len > 0)
      _elm_entry_guide_update(obj, EINA_TRUE);
    else
      _elm_entry_guide_update(obj, EINA_FALSE);
+    */
+   /* END */
 
    // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
    if (elm_atspi_bridge_utils_is_screen_reader_enabled())
