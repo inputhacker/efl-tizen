@@ -1385,6 +1385,7 @@ _elm_ctxpopup_efl_ui_widget_theme_apply(Eo *obj, Elm_Ctxpopup_Data *sd)
    Eina_Bool rtl;
    Eina_Bool tmp;
    Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
+   char *style;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_FAILED);
 
@@ -1414,38 +1415,40 @@ _elm_ctxpopup_efl_ui_widget_theme_apply(Eo *obj, Elm_Ctxpopup_Data *sd)
      {
         edje_object_mirrored_set(VIEW(item), rtl);
 
+        style = (item->style ? item->style : elm_widget_style_get(obj));
+
         if (item->label && item->icon)
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_text_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_text_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
         else if (item->label)
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "text_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "text_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
         else
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
 
         if (item->label)
@@ -1581,16 +1584,20 @@ _elm_ctxpopup_item_elm_widget_item_part_text_set(Eo *eo_ctxpopup_it EINA_UNUSED,
 
    ELM_CTXPOPUP_DATA_GET(WIDGET(ctxpopup_it), sd);
 
+   char *style = (ctxpopup_it->style ?
+                  ctxpopup_it->style :
+                  elm_widget_style_get(WIDGET(ctxpopup_it)));
+
    if (ctxpopup_it->label && !label)
      {
         if (!sd->horizontal)
           _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                 "icon_style_item",
-                                elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                style);
         else
           _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                 "icon_style_item_horizontal",
-                                elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                style);
      }
    else if (!ctxpopup_it->label && label)
      {
@@ -1599,22 +1606,22 @@ _elm_ctxpopup_item_elm_widget_item_part_text_set(Eo *eo_ctxpopup_it EINA_UNUSED,
              if (!sd->horizontal)
                _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                      "text_style_item",
-                                     elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                     style);
              else
                _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                      "text_style_item_horizontal",
-                                     elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                     style);
           }
         else
           {
              if (!sd->horizontal)
                _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                     "icon_text_style_item",
-                                    elm_widget_style_get(WIDGET(ctxpopup_it)));
-             else
+                                     style);
+
                _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                      "icon_text_style_item_horizontal",
-                                     elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                     style);
           }
      }
 
@@ -1650,6 +1657,10 @@ _elm_ctxpopup_item_elm_widget_item_part_content_set(Eo *eo_ctxpopup_it EINA_UNUS
 
    ELM_CTXPOPUP_DATA_GET(WIDGET(ctxpopup_it), sd);
 
+   char *style = (ctxpopup_it->style ?
+                  ctxpopup_it->style :
+                  elm_widget_style_get(WIDGET(ctxpopup_it)));
+
    if (ctxpopup_it->icon)
      evas_object_del(ctxpopup_it->icon);
 
@@ -1660,22 +1671,22 @@ _elm_ctxpopup_item_elm_widget_item_part_content_set(Eo *eo_ctxpopup_it EINA_UNUS
              if (!sd->horizontal)
                _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                      "icon_text_style_item",
-                                     elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                     style);
              else
                _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                      "icon_text_style_item_horizontal",
-                                     elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                     style);
           }
         else if (ctxpopup_it->icon && !content)
           {
              if (!sd->horizontal)
                _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                      "text_style_item",
-                                     elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                     style);
              else
                _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                      "text_style_item_horizontal",
-                                     elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                     style);
           }
      }
 
@@ -1711,6 +1722,10 @@ _elm_ctxpopup_item_elm_widget_item_part_content_unset(Eo *eo_ctxpopup_it EINA_UN
 
    ELM_CTXPOPUP_DATA_GET(WIDGET(ctxpopup_it), sd);
 
+   char *style = (ctxpopup_it->style ?
+                  ctxpopup_it->style :
+                  elm_widget_style_get(WIDGET(ctxpopup_it)));
+
    edje_object_part_unswallow(VIEW(ctxpopup_it), ctxpopup_it->icon);
    evas_object_hide(ctxpopup_it->icon);
 
@@ -1719,11 +1734,11 @@ _elm_ctxpopup_item_elm_widget_item_part_content_unset(Eo *eo_ctxpopup_it EINA_UN
         if (!sd->horizontal)
           _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                 "text_style_item",
-                                elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                style);
         else
           _elm_theme_object_set(WIDGET(ctxpopup_it), VIEW(ctxpopup_it), "ctxpopup",
                                 "text_style_item_horizontal",
-                                elm_widget_style_get(WIDGET(ctxpopup_it)));
+                                style);
      }
 
    content = ctxpopup_it->icon;
@@ -1819,6 +1834,7 @@ _on_show(void *data EINA_UNUSED,
    Eina_List *elist;
    Elm_Ctxpopup_Item_Data *item;
    int idx = 0;
+   char *style;
 
    ELM_CTXPOPUP_DATA_GET(obj, sd);
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
@@ -1840,38 +1856,40 @@ _on_show(void *data EINA_UNUSED,
 
    EINA_LIST_FOREACH(sd->items, elist, item)
      {
+        style = (item->style ? item->style : elm_widget_style_get(obj));
+
         if (item->label && item->icon)
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_text_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_text_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
         else if (item->label)
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "text_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "text_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
         else
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
 
         if (idx++ == 0)
@@ -2237,6 +2255,7 @@ _elm_ctxpopup_horizontal_set(Eo *obj, Elm_Ctxpopup_Data *sd, Eina_Bool horizonta
    Eina_List *elist;
    Elm_Ctxpopup_Item_Data *item;
    int idx = 0;
+   char *style;
 
    sd->horizontal = !!horizontal;
 
@@ -2258,38 +2277,40 @@ _elm_ctxpopup_horizontal_set(Eo *obj, Elm_Ctxpopup_Data *sd, Eina_Bool horizonta
 
    EINA_LIST_FOREACH(sd->items, elist, item)
      {
+        style = (item->style ? item->style : elm_widget_style_get(obj));
+
         if (item->label && item->icon)
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_text_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_text_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
         else if (item->label)
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "text_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "text_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
         else
           {
              if (!sd->horizontal)
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_style_item",
-                                     elm_widget_style_get(obj));
+                                     style);
              else
                _elm_theme_object_set(obj, VIEW(item), "ctxpopup",
                                      "icon_style_item_horizontal",
-                                     elm_widget_style_get(obj));
+                                     style);
           }
         if (idx++ == 0)
           edje_object_signal_emit(VIEW(item), "elm,state,default", "elm");
