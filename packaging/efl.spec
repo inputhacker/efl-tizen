@@ -2043,8 +2043,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libelementary.so.1.20.*
 %{_datadir}/elementary/edje_externals/*
 %{_datadir}/icons/elementary.png
-%exclude %{_libdir}/elementary/modules/
-%exclude %{_libdir}/debug/usr/lib/elementary/modules/
+%{_libdir}/elementary/modules/
+%{_libdir}/debug/usr/lib/elementary/modules/
 %exclude %{_datadir}/elementary/config/
 ##%{_tmpfilesdir}/elementary.conf
 
