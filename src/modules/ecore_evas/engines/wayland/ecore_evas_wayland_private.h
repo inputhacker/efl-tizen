@@ -115,4 +115,5 @@ struct _Ecore_Evas_Engine_Wl_Data
  */
 Ecore_Evas *_ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, int x, int y, int w, int h, Eina_Bool frame, const char *engine_name);
 
+Ecore_Evas *_ecore_evas_wl_common_options_new_internal(const char *disp_name, unsigned int parent, int x, int y, int w, int h, Eina_Bool frame, const int *opt, const char *engine_name);
 #endif /* _ECORE_EVAS_WAYLAND_PRIVATE_H_ */

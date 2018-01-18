@@ -38,4 +38,14 @@ ecore_evas_wayland_egl_new_internal(const char *disp_name, unsigned int parent, 
                                              "wayland_egl");
 }
 
+EAPI Ecore_Evas *
+ecore_evas_wayland_egl_options_new_internal(const char *disp_name, unsigned int parent, int x, int y, int w, int h, Eina_Bool frame, const int *opt)
+{
+   LOGFN(__FILE__, __LINE__, __FUNCTION__);
+
+   return _ecore_evas_wl_common_options_new_internal(disp_name, parent,
+                                             x, y, w, h, frame, opt,
+                                             "wayland_egl");
+}
+
 #endif

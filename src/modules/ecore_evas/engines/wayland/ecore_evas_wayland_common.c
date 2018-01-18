@@ -3305,6 +3305,13 @@ static Ecore_Evas_Engine_Func _ecore_wl_engine_func =
 Ecore_Evas *
 _ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, int x, int y, int w, int h, Eina_Bool frame, const char *engine_name)
 {
+  return _ecore_evas_wl_common_options_new_internal(disp_name, parent, x, y, w, h,
+                                                    frame, NULL, engine_name);
+}
+
+Ecore_Evas *
+_ecore_evas_wl_common_options_new_internal(const char *disp_name, unsigned int parent, int x, int y, int w, int h, Eina_Bool frame, const int *opt, const char *engine_name)
+{
    Ecore_Wl2_Display *ewd;
    Ecore_Wl2_Window *p = NULL;
    Evas_Engine_Info_Wayland *einfo;
@@ -3425,6 +3432,30 @@ _ecore_evas_wl_common_new_internal(const char *disp_name, unsigned int parent, i
         wdata->sync_done = EINA_TRUE;
         if ((einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas)))
           {
+            if (opt)
+              {
+                 int op;
+
+                 for (op = 0; opt[op]; op++)
+                   {
+                      if (opt[op] == ECORE_EVAS_OPT_GL_DEPTH)
+                        {
+                           op++;
+                           einfo->depth_bits = opt[op];
+                        }
+                      else if (opt[op] == ECORE_EVAS_OPT_GL_STENCIL)
+                        {
+                           op++;
+                           einfo->stencil_bits = opt[op];
+                        }
+                      else if (opt[op] == ECORE_EVAS_OPT_GL_MSAA)
+                        {
+                           op++;
+                           einfo->msaa_bits = opt[op];
+                        }
+                   }
+              }
+
              einfo->info.destination_alpha = EINA_TRUE;
              einfo->info.rotation = ee->rotation;
              einfo->info.depth = 32;
