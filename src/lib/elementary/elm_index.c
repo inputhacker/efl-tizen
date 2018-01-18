@@ -19,7 +19,11 @@
 #define MY_CLASS_NAME "Elm_Index"
 #define MY_CLASS_NAME_LEGACY "elm_index"
 
-#define INDEX_DELAY_CHANGE_TIME 0.2
+//TIZEN_ONLY(20150819): delay change value has been changed to 0.0
+//                      in current Tizen UX.
+#define INDEX_DELAY_CHANGE_TIME 0.0
+//#define INDEX_DELAY_CHANGE_TIME 0.2
+//
 
 static const char SIG_CHANGED[] = "changed";
 static const char SIG_DELAY_CHANGED[] = "delay,changed";
@@ -1104,6 +1108,10 @@ _elm_index_efl_canvas_group_group_add(Eo *obj, Elm_Index_Data *priv)
    evas_object_show(priv->bx[0]);
 
    priv->delay_change_time = INDEX_DELAY_CHANGE_TIME;
+   // TIZEN ONLY(20150527) : Enable omit as default
+   priv->omit_enabled = EINA_TRUE;
+   //
+
    priv->dir = EFL_UI_DIR_VERTICAL;
 
    if (edje_object_part_exists
