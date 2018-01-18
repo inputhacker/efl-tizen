@@ -1940,10 +1940,9 @@ _elm_interface_scrollable_mirrored_set(Eo *obj EINA_UNUSED, Elm_Scrollable_Smart
    sid->is_mirrored = mirrored;
    edje_object_mirrored_set(sid->edje_obj, mirrored);
 
-   if (sid->is_mirrored)
-     wx = _elm_scroll_x_mirrored_get(sid->obj, sid->wx);
-   else
-     wx = sid->wx;
+   //TIZEN_ONLY(20180116) Fix scroller to keep its page when changing lang
+   wx = _elm_scroll_x_mirrored_get(sid->obj, sid->wx);
+   //
 
    elm_interface_scrollable_content_pos_set(sid->obj, wx, sid->wy, EINA_FALSE);
 }
