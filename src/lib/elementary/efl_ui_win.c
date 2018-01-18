@@ -9898,6 +9898,20 @@ elm_win_aux_msg_options_get(Evas_Object *obj,
 // END of TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
 //////////////////////////////////////////////////////////////////
 
+/***********************************************************
+ * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+ ***********************************************************/
+EOLIAN static void
+_efl_ui_win_efl_canvas_object_paragraph_direction_set(Eo *obj, Efl_Ui_Win_Data *sd, Evas_BiDi_Direction dir)
+{
+   efl_canvas_object_paragraph_direction_set(sd->legacy.edje, dir);
+
+   efl_canvas_object_paragraph_direction_set(efl_super(obj, MY_CLASS), dir);
+}
+/*******
+ * END *
+ *******/
+
 /* Internal EO APIs and hidden overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(efl_ui_win, Efl_Ui_Win_Data)

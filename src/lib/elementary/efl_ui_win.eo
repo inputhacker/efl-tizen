@@ -844,6 +844,13 @@ class Efl.Ui.Win (Efl.Ui.Widget, Efl.Canvas, Efl.Canvas.Pointer, Efl.Access.Wind
       Efl.Content.content_unset;
       Efl.Part.part;
       Efl.Object.provider_find;
+      /***********************************************************
+       * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+       ***********************************************************/
+      Efl.Canvas.Object.paragraph_direction { set; }
+      /*******
+       * END *
+       *******/
    }
    constructors {
       .win_name;

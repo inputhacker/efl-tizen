@@ -85,6 +85,15 @@ struct _Elm_Translate_String_Data
    Eina_Bool   preset : 1;
 };
 
+/***********************************************************
+ * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+ ***********************************************************/
+static void
+_efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir);
+/*******
+ * END *
+ *******/
+
 /* local subsystem globals */
 static inline Eina_Bool
 _elm_widget_is(const Evas_Object *obj)
@@ -1530,6 +1539,20 @@ _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
              if (aparent)
                 efl_access_children_changed_added_signal_emit(aparent, sobj);
           }
+
+        /***********************************************************
+         * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+         ***********************************************************/
+        if (sdc->inherit_paragraph_direction &&
+            (sdc->paragraph_direction != efl_canvas_object_paragraph_direction_get(obj)))
+          {
+             sdc->paragraph_direction = efl_canvas_object_paragraph_direction_get(obj);
+             _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(sobj, sdc, sdc->paragraph_direction);
+             efl_canvas_object_paragraph_direction_set(efl_super(sobj, MY_CLASS), sdc->paragraph_direction);
+          }
+        /*******
+         * END *
+         *******/
      }
 
 end:
@@ -1613,6 +1636,20 @@ _efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
         sdc->parent_obj = NULL;
 
         _full_eval(sobj, sdc);
+
+        /***********************************************************
+         * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+         ***********************************************************/
+        if (sdc->inherit_paragraph_direction &&
+            (sdc->paragraph_direction != EVAS_BIDI_DIRECTION_NEUTRAL))
+          {
+             sdc->paragraph_direction = EVAS_BIDI_DIRECTION_NEUTRAL;
+             _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(sobj, sdc, sdc->paragraph_direction);
+             efl_canvas_object_paragraph_direction_set(efl_super(sobj, MY_CLASS), EVAS_BIDI_DIRECTION_NEUTRAL);
+          }
+        /*******
+         * END *
+         *******/
      }
 
    if (sd->resize_obj == sobj) sd->resize_obj = NULL;
@@ -5439,6 +5476,20 @@ _efl_ui_widget_efl_object_constructor(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UN
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
    sd->can_highlight = EINA_TRUE;
    //
+   /***********************************************************
+    * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+    ***********************************************************/
+   sd->inherit_paragraph_direction = EINA_TRUE;
+
+   if (sd->paragraph_direction != efl_canvas_object_paragraph_direction_get(parent))
+     {
+        sd->paragraph_direction = efl_canvas_object_paragraph_direction_get(parent);
+        _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(obj, sd, sd->paragraph_direction);
+        efl_canvas_object_paragraph_direction_set(efl_super(obj, MY_CLASS), sd->paragraph_direction);
+     }
+   /*******
+    * END *
+    *******/
 
    efl_event_callback_add(obj, EFL_UI_FOCUS_OBJECT_EVENT_FOCUS_CHANGED, _focus_event_changed, NULL);
 
@@ -7465,6 +7516,71 @@ _elm_widget_item_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, E
    return NULL;
 }
 
+/***********************************************************
+ * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+ ***********************************************************/
+static void
+_efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir)
+{
+   Evas_Object *child;
+   Eina_List *l;
+
+   if (sd->on_destroy) return;
+
+   EINA_LIST_FOREACH(sd->subobjs, l, child)
+     {
+        if (_elm_widget_is(child))
+          {
+             Efl_Ui_Widget_Data *sdc = efl_data_scope_get(child, MY_CLASS);
+
+             if (sdc->inherit_paragraph_direction &&
+                 (sdc->paragraph_direction != dir))
+               {
+                  sdc->paragraph_direction = dir;
+                  _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(child, sdc, dir);
+                  efl_canvas_object_paragraph_direction_set(efl_super(child, MY_CLASS), dir);
+               }
+          }
+
+        /* FIXME: There is no way to handle non-widget child object.
+         * If a non-widget child object has smart parent, it will get the direction
+         * from the smart parent. */
+     }
+}
+
+EOLIAN static void
+_efl_ui_widget_efl_canvas_object_paragraph_direction_set(Eo *obj, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir)
+{
+   if ((!(sd->inherit_paragraph_direction) && (sd->paragraph_direction == dir)) ||
+       (sd->inherit_paragraph_direction && (dir == EVAS_BIDI_DIRECTION_INHERIT)))
+     return;
+
+   if (dir == EVAS_BIDI_DIRECTION_INHERIT)
+     {
+        sd->inherit_paragraph_direction = EINA_TRUE;
+        Evas_BiDi_Direction parent_dir = EVAS_BIDI_DIRECTION_NEUTRAL;
+
+        if (sd->parent_obj)
+          parent_dir = efl_canvas_object_paragraph_direction_get(sd->parent_obj);
+
+        if (parent_dir != sd->paragraph_direction)
+          {
+             sd->paragraph_direction = parent_dir;
+             _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(obj, sd, parent_dir);
+          }
+     }
+   else
+     {
+        sd->inherit_paragraph_direction = EINA_FALSE;
+        sd->paragraph_direction = dir;
+        _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(obj, sd, dir);
+     }
+
+   efl_canvas_object_paragraph_direction_set(efl_super(obj, MY_CLASS), dir);
+}
+/*******
+ * END *
+ *******/
 
 /***********************************************************************************
  * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *

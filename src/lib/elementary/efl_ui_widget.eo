@@ -659,6 +659,13 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access,
       Efl.Ui.Cursor.cursor_theme_search_enabled { get; set; }
       Efl.Ui.Translatable.translation_update; [[This implements the calls to $gettext() and $text_set().]]
       Efl.Part.part; [[Returns @Efl.Ui.Widget.Part.]]
+      /***********************************************************
+       * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+       ***********************************************************/
+      Efl.Canvas.Object.paragraph_direction { set; }
+      /*******
+       * END *
+       *******/
    }
    events {
       moved; [[Called when widget moved]]

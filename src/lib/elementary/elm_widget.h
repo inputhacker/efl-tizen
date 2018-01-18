@@ -457,6 +457,15 @@ typedef struct _Elm_Widget_Smart_Data
       Efl_Ui_Focus_Object *provider;
    } manager;
 
+   /***********************************************************
+    * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+    ***********************************************************/
+   Evas_BiDi_Direction           paragraph_direction : 3;
+   Eina_Bool                     inherit_paragraph_direction : 1;
+   /*******
+    * END *
+    *******/
+
    Eina_Bool                     scroll_x_locked : 1;
    Eina_Bool                     scroll_y_locked : 1;
 
