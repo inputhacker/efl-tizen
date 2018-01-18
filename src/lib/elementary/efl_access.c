@@ -355,7 +355,7 @@ EOLIAN const char *
 _efl_access_name_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd)
 {
    //TIZEN_ONLY(20190922): add name callback, description callback.
-   const char *ret = NULL;
+   char *ret = NULL;
    if (pd->name_cb_item.cb)
      ret = pd->name_cb_item.cb((void *)pd->name_cb_item.data, (Evas_Object *)obj);
    if (ret)

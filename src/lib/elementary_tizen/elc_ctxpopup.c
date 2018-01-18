@@ -2689,11 +2689,9 @@ _elm_ctxpopup_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSE
 
    STATE_TYPE_SET(ret, EFL_ACCESS_STATE_MODAL);
 
-   //TIZEN_ONLY(20180112): HIGHLIGHTED state is not supported yet
-   /*
    if (_elm_object_accessibility_currently_highlighted_get() == (void*)sd->scr)
-     STATE_TYPE_SET(ret, ELM_ATSPI_STATE_HIGHLIGHTED);
-   */
+     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_HIGHLIGHTED);
+
    return ret;
 }
 
