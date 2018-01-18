@@ -3585,6 +3585,11 @@ _entry_anchor_clicked_signal_cb(void *data,
 
    ELM_ENTRY_DATA_GET(data, sd);
 
+   /* TIZEN_ONLY(20170106): Do not send anchor clicked when long pressed. */
+   if (sd->long_pressed && !_elm_config->desktop_entry)
+     return;
+   /* END */
+
    p = emission + sizeof("nchor,mouse,clicked,");
    ei.button = strtol(p, &p2, 10);
    ei.name = p2 + 1;
