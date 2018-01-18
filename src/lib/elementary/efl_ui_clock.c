@@ -635,6 +635,20 @@ _efl_ui_clock_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Clock_Data *sd)
    return int_ret;
 }
 
+//TIZEN_ONLY(20170807): Apply UI Mirroring for Tizen 4.0 UX
+EOLIAN static Eina_Bool
+_efl_ui_clock_efl_ui_base_mirrored_get(Eo *obj EINA_UNUSED, Efl_Ui_Clock_Data *sd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+
+EOLIAN static void
+_efl_ui_clock_efl_ui_base_mirrored_set(Eo *obj EINA_UNUSED, Efl_Ui_Clock_Data *sd EINA_UNUSED, Eina_Bool mirrored EINA_UNUSED)
+{
+   return;
+}
+//
+
 static int
 _max_days_get(int year,
               int month)
