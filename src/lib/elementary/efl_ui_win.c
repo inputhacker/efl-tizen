@@ -4244,8 +4244,20 @@ _elm_win_translate(void)
    const Eina_List *l;
    Evas_Object *obj;
 
+   /* TIZEN_ONLY(20180117): Apply paragraph direction according to locale
    EINA_LIST_FOREACH(_elm_win_list, l, obj)
      efl_ui_translatable_translation_update(obj);
+    */
+   EINA_LIST_FOREACH(_elm_win_list, l, obj)
+     {
+        if (!strcmp(E_("default:LTR"), "default:RTL"))
+          efl_canvas_object_paragraph_direction_set(obj, EVAS_BIDI_DIRECTION_ANY_RTL);
+        else
+          efl_canvas_object_paragraph_direction_set(obj, EVAS_BIDI_DIRECTION_LTR);
+
+        efl_ui_translatable_translation_update(obj);
+     }
+   /* END */
 
    //TIZEN_ONLY(20161202): Temporary code - Apply mirroring in _elm_win_translate()
    if (_elm_config && _elm_config->language_auto_mirrored)
@@ -6191,6 +6203,13 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
            default: break;
           }
      }
+
+   /* TIZEN_ONLY(20180117): Apply paragraph direction according to locale */
+   if (!strcmp(E_("default:LTR"), "default:RTL"))
+     evas_object_paragraph_direction_set(obj, EVAS_BIDI_DIRECTION_ANY_RTL);
+   else
+     evas_object_paragraph_direction_set(obj, EVAS_BIDI_DIRECTION_LTR);
+   /* END */
 
    return obj;
 }
@@ -9269,6 +9288,13 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
                   TRAP(sd, name_class_set, name, _elm_appname);
                   _precreated_win_obj = NULL;
                   INF("Return precreated obj(%p).", tmp);
+
+                  /* TIZEN_ONLY(20180117): Apply paragraph direction according to locale */
+                  if (!strcmp(E_("default:LTR"), "default:RTL"))
+                    efl_canvas_object_paragraph_direction_set(tmp, EVAS_BIDI_DIRECTION_ANY_RTL);
+                  else
+                    efl_canvas_object_paragraph_direction_set(tmp, EVAS_BIDI_DIRECTION_LTR);
+                  /* END */
 
                   return tmp;
                }
