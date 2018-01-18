@@ -1103,12 +1103,16 @@ _item_unrealize(Elm_Gen_Item *it,
      }
    /* trackt */
    elm_wdg_item_track_cancel(EO_OBJ(it));
-/* FIXME: Color Class is not merged.
-//TIZEN_ONLY(20161013): clean up elm color class feature
+
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
    if (it->base->color_classes)
      edje_object_color_class_clear(VIEW(it));
-//
-*/
+   /*******
+    * END *
+    *******/
+
    EINA_LIST_FREE(it->contents, content)
      {
         if (it->itc->version >= 3 && it->itc->func.reusable_content_get)
@@ -1809,12 +1813,14 @@ _item_realize(Elm_Gen_Item *it,
    if (!_item_cache_pop(it))
      VIEW(it) = _view_create(it, it->itc->item_style);
 
-/* FIXME: Color Class is not merged.
-//TIZEN_ONLY(20161013): clean up elm color class feature
+   /***********************************************************************************
+    * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+    ***********************************************************************************/
    if (it->base->color_classes)
      _elm_widget_item_color_class_update(it->base);
-//
-*/
+   /*******
+    * END *
+    *******/
 
    treesize = edje_object_data_get(VIEW(it), "treesize");
    if (treesize)
