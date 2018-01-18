@@ -6761,12 +6761,68 @@ EFL_FUNC_BODY_CONST(efl_ui_widget_default_text_part_get, const char *, NULL)
 ELM_PART_CONTENT_DEFAULT_GET(efl_ui_widget, NULL)
 ELM_PART_TEXT_DEFAULT_GET(efl_ui_widget, NULL)
 
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+/* Internal EO APIs and hidden overrides */
+EAPI EFL_FUNC_BODYV(elm_widget_class_color_set, Eina_Bool, EINA_FALSE,
+                    EFL_FUNC_CALL(color_class, r, g, b, a),
+                    const char *color_class, int r, int g, int b, int a)
+EAPI EFL_FUNC_BODYV(elm_widget_class_color_get, Eina_Bool, EINA_FALSE,
+                    EFL_FUNC_CALL(color_class, r, g, b, a),
+                    const char *color_class, int *r, int *g, int *b, int *a)
+EAPI EFL_FUNC_BODYV(elm_widget_class_color2_set, Eina_Bool, EINA_FALSE,
+                    EFL_FUNC_CALL(color_class, r, g, b, a),
+                    const char *color_class, int r, int g, int b, int a)
+EAPI EFL_FUNC_BODYV(elm_widget_class_color2_get, Eina_Bool, EINA_FALSE,
+                    EFL_FUNC_CALL(color_class, r, g, b, a),
+                    const char *color_class, int *r, int *g, int *b, int *a)
+EAPI EFL_FUNC_BODYV(elm_widget_class_color3_set, Eina_Bool, EINA_FALSE,
+                    EFL_FUNC_CALL(color_class, r, g, b, a),
+                    const char *color_class, int r, int g, int b, int a)
+EAPI EFL_FUNC_BODYV(elm_widget_class_color3_get, Eina_Bool, EINA_FALSE,
+                    EFL_FUNC_CALL(color_class, r, g, b, a),
+                    const char *color_class, int *r, int *g, int *b, int *a)
+EAPI EFL_VOID_FUNC_BODYV(elm_widget_class_color_del,
+                         EFL_FUNC_CALL(color_class),
+                         const char *color_class)
+EAPI EFL_VOID_FUNC_BODY(elm_widget_class_color_clear)
+
+static Eina_Bool _elm_widget_class_color_set(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, const char *color_class, int r, int g, int b, int a);
+static Eina_Bool _elm_widget_class_color_get(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, const char *color_class, int *r, int *g, int *b, int *a);
+static Eina_Bool _elm_widget_class_color2_set(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, const char *color_class, int r, int g, int b, int a);
+static Eina_Bool _elm_widget_class_color2_get(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, const char *color_class, int *r, int *g, int *b, int *a);
+static Eina_Bool _elm_widget_class_color3_set(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, const char *color_class, int r, int g, int b, int a);
+static Eina_Bool _elm_widget_class_color3_get(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, const char *color_class, int *r, int *g, int *b, int *a);
+static void _elm_widget_class_color_del(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, const char *color_class);
+static void _elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd);
+/*******
+ * END *
+ *******/
+
+
 #define EFL_UI_WIDGET_EXTRA_OPS \
    EFL_CANVAS_GROUP_ADD_DEL_OPS(efl_ui_widget), \
    ELM_PART_CONTENT_DEFAULT_OPS(efl_ui_widget), \
    ELM_PART_TEXT_DEFAULT_OPS(efl_ui_widget), \
    EFL_OBJECT_OP_FUNC(efl_canvas_object_legacy_ctor, _efl_ui_widget_legacy_ctor), \
-   EFL_OBJECT_OP_FUNC(efl_dbg_info_get, _efl_ui_widget_efl_object_dbg_info_get)
+   EFL_OBJECT_OP_FUNC(efl_dbg_info_get, _efl_ui_widget_efl_object_dbg_info_get), \
+/***********************************************************************************  \
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *  \
+ ***********************************************************************************/ \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_set, _elm_widget_class_color_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_get, _elm_widget_class_color_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color2_set, _elm_widget_class_color2_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color2_get, _elm_widget_class_color2_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color3_set, _elm_widget_class_color3_set), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color3_get, _elm_widget_class_color3_get), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_del, _elm_widget_class_color_del), \
+   EFL_OBJECT_OP_FUNC(elm_widget_class_color_clear, _elm_widget_class_color_clear)
+
+/*******
+ * END *
+ *******/
+
 
 //TIZEN_ONLY(20160329): widget: improve accessibile_at_point getter (a8aff0423202b9a55dbb3843205875226678fbd6)
 static void
@@ -8055,40 +8111,6 @@ _elm_widget_item_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd
 
    edje_object_color_class_clear(edje);
 }
-
-/* Internal EO APIs and hidden overrides */
-EAPI EFL_FUNC_BODYV(elm_widget_class_color_set, Eina_Bool, EINA_FALSE,
-                    EFL_FUNC_CALL(color_class, r, g, b, a),
-                    const char *color_class, int r, int g, int b, int a)
-EAPI EFL_FUNC_BODYV(elm_widget_class_color_get, Eina_Bool, EINA_FALSE,
-                    EFL_FUNC_CALL(color_class, r, g, b, a),
-                    const char *color_class, int *r, int *g, int *b, int *a)
-EAPI EFL_FUNC_BODYV(elm_widget_class_color2_set, Eina_Bool, EINA_FALSE,
-                    EFL_FUNC_CALL(color_class, r, g, b, a),
-                    const char *color_class, int r, int g, int b, int a)
-EAPI EFL_FUNC_BODYV(elm_widget_class_color2_get, Eina_Bool, EINA_FALSE,
-                    EFL_FUNC_CALL(color_class, r, g, b, a),
-                    const char *color_class, int *r, int *g, int *b, int *a)
-EAPI EFL_FUNC_BODYV(elm_widget_class_color3_set, Eina_Bool, EINA_FALSE,
-                    EFL_FUNC_CALL(color_class, r, g, b, a),
-                    const char *color_class, int r, int g, int b, int a)
-EAPI EFL_FUNC_BODYV(elm_widget_class_color3_get, Eina_Bool, EINA_FALSE,
-                    EFL_FUNC_CALL(color_class, r, g, b, a),
-                    const char *color_class, int *r, int *g, int *b, int *a)
-EAPI EFL_VOID_FUNC_BODYV(elm_widget_class_color_del,
-                         EFL_FUNC_CALL(color_class),
-                         const char *color_class)
-EAPI EFL_VOID_FUNC_BODY(elm_widget_class_color_clear)
-
-#define EFL_UI_WIDGET_EXTRA_OPS \
-   EFL_OBJECT_OP_FUNC(elm_widget_class_color_set, _elm_widget_class_color_set), \
-   EFL_OBJECT_OP_FUNC(elm_widget_class_color_get, _elm_widget_class_color_get), \
-   EFL_OBJECT_OP_FUNC(elm_widget_class_color2_set, _elm_widget_class_color2_set), \
-   EFL_OBJECT_OP_FUNC(elm_widget_class_color2_get, _elm_widget_class_color2_get), \
-   EFL_OBJECT_OP_FUNC(elm_widget_class_color3_set, _elm_widget_class_color3_set), \
-   EFL_OBJECT_OP_FUNC(elm_widget_class_color3_get, _elm_widget_class_color3_get), \
-   EFL_OBJECT_OP_FUNC(elm_widget_class_color_del, _elm_widget_class_color_del), \
-   EFL_OBJECT_OP_FUNC(elm_widget_class_color_clear, _elm_widget_class_color_clear)
 
 /* Internal EO APIs and hidden overrides */
 EAPI EFL_FUNC_BODYV(elm_widget_item_class_color_set, Eina_Bool, EINA_FALSE,
