@@ -918,7 +918,6 @@ _ecore_wl2_window_shell_surface_init(Ecore_Wl2_Window *window)
           }
         else
           zwp_e_session_recovery_get_uuid(window->display->wl.session_recovery, window->surface);
-        ecore_wl2_display_flush(window->display);
      }
 }
 
@@ -1282,7 +1281,6 @@ ecore_wl2_window_raise(Ecore_Wl2_Window *window)
                                     window->set_config.geometry.w,
                                     window->set_config.geometry.h, &states);
         wl_array_release(&states);
-        ecore_wl2_display_flush(window->display);
      }
 */
    if ((window->surface) && (window->display->wl.tz_policy))
@@ -1442,7 +1440,6 @@ ecore_wl2_window_alpha_set(Ecore_Wl2_Window *window, Eina_Bool alpha)
                                         window->opaque.h);
    else
      ecore_wl2_window_opaque_region_set(window, 0, 0, 0, 0);
-   ecore_wl2_display_flush(window->display);
 }
 
 EAPI void
@@ -1466,7 +1463,6 @@ ecore_wl2_window_transparent_set(Ecore_Wl2_Window *window, Eina_Bool transparent
    else if (window->surface)
      wl_surface_set_opaque_region(window->surface, NULL);
 //
-   ecore_wl2_display_flush(window->display);
 }
 
 // TIZEN_ONLY(20171108) : Get a window's transparent property
@@ -1915,6 +1911,7 @@ ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool iconified)
           xdg_toplevel_set_minimized(window->xdg_toplevel);
         if (window->zxdg_toplevel)
           zxdg_toplevel_v6_set_minimized(window->zxdg_toplevel);
+        ecore_wl2_display_flush(window->display);
      }
    else
      {
@@ -1948,7 +1945,6 @@ ecore_wl2_window_iconified_set(Ecore_Wl2_Window *window, Eina_Bool iconified)
    */
    _ecore_wl2_window_iconified_set(window, iconified, EINA_TRUE);
    //
-   ecore_wl2_display_flush(window->display);
 }
 
 // TIZEN_ONLY(20151231) : handling iconic state on tizen
@@ -2119,7 +2115,6 @@ ecore_wl2_window_buffer_transform_set(Ecore_Wl2_Window *window, int transform)
    EINA_SAFETY_ON_NULL_RETURN(window);
 
    wl_surface_set_buffer_transform(window->surface, transform);
-   ecore_wl2_display_flush(window->display);
 }
 
 EAPI void
@@ -2841,7 +2836,6 @@ _maximized_set(Ecore_Wl2_Window *window)
         if (window->zxdg_toplevel)
           zxdg_toplevel_v6_unset_maximized(window->zxdg_toplevel);
      }
-   ecore_wl2_display_flush(window->display);
 }
 
 static void
@@ -2864,7 +2858,6 @@ _fullscreen_set(Ecore_Wl2_Window *window)
         if (window->zxdg_toplevel)
           zxdg_toplevel_v6_unset_fullscreen(window->zxdg_toplevel);
      }
-   ecore_wl2_display_flush(window->display);
 }
 
 static void
@@ -2891,7 +2884,6 @@ _input_set(Ecore_Wl2_Window *window)
                  window->input_rect.w, window->input_rect.h);
    wl_surface_set_input_region(window->surface, region);
    wl_region_destroy(region);
-   ecore_wl2_display_flush(window->display);
 }
 
 static void
@@ -2916,7 +2908,6 @@ _opaque_set(Ecore_Wl2_Window *window)
                  window->opaque.w, window->opaque.h);
    wl_surface_set_opaque_region(window->surface, region);
    wl_region_destroy(region);
-   ecore_wl2_display_flush(window->display);
 }
 
 EAPI void
