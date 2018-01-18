@@ -1121,7 +1121,6 @@ _elm_ctxpopup_elm_layout_sizing_eval(Eo *obj, Elm_Ctxpopup_Data *sd)
    evas_object_move(sd->bg, x, y);
    evas_object_resize(sd->bg, w, h);
 
-
    // resize item and set ellipsis state (only vertical mode)
    if (!sd->horizontal)
      {
@@ -1139,6 +1138,12 @@ _elm_ctxpopup_elm_layout_sizing_eval(Eo *obj, Elm_Ctxpopup_Data *sd)
                }
           }
      }
+
+   if (sd->visible)
+     if (sd->show_finished)
+       _visible_signals_emit(obj, sd->dir);
+     else
+       _show_signals_emit(obj, sd->dir);
 }
 
 static void
@@ -1197,8 +1202,6 @@ _on_parent_resize(void *data,
         /* TIZEN_ONLY(20170123): to avoid flickering problem when rotate device
         _show_signals_emit(data, sd->dir);
         */
-        _visible_signals_emit(data, sd->dir);
-        /* END */
      }
 }
 
@@ -1479,9 +1482,6 @@ _elm_ctxpopup_efl_ui_widget_theme_apply(Eo *obj, Elm_Ctxpopup_Data *sd)
         edje_object_signal_emit(VIEW(item), "elm,state,text,default", "elm");
         edje_object_message_signal_process(VIEW(item));
      }
-
-   if (evas_object_visible_get(sd->bg))
-     edje_object_signal_emit(sd->bg, "elm,state,show", "elm");
 
    if (sd->scr)
      {
@@ -1834,6 +1834,7 @@ _on_show(void *data EINA_UNUSED,
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
    sd->visible = EINA_TRUE;
+   sd->show_finished = EINA_FALSE;
    //TIZEN_ONLY(20170919): Handle default label object
    _elm_win_default_label_obj_append(obj);
    //
@@ -1893,7 +1894,6 @@ _on_show(void *data EINA_UNUSED,
    elm_layout_sizing_eval(obj);
 
    elm_object_focus_set(obj, EINA_TRUE);
-   _show_signals_emit(obj, sd->dir);
 }
 
 EOLIAN static void
@@ -1966,6 +1966,8 @@ _show_finished_cb(void *data,
                   const char *emission EINA_UNUSED,
                   const char *source EINA_UNUSED)
 {
+   ELM_CTXPOPUP_DATA_GET(obj, sd);
+   sd->show_finished = EINA_TRUE;
    elm_object_focus_set(data, EINA_TRUE);
 }
 /* END */

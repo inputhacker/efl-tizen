@@ -69,6 +69,7 @@ struct _Elm_Ctxpopup_Data
    Eina_Bool              mouse_down : 1;
 //******************** TIZEN Only
    Eina_Bool              pressed : 1;
+   Eina_Bool              show_finished : 1;
 //****************************
 };
 
