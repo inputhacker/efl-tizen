@@ -39,7 +39,7 @@ class Efl.Ui.Slider (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Direction,
       Efl.Canvas.Group.group_calculate;
       Efl.Ui.Widget.theme_apply;
       Efl.Ui.Widget.on_access_activate;
-      Efl.Ui.Widget.on_focus_update;
+      Efl.Ui.Focus.Object.on_focus_update;
       Efl.Ui.Widget.widget_event;
       //TIZEN_ONLY(20170419): fix slider indicator behavior
       Efl.Ui.Widget.on_disabled_update;
