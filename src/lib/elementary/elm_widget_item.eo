@@ -540,6 +540,10 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
       implements {
            Efl.Object.constructor;
            Efl.Object.destructor;
+           //TIZEN_ONLY(20150713) : add widget_item name setter
+           Efl.Access.name { set; get;}
+           ///
+
            Efl.Access.state_set { get; }
            Efl.Access.attributes { get; }
            //TIZEN_ONLY(20161111) add widget/widget_item description get/set
@@ -548,6 +552,9 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
           //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
            Efl.Access.can_highlight { get; set; }
           //
+           //TIZEN_ONLY(20150731) : add i18n support for name and description
+           Efl.Access.translation_domain { set; get;}
+           //
            Efl.Access.Component.extents { get; set; }
            Efl.Access.Component.alpha { get; }
            Efl.Access.Component.layer { get; }

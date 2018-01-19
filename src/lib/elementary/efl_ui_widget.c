@@ -4063,17 +4063,34 @@ _elm_widget_item_efl_object_destructor(Eo *eo_item, Elm_Widget_Item_Data *item)
      }
    eina_hash_free(item->labels);
 
+   efl_access_description_set(eo_item, NULL);
+   efl_access_name_set(eo_item, NULL);
+
    efl_access_description_cb_set(eo_item, NULL, NULL);
    efl_access_name_cb_set(eo_item, NULL, NULL);
    //TIZEN_ONLY(20170405) Add gesture method to accessible interface
    efl_access_gesture_cb_set(eo_item, NULL, NULL);
    //
+
+   efl_access_translation_domain_set(eo_item, NULL);
+   efl_access_relationships_clear(eo_item);
+
    efl_access_attributes_clear(eo_item);
    efl_access_removed(eo_item);
 
    // TIZEN_ONLY(20150709) : atspi relations api
    if (item->atspi_custom_relations)
      efl_access_relation_set_free(&item->atspi_custom_relations);
+   //
+
+   //TIZEN_ONLY(20150731) : add i18n support for name and description
+   if (item->atspi_translation_domain)
+     eina_stringshare_del(item->atspi_translation_domain);
+   ///
+
+   //TIZEN_ONLY(20150713) : add widget_item name setter
+   if (item->name)
+     eina_stringshare_del(item->name);
    //
 
    /***********************************************************************************
@@ -5545,11 +5562,19 @@ _efl_ui_widget_efl_object_destructor(Eo *obj, Elm_Widget_Smart_Data *sd)
         efl_event_callback_del(sd->manager.provider, EFL_UI_FOCUS_OBJECT_EVENT_MANAGER_CHANGED, _manager_changed_cb, obj);
         sd->manager.provider = NULL;
      }
+
+   efl_access_description_set(obj, NULL);
+   efl_access_name_set(obj, NULL);
+
    efl_access_description_cb_set(obj, NULL, NULL);
    efl_access_name_cb_set(obj, NULL, NULL);
    //TIZEN_ONLY(20170405) Add gesture method to accessible interface
    efl_access_gesture_cb_set(obj, NULL, NULL);
    //
+
+   efl_access_translation_domain_set(obj, NULL);
+   efl_access_relationships_clear(obj);
+
    efl_access_attributes_clear(obj);
    efl_access_removed(obj);
    if (sd->logical.parent)
@@ -5562,6 +5587,16 @@ _efl_ui_widget_efl_object_destructor(Eo *obj, Elm_Widget_Smart_Data *sd)
    if (sd->atspi_custom_relations)
      efl_access_relation_set_free(&sd->atspi_custom_relations);
    //
+
+   //TIZEN_ONLY(20150717) add widget name setter
+   if (sd->name)
+     eina_stringshare_del(sd->name);
+   //
+
+   //TIZEN_ONLY(20150731) : add i18n support for name and description
+   if (sd->atspi_translation_domain)
+     eina_stringshare_del(sd->atspi_translation_domain);
+   ///
 
    sd->on_destroy = EINA_TRUE;
    efl_destructor(efl_super(obj, EFL_UI_WIDGET_CLASS));
@@ -5646,13 +5681,34 @@ _efl_ui_widget_efl_access_component_focus_grab(Eo *obj, Elm_Widget_Smart_Data *p
    return EINA_FALSE;
 }
 
+//TIZEN_ONLY(20150717) add widget name setter
+EOLIAN void
+_efl_ui_widget_efl_access_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data* _pd EINA_UNUSED, const char *name)
+{
+   if (_pd->name)
+     eina_stringshare_del(_pd->name);
+
+   _pd->name = eina_stringshare_add(name);
+}
+//
+
 EOLIAN static const char*
 _efl_ui_widget_efl_access_name_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
 {
    const char *ret, *name;
    name = efl_access_name_get(efl_super(obj, EFL_UI_WIDGET_CLASS));
-
    if (name) return name;
+
+   //TIZEN_ONLY(20150717) add widget name setter
+   if (_pd->name)
+     {
+#ifdef HAVE_GETTEXT
+        if (_pd->atspi_translation_domain)
+          return dgettext(_pd->atspi_translation_domain, _pd->name);
+#endif
+        return _pd->name;
+     }
+   //
 
    //TIZEN_ONLY(20170110) : Ignore text from elm_object_text_set in accessible_name_get
    Efl_Access_Role role;
@@ -5750,7 +5806,64 @@ _elm_widget_item_efl_access_description_get(Eo *obj EINA_UNUSED, Elm_Widget_Item
 }
 //
 
-//TIZEN_ONLY(20171114) : spatially sort atspi children
+//TIZEN_ONLY(20150713) : add atspi name setter to widget_item
+EOLIAN void
+_elm_widget_item_efl_access_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd EINA_UNUSED, const char *name)
+{
+   if (_pd->name)
+     eina_stringshare_del(_pd->name);
+
+   _pd->name = eina_stringshare_add(name);
+}
+
+EOLIAN const char*
+_elm_widget_item_efl_access_name_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
+{
+   //TIZEN_ONLY(20190922): add name callback, description callback.
+   const char *ret = NULL;
+   ret = efl_access_name_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
+   if (ret) return ret;
+   //
+
+   if (_pd->name)
+     {
+#ifdef HAVE_GETTEXT
+        if (_pd->atspi_translation_domain)
+          return dgettext(_pd->atspi_translation_domain, _pd->name);
+#endif
+        return _pd->name;
+     }
+
+   return NULL;
+}
+///
+
+//TIZEN_ONLY(20150731) : add i18n support for name and description
+EOLIAN static void
+_efl_ui_widget_efl_access_translation_domain_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, const char *domain)
+{
+   eina_stringshare_replace(&_pd->atspi_translation_domain, domain);
+}
+
+EOLIAN static const char*
+_efl_ui_widget_efl_access_translation_domain_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd)
+{
+   return _pd->atspi_translation_domain;
+}
+
+EOLIAN static void
+_elm_widget_item_efl_access_translation_domain_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd, const char *domain)
+{
+   eina_stringshare_replace(&_pd->atspi_translation_domain, domain);
+}
+
+EOLIAN static const char*
+_elm_widget_item_efl_access_translation_domain_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd)
+{
+   return _pd->atspi_translation_domain;
+}
+///
+
 static int _sort_vertically(const void *data1, const void *data2)
 {
    Evas_Coord y1, y2;

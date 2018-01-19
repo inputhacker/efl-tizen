@@ -623,7 +623,7 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access,
       Efl.Canvas.Group.group_calculate;
       Efl.Canvas.Group.group_member_del;
       Efl.Canvas.Group.group_member_add;
-      Efl.Access.name { get; }
+      Efl.Access.name { set; get; }
       Efl.Access.state_set { get; }
       Efl.Access.children { get; }
       Efl.Access.parent { get; }
@@ -634,6 +634,9 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access,
       //TIZEN_ONLY(20161111) add widget/widget_item description get/set
       Efl.Access.description { set; get; }
       //
+      //TIZEN_ONLY(20150731) : add i18n support for name and description
+      Efl.Access.translation_domain { set; get;}
+      ///
       //TIZEN_ONLY(20150709) : atspi relations api
       Efl.Access.relation_set { get;}
       Efl.Access.relationship_append;
