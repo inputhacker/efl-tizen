@@ -2456,7 +2456,7 @@ _elm_widget_top_win_focused_set(Evas_Object *obj,
    sd->top_win_focused = top_win_focused;
 
    if (sd->focused && !sd->top_win_focused)
-     efl_ui_widget_on_focus_update(obj, NULL);
+     efl_ui_widget_on_focus_update(obj);
 }
 
 Eina_Bool
@@ -5623,7 +5623,7 @@ _efl_ui_widget_efl_object_debug_name_override(Eo *obj, Elm_Widget_Smart_Data *sd
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_widget_on_focus_update(Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Object_Item *item EINA_UNUSED)
+_efl_ui_widget_on_focus_update(Eo *obj, Elm_Widget_Smart_Data *sd)
 {
    Eina_Bool focused;
 
@@ -6428,7 +6428,7 @@ _efl_ui_widget_efl_ui_focus_object_focus_set(Eo *obj, Elm_Widget_Smart_Data *pd,
 
    efl_ui_focus_object_focus_set(efl_super(obj, MY_CLASS), focus);
 
-   efl_ui_widget_on_focus_update(obj, NULL);
+   efl_ui_widget_on_focus_update(obj);
 }
 
 EOLIAN static Efl_Ui_Focus_Manager*
