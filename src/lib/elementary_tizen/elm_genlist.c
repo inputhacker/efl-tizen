@@ -4644,7 +4644,8 @@ _elm_genlist_efl_ui_widget_translate(Eo *obj, Elm_Genlist_Data *sd)
                {
                   elm_genlist_item_fields_update(EO_OBJ(it),
                                                  NULL,
-                                                 ELM_GENLIST_ITEM_FIELD_TEXT);
+                                                 ELM_GENLIST_ITEM_FIELD_TEXT |
+                                                 ELM_GENLIST_ITEM_FIELD_CONTENT);
                }
              else GL_IT(it)->calc_done = EINA_FALSE;
           }
