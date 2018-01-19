@@ -554,7 +554,6 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus)
            Efl.Access.name { get; }
            Efl.Access.state_set { get; }
            Efl.Ui.Focus.Object.prepare_logical;
-           Efl.Access.children { get; }
            //TIZEN_ONLY(20171114) genlist: enhance accessibility scroll & highlight
            Efl.Access.Component.highlight_grab;
            Efl.Access.Component.highlight_clear;
