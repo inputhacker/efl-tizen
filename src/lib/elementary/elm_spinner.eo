@@ -172,7 +172,7 @@ class Elm.Spinner (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Focus.Composition,
       Efl.Object.constructor;
       Efl.Ui.Widget.theme_apply;
       Efl.Ui.Widget.on_access_update;
-      Efl.Ui.Widget.on_focus_update;
+      Efl.Ui.Focus.Object.on_focus_update;
       Efl.Ui.Widget.widget_event;
       /* TIZEN_ONLY(20161111, 20180111)
        *  (20161111): apply UI Mirroring for Tizen 3.0 UX

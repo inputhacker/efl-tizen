@@ -665,8 +665,10 @@ class Elm.Genlist (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Elm.Interface_Scroll
       Efl.Ui.Widget.widget_sub_object_del;
       Efl.Ui.Widget.on_access_update;
       Efl.Ui.Widget.focus_highlight_geometry { get; }
-      Efl.Ui.Widget.on_focus_update;
+      //Efl.Ui.Widget.on_focus_update;
       //Efl.Ui.Widget.widget_event;
+      Efl.Ui.Focus.Object.on_focus_update;
+      Efl.Ui.Widget.widget_event; // rebase
       Efl.Ui.Widget.focused_item { get; }
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
       //register/unregister access objects accordingly.
