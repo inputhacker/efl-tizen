@@ -35,7 +35,6 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_calendar.c \
 	lib/elementary/efl_ui_check.c \
 	lib/elementary/elm_clock.c \
-	lib/elementary/elm_cnp.c \
 	lib/elementary/elm_code_line.c \
 	lib/elementary/elm_code_text.c \
 	lib/elementary/elm_code_indent.c \
@@ -182,6 +181,9 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_scroll_manager.c \
 	lib/elementary/efl_ui_pan.c \
 	lib/elementary/tizen_vector.c \
+	lib/elementary/efl_selection_manager.c \
+	lib/elementary/efl_selection.c \
+	lib/elementary/efl_ui_dnd.c \
 	$(NULL)
 
 
