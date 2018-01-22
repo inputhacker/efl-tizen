@@ -53,6 +53,8 @@ else
 bin_eet_eet_LDADD = @USE_EET_LIBS@
 endif
 bin_eet_eet_DEPENDENCIES = @USE_EET_INTERNAL_LIBS@
+bin_eet_eet_LDFLAGS = -pie
+bin_eet_eet_CFLAGS = -fPIE
 
 ### Unit tests
 
