@@ -29,7 +29,7 @@ enum ATOM_INDEX_CBHM_COUNT {
 	ATOM_INDEX_CBHM_COUNT_MAX = 3
 };
 
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
 enum _Atom_Index_Cbhm_Item_Type {
 	ATOM_INDEX_CBHM_TARGET = 0,
 	ATOM_INDEX_CBHM_TEXT = 1,
@@ -51,7 +51,7 @@ Eina_Bool _cbhm_item_get(Evas_Object *obj EINA_UNUSED, int index, Ecore_X_Atom *
 Eina_Bool _cbhm_item_get(Evas_Object *obj, int index, void *data_type, char **buf);
 #endif
 
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
 Eldbus_Proxy* cbhm_proxy_get(Evas_Object *obj);
 #endif
 

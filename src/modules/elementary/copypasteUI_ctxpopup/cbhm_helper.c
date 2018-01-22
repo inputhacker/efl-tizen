@@ -200,7 +200,7 @@ _cbhm_item_count_get(Evas_Object *obj EINA_UNUSED, int atom_index)
      }
    DMSG("ret: 0x%x\n", ret);
 #endif
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
    Eldbus_Message *reply, *req;
    Eldbus_Proxy *cbhm_proxy = cbhm_proxy_get(obj);
    const char *errname = NULL, *errmsg = NULL;
@@ -393,7 +393,7 @@ _cbhm_serial_number_get()
    return senum;
 }
 
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
 int
 _cbhm_item_type_get(Evas_Object *obj, int item_index)
 {

@@ -106,7 +106,7 @@ struct _Elm_Entry_Data
    Eina_Bool                             cursor_handler_down : 1;
    Eina_Bool                             cursor_handler_shown : 1;
    Eina_Bool                             long_pressing : 1;
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
    Ecore_Job                            *cbhm_init_job;
    Eina_Bool                             cbhm_init_done : 1;
    Eldbus_Proxy                         *cbhm_proxy;

@@ -1023,7 +1023,7 @@ _translate_menu(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_
 }
 #endif
 
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
 Eldbus_Proxy*
 cbhm_proxy_get(Evas_Object *obj)
 {
@@ -1050,7 +1050,7 @@ _clipboard_menu(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    if (ext_mod->cnp_mode != ELM_CNP_MODE_MARKUP)
      {
         EINA_LOG_ERR("eldbus_proxy_call CbhmShow 0");
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
         if (ext_mod->cbhm_proxy)
           eldbus_proxy_call(ext_mod->cbhm_proxy, "CbhmShow", NULL, NULL, -1, "s", "0");
 #else
@@ -1060,7 +1060,7 @@ _clipboard_menu(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
    else
      {
          EINA_LOG_ERR("eldbus_proxy_call CbhmShow 1");
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
         if (ext_mod->cbhm_proxy)
           eldbus_proxy_call(ext_mod->cbhm_proxy, "CbhmShow", NULL, NULL, -1, "s", "1");
 #else
@@ -1360,7 +1360,7 @@ obj_longpress(Evas_Object *obj)
 #ifdef HAVE_ELEMENTARY_X
              if (cbhm_count)
 #endif
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
              if (cbhm_count)
 #endif
                {
@@ -1372,7 +1372,7 @@ obj_longpress(Evas_Object *obj)
                            !(first_cbhm_item_type == ecore_x_atom_get("text/uri")) &&
                            !(first_cbhm_item_type == ecore_x_atom_get("text/uri-list")))
 #endif
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
                        if (ext_mod->editable && (_cbhm_item_type_get(obj, 0) != ATOM_INDEX_CBHM_IMAGE))
 #endif
                          {
@@ -1413,7 +1413,7 @@ obj_longpress(Evas_Object *obj)
 #ifdef HAVE_ELEMENTARY_X
              if ((ext_mod->editable) && (cbhm_count) && (has_clipboard))
 #endif
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
              if ((ext_mod->editable) && (cbhm_count) && (has_clipboard))
 #endif
                {
@@ -1499,7 +1499,7 @@ obj_longpress(Evas_Object *obj)
 #ifdef HAVE_ELEMENTARY_X
                    if (ext_mod->editable && cbhm_count)
 #endif
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
                    if (ext_mod->editable && cbhm_count)
 #endif
                      {
@@ -1574,7 +1574,7 @@ obj_longpress(Evas_Object *obj)
 #ifdef HAVE_ELEMENTARY_X
                    if (cbhm_count)
 #endif
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
                    if (cbhm_count)
 #endif
                      {
@@ -1587,7 +1587,7 @@ obj_longpress(Evas_Object *obj)
                                   if (!(first_cbhm_item_type == ecore_x_atom_get("text/uri")) &&
                                       !(first_cbhm_item_type == ecore_x_atom_get("text/uri-list")))
 #endif
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
                                   if ((_cbhm_item_type_get(obj, 0) != ATOM_INDEX_CBHM_IMAGE))
 #endif
                                     {
@@ -1627,7 +1627,7 @@ obj_longpress(Evas_Object *obj)
 #ifdef HAVE_ELEMENTARY_X
                   if ((ext_mod->editable) && (cbhm_count) && (has_clipboard))
 #endif
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
                   if ((ext_mod->editable) && (cbhm_count) && (has_clipboard))
 #endif
                     {
@@ -1828,7 +1828,7 @@ obj_hide_clipboard(Evas_Object *obj)
 {
    if (!obj || !ext_mod) return;
 
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
    EINA_LOG_ERR("CbhmHide proxy call");
    eldbus_proxy_call(cbhm_proxy_get(obj), "CbhmHide", NULL, NULL, -1, "");
 #else

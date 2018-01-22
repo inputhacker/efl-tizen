@@ -87,7 +87,7 @@ struct _Elm_Entry_Extension_data
    Ecore_Timer *show_timer;
    char *source_text;
    char *target_text;
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
    Eldbus_Proxy *cbhm_proxy;
 #endif
    /* For setting color class parent relation to copypaste popup */

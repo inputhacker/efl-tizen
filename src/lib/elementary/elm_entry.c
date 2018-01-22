@@ -132,7 +132,7 @@ static void _atspi_expose_anchors(Eo *obj, Eina_Bool is_screen_reader);
  * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
  *************************************************************/
 /* Put declations of TIZEN_ONLY internal functions here */
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
 static void _cbhm_on_name_owner_changed(void *data EINA_UNUSED, const char *bus, const char *old_id EINA_UNUSED, const char *new_id);
 static void _on_item_clicked(void *data, const Eldbus_Message *msg EINA_UNUSED);
 static void _cbhm_eldbus_init(Evas_Object *obj);
@@ -1760,13 +1760,13 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
         /*************************************************************
          * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
          *************************************************************/
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
         /* Send focused entry type to CBHM */
         if (sd->cnp_mode == ELM_CNP_MODE_PLAINTEXT)
           eldbus_proxy_call(sd->cbhm_proxy, "CbhmSetInputTextType", NULL, NULL, -1, "s", "text");
         else
           eldbus_proxy_call(sd->cbhm_proxy, "CbhmSetInputTextType", NULL, NULL, -1, "s", "image");
-#endif /* HAVE_ELEMENTARY_WAYLAND */
+#endif /* HAVE_ELEMENTARY_WL2 */
         /*******
          * END *
          *******/
@@ -2203,7 +2203,7 @@ _menu_call(Evas_Object *obj)
          * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
          *************************************************************/
         /* CBHM client for multi entry */
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
         if (!sd->cbhm_init_done)
           {
              if (sd->cbhm_init_job)
@@ -5229,7 +5229,7 @@ _elm_entry_efl_canvas_group_group_add(Eo *obj, Elm_Entry_Data *priv)
     *************************************************************/
    priv->cursor_handler_shown = EINA_FALSE;
 
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
    priv->cbhm_init_done = EINA_FALSE;
    priv->cbhm_init_job = ecore_job_add((Ecore_Cb)_init_eldbus_job, obj);
 #endif
@@ -5431,7 +5431,7 @@ _elm_entry_efl_canvas_group_group_del(Eo *obj, Elm_Entry_Data *sd)
      ecore_job_del(sd->cursor_handler_update_job);
 
    /* For supporting CBHM client for multiple entry object */
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
    _cbhm_eldbus_deinit(obj);
 #endif
    /*******
@@ -8232,7 +8232,7 @@ _elm_entry_elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
  ****************************************************************************/
 
 /* cbhm client for multi entry */
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
 #define CBHM_DBUS_OBJPATH "/org/tizen/cbhm/dbus"
 #ifndef CBHM_DBUS_INTERFACE
 #define CBHM_DBUS_INTERFACE "org.tizen.cbhm.dbus"
@@ -8955,7 +8955,7 @@ EAPI void elm_entry_extension_module_data_get(Evas_Object *obj, Elm_Entry_Extens
    ext_mod->ent_scroll = sd->scroll;
 
    /* cbhm client for multi entry */
-#ifdef HAVE_ELEMENTARY_WAYLAND
+#ifdef HAVE_ELEMENTARY_WL2
    ext_mod->cbhm_proxy = sd->cbhm_proxy;
 #endif
 

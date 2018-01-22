@@ -7373,7 +7373,7 @@ _efl_ui_win_keygrab_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, const char *ke
          ret = ecore_x_window_keygrab_set(sd->x.xwin, key, 0, 0, 0, x_grab_mode);
      }
 // TIZEN_ONLY(20150722): Add ecore_wl_window_keygrab_* APIs
-#elif defined HAVE_ELEMENTARY_WAYLAND
+#elif defined HAVE_ELEMENTARY_WL2
    _elm_win_wlwindow_get(sd);
    if (sd->wl.win)
      {
@@ -7417,7 +7417,7 @@ _efl_ui_win_keygrab_unset(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, const char *
    if (sd->x.xwin)
      ret = ecore_x_window_keygrab_unset(sd->x.xwin, key, 0, 0);
 // TIZEN_ONLY(20150722): Add ecore_wl_window_keygrab_* APIs
-#elif defined HAVE_ELEMENTARY_WAYLAND
+#elif defined HAVE_ELEMENTARY_WL2
    _elm_win_wlwindow_get(sd);
    if (sd->wl.win)
      ret = ecore_wl2_window_keygrab_unset(sd->wl.win, key, 0, 0);
