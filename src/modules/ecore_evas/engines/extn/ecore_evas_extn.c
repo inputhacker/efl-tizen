@@ -30,34 +30,6 @@ static const int   interface_extn_version = 1;
 static Ecore_Evas_Interface_Extn *_ecore_evas_extn_interface_new(void);
 static void *_ecore_evas_socket_switch(void *data, void *dest_buf);
 
-/* Tizen Only : Callback function  & listener for tizen remote surface */
-
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-// For Provider
-static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider, uint32_t res_id);
-static void _ecore_evas_extn_rsp_cb_visibility(void *data, struct tizen_remote_surface_provider *provider, uint32_t visibility);
-
-static const struct tizen_remote_surface_provider_listener _ecore_evas_extn_gl_socket_listener =
-{
-    _ecore_evas_extn_rsp_cb_resource_id,
-    _ecore_evas_extn_rsp_cb_visibility,
-};
-
-//For Cousumer
-static void _ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *trs, struct wl_buffer *buffer, uint32_t time); /* This callback will be deprecated */
-static void _ecore_evas_extn_rs_cb_missing(void *data, struct tizen_remote_surface *trs);
-static void _ecore_evas_extn_rs_cb_changed_buffer(void *data, struct tizen_remote_surface *trs, uint32_t type, struct wl_buffer *buffer,
-                              int32_t img_file_fd, uint32_t img_file_size, uint32_t time, struct wl_array *keys);
-
-static const struct tizen_remote_surface_listener _ecore_evas_extn_gl_plug_listener =
-{
-   _ecore_evas_extn_rs_cb_buffer_update, // it will be deprecated
-   _ecore_evas_extn_rs_cb_missing,
-   _ecore_evas_extn_rs_cb_changed_buffer,
-};
-
-#endif
-/* Tizen Only : --- End */
 typedef struct _Extn Extn;
 
 struct _Extn
@@ -88,246 +60,9 @@ struct _Extn
    struct {
       Eina_Bool   done : 1; /* need to send change done event to the client(plug) */
    } profile;
-
-   /* Tizen Only : for tizen remote surface */
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-   struct tizen_remote_surface_provider *tizen_rsp;
-   struct wayland_tbm_client *tbm_client;
-   struct tizen_remote_surface *tizen_rs;
-   uint32_t resource_id;
-   Eina_Bool redirect;
-#endif
-   int extn_type_client;
-
-   /* Tizen Only : --- End */
 };
 
 static Eina_List *extn_ee_list = NULL;
-
-/* Tizen Only : for tizen remote surface */
-/* local value for tizen remote manager */
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-struct tizen_remote_surface_manager *tizen_rsm = NULL;
-struct wl_buffer *pre_buffer = NULL; //pre_buffer for tizen remote surface
-#endif
-static int extn_type = EXTN_TYPE_NONE;
-
-/* Tizen Only : Callback function  & listener for tizen remote surface */
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-static void _ecore_evas_extn_rsp_cb_resource_id(void *data, struct tizen_remote_surface_provider *provider EINA_UNUSED, uint32_t res_id)
-{
-   /* to get resource id of this remote surface */
-   Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata;
-   Extn *extn;
-   if(!ee)
-     {
-        ERR("Ecore evas is NULL");
-        return;
-     }
-   bdata = ee->engine.extn.data;
-   if(!bdata)
-     {
-        ERR("Buffer Data is NULL");
-        return;
-     }
-   extn = bdata->data;
-   if(!extn)
-     {
-        ERR("Extn is NULL");
-        return;
-     }
-   extn->resource_id = res_id;
-   INF("[EXTN_GL] remote surcace's resource_id: %u ",extn->resource_id);
-}
-static void _ecore_evas_extn_rsp_cb_visibility(void *data EINA_UNUSED, struct tizen_remote_surface_provider *provider EINA_UNUSED, uint32_t visibility EINA_UNUSED)
-{
-   /* To do : add visibility change  */
-}
-
-static void
-_ecore_evas_extn_rs_cb_buffer_update(void *data, struct tizen_remote_surface *trs, struct wl_buffer *buffer, uint32_t time EINA_UNUSED) /* This callback will be deprecated */
-{
-  Evas_Object* img = data;
-
-  //see next page
-   tbm_surface_h tbm_surface;
-   int width, height;
-
-   //added image object for native surface
-   tizen_remote_surface_transfer_visibility(trs,
-                              TIZEN_REMOTE_SURFACE_VISIBILITY_TYPE_VISIBLE);
-
-   //get tbm surface from buffer
-   tbm_surface = wl_buffer_get_user_data(buffer);
-   width = tbm_surface_get_width(tbm_surface);
-   height = tbm_surface_get_height(tbm_surface);
-   INF("[EXTN_GL] BUFFER UPDATE %p %p (%dx%d)",buffer,tbm_surface,width,height);
-
-   Evas_Native_Surface ns;
-   memset(&ns, 0, sizeof(Evas_Native_Surface));
-   ns.version = EVAS_NATIVE_SURFACE_VERSION;
-   ns.type = EVAS_NATIVE_SURFACE_TBM;
-   ns.data.tbm.buffer = tbm_surface;
-
-   evas_object_image_size_set(img, width, height);
-
-   //set native surface
-   evas_object_image_native_surface_set(img, &ns);
-   //set dirty for image updating
-   evas_object_image_pixels_dirty_set(img, EINA_TRUE);
-
-   if( pre_buffer)
-     {
-        if (tizen_remote_surface_get_version(trs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
-          {
-             tizen_remote_surface_release(trs, pre_buffer);
-
-             // unref pre tbm_surface
-             tbm_surface_h pre_tbm_surface;
-             pre_tbm_surface = wl_buffer_get_user_data(pre_buffer);
-             tbm_surface_internal_unref(pre_tbm_surface);
-             wl_buffer_destroy(pre_buffer);
-          }
-     }
-   pre_buffer = buffer;
-}
-
-static void
-_ecore_evas_extn_rs_cb_changed_buffer(void *data, struct tizen_remote_surface *trs, uint32_t type, struct wl_buffer *buffer,
-                              int32_t img_file_fd, uint32_t img_file_size EINA_UNUSED, uint32_t time EINA_UNUSED, struct wl_array *keys EINA_UNUSED)
-{
-   /* check type of given buffer */
-   if (type == TIZEN_REMOTE_SURFACE_BUFFER_TYPE_TBM)
-     {
-        Evas_Object* img = data;
-        //see next page
-        tbm_surface_h tbm_surface;
-        int width, height;
-
-        //added image object for native surface
-        tizen_remote_surface_transfer_visibility(trs,
-                                   TIZEN_REMOTE_SURFACE_VISIBILITY_TYPE_VISIBLE);
-
-        //get tbm surface from buffer
-        tbm_surface = wl_buffer_get_user_data(buffer);
-        width = tbm_surface_get_width(tbm_surface);
-        height = tbm_surface_get_height(tbm_surface);
-        INF("[EXTN_GL] BUFFER UPDATE %p %p (%dx%d)",buffer,tbm_surface,width,height);
-
-        Evas_Native_Surface ns;
-        memset(&ns, 0, sizeof(Evas_Native_Surface));
-        ns.version = EVAS_NATIVE_SURFACE_VERSION;
-        ns.type = EVAS_NATIVE_SURFACE_TBM;
-        ns.data.tbm.buffer = tbm_surface;
-
-        evas_object_image_size_set(img, width, height);
-
-        //set native surface
-        evas_object_image_native_surface_set(img, &ns);
-        //set dirty for image updating
-        evas_object_image_pixels_dirty_set(img, EINA_TRUE);
-     }
-   else if (type == TIZEN_REMOTE_SURFACE_BUFFER_TYPE_IMAGE_FILE)
-     {
-        ERR("[EXTN_GL] IMAGE_FILE type can't use now");
-     }
-
-   // release pre_buffer & image_file_fd
-   if( pre_buffer)
-     {
-        if (tizen_remote_surface_get_version(trs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
-          {
-             tizen_remote_surface_release(trs, pre_buffer);
-
-             // unref pre tbm_surface
-             tbm_surface_h pre_tbm_surface;
-             pre_tbm_surface = wl_buffer_get_user_data(pre_buffer);
-             tbm_surface_internal_unref(pre_tbm_surface);
-             wl_buffer_destroy(pre_buffer);
-          }
-     }
-   pre_buffer = buffer;
-   close(img_file_fd); /* close passed fd whatever type is */
-}
-static void
-_ecore_evas_extn_rs_cb_missing(void *data EINA_UNUSED, struct tizen_remote_surface *trs EINA_UNUSED)
-{
-    ERR("Plug is missing...! ");
-}
-
-Eina_Bool
-_tizen_remote_surface_init(void)
-{
-   Eina_Inlist *globals;
-   Ecore_Wl_Global *global;
-   struct wl_registry *registry;
-   if (!tizen_rsm)
-     {
-        registry = ecore_wl_registry_get();
-        globals = ecore_wl_globals_get();
-
-        if (!registry || !globals)
-          {
-             ERR( "Could not get registry(%p) or global list(%p)\n",
-                     registry, globals);
-             return EINA_FALSE;
-          }
-
-        EINA_INLIST_FOREACH(globals, global)
-          {
-             if (!strcmp(global->interface, "tizen_remote_surface_manager"))
-               {
-                  tizen_rsm =
-                     wl_registry_bind(registry, global->id,
-                                      &tizen_remote_surface_manager_interface, global->version<3? global->version : 3);
-                   INF("[EXTN_GL] Create tizen_rsm : %p",tizen_rsm);
-               }
-          }
-     }
-   if (!tizen_rsm)
-     {
-        ERR("Could not bind tizen_remote_surface_manager");
-        return EINA_FALSE;
-     }
-
-   return EINA_TRUE;
-}
-#endif
-
-void
-_ecore_evas_extn_type_set(int type)
-{
-   extn_type = type;
-}
-static int
-_ecore_evas_extn_type_get()
-{
-   char *engine = NULL;
-
-   if( extn_type != EXTN_TYPE_NONE)
-     return extn_type;
-
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-   extn_type = EXTN_TYPE_SHM;
-
-   engine = getenv("ECORE_EVAS_EXTN_SOCKET_ENGINE");
-
-   if (engine)
-     {
-        if ((!strcasecmp(engine, "buffer")))
-           extn_type = EXTN_TYPE_SHM;
-        else if ((!strcasecmp(engine, "wayland_egl")))
-           extn_type = EXTN_TYPE_WAYLAND_EGL;
-        else
-           extn_type = EXTN_TYPE_SHM;
-     }
-#else
-   extn_type = EXTN_TYPE_SHM;
-#endif
-
-   return extn_type;
-}
 
 static Eina_Bool
 _ecore_evas_extn_module_init(void)
@@ -362,12 +97,11 @@ _ecore_evas_extn_plug_render_pre(void *data, Evas *e EINA_UNUSED, void *event_in
    Extn *extn;
 
    if (!ee) return;
-   bdata = ee->engine.extn.data;
+   bdata = ee->engine.data;
    if (!bdata) return;
    extn = bdata->data;
    if (!extn) return;
-   if(extn->extn_type_client ==  EXTN_TYPE_SHM)
-     bdata->pixels = _extnbuf_lock(extn->b[extn->cur_b].buf, NULL, NULL, NULL);
+   bdata->pixels = _extnbuf_lock(extn->b[extn->cur_b].buf, NULL, NULL, NULL);
 }
 
 static void
@@ -378,19 +112,16 @@ _ecore_evas_extn_plug_render_post(void *data, Evas *e EINA_UNUSED, void *event_i
    Extn *extn;
 
    if (!ee) return;
-   bdata = ee->engine.extn.data;
+   bdata = ee->engine.data;
    if (!bdata) return;
    extn = bdata->data;
    if (!extn) return;
-   if(extn->extn_type_client ==  EXTN_TYPE_SHM)
+   _extnbuf_unlock(extn->b[extn->cur_b].buf);
+   if (extn->b[extn->cur_b].obuf)
      {
-        _extnbuf_unlock(extn->b[extn->cur_b].buf);
-        if (extn->b[extn->cur_b].obuf)
-          {
-             _extnbuf_unlock(extn->b[extn->cur_b].obuf);
-             _extnbuf_free(extn->b[extn->cur_b].obuf);
-             extn->b[extn->cur_b].obuf = NULL;
-          }
+        _extnbuf_unlock(extn->b[extn->cur_b].obuf);
+        _extnbuf_free(extn->b[extn->cur_b].obuf);
+        extn->b[extn->cur_b].obuf = NULL;
      }
 }
 
@@ -405,7 +136,7 @@ static void
 _ecore_evas_extn_coord_translate(Ecore_Evas *ee, Evas_Coord *x, Evas_Coord *y)
 {
    Evas_Coord xx, yy, ww, hh, fx, fy, fw, fh;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
 
    evas_object_geometry_get(bdata->image, &xx, &yy, &ww, &hh);
    evas_object_image_fill_get(bdata->image, &fx, &fy, &fw, &fh);
@@ -445,7 +176,7 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
 {
    Extn *extn;
    Ecore_Ipc_Client *client;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    if (!bdata) return;
 
    extn = bdata->data;
@@ -460,48 +191,17 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
              evas_object_image_pixels_dirty_set(bdata->image, EINA_TRUE);
           }
         bdata->pixels = NULL;
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-        if(extn->extn_type_client ==  EXTN_TYPE_WAYLAND_EGL)
+        for (i = 0; i < NBUF; i++)
           {
-             extn->resource_id = 0;
-             if(extn->tizen_rsp) tizen_remote_surface_provider_destroy(extn->tizen_rsp);
-             if(extn->tizen_rs)
-               {
-                  if( pre_buffer)
-                    {
-                       if (tizen_remote_surface_get_version(extn->tizen_rs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
-                         {
-                            tizen_remote_surface_release(extn->tizen_rs, pre_buffer);
-
-                            // unref pre tbm_surface
-                            tbm_surface_h pre_tbm_surface;
-                            pre_tbm_surface = wl_buffer_get_user_data(pre_buffer);
-                            tbm_surface_internal_unref(pre_tbm_surface);
-                            wl_buffer_destroy(pre_buffer);
-                            pre_buffer = NULL;
-                         }
-                    }
-                  tizen_remote_surface_destroy(extn->tizen_rs);
-               }
-             if(extn->tbm_client) wayland_tbm_client_deinit(extn->tbm_client);
-             if(tizen_rsm) tizen_remote_surface_manager_destroy(tizen_rsm);
+             if (extn->b[i].buf) _extnbuf_free(extn->b[i].buf);
+             if (extn->b[i].obuf) _extnbuf_free(extn->b[i].obuf);
+             if (extn->b[i].base) eina_stringshare_del(extn->b[i].base);
+             if (extn->b[i].lock) eina_stringshare_del(extn->b[i].lock);
+             extn->b[i].buf = NULL;
+             extn->b[i].obuf = NULL;
+             extn->b[i].base = NULL;
+             extn->b[i].lock = NULL;
           }
-        else
-#endif
-          {
-             for (i = 0; i < NBUF; i++)
-               {
-                  if (extn->b[i].buf) _extnbuf_free(extn->b[i].buf);
-                  if (extn->b[i].obuf) _extnbuf_free(extn->b[i].obuf);
-                  if (extn->b[i].base) eina_stringshare_del(extn->b[i].base);
-                  if (extn->b[i].lock) eina_stringshare_del(extn->b[i].lock);
-                  extn->b[i].buf = NULL;
-                  extn->b[i].obuf = NULL;
-                  extn->b[i].base = NULL;
-                  extn->b[i].lock = NULL;
-               }
-          }
-
         if (extn->svc.name) eina_stringshare_del(extn->svc.name);
         if (extn->ipc.clients)
           {
@@ -545,14 +245,14 @@ _ecore_evas_extn_free(Ecore_Evas *ee)
         bdata->image = NULL;
      }
    free(bdata);
-   ee->engine.extn.data = NULL;
+   ee->engine.data = NULL;
    extn_ee_list = eina_list_remove(extn_ee_list, ee);
 }
 
 static void
 _ecore_evas_resize(Ecore_Evas *ee, int w, int h)
 {
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
 
    if (w < 1) w = 1;
    if (h < 1) h = 1;
@@ -641,7 +341,7 @@ static void
 _ecore_evas_extn_cb_mouse_in(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Mouse_In *ev = event_info;
    Extn *extn;
 
@@ -663,7 +363,7 @@ static void
 _ecore_evas_extn_cb_mouse_out(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Mouse_Out *ev = event_info;
    Extn *extn;
 
@@ -686,7 +386,7 @@ _ecore_evas_extn_cb_mouse_down(void *data, Evas *e EINA_UNUSED, Evas_Object *obj
 {
    Ecore_Evas *ee = data;
    Evas_Event_Mouse_Down *ev = event_info;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
 
    extn = bdata->data;
@@ -726,7 +426,7 @@ static void
 _ecore_evas_extn_cb_mouse_up(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Mouse_Up *ev = event_info;
    Extn *extn;
 
@@ -750,7 +450,7 @@ static void
 _ecore_evas_extn_cb_mouse_move(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Mouse_Move *ev = event_info;
    Extn *extn;
 
@@ -778,7 +478,7 @@ static void
 _ecore_evas_extn_cb_mouse_wheel(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Mouse_Wheel *ev = event_info;
    Extn *extn;
 
@@ -802,7 +502,7 @@ static void
 _ecore_evas_extn_cb_multi_down(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Multi_Down *ev = event_info;
    Extn *extn;
 
@@ -840,7 +540,7 @@ static void
 _ecore_evas_extn_cb_multi_up(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Multi_Up *ev = event_info;
    Extn *extn;
 
@@ -877,7 +577,7 @@ static void
 _ecore_evas_extn_cb_multi_move(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Multi_Move *ev = event_info;
    Extn *extn;
 
@@ -913,7 +613,7 @@ static void
 _ecore_evas_extn_cb_key_down(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Key_Down *ev = event_info;
    Extn *extn;
 
@@ -970,7 +670,7 @@ static void
 _ecore_evas_extn_cb_key_up(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Key_Up *ev = event_info;
    Extn *extn;
 
@@ -1027,7 +727,7 @@ static void
 _ecore_evas_extn_cb_hold(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Evas_Event_Hold *ev = event_info;
    Extn *extn;
 
@@ -1049,7 +749,7 @@ static void
 _ecore_evas_extn_cb_focus_in(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
    Evas_Device *dev;
 
@@ -1066,7 +766,7 @@ static void
 _ecore_evas_extn_cb_focus_out(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
 
    ee->prop.focused_by = eina_list_remove(ee->prop.focused_by,
@@ -1081,7 +781,7 @@ static void
 _ecore_evas_extn_cb_show(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
 
    ee->visible = 1;
@@ -1095,7 +795,7 @@ static void
 _ecore_evas_extn_cb_hide(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
 
    ee->visible = 0;
@@ -1105,94 +805,11 @@ _ecore_evas_extn_cb_hide(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_
    ecore_ipc_server_send(extn->ipc.server, MAJOR, OP_HIDE, 0, 0, 0, NULL, 0);
 }
 
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-static Eina_Bool
-_ecore_evas_plug_cb_window_iconify_change(void *data, int type EINA_UNUSED, void *event)
-{
-   Extn *extn;
-   Ecore_Evas *ee,*ee2;
-   Ecore_Wl_Event_Window_Iconify_State_Change *ev;
-   Ecore_Evas_Engine_Buffer_Data *bdata;
-
-   ee2 = data;
-   bdata = ee2->engine.extn.data;
-   if(!bdata) return ECORE_CALLBACK_PASS_ON;
-
-   extn = bdata->data;
-   if(extn->extn_type_client == EXTN_TYPE_SHM) return ECORE_CALLBACK_PASS_ON;
-
-   ev = event;
-   ee = ecore_event_window_match(ev->win);
-
-   if (!ee) return ECORE_CALLBACK_PASS_ON;
-   if (ev->win != ee->prop.window) return ECORE_CALLBACK_PASS_ON;
-
-   if(extn->tizen_rs)
-     {
-        if(ee->prop.iconified && pre_buffer)
-          {
-             INF("[EXTN_GL] plug is iconified ");
-             if (tizen_remote_surface_get_version(extn->tizen_rs) >= TIZEN_REMOTE_SURFACE_RELEASE_SINCE_VERSION)
-               {
-                  INF("[EXTN_GL] buffer release (iconify_change) >> %p",pre_buffer);
-                  tizen_remote_surface_release(extn->tizen_rs, pre_buffer);
-
-                  // unref pre tbm_surface
-                  tbm_surface_h pre_tbm_surface;
-                  pre_tbm_surface = wl_buffer_get_user_data(pre_buffer);
-                  tbm_surface_internal_unref(pre_tbm_surface);
-                  wl_buffer_destroy(pre_buffer);
-                  pre_buffer = NULL;
-               }
-             if(extn->redirect)
-               {
-                  INF("[EXTN_GL] tizen remote surface unredirect");
-                  tizen_remote_surface_unredirect(extn->tizen_rs);
-                  extn->redirect = EINA_FALSE;
-               }
-          }
-        else
-          {
-             INF("[EXTN_GL] plug is un-iconified ");
-             if(!extn->redirect)
-               {
-                  INF("[EXTN_GL] tizen remote surface redirect");
-                  tizen_remote_surface_redirect(extn->tizen_rs);
-                  extn->redirect = EINA_TRUE;
-                  ecore_wl_sync();
-               }
-          }
-     }
-  return ECORE_CALLBACK_PASS_ON;
-}
-
-static Eina_Bool
-_ecore_evas_plug_cb_window_show(void *data, int type EINA_UNUSED, void *event EINA_UNUSED)
-{
-   Extn *extn;
-   Ecore_Evas *ee;
-   Ecore_Evas_Engine_Buffer_Data *bdata;
-
-   ee = data;
-   bdata = ee->engine.extn.data;
-   if(!bdata) return ECORE_CALLBACK_PASS_ON;
-   extn = bdata->data;
-   if(extn->extn_type_client == EXTN_TYPE_SHM) return ECORE_CALLBACK_PASS_ON;
-
-   if(extn->tizen_rs && !extn->redirect)
-     {
-        INF("[EXTN_GL] redirect buffer");
-        tizen_remote_surface_redirect(extn->tizen_rs);
-        extn->redirect = EINA_TRUE;
-     }
-   return ECORE_CALLBACK_PASS_ON;
-}
-#endif
 static void
 _ecore_evas_extn_plug_profile_set(Ecore_Evas *ee, const char *profile)
 {
    Extn *extn;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
 
    _ecore_evas_window_profile_free(ee);
    ee->prop.profile.name = NULL;
@@ -1213,7 +830,7 @@ _ecore_evas_extn_plug_profile_set(Ecore_Evas *ee, const char *profile)
 static void
 _ecore_evas_extn_plug_msg_parent_send(Ecore_Evas *ee, int msg_domain, int msg_id, void *data, int size)
 {
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
 
    extn = bdata->data;
@@ -1321,7 +938,7 @@ _ipc_server_add(void *data, int type EINA_UNUSED, void *event)
 {
    Ecore_Ipc_Event_Server_Add *e = event;
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
 
    if (ee != ecore_ipc_server_data_get(e->server))
@@ -1343,7 +960,7 @@ _ipc_server_del(void *data, int type EINA_UNUSED, void *event)
 {
    Ecore_Ipc_Event_Server_Del *e = event;
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
    int i;
 
@@ -1375,7 +992,7 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
 {
    Ecore_Ipc_Event_Server_Data *e = event;
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
 
    if (ee != ecore_ipc_server_data_get(e->server))
@@ -1535,93 +1152,6 @@ _ipc_server_data(void *data, int type EINA_UNUSED, void *event)
                 }
            }
          break;
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-      case OP_GL_REF:
-           {
-              // save resouce id
-              uint32_t rid = e->ref;
-              INF("[EXTN_GL] receive socket to client >>  (resource_id:%u)",rid);
-
-              // initailize tizen remote surface
-              if (!_tizen_remote_surface_init())
-                {
-                   ERR("_tizen_remote_surface_init() is failed");
-                   break;
-                }
-
-              Ecore_Evas* ee_origin = evas_object_data_get(bdata->image, "Ecore_Evas_Parent");
-              if(!ee_origin)
-                {
-                   ERR("[EXTN_GL] ee_origin is NULL");
-                   break;
-                }
-
-              // get wayland tbm
-              if(!(extn->tbm_client))
-                {
-                   struct wl_tbm *wl_tbm = NULL;
-
-                   if (!strcmp(ee_origin->driver, "wayland_shm"))
-                     {
-                        // create client pointer for shm backend
-                        struct wayland_tbm_client *tbm_client_shm = NULL;
-
-                        // get tbm_client_shm from wayland_shm backend
-                        Evas_Engine_Info_Wayland *einfo;
-                        if ((einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee_origin->evas)))
-                          tbm_client_shm = einfo->info.tbm_client;
-
-                        // get wayland tbm
-                        wl_tbm = (struct wl_tbm *)wayland_tbm_client_get_wl_tbm(tbm_client_shm);
-                        INF("[EXTN_GL] Get wl_tbm(SHM backend) :%p", wl_tbm);
-                     }
-                   else
-                     {
-                        extn->tbm_client = (struct wayland_tbm_client *)wayland_tbm_client_init(ecore_wl_display_get());
-
-                        // get wayland tbm
-                        wl_tbm = (struct wl_tbm *)wayland_tbm_client_get_wl_tbm(extn->tbm_client);
-                        INF("[EXTN_GL] Get wl_tbm : %p", wl_tbm);
-                     }
-
-                   if (!wl_tbm)
-                     {
-                        ERR("[EXTN_GL] wl_tbm is NULL");
-                        break;
-                     }
-
-                  // Add listener for tizen remote surface
-                  if(!(extn->tizen_rs)){
-                     //create tizen_remote_surface
-                     extn->tizen_rs = tizen_remote_surface_manager_create_surface(tizen_rsm, rid, wl_tbm);
-                     if(!(extn->tizen_rs))
-                       {
-                          ERR("tizen_rs is NULL");
-                          break;
-                       }
-                     tizen_remote_surface_add_listener(extn->tizen_rs, &_ecore_evas_extn_gl_plug_listener, bdata->image);
-
-                     if(!ecore_evas_withdrawn_get(ee_origin) && !ecore_evas_iconified_get(ee_origin))
-                       {
-                          if(!extn->redirect)
-                            {
-                               INF("[EXTN_GL] this window(ee:%p) is normal status . iconify:%d, withdraw:%d ",ee_origin,ecore_evas_iconified_get(ee_origin),ecore_evas_withdrawn_get(ee_origin));
-                               tizen_remote_surface_redirect(extn->tizen_rs);
-                               extn->redirect = EINA_TRUE;
-                            }
-                       }
-                    else
-                      {
-                         INF("[EXTN_GL] this window(ee:%p) is iconified or withdrawn . iconify:%d, withdraw:%d ",ee_origin,ecore_evas_iconified_get(ee_origin),ecore_evas_withdrawn_get(ee_origin));
-                      }
-                  }
-                }
-
-              //Set extn_type
-              extn->extn_type_client = EXTN_TYPE_WAYLAND_EGL;
-           }
-         break;
- #endif
       case OP_RESIZE:
          if ((e->data) && (e->size >= (int)sizeof(Ipc_Data_Resize)))
            {
@@ -1670,7 +1200,7 @@ ecore_evas_extn_plug_new_internal(Ecore_Evas *ee_target)
 	free(ee);
 	return NULL;
      }
-   ee->engine.extn.data = bdata;
+   ee->engine.data = bdata;
    o = evas_object_image_filled_add(ee_target->evas);
    /* this make problem in gl engine, so I'll block this until solve problem
    evas_object_image_content_hint_set(o, EVAS_IMAGE_CONTENT_HINT_DYNAMIC);*/
@@ -1783,7 +1313,7 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
 
    if (!ECORE_MAGIC_CHECK(ee, ECORE_MAGIC_EVAS)) return EINA_FALSE;
 
-   bdata = ee->engine.extn.data;
+   bdata = ee->engine.data;
    if (!svcname)
      {
         bdata->data = NULL;
@@ -1801,13 +1331,6 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
    extn->svc.name = eina_stringshare_add(svcname);
    extn->svc.num = svcnum;
    extn->svc.sys = svcsys;
-
-   extn->extn_type_client = EXTN_TYPE_SHM;
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-   extn->tizen_rs = NULL;
-   extn->tbm_client = NULL;
-   extn->redirect = EINA_FALSE;
-#endif
 
    if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
    extn->ipc.server = ecore_ipc_server_connect(ipctype, (char *)extn->svc.name,
@@ -1833,19 +1356,6 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
       (extn->ipc.handlers,
        ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
                                _ipc_server_data, ee));
-
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-    extn->ipc.handlers = eina_list_append
-      (extn->ipc.handlers,
-       ecore_event_handler_add(ECORE_WL_EVENT_WINDOW_ICONIFY_STATE_CHANGE,
-                               _ecore_evas_plug_cb_window_iconify_change, ee));
-
-    extn->ipc.handlers = eina_list_append
-      (extn->ipc.handlers,
-       ecore_event_handler_add(ECORE_WL_EVENT_WINDOW_SHOW,
-                               _ecore_evas_plug_cb_window_show, ee));
-#endif
-
    return EINA_TRUE;
 }
 
@@ -1854,7 +1364,7 @@ _ecore_evas_socket_resize(Ecore_Evas *ee, int w, int h)
 {
    Extn *extn;
    Evas_Engine_Info_Buffer *einfo;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    int stride = 0;
 
    if (w < 1) w = 1;
@@ -1868,29 +1378,7 @@ _ecore_evas_socket_resize(Ecore_Evas *ee, int w, int h)
    evas_output_viewport_set(ee->evas, 0, 0, ee->w, ee->h);
    evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
    extn = bdata->data;
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-   if(_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
-     {
-        if ( extn && extn->ipc.clients)
-          {
-             Ipc_Data_Resize ipc;
-             Eina_List *l;
-             Ecore_Ipc_Client *client;
-
-             EINA_LIST_FOREACH(extn->ipc.clients, l, client)
-               {
-                  ipc.w = ee->w;
-                  ipc.h = ee->h;
-                  INF("[EXTN_GL]Socket Resize is Called (%dx%d)",ee->w,ee->h);
-                  ecore_ipc_client_send(client, MAJOR, OP_RESIZE,
-                                           0, 0, 0, &ipc, sizeof(ipc));
-               }
-          }
-     }
-   else if (extn)
-#else
-   if(extn)
-#endif
+   if (extn)
      {
         int i, last_try = 0;
 
@@ -1989,7 +1477,7 @@ static void
 _ecore_evas_extn_socket_window_profile_change_done_send(Ecore_Evas *ee)
 {
    Extn *extn;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Ecore_Ipc_Client *client;
    Eina_List *l = NULL;
    char *s;
@@ -2011,7 +1499,7 @@ static void *
 _ecore_evas_socket_switch(void *data, void *dest_buf EINA_UNUSED)
 {
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn = bdata->data;
 
    extn->prev_b = extn->cur_b;
@@ -2026,7 +1514,7 @@ static Eina_Bool
 _ecore_evas_extn_socket_prepare(Ecore_Evas *ee)
 {
    Extn *extn;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    int cur_b;
 
    extn = bdata->data;
@@ -2085,7 +1573,7 @@ _ipc_client_add(void *data, int type EINA_UNUSED, void *event)
 {
    Ecore_Ipc_Event_Client_Add *e = event;
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
    Ipc_Data_Resize ipc;
    Ipc_Data_Update ipc2;
@@ -2100,47 +1588,31 @@ _ipc_client_add(void *data, int type EINA_UNUSED, void *event)
 
    extn->ipc.clients = eina_list_append(extn->ipc.clients, e->client);
 
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-   if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
+   for (i = 0; i < NBUF; i++)
      {
-        INF("[EXTN_GL] send resouce id to client ( %dx%d,  resource_id:%u)",ee->w,ee->h,extn->resource_id);
-        ipc.w = ee->w;
-        ipc.h = ee->h;
-        ecore_ipc_client_send(e->client, MAJOR, OP_GL_REF,
-                                extn->resource_id, 0, 0,
-                                NULL,0);
-        ecore_ipc_client_send(e->client, MAJOR, OP_RESIZE,
-                              0, 0, 0, &ipc, sizeof(ipc));
+        const char *lock;
+
+        ecore_ipc_client_send(e->client, MAJOR, OP_SHM_REF0,
+                              extn->svc.num, extn->b[i].num, i,
+                              extn->svc.name,
+                              strlen(extn->svc.name) + 1);
+        lock = _extnbuf_lock_file_get(extn->b[i].buf);
+        ecore_ipc_client_send(e->client, MAJOR, OP_SHM_REF1,
+                              ee->w, ee->h, i,
+                              lock, strlen(lock) + 1);
+        ecore_ipc_client_send(e->client, MAJOR, OP_SHM_REF2,
+                              ee->alpha, extn->svc.sys, i,
+                              NULL, 0);
      }
-   else
-#endif
-     {
-        for (i = 0; i < NBUF; i++)
-          {
-             const char *lock;
-             ecore_ipc_client_send(e->client, MAJOR, OP_SHM_REF0,
-                                   extn->svc.num, extn->b[i].num, i,
-                                   extn->svc.name,
-                                   strlen(extn->svc.name) + 1);
-             lock = _extnbuf_lock_file_get(extn->b[i].buf);
-             ecore_ipc_client_send(e->client, MAJOR, OP_SHM_REF1,
-                                   ee->w, ee->h, i,
-                                   lock, strlen(lock) + 1);
-             ecore_ipc_client_send(e->client, MAJOR, OP_SHM_REF2,
-                                   ee->alpha, extn->svc.sys, i,
-                                   NULL, 0);
-          }
-        ipc.w = ee->w; ipc.h = ee->h;
-        ecore_ipc_client_send(e->client, MAJOR, OP_RESIZE,
-                              0, 0, 0, &ipc, sizeof(ipc));
-        ipc2.x = 0; ipc2.y = 0; ipc2.w = ee->w; ipc2.h = ee->h;
-        ecore_ipc_client_send(e->client, MAJOR, OP_UPDATE, 0, 0, 0, &ipc2,
-                              sizeof(ipc2));
-        prev_b = extn->cur_b - 1;
-        if (prev_b < 0) prev_b = NBUF - 1;
-        ecore_ipc_client_send(e->client, MAJOR, OP_UPDATE_DONE, 0, 0,
-                              prev_b, NULL, 0);
-     }
+   ipc.w = ee->w; ipc.h = ee->h;
+   ecore_ipc_client_send(e->client, MAJOR, OP_RESIZE,
+                         0, 0, 0, &ipc, sizeof(ipc));
+   ipc2.x = 0; ipc2.y = 0; ipc2.w = ee->w; ipc2.h = ee->h;
+   ecore_ipc_client_send(e->client, MAJOR, OP_UPDATE, 0, 0, 0, &ipc2,
+                         sizeof(ipc2));
+   prev_b = extn->prev_b;
+   ecore_ipc_client_send(e->client, MAJOR, OP_UPDATE_DONE, 0, 0,
+                         prev_b, NULL, 0);
    _ecore_evas_extn_event(ee, ECORE_EVAS_EXTN_CLIENT_ADD);
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -2150,7 +1622,7 @@ _ipc_client_del(void *data, int type EINA_UNUSED, void *event)
 {
    Ecore_Ipc_Event_Client_Del *e = event;
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
    extn = bdata->data;
    if (!extn) return ECORE_CALLBACK_PASS_ON;
@@ -2168,7 +1640,7 @@ _ipc_client_data(void *data, int type EINA_UNUSED, void *event)
 {
    Ecore_Ipc_Event_Client_Data *e = event;
    Ecore_Evas *ee = data;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
 
    if (ee != ecore_ipc_server_data_get(ecore_ipc_client_server_get(e->client)))
@@ -2443,7 +1915,7 @@ _ipc_client_data(void *data, int type EINA_UNUSED, void *event)
 static void
 _ecore_evas_extn_socket_alpha_set(Ecore_Evas *ee, int alpha)
 {
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
    Eina_List *l;
    Ecore_Ipc_Client *client;
@@ -2454,58 +1926,38 @@ _ecore_evas_extn_socket_alpha_set(Ecore_Evas *ee, int alpha)
    extn = bdata->data;
    if (extn)
      {
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-        if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
+        Evas_Engine_Info_Buffer *einfo;
+
+        einfo = (Evas_Engine_Info_Buffer *)evas_engine_info_get(ee->evas);
+        if (einfo)
           {
-             Evas_Engine_Info_Wayland *einfo;
-             ee->alpha = alpha;
-             einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
-             if(einfo)
-               {
-                  int fw, fh;
-                  evas_output_framespace_get(ee->evas, NULL, NULL, &fw, &fh);
-                  einfo->info.destination_alpha = EINA_TRUE;
-                  if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
-                    ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
-                  evas_damage_rectangle_add(ee->evas, 0, 0, ee->w + fw, ee->h + fh);
-               }
+             if (ee->alpha)
+               einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_ARGB32;
+             else
+               einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_RGB32;
+             if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
+               ERR("Cannot set ecore_evas_ext alpha");
+             evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
           }
-        else
-#endif
+        EINA_LIST_FOREACH(extn->ipc.clients, l, client)
           {
-             Evas_Engine_Info_Buffer *einfo;
+             int i;
 
-             einfo = (Evas_Engine_Info_Buffer *)evas_engine_info_get(ee->evas);
-             if (einfo)
+             for (i = 0; i < NBUF; i++)
                {
-                  if (ee->alpha)
-                    einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_ARGB32;
-                  else
-                    einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_RGB32;
-                  if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
-                    ERR("Cannot set ecore_evas_ext alpha");
-                  evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
-               }
-            EINA_LIST_FOREACH(extn->ipc.clients, l, client)
-               {
-                  int i;
+                  const char *lock;
 
-                  for (i = 0; i < NBUF; i++)
-                    {
-                       const char *lock;
-
-                       ecore_ipc_client_send(client, MAJOR, OP_SHM_REF0,
-                                             extn->svc.num, extn->b[i].num, i,
-                                             extn->svc.name,
-                                             strlen(extn->svc.name) + 1);
-                       lock = _extnbuf_lock_file_get(extn->b[i].buf);
-                       ecore_ipc_client_send(client, MAJOR, OP_SHM_REF1,
-                                             ee->w, ee->h, i,
-                                             lock, strlen(lock) + 1);
-                       ecore_ipc_client_send(client, MAJOR, OP_SHM_REF2,
-                                             ee->alpha, extn->svc.sys, i,
-                                             NULL, 0);
-                    }
+                  ecore_ipc_client_send(client, MAJOR, OP_SHM_REF0,
+                                        extn->svc.num, extn->b[i].num, i,
+                                        extn->svc.name,
+                                        strlen(extn->svc.name) + 1);
+                  lock = _extnbuf_lock_file_get(extn->b[i].buf);
+                  ecore_ipc_client_send(client, MAJOR, OP_SHM_REF1,
+                                        ee->w, ee->h, i,
+                                        lock, strlen(lock) + 1);
+                  ecore_ipc_client_send(client, MAJOR, OP_SHM_REF2,
+                                        ee->alpha, extn->svc.sys, i,
+                                        NULL, 0);
                }
           }
      }
@@ -2551,7 +2003,7 @@ _ecore_evas_extn_socket_available_profiles_set(Ecore_Evas *ee, const char **plis
 static void
 _ecore_evas_extn_socket_msg_send(Ecore_Evas *ee, int msg_domain, int msg_id, void *data, int size)
 {
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
    Extn *extn;
    Eina_List *l;
    Ecore_Ipc_Client *client;
@@ -2662,145 +2114,101 @@ static const Ecore_Evas_Engine_Func _ecore_extn_socket_engine_func =
 EAPI Ecore_Evas *
 ecore_evas_extn_socket_new_internal(int w, int h)
 {
+   Evas_Engine_Info_Buffer *einfo;
    Ecore_Evas_Interface_Extn *iface;
+   Ecore_Evas_Engine_Buffer_Data *bdata;
    Ecore_Evas *ee;
    int rmethod;
 
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-   if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
+   rmethod = evas_render_method_lookup("buffer");
+   if (!rmethod) return NULL;
+   ee = calloc(1, sizeof(Ecore_Evas));
+   if (!ee) return NULL;
+   bdata = calloc(1, sizeof(Ecore_Evas_Engine_Buffer_Data));
+   if (!bdata)
      {
-        Ecore_Evas_Engine_Buffer_Data *bdata;
-        bdata = calloc(1, sizeof(Ecore_Evas_Engine_Buffer_Data));
-        if (!bdata) return NULL;
-        ee = ecore_evas_wayland_egl_new(NULL, 0, 0, 0, w, h, 0);
-        if (!ee)
-          {
-             ERR("[EXTN_GL] ecore_evas_wayland_egl_new is failed! it will be buffer backend ");
-             _ecore_evas_extn_type_set(EXTN_TYPE_SHM);
-             free(bdata);
-          }
+	free(ee);
+	return NULL;
+     }
+
+   ECORE_MAGIC_SET(ee, ECORE_MAGIC_EVAS);
+
+   ee->engine.func = (Ecore_Evas_Engine_Func *)&_ecore_extn_socket_engine_func;
+   ee->engine.data = bdata;
+
+   ee->driver = "extn_socket";
+
+   iface = _ecore_evas_extn_interface_new();
+   ee->engine.ifaces = eina_list_append(ee->engine.ifaces, iface);
+
+   ee->rotation = 0;
+   ee->visible = 0;
+   ee->w = w;
+   ee->h = h;
+   ee->req.w = ee->w;
+   ee->req.h = ee->h;
+   ee->profile_supported = 1; /* to accept the profile change request from the client(plug) */
+
+   ee->prop.max.w = 0;
+   ee->prop.max.h = 0;
+   ee->prop.layer = 0;
+   ee->prop.borderless = EINA_TRUE;
+   ee->prop.override = EINA_TRUE;
+   ee->prop.maximized = EINA_FALSE;
+   ee->prop.fullscreen = EINA_FALSE;
+   ee->prop.withdrawn = EINA_FALSE;
+   ee->prop.sticky = EINA_FALSE;
+
+   /* init evas here */
+   ee->evas = evas_new();
+   evas_data_attach_set(ee->evas, ee);
+   evas_output_method_set(ee->evas, rmethod);
+   evas_output_size_set(ee->evas, w, h);
+   evas_output_viewport_set(ee->evas, 0, 0, w, h);
+   evas_event_callback_add(ee->evas, EVAS_CALLBACK_RENDER_POST, _ecore_evas_ews_update_image, ee);
+
+   einfo = (Evas_Engine_Info_Buffer *)evas_engine_info_get(ee->evas);
+   if (einfo)
+     {
+        if (ee->alpha)
+          einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_ARGB32;
         else
+          einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_RGB32;
+        einfo->info.dest_buffer = NULL;
+        einfo->info.dest_buffer_row_bytes = 0;
+        einfo->info.use_color_key = 0;
+        einfo->info.alpha_threshold = 0;
+        einfo->info.func.new_update_region = NULL;
+        einfo->info.func.free_update_region = NULL;
+        einfo->info.func.switch_buffer = _ecore_evas_socket_switch;
+        einfo->info.switch_data = ee;
+        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
           {
-             ee->engine.func = (Ecore_Evas_Engine_Func *)&_ecore_extn_socket_engine_func;
-             ee->engine.extn.data = bdata;
-
-             iface = _ecore_evas_extn_interface_new();
-             ee->engine.ifaces = eina_list_append(ee->engine.ifaces, iface);
-             ee->visible = 0;
-             if (!_tizen_remote_surface_init())
-               {
-                  ERR("_tizen_remote_surface_init() is failed");
-                  ecore_evas_free(ee);
-                  return NULL;
-               }
-             evas_key_modifier_add(ee->evas, "Shift");
-             evas_key_modifier_add(ee->evas, "Control");
-             evas_key_modifier_add(ee->evas, "Alt");
-             evas_key_modifier_add(ee->evas, "Meta");
-             evas_key_modifier_add(ee->evas, "Hyper");
-             evas_key_modifier_add(ee->evas, "Super");
-             evas_key_lock_add(ee->evas, "Caps_Lock");
-             evas_key_lock_add(ee->evas, "Num_Lock");
-             evas_key_lock_add(ee->evas, "Scroll_Lock");
-
-             extn_ee_list = eina_list_append(extn_ee_list, ee);
+             ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
+             ecore_evas_free(ee);
+             return NULL;
           }
      }
-   if (_ecore_evas_extn_type_get() == EXTN_TYPE_SHM)
-#endif
-      {
-         Evas_Engine_Info_Buffer *einfo;
-         Ecore_Evas_Engine_Buffer_Data *bdata;
+   else
+     {
+        ERR("evas_engine_info_set() init engine '%s' failed.", ee->driver);
+        ecore_evas_free(ee);
+        return NULL;
+     }
+   evas_key_modifier_add(ee->evas, "Shift");
+   evas_key_modifier_add(ee->evas, "Control");
+   evas_key_modifier_add(ee->evas, "Alt");
+   evas_key_modifier_add(ee->evas, "Meta");
+   evas_key_modifier_add(ee->evas, "Hyper");
+   evas_key_modifier_add(ee->evas, "Super");
+   evas_key_lock_add(ee->evas, "Caps_Lock");
+   evas_key_lock_add(ee->evas, "Num_Lock");
+   evas_key_lock_add(ee->evas, "Scroll_Lock");
 
-         rmethod = evas_render_method_lookup("buffer");
-         if (!rmethod) return NULL;
-         ee = calloc(1, sizeof(Ecore_Evas));
-         if (!ee) return NULL;
-         bdata = calloc(1, sizeof(Ecore_Evas_Engine_Buffer_Data));
-         if (!bdata)
-           {
-              free(ee);
-              return NULL;
-           }
+   extn_ee_list = eina_list_append(extn_ee_list, ee);
 
-         ECORE_MAGIC_SET(ee, ECORE_MAGIC_EVAS);
+   _ecore_evas_register(ee);
 
-         ee->engine.func = (Ecore_Evas_Engine_Func *)&_ecore_extn_socket_engine_func;
-         ee->engine.extn.data = bdata;
-
-         ee->driver = "extn_socket";
-
-         iface = _ecore_evas_extn_interface_new();
-         ee->engine.ifaces = eina_list_append(ee->engine.ifaces, iface);
-
-         ee->rotation = 0;
-         ee->visible = 0;
-         ee->w = w;
-         ee->h = h;
-         ee->req.w = ee->w;
-         ee->req.h = ee->h;
-         ee->profile_supported = 1; /* to accept the profile change request from the client(plug) */
-
-         ee->prop.max.w = 0;
-         ee->prop.max.h = 0;
-         ee->prop.layer = 0;
-         ee->prop.borderless = EINA_TRUE;
-         ee->prop.override = EINA_TRUE;
-         ee->prop.maximized = EINA_FALSE;
-         ee->prop.fullscreen = EINA_FALSE;
-         ee->prop.withdrawn = EINA_FALSE;
-         ee->prop.sticky = EINA_FALSE;
-
-         /* init evas here */
-         ee->evas = evas_new();
-         evas_data_attach_set(ee->evas, ee);
-         evas_output_method_set(ee->evas, rmethod);
-         evas_output_size_set(ee->evas, w, h);
-         evas_output_viewport_set(ee->evas, 0, 0, w, h);
-         evas_event_callback_add(ee->evas, EVAS_CALLBACK_RENDER_POST, _ecore_evas_ews_update_image, ee);
-
-         einfo = (Evas_Engine_Info_Buffer *)evas_engine_info_get(ee->evas);
-         if (einfo)
-           {
-              if (ee->alpha)
-                einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_ARGB32;
-              else
-                einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_RGB32;
-              einfo->info.dest_buffer = NULL;
-              einfo->info.dest_buffer_row_bytes = 0;
-              einfo->info.use_color_key = 0;
-              einfo->info.alpha_threshold = 0;
-              einfo->info.func.new_update_region = NULL;
-              einfo->info.func.free_update_region = NULL;
-              einfo->info.func.switch_buffer = _ecore_evas_socket_switch;
-              einfo->info.switch_data = ee;
-              if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
-                {
-                   ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
-                   ecore_evas_free(ee);
-                   return NULL;
-                }
-           }
-         else
-           {
-              ERR("evas_engine_info_set() init engine '%s' failed.", ee->driver);
-              ecore_evas_free(ee);
-              return NULL;
-           }
-         evas_key_modifier_add(ee->evas, "Shift");
-         evas_key_modifier_add(ee->evas, "Control");
-         evas_key_modifier_add(ee->evas, "Alt");
-         evas_key_modifier_add(ee->evas, "Meta");
-         evas_key_modifier_add(ee->evas, "Hyper");
-         evas_key_modifier_add(ee->evas, "Super");
-         evas_key_lock_add(ee->evas, "Caps_Lock");
-         evas_key_lock_add(ee->evas, "Num_Lock");
-         evas_key_lock_add(ee->evas, "Scroll_Lock");
-
-         extn_ee_list = eina_list_append(extn_ee_list, ee);
-
-         _ecore_evas_register(ee);
-      }
    return ee;
 }
 
@@ -2808,7 +2216,8 @@ Eina_Bool
 _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, Eina_Bool svcsys)
 {
    Extn *extn;
-   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.extn.data;
+   Ecore_Evas_Engine_Buffer_Data *bdata = ee->engine.data;
+
    extn = calloc(1, sizeof(Extn));
    if (!extn)
      {
@@ -2825,109 +2234,55 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
         extn->svc.num = svcnum;
         extn->svc.sys = svcsys;
 
-
-#ifdef BUILD_TIZEN_REMOTE_SURFACE
-        extn->tizen_rsp = NULL;
-        if (_ecore_evas_extn_type_get() == EXTN_TYPE_WAYLAND_EGL)
+        for (i = 0; i < NBUF; i++)
           {
-             if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
-             extn->ipc.server = ecore_ipc_server_add(ipctype,
-                                                     (char *)extn->svc.name,
-                                                     extn->svc.num, ee);
-             if (!extn->ipc.server)
+             do
                {
-                  eina_stringshare_del(extn->svc.name);
-                  free(extn);
-                  ecore_ipc_shutdown();
-                  return EINA_FALSE;
+                  extn->b[i].buf = _extnbuf_new(extn->svc.name, extn->svc.num,
+                                                extn->svc.sys, last_try,
+                                                ee->w, ee->h, EINA_TRUE);
+                  if (extn->b[i].buf) extn->b[i].num = last_try;
+                  last_try++;
+                  if (last_try > 1024) break;
                }
+             while (!extn->b[i].buf);
 
-             bdata->data = extn;
-
-             Ecore_Wl_Window *wlwin;
-             struct wl_surface *surface;
-             wlwin = ecore_evas_wayland_window_get(ee);
-             if(!wlwin)
-               {
-                  ERR("wlwin is NULL");
-               }
-             surface = ecore_wl_window_surface_get(wlwin);
-             if(!surface)
-               {
-                  ERR("surface is NULL");
-               }
-
-             if (!tizen_rsm)
-               {
-                  ERR("tizen_rsm is NULL");
-                  return EINA_FALSE;
-               }
-
-             if (!(extn->tizen_rsp))
-               {
-                  extn->tizen_rsp = tizen_remote_surface_manager_create_provider(tizen_rsm, surface);
-                  INF("[EXTN_GL] tizen remote surface provider : %p",extn->tizen_rsp);
-                  if (!(extn->tizen_rsp))
-                    {
-                       ERR("Could not create tizen_remote_surface_provider\n");
-                       return EINA_FALSE;
-                    }
-                 tizen_remote_surface_provider_add_listener(extn->tizen_rsp, &_ecore_evas_extn_gl_socket_listener, ee);
-               }
           }
+
+        if (extn->b[extn->cur_b].buf)
+          bdata->pixels = _extnbuf_data_get(extn->b[extn->cur_b].buf,
+                                            NULL, NULL, NULL);
         else
-#endif
+          {
+             eina_stringshare_del(extn->svc.name);
+             free(extn);
+             ecore_ipc_shutdown();
+             return EINA_FALSE;
+          }
+
+        if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
+        extn->ipc.server = ecore_ipc_server_add(ipctype,
+                                                (char *)extn->svc.name,
+                                                extn->svc.num, ee);
+        if (!extn->ipc.server)
           {
              for (i = 0; i < NBUF; i++)
                {
-                  do
-                    {
-                       extn->b[i].buf = _extnbuf_new(extn->svc.name, extn->svc.num,
-                                                     extn->svc.sys, last_try,
-                                                     ee->w, ee->h, EINA_TRUE);
-                       if (extn->b[i].buf) extn->b[i].num = last_try;
-                       last_try++;
-                       if (last_try > 1024) break;
-                    }
-                  while (!extn->b[i].buf);
+                  if (extn->b[i].buf) _extnbuf_free(extn->b[i].buf);
+                  if (extn->b[i].obuf) _extnbuf_free(extn->b[i].obuf);
+                  if (extn->b[i].base) eina_stringshare_del(extn->b[i].base);
+                  if (extn->b[i].lock) eina_stringshare_del(extn->b[i].lock);
+                  extn->b[i].buf = NULL;
+                  extn->b[i].obuf = NULL;
+                  extn->b[i].base = NULL;
+                  extn->b[i].lock = NULL;
                }
-
-             if (extn->b[extn->cur_b].buf)
-               bdata->pixels = _extnbuf_data_get(extn->b[extn->cur_b].buf,
-                                                 NULL, NULL, NULL);
-             else
-               {
-                  eina_stringshare_del(extn->svc.name);
-                  free(extn);
-                  ecore_ipc_shutdown();
-                  return EINA_FALSE;
-               }
-
-             if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
-             extn->ipc.server = ecore_ipc_server_add(ipctype,
-                                                     (char *)extn->svc.name,
-                                                     extn->svc.num, ee);
-             if (!extn->ipc.server)
-               {
-                  for (i = 0; i < NBUF; i++)
-                    {
-                       if (extn->b[i].buf) _extnbuf_free(extn->b[i].buf);
-                       if (extn->b[i].obuf) _extnbuf_free(extn->b[i].obuf);
-                       if (extn->b[i].base) eina_stringshare_del(extn->b[i].base);
-                       if (extn->b[i].lock) eina_stringshare_del(extn->b[i].lock);
-                       extn->b[i].buf = NULL;
-                       extn->b[i].obuf = NULL;
-                       extn->b[i].base = NULL;
-                       extn->b[i].lock = NULL;
-                    }
-                  eina_stringshare_del(extn->svc.name);
-                  free(extn);
-                  ecore_ipc_shutdown();
-                  return EINA_FALSE;
-                    }
-             bdata->data = extn;
+             eina_stringshare_del(extn->svc.name);
+             free(extn);
+             ecore_ipc_shutdown();
+             return EINA_FALSE;
           }
-
+        bdata->data = extn;
         extn->ipc.handlers = eina_list_append
            (extn->ipc.handlers,
             ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD,
