@@ -9760,6 +9760,19 @@ _elm_genlist_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Gen_Item *
 }
 //
 
+/* Standard widget overrides */
+
+ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_genlist, Elm_Genlist_Data)
+
+/* Internal EO APIs and hidden overrides */
+
+#define ELM_GENLIST_EXTRA_OPS \
+   ELM_LAYOUT_SIZING_EVAL_OPS(elm_genlist), \
+   EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_genlist)
+
+#define ELM_GENLIST_PAN_EXTRA_OPS \
+   EFL_CANVAS_GROUP_DEL_OPS(elm_genlist_pan)
+
 #include "../elementary/elm_genlist.eo.c"
 #include "../elementary/elm_genlist_pan.eo.c"
 #include "../elementary/elm_genlist_item.eo.c"
