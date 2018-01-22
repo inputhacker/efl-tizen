@@ -184,7 +184,6 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
           goto done;
         else if (tick == 1)
           {
-             fd_set rfds;
              int ret;
              if (!vblank_wait)
                {
@@ -195,12 +194,9 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
              else if ((ptime + _tdm_req_fps) <= ecore_time_get())
                DBG("tdm vblank handler does not called in %lfms\n", ecore_time_get() - ptime);
 
-             FD_ZERO(&rfds);
-             FD_SET(tdm_fd, &rfds);
-
              ret = poll(&fds, 1, -1);
 
-             if ((ret == 1) && (FD_ISSET(tdm_fd, &rfds)))
+             if (ret == 1)
                {
                   err = tdm_client_handle_events(client);
                   if (err != TDM_ERROR_NONE) {
@@ -216,9 +212,6 @@ _tdm_tick_core(void *data EINA_UNUSED, Ecore_Thread *thread)
                        ERR("tdm_fd poll fail\n");
                        goto done;
                     }
-
-                  vblank_wait = 0;
-                  _tdm_send_time(ecore_time_get());
                }
           }
      }
