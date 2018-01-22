@@ -573,14 +573,22 @@ _base_geometry_calc(Evas_Object *obj,
    evas_object_size_hint_max_get(obj, &max_size.x, &max_size.y);
    if (max_size.x == -1)
      {
-        if ((str = edje_object_data_get(sd->layout, "match_max_width")) &&
-            (!strcmp(str, "portrait_width")) && (win))
-          elm_win_screen_size_get(win, NULL, NULL, &max_size.x, NULL);
-        else if (str = edje_object_data_get(sd->layout, "visible_maxw"))
-          max_size.x = (int)(atoi(str)
-                             * elm_config_scale_get()
-                             * elm_object_scale_get(obj)
-                             / edje_object_base_scale_get(sd->layout) + 0.5);
+        str = edje_object_data_get(sd->layout, "match_max_width");
+
+        if ((str) && (win) && (!strcmp(str, "portrait_width")))
+          {
+             elm_win_screen_size_get(win, NULL, NULL, &max_size.x, NULL);
+          }
+        else
+          {
+             str = edje_object_data_get(sd->layout, "visible_maxw");
+
+             if (str)
+               max_size.x = (int)(atoi(str)
+                                  * elm_config_scale_get()
+                                  * elm_object_scale_get(obj)
+                                  / edje_object_base_scale_get(sd->layout) + 0.5);
+          }
      }
    if (max_size.y == -1)
      {
