@@ -4246,7 +4246,7 @@ typedef struct accessibility_navigation_pointer_table {
 } accessibility_navigation_pointer_table;
 
 #define CALL(fncname, ...) table->fncname(table, __VA_ARGS__)
-static unsigned char _accept_object_check_role(accessibility_navigation_pointer_table *table, void *obj)
+static unsigned char _accept_object_check_role(accessibility_navigation_pointer_table *table EINA_UNUSED, void *obj)
 {
    return _elm_widget_atspi_role_acceptable_check(obj);
 }

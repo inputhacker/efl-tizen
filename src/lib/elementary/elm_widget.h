@@ -867,6 +867,14 @@ const char*           _elm_widget_item_accessible_plain_name_get(Elm_Object_Item
 Eina_Bool _elm_widget_atspi_role_acceptable_check(Eo *obj);
 //
 
+// TIZEN_ONLY(20150705): Genlist item align feature
+EAPI void elm_widget_scroll_item_align_enabled_set(Evas_Object *obj, Eina_Bool scroll_item_align_enable);
+EAPI Eina_Bool elm_widget_scroll_item_align_enabled_get(const Evas_Object *obj);
+EAPI void elm_widget_scroll_item_valign_set(Evas_Object *obj, const char *scroll_item_valign);
+EAPI const char *elm_widget_scroll_item_valign_get(const Evas_Object *obj);
+//
+
+
 Efl_Canvas_Object *   _efl_ui_widget_bg_get(Efl_Ui_Widget *obj);
 
 #define ELM_WIDGET_DATA_GET_OR_RETURN(o, ptr, ...)   \

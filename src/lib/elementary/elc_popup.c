@@ -1259,7 +1259,7 @@ _item_focus_change(void *data, const Efl_Event *event EINA_UNUSED)
 /* TIZEN_ONLY(20161107): support scrollable content */
 //FIXME: genlist only now, it should be changed to support other scrollable.
 static void
-_scrollable_content_loaded_cb(void *data, Evas_Object *obj, void *event_info)
+_scrollable_content_loaded_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    ELM_POPUP_DATA_GET(data, sd);
 

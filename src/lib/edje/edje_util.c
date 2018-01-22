@@ -6936,7 +6936,6 @@ EOLIAN Eina_Bool
 _efl_canvas_layout_part_text_marquee_always_get(Eo *eo_obj EINA_UNUSED, Edje *ed, const char *part)
 {
    Edje_Real_Part *rp;
-   Edje_Part_Description_Text *desc;
 
    if (!part) return EINA_FALSE;
    rp = _edje_real_part_recursive_get(&ed, part);

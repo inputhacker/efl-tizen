@@ -616,7 +616,7 @@ _indicator_connect_cb(void *data)
 
 static void
 _indicator_disconnected(void *data,
-                        Efl_Event *event)
+                        const Efl_Event *event EINA_UNUSED)
 {
    Evas_Object *conform = data;
 
@@ -645,7 +645,7 @@ struct _Indicator_Data_Animation
 
 static void
 _plug_msg_handle(void *data,
-                 Efl_Event *event)
+                 const Efl_Event *event)
 {
    Evas_Object *conformant = data;
    Elm_Plug_Message *pm = event->info;
@@ -663,7 +663,7 @@ _plug_msg_handle(void *data,
      {
         if (msg_id == MSG_ID_INDICATOR_START_ANIMATION)
           {
-             if (msg_data_size != (int)sizeof(Indicator_Data_Animation)) return EINA_FALSE;
+             if (msg_data_size != (int)sizeof(Indicator_Data_Animation)) return;
 
              Indicator_Data_Animation *anim_data = msg_data;
              _indicator_show_effect(conformant, anim_data->duration);
@@ -810,7 +810,7 @@ _create_indicator(Evas_Object *obj)
 //END
 
 // TIZEN_ONLY(20160801): indicator implementation
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
 static Eina_Bool
 _indicator_visible_type_set(Evas_Object *obj, Eina_Bool visible)
 {
@@ -842,7 +842,7 @@ _indicator_hide_effect_done_cb(void *data)
    sd->indicator_effect_timer = NULL;
    elm_object_signal_emit(conformant, "indicator,hide,effect", "elm");
 
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
    _indicator_visible_type_set(conformant, EINA_FALSE);
 #endif
    return ECORE_CALLBACK_CANCEL;
@@ -878,7 +878,7 @@ _indicator_show_effect(Evas_Object *conformant, double duration)
    sd->on_indicator_effect = EINA_TRUE;
    elm_object_signal_emit(conformant, "indicator,show,effect", "elm");
 
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
    _indicator_visible_type_set(conformant, EINA_TRUE);
 #endif
    _indicator_hide_effect_set(conformant, duration);
@@ -899,7 +899,7 @@ _indicator_post_appearance_changed(Evas_Object *conformant)
 
    if((sd->indmode != ELM_WIN_INDICATOR_SHOW))
      {
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
    _indicator_visible_type_set(conformant, EINA_FALSE);
 #endif
         return;
@@ -907,7 +907,7 @@ _indicator_post_appearance_changed(Evas_Object *conformant)
 
    if ( sd->rot == 90 || sd->rot == 270 )
      {
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
    _indicator_visible_type_set(conformant, EINA_FALSE);
 #endif
         return;
@@ -919,13 +919,13 @@ _indicator_post_appearance_changed(Evas_Object *conformant)
 
    if (sd->ind_o_mode == ELM_WIN_INDICATOR_TRANSPARENT)
      {
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
         _indicator_visible_type_set(conformant, EINA_FALSE);
 #endif
      }
    else
      {
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
         _indicator_visible_type_set(conformant, EINA_TRUE);
 #endif
      }
@@ -1034,7 +1034,11 @@ _on_rotation_changed(void *data, const Efl_Event *event EINA_UNUSED)
    int rot = 0;
    Evas_Object *win = event->object;
    Evas_Object *conformant = data;
+   /* TIZEN_ONLY(20170228): Remove legacy to coraborate with current indicator properly
+    * Remove the following unused variable.
    Evas_Object *old_indi = NULL;
+    */
+   /* END */
 
    ELM_CONFORMANT_DATA_GET(data, sd);
 
@@ -1494,13 +1498,13 @@ _elm_conformant_efl_canvas_group_group_del(Eo *obj, Elm_Conformant_Data *sd)
    efl_event_callback_del(sd->win, EFL_UI_WIN_EVENT_ROTATION_CHANGED, _on_rotation_changed, obj);
 
   // TIZEN_ONLY(20150707): implemented elm_win_conformant_set/get for wayland
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
    evas_object_smart_callback_del_full
      (sd->win, "conformant,changed", _on_conformant_changed, obj);
 #endif
    // END
    // TIZEN_ONLY(20160801): indicator implementation
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
    evas_object_smart_callback_del_full
      (sd->win, "indicator,flick,done", _on_indicator_flick_done, obj);
 #endif
@@ -1599,7 +1603,7 @@ _elm_conformant_efl_object_constructor(Eo *obj, Elm_Conformant_Data *sd)
    efl_event_callback_add(sd->win, EFL_UI_WIN_EVENT_INDICATOR_PROP_CHANGED, _on_indicator_mode_changed, obj);
    efl_event_callback_add(sd->win, EFL_UI_WIN_EVENT_ROTATION_CHANGED, _on_rotation_changed, obj);
    // TIZEN_ONLY(20150707): implemented elm_win_conformant_set/get for wayland
-#ifdef defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
+#if defined(HAVE_ELEMENTARY_WAYLAND) || defined(HAVE_ELEMENTARY_WL2)
    evas_object_smart_callback_add
      (sd->win, "conformant,changed", _on_conformant_changed, obj);
    // END
