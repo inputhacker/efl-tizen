@@ -237,7 +237,9 @@ static const Elm_Action key_actions[] = {
 static void
 _changed(Evas_Object *pan_obj)
 {
+   if (!pan_obj) return;
    Elm_Genlist_Pan_Data *psd = efl_data_scope_get(pan_obj, MY_PAN_CLASS);
+   if (!psd) return;
    Elm_Genlist_Data *sd = psd->wsd;
 
    if (sd->viewport_w > 1) evas_object_smart_changed(pan_obj);
