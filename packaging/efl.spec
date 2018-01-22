@@ -1229,6 +1229,7 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-libraw \
     --disable-systemd \
     --disable-cserve \
+    --with-elementary-base-dir="share/.elementary" \
     --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb
 #    --enable-systemd \
 #    --enable-drm \

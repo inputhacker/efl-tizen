@@ -720,12 +720,23 @@ _elm_config_user_dir_snprintf(char       *dst,
         if (getenv("ELM_CONFIG_DIR_XDG")) use_xdg_config = 1;
         else use_xdg_config = 0;
      }
+
    if (use_xdg_config)
      file_obj = efl_vpath_manager_fetch(EFL_VPATH_MANAGER_CLASS,
                                         "(:config:)/elementary");
    else
+   /***************************************************************************
+    * TIZEN_ONLY(20180122): Fix to use ELEMENTARY_BASE_DIR for configure path *
+    ***************************************************************************
      file_obj = efl_vpath_manager_fetch(EFL_VPATH_MANAGER_CLASS,
                                         "(:home:)/.elementary");
+    */
+     file_obj = efl_vpath_manager_fetch(EFL_VPATH_MANAGER_CLASS,
+                                        "(:home:)/"ELEMENTARY_BASE_DIR);
+   /*******
+    * END *
+    *******/
+
    eina_strlcpy(dst, efl_vpath_file_result_get(file_obj), size);
    efl_del(file_obj);
 
