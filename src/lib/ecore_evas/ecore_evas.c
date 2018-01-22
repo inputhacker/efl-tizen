@@ -1926,6 +1926,9 @@ ecore_evas_cursor_set(Ecore_Evas *ee, const char *file,
                       int layer, int hot_x, int hot_y)
 {
    Evas_Object *obj = NULL;
+
+   ECORE_EVAS_CHECk(ee);
+
    if (file)
      {
         int x, y;
