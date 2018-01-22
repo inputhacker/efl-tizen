@@ -122,7 +122,7 @@ _efl_access_component_extents_get(Eo *obj, Efl_Access_Component_Data *_pd EINA_U
    if (screen_coords)
      {
         Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
-        if (!ee)
+        if (ee)
           {
              int ee_x = 0, ee_y = 0;
              ecore_evas_geometry_get(ee, &ee_x, &ee_y, NULL, NULL);
