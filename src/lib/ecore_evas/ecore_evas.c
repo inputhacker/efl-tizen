@@ -1927,7 +1927,7 @@ ecore_evas_cursor_set(Ecore_Evas *ee, const char *file,
 {
    Evas_Object *obj = NULL;
 
-   ECORE_EVAS_CHECk(ee);
+   ECORE_EVAS_CHECK(ee);
 
    if (file)
      {
