@@ -1,5 +1,3 @@
-typedef Eo Elm_Check;
-
 /**
  * @brief Add a new Check object
  *

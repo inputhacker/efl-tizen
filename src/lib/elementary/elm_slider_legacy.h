@@ -1,5 +1,3 @@
-typedef Eo Elm_Slider;
-
 /**
  * Add a new slider widget to the given parent Elementary
  * (container) object.

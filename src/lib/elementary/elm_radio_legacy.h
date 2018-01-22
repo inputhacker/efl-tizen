@@ -1,5 +1,3 @@
-typedef Eo Elm_Radio;
-
 /**
  * @brief Add a new radio to the parent
  *

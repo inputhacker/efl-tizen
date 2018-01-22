@@ -25,8 +25,6 @@ struct _Elm_Layout_Part_Alias_Description
                           * with "elm.content.swallow" on this one */
 };
 
-typedef Eo Elm_Layout;
-
 typedef struct _Elm_Layout_Part_Alias_Description Elm_Layout_Part_Alias_Description;
 
 /**

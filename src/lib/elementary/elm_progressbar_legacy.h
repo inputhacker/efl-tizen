@@ -1,5 +1,3 @@
-typedef Eo Elm_Progressbar;
-
 /**
  * Add a new progress bar widget to the given parent Elementary
  * (container) object
