@@ -1818,6 +1818,16 @@ ecore_wl2_display_compositor_version_get(Ecore_Wl2_Display *display)
    return display->wl.compositor_version;
 }
 
+// TIZEN_ONLY(20180123)
+EAPI struct wl_compositor *
+ecore_wl2_display_compositor_get(Ecore_Wl2_Display *display)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(display, 0);
+
+   return display->wl.compositor;
+}
+//
+
 EAPI Eina_Iterator *
 ecore_wl2_display_inputs_get(Ecore_Wl2_Display *display)
 {

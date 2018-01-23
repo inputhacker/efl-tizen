@@ -2347,6 +2347,10 @@ EAPI void ecore_wl2_sync(void);
 EAPI Eina_Bool ecore_wl2_window_ignore_output_transform_get(Ecore_Wl2_Window *win);
 //
 
+//TIZEN_ONLY(20171115): support getting wl_compositor of Ecore_Wl2_Display
+EAPI struct wl_compositor *ecore_wl2_display_compositor_get(Ecore_Wl2_Display *display);
+//
+
 # endif
 
 # undef EAPI
