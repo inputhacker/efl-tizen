@@ -67,6 +67,8 @@ typedef struct _tbm_surface_info
 /* returns 0 on success */
 static int (*sym_tbm_surface_map) (tbm_surface_h surface, int opt, tbm_surface_info_s *info) = NULL;
 static int (*sym_tbm_surface_unmap) (tbm_surface_h surface) = NULL;
+static void (*sym_tbm_surface_internal_unref) (tbm_surface_h surface) = NULL;
+static void (*sym_tbm_surface_internal_ref) (tbm_surface_h surface) = NULL;
 static int (*sym_tbm_surface_get_info) (tbm_surface_h surface, tbm_surface_info_s *info) = NULL;
 
 EAPI int
@@ -103,6 +105,8 @@ _evas_native_tbm_init(void)
              SYM(tbm_lib, tbm_surface_map);
              SYM(tbm_lib, tbm_surface_unmap);
              SYM(tbm_lib, tbm_surface_get_info);
+             SYM(tbm_lib, tbm_surface_internal_unref);
+             SYM(tbm_lib, tbm_surface_internal_ref);
              if (fail)
                {
                   dlclose(tbm_lib);
@@ -250,6 +254,11 @@ _native_free_cb(void *image)
 
    if (!im) return;
    Native *n = im->native.data;
+   tbm_surface_h tbm_surf;
+
+   tbm_surf = n->ns.data.tbm.buffer;
+   if (tbm_surf)
+     sym_tbm_surface_internal_unref(tbm_surf);
 
    im->native.data        = NULL;
    im->native.func.bind   = NULL;
@@ -370,6 +379,8 @@ _evas_native_tbm_surface_image_set(void *data EINA_UNUSED, void *image, void *na
         im->native.func.bind   = _native_bind_cb;
         im->native.func.unbind = _native_unbind_cb;
         im->native.func.free   = _native_free_cb;
+
+        sym_tbm_surface_internal_ref(tbm_surf);
 
         sym_tbm_surface_unmap(tbm_surf);
      }
