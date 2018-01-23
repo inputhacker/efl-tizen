@@ -1091,11 +1091,11 @@ Recommends:     elementary
 %description -n elementary-devel
 Development components for the elementary package
 
-%package -n elementary-theme
-Summary:        Default theme for elementary
-
-%description -n elementary-theme
-Default theme which provides various styles for elementary.
+#%package -n elementary-theme
+#Summary:        Default theme for elementary
+#
+#%description -n elementary-theme
+#Default theme which provides various styles for elementary.
 
 %package -n efl-locale
 Summary:        Translations and Locale for package %{name}
@@ -2048,6 +2048,9 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/debug/usr/lib/elementary/modules/
 %exclude %{_datadir}/elementary/config/
 ##%{_tmpfilesdir}/elementary.conf
+%exclude /usr/share/icons/Enlightenment-X
+%exclude /usr/share/elementary/test*
+%exclude %{_datadir}/elementary/themes/*
 
 %files -n elementary-tizen
 %manifest %{name}.manifest
@@ -2084,11 +2087,11 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 /usr/share/eolian/include/elementary-*1/*.eot
 %exclude %{_includedir}/elementary-cxx-1/*.hh
 
-%files -n elementary-theme
-%manifest %{name}.manifest
-%{_datadir}/elementary/themes/*
-%exclude /usr/share/icons/Enlightenment-X
-%exclude /usr/share/elementary/test*
+#%files -n elementary-theme
+#%manifest %{name}.manifest
+#%{_datadir}/elementary/themes/*
+#%exclude /usr/share/icons/Enlightenment-X
+#%exclude /usr/share/elementary/test*
 
 %files -n efl-locale -f %{name}.lang
 %license COPYING
