@@ -616,8 +616,9 @@ _elm_genlist_pan_efl_canvas_group_group_del(Eo *obj, Elm_Genlist_Pan_Data *psd)
 }
 
 EOLIAN static void
-_elm_genlist_pan_efl_gfx_position_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Position2D pos EINA_UNUSED)
+_elm_genlist_pan_efl_gfx_position_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Position2D pos)
 {
+   efl_gfx_position_set(efl_super(obj, MY_PAN_CLASS), pos);
    psd->wsd->dir = 0;
    _changed(obj);
 }
@@ -667,6 +668,9 @@ _elm_genlist_pan_efl_gfx_size_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Size2
    psd->wsd->viewport_h = size.h;
 
    psd->wsd->calc_done = EINA_FALSE;
+super:
+   efl_gfx_size_set(efl_super(obj, MY_PAN_CLASS), size);
+
    _changed(obj);
 }
 
@@ -1229,7 +1233,8 @@ _calc(void *data)
         sd->minh = minh;
         if (!sd->queue && (minh != current_minh)) load_done = EINA_TRUE;
         elm_layout_sizing_eval(sd->obj);
-        evas_object_smart_callback_call(sd->pan_obj, "changed", NULL);
+        efl_event_callback_legacy_call
+          (sd->pan_obj, ELM_PAN_EVENT_CHANGED, NULL);
         if (load_done)
           evas_object_smart_callback_call(sd->obj, SIG_LOADED, NULL);
         sd->processed_sizes = 0;
@@ -6461,7 +6466,7 @@ _elm_genlist_efl_canvas_group_group_add(Eo *obj, Elm_Genlist_Data *priv)
    priv->size_caches = eina_hash_string_small_new(_size_cache_free);
    priv->hit_rect = evas_object_rectangle_add(evas_object_evas_get(obj));
    evas_object_smart_member_add(priv->hit_rect, obj);
-   efl_ui_widget_sub_object_add(obj, priv->hit_rect);
+   elm_widget_sub_object_add(obj, priv->hit_rect);
 
    /* common scroller hit rectangle setup */
    evas_object_color_set(priv->hit_rect, 0, 0, 0, 0);
