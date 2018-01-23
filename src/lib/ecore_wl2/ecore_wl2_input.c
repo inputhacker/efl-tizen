@@ -366,43 +366,48 @@ _ecore_wl2_seat_dev_get(Ecore_Wl2_Input *input, int window_id)
 
 //TIZEN_ONLY(20180118): support a Ecore_Device
 static void
-_input_event_mouse_io_cb_free(void *data EINA_UNUSED, Ecore_Event_Mouse_IO *event)
+_input_event_mouse_io_cb_free(void *data EINA_UNUSED, void *event)
 {
-   if (event->dev)
-     efl_unref(event->dev);
-   free(event);
+   Ecore_Event_Mouse_IO *ev = event;
+   if (ev->dev)
+     efl_unref(ev->dev);
+   free(ev);
 }
 
 static void
-_input_event_mouse_move_cb_free(void *data EINA_UNUSED, Ecore_Event_Mouse_Move *event)
+_input_event_mouse_move_cb_free(void *data EINA_UNUSED, void *event)
 {
-   if (event->dev)
-     efl_unref(event->dev);
-   free(event);
+   Ecore_Event_Mouse_Move *ev = event;
+   if (ev->dev)
+     efl_unref(ev->dev);
+   free(ev);
 }
 
 static void
-_input_event_mouse_wheel_cb_free(void *data EINA_UNUSED, Ecore_Event_Mouse_Wheel *event)
+_input_event_mouse_wheel_cb_free(void *data EINA_UNUSED, void *event)
 {
-   if (event->dev)
-     efl_unref(event->dev);
-   free(event);
+   Ecore_Event_Mouse_Wheel *ev = event;
+   if (ev->dev)
+     efl_unref(ev->dev);
+   free(ev);
 }
 
 static void
-_input_event_mouse_button_cb_free(void *data EINA_UNUSED, Ecore_Event_Mouse_Button *event)
+_input_event_mouse_button_cb_free(void *data EINA_UNUSED, void *event)
 {
-   if (event->dev)
-     efl_unref(event->dev);
-   free(event);
+   Ecore_Event_Mouse_Button *ev = event;
+   if (ev->dev)
+     efl_unref(ev->dev);
+   free(ev);
 }
 
 static void
-_input_event_key_cb_free(void *data EINA_UNUSED, Ecore_Event_Key *event)
+_input_event_key_cb_free(void *data EINA_UNUSED, void *event)
 {
-   if (event->dev)
-     efl_unref(event->dev);
-   free(event);
+   Ecore_Event_Key *ev = event;
+   if (ev->dev)
+     efl_unref(ev->dev);
+   free(ev);
 }
 //
 
@@ -3062,7 +3067,7 @@ _ecore_wl2_input_device_ecore_device_add(Ecore_Wl2_Tizen_Input_Device *dev)
 
    if (!dev->identifier) return;
 
-   EINA_LIST_FOREACH(ecore_device_list(), l, ecdev)
+   EINA_LIST_FOREACH((Eina_List *)ecore_device_list(), l, ecdev)
      {
         ecdev_name = ecore_device_identifier_get(ecdev);
         if (!ecdev_name) continue;

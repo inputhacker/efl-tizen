@@ -1526,7 +1526,7 @@ _ecore_evas_wl_common_default_seat_get(Evas *evas)
    EINA_LIST_FOREACH(list, l, device)
      {
         if ((evas_device_class_get(device) == EVAS_DEVICE_CLASS_SEAT) &&
-            !strncmp(evas_device_description_get(device), "Wayland seat", "Wayland seat"))
+            !strncmp(evas_device_description_get(device), "Wayland seat", sizeof("Wayland seat")))
           {
              return device;
           }
