@@ -17,7 +17,6 @@
 #define MY_CLASS_PFX efl_ui_layout
 
 #define MY_CLASS_NAME "Efl.Ui.Layout"
-#define MY_CLASS_NAME_LEGACY "elm_layout"
 
 Eo *_efl_ui_layout_pack_proxy_get(Efl_Ui_Layout *obj, Edje_Part_Type type, const char *part);
 static void _efl_model_properties_changed_cb(void *, const Efl_Event *);
@@ -811,9 +810,8 @@ EOLIAN static Efl_Ui_Theme_Apply
 _efl_ui_layout_theme_set(Eo *obj, Efl_Ui_Layout_Data *sd, const char *klass, const char *group, const char *style)
 {
    Eina_Bool changed = EINA_FALSE;
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
 
-   if (!wd->legacy && efl_finalized_get(obj))
+   if (!elm_widget_is_legacy(obj) && efl_finalized_get(obj))
      {
         ERR("Efl.Ui.Layout.theme can only be set before finalize!");
         return EFL_UI_THEME_APPLY_FAILED;
@@ -1162,7 +1160,7 @@ _efl_ui_layout_text_generic_set(Eo *obj, Efl_Ui_Layout_Data *sd, const char *par
 
    if (!text) return EINA_TRUE;
 
-   if (wd->legacy)
+   if (elm_widget_is_legacy(obj))
      {
         if (!edje_object_part_text_escaped_set
          (wd->resize_obj, part, text))
@@ -2101,12 +2099,6 @@ _efl_ui_layout_efl_ui_model_factory_connect_connect(Eo *obj EINA_UNUSED, Efl_Ui_
    elm_layout_content_set(obj, name, new_ev);
 }
 
-EAPI Evas_Object *
-elm_layout_add(Evas_Object *parent)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
-   return elm_legacy_add(MY_CLASS, parent);
-}
 
 //TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
 static void
@@ -2121,7 +2113,6 @@ _efl_ui_layout_efl_object_constructor(Eo *obj, Efl_Ui_Layout_Data *sd)
 {
    sd->obj = obj;
    obj = efl_constructor(efl_super(obj, MY_CLASS));
-   efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    efl_access_role_set(obj, EFL_ACCESS_ROLE_FILLER);
 
@@ -2132,11 +2123,6 @@ _efl_ui_layout_efl_object_constructor(Eo *obj, Efl_Ui_Layout_Data *sd)
    //
 
    return obj;
-}
-
-EOLIAN static void _efl_ui_layout_class_constructor(Efl_Class *klass)
-{
-   evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
 }
 
 EOLIAN static Efl_Object*
@@ -2163,297 +2149,6 @@ _efl_ui_layout_efl_layout_signal_signal_process(Eo *obj, Efl_Ui_Layout_Data *pd 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
    efl_layout_signal_process(wd->resize_obj, recurse);
 }
-
-
-/* Legacy APIs */
-
-EAPI Eina_Bool
-elm_layout_file_set(Eo *obj, const char *file, const char *group)
-{
-   return efl_file_set((Eo *) obj, file, group);
-}
-
-EAPI void
-elm_layout_file_get(Eo *obj, const char **file, const char **group)
-{
-   efl_file_get((Eo *) obj, file, group);
-}
-
-EAPI Eina_Bool
-elm_layout_mmap_set(Eo *obj, const Eina_File *file, const char *group)
-{
-   return efl_file_mmap_set((Eo *) obj, file, group);
-}
-
-EAPI void
-elm_layout_mmap_get(Eo *obj, const Eina_File **file, const char **group)
-{
-   efl_file_mmap_get((Eo *) obj, file, group);
-}
-
-EAPI Eina_Bool
-elm_layout_box_append(Eo *obj, const char *part, Evas_Object *child)
-{
-   return efl_pack(efl_part(obj, part), child);
-}
-
-EAPI Eina_Bool
-elm_layout_box_prepend(Eo *obj, const char *part, Evas_Object *child)
-{
-   return efl_pack_begin(efl_part(obj, part), child);
-}
-
-EAPI Eina_Bool
-elm_layout_box_insert_before(Eo *obj, const char *part, Evas_Object *child, const Evas_Object *reference)
-{
-   return efl_pack_before(efl_part(obj, part), child, reference);
-}
-
-EAPI Eina_Bool
-elm_layout_box_insert_at(Eo *obj, const char *part, Evas_Object *child, unsigned int pos)
-{
-   return efl_pack_at(efl_part(obj, part), child, pos);
-}
-
-EAPI Evas_Object *
-elm_layout_box_remove(Eo *obj, const char *part, Evas_Object *child)
-{
-   if (!efl_pack_unpack(efl_part(obj, part), child))
-     return NULL;
-   return child;
-}
-
-EAPI Eina_Bool
-elm_layout_box_remove_all(Eo *obj, const char *part, Eina_Bool clear)
-{
-   if (clear)
-     return efl_pack_clear(efl_part(obj, part));
-   else
-     return efl_pack_unpack_all(efl_part(obj, part));
-}
-
-EAPI Eina_Bool
-elm_layout_table_pack(Eo *obj, const char *part, Evas_Object *child, unsigned short col, unsigned short row, unsigned short colspan, unsigned short rowspan)
-{
-   return efl_pack_table(efl_part(obj, part), child, col, row, colspan, rowspan);
-}
-
-EAPI Evas_Object *
-elm_layout_table_unpack(Eo *obj, const char *part, Evas_Object *child)
-{
-   if (!efl_pack_unpack(efl_part(obj, part), child))
-     return NULL;
-   return child;
-}
-
-EAPI Eina_Bool
-elm_layout_table_clear(Eo *obj, const char *part, Eina_Bool clear)
-{
-   if (clear)
-     return efl_pack_clear(efl_part(obj, part));
-   else
-     return efl_pack_unpack_all(efl_part(obj, part));
-}
-
-EAPI Eina_Bool
-elm_layout_text_set(Eo *obj, const char *part, const char *text)
-{
-   if (!part)
-     {
-        part = efl_ui_widget_default_text_part_get(obj);
-        if (!part) return EINA_FALSE;
-     }
-   else if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
-     return EINA_FALSE;
-
-   efl_text_set(efl_part(obj, part), text);
-   return EINA_TRUE;
-}
-
-EAPI const char *
-elm_layout_text_get(const Eo *obj, const char *part)
-{
-   if (!part)
-     {
-        part = efl_ui_widget_default_text_part_get(obj);
-        if (!part) return NULL;
-     }
-   else if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
-     return NULL;
-
-   return efl_text_get(efl_part(obj, part));
-}
-
-EAPI Eina_Bool
-elm_layout_part_cursor_engine_only_set(Eo *obj, const char *part, Eina_Bool engine_only)
-{
-   return efl_ui_cursor_theme_search_enabled_set(efl_part(obj, part), !engine_only);
-}
-
-EAPI Eina_Bool
-elm_layout_part_cursor_engine_only_get(const Eo *obj, const char *part)
-{
-   return !efl_ui_cursor_theme_search_enabled_get(efl_part(obj, part));
-}
-
-EAPI Eina_Bool
-elm_layout_part_cursor_set(Eo *obj, const char *part, const char *cursor)
-{
-   return efl_ui_cursor_set(efl_part(obj, part), cursor);
-}
-
-EAPI const char *
-elm_layout_part_cursor_get(const Eo *obj, const char *part)
-{
-   return efl_ui_cursor_get(efl_part(obj, part));
-}
-
-EAPI Eina_Bool
-elm_layout_part_cursor_style_set(Eo *obj, const char *part, const char *style)
-{
-   return efl_ui_cursor_style_set(efl_part(obj, part), style);
-}
-
-EAPI const char *
-elm_layout_part_cursor_style_get(const Eo *obj, const char *part)
-{
-   return efl_ui_cursor_style_get(efl_part(obj, part));
-}
-
-EAPI Eina_Bool
-elm_layout_part_cursor_unset(Eo *obj, const char *part)
-{
-   return efl_ui_cursor_set(efl_part(obj, part), NULL);
-}
-
-EAPI int
-elm_layout_freeze(Evas_Object *obj)
-{
-   return efl_layout_calc_freeze(obj);
-}
-
-EAPI int
-elm_layout_thaw(Evas_Object *obj)
-{
-   return efl_layout_calc_thaw(obj);
-}
-
-void
-_elm_layout_signal_callback_add_legacy(Eo *obj, Eo *edje, Eina_List **p_edje_signals,
-                                       const char *emission, const char *source,
-                                       Edje_Signal_Cb func, void *data)
-{
-   Edje_Signal_Data *esd;
-
-   esd = ELM_NEW(Edje_Signal_Data);
-   if (!esd) return;
-
-   esd->obj = obj;
-   esd->func = func;
-   esd->emission = eina_stringshare_add(emission);
-   esd->source = eina_stringshare_add(source);
-   esd->data = data;
-   *p_edje_signals = eina_list_append(*p_edje_signals, esd);
-
-   efl_layout_signal_callback_add(edje, emission, source,
-                                         _edje_signal_callback, esd);
-}
-
-EAPI void
-elm_layout_signal_callback_add(Eo *obj, const char *emission, const char *source, Edje_Signal_Cb func, void *data)
-{
-   Efl_Ui_Layout_Data *sd;
-
-   if (!emission || !source) return;
-
-   if (efl_isa(obj, ELM_ENTRY_CLASS))
-     {
-        _elm_entry_signal_callback_add_legacy(obj, emission, source, func, data);
-        return;
-     }
-
-   sd = efl_data_scope_safe_get(obj, MY_CLASS);
-   if (!sd) return;
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
-
-   _elm_layout_signal_callback_add_legacy(obj, wd->resize_obj, &sd->edje_signals,
-                                          emission, source, func, data);
-}
-
-void *
-_elm_layout_signal_callback_del_legacy(Eo *obj EINA_UNUSED, Eo *edje, Eina_List **p_edje_signals,
-                                       const char *emission, const char *source,
-                                       Edje_Signal_Cb func)
-{
-   Edje_Signal_Data *esd = NULL;
-   void *data = NULL;
-   Eina_List *l;
-
-   if (!emission || !source) return NULL;
-
-   EINA_LIST_FOREACH(*p_edje_signals, l, esd)
-     {
-        if ((esd->func == func) && (!strcmp(esd->emission, emission)) &&
-            (!strcmp(esd->source, source)))
-          {
-             *p_edje_signals = eina_list_remove_list(*p_edje_signals, l);
-
-             efl_layout_signal_callback_del(edje, emission, source,
-                                                   _edje_signal_callback, esd);
-
-             eina_stringshare_del(esd->emission);
-             eina_stringshare_del(esd->source);
-             data = esd->data;
-             free(esd);
-
-             return data; /* stop at 1st match */
-          }
-     }
-
-   return NULL;
-}
-
-EAPI void *
-elm_layout_signal_callback_del(Eo *obj, const char *emission, const char *source, Edje_Signal_Cb func)
-{
-   Efl_Ui_Layout_Data *sd;
-
-   if (!emission || !source) return NULL;
-
-   if (efl_isa(obj, ELM_ENTRY_CLASS))
-     return _elm_entry_signal_callback_del_legacy(obj, emission, source, func);
-
-   sd = efl_data_scope_safe_get(obj, MY_CLASS);
-   if (!sd) return NULL;
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
-
-   return _elm_layout_signal_callback_del_legacy(obj, wd->resize_obj, &sd->edje_signals,
-                                                 emission, source, func);
-}
-
-EAPI void
-elm_layout_signal_emit(Eo *obj, const char *emission, const char *source)
-{
-   efl_layout_signal_emit(obj, emission, source);
-}
-
-EAPI const char *
-elm_layout_data_get(const Evas_Object *obj, const char *key)
-{
-   return efl_layout_group_data_get(obj, key);
-}
-
-EAPI Eina_Bool
-elm_layout_theme_set(Evas_Object *obj, const char *klass, const char *group, const char *style)
-{
-   Efl_Ui_Theme_Apply ta;
-
-   ta = efl_ui_layout_theme_set(obj, klass, group, style);
-   return (ta != EFL_UI_THEME_APPLY_FAILED);
-}
-
-/* End of legacy only */
-
 
 /* Efl.Part implementation */
 
@@ -2759,3 +2454,315 @@ ELM_LAYOUT_TEXT_ALIASES_IMPLEMENT(MY_CLASS_PFX)
    EFL_OBJECT_OP_FUNC(efl_dbg_info_get, _efl_ui_layout_efl_object_dbg_info_get)
 
 #include "efl_ui_layout.eo.c"
+
+#include "efl_ui_layout_legacy.eo.h"
+
+#define MY_CLASS_NAME_LEGACY "elm_layout"
+
+static void
+_efl_ui_layout_legacy_class_constructor(Efl_Class *klass)
+{
+   evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
+}
+
+EOLIAN static Eo *
+_efl_ui_layout_legacy_efl_object_constructor(Eo *obj, void *pd EINA_UNUSED)
+{
+   obj = efl_constructor(efl_super(obj, EFL_UI_LAYOUT_LEGACY_CLASS));
+   efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
+   return obj;
+}
+
+EAPI Evas_Object *
+elm_layout_add(Evas_Object *parent)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
+   return elm_legacy_add(EFL_UI_LAYOUT_LEGACY_CLASS, parent);
+}
+
+EAPI Eina_Bool
+elm_layout_file_set(Eo *obj, const char *file, const char *group)
+{
+   return efl_file_set((Eo *) obj, file, group);
+}
+
+EAPI void
+elm_layout_file_get(Eo *obj, const char **file, const char **group)
+{
+   efl_file_get((Eo *) obj, file, group);
+}
+
+EAPI Eina_Bool
+elm_layout_mmap_set(Eo *obj, const Eina_File *file, const char *group)
+{
+   return efl_file_mmap_set((Eo *) obj, file, group);
+}
+
+EAPI void
+elm_layout_mmap_get(Eo *obj, const Eina_File **file, const char **group)
+{
+   efl_file_mmap_get((Eo *) obj, file, group);
+}
+
+EAPI Eina_Bool
+elm_layout_box_append(Eo *obj, const char *part, Evas_Object *child)
+{
+   return efl_pack(efl_part(obj, part), child);
+}
+
+EAPI Eina_Bool
+elm_layout_box_prepend(Eo *obj, const char *part, Evas_Object *child)
+{
+   return efl_pack_begin(efl_part(obj, part), child);
+}
+
+EAPI Eina_Bool
+elm_layout_box_insert_before(Eo *obj, const char *part, Evas_Object *child, const Evas_Object *reference)
+{
+   return efl_pack_before(efl_part(obj, part), child, reference);
+}
+
+EAPI Eina_Bool
+elm_layout_box_insert_at(Eo *obj, const char *part, Evas_Object *child, unsigned int pos)
+{
+   return efl_pack_at(efl_part(obj, part), child, pos);
+}
+
+EAPI Evas_Object *
+elm_layout_box_remove(Eo *obj, const char *part, Evas_Object *child)
+{
+   if (!efl_pack_unpack(efl_part(obj, part), child))
+     return NULL;
+   return child;
+}
+
+EAPI Eina_Bool
+elm_layout_box_remove_all(Eo *obj, const char *part, Eina_Bool clear)
+{
+   if (clear)
+     return efl_pack_clear(efl_part(obj, part));
+   else
+     return efl_pack_unpack_all(efl_part(obj, part));
+}
+
+EAPI Eina_Bool
+elm_layout_table_pack(Eo *obj, const char *part, Evas_Object *child, unsigned short col, unsigned short row, unsigned short colspan, unsigned short rowspan)
+{
+   return efl_pack_table(efl_part(obj, part), child, col, row, colspan, rowspan);
+}
+
+EAPI Evas_Object *
+elm_layout_table_unpack(Eo *obj, const char *part, Evas_Object *child)
+{
+   if (!efl_pack_unpack(efl_part(obj, part), child))
+     return NULL;
+   return child;
+}
+
+EAPI Eina_Bool
+elm_layout_table_clear(Eo *obj, const char *part, Eina_Bool clear)
+{
+   if (clear)
+     return efl_pack_clear(efl_part(obj, part));
+   else
+     return efl_pack_unpack_all(efl_part(obj, part));
+}
+
+EAPI Eina_Bool
+elm_layout_text_set(Eo *obj, const char *part, const char *text)
+{
+   if (!part)
+     {
+        part = efl_ui_widget_default_text_part_get(obj);
+        if (!part) return EINA_FALSE;
+     }
+   else if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
+     return EINA_FALSE;
+
+   efl_text_set(efl_part(obj, part), text);
+   return EINA_TRUE;
+}
+
+EAPI const char *
+elm_layout_text_get(const Eo *obj, const char *part)
+{
+   if (!part)
+     {
+        part = efl_ui_widget_default_text_part_get(obj);
+        if (!part) return NULL;
+     }
+   else if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
+     return NULL;
+
+   return efl_text_get(efl_part(obj, part));
+}
+
+EAPI Eina_Bool
+elm_layout_part_cursor_engine_only_set(Eo *obj, const char *part, Eina_Bool engine_only)
+{
+   return efl_ui_cursor_theme_search_enabled_set(efl_part(obj, part), !engine_only);
+}
+
+EAPI Eina_Bool
+elm_layout_part_cursor_engine_only_get(const Eo *obj, const char *part)
+{
+   return !efl_ui_cursor_theme_search_enabled_get(efl_part(obj, part));
+}
+
+EAPI Eina_Bool
+elm_layout_part_cursor_set(Eo *obj, const char *part, const char *cursor)
+{
+   return efl_ui_cursor_set(efl_part(obj, part), cursor);
+}
+
+EAPI const char *
+elm_layout_part_cursor_get(const Eo *obj, const char *part)
+{
+   return efl_ui_cursor_get(efl_part(obj, part));
+}
+
+EAPI Eina_Bool
+elm_layout_part_cursor_style_set(Eo *obj, const char *part, const char *style)
+{
+   return efl_ui_cursor_style_set(efl_part(obj, part), style);
+}
+
+EAPI const char *
+elm_layout_part_cursor_style_get(const Eo *obj, const char *part)
+{
+   return efl_ui_cursor_style_get(efl_part(obj, part));
+}
+
+EAPI Eina_Bool
+elm_layout_part_cursor_unset(Eo *obj, const char *part)
+{
+   return efl_ui_cursor_set(efl_part(obj, part), NULL);
+}
+
+EAPI int
+elm_layout_freeze(Evas_Object *obj)
+{
+   return efl_layout_calc_freeze(obj);
+}
+
+EAPI int
+elm_layout_thaw(Evas_Object *obj)
+{
+   return efl_layout_calc_thaw(obj);
+}
+
+void
+_elm_layout_signal_callback_add_legacy(Eo *obj, Eo *edje, Eina_List **p_edje_signals,
+                                       const char *emission, const char *source,
+                                       Edje_Signal_Cb func, void *data)
+{
+   Edje_Signal_Data *esd;
+
+   esd = ELM_NEW(Edje_Signal_Data);
+   if (!esd) return;
+
+   esd->obj = obj;
+   esd->func = func;
+   esd->emission = eina_stringshare_add(emission);
+   esd->source = eina_stringshare_add(source);
+   esd->data = data;
+   *p_edje_signals = eina_list_append(*p_edje_signals, esd);
+
+   efl_layout_signal_callback_add(edje, emission, source,
+                                         _edje_signal_callback, esd);
+}
+
+EAPI void
+elm_layout_signal_callback_add(Eo *obj, const char *emission, const char *source, Edje_Signal_Cb func, void *data)
+{
+   Efl_Ui_Layout_Data *sd;
+
+   if (!emission || !source) return;
+
+   if (efl_isa(obj, ELM_ENTRY_CLASS))
+     {
+        _elm_entry_signal_callback_add_legacy(obj, emission, source, func, data);
+        return;
+     }
+
+   sd = efl_data_scope_safe_get(obj, MY_CLASS);
+   if (!sd) return;
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
+
+   _elm_layout_signal_callback_add_legacy(obj, wd->resize_obj, &sd->edje_signals,
+                                          emission, source, func, data);
+}
+
+void *
+_elm_layout_signal_callback_del_legacy(Eo *obj EINA_UNUSED, Eo *edje, Eina_List **p_edje_signals,
+                                       const char *emission, const char *source,
+                                       Edje_Signal_Cb func)
+{
+   Edje_Signal_Data *esd = NULL;
+   void *data = NULL;
+   Eina_List *l;
+
+   if (!emission || !source) return NULL;
+
+   EINA_LIST_FOREACH(*p_edje_signals, l, esd)
+     {
+        if ((esd->func == func) && (!strcmp(esd->emission, emission)) &&
+            (!strcmp(esd->source, source)))
+          {
+             *p_edje_signals = eina_list_remove_list(*p_edje_signals, l);
+
+             efl_layout_signal_callback_del(edje, emission, source,
+                                                   _edje_signal_callback, esd);
+
+             eina_stringshare_del(esd->emission);
+             eina_stringshare_del(esd->source);
+             data = esd->data;
+             free(esd);
+
+             return data; /* stop at 1st match */
+          }
+     }
+
+   return NULL;
+}
+
+EAPI void *
+elm_layout_signal_callback_del(Eo *obj, const char *emission, const char *source, Edje_Signal_Cb func)
+{
+   Efl_Ui_Layout_Data *sd;
+
+   if (!emission || !source) return NULL;
+
+   if (efl_isa(obj, ELM_ENTRY_CLASS))
+     return _elm_entry_signal_callback_del_legacy(obj, emission, source, func);
+
+   sd = efl_data_scope_safe_get(obj, MY_CLASS);
+   if (!sd) return NULL;
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
+
+   return _elm_layout_signal_callback_del_legacy(obj, wd->resize_obj, &sd->edje_signals,
+                                                 emission, source, func);
+}
+
+EAPI void
+elm_layout_signal_emit(Eo *obj, const char *emission, const char *source)
+{
+   efl_layout_signal_emit(obj, emission, source);
+}
+
+EAPI const char *
+elm_layout_data_get(const Evas_Object *obj, const char *key)
+{
+   return efl_layout_group_data_get(obj, key);
+}
+
+EAPI Eina_Bool
+elm_layout_theme_set(Evas_Object *obj, const char *klass, const char *group, const char *style)
+{
+   Efl_Ui_Theme_Apply ta;
+
+   ta = efl_ui_layout_theme_set(obj, klass, group, style);
+   return (ta != EFL_UI_THEME_APPLY_FAILED);
+}
+
+#include "efl_ui_layout_legacy.eo.c"

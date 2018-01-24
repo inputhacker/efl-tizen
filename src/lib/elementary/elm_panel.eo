@@ -12,7 +12,7 @@ class Elm.Panel (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Elm.Interface_Scrollable,
                  // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
                  Efl.Orientation,
                  //
-                 Efl.Access.Widget.Action)
+                 Efl.Access.Widget.Action, Efl.Ui.Legacy)
 {
    [[Elementary panel class]]
    legacy_prefix: elm_panel;

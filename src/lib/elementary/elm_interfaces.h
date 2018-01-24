@@ -18,6 +18,7 @@
 #include "efl_access_image.eo.h"
 #include "efl_access_selection.eo.h"
 #include "efl_access_value.eo.h"
+#include "efl_ui_legacy.eo.h"
 #endif
 // TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
 //#endif
@@ -40,6 +41,7 @@
 #include "efl_access_image.eo.legacy.h"
 #include "efl_access_selection.eo.legacy.h"
 #include "efl_access_value.eo.legacy.h"
+#include "efl_ui_legacy.eo.legacy.h"
 #endif
 // TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
 //#endif

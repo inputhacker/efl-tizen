@@ -5874,7 +5874,6 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
 
    /* FIXME: Major hack: calling the constructor in the middle of finalize. */
    efl_constructor(efl_super(obj, MY_CLASS));
-   efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
 
    evas_object_focus_set(obj, EINA_TRUE);
@@ -7814,9 +7813,8 @@ _elm_win_focus_auto_hide(Evas_Object *obj)
 }
 
 EOLIAN static void
-_efl_ui_win_class_constructor(Efl_Class *klass)
+_efl_ui_win_class_constructor(Efl_Class *klass EINA_UNUSED)
 {
-   evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
 }
 
 EOLIAN static void
@@ -9363,114 +9361,6 @@ _fake_canvas_set(Evas_Object *obj, Ecore_Evas *oee)
    _elm_win_need_frame_adjust(sd, ecore_evas_engine_name_get(oee));
 }
 
-EAPI Evas_Object *
-elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
-{
-//TIZEN_ONLY(20160628):  Add Performance log for cold booting
-#ifdef ENABLE_TTRACE
-   traceBegin(TTRACE_TAG_EFL, "elm_win_add");
-#endif
-//
-   const Efl_Class *klass = MY_CLASS;
-
-//TIZEN_ONLY(20161202): Temporary code - Apply mirroring in elm_win_add()
-   if (_elm_config && _elm_config->language_auto_mirrored)
-     {
-        if (!strcmp(E_("default:LTR"), "default:RTL"))
-          elm_config_mirrored_set(EINA_TRUE);
-        else
-          elm_config_mirrored_set(EINA_FALSE);
-     }
-//
-
-   switch ((int) type)
-     {
-      case ELM_WIN_INLINED_IMAGE: klass = EFL_UI_WIN_INLINED_CLASS; break;
-      case ELM_WIN_SOCKET_IMAGE: klass = EFL_UI_WIN_SOCKET_CLASS; break;
-      default: break;
-     }
-// TIZEN_ONLY(20160218): Improve launching performance.
-   if (_precreated_win_obj)
-     {
-        ELM_WIN_DATA_GET(_precreated_win_obj, sd);
-
-        if (sd)
-          {
-             if (sd->parent == parent)
-               {
-                  Evas_Object *tmp = _precreated_win_obj;
-                  TRAP(sd, name_class_set, name, _elm_appname);
-                  //TIZEN_ONLY(20180131):Added code to set the window title
-                  TRAP(sd, title_set, sd->title ? sd->title : name);
-                  _precreated_win_obj = NULL;
-                  if (sd->type != type)
-                    efl_ui_win_type_set(tmp, type);
-                  INF("Return precreated obj(%p).", tmp);
-
-                  /* TIZEN_ONLY(20180117): Apply paragraph direction according to locale */
-                  if (!strcmp(E_("default:LTR"), "default:RTL"))
-                    efl_canvas_object_paragraph_direction_set(tmp, EVAS_BIDI_DIRECTION_ANY_RTL);
-                  else
-                    efl_canvas_object_paragraph_direction_set(tmp, EVAS_BIDI_DIRECTION_LTR);
-                  /* END */
-
-                  return tmp;
-               }
-          }
-     }
-//
-
-   Evas_Object *obj = elm_legacy_add(klass, parent,
-                         efl_ui_win_name_set(efl_added, name),
-                         efl_ui_win_type_set(efl_added, type));
-
-//TIZEN_ONLY(20160628):  Add Performance log for cold booting
-#ifdef ENABLE_TTRACE
-   traceEnd(TTRACE_TAG_EFL);
-#endif
-//
-   return obj;
-}
-
-EAPI Evas_Object *
-elm_win_fake_add(Ecore_Evas *ee)
-{
-   return elm_legacy_add(MY_CLASS, NULL,
-                         _fake_canvas_set(efl_added, ee),
-                         efl_ui_win_name_set(efl_added, NULL),
-                         efl_ui_win_type_set(efl_added, ELM_WIN_FAKE));
-}
-
-EAPI Evas_Object *
-elm_win_util_standard_add(const char *name, const char *title)
-{
-   Evas_Object *win;
-
-   win = elm_legacy_add(EFL_UI_WIN_CLASS, NULL,
-                        efl_text_set(efl_added, title),
-                        efl_ui_win_name_set(efl_added, name),
-                        efl_ui_win_type_set(efl_added, EFL_UI_WIN_BASIC));
-   if (!win) return NULL;
-
-   _elm_win_standard_init(win);
-   return win;
-}
-
-EAPI Evas_Object *
-elm_win_util_dialog_add(Evas_Object *parent, const char *name, const char *title)
-{
-   Evas_Object *win;
-
-   win = elm_legacy_add(EFL_UI_WIN_CLASS, parent,
-                        efl_text_set(efl_added, title),
-                        efl_ui_win_name_set(efl_added, name),
-                        efl_ui_win_type_set(efl_added, EFL_UI_WIN_DIALOG_BASIC));
-   if (!win) return NULL;
-
-   _elm_win_standard_init(win);
-   return win;
-}
-
 /**
   * @internal
   *
@@ -10068,3 +9958,130 @@ ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(efl_ui_win, Efl_Ui_Win_Data)
    EFL_OBJECT_OP_FUNC(efl_canvas_object_legacy_ctor, _efl_ui_win_efl_canvas_object_legacy_ctor)
 
 #include "efl_ui_win.eo.c"
+
+#include "efl_ui_win_legacy.eo.h"
+
+static void
+_efl_ui_win_legacy_class_constructor(Efl_Class *klass)
+{
+   evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
+}
+
+EOLIAN static Eo *
+_efl_ui_win_legacy_efl_object_constructor(Eo *obj, void *pd EINA_UNUSED)
+{
+   obj = efl_constructor(efl_super(obj, EFL_UI_WIN_LEGACY_CLASS));
+   efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
+   return obj;
+}
+
+EAPI Evas_Object *
+elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
+{
+//TIZEN_ONLY(20160628):  Add Performance log for cold booting
+#ifdef ENABLE_TTRACE
+   traceBegin(TTRACE_TAG_EFL, "elm_win_add");
+#endif
+//
+   const Efl_Class *klass = EFL_UI_WIN_LEGACY_CLASS;
+
+//TIZEN_ONLY(20161202): Temporary code - Apply mirroring in elm_win_add()
+   if (_elm_config && _elm_config->language_auto_mirrored)
+     {
+        if (!strcmp(E_("default:LTR"), "default:RTL"))
+          elm_config_mirrored_set(EINA_TRUE);
+        else
+          elm_config_mirrored_set(EINA_FALSE);
+     }
+//
+
+   switch ((int) type)
+     {
+      case ELM_WIN_INLINED_IMAGE: klass = EFL_UI_WIN_INLINED_CLASS; break;
+      case ELM_WIN_SOCKET_IMAGE: klass = EFL_UI_WIN_SOCKET_CLASS; break;
+      default: break;
+     }
+// TIZEN_ONLY(20160218): Improve launching performance.
+   if (_precreated_win_obj)
+     {
+        ELM_WIN_DATA_GET(_precreated_win_obj, sd);
+
+        if (sd)
+          {
+             if (sd->parent == parent)
+               {
+                  Evas_Object *tmp = _precreated_win_obj;
+                  TRAP(sd, name_class_set, name, _elm_appname);
+                  //TIZEN_ONLY(20180131):Added code to set the window title
+                  TRAP(sd, title_set, sd->title ? sd->title : name);
+                  _precreated_win_obj = NULL;
+                  if (sd->type != type)
+                    efl_ui_win_type_set(tmp, type);
+                  INF("Return precreated obj(%p).", tmp);
+
+                  /* TIZEN_ONLY(20180117): Apply paragraph direction according to locale */
+                  if (!strcmp(E_("default:LTR"), "default:RTL"))
+                    efl_canvas_object_paragraph_direction_set(tmp, EVAS_BIDI_DIRECTION_ANY_RTL);
+                  else
+                    efl_canvas_object_paragraph_direction_set(tmp, EVAS_BIDI_DIRECTION_LTR);
+                  /* END */
+
+                  return tmp;
+               }
+          }
+     }
+//
+
+   Evas_Object *obj = elm_legacy_add(klass, parent,
+                         efl_ui_win_name_set(efl_added, name),
+                         efl_ui_win_type_set(efl_added, type));
+
+//TIZEN_ONLY(20160628):  Add Performance log for cold booting
+#ifdef ENABLE_TTRACE
+   traceEnd(TTRACE_TAG_EFL);
+#endif
+//
+   return obj;
+}
+
+
+EAPI Evas_Object *
+elm_win_fake_add(Ecore_Evas *ee)
+{
+   return elm_legacy_add(EFL_UI_WIN_LEGACY_CLASS, NULL,
+                        _fake_canvas_set(efl_added, ee),
+                        efl_ui_win_name_set(efl_added, NULL),
+                        efl_ui_win_type_set(efl_added, ELM_WIN_FAKE));
+}
+
+EAPI Evas_Object *
+elm_win_util_standard_add(const char *name, const char *title)
+{
+   Evas_Object *win;
+
+   win = elm_legacy_add(EFL_UI_WIN_LEGACY_CLASS, NULL,
+                        efl_text_set(efl_added, title),
+                        efl_ui_win_name_set(efl_added, name),
+                        efl_ui_win_type_set(efl_added, EFL_UI_WIN_BASIC));
+   if (!win) return NULL;
+
+   _elm_win_standard_init(win);
+   return win;
+}
+
+EAPI Evas_Object *
+elm_win_util_dialog_add(Evas_Object *parent, const char *name, const char *title)
+{
+   Evas_Object *win;
+
+   win = elm_legacy_add(EFL_UI_WIN_LEGACY_CLASS, parent,
+                        efl_text_set(efl_added, title),
+                        efl_ui_win_name_set(efl_added, name),
+                        efl_ui_win_type_set(efl_added, EFL_UI_WIN_DIALOG_BASIC));
+   if (!win) return NULL;
+
+   _elm_win_standard_init(win);
+   return win;
+}
+
+#include "efl_ui_win_legacy.eo.c"
