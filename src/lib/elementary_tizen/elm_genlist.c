@@ -2515,7 +2515,7 @@ _elm_genlist_pan_efl_canvas_group_group_calculate(Eo *obj, Elm_Genlist_Pan_Data 
      {
        if (psd->wsd->banded_bg_rect && !psd->wsd->reorder.it)
          {
-            Evas_Coord bg_x, bg_y, bg_w, bg_h, svy, svh;
+            Eina_Rect bg;
             Elm_Gen_Item *tmp = NULL, *prev = NULL;
 
             tmp = ELM_GEN_ITEM_FROM_INLIST(psd->wsd->items->last);
@@ -2542,17 +2542,13 @@ _elm_genlist_pan_efl_canvas_group_group_calculate(Eo *obj, Elm_Genlist_Pan_Data 
               {
                  int index = 0;
 
-                 elm_interface_scrollable_content_viewport_geometry_get(psd->wsd->obj,
-                       NULL, &svy, NULL, &svh);
-
-                 bg_x = GL_IT(tmp)->scrl_x;
-                 bg_y = GL_IT(tmp)->scrl_y + GL_IT(tmp)->h;
-                 bg_w = GL_IT(tmp)->w;
-                 bg_h = svy + svh - bg_y;
+                 bg.x = GL_IT(tmp)->scrl_x;
+                 bg.y = GL_IT(tmp)->scrl_y + GL_IT(tmp)->h;
+                 bg.w = GL_IT(tmp)->w;
+                 bg.h = oy + oh - bg.y;
 
                  evas_object_stack_below(psd->wsd->banded_bg_rect, VIEW(tmp));
-                 evas_object_resize(psd->wsd->banded_bg_rect, bg_w, bg_h);
-                 evas_object_move(psd->wsd->banded_bg_rect, bg_x, bg_y);
+                 efl_gfx_geometry_set(psd->wsd->banded_bg_rect, bg);
 
                  //GET COLOR OF LAST ITEM AND SET NEXT COLOR TO BANDED BG RECT
                  if (psd->wsd->banded_bg_on)
