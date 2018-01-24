@@ -5,9 +5,9 @@
 #include <Elementary.h>
 #include "elm_priv.h"
 
-char _tizen_profile_wearable = -1; /* Unknown */
+int _tizen_profile_wearable = -1; /* Unknown */
 
-char tizen_util_probe_profile_wearable()
+int tizen_util_probe_profile_wearable()
 {
    const char *profile_name;
 
