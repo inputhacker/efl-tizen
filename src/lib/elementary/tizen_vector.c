@@ -17,7 +17,7 @@ ELM_VG_SCALE_SIZE(Evas_Object* obj, double x)
 {
    Evas_Object *edje = elm_layout_edje_get(obj);
 
-   return ((x) * elm_config_scale_get() / edje_object_base_scale_get(edje) * elm_widget_scale_get(obj));
+   return ((x) * elm_config_scale_get() / edje_object_base_scale_get(edje) * efl_gfx_scale_get(obj));
 }
 /////////////////////////////////////////////////////////////////////////
 /* Radio */
@@ -1744,8 +1744,9 @@ _progressbar_normal_style(vg_progressbar *vd)
    for(i=0; i < 3; i++)
      {
         vd->vg[i] = evas_object_vg_add(e);
-        root = evas_object_vg_root_node_get(vd->vg[i]);
-        vd->shape[i] = evas_vg_shape_add(root);
+        Efl_VG *container = evas_vg_container_add(vd->vg[i]);
+        evas_object_vg_root_node_set(vd->vg[i], container);
+        vd->shape[i] = evas_vg_shape_add(container);
      }
 
    evas_object_event_callback_add(vd->vg[0], EVAS_CALLBACK_RESIZE,
@@ -2017,8 +2018,9 @@ _progressbar_process_style(vg_progressbar *vd)
    for(i=0; i < 3; i++)
      {
         vd->vg[i] = evas_object_vg_add(e);
-        root = evas_object_vg_root_node_get(vd->vg[i]);
-        vd->shape[i] = evas_vg_shape_add(root);
+        Efl_VG *container = evas_vg_container_add(vd->vg[i]);
+        evas_object_vg_root_node_set(vd->vg[i], container);
+        vd->shape[i] = evas_vg_shape_add(container);
         evas_vg_shape_stroke_color_set(vd->shape[i], 255, 255, 255, 255);
         evas_vg_shape_stroke_cap_set(vd->shape[i], EFL_GFX_CAP_ROUND);
      }

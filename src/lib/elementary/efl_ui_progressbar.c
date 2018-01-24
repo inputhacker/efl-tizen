@@ -274,6 +274,10 @@ _efl_ui_progressbar_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Progressbar_Data *
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
    if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
 
+#ifdef TIZEN_VECTOR_UX
+   tizen_vg_progressbar_set(obj);
+#endif
+
    if (sd->pulse)
      elm_layout_signal_emit(obj, "elm,state,pulse", "elm");
    else
@@ -380,6 +384,10 @@ _efl_ui_progressbar_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Progressbar_Data 
    evas_object_pass_events_set(priv->spacer, EINA_TRUE);
 
    elm_layout_content_set(obj, "elm.swallow.bar", priv->spacer);
+
+#ifdef TIZEN_VECTOR_UX
+   tizen_vg_progressbar_set(obj);
+#endif
 
    _units_set(obj);
    _val_set(obj);
