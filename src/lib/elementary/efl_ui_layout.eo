@@ -87,7 +87,6 @@ class Efl.Ui.Layout (Efl.Ui.Widget, Efl.Part, Efl.Container, Efl.File,
        *******/
    }
    implements {
-      class.constructor;
       Efl.Object.constructor;
       Efl.Object.finalize;
       Efl.File.file { get; set; }
