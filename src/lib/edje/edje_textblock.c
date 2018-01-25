@@ -513,11 +513,34 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
              if (ep->typedata.text->text) text = ep->typedata.text->text;
           }
 
+        /***********************************************************************************
+         * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+         ***********************************************************************************
         EINA_LIST_FOREACH(ed->file->styles, l, stl)
           {
              if ((stl->name) && (!strcmp(stl->name, style))) break;
              stl = NULL;
           }
+         */
+        /* check object level styles */
+        EINA_LIST_FOREACH(ed->styles, l, stl)
+          {
+             if ((stl->name) && (!strcmp(stl->name, style))) break;
+             stl = NULL;
+          }
+
+        /* check file level styles */
+        if (!stl)
+          {
+             EINA_LIST_FOREACH(ed->file->styles, l, stl)
+               {
+                  if ((stl->name) && (!strcmp(stl->name, style))) break;
+                  stl = NULL;
+               }
+          }
+        /*******
+         * END *
+         *******/
 
         if (ep->part->scale)
           evas_object_scale_set(ep->object, TO_DOUBLE(sc));
