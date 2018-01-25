@@ -1077,6 +1077,11 @@ elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi
 {
    efl_access_state_notify(obj, state_types_mask, recursive);
 }
+
+EAPI void elm_atspi_relation_set_free(Elm_Atspi_Relation_Set *set)
+{
+   efl_access_relation_set_free(set);
+}
 //
 
 #include "efl_access.eo.c"

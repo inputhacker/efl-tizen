@@ -795,6 +795,15 @@ EAPI void elm_atspi_accessible_relationships_clear(Elm_Interface_Atspi_Accessibl
  */
 EAPI void elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_State_Set state_types_mask, Eina_Bool recursive);
 
+/**
+ * @internal
+ * Frees Elm_Atspi_Relation_Set
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void elm_atspi_relation_set_free(Elm_Atspi_Relation_Set *set);
 #include "efl_access.eo.legacy.h"
 
 /**
