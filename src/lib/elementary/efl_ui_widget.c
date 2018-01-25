@@ -7835,11 +7835,42 @@ _elm_widget_edje_class_get(const Efl_Class *klass, const char *style, const char
 {
    Eina_Strbuf *buf;
    Eina_Stringshare *str;
+   const char *klass_name = NULL;
 
    buf = eina_strbuf_new();
 
-   eina_strbuf_append(buf, strchr(efl_class_name_get(klass), '_') + 1);
-   eina_strbuf_tolower(buf);
+   klass_name = efl_class_name_get(klass);
+
+   if (klass_name)
+     {
+        /* Get the last word from the given klass name */
+        char *temp, *temp_orig, *temp_ret, *last_ret = NULL;
+        const char *delim = NULL;
+
+        temp_orig = temp = strdup(klass_name);
+
+        /* If "." is not used for word serperator,
+         * it assume the given klass name is legacy.
+         * And legacy klass name was made with "_" as its word seperator. */
+        if (strchr(klass_name, '.'))
+          delim = ".";
+        else
+          delim = "_";
+
+        while ((temp_ret = strsep(&temp, delim)) != NULL)
+          {
+             if (strcmp(temp_ret, ""))
+               last_ret = temp_ret;
+          }
+
+        if (last_ret)
+          {
+             eina_strbuf_append(buf, last_ret);
+             eina_strbuf_tolower(buf);
+          }
+
+        free(temp_orig);
+     }
 
    if (style)
      {
