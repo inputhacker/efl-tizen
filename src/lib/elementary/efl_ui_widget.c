@@ -5737,7 +5737,7 @@ EOLIAN static const char*
 _efl_ui_widget_efl_access_description_get(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *_pd EINA_UNUSED)
 {
    const char *ret = NULL;
-   ret = efl_access_description_get(obj);
+   ret = efl_access_description_get(efl_super(obj, EFL_UI_WIDGET_CLASS));
    if (ret) return ret;
 
 #ifdef HAVE_GETTEXT

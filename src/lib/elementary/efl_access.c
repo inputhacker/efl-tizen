@@ -906,13 +906,13 @@ elm_atspi_accessible_relationship_append(Elm_Interface_Atspi_Accessible *obj, El
 EAPI void
 elm_atspi_accessible_relationship_remove(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Relation_Type type, const Elm_Interface_Atspi_Accessible *relation_object)
 {
-   elm_atspi_accessible_relationship_remove(obj, type, relation_object);
+   efl_access_relationship_remove(obj, type, relation_object);
 }
 
 EAPI const char *
 elm_atspi_accessible_translation_domain_get(const Elm_Interface_Atspi_Accessible *obj)
 {
-   return elm_atspi_accessible_translation_domain_get(obj);
+   return efl_access_translation_domain_get(obj);
 }
 
 EAPI void
