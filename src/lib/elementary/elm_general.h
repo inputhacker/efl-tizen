@@ -251,7 +251,7 @@ EAPI Eina_Bool efl_quicklaunch_prepare(int argc, char **argv, const char *cwd);
  * @deprecated Deprecated since 2.4
  * Exposed symbol used only by macros and should not be used by apps
  */
-EINA_DEPRECATED EAPI Eina_Bool elm_quicklaunch_fork(int argc, char **argv, char *cwd, void (*postfork_func) (void *data), void *postfork_data);
+EINA_DEPRECATED EAPI int elm_quicklaunch_fork(int argc, char **argv, char *cwd, void (*postfork_func) (void *data), void *postfork_data);
 
 /**
  * @deprecated Deprecated since 2.4
