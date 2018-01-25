@@ -24,6 +24,12 @@ _ecore_wl2_window_shutdown(void)
    _windows = NULL;
 }
 
+Eina_Hash *
+_ecore_wl2_window_hash_get(void)
+{
+   return _windows;
+}
+
 static char *
 _ecore_wl2_window_id_str_get(int win_id)
 {
@@ -979,6 +985,8 @@ ecore_wl2_window_new(Ecore_Wl2_Display *display, Ecore_Wl2_Window *parent, int x
 //TIZEN_ONLY(20171216): add ecore_wl2_window_find
    eina_hash_add(_windows, _ecore_wl2_window_id_str_get(win->id), win);
 //
+
+   _ecore_wl2_input_devices_send(ecore_wl2_input_default_input_get(display), win);
 
    return win;
 }

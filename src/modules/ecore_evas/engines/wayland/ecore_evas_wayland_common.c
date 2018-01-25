@@ -1537,11 +1537,15 @@ _ecore_evas_wl_common_default_seat_get(Evas *evas)
 static Eina_Bool
 _ecore_evas_wl_common_cb_tizen_device_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
-   Ecore_Wl2_Event_Tizen_Device_Info *ev;
+   Ecore_Event_Device_Info *ev;
+   Ecore_Wl2_Window *win = NULL;
+   Ecore_Wl2_Display *display = NULL;
    Ecore_Evas *ee;
    Eina_List *l;
 
    ev = event;
+   if (ev->window) win = ecore_wl2_window_find(ev->window);
+   if (win) display = ecore_wl2_window_display_get(win);
 
    EINA_LIST_FOREACH(ee_list, l, ee)
      {
@@ -1549,7 +1553,7 @@ _ecore_evas_wl_common_cb_tizen_device_add(void *data EINA_UNUSED, int type EINA_
         Evas_Device *device, *seat;
 
         wdata = ee->engine.data;
-        if (ev->display != wdata->display) continue;
+        if (display != wdata->display) continue;
 
         if (_ecore_evas_wl_common_evas_device_find(ee->evas, ev->identifier)) continue;
         seat = _ecore_evas_wl_common_default_seat_get(ee->evas);
@@ -1567,11 +1571,15 @@ _ecore_evas_wl_common_cb_tizen_device_add(void *data EINA_UNUSED, int type EINA_
 static Eina_Bool
 _ecore_evas_wl_common_cb_tizen_device_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
-   Ecore_Wl2_Event_Tizen_Device_Info *ev;
+   Ecore_Event_Device_Info *ev;
+   Ecore_Wl2_Window *win = NULL;
+   Ecore_Wl2_Display *display = NULL;
    Ecore_Evas *ee;
    Eina_List *list, *l, *ll, *ll_next;
 
    ev = event;
+   if (ev->window) win = ecore_wl2_window_find(ev->window);
+   if (win) display = ecore_wl2_window_display_get(win);
 
    EINA_LIST_FOREACH(ee_list, l, ee)
      {
@@ -1579,7 +1587,7 @@ _ecore_evas_wl_common_cb_tizen_device_del(void *data EINA_UNUSED, int type EINA_
         Evas_Device *device;
 
         wdata = ee->engine.data;
-        if (ev->display != wdata->display) continue;
+        if (display != wdata->display) continue;
 
         list = (Eina_List *)evas_device_list(ee->evas, NULL);
         EINA_LIST_FOREACH_SAFE(list, ll, ll_next, device)
@@ -1709,11 +1717,11 @@ _ecore_evas_wl_common_init(void)
    //
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
    h =
-     ecore_event_handler_add(ECORE_WL2_EVENT_TIZEN_DEVICE_ADD,
+     ecore_event_handler_add(ECORE_EVENT_DEVICE_ADD,
                              _ecore_evas_wl_common_cb_tizen_device_add, NULL);
    eina_array_push(_ecore_evas_wl_event_hdls, h);
    h =
-     ecore_event_handler_add(ECORE_WL2_EVENT_TIZEN_DEVICE_DEL,
+     ecore_event_handler_add(ECORE_EVENT_DEVICE_DEL,
                              _ecore_evas_wl_common_cb_tizen_device_del, NULL);
    eina_array_push(_ecore_evas_wl_event_hdls, h);
    //

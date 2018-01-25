@@ -550,26 +550,6 @@ typedef struct _Ecore_Wl2_Window_Keygrab_Info
 } Ecore_Wl2_Window_Keygrab_Info;
 //
 
-// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
-typedef struct _Ecore_Wl2_Event_Tizen_Device_Info
-{
-   Ecore_Wl2_Display *display;
-   const char *name;
-   const char *identifier;
-   const char *seatname;
-   Efl_Input_Device_Type clas;
-   Efl_Input_Device_Subtype subclas;
-} Ecore_Wl2_Event_Tizen_Device_Info;
-
-typedef struct _Ecore_Wl2_Event_Tizen_Input_Device_Info
-{
-   Eo *dev;
-   const char *name;
-   const char *identifier;
-   int window_id;
-} Ecore_Wl2_Event_Tizen_Input_Device_Info;
-//
-
 typedef void (*Ecore_Wl2_Bind_Cb)(struct wl_client *client, void *data, uint32_t version, uint32_t id);
 typedef void (*Ecore_Wl2_Unbind_Cb)(struct wl_resource *resource);
 typedef void (*Ecore_Wl2_Frame_Cb)(Ecore_Wl2_Window *win, uint32_t timestamp, void *data);
@@ -630,12 +610,6 @@ EAPI extern int ECORE_WL2_EVENT_EFFECT_END;
 EAPI extern int ECORE_WL2_EVENT_IGNORE_OUTPUT_TRANSFORM;
 EAPI extern int ECORE_WL2_EVENT_INDICATOR_FLICK;
 EAPI extern int ECORE_WL2_EVENT_CLIPBOARD_DATA_SELECTED;
-//
-// TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
-EAPI extern int ECORE_WL2_EVENT_TIZEN_DEVICE_ADD;
-EAPI extern int ECORE_WL2_EVENT_TIZEN_DEVICE_DEL;
-EAPI extern int ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_ADDED;
-EAPI extern int ECORE_WL2_EVENT_TIZEN_INPUT_DEVICE_REMOVED;
 //
 
 /**

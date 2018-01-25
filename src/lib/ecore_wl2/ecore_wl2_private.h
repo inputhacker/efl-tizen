@@ -803,6 +803,7 @@ Eina_Hash *_ecore_wl2_keygrab_hash_get(void);
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
 void _ecore_wl2_input_device_manager_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version);
 //
+void _ecore_wl2_input_devices_send(Ecore_Wl2_Input *input, Ecore_Wl2_Window *win);
 
 //TIZEN_ONLY(20171115): support output transform
 void _ecore_wl2_window_ignore_output_transform_set(Ecore_Wl2_Window *window, Eina_Bool ignore);
@@ -812,6 +813,7 @@ void _ecore_wl2_window_ignore_output_transform_set(Ecore_Wl2_Window *window, Ein
 void _ecore_wl2_window_init(void);
 void _ecore_wl2_window_shutdown(void);
 //
+Eina_Hash *_ecore_wl2_window_hash_get(void);
 
 EAPI extern int _ecore_wl2_event_window_www;
 EAPI extern int _ecore_wl2_event_window_www_drag;

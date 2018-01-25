@@ -3028,7 +3028,7 @@ err:
 static void
 _ecore_wl2_input_device_info_free(void *data EINA_UNUSED, void *ev)
 {
-   Ecore_Wl2_Event_Tizen_Device_Info *e;
+   Ecore_Event_Device_Info *e;
 
    e = ev;
    eina_stringshare_del(e->name);
@@ -3039,13 +3039,13 @@ _ecore_wl2_input_device_info_free(void *data EINA_UNUSED, void *ev)
 }
 
 void
-_ecore_wl2_input_device_info_send(Ecore_Wl2_Display *dpy, const char *name,  const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas, Eina_Bool flag)
+_ecore_wl2_input_device_info_send(Ecore_Window win_id, const char *name,  const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas, Eina_Bool flag)
 {
-   Ecore_Wl2_Event_Tizen_Device_Info *e;
+   Ecore_Event_Device_Info *e;
 
-   if (!(e = calloc(1, sizeof(Ecore_Wl2_Event_Tizen_Device_Info)))) return;
+   if (!(e = calloc(1, sizeof(Ecore_Event_Device_Info)))) return;
 
-   e->display = dpy;
+   e->window = win_id;
    e->name = eina_stringshare_add(name);
    e->identifier = eina_stringshare_add(identifier);
    e->seatname = eina_stringshare_add(name);
@@ -3053,33 +3053,33 @@ _ecore_wl2_input_device_info_send(Ecore_Wl2_Display *dpy, const char *name,  con
    e->subclas = subclas;
 
    if (flag)
-     ecore_event_add(ECORE_WL2_EVENT_TIZEN_DEVICE_ADD, e, _ecore_wl2_input_device_info_free, NULL);
+     ecore_event_add(ECORE_EVENT_DEVICE_ADD, e, _ecore_wl2_input_device_info_free, NULL);
    else
-     ecore_event_add(ECORE_WL2_EVENT_TIZEN_DEVICE_DEL, e, _ecore_wl2_input_device_info_free, NULL);
+     ecore_event_add(ECORE_EVENT_DEVICE_DEL, e, _ecore_wl2_input_device_info_free, NULL);
 }
 
-static void
+static Eina_Bool
 _ecore_wl2_input_device_ecore_device_add(Ecore_Wl2_Tizen_Input_Device *dev)
 {
    Ecore_Device *ecdev;
    Eina_List *l;
    const char *ecdev_name;
 
-   if (!dev->identifier) return;
+   if (!dev->identifier) return EINA_FALSE;
 
    EINA_LIST_FOREACH((Eina_List *)ecore_device_list(), l, ecdev)
      {
         ecdev_name = ecore_device_identifier_get(ecdev);
         if (!ecdev_name) continue;
         if ((ecore_device_class_get(ecdev) == dev->clas) && (!strcmp(ecdev_name, dev->identifier)))
-          return;
+          return EINA_FALSE;
      }
 
    ecdev = ecore_device_add();
    if (!ecdev)
      {
         ERR("Failed to add ecore device for name: %s (%s)\n", dev->name, dev->identifier);
-        return;
+        return EINA_FALSE;
      }
    ecore_device_name_set(ecdev, dev->name);
    ecore_device_identifier_set(ecdev, dev->identifier);
@@ -3087,16 +3087,18 @@ _ecore_wl2_input_device_ecore_device_add(Ecore_Wl2_Tizen_Input_Device *dev)
    ecore_device_subclass_set(ecdev, dev->subclas);
 
    dev->device = efl_ref(ecdev);
+
+   return EINA_TRUE;
 }
 
-static void
+static Eina_Bool
 _ecore_wl2_input_device_ecore_device_remove(Ecore_Wl2_Tizen_Input_Device *dev)
 {
    Ecore_Device *ecdev;
    const Eina_List *l;
    const char *ecdev_name;
 
-   if (!dev->identifier) return;
+   if (!dev->identifier) return EINA_FALSE;
 
    EINA_LIST_FOREACH(ecore_device_list(), l, ecdev)
      {
@@ -3107,25 +3109,66 @@ _ecore_wl2_input_device_ecore_device_remove(Ecore_Wl2_Tizen_Input_Device *dev)
            {
               ecore_device_del(ecdev);
               dev->device = NULL;
-              return;
+              return EINA_TRUE;
            }
       }
+
+    return EINA_FALSE;
 }
 
 static void
 _ecore_wl2_input_device_info_broadcast(Ecore_Wl2_Tizen_Input_Device *dev, Eina_Bool flag)
 {
+   Eina_Hash *windows = NULL;
+   Eina_Iterator *itr;
+   Ecore_Wl2_Window *win = NULL;
+   void *data;
+   Eina_Bool res, has_win = EINA_FALSE;
+
    if (!dev) return;
    if (!dev->name) return;
    if (!dev->input || !dev->input->display) return;
 
-   _ecore_wl2_input_device_info_send(dev->input->display, dev->name, dev->identifier, dev->clas, dev->subclas, flag);
-
    if (flag)
-     _ecore_wl2_input_device_ecore_device_add(dev);
+     res = _ecore_wl2_input_device_ecore_device_add(dev);
    else
-     _ecore_wl2_input_device_ecore_device_remove(dev);
+     res = _ecore_wl2_input_device_ecore_device_remove(dev);
+
+   if (!res) return;
+
+   windows = _ecore_wl2_window_hash_get();
+   if (windows)
+     {
+        itr = eina_hash_iterator_data_new(windows);
+        while (eina_iterator_next(itr, &data))
+          {
+             win = data;
+             has_win = EINA_TRUE;
+             _ecore_wl2_input_device_info_send(win->id, dev->name, dev->identifier, dev->clas, dev->subclas, flag);
+          }
+
+        eina_iterator_free(itr);
+     }
+   if (!has_win)
+     {
+        _ecore_wl2_input_device_info_send((uintptr_t)NULL, dev->name, dev->identifier, dev->clas, dev->subclas, flag);
+     }
 }
+
+void
+_ecore_wl2_input_devices_send(Ecore_Wl2_Input *input, Ecore_Wl2_Window *win)
+{
+   Eina_List *l;
+   Ecore_Wl2_Tizen_Input_Device *dev;
+
+   if (!input) return;
+
+   EINA_LIST_FOREACH(input->devmgr.devices, l, dev)
+     {
+        _ecore_wl2_input_device_info_send(win->id, dev->name, dev->identifier, dev->clas, dev->subclas, EINA_TRUE);
+     }
+}
+
 
 static void
 _ecore_wl2_input_device_cb_device_info(void *data, struct tizen_input_device *tizen_input_device EINA_UNUSED, const char *name, uint32_t clas, uint32_t subclas, struct wl_array *axes EINA_UNUSED)
