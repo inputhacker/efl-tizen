@@ -138,7 +138,9 @@ _efl_net_dialer_unix_efl_net_dialer_dial(Eo *o, Efl_Net_Dialer_Unix_Data *pd, co
    EINA_SAFETY_ON_TRUE_RETURN_VAL(address[0] == '\0', EINVAL);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(efl_net_dialer_connected_get(o), EISCONN);
    EINA_SAFETY_ON_TRUE_RETURN_VAL(efl_io_closer_closed_get(o), EBADF);
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(efl_loop_fd_get(o) >= 0, EALREADY);
+   // TIZEN ONLY (20180125): smack issue: use fd from E
+   //EINA_SAFETY_ON_TRUE_RETURN_VAL(efl_loop_fd_get(o) >= 0, EALREADY);
+   //
 
    if (pd->connect.thread)
      {
@@ -170,9 +172,13 @@ _efl_net_dialer_unix_efl_net_dialer_dial(Eo *o, Efl_Net_Dialer_Unix_Data *pd, co
         addrlen = strlen(path) + 1 + offsetof(struct sockaddr_un, sun_path);
      }
 
-   pd->connect.thread = efl_net_connect_async_new((const struct sockaddr *)&addr, addrlen, SOCK_STREAM, 0,
+   //(20180125) TIZEN_ONLY: smack issue, use fd from E
+   //pd->connect.thread = efl_net_connect_async_new((const struct sockaddr *)&addr, addrlen, SOCK_STREAM, 0,
+   pd->connect.thread = efl_net_connect_async_with_fd_new((const struct sockaddr *)&addr, addrlen, SOCK_STREAM, 0,
                                                   efl_io_closer_close_on_exec_get(o),
-                                                  _efl_net_dialer_unix_connected, o);
+                                                  _efl_net_dialer_unix_connected,
+                                                  efl_loop_fd_get(o), o);
+   //
    EINA_SAFETY_ON_NULL_RETURN_VAL(pd->connect.thread, EINVAL);
 
    efl_net_dialer_address_dial_set(o, address);

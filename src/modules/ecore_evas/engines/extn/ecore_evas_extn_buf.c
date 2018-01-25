@@ -24,7 +24,9 @@ _extnbuf_new(const char *base, int id, Eina_Bool sys, int num,
    mode_t mode = S_IRUSR;
    int prot = PROT_READ;
    int page_size;
-   Eina_Tmpstr *tmp = NULL;
+   //TIZEN ONLY (150908): security issue. To access any application, it needs smack rule.
+   //Eina_Tmpstr *tmp = NULL;
+   //
 
    page_size = eina_cpu_page_size();
 
@@ -53,9 +55,13 @@ _extnbuf_new(const char *base, int id, Eina_Bool sys, int num,
 
    if (b->am_owner)
      {
-        b->lockfd = eina_file_mkstemp("ee-lock-XXXXXX", &tmp);
+        //TIZEN ONLY (150908): security issue. To access any application, it needs smack rule.
+        //b->lockfd = eina_file_mkstemp("ee-lock-XXXXXX", &tmp);
+        char file[] = "/run/.efl/ee-lock-XXXXXX";
+        b->lockfd = mkstemp(file);
+        //
         if (b->lockfd < 0) goto err;
-        b->lock = eina_stringshare_add(tmp);
+        b->lock = eina_stringshare_add(file);
         if (!b->lock) goto err;
         b->fd = shm_open(b->file, O_RDWR | O_CREAT | O_EXCL, mode);
         if (b->fd < 0) goto err;
@@ -68,10 +74,13 @@ _extnbuf_new(const char *base, int id, Eina_Bool sys, int num,
      }
    b->addr = mmap(NULL, b->size, prot, MAP_SHARED, b->fd, 0);
    if (b->addr == MAP_FAILED) goto err;
-   eina_tmpstr_del(tmp);
+   //eina_tmpstr_del(tmp);
    return b;
 err:
-   eina_tmpstr_del(tmp);
+   /* TIZEN ONLY (20160920): security issue. To access any application, it needs smack rule.
+   if (tmp) eina_tmpstr_del(tmp);
+    */
+   /*   END   */
    _extnbuf_free(b);
    return NULL;
 }

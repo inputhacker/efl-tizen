@@ -56,6 +56,7 @@ modules_ecore_evas_engines_extn_module_la_SOURCES = $(EXTNSOURCES)
 modules_ecore_evas_engines_extn_module_la_CPPFLAGS = -I$(top_builddir)/src/lib/efl \
 @ECORE_EVAS_CFLAGS@ \
 @ECORE_IPC_CFLAGS@ \
+@ECORE_WL2_CFLAGS@ \
 -I$(top_srcdir)/src/modules/evas/engines/buffer \
 -I$(top_srcdir)/src/modules/ecore_evas/engines/extn
 modules_ecore_evas_engines_extn_module_la_LIBADD = \

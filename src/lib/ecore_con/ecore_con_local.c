@@ -31,7 +31,8 @@
 static const char *
 _ecore_con_local_path_get(void)
 {
-   static char *homedir = NULL;
+   // TIZEN ONLY (20180125): smack issue: change location
+   /*static char *homedir = NULL;
    if (homedir) return homedir;
 
 #if defined(HAVE_GETUID) && defined(HAVE_GETEUID)
@@ -39,7 +40,9 @@ _ecore_con_local_path_get(void)
 #endif
    if (!homedir) homedir = (char *)eina_environment_home_get();
    if (!homedir) homedir = (char *)eina_environment_tmp_get();
-   return homedir;
+   return homedir;*/
+   return "/run/.efl";
+   //
 }
 #endif
 

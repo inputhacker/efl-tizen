@@ -29,6 +29,12 @@
 #include <Ecore_Input.h>
 #include <Ecore_Ipc.h>
 
+// TIZEN ONLY (170220): request e19 compositor to create socket
+#if HAVE_ECORE_WL2
+# include <Ecore_Wl2.h>
+# include <tizen-extension-client-protocol.h>
+#endif
+// TIZEN ONLY: END
 #include "ecore_private.h" // FIXME: Because of ECORE_MAGIC
 #include "ecore_evas_private.h"
 #include "ecore_evas_buffer.h"

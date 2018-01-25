@@ -374,6 +374,25 @@ EAPI int               ecore_ipc_shutdown(void);
 EAPI Ecore_Ipc_Server *ecore_ipc_server_add(Ecore_Ipc_Type type, const char *name, int port, const void *data);
 
 /**
+ * @internal
+ *
+ * @ingroup Ecore_IPC_Server_Group
+ * @brief Creates an IPC server that listens for connections.
+ *
+ * For more details about the @p compl_type, @p name and @p port
+ * parameters, see the @ref ecore_con_server_add documentation.
+ *
+ * @param   compl_type The connection type.
+ * @param   name       Name to associate with the socket used for connection.
+ * @param   port       Number to identify with socket used for connection.
+ * @param   fd         The socket's fd.
+ * @param   data       Data to associate with the IPC server.
+ * @return  New IPC server.  If there is an error, @c NULL is returned.
+ * @todo    Need to add protocol type parameter to this function.
+ */
+EAPI Ecore_Ipc_Server *ecore_ipc_server_with_fd_add(Ecore_Ipc_Type type, const char *name, int port, int fd, const void *data);
+
+/**
  * @ingroup Ecore_IPC_Server_Group
  * @brief Creates an IPC server object to represent the IPC server listening
  * on the given port.
@@ -391,6 +410,28 @@ EAPI Ecore_Ipc_Server *ecore_ipc_server_add(Ecore_Ipc_Type type, const char *nam
  * @todo    Need to add protocol type parameter.
  */
 EAPI Ecore_Ipc_Server *ecore_ipc_server_connect(Ecore_Ipc_Type type, char *name, int port, const void *data);
+
+/**
+ * @internal
+ *
+ * @ingroup Ecore_IPC_Server_Group
+ * @brief Creates an IPC server object to represent the IPC server listening
+ * on the given port.
+ *
+ * For more details about the @p compl_type, @p name and @p port
+ * parameters, see the @ref ecore_con_server_connect documentation.
+ *
+ * @param   compl_type The IPC connection type.
+ * @param   name       Name used to determine which socket to use for the
+ *                     IPC connection.
+ * @param   port       Number used to identify the socket to use for the
+ *                     IPC connection.
+ * @param   fd         The socket's fd.
+ * @param   data       Data to associate with the server.
+ * @return  A new IPC server.  @c NULL is returned on error.
+ * @todo    Need to add protocol type parameter.
+ */
+EAPI Ecore_Ipc_Server *ecore_ipc_server_with_fd_connect(Ecore_Ipc_Type type, char *name, int port, int fd, const void *data);
 
 /**
  * @ingroup Ecore_IPC_Server_Group

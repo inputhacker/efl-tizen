@@ -377,9 +377,11 @@ static void _ecore_ipc_server_client_add(void *data, const Efl_Event *event);
 EFL_CALLBACKS_ARRAY_DEFINE(_ecore_ipc_server_cbs,
                            { EFL_NET_SERVER_EVENT_CLIENT_ADD, _ecore_ipc_server_client_add });
 
+// TIZEN ONLY (20180125): smack issue: geting socket from compositor in ecore_evas extn engine
+// internal API
 /* FIXME: need to add protocol type parameter */
 EAPI Ecore_Ipc_Server *
-ecore_ipc_server_add(Ecore_Ipc_Type type, const char *name, int port, const void *data)
+ecore_ipc_server_with_fd_add(Ecore_Ipc_Type type, const char *name, int port, int fd, const void *data)
 {
    Ecore_Ipc_Server *svr;
    Eo *loop = efl_main_loop_get();
@@ -407,6 +409,7 @@ ecore_ipc_server_add(Ecore_Ipc_Type type, const char *name, int port, const void
         svr->server = efl_add(EFL_NET_SERVER_UNIX_CLASS, efl_main_loop_get(),
                               efl_net_server_unix_leading_directories_create_set(efl_added, EINA_TRUE, S_IRUSR | S_IWUSR | S_IXUSR));
         EINA_SAFETY_ON_NULL_GOTO(svr->server, error_server);
+        efl_loop_fd_set(svr->server, fd);// TIZEN ONLY (20180125): smack issue
      }
    else if ((type & ECORE_IPC_TYPE) == ECORE_IPC_LOCAL_SYSTEM)
      {
@@ -420,6 +423,7 @@ ecore_ipc_server_add(Ecore_Ipc_Type type, const char *name, int port, const void
 
         svr->server = efl_add(EFL_NET_SERVER_UNIX_CLASS, efl_main_loop_get());
         EINA_SAFETY_ON_NULL_GOTO(svr->server, error_server);
+        efl_loop_fd_set(svr->server, fd);// TIZEN ONLY (20180125): smack issue
      }
 #endif /* EFL_NET_SERVER_UNIX_CLASS */
 #ifdef EFL_NET_SERVER_WINDOWS_CLASS
@@ -539,6 +543,13 @@ ecore_ipc_server_add(Ecore_Ipc_Type type, const char *name, int port, const void
    return NULL;
 }
 
+/* FIXME: need to add protocol type parameter */
+EAPI Ecore_Ipc_Server *
+ecore_ipc_server_add(Ecore_Ipc_Type type, const char *name, int port, const void *data)
+{
+    ecore_ipc_server_with_fd_add(type, name, port, -1, data);
+}
+
 static void
 _ecore_ipc_dialer_del(Ecore_Ipc_Server *svr)
 {
@@ -647,10 +658,11 @@ _ecore_ipc_dialer_copier_error(void *data, const Efl_Event *event)
 
 EFL_CALLBACKS_ARRAY_DEFINE(_ecore_ipc_dialer_copier_cbs,
                            { EFL_IO_COPIER_EVENT_ERROR, _ecore_ipc_dialer_copier_error });
-
+// TIZEN ONLY (20180125): smack issue: geting socket from compositor in ecore_evas extn engine
+// internal API
 /* FIXME: need to add protocol type parameter */
 EAPI Ecore_Ipc_Server *
-ecore_ipc_server_connect(Ecore_Ipc_Type type, char *name, int port, const void *data)
+ecore_ipc_server_with_fd_connect(Ecore_Ipc_Type type, char *name, int port, int fd, const void *data)
 {
    Ecore_Ipc_Server *svr;
    Eo *loop = efl_main_loop_get();
@@ -683,6 +695,7 @@ ecore_ipc_server_connect(Ecore_Ipc_Type type, char *name, int port, const void *
 
         svr->dialer.dialer = efl_add(EFL_NET_DIALER_UNIX_CLASS, efl_main_loop_get());
         EINA_SAFETY_ON_NULL_GOTO(svr->dialer.dialer, error_dialer);
+        efl_loop_fd_set(svr->dialer.dialer, fd);// TIZEN ONLY (20180125): smack issue
      }
    else if ((type & ECORE_IPC_TYPE) == ECORE_IPC_LOCAL_SYSTEM)
      {
@@ -691,6 +704,7 @@ ecore_ipc_server_connect(Ecore_Ipc_Type type, char *name, int port, const void *
 
         svr->dialer.dialer = efl_add(EFL_NET_DIALER_UNIX_CLASS, efl_main_loop_get());
         EINA_SAFETY_ON_NULL_GOTO(svr->dialer.dialer, error_dialer);
+        efl_loop_fd_set(svr->dialer.dialer, fd);// TIZEN ONLY (20180125): smack issue
      }
 #endif /* EFL_NET_DIALER_UNIX_CLASS */
 #ifdef EFL_NET_DIALER_WINDOWS_CLASS
@@ -795,6 +809,13 @@ ecore_ipc_server_connect(Ecore_Ipc_Type type, char *name, int port, const void *
    free(address);
    free(svr);
    return NULL;
+}
+
+/* FIXME: need to add protocol type parameter */
+EAPI Ecore_Ipc_Server *
+ecore_ipc_server_connect(Ecore_Ipc_Type type, char *name, int port, const void *data)
+{
+   ecore_ipc_server_with_fd_connect(type, name, port, -1, data);
 }
 
 EAPI void *

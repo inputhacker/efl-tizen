@@ -1305,11 +1305,94 @@ ecore_evas_extn_plug_new_internal(Ecore_Evas *ee_target)
    return o;
 }
 
+// TIZEN ONLY (20180125): smack issue: request e19 compositor to create socket
+#if HAVE_ECORE_WL2
+static void
+_ecore_evas_extn_compositor_socket(void *data, struct tizen_embedded_compositor *tec EINA_UNUSED, int fd)
+{
+   int *socket_fd = (int *)data;
+
+   *socket_fd = fd;
+   return;
+}
+
+static const struct tizen_embedded_compositor_listener tizen_embedded_compositor_listener =
+{
+   _ecore_evas_extn_compositor_socket
+};
+
+static int
+_compositor_socket_get()
+{
+   Ecore_Wl2_Display *display;
+   Eina_Iterator *itr;
+   Ecore_Wl2_Global *global;
+   struct tizen_embedded_compositor *tec = NULL;
+   int fd = -1;
+
+   const char *s = getenv("ECORE_EVAS_EXTN_DISABLE_SOCKET_FROM_SERVER");
+   if ((s) && (!strncmp(s, "1", 1)))
+     return -1;
+
+   //if (ecore_wl2_server_mode_get())
+   //  return -1;
+
+   display = ecore_wl2_connected_display_get(NULL);
+   itr = ecore_wl2_display_globals_get(display);
+   if (!itr)
+     {
+        ERR("Cannot get wl globals");
+        return -1;
+     }
+
+   EINA_ITERATOR_FOREACH(itr, global)
+     {
+        if (!strcmp(global->interface, "tizen_embedded_compositor"))
+          {
+             tec = wl_registry_bind(ecore_wl2_display_registry_get(display),
+                               global->id,
+                               &tizen_embedded_compositor_interface,
+                               1);
+             tizen_embedded_compositor_add_listener(tec,
+                               &tizen_embedded_compositor_listener,
+                               &fd);
+             break;
+          }
+     }
+   eina_iterator_free(itr);
+
+   if (!tec)
+     {
+        ERR("Cannot find tizen embedded compositor");
+        return -1;
+     }
+
+   tizen_embedded_compositor_get_socket(tec);
+   ecore_wl2_sync();
+
+   tizen_embedded_compositor_destroy(tec);
+   return fd;
+}
+#else
+static int
+_compositor_socket_get()
+{
+   DBG("Just return -1");
+   return -1;
+}
+#endif
+// TIZEN ONLY: END
+
+
 static Eina_Bool
 _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, Eina_Bool svcsys)
 {
    Extn *extn;
    Ecore_Evas_Engine_Buffer_Data *bdata;
+
+   // TIZEN ONLY (20180125): smack issue: using fd from E
+   int fd = _compositor_socket_get();
+   //
 
    if (!ECORE_MAGIC_CHECK(ee, ECORE_MAGIC_EVAS)) return EINA_FALSE;
 
@@ -1333,8 +1416,10 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
    extn->svc.sys = svcsys;
 
    if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
-   extn->ipc.server = ecore_ipc_server_connect(ipctype, (char *)extn->svc.name,
-                                               extn->svc.num, ee);
+   // TIZEN ONLY (20180125): smack issue: using fd from E
+   extn->ipc.server = ecore_ipc_server_with_fd_connect(ipctype, (char *)extn->svc.name,
+                                                       extn->svc.num, fd, ee);
+   //
    if (!extn->ipc.server)
      {
         bdata->data = NULL;
@@ -2228,11 +2313,16 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
         Ecore_Ipc_Type ipctype = ECORE_IPC_LOCAL_USER;
         int i;
         int last_try = 0;
+        int fd = 0;
 
         ecore_ipc_init();
         extn->svc.name = eina_stringshare_add(svcname);
         extn->svc.num = svcnum;
         extn->svc.sys = svcsys;
+
+        // TIZEN ONLY (20180125): smack issue: using fd from E
+        fd = _compositor_socket_get();
+        //
 
         for (i = 0; i < NBUF; i++)
           {
@@ -2261,9 +2351,11 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
           }
 
         if (extn->svc.sys) ipctype = ECORE_IPC_LOCAL_SYSTEM;
-        extn->ipc.server = ecore_ipc_server_add(ipctype,
-                                                (char *)extn->svc.name,
-                                                extn->svc.num, ee);
+        // TIZEN ONLY (20180125): smack issue: using fd from E
+        extn->ipc.server = ecore_ipc_server_with_fd_add(ipctype,
+                                                        (char *)extn->svc.name,
+                                                        extn->svc.num, fd, ee);
+        //
         if (!extn->ipc.server)
           {
              for (i = 0; i < NBUF; i++)

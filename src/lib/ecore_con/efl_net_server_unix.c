@@ -62,8 +62,18 @@ _efl_net_server_unix_bind(Eo *o, Efl_Net_Server_Unix_Data *pd)
 
    do
      {
-        fd = efl_net_socket4(AF_UNIX, SOCK_STREAM, 0,
-                             efl_net_server_fd_close_on_exec_get(o));
+        // TIZEN ONLY (20180125): smack issue: use fd from E
+        fd = efl_loop_fd_get(o);
+        if (fd < 0)
+          {
+             fd = efl_net_socket4(AF_UNIX, SOCK_STREAM, 0,
+                                  efl_net_server_fd_close_on_exec_get(o));
+          }
+        else
+          {
+             eina_file_close_on_exec(fd, efl_net_server_fd_close_on_exec_get(o));
+          }
+        //
         if (fd == INVALID_SOCKET)
           {
              err = efl_net_socket_error_get();

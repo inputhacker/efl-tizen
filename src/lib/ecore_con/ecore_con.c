@@ -757,7 +757,28 @@ _efl_net_connect_async_run(void *data, Ecore_Thread *thread EINA_UNUSED)
    /* always close-on-exec since it's not a point to pass an
     * under construction socket to a child process.
     */
-   d->sockfd = efl_net_socket4(d->addr->sa_family, d->type, d->protocol, EINA_TRUE);
+   // TIZEN ONLY (20180125): smack issue: using fd from E
+   if (d->sockfd < 0)
+     {
+        d->sockfd = efl_net_socket4(d->addr->sa_family, d->type, d->protocol, EINA_TRUE);
+     }
+   else
+     {
+        int curstate;
+        if (!fcntl(d->sockfd, F_SETLK, O_NONBLOCK))
+          {
+             ERR("failed to set socket as nonblock");
+             return;
+          }
+        eina_file_close_on_exec(d->sockfd, EINA_TRUE);
+        if (setsockopt(d->sockfd, SOL_SOCKET, SO_REUSEADDR, (const void *)&curstate,
+                       sizeof(curstate)) < 0)
+          {
+             ERR("failed to set socket opt");
+             return;
+          }
+     }
+   //
    if (d->sockfd == INVALID_SOCKET)
      {
         d->error = efl_net_socket_error_get();
@@ -830,8 +851,9 @@ _efl_net_connect_async_cancel(void *data, Ecore_Thread *thread EINA_UNUSED)
    _efl_net_connect_async_data_free(d);
 }
 
+//(20180124) TIZEN_ONLY: resolve smack issue, using fd from e19
 Ecore_Thread *
-efl_net_connect_async_new(const struct sockaddr *addr, socklen_t addrlen, int type, int protocol, Eina_Bool close_on_exec, Efl_Net_Connect_Async_Cb cb, const void *data)
+efl_net_connect_async_with_fd_new(const struct sockaddr *addr, socklen_t addrlen, int type, int protocol, Eina_Bool close_on_exec, Efl_Net_Connect_Async_Cb cb, int fd, const void *data)
 {
    Efl_Net_Connect_Async_Data *d;
 
@@ -850,13 +872,20 @@ efl_net_connect_async_new(const struct sockaddr *addr, socklen_t addrlen, int ty
    d->protocol = protocol;
    memcpy(d->addr, addr, addrlen);
 
-   d->sockfd = INVALID_SOCKET;
+   //d->sockfd = INVALID_SOCKET;
+   d->sockfd = fd;
    d->error = 0;
 
    return ecore_thread_run(_efl_net_connect_async_run,
                            _efl_net_connect_async_end,
                            _efl_net_connect_async_cancel,
                            d);
+}
+
+Ecore_Thread *
+efl_net_connect_async_new(const struct sockaddr *addr, socklen_t addrlen, int type, int protocol, Eina_Bool close_on_exec, Efl_Net_Connect_Async_Cb cb, const void *data)
+{
+    efl_net_connect_async_with_fd_new(addr, addrlen, type, protocol, close_on_exec, cb, INVALID_SOCKET, data);
 }
 
 static Eina_Bool
