@@ -11,6 +11,24 @@
 
 #define MAX_BUFFERS 4
 
+static Eina_Bool
+_evas_dmabuf_surface_check(Ecore_Wl2_Window *win)
+{
+   Ecore_Wl2_Display *ewd;
+   Ecore_Wl2_Buffer_Type types = 0;
+
+   ewd = ecore_wl2_window_display_get(win);
+   if (ecore_wl2_display_shm_get(ewd))
+     types |= ECORE_WL2_BUFFER_SHM;
+   if (ecore_wl2_display_dmabuf_get(ewd))
+     types |= ECORE_WL2_BUFFER_DMABUF;
+
+   if (!ecore_wl2_buffer_init(ewd, types))
+     return EINA_FALSE;
+
+   return EINA_TRUE;
+}
+
 static void
 _evas_dmabuf_surface_reconfigure(Ecore_Wl2_Surface *s, int w, int h, uint32_t flags EINA_UNUSED, Eina_Bool force)
 {
@@ -215,8 +233,6 @@ EAPI Ecore_Wl2_Surface *
 ecore_wl2_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha)
 {
    Ecore_Wl2_Surface *out;
-   Ecore_Wl2_Display *ewd;
-   Ecore_Wl2_Buffer_Type types = 0;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(win, NULL);
 
@@ -225,13 +241,6 @@ ecore_wl2_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha)
    out = calloc(1, sizeof(*out));
    if (!out) return NULL;
    out->wl2_win = win;
-
-   ewd = ecore_wl2_window_display_get(win);
-   if (ecore_wl2_display_shm_get(ewd))
-     types |= ECORE_WL2_BUFFER_SHM;
-   if (ecore_wl2_display_dmabuf_get(ewd))
-     types |= ECORE_WL2_BUFFER_DMABUF;
-
    out->alpha = alpha;
 //TIZEN_ONLY(20180105): tizen don't allow the zero size buffer creation
    out->w = 1;
@@ -242,8 +251,7 @@ ecore_wl2_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha)
    */
 //
 
-   /* create surface buffers */
-   if (!ecore_wl2_buffer_init(ewd, types)) goto err;
+   if (!_evas_dmabuf_surface_check(win)) goto err;
 
    out->funcs.destroy = _evas_dmabuf_surface_destroy;
    out->funcs.reconfigure = _evas_dmabuf_surface_reconfigure;
