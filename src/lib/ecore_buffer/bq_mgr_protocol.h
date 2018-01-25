@@ -12,10 +12,10 @@ extern "C" {
 struct wl_client;
 struct wl_resource;
 
-struct bq_mgr;
-struct bq_consumer;
-struct bq_provider;
 struct bq_buffer;
+struct bq_consumer;
+struct bq_mgr;
+struct bq_provider;
 
 extern const struct wl_interface bq_mgr_interface;
 extern const struct wl_interface bq_consumer_interface;
@@ -34,6 +34,9 @@ enum bq_mgr_error {
 #define BQ_MGR_CREATE_CONSUMER	0
 #define BQ_MGR_CREATE_PROVIDER	1
 
+#define BQ_MGR_CREATE_CONSUMER_SINCE_VERSION	1
+#define BQ_MGR_CREATE_PROVIDER_SINCE_VERSION	1
+
 static inline void
 bq_mgr_set_user_data(struct bq_mgr *bq_mgr, void *user_data)
 {
@@ -44,6 +47,12 @@ static inline void *
 bq_mgr_get_user_data(struct bq_mgr *bq_mgr)
 {
 	return wl_proxy_get_user_data((struct wl_proxy *) bq_mgr);
+}
+
+static inline uint32_t
+bq_mgr_get_version(struct bq_mgr *bq_mgr)
+{
+	return wl_proxy_get_version((struct wl_proxy *) bq_mgr);
 }
 
 static inline void
@@ -171,6 +180,10 @@ bq_consumer_add_listener(struct bq_consumer *bq_consumer,
 }
 
 #define BQ_CONSUMER_RELEASE_BUFFER	0
+#define BQ_CONSUMER_DESTROY	1
+
+#define BQ_CONSUMER_RELEASE_BUFFER_SINCE_VERSION	1
+#define BQ_CONSUMER_DESTROY_SINCE_VERSION	2
 
 static inline void
 bq_consumer_set_user_data(struct bq_consumer *bq_consumer, void *user_data)
@@ -184,10 +197,10 @@ bq_consumer_get_user_data(struct bq_consumer *bq_consumer)
 	return wl_proxy_get_user_data((struct wl_proxy *) bq_consumer);
 }
 
-static inline void
-bq_consumer_destroy(struct bq_consumer *bq_consumer)
+static inline uint32_t
+bq_consumer_get_version(struct bq_consumer *bq_consumer)
 {
-	wl_proxy_destroy((struct wl_proxy *) bq_consumer);
+	return wl_proxy_get_version((struct wl_proxy *) bq_consumer);
 }
 
 static inline void
@@ -195,6 +208,15 @@ bq_consumer_release_buffer(struct bq_consumer *bq_consumer, struct bq_buffer *bu
 {
 	wl_proxy_marshal((struct wl_proxy *) bq_consumer,
 			 BQ_CONSUMER_RELEASE_BUFFER, buffer);
+}
+
+static inline void
+bq_consumer_destroy(struct bq_consumer *bq_consumer)
+{
+	wl_proxy_marshal((struct wl_proxy *) bq_consumer,
+			 BQ_CONSUMER_DESTROY);
+
+	wl_proxy_destroy((struct wl_proxy *) bq_consumer);
 }
 
 #ifndef BQ_PROVIDER_ERROR_ENUM
@@ -246,6 +268,14 @@ bq_provider_add_listener(struct bq_provider *bq_provider,
 #define BQ_PROVIDER_SET_BUFFER_FD	2
 #define BQ_PROVIDER_DETACH_BUFFER	3
 #define BQ_PROVIDER_ENQUEUE_BUFFER	4
+#define BQ_PROVIDER_DESTROY	5
+
+#define BQ_PROVIDER_ATTACH_BUFFER_SINCE_VERSION	1
+#define BQ_PROVIDER_SET_BUFFER_ID_SINCE_VERSION	1
+#define BQ_PROVIDER_SET_BUFFER_FD_SINCE_VERSION	1
+#define BQ_PROVIDER_DETACH_BUFFER_SINCE_VERSION	1
+#define BQ_PROVIDER_ENQUEUE_BUFFER_SINCE_VERSION	1
+#define BQ_PROVIDER_DESTROY_SINCE_VERSION	2
 
 static inline void
 bq_provider_set_user_data(struct bq_provider *bq_provider, void *user_data)
@@ -259,10 +289,10 @@ bq_provider_get_user_data(struct bq_provider *bq_provider)
 	return wl_proxy_get_user_data((struct wl_proxy *) bq_provider);
 }
 
-static inline void
-bq_provider_destroy(struct bq_provider *bq_provider)
+static inline uint32_t
+bq_provider_get_version(struct bq_provider *bq_provider)
 {
-	wl_proxy_destroy((struct wl_proxy *) bq_provider);
+	return wl_proxy_get_version((struct wl_proxy *) bq_provider);
 }
 
 static inline struct bq_buffer *
@@ -305,6 +335,19 @@ bq_provider_enqueue_buffer(struct bq_provider *bq_provider, struct bq_buffer *bu
 }
 
 static inline void
+bq_provider_destroy(struct bq_provider *bq_provider)
+{
+	wl_proxy_marshal((struct wl_proxy *) bq_provider,
+			 BQ_PROVIDER_DESTROY);
+
+	wl_proxy_destroy((struct wl_proxy *) bq_provider);
+}
+
+#define BQ_BUFFER_DESTROY	0
+
+#define BQ_BUFFER_DESTROY_SINCE_VERSION	2
+
+static inline void
 bq_buffer_set_user_data(struct bq_buffer *bq_buffer, void *user_data)
 {
 	wl_proxy_set_user_data((struct wl_proxy *) bq_buffer, user_data);
@@ -316,9 +359,18 @@ bq_buffer_get_user_data(struct bq_buffer *bq_buffer)
 	return wl_proxy_get_user_data((struct wl_proxy *) bq_buffer);
 }
 
+static inline uint32_t
+bq_buffer_get_version(struct bq_buffer *bq_buffer)
+{
+	return wl_proxy_get_version((struct wl_proxy *) bq_buffer);
+}
+
 static inline void
 bq_buffer_destroy(struct bq_buffer *bq_buffer)
 {
+	wl_proxy_marshal((struct wl_proxy *) bq_buffer,
+			 BQ_BUFFER_DESTROY);
+
 	wl_proxy_destroy((struct wl_proxy *) bq_buffer);
 }
 

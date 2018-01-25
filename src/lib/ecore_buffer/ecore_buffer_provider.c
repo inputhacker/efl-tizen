@@ -311,12 +311,16 @@ static Shared_Buffer *
 _ecore_buffer_provider_shared_buffer_new(Ecore_Buffer_Provider *provider, Ecore_Buffer *buffer)
 {
    Shared_Buffer *sb;
+   Ecore_Export_Type export_type;
+   Ecore_Buffer_Info info;
+   Eina_Bool res;
    struct bq_buffer *buf_resource;
    unsigned int w = 0, h = 0, format = 0;
-   Ecore_Export_Type export_type;
    int export_id;
    const char *engine;
    unsigned int flags;
+   int offset[3] = {0,}, stride[3] = {0,};
+   int i;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(provider, NULL);
 
@@ -328,11 +332,29 @@ _ecore_buffer_provider_shared_buffer_new(Ecore_Buffer_Provider *provider, Ecore_
         return NULL;
      }
 
-   ecore_buffer_size_get(buffer, &w, &h);
-   format = ecore_buffer_format_get(buffer);
-   export_type = _ecore_buffer_export(buffer, &export_id);
    engine = _ecore_buffer_engine_name_get(buffer);
    flags = ecore_buffer_flags_get(buffer);
+
+   res = _ecore_buffer_info_get(buffer, &info);
+   if (res)
+     {
+        int count;
+        w = info.width;
+        h = info.height;
+        format = info.format;
+        /* FIXME info.num_planes may be 4 */
+        count = info.num_planes < 4 ? info.num_planes : 3;
+        for (i = 0; i < count; i++)
+          {
+             offset[i] = info.planes[i].offset;
+             stride[i] = info.planes[i].stride;
+          }
+     }
+   else
+     {
+        ecore_buffer_size_get(buffer, &w, &h);
+        format = ecore_buffer_format_get(buffer);
+     }
 
    buf_resource = bq_provider_attach_buffer(provider->resource, engine, w, h, format, flags);
    if (!buf_resource)
@@ -342,15 +364,24 @@ _ecore_buffer_provider_shared_buffer_new(Ecore_Buffer_Provider *provider, Ecore_
         return NULL;
      }
 
+   export_type = _ecore_buffer_export(buffer, &export_id);
    switch (export_type)
      {
       case EXPORT_TYPE_ID:
-         bq_provider_set_buffer_id(provider->resource, buf_resource,
-                                   export_id, 0, 0, 0, 0, 0, 0);
+         bq_provider_set_buffer_id(provider->resource,
+                                   buf_resource,
+                                   export_id,
+                                   offset[0], stride[0],
+                                   offset[1], stride[1],
+                                   offset[2], stride[2]);
          break;
       case EXPORT_TYPE_FD:
-         bq_provider_set_buffer_fd(provider->resource, buf_resource,
-                                   export_id, 0, 0, 0, 0, 0, 0);
+         bq_provider_set_buffer_fd(provider->resource,
+                                   buf_resource,
+                                   export_id,
+                                   offset[0], stride[0],
+                                   offset[1], stride[1],
+                                   offset[2], stride[2]);
          close(export_id);
          break;
       default:
@@ -370,10 +401,13 @@ _ecore_buffer_provider_shared_buffer_new(Ecore_Buffer_Provider *provider, Ecore_
 static void
 _ecore_buffer_provider_shared_buffer_free(Ecore_Buffer_Provider *provider, Shared_Buffer *sb)
 {
-   struct bq_buffer *buf_resource;
+   struct bq_buffer *buf_resource = _shared_buffer_resource_get(sb);
 
    EINA_SAFETY_ON_NULL_RETURN(provider);
    EINA_SAFETY_ON_NULL_RETURN(sb);
+
+   if (!provider->ebq)
+     return;
 
    buf_resource = _shared_buffer_resource_get(sb);
    if (!buf_resource)

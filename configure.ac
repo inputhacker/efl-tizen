@@ -5390,6 +5390,7 @@ AM_CONDITIONAL([ALWAYS_BUILD_EXAMPLES], [test "${want_always_build_examples}" = 
 #### Ecore_Buffer
 build_ecore_buffer_x11_dri2="no"
 build_ecore_buffer_x11_dri3="no"
+build_ecore_buffer_tbm="no"
 EFL_LIB_START_OPTIONAL([Ecore_Buffer], [test "${want_ecore_buffer}" = "yes"])
 ### Checks for libraries
 EFL_INTERNAL_DEPEND_PKG([ECORE_BUFFER], [eina])
@@ -5435,16 +5436,28 @@ if test "x${have_x11_dri3_pkgs}" = "xyes" ; then
    build_ecore_buffer_x11_dri3="yes"
    AC_DEFINE(BUILD_ECORE_BUFFER_X11_DRI3, 1, [Support for X11_DRI3 Backend in Ecore_Buffer])
 fi
+
+PKG_CHECK_MODULES([TBM], [libtbm >= "1.1.0"],
+                  [have_tbm="yes"],
+                  [have_tbm="no"])
+
+if test "x${have_tbm}" = "xyes" ; then
+   build_ecore_buffer_tbm="yes"
+   AC_DEFINE(BUILD_ECORE_BUFFER_TBM, 1, [Support for TBM Backend in Ecore_Buffer])
+fi
+
 EFL_EVAL_PKGS([ECORE_BUFFER])
 
 EFL_ADD_FEATURE([ECORE_BUFFER], [shm], ["yes"])
 EFL_ADD_FEATURE([ECORE_BUFFER], [x11_dri2], [${build_ecore_buffer_x11_dri2}])
 EFL_ADD_FEATURE([ECORE_BUFFER], [x11_dri3], [${build_ecore_buffer_x11_dri3}])
+EFL_ADD_FEATURE([ECORE_BUFFER], [tbm], [${build_ecore_buffer_tbm}])
 
 EFL_LIB_END_OPTIONAL([Ecore_Buffer])
 
 AM_CONDITIONAL([BUILD_ECORE_BUFFER_X11_DRI2], [test "${build_ecore_buffer_x11_dri2}" = "xyes"])
 AM_CONDITIONAL([BUILD_ECORE_BUFFER_X11_DRI3], [test "${build_ecore_buffer_x11_dri3}" = "xyes"])
+AM_CONDITIONAL([BUILD_ECORE_BUFFER_TBM], [test "${build_ecore_buffer_tbm}" = "yes"])
 
 #### End of Ecore_Buffer
 

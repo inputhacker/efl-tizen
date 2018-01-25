@@ -430,6 +430,54 @@ enum _Ecore_Export_Type
 };
 
 /**
+ * @typedef Ecore_Buffer_Plane
+ * Types for plane information.
+ * @since 1.15
+ */
+typedef struct _Ecore_Buffer_Plane Ecore_Buffer_Plane;
+
+/**
+ * @typedef Ecore_Buffer_Info
+ * Types for buffer information.
+ * @since 1.15
+ */
+typedef struct _Ecore_Buffer_Info Ecore_Buffer_Info;
+
+/**
+ * @brief Definition for the maximum number of Ecore_Buffer's plane.
+ * @since 1.15
+ */
+#define ECORE_BUFFER_PLANE_MAX   4
+
+/**
+ * @brief Definition for the Ecore_Buffer plane struct.
+ * @since 1.15
+ */
+struct _Ecore_Buffer_Plane
+{
+   int size;
+   int offset;
+   int stride;
+};
+
+/**
+ * @brief Definition for the Ecore_Buffer information struct.
+ * @since 1.15
+ */
+struct _Ecore_Buffer_Info
+{
+   int width;
+   int height;
+   int bpp;
+   int size;
+   Ecore_Buffer_Format format;
+
+   int num_planes;
+   Ecore_Buffer_Plane planes[ECORE_BUFFER_PLANE_MAX];
+   Ecore_Pixmap pixmap;
+};
+
+/**
  * @struct _Ecore_Buffer_Backend
  * @brief Structure used when initializing Ecore Buffer Backend. This structure
  * is mainly used by modules implementing the Ecore Buffer Backend interface.
@@ -445,18 +493,23 @@ struct _Ecore_Buffer_Backend
                                                int width, int height,
                                                Ecore_Buffer_Format format,
                                                unsigned int flags); /**< Newly allocate memory for buffer */
+   Ecore_Buffer_Data           (*buffer_alloc_with_tbm_surface)(Ecore_Buffer_Module_Data bmdata,
+                                                                void *tbm_surface,
+                                                                int *ret_w, int *ret_h,
+                                                                Ecore_Buffer_Format *ret_format,
+                                                                unsigned int flags); /**< Create Ecore_Buffer from existed tbm_surface handle. */
+   Eina_Bool                   (*buffer_info_get)(Ecore_Buffer_Module_Data bmdata,
+                                                  Ecore_Buffer_Data bdata,
+                                                  Ecore_Buffer_Info *info);
    void                        (*buffer_free)(Ecore_Buffer_Module_Data bmdata,
                                               Ecore_Buffer_Data bdata); /**< Free allocated memory */
    Ecore_Export_Type           (*buffer_export)(Ecore_Buffer_Module_Data bmdata,
                                                 Ecore_Buffer_Data bdata, int *id); /**< Get the id or fd of Ecore_Buffer for exporting it */
    Ecore_Buffer_Data           (*buffer_import)(Ecore_Buffer_Module_Data bmdata,
-                                                int w, int h,
-                                                Ecore_Buffer_Format format,
+                                                Ecore_Buffer_Info *info,
                                                 Ecore_Export_Type type,
                                                 int export_id,
                                                 unsigned int flags); /**< Import and create Ecore_Buffer from id or fd */
-   void                       *(*data_get)(Ecore_Buffer_Module_Data bmdata,
-                                           Ecore_Buffer_Data bdata);
    Ecore_Pixmap                (*pixmap_get)(Ecore_Buffer_Module_Data bmdata,
                                              Ecore_Buffer_Data bdata); /**< Get the pixmap handle */
    void                       *(*tbm_surface_get)(Ecore_Buffer_Module_Data bmdata,
@@ -471,6 +524,10 @@ struct _Ecore_Buffer_Backend
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  *
  * @see ecore_buffer_shutdown()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool     ecore_buffer_init(void);
 /**
@@ -481,6 +538,10 @@ EAPI Eina_Bool     ecore_buffer_init(void);
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  *
  * @see ecore_buffer_init()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool     ecore_buffer_shutdown(void);
 /**
@@ -491,6 +552,10 @@ EAPI Eina_Bool     ecore_buffer_shutdown(void);
  * @param[in] be The backend
  *
  * @return @c EINA_TRUE if backend has been correctly registered, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool     ecore_buffer_register(Ecore_Buffer_Backend *be);
 /**
@@ -499,6 +564,10 @@ EAPI Eina_Bool     ecore_buffer_register(Ecore_Buffer_Backend *be);
  * @since 1.15
  *
  * @param[in] be The backend
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void          ecore_buffer_unregister(Ecore_Buffer_Backend *be);
 /**
@@ -513,6 +582,10 @@ EAPI void          ecore_buffer_unregister(Ecore_Buffer_Backend *be);
  * @param[in] flags Flags for Ecore_Buffer
  *
  * @return Newly allocated Ecore_Buffer instance, NULL otherwise.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Buffer *ecore_buffer_new(const char *engine, unsigned int width, unsigned int height, Ecore_Buffer_Format format, unsigned int flags);
 /**
@@ -537,6 +610,10 @@ EAPI Ecore_Buffer *ecore_buffer_new_with_tbm_surface(const char *engine, void *t
  * @since 1.15
  *
  * @param[in] buf The Ecore_Buffer to free
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void          ecore_buffer_free(Ecore_Buffer *buf);
 /**
@@ -552,6 +629,10 @@ EAPI void          ecore_buffer_free(Ecore_Buffer *buf);
  * @p func to be called whenever @p buf is freed.
  *
  * @see ecore_buffer_free_callback_remove()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void          ecore_buffer_free_callback_add(Ecore_Buffer *buf, Ecore_Buffer_Cb  func, void *data);
 /**
@@ -564,16 +645,12 @@ EAPI void          ecore_buffer_free_callback_add(Ecore_Buffer *buf, Ecore_Buffe
  * @param[in] data A pointer to the user data to remove
  *
  * @see ecore_buffer_free_callback_add()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void          ecore_buffer_free_callback_remove(Ecore_Buffer *buf, Ecore_Buffer_Cb func, void *data);
-/**
- * @brief Get a pointer to the raw data of the given Ecore_Buffer.
- *
- * @param[in] buf The Ecore_Buffer.
- *
- * @return The pointer of raw data.
- */
-EAPI void         *ecore_buffer_data_get(Ecore_Buffer *buf);
 /**
  * @brief Returns the Pixmap of given Ecore_Buffer.
  *
@@ -582,6 +659,10 @@ EAPI void         *ecore_buffer_data_get(Ecore_Buffer *buf);
  * @param[in] buf The Ecore_Buffer
  *
  * @return The Pixmap instance, @c 0 otherwise.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Pixmap  ecore_buffer_pixmap_get(Ecore_Buffer *buf);
 /**
@@ -595,6 +676,10 @@ EAPI Ecore_Pixmap  ecore_buffer_pixmap_get(Ecore_Buffer *buf);
  *
  * The tbm surface handle will be used for the API of libtbm.
  * The API is described in tbm_surface.h in libtbm.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         *ecore_buffer_tbm_surface_get(Ecore_Buffer *buf);
 /**
@@ -607,6 +692,10 @@ EAPI void         *ecore_buffer_tbm_surface_get(Ecore_Buffer *buf);
  * @param[out] height Where to return the height value. May be @c NULL.
  *
  * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool     ecore_buffer_size_get(Ecore_Buffer *buf, unsigned int *width, unsigned int *height);
 /**
@@ -619,6 +708,10 @@ EAPI Eina_Bool     ecore_buffer_size_get(Ecore_Buffer *buf, unsigned int *width,
  * @return The format of given Ecore_Buffer.
  *
  * Return value can be one of those pre-defined value such as ECORE_BUFFER_FORMAT_XRGB8888.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Buffer_Format ecore_buffer_format_get(Ecore_Buffer *buf);
 /**
@@ -631,6 +724,10 @@ EAPI Ecore_Buffer_Format ecore_buffer_format_get(Ecore_Buffer *buf);
  * @return The flags of given Ecore_Buffer.
  *
  * NOTE: Not Defined yet.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI unsigned int  ecore_buffer_flags_get(Ecore_Buffer *buf);
 

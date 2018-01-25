@@ -17,17 +17,15 @@ typedef struct _Ecore_Buffer_Cb_Data Ecore_Buffer_Cb_Data;
 
 struct _Ecore_Buffer_Module
 {
-     Ecore_Buffer_Backend *be;
-     Ecore_Buffer_Module_Data data;
+   Ecore_Buffer_Backend *be;
+   Ecore_Buffer_Module_Data data;
 };
 
 struct _Ecore_Buffer
 {
-   unsigned int width;
-   unsigned int height;
-   int format;
    unsigned int flags;
 
+   Ecore_Buffer_Info info;
    Ecore_Buffer_Data buffer_data;
    Ecore_Buffer_Module *bm;
 
@@ -87,10 +85,10 @@ _ecore_buffer_get_backend(const char *name)
    else
      bm = eina_hash_find(_backends, backend_name);
 
-   if ((!bm) || (!bm->be))
+   if ((!bm) || (!bm->be) || (!bm->be->init))
      return NULL;
 
-   if (bm->be->init)
+   if (!bm->data)
      bm->data = bm->be->init(NULL, NULL);
 
    return bm;
@@ -267,10 +265,70 @@ ecore_buffer_new(const char *engine, unsigned int width, unsigned int height, Ec
         return NULL;
      }
 
+   if (bm->be->buffer_info_get)
+     bm->be->buffer_info_get(bm->data, bo_data, &bo->info);
+   else
+     {
+        bo->info.width = width;
+        bo->info.height = height;
+        bo->info.format = format;
+     }
+
    bo->bm = bm;
-   bo->width = width;
-   bo->height = height;
-   bo->format = format;
+   bo->flags = flags;
+   bo->buffer_data = bo_data;
+
+   return bo;
+}
+
+EAPI Ecore_Buffer *
+ecore_buffer_new_with_tbm_surface(const char *engine, void *tbm_surface, unsigned int flags)
+{
+   Ecore_Buffer_Module *bm;
+   Ecore_Buffer *bo;
+   int w = 0, h = 0;
+   Ecore_Buffer_Format format = 0;
+   void *bo_data;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(tbm_surface, NULL);
+
+   bm = _ecore_buffer_get_backend(engine);
+   if (!bm)
+     {
+        ERR("Failed to get Backend: %s", engine);
+        return NULL;
+     }
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(bm->be, NULL);
+
+   if (!bm->be->buffer_alloc_with_tbm_surface)
+     {
+        ERR("Not supported create buffer with tbm_surface");
+        return NULL;
+     }
+
+   bo = calloc(1, sizeof(Ecore_Buffer));
+   if (!bo)
+     return NULL;
+
+   bo_data = bm->be->buffer_alloc_with_tbm_surface(bm->data, tbm_surface,
+                                                   &w, &h, &format, flags);
+   if (!bo_data)
+     {
+        free(bo);
+        return NULL;
+     }
+
+   if (bm->be->buffer_info_get)
+     bm->be->buffer_info_get(bm->data, bo_data, &bo->info);
+   else
+     {
+        bo->info.width = w;
+        bo->info.height = h;
+        bo->info.format = format;
+     }
+
+   bo->bm = bm;
    bo->flags = flags;
    bo->buffer_data = bo_data;
 
@@ -307,19 +365,6 @@ ecore_buffer_free(Ecore_Buffer *buf)
    free(buf);
 }
 
-EAPI void *
-ecore_buffer_data_get(Ecore_Buffer *buf)
-{
-   EINA_SAFETY_ON_NULL_RETURN_VAL(buf, NULL);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(buf->bm, NULL);
-   EINA_SAFETY_ON_NULL_RETURN_VAL(buf->bm->be, NULL);
-
-   if (!buf->bm->be->data_get)
-     return NULL;
-
-   return buf->bm->be->data_get(buf->bm->data, buf->buffer_data);
-}
-
 EAPI Ecore_Pixmap
 ecore_buffer_pixmap_get(Ecore_Buffer *buf)
 {
@@ -354,8 +399,8 @@ ecore_buffer_size_get(Ecore_Buffer *buf, unsigned int *width, unsigned int *heig
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(buf, EINA_FALSE);
 
-   if (width) *width = buf->width;
-   if (height) *height = buf->height;
+   if (width) *width = buf->info.width;
+   if (height) *height = buf->info.height;
 
    return EINA_TRUE;
 }
@@ -365,7 +410,7 @@ ecore_buffer_format_get(Ecore_Buffer *buf)
 {
    EINA_SAFETY_ON_NULL_RETURN_VAL(buf, 0);
 
-   return buf->format;
+   return buf->info.format;
 }
 
 EAPI unsigned int
@@ -448,7 +493,7 @@ _ecore_buffer_export(Ecore_Buffer *buf, int *id)
 }
 
 Ecore_Buffer *
-_ecore_buffer_import(const char *engine, int width, int height, Ecore_Buffer_Format format, Ecore_Export_Type type, int export_id, unsigned int flags)
+_ecore_buffer_import(const char *engine, Ecore_Buffer_Info *info, Ecore_Export_Type type, int export_id, unsigned int flags)
 {
    Ecore_Buffer_Module *bm;
    Ecore_Buffer *bo;
@@ -473,19 +518,29 @@ _ecore_buffer_import(const char *engine, int width, int height, Ecore_Buffer_For
    if (!bo)
      return NULL;
 
-   bo_data = bm->be->buffer_import(bm->data, width, height, format, type, export_id, flags);
+   bo_data = bm->be->buffer_import(bm->data, info, type, export_id, flags);
    if (!bo_data)
      {
         free(bo);
         return NULL;
      }
 
+   memcpy(&bo->info, info, sizeof(*info));
+
    bo->bm = bm;
-   bo->width = width;
-   bo->height = height;
-   bo->format = format;
    bo->flags = flags;
    bo->buffer_data = bo_data;
 
    return bo;
+}
+
+Eina_Bool
+_ecore_buffer_info_get(Ecore_Buffer *buf, Ecore_Buffer_Info *info)
+{
+   EINA_SAFETY_ON_NULL_RETURN_VAL(buf, EINA_FALSE);
+
+   if (info)
+     memcpy(info, &buf->info, sizeof(*info));
+
+   return EINA_TRUE;
 }

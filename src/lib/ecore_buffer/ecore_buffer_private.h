@@ -27,5 +27,6 @@ const char        *_ecore_buffer_engine_name_get(Ecore_Buffer *buf);
 /* NOTE: if Ecore_Export_Type as a return value is EXPORT_TYPE_FD,
  * then caller should close the fd after using it. */
 Ecore_Export_Type  _ecore_buffer_export(Ecore_Buffer *buf, int *id);
-Ecore_Buffer      *_ecore_buffer_import(const char *engine, int width, int height, Ecore_Buffer_Format format, Ecore_Export_Type type, int export_id, unsigned int flags);
+Ecore_Buffer      *_ecore_buffer_import(const char *engine, Ecore_Buffer_Info *info, Ecore_Export_Type type, int export_id, unsigned int flags);
+Eina_Bool          _ecore_buffer_info_get(Ecore_Buffer *buf, Ecore_Buffer_Info *info);
 #endif /* _ECORE_BUFFER_PRIVATE_H_ */

@@ -182,17 +182,26 @@ typedef void (*Ecore_Buffer_Provider_Enqueue_Cb) (Ecore_Buffer_Provider *provide
  * Set up the connection of Buffer Queue daemon, and Init Ecore_Buffer_Queue libraries.
  *
  * @see ecore_buffer_queue_shutdown()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
-EAPI int   ecore_buffer_queue_init(void);
+EAPI int    ecore_buffer_queue_init(void);
 /**
  * @brief Shuts down the Ecore_Buffer_Queue system.
  *
  * @since 1.15
  *
- * @return How many times the lib has been initialized.
  * This closes the connection of Buffer Queue daemon, and Shut down Ecore_Buffer_Queue libraries.
  *
+ * @return How many times the lib has been initialized.
+ *
  * @see ecore_buffer_queue_init()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int    ecore_buffer_queue_shutdown(void);
 
@@ -216,6 +225,10 @@ EAPI int    ecore_buffer_queue_shutdown(void);
  * @param[in] h Height of buffer recommended to provider.
  *
  * @return Ecore_Buffer_Consumer instance or @c NULL if creation failed.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Buffer_Consumer    *ecore_buffer_consumer_new(const char *name, int32_t queue_size, int32_t w, int32_t h);
 /**
@@ -226,6 +239,10 @@ EAPI Ecore_Buffer_Consumer    *ecore_buffer_consumer_new(const char *name, int32
  * @param[in] consumer The Ecore_Buffer_Consumer to free
  *
  * This frees up any memory used by the Ecore_Buffer_Consumer.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                      ecore_buffer_consumer_free(Ecore_Buffer_Consumer *consumer);
 /**
@@ -241,6 +258,10 @@ EAPI void                      ecore_buffer_consumer_free(Ecore_Buffer_Consumer 
  *
  * Consumer can store Ecore_Buffer submitted by Provider as much as size of queue
  * which is passed as a argument of ecore_buffer_consumer_new().
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Buffer             *ecore_buffer_consumer_buffer_dequeue(Ecore_Buffer_Consumer *consumer);
 /**
@@ -259,6 +280,10 @@ EAPI Ecore_Buffer             *ecore_buffer_consumer_buffer_dequeue(Ecore_Buffer
  * By doing release, Ecore_Buffer will be used by provider again,
  * or freed internally if Ecore_Buffer is not necessary anymore.
  * If not, the resource of Ecore_Buffer is continually owned by consumer until released.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool                 ecore_buffer_consumer_buffer_release(Ecore_Buffer_Consumer *consumer, Ecore_Buffer *buffer);
 /**
@@ -269,6 +294,10 @@ EAPI Eina_Bool                 ecore_buffer_consumer_buffer_release(Ecore_Buffer
  * @param[in] consumer The Ecore_Buffer_Consumer to query
  *
  * @return @c EINA_TRUE means queue is empty, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool                 ecore_buffer_consumer_queue_is_empty(Ecore_Buffer_Consumer *consumer);
 /**
@@ -282,6 +311,10 @@ EAPI Eina_Bool                 ecore_buffer_consumer_queue_is_empty(Ecore_Buffer
  *
  * A call to this function will set a callback on an Ecore_Buffer_Consumer, causing
  * @p func to be called whenever @p consumer is connected with provider.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                      ecore_buffer_consumer_provider_add_cb_set(Ecore_Buffer_Consumer *consumer, Ecore_Buffer_Consumer_Provider_Add_Cb func, void *data);
 /**
@@ -295,6 +328,10 @@ EAPI void                      ecore_buffer_consumer_provider_add_cb_set(Ecore_B
  *
  * A call to this function will set a callback on an Ecore_Buffer_Consumer, causing
  * @p func to be called whenever @p consumer is disconnected with provider.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                      ecore_buffer_consumer_provider_del_cb_set(Ecore_Buffer_Consumer *consumer, Ecore_Buffer_Consumer_Provider_Del_Cb func, void *data);
 /**
@@ -310,6 +347,10 @@ EAPI void                      ecore_buffer_consumer_provider_del_cb_set(Ecore_B
  * @p func to be called whenever @p consumer has received buffer submitted from provider.
  *
  * You may success acquire Ecore_Buffer after this callback called.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                      ecore_buffer_consumer_buffer_enqueued_cb_set(Ecore_Buffer_Consumer *consumer, Ecore_Buffer_Consumer_Enqueue_Cb func, void *data);
 
@@ -330,6 +371,10 @@ EAPI void                      ecore_buffer_consumer_buffer_enqueued_cb_set(Ecor
  * @param[in] name The name of Buffer_Queue.
  *
  * @return Ecore_Buffer_Provider instance or @c NULL if creation failed.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Buffer_Provider    *ecore_buffer_provider_new(const char *name);
 /**
@@ -340,6 +385,10 @@ EAPI Ecore_Buffer_Provider    *ecore_buffer_provider_new(const char *name);
  * @param[in] provider The Ecore_Buffer_Provider to free
  *
  * This frees up any memory used by the Ecore_Buffer_Provider.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                      ecore_buffer_provider_free(Ecore_Buffer_Provider *provider);
 /**
@@ -362,6 +411,10 @@ EAPI void                      ecore_buffer_provider_free(Ecore_Buffer_Provider 
  *  so, You may create new Ecore_Buffer, and then just enqueue the Ecore_Buffer.
  *
  * @see ecore_buffer_new(), ecore_buffer_provider_buffer_enqueue()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Buffer_Return       ecore_buffer_provider_buffer_acquire(Ecore_Buffer_Provider *provider, Ecore_Buffer **ret_buf);
 /**
@@ -379,6 +432,10 @@ EAPI Ecore_Buffer_Return       ecore_buffer_provider_buffer_acquire(Ecore_Buffer
  * and new Ecore_Buffer after received return value of ECORE_BUFFER_RETURN_NEED_ALLOC by ecore_buffer_provider_buffer_acquire().
  *
  * @see ecore_buffer_new(), ecore_buffer_provider_buffer_dequeue()
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool                 ecore_buffer_provider_buffer_enqueue(Ecore_Buffer_Provider *provider, Ecore_Buffer *buffer);
 /**
@@ -395,6 +452,10 @@ EAPI Eina_Bool                 ecore_buffer_provider_buffer_enqueue(Ecore_Buffer
  *  so, You may create new Ecore_Buffer, and then just enqueue the Ecore_Buffer.
  *
  * @return @c EINA_TRUE means queue is empty, @c EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Ecore_Buffer_Return       ecore_buffer_provider_buffer_acquirable_check(Ecore_Buffer_Provider *provider);
 /**
@@ -408,6 +469,10 @@ EAPI Ecore_Buffer_Return       ecore_buffer_provider_buffer_acquirable_check(Eco
  *
  * A call to this function will set a callback on an Ecore_Buffer_Provider, causing
  * @p func to be called whenever @p provider is connected with consumer.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                      ecore_buffer_provider_consumer_add_cb_set(Ecore_Buffer_Provider *provider, Ecore_Buffer_Provider_Consumer_Add_Cb func, void *data);
 /**
@@ -421,6 +486,10 @@ EAPI void                      ecore_buffer_provider_consumer_add_cb_set(Ecore_B
  *
  * A call to this function will set a callback on an Ecore_Buffer_Provider, causing
  * @p func to be called whenever @p provider is disconnected with consumer.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                      ecore_buffer_provider_consumer_del_cb_set(Ecore_Buffer_Provider *provider, Ecore_Buffer_Provider_Consumer_Del_Cb func, void *data);
 /**
@@ -436,6 +505,10 @@ EAPI void                      ecore_buffer_provider_consumer_del_cb_set(Ecore_B
  * @p func to be called whenever @p provider has received Ecore_Buffer released from provider.
  *
  * You may success dequeue the Ecore_Buffer after this callback called.
+ *
+ * @if MOBILE @since_tizen 2.4
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void                      ecore_buffer_provider_buffer_released_cb_set(Ecore_Buffer_Provider *provider, Ecore_Buffer_Provider_Enqueue_Cb func, void *data);
 

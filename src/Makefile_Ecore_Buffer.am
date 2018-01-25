@@ -110,4 +110,26 @@ modules_ecore_buffer_x11_dri3_module_la_LDFLAGS = -module @EFL_LTMODULE_FLAGS@
 modules_ecore_buffer_x11_dri3_module_la_LIBTOOLFLAGS = --tag=disable-static
 endif
 
+if BUILD_ECORE_BUFFER_TBM
+ecorebuffertbmdir = $(libdir)/ecore_buffer/modules/tbm/$(MODULE_ARCH)
+ecorebuffertbm_LTLIBRARIES = modules/ecore_buffer/tbm/module.la
+
+modules_ecore_buffer_tbm_module_la_SOURCES = \
+   modules/ecore_buffer/tbm/ecore_buffer_tbm.c
+modules_ecore_buffer_tbm_module_la_CPPFLAGS = \
+   -I$(top_builddir)/src/lib/efl \
+   @ECORE_BUFFER_CFLAGS@ \
+   @TBM_CFLAGS@ \
+   -I$(top_srcdir)/src/modules/ecore_buffer/tbm
+modules_ecore_buffer_tbm_module_la_LIBADD = \
+   @ECORE_BUFFER_LIBS@ \
+   @USE_ECORE_BUFFER_INTERNAL_LIBS@ \
+   @TBM_LIBS@
+modules_ecore_buffer_tbm_module_la_DEPENDENCIES = \
+   @USE_ECORE_X_INTERNAL_LIBS@ \
+   @USE_ECORE_BUFFER_INTERNAL_LIBS@
+modules_ecore_buffer_tbm_module_la_LDFLAGS = -module @EFL_LTMODULE_FLAGS@
+modules_ecore_buffer_tbm_module_la_LIBTOOLFLAGS = --tag=disable-static
+endif
+
 endif
