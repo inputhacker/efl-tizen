@@ -8469,6 +8469,19 @@ elm_win_indicator_mode_set(Evas_Object *obj, Elm_Win_Indicator_Mode mode)
             (sd->x.xwin, ECORE_X_ILLUME_INDICATOR_STATE_OFF);
      }
 #endif
+#ifdef HAVE_ELEMENTARY_WL2
+   ERR("WKWK indicator mode set WL2 %d", sd->legacy.indmode);
+   _elm_win_wlwindow_get(sd);
+   if (sd->wl.win)
+     {
+        if (sd->legacy.indmode == ELM_WIN_INDICATOR_SHOW)
+          ecore_wl2_window_indicator_state_set
+            (sd->wl.win, ECORE_WL2_INDICATOR_STATE_ON);
+        else if (sd->legacy.indmode == ELM_WIN_INDICATOR_HIDE)
+          ecore_wl2_window_indicator_state_set
+            (sd->wl.win, ECORE_WL2_INDICATOR_STATE_OFF);
+     }
+#endif
    efl_event_callback_legacy_call
      (obj, EFL_UI_WIN_EVENT_INDICATOR_PROP_CHANGED, NULL);
 }
@@ -8515,6 +8528,25 @@ elm_win_indicator_opacity_set(Evas_Object *obj, Elm_Win_Indicator_Opacity_Mode m
         else if (sd->legacy.ind_o_mode == ELM_WIN_INDICATOR_TRANSPARENT)
           ecore_x_e_illume_indicator_opacity_set
             (sd->x.xwin, ECORE_X_ILLUME_INDICATOR_TRANSPARENT);
+     }
+#endif
+#ifdef HAVE_ELEMENTARY_WL2
+   _elm_win_wlwindow_get(sd);
+   ERR("WKWK opacity mode set WL2 %d", sd->legacy.ind_o_mode);
+   if (sd->wl.win)
+     {
+        if (sd->legacy.ind_o_mode == ELM_WIN_INDICATOR_OPAQUE)
+          ecore_wl2_window_indicator_opacity_set
+            (sd->wl.win, ECORE_WL2_INDICATOR_OPAQUE);
+        else if (sd->legacy.ind_o_mode == ELM_WIN_INDICATOR_TRANSLUCENT)
+          ecore_wl2_window_indicator_opacity_set
+            (sd->wl.win, ECORE_WL2_INDICATOR_TRANSLUCENT);
+        else if (sd->legacy.ind_o_mode == ELM_WIN_INDICATOR_TRANSPARENT)
+          ecore_wl2_window_indicator_opacity_set
+            (sd->wl.win, ECORE_WL2_INDICATOR_TRANSPARENT);
+        else if (sd->legacy.ind_o_mode == ELM_WIN_INDICATOR_BG_TRANSPARENT)
+          ecore_wl2_window_indicator_opacity_set
+            (sd->wl.win, ECORE_WL2_INDICATOR_BG_TRANSPARENT);
      }
 #endif
    efl_event_callback_legacy_call
