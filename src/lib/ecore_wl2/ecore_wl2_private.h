@@ -756,7 +756,7 @@ typedef struct _Ecore_Wl2_Surface
 
    int w, h;
    Eina_Bool alpha : 1;
-   Ecore_Wl2_Surface_Interface funcs;
+   Ecore_Wl2_Surface_Interface *funcs;
    unsigned int frame_age;  // TIZEN_ONLY(20171226) : evas tbm_buf backend
 } Ecore_Wl2_Surface;
 
