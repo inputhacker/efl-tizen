@@ -665,7 +665,7 @@ efl_access_relation_set_relation_append(Efl_Access_Relation_Set *set, Efl_Access
      {
         if (rel->type == type)
           {
-             ll = eina_list_data_find(rel->objects, rel_obj);
+             ll = eina_list_data_find_list(rel->objects, rel_obj);
              if (!ll)
                {
                   rel->objects = eina_list_append(rel->objects, rel_obj);
@@ -1018,10 +1018,7 @@ elm_atspi_accessible_description_cb_set(Elm_Interface_Atspi_Accessible *obj, Elm
 EAPI void
 elm_atspi_accessible_gesture_cb_set(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_Gesture_Cb gesture_cb, const void *data)
 {
-   Efl_Access_Data *sd = efl_data_scope_get(obj, ELM_ACCESS_CLASS);
-
-   sd->legacy_gesture_cb_item.cb = gesture_cb;
-   sd->legacy_gesture_cb_item.data = data;
+   efl_access_gesture_cb_set(obj, gesture_cb, data);
 }
 
 EAPI void
@@ -1081,6 +1078,41 @@ elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi
 EAPI void elm_atspi_relation_set_free(Elm_Atspi_Relation_Set *set)
 {
    efl_access_relation_set_free(set);
+}
+
+EAPI Elm_Atspi_Relation_Set elm_atspi_relation_set_clone(const Elm_Atspi_Relation_Set *set)
+{
+   return efl_access_relation_set_clone(set);
+}
+
+EAPI void elm_atspi_relation_free(Elm_Atspi_Relation *relation)
+{
+   efl_access_relation_free(relation);
+}
+
+EAPI Elm_Atspi_Relation * elm_atspi_relation_clone(const Elm_Atspi_Relation *relation)
+{
+   return efl_access_relation_clone(relation);
+}
+
+EAPI Eina_Bool elm_atspi_relation_set_relation_append(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type, const Eo *rel_obj)
+{
+   return efl_access_relation_set_relation_append(set, type, rel_obj);
+}
+
+EAPI void elm_atspi_relation_set_relation_remove(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type, const Eo *rel_obj)
+{
+   efl_access_relation_set_relation_remove(set, type, rel_obj);
+}
+
+EAPI void elm_atspi_relation_set_relation_type_remove(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type)
+{
+   efl_access_relation_set_relation_type_remove(set, type);
+}
+
+EAPI void elm_atspi_attributes_list_free(Eina_List *list)
+{
+   efl_access_attributes_list_free(list);
 }
 //
 

@@ -303,7 +303,7 @@ struct _Elm_Atspi_Gesture_Info
  * Detailed information of gesture that is emitted on assistive technology client side.
  * @if MOBILE @since_tizen 4.0 @elseif WEARABLE @since_tizen 3.0 @endif
  */
-typedef struct _Elm_Atspi_Gesture_Info Elm_Atspi_Gesture_Info;
+#define Elm_Atspi_Gesture_Info Efl_Access_Gesture_Info
 
 /**
  * A Elm_Accessible_Reading_Info_Type mask indicating which types of reading
@@ -337,7 +337,7 @@ typedef char *(*Elm_Atspi_Reading_Info_Cb)(void *data, Evas_Object *obj);
  * @see elm_atspi_accessible_gesture_cb_set
  * @if MOBILE @since_tizen 4.0 @elseif WEARABLE @since_tizen 3.0 @endif
  */
-typedef Eina_Bool (*Elm_Atspi_Gesture_Cb)(void *data, Elm_Atspi_Gesture_Info gesture_info, Evas_Object *obj);
+#define Elm_Atspi_Gesture_Cb Efl_Access_Gesture_Cb
 
 /** AT-SPI object state set.
  *
@@ -804,6 +804,78 @@ EAPI void elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj,
  * @endif
  */
 EAPI void elm_atspi_relation_set_free(Elm_Atspi_Relation_Set *set);
+
+/**
+ * @internal
+ * Clones Elm_Atspi_Relation_Set
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Elm_Atspi_Relation_Set elm_atspi_relation_set_clone(const Elm_Atspi_Relation_Set *set);
+
+#define Elm_Atspi_Relation Efl_Access_Relation
+
+/**
+ * @internal
+ * Frees relation.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void elm_atspi_relation_free(Elm_Atspi_Relation *relation);
+
+/**
+ * @internal
+ * Clones relation.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Elm_Atspi_Relation * elm_atspi_relation_clone(const Elm_Atspi_Relation *relation);
+
+/**
+ * @internal
+ * Appends relation to relation set
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool elm_atspi_relation_set_relation_append(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type, const Eo *rel_obj);
+
+/**
+ * @internal
+ * Removes relation from relation set
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void elm_atspi_relation_set_relation_remove(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type, const Eo *rel_obj);
+
+/**
+ * @internal
+ * Removes all relation from relation set of a given type
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void elm_atspi_relation_set_relation_type_remove(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type);
+
+/**
+ * @internal
+ * Free Elm_Atspi_Attributes_List
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void elm_atspi_attributes_list_free(Eina_List *list);
 #include "efl_access.eo.legacy.h"
 
 /**
