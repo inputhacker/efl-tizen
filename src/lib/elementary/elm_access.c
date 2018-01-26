@@ -1586,17 +1586,23 @@ _elm_access_efl_access_component_highlight_clear(Eo *obj, void *pd EINA_UNUSED)
 EOLIAN static const char*
 _elm_access_efl_access_name_get(Eo *obj, void *pd EINA_UNUSED)
 {
+   char *accessible_name;
    const char *ret = efl_access_name_get(efl_super(obj, MY_CLASS));
-   if (ret)
-     return ret;
-   else
-     return elm_access_info_get(obj, ELM_ACCESS_INFO);
+   if (ret) return ret;
+
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
+
+   accessible_name = elm_access_info_get(obj, ELM_ACCESS_INFO);
+   eina_stringshare_del(wd->accessible_name);
+   wd->accessible_name = eina_stringshare_add(accessible_name);
+   free(accessible_name);
+   return wd->accessible_name;
 }
 
 EOLIAN static const char*
 _elm_access_efl_access_description_get(Eo *obj, void *pd EINA_UNUSED)
 {
-   const char *ret = efl_access_name_get(efl_super(obj, MY_CLASS));
+   const char *ret = efl_access_description_get(efl_super(obj, MY_CLASS));
    if (ret)
      return ret;
    else
