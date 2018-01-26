@@ -99,7 +99,7 @@ struct _Outbuf
         /* Eina_Bool redraw : 1; */
         Eina_Bool destination_alpha : 1;
      } priv;
-   Eina_Bool dirty : 1;
+
    // TIZEN_ONLY(20161017): Properly invalidate buffer //
    int prev_age;
    //
