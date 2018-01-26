@@ -712,4 +712,30 @@ EAPI const char *elm_layout_part_cursor_style_get(const Evas_Object *obj, const 
  */
 EAPI Eina_Bool elm_layout_part_cursor_unset(Evas_Object *obj, const char *part_name);
 
+/*************************************************************************
+ * TIZEN_ONLY_FEATURE: add internal APIs for handling a part's alignment *
+ *************************************************************************/
+/**
+ * @internal
+ */
+EAPI void elm_layout_text_valign_set(Evas_Object *obj, const char *part, double valign);
+
+/**
+ * @internal
+ */
+EAPI double elm_layout_text_valign_get(Evas_Object *obj, const char *part);
+
+/**
+ * @internal
+ */
+EAPI void elm_layout_valign_set(Evas_Object *obj, const char *part, double valign);
+
+/**
+ * @internal
+ */
+EAPI double elm_layout_valign_get(Evas_Object *obj, const char *part);
+/*******
+ * END *
+ *******/
+
 #include "efl_ui_layout.eo.legacy.h"

@@ -2623,6 +2623,30 @@ _efl_ui_layout_valign_get(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, const ch
 
    return edje_object_part_valign_get(wd->resize_obj, part);
 }
+
+EAPI void
+elm_layout_text_valign_set(Evas_Object *obj, const char *part, double valign)
+{
+   efl_ui_layout_text_valign_set(obj, part, valign);
+}
+
+EAPI double
+elm_layout_text_valign_get(Evas_Object *obj, const char *part)
+{
+   return efl_ui_layout_text_valign_get(obj, part);
+}
+
+EAPI void
+elm_layout_valign_set(Evas_Object *obj, const char *part, double valign)
+{
+   efl_ui_layout_valign_set(obj, part, valign);
+}
+
+EAPI double
+elm_layout_valign_get(Evas_Object *obj, const char *part)
+{
+   return efl_ui_layout_valign_get(obj, part);
+}
 /*******
  * END *
  *******/
