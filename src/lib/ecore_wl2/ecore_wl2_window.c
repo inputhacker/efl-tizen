@@ -132,7 +132,7 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
 
    ev->win = win->id;
    ev->event_win = win->id;
-   
+
 // TIZEN_ONLY(20171112): support tizen_position
    ev->x = win->set_config.geometry.x;
    ev->y = win->set_config.geometry.y;
@@ -3043,13 +3043,11 @@ ecore_wl2_window_commit(Ecore_Wl2_Window *window, Eina_Bool flush)
 
    if (window->commit_pending)
      {
+        wl_callback_destroy(window->callback);
         if (window->callback)
           wl_callback_destroy(window->callback);
         window->callback = NULL;
-        /* The elm mouse cursor bits do some harmless but weird stuff that
-         * can hit this, silence the warning for that case only. */
-        if (window->type != ECORE_WL2_WINDOW_TYPE_NONE)
-          WRN("Commit before previous commit processed");
+        WRN("Commit before previous commit processed");
      }
    if (!window->pending.configure)
      {
