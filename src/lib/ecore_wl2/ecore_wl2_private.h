@@ -822,4 +822,6 @@ Eina_Hash *_ecore_wl2_window_hash_get(void);
 EAPI extern int _ecore_wl2_event_window_www;
 EAPI extern int _ecore_wl2_event_window_www_drag;
 
+Eina_Bool ecore_wl2_surface_manager_dmabuf_add(void);
+
 #endif
