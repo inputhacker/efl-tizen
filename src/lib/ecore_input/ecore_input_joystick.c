@@ -47,7 +47,8 @@ struct _Joystick_Mapping_Info
 } Joystick_Mapping_Info[] = {
    {"045e", "028e", _joystick_xbox360_mapper}, /* Microsoft X-Box 360 pad */
    {"045e", "02dd", _joystick_xboxone_mapper}, /* Microsoft X-Box One pad (Covert Forces) */
-   {"054c", "05c4", _joystick_ps4_mapper} /* Sony Computer Entertainment Wireless Controller */
+   {"054c", "05c4", _joystick_ps4_mapper}, /* Sony Computer Entertainment Wireless Controller */
+   {"054c", "09cc", _joystick_ps4_mapper}  /* Sony Computer Entertainment Wireless Controller 2nd Generation*/
 };
 
 static const char joystickPrefix[] = "/dev/input/js";
