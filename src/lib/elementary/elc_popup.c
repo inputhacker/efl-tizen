@@ -1431,7 +1431,9 @@ _content_text_set(Evas_Object *obj,
    evas_object_event_callback_add
      (sd->text_content_obj, EVAS_CALLBACK_DEL, _on_text_content_del, obj);
 
+   /* TIZEN_ONLY(20180129): disable line wrap set to label
    elm_label_line_wrap_set(sd->text_content_obj, sd->content_text_wrap_type);
+    */
    elm_object_text_set(sd->text_content_obj, text);
    evas_object_size_hint_weight_set
      (sd->text_content_obj, EVAS_HINT_EXPAND, 0.0);
@@ -2195,8 +2197,11 @@ _elm_popup_content_text_wrap_type_set(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd, E
    if (wrap == ELM_WRAP_NONE) return;
 
    sd->content_text_wrap_type = wrap;
+   /* TIZEN_ONLY(20180129): disable line wrap set to label
+   FIXME: actually, label's wrap was controlled by edc code.
    if (sd->text_content_obj)
      elm_label_line_wrap_set(sd->text_content_obj, wrap);
+    */
 }
 
 EOLIAN static Elm_Wrap_Type
