@@ -286,6 +286,8 @@ _ecore_wl2_window_zxdg_popup_create(Ecore_Wl2_Window *win)
    struct zxdg_positioner_v6 *pos;
 
    EINA_SAFETY_ON_NULL_RETURN(win->parent);
+   if (!win->parent->zxdg_surface) return;
+
    pos = zxdg_shell_v6_create_positioner(win->display->wl.zxdg_shell);
    if (!pos) return;
 
