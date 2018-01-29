@@ -84,6 +84,22 @@ ecore_device_del(Ecore_Device *dev)
    return;
 }
 
+EAPI Ecore_Device *
+ecore_device_ref(Ecore_Device *dev)
+{
+   SAFETY_CHECK(dev, EFL_ECORE_INPUT_DEVICE_CLASS);
+
+   return efl_ref(dev);
+}
+
+EAPI void
+ecore_device_unref(Ecore_Device *dev)
+{
+   SAFETY_CHECK(dev, EFL_ECORE_INPUT_DEVICE_CLASS);
+
+   efl_unref(dev);
+}
+
 EAPI const Eina_List *
 ecore_device_list(void)
 {

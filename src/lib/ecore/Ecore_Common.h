@@ -3287,6 +3287,9 @@ EAPI Ecore_Device *ecore_device_add();
  */
 EAPI void ecore_device_del(Ecore_Device *dev);
 
+EAPI Ecore_Device *ecore_device_ref(Ecore_Device *dev);
+EAPI void ecore_device_unref(Ecore_Device *dev);
+
 /**
  * Lists all current devices.
  *
