@@ -315,10 +315,6 @@ eina_file_real_close(Eina_File *file)
         free(map);
      }
 
-   //TIZEN_ONLY(20180107): add log for SIGBUS unmap issue.
-   EINA_LOG_ERR("Memory unmapped[%p]", file->global_map);
-   //
-
    if (file->global_map != MAP_FAILED)
      munmap(file->global_map, file->length);
 
