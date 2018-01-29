@@ -2259,7 +2259,7 @@ elm_layout_text_set(Eo *obj, const char *part, const char *text)
    else if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
      return EINA_FALSE;
 
-   efl_text_set(efl_part(obj, part), text);
+   efl_text_markup_set(efl_part(obj, part), text);
    return EINA_TRUE;
 }
 
@@ -2274,7 +2274,7 @@ elm_layout_text_get(const Eo *obj, const char *part)
    else if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
      return NULL;
 
-   return efl_text_get(efl_part(obj, part));
+   return efl_text_markup_get(efl_part(obj, part));
 }
 
 EAPI Eina_Bool
