@@ -7611,6 +7611,11 @@ _efl_ui_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Dat
    if(!_elm_atspi_enabled())
       return EINA_FALSE;
 
+   // TIZEN_ONLY(20171020) : atspi : Do not send signal, if current object and highlight object are same
+   if (_elm_object_accessibility_currently_highlighted_get() == obj)
+      return EINA_FALSE;
+   //
+
    //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
    _elm_widget_accessibility_highlight_grabbing_set(obj, EINA_TRUE);
    //
@@ -7661,6 +7666,10 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
 
    if (!sd) return EINA_FALSE;
    if (!sd->view) return EINA_FALSE;
+   // TIZEN_ONLY(20171020) : atspi : Do not send signal, if current object and highlight object are same
+   if (_elm_object_accessibility_currently_highlighted_get() == obj)
+      return EINA_FALSE;
+   //
 
    //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
    _elm_widget_accessibility_highlight_grabbing_set(obj, EINA_TRUE);
