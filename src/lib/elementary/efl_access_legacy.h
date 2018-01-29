@@ -796,7 +796,6 @@ EAPI void elm_atspi_accessible_relationships_clear(Elm_Interface_Atspi_Accessibl
 EAPI void elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_State_Set state_types_mask, Eina_Bool recursive);
 
 /**
- * @internal
  * Frees Elm_Atspi_Relation_Set
  *
  * @if MOBILE @since_tizen 3.0
@@ -806,7 +805,6 @@ EAPI void elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj,
 EAPI void elm_atspi_relation_set_free(Elm_Atspi_Relation_Set *set);
 
 /**
- * @internal
  * Clones Elm_Atspi_Relation_Set
  *
  * @if MOBILE @since_tizen 3.0
@@ -818,7 +816,6 @@ EAPI Elm_Atspi_Relation_Set elm_atspi_relation_set_clone(const Elm_Atspi_Relatio
 #define Elm_Atspi_Relation Efl_Access_Relation
 
 /**
- * @internal
  * Frees relation.
  *
  * @if MOBILE @since_tizen 3.0
@@ -828,7 +825,6 @@ EAPI Elm_Atspi_Relation_Set elm_atspi_relation_set_clone(const Elm_Atspi_Relatio
 EAPI void elm_atspi_relation_free(Elm_Atspi_Relation *relation);
 
 /**
- * @internal
  * Clones relation.
  *
  * @if MOBILE @since_tizen 3.0
@@ -838,7 +834,6 @@ EAPI void elm_atspi_relation_free(Elm_Atspi_Relation *relation);
 EAPI Elm_Atspi_Relation * elm_atspi_relation_clone(const Elm_Atspi_Relation *relation);
 
 /**
- * @internal
  * Appends relation to relation set
  *
  * @if MOBILE @since_tizen 3.0
@@ -848,7 +843,6 @@ EAPI Elm_Atspi_Relation * elm_atspi_relation_clone(const Elm_Atspi_Relation *rel
 EAPI Eina_Bool elm_atspi_relation_set_relation_append(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type, const Eo *rel_obj);
 
 /**
- * @internal
  * Removes relation from relation set
  *
  * @if MOBILE @since_tizen 3.0
@@ -858,7 +852,6 @@ EAPI Eina_Bool elm_atspi_relation_set_relation_append(Elm_Atspi_Relation_Set *se
 EAPI void elm_atspi_relation_set_relation_remove(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type, const Eo *rel_obj);
 
 /**
- * @internal
  * Removes all relation from relation set of a given type
  *
  * @if MOBILE @since_tizen 3.0
@@ -868,7 +861,6 @@ EAPI void elm_atspi_relation_set_relation_remove(Elm_Atspi_Relation_Set *set, El
 EAPI void elm_atspi_relation_set_relation_type_remove(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type);
 
 /**
- * @internal
  * Free Elm_Atspi_Attributes_List
  *
  * @if MOBILE @since_tizen 3.0
