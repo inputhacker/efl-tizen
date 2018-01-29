@@ -11,22 +11,24 @@
  */
 typedef char *(*Efl_Access_Reading_Info_Cb)(void *data, Evas_Object *obj);
 //
-//TIZEN_ONLY(20170405) Add gesture method to accessible interface
-//FIXME: Efl_Access_Gesture_Cb is dependant on Efl_Access_Gesture_Info and Efl_Access_Gesture_Info is defined in
-//efl_access.eo.h
-typedef struct _Efl_Access_Gesture_Info Efl_Access_Gesture_Info;
-typedef Eina_Bool (*Efl_Access_Gesture_Cb)(void *data, Efl_Access_Gesture_Info gesture_info, Evas_Object *obj);
-//
 
 //TIZEN_ONLY(20170406) Add Elm_Atspi_Reading_Info_Type_Mask
 typedef unsigned int Efl_Access_Reading_Info_Type_Mask;
 //
 
+//TIZEN_ONLY(20170405) Add gesture method to accessible interface
+typedef struct _Efl_Access_Gesture_Info Efl_Access_Gesture_Info;
+typedef Eina_Bool (*Efl_Access_Gesture_Cb)(void *data, Efl_Access_Gesture_Info gesture_info, Evas_Object *obj);
+#define TIZEN_ONLY
+#include "efl_access_legacy.h"
+//
 #ifdef EFL_EO_API_SUPPORT
 #include "efl_access.eo.h"
 #endif
 #ifndef EFL_NOLEGACY_API_SUPPORT
-#include "efl_access_legacy.h"
+#ifndef TIZEN_ONLY
+#include "efl_access.eo.legacy.h"
+#endif
 #endif
 
 // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi

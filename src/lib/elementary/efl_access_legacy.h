@@ -3,6 +3,7 @@
  * @ingroup elm_accessibility_group
  * @{
  */
+#include "efl_access.eo.legacy.h"
 
 typedef Eo Elm_Interface_Atspi_Accessible;
 
@@ -868,7 +869,6 @@ EAPI void elm_atspi_relation_set_relation_type_remove(Elm_Atspi_Relation_Set *se
  * @endif
  */
 EAPI void elm_atspi_attributes_list_free(Eina_List *list);
-#include "efl_access.eo.legacy.h"
 
 /**
  * @}
