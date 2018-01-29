@@ -1205,6 +1205,23 @@ EAPI Evas_Object *edje_object_part_table_child_get(const Evas_Object *obj, const
 EAPI Eina_Bool edje_object_part_table_clear(Evas_Object *obj, const char *part, Eina_Bool clear);
 
 /**
+ * @brief Gets the description of an object color class.
+ *
+ * This function gets the description of a color class in use by an object.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ * @param[in] color_class The color class name
+ *
+ * @return The description of the target color class or $null if not found
+ *
+ * @ingroup Edje_Object
+ */
+EAPI const char *edje_object_color_class_description_get(const Evas_Object *obj, const char *color_class);
+
+/**
  * @brief Sets the object color class.
  *
  * This function sets the color values for an object level color class. This

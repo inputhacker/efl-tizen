@@ -78,3 +78,183 @@ EAPI void *elm_object_item_data_get(const Elm_Object_Item *it);
  * @ingroup Elm_General
  */
 EAPI void elm_object_item_data_set(Elm_Object_Item *it, void *data);
+
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+/**
+ * @brief Set the color of color class for a given widget item.
+ *
+ * @note These color values are expected to be premultiplied by @p a.
+ *
+ * @param[in] it The Elementary widget item.
+ * @param[in] color_class The name of color class.
+ * @param[in] r The red intensity of the red color.
+ * @param[in] g The green intensity of the green color.
+ * @param[in] b The blue intensity of the blue color.
+ * @param[in] a The alpha value.
+ *
+ * @since 1.19
+ *
+ * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool        elm_object_item_color_class_color_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a);
+
+/**
+ * @brief Get the color of color class for a given widget item.
+ *
+ * @note These color values are expected to be premultiplied by @p a.
+ *
+ * @param[in] it The Elementary widget item.
+ * @param[in] color_class The name of color class.
+ * @param[in] r The red intensity of the red color.
+ * @param[in] g The green intensity of the green color.
+ * @param[in] b The blue intensity of the blue color.
+ * @param[in] a The alpha value.
+ *
+ * @since 1.19
+ *
+ * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool        elm_object_item_color_class_color_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a);
+
+/**
+ * @brief Set the second color of color class for a given widget item.
+ *
+ * The second color is commonly used for outline of text.
+ *
+ * @note These color values are expected to be premultiplied by @p a.
+ *
+ * @param[in] it The Elementary widget item.
+ * @param[in] color_class The name of color class.
+ * @param[in] r The red intensity of the red color.
+ * @param[in] g The green intensity of the green color.
+ * @param[in] b The blue intensity of the blue color.
+ * @param[in] a The alpha value.
+ *
+ * @since 1.19
+ *
+ * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool        elm_object_item_color_class_color2_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a);
+
+/**
+ * @brief Get the second color of color class for a given widget item.
+ *
+ * The second color is commonly used for outline of text.
+ *
+ * @note These color values are expected to be premultiplied by @p a.
+ *
+ * @param[in] it The Elementary widget item.
+ * @param[in] color_class The name of color class.
+ * @param[in] r The red intensity of the red color.
+ * @param[in] g The green intensity of the green color.
+ * @param[in] b The blue intensity of the blue color.
+ * @param[in] a The alpha value.
+ *
+ * @since 1.19
+ *
+ * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool        elm_object_item_color_class_color2_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a);
+
+/**
+ * @brief Set the third color of color class for a given widget item.
+ *
+ * The third color is commonly used for shadow of text.
+ *
+ * @note These color values are expected to be premultiplied by @p a.
+ *
+ * @param[in] it The Elementary widget item.
+ * @param[in] color_class The name of color class.
+ * @param[in] r The red intensity of the red color.
+ * @param[in] g The green intensity of the green color.
+ * @param[in] b The blue intensity of the blue color.
+ * @param[in] a The alpha value.
+ *
+ * @since 1.19
+ *
+ * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool        elm_object_item_color_class_color3_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a);
+
+/**
+ * @brief Get the third color of color class for a given widget item.
+ *
+ * The third color is commonly used for shadow of text.
+ *
+ * @note These color values are expected to be premultiplied by @p a.
+ *
+ * @param[in] it The Elementary widget item.
+ * @param[in] color_class The name of color class.
+ * @param[in] r The red intensity of the red color.
+ * @param[in] g The green intensity of the green color.
+ * @param[in] b The blue intensity of the blue color.
+ * @param[in] a The alpha value.
+ *
+ * @since 1.19
+ *
+ * @ingroup General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool        elm_object_item_color_class_color3_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a);
+
+/**
+ * @brief Delete the color class for the Elementary widget item.
+ *
+ * Deleting the color class will revert it to the values defined by
+ * elm_color_class_set() or the theme file.
+ *
+ * @param[in] it The Elementary widget item.
+ * @param[in] color_class The name of color class.
+ *
+ * @ingroup Elm_General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void             elm_object_item_color_class_del(Elm_Object_Item *it, const char *color_class);
+
+/**
+ * @brief Delete all color classes for the Elementary widget item.
+ *
+ * This function deletes any color classes defined for the Elementary widget item.
+ * Clearing color classes will revert the color of all parts to the values
+ * defined by elm_color_class_set() or the theme file.]]
+ *
+ * @param[in] it The Elementary widget item.
+ *
+ * @ingroup Elm_General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void             elm_object_item_color_class_clear(Elm_Object_Item *it);
+/*******
+ * END *
+ *******/

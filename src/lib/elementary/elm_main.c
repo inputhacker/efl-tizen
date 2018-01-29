@@ -2380,6 +2380,55 @@ elm_object_color_class_clear(Evas_Object *obj)
 {
    return elm_widget_class_color_clear(obj);
 }
+
+/* Legacy APIs for item */
+EAPI Eina_Bool
+elm_object_item_color_class_color_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a)
+{
+   return elm_widget_item_class_color_set(it, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_item_color_class_color_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   return elm_widget_item_class_color_get(it, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_item_color_class_color2_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a)
+{
+   return elm_widget_item_class_color2_set(it, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_item_color_class_color2_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   return elm_widget_item_class_color2_get(it, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_item_color_class_color3_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a)
+{
+   return elm_widget_item_class_color3_set(it, color_class, r, g, b, a);
+}
+
+EAPI Eina_Bool
+elm_object_item_color_class_color3_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a)
+{
+   return elm_widget_item_class_color3_get(it, color_class, r, g, b, a);
+}
+
+EAPI void
+elm_object_item_color_class_del(Elm_Object_Item *it, const char *color_class)
+{
+   return elm_widget_item_class_color_del(it, color_class);
+}
+
+EAPI void
+elm_object_item_color_class_clear(Elm_Object_Item *it)
+{
+   return elm_widget_item_class_color_clear(it);
+}
 /*******
  * END *
  *******/

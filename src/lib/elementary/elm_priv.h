@@ -946,6 +946,15 @@ EAPI Eina_Bool elm_widget_class_color3_set(Evas_Object *obj, const char *color_c
 EAPI Eina_Bool elm_widget_class_color3_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a);
 EAPI void elm_widget_class_color_del(Evas_Object *obj, const char *color_class);
 EAPI void elm_widget_class_color_clear(Evas_Object *obj);
+
+EAPI Eina_Bool elm_widget_item_class_color_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a);
+EAPI Eina_Bool elm_widget_item_class_color_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a);
+EAPI Eina_Bool elm_widget_item_class_color2_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a);
+EAPI Eina_Bool elm_widget_item_class_color2_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a);
+EAPI Eina_Bool elm_widget_item_class_color3_set(Elm_Object_Item *it, const char *color_class, int r, int g, int b, int a);
+EAPI Eina_Bool elm_widget_item_class_color3_get(Elm_Object_Item *it, const char *color_class, int *r, int *g, int *b, int *a);
+EAPI void elm_widget_item_class_color_del(Elm_Object_Item *it, const char *color_class);
+EAPI void elm_widget_item_class_color_clear(Elm_Object_Item *it);
 /*******
  * END *
  *******/

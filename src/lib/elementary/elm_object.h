@@ -766,6 +766,24 @@ EAPI Eina_Bool        elm_color_class_color3_set(const char *color_class, int r,
 EAPI Eina_Bool        elm_color_class_color3_get(const char *color_class, int *r, int *g, int *b, int *a);
 
 /**
+ * @brief Delete elementary color class.
+ *
+ * This function deletes any values at the process level for the
+ * specified color class.
+ * @note Deleting the color class will revert it to the
+ *       values defined in the theme file.
+ *
+ * @param[in] color_class The name of color class.
+ *
+ * @ingroup Elm_General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void             elm_color_class_del(const char *color_class);
+
+/**
  * @brief Set the color of color class for a given widget.
  *
  * @note These color values are expected to be premultiplied by @p a.
@@ -904,6 +922,40 @@ EAPI Eina_Bool        elm_object_color_class_color3_set(Evas_Object *obj, const 
  * @endif
  */
 EAPI Eina_Bool        elm_object_color_class_color3_get(Evas_Object *obj, const char *color_class, int *r, int *g, int *b, int *a);
+
+/**
+ * @brief Delete the color class for the Elementary widget.
+ *
+ * Deleting the color class will revert it to the values defined by
+ * elm_color_class_set() or the theme file.
+ *
+ * @param[in] obj The Elementary widget.
+ * @param[in] color_class The name of color class.
+ *
+ * @ingroup Elm_General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void             elm_object_color_class_del(Evas_Object *obj, const char *color_class);
+
+/**
+ * @brief Delete all color classes for the Elementary widget item.
+ *
+ * This function deletes any color classes defined for the Elementary widget item.
+ * Clearing color classes will revert the color of all parts to the values
+ * defined by elm_color_class_set() or the theme file.
+ *
+ * @param[in] obj The Elementary widget.
+ *
+ * @ingroup Elm_General
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void             elm_object_color_class_clear(Evas_Object *obj);
 /*******
  * END *
  *******/
