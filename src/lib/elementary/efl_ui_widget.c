@@ -7624,7 +7624,6 @@ _efl_ui_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Dat
    _accessible_highlight_region_show(obj);
    //
 
-   elm_widget_focus_region_show(obj);
    elm_object_accessibility_highlight_set(obj, EINA_TRUE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
 
@@ -7681,8 +7680,8 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
 
    if (!sd->eo_obj) return EINA_FALSE;
    elm_object_accessibility_highlight_set(sd->eo_obj, EINA_TRUE);
-   if (!obj) return EINA_FALSE;
 
+   if (!obj) return EINA_FALSE;
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_HIGHLIGHTED, obj);
