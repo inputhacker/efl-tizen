@@ -79,6 +79,7 @@ struct _Outbuf
    EGLSurface egl_surface[1];
    EGLConfig egl_config;
    EGLDisplay egl_disp;
+   EGLSyncKHR egl_fence;
 
    Eina_Bool lost_back : 1;
    Eina_Bool surf : 1;
