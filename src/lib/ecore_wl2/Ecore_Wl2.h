@@ -434,6 +434,11 @@ typedef struct Ecore_Wl2_Event_Aux_Message
    Ecore_Wl2_Display *display;
 } Ecore_Wl2_Event_Aux_Message;
 
+typedef struct Ecore_Wl2_Event_Window_Offscreen
+{
+   unsigned int win;
+} Ecore_Wl2_Event_Window_Offscreen;
+
 typedef struct _Ecore_Wl2_Buffer Ecore_Wl2_Buffer;
 
 typedef enum _Ecore_Wl2_Buffer_Type
@@ -598,6 +603,7 @@ EAPI extern int ECORE_WL2_EVENT_WINDOW_HIDE; /** @since 1.20 */
 EAPI extern int ECORE_WL2_EVENT_WINDOW_ACTIVATE; /** @since 1.20 */
 EAPI extern int ECORE_WL2_EVENT_WINDOW_DEACTIVATE; /** @since 1.20 */
 EAPI extern int ECORE_WL2_EVENT_WINDOW_ICONIFY_STATE_CHANGE; /** @since 1.21 */
+EAPI extern int ECORE_WL2_EVENT_WINDOW_OFFSCREEN; /** @since 1.21 */
 // TIZEN_ONLY(20171107): added wl events from ecore_wayland to ecore_wl2
 EAPI extern int ECORE_WL2_EVENT_WINDOW_VISIBILITY_CHANGE;
 EAPI extern int ECORE_WL2_EVENT_WINDOW_PRE_VISIBILITY_CHANGE;
