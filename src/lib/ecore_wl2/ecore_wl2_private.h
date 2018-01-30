@@ -756,8 +756,9 @@ typedef struct _Ecore_Wl2_Surface
    Ecore_Wl2_Window *wl2_win;
 
    int w, h;
-   Eina_Bool alpha : 1;
    Ecore_Wl2_Surface_Interface *funcs;
+   Ecore_Event_Handler *offscreen_handler;
+   Eina_Bool alpha : 1;
    unsigned int frame_age;  // TIZEN_ONLY(20171226) : evas tbm_buf backend
 } Ecore_Wl2_Surface;
 
@@ -809,7 +810,9 @@ Eina_Hash *_ecore_wl2_keygrab_hash_get(void);
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
 void _ecore_wl2_input_device_manager_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version);
 //
+// TIZEN_ONLY(20180125): generate Ecore_Device_Add/Del events
 void _ecore_wl2_input_devices_send(Ecore_Wl2_Input *input, Ecore_Wl2_Window *win);
+//
 
 //TIZEN_ONLY(20171115): support output transform
 void _ecore_wl2_window_ignore_output_transform_set(Ecore_Wl2_Window *window, Eina_Bool ignore);
@@ -819,7 +822,10 @@ void _ecore_wl2_window_ignore_output_transform_set(Ecore_Wl2_Window *window, Ein
 void _ecore_wl2_window_init(void);
 void _ecore_wl2_window_shutdown(void);
 //
+
+// TIZEN_ONLY(20180125): generate Ecore_Device_Add/Del events
 Eina_Hash *_ecore_wl2_window_hash_get(void);
+//
 
 EAPI extern int _ecore_wl2_event_window_www;
 EAPI extern int _ecore_wl2_event_window_www_drag;
