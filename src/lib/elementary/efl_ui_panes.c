@@ -672,7 +672,7 @@ elm_panes_add(Evas_Object *parent)
 EAPI void
 elm_panes_content_left_min_size_set(Evas_Object *obj, int size)
 {
-   EFL_UI_PANES_DATA_GET(obj, sd);
+   EFL_UI_PANES_DATA_GET_OR_RETURN(obj, sd);
 
    sd->left_min_size = size;
    if (sd->left_min_size < 0) sd->left_min_size = 0;
@@ -683,14 +683,14 @@ elm_panes_content_left_min_size_set(Evas_Object *obj, int size)
 EAPI int
 elm_panes_content_left_min_size_get(const Evas_Object *obj)
 {
-   EFL_UI_PANES_DATA_GET(obj, sd);
+   EFL_UI_PANES_DATA_GET_OR_RETURN_VAL(obj, sd, 0);
    return sd->left_min_size;
 }
 
 EAPI void
 elm_panes_content_right_min_size_set(Evas_Object *obj, int size)
 {
-   EFL_UI_PANES_DATA_GET(obj, sd);
+   EFL_UI_PANES_DATA_GET_OR_RETURN(obj, sd);
 
    sd->right_min_size = size;
    if (sd->right_min_size < 0) sd->right_min_size = 0;
@@ -701,7 +701,7 @@ elm_panes_content_right_min_size_set(Evas_Object *obj, int size)
 EAPI int
 elm_panes_content_right_min_size_get(const Evas_Object *obj)
 {
-   EFL_UI_PANES_DATA_GET(obj, sd);
+   EFL_UI_PANES_DATA_GET_OR_RETURN_VAL(obj, sd, 0);
    return sd->right_min_size;
 }
 
@@ -720,6 +720,8 @@ elm_panes_content_left_size_set(Evas_Object *obj, double size)
 EAPI double
 elm_panes_content_right_size_get(const Evas_Object *obj)
 {
+   EFL_UI_PANES_CHECK(obj) 0.0;
+
    return 1.0 - elm_panes_content_left_size_get(obj);
 }
 
@@ -732,7 +734,7 @@ elm_panes_content_right_size_set(Evas_Object *obj, double size)
 EAPI void
 elm_panes_content_left_min_relative_size_set(Evas_Object *obj, double size)
 {
-   EFL_UI_PANES_DATA_GET(obj, sd);
+   EFL_UI_PANES_DATA_GET_OR_RETURN(obj, sd);
    sd->left_min_relative_size = size;
    if (sd->left_min_relative_size < 0) sd->left_min_relative_size = 0;
    sd->left_min_size_is_relative = EINA_TRUE;
@@ -742,14 +744,14 @@ elm_panes_content_left_min_relative_size_set(Evas_Object *obj, double size)
 EAPI double
 elm_panes_content_left_min_relative_size_get(const Evas_Object *obj)
 {
-   EFL_UI_PANES_DATA_GET(obj, sd);
+   EFL_UI_PANES_DATA_GET_OR_RETURN_VAL(obj, sd, 0.0);
    return sd->left_min_relative_size;
 }
 
 EAPI void
 elm_panes_content_right_min_relative_size_set(Evas_Object *obj, double size)
 {
-   EFL_UI_PANES_DATA_GET(obj, sd);
+   EFL_UI_PANES_DATA_GET_OR_RETURN(obj, sd);
 
    sd->right_min_relative_size = size;
    if (sd->right_min_relative_size < 0) sd->right_min_relative_size = 0;
@@ -760,13 +762,15 @@ elm_panes_content_right_min_relative_size_set(Evas_Object *obj, double size)
 EAPI double
 elm_panes_content_right_min_relative_size_get(const Evas_Object *obj)
 {
-   EFL_UI_PANES_DATA_GET(obj, sd);
+   EFL_UI_PANES_DATA_GET_OR_RETURN_VAL(obj, sd, 0.0);
    return sd->right_min_relative_size;
 }
 
 EAPI void
 elm_panes_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
 {
+   EFL_UI_PANES_CHECK(obj);
+
    Efl_Ui_Dir dir;
 
    if (horizontal)
@@ -780,6 +784,8 @@ elm_panes_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
 EAPI Eina_Bool
 elm_panes_horizontal_get(const Evas_Object *obj)
 {
+   EFL_UI_PANES_CHECK(obj) EINA_FALSE;
+
    Efl_Ui_Dir dir = efl_ui_direction_get(obj);
 
    if (dir == EFL_UI_DIR_HORIZONTAL)
