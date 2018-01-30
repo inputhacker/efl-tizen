@@ -606,7 +606,9 @@ _efl_ui_clock_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Clock_Data *sd)
      {
         field = sd->field_list + idx;
         // TODO: Different group name for each field_obj may be needed.
-        elm_widget_element_update(obj, field->item_obj, PART_NAME_ARRAY[idx]);
+        //TIZEN_ONLY(20180125): This is not Tizen UX.
+        //elm_widget_element_update(obj, field->item_obj, PART_NAME_ARRAY[idx]);
+        //
         if (field->fmt_exist && field->visible)
           {
              snprintf(buf, sizeof(buf), EDC_PART_FIELD_ENABLE_SIG_STR,
@@ -977,7 +979,10 @@ _efl_ui_clock_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Clock_Data *priv)
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
    if (!elm_widget_theme_klass_get(obj))
-     elm_widget_theme_klass_set(obj, "uiclock");
+     //TIZEN_ONLY(20180125): To manintain compatibility.
+     //elm_widget_theme_klass_set(obj, "uiclock");
+     elm_widget_theme_klass_set(obj, "datetime");
+     //
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
 

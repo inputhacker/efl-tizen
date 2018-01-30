@@ -293,6 +293,8 @@ includesunstable_HEADERS = \
 	lib/elementary/elm_widget_calendar.h \
 	lib/elementary/efl_ui_calendar_private.h \
 	lib/elementary/efl_ui_check_private.h \
+	lib/elementary/efl_ui_clock_private.h \
+	lib/elementary/elm_datetime.h \
 	lib/elementary/elm_widget_clock.h \
 	lib/elementary/elm_widget_colorselector.h \
 	lib/elementary/elm_widget_conform.h \
@@ -440,7 +442,6 @@ includesub_HEADERS = \
 	lib/elementary/elm_conform.h \
 	lib/elementary/elm_conform_legacy.h \
 	lib/elementary/elm_cursor.h \
-	lib/elementary/elm_datetime.h \
 	lib/elementary/elm_dayselector.h \
 	lib/elementary/elm_dayselector_legacy.h \
 	lib/elementary/elm_debug.h \
@@ -747,7 +748,6 @@ lib_elementary_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_table_private.h \
 	lib/elementary/efl_ui_text.c \
 	lib/elementary/efl_ui_clock.c \
-	lib/elementary/efl_ui_clock_private.h \
 	lib/elementary/efl_ui_image_factory.c \
 	lib/elementary/efl_ui_focus_manager.c \
 	lib/elementary/efl_ui_focus_manager_calc.c \
