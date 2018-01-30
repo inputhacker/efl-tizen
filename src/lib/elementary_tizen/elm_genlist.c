@@ -1293,7 +1293,11 @@ _focus_bg_show(Elm_Gen_Item *it)
 
    if (!VIEW(it)) return;
    focus_bg = edje_object_data_get(VIEW(it), "focus_bg");
-   if (focus_bg && !strcmp(focus_bg, "off")) return;
+   if (focus_bg && !strcmp(focus_bg, "off"))
+     {
+        edje_object_signal_emit(wd->resize_obj, SIGNAL_FOCUS_BG_HIDE, "elm");
+        return;
+     }
 
    evas_object_geometry_get(wd->resize_obj, NULL, NULL, &w, NULL);
    top = edje_object_part_object_get(VIEW(it), "elm.padding.focus_bg.top");
@@ -2381,6 +2385,7 @@ _elm_genlist_pan_efl_canvas_group_group_calculate(Eo *obj, Elm_Genlist_Pan_Data 
 {
    Evas_Coord ox, oy, ow, oh, cvx, cvy, cvw, cvh;
    Item_Block *itb;
+   ELM_WIDGET_DATA_GET_OR_RETURN(psd->wsd->obj, wd);
 
    evas_object_geometry_get(obj, &ox, &oy, &ow, &oh);
    evas_output_viewport_get(evas_object_evas_get(obj), &cvx, &cvy, &cvw, &cvh);
@@ -2672,6 +2677,7 @@ _elm_genlist_pan_efl_canvas_group_group_calculate(Eo *obj, Elm_Genlist_Pan_Data 
           {
              if (psd->wsd->aligned_item && (psd->wsd->aligned_item != psd->wsd->adjusted_item))
                edje_object_signal_emit(VIEW(psd->wsd->aligned_item), SIGNAL_ITEM_UNHIGHLIGHTED, "elm");
+               edje_object_signal_emit(wd->resize_obj, SIGNAL_FOCUS_BG_HIDE, "elm");
              psd->wsd->aligned_item = NULL;
              psd->wsd->unhighlight_skip = EINA_TRUE;
              elm_interface_scrollable_content_region_show(WIDGET(it), x, y, ow, oh);
@@ -4606,6 +4612,8 @@ _elm_genlist_efl_ui_widget_theme_apply(Eo *obj, Elm_Genlist_Data *sd)
    elm_layout_sizing_eval(obj);
    _changed(sd->pan_obj);
 
+   edje_object_signal_emit(wsd->resize_obj, SIGNAL_FOCUS_BG_HIDE, "elm");
+
    if (wsd->scroll_item_align_enable && sd->aligned_item)
      elm_genlist_item_show(EO_OBJ(sd->aligned_item), ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
 
@@ -6085,6 +6093,10 @@ _scroll_animate_start_cb(Evas_Object *obj,
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
    evas_object_smart_callback_call(obj, SIG_SCROLL_ANIM_START, NULL);
+   if (wd->scroll_item_align_enable)
+     {
+        edje_object_signal_emit(wd->resize_obj, SIGNAL_FOCUS_BG_HIDE, "elm");
+     }
 }
 
 static void
@@ -6108,6 +6120,10 @@ _scroll_drag_start_cb(Evas_Object *obj,
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
    evas_object_smart_callback_call(obj, SIG_SCROLL_DRAG_START, NULL);
+   if (wd->scroll_item_align_enable)
+     {
+        edje_object_signal_emit(wd->resize_obj, SIGNAL_FOCUS_BG_HIDE, "elm");
+     }
 }
 
 static Eina_Bool
