@@ -5379,6 +5379,7 @@ static void
 _item_min_calc(Elm_Gen_Item *it)
 {
    Elm_Genlist_Data *sd = GL_IT(it)->wsd;
+   ELM_WIDGET_DATA_GET_OR_RETURN(WIDGET(it), wd);
    Evas_Coord mw = 0, mh = 0;
    Evas_Coord vw = 0;
 
@@ -5434,6 +5435,8 @@ _item_min_calc(Elm_Gen_Item *it)
           evas_object_resize(VIEW(it), GL_IT(it)->w, GL_IT(it)->h);
      }
    //
+   if (wd->scroll_item_align_enable && (sd->aligned_item == it))
+     _focus_bg_show(sd->aligned_item);
 }
 
 static void
