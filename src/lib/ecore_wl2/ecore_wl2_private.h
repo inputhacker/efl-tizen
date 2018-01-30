@@ -822,4 +822,6 @@ Eina_Hash *_ecore_wl2_window_hash_get(void);
 EAPI extern int _ecore_wl2_event_window_www;
 EAPI extern int _ecore_wl2_event_window_www_drag;
 
+Ecore_Wl2_Output *_ecore_wl2_output_find(Ecore_Wl2_Display *dsp, struct wl_output *op);
+
 #endif
