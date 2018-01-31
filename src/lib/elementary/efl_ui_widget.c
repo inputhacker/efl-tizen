@@ -7327,11 +7327,26 @@ static Eo *_item_at_point_get(Evas_Object *obj, int x, int y)
 EOLIAN static Eo *
 _efl_ui_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool screen_coords, int x, int y)
 {
+   Elm_Atspi_Role role;
    Eina_List *l;
    Evas_Object *stack_item;
 
-   if(strcmp("Efl_Ui_Win", efl_class_name_get(efl_class_get(obj))))
-     return _accessible_at_point_top_down_get(obj, _pd, screen_coords, x, y);
+   role = efl_access_role_get(obj);
+
+   switch (role)
+     {
+      case ELM_ATSPI_ROLE_WINDOW:
+      case ELM_ATSPI_ROLE_INPUT_METHOD_WINDOW:
+      case ELM_ATSPI_ROLE_DIALOG:
+      case ELM_ATSPI_ROLE_PAGE_TAB:
+      case ELM_ATSPI_ROLE_POPUP_MENU:
+      case ELM_ATSPI_ROLE_PANEL:
+        DBG("Find accessible from bottom");
+        break;
+
+      default:
+        return _accessible_at_point_top_down_get(obj, _pd, screen_coords, x, y);
+     }
 
    _coordinate_system_based_point_translate(obj, screen_coords, &x, &y);
 
@@ -7355,8 +7370,6 @@ _efl_ui_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_
                {
                   Eina_Bool acceptable = EINA_FALSE;
                   Eo *item_child;
-
-                  Efl_Access_Role role;
                   role = efl_access_role_get(smart_parent);
                   switch (role)
                     {
