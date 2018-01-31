@@ -3646,6 +3646,9 @@ _elm_win_wlwin_type_update(Efl_Ui_Win_Data *sd)
       case ELM_WIN_DND:
         wtype = ECORE_WL2_WINDOW_TYPE_DND;
         break;
+      case ELM_WIN_NOTIFICATION:
+        wtype = ECORE_WL2_WINDOW_TYPE_NOTIFICATION;
+        break;
       default:
         wtype = ECORE_WL2_WINDOW_TYPE_NONE;
      }

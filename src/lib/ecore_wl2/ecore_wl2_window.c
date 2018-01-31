@@ -1903,15 +1903,52 @@ ecore_wl2_window_find(unsigned int id)
 }
 //
 
+//TIZEN_ONLY(20180202): Fix to send a proper window type value to the server
+static inline uint32_t
+_convert_to_tzsh_type(Ecore_Wl2_Window_Type type)
+{
+   switch (type)
+     {
+        case ECORE_WL2_WINDOW_TYPE_NONE:
+          return TIZEN_POLICY_WIN_TYPE_NONE;
+        case ECORE_WL2_WINDOW_TYPE_TOPLEVEL:
+          return TIZEN_POLICY_WIN_TYPE_TOPLEVEL;
+        case ECORE_WL2_WINDOW_TYPE_MENU:
+          return TIZEN_POLICY_WIN_TYPE_MENU;
+        case ECORE_WL2_WINDOW_TYPE_DND:
+          return TIZEN_POLICY_WIN_TYPE_DND;
+        case ECORE_WL2_WINDOW_TYPE_CUSTOM:
+          return TIZEN_POLICY_WIN_TYPE_CUSTOM;
+        case ECORE_WL2_WINDOW_TYPE_NOTIFICATION:
+          return TIZEN_POLICY_WIN_TYPE_NOTIFICATION;
+        case ECORE_WL2_WINDOW_TYPE_UTILITY:
+          return TIZEN_POLICY_WIN_TYPE_UTILITY;
+        case ECORE_WL2_WINDOW_TYPE_DIALOG:
+          return TIZEN_POLICY_WIN_TYPE_DIALOG;
+        case ECORE_WL2_WINDOW_TYPE_DOCK:
+          return TIZEN_POLICY_WIN_TYPE_DOCK;
+        case ECORE_WL2_WINDOW_TYPE_SPLASH:
+          return TIZEN_POLICY_WIN_TYPE_SPLASH;
+        default:
+          return TIZEN_POLICY_WIN_TYPE_NONE;
+     }
+}
+//
+
 EAPI void
 ecore_wl2_window_type_set(Ecore_Wl2_Window *window, Ecore_Wl2_Window_Type type)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
    window->type = type;
 
+   // TIZEN_ONLY(20180202): Fix to send a proper window type value to the server
+   uint32_t tzsh_type;
+   tzsh_type = _convert_to_tzsh_type(type);
+   //
+
 // TIZEN_ONLY(20171114)
    if ((window->surface) && (window->display->wl.tz_policy))
-     tizen_policy_set_type(window->display->wl.tz_policy, window->surface, (uint32_t)type);
+     tizen_policy_set_type(window->display->wl.tz_policy, window->surface, (uint32_t)tzsh_type);
 //
 }
 
