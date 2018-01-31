@@ -9371,6 +9371,8 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
                {
                   Evas_Object *tmp = _precreated_win_obj;
                   TRAP(sd, name_class_set, name, _elm_appname);
+                  //TIZEN_ONLY(20180131):Added code to set the window title
+                  TRAP(sd, title_set, sd->title ? sd->title : name);
                   _precreated_win_obj = NULL;
                   if (sd->type != type)
                     efl_ui_win_type_set(tmp, type);
