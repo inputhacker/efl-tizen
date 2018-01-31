@@ -4752,6 +4752,23 @@ _elm_win_frame_cb_resize_start(void *data, Evas_Object *obj EINA_UNUSED,
    _win_move_resize_start(sd, mode);
 }
 
+//TIZEN_ONLY(20180131):Added resize,end signal for mouse up
+static void
+_elm_win_frame_cb_resize_end(void *data,
+                             Evas_Object *obj EINA_UNUSED,
+                             const char *sig EINA_UNUSED,
+                             const char *source EINA_UNUSED)
+{
+#ifdef HAVE_ELEMENTARY_WL2
+   ELM_WIN_DATA_GET(data, sd);
+
+   if (!sd) return;
+   if (sd->resizing) sd->resizing = EINA_FALSE;
+#else
+   (void)data;
+#endif
+}
+//
 static void
 _elm_win_frame_cb_minimize(void *data,
                            Evas_Object *obj EINA_UNUSED,
@@ -5062,6 +5079,11 @@ _elm_win_frame_add(Efl_Ui_Win_Data *sd, const char *element, const char *style)
    edje_object_signal_callback_add
      (sd->frame_obj, "elm,action,resize,start", "*",
      _elm_win_frame_cb_resize_start, obj);
+//TIZEN_ONLY(20180131):Added resize,end signal for mouse up
+   edje_object_signal_callback_add
+     (sd->frame_obj, "elm,action,resize,end", "*",
+     _elm_win_frame_cb_resize_end, obj);
+//
    edje_object_signal_callback_add
      (sd->frame_obj, "elm,action,minimize", "elm",
      _elm_win_frame_cb_minimize, obj);

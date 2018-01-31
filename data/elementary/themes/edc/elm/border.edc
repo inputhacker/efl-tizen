@@ -1116,6 +1116,10 @@ group { name: "elm/border/base/default";
          action: SIGNAL_EMIT "elm,action,resize,start" "elm.event.resize.br";
       }
       program {
+         signal: "mouse,up,1"; source: "elm.event.resize.br";
+         action: SIGNAL_EMIT "elm,action,resize,end" "elm.event.resize.br";
+      }
+      program {
          signal: "mouse,clicked,1"; source: "elm.event.icon";
          action: SIGNAL_EMIT "elm,action,menu" "elm";
       }
