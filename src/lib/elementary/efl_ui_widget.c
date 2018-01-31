@@ -7663,6 +7663,10 @@ _efl_ui_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Dat
 EOLIAN static Eina_Bool
 _efl_ui_widget_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
 {
+   if (!obj) return EINA_FALSE;
+   if (!_elm_atspi_enabled())
+      return EINA_FALSE;
+
    elm_object_accessibility_highlight_set(obj, EINA_FALSE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
@@ -7688,6 +7692,9 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
 
    if (!sd) return EINA_FALSE;
    if (!sd->view) return EINA_FALSE;
+   if (!_elm_atspi_enabled())
+      return EINA_FALSE;
+
    // TIZEN_ONLY(20171020) : atspi : Do not send signal, if current object and highlight object are same
    if (_elm_object_accessibility_currently_highlighted_get() == obj)
       return EINA_FALSE;
@@ -7722,6 +7729,9 @@ EOLIAN static Eina_Bool
 _elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_Data *sd)
 {
    if (!obj) return EINA_FALSE;
+   if (!_elm_atspi_enabled())
+     return EINA_FALSE;
+
    elm_object_accessibility_highlight_set(sd->eo_obj, EINA_FALSE);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
