@@ -130,6 +130,9 @@ typedef struct _Elm_Atspi_Bridge_Data
    Eo *root;
    Eina_List *socket_queue;
    Eina_List *plug_queue;
+   // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
+   Eina_List *connected_plugs_sockets;
+   //
    Evas_Point socket_offset;
    //
    Eina_Bool connected : 1;
@@ -191,6 +194,9 @@ static void _object_get_bus_name_and_path(Eo *bridge, const Eo *obj, const char 
 // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
 static Eo *_calculate_navigable_accessible_at_point(Eo *bridge, Eo *root, Eina_Bool coord_type, int x, int y);
 static Eo *_calculate_neighbor(Eo *bridge, Eo *root, Eo *current, Eina_Bool forward, int search_mode);
+//
+// TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
+Eo *plug_type_proxy_get(Eo *obj, Evas_Object *widget);
 //
 // utility functions
 static void _iter_interfaces_append(Eldbus_Message_Iter *iter, const Eo *obj);
@@ -1083,9 +1089,9 @@ _accessible_get_navigable_at_point(const Eldbus_Service_Interface *iface EINA_UN
 
              EINA_LIST_FOREACH(wd->subobjs, l, widget)
                {
-                  Eo *proxy;
-
-                  proxy = evas_object_data_get(widget, "__widget_proxy");
+                  // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
+                  Eo *proxy = plug_type_proxy_get(parent, widget);
+                  //
                   if (proxy)
                     {
                        int px, py, pw, ph;
@@ -6140,6 +6146,13 @@ static void
 _a11y_connection_shutdown(Eo *bridge)
 {
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(bridge, pd);
+
+   // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
+   Eo *socket;
+   EINA_LIST_FREE(pd->connected_plugs_sockets, socket)
+      evas_object_data_set(socket, "__proxy_invalid", (void*)1);
+   //
+
    Eldbus_Pending *pending;
 
    if (pd->connected)
@@ -6746,10 +6759,23 @@ obj_err:
    return NULL;
 }
 
+static Eina_Bool _from_list_remove(void *data, Eo *obj, const Efl_Event_Description *desc EINA_UNUSED, void *event_info EINA_UNUSED)
+{
+   Eina_List **list = data;
+   *list = eina_list_remove(*list, obj);
+   return EINA_TRUE;
+}
+
 EOLIAN void
 _elm_atspi_bridge_efl_object_destructor(Eo *obj, Elm_Atspi_Bridge_Data *pd)
 {
    _a11y_connection_shutdown(obj);
+
+   Eo *socket_elem = NULL;
+   EINA_LIST_FREE(pd->connected_plugs_sockets, socket_elem)
+     {
+       efl_event_callback_del(socket_elem, EFL_EVENT_DEL, _from_list_remove, &pd->connected_plugs_sockets);
+     }
 
    if (pd->bus_obj) eldbus_object_unref(pd->bus_obj);
    if (pd->session_bus) eldbus_connection_unref(pd->session_bus);
@@ -6950,12 +6976,22 @@ _plug_address_discover(Eldbus_Connection *conn, Eo *proxy, const char *svc_bus, 
    eldbus_object_send(dobj, msg, _socket_addr_get_cb, proxy, 100);
 }
 
+static void _add_plug_or_socket_to_connected_list_in_bridge(Eo *plug_or_socket)
+{
+   Eo *bridge = _elm_atspi_bridge_get();
+   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(bridge, pd);
+   pd->connected_plugs_sockets = eina_list_append(pd->connected_plugs_sockets, plug_or_socket);
+   efl_event_callback_add(plug_or_socket, EFL_EVENT_DEL, _from_list_remove, &pd->connected_plugs_sockets);
+}
+
 static void _plug_connect(Eldbus_Connection *conn, Eo *proxy)
 {
    const char *bus, *path;
 
    bus = efl_key_data_get(proxy, "__svc_bus");
    path = efl_key_data_get(proxy, "__svc_path");
+
+   _add_plug_or_socket_to_connected_list_in_bridge(proxy);
 
    if (bus && path)
      {
@@ -6974,12 +7010,6 @@ static void _plug_connect(Eldbus_Connection *conn, Eo *proxy)
         _plug_embedded_send(conn, proxy, bus, path);
      }
    return;
-}
-
-static void _from_list_remove(void *data, const Efl_Event *event)
-{
-   Eina_List **list = data;
-   *list = eina_list_remove(*list, event->object);
 }
 
 EAPI void elm_atspi_bridge_utils_proxy_connect(Eo *proxy)
@@ -7127,6 +7157,7 @@ static void _socket_ifc_create(Eldbus_Connection *conn, Eo *proxy)
    pd->interfaces.socket =
       eldbus_service_interface_fallback_register(pd->a11y_bus, ELM_ACCESS_OBJECT_PATH_PREFIX2, &socket_iface_desc);
    //
+   _add_plug_or_socket_to_connected_list_in_bridge(proxy);
 }
 
 EAPI void elm_atspi_bridge_utils_proxy_listen(Eo *proxy)

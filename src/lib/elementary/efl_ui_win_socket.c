@@ -71,13 +71,20 @@ _access_socket_proxy_listen(Eo * obj)
    if ((plug_id = evas_object_data_get(obj, "___PLUGID")) != NULL)
      {
         char *svcname, *svcnum;
-        if (!sd->socket_proxy && _elm_atspi_bridge_plug_id_split(plug_id, &svcname, &svcnum))
-          {
+       // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
+       if (_elm_atspi_bridge_plug_id_split(plug_id, &svcname, &svcnum))
+         {
+            if (sd->socket_proxy)
+              {
+                if (!evas_object_data_get(sd->socket_proxy, "__proxy_invalid")) return;
+                efl_unref(sd->socket_proxy);
+              }
              sd->socket_proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_SOCKET);
              elm_atspi_bridge_utils_proxy_listen(sd->socket_proxy);
              free(svcname);
              free(svcnum);
           }
+       //
      }
 }
 

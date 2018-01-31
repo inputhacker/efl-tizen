@@ -5934,8 +5934,8 @@ _on_ewk_del(void *data, const Efl_Event *desc EINA_UNUSED)
 //
 
 //TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
-static Eo *
-_plug_type_proxy_get(Eo *obj, Evas_Object *widget)
+Eo *
+plug_type_proxy_get(Eo *obj, Evas_Object *widget)
 {
    Eo *proxy = NULL;
    const char *plug_id;
@@ -5947,7 +5947,13 @@ _plug_type_proxy_get(Eo *obj, Evas_Object *widget)
         efl_access_attribute_append(efl_super(obj, MY_CLASS), "___PlugID", plug_id);
 
         proxy = evas_object_data_get(widget, "__widget_proxy");
-        if (proxy) return proxy;
+        // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
+        if (proxy)
+          {
+            if (!evas_object_data_get(proxy, "__proxy_invalid")) return proxy;
+            evas_object_data_del(widget, "__widget_proxy");
+          }
+        //
 
         if (_elm_atspi_bridge_plug_id_split(plug_id, &svcname, &svcnum))
           {
@@ -5977,8 +5983,7 @@ elm_widget_atspi_plug_type_proxy_get(Evas_Object *obj)
    Eo *proxy = NULL;
    EINA_LIST_FOREACH(wd->subobjs, l, widget)
      {
-        if (evas_object_data_get(widget, "___PLUGID"))
-           proxy = _plug_type_proxy_get(obj, widget);
+        proxy = plug_type_proxy_get(obj, widget);
         if (proxy) break;
      }
    return proxy;
@@ -6019,7 +6024,7 @@ _efl_ui_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Dat
         /* This assumes that only one proxy exists in obj */
         if (!proxy)
           {
-             proxy = _plug_type_proxy_get(obj, widget);
+             proxy = plug_type_proxy_get(obj, widget);
              if (proxy)
                {
                   accs = eina_list_append(accs, proxy);
@@ -7263,6 +7268,11 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
                    proxy = evas_object_data_get(smart_parent, "__widget_proxy");
                    if (proxy)
                      {
+                        // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
+                        Eo *parent;
+                        parent = efl_access_parent_get(smart_parent);
+                        proxy = plug_type_proxy_get(parent, smart_parent);
+                        //
                         evas_object_geometry_get(smart_parent, &px, &py, &pw, &ph);
                         if (x >= px && x <= px + pw && y >= py && y <= py +ph)
                           {
