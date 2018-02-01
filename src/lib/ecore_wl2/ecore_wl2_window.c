@@ -154,6 +154,27 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
      _ecore_wl2_window_deactivate_send(win);
 }
 
+//TIZEN_ONLY(20180201) : add function to set window size by client.
+static void
+_ecore_wl2_window_configure_send_by_client(Ecore_Wl2_Window *win)
+{
+   Ecore_Wl2_Event_Window_Configure *ev;
+
+   ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Configure));
+   if (!ev) return;
+
+   ev->win = win->id;
+   ev->event_win = win->id;
+   ev->x = win->saved.x;
+   ev->y = win->saved.y;
+   ev->w = win->set_config.geometry.w;
+   ev->h = win->set_config.geometry.h;
+   ev->edges = !!win->req_config.resizing;
+
+   ecore_event_add(ECORE_WL2_EVENT_WINDOW_CONFIGURE, ev, NULL, NULL);
+}
+//
+
 static void
 _configure_complete(Ecore_Wl2_Window *window)
 {
@@ -755,9 +776,13 @@ _ecore_wl2_window_tz_ext_init(Ecore_Wl2_Window *window)
                                               (uint32_t)angle, x, y, w, h);
 
              if ((rot == (i * 90)) &&
-                 ((window->saved.w != w) || (window->saved.h != h)))
+                 ((window->set_config.geometry.w != w) || (window->set_config.geometry.h != h)))
                {
-                  _ecore_wl2_window_configure_send(window);
+                  //TIZEN_ONLY(20180201) : add function to set window size by client.
+                  window->set_config.geometry.w = w;
+                  window->set_config.geometry.h = h;
+                  _ecore_wl2_window_configure_send_by_client(window);
+                  //
                }
           }
      }
@@ -2198,9 +2223,13 @@ ecore_wl2_window_rotation_geometry_set(Ecore_Wl2_Window *win, int rot, int x, in
    rotation = ecore_wl2_window_rotation_get(win);
    if ((rotation % 90 != 0) || (rotation / 90 > 3) || (rotation < 0)) return;
    if ((i == (rotation / 90)) &&
-       ((win->saved.w != w) || (win->saved.h != h)))
+       ((win->set_config.geometry.w != w) || (win->set_config.geometry.h != h)))
      {
-        _ecore_wl2_window_configure_send(win);
+        //TIZEN_ONLY(20180201) : add function to set window size by client.
+        win->set_config.geometry.w = w;
+        win->set_config.geometry.h = h;
+        _ecore_wl2_window_configure_send_by_client(win);
+        //
      }
 }
 
