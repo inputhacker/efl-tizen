@@ -1707,7 +1707,17 @@ _touch_cb_cancel(void *data, struct wl_touch *touch EINA_UNUSED)
    ev->window = input->focus.touch->id;
    ev->event_window = ev->window;
 
-   ecore_event_add(ECORE_EVENT_MOUSE_BUTTON_CANCEL, ev, NULL, NULL);
+   ev->buttons = 1;
+
+   ev->root.x = input->pointer.sx;
+   ev->root.y = input->pointer.sy;
+   ev->x = input->pointer.sx;
+   ev->y = input->pointer.sy;
+   ev->modifiers = input->keyboard.modifiers;
+
+   ev->dev = _ecore_wl2_touch_dev_get(input, ev->window);
+
+   ecore_event_add(ECORE_EVENT_MOUSE_BUTTON_CANCEL, ev, NULL, _input_event_mouse_button_cb_free);
 //
 }
 
