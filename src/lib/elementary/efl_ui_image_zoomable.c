@@ -3107,6 +3107,7 @@ elm_photocam_image_orient_get(const Eo *obj)
 EAPI Evas_Object*
 elm_photocam_internal_image_get(const Evas_Object *obj)
 {
+   ELM_PHOTOCAM_CHECK(obj) NULL;
    EFL_UI_IMAGE_ZOOMABLE_DATA_GET_OR_RETURN_VAL(obj, sd, NULL);
 
    return sd->img;
