@@ -312,7 +312,7 @@ evas_gl_symbols(void *(*GetProcAddress)(const char *name), const char *extsn)
 #ifdef GL_GLES
 #define FINDSYMN(dst, sym, ext, typ) do { \
    if (!dst) { \
-      if (_has_extn(ext, extsn) && GetProcAddress) \
+      if (/*_has_extn(ext, extsn) &&*/ GetProcAddress) \
         dst = (typ) GetProcAddress(sym); \
       if (!dst) \
         dst = (typ) dlsym(RTLD_DEFAULT, sym); \
