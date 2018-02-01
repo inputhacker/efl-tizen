@@ -105,7 +105,7 @@ struct _Evas_Object_Table_Accessor
    EVAS_OBJECT_TABLE_DATA_GET(o, ptr);                                  \
 if (!ptr)                                                               \
 {                                                                       \
-   CRI("no widget data for object %p (%s)",                            \
+   ERR("no widget data for object %p (%s)",                            \
         o, evas_object_type_get(o));                                    \
    return;                                                              \
 }

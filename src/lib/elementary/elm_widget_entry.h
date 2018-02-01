@@ -194,7 +194,7 @@ typedef enum _Length_Unit
   ELM_ENTRY_DATA_GET(o, ptr);                        \
   if (EINA_UNLIKELY(!ptr))                           \
     {                                                \
-       CRI("No widget data for object %p (%s)",      \
+       ERR("No widget data for object %p (%s)",      \
            o, evas_object_type_get(o));              \
        return;                                       \
     }
@@ -203,7 +203,7 @@ typedef enum _Length_Unit
   ELM_ENTRY_DATA_GET(o, ptr);                         \
   if (EINA_UNLIKELY(!ptr))                            \
     {                                                 \
-       CRI("No widget data for object %p (%s)",       \
+       ERR("No widget data for object %p (%s)",       \
            o, evas_object_type_get(o));               \
        return val;                                    \
     }
