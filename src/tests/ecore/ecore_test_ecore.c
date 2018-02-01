@@ -286,7 +286,7 @@ START_TEST(ecore_test_ecore_main_loop_fd_handler_valid_flags)
    fail_if(fd_handler != NULL);
 
    if (fd_handler)
-	   ecore_main_fd_handler_del(fd_handler);
+     ecore_main_fd_handler_del(fd_handler);
 
    close(comm[0]);
    close(comm[1]);
