@@ -22,6 +22,10 @@ _elm_atspi_app_object_efl_object_destructor(Eo *obj EINA_UNUSED, Elm_Atspi_App_O
 {
    if (_pd->descr) eina_stringshare_del(_pd->descr);
 
+   //TIZEN_ONLY(20160926): attributes get, endless recursion fix.
+   efl_access_attributes_clear(obj);
+   //
+
    efl_destructor(efl_super(obj, ELM_ATSPI_APP_OBJECT_CLASS));
 }
 
