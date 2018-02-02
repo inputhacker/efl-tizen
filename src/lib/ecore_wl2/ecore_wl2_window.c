@@ -997,6 +997,10 @@ ecore_wl2_window_new(Ecore_Wl2_Display *display, Ecore_Wl2_Window *parent, int x
    win->configured.edges = 0;
    //
 
+   // TIZEN_ONLY(20180202) : Set default type to keep backward compat.
+   win->type = ECORE_WL2_WINDOW_TYPE_TOPLEVEL;
+   // END
+
    //TIZEN_ONLY(20171115): support output transform
    win->ignore_output_transform = EINA_TRUE;
    //
