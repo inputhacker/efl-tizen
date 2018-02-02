@@ -5795,7 +5795,7 @@ EOLIAN const char*
 _elm_widget_item_efl_access_description_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
 {
    const char *ret = NULL;
-   ret = efl_access_description_get(obj);
+   ret = efl_access_description_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
    if (ret) return ret;
 
 #ifdef HAVE_GETTEXT
