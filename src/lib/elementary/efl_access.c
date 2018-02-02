@@ -336,7 +336,7 @@ _efl_access_role_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, Efl_Access_Role r
      {
         pd->role = role;
         //TIZEN_ONLY(20160708) Do not send role changed signal - 10000 list items send 10000 IPC.
-        efl_access_role_changed_signal_emit(obj);
+        //efl_access_role_changed_signal_emit(obj);
         //
      }
 }
