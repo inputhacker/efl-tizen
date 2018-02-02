@@ -4171,7 +4171,12 @@ _elm_toolbar_efl_access_selection_is_child_selected(Eo *obj EINA_UNUSED, Elm_Too
      {
         if (child_index-- == 0)
           {
-             return elm_toolbar_item_selected_get(EO_OBJ(item));
+             //TIZEN_ONLY(20160708): if auto selected item feature is enabled for navigation style.
+             if ((pd->auto_selected_last_item == EO_OBJ(item)) && (pd->select_mode == ELM_OBJECT_SELECT_MODE_NONE))
+               return EINA_TRUE;
+             else
+               return elm_toolbar_item_selected_get(EO_OBJ(item));
+             //
           }
      }
    return EINA_FALSE;
@@ -4360,7 +4365,7 @@ _elm_toolbar_efl_ui_focus_composition_prepare(Eo *obj, Elm_Toolbar_Data *pd)
 /***********************************************************************************
  * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
  ***********************************************************************************/
-/** 
+/**
  * elm_widget_class_color_set is applicable only to LAYOUT class.
  * Since elm_toolbar does not inherit elm_layout,
  * this needs to be implemented.
