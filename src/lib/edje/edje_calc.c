@@ -1638,7 +1638,6 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
         if ((chosen_desc->text.fit_x) || (chosen_desc->text.fit_y))
           {
              double orig_scale = 1.0;
-             double orig_ellipsis = -1.0;
              double result_scale;
              double fit_x_scale;
              double fit_y_scale;
