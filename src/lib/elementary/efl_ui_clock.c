@@ -1040,7 +1040,9 @@ _efl_ui_clock_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Clock_Data *priv)
 
    _field_list_init(obj);
    _reload_format(obj);
-   _ticker(obj);
+   //TIZEN_ONLY(20180205): This is not tizen UX.
+   //_ticker(obj);
+   //
 
    /* TIZEN_ONLY(20180111): elm_widget_can_focus_set before module init for support TV UX */
    //elm_widget_can_focus_set(obj, EINA_TRUE);
