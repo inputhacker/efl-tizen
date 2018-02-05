@@ -70,7 +70,12 @@ static int _ecore_evas_fps_debug = 0;
 static const Efl_Event_Description *_event_description_get(Efl_Pointer_Action action);
 
 //RENDER_SYNC
+//TIZEN_ONLY(20180205): disable ecore_evas_render_sync feature until stable state
+/*
 static int _ecore_evas_render_sync = 1;
+*/
+static int _ecore_evas_render_sync = 0;
+//
 
 // TIZEN_ONLY(20171130) to prevent the render freeze
 static Eina_Bool _ee_idle_enter = EINA_FALSE;
@@ -670,7 +675,11 @@ ecore_evas_init(void)
    ecore_evas_idle_exiter =
      ecore_idle_exiter_add(_ecore_evas_idle_exiter, NULL);
    if (getenv("ECORE_EVAS_FPS_DEBUG")) _ecore_evas_fps_debug = 1;
+//TIZEN_ONLY(20180205): disable ecore_evas_render_sync feature until stable state
+/*
    if (getenv("ECORE_EVAS_RENDER_NOSYNC")) _ecore_evas_render_sync = 0;
+*/
+   if (getenv("ECORE_EVAS_RENDER_SYNC")) _ecore_evas_render_sync = 1;
    if (_ecore_evas_fps_debug) _ecore_evas_fps_debug_init();
 
 #ifdef BUILD_ECORE_EVAS_EWS
