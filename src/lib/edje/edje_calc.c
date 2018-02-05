@@ -2167,12 +2167,13 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
      }
 }
 
+/* TIZEN_ONLY(20180205): don't calculate textblock twice
 static void
 _edje_textblock_recalc_apply(Edje *ed, Edje_Real_Part *ep,
                              Edje_Calc_Params *params,
                              Edje_Part_Description_Text *chosen_desc)
 {
-   /* FIXME: this is just an hack. */
+   // FIXME: this is just an hack.
    FLOAT_T sc;
    sc = DIV(ed->scale, ed->file->base_scale);
    if (sc == ZERO) sc = DIV(_edje_scale, ed->file->base_scale);
@@ -2182,6 +2183,8 @@ _edje_textblock_recalc_apply(Edje *ed, Edje_Real_Part *ep,
                                            NULL, NULL, NULL, NULL);
      }
 }
+ */
+/* END */
 
 static void
 _edje_part_recalc_single_text(FLOAT_T sc EINA_UNUSED,
@@ -5440,7 +5443,10 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
              break;
 
            case EDJE_PART_TYPE_TEXTBLOCK:
+             /* TIZEN_ONLY(20180205): don't calculate textblock twice
              _edje_textblock_recalc_apply(ed, ep, pf, (Edje_Part_Description_Text *)chosen_desc);
+              */
+             /* END */
              break;
 
            case EDJE_PART_TYPE_VECTOR:
