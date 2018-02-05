@@ -1639,7 +1639,6 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
             (TO_INT(params->eval.w) > 0) && (TO_INT(params->eval.h) > 0))
           {
              double orig_scale = 1.0;
-             double orig_ellipsis = -1.0;
              double result_scale;
              double fit_x_scale;
              double fit_y_scale;
