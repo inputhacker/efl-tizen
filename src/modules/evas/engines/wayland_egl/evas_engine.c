@@ -1358,12 +1358,15 @@ _native_cb_bind(void *data, void *image)
                {
                   if (glsym_glEGLImageTargetTexture2DOES)
                     {
-                       if (getenv("EVAS_GL_EGL_SYNC_ON"))
+                       if (getenv("EVAS_GL_EGL_SYNC_ON") && glsym_eglWaitSyncKHR)
                          {
                             wait_result = glsym_eglWaitSyncKHR(ob->egl_disp, ob->egl_fence, 0);
                             if (!wait_result)
                               ERR("eglWaitSync failed");
-                            destroy_result = glsym_eglDestroySyncKHR(ob->egl_disp, ob->egl_fence);
+
+                            if (glsym_eglDestroySyncKHR)
+                              destroy_result = glsym_eglDestroySyncKHR(ob->egl_disp, ob->egl_fence);
+
                             if (!destroy_result)
                               ERR("eglDestroySync failed");
                          }
@@ -1408,9 +1411,10 @@ eng_gl_get_pixels(void *data EINA_UNUSED, Evas_Object_Image_Pixels_Get_Cb cb, vo
    if (!(ob = eng_get_ob(re))) return;
    cb(get_pixels_data, o);
 
-   if (getenv("EVAS_GL_EGL_SYNC_ON"))
+   if (getenv("EVAS_GL_EGL_SYNC_ON") && glsym_eglWaitSyncKHR)
      {
-        ob->egl_fence = glsym_eglCreateSyncKHR(ob->egl_disp, EGL_SYNC_FENCE_KHR, NULL);
+        if (glsym_eglCreateSyncKHR)
+          ob->egl_fence = glsym_eglCreateSyncKHR(ob->egl_disp, EGL_SYNC_FENCE_KHR, NULL);
 
         if (ob->egl_fence == EGL_NO_SYNC)
           ERR("eglCreateSync failed");
