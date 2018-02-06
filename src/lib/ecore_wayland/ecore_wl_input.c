@@ -637,7 +637,7 @@ _ecore_wl_input_del(Ecore_Wl_Input *input)
 
    EINA_LIST_FREE(input->devices, dev)
      {
-        if (dev->tz_device) tizen_input_device_destroy(dev->tz_device);
+        if (dev->tz_device) tizen_input_device_release(dev->tz_device);
         if (dev->name) eina_stringshare_del(dev->name);
         if (dev->identifier) eina_stringshare_del(dev->identifier);
         dev->seat = NULL;
@@ -905,6 +905,8 @@ _ecore_wl_input_cb_keyboard_keymap(void *data, struct wl_keyboard *keyboard EINA
         return;
      }
 
+   if (input->xkb.keymap) xkb_map_unref(input->xkb.keymap);
+
    input->xkb.keymap =
      xkb_map_new_from_string(input->display->xkb.context, map,
                              XKB_KEYMAP_FORMAT_TEXT_V1, 0);
@@ -913,6 +915,7 @@ _ecore_wl_input_cb_keyboard_keymap(void *data, struct wl_keyboard *keyboard EINA
    close(fd);
 
    if (!(input->xkb.keymap)) return;
+   if (input->xkb.state) xkb_state_unref(input->xkb.state);
    if (!(input->xkb.state = xkb_state_new(input->xkb.keymap)))
      {
         xkb_map_unref(input->xkb.keymap);
@@ -944,6 +947,7 @@ _ecore_wl_input_cb_keyboard_keymap(void *data, struct wl_keyboard *keyboard EINA
    if (!_ecore_wl_input_keymap_update_send(input))
      {
         xkb_map_unref(input->xkb.keymap);
+        xkb_state_unref(input->xkb.state);
         input->xkb.keymap = NULL;
         return;
      }
