@@ -14,7 +14,6 @@
 
 
 static Eina_Bool _key_action_activate(Evas_Object *obj, const char *params);
-static void _state_active(Evas_Object *obj, Efl_Ui_Nstate_Data *sd);
 
 static const Elm_Action key_actions[] = {
    {"activate", _key_action_activate},
@@ -117,14 +116,12 @@ _efl_ui_nstate_value_set(Eo *obj, Efl_Ui_Nstate_Data *pd, int state)
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_efl_ui_nstate_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Nstate_Data *pd)
+_efl_ui_nstate_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Nstate_Data *pd EINA_UNUSED)
 {
    Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
 
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
    if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
-
-   _state_signal_emit(obj, pd);
 
    return int_ret;
 }
