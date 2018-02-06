@@ -7132,6 +7132,9 @@ _efl_canvas_text_efl_object_constructor(Eo *eo_obj, Efl_Canvas_Text_Data *class_
    o->cursor = evas_object_textblock_cursor_new(eo_obj);
    //XXX: empty the list hacky but we need o->cursors to not contain o->cursor
    o->cursors = eina_list_remove_list(o->cursors, o->cursors);
+   /* TIZEN_ONLY(20180206): Add missing initialization code for ellipsis. */
+   o->ellipsis = -1.0;
+   /* END */
    _format_command_init();
    evas_object_textblock_init(eo_obj);
 
