@@ -19,7 +19,6 @@ typedef struct
 } Efl_Ui_Nstate_Data;
 
 static Eina_Bool _key_action_activate(Evas_Object *obj, const char *params);
-static void _state_active(Evas_Object *obj, Efl_Ui_Nstate_Data *sd);
 
 static const Elm_Action key_actions[] = {
    {"activate", _key_action_activate},
@@ -64,18 +63,6 @@ _next_state_set(Efl_Ui_Nstate_Data *sd)
    if (sd->state == sd->nstate) sd->state = 0;
 }
 
-static void
-_state_active(Evas_Object *obj, Efl_Ui_Nstate_Data *sd)
-{
-   char buf[64];
-
-   sprintf(buf, "elm,state,changed,%d", sd->state);
-   elm_layout_signal_emit(obj, buf, "elm");
-   edje_object_message_signal_process(elm_layout_edje_get(obj));
-   elm_layout_sizing_eval(obj);
-   efl_event_callback_legacy_call(obj, EFL_UI_NSTATE_EVENT_CHANGED, NULL);
-}
-
 EOLIAN static int
 _efl_ui_nstate_count_get(Eo *obj EINA_UNUSED, Efl_Ui_Nstate_Data *pd)
 {
@@ -107,23 +94,20 @@ _is_valid_state(Efl_Ui_Nstate_Data *sd, int state)
 }
 
 EOLIAN static void
-_efl_ui_nstate_value_set(Eo *obj, Efl_Ui_Nstate_Data *pd, int state)
+_efl_ui_nstate_value_set(Eo *obj EINA_UNUSED, Efl_Ui_Nstate_Data *pd, int state)
 {
    if (!_is_valid_state(pd, state)) return;
 
    pd->state = state;
-   _state_active(obj, pd);
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
-_efl_ui_nstate_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Nstate_Data *pd)
+_efl_ui_nstate_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Nstate_Data *pd EINA_UNUSED)
 {
    Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
 
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
    if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
-
-   _state_active(obj, pd);
 
    return int_ret;
 }
@@ -136,10 +120,9 @@ _key_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
 }
 
 EOLIAN static void
-_efl_ui_nstate_activate(Eo *obj, Efl_Ui_Nstate_Data *_pd)
+_efl_ui_nstate_activate(Eo *obj EINA_UNUSED, Efl_Ui_Nstate_Data *_pd)
 {
    _next_state_set(_pd);
-   _state_active(obj, _pd);
 }
 
 EOLIAN static void
