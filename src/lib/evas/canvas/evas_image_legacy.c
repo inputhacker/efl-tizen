@@ -540,6 +540,28 @@ evas_object_image_pixels_get_callback_set(Eo *eo_obj, Evas_Object_Image_Pixels_G
    EINA_COW_PIXEL_WRITE_END(o, pixi_write);
 }
 
+// TIZEN_ONLY : noti callback
+/* E20 need to a noti callback for this object.
+ * so we register the callback temporarily
+ * This patch can be removed or modified later.
+ */
+EAPI void
+evas_image_pixels_noti_callback_set(Eo *eo_obj, Evas_Object_Image_Pixels_Get_Cb func, void *data)
+{
+  EVAS_IMAGE_API(eo_obj);
+
+   Evas_Object_Protected_Data *obj = efl_data_scope_get(eo_obj, EFL_CANVAS_OBJECT_CLASS);
+   Evas_Image_Data *o = efl_data_scope_get(eo_obj, EFL_CANVAS_IMAGE_INTERNAL_CLASS);
+
+   evas_object_async_block(obj);
+   EINA_COW_PIXEL_WRITE_BEGIN(o, pixi_write)
+     {
+        pixi_write->func.noti_pixels = func;
+        pixi_write->func.noti_pixels_data = data;
+     }
+   EINA_COW_PIXEL_WRITE_END(o, pixi_write);
+}
+
 EAPI void
 evas_object_image_pixels_dirty_set(Eo *eo_obj, Eina_Bool dirty)
 {

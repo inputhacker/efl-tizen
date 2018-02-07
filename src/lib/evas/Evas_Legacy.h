@@ -5727,7 +5727,6 @@ EAPI Eina_Bool evas_object_image_pixels_dirty_get(const Evas_Object *obj);
  */
 EAPI void evas_object_image_pixels_get_callback_set(Evas_Object *obj, Evas_Object_Image_Pixels_Get_Cb func, void *data) EINA_ARG_NONNULL(2);
 
-
 /**
  * @typedef Evas_Video_Surface
  *
@@ -8043,6 +8042,27 @@ EAPI Eina_Bool                                evas_textblock_cursor_cluster_prev
 /*******
  * END *
  *******/
+
+/************************************************************************
+ * TIZEN_ONLY(20150127): Add evas_image_pixels_noti_callback_set* APIs. *
+ ************************************************************************/
+/**
+ * @internal
+ *
+ * TIZEN_ONLY : noti callback
+ * E20 need to a noti callback for this object.
+ *
+ * so we register the callback temporarily
+ * This api can be removed or modified later.
+ *
+ * @param[in] func The callback function.
+ * @param[in] data The data pointer to be passed to @c func.
+ */
+EAPI void evas_image_pixels_noti_callback_set(Evas_Object *obj, Evas_Object_Image_Pixels_Get_Cb func, void *data);
+/*******
+ * END *
+ *******/
+
 
 #ifdef EFL_BETA_API_SUPPORT
 /**

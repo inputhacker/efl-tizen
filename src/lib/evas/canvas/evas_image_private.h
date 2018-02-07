@@ -60,6 +60,9 @@ struct _Evas_Object_Image_Pixels
       /* FIXME: no good match for eo */
       Evas_Object_Image_Pixels_Get_Cb  get_pixels;
       void                            *get_pixels_data;
+      /* TIZEN_ONLY : noti callback */
+      Evas_Object_Image_Pixels_Get_Cb  noti_pixels;
+      void                            *noti_pixels_data;
    } func;
    Eina_Hash       *images_to_free; /* pixel void* -> Evas_Image_Legacy_Pixels_Entry */
 

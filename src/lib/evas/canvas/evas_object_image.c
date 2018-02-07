@@ -1540,6 +1540,13 @@ evas_process_dirty_pixels(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, 
 {
    Eina_Bool direct_override = EINA_FALSE, direct_force_off = EINA_FALSE;
 
+   // TIZEN_ONLY : noti callback : notify the object when the engine_data exists
+   if (o->pixels->func.noti_pixels)
+     {
+       if (o->engine_data)
+         o->pixels->func.noti_pixels(o->pixels->func.noti_pixels_data, eo_obj);
+     }
+
    if (o->dirty_pixels)
      {
         if (o->pixels->func.get_pixels)
