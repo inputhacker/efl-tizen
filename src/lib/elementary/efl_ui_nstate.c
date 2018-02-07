@@ -107,12 +107,11 @@ _is_valid_state(Efl_Ui_Nstate_Data *sd, int state)
 }
 
 EOLIAN static void
-_efl_ui_nstate_value_set(Eo *obj, Efl_Ui_Nstate_Data *pd, int state)
+_efl_ui_nstate_value_set(Eo *obj EINA_UNUSED, Efl_Ui_Nstate_Data *pd, int state)
 {
    if (!_is_valid_state(pd, state)) return;
 
    pd->state = state;
-   _state_active(obj, pd);
 }
 
 EOLIAN static Efl_Ui_Theme_Apply
@@ -134,10 +133,9 @@ _key_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
 }
 
 EOLIAN static void
-_efl_ui_nstate_activate(Eo *obj, Efl_Ui_Nstate_Data *_pd)
+_efl_ui_nstate_activate(Eo *obj EINA_UNUSED, Efl_Ui_Nstate_Data *_pd)
 {
    _next_state_set(_pd);
-   _state_active(obj, _pd);
 }
 
 EOLIAN static void
