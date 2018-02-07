@@ -3358,7 +3358,7 @@ void
 _ecore_wl2_input_device_manager_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version EINA_UNUSED)
 {
    ewd->wl.tz_input_device_manager =
-   wl_registry_bind(ewd->wl.registry, id, &tizen_input_device_manager_interface, 1);
+   wl_registry_bind(ewd->wl.registry, id, &tizen_input_device_manager_interface, 2);
 
    tizen_input_device_manager_add_listener(ewd->wl.tz_input_device_manager,
                                        &_tz_input_device_mgr_listener, ewd);
