@@ -1156,6 +1156,7 @@ elm_quicklaunch_fork(int    argc,
         perror("could not fork");
         return 0;
      }
+   ecore_app_args_set(argc, (const char**)argv);
    if (postfork_func) postfork_func(postfork_data);
 
    eina_main_loop_define();
