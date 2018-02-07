@@ -2901,7 +2901,7 @@ eng_ector_begin(void *engine, void *output,
         memset(pixels, 0, stride * h);
 
         // it just uses the software backend to draw for now
-        ector_buffer_pixels_set(ector, pixels, w, h, EFL_GFX_COLORSPACE_ARGB8888, EINA_TRUE);
+        ector_buffer_pixels_set(ector, pixels, w, h, stride, EFL_GFX_COLORSPACE_ARGB8888, EINA_TRUE);
         ector_surface_reference_point_set(ector, x, y);
      }
    else
@@ -2925,7 +2925,7 @@ eng_ector_end(void *engine, void *output,
 
         eng_image_data_put(engine, glim, pixels);
         eng_image_data_put(engine, glim, pixels);
-        ector_buffer_pixels_set(ector, NULL, 0, 0, EFL_GFX_COLORSPACE_ARGB8888, EINA_TRUE);
+        ector_buffer_pixels_set(ector, NULL, 0, 0, 0, EFL_GFX_COLORSPACE_ARGB8888, EINA_TRUE);
         evas_common_cpu_end_opt();
      }
    else if (use_gl)
