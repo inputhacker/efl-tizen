@@ -97,16 +97,6 @@ ethumbfilesdir = $(datadir)/ethumb
 ethumbfiles_DATA = ethumb/checkme
 EXTRA_DIST += $(ethumbfiles_DATA)
 
-ethumbframesdir = $(datadir)/ethumb/frames
-ethumbframes_DATA = ethumb/frames/default.edj
-CLEANFILES += ethumb/frames/default.edj
-
-ethumb/frames/default.edj: ethumb/frames/default.edc
-	$(AM_V_EDJ) \
-	$(MKDIR_P) ethumb/frames/; \
-	$(EDJE_CC) $(EDJE_CC_FLAGS) -id $(srcdir)/ethumb/frames/ $< $@
-
-
 EXTRA_DIST += \
 ethumb/frames/default.edc \
 ethumb/frames/border-0.jpg

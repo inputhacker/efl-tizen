@@ -1077,7 +1077,6 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 
 %__make %{?_smp_mflags}
 
-
 %install
 %make_install
 #make datadir=%{buildroot}%{_datadir} install-examples
@@ -1691,7 +1690,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_datadir}/ethumb_client/*
 #%{_datadir}/ethumb_client/*/*
 %{_libdir}/ethumb/modules/*/*/module.so
-%{_libdir}/ethumb/modules/*/*/template.edj
+#%{_libdir}/ethumb/modules/*/*/template.edj
 %exclude %{_libdir}/ethumb_client/utils/*/ethumbd_slave
 %exclude /usr/lib/debug/%{_libdir}/ethumb_client/utils/*/ethumbd_slave.debug
 %exclude %{_bindir}/ethumb
