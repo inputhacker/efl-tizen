@@ -94,6 +94,8 @@ _ector_software_buffer_base_ector_buffer_pixels_set(Eo *obj, Ector_Software_Buff
 
    if (stride == 0)
      stride = width * pxs;
+   else if (stride < (int)(width * pxs))
+     fail ("Stride is less than minimum stride: provided %u bytes, minimum %u bytes!", stride, (width * pxs));
 
    if (pd->pixels.u8 && (pd->pixels.u8 != pixels))
      _ector_software_buffer_base_pixels_clear(obj, pd);
