@@ -1047,7 +1047,10 @@ _mouse_clicked_signal_cb(void *data EINA_UNUSED,
 {
    EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
 
-   if (sd->editable) efl_ui_text_input_panel_show(sd->entry);
+   //FIXME: Change this when efl interface theme merged.
+   //if (sd->editable) efl_ui_text_input_panel_show(sd->entry);
+   if (sd->editable) elm_entry_input_panel_show(sd->entry);
+   //
 
    efl_event_callback_legacy_call(obj, EFL_UI_EVENT_CLICKED, NULL);
 }
@@ -1551,6 +1554,9 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
      _atspi_multibuttonentry_label_register(obj, EINA_TRUE);
    //
 
+
+   //FIXME: Change this when efl interface theme merged.
+   /*
    sd->entry = efl_add(EFL_UI_TEXT_CLASS, sd->box,
                        efl_text_multiline_set(efl_added, EINA_FALSE),
                        efl_text_set(efl_added, ""),
@@ -1558,11 +1564,20 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
                        efl_ui_text_input_panel_enabled_set(efl_added, EINA_FALSE),
                        efl_ui_text_interactive_editable_set(efl_added, EINA_TRUE),
                        efl_composite_attach(obj, efl_added));
-
+   */
+   sd->entry = elm_entry_add(obj);
+   if (!sd->entry) return;
+   /* TIZEN_ONLY(20161031): apply color_class parent-child relationship to all widgets */
+   _elm_widget_color_class_parent_set(sd->entry, obj);
+   /* END */
+   elm_entry_single_line_set(sd->entry, EINA_TRUE);
    //TIZEN_ONLY(20160425): Entry property set for mobile UX.
    elm_object_style_set(sd->entry, "multibuttonentry/default");
    elm_entry_scrollable_set(sd->entry, EINA_TRUE);
+   elm_entry_cnp_mode_set(sd->entry, ELM_CNP_MODE_PLAINTEXT);
    //
+   elm_object_text_set(sd->entry, "");
+   elm_entry_input_panel_enabled_set(sd->entry, EINA_FALSE);
 
    /***********************************************************************************
     * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
@@ -1578,6 +1593,7 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
    evas_object_size_hint_align_set(sd->entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    elm_box_pack_end(sd->box, sd->entry);
+   //
 
    sd->view_state = MULTIBUTTONENTRY_VIEW_ENTRY;
 
