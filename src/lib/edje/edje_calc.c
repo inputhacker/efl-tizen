@@ -5043,7 +5043,10 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
              break;
 
            case EDJE_PART_TYPE_TEXTBLOCK:
+             /* TIZEN_ONLY(20180205): don't calculate textblock twice
              _edje_textblock_recalc_apply(ed, ep, pf, (Edje_Part_Description_Text *)chosen_desc);
+              */
+             /* END */
              break;
 
            case EDJE_PART_TYPE_VECTOR:
