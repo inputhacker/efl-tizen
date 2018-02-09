@@ -628,18 +628,27 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
          * to give size limitation as percentage.
          * ex) fit_range: 0.7 2.5; // 70% ~ 250%
          */
-        if (((chosen_desc->text.fit_x) || (chosen_desc->text.fit_y)) &&
-            (TO_INT(params->eval.w) > 0) && (TO_INT(params->eval.h) > 0))
+        if ((chosen_desc->text.fit_x) || (chosen_desc->text.fit_y))
           {
              double orig_scale = 1.0;
              double result_scale;
              double fit_x_scale;
              double fit_y_scale;
+             int given_w, given_h;
+
+             given_w = TO_INT(params->eval.w);
+             given_h = TO_INT(params->eval.h);
+
+             if (minw && *minw > given_w)
+               given_w = *minw;
+
+             if (minh && *minh > given_h)
+               given_h = *minh;
 
              if (ep->part->scale) orig_scale = TO_DOUBLE(sc);
              efl_gfx_scale_set(ep->object, orig_scale);
              evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_TRUE);
-             efl_gfx_size_set(ep->object, EINA_SIZE2D(TO_INT(params->eval.w), TO_INT(params->eval.h)));
+             efl_gfx_size_set(ep->object, EINA_SIZE2D(given_w, given_h));
 
              result_scale = 0.0;
              fit_x_scale = orig_scale;
@@ -647,11 +656,11 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
 
              if (chosen_desc->text.fit_x)
                {
-                  efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
+                  efl_canvas_text_size_native_get(ep->object, &tw, NULL);
                   if (tw > 0)
                     {
                        fit_x_scale = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale,
-                                                                                           orig_scale * TO_INT(params->eval.w) / tw);
+                                                                                           orig_scale * (double)given_w / tw);
                     }
 
                   result_scale = fit_x_scale;
@@ -659,11 +668,11 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
 
              if (chosen_desc->text.fit_y)
                {
-                  efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
+                  efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
                   if (th > 0)
                     {
-                       double given_size = (TO_DOUBLE(params->eval.w) * TO_DOUBLE(params->eval.w) + TO_DOUBLE(params->eval.h) * TO_DOUBLE(params->eval.h));
-                       double current_size = (TO_DOUBLE(params->eval.w) * TO_DOUBLE(params->eval.w) + TO_DOUBLE(th) * TO_DOUBLE(th));
+                       double given_size = (double)given_w * (double)given_w + (double)given_h * (double)given_h;
+                       double current_size = (double)given_w * (double)given_w + (double)th * (double)th;
 
                        fit_y_scale = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale,
                                                                                            orig_scale * given_size / current_size);
@@ -676,18 +685,19 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                }
 
              efl_gfx_scale_set(ep->object, result_scale);
-             efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
+             efl_canvas_text_size_native_get(ep->object, &tw, NULL);
+             efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
 
              /* Final tuning, try going down/up by 5% at a time, hoping it'll
               * actually end up being correct. */
-             if (((chosen_desc->text.fit_x && (tw > TO_INT(params->eval.w))) ||
-                  (chosen_desc->text.fit_y && (th > TO_INT(params->eval.h)))))
+             if (((chosen_desc->text.fit_x && (tw > given_w))) ||
+                 (chosen_desc->text.fit_y && (th > given_h)))
                {
                   int i = 5;   /* Tries before we give up. */
 
                   while ((i > 0) &&
-                         ((chosen_desc->text.fit_x && (tw > TO_INT(params->eval.w))) ||
-                          (chosen_desc->text.fit_y && (th > TO_INT(params->eval.h)))))
+                         ((chosen_desc->text.fit_x && (tw > given_w)) ||
+                          (chosen_desc->text.fit_y && (th > given_h))))
                     {
                        double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale, result_scale * 0.95);
 
@@ -697,18 +707,19 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                        result_scale = tmp_s;
 
                        efl_gfx_scale_set(ep->object, result_scale);
-                       efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
+                       efl_canvas_text_size_native_get(ep->object, &tw, NULL);
+                       efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
                        i--;
                     }
                }
-             else if (((chosen_desc->text.fit_x && (tw < TO_INT(params->eval.w))) ||
-                       (chosen_desc->text.fit_y && (th < TO_INT(params->eval.h)))))
+             else if (((chosen_desc->text.fit_x && (tw < given_w)) ||
+                       (chosen_desc->text.fit_y && (th < given_h))))
                {
                   int i = 5;   /* Tries before we give up. */
 
                   while ((i > 0) &&
-                         ((chosen_desc->text.fit_x && (tw < TO_INT(params->eval.w))) ||
-                          (chosen_desc->text.fit_y && (th < TO_INT(params->eval.h)))))
+                         ((chosen_desc->text.fit_x && (tw < given_w)) ||
+                          (chosen_desc->text.fit_y && (th < given_h))))
                     {
                        double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale, result_scale * 1.05);
 
@@ -717,12 +728,13 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                          break;
 
                        efl_gfx_scale_set(ep->object, tmp_s);
-                       efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
+                       efl_canvas_text_size_native_get(ep->object, &tw, NULL);
+                       efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
 
                        /* It can't be bigger than given size.
                         * Restore scale for the object. */
-                       if (((chosen_desc->text.fit_x && (tw > TO_INT(params->eval.w))) ||
-                            (chosen_desc->text.fit_y && (th > TO_INT(params->eval.h)))))
+                       if (((chosen_desc->text.fit_x && (tw > given_w)) ||
+                            (chosen_desc->text.fit_y && (th > given_h))))
                          {
                             efl_gfx_scale_set(ep->object, result_scale);
                             break;
