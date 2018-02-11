@@ -2303,7 +2303,7 @@ EAPI void elm_config_powersave_set(int set);
   * @since 1.21
   * @see elm_config_drag_anim_duration_set()
   */
-EAPI double elm_config_drag_anim_duration_get();
+EAPI double elm_config_drag_anim_duration_get(void);
 
 /**
   * Set the animation duration for container objects
@@ -2313,7 +2313,7 @@ EAPI double elm_config_drag_anim_duration_get();
   * @since 1.21
   * @see elm_config_drag_anim_duration_get()
   */
-EAPI void elm_config_drag_anim_duration_set();
+EAPI void elm_config_drag_anim_duration_set(double set);
 
 /* new efl.config interface helpers in C */
 
