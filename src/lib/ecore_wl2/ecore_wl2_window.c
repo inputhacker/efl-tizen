@@ -1510,15 +1510,11 @@ ecore_wl2_window_alpha_set(Ecore_Wl2_Window *window, Eina_Bool alpha)
    if (surf)
      ecore_wl2_surface_reconfigure(surf, surf->w, surf->h, 0, alpha);
 
+// TIZEN_ONLY(20170203)
    if (!window->alpha)
      ecore_wl2_window_opaque_region_set(window, window->opaque.x,
                                         window->opaque.y, window->opaque.w,
                                         window->opaque.h);
-// TIZEN_ONLY(20170203)
-/*
-   else
-     ecore_wl2_window_opaque_region_set(window, 0, 0, 0, 0);
-*/
    else if (window->surface)
      wl_surface_set_opaque_region(window->surface, NULL);
 //
