@@ -1650,10 +1650,9 @@ elm_slider_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
 EAPI Eina_Bool
 elm_slider_horizontal_get(const Evas_Object *obj)
 {
-   Efl_Ui_Dir dir;
-   dir = efl_ui_direction_get(obj);
+   EFL_UI_SLIDER_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
 
-   return _is_horizontal(dir);
+   return _is_horizontal(sd->dir);
 }
 
 EAPI void
