@@ -1477,8 +1477,6 @@ _elm_win_focus_in(Ecore_Evas *ee)
 
         if (child)
           efl_ui_focus_manager_focus_set(sd->obj, sd->obj);
-        else
-          evas_object_focus_set(sd->obj, EINA_TRUE);
      }
 }
 
