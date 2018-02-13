@@ -124,7 +124,7 @@ _efl_ui_nstate_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Nstate_Data *pd)
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
    if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
 
-   _state_active(obj, pd);
+   _state_signal_emit(obj, pd);
 
    return int_ret;
 }
