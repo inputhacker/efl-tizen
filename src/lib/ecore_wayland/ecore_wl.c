@@ -16,7 +16,7 @@
 # include <subsurface-client-protocol.h>
 #endif
 
-#include "xdg-shell-client-protocol.h"
+#include "xdg-shell-unstable-v5-client-protocol.h"
 #define XDG_VERSION 5
 
 #include "session-recovery-client-protocol.h"

@@ -3,7 +3,7 @@
 #endif
 
 #include "ecore_wl_private.h"
-#include "xdg-shell-client-protocol.h"
+#include "xdg-shell-unstable-v5-client-protocol.h"
 #include "session-recovery-client-protocol.h"
 
 /* local function prototypes */

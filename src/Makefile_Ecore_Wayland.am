@@ -21,8 +21,8 @@ lib/ecore_wayland/subsurface-protocol.c \
 lib/ecore_wayland/subsurface-client-protocol.h \
 lib/ecore_wayland/ivi-application-protocol.c \
 lib/ecore_wayland/ivi-application-client-protocol.h \
-lib/ecore_wayland/xdg-shell-client-protocol.h \
-lib/ecore_wayland/xdg-shell-protocol.c \
+lib/ecore_wayland/xdg-shell-unstable-v5-client-protocol.h \
+lib/ecore_wayland/xdg-shell-unstable-v5-protocol.c \
 lib/ecore_wayland/session-recovery-client-protocol.h \
 lib/ecore_wayland/session-recovery-protocol.c
 
