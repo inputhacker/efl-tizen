@@ -9211,7 +9211,7 @@ _elm_win_window_id_get(Efl_Ui_Win_Data *sd)
 {
 #if HAVE_ELEMENTARY_WL2
    if (sd->wl.win)
-     return (Ecore_Window)ecore_wl2_window_surface_id_get(sd->wl.win);
+     return (Ecore_Window)ecore_wl2_window_id_get(sd->wl.win);
    if (sd->parent)
      {
         Ecore_Wl2_Window *parent;
@@ -9219,7 +9219,7 @@ _elm_win_window_id_get(Efl_Ui_Win_Data *sd)
         parent = (Ecore_Wl2_Window *)elm_win_wl_window_get(sd->parent);
 //TIZEN_ONLY(20171208)
         if (parent)
-          return (Ecore_Window)ecore_wl2_window_surface_id_get(parent);
+          return (Ecore_Window)ecore_wl2_window_id_get(parent);
      }
 #endif
 #ifdef HAVE_ELEMENTARY_X
