@@ -130,24 +130,23 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
    config_attrs[n++] = EGL_WINDOW_BIT;
    config_attrs[n++] = EGL_RENDERABLE_TYPE;
    config_attrs[n++] = EGL_OPENGL_ES2_BIT;
-# if 0
-   /* FIXME: n900 - omap3 sgx libs break here */
+
    config_attrs[n++] = EGL_RED_SIZE;
    config_attrs[n++] = 1;
    config_attrs[n++] = EGL_GREEN_SIZE;
    config_attrs[n++] = 1;
    config_attrs[n++] = EGL_BLUE_SIZE;
    config_attrs[n++] = 1;
-   /* FIXME: end n900 breakage */
-# endif
-  config_attrs[n++] = EGL_ALPHA_SIZE;
-  config_attrs[n++] = gw->alpha;
-  config_attrs[n++] = EGL_DEPTH_SIZE;
+
+   config_attrs[n++] = EGL_ALPHA_SIZE;
+   config_attrs[n++] = gw->alpha;
+   config_attrs[n++] = EGL_DEPTH_SIZE;
 //TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
 //  config_attrs[n++] = 0;
-  config_attrs[n++] = gw->depth_bits;
+   config_attrs[n++] = gw->depth_bits;
 //
-  config_attrs[n++] = EGL_STENCIL_SIZE;
+   config_attrs[n++] = EGL_STENCIL_SIZE;
+
 //TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
 //  config_attrs[n++] = 0;
    config_attrs[n++] = gw->stencil_bits;
@@ -159,7 +158,7 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
         config_attrs[n++] = gw->msaa_bits;
      }
 //
-  config_attrs[n++] = EGL_NONE;
+   config_attrs[n++] = EGL_NONE;
 
    /* FIXME: Remove this line as soon as eglGetDisplay() autodetection
     * gets fixed. Currently it is incorrectly detecting wl_display and
