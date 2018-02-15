@@ -78,7 +78,6 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/efl_access_action.c \
 	lib/elementary/efl_access_component.c \
 	lib/elementary/efl_access_editable_text.c \
-	lib/elementary/efl_access_image.c \
 	lib/elementary/efl_access_selection.c \
 	lib/elementary/efl_access_text.c \
 	lib/elementary/efl_access_value.c \

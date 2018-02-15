@@ -15,7 +15,6 @@
 #include "efl_access_action.eo.h"
 #include "efl_access_component.eo.h"
 #include "efl_access_editable_text.eo.h"
-#include "efl_access_image.eo.h"
 #include "efl_access_selection.eo.h"
 #include "efl_access_value.eo.h"
 #include "efl_ui_legacy.eo.h"
@@ -38,7 +37,6 @@
  * @}
  */
 #include "efl_access_editable_text.eo.legacy.h"
-#include "efl_access_image.eo.legacy.h"
 #include "efl_access_selection.eo.legacy.h"
 #include "efl_access_value.eo.legacy.h"
 #include "efl_ui_legacy.eo.legacy.h"
