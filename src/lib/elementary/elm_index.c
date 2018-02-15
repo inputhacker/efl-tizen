@@ -1257,7 +1257,7 @@ _elm_index_efl_object_constructor(Eo *obj, Elm_Index_Data *_pd EINA_UNUSED)
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    efl_access_role_set(obj, EFL_ACCESS_ROLE_SCROLL_BAR);
    //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
-   efl_access_name_set(obj, N_("Index"));
+   efl_access_i18n_name_set(obj, N_("Index"));
    //
 
    return obj;
@@ -1732,10 +1732,10 @@ _elm_index_efl_access_children_get(Eo *obj, Elm_Index_Data *data)
 }
 
 EOLIAN static const char*
-_elm_index_item_efl_access_name_get(Eo *eo_it, Elm_Index_Item_Data *data)
+_elm_index_item_efl_access_i18n_name_get(Eo *eo_it, Elm_Index_Item_Data *data)
 {
    const char *name;
-   name = efl_access_name_get(efl_super(eo_it, ELM_INDEX_ITEM_CLASS));
+   name = efl_access_i18n_name_get(efl_super(eo_it, ELM_INDEX_ITEM_CLASS));
    if (name) return name;
 
    return _elm_widget_item_accessible_plain_name_get(eo_it, data->letter);

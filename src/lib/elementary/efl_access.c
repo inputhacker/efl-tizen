@@ -352,7 +352,7 @@ _efl_access_role_name_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
 }
 
 EOLIAN const char *
-_efl_access_name_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd)
+_efl_access_i18n_name_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd)
 {
    //TIZEN_ONLY(20190922): add name callback, description callback.
    char *ret = NULL;
@@ -374,7 +374,7 @@ _efl_access_name_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd)
 }
 
 EOLIAN static void
-_efl_access_name_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, const char *val)
+_efl_access_i18n_name_set(Eo *obj EINA_UNUSED, Efl_Access_Data *pd, const char *val)
 {
    eina_stringshare_replace(&pd->name, val);
 }
@@ -929,13 +929,13 @@ elm_atspi_accessible_localized_role_name_get(const Elm_Interface_Atspi_Accessibl
 
 EAPI void elm_atspi_accessible_name_set(Elm_Interface_Atspi_Accessible *obj, const char *name)
 {
-   efl_access_name_set(obj, name);
+   efl_access_i18n_name_set(obj, name);
 }
 
 EAPI const char *
 elm_atspi_accessible_name_get(const Elm_Interface_Atspi_Accessible *obj)
 {
-   return efl_access_name_get(obj);
+   return efl_access_i18n_name_get(obj);
 }
 
 EAPI void

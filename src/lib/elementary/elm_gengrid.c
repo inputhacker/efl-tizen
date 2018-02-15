@@ -1074,7 +1074,7 @@ _item_text_realize(Elm_Gen_Item *it,
              edje_object_signal_emit(target, buf, "elm");
           }
         if (_elm_atspi_enabled())
-          efl_access_name_changed_signal_emit(EO_OBJ(it));
+          efl_access_i18n_name_changed_signal_emit(EO_OBJ(it));
      }
 }
 
@@ -4381,7 +4381,7 @@ _elm_gengrid_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *
           {
              efl_access_added(EO_OBJ(it));
              efl_access_children_changed_added_signal_emit(sd->obj, EO_OBJ(it));
-             efl_access_name_changed_signal_emit(EO_OBJ(it));
+             efl_access_i18n_name_changed_signal_emit(EO_OBJ(it));
              EINA_LIST_FOREACH(it->contents, l, content)
                {
                   if (efl_isa(content, EFL_ACCESS_MIXIN))
@@ -5659,13 +5659,13 @@ _elm_gengrid_item_efl_access_state_set_get(Eo *eo_it, Elm_Gen_Item *it EINA_UNUS
 }
 
 EOLIAN const char*
-_elm_gengrid_item_efl_access_name_get(Eo *eo_it, Elm_Gen_Item *it)
+_elm_gengrid_item_efl_access_i18n_name_get(Eo *eo_it, Elm_Gen_Item *it)
 {
    const char *ret;
    Eina_Strbuf *buf;
    char *accessible_name;
 
-   ret = efl_access_name_get(efl_super(eo_it, ELM_GENGRID_ITEM_CLASS));
+   ret = efl_access_i18n_name_get(efl_super(eo_it, ELM_GENGRID_ITEM_CLASS));
    if (ret) return ret;
 
    buf = eina_strbuf_new();

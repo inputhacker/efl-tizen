@@ -259,13 +259,13 @@ _on_item_changed(Elm_Flipselector_Data *sd)
        if (sd->access_top_button)
          {
             elm_access_info_set(sd->access_top_button, ELM_ACCESS_INFO, (char *)item->label);
-            efl_access_name_changed_signal_emit(sd->access_top_button);
+            efl_access_i18n_name_changed_signal_emit(sd->access_top_button);
          }
 
        if (sd->access_bottom_button)
          {
             elm_access_info_set(sd->access_bottom_button, ELM_ACCESS_INFO, (char *)item->label);
-            efl_access_name_changed_signal_emit(sd->access_bottom_button);
+            efl_access_i18n_name_changed_signal_emit(sd->access_bottom_button);
          }
      }
    //

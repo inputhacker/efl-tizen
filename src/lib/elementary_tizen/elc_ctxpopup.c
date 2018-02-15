@@ -2639,13 +2639,13 @@ _elm_ctxpopup_item_init(Eo *eo_item,
 
 //TIZEN ONLY(20160918): name interface added
 EOLIAN static const char*
-_elm_ctxpopup_efl_access_name_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
+_elm_ctxpopup_efl_access_i18n_name_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
 {
    Eina_Strbuf *buf;
    const char *accessible_name = NULL;
    const char *style = elm_widget_style_get(obj);
 
-   accessible_name = efl_access_name_get(efl_super(obj, MY_CLASS));
+   accessible_name = efl_access_i18n_name_get(efl_super(obj, MY_CLASS));
    if (accessible_name) return accessible_name;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
@@ -2769,17 +2769,17 @@ _elm_ctxpopup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Ctxp
 
 //TIZEN ONLY(20150710)ctxpopup: Accessible methods for children_get, extents_get and item name_get
 EOLIAN const char *
-_elm_ctxpopup_item_efl_access_name_get(Eo *eo_it, Elm_Ctxpopup_Item_Data *item)
+_elm_ctxpopup_item_efl_access_i18n_name_get(Eo *eo_it, Elm_Ctxpopup_Item_Data *item)
 {
    const char *accessible_name = NULL;
-   accessible_name = efl_access_name_get(efl_super(eo_it, ELM_CTXPOPUP_ITEM_CLASS));
+   accessible_name = efl_access_i18n_name_get(efl_super(eo_it, ELM_CTXPOPUP_ITEM_CLASS));
 
    if (accessible_name) return accessible_name;
 
    if(item->icon && !item->label)
      {
         const char *icon_name = NULL;
-        icon_name = efl_access_name_get(item->icon);
+        icon_name = efl_access_i18n_name_get(item->icon);
         return icon_name;
      }
    else

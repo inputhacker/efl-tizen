@@ -4150,7 +4150,7 @@ _elm_widget_item_efl_object_destructor(Eo *eo_item, Elm_Widget_Item_Data *item)
    eina_hash_free(item->labels);
 
    efl_access_description_set(eo_item, NULL);
-   efl_access_name_set(eo_item, NULL);
+   efl_access_i18n_name_set(eo_item, NULL);
 
    efl_access_description_cb_set(eo_item, NULL, NULL);
    efl_access_name_cb_set(eo_item, NULL, NULL);
@@ -5645,7 +5645,7 @@ _efl_ui_widget_efl_object_destructor(Eo *obj, Elm_Widget_Smart_Data *sd)
      }
 
    efl_access_description_set(obj, NULL);
-   efl_access_name_set(obj, NULL);
+   efl_access_i18n_name_set(obj, NULL);
 
    efl_access_description_cb_set(obj, NULL, NULL);
    efl_access_name_cb_set(obj, NULL, NULL);
@@ -5757,7 +5757,7 @@ _efl_ui_widget_efl_access_component_focus_grab(Eo *obj, Elm_Widget_Smart_Data *p
 
 //TIZEN_ONLY(20150717) add widget name setter
 EOLIAN void
-_efl_ui_widget_efl_access_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data* _pd EINA_UNUSED, const char *name)
+_efl_ui_widget_efl_access_i18n_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data* _pd EINA_UNUSED, const char *name)
 {
    if (_pd->name)
      eina_stringshare_del(_pd->name);
@@ -5767,10 +5767,11 @@ _efl_ui_widget_efl_access_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data* _
 //
 
 EOLIAN static const char*
-_efl_ui_widget_efl_access_name_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+_efl_ui_widget_efl_access_i18n_name_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
 {
    const char *ret, *name;
-   name = efl_access_name_get(efl_super(obj, EFL_UI_WIDGET_CLASS));
+   name = efl_access_i18n_name_get(efl_super(obj, EFL_UI_WIDGET_CLASS));
+
    if (name) return name;
 
    //TIZEN_ONLY(20150717) add widget name setter
@@ -5882,7 +5883,7 @@ _elm_widget_item_efl_access_description_get(Eo *obj EINA_UNUSED, Elm_Widget_Item
 
 //TIZEN_ONLY(20150713) : add atspi name setter to widget_item
 EOLIAN void
-_elm_widget_item_efl_access_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd EINA_UNUSED, const char *name)
+_elm_widget_item_efl_access_i18n_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd EINA_UNUSED, const char *name)
 {
    if (_pd->name)
      eina_stringshare_del(_pd->name);
@@ -5891,11 +5892,11 @@ _elm_widget_item_efl_access_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* 
 }
 
 EOLIAN const char*
-_elm_widget_item_efl_access_name_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
+_elm_widget_item_efl_access_i18n_name_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
 {
    //TIZEN_ONLY(20190922): add name callback, description callback.
    const char *ret = NULL;
-   ret = efl_access_name_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
+   ret = efl_access_i18n_name_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
    if (ret) return ret;
    //
 

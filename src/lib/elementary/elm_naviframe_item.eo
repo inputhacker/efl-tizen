@@ -84,7 +84,7 @@ class Elm.Naviframe.Item(Elm.Widget.Item, Efl.Ui.Legacy)
         Elm.Widget.Item.part_content_unset;
         Efl.Access.children { get; }
         //TIZEN_ONLY(20161213) Using VIEW(item) for naviframe, naviframe item accessible information
-        Efl.Access.name { get; set; }
+        Efl.Access.i18n_name { get; set; }
         Efl.Access.description { get; set; }
         //
    }

@@ -541,7 +541,7 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
            Efl.Object.constructor;
            Efl.Object.destructor;
            //TIZEN_ONLY(20150713) : add widget_item name setter
-           Efl.Access.name { set; get;}
+           Efl.Access.i18n_name { set; get;}
            ///
 
            Efl.Access.state_set { get; }

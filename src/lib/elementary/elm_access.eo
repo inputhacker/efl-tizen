@@ -16,7 +16,7 @@ class Elm.Access (Efl.Ui.Widget, Efl.Access.Widget.Action)
       Efl.Access.Component.highlight_clear;
       //
       //TIZEN_ONLY(20171122) elm: add name and description to elm_access
-      Efl.Access.name { get; }
+      Efl.Access.i18n_name { get; }
       Efl.Access.description { get; }
       //
    }

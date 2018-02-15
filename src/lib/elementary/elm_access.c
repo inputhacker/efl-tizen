@@ -1584,10 +1584,10 @@ _elm_access_efl_access_component_highlight_clear(Eo *obj, void *pd EINA_UNUSED)
 
 //TIZEN_ONLY(20171122) elm: add name and description to elm_access
 EOLIAN static const char*
-_elm_access_efl_access_name_get(Eo *obj, void *pd EINA_UNUSED)
+_elm_access_efl_access_i18n_name_get(Eo *obj, void *pd EINA_UNUSED)
 {
    char *accessible_name;
-   const char *ret = efl_access_name_get(efl_super(obj, MY_CLASS));
+   const char *ret = efl_access_i18n_name_get(efl_super(obj, MY_CLASS));
    if (ret) return ret;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);

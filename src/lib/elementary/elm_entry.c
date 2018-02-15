@@ -7659,10 +7659,10 @@ _elm_entry_efl_access_state_set_get(Eo *obj, Elm_Entry_Data *_pd EINA_UNUSED)
 }
 
 EOLIAN static const char*
-_elm_entry_efl_access_name_get(Eo *obj, Elm_Entry_Data *sd)
+_elm_entry_efl_access_i18n_name_get(Eo *obj, Elm_Entry_Data *sd)
 {
    const char *name;
-   name = efl_access_name_get(efl_super(obj, ELM_ENTRY_CLASS));
+   name = efl_access_i18n_name_get(efl_super(obj, ELM_ENTRY_CLASS));
    if (name && strncmp("", name, 1)) return name;
 
    if (sd->password) return NULL;
@@ -7979,7 +7979,7 @@ _atspi_expose_anchors(Eo *obj, Eina_Bool is_screen_reader)
                                    eina_list_append(sd->anchor_atspi_rects, rect);
 
                                  ao = elm_access_object_register(rect, obj);
-                                 efl_access_name_set(ao, text);
+                                 efl_access_i18n_name_set(ao, text);
                                  efl_access_reading_info_type_set(ao,
                                          EFL_ACCESS_READING_INFO_TYPE_NAME);
                                  evas_object_smart_callback_add(ao, "atspi,highlighted",

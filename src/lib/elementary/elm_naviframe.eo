@@ -161,7 +161,7 @@ class Elm.Naviframe (Efl.Ui.Layout, Efl.Access.Widget.Action, Efl.Ui.Legacy)
       Efl.Ui.Widget.part_access_object_get;
       //
       //TIZEN_ONLY(20161213) Using VIEW(item) for naviframe, naviframe item accessible information
-      Efl.Access.name { get; }
+      Efl.Access.i18n_name { get; }
       Efl.Access.description { get; }
       //
       Efl.Part.part;
