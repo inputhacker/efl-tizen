@@ -7834,15 +7834,6 @@ _efl_ui_win_efl_object_debug_name_override(Eo *obj, Efl_Ui_Win_Data *pd, Eina_St
    eina_strbuf_append_printf(sb, ":'%s':'%s'", pd->name, pd->title);
 }
 
-EOLIAN static Eo*
-_efl_ui_win_efl_access_parent_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd EINA_UNUSED)
-{
-   // attach all kinds of windows directly to ATSPI application root object
-   Eo *root;
-   root = efl_access_root_get(EFL_ACCESS_MIXIN);
-   return root;
-}
-
 EOLIAN static const Efl_Access_Action_Data*
 _efl_ui_win_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd EINA_UNUSED)
 {
@@ -7926,6 +7917,9 @@ _efl_ui_win_efl_object_provider_find(const Eo *obj,
 {
     if (klass == EFL_UI_WIN_CLASS)
       return (Eo *)obj;
+
+   // attach all kinds of windows directly to ATSPI application root object
+   if (klass == EFL_ACCESS_MIXIN) return efl_access_root_get(EFL_ACCESS_MIXIN);
 
     if (klass == EFL_UI_FOCUS_PARENT_PROVIDER_INTERFACE)
       return pd->provider;
@@ -9164,11 +9158,11 @@ static int _sort_parent_child_order(const void *data1, const void *data2)
    if (data1)
      {
         Eo *parent;
-        parent = efl_access_parent_get(data1);
+        parent = efl_provider_find(efl_parent_get(data1), EFL_ACCESS_MIXIN);
         while (parent)
           {
              if (parent == data2) return 1;
-             parent = efl_access_parent_get(parent);
+             parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_MIXIN);
           }
      }
    return -1;

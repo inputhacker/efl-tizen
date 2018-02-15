@@ -149,7 +149,7 @@ _elm_atspi_proxy_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Da
 }
 
 EOLIAN Eo*
-_elm_atspi_proxy_efl_access_parent_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
+_elm_atspi_proxy_efl_object_parent_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
 {
    Eo *ret = NULL;
    if (_pd->type == ELM_ATSPI_PROXY_TYPE_PLUG)

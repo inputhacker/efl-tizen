@@ -2522,7 +2522,7 @@ _item_new(Evas_Object *obj,
    icon_obj = elm_icon_add(VIEW(it));
 
    if (_elm_atspi_enabled())
-       if (icon_obj) efl_access_parent_set(icon_obj, eo_it);
+       if (icon_obj) efl_parent_set(icon_obj, eo_it);
 
    if (_elm_config->access_mode == ELM_ACCESS_MODE_ON)
      _access_widget_item_register(it);
@@ -3019,7 +3019,7 @@ _elm_toolbar_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Toolbar_Data *
      {
         if (is_screen_reader)
           {
-             if (it->icon) efl_access_parent_set(it->icon, EO_OBJ(it));
+             if (it->icon) efl_parent_set(it->icon, EO_OBJ(it));
              efl_access_added(EO_OBJ(it));
              efl_access_children_changed_added_signal_emit(obj, EO_OBJ(it));
           }

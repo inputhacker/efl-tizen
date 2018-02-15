@@ -975,7 +975,7 @@ _efl_ui_widget_efl_gfx_visible_set(Eo *obj, Elm_Widget_Smart_Data *pd, Eina_Bool
         if (highlighted_obj && highlighted_obj != obj)
           {
              Eo *parent;
-             parent = efl_access_parent_get(highlighted_obj);
+             parent = efl_provider_find(efl_parent_get(highlighted_obj), EFL_ACCESS_MIXIN);
              while (parent)
                {
                   if (parent == obj)
@@ -984,7 +984,7 @@ _efl_ui_widget_efl_gfx_visible_set(Eo *obj, Elm_Widget_Smart_Data *pd, Eina_Bool
                        efl_access_component_highlight_clear(highlighted_obj);
                        break;
                     }
-                  parent = efl_access_parent_get(parent);
+                  parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_MIXIN);
                }
           }
         //
@@ -1603,7 +1603,7 @@ _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
         if (_elm_atspi_enabled() && !sd->on_create)
           {
              Efl_Access *aparent;
-             aparent = efl_access_parent_get(sobj);
+             aparent = efl_provider_find(efl_parent_get(sobj), EFL_ACCESS_MIXIN);
              if (aparent)
                 efl_access_children_changed_added_signal_emit(aparent, sobj);
           }
@@ -1695,7 +1695,7 @@ _efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
         if (_elm_atspi_enabled() && !sd->on_destroy)
           {
              Efl_Access *aparent;
-             aparent = efl_access_parent_get(sobj);
+             aparent = efl_provider_find(efl_parent_get(sobj), EFL_ACCESS_MIXIN);
              if (aparent)
                 efl_access_children_changed_del_signal_emit(aparent, sobj);
           }
@@ -4431,13 +4431,13 @@ _elm_widget_item_highlightable(Elm_Object_Item *item)
    if (!id) return EINA_FALSE;
    if (!id->can_highlight) return EINA_FALSE;
 
-   parent = efl_access_parent_get(item);
+   parent = efl_provider_find(efl_parent_get(item), EFL_ACCESS_MIXIN);
    while (parent && !efl_isa(parent, ELM_ATSPI_APP_OBJECT_CLASS))
      {
         //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
         if (!_elm_widget_can_highlight_get_by_class(parent)) return EINA_FALSE;
         //
-        parent = efl_access_parent_get(parent);
+        parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_MIXIN);
      }
    return EINA_TRUE;
 }
@@ -6092,7 +6092,7 @@ _efl_ui_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Dat
         // TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
         if (efl_isa(widget, EFL_ACCESS_MIXIN))
           {
-             parent = efl_access_parent_get(widget);
+             parent = efl_provider_find(efl_parent_get(widget), EFL_ACCESS_MIXIN);
              if (parent && (parent != obj)) continue;
           }
         // TIZEN_ONLY(20160705) - enable atspi_proxy to work
@@ -6157,21 +6157,6 @@ _efl_ui_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Dat
    return accs;
 }
 
-EOLIAN static Eo*
-_efl_ui_widget_efl_access_parent_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
-{
-   Efl_Access_Type type;
-   Efl_Access *parent = obj;
-
-   do {
-        ELM_WIDGET_DATA_GET_OR_RETURN(parent, wd, NULL);
-        parent = wd->parent_obj;
-        type = efl_access_type_get(parent);
-   } while (parent && (type == EFL_ACCESS_TYPE_SKIPPED));
-
-   return efl_isa(parent, EFL_ACCESS_MIXIN) ? parent : NULL;
-}
-
 //TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
 EAPI Eina_Bool
 _elm_widget_highlightable(Evas_Object *obj)
@@ -6182,13 +6167,13 @@ _elm_widget_highlightable(Evas_Object *obj)
    if (!wd) return EINA_FALSE;
    if (!wd->can_highlight) return EINA_FALSE;
 
-   parent = efl_access_parent_get(obj);
+   parent = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_MIXIN);
    while (parent && !efl_isa(parent, ELM_ATSPI_APP_OBJECT_CLASS))
      {
         //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
         if (!_elm_widget_can_highlight_get_by_class(parent)) return EINA_FALSE;
         //
-        parent = efl_access_parent_get(parent);
+        parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_MIXIN);
      }
    return EINA_TRUE;
 }
@@ -6466,6 +6451,13 @@ _efl_ui_widget_efl_object_provider_find(const Eo *obj, Elm_Widget_Smart_Data *pd
 
    if ((klass == EFL_CONFIG_INTERFACE) || (klass == EFL_CONFIG_GLOBAL_CLASS))
      return _efl_config_obj;
+
+   if (klass == EFL_ACCESS_MIXIN)
+     {
+        Efl_Access_Type type = efl_access_type_get(obj);
+        if (type != EFL_ACCESS_TYPE_SKIPPED)
+          return (Eo*)obj;
+     }
 
    if (pd->provider_lookup) return NULL;
    pd->provider_lookup = EINA_TRUE;
@@ -7361,7 +7353,7 @@ _accessible_at_point_top_down_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSE
                      {
                         // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
                         Eo *parent;
-                        parent = efl_access_parent_get(smart_parent);
+                        parent = efl_provider_find(efl_parent_get(smart_parent), EFL_ACCESS_MIXIN);
                         proxy = plug_type_proxy_get(parent, smart_parent);
                         //
                         evas_object_geometry_get(smart_parent, &px, &py, &pw, &ph);

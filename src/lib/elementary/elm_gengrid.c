@@ -4031,7 +4031,6 @@ _internal_elm_gengrid_clear(Evas_Object *obj,
              if (itn) itn->walking++;  /* prevent early death of subitem */
              if (VIEW(it))
                _item_mouse_callbacks_del(it, VIEW(it));
-             it->del_cb(it);
              efl_del(EO_OBJ(it));
              if (itn) itn->walking--;
           }
@@ -4107,7 +4106,6 @@ _item_select(Elm_Gen_Item *it)
      {
         if ((!it->walking) && (it->generation < sd->generation))
           {
-             it->del_cb(it);
              efl_del(eo_it);
              sd->last_selected_item = NULL;
           }
@@ -4147,7 +4145,6 @@ _elm_gengrid_item_new(Elm_Gengrid_Data *sd,
    it->func.func = func;
    it->func.data = func_data;
 
-   it->del_cb = (Ecore_Cb)_item_del;
    it->highlight_cb = (Ecore_Cb)_item_highlight;
    it->unhighlight_cb = (Ecore_Cb)_item_unhighlight;
    it->sel_cb = (Ecore_Cb)_item_select;
@@ -4385,7 +4382,7 @@ _elm_gengrid_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *
              EINA_LIST_FOREACH(it->contents, l, content)
                {
                   if (efl_isa(content, EFL_ACCESS_MIXIN))
-                    efl_access_parent_set(content, EO_OBJ(it));
+                    efl_parent_set(content, EO_OBJ(it));
                }
           }
         else
@@ -6228,7 +6225,7 @@ _elm_gengrid_item_efl_access_children_get(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *i
              if (part && efl_isa(part, EFL_ACCESS_MIXIN))
                {
                   ret = eina_list_append(ret, part);
-                  efl_access_parent_set(part, eo_it);
+                  efl_parent_set(part, eo_it);
                }
           }
      }

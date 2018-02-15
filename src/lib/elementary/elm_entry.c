@@ -7808,7 +7808,7 @@ static void
 _anchor_rect_highlighted_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    Eo *entry;
-   entry = efl_access_parent_get(obj);
+   entry = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_MIXIN);
    unsigned int dindex = (unsigned int)data;
 
    Evas_Textblock_Rectangle *r;
@@ -7874,7 +7874,7 @@ _anchor_rect_unhighlighted_cb(void *data EINA_UNUSED, Evas_Object *obj,
                               void *event_info EINA_UNUSED)
 {
    Eo *entry;
-   entry = efl_access_parent_get(obj);
+   entry = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_MIXIN);
 
    ELM_ENTRY_DATA_GET(entry, sd);
 
@@ -7894,7 +7894,7 @@ _anchor_rect_activated_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_
 {
    Elm_Entry_Anchor_Info ei;
    Eo *entry;
-   entry = efl_access_parent_get(obj);
+   entry = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_MIXIN);
 
    ELM_ENTRY_DATA_GET(entry, sd);
 

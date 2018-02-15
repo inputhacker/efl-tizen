@@ -6002,7 +6002,7 @@ _elm_genlist_efl_ui_widget_screen_reader(Eo *obj EINA_UNUSED, Elm_Genlist_Data *
                          {
                             if (efl_isa(content, EFL_ACCESS_MIXIN))
                               {
-                                 efl_access_parent_set(content, EO_OBJ(it));
+                                 efl_parent_set(content, EO_OBJ(it));
                                  efl_access_children_changed_added_signal_emit(EO_OBJ(it), content);
                               }
                          }
@@ -8700,7 +8700,7 @@ _elm_genlist_item_efl_access_children_get(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *i
              if (part && efl_isa(part, EFL_ACCESS_MIXIN))
                {
                   ret = eina_list_append(ret, part);
-                  efl_access_parent_set(part, eo_it);
+                  efl_parent_set(part, eo_it);
                }
           }
      }
