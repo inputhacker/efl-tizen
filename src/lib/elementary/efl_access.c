@@ -828,7 +828,7 @@ _efl_access_state_notify(Eo *obj, Efl_Access_Data *data EINA_UNUSED, Efl_Access_
 //
 
 EOLIAN Eo*
-_efl_access_root_get(Eo *class EINA_UNUSED, void *pd EINA_UNUSED)
+_efl_access_access_root_get(Eo *class EINA_UNUSED, void *pd EINA_UNUSED)
 {
    if (!root)
       root = efl_add(ELM_ATSPI_APP_OBJECT_CLASS, NULL);
