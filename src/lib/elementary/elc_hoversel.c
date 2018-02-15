@@ -1061,7 +1061,7 @@ _elm_hoversel_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_
 }
 
 EOLIAN Eina_List*
-_elm_hoversel_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Hoversel_Data *pd)
+_elm_hoversel_efl_access_access_children_get(Eo *obj EINA_UNUSED, Elm_Hoversel_Data *pd)
 {
    //TIZEN_ONLY(20161121): Added hover object in children list
    //return eina_list_clone(pd->items);

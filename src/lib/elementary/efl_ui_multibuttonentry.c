@@ -2169,7 +2169,7 @@ _efl_ui_multibuttonentry_class_constructor(Efl_Class *klass EINA_UNUSED)
 }
 
 EOLIAN static Eina_List*
-_efl_ui_multibuttonentry_efl_access_children_get(Eo *obj EINA_UNUSED, Efl_Ui_Multibuttonentry_Data *sd)
+_efl_ui_multibuttonentry_efl_access_access_children_get(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd)
 {
    Eina_List *ret = NULL;
    //TIZEN_ONLY(20160527) : Improve MBE atspi support

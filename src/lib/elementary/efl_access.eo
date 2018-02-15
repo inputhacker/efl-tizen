@@ -412,7 +412,8 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
          return: bool;
       }
       //
-      @property children @protected @beta {
+      @property access_children @protected @beta {
+         [[Gets object's accessible children.]]
          get {
             [[Gets object's accessible children.]]
          }
@@ -564,7 +565,7 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
             domain: string; [[Translation domain]]
          }
       }
-      @property type @beta {
+      @property access_type @beta {
            [[Type of accessibility object]]
            get {
            }

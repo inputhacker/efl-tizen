@@ -6065,8 +6065,9 @@ elm_widget_atspi_plug_type_proxy_get(Evas_Object *obj)
 }
 //
 
+
 EOLIAN static Eina_List*
-_efl_ui_widget_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd)
+_efl_ui_widget_efl_access_access_children_get(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd)
 {
    Eina_List *l, *accs = NULL;
    Evas_Object *widget;

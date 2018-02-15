@@ -5965,7 +5965,7 @@ static int _sort_items(const void *data1, const void *data2)
 //
 
 EOLIAN Eina_List*
-_elm_gengrid_efl_access_children_get(Eo *obj, Elm_Gengrid_Data *sd)
+_elm_gengrid_efl_access_access_children_get(Eo *obj, Elm_Gengrid_Data *sd)
 {
    Eina_List *ret = NULL, *ret2 = NULL;
    Elm_Gen_Item *it;
