@@ -2148,6 +2148,12 @@ elm_object_focus_region_show_mode_get(const Evas_Object *obj)
    return elm_widget_focus_region_show_mode_get(obj);
 }
 
+EAPI void
+elm_object_item_del(Eo *obj)
+{
+   efl_del(obj);
+}
+
 //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
 EAPI void
 elm_object_accessibility_highlight_set(void *obj, Eina_Bool visible)
@@ -2404,3 +2410,4 @@ elm_object_item_color_class_clear(Elm_Object_Item *it)
 /*******
  * END *
  *******/
+

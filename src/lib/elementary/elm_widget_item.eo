@@ -211,9 +211,6 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
                   Note: Every elm_object_item supports this API]]
                   return: Efl.Canvas.Object; [[The widget object]]
            }
-           del {
-                [[Delete the given item.]]
-           }
            pre_notify_del @protected {
                 [[notify deletion of widget item]]
                 legacy: null;
@@ -543,7 +540,7 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
            //TIZEN_ONLY(20150713) : add widget_item name setter
            Efl.Access.i18n_name { set; get;}
            ///
-
+           Efl.Object.del;
            Efl.Access.state_set { get; }
            Efl.Access.attributes { get; }
            //TIZEN_ONLY(20161111) add widget/widget_item description get/set

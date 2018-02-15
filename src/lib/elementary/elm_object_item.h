@@ -79,6 +79,12 @@ EAPI void *elm_object_item_data_get(const Elm_Object_Item *it);
  */
 EAPI void elm_object_item_data_set(Elm_Object_Item *it, void *data);
 
+/** Delete the given item.
+ *
+ * @ingroup Elm_General
+ */
+EAPI void elm_object_item_del(Elm_Object_Item *obj);
+
 /***********************************************************************************
  * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
  ***********************************************************************************/

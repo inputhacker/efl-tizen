@@ -833,7 +833,7 @@ _elm_hoversel_clear(Eo *obj EINA_UNUSED, Elm_Hoversel_Data *sd)
 
    EINA_LIST_FOREACH_SAFE(sd->items, l, ll, it)
      {
-        elm_wdg_item_del(it);
+        efl_del(it);
      }
 }
 
