@@ -2737,7 +2737,7 @@ _elm_color_item_efl_access_state_set_get(Eo *obj, Elm_Color_Item_Data *sd EINA_U
 }
 
 EOLIAN static void
-_elm_color_item_elm_widget_item_focus_set(Eo *eo_it, Elm_Color_Item_Data *it, Eina_Bool focused)
+_elm_color_item_elm_widget_item_item_focus_set(Eo *eo_it, Elm_Color_Item_Data *it, Eina_Bool focused)
 {
    Evas_Object *obj = WIDGET(it);
    ELM_COLORSELECTOR_DATA_GET(obj, sd);
@@ -2763,7 +2763,7 @@ _elm_color_item_elm_widget_item_focus_set(Eo *eo_it, Elm_Color_Item_Data *it, Ei
 }
 
 EOLIAN static Eina_Bool
-_elm_color_item_elm_widget_item_focus_get(Eo *eo_it, Elm_Color_Item_Data *it)
+_elm_color_item_elm_widget_item_item_focus_get(Eo *eo_it, Elm_Color_Item_Data *it)
 {
    Evas_Object *obj = WIDGET(it);
    ELM_COLORSELECTOR_DATA_GET(obj, sd);
