@@ -6289,6 +6289,17 @@ EAPI void evas_object_polygon_points_clear(Evas_Object *obj);
  *
  * @{
  */
+
+
+/** Call user-provided @c calculate smart functions and unset the flag
+ * signalling that the object needs to get recalculated to all smart objects in
+ * the canvas.
+ *
+ * @ingroup Evas_Canvas
+ */
+EAPI void evas_smart_objects_calculate(Eo *obj);
+
+
 /**
  * Instantiates a new smart object described by @p s.
  *
