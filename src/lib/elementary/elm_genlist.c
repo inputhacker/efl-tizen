@@ -8996,7 +8996,7 @@ _elm_genlist_efl_access_selection_all_children_select(Eo *obj, Elm_Genlist_Data 
 }
 
 EOLIAN Eina_Bool
-_elm_genlist_efl_access_selection_clear(Eo *obj EINA_UNUSED, Elm_Genlist_Data *pd)
+_elm_genlist_efl_access_selection_access_selection_clear(Eo *obj EINA_UNUSED, Elm_Genlist_Data *pd)
 {
    return _all_items_deselect(pd);
 }
