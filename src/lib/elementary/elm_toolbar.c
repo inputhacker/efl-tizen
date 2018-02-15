@@ -280,7 +280,7 @@ _mirrored_set(Evas_Object *obj,
    ELM_TOOLBAR_DATA_GET(obj, sd);
 
    /* TIZEN_ONLY(20170214): Added for mirroring of navigationbar */
-   elm_interface_scrollable_mirrored_set(obj, mirrored);
+   efl_ui_mirrored_set(obj, mirrored);
    /* END */
 
    EINA_INLIST_FOREACH(sd->items, it)
