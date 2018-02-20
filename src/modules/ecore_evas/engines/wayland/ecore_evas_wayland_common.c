@@ -602,8 +602,13 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
    prev_full = ee->prop.fullscreen;
    ee->prop.maximized =
      (ev->states & ECORE_WL2_WINDOW_STATE_MAXIMIZED) == ECORE_WL2_WINDOW_STATE_MAXIMIZED;
+//TIZEN_ONLY(20180220): fullscreen set using the client's value
+/*
    ee->prop.fullscreen =
      (ev->states & ECORE_WL2_WINDOW_STATE_FULLSCREEN) == ECORE_WL2_WINDOW_STATE_FULLSCREEN;
+*/
+   ee->prop.fullscreen =  ecore_wl2_window_fullscreen_get(wdata->win);
+//
    active = wdata->activated;
    wdata->activated = ecore_wl2_window_activated_get(wdata->win);
 
