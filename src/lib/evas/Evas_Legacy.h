@@ -3625,6 +3625,8 @@ EAPI Evas_Object *evas_object_rectangle_add(Evas *e) EINA_WARN_UNUSED_RESULT EIN
 
 #ifdef EFL_BETA_API_SUPPORT
 
+typedef Eo Efl_Canvas_VG_Node;
+
 /**
  * Creates a new vector object on the given Evas @p e canvas.
  *
@@ -3641,7 +3643,7 @@ EAPI Evas_Object *evas_object_rectangle_add(Evas *e) EINA_WARN_UNUSED_RESULT EIN
 EAPI Evas_Object *evas_object_vg_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
 #include "canvas/efl_canvas_vg.eo.legacy.h"
-#include "canvas/efl_vg_container.eo.legacy.h"
+#include "canvas/efl_canvas_vg_container.eo.legacy.h"
 /**
  * Creates a new vector shape object \.
  *
@@ -3834,7 +3836,7 @@ EAPI void evas_vg_node_raise(Eo *obj);
  */
 EAPI void evas_vg_node_lower(Eo *obj);
 
-#include "canvas/efl_vg.eo.legacy.h"
+#include "canvas/efl_canvas_vg_node.eo.legacy.h"
 
 /**
  *
@@ -4277,7 +4279,7 @@ EAPI void evas_vg_shape_stroke_fill_set(Eo *obj, Efl_VG *f);
  */
 EAPI Efl_VG* evas_vg_shape_stroke_fill_get(const Eo *obj);
 
-#include "canvas/efl_vg_shape.eo.legacy.h"
+#include "canvas/efl_canvas_vg_shape.eo.legacy.h"
 
 /**
  *
@@ -4321,7 +4323,7 @@ EAPI void evas_vg_gradient_spread_set(Eo *obj, Efl_Gfx_Gradient_Spread s);
  */
 EAPI Efl_Gfx_Gradient_Spread evas_vg_gradient_spread_get(Eo *obj);
 
-#include "canvas/efl_vg_gradient.eo.legacy.h"
+#include "canvas/efl_canvas_vg_gradient.eo.legacy.h"
 
 /**
  * Creates a new linear gradient object \.
@@ -4372,7 +4374,7 @@ EAPI void evas_vg_gradient_linear_end_set(Eo *obj, double x, double y);
  */
 EAPI void evas_vg_gradient_linear_end_get(Eo *obj, double *x, double *y);
 
-#include "canvas/efl_vg_gradient_linear.eo.legacy.h"
+#include "canvas/efl_canvas_vg_gradient_linear.eo.legacy.h"
 
 /**
  * Creates a new radial gradient object \.
@@ -4440,7 +4442,7 @@ EAPI void evas_vg_gradient_radial_focal_set(Eo *obj, double x, double y);
  */
 EAPI void evas_vg_gradient_radial_focal_get(Eo *obj, double *x, double *y);
 
-#include "canvas/efl_vg_gradient_radial.eo.legacy.h"
+#include "canvas/efl_canvas_vg_gradient_radial.eo.legacy.h"
 
 #endif
 
