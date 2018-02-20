@@ -668,7 +668,9 @@ _elm_list_deletions_process(Elm_List_Data *sd)
      {
         sd->items = eina_list_remove_list(sd->items, it->node);
 
-        efl_del(EO_OBJ(it));
+        /* issuing free because of "locking" item del pre hook */
+        _elm_list_item_free(it);
+        efl_parent_set(EO_OBJ(it), NULL);
      }
 
    sd->walking--;
@@ -2495,6 +2497,9 @@ _elm_list_efl_canvas_group_group_del(Eo *obj, Elm_List_Data *sd)
 
    EINA_LIST_FREE(sd->items, eo_it)
      {
+        ELM_LIST_ITEM_DATA_GET(eo_it, it);
+        /* issuing free because of "locking" item del pre hook */
+        _elm_list_item_free(it);
         efl_del(eo_it);
      }
 
@@ -2786,6 +2791,9 @@ _elm_list_clear(Eo *obj, Elm_List_Data *sd)
 
    EINA_LIST_FREE(sd->items, eo_it)
      {
+        ELM_LIST_ITEM_DATA_GET(eo_it, it);
+        /* issuing free because of "locking" item del pre hook */
+        _elm_list_item_free(it);
         efl_del(eo_it);
      }
 
