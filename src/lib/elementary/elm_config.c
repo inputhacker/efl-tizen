@@ -694,7 +694,7 @@ _elm_config_user_dir_snprintf(char       *dst,
 {
    size_t user_dir_len = 0, off = 0;
    va_list ap;
-   Efl_Vpath_File *file_obj;
+   char *tmp;
    static int use_xdg_config = -1;
 
    /**************************************************************
@@ -722,14 +722,12 @@ _elm_config_user_dir_snprintf(char       *dst,
      }
 
    if (use_xdg_config)
-     file_obj = efl_vpath_manager_fetch(EFL_VPATH_MANAGER_CLASS,
-                                        "(:config:)/elementary");
+     tmp = eina_vpath_resolve("(:usr.config:)/elementary");
    else
-     file_obj = efl_vpath_manager_fetch(EFL_VPATH_MANAGER_CLASS,
-                                        "(:home:)/"ELEMENTARY_BASE_DIR);
+     tmp = eina_vpath_resolve("(:home:)/elementary" ELEMENTARY_BASE_DIR);
 
-   eina_strlcpy(dst, efl_vpath_file_result_get(file_obj), size);
-   efl_del(file_obj);
+   eina_strlcpy(dst, tmp, size);
+   free(tmp);
 
    user_dir_len = strlen(dst);
    off = user_dir_len + 1;
