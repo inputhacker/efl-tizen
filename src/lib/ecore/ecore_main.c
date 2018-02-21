@@ -221,7 +221,7 @@ static gboolean   ecore_fds_ready;
 static inline void
 _ecore_fd_valid(Eo *obj EINA_UNUSED, Efl_Loop_Data *pd EINA_UNUSED)
 {
-# ifdef HAVE_EPOLL
+# ifdef HAVE_SYS_EPOLL_H
    if ((pd->epoll_fd >= 0) &&
        (fcntl(pd->epoll_fd, F_GETFD) < 0))
      {
@@ -265,7 +265,7 @@ _throttle_do(Efl_Loop_Data *pd)
    eina_evlog("-throttle", NULL, 0.0, NULL);
 }
 
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
 static inline int
 _ecore_get_epoll_fd(Eo *obj, Efl_Loop_Data *pd)
 {
@@ -295,9 +295,9 @@ static inline int
 _ecore_poll_events_from_fdh(Ecore_Fd_Handler *fdh)
 {
    int events = 0;
-   if (fdh->flags & ECORE_FD_READ)  events |= EPOLLIN;
-   if (fdh->flags & ECORE_FD_WRITE) events |= EPOLLOUT;
-   if (fdh->flags & ECORE_FD_ERROR) events |= EPOLLERR | EPOLLPRI;
+   if (fdh->flags & ECORE_FD_READ)  events |= EPOLLIN | EPOLLHUP;
+   if (fdh->flags & ECORE_FD_WRITE) events |= EPOLLOUT | EPOLLHUP;
+   if (fdh->flags & ECORE_FD_ERROR) events |= EPOLLERR | EPOLLPRI | EPOLLHUP;
    return events;
 }
 #endif
@@ -307,9 +307,9 @@ static inline int
 _gfd_events_from_fdh(Ecore_Fd_Handler *fdh)
 {
    int events = 0;
-   if (fdh->flags & ECORE_FD_READ)  events |= G_IO_IN;
-   if (fdh->flags & ECORE_FD_WRITE) events |= G_IO_OUT;
-   if (fdh->flags & ECORE_FD_ERROR) events |= G_IO_ERR;
+   if (fdh->flags & ECORE_FD_READ)  events |= G_IO_IN | G_IO_HUP;
+   if (fdh->flags & ECORE_FD_WRITE) events |= G_IO_OUT | G_IO_HUP;
+   if (fdh->flags & ECORE_FD_ERROR) events |= G_IO_ERR | G_IO_HUP;
    return events;
 }
 #endif
@@ -337,6 +337,12 @@ _ecore_main_uv_poll_cb(uv_poll_t *handle, int status, int events)
   if (events & UV_READABLE) fdh->read_active  = EINA_TRUE;
   if (events & UV_WRITABLE) fdh->write_active = EINA_TRUE;
 
+  if (events & UV_DISCONNECT)
+     {
+        fdh->read_active  = EINA_TRUE;
+        fdh->write_active = EINA_TRUE;
+        fdh->error_active = EINA_TRUE;
+     }
   _ecore_try_add_to_call_list(obj, pd, fdh);
 
   _ecore_main_fd_handlers_call(obj, pd);
@@ -364,7 +370,7 @@ _ecore_main_fdh_poll_add(Efl_Loop_Data *pd EINA_UNUSED, Ecore_Fd_Handler *fdh)
    DBG("_ecore_main_fdh_poll_add");
    int r = 0;
 
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
 # ifdef HAVE_LIBUV
    if (!_dl_uv_run)
 # endif
@@ -419,7 +425,7 @@ _ecore_main_fdh_poll_add(Efl_Loop_Data *pd EINA_UNUSED, Ecore_Fd_Handler *fdh)
 static inline void
 _ecore_main_fdh_poll_del(Efl_Loop_Data *pd, Ecore_Fd_Handler *fdh)
 {
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
 # ifdef HAVE_LIBUV
    if (!_dl_uv_run)
 # endif
@@ -471,7 +477,7 @@ _ecore_main_fdh_poll_modify(Efl_Loop_Data *pd EINA_UNUSED, Ecore_Fd_Handler *fdh
 {
    DBG("_ecore_main_fdh_poll_modify %p", fdh);
    int r = 0;
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
 # ifdef HAVE_LIBUV
    if (!_dl_uv_run)
 # endif
@@ -523,7 +529,7 @@ _ecore_main_idler_all_call(Eo *loop)
    eina_freeq_reduce(eina_freeq_main_get(), 84);
 }
 
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
 static inline int
 _ecore_main_fdh_epoll_mark_active(Eo *obj, Efl_Loop_Data *pd)
 {
@@ -564,6 +570,13 @@ _ecore_main_fdh_epoll_mark_active(Eo *obj, Efl_Loop_Data *pd)
 //TIZEN_ONLY(20151202): handle EPOLLHUP
         if (ev[i].events & EPOLLHUP) fdh->error_active = EINA_TRUE;
 //
+
+        if (ev[i].events & EPOLLHUP)
+          {
+             fdh->read_active  = EINA_TRUE;
+             fdh->write_active = EINA_TRUE;
+             fdh->error_active = EINA_TRUE;
+          }
 
         _ecore_try_add_to_call_list(obj, pd, fdh);
      }
@@ -642,6 +655,13 @@ _ecore_main_fdh_glib_mark_active(Eo *obj, Efl_Loop_Data *pd)
         if (fdh->gfd.revents & G_IO_IN)  fdh->read_active  = EINA_TRUE;
         if (fdh->gfd.revents & G_IO_OUT) fdh->write_active = EINA_TRUE;
         if (fdh->gfd.revents & G_IO_ERR) fdh->error_active = EINA_TRUE;
+
+        if (fdh->gfd.revents & G_IO_HUP)
+          {
+             fdh->read_active  = EINA_TRUE;
+             fdh->write_active = EINA_TRUE;
+             fdh->error_active = EINA_TRUE;
+          }
 
         _ecore_try_add_to_call_list(obj, fdh);
 
@@ -775,7 +795,7 @@ _ecore_main_gsource_check(GSource *source EINA_UNUSED)
    else ret = TRUE;
 
    // check if fds are ready
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
    if (pd->epoll_fd >= 0)
      ecore_fds_ready = (_ecore_main_fdh_epoll_mark_active(obj, pd) > 0);
    else
@@ -936,7 +956,7 @@ _ecore_main_loop_setup(Eo *obj, Efl_Loop_Data *pd)
 {
    // Please note that this function is being also called in case of a bad
    // fd to reset the main loop.
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
    pd->epoll_fd = epoll_create(1);
    if (pd->epoll_fd < 0) WRN("Failed to create epoll fd!");
    else
@@ -1039,7 +1059,7 @@ _ecore_main_loop_setup(Eo *obj, Efl_Loop_Data *pd)
           {
              g_source_set_priority(ecore_glib_source,
                                    G_PRIORITY_HIGH_IDLE + 20);
-# ifdef HAVE_EPOLL
+# ifdef HAVE_SYS_EPOLL_H
              if (pd->epoll_fd >= 0)
                {
                   // epoll multiplexes fds into the g_main_loop
@@ -1095,7 +1115,7 @@ _ecore_main_loop_clear(Eo *obj, Efl_Loop_Data *pd)
           }
 #endif
      }
-# ifdef HAVE_EPOLL
+# ifdef HAVE_SYS_EPOLL_H
    if (pd->epoll_fd >= 0)
      {
         close(pd->epoll_fd);
@@ -1848,7 +1868,7 @@ _ecore_main_select(Eo *obj, Efl_Loop_Data *pd, double timeout)
    // call the prepare callback for all handlers
    if (pd->fd_handlers_with_prep) _ecore_main_prepare_handlers(obj, pd);
 
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
    if (pd->epoll_fd < 0)
      {
 #endif
@@ -1873,8 +1893,8 @@ _ecore_main_select(Eo *obj, Efl_Loop_Data *pd, double timeout)
                     }
                }
           }
+#ifdef HAVE_SYS_EPOLL_H
      }
-#ifdef HAVE_EPOLL
    else
      {
         // polling on the epoll fd will wake when fd in the epoll set is active
@@ -1934,7 +1954,7 @@ _ecore_main_select(Eo *obj, Efl_Loop_Data *pd, double timeout)
      {
         //TIZEN_ONLY: ecore: stabilize wayland event handling in multithread
         /*
-#ifdef HAVE_EPOLL
+#ifdef HAVE_SYS_EPOLL_H
         if (pd->epoll_fd >= 0)
           _ecore_main_fdh_epoll_mark_active(obj, pd);
         else
