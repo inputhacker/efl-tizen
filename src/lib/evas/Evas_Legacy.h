@@ -8287,6 +8287,17 @@ EAPI void evas_object_image_pixels_noti_callback_set(Evas_Object *obj, Evas_Obje
  */
 EAPI Evas_Object *evas_object_event_grabber_add(Evas *e);
 #include "canvas/efl_canvas_object_event_grabber.eo.legacy.h"
+
+#include "canvas/efl_canvas_animation_alpha.eo.legacy.h"
+#include "canvas/efl_canvas_animation.eo.legacy.h"
+#include "canvas/efl_canvas_animation_group.eo.legacy.h"
+#include "canvas/efl_canvas_animation_group_parallel.eo.legacy.h"
+#include "canvas/efl_canvas_animation_group_sequential.eo.legacy.h"
+#include "canvas/efl_canvas_animation_player.eo.legacy.h"
+#include "canvas/efl_canvas_animation_rotate.eo.legacy.h"
+#include "canvas/efl_canvas_animation_scale.eo.legacy.h"
+#include "canvas/efl_canvas_animation_translate.eo.legacy.h"
+
 #endif
 
 //TIZEN_ONLY(20171215): add heder define
