@@ -26,6 +26,14 @@ evas_common_font_query_run_font_end_get(RGBA_Font *fn, RGBA_Font_Int **script_fi
    if (!*script_fi)
      {
         const Eina_Unicode *base_char = NULL;
+
+        /* TIZEN_ONLY(20180221): Don't pick a script font based on COMMON/UNKNOWN script text. */
+        /* It just skip searching font if the given script is not explicit script.
+         * In this case, it will pick the top font as its script font. */
+        if (((script) == EVAS_SCRIPT_UNKNOWN) || ((script) <= EVAS_SCRIPT_INHERITED))
+          goto get_top_font;
+        /* END */
+
         /* Skip common chars */
         for (base_char = text ;
              (base_char < run_end) &&
@@ -50,6 +58,10 @@ evas_common_font_query_run_font_end_get(RGBA_Font *fn, RGBA_Font_Int **script_fi
          * replacement char */
         if (base_char == run_end)
            evas_common_font_glyph_search(fn, &fi, REPLACEMENT_CHAR);
+
+        /* TIZEN_ONLY(20180221): Don't pick a script font based on COMMON/UNKNOWN script text. */
+get_top_font:
+        /* END */
 
         if (!fi)
            fi = fn->fonts->data;
