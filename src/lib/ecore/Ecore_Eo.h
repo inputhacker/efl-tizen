@@ -48,6 +48,9 @@ extern "C" {
 #include "efl_loop_message.eo.h"
 #include "efl_loop_message_handler.eo.h"
 
+#include "efl_task.eo.h"
+#include "efl_exe.eo.h"
+
 #include "efl_loop.eo.h"
 
 /**
