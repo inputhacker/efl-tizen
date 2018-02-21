@@ -239,7 +239,7 @@ extern EAPI int _evas_log_dom_global;
 
 /* use exact rects for updates not tiles */
 //#define NEWTILER
-#define TILESIZE 8
+#define TILESIZE 16
 #define IMG_MAX_SIZE 65000
 
 #define IMG_TOO_BIG(w, h) \
