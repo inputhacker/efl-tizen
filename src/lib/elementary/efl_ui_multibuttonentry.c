@@ -845,7 +845,10 @@ _item_new(Efl_Ui_Multibuttonentry_Data *sd,
    elm_object_part_text_set(VIEW(item), "elm.btn.text", str);
 
    //entry is cleared when text is made to button
-   efl_text_set(sd->entry, "");
+   //FIXME: Change this when efl interface theme merged.
+   //efl_text_set(sd->entry, "");
+   elm_object_text_set(sd->entry, "");
+   //
 
    elm_layout_signal_callback_add
      (VIEW(item), "mouse,clicked,1", "*", _on_item_clicked, EO_OBJ(item));
@@ -1126,7 +1129,10 @@ _entry_changed_cb(void *data, const Efl_Event *event EINA_UNUSED)
    EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(data, sd);
    const char *str;
 
-   str = efl_text_get(sd->entry);
+   //FIXME: Change this when efl interface theme merged.
+   //str = efl_text_get(sd->entry);
+   str = elm_object_text_get(sd->entry);
+   //
    sd->n_str = str ? strlen(str) : 0;
 }
 
@@ -1150,7 +1156,10 @@ _entry_focus_changed_cb(void *data, const Efl_Event *event)
      {
         const char *str;
 
-        str = efl_text_get(sd->entry);
+        //FIXME: Change this when efl interface theme merged.
+        //str = efl_text_get(sd->entry);
+        str = elm_object_text_get(sd->entry);
+        //
         if (str && str[0])
           _item_new(sd, str, MULTIBUTTONENTRY_POS_END, NULL, NULL, NULL);
      }
@@ -1239,7 +1248,10 @@ _entry_key_up_cb(void *data,
 
    if (!sd->box) return;
 
-   str = efl_text_get(sd->entry);
+   //FIXME: Change this when efl interface theme merged.
+   //str = efl_text_get(sd->entry);
+   str = elm_object_text_get(sd->entry);
+   //
    if (!str) return;
 
    if (strlen(str) &&
@@ -1593,6 +1605,7 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
    evas_object_size_hint_align_set(sd->entry, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    elm_box_pack_end(sd->box, sd->entry);
+   evas_object_show(sd->entry);
    //
 
    sd->view_state = MULTIBUTTONENTRY_VIEW_ENTRY;
