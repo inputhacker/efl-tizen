@@ -252,6 +252,8 @@ elm_cnp_selection_set(Evas_Object *obj, Elm_Sel_Type type,
 EAPI Eina_Bool
 elm_object_cnp_selection_clear(Evas_Object *obj, Elm_Sel_Type type)
 {
+   if (type > ELM_SEL_TYPE_CLIPBOARD) return EINA_FALSE;
+
    int seatid = 1;
    Eo *sel_man = _selection_manager_get((Evas_Object *)obj);
 
