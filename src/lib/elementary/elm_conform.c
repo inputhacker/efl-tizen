@@ -236,8 +236,9 @@ _conformant_part_sizing_eval(Evas_Object *obj,
 
    ELM_CONFORMANT_DATA_GET(obj, sd);
 
-#ifdef HAVE_ELEMENTARY_X
    top = elm_widget_top_get(obj);
+
+#ifdef HAVE_ELEMENTARY_X
    xwin = elm_win_xwindow_get(top);
 
    if (xwin)
