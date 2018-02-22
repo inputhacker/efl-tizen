@@ -2288,7 +2288,10 @@ ELM_PART_OVERRIDE_TEXT_GET(efl_ui_multibuttonentry, EFL_UI_MULTIBUTTONENTRY, Efl
 
 typedef struct
 {
-   Efl_Ui_Multibuttonentry_Format_Cb format_cb;
+   //TIZEN_ONLY(20180222): It's wrong point on upstream.
+   //Efl_Ui_Multibuttonentry_Format_Cb format_cb;
+   Elm_Multibuttonentry_Format_Cb format_cb;
+   //
    void *data;
 } Mbe_Format_Wrapper_Data ;
 
@@ -2319,7 +2322,10 @@ _format_legacy_to_format_eo_free_cb(void *data)
 }
 
 EAPI void
-elm_multibuttonentry_format_function_set(Eo *obj, Efl_Ui_Multibuttonentry_Format_Cb format_function, const void *data)
+//TIZEN_ONLY(20180222): It's wrong point on upstream.
+//elm_multibuttonentry_format_function_set(Eo *obj, Efl_Ui_Multibuttonentry_Format_Cb format_function, const void *data)
+elm_multibuttonentry_format_function_set(Eo *obj, Elm_Multibuttonentry_Format_Cb format_function, const void *data)
+//
 {
    Mbe_Format_Wrapper_Data *mfwd = malloc(sizeof(Mbe_Format_Wrapper_Data));
 
