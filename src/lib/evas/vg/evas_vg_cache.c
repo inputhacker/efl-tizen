@@ -47,6 +47,7 @@ evas_cache_svg_shutdown(void)
    _evas_vg_svg_node_eet_destroy();
    eina_hash_free(svg_cache->vg_hash);
    eina_hash_free(svg_cache->active);
+   free(svg_cache);
    svg_cache = NULL;
 }
 
