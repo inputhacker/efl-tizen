@@ -6450,7 +6450,6 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
    _elm_win_xwin_update(sd);
 #endif
 
-// TIZEN_ONLY (20151017) do not prohibit fake win's auto-render
    if (type != ELM_WIN_FAKE)
      {
         //Prohibiting auto-rendering, until elm_win is shown.
@@ -6466,7 +6465,6 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
                }
           }
      }
- //
 
 #ifdef ELM_DEBUG
    Evas_Modifier_Mask mask = evas_key_modifier_mask_get(sd->evas, "Control");
