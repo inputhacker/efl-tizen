@@ -355,6 +355,7 @@ extern int                    beta;
 extern int had_quote;
 
 extern unsigned int max_open_files;
+extern Eina_Array *requires;
 
 /* TIZEN_ONLY(150320)********************Ninepatch patch for Samsung************************************/
 Eina_Bool    is_ninepatch_image(const char* name);
