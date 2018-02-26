@@ -202,6 +202,7 @@ static void      *_part_free(Edje_Part_Collection *pc, Edje_Part *ep);
 
 static void       check_has_anchors(void);
 
+static void       st_id(void);
 static void       st_efl_version(void);
 static void       st_externals_external(void);
 
@@ -727,6 +728,7 @@ static void st_collections_plugins_plugin_param(void);
 
 New_Statement_Handler statement_handlers[] =
 {
+   {"id", st_id},
    {"efl_version", st_efl_version},
    {"externals.external", st_externals_external},
    IMAGE_STATEMENTS("")
@@ -2277,6 +2279,30 @@ st_efl_version(void)
 
    edje_file->efl_version.major = parse_int(0);
    edje_file->efl_version.minor = parse_int(1);
+}
+
+/** @edcsubsection{toplevel_id,
+ *                 id} */
+
+/**
+    @page edcref
+
+    @property
+        id
+    @parameters
+        [name]
+    @effect
+        A string which is used to identify the edje file.
+    @since 1.21
+    @endproperty
+ */
+static void
+st_id(void)
+{
+   check_arg_count(1);
+
+   free(edje_file->id);
+   edje_file->id = parse_str(0);
 }
 
 /** @edcsubsection{toplevel_externals,
