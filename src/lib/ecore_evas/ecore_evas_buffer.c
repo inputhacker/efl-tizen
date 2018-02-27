@@ -176,7 +176,7 @@ EAPI int
 ecore_evas_buffer_render(Ecore_Evas *ee)
 {
    int r;
-
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ee, 0);
    r = ecore_evas_render(ee);
    ecore_evas_render_wait(ee);
    return r;
