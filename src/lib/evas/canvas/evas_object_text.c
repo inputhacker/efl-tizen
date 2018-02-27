@@ -868,17 +868,6 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
           width += last_it->w - last_it->adv;
         /* END */
      }
-
-   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
-   if (o->font && o->items)
-     {
-        int inset = ENFN->font_inset_get(ENDT, o->font, &o->items->text_props);
-
-        if (inset < 0)
-          width -= inset;
-     }
-   /* END */
-
    o->last_computed.width_without_ellipsis = width;
 
    _evas_object_text_pad_get(eo_obj, o, &l, &r, NULL, NULL);
@@ -1101,19 +1090,6 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
    }
 
    _evas_object_text_item_order(eo_obj, o);
-
-   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
-   if (o->font && o->items)
-     {
-        int inset = ENFN->font_inset_get(ENDT, o->font, &o->items->text_props);
-
-        if (inset < 0)
-          {
-             o->last_computed.advance -= inset;
-             o->last_computed.width -= inset;
-          }
-     }
-   /* END */
 
    if (v_to_l) free(v_to_l);
 }
@@ -1885,9 +1861,6 @@ evas_object_text_render(Evas_Object *eo_obj,
      };
    int sl = 0, st = 0;
    int shad_dst = 0, shad_sz = 0, dx = 0, dy = 0, haveshad = 0;
-   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
-   int inset = ENFN->font_inset_get(ENDT, o->font, &o->items->text_props);
-   /* END */
 
    /* render object to surface with context, and offxet by x,y */
    _evas_object_text_pad_get(eo_obj, o, &sl, NULL, &st, NULL);
@@ -1957,11 +1930,7 @@ evas_object_text_render(Evas_Object *eo_obj,
                                 context,                                \
                                 surface,                                \
                                 o->font,                                \
-                                /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. \
                                 obj->cur->geometry.x + x + sl + ox + it->x, \
-                                 */ \
-                                obj->cur->geometry.x + x + sl + ox + it->x - inset, \
-                                /* END */ \
                                 obj->cur->geometry.y + y + st + oy +     \
                                 (int) o->max_ascent,                    \
                                 obj->cur->geometry.w,                    \
