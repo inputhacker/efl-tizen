@@ -46,9 +46,7 @@ EAPI void
 elm_datetime_format_set(Evas_Object *obj,
                         const char *fmt)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
    EINA_SAFETY_ON_NULL_RETURN(obj);
-   //
 
    efl_ui_clock_format_set(obj, fmt);
 }
@@ -56,9 +54,7 @@ elm_datetime_format_set(Evas_Object *obj,
 EAPI const char *
 elm_datetime_format_get(const Evas_Object *obj)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
-   //
 
    return efl_ui_clock_format_get(obj);
 }
@@ -102,9 +98,9 @@ adjust_field_type(Elm_Datetime_Field_Type type)
 EAPI void
 elm_datetime_field_limit_set(Evas_Object *obj, Elm_Datetime_Field_Type type, int min, int max)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
    EINA_SAFETY_ON_NULL_RETURN(obj);
-   //
+
+   if ((type < ELM_DATETIME_YEAR) || (type >= ELM_DATETIME_AMPM)) return;
 
    efl_ui_clock_field_limit_set(obj, adjust_field_type(type), min, max);
 }
@@ -112,9 +108,9 @@ elm_datetime_field_limit_set(Evas_Object *obj, Elm_Datetime_Field_Type type, int
 EAPI void
 elm_datetime_field_limit_get(const Evas_Object *obj, Elm_Datetime_Field_Type fieldtype, int *min, int *max)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
    EINA_SAFETY_ON_NULL_RETURN(obj);
-   //
+
+   if ((fieldtype < ELM_DATETIME_YEAR) || (fieldtype >= ELM_DATETIME_AMPM)) return;
 
    efl_ui_clock_field_limit_get(obj, adjust_field_type(fieldtype), min, max);
 }
@@ -122,11 +118,8 @@ elm_datetime_field_limit_get(const Evas_Object *obj, Elm_Datetime_Field_Type fie
 EAPI Eina_Bool
 elm_datetime_value_min_set(Evas_Object *obj, const Efl_Time *mintime)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
-   //if (mintime) efl_ui_clock_time_min_set(obj, *mintime);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(mintime, EINA_FALSE);
-   //
 
    efl_ui_clock_time_min_set(obj, *mintime);
 
@@ -136,11 +129,8 @@ elm_datetime_value_min_set(Evas_Object *obj, const Efl_Time *mintime)
 EAPI Eina_Bool
 elm_datetime_value_min_get(const Evas_Object *obj, Efl_Time *mintime)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
-   //if (mintime) *mintime = efl_ui_clock_time_min_get(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(mintime, EINA_FALSE);
-   //
 
    *mintime = efl_ui_clock_time_min_get(obj);
 
@@ -150,11 +140,8 @@ elm_datetime_value_min_get(const Evas_Object *obj, Efl_Time *mintime)
 EAPI Eina_Bool
 elm_datetime_value_set(Evas_Object *obj, const Efl_Time *newtime)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
-   //if (newtime) efl_ui_clock_time_set(obj, *newtime);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(newtime, EINA_FALSE);
-   //
 
    efl_ui_clock_time_set(obj, *newtime);
 
@@ -164,11 +151,8 @@ elm_datetime_value_set(Evas_Object *obj, const Efl_Time *newtime)
 EAPI Eina_Bool
 elm_datetime_value_get(const Evas_Object *obj, Efl_Time *currtime)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
-   //if (currtime) *currtime = efl_ui_clock_time_get(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(currtime, EINA_FALSE);
-   //
 
    *currtime = efl_ui_clock_time_get(obj);
 
@@ -178,18 +162,18 @@ elm_datetime_value_get(const Evas_Object *obj, Efl_Time *currtime)
 EAPI void
 elm_datetime_field_visible_set(Evas_Object *obj, Elm_Datetime_Field_Type fieldtype, Eina_Bool visible)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
    EINA_SAFETY_ON_NULL_RETURN(obj);
-   //
+
+   if ((fieldtype < ELM_DATETIME_YEAR) || (fieldtype > ELM_DATETIME_AMPM)) return;
 
    efl_ui_clock_field_visible_set(obj, adjust_field_type(fieldtype), visible);
 }
 
 EAPI Eina_Bool elm_datetime_field_visible_get(const Evas_Object *obj, Elm_Datetime_Field_Type fieldtype)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
-   //
+
+   if ((fieldtype < ELM_DATETIME_YEAR) || (fieldtype > ELM_DATETIME_AMPM)) return EINA_FALSE;
 
    return efl_ui_clock_field_visible_get(obj, adjust_field_type(fieldtype));
 }
@@ -197,11 +181,8 @@ EAPI Eina_Bool elm_datetime_field_visible_get(const Evas_Object *obj, Elm_Dateti
 EAPI Eina_Bool
 elm_datetime_value_max_set(Evas_Object *obj, const Efl_Time *maxtime)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
-   //if (maxtime) efl_ui_clock_time_max_set(obj, *maxtime);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(maxtime, EINA_FALSE);
-   //
 
    efl_ui_clock_time_max_set(obj, *maxtime);
 
@@ -211,11 +192,8 @@ elm_datetime_value_max_set(Evas_Object *obj, const Efl_Time *maxtime)
 EAPI Eina_Bool
 elm_datetime_value_max_get(const Evas_Object *obj, Efl_Time *maxtime)
 {
-   //TIZEN_ONLY(20180220): Considering wrong param has been passed case.
-   //if (maxtime) *maxtime = efl_ui_clock_time_max_get(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(maxtime, EINA_FALSE);
-   //
 
    *maxtime = efl_ui_clock_time_max_get(obj);
 
