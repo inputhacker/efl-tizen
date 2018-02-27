@@ -1488,7 +1488,7 @@ ecore_main_fd_handler_add(int                    fd,
 {
    Ecore_Fd_Handler *fdh = NULL;
    EINA_MAIN_LOOP_CHECK_RETURN_VAL(NULL);
-   fdh = _ecore_main_fd_handler_add(efl_loop_main_get(EFL_LOOP_CLASS),
+   fdh = _ecore_main_fd_handler_add(efl_main_loop_get(),
                                     ML_DAT, NULL, fd, flags, func, data,
                                     buf_func, buf_data, EINA_FALSE);
    if (fdh) fdh->legacy = EINA_TRUE;
@@ -1504,7 +1504,7 @@ ecore_main_fd_handler_file_add(int                    fd,
                                const void            *buf_data)
 {
    EINA_MAIN_LOOP_CHECK_RETURN_VAL(NULL);
-   return _ecore_main_fd_handler_add(efl_loop_main_get(EFL_LOOP_CLASS),
+   return _ecore_main_fd_handler_add(efl_main_loop_get(),
                                      ML_DAT, NULL, fd, flags, func, data,
                                      buf_func, buf_data, EINA_TRUE);
 }
@@ -1711,7 +1711,7 @@ ecore_main_fd_handler_active_set(Ecore_Fd_Handler      *fd_handler,
 }
 
 void
-_ecore_main_content_clear(Efl_Loop_Data *pd)
+_ecore_main_content_clear(Eo *obj, Efl_Loop_Data *pd)
 {
    Efl_Promise *promise;
    Efl_Future *future;
@@ -1724,7 +1724,7 @@ _ecore_main_content_clear(Efl_Loop_Data *pd)
      ecore_loop_promise_fulfill(promise);
 
    // FIXME
-   __eina_promise_cancel_all();
+   __eina_promise_cancel_data(obj);
 
    while (pd->fd_handlers)
      {
