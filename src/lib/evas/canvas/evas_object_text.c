@@ -65,9 +65,6 @@ struct _Evas_Text_Data
       int                       width;
       /* END */
       Eina_Bool                 ellipsis;
-      /* TIZEN_ONLY(20180117): Don't apply negative inset for first glyph. */
-      int                       inset;
-      /* END */
    } last_computed;
 
    Evas_BiDi_Paragraph_Props  *bidi_par_props;
@@ -872,7 +869,7 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
         /* END */
      }
 
-   /* TIZEN_ONLY(20180117): Don't apply negative inset for first glyph. */
+   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
    if (o->font && o->items)
      {
         int inset = ENFN->font_inset_get(ENDT, o->font, &o->items->text_props);
@@ -1105,9 +1102,7 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
 
    _evas_object_text_item_order(eo_obj, o);
 
-   /* TIZEN_ONLY(20180117): Don't apply negative inset for first glyph. */
-   o->last_computed.inset = 0;
-
+   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
    if (o->font && o->items)
      {
         int inset = ENFN->font_inset_get(ENDT, o->font, &o->items->text_props);
@@ -1116,7 +1111,6 @@ _evas_object_text_layout(Evas_Object *eo_obj, Evas_Text_Data *o, Eina_Unicode *t
           {
              o->last_computed.advance -= inset;
              o->last_computed.width -= inset;
-             o->last_computed.inset = inset;
           }
      }
    /* END */
@@ -1861,11 +1855,7 @@ _evas_text_evas_filter_input_render(Eo *eo_obj EINA_UNUSED, Evas_Text_Data *o,
        {
           if (!evas_filter_font_draw(filter, drawctx,
                                      EVAS_FILTER_BUFFER_INPUT_ID, o->font,
-                                     /* TIZEN_ONLY(20180117): Don't apply negative inset for first glyph.
                                      l + it->x,
-                                      */
-                                     l + it->x - o->last_computed.inset,
-                                     /* END */
                                      t + (int) o->max_ascent,
                                      &it->text_props,
                                      do_async))
@@ -1895,6 +1885,9 @@ evas_object_text_render(Evas_Object *eo_obj,
      };
    int sl = 0, st = 0;
    int shad_dst = 0, shad_sz = 0, dx = 0, dy = 0, haveshad = 0;
+   /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. */
+   int inset = ENFN->font_inset_get(ENDT, o->font, &o->items->text_props);
+   /* END */
 
    /* render object to surface with context, and offxet by x,y */
    _evas_object_text_pad_get(eo_obj, o, &sl, NULL, &st, NULL);
@@ -1964,10 +1957,10 @@ evas_object_text_render(Evas_Object *eo_obj,
                                 context,                                \
                                 surface,                                \
                                 o->font,                                \
-                                /* TIZEN_ONLY(20180117): Don't apply negative inset for first glyph. \
+                                /* TIZEN_ONLY(20180110): Don't apply negative inset for first glyph. \
                                 obj->cur->geometry.x + x + sl + ox + it->x, \
                                  */ \
-                                obj->cur->geometry.x + x + sl + ox + it->x - o->last_computed.inset, \
+                                obj->cur->geometry.x + x + sl + ox + it->x - inset, \
                                 /* END */ \
                                 obj->cur->geometry.y + y + st + oy +     \
                                 (int) o->max_ascent,                    \
