@@ -92,9 +92,9 @@ unsigned int (*glsym_eglSwapBuffersWithDamage) (EGLDisplay a, void *b, const EGL
 unsigned int (*glsym_eglSetDamageRegionKHR) (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d) = NULL;
 unsigned int (*glsym_eglQueryWaylandBufferWL)(EGLDisplay a, struct wl_resource *b, EGLint c, EGLint *d) = NULL;
 
-EGLSyncKHR (*glsym_eglCreateSyncKHR) (EGLDisplay dpy, EGLenum type, const EGLint *attrib_list);
-EGLBoolean (*glsym_eglDestroySyncKHR) (EGLDisplay dpy, EGLSyncKHR sync);
-EGLint (*glsym_eglWaitSyncKHR) (EGLDisplay dpy, EGLSyncKHR sync, EGLint flags);
+EGLSyncKHR (*glsym_eglCreateSyncKHR) (EGLDisplay dpy, EGLenum type, const EGLint *attrib_list) = NULL;
+EGLBoolean (*glsym_eglDestroySyncKHR) (EGLDisplay dpy, EGLSyncKHR sync) = NULL;
+EGLint (*glsym_eglWaitSyncKHR) (EGLDisplay dpy, EGLSyncKHR sync, EGLint flags) = NULL;
 
 void (*glsym_evas_gl_common_surface_cache_dump)(void) = NULL;
 
