@@ -3126,10 +3126,14 @@ evas_process_dirty_pixels(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, 
                   if (ENFN->gl_get_pixels_pre)
                     ENFN->gl_get_pixels_pre(output);
                   // IS INDIRECT RENDERING #1
-                  if (ENFN->gl_get_pixels)
-                    ENFN->gl_get_pixels(output, o->pixels->func.get_pixels, o->pixels->func.get_pixels_data, eo_obj, o->engine_data);
-                  else
-                  o->pixels->func.get_pixels(o->pixels->func.get_pixels_data, eo_obj);
+                  if (o->pixels->func.get_pixels)
+                    {
+                      if (ENFN->gl_get_pixels)
+                        ENFN->gl_get_pixels(output, o->pixels->func.get_pixels, o->pixels->func.get_pixels_data, eo_obj, o->engine_data);
+                      else
+                        o->pixels->func.get_pixels(o->pixels->func.get_pixels_data, eo_obj);
+                    }
+
                   if (ENFN->gl_get_pixels_post)
                     ENFN->gl_get_pixels_post(output);
                }
