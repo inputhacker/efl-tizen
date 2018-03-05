@@ -1658,7 +1658,13 @@ _elm_win_opaque_update(Efl_Ui_Win_Data *sd, Eina_Bool force_alpha)
 
    /* FIXME: Replace with call to ecore_evas_shadow_geometry_set(). */
    ecore_wl2_window_geometry_set(sd->wl.win, ox, oy, ow, oh);
+   //TIZEN_ONLY(20180305) remove side effect of input region
+   /*
+   //
    ecore_wl2_window_input_region_set(sd->wl.win, ox, oy, ow, oh);
+   //TIZEN_ONLY(20180305) remove side effect of input region
+   */
+   //
 #else
    (void)sd;
    (void)force_alpha;
