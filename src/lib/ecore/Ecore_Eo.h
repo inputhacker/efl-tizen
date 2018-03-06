@@ -50,6 +50,7 @@ extern "C" {
 
 #include "efl_task.eo.h"
 #include "efl_thread.eo.h"
+#include "efl_threadio.eo.h"
 #include "efl_exe.eo.h"
 
 #include "efl_loop.eo.h"
