@@ -393,6 +393,9 @@ _sys_lang_changed(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA
    return ECORE_CALLBACK_PASS_ON;
 }
 
+// This is necessary to keep backward compatibility
+static const char *bcargv[] = { "exe" };
+
 EAPI int
 elm_init(int argc, char **argv)
 {
@@ -411,8 +414,8 @@ elm_init(int argc, char **argv)
    //
         return _elm_init_count;
      }
-   elm_quicklaunch_init(argc, argv);
-   elm_quicklaunch_sub_init(argc, argv);
+   elm_quicklaunch_init(argc, argv ? argv : (char**) bcargv);
+   elm_quicklaunch_sub_init(argc, argv ? argv : (char**) bcargv);
 
    _prefix_shutdown();
 
