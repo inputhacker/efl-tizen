@@ -62,6 +62,120 @@ struct _Ecore_Evas_Engine_Tbm_Data {
    void *data;
 };
 
+Ecore_Event_Handler *_ecore_evas_tbm_ecore_cb_handlers[2] = {0, };
+
+static Eina_Bool
+_ecore_evas_tbm_evas_device_find(Evas *evas, const char *identifier)
+{
+   Eina_List *list, *l;
+   Evas_Device *device;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(evas, EINA_FALSE);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(identifier, EINA_FALSE);
+
+   list = (Eina_List *)evas_device_list(evas, NULL);
+   EINA_LIST_FOREACH(list, l, device)
+     {
+        if (!strncmp(evas_device_description_get(device), identifier, strlen(identifier)))
+          {
+             return EINA_TRUE;
+          }
+     }
+   return EINA_FALSE;
+}
+
+static Evas_Device *
+_ecore_evas_tbm_default_seat_get(Evas *evas)
+{
+   Eina_List *list, *l;
+   Evas_Device *device;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(evas, EINA_FALSE);
+
+   list = (Eina_List *)evas_device_list(evas, NULL);
+   EINA_LIST_FOREACH(list, l, device)
+     {
+        if ((evas_device_class_get(device) == EVAS_DEVICE_CLASS_SEAT) &&
+            !strncmp(evas_device_description_get(device), "Enlightenment seat", sizeof("Enlightenment seat")))
+          {
+             return device;
+          }
+     }
+   return NULL;
+}
+
+static Eina_Bool
+_ecore_evas_tbm_cb_ecore_device_add(void *data, int type EINA_UNUSED, void *event)
+{
+   Ecore_Event_Device_Info *ev;
+   Ecore_Evas *ee = (Ecore_Evas *)data;
+   Evas_Device *seat;
+
+   ev = event;
+
+   if (ee->prop.window != ev->window) return ECORE_CALLBACK_PASS_ON;
+   if (_ecore_evas_tbm_evas_device_find(ee->evas, ev->identifier)) return ECORE_CALLBACK_PASS_ON;
+
+   seat = _ecore_evas_tbm_default_seat_get(ee->evas);
+
+   evas_device_add_full(ee->evas, ev->name,
+                        ev->identifier,
+                        seat, NULL,
+                        ev->clas,
+                        ev->subclas);
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static Eina_Bool
+_ecore_evas_tbm_cb_ecore_device_del(void *data, int type EINA_UNUSED, void *event)
+{
+   Ecore_Event_Device_Info *ev;
+   Ecore_Evas *ee = (Ecore_Evas *)data;
+   Eina_List *list, *l, *l_next;
+   Evas_Device *device;
+
+   ev = event;
+
+   if (ee->prop.window != ev->window) return ECORE_CALLBACK_PASS_ON;
+
+   list = (Eina_List *)evas_device_list(ee->evas, NULL);
+   EINA_LIST_FOREACH_SAFE(list, l, l_next, device)
+     {
+        if (!strncmp(evas_device_description_get(device), ev->identifier, strlen(ev->identifier)))
+          {
+             evas_device_del(device);
+          }
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+
+static void
+_ecore_evas_tbm_event_register(Ecore_Evas *ee)
+{
+   if (!ecore_event_init()) return;
+
+   _ecore_evas_tbm_ecore_cb_handlers[0] = ecore_event_handler_add(ECORE_EVENT_DEVICE_ADD,
+                                          _ecore_evas_tbm_cb_ecore_device_add, ee);
+   _ecore_evas_tbm_ecore_cb_handlers[1] = ecore_event_handler_add(ECORE_EVENT_DEVICE_DEL,
+                                          _ecore_evas_tbm_cb_ecore_device_del, ee);
+}
+
+static void
+_ecore_evas_tbm_event_unregister(void)
+{
+   int i;
+
+   if (_ecore_evas_tbm_ecore_cb_handlers[0]) ecore_event_shutdown();
+
+   for (i = 0; i < 2; i++)
+     {
+        ecore_event_handler_del(_ecore_evas_tbm_ecore_cb_handlers[i]);
+        _ecore_evas_tbm_ecore_cb_handlers[i] = NULL;
+     }
+}
+
 static void
 _ecore_evas_tbm_free(Ecore_Evas *ee)
 {
@@ -70,6 +184,8 @@ _ecore_evas_tbm_free(Ecore_Evas *ee)
    if (tbm_data->tbm_queue && tbm_data->free_func)
      tbm_data->free_func(tbm_data->data,tbm_data->tbm_queue);
    free(tbm_data);
+
+   _ecore_evas_tbm_event_unregister();
 }
 
 static void
@@ -953,6 +1069,8 @@ ecore_evas_tbm_ext_new_internal(const char *engine, void *tbm_surf_queue, void* 
 
     _ecore_evas_register(ee);
 
+    _ecore_evas_tbm_event_register(ee);
+
     return ee;
 }
 
@@ -971,7 +1089,6 @@ ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(alloc_func, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(free_func, NULL);
-
 
    if (!strcmp(engine, "gl_tbm"))
      {
@@ -1108,6 +1225,8 @@ ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,
    _ecore_evas_register(ee);
 
    evas_event_feed_mouse_in(ee->evas, (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), NULL);
+
+   _ecore_evas_tbm_event_register(ee);
 
    return ee;
 

@@ -183,13 +183,13 @@ _ecore_event_evas_push_fake(void *data)
 }
 
 static Eina_Bool
-_ecore_event_evas_push_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press press)
+_ecore_event_evas_push_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press press, Evas_Device *evas_dev)
 {
    Ecore_Event_Last *eel;
    Ecore_Input_Action action = ECORE_INPUT_CONTINUE;
 
    //_ecore_event_evas_mouse_button already check press or cancel without history
-   eel = _ecore_event_evas_lookup(e->dev, e->multi.device, e->buttons, e->window, EINA_TRUE);
+   eel = _ecore_event_evas_lookup(evas_dev, e->multi.device, e->buttons, e->window, EINA_TRUE);
    if (!eel) return EINA_FALSE;
    INF("dev(%d), button(%d), last_press(%d), press(%d)", e->multi.device, e->buttons, eel->state, press);
 
@@ -472,15 +472,14 @@ _ecore_event_evas_device_find(Evas *eo_e, Ecore_Device *ecore_dev)
    return NULL;
 }
 
-static void
-_ecore_event_device_check(Evas *eo_e, int type, void *ev, Eo *dev)
+static Evas_Device *
+_ecore_event_evas_device_get(Evas *eo_e, int type, Eo *dev)
 {
-   Evas_Device *evas_device;
-   Eo *tmp_dev;
+   Evas_Device *evas_device = NULL;
 
-   if (efl_class_get(dev) != EFL_ECORE_INPUT_DEVICE_CLASS) return;
+   if (!dev || efl_class_get(dev) != EFL_ECORE_INPUT_DEVICE_CLASS) return NULL;
 
-   evas_device = _ecore_event_evas_device_find(eo_e, dev);
+   if (dev) evas_device = _ecore_event_evas_device_find(eo_e, dev);
    if (!evas_device)
      {
         WRN("Failed to found evas device for %s (identifier: %s, class: %d)\n", efl_name_get(dev), efl_comment_get(dev), efl_ecore_input_device_type_get(dev));
@@ -495,61 +494,7 @@ _ecore_event_device_check(Evas *eo_e, int type, void *ev, Eo *dev)
           }
      }
 
-   if (evas_device)
-     {
-        if (type == ECORE_EVENT_KEY_DOWN ||
-            type == ECORE_EVENT_KEY_UP)
-          {
-             Ecore_Event_Key *e = (Ecore_Event_Key *)ev;
-
-             tmp_dev = e->dev;
-             e->dev = efl_ref(evas_device);
-             efl_unref(tmp_dev);
-          }
-        else if (type == ECORE_EVENT_MOUSE_BUTTON_DOWN ||
-                 type == ECORE_EVENT_MOUSE_BUTTON_UP ||
-                 type == ECORE_EVENT_MOUSE_BUTTON_CANCEL)
-          {
-             Ecore_Event_Mouse_Button *e = (Ecore_Event_Mouse_Button *)ev;
-
-             tmp_dev = e->dev;
-             e->dev = efl_ref(evas_device);
-             efl_unref(tmp_dev);
-          }
-        else if (type == ECORE_EVENT_MOUSE_MOVE)
-          {
-             Ecore_Event_Mouse_Move *e = (Ecore_Event_Mouse_Move *)ev;
-
-             tmp_dev = e->dev;
-             e->dev = efl_ref(evas_device);
-             efl_unref(tmp_dev);
-          }
-        else if (type == ECORE_EVENT_MOUSE_IN ||
-                 type == ECORE_EVENT_MOUSE_OUT)
-          {
-             Ecore_Event_Mouse_IO *e = (Ecore_Event_Mouse_IO *)ev;
-
-             tmp_dev = e->dev;
-             e->dev = efl_ref(evas_device);
-             efl_unref(tmp_dev);
-          }
-        else if (type == ECORE_EVENT_MOUSE_WHEEL)
-          {
-             Ecore_Event_Mouse_Wheel *e = (Ecore_Event_Mouse_Wheel *)ev;
-
-             tmp_dev = e->dev;
-             e->dev = efl_ref(evas_device);
-             efl_unref(tmp_dev);
-          }
-        else if (type == ECORE_EVENT_AXIS_UPDATE)
-          {
-             Ecore_Event_Axis_Update *e = (Ecore_Event_Axis_Update *)ev;
-
-             tmp_dev = e->dev;
-             e->dev = efl_ref(evas_device);
-             efl_unref(tmp_dev);
-          }
-     }
+   return evas_device;
 }
 //
 
@@ -559,21 +504,22 @@ _ecore_event_evas_key(Ecore_Event_Key *e, Ecore_Event_Press press)
    Ecore_Input_Window *lookup;
    Eo *seat;
    Eina_Bool evas_dev_pushed = EINA_FALSE;
+   Evas_Device *evas_device;
 
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
    // TIZEN_ONLY(20180118): support a Ecore_Device
    if (press == ECORE_DOWN)
-     _ecore_event_device_check(lookup->evas, ECORE_EVENT_KEY_DOWN, e, e->dev);
+     evas_device = _ecore_event_evas_device_get(lookup->evas, ECORE_EVENT_KEY_DOWN, e->dev);
    else
-     _ecore_event_device_check(lookup->evas, ECORE_EVENT_KEY_UP, e, e->dev);
+     evas_device = _ecore_event_evas_device_get(lookup->evas, ECORE_EVENT_KEY_UP, e->dev);
    //
-   seat = e->dev ? efl_input_device_seat_get(e->dev) : NULL;
+   seat = evas_device ? efl_input_device_seat_get(evas_device) : NULL;
    ecore_event_evas_seat_modifier_lock_update(lookup->evas, e->modifiers, seat);
 
-   if (e->dev)
+   if (evas_device)
      {
-        evas_device_push(lookup->evas, e->dev);
+        evas_device_push(lookup->evas, evas_device);
         evas_dev_pushed = EINA_TRUE;
      }
 
@@ -623,10 +569,6 @@ _ecore_event_evas_mouse_button_cancel(Ecore_Event_Mouse_Button *e)
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
 
-   // TIZEN_ONLY(20180118): support a Ecore_Device
-   _ecore_event_device_check(lookup->evas, ECORE_EVENT_MOUSE_BUTTON_CANCEL, e, e->dev);
-   //
-
    INF("ButtonEvent cancel, device(%d), button(%d)", e->multi.device, e->buttons);
    if (!lookup->direct ||
        !lookup->direct(lookup->window, ECORE_EVENT_MOUSE_BUTTON_CANCEL, e))
@@ -652,14 +594,15 @@ _ecore_event_evas_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press pr
    Ecore_Input_Window *lookup;
    Evas_Button_Flags flags = EVAS_BUTTON_NONE;
    Eina_Bool evas_dev_pushed = EINA_FALSE;
+   Evas_Device *evas_device;
 
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
    // TIZEN_ONLY(20180118): support a Ecore_Device
    if (press == ECORE_DOWN)
-     _ecore_event_device_check(lookup->evas, ECORE_EVENT_MOUSE_BUTTON_DOWN, e, e->dev);
+     evas_device = _ecore_event_evas_device_get(lookup->evas, ECORE_EVENT_MOUSE_BUTTON_DOWN, e->dev);
    else
-     _ecore_event_device_check(lookup->evas, ECORE_EVENT_MOUSE_BUTTON_UP, e, e->dev);
+     evas_device = _ecore_event_evas_device_get(lookup->evas, ECORE_EVENT_MOUSE_BUTTON_UP, e->dev);
    //
    if (e->double_click) flags |= EVAS_BUTTON_DOUBLE_CLICK;
    if (e->triple_click) flags |= EVAS_BUTTON_TRIPLE_CLICK;
@@ -672,7 +615,7 @@ _ecore_event_evas_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press pr
    if (press != ECORE_DOWN)
      {
         //ECORE_UP or ECORE_CANCEL
-        eel = _ecore_event_evas_lookup(e->dev, e->multi.device, e->buttons, e->window, EINA_FALSE);
+        eel = _ecore_event_evas_lookup(evas_device, e->multi.device, e->buttons, e->window, EINA_FALSE);
         if (!eel)
           {
              WRN("ButtonEvent has no history.");
@@ -691,20 +634,20 @@ _ecore_event_evas_mouse_button(Ecore_Event_Mouse_Button *e, Ecore_Event_Press pr
    if (!faked)
      {
         Eina_Bool ret = EINA_FALSE;
-        ret = _ecore_event_evas_push_mouse_button(e, press);
+        ret = _ecore_event_evas_push_mouse_button(e, press, evas_device);
         /* This ButtonEvent is worng */
         if (!ret) return ECORE_CALLBACK_PASS_ON;
      }
 
-   if (e->dev)
+   if (evas_device)
      {
-        evas_device_push(lookup->evas, e->dev);
+        evas_device_push(lookup->evas, evas_device);
         evas_dev_pushed = EINA_TRUE;
      }
 
    if (e->multi.device == 0)
      {
-        Eo *seat = e->dev ? efl_input_device_seat_get(e->dev) : NULL;
+        Eo *seat = evas_device ? efl_input_device_seat_get(evas_device) : NULL;
         ecore_event_evas_seat_modifier_lock_update(lookup->evas, e->modifiers, seat);
         if (press == ECORE_DOWN)
           {
@@ -798,24 +741,25 @@ ecore_event_evas_mouse_move(void *data EINA_UNUSED, int type EINA_UNUSED, void *
    Ecore_Event_Mouse_Move *e;
    Ecore_Input_Window *lookup;
    Eina_Bool evas_dev_pushed = EINA_FALSE;
+   Evas_Device *evas_device;
 
    e = event;
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
 
    // TIZEN_ONLY(20180118): support a Ecore_Device
-   _ecore_event_device_check(lookup->evas, ECORE_EVENT_MOUSE_MOVE, e, e->dev);
+   evas_device = _ecore_event_evas_device_get(lookup->evas, ECORE_EVENT_MOUSE_MOVE, e->dev);
    //
 
-   if (e->dev)
+   if (evas_device)
      {
-        evas_device_push(lookup->evas, e->dev);
+        evas_device_push(lookup->evas, evas_device);
         evas_dev_pushed = EINA_TRUE;
      }
 
    if (e->multi.device == 0)
      {
-        Eo *seat = e->dev ? efl_input_device_seat_get(e->dev) : NULL;
+        Eo *seat = evas_device ? efl_input_device_seat_get(evas_device) : NULL;
         _ecore_event_evas_push_mouse_move(e);
         ecore_event_evas_seat_modifier_lock_update(lookup->evas, e->modifiers, seat);
         if (!lookup->direct ||
@@ -890,26 +834,27 @@ _ecore_event_evas_mouse_io(Ecore_Event_Mouse_IO *e, Ecore_Event_IO io)
    Ecore_Input_Window *lookup;
    Eo *seat;
    Eina_Bool evas_dev_pushed = EINA_FALSE;
+   Evas_Device *evas_device;
 
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
 
    // TIZEN_ONLY(20180118): support a Ecore_Device
    if (io == ECORE_IN)
-     _ecore_event_device_check(lookup->evas, ECORE_EVENT_MOUSE_IN, e, e->dev);
+     evas_device = _ecore_event_evas_device_get(lookup->evas, ECORE_EVENT_MOUSE_IN, e->dev);
    else
-     _ecore_event_device_check(lookup->evas, ECORE_EVENT_MOUSE_OUT, e, e->dev);
+     evas_device = _ecore_event_evas_device_get(lookup->evas, ECORE_EVENT_MOUSE_OUT, e->dev);
    //
 
    // TIZEN_ONLY ecore_input_evas: push an evas device if there is the device within an ecore input event
-   if (e->dev)
+   if (evas_device)
      {
-        evas_device_push(lookup->evas, e->dev);
+        evas_device_push(lookup->evas, evas_device);
         evas_dev_pushed = EINA_TRUE;
      }
    //
 
-   seat = e->dev ? efl_input_device_seat_get(e->dev) : NULL;
+   seat = evas_device ? efl_input_device_seat_get(evas_device) : NULL;
    ecore_event_evas_seat_modifier_lock_update(lookup->evas, e->modifiers, seat);
    switch (io)
      {
@@ -965,21 +910,22 @@ ecore_event_evas_mouse_wheel(void *data EINA_UNUSED, int type EINA_UNUSED, void 
    Ecore_Input_Window *lookup;
    Eo *seat;
    Eina_Bool evas_dev_pushed = EINA_FALSE;
+   Evas_Device *evas_device;
 
    e = event;
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
    // TIZEN_ONLY(20180118): support a Ecore_Device
-   _ecore_event_device_check(lookup->evas, ECORE_EVENT_MOUSE_WHEEL, e, e->dev);
+   evas_device = _ecore_event_evas_device_get(lookup->evas, ECORE_EVENT_MOUSE_WHEEL, e->dev);
    //
 
-   if (e->dev)
+   if (evas_device)
      {
-        evas_device_push(lookup->evas, e->dev);
+        evas_device_push(lookup->evas, evas_device);
         evas_dev_pushed = EINA_TRUE;
      }
 
-   seat = e->dev ? efl_input_device_seat_get(e->dev) : NULL;
+   seat = evas_device ? efl_input_device_seat_get(evas_device) : NULL;
    ecore_event_evas_seat_modifier_lock_update(lookup->evas, e->modifiers, seat);
    if (!lookup->direct ||
        !lookup->direct(lookup->window, ECORE_EVENT_MOUSE_WHEEL, e))
@@ -1014,9 +960,6 @@ ecore_event_evas_axis_update(void *data EINA_UNUSED, int type EINA_UNUSED, void 
    e = event;
    lookup = _ecore_event_window_match(e->event_window);
    if (!lookup) return ECORE_CALLBACK_PASS_ON;
-   // TIZEN_ONLY(20180118): support a Ecore_Device
-   _ecore_event_device_check(lookup->evas, ECORE_EVENT_AXIS_UPDATE, e, e->dev);
-   //
    if (!lookup->direct ||
        !lookup->direct(lookup->window, ECORE_EVENT_AXIS_UPDATE, e))
      {

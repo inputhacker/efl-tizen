@@ -5225,6 +5225,30 @@ _event_description_get(Efl_Pointer_Action action)
      }
 }
 
+// TIZEN_ONLY(20180227): get evas device from ecore device
+static Efl_Input_Device *
+_ecore_evas_event_evas_device_get(Evas *evas, Ecore_Device *ecore_dev)
+{
+   Efl_Input_Device *dev = NULL;
+   Eina_List *list, *l;
+
+   if (efl_class_get(ecore_dev) != EFL_ECORE_INPUT_DEVICE_CLASS) return NULL;
+
+   list = (Eina_List *)evas_device_list(evas, NULL);
+   EINA_LIST_FOREACH(list, l, dev)
+     {
+        if ((evas_device_class_get(dev) == (Evas_Device_Class)ecore_device_class_get(ecore_dev)) &&
+            !strncmp(efl_name_get(dev), efl_name_get(ecore_dev), strlen(efl_name_get(dev))) &&
+            !strncmp(efl_comment_get(dev), efl_comment_get(ecore_dev), strlen(efl_comment_get(dev))))
+          {
+             return dev;
+          }
+     }
+
+   return NULL;
+}
+//
+
 static Eina_Bool
 _direct_mouse_updown(Ecore_Evas *ee, const Ecore_Event_Mouse_Button *info, Efl_Pointer_Action action)
 {
@@ -5232,6 +5256,11 @@ _direct_mouse_updown(Ecore_Evas *ee, const Ecore_Event_Mouse_Button *info, Efl_P
    Efl_Input_Pointer *evt;
    Evas *e = ee->evas;
    Eina_Bool processed;
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   Evas_Device *evas_dev;
+
+   evas_dev = _ecore_evas_event_evas_device_get(e, info->dev);
+   //
 
    /* Unused information:
     * same_screen
@@ -5257,7 +5286,10 @@ _direct_mouse_updown(Ecore_Evas *ee, const Ecore_Event_Mouse_Button *info, Efl_P
    ev->radius_y = info->multi.radius_y;
    ev->pressure = info->multi.pressure;
    ev->angle = info->multi.angle - ee->rotation;
-   if (info->dev) ev->device = efl_ref(info->dev);
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   if (evas_dev) ev->device = efl_ref(evas_dev);
+   //
+   //if (info->dev) ev->device = efl_ref(info->dev);
    else ev->device = efl_ref(evas_default_device_get(e, EFL_INPUT_DEVICE_TYPE_MOUSE));
    efl_input_pointer_finalize(evt);
 
@@ -5293,9 +5325,16 @@ _direct_mouse_move_cb(Ecore_Evas *ee, const Ecore_Event_Mouse_Move *info)
    Efl_Input_Pointer *evt;
    Evas *e = ee->evas;
    Eina_Bool processed;
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   Evas_Device *evas_dev;
 
-   _ecore_evas_mouse_move_process_internal(ee, info->dev, info->x, info->y,
+   evas_dev = _ecore_evas_event_evas_device_get(e, info->dev);
+   _ecore_evas_mouse_move_process_internal(ee, evas_dev, info->x, info->y,
                                            info->timestamp, EINA_FALSE);
+   //
+
+   //_ecore_evas_mouse_move_process_internal(ee, info->dev, info->x, info->y,
+   //                                        info->timestamp, EINA_FALSE);
 
    /* Unused information:
     * same_screen
@@ -5319,7 +5358,10 @@ _direct_mouse_move_cb(Ecore_Evas *ee, const Ecore_Event_Mouse_Move *info)
    ev->radius_y = info->multi.radius_y;
    ev->pressure = info->multi.pressure;
    ev->angle = info->multi.angle - ee->rotation;
-   if (info->dev) ev->device = efl_ref(info->dev);
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   if (evas_dev) ev->device = efl_ref(evas_dev);
+   //
+   //if (info->dev) ev->device = efl_ref(info->dev);
    else ev->device = efl_ref(evas_default_device_get(e, EFL_INPUT_DEVICE_TYPE_MOUSE));
    efl_input_pointer_finalize(evt);
 
@@ -5337,6 +5379,11 @@ _direct_mouse_wheel_cb(Ecore_Evas *ee, const Ecore_Event_Mouse_Wheel *info)
    Efl_Input_Pointer *evt;
    Evas *e = ee->evas;
    Eina_Bool processed;
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   Evas_Device *evas_dev;
+
+   evas_dev = _ecore_evas_event_evas_device_get(e, info->dev);
+   //
 
    /* Unused information:
     * same_screen
@@ -5354,7 +5401,10 @@ _direct_mouse_wheel_cb(Ecore_Evas *ee, const Ecore_Event_Mouse_Wheel *info)
    _pointer_position_set(ev, ee, info->x, info->y, info->x, info->y);
    ev->wheel.z = info->z;
    ev->wheel.horizontal = !!info->direction;
-   if (info->dev) ev->device = efl_ref(info->dev);
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   if (evas_dev) ev->device = efl_ref(evas_dev);
+   //
+   //if (info->dev) ev->device = efl_ref(info->dev);
    else ev->device = efl_ref(evas_default_device_get(e, EFL_INPUT_DEVICE_TYPE_MOUSE));
    efl_input_pointer_finalize(evt);
 
@@ -5372,6 +5422,11 @@ _direct_mouse_inout(Ecore_Evas *ee, const Ecore_Event_Mouse_IO *info, Efl_Pointe
    Efl_Input_Pointer *evt;
    Evas *e = ee->evas;
    Eina_Bool processed;
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   Evas_Device *evas_dev;
+
+   evas_dev = _ecore_evas_event_evas_device_get(e, info->dev);
+   //
 
    /* Unused information:
     * event_window
@@ -5384,7 +5439,10 @@ _direct_mouse_inout(Ecore_Evas *ee, const Ecore_Event_Mouse_IO *info, Efl_Pointe
    ev->action = action;
    ev->timestamp = info->timestamp;
    _pointer_position_set(ev, ee, info->x, info->y, info->x, info->y);
-   if (info->dev) ev->device = efl_ref(info->dev);
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   if (evas_dev) ev->device = efl_ref(evas_dev);
+   //
+   //if (info->dev) ev->device = efl_ref(info->dev);
    else ev->device = efl_ref(evas_default_device_get(e, EFL_INPUT_DEVICE_TYPE_MOUSE));
    efl_input_pointer_finalize(evt);
 
@@ -5417,6 +5475,11 @@ _direct_axis_update_cb(Ecore_Evas *ee, const Ecore_Event_Axis_Update *info)
    Eina_Bool processed;
    double x = 0, y = 0;
    int n;
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   Evas_Device *evas_dev;
+
+   evas_dev = _ecore_evas_event_evas_device_get(e, info->dev);
+   //
 
    /* Unused information:
     * window, root_window, event_window
@@ -5514,7 +5577,10 @@ _direct_axis_update_cb(Ecore_Evas *ee, const Ecore_Event_Axis_Update *info)
           }
      }
    _pointer_position_set(ev, ee, x, y, x, y);
-   if (info->dev) ev->device = efl_ref(info->dev);
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   if (evas_dev) ev->device = efl_ref(evas_dev);
+   //
+   //if (info->dev) ev->device = efl_ref(info->dev);
    else ev->device = efl_ref(evas_default_device_get(e, EFL_INPUT_DEVICE_TYPE_MOUSE));
    efl_input_pointer_finalize(evt);
 
@@ -5532,6 +5598,11 @@ _direct_key_updown_cb(Ecore_Evas *ee, const Ecore_Event_Key *info, Eina_Bool dow
    Efl_Input_Key *evt;
    Evas *e = ee->evas;
    Eina_Bool processed;
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   Evas_Device *evas_dev;
+
+   evas_dev = _ecore_evas_event_evas_device_get(e, info->dev);
+   //
 
    /* Unused information:
     * window
@@ -5553,7 +5624,10 @@ _direct_key_updown_cb(Ecore_Evas *ee, const Ecore_Event_Key *info, Eina_Bool dow
    ev->keycode = info->keycode;
    ev->data = info->data;
    ev->event_flags = 0;
-   if (info->dev) ev->device = efl_ref(info->dev);
+   // TIZEN_ONLY(20180227): get evas device from ecore device
+   if (evas_dev) ev->device = efl_ref(evas_dev);
+   //
+   //if (info->dev) ev->device = efl_ref(info->dev);
    else ev->device = efl_ref(evas_default_device_get(e, EFL_INPUT_DEVICE_TYPE_KEYBOARD));
 
    if (down)
