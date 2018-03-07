@@ -8495,7 +8495,6 @@ elm_win_indicator_mode_set(Evas_Object *obj, Elm_Win_Indicator_Mode mode)
      }
 #endif
 #ifdef HAVE_ELEMENTARY_WL2
-   ERR("WKWK indicator mode set WL2 %d", sd->legacy.indmode);
    _elm_win_wlwindow_get(sd);
    if (sd->wl.win)
      {
@@ -8557,7 +8556,6 @@ elm_win_indicator_opacity_set(Evas_Object *obj, Elm_Win_Indicator_Opacity_Mode m
 #endif
 #ifdef HAVE_ELEMENTARY_WL2
    _elm_win_wlwindow_get(sd);
-   ERR("WKWK opacity mode set WL2 %d", sd->legacy.ind_o_mode);
    if (sd->wl.win)
      {
         if (sd->legacy.ind_o_mode == ELM_WIN_INDICATOR_OPAQUE)
