@@ -27,6 +27,7 @@
 #define EVAS_GL_UPDATE_TILE_SIZE 16
 
 static int _evas_engine_GL_log_dom = -1;
+static int _evas_gl_render_thread = -1;
 
 #undef ERR
 #undef DBG
@@ -2880,13 +2881,31 @@ eng_ector_surface_cache_get(void *data EINA_UNUSED, void *key)
    return evas_gl_common_surface_cache_get(key);
 }
 
+static int
+_evas_gl_render_thread_enabled()
+{
+  if (_evas_gl_render_thread < 0)
+    {
+      char *env_thread = getenv("EVAS_GL_RENDER_THREAD");
+      int env_thread_value = 0;
+      if (env_thread)
+        env_thread_value = atoi(env_thread);
+      if (env_thread_value == 1)
+        _evas_gl_render_thread = 1;
+      else
+        _evas_gl_render_thread = 0;
+    }
+  return _evas_gl_render_thread;
+}
+
 static Evas_Func func, pfunc;
 
 static int
 module_open(Evas_Module *em)
 {
    if (!em) return 0;
-   if (!evas_threads_gl_init()) return 0;
+   if (_evas_gl_render_thread_enabled())
+     if (!evas_threads_gl_init()) return 0;
    if (!evas_gl_common_module_open()) return 0;
    /* get whatever engine module we inherit from */
    if (!_evas_module_engine_inherit(&pfunc, "software_generic")) return 0;
