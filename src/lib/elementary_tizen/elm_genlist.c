@@ -4281,114 +4281,58 @@ _elm_genlist_efl_ui_widget_focus_highlight_geometry_get(Eo *obj, Elm_Genlist_Dat
    return r;
 }
 
+EOLIAN static void
+_elm_genlist_efl_ui_focus_manager_setup_on_first_touch(Eo *obj, Elm_Genlist_Data *sd, Efl_Ui_Focus_Direction direction EINA_UNUSED, Efl_Ui_Focus_Object *entry EINA_UNUSED)
+{
+   Elm_Object_Item *eo_it = NULL;
+   Eina_Bool is_sel = EINA_FALSE;
+
+   if (sd->last_focused_item)
+     eo_it = sd->last_focused_item;
+   else if (sd->last_selected_item)
+     eo_it = sd->last_selected_item;
+   else if (_elm_config->first_item_focus_on_first_focus_in || !eo_it)
+     {
+        eo_it = elm_genlist_first_item_get(obj);
+        is_sel = EINA_TRUE;
+     }
+
+   while (eo_it)
+     {
+        ELM_GENLIST_ITEM_DATA_GET(eo_it, it);
+        if ((!_is_no_select(it)) && (!elm_object_item_disabled_get(eo_it)))
+          break;
+        eo_it = EO_OBJ(ELM_GEN_ITEM_NEXT(it));
+     }
+
+   if (eo_it)
+     {
+        eo_it = _elm_genlist_nearest_visible_item_get(obj, eo_it);
+        if (eo_it)
+          {
+             if (!_elm_config->item_select_on_focus_disable && is_sel)
+               elm_genlist_item_selected_set(eo_it, EINA_TRUE);
+             else
+               elm_object_item_focus_set(eo_it, EINA_TRUE);
+            _elm_widget_focus_highlight_start(obj);
+            //set it again in the manager, there might be the case that the manager focus history and internal item foused logic are in different states
+            efl_ui_focus_manager_focus_set(obj, eo_it);
+          }
+     }
+}
+
 EOLIAN static Eina_Bool
 _elm_genlist_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Genlist_Data *sd)
 {
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
    Eina_Bool int_ret = EINA_FALSE;
 
    int_ret = efl_ui_focus_object_on_focus_update(efl_super(obj, MY_CLASS));
    if (!int_ret) return EINA_FALSE;
 
-   if ((sd->items) && (sd->selected) && (!sd->last_selected_item))
-     sd->last_selected_item = eina_list_data_get(sd->selected);
-
-   if (sd->select_on_focus_enabled) return EINA_TRUE;
-   if (efl_ui_focus_object_focus_get(obj))
+   if (efl_ui_focus_object_focus_get(obj) && (sd->items) && (sd->selected) &&
+       (!sd->last_selected_item))
      {
-        // Do nothing if on_focus is called by child's parent_focus
-        //if (!wd->is_focus_target) return EINA_TRUE;
-
-        if (sd->focused_item)
-          {
-             if (!sd->focused_content)
-               {
-                  Eina_Bool found = EINA_FALSE;
-                  ELM_GENLIST_ITEM_DATA_GET(sd->focused_item, it);
-                  found = _item_focusable_search(&it, 1);
-                  if (found)
-                    {
-                       sd->focus_scrollto_type = ELM_GENLIST_ITEM_SCROLLTO_IN;
-                       elm_object_item_focus_set(EO_OBJ(it), EINA_TRUE);
-                    }
-               }
-             else
-               elm_object_focus_set(sd->focused_content, EINA_TRUE);
-          }
-        else
-          {
-             Item_Block *itb, *nib;
-             EINA_INLIST_FOREACH(sd->blocks, itb)
-               {
-                  if (itb->realized)
-                    {
-                       Elm_Gen_Item *tmp = eina_list_data_get(itb->items);
-                       while(tmp && tmp->item->block == itb)
-                         {
-                            if (tmp->realized)
-                              {
-                                 Elm_Gen_Item *old = tmp;
-                                 Evas_Coord x, y, w, h, sx, sy, sw, sh;
-                                 evas_object_geometry_get(VIEW(tmp), &x, &y, &w, &h);
-                                 evas_object_geometry_get(obj, &sx, &sy, &sw, &sh);
-                                 /* Item is included viewport and focusable */
-                                 if ((ELM_RECTS_INCLUDE(sx, sy, sw, sh, x, y, w, h)) &&
-                                     (_item_focusable_search(&tmp, 1)))
-                                   {
-                                      Eina_Bool include = EINA_TRUE;
-                                      if (old != tmp && tmp->realized)
-                                        {
-                                           evas_object_geometry_get(VIEW(tmp), &x, &y, &w, &h);
-                                           evas_object_geometry_get(obj, &sx, &sy, &sw, &sh);
-                                           include = ELM_RECTS_INCLUDE(sx, sy, sw, sh, x, y, w, h);
-                                        }
-                                      else if (!tmp->realized) include = EINA_FALSE;
-
-                                      if (include)
-                                        {
-                                           elm_object_item_focus_set(EO_OBJ(tmp), EINA_TRUE);
-                                           return EINA_TRUE;
-                                        }
-                                   }
-                              }
-
-                            if (!tmp) break;
-                            tmp = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(tmp)->next);
-                         }
-
-                       nib = EINA_INLIST_CONTAINER_GET(EINA_INLIST_GET(itb)->next, Item_Block);
-                       if (!nib || !nib->realized) break;
-                    }
-               }
-             if (!sd->focused_item) _item_focus_next(sd, FOCUS_DIR_DOWN);
-          }
-     }
-   else
-     {
-        // when key down and not called key up
-        // and focus is not on genlist, call select_timer forcely
-        if (sd->key_down_item)
-          {
-             _select_timer(sd->key_down_item);
-             sd->key_down_item = NULL;
-          }
-
-        if (sd->focused_item)
-          {
-             ELM_GENLIST_ITEM_DATA_GET(sd->focused_item, focus_it);
-             if (sd->focused_content)
-               {
-                  //FIXME: when genlist contents loose their focus,
-                  //       focus unset should automatically work.
-                  elm_object_focus_set(sd->focused_content, EINA_FALSE);
-               }
-             // Do not use _item_unfocused because focus should be remained
-             edje_object_signal_emit
-                (VIEW(focus_it), SIGNAL_UNFOCUSED, "elm");
-              if (focus_it->deco_all_view)
-                edje_object_signal_emit
-                   (focus_it->deco_all_view, SIGNAL_UNFOCUSED, "elm");
-          }
+        sd->last_selected_item = eina_list_data_get(sd->selected);
      }
 
    return EINA_TRUE;

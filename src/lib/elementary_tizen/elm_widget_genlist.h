@@ -43,7 +43,7 @@ struct _Elm_Genlist_Data
 
    Evas_Object                          *focused_content;
    Elm_Object_Item                      *focused_item; /**< a focused item by keypad arrow or mouse. This is set to NULL if widget looses focus. */
-
+   Elm_Object_Item                      *last_focused_item; /**< This records the last focused item when widget looses focus. This is required to set the focus on last focused item when widgets gets focus. */
 
    //Evas_Object                          *stack[2]; // stacking markers in pan
    Evas_Object                          *obj; // the object itself
