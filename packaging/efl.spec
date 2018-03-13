@@ -1352,6 +1352,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libefl.so
 %{_libdir}/pkgconfig/efl*.pc
 %exclude %{_includedir}/efl-cxx-1/*.hh
+%exclude %{_includedir}/efl-cxx-1/cxx/*.hh
 
 %files -n eina
 %manifest %{name}.manifest
