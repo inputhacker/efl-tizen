@@ -901,6 +901,7 @@ elm_quicklaunch_shutdown(void)
 
    ecore_file_shutdown();
    eio_shutdown();
+   ecore_event_shutdown();
    ecore_shutdown();
    eet_shutdown();
 
