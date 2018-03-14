@@ -5128,9 +5128,15 @@ _evas_object_image_hdr_conv_update(Evas_Object_Protected_Data *obj, Evas_Image_D
              if (ENFN->image_hdr_conv_get)
                ENFN->image_hdr_conv_get(output, image, &im_hfalg, &im_hgamma);
 
-             if ((evas_hgamma != im_hgamma)
-                  && ENFN->image_hdr_conv_set)
+             if ((evas_hgamma != im_hgamma) && (ENFN->image_hdr_conv_set))
                ENFN->image_hdr_conv_set(output, image, EINA_TRUE);
+          }
+        else
+          {
+             // Need to check evas_hflag
+             if (ENFN->image_hdr_conv_set)
+               ENFN->image_hdr_conv_set(output, image, EINA_FALSE);
+
           }
       }
 }
@@ -5142,28 +5148,21 @@ evas_object_image_hdr_conversion_set(Evas_Object *eo_obj, Eina_Bool flag)
    Evas_Image_Data *o = eo_data_scope_get(eo_obj, MY_CLASS);
    evas_object_async_block(obj);
 
-   _evas_object_image_cleanup(eo_obj, obj, o);
-
    int       evas_hflag = 0;
    void     *evas_hgamma = NULL;
 
    if (ENFN->hdr_conv_gamma_get)
      ENFN->hdr_conv_gamma_get(ENDT, &evas_hflag, &evas_hgamma);
 
-   if(evas_hgamma == NULL)
-     {
-        INF("Gamma Table is NULL, so we can't set hdr conversion");
-     }
-   else
-     {
-        EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
-          state_write->hdr_flag = flag;
-        EINA_COW_IMAGE_STATE_WRITE_END(o, state_write);
-        if (o->engine_data && ENFN->image_hdr_conv_set)
-          ENFN->image_hdr_conv_set(ENDT, o->engine_data, flag);
+   if (evas_hgamma == NULL && flag == EINA_TRUE) return;
 
-        o->written = EINA_TRUE;
-     }
+   EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
+     state_write->hdr_flag = flag;
+   EINA_COW_IMAGE_STATE_WRITE_END(o, state_write);
+   if (o->engine_data && ENFN->image_hdr_conv_set)
+     ENFN->image_hdr_conv_set(ENDT, o->engine_data, flag);
+
+   o->written = EINA_TRUE;
 }
 
 EAPI Eina_Bool

@@ -1964,6 +1964,7 @@ eng_image_hdr_conv_set(void *data, void *image, Eina_Bool hdr_conv)
         im->hdr_convert.hdr_conv_flag = ob->hdr.flag;
         im->hdr_convert.gamma = ob->hdr.gamma;
      }
+
    glsym_evas_gl_common_texture_hdr_update(im);
    ob->hdr.gTexture = im->hdr_convert.texture;
 }
@@ -2004,7 +2005,6 @@ eng_hdr_conv_gamma_set(void *data, int flag, void *gamma)
            ERR("invalid hdr gamma tatble!!!");
            return;
         }
-
         ob->hdr.flag = flag;
         ob->hdr.gamma = gamma;
      }
