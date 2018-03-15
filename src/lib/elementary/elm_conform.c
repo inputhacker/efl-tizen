@@ -31,6 +31,7 @@ static const char SOFTKEY_PART[] = "elm.swallow.softkey";
 
 static const char SIG_VIRTUALKEYPAD_STATE_ON[] = "virtualkeypad,state,on";
 static const char SIG_VIRTUALKEYPAD_STATE_OFF[] = "virtualkeypad,state,off";
+static const char SIG_VIRTUALKEYPAD_SIZE_CHANGED[] = "virtualkeypad,size,changed";
 static const char SIG_CLIPBOARD_STATE_ON[] = "clipboard,state,on";
 static const char SIG_CLIPBOARD_STATE_OFF[] = "clipboard,state,off";
 //TIZEN_ONLY(20161213): apply screen_reader_changed callback
@@ -40,6 +41,7 @@ static const char SIG_ATSPI_SCREEN_READER_CHANGED[] = "atspi,screen,reader,chang
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_VIRTUALKEYPAD_STATE_ON, ""},
    {SIG_VIRTUALKEYPAD_STATE_OFF, ""},
+   {SIG_VIRTUALKEYPAD_SIZE_CHANGED, ""},
    {SIG_CLIPBOARD_STATE_ON, ""},
    {SIG_CLIPBOARD_STATE_OFF, ""},
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
@@ -203,8 +205,48 @@ _conformant_part_size_hints_set(Evas_Object *obj,
 {
    Evas_Coord cx, cy, cw, ch;
    Evas_Coord part_height = 0, part_width = 0;
+   //TIZEN_ONLY(20170405): add window's x,y postion when calculating overlapping size.
+   Evas_Coord tx, ty, tw, th;
+   Evas_Coord nx, ny;
+   Evas_Object *top;
+   //
 
    evas_object_geometry_get(obj, &cx, &cy, &cw, &ch);
+
+   //TIZEN_ONLY(20170405): add window's x,y postion when calculating overlapping size.
+   ELM_CONFORMANT_DATA_GET(obj, sd);
+   top = elm_widget_top_get(obj);
+   evas_object_geometry_get(top, &tx, &ty, &tw, &th);
+   // position (tx, ty) is based on screen(absolute) coordinates,
+   // but size (tw, th) is based on view port :(
+
+   Evas_Coord ww = 0, wh = 0;
+   elm_win_screen_size_get(top, NULL, NULL, &ww, &wh);
+
+   if (sd->rot == 90)
+     {
+        nx = wh - ty - tw;
+        ny = tx;
+     }
+   else if (sd->rot == 180)
+     {
+        nx = ww - tx - tw;
+        ny = wh - ty - th;
+     }
+   else if (sd->rot == 270)
+     {
+        nx = ty;
+        ny = ww - tx - th;
+     }
+   else
+     {
+        nx = tx;
+        ny = ty;
+     }
+
+   cx += nx;
+   cy += ny;
+   //
 
    /* Part overlapping with conformant */
    if ((cx < (sx + sw)) && ((cx + cw) > sx)
@@ -346,8 +388,15 @@ _conformant_part_sizing_eval(Evas_Object *obj,
              if (access)
                efl_access_bounds_changed_signal_emit(access, sx, sy, sw, sh);
           }
-        _conformant_part_size_hints_set
-           (obj, sd->virtualkeypad, sx, sy, sw, sh);
+        if (sd->virtualkeypad)
+          {
+             Eina_Rectangle rect;
+
+             _conformant_part_size_hints_set
+                (obj, sd->virtualkeypad, sx, sy, sw, sh);
+             rect.x = sx; rect.y = sy; rect.w = sw; rect.h = sh;
+             evas_object_smart_callback_call(obj, SIG_VIRTUALKEYPAD_SIZE_CHANGED, (void *)&rect);
+          }
      }
 
    if (part_type & ELM_CONFORMANT_SOFTKEY_PART)
@@ -363,7 +412,8 @@ _conformant_part_sizing_eval(Evas_Object *obj,
                sx = sy = sw = sh = 0;
           }
 #endif
-        _conformant_part_size_hints_set(obj, sd->softkey, sx, sy, sw, sh);
+        if (sd->softkey)
+          _conformant_part_size_hints_set(obj, sd->softkey, sx, sy, sw, sh);
      }
    if (part_type & ELM_CONFORMANT_CLIPBOARD_PART)
      {
@@ -378,7 +428,8 @@ _conformant_part_sizing_eval(Evas_Object *obj,
                sx = sy = sw = sh = 0;
           }
 #endif
-        _conformant_part_size_hints_set(obj, sd->clipboard, sx, sy, sw, sh);
+        if (sd->clipboard)
+          _conformant_part_size_hints_set(obj, sd->clipboard, sx, sy, sw, sh);
      }
 }
 
@@ -1176,7 +1227,6 @@ _move_resize_cb(void *data EINA_UNUSED,
    _conformant_part_sizing_eval(obj, part_type);
 }
 
-#ifdef HAVE_ELEMENTARY_X
 static void
 _show_region_job(void *data)
 {
@@ -1207,9 +1257,11 @@ _on_content_resize(void *data,
 {
    ELM_CONFORMANT_DATA_GET(data, sd);
 
+#ifdef HAVE_ELEMENTARY_X
    if ((sd->vkb_state == ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF) &&
        (sd->clipboard_state == ECORE_X_ILLUME_CLIPBOARD_STATE_OFF))
      return;
+#endif
 
    ecore_job_del(sd->show_region_job);
    sd->show_region_job = ecore_job_add(_show_region_job, data);
@@ -1224,9 +1276,6 @@ _on_top_scroller_del(void *data, const Efl_Event *event)
      sd->scroller = NULL;
 }
 
-#endif
-
-#ifdef HAVE_ELEMENTARY_X
 static void
 _autoscroll_objects_update(void *data)
 {
@@ -1269,6 +1318,7 @@ _autoscroll_objects_update(void *data)
      }
 }
 
+#ifdef HAVE_ELEMENTARY_X
 static void
 _virtualkeypad_state_change(Evas_Object *obj, Ecore_X_Event_Window_Property *ev)
 {
@@ -1444,19 +1494,57 @@ _on_prop_change(void *data,
 #endif
 
 // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
+#ifdef HAVE_ELEMENTARY_WL2
 static void
 _on_conformant_changed(void *data,
                      Evas_Object *obj EINA_UNUSED,
                      void *event_info EINA_UNUSED)
 {
-   Conformant_Part_Type part_type;
+   Efl_Ui_Win_Conformant_Property property = (Efl_Ui_Win_Conformant_Property) event_info;
+   Elm_Win_Keyboard_Mode mode;
 
-   part_type = (ELM_CONFORMANT_INDICATOR_PART |
-                ELM_CONFORMANT_VIRTUAL_KEYPAD_PART);
+   ELM_CONFORMANT_DATA_GET(data, sd);
 
-   _conformant_part_sizing_eval(data, part_type);
+   /* object is already freed */
+   if (!sd) return;
+
+   mode = elm_win_keyboard_mode_get(obj);
+
+   if (property & EFL_UI_WIN_CONFORMANT_PROPERTY_KEYBOARD_STATE)
+     {
+        if (mode == ELM_WIN_KEYBOARD_ON)
+          {
+             _conformant_part_sizing_eval(data, ELM_CONFORMANT_VIRTUAL_KEYPAD_PART);
+             elm_widget_display_mode_set(data, EVAS_DISPLAY_MODE_COMPRESS);
+             _autoscroll_objects_update(data);
+             efl_event_callback_legacy_call(obj, ELM_CONFORMANT_EVENT_VIRTUALKEYPAD_STATE_ON, NULL);
+          }
+        else if (mode == ELM_WIN_KEYBOARD_OFF)
+          {
+             evas_object_size_hint_min_set(sd->virtualkeypad, -1, 0);
+             evas_object_size_hint_max_set(sd->virtualkeypad, -1, 0);
+             elm_widget_display_mode_set(data, EVAS_DISPLAY_MODE_NONE);
+             efl_event_callback_legacy_call(obj, ELM_CONFORMANT_EVENT_VIRTUALKEYPAD_STATE_OFF, NULL);
+             //TIZEN ONLY(20160628): update geometry of keyboard to screen-reader
+             if (_elm_atspi_enabled())
+               {
+                  Evas_Object *access;
+                  access = evas_object_data_get(sd->virtualkeypad, "_part_access_obj");
+                  if (access)
+                    efl_access_bounds_changed_signal_emit(access, 0, 0, 0, 0);
+               }
+             //
+          }
+     }
+   if ((property & EFL_UI_WIN_CONFORMANT_PROPERTY_KEYBOARD_GEOMETRY) &&
+       (mode == ELM_WIN_KEYBOARD_ON))
+     {
+        _conformant_part_sizing_eval(data, ELM_CONFORMANT_VIRTUAL_KEYPAD_PART);
+     }
 }
+#endif
 // END of TIZEN_ONLY(20150707)
+
 
 EOLIAN static void
 _elm_conformant_efl_canvas_group_group_add(Eo *obj, Elm_Conformant_Data *_pd EINA_UNUSED)

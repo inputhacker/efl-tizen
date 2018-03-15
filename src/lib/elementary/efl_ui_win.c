@@ -1739,6 +1739,10 @@ _elm_win_state_change(Ecore_Evas *ee)
    Eina_Bool ch_aux_hint = EINA_FALSE;
    Eina_List *aux_hints = NULL;
 //
+//
+#ifdef HAVE_ELEMENTARY_WL2
+   Efl_Ui_Win_Conformant_Property property = EFL_UI_WIN_CONFORMANT_PROPERTY_DEFAULT; //TIZEN_ONLY(20160330): add processing properties of window
+#endif
 
    const char *profile;
 
@@ -1809,12 +1813,14 @@ _elm_win_state_change(Ecore_Evas *ee)
      {
         sd->legacy.indmode = (Elm_Win_Indicator_Mode)ecore_wl2_window_indicator_state_get(sd->wl.win);
         ch_conformant = EINA_TRUE;
-
+        property |= EFL_UI_WIN_CONFORMANT_PROPERTY_INDICATOR_STATE; //TIZEN_ONLY(20160330): add processing properties of window
      }
    if (sd->kbdmode != (Elm_Win_Keyboard_Mode)ecore_wl2_window_keyboard_state_get(sd->wl.win))
      {
         sd->kbdmode = (Elm_Win_Keyboard_Mode)ecore_wl2_window_keyboard_state_get(sd->wl.win);
         ch_conformant = EINA_TRUE;
+        property |= EFL_UI_WIN_CONFORMANT_PROPERTY_KEYBOARD_STATE; //TIZEN_ONLY(20160330): add processing properties of window
+
      }
    if (ecore_wl2_window_indicator_geometry_get(sd->wl.win, &x, &y, &w, &h))
      {
@@ -1825,6 +1831,7 @@ _elm_win_state_change(Ecore_Evas *ee)
              sd->ind.w = w;
              sd->ind.h = h;
              ch_conformant  = EINA_TRUE;
+             property |= EFL_UI_WIN_CONFORMANT_PROPERTY_INDICATOR_GEOMETRY; //TIZEN_ONLY(20160330): add processing properties of window
           }
      }
    if (ecore_wl2_window_keyboard_geometry_get(sd->wl.win, &x, &y, &w, &h))
@@ -1836,6 +1843,7 @@ _elm_win_state_change(Ecore_Evas *ee)
              sd->kbd.w = w;
              sd->kbd.h = h;
              ch_conformant  = EINA_TRUE;
+             property |= EFL_UI_WIN_CONFORMANT_PROPERTY_KEYBOARD_GEOMETRY; //TIZEN_ONLY(20160330): add processing properties of window
           }
      }
 #endif
@@ -1951,7 +1959,11 @@ _elm_win_state_change(Ecore_Evas *ee)
    // TIZEN_ONLY(20150707): elm_conform for wayland, and signal if parts are changed
    if (ch_conformant)
      {
+#ifdef HAVE_ELEMENTARY_WL2
+        evas_object_smart_callback_call(obj, SIG_CONFORMANT_CHANGED, (void *)property); //TIZEN_ONLY(20160330): add processing properties of window
+#else
         evas_object_smart_callback_call(obj, SIG_CONFORMANT_CHANGED, NULL);
+#endif
      }
    //
    // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)

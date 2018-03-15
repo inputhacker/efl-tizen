@@ -177,6 +177,19 @@ enum Efl.Ui.Win.Effect.Type
 }
 //
 
+//TIZEN_ONLY(20160330): add processing properties of window
+enum Efl.Ui.Win.Conformant.Property
+{
+   default = 0,
+   indicator_state = 1 << 0,
+   indicator_geometry = 1 << 1,
+   keyboard_state = 1 << 2,
+   keyboard_geometry = 1 << 3,
+   clipboard_state = 1 << 4,
+   clipboard_geometry = 1 << 5
+}
+//
+
 class Efl.Ui.Win (Efl.Ui.Widget, Efl.Canvas, Efl.Canvas.Pointer, Efl.Access.Window,
                   Efl.Access.Component, Efl.Access.Widget.Action,
                   Efl.Content, Efl.Input.State, Efl.Input.Interface, Efl.Screen,
