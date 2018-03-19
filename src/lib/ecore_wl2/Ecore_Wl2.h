@@ -1642,6 +1642,10 @@ EAPI Eina_Stringshare *ecore_wl2_input_name_get(Ecore_Wl2_Input *input);
  */
 EAPI Eina_Bool ecore_wl2_input_keyboard_repeat_get(const Ecore_Wl2_Input *input, double *rate, double *delay);
 
+//TIZEN_ONLY(20180319): add keyboard repeat info set/get API.
+EAPI Eina_Bool ecore_wl2_input_keyboard_repeat_set(Ecore_Wl2_Input *input, double rate, double delay);
+//
+
 /**
  * Get the Evas_Device for the seat belonging to a window from an input
  * @param input The input
