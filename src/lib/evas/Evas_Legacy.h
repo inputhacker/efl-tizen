@@ -8044,7 +8044,7 @@ EAPI Eina_Bool                                evas_textblock_cursor_cluster_prev
  *******/
 
 /************************************************************************
- * TIZEN_ONLY(20150127): Add evas_image_pixels_noti_callback_set* APIs. *
+ * TIZEN_ONLY(20150127): Add evas_object_image_pixels_noti_callback_set* APIs. *
  ************************************************************************/
 /**
  * @internal
@@ -8058,7 +8058,7 @@ EAPI Eina_Bool                                evas_textblock_cursor_cluster_prev
  * @param[in] func The callback function.
  * @param[in] data The data pointer to be passed to @c func.
  */
-EAPI void evas_image_pixels_noti_callback_set(Evas_Object *obj, Evas_Object_Image_Pixels_Get_Cb func, void *data);
+EAPI void evas_object_image_pixels_noti_callback_set(Evas_Object *obj, Evas_Object_Image_Pixels_Get_Cb func, void *data);
 /*******
  * END *
  *******/

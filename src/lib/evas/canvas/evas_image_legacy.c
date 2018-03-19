@@ -546,7 +546,7 @@ evas_object_image_pixels_get_callback_set(Eo *eo_obj, Evas_Object_Image_Pixels_G
  * This patch can be removed or modified later.
  */
 EAPI void
-evas_image_pixels_noti_callback_set(Eo *eo_obj, Evas_Object_Image_Pixels_Get_Cb func, void *data)
+evas_object_image_pixels_noti_callback_set(Eo *eo_obj, Evas_Object_Image_Pixels_Get_Cb func, void *data)
 {
   EVAS_IMAGE_API(eo_obj);
 
