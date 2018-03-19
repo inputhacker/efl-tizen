@@ -952,7 +952,7 @@ Eina_Bool _elm_widget_item_color_class_update(Elm_Widget_Item_Data *sd);
  *******/
 
 #define elm_legacy_add(k, p, ...) ({ \
-   efl_add(k, p, efl_canvas_object_legacy_ctor(efl_added), ##__VA_ARGS__); })
+       efl_add(k, p ? p : efl_main_loop_get(), efl_canvas_object_legacy_ctor(efl_added), ##__VA_ARGS__); })
 
 static inline Eo *
 elm_widget_resize_object_get(const Eo *obj)
