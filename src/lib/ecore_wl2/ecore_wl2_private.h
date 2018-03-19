@@ -646,6 +646,9 @@ struct _Ecore_Wl2_Input
         double rate, delay;
         Eina_Bool enabled : 1;
         Eina_Bool repeating : 1;
+        //TIZEN_ONLY(20180319): add keyboard repeat info set/get API.
+        Eina_Bool changed : 1;
+        //
      } repeat;
 
    struct
