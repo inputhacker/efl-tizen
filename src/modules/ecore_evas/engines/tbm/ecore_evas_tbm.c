@@ -1075,7 +1075,7 @@ ecore_evas_tbm_ext_new_internal(const char *engine, void *tbm_surf_queue, void* 
 }
 
 EAPI Ecore_Evas *
-ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,
+ecore_evas_tbm_allocfunc_new_internal(const char *engine, int w, int h,
                              void *(*alloc_func) (void *data, int w, int h),
                              void (*free_func) (void *data, void *tbm_queue),
                              const void *data)
@@ -1235,14 +1235,14 @@ ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,
 EAPI Ecore_Evas *
 ecore_evas_gl_tbm_new_internal(int w, int h)
 {
-    return ecore_evas_tbm_allocfunc_new
+    return ecore_evas_tbm_allocfunc_new_internal
      ("gl_tbm", w, h,_ecore_evas_tbm_queue_alloc, _ecore_evas_tbm_queue_free, NULL);
 }
 
 EAPI Ecore_Evas *
 ecore_evas_software_tbm_new_internal(int w, int h)
 {
-    return ecore_evas_tbm_allocfunc_new
+    return ecore_evas_tbm_allocfunc_new_internal
      ("software_tbm", w, h,_ecore_evas_tbm_queue_alloc, _ecore_evas_tbm_queue_free, NULL);
 }
 
@@ -1258,7 +1258,7 @@ ecore_evas_tbm_ecore_evas_parent_get(Ecore_Evas *ee)
 }
 
 EAPI const void *
-ecore_evas_tbm_pixels_acquire(Ecore_Evas *ee)
+ecore_evas_tbm_pixels_acquire_internal(Ecore_Evas *ee)
 {
    Ecore_Evas_Engine_Tbm_Data *tbm_data;
    tbm_surface_info_s surf_info;
@@ -1277,7 +1277,7 @@ ecore_evas_tbm_pixels_acquire(Ecore_Evas *ee)
 }
 
 EAPI void
-ecore_evas_tbm_pixels_release(Ecore_Evas *ee)
+ecore_evas_tbm_pixels_release_internal(Ecore_Evas *ee)
 {
    Ecore_Evas_Engine_Tbm_Data *tbm_data;
 

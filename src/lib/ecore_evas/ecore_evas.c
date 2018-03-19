@@ -5016,26 +5016,6 @@ ecore_evas_gl_drm_new(const char *disp_name, unsigned int parent,
 }
 
 EAPI Ecore_Evas *
-ecore_evas_tbm_ext_new(const char *engine, void *tbm_surf_queue, void *data)
-{
-   Ecore_Evas *ee;
-   Ecore_Evas *(*new)(const char *, void *, void *);
-   Eina_Module *m = _ecore_evas_engine_load("tbm");
-   EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
-
-   new = eina_module_symbol_get(m, "ecore_evas_tbm_ext_new_internal");
-   EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
-
-   ee = new(engine, tbm_surf_queue, data);
-   if (!_ecore_evas_cursors_init(ee))
-     {
-        ecore_evas_free(ee);
-        return NULL;
-     }
-   return ee;
-}
-
-EAPI Ecore_Evas *
 ecore_evas_software_gdi_new(Ecore_Win32_Window *parent,
 			    int                 x,
 			    int                 y,
@@ -5136,6 +5116,26 @@ ecore_evas_psl1ght_new(const char* name, int w, int h)
 
 /* TIZEN_ONLY(20160330): TBM Backend */
 EAPI Ecore_Evas *
+ecore_evas_tbm_ext_new(const char *engine, void *tbm_surf_queue, void *data)
+{
+   Ecore_Evas *ee;
+   Ecore_Evas *(*new)(const char *, void *, void *);
+   Eina_Module *m = _ecore_evas_engine_load("tbm");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+   new = eina_module_symbol_get(m, "ecore_evas_tbm_ext_new_internal");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
+
+   ee = new(engine, tbm_surf_queue, data);
+   if (!_ecore_evas_cursors_init(ee))
+     {
+        ecore_evas_free(ee);
+        return NULL;
+     }
+   return ee;
+}
+
+EAPI Ecore_Evas *
 ecore_evas_gl_tbm_new(int w, int h)
 {
     Ecore_Evas *ee;
@@ -5163,6 +5163,82 @@ ecore_evas_software_tbm_new(int w, int h)
 
     ee = new(w, h);
     return ee;
+}
+
+typedef void *(*Ecore_Evas_Tbm_Alloc_Func) (void *data, int w, int h);
+typedef void (*Ecore_Evas_Tbm_Free_Func) (void *data, void *tbm_queue);
+
+EAPI Ecore_Evas *
+ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,
+                             void *(*alloc_func) (void *data, int w, int h),
+                             void (*free_func) (void *data, void *tbm_queue),
+                             const void *data)
+{
+    Ecore_Evas *ee;
+    Ecore_Evas *(*new)(const char*, int, int, Ecore_Evas_Tbm_Alloc_Func, Ecore_Evas_Tbm_Free_Func, const void*);
+
+    Eina_Module *m = NULL;
+    if (!strcmp(engine, "gl_tbm"))
+      {
+         m = _ecore_evas_engine_load("gl_tbm");
+      }
+    else if (!strcmp(engine, "software_tbm"))
+      {
+         m = _ecore_evas_engine_load("software_tbm");
+      }
+    EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+    new = eina_module_symbol_get(m, "ecore_evas_tbm_allocfunc_new_internal");
+    EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
+
+    ee = new(engine, w, h, alloc_func, free_func, data);
+    return ee;
+}
+
+EAPI const void *
+ecore_evas_tbm_pixels_acquire(Ecore_Evas *ee)
+{
+    void *px = NULL;
+    Eina_Module *m = NULL;
+    void *(*pixel_acquire)(Ecore_Evas*);
+
+    if (!strcmp(ee->driver, "gl_tbm"))
+      {
+         m = _ecore_evas_engine_load("gl_tbm");
+      }
+    else if (!strcmp(ee->driver, "software_tbm"))
+      {
+         m = _ecore_evas_engine_load("software_tbm");
+      }
+    EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+    pixel_acquire = eina_module_symbol_get(m, "ecore_evas_tbm_pixels_acquire_internal");
+    EINA_SAFETY_ON_NULL_RETURN_VAL(pixel_acquire, NULL);
+
+    px = pixel_acquire(ee);
+    return px;
+}
+
+EAPI void
+ecore_evas_tbm_pixels_release(Ecore_Evas *ee)
+{
+    Eina_Module *m = NULL;
+    void (*pixel_release)(Ecore_Evas*);
+
+    if (!strcmp(ee->driver, "gl_tbm"))
+      {
+         m = _ecore_evas_engine_load("gl_tbm");
+      }
+    else if (!strcmp(ee->driver, "software_tbm"))
+      {
+         m = _ecore_evas_engine_load("software_tbm");
+      }
+    EINA_SAFETY_ON_NULL_RETURN(m);
+
+    pixel_release = eina_module_symbol_get(m, "ecore_evas_tbm_pixels_release_internal");
+    EINA_SAFETY_ON_NULL_RETURN(pixel_release);
+
+    pixel_release(ee);
 }
 
 /* new input model with eo:
