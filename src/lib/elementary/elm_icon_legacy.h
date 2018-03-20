@@ -51,7 +51,10 @@ EAPI void elm_icon_thumb_set(Evas_Object *obj, const char *file, const char *gro
  * @ingroup Elm_Icon
  */
 
-EAPI void elm_icon_order_lookup_set(Evas_Object *obj EINA_UNUSED, Elm_Icon_Lookup_Order order EINA_UNUSED) EINA_DEPRECATED;
+//TIZEN_ONLY(20180317): support elm_icon_order_lookup_get/set until find alternative api
+//EAPI void elm_icon_order_lookup_set(Evas_Object *obj EINA_UNUSED, Elm_Icon_Lookup_Order order EINA_UNUSED) EINA_DEPRECATED;
+EAPI void elm_icon_order_lookup_set(Evas_Object *obj EINA_UNUSED, Elm_Icon_Lookup_Order order EINA_UNUSED);
+//
 
 /**
  * @brief Get the icon lookup order.
@@ -63,8 +66,10 @@ EAPI void elm_icon_order_lookup_set(Evas_Object *obj EINA_UNUSED, Elm_Icon_Looku
  *
  * @ingroup Elm_Icon
  */
-EAPI Elm_Icon_Lookup_Order elm_icon_order_lookup_get(const Evas_Object *obj EINA_UNUSED) EINA_DEPRECATED;
-
+//TIZEN_ONLY(20180317): support elm_icon_order_lookup_get/set until find alternative api
+//EAPI Elm_Icon_Lookup_Order elm_icon_order_lookup_get(const Evas_Object *obj EINA_UNUSED) EINA_DEPRECATED;
+EAPI Elm_Icon_Lookup_Order elm_icon_order_lookup_get(const Evas_Object *obj EINA_UNUSED);
+//
 /**
  * @brief Set the icon by icon standards names.
  *
