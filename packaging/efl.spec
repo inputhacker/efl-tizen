@@ -1337,8 +1337,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 /usr/share/eolian/include/efl-1/*.eot
 %exclude %{_bindir}/efl_debug
 %exclude %{_bindir}/efl_debugd
-%exclude /usr/lib/debug/usr/bin/efl_debug.debug
-%exclude /usr/lib/debug/usr/bin//efl_debugd.debug
+%exclude /usr/lib/debug/%{_bindir}/efl_debug.debug
+%exclude /usr/lib/debug/%{_bindir}/efl_debugd.debug
 
 %files -n %{name}-devel
 %manifest %{name}.manifest
@@ -1362,7 +1362,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %manifest %{name}.manifest
 %{_bindir}/eina_btlog
 %exclude %{_bindir}/eina_modinfo
-%exclude %{_libdir}/debug/usr/bin/eina_modinfo.debug
+%exclude /usr/lib/debug/%{_bindir}/eina_modinfo.debug
 
 #%files -n eina-examples
 #%manifest %{name}.manifest
@@ -1427,7 +1427,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %license licenses/COPYING.BSD
 %{_libdir}/libeo.so.*
 %exclude %{_libdir}/libeo_dbg.so.*
-%exclude %{_libdir}/debug/usr/lib/libeo_dbg*
+%exclude /usr/lib/debug/%{_libdir}/libeo_dbg*
 
 #%files -n eo-examples
 #%manifest %{name}.manifest
@@ -1474,7 +1474,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_datadir}/evas/checkme
 /usr/share/evas/filters/lua/*.lua
 %exclude %{_libdir}/evas/utils/*
-%exclude %{_libdir}/debug/usr/lib/evas/utils/*
+%exclude /usr/lib/debug/%{_libdir}/evas/utils/*
 
 #%files -n evas-examples
 #%manifest %{name}.manifest
@@ -1505,7 +1505,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libecore.so.*
 /usr/share/eolian/include/ecore-1/*.eot
 %exclude %{_libdir}/ecore/system/upower/
-%exclude %{_libdir}/debug/usr/lib/ecore/system/upower/
+%exclude /usr/lib/debug/%{_libdir}/ecore/system/upower/
 #%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
 #%exclude /usr/lib/debug/%{_libdir}/ecore/system/systemd/v-*/module.so.debug
 %{_datadir}/ecore/checkme
@@ -1552,7 +1552,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libecore_buffer.so.*
 %{_libdir}/ecore_buffer/modules/*/*/module.so
 %exclude %{_libdir}/ecore_buffer/bin/
-%exclude %{_libdir}/debug/usr/lib/ecore_buffer/bin/
+%exclude /usr/lib/debug/%{_libdir}/ecore_buffer/bin/
 
 %files -n ecore-buffer-devel
 %manifest %{name}.manifest
@@ -1568,7 +1568,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libecore_con.so.*
 %{_tmpfilesdir}/efl.conf
 %exclude %{_libdir}/ecore_con/utils/v-1.20/efl_net_proxy_helper
-%exclude %{_libdir}/debug/usr/lib/ecore_con/utils/v-1.20/efl_net_proxy_helper*
+%exclude /usr/lib/debug/%{_libdir}/ecore_con/utils/v-1.20/efl_net_proxy_helper*
 
 %files -n ecore-con-devel
 %manifest %{name}.manifest
@@ -1840,7 +1840,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_bindir}/eeze_mount
 %exclude %{_bindir}/eeze_scanner
 %exclude %{_bindir}/eeze_scanner_monitor
-%exclude /usr/lib/debug/usr/bin/eeze_scanner*
+%exclude /usr/lib/debug/%{_bindir}/eeze_scanner*
 %{_bindir}/eeze_umount
 %{_libdir}/eeze/modules/sensor/*/*/module.so
 %{_datadir}/eeze/checkme
@@ -1858,7 +1858,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %exclude %{_bindir}/efreetd
-%exclude /usr/lib/debug/usr/bin/efreetd.debug
+%exclude /usr/lib/debug/%{_bindir}/efreetd.debug
 %{_libdir}/efreet/*/efreet_desktop_cache_create
 %{_libdir}/efreet/*/efreet_icon_cache_create
 %{_libdir}/libefreet.so.*
@@ -1866,7 +1866,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libefreet_trash.so.*
 %{_datadir}/efreet/*
 %exclude %{_libdir}/efreet/*/efreet_mime_cache_create
-%exclude %{_libdir}/debug/usr/lib/efreet/*/
+%exclude /usr/lib/debug/%{_libdir}/efreet/*/
 
 %files -n efreet-devel
 %manifest %{name}.manifest
@@ -1920,9 +1920,9 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %exclude %{_bindir}/ethumb
 %exclude %{_bindir}/ethumbd
 %exclude %{_bindir}/ethumbd_client
-%exclude /usr/lib/debug/usr/bin/ethumb.debug
-%exclude /usr/lib/debug/usr/bin/ethumbd.debug
-%exclude /usr/lib/debug/usr/bin/ethumbd_client.debug
+%exclude /usr/lib/debug/%{_bindir}/ethumb.debug
+%exclude /usr/lib/debug/%{_bindir}/ethumbd.debug
+%exclude /usr/lib/debug/%{_bindir}/ethumbd_client.debug
 %exclude /usr/lib/debug/.build-id/*/*
 
 #%files -n ethumb-examples
@@ -2045,7 +2045,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_datadir}/elementary/edje_externals/*
 %{_datadir}/icons/elementary.png
 %{_libdir}/elementary/modules/
-%{_libdir}/debug/usr/lib/elementary/modules/
+/usr/lib/debug/%{_libdir}/elementary/modules/
 %exclude %{_datadir}/elementary/config/
 ##%{_tmpfilesdir}/elementary.conf
 
