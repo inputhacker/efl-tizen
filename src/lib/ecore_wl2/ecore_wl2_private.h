@@ -288,11 +288,13 @@ struct _Ecore_Wl2_Window
    //TIZEN_ONLY(20171115): support output transform
    Eina_Bool ignore_output_transform : 1;
    //
-   Eina_Bool moving : 1;
    //TODO: move the iconified into the Ecore_Wl2_Window_Configure_State structure.
    // TIZEN_ONLY(20150822)
    Eina_Bool iconified : 1;
    //
+
+   Eina_Bool moving : 1;
+   Eina_Bool resizing : 1;
    Eina_Bool alpha : 1;
    Eina_Bool transparent : 1;
 
