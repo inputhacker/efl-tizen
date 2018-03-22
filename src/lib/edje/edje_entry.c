@@ -7,6 +7,7 @@ static void      _edje_entry_imf_event_preedit_changed_cb(void *data, Ecore_IMF_
 static void      _edje_entry_imf_event_delete_surrounding_cb(void *data, Ecore_IMF_Context *ctx, void *event);
 static void      _edje_entry_imf_event_selection_set_cb(void *data, Ecore_IMF_Context *ctx, void *event_info);
 static Eina_Bool _edje_entry_imf_retrieve_selection_cb(void *data, Ecore_IMF_Context *ctx, char **text);
+static void      _edje_entry_imf_event_private_command_send_cb(void *data, Ecore_IMF_Context *ctx, void *event_info);
 #endif
 
 typedef struct _Entry  Entry;
@@ -3154,6 +3155,7 @@ _edje_entry_real_part_init(Edje *ed, Edje_Real_Part *rp, Ecore_IMF_Context *ic)
         ecore_imf_context_event_callback_add(en->imf_context, ECORE_IMF_CALLBACK_DELETE_SURROUNDING, _edje_entry_imf_event_delete_surrounding_cb, ed);
         ecore_imf_context_event_callback_add(en->imf_context, ECORE_IMF_CALLBACK_PREEDIT_CHANGED, _edje_entry_imf_event_preedit_changed_cb, ed);
         ecore_imf_context_event_callback_add(en->imf_context, ECORE_IMF_CALLBACK_SELECTION_SET, _edje_entry_imf_event_selection_set_cb, ed);
+        ecore_imf_context_event_callback_add(en->imf_context, ECORE_IMF_CALLBACK_PRIVATE_COMMAND_SEND, _edje_entry_imf_event_private_command_send_cb, ed);
         ecore_imf_context_input_mode_set(en->imf_context,
                                          rp->part->entry_mode == EDJE_ENTRY_EDIT_MODE_PASSWORD ?
                                          ECORE_IMF_INPUT_MODE_INVISIBLE : ECORE_IMF_INPUT_MODE_FULL);
@@ -3224,6 +3226,7 @@ _edje_entry_real_part_shutdown(Edje *ed, Edje_Real_Part *rp, Eina_Bool reuse_ic)
              ecore_imf_context_event_callback_del(en->imf_context, ECORE_IMF_CALLBACK_DELETE_SURROUNDING, _edje_entry_imf_event_delete_surrounding_cb);
              ecore_imf_context_event_callback_del(en->imf_context, ECORE_IMF_CALLBACK_PREEDIT_CHANGED, _edje_entry_imf_event_preedit_changed_cb);
              ecore_imf_context_event_callback_del(en->imf_context, ECORE_IMF_CALLBACK_SELECTION_SET, _edje_entry_imf_event_selection_set_cb);
+             ecore_imf_context_event_callback_del(en->imf_context, ECORE_IMF_CALLBACK_PRIVATE_COMMAND_SEND, _edje_entry_imf_event_private_command_send_cb);
 
              // TIZEN_ONLY(20131129): Reuse ecore_imf_context when theme is changed
              if (!reuse_ic)
@@ -5205,8 +5208,11 @@ _edje_entry_imf_event_delete_surrounding_cb(void *data, Ecore_IMF_Context *ctx E
    _edje_emit(ed, "cursor,changed", en->rp->part->name);
    _edje_emit(ed, "cursor,changed,manual", en->rp->part->name);
 
-   _edje_entry_imf_cursor_info_set(en);
-   _edje_entry_real_part_configure(ed, rp);
+   if(!en->freeze)
+     {
+        _edje_entry_imf_cursor_info_set(en);
+        _edje_entry_real_part_configure(ed, rp);
+     }
 
 end:
    evas_textblock_cursor_free(del_start);
@@ -5275,6 +5281,23 @@ _edje_entry_imf_retrieve_selection_cb(void *data, Ecore_IMF_Context *ctx EINA_UN
      }
    else
      return EINA_FALSE;
+}
+
+static void
+_edje_entry_imf_event_private_command_send_cb(void *data, Ecore_IMF_Context *ctx EINA_UNUSED, void *event_info)
+{
+   Edje *ed = data;
+   Edje_Real_Part *rp = ed->focused_part;
+   char *command = (char *)event_info;
+
+   if (strncmp(command, "TRANSACTION_START", strlen(command)) == 0)
+     {
+        _edje_entry_freeze(rp);
+     }
+   else if (strncmp(command, "TRANSACTION_END", strlen(command)) == 0)
+     {
+        _edje_entry_thaw(rp);
+     }
 }
 
 #endif
