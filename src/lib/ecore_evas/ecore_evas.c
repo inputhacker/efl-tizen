@@ -5140,7 +5140,7 @@ ecore_evas_gl_tbm_new(int w, int h)
 {
     Ecore_Evas *ee;
     Ecore_Evas *(*new)(int, int);
-    Eina_Module *m = _ecore_evas_engine_load("gl_tbm");
+    Eina_Module *m = _ecore_evas_engine_load("tbm");
     EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
 
     new = eina_module_symbol_get(m, "ecore_evas_gl_tbm_new_internal");
@@ -5155,7 +5155,7 @@ ecore_evas_software_tbm_new(int w, int h)
 {
     Ecore_Evas *ee;
     Ecore_Evas *(*new)(int, int);
-    Eina_Module *m = _ecore_evas_engine_load("software_tbm");
+    Eina_Module *m = _ecore_evas_engine_load("tbm");
     EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
 
     new = eina_module_symbol_get(m, "ecore_evas_software_tbm_new_internal");
@@ -5180,11 +5180,11 @@ ecore_evas_tbm_allocfunc_new(const char *engine, int w, int h,
     Eina_Module *m = NULL;
     if (!strcmp(engine, "gl_tbm"))
       {
-         m = _ecore_evas_engine_load("gl_tbm");
+         m = _ecore_evas_engine_load("tbm");
       }
     else if (!strcmp(engine, "software_tbm"))
       {
-         m = _ecore_evas_engine_load("software_tbm");
+         m = _ecore_evas_engine_load("tbm");
       }
     EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
 
@@ -5204,11 +5204,11 @@ ecore_evas_tbm_pixels_acquire(Ecore_Evas *ee)
 
     if (!strcmp(ee->driver, "gl_tbm"))
       {
-         m = _ecore_evas_engine_load("gl_tbm");
+         m = _ecore_evas_engine_load("tbm");
       }
     else if (!strcmp(ee->driver, "software_tbm"))
       {
-         m = _ecore_evas_engine_load("software_tbm");
+         m = _ecore_evas_engine_load("tbm");
       }
     EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
 
@@ -5227,11 +5227,11 @@ ecore_evas_tbm_pixels_release(Ecore_Evas *ee)
 
     if (!strcmp(ee->driver, "gl_tbm"))
       {
-         m = _ecore_evas_engine_load("gl_tbm");
+         m = _ecore_evas_engine_load("tbm");
       }
     else if (!strcmp(ee->driver, "software_tbm"))
       {
-         m = _ecore_evas_engine_load("software_tbm");
+         m = _ecore_evas_engine_load("tbm");
       }
     EINA_SAFETY_ON_NULL_RETURN(m);
 
