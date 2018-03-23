@@ -5208,11 +5208,16 @@ _edje_entry_imf_event_delete_surrounding_cb(void *data, Ecore_IMF_Context *ctx E
    _edje_emit(ed, "cursor,changed", en->rp->part->name);
    _edje_emit(ed, "cursor,changed,manual", en->rp->part->name);
 
+   /* TIZEN_ONLY(20180322): Modified not to send cursor position until the transaction isn't terminated
+   _edje_entry_imf_cursor_info_set(en);
+   _edje_entry_real_part_configure(ed, rp);
+   */
    if(!en->freeze)
      {
         _edje_entry_imf_cursor_info_set(en);
         _edje_entry_real_part_configure(ed, rp);
      }
+   /* END */
 
 end:
    evas_textblock_cursor_free(del_start);
@@ -5283,6 +5288,7 @@ _edje_entry_imf_retrieve_selection_cb(void *data, Ecore_IMF_Context *ctx EINA_UN
      return EINA_FALSE;
 }
 
+/* TIZEN_ONLY(20180322): Modified not to send cursor position until the transaction isn't terminated */
 static void
 _edje_entry_imf_event_private_command_send_cb(void *data, Ecore_IMF_Context *ctx EINA_UNUSED, void *event_info)
 {
@@ -5299,6 +5305,7 @@ _edje_entry_imf_event_private_command_send_cb(void *data, Ecore_IMF_Context *ctx
         _edje_entry_thaw(rp);
      }
 }
+/* END */
 
 #endif
 
