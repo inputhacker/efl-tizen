@@ -107,6 +107,14 @@ evas_common_text_props_content_unref(Evas_Text_Props *props)
         free(props->info);
         props->info = NULL;
      }
+
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************/
+   evas_common_font_glyph_lru_trim();
+   /*******
+    * END *
+    *******/
 }
 
 static int
@@ -398,8 +406,17 @@ _content_create_ot(RGBA_Font_Int *fi, const Eina_Unicode *text,
              if (is_replacement)
                {
                   /* Update the advance accordingly */
+                  /******************************************************************
+                   * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+                   ******************************************************************
                   adjust_x += (pen_x + (fg->glyph->advance.x >> 16)) -
                      gl_itr->pen_after;
+                   */
+                  adjust_x += (pen_x + (fg->advance.x >> 16)) -
+                     gl_itr->pen_after;
+                  /*******
+                   * END *
+                   *******/
                }
              pen_x = gl_itr->pen_after;
           }
@@ -492,7 +509,15 @@ _content_create_regular(RGBA_Font_Int *fi, const Eina_Unicode *text,
         gl_itr->index = idx;
         gl_itr->x_bear = fg->x_bear;
         gl_itr->y_bear = fg->y_bear;
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************
         adv = fg->glyph->advance.x >> 10;
+         */
+        adv = fg->advance.x >> 10;
+        /*******
+         * END *
+         *******/
         gl_itr->width = fg->width;
 
         if (EVAS_FONT_CHARACTER_IS_INVISIBLE(_gl))

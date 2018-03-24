@@ -190,7 +190,15 @@ _evas_common_font_ot_hb_get_glyph_advance(hb_font_t *font,
    fg = evas_common_font_int_cache_glyph_get(fi, glyph);
    if (fg)
      {
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************
         return fg->glyph->advance.x >> 10;
+         */
+        return fg->advance.x >> 10;
+        /*******
+         * END *
+         *******/
      }
    return 0;
 }

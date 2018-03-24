@@ -87,6 +87,24 @@ EAPI void             *evas_common_font_glyph_compress(void *data, int num_grays
 EAPI void              evas_common_font_glyph_draw(RGBA_Font_Glyph *fg, RGBA_Draw_Context *dc, RGBA_Image *dst, int dst_pitch, int x, int y, int cx, int cy, int cw, int ch);
 EAPI DATA8            *evas_common_font_glyph_uncompress(RGBA_Font_Glyph *fg, int *wret, int *hret);
 
+/******************************************************************
+ * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+ ******************************************************************/
+int evas_common_font_glyph_size_get(RGBA_Font_Glyph *fg);
+
+void evas_common_font_glyph_lru_append(RGBA_Font_Glyph *fg);
+void evas_common_font_glyph_lru_remove(RGBA_Font_Glyph *fg);
+void evas_common_font_glyph_done(RGBA_Font_Glyph *fg);
+void evas_common_font_glyph_lru_trim(void);
+void evas_common_font_glyph_ref(RGBA_Font_Glyph *fg);
+void evas_common_font_glyph_unref(RGBA_Font_Glyph *fg);
+
+EAPI void evas_common_font_glyph_lru_size_set(int size);
+EAPI int evas_common_font_glyph_lru_size_get(void);
+/*******
+ * END *
+ *******/
+
 void evas_common_font_load_init(void);
 void evas_common_font_load_shutdown(void);
 

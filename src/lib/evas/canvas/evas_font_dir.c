@@ -1569,3 +1569,21 @@ evas_font_reinit(void)
    /* END */
 #endif
 }
+
+/******************************************************************
+ * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+ ******************************************************************/
+EAPI void
+evas_font_glyph_lru_size_set(int size)
+{
+   evas_common_font_glyph_lru_size_set(size);
+}
+
+EAPI int
+evas_font_glyph_lru_size_get(void)
+{
+   return evas_common_font_glyph_lru_size_get();
+}
+/*******
+ * END *
+ *******/

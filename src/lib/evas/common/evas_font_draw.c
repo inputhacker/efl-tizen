@@ -218,6 +218,9 @@ evas_common_font_rgba_draw(RGBA_Image *dst, RGBA_Draw_Context *dc, int x, int y,
 void
 evas_common_font_glyphs_ref(Evas_Glyph_Array *array)
 {
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************
 #ifdef EVAS_CSERVE2
    if (evas_cserve2_use_get() && !array->refcount)
      {
@@ -230,6 +233,29 @@ evas_common_font_glyphs_ref(Evas_Glyph_Array *array)
         eina_iterator_free(iter);
      }
 #endif
+    */
+   if (!array->refcount)
+     {
+        Eina_Iterator *iter;
+        Evas_Glyph *glyph;
+
+        iter = eina_inarray_iterator_new(array->array);
+        EINA_ITERATOR_FOREACH(iter, glyph)
+          {
+#ifdef EVAS_CSERVE2
+             if (evas_cserve2_use_get())
+               {
+                  evas_cserve2_font_glyph_ref(glyph->fg->glyph_out, EINA_TRUE);
+                  continue;
+               }
+#endif
+             evas_common_font_glyph_ref(glyph->fg);
+          }
+        eina_iterator_free(iter);
+     }
+   /*******
+    * END *
+    *******/
 
    array->refcount++;
 }
@@ -239,6 +265,9 @@ evas_common_font_glyphs_unref(Evas_Glyph_Array *array)
 {
    if (--array->refcount) return;
 
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************
 #ifdef EVAS_CSERVE2
    if (evas_cserve2_use_get())
      {
@@ -251,6 +280,26 @@ evas_common_font_glyphs_unref(Evas_Glyph_Array *array)
         eina_iterator_free(iter);
      }
 #endif
+    */
+   Eina_Iterator *iter;
+   Evas_Glyph *glyph;
+
+   iter = eina_inarray_iterator_new(array->array);
+   EINA_ITERATOR_FOREACH(iter, glyph)
+     {
+#ifdef EVAS_CSERVE2
+        if (evas_cserve2_use_get())
+          {
+             evas_cserve2_font_glyph_ref(glyph->fg->glyph_out, EINA_FALSE);
+             continue;
+          }
+#endif
+        evas_common_font_glyph_unref(glyph->fg);
+     }
+   eina_iterator_free(iter);
+   /*******
+    * END *
+    *******/
 
    eina_inarray_free(array->array);
    evas_common_font_int_unref(array->fi);
@@ -293,6 +342,9 @@ evas_common_font_draw_prepare(Evas_Text_Props *text_props)
    if (text_props->len < unit) unit = text_props->len;
    if (text_props->glyphs && text_props->glyphs->refcount == 1)
      {
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************
 #ifdef EVAS_CSERVE2
         if (evas_cserve2_use_get())
           {
@@ -305,6 +357,27 @@ evas_common_font_draw_prepare(Evas_Text_Props *text_props)
              eina_iterator_free(iter);
           }
 #endif
+         */
+        Eina_Iterator *iter;
+        Evas_Glyph *glyph;
+
+        iter = eina_inarray_iterator_new(text_props->glyphs->array);
+        EINA_ITERATOR_FOREACH(iter, glyph)
+          {
+#ifdef EVAS_CSERVE2
+             if (evas_cserve2_use_get())
+               {
+                  evas_cserve2_font_glyph_ref(glyph->fg->glyph_out, EINA_FALSE);
+                  continue;
+               }
+#endif
+             evas_common_font_glyph_unref(glyph->fg);
+          }
+        eina_iterator_free(iter);
+        /*******
+         * END *
+         *******/
+
         glyphs = text_props->glyphs->array;
         glyphs->len = 0;
         reused_glyphs = EINA_TRUE;
@@ -341,10 +414,27 @@ evas_common_font_draw_prepare(Evas_Text_Props *text_props)
              goto error;
           }
 
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************
 #ifdef EVAS_CSERVE2
         if (evas_cserve2_use_get())
           evas_cserve2_font_glyph_ref(fg->glyph_out, EINA_TRUE);
 #endif
+         */
+#ifdef EVAS_CSERVE2
+        if (evas_cserve2_use_get())
+          {
+             evas_cserve2_font_glyph_ref(fg->glyph_out, EINA_TRUE);
+          }
+        else
+#endif
+          {
+             evas_common_font_glyph_ref(fg);
+          }
+        /*******
+         * END *
+         *******/
 
         glyph = eina_inarray_grow(glyphs, 1);
         if (!glyph) goto error;

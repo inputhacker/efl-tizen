@@ -1064,6 +1064,13 @@ struct _RGBA_Font_Glyph_Out
 
 struct _RGBA_Font_Glyph
 {
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************/
+   EINA_INLIST;
+   /*******
+    * END *
+    *******/
    FT_UInt         index;
    Evas_Coord      width;
    Evas_Coord      x_bear;
@@ -1074,6 +1081,16 @@ struct _RGBA_Font_Glyph
    void           *ext_dat;
    void           (*ext_dat_free) (void *ext_dat);
    RGBA_Font_Int   *fi;
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************/
+   FT_Vector       advance;
+   int             ref_count;
+   Eina_Bool       trimmed : 1;
+   Eina_Bool       in_lru : 1;
+   /*******
+    * END *
+    *******/
 };
 
 struct _RGBA_Gfx_Compositor

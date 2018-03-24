@@ -32,6 +32,17 @@ static Eina_List   *fonts_lru = NULL;
 static Eina_Inlist *fonts_use_lru = NULL;
 static int          fonts_use_usage = 0;
 
+/******************************************************************
+ * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+ ******************************************************************/
+static int          font_glyph_lru_usage = 0;
+static int          font_glyph_lru_size = 5242880; // 5 MB
+static Eina_Inlist *font_glyph_lru = NULL;
+static Eina_Inlist *font_color_glyph_lru = NULL;
+/*******
+ * END *
+ *******/
+
 static void _evas_common_font_int_clear(RGBA_Font_Int *fi);
 
 static int
@@ -86,7 +97,14 @@ _evas_common_font_int_free(RGBA_Font_Int *fi)
 #ifdef USE_HARFBUZZ
    hb_font_destroy(fi->ft.hb_font);
 #endif
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************
    evas_common_font_source_free(fi->src);
+    */
+   /*******
+    * END *
+    *******/
    if (fi->references <= 0) fonts_lru = eina_list_remove(fonts_lru, fi);
    if (fi->fash) fi->fash->freeme(fi->fash);
    if (fi->inuse)
@@ -96,6 +114,16 @@ _evas_common_font_int_free(RGBA_Font_Int *fi)
       fonts_use_usage -= fi->usage;
       fi->usage = 0;
     }
+
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************/
+   /* It has to be called after calling fash->freeme.
+    * When glyphs are being free'd, it will check glyph's type from its src. */
+   evas_common_font_source_free(fi->src);
+   /*******
+    * END *
+    *******/
 #ifdef EVAS_CSERVE2
    evas_cserve2_font_free(fi->cs2_handler);
 #endif
@@ -871,6 +899,145 @@ evas_common_font_int_use_trim(void)
  */
 }
 
+/******************************************************************
+ * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+ ******************************************************************/
+int
+evas_common_font_glyph_size_get(RGBA_Font_Glyph *fg)
+{
+   RGBA_Font_Int *fi;
+   int ret = 0;
+
+   if (!(fg && fg->glyph_out)) return ret;
+
+   fi = fg->fi;
+   if (!(fi && fi->src)) return ret;
+
+   if (!FT_HAS_COLOR(fi->src->ft.face))
+     {
+        /* This '+ 100' is just an estimation of how much memory freetype will use
+         * on it's size. This value is not really used anywhere in code - it's
+         * only for statistics. */
+        ret = sizeof(RGBA_Font_Glyph) + sizeof(Eina_List) +
+           (fg->glyph_out->bitmap.width * fg->glyph_out->bitmap.rows / 2) + 100;
+     }
+   else
+     {
+        /* It can't be compressed. So, a buffer needs [pitch * rows] bytes. */
+        ret = sizeof(RGBA_Font_Glyph) + sizeof(Eina_List) +
+           (fg->glyph_out->bitmap.pitch * fg->glyph_out->bitmap.rows) + 100;
+     }
+
+   return ret;
+}
+
+void
+evas_common_font_glyph_lru_append(RGBA_Font_Glyph *fg)
+{
+   int size;
+
+   if (fg->in_lru) return;
+
+   size = evas_common_font_glyph_size_get(fg);
+
+   if (fg->fi && FT_HAS_COLOR(fg->fi->src->ft.face))
+     font_color_glyph_lru = eina_inlist_append(font_color_glyph_lru, EINA_INLIST_GET(fg));
+   else
+     font_glyph_lru = eina_inlist_append(font_glyph_lru, EINA_INLIST_GET(fg));
+
+   font_glyph_lru_usage += size;
+   fg->in_lru = EINA_TRUE;
+}
+
+void
+evas_common_font_glyph_lru_remove(RGBA_Font_Glyph *fg)
+{
+   int size;
+
+   if (!fg->in_lru) return;
+   if (!font_glyph_lru && !font_color_glyph_lru) return;
+
+   size = evas_common_font_glyph_size_get(fg);
+
+   if (fg->fi && FT_HAS_COLOR(fg->fi->src->ft.face))
+     font_color_glyph_lru = eina_inlist_remove(font_color_glyph_lru, EINA_INLIST_GET(fg));
+   else
+     font_glyph_lru = eina_inlist_remove(font_glyph_lru, EINA_INLIST_GET(fg));
+
+   font_glyph_lru_usage -= size;
+   fg->in_lru = EINA_FALSE;
+}
+
+void
+evas_common_font_glyph_lru_trim(void)
+{
+   RGBA_Font_Glyph *fg;
+   Eina_Inlist *l;
+
+   /* If there is no glyph cache size is set, don't trim. */
+   if (font_glyph_lru_size <= 0) return;
+   if (font_glyph_lru_usage <= font_glyph_lru_size) return;
+   if (!font_glyph_lru && !font_color_glyph_lru) return;
+
+   FTLOCK();
+
+   /* Firstly, trim color glyph lru list.
+    * Color glyphs need much bigger memory than general compressed glyphs */
+   EINA_INLIST_FOREACH_SAFE(font_color_glyph_lru, l, fg)
+     {
+        evas_common_font_glyph_lru_remove(fg);
+        evas_common_font_glyph_done(fg);
+        fg->trimmed = EINA_TRUE;
+
+        if (font_glyph_lru_usage <= font_glyph_lru_size) break;
+     }
+
+   /* Trim general glyph lru list. */
+   if (font_glyph_lru_usage > font_glyph_lru_size)
+     {
+        EINA_INLIST_FOREACH_SAFE(font_glyph_lru, l, fg)
+          {
+             evas_common_font_glyph_lru_remove(fg);
+             evas_common_font_glyph_done(fg);
+             fg->trimmed = EINA_TRUE;
+
+             if (font_glyph_lru_usage <= font_glyph_lru_size) break;
+          }
+     }
+
+   FTUNLOCK();
+
+   if (!font_glyph_lru)
+     WRN("There is no enough cache space even one glyph! Please, increase glyph cache size.");
+}
+
+void
+evas_common_font_glyph_ref(RGBA_Font_Glyph *fg)
+{
+   if (fg->ref_count == 0)
+     evas_common_font_glyph_lru_remove(fg);
+
+   fg->ref_count++;
+}
+
+void
+evas_common_font_glyph_unref(RGBA_Font_Glyph *fg)
+{
+   if (fg->ref_count == 0)
+     {
+        ERR("It tries to unref a glyph which does not ref'ed!!");
+        return;
+     }
+
+   fg->ref_count--;
+
+   if (fg->ref_count == 0)
+     evas_common_font_glyph_lru_append(fg);
+}
+/*******
+ * END *
+ *******/
+
 void
 evas_common_font_int_unload(RGBA_Font_Int *fi EINA_UNUSED)
 {
@@ -974,3 +1141,21 @@ evas_common_font_int_find(const char *name, int size,
    eina_stringshare_del(tmp_fn.name);
    return fi;
 }
+
+/******************************************************************
+ * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+ ******************************************************************/
+EAPI void
+evas_common_font_glyph_lru_size_set(int size)
+{
+   font_glyph_lru_size = size;
+}
+
+EAPI int
+evas_common_font_glyph_lru_size_get(void)
+{
+   return font_glyph_lru_size;
+}
+/*******
+ * END *
+ *******/

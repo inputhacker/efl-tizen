@@ -394,11 +394,46 @@ _fash_int_add(Fash_Int *fash, int item, RGBA_Font_Int *fint, int idx)
    fash->bucket[grp]->bucket[maj]->item[min].index = idx;
 }
 
+/******************************************************************
+ * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+ ******************************************************************/
+void
+evas_common_font_glyph_done(RGBA_Font_Glyph *fg)
+{
+   if (fg && fg->glyph_out)
+     {
+        if ((fg->glyph_out->rle) && (fg->glyph_out->bitmap.rle_alloc))
+          free(fg->glyph_out->rle);
+        fg->glyph_out->rle = NULL;
+        if (!fg->glyph_out->bitmap.no_free_glout) free(fg->glyph_out);
+        fg->glyph_out = NULL;
+     }
+
+   /* extension calls */
+   if (fg->ext_dat && fg->ext_dat_free)
+     {
+        fg->ext_dat_free(fg->ext_dat);
+        fg->ext_dat = NULL;
+     }
+
+   if (fg->glyph)
+     {
+        FT_Done_Glyph(fg->glyph);
+        fg->glyph = NULL;
+     }
+}
+/*******
+ * END *
+ *******/
+
 static void
 _glyph_free(RGBA_Font_Glyph *fg)
 {
    if ((!fg) || (fg == (void *)(-1))) return;
 
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************
    if (fg->glyph_out)
      {
         if ((!fg->glyph_out->rle) && (!fg->glyph_out->bitmap.rle_alloc))
@@ -414,8 +449,14 @@ _glyph_free(RGBA_Font_Glyph *fg)
         fg->glyph_out = NULL;
      }
    FT_Done_Glyph(fg->glyph);
-   /* extension calls */
+   // extension calls
    if (fg->ext_dat_free) fg->ext_dat_free(fg->ext_dat);
+    */
+   evas_common_font_glyph_lru_remove(fg);
+   evas_common_font_glyph_done(fg);
+   /*******
+    * END *
+    *******/
    free(fg);
 }
 
@@ -499,12 +540,27 @@ _fash_gl_add(Fash_Glyph *fash, int item, RGBA_Font_Glyph *glyph)
 EAPI RGBA_Font_Glyph *
 evas_common_font_int_cache_glyph_get(RGBA_Font_Int *fi, FT_UInt idx)
 {
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************
    RGBA_Font_Glyph *fg;
+    */
+   RGBA_Font_Glyph *fg = NULL;
+   /*******
+    * END *
+    *******/
    FT_Error error;
    const FT_Int32 hintflags[3] =
      { FT_LOAD_NO_HINTING, FT_LOAD_FORCE_AUTOHINT, FT_LOAD_NO_AUTOHINT };
    static FT_Matrix transform = {0x10000, _EVAS_FONT_SLANT_TAN * 0x10000,
         0x00000, 0x10000};
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************/
+   Eina_Bool fg_from_fash = EINA_FALSE;
+   /*******
+    * END *
+    *******/
 
    evas_common_font_int_promote(fi);
    if (fi->fash)
@@ -513,6 +569,9 @@ evas_common_font_int_cache_glyph_get(RGBA_Font_Int *fi, FT_UInt idx)
         if (fg == (void *)(-1)) return NULL;
         else if (fg)
           {
+             /******************************************************************
+              * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+              ******************************************************************
 #ifdef EVAS_CSERVE2
              if (fi->cs2_handler)
                {
@@ -529,6 +588,32 @@ evas_common_font_int_cache_glyph_get(RGBA_Font_Int *fi, FT_UInt idx)
 #else
              return fg;
 #endif
+              */
+#ifdef EVAS_CSERVE2
+             if (fi->cs2_handler)
+               {
+                  if (evas_cserve2_font_glyph_used(fi->cs2_handler, idx,
+                                                   fi->hinting))
+                    return fg;
+                  else
+                    {
+                       _glyph_free(fg);
+                       _fash_gl_add(fi->fash, idx, NULL);
+                    }
+               }
+             else
+#endif
+             if (fg->trimmed)
+               {
+                  fg_from_fash = EINA_TRUE;
+               }
+             else
+               {
+                  return fg;
+               }
+             /*******
+              * END *
+              *******/
           }
      }
 //   fg = eina_hash_find(fi->glyphs, &hindex);
@@ -544,6 +629,14 @@ evas_common_font_int_cache_glyph_get(RGBA_Font_Int *fi, FT_UInt idx)
    FTUNLOCK();
    if (error)
      {
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************/
+        ERR("Failed to load a glyph using FT_Load_Glyph for idx[%d]. fg_from_fash[%d]", idx, fg_from_fash);
+        free(fg);
+        /*******
+         * END *
+         *******/
         if (!fi->fash) fi->fash = _fash_gl_new();
         if (fi->fash) _fash_gl_add(fi->fash, idx, (void *)(-1));
         return NULL;
@@ -556,14 +649,33 @@ evas_common_font_int_cache_glyph_get(RGBA_Font_Int *fi, FT_UInt idx)
    if (fi->runtime_rend & FONT_REND_WEIGHT)
       FT_GlyphSlot_Embolden(fi->src->ft.face->glyph);
 
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************
    fg = calloc(1, sizeof(RGBA_Font_Glyph));
    if (!fg) return NULL;
+    */
+   if (!fg)
+     {
+        fg = calloc(1, sizeof(RGBA_Font_Glyph));
+        if (!fg) return NULL;
+     }
+   /*******
+    * END *
+    *******/
 
    FTLOCK();
    error = FT_Get_Glyph(fi->src->ft.face->glyph, &(fg->glyph));
    FTUNLOCK();
    if (error)
      {
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************/
+        ERR("Failed to get a glyph using FT_Get_Glyph for idx[%d]. fg_from_fash[%d]", idx, fg_from_fash);
+        /*******
+         * END *
+         *******/
         free(fg);
         if (!fi->fash) fi->fash = _fash_gl_new();
         if (fi->fash) _fash_gl_add(fi->fash, idx, (void *)(-1));
@@ -579,12 +691,19 @@ evas_common_font_int_cache_glyph_get(RGBA_Font_Int *fi, FT_UInt idx)
         fg->width = EVAS_FONT_ROUND_26_6_TO_INT(outbox.xMax - outbox.xMin);
         fg->x_bear = EVAS_FONT_ROUND_26_6_TO_INT(outbox.xMin);
         fg->y_bear = EVAS_FONT_ROUND_26_6_TO_INT(outbox.yMax);
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************/
+        fg->advance = fg->glyph->advance;
+        /*******
+         * END *
+         *******/
 
         // TIZEN_ONLY(20150622): Add scale feature for embedded bitmap fonts.
         if (FT_HAS_FIXED_SIZES(fi->src->ft.face))
           {
-             fg->glyph->advance.x *= fi->scale_factor;
-             fg->glyph->advance.y *= fi->scale_factor;
+             fg->advance.x *= fi->scale_factor;
+             fg->advance.y *= fi->scale_factor;
              fg->width *= fi->scale_factor;
              fg->x_bear *= fi->scale_factor;
              fg->y_bear *= fi->scale_factor;
@@ -595,14 +714,33 @@ evas_common_font_int_cache_glyph_get(RGBA_Font_Int *fi, FT_UInt idx)
    fg->index = idx;
    fg->fi = fi;
 
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************
    if (!fi->fash) fi->fash = _fash_gl_new();
    if (fi->fash) _fash_gl_add(fi->fash, idx, fg);
+    */
+   if (!fg_from_fash)
+     {
+        if (!fi->fash) fi->fash = _fash_gl_new();
+        if (fi->fash) _fash_gl_add(fi->fash, idx, fg);
+     }
+   /*******
+    * END *
+    *******/
 
 #ifdef EVAS_CSERVE2
    if (fi->cs2_handler)
      evas_cserve2_font_glyph_request(fi->cs2_handler, idx, fi->hinting);
 #endif
 
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************/
+   fg->trimmed = EINA_FALSE;
+   /*******
+    * END *
+    *******/
 //   eina_hash_direct_add(fi->glyphs, &fg->index, fg);
    return fg;
 }
@@ -641,6 +779,13 @@ evas_common_font_int_cache_glyph_render(RGBA_Font_Glyph *fg)
    if (error)
      {
         FT_Done_Glyph(fg->glyph);
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************/
+        fg->glyph = NULL;
+        /*******
+         * END *
+         *******/
         FTUNLOCK();
         if (!fi->fash) fi->fash = _fash_gl_new();
         if (fi->fash) _fash_gl_add(fi->fash, fg->index, (void *)(-1));
@@ -657,12 +802,20 @@ evas_common_font_int_cache_glyph_render(RGBA_Font_Glyph *fg)
    fg->glyph_out->bitmap.pitch = fbg->bitmap.pitch;
    fg->glyph_out->bitmap.buffer = fbg->bitmap.buffer;
    fg->glyph_out->bitmap.rle_alloc = EINA_TRUE;
-   
-   /* This '+ 100' is just an estimation of how much memory freetype will use
+
+   /******************************************************************
+    * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+    ******************************************************************
+    * This '+ 100' is just an estimation of how much memory freetype will use
     * on it's size. This value is not really used anywhere in code - it's
-    * only for statistics. */
+    * only for statistics. *
    size = sizeof(RGBA_Font_Glyph) + sizeof(Eina_List) +
     (fg->glyph_out->bitmap.width * fg->glyph_out->bitmap.rows / 2) + 100;
+    */
+   size = evas_common_font_glyph_size_get(fg);
+   /*******
+    * END *
+    *******/
    fi->usage += size;
    if (fi->inuse) evas_common_font_int_use_increase(size);
 
@@ -676,9 +829,20 @@ evas_common_font_int_cache_glyph_render(RGBA_Font_Glyph *fg)
 
         fg->glyph_out->bitmap.buffer = NULL;
 
+        /******************************************************************
+         * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+         ******************************************************************
         // this may be technically incorrect as we go and free a bitmap buffer
         // behind the ftglyph's back...
         FT_Bitmap_Done(evas_ft_lib, &(fbg->bitmap));
+         */
+        /* The glyph will be fully cleared not only for its bitmap buffer.
+         * The glyph which is cleared only its bitmap buffer can't be reused again. */
+        FT_Done_Glyph(fg->glyph);
+        fg->glyph = NULL;
+        /*******
+         * END *
+         *******/
      }
    else
      {

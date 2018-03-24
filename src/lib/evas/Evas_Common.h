@@ -6138,6 +6138,31 @@ EAPI const Eina_List        *evas_font_path_global_list(void) EINA_WARN_UNUSED_R
  */
 EAPI void                    evas_font_reinit(void);
 
+/******************************************************************
+ * TIZEN_ONLY(20180402): evas font: add/apply font glyph lru list *
+ ******************************************************************/
+/**
+ * Set glyphs lru list size as byte.
+ * It is used for trimming bitmap data of least recently used glyphs.
+ * It helps reducing memory usage.
+ * If the given size is 0, Evas will not trim bitmap data.
+ *
+ * @ingroup Evas_Font_Group
+ * @since 1.21
+ */
+EAPI void                    evas_font_glyph_lru_size_set(int size);
+
+/**
+ * Get glyphs lru list size as byte.
+ *
+ * @ingroup Evas_Font_Group
+ * @since 1.21
+ */
+EAPI int                     evas_font_glyph_lru_size_get(void);
+/*******
+ * END *
+ *******/
+
 /**
  * @}
  */
