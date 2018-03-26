@@ -185,7 +185,6 @@ ecore_evas_render(Ecore_Evas *ee)
 
    ecore_evas_render_prepare(ee);
 
-
    if (!ee->visible)
      {
         evas_norender(ee->evas);
