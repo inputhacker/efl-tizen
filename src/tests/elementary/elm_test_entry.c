@@ -9,7 +9,7 @@
 #include <Elementary.h>
 #include "elm_suite.h"
 
-START_TEST (elm_entry_legacy_type_check)
+EFL_START_TEST (elm_entry_legacy_type_check)
 {
    Evas_Object *win, *entry;
    const char *type;
@@ -30,9 +30,9 @@ START_TEST (elm_entry_legacy_type_check)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_del)
+EFL_START_TEST (elm_entry_del)
 {
    Evas_Object *win, *entry;
 
@@ -45,7 +45,7 @@ START_TEST (elm_entry_del)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 void
 _dummy_cb(void *data EINA_UNUSED, Eo *obj EINA_UNUSED,
@@ -53,7 +53,7 @@ _dummy_cb(void *data EINA_UNUSED, Eo *obj EINA_UNUSED,
 {
 }
 
-START_TEST (elm_entry_signal_callback)
+EFL_START_TEST (elm_entry_signal_callback)
 {
    Evas_Object *win, *entry;
    void *data;
@@ -93,9 +93,9 @@ START_TEST (elm_entry_signal_callback)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_atspi_text_char_get)
+EFL_START_TEST (elm_entry_atspi_text_char_get)
 {
    Evas_Object *win, *entry;
    Eina_Unicode *expected;
@@ -134,9 +134,9 @@ START_TEST (elm_entry_atspi_text_char_get)
    free(expected);
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_atspi_text_char_count)
+EFL_START_TEST (elm_entry_atspi_text_char_count)
 {
    Evas_Object *win, *entry;
    int val;
@@ -155,9 +155,9 @@ START_TEST (elm_entry_atspi_text_char_count)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_atspi_text_string_get_char)
+EFL_START_TEST (elm_entry_atspi_text_string_get_char)
 {
    Evas_Object *win, *entry;
    char *val;
@@ -201,9 +201,9 @@ START_TEST (elm_entry_atspi_text_string_get_char)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_atspi_text_string_get_word)
+EFL_START_TEST (elm_entry_atspi_text_string_get_word)
 {
    Evas_Object *win, *entry;
    char *val;
@@ -248,9 +248,9 @@ START_TEST (elm_entry_atspi_text_string_get_word)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_atspi_text_string_get_paragraph)
+EFL_START_TEST (elm_entry_atspi_text_string_get_paragraph)
 {
    Evas_Object *win, *entry;
    char *val;
@@ -295,9 +295,9 @@ START_TEST (elm_entry_atspi_text_string_get_paragraph)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_atspi_text_string_get_line)
+EFL_START_TEST (elm_entry_atspi_text_string_get_line)
 {
    Evas_Object *win, *entry;
    char *val;
@@ -331,9 +331,9 @@ START_TEST (elm_entry_atspi_text_string_get_line)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_atspi_text_text_get)
+EFL_START_TEST (elm_entry_atspi_text_text_get)
 {
    Evas_Object *win, *entry;
    char *val;
@@ -363,9 +363,9 @@ START_TEST (elm_entry_atspi_text_text_get)
    if (val) free(val);
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_entry_atspi_text_selections)
+EFL_START_TEST (elm_entry_atspi_text_selections)
 {
    Evas_Object *win, *entry;
    int val, start, end;
@@ -410,9 +410,9 @@ START_TEST (elm_entry_atspi_text_selections)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
-START_TEST (elm_atspi_role_get)
+EFL_START_TEST (elm_atspi_role_get)
 {
    Evas_Object *win, *entry;
    Efl_Access_Role role;
@@ -428,7 +428,7 @@ START_TEST (elm_atspi_role_get)
 
    elm_shutdown();
 }
-END_TEST
+EFL_END_TEST
 
 void elm_test_entry(TCase *tc)
 {
