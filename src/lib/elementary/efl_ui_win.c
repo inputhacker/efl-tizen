@@ -4292,12 +4292,6 @@ _elm_win_translate(void)
    //
 }
 
-void
-_elm_win_focus_reconfigure(void)
-{
-   /* FOCUS-FIXME */
-}
-
 #ifdef HAVE_ELEMENTARY_X
 static Eina_Bool
 _elm_win_client_message(void *data,
