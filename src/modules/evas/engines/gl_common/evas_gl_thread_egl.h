@@ -44,8 +44,8 @@ EVAS_TH_EGL_FN      (int        , eglWaitSyncKHR,  EGLDisplay  dpy,  void * sync
 EVAS_TH_EGL_FN      (EGLBoolean , eglBindWaylandDisplayWL,  EGLDisplay  dpy,  void *wl_display) \
 EVAS_TH_EGL_FN      (EGLBoolean , eglUnbindWaylandDisplayWL,  EGLDisplay  dpy,  void *wl_display) \
 EVAS_TH_EGL_FN      (void *     , eglGetProcAddress, char const * procname) \
-EVAS_TH_EGL_FN      (void       , wl_egl_window_set_buffer_transform, void *egl_window, int wl_output_transform) \
-EVAS_TH_EGL_FN      (void       , wl_egl_window_set_window_transform, void *egl_window, int wl_output_transform)
+EVAS_TH_EGL_FN      (void       , wl_egl_window_tizen_set_buffer_transform, void *egl_window, int wl_output_transform) \
+EVAS_TH_EGL_FN      (void       , wl_egl_window_tizen_set_window_transform, void *egl_window, int wl_output_transform)
 
 
 

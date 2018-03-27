@@ -404,7 +404,7 @@ fi
 PKG_CHECK_EXISTS([egl ${gl_library} wayland-client >= REQUIRED_WAYLAND_VERSION wayland-egl],
    [
     have_dep="yes"
-    requirement="egl ${gl_library} wayland-client wayland-egl"
+    requirement="egl ${gl_library} wayland-client wayland-egl wayland-egl-tizen"
    ],
    [have_dep="no"])
 
@@ -528,7 +528,7 @@ fi
 PKG_CHECK_EXISTS([egl ${gl_library} wayland-client >= 1.3.0 wayland-egl >= 9.2.0],
    [
     have_dep="yes"
-    requirement="egl ${gl_library} wayland-client wayland-egl"
+    requirement="egl ${gl_library} wayland-client wayland-egl wayland-egl-tizen"
    ],
    [have_dep="no"])
 
