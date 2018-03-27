@@ -14,8 +14,6 @@ EFL_START_TEST (elm_entry_legacy_type_check)
    Evas_Object *win, *entry;
    const char *type;
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -28,7 +26,6 @@ EFL_START_TEST (elm_entry_legacy_type_check)
    ck_assert(type != NULL);
    ck_assert(!strcmp(type, "elm_entry"));
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -36,14 +33,11 @@ EFL_START_TEST (elm_entry_del)
 {
    Evas_Object *win, *entry;
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
    elm_object_text_set(entry, "TEST");
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -59,8 +53,6 @@ EFL_START_TEST (elm_entry_signal_callback)
    void *data;
    int k;
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -91,7 +83,6 @@ EFL_START_TEST (elm_entry_signal_callback)
    data = elm_layout_signal_callback_del(entry, "sig", "src", _dummy_cb);
    fail_if(data);
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -104,8 +95,6 @@ EFL_START_TEST (elm_entry_atspi_text_char_get)
    const char *txt = "ĄA11Y Ł TEST";
    const char *mtxt = "<b>ĄA11Y</b> <title>Ł</> TEST";
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -132,7 +121,6 @@ EFL_START_TEST (elm_entry_atspi_text_char_get)
    ck_assert(val == 0);
 
    free(expected);
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -143,8 +131,6 @@ EFL_START_TEST (elm_entry_atspi_text_char_count)
 
    const char *mtxt = "<b>AĄ11Y</b> <title>Ł</> TEST";
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -153,7 +139,6 @@ EFL_START_TEST (elm_entry_atspi_text_char_count)
    val = efl_access_text_character_count_get(entry);
    ck_assert(val == 12);
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -165,8 +150,6 @@ EFL_START_TEST (elm_entry_atspi_text_string_get_char)
 
    const char *txt = "Lorem ipśum   dolor sit amęt";
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -199,7 +182,6 @@ EFL_START_TEST (elm_entry_atspi_text_string_get_char)
    ck_assert(end == -1);
    ck_assert(val == NULL);
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -211,8 +193,6 @@ EFL_START_TEST (elm_entry_atspi_text_string_get_word)
 
    const char *txt = "Lorem ipśum   dolor sit amęt";
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -246,7 +226,6 @@ EFL_START_TEST (elm_entry_atspi_text_string_get_word)
    ck_assert(val == NULL);
    if (val) free(val);
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -258,8 +237,6 @@ EFL_START_TEST (elm_entry_atspi_text_string_get_paragraph)
 
    const char *txt = "Lorem ipśum<br>   dolor sit<br> amęt";
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -293,7 +270,6 @@ EFL_START_TEST (elm_entry_atspi_text_string_get_paragraph)
    ck_assert(val == NULL);
    if (val) free(val);
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -305,8 +281,6 @@ EFL_START_TEST (elm_entry_atspi_text_string_get_line)
 
    const char *txt = "Lorem ipśum<br>   dolor sit amęt";
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -329,7 +303,6 @@ EFL_START_TEST (elm_entry_atspi_text_string_get_line)
    ck_assert(end == 29);
    if (val) free(val);
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -339,8 +312,6 @@ EFL_START_TEST (elm_entry_atspi_text_text_get)
    char *val;
    const char *txt = "Lorem Xpśum dolor sit amęt";
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -361,7 +332,6 @@ EFL_START_TEST (elm_entry_atspi_text_text_get)
    ck_assert_str_eq(val, "Xpśum dolor");
 
    if (val) free(val);
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -373,8 +343,6 @@ EFL_START_TEST (elm_entry_atspi_text_selections)
    Eina_Bool ret;
    const char *txt = "Lorem ipśum<br>   dolor sit\n amęt";
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -408,7 +376,6 @@ EFL_START_TEST (elm_entry_atspi_text_selections)
    str = elm_entry_selection_get(entry);
    ck_assert(str == NULL);
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
@@ -417,8 +384,6 @@ EFL_START_TEST (elm_atspi_role_get)
    Evas_Object *win, *entry;
    Efl_Access_Role role;
 
-   char *args[] = { "exe" };
-   elm_init(1, args);
    win = elm_win_add(NULL, "entry", ELM_WIN_BASIC);
 
    entry = elm_entry_add(win);
@@ -426,7 +391,6 @@ EFL_START_TEST (elm_atspi_role_get)
 
    ck_assert(role == EFL_ACCESS_ROLE_ENTRY);
 
-   elm_shutdown();
 }
 EFL_END_TEST
 
