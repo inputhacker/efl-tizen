@@ -9,6 +9,7 @@
 
 /* NB: This already includes wayland-client.h */
 # include <wayland-egl.h>
+#include <wayland-egl-tizen.h>
 
 # define GL_GLEXT_PROTOTYPES
 
@@ -169,13 +170,5 @@ typedef enum {
     EVAS_ROTATION_180 = 180,
     EVAS_ROTATION_270 = 270
 } evas_wl_egl_window_rotation;
-
-//TIZEN_ONLY(20161121) : Support PreRotation
-typedef int (*wl_egl_win_get_capabilities) (struct wl_egl_window *egl_window);
-typedef void (*wl_egl_win_set_rotation) (struct wl_egl_window *egl_window, int rotation);
-
-extern wl_egl_win_get_capabilities glsym_wl_egl_win_get_capabilities;
-extern wl_egl_win_set_rotation glsym_wl_egl_win_set_rotation;
-//
 
 #endif

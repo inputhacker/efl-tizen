@@ -230,10 +230,10 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
 // TIZEN_ONLY(20171123)
 
 //TIZEN_ONLY(20161121):Support PreRotation
-   if (!getenv("EVAS_GL_PREROTATION_DISABLE") && glsym_wl_egl_win_get_capabilities)
+   if (!getenv("EVAS_GL_PREROTATION_DISABLE"))
      {
         int prerotation_cap = EVAS_WL_EGL_WINDOW_CAPABILITY_NONE;
-        prerotation_cap = glsym_wl_egl_win_get_capabilities(gw->win);
+        prerotation_cap = wl_egl_window_tizen_get_capabilities(gw->win);
         if (prerotation_cap == EVAS_WL_EGL_WINDOW_CAPABILITY_ROTATION_SUPPORTED)
           {
              gw->support_pre_rotation = 1;
@@ -551,8 +551,8 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
          * because the display server needs to calcuate the screen rotation value
          * from buffer_transform value.
          */
-        wl_egl_window_set_buffer_transform(ob->win, ob->rot / 90);
-        wl_egl_window_set_window_transform(ob->win, ob->info->window_rotation / 90);
+        wl_egl_window_tizen_set_buffer_transform(ob->win, ob->rot / 90);
+        wl_egl_window_tizen_set_window_transform(ob->win, ob->info->window_rotation / 90);
         //
 
         if ((ob->rot == 90) || (ob->rot == 270))

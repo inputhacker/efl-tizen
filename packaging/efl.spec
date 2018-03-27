@@ -35,6 +35,7 @@ BuildRequires:  pkgconfig(tizen-extension-client)
 BuildRequires:  pkgconfig(tizen-remote-surface-client)
 BuildRequires:  pkgconfig(wayland-egl-tizen)
 BuildRequires:  wayland-protocols
+BuildRequires:  pkgconfig(wayland-egl-tizen)
 Requires:       libwayland-extension-client
 Requires:       libwayland-egl-tizen
 %endif

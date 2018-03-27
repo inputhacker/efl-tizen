@@ -76,14 +76,6 @@ unsigned int (*glsym_eglSwapBuffersWithDamage) (EGLDisplay a, void *b, const EGL
 unsigned int (*glsym_eglSetDamageRegionKHR) (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d) = NULL;
 unsigned int (*glsym_eglQueryWaylandBufferWL)(EGLDisplay a, void *b, EGLint c, EGLint *d) = NULL;
 
-//TIZEN_ONLY(20161121) : Support PreRotation
-////////////////////////////////////
-//libwayland-client.so.0
-static void *wl_client_lib_handle = NULL;
-wl_egl_win_get_capabilities glsym_wl_egl_win_get_capabilities = NULL;
-wl_egl_win_set_rotation glsym_wl_egl_win_set_rotation = NULL;
-//
-
 /* local variables */
 static Eina_Bool initted = EINA_FALSE;
 static int gl_wins = 0;
@@ -193,38 +185,6 @@ eng_gl_symbols(EGLDisplay edsp)
    done = EINA_TRUE;
 }
 
-//TIZEN_ONLY(20161121) : Support PreRotation
-static void
-pre_rotation_symbols(void)
-{
-   static Eina_Bool init_pre_rotation_syms = EINA_FALSE;
-   if (init_pre_rotation_syms) return;
-   init_pre_rotation_syms = EINA_TRUE;
-
-#ifdef GL_GLES
-   const char *wayland_egl_lib = LIBDIR"/libwayland-egl.so.1";
-   wl_client_lib_handle = dlopen(wayland_egl_lib, RTLD_NOW);
-   if (!wl_client_lib_handle)
-     {
-        ERR("Unable to open libtbm: %s", dlerror());
-        return;
-     }
-
-#define FIND_EGL_WL_SYM(dst, sym, typ) \
-   if (!dst) dst = (typ)dlsym(wl_client_lib_handle, sym); \
-   if (!dst)  \
-     { \
-        ERR("Symbol not found %s\n", sym); \
-        return; \
-     }
-
-   FIND_EGL_WL_SYM(glsym_wl_egl_win_set_rotation, "wl_egl_window_set_rotation", glsym_func_void);
-   FIND_EGL_WL_SYM(glsym_wl_egl_win_get_capabilities, "wl_egl_window_get_capabilities", glsym_func_int);
-
-#undef FIND_EGL_WL_SYM
-#endif
-}
-
 static void
 gl_extn_veto(Render_Engine *re)
 {
@@ -309,11 +269,6 @@ _evas_native_win_pre_rotation_set(struct wl_egl_window *win, int angle)
 {
     evas_wl_egl_window_rotation rot;
     if (!win) return;
-    if (!glsym_wl_egl_win_set_rotation)
-      {
-         ERR("Not supported PreRotation");
-         return;
-      }
 
     switch (angle)
       {
@@ -334,10 +289,7 @@ _evas_native_win_pre_rotation_set(struct wl_egl_window *win, int angle)
             break;
       }
 
-    if (glsym_wl_egl_win_set_rotation)
-      {
-         glsym_wl_egl_win_set_rotation(win, rot);
-      }
+    wl_egl_window_tizen_set_rotation(win, rot);
 }
 
 static void *
@@ -1795,10 +1747,6 @@ module_open(Evas_Module *em)
 
    evas_gl_thread_link_init();
    symbols();
-
-   //TIZEN_ONLY(20161121) : Support PreRotation
-   pre_rotation_symbols();
-   //
 
    /* advertise out which functions we support */
    em->functions = (void *)(&func);
