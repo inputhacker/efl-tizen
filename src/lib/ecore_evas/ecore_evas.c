@@ -185,7 +185,6 @@ ecore_evas_render(Ecore_Evas *ee)
 
    ecore_evas_render_prepare(ee);
 
-   ee->in_async_render = 1;
 
    if (!ee->visible)
      {
@@ -194,6 +193,7 @@ ecore_evas_render(Ecore_Evas *ee)
    else if (ee->can_async_render && !ee->manual_render)
      {
         rend |= !!evas_render_async(ee->evas);
+        if (rend) ee->in_async_render = 1;
      }
    else
      {
