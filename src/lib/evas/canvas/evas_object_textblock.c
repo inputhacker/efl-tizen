@@ -8964,9 +8964,24 @@ evas_textblock_cursor_line_char_last(Evas_Textblock_Cursor *cur)
    if (ln->items)
      {
         Evas_Object_Textblock_Item *i;
+        /* TIZEN_ONLY(20180331): Fix wrong bidi decision caused by empty text item
         it = ln->items;
+         */
+        /* END */
         EINA_INLIST_FOREACH(ln->items, i)
           {
+             /* TIZEN_ONLY(20180331): Fix wrong bidi decision caused by empty text item */
+             if ((i->type == EVAS_TEXTBLOCK_ITEM_TEXT) &&
+                 (_ITEM_TEXT(i)->text_props.text_len == 0))
+               continue;
+
+             if (it == NULL)
+               {
+                  it = i;
+                  continue;
+               }
+             /* END */
+
              if (it->text_pos < i->text_pos)
                {
                   it = i;
@@ -11179,6 +11194,13 @@ evas_textblock_cursor_geometry_bidi_get(const Evas_Textblock_Cursor *cur, Evas_C
                               {
                                  if (ititr == it)
                                    break;
+
+                                 /* TIZEN_ONLY(20180331): Fix wrong bidi decision caused by empty text item */
+                                 if ((ititr->type == EVAS_TEXTBLOCK_ITEM_TEXT) &&
+                                     (_ITEM_TEXT(ititr)->text_props.text_len == 0))
+                                   continue;
+                                 /* END */
+
                                  previt = ititr;
                               }
 
