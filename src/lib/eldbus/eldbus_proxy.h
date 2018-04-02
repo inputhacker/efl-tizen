@@ -9,73 +9,82 @@
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get a proxy of the following interface name in a Eldbus_Object.
  *
  * @param obj The Eldbus_Object on which to do the query.
  * @param interface The interface name of the proxy.
  * @return The corresponding Eldbus_Proxy object.
  */
-EAPI Eldbus_Proxy          *eldbus_proxy_get(Eldbus_Object *obj, const char *interface) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Proxy          *eldbus_proxy_get(Eldbus_Object *obj, const char *interface) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Increase proxy reference.
  *
  * @param proxy The Eldbus_Proxy on which to increase the refcount.
  * @return The Eldbus_Proxy with an increased refcount.
  */
-EAPI Eldbus_Proxy          *eldbus_proxy_ref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Proxy          *eldbus_proxy_ref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Decrease proxy reference.
  * If reference == 0 proxy will be freed and all your children.
  *
  * @param proxy The Eldbus_Proxy on which to decrease the refcount.
  */
-EAPI void                  eldbus_proxy_unref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void                  eldbus_proxy_unref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the Eldbus_Object associated with a proxy object.
  *
  * @param proxy The Eldbus_Proxy on which to do the query.
  * @return The corresponding Eldbus_Object.
  */
-EAPI Eldbus_Object         *eldbus_proxy_object_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Object         *eldbus_proxy_object_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the interface name associated with a proxy object.
  *
  * @param proxy The Eldbus_Proxy on which to do the query.
  * @return The string corresponding to the interface name.
  */
-EAPI const char           *eldbus_proxy_interface_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_proxy_interface_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Set data to an Eldbus_Proxy object.
  *
  * @param proxy The Eldbus_Proxy on which to set the data.
  * @param key A string to which the data will be associated.
  * @param data The data to set to the proxy object.
  */
-EAPI void                  eldbus_proxy_data_set(Eldbus_Proxy *proxy, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI void                  eldbus_proxy_data_set(Eldbus_Proxy *proxy, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get data of an Eldbus_Proxy object.
  *
  * @param proxy The Eldbus_Proxy on which to get the data.
  * @param key The string to which the data is associated.
  * @return The data set to the proxy object associated with the provided key.
  */
-EAPI void                 *eldbus_proxy_data_get(const Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                 *eldbus_proxy_data_get(const Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Delete data of an Eldbus_Proxy object.
  *
  * @param proxy The Eldbus_Proxy on which to delete the data.
  * @param key The string to which the data is associated.
  */
-EAPI void                 *eldbus_proxy_data_del(Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                 *eldbus_proxy_data_del(Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a callback function to be called when an event of the
  * type passed occurs.
  *
@@ -83,27 +92,30 @@ EAPI void                 *eldbus_proxy_data_del(Eldbus_Proxy *proxy, const char
  * @param cb The callback to add.
  * @param data The data to pass to the callback.
  */
-EAPI void                  eldbus_proxy_free_cb_add(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                  eldbus_proxy_free_cb_add(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Remove callback registered in eldbus_proxy_free_cb_add().
  *
  * @param proxy The Eldbus_Proxy on which to delete the callback.
  * @param cb The callback to delete.
  * @param data The data passed to the callback.
  */
-EAPI void                  eldbus_proxy_free_cb_del(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                  eldbus_proxy_free_cb_del(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Constructs a new message to invoke a method on a remote interface.
  *
  * @param proxy The Eldbus_Proxy on which to call the method.
  * @param member The name of the method to invoke.
  * @return An Eldbus_Message object.
  */
-EAPI Eldbus_Message        *eldbus_proxy_method_call_new(Eldbus_Proxy *proxy, const char *member) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_proxy_method_call_new(Eldbus_Proxy *proxy, const char *member) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Send a message.
  *
  * @param proxy the msg will be send in connection that proxy belongs
@@ -114,9 +126,10 @@ EAPI Eldbus_Message        *eldbus_proxy_method_call_new(Eldbus_Proxy *proxy, co
  * ELDBUS_TIMEOUT_INFINITE for no timeout
  * @return A Eldbus_Pending object on the sent message.
  */
-EAPI Eldbus_Pending        *eldbus_proxy_send(Eldbus_Proxy *proxy, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_send(Eldbus_Proxy *proxy, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Send a message and block while waiting for the reply.
  *
  * @param proxy the msg will be send in connection that proxy belongs
@@ -128,9 +141,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_send(Eldbus_Proxy *proxy, Eldbus_Messag
  * The returned Eldbus_Message need to be unref after read.
  * @since 1.13
  */
-EAPI Eldbus_Message        *eldbus_proxy_send_and_block(Eldbus_Proxy *proxy, Eldbus_Message *msg, double timeout) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_proxy_send_and_block(Eldbus_Proxy *proxy, Eldbus_Message *msg, double timeout) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Call a method in proxy.
  * Send a method call to interface that proxy belong with data.
  *
@@ -148,9 +162,10 @@ EAPI Eldbus_Message        *eldbus_proxy_send_and_block(Eldbus_Proxy *proxy, Eld
  * @note This function only support basic type to complex types use
  * eldbus_message_iter_* functions.
  */
-EAPI Eldbus_Pending        *eldbus_proxy_call(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, ...) EINA_ARG_NONNULL(1, 2, 6);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_call(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, ...) EINA_ARG_NONNULL(1, 2, 6);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Call a method in proxy.
  * Send a method call to interface that proxy belong with data.
  *
@@ -167,9 +182,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_call(Eldbus_Proxy *proxy, const char *m
  * @note This function only support basic type to complex types use
  * eldbus_message_iter_* functions.
  */
-EAPI Eldbus_Pending        *eldbus_proxy_vcall(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 6);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_vcall(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 6);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a signal handler.
  *
  * @param proxy interface where the signal is emitted
@@ -178,7 +194,7 @@ EAPI Eldbus_Pending        *eldbus_proxy_vcall(Eldbus_Proxy *proxy, const char *
  * @param cb_data data that will be passed to callback
  * @return A listener to the desired signal.
  */
-EAPI Eldbus_Signal_Handler *eldbus_proxy_signal_handler_add(Eldbus_Proxy *proxy, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_proxy_signal_handler_add(Eldbus_Proxy *proxy, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @typedef Eldbus_Proxy_Event_Type
@@ -239,6 +255,7 @@ typedef struct _Eldbus_Proxy_Event_Property_Removed
 typedef void (*Eldbus_Proxy_Event_Cb)(void *data, Eldbus_Proxy *proxy, void *event_info);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a callback function to be called when occurs a event of the
  * type passed.
  *
@@ -247,9 +264,10 @@ typedef void (*Eldbus_Proxy_Event_Cb)(void *data, Eldbus_Proxy *proxy, void *eve
  * @param cb The callback function to register.
  * @param cb_data The data to pass to the callback.
  */
-EAPI void eldbus_proxy_event_callback_add(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI void eldbus_proxy_event_callback_add(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Remove callback registered in eldbus_proxy_event_callback_add().
  *
  * @param proxy The Eldbus_Proxy object.
@@ -257,7 +275,7 @@ EAPI void eldbus_proxy_event_callback_add(Eldbus_Proxy *proxy, Eldbus_Proxy_Even
  * @param cb The callback function to delete.
  * @param cb_data The data passed to the callback.
  */
-EAPI void eldbus_proxy_event_callback_del(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI void eldbus_proxy_event_callback_del(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @}

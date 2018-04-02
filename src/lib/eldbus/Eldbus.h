@@ -143,20 +143,25 @@ typedef struct _Eldbus_Version
    int revision; /**< git revision (0 if a proper release or the git revision number Eldbus is built from) */
 } Eldbus_Version;
 
-EAPI extern const Eldbus_Version * eldbus_version; /**< Global Eldbus_Version object */
+/**
+ * @deprecated Deprecated since 4.0.
+ */
+EINA_DEPRECATED EAPI extern const Eldbus_Version * eldbus_version; /**< Global Eldbus_Version object */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Initialize eldbus.
  *
  * @return 1 or greater on success, 0 otherwise
  */
-EAPI int eldbus_init(void);
+EINA_DEPRECATED EAPI int eldbus_init(void);
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Shutdown eldbus.
  *
  * @return 0 if e_dbus shuts down, greater than 0 otherwise.
  */
-EAPI int eldbus_shutdown(void);
+EINA_DEPRECATED EAPI int eldbus_shutdown(void);
 
 /**
  * @typedef Eldbus_Free_Cb
