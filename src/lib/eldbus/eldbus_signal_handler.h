@@ -9,6 +9,7 @@
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a signal handler.
  *
  * @param conn connection where the signal is emitted
@@ -23,18 +24,20 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Signal_Handler *eldbus_signal_handler_add(Eldbus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 6);
+EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_signal_handler_add(Eldbus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 6);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Increase signal handler reference.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Signal_Handler *eldbus_signal_handler_ref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_signal_handler_ref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Decrease signal handler reference.
  * If reference == 0 signal handler will be freed.
  *
@@ -42,9 +45,10 @@ EAPI Eldbus_Signal_Handler *eldbus_signal_handler_ref(Eldbus_Signal_Handler *han
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_signal_handler_unref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void                  eldbus_signal_handler_unref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Decrease signal handler reference like eldbus_signal_handler_unref()
  * but if reference > 0 this signal handler will stop listening to signals. In other
  * words it will be canceled but memory will not be freed.
@@ -53,9 +57,10 @@ EAPI void                  eldbus_signal_handler_unref(Eldbus_Signal_Handler *ha
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_signal_handler_del(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void                  eldbus_signal_handler_del(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add extra argument in match of signal handler to obtain specifics signals.
  *
  * Example:
@@ -75,9 +80,10 @@ EAPI void                  eldbus_signal_handler_del(Eldbus_Signal_Handler *hand
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool             eldbus_signal_handler_match_extra_set(Eldbus_Signal_Handler *sh, ...) EINA_ARG_NONNULL(1) EINA_SENTINEL;
+EINA_DEPRECATED EAPI Eina_Bool             eldbus_signal_handler_match_extra_set(Eldbus_Signal_Handler *sh, ...) EINA_ARG_NONNULL(1) EINA_SENTINEL;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add extra argument in match of signal handler to obtain specifics signals.
  *
  * Example:
@@ -97,33 +103,53 @@ EAPI Eina_Bool             eldbus_signal_handler_match_extra_set(Eldbus_Signal_H
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool             eldbus_signal_handler_match_extra_vset(Eldbus_Signal_Handler *sh, va_list ap) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eina_Bool             eldbus_signal_handler_match_extra_vset(Eldbus_Signal_Handler *sh, va_list ap) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a callback function to be called when signal handler will be freed.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_signal_handler_free_cb_add(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                  eldbus_signal_handler_free_cb_add(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Remove callback registered in eldbus_signal_handler_free_cb_add().
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_signal_handler_free_cb_del(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                  eldbus_signal_handler_free_cb_del(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
-EAPI const char           *eldbus_signal_handler_sender_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-EAPI const char           *eldbus_signal_handler_path_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-EAPI const char           *eldbus_signal_handler_interface_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-EAPI const char           *eldbus_signal_handler_member_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
-EAPI const char           *eldbus_signal_handler_match_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+/**
+ * @deprecated Deprecated since 4.0.
+ */
+EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_sender_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+/**
+ * @deprecated Deprecated since 4.0.
+ */
+EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_path_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+/**
+ * @deprecated Deprecated since 4.0.
+ */
+EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_interface_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+/**
+ * @deprecated Deprecated since 4.0.
+ */
+EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_member_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+/**
+ * @deprecated Deprecated since 4.0.
+ */
+EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_match_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
-EAPI Eldbus_Connection     *eldbus_signal_handler_connection_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+/**
+ * eldbus_signal_handler_connection_get
+ */
+EINA_DEPRECATED EAPI Eldbus_Connection     *eldbus_signal_handler_connection_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @}

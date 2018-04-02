@@ -117,6 +117,7 @@ typedef struct _Eldbus_Service_Interface_Desc2
 } Eldbus_Service_Interface_Desc2;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Register an interface in the given path and connection.
  *
  * @param conn where the interface should listen
@@ -129,9 +130,10 @@ typedef struct _Eldbus_Service_Interface_Desc2
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Service_Interface *eldbus_service_interface_register(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc *desc) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI Eldbus_Service_Interface *eldbus_service_interface_register(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc *desc) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Register a fallback interface handler for a given subsection of the object hierarchy.
  * Note: Use eldbus_service_interface_unregister() to unregister a interface.
  * @param conn where the interface should listen
@@ -147,10 +149,11 @@ EAPI Eldbus_Service_Interface *eldbus_service_interface_register(Eldbus_Connecti
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Service_Interface *
+EINA_DEPRECATED EAPI Eldbus_Service_Interface *
 eldbus_service_interface_fallback_register(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc *desc) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Register an interface in the given path and connection. This
  * extended register function allows the registration of stateful methods, with void* data.
  *
@@ -168,9 +171,10 @@ eldbus_service_interface_fallback_register(Eldbus_Connection *conn, const char *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Service_Interface *eldbus_service_interface_register2(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc2 *desc) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI Eldbus_Service_Interface *eldbus_service_interface_register2(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc2 *desc) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Register a fallback interface handler for a given subsection
  * of the object hierarchy.  This extended register function allows
  * the registration of stateful methods, with void* data.
@@ -190,11 +194,12 @@ EAPI Eldbus_Service_Interface *eldbus_service_interface_register2(Eldbus_Connect
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Service_Interface *
+EINA_DEPRECATED EAPI Eldbus_Service_Interface *
 eldbus_service_interface_fallback_register2(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc2 *desc) EINA_ARG_NONNULL(1, 2, 3);
 
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Unregister a interface.
  * Note: This doesn't unregister the object path if interface count reaches 0.
  * Use eldbus_service_object_unregister() to unregister the object.
@@ -203,9 +208,10 @@ eldbus_service_interface_fallback_register2(Eldbus_Connection *conn, const char 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void eldbus_service_interface_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void eldbus_service_interface_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Unregister all interfaces of the object path that this interface belongs
  * and the object path.
  *
@@ -213,11 +219,18 @@ EAPI void eldbus_service_interface_unregister(Eldbus_Service_Interface *iface) E
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void eldbus_service_object_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
-EAPI Eldbus_Connection *eldbus_service_connection_get(const Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI void eldbus_service_object_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
+/**
+ * @deprecated Deprecated since 4.0.
+ */
+EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_service_connection_get(const Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+/**
+ * @deprecated Deprecated since 4.0.
+ */
 EAPI const char *eldbus_service_object_path_get(const Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Emit a signal handler of the interface with non-complex types.
  * Each signal handler have a internal id, the first signal handler of
  * interface is = 0 the second = 1 and go on.
@@ -230,9 +243,10 @@ EAPI const char *eldbus_service_object_path_get(const Eldbus_Service_Interface *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool eldbus_service_signal_emit(const Eldbus_Service_Interface *iface, unsigned int signal_id, ...) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eina_Bool eldbus_service_signal_emit(const Eldbus_Service_Interface *iface, unsigned int signal_id, ...) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Create signal message.
  * Each signal handler have a internal id, the first signal handler of
  * interface is = 0 the second = 1 and go on.
@@ -245,9 +259,10 @@ EAPI Eina_Bool eldbus_service_signal_emit(const Eldbus_Service_Interface *iface,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message *eldbus_service_signal_new(const Eldbus_Service_Interface *iface, unsigned int signal_id) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Message *eldbus_service_signal_new(const Eldbus_Service_Interface *iface, unsigned int signal_id) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Send a signal message.
  *
  * On success this will call eldbus_message_unref() on the @param signal_msg,
@@ -258,9 +273,10 @@ EAPI Eldbus_Message *eldbus_service_signal_new(const Eldbus_Service_Interface *i
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool eldbus_service_signal_send(const Eldbus_Service_Interface *iface, Eldbus_Message *signal_msg) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Bool eldbus_service_signal_send(const Eldbus_Service_Interface *iface, Eldbus_Message *signal_msg) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Store data at object path, this data can be obtained from all interfaces
  * of the same object.
  *
@@ -273,9 +289,10 @@ EAPI Eina_Bool eldbus_service_signal_send(const Eldbus_Service_Interface *iface,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void eldbus_service_object_data_set(Eldbus_Service_Interface *iface, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI void eldbus_service_object_data_set(Eldbus_Service_Interface *iface, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get data stored in object path.
  *
  * @param iface interface that belongs to the object path where data are stored
@@ -287,9 +304,10 @@ EAPI void eldbus_service_object_data_set(Eldbus_Service_Interface *iface, const 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void *eldbus_service_object_data_get(const Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI void *eldbus_service_object_data_get(const Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Del data stored in object path.
  *
  * @param iface interface that belongs to the object path where data are stored
@@ -301,9 +319,10 @@ EAPI void *eldbus_service_object_data_get(const Eldbus_Service_Interface *iface,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void *eldbus_service_object_data_del(Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void *eldbus_service_object_data_del(Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add property to list of changed properties
  * A DBus.PropertiesChanged signal will be sent in an idler with all properties
  * that have changed.
@@ -315,11 +334,15 @@ EAPI void *eldbus_service_object_data_del(Eldbus_Service_Interface *iface, const
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool eldbus_service_property_changed(const Eldbus_Service_Interface *iface, const char *name) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Bool eldbus_service_property_changed(const Eldbus_Service_Interface *iface, const char *name) EINA_ARG_NONNULL(1, 2);
 
+/**
+ * @deprecated Deprecated since 4.0.
+ */
 EAPI Eina_Bool eldbus_service_property_invalidate_set(const Eldbus_Service_Interface *iface, const char *name, Eina_Bool is_invalidate) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Attach ObjectManager interface.
  *
  * @param iface ObjectManager will be attach in object path of this interface.
@@ -329,9 +352,10 @@ EAPI Eina_Bool eldbus_service_property_invalidate_set(const Eldbus_Service_Inter
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool eldbus_service_object_manager_attach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eina_Bool eldbus_service_object_manager_attach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Detach ObjectManager interface.
  *
  * @param iface ObjectManager of object path of this interface will be detach.
@@ -341,7 +365,7 @@ EAPI Eina_Bool eldbus_service_object_manager_attach(Eldbus_Service_Interface *if
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool eldbus_service_object_manager_detach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eina_Bool eldbus_service_object_manager_detach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 
 /**
  * @}

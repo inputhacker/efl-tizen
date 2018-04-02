@@ -18,6 +18,7 @@
 #define ELDBUS_NAME_REQUEST_REPLY_ALREADY_OWNER    4 /**< Service is already the primary owner */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Send a "RequestName" method call in proxy.
  *
  * @param conn Connection object.
@@ -31,7 +32,7 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
 /* Replies to releasing a name */
 #define ELDBUS_NAME_RELEASE_REPLY_RELEASED     1    /**< Service was released from the given name */
@@ -39,6 +40,7 @@ EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn, const char *bu
 #define ELDBUS_NAME_RELEASE_REPLY_NOT_OWNER    3    /**< Service is not an owner of the given name */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Send a "ReleaseName" method call in proxy.
  *
  * @param conn Connection object.
@@ -51,9 +53,10 @@ EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn, const char *bu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending *eldbus_name_release(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_release(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Send a "GetNameOwner" method call in proxy.
  *
  * @param conn Connection object.
@@ -66,9 +69,10 @@ EAPI Eldbus_Pending *eldbus_name_release(Eldbus_Connection *conn, const char *bu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending *eldbus_name_owner_get(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_owner_get(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Send a "NameHasOwner" method call in proxy.
  *
  * @param conn Connection object.
@@ -81,9 +85,10 @@ EAPI Eldbus_Pending *eldbus_name_owner_get(Eldbus_Connection *conn, const char *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending *eldbus_name_owner_has(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data);
+EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_owner_has(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Send a "ListNames" method call in proxy.
  *
  * @param conn Connection object.
@@ -95,9 +100,10 @@ EAPI Eldbus_Pending *eldbus_name_owner_has(Eldbus_Connection *conn, const char *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending *eldbus_names_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_names_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Send a "ListActivatableNames" method call in proxy.
  *
  * @param conn Connection object.
@@ -109,9 +115,10 @@ EAPI Eldbus_Pending *eldbus_names_list(Eldbus_Connection *conn, Eldbus_Message_C
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending *eldbus_names_activatable_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_names_activatable_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Send a "Hello" method call in proxy.
  *
  * @param conn Connection object.
@@ -123,13 +130,14 @@ EAPI Eldbus_Pending *eldbus_names_activatable_list(Eldbus_Connection *conn, Eldb
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending *eldbus_hello(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_hello(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /* Replies to service starts */
 #define ELDBUS_NAME_START_REPLY_SUCCESS         1 /**< Service was auto started */
 #define ELDBUS_NAME_START_REPLY_ALREADY_RUNNING 2 /**< Service was already running */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Send a "StartServiceByName" method call in proxy.
  *
  * @param conn Connection object.
@@ -143,7 +151,7 @@ EAPI Eldbus_Pending *eldbus_hello(Eldbus_Connection *conn, Eldbus_Message_Cb cb,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_name_start(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_name_start(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @typedef Eldbus_Name_Owner_Changed_Cb
@@ -153,6 +161,7 @@ EAPI Eldbus_Pending        *eldbus_name_start(Eldbus_Connection *conn, const cha
 typedef void (*Eldbus_Name_Owner_Changed_Cb)(void *data, const char *bus, const char *old_id, const char *new_id);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Add a callback to be called when unique id of a bus name changed.
  *
  * This function implicitly calls eldbus_name_owner_get() in order to be able to
@@ -171,8 +180,9 @@ typedef void (*Eldbus_Name_Owner_Changed_Cb)(void *data, const char *bus, const 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_name_owner_changed_callback_add(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data, Eina_Bool allow_initial_call) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI void                  eldbus_name_owner_changed_callback_add(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data, Eina_Bool allow_initial_call) EINA_ARG_NONNULL(1, 2, 3);
 /**
+ * @deprecated Deprecated since 4.0.
  * Remove callback added with eldbus_name_owner_changed_callback_add().
  *
  * @param conn connection
@@ -184,7 +194,7 @@ EAPI void                  eldbus_name_owner_changed_callback_add(Eldbus_Connect
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_name_owner_changed_callback_del(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI void                  eldbus_name_owner_changed_callback_del(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @defgroup Eldbus_FDO_Peer org.freedesktop.DBus.Peer
@@ -193,6 +203,7 @@ EAPI void                  eldbus_name_owner_changed_callback_del(Eldbus_Connect
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Call the method "Ping" on the eldbus object.
  *
  * @param obj Eldbus object.
@@ -204,9 +215,10 @@ EAPI void                  eldbus_name_owner_changed_callback_del(Eldbus_Connect
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_object_peer_ping(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_peer_ping(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Call the method "GetMachineId" on the eldbus object.
  *
  * @param obj Eldbus object.
@@ -218,7 +230,7 @@ EAPI Eldbus_Pending        *eldbus_object_peer_ping(Eldbus_Object *obj, Eldbus_M
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @}
@@ -231,6 +243,7 @@ EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(Eldbus_Object *obj
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Call the method "Introspect" on the eldbus object.
  *
  * @param obj Eldbus object.
@@ -242,7 +255,7 @@ EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(Eldbus_Object *obj
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 /**
  * @}
  */
@@ -253,6 +266,7 @@ EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Object *obj, Eldbus_
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Enable or disable local cache of properties.
  *
  * After enable you can call eldbus_proxy_property_local_get() or
@@ -269,9 +283,10 @@ EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Object *obj, Eldbus_
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool eldbus_proxy_properties_monitor(Eldbus_Proxy *proxy, Eina_Bool enable) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eina_Bool eldbus_proxy_properties_monitor(Eldbus_Proxy *proxy, Eina_Bool enable) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get a property.
  *
  * @param proxy The proxy object on which to do the query.
@@ -284,9 +299,10 @@ EAPI Eina_Bool eldbus_proxy_properties_monitor(Eldbus_Proxy *proxy, Eina_Bool en
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_proxy_property_get(Eldbus_Proxy *proxy, const char *name, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_get(Eldbus_Proxy *proxy, const char *name, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Set a property.
  *
  * @param proxy The proxy object on which to do the query.
@@ -301,9 +317,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_property_get(Eldbus_Proxy *proxy, const
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_proxy_property_set(Eldbus_Proxy *proxy, const char *name, const char *sig, const void *value, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_set(Eldbus_Proxy *proxy, const char *name, const char *sig, const void *value, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get all properties.
  *
  * @param proxy The proxy object on which to do the query.
@@ -315,9 +332,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_property_set(Eldbus_Proxy *proxy, const
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_proxy_property_get_all(Eldbus_Proxy *proxy, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_get_all(Eldbus_Proxy *proxy, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Register a callback on "PropertiesChanged" signal.
  *
  * @param proxy The proxy object on which to register the callback.
@@ -329,9 +347,10 @@ EAPI Eldbus_Pending        *eldbus_proxy_property_get_all(Eldbus_Proxy *proxy, E
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Signal_Handler *eldbus_proxy_properties_changed_callback_add(Eldbus_Proxy *proxy, Eldbus_Signal_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_proxy_properties_changed_callback_add(Eldbus_Proxy *proxy, Eldbus_Signal_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Return the cached value of property.
  *
  * This only work if you have enable eldbus_proxy_properties_monitor or
@@ -346,9 +365,10 @@ EAPI Eldbus_Signal_Handler *eldbus_proxy_properties_changed_callback_add(Eldbus_
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Value           *eldbus_proxy_property_local_get(Eldbus_Proxy *proxy, const char *name) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Value           *eldbus_proxy_property_local_get(Eldbus_Proxy *proxy, const char *name) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get all cached properties.
  *
  * This only work if you have enable eldbus_proxy_properties_monitor or
@@ -362,7 +382,7 @@ EAPI Eina_Value           *eldbus_proxy_property_local_get(Eldbus_Proxy *proxy, 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
 /**
  * @}
@@ -374,6 +394,7 @@ EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(Eldbus_Proxy *pro
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Call the method "GetManagedObjects" on the eldbus object.
  *
  * @param obj A Eldbus object.
@@ -386,9 +407,10 @@ EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(Eldbus_Proxy *pro
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_object_managed_objects_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_managed_objects_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Register a callback on "InterfacesAdded" signal.
  *
  * @param obj The Eldbus object on which to register the callback.
@@ -400,9 +422,10 @@ EAPI Eldbus_Pending        *eldbus_object_managed_objects_get(Eldbus_Object *obj
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_added(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_added(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Register a callback on "InterfacesRemoved" signal.
  *
  * @param obj The Eldbus object on which to register the callback.
@@ -414,7 +437,7 @@ EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_added(Eldbus_Object
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_removed(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_removed(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /**
  * @}

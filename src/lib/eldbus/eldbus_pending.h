@@ -9,6 +9,7 @@
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Set data to a Eldbus_Pending object.
  *
  * @param pending The Eldbus_Pending object on which the data is set.
@@ -19,9 +20,10 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_pending_data_set(Eldbus_Pending *pending, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI void                  eldbus_pending_data_set(Eldbus_Pending *pending, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the data set to a Eldbus_Pending object.
  *
  * @param pending The Eldbus_Pending object on which the data is set.
@@ -32,9 +34,10 @@ EAPI void                  eldbus_pending_data_set(Eldbus_Pending *pending, cons
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                 *eldbus_pending_data_get(const Eldbus_Pending *pending, const char *key) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                 *eldbus_pending_data_get(const Eldbus_Pending *pending, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Delete the data set to a Eldbus_Pending object.
  *
  * @param pending The Eldbus_Pending object on which the data is set.
@@ -44,9 +47,10 @@ EAPI void                 *eldbus_pending_data_get(const Eldbus_Pending *pending
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                 *eldbus_pending_data_del(Eldbus_Pending *pending, const char *key) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                 *eldbus_pending_data_del(Eldbus_Pending *pending, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Cancel the pending message.
  *
  * @param pending The Eldbus_Pending object corresponding to the pending message.
@@ -55,9 +59,10 @@ EAPI void                 *eldbus_pending_data_del(Eldbus_Pending *pending, cons
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_pending_cancel(Eldbus_Pending *pending) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void                  eldbus_pending_cancel(Eldbus_Pending *pending) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the destination of the pending message.
  *
  * @param pending The Eldbus_Pending object.
@@ -67,9 +72,10 @@ EAPI void                  eldbus_pending_cancel(Eldbus_Pending *pending) EINA_A
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_pending_destination_get(const Eldbus_Pending *pending) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_pending_destination_get(const Eldbus_Pending *pending) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the path of the pending message.
  *
  * @param pending The Eldbus_Pending object.
@@ -79,9 +85,10 @@ EAPI const char           *eldbus_pending_destination_get(const Eldbus_Pending *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_pending_path_get(const Eldbus_Pending *pending) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_pending_path_get(const Eldbus_Pending *pending) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the interface of the pending message.
  *
  * @param pending The Eldbus_Pending object.
@@ -91,9 +98,10 @@ EAPI const char           *eldbus_pending_path_get(const Eldbus_Pending *pending
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_pending_interface_get(const Eldbus_Pending *pending) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_pending_interface_get(const Eldbus_Pending *pending) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the method of the pending message.
  *
  * @param pending The Eldbus_Pending object.
@@ -103,9 +111,10 @@ EAPI const char           *eldbus_pending_interface_get(const Eldbus_Pending *pe
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_pending_method_get(const Eldbus_Pending *pending) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_pending_method_get(const Eldbus_Pending *pending) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a callback function to be called when pending will be freed.
  *
  * @param pending The Eldbus_Pending object on which the callback is registered.
@@ -116,9 +125,10 @@ EAPI const char           *eldbus_pending_method_get(const Eldbus_Pending *pendi
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_pending_free_cb_add(Eldbus_Pending *pending, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                  eldbus_pending_free_cb_add(Eldbus_Pending *pending, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Remove callback registered in eldbus_pending_free_cb_add().
  *
  * @param pending The Eldbus_Pending object on which the callback was registered.
@@ -129,7 +139,7 @@ EAPI void                  eldbus_pending_free_cb_add(Eldbus_Pending *pending, E
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_pending_free_cb_del(Eldbus_Pending *pending, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                  eldbus_pending_free_cb_del(Eldbus_Pending *pending, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @}

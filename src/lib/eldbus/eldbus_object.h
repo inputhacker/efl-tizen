@@ -9,6 +9,7 @@
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get an object of the given bus and path.
  *
  * @param conn connection where object belongs
@@ -20,9 +21,10 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Object *eldbus_object_get(Eldbus_Connection *conn, const char *bus, const char *path) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Object *eldbus_object_get(Eldbus_Connection *conn, const char *bus, const char *path) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Increase object reference.
  *
  * @param obj An Eldbus_Object.
@@ -32,9 +34,10 @@ EAPI Eldbus_Object *eldbus_object_get(Eldbus_Connection *conn, const char *bus, 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Object *eldbus_object_ref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Object *eldbus_object_ref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Decrease object reference.
  * If reference == 0 object will be freed and all its children.
  *
@@ -44,9 +47,10 @@ EAPI Eldbus_Object *eldbus_object_ref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void          eldbus_object_unref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void          eldbus_object_unref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a callback function to be called when object will be freed.
  *
  * @param obj object that you want to monitor
@@ -57,9 +61,10 @@ EAPI void          eldbus_object_unref(Eldbus_Object *obj) EINA_ARG_NONNULL(1);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void          eldbus_object_free_cb_add(Eldbus_Object *obj, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void          eldbus_object_free_cb_add(Eldbus_Object *obj, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Remove callback registered in eldbus_object_free_cb_add().
  *
  * @param obj Object monitored.
@@ -70,7 +75,7 @@ EAPI void          eldbus_object_free_cb_add(Eldbus_Object *obj, Eldbus_Free_Cb 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void          eldbus_object_free_cb_del(Eldbus_Object *obj, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void          eldbus_object_free_cb_del(Eldbus_Object *obj, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @typedef Eldbus_Object_Event_Type
@@ -145,6 +150,7 @@ typedef struct _Eldbus_Object_Event_Property_Removed
 typedef void (*Eldbus_Object_Event_Cb)(void *data, Eldbus_Object *obj, void *event_info);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a callback function to be called when an event of the specified
  * type occurs.
  *
@@ -157,9 +163,10 @@ typedef void (*Eldbus_Object_Event_Cb)(void *data, Eldbus_Object *obj, void *eve
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_object_event_callback_add(Eldbus_Object *obj, Eldbus_Object_Event_Type type, Eldbus_Object_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI void                  eldbus_object_event_callback_add(Eldbus_Object *obj, Eldbus_Object_Event_Type type, Eldbus_Object_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Remove callback registered in eldbus_object_event_callback_add().
  *
  * @param obj The Eldbus_Object.
@@ -171,9 +178,10 @@ EAPI void                  eldbus_object_event_callback_add(Eldbus_Object *obj, 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_object_event_callback_del(Eldbus_Object *obj, Eldbus_Object_Event_Type type, Eldbus_Object_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI void                  eldbus_object_event_callback_del(Eldbus_Object *obj, Eldbus_Object_Event_Type type, Eldbus_Object_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the Eldbus_Connection object associated with a Eldbus_Object.
  *
  * @param obj The Eldbus_Object.
@@ -183,9 +191,10 @@ EAPI void                  eldbus_object_event_callback_del(Eldbus_Object *obj, 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Connection     *eldbus_object_connection_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Connection     *eldbus_object_connection_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the name associated with a Eldbus_Object.
  *
  * @param obj The Eldbus_Object.
@@ -195,9 +204,10 @@ EAPI Eldbus_Connection     *eldbus_object_connection_get(const Eldbus_Object *ob
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_object_bus_name_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED  EAPI const char           *eldbus_object_bus_name_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the path associated with a Eldbus_Object.
  *
  * @param obj The Eldbus_Object.
@@ -207,9 +217,10 @@ EAPI const char           *eldbus_object_bus_name_get(const Eldbus_Object *obj) 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_object_path_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_object_path_get(const Eldbus_Object *obj) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Send a message.
  *
  * @param obj the msg will be sent in connection to this object
@@ -225,9 +236,10 @@ EAPI const char           *eldbus_object_path_get(const Eldbus_Object *obj) EINA
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending        *eldbus_object_send(Eldbus_Object *obj, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_send(Eldbus_Object *obj, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a signal handler.
  *
  * @param obj where the signal is emitted
@@ -241,9 +253,10 @@ EAPI Eldbus_Pending        *eldbus_object_send(Eldbus_Object *obj, Eldbus_Messag
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Signal_Handler *eldbus_object_signal_handler_add(Eldbus_Object *obj, const char *interface, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 4);
+EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_object_signal_handler_add(Eldbus_Object *obj, const char *interface, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 4);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Call a dbus method on the Eldbus_Object.
  *
  * @param obj The Eldbus_Object on which to call the method.
@@ -256,7 +269,7 @@ EAPI Eldbus_Signal_Handler *eldbus_object_signal_handler_add(Eldbus_Object *obj,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message *eldbus_object_method_call_new(Eldbus_Object *obj, const char *interface, const char *member) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Message *eldbus_object_method_call_new(Eldbus_Object *obj, const char *interface, const char *member) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @}

@@ -9,6 +9,7 @@
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Increase message reference.
  *
  * @param msg The Eldbus_Message object.
@@ -18,9 +19,10 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Decrease message reference.
  *
  * When refcount reaches zero the message and all its resources will be
@@ -32,9 +34,10 @@ EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NON
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the Eldbus message path.
  *
  * @param msg The Eldbus_Message object.
@@ -44,9 +47,10 @@ EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NO
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the Eldbus message interface.
  *
  * @param msg The Eldbus_Message object.
@@ -56,9 +60,10 @@ EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EI
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the Eldbus message member.
  *
  * @param msg The Eldbus_Message object.
@@ -68,9 +73,10 @@ EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *ms
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the Eldbus message destination.
  *
  * @param msg The Eldbus_Message object.
@@ -80,9 +86,10 @@ EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the Eldbus message sender.
  *
  * @param msg The Eldbus_Message object.
@@ -92,9 +99,10 @@ EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Get the Eldbus message signature.
  *
  * @param msg The Eldbus_Message object.
@@ -104,9 +112,10 @@ EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Create a new message to invoke a method on a remote object.
  *
  * @param dest bus name or unique id of the remote application
@@ -120,9 +129,10 @@ EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *ms
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, const char *path, const char *iface, const char *method) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
+EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, const char *path, const char *iface, const char *method) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Create a new signal message.
  *
  * @param path object path
@@ -137,9 +147,10 @@ EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, con
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *interface, const char *name) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *interface, const char *name) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Create a new message that is an error reply to another message.
  *
  * @param msg the message we're replying to
@@ -152,9 +163,10 @@ EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *int
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, const char *error_name, const char *error_msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, const char *error_name, const char *error_msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Create a message that is a reply to a method call.
  *
  * @param msg the message we're replying to
@@ -165,10 +177,11 @@ EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the error text and name from a Eldbus_Message.
  *
  * If @param msg is an error message return EINA_TRUE and fill in the name and
@@ -185,9 +198,10 @@ EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Messag
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, const char **name, const char **text) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, const char **name, const char **text) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the arguments from an Eldbus_Message
  *
  * Get the arguments of an Eldbus_Message storing them in the locations pointed
@@ -208,9 +222,10 @@ EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, c
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the arguments from an Eldbus_Message using a va_list.
  *
  * @param msg The message to get the arguments from.
@@ -226,9 +241,10 @@ EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *ms
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Append arguments into an Eldbus_Message
  *
  * Append arguments into an Eldbus_Message according to the param signature
@@ -248,9 +264,10 @@ EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *m
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Append arguments into an Eldbus_Message using a va_list.
  *
  * @param msg The message in which arguments are being appended.
@@ -265,7 +282,7 @@ EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @defgroup Eldbus_Message_Iter Iterator
@@ -273,6 +290,7 @@ EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg,
  */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Create and append a typed iterator to another iterator.
  *
  * After append data to returned iterator it must be closed calling
@@ -294,18 +312,20 @@ EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldbus_Message_Iter *iter, int type, const char* contained_signature) EINA_ARG_NONNULL(1, 3) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldbus_Message_Iter *iter, int type, const char* contained_signature) EINA_ARG_NONNULL(1, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Append a basic type into an Eldbus_Iterator.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Iter *iter, int type, ...) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Iter *iter, int type, ...) EINA_ARG_NONNULL(1, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Append an argument into an Eldbus_Message_Iter. For each complete type
  * you need to provide the correspondent value. In case of complex types you
  * need to provide an Eldbus_Message_Iter** to be allocated and then filled in.
@@ -332,9 +352,10 @@ EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Ite
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Set data to Eldbus_Message_Iter. For each complete in signature
  * you need pass the value, in case of complex type a pointer to be allocated a
  * Eldbus_Message_Iter that you need fill and close.
@@ -357,10 +378,11 @@ EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 3);
 
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Append a array of basic type with fixed size to Eldbus_Message_Iter.
  *
  * @param iter iterator
@@ -373,9 +395,10 @@ EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Messag
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Message_Iter *iter, int type, const void *array, unsigned int size) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Message_Iter *iter, int type, const void *array, unsigned int size) EINA_ARG_NONNULL(1, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Closes a container-typed value appended to the message.
  *
  * @param iter parent of the sub-iterator
@@ -387,27 +410,30 @@ EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Messa
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_container_close(Eldbus_Message_Iter *iter, Eldbus_Message_Iter *sub) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_container_close(Eldbus_Message_Iter *iter, Eldbus_Message_Iter *sub) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get the main Eldbus_Message_Iter from the Eldbus_Message.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get a basic type from Eldbus_Iterator.
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *iter, void *value) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *iter, void *value) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Returns the current signature of a message iterator.
  *
  * @param iter The iterator on which to query the signature.
@@ -419,9 +445,10 @@ EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EINA_DEPRECATED EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Moves the iterator to the next field, if any.
  * @param iter iterator
  *
@@ -431,9 +458,10 @@ EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_It
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get a complete type from Eldbus_Message_Iter if is not at the end
  * of iterator and move to next field.
  * Useful to iterate over arrays.
@@ -449,9 +477,10 @@ EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter)
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Iter *iter, char signature, ...) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Iter *iter, char signature, ...) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Reads a block of fixed-length values from the message iterator.
  *
  * Fixed-length values are those basic types that are not string-like,
@@ -478,9 +507,10 @@ EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Ite
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, int signature, void *value, int *n_elements) EINA_ARG_NONNULL(1, 3, 4);
+EINA_DEPRECATED EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, int signature, void *value, int *n_elements) EINA_ARG_NONNULL(1, 3, 4);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get data from Eldbus_Message_Iter, for each complete type must have
  * a pointer to store his value, in case of complex type a
  * Eldbus_Message_Iter will be need.
@@ -495,9 +525,10 @@ EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, in
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get data from Eldbus_Message_Iter, for each complete type must have
  * a pointer to store his value, in case of complex type a
  * Eldbus_Message_Iter will be need.
@@ -512,9 +543,10 @@ EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_It
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Manually delete the iterator.
  *
  * Iterators are usually bound to the life of @ref Eldbus_Message
@@ -532,7 +564,7 @@ EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_I
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_message_iter_del(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void                  eldbus_message_iter_del(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
 
 /**
  * @}

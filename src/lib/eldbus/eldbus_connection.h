@@ -25,6 +25,7 @@ typedef enum
 #define ELDBUS_TIMEOUT_INFINITE ((int) 0x7fffffff) /**< Infinite timeout definition */
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Establish a connection to bus and integrate it with the ecore main
  * loop. If a connection of given type was already created before, its
  * reference counter is incremented and the connection is returned.
@@ -38,9 +39,10 @@ typedef enum
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Connection *eldbus_connection_get(Eldbus_Connection_Type type);
+EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_connection_get(Eldbus_Connection_Type type);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Always create and establish a new connection to bus and integrate it with
  * the ecore main loop. Differently from eldbus_connection_get(), this function
  * guarantees to create a new connection to the D-Bus daemon and the connection
@@ -55,9 +57,10 @@ EAPI Eldbus_Connection *eldbus_connection_get(Eldbus_Connection_Type type);
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Connection *eldbus_private_connection_get(Eldbus_Connection_Type type);
+EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_private_connection_get(Eldbus_Connection_Type type);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Establish a connection to bus and integrate it with the ecore main
  * loop. If a connection of given type was already created before, its
  * reference counter is incremented and the connection is returned.
@@ -70,9 +73,10 @@ EAPI Eldbus_Connection *eldbus_private_connection_get(Eldbus_Connection_Type typ
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Connection *eldbus_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Always create and establish a new connection to bus and integrate it with
  * the ecore main loop. Differently from eldbus_connection_get(), this function
  * guarantees to create a new connection to the D-Bus daemon and the connection
@@ -86,9 +90,10 @@ EAPI Eldbus_Connection *eldbus_address_connection_get(const char *address) EINA_
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Connection *eldbus_private_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_private_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Increment connection reference count.
  *
  * @param conn The given Eldbus_Connection object to reference.
@@ -98,9 +103,10 @@ EAPI Eldbus_Connection *eldbus_private_address_connection_get(const char *addres
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Connection *eldbus_connection_ref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_connection_ref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Decrement connection reference count.
  *
  * If reference count reaches 0, the connection to bus will be dropped and all
@@ -112,9 +118,10 @@ EAPI Eldbus_Connection *eldbus_connection_ref(Eldbus_Connection *conn) EINA_ARG_
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void              eldbus_connection_unref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI void              eldbus_connection_unref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a callback function to be called when connection is freed
  *
  * @param conn The connection object to add the callback to.
@@ -125,18 +132,20 @@ EAPI void              eldbus_connection_unref(Eldbus_Connection *conn) EINA_ARG
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void              eldbus_connection_free_cb_add(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void              eldbus_connection_free_cb_add(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Remove callback registered in eldbus_connection_free_cb_add().
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void              eldbus_connection_free_cb_del(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void              eldbus_connection_free_cb_del(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Set an attached data pointer to an object with a given string key.
  *
  * @param conn The connection object to store data to
@@ -147,9 +156,10 @@ EAPI void              eldbus_connection_free_cb_del(Eldbus_Connection *conn, El
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void              eldbus_connection_data_set(Eldbus_Connection *conn, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI void              eldbus_connection_data_set(Eldbus_Connection *conn, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Get data stored in connection.
  *
  * @param conn connection where data is stored
@@ -161,9 +171,10 @@ EAPI void              eldbus_connection_data_set(Eldbus_Connection *conn, const
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void             *eldbus_connection_data_get(const Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void             *eldbus_connection_data_get(const Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Del data stored in connection.
  *
  * @param conn connection where data is stored
@@ -175,7 +186,7 @@ EAPI void             *eldbus_connection_data_get(const Eldbus_Connection *conn,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void             *eldbus_connection_data_del(Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI void             *eldbus_connection_data_del(Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @typedef Eldbus_Connection_Event_Type
@@ -196,6 +207,7 @@ typedef enum
 typedef void (*Eldbus_Connection_Event_Cb)(void *data, Eldbus_Connection *conn, void *event_info);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Add a callback function to be called when an event occurs of the
  * type passed.
  *
@@ -203,18 +215,20 @@ typedef void (*Eldbus_Connection_Event_Cb)(void *data, Eldbus_Connection *conn, 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_connection_event_callback_add(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI void                  eldbus_connection_event_callback_add(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Remove callback registered in eldbus_connection_event_callback_add().
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI void                  eldbus_connection_event_callback_del(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EINA_DEPRECATED EAPI void                  eldbus_connection_event_callback_del(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Send a message.
  *
  * @param conn the connection where the message will be sent
@@ -230,9 +244,10 @@ EAPI void                  eldbus_connection_event_callback_del(Eldbus_Connectio
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI Eldbus_Pending *eldbus_connection_send(Eldbus_Connection *conn, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
+EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_connection_send(Eldbus_Connection *conn, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * @brief Gets unique name assigned by the message bus.
  *
  * @param conn connection object to get unique name from.
@@ -244,7 +259,7 @@ EAPI Eldbus_Pending *eldbus_connection_send(Eldbus_Connection *conn, Eldbus_Mess
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EAPI const char *eldbus_connection_unique_name_get(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
+EINA_DEPRECATED EAPI const char *eldbus_connection_unique_name_get(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 /**
  * @}
  */
