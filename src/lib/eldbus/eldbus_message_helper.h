@@ -17,6 +17,7 @@
 typedef void (*Eldbus_Dict_Cb_Get)(void *data, const void *key, Eldbus_Message_Iter *var);
 
 /**
+ * @deprecated Deprecated since 4.0.
  * Iterate over a dictionary.
  *
  * @param dict iterator with array of entry
@@ -24,7 +25,7 @@ typedef void (*Eldbus_Dict_Cb_Get)(void *data, const void *key, Eldbus_Message_I
  * @param cb callback that will be called in each entry
  * @param data context data
  */
-EAPI void eldbus_message_iter_dict_iterate(Eldbus_Message_Iter *dict, const char *signature, Eldbus_Dict_Cb_Get cb, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EINA_DEPRECATED EAPI void eldbus_message_iter_dict_iterate(Eldbus_Message_Iter *dict, const char *signature, Eldbus_Dict_Cb_Get cb, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @}
