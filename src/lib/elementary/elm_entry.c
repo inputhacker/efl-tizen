@@ -7750,10 +7750,15 @@ _elm_entry_efl_access_i18n_name_get(Eo *obj, Elm_Entry_Data *sd)
    name = efl_access_i18n_name_get(efl_super(obj, ELM_ENTRY_CLASS));
    if (name && strncmp("", name, 1)) return name;
 
-   if (sd->password) return NULL;
-
-   name = _elm_widget_accessible_plain_name_get(obj, elm_entry_entry_get(obj));
-   if (name && strncmp("", name, 1)) return name;
+   if (sd->password)
+     {
+        if (sd->has_text) return NULL;
+     }
+   else
+     {
+        name = _elm_widget_accessible_plain_name_get(obj, elm_entry_entry_get(obj));
+        if (name && strncmp("", name, 1)) return name;
+     }
 
    const char *ret = edje_object_part_text_get(sd->entry_edje, "elm.guide");
    return _elm_widget_accessible_plain_name_get(obj, ret);

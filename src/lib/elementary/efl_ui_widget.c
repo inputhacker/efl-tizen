@@ -5789,7 +5789,7 @@ _efl_ui_widget_efl_access_i18n_name_get(Eo *obj, Elm_Widget_Smart_Data *_pd EINA
    //TIZEN_ONLY(20170110) : Ignore text from elm_object_text_set in accessible_name_get
    Efl_Access_Role role;
    role = efl_access_role_get(obj);
-   if(role == EFL_ACCESS_ROLE_DIALOG)
+   if(role == EFL_ACCESS_ROLE_DIALOG || role == EFL_ACCESS_ROLE_PASSWORD_TEXT)
      return NULL;
    //
 
