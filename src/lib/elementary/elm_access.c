@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 
 // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
@@ -1537,10 +1537,10 @@ _elm_access_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNUSED, 
 }
 
 EOLIAN static Efl_Access_State_Set
-_elm_access_efl_access_state_set_get(const Eo *obj, void *pd EINA_UNUSED)
+_elm_access_efl_access_object_state_set_get(const Eo *obj, void *pd EINA_UNUSED)
 {
    Efl_Access_State_Set ret;
-   ret = efl_access_state_set_get(efl_super(obj, ELM_ACCESS_CLASS));
+   ret = efl_access_object_state_set_get(efl_super(obj, ELM_ACCESS_CLASS));
 
    Elm_Access_Info *info = _elm_access_info_get(obj);
    if (info && !evas_object_visible_get(info->part_object))
@@ -1586,10 +1586,10 @@ _elm_access_efl_access_component_highlight_clear(Eo *obj, void *pd EINA_UNUSED)
 
 //TIZEN_ONLY(20171122) elm: add name and description to elm_access
 EOLIAN static const char*
-_elm_access_efl_access_i18n_name_get(const Eo *obj, void *pd EINA_UNUSED)
+_elm_access_efl_access_object_i18n_name_get(const Eo *obj, void *pd EINA_UNUSED)
 {
    char *accessible_name;
-   const char *ret = efl_access_i18n_name_get(efl_super(obj, MY_CLASS));
+   const char *ret = efl_access_object_i18n_name_get(efl_super(obj, MY_CLASS));
    if (ret) return ret;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
@@ -1602,9 +1602,9 @@ _elm_access_efl_access_i18n_name_get(const Eo *obj, void *pd EINA_UNUSED)
 }
 
 EOLIAN static const char*
-_elm_access_efl_access_description_get(const Eo *obj, void *pd EINA_UNUSED)
+_elm_access_efl_access_object_description_get(const Eo *obj, void *pd EINA_UNUSED)
 {
-   const char *ret = efl_access_description_get(efl_super(obj, MY_CLASS));
+   const char *ret = efl_access_object_description_get(efl_super(obj, MY_CLASS));
    if (ret)
      return ret;
    else

@@ -3,7 +3,7 @@
 #endif
 
 #define ELM_WIDGET_PROTECTED
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define ELM_LAYOUT_PROTECTED
 
 #include <Elementary.h>
@@ -446,7 +446,7 @@ _atspi_expose_keypad_area(Evas_Object *obj, Eina_Bool is_atspi)
         if (is_atspi)
           {
              access = elm_access_object_register(sd->virtualkeypad, obj);
-             efl_access_role_set(access, EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW);
+             efl_access_object_role_set(access, EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW);
           }
         else
           elm_access_object_unregister(sd->virtualkeypad);
@@ -1676,7 +1676,7 @@ _elm_conformant_efl_object_constructor(Eo *obj, Elm_Conformant_Data *sd)
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_FILLER);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_FILLER);
 
    Efl_Event event = {};
    event.object = sd->win;

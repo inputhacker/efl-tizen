@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define EFL_UI_FOCUS_COMPOSITION_PROTECTED
 #define EFL_UI_FOCUS_OBJECT_PROTECTED
@@ -626,7 +626,7 @@ _atspi_expose_objects(Evas_Object *obj, Eina_Bool is_atspi)
              access = elm_access_object_register(part, obj);
              _elm_access_callback_set(_elm_access_info_get(access),
                                       ELM_ACCESS_INFO, _month_access_info_cb, obj);
-             efl_access_role_set(access, EFL_ACCESS_ROLE_HEADING);
+             efl_access_object_role_set(access, EFL_ACCESS_ROLE_HEADING);
           }
          //
         day = 0;
@@ -640,7 +640,7 @@ _atspi_expose_objects(Evas_Object *obj, Eina_Bool is_atspi)
              if ((day) && (day <= maxdays))
                {
                   ao = elm_access_object_register(ac, obj);
-                  efl_access_role_set(ao, EFL_ACCESS_ROLE_TABLE_CELL);
+                  efl_access_object_role_set(ao, EFL_ACCESS_ROLE_TABLE_CELL);
                   snprintf(day_s, sizeof(day_s), "%i", day++);
                   elm_access_info_set(ao, ELM_ACCESS_INFO, (const char*)day_s);
                   elm_access_info_cb_set(ao, ELM_ACCESS_CONTEXT_INFO, _localized_access_info_cb, E_("calendar item"));
@@ -2130,7 +2130,7 @@ _elm_calendar_efl_object_constructor(Eo *obj, Elm_Calendar_Data *sd)
 
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_CALENDAR);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_CALENDAR);
 
    return obj;
 }

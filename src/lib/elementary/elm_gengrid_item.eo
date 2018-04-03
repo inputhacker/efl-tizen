@@ -228,8 +228,8 @@ class Elm.Gengrid.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Focus.Object, Efl.Ui
            Elm.Widget.Item.tooltip_unset;
            Elm.Widget.Item.cursor { set; }
            Elm.Widget.Item.cursor_unset;
-           Efl.Access.i18n_name { get; }
-           Efl.Access.state_set { get; }
+           Efl.Access.Object.i18n_name { get; }
+           Efl.Access.Object.state_set { get; }
            Efl.Ui.Focus.Object.prepare_logical_none_recursive;
 
            //TIZEN_ONLY(20171114):  Region show on item elements fixed
@@ -237,7 +237,7 @@ class Elm.Gengrid.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Focus.Object, Efl.Ui
            Efl.Access.Component.highlight_clear;
            //
            //TIZEN_ONLY(20171122) Fixed _accessible_set_parent for gengrid items
-           Efl.Access.access_children { get; }
+           Efl.Access.Object.access_children { get; }
            //
       }
 }

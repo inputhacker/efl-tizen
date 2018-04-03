@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define EFL_ACCESS_COMPONENT_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
@@ -556,7 +556,7 @@ _elm_index_item_efl_object_constructor(Eo *obj, Elm_Index_Item_Data *it)
 {
    obj = efl_constructor(efl_super(obj, ELM_INDEX_ITEM_CLASS));
    it->base = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_RADIO_MENU_ITEM);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_RADIO_MENU_ITEM);
 
    return obj;
 }
@@ -1255,9 +1255,10 @@ _elm_index_efl_object_constructor(Eo *obj, Elm_Index_Data *_pd EINA_UNUSED)
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_SCROLL_BAR);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_SCROLL_BAR);
+
    //TIZEN_ONLY(20171114) [Index] Made UX changes for atspi as per v0.2
-   efl_access_i18n_name_set(obj, N_("Index"));
+   efl_access_object_i18n_name_set(obj, N_("Index"));
    //
 
    return obj;
@@ -1724,18 +1725,18 @@ _item_action_activate(Eo *obj, const char *params EINA_UNUSED EINA_UNUSED)
 }
 
 EOLIAN static Eina_List*
-_elm_index_efl_access_access_children_get(const Eo *obj, Elm_Index_Data *data)
+_elm_index_efl_access_object_access_children_get(const Eo *obj, Elm_Index_Data *data)
 {
    Eina_List *ret;
-   ret = efl_access_children_get(efl_super(obj, ELM_INDEX_CLASS));
+   ret = efl_access_object_access_children_get(efl_super(obj, ELM_INDEX_CLASS));
    return eina_list_merge(eina_list_clone(data->items), ret);
 }
 
 EOLIAN static const char*
-_elm_index_item_efl_access_i18n_name_get(const Eo *eo_it, Elm_Index_Item_Data *data)
+_elm_index_item_efl_access_object_i18n_name_get(const Eo *eo_it, Elm_Index_Item_Data *data)
 {
    const char *name;
-   name = efl_access_i18n_name_get(efl_super(eo_it, ELM_INDEX_ITEM_CLASS));
+   name = efl_access_object_i18n_name_get(efl_super(eo_it, ELM_INDEX_ITEM_CLASS));
    if (name) return name;
 
    return _elm_widget_item_accessible_plain_name_get(eo_it, data->letter);
@@ -1783,12 +1784,12 @@ _elm_index_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Index_D
 
 //TIZEN_ONLY(20161006) : add highlighted state for index
 EOLIAN static Efl_Access_State_Set
-_elm_index_efl_access_state_set_get(const Eo *obj, Elm_Index_Data *sd)
+_elm_index_efl_access_object_state_set_get(const Eo *obj, Elm_Index_Data *sd)
 {
    Efl_Access_State_Set ret;
    int level = sd->level;
 
-   ret = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+   ret = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
    if (sd->bx[level] && _elm_object_accessibility_currently_highlighted_get() == (void*)sd->bx[level])
      STATE_TYPE_SET(ret, EFL_ACCESS_STATE_HIGHLIGHTED);
 
@@ -1798,14 +1799,14 @@ _elm_index_efl_access_state_set_get(const Eo *obj, Elm_Index_Data *sd)
 
 //TIZEN_ONLY(20161021) :atspi:Do not give highlightable state if index style is pagecontrol
 EOLIAN static Efl_Access_State_Set
-_elm_index_item_efl_access_state_set_get(const Eo *eo_it, Elm_Index_Item_Data *sd)
+_elm_index_item_efl_access_object_state_set_get(const Eo *eo_it, Elm_Index_Item_Data *sd)
 {
    Efl_Access_State_Set ret;
    Evas_Object *obj = WIDGET(sd);
    ELM_INDEX_DATA_GET(obj, pd);
    const char *style = elm_widget_style_get(WIDGET(sd));
 
-   ret = efl_access_state_set_get(efl_super(eo_it, ELM_INDEX_ITEM_CLASS));
+   ret = efl_access_object_state_set_get(efl_super(eo_it, ELM_INDEX_ITEM_CLASS));
    if (style && !strcmp(style, "pagecontrol"))
      STATE_TYPE_UNSET(ret, EFL_ACCESS_STATE_HIGHLIGHTABLE);
 

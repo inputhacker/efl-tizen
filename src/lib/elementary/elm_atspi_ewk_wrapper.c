@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_COMPONENT_PROTECTED
 
 #include <Elementary.h>
@@ -54,7 +54,7 @@ _elm_atspi_ewk_wrapper_ewk_constructor(Eo *obj, Elm_Atspi_Ewk_Wrapper_Data *_pd,
    _pd->ewk_view = ewk_view;
 
    elm_widget_sub_object_parent_add(obj);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_EMBEDDED);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_EMBEDDED);
 
    evas_object_geometry_get(ewk_view, &x, &y, &w, &h);
    evas_object_move(obj, x, y);
@@ -130,7 +130,7 @@ _elm_atspi_ewk_wrapper_efl_object_destructor(Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_
 }
 
 EOLIAN static Eina_List*
-_elm_atspi_ewk_wrapper_efl_access_access_children_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
+_elm_atspi_ewk_wrapper_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
 {
    if (_pd->proxy)
      return eina_list_append(NULL, _pd->proxy);

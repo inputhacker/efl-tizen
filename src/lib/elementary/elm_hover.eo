@@ -70,10 +70,11 @@ class Elm.Hover (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Efl.Ui.Clickable,
       Efl.Ui.Widget.widget_parent { get; set; }
       Efl.Ui.Widget.widget_sub_object_del;
       Efl.Access.Widget.Action.elm_actions { get; }
-      Efl.Access.state_set { get; }
+      Efl.Access.Object.state_set { get; }
+      Efl.Part.part;
+
       Efl.Access.Component.highlight_grab;
       Efl.Access.Component.highlight_clear;
-      Efl.Part.part;
    }
    events {
       smart,changed; [[Called when hover changed]]

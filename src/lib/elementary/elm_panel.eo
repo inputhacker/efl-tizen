@@ -92,7 +92,7 @@ class Elm.Panel (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Elm.Interface_Scrollable,
       Efl.Ui.Widget.interest_region { get; }
       Efl.Access.Widget.Action.elm_actions { get; }
       // TIZEN_ONLY(20170829): [atspi][panel] Adds accessibility support for the panel widget.
-      Efl.Access.state_set { get; }
+      Efl.Access.Object.state_set { get; }
       //
       Efl.Part.part;
    }

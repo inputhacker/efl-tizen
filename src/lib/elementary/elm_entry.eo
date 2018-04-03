@@ -851,15 +851,8 @@ class Elm.Entry (Efl.Ui.Layout, Elm.Interface_Scrollable, Efl.Ui.Clickable,
       Efl.Ui.Widget.widget_sub_object_del;
       Elm.Interface_Scrollable.policy { set; }
       Elm.Interface_Scrollable.bounce_allow { set; }
-      // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
-      Efl.Ui.Widget.screen_reader;
-      //
-      Efl.Access.access_children { get; }
-      // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
-      Efl.Access.Component.accessible_at_point_get;
-      //
-      Efl.Access.state_set { get; }
-      Efl.Access.i18n_name { get; }
+      Efl.Access.Object.state_set { get; }
+      Efl.Access.Object.i18n_name { get; }
       Efl.Access.Text.access_text { get; }
       Efl.Access.Text.string { get; }
       Efl.Access.Text.attribute { get; }
@@ -885,6 +878,14 @@ class Elm.Entry (Efl.Ui.Layout, Elm.Interface_Scrollable, Efl.Ui.Clickable,
       Efl.Access.Widget.Action.elm_actions { get; }
       Efl.File.file { get; set; }
       Efl.Part.part;
+
+      // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+      Efl.Ui.Widget.screen_reader;
+      //
+      Efl.Access.Object.access_children { get; }
+      // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
+      Efl.Access.Component.accessible_at_point_get;
+      //
       /*****************************************************************************
        * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
        *****************************************************************************/

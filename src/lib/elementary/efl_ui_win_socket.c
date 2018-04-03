@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_UI_WIN_PROTECTED
 #define EFL_UI_WIN_SOCKET_PROTECTED
 
@@ -128,7 +128,7 @@ _efl_ui_win_socket_efl_object_parent_get(const Eo *obj, Efl_Ui_Win_Socket_Data *
    if (pd->socket_proxy) return pd->socket_proxy;
 
    parent = efl_parent_get(efl_super(obj, EFL_UI_WIN_SOCKET_CLASS));
-   prov = efl_provider_find(parent, EFL_ACCESS_MIXIN);
+   prov = efl_provider_find(parent, EFL_ACCESS_OBJECT_MIXIN);
 
    return (prov ? prov : parent);
 }

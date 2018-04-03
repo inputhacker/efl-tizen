@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 
 #include <Elementary.h>
 
@@ -167,7 +167,7 @@ _elm_plug_efl_object_constructor(Eo *obj, void *sd EINA_UNUSED)
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_IMAGE);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_IMAGE);
 
    return obj;
 }
@@ -218,10 +218,10 @@ _elm_plug_connect(Eo *obj, void *sd EINA_UNUSED, const char *svcname, int svcnum
 
 //TIZEN_ONLY(20171108): make atspi_proxy work
 EOLIAN static Eina_List*
-_elm_plug_efl_access_access_children_get(const Eo *obj, void *sd EINA_UNUSED)
+_elm_plug_efl_access_object_access_children_get(const Eo *obj, void *sd EINA_UNUSED)
 {
    Eina_List *ret;
-   ret = efl_access_children_get(efl_super(obj, EFL_UI_WIDGET_CLASS));
+   ret = efl_access_object_access_children_get(efl_super(obj, EFL_UI_WIDGET_CLASS));
    return ret;
 }
 //

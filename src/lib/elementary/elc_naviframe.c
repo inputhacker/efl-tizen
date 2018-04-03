@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
 #define ELM_WIDGET_PROTECTED
@@ -392,7 +392,7 @@ _atspi_expose_title(Elm_Naviframe_Item_Data *it, Eina_Bool is_atspi)
         access = elm_access_object_register(part, VIEW(it));
         _elm_access_callback_set(_elm_access_info_get(access),
                                  ELM_ACCESS_INFO, _access_info_cb, it);
-        efl_access_role_set(access, EFL_ACCESS_ROLE_HEADING);
+        efl_access_object_role_set(access, EFL_ACCESS_ROLE_HEADING);
      }
    else
      elm_access_object_unregister(part);
@@ -628,7 +628,7 @@ _elm_naviframe_item_elm_widget_item_part_text_set(Eo *eo_it,
         if (nit->title_label) strncat(buf, " ", 1);
         strncat(buf, nit->subtitle_label, sizeof(buf) - strlen(buf) - 2);
      }
-   efl_access_i18n_name_set(eo_it, buf);
+   efl_access_object_i18n_name_set(eo_it, buf);
 
    elm_layout_sizing_eval(WIDGET(nit));
 }
@@ -702,7 +702,7 @@ _elm_naviframe_item_efl_object_destructor(Eo *eo_item, Elm_Naviframe_Item_Data *
 
         //TIZEN_ONLY(20171019): add state_notify api
         if (_elm_atspi_enabled())
-          efl_access_state_notify(VIEW(prev_it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
+          efl_access_object_state_notify(VIEW(prev_it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
                                                  | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
         //
 
@@ -776,7 +776,7 @@ _item_title_prev_btn_set(Elm_Naviframe_Item_Data *it,
    if (!elm_layout_text_get(btn, NULL))
      {
         if(_elm_config->atspi_mode)
-          efl_access_i18n_name_set(btn, N_("Navigate back"));
+          efl_access_object_i18n_name_set(btn, N_("Navigate back"));
      }
    //
 
@@ -1259,7 +1259,7 @@ _on_item_push_finished(void *data,
 
    //TIZEN_ONLY(20161122): add state_notify api
    if (_elm_atspi_enabled())
-      efl_access_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+      efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
    //
 
    //TIZEN ONLY(20161208): Support tizen transition
@@ -1339,7 +1339,7 @@ _on_item_show_finished(void *data,
 
         if (_elm_atspi_enabled())
           {
-             efl_access_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
+             efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
                                                | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
           }
      }
@@ -1405,8 +1405,8 @@ _item_new(Evas_Object *obj,
    ELM_NAVIFRAME_DATA_GET(obj, sd);
 
    eo_item = efl_add(ELM_NAVIFRAME_ITEM_CLASS, obj);
-   efl_access_role_set(eo_item, EFL_ACCESS_ROLE_PAGE_TAB);
-   efl_access_i18n_name_set(eo_item, (char*)title_label);
+   efl_access_object_role_set(eo_item, EFL_ACCESS_ROLE_PAGE_TAB);
+   efl_access_object_i18n_name_set(eo_item, (char*)title_label);
 
    if (!eo_item)
      {
@@ -1475,7 +1475,7 @@ _item_new(Evas_Object *obj,
           }
         //TIZEN ONLY(20161207): add reading text of back button
         if(_elm_config->atspi_mode)
-          efl_access_i18n_name_set(prev_btn, N_("Navigate back"));
+          efl_access_object_i18n_name_set(prev_btn, N_("Navigate back"));
         //
      }
 
@@ -1852,7 +1852,7 @@ _elm_naviframe_efl_object_constructor(Eo *obj, Elm_Naviframe_Data *sd)
    sd->obj = obj;
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_PAGE_TAB_LIST);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_PAGE_TAB_LIST);
 
    return obj;
 }
@@ -1955,7 +1955,7 @@ _elm_naviframe_item_insert_after(Eo *obj, Elm_Naviframe_Data *sd, Elm_Object_Ite
         evas_object_hide(VIEW(after));
         //TIZEN_ONLY(20171019): add state_notify api
         if (_elm_atspi_enabled())
-          efl_access_state_notify(VIEW(after), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
+          efl_access_object_state_notify(VIEW(after), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
                                                | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
         //
         if (elm_object_focus_allow_get(VIEW(it)))
@@ -1988,7 +1988,7 @@ _elm_naviframe_item_insert_after(Eo *obj, Elm_Naviframe_Data *sd, Elm_Object_Ite
            //TIZEN_ONLY(20171019): Handle default label object
            _elm_win_default_label_obj_append(VIEW(it));
            if (_elm_atspi_enabled())
-             efl_access_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
+             efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
                                                | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
            //
            efl_event_callback_legacy_call(obj, ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, eo_item);
@@ -2230,7 +2230,7 @@ _elm_naviframe_item_elm_widget_item_style_set(Eo *eo_item EINA_UNUSED,
               Evas_Object *access = elm_access_object_register(part, VIEW(nit));
               _elm_access_callback_set(_elm_access_info_get(access),
                                        ELM_ACCESS_INFO, _access_info_cb, nit);
-              efl_access_role_set(access, EFL_ACCESS_ROLE_HEADING);
+              efl_access_object_role_set(access, EFL_ACCESS_ROLE_HEADING);
            }
      }
    //
@@ -2293,7 +2293,7 @@ _elm_naviframe_item_pop_cb_set(Eo *eo_item EINA_UNUSED,
 }
 
 EOLIAN static Eina_List*
-_elm_naviframe_item_efl_access_access_children_get(const Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data *nit)
+_elm_naviframe_item_efl_access_object_access_children_get(const Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data *nit)
 {
    Eina_List *ret = NULL;
 
@@ -2358,7 +2358,7 @@ _elm_naviframe_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNUSE
 
 //TIZEN_ONLY(20161213) Using VIEW(item) for naviframe, naviframe item accessible information
 EOLIAN const char*
-_elm_naviframe_efl_access_i18n_name_get(const Eo *eo, Elm_Naviframe_Data *pd EINA_UNUSED)
+_elm_naviframe_efl_access_object_i18n_name_get(const Eo *eo, Elm_Naviframe_Data *pd EINA_UNUSED)
 {
    const char *ret = NULL;
    Elm_Object_Item *eo_top_it = NULL;
@@ -2366,14 +2366,14 @@ _elm_naviframe_efl_access_i18n_name_get(const Eo *eo, Elm_Naviframe_Data *pd EIN
    eo_top_it = elm_naviframe_top_item_get(eo);
    if (eo_top_it)
      {
-        ret = efl_access_i18n_name_get(eo_top_it);
+        ret = efl_access_object_i18n_name_get(eo_top_it);
      }
 
    return ret;
 }
 
 EOLIAN const char*
-_elm_naviframe_efl_access_description_get(const Eo *eo, Elm_Naviframe_Data *pd EINA_UNUSED)
+_elm_naviframe_efl_access_object_description_get(const Eo *eo, Elm_Naviframe_Data *pd EINA_UNUSED)
 {
    const char *ret = NULL;
    Elm_Object_Item *eo_top_it = NULL;
@@ -2381,71 +2381,71 @@ _elm_naviframe_efl_access_description_get(const Eo *eo, Elm_Naviframe_Data *pd E
    eo_top_it = elm_naviframe_top_item_get(eo);
    if (eo_top_it)
      {
-        ret = efl_access_description_get(eo_top_it);
+        ret = efl_access_object_description_get(eo_top_it);
      }
 
    return ret;
 }
 
 EOLIAN void
-_elm_naviframe_item_efl_access_i18n_name_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *name)
+_elm_naviframe_item_efl_access_object_i18n_name_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *name)
 {
-   efl_access_i18n_name_set(VIEW(nit), name);
+   efl_access_object_i18n_name_set(VIEW(nit), name);
 }
 
 EOLIAN const char*
-_elm_naviframe_item_efl_access_i18n_name_get(const Eo *eo_item, Elm_Naviframe_Item_Data *nit)
+_elm_naviframe_item_efl_access_object_i18n_name_get(const Eo *eo_item, Elm_Naviframe_Item_Data *nit)
 {
    const char *ret = NULL;
-   ret = efl_access_i18n_name_get(efl_super(eo_item, ELM_NAVIFRAME_ITEM_CLASS));
+   ret = efl_access_object_i18n_name_get(efl_super(eo_item, ELM_NAVIFRAME_ITEM_CLASS));
    if (ret) return ret;
 
-   ret = efl_access_i18n_name_get(VIEW(nit));
+   ret = efl_access_object_i18n_name_get(VIEW(nit));
    return ret;
 }
 
 EOLIAN void
-_elm_naviframe_item_efl_access_description_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *description)
+_elm_naviframe_item_efl_access_object_description_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *description)
 {
-   efl_access_description_set(VIEW(nit), description);
+   efl_access_object_description_set(VIEW(nit), description);
 }
 
 EOLIAN const char*
-_elm_naviframe_item_efl_access_description_get(const Eo *eo_item, Elm_Naviframe_Item_Data *nit)
+_elm_naviframe_item_efl_access_object_description_get(const Eo *eo_item, Elm_Naviframe_Item_Data *nit)
 {
    const char *ret = NULL;
-   ret = efl_access_description_get(efl_super(eo_item, ELM_NAVIFRAME_ITEM_CLASS));
+   ret = efl_access_object_description_get(efl_super(eo_item, ELM_NAVIFRAME_ITEM_CLASS));
    if (ret) return ret;
 
-   ret = efl_access_description_get(VIEW(nit));
+   ret = efl_access_object_description_get(VIEW(nit));
    return ret;
 }
 //
 EOLIAN static void
-_elm_naviframe_item_efl_access_translation_domain_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *domain)
+_elm_naviframe_item_efl_access_object_translation_domain_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *domain)
 {
-   efl_access_translation_domain_set(VIEW(nit), domain);
+   efl_access_object_translation_domain_set(VIEW(nit), domain);
 }
 
 EOLIAN static const char*
-_elm_naviframe_item_efl_access_translation_domain_get(const Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit)
+_elm_naviframe_item_efl_access_object_translation_domain_get(const Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit)
 {
    const char *ret = NULL;
-   ret = efl_access_translation_domain_get(VIEW(nit));
+   ret = efl_access_object_translation_domain_get(VIEW(nit));
    return ret;
 }
 
 
 EOLIAN static void
-_elm_naviframe_item_efl_access_name_cb_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, Elm_Atspi_Reading_Info_Cb name_cb, const void *data)
+_elm_naviframe_item_efl_access_object_name_cb_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, Elm_Atspi_Reading_Info_Cb name_cb, const void *data)
 {
-   efl_access_name_cb_set(VIEW(nit), name_cb, data);
+   efl_access_object_name_cb_set(VIEW(nit), name_cb, data);
 }
 
 EOLIAN static void
-_elm_naviframe_item_efl_access_description_cb_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, Elm_Atspi_Reading_Info_Cb description_cb, const void *data)
+_elm_naviframe_item_efl_access_object_description_cb_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, Elm_Atspi_Reading_Info_Cb description_cb, const void *data)
 {
-   efl_access_description_cb_set(VIEW(nit), description_cb, data);
+   efl_access_object_description_cb_set(VIEW(nit), description_cb, data);
 }
 
 

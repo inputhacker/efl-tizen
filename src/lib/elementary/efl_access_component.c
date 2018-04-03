@@ -4,7 +4,7 @@
 
 #define EFL_ACCESS_COMPONENT_PROTECTED
 #define EFL_ACCESS_COMPONENT_BETA
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 
 #include <Elementary.h>
 
@@ -57,7 +57,7 @@ _efl_access_component_accessible_at_point_get(Eo *obj, Efl_Access_Component_Data
    Eina_List *l, *children;
    Eo *ret = NULL, *child;
 
-   children = efl_access_children_get(obj);
+   children = efl_access_object_access_children_get(obj);
 
    //TIZEN_ONLY (20171114) imporove object at xy get function
    EINA_LIST_REVERSE_FOREACH(children, l, child)
@@ -67,7 +67,7 @@ _efl_access_component_accessible_at_point_get(Eo *obj, Efl_Access_Component_Data
         if (efl_isa(child, EFL_ACCESS_COMPONENT_MIXIN))
           {
               //TIZEN_ONLY (20171114) imporove object at xy get function
-              Efl_Access_Role role = efl_access_role_get(child);
+              Efl_Access_Role role = efl_access_object_role_get(child);
               if (role == EFL_ACCESS_ROLE_REDUNDANT_OBJECT)
                 continue;
               //

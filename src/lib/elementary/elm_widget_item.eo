@@ -4,8 +4,9 @@ import efl_ui;
 type Elm_Tooltip_Item_Content_Cb: __undefined_type; [[Elementary tooltip item content callback type]]
 type Elm_Object_Item_Signal_Cb: __undefined_type; [[Elementary object item signal callback type]]
 
-class Elm.Widget.Item(Efl.Object, Efl.Access,
-                      Efl.Access.Component, Efl.Access.Widget.Action)
+class Elm.Widget.Item(Efl.Object, Efl.Access.Object,
+                      Efl.Access.Component,
+                      Efl.Access.Widget.Action)
 {
       [[Elementary widget item class]]
       eo_prefix: elm_wdg_item;
@@ -540,27 +541,27 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
            Efl.Object.constructor;
            Efl.Object.destructor;
            //TIZEN_ONLY(20150713) : add widget_item name setter
-           Efl.Access.i18n_name { set; get;}
+           Efl.Access.Object.i18n_name { set; get;}
            ///
            Efl.Object.del;
-           Efl.Access.state_set { get; }
-           Efl.Access.attributes { get; }
+           Efl.Access.Object.state_set { get; }
+           Efl.Access.Object.attributes { get; }
            //TIZEN_ONLY(20161111) add widget/widget_item description get/set
-           Efl.Access.description { set; get; }
+           Efl.Access.Object.description { set; get; }
            //
           //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
-           Efl.Access.can_highlight { get; set; }
+           Efl.Access.Object.can_highlight { get; set; }
           //
            //TIZEN_ONLY(20150731) : add i18n support for name and description
-           Efl.Access.translation_domain { set; get;}
+           Efl.Access.Object.translation_domain { set; get;}
            //
            Efl.Access.Component.extents { get; set; }
            Efl.Access.Component.focus_grab;
            //TIZEN_ONLY(20150709) : atspi relations api
-           Efl.Access.relation_set { get; }
-           Efl.Access.relationship_append;
-           Efl.Access.relationship_remove;
-           Efl.Access.relationships_clear;
+           Efl.Access.Object.relation_set { get; }
+           Efl.Access.Object.relationship_append;
+           Efl.Access.Object.relationship_remove;
+           Efl.Access.Object.relationships_clear;
            //
            //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
            Efl.Access.Component.highlight_grab;

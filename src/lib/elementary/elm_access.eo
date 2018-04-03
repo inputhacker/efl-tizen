@@ -10,14 +10,15 @@ class Elm.Access (Efl.Ui.Widget, Efl.Access.Widget.Action)
       Efl.Ui.Widget.on_access_activate;
       Efl.Ui.Focus.Object.on_focus_update;
       Efl.Access.Widget.Action.elm_actions { get; }
-      Efl.Access.state_set { get; }
+      Efl.Access.Object.state_set { get; }
+
       // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
       Efl.Access.Component.highlight_grab;
       Efl.Access.Component.highlight_clear;
       //
       //TIZEN_ONLY(20171122) elm: add name and description to elm_access
-      Efl.Access.i18n_name { get; }
-      Efl.Access.description { get; }
+      Efl.Access.Object.i18n_name { get; }
+      Efl.Access.Object.description { get; }
       //
    }
 }

@@ -2,7 +2,7 @@
 # include "../elementary/elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_WIDGET_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
@@ -2217,7 +2217,7 @@ _elm_ctxpopup_efl_object_constructor(Eo *obj, Elm_Ctxpopup_Data *_pd EINA_UNUSED
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_POPUP_MENU);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_POPUP_MENU);
 
    return obj;
 }
@@ -2358,7 +2358,7 @@ _elm_ctxpopup_item_efl_object_constructor(Eo *obj, Elm_Ctxpopup_Item_Data *it)
    obj = efl_constructor(efl_super(obj, ELM_CTXPOPUP_ITEM_CLASS));
    it->base = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
 //TIZEN ONLY(20150710)ctxpopup: Accessible methods for children_get, extents_get and item name_get
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_MENU_ITEM);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_MENU_ITEM);
 //
    return obj;
 }
@@ -2640,13 +2640,13 @@ _elm_ctxpopup_item_init(Eo *eo_item,
 
 //TIZEN ONLY(20160918): name interface added
 EOLIAN static const char*
-_elm_ctxpopup_efl_access_i18n_name_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
+_elm_ctxpopup_efl_access_object_i18n_name_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
 {
    Eina_Strbuf *buf;
    const char *accessible_name = NULL;
    const char *style = elm_widget_style_get(obj);
 
-   accessible_name = efl_access_i18n_name_get(efl_super(obj, MY_CLASS));
+   accessible_name = efl_access_object_i18n_name_get(efl_super(obj, MY_CLASS));
    if (accessible_name) return accessible_name;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
@@ -2683,10 +2683,10 @@ _elm_ctxpopup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_
 }
 
 EOLIAN static Efl_Access_State_Set
-_elm_ctxpopup_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
+_elm_ctxpopup_efl_access_object_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
 {
    Efl_Access_State_Set ret;
-   ret = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+   ret = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
 
    STATE_TYPE_SET(ret, EFL_ACCESS_STATE_MODAL);
 
@@ -2698,7 +2698,7 @@ _elm_ctxpopup_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSE
 
 //TIZEN ONLY(20150710): ctxpopup: Accessible methods for children_get, extents_get and item name_get
 EOLIAN Eina_List*
-_elm_ctxpopup_efl_access_access_children_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_efl_access_object_access_children_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    Eina_List *ret = NULL;
    Eina_List *l = NULL;
@@ -2770,17 +2770,17 @@ _elm_ctxpopup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Ctxp
 
 //TIZEN ONLY(20150710)ctxpopup: Accessible methods for children_get, extents_get and item name_get
 EOLIAN const char *
-_elm_ctxpopup_item_efl_access_i18n_name_get(Eo *eo_it, Elm_Ctxpopup_Item_Data *item)
+_elm_ctxpopup_item_efl_access_object_i18n_name_get(Eo *eo_it, Elm_Ctxpopup_Item_Data *item)
 {
    const char *accessible_name = NULL;
-   accessible_name = efl_access_i18n_name_get(efl_super(eo_it, ELM_CTXPOPUP_ITEM_CLASS));
+   accessible_name = efl_access_object_i18n_name_get(efl_super(eo_it, ELM_CTXPOPUP_ITEM_CLASS));
 
    if (accessible_name) return accessible_name;
 
    if(item->icon && !item->label)
      {
         const char *icon_name = NULL;
-        icon_name = efl_access_i18n_name_get(item->icon);
+        icon_name = efl_access_object_i18n_name_get(item->icon);
         return icon_name;
      }
    else
@@ -3022,13 +3022,13 @@ _content_move_up_cb(void *data, Evas_Object *obj, void *ev EINA_UNUSED)
 
 //TIZEN_ONLY ctx_popup: fix accessibility states
 EOLIAN static Efl_Access_State_Set
-_elm_ctxpopup_item_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Item_Data *it)
+_elm_ctxpopup_item_efl_access_object_state_set_get(Eo *obj, Elm_Ctxpopup_Item_Data *it)
 {
    Efl_Access_State_Set states;
    Eina_Rectangle r1, r2;
    Eina_Bool is_showing = EINA_FALSE;
 
-   states = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+   states = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
 
    // evaluate showing state
    if (VIEW(it) &&

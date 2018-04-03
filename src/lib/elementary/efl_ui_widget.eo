@@ -13,7 +13,7 @@ struct Efl.Ui.Widget.Focus_State {
    logical : bool; [[$true if this is registered as logical currently]]
 }
 
-abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access,
+abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access.Object,
                         Efl.Access.Component, Efl.Part, Efl.Ui.Focus.Object,
                         Efl.Ui.Base, Efl.Ui.Cursor, Efl.Ui.Translatable,
                         Efl.Selection, Efl.Ui.Dnd,
@@ -616,24 +616,24 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access,
       Efl.Canvas.Group.group_calculate;
       Efl.Canvas.Group.group_member_del;
       Efl.Canvas.Group.group_member_add;
-      Efl.Access.i18n_name { get; }
-      Efl.Access.state_set { get; }
-      Efl.Access.access_children { get; }
-      Efl.Access.attributes { get; }
+      Efl.Access.Object.i18n_name { get; }
+      Efl.Access.Object.state_set { get; }
+      Efl.Access.Object.access_children { get; }
+      Efl.Access.Object.attributes { get; }
       Efl.Access.Component.focus_grab;
       Efl.Ui.Focus.Object.focus_manager { get; }
       Efl.Ui.Focus.Object.focus_parent { get; }
       //TIZEN_ONLY(20161111) add widget/widget_item description get/set
-      Efl.Access.description { set; get; }
+      Efl.Access.Object.description { set; get; }
       //
       //TIZEN_ONLY(20150731) : add i18n support for name and description
-      Efl.Access.translation_domain { set; get;}
+      Efl.Access.Object.translation_domain { set; get;}
       ///
       //TIZEN_ONLY(20150709) : atspi relations api
-      Efl.Access.relation_set { get;}
-      Efl.Access.relationship_append;
-      Efl.Access.relationship_remove;
-      Efl.Access.relationships_clear;
+      Efl.Access.Object.relation_set { get;}
+      Efl.Access.Object.relationship_append;
+      Efl.Access.Object.relationship_remove;
+      Efl.Access.Object.relationships_clear;
       //
       //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
       Efl.Access.Component.accessible_at_point_get;
@@ -641,7 +641,7 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access,
       Efl.Access.Component.highlight_clear;
       //
       //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
-      Efl.Access.can_highlight { get; set; }
+      Efl.Access.Object.can_highlight { get; set; }
       //TIZEN_ONLY(20160527): widget: add AtspiAction interface to all widgets
       Efl.Access.Widget.Action.elm_actions { get; }
       //

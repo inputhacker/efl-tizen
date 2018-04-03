@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define EFL_ACCESS_COMPONENT_PROTECTED
 
@@ -728,8 +728,8 @@ _atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd, Eina_Bool is_sc
              sd->access_top_button = elm_access_object_register(btn1, sd->obj);
              sd->access_bottom_button = elm_access_object_register(btn2, sd->obj);
 
-             efl_access_role_set(sd->access_top_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
-             efl_access_role_set(sd->access_bottom_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
+             efl_access_object_role_set(sd->access_top_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
+             efl_access_object_role_set(sd->access_bottom_button, EFL_ACCESS_ROLE_PUSH_BUTTON);
 
              elm_access_action_cb_set(sd->access_top_button, ELM_ACCESS_ACTION_ACTIVATE, _activate_top_cb, sd);
              elm_access_action_cb_set(sd->access_bottom_button, ELM_ACCESS_ACTION_ACTIVATE, _activate_bottom_cb, sd);
@@ -764,7 +764,7 @@ _elm_flipselector_efl_object_constructor(Eo *obj, Elm_Flipselector_Data *sd)
    sd->obj = obj;
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_LIST);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_LIST);
 
    //TIZEN ONLY(20151012): expose flipselector top/bottom buttons for accessibility tree
    if (elm_atspi_bridge_utils_is_screen_reader_enabled())

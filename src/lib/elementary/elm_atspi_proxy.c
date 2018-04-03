@@ -2,7 +2,7 @@
   #include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 
 #include <Elementary.h>
 #include "elm_widget.h"
@@ -106,9 +106,9 @@ _elm_atspi_proxy_constructor(Eo *obj, Elm_Atspi_Proxy_Data *_pd, Elm_Atspi_Proxy
 
    _pd->type = type;
    parent = efl_parent_get(obj);
-   if (!parent || !efl_isa(parent, EFL_ACCESS_MIXIN))
+   if (!parent || !efl_isa(parent, EFL_ACCESS_OBJECT_MIXIN))
      {
-        CRI("Elm_Atspi_Proxy parent (%s) must implement EFL_ACCESS_MIXIN", efl_class_name_get(efl_class_get(parent)));
+        CRI("Elm_Atspi_Proxy parent (%s) must implement EFL_ACCESS_OBJECT_MIXIN", efl_class_name_get(efl_class_get(parent)));
         abort();
      }
    if (type == ELM_ATSPI_PROXY_TYPE_SOCKET)
@@ -136,7 +136,7 @@ _elm_atspi_proxy_address_set(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd, con
 }
 
 EOLIAN Eina_List*
-_elm_atspi_proxy_efl_access_access_children_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
+_elm_atspi_proxy_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
 {
    Eina_List *ret = NULL;
    if (_pd->type == ELM_ATSPI_PROXY_TYPE_SOCKET)

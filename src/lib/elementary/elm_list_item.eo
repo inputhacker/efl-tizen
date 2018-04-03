@@ -115,8 +115,9 @@ class Elm.List.Item(Elm.Widget.Item, Efl.Ui.Legacy)
            Elm.Widget.Item.part_text { get; set; }
            Elm.Widget.Item.part_content { get; set; }
            Elm.Widget.Item.part_content_unset;
-           Efl.Access.i18n_name { get; }
-           Efl.Access.state_set { get; }
+           Efl.Access.Object.i18n_name { get; }
+           Efl.Access.Object.state_set { get; }
+
            //TIZEN_ONLY(20171114): list: enhance accessibility scroll and highlight
            Efl.Access.Component.highlight_grab;
            //TIZEN_ONLY(20171114):  Region show on item elements fixed

@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define EFL_UI_FOCUS_LAYER_PROTECTED
 
@@ -140,7 +140,7 @@ static void
 _accessible_panel_hidden_set(Evas_Object* obj, Eina_Bool is_hidden)
 {
    is_hidden = !!is_hidden;
-   efl_access_can_highlight_set(obj, !is_hidden);
+   efl_access_object_can_highlight_set(obj, !is_hidden);
    efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, !is_hidden);
    if (is_hidden)
      _elm_win_default_label_obj_remove(obj);
@@ -1066,7 +1066,7 @@ _elm_panel_efl_object_constructor(Eo *obj, Elm_Panel_Data *_pd EINA_UNUSED)
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_PANEL);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_PANEL);
 
    efl_ui_focus_layer_behaviour_set(obj, EINA_FALSE, EINA_FALSE);
 
@@ -1573,10 +1573,10 @@ _elm_panel_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNUSED, E
 
 // TIZEN_ONLY(20170829) : [atspi][panel] Adds accessibility support for the panel widget.
 EOLIAN static Efl_Access_State_Set
-_elm_panel_efl_access_state_set_get(const Eo *obj, Elm_Panel_Data *sd EINA_UNUSED)
+_elm_panel_efl_access_object_state_set_get(const Eo *obj, Elm_Panel_Data *sd EINA_UNUSED)
 {
    Efl_Access_State_Set ret;
-   ret = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+   ret = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
 
    if (!sd->hidden)
       STATE_TYPE_SET(ret, EFL_ACCESS_STATE_SHOWING);

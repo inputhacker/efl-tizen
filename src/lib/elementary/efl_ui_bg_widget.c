@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define ELM_LAYOUT_PROTECTED
 
 #include <Elementary.h>
@@ -58,8 +58,7 @@ _efl_ui_bg_widget_efl_object_constructor(Eo *obj, Efl_Ui_Bg_Widget_Data *pd)
      elm_image_no_scale_set(pd->img, EINA_TRUE);
    /* END */
 
-   efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
-   efl_access_type_set(obj, EFL_ACCESS_TYPE_DISABLED);
+   efl_access_object_access_type_set(obj, EFL_ACCESS_TYPE_DISABLED);
 
    efl_ui_widget_focus_allow_set(obj, EINA_FALSE);
 

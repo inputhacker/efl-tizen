@@ -67,7 +67,7 @@ class Efl.Ui.Progressbar (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Format,
       Efl.Ui.Base.mirrored { get; set; }
       //
       //TIZEN_ONLY(20160603): added description_get API
-      Efl.Access.description { get; }
+      Efl.Access.Object.description { get; }
       //
 
    }

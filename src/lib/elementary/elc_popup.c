@@ -2,7 +2,7 @@
 # include "elementary_config.h"
 #endif
 
-#define EFL_ACCESS_PROTECTED
+#define EFL_ACCESS_OBJECT_PROTECTED
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_WIDGET_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
@@ -431,7 +431,7 @@ _atspi_expose_title(Eo *obj, Eina_Bool is_atspi)
           {
              ao = _elm_access_edje_object_part_object_register
                    (sd->main_layout, elm_layout_edje_get(sd->main_layout), ACCESS_TITLE_PART);
-             efl_access_role_set(ao, EFL_ACCESS_ROLE_HEADING);
+             efl_access_object_role_set(ao, EFL_ACCESS_ROLE_HEADING);
              _elm_access_callback_set(_elm_access_info_get(ao),
                                        ELM_ACCESS_INFO, _access_info_cb, sd);
           }
@@ -471,8 +471,8 @@ _atspi_part_text_expose(Eo *obj, const char *part, Eina_Bool is_atspi)
           {
              ao = _elm_access_edje_object_part_object_register
                    (sd->main_layout, elm_layout_edje_get(sd->main_layout), part);
-             efl_access_role_set(ao, EFL_ACCESS_ROLE_LABEL);
-             efl_access_name_cb_set(ao, _access_name_set_cb, text);
+             efl_access_object_role_set(ao, EFL_ACCESS_ROLE_LABEL);
+             efl_access_object_name_cb_set(ao, _access_name_set_cb, text);
           }
      }
    else
@@ -2154,7 +2154,7 @@ _elm_popup_efl_ui_widget_atspi(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED, Eina_Bo
 
    if (!is_atspi) return;
 
-   ss = efl_access_state_set_get(obj);
+   ss = efl_access_object_state_set_get(obj);
    if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_SHOWING))
      {
         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, EINA_TRUE);
@@ -2181,7 +2181,7 @@ _elm_popup_efl_object_constructor(Eo *obj, Elm_Popup_Data *_pd EINA_UNUSED)
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   efl_access_role_set(obj, EFL_ACCESS_ROLE_DIALOG);
+   efl_access_object_role_set(obj, EFL_ACCESS_ROLE_DIALOG);
 
    return obj;
 }
@@ -2458,10 +2458,10 @@ _elm_popup_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNUSED, E
 }
 
 EOLIAN static Efl_Access_State_Set
-_elm_popup_efl_access_state_set_get(const Eo *obj, Elm_Popup_Data *sd EINA_UNUSED)
+_elm_popup_efl_access_object_state_set_get(const Eo *obj, Elm_Popup_Data *sd EINA_UNUSED)
 {
    Efl_Access_State_Set ret;
-   ret = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+   ret = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
 
    STATE_TYPE_SET(ret, EFL_ACCESS_STATE_MODAL);
 
@@ -2469,12 +2469,12 @@ _elm_popup_efl_access_state_set_get(const Eo *obj, Elm_Popup_Data *sd EINA_UNUSE
 }
 
 EOLIAN static const char*
-_elm_popup_efl_access_i18n_name_get(const Eo *obj, Elm_Popup_Data *sd)
+_elm_popup_efl_access_object_i18n_name_get(const Eo *obj, Elm_Popup_Data *sd)
 {
    const char *name = NULL;
    Eina_Strbuf *buf;
 
-   name = efl_access_i18n_name_get(efl_super(obj, ELM_POPUP_CLASS));
+   name = efl_access_object_i18n_name_get(efl_super(obj, ELM_POPUP_CLASS));
    if (name) return name;
 
    buf = eina_strbuf_new();
