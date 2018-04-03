@@ -162,6 +162,9 @@ struct _Elm_Genlist_Data
    Elm_Gen_Item                         *highlighted_item;
    Evas_Coord                            viewport_w, viewport_h;
    Elm_Gen_Item                         *atspi_item_to_highlight;
+   // TIZEN_ONLY(20180326) : Atspi: enhance finding next and prev item on screen's edge
+   int                                   scroll_delta_y_backup;
+   //
    Elm_Gen_Item                         *aligned_item;
    //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
    Elm_Gen_Item                         *currently_highlighted_item;
