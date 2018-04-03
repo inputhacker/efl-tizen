@@ -2798,6 +2798,10 @@ static Eina_Bool
 _item_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
 {
    ELM_CTXPOPUP_ITEM_DATA_GET(obj, item);
+   edje_object_signal_emit
+      (VIEW(item), "elm,key,action,activate", "elm");
+   edje_object_message_signal_process(VIEW(item));
+
 
    if (item->wcb.org_func_cb)
      item->wcb.org_func_cb((void*)item->wcb.org_data, WIDGET(item), EO_OBJ(item));
