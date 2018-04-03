@@ -1204,6 +1204,20 @@ _elm_win_focus_highlight_anim_setup(Efl_Ui_Win_Data *sd,
    m->val[7] = rt.h;
    edje_object_message_send(obj, EDJE_MESSAGE_INT_SET, 1, m);
 }
+// TIZEN_ONLY(20180326) : Atspi: enhance finding next and prev item on screen's edge
+EAPI Eina_Bool
+_elm_win_accessibility_parent_is_item(Evas_Object *obj)
+{
+   Evas_Object *parent;
+   parent = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_MIXIN);
+   while (parent)
+     {
+        if (efl_isa(parent, ELM_WIDGET_ITEM_CLASS)) return EINA_TRUE;
+        parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_MIXIN);
+     }
+   return EINA_FALSE;
+}
+//
 // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
 static void
 _elm_win_accessibility_highlight_simple_setup(Efl_Ui_Win_Data *sd,
@@ -1232,7 +1246,10 @@ _elm_win_accessibility_highlight_simple_setup(Efl_Ui_Win_Data *sd,
            && efl_isa(target, EFL_ACCESS_MIXIN))
           {
              role = efl_access_role_get(target);
-             if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM)
+             if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM
+                 // TIZEN_ONLY(20180326) : Atspi: enhance finding next and prev item on screen's edge
+                 && ! _elm_win_accessibility_parent_is_item(target))
+                 //
                {
                   efl_access_move_outed_signal_emit(target, EFL_ACCESS_MOVE_OUTED_TOP_LEFT);
                   sd->accessibility_highlight.cur.need_moved = EINA_FALSE;
@@ -1244,7 +1261,10 @@ _elm_win_accessibility_highlight_simple_setup(Efl_Ui_Win_Data *sd,
             && efl_isa(target, EFL_ACCESS_MIXIN))
           {
              role = efl_access_role_get(target);
-             if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM)
+             if (role && role != EFL_ACCESS_ROLE_MENU_ITEM && role != EFL_ACCESS_ROLE_LIST_ITEM
+                // TIZEN_ONLY(20180326) : Atspi: enhance finding next and prev item on screen's edge
+                && ! _elm_win_accessibility_parent_is_item(target))
+                //
                {
                   efl_access_move_outed_signal_emit(target, EFL_ACCESS_MOVE_OUTED_BOTTOM_RIGHT);
                   sd->accessibility_highlight.cur.need_moved = EINA_FALSE;

@@ -9557,7 +9557,7 @@ static int _is_item_in_viewport(int viewport_y, int viewport_h, int obj_y, int o
 }
 
 EOLIAN static void
-_elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data *sid EINA_UNUSED, Evas_Coord x, Evas_Coord y, Eina_Bool sig)
+_elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data *sd, Evas_Coord x, Evas_Coord y, Eina_Bool sig)
 {
    if (!_elm_atspi_enabled())
      {
@@ -9607,13 +9607,24 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
         evas_object_geometry_get(highlighted_obj, &hx, &hy, &hw, &hh);
 
         Elm_Gen_Item * next_previous_item = NULL;
+        // TIZEN_ONLY(20180326) : Atspi: enhance finding next and prev item on screen's edge
+        /* FIXME : the content_pos_set of genlist differs by 1 pixel from the final call when scrolled up and down.
+                   If the item size is 360x360 on a 360x360 size screen, scrolling upward (0,360) to (0, 0)
+                   will be called until the y coordinate of the highlight object in content_pos_set is 1.
+                   But downward is not same. if scrolling downward (0,0) to (0,360)
+                   will be called y coordinate of highlight object in final called content_pos_set is 360.
+                   This part can be modified according to the content_pos_set call convention.
+        */
+        if(sd->scroll_delta_y_backup < 0)
+          hy = hy - 1;
+        //
         int viewport_position_result = _is_item_in_viewport(obj_y, h, hy, hh);
         //only highlight if move direction is correct
         //sometimes highlighted item is brought in and it does not fit viewport
         //however content goes to the viewport position so soon it will
         //meet _is_item_in_viewport condition
-        if ((viewport_position_result < 0 && delta_y > 0) ||
-           (viewport_position_result > 0 && delta_y < 0))
+        if ((viewport_position_result < 0 && (delta_y != 0 ? delta_y > 0 : sd->scroll_delta_y_backup > 0)) ||
+           (viewport_position_result > 0 && (delta_y != 0 ? delta_y < 0 : sd->scroll_delta_y_backup < 0)))
           {
 
              Eina_List *realized_items = elm_genlist_realized_items_get(obj);
@@ -9628,6 +9639,9 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
                   ELM_GENLIST_ITEM_DATA_GET(item, it_data);
                   next_previous_item = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(it_data));
                   evas_object_geometry_get(VIEW(next_previous_item), &hx, &hy, &hw, &hh);
+                  //FIXME : the content_pos_set of genlist differs by 1 pixel from the final call when scrolled up and down.
+                  if(sd->scroll_delta_y_backup < 0)
+                    hy = hy - 1;
                   if (_is_item_in_viewport(obj_y, h, hy, hh) == 0)
                     break;
 
@@ -9642,6 +9656,12 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
              efl_access_state_changed_signal_emit(EO_OBJ(next_previous_item), ELM_ATSPI_STATE_HIGHLIGHTED, EINA_TRUE);
           }
      }
+   // TIZEN_ONLY(20180326) : Atspi: enhance finding next and prev item on screen's edge
+   /* FIXME : delta_y means the direction of the scroll. However, old_y and y do not have the proper orientation
+              when content_pos_set is called twice. Therefore, we use delta_y_backup temporarily.
+   */
+   sd->scroll_delta_y_backup = delta_y;
+   //
 }
 // Tizen only (20150914)
 
@@ -9650,51 +9670,14 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
 {
    ELM_GENLIST_DATA_GET(WIDGET(it), sd);
 
-   if (!TIZEN_PROFILE_WEARABLE)
-     {
-        //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
-        efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_GENLIST_ITEM_CLASS));
-        //
-     }
-   else
-     {
-        // TIZEN_ONLY(20171011) : atspi : Do not center align when genlist item is highlighted in wearable profile
-        //FIXME : First, last item is called centered because it may not have a proxy image.
-        //        This part will be revised in the next version.
-        Eina_List *realized = elm_genlist_realized_items_get(WIDGET(it));
-        if (VIEW(it) || realized)
-          {
-             Elm_Object_Item *first_it = elm_genlist_first_item_get(WIDGET(it));
-             Elm_Object_Item *last_it = elm_genlist_last_item_get(WIDGET(it));
-             if (first_it == eo_it || last_it == eo_it)
-               elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
-             else
-               elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
-           }
-        if (realized)
-          eina_list_free(realized);
-        //
+   efl_access_component_highlight_grab(efl_super(EO_OBJ(it), ELM_GENLIST_ITEM_CLASS));
 
-        if (VIEW(it))
-          elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
+   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
+   // If you call efl_super, then you do NOT have to call smart callback.
+   evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
+   //
 
-        ///TIZEN_ONLY(20170717) : expose highlight information on atspi
-        efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
-        ///
-
-        //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
-        // If you call efl_super, then you do NOT have to call smart callback.
-        evas_object_smart_callback_call(WIDGET(it), "atspi,highlighted", EO_OBJ(it));
-        //
-     }
-
-   if (VIEW(it))
-     {
-        //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
-        sd->currently_highlighted_item = it;
-        //
-     }
-   else
+   if (!VIEW(it))
      {
         if (!TIZEN_PROFILE_WEARABLE)
           {
@@ -9702,7 +9685,6 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
              elm_genlist_item_bring_in(eo_it, ELM_GENLIST_ITEM_SCROLLTO_IN);
              //
           }
-        sd->atspi_item_to_highlight = it;//it will be highlighted when realized
      }
 
   //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
