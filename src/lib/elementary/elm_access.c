@@ -1558,12 +1558,13 @@ _elm_access_efl_access_component_highlight_grab(Eo *obj, void *pd EINA_UNUSED)
 {
    if (!_access_action_callback_call(obj, ELM_ACCESS_ACTION_HIGHLIGHT, NULL))
      efl_access_component_highlight_grab(efl_super(obj, ELM_ACCESS_CLASS));
+   else
+     efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
 
    // TIZEN_ONLY(20160708) - support elm_access used for embedded toolkit
    action_by = ELM_ACCESS_ACTION_FIRST;
    //
 
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
    return EINA_TRUE;
 }
 
@@ -1572,12 +1573,13 @@ _elm_access_efl_access_component_highlight_clear(Eo *obj, void *pd EINA_UNUSED)
 {
    if (!_access_action_callback_call(obj, ELM_ACCESS_ACTION_UNHIGHLIGHT, NULL))
      efl_access_component_highlight_clear(efl_super(obj, ELM_ACCESS_CLASS));
+   else
+     efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
 
    // TIZEN_ONLY(20160708) - support elm_access used for embedded toolkit
    action_by = ELM_ACCESS_ACTION_FIRST;
    //
 
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
    return EINA_TRUE;
 }
 //

@@ -983,6 +983,23 @@ _accessible_gesture_do(const Eldbus_Service_Interface *iface, const Eldbus_Messa
 }
 //
 
+static Eina_Bool
+_ee_obscured_get(Eo *obj)
+{
+   const Ecore_Evas *ee;
+   if (efl_isa(obj, ELM_WIDGET_ITEM_CLASS))
+     {
+        Elm_Widget_Item_Data *id = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
+        ee = ecore_evas_ecore_evas_get(evas_object_evas_get(id->view));
+     }
+   else
+     {
+        ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
+     }
+
+   return ecore_evas_obscured_get(ee);
+}
+
 // TIZEN_ONLY(20170310) - implementation of get object under coordinates for accessibility
 static Eldbus_Message *
 _accessible_get_neighbor(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eldbus_Message *msg)
@@ -1008,8 +1025,7 @@ _accessible_get_neighbor(const Eldbus_Service_Interface *iface EINA_UNUSED, cons
    // TIZEN_ONLY(20161213) - do not response if ecore evas is obscured
    if (root)
      {
-        const Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(root));
-        if (ecore_evas_obscured_get(ee))
+        if (_ee_obscured_get(root))
           return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "ecore evas is obscured.");
      }
    //
@@ -1050,8 +1066,7 @@ _accessible_get_navigable_at_point(const Eldbus_Service_Interface *iface EINA_UN
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_MIXIN, msg);
 
    // TIZEN_ONLY(20161213) - do not response if ecore evas is obscured
-   const Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
-   if (ecore_evas_obscured_get(ee))
+   if (_ee_obscured_get(obj))
      return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "ecore evas is obscured.");
    //
 
@@ -4216,8 +4231,7 @@ _component_get_accessible_at_point(const Eldbus_Service_Interface *iface EINA_UN
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_COMPONENT_MIXIN, msg);
 
    // TIZEN_ONLY(20161213) - do not response if ecore evas is obscured
-   const Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(obj));
-   if (ecore_evas_obscured_get(ee))
+   if (_ee_obscured_get(obj))
      return eldbus_message_error_new(msg, "org.freedesktop.DBus.Error.Failed", "ecore evas is obscured.");
    //
 
@@ -5613,9 +5627,14 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
    type_desc = elm_states_to_atspi_state[state_data->type].name;
    //TIZEN_ONLY(20170802): handle "gesture_required" attribute
    unsigned int det2 = 0;
-   if ((state_data->type == EFL_ACCESS_STATE_HIGHLIGHTED) &&
-       (_scroll_gesture_required_is(event->object)))
-     det2++;
+   if (state_data->type == EFL_ACCESS_STATE_HIGHLIGHTED)
+    {
+       if (_ee_obscured_get(event->object))
+         return EINA_FALSE;
+
+       if (_scroll_gesture_required_is(event->object))
+        det2++;
+    }
 
    _bridge_signal_send(data, event->object, ATSPI_DBUS_INTERFACE_EVENT_OBJECT,
                        &_event_obj_signals[ATSPI_OBJECT_EVENT_STATE_CHANGED], type_desc, state_data->new_value, det2, NULL);
