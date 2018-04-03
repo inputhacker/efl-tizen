@@ -7126,6 +7126,7 @@ _acceptable_child_is(Eo *obj)
      {
        case EFL_ACCESS_ROLE_IMAGE:
        case EFL_ACCESS_ROLE_ICON:
+       case EFL_ACCESS_ROLE_REDUNDANT_OBJECT:
        /* remove unacceptable leaf node */
          children = efl_access_children_get(obj);
          if (!children) return EINA_FALSE;
