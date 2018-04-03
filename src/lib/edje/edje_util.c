@@ -973,7 +973,16 @@ _efl_canvas_layout_efl_gfx_color_class_color_class_get(Eo *obj EINA_UNUSED, Edje
    if (!color_class)
      cc = NULL;
    else
+    /***********************************************************************************
+     * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+     ***********************************************************************************/
+    cc = _edje_color_class_recursive_find(ed, ed->file, color_class);
+    /*
      cc = _edje_color_class_find(ed, color_class);
+    */
+    /*******
+     * END *
+     *******/
 
    return _edje_color_class_get_internal(cc, layer, r, g, b, a);
 }
