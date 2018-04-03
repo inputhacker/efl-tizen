@@ -2535,7 +2535,8 @@ done:
    return ret;
 
 error:
-   eina_hash_set(ls->state->parsing, filename, (void *)EINA_FALSE);
+   if (ls && ls->state)
+     eina_hash_set(ls->state->parsing, filename, (void *)EINA_FALSE);
    eo_lexer_free(ls);
    return NULL;
 }
