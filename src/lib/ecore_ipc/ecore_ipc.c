@@ -547,7 +547,7 @@ ecore_ipc_server_with_fd_add(Ecore_Ipc_Type type, const char *name, int port, in
 EAPI Ecore_Ipc_Server *
 ecore_ipc_server_add(Ecore_Ipc_Type type, const char *name, int port, const void *data)
 {
-    ecore_ipc_server_with_fd_add(type, name, port, -1, data);
+    return ecore_ipc_server_with_fd_add(type, name, port, -1, data);
 }
 
 static void
@@ -815,7 +815,7 @@ ecore_ipc_server_with_fd_connect(Ecore_Ipc_Type type, char *name, int port, int 
 EAPI Ecore_Ipc_Server *
 ecore_ipc_server_connect(Ecore_Ipc_Type type, char *name, int port, const void *data)
 {
-   ecore_ipc_server_with_fd_connect(type, name, port, -1, data);
+   return ecore_ipc_server_with_fd_connect(type, name, port, -1, data);
 }
 
 EAPI void *

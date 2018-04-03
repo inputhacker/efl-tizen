@@ -87,7 +87,7 @@ ecore_device_del(Ecore_Device *dev)
 EAPI Ecore_Device *
 ecore_device_ref(Ecore_Device *dev)
 {
-   SAFETY_CHECK(dev, EFL_ECORE_INPUT_DEVICE_CLASS);
+   SAFETY_CHECK(dev, EFL_ECORE_INPUT_DEVICE_CLASS, NULL);
 
    return efl_ref(dev);
 }
