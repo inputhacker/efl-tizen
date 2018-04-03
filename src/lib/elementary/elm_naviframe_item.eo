@@ -89,5 +89,6 @@ class Elm.Naviframe.Item(Elm.Widget.Item)
         //
         Efl.Access.name_cb { set; }
         Efl.Access.description_cb { set; }
+        Efl.Access.translation_domain { set; get; }
    }
 }
