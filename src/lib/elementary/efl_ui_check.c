@@ -112,6 +112,7 @@ _efl_ui_check_efl_ui_widget_on_access_activate(Eo *obj EINA_UNUSED, Efl_Ui_Check
 static Eina_Bool
 _key_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
 {
+   elm_layout_signal_emit(obj, "elm,key,action,activate", "elm");
    _activate(obj);
    return EINA_TRUE;
 }
