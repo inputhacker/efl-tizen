@@ -885,7 +885,7 @@ efl_net_connect_async_with_fd_new(const struct sockaddr *addr, socklen_t addrlen
 Ecore_Thread *
 efl_net_connect_async_new(const struct sockaddr *addr, socklen_t addrlen, int type, int protocol, Eina_Bool close_on_exec, Efl_Net_Connect_Async_Cb cb, const void *data)
 {
-    efl_net_connect_async_with_fd_new(addr, addrlen, type, protocol, close_on_exec, cb, INVALID_SOCKET, data);
+    return efl_net_connect_async_with_fd_new(addr, addrlen, type, protocol, close_on_exec, cb, INVALID_SOCKET, data);
 }
 
 static Eina_Bool
