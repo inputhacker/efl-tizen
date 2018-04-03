@@ -2421,6 +2421,20 @@ _elm_naviframe_item_efl_access_description_get(Eo *eo_item, Elm_Naviframe_Item_D
    return ret;
 }
 //
+EOLIAN static void
+_elm_naviframe_item_efl_access_translation_domain_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, const char *domain)
+{
+   efl_access_translation_domain_set(VIEW(nit), domain);
+}
+
+EOLIAN static const char*
+_elm_naviframe_item_efl_access_translation_domain_get(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit)
+{
+   const char *ret = NULL;
+   ret = efl_access_translation_domain_get(VIEW(nit));
+   return ret;
+}
+
 
 EOLIAN static void
 _elm_naviframe_item_efl_access_name_cb_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, Elm_Atspi_Reading_Info_Cb name_cb, const void *data)
