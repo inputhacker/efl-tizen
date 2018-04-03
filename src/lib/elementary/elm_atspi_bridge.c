@@ -245,8 +245,9 @@ static const Elm_Atspi_Bridge_Event_Handler event_handlers[] = {
 enum
 {
   EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_ENABLED = 0,
-  EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_DISABLED = 1 << 0,
-  EFL_ACCESS_WINDOW_ACTIVATE_INFO_KEYBOARD = 1 << 1,
+  EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_ENABLED_WITHOUT_WINDOW = 1 << 0,
+  EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_DISABLED = 1 << 1,
+  EFL_ACCESS_WINDOW_ACTIVATE_INFO_KEYBOARD = 1 << 2,
 };
 //
 
@@ -1440,13 +1441,15 @@ static Eldbus_Message *
 _accessible_default_label_info_get(const Eldbus_Service_Interface *iface, const Eldbus_Message *msg)
 {
    Eldbus_Message *ret;
-   Eldbus_Message_Iter *iter;
+   Eldbus_Message_Iter *iter, *iter_dict, *iter_entry;
    const char *obj_path = eldbus_message_path_get(msg);
    Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
    Eo *default_label_obj;
    Efl_Access_Role role;
    AtspiRole atspi_role = ATSPI_ROLE_INVALID;
+   Eina_List *attrs, *l;
+   Efl_Access_Attribute *attr = NULL;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_MIXIN, msg);
 
@@ -1463,6 +1466,21 @@ _accessible_default_label_info_get(const Eldbus_Service_Interface *iface, const 
    role = efl_access_role_get(default_label_obj);
    atspi_role = role > EFL_ACCESS_ROLE_LAST_DEFINED ? ATSPI_ROLE_LAST_DEFINED : elm_roles_to_atspi_roles[role][1];
    eldbus_message_iter_basic_append(iter, 'u', atspi_role);
+
+   attrs = efl_access_attributes_get(default_label_obj);
+   iter_dict = eldbus_message_iter_container_new(iter, 'a', "{ss}");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(iter_dict, NULL);
+
+   EINA_LIST_FOREACH(attrs, l, attr)
+     {
+        iter_entry = eldbus_message_iter_container_new(iter_dict, 'e', NULL);
+        EINA_SAFETY_ON_NULL_RETURN_VAL(iter_entry, NULL);
+        eldbus_message_iter_arguments_append(iter_entry, "ss", attr->key, attr->value);
+        eldbus_message_iter_container_close(iter_dict, iter_entry);
+     }
+
+   eldbus_message_iter_container_close(iter, iter_dict);
+   efl_access_attributes_list_free(attrs);
 
    return ret;
 }
@@ -5844,10 +5862,16 @@ _window_activated_detail_value_add(Eo *obj)
    attr_list = efl_access_attributes_get(obj);
    EINA_LIST_FOREACH(attr_list, l, attr)
      {
-        if (!strcmp(attr->key, "default_label") && !strcmp(attr->value, "disabled"))
+        if (!strcmp(attr->key, "default_label"))
           {
-             ret |= EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_DISABLED;
-             break;
+             if(!strcmp(attr->value, "enabled_without_window"))
+               {
+                  ret |= EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_ENABLED_WITHOUT_WINDOW;
+               }
+             else if(!strcmp(attr->value, "disabled"))
+               {
+                  ret |= EFL_ACCESS_WINDOW_ACTIVATE_INFO_DEFAULT_LABEL_DISABLED;
+               }
           }
      }
    if (attr_list)
