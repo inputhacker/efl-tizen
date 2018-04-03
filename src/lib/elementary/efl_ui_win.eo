@@ -10,7 +10,7 @@ enum Efl.Ui.Win.Type
    ]]
    legacy: efl_ui_win;
 
-   unknown, [[Default, unknown, type]]
+   unknown = -1, [[Default, unknown, type]]
    basic, [[A normal window. Indicates a normal, top-level window. Almost every
             window will be created with this type.]]
    dialog_basic, [[Used for simple dialog windows.]]
