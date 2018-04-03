@@ -470,5 +470,7 @@ ecore_wl2_tbmbuf_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha,
     {
       free(surf);
     }
+  if (out)
+    free(out);
   return NULL;
 }
