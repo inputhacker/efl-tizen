@@ -77,5 +77,7 @@ class Elm.Naviframe.Item(Elm.Widget.Item, Efl.Ui.Legacy)
         Efl.Access.i18n_name { get; set; }
         Efl.Access.description { get; set; }
         //
+        Efl.Access.name_cb { set; }
+        Efl.Access.description_cb { set; }
    }
 }

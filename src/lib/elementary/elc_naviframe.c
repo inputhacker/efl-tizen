@@ -2422,6 +2422,19 @@ _elm_naviframe_item_efl_access_description_get(Eo *eo_item, Elm_Naviframe_Item_D
 }
 //
 
+EOLIAN static void
+_elm_naviframe_item_efl_access_name_cb_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, Elm_Atspi_Reading_Info_Cb name_cb, const void *data)
+{
+   efl_access_name_cb_set(VIEW(nit), name_cb, data);
+}
+
+EOLIAN static void
+_elm_naviframe_item_efl_access_description_cb_set(Eo *eo_item EINA_UNUSED, Elm_Naviframe_Item_Data* nit, Elm_Atspi_Reading_Info_Cb description_cb, const void *data)
+{
+   efl_access_description_cb_set(VIEW(nit), description_cb, data);
+}
+
+
 /* Standard widget overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_naviframe, Elm_Naviframe_Data)
