@@ -1546,7 +1546,7 @@ static const Eldbus_Method accessible_methods[] = {
    //
    //TIZEN_ONLY(20170919): Handle default label object
    { "GetDefaultLabelInfo",
-     NULL, ELDBUS_ARGS({"(so)", "defaultLabelObject"}, {"u", "defaultLabelRole"}),
+     NULL, ELDBUS_ARGS({"(so)", "defaultLabelObject"}, {"u", "defaultLabelRole"},{"a{ss}", "attributes"}),
      _accessible_default_label_info_get, 0},
    //
    { NULL, NULL, NULL, NULL, 0 }
