@@ -4282,12 +4282,12 @@ _elm_genlist_efl_ui_widget_focus_highlight_geometry_get(Eo *obj, Elm_Genlist_Dat
 }
 
 EOLIAN static Eina_Bool
-_elm_genlist_efl_ui_widget_on_focus_update(Eo *obj, Elm_Genlist_Data *sd, Elm_Object_Item *item EINA_UNUSED)
+_elm_genlist_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Genlist_Data *sd)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
    Eina_Bool int_ret = EINA_FALSE;
 
-   int_ret = efl_ui_widget_on_focus_update(efl_super(obj, MY_CLASS), NULL);
+   int_ret = efl_ui_focus_object_on_focus_update(efl_super(obj, MY_CLASS));
    if (!int_ret) return EINA_FALSE;
 
    if ((sd->items) && (sd->selected) && (!sd->last_selected_item))
