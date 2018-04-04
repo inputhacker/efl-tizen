@@ -1719,6 +1719,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_wl2.so.*
+%{_libdir}/ecore_wl2/engines/*/*/module.so
+%exclude /usr/lib/debug/%{_libdir}/ecore_wl2/engines/*/*/module.so.debug
 
 %files -n ecore-wl2-devel
 %manifest %{name}.manifest
