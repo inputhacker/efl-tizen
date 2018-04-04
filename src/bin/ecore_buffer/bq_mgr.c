@@ -471,6 +471,9 @@ bq_mgr_buffer_provider_attatch_buffer(struct wl_client *client,
    bq_consumer = bq->consumer;
 
    bq_buffer = BQ_OBJECT_NEW(Bq_Buffer, bq_buffer_free);
+   if (!bq_buffer)
+     return;
+
    bq_buffer->provider = wl_resource_create(client, &bq_buffer_interface, 1, buffer);
    wl_resource_set_implementation(bq_buffer->provider, NULL, bq_buffer, bq_mgr_buffer_destroy);
 
