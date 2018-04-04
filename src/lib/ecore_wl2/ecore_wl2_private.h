@@ -703,6 +703,12 @@ struct _Ecore_Wl2_Input
 // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
    Eina_Bool caps_update;
 //
+
+// TIZEN_ONLY(20180404): support a tizen_keyrouter event surface event
+   Ecore_Wl2_Window *key_win;
+   Ecore_Wl2_Window *repeat_win;
+   int key_mode;
+//
 };
 
 typedef struct Ecore_Wl2_Event_Window_WWW

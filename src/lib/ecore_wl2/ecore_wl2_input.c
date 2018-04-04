@@ -1435,8 +1435,18 @@ _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned 
    input = data;
    if (!input) return;
 
-   /* try to get the window which has keyboard focus */
-   window = input->focus.keyboard;
+// TIZEN_ONLY(20180404): support a tizen_keyrouter event surface event
+   if (input->key_win)
+     {
+        window = input->key_win;
+     }
+   else if ((input->repeat.key) && (keycode == input->repeat.key))
+     {
+        window = input->repeat_win;
+     }
+   else
+//
+      window = input->focus.keyboard; /* try to get the window which has keyboard focus */
    // TIZEN_ONLY(20171107): support a tizen_keyrouter interface
    if (!window)
      {
@@ -1475,6 +1485,10 @@ _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned 
      sym = process_key_press(sym, input);
    sym_name = xkb_state_key_get_one_sym(input->xkb.maskless_state, code);
 
+// TIZEN_ONLY(20180404): support a tizen_keyrouter event surface event
+   if (input->key_win) input->key_win = NULL;
+//
+
    _ecore_wl2_input_key_send(input, window, sym, sym_name, code,
                              state, timestamp);
 
@@ -1488,6 +1502,9 @@ _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned 
         input->repeat.time = 0;
         if (input->repeat.timer) ecore_timer_del(input->repeat.timer);
         input->repeat.timer = NULL;
+// TIZEN_ONLY(20180404): support a tizen_keyrouter event surface event
+        input->repeat_win = NULL;
+//
      }
    else if (state == WL_KEYBOARD_KEY_STATE_PRESSED)
      {
@@ -1498,6 +1515,9 @@ _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned 
         input->repeat.sym_name = sym;
         input->repeat.key = keycode;
         input->repeat.time = timestamp;
+// TIZEN_ONLY(20180404): support a tizen_keyrouter event surface event
+        input->repeat_win = window;
+//
 
         /* Delete this timer if there is still one */
         if (input->repeat.timer) ecore_timer_del(input->repeat.timer);
@@ -2458,6 +2478,30 @@ _ecore_wl2_cb_key_cancel(void *data, struct tizen_keyrouter *tizen_keyrouter EIN
      }
 }
 
+static void
+_ecore_wl2_cb_event_surface(void *data, struct tizen_keyrouter *tizen_keyrouter EINA_UNUSED, struct wl_surface *surface, uint32_t mode)
+{
+   Ecore_Wl2_Display *ewd = (Ecore_Wl2_Display *)data;
+   Ecore_Wl2_Input *input;
+
+   if (!ewd)
+     {
+        WRN("Failed to get Ecore_Wl2_Display\n");
+        return;
+     }
+
+   EINA_INLIST_FOREACH(ewd->inputs, input)
+     {
+        input->key_win = ecore_wl2_window_surface_find(surface);
+        input->key_mode = mode;
+
+        if(!input->key_win)
+          {
+             WRN("Get a event_surface(%p) but there was a no Ecore_Wl2_Window\n", surface);
+          }
+     }
+}
+
 // TIZEN_ONLY(20150722): Add ecore_wl_window_keygrab_* APIs
 static const struct tizen_keyrouter_listener _tz_keyrouter_listener =
 {
@@ -2467,7 +2511,8 @@ static const struct tizen_keyrouter_listener _tz_keyrouter_listener =
    _ecore_wl2_cb_set_register_none_key,
    _ecore_wl2_cb_keyregister_notify,
    _ecore_wl2_cb_set_input_config,
-   _ecore_wl2_cb_key_cancel
+   _ecore_wl2_cb_key_cancel,
+   _ecore_wl2_cb_event_surface
 };
 //
 
@@ -2475,7 +2520,7 @@ void
 _ecore_wl2_keyrouter_setup(Ecore_Wl2_Display *ewd, unsigned int id, unsigned int version EINA_UNUSED)
 {
    ewd->wl.tz_keyrouter =
-          wl_registry_bind(ewd->wl.registry, id, &tizen_keyrouter_interface, 1);
+          wl_registry_bind(ewd->wl.registry, id, &tizen_keyrouter_interface, 2);
    if (ewd->wl.tz_keyrouter)
      tizen_keyrouter_add_listener(ewd->wl.tz_keyrouter, &_tz_keyrouter_listener, ewd);
 }
