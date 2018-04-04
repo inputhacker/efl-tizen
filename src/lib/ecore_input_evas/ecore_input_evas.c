@@ -458,13 +458,24 @@ _ecore_event_evas_device_find(Evas *eo_e, Ecore_Device *ecore_dev)
 {
    Eina_List *list, *l;
    Evas_Device *evas_device;
+   char *evas_device_name, *evas_device_comment;
+   char *ecore_device_name, *ecore_device_comment;
+
+   ecore_device_name = ecore_device_name_get(ecore_dev);
+   ecore_device_comment = ecore_device_description_get(ecore_dev);
+
+   if (!ecore_device_name || !ecore_device_comment) return NULL;
 
    list = (Eina_List *)evas_device_list(eo_e, NULL);
    EINA_LIST_FOREACH(list, l, evas_device)
      {
+        evas_device_name = evas_device_name_get(evas_device);
+        evas_device_comment = evas_device_description_get(evas_device);
+        if (!evas_device_name || !evas_device_comment) continue;
+
         if ((evas_device_class_get(evas_device) == (Evas_Device_Class)ecore_device_class_get(ecore_dev)) &&
-            !strncmp(efl_name_get(evas_device), efl_name_get(ecore_dev), strlen(efl_name_get(evas_device))) &&
-            !strncmp(efl_comment_get(evas_device), efl_comment_get(ecore_dev), strlen(efl_comment_get(evas_device))))
+            !strncmp(evas_device_name, ecore_device_name, strlen(evas_device_name)) &&
+            !strncmp(evas_device_comment, ecore_device_comment, strlen(evas_device_comment)))
           {
              return evas_device;
           }

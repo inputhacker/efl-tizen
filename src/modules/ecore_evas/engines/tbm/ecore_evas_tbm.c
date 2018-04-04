@@ -89,14 +89,17 @@ _ecore_evas_tbm_default_seat_get(Evas *evas)
 {
    Eina_List *list, *l;
    Evas_Device *device;
+   char *evas_device_description;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(evas, EINA_FALSE);
 
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, device)
      {
+        evas_device_description = evas_device_description_get(device);
+        if (!evas_device_description) continue;
         if ((evas_device_class_get(device) == EVAS_DEVICE_CLASS_SEAT) &&
-            !strncmp(evas_device_description_get(device), "Enlightenment seat", sizeof("Enlightenment seat")))
+            !strncmp(evas_device_description, "Enlightenment seat", sizeof("Enlightenment seat")))
           {
              return device;
           }
