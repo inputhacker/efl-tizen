@@ -110,6 +110,7 @@ _ecore_event_filters_call(Eo *obj, Efl_Loop_Data *pd)
      {
         EINA_LIST_FREE(eemhd->filters_delete, f)
           {
+             eemhd->filters = eina_inlist_remove(eemhd->filters, EINA_INLIST_GET(f));
              free(f);
           }
      }
