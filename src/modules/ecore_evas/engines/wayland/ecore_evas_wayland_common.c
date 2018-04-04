@@ -34,7 +34,6 @@ static Eina_Array *_ecore_evas_wl_event_hdls;
 
 // TIZEN_ONLY(20160617) : uniconify force render
 static void _ecore_evas_wl_common_damage_add(Ecore_Evas *ee);
-int _ecore_evas_wl_common_render(Ecore_Evas *ee);
 //
 
 static void _ecore_evas_wayland_resize(Ecore_Evas *ee, int location);
@@ -836,7 +835,6 @@ _ecore_evas_wl_common_cb_window_pending_rotate(Ecore_Evas *ee, Ecore_Wl2_Event_W
    //Server has responsibility to show frame even though app not call render when app turns on manual rotation render feature.
    //until server add the code, client create fake damage.
    _ecore_evas_wl_common_damage_add(ee);
-   _ecore_evas_wl_common_render(ee);
 
    ee->prop.wm_rot.pending_mode.wm_angle = ev->angle;
    return ECORE_CALLBACK_PASS_ON;
@@ -2580,18 +2578,6 @@ _ecore_evas_wl_common_render_updates(void *data, Evas *evas EINA_UNUSED, void *e
      }
 }
 
-// TIZEN_ONLY
-int _ecore_evas_wl_common_render(Ecore_Evas *ee)
-{
-   int rend = 0;
-
-   // This function should be implemented.
-   if (!ee) return 0;
-
-   return rend;
-}
-//
-
 static Eina_Bool
 _ecore_evas_wl_common_prepare(Ecore_Evas *ee)
 {
@@ -3035,10 +3021,7 @@ _ecore_evas_wl_common_cb_output_transform(void *data, int type EINA_UNUSED, void
    changed = _ecore_evas_wl_common_rotate_update(ee);
 
    if (!ee->manual_render && changed)
-     {
-        evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
-        _ecore_evas_wl_common_render(ee);
-     }
+     evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -3054,10 +3037,7 @@ _ecore_evas_wl_common_cb_ignore_output_transform(void *data, int type EINA_UNUSE
    changed = _ecore_evas_wl_common_rotate_update(ee);
 
    if (!ee->manual_render && changed)
-     {
-        evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
-        _ecore_evas_wl_common_render(ee);
-     }
+     evas_damage_rectangle_add(ee->evas, 0, 0, ee->w, ee->h);
 
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -3272,7 +3252,7 @@ static Ecore_Evas_Engine_Func _ecore_wl_engine_func =
    NULL, // modal set
    NULL, // demand attention set
    _ecore_evas_wl_common_focus_skip_set,
-   NULL, //_ecore_evas_wl_common_render,
+   NULL,
    _ecore_evas_wl_common_screen_geometry_get,
    _ecore_evas_wl_common_screen_dpi_get,
    NULL, // func msg parent send
