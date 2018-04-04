@@ -609,7 +609,7 @@ bq_mgr_buffer_provider_enqueue_buffer(struct wl_client *client EINA_UNUSED,
    bq_consumer = bq->consumer;
    if (!bq_consumer)
      {
-        wl_resource_post_error(BQ_OBJECT_RESOURCE(bq_consumer),
+        wl_resource_post_error(BQ_OBJECT_RESOURCE(bq_provider),
                                BQ_PROVIDER_ERROR_CONNECTION,
                                "Not connected:%s", bq->name);
         return;
