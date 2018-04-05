@@ -451,7 +451,8 @@ _access_name_set_cb(void *data, Evas_Object *obj EINA_UNUSED)
 {
    char *text = NULL;
    if (data) text = _elm_util_mkup_to_text((char*)data);
-   if (text) return strdup(text);
+   if (text) return text;
+
    return NULL;
 }
 
