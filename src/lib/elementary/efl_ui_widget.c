@@ -6370,14 +6370,6 @@ _elm_widget_item_efl_access_component_extents_set(Eo *obj EINA_UNUSED, Elm_Widge
    return EINA_FALSE;
 }
 
-EOLIAN static int
-_elm_widget_item_efl_access_component_layer_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd EINA_UNUSED)
-{
-   if (!sd->view)
-     return -1;
-   return evas_object_layer_get(sd->view);
-}
-
 EOLIAN static Eina_Bool
 _elm_widget_item_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
 {
@@ -6433,16 +6425,6 @@ _elm_widget_item_efl_access_can_highlight_get(Eo *obj, Elm_Widget_Item_Data *_pd
    return _elm_widget_item_highlightable(obj);
 }
 //
-
-EOLIAN static double
-_elm_widget_item_efl_access_component_alpha_get(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd EINA_UNUSED)
-{
-   int alpha;
-
-   if (!sd->view) return -1.0;
-   evas_object_color_get(sd->view, NULL, NULL, NULL, &alpha);
-   return (double)alpha / 255.0;
-}
 
 EOLIAN static Efl_Object *
 _efl_ui_widget_efl_object_provider_find(const Eo *obj, Elm_Widget_Smart_Data *pd, const Efl_Object *klass)

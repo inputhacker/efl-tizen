@@ -556,8 +556,6 @@ class Elm.Widget.Item(Efl.Object, Efl.Access,
            Efl.Access.translation_domain { set; get;}
            //
            Efl.Access.Component.extents { get; set; }
-           Efl.Access.Component.alpha { get; }
-           Efl.Access.Component.layer { get; }
            Efl.Access.Component.focus_grab;
            //TIZEN_ONLY(20150709) : atspi relations api
            Efl.Access.relation_set { get; }
