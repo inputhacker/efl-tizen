@@ -277,7 +277,7 @@ _banded_item_bg_add(Elm_Gen_Item *it, Evas_Object *target)
          evas_object_color_set(sd->banded_bg_rect, 0, 0, 0, 0);
        efl_canvas_group_member_add(sd->pan_obj, sd->banded_bg_rect);
        efl_ui_widget_sub_object_add(sd->obj, sd->banded_bg_rect);
-       efl_gfx_geometry_set(sd->banded_bg_rect, EINA_RECT(0, 0, -9999, -9999));
+       efl_gfx_entity_geometry_set(sd->banded_bg_rect, EINA_RECT(0, 0, -9999, -9999));
        evas_object_repeat_events_set(sd->banded_bg_rect, EINA_TRUE);
     }
 }
@@ -616,15 +616,15 @@ _elm_genlist_pan_efl_canvas_group_group_del(Eo *obj, Elm_Genlist_Pan_Data *psd)
 }
 
 EOLIAN static void
-_elm_genlist_pan_efl_gfx_position_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Position2D pos)
+_elm_genlist_pan_efl_gfx_entity_position_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Position2D pos)
 {
-   efl_gfx_position_set(efl_super(obj, MY_PAN_CLASS), pos);
+   efl_gfx_entity_position_set(efl_super(obj, MY_PAN_CLASS), pos);
    psd->wsd->dir = 0;
    _changed(obj);
 }
 
 EOLIAN static void
-_elm_genlist_pan_efl_gfx_size_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Size2D size)
+_elm_genlist_pan_efl_gfx_entity_size_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Size2D size)
 {
    if ((size.w > 1 || size.h > 1))
      {
@@ -669,7 +669,7 @@ _elm_genlist_pan_efl_gfx_size_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Size2
 
    psd->wsd->calc_done = EINA_FALSE;
 super:
-   efl_gfx_size_set(efl_super(obj, MY_PAN_CLASS), size);
+   efl_gfx_entity_size_set(efl_super(obj, MY_PAN_CLASS), size);
 
    _changed(obj);
 }
@@ -946,7 +946,7 @@ _view_theme_update(Elm_Gen_Item *it, Evas_Object *view, const char *style)
      }
 
    edje_object_mirrored_set(view, efl_ui_mirrored_get(WIDGET(it)));
-   edje_object_scale_set(view, efl_gfx_scale_get(WIDGET(it))
+   edje_object_scale_set(view, efl_gfx_entity_scale_get(WIDGET(it))
                          * elm_config_scale_get());
 
    GL_IT(it)->multiline = EINA_FALSE;
@@ -985,7 +985,7 @@ _view_create(Elm_Gen_Item *it, const char *style)
    Evas_Object *view = edje_object_add(evas_object_evas_get(WIDGET(it)));
    efl_canvas_group_member_add(GL_IT(it)->wsd->pan_obj, view);
    elm_widget_sub_object_add(WIDGET(it), view);
-   edje_object_scale_set(view, efl_gfx_scale_get(WIDGET(it)) *
+   edje_object_scale_set(view, efl_gfx_entity_scale_get(WIDGET(it)) *
                          elm_config_scale_get());
 
    _view_theme_update(it, view, style);
@@ -1631,7 +1631,7 @@ _item_cache_push(Elm_Gen_Item *it, Eina_List *contents)
    edje_object_mirrored_set(VIEW(it),
                             efl_ui_mirrored_get(WIDGET(it)));
    edje_object_scale_set(VIEW(it),
-                         efl_gfx_scale_get(WIDGET(it))
+                         efl_gfx_entity_scale_get(WIDGET(it))
                          * elm_config_scale_get());
 
    ic->base_view = VIEW(it);
@@ -2564,7 +2564,7 @@ _elm_genlist_pan_efl_canvas_group_group_calculate(Eo *obj, Elm_Genlist_Pan_Data 
                  bg.h = oy + oh - bg.y;
 
                  evas_object_stack_below(psd->wsd->banded_bg_rect, VIEW(tmp));
-                 efl_gfx_geometry_set(psd->wsd->banded_bg_rect, bg);
+                 efl_gfx_entity_geometry_set(psd->wsd->banded_bg_rect, bg);
 
                  //GET COLOR OF LAST ITEM AND SET NEXT COLOR TO BANDED BG RECT
                  if (psd->wsd->banded_bg_on)
@@ -6625,7 +6625,7 @@ _elm_genlist_efl_canvas_group_group_del(Eo *obj, Elm_Genlist_Data *sd)
 }
 
 EOLIAN static void
-_elm_genlist_efl_gfx_position_set(Eo *obj, Elm_Genlist_Data *sd, Eina_Position2D pos)
+_elm_genlist_efl_gfx_entity_position_set(Eo *obj, Elm_Genlist_Data *sd, Eina_Position2D pos)
 {
    Evas_Coord ox, oy, bg_x, bg_y;
 
@@ -6635,20 +6635,20 @@ _elm_genlist_efl_gfx_position_set(Eo *obj, Elm_Genlist_Data *sd, Eina_Position2D
         evas_object_geometry_get(sd->banded_bg_rect, &bg_x, &bg_y, NULL, NULL);
      }
 
-   efl_gfx_position_set(efl_super(obj, MY_CLASS), pos);
-   efl_gfx_position_set(sd->hit_rect, pos);
+   efl_gfx_entity_position_set(efl_super(obj, MY_CLASS), pos);
+   efl_gfx_entity_position_set(sd->hit_rect, pos);
 
    if (!TIZEN_PROFILE_WEARABLE)
-     efl_gfx_position_set(sd->banded_bg_rect, EINA_POSITION2D((bg_x + pos.x - ox), (bg_y + pos.y - oy)));
+     efl_gfx_entity_position_set(sd->banded_bg_rect, EINA_POSITION2D((bg_x + pos.x - ox), (bg_y + pos.y - oy)));
 }
 
 EOLIAN static void
-_elm_genlist_efl_gfx_size_set(Eo *obj, Elm_Genlist_Data *sd, Eina_Size2D sz)
+_elm_genlist_efl_gfx_entity_size_set(Eo *obj, Elm_Genlist_Data *sd, Eina_Size2D sz)
 
 {
-   efl_gfx_size_set(efl_super(obj, MY_CLASS), sz);
+   efl_gfx_entity_size_set(efl_super(obj, MY_CLASS), sz);
 
-   efl_gfx_size_set(sd->hit_rect, sz);
+   efl_gfx_entity_size_set(sd->hit_rect, sz);
 }
 
 EOLIAN static void

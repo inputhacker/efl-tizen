@@ -103,9 +103,9 @@ _access_socket_proxy_unref(Eo * obj)
 
 //TIZEN_ONLY(20171108): make atspi_proxy work
 EOLIAN static void
-_efl_ui_win_socket_efl_gfx_visible_set(Eo *obj, Efl_Ui_Win_Socket_Data *sd EINA_UNUSED, Eina_Bool vis)
+_efl_ui_win_socket_efl_gfx_entity_visible_set(Eo *obj, Efl_Ui_Win_Socket_Data *sd EINA_UNUSED, Eina_Bool vis)
 {
-   efl_gfx_visible_set(efl_super(obj, EFL_UI_WIN_SOCKET_CLASS), vis);
+   efl_gfx_entity_visible_set(efl_super(obj, EFL_UI_WIN_SOCKET_CLASS), vis);
 
    // TIZEN_ONLY(20160705) - enable atspi_proxy to work
    if (vis)

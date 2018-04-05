@@ -17,7 +17,7 @@ ELM_VG_SCALE_SIZE(Evas_Object* obj, double x)
 {
    Evas_Object *edje = elm_layout_edje_get(obj);
 
-   return ((x) * elm_config_scale_get() / edje_object_base_scale_get(edje) * efl_gfx_scale_get(obj));
+   return ((x) * elm_config_scale_get() / edje_object_base_scale_get(edje) * efl_gfx_entity_scale_get(obj));
 }
 /////////////////////////////////////////////////////////////////////////
 /* Radio */
@@ -25,7 +25,7 @@ ELM_VG_SCALE_SIZE(Evas_Object* obj, double x)
 typedef struct vg_radio_s
 {
    Evas_Object *vg[3];       //0: bg, 1: outline, 2: icon
-   Efl_Canvas_VG_Shape *shape[3];   //0: bg, 1: outline, 2: icon
+   Efl_Canvas_Vg_Shape *shape[3];   //0: bg, 1: outline, 2: icon
    Elm_Transit *transit;
    Evas_Object *obj;
    Eina_Bool init : 1;
@@ -247,7 +247,7 @@ tizen_vg_radio_state_set(Elm_Radio *obj)
 typedef struct check_favorite_s
 {
    Evas_Object *vg[2]; //0: outline, 1: inner body
-   Efl_Canvas_VG_Shape *shape[2];  //0: outline, 1: inner body
+   Efl_Canvas_Vg_Shape *shape[2];  //0: outline, 1: inner body
    Elm_Transit *transit;
    Evas_Object *obj;
    Eina_Bool init : 1;
@@ -462,7 +462,7 @@ tizen_vg_check_favorite_set(Elm_Check *obj)
 typedef struct check_onoff_s
 {
    Evas_Object *vg[3]; //0: bg, 1: overlapped circle, 2: line-circle
-   Efl_Canvas_VG_Shape *shape[4];  //0: bg, 1: overlapped circle, 2: line, 3: circle
+   Efl_Canvas_Vg_Shape *shape[4];  //0: bg, 1: overlapped circle, 2: line, 3: circle
    Elm_Transit *transit[3];  //0: circle, 1: line, 2: overlapped circle
    Evas_Object *obj;
    Eina_Bool init : 1;
@@ -823,7 +823,7 @@ tizen_vg_check_onoff_set(Elm_Check *obj)
 typedef struct check_default_s
 {
    Evas_Object *vg[3]; //0: base, 1: line 2: bg
-   Efl_Canvas_VG_Shape *shape[5];  //0: outline, 1: bg, 2: left line, 3: right line 4: bg
+   Efl_Canvas_Vg_Shape *shape[5];  //0: outline, 1: bg, 2: left line, 3: right line 4: bg
    Elm_Transit *transit[3]; //0: bg color, 1: bg scale, 2: check lines
    Evas_Object *obj;
    double left_move_to[2];
@@ -1281,7 +1281,7 @@ tizen_vg_check_state_set(Elm_Check *obj)
 typedef struct vg_button_s
 {
    Evas_Object *vg[2];       //0: base, 1: effect
-   Efl_Canvas_VG_Shape *shape[2];   //0: base, 1: effect
+   Efl_Canvas_Vg_Shape *shape[2];   //0: base, 1: effect
    Evas_Object *obj;
    Evas_Coord corner;
    Eina_Bool init : 1;
@@ -1543,7 +1543,7 @@ tizen_vg_button_set(Elm_Button *obj)
 typedef struct vg_progressbar_s
 {
    Evas_Object *vg[3];       //0: base, 1: layer1, 2:layer2
-   Efl_Canvas_VG_Shape *shape[3];   //0: base, 1: layer1, 2: layer2
+   Efl_Canvas_Vg_Shape *shape[3];   //0: base, 1: layer1, 2: layer2
    Elm_Transit  *transit[8];
    Evas_Object *obj;
    Evas_Coord x, w, h;       // for normal style animation data
@@ -2126,7 +2126,7 @@ tizen_vg_progressbar_set(Elm_Progressbar *obj)
 typedef struct vg_slider_s
 {
    Evas_Object *vg[5];
-   Efl_Canvas_VG_Shape *shape[5];
+   Efl_Canvas_Vg_Shape *shape[5];
    Evas_Object *obj;
    Evas_Object *popup;
    Eina_Stringshare *style;

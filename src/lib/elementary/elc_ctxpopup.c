@@ -1734,7 +1734,7 @@ _elm_ctxpopup_efl_access_component_extents_get(const Eo *obj EINA_UNUSED, Elm_Ct
         r.h = -1;
         return r;
      }
-   r = efl_gfx_geometry_get(sd->box);
+   r = efl_gfx_entity_geometry_get(sd->box);
 
    if (screen_coords)
      {

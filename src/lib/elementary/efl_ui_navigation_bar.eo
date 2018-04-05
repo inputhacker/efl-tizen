@@ -16,7 +16,7 @@ class Efl.Ui.Navigation_Bar (Efl.Ui.Layout, Efl.Content, Efl.Text, Efl.Ui.Transl
            and the Navigation_Layout widget is pushed to the Stack widget.
 
            The back button is hidden by default and it can be visible.
-           e.g. efl_gfx_visible_set(efl_part(navigation_bar, "back_button"), EINA_TRUE);
+           e.g. efl_gfx_entity_visible_set(efl_part(navigation_bar, "back_button"), EINA_TRUE);
          ]]
    }
    implements {

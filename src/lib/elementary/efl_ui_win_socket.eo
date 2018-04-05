@@ -28,7 +28,7 @@ class Efl.Ui.Win_Socket (Efl.Ui.Win)
    implements {
       Efl.Object.finalize;
       //TIZEN_ONLY(20171108): make atspi_proxy work
-      Efl.Gfx.visible { set; }
+      Efl.Gfx.Entity.visible { set; }
       Efl.Object.parent { get; }
       //
    }

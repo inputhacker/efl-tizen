@@ -1400,7 +1400,7 @@ typedef struct _Efl_Canvas_Iterator
 static Eina_Bool
 _efl_canvas_iterator_next(Efl_Canvas_Iterator *it, void **data)
 {
-   Efl_Gfx *sub;
+   Efl_Gfx_Entity *sub;
 
    if (!it->object) return EINA_FALSE;
    if (!eina_iterator_next(it->real_iterator, (void **) &sub))

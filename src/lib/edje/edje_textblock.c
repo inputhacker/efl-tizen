@@ -44,7 +44,7 @@ _edje_part_recalc_single_textblock_min_max_calc_legacy(Edje_Real_Part *ep,
         tw = th = 0;
         if (!chosen_desc->text.min_x)
           {
-             efl_gfx_size_set(ep->object, EINA_SIZE2D(TO_INT(params->eval.w),  TO_INT(params->eval.h)));
+             efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(TO_INT(params->eval.w),  TO_INT(params->eval.h)));
              efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
           }
         else
@@ -70,7 +70,7 @@ _edje_part_recalc_single_textblock_min_max_calc_legacy(Edje_Real_Part *ep,
         tw = th = 0;
         if (!chosen_desc->text.max_x)
           {
-             efl_gfx_size_set(ep->object, EINA_SIZE2D(TO_INT(params->eval.w),  TO_INT(params->eval.h)));
+             efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(TO_INT(params->eval.w),  TO_INT(params->eval.h)));
              efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
           }
         else
@@ -150,7 +150,7 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
               * don't get meaningless height for multiline //
              if (temp_w > 0)
                {
-                  efl_gfx_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
+                  efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
                   efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
 
                   tw += ins_l + ins_r;
@@ -163,7 +163,7 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
                   th += ins_t + ins_b;
                }
              */
-             EINA_SIZE2D(ow, oh) = efl_gfx_size_get(ep->object);
+             EINA_SIZE2D(ow, oh) = efl_gfx_entity_size_get(ep->object);
 
              /* If object's size is same with the target size,
               * get current text size and check it before resizing it huge.
@@ -211,7 +211,7 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
                    * don't get meaningless height for multiline */
                   if (temp_w > 0)
                     {
-                       efl_gfx_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
+                       efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
                        efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
 
                        tw += ins_l + ins_r;
@@ -253,7 +253,7 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
                        temp_h = *maxh;
                     }
 
-                  efl_gfx_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
+                  efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
                   efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
 
                   tw += ins_l + ins_r;
@@ -338,7 +338,7 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
                    * don't get meaningless height for multiline */
                   if (temp_w > 0)
                     {
-                       efl_gfx_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
+                       efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
                        efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
 
                        tw += ins_l + ins_r;
@@ -396,7 +396,7 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
                             /* text.min: 0 0
                              * text.max: 1 1 */
 
-                            efl_gfx_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
+                            efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
                             efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
 
                             tw += ins_l + ins_r;
@@ -422,8 +422,8 @@ _edje_part_recalc_single_textblock_min_max_calc(Edje_Real_Part *ep,
                        if (min_calc_w > temp_w)
                          temp_w = min_calc_w;
 
-                       temp_h = efl_gfx_size_get(ep->object).h;
-                       efl_gfx_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
+                       temp_h = efl_gfx_entity_size_get(ep->object).h;
+                       efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(temp_w,  temp_h));
                        efl_canvas_text_size_formatted_get(ep->object, &tw, &th);
 
                        tw += ins_l + ins_r;
@@ -555,7 +555,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
              double s = base_s;
 
              if (ep->part->scale) base_s = TO_DOUBLE(sc);
-             efl_gfx_scale_set(ep->object, base_s);
+             efl_gfx_entity_scale_set(ep->object, base_s);
              efl_canvas_text_size_native_get(ep->object, &tw, &th);
 
              orig_s = base_s;
@@ -564,7 +564,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
              {
                 orig_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s,
                                                                                orig_s * TO_INT(params->eval.w) / tw);
-                efl_gfx_scale_set(ep->object, orig_s);
+                efl_gfx_entity_scale_set(ep->object, orig_s);
                 efl_canvas_text_size_native_get(ep->object, &tw, &th);
              }
              if (chosen_desc->text.fit_x)
@@ -573,7 +573,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                     {
                        s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s,
                                                                                  orig_s * TO_INT(params->eval.w) / tw);
-                       efl_gfx_scale_set(ep->object, s);
+                       efl_gfx_entity_scale_set(ep->object, s);
                        efl_canvas_text_size_native_get(ep->object, NULL, NULL);
                     }
                }
@@ -590,7 +590,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                             s = tmp_s;
                          }
 
-                       efl_gfx_scale_set(ep->object, s);
+                       efl_gfx_entity_scale_set(ep->object, s);
                        efl_canvas_text_size_native_get(ep->object, NULL, NULL);
                     }
                }
@@ -615,7 +615,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                        break;
                      s = tmp_s;
 
-                     efl_gfx_scale_set(ep->object, s);
+                     efl_gfx_entity_scale_set(ep->object, s);
                      efl_canvas_text_size_native_get(ep->object, &fw, &fh);
                      i--;
                   }
@@ -646,9 +646,9 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                given_h = *minh;
 
              if (ep->part->scale) orig_scale = TO_DOUBLE(sc);
-             efl_gfx_scale_set(ep->object, orig_scale);
+             efl_gfx_entity_scale_set(ep->object, orig_scale);
              evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_TRUE);
-             efl_gfx_size_set(ep->object, EINA_SIZE2D(given_w, given_h));
+             efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(given_w, given_h));
 
              result_scale = 0.0;
              fit_x_scale = orig_scale;
@@ -684,7 +684,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                     result_scale = fit_y_scale;
                }
 
-             efl_gfx_scale_set(ep->object, result_scale);
+             efl_gfx_entity_scale_set(ep->object, result_scale);
              efl_canvas_text_size_native_get(ep->object, &tw, NULL);
              efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
 
@@ -706,7 +706,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                          break;
                        result_scale = tmp_s;
 
-                       efl_gfx_scale_set(ep->object, result_scale);
+                       efl_gfx_entity_scale_set(ep->object, result_scale);
                        efl_canvas_text_size_native_get(ep->object, &tw, NULL);
                        efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
                        i--;
@@ -727,7 +727,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                        if (fabs(tmp_s - result_scale) <= DBL_EPSILON)
                          break;
 
-                       efl_gfx_scale_set(ep->object, tmp_s);
+                       efl_gfx_entity_scale_set(ep->object, tmp_s);
                        efl_canvas_text_size_native_get(ep->object, &tw, NULL);
                        efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
 
@@ -736,7 +736,7 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                        if (((chosen_desc->text.fit_x && (tw > given_w)) ||
                             (chosen_desc->text.fit_y && (th > given_h))))
                          {
-                            efl_gfx_scale_set(ep->object, result_scale);
+                            efl_gfx_entity_scale_set(ep->object, result_scale);
                             break;
                          }
 

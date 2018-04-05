@@ -79,11 +79,8 @@ class Elm.Panel (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Elm.Interface_Scrollable,
    implements {
       class.constructor;
       Efl.Object.constructor;
-      Efl.Gfx.position { set; }
-      Efl.Gfx.size { set; }
-      // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
-      Efl.Orientation.orientation { set; }
-      //
+      Efl.Gfx.Entity.position { set; }
+      Efl.Gfx.Entity.size { set; }
       Efl.Canvas.Group.group_member_add;
       Efl.Ui.Widget.theme_apply;
       Efl.Ui.Widget.on_disabled_update;
@@ -91,10 +88,13 @@ class Elm.Panel (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Elm.Interface_Scrollable,
       Efl.Ui.Widget.widget_event;
       Efl.Ui.Widget.interest_region { get; }
       Efl.Access.Widget.Action.elm_actions { get; }
+      Efl.Part.part;
+      // TIZEN_ONLY(20170105): scrollable panel content size ratio refactoring (for 2.4 UX)
+      Efl.Orientation.orientation { set; }
+      //
       // TIZEN_ONLY(20170829): [atspi][panel] Adds accessibility support for the panel widget.
       Efl.Access.Object.state_set { get; }
       //
-      Efl.Part.part;
    }
    events {
       toggled; [[Called when the hidden state was toggled]]
