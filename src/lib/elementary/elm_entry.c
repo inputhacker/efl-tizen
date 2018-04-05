@@ -8093,6 +8093,8 @@ _atspi_expose_anchors(Eo *obj, Eina_Bool is_screen_reader)
                             free(r);
                             range = eina_list_remove_list(range, ll);
                          }
+                       if (text) free(text);
+                       if (!rect) free(name);
                     }
                   else
                     {
