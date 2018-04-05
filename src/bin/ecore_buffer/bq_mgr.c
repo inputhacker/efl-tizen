@@ -132,7 +132,7 @@ bq_object_ref(Bq_Object *o)
    return o->ref;
 }
 
-static int
+static void
 bq_object_unref(Bq_Object *o)
 {
    o->ref--;
@@ -144,11 +144,9 @@ bq_object_unref(Bq_Object *o)
 
         free(o);
      }
-
-   return o->ref;
 }
 
-static int
+static void
 bq_object_free(Bq_Object *o)
 {
    if (!o) return 0;
@@ -156,7 +154,7 @@ bq_object_free(Bq_Object *o)
 
    o->deleted = EINA_TRUE;
 
-   return bq_object_unref(o);
+   bq_object_unref(o);
 }
 
 static void
@@ -296,15 +294,14 @@ bq_mgr_buffer_consumer_destroy(struct wl_resource *resource)
           {
              wl_resource_destroy(buf->consumer);
              buf->consumer = NULL;
-             bq_object_unref(BQ_OBJECT(buf));
           }
 
         if (buf->provider)
           {
              wl_resource_destroy(buf->provider);
              buf->provider = NULL;
-             bq_object_unref(BQ_OBJECT(buf));
           }
+        free(buf);
      }
 
    bq_object_unref(BQ_OBJECT(bq_consumer));
@@ -475,14 +472,14 @@ bq_mgr_buffer_provider_attatch_buffer(struct wl_client *client,
      return;
 
    bq_buffer->provider = wl_resource_create(client, &bq_buffer_interface, 1, buffer);
-   wl_resource_set_implementation(bq_buffer->provider, NULL, bq_buffer, bq_mgr_buffer_destroy);
-
    if (!bq_buffer->provider)
      {
         wl_client_post_no_memory(client);
         bq_object_unref(BQ_OBJECT(bq_buffer));
         return;
      }
+
+   wl_resource_set_implementation(bq_buffer->provider, NULL, bq_buffer, bq_mgr_buffer_destroy);
 
    bq_buffer->engine = strdup(engine);
    bq_buffer->width = width;
@@ -661,15 +658,14 @@ bq_mgr_buffer_provider_destroy(struct wl_resource *resource)
              bq_consumer_send_buffer_detached(BQ_OBJECT_RESOURCE(bq_consumer), buf->consumer);
              wl_resource_destroy(buf->consumer);
              buf->consumer = NULL;
-             bq_object_unref(BQ_OBJECT(buf));
           }
 
         if (buf->provider)
           {
              wl_resource_destroy(buf->provider);
              buf->provider = NULL;
-             bq_object_unref(BQ_OBJECT(buf));
           }
+        free(buf);
      }
 
    if (bq_consumer)
@@ -846,7 +842,9 @@ bq_mgr_new(char *sock_name)
 
    if (!sock_name)
      sock_name = default_sock_name;
-   wl_display_add_socket(bq_mgr->wdpy, sock_name);
+
+   if (wl_display_add_socket(bq_mgr->wdpy, sock_name))
+     goto on_err;
 
    return bq_mgr;
 
