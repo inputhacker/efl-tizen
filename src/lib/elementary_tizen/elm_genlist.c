@@ -2677,7 +2677,7 @@ _elm_genlist_pan_efl_canvas_group_group_calculate(Eo *obj, Elm_Genlist_Pan_Data 
           {
              if (psd->wsd->aligned_item && (psd->wsd->aligned_item != psd->wsd->adjusted_item))
                edje_object_signal_emit(VIEW(psd->wsd->aligned_item), SIGNAL_ITEM_UNHIGHLIGHTED, "elm");
-               edje_object_signal_emit(wd->resize_obj, SIGNAL_FOCUS_BG_HIDE, "elm");
+             edje_object_signal_emit(wd->resize_obj, SIGNAL_FOCUS_BG_HIDE, "elm");
              psd->wsd->aligned_item = NULL;
              psd->wsd->unhighlight_skip = EINA_TRUE;
              elm_interface_scrollable_content_region_show(WIDGET(it), x, y, ow, oh);
