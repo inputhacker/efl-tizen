@@ -247,6 +247,7 @@ _cbhm_item_count_get(Evas_Object *obj EINA_UNUSED, int atom_index)
      }
 
    eldbus_message_unref(req);
+   eldbus_message_unref(reply);
    EINA_LOG_DBG("cbhm item count(%d)", count);
 
    return count;
@@ -437,6 +438,7 @@ _cbhm_item_type_get(Evas_Object *obj, int item_index)
      }
 
    eldbus_message_unref(req);
+   eldbus_message_unref(reply);
    EINA_LOG_DBG("cbhm item type(%d) of index(%d)", type, item_index);
 
    return type;
