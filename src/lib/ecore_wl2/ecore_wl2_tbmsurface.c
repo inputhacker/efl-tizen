@@ -25,11 +25,6 @@ typedef struct {
   unsigned int num_surface;
 } tbm_buffer_info;
 
-typedef struct _Ecore_Wl2_Tbmbuf_Private
-{
-   Ecore_Wl2_Buffer *current;
-   Eina_List *buffers;
-} Ecore_Wl2_Tbmbuf_Private;
 
 static int   tbm_queue_ref = 0;
 static Eina_Bool need_to_tbm_queue = EINA_TRUE;
@@ -54,16 +49,13 @@ _evas_tbmbuf_buffer_unmap(Ecore_Wl2_Buffer *surf)
 
 
 static void
-_evas_tbmbuf_surface_reconfigure(Ecore_Wl2_Surface *surface, void *priv_data, int w, int h, uint32_t flags , Eina_Bool force )
+_evas_tbmbuf_surface_reconfigure(Ecore_Wl2_Surface *surface, int w, int h, uint32_t flags , Eina_Bool force )
 {
-  Ecore_Wl2_Tbmbuf_Private *p = priv_data;
-
   Ecore_Wl2_Buffer *surf;
 
   if (!surface) return;
-  if (!p) return;
 
-  surf = p->current;
+  surf = surface->current;
 
   if (!surf) return;
 
@@ -131,17 +123,15 @@ static const struct wl_buffer_listener buffer_listener = {
 
 
 static int
-_evas_tbmbuf_surface_assign(Ecore_Wl2_Surface *surface, void *priv_data)
+_evas_tbmbuf_surface_assign(Ecore_Wl2_Surface *surface)
 {
   Ecore_Wl2_Buffer *surf;
-  Ecore_Wl2_Tbmbuf_Private *p = priv_data;
 
   Render_Output_Swap_Mode mode = MODE_FULL;
   tbm_buffer_info *tbuf_info = NULL;
   if (!surface) return 0;
-  if (!p) return 0;
 
-  surf = p->current;
+  surf = surface->current;
   if (!surf)
     {
       ERR("surface is NULL");
@@ -262,15 +252,12 @@ _evas_tbmbuf_surface_assign(Ecore_Wl2_Surface *surface, void *priv_data)
 
 
 static void *
-_evas_tbmbuf_surface_data_get(Ecore_Wl2_Surface *surface, void *priv_data, int *w, int *h)
+_evas_tbmbuf_surface_data_get(Ecore_Wl2_Surface *surface, int *w, int *h)
 {
   Ecore_Wl2_Buffer *surf;
   void *image;
-  Ecore_Wl2_Tbmbuf_Private *p = priv_data;
 
-  if (!p) return 0;
-
-  surf = p->current;
+  surf = surface->current;
   if (!surf)
     {
       ERR("surface is NULL");
@@ -306,16 +293,13 @@ _evas_surface_damage(struct wl_surface *s, int compositor_version, int w, int h,
 
 
 static void
-_evas_tbmbuf_surface_post(Ecore_Wl2_Surface *surface, void *priv_data, Eina_Rectangle *rects, unsigned int count)
+_evas_tbmbuf_surface_post(Ecore_Wl2_Surface *surface, Eina_Rectangle *rects, unsigned int count)
 {
   Ecore_Wl2_Buffer *surf;
   tbm_buffer_info *tbuf_info = NULL;
-  Ecore_Wl2_Tbmbuf_Private *p = priv_data;
-  
   if (!surface) return;
-  if (!p) return;
 
-  surf = p->current;
+  surf = surface->current;
   if (!surf->wl_surface) return;
 
   struct wl_buffer *buffer = NULL;
@@ -350,14 +334,12 @@ _evas_tbmbuf_surface_post(Ecore_Wl2_Surface *surface, void *priv_data, Eina_Rect
 }
 
 static void
-_evas_tbmbuf_surface_destroy(Ecore_Wl2_Surface *surface, void *priv_data)
+_evas_tbmbuf_surface_destroy(Ecore_Wl2_Surface *surface)
 {
   Ecore_Wl2_Buffer *surf = NULL;
-  Ecore_Wl2_Tbmbuf_Private *p = priv_data;
   if (!surface) return;
-  if (!p) return;
 
-  surf = p->current;
+  surf = surface->current;
   if (surf)
     {
       if (surf->tbm_queue && tbm_queue_ref == 0)
@@ -371,25 +353,14 @@ _evas_tbmbuf_surface_destroy(Ecore_Wl2_Surface *surface, void *priv_data)
       if (tbm_queue_ref)
         --tbm_queue_ref;
       free(surf);
-      p->current = NULL;
+      surface->current = NULL;
     }
 }
 
 static void
-_evas_tbmbuf_surface_flush(Ecore_Wl2_Surface *surface EINA_UNUSED,  void *priv_data EINA_UNUSED)
+_evas_tbmbuf_surface_flush(Ecore_Wl2_Surface *surface EINA_UNUSED)
 {
 }
-
-static Ecore_Wl2_Surface_Interface tbmbuf_smanager =
-{
-//   .check = _evas_tbmbuf_surface_check,
-   .destroy = _evas_tbmbuf_surface_destroy,
-   .reconfigure = _evas_tbmbuf_surface_reconfigure,
-   .data_get = _evas_tbmbuf_surface_data_get,
-   .assign = _evas_tbmbuf_surface_assign,
-   .post = _evas_tbmbuf_surface_post,
-   .flush = _evas_tbmbuf_surface_flush
-};
 
 EAPI Ecore_Wl2_Surface *
 ecore_wl2_tbmbuf_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha,
@@ -398,20 +369,12 @@ ecore_wl2_tbmbuf_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha,
   Ecore_Wl2_Buffer *surf = NULL;
 
   Ecore_Wl2_Surface *out;
-  Ecore_Wl2_Tbmbuf_Private *p = NULL;
-//  Ecore_Wl2_Surface_Interface *intf;
-
   out = calloc(1, sizeof(*out));
   if (!out) return NULL;
-
-  out->private_data = calloc(1, sizeof(Ecore_Wl2_Tbmbuf_Private));
-  if (!out->private_data) goto err;
- 
   if (!(surf = calloc(1, sizeof(Ecore_Wl2_Buffer)))) goto err;
 
   out->wl2_win = win;
-  p = (Ecore_Wl2_Tbmbuf_Private *)out->private_data;
-  p->current = surf;
+  out->current = surf;
   /* TIZEN_ONLY(20171204) : temporary patch */
   if (w < 1) w = 1;
   if (h < 1) h = 1;
@@ -460,8 +423,14 @@ ecore_wl2_tbmbuf_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha,
       goto err;
     }
   surf->tbm_surface = NULL;
-  out->funcs = &tbmbuf_smanager;
 
+
+  out->funcs.destroy = _evas_tbmbuf_surface_destroy;
+  out->funcs.reconfigure = _evas_tbmbuf_surface_reconfigure;
+  out->funcs.data_get = _evas_tbmbuf_surface_data_get;
+  out->funcs.assign = _evas_tbmbuf_surface_assign;
+  out->funcs.post = _evas_tbmbuf_surface_post;
+  out->funcs.flush = _evas_tbmbuf_surface_flush;
   win->wl2_surface = out;
   return out;
 
