@@ -75,20 +75,31 @@ _ecore_buffer_shm_buffer_alloc(Ecore_Buffer_Module_Data bmdata, int width, int h
    if (!name) goto err;
 
    fd = mkostemp(name, O_CLOEXEC);
-   if (fd < 0) goto err_fd;
+   if (fd < 0)
+     {
+        free(name);
+        goto err;
+     }
+
    b->file = eina_stringshare_add(name);
    free(name);
 
-   if (ftruncate(fd, b->size) < 0) goto err;
+   if (ftruncate(fd, b->size) < 0)
+     {
+        close(fd);
+        goto err;
+     }
 
    b->addr = mmap(NULL, b->size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-   if (b->addr == MAP_FAILED) goto err;
+   if (b->addr == MAP_FAILED)
+     {
+        close(fd);
+        goto err;
+     }
    close(fd);
 
    return b;
 err:
-   close(fd);
-err_fd:
    _ecore_buffer_shm_buffer_free(bmdata, b);
    return NULL;
 }
