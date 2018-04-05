@@ -5648,8 +5648,6 @@ _edje_entry_imf_event_delete_surrounding_cb(void *data, Ecore_IMF_Context *ctx E
      }
    /* END */
 
-   cursor_pos = evas_textblock_cursor_pos_get(en->cursor);
-
    del_start = evas_object_textblock_cursor_new(en->rp->object);
    evas_textblock_cursor_pos_set(del_start, cursor_pos + ev->offset);
 
