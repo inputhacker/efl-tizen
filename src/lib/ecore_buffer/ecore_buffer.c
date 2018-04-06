@@ -12,6 +12,8 @@
 #include "Ecore_Buffer.h"
 #include "ecore_buffer_private.h"
 
+#define PREFERRED_ENGINE  "tbm"
+
 typedef struct _Ecore_Buffer_Module Ecore_Buffer_Module;
 typedef struct _Ecore_Buffer_Cb_Data Ecore_Buffer_Cb_Data;
 
@@ -76,10 +78,14 @@ _ecore_buffer_get_backend(const char *name)
         backend_name = (const char*)getenv("ECORE_BUFFER_ENGINE");
         if (!backend_name)
           {
-             backend_name_itr = eina_hash_iterator_data_new(_backends);
-             while((!bm) &&
-                   (eina_iterator_next(backend_name_itr, (void **)&bm)));
-             eina_iterator_free(backend_name_itr);
+             bm = eina_hash_find(_backends, PREFERRED_ENGINE);
+             if (!bm)
+               {
+                  backend_name_itr = eina_hash_iterator_data_new(_backends);
+                  while((!bm) &&
+                        (eina_iterator_next(backend_name_itr, (void **)&bm)));
+                  eina_iterator_free(backend_name_itr);
+               }
           }
      }
    else
