@@ -74,10 +74,18 @@ typedef Efl_Ui_Win_Type       Elm_Win_Type;
  * dragged across different windows, or even applications. Typically
  * used with elm_win_override_set().
  */
+//TIZEN_ONLY(20180406): fix ABI break related with window type
+/*
 #define ELM_WIN_DND                  13
 #define ELM_WIN_INLINED_IMAGE        14
 #define ELM_WIN_SOCKET_IMAGE         15
-#define ELM_WIN_FAKE                 16 /**< See elm_win_fake_add(). @since 1.13 */
+#define ELM_WIN_FAKE                 16 // See elm_win_fake_add(). @since 1.13
+*/
+#define ELM_WIN_DND                  14
+#define ELM_WIN_INLINED_IMAGE        15
+#define ELM_WIN_SOCKET_IMAGE         16
+#define ELM_WIN_FAKE                 18 /**< See elm_win_fake_add(). @since 1.13 */
+//
 #define ELM_WIN_NAVIFRAME_BASIC      EFL_UI_WIN_NAVIFRAME_BASIC
 
 typedef Efl_Ui_Win_Keyboard_Mode        Elm_Win_Keyboard_Mode;
