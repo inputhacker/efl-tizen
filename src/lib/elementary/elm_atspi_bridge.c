@@ -2792,9 +2792,11 @@ _elm_atspi_bridge_plug_id_split(const char *plug_id, char **bus, char **path)
              ret = EINA_TRUE;
           }
      }
-
-   free(split[0]);
-   free(split);
+   if (split)
+     {
+        free(split[0]);
+        free(split);
+     }
    return ret;
 }
 
