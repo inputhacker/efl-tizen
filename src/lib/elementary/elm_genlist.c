@@ -9287,7 +9287,7 @@ _elm_genlist_efl_ui_focus_composition_prepare(Eo *obj, Elm_Genlist_Data *pd)
 }
 
 EOLIAN static void
-_elm_genlist_item_efl_ui_focus_object_prepare_logical(Eo *obj, Elm_Gen_Item *pd)
+_elm_genlist_item_efl_ui_focus_object_prepare_logical_none_recursive(Eo *obj, Elm_Gen_Item *pd)
 {
    Eina_List *n;
    Efl_Ui_Widget *wid;
@@ -9298,7 +9298,7 @@ _elm_genlist_item_efl_ui_focus_object_prepare_logical(Eo *obj, Elm_Gen_Item *pd)
           _elm_widget_full_eval(wid);
      }
 
-   efl_ui_focus_object_prepare_logical(efl_super(obj, ELM_GENLIST_ITEM_CLASS));
+   efl_ui_focus_object_prepare_logical_none_recursive(efl_super(obj, ELM_GENLIST_ITEM_CLASS));
 }
 
 EOLIAN static Eina_Bool
