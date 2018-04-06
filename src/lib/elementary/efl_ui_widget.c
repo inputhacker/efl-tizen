@@ -264,7 +264,7 @@ _elm_widget_item_highlight_in_theme(Evas_Object *obj, Elm_Object_Item *eo_it)
      {
         Elm_Widget_Item_Data *it = efl_data_scope_get(eo_it, ELM_WIDGET_ITEM_CLASS);
 
-        if (efl_isa(it->view, EFL_UI_LAYOUT_CLASS))
+        if (efl_isa(it->view, EFL_UI_LAYOUT_OBJECT_CLASS))
           str = edje_object_data_get(elm_layout_edje_get(it->view), "focus_highlight");
         else
           str = edje_object_data_get(it->view, "focus_highlight");
@@ -2907,7 +2907,7 @@ elm_widget_part_text_set(Eo *obj, const char *part, const char *label)
 {
    /* legacy support: combobox was special (internal entry is text object). */
    //TIZEN_ONLY(20180426):stop creating unused class.
-   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
      elm_layout_text_set(obj, part, label);
    else if (efl_isa(obj, ELM_COMBOBOX_CLASS))
      _elm_combobox_part_text_set(obj, part, label);
@@ -2919,7 +2919,7 @@ elm_widget_part_text_get(const Eo *obj, const char *part)
 {
    /* legacy support: combobox was special (internal entry is text object). */
    //TIZEN_ONLY(20180426):stop creating unused class.
-   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
      return elm_layout_text_get(obj, part);
    else if (efl_isa(obj, ELM_COMBOBOX_CLASS))
      return _elm_combobox_part_text_get(obj, part);
@@ -3619,7 +3619,7 @@ elm_widget_focus_highlight_focus_part_geometry_get(const Evas_Object *obj,
         if (!(target_hl_part = edje_object_data_get(edje_obj, "focus_part")))
           return;
      }
-   else if (obj && efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   else if (obj && efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
      {
         edje_obj = elm_layout_edje_get(obj);
         if (!(target_hl_part = elm_layout_data_get(obj, "focus_part")))
@@ -6553,7 +6553,7 @@ EAPI void
 elm_widget_content_part_set(Evas_Object *obj, const char *part, Evas_Object *content)
 {
    ELM_WIDGET_CHECK(obj);
-   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
      {
         elm_layout_content_set(obj, part, content);
         return;
@@ -6571,7 +6571,7 @@ EAPI Evas_Object *
 elm_widget_content_part_get(const Evas_Object *obj, const char *part)
 {
    ELM_WIDGET_CHECK(obj) NULL;
-   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
      return elm_layout_content_get(obj, part);
    if (!efl_isa(obj, EFL_PART_INTERFACE)) return NULL;
    if (!part)
@@ -6586,7 +6586,7 @@ EAPI Evas_Object *
 elm_widget_content_part_unset(Evas_Object *obj, const char *part)
 {
    ELM_WIDGET_CHECK(obj) NULL;
-   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
      return elm_layout_content_unset(obj, part);
    if (!efl_isa(obj, EFL_PART_INTERFACE)) return NULL;
    if (!part)
@@ -7944,12 +7944,12 @@ _elm_widget_color_class_parent_set(Evas_Object *obj, Evas_Object *parent)
 
    if (!obj || !parent) return;
 
-   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
      edje =  elm_layout_edje_get(obj);
    else if (efl_isa(obj, EFL_CANVAS_LAYOUT_CLASS))
      edje = obj;
 
-   if (efl_isa(parent, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(parent, EFL_UI_LAYOUT_OBJECT_CLASS))
      parent_edje =  elm_layout_edje_get(parent);
    else if (efl_isa(parent, EFL_CANVAS_LAYOUT_CLASS))
      parent_edje = parent;
@@ -7966,7 +7966,7 @@ _elm_widget_color_class_parent_unset(Evas_Object *obj)
 
    if (!obj) return;
 
-   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
      edje =  elm_layout_edje_get(obj);
    else if (efl_isa(obj, EFL_CANVAS_LAYOUT_CLASS))
      edje = obj;
@@ -8113,7 +8113,7 @@ _elm_widget_class_color_set(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, cons
    Evas_Object *edje;
    Eina_Bool int_ret = EINA_TRUE;
 
-   if (!efl_isa(obj, EFL_UI_LAYOUT_CLASS)) return EINA_FALSE;
+   if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return EINA_FALSE;
 
    edje = elm_layout_edje_get(obj);
    int_ret &= _elm_widget_color_class_set_internal(obj, edje, color_class,
@@ -8131,7 +8131,7 @@ _elm_widget_class_color_get(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, cons
    Evas_Object *edje;
    Eina_Bool int_ret = EINA_TRUE;
 
-   if (!efl_isa(obj, EFL_UI_LAYOUT_CLASS)) return EINA_FALSE;
+   if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return EINA_FALSE;
 
    edje = elm_layout_edje_get(obj);
    int_ret &= _elm_widget_color_class_get_internal(obj, edje, color_class,
@@ -8149,7 +8149,7 @@ _elm_widget_class_color2_set(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, con
    Evas_Object *edje;
    Eina_Bool int_ret = EINA_TRUE;
 
-   if (!efl_isa(obj, EFL_UI_LAYOUT_CLASS)) return EINA_FALSE;
+   if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return EINA_FALSE;
 
    edje = elm_layout_edje_get(obj);
    int_ret &= _elm_widget_color_class_set_internal(obj, edje, color_class,
@@ -8167,7 +8167,7 @@ _elm_widget_class_color2_get(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, con
    Evas_Object *edje;
    Eina_Bool int_ret = EINA_TRUE;
 
-   if (!efl_isa(obj, EFL_UI_LAYOUT_CLASS)) return EINA_FALSE;
+   if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return EINA_FALSE;
 
    edje = elm_layout_edje_get(obj);
    int_ret &= _elm_widget_color_class_get_internal(obj, edje, color_class,
@@ -8185,7 +8185,7 @@ _elm_widget_class_color3_set(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, con
    Evas_Object *edje;
    Eina_Bool int_ret = EINA_TRUE;
 
-   if (!efl_isa(obj, EFL_UI_LAYOUT_CLASS)) return EINA_FALSE;
+   if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return EINA_FALSE;
 
    edje = elm_layout_edje_get(obj);
    int_ret &= _elm_widget_color_class_set_internal(obj, edje, color_class,
@@ -8203,7 +8203,7 @@ _elm_widget_class_color3_get(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED, con
    Evas_Object *edje;
    Eina_Bool int_ret = EINA_TRUE;
 
-   if (!efl_isa(obj, EFL_UI_LAYOUT_CLASS)) return EINA_FALSE;
+   if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return EINA_FALSE;
 
    edje = elm_layout_edje_get(obj);
    int_ret &= _elm_widget_color_class_get_internal(obj, edje, color_class,
@@ -8220,7 +8220,7 @@ _elm_widget_class_color_del(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, cons
 {
    Eina_Stringshare *buf;
 
-   if (!efl_isa(obj, EFL_UI_LAYOUT_CLASS)) return;
+   if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return;
 
    buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);
    edje_object_color_class_del(sd->resize_obj, buf);
@@ -8231,7 +8231,7 @@ _elm_widget_class_color_del(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, cons
 static void
 _elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
 {
-   if (!efl_isa(obj, EFL_UI_LAYOUT_CLASS)) return;
+   if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return;
    edje_object_color_class_clear(sd->resize_obj);
 }
 
@@ -8241,7 +8241,7 @@ _elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
    Edje_Color_Class *cc;                                                         \
    Eina_Bool int_ret = EINA_TRUE;                                                \
    if (cond) return EINA_FALSE;                                                  \
-   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))                                            \
+   if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))                                            \
      edje =  elm_layout_edje_get(obj);                                           \
    else if (efl_isa(obj, EFL_CANVAS_LAYOUT_CLASS))                                      \
      edje = obj;                                                                 \
@@ -8398,7 +8398,7 @@ _elm_widget_item_edje_get(const Eo *obj, Elm_Widget_Item_Data *sd)
    if (!sd)
      sd = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
 
-   if (efl_isa(sd->view, EFL_UI_LAYOUT_CLASS))
+   if (efl_isa(sd->view, EFL_UI_LAYOUT_OBJECT_CLASS))
      return elm_layout_edje_get(sd->view);
    else if (efl_isa(sd->view, EFL_CANVAS_LAYOUT_CLASS))
      return sd->view;
