@@ -60,7 +60,6 @@ BuildRequires:  gnutls-devel
 BuildRequires:  curl-devel
 BuildRequires:  pkgconfig(vconf)
 BuildRequires:  pkgconfig(xkbcommon)
-BuildRequires:  systemd-devel
 BuildRequires:  pkgconfig(ttrace)
 
 #eldbus
@@ -1062,7 +1061,7 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 %endif
     --disable-physics \
     --disable-cxx-bindings \
-    --enable-systemd \
+    --disable-systemd \
     --enable-lua-old \
     --enable-ecore-buffer \
     --disable-gstreamer1 \
