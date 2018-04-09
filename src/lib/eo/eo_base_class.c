@@ -620,7 +620,8 @@ _efl_object_parent_set(Eo *obj, Efl_Object_Data *pd, Eo *parent_id)
        ((parent_id) && (!_eo_id_domain_compatible(parent_id, obj))))
      return;
 
-   EO_OBJ_POINTER(obj, eo_obj);
+   EO_OBJ_POINTER_GOTO(obj, eo_obj, err_impossible);
+
    if (pd->parent)
      {
         Efl_Object_Data *old_parent_pd = efl_data_scope_get(pd->parent,
