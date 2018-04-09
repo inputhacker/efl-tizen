@@ -1253,7 +1253,7 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
    EINA_LIST_FOREACH(attrs, l, attr)
      {
         iter_entry = eldbus_message_iter_container_new(iter_dict, 'e', NULL);
-        EINA_SAFETY_ON_NULL_RETURN_VAL(iter_entry, NULL);
+        EINA_SAFETY_ON_NULL_GOTO(iter_entry, fail);
         eldbus_message_iter_arguments_append(iter_entry, "ss", attr->key, attr->value);
         eldbus_message_iter_container_close(iter_dict, iter_entry);
      }
