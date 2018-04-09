@@ -947,7 +947,7 @@ eng_image_data_put(void *data, void *image, DATA32 *image_data)
                         }
                       else if (im->gc->shared->info.sec_image_map)
                         {
-                           void *disp = disp = re->window_egl_display_get(re->software.ob);
+                           void *disp = re->window_egl_display_get(re->software.ob);
                            secsym_eglUnmapImageSEC(disp, im->tex->pt->dyn.img, EGL_MAP_GL_TEXTURE_DEVICE_CPU_SEC);
                         }
                    }
