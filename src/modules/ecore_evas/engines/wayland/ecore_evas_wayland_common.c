@@ -624,16 +624,11 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
    active = wdata->activated;
    wdata->activated = ecore_wl2_window_activated_get(wdata->win);
 
-// TIZEN_ONLY(20160630): : check opensource size issu
-
    nw = ev->w;
    nh = ev->h;
 
-// ecore_wl2_window_geometry_get(wdata->win, &nx, &ny, &nw, &nh);
-//
-
-   pfw = fw = wdata->win->set_config.geometry.w - wdata->content.w;
-   pfh = fh = wdata->win->set_config.geometry.h - wdata->content.h;
+   pfw = fw = wdata->content.w ? wdata->win->set_config.geometry.w - wdata->content.w : 0;
+   pfh = fh = wdata->content.h ? wdata->win->set_config.geometry.h - wdata->content.h : 0;
 
    if ((prev_max != ee->prop.maximized) ||
        (prev_full != ee->prop.fullscreen) ||
@@ -641,8 +636,8 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
      {
         state_change = EINA_TRUE;
         _ecore_evas_wl_common_state_update(ee);
-        fw = wdata->win->set_config.geometry.w - wdata->content.w;
-        fh = wdata->win->set_config.geometry.h - wdata->content.h;
+        fw = wdata->content.w ? wdata->win->set_config.geometry.w - wdata->content.w : 0;
+        fh = wdata->content.h ? wdata->win->set_config.geometry.h - wdata->content.h : 0;
      }
 
    if ((!nw) && (!nh))
