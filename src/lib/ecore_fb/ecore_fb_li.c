@@ -47,7 +47,7 @@ _ecore_fb_li_device_event_key(Ecore_Fb_Input_Device *dev, struct input_event *ie
      {
         int offset = 0;
         const char *keyname = _ecore_fb_li_kbd_syms[iev->code * 7];
-        
+
         /* check the key table */
         if (iev->value)
           {
@@ -102,11 +102,11 @@ _ecore_fb_li_device_event_key(Ecore_Fb_Input_Device *dev, struct input_event *ie
 
         const char *key = _ecore_fb_li_kbd_syms[(iev->code * 7) + offset];
         const char *compose = _ecore_fb_li_kbd_syms[(iev->code * 7) + 3 + offset];
-        
+
         if (dev->keyboard.ctrl)
           {
              const char *ts = _ecore_fb_li_kbd_syms[(iev->code * 7) + 3 + 3];
-             
+
              if (ts) compose = ts;
           }
 
@@ -634,7 +634,7 @@ EAPI void
 ecore_fb_input_device_axis_size_set(Ecore_Fb_Input_Device *dev, int w, int h)
 {
    if (!dev) return;
-   if ((w < 0) || (h < 0)) return;
+   if ((w <= 0) || (h <= 0)) return;
    /* FIXME
     * this code is for a touchscreen device,
     * make it configurable (ABSOLUTE | RELATIVE)
