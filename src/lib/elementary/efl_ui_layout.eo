@@ -41,50 +41,6 @@ class Efl.Ui.Layout (Efl.Ui.Widget, Efl.Part, Efl.Container, Efl.File,
             style: string("default"); [[The style to use, eg "default".]]
          }
       }
-      /*************************************************************************
-       * TIZEN_ONLY_FEATURE: add internal APIs for handling a part's alignment *
-       *************************************************************************/
-      @property text_valign {
-         set {
-            [[Sets vertical align.
-              If the given align value is -1.0, it respect Edje's align again.
-              \@internal
-            ]]
-         }
-         get {
-            [[Gets vertical align
-              \@internal
-            ]]
-         }
-         keys {
-            part: string; [[The part name]]
-         }
-         values {
-            valign: double; [[The valign 0.0~1.0. -1.0 for respect EDC's align value.]]
-         }
-      }
-      @property valign {
-         set {
-            [[Sets vertical align.
-              If the given align value is -1.0, it respect Edje's align again.
-              \@internal
-            ]]
-         }
-         get {
-            [[Gets vertical align
-              \@internal
-            ]]
-         }
-         keys {
-            part: string; [[The part name]]
-         }
-         values {
-            valign: double; [[The valign 0.0~1.0. -1.0 for respect EDC's align value.]]
-         }
-      }
-      /*******
-       * END *
-       *******/
    }
    implements {
       Efl.Object.constructor;

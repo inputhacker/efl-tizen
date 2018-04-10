@@ -2314,60 +2314,36 @@ _efl_ui_layout_efl_ui_widget_screen_reader(Eo *obj, Efl_Ui_Layout_Data *_pd EINA
 /*************************************************************************
  * TIZEN_ONLY_FEATURE: add internal APIs for handling a part's alignment *
  *************************************************************************/
-EOLIAN static void
-_efl_ui_layout_text_valign_set(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, const char *part, double valign)
+EAPI void
+elm_layout_text_valign_set(Evas_Object *obj, const char *part, double valign)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
    edje_object_part_text_valign_set(wd->resize_obj, part, valign);
 }
 
-EOLIAN static double
-_efl_ui_layout_text_valign_get(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, const char *part)
+EAPI double
+elm_layout_text_valign_get(Evas_Object *obj, const char *part)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, -1.0);
 
    return edje_object_part_text_valign_get(wd->resize_obj, part);
 }
 
-EOLIAN static void
-_efl_ui_layout_valign_set(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, const char *part, double valign)
+EAPI void
+elm_layout_valign_set(Evas_Object *obj, const char *part, double valign)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
    edje_object_part_valign_set(wd->resize_obj, part, valign);
 }
 
-EOLIAN static double
-_efl_ui_layout_valign_get(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, const char *part)
+EAPI double
+elm_layout_valign_get(Evas_Object *obj, const char *part)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, -1.0);
 
    return edje_object_part_valign_get(wd->resize_obj, part);
-}
-
-EAPI void
-elm_layout_text_valign_set(Evas_Object *obj, const char *part, double valign)
-{
-   efl_ui_layout_text_valign_set(obj, part, valign);
-}
-
-EAPI double
-elm_layout_text_valign_get(Evas_Object *obj, const char *part)
-{
-   return efl_ui_layout_text_valign_get(obj, part);
-}
-
-EAPI void
-elm_layout_valign_set(Evas_Object *obj, const char *part, double valign)
-{
-   efl_ui_layout_valign_set(obj, part, valign);
-}
-
-EAPI double
-elm_layout_valign_get(Evas_Object *obj, const char *part)
-{
-   return efl_ui_layout_valign_get(obj, part);
 }
 /*******
  * END *
