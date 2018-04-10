@@ -626,6 +626,9 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
    nw = ev->w;
    nh = ev->h;
 
+// ecore_wl2_window_geometry_get(wdata->win, &nx, &ny, &nw, &nh);
+//
+
    pfw = fw = wdata->content.w ? wdata->win->set_config.geometry.w - wdata->content.w : 0;
    pfh = fh = wdata->content.h ? wdata->win->set_config.geometry.h - wdata->content.h : 0;
 
