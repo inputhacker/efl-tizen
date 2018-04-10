@@ -219,7 +219,7 @@ class Elm.Ctxpopup (Efl.Ui.Layout, Efl.Ui.Focus.Layer, Efl.Access.Widget.Action,
       Efl.Access.Widget.Action.elm_actions { get; }
       Efl.Access.state_set { get; }
       // TIZEN_ONLY(20170116): merge eo & header files for different profiles
-      Efl.Access.children { get; }
+      Efl.Access.access_children { get; }
       //
       //TIZEN ONLY(20160918): name interface added\
       Efl.Access.i18n_name { get; }

@@ -218,7 +218,7 @@ _elm_plug_connect(Eo *obj, void *sd EINA_UNUSED, const char *svcname, int svcnum
 
 //TIZEN_ONLY(20171108): make atspi_proxy work
 EOLIAN static Eina_List*
-_elm_plug_efl_access_children_get(Eo *obj, void *sd EINA_UNUSED)
+_elm_plug_efl_access_access_children_get(Eo *obj, void *sd EINA_UNUSED)
 {
    Eina_List *ret;
    ret = efl_access_children_get(efl_super(obj, EFL_UI_WIDGET_CLASS));

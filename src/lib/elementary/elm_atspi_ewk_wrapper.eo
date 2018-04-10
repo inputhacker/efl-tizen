@@ -30,7 +30,7 @@ class Elm.Atspi.Ewk_Wrapper (Efl.Object, Efl.Access, Efl.Access.Component)
    }
    implements {
       Efl.Object.destructor;
-      Efl.Access.children { get; }
+      Efl.Access.access_children { get; }
       Efl.Access.Component.accessible_at_point_get;
    }
 }

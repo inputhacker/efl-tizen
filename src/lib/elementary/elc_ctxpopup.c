@@ -1838,7 +1838,7 @@ _elm_ctxpopup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Ctxp
 
 //TIZEN ONLY(20150710)ctxpopup: Accessible methods for children_get, extents_get and item name_get
 EOLIAN Eina_List*
-_elm_ctxpopup_efl_access_children_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Data *sd EINA_UNUSED)
+_elm_ctxpopup_efl_access_access_children_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Data *sd EINA_UNUSED)
 {
    // mobile & wearable only feature
    return NULL;

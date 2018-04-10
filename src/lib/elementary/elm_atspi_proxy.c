@@ -136,7 +136,7 @@ _elm_atspi_proxy_address_set(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd, con
 }
 
 EOLIAN Eina_List*
-_elm_atspi_proxy_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
+_elm_atspi_proxy_efl_access_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
 {
    Eina_List *ret = NULL;
    if (_pd->type == ELM_ATSPI_PROXY_TYPE_SOCKET)

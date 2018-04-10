@@ -8086,7 +8086,7 @@ _elm_entry_efl_ui_widget_screen_reader(Eo *obj, Elm_Entry_Data *sd EINA_UNUSED, 
 }
 
 EOLIAN static Eina_List*
-_elm_entry_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
+_elm_entry_efl_access_access_children_get(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
 {
    Eina_List *l;
    Eina_List *ret = NULL;

@@ -130,7 +130,7 @@ _elm_atspi_ewk_wrapper_efl_object_destructor(Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_
 }
 
 EOLIAN static Eina_List*
-_elm_atspi_ewk_wrapper_efl_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
+_elm_atspi_ewk_wrapper_efl_access_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
 {
    if (_pd->proxy)
      return eina_list_append(NULL, _pd->proxy);

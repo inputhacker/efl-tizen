@@ -9162,7 +9162,7 @@ _elm_genlist_item_efl_access_i18n_name_get(Eo *eo_it, Elm_Gen_Item *it)
 }
 
 EOLIAN Eina_List*
-_elm_genlist_item_efl_access_children_get(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it)
+_elm_genlist_item_efl_access_access_children_get(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it)
 {
    Eina_List *ret = NULL;
    if (VIEW(it))

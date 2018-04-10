@@ -6206,7 +6206,7 @@ _elm_gengrid_item_efl_ui_focus_object_prepare_logical(Eo *obj, Elm_Gen_Item *pd)
 
 //TIZEN_ONLY(20171122) Fixed _accessible_set_parent for gengrid items
 EOLIAN Eina_List*
-_elm_gengrid_item_efl_access_children_get(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it)
+_elm_gengrid_item_efl_access_access_children_get(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it)
 {
    Eina_List *ret = NULL;
    if (VIEW(it))
