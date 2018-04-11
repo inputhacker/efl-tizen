@@ -6719,6 +6719,20 @@ _elm_genlist_efl_object_constructor(Eo *obj, Elm_Genlist_Data *sd)
    return obj;
 }
 
+EOLIAN static Eo *
+_elm_genlist_efl_object_finalize(Eo *obj, Elm_Genlist_Data *sd)
+{
+   obj = efl_finalize(efl_super(obj, MY_CLASS));
+
+   // FIXME:
+   // Genlist is a legacy-only widget which means it will always be marked as
+   // "legacy" here. The proper test here is "app targets EFL 1.19 or below".
+   if (elm_widget_is_legacy(obj))
+     sd->legacy_order_insane = EINA_TRUE;
+
+   return obj;
+}
+
 static void
 _internal_elm_genlist_clear(Evas_Object *obj)
 {
