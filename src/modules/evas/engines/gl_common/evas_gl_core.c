@@ -2170,7 +2170,7 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
      {
         ERR("Surface allocation failed.");
         evas_gl_common_error_set(EVAS_GL_BAD_ALLOC);
-        goto error;
+        return NULL;
      }
 
    // Set surface info
@@ -2236,10 +2236,6 @@ evgl_surface_create(void *eng_data, Evas_GL_Config *cfg, int w, int h)
       evgl_engine->funcs->partial_rendering_disable();
 
    return sfc;
-
-error:
-   if (sfc) free(sfc);
-   return NULL;
 }
 
 void *
