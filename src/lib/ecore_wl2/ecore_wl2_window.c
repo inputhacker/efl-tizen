@@ -2295,6 +2295,14 @@ ecore_wl2_window_aux_hints_supported_get(Ecore_Wl2_Window *win)
    if (!win) return NULL;
    if (!win->surface) return NULL;
 
+   // TIZEN_ONLY : To use tizen protocols
+   if (win->display->wl.tz_policy)
+     {
+        tizen_policy_get_supported_aux_hints(win->display->wl.tz_policy, win->surface);
+        ecore_wl2_display_sync(win->display);
+     }
+   //
+
    EINA_LIST_FOREACH(win->supported_aux_hints, ll, supported_hint)
      {
         hint = eina_stringshare_add(supported_hint);
@@ -2309,6 +2317,11 @@ ecore_wl2_window_aux_hint_add(Ecore_Wl2_Window *win, int id, const char *hint, c
    if (!win) return;
    if ((win->surface) && (win->display->wl.efl_aux_hints))
      efl_aux_hints_add_aux_hint(win->display->wl.efl_aux_hints, win->surface, id, hint, val);
+
+   // TIZEN_ONLY : To use tizen protocols
+   if ((win->surface) && (win->display->wl.tz_policy))
+     tizen_policy_add_aux_hint(win->display->wl.tz_policy, win->surface, id, hint, val);
+   //
 }
 
 EAPI void
@@ -2317,6 +2330,11 @@ ecore_wl2_window_aux_hint_change(Ecore_Wl2_Window *win, int id, const char *val)
    if (!win) return;
    if ((win->surface) && (win->display->wl.efl_aux_hints))
      efl_aux_hints_change_aux_hint(win->display->wl.efl_aux_hints, win->surface, id, val);
+
+   // TIZEN_ONLY : To use tizen protocols
+   if ((win->surface) && (win->display->wl.tz_policy))
+     tizen_policy_change_aux_hint(win->display->wl.tz_policy, win->surface, id, val);
+   //
 }
 
 EAPI void
@@ -2325,6 +2343,11 @@ ecore_wl2_window_aux_hint_del(Ecore_Wl2_Window *win, int id)
    if (!win) return;
    if ((win->surface) && (win->display->wl.efl_aux_hints))
      efl_aux_hints_del_aux_hint(win->display->wl.efl_aux_hints, win->surface, id);
+
+   // TIZEN_ONLY : To use tizen protocols
+   if ((win->surface) && (win->display->wl.tz_policy))
+     tizen_policy_del_aux_hint(win->display->wl.tz_policy, win->surface, id);
+   //
 }
 
 EAPI void
