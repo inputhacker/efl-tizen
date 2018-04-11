@@ -6557,7 +6557,7 @@ _elm_atspi_bridge_init(void)
 {
    if (!_init_count)
      {
-        _instance = efl_add(ELM_ATSPI_BRIDGE_CLASS, efl_main_loop_get());
+        _instance = efl_add_ref(ELM_ATSPI_BRIDGE_CLASS, NULL);
         _init_count = 1;
      }
 }
@@ -6573,7 +6573,7 @@ _elm_atspi_bridge_shutdown(void)
 {
    if (_init_count)
      {
-        efl_del(_instance);
+        efl_unref(_instance);
         _init_count = 0;
      }
 
