@@ -40,11 +40,6 @@ struct _Elm_Genlist_Data
    Eina_Inlist_Sorted_State             *state;
    Evas_Object                          *hit_rect;
    Evas_Object                          *pan_obj;
-
-   Evas_Object                          *focused_content;
-   Elm_Object_Item                      *focused_item; /**< a focused item by keypad arrow or mouse. This is set to NULL if widget looses focus. */
-   Elm_Object_Item                      *last_focused_item; /**< This records the last focused item when widget looses focus. This is required to set the focus on last focused item when widgets gets focus. */
-
    //Evas_Object                          *stack[2]; // stacking markers in pan
    Evas_Object                          *obj; // the object itself
 
@@ -69,8 +64,18 @@ struct _Elm_Genlist_Data
      } reorder;
 
    Elm_Object_Item                      *last_selected_item;
+   Evas_Object                          *focused_content;
+   Elm_Object_Item                      *focused_item; /**< a focused item by keypad arrow or mouse. This is set to NULL if widget looses focus. */
+   Elm_Object_Item                      *last_focused_item; /**< This records the last focused item when widget looses focus. This is required to set the focus on last focused item when widgets gets focus. */
+   Ecore_Job                            *calc_job;
+   int                                   walking;
    int                                   minw, minh;
-
+   Eina_Bool                             scr_minw : 1; /* a flag for determining
+                                                        * minimum width to limit
+                                                        * as their content size */
+   Eina_Bool                             scr_minh : 1; /* a flag for determining
+                                                        * minimum height to limit
+                                                        * as their content size */
    unsigned int                          item_count;
    Evas_Coord                            pan_x, pan_y;
    Elm_Object_Select_Mode                select_mode;
@@ -88,50 +93,76 @@ struct _Elm_Genlist_Data
                                                   * number of items in
                                                   * a block is
                                                   * 'max_items_per_block'. */
-   Evas_Coord                            prev_viewport_w;
+   Evas_Coord                            reorder_old_pan_y, w, h, realminw;
+   Evas_Coord                            prev_viewport_w; /* previous scrollable
+                                                           * interface's
+                                                           * viewport size.
+                                                           * This is used only
+                                                           * when genlist is in
+                                                           * a compress mode. */
+   Ecore_Job                            *update_job;
    Ecore_Idle_Enterer                   *queue_idle_enterer;
+   Ecore_Idler                          *must_recalc_idler;
    Eina_List                            *queue;
-   Elm_Gen_Item                         *show_item, *mode_item, *expanded_item;
+   Elm_Gen_Item                         *show_item, *anchor_item, *mode_item,
+                                        *reorder_rel, *expanded_item, *pin_item;
    Eina_Inlist                          *item_cache; /* an inlist of
                                                       * edje object it
                                                       * cache. */
-
+   Evas_Coord                            anchor_y;
+   Evas_Coord                            reorder_start_y; /* reorder
+                                                           * it's
+                                                           * initial y
+                                                           * coordinate
+                                                           * in the
+                                                           * pan. */
    Elm_List_Mode                         mode;
 
+   //
    Ecore_Job                             *dummy_job;
-   Ecore_Timer                          *scr_hold_timer;
    Ecore_Timer                           *scr_timer;
+   //
 
+   Ecore_Timer                          *multi_timer, *scr_hold_timer;
+   Ecore_Animator                       *reorder_move_animator;
    const char                           *decorate_it_type;
    double                                start_time;
-   double                                longpress_timeout;
-
    Evas_Coord                            prev_x, prev_y, prev_mx, prev_my;
    Evas_Coord                            cur_x, cur_y, cur_mx, cur_my;
    Evas_Coord                            finger_minw, finger_minh;
 
+   struct
+   {
+      Evas_Coord x, y;
+   } history[SWIPE_MOVES];
+
+   int                                   multi_device;
    int                                   item_cache_count;
-   int                                   item_cache_max; /* maximum
-                                                          * number of
-                                                          * cached
-                                                          * items */
+
+   /* maximum number of cached items. (max_items_per_block * 2) */
+   int                                   item_cache_max;
+   int                                   movements;
+
    /* maximum number of items per block */
    int                                   max_items_per_block;
    int                                   processed_sizes;
 
-   Eina_Hash                             *size_caches;
-   Eina_Hash                            *content_item_map;
-   Eo                                   *provider;
-
    /* longpress timeout. this value comes from _elm_config by
     * default. this can be changed by
     * elm_genlist_longpress_timeout_set() */
+   double                                longpress_timeout;
    Eina_Compare_Cb                       item_compare_cb;
    Eina_Compare_Cb                       item_compare_data_cb;
 
    /* a scrollto type which remembers where to scroll ex) in, top,
     * middle */
    Elm_Genlist_Item_Scrollto_Type        scroll_to_type;
+   Evas_Object                          *event_block_rect; /**< This object blocks the event in some cases. For example, when the tree effect is running and not finished, this object blocks events to the genlist. */
+   Eina_List                            *move_items; /* items move for
+                                                      * tree effect */
+   Elm_Gen_Item                         *expanded_next_item;
+   Elm_Genlist_Item_Move_Effect_Mode     move_effect_mode;
+   int                                   reorder_fast;
 
    Evas_Object                          *g_layer;
    Elm_Gen_Item                         *g_item;
@@ -161,29 +192,45 @@ struct _Elm_Genlist_Data
                                                              un-scrollable. */
    Elm_Gen_Item                         *highlighted_item;
    Evas_Coord                            viewport_w, viewport_h;
-   Elm_Gen_Item                         *atspi_item_to_highlight;
    Elm_Gen_Item                         *aligned_item;
-   //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
-   Elm_Gen_Item                         *currently_highlighted_item;
-   //
 
    Eina_List                            *filter_queue;
    Eina_List                            *filtered_list;
    void                                 *filter_data;
    unsigned int                          processed_count;
    unsigned int                          filtered_count;
+   unsigned int                          top_level_parent_items;
    Ecore_Idle_Enterer                   *queue_filter_enterer;
-   Elm_Genlist_Item_Scrollto_Type        focus_scrollto_type;
+   Eina_Hash                             *size_caches;
 
+   Eina_Hash                            *content_item_map;
+   Eo                                   *provider;
+   Elm_Gen_Item                         *focus_on_realization;
+
+   //TIZEN_ONLY(20171114) genlist: enhance accessibility scroll & highlight
+   Elm_Gen_Item                         *atspi_item_to_highlight;
+   //
+   //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
+   Elm_Gen_Item                         *currently_highlighted_item;
+   //
+
+   ///
+   Elm_Genlist_Item_Scrollto_Type        focus_scrollto_type;
    Elm_Gen_Item                          *adjusted_item;
    Evas_Object                           *focus_bg;
    Evas_Object                           *clipee;
-
-   Eina_Bool                             scr_minw : 1;
-   Eina_Bool                             scr_minh : 1;
-
    Eina_Bool                             select_on_focus_enabled : 1;
+   //
+
+   Eina_Bool                             filter;
+   Eina_Bool                             focus_on_selection_enabled : 1;
+   Eina_Bool                             tree_effect_enabled : 1;
+   Eina_Bool                             auto_scroll_enabled : 1;
    Eina_Bool                             decorate_all_mode : 1;
+   Eina_Bool                             height_for_width : 1;
+   Eina_Bool                             reorder_pan_move : 1;
+   Eina_Bool                             multi_timeout : 1;
+   Eina_Bool                             multi_touched : 1;
    Eina_Bool                             reorder_mode : 1; /* a flag
                                                             * for
                                                             * reorder
@@ -194,16 +241,20 @@ struct _Elm_Genlist_Data
                                                              * reorder
                                                              * by force */
    /* this flag means genlist is supposed to be scrolled. if this flag
-    * is set to EINA_TRUE, genlist checks whether it's ok to scroll
+    * is set to @c EINA_TRUE, genlist checks whether it's ok to scroll
     * genlist now or not. */
-
+   Eina_Bool                             check_scroll : 1;
+   Eina_Bool                             pan_changed : 1;
+   Eina_Bool                             wasselected : 1;
    Eina_Bool                             homogeneous : 1;
-   Eina_Bool                             realization_mode : 1;
-
-   Eina_Bool                             on_sub_del : 1;
+   Eina_Bool                             longpressed : 1;
 
    /* a flag for items can be highlighted or not. by default this flag
-       * is true. */
+    * is true. */
+   Eina_Bool                             mouse_down : 1;
+   Eina_Bool                             multi_down : 1;
+   Eina_Bool                             on_sub_del : 1;
+
    Eina_Bool                             highlight : 1;
    Eina_Bool                             h_bounce : 1;
    Eina_Bool                             v_bounce : 1;
@@ -213,10 +264,13 @@ struct _Elm_Genlist_Data
                                                         * animation. (show,
                                                         * bring in) */
 
-   /* this is set to EINA_TRUE when the item is re-queued. this
+   Eina_Bool                             realization_mode : 1;
+
+   /* this is set to @c EINA_TRUE when the item is re-queued. this
     * happens when the item is un-queued but the rel item is still in
     * the queue. this item will be processed later. */
    Eina_Bool                             requeued : 1;
+   Eina_Bool                             on_hold : 1;
    Eina_Bool                             multi : 1; /* a flag for item
                                                      * multi
                                                      * selection */
@@ -224,13 +278,20 @@ struct _Elm_Genlist_Data
    Eina_Bool                             calc_done : 1;
    Eina_Bool                             was_selected : 1;
    Eina_Bool                             no_cache : 1;
-   Eina_Bool                             on_hold : 1; /* a flag for check
-                                                       * item selected or
-                                                       * not */
 
+   Eina_Bool                             swipe : 1;
    /**< value whether item loop feature is enabled or not. */
    Eina_Bool                             item_loop_enable : 1;
    Eina_Bool                             item_looping_on : 1;
+
+   Eina_Bool                             tree_effect_animator : 1;
+   Eina_Bool                             pin_item_top : 1;
+
+   // If true, use insane legacy item order: item, item, parent
+   Eina_Bool                             legacy_order_insane : 1;
+
+   //Tizen Only
+   Eina_List                             *prepend_items;
 
    /* this is genlist item Fx effect on Add/Remove */
    Eina_Bool                             fx_mode : 1;
@@ -241,9 +302,6 @@ struct _Elm_Genlist_Data
    Eina_Bool                             unhighlight_skip: 1;
    Eina_Bool                             bottom_margin_enabled : 1;
    Eina_Bool                             unhighlighted : 1;
-   Eina_Bool                             filter : 1;
-
-   Eina_Bool                             focus_on_selection_enabled : 1;
 };
 
 typedef struct _Item_Block Item_Block;

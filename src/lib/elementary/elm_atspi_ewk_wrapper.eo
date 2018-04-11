@@ -4,7 +4,7 @@ class Elm.Atspi.Ewk_Wrapper (Efl.Object, Efl.Access, Efl.Access.Component)
    eo_prefix: elm_obj_atspi_ewk_wrapper;
    legacy_prefix: elm_atspi_ewk_wrapper;
    methods {
-      constructor {
+      ewk_constructor {
          params {
              @in ewk: Efl.Object;
          }
@@ -26,7 +26,7 @@ class Elm.Atspi.Ewk_Wrapper (Efl.Object, Efl.Access, Efl.Access.Component)
       }
    }
    constructors {
-      .constructor;
+      .ewk_constructor;
    }
    implements {
       Efl.Object.destructor;
