@@ -20,18 +20,6 @@ extern "C" {
  * @}
  */
 
-/**
- * @ingroup Ecore_Exe_Group
- *
- * @{
- */
-
-#include "ecore_exe.eo.h"
-
-/**
- * @}
- */
-
 
 #include "ecore_event_message.eo.h"
 #include "ecore_event_message_handler.eo.h"
