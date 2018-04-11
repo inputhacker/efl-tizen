@@ -1382,11 +1382,15 @@ _keyboard_cb_repeat(void *data)
      }
    return ECORE_CALLBACK_RENEW;
 
+// TIZEN_ONLY(20160610): fix key repeat condition.
+/*
 out:
    input->repeat.sym = 0;
    input->repeat.key = 0;
    input->repeat.time = 0;
    return ECORE_CALLBACK_CANCEL;
+*/
+//
 }
 
 /* from weston/clients/window.c */
