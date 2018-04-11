@@ -21,9 +21,6 @@ extern "C" {
  */
 
 
-#include "ecore_event_message.eo.h"
-#include "ecore_event_message_handler.eo.h"
-
 #include "efl_loop_message_future.eo.h"
 #include "efl_loop_message_future_handler.eo.h"
 
