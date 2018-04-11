@@ -424,12 +424,6 @@ _tizen_policy_cb_supported_aux_hints(void *data, struct tizen_policy *tizen_poli
           }
         free(str);
      }
-
-   if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Aux_Hint_Supported)))) return;
-   ev->win = win->id;
-   ev->display = ewd;
-   ewd->refs++;
-   ecore_event_add(ECORE_WL2_EVENT_AUX_HINT_SUPPORTED, ev, _display_event_free, ewd);
 }
 
 static void
