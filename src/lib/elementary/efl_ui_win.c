@@ -9949,7 +9949,7 @@ elm_win_active_win_orientation_get(Evas_Object *obj)
    Ecore_Wl2_Window *win = NULL;
    if (obj)
      {
-        ELM_WIN_DATA_GET(obj, sd);
+        ELM_WIN_DATA_GET_OR_RETURN(obj, sd, angle);
         if (sd)
           win = sd->wl.win;
      }
