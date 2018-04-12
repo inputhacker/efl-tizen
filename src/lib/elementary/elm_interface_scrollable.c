@@ -3035,7 +3035,7 @@ _elm_scroll_mouse_up_event_cb(void *data,
                                  Evas_Coord pos_x = 0, pos_y = 0;
                                  Evas_Coord adjust_x, adjust_y;
 
-                                 sid->pan_obj, elm_obj_pan_pos_adjust(sid->pan_obj, &pos_x, &pos_y);
+                                 elm_obj_pan_pos_adjust(sid->pan_obj, &pos_x, &pos_y);
 
                                  elm_interface_scrollable_content_pos_get(sid->obj, &adjust_x, &adjust_y);
                                  pos_y = -pos_y;
