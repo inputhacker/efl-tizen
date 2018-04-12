@@ -125,6 +125,7 @@ struct _Mod_Api
 
 static void _create_selection_handlers(Evas_Object *obj, Elm_Entry_Data *sd);
 static void _magnifier_move(void *data);
+
 // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
 static void _atspi_expose_anchors(Eo *obj, Eina_Bool is_screen_reader);
 //
@@ -164,6 +165,8 @@ static void _cursor_handler_update_job_cb(void *data);
 /*******
  * END *
  *******/
+
+static Eina_Bool _entry_selection_changed_signal_job_cb(void *data);
 
 static Evas_Object *
 _entry_win_get(Evas_Object *obj)
@@ -2830,6 +2833,8 @@ _mouse_up_cb(void *data,
         /*******
          * END *
          *******/
+        if (sd->sel_change_timeout) ecore_timer_del(sd->sel_change_timeout);
+        sd->sel_change_timeout = ecore_timer_add(0.02, _entry_selection_changed_signal_job_cb, data);
      }
   /* Since context menu disabled flag was checked at mouse right key down,
    * hence the same should be stopped at mouse up of right key as well */
@@ -3230,11 +3235,8 @@ _entry_selection_none_signal_cb(void *data,
 //   return win && elm_win_wl_window_get(win);
 //}
 
-static void
-_entry_selection_changed_signal_cb(void *data,
-                                   Evas_Object *obj EINA_UNUSED,
-                                   const char *emission EINA_UNUSED,
-                                   const char *source EINA_UNUSED)
+static Eina_Bool
+_entry_selection_changed_signal_job_cb(void *data)
 {
    ELM_ENTRY_DATA_GET(data, sd);
 
@@ -3246,10 +3248,24 @@ _entry_selection_changed_signal_cb(void *data,
    // XXX: still try primary selection even if on wl in case it's
    // supported
 //   if (!_entry_win_is_wl(data))
+   if (!evas_pointer_button_down_mask_get(evas_object_evas_get(sd->entry_edje)))
      _selection_store(ELM_SEL_TYPE_PRIMARY, data);
    _update_selection_handler(data);
    if (_elm_atspi_enabled())
      efl_access_event_emit(EFL_ACCESS_MIXIN, data, EFL_ACCESS_TEXT_EVENT_ACCESS_TEXT_SELECTION_CHANGED, NULL);
+   return EINA_FALSE;
+}
+
+static void
+_entry_selection_changed_signal_cb(void *data,
+                                   Evas_Object *obj EINA_UNUSED,
+                                   const char *emission EINA_UNUSED,
+                                   const char *source EINA_UNUSED)
+{
+   ELM_ENTRY_DATA_GET(data, sd);
+
+   if (sd->sel_change_timeout) ecore_timer_del(sd->sel_change_timeout);
+   sd->sel_change_timeout = ecore_timer_add(0.02, _entry_selection_changed_signal_job_cb, data);
 }
 
 static void
@@ -5417,6 +5433,8 @@ _elm_entry_efl_canvas_group_group_del(Eo *obj, Elm_Entry_Data *sd)
 
    eina_stringshare_del(sd->file);
 
+   ecore_timer_del(sd->sel_change_timeout);
+   sd->sel_change_timeout = NULL;
    ecore_job_del(sd->hov_deljob);
    if ((sd->api) && (sd->api->obj_unhook))
      sd->api->obj_unhook(obj);  // module - unhook
