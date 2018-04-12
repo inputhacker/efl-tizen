@@ -183,7 +183,7 @@ ecore_evas_render(Ecore_Evas *ee)
 
    ecore_evas_render_prepare(ee);
 
-   if (!ee->visible)
+   if (!ee->visible || ee->draw_block)
      {
         evas_norender(ee->evas);
      }
@@ -241,6 +241,7 @@ _ecore_evas_idle_enter(void *data EINA_UNUSED)
         // TIZEN_ONLY(20171130) to prevent the render freeze
         ee->animator_ticked_in_idler = 0;
         // End of TIZEN_ONLY(20171130)
+        if (ee->draw_block) continue;
 
         if (ee->manual_render)
           {
