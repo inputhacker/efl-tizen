@@ -417,23 +417,65 @@ _internal_elm_icon_standard_set(Evas_Object *obj,
 
    ELM_ICON_DATA_GET(obj, sd);
 
-   /* try locating the icon using the specified theme */
-   if (!strcmp(ELM_CONFIG_ICON_THEME_ELEMENTARY, elm_config_icon_theme_get()))
-     {
-        ret = _icon_standard_set(obj, name);
-        if (ret && fdo) *fdo = EINA_FALSE;
 
-        if (!ret)
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   if (sd->has_lookup_order)
+     {
+        switch (sd->lookup_order)
           {
-             ret = _icon_freedesktop_set(obj, "hicolor", name, _icon_size_min_get(obj));
-             if (ret && fdo) *fdo = EINA_TRUE;
+             case ELM_ICON_LOOKUP_FDO:
+               ret = _icon_freedesktop_set(obj, NULL, name, _icon_size_min_get(obj));
+               if (ret && fdo) *fdo = EINA_TRUE;
+             break;
+
+             case ELM_ICON_LOOKUP_THEME:
+               ret = _icon_standard_set(obj, name);
+             break;
+
+             case ELM_ICON_LOOKUP_THEME_FDO:
+               ret = _icon_standard_set(obj, name);
+             if (!ret)
+               {
+                  ret = _icon_freedesktop_set(obj, NULL, name, _icon_size_min_get(obj));
+                  if (ret && fdo) *fdo = EINA_TRUE;
+               }
+             break;
+
+             case ELM_ICON_LOOKUP_FDO_THEME:
+             default:
+               ret = _icon_freedesktop_set(obj, NULL, name, _icon_size_min_get(obj));
+               if (!ret)
+                 ret = _icon_standard_set(obj, name);
+               else if (fdo)
+                 *fdo = EINA_TRUE;
+             break;
           }
      }
+
    else
      {
-        ret = _icon_freedesktop_set(obj, NULL, name, _icon_size_min_get(obj));
-        if (ret && fdo) *fdo = EINA_TRUE;
+   /* TIZEN_ONLY_END  */
+
+        /* try locating the icon using the specified theme */
+        if (!strcmp(ELM_CONFIG_ICON_THEME_ELEMENTARY, elm_config_icon_theme_get()))
+          {
+             ret = _icon_standard_set(obj, name);
+             if (ret && fdo) *fdo = EINA_FALSE;
+
+             if (!ret)
+               {
+                  ret = _icon_freedesktop_set(obj, "hicolor", name, _icon_size_min_get(obj));
+                  if (ret && fdo) *fdo = EINA_TRUE;
+               }
+          }
+        else
+          {
+             ret = _icon_freedesktop_set(obj, NULL, name, _icon_size_min_get(obj));
+             if (ret && fdo) *fdo = EINA_TRUE;
+          }
+   /* TIZEN_ONLY(20180412): lookup_order implements */
      }
+   /* TIZEN_ONLY END */
 
    if (ret)
      {
@@ -491,6 +533,11 @@ _elm_icon_efl_canvas_group_group_add(Eo *obj, Elm_Icon_Data *priv)
 {
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
    elm_widget_sub_object_parent_add(obj);
+
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   priv->has_lookup_order = EINA_FALSE;
+   priv->lookup_order = 0;
+   /* TIZEN_ONLY END */
 
    priv->thumb.request = NULL;
 }
@@ -903,16 +950,27 @@ elm_icon_standard_get(const Evas_Object *obj)
 }
 
 EAPI void
-elm_icon_order_lookup_set(Evas_Object *obj EINA_UNUSED,
-                           Elm_Icon_Lookup_Order order EINA_UNUSED)
+elm_icon_order_lookup_set(Evas_Object *obj, Elm_Icon_Lookup_Order order)
 {
    // this method's behaviour has been overridden by elm_config_icon_theme_set
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   ELM_ICON_CHECK(obj);
+   ELM_ICON_DATA_GET(obj, sd);
+   sd->has_lookup_order = EINA_TRUE;
+   sd->lookup_order = order;
+   /* TIZEN_ONLY END */
 }
 
 EAPI Elm_Icon_Lookup_Order
-elm_icon_order_lookup_get(const Evas_Object *obj EINA_UNUSED)
+elm_icon_order_lookup_get(const Evas_Object *obj)
 {
-   return ELM_ICON_LOOKUP_FDO_THEME;
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   ELM_ICON_CHECK(obj) 1;
+   ELM_ICON_DATA_GET(obj, sd);
+
+   return sd->lookup_order;
+   //return ELM_ICON_LOOKUP_FDO_THEME;
+   /* TIZEN_ONLY END */
 }
 
 /* Internal EO APIs and hidden overrides */

@@ -24,6 +24,10 @@ struct _Elm_Icon_Data
 {
    Evas_Object          *obj; // the object itself
    const char           *stdicon;
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   Eina_Bool             has_lookup_order;
+   Elm_Icon_Lookup_Order lookup_order;
+   /* TIZEN_ONLY END */
 
    struct
    {
