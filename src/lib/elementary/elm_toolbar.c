@@ -2522,6 +2522,10 @@ _item_new(Evas_Object *obj,
    efl_access_type_set(VIEW(it), EFL_ACCESS_TYPE_DISABLED);
 
    icon_obj = elm_icon_add(VIEW(it));
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   if (sd->has_lookup_order)
+     elm_icon_order_lookup_set(icon_obj, sd->lookup_order);
+   /* END */
 
    if (_elm_atspi_enabled())
        if (icon_obj) efl_parent_set(icon_obj, eo_it);
@@ -2934,6 +2938,11 @@ _elm_toolbar_efl_canvas_group_group_add(Eo *obj, Elm_Toolbar_Data *priv)
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOVE, _move_cb, obj);
    evas_object_event_callback_add
      (priv->bx, EVAS_CALLBACK_RESIZE, _resize_cb, obj);
+
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   priv->has_lookup_order = EINA_FALSE;
+   priv->lookup_order = 0;
+   /* END */
 
    _elm_toolbar_highlight_in_theme(obj);
    _sizing_eval(obj);
@@ -3732,6 +3741,13 @@ _elm_toolbar_item_state_add(Eo *eo_item, Elm_Toolbar_Item_Data *item,
      }
 
    icon_obj = elm_icon_add(obj);
+
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   ELM_TOOLBAR_DATA_GET(obj, sd);
+   if (sd->has_lookup_order)
+     elm_icon_order_lookup_set(icon_obj, sd->lookup_order);
+   /* END */
+
    if (!icon_obj) goto error_state_add;
 
    if (!_item_icon_set(icon_obj, "toolbar/", icon))
@@ -4317,16 +4333,35 @@ _elm_toolbar_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_T
 /* Legacy deprecated functions */
 
 EAPI void
-elm_toolbar_icon_order_lookup_set(Evas_Object *obj EINA_UNUSED,
-                                   Elm_Icon_Lookup_Order order EINA_UNUSED)
+elm_toolbar_icon_order_lookup_set(Evas_Object *obj, Elm_Icon_Lookup_Order order)
 {
    // this method's behaviour has been overridden by elm_config_icon_theme_set
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   Elm_Toolbar_Item_Data *it;
+
+   ELM_TOOLBAR_CHECK(obj);
+   ELM_TOOLBAR_DATA_GET(obj, sd);
+
+   if (sd->lookup_order == order) return;
+   sd->has_lookup_order = EINA_TRUE;
+   sd->lookup_order = order;
+   EINA_INLIST_FOREACH(sd->items, it)
+     elm_icon_order_lookup_set(it->icon, order);
+   if (sd->more_item)
+     elm_icon_order_lookup_set(sd->more_item->icon, order);
+   /* END */
 }
 
 EAPI Elm_Icon_Lookup_Order
-elm_toolbar_icon_order_lookup_get(const Evas_Object *obj EINA_UNUSED)
+elm_toolbar_icon_order_lookup_get(const Evas_Object *obj)
 {
-   return ELM_ICON_LOOKUP_FDO_THEME;
+   /* TIZEN_ONLY(20180412): lookup_order implements */
+   ELM_TOOLBAR_CHECK(obj) 1;
+   ELM_TOOLBAR_DATA_GET(obj, sd);
+
+   return sd->lookup_order;
+   //return ELM_ICON_LOOKUP_FDO_THEME;
+   /* END */
 }
 
 static Eina_Bool
