@@ -1492,6 +1492,12 @@ ecore_wl2_window_opaque_region_set(Ecore_Wl2_Window *window, int x, int y, int w
    window->opaque.y = ny;
    window->opaque.w = nw;
    window->opaque.h = nh;
+
+// TIZEN_ONLY(20180412) : check transparent and alpha value
+   if ((window->transparent) || (window->alpha))
+     return;
+//
+
    window->opaque_set = x || y || w || h;
    window->pending.opaque = EINA_TRUE;
 }
