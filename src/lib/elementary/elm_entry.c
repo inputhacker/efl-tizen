@@ -3220,13 +3220,15 @@ _entry_selection_none_signal_cb(void *data,
     *******/
 }
 
-static inline Eina_Bool
-_entry_win_is_wl(Evas_Object *obj)
-{
-   Evas_Object *win = _entry_win_get(obj);
-   /* primary selection does not exist (yet) */
-   return win && elm_win_wl_window_get(win);
-}
+// XXX: still try primary selection even if on wl in case it's
+// supported
+//static inline Eina_Bool
+//_entry_win_is_wl(Evas_Object *obj)
+//{
+//   Evas_Object *win = _entry_win_get(obj);
+//   /* primary selection does not exist (yet) */
+//   return win && elm_win_wl_window_get(win);
+//}
 
 static void
 _entry_selection_changed_signal_cb(void *data,
@@ -3236,11 +3238,14 @@ _entry_selection_changed_signal_cb(void *data,
 {
    ELM_ENTRY_DATA_GET(data, sd);
 
-   if(!sd) return;
+   if (!sd) return EINA_FALSE;
+   sd->sel_change_timeout = NULL;
    sd->have_selection = EINA_TRUE;
    efl_event_callback_legacy_call
      (data, EFL_UI_EVENT_SELECTION_CHANGED, NULL);
-   if (!_entry_win_is_wl(data))
+   // XXX: still try primary selection even if on wl in case it's
+   // supported
+//   if (!_entry_win_is_wl(data))
      _selection_store(ELM_SEL_TYPE_PRIMARY, data);
    _update_selection_handler(data);
    if (_elm_atspi_enabled())
@@ -3273,7 +3278,9 @@ _entry_selection_cleared_signal_cb(void *data,
    sd->have_selection = EINA_FALSE;
    efl_event_callback_legacy_call
      (data, EFL_UI_EVENT_SELECTION_CLEARED, NULL);
-   if (!_entry_win_is_wl(data))
+   // XXX: still try primary selection even if on wl in case it's
+   // supported
+//   if (!_entry_win_is_wl(data))
      {
         if (sd->cut_sel)
           {
@@ -3292,20 +3299,20 @@ _entry_selection_cleared_signal_cb(void *data,
    /*************************************************************
     * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
     *************************************************************/
-   else
-     {
-        /* When primary type does not exist */
-        if (sd->cut_sel)
-          {
-             elm_cnp_selection_loss_callback_set(data, ELM_SEL_TYPE_PRIMARY, _selection_clear, data);
-
-             ELM_SAFE_FREE(sd->cut_sel, eina_stringshare_del);
-          }
-        else if (!sd->drag_started)
-          {
-             elm_object_cnp_selection_clear(data, ELM_SEL_TYPE_PRIMARY);
-          }
-     }
+//   else
+//     {
+//       /* When primary type does not exist */
+//        if (sd->cut_sel)
+//          {
+//             elm_cnp_selection_loss_callback_set(data, ELM_SEL_TYPE_PRIMARY, _selection_clear, data);
+//
+//             ELM_SAFE_FREE(sd->cut_sel, eina_stringshare_del);
+//          }
+//        else if (!sd->drag_started)
+//          {
+//             elm_object_cnp_selection_clear(data, ELM_SEL_TYPE_PRIMARY);
+//          }
+//     }
    /*******
     * END *
     *******/
@@ -3328,7 +3335,9 @@ _entry_paste_request_signal_cb(void *data,
      ELM_SEL_TYPE_PRIMARY : ELM_SEL_TYPE_CLIPBOARD;
 
    if (!sd->editable) return;
-   if ((type == ELM_SEL_TYPE_PRIMARY) && _entry_win_is_wl(data)) return;
+   // XXX: still try primary selection even if on wl in case it's
+   // supported
+//   if ((type == ELM_SEL_TYPE_PRIMARY) && _entry_win_is_wl(data)) return;
    efl_event_callback_legacy_call
      (data, EFL_UI_EVENT_SELECTION_PASTE, NULL);
 
