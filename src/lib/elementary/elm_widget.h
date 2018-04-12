@@ -389,10 +389,6 @@ typedef struct _Elm_Widget_Smart_Data
    Evas_Object                  *hover_obj;
    Evas_Object                  *bg;
    Eina_List                    *tooltips, *cursors;
-   Evas_Object                  *focus_previous, *focus_next;
-   Evas_Object                  *focus_up, *focus_down, *focus_right, *focus_left;
-   Elm_Object_Item              *item_focus_previous, *item_focus_next;
-   Elm_Object_Item              *item_focus_up, *item_focus_down, *item_focus_right, *item_focus_left;
 
    /* "show region" coordinates. all widgets got those because this
     * info may be set and queried recursively through the widget
@@ -459,16 +455,11 @@ typedef struct _Elm_Widget_Smart_Data
       Efl_Ui_Focus_Manager *manager;
       Efl_Ui_Focus_Object *provider;
    } manager;
-
-   /***********************************************************
-    * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
-    ***********************************************************/
-   Evas_BiDi_Direction           paragraph_direction : 3;
-   Eina_Bool                     inherit_paragraph_direction : 1;
-   /*******
-    * END *
-    *******/
-
+   struct {
+     Eina_List *custom_chain;
+     Evas_Object *prev, *next, *up, *down, *right, *left;
+     Elm_Object_Item *item_prev, *item_next, *item_up, *item_down, *item_right, *item_left;
+   } legacy_focus;
    Eina_Bool                     scroll_x_locked : 1;
    Eina_Bool                     scroll_y_locked : 1;
 
@@ -492,6 +483,15 @@ typedef struct _Elm_Widget_Smart_Data
    Eina_Bool                     on_destroy: 1; /**< This is true when the widget is on destruction(general widget destructor). */
    Eina_Bool                     provider_lookup : 1; /**< This is true when efl_provider_find is currently walking the tree */
    Eina_Bool                     has_shadow : 1;
+
+   /***********************************************************
+    * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
+    ***********************************************************/
+   Evas_BiDi_Direction           paragraph_direction : 3;
+   Eina_Bool                     inherit_paragraph_direction : 1;
+   /*******
+    * END *
+    *******/
    ///TIZEN_ONLY(20170717) : expose highlight information on atspi
    Eina_Bool                     can_highlight : 1; /**< true if widget have at-spi HIGHLIGHTABLE state */
    ///
