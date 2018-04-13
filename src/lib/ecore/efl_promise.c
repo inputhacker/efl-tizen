@@ -1396,6 +1396,7 @@ efl_future_race_internal(Efl_Future *f1, ...)
      {
         eina_array_push(&race->members, fn);
      }
+   va_end(args);
 
    return _efl_future_race_done(race);
 }
