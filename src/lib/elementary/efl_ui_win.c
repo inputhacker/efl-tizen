@@ -6514,6 +6514,11 @@ _efl_ui_win_icon_object_set(Eo *obj, Efl_Ui_Win_Data *sd, Evas_Object *icon)
      }
 #ifdef HAVE_ELEMENTARY_X
    _elm_win_xwin_update(sd);
+//TIZEN_ONLY(160628): To support an app window icon on SDK UI Tools.
+#elif HAVE_ELEMENTARY_WIN32
+   const char *path;
+   elm_image_file_get(icon, &path, NULL);
+   ecore_win32_window_icon_set(sd->win32.win, path);
 #endif
 }
 
