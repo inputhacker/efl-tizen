@@ -1232,7 +1232,8 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-systemd \
     --disable-cserve \
     --with-elementary-base-dir="share/.elementary" \
-    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb
+    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb \
+    ac_cv_func_getuid=no
 #    --enable-systemd \
 #    --enable-drm \
 #    --enable-gl-drm \
