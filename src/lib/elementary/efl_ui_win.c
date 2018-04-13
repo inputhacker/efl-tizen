@@ -232,6 +232,9 @@ struct _Efl_Ui_Win_Data
       unsigned int count; /* number of elements in available rotations */
       Eina_Bool    wm_supported : 1; /* set true when the window manager support window rotation */
       Eina_Bool    use : 1; /* set ture when application use window manager rotation. */
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+      Eina_Bool    rotation_pending : 1; /* set true when application will manage the rotation */
+//
    } wm_rot;
 
    void *trap_data;
@@ -7136,6 +7139,29 @@ _win_rotation_degree_check(int rotation)
    return rotation;
 }
 
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+/*
+ * This API rotates the window by app side.
+ */
+
+static void
+_win_pending_rotate(Evas_Object *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, int rotation, Eina_Bool resize)
+{
+   rotation = _win_rotation_degree_check(rotation);
+   DBG("PendingRotation: elm_win pending rotation set rot=%d", rotation);
+   if (sd->rot == rotation) return;
+
+   //TODO: We need time to set up the role of pending rotation between the server and client.
+   //and also need time to discuss this concept with opensource.
+   //so until that time, we add ecore evas data instead of opening the new ecore_evas_XXX api.
+   ecore_evas_data_set(sd->ee, "pending_rotation", (void *)1);
+
+   // Currently only support rotation_with_resize
+   if (resize) TRAP(sd, rotation_with_resize_set, rotation);
+   else return;
+}
+//
+
 /*
  * This API resizes the internal window(ex: X window) and evas_output.
  * But this does not resize the elm window object and its contents.
@@ -8753,7 +8779,13 @@ elm_win_rotation_with_resize_set(Evas_Object *obj, int rotation)
 {
    Efl_Ui_Win_Data *sd = efl_data_scope_safe_get(obj, MY_CLASS);
    if (!sd) return;
-
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+   if (sd->wm_rot.rotation_pending)
+     {
+        _win_pending_rotate(obj, sd, rotation, EINA_TRUE);
+     }
+   else
+//
    _win_rotate(obj, sd, rotation, EINA_TRUE);
 }
 
@@ -9106,6 +9138,41 @@ elm_win_inlined_image_object_get(const Evas_Object *obj)
 
    return sd->img_obj;
 }
+
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+
+/* Efl don't have any plan to open new API to support the client rotation.(ex: elm_win_rotation_set)
+ * But it is need that apps deal with rotation
+ * For example, if the app want to do the object rotation effect during the rotation,
+ * canvas should not be rotated until app's rotation effect ends.
+ * so until to decide app's rotaion policy,
+ * just use the "wm.policy.win.rot.render.nopending" aux_hint.
+ * Using this hint, elm- ecore_evas - engine -tizen display server will manage the pending rotation.
+*/
+
+static int
+_elm_win_wm_pending_rotation_set(Evas_Object *obj EINA_UNUSED, const char *hint EINA_UNUSED, const char *val)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, -1);
+
+   int id = -1;
+
+   //TODO: aux_hint_del, aux_hint_val_set.
+   //Currently only 1 is available.
+
+   if (!val || (strncmp(val, "1", 1))) return -1;
+   id = ecore_evas_aux_hint_add(sd->ee, "wm.policy.win.rot.render.nopending", val);
+
+   if (id == -1)
+     {
+        ERR("PendingRotation: elm_win pending_rotation_set aux id failed");
+        //return id;
+     }
+   sd->wm_rot.rotation_pending = EINA_TRUE;
+   DBG("PendingRotation: elm_win rotation_pending_set sucess");
+   return id;
+}
+//
 
 // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
 static void _elm_win_accessibility_highlight_callbacks_del(Efl_Ui_Win_Data *sd)
@@ -9984,7 +10051,12 @@ EAPI int
 elm_win_aux_hint_add(Evas_Object *obj, const char *hint, const char *val)
 {
    ELM_WIN_DATA_GET_OR_RETURN(obj, sd, -1);
-
+// TIZEN_ONLY(20170212): pend rotation until app set rotation
+   if ((hint) && (!strncmp(hint, "wm.policy.win.rot.render.nopending", strlen(hint))))
+     {
+        return _elm_win_wm_pending_rotation_set(obj, hint, val);
+     }
+//
    return ecore_evas_aux_hint_add(sd->ee, hint, val);
 }
 
