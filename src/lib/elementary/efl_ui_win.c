@@ -5224,12 +5224,6 @@ _elm_win_frame_style_update(Efl_Ui_Win_Data *sd, Eina_Bool force_emit, Eina_Bool
         sd->csd.need_menu = EINA_FALSE;
         sd->csd.need_indicator = EINA_FALSE;
      }
-//TIZEN_ONLY(20171201): Use win_no_border config temporarily.
-   else if(_elm_config->win_no_border)
-     {
-        sd->csd.need_borderless = EINA_TRUE;
-     }
-//
    else
      {
         sd->csd.need_shadow = sd->csd.need && (!sd->maximized);
@@ -6325,6 +6319,13 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
            default: break;
           }
      }
+
+   //TIZEN_ONLY(20171201): Use win_no_border config.
+   if(_elm_config->win_no_border)
+     {
+        elm_win_borderless_set(obj, EINA_TRUE);
+     }
+   //
 
    /* TIZEN_ONLY(20180117): Apply paragraph direction according to locale */
    if (!strcmp(E_("default:LTR"), "default:RTL"))
