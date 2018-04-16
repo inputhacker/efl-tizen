@@ -481,7 +481,7 @@ _efl_canvas_layout_efl_ui_base_mirrored_set(Eo *obj, Edje *ed, Eina_Bool rtl)
         _edje_part_description_apply(ed, ep, s, v, NULL, 0.0);
         ep->chosen_description = ep->param1.description;
      }
-   _edje_recalc_do(ed);
+   if (!ed->freeze) _edje_recalc_do(ed);
 
    _edje_object_orientation_inform(obj);
 
@@ -2048,7 +2048,7 @@ edje_object_part_object_get(const Eo *obj, const char *part)
    if ((!ed) || (!part)) return NULL;
 
    /* Need to recalc before providing the object. */
-   _edje_recalc_do(ed);
+   if (!ed->freeze) _edje_recalc_do(ed);
 
    rp = _edje_real_part_recursive_get(&ed, part);
    if (!rp) return NULL;
@@ -2203,7 +2203,7 @@ _edje_efl_text_text_get(const Eo *obj EINA_UNUSED, Edje *ed, const char *part,
    if ((!ed) || (!part)) return NULL;
 
    /* Need to recalc before providing the object. */
-   _edje_recalc_do(ed);
+   if (!ed->freeze) _edje_recalc_do(ed);
 
    rp = _edje_real_part_recursive_get(&ed, part);
    if (!rp) return NULL;
@@ -3497,7 +3497,7 @@ _edje_efl_content_content_get(Edje *ed, const char *part)
    if ((!ed) || (!part)) return NULL;
 
    /* Need to recalc before providing the object. */
-   _edje_recalc_do(ed);
+   if (!ed->freeze) _edje_recalc_do(ed);
 
    rp = _edje_real_part_recursive_get(&ed, part);
    if (!rp) return NULL;
@@ -3563,7 +3563,7 @@ _efl_canvas_layout_efl_layout_group_group_size_max_get(const Eo *obj EINA_UNUSED
      return EINA_SIZE2D(0, 0);
 
    /* Need to recalc before providing the object. */
-   _edje_recalc_do(ed);
+   if (!ed->freeze) _edje_recalc_do(ed);
 
    sz = ed->collection->prop.max;
 
