@@ -98,8 +98,8 @@ evas_init(void)
 
 #ifdef EVAS_CSERVE2
    if (cs2) evas_cserve2_shutdown();
- shutdown_async_events:
 #endif
+ shutdown_async_events:
    evas_async_events_shutdown();
  shutdown_module:
    evas_module_shutdown();
