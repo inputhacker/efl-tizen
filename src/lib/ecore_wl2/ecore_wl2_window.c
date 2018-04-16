@@ -1383,18 +1383,15 @@ ecore_wl2_window_lower(Ecore_Wl2_Window *window)
    EINA_SAFETY_ON_NULL_RETURN(window);
    EINA_SAFETY_ON_NULL_RETURN(window->display);
 
-   if (window->zxdg_toplevel)
+   /* FIXME: This should lower the xdg surface also */
+   if (window->display->wl.tz_policy)
      {
-        /* FIXME: This should lower the xdg surface also */
-        if (window->display->wl.tz_policy)
-          {
-             tizen_policy_lower(window->display->wl.tz_policy, window->surface);
+        tizen_policy_lower(window->display->wl.tz_policy, window->surface);
 
-             if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Lower)))) return;
+        if (!(ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Lower)))) return;
 
-             ev->win = window->id;
-             ecore_event_add(ECORE_WL2_EVENT_WINDOW_LOWER, ev, NULL, NULL);
-          }
+        ev->win = window->id;
+        ecore_event_add(ECORE_WL2_EVENT_WINDOW_LOWER, ev, NULL, NULL);
      }
 }
 
