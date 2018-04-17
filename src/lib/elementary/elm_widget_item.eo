@@ -539,33 +539,40 @@ class Elm.Widget.Item(Efl.Object, Efl.Access.Object,
       implements {
            Efl.Object.constructor;
            Efl.Object.destructor;
-           //TIZEN_ONLY(20150713) : add widget_item name setter
-           Efl.Access.Object.i18n_name { set; get;}
-           ///
-           Efl.Object.del;
+           Efl.Object.invalidate;
            Efl.Access.Object.state_set { get; }
            Efl.Access.Object.attributes { get; }
+           Efl.Access.Component.extents { get; set; }
+           Efl.Access.Component.focus_grab;
+
+           //TIZEN_ONLY(20150713) : add widget_item name setter
+           Efl.Access.Object.i18n_name { set; get;}
+           //
+
            //TIZEN_ONLY(20161111) add widget/widget_item description get/set
            Efl.Access.Object.description { set; get; }
            //
-          //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
+
+           //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
            Efl.Access.Object.can_highlight { get; set; }
-          //
+           //
+
            //TIZEN_ONLY(20150731) : add i18n support for name and description
            Efl.Access.Object.translation_domain { set; get;}
            //
-           Efl.Access.Component.extents { get; set; }
-           Efl.Access.Component.focus_grab;
+
            //TIZEN_ONLY(20150709) : atspi relations api
            Efl.Access.Object.relation_set { get; }
            Efl.Access.Object.relationship_append;
            Efl.Access.Object.relationship_remove;
            Efl.Access.Object.relationships_clear;
            //
+
            //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
            Efl.Access.Component.highlight_grab;
            Efl.Access.Component.highlight_clear;
            //
+
            //TIZEN_ONLY(20160527): widget: add AtspiAction interface to all widgets
            Efl.Access.Widget.Action.elm_actions { get; }
            //
