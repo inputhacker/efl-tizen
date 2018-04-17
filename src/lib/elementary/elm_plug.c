@@ -173,7 +173,7 @@ _elm_plug_efl_object_constructor(Eo *obj, void *sd EINA_UNUSED)
 }
 
 EOLIAN static Evas_Object*
-_elm_plug_image_object_get(Eo *obj, void *sd EINA_UNUSED)
+_elm_plug_image_object_get(const Eo *obj, void *sd EINA_UNUSED)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
    return wd->resize_obj;
@@ -218,7 +218,7 @@ _elm_plug_connect(Eo *obj, void *sd EINA_UNUSED, const char *svcname, int svcnum
 
 //TIZEN_ONLY(20171108): make atspi_proxy work
 EOLIAN static Eina_List*
-_elm_plug_efl_access_access_children_get(Eo *obj, void *sd EINA_UNUSED)
+_elm_plug_efl_access_access_children_get(const Eo *obj, void *sd EINA_UNUSED)
 {
    Eina_List *ret;
    ret = efl_access_children_get(efl_super(obj, EFL_UI_WIDGET_CLASS));

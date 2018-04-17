@@ -6756,14 +6756,14 @@ _elm_atspi_bridge_key_filter(void *data, void *loop EINA_UNUSED, int type, void 
 }
 
 EOLIAN Eina_Bool
-_elm_atspi_bridge_connected_get(Eo *obj EINA_UNUSED, Elm_Atspi_Bridge_Data *pd)
+_elm_atspi_bridge_connected_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Bridge_Data *pd)
 {
    return pd->connected;
 }
 
 //TIZEN_ONLY(20171108): make atspi_proxy work
 EOLIAN Eo*
-_elm_atspi_bridge_root_get(Eo *obj EINA_UNUSED, Elm_Atspi_Bridge_Data *pd)
+_elm_atspi_bridge_root_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Bridge_Data *pd)
 {
    if (!pd->root)
      {

@@ -114,7 +114,7 @@ _efl_ecore_input_device_device_type_set(Eo *obj, Efl_Ecore_Input_Device_Data *pd
 }
 
 EOLIAN static Efl_Ecore_Input_Device_Type
-_efl_ecore_input_device_device_type_get(Eo *obj EINA_UNUSED, Efl_Ecore_Input_Device_Data *pd)
+_efl_ecore_input_device_device_type_get(const Eo *obj EINA_UNUSED, Efl_Ecore_Input_Device_Data *pd)
 {
    return pd->klass;
 }
@@ -128,7 +128,7 @@ _efl_ecore_input_device_source_set(Eo *obj EINA_UNUSED, Efl_Ecore_Input_Device_D
 }
 
 EOLIAN static Efl_Ecore_Input_Device *
-_efl_ecore_input_device_source_get(Eo *obj EINA_UNUSED, Efl_Ecore_Input_Device_Data *pd)
+_efl_ecore_input_device_source_get(const Eo *obj EINA_UNUSED, Efl_Ecore_Input_Device_Data *pd)
 {
    return pd->source;
 }
@@ -141,7 +141,7 @@ _efl_ecore_input_device_seat_id_set(Eo *obj EINA_UNUSED, Efl_Ecore_Input_Device_
 }
 
 EOLIAN static unsigned int
-_efl_ecore_input_device_seat_id_get(Eo *obj, Efl_Ecore_Input_Device_Data *pd)
+_efl_ecore_input_device_seat_id_get(const Eo *obj, Efl_Ecore_Input_Device_Data *pd)
 {
    if (pd->klass == EFL_ECORE_INPUT_DEVICE_TYPE_SEAT)
      return pd->id;
@@ -149,7 +149,7 @@ _efl_ecore_input_device_seat_id_get(Eo *obj, Efl_Ecore_Input_Device_Data *pd)
 }
 
 EOLIAN static Efl_Ecore_Input_Device *
-_efl_ecore_input_device_seat_get(Eo *obj, Efl_Ecore_Input_Device_Data *pd)
+_efl_ecore_input_device_seat_get(const Eo *obj, Efl_Ecore_Input_Device_Data *pd)
 {
    for (; obj; obj = efl_parent_get(obj))
      {

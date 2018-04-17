@@ -36,7 +36,7 @@ static int _none_log_dom = -1;
 #define DBG(...)      EINA_LOG_DOM_DBG(_none_log_dom, __VA_ARGS__)
 
 EOLIAN static Eina_Bool
-_elm_web_none_elm_web_tab_propagate_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *sd EINA_UNUSED)
+_elm_web_none_elm_web_tab_propagate_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *sd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
@@ -60,7 +60,7 @@ _elm_web_none_efl_canvas_group_group_add(Eo *obj, Elm_Web_None_Data *_pd EINA_UN
 }
 
 EOLIAN static Evas_Object*
-_elm_web_none_elm_web_webkit_view_get(Eo *obj, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_webkit_view_get(const Eo *obj, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    (void)obj;
    ERR("Elementary not compiled with EWebKit support.");
@@ -103,7 +103,7 @@ _elm_web_none_elm_web_useragent_set(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd 
 }
 
 EOLIAN static const char*
-_elm_web_none_elm_web_useragent_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_useragent_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return NULL;
 }
@@ -115,7 +115,7 @@ _elm_web_none_elm_web_url_set(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_U
 }
 
 EOLIAN static const char*
-_elm_web_none_elm_web_url_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_url_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return NULL;
 }
@@ -127,7 +127,7 @@ _elm_web_none_elm_web_html_string_load(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_
 }
 
 EOLIAN static const char*
-_elm_web_none_elm_web_title_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_title_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return NULL;
 }
@@ -138,7 +138,7 @@ _elm_web_none_elm_web_bg_color_set(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd E
 }
 
 EOLIAN static void
-_elm_web_none_elm_web_bg_color_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED, int *r, int *g, int *b, int *a)
+_elm_web_none_elm_web_bg_color_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED, int *r, int *g, int *b, int *a)
 {
    if (r) *r = 0;
    if (g) *g = 0;
@@ -147,7 +147,7 @@ _elm_web_none_elm_web_bg_color_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd E
 }
 
 EOLIAN static const char*
-_elm_web_none_elm_web_selection_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_selection_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return NULL;
 }
@@ -188,13 +188,13 @@ _elm_web_none_elm_web_text_matches_highlight_set(Eo *obj EINA_UNUSED, Elm_Web_No
 }
 
 EOLIAN static Eina_Bool
-_elm_web_none_elm_web_text_matches_highlight_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_text_matches_highlight_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
 
 EOLIAN static double
-_elm_web_none_elm_web_load_progress_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_load_progress_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return -1.0;
 }
@@ -236,13 +236,13 @@ _elm_web_none_elm_web_navigate(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_
 }
 
 EOLIAN static Eina_Bool
-_elm_web_none_elm_web_back_possible_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_back_possible_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
 
 EOLIAN static Eina_Bool
-_elm_web_none_elm_web_forward_possible_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_forward_possible_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
@@ -254,7 +254,7 @@ _elm_web_none_elm_web_navigate_possible_get(Eo *obj EINA_UNUSED, Elm_Web_None_Da
 }
 
 EOLIAN static Eina_Bool
-_elm_web_none_elm_web_history_enabled_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_elm_web_history_enabled_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
@@ -270,7 +270,7 @@ _elm_web_none_efl_ui_zoom_zoom_level_set(Eo *obj EINA_UNUSED, Elm_Web_None_Data 
 }
 
 EOLIAN static double
-_elm_web_none_efl_ui_zoom_zoom_level_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_efl_ui_zoom_zoom_level_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return -1;
 }
@@ -281,7 +281,7 @@ _elm_web_none_efl_ui_zoom_zoom_mode_set(Eo *obj EINA_UNUSED, Elm_Web_None_Data *
 }
 
 EOLIAN static Efl_Ui_Zoom_Mode
-_elm_web_none_efl_ui_zoom_zoom_mode_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
+_elm_web_none_efl_ui_zoom_zoom_mode_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *_pd EINA_UNUSED)
 {
    return EFL_UI_ZOOM_MODE_LAST;
 }
@@ -302,7 +302,7 @@ _elm_web_none_elm_web_inwin_mode_set(Eo *obj EINA_UNUSED, Elm_Web_None_Data *sd 
 }
 
 EOLIAN static Eina_Bool
-_elm_web_none_elm_web_inwin_mode_get(Eo *obj EINA_UNUSED, Elm_Web_None_Data *sd EINA_UNUSED)
+_elm_web_none_elm_web_inwin_mode_get(const Eo *obj EINA_UNUSED, Elm_Web_None_Data *sd EINA_UNUSED)
 {
    return EINA_FALSE;
 }

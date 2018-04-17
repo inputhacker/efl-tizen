@@ -1114,7 +1114,7 @@ _elm_popup_item_elm_widget_item_part_text_set(Eo *eo_it EINA_UNUSED, Elm_Popup_I
 }
 
 EOLIAN static const char *
-_elm_popup_item_elm_widget_item_part_text_get(Eo *eo_it EINA_UNUSED, Elm_Popup_Item_Data *it,
+_elm_popup_item_elm_widget_item_part_text_get(const Eo *eo_it EINA_UNUSED, Elm_Popup_Item_Data *it,
                     const char *part)
 {
    ELM_POPUP_ITEM_CHECK_OR_RETURN(it, NULL);
@@ -1162,7 +1162,7 @@ _elm_popup_item_elm_widget_item_part_content_set(Eo *eo_it EINA_UNUSED, Elm_Popu
 }
 
 EOLIAN static Evas_Object *
-_elm_popup_item_elm_widget_item_part_content_get(Eo *eo_it EINA_UNUSED, Elm_Popup_Item_Data *it,
+_elm_popup_item_elm_widget_item_part_content_get(const Eo *eo_it EINA_UNUSED, Elm_Popup_Item_Data *it,
                        const char *part)
 {
    ELM_POPUP_ITEM_CHECK_OR_RETURN(it, NULL);
@@ -2198,7 +2198,7 @@ _elm_popup_content_text_wrap_type_set(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd, E
 }
 
 EOLIAN static Elm_Wrap_Type
-_elm_popup_content_text_wrap_type_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
+_elm_popup_content_text_wrap_type_get(const Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
 {
    return sd->content_text_wrap_type;
 }
@@ -2296,7 +2296,7 @@ _elm_popup_orient_set(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd, Elm_Popup_Orient 
 }
 
 EOLIAN static Elm_Popup_Orient
-_elm_popup_orient_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
+_elm_popup_orient_get(const Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
 {
    return (Elm_Popup_Orient)_elm_notify_orient_get(sd->notify);
 }
@@ -2308,7 +2308,7 @@ _elm_popup_align_set(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd, double horizontal,
 }
 
 EOLIAN static void
-_elm_popup_align_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd, double *horizontal, double *vertical)
+_elm_popup_align_get(const Eo *obj EINA_UNUSED, Elm_Popup_Data *sd, double *horizontal, double *vertical)
 {
    elm_notify_align_get(sd->notify, horizontal, vertical);
 }
@@ -2320,7 +2320,7 @@ _elm_popup_timeout_set(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd, double timeout)
 }
 
 EOLIAN static double
-_elm_popup_timeout_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
+_elm_popup_timeout_get(const Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
 {
    return elm_notify_timeout_get(sd->notify);
 }
@@ -2334,7 +2334,7 @@ _elm_popup_allow_events_set(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd, Eina_Bool a
 }
 
 EOLIAN static Eina_Bool
-_elm_popup_allow_events_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
+_elm_popup_allow_events_get(const Eo *obj EINA_UNUSED, Elm_Popup_Data *sd)
 {
    return elm_notify_allow_events_get(sd->notify);
 }
@@ -2414,7 +2414,7 @@ _elm_popup_scrollable_set(Eo *obj, Elm_Popup_Data *pd, Eina_Bool scroll)
 }
 
 EOLIAN Eina_Bool
-_elm_popup_scrollable_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *pd)
+_elm_popup_scrollable_get(const Eo *obj EINA_UNUSED, Elm_Popup_Data *pd)
 {
    return pd->scroll;
 }
@@ -2443,7 +2443,7 @@ _action_dismiss(Evas_Object *obj, const char *params EINA_UNUSED)
 }
 
 EOLIAN const Efl_Access_Action_Data *
-_elm_popup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Popup_Data *pd)
+_elm_popup_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNUSED, Elm_Popup_Data *pd)
 {
    static Efl_Access_Action_Data atspi_actions[] = {
 //TIZEN_ONLY(20150709) : add keybinding for elm_popup "block,clicked" action
@@ -2458,7 +2458,7 @@ _elm_popup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Pop
 }
 
 EOLIAN static Efl_Access_State_Set
-_elm_popup_efl_access_state_set_get(Eo *obj, Elm_Popup_Data *sd EINA_UNUSED)
+_elm_popup_efl_access_state_set_get(const Eo *obj, Elm_Popup_Data *sd EINA_UNUSED)
 {
    Efl_Access_State_Set ret;
    ret = efl_access_state_set_get(efl_super(obj, MY_CLASS));
@@ -2469,7 +2469,7 @@ _elm_popup_efl_access_state_set_get(Eo *obj, Elm_Popup_Data *sd EINA_UNUSED)
 }
 
 EOLIAN static const char*
-_elm_popup_efl_access_i18n_name_get(Eo *obj, Elm_Popup_Data *sd)
+_elm_popup_efl_access_i18n_name_get(const Eo *obj, Elm_Popup_Data *sd)
 {
    const char *name = NULL;
    Eina_Strbuf *buf;

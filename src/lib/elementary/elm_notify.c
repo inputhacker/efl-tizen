@@ -442,7 +442,7 @@ _elm_notify_content_set(Eo *obj, Elm_Notify_Data *sd, const char *part, Evas_Obj
 }
 
 static Evas_Object*
-_elm_notify_content_get(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd, const char *part)
+_elm_notify_content_get(const Eo *obj EINA_UNUSED, Elm_Notify_Data *sd, const char *part)
 {
    if (part && strcmp(part, "default")) return NULL;
 
@@ -471,7 +471,7 @@ _elm_notify_efl_content_content_set(Eo *obj, Elm_Notify_Data *sd, Evas_Object *c
 }
 
 EOLIAN static Evas_Object*
-_elm_notify_efl_content_content_get(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
+_elm_notify_efl_content_content_get(const Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
 {
    return _elm_notify_content_get(obj, sd, NULL);
 }
@@ -636,7 +636,7 @@ elm_notify_parent_get(const Evas_Object *obj)
 }
 
 EOLIAN static Evas_Object*
-_elm_notify_efl_ui_widget_widget_parent_get(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
+_elm_notify_efl_ui_widget_widget_parent_get(const Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
 {
    return sd->parent;
 }
@@ -731,7 +731,7 @@ _elm_notify_timeout_set(Eo *obj, Elm_Notify_Data *sd, double timeout)
 }
 
 EOLIAN static double
-_elm_notify_timeout_get(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
+_elm_notify_timeout_get(const Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
 {
    return sd->timeout;
 }
@@ -759,7 +759,7 @@ _elm_notify_allow_events_set(Eo *obj, Elm_Notify_Data *sd, Eina_Bool allow)
 }
 
 EOLIAN static Eina_Bool
-_elm_notify_allow_events_get(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
+_elm_notify_allow_events_get(const Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
 {
    return sd->allow_events;
 }
@@ -799,7 +799,7 @@ _elm_notify_dismiss(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd)
 
 
 EOLIAN static void
-_elm_notify_align_get(Eo *obj EINA_UNUSED, Elm_Notify_Data *sd, double *horizontal, double *vertical)
+_elm_notify_align_get(const Eo *obj EINA_UNUSED, Elm_Notify_Data *sd, double *horizontal, double *vertical)
 {
    if (horizontal)
      *horizontal = sd->horizontal_align;
@@ -839,7 +839,7 @@ ELM_PART_OVERRIDE_CONTENT_UNSET(elm_notify, ELM_NOTIFY, Elm_Notify_Data)
 ELM_PART_CONTENT_DEFAULT_GET(elm_notify, "default")
 
 EOLIAN static const char *
-_elm_notify_part_efl_ui_translatable_translatable_text_get(Eo *obj, void *_pd EINA_UNUSED, const char **domain)
+_elm_notify_part_efl_ui_translatable_translatable_text_get(const Eo *obj, void *_pd EINA_UNUSED, const char **domain)
 {
    Elm_Part_Data *pd = efl_data_scope_get(obj, EFL_UI_WIDGET_PART_CLASS);
    return elm_widget_part_translatable_text_get(pd->obj, pd->part, domain);

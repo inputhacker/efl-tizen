@@ -21,7 +21,7 @@ typedef struct _Efl_Access_Component_Data Efl_Access_Component_Data;
 
 
 EOLIAN static void
-_efl_access_component_screen_position_get(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED, int *x, int *y)
+_efl_access_component_screen_position_get(const Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED, int *x, int *y)
 {
    Eina_Rect r;
 
@@ -85,7 +85,7 @@ _efl_access_component_accessible_at_point_get(Eo *obj, Efl_Access_Component_Data
 }
 
 EOLIAN static Eina_Rect
-_efl_access_component_extents_get(Eo *obj, Efl_Access_Component_Data *_pd EINA_UNUSED, Eina_Bool screen_coords)
+_efl_access_component_extents_get(const Eo *obj, Efl_Access_Component_Data *_pd EINA_UNUSED, Eina_Bool screen_coords)
 {
    Eina_Rect r;
 
@@ -127,7 +127,7 @@ _efl_access_component_extents_set(Eo *obj, Efl_Access_Component_Data *_pd EINA_U
 }
 
 EOLIAN static int
-_efl_access_component_z_order_get(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED)
+_efl_access_component_z_order_get(const Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd EINA_UNUSED)
 {
    // Currently not used.
    return 0;
@@ -167,7 +167,7 @@ _efl_access_component_socket_offset_set(Eo *obj EINA_UNUSED, Efl_Access_Componen
 }
 
 EOLIAN static void
-_efl_access_component_socket_offset_get(Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd, int *x, int *y)
+_efl_access_component_socket_offset_get(const Eo *obj EINA_UNUSED, Efl_Access_Component_Data *_pd, int *x, int *y)
 {
    *x = _pd->socket_offset.x;
    *y = _pd->socket_offset.y;

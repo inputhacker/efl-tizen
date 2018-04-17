@@ -130,7 +130,7 @@ _elm_atspi_ewk_wrapper_efl_object_destructor(Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_
 }
 
 EOLIAN static Eina_List*
-_elm_atspi_ewk_wrapper_efl_access_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
+_elm_atspi_ewk_wrapper_efl_access_access_children_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
 {
    if (_pd->proxy)
      return eina_list_append(NULL, _pd->proxy);
@@ -202,7 +202,7 @@ _elm_atspi_ewk_wrapper_efl_access_component_accessible_at_point_get(Eo *obj EINA
 }
 
 EOLIAN static Evas_Object *
-_elm_atspi_ewk_wrapper_ewk_view_get(Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
+_elm_atspi_ewk_wrapper_ewk_view_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
 {
    return _pd->ewk_view;
 }

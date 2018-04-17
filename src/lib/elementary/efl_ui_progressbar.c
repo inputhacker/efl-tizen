@@ -407,7 +407,7 @@ _efl_ui_progressbar_pulse_mode_set(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data 
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_progressbar_pulse_mode_get(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *sd)
+_efl_ui_progressbar_pulse_mode_get(const Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *sd)
 {
    return sd->pulse;
 }
@@ -421,7 +421,7 @@ _efl_ui_progressbar_efl_ui_direction_direction_set(Eo *obj, Efl_Ui_Progressbar_D
 }
 
 EOLIAN static Efl_Ui_Dir
-_efl_ui_progressbar_efl_ui_direction_direction_get(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *sd)
+_efl_ui_progressbar_efl_ui_direction_direction_get(const Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *sd)
 {
    return sd->dir;
 }
@@ -554,7 +554,7 @@ _efl_ui_progressbar_efl_ui_range_range_value_set(Eo *obj, Efl_Ui_Progressbar_Dat
 }
 
 EOLIAN static double
-_efl_ui_progressbar_efl_ui_range_range_value_get(Eo *obj, Efl_Ui_Progressbar_Data *sd EINA_UNUSED)
+_efl_ui_progressbar_efl_ui_range_range_value_get(const Eo *obj, Efl_Ui_Progressbar_Data *sd EINA_UNUSED)
 {
    return efl_ui_range_value_get(efl_part(obj, "elm.cur.progressbar"));
 }
@@ -601,7 +601,7 @@ _efl_ui_progressbar_pulse_set(Eo *obj, Efl_Ui_Progressbar_Data *sd, Eina_Bool st
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_progressbar_pulse_get(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *sd)
+_efl_ui_progressbar_pulse_get(const Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *sd)
 {
    return (sd->pulse_state && sd->pulse);
 }
@@ -613,7 +613,7 @@ _efl_ui_progressbar_efl_ui_range_range_min_max_set(Eo *obj, Efl_Ui_Progressbar_D
 }
 
 EOLIAN static void
-_efl_ui_progressbar_efl_ui_range_range_min_max_get(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *sd, double *min, double *max)
+_efl_ui_progressbar_efl_ui_range_range_min_max_get(const Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *sd, double *min, double *max)
 {
    if (min) *min = sd->val_min;
    if (max) *max = sd->val_max;
@@ -644,7 +644,7 @@ _efl_ui_progressbar_part_efl_ui_range_range_value_set(Eo *obj, void *_pd EINA_UN
 }
 
 EOLIAN static double
-_efl_ui_progressbar_part_efl_ui_range_range_value_get(Eo *obj, void *_pd EINA_UNUSED)
+_efl_ui_progressbar_part_efl_ui_range_range_value_get(const Eo *obj, void *_pd EINA_UNUSED)
 {
    Elm_Part_Data *pd = efl_data_scope_get(obj, EFL_UI_WIDGET_PART_CLASS);
    Efl_Ui_Progressbar_Data *sd = efl_data_scope_get(pd->obj, EFL_UI_PROGRESSBAR_CLASS);
@@ -653,7 +653,7 @@ _efl_ui_progressbar_part_efl_ui_range_range_value_get(Eo *obj, void *_pd EINA_UN
 }
 
 EOLIAN static void
-_efl_ui_progressbar_efl_access_value_value_and_text_get(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *_pd, double *value, const char **text EINA_UNUSED)
+_efl_ui_progressbar_efl_access_value_value_and_text_get(const Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *_pd, double *value, const char **text EINA_UNUSED)
 {
    if (value) *value = _pd->val;
 }
@@ -661,7 +661,7 @@ _efl_ui_progressbar_efl_access_value_value_and_text_get(Eo *obj EINA_UNUSED, Efl
 
 //TIZEN_ONLY(20160603): added description_get API
 EOLIAN static const char*
-_efl_ui_progressbar_efl_access_description_get(Eo *obj, Efl_Ui_Progressbar_Data *pd EINA_UNUSED)
+_efl_ui_progressbar_efl_access_description_get(const Eo *obj, Efl_Ui_Progressbar_Data *pd EINA_UNUSED)
 {
     const char *ret = elm_object_part_text_get(obj, "elm.text.status");
     return ret ? strdup(ret) : NULL;
@@ -670,7 +670,7 @@ _efl_ui_progressbar_efl_access_description_get(Eo *obj, Efl_Ui_Progressbar_Data 
 
 //TIZEN_ONLY(20161109): apply UI Mirroring for Tizen 3.0 UX
 EOLIAN static Eina_Bool
-_efl_ui_progressbar_efl_ui_base_mirrored_get(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *_pd EINA_UNUSED)
+_efl_ui_progressbar_efl_ui_base_mirrored_get(const Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *_pd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
@@ -694,7 +694,7 @@ _efl_ui_progressbar_part_efl_ui_range_range_min_max_set(Eo *obj, void *_pd EINA_
 }
 
 EOLIAN static void
-_efl_ui_progressbar_part_efl_ui_range_range_min_max_get(Eo *obj, void *_pd EINA_UNUSED, double *min, double *max)
+_efl_ui_progressbar_part_efl_ui_range_range_min_max_get(const Eo *obj, void *_pd EINA_UNUSED, double *min, double *max)
 {
    Efl_Ui_Progress_Status *ps;
    Eina_List *l;

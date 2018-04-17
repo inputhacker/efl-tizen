@@ -15,9 +15,9 @@ extern Eina_Hash *_elm_key_bindings;
 //TIZEN_ONLY(20160524):apply callbacks on direct reading stop/cancel
 
 EOLIAN static Eina_List*
-_efl_access_widget_action_efl_access_action_actions_get(Eo *obj, void *pd EINA_UNUSED);
+_efl_access_widget_action_efl_access_action_actions_get(const Eo *obj, void *pd EINA_UNUSED);
 EOLIAN static const char *
-_efl_access_widget_action_efl_access_action_action_name_get(Eo *obj, void *pd EINA_UNUSED, int id);
+_efl_access_widget_action_efl_access_action_action_name_get(const Eo *obj, void *pd EINA_UNUSED, int id);
 /* support for smart callbacks added for backward compatibility */
 static const char SIG_READ_STOP[] = "access,read,stop";
 static const char SIG_READ_CANCEL[] = "access,read,cancel";
@@ -167,7 +167,7 @@ _efl_access_widget_action_efl_access_action_action_keybinding_get(Eo *obj, void 
 }
 
 EOLIAN static const char *
-_efl_access_widget_action_efl_access_action_action_name_get(Eo *obj, void *pd EINA_UNUSED, int id)
+_efl_access_widget_action_efl_access_action_action_name_get(const Eo *obj, void *pd EINA_UNUSED, int id)
 {
    //TIZEN_ONLY(20160524):apply callbacks on direct reading stop/cancel
    /*
@@ -199,13 +199,13 @@ _efl_access_widget_action_efl_access_action_action_description_set(Eo *obj EINA_
 }
 
 EOLIAN static const char *
-_efl_access_widget_action_efl_access_action_action_description_get(Eo *obj EINA_UNUSED, void *pd EINA_UNUSED, int id EINA_UNUSED)
+_efl_access_widget_action_efl_access_action_action_description_get(const Eo *obj EINA_UNUSED, void *pd EINA_UNUSED, int id EINA_UNUSED)
 {
    return NULL;
 }
 
 EOLIAN static Eina_List*
-_efl_access_widget_action_efl_access_action_actions_get(Eo *obj, void *pd EINA_UNUSED)
+_efl_access_widget_action_efl_access_action_actions_get(const Eo *obj, void *pd EINA_UNUSED)
 {
    const Efl_Access_Action_Data *actions = NULL;
    Eina_List *action_names = NULL;

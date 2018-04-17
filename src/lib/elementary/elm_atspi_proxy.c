@@ -116,13 +116,13 @@ _elm_atspi_proxy_constructor(Eo *obj, Elm_Atspi_Proxy_Data *_pd, Elm_Atspi_Proxy
 }
 
 EOLIAN Elm_Atspi_Proxy_Type
-_elm_atspi_proxy_type_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
+_elm_atspi_proxy_type_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
 {
    return _pd->type;
 }
 
 EOLIAN void
-_elm_atspi_proxy_address_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd, const char **bus, const char **path)
+_elm_atspi_proxy_address_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd, const char **bus, const char **path)
 {
    if (bus) *bus = _pd->bus;
    if (path) *path = _pd->path;
@@ -136,7 +136,7 @@ _elm_atspi_proxy_address_set(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd, con
 }
 
 EOLIAN Eina_List*
-_elm_atspi_proxy_efl_access_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
+_elm_atspi_proxy_efl_access_access_children_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
 {
    Eina_List *ret = NULL;
    if (_pd->type == ELM_ATSPI_PROXY_TYPE_SOCKET)
@@ -149,7 +149,7 @@ _elm_atspi_proxy_efl_access_access_children_get(Eo *obj EINA_UNUSED, Elm_Atspi_P
 }
 
 EOLIAN Eo*
-_elm_atspi_proxy_efl_object_parent_get(Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
+_elm_atspi_proxy_efl_object_parent_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
 {
    Eo *ret = NULL;
    if (_pd->type == ELM_ATSPI_PROXY_TYPE_PLUG)

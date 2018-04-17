@@ -121,7 +121,7 @@ _efl_ui_win_socket_efl_gfx_visible_set(Eo *obj, Efl_Ui_Win_Socket_Data *sd EINA_
 }
 
 EOLIAN static Eo*
-_efl_ui_win_socket_efl_object_parent_get(Eo *obj, Efl_Ui_Win_Socket_Data *pd)
+_efl_ui_win_socket_efl_object_parent_get(const Eo *obj, Efl_Ui_Win_Socket_Data *pd)
 {
    Eo *parent, *prov;
 

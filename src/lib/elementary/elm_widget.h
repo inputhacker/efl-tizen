@@ -863,10 +863,10 @@ EAPI Eina_Bool        _elm_widget_item_highlightable(Elm_Object_Item *item);
 /* debug function. don't use it unless you are tracking parenting issues */
 EAPI void             elm_widget_tree_dump(const Evas_Object *top);
 EAPI void             elm_widget_tree_dot_dump(const Evas_Object *top, FILE *output);
-EAPI Eina_Bool        _elm_widget_onscreen_is(Evas_Object *widget);
-EAPI Eina_Bool        _elm_widget_item_onscreen_is(Elm_Object_Item *item);
-const char*           _elm_widget_accessible_plain_name_get(Evas_Object *obj, const char* name);
-const char*           _elm_widget_item_accessible_plain_name_get(Elm_Object_Item *item, const char* name);
+EAPI Eina_Bool        _elm_widget_onscreen_is(const Evas_Object *widget);
+EAPI Eina_Bool        _elm_widget_item_onscreen_is(const Elm_Object_Item *item);
+const char*           _elm_widget_accessible_plain_name_get(const Evas_Object *obj, const char* name);
+const char*           _elm_widget_item_accessible_plain_name_get(const Elm_Object_Item *item, const char* name);
 
 //TIZEN_ONLY(20170905): find valid child of list item
 Eina_Bool _elm_widget_atspi_role_acceptable_check(Eo *obj);
@@ -879,8 +879,7 @@ EAPI void elm_widget_scroll_item_valign_set(Evas_Object *obj, const char *scroll
 EAPI const char *elm_widget_scroll_item_valign_get(const Evas_Object *obj);
 //
 
-
-Efl_Canvas_Object *   _efl_ui_widget_bg_get(Efl_Ui_Widget *obj);
+Efl_Canvas_Object *   _efl_ui_widget_bg_get(const Efl_Ui_Widget *obj);
 
 #define ELM_WIDGET_DATA_GET_OR_RETURN(o, ptr, ...)   \
   Elm_Widget_Smart_Data *ptr;                        \
