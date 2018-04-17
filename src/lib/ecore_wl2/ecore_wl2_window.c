@@ -3187,6 +3187,8 @@ ecore_wl2_window_input_get(Ecore_Wl2_Window *win)
    EINA_INLIST_FOREACH(win->display->inputs, input)
      {
         if (input->focus.pointer) return input;
+        //This code will be changed after adding ecore_wl2_window_keyboard_get API
+        if (input->focus.keyboard) return input;
      }
 
    return NULL;
