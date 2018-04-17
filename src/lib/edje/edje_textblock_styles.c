@@ -343,7 +343,8 @@ _edje_textblock_style_update(Edje *ed, Edje_Style *stl, Eina_Bool force)
 
    if (_edje_fontset_append)
      fontset = eina_str_escape(_edje_fontset_append);
-   fontsource = eina_str_escape(ed->file->path);
+   if (ed->file->fonts)
+     fontsource = eina_str_escape(ed->file->path);
 
    /* Build the style from each tag */
    EINA_LIST_FOREACH(stl->tags, l, tag)
@@ -373,9 +374,12 @@ _edje_textblock_style_update(Edje *ed, Edje_Style *stl, Eina_Bool force)
                   eina_strbuf_append(txt, "font_fallbacks=");
                   eina_strbuf_append(txt, fontset);
                }
-             eina_strbuf_append(txt, " ");
-             eina_strbuf_append(txt, "font_source=");
-             eina_strbuf_append(txt, fontsource);
+             if (fontsource)
+               {
+                  eina_strbuf_append(txt, " ");
+                  eina_strbuf_append(txt, "font_source=");
+                  eina_strbuf_append(txt, fontsource);
+               }
           }
         if (tag->font_size != 0)
           {
@@ -884,7 +888,8 @@ _edje_textblock_style_parse_and_fix(Edje_File *edf)
 
         if (_edje_fontset_append)
           fontset = eina_str_escape(_edje_fontset_append);
-        fontsource = eina_str_escape(edf->path);
+        if (edf->fonts)
+          fontsource = eina_str_escape(edf->path);
 
         /* Build the style from each tag */
         EINA_LIST_FOREACH(stl->tags, ll, tag)
@@ -915,9 +920,12 @@ _edje_textblock_style_parse_and_fix(Edje_File *edf)
                        eina_strbuf_append(txt, "font_fallbacks=");
                        eina_strbuf_append(txt, fontset);
                     }
-                  eina_strbuf_append(txt, " ");
-                  eina_strbuf_append(txt, "font_source=");
-                  eina_strbuf_append(txt, fontsource);
+                  if (fontsource)
+                    {
+                       eina_strbuf_append(txt, " ");
+                       eina_strbuf_append(txt, "font_source=");
+                       eina_strbuf_append(txt, fontsource);
+                    }
                }
              if (tag->font_size > 0)
                {
@@ -1048,7 +1056,8 @@ _edje_file_textblock_style_all_update(Edje_File *edf)
 
         if (_edje_fontset_append)
           fontset = eina_str_escape(_edje_fontset_append);
-        fontsource = eina_str_escape(edf->path);
+        if (edf->fonts)
+          fontsource = eina_str_escape(edf->path);
 
         /* Build the style from each tag */
         EINA_LIST_FOREACH(stl->tags, ll, tag)
@@ -1076,9 +1085,12 @@ _edje_file_textblock_style_all_update(Edje_File *edf)
                        eina_strbuf_append(txt, "font_fallbacks=");
                        eina_strbuf_append(txt, fontset);
                     }
-                  eina_strbuf_append(txt, " ");
-                  eina_strbuf_append(txt, "font_source=");
-                  eina_strbuf_append(txt, fontsource);
+                  if (fontsource)
+                    {
+                       eina_strbuf_append(txt, " ");
+                       eina_strbuf_append(txt, "font_source=");
+                       eina_strbuf_append(txt, fontsource);
+                    }
                }
              if (tag->font_size != 0)
                {
