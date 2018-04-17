@@ -1102,11 +1102,22 @@ _elm_win_pre_render(Ecore_Evas *ee)
    _elm_win_throttle_ok = EINA_TRUE;
    if (!sd->first_draw)
      {
-        sd->first_draw = EINA_TRUE;
         edje_object_thaw(sd->frame_obj);
+        evas_object_show(sd->frame_obj);
         _elm_win_frame_style_update(sd, 1, 1);
         _elm_win_frame_obj_update(sd);
         ELM_WIN_DATA_ALIVE_CHECK(obj, sd);
+
+        if (sd->img_obj)
+          {
+             evas_object_show(sd->img_obj);
+          }
+        if (sd->pointer.obj) evas_object_show(sd->pointer.obj);
+#ifdef ELEMENTARY_X
+        if (sd->type == ELM_WIN_TOOLTIP)
+          ecore_x_window_shape_input_rectangle_set(sd->x.xwin, 0, 0, 0, 0);
+#endif
+        sd->first_draw = EINA_TRUE;
      }
    if (sd->deferred_resize_job)
      _elm_win_resize_job(sd->obj);
@@ -3311,48 +3322,6 @@ _efl_ui_win_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Win_Data *sd)
      {
         _elm_win_flush_cache_and_exit(obj);
      }
-}
-
-static void
-_elm_win_obj_intercept_show(void *data,
-                            Evas_Object *obj)
-{
-   ELM_WIN_DATA_GET(data, sd);
-
-   /* FIXME: this intercept needs to be implemented in proper EO */
-
-   // this is called to make sure all smart containers have calculated their
-   // sizes BEFORE we show the window to make sure it initially appears at
-   // our desired size (ie min size is known first)
-   evas_smart_objects_calculate(evas_object_evas_get(obj));
-   if (sd->frame_obj)
-     {
-        evas_object_show(sd->frame_obj);
-     }
-   if (sd->img_obj)
-     {
-        evas_object_show(sd->img_obj);
-     }
-   if (sd->pointer.obj) evas_object_show(sd->pointer.obj);
-
-   evas_object_show(obj);
-
-/* TIZEN_ONLY: ecore_evas_input_rect_set api is exist only in tizen */
-#ifdef HAVE_ELEMENTARY_WL2
-   int x, y, w, h;
-   Eina_Rectangle input_rect = { -1, -1, 1, 1 };
-
-   evas_object_geometry_get(obj, &x, &y, &w, &h);
-   ecore_wl2_window_opaque_region_set(sd->wl.win, x, y, w, h);
-
-   if (sd->type == ELM_WIN_TOOLTIP)
-     ecore_evas_input_rect_set(sd->ee, &input_rect);
-#endif
-
-#ifdef ELEMENTARY_X
-   if (sd->type == ELM_WIN_TOOLTIP)
-     ecore_x_window_shape_input_rectangle_set(sd->x.xwin, 0, 0, 0, 0);
-#endif
 }
 
 EOLIAN static void
@@ -6058,8 +6027,6 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
           (obj, _elm_win_obj_intercept_stack_below, obj);
         evas_object_intercept_layer_set_callback_add
           (obj, _elm_win_obj_intercept_layer_set, obj);
-        evas_object_intercept_show_callback_add
-          (obj, _elm_win_obj_intercept_show, obj);
      }
 
    TRAP(sd, name_class_set, name, _elm_appname);
