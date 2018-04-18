@@ -872,6 +872,26 @@ _efl_ui_layout_efl_layout_signal_signal_callback_del(Eo *obj, Efl_Ui_Layout_Data
    return efl_layout_signal_callback_add(wd->resize_obj, emission, source, func, data);
 }
 
+// TODO:
+// - message_send
+// - message_signal_process
+// and also message handler (not implemented yet as an EO interface!)
+
+EAPI Eina_Bool
+elm_layout_content_set(Evas_Object *obj, const char *swallow, Evas_Object *content)
+{
+   EFL_UI_LAYOUT_CHECK(obj) EINA_FALSE;
+   if (!swallow)
+     {
+        swallow = efl_ui_widget_default_content_part_get(obj);
+        if (!swallow) return EINA_FALSE;
+     }
+   else if (!_elm_layout_part_aliasing_eval(obj, &swallow, EINA_FALSE))
+     return EINA_FALSE;
+
+   return efl_content_set(efl_part(obj, swallow), content);
+}
+
 static Eina_Bool
 _efl_ui_layout_content_set(Eo *obj, Efl_Ui_Layout_Data *sd, const char *part, Evas_Object *content)
 {
@@ -939,32 +959,6 @@ _efl_ui_layout_content_set(Eo *obj, Efl_Ui_Layout_Data *sd, const char *part, Ev
 
 end:
    return EINA_TRUE;
-}
-
-// TODO:
-// - message_send
-// - message_signal_process
-// and also message handler (not implemented yet as an EO interface!)
-
-EAPI Eina_Bool
-elm_layout_content_set(Evas_Object *obj, const char *swallow, Evas_Object *content)
-{
-   EFL_UI_LAYOUT_CHECK(obj) EINA_FALSE;
-   if (!swallow)
-     {
-        swallow = efl_ui_widget_default_content_part_get(obj);
-        if (!swallow) return EINA_FALSE;
-     }
-   else if (!_elm_layout_part_aliasing_eval(obj, &swallow, EINA_FALSE))
-     return EINA_FALSE;
-
-   if (elm_widget_is_legacy(obj))
-     {
-        EFL_UI_LAYOUT_DATA_GET(obj, sd);
-        return _efl_ui_layout_content_set(obj, sd, swallow, content);
-     }
-
-   return efl_content_set(efl_part(obj, swallow), content);
 }
 
 EAPI Evas_Object *

@@ -6519,13 +6519,6 @@ elm_widget_content_part_set(Evas_Object *obj, const char *part, Evas_Object *con
         part = efl_ui_widget_default_content_part_get(obj);
         if (!part) return;
      }
-
-   if (elm_widget_is_legacy(obj))
-     {
-        elm_layout_content_set(obj, part, content);
-        return;
-     }
-
    efl_content_set(efl_part(obj, part), content);
 }
 
