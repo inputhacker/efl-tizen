@@ -9275,8 +9275,10 @@ st_collections_group_parts_part_description_min(void)
    check_min_arg_count(1);
 
    if (is_param(1)) {
-      current_desc->min.w = parse_int_range(0, 0, 0x7fffffff);
-      current_desc->min.h = parse_int_range(1, 0, 0x7fffffff);
+      //TIZEN_ONLY(20180418): fix parsing min/max value.
+      current_desc->min.w = parse_float_range(0, 0, 0x7fffffff);
+      current_desc->min.h = parse_float_range(1, 0, 0x7fffffff);
+      //
    } else {
       char *tmp;
 
@@ -9341,8 +9343,10 @@ st_collections_group_parts_part_description_max(void)
    check_min_arg_count(1);
 
    if (is_param(1)) {
-      current_desc->max.w = parse_int_range(0, -1, 0x7fffffff);
-      current_desc->max.h = parse_int_range(1, -1, 0x7fffffff);
+      //TIZEN_ONLY(20180418): fix parsing min/max value.
+      current_desc->max.w = parse_float_range(0, -1.0, 0x7fffffff);
+      current_desc->max.h = parse_float_range(1, -1.0, 0x7fffffff);
+      //
    } else {
       char *tmp;
 
