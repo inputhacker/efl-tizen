@@ -149,8 +149,8 @@ bq_object_unref(Bq_Object *o)
 static void
 bq_object_free(Bq_Object *o)
 {
-   if (!o) return 0;
-   if (o->deleted) return 0;
+   if (!o) return;
+   if (o->deleted) return;
 
    o->deleted = EINA_TRUE;
 
