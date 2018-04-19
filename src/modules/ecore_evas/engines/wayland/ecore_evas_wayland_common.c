@@ -1502,6 +1502,7 @@ _ecore_evas_wl_common_evas_device_find(Evas *evas, const char *identifier)
 {
    Eina_List *list, *l;
    Evas_Device *device;
+   char *evas_device_description;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(evas, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(identifier, EINA_FALSE);
@@ -1509,7 +1510,10 @@ _ecore_evas_wl_common_evas_device_find(Evas *evas, const char *identifier)
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, device)
      {
-        if (!strncmp(evas_device_description_get(device), identifier, strlen(identifier)))
+        evas_device_description = evas_device_description_get(device);
+        if (!evas_device_description) continue;
+
+        if (!strncmp(evas_device_description, identifier, strlen(identifier)))
           {
              return EINA_TRUE;
           }
@@ -1522,14 +1526,18 @@ _ecore_evas_wl_common_default_seat_get(Evas *evas)
 {
    Eina_List *list, *l;
    Evas_Device *device;
+   char *evas_device_description;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(evas, EINA_FALSE);
 
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, device)
      {
+        evas_device_description = evas_device_description_get(device);
+        if (!evas_device_description) continue;
+
         if ((evas_device_class_get(device) == EVAS_DEVICE_CLASS_SEAT) &&
-            !strncmp(evas_device_description_get(device), "Wayland seat", sizeof("Wayland seat")))
+            !strncmp(evas_device_description, "Wayland seat", sizeof("Wayland seat")))
           {
              return device;
           }
@@ -1584,10 +1592,13 @@ _ecore_evas_wl_common_cb_tizen_device_del(void *data EINA_UNUSED, int type EINA_
    if (ev->window) win = ecore_wl2_window_find(ev->window);
    if (win) display = ecore_wl2_window_display_get(win);
 
+   if (!ev->identifier) return ECORE_CALLBACK_PASS_ON;
+
    EINA_LIST_FOREACH(ee_list, l, ee)
      {
         Ecore_Evas_Engine_Wl_Data *wdata;
         Evas_Device *device;
+        char *evas_device_description;
 
         wdata = ee->engine.data;
         if (display != wdata->display) continue;
@@ -1595,7 +1606,9 @@ _ecore_evas_wl_common_cb_tizen_device_del(void *data EINA_UNUSED, int type EINA_
         list = (Eina_List *)evas_device_list(ee->evas, NULL);
         EINA_LIST_FOREACH_SAFE(list, ll, ll_next, device)
           {
-             if (!strncmp(evas_device_description_get(device), ev->identifier, strlen(ev->identifier)))
+             evas_device_description = evas_device_description_get(device);
+             if (!evas_device_description) continue;
+             if (!strncmp(evas_device_description, ev->identifier, strlen(ev->identifier)))
                {
                   evas_device_del(device);
                }
