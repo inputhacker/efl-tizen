@@ -69,6 +69,7 @@ _ecore_evas_tbm_evas_device_find(Evas *evas, const char *identifier)
 {
    Eina_List *list, *l;
    Evas_Device *device;
+   char *evas_device_description;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(evas, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(identifier, EINA_FALSE);
@@ -76,7 +77,10 @@ _ecore_evas_tbm_evas_device_find(Evas *evas, const char *identifier)
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, device)
      {
-        if (!strncmp(evas_device_description_get(device), identifier, strlen(identifier)))
+        evas_device_description = evas_device_description_get(device);
+        if (!evas_device_description) continue;
+
+        if (!strncmp(evas_device_description, identifier, strlen(identifier)))
           {
              return EINA_TRUE;
           }
@@ -137,6 +141,7 @@ _ecore_evas_tbm_cb_ecore_device_del(void *data, int type EINA_UNUSED, void *even
    Ecore_Evas *ee = (Ecore_Evas *)data;
    Eina_List *list, *l, *l_next;
    Evas_Device *device;
+   char *evas_device_description;
 
    ev = event;
 
@@ -145,7 +150,9 @@ _ecore_evas_tbm_cb_ecore_device_del(void *data, int type EINA_UNUSED, void *even
    list = (Eina_List *)evas_device_list(ee->evas, NULL);
    EINA_LIST_FOREACH_SAFE(list, l, l_next, device)
      {
-        if (!strncmp(evas_device_description_get(device), ev->identifier, strlen(ev->identifier)))
+        evas_device_description = evas_device_description_get(device);
+        if (!evas_device_description) continue;
+        if (!strncmp(evas_device_description, ev->identifier, strlen(ev->identifier)))
           {
              evas_device_del(device);
           }
