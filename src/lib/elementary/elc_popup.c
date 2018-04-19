@@ -2084,7 +2084,11 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
    efl_event_callback_array_add(priv->notify, _notify_cb(), obj);
 
    elm_widget_can_focus_set(obj, EINA_TRUE);
+   //TIZEN_ONLY(20180419): Quick fix focus problem
+   /*TODO: temporarily remove to solve TV side issue. need to check regression
    elm_widget_can_focus_set(priv->main_layout, EINA_TRUE);
+   */
+   //
 
    _populate_theme_scroll(priv);
 
