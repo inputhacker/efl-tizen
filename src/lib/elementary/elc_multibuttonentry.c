@@ -122,16 +122,23 @@ _elm_multibuttonentry_efl_ui_widget_theme_apply(Eo *obj, Elm_Multibuttonentry_Da
      {
         ELM_MULTIBUTTONENTRY_ITEM_DATA_GET(eo_item, item);
         if (VIEW(item))
-          if (!elm_widget_element_update(obj, VIEW(item), PART_NAME_BUTTON))
+          if (!elm_layout_theme_set(VIEW(item), "multibuttonentry",
+                                    PART_NAME_BUTTON, elm_widget_style_get(obj)))
             CRI("Failed to set layout!");
      }
 
-   elm_widget_element_update(obj, sd->label, PART_NAME_LABEL);
-   //TIZEN_ONLY(20150429): "Closedbutton" name is only for upstream.
-   //elm_widget_element_update(obj, sd->end, PART_NAME_CLOSED_BUTTON);
-   elm_widget_element_update(obj, sd->end, PART_NAME_NUMBER);
-   //
-   elm_widget_element_update(obj, sd->guide_text, PART_NAME_GUIDE_TEXT);
+   elm_widget_theme_object_set
+      (obj, sd->label, "multibuttonentry", PART_NAME_LABEL,
+       elm_widget_style_get(obj));
+//   elm_widget_theme_object_set
+//      (obj, sd->end, "multibuttonentry", PART_NAME_CLOSED_BUTTON,
+//       elm_widget_style_get(obj));
+   elm_widget_theme_object_set
+      (obj, sd->end, "multibuttonentry", PART_NAME_NUMBER,
+       elm_widget_style_get(obj));
+   elm_widget_theme_object_set
+      (obj,sd->guide_text, "multibuttonentry", PART_NAME_GUIDE_TEXT,
+       elm_widget_style_get(obj));
 
    /* TIZEN_ONLY(20161102): apply widget's style to internal entry widget */
    if (sd->entry)
@@ -738,14 +745,14 @@ _access_multibuttonentry_item_register(Evas_Object *obj,
 static char *
 _label_access_info_cb(void *data, Evas_Object *obj EINA_UNUSED)
 {
-   EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(data, sd, NULL);
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(data, sd, NULL);
    return strdup((char *)sd->label_str);
 }
 
 static void
 _atspi_multibuttonentry_label_register(Evas_Object *obj, Eina_Bool is_atspi)
 {
-   EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
    Evas_Object *label_obj;
    label_obj = (Evas_Object *)edje_object_part_object_get(sd->label, "elm.text");
    if (label_obj)
@@ -832,16 +839,14 @@ _item_new(Elm_Multibuttonentry_Data *sd,
 
    efl_access_type_set(VIEW(item), EFL_ACCESS_TYPE_DISABLED);
 
-   if (!elm_widget_element_update(obj, VIEW(item), PART_NAME_BUTTON))
+   if (!elm_layout_theme_set(VIEW(item), "multibuttonentry", PART_NAME_BUTTON,
+                             elm_widget_style_get(obj)))
      CRI("Failed to set layout!");
 
    elm_object_part_text_set(VIEW(item), "elm.btn.text", str);
 
    //entry is cleared when text is made to button
-   //FIXME: Change this when efl interface theme merged.
-   //efl_text_set(sd->entry, "");
    elm_object_text_set(sd->entry, "");
-   //
 
    elm_layout_signal_callback_add
      (VIEW(item), "mouse,clicked,1", "*", _on_item_clicked, EO_OBJ(item));
@@ -1142,10 +1147,7 @@ _entry_focus_changed_cb(void *data, const Efl_Event *event)
      {
         const char *str;
 
-        //FIXME: Change this when efl interface theme merged.
-        //str = efl_text_get(sd->entry);
         str = elm_object_text_get(sd->entry);
-        //
         if (str && str[0])
           _item_new(sd, str, MULTIBUTTONENTRY_POS_END, NULL, NULL, NULL);
      }
@@ -1322,7 +1324,9 @@ _guide_text_set(Evas_Object *obj,
 
    if (sd->guide_text)
      {
-        elm_widget_element_update(obj, sd->guide_text, PART_NAME_GUIDE_TEXT);
+        elm_widget_theme_object_set(obj, sd->guide_text, "multibuttonentry",
+                                    PART_NAME_GUIDE_TEXT,
+                                    elm_widget_style_get(obj));
         evas_object_size_hint_weight_set
           (sd->guide_text, 0.0, EVAS_HINT_EXPAND);
         evas_object_size_hint_align_set
@@ -1527,7 +1531,9 @@ _view_init(Evas_Object *obj, Elm_Multibuttonentry_Data *sd)
 
    sd->label = edje_object_add(evas_object_evas_get(obj));
    if (!sd->label) return;
-   elm_widget_element_update(obj, sd->label, PART_NAME_LABEL);
+   elm_widget_theme_object_set
+      (obj, sd->label, "multibuttonentry", PART_NAME_LABEL,
+       elm_widget_style_get(obj));
 
    /***********************************************************************************
     * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
@@ -1595,7 +1601,9 @@ _view_init(Evas_Object *obj, Elm_Multibuttonentry_Data *sd)
         sd->end = edje_object_add(evas_object_evas_get(obj));
         if (!sd->end) return;
         //elm_widget_element_update(obj, sd->end, PART_NAME_CLOSED_BUTTON);
-        elm_widget_element_update(obj, sd->end, PART_NAME_NUMBER);
+          elm_widget_theme_object_set
+            (obj, sd->end, "multibuttonentry", PART_NAME_NUMBER,
+             elm_widget_style_get(obj));
         //
 
         /***********************************************************************************
@@ -1625,7 +1633,7 @@ _elm_multibuttonentry_text_set(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSE
         if (label) _guide_text_set(obj, label);
      }
    else
-     efl_text_set(efl_part(efl_super(obj, MY_CLASS), part), label);
+     elm_object_part_text_set(obj, part, label);
 }
 
 EOLIAN static const char*
@@ -1642,7 +1650,7 @@ _elm_multibuttonentry_text_get(Eo *obj, Elm_Multibuttonentry_Data *sd, const cha
         text = sd->guide_text_str;
      }
    else
-     text = efl_text_get(efl_part(efl_super(obj, MY_CLASS), part));
+     text = elm_object_part_text_get(obj, part);
 
    return text;
 }
@@ -1773,7 +1781,7 @@ _atspi_obj_process(Evas_Object *obj, Eina_Bool is_atspi)
    Eina_List *l;
    Elm_Object_Item *it;
 
-   EFL_UI_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(obj, sd);
 
    /* label */
    _atspi_multibuttonentry_label_register(obj, is_atspi);
@@ -1802,7 +1810,7 @@ elm_multibuttonentry_add(Evas_Object *parent)
 //register/unregister access objects accordingly.
 // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
 EOLIAN static void
-_efl_ui_multibuttonentry_efl_ui_widget_screen_reader(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_screen_reader)
+_elm_multibuttonentry_efl_ui_widget_screen_reader(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSED, Eina_Bool is_screen_reader)
 {
    _atspi_obj_process(obj, is_screen_reader);
    //TIZEN_ONLY(20161213): apply screen_reader_changed callback
@@ -1853,6 +1861,7 @@ EOLIAN static Eo *
 _elm_multibuttonentry_efl_object_constructor(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSED)
 {
    obj = efl_constructor(efl_super(obj, MY_CLASS));
+   efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    efl_access_role_set(obj, EFL_ACCESS_ROLE_FILLER);
 
