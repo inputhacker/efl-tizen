@@ -69,6 +69,10 @@ edjefilesdir = $(datadir)/edje/include
 edjefiles_DATA = edje/include/edje.inc
 EXTRA_DIST += $(edjefiles_DATA)
 
+edjeimagesdir = $(datadir)/edje/images
+edjeimages_DATA = edje/images/edje_default_fade_image.png
+EXTRA_DIST += $(edjeimages_DATA)
+
 mimedir = $(datadir)/mime/packages
 mime_DATA = edje/edje.xml
 EXTRA_DIST += $(mime_DATA)

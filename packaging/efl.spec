@@ -1811,7 +1811,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libedje.so.*
 %{_libdir}/edje/utils/*/*
 %{_datadir}/edje/include/edje.inc
-#%{_datadir}/edje/images/*
+%{_datadir}/edje/images/*
 %{_datadir}/mime/packages/edje.xml
 
 %files -n edje-tools
