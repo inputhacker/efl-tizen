@@ -9952,7 +9952,7 @@ elm_win_active_win_orientation_get(Evas_Object *obj)
         if (sd)
           win = sd->wl.win;
      }
-   angle = ecore_wl2_window_active_angle_get(win);
+   if (win) angle = ecore_wl2_window_active_angle_get(win);
 #endif
    return angle;
 }
