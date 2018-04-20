@@ -1655,7 +1655,15 @@ _elm_win_opaque_update(Efl_Ui_Win_Data *sd, Eina_Bool force_alpha)
    if (strncmp(engine_name, "wayland", sizeof("wayland") - 1)) return;
 
    wdata = sd->ee->engine.data;
+   // TIZEN_ONLY(20180420) : fix bug for setting alpha
+   /*
    alpha = ecore_evas_alpha_get(sd->ee) || force_alpha;
+   */
+   if (force_alpha)
+     alpha = sd->application_alpha || sd->theme_alpha;
+   else
+     alpha = ecore_evas_alpha_get(sd->ee);
+   //
    if (sd->fullscreen || !sd->frame_obj)
      {
         ecore_evas_geometry_get(sd->ee, NULL, NULL, &ow, &oh);
