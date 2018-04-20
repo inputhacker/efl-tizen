@@ -415,16 +415,16 @@ elm_drop_target_add(Evas_Object *obj, Elm_Sel_Format format,
 {
    Eo *sel_man = _selection_manager_get(obj);
    int seatid = 1;
-   Dnd_Drag_State *enter, *leave;
-   Dnd_Drag_Pos *pos;
-   Dnd_Drop *drop;
+   Dnd_Drag_State *enter = NULL, *leave = NULL;
+   Dnd_Drag_Pos *pos = NULL;
+   Dnd_Drop *drop = NULL;
    Eina_List *drop_list;
 
    enter = calloc(1, sizeof(Dnd_Drag_State));
    leave = calloc(1, sizeof(Dnd_Drag_State));
    pos = calloc(1, sizeof(Dnd_Drag_Pos));
    drop = calloc(1, sizeof(Dnd_Drop));
-   if (!enter || !leave || !pos || !drop) return EINA_FALSE;
+   if (!enter || !leave || !pos || !drop) goto on_error;
 #ifdef HAVE_ELEMENTARY_WL2
    seatid = _wl_default_seat_id_get(obj);
 #endif
@@ -459,6 +459,14 @@ elm_drop_target_add(Evas_Object *obj, Elm_Sel_Format format,
 
 
    return EINA_TRUE;
+
+on_error:
+   if (enter) free(enter);
+   if (leave) free(leave);
+   if (pos) free(pos);
+   if (drop) free(drop);
+
+   return EINA_FALSE;
 }
 
 EAPI Eina_Bool
