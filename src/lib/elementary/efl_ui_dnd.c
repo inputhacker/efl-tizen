@@ -458,7 +458,6 @@ elm_drop_target_add(Evas_Object *obj, Elm_Sel_Format format,
                           _dnd_drop_cb, drop);
    efl_selection_manager_drop_target_add(sel_man, obj, (Efl_Selection_Format)format, seatid);
 
-
    return EINA_TRUE;
 
 on_error:
