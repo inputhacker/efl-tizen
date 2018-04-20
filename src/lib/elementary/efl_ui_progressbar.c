@@ -758,10 +758,9 @@ elm_progressbar_inverted_set(Evas_Object *obj, Eina_Bool inverted)
 EAPI Eina_Bool
 elm_progressbar_inverted_get(const Evas_Object *obj)
 {
-   Efl_Ui_Dir dir;
-   dir = efl_ui_direction_get(obj);
+   EFL_UI_PROGRESSBAR_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
 
-   return _is_inverted(dir);
+   return _is_inverted(sd->dir);
 }
 
 EAPI void
