@@ -1532,7 +1532,6 @@ parse_part(Eo_Lexer *ls)
         Eolian_Class *dep = NULL;
         const char *fname = eina_hash_find(ls->state->filenames_eo, fnm);
         eina_stringshare_del(bnm);
-        free(fnm);
         if (fname)
           dep = _parse_dep(ls, fname, nm);
         if (!dep)
@@ -1541,6 +1540,7 @@ parse_part(Eo_Lexer *ls)
              eo_lexer_context_restore(ls);
              snprintf(ebuf, sizeof(ebuf), "unknown class '%s'", nm);
              eo_lexer_syntax_error(ls, ebuf);
+             free(fnm);
              return;
           }
         part->klass = dep;
@@ -1550,6 +1550,7 @@ parse_part(Eo_Lexer *ls)
    pop_strbuf(ls);
    check_next(ls, ';');
    FILL_DOC(ls, part, doc);
+   free(fnm);
 }
 
 static void
