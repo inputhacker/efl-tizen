@@ -100,6 +100,13 @@ struct _Efl_Ui_Layout_Sub_Object_Data
       {
          unsigned short col, row, colspan, rowspan;
       } table;
+      /* TIZEN_ONLY(20180420): Do text/content set when new theme is applied */
+      struct
+      {
+         const char *text;
+         Eina_Bool is_markup;
+      } text;
+      /* END */
    } p;
 };
 
@@ -267,6 +274,56 @@ _parts_signals_emit(Efl_Ui_Layout_Data *sd)
      }
 }
 
+/* TIZEN_ONLY(20180420): Do text/content set when new theme is applied */
+static void
+_parts_swallow_fix(Efl_Ui_Layout_Data *sd, Efl_Ui_Widget_Data *wd)
+{
+   Eina_List *l;
+   Efl_Ui_Layout_Sub_Object_Data *sub_d;
+
+   EINA_LIST_FOREACH(sd->subs, l, sub_d)
+     {
+        if (sub_d->type == SWALLOW)
+          {
+             if (sub_d->part)
+               edje_object_part_swallow(wd->resize_obj,
+                                        sub_d->part, sub_d->obj);
+          }
+     }
+}
+
+static void
+_parts_text_fix(Efl_Ui_Layout_Data *sd)
+{
+   const Eina_List *l;
+   Efl_Ui_Layout_Sub_Object_Data *sub_d;
+   ELM_WIDGET_DATA_GET_OR_RETURN(sd->obj, wd);
+
+   EINA_LIST_FOREACH(sd->subs, l, sub_d)
+     {
+        if (sub_d->type == TEXT)
+          {
+             if (elm_widget_is_legacy(sd->obj))
+               {
+                  edje_object_part_text_escaped_set
+                     (wd->resize_obj, sub_d->part,
+                      sub_d->p.text.text);
+               }
+             else if (sub_d->p.text.is_markup)
+               {
+                  efl_text_markup_set(efl_part(wd->resize_obj, sub_d->part),
+                                      sub_d->p.text.text);
+               }
+             else
+               {
+                  efl_text_set(efl_part(wd->resize_obj, sub_d->part),
+                               sub_d->p.text.text);
+               }
+          }
+     }
+}
+/* END */
+
 static void
 _part_cursor_part_apply(const Efl_Ui_Layout_Sub_Object_Cursor *pc)
 {
@@ -342,6 +399,10 @@ _visuals_refresh(Evas_Object *obj,
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
 
+   /* TIZEN_ONLY(20180420): Do text/content set when new theme is applied */
+   _parts_swallow_fix(sd, wd);
+   _parts_text_fix(sd);
+   /* END */
    _parts_signals_emit(sd);
    _parts_cursors_apply(sd);
 
@@ -671,17 +732,35 @@ _efl_ui_layout_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Layout_Data *sd)
    Efl_Ui_Layout_Sub_Connect *sc;
    Edje_Signal_Data *esd;
    Evas_Object *child;
-   Eina_List *l;
+   Eina_List *l, *ll;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
    elm_layout_freeze(obj);
 
+   /* TIZEN_ONLY(20180420): Do text/content set when new theme is applied
    EINA_LIST_FREE(sd->subs, sub_d)
      {
         eina_stringshare_del(sub_d->part);
         free(sub_d);
      }
+   */
+   EINA_LIST_FOREACH_SAFE(sd->subs, l, ll, sub_d)
+     {
+        if (sub_d->type == TEXT)
+          {
+             eina_stringshare_del(sub_d->p.text.text);
+             eina_stringshare_del(sub_d->part);
+             sd->subs = eina_list_remove_list(sd->subs, l);
+             free(sub_d);
+          }
+        else
+          {
+             eina_stringshare_del(sub_d->part);
+             free(sub_d);
+          }
+     }
+   /* END */
 
    EINA_LIST_FREE(sd->parts_cursors, pc)
      _part_cursor_free(pc);
@@ -1166,6 +1245,9 @@ _efl_ui_layout_text_generic_set(Eo *obj, Efl_Ui_Layout_Data *sd, const char *par
                {
                   _text_signal_emit(sd, sub_d, EINA_FALSE);
                   eina_stringshare_del(sub_d->part);
+                  /* TIZEN_ONLY(20180420): Do text/content set when new theme is applied */
+                  eina_stringshare_del(sub_d->p.text.text);
+                  /* END */
                   free(sub_d);
                   edje_object_part_text_escaped_set
                     (wd->resize_obj, part, NULL);
@@ -1203,6 +1285,11 @@ _efl_ui_layout_text_generic_set(Eo *obj, Efl_Ui_Layout_Data *sd, const char *par
         sub_d->part = eina_stringshare_add(part);
         sd->subs = eina_list_append(sd->subs, sub_d);
      }
+
+   /* TIZEN_ONLY(20180420): Do text/content set when new theme is applied */
+   eina_stringshare_replace(&sub_d->p.text.text, text);
+   sub_d->p.text.is_markup = is_markup;
+   /* END */
 
    _text_signal_emit(sd, sub_d, EINA_TRUE);
 
