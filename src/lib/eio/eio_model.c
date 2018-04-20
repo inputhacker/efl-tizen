@@ -348,7 +348,7 @@ _eio_model_efl_model_property_get(Eo *obj, Eio_Model_Data *priv, const char *pro
      }
    else if(strcmp(_eio_model_prop_names[EIO_MODEL_PROP_PATH], property) == 0)
      {
-        value = priv->path;
+        value = strdup(priv->path);
         property_name = EIO_MODEL_PROP_PATH;
      }
    else if(strcmp(_eio_model_prop_names[EIO_MODEL_PROP_MIME_TYPE], property) == 0)
@@ -385,7 +385,7 @@ _eio_model_efl_model_property_get(Eo *obj, Eio_Model_Data *priv, const char *pro
           Eina_Value* v = eina_value_new(EINA_VALUE_TYPE_STRING);
           eina_value_set(v, value);
           efl_promise_value_set(promise, v, (Eina_Free_Cb)&eina_value_free);
-
+          free(value);
           break;
        }
      default:
