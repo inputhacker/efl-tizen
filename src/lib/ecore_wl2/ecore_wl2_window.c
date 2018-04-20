@@ -1371,7 +1371,7 @@ ecore_wl2_window_active_angle_get(Ecore_Wl2_Window *window)
    EINA_SAFETY_ON_NULL_RETURN_VAL(window, 0);
    EINA_SAFETY_ON_NULL_RETURN_VAL(window->display, 0);
 
-   if (window->display->wl.tz_policy_ext) return 0;
+   if (!window->display->wl.tz_policy_ext) return 0;
 
    surface = ecore_wl2_window_surface_get(window);
 
