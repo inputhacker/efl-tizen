@@ -105,6 +105,7 @@ code_parse_internal(Code *code)
           {
              if (tmp->str) free(tmp->str);
              free(tmp);
+             tmp = NULL;
           }
 
         switch (token->type)
