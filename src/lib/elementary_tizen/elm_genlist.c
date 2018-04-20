@@ -69,6 +69,7 @@
 #define ELM_PRIV_GENLIST_SIGNALS(cmd) \
     cmd(SIG_ACTIVATED, "activated", "") \
     cmd(SIG_CLICKED_DOUBLE, "clicked,double", "") \
+    cmd(SIG_CLICKED_RIGHT, "clicked,right", "") \
     cmd(SIG_SELECTED, "selected", "") \
     cmd(SIG_UNSELECTED, "unselected", "") \
     cmd(SIG_EXPANDED, "expanded", "") \
@@ -84,11 +85,11 @@
     cmd(SIG_DRAG_STOP, "drag,stop", "") \
     cmd(SIG_DRAG, "drag", "") \
     cmd(SIG_LONGPRESSED, "longpressed", "") \
+    cmd(SIG_SCROLL, "scroll", "") \
     cmd(SIG_SCROLL_ANIM_START, "scroll,anim,start", "") \
     cmd(SIG_SCROLL_ANIM_STOP, "scroll,anim,stop", "") \
     cmd(SIG_SCROLL_DRAG_START, "scroll,drag,start", "") \
     cmd(SIG_SCROLL_DRAG_STOP, "scroll,drag,stop", "") \
-    cmd(SIG_SCROLL, "scroll", "") \
     cmd(SIG_EDGE_TOP, "edge,top", "") \
     cmd(SIG_EDGE_BOTTOM, "edge,bottom", "") \
     cmd(SIG_EDGE_LEFT, "edge,left", "") \
@@ -117,6 +118,7 @@
     cmd(SIG_ITEM_UNFOCUSED, "item,unfocused", "") \
     cmd(SIG_PRESSED, "pressed", "") \
     cmd(SIG_RELEASED, "released", "") \
+    cmd(SIG_CHANGED, "changed", "") \
     cmd(SIG_WIDGET_ATSPI_HIGHLIGHTED, "atspi,highlighted", "") \
     cmd(SIG_ATSPI_SCREEN_READER_CHANGED, "atspi,screen,reader,changed", "") \
     cmd(SIG_FILTER_DONE, "filter,done", "") \
@@ -126,16 +128,23 @@
 ELM_PRIV_GENLIST_SIGNALS(ELM_PRIV_STATIC_VARIABLE_DECLARE);
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
-     ELM_PRIV_GENLIST_SIGNALS(ELM_PRIV_SMART_CALLBACKS_DESC)
-       {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
-       {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
-       {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
-       {NULL, NULL}
-};
+   ELM_PRIV_GENLIST_SIGNALS(ELM_PRIV_SMART_CALLBACKS_DESC)
+   {SIG_WIDGET_LANG_CHANGED, ""}, /**< handled by elm_widget */
+   {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
+   {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
+   {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
+   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
+   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
+   //
 
+   //TIZEN_ONLY(20170724): grab highlight using unrealized item
+   {SIG_WIDGET_ATSPI_HIGHLIGHTED, ""},
+   //
+   {NULL, NULL}
+};
 #undef ELM_PRIV_GENLIST_SIGNALS
 
-// ****  edje interface signals *** //
+/* edje signals internally used */
 static const char SIGNAL_ENABLED[] = "elm,state,enabled";
 static const char SIGNAL_DISABLED[] = "elm,state,disabled";
 static const char SIGNAL_SELECTED[] = "elm,state,selected";
@@ -145,8 +154,8 @@ static const char SIGNAL_CONTRACTED[] = "elm,state,contracted";
 static const char SIGNAL_FLIP_ENABLED[] = "elm,state,flip,enabled";
 static const char SIGNAL_FLIP_DISABLED[] = "elm,state,flip,disabled";
 static const char SIGNAL_DECORATE_ENABLED[] = "elm,state,decorate,enabled";
-static const char SIGNAL_DECORATE_ENABLED_EFFECT[] = "elm,state,decorate,enabled,effect";
 static const char SIGNAL_DECORATE_DISABLED[] = "elm,state,decorate,disabled";
+static const char SIGNAL_DECORATE_ENABLED_EFFECT[] = "elm,state,decorate,enabled,effect";
 static const char SIGNAL_REORDER_ENABLED[] = "elm,state,reorder,enabled";
 static const char SIGNAL_REORDER_DISABLED[] = "elm,state,reorder,disabled";
 static const char SIGNAL_REORDER_MODE_SET[] = "elm,state,reorder,mode_set";
@@ -167,15 +176,16 @@ static const char SIGNAL_GROUP_SINGLE[] = "elm,state,group,single";
 static const char SIGNAL_GROUP_FIRST[] = "elm,state,group,first";
 static const char SIGNAL_GROUP_LAST[] = "elm,state,group,last";
 static const char SIGNAL_GROUP_MIDDLE[] = "elm,state,group,middle";
+//Tizen Only(20160307)
+static const char SIGNAL_DEFAULT[] = "elm,state,default";
 //TIZEN ONLY
 static const char SIGNAL_CLICKED[] = "elm,state,clicked";
-static const char SIGNAL_DEFAULT[] = "elm,state,default";
 static const char SIGNAL_BG_CHANGE[] = "bg_color_change";
 static const char SIGNAL_ITEM_HIGHLIGHTED[] = "elm,state,highlighted";
 static const char SIGNAL_ITEM_UNHIGHLIGHTED[] = "elm,state,unhighlighted";
 static const char SIGNAL_FOCUS_BG_SHOW[] = "elm,state,focus_bg,show";
 static const char SIGNAL_FOCUS_BG_HIDE[] = "elm,state,focus_bg,hide";
-
+//
 
 static Eina_Bool _key_action_move(Evas_Object *obj, const char *params);
 static Eina_Bool _key_action_select(Evas_Object *obj, const char *params);
@@ -760,7 +770,8 @@ _widget_calculate_recursive(Eo *obj)
    if (!efl_isa(obj, EFL_UI_WIDGET_CLASS)) return;
 
    pd = efl_data_scope_get(obj, EFL_UI_WIDGET_CLASS);
-   if (!pd) return;
+   if (!pd || !pd->resize_obj)
+     return;
 
    if (!evas_object_smart_need_recalculate_get(obj) &&
        !evas_object_smart_need_recalculate_get(pd->resize_obj))
@@ -4191,6 +4202,72 @@ _elm_genlist_efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Genlist_Data *sd, 
    return int_ret;
 }
 
+/*
+ * This function searches the nearest visible item based on the given item.
+ * If the given item is in the genlist viewport, this returns the given item.
+ * Or this searches the realized items and checks the nearest fully visible item
+ * according to the given item's position.
+ */
+static Elm_Object_Item *
+_elm_genlist_nearest_visible_item_get(Evas_Object *obj, Elm_Object_Item *eo_it)
+{
+   Evas_Coord vx = 0, vy = 0, vw = 0, vh = 0; // genlist viewport geometry
+   Evas_Coord ix = 0, iy = 0, iw = 0, ih = 0; // given item geometry
+   Evas_Coord cx = 0, cy = 0, cw = 0, ch = 0; // candidate item geometry
+   Eina_List *item_list = NULL, *l = NULL;
+   Elm_Object_Item *eo_item = NULL;
+   ELM_GENLIST_DATA_GET(obj, sd);
+   Eina_Bool search_next = EINA_FALSE;
+
+   if (!eo_it) return NULL;
+   ELM_GENLIST_ITEM_DATA_GET(eo_it, it);
+
+   evas_object_geometry_get(sd->pan_obj, &vx, &vy, &vw, &vh);
+   evas_object_geometry_get(VIEW(it), &ix, &iy, &iw, &ih); // FIXME: check if the item is realized or not
+
+   if (ELM_RECTS_INCLUDE(vx, vy, vw, vh, ix, iy, iw, ih))
+     {
+        if (!elm_object_item_disabled_get(eo_it))
+          return eo_it;
+        else
+          search_next = EINA_TRUE;
+     }
+
+   item_list = elm_genlist_realized_items_get(obj);
+
+   if ((iy < vy) || search_next)
+     {
+        EINA_LIST_FOREACH(item_list, l, eo_item)
+          {
+             ELM_GENLIST_ITEM_DATA_GET(eo_item, item);
+             evas_object_geometry_get(VIEW(item), &cx, &cy, &cw, &ch);
+             if (ELM_RECTS_INCLUDE(vx, vy, vw, vh, cx, cy, cw, ch) &&
+                 !elm_object_item_disabled_get(eo_item))
+               {
+                  eina_list_free(item_list);
+                  return eo_item;
+               }
+          }
+     }
+   else
+     {
+        EINA_LIST_REVERSE_FOREACH(item_list, l, eo_item)
+          {
+             ELM_GENLIST_ITEM_DATA_GET(eo_item, item);
+             evas_object_geometry_get(VIEW(item), &cx, &cy, &cw, &ch);
+             if (ELM_RECTS_INCLUDE(vx, vy, vw, vh, cx, cy, cw, ch) &&
+                 !elm_object_item_disabled_get(eo_item))
+               {
+                  eina_list_free(item_list);
+                  return eo_item;
+               }
+          }
+     }
+   eina_list_free(item_list);
+
+   return eo_it;
+}
+
 static void
 _elm_genlist_focus_highlight_show(void *data EINA_UNUSED,
                                   Evas_Object *obj,
@@ -4399,6 +4476,7 @@ _elm_genlist_item_elm_widget_item_item_focus_set(Eo *eo_it EINA_UNUSED, Elm_Gen_
                   _item_unfocused(focus_it);
                }
              _item_focused(it, sd->focus_scrollto_type);
+             //efl_ui_focus_manager_focus_set(it->base->widget, eo_it);
 
              /* If item is not realized state, widget couldn't get focus_highlight data. */
              if (it->realized)
@@ -4407,6 +4485,7 @@ _elm_genlist_item_elm_widget_item_item_focus_set(Eo *eo_it EINA_UNUSED, Elm_Gen_
                   _elm_widget_highlight_in_theme_update(obj);
                   _elm_widget_focus_highlight_start(obj);
                }
+             efl_ui_focus_manager_focus_set(it->base->widget, eo_it);
           }
      }
    else
@@ -6688,11 +6767,14 @@ _genlist_element_focused(void *data, const Efl_Event *ev)
 
    if (efl_isa(item, ELM_GENLIST_ITEM_CLASS))
      {
+        /*
         ELM_GENLIST_ITEM_DATA_GET(item, it);
         _item_focused(it, pd->focus_scrollto_type);
         _all_items_deselect(pd);
         elm_genlist_item_selected_set(item, EINA_TRUE);
         elm_genlist_item_bring_in(item, ELM_GENLIST_ITEM_SCROLLTO_MIDDLE);
+        */
+        elm_object_item_focus_set(item, EINA_TRUE);
      }
 }
 
@@ -6758,7 +6840,8 @@ _internal_elm_genlist_clear(Evas_Object *obj)
      {
         it = EINA_INLIST_CONTAINER_GET(sd->items->last, Elm_Gen_Item);
         //elm_widget_item_del(it);
-        _item_free(it);
+        //_item_free(it);
+        efl_del(EO_OBJ(it));
      }
    sd->reorder.it = NULL;
    sd->reorder.dir = 0;
@@ -7138,7 +7221,8 @@ _elm_genlist_item_elm_widget_item_del_pre(Eo *eo_it EINA_UNUSED,
              Elm_Object_Item *itt;
              EINA_LIST_FOREACH(it->item->items, l, itt)
                {
-                  elm_wdg_item_del(itt);
+                  //elm_wdg_item_del(itt);
+                  efl_del(itt);
                }
           }
         sd->del_fx.items = eina_list_append(sd->del_fx.items, it);
@@ -7841,7 +7925,8 @@ _elm_genlist_item_subitems_clear(Eo *eo_item EINA_UNUSED, Elm_Gen_Item *it)
    Elm_Object_Item *eo_it2;
 
    EINA_LIST_FOREACH_SAFE(GL_IT(it)->items, l, ll, eo_it2)
-     elm_wdg_item_del(eo_it2);
+     efl_del(eo_it2);
+//   elm_wdg_item_del(eo_it2);
 }
 
 EOLIAN static void
@@ -9521,6 +9606,15 @@ _elm_genlist_efl_ui_focus_composition_prepare(Eo *obj, Elm_Genlist_Data *pd)
      }
 
    efl_ui_focus_composition_elements_set(obj, order);
+
+   EINA_INLIST_FOREACH(pd->items, item)
+     {
+        if (item->base->disabled)
+          continue;
+
+        efl_ui_focus_object_prepare_logical(item->base->eo_obj);
+     }
+
 }
 
 EOLIAN static void
@@ -9529,7 +9623,7 @@ _elm_genlist_item_efl_ui_focus_object_prepare_logical_none_recursive(Eo *obj, El
    Eina_List *n;
    Efl_Ui_Widget*wid;
 
-   _item_realize(pd, EINA_FALSE);
+//   _item_realize(pd, EINA_FALSE);
 
    EINA_LIST_FOREACH(pd->contents, n, wid)
      {
