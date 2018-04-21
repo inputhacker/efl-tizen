@@ -578,7 +578,11 @@ EOLIAN static void
 _efl_ui_progressbar_pulse_set(Eo *obj, Efl_Ui_Progressbar_Data *sd, Eina_Bool state)
 {
    state = !!state;
-   if ((!sd->pulse) || (sd->pulse_state == state)) return;
+   //////////////////////////////////////////////////////////////////////
+   //TIZEN_ONLY(20150128): progress pulse policy is diffrent with spin.
+   //if ((!sd->pulse) || (sd->pulse_state == state)) return;
+   if ((!sd->pulse) && (sd->pulse_state == state)) return;
+   //////////////////////////////////////////////////////////////////////
 
    sd->pulse_state = state;
 
