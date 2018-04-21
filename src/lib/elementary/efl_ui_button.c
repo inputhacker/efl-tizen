@@ -425,6 +425,20 @@ ELM_PART_CONTENT_DEFAULT_IMPLEMENT(efl_ui_button, Efl_Ui_Button_Data)
 static Eina_Bool
 _part_is_efl_ui_button_part(const Eo *obj EINA_UNUSED, const char *part)
 {
+   /* TIZEN_ONLY(20180421): Do requested job even if a part name is improper for that job. */
+   Efl_Canvas_Layout_Part_Type type = EFL_CANVAS_LAYOUT_PART_TYPE_NONE;
+
+   ELM_WIDGET_DATA_GET_OR_RETURN((Eo *) obj, wd, EINA_FALSE);
+
+   if (efl_layout_group_part_exist_get(wd->resize_obj, part))
+     {
+        type = efl_canvas_layout_part_type_get(efl_part(wd->resize_obj, part));
+
+        if (type != EFL_CANVAS_LAYOUT_PART_TYPE_SWALLOW)
+          return EINA_FALSE;
+     }
+   /* END */
+
    return eina_streq(part, "elm.swallow.content");
 }
 
