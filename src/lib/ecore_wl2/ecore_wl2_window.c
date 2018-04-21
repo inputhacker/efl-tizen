@@ -124,6 +124,10 @@ static void
 _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
 {
    Ecore_Wl2_Event_Window_Configure *ev;
+//TIZEN_ONLY(20180422): ignore 1X1 init size
+   Eina_Bool resized_win_by_client = EINA_FALSE;
+   Eina_Bool first_configure = EINA_FALSE;
+//
 
    ev = calloc(1, sizeof(Ecore_Wl2_Event_Window_Configure));
    if (!ev) return;
@@ -135,9 +139,17 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
    ev->x = win->saved.x;
    ev->y = win->saved.y;
 //
-
+//TIZEN_ONLY(20180422): ignore 1X1 init size
+   resized_win_by_client = (win->set_config.geometry.w > 1) && (win->set_config.geometry.h > 1);
+   first_configure = (win->def_config.geometry.w == 1) && (win->def_config.geometry.h == 1);
+/*
    if ((win->set_config.geometry.w == win->def_config.geometry.w) &&
        (win->set_config.geometry.h == win->def_config.geometry.h))
+*/
+   if (((win->set_config.geometry.w == win->def_config.geometry.w) &&
+       (win->set_config.geometry.h == win->def_config.geometry.h))
+       || (resized_win_by_client && first_configure))
+//
      ev->w = ev->h = 0;
    else if ((!win->def_config.geometry.w) && (!win->def_config.geometry.h) &&
             (!win->def_config.fullscreen) &&
