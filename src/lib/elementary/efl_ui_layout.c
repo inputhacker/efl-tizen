@@ -2612,6 +2612,11 @@ elm_layout_box_insert_before(Eo *obj, const char *part, Evas_Object *child, cons
 EAPI Eina_Bool
 elm_layout_box_insert_at(Eo *obj, const char *part, Evas_Object *child, unsigned int pos)
 {
+   /* TIZEN_ONLY(20180421): just return false when the given pos is negative */
+   if ((int)pos < 0)
+     return EINA_FALSE;
+   /* END */
+
    return efl_pack_at(efl_part(obj, part), child, pos);
 }
 
