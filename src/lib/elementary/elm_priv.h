@@ -815,6 +815,7 @@ double _elm_atof(const char *s);
 #ifdef TIZEN_VECTOR_UX
 void tizen_vg_button_set(Elm_Button *obj);
 void tizen_vg_progressbar_set(Elm_Progressbar *obj);
+void tizen_vg_slider_set(Elm_Slider *obj, Evas_Object *popup);
 #endif
 
 // elm_layout and elm_entry LEGACY signal API (returned the user data pointer)

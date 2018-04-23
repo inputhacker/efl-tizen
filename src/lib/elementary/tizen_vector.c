@@ -2243,7 +2243,8 @@ _slider_create_handle(vg_slider *vd)
    for(i=0; i < 5; i++)
      {
         vd->vg[i] = evas_object_vg_add(e);
-        root = evas_object_vg_root_node_get(vd->vg[i]);
+        root = evas_vg_container_add(vd->vg[i]);
+        evas_object_vg_root_node_set(vd->vg[i], root);
         vd->shape[i] = evas_vg_shape_add(root);
         evas_vg_node_color_set(vd->shape[i], 255, 255, 255, 255);
 
