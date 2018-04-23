@@ -819,12 +819,15 @@ _efl_ui_slider_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Slider_Data *sd)
      elm_layout_signal_emit(obj, "elm,state,val,show", "elm");
    else
      elm_layout_signal_emit(obj, "elm,state,val,hide", "elm");
-
   
    if (!sd->popup)
      _popup_add(sd, obj, &sd->popup, &sd->track, sd->intvl_enable);
    else
      _popup_update(obj, sd, sd->popup);
+
+#ifdef TIZEN_VECTOR_UX
+   tizen_vg_slider_set(obj, sd->popup);
+#endif
 
    if (sd->intvl_enable)
      {
@@ -832,6 +835,10 @@ _efl_ui_slider_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Slider_Data *sd)
           _popup_add(sd, obj, &sd->popup2, &sd->track2, EINA_TRUE);
         else
           _popup_update(obj, sd, sd->popup2);
+
+#ifdef TIZEN_VECTOR_UX
+        tizen_vg_slider_set(obj, sd->popup2);
+#endif
      }
 
    _min_max_set(obj);
@@ -1174,9 +1181,19 @@ _efl_ui_slider_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Slider_Data *priv)
    elm_layout_content_set(obj, "elm.swallow.bar", priv->spacer);
 
    if (!priv->intvl_enable)
-     _popup_add(priv, obj, &priv->popup, &priv->track, priv->intvl_enable);
+     {
+        _popup_add(priv, obj, &priv->popup, &priv->track, priv->intvl_enable);
+#ifdef TIZEN_VECTOR_UX
+        tizen_vg_slider_set(obj, priv->popup);
+#endif
+     }
    else
-     _popup_add(priv, obj, &priv->popup2, &priv->track2, priv->intvl_enable);
+     {
+        _popup_add(priv, obj, &priv->popup2, &priv->track2, priv->intvl_enable);
+#ifdef TIZEN_VECTOR_UX
+        tizen_vg_slider_set(obj, priv->popup2);
+#endif
+     }
 
    evas_object_event_callback_add
      (priv->spacer, EVAS_CALLBACK_MOUSE_DOWN, _spacer_down_cb, obj);
