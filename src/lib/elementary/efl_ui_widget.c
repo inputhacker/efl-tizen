@@ -153,6 +153,25 @@ static const char *legacy_type_table[][2] =
      { "Elm.Slideshow", "Elm_Slideshow" },
      { "Elm.Spinner", "Elm_Spinner" },
      { "Elm.Plug", "Elm_Plug" },
+     /* TIZEN_ONLY(20180423): add additional class names for legacy API calls */
+     { "Efl.Ui.Bg_Widget", "Elm_Bg" },
+     { "Efl.Ui.Button", "Elm_Button" },
+     { "Efl.Ui.Check", "Elm_Check" },
+     { "Efl.Ui.Clock", "Elm_Datetime" },
+     { "Efl.Ui.Flip", "Elm_Flip" },
+     { "Efl.Ui.Frame", "Elm_Frame" },
+     { "Efl.Ui.Image", "Elm_Image" },
+     { "Efl.Ui.Image_Zoomable", "Elm_Photocam" },
+     { "Efl.Ui.Layout", "Elm_Layout" },
+     { "Efl.Ui.Multibuttonentry", "Elm_Multibuttonentry" },
+     { "Efl.Ui.Panes", "Elm_Panes" },
+     { "Efl.Ui.Progressbar", "Elm_Progressbar" },
+     { "Efl.Ui.Radio", "Elm_Radio" },
+     { "Efl.Ui.Slider", "Elm_Slider" },
+     { "Efl.Ui.Video", "Elm_Video" },
+     { "Efl.Ui.Win", "Elm_Win" },
+     { "Elm.Code_Widget", "Elm_Code_Widget" },
+     /* END */
      { NULL, NULL }
 };
 
