@@ -123,9 +123,15 @@ _efl_ui_win_socket_efl_gfx_visible_set(Eo *obj, Efl_Ui_Win_Socket_Data *sd EINA_
 EOLIAN static Eo*
 _efl_ui_win_socket_efl_object_parent_get(Eo *obj, Efl_Ui_Win_Socket_Data *pd)
 {
+   Eo *parent, *prov;
+
    if (pd->socket_proxy) return pd->socket_proxy;
 
-   return efl_provider_find(efl_parent_get(efl_super(obj, EFL_UI_WIN_SOCKET_CLASS)), EFL_ACCESS_MIXIN);
+   parent = efl_parent_get(efl_super(obj, EFL_UI_WIN_SOCKET_CLASS));
+   prov = efl_provider_find(parent, EFL_ACCESS_MIXIN);
+
+   return (prov ? prov : parent);
 }
+
 //
 #include "efl_ui_win_socket.eo.c"
