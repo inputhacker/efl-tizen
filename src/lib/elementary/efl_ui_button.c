@@ -230,6 +230,11 @@ _efl_ui_button_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Button_Data *_pd EINA_
                                        elm_widget_theme_element_get(obj),
                                        elm_widget_theme_style_get(obj)))
      CRI("Failed to set layout!");
+
+#ifdef TIZEN_VECTOR_UX
+   tizen_vg_button_set(obj);
+#endif
+
 }
 
 EOLIAN static Eo *
@@ -429,6 +434,10 @@ _efl_ui_button_legacy_efl_ui_widget_theme_apply(Eo *obj, void *_pd EINA_UNUSED)
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, EFL_UI_BUTTON_LEGACY_CLASS));
    if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
    _icon_signal_emit(obj);
+
+#ifdef TIZEN_VECTOR_UX
+   tizen_vg_button_set(obj);
+#endif
 
    return int_ret;
 }

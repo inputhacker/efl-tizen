@@ -1295,7 +1295,8 @@ button_no_bg_init(vg_button *vd)
    vd->init = EINA_TRUE;
 
    //Effect Shape
-   Efl_VG *effect_root = evas_object_vg_root_node_get(vd->vg[0]);
+   Efl_VG *effect_root = evas_vg_container_add(vd->vg[0]);
+   evas_object_vg_root_node_set(vd->vg[0], effect_root);
    vd->shape[0] = evas_vg_shape_add(effect_root);
    evas_vg_node_color_set(vd->shape[0], 255, 255, 255, 255);
 }
@@ -1394,12 +1395,14 @@ button_init(vg_button *vd)
    vd->init = EINA_TRUE;
 
    //Base Shape
-   Efl_VG *base_root = evas_object_vg_root_node_get(vd->vg[0]);
+   Efl_VG *base_root = evas_vg_container_add(vd->vg[0]);
+   evas_object_vg_root_node_set(vd->vg[0], base_root);
    vd->shape[0] = evas_vg_shape_add(base_root);
    evas_vg_node_color_set(vd->shape[0], 255, 255, 255, 255);
 
    //Effect Shape
-   Efl_VG *effect_root = evas_object_vg_root_node_get(vd->vg[1]);
+   Efl_VG *effect_root = evas_vg_container_add(vd->vg[1]);
+   evas_object_vg_root_node_set(vd->vg[1], effect_root);
    vd->shape[1] = evas_vg_shape_add(effect_root);
    evas_vg_node_color_set(vd->shape[1], 255, 255, 255, 255);
 }
