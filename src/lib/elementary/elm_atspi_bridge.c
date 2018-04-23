@@ -1249,7 +1249,7 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
    /* attributes */
    attrs = efl_access_attributes_get(obj);
    iter_dict = eldbus_message_iter_container_new(iter, 'a', "{ss}");
-   EINA_SAFETY_ON_NULL_RETURN_VAL(iter_dict, NULL);
+   EINA_SAFETY_ON_NULL_GOTO(iter_dict, fail);
    EINA_LIST_FOREACH(attrs, l, attr)
      {
         iter_entry = eldbus_message_iter_container_new(iter_dict, 'e', NULL);
@@ -1484,12 +1484,12 @@ _accessible_default_label_info_get(const Eldbus_Service_Interface *iface, const 
 
    attrs = efl_access_attributes_get(default_label_obj);
    iter_dict = eldbus_message_iter_container_new(iter, 'a', "{ss}");
-   EINA_SAFETY_ON_NULL_RETURN_VAL(iter_dict, NULL);
+   EINA_SAFETY_ON_NULL_GOTO(iter_dict, fail);
 
    EINA_LIST_FOREACH(attrs, l, attr)
      {
         iter_entry = eldbus_message_iter_container_new(iter_dict, 'e', NULL);
-        EINA_SAFETY_ON_NULL_RETURN_VAL(iter_entry, NULL);
+        EINA_SAFETY_ON_NULL_GOTO(iter_entry, fail);
         eldbus_message_iter_arguments_append(iter_entry, "ss", attr->key, attr->value);
         eldbus_message_iter_container_close(iter_dict, iter_entry);
      }
@@ -1498,6 +1498,10 @@ _accessible_default_label_info_get(const Eldbus_Service_Interface *iface, const 
    efl_access_attributes_list_free(attrs);
 
    return ret;
+
+fail:
+   if (ret) eldbus_message_unref(ret);
+   return NULL;
 }
 //
 
