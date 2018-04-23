@@ -477,7 +477,8 @@ _items_remove(Elm_Ctxpopup_Data *sd)
    if (!sd->items) return;
 
    EINA_LIST_FOREACH_SAFE(sd->items, l, l_next, item)
-     elm_wdg_item_del(EO_OBJ(item));
+     efl_del(EO_OBJ(item));
+//     elm_wdg_item_del(EO_OBJ(item));
 
    sd->items = NULL;
 }
