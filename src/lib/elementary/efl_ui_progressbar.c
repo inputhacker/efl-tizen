@@ -604,6 +604,18 @@ _efl_ui_progressbar_class_constructor(Efl_Class *klass)
    evas_smart_legacy_type_register(MY_CLASS_NAME_LEGACY, klass);
 }
 
+EOLIAN static Eina_Bool
+_efl_ui_progressbar_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *_pd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
+_efl_ui_progressbar_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Efl_Ui_Progressbar_Data *_pd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+
 /* Efl.Part begin */
 
 EOLIAN static Eo *

@@ -198,6 +198,9 @@ class Elm.Index (Efl.Ui.Layout, Efl.Ui.Direction,
       class.constructor;
       Efl.Object.constructor;
       Efl.Ui.Widget.theme_apply;
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_direction_manager_is;
+      Efl.Ui.Widget.focus_next;
       Efl.Ui.Widget.on_access_update;
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
       //register/unregister access objects accordingly.

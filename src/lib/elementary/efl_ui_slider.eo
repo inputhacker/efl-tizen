@@ -40,6 +40,8 @@ class Efl.Ui.Slider (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Direction,
       Efl.Ui.Widget.theme_apply;
       Efl.Ui.Widget.on_access_activate;
       Efl.Ui.Widget.on_focus_update;
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_direction_manager_is;
       Efl.Ui.Widget.widget_event;
       //TIZEN_ONLY(20170419): fix slider indicator behavior
       Efl.Ui.Widget.on_disabled_update;

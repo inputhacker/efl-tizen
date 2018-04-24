@@ -57,6 +57,8 @@ class Efl.Ui.Progressbar (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Format,
       //TIZEN_ONLY(20161109): apply UI Mirroring for Tizen 3.0 UX
       Efl.Ui.Base.mirrored { get; set; }
       //
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_direction_manager_is;
       Efl.Ui.Range.range_value { get; set; }
       Efl.Ui.Direction.direction { get; set; }
       Efl.Ui.Format.format_cb { set; }

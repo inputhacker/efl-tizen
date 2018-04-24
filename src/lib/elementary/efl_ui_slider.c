@@ -315,7 +315,13 @@ _drag_start(void *data,
             const char *emission EINA_UNUSED,
             const char *source EINA_UNUSED)
 {
-   if (!efl_ui_focus_object_focus_get(data))
+   Eina_Bool focused;
+
+   if (elm_widget_is_legacy(data))
+     focused = elm_widget_focus_get(data);
+   else
+     focused = efl_ui_focus_object_focus_get(data);
+   if (!focused)
      elm_object_focus_set(data, EINA_TRUE);
    _slider_update(data, EINA_TRUE);
    efl_event_callback_legacy_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_START, NULL);
@@ -412,12 +418,19 @@ _popup_hide(void *data,
             const char *source EINA_UNUSED)
 {
    EFL_UI_SLIDER_DATA_GET(data, sd);
+   Eina_Bool focused;
 
    if (!sd->popup_visible || !sd->popup) return;
 
    if (sd->indicator_visible_mode == ELM_SLIDER_INDICATOR_VISIBLE_MODE_ALWAYS) return;
+
+   if (elm_widget_is_legacy(data))
+     focused = elm_widget_focus_get(data);
+   else
+     focused = efl_ui_focus_object_focus_get(data);
+
    if ((sd->indicator_visible_mode == ELM_SLIDER_INDICATOR_VISIBLE_MODE_ON_FOCUS) &&
-       efl_ui_focus_object_focus_get(data))
+       focused)
      return;
 
    edje_object_signal_emit(sd->popup, "popup,hide", "elm"); // XXX: for compat
@@ -437,9 +450,15 @@ _popup_hide_done(void *data,
                  const char *source EINA_UNUSED)
 {
    EFL_UI_SLIDER_DATA_GET(data, sd);
+   Eina_Bool focused;
+
+   if (elm_widget_is_legacy(data))
+     focused = elm_widget_focus_get(data);
+   else
+     focused = efl_ui_focus_object_focus_get(data);
    if (sd->popup)
      {
-        if (!((efl_ui_focus_object_focus_get(data)) &&
+        if (!(focused &&
               (sd->indicator_visible_mode == ELM_SLIDER_INDICATOR_VISIBLE_MODE_ON_FOCUS)))
           {
              evas_object_hide(sd->popup);
@@ -448,7 +467,7 @@ _popup_hide_done(void *data,
      }
    if (sd->popup2)
      {
-        if (!((efl_ui_focus_object_focus_get(data)) &&
+        if (!(focused &&
               (sd->indicator_visible_mode == ELM_SLIDER_INDICATOR_VISIBLE_MODE_ON_FOCUS)))
           {
              evas_object_hide(sd->popup2);
@@ -932,6 +951,7 @@ _spacer_down_cb(void *data,
                 void *event_info)
 {
    EFL_UI_SLIDER_DATA_GET(data, sd);
+   Eina_Bool focused;
 
    Evas_Event_Mouse_Down *ev = event_info;
    Evas_Coord x, y, w, h;
@@ -957,7 +977,12 @@ _spacer_down_cb(void *data,
 
    _move_knob_on_mouse(data, button_x, button_y);
 
-   if (!efl_ui_focus_object_focus_get(data))
+   if (elm_widget_is_legacy(data))
+     focused = elm_widget_focus_get(data);
+   else
+     focused = efl_ui_focus_object_focus_get(data);
+   
+   if (!focused)
      elm_object_focus_set(data, EINA_TRUE);
    _slider_update(data, EINA_TRUE);
    efl_event_callback_legacy_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_START, NULL);
@@ -1340,15 +1365,31 @@ _efl_ui_slider_step_get(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *sd)
 }
 
 EOLIAN static Eina_Bool
+_efl_ui_slider_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_pd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
+_efl_ui_slider_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_pd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
 _efl_ui_slider_efl_ui_widget_on_focus_update(Eo *obj, Efl_Ui_Slider_Data *sd EINA_UNUSED, Elm_Object_Item *item EINA_UNUSED)
 {
-   Eina_Bool int_ret = EINA_FALSE;
+   Eina_Bool int_ret = EINA_FALSE, focused;
 
    int_ret = efl_ui_widget_on_focus_update(efl_super(obj, MY_CLASS), NULL);
+   if (elm_widget_is_legacy(obj))
+     focused = elm_widget_focus_get(obj);
+   else
+     focused = efl_ui_focus_object_focus_get(obj);
 
-   if ((sd->indicator_visible_mode == ELM_SLIDER_INDICATOR_VISIBLE_MODE_ON_FOCUS) && efl_ui_focus_object_focus_get(obj))
+   if ((sd->indicator_visible_mode == ELM_SLIDER_INDICATOR_VISIBLE_MODE_ON_FOCUS) && focused)
      _popup_show(obj, NULL, NULL, NULL);
-   else if (!efl_ui_focus_object_focus_get(obj))
+   else if (!focused)
      _popup_hide(obj, NULL, NULL, NULL);
 
    return int_ret;
