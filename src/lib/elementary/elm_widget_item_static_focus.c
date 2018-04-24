@@ -39,5 +39,4 @@ _elm_widget_item_static_focus_efl_ui_focus_object_prepare_logical(Eo *obj, Elm_W
         pd->adapter = NULL;
      }
 }
-
 #include "elm_widget_item_static_focus.eo.c"
