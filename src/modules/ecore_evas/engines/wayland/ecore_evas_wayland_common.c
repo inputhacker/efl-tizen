@@ -309,8 +309,6 @@ _ecore_evas_wl_common_move(Ecore_Evas *ee, int x, int y)
         ee->y = y;
         if (ee->func.fn_move) ee->func.fn_move(ee);
      }
-
-   ecore_wl2_window_position_set(wdata->win, x, y);
 }
 //
 
@@ -611,12 +609,11 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
    active = wdata->activated;
    wdata->activated = ecore_wl2_window_activated_get(wdata->win);
 
-// TIZEN_ONLY(20160630): : check opensource size issu
-
    nw = ev->w;
    nh = ev->h;
-
-// ecore_wl2_window_geometry_get(wdata->win, &nx, &ny, &nw, &nh);
+// TIZEN_ONLY(20180424) : handle window position
+   nx = ev->x;
+   ny = ev->y;
 //
 
    pfw = fw = wdata->content.w ? wdata->win->set_config.geometry.w - wdata->content.w : 0;
@@ -643,6 +640,11 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
                                               wdata->win->req_config.serial);
              wdata->win->set_config.serial = wdata->win->req_config.serial;
           }
+
+// TIZEN_ONLY(20180424) : handle window position
+        if ((ee->x != nx) || (ee->y != ny))
+          _ecore_evas_wl_common_move(ee, nx, ny);
+//
         return ECORE_CALLBACK_RENEW;
      }
 
@@ -2847,8 +2849,12 @@ _ecore_evas_wl_common_show(Ecore_Evas *ee)
           }
 
         evas_output_framespace_get(ee->evas, NULL, NULL, &fw, &fh);
-
+// TIZEN_ONLY(20180424) : handle window position
+/*
         ecore_wl2_window_geometry_set(wdata->win, 0, 0, ee->w, ee->h);
+*/
+        ecore_wl2_window_geometry_set(wdata->win, ee->x, ee->y, ee->w, ee->h);
+//
         ecore_wl2_window_show(wdata->win);
         ecore_wl2_window_alpha_set(wdata->win, ee->alpha);
 
