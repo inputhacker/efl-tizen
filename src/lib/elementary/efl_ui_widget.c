@@ -1706,6 +1706,8 @@ _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
           {
              if (!sdc->disabled && (elm_widget_disabled_get(obj)))
                {
+                  if (elm_widget_is_legacy(sobj))
+                    efl_ui_widget_focus_disabled_handle(sobj);
                   efl_ui_widget_on_disabled_update(sobj, EINA_TRUE);
                }
           }
@@ -3640,6 +3642,8 @@ _elm_widget_disabled_eval(const Evas_Object *obj, Eina_Bool disabled)
      {
         if (elm_widget_is(child))
           {
+             if (elm_widget_is_legacy(obj))
+               efl_ui_widget_focus_disabled_handle((Evas_Object *)obj);
              efl_ui_widget_on_disabled_update(child, disabled);
              _elm_widget_disabled_eval(child, disabled);
           }
@@ -3652,6 +3656,8 @@ elm_widget_disabled_internal(Eo *obj, Eina_Bool disabled)
    if (!disabled && elm_widget_disabled_get(elm_widget_parent_get(obj)))
      return;
 
+   if (elm_widget_is_legacy(obj))
+     efl_ui_widget_focus_disabled_handle(obj);
    efl_ui_widget_on_disabled_update(obj, disabled);
    _elm_widget_disabled_eval(obj, disabled);
 }
