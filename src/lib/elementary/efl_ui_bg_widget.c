@@ -13,6 +13,7 @@
 #define MY_CLASS_PFX efl_ui_bg_widget
 
 #define MY_CLASS_NAME "Efl.Ui.Bg_Widget"
+#define MY_CLASS_NAME_LEGACY "elm_bg"
 
 static const Elm_Layout_Part_Alias_Description _content_aliases[] =
 {
@@ -52,6 +53,12 @@ _efl_ui_bg_widget_efl_object_constructor(Eo *obj, Efl_Ui_Bg_Widget_Data *pd)
    pd->file = NULL;
    pd->key = NULL;
 
+   /* TIZEN_ONLY(20180424): fix legacy bg scale policy */
+   if (elm_widget_is_legacy(obj))
+     elm_image_no_scale_set(pd->img, EINA_TRUE);
+   /* END */
+
+   efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    efl_access_type_set(obj, EFL_ACCESS_TYPE_DISABLED);
 
    efl_ui_widget_focus_allow_set(obj, EINA_FALSE);
@@ -269,10 +276,7 @@ ELM_LAYOUT_CONTENT_ALIASES_IMPLEMENT(MY_CLASS_PFX)
 
 #include "efl_ui_bg_widget.eo.c"
 
-
 #include "efl_ui_bg_widget_legacy.eo.h"
-
-#define MY_CLASS_NAME_LEGACY "elm_bg"
 
 static void
 _efl_ui_bg_widget_legacy_class_constructor(Efl_Class *klass)
