@@ -251,15 +251,6 @@ struct _Ecore_Wl2_Window
    struct wl_region *input_region;
    //
 
-   // TIZEN_ONLY(20160323)
-   struct
-     {
-        int x, y; /* it indicates a position configured by window manager. */
-        int w, h;
-        unsigned int edges;
-     } configured;
-   //
-
    Ecore_Wl2_Window_Type type;
 
    struct

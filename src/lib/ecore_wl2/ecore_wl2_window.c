@@ -132,8 +132,8 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
    ev->event_win = win->id;
    
 // TIZEN_ONLY(20171112): support tizen_position
-   ev->x = win->saved.x;
-   ev->y = win->saved.y;
+   ev->x = win->set_config.geometry.x;
+   ev->y = win->set_config.geometry.y;
 //
 
    if ((win->set_config.geometry.w == win->def_config.geometry.w) &&
@@ -155,13 +155,6 @@ _ecore_wl2_window_configure_send(Ecore_Wl2_Window *win)
      ev->states |= ECORE_WL2_WINDOW_STATE_MAXIMIZED;
 
    win->req_config = win->def_config;
-
-// TIZEN_ONLY(20160323)
-// TODO: should fix this code base on opensource
-   win->configured.w = win->saved.w;
-   win->configured.h = win->saved.h;
-   win->configured.edges = ev->edges;
-//
 
    ecore_event_add(ECORE_WL2_EVENT_WINDOW_CONFIGURE, ev, NULL, NULL);
 
@@ -539,12 +532,17 @@ _tizen_position_cb_changed(void *data, struct tizen_position *tizen_position EIN
 
    if (!(win = data)) return;
 
-   win->configured.x = x;
-   win->configured.y = y;
-//TODO: check win->saved and win->geometry is same.
-   if ((x != win->saved.x) || (y != win->saved.y))
+   win->def_config.geometry.x = x;
+   win->def_config.geometry.y = y;
+
+   if ((x != win->set_config.geometry.x) || (y != win->set_config.geometry.y))
      {
-        ecore_wl2_window_geometry_set(win, x, y, win->saved.w, win->saved.h);
+        win->saved.x = win->set_config.geometry.x;
+        win->saved.y = win->set_config.geometry.y;
+
+        win->set_config.geometry.x = x;
+        win->set_config.geometry.y = y;
+
         _ecore_wl2_window_configure_send(win);
      }
 }
@@ -642,8 +640,8 @@ _ecore_wl_window_cb_angle_change(void *data, struct tizen_rotation *tizen_rotati
    win->wm_rot.serial = serial;
 
    ev->win = win->id;
-   ev->w = win->configured.w;
-   ev->h = win->configured.h;
+   ev->w = win->def_config.geometry.w;
+   ev->h = win->def_config.geometry.h;
 
    switch (angle)
      {
@@ -1066,14 +1064,6 @@ ecore_wl2_window_new(Ecore_Wl2_Display *display, Ecore_Wl2_Window *parent, int x
    win->opaque.w = w;
    win->opaque.h = h;
 
-   // TIZEN_ONLY(20160323)
-   win->configured.x = -99999; /* this is arbitary */
-   win->configured.y = -99999;
-   win->configured.w = w;
-   win->configured.h = h;
-   win->configured.edges = 0;
-   //
-
    // TIZEN_ONLY(20180202) : Set default type to keep backward compat.
    win->type = ECORE_WL2_WINDOW_TYPE_TOPLEVEL;
    // END
@@ -1461,10 +1451,13 @@ ecore_wl2_window_position_set(Ecore_Wl2_Window *window, int x, int y)
    window->saved.x = x;
    window->saved.y = y;
 
+   window->set_config.geometry.x = x;
+   window->set_config.geometry.y = y;
+
    if ((window->surface) && (window->tz_position))
      {
-        if ((window->configured.x != x) || (window->configured.y != y))
-          tizen_position_set(window->tz_position, window->saved.x, window->saved.y);
+        if ((window->def_config.geometry.x != x) || (window->def_config.geometry.y != y))
+          tizen_position_set(window->tz_position, x, y);
      }
 }
 

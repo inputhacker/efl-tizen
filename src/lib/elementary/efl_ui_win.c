@@ -1699,7 +1699,7 @@ _elm_win_opaque_update(Efl_Ui_Win_Data *sd, Eina_Bool force_alpha)
      ecore_wl2_window_opaque_region_set(sd->wl.win, 0, 0, 0, 0);
 
    /* FIXME: Replace with call to ecore_evas_shadow_geometry_set(). */
-   ecore_wl2_window_geometry_set(sd->wl.win, ox, oy, ow, oh);
+   ecore_wl2_window_geometry_set(sd->wl.win, sd->screen.x, sd->screen.y, ow, oh);
    //TIZEN_ONLY(20180305) remove side effect of input region
    /*
    //
@@ -3427,6 +3427,11 @@ _efl_ui_win_efl_gfx_position_set(Eo *obj, Efl_Ui_Win_Data *sd, Eina_Position2D p
              sd->req_x = pos.x;
              sd->req_y = pos.y;
              TRAP(sd, move, pos.x, pos.y);
+// TIZEN_ONLY(20180424): set window position
+#ifdef HAVE_ELEMENTARY_WL2
+             ecore_wl2_window_position_set(sd->wl.win, pos.x, pos.y);
+#endif
+//
           }
         if (!ecore_evas_override_get(sd->ee)) goto super_skip;
      }
@@ -3442,6 +3447,9 @@ _efl_ui_win_efl_gfx_position_set(Eo *obj, Efl_Ui_Win_Data *sd, Eina_Position2D p
    if (sd->frame_obj)
      {
 #ifdef HAVE_ELEMENTARY_WL2
+        // TIZEN_ONLY(20180424): set window position
+        ecore_wl2_window_position_set(sd->wl.win, pos.x, pos.y);
+        //
         /* TODO */
         /* ecore_wl_window_update_location(sd->wl.win, x, y); */
 #endif
