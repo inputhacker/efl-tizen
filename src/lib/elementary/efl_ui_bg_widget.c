@@ -79,6 +79,11 @@ _efl_ui_bg_widget_efl_object_constructor(Eo *obj, Efl_Ui_Bg_Widget_Data *pd)
    pd->file = NULL;
    pd->key = NULL;
 
+   /* TIZEN_ONLY(20180424): fix legacy bg scale policy */
+   if (elm_widget_is_legacy(obj))
+     elm_image_no_scale_set(pd->img, EINA_TRUE);
+   /* END */
+
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    efl_access_type_set(obj, EFL_ACCESS_TYPE_DISABLED);
 
