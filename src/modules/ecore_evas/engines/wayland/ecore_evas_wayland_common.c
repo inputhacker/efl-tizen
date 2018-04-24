@@ -728,19 +728,6 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
      }
    if ((!nw) && (!nh))
      {
-        if ((wdata->win->set_config.serial != wdata->win->req_config.serial) &&
-            wdata->win->req_config.serial && wdata->win->surface &&
-            ((!state_change) || ((pfw == fw) && (pfh == fh))))
-          {
-             if (wdata->win->xdg_configure_ack)
-               wdata->win->xdg_configure_ack(wdata->win->xdg_surface,
-                                              wdata->win->req_config.serial);
-             if (wdata->win->zxdg_configure_ack)
-               wdata->win->zxdg_configure_ack(wdata->win->zxdg_surface,
-                                              wdata->win->req_config.serial);
-             wdata->win->set_config.serial = wdata->win->req_config.serial;
-          }
-
 // TIZEN_ONLY(20180424) : handle window position
         if ((ee->x != nx) || (ee->y != ny))
           _ecore_evas_wl_common_move(ee, nx, ny);
