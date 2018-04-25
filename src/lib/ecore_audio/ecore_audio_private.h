@@ -219,6 +219,7 @@ struct _Ecore_Audio_Lib_Sndfile
    void        (*sf_write_sync)   (SNDFILE *sndfile);
    sf_count_t  (*sf_seek)         (SNDFILE *sndfile, sf_count_t frames, int whence);
    const char *(*sf_strerror)     (SNDFILE *sndfile);
+   sf_count_t  (*sf_read_short)   (SNDFILE *sndfile, short *ptr, sf_count_t items);
 };
 
 #define ESF_CALL(x) ecore_audio_sndfile_lib->x

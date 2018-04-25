@@ -1232,6 +1232,7 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-libraw \
     --disable-systemd \
     --disable-cserve \
+    --enable-tizenaudio \
     --with-elementary-base-dir="share/.elementary" \
     --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb \
     ac_cv_func_getuid=no
@@ -1239,8 +1240,8 @@ export XDG_RUNTIME_DIR="/tmp/"
 #    --enable-drm \
 #    --enable-gl-drm \
 
-%__make %{?_smp_mflags} --trace \
-2>&1 | sed \
+%__make %{?_smp_mflags} 2>&1 | \
+sed \
 -e 's%^.*: error: .*$%\x1b[37;41m&\x1b[m%' \
 -e 's%^.*: warning: .*$%\x1b[30;43m&\x1b[m%'
 

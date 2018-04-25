@@ -231,6 +231,7 @@ ecore_audio_sndfile_lib_load(void)
    SYM(sf_open_virtual);
    SYM(sf_close);
    SYM(sf_read_float);
+   SYM(sf_read_short);
    SYM(sf_write_float);
    SYM(sf_write_sync);
    SYM(sf_seek);

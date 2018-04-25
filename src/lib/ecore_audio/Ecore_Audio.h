@@ -209,6 +209,15 @@ EAPI int                 ecore_audio_shutdown(void);
 
 #include <ecore_audio_obj_out_wasapi.h>
 
+/* TIZEN_ONLY(20161109, 20161202)
+ *  (20161109): ecore_audio: Add tizen ecore_audio module(e182090493d623212cd0ee7d55ae4ebd679eff42)
+ *  (20161202): ecore_audio: Add 'TIZEN_ONLY' comment
+ */
+#if HAVE_TIZENAUDIO
+# include <ecore_audio_obj_out_tizen.h>
+#endif
+/* END */
+
 /**
  * @}
  */

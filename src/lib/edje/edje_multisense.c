@@ -202,7 +202,7 @@ _edje_multisense_internal_sound_sample_play(Edje *ed, const char *sample_name, c
              in = efl_add(ECORE_AUDIO_IN_SNDFILE_CLASS, efl_main_loop_get(), efl_name_set(efl_added, snd_id_str), ecore_audio_obj_in_speed_set(efl_added, speed), ecore_audio_obj_vio_set(efl_added, &eet_data->vio, eet_data, _free), efl_event_callback_add(efl_added, ECORE_AUDIO_IN_EVENT_IN_STOPPED, _play_finished, NULL));
              if (!out)
                {
-
+/* TIZEN_ONLY
 # ifdef _WIN32
                   out = efl_add(ECORE_AUDIO_OUT_WASAPI_CLASS, efl_main_loop_get(), efl_event_callback_add(efl_added, ECORE_AUDIO_OUT_WASAPI_EVENT_CONTEXT_FAIL, _out_fail, NULL));
 # else
@@ -210,6 +210,33 @@ _edje_multisense_internal_sound_sample_play(Edje *ed, const char *sample_name, c
                   out = efl_add(ECORE_AUDIO_OUT_PULSE_CLASS, efl_main_loop_get(), efl_event_callback_add(efl_added, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL, _out_fail, NULL));
 #  endif
 # endif
+*/
+
+# ifdef _WIN32
+                  out = efl_add(ECORE_AUDIO_OUT_WASAPI_CLASS, NULL, efl_event_callback_add(efl_added, ECORE_AUDIO_OUT_WASAPI_EVENT_CONTEXT_FAIL, _out_fail, NULL));
+# else
+#if HAVE_TIZENAUDIO
+                  if (!(out = efl_add(ECORE_AUDIO_OUT_TIZEN_CLASS, NULL)))
+                    {
+                       ERR("Could not create multisense audio out (Tizen Audio)");
+#endif
+/* END */
+#if HAVE_COREAUDIO
+                  out = efl_add(ECORE_AUDIO_OUT_CORE_AUDIO_CLASS, NULL);
+#elif HAVE_PULSE
+                  out = efl_add(ECORE_AUDIO_OUT_PULSE_CLASS, NULL, efl_event_callback_add(efl_added, ECORE_AUDIO_OUT_PULSE_EVENT_CONTEXT_FAIL, _out_fail, NULL));
+#endif
+
+/* TIZEN_ONLY(20161109, 20161202)
+ *  (20161109): ecore_audio: Add tizen ecore_audio module(e182090493d623212cd0ee7d55ae4ebd679eff42)
+ *  (20161202): ecore_audio: Add 'TIZEN_ONLY' comment
+ */
+#if HAVE_TIZENAUDIO
+                    }
+#endif
+
+# endif
+// END
                   if (out) outs++;
                }
              if (!out)
