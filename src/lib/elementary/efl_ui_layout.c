@@ -732,7 +732,7 @@ _efl_ui_layout_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Layout_Data *sd)
    Efl_Ui_Layout_Sub_Connect *sc;
    Edje_Signal_Data *esd;
    Evas_Object *child;
-   Eina_List *l, *ll;
+   Eina_List *l;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
@@ -745,20 +745,13 @@ _efl_ui_layout_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Layout_Data *sd)
         free(sub_d);
      }
    */
-   EINA_LIST_FOREACH_SAFE(sd->subs, l, ll, sub_d)
+   EINA_LIST_FREE(sd->subs, sub_d)
      {
         if (sub_d->type == TEXT)
-          {
-             eina_stringshare_del(sub_d->p.text.text);
-             eina_stringshare_del(sub_d->part);
-             sd->subs = eina_list_remove_list(sd->subs, l);
-             free(sub_d);
-          }
-        else
-          {
-             eina_stringshare_del(sub_d->part);
-             free(sub_d);
-          }
+          eina_stringshare_del(sub_d->p.text.text);
+
+        eina_stringshare_del(sub_d->part);
+        free(sub_d);
      }
    /* END */
 
