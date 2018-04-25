@@ -400,7 +400,9 @@ _fash_int_add(Fash_Int *fash, int item, RGBA_Font_Int *fint, int idx)
 void
 evas_common_font_glyph_done(RGBA_Font_Glyph *fg)
 {
-   if (fg && fg->glyph_out)
+   if (!fg) return;
+
+   if (fg->glyph_out)
      {
         if ((fg->glyph_out->rle) && (fg->glyph_out->bitmap.rle_alloc))
           free(fg->glyph_out->rle);
