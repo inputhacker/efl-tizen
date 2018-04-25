@@ -3768,7 +3768,7 @@ _elm_gengrid_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_G
    //Fallback Legacy Focus
    if (!elm_widget_is_legacy(obj))
      return efl_ui_widget_focus_direction_manager_is(efl_super(obj, MY_CLASS));
-   return _elm_gengrid_smart_focus_next_enable;
+   else return EINA_TRUE;
 }
 
 EOLIAN static Eina_Bool
