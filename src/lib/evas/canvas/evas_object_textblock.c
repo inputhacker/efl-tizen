@@ -7865,6 +7865,10 @@ evas_textblock_string_escape_get(const char *string, int *len_ret)
 static void
 _cursor_emit_if_changed(Efl_Text_Cursor_Cursor *cur)
 {
+   /* TIZEN_ONLY(20180425): prevent invalid read from a free'd cursor */
+   if (!cur) return;
+   /* END */
+
    if (cur->changed)
      {
         cur->changed = EINA_FALSE;
@@ -14353,6 +14357,9 @@ evas_object_textblock_free(Evas_Object *eo_obj)
         evas_object_textblock_style_user_pop(eo_obj);
      }
    free(o->cursor);
+   /* TIZEN_ONLY(20180425): prevent invalid read from a free'd cursor */
+   o->cursor = NULL;
+   /* END */
    while (o->cursors)
      {
         Efl_Text_Cursor_Cursor *cur;
