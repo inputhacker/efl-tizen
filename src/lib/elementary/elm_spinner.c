@@ -916,15 +916,16 @@ _elm_spinner_efl_ui_widget_widget_event(Eo *obj, Elm_Spinner_Data *sd, const Efl
    //TIZEN_ONLY(20170418): Support Tv 4.0 UX.
    if ((!sd->button_layout) || (!elm_object_focus_allow_get(sd->inc_button)))
      {
+        Evas_Event_Key_Down *ev1 = efl_input_legacy_info_get(eo_event->info);
         if ((eo_event->desc == EFL_EVENT_KEY_DOWN))
           {
-             if (!strcmp(((Evas_Event_Key_Down *)ev)->key, "Up"))
+             if (!strcmp(((Evas_Event_Key_Down *)ev1)->key, "Up"))
                {
                   _button_inc_dec_start_cb(obj, obj, "elm,action,increment,start", NULL);
                   efl_input_processed_set(ev, EINA_TRUE);
                   return EINA_TRUE;
                }
-             if (!strcmp(((Evas_Event_Key_Down *)ev)->key, "Down"))
+             if (!strcmp(((Evas_Event_Key_Down *)ev1)->key, "Down"))
                {
                   _button_inc_dec_start_cb(obj, obj, "elm,action,decrement,start", NULL);
                   efl_input_processed_set(ev, EINA_TRUE);
