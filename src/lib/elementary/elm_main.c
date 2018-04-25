@@ -1789,12 +1789,12 @@ EAPI Evas_Object *
 elm_object_focus_next_object_get(const Evas_Object  *obj,
                                  Elm_Focus_Direction dir)
 {
+   Efl_Ui_Widget *top = elm_object_top_widget_get(obj);
    EINA_SAFETY_ON_NULL_RETURN_VAL(obj, NULL);
    if (elm_widget_is_legacy(obj))
      return efl_ui_widget_focus_next_object_get(obj, dir);
 
-   Efl_Ui_Widget *top = elm_object_top_widget_get(obj);
-   return efl_ui_focus_manager_request_move(efl_ui_focus_util_active_manager(EFL_UI_FOCUS_UTIL_CLASS, top), dir, NULL, EINA_FALSE);
+   return efl_ui_focus_manager_request_move(top, dir);
 }
 
 EAPI void
