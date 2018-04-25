@@ -1272,7 +1272,7 @@ _elm_entry_efl_ui_widget_theme_apply(Eo *obj, Elm_Entry_Data *sd)
     * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
     *****************************************************************************/
    /* Store current cursor position to prevent cursor position initialization issue. */
-   int cursor_pos = sd->cursor_pos;
+   cursor_pos = sd->cursor_pos;
    /*******
     * END *
     *******/

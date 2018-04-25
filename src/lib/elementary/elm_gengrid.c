@@ -3659,7 +3659,7 @@ _elm_gengrid_efl_ui_widget_on_focus_update(Eo *obj, Elm_Gengrid_Data *sd, Elm_Wi
    Eina_Bool int_ret = EINA_FALSE;
    Elm_Object_Item *eo_it = NULL;
 
-   int_ret = efl_ui_focus_object_on_focus_update(efl_super(obj, MY_CLASS));
+   int_ret = efl_ui_widget_on_focus_update(efl_super(obj, MY_CLASS), NULL);
    if (!int_ret) return EINA_FALSE;
 
    //Fallback Legacy Focus
@@ -3768,7 +3768,7 @@ _elm_gengrid_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_G
    //Fallback Legacy Focus
    if (!elm_widget_is_legacy(obj))
      return efl_ui_widget_focus_direction_manager_is(efl_super(obj, MY_CLASS));
-   else return EINA_TRUE;
+   return _elm_gengrid_smart_focus_next_enable;
 }
 
 EOLIAN static Eina_Bool
