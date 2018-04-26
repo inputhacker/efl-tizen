@@ -2905,20 +2905,24 @@ EAPI void
 elm_widget_part_text_set(Eo *obj, const char *part, const char *label)
 {
    /* legacy support: combobox was special (internal entry is text object). */
-   if (efl_isa(obj, ELM_COMBOBOX_CLASS))
-     _elm_combobox_part_text_set(obj, part, label);
-   else if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   //TIZEN_ONLY(20180426):stop creating unused class.
+   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
      elm_layout_text_set(obj, part, label);
+   else if (efl_isa(obj, ELM_COMBOBOX_CLASS))
+     _elm_combobox_part_text_set(obj, part, label);
+   //
 }
 
 EAPI const char*
 elm_widget_part_text_get(const Eo *obj, const char *part)
 {
    /* legacy support: combobox was special (internal entry is text object). */
-   if (efl_isa(obj, ELM_COMBOBOX_CLASS))
-     return _elm_combobox_part_text_get(obj, part);
-   else if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+   //TIZEN_ONLY(20180426):stop creating unused class.
+   if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
      return elm_layout_text_get(obj, part);
+   else if (efl_isa(obj, ELM_COMBOBOX_CLASS))
+     return _elm_combobox_part_text_get(obj, part);
+   //
 
    return NULL;
 }
