@@ -5278,7 +5278,7 @@ _ecore_evas_event_evas_device_get(Evas *evas, Ecore_Device *ecore_dev)
    Efl_Input_Device *dev = NULL;
    Eina_List *list, *l;
 
-   if (efl_class_get(ecore_dev) != EFL_ECORE_INPUT_DEVICE_CLASS) return NULL;
+   if (efl_class_get(ecore_dev) != EFL_INPUT_DEVICE_CLASS) return NULL;
 
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, dev)

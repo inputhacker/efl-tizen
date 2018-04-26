@@ -6,7 +6,6 @@ efl_eolian_legacy_files = \
 	lib/efl/interfaces/efl_gfx_image.eo \
 	lib/efl/interfaces/efl_gfx_image_animation_controller.eo \
 	lib/efl/interfaces/efl_input_device.eo \
-	lib/efl/interfaces/efl_ecore_input_device.eo \
         lib/efl/interfaces/efl_ui_draggable.eo \
         lib/efl/interfaces/efl_ui_clickable.eo \
         lib/efl/interfaces/efl_ui_scrollable.eo \
@@ -118,7 +117,6 @@ lib/efl/interfaces/efl_model_common.c \
 lib/efl/interfaces/efl_gfx_path.c \
 lib/efl/interfaces/efl_gfx_shape.c \
 lib/efl/interfaces/efl_input_device.c \
-lib/efl/interfaces/efl_ecore_input_device.c \
 lib/efl/interfaces/efl_io_closer.c \
 lib/efl/interfaces/efl_io_positioner.c \
 lib/efl/interfaces/efl_io_reader.c \

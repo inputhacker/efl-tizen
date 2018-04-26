@@ -16,9 +16,6 @@
 typedef struct _Efl_Input_Pointer_Data  Efl_Input_Pointer_Data;
 typedef struct _Efl_Input_Key_Data      Efl_Input_Key_Data;
 typedef struct _Efl_Input_Device_Data   Efl_Input_Device_Data;
-// TIZEN_ONLY(20180118): support a Ecore_Device
-typedef struct _Efl_Ecore_Input_Device_Data   Efl_Ecore_Input_Device_Data;
-//
 typedef struct _Efl_Input_Hold_Data     Efl_Input_Hold_Data;
 typedef struct _Efl_Input_Focus_Data    Efl_Input_Focus_Data;
 
@@ -100,19 +97,6 @@ struct _Efl_Input_Device_Data
    unsigned int      subclass; // Evas_Device_Subclass (unused)
    unsigned int      pointer_count;
 };
-
-// TIZEN_ONLY(20180118): support a Ecore_Device
-struct _Efl_Ecore_Input_Device_Data
-{
-   Eo               *eo;
-   Efl_Ecore_Input_Device *source;  /* ref */
-   Eina_List        *children; /* ref'ed by efl_parent, not by this list */
-   unsigned int      id;
-   Efl_Ecore_Input_Device_Type klass;
-   unsigned int      subclass; // Evas_Device_Subclass (unused)
-   unsigned int      pointer_count;
-};
-//
 
 struct _Efl_Input_Hold_Data
 {

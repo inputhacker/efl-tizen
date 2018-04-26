@@ -28,7 +28,6 @@ set(PUBLIC_EO_FILES
   interfaces/efl_image_animated.eo
   interfaces/efl_image_load.eo
   interfaces/efl_input_device.eo
-  interfaces/efl_ecore_input_device.eo
   interfaces/efl_input_types.eot
   interfaces/efl_io_buffer.eo
   interfaces/efl_io_closer.eo
@@ -77,7 +76,6 @@ set(SOURCES
   interfaces/efl_vpath_core.c
   interfaces/efl_vpath_file_core.c
   interfaces/efl_input_device.c
-  interfaces/efl_ecore_input_device.c
   interfaces/efl_io_closer.c
   interfaces/efl_io_positioner.c
   interfaces/efl_io_reader.c

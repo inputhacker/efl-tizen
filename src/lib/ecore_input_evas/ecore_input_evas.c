@@ -488,12 +488,12 @@ _ecore_event_evas_device_get(Evas *eo_e, int type, Eo *dev)
 {
    Evas_Device *evas_device = NULL;
 
-   if (!dev || efl_class_get(dev) != EFL_ECORE_INPUT_DEVICE_CLASS) return NULL;
+   if (!dev || efl_class_get(dev) != EFL_INPUT_DEVICE_CLASS) return NULL;
 
    if (dev) evas_device = _ecore_event_evas_device_find(eo_e, dev);
    if (!evas_device)
      {
-        WRN("Failed to found evas device for %s (identifier: %s, class: %d)\n", efl_name_get(dev), efl_comment_get(dev), efl_ecore_input_device_type_get(dev));
+        WRN("Failed to found evas device for %s (identifier: %s, class: %d)\n", efl_name_get(dev), efl_comment_get(dev), efl_input_device_type_get(dev));
         if (type == ECORE_EVENT_KEY_DOWN || type == ECORE_EVENT_KEY_UP)
           evas_device = evas_device_default_get(eo_e, EVAS_DEVICE_CLASS_KEYBOARD);
         else

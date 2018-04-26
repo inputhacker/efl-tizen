@@ -3242,38 +3242,38 @@ typedef Eo                 Ecore_Device; /**< A handle for an device */
   * @typedef Ecore_Device_Class
   * An enum of Device Classes.
   */
-typedef Efl_Ecore_Input_Device_Type Ecore_Device_Class;
+typedef Efl_Input_Device_Type Ecore_Device_Class;
 
-#define ECORE_DEVICE_CLASS_NONE             EFL_ECORE_INPUT_DEVICE_TYPE_NONE /**< Not a device @since 1.8 */
-#define ECORE_DEVICE_CLASS_SEAT             EFL_ECORE_INPUT_DEVICE_TYPE_SEAT /**< The user/seat (the user themselves) @since 1.8 */
-#define ECORE_DEVICE_CLASS_KEYBOARD         EFL_ECORE_INPUT_DEVICE_TYPE_KEYBOARD /**< A regular keyboard, numberpad or attached buttons @since 1.8 */
-#define ECORE_DEVICE_CLASS_MOUSE            EFL_ECORE_INPUT_DEVICE_TYPE_MOUSE /**< A mouse, trackball or touchpad relative motion device @since 1.8 */
-#define ECORE_DEVICE_CLASS_TOUCH            EFL_ECORE_INPUT_DEVICE_TYPE_TOUCH /**< A touchscreen with fingers or stylus @since 1.8 */
-#define ECORE_DEVICE_CLASS_PEN              EFL_ECORE_INPUT_DEVICE_TYPE_PEN /**< A special pen device @since 1.8 */
-#define ECORE_DEVICE_CLASS_POINTER          EFL_ECORE_INPUT_DEVICE_TYPE_WAND /**< A laser pointer, wii-style or "minority report" pointing device @since 1.8 */
-#define ECORE_DEVICE_CLASS_WAND             EFL_ECORE_INPUT_DEVICE_TYPE_WAND /**< A synonym for ECORE_DEVICE_CLASS_POINTER @since 1.18 */
-#define ECORE_DEVICE_CLASS_GAMEPAD          EFL_ECORE_INPUT_DEVICE_TYPE_GAMEPAD /**<  A gamepad controller or joystick @since 1.8 */
+#define ECORE_DEVICE_CLASS_NONE             EFL_INPUT_DEVICE_TYPE_NONE /**< Not a device @since 1.8 */
+#define ECORE_DEVICE_CLASS_SEAT             EFL_INPUT_DEVICE_TYPE_SEAT /**< The user/seat (the user themselves) @since 1.8 */
+#define ECORE_DEVICE_CLASS_KEYBOARD         EFL_INPUT_DEVICE_TYPE_KEYBOARD /**< A regular keyboard, numberpad or attached buttons @since 1.8 */
+#define ECORE_DEVICE_CLASS_MOUSE            EFL_INPUT_DEVICE_TYPE_MOUSE /**< A mouse, trackball or touchpad relative motion device @since 1.8 */
+#define ECORE_DEVICE_CLASS_TOUCH            EFL_INPUT_DEVICE_TYPE_TOUCH /**< A touchscreen with fingers or stylus @since 1.8 */
+#define ECORE_DEVICE_CLASS_PEN              EFL_INPUT_DEVICE_TYPE_PEN /**< A special pen device @since 1.8 */
+#define ECORE_DEVICE_CLASS_POINTER          EFL_INPUT_DEVICE_TYPE_WAND /**< A laser pointer, wii-style or "minority report" pointing device @since 1.8 */
+#define ECORE_DEVICE_CLASS_WAND             EFL_INPUT_DEVICE_TYPE_WAND /**< A synonym for ECORE_DEVICE_CLASS_POINTER @since 1.18 */
+#define ECORE_DEVICE_CLASS_GAMEPAD          EFL_INPUT_DEVICE_TYPE_GAMEPAD /**<  A gamepad controller or joystick @since 1.8 */
 
 
  /**
    * @typedef Ecore_Device_Subclass
    * An enum of Device Subclasses.
    */
-typedef Efl_Ecore_Input_Device_Subtype Ecore_Device_Subclass;
+typedef Efl_Input_Device_Subtype Ecore_Device_Subclass;
 
-#define ECORE_DEVICE_SUBCLASS_NONE   EFL_ECORE_INPUT_DEVICE_SUBTYPE_NONE /**< Not a device @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_FINGER   EFL_ECORE_INPUT_DEVICE_SUBTYPE_FINGER /**< The normal flat of your finger @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_FINGERNAIL   EFL_ECORE_INPUT_DEVICE_SUBTYPE_FINGERNAIL /**< A fingernail @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_KNUCKLE   EFL_ECORE_INPUT_DEVICE_SUBTYPE_KNUCKLE /**< A Knuckle @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_PALM   EFL_ECORE_INPUT_DEVICE_SUBTYPE_PALM /**< The palm of a users hand @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_HAND_SIZE   EFL_ECORE_INPUT_DEVICE_SUBTYPE_HAND_SIZE /**< The side of your hand @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_HAND_FLAT   EFL_ECORE_INPUT_DEVICE_SUBTYPE_HAND_FLAT /**< The flat of your hand @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_PEN_TIP   EFL_ECORE_INPUT_DEVICE_SUBTYPE_PEN_TIP /**< The tip of a pen @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_TRACKPAD   EFL_ECORE_INPUT_DEVICE_SUBTYPE_TRACKPAD /**< A trackpad style mouse @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_TRACKPOINT   EFL_ECORE_INPUT_DEVICE_SUBTYPE_TRACKPOINT /**< A trackpoint style mouse @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_TRACKBALL   EFL_ECORE_INPUT_DEVICE_SUBTYPE_TRACKBALL /**< A trackball style mouse @since 1.18 */
-#define ECORE_DEVICE_SUBCLASS_REMOCON   EFL_ECORE_INPUT_DEVICE_SUBTYPE_REMOCON /**< A remote controller @since_tizen 4.0 */
-#define ECORE_DEVICE_SUBCLASS_VIRTUAL_KEYBOARD   EFL_ECORE_INPUT_DEVICE_SUBTYPE_VIRTUAL_KEYBOARD /**< A virtual keyboard @since_tizen 4.0*/
+#define ECORE_DEVICE_SUBCLASS_NONE   EFL_INPUT_DEVICE_SUBTYPE_NONE /**< Not a device @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_FINGER   EFL_INPUT_DEVICE_SUBTYPE_FINGER /**< The normal flat of your finger @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_FINGERNAIL   EFL_INPUT_DEVICE_SUBTYPE_FINGERNAIL /**< A fingernail @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_KNUCKLE   EFL_INPUT_DEVICE_SUBTYPE_KNUCKLE /**< A Knuckle @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_PALM   EFL_INPUT_DEVICE_SUBTYPE_PALM /**< The palm of a users hand @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_HAND_SIZE   EFL_INPUT_DEVICE_SUBTYPE_HAND_SIZE /**< The side of your hand @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_HAND_FLAT   EFL_INPUT_DEVICE_SUBTYPE_HAND_FLAT /**< The flat of your hand @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_PEN_TIP   EFL_INPUT_DEVICE_SUBTYPE_PEN_TIP /**< The tip of a pen @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_TRACKPAD   EFL_INPUT_DEVICE_SUBTYPE_TRACKPAD /**< A trackpad style mouse @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_TRACKPOINT   EFL_INPUT_DEVICE_SUBTYPE_TRACKPOINT /**< A trackpoint style mouse @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_TRACKBALL   EFL_INPUT_DEVICE_SUBTYPE_TRACKBALL /**< A trackball style mouse @since 1.18 */
+#define ECORE_DEVICE_SUBCLASS_REMOCON   EFL_INPUT_DEVICE_SUBTYPE_REMOCON /**< A remote controller @since_tizen 4.0 */
+#define ECORE_DEVICE_SUBCLASS_VIRTUAL_KEYBOARD   EFL_INPUT_DEVICE_SUBTYPE_VIRTUAL_KEYBOARD /**< A virtual keyboard @since_tizen 4.0*/
 
 typedef struct _Ecore_Device_Event_Info Ecore_Device_Event_Info; /**< @since 1.18 */
 
