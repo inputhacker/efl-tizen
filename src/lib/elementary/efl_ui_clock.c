@@ -480,13 +480,13 @@ _reload_format(Evas_Object *obj)
           {
              snprintf(buf, sizeof(buf), EDC_PART_FIELD_ENABLE_SIG_STR,
                       field->location);
-             elm_layout_signal_emit(obj, buf, "elm");
+             elm_layout_signal_emit(obj, buf, "efl");
           }
         else
           {
              snprintf(buf, sizeof(buf), EDC_PART_FIELD_DISABLE_SIG_STR,
                       field->location);
-             elm_layout_signal_emit(obj, buf, "elm");
+             elm_layout_signal_emit(obj, buf, "efl");
           }
         if (field->location + 1)
           {
@@ -625,7 +625,7 @@ _efl_ui_clock_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Clock_Data *sd)
           {
              snprintf(buf, sizeof(buf), EDC_PART_FIELD_ENABLE_SIG_STR,
                       field->location);
-             elm_layout_signal_emit(obj, buf, "elm");
+             elm_layout_signal_emit(obj, buf, "efl");
 
              if (field->location)
                {
@@ -639,7 +639,7 @@ _efl_ui_clock_efl_ui_widget_theme_apply(Eo *obj, Efl_Ui_Clock_Data *sd)
           {
              snprintf(buf, sizeof(buf), EDC_PART_FIELD_DISABLE_SIG_STR,
                       field->location);
-             elm_layout_signal_emit(obj, buf, "elm");
+             elm_layout_signal_emit(obj, buf, "efl");
           }
      }
 
@@ -1169,7 +1169,7 @@ _efl_ui_clock_field_visible_set(Eo *obj, Efl_Ui_Clock_Data *sd, Efl_Ui_Clock_Typ
 
         snprintf(buf, sizeof(buf), EDC_PART_FIELD_ENABLE_SIG_STR,
                  field->location);
-        elm_layout_signal_emit(obj, buf, "elm");
+        elm_layout_signal_emit(obj, buf, "efl");
 
         ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
         edje_object_message_signal_process(wd->resize_obj);
@@ -1186,7 +1186,7 @@ _efl_ui_clock_field_visible_set(Eo *obj, Efl_Ui_Clock_Data *sd, Efl_Ui_Clock_Typ
 
         snprintf(buf, sizeof(buf), EDC_PART_FIELD_DISABLE_SIG_STR,
                  field->location);
-        elm_layout_signal_emit(obj, buf, "elm");
+        elm_layout_signal_emit(obj, buf, "efl");
 
         ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
         edje_object_message_signal_process(wd->resize_obj);
