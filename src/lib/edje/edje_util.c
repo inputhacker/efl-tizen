@@ -6247,7 +6247,11 @@ _edje_real_part_swallow(Edje *ed,
 #endif
    if (!obj_swallow) return;
    rp->typedata.swallow->swallowed_object = obj_swallow;
-   efl_parent_set(obj_swallow, ed->obj);
+   //TIZEN_ONLY(20180213): It doesn't need here.
+   //                      The object has already proper efl_parent.
+   //                      It makes object isolate.
+   //efl_parent_set(obj_swallow, ed->obj);
+   //
    evas_object_smart_member_add(rp->typedata.swallow->swallowed_object, ed->obj);
    if (rp->part->clip_to_id >= 0)
      {
