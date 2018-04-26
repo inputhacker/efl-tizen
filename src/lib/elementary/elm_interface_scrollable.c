@@ -5146,6 +5146,17 @@ _elm_interface_scrollable_efl_canvas_group_group_del(Eo *obj, Elm_Scrollable_Sma
    elm_interface_scrollable_content_set(obj, NULL);
    if (!sid->extern_pan) evas_object_del(sid->pan_obj);
 
+   if (sid->adjust_job.bar_size_adjust)
+     {
+        ecore_job_del(sid->adjust_job.bar_size_adjust);
+        sid->adjust_job.bar_size_adjust = NULL;
+     }
+   if (sid->adjust_job.bar_pos_adjust)
+     {
+        ecore_job_del(sid->adjust_job.bar_pos_adjust);
+        sid->adjust_job.bar_pos_adjust = NULL;
+     }
+
    ecore_idle_enterer_del(sid->down.hold_enterer);
    ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.hold_animator, _elm_scroll_hold_animator, sid);
    ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.onhold_animator, _elm_scroll_on_hold_animator, sid);
