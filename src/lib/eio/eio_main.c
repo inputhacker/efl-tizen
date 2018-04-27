@@ -317,7 +317,9 @@ eio_init(void)
 
    eio_monitor_init();
 
+   /* TIZEN_ONLY(20180427): disable unnecessary parts.
    efreet_mime_init();
+   */
 
    io_manager = efl_add(EFL_IO_MANAGER_CLASS, efl_main_loop_get());
    efl_loop_register(efl_main_loop_get(), EFL_IO_MANAGER_CLASS, io_manager);
@@ -371,7 +373,9 @@ eio_shutdown(void)
           CRI("We couldn't terminate in less than 30s some pending IO. This can led to some crash.");
      }
 
+   /* TIZEN_ONLY(20180427): disable unnecessary parts.
    efreet_mime_shutdown();
+   */
 
    eio_monitor_shutdown();
 

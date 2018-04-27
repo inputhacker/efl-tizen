@@ -677,14 +677,18 @@ elm_need_efreet(void)
 {
    if (_elm_need_efreet) return EINA_TRUE;
    if (!efreet_init()) return EINA_FALSE;
+   /* TIZEN_ONLY(20180427): disable unnecessary parts.
    if (!efreet_mime_init())
      {
         efreet_shutdown();
         return EINA_FALSE;
      }
+   */
    if (!efreet_trash_init())
      {
+        /* TIZEN_ONLY(20180427): disable unnecessary parts.
         efreet_mime_shutdown();
+        */
         efreet_shutdown();
         return EINA_FALSE;
      }
@@ -712,7 +716,9 @@ _elm_unneed_efreet(void)
    if (!_elm_need_efreet) return;
    _elm_need_efreet = EINA_FALSE;
    efreet_trash_shutdown();
+   /* TIZEN_ONLY(20180427): disable unnecessary parts.
    efreet_mime_shutdown();
+   */
    efreet_shutdown();
 }
 

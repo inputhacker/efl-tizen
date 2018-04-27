@@ -5101,6 +5101,7 @@ _elm_win_frame_add(Efl_Ui_Win_Data *sd, const char *element, const char *style)
 
    edje_object_part_swallow(sd->frame_obj, "elm.swallow.client", sd->legacy.edje);
 
+   /* TIZEN_ONLY(20180427): disable unnecessary parts.
    if (sd->icon)
      evas_object_show(sd->icon);
    else
@@ -5126,6 +5127,7 @@ _elm_win_frame_add(Efl_Ui_Win_Data *sd, const char *element, const char *style)
 
    edje_object_part_swallow(sd->frame_obj, "elm.swallow.icon", sd->icon);
    efl_canvas_object_is_frame_object_set(sd->icon, EINA_TRUE);
+   */
 
    evas_object_event_callback_add
      (sd->frame_obj, EVAS_CALLBACK_MOVE, _elm_win_frame_obj_move, sd);
