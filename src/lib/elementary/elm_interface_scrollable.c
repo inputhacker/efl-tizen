@@ -5153,6 +5153,12 @@ _elm_interface_scrollable_efl_canvas_group_group_del(Eo *obj, Elm_Scrollable_Sma
    ELM_ANIMATOR_DISCONNECT(sid->obj, sid->down.bounce_y_animator, _elm_scroll_bounce_y_animator, sid->obj);
    ELM_ANIMATOR_DISCONNECT(sid->obj, sid->scrollto.x.animator, _elm_scroll_scroll_to_x_animator, sid);
    ELM_ANIMATOR_DISCONNECT(sid->obj, sid->scrollto.y.animator, _elm_scroll_scroll_to_y_animator, sid);
+
+   /* TIZEN_ONLY(20180427): clear adjust jobs when a scroller interface is deleted */
+   ELM_SAFE_FREE(sid->adjust_job.bar_size_adjust, ecore_job_del);
+   ELM_SAFE_FREE(sid->adjust_job.bar_pos_adjust, ecore_job_del);
+   ELM_SAFE_FREE(sid->adjust_job.page_adjust, ecore_job_del);
+   /* END */
 }
 
 EOLIAN static void
