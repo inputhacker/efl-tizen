@@ -473,7 +473,8 @@ _item_content_realize(Elm_Gen_Item *it,
           }
         if (content != old)
           {
-             eina_hash_add(sd->content_item_map, &content, it->base->eo_obj);
+             if (!elm_widget_is_legacy(sd->obj))
+               eina_hash_add(sd->content_item_map, &content, it->base->eo_obj);
              // FIXME: Genlist item doesn't update its size when the size of
              // content is changed, so deferred calculation for content should
              // be performed before realization.
@@ -509,7 +510,8 @@ out:
           {
              *contents = eina_list_remove(*contents, old);
              evas_object_del(old);
-             eina_hash_del_by_key(sd->content_item_map, &old);
+             if (!elm_widget_is_legacy(sd->obj))
+               eina_hash_del_by_key(sd->content_item_map, &old);
           }
      }
 }
@@ -1778,7 +1780,8 @@ _content_cache_add(Elm_Gen_Item *it, Eina_List **cache)
    EINA_LIST_FREE(it->contents, content)
      {
         *cache = eina_list_append(*cache, content);
-        eina_hash_del_by_key(pd->content_item_map, &content);
+        if (!elm_widget_is_legacy(pd->obj))
+          eina_hash_del_by_key(pd->content_item_map, &content);
      }
 
    return *cache;
@@ -6264,9 +6267,9 @@ _elm_genlist_efl_object_constructor(Eo *obj, Elm_Genlist_Data *sd)
 {
    obj = efl_constructor(efl_super(obj, MY_CLASS));
 
-   sd->content_item_map = eina_hash_pointer_new(NULL);
    if (!elm_widget_is_legacy(obj))
      {
+        sd->content_item_map = eina_hash_pointer_new(NULL);
         sd->provider = efl_add(EFL_UI_FOCUS_PARENT_PROVIDER_GEN_CLASS, obj,
         efl_ui_focus_parent_provider_gen_container_set(efl_added, obj),
         efl_ui_focus_parent_provider_gen_content_item_map_set(efl_added, sd->content_item_map));
