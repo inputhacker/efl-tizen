@@ -6273,12 +6273,6 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
           elm_win_focus_highlight_animate_set(obj, EINA_TRUE);
      }
 
-//TIZEN_ONLY(20171201): Use win_no_border config temporarily.
-   if (_elm_config->win_no_border)
-     {
-        sd->csd.need_borderless = EINA_TRUE;
-     }
-//
    efl_access_role_set(obj, EFL_ACCESS_ROLE_WINDOW);
    if (_elm_atspi_enabled())
      efl_access_window_created_signal_emit(obj);
@@ -6315,6 +6309,13 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
            default: break;
           }
      }
+
+   //TIZEN_ONLY(20171201): Use win_no_border config temporarily.
+   if (_elm_config->win_no_border)
+     {
+        elm_win_borderless_set(obj, EINA_TRUE);
+     }
+   //
 
    /* TIZEN_ONLY(20180117): Apply paragraph direction according to locale */
    if (!strcmp(E_("default:LTR"), "default:RTL"))
