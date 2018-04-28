@@ -214,9 +214,6 @@ struct _Elm_Genlist_Data
    Eina_Bool                             tree_effect_animator : 1;
    Eina_Bool                             pin_item_top : 1;
 
-   // If true, use insane legacy item order: item, item, parent
-   Eina_Bool                             legacy_order_insane : 1;
-
    //Tizen Only
    Eina_List                             *prepend_items;
 };
