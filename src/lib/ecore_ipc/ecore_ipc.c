@@ -377,7 +377,7 @@ static void _ecore_ipc_server_client_add(void *data, const Efl_Event *event);
 EFL_CALLBACKS_ARRAY_DEFINE(_ecore_ipc_server_cbs,
                            { EFL_NET_SERVER_EVENT_CLIENT_ADD, _ecore_ipc_server_client_add });
 
-// TIZEN ONLY (20180125): smack issue: geting socket from compositor in ecore_evas extn engine
+// TIZEN_ONLY (20180125): smack issue: geting socket from compositor in ecore_evas extn engine
 // internal API
 /* FIXME: need to add protocol type parameter */
 EAPI Ecore_Ipc_Server *
@@ -393,6 +393,24 @@ ecore_ipc_server_with_fd_add(Ecore_Ipc_Type type, const char *name, int port, in
 #endif
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(name, NULL);
+   /* TIZEN_ONLY(20180430): port is an abstraction for socket ipc communication,
+      if port value is higher than 0 when ecore_ipc_server_add, it means users try to use
+      sockets with port. If users use sockets with port, port number should be checked.
+      Zero port number is no issue because it means select any available local port. */
+   if (port != 0)
+   {
+      Ecore_Ipc_Type ipc_type;
+      ipc_type = type & ECORE_IPC_TYPE;
+
+      if (((ipc_type == ECORE_IPC_LOCAL_USER) || (ipc_type == ECORE_IPC_LOCAL_SYSTEM) ||
+           (ipc_type == ECORE_IPC_REMOTE_SYSTEM) || (ipc_type == ECORE_IPC_USE_SSL) ||
+           (ipc_type == ECORE_IPC_NO_PROXY)) &&
+          ((port < 0) || (port > 65535)))
+        {// The allowable port number is an unsigned 16-bit integer, so 1-16635, 0 is reserverd
+           ERR("Port %d invalid (0 <= port <= 65535 for sockets)", port);
+           return NULL;
+        }
+   }
 
    svr = calloc(1, sizeof(Ecore_Ipc_Server));
    EINA_SAFETY_ON_NULL_RETURN_VAL(svr, NULL);
@@ -409,7 +427,7 @@ ecore_ipc_server_with_fd_add(Ecore_Ipc_Type type, const char *name, int port, in
         svr->server = efl_add(EFL_NET_SERVER_UNIX_CLASS, efl_main_loop_get(),
                               efl_net_server_unix_leading_directories_create_set(efl_added, EINA_TRUE, S_IRUSR | S_IWUSR | S_IXUSR));
         EINA_SAFETY_ON_NULL_GOTO(svr->server, error_server);
-        efl_loop_fd_set(svr->server, fd);// TIZEN ONLY (20180125): smack issue
+        efl_loop_fd_set(svr->server, fd);// TIZEN_ONLY (20180125): smack issue
      }
    else if ((type & ECORE_IPC_TYPE) == ECORE_IPC_LOCAL_SYSTEM)
      {
@@ -423,7 +441,7 @@ ecore_ipc_server_with_fd_add(Ecore_Ipc_Type type, const char *name, int port, in
 
         svr->server = efl_add(EFL_NET_SERVER_UNIX_CLASS, efl_main_loop_get());
         EINA_SAFETY_ON_NULL_GOTO(svr->server, error_server);
-        efl_loop_fd_set(svr->server, fd);// TIZEN ONLY (20180125): smack issue
+        efl_loop_fd_set(svr->server, fd);// TIZEN_ONLY (20180125): smack issue
      }
 #endif /* EFL_NET_SERVER_UNIX_CLASS */
 #ifdef EFL_NET_SERVER_WINDOWS_CLASS
@@ -453,12 +471,6 @@ ecore_ipc_server_with_fd_add(Ecore_Ipc_Type type, const char *name, int port, in
    else if ((type & ECORE_IPC_TYPE) == ECORE_IPC_REMOTE_SYSTEM)
      {
         char buf[4096];
-
-        if (port <= 0)
-          {
-             ERR("remote system requires port>=0, got %d", port);
-             goto error_server;
-          }
 
         snprintf(buf, sizeof(buf), "%s:%d", name, port);
         address = strdup(buf);
@@ -658,7 +670,7 @@ _ecore_ipc_dialer_copier_error(void *data, const Efl_Event *event)
 
 EFL_CALLBACKS_ARRAY_DEFINE(_ecore_ipc_dialer_copier_cbs,
                            { EFL_IO_COPIER_EVENT_ERROR, _ecore_ipc_dialer_copier_error });
-// TIZEN ONLY (20180125): smack issue: geting socket from compositor in ecore_evas extn engine
+// TIZEN_ONLY(20180125): smack issue: geting socket from compositor in ecore_evas extn engine
 // internal API
 /* FIXME: need to add protocol type parameter */
 EAPI Ecore_Ipc_Server *
@@ -695,7 +707,7 @@ ecore_ipc_server_with_fd_connect(Ecore_Ipc_Type type, char *name, int port, int 
 
         svr->dialer.dialer = efl_add(EFL_NET_DIALER_UNIX_CLASS, efl_main_loop_get());
         EINA_SAFETY_ON_NULL_GOTO(svr->dialer.dialer, error_dialer);
-        efl_loop_fd_set(svr->dialer.dialer, fd);// TIZEN ONLY (20180125): smack issue
+        efl_loop_fd_set(svr->dialer.dialer, fd);// TIZEN_ONLY(20180125): smack issue
      }
    else if ((type & ECORE_IPC_TYPE) == ECORE_IPC_LOCAL_SYSTEM)
      {
@@ -704,7 +716,7 @@ ecore_ipc_server_with_fd_connect(Ecore_Ipc_Type type, char *name, int port, int 
 
         svr->dialer.dialer = efl_add(EFL_NET_DIALER_UNIX_CLASS, efl_main_loop_get());
         EINA_SAFETY_ON_NULL_GOTO(svr->dialer.dialer, error_dialer);
-        efl_loop_fd_set(svr->dialer.dialer, fd);// TIZEN ONLY (20180125): smack issue
+        efl_loop_fd_set(svr->dialer.dialer, fd);// TIZEN_ONLY(20180125): smack issue
      }
 #endif /* EFL_NET_DIALER_UNIX_CLASS */
 #ifdef EFL_NET_DIALER_WINDOWS_CLASS
