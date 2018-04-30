@@ -972,7 +972,11 @@ elm_widget_is_legacy(const Eo *obj)
    Elm_Widget_Smart_Data *sd;
 
    if (_elm_legacy_add) return EINA_TRUE;
+   /* TIZEN_ONLY(20184030): fix elm_widget_is_legacy() failure issue
    sd = (Elm_Widget_Smart_Data *) efl_data_scope_safe_get(obj, EFL_UI_WIDGET_CLASS);
+    */
+   sd = (Elm_Widget_Smart_Data *) efl_data_scope_get(obj, EFL_UI_WIDGET_CLASS);
+   /* END */
    return sd ? sd->legacy : EINA_FALSE;
 }
 
