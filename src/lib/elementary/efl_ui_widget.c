@@ -187,6 +187,7 @@ static const char *legacy_type_table[][2] =
      { "Efl.Ui.Video", "Elm_Video" },
      { "Efl.Ui.Win", "Elm_Win" },
      { "Elm.Code_Widget", "Elm_Code_Widget" },
+     { "Elm.Gesture_Layer", "Elm_Gesture_Layer" },
      /* END */
      { NULL, NULL }
 };
