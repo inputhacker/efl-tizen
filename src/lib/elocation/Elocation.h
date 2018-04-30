@@ -65,7 +65,9 @@
 #include <stdio.h>
 
 #include <Ecore.h>
-#include <Eldbus.h>
+//TIZEN_ONLY(20180430): Move eldbus dependency from public header to private header
+//#include <Eldbus.h>
+//
 
 #ifdef __cplusplus
 extern "C" {

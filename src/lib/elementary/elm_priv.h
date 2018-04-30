@@ -20,6 +20,9 @@
 # endif
 
 # include <Eio.h>
+//TIZEN_ONLY(20180430): Move eldbus dependency from public header to private header
+#include <Eldbus.h>
+//
 
 // Evas internal EO APIs
 # include "Evas_Internal.h"

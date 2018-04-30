@@ -65,7 +65,9 @@
 #include <Ecore_IMF.h>
 #include <Ecore_Con.h>
 #include <Edje.h>
-#include <Eldbus.h>
+//TIZEN_ONLY(20180430): Move eldbus dependency from public header to private header
+//#include <Eldbus.h>
+//
 #include <Efreet.h>
 #include <Efreet_Mime.h>
 #include <Efreet_Trash.h>
