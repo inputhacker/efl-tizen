@@ -45,6 +45,19 @@ static Ecore_Wl2_Input *_wl_seat_get(Ecore_Wl2_Window *win, Evas_Object *obj, un
 static void _set_selection_list(Sel_Manager_Selection *sel_list, Sel_Manager_Seat_Selection *seat_sel);
 #endif
 
+/* TIZEN_ONLY(20180430): fix duplicated string memory issue */
+static Eina_Rw_Slice
+_eina_slice_dup_safe(Eina_Slice slice)
+{
+   Eina_Rw_Slice ret;
+
+   ret.len = slice.len;
+   ret.mem = eina_slice_strdup(slice);
+
+   return ret;
+}
+/* END */
+
 static Sel_Manager_Seat_Selection *
 _sel_manager_seat_selection_get(Efl_Selection_Manager_Data *pd, unsigned int seat)
 {
@@ -1228,7 +1241,11 @@ _x11_efl_sel_manager_selection_set(Efl_Selection_Manager_Data *pd, Efl_Object *o
    sel->owner = owner;
    free(sel->data.mem);
    sel->xwin = xwin;
+   /* TIZEN_ONLY(20180430): fix duplicated string memory issue
    sel->data = eina_slice_dup(data);
+    */
+   sel->data = _eina_slice_dup_safe(data);
+   /* END */
    sel->active = EINA_TRUE;
    sel->format = format;
 
@@ -1449,7 +1466,11 @@ _x11_efl_sel_manager_drag_start(Eo *obj EINA_UNUSED, Efl_Selection_Manager_Data 
    sel->request_obj = drag_obj;
    sel->format = format;
    if (sel->data.mem) free(sel->data.mem);
+   /* TIZEN_ONLY(20180430): fix duplicated string memory issue
    sel->data = eina_slice_dup(data);
+    */
+   sel->data = _eina_slice_dup_safe(data);
+   /* END */
    sel->action = action;
    seat_sel->drag_obj = drag_obj;
    seat_sel->drag_action = action;
@@ -2210,7 +2231,11 @@ _wl_efl_sel_manager_drag_start(Eo *obj EINA_UNUSED, Efl_Selection_Manager_Data *
    /* set the drag data used when a drop occurs */
    free(sel->data.mem);
    sel->data.len = 0;
+   /* TIZEN_ONLY(20180430): fix duplicated string memory issue
    sel->data = eina_slice_dup(data);
+    */
+   sel->data = _eina_slice_dup_safe(data);
+   /* END */
 
    /* setup callback to notify if this object gets deleted */
    evas_object_event_callback_add(drag_obj, EVAS_CALLBACK_DEL,
@@ -2553,7 +2578,11 @@ _wl_efl_sel_manager_selection_set(Efl_Selection_Manager_Data *pd,
    evas_object_event_callback_add
      (sel->owner, EVAS_CALLBACK_DEL, _wl_sel_obj_del, &sel);
 
+   /* TIZEN_ONLY(20180430): fix duplicated string memory issue
    sel->data = eina_slice_dup(data);
+    */
+   sel->data = _eina_slice_dup_safe(data);
+   /* END */
    if (!sel->data.mem)
      {
         efl_selection_manager_selection_clear(pd->sel_man, owner, type, seat_sel->seat);
@@ -3973,7 +4002,11 @@ _cocoa_efl_sel_manager_selection_set(Efl_Selection_Manager_Data *pd,
    evas_object_event_callback_add(sel->owner, EVAS_CALLBACK_DEL,
                                   _cocoa_sel_obj_del_cb, sel);
    ELM_SAFE_FREE(sel->data.mem, free);
+   /* TIZEN_ONLY(20180430): fix duplicated string memory issue
    sel->data = eina_slice_dup(data);
+    */
+   sel->data = _eina_slice_dup_safe(data);
+   /* END */
    if (sel->data.mem)
      {
         ecore_type = _sel_format_to_ecore_cocoa_cnp_type(format);
@@ -4206,7 +4239,11 @@ _win32_efl_sel_manager_selection_set(Efl_Selection_Manager_Data *pd,
      (sel->owner, EVAS_CALLBACK_DEL, _win32_sel_obj_del, sel);
 
    ELM_SAFE_FREE(sel->data.mem, free);
+   /* TIZEN_ONLY(20180430): fix duplicated string memory issue
    sel->data = eina_slice_dup(data);
+    */
+   sel->data = _eina_slice_dup_safe(data);
+   /* END */
    if (!sel->data.mem)
      {
         efl_selection_manager_selection_clear(pd->sel_man, owner, type, seat_sel->seat);
