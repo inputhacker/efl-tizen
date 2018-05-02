@@ -113,14 +113,13 @@ _elm_ctxpopup_efl_ui_widget_focus_next(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *s
            items = eina_list_append(items, sd->box);
 
         _elm_access_auto_highlight_set(EINA_TRUE);
-        ret = elm_widget_focus_list_next_get
-                 (obj, items, eina_list_data_get, dir, next, next_item);
+        ret = efl_ui_widget_focus_list_next_get(obj, items, eina_list_data_get, dir, next, next_item);
         _elm_access_auto_highlight_set(EINA_FALSE);
         return ret;
      }
    else
      {
-        elm_widget_focus_next_get(sd->box, dir, next, next_item);
+        efl_ui_widget_focus_next_get(sd->box, dir, next, next_item);
         if (!*next) *next = (Evas_Object *)obj;
         return EINA_TRUE;
      }
@@ -151,7 +150,7 @@ _elm_ctxpopup_efl_ui_widget_focus_direction(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Da
 
    l = eina_list_append(l, sd->box);
 
-   elm_widget_focus_list_direction_get
+   efl_ui_widget_focus_list_direction_get
       (obj, base, l, list_data_get, degree, direction, direction_item, weight);
    eina_list_free(l);
 
@@ -167,17 +166,17 @@ _key_action_move(Evas_Object *obj, const char *params)
    if (!sd->box) return EINA_FALSE;
 
    if (!strcmp(dir, "previous"))
-     elm_widget_focus_cycle(sd->box, ELM_FOCUS_PREVIOUS);
+     efl_ui_widget_focus_cycle(sd->box, ELM_FOCUS_PREVIOUS);
    else if (!strcmp(dir, "next"))
-     elm_widget_focus_cycle(sd->box, ELM_FOCUS_NEXT);
+     efl_ui_widget_focus_cycle(sd->box, ELM_FOCUS_NEXT);
    else if (!strcmp(dir, "left"))
-     elm_widget_focus_cycle(sd->box, ELM_FOCUS_LEFT);
+     efl_ui_widget_focus_cycle(sd->box, ELM_FOCUS_LEFT);
    else if (!strcmp(dir, "right"))
-     elm_widget_focus_cycle(sd->box, ELM_FOCUS_RIGHT);
+     efl_ui_widget_focus_cycle(sd->box, ELM_FOCUS_RIGHT);
    else if (!strcmp(dir, "up"))
-     elm_widget_focus_cycle(sd->box, ELM_FOCUS_UP);
+     efl_ui_widget_focus_cycle(sd->box, ELM_FOCUS_UP);
    else if (!strcmp(dir, "down"))
-     elm_widget_focus_cycle(sd->box, ELM_FOCUS_DOWN);
+     efl_ui_widget_focus_cycle(sd->box, ELM_FOCUS_DOWN);
    else return EINA_FALSE;
 
    return EINA_TRUE;
@@ -1319,7 +1318,7 @@ _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *s
           dir = ELM_FOCUS_NEXT;
 
         ret = efl_ui_widget_focus_next_get(sd->box, dir, &target, &target_item);
-        if (ret) elm_widget_focus_steal(target, target_item);
+        if (ret) efl_ui_widget_focus_steal(target, target_item);
 
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
         return EINA_TRUE;
@@ -1349,7 +1348,7 @@ _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *s
                  (!strcmp(ev->key, "KP_Down")))
           degree = 180.0;
 
-        elm_widget_focus_direction_go(sd->box, degree);
+        efl_ui_widget_focus_direction_go(sd->box, degree);
         ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
         return EINA_TRUE;
      }
