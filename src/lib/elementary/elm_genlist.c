@@ -3552,23 +3552,20 @@ _elm_genlist_efl_ui_widget_on_focus_update(Eo *obj, Elm_Genlist_Data *sd, Elm_Ob
    Eina_Bool int_ret = EINA_FALSE;
    Elm_Object_Item *eo_it = NULL;
    Eina_Bool is_sel = EINA_FALSE;
-   Eina_Bool focused;
 
    int_ret = efl_ui_widget_on_focus_update(efl_super(obj, MY_CLASS), NULL);
    if (!int_ret) return EINA_FALSE;
 
-   if (elm_widget_is_legacy(obj))
-     focused = elm_widget_focus_get(obj);
-   else
-     focused = efl_ui_focus_object_focus_get(obj);
-
-   if (focused && (sd->items) && (sd->selected) &&
+   if (efl_ui_focus_object_focus_get(obj) && (sd->items) && (sd->selected) &&
        (!sd->last_selected_item))
      {
         sd->last_selected_item = eina_list_data_get(sd->selected);
      }
 
-   if (focused && !sd->mouse_down)
+   // Fallback Legacy Focus
+   if (!elm_widget_is_legacy(obj)) return EINA_TRUE;
+
+   if (efl_ui_focus_object_focus_get(obj) && !sd->mouse_down)
      {
         if (sd->last_focused_item)
           eo_it = sd->last_focused_item;
@@ -3576,22 +3573,14 @@ _elm_genlist_efl_ui_widget_on_focus_update(Eo *obj, Elm_Genlist_Data *sd, Elm_Ob
           eo_it = sd->last_selected_item;
         else if (_elm_config->first_item_focus_on_first_focus_in)
           {
-             if (!elm_widget_is_legacy(obj))
-               {
-                  if (!_elm_config->item_select_on_focus_disable && is_sel)
-                    elm_genlist_item_selected_set(eo_it, EINA_TRUE);
-                  else
-                    elm_object_item_focus_set(eo_it, EINA_TRUE);
-                  _elm_widget_focus_highlight_start(obj);
-                  //set it again in the manager, there might be the case that the manager focus history and internal item foused logic are in different states
-                  if (!elm_widget_is_legacy(obj) && efl_ui_focus_manager_request_subchild(obj, eo_it))
-                    efl_ui_focus_manager_focus_set(obj, eo_it);
-               }
+             if (!_elm_config->item_select_on_focus_disable && is_sel)
+               elm_genlist_item_selected_set(eo_it, EINA_TRUE);
              else
-               {
-                  eo_it = elm_genlist_first_item_get(obj);
-                  is_sel = EINA_TRUE;
-               }
+               elm_object_item_focus_set(eo_it, EINA_TRUE);
+            _elm_widget_focus_highlight_start(obj);
+            //set it again in the manager, there might be the case that the manager focus history and internal item foused logic are in different states
+            if (!elm_widget_is_legacy(obj) && efl_ui_focus_manager_request_subchild(obj, eo_it))
+              efl_ui_focus_manager_focus_set(obj, eo_it);
           }
 
         while (eo_it)
@@ -6619,12 +6608,7 @@ _elm_genlist_item_elm_widget_item_focus_set(Eo *eo_it, Elm_Gen_Item *it, Eina_Bo
      }
    else
      {
-        Eina_Bool focused;
-        if (elm_widget_is_legacy(obj))
-          focused = elm_widget_focus_get(obj);
-        else
-          focused = efl_ui_focus_object_focus_get(obj);
-        if (!focused)
+        if (!efl_ui_focus_object_focus_get(obj))
           return;
         _elm_genlist_item_unfocused(eo_it);
      }
@@ -6699,7 +6683,9 @@ _elm_genlist_item_new(Elm_Genlist_Data *sd,
    it->item->expanded_depth = depth;
    sd->item_count++;
 
-   efl_ui_focus_composition_dirty(sd->obj);
+   //Fallback Legacy Focus
+   if (elm_widget_is_legacy(sd->obj))
+     efl_ui_focus_composition_dirty(sd->obj);
 
    return it;
 }
