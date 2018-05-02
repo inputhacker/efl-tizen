@@ -3286,20 +3286,6 @@ ob_color_class(void)
    cc = mem_alloc(SZ(Edje_Color_Class));
    edje_file->color_classes = eina_list_append(edje_file->color_classes, cc);
 
-   /* TIZEN_ONLY(20180420): Fix backward compat issue caused by color_class
-   cc->r = 255;
-   cc->g = 255;
-   cc->b = 255;
-   cc->a = 255;
-   cc->r2 = 255;
-   cc->g2 = 255;
-   cc->b2 = 255;
-   cc->a2 = 255;
-   cc->r3 = 255;
-   cc->g3 = 255;
-   cc->b3 = 255;
-   cc->a3 = 255;
-    */
    cc->r = 0;
    cc->g = 0;
    cc->b = 0;
@@ -3312,7 +3298,6 @@ ob_color_class(void)
    cc->g3 = 0;
    cc->b3 = 0;
    cc->a3 = 0;
-   /* END */
 }
 
 static void
