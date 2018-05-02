@@ -90,11 +90,8 @@ _access_object_get(const Evas_Object *obj, const char* part)
    return ao;
 }
 
-/**
- * to fix error, disable below code temporarily
- *
 EOLIAN static Eina_Bool
-_elm_ctxpopup_elm_widget_focus_next(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_elm_ctxpopup_efl_ui_widget_focus_next(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Eina_List *items = NULL;
    Evas_Object *ao;
@@ -130,19 +127,19 @@ _elm_ctxpopup_elm_widget_focus_next(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, 
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_elm_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *_pd EINA_UNUSED)
+_elm_ctxpopup_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *_pd EINA_UNUSED)
 {
    return EINA_TRUE;
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_elm_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *_pd EINA_UNUSED)
+_elm_ctxpopup_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *_pd EINA_UNUSED)
 {
    return EINA_TRUE;
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_elm_widget_focus_direction(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, const Evas_Object *base, double degree, Evas_Object **direction, Elm_Object_Item **direction_item, double *weight)
+_elm_ctxpopup_efl_ui_widget_focus_direction(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, const Evas_Object *base, double degree, Evas_Object **direction, Elm_Object_Item **direction_item, double *weight)
 {
    Eina_List *l = NULL;
    void *(*list_data_get)(const Eina_List *list);
@@ -185,7 +182,6 @@ _key_action_move(Evas_Object *obj, const char *params)
 
    return EINA_TRUE;
 }
- */
 
 static void
 _x_pos_adjust(Evas_Coord_Point *pos,
@@ -1293,9 +1289,6 @@ _mirrored_set(Evas_Object *obj, Eina_Bool rtl)
    edje_object_mirrored_set(wd->resize_obj, rtl);
 }
 
-/**
- * disable this code temporarily
- *
 EOLIAN static Eina_Bool
 _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *src EINA_UNUSED, Evas_Callback_Type type, void *event_info)
 {
@@ -1394,7 +1387,6 @@ _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *s
    return EINA_TRUE;
 //
 }
-*/
 
 //FIXME: lost the content size when theme hook is called.
 EOLIAN static Efl_Ui_Theme_Apply
