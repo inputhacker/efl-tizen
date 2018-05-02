@@ -379,10 +379,10 @@ EAPI Ecore_Ipc_Server *ecore_ipc_server_add(Ecore_Ipc_Type type, const char *nam
  * @ingroup Ecore_IPC_Server_Group
  * @brief Creates an IPC server that listens for connections.
  *
- * For more details about the @p compl_type, @p name and @p port
+ * For more details about the @p type, @p name and @p port
  * parameters, see the @ref ecore_con_server_add documentation.
  *
- * @param   compl_type The connection type.
+ * @param   type       The connection type.
  * @param   name       Name to associate with the socket used for connection.
  * @param   port       Number to identify with socket used for connection.
  * @param   fd         The socket's fd.
