@@ -1042,6 +1042,9 @@ elementary/themes/edc/efl/tooltip.edc \
 elementary/themes/edc/efl/video.edc \
 elementary/themes/edc/efl/list.edc \
 elementary/themes/edc/efl/win.edc \
-elementary/themes/edc/efl/pager.edc
+elementary/themes/edc/efl/pager.edc \
+elementary/themes/edc/efl/tab_pager.edc \
+elementary/themes/edc/efl/tab_bar.edc \
+elementary/themes/edc/efl/tab_page.edc
 
 EXTRA_DIST += $(elementary_themes_files) $(efl_ui_themes_files)
