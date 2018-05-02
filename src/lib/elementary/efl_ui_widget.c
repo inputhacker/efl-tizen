@@ -7017,11 +7017,14 @@ _efl_ui_widget_efl_object_constructor(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UN
     ***********************************************************/
    sd->inherit_paragraph_direction = EINA_TRUE;
 
-   if (sd->paragraph_direction != efl_canvas_object_paragraph_direction_get(parent))
+   if (efl_isa(parent, EFL_CANVAS_OBJECT_CLASS))
      {
-        sd->paragraph_direction = efl_canvas_object_paragraph_direction_get(parent);
-        _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(obj, sd, sd->paragraph_direction);
-        efl_canvas_object_paragraph_direction_set(efl_super(obj, MY_CLASS), sd->paragraph_direction);
+        if (sd->paragraph_direction != efl_canvas_object_paragraph_direction_get(parent))
+          {
+             sd->paragraph_direction = efl_canvas_object_paragraph_direction_get(parent);
+             _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(obj, sd, sd->paragraph_direction);
+             efl_canvas_object_paragraph_direction_set(efl_super(obj, MY_CLASS), sd->paragraph_direction);
+          }
      }
    /*******
     * END *
