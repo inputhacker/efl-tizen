@@ -115,6 +115,9 @@ typedef struct _Elm_Gen_Item_Class
                           * its managed for you by class ref/unref calls. */
   Eina_Bool delete_me; /**< Leave this alone - set it to 0 if you have a const
                         * class of your own. */
+// TIZEN ONLY(20160630): Support homogeneous mode in item class.
+   Eina_Bool     homogeneous : 1;
+//
   const char *item_style; /**< Name of the visual style to use for this item. If
                            * you don't know use "default". */
   const char *decorate_item_style; /**< Style used if item is set to a decorate
@@ -124,9 +127,6 @@ typedef struct _Elm_Gen_Item_Class
                                         * NULL if you don't care. Currently
                                         * it's used only in genlist. */
   Elm_Gen_Item_Class_Functions func; /**< Set of callbacks */
-// TIZEN ONLY(20160630): Support homogeneous mode in item class.
-   Eina_Bool     homogeneous : 1;
-//
 } Elm_Gen_Item_Class;
 
 /** See @ref Elm_Gen_Item_Class. */
