@@ -898,15 +898,17 @@ class Elm.Entry (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clickabl
       Efl.Access.Editable.Text.paste;
       Efl.Access.Widget.Action.elm_actions { get; }
       Efl.File.file { get; set; }
-      Efl.Part.part;
+      Efl.Access.Object.access_children { get; }
+      Efl.Part.part_get;
 
       // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
       Efl.Ui.Widget.screen_reader;
       //
-      Efl.Access.Object.access_children { get; }
+
       // TIZEN_ONLY(20170512): Support accessibility for entry anchors.
       Efl.Access.Component.accessible_at_point_get;
       //
+
       /*****************************************************************************
        * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
        *****************************************************************************/

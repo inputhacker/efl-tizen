@@ -46,7 +46,7 @@ class Elm.Atspi.Proxy (Efl.Ui.Widget)
       Efl.Ui.Widget.atspi;
    }
    events {
-      connected;
-      disconnected;
+      connected: void;
+      disconnected: void;
    }
 }

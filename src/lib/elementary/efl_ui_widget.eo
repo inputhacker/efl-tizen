@@ -612,28 +612,6 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access.Object,
       Efl.Access.Component.focus_grab;
       Efl.Ui.Focus.Object.focus_manager { get; }
       Efl.Ui.Focus.Object.focus_parent { get; }
-      //TIZEN_ONLY(20161111) add widget/widget_item description get/set
-      Efl.Access.Object.description { set; get; }
-      //
-      //TIZEN_ONLY(20150731) : add i18n support for name and description
-      Efl.Access.Object.translation_domain { set; get;}
-      ///
-      //TIZEN_ONLY(20150709) : atspi relations api
-      Efl.Access.Object.relation_set { get;}
-      Efl.Access.Object.relationship_append;
-      Efl.Access.Object.relationship_remove;
-      Efl.Access.Object.relationships_clear;
-      //
-      //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
-      Efl.Access.Component.accessible_at_point_get;
-      Efl.Access.Component.highlight_grab;
-      Efl.Access.Component.highlight_clear;
-      //
-      //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
-      Efl.Access.Object.can_highlight { get; set; }
-      //TIZEN_ONLY(20160527): widget: add AtspiAction interface to all widgets
-      Efl.Access.Widget.Action.elm_actions { get; }
-      //
       Efl.Ui.Focus.Object.focus_geometry { get; }
       Efl.Ui.Focus.Object.focus { set; }
       Efl.Ui.Base.mirrored { get; set; }
@@ -643,7 +621,36 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access.Object,
       Efl.Ui.Cursor.cursor_theme_search_enabled { get; set; }
       Efl.Ui.Focus.Object.on_focus_update;
       Efl.Ui.Translatable.translation_update; [[This implements the calls to $gettext() and $text_set().]]
-      Efl.Part.part; [[Returns @Efl.Ui.Widget_Part.]]
+      Efl.Part.part_get; [[Returns @Efl.Ui.Widget_Part.]]
+
+      //TIZEN_ONLY(20161111) add widget/widget_item description get/set
+      Efl.Access.Object.description { set; get; }
+      //
+
+      //TIZEN_ONLY(20150731) : add i18n support for name and description
+      Efl.Access.Object.translation_domain { set; get;}
+      //
+
+      //TIZEN_ONLY(20150709) : atspi relations api
+      Efl.Access.Object.relation_set { get;}
+      Efl.Access.Object.relationship_append;
+      Efl.Access.Object.relationship_remove;
+      Efl.Access.Object.relationships_clear;
+      //
+
+      //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
+      Efl.Access.Component.accessible_at_point_get;
+      Efl.Access.Component.highlight_grab;
+      Efl.Access.Component.highlight_clear;
+      //
+
+      //TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
+      Efl.Access.Object.can_highlight { get; set; }
+      //
+
+      //TIZEN_ONLY(20160527): widget: add AtspiAction interface to all widgets
+      Efl.Access.Widget.Action.elm_actions { get; }
+      //
 
       /***********************************************************
        * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
