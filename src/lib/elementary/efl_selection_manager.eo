@@ -93,6 +93,7 @@ class Efl.Selection_Manager (Efl.Object) {
             @in cont: Efl.Object; [[Container object]]
             @in seat: uint; [[Specified seat for multiple seats case]]
          }
+         return: bool; [[$true on success, $false otherwise]]
       }
       drop_target_add @beta {
          [[Add a dropable target. There are four events emitted:
@@ -130,6 +131,7 @@ class Efl.Selection_Manager (Efl.Object) {
             @in cont: Efl.Object; [[Container object]]
             @in seat: uint; [[Specified seat for multiple seats case.]]
          }
+         return: bool; [[$true on success, $false otherwise]]
       }
    }
    implements {

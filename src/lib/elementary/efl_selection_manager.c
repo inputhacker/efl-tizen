@@ -22,7 +22,7 @@
 static void _anim_data_free(Sel_Manager_Drag_Container *dc);
 static void _cont_obj_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cont_obj_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _item_container_del_internal(Sel_Manager_Drag_Container *dc, Eina_Bool full);
+static Eina_Bool _item_container_del_internal(Sel_Manager_Drag_Container *dc, Eina_Bool full);
 
 void efl_selection_manager_drop_target_del(Eo *obj, Efl_Object *target_obj, Efl_Selection_Format format, unsigned int seat);
 void efl_selection_manager_selection_clear(Eo *obj, Efl_Object *owner, Efl_Selection_Type type, unsigned int seat);
@@ -4656,7 +4656,7 @@ _cont_obj_mouse_down_cb(void *data, Evas *e, Evas_Object *obj EINA_UNUSED, void 
      }
 }
 
-static void
+static Eina_Bool
 _item_container_del_internal(Sel_Manager_Drag_Container *dc, Eina_Bool full)
 {
    if (dc)
@@ -4672,6 +4672,11 @@ _item_container_del_internal(Sel_Manager_Drag_Container *dc, Eina_Bool full)
              dc->item_get_func_data = NULL;
              free(dc);
           }
+        return EINA_TRUE;
+     }
+   else
+     {
+        return EINA_FALSE;
      }
 }
 
@@ -5069,7 +5074,7 @@ _efl_selection_manager_container_drop_item_add(Eo *obj, Efl_Selection_Manager_Da
 
    if (_drop_item_container_del(pd, cont, EINA_FALSE))
      {
-        di = eina_list_search_unsorted(pd->drop_cont_list, _drop_item_container_cmp, obj);
+        di = eina_list_search_unsorted(pd->drop_cont_list, _drop_item_container_cmp, cont);
         if (!di) return;
      }
    else
@@ -5077,7 +5082,7 @@ _efl_selection_manager_container_drop_item_add(Eo *obj, Efl_Selection_Manager_Da
         di = calloc(1, sizeof(Item_Container_Drop_Info));
         if (!di) return;
 
-        di->obj = obj;
+        di->obj = cont;
         pd->drop_cont_list = eina_list_append(pd->drop_cont_list, di);
      }
    di->item_func = item_func;
@@ -5100,11 +5105,11 @@ _efl_selection_manager_container_drop_item_add(Eo *obj, Efl_Selection_Manager_Da
    _efl_selection_manager_drop_target_add(obj, pd, cont, format, seat);
 }
 
-EOLIAN static void
+EOLIAN static Eina_Bool
 _efl_selection_manager_container_drop_item_del(Eo *obj EINA_UNUSED, Efl_Selection_Manager_Data *pd,
                                                Efl_Object *cont, unsigned int seat EINA_UNUSED)
 {
-   _drop_item_container_del(pd, cont, EINA_TRUE);
+   return _drop_item_container_del(pd, cont, EINA_TRUE);
 }
 
 EOLIAN static void
@@ -5149,14 +5154,13 @@ _efl_selection_manager_container_drag_item_add(Eo *obj EINA_UNUSED, Efl_Selectio
                                   _cont_obj_mouse_down_cb, dc);
 }
 
-EOLIAN static void
+EOLIAN static Eina_Bool
 _efl_selection_manager_container_drag_item_del(Eo *obj EINA_UNUSED, Efl_Selection_Manager_Data *pd,
                                                Efl_Object *cont, unsigned int seat EINA_UNUSED)
 {
    Sel_Manager_Drag_Container *dc = eina_list_search_unsorted(pd->drag_cont_list,
                                       _drag_item_container_cmp, cont);
-   if (dc)
-     _item_container_del_internal(dc, EINA_TRUE);
+   return _item_container_del_internal(dc, EINA_TRUE);
 }
 
 static Eo *
