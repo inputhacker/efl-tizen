@@ -308,8 +308,6 @@ struct Efl.Access.Gesture_Info
    event_time: uint; [[gesture occurance time]]
 }
 
-type Efl.Access.Relation_Set: list<ptr(Efl.Access.Relation)>; [[Elementary Accessibility relation set type]]
-
 mixin Efl.Access.Object (Efl.Interface, Efl.Object)
 {
    [[Accessibility accessible mixin]]
@@ -349,13 +347,9 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
          }
       }
       //
-      @property relation_set @protected @beta {
-         get {
-            [[Gets an all relations between accessible object and other accessible objects.]]
-         }
-         values {
-            relations: Efl.Access.Relation_Set; [[Accessible relation set]]
-         }
+      relations_get @protected @beta @const {
+         [[Gets an all relations between accessible object and other accessible objects.]]
+         return: iterator<ptr(Efl.Access.Relation)>; [[Accessible relation set]]
       }
       @property role @beta {
          get {
@@ -632,6 +626,7 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
    }
    implements {
       Efl.Object.destructor;
+      Efl.Object.invalidate;
    }
    events {
       property,changed: string; [[Called when property has changed]]

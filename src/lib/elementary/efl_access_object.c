@@ -152,7 +152,7 @@ typedef struct _Elm_Atspi_Gesture_Cb_Item Elm_Atspi_Gesture_Cb_Item;
 
 struct _Efl_Access_Object_Data
 {
-   Efl_Access_Relation_Set relations;
+   Eina_List     *relations;
    //TIZEN_ONLY(20190922): add name callback, description callback.
    Efl_Access_Reading_Info_Cb_Item name_cb_item;
    Efl_Access_Reading_Info_Cb_Item description_cb_item;
@@ -483,7 +483,7 @@ _efl_access_object_access_children_get(const Eo *obj, Efl_Access_Object_Data *pd
           {
             children = eina_list_append(children, chld);
             //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
-            efl_access_object_access_parent_set(chld, obj);
+            efl_access_object_access_parent_set(chld, (Eo *)obj);
             //
           }
      }
@@ -515,11 +515,11 @@ _efl_access_object_can_highlight_get(const Eo *obj EINA_UNUSED, Efl_Access_Objec
 }
 //
 
-EOLIAN Efl_Access_Relation_Set
-_efl_access_object_relation_set_get(const Eo *obj EINA_UNUSED, Efl_Access_Object_Data *pd)
+EOLIAN Eina_Iterator *
+_efl_access_object_relations_get(const Eo *obj EINA_UNUSED, Efl_Access_Object_Data *pd EINA_UNUSED)
 {
    //TIZEN_ONLY(20171115) Fixed the bugs and warnings in atspi relationship APIS
-   //return efl_access_relation_set_clone(pd->relations);
+   //return eina_list_iterator_new(pd->relations);
    WRN("The %s object does not implement the \"accessible_relation_set\" function.",
        efl_class_name_get(efl_class_get(obj)));
    return NULL;
@@ -602,112 +602,48 @@ _efl_access_object_translation_domain_get(const Eo *obj EINA_UNUSED, Efl_Access_
    return pd->translation_domain;
 }
 
-EAPI void
-efl_access_relation_free(Efl_Access_Relation *relation)
+// TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+static void
+_efl_access_relation_free(Efl_Access_Relation *relation)
 {
    eina_list_free(relation->objects);
    free(relation);
 }
+//
 
-EAPI Efl_Access_Relation *
-efl_access_relation_clone(const Efl_Access_Relation *relation)
-{
-   Efl_Access_Relation *ret = calloc(1, sizeof(Efl_Access_Relation));
-   if (!ret) return NULL;
-
-   ret->type = relation->type;
-   ret->objects = eina_list_clone(relation->objects);
-   return ret;
-}
-
+// TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
 static void
 _on_rel_obj_del(void *data, const Efl_Event *event)
 {
-   Efl_Access_Relation_Set *set = data;
+   Eina_List **relations = data;
+//
+
    Efl_Access_Relation *rel;
    Eina_List *l, *l2, *p, *p2;
    Eo *rel_obj;
 
-   EINA_LIST_FOREACH_SAFE(*set, l, l2, rel)
+   // TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+   EINA_LIST_FOREACH_SAFE(*relations, l, l2, rel)
+   //
      {
         EINA_LIST_FOREACH_SAFE(rel->objects, p, p2, rel_obj)
           {
-          if (rel_obj == event->object)
+             if (rel_obj == event->object)
                rel->objects = eina_list_remove_list(rel->objects, p);
           }
         if (!rel->objects)
           {
-             *set = eina_list_remove_list(*set, l);
+             // TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+             *relations = eina_list_remove_list(*relations, l);
+             //
              free(rel);
           }
      }
 }
 
-EAPI Eina_Bool
-efl_access_relation_set_relation_append(Efl_Access_Relation_Set *set, Efl_Access_Relation_Type type, const Eo *rel_obj)
-{
-   Efl_Access_Relation *rel;
-   Eina_List *l, *ll;
-
-   if (!efl_isa(rel_obj, EFL_ACCESS_OBJECT_MIXIN))
-     return EINA_FALSE;
-
-   EINA_LIST_FOREACH(*set, l, rel)
-     {
-        if (rel->type == type)
-          {
-             ll = eina_list_data_find_list(rel->objects, rel_obj);
-             if (!ll)
-               {
-                  rel->objects = eina_list_append(rel->objects, rel_obj);
-                  efl_event_callback_add((Eo *) rel_obj, EFL_EVENT_DEL, _on_rel_obj_del, set);
-               }
-             else
-               {
-                  rel->objects = eina_list_demote_list(rel->objects, ll);
-               }
-             return EINA_TRUE;
-          }
-     }
-
-   rel = calloc(1, sizeof(Efl_Access_Relation));
-   if (!rel) return EINA_FALSE;
-
-   rel->type = type;
-   rel->objects = eina_list_append(rel->objects, rel_obj);
-   *set = eina_list_append(*set, rel);
-
-   efl_event_callback_add((Eo *) rel_obj, EFL_EVENT_DEL, _on_rel_obj_del, set);
-   return EINA_TRUE;
-}
-
-EAPI void
-efl_access_relation_set_relation_remove(Efl_Access_Relation_Set *set, Efl_Access_Relation_Type type, const Eo *rel_obj)
-{
-   Eina_List *l;
-   Efl_Access_Relation *rel;
-
-   EINA_LIST_FOREACH(*set, l, rel)
-     {
-        if (rel->type == type)
-          {
-             if (eina_list_data_find(rel->objects, rel_obj))
-               {
-                  efl_event_callback_del((Eo *) rel_obj, EFL_EVENT_DEL, _on_rel_obj_del, set);
-                  rel->objects = eina_list_remove(rel->objects, rel_obj);
-               }
-             if (!rel->objects)
-               {
-                  *set = eina_list_remove(*set, rel);
-                  efl_access_relation_free(rel);
-               }
-             return;
-          }
-     }
-}
-
-EAPI void
-efl_access_relation_set_relation_type_remove(Efl_Access_Relation_Set *set, Efl_Access_Relation_Type type)
+// TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+static void
+_efl_access_relation_set_relation_type_remove(Eina_List **set, Efl_Access_Relation_Type type)
 {
    Eina_List *l;
    Efl_Access_Relation *rel;
@@ -720,38 +656,162 @@ efl_access_relation_set_relation_type_remove(Efl_Access_Relation_Set *set, Efl_A
              EINA_LIST_FOREACH(rel->objects, l, obj)
                 efl_event_callback_del(obj, EFL_EVENT_DEL, _on_rel_obj_del, set);
              *set = eina_list_remove(*set, rel);
-             efl_access_relation_free(rel);
+             _efl_access_relation_free(rel);
              return;
           }
      }
 }
 
-//TIZEN_ONLY(20171115) Fixed the bugs and warnings in atspi relationship APIS
-EAPI void
-efl_access_relation_set_free(Efl_Access_Relation_Set *set)
+static void
+_efl_access_relation_set_free(Eina_List **relations)
+{
+   Efl_Access_Relation *rel;
+   Eo *obj;
+
+   EINA_LIST_FREE(*relations, rel)
+     {
+        Eina_List *l;
+
+        EINA_LIST_FOREACH(rel->objects, l, obj)
+          efl_event_callback_del(obj, EFL_EVENT_DEL, _on_rel_obj_del, relations);
+        eina_list_free(rel->objects);
+        free(rel);
+     }
+}
+//
+
+static void
+efl_access_relation_set_free(Efl_Access_Object_Data *sd)
+{
+   // TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+   _efl_access_relation_set_free(&sd->relations);
+   //
+}
+
+
+// TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+static Eina_Bool
+_efl_access_object_relation_append(Eina_List **relations, Efl_Access_Relation_Type type, const Eo *relation)
+{
+   Efl_Access_Relation *rel;
+   //TIZEN_ONLY(20171208): elm: [atspi]Demote relation object if the object exist
+   Eina_List *l, *ll;
+   //
+
+   EINA_LIST_FOREACH(*relations, l, rel)
+     {
+        if (rel->type == type)
+          {
+             //TIZEN_ONLY(20171208): elm: [atspi]Demote relation object if the object exist
+             ll = eina_list_data_find(rel->objects, relation);
+             if (!ll)
+             //
+               {
+                  rel->objects = eina_list_append(rel->objects, relation);
+                  efl_event_callback_add((Eo *) relation, EFL_EVENT_DEL, _on_rel_obj_del, relations);
+               }
+             //TIZEN_ONLY(20171208): elm: [atspi]Demote relation object if the object exist
+             else
+               {
+                  rel->objects = eina_list_demote_list(rel->objects, ll);
+               }
+             //
+             return EINA_TRUE;
+          }
+     }
+
+   rel = calloc(1, sizeof(Efl_Access_Relation));
+   if (!rel) return EINA_FALSE;
+
+   rel->type = type;
+   rel->objects = eina_list_append(rel->objects, relation);
+   *relations = eina_list_append(*relations, rel);
+
+   efl_event_callback_add((Eo *) relation, EFL_EVENT_DEL, _on_rel_obj_del, relations);
+
+   return EINA_TRUE;
+}
+//
+
+EOLIAN static Eina_Bool
+_efl_access_object_relationship_append(Eo *obj EINA_UNUSED, Efl_Access_Object_Data *sd, Efl_Access_Relation_Type type, const Efl_Access_Object *relation)
+{
+   // TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+   return _efl_access_object_relation_append(&sd->relations, type, relation);
+   //
+}
+
+// TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+static void
+_efl_access_object_relation_remove(Eina_List** relations, Efl_Access_Relation_Type type, const Efl_Access_Object *relation)
 {
    Efl_Access_Relation *rel;
    Eina_List *l;
-   Eo *obj;
 
-   EINA_LIST_FREE(*set, rel)
+   EINA_LIST_FOREACH(*relations, l, rel)
      {
-        EINA_LIST_FOREACH(rel->objects, l, obj)
-           efl_event_callback_del(obj, EFL_EVENT_DEL, _on_rel_obj_del, set);
-        efl_access_relation_free(rel);
+        if (rel->type == type)
+          {
+             if (relation)
+               {
+                  if (eina_list_data_find(rel->objects, relation))
+                    {
+                       efl_event_callback_del((Eo *) relation, EFL_EVENT_DEL, _on_rel_obj_del, relations);
+                       rel->objects = eina_list_remove(rel->objects, relation);
+                    }
+                  if (!rel->objects)
+                    {
+                       *relations = eina_list_remove(*relations, rel);
+                       free(rel);
+                    }
+               }
+             else
+               {
+                  Eina_List *ll;
+                  Eo *ro;
+
+                  EINA_LIST_FOREACH(rel->objects, ll, ro)
+                    efl_event_callback_del(ro, EFL_EVENT_DEL, _on_rel_obj_del, relations);
+                  *relations = eina_list_remove(*relations, rel);
+                  free(rel);
+               }
+             return ;
+          }
      }
 }
+//
 
-EAPI Efl_Access_Relation_Set
-efl_access_relation_set_clone(const Efl_Access_Relation_Set *set)
+EOLIAN static void
+_efl_access_object_relationship_remove(Eo *obj EINA_UNUSED, Efl_Access_Object_Data *sd, Efl_Access_Relation_Type type, const Efl_Access_Object *relation)
 {
-   Efl_Access_Relation_Set ret = NULL;
+   // TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+   _efl_access_object_relation_remove(&sd->relations, type, relation);
+   //
+}
+
+// TIZEN_ONLY(20190104): Access: Add the missing patch related by Efl.Access_Object.relations_get
+static Efl_Access_Relation *
+_efl_access_relation_clone(const Efl_Access_Relation *relation)
+{
+   Efl_Access_Relation *ret = calloc(1, sizeof(Efl_Access_Relation));
+   if (!ret) return NULL;
+
+   ret->type = relation->type;
+   ret->objects = eina_list_clone(relation->objects);
+   return ret;
+}
+
+
+static Eina_List *
+_efl_access_relation_set_clone(const Eina_List **set)
+{
+   Eina_List *ret = NULL;
    Eina_List *l;
    Efl_Access_Relation *rel;
 
    EINA_LIST_FOREACH(*set, l, rel)
      {
-        Efl_Access_Relation *cpy = efl_access_relation_clone(rel);
+        Efl_Access_Relation *cpy = _efl_access_relation_clone(rel);
         ret = eina_list_append(ret, cpy);
      }
 
@@ -759,27 +819,10 @@ efl_access_relation_set_clone(const Efl_Access_Relation_Set *set)
 }
 //
 
-EOLIAN static Eina_Bool
-_efl_access_object_relationship_append(Eo *obj EINA_UNUSED, Efl_Access_Object_Data *sd, Efl_Access_Relation_Type type, const Efl_Access_Object *relation_obj)
-{
-   return efl_access_relation_set_relation_append(&sd->relations, type, relation_obj);
-}
-
-EOLIAN static void
-_efl_access_object_relationship_remove(Eo *obj EINA_UNUSED, Efl_Access_Object_Data *sd, Efl_Access_Relation_Type type, const Efl_Access_Object *relation_obj)
-{
-   if (relation_obj)
-     efl_access_relation_set_relation_remove(&sd->relations, type, relation_obj);
-   else
-     efl_access_relation_set_relation_type_remove(&sd->relations, type);
-}
-
 EOLIAN static void
 _efl_access_object_relationships_clear(Eo *obj EINA_UNUSED, Efl_Access_Object_Data *sd)
 {
-   //TIZEN_ONLY(20171115) Fixed the bugs and warnings in atspi relationship APIS
-   efl_access_relation_set_free(&sd->relations);
-   //
+   efl_access_relation_set_free(sd);
    sd->relations = NULL;
 }
 
@@ -837,12 +880,19 @@ _efl_access_object_access_root_get(const Eo *class EINA_UNUSED, void *pd EINA_UN
 }
 
 EOLIAN void
+_efl_access_object_efl_object_invalidate(Eo *obj, Efl_Access_Object_Data *pd)
+{
+   efl_access_relation_set_free(pd);
+
+   efl_invalidate(efl_super(obj, EFL_ACCESS_OBJECT_MIXIN));
+}
+
+EOLIAN void
 _efl_access_object_efl_object_destructor(Eo *obj, Efl_Access_Object_Data *pd)
 {
    eina_stringshare_del(pd->name);
    eina_stringshare_del(pd->description);
    eina_stringshare_del(pd->translation_domain);
-   efl_access_relation_set_free(&pd->relations);
    //TIZEN_ONLY(20181211): Fix for missing unregistration of atspi objects
    unregister_atspi_object_in_bridge(obj);
    //
@@ -912,7 +962,15 @@ elm_atspi_accessible_name_cb_set(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi_
 EAPI Elm_Atspi_Relation_Set
 elm_atspi_accessible_relation_set_get(const Elm_Interface_Atspi_Accessible *obj)
 {
-   return efl_access_object_relation_set_get(obj);
+   Elm_Atspi_Relation_Set relation_set;
+   Eina_Iterator *relations = efl_access_object_relations_get(obj);
+   Efl_Access_Relation *rel;
+   EINA_ITERATOR_FOREACH(relations, rel)
+     {
+        relation_set = eina_list_append(relation_set, rel);
+     }
+   eina_iterator_free(relations);
+   return eina_list_clone(relation_set);
 }
 
 EAPI void
@@ -1044,37 +1102,37 @@ elm_atspi_accessible_state_notify(Elm_Interface_Atspi_Accessible *obj, Elm_Atspi
 
 EAPI void elm_atspi_relation_set_free(Elm_Atspi_Relation_Set *set)
 {
-   efl_access_relation_set_free(set);
+   _efl_access_relation_set_free(set);
 }
 
 EAPI Elm_Atspi_Relation_Set elm_atspi_relation_set_clone(const Elm_Atspi_Relation_Set *set)
 {
-   return efl_access_relation_set_clone(set);
+   return _efl_access_relation_set_clone(set);
 }
 
 EAPI void elm_atspi_relation_free(Elm_Atspi_Relation *relation)
 {
-   efl_access_relation_free(relation);
+   _efl_access_relation_free(relation);
 }
 
 EAPI Elm_Atspi_Relation * elm_atspi_relation_clone(const Elm_Atspi_Relation *relation)
 {
-   return efl_access_relation_clone(relation);
+   return _efl_access_relation_clone(relation);
 }
 
 EAPI Eina_Bool elm_atspi_relation_set_relation_append(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type, const Eo *rel_obj)
 {
-   return efl_access_relation_set_relation_append(set, type, rel_obj);
+   return _efl_access_object_relation_append(set, type, rel_obj);
 }
 
 EAPI void elm_atspi_relation_set_relation_remove(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type, const Eo *rel_obj)
 {
-   efl_access_relation_set_relation_remove(set, type, rel_obj);
+   _efl_access_object_relation_remove(set, type, rel_obj);
 }
 
 EAPI void elm_atspi_relation_set_relation_type_remove(Elm_Atspi_Relation_Set *set, Elm_Atspi_Relation_Type type)
 {
-   efl_access_relation_set_relation_type_remove(set, type);
+   _efl_access_relation_set_relation_type_remove(set, type);
 }
 
 EAPI void elm_atspi_attributes_list_free(Eina_List *list)
