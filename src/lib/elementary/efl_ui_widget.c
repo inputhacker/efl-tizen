@@ -189,6 +189,18 @@ static const char *legacy_type_table[][2] =
      { "Elm.Code_Widget", "Elm_Code_Widget" },
      { "Elm.Gesture_Layer", "Elm_Gesture_Layer" },
      /* END */
+     /* TIZEN_ONLY(20180504): add missing item class names and fix edje_class parse rule for legacy */
+     { "Elm.Naviframe.Item", "Elm_Naviframe_Item" },
+     { "Elm.Genlist.Item", "Elm_Genlist_Item" },
+     { "Elm.Gengrid.Item", "Elm_Gengrid_Item" },
+     { "Elm.Toolbar.Item", "Elm_Toolbar_Item" },
+     { "Efl.Ui.Multibuttonentry.Item", "Elm_Multibuttonentry_Item" },
+     { "Elm.Ctxpopup.Item", "Elm_Ctxpopup_Item" },
+     { "Elm.Hoversel.Item", "Elm_Hoversel_Item" },
+     { "Elm.Index.Item", "Elm_Index_Item" },
+     { "Elm.Popup.Item", "Elm_Popup_Item" },
+     { "Elm.List.Item", "Elm_List_Item" },
+     /* END */
      { NULL, NULL }
 };
 
@@ -4632,6 +4644,27 @@ elm_widget_type_get(const Evas_Object *obj)
 
    return ret;
 }
+
+/* TIZEN_ONLY(20180504): add missing item class names and fix edje_class parse rule for legacy */
+const char *
+_elm_widget_item_legacy_type_get(const Evas_Object *obj)
+{
+   const char *ret;
+   int i;
+
+   ret = efl_class_name_get(efl_class_get(obj));
+
+   /* If the given widget is created for legacy,
+    * convert type name to legacy. */
+   for (i = 0; legacy_type_table[i][0] ; i++)
+     {
+        if (eina_streq(ret, legacy_type_table[i][0]))
+          return legacy_type_table[i][1];
+     }
+
+   return ret;
+}
+/* END */
 
 EAPI Eina_Bool
 elm_widget_type_check(const Evas_Object *obj,
@@ -9339,45 +9372,70 @@ _edje_color_class_free(void *data)
 }
 
 Eina_Stringshare *
-_elm_widget_edje_class_get(const Efl_Class *klass, const char *style, const char *part)
+_elm_widget_edje_class_get(Evas_Object *obj, const char *style, const char *part)
 {
    Eina_Strbuf *buf;
    Eina_Stringshare *str;
    const char *klass_name = NULL;
+   Eina_Bool is_legacy = EINA_FALSE;
+   Eina_Bool is_item = efl_isa(obj, ELM_WIDGET_ITEM_CLASS);
+
+   if (is_item)
+     is_legacy = elm_widget_is_legacy(elm_object_item_widget_get(obj));
+   else
+     is_legacy = elm_widget_is_legacy(obj);
 
    buf = eina_strbuf_new();
 
-   klass_name = efl_class_name_get(klass);
+   if (is_legacy)
+     {
+        if (is_item)
+          klass_name = _elm_widget_item_legacy_type_get(obj);
+        else
+          klass_name = elm_widget_type_get(obj);
+     }
+   else
+     {
+        klass_name = efl_class_name_get(efl_class_get(obj));
+     }
 
    if (klass_name)
      {
-        /* Get the last word from the given klass name */
-        char *temp, *temp_orig, *temp_ret, *last_ret = NULL;
-        const char *delim = NULL;
-
-        temp_orig = temp = strdup(klass_name);
-
-        /* If "." is not used for word serperator,
-         * it assume the given klass name is legacy.
-         * And legacy klass name was made with "_" as its word seperator. */
-        if (strchr(klass_name, '.'))
-          delim = ".";
-        else
-          delim = "_";
-
-        while ((temp_ret = strsep(&temp, delim)) != NULL)
+        if (is_legacy)
           {
-             if (strcmp(temp_ret, ""))
-               last_ret = temp_ret;
-          }
-
-        if (last_ret)
-          {
-             eina_strbuf_append(buf, last_ret);
+             eina_strbuf_append(buf, strchr(klass_name, '_') + 1);
              eina_strbuf_tolower(buf);
           }
+        else
+          {
+             /* Get the last word from the given klass name */
+             char *temp, *temp_orig, *temp_ret, *last_ret = NULL;
+             const char *delim = NULL;
 
-        free(temp_orig);
+             temp_orig = temp = strdup(klass_name);
+
+             /* If "." is not used for word serperator,
+              * it assume the given klass name is legacy.
+              * And legacy klass name was made with "_" as its word seperator. */
+             if (strchr(klass_name, '.'))
+               delim = ".";
+             else
+               delim = "_";
+
+             while ((temp_ret = strsep(&temp, delim)) != NULL)
+               {
+                  if (strcmp(temp_ret, ""))
+                    last_ret = temp_ret;
+               }
+
+             if (last_ret)
+               {
+                  eina_strbuf_append(buf, last_ret);
+                  eina_strbuf_tolower(buf);
+               }
+
+             free(temp_orig);
+          }
      }
 
    if (style)
@@ -9409,7 +9467,7 @@ _elm_widget_color_class_set_internal(Evas_Object *obj, Evas_Object *edje, const 
 
    if (!color_class) return EINA_FALSE;
 
-   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);
+   buf = _elm_widget_edje_class_get(obj, NULL, color_class);
 
 #define TEMP_COLOR(x, y) \
    ((temp_color[x][y] == -1) ? &temp_color[x][y] : NULL)
@@ -9447,7 +9505,7 @@ _elm_widget_color_class_get_internal(Evas_Object *obj, Evas_Object *edje, const 
 
    if (!color_class) return EINA_FALSE;
 
-   buf = _elm_widget_edje_class_get(efl_class_get(obj), elm_widget_style_get(obj), color_class);
+   buf = _elm_widget_edje_class_get(obj, elm_widget_style_get(obj), color_class);
 
    int_ret &= edje_object_color_class_get(edje, buf,
                                           r,  g,  b,  a,
@@ -9575,7 +9633,7 @@ _elm_widget_class_color_del(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, cons
 
    if (!efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS)) return;
 
-   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);
+   buf = _elm_widget_edje_class_get(obj, NULL, color_class);
    edje_object_color_class_del(sd->resize_obj, buf);
    eina_stringshare_del(buf);
 }
@@ -9619,7 +9677,7 @@ _elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
    Eina_Bool int_ret = EINA_FALSE;                                               \
    Edje_Color_Class *cc = NULL;                                                  \
    Eina_Stringshare *buf;                                                        \
-   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);       \
+   buf = _elm_widget_edje_class_get(obj, NULL, color_class);       \
    CHECK_BOUND(r);                                                               \
    CHECK_BOUND(g);                                                               \
    CHECK_BOUND(b);                                                               \
@@ -9662,7 +9720,7 @@ _elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
    Edje_Color_Class *cc;                                                         \
    Eina_Stringshare *buf;                                                        \
    int alpha = 0;                                                                \
-   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);       \
+   buf = _elm_widget_edje_class_get(obj, NULL, color_class);       \
    if ((!sd->color_classes) || !(cc = eina_hash_find(sd->color_classes, buf)))   \
      {                                                                           \
         if (r) *r = 0;                                                           \
@@ -9769,7 +9827,7 @@ _elm_widget_item_class_color_del(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd, 
 
    if (!color_class) return;
 
-   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);
+   buf = _elm_widget_edje_class_get(obj, NULL, color_class);
    eina_hash_del(sd->color_classes, buf, cc);
 
    edje = _elm_widget_item_edje_get(obj, sd);

@@ -4654,7 +4654,7 @@ _elm_toolbar_elm_widget_class_color_del(Eo *obj, Elm_Toolbar_Data *sd EINA_UNUSE
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
-   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);
+   buf = _elm_widget_edje_class_get(obj, NULL, color_class);
    edje_object_color_class_del(wd->resize_obj, buf);
    eina_stringshare_del(buf);
 }

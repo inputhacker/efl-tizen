@@ -8371,7 +8371,7 @@ _elm_entry_elm_widget_class_color_del(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd, c
 {
    Eina_Stringshare *buf;
 
-   buf = _elm_widget_edje_class_get(efl_class_get(obj), NULL, color_class);
+   buf = _elm_widget_edje_class_get(obj, NULL, color_class);
    edje_object_color_class_del(sd->entry_edje, buf);
    eina_stringshare_del(buf);
 }

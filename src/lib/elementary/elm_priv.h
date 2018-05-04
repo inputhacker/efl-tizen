@@ -967,7 +967,7 @@ static inline void _elm_color_unpremul(int a, int *r, int *g, int *b)
 }
 #undef _DIV_0xFF
 
-Eina_Stringshare *_elm_widget_edje_class_get(const Efl_Class *klass, const char *style, const char *part);
+Eina_Stringshare *_elm_widget_edje_class_get(Evas_Object *obj, const char *style, const char *part);
 Eina_Bool _elm_widget_item_color_class_update(Elm_Widget_Item_Data *sd);
 Eina_Bool _elm_widget_color_class_set_internal(Evas_Object *obj, Evas_Object *edje, const char *color_class,
                                                int r, int g, int b, int a,
