@@ -236,6 +236,7 @@ _cbhm_item_count_get(Evas_Object *obj EINA_UNUSED, int atom_index)
         EINA_LOG_ERR("Unable to call method org.freedesktop.DBus.Properties.Get: %s %s",
               errname, errmsg);
         eldbus_message_unref(req);
+        eldbus_message_unref(reply);
         return -1;
      }
 
@@ -428,6 +429,7 @@ _cbhm_item_type_get(Evas_Object *obj, int item_index)
         EINA_LOG_ERR("Unable to call method org.freedesktop.DBus.Properties.Get: %s %s",
               errname, errmsg);
         eldbus_message_unref(req);
+        eldbus_message_unref(reply);
         return -1;
      }
 
