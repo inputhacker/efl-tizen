@@ -764,7 +764,7 @@ _efl_net_connect_async_run(void *data, Ecore_Thread *thread EINA_UNUSED)
      }
    else
      {
-        int curstate;
+        int curstate = 0;
         if (!fcntl(d->sockfd, F_SETLK, O_NONBLOCK))
           {
              ERR("failed to set socket as nonblock");

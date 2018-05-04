@@ -495,7 +495,7 @@ _ecore_evas_buffer_alpha_set(Ecore_Evas *ee, int alpha)
    else
      {
         Evas_Engine_Info_Buffer *einfo;
-        
+
         einfo = (Evas_Engine_Info_Buffer *)evas_engine_info_get(ee->evas);
         if (einfo)
           {
