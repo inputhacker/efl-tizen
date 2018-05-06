@@ -3213,13 +3213,18 @@ _layout_find_paragraph_by_line_no(Efl_Canvas_Text_Data *o, int line_no)
  * @param c The context to work on - Not NULL.
  * @param n the associated text node
  * @param append true to append, false to prpend.
+ * @return @c EINA_TRUE on success, @c EINA_FALSE otherwise.
  */
-static void
+static Eina_Bool
 _layout_paragraph_new(Ctxt *c, Evas_Object_Textblock_Node_Text *n,
       Eina_Bool append)
 {
    Evas_Object_Textblock_Paragraph *rel_par = c->par;
-   c->par = calloc(1, sizeof(Evas_Object_Textblock_Paragraph));
+   Evas_Object_Textblock_Paragraph *new_par = calloc(1, sizeof(Evas_Object_Textblock_Paragraph));
+
+   if (!new_par) return EINA_FALSE;
+   c->par = new_par;
+
    if (append || !rel_par)
       c->paragraphs = (Evas_Object_Textblock_Paragraph *)
          eina_inlist_append_relative(EINA_INLIST_GET(c->paragraphs),
@@ -3238,6 +3243,8 @@ _layout_paragraph_new(Ctxt *c, Evas_Object_Textblock_Node_Text *n,
    c->par->line_no = -1;
    c->par->visible = 1;
    c->o->num_paragraphs++;
+
+   return EINA_TRUE;
 }
 
 #ifdef BIDI_SUPPORT
@@ -6553,7 +6560,8 @@ _layout_pre(Ctxt *c)
              else
                {
                   /* If it's a new paragraph, just add it. */
-                  _layout_paragraph_new(c, n, EINA_FALSE);
+                  if (!_layout_paragraph_new(c, n, EINA_FALSE))
+                    break;
                }
 
 #ifdef BIDI_SUPPORT
@@ -6658,7 +6666,7 @@ _layout_pre(Ctxt *c)
     * if the last paragraph has no lines/text, create that as well */
    if (!c->paragraphs)
      {
-        _layout_paragraph_new(c, NULL, EINA_TRUE);
+        if (!_layout_paragraph_new(c, NULL, EINA_TRUE)) return;
         o->paragraphs = c->paragraphs;
      }
    c->par = (Evas_Object_Textblock_Paragraph *)
@@ -6781,7 +6789,7 @@ _layout_visual(Ctxt *c)
         }
 
       /* Get the last visible paragraph in the layout */
-      if (!last_vis_par && c->paragraphs)
+      if (!last_vis_par)
          last_vis_par = (Evas_Object_Textblock_Paragraph *)
             EINA_INLIST_GET(c->paragraphs)->last;
 
