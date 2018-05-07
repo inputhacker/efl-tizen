@@ -1399,7 +1399,7 @@ _elm_index_item_append(Eo *obj, Elm_Index_Data *sd, const char *letter, Evas_Sma
    sd->items = eina_list_append(sd->items, eo_item);
 
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
-   VIEW(it) = edje_object_add(evas_object_evas_get(obj));
+   VIEW_SET(it, edje_object_add(evas_object_evas_get(obj)));
 
    if (_elm_atspi_enabled())
      {
@@ -1421,7 +1421,7 @@ _elm_index_item_prepend(Eo *obj, Elm_Index_Data *sd, const char *letter, Evas_Sm
    sd->items = eina_list_prepend(sd->items, eo_item);
 
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
-   VIEW(it) = edje_object_add(evas_object_evas_get(obj));
+   VIEW_SET(it, edje_object_add(evas_object_evas_get(obj)));
 
    if (_elm_atspi_enabled())
      {
@@ -1456,7 +1456,7 @@ _elm_index_item_insert_after(Eo *obj, Elm_Index_Data *sd, Elm_Object_Item *after
    sd->items = eina_list_append_relative(sd->items, eo_item, after);
 
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
-   VIEW(it) = edje_object_add(evas_object_evas_get(obj));
+   VIEW_SET(it, edje_object_add(evas_object_evas_get(obj)));
 
    if (_elm_atspi_enabled())
      {
@@ -1480,7 +1480,7 @@ _elm_index_item_insert_before(Eo *obj, Elm_Index_Data *sd, Elm_Object_Item *befo
    sd->items = eina_list_prepend_relative(sd->items, eo_item, before);
 
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
-   VIEW(it) = edje_object_add(evas_object_evas_get(obj));
+   VIEW_SET(it, edje_object_add(evas_object_evas_get(obj)));
 
    if (_elm_atspi_enabled())
      {
@@ -1524,7 +1524,7 @@ _elm_index_item_sorted_insert(Eo *obj, Elm_Index_Data *sd, const char *letter, E
           }
      }
    ELM_INDEX_ITEM_DATA_GET(eo_item, it);
-   VIEW(it) = edje_object_add(evas_object_evas_get(obj));
+   VIEW_SET(it, edje_object_add(evas_object_evas_get(obj)));
 
    if (_elm_atspi_enabled())
      {
