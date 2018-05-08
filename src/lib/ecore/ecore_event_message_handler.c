@@ -118,12 +118,15 @@ _ecore_event_filters_call(Eo *obj, Efl_Loop_Data *pd)
 
 //////////////////////////////////////////////////////////////////////////
 
+//TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
 EOLIAN static Ecore_Event_Message *
-_ecore_event_message_handler_message_type_add(Eo *obj, Ecore_Event_Message_Handler_Data *pd EINA_UNUSED)
+_ecore_event_message_handler_message_type_add(Eo *obj, Ecore_Event_Message_Handler_Data *pd, int type)
 {
    // XXX: implemented event obj cache
+   if (type > pd->event_type_count) return NULL;
    return efl_add(ECORE_EVENT_MESSAGE_CLASS, obj);
 }
+//
 
 EOLIAN static int
 _ecore_event_message_handler_type_new(Eo *obj EINA_UNUSED, Ecore_Event_Message_Handler_Data *pd)
@@ -145,7 +148,9 @@ _ecore_event_message_handler_handler_add(Eo *obj EINA_UNUSED, Ecore_Event_Messag
 {
    Handler *h;
 
+   //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
    if ((type < 0) || (type > pd->event_type_count) || (!func)) return NULL;
+   //
    h = calloc(1, sizeof(Handler));
    if (!h) return NULL;
    h->func = func;
@@ -291,7 +296,9 @@ EOLIAN static Efl_Object *
 _ecore_event_message_handler_efl_object_constructor(Eo *obj, Ecore_Event_Message_Handler_Data *pd)
 {
    obj = efl_constructor(efl_super(obj, MY_CLASS));
-   pd->event_type_count = -1;
+   //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
+   pd->event_type_count = 0;
+   //
    pd->current_event_type = -1;
    return obj;
 }
@@ -315,7 +322,9 @@ _ecore_event_message_handler_efl_object_destructor(Eo *obj, Ecore_Event_Message_
           {
              free(h);
           }
-        for (i = 0; i <= pd->event_type_count; i++)
+        //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
+        for (i = 1; i <= pd->event_type_count; i++)
+        //
           {
              EINA_INLIST_FREE(pd->handlers[i], h)
                {
@@ -347,7 +356,9 @@ _ecore_event_message_handler_efl_loop_message_handler_message_call(Eo *obj, Ecor
    // call legacy handlers which are controled by this class' custom api
    ecore_event_message_data_steal
      (message, &type, &data, &free_func, &free_data);
-   if ((type >= 0) && (type <= pd->event_type_count))
+   //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
+   if ((type > 0) && (type <= pd->event_type_count))
+   //
      {
         if (free_func) fn_free = free_func;
         pd->current_event_data = data;

@@ -13,6 +13,11 @@ class Ecore.Event.Message.Handler (Efl.Loop.Message.Handler)
    methods {
       message_type_add {
          [[ ]]
+         //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
+         params {
+            type: int;
+         }
+         //
          return: Ecore.Event.Message; [[ ]]
       }
       type_new {
