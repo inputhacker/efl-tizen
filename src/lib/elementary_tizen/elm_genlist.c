@@ -8152,7 +8152,14 @@ _elm_genlist_item_item_class_update(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it,
    ELM_GENLIST_ITEM_CHECK_OR_RETURN(it);
    EINA_SAFETY_ON_NULL_RETURN(itc);
    Elm_Genlist_Data *sd = GL_IT(it)->wsd;
-   it->itc = itc;
+
+   /* Decrease the orignal item class refcount to prevent memory leak */
+   if (it->itc != itc)
+     {
+        elm_genlist_item_class_unref((Elm_Genlist_Item_Class *)it->itc);
+        it->itc = itc;
+        elm_genlist_item_class_ref((Elm_Genlist_Item_Class *)it->itc);
+     }
 
    if (!GL_IT(it)->block) return;
 
