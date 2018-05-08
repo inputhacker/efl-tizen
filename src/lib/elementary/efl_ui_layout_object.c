@@ -366,6 +366,7 @@ _parts_text_fix(Efl_Ui_Layout_Object_Data *sd)
 }
 /* END */
 
+/* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
 static void
 _part_cursor_part_apply(const Efl_Ui_Layout_Sub_Object_Cursor *pc)
 {
@@ -373,6 +374,15 @@ _part_cursor_part_apply(const Efl_Ui_Layout_Sub_Object_Cursor *pc)
    elm_object_cursor_style_set(pc->obj, pc->style);
    elm_object_cursor_theme_search_enabled_set(pc->obj, !pc->engine_only);
 }
+ */
+static void
+_part_cursor_part_apply(Efl_Ui_Layout_Data *sd, const Efl_Ui_Layout_Sub_Object_Cursor *pc)
+{
+   elm_object_sub_cursor_set(pc->obj, sd->obj, pc->cursor);
+   elm_object_sub_cursor_style_set(pc->obj, pc->style);
+   elm_object_sub_cursor_theme_search_enabled_set(pc->obj, !pc->engine_only);
+}
+/* END */
 
 static void
 _parts_cursors_apply(Efl_Ui_Layout_Object_Data *sd)
@@ -407,7 +417,11 @@ _parts_cursors_apply(Efl_Ui_Layout_Object_Data *sd)
           }
 
         pc->obj = obj;
+        /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
         _part_cursor_part_apply(pc);
+         */
+        _part_cursor_part_apply(sd, pc);
+        /* END */
      }
 }
 
@@ -1967,7 +1981,11 @@ _efl_ui_layout_part_cursor_get(Efl_Ui_Layout_Object_Data *sd, const char *part_n
    EINA_SAFETY_ON_NULL_RETURN_VAL(pc, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(pc->obj, NULL);
 
+   /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
    return elm_object_cursor_get(pc->obj);
+    */
+   return elm_object_sub_cursor_get(pc->obj);
+   /* END */
 }
 
 static Eina_Bool
@@ -2002,7 +2020,11 @@ _efl_ui_layout_part_cursor_style_set(Efl_Ui_Layout_Object_Data *sd, const char *
    EINA_SAFETY_ON_NULL_RETURN_VAL(pc->obj, EINA_FALSE);
 
    eina_stringshare_replace(&pc->style, style);
+   /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
    elm_object_cursor_style_set(pc->obj, pc->style);
+    */
+   elm_object_sub_cursor_style_set(pc->obj, pc->style);
+   /* END */
 
    return EINA_TRUE;
 }
@@ -2016,7 +2038,11 @@ _efl_ui_layout_part_cursor_style_get(Efl_Ui_Layout_Object_Data *sd, const char *
    EINA_SAFETY_ON_NULL_RETURN_VAL(pc, NULL);
    EINA_SAFETY_ON_NULL_RETURN_VAL(pc->obj, NULL);
 
+   /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
    return elm_object_cursor_style_get(pc->obj);
+    */
+   return elm_object_sub_cursor_style_get(pc->obj);
+   /* END */
 }
 
 static Eina_Bool
@@ -2029,7 +2055,11 @@ _efl_ui_layout_part_cursor_engine_only_set(Efl_Ui_Layout_Object_Data *sd, const 
    EINA_SAFETY_ON_NULL_RETURN_VAL(pc->obj, EINA_FALSE);
 
    pc->engine_only = !!engine_only;
+   /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
    elm_object_cursor_theme_search_enabled_set(pc->obj, !pc->engine_only);
+    */
+   elm_object_sub_cursor_theme_search_enabled_set(pc->obj, !pc->engine_only);
+   /* END */
 
    return EINA_TRUE;
 }
@@ -2043,7 +2073,11 @@ _efl_ui_layout_part_cursor_engine_only_get(Efl_Ui_Layout_Object_Data *sd, const 
    EINA_SAFETY_ON_NULL_RETURN_VAL(pc, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(pc->obj, EINA_FALSE);
 
+   /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
    return !elm_object_cursor_theme_search_enabled_get(pc->obj);
+    */
+   return !elm_object_sub_cursor_theme_search_enabled_get(pc->obj);
+   /* END */
 }
 
 EAPI Eina_Bool

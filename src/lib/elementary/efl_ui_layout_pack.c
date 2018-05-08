@@ -46,9 +46,15 @@ _efl_ui_layout_pack_proxy_get(Efl_Ui_Layout_Object *obj, Edje_Part_Type type, co
 {
    if (type == EDJE_PART_TYPE_BOX)
      return efl_add(BOX_CLASS, obj,
+                    /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table */
+                    _elm_part_initialize(efl_added, obj, part),
+                    /* END */
                    efl_ui_layout_part_box_real_part_set(efl_added, obj, part));
    else if (type == EDJE_PART_TYPE_TABLE)
      return efl_add(TABLE_CLASS, obj,
+                    /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table */
+                    _elm_part_initialize(efl_added, obj, part),
+                    /* END */
                    efl_ui_layout_part_table_real_part_set(efl_added, obj, part));
    else
      return NULL;
