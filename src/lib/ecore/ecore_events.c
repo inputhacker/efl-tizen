@@ -66,7 +66,9 @@ ecore_event_add(int          type,
    Ecore_Event_Message *msg;
    if (type <= ECORE_EVENT_NONE) return NULL;
 
-   msg = ecore_event_message_handler_message_type_add(_event_msg_handler);
+   //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
+   msg = ecore_event_message_handler_message_type_add(_event_msg_handler, type);
+   //
    if (msg)
      {
         ecore_event_message_data_set(msg, type, ev, func_free, data);
