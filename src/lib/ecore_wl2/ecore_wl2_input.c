@@ -3412,22 +3412,6 @@ _ecore_wl2_input_device_manager_setup(Ecore_Wl2_Display *ewd, unsigned int id, u
 }
 //
 
-EAPI void
-ecore_wl2_input_grab(Ecore_Wl2_Input *input, Ecore_Wl2_Window *window, unsigned int button)
-{
-   EINA_SAFETY_ON_NULL_RETURN(input);
-   EINA_SAFETY_ON_NULL_RETURN(input->display);
-   _ecore_wl2_input_grab(input, window, button);
-}
-
-EAPI void
-ecore_wl2_input_ungrab(Ecore_Wl2_Input *input)
-{
-   EINA_SAFETY_ON_NULL_RETURN(input);
-   EINA_SAFETY_ON_NULL_RETURN(input->display);
-   _ecore_wl2_input_ungrab(input);
-}
-
 EAPI struct wl_seat *
 ecore_wl2_input_seat_get(Ecore_Wl2_Input *input)
 {
