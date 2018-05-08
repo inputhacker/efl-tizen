@@ -1566,9 +1566,15 @@ _elm_win_focus_in(Ecore_Evas *ee)
 
                   newest = efl_ui_widget_newest_focus_order_get
                      (obj, &newest_focus_order, EINA_TRUE);
+                  // TIZEN_ONLY (20180508): onscreen_is should not be checked
+                  //                        to keep compatibility with Tizen 2.4
+                  /*
                   if (newest &&
                       (_elm_widget_onscreen_is(newest) || (newest == obj)))
                     efl_ui_widget_focus_restore(obj);
+                  */
+                  if (newest) efl_ui_widget_focus_restore(obj);
+                  /////////////////////////////////////////////////////////////
                   else
                     evas_object_focus_set(obj, EINA_TRUE);
                }
