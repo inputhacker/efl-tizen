@@ -870,6 +870,16 @@ EAPI void elm_atspi_relation_set_relation_type_remove(Elm_Atspi_Relation_Set *se
  */
 EAPI void elm_atspi_attributes_list_free(Eina_List *list);
 
+//TIZEN_ONLY(20180509) : efl_access: Support legacy API for elm_atspi_text
+struct _Elm_Atspi_Text_Attribute
+{
+   const char *name;
+   const char *value;
+};
+
+typedef struct _Elm_Atspi_Text_Attribute Elm_Atspi_Text_Attribute;
+//
+
 /**
  * @}
  */
