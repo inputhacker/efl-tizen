@@ -4526,8 +4526,8 @@ _elm_scroll_pan_changed_cb(void *data, const Efl_Event *event EINA_UNUSED)
         current_calc = evas_smart_objects_calculate_count_get(evas_object_evas_get(event->object));
         if (sid->requested_page.loop_cnt == current_calc)
           {
-             ELM_SAFE_FREE(sid->scrollto.x.animator, ecore_animator_del);
-             ELM_SAFE_FREE(sid->scrollto.y.animator, ecore_animator_del);
+             ELM_ANIMATOR_DISCONNECT(sid->obj, sid->scrollto.x.animator, _elm_scroll_scroll_to_x_animator, sid);
+             ELM_ANIMATOR_DISCONNECT(sid->obj, sid->scrollto.y.animator, _elm_scroll_scroll_to_y_animator, sid);
 
              x = sid->pagesize_h * sid->requested_page.h;
              x = (sid->is_mirrored ? _elm_scroll_x_mirrored_get(sid->obj, x) : x);
