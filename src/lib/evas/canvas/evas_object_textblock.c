@@ -3453,6 +3453,11 @@ _layout_format_push(Ctxt *c, Evas_Object_Textblock_Format *fmt,
         *fmt = c->o->default_format.format;
         fmt->ref = 1;
         fmt->font.bitmap_scalable = _FMT_INFO(bitmap_scalable);
+        /* TIZEN_ONLY(20180509): Fix default values for text alignment */
+        fmt->halign = 0.0;
+        fmt->halign_auto = EINA_TRUE;
+        fmt->valign = -1.0;
+        /* END */
 
         // Apply font if specified
         if (_FMT_INFO(font))
