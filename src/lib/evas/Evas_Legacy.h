@@ -7034,6 +7034,84 @@ EAPI Eina_Bool evas_object_grid_mirrored_get(const Eo *obj);
  */
 
 /**
+ *
+ * @brief Adds an output to the canvas
+ *
+ * @param[in] e The canvas to add the output to
+ * @return The output
+ *
+ * @see evas_out_engine_info_set
+ * @see evas_output_viewport_set
+ * @see evas_output_size_set
+ *
+ * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ */
+/** @deprecated evas_out_add */
+EAPI Evas_Out *evas_out_add(Evas *e) EINA_DEPRECATED;
+
+/**
+ *
+ * @brief Deletes an output
+ *
+ * @param[in] evo The output object
+ *
+ * @see evas_out_add
+ *
+ * @since 1.8
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARBLE @since_tizen 3.0
+ * @endif
+ *
+ */
+/** @deprecated evas_output_del */
+EAPI void evas_output_del(Evas_Out *evo) EINA_DEPRECATED;
+
+/**
+ * @internal
+ *
+ * @brief Sets the viewport region of the canvas that the
+ * output display.
+ *
+ * This sets both the viewport region in the canvas that displays on the given
+ * output, but also the viewport size will match the output resolution 1:1.
+ *
+ * @param[in] obj The object
+ * @param[in] x
+ * @param[in] y
+ * @param[in] w
+ * @param[in] h
+ *
+ * @ingroup Evas_Canvas
+ */
+/** @deprecated evas_output_view_set */
+EAPI void evas_output_view_set(Evas_Out *obj, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h) EINA_DEPRECATED;
+
+/**
+ *
+ * @brief Gets the viewport region of the canvas that the output display.
+ *
+ * @param[in] obj The object
+ * @param[out] x
+ * @param[out] y
+ * @param[out] w
+ * @param[out] h
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ * @ingroup Evas_Canvas
+ */
+/** @deprecated evas_output_view_get */
+EAPI void evas_output_view_get(const Evas_Out *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h) EINA_DEPRECATED;
+
+/**
  * @brief Sets the output framespace size of the render engine of the given
  * evas.
  *
