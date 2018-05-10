@@ -671,6 +671,9 @@ typedef struct
 } Phase1_Context;
 
 #define RENDCACHE 1
+//TIZEN_ONLY(20180510): disable render cache feature
+#undef RENDCACHE
+//
 
 #ifdef RENDCACHE
 static Render_Cache *
