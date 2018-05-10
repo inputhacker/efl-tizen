@@ -1984,7 +1984,7 @@ _show_finished_cb(void *data,
                   const char *emission EINA_UNUSED,
                   const char *source EINA_UNUSED)
 {
-   ELM_CTXPOPUP_DATA_GET(obj, sd);
+   ELM_CTXPOPUP_DATA_GET(data, sd);
    sd->show_finished = EINA_TRUE;
    elm_object_focus_set(data, EINA_TRUE);
 }
