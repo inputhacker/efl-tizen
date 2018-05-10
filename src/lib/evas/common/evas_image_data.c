@@ -129,6 +129,7 @@ evas_common_rgba_image_colorspace_set(Image_Entry* ie_dst, Evas_Colorspace cspac
       case EVAS_COLORSPACE_ARGB8888:
       case EVAS_COLORSPACE_AGRY88:
       case EVAS_COLORSPACE_GRY8:
+      case EVAS_COLORSPACE_PALETTE:
 	if (dst->cs.data)
 	  {
 	     if (!dst->cs.no_free) free(dst->cs.data);
@@ -141,6 +142,7 @@ evas_common_rgba_image_colorspace_set(Image_Entry* ie_dst, Evas_Colorspace cspac
              dst->image.data = NULL;
              dst->image.no_free = 0;
           }
+
         break;
       case EVAS_COLORSPACE_YCBCR422P601_PL:
       case EVAS_COLORSPACE_YCBCR422P709_PL:

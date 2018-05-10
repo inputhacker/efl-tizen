@@ -57,6 +57,7 @@ struct _Evas_Object_Image_Load_Opts
       int scale_hint;
    } scale_load;
    Eina_Bool  orientation : 1;
+   Eina_Bool  can_load_colormap : 1;
 };
 
 struct _Evas_Object_Image_Pixels
@@ -364,6 +365,13 @@ _evas_image_eo_base_constructor(Eo *eo_obj, Evas_Image_Data *o)
    o->prev = eina_cow_alloc(evas_object_image_state_cow);
    o->proxy_src_clip = EINA_TRUE;
 
+   if (!strcmp(obj->layer->evas->engine.module->definition->name, "wayland_egl"))
+     {
+        EINA_COW_LOAD_OPTS_WRITE_BEGIN(o, low)
+           low->can_load_colormap = EINA_TRUE;
+        EINA_COW_LOAD_OPTS_WRITE_END(o, low)
+     }
+
    cspace = ENFN->image_colorspace_get(ENDT, o->engine_data);
    if (cspace != o->cur->cspace)
      {
@@ -487,6 +495,7 @@ _image_init_set(const Eina_File *f, const char *file, const char *key,
    lo->scale_load.scale_hint = o->load_opts->scale_load.scale_hint;
    lo->orientation = o->load_opts->orientation;
    lo->degree = 0;
+   lo->can_load_colormap = o->load_opts->can_load_colormap;
 }
 
 static void
@@ -2817,6 +2826,7 @@ evas_object_image_load(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, Eva
    lo.scale_load.scale_hint = o->load_opts->scale_load.scale_hint;
    lo.orientation = o->load_opts->orientation;
    lo.degree = 0;
+   lo.can_load_colormap = o->load_opts->can_load_colormap;
    if (o->cur->mmaped_source)
      o->engine_data = ENFN->image_mmap
        (ENDT,

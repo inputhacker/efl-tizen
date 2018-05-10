@@ -136,6 +136,7 @@ _evas_common_rgba_image_surface_size(unsigned int w, unsigned int h,
 
    switch (cspace)
      {
+      case EVAS_COLORSPACE_PALETTE:
       case EVAS_COLORSPACE_GRY8: siz = w * h * sizeof(DATA8); break;
       case EVAS_COLORSPACE_AGRY88: siz = w * h * sizeof(DATA16); break;
       case EVAS_COLORSPACE_RGBA8_ETC2_EAC:

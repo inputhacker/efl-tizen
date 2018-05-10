@@ -41,7 +41,8 @@ typedef enum _Emile_Colorspace
   EMILE_COLORSPACE_RGBA_S3TC_DXT2 = 15,	/**< DirectDraw DXT2 format with premultiplied RGBA. Not supported by OpenGL itself. @since 1.11 */
   EMILE_COLORSPACE_RGBA_S3TC_DXT3 = 16,	/**< OpenGL COMPRESSED_RGBA_S3TC_DXT3_EXT format with RGBA. @since 1.11 */
   EMILE_COLORSPACE_RGBA_S3TC_DXT4 = 17,	/**< DirectDraw DXT4 format with premultiplied RGBA. Not supported by OpenGL itself. @since 1.11 */
-  EMILE_COLORSPACE_RGBA_S3TC_DXT5 = 18	/**< OpenGL COMPRESSED_RGBA_S3TC_DXT5_EXT format with RGBA. @since 1.11 */
+  EMILE_COLORSPACE_RGBA_S3TC_DXT5 = 18,	/**< OpenGL COMPRESSED_RGBA_S3TC_DXT5_EXT format with RGBA. @since 1.11 */
+  EMILE_COLORSPACE_PALETTE = 19
 } Emile_Colorspace;
 
 /**
@@ -159,10 +160,20 @@ struct _Emile_Image_Property
     unsigned char l, r, t, b;
   } borders;
 
+  struct
+    {
+       unsigned char red;
+       unsigned char green;
+       unsigned char blue;
+       unsigned char alpha;
+    } palette[256];
+
   const Emile_Colorspace *cspaces;
   Emile_Colorspace cspace;
 
   Emile_Image_Encoding encoding;
+
+  int num_palette;
 
   unsigned int w;
   unsigned int h;
@@ -211,6 +222,7 @@ struct _Emile_Image_Load_Opts
   int scale_down_by;
 
   Eina_Bool orientation;
+  Eina_Bool can_load_colormap;
 };
 
 // FIXME: should we set region at load time, instead of head time

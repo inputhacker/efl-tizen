@@ -273,6 +273,7 @@ eng_image_colorspace_set(void *data, void *image, Evas_Colorspace cspace)
    evas_cache_image_colorspace(&im->im->cache_entry, cspace);
    switch (cspace)
      {
+      case EVAS_COLORSPACE_PALETTE:
       case EVAS_COLORSPACE_ARGB8888:
          if (im->cs.data)
            {
