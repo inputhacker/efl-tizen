@@ -656,6 +656,14 @@ struct _Image_Entry
         Evas_Image_Load_Func *loader;
      } info;
 
+   struct
+     {
+        DATA8 red;
+        DATA8 green;
+        DATA8 blue;
+        DATA8 alpha;
+     } palette[256];
+
    SLK(lock);
    SLK(lock_cancel);
 
@@ -673,6 +681,7 @@ struct _Image_Entry
    int                    connect_num;
    int                    channel;
    int                    load_error;
+   int                    num_palette;
 };
 
 struct _Engine_Image_Entry

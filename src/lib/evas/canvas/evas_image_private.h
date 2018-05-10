@@ -48,6 +48,7 @@ struct _Evas_Object_Image_Load_Opts
       int scale_hint;
    } scale_load;
    Eina_Bool  orientation : 1;
+   Eina_Bool  can_load_colormap : 1;
 };
 
 struct _Evas_Object_Image_Pixels

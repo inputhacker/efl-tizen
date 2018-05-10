@@ -178,6 +178,7 @@ _evas_image_file_header(Evas_Module *em, Image_Entry *ie, int *error)
 {
    Evas_Image_Load_Func *evas_image_load_func = NULL;
    Eina_Bool r = EINA_TRUE;
+   int i;
 
    if (!evas_module_load(em)) goto load_error;
    evas_image_load_func = em->functions;
@@ -226,6 +227,24 @@ _evas_image_file_header(Evas_Module *em, Image_Entry *ie, int *error)
              if (property.cspaces) ie->cspaces = property.cspaces;
              ie->flags.rotated = property.rotated;
              ie->flags.flipped = property.flipped;
+             ie->num_palette = property.num_palette;
+
+             for (i = 0; i < ie->num_palette; i++)
+               {
+                  ie->palette[i].red = property.palette[i].red;
+                  ie->palette[i].green = property.palette[i].green;
+                  ie->palette[i].blue = property.palette[i].blue;
+                  ie->palette[i].alpha = property.palette[i].alpha;
+#if 0
+                  ERR("[%d] %d %d %d %d", i,
+                      ie->palette[i].red,
+                      ie->palette[i].green,
+                      ie->palette[i].blue,
+                      ie->palette[i].alpha
+                     );
+#endif
+               }
+
              r = EINA_FALSE;
           }
         else

@@ -93,8 +93,11 @@ evas_image_load_file_head_png(void *loader_data,
    png_infop info_ptr = NULL;
    png_uint_32 w32, h32;
    int bit_depth, color_type, interlace_type;
+   int num_trans;
    volatile char hasa;
    volatile Eina_Bool r = EINA_FALSE;
+   png_colorp palette;
+   png_bytep trans;
 
    opts = loader->opts;
    f = loader->f;
@@ -203,6 +206,32 @@ evas_image_load_file_head_png(void *loader_data,
          break;
       case PNG_COLOR_TYPE_GRAY:
          if (!hasa) prop->cspaces = cspace_grey;
+         break;
+      case PNG_COLOR_TYPE_PALETTE:
+         if (!opts->emile.can_load_colormap) break;
+         if (png_get_PLTE(png_ptr, info_ptr, &palette, &prop->num_palette)
+             != PNG_INFO_PLTE)
+           {
+              *error = EVAS_LOAD_ERROR_GENERIC;
+              goto close_file;
+           }
+         int i;
+         for (i = 0; i < prop->num_palette; i++)
+           {
+              prop->palette[i].red = palette[i].red;
+              prop->palette[i].green = palette[i].green;
+              prop->palette[i].blue = palette[i].blue;
+              prop->palette[i].alpha = 0xff;
+           }
+         if (png_get_tRNS(png_ptr, info_ptr, &trans, &num_trans, NULL)
+             == PNG_INFO_tRNS)
+           {
+              for (i = 0; i < num_trans; i++)
+                {
+                   prop->palette[i].alpha = trans[i];
+                }
+           }
+
          break;
      }
    if (hasa) prop->alpha = 1;
@@ -325,7 +354,8 @@ evas_image_load_file_data_png(void *loader_data,
      }
 
    surface = pixels;
-   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)
+       && !((color_type == PNG_COLOR_TYPE_PALETTE) && opts->emile.can_load_colormap))
      {
         /* expand transparency entry -> alpha channel if present */
         png_set_tRNS_to_alpha(png_ptr);
@@ -337,7 +367,8 @@ evas_image_load_file_data_png(void *loader_data,
 
    /* Prep for transformations...  ultimately we want ARGB */
    /* expand palette -> RGB if necessary */
-   if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
+   if ((color_type == PNG_COLOR_TYPE_PALETTE) && !opts->emile.can_load_colormap)
+     png_set_palette_to_rgb(png_ptr);
    /* expand gray (w/reduced bits) -> 8-bit RGB if necessary */
    if ((color_type == PNG_COLOR_TYPE_GRAY) ||
        (color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
@@ -378,8 +409,12 @@ evas_image_load_file_data_png(void *loader_data,
          pack_offset = sizeof(DATA16);
          break;
       case EVAS_COLORSPACE_GRY8: pack_offset = sizeof(DATA8); break;
+      case EVAS_COLORSPACE_PALETTE: break;
       default: abort();
      }
+
+   if ((color_type == PNG_COLOR_TYPE_PALETTE) && opts->emile.can_load_colormap)
+     pack_offset = sizeof(DATA8);
 
    passes = png_set_interlace_handling(png_ptr);
    

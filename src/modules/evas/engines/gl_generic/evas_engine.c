@@ -332,6 +332,7 @@ eng_image_colorspace_set(void *engine, void *image, Evas_Colorspace cspace)
    evas_gl_common_image_alloc_ensure(im);
    switch (cspace)
      {
+      case EVAS_COLORSPACE_PALETTE:
       case EVAS_COLORSPACE_ARGB8888:
          evas_cache_image_colorspace(&im->im->cache_entry, cspace);
          if (im->cs.data)
