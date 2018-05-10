@@ -168,10 +168,20 @@ struct _Emile_Image_Property
     unsigned char l, r, t, b;
   } borders;
 
+  struct
+    {
+       unsigned char red;
+       unsigned char green;
+       unsigned char blue;
+       unsigned char alpha;
+    } palette[256];
+
   const Emile_Colorspace *cspaces;
   Emile_Colorspace cspace;
 
   Emile_Image_Encoding encoding;
+
+  int num_palette;
 
   unsigned int w;
   unsigned int h;
@@ -220,6 +230,7 @@ struct _Emile_Image_Load_Opts
   int scale_down_by;
 
   Eina_Bool orientation;
+  Eina_Bool can_load_colormap;
 };
 
 // FIXME: should we set region at load time, instead of head time

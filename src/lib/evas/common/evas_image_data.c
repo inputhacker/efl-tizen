@@ -170,6 +170,7 @@ evas_common_rgba_image_colorspace_set(Image_Entry* ie, Evas_Colorspace cspace)
       case EVAS_COLORSPACE_ARGB8888:
       case EVAS_COLORSPACE_AGRY88:
       case EVAS_COLORSPACE_GRY8:
+      case EVAS_COLORSPACE_PALETTE:
         // all good
         break;
       case EVAS_COLORSPACE_ETC1:

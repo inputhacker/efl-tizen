@@ -228,7 +228,15 @@ _efl_canvas_image_internal_efl_object_constructor(Eo *eo_obj, Evas_Image_Data *o
    o->prev = eina_cow_alloc(evas_object_image_state_cow);
    o->proxy_src_clip = EINA_TRUE;
 
+   if (!strcmp(obj->layer->evas->engine.module->definition->name, "wayland_egl"))
+     {
+        EINA_COW_LOAD_OPTS_WRITE_BEGIN(o, low)
+           low->can_load_colormap = EINA_TRUE;
+        EINA_COW_LOAD_OPTS_WRITE_END(o, low)
+     }
+
    cspace = ENFN->image_colorspace_get(ENC, o->engine_data);
+
    if (cspace != o->cur->cspace)
      {
         EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
@@ -307,6 +315,7 @@ _evas_image_init_set(const Eina_File *f, const char *key,
    lo->emile.scale_load.scale_hint = o->load_opts->scale_load.scale_hint;
    lo->emile.orientation = o->load_opts->orientation;
    lo->emile.degree = 0;
+   lo->emile.can_load_colormap = o->load_opts->can_load_colormap;
    lo->skip_head = o->skip_head;
 }
 
@@ -1277,6 +1286,7 @@ _evas_image_load(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, Evas_Imag
    lo.emile.scale_load.scale_hint = o->load_opts->scale_load.scale_hint;
    lo.emile.orientation = o->load_opts->orientation;
    lo.emile.degree = 0;
+   lo.emile.can_load_colormap = o->load_opts->can_load_colormap;
    lo.skip_head = o->skip_head;
    o->engine_data = ENFN->image_mmap(ENC, o->cur->f, o->cur->key, &o->load_error, &lo);
 

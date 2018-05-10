@@ -740,6 +740,7 @@ static const Evas_Image_Load_Opts prevent = {
       0,
       0,
 
+      EINA_FALSE,
       EINA_FALSE
    },
    EINA_FALSE
@@ -757,7 +758,8 @@ _evas_cache_image_loadopts_append(char *hkey, Evas_Image_Load_Opts **plo)
            (EINA_DBL_EQ(lo->emile.dpi, 0.0)) &&
            ((lo->emile.w == 0) || (lo->emile.h == 0)) &&
            ((lo->emile.region.w == 0) || (lo->emile.region.h == 0)) &&
-           (lo->emile.orientation == 0)
+           (lo->emile.orientation == 0) &&
+           (lo->emile.can_load_colormap == 0)
        ))
      {
         *plo = (Evas_Image_Load_Opts*) &prevent;
@@ -794,6 +796,27 @@ _evas_cache_image_loadopts_append(char *hkey, Evas_Image_Load_Opts **plo)
              hkey[offset] = '/';
              offset += 1;
              hkey[offset] = 'o';
+             offset += 1;
+          }
+        else
+          {
+             hkey[offset] = '/';
+             offset += 1;
+             hkey[offset] = 'x';
+             offset += 1;
+          }
+        if (lo->emile.can_load_colormap)
+          {
+             hkey[offset] = '/';
+             offset += 1;
+             hkey[offset] = 'o';
+             offset += 1;
+          }
+        else
+          {
+             hkey[offset] = '/';
+             offset += 1;
+             hkey[offset] = 'x';
              offset += 1;
           }
      }

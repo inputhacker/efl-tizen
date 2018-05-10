@@ -18,7 +18,8 @@ enum Efl.Gfx.Colorspace {
   rgba_s3tc_dxt2 = 15,  [[DirectDraw DXT2 format with premultiplied RGBA. Not supported by OpenGL itself. @since 1.11.]]
   rgba_s3tc_dxt3 = 16,  [[OpenGL COMPRESSED_RGBA_S3TC_DXT3_EXT format with RGBA. @since 1.11.]]
   rgba_s3tc_dxt4 = 17,  [[DirectDraw DXT4 format with premultiplied RGBA. Not supported by OpenGL itself. @since 1.11.]]
-  rgba_s3tc_dxt5 = 18   [[OpenGL COMPRESSED_RGBA_S3TC_DXT5_EXT format with RGBA. @since 1.11.]]
+  rgba_s3tc_dxt5 = 18,  [[OpenGL COMPRESSED_RGBA_S3TC_DXT5_EXT format with RGBA. @since 1.11.]]
+  palette
 }
 
 enum Efl.Gfx.Render_Op {
