@@ -828,6 +828,9 @@ _evas_render_phase1_object_mapped_had_restack(Phase1_Context *p1ctx,
 }
 
 #define RENDCACHE 1
+//TIZEN_ONLY(20180510): disable render cache feature
+#undef RENDCACHE
+//
 
 static Eina_Bool
 _evas_render_phase1_object_changed_smart(Phase1_Context *p1ctx,
