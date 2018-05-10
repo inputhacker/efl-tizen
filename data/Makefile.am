@@ -3,6 +3,9 @@ MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST =
 CLEANFILES =
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_EFL
+
 ########################################################################
 # Embryo
 embryofilesdir = $(datadir)/embryo/include
@@ -77,8 +80,14 @@ mimedir = $(datadir)/mime/packages
 mime_DATA = edje/edje.xml
 EXTRA_DIST += $(mime_DATA)
 
+endif
+##
+
 # Helper for people using EDJ
 include ../src/Makefile_Edje_Helper.am
+
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_EFL
 
 ########################################################################
 # Emotion
@@ -118,6 +127,12 @@ eluafilesdir = $(datadir)/elua
 eluafiles_DATA = elua/checkme
 EXTRA_DIST += $(eluafiles_DATA)
 
+endif
+##
+
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_ELM
+
 #######################################################################
 # Elementary
 
@@ -129,10 +144,19 @@ CLEANFILES += elementary/themes/default.edj
 
 include elementary/themes/Makefile.am
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_EFL
 elementary/themes/default.edj: elementary/themes/default.edc $(elementary_themes_files) $(efl_ui_themes_files) $(top_builddir)/src/bin/edje/edje_cc${EXEEXT}
 	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/themes/; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) $(EDJE_CC_ELM_FLAGS) $< $@
+else
+elementary/themes/default.edj: elementary/themes/default.edc $(elementary_themes_files) $(efl_ui_themes_files)
+	$(AM_V_EDJ) \
+	$(MKDIR_P) elementary/themes/; \
+	$(EDJE_CC) $(EDJE_CC_FLAGS) $(EDJE_CC_ELM_FLAGS) $< $@
+endif
+##
 
 # desktop files
 
@@ -253,3 +277,5 @@ elementary/objects/test_prefs.epb: elementary/objects/test_prefs.epc
 	$(MKDIR_P) elementary/objects/; \
 	$(ELM_PREFS_CC) $(ELM_PREFS_FLAGS) $< $@
 
+endif
+##

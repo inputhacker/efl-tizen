@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_ELM
 if EFL_BUILD_DOC
 
 include ../../Makefile_Elm_Helpers.am
@@ -111,6 +113,8 @@ $(top_builddir)/src/lib/elementary/libelementary.la \
 @ECORE_EVAS_LDFLAGS@
 
 endif
+endif
+##
 
 EXTRA_DIST = \
 	widget_preview_actionslider.c \
