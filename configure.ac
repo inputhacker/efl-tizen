@@ -5499,6 +5499,27 @@ EFL_LIB_START([Elementary])
 
 ### Additional options to configure
 
+## TIZEN_ONLY(20180509): support elementary optional build
+AC_ARG_WITH([elementary],
+   [AS_HELP_STRING([--with-elementary=@<:@efl/elm/both@:>@],[Select Elemnetary build type @<:@default=both@:>@])],
+   [build_elm=${withval}],
+   [build_elm="both"])
+
+AM_CONDITIONAL([BUILD_TIZEN_EFL], [test "x${build_elm}" = "xefl" || test "x${build_elm}" = "xboth"])
+AC_DEFINE_IF([BUILD_TIZEN_EFL],
+        [test "x${build_elm}" = "xefl" || test "x${build_elm}" = "xboth"],
+        [1],
+        [Build EFL library except Elementary])
+AC_SUBST([BUILD_TIZEN_EFL])
+
+AM_CONDITIONAL([BUILD_TIZEN_ELM], [test "x${build_elm}" = "xelm" || test "x${build_elm}" = "xboth"])
+AC_DEFINE_IF([BUILD_TIZEN_ELM],
+        [test "x${build_elm}" = "xelm" || test "x${build_elm}" = "xboth"],
+        [1],
+        [Build Elementary library ])
+AC_SUBST([BUILD_TIZEN_ELM])
+##
+
 ## Elementary base dir
 
 AC_ARG_WITH([elementary-base-dir],
@@ -5574,6 +5595,36 @@ EFL_OPTIONAL_INTERNAL_DEPEND_PKG([ELEMENTARY], [${build_ecore_evas_wayland}], [e
 
 EFL_OPTIONAL_DEPEND_PKG([ELEMENTARY], [${want_elput}], [ELPUT], [xkbcommon])
 EFL_OPTIONAL_DEPEND_PKG([ELEMENTARY], [${want_wayland}], [WAYLAND], [wayland-client])
+
+## TIZEN_ONLY(20180509): support elementary optional build
+if test "x${build_elm}" = "xelm" ; then
+
+EFL_DEPEND_PKG([ELEMENTARY], [EINA], [eina >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EMILE], [emile >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EET], [eet >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EO], [eo >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EFL], [efl >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EVAS], [evas >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ECORE], [ecore >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ECORE_EVAS], [ecore-evas >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ECORE_FILE], [ecore-file >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ECORE_INPUT], [ecore-input >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EDJE], [edje >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ETHUMB], [ethumb >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ETHUMB_CLIENT], [ethumb_client >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EMOTION], [emotion >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ECORE_IMF], [ecore-imf >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ECORE_CON], [ecore-con >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ELDBUS], [eldbus >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EFREET], [efreet >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EFREET_MIME], [efreet-mime >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EFREET_TRASH], [efreet-trash >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [EIO], [eio >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ELOCATION], [elocation >= efl_version])
+EFL_DEPEND_PKG([ELEMENTARY], [ECORE_WL2], [ecore-wl2 >= efl_version])
+
+fi
+##
 
 dnl Special case deps for ecore_drm
 if test "${want_drm}" = "yes"; then

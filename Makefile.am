@@ -5,13 +5,19 @@ AM_DISTCHECK_CONFIGURE_FLAGS = \
 --with-systemdunitdir=. \
 --enable-always-build-examples
 
-SUBDIRS = src data doc
+## TIZEN_ONLY(20180509): support elementary optional build
+SUBDIRS = src data
+
+if BUILD_TIZEN_EFL
+SUBDIRS += doc
 
 if HAVE_PO
 
 SUBDIRS += po
 
 endif
+endif
+##
 
 MAINTAINERCLEANFILES = \
 Makefile.in \
@@ -119,6 +125,8 @@ endif
 
 pkgconfig_DATA =
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_EFL
 if HAVE_WINDOWS
 pkgconfig_DATA += pc/evil.pc
 endif
@@ -160,9 +168,19 @@ pc/emotion.pc \
 pc/ethumb.pc \
 pc/ethumb_client.pc \
 pc/elocation.pc \
-pc/elementary.pc \
 pc/efl-ui.pc
+endif
+##
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_ELM
+pkgconfig_DATA += \
+pc/elementary.pc
+endif
+##
+
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_EFL
 if HAVE_CXX
 pkgconfig_DATA += \
 pc/eina-cxx.pc \
@@ -301,8 +319,13 @@ endif
 if HAVE_ECORE_DRM2
 pkgconfig_DATA += pc/ecore-drm2.pc
 endif
+endif
+##
 
 # Cmake configs:
+
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_EFL
 efl_cmakeconfigdir = $(libdir)/cmake/Efl/
 efl_cmakeconfig_DATA = \
 cmakeconfig/EflConfig.cmake \
@@ -403,12 +426,20 @@ ethumbclient_cmakeconfigdir =  $(libdir)/cmake/EthumbClient/
 ethumbclient_cmakeconfig_DATA = \
 cmakeconfig/EthumbClientConfig.cmake \
 cmakeconfig/EthumbClientConfigVersion.cmake
+endif
+##
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_ELM
 cmakeconfigdir = $(libdir)/cmake/Elementary
 cmakeconfig_DATA = \
 cmakeconfig/ElementaryConfig.cmake \
 cmakeconfig/ElementaryConfigVersion.cmake
+endif
+##
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_EFL
 emotion_cmakeconfigdir =  $(libdir)/cmake/Emotion/
 emotion_cmakeconfig_DATA = \
 cmakeconfig/EmotionConfig.cmake \
@@ -435,6 +466,9 @@ systemdunitsdir = @USER_SESSION_DIR@
 systemdunits_DATA = \
 systemd-services/ethumb.service
 endif
+endif
+##
+
 EXTRA_DIST += $(systemdunits_DATA)
 
 

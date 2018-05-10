@@ -26,7 +26,11 @@ installed_eflcxxextraheadersdir = $(includedir)/efl-cxx-@VMAJ@/cxx
 dist_installed_eflcxxextraheaders_DATA = lib/efl/cxx/efl_part_impl.hh
 
 installed_elementarycxxmainheadersdir = $(includedir)/elementary-cxx-@VMAJ@/
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_ELM
 dist_installed_elementarycxxmainheaders_DATA = lib/elementary/Elementary.hh
+endif
+##
 
 installed_evascxxmainheadersdir = $(includedir)/evas-cxx-@VMAJ@/
 dist_installed_evascxxmainheaders_DATA = lib/evas/Evas.hh

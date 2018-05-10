@@ -169,6 +169,15 @@ elm_private_eolian_files = \
 	lib/elementary/efl_datetime_manager.eo \
 	$(NULL)
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if !BUILD_TIZEN_EFL
+elm_private_eolian_files += \
+	lib/evas/canvas/evas_box.eo \
+	lib/evas/canvas/evas_table.eo \
+	$(NULL)
+endif
+##
+
 # Legacy classes - not part of public EO API
 elm_legacy_eolian_files = \
 	lib/elementary/efl_ui_button_legacy.eo \
@@ -1287,7 +1296,13 @@ prefs_filesdir = $(libdir)/elementary/modules/prefs/$(MODULE_ARCH)
 prefs_files_DATA = modules/elementary/prefs/elm_prefs_swallow.edj
 CLEANFILES += $(prefs_files_DATA)
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_EFL
 modules/elementary/prefs/elm_prefs_swallow.edj: modules/elementary/prefs/elm_prefs_swallow.edc bin/edje/edje_cc${EXEEXT}
+else
+modules/elementary/prefs/elm_prefs_swallow.edj: modules/elementary/prefs/elm_prefs_swallow.edc
+endif
+##
 	$(AM_V_EDJ) \
 	$(MKDIR_P) modules/elementary/prefs/ ; \
 	$(EDJE_CC) $(EDJE_CC_FLAGS) -id $(top_srcdir)/src/modules/elementary/prefs/ $< $@

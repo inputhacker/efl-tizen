@@ -71,6 +71,34 @@ BuildRequires:  pkgconfig(xkbcommon)
 BuildRequires:  systemd-devel
 BuildRequires:  pkgconfig(ttrace)
 
+###
+BuildRequires:  pkgconfig(eina)
+BuildRequires:  pkgconfig(emile)
+BuildRequires:  pkgconfig(eo)
+BuildRequires:  pkgconfig(efl)
+BuildRequires:  pkgconfig(evas)
+BuildRequires:  pkgconfig(ecore-core)
+BuildRequires:  pkgconfig(ecore-evas)
+BuildRequires:  pkgconfig(ecore-file)
+BuildRequires:  pkgconfig(ecore-input)
+BuildRequires:  pkgconfig(edje)
+BuildRequires:  pkgconfig(ethumb)
+BuildRequires:  pkgconfig(ethumb_client)
+BuildRequires:  pkgconfig(emotion)
+BuildRequires:  pkgconfig(ecore-imf)
+BuildRequires:  pkgconfig(ecore-con)
+BuildRequires:  pkgconfig(eldbus)
+BuildRequires:  pkgconfig(efreet)
+BuildRequires:  pkgconfig(efreet-mime)
+BuildRequires:  pkgconfig(efreet-trash)
+BuildRequires:  pkgconfig(eio)
+BuildRequires:  pkgconfig(elocation)
+BuildRequires:  pkgconfig(ecore-wl2)
+BuildRequires:  eet-tools
+BuildRequires:  edje-tools
+BuildRequires:  eolian
+###
+
 #eldbus
 BuildRequires:  dbus-devel
 
@@ -1040,66 +1068,6 @@ License: BSD-2-Clause
 %description -n elua-devel
 Development files for elua
 
-
-%package -n elementary
-Summary: EFL toolkit for small touchscreens
-Group:    Graphics & UI Framework/Development
-License:        LGPL-2.1+ and CC-BY-SA-3.0
-
-%description -n elementary
-Elementary is a widget set. It is a new-style of widget set much more canvas
-object based than anything else. Why not ETK? Why not EWL? Well they both
-tend to veer away from the core of Evas, Ecore and Edje a lot to build their
-own worlds. Also I wanted something focused on embedded devices -
-specifically small touchscreens. Unlike GTK+ and Qt, 75% of the "widget set"
-is already embodied in a common core - Ecore, Edje, Evas etc. So this
-fine-grained library splitting means all of this is shared, just a new
-widget "personality" is on top. And that is... Elementary, my dear watson
-Elementary
-
-%package -n elementary-tizen
-Summary:        EFL toolkit for small touchscreens for Tizen devices
-Requires:       elementary
-
-%description -n elementary-tizen
-Elementary is a widget set. It is a new-style of widget set much more canvas
-object based than anything else. Why not ETK? Why not EWL? Well they both
-tend to veer away from the core of Evas, Ecore and Edje a lot to build their
-own worlds. Also I wanted something focused on embedded devices -
-specifically small touchscreens. Unlike GTK+ and Qt, 75% of the "widget set"
-is already embodied in a common core - Ecore, Edje, Evas etc. So this
-fine-grained library splitting means all of this is shared, just a new
-widget "personality" is on top. And that is... Elementary, my dear watson.
-Elementary. This is an alternative package for Tizen devices that uses different
-set of source code.
-
-%package -n elementary-examples
-Summary:   EFL elementary examples
-
-%description -n elementary-examples
-EFL elementary examples
-
-%package -n elementary-tools
-Summary:   EFL elementary configuration and test apps
-
-%description -n elementary-tools
-EFL elementary configuration and test apps package
-
-%package -n elementary-devel
-Summary:        Development files for elementary
-Group:          Development/Libraries
-Requires:       %{name} = %{version}
-Recommends:     elementary
-
-%description -n elementary-devel
-Development components for the elementary package
-
-%package -n elementary-theme
-Summary:        Default theme for elementary
-
-%description -n elementary-theme
-Default theme which provides various styles for elementary.
-
 %package -n efl-locale
 Summary:        Translations and Locale for package %{name}
 Group: Translations
@@ -1181,9 +1149,6 @@ CFLAGS+=" -DMESA_EGL_NO_X11_HEADERS "
 
 CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 
-# disable eo thread check?
-#CFLAGS+=" -DDISABLE_EO_THREAD_CHECK"
-
 %if "%{asan}" == "1"
 %restore_fcommon
 %endif
@@ -1233,16 +1198,15 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-libraw \
     --disable-systemd \
     --disable-cserve \
-    --enable-tizenaudio \
     --with-elementary-base-dir="share/.elementary" \
-    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb \
-    ac_cv_func_getuid=no
+    --with-elementary=efl \
+    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb
 #    --enable-systemd \
 #    --enable-drm \
 #    --enable-gl-drm \
 
-%__make %{?_smp_mflags} 2>&1 | \
-sed \
+%__make %{?_smp_mflags} --trace \
+2>&1 | sed \
 -e 's%^.*: error: .*$%\x1b[37;41m&\x1b[m%' \
 -e 's%^.*: warning: .*$%\x1b[30;43m&\x1b[m%'
 
@@ -1319,21 +1283,6 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %post -n efl-wl -p /sbin/ldconfig
 %postun -n efl-wl -p /sbin/ldconfig
 
-%post -n elementary -p /sbin/ldconfig
-%postun -n elementary -p /sbin/ldconfig
-
-%post -n elementary-tizen
-rm -f %{_libdir}/libelementary.so.1
-#ln -sf %{_libdir}/libelementary.so.1.99.100 %{_libdir}/libelementary.so.1
-ldconfig -l %{_libdir}/libelementary.so.1.99.100
-
-%preun -n elementary-tizen
-rm -f %{_libdir}/libelementary.so.1
-#ln -sf %{_libdir}/libelementary.so.1.20.* %{_libdir}/libelementary.so.1
-ldconfig -l %{_libdir}/libelementary.so.1.20.*
-
-%postun -n elementary-tizen -p /sbin/ldconfig
-
 
 %files -n %{name}
 %manifest %{name}.manifest
@@ -1356,7 +1305,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libefl.so
 %{_libdir}/pkgconfig/efl*.pc
 %exclude %{_includedir}/efl-cxx-1/*.hh
-%exclude %{_includedir}/efl-cxx-1/cxx/*.hh
 
 %files -n eina
 %manifest %{name}.manifest
@@ -1724,8 +1672,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_wl2.so.*
-%{_libdir}/ecore_wl2/engines/*/*/module.so
-%exclude /usr/lib/debug/%{_libdir}/ecore_wl2/engines/*/*/module.so.debug
 
 %files -n ecore-wl2-devel
 %manifest %{name}.manifest
@@ -2042,63 +1988,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libelput.so
 %{_libdir}/pkgconfig/elput.pc
 %{_includedir}/elput-1/*.h
-
-%files -n elementary
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%license COPYING
-%{_bindir}/elementary_quicklaunch
-%{_bindir}/elementary_run
-%{_libdir}/edje/modules/elm/v-1.20/module.so
-%{_libdir}/libelementary.so.1
-%{_libdir}/libelementary.so.1.20.*
-%{_datadir}/elementary/edje_externals/*
-%{_datadir}/icons/elementary.png
-%{_libdir}/elementary/modules/
-/usr/lib/debug/%{_libdir}/elementary/modules/
-%exclude %{_datadir}/elementary/config/
-##%{_tmpfilesdir}/elementary.conf
-
-%files -n elementary-tizen
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%{_libdir}/libelementary.so.1.99.*
-
-%if ! %dbus_unavailable
-%files -n elementary-examples
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%{_libdir}/elementary/examples/*
-%endif
-
-%files -n elementary-tools
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%{_datadir}/applications/*
-%{_datadir}/elementary/images/*
-%{_datadir}/elementary/objects/*
-%{_bindir}/elementary_config
-%{_bindir}/elementary_test*
-%{_bindir}/elementary_codegen
-%{_bindir}/elm_prefs_cc
-
-%files -n elementary-devel
-%manifest %{name}.manifest
-%defattr(-,root,root,-)
-%{_includedir}/elementary-1/*.h*
-%{_datadir}/eolian/include/elementary-1/*.eo
-%{_libdir}/libelementary.so
-%{_libdir}/pkgconfig/elementary.pc
-%{_libdir}/cmake/Elementary/ElementaryConfig.cmake
-%{_libdir}/cmake/Elementary/ElementaryConfigVersion.cmake
-/usr/share/eolian/include/elementary-*1/*.eot
-%exclude %{_includedir}/elementary-cxx-1/*.hh
-
-%files -n elementary-theme
-%manifest %{name}.manifest
-%{_datadir}/elementary/themes/*
-%exclude /usr/share/icons/Enlightenment-X
-%exclude /usr/share/elementary/test*
 
 %files -n efl-locale -f %{name}.lang
 %license COPYING

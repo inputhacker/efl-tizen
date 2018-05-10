@@ -1,3 +1,13 @@
+## TIZEN_ONLY(20180509): support elementary optional build
+if !BUILD_TIZEN_EFL
+BUILT_SOURCES += \
+lib/ecore_wl2/efl-aux-hints-client-protocol.h \
+lib/ecore_wl2/www-client-protocol.h \
+lib/ecore_wl2/teamwork-client-protocol.h \
+lib/ecore_wl2/session-recovery-client-protocol.h
+endif
+##
+
 EXTRA_DIST2 += \
 wayland_protocol/efl-aux-hints.xml \
 wayland_protocol/efl-hints.xml \

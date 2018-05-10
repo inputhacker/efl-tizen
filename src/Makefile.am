@@ -31,6 +31,8 @@ GENERATED_LUA_BINDINGS =
 
 EFL_INSTALL_EXEC_HOOK=
 
+## TIZEN_ONLY(20180508): support elementary optional build
+if BUILD_TIZEN_EFL
 include Makefile_Evil.am
 include Makefile_Escape.am
 
@@ -75,15 +77,30 @@ include Makefile_Emotion.am
 include Makefile_Ethumb.am
 include Makefile_Ethumb_Client.am
 include Makefile_Elocation.am
+include Makefile_efl_wl.am
+endif
+##
+
+## TIZEN_ONLY(20180508): support elementary optional build
+if BUILD_TIZEN_ELM
+include Makefile_Eolian_Helper.am
+include Makefile_Elua_Helper.am
+include Makefile_Edje_Helper.am
+include Makefile_Eet_Helper.am
 include Makefile_Elementary_Tizen.am
 include Makefile_Elementary.am
-include Makefile_efl_wl.am
+endif
+##
 
+## TIZEN_ONLY(20180508): support elementary optional build
+if BUILD_TIZEN_EFL
 include Makefile_Cxx.am
 include Makefile_Eolian_Cxx.am
 include Makefile_Efl_Mono.am
 
 include Makefile_Elua.am
+endif
+##
 
 include Makefile_Wayland_Protocols.am
 
@@ -99,8 +116,10 @@ endif
 endif
 endif
 
-include Makefile_Eolian_Js.am
-include Makefile_Efl_Js.am
+## TIZEN_ONLY(20180508): support elementary optional build
+#include Makefile_Eolian_Js.am
+#include Makefile_Efl_Js.am
+##
 
 .PHONY: benchmark examples
 

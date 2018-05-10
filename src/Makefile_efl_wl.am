@@ -29,6 +29,8 @@ lib_efl_wl_libefl_wl_la_LDFLAGS = @EFL_LTLIBRARY_FLAGS@
 
 BUILT_SOURCES += $(nodist_lib_efl_wl_libefl_wl_la_SOURCES)
 
+## TIZEN_ONLY(20180509): support elementary optional build
+if BUILD_TIZEN_ELM
 bin_PROGRAMS += \
 bin/efl_wl/efl_wl_test \
 bin/efl_wl/efl_wl_test_stack
@@ -47,6 +49,8 @@ bin_efl_wl_efl_wl_test_stack_DEPENDENCIES = @USE_EFL_WL_INTERNAL_LIBS@ @USE_ELEM
 bin_efl_wl_efl_wl_test_stack_CPPFLAGS = \
 @EFL_WL_CFLAGS@ \
 @ELEMENTARY_CFLAGS@
+endif
+##
 
 endif
 
