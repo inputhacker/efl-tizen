@@ -3287,6 +3287,8 @@ EAPI void                    evas_language_reinit(void);
  * @ingroup Evas_Canvas
  */
 
+typedef Eo Evas_Out;
+
 /**
  * @ingroup Evas_Font_Group
  *

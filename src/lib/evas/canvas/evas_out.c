@@ -38,6 +38,111 @@ efl_canvas_output_info_get(Evas_Public_Data *e, Efl_Canvas_Output *output)
      e->engine.func->output_info_setup(output->info);
 }
 
+/* deprecated */
+EINA_DEPRECATED EAPI Evas_Out *
+evas_out_add(Evas *e)
+{
+   MAGIC_CHECK(e, Evas, MAGIC_EVAS);
+   return NULL;
+   MAGIC_CHECK_END();
+   Efl_Canvas_Output *r;
+   Evas_Object *eo_obj;
+   r = efl_canvas_output_add(e);
+   if (!r) return eo_obj = NULL;
+   else return eo_obj = r->canvas;
+}
+
+/* deprecated */
+EINA_DEPRECATED EAPI void
+evas_output_del(Evas_Out *evo)
+{
+   Efl_Canvas_Output *output;
+
+   if (evo)
+     {
+        Evas *eo_e;
+        eo_e = evas_object_evas_get((Evas_Object *)evo);
+        Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+        output = eina_list_data_get(e->outputs);
+        if (!output) goto on_error;
+        e = _efl_canvas_output_async_block(output);
+        if (!e) goto on_error;
+
+        if (e->engine.func)
+          {
+             e->engine.func->output_free(_evas_engine_context(e),
+                                         output->output);
+             if (output->info) free(output->info);
+             output->info = NULL;
+          }
+        e->outputs = eina_list_remove(e->outputs, output);
+
+        efl_wref_del(output->canvas, &output->canvas);
+        free(output);
+     }
+
+   return;
+
+on_error:
+   if(output) free(output);
+}
+
+/* deprecated */
+EINA_DEPRECATED EAPI void
+evas_output_view_set(Evas_Out *obj, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h)
+{
+   Efl_Canvas_Output *output;
+
+   if (obj)
+     {
+        Evas *eo_e;
+        eo_e = evas_object_evas_get((Evas_Object *)obj);
+        Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+        output = eina_list_data_get(e->outputs);
+        if (!output) return;
+        e = _efl_canvas_output_async_block(output);
+        if (!e) return;
+
+        if (output->geometry.x != x) goto changed;
+        if (output->geometry.y != y) goto changed;
+        if (output->geometry.w != w) goto changed;
+        if (output->geometry.h != h) goto changed;
+     }
+
+   return;
+
+changed:
+   output->geometry.x = x;
+   output->geometry.y = y;
+   output->geometry.w = w;
+   output->geometry.h = h;
+   output->changed = EINA_TRUE;
+   // XXX: tell evas to add damage if viewport loc/size changed
+}
+
+/* deprecated */
+EINA_DEPRECATED EAPI void
+evas_output_view_get(const Evas_Out *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
+{
+   Efl_Canvas_Output *output;
+
+   if (obj)
+     {
+        Evas *eo_e;
+        eo_e = evas_object_evas_get((Evas_Object *)obj);
+        Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+        output = eina_list_data_get(e->outputs);
+        if (!output) return;
+
+        if (x) *x = output->geometry.x;
+        if (y) *y = output->geometry.y;
+        if (w) *w = output->geometry.w;
+        if (h) *h = output->geometry.h;
+     }
+   return;
+}
+
+
 EAPI Efl_Canvas_Output *
 efl_canvas_output_add(Evas *canvas)
 {
