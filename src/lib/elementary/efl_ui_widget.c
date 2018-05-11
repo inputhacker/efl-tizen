@@ -200,6 +200,7 @@ static const char *legacy_type_table[][2] =
      { "Elm.Index.Item", "Elm_Index_Item" },
      { "Elm.Popup.Item", "Elm_Popup_Item" },
      { "Elm.List.Item", "Elm_List_Item" },
+     { "Elm.Color.Item", "Elm_Color_Item" },
      /* END */
      { NULL, NULL }
 };
@@ -9401,7 +9402,7 @@ _elm_widget_edje_class_get(Evas_Object *obj, const char *style, const char *part
 
    if (klass_name)
      {
-        if (is_legacy)
+        if (is_legacy && strchr(klass_name, "_"))
           {
              eina_strbuf_append(buf, strchr(klass_name, '_') + 1);
              eina_strbuf_tolower(buf);
