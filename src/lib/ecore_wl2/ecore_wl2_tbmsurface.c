@@ -365,8 +365,7 @@ _evas_tbmbuf_surface_destroy(Ecore_Wl2_Surface *surface, void *priv_data)
           if (surf->tbm_surface)
             tbm_surface_internal_set_user_data(surf->tbm_surface, KEY_WINDOW, NULL);
           tbm_surface_queue_destroy(surf->tbm_queue);
-          need_to_tbm_queue = EINA_TRUE;
-          tbm_queue = NULL;
+          surf->tbm_queue = NULL;
         }
       if (tbm_queue_ref)
         --tbm_queue_ref;
@@ -391,9 +390,25 @@ static Ecore_Wl2_Surface_Interface tbmbuf_smanager =
    .flush = _evas_tbmbuf_surface_flush
 };
 
+EAPI void *
+ecore_wl2_tbmbuf_surface_tbm_queue_get(Ecore_Wl2_Surface *surface)
+{
+  Ecore_Wl2_Buffer *surf = NULL;
+  if (!surface) return NULL;
+  Ecore_Wl2_Tbmbuf_Private *p = surface->private_data;
+  if (!p) return NULL;
+
+  surf = p->current;
+  if (surf)
+    {
+      return surf->tbm_queue;
+    }
+  return NULL;
+}
+
 EAPI Ecore_Wl2_Surface *
 ecore_wl2_tbmbuf_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha,
-                                struct wayland_tbm_client *tbm_client, int w, int h, int num_buff)
+                                struct wayland_tbm_client *tbm_client, void *info_tbm_queue, int w, int h, int num_buff)
 {
   Ecore_Wl2_Buffer *surf = NULL;
 
@@ -436,20 +451,19 @@ ecore_wl2_tbmbuf_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha,
   if (num_buff == 1) num_buff = 2;
 
   /* create surface buffers */
-  if (need_to_tbm_queue)
+  if (!info_tbm_queue)
     {
-      tbm_queue =  wayland_tbm_client_create_surface_queue(surf->tbm_client,
+      info_tbm_queue =  wayland_tbm_client_create_surface_queue(surf->tbm_client,
                                                            surf->wl_surface,
                                                            num_buff,
                                                            w, h,
                                                            TBM_FORMAT_ARGB8888);
-      surf->tbm_queue = tbm_queue;
-      need_to_tbm_queue = EINA_FALSE;
+      surf->tbm_queue = info_tbm_queue;
     }
   else
     {
       /* reuse tbm_queue */
-      surf->tbm_queue = tbm_queue;
+      surf->tbm_queue = info_tbm_queue;
       tbm_surface_queue_reset(surf->tbm_queue, w, h, TBM_FORMAT_ARGB8888);
 
       tbm_queue_ref++;

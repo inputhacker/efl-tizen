@@ -45,7 +45,8 @@ _evas_outbuf_setup(int w, int h, Evas_Engine_Info_Wayland *info)
            sw = h;
            sh = w;
          }
-       ob->surface = ecore_wl2_tbmbuf_surface_create(info->info.wl2_win, ob->priv.destination_alpha, info->info.tbm_client, sw, sh, 3);
+       ob->surface = ecore_wl2_tbmbuf_surface_create(info->info.wl2_win, ob->priv.destination_alpha, info->info.tbm_client, info->info.tbm_queue, sw, sh, 3);
+       info->info.tbm_queue = ecore_wl2_tbmbuf_surface_tbm_queue_get(ob->surface);
      }
    // fallback
    if (!ob->surface)

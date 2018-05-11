@@ -1,10 +1,10 @@
 /* Portions of this code have been derived from Weston
  *
- * Copyright © 2008-2012 Kristian Høgsberg
- * Copyright © 2010-2012 Intel Corporation
- * Copyright © 2010-2011 Benjamin Franzke
- * Copyright © 2011-2012 Collabora, Ltd.
- * Copyright © 2010 Red Hat <mjg@redhat.com>
+ * Copyright ⓒ 2008-2012 Kristian Høgsberg
+ * Copyright ⓒ 2010-2012 Intel Corporation
+ * Copyright ⓒ 2010-2011 Benjamin Franzke
+ * Copyright ⓒ 2011-2012 Collabora, Ltd.
+ * Copyright ⓒ 2010 Red Hat <mjg@redhat.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -119,6 +119,7 @@ void _evas_outbuf_redraws_clear(Outbuf *ob);
 
 // TIZEN_ONLY(20171226) : evas tbm_buf backend
 Ecore_Wl2_Surface *ecore_wl2_tbmbuf_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha,
-                                                   struct wayland_tbm_client *tbm_client, int w, int h, int num_buff);
+                                                   struct wayland_tbm_client *tbm_client, void *tbm_queue, int w, int h, int num_buff);
+void *ecore_wl2_tbmbuf_surface_tbm_queue_get(Ecore_Wl2_Surface *surface);
 //
 #endif
