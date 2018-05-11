@@ -1471,7 +1471,7 @@ _evgl_glGetString(GLenum name)
 {
    static char _version[128] = {0};
    static char _glsl[128] = {0};
-   const char *ret, *version_extra;
+   const char *ret;
    EVGL_Resource *rsc;
    EVGL_Context *ctx;
 
@@ -1520,19 +1520,6 @@ _evgl_glGetString(GLenum name)
         _version[sizeof(_glsl) - 1] = '\0';
         return (const GLubyte *) _glsl;
 #endif
-
-      case GL_VERSION:
-        ret = (const char *) EVGL_TH(glGetString, GL_VERSION);
-        if (!ret) return NULL;
-#ifdef GL_GLES
-        version_extra = ret + 10;
-#else
-        version_extra = ret;
-#endif
-        snprintf(_version, sizeof(_version), "OpenGL ES %d.%d Evas GL (%s)",
-                 (int) ctx->version, ctx->version_minor, version_extra);
-        _version[sizeof(_version) - 1] = '\0';
-        return (const GLubyte *) _version;
 
       case GL_EXTENSIONS:
         // Passing the version -  GLESv2/GLESv3.
