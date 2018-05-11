@@ -7218,7 +7218,7 @@ Eo* _elm_atspi_bridge_utils_proxy_create(Eo *parent, const char *svcname, int sv
    free(name);
    //
 
-   ret = efl_add(ELM_ATSPI_PROXY_CLASS, parent, elm_obj_atspi_proxy_constructor(efl_added, type));
+   ret = efl_add(ELM_ATSPI_PROXY_CLASS, parent, elm_obj_atspi_proxy_ctor(efl_added, type));
    if (!ret) return NULL;
 
    snprintf(bus, sizeof(bus), "elm.atspi.proxy.socket.%s-%d", svcname, svcnum);

@@ -654,12 +654,13 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access.Object,
        *******/
    }
    events {
-      moved; [[Called when widget moved]]
+      moved: Efl.Object; [[Called when widget moved]]
+      language,changed: void; [[Called when widget language changed]]
+      access,changed: void; [[Called when accessibility changed]]
+
       // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
-      atspi,highlighted;
-      atspi,unhighlighted;
+      atspi,highlighted: void;
+      atspi,unhighlighted: void;
       //
-      language,changed; [[Called when widget language changed]]
-      access,changed; [[Called when accessibility changed]]
    }
 }

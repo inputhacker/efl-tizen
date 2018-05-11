@@ -1520,7 +1520,7 @@ elm_slider_indicator_visible_mode_get(const Evas_Object *obj)
 
 //TIZEN_ONLY(20161115): apply UI Mirroring for Tizen 3.0 UX
 EOLIAN static Eina_Bool
-_elm_slider_efl_ui_base_mirrored_get(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_pd EINA_UNUSED)
+_elm_slider_efl_ui_base_mirrored_get(const Eo *obj EINA_UNUSED, Elm_Slider_Data *_pd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
@@ -1528,7 +1528,7 @@ _elm_slider_efl_ui_base_mirrored_get(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_p
 
 //TIZEN_ONLY(20161115): apply UI Mirroring for Tizen 3.0 UX
 EOLIAN static void
-_elm_slider_efl_ui_base_mirrored_set(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_pd EINA_UNUSED, Eina_Bool mirrored EINA_UNUSED)
+_elm_slider_efl_ui_base_mirrored_set(Eo *obj EINA_UNUSED, Elm_Slider_Data *_pd EINA_UNUSED, Eina_Bool mirrored EINA_UNUSED)
 {
    return;
 }
@@ -1536,7 +1536,7 @@ _elm_slider_efl_ui_base_mirrored_set(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_p
 
 //TIZEN_ONLY(20170419): fix slider indicator behavior
 EOLIAN static Eina_Bool
-_elm_slider_efl_ui_widget_on_disabled_update(Eo *obj, Efl_Ui_Slider_Data *sd, Eina_Bool disabled)
+_elm_slider_efl_ui_widget_on_disabled_update(Eo *obj, Elm_Slider_Data *sd, Eina_Bool disabled)
 {
    if (!efl_ui_widget_on_disabled_update(efl_super(obj, MY_CLASS), disabled))
      return EINA_FALSE;

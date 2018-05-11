@@ -41,8 +41,8 @@ class Elm.Plug (Efl.Ui.Widget, Efl.Ui.Clickable, Efl.Ui.Legacy)
       //
    }
    events {
-      image,deleted; [[Called when image was deleted]]
-      image,resized; [[Called when image was resized]]
-      message,received;
+      image,deleted: void; [[Called when image was deleted]]
+      image,resized: Eina.Position2D; [[Called when image was resized]]
+      message,received: void;
    }
 }

@@ -232,6 +232,6 @@ class Efl.Ui.Clock (Efl.Ui.Layout.Object)
       //
    }
    events {
-      changed; [[Called when clock changed]]
+      changed: void; [[Called when clock changed]]
    }
 }

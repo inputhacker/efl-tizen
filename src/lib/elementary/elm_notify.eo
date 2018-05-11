@@ -94,11 +94,12 @@ class Elm.Notify (Efl.Ui.Widget, Efl.Ui.Focus.Layer, Efl.Content, Efl.Part, Efl.
       /* END */
    }
    events {
-      block,clicked; [[Called when block was clicked]]
-      timeout; [[Called when notify timed out]]
-      dismissed; [[Called when notify was dismissed]]
+      block,clicked: void; [[Called when block was clicked]]
+      timeout: void; [[Called when notify timed out]]
+      dismissed: void; [[Called when notify was dismissed]]
+
       /* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
-      show,finished; [[Called when notify show animation is finished]]
+      show,finished: void; [[Called when notify show animation is finished]]
       /* END */
    }
 }

@@ -76,7 +76,7 @@ _elm_atspi_ewk_wrapper_proxy_create(const char *plugid, Eo *parent)
         return NULL;
    }
 
-   proxy = efl_add(ELM_ATSPI_PROXY_CLASS, parent, elm_obj_atspi_proxy_constructor(parent, ELM_ATSPI_PROXY_TYPE_PLUG));
+   proxy = efl_add(ELM_ATSPI_PROXY_CLASS, parent, elm_obj_atspi_proxy_ctor(parent, ELM_ATSPI_PROXY_TYPE_PLUG));
    if (!proxy) {
         ERR("Unable to create Elm_Atspi_Proxy object");
         free(bus); free(path);

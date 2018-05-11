@@ -63,6 +63,6 @@ class Elm.Pan (Efl.Canvas.Group)
       Efl.Gfx.Entity.size { set; }
    }
    events {
-      changed; [[Called when pan object changed]]
+      changed: void; [[Called when pan object changed]]
    }
 }

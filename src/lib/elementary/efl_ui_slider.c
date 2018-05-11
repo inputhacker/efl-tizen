@@ -496,7 +496,7 @@ _spacer_down_cb(void *data,
      {
         button_x = ((double)ev->canvas.x - (double)sr.x) / (double)sr.w;
         if (button_x > 1) button_x = 1;
-        if (button_x  0) button_x = 0;
+        if (button_x < 0) button_x = 0;
      }
    else
      {
@@ -791,33 +791,6 @@ _efl_ui_slider_efl_ui_focus_object_on_focus_update(Eo *obj, Efl_Ui_Slider_Data *
 
    return int_ret;
 }
-
-//TIZEN_ONLY(20170419): fix slider indicator behavior
-EOLIAN static Eina_Bool
-_efl_ui_slider_efl_ui_widget_on_disabled_update(Eo *obj, Efl_Ui_Slider_Data *sd, Eina_Bool disabled)
-{
-   if (!efl_ui_widget_on_disabled_update(efl_super(obj, MY_CLASS), disabled))
-     return EINA_FALSE;
-
-   if (sd->popup)
-     {
-        if (disabled)
-          edje_object_signal_emit(sd->popup, "elm,state,disabled", "elm");
-        else
-          edje_object_signal_emit(sd->popup, "elm,state,enabled", "elm");
-     }
-
-   if (sd->popup2)
-     {
-        if (disabled)
-          edje_object_signal_emit(sd->popup2, "elm,state,disabled", "elm");
-        else
-          edje_object_signal_emit(sd->popup2, "elm,state,enabled", "elm");
-     }
-
-   return EINA_TRUE;
-}
-//
 
 // A11Y Accessibility
 
