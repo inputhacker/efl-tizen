@@ -146,7 +146,7 @@ typedef struct _Eldbus_Version
 /**
  * @deprecated Deprecated since 4.0.
  */
-EINA_DEPRECATED EAPI extern const Eldbus_Version * eldbus_version; /**< Global Eldbus_Version object */
+EAPI extern const Eldbus_Version * eldbus_version; /**< Global Eldbus_Version object */
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -154,14 +154,14 @@ EINA_DEPRECATED EAPI extern const Eldbus_Version * eldbus_version; /**< Global E
  *
  * @return 1 or greater on success, 0 otherwise
  */
-EINA_DEPRECATED EAPI int eldbus_init(void);
+EAPI int eldbus_init(void);
 /**
  * @deprecated Deprecated since 4.0.
  * @brief Shutdown eldbus.
  *
  * @return 0 if e_dbus shuts down, greater than 0 otherwise.
  */
-EINA_DEPRECATED EAPI int eldbus_shutdown(void);
+EAPI int eldbus_shutdown(void);
 
 /**
  * @typedef Eldbus_Free_Cb
