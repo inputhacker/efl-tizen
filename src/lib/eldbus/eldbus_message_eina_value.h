@@ -15,7 +15,7 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Value *eldbus_message_to_eina_value(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Value *eldbus_message_to_eina_value(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -29,7 +29,7 @@ EINA_DEPRECATED EAPI Eina_Value *eldbus_message_to_eina_value(const Eldbus_Messa
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Value *eldbus_message_iter_struct_like_to_eina_value(const Eldbus_Message_Iter *iter);
+EAPI Eina_Value *eldbus_message_iter_struct_like_to_eina_value(const Eldbus_Message_Iter *iter);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -44,7 +44,7 @@ EINA_DEPRECATED EAPI Eina_Value *eldbus_message_iter_struct_like_to_eina_value(c
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_message_from_eina_value(const char *signature, Eldbus_Message *msg, const Eina_Value *value) EINA_ARG_NONNULL(1, 2, 3);
+EAPI Eina_Bool eldbus_message_from_eina_value(const char *signature, Eldbus_Message *msg, const Eina_Value *value) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @}

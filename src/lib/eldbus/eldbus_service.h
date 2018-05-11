@@ -130,7 +130,7 @@ typedef struct _Eldbus_Service_Interface_Desc2
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Service_Interface *eldbus_service_interface_register(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc *desc) EINA_ARG_NONNULL(1, 2, 3);
+EAPI Eldbus_Service_Interface *eldbus_service_interface_register(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc *desc) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -149,7 +149,7 @@ EINA_DEPRECATED EAPI Eldbus_Service_Interface *eldbus_service_interface_register
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Service_Interface *
+EAPI Eldbus_Service_Interface *
 eldbus_service_interface_fallback_register(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc *desc) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
@@ -171,7 +171,7 @@ eldbus_service_interface_fallback_register(Eldbus_Connection *conn, const char *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Service_Interface *eldbus_service_interface_register2(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc2 *desc) EINA_ARG_NONNULL(1, 2, 3);
+EAPI Eldbus_Service_Interface *eldbus_service_interface_register2(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc2 *desc) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -194,7 +194,7 @@ EINA_DEPRECATED EAPI Eldbus_Service_Interface *eldbus_service_interface_register
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Service_Interface *
+EAPI Eldbus_Service_Interface *
 eldbus_service_interface_fallback_register2(Eldbus_Connection *conn, const char *path, const Eldbus_Service_Interface_Desc2 *desc) EINA_ARG_NONNULL(1, 2, 3);
 
 
@@ -208,7 +208,7 @@ eldbus_service_interface_fallback_register2(Eldbus_Connection *conn, const char 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void eldbus_service_interface_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
+EAPI void eldbus_service_interface_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -219,11 +219,11 @@ EINA_DEPRECATED EAPI void eldbus_service_interface_unregister(Eldbus_Service_Int
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void eldbus_service_object_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
+EAPI void eldbus_service_object_unregister(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 /**
  * @deprecated Deprecated since 4.0.
  */
-EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_service_connection_get(const Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Connection *eldbus_service_connection_get(const Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 /**
  * @deprecated Deprecated since 4.0.
  */
@@ -243,7 +243,7 @@ EAPI const char *eldbus_service_object_path_get(const Eldbus_Service_Interface *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_service_signal_emit(const Eldbus_Service_Interface *iface, unsigned int signal_id, ...) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool eldbus_service_signal_emit(const Eldbus_Service_Interface *iface, unsigned int signal_id, ...) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -259,7 +259,7 @@ EINA_DEPRECATED EAPI Eina_Bool eldbus_service_signal_emit(const Eldbus_Service_I
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message *eldbus_service_signal_new(const Eldbus_Service_Interface *iface, unsigned int signal_id) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message *eldbus_service_signal_new(const Eldbus_Service_Interface *iface, unsigned int signal_id) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -273,7 +273,7 @@ EINA_DEPRECATED EAPI Eldbus_Message *eldbus_service_signal_new(const Eldbus_Serv
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_service_signal_send(const Eldbus_Service_Interface *iface, Eldbus_Message *signal_msg) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool eldbus_service_signal_send(const Eldbus_Service_Interface *iface, Eldbus_Message *signal_msg) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -289,7 +289,7 @@ EINA_DEPRECATED EAPI Eina_Bool eldbus_service_signal_send(const Eldbus_Service_I
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void eldbus_service_object_data_set(Eldbus_Service_Interface *iface, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EAPI void eldbus_service_object_data_set(Eldbus_Service_Interface *iface, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -304,7 +304,7 @@ EINA_DEPRECATED EAPI void eldbus_service_object_data_set(Eldbus_Service_Interfac
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void *eldbus_service_object_data_get(const Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI void *eldbus_service_object_data_get(const Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -319,7 +319,7 @@ EINA_DEPRECATED EAPI void *eldbus_service_object_data_get(const Eldbus_Service_I
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void *eldbus_service_object_data_del(Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2);
+EAPI void *eldbus_service_object_data_del(Eldbus_Service_Interface *iface, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -334,7 +334,7 @@ EINA_DEPRECATED EAPI void *eldbus_service_object_data_del(Eldbus_Service_Interfa
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_service_property_changed(const Eldbus_Service_Interface *iface, const char *name) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool eldbus_service_property_changed(const Eldbus_Service_Interface *iface, const char *name) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -352,7 +352,7 @@ EAPI Eina_Bool eldbus_service_property_invalidate_set(const Eldbus_Service_Inter
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_service_object_manager_attach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool eldbus_service_object_manager_attach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -365,7 +365,7 @@ EINA_DEPRECATED EAPI Eina_Bool eldbus_service_object_manager_attach(Eldbus_Servi
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_service_object_manager_detach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool eldbus_service_object_manager_detach(Eldbus_Service_Interface *iface) EINA_ARG_NONNULL(1);
 
 /**
  * @}

@@ -32,7 +32,7 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
 /* Replies to releasing a name */
 #define ELDBUS_NAME_RELEASE_REPLY_RELEASED     1    /**< Service was released from the given name */
@@ -53,7 +53,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_request(Eldbus_Connection *conn
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_release(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending *eldbus_name_release(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -69,7 +69,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_release(Eldbus_Connection *conn
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_owner_get(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending *eldbus_name_owner_get(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -85,7 +85,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_owner_get(Eldbus_Connection *co
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_owner_has(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data);
+EAPI Eldbus_Pending *eldbus_name_owner_has(Eldbus_Connection *conn, const char *bus, Eldbus_Message_Cb cb, const void *cb_data);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -100,7 +100,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_name_owner_has(Eldbus_Connection *co
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_names_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Pending *eldbus_names_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -115,7 +115,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_names_list(Eldbus_Connection *conn, 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_names_activatable_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Pending *eldbus_names_activatable_list(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -130,7 +130,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_names_activatable_list(Eldbus_Connec
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_hello(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Pending *eldbus_hello(Eldbus_Connection *conn, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /* Replies to service starts */
 #define ELDBUS_NAME_START_REPLY_SUCCESS         1 /**< Service was auto started */
@@ -151,7 +151,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_hello(Eldbus_Connection *conn, Eldbu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_name_start(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending        *eldbus_name_start(Eldbus_Connection *conn, const char *bus, unsigned int flags, Eldbus_Message_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @typedef Eldbus_Name_Owner_Changed_Cb
@@ -180,7 +180,7 @@ typedef void (*Eldbus_Name_Owner_Changed_Cb)(void *data, const char *bus, const 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_name_owner_changed_callback_add(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data, Eina_Bool allow_initial_call) EINA_ARG_NONNULL(1, 2, 3);
+EAPI void                  eldbus_name_owner_changed_callback_add(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data, Eina_Bool allow_initial_call) EINA_ARG_NONNULL(1, 2, 3);
 /**
  * @deprecated Deprecated since 4.0.
  * Remove callback added with eldbus_name_owner_changed_callback_add().
@@ -194,7 +194,7 @@ EINA_DEPRECATED EAPI void                  eldbus_name_owner_changed_callback_ad
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_name_owner_changed_callback_del(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2, 3);
+EAPI void                  eldbus_name_owner_changed_callback_del(Eldbus_Connection *conn, const char *bus, Eldbus_Name_Owner_Changed_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @defgroup Eldbus_FDO_Peer org.freedesktop.DBus.Peer
@@ -215,7 +215,7 @@ EINA_DEPRECATED EAPI void                  eldbus_name_owner_changed_callback_de
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_peer_ping(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending        *eldbus_object_peer_ping(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -230,7 +230,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_peer_ping(Eldbus_Objec
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @}
@@ -255,7 +255,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_peer_machine_id_get(El
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 /**
  * @}
  */
@@ -283,7 +283,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_introspect(Eldbus_Obje
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_proxy_properties_monitor(Eldbus_Proxy *proxy, Eina_Bool enable) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool eldbus_proxy_properties_monitor(Eldbus_Proxy *proxy, Eina_Bool enable) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -299,7 +299,7 @@ EINA_DEPRECATED EAPI Eina_Bool eldbus_proxy_properties_monitor(Eldbus_Proxy *pro
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_get(Eldbus_Proxy *proxy, const char *name, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EAPI Eldbus_Pending        *eldbus_proxy_property_get(Eldbus_Proxy *proxy, const char *name, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -317,7 +317,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_get(Eldbus_Pro
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_set(Eldbus_Proxy *proxy, const char *name, const char *sig, const void *value, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
+EAPI Eldbus_Pending        *eldbus_proxy_property_set(Eldbus_Proxy *proxy, const char *name, const char *sig, const void *value, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2, 3, 4);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -332,7 +332,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_set(Eldbus_Pro
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_get_all(Eldbus_Proxy *proxy, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending        *eldbus_proxy_property_get_all(Eldbus_Proxy *proxy, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -347,7 +347,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_property_get_all(Eldbus
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_proxy_properties_changed_callback_add(Eldbus_Proxy *proxy, Eldbus_Signal_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Signal_Handler *eldbus_proxy_properties_changed_callback_add(Eldbus_Proxy *proxy, Eldbus_Signal_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -365,7 +365,7 @@ EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_proxy_properties_changed_call
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Value           *eldbus_proxy_property_local_get(Eldbus_Proxy *proxy, const char *name) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Value           *eldbus_proxy_property_local_get(Eldbus_Proxy *proxy, const char *name) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -382,7 +382,7 @@ EINA_DEPRECATED EAPI Eina_Value           *eldbus_proxy_property_local_get(Eldbu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
+EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
 /**
  * @}
@@ -407,7 +407,7 @@ EINA_DEPRECATED EAPI const Eina_Hash      *eldbus_proxy_property_local_get_all(E
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_managed_objects_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending        *eldbus_object_managed_objects_get(Eldbus_Object *obj, Eldbus_Message_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -422,7 +422,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_object_managed_objects_get(El
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_added(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_added(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -437,7 +437,7 @@ EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_add
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_removed(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Signal_Handler *eldbus_object_manager_interfaces_removed(Eldbus_Object *obj, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1);
 
 /**
  * @}

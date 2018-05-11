@@ -19,7 +19,7 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -34,7 +34,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *m
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
+EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -47,7 +47,7 @@ EINA_DEPRECATED EAPI void                  eldbus_message_unref(Eldbus_Message *
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -60,7 +60,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_path_get(const Eldbus_
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -73,7 +73,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_interface_get(const El
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -86,7 +86,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_member_get(const Eldbu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -99,7 +99,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_destination_get(const 
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -112,7 +112,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_sender_get(const Eldbu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -129,7 +129,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_signature_get(const El
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, const char *path, const char *iface, const char *method) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
+EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, const char *path, const char *iface, const char *method) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -147,7 +147,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_call_new(const
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *interface, const char *name) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *interface, const char *name) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -163,7 +163,7 @@ EINA_DEPRECATED EAPI Eldbus_Message *eldbus_message_signal_new(const char *path,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, const char *error_name, const char *error_msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, const char *error_name, const char *error_msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -177,7 +177,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 
 /**
@@ -198,7 +198,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_return_new(con
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, const char **name, const char **text) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, const char **name, const char **text) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -222,7 +222,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_error_get(const Eldbus
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -241,7 +241,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_get(const El
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -264,7 +264,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vget(const E
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -282,7 +282,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_append(Eldbu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @defgroup Eldbus_Message_Iter Iterator
@@ -312,7 +312,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldb
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldbus_Message_Iter *iter, int type, const char* contained_signature) EINA_ARG_NONNULL(1, 3) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldbus_Message_Iter *iter, int type, const char* contained_signature) EINA_ARG_NONNULL(1, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -322,7 +322,7 @@ EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldb
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Iter *iter, int type, ...) EINA_ARG_NONNULL(1, 3);
+EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Iter *iter, int type, ...) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -352,7 +352,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_basic_append(El
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -378,7 +378,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_appen
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 3);
+EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 3);
 
 
 /**
@@ -395,7 +395,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vappe
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Message_Iter *iter, int type, const void *array, unsigned int size) EINA_ARG_NONNULL(1, 3);
+EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Message_Iter *iter, int type, const void *array, unsigned int size) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -410,7 +410,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_fixed_array_app
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_container_close(Eldbus_Message_Iter *iter, Eldbus_Message_Iter *sub) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool               eldbus_message_iter_container_close(Eldbus_Message_Iter *iter, Eldbus_Message_Iter *sub) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -420,7 +420,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_container_close
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -430,7 +430,7 @@ EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_M
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *iter, void *value) EINA_ARG_NONNULL(1, 2);
+EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *iter, void *value) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -445,7 +445,7 @@ EINA_DEPRECATED EAPI void                    eldbus_message_iter_basic_get(Eldbu
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -458,7 +458,7 @@ EINA_DEPRECATED EAPI char                   *eldbus_message_iter_signature_get(E
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -477,7 +477,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Mes
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Iter *iter, char signature, ...) EINA_ARG_NONNULL(1, 2, 3);
+EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Iter *iter, char signature, ...) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -507,7 +507,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_get_and_next(El
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, int signature, void *value, int *n_elements) EINA_ARG_NONNULL(1, 3, 4);
+EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, int signature, void *value, int *n_elements) EINA_ARG_NONNULL(1, 3, 4);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -525,7 +525,7 @@ EINA_DEPRECATED EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Messag
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -543,7 +543,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_get(E
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -564,7 +564,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vget(
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_message_iter_del(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
+EAPI void                  eldbus_message_iter_del(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
 
 /**
  * @}

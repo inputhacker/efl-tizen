@@ -24,7 +24,7 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_signal_handler_add(Eldbus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 6);
+EAPI Eldbus_Signal_Handler *eldbus_signal_handler_add(Eldbus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 6);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -34,7 +34,7 @@ EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_signal_handler_add(Eldbus_Con
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_signal_handler_ref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Signal_Handler *eldbus_signal_handler_ref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -45,7 +45,7 @@ EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_signal_handler_ref(Eldbus_Sig
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_signal_handler_unref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
+EAPI void                  eldbus_signal_handler_unref(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -57,7 +57,7 @@ EINA_DEPRECATED EAPI void                  eldbus_signal_handler_unref(Eldbus_Si
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_signal_handler_del(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
+EAPI void                  eldbus_signal_handler_del(Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -80,7 +80,7 @@ EINA_DEPRECATED EAPI void                  eldbus_signal_handler_del(Eldbus_Sign
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_signal_handler_match_extra_set(Eldbus_Signal_Handler *sh, ...) EINA_ARG_NONNULL(1) EINA_SENTINEL;
+EAPI Eina_Bool             eldbus_signal_handler_match_extra_set(Eldbus_Signal_Handler *sh, ...) EINA_ARG_NONNULL(1) EINA_SENTINEL;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -103,7 +103,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_signal_handler_match_extra_set
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_signal_handler_match_extra_vset(Eldbus_Signal_Handler *sh, va_list ap) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool             eldbus_signal_handler_match_extra_vset(Eldbus_Signal_Handler *sh, va_list ap) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -113,7 +113,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_signal_handler_match_extra_vse
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_signal_handler_free_cb_add(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI void                  eldbus_signal_handler_free_cb_add(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -123,33 +123,33 @@ EINA_DEPRECATED EAPI void                  eldbus_signal_handler_free_cb_add(Eld
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_signal_handler_free_cb_del(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI void                  eldbus_signal_handler_free_cb_del(Eldbus_Signal_Handler *handler, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_sender_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_signal_handler_sender_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 /**
  * @deprecated Deprecated since 4.0.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_path_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_signal_handler_path_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 /**
  * @deprecated Deprecated since 4.0.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_interface_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_signal_handler_interface_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 /**
  * @deprecated Deprecated since 4.0.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_member_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_signal_handler_member_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 /**
  * @deprecated Deprecated since 4.0.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_signal_handler_match_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_signal_handler_match_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * eldbus_signal_handler_connection_get
  */
-EINA_DEPRECATED EAPI Eldbus_Connection     *eldbus_signal_handler_connection_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Connection     *eldbus_signal_handler_connection_get(const Eldbus_Signal_Handler *handler) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @}

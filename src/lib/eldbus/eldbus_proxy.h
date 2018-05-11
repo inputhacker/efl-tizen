@@ -20,7 +20,7 @@
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Proxy          *eldbus_proxy_get(Eldbus_Object *obj, const char *interface) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Proxy          *eldbus_proxy_get(Eldbus_Object *obj, const char *interface) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -33,7 +33,7 @@ EINA_DEPRECATED EAPI Eldbus_Proxy          *eldbus_proxy_get(Eldbus_Object *obj,
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Proxy          *eldbus_proxy_ref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Proxy          *eldbus_proxy_ref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -46,7 +46,7 @@ EINA_DEPRECATED EAPI Eldbus_Proxy          *eldbus_proxy_ref(Eldbus_Proxy *proxy
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_proxy_unref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
+EAPI void                  eldbus_proxy_unref(Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -59,7 +59,7 @@ EINA_DEPRECATED EAPI void                  eldbus_proxy_unref(Eldbus_Proxy *prox
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Object         *eldbus_proxy_object_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Object         *eldbus_proxy_object_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -72,7 +72,7 @@ EINA_DEPRECATED EAPI Eldbus_Object         *eldbus_proxy_object_get(const Eldbus
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI const char           *eldbus_proxy_interface_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_proxy_interface_get(const Eldbus_Proxy *proxy) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -86,7 +86,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_proxy_interface_get(const Eldb
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_proxy_data_set(Eldbus_Proxy *proxy, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EAPI void                  eldbus_proxy_data_set(Eldbus_Proxy *proxy, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -100,7 +100,7 @@ EINA_DEPRECATED EAPI void                  eldbus_proxy_data_set(Eldbus_Proxy *p
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                 *eldbus_proxy_data_get(const Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
+EAPI void                 *eldbus_proxy_data_get(const Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -113,7 +113,7 @@ EINA_DEPRECATED EAPI void                 *eldbus_proxy_data_get(const Eldbus_Pr
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                 *eldbus_proxy_data_del(Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
+EAPI void                 *eldbus_proxy_data_del(Eldbus_Proxy *proxy, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -128,7 +128,7 @@ EINA_DEPRECATED EAPI void                 *eldbus_proxy_data_del(Eldbus_Proxy *p
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_proxy_free_cb_add(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI void                  eldbus_proxy_free_cb_add(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -142,7 +142,7 @@ EINA_DEPRECATED EAPI void                  eldbus_proxy_free_cb_add(Eldbus_Proxy
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void                  eldbus_proxy_free_cb_del(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI void                  eldbus_proxy_free_cb_del(Eldbus_Proxy *proxy, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -156,7 +156,7 @@ EINA_DEPRECATED EAPI void                  eldbus_proxy_free_cb_del(Eldbus_Proxy
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_proxy_method_call_new(Eldbus_Proxy *proxy, const char *member) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message        *eldbus_proxy_method_call_new(Eldbus_Proxy *proxy, const char *member) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -174,7 +174,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_proxy_method_call_new(Eldbus_
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_send(Eldbus_Proxy *proxy, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending        *eldbus_proxy_send(Eldbus_Proxy *proxy, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -193,7 +193,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_send(Eldbus_Proxy *prox
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_proxy_send_and_block(Eldbus_Proxy *proxy, Eldbus_Message *msg, double timeout) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Message        *eldbus_proxy_send_and_block(Eldbus_Proxy *proxy, Eldbus_Message *msg, double timeout) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -218,7 +218,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_proxy_send_and_block(Eldbus_P
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_call(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, ...) EINA_ARG_NONNULL(1, 2, 6);
+EAPI Eldbus_Pending        *eldbus_proxy_call(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, ...) EINA_ARG_NONNULL(1, 2, 6);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -242,7 +242,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_call(Eldbus_Proxy *prox
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_vcall(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 6);
+EAPI Eldbus_Pending        *eldbus_proxy_vcall(Eldbus_Proxy *proxy, const char *member, Eldbus_Message_Cb cb, const void *cb_data, double timeout, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 6);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -258,7 +258,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending        *eldbus_proxy_vcall(Eldbus_Proxy *pro
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI Eldbus_Signal_Handler *eldbus_proxy_signal_handler_add(Eldbus_Proxy *proxy, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EAPI Eldbus_Signal_Handler *eldbus_proxy_signal_handler_add(Eldbus_Proxy *proxy, const char *member, Eldbus_Signal_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @typedef Eldbus_Proxy_Event_Type
@@ -332,7 +332,7 @@ typedef void (*Eldbus_Proxy_Event_Cb)(void *data, Eldbus_Proxy *proxy, void *eve
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void eldbus_proxy_event_callback_add(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EAPI void eldbus_proxy_event_callback_add(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -347,7 +347,7 @@ EINA_DEPRECATED EAPI void eldbus_proxy_event_callback_add(Eldbus_Proxy *proxy, E
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
  */
-EINA_DEPRECATED EAPI void eldbus_proxy_event_callback_del(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EAPI void eldbus_proxy_event_callback_del(Eldbus_Proxy *proxy, Eldbus_Proxy_Event_Type type, Eldbus_Proxy_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @}
