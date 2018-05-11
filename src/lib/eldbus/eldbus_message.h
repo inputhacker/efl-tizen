@@ -15,7 +15,7 @@
  * @param msg The Eldbus_Message object.
  * @return The previous Eldbus_Message with incremented refcount.
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -26,7 +26,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_ref(Eldbus_Message *m
  *
  * @param msg The Eldbus_Message object.
  */
-EINA_DEPRECATED EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
+EAPI void                  eldbus_message_unref(Eldbus_Message *msg) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -35,7 +35,7 @@ EINA_DEPRECATED EAPI void                  eldbus_message_unref(Eldbus_Message *
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message path.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_path_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -44,7 +44,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_path_get(const Eldbus_
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message interface.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_interface_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -53,7 +53,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_interface_get(const El
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message member.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_member_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -62,7 +62,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_member_get(const Eldbu
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message destination.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_destination_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -71,7 +71,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_destination_get(const 
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message sender.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_sender_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -80,7 +80,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_sender_get(const Eldbu
  * @param msg The Eldbus_Message object.
  * @return A string containing the dbus message signature.
  */
-EINA_DEPRECATED EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI const char           *eldbus_message_signature_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -93,7 +93,7 @@ EINA_DEPRECATED EAPI const char           *eldbus_message_signature_get(const El
  *
  * @return a new Eldbus_Message, free with eldbus_message_unref()
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, const char *path, const char *iface, const char *method) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
+EAPI Eldbus_Message        *eldbus_message_method_call_new(const char *dest, const char *path, const char *iface, const char *method) EINA_ARG_NONNULL(1, 2, 3, 4) EINA_WARN_UNUSED_RESULT EINA_MALLOC;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -107,7 +107,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_call_new(const
  *
  * @since 1.16
  */
-EINA_DEPRECATED EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *interface, const char *name) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message *eldbus_message_signal_new(const char *path, const char *interface, const char *name) EINA_ARG_NONNULL(1, 2, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -119,7 +119,7 @@ EINA_DEPRECATED EAPI Eldbus_Message *eldbus_message_signal_new(const char *path,
  *
  * @return a new Eldbus_Message, free with eldbus_message_unref()
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, const char *error_name, const char *error_msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbus_Message *msg, const char *error_name, const char *error_msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -129,7 +129,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_error_new(const Eldbu
  *
  * @return new Eldbus_Message, free with eldbus_message_unref()
  */
-EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message        *eldbus_message_method_return_new(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 
 /**
@@ -146,7 +146,7 @@ EINA_DEPRECATED EAPI Eldbus_Message        *eldbus_message_method_return_new(con
  * desired.
  * @return EINA_TRUE on success, else EINA_FALSE.
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, const char **name, const char **text) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool             eldbus_message_error_get(const Eldbus_Message *msg, const char **name, const char **text) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -166,7 +166,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_error_get(const Eldbus
  * @return EINA_TRUE if the arguments were read successfully and stored in the
  * respective pointer arguments.
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool             eldbus_message_arguments_get(const Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -181,7 +181,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_get(const El
  * @return EINA_TRUE if the arguments were read successfully and stored in the
  * respective pointer arguments.
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
+EAPI Eina_Bool             eldbus_message_arguments_vget(const Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -200,7 +200,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vget(const E
  *
  * @return EINA_TRUE on success, EINA_FALSE otherwise.
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool             eldbus_message_arguments_append(Eldbus_Message *msg, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -214,7 +214,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_append(Eldbu
  *
  * @return EINA_TRUE on success, EINA_FALSE otherwise.
  */
-EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldbus_Message *msg, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @defgroup Eldbus_Message_Iter Iterator
@@ -240,7 +240,7 @@ EINA_DEPRECATED EAPI Eina_Bool             eldbus_message_arguments_vappend(Eldb
  *
  * @return the new iterator
  */
-EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldbus_Message_Iter *iter, int type, const char* contained_signature) EINA_ARG_NONNULL(1, 3) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldbus_Message_Iter *iter, int type, const char* contained_signature) EINA_ARG_NONNULL(1, 3) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -252,7 +252,7 @@ EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_container_new(Eldb
  *
  * @return EINA_TRUE on success, else EINA_FALSE.
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Iter *iter, int type, ...) EINA_ARG_NONNULL(1, 3);
+EAPI Eina_Bool               eldbus_message_iter_basic_append(Eldbus_Message_Iter *iter, int type, ...) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -278,7 +278,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_basic_append(El
  * eldbus_message_iter_container_new() instead to create the variant, fill
  * with data and close it.
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool               eldbus_message_iter_arguments_append(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -300,7 +300,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_appen
  * eldbus_message_iter_container_new() to create the variant fill
  * data and close it.
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 3);
+EAPI Eina_Bool               eldbus_message_iter_arguments_vappend(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2, 3);
 
 
 /**
@@ -313,7 +313,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vappe
  * @param size of array
  * @return EINA_TRUE on success, else EINA_FALSE
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Message_Iter *iter, int type, const void *array, unsigned int size) EINA_ARG_NONNULL(1, 3);
+EAPI Eina_Bool               eldbus_message_iter_fixed_array_append(Eldbus_Message_Iter *iter, int type, const void *array, unsigned int size) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -324,7 +324,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_fixed_array_app
  *
  * @return EINA_FALSE if iterator was already close or if not enough memory
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_container_close(Eldbus_Message_Iter *iter, Eldbus_Message_Iter *sub) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool               eldbus_message_iter_container_close(Eldbus_Message_Iter *iter, Eldbus_Message_Iter *sub) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -334,7 +334,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_container_close
  *
  * @return The iterator of the message.
  */
-EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_Message *msg) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -343,7 +343,7 @@ EINA_DEPRECATED EAPI Eldbus_Message_Iter *eldbus_message_iter_get(const Eldbus_M
  * @param iter The iterator to get the basic type from.
  * @param value The basic type of the iterator.
  */
-EINA_DEPRECATED EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *iter, void *value) EINA_ARG_NONNULL(1, 2);
+EAPI void                    eldbus_message_iter_basic_get(Eldbus_Message_Iter *iter, void *value) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -354,7 +354,7 @@ EINA_DEPRECATED EAPI void                    eldbus_message_iter_basic_get(Eldbu
  *
  * @note The returned string must be freed.
  */
-EINA_DEPRECATED EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
+EAPI char                   *eldbus_message_iter_signature_get(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -363,7 +363,7 @@ EINA_DEPRECATED EAPI char                   *eldbus_message_iter_signature_get(E
  *
  * @return if iterator was reach to end return EINA_FALSE
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
+EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -379,7 +379,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_next(Eldbus_Mes
  * iterator points return EINA_FALSE
  *
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Iter *iter, char signature, ...) EINA_ARG_NONNULL(1, 2, 3);
+EAPI Eina_Bool               eldbus_message_iter_get_and_next(Eldbus_Message_Iter *iter, char signature, ...) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -405,7 +405,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_get_and_next(El
  * @param n_elements
  * @return EINA_TRUE on success, else EINA_FALSE.
  */
-EINA_DEPRECATED EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, int signature, void *value, int *n_elements) EINA_ARG_NONNULL(1, 3, 4);
+EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Message_Iter *iter, int signature, void *value, int *n_elements) EINA_ARG_NONNULL(1, 3, 4);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -419,7 +419,7 @@ EINA_DEPRECATED EAPI Eina_Bool eldbus_message_iter_fixed_array_get(Eldbus_Messag
  *
  * @return EINA_FALSE if signature different from signature in iterator
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool               eldbus_message_iter_arguments_get(Eldbus_Message_Iter *iter, const char *signature, ...) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -433,7 +433,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_get(E
  *
  * @return EINA_FALSE if signature different from signature in iterator
  */
-EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
+EAPI Eina_Bool               eldbus_message_iter_arguments_vget(Eldbus_Message_Iter *iter, const char *signature, va_list ap) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -450,7 +450,7 @@ EINA_DEPRECATED EAPI Eina_Bool               eldbus_message_iter_arguments_vget(
  *
  * @param iter the iterator to be deleted.
  */
-EINA_DEPRECATED EAPI void                  eldbus_message_iter_del(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
+EAPI void                  eldbus_message_iter_del(Eldbus_Message_Iter *iter) EINA_ARG_NONNULL(1);
 
 /**
  * @}

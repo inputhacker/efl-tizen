@@ -35,7 +35,7 @@ typedef enum
  *
  * @return connection with bus
  */
-EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_connection_get(Eldbus_Connection_Type type);
+EAPI Eldbus_Connection *eldbus_connection_get(Eldbus_Connection_Type type);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -49,7 +49,7 @@ EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_connection_get(Eldbus_Connection_
  *
  * @return connection with bus
  */
-EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_private_connection_get(Eldbus_Connection_Type type);
+EAPI Eldbus_Connection *eldbus_private_connection_get(Eldbus_Connection_Type type);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -61,7 +61,7 @@ EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_private_connection_get(Eldbus_Con
  *
  * @return connection with bus
  */
-EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Connection *eldbus_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -74,7 +74,7 @@ EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_address_connection_get(const char
  *
  * @return connection with bus
  */
-EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_private_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Connection *eldbus_private_address_connection_get(const char *address) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -83,7 +83,7 @@ EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_private_address_connection_get(co
  * @param conn The given Eldbus_Connection object to reference.
  * @return The Eldbus_Connection object given as parameter.
  */
-EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_connection_ref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
+EAPI Eldbus_Connection *eldbus_connection_ref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -94,7 +94,7 @@ EINA_DEPRECATED EAPI Eldbus_Connection *eldbus_connection_ref(Eldbus_Connection 
  *
  * @param conn The given Eldbus_Connection object to unreference.
  */
-EINA_DEPRECATED EAPI void              eldbus_connection_unref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
+EAPI void              eldbus_connection_unref(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -104,7 +104,7 @@ EINA_DEPRECATED EAPI void              eldbus_connection_unref(Eldbus_Connection
  * @param cb The callback to be called when the connection is free.
  * @param data The data passed to the callback.
  */
-EINA_DEPRECATED EAPI void              eldbus_connection_free_cb_add(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI void              eldbus_connection_free_cb_add(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -114,7 +114,7 @@ EINA_DEPRECATED EAPI void              eldbus_connection_free_cb_add(Eldbus_Conn
  * @param cb The callback that was called when the connection was free.
  * @param data The data that was passed to the callback.
  */
-EINA_DEPRECATED EAPI void              eldbus_connection_free_cb_del(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
+EAPI void              eldbus_connection_free_cb_del(Eldbus_Connection *conn, Eldbus_Free_Cb cb, const void *data) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -124,7 +124,7 @@ EINA_DEPRECATED EAPI void              eldbus_connection_free_cb_del(Eldbus_Conn
  * @param key to identify data
  * @param data data that will be stored
  */
-EINA_DEPRECATED EAPI void              eldbus_connection_data_set(Eldbus_Connection *conn, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
+EAPI void              eldbus_connection_data_set(Eldbus_Connection *conn, const char *key, const void *data) EINA_ARG_NONNULL(1, 2, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -135,7 +135,7 @@ EINA_DEPRECATED EAPI void              eldbus_connection_data_set(Eldbus_Connect
  *
  * @return pointer to data if found otherwise NULL
  */
-EINA_DEPRECATED EAPI void             *eldbus_connection_data_get(const Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
+EAPI void             *eldbus_connection_data_get(const Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -146,7 +146,7 @@ EINA_DEPRECATED EAPI void             *eldbus_connection_data_get(const Eldbus_C
  *
  * @return pointer to data if found otherwise NULL
  */
-EINA_DEPRECATED EAPI void             *eldbus_connection_data_del(Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
+EAPI void             *eldbus_connection_data_del(Eldbus_Connection *conn, const char *key) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @typedef Eldbus_Connection_Event_Type
@@ -176,7 +176,7 @@ typedef void (*Eldbus_Connection_Event_Cb)(void *data, Eldbus_Connection *conn, 
  * @param cb The callback to be called when the event is triggered.
  * @param cb_data The data passed to the callback.
  */
-EINA_DEPRECATED EAPI void                  eldbus_connection_event_callback_add(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EAPI void                  eldbus_connection_event_callback_add(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -187,7 +187,7 @@ EINA_DEPRECATED EAPI void                  eldbus_connection_event_callback_add(
  * @param cb The callback that was called when the event was triggered.
  * @param cb_data The data that was passed to the callback.
  */
-EINA_DEPRECATED EAPI void                  eldbus_connection_event_callback_del(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
+EAPI void                  eldbus_connection_event_callback_del(Eldbus_Connection *conn, Eldbus_Connection_Event_Type type, Eldbus_Connection_Event_Cb cb, const void *cb_data) EINA_ARG_NONNULL(1, 3);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -202,7 +202,7 @@ EINA_DEPRECATED EAPI void                  eldbus_connection_event_callback_del(
  * ELDBUS_TIMEOUT_INFINITE for no timeout
  * @return A Eldbus_Pending struct.
  */
-EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_connection_send(Eldbus_Connection *conn, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
+EAPI Eldbus_Pending *eldbus_connection_send(Eldbus_Connection *conn, Eldbus_Message *msg, Eldbus_Message_Cb cb, const void *cb_data, double timeout) EINA_ARG_NONNULL(1, 2);
 
 /**
  * @deprecated Deprecated since 4.0.
@@ -213,7 +213,7 @@ EINA_DEPRECATED EAPI Eldbus_Pending *eldbus_connection_send(Eldbus_Connection *c
  * @return pointer to unique name string or NULL or error. Returned value
  * remains valid until connection is free.
  */
-EINA_DEPRECATED EAPI const char *eldbus_connection_unique_name_get(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
+EAPI const char *eldbus_connection_unique_name_get(Eldbus_Connection *conn) EINA_ARG_NONNULL(1);
 /**
  * @}
  */
