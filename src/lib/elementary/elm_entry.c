@@ -1770,6 +1770,9 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
         if (top && top_is_win && sd->input_panel_enable && !sd->input_panel_show_on_demand &&
             !edje_object_part_text_imf_context_get(sd->entry_edje, "elm.text"))
           elm_win_keyboard_mode_set(top, ELM_WIN_KEYBOARD_ON);
+        /* TIZEN_ONLY(20180514): support legacy focused/unfocused callback calls */
+        evas_object_smart_callback_call(obj, "focused", NULL);
+        /* END */
         if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
         _return_key_enabled_check(obj);
@@ -1808,6 +1811,9 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
         if (top && top_is_win && sd->input_panel_enable &&
             !edje_object_part_text_imf_context_get(sd->entry_edje, "elm.text"))
           elm_win_keyboard_mode_set(top, ELM_WIN_KEYBOARD_OFF);
+        /* TIZEN_ONLY(20180514): support legacy focused/unfocused callback calls */
+        evas_object_smart_callback_call(obj, "unfocused", NULL);
+        /* END */
         if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_FALSE);
 
