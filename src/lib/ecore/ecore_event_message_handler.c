@@ -149,7 +149,7 @@ _ecore_event_message_handler_handler_add(Eo *obj EINA_UNUSED, Ecore_Event_Messag
    Handler *h;
 
    //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
-   if ((type < 0) || (type > pd->event_type_count) || (!func)) return NULL;
+   if ((type <= 0) || (type > pd->event_type_count) || (!func)) return NULL;
    //
    h = calloc(1, sizeof(Handler));
    if (!h) return NULL;
