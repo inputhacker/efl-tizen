@@ -2503,7 +2503,11 @@ _ecore_evas_wl_common_render_flush_pre(void *data, Evas *evas, void *event EINA_
 
    if (wdata->win->pending.configure) return;
 
+   //TIZEN_ONLY(20180514): support to rotate window which does not have shell surface
+   /*
    if (!ecore_wl2_window_shell_surface_exists(wdata->win)) return;
+   */
+   //
 
    ecore_wl2_window_update_begin(wdata->win);
 
