@@ -175,8 +175,8 @@ _ecore_wl2_window_configure_send_by_client(Ecore_Wl2_Window *win)
 
    ev->win = win->id;
    ev->event_win = win->id;
-   ev->x = win->saved.x;
-   ev->y = win->saved.y;
+   ev->x = win->set_config.geometry.x;
+   ev->y = win->set_config.geometry.y;
    ev->w = win->set_config.geometry.w;
    ev->h = win->set_config.geometry.h;
    ev->edges = !!win->req_config.resizing;
