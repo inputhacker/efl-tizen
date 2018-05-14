@@ -833,6 +833,8 @@ _elm_atspi_enabled()
 }
 //
 
+extern Eina_Bool _use_build_config;
+
 /* Used by the paste handler */
 void   _elm_entry_entry_paste(Evas_Object *obj, const char *entry);
 

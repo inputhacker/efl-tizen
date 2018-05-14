@@ -36,6 +36,8 @@
 # define LIBEXT ".so"
 #endif
 
+Eina_Bool _use_build_config;
+
 static Elm_Version _version = { VMAJ, VMIN, VMIC, VREV };
 // TIZEN_ONLY(20171114) Accessibility Highlight Frame added
 static void * _accessibility_currently_highlighted_obj = NULL;
@@ -740,6 +742,7 @@ elm_quicklaunch_init(int    argc EINA_UNUSED,
 {
    _elm_ql_init_count++;
    if (_elm_ql_init_count > 1) return _elm_ql_init_count;
+   _use_build_config = !!getenv("EFL_RUN_IN_TREE");
    eina_init();
    _elm_log_dom = eina_log_domain_register("elementary", EINA_COLOR_LIGHTBLUE);
    if (!_elm_log_dom)
@@ -783,7 +786,10 @@ elm_quicklaunch_init(int    argc EINA_UNUSED,
                          LOCALE_DIR);
    if (pfx)
      {
-        _elm_data_dir = eina_stringshare_add(eina_prefix_data_get(pfx));
+        if (_use_build_config)
+          _elm_data_dir = eina_stringshare_add(PACKAGE_BUILD_DIR "/data/elementary");
+        else
+          _elm_data_dir = eina_stringshare_add(eina_prefix_data_get(pfx));
         _elm_lib_dir = eina_stringshare_add(eina_prefix_lib_get(pfx));
      }
    if (!_elm_data_dir) _elm_data_dir = eina_stringshare_add("/");
