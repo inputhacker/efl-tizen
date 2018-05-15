@@ -71,6 +71,14 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {NULL, NULL}
 };
 
+// TIZEN_ONLY(20180515): Add content aliases for backward compatibility
+static const Elm_Layout_Part_Alias_Description _content_aliases[] =
+{
+   {"default", "default"},
+   {NULL, NULL}
+};
+//
+
 static Eina_Bool _key_action_move(Evas_Object *obj, const char *params);
 static Eina_Bool _key_action_escape(Evas_Object *obj, const char *params);
 static void _parent_geom_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED);
@@ -2689,16 +2697,30 @@ ELM_PART_OVERRIDE_CONTENT_UNSET(elm_popup, ELM_POPUP, Elm_Popup_Data)
 ELM_PART_OVERRIDE_TEXT_SET(elm_popup, ELM_POPUP, Elm_Popup_Data)
 ELM_PART_OVERRIDE_TEXT_GET(elm_popup, ELM_POPUP, Elm_Popup_Data)
 ELM_PART_CONTENT_DEFAULT_GET(elm_popup, "default")
+// TIZEN_ONLY(20180515): Add content aliases for backward compatibility
+ELM_PART_CONTENT_DEFAULT_IMPLEMENT(elm_popup, Elm_Popup_Data)
+//
 #include "elm_popup_part.eo.c"
 
 /* Efl.Part end */
 
 /* Internal EO APIs and hidden overrides */
 
+// TIZEN_ONLY(20180515): Add content aliases for backward compatibility
+ELM_LAYOUT_CONTENT_ALIASES_IMPLEMENT(elm_popup)
+
+#define ELM_POPUP_EXTRA_OPS \
+   ELM_PART_CONTENT_DEFAULT_OPS(elm_popup), \
+   ELM_LAYOUT_CONTENT_ALIASES_OPS(elm_popup), \
+   ELM_LAYOUT_SIZING_EVAL_OPS(elm_popup), \
+   EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_popup)
+/*
 #define ELM_POPUP_EXTRA_OPS \
    ELM_PART_CONTENT_DEFAULT_OPS(elm_popup), \
    ELM_LAYOUT_SIZING_EVAL_OPS(elm_popup), \
    EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_popup)
+*/
+//
 
 #include "elm_popup.eo.c"
 #include "elm_popup_item.eo.c"
