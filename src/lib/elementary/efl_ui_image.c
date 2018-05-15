@@ -764,7 +764,16 @@ _efl_ui_image_sizing_eval(Evas_Object *obj)
    if (sd->no_scale)
      _efl_ui_image_internal_scale_set(obj, sd, 1.0);
    else
+     /* TIZEN_ONLY(20180511) keep no_scale compatibility
+      * It fixes backward compatibility issue of no_scale feature. The no_scale feature didn't work at all in Tizen 4.0.
+      * If we need to support this feature in legacy API, we need to add new API.
      _efl_ui_image_internal_scale_set(obj, sd, efl_gfx_entity_scale_get(obj) * elm_config_scale_get());
+      */
+     {
+        if (!elm_widget_is_legacy(obj))
+          _efl_ui_image_internal_scale_set(obj, sd, efl_gfx_entity_scale_get(obj) * elm_config_scale_get());
+     }
+     /* END */
 
    ts = sd->scale;
    sd->scale = 1.0;
