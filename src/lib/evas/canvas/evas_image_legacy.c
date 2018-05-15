@@ -362,7 +362,10 @@ evas_object_image_load_head_skip_get(const Evas_Object *obj)
 EAPI Evas_Load_Error
 evas_object_image_load_error_get(const Evas_Object *obj)
 {
-   EVAS_IMAGE_API(obj, EVAS_LOAD_ERROR_GENERIC);
+   //TIZEN_ONLY(20180515): keep compatibility
+   //EVAS_IMAGE_API(obj, EVAS_LOAD_ERROR_GENERIC);
+   EVAS_IMAGE_API(obj, EVAS_LOAD_ERROR_NONE);
+   //
    return _evas_image_load_error_get(obj);
 }
 
