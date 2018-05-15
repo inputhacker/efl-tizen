@@ -33,6 +33,15 @@ static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
    {NULL, NULL}
 };
+
+// TIZEN_ONLY(20180515): Add content aliases for backward compatibility
+static const Elm_Layout_Part_Alias_Description _content_aliases[] =
+{
+   {"default", "default"},
+   {NULL, NULL}
+};
+//
+
 static void _panel_toggle(void *, Evas_Object *, const char *,const char *);
 static Eina_Bool _key_action_toggle(Evas_Object *obj, const char *params);
 static void _drawer_open(Evas_Object *, Evas_Coord , Evas_Coord , Eina_Bool );
@@ -1595,14 +1604,28 @@ ELM_PART_OVERRIDE(elm_panel, ELM_PANEL, Elm_Panel_Data)
 ELM_PART_OVERRIDE_CONTENT_SET(elm_panel, ELM_PANEL, Elm_Panel_Data)
 ELM_PART_OVERRIDE_CONTENT_GET(elm_panel, ELM_PANEL, Elm_Panel_Data)
 ELM_PART_OVERRIDE_CONTENT_UNSET(elm_panel, ELM_PANEL, Elm_Panel_Data)
+// TIZEN_ONLY(20180515): Add content aliases for backward compatibility
+ELM_PART_CONTENT_DEFAULT_GET(elm_panel, _content_aliases[0].real_part)
+ELM_PART_CONTENT_DEFAULT_IMPLEMENT(elm_panel, Elm_Panel_Data)
+//
 #include "elm_panel_part.eo.c"
 
 /* Efl.Part end */
 
 /* Internal EO APIs and hidden overrides */
 
+// TIZEN_ONLY(20180515): Add content aliases for backward compatibility
+ELM_LAYOUT_CONTENT_ALIASES_IMPLEMENT(elm_panel)
+
+#define ELM_PANEL_EXTRA_OPS \
+   ELM_LAYOUT_SIZING_EVAL_OPS(elm_panel), \
+   ELM_LAYOUT_CONTENT_ALIASES_OPS(elm_panel), \
+   EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_panel)
+/*
 #define ELM_PANEL_EXTRA_OPS \
    ELM_LAYOUT_SIZING_EVAL_OPS(elm_panel), \
    EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_panel)
+*/
+//
 
 #include "elm_panel.eo.c"
