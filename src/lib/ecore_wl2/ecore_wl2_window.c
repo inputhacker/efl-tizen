@@ -9,6 +9,10 @@
 /* local variables */
 static Eina_Hash *_windows = NULL;
 
+//TIZEN_ONLY(20180516)
+static void _opaque_set(Ecore_Wl2_Window *window);
+//
+
 /* internal functions */
 void
 _ecore_wl2_window_init(void)
@@ -1399,7 +1403,7 @@ ecore_wl2_window_alpha_set(Ecore_Wl2_Window *window, Eina_Bool alpha)
                                            window->opaque.h);
 // TIZEN_ONLY(20180516) : set opaque_set and pending.opaque value by force
         window->opaque_set = window->opaque.x || window->opaque.y || window->opaque.w || window->opaque.h;
-        window->pending.opaque = EINA_TRUE;
+        _opaque_set(window);
 //
      }
 // TIZEN_ONLY(20170203)
@@ -1428,7 +1432,7 @@ ecore_wl2_window_transparent_set(Ecore_Wl2_Window *window, Eina_Bool transparent
                                            window->opaque.h);
 // TIZEN_ONLY(20180516) : set opaque_set and pending.opaque value by force
         window->opaque_set = window->opaque.x || window->opaque.y || window->opaque.w || window->opaque.h;
-        window->pending.opaque = EINA_TRUE;
+        _opaque_set(window);
 //
      }
 // TIZEN_ONLY(20170203)
