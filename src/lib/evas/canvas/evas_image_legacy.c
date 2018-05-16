@@ -341,7 +341,10 @@ evas_object_image_load_scale_down_set(Evas_Object *obj, int scale_down)
 EAPI int
 evas_object_image_load_scale_down_get(const Evas_Object *obj)
 {
-   EVAS_IMAGE_API(obj, 1);
+   //TIZEN_ONLY(20180516): keep compatibility
+   //EVAS_IMAGE_API(obj, 1);
+   EVAS_IMAGE_API(obj, 0);
+   //
    return _evas_image_load_scale_down_get(obj);
 }
 
