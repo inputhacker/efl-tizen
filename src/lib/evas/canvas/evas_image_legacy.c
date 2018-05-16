@@ -1046,20 +1046,52 @@ evas_object_image_video_surface_caps_get(const Evas_Object *eo_obj)
 }
 
 /* deprecated */
+//TIZEN_ONLY(20180515)
+//EAPI void
+//evas_object_image_fill_spread_set(Evas_Object *obj EINA_UNUSED, Evas_Fill_Spread spread)
+//{
+//   /* not implemented! */
+//   if (spread != EFL_GFX_FILL_REPEAT)
+//     WRN("Fill spread support is not implemented!");
+//}
 EAPI void
-evas_object_image_fill_spread_set(Evas_Object *obj EINA_UNUSED, Evas_Fill_Spread spread)
+evas_object_image_fill_spread_set(Evas_Object *eo_obj, Evas_Fill_Spread spread)
 {
-   /* not implemented! */
-   if (spread != EFL_GFX_FILL_REPEAT)
-     WRN("Fill spread support is not implemented!");
+   EVAS_IMAGE_LEGACY_API(eo_obj);
+
+   Evas_Object_Protected_Data *obj = efl_data_scope_get(eo_obj, EFL_CANVAS_OBJECT_CLASS);
+   Evas_Image_Data *o = efl_data_scope_get(eo_obj, EFL_CANVAS_IMAGE_INTERNAL_CLASS);
+
+   if (spread == (Evas_Fill_Spread)o->cur->spread) return;
+
+   evas_object_async_block(obj);
+
+   EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
+      state_write->spread = spread;
+   EINA_COW_IMAGE_STATE_WRITE_END(o, state_write);
+
+   o->changed = EINA_TRUE;
+   evas_object_change(eo_obj, obj);
 }
+//
 
 /* deprecated */
+/* TIZEN_ONLY(20180515)
 EAPI Evas_Fill_Spread
 evas_object_image_fill_spread_get(const Evas_Object *obj EINA_UNUSED)
 {
    return EFL_GFX_FILL_REPEAT;
 }
+*/
+EAPI Evas_Fill_Spread
+evas_object_image_fill_spread_get(const Evas_Object *obj)
+{
+   EVAS_IMAGE_LEGACY_API(obj, 0);
+   Evas_Image_Data *o = efl_data_scope_get(obj, EFL_CANVAS_IMAGE_INTERNAL_CLASS);
+
+   return (Evas_Fill_Spread)o->cur->spread;
+}
+/* END */
 
 /* deprecated */
 EAPI void

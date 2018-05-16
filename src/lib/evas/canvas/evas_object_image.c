@@ -98,6 +98,9 @@ static const Evas_Object_Image_State default_state = {
    NULL, //f
    NULL, //key
    0, //frame
+   //TIZEN_ONLY(20150515): maintain property for set/get function
+   EVAS_TEXTURE_REPEAT,
+   //
    EVAS_COLORSPACE_ARGB8888,
    EVAS_IMAGE_ORIENT_NONE,
 

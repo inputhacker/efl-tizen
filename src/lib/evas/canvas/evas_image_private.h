@@ -89,6 +89,9 @@ struct _Evas_Object_Image_State
    Eina_File     *f;
    const char    *key;
    int            frame;
+   //TIZEN_ONLY(20180515): maintain property for set/get function
+   int            spread;
+   //
 
    Evas_Colorspace    cspace;
    Evas_Image_Orient  orient;
