@@ -1196,15 +1196,16 @@ _evas_canvas_image_cache_get(Eo *eo_e EINA_UNUSED, Evas_Public_Data *e)
 }
 
 EOLIAN Eina_Bool
-_evas_canvas_image_max_size_get(Eo *eo_e EINA_UNUSED, Evas_Public_Data *e, Eina_Size2D *max)
+_evas_canvas_image_max_size_get(Eo *eo_e EINA_UNUSED, Evas_Public_Data *e, int *maxw, int *maxh)
 {
    int w = 0, h = 0;
 
-   if (max) *max = EINA_SIZE2D(0xffff, 0xffff);
+   if (maxw) *maxw = 0xffff;
+   if (maxh) *maxh = 0xffff;
    if (!e->engine.func->image_max_size_get) return EINA_FALSE;
-   if (!max) return EINA_TRUE;
    e->engine.func->image_max_size_get(_evas_engine_context(e), &w, &h);
-   *max = EINA_SIZE2D(w, h);
+   if (maxw) *maxw = w;
+   if (maxh) *maxh = h;
    return EINA_TRUE;
 }
 
