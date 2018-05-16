@@ -1393,9 +1393,15 @@ ecore_wl2_window_alpha_set(Ecore_Wl2_Window *window, Eina_Bool alpha)
    window->alpha = alpha;
 
    if (!window->alpha)
-     ecore_wl2_window_opaque_region_set(window, window->opaque.x,
-                                        window->opaque.y, window->opaque.w,
-                                        window->opaque.h);
+     {
+        ecore_wl2_window_opaque_region_set(window, window->opaque.x,
+                                           window->opaque.y, window->opaque.w,
+                                           window->opaque.h);
+// TIZEN_ONLY(20180516) : set opaque_set and pending.opaque value by force
+        window->opaque_set = window->opaque.x || window->opaque.y || window->opaque.w || window->opaque.h;
+        window->pending.opaque = EINA_TRUE;
+//
+     }
 // TIZEN_ONLY(20170203)
 /*
    else
@@ -1416,9 +1422,15 @@ ecore_wl2_window_transparent_set(Ecore_Wl2_Window *window, Eina_Bool transparent
    window->transparent = transparent;
 
    if (!window->transparent)
-     ecore_wl2_window_opaque_region_set(window, window->opaque.x,
-                                        window->opaque.y, window->opaque.w,
-                                        window->opaque.h);
+     {
+        ecore_wl2_window_opaque_region_set(window, window->opaque.x,
+                                           window->opaque.y, window->opaque.w,
+                                           window->opaque.h);
+// TIZEN_ONLY(20180516) : set opaque_set and pending.opaque value by force
+        window->opaque_set = window->opaque.x || window->opaque.y || window->opaque.w || window->opaque.h;
+        window->pending.opaque = EINA_TRUE;
+//
+     }
 // TIZEN_ONLY(20170203)
 /*
    else
