@@ -6287,6 +6287,8 @@ _elm_widget_highlightable(Evas_Object *obj)
 }
 //
 
+/* Legacy APIs */
+
 EOLIAN static Efl_Access_State_Set
 _efl_ui_widget_efl_access_object_state_set_get(const Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
 {
