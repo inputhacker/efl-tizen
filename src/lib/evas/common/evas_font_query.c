@@ -100,20 +100,7 @@ get_top_font:
              if (!evas_common_get_char_index(fi, *itr))
                 break;
 
-             /* TIZEN_ONLY(20170817): fix emoji merge issues caused by wrong handling of INHERITED script.
              if (fi != *script_fi)
-              */
-             /* If a char has INHERITED script, it should be loaded from current font.
-              *
-              * ex) Let's assume A font is selected as script font. B font is current font.
-              *     Both font has ZWJ character and its ligature information.
-              *       TEXT : [char from A] [char from B] [ZWJ] [char from B]
-              *     => In this case, we need to load ZWJ from font B.
-              *        If we don't put a additional condition to check current char's script,
-              *        ZWJ will be loaded from font A and it ruins ligature from font B. */
-             if ((fi != *script_fi) &&
-                 (evas_common_language_char_script_get(*itr) != EVAS_SCRIPT_INHERITED))
-             /* END */
                {
                   if (evas_common_get_char_index(*script_fi, *itr))
                      break;
