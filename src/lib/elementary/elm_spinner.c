@@ -1741,16 +1741,39 @@ _elm_spinner_label_format_get(const Eo *obj EINA_UNUSED, Elm_Spinner_Data *sd)
 EOLIAN static void
 _elm_spinner_efl_ui_range_range_min_max_set(Eo *obj, Elm_Spinner_Data *sd, double min, double max)
 {
+   //TIZEN_ONLY(20180517): Call changed callback when value changed in min_max_set.
+   Eina_Bool value_changed = EINA_FALSE;
+   //
+
    if ((sd->val_min == min) && (sd->val_max == max)) return;
 
    sd->val_min = min;
    sd->val_max = max;
 
-   if (sd->val < sd->val_min) sd->val = sd->val_min;
-   if (sd->val > sd->val_max) sd->val = sd->val_max;
+   if (sd->val < sd->val_min)
+     {
+        sd->val = sd->val_min;
+        //TIZEN_ONLY(20180517): Call changed callback when value changed in min_max_set.
+        value_changed = EINA_TRUE;
+        //
+     }
+   if (sd->val > sd->val_max)
+     {
+        sd->val = sd->val_max;
+        //TIZEN_ONLY(20180517): Call changed callback when value changed in min_max_set.
+        value_changed = EINA_TRUE;
+        //
+     }
 
    _val_set(obj);
-   _label_write(obj);
+   //TIZEN_ONLY(20180517): Call changed callback when value changed in min_max_set.
+   //_label_write(obj);
+   if (value_changed)
+     {
+        _label_write(obj);
+        evas_object_smart_callback_call(obj, SIG_CHANGED, NULL);
+     }
+   //
    //TIZEN_ONLY(20160419): Added entry filter feature.
    _entry_accept_filter_add(obj);
    //
