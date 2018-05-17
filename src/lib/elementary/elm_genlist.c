@@ -3579,22 +3579,8 @@ _elm_genlist_efl_ui_widget_on_focus_update(Eo *obj, Elm_Genlist_Data *sd, Elm_Ob
           eo_it = sd->last_selected_item;
         else if (_elm_config->first_item_focus_on_first_focus_in)
           {
-             if (!elm_widget_is_legacy(obj))
-               {
-                  if (!_elm_config->item_select_on_focus_disable && is_sel)
-                    elm_genlist_item_selected_set(eo_it, EINA_TRUE);
-                  else
-                    elm_object_item_focus_set(eo_it, EINA_TRUE);
-                  _elm_widget_focus_highlight_start(obj);
-                  //set it again in the manager, there might be the case that the manager focus history and internal item foused logic are in different states
-                  if (!elm_widget_is_legacy(obj) && efl_ui_focus_manager_request_subchild(obj, eo_it))
-                    efl_ui_focus_manager_focus_set(obj, eo_it);
-               }
-             else
-               {
-                  eo_it = elm_genlist_first_item_get(obj);
-                  is_sel = EINA_TRUE;
-               }
+             eo_it = elm_genlist_first_item_get(obj);
+             is_sel = EINA_TRUE;
           }
 
         while (eo_it)
@@ -3615,6 +3601,9 @@ _elm_genlist_efl_ui_widget_on_focus_update(Eo *obj, Elm_Genlist_Data *sd, Elm_Ob
                   else
                     elm_object_item_focus_set(eo_it, EINA_TRUE);
                   _elm_widget_focus_highlight_start(obj);
+                  //set it again in the manager, there might be the case that the manager focus history and internal item foused logic are in different states
+                  if (!elm_widget_is_legacy(obj) && efl_ui_focus_manager_request_subchild(obj, eo_it))
+                    efl_ui_focus_manager_focus_set(obj, eo_it);
                }
           }
      }
