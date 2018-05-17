@@ -3603,6 +3603,9 @@ _elm_genlist_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Genlist_Data *sd)
                   else
                     elm_object_item_focus_set(eo_it, EINA_TRUE);
                   _elm_widget_focus_highlight_start(obj);
+                  //set it again in the manager, there might be the case that the manager focus history and internal item foused logic are in different states
+                  if (!elm_widget_is_legacy(obj) && efl_ui_focus_manager_request_subchild(obj, eo_it))
+                    efl_ui_focus_manager_focus_set(obj, eo_it);
                }
           }
      }
