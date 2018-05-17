@@ -2881,7 +2881,7 @@ EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_right_get(const Evas_Object 
  * @see elm_panes_content_left_set() for details.
  * @see elm_panes_content_left_get().
  *
- * @deprecated use elm_object_part_content_unset() instead
+ * @deprecated use elm_object_part_content_unset() instead. Deprecated since 5.0.
  *
  */
 EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_left_unset(Evas_Object *obj);
@@ -2898,7 +2898,7 @@ EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_left_unset(Evas_Object *obj)
  * @see elm_panes_content_right_set() for details.
  * @see elm_panes_content_right_get().
  *
- * @deprecated use elm_object_part_content_unset() instead
+ * @deprecated use elm_object_part_content_unset() instead. Deprecated since 5.0.
  *
  */
 EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_right_unset(Evas_Object *obj);
