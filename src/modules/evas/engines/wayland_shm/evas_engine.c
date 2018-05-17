@@ -17,9 +17,6 @@ int _evas_engine_way_shm_log_dom = -1;
 /* evas function tables - filled in later (func and parent func) */
 static Evas_Func func, pfunc;
 
-static Evas_Native_Tbm_Surface_Image_Set_Call  glsym__evas_native_tbm_surface_image_set = NULL;
-static Evas_Native_Tbm_Surface_Stride_Get_Call  glsym__evas_native_tbm_surface_stride_get = NULL;
-
 /* engine structure data */
 typedef struct _Render_Engine Render_Engine;
 struct _Render_Engine
@@ -61,6 +58,8 @@ eng_output_setup(void *engine, void *info, unsigned int w, unsigned int h)
    evas_render_engine_software_generic_merge_mode_set(&re->generic);
 
    re->generic.ob->info = einfo;
+   /* init tbm native surface lib */
+   _evas_native_tbm_init();
 
    /* return allocated render engine */
    return re;
@@ -80,10 +79,6 @@ _symbols(void)
 
 #define LINK2GENERIC(sym) \
    glsym_##sym = dlsym(RTLD_DEFAULT, #sym);
-
-   // Get function pointer to native_common that is now provided through the link of SW_Generic.
-   LINK2GENERIC(_evas_native_tbm_surface_image_set);
-   LINK2GENERIC(_evas_native_tbm_surface_stride_get);
 
    done = 1;
 }
@@ -157,6 +152,9 @@ eng_output_free(void *engine, void *data)
         evas_render_engine_software_generic_clean(engine, &re->generic);
         free(re);
      }
+
+   /* shutdown tbm native surface lib */
+   _evas_native_tbm_shutdown();
 }
 
 static int
@@ -210,47 +208,83 @@ eng_image_native_set(void *engine EINA_UNUSED, void *image, void *native)
    //TIZEN_ONLY : fix to build warning
    RGBA_Image *im = image;
    RGBA_Image *im2 = NULL;
-   int stride;
 
-   if (!im || !ns) return im;
+   if (!im) return im;
 
-   if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+   if (ns)
      {
-        if (im->native.data)
-          {
-             //image have native surface already
-             Evas_Native_Surface *ens = im->native.data;
+       if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+         {
+           if (im->native.data)
+             {
+               //image have native surface already
+               Evas_Native_Surface *ens = im->native.data;
 
-             if ((ens->type == ns->type) &&
-                 (ens->data.tbm.buffer == ns->data.tbm.buffer))
-                return im;
-          }
-      }
+               if ((ens->type == ns->type) &&
+                   (ens->data.tbm.buffer == ns->data.tbm.buffer))
+                 return im;
+             }
+         }
 
-   if (ns->type == EVAS_NATIVE_SURFACE_EVASGL)
-     {
-        im2 = (RGBA_Image *) evas_cache_image_data(evas_common_image_cache_get(),
-                                                   ie->w, ie->h, ns->data.evasgl.surface, 1,
+       if (ns->type == EVAS_NATIVE_SURFACE_EVASGL)
+         {
+           im2 = (RGBA_Image *) evas_cache_image_data(evas_common_image_cache_get(),
+                                                      ie->w, ie->h, ns->data.evasgl.surface, 1,
+                                                      EVAS_COLORSPACE_ARGB8888);
+         }
+       else if (ns->type == EVAS_NATIVE_SURFACE_TBM)
+         {
+           Evas_Colorspace cs = _evas_native_tbm_surface_colorspace_get(NULL, ns);
+           if (cs == EVAS_COLORSPACE_ARGB8888)
+             {
+               im2 = (RGBA_Image *)evas_cache_image_data(evas_common_image_cache_get(),
+                                                         ie->w, ie->h, NULL, ie->flags.alpha,
+                                                         EVAS_COLORSPACE_ARGB8888);
+             }
+           else
+             {
+               int stride = _evas_native_tbm_surface_stride_get(NULL, ns);
+               if (stride > -1)
+                 {
+                   /**
+                    * To support various color format in Native TBM Surface,
+                    * Cache Image should have both im->image.data and cs.data memory.
+                    * In default, evas_cache_image_copied_data is callled with his colorspace.
+                    * In the case, cs.data is allocated and free, then re-allocated.
+                    * To optimize, we have two options.
+                    * One of them, evas_cache_image_copied_data is called with EVAS_COLORSPACE_ARGB8888
+                    * The other option, evas_cache_image_data is called with his colorspace
+                    * and evas_cache_image_surface_alloc should be called.
+                    * Then, new Cache Image's cs should be set with EVAS_COLORSPACE_ARGB8888.
+                    * Because of allocation cs.data in _evas_native_tbm_surface_image_set()
+                    * In current, first option is used.
+                    **/
+                   im2 = (RGBA_Image *)evas_cache_image_copied_data(evas_common_image_cache_get(),
+                                                                    stride, ie->h, NULL, ie->flags.alpha, cs);
+                 }
+               else
+                 {
+                   ERR("Fail to get stride");
+                   return im;
+                 }
+             }
+         }
+       else
+         im2 = (RGBA_Image *)evas_cache_image_data(evas_common_image_cache_get(),
+                                                   ie->w, ie->h,
+                                                   NULL, 1,
                                                    EVAS_COLORSPACE_ARGB8888);
      }
-   else if (ns->type == EVAS_NATIVE_SURFACE_TBM)
-     {
-        stride = glsym__evas_native_tbm_surface_stride_get(NULL, ns);
-        im2 = (RGBA_Image *)evas_cache_image_copied_data(evas_common_image_cache_get(),
-                                                         stride, ie->h, NULL, ie->flags.alpha,
-                                                         EVAS_COLORSPACE_ARGB8888);
-     }
-   else
-     im2 = (RGBA_Image *)evas_cache_image_data(evas_common_image_cache_get(),
-                                               ie->w, ie->h,
-                                               NULL, 1,
-                                               EVAS_COLORSPACE_ARGB8888);
+
+
 
    if (im->native.data)
       {
          if (im->native.func.free)
             im->native.func.free(im);
       }
+
+   if (!ns) return im;
 
 #ifdef EVAS_CSERVE2
    if (evas_cserve2_use_get() && evas_cache2_image_cached(ie))
@@ -262,7 +296,7 @@ eng_image_native_set(void *engine EINA_UNUSED, void *image, void *native)
 
    if (ns->type == EVAS_NATIVE_SURFACE_TBM)
      {
-        return glsym__evas_native_tbm_surface_image_set(NULL, im, ns);
+        return _evas_native_tbm_surface_image_set(NULL, im, ns);
      }
    else if (ns->type == EVAS_NATIVE_SURFACE_EVASGL)
      {
