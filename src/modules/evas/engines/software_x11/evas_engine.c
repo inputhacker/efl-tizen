@@ -24,8 +24,6 @@
 #include <Ecore.h>
 #include <Eina.h>
 
-static Evas_Native_Tbm_Surface_Image_Set_Call glsym__evas_native_tbm_surface_image_set = NULL;
-static Evas_Native_Tbm_Surface_Stride_Get_Call glsym__evas_native_tbm_surface_stride_get = NULL;
 int _evas_engine_soft_x11_log_dom = -1;
 
 /* function tables - filled in later (func and parent func) */
@@ -208,9 +206,6 @@ _symbols(void)
 #define LINK2GENERIC(sym) \
   glsym_##sym = dlsym(RTLD_DEFAULT, #sym);
 
-   // Get function pointer to native_common that is now provided through the link of SW_Generic.
-   LINK2GENERIC(_evas_native_tbm_surface_image_set);
-   LINK2GENERIC(_evas_native_tbm_surface_stride_get);
 
    done = 1;
 }
@@ -470,7 +465,7 @@ eng_image_native_set(void *engine, void *image, void *native)
                                  EVAS_COLORSPACE_ARGB8888);
    else if (ns->type == EVAS_NATIVE_SURFACE_TBM)
      {
-        stride = glsym__evas_native_tbm_surface_stride_get(re->generic.ob, ns);
+        stride = _evas_native_tbm_surface_stride_get(re->generic.ob, ns);
         ie2 = evas_cache_image_copied_data(evas_common_image_cache_get(),
                                            stride, ie->h, NULL, ie->flags.alpha,
                                            EVAS_COLORSPACE_ARGB8888);
@@ -504,7 +499,7 @@ eng_image_native_set(void *engine, void *image, void *native)
      }
    else if (ns->type == EVAS_NATIVE_SURFACE_TBM)
      {
-        return glsym__evas_native_tbm_surface_image_set(re->generic.ob, ie, ns);
+        return _evas_native_tbm_surface_image_set(re->generic.ob, ie, ns);
      }
    else if (ns->type == EVAS_NATIVE_SURFACE_EVASGL)
      {

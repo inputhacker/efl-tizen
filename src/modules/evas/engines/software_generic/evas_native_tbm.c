@@ -228,7 +228,6 @@ _native_bind_cb(void *image, int x EINA_UNUSED, int y EINA_UNUSED, int w EINA_UN
    if (sym_tbm_surface_map(tbm_surf, TBM_SURF_OPTION_READ|TBM_SURF_OPTION_WRITE, &info))
      return;
 
-   im->image.data = (DATA32 *)info.planes[0].ptr;
 }
 
 static void
