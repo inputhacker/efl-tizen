@@ -1183,6 +1183,9 @@ CFLAGS+=" -DMESA_EGL_NO_X11_HEADERS "
 
 CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 
+# disable eo thread check?
+#CFLAGS+=" -DDISABLE_EO_THREAD_CHECK"
+
 %if "%{asan}" == "1"
 %restore_fcommon
 %endif
