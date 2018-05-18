@@ -680,15 +680,6 @@ _efl_ui_widget_efl_ui_cursor_cursor_set(Evas_Object *obj, Elm_Widget_Smart_Data 
    return EINA_TRUE;
 }
 
-//TIZEN_ONLY(20180504): fix ABI break on elm_object_item cursor APIs
-/*
-EOLIAN const char *
-_efl_ui_widget_efl_ui_cursor_cursor_get(const Evas_Object *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
-{
-   ELM_CURSOR_GET_OR_RETURN(cur, obj, NULL);
-   return cur->cursor_name;
-}
-*/
 const char *
 elm_object_sub_cursor_get(const Evas_Object *obj)
 {
@@ -701,7 +692,6 @@ _efl_ui_widget_efl_ui_cursor_cursor_get(const Evas_Object *obj, Elm_Widget_Smart
 {
    return elm_object_sub_cursor_get(obj);
 }
-//
 
 EAPI void
 elm_object_cursor_unset(Evas_Object *obj)
@@ -767,17 +757,9 @@ elm_object_cursor_unset(Evas_Object *obj)
    free(cur);
 }
 
-//TIZEN_ONLY(20180504): fix ABI break on elm_object_item cursor APIs
-/*
-EOLIAN Eina_Bool
-_efl_ui_widget_efl_ui_cursor_cursor_style_set(Evas_Object *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED,
-                                           const char *style)
-{
-*/
 Eina_Bool
 elm_object_sub_cursor_style_set(Evas_Object *obj, const char *style)
 {
-//
    ELM_CURSOR_GET_OR_RETURN(cur, obj, EINA_FALSE);
 
    if (!eina_stringshare_replace(&cur->style, style))
@@ -810,24 +792,13 @@ elm_object_sub_cursor_style_set(Evas_Object *obj, const char *style)
    return EINA_TRUE;
 }
 
-//TIZEN_ONLY(20180504): fix ABI break on elm_object_item cursor APIs
 EOLIAN Eina_Bool
 _efl_ui_widget_efl_ui_cursor_cursor_style_set(Evas_Object *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED,
                                            const char *style)
 {
    return elm_object_sub_cursor_style_set(obj, style);
 }
-//
 
-//TIZEN_ONLY(20180504): fix ABI break on elm_object_item cursor APIs
-/*
-EOLIAN const char *
-_efl_ui_widget_efl_ui_cursor_cursor_style_get(const Evas_Object *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
-{
-   ELM_CURSOR_GET_OR_RETURN(cur, obj, NULL);
-   return cur->style ? cur->style : "default";
-}
-*/
 const char *
 elm_object_sub_cursor_style_get(const Evas_Object *obj)
 {
@@ -840,7 +811,6 @@ _efl_ui_widget_efl_ui_cursor_cursor_style_get(const Evas_Object *obj, Elm_Widget
 {
    return elm_object_sub_cursor_style_get(obj);
 }
-//
 
 /**
  * Notify cursor should recalculate its theme.
@@ -857,17 +827,9 @@ elm_cursor_theme(Elm_Cursor *cur)
      _elm_cursor_set_hot_spots(cur);
 }
 
-//TIZEN_ONLY(20180504): fix ABI break on elm_object_item cursor APIs
-/*
-EOLIAN Eina_Bool
-_efl_ui_widget_efl_ui_cursor_cursor_theme_search_enabled_set(Evas_Object *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED,
-                                                             Eina_Bool theme_search)
-{
-*/
 Eina_Bool
 elm_object_sub_cursor_theme_search_enabled_set(Evas_Object *obj, Eina_Bool theme_search)
 {
-//
    ELM_CURSOR_GET_OR_RETURN(cur, obj, EINA_FALSE);
    cur->theme_search = theme_search;
    ELM_SAFE_FREE(cur->obj, evas_object_del);
@@ -875,24 +837,13 @@ elm_object_sub_cursor_theme_search_enabled_set(Evas_Object *obj, Eina_Bool theme
    return EINA_TRUE;
 }
 
-//TIZEN_ONLY(20180504): fix ABI break on elm_object_item cursor APIs
 EOLIAN Eina_Bool
 _efl_ui_widget_efl_ui_cursor_cursor_theme_search_enabled_set(Evas_Object *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED,
                                                              Eina_Bool theme_search)
 {
    return elm_object_sub_cursor_theme_search_enabled_set(obj, theme_search);
 }
-//
 
-//TIZEN_ONLY(20180504): fix ABI break on elm_object_item cursor APIs
-/*
-EOLIAN Eina_Bool
-_efl_ui_widget_efl_ui_cursor_cursor_theme_search_enabled_get(const Evas_Object *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
-{
-   ELM_CURSOR_GET_OR_RETURN(cur, obj, EINA_FALSE);
-   return cur->theme_search;
-}
-*/
 Eina_Bool
 elm_object_sub_cursor_theme_search_enabled_get(const Evas_Object *obj)
 {
@@ -905,6 +856,5 @@ _efl_ui_widget_efl_ui_cursor_cursor_theme_search_enabled_get(const Evas_Object *
 {
    return elm_object_sub_cursor_theme_search_enabled_get(obj);
 }
-//
 
 #include "efl_ui_cursor.eo.c"

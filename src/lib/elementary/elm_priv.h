@@ -680,7 +680,7 @@ void                 elm_cursor_theme(Elm_Cursor *cur);
 void                 elm_object_sub_cursor_set(Evas_Object *eventarea,
                                                Evas_Object *owner,
                                                const char *cursor);
-//TIZEN_ONLY(20180504): fix ABI break on elm_object_item cursor APIs
+
 const char *         elm_object_sub_cursor_get(const Evas_Object *obj);
 Eina_Bool            elm_object_sub_cursor_style_set(Evas_Object *obj,
                                                      const char *style);
@@ -688,7 +688,6 @@ const char *         elm_object_sub_cursor_style_get(const Evas_Object *obj);
 Eina_Bool            elm_object_sub_cursor_theme_search_enabled_set(Evas_Object *obj,
                                                                     Eina_Bool theme_search);
 Eina_Bool            elm_object_sub_cursor_theme_search_enabled_get(const Evas_Object *obj);
-//
 
 void                 elm_menu_clone(Evas_Object *from_menu,
                                     Evas_Object *to_menu,
