@@ -1381,12 +1381,12 @@ _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *s
    //if (strcmp(ev->keyname, "Escape")) return EINA_FALSE;
    return EINA_FALSE;
 
-//
+/*
    _hide_signals_emit(obj, sd->dir);
 
    ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
    return EINA_TRUE;
-//
+*/
 }
 
 //FIXME: lost the content size when theme hook is called.
