@@ -6321,6 +6321,9 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
              Ecore_Wl2_Display *d = ecore_wl2_display_connect(env);
              sd->wl.win = ecore_wl2_window_new(d, NULL, 0, 0, 1, 1);
              ecore_wl2_display_disconnect(d);
+//TIZEN_ONLY(20180518): call ecore_wl2_window_free only fake make it
+             evas_object_data_set(sd->obj, "__fake_make_wl2", sd->obj);
+//
           }
      }
 #endif
@@ -6653,8 +6656,12 @@ EOLIAN static void
 _efl_ui_win_efl_object_destructor(Eo *obj, Efl_Ui_Win_Data *pd EINA_UNUSED)
 {
 #ifdef HAVE_ELEMENTARY_WL2
-   if (pd->type == ELM_WIN_FAKE)
+//TIZEN_ONLY(20180518): call ecore_wl2_window_free only fake make it
+// if (pd->type == ELM_WIN_FAKE)
+   if (pd->type == ELM_WIN_FAKE && evas_object_data_get(pd->obj, "__fake_make_wl2"))
      {
+        evas_object_data_del(obj, "__fake_make_wl2");
+//
         if (pd->wl.win)
           ecore_wl2_window_free(pd->wl.win);
      }
