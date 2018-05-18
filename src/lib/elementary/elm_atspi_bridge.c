@@ -5711,7 +5711,7 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
    if (state_data->type == EFL_ACCESS_STATE_HIGHLIGHTED)
     {
        if (_ee_obscured_get(event->object))
-         return EINA_FALSE;
+         return;
 
        if (_scroll_gesture_required_is(event->object))
         det2++;
