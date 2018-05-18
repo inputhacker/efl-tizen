@@ -12,6 +12,11 @@ Eina_TLS          _eo_table_data;
 Eo_Id_Data       *_eo_table_data_shared = NULL;
 Eo_Id_Table_Data *_eo_table_data_shared_data = NULL;
 
+/* TIZEN_ONLY(20180518): See _eo_table_data_get() in eo_ptr_indirection.x. */
+#ifdef DISABLE_EO_THREAD_CHECK
+Eo_Id_Data       *_tizen_eo_table_data = NULL;
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 
 void
