@@ -9402,7 +9402,7 @@ _elm_widget_edje_class_get(Evas_Object *obj, const char *style, const char *part
 
    if (klass_name)
      {
-        if (is_legacy && strchr(klass_name, "_"))
+        if (is_legacy && strchr(klass_name, '_'))
           {
              eina_strbuf_append(buf, strchr(klass_name, '_') + 1);
              eina_strbuf_tolower(buf);
