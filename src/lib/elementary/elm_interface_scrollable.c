@@ -2446,7 +2446,7 @@ _elm_scroll_post_event_up(void *data,
         if (sid->down.dragged)
           elm_widget_scroll_lock_set(sid->obj, EFL_UI_SCROLL_BLOCK_NONE);
      }
-   return EINA_FALSE;
+   return EINA_TRUE;
 }
 
 static Eina_Bool
@@ -3435,7 +3435,7 @@ _elm_scroll_post_event_move(void *data,
      }
    if (start) _elm_scroll_drag_start(sid);
 
-   return EINA_FALSE;
+   return EINA_TRUE;
 }
 
 
