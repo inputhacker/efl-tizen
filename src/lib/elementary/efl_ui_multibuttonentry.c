@@ -1637,7 +1637,7 @@ _view_init(Evas_Object *obj, Efl_Ui_Multibuttonentry_Data *sd)
 static void
 _efl_ui_multibuttonentry_text_set(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd EINA_UNUSED, const char *part, const char *label)
 {
-   if (!part || !strcmp(part, "default") || !strcmp(part, "elm.text"))
+   if (!part || !strcmp(part, "elm.text"))
      {
         if (label) _label_set(obj, label);
      }
@@ -1654,7 +1654,7 @@ _efl_ui_multibuttonentry_text_get(Eo *obj, Efl_Ui_Multibuttonentry_Data *sd, con
 {
    const char *text = NULL;
 
-   if (!part || !strcmp(part, "default"))
+   if (!part || !strcmp(part, "elm.text"))
      {
         text = sd->label_str;
      }
