@@ -10,11 +10,11 @@ SUBDIRS = src data
 
 if BUILD_TIZEN_EFL
 SUBDIRS += doc
+endif
 
+if BUILD_TIZEN_ELM
 if HAVE_PO
-
 SUBDIRS += po
-
 endif
 endif
 ##

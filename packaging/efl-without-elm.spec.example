@@ -1068,13 +1068,13 @@ License: BSD-2-Clause
 %description -n elua-devel
 Development files for elua
 
-%package -n efl-locale
-Summary:        Translations and Locale for package %{name}
-Group: Translations
-AutoReqProv: 0
+##%package -n efl-locale
+##Summary:        Translations and Locale for package %{name}
+##Group: Translations
+##AutoReqProv: 0
 
-%description -n efl-locale
-This package provides translations for package %{name}.
+##%description -n efl-locale
+##This package provides translations for package %{name}.
 
 %package -n ecore-wl2
 Summary: Ecore_Wl2 provides a wrapper and convenience functions for using the Wayland protocol in implementing a window system.
@@ -1139,7 +1139,7 @@ cp %{SOURCE1001} .
 
 %build
 
-%if "%{TIZEN_PRODUCT_TV}" == "1"
+%if "%{tizen_profile_name}" == "tv"
         export CFLAGS+=" -DTIZEN_PROFILE_TV"
 %endif
 
@@ -1218,7 +1218,7 @@ rm %{buildroot}/usr/share/ecore_x/checkme
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
-%find_lang %{name}
+##%find_lang %{name}
 
 %post -n eina -p /sbin/ldconfig
 %postun -n eina -p /sbin/ldconfig
@@ -1989,7 +1989,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/pkgconfig/elput.pc
 %{_includedir}/elput-1/*.h
 
-%files -n efl-locale -f %{name}.lang
-%license COPYING
-%defattr(-,root,root,-)
+##%files -n efl-locale -f %{name}.lang
+##%license COPYING
+##%defattr(-,root,root,-)
 
