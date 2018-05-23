@@ -200,6 +200,14 @@ Summary:        Default theme for elementary
 %description -n elementary-theme
 Default theme which provides various styles for elementary.
 
+%package -n efl-locale
+Summary:        Translations and Locale for package efl
+Group: Translations
+AutoReqProv: 0
+
+%description -n efl-locale
+This package provides translations for package efl.
+
 
 %prep
 %setup -q
@@ -208,7 +216,7 @@ cp %{SOURCE1001} .
 
 %build
 
-%if "%{TIZEN_PRODUCT_TV}" == "1"
+%if "%{tizen_profile_name}" == "tv"
         export CFLAGS+=" -DTIZEN_PROFILE_TV"
 %endif
 
@@ -291,7 +299,7 @@ export XDG_RUNTIME_DIR="/tmp/"
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
-#%find_lang %{name}
+%find_lang efl
 
 %post -n elementary -p /sbin/ldconfig
 %postun -n elementary -p /sbin/ldconfig
@@ -364,4 +372,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %exclude /usr/share/icons/Enlightenment-X
 %exclude /usr/share/elementary/test*
 
+%files -n efl-locale -f efl.lang
+%license COPYING
+%defattr(-,root,root,-)
 
