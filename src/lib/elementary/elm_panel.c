@@ -1606,7 +1606,6 @@ ELM_PART_OVERRIDE_CONTENT_GET(elm_panel, ELM_PANEL, Elm_Panel_Data)
 ELM_PART_OVERRIDE_CONTENT_UNSET(elm_panel, ELM_PANEL, Elm_Panel_Data)
 // TIZEN_ONLY(20180515): Add content aliases for backward compatibility
 ELM_PART_CONTENT_DEFAULT_GET(elm_panel, _content_aliases[0].real_part)
-ELM_PART_CONTENT_DEFAULT_IMPLEMENT(elm_panel, Elm_Panel_Data)
 //
 #include "elm_panel_part.eo.c"
 
@@ -1620,6 +1619,7 @@ ELM_LAYOUT_CONTENT_ALIASES_IMPLEMENT(elm_panel)
 #define ELM_PANEL_EXTRA_OPS \
    ELM_LAYOUT_SIZING_EVAL_OPS(elm_panel), \
    ELM_LAYOUT_CONTENT_ALIASES_OPS(elm_panel), \
+   ELM_PART_CONTENT_DEFAULT_OPS(elm_panel), \
    EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_panel)
 /*
 #define ELM_PANEL_EXTRA_OPS \
