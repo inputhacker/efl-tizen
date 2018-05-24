@@ -231,6 +231,7 @@ _evas_image_file_header(Evas_Module *em, Image_Entry *ie, int *error)
              ie->flags.rotated = property.rotated;
              ie->flags.flipped = property.flipped;
              ie->num_palette = property.num_palette;
+             ERR("ie->num_palette :%d ",ie->num_palette);
 
              for (i = 0; i < ie->num_palette; i++)
                {
@@ -238,7 +239,7 @@ _evas_image_file_header(Evas_Module *em, Image_Entry *ie, int *error)
                   ie->palette[i].green = property.palette[i].green;
                   ie->palette[i].blue = property.palette[i].blue;
                   ie->palette[i].alpha = property.palette[i].alpha;
-#if 0
+#if 1
                   ERR("[%d] %d %d %d %d", i,
                       ie->palette[i].red,
                       ie->palette[i].green,

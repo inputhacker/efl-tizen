@@ -45,8 +45,9 @@ typedef enum {
    SHADER_FLAG_FILTER_BLUR       = (1 << 23),
    SHADER_FLAG_FILTER_DIR_Y      = (1 << 24),
    SHADER_FLAG_FILTER_ALPHA_ONLY = (1 << 25),
+SHADER_FLAG_PALETTE   = (1 << 26),
 } Shader_Flag;
-#define SHADER_FLAG_COUNT 26
+#define SHADER_FLAG_COUNT 27
 
 static const char *_shader_flags[SHADER_FLAG_COUNT] = {
    "TEX",
@@ -75,6 +76,7 @@ static const char *_shader_flags[SHADER_FLAG_COUNT] = {
    "FILTER_BLUR",
    "FILTER_DIR_Y",
    "ALPHA_ONLY",
+   "PALETTE",
 };
 
 static Eina_Bool compiler_released = EINA_FALSE;
@@ -117,6 +119,8 @@ _attributes_bind(GLint prg)
    GL_TH(glBindAttribLocation, prg, SHAD_TEXSAM,  "tex_sample");
    GL_TH(glBindAttribLocation, prg, SHAD_MASK,    "mask_coord");
    GL_TH(glBindAttribLocation, prg, SHAD_MASKSAM, "tex_masksample");
+   GL_TH(glBindAttribLocation, prg, SHAD_XDERIATIVE, "xDerivative");
+   GL_TH(glBindAttribLocation, prg, SHAD_YDERIATIVE, "yDerivative");
 }
 
 static Evas_GL_Program *
@@ -874,6 +878,12 @@ evas_gl_common_shader_flags_get(Evas_GL_Shared *shared, Shader_Type type,
         flags |= SHADER_FLAG_MASK_COLOR;
      }
 
+if(type == SHD_IMAGE && tex->has_palette)
+    {
+      ERR("tscholb : this shader use PALETTE !! (tex_palette:%d)",tex->tex_palette);
+      flags |= SHADER_FLAG_PALETTE;
+    }
+
    switch (type)
      {
       case SHD_RECT:
@@ -990,6 +1000,7 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
       { "texv", 0 },
       { "texuv", 0 },
       { "tex_filter", 0 },
+      { "paletteSampler", 0},
       { NULL, 0 }
    };
    Eina_Bool hastex = 0;
@@ -1024,11 +1035,18 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
         textures[5].enabled = 1;
         hastex = 1;
      }
+
    if ((p->flags & SHADER_FLAG_FILTER_DISPLACE) ||
        (p->flags & SHADER_FLAG_FILTER_CURVE) ||
        (p->flags & SHADER_FLAG_FILTER_BLUR))
      {
         textures[6].enabled = 1;
+        hastex = 1;
+     }
+
+   if ((p->flags & SHADER_FLAG_PALETTE))
+     {
+        textures[7].enabled = 1;
         hastex = 1;
      }
 

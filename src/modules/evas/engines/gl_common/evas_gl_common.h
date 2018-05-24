@@ -62,6 +62,8 @@
 #define SHAD_TEXSAM 6
 #define SHAD_MASK   7
 #define SHAD_MASKSAM 8
+#define SHAD_XDERIATIVE 9
+#define SHAD_YDERIATIVE 10
 
 typedef struct _Evas_GL_Program               Evas_GL_Program;
 typedef struct _Evas_GL_Shared                Evas_GL_Shared;
@@ -331,9 +333,10 @@ struct _Evas_Engine_GL_Context
          Evas_GL_Program *prog;
          Evas_GL_Image   *surface;
          void            *cur_tex_dyn, *cur_texu_dyn, *cur_texv_dyn;
-         GLuint           cur_tex, cur_texu, cur_texv, cur_texa, cur_texm;
+         GLuint           cur_tex, cur_texu, cur_texv, cur_texa, cur_texm, cur_texp;
          int              tex_target;
          int              cx, cy, cw, ch;
+         int              tex_w,tex_h;
          signed char      render_op;
          Eina_Bool        smooth      : 2;
          Eina_Bool        blend       : 2;
@@ -373,6 +376,7 @@ struct _Evas_Engine_GL_Context
          Eina_Bool      use_mask    : 1;
          Eina_Bool      use_masksam : 1;
          Eina_Bool      anti_alias  : 1;
+         Eina_Bool      use_palette : 1;
       } array;
    } pipe[MAX_PIPES];
 
@@ -457,6 +461,9 @@ struct _Evas_GL_Texture
    Eina_Bool        dyn : 1;
    Eina_Bool        uploaded : 1;
    Eina_Bool        was_preloaded : 1;
+
+   GLint tex_palette;
+   Eina_Bool has_palette;
 };
 
 struct _Evas_GL_Image

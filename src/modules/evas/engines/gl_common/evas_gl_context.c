@@ -2299,6 +2299,15 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
    gc->pipe[pn].shader.cy = 0;
    gc->pipe[pn].shader.cw = 0;
    gc->pipe[pn].shader.ch = 0;
+   gc->pipe[pn].shader.tex_w = (int)pt->w;
+   gc->pipe[pn].shader.tex_h = (int)pt->h;
+   if(tex->has_palette)
+   {
+     gc->pipe[pn].shader.cur_texp = tex->tex_palette;
+     ERR("tscholb : palette in pipe[%d]= %d,  tex:%dx%d,img(%dx%d),anti:%d ",
+     pn, tex->tex_palette,gc->pipe[pn].shader.tex_w,gc->pipe[pn].shader.tex_h,w,h,gc->pipe[pn].array.anti_alias);
+   }
+
    gc->pipe[pn].array.line = 0;
    gc->pipe[pn].array.use_vertex = 1;
    gc->pipe[pn].array.use_color = !nomul;
@@ -2308,6 +2317,7 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
    gc->pipe[pn].array.use_texsam = (sam != SHD_SAM11);
    gc->pipe[pn].array.use_mask = !!mtex;
    gc->pipe[pn].array.use_masksam = (masksam != SHD_SAM11);
+   gc->pipe[pn].array.use_palette = tex->has_palette;
 
    pipe_region_expand(gc, pn, x, y, w, h);
    PIPE_GROW(gc, pn, 6);
@@ -4049,6 +4059,7 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
           {
              if (gc->pipe[i].shader.smooth)
                {
+
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
                   if (shared->info.anisotropic > 0.0)
                     GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, shared->info.anisotropic);
@@ -4063,6 +4074,15 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
                       GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                       GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                     }
+
+                  // Paletted png need to use NEAREST
+                  if(gc->pipe[i].array.use_palette)
+                    {
+                       ERR("tscholb : PALETTE png(i:%d) have to use GL_NEAREST",i);
+                       GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                       GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    }
+
                   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                }
@@ -4302,6 +4322,19 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
           }
         else
           GL_TH(glDisableVertexAttribArray, SHAD_COLOR);
+
+        if(gc->pipe[i].array.use_palette)
+         {
+            ERR("tscholb : push palette context[%d]= %d  xD:%d,yD:%d,  %f,%f",
+                i, gc->pipe[i].shader.cur_texp,
+                gc->pipe[i].shader.tex_w, gc->pipe[i].shader.tex_h,
+                (float)(1.0/gc->pipe[i].shader.tex_w),(float)(1.0/gc->pipe[i].shader.tex_h) );
+            GL_TH(glUniform1f, SHAD_XDERIATIVE , (float)(1.0/gc->pipe[i].shader.tex_w));
+            GL_TH(glUniform1f, SHAD_YDERIATIVE , (float)(1.0/gc->pipe[i].shader.tex_h));
+            GL_TH(glActiveTexture, GL_TEXTURE0 + 1);
+            GL_TH(glBindTexture, GL_TEXTURE_2D, gc->pipe[i].shader.cur_texp);
+            GL_TH(glActiveTexture, GL_TEXTURE0);
+         }
 
         if (gc->pipe[i].array.line)
           {

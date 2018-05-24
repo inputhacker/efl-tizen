@@ -52,6 +52,10 @@ static const GLenum s3tc_rgba_dxt1_fmt  = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
 static const GLenum s3tc_rgba_dxt23_fmt = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
 static const GLenum s3tc_rgba_dxt45_fmt = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
 
+// Palette fmt
+static const palette_ifmt         = GL_ALPHA;
+static const palette_fmt          = GL_ALPHA;
+
 static struct {
    struct {
       int num, pix;
@@ -95,7 +99,9 @@ static const struct {
   { MATCH_ANY, MATCH_ANY, EVAS_COLORSPACE_RGBA_S3TC_DXT2, &s3tc_rgba_dxt23_fmt, &s3tc_rgba_dxt23_fmt },
   { MATCH_ANY, MATCH_ANY, EVAS_COLORSPACE_RGBA_S3TC_DXT3, &s3tc_rgba_dxt23_fmt, &s3tc_rgba_dxt23_fmt },
   { MATCH_ANY, MATCH_ANY, EVAS_COLORSPACE_RGBA_S3TC_DXT4, &s3tc_rgba_dxt45_fmt, &s3tc_rgba_dxt45_fmt },
-  { MATCH_ANY, MATCH_ANY, EVAS_COLORSPACE_RGBA_S3TC_DXT5, &s3tc_rgba_dxt45_fmt, &s3tc_rgba_dxt45_fmt }
+  { MATCH_ANY, MATCH_ANY, EVAS_COLORSPACE_RGBA_S3TC_DXT5, &s3tc_rgba_dxt45_fmt, &s3tc_rgba_dxt45_fmt },
+  // PALETTE support
+  { MATCH_ANY, MATCH_ANY, EVAS_COLORSPACE_PALETTE, &palette_ifmt, &palette_fmt }
 };
 
 static void
@@ -608,6 +614,11 @@ evas_gl_common_texture_new(Evas_Engine_GL_Context *gc, RGBA_Image *im, Eina_Bool
         break;
       case EVAS_COLORSPACE_ETC1_ALPHA:
         return evas_gl_common_texture_rgb_a_pair_new(gc, im);
+      case EVAS_COLORSPACE_PALETTE:
+      {
+        ERR("tscholb : Disable atlas for pallete type");
+        disable_atlas = 1;
+      }
      default:
         if (disable_atlas)
           {
@@ -694,6 +705,7 @@ _pool_tex_render_new(Evas_Engine_GL_Context *gc, int w, int h, int intformat, in
    GL_TH(glBindTexture, GL_TEXTURE_2D, pt->texture);
    GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
    GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
    GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
    ok = _tex_2d(gc, pt->intformat, w, h, pt->format, pt->dataformat, NULL);
@@ -1447,6 +1459,26 @@ evas_gl_common_texture_update(Evas_GL_Texture *tex, RGBA_Image *im)
 
    switch (im->cache_entry.space)
      {
+      case EVAS_COLORSPACE_PALETTE:
+      {
+        tex->has_palette = EINA_TRUE;
+        ERR("tscholb : Palette type( need to Create new Texture !!");
+        {
+          GL_TH(glGenTextures, 1, &(tex->tex_palette));
+          GL_TH(glBindTexture, GL_TEXTURE_2D, tex->tex_palette);
+          GL_TH(glPixelStorei, GL_UNPACK_ALIGNMENT, 4);
+
+          GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+          GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+          GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+          GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+          GL_TH(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA, 256, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, im->cache_entry.palette);
+          ERR("tscholb : [Gen, Palette Texture ] tex_palette >>%d",tex->tex_palette);
+        }
+        bytes_count = 1;
+        break;
+      }
       case EVAS_COLORSPACE_ARGB8888: bytes_count = 4; break;
       case EVAS_COLORSPACE_GRY8: bytes_count = 1; break;
       case EVAS_COLORSPACE_AGRY88: bytes_count = 2; break;
@@ -1700,6 +1732,11 @@ evas_gl_common_texture_free(Evas_GL_Texture *tex, Eina_Bool force)
      }
    tex->references--;
    if (tex->references != 0) return;
+   if(tex->has_palette)
+   {
+      ERR("tscholb : Deelte Palette texture (%d)",tex->tex_palette);
+      glDeleteTextures(1, &(tex->tex_palette));
+   }
    if (tex->fglyph)
      {
         tex->gc->font_glyph_textures = eina_list_remove(tex->gc->font_glyph_textures, tex);

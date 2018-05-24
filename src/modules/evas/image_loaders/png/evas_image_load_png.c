@@ -212,6 +212,7 @@ evas_image_load_file_head_png(void *loader_data,
          if (png_get_PLTE(png_ptr, info_ptr, &palette, &prop->num_palette)
              != PNG_INFO_PLTE)
            {
+             ERR("tscholb : png_get_PLTE is error !!");
               *error = EVAS_LOAD_ERROR_GENERIC;
               goto close_file;
            }
@@ -231,7 +232,7 @@ evas_image_load_file_head_png(void *loader_data,
                    prop->palette[i].alpha = trans[i];
                 }
            }
-
+         ERR("tscholb : num_Palette :%d ",prop->num_palette);
          break;
      }
    if (hasa) prop->alpha = 1;

@@ -659,6 +659,7 @@ evas_gl_common_image_content_hint_set(Evas_GL_Image *im, int hint)
       case EVAS_COLORSPACE_YCBCR420NV12601_PL:
       case EVAS_COLORSPACE_YCBCR420TM12601_PL:
       case EVAS_COLORSPACE_ETC1_ALPHA:
+      case EVAS_COLORSPACE_PALETTE: ERR("tscholb : content_hint_set? ( To DO)");
         return;
       default: break;
      }
@@ -890,9 +891,20 @@ evas_gl_common_image_update(Evas_Engine_GL_Context *gc, Evas_GL_Image *im)
      }
    else
  */
+   // if this image use palette type, we need to change color format
+   if(ie->num_palette > 0)
+   {
+     ERR("tscholb : Change Colorspace for PALETTE type,  paletteCnt:%d",ie->num_palette);
+     evas_cache_image_colorspace(&im->im->cache_entry,EVAS_COLORSPACE_PALETTE);
+     im->cs.space = EVAS_COLORSPACE_PALETTE;
+   }
 
    switch (im->cs.space)
      {
+      case EVAS_COLORSPACE_PALETTE:
+      {
+        //evas_cache_image_colorspace(&im->im->cache_entry, im->cs.space);
+      }
       case EVAS_COLORSPACE_ARGB8888:
       case EVAS_COLORSPACE_GRY8:
       case EVAS_COLORSPACE_AGRY88:
