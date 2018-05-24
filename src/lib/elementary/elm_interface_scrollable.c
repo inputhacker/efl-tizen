@@ -2443,8 +2443,7 @@ _elm_scroll_post_event_up(void *data,
 
    if (sid->obj)
      {
-        if (sid->down.dragged)
-          elm_widget_scroll_lock_set(sid->obj, EFL_UI_SCROLL_BLOCK_NONE);
+        elm_widget_scroll_lock_set(sid->obj, EFL_UI_SCROLL_BLOCK_NONE);
      }
    return EINA_TRUE;
 }
