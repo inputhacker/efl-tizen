@@ -335,7 +335,7 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
        gw->gl_context->eglctxt = gw->egl_context;
        eng_window_use(gw);
 //TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
-       glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot);
+       glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot, 1);
 //
     }
 
@@ -437,7 +437,7 @@ eng_window_use(Outbuf *gw)
    if ((gw) && (gw->gl_context))
      {
         glsym_evas_gl_common_context_use(gw->gl_context);
-        glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot);
+        glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot, 0);
      }
 }
 
@@ -524,7 +524,7 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
    if (!ob->win)
      eng_window_resurf(ob);
    eng_window_use(ob);
-   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot);
+   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot, 1);
 
    if (ob->win)
      {

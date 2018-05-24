@@ -585,7 +585,7 @@ EAPI void         evas_gl_common_context_use(Evas_Engine_GL_Context *gc);
 EAPI void         evas_gl_common_context_newframe(Evas_Engine_GL_Context *gc);
 EAPI void         evas_gl_common_context_done(Evas_Engine_GL_Context *gc);
 
-EAPI void         evas_gl_common_context_resize(Evas_Engine_GL_Context *gc, int w, int h, int rot);
+EAPI void         evas_gl_common_context_resize(Evas_Engine_GL_Context *gc, int w, int h, int rot, int force_update);
 EAPI int          evas_gl_common_buffer_dump(Evas_Engine_GL_Context *gc, const char* dname, const char* fname, int frame, const char* suffix);
 
 EAPI void         evas_gl_preload_render_lock(evas_gl_make_current_cb make_current, void *engine_data);

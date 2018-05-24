@@ -364,7 +364,7 @@ _evas_outbuf_egl_setup(Outbuf *ob)
 
    evas_outbuf_use(ob);
    glsym_evas_gl_common_context_resize(ob->gl_context,
-                                       ob->w, ob->h, ob->rotation);
+                                       ob->w, ob->h, ob->rotation, 1);
 
    ob->surf = EINA_TRUE;
 
@@ -557,7 +557,7 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth)
      _evas_outbuf_gbm_surface_create(ob, h, w);
    _evas_outbuf_egl_setup(ob);
 
-   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot);
+   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot, 1);
 }
 
 Render_Output_Swap_Mode
@@ -622,7 +622,7 @@ evas_outbuf_update_region_first_rect(Outbuf *ob)
 
    if (!_re_wincheck(ob)) return EINA_TRUE;
 
-   /* glsym_evas_gl_common_context_resize(ob->gl_context, ob->w, ob->h, ob->rotation); */
+   /* glsym_evas_gl_common_context_resize(ob->gl_context, ob->w, ob->h, ob->rotation, 0); */
    glsym_evas_gl_common_context_flush(ob->gl_context);
    glsym_evas_gl_common_context_newframe(ob->gl_context);
 

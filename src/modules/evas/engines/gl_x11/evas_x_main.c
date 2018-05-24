@@ -594,7 +594,7 @@ try_gles2:
    glXGetFBConfigAttrib(gw->disp, evis2->config, GLX_FBCONFIG_ID, &gw->gl_context->glxcfg_rgba);
 #endif
    eng_window_use(gw);
-   glsym_evas_gl_common_context_resize(gw->gl_context, w, h, rot);
+   glsym_evas_gl_common_context_resize(gw->gl_context, w, h, rot, 1);
    gw->surf = 1;
    return gw;
 }
@@ -1373,7 +1373,7 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
    ob->h = h;
    ob->rot = rot;
    eng_window_use(ob);
-   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot);
+   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot, 1);
 }
 
 int
@@ -1447,7 +1447,7 @@ eng_outbuf_region_first_rect(Outbuf *ob)
 
    glsym_evas_gl_common_context_resize(ob->gl_context,
                                  ob->w, ob->h,
-                                 ob->rot);
+                                 ob->rot, 0);
 
    glsym_evas_gl_common_context_flush(ob->gl_context);
    glsym_evas_gl_common_context_newframe(ob->gl_context);

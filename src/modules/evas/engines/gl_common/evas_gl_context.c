@@ -759,7 +759,7 @@ _calculate_foc(int rot, int m, int w, int h, int px, int py,
    if (ay_out) *ay_out = ay;
 }
 static void
-_evas_gl_common_viewport_set(Evas_Engine_GL_Context *gc, int pipe)
+_evas_gl_common_viewport_set(Evas_Engine_GL_Context *gc, int pipe, int force_update)
 {
    int w = 1, h = 1, m = 1, rot = 1, foc = 0;
    int offx = 0, offy = 0;
@@ -787,7 +787,7 @@ _evas_gl_common_viewport_set(Evas_Engine_GL_Context *gc, int pipe)
      }
 
 #ifdef GL_GLES
-   if (gc->shared->eglctxt == gc->eglctxt)
+   if ((gc->shared->eglctxt == gc->eglctxt) && (!force_update))
 #endif
      {
         if (((offx == gc->shared->offx) && (offy == gc->shared->offy)) &&
@@ -1253,7 +1253,6 @@ evas_gl_common_context_new(Eina_TLS context_key, Eina_TLS shared_key)
      eina_tls_set(shared_key, gc->shared);
 
    _evas_gl_common_viewport_set(gc, 0, 1);
-
    gc->def_surface = evas_gl_common_image_surface_new(gc, 1, 1, 1, EINA_FALSE);
 
    return gc;
@@ -1712,14 +1711,14 @@ evas_gl_common_context_newframe(Evas_Engine_GL_Context *gc)
    GL_TH(glActiveTexture, GL_TEXTURE0);
    GL_TH(glBindTexture, gc->pipe[0].shader.tex_target, gc->pipe[0].shader.cur_tex);
 
-   _evas_gl_common_viewport_set(gc, 0);
+   _evas_gl_common_viewport_set(gc, 0, 1);
 }
 
 EAPI void
-evas_gl_common_context_resize(Evas_Engine_GL_Context *gc, int w, int h, int rot)
+evas_gl_common_context_resize(Evas_Engine_GL_Context *gc, int w, int h, int rot, int force_update)
 {
    if (!gc) return;
-   if ((gc->w == w) && (gc->h == h) && (gc->rot == rot)) return;
+   if ((!force_update) && (gc->w == w) && (gc->h == h) && (gc->rot == rot)) return;
    evas_gl_common_context_flush(gc);
    gc->rot = rot;
    gc->w = w;
@@ -1828,7 +1827,7 @@ evas_gl_common_context_target_surface_set(Evas_Engine_GL_Context *gc,
       GL_TH(glBindFramebuffer,  GL_FRAMEBUFFER, 0);
    else
       GL_TH(glBindFramebuffer,  GL_FRAMEBUFFER, surface->tex->pt->fb);
-   _evas_gl_common_viewport_set(gc, 0);
+   _evas_gl_common_viewport_set(gc, 0, 0);
 }
 
 static inline Eina_Bool
@@ -4064,7 +4063,7 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
         Evas_GL_Program *prog;
         if (gc->pipe[i].array.num <= 0) break;
 
-        _evas_gl_common_viewport_set(gc, i);
+        _evas_gl_common_viewport_set(gc, i, 0);
 
         prog = gc->pipe[i].shader.prog;
         setclip = EINA_FALSE;
