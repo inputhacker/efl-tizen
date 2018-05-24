@@ -203,7 +203,7 @@ eng_window_new(Evas_Engine_Info_GL_Tbm *einfo, int w, int h, Render_Output_Swap_
         eng_window_use(gw);
      }
 
-   glsym_evas_gl_common_context_resize(gw->gl_context, w, h, gw->rot);
+   glsym_evas_gl_common_context_resize(gw->gl_context, w, h, gw->rot, 1);
 
    gw->surf = EINA_TRUE;
 
@@ -287,7 +287,7 @@ eng_window_use(Outbuf *gw)
    if ((gw) && (gw->gl_context))
      {
         glsym_evas_gl_common_context_use(gw->gl_context);
-        glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot);
+        glsym_evas_gl_common_context_resize(gw->gl_context, gw->w, gw->h, gw->rot, 0);
      }
 }
 
@@ -350,7 +350,7 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
         ob->h = h;
         ob->rot = rot;
         eng_window_use(ob);
-        glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot);
+        glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot, 1);
 
         //tbm_surface_queue_reset(ob->tbm_queue, w, h, TBM_FORMAT_ARGB8888);
      }

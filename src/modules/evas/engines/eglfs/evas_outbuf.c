@@ -369,7 +369,7 @@ _evas_outbuf_egl_setup(Outbuf *ob)
 
    evas_outbuf_use(ob);
    glsym_evas_gl_common_context_resize(ob->gl_context,
-                                       ob->w, ob->h, ob->rotation);
+                                       ob->w, ob->h, ob->rotation, 1);
 
    ob->surf = EINA_TRUE;
 
@@ -548,7 +548,7 @@ evas_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth)
    ob->rotation = rot;
 
    evas_outbuf_use(ob);
-   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot);
+   glsym_evas_gl_common_context_resize(ob->gl_context, w, h, rot, 1);
 }
 
 Render_Output_Swap_Mode
