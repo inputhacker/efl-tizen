@@ -239,10 +239,6 @@ ecore_wl2_shutdown(void)
         return 0;
      }
 
-//TIZEN_ONLY(20171216): add ecore_wl2_window_find
-   _ecore_wl2_window_shutdown();
-//
-
    if (--_ecore_wl2_init_count != 0) return _ecore_wl2_init_count;
 
    /* reset events */
@@ -301,6 +297,10 @@ ecore_wl2_shutdown(void)
                           ECORE_WL2_EVENT_CLIPBOARD_DATA_SELECTED,
                           ECORE_WL2_EVENT_WINDOW_ICONIFY_STATE_CHANGE,
                           ECORE_WL2_EVENT_WINDOW_OFFSCREEN);
+
+   //TIZEN_ONLY(20171216): add ecore_wl2_window_find
+   _ecore_wl2_window_shutdown();
+   //
 
    /* shutdown Ecore_Event */
    ecore_event_shutdown();
