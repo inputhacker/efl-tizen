@@ -7606,7 +7606,7 @@ _elm_genlist_item_coordinates_calc(Elm_Gen_Item *it,
      }
 
    // TIZEN ONLY(20160630): Support homogeneous mode in item class.
-   if ((sd->queue) || (it->item->block->w < 1) ||
+   if ((sd->queue) ||
        (!((sd->homogeneous || it->itc->homogeneous) &&
           (sd->mode == ELM_LIST_COMPRESS))))
      {
