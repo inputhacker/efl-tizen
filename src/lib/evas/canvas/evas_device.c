@@ -89,6 +89,11 @@ _del_cb(void *data, const Efl_Event *ev)
    else if (e->default_keyboard == ev->object)
      e->default_keyboard = _new_default_device_find(e, ev->object);
 
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   if (e->last_mouse == ev->object)
+     e->last_mouse = NULL;
+   //
+
    if ((efl_input_device_type_get(ev->object) == EFL_INPUT_DEVICE_TYPE_SEAT) && (!e->default_seat))
      {
         Evas_Pointer_Data *pdata = _evas_pointer_data_by_device_get(e, ev->object);
