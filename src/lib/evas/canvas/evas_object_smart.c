@@ -1366,6 +1366,10 @@ evas_object_update_bounding_box(Evas_Object *eo_obj EINA_UNUSED, Evas_Object_Pro
         ph = obj->prev->geometry.h;
      }
 
+   // TIZEN_ONLY(171115) : Don't need to apply 0 size when bounding box has updates
+   if (w <= 0 || h <= 0) return;
+   //
+
    /* We are not yet trying to find the smallest bounding box, but we want to find a good approximation quickly.
     * That's why we initialiaze min and max search to geometry of the parent object.
     */
