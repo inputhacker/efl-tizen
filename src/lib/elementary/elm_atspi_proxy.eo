@@ -36,9 +36,11 @@ class Elm.Atspi.Proxy (Efl.Ui.Widget)
       address_get_retry_timer_add {
       }
    }
+   /*
    constructors {
       .constructor;
    }
+   */
    implements {
       Efl.Object.destructor;
       Efl.Access.access_children { get; }
