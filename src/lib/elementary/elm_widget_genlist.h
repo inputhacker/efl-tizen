@@ -58,12 +58,6 @@ struct _Elm_Genlist_Data
    Ecore_Job                            *calc_job;
    int                                   walking;
    int                                   minw, minh;
-   Eina_Bool                             scr_minw : 1; /* a flag for determining
-                                                        * minimum width to limit
-                                                        * as their content size */
-   Eina_Bool                             scr_minh : 1; /* a flag for determining
-                                                        * minimum height to limit
-                                                        * as their content size */
    unsigned int                          item_count;
    Evas_Coord                            pan_x, pan_y;
    Elm_Object_Select_Mode                select_mode;
@@ -153,13 +147,12 @@ struct _Elm_Genlist_Data
    Eo                                   *provider;
    Elm_Gen_Item                         *focus_on_realization;
 
-   //TIZEN_ONLY(20171114) genlist: enhance accessibility scroll & highlight
-   Elm_Gen_Item                         *atspi_item_to_highlight;
-   //
-   //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
-   Elm_Gen_Item                         *currently_highlighted_item;
-   //
-
+   Eina_Bool                             scr_minw : 1; /* a flag for determining
+                                                        * minimum width to limit
+                                                        * as their content size */
+   Eina_Bool                             scr_minh : 1; /* a flag for determining
+                                                        * minimum height to limit
+                                                        * as their content size */
    Eina_Bool                             filter;
    Eina_Bool                             focus_on_selection_enabled : 1;
    Eina_Bool                             tree_effect_enabled : 1;
@@ -216,6 +209,16 @@ struct _Elm_Genlist_Data
 
    //Tizen Only
    Eina_List                             *prepend_items;
+   //
+
+   //TIZEN_ONLY(20171114) genlist: enhance accessibility scroll & highlight
+   Elm_Gen_Item                         *atspi_item_to_highlight;
+   //
+
+   //TIZEN_ONLY(20161104) : Accessibility : synchronized highlight of atspi and item align feature for wearable profile
+   Elm_Gen_Item                         *currently_highlighted_item;
+   //
+
 };
 
 typedef struct _Item_Block Item_Block;
