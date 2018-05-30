@@ -3623,8 +3623,6 @@ EAPI Evas_Object *evas_object_rectangle_add(Evas *e) EINA_WARN_UNUSED_RESULT EIN
  * @since 1.14
  */
 
-#ifdef EFL_BETA_API_SUPPORT
-
 /**
  * Creates a new vector object on the given Evas @p e canvas.
  *
@@ -4442,8 +4440,6 @@ EAPI void evas_vg_gradient_radial_focal_set(Eo *obj, double x, double y);
 EAPI void evas_vg_gradient_radial_focal_get(Eo *obj, double *x, double *y);
 
 #include "canvas/efl_canvas_vg_gradient_radial.eo.legacy.h"
-
-#endif
 
 /**
  * @}
@@ -8131,6 +8127,30 @@ EAPI void evas_object_text_filter_program_set(Evas_Object *obj, const char *code
  */
 EAPI void evas_object_text_filter_source_set(Evas_Object *obj, const char *name, Evas_Object *source) EINA_DEPRECATED;
 
+/**
+ * Creates a new smart rectangle object on the given Evas @p e canvas.
+ *
+ * @param e The given canvas.
+ * @return The created object handle.
+ *
+ * This provides a smart version of the typical "event rectangle",
+ * which allows objects to set this as their parent and route events
+ * to a group of objects. Events will not propagate to non-member objects
+ * below this object.
+ *
+ * Adding members is done just like a normal smart object, using
+ * efl_canvas_group_member_add (Eo API) or evas_object_smart_member_add (legacy).
+ *
+ * Child objects are not modified in any way, unlike other types of smart objects.
+ *
+ * It is a user error for any child objects to be stacked above the event
+ * grabber parent while the event grabber is visible.
+ * A critical error will be raised if this is detected at any point.
+ *
+ * @since 1.20
+ */
+EAPI Evas_Object *evas_object_event_grabber_add(Evas *e);
+
 /*********************************************************************************
  * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
  *                       Edje textblock/text calculation/ellipsize feature.
@@ -8260,31 +8280,6 @@ EAPI void evas_object_image_pixels_noti_callback_set(Evas_Object *obj, Evas_Obje
  * END *
  *******/
 
-
-#ifdef EFL_BETA_API_SUPPORT
-/**
- * Creates a new smart rectangle object on the given Evas @p e canvas.
- *
- * @param e The given canvas.
- * @return The created object handle.
- *
- * This provides a smart version of the typical "event rectangle",
- * which allows objects to set this as their parent and route events
- * to a group of objects. Events will not propagate to non-member objects
- * below this object.
- *
- * Adding members is done just like a normal smart object, using
- * efl_canvas_group_member_add (Eo API) or evas_object_smart_member_add (legacy).
- *
- * Child objects are not modified in any way, unlike other types of smart objects.
- *
- * It is a user error for any child objects to be stacked above the event
- * grabber parent while the event grabber is visible.
- * A critical error will be raised if this is detected at any point.
- *
- * @since 1.20
- */
-EAPI Evas_Object *evas_object_event_grabber_add(Evas *e);
 #include "canvas/efl_canvas_event_grabber.eo.legacy.h"
 
 #include "canvas/efl_canvas_animation_alpha.eo.legacy.h"
@@ -8296,8 +8291,6 @@ EAPI Evas_Object *evas_object_event_grabber_add(Evas *e);
 #include "canvas/efl_canvas_animation_rotate.eo.legacy.h"
 #include "canvas/efl_canvas_animation_scale.eo.legacy.h"
 #include "canvas/efl_canvas_animation_translate.eo.legacy.h"
-
-#endif
 
 //TIZEN_ONLY(20171215): add heder define
 #endif
