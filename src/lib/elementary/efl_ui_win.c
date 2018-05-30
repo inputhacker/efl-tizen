@@ -6377,6 +6377,10 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
    sd->evas = ecore_evas_get(sd->ee);
 
    evas_object_color_set(obj, 0, 0, 0, 0);
+   //TIZEN_ONLY(20180530): keep default geometry compatibility
+   evas_object_move(obj, 0, 0);
+   evas_object_resize(obj, 1, 1);
+   //
    evas_object_pass_events_set(obj, EINA_TRUE);
 
    if (type == ELM_WIN_INLINED_IMAGE)
