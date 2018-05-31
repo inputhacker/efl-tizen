@@ -100,7 +100,7 @@ _elm_atspi_proxy_efl_object_destructor(Eo *obj, Elm_Atspi_Proxy_Data *_pd)
 }
 
 EOLIAN static void
-_elm_atspi_proxy_constructor(Eo *obj, Elm_Atspi_Proxy_Data *_pd, Elm_Atspi_Proxy_Type type)
+_elm_atspi_proxy_ctor(Eo *obj, Elm_Atspi_Proxy_Data *_pd, Elm_Atspi_Proxy_Type type)
 {
    Eo *parent;
 

@@ -10,7 +10,7 @@ class Elm.Atspi.Proxy (Efl.Ui.Widget)
    event_prefix: elm_atspi_proxy;
    data: Elm_Atspi_Proxy_Data;
    methods {
-      constructor {
+      ctor {
          [[ No description supplied by the EAPI.]]
          params {
             @in type: Elm.Atspi.Proxy_Type;
@@ -36,11 +36,9 @@ class Elm.Atspi.Proxy (Efl.Ui.Widget)
       address_get_retry_timer_add {
       }
    }
-   /*
    constructors {
-      .constructor;
+      .ctor;
    }
-   */
    implements {
       Efl.Object.destructor;
       Efl.Access.Object.access_children { get; }
