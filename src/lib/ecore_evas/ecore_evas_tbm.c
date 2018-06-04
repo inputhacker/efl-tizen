@@ -907,3 +907,32 @@ ecore_evas_tbm_pixels_release(Ecore_Evas *ee)
    tbm_data = ee->engine.data;
 }
 
+EAPI void *
+ecore_evas_tbm_surface_get(Ecore_Evas *ee)
+{
+   Ecore_Evas_Engine_Tbm_Data *tbm_data;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ee, NULL);
+
+   tbm_data = ee->engine.data;
+
+   return &tbm_data->tbm_surf;
+}
+
+EAPI int
+ecore_evas_tbm_stride_get(Ecore_Evas *ee)
+{
+   Ecore_Evas_Engine_Tbm_Data *tbm_data;
+   tbm_surface_info_s info;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(ee, NULL);
+
+   tbm_data = ee->engine.data;
+   if (tbm_data->tbm_surf)
+   {
+     tbm_surface_get_info(tbm_data->tbm_surf, &info);
+     return info.planes[0].stride;
+   }
+   return 0;
+}
+

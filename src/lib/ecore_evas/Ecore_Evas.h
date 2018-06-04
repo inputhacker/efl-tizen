@@ -1733,6 +1733,8 @@ EAPI Ecore_Evas     *ecore_evas_tbm_allocfunc_new(const char *engine, int w, int
 EAPI Ecore_Evas     *ecore_evas_tbm_ext_new(const char *engine, void *tbm_surf_queue, void* data);
 EAPI const void     *ecore_evas_tbm_pixels_acquire(Ecore_Evas *ee);
 EAPI void            ecore_evas_tbm_pixels_release(Ecore_Evas *ee);
+EAPI void           *ecore_evas_tbm_surface_get(Ecore_Evas *ee);
+EAPI int             ecore_evas_tbm_stride_get(Ecore_Evas *ee);
 
 /**
  * @brief Creates a new @c Ecore_Evas canvas bound to the Evas.
