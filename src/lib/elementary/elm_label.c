@@ -464,7 +464,6 @@ static Eina_Bool
 _elm_label_text_set(Eo *obj, Elm_Label_Data *sd, const char *part, const char *label)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
-   Eina_Bool int_ret = EINA_TRUE;
 
    if (!label) label = "";
    /* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages
@@ -475,13 +474,11 @@ _elm_label_text_set(Eo *obj, Elm_Label_Data *sd, const char *part, const char *l
 
    efl_text_markup_set(efl_part(efl_super(obj, MY_CLASS), part), label);
 
-   if (int_ret)
-     {
-        sd->lastw = -1;
-        elm_layout_sizing_eval(obj);
-        _label_slide_change(obj);
-     }
-   return int_ret;
+   sd->lastw = -1;
+   elm_layout_sizing_eval(obj);
+   _label_slide_change(obj);
+
+   return EINA_TRUE;
 }
 
 static char *
