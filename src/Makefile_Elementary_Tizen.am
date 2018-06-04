@@ -15,8 +15,10 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/elc_fileselector_button.c \
 	lib/elementary/elc_fileselector_entry.c \
 	lib/elementary/elc_hoversel.c \
-	lib/elementary/efl_ui_multibuttonentry.c \
+	lib/elementary/elc_multibuttonentry.c \
 	lib/elementary/elc_naviframe.c \
+	lib/elementary/efl_ui_navigation_bar.c \
+	lib/elementary/efl_ui_navigation_layout.c \
 	lib/elementary/elc_player.c \
 	lib/elementary/elc_popup.c \
 	lib/elementary/elc_scrolled_entry.c \
@@ -64,6 +66,7 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/elm_flipselector.c \
 	lib/elementary/elm_font.c \
 	lib/elementary/efl_ui_frame.c \
+	lib/elementary/efl_ui_stack.c \
 	lib/elementary/elm_gengrid.c \
 	lib/elementary_tizen/elm_genlist.c \
 	lib/elementary/elm_gesture_layer.c \
@@ -74,7 +77,7 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/elm_icon.c \
 	lib/elementary/efl_ui_image.c \
 	lib/elementary/elm_index.c \
-	lib/elementary/efl_access.c \
+	lib/elementary/efl_access_object.c \
 	lib/elementary/efl_access_action.c \
 	lib/elementary/efl_access_component.c \
 	lib/elementary/efl_access_editable_text.c \
@@ -87,7 +90,7 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/elm_interface_scrollable.c \
 	lib/elementary/elm_inwin.c \
 	lib/elementary/elm_label.c \
-	lib/elementary/efl_ui_layout.c \
+	lib/elementary/efl_ui_layout_object.c \
 	lib/elementary/efl_ui_layout_pack.c \
 	lib/elementary/elm_list.c \
 	lib/elementary/elm_main.c \
@@ -111,10 +114,14 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/elm_scroller.c \
 	lib/elementary/elm_segment_control.c \
 	lib/elementary/elm_separator.c \
+	lib/elementary/elm_slider.c \
 	lib/elementary/efl_ui_slider.c \
 	lib/elementary/efl_ui_slider_interval.c \
 	lib/elementary/efl_ui_spin.c \
 	lib/elementary/efl_ui_spin_button.c \
+	lib/elementary/efl_ui_datepicker.c \
+	lib/elementary/efl_ui_timepicker.c \
+	lib/elementary/efl_ui_tags.c \
 	lib/elementary/elm_slideshow.c \
 	lib/elementary/elm_spinner.c \
 	lib/elementary/elm_store.c \
@@ -175,6 +182,11 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_focus_parent_provider_gen.c \
 	lib/elementary/efl_ui_focus_util.c \
 	lib/elementary/elm_widget_item_static_focus.c \
+	lib/elementary/efl_ui_item.c \
+	lib/elementary/efl_ui_list_item.c \
+	lib/elementary/efl_ui_list_default_item.c \
+	lib/elementary/efl_ui_list_empty_item.c \
+	lib/elementary/efl_ui_list.c \
 	lib/elementary/efl_ui_view_list.c \
 	lib/elementary/efl_ui_view_list_precise_layouter.c \
 	lib/elementary/efl_ui_view_list_segarray.c \
@@ -186,9 +198,22 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/efl_selection_manager.c \
 	lib/elementary/efl_selection_manager_private.h \
 	lib/elementary/efl_selection.c \
+	lib/elementary/efl_datetime_manager.c \
 	lib/elementary/efl_ui_dnd.c \
-  static_libs/buildsystem/buildsystem.h \
-  static_libs/buildsystem/buildsystem_autotools.c \
+	lib/elementary/elm_focus_legacy.c \
+	static_libs/buildsystem/buildsystem.h \
+	static_libs/buildsystem/buildsystem_autotools.c \
+	lib/elementary/efl_ui_pager.c \
+	lib/elementary/efl_page_transition.c \
+	lib/elementary/efl_page_transition_scroll.c \
+	lib/elementary/efl_page_indicator.c \
+	lib/elementary/efl_page_indicator_icon.c \
+	lib/elementary/efl_ui_focus_graph.h \
+	lib/elementary/efl_ui_focus_graph.c \
+	lib/elementary/efl_ui_tab_pager.c \
+	lib/elementary/efl_ui_tab_bar.c \
+	lib/elementary/efl_ui_tab_page.c \
+	lib/elementary/efl_ui_widget_focus_manager.c \
 	$(NULL)
 
 
