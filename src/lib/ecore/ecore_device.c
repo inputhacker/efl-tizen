@@ -50,7 +50,7 @@ ecore_device_add()
    Ecore_Device *dev;
    Efl_Ecore_Input_Device_Data *d;
 
-   dev = efl_add(EFL_ECORE_INPUT_DEVICE_CLASS, NULL,
+   dev = efl_add_ref(EFL_ECORE_INPUT_DEVICE_CLASS, NULL,
                  efl_name_set(efl_added, NULL),
                  efl_comment_set(efl_added, NULL),
                  efl_ecore_input_device_type_set(efl_added, EFL_ECORE_INPUT_DEVICE_TYPE_NONE),
@@ -80,7 +80,7 @@ ecore_device_del(Ecore_Device *dev)
      }
    devices_num--;
 
-   efl_del(dev);
+   efl_unref(dev);
    return;
 }
 
