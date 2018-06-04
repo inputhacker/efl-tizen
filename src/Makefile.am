@@ -75,7 +75,7 @@ include Makefile_Emotion.am
 include Makefile_Ethumb.am
 include Makefile_Ethumb_Client.am
 include Makefile_Elocation.am
-##include Makefile_Elementary_Tizen.am
+include Makefile_Elementary_Tizen.am
 include Makefile_Elementary.am
 include Makefile_efl_wl.am
 

@@ -1057,21 +1057,21 @@ fine-grained library splitting means all of this is shared, just a new
 widget "personality" is on top. And that is... Elementary, my dear watson
 Elementary
 
-#%package -n elementary-tizen
-#Summary:        EFL toolkit for small touchscreens for Tizen devices
-#Requires:       elementary
+%package -n elementary-tizen
+Summary:        EFL toolkit for small touchscreens for Tizen devices
+Requires:       elementary
 
-#%description -n elementary-tizen
-#Elementary is a widget set. It is a new-style of widget set much more canvas
-#object based than anything else. Why not ETK? Why not EWL? Well they both
-#tend to veer away from the core of Evas, Ecore and Edje a lot to build their
-#own worlds. Also I wanted something focused on embedded devices -
-#specifically small touchscreens. Unlike GTK+ and Qt, 75% of the "widget set"
-#is already embodied in a common core - Ecore, Edje, Evas etc. So this
-#fine-grained library splitting means all of this is shared, just a new
-#widget "personality" is on top. And that is... Elementary, my dear watson.
-#Elementary. This is an alternative package for Tizen devices that uses different
-#set of source code.
+%description -n elementary-tizen
+Elementary is a widget set. It is a new-style of widget set much more canvas
+object based than anything else. Why not ETK? Why not EWL? Well they both
+tend to veer away from the core of Evas, Ecore and Edje a lot to build their
+own worlds. Also I wanted something focused on embedded devices -
+specifically small touchscreens. Unlike GTK+ and Qt, 75% of the "widget set"
+is already embodied in a common core - Ecore, Edje, Evas etc. So this
+fine-grained library splitting means all of this is shared, just a new
+widget "personality" is on top. And that is... Elementary, my dear watson.
+Elementary. This is an alternative package for Tizen devices that uses different
+set of source code.
 
 %package -n elementary-examples
 Summary:   EFL elementary examples
@@ -1321,17 +1321,17 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %post -n elementary -p /sbin/ldconfig
 %postun -n elementary -p /sbin/ldconfig
 
-#%post -n elementary-tizen
-#rm -f %{_libdir}/libelementary.so.1
-##ln -sf %{_libdir}/libelementary.so.1.99.100 %{_libdir}/libelementary.so.1
-#ldconfig -l %{_libdir}/libelementary.so.1.99.100
+%post -n elementary-tizen
+rm -f %{_libdir}/libelementary.so.1
+#ln -sf %{_libdir}/libelementary.so.1.99.100 %{_libdir}/libelementary.so.1
+ldconfig -l %{_libdir}/libelementary.so.1.99.100
 
-#%preun -n elementary-tizen
-#rm -f %{_libdir}/libelementary.so.1
-##ln -sf %{_libdir}/libelementary.so.1.20.* %{_libdir}/libelementary.so.1
-#ldconfig -l %{_libdir}/libelementary.so.1.20.*
+%preun -n elementary-tizen
+rm -f %{_libdir}/libelementary.so.1
+#ln -sf %{_libdir}/libelementary.so.1.20.* %{_libdir}/libelementary.so.1
+ldconfig -l %{_libdir}/libelementary.so.1.20.*
 
-#%postun -n elementary-tizen -p /sbin/ldconfig
+%postun -n elementary-tizen -p /sbin/ldconfig
 
 
 %files -n %{name}
@@ -2057,10 +2057,10 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %exclude %{_datadir}/elementary/config/
 ##%{_tmpfilesdir}/elementary.conf
 
-#%files -n elementary-tizen
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_libdir}/libelementary.so.1.99.*
+%files -n elementary-tizen
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_libdir}/libelementary.so.1.99.*
 
 %if ! %dbus_unavailable
 %files -n elementary-examples
