@@ -33,10 +33,11 @@ struct _Elm_Ctxpopup_Item_Data
 {
    Elm_Widget_Item_Data *base;
 
+   Elm_Object_Item *list_item;
+
    const char   *label;
    Evas_Object  *icon;
    Evas_Object  *btn;
-   Eina_Stringshare *style;
 
    struct
      {
@@ -44,28 +45,38 @@ struct _Elm_Ctxpopup_Item_Data
         const void    *org_data;
         Evas_Object   *cobj;
      } wcb;
+
+   Eina_Stringshare *style;
+
+   Eina_Bool      selected : 1;
 };
 
 struct _Elm_Ctxpopup_Data
 {
    Evas_Object           *parent;
+   Evas_Object           *list;
    Evas_Object           *box;
+   Eina_List             *items;
 
-   Evas_Object           *layout;
    Evas_Object           *arrow;
-   Evas_Object           *scr;
    Evas_Object           *bg;
    Evas_Object           *content;
-   Eina_List             *items;
+
+   Evas_Object           *layout;
+   Evas_Object           *scr;
 
    Elm_Ctxpopup_Direction dir;
    Elm_Ctxpopup_Direction dir_priority[4];
 
    int                    multi_down;
 
+   Eina_Bool              list_visible : 1;
    Eina_Bool              horizontal : 1;
+   Eina_Bool              finished : 1;
+   Eina_Bool              emitted : 1;
    Eina_Bool              visible : 1;
    Eina_Bool              auto_hide : 1;
+
    Eina_Bool              mouse_down : 1;
 //******************** TIZEN Only
    Eina_Bool              pressed : 1;

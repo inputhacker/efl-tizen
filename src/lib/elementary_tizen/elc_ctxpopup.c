@@ -8,6 +8,7 @@
 #define ELM_WIDGET_ITEM_PROTECTED
 #define EFL_ACCESS_COMPONENT_PROTECTED
 #define EFL_UI_TRANSLATABLE_PROTECTED
+#define EFL_PART_PROTECTED
 
 #include <Elementary.h>
 
@@ -434,13 +435,13 @@ _item_in_focusable_button(Elm_Ctxpopup_Item_Data *item)
    return bt;
 }
 
-EOLIAN static Eina_Bool
+EOLIAN static void
 _elm_ctxpopup_item_elm_widget_item_del_pre(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Item_Data *item)
 {
    Evas_Object *btn;
 
    ELM_CTXPOPUP_DATA_GET(WIDGET(item), sd);
-   if (!sd) return EINA_FALSE;
+   if (!sd) return;
 
    btn = item->btn;
    elm_box_unpack(sd->box, btn);
@@ -461,11 +462,11 @@ _elm_ctxpopup_item_elm_widget_item_del_pre(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup
    if (eina_list_count(sd->items) < 1)
      {
         evas_object_hide(WIDGET(item));
-        return EINA_TRUE;
+        return;
      }
    if (sd->visible) elm_layout_sizing_eval(WIDGET(item));
 
-   return EINA_TRUE;
+   return;
 }
 
 static void
@@ -1654,7 +1655,7 @@ _elm_ctxpopup_item_elm_widget_item_part_text_set(Eo *eo_ctxpopup_it EINA_UNUSED,
 }
 
 EOLIAN static const char *
-_elm_ctxpopup_item_elm_widget_item_part_text_get(Eo *eo_ctxpopup_it EINA_UNUSED,
+_elm_ctxpopup_item_elm_widget_item_part_text_get(const Eo *eo_ctxpopup_it EINA_UNUSED,
                                                  Elm_Ctxpopup_Item_Data *ctxpopup_it,
                                                  const char *part)
 {
@@ -1719,7 +1720,7 @@ _elm_ctxpopup_item_elm_widget_item_part_content_set(Eo *eo_ctxpopup_it EINA_UNUS
 }
 
 EOLIAN static Evas_Object *
-_elm_ctxpopup_item_elm_widget_item_part_content_get(Eo *eo_ctxpopup_it EINA_UNUSED,
+_elm_ctxpopup_item_elm_widget_item_part_content_get(const Eo *eo_ctxpopup_it EINA_UNUSED,
                                                     Elm_Ctxpopup_Item_Data *ctxpopup_it,
                                                     const char *part)
 {
@@ -1826,7 +1827,7 @@ _elm_ctxpopup_item_elm_widget_item_style_set(Eo *eo_item EINA_UNUSED,
 }
 
 EOLIAN static const char *
-_elm_ctxpopup_item_elm_widget_item_style_get(Eo *eo_it EINA_UNUSED,
+_elm_ctxpopup_item_elm_widget_item_style_get(const Eo *eo_it EINA_UNUSED,
                                              Elm_Ctxpopup_Item_Data *item)
 {
    return item->style;
@@ -1931,7 +1932,7 @@ _elm_ctxpopup_item_elm_widget_item_item_focus_set(Eo *eo_ctxpopup_it EINA_UNUSED
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_item_elm_widget_item_item_focus_get(Eo *eo_ctxpopup_it EINA_UNUSED,
+_elm_ctxpopup_item_elm_widget_item_item_focus_get(const Eo *eo_ctxpopup_it EINA_UNUSED,
                                              Elm_Ctxpopup_Item_Data *ctxpopup_it)
 {
    return elm_object_item_focus_get(ctxpopup_it->btn);
@@ -2250,7 +2251,7 @@ _elm_ctxpopup_hover_parent_set(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *pare
 }
 
 EOLIAN static Evas_Object*
-_elm_ctxpopup_hover_parent_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_hover_parent_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    return sd->parent;
 }
@@ -2347,7 +2348,7 @@ _elm_ctxpopup_horizontal_set(Eo *obj, Elm_Ctxpopup_Data *sd, Eina_Bool horizonta
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_horizontal_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_horizontal_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    return sd->horizontal;
 }
@@ -2524,7 +2525,7 @@ _elm_ctxpopup_direction_priority_set(Eo *obj, Elm_Ctxpopup_Data *sd, Elm_Ctxpopu
 }
 
 EOLIAN static void
-_elm_ctxpopup_direction_priority_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Elm_Ctxpopup_Direction *first, Elm_Ctxpopup_Direction *second, Elm_Ctxpopup_Direction *third, Elm_Ctxpopup_Direction *fourth)
+_elm_ctxpopup_direction_priority_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Elm_Ctxpopup_Direction *first, Elm_Ctxpopup_Direction *second, Elm_Ctxpopup_Direction *third, Elm_Ctxpopup_Direction *fourth)
 {
    if (first) *first = sd->dir_priority[0];
    if (second) *second = sd->dir_priority[1];
@@ -2533,7 +2534,7 @@ _elm_ctxpopup_direction_priority_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd,
 }
 
 EOLIAN static Elm_Ctxpopup_Direction
-_elm_ctxpopup_direction_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_direction_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    return sd->dir;
 }
@@ -2565,20 +2566,22 @@ _elm_ctxpopup_auto_hide_disabled_set(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd,
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_auto_hide_disabled_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_auto_hide_disabled_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    return !sd->auto_hide;
 }
 
 // TIZEN_ONLY(20170116): merge eo & header files for different profiles
-EOLIAN static Eina_Iterator*
-_elm_ctxpopup_efl_ui_menu_items_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+EOLIAN static const Eina_List *
+//EOLIAN static Eina_Iterator*
+_elm_ctxpopup_items_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
-   return eina_list_iterator_new(sd->items);
+  return sd->items;
+   //return eina_list_iterator_new(sd->items);
 }
 
 EOLIAN static Elm_Object_Item*
-_elm_ctxpopup_efl_ui_menu_first_item_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_first_item_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    if (!sd->items) return NULL;
 
@@ -2586,15 +2589,42 @@ _elm_ctxpopup_efl_ui_menu_first_item_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data 
 }
 
 EOLIAN static Elm_Object_Item*
-_elm_ctxpopup_efl_ui_menu_last_item_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_last_item_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    if (!sd->items) return NULL;
 
    return eina_list_data_get(eina_list_last(sd->items));
 }
 
+// TIZEN_ONLY(20180112): remove item selected function
+EOLIAN static Elm_Object_Item*
+_elm_ctxpopup_selected_item_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+{
+   Eina_List *l;
+   Elm_Object_Item *eo_item;
+
+   EINA_LIST_FOREACH(sd->items, l, eo_item)
+     {
+        ELM_CTXPOPUP_ITEM_DATA_GET(eo_item, item);
+        if (item->selected) return eo_item;
+     }
+
+   return NULL;
+}
+//
+
+// TIZEN_ONLY(20180112): remove focused item get function
+EOLIAN static Elm_Object_Item*
+_elm_ctxpopup_efl_ui_widget_focused_item_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+{
+   if (!sd->list) return NULL;
+
+   return elm_object_focused_item_get(sd->list);
+}
+//
+
 EOLIAN static Elm_Object_Item *
-_elm_ctxpopup_item_efl_ui_item_prev_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Item_Data *item)
+_elm_ctxpopup_item_prev_get(const Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Item_Data *item)
 {
    Eina_List *l;
 
@@ -2609,7 +2639,7 @@ _elm_ctxpopup_item_efl_ui_item_prev_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_It
 }
 
 EOLIAN static Elm_Object_Item *
-_elm_ctxpopup_item_efl_ui_item_next_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Item_Data *item)
+_elm_ctxpopup_item_next_get(const Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Item_Data *item)
 {
    Eina_List *l;
 
@@ -2622,6 +2652,36 @@ _elm_ctxpopup_item_efl_ui_item_next_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_It
 
    return NULL;
 }
+
+EOLIAN static void
+_elm_ctxpopup_item_selected_set(Eo *eo_item EINA_UNUSED,
+                                            Elm_Ctxpopup_Item_Data *item,
+                                            Eina_Bool selected)
+{
+   Elm_Object_Item *eo_item2;
+   Eina_List *l;
+
+   if (selected == item->selected) return;
+
+   if (selected)
+     {
+        ELM_CTXPOPUP_DATA_GET_OR_RETURN(item->wcb.cobj, sd);
+        EINA_LIST_FOREACH(sd->items, l, eo_item2)
+          {
+             ELM_CTXPOPUP_ITEM_DATA_GET(eo_item2, item2);
+             item2->selected = EINA_FALSE;
+          }
+     }
+   elm_list_item_selected_set(item->list_item, selected);
+   item->selected = selected;
+}
+
+EOLIAN static Eina_Bool
+_elm_ctxpopup_item_selected_get(const Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Item_Data *item)
+{
+   return item->selected;
+}
+
 //
 
 EOLIAN static void
@@ -2640,7 +2700,7 @@ _elm_ctxpopup_item_init(Eo *eo_item,
 
 //TIZEN ONLY(20160918): name interface added
 EOLIAN static const char*
-_elm_ctxpopup_efl_access_object_i18n_name_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
+_elm_ctxpopup_efl_access_object_i18n_name_get(const Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
 {
    Eina_Strbuf *buf;
    const char *accessible_name = NULL;
@@ -2665,7 +2725,7 @@ _elm_ctxpopup_efl_access_object_i18n_name_get(Eo *obj, Elm_Ctxpopup_Data *sd EIN
 //
 
 EOLIAN static const Efl_Access_Action_Data*
-_elm_ctxpopup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd EINA_UNUSED)
+_elm_ctxpopup_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd EINA_UNUSED)
 {
    static Efl_Access_Action_Data atspi_actions[] = {
           { "escape", "escape", NULL, _key_action_escape},
@@ -2683,7 +2743,7 @@ _elm_ctxpopup_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_
 }
 
 EOLIAN static Efl_Access_State_Set
-_elm_ctxpopup_efl_access_object_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
+_elm_ctxpopup_efl_access_object_state_set_get(const Eo *obj, Elm_Ctxpopup_Data *sd EINA_UNUSED)
 {
    Efl_Access_State_Set ret;
    ret = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
@@ -2698,7 +2758,7 @@ _elm_ctxpopup_efl_access_object_state_set_get(Eo *obj, Elm_Ctxpopup_Data *sd EIN
 
 //TIZEN ONLY(20150710): ctxpopup: Accessible methods for children_get, extents_get and item name_get
 EOLIAN Eina_List*
-_elm_ctxpopup_efl_access_object_access_children_get(Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_efl_access_object_access_children_get(const Eo *eo_item EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    Eina_List *ret = NULL;
    Eina_List *l = NULL;
@@ -2711,7 +2771,7 @@ _elm_ctxpopup_efl_access_object_access_children_get(Eo *eo_item EINA_UNUSED, Elm
 }
 
 EOLIAN static Eina_Rect
-_elm_ctxpopup_efl_access_component_extents_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Eina_Bool screen_coords)
+_elm_ctxpopup_efl_access_component_extents_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Eina_Bool screen_coords)
 {
    int ee_x, ee_y;
    Eina_Rect r;
@@ -2770,7 +2830,7 @@ _elm_ctxpopup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Ctxp
 
 //TIZEN ONLY(20150710)ctxpopup: Accessible methods for children_get, extents_get and item name_get
 EOLIAN const char *
-_elm_ctxpopup_item_efl_access_object_i18n_name_get(Eo *eo_it, Elm_Ctxpopup_Item_Data *item)
+_elm_ctxpopup_item_efl_access_object_i18n_name_get(const Eo *eo_it, Elm_Ctxpopup_Item_Data *item)
 {
    const char *accessible_name = NULL;
    accessible_name = efl_access_object_i18n_name_get(efl_super(eo_it, ELM_CTXPOPUP_ITEM_CLASS));
@@ -2810,7 +2870,7 @@ _item_action_activate(Evas_Object *obj, const char *params EINA_UNUSED)
 }
 
 EOLIAN static const Efl_Access_Action_Data*
-_elm_ctxpopup_item_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Item_Data *sd EINA_UNUSED)
+_elm_ctxpopup_item_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Item_Data *sd EINA_UNUSED)
 {
    static Efl_Access_Action_Data atspi_actions[] = {
           { "activate", "activate", NULL, _item_action_activate},
@@ -3022,7 +3082,7 @@ _content_move_up_cb(void *data, Evas_Object *obj, void *ev EINA_UNUSED)
 
 //TIZEN_ONLY ctx_popup: fix accessibility states
 EOLIAN static Efl_Access_State_Set
-_elm_ctxpopup_item_efl_access_object_state_set_get(Eo *obj, Elm_Ctxpopup_Item_Data *it)
+_elm_ctxpopup_item_efl_access_object_state_set_get(const Eo *obj, Elm_Ctxpopup_Item_Data *it)
 {
    Efl_Access_State_Set states;
    Eina_Rectangle r1, r2;
