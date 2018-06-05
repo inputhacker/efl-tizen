@@ -6077,6 +6077,27 @@ _elm_entry_textblock_cursor_geometry_get(const Eo *obj EINA_UNUSED, Elm_Entry_Da
    return EINA_TRUE;
 }
 
+/* TIZEN_ONLY(20180605): add elm_entry_cursor_coord_set/get */
+EOLIAN static Eina_Bool
+_elm_entry_cursor_coord_set(Eo *obj, Elm_Entry_Data *sd, Evas_Coord x, Evas_Coord y)
+{
+   elm_entry_select_none(obj);
+
+   if (sd->cursor_handler)
+     evas_object_hide(sd->cursor_handler);
+
+   return edje_object_part_text_cursor_coord_set
+      (sd->entry_edje, "elm.text", EDJE_CURSOR_MAIN, x, y);
+}
+
+EOLIAN static void
+_elm_entry_cursor_coord_get(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd, Evas_Coord *x, Evas_Coord *y)
+{
+   edje_object_part_text_cursor_geometry_get
+      (sd->entry_edje, "elm.text", x, y, NULL, NULL);
+}
+/* END */
+
 EOLIAN static Eina_Bool
 _elm_entry_cursor_next(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
 {

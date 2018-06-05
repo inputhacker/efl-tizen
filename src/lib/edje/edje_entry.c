@@ -5003,7 +5003,7 @@ _edje_text_cursor_coord_set(Edje_Real_Part *rp, Efl_Text_Cursor_Cursor *c,
     */
    Eina_Bool ret = evas_textblock_cursor_cluster_coord_set(c, x, y);
 
-   if (cur == EDJE_CURSOR_MAIN)
+   if (c == _cursor_get(rp, EDJE_CURSOR_MAIN))
      {
         _edje_entry_imf_context_reset(rp);
         _sel_update(en->ed, c, rp->object, rp->typedata.text->entry_data);
