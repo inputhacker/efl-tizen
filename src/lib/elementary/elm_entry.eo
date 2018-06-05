@@ -486,6 +486,25 @@ class Elm.Entry (Efl.Ui.Layout, Elm.Interface_Scrollable, Efl.Ui.Clickable,
             h: int; [[Height]]
          }
       }
+      /* TIZEN_ONLY(20180605): add elm_entry_cursor_coord_set/get */
+      @property cursor_coord {
+         set {
+            [[Sets the cursor position in the entry according to the given coordinate.
+              \@since_tizen 5.0
+            ]]
+            return: bool;
+         }
+         get {
+            [[Gets the cursor coordinate in the entry.
+              \@since_tizen 5.0
+            ]]
+         }
+         values {
+            x: int; [[x coordinate]]
+            y: int; [[y coordinate]]
+         }
+      }
+      /* END */
       @property imf_context {
          get {
             [[Returns the input method context of the entry.
