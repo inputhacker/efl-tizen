@@ -2363,7 +2363,6 @@ _item_new(Evas_Object *obj,
         evas_object_event_callback_add
           (it->icon, EVAS_CALLBACK_CHANGED_SIZE_HINTS, _size_hints_changed_cb,
           obj);
-        efl_access_object_access_type_set(it->icon, EFL_ACCESS_TYPE_DISABLED);
         //TIZEN_ONLY(20180607): Restore legacy focus
         if (!elm_widget_is_legacy(obj))
         //
@@ -2375,7 +2374,6 @@ _item_new(Evas_Object *obj,
         evas_object_event_callback_add
           (it->end, EVAS_CALLBACK_CHANGED_SIZE_HINTS, _size_hints_changed_cb,
           obj);
-        efl_access_object_access_type_set(it->end, EFL_ACCESS_TYPE_DISABLED);
         //TIZEN_ONLY(20180607): Restore legacy focus
         if (!elm_widget_is_legacy(obj))
         //
@@ -2487,7 +2485,6 @@ _elm_list_efl_canvas_group_group_add(Eo *obj, Elm_List_Data *priv)
    priv->box = elm_box_add(obj);
    evas_object_size_hint_weight_set(priv->box, EVAS_HINT_EXPAND, 0.0);
    evas_object_size_hint_align_set(priv->box, EVAS_HINT_FILL, 0.0);
-   efl_access_object_access_type_set(priv->box, EFL_ACCESS_TYPE_DISABLED);
 
    /* FIXME: change this ugly code path later */
    elm_widget_on_show_region_hook_set(priv->box, obj, _show_region_hook, NULL);

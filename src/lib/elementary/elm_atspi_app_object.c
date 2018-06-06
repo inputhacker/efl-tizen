@@ -37,16 +37,13 @@ _elm_atspi_app_object_efl_access_object_access_children_get(const Eo *obj EINA_U
 
    EINA_LIST_FOREACH(_elm_win_list, l, win)
      {
-        Efl_Access_Type type;
         if (!efl_isa(win, EFL_ACCESS_OBJECT_MIXIN))
           continue;
-        type = efl_access_object_access_type_get(win);
         /* TIZEN_ONLY(20171108): make atspi_proxy work
         if (type == EFL_ACCESS_TYPE_REGULAR)
         */
         //TIZEN_ONLY(20171108): make atspi_proxy work
-        if (type == EFL_ACCESS_TYPE_REGULAR &&
-            (elm_win_type_get(win) != ELM_WIN_SOCKET_IMAGE))
+        if (elm_win_type_get(win) != ELM_WIN_SOCKET_IMAGE)
         //
           accs = eina_list_append(accs, win);
      }

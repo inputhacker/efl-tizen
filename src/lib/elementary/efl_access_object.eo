@@ -2,14 +2,6 @@ type Efl_Access_Reading_Info_Cb: __undefined_type; [[reading information callbac
 type Efl_Access_Gesture_Cb: __undefined_type; [[gesture callback]]
 type Efl_Access_Reading_Info_Type_Mask: __undefined_type; [[Reading information types]]
 
-enum Efl.Access.Type
-{
-   [[Type of accessibility object]]
-   regular, [[default accessibile object]]
-   disabled, [[skip object and its children in accessibility hierarchy]]
-   skipped [[skip object in accessibility hierarchy]]
-}
-
 enum Efl.Access.Role
 {
    [[Describes the role of an object visible to Accessibility Clients.]]
@@ -562,16 +554,6 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
          values {
             domain: string; [[Translation domain]]
          }
-      }
-      @property access_type @beta {
-           [[Type of accessibility object]]
-           get {
-           }
-           set {
-           }
-           values {
-               type: Efl.Access.Type; [[Object type]]
-           }
       }
       relationship_append @beta {
          [[Defines the relationship between two accessible objects.
