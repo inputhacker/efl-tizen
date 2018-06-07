@@ -7033,7 +7033,7 @@ _item_free(Elm_Gen_Item *it)
      {
         //elm_widget_item_del(it2);
         ELM_GENLIST_ITEM_DATA_GET(eo_it2, it2);
-        _item_free(it2);
+        efl_del(EO_OBJ(it2));
      }
    sd->reorder.move_items = eina_list_remove(sd->reorder.move_items, it);
 
@@ -7158,7 +7158,6 @@ end:
    elm_genlist_item_class_unref((Elm_Genlist_Item_Class *)it->itc);
    free(GL_IT(it));
    GL_IT(it) = NULL;
-   efl_del(EO_OBJ(it));
 
 // TIZEN_ONLY(20150703) : banded color background feature. enabled only un-scrollable
    if (!TIZEN_PROFILE_WEARABLE)
