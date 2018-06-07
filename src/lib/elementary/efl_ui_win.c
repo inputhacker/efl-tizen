@@ -9352,7 +9352,8 @@ _elm_win_object_set_accessibility_highlight(Evas_Object *win, Evas_Object *obj, 
    ELM_WIN_DATA_GET(win, sd);
    if (visible || sd->accessibility_highlight.cur.target == obj)
      {
-        _elm_win_accessibility_highlight_hide(sd->obj);
+        if (sd->obj)
+          _elm_win_accessibility_highlight_hide(sd->obj);
         // TIZEN_ONLY(20171117) Accessibility frame follows parent item on scroll event
         _elm_win_accessibility_highlight_callbacks_del(sd);
         //
