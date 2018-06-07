@@ -916,6 +916,11 @@ class Elm.Entry (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clickabl
       /*******
        * END *
        *******/
+
+      //TIZEN_ONLY(20180607): Restore legacy focus
+      Efl.Ui.Widget.focus_direction_manager_is;
+      Efl.Ui.Widget.focus_next_manager_is;
+      //
    }
    events {
       activated: void; [[Called when entry got activated]]

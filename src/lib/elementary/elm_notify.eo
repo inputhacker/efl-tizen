@@ -93,6 +93,12 @@ class Elm.Notify (Efl.Ui.Widget, Efl.Ui.Focus.Layer, Efl.Content, Efl.Part, Efl.
       /* TIZEN_ONLY(170621): support multiscale problem on TM2 */
       Efl.Ui.Widget.on_orientation_update;
       /* END */
+      //TIZEN_ONLY(20180607): Restore legacy focus
+      Efl.Ui.Widget.focus_direction;
+      Efl.Ui.Widget.focus_direction_manager_is;
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_next;
+      //
    }
    events {
       block,clicked: void; [[Called when block was clicked]]

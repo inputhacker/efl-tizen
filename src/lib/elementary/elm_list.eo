@@ -427,6 +427,11 @@ class Elm.List (Efl.Ui.Layout.Object, Elm.Interface_Scrollable,
       //TIZEN_ONLY(20171114): list: enhance accessibility scroll and highlight
       Elm.Interface_Scrollable.content_pos_set;
       //
+      //TIZEN_ONLY(20180607): Restore legacy focus
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_direction_manager_is;
+      Efl.Ui.Widget.focus_next;
+      //
    }
    events {
       activated: Efl.Object; [[Called when activated]]

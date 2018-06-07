@@ -1323,7 +1323,16 @@ _elm_entry_efl_ui_widget_theme_apply(Eo *obj, Elm_Entry_Data *sd)
 
    if (cursor_pos) elm_entry_cursor_pos_set(obj, cursor_pos);
 
-   if (efl_ui_focus_object_focus_get(obj))
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   Eina_Bool focused;
+   if (elm_widget_is_legacy(obj))
+     focused = elm_widget_focus_get(obj);
+   else
+     focused = efl_ui_focus_object_focus_get(obj);
+
+   if (focused)
+   //if (efl_ui_focus_object_focus_get(obj))
+   //
      {
         edje_object_signal_emit(sd->entry_edje, "elm,action,focus", "elm");
         if (sd->scroll)
@@ -1742,7 +1751,16 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
    if (top && efl_isa(top, EFL_UI_WIN_CLASS))
      top_is_win = EINA_TRUE;
 
-   if (efl_ui_focus_object_focus_get(obj) && sd->editable)
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   Eina_Bool focused = EINA_FALSE;
+   if (elm_widget_is_legacy(obj))
+     focused = elm_widget_focus_get(obj);
+   else
+     focused = efl_ui_focus_object_focus_get(obj);
+
+   if (focused && sd->editable)
+   //if (efl_ui_focus_object_focus_get(obj) && sd->editable)
+   //
      {
         evas_object_focus_set(sd->entry_edje, EINA_TRUE);
         edje_object_signal_emit(sd->entry_edje, "elm,action,focus", "elm");
@@ -3387,11 +3405,20 @@ _entry_cursor_changed_signal_cb(void *data,
                                 const char *source EINA_UNUSED)
 {
    ELM_ENTRY_DATA_GET(data, sd);
-   if(!sd) return;
+   if (!sd) return;
    sd->cursor_pos = edje_object_part_text_cursor_pos_get
        (sd->entry_edje, "elm.text", EDJE_CURSOR_MAIN);
    sd->cur_changed = EINA_TRUE;
-   if (efl_ui_focus_object_focus_get(data))
+
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   Eina_Bool focused;
+   if (elm_widget_is_legacy(data))
+     focused = elm_widget_focus_get(data);
+   else
+     focused = efl_ui_focus_object_focus_get(data);
+   if (focused)
+   //if (efl_ui_focus_object_focus_get(data))
+   //
      edje_object_signal_emit(sd->entry_edje, "elm,action,show,cursor", "elm");
    _cursor_geometry_recalc(data);
 
@@ -5905,12 +5932,16 @@ _elm_entry_editable_set(Eo *obj, Elm_Entry_Data *sd, Eina_Bool editable)
    efl_ui_widget_theme_apply(obj);
    _elm_entry_focus_update(obj, sd);
 
-   //legacy focus event emission
-   if (efl_ui_focus_object_focus_get(obj))
-     evas_object_smart_callback_call(obj, "focused", NULL);
-   else
-     evas_object_smart_callback_call(obj, "unfocused", NULL);
-
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (!elm_widget_is_legacy(obj))
+   //
+     {
+        //legacy focus event emission
+        if (efl_ui_focus_object_focus_get(obj))
+          evas_object_smart_callback_call(obj, "focused", NULL);
+        else
+          evas_object_smart_callback_call(obj, "unfocused", NULL);
+     }
    elm_drop_target_del(obj, sd->drop_format,
                        _dnd_enter_cb, NULL,
                        _dnd_leave_cb, NULL,
@@ -7156,6 +7187,19 @@ _elm_entry_efl_ui_widget_on_access_activate(Eo *obj, Elm_Entry_Data *_pd EINA_UN
    return EINA_TRUE;
 }
 
+//TIZEN_ONLY(20180607): Restore legacy focus
+EOLIAN static Eina_Bool
+_elm_entry_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Entry_Data *_pd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+
+EOLIAN static Eina_Bool
+_elm_entry_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_Entry_Data *_pd EINA_UNUSED)
+{
+   return EINA_FALSE;
+}
+//
 EOLIAN static void
 _elm_entry_select_allow_set(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd, Eina_Bool allow)
 {

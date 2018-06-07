@@ -212,6 +212,11 @@ class Elm.Index (Efl.Ui.Layout.Object, Efl.Ui.Direction,
       Efl.Access.Component.highlight_grab;
       Efl.Access.Component.highlight_clear;
       //
+      //TIZEN_ONLY(20180607): Restore legacy focus
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_direction_manager_is;
+      Efl.Ui.Widget.focus_next;
+      //
    }
    events {
       changed: Efl.Object; [[Called when index changed]]

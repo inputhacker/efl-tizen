@@ -5382,6 +5382,9 @@ _filter_cb(const void *iterator EINA_UNUSED, void *data, void *fdata)
 EOLIAN static Eina_Iterator*
 _elm_interface_scrollable_efl_ui_focus_manager_border_elements_get(const Eo *obj, Elm_Scrollable_Smart_Interface_Data *pd EINA_UNUSED)
 {
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(obj)) return NULL;
+   //
    Eina_Iterator *border_elements;
    Eina_Rectangle *rect = calloc(1, sizeof(Eina_Rectangle));
 

@@ -29,7 +29,10 @@ EOLIAN static void
 _efl_ui_focus_layer_efl_gfx_entity_visible_set(Eo *obj, Efl_Ui_Focus_Layer_Data *pd, Eina_Bool v)
 {
    efl_gfx_entity_visible_set(efl_super(obj, MY_CLASS), v);
-
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(obj))
+     return;
+   //
    if (pd->enable_on_visible)
      {
         efl_ui_focus_layer_enable_set(obj, v);
@@ -57,7 +60,11 @@ _efl_ui_focus_layer_efl_ui_focus_manager_move(Eo *obj, Efl_Ui_Focus_Layer_Data *
 EOLIAN static void
 _efl_ui_focus_layer_efl_object_destructor(Eo *obj, Efl_Ui_Focus_Layer_Data *pd EINA_UNUSED)
 {
-   efl_ui_focus_layer_enable_set(obj, EINA_FALSE);
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (!elm_widget_is_legacy(obj))
+   //
+     efl_ui_focus_layer_enable_set(obj, EINA_FALSE);
+
    efl_destructor(efl_super(obj, MY_CLASS));
 }
 
@@ -89,6 +96,10 @@ EOLIAN static Efl_Object*
 _efl_ui_focus_layer_efl_object_constructor(Eo *obj, Efl_Ui_Focus_Layer_Data *pd)
 {
    obj = efl_constructor(efl_super(obj, MY_CLASS));
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(obj))
+     return obj;
+   //
    pd->enable_on_visible = EINA_TRUE;
    pd->cycle = EINA_TRUE;
    return obj;

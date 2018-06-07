@@ -57,6 +57,12 @@ class Elm.Scroller (Efl.Ui.Layout.Object, Elm.Interface_Scrollable,
       Efl.Access.Widget.Action.elm_actions { get; }
       Efl.Part.part_get;
       Efl.Ui.Widget.focus_state_apply;
+      //TIZEN_ONLY(20180607): Restore legacy focus
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_direction_manager_is;
+      Efl.Ui.Widget.focus_next;
+      Efl.Ui.Widget.focus_direction;
+      //
    }
    events {
       scroll,page,changed: void; [[Called when scroll page changed]]

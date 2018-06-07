@@ -4515,7 +4515,7 @@ _elm_genlist_efl_ui_widget_focused_item_get(const Eo *obj EINA_UNUSED, Elm_Genli
 }
 
 static Eina_Bool _elm_genlist_smart_focus_next_enable = EINA_FALSE;
-/* FIXME: Need to Implement based on Focus manager
+
 EOLIAN static Eina_Bool
 _elm_genlist_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Genlist_Data *_pd EINA_UNUSED)
 {
@@ -4593,7 +4593,7 @@ _elm_genlist_efl_ui_widget_focus_next(Eo *obj, Elm_Genlist_Data *sd, Elm_Focus_D
    return elm_widget_focus_list_next_get
             (obj, items, eina_list_data_get, dir, next, next_item);
 }
-*/
+
 static void
 _mirrored_set(Evas_Object *obj,
               Eina_Bool rtl)

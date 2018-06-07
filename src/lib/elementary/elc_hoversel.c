@@ -212,6 +212,25 @@ _item_focus_changed(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
      }
 }
 
+//TIZEN_ONLY(20180607): Restore legacy focus
+static void
+_item_focused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+{
+   Elm_Hoversel_Item_Data *it = data;
+
+   efl_event_callback_legacy_call(WIDGET(it), ELM_HOVERSEL_EVENT_ITEM_FOCUSED, EO_OBJ(it));
+}
+
+static void
+_item_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+
+{
+   Elm_Hoversel_Item_Data *it = data;
+
+   efl_event_callback_legacy_call(WIDGET(it), ELM_HOVERSEL_EVENT_ITEM_UNFOCUSED, EO_OBJ(it));
+}
+//
+
 static void
 _create_scroller(Evas_Object *obj, Elm_Hoversel_Data *sd)
 {
@@ -627,6 +646,11 @@ EOLIAN static Eina_Bool
 _elm_hoversel_item_elm_widget_item_item_focus_get(const Eo *eo_it EINA_UNUSED,
                                              Elm_Hoversel_Item_Data *it)
 {
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(VIEW(it)))
+     return elm_widget_focus_get(VIEW(it));
+   //
+
    return efl_ui_focus_object_focus_get(VIEW(it));
 }
 
@@ -909,7 +933,16 @@ _elm_hoversel_item_add(Eo *obj, Elm_Hoversel_Data *sd, const char *label, const 
     evas_object_size_hint_weight_set(bt, EVAS_HINT_EXPAND, 0.0);
     evas_object_size_hint_align_set(bt, EVAS_HINT_FILL, EVAS_HINT_FILL);
     efl_event_callback_add(bt, EFL_UI_EVENT_CLICKED, _on_item_clicked, item);
-    efl_event_callback_add(bt, EFL_UI_FOCUS_OBJECT_EVENT_FOCUS_CHANGED, _item_focus_changed, item);
+
+    //TIZEN_ONLY(20180607): Restore legacy focus
+    if (elm_widget_is_legacy(bt))
+      {
+         evas_object_smart_callback_add(bt, "focused", _item_focused_cb, item);
+         evas_object_smart_callback_add(bt, "unfocused", _item_unfocused_cb, item);
+      }
+    else
+    //
+      efl_event_callback_add(bt, EFL_UI_FOCUS_OBJECT_EVENT_FOCUS_CHANGED, _item_focus_changed, item);
 
    sd->items = eina_list_append(sd->items, eo_item);
 

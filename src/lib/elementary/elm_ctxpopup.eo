@@ -258,6 +258,13 @@ class Elm.Ctxpopup (Efl.Ui.Layout.Object, Efl.Ui.Focus.Layer, Efl.Access.Widget.
       Efl.Access.Component.highlight_grab;
       Efl.Access.Component.highlight_clear;
       //
+
+      //TIZEN_ONLY(20180607): Restore legacy focus
+      Efl.Ui.Widget.focus_direction;
+      Efl.Ui.Widget.focus_direction_manager_is;
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_next;
+      //
    }
    events {
       dismissed: void; [[Called when context popup was dismissed]]

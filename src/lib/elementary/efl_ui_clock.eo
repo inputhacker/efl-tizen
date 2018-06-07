@@ -230,6 +230,10 @@ class Efl.Ui.Clock (Efl.Ui.Layout.Object)
       //TIZEN_ONLY(20170807): Apply UI Mirror for Tizen 4.0 UX
       Efl.Ui.Base.mirrored { get; set; }
       //
+      //TIZEN_ONLY(20180607): Restore legacy focus
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_next;
+      //
    }
    events {
       changed: void; [[Called when clock changed]]

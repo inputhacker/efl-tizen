@@ -107,6 +107,8 @@ elm_object_focus_next_object_set(Evas_Object        *obj,
    EINA_SAFETY_ON_FALSE_RETURN(efl_isa(next, EFL_UI_WIDGET_CLASS));
    ELM_WIDGET_DATA_GET_OR_RETURN(next, next_pd);
 
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   /*
    #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction) pd->legacy_focus.field = next;
    MAPPING()
    #undef MAP
@@ -114,6 +116,9 @@ elm_object_focus_next_object_set(Evas_Object        *obj,
    #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction) next_pd->legacy_focus.field = obj;
    MAPPING()
    #undef MAP
+   */
+   efl_ui_widget_focus_next_object_set(obj, next, dir);
+   //
 }
 
 EAPI void
@@ -121,23 +126,28 @@ elm_object_focus_custom_chain_set(Evas_Object *obj,
                                   Eina_List   *objs EINA_UNUSED)
 {
    API_ENTRY()
-   _custom_chain_set(obj, objs);
+   //_custom_chain_set(obj, objs);
+   efl_ui_widget_focus_custom_chain_set(obj, objs);
 }
 
 EAPI void
 elm_object_focus_custom_chain_unset(Evas_Object *obj)
 {
    API_ENTRY()
-
-   _custom_chain_set(obj, NULL);
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   //_custom_chain_set(obj, NULL);
+   efl_ui_widget_focus_custom_chain_unset(obj);
+   //
 }
 
 EAPI const Eina_List *
 elm_object_focus_custom_chain_get(const Evas_Object *obj)
 {
    API_ENTRY_VAL(NULL)
-
-   return _custom_chain_get(obj);
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   //return _custom_chain_get(obj);
+   return efl_ui_widget_focus_custom_chain_get(obj);
+   //
 }
 
 EAPI void
@@ -146,11 +156,16 @@ elm_object_focus_custom_chain_append(Evas_Object *obj,
                                      Evas_Object *relative_child)
 {
    API_ENTRY()
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   /*
    Eina_List *tmp;
 
    tmp = eina_list_clone(pd->legacy_focus.custom_chain);
    tmp = eina_list_append_relative(tmp, child, relative_child);
    _custom_chain_set(obj, tmp);
+   */
+   efl_ui_widget_focus_custom_chain_append(obj, child, relative_child);
+   //
 }
 
 EAPI void
@@ -159,11 +174,16 @@ elm_object_focus_custom_chain_prepend(Evas_Object *obj,
                                       Evas_Object *relative_child EINA_UNUSED)
 {
    API_ENTRY()
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   /*
    Eina_List *tmp;
 
    tmp = eina_list_clone(pd->legacy_focus.custom_chain);
    tmp = eina_list_prepend_relative(tmp, child, relative_child);
    _custom_chain_set(obj, tmp);
+   */
+   efl_ui_widget_focus_custom_chain_prepend(obj, child, relative_child);
+   //
 }
 
 EINA_DEPRECATED EAPI void
@@ -182,7 +202,8 @@ elm_object_focus_next(Evas_Object        *obj,
    Efl_Ui_Focus_Object *logical;
    Efl_Ui_Focus_Manager *manager_top;
    API_ENTRY()
-
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   /*
    top = elm_object_top_widget_get(obj);
    manager_top = efl_ui_focus_util_active_manager(EFL_UI_FOCUS_UTIL_CLASS, obj);
    logical = efl_ui_focus_manager_focus_get(manager_top);
@@ -218,6 +239,9 @@ elm_object_focus_next(Evas_Object        *obj,
              efl_ui_focus_manager_setup_on_first_touch(top, dir, root);
           }
      }
+   */
+   efl_ui_widget_focus_cycle(obj, dir);
+   //
 }
 
 EAPI Evas_Object *
@@ -226,12 +250,16 @@ elm_object_focus_next_object_get(const Evas_Object  *obj,
 {
    Efl_Ui_Widget *top = elm_object_top_widget_get(obj);
    API_ENTRY_VAL(NULL)
-
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   /*
    #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.field) return pd->legacy_focus.field;
    MAPPING()
    #undef MAP
 
    return efl_ui_focus_manager_request_move(efl_ui_focus_util_active_manager(EFL_UI_FOCUS_UTIL_CLASS, top), dir, NULL, EINA_FALSE);
+   */
+   return efl_ui_widget_focus_next_object_get(obj, dir);
+   //
 }
 
 EAPI Elm_Object_Item *
@@ -240,7 +268,10 @@ elm_object_focus_next_item_get(const Evas_Object  *obj,
 {
    API_ENTRY_VAL(NULL)
    /* FOCUS-FIXME */
-   return NULL;
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   //return NULL;
+   return efl_ui_widget_focus_next_item_get(obj, dir);
+   //
 }
 
 EAPI void
@@ -250,12 +281,17 @@ elm_object_focus_next_item_set(Evas_Object     *obj,
 {
    API_ENTRY()
    /* FOCUS-FIXME */
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   efl_ui_widget_focus_next_item_set(obj, next_item, dir);
+   //
 }
 
 EAPI Evas_Object *
 elm_object_focused_object_get(const Evas_Object *obj)
 {
    API_ENTRY_VAL(NULL)
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   /*
    Efl_Ui_Focus_Manager *man = elm_object_top_widget_get(obj);
 
    while(efl_ui_focus_manager_redirect_get(man))
@@ -269,6 +305,9 @@ elm_object_focused_object_get(const Evas_Object *obj)
      }
 
    return efl_ui_focus_manager_focus_get(man);
+   */
+   return efl_ui_widget_focused_object_get(obj);
+   //
 }
 
 EAPI Eina_Bool
@@ -276,10 +315,17 @@ elm_object_focus_get(const Evas_Object *obj)
 {
    Efl_Ui_Focus_Manager *m;
    Efl_Ui_Focus_Object *focused_child;
-   API_ENTRY_VAL(EINA_FALSE)
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   //API_ENTRY_VAL(EINA_FALSE)
+   //
 
    if (!elm_widget_is(obj))
      return evas_object_focus_get(obj);
+
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(obj))
+     return elm_widget_focus_get(obj);
+   //
 
    m = efl_ui_focus_object_focus_manager_get(obj);
 
@@ -324,6 +370,17 @@ elm_object_focus_set(Evas_Object *obj,
      }
    else if (elm_widget_is(obj))
      {
+        if (elm_widget_is_legacy(obj))
+          {
+             if (focus == elm_widget_focus_get(obj)) return;
+
+             if (focus)
+               efl_ui_widget_focus_cycle(obj, ELM_FOCUS_NEXT);
+             else
+               efl_ui_widget_focused_object_clear(obj);
+             return;
+          }
+
         if (focus)
           efl_ui_focus_util_focus(EFL_UI_FOCUS_UTIL_CLASS, obj);
         else

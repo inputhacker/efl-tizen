@@ -314,6 +314,7 @@ typedef void                  (*Elm_Widget_Focus_Set_Cb)(void *data, Eina_Bool f
 typedef Eina_Bool             (*Elm_Widget_Focus_Get_Cb)(const void *data);
 
 typedef void (*Elm_Access_On_Highlight_Cb)(void *data);
+
 typedef void * (*list_data_get_func_type)(const Eina_List * l);
 
 #include "efl_ui_widget.eo.h"
@@ -389,6 +390,12 @@ typedef struct _Elm_Widget_Smart_Data
    Evas_Object                  *hover_obj;
    Evas_Object                  *bg;
    Eina_List                    *tooltips, *cursors;
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   Evas_Object                  *focus_previous, *focus_next;
+   Evas_Object                  *focus_up, *focus_down, *focus_right, *focus_left;
+   Elm_Object_Item              *item_focus_previous, *item_focus_next;
+   Elm_Object_Item              *item_focus_up, *item_focus_down, *item_focus_right, *item_focus_left;
+   //
 
    /* "show region" coordinates. all widgets got those because this
     * info may be set and queried recursively through the widget
@@ -779,6 +786,11 @@ EAPI Eina_Bool        elm_widget_focus_highlight_enabled_get(const Evas_Object *
 EAPI void             elm_widget_focus_highlight_focus_part_geometry_get(const Evas_Object *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h);
 Evas_Object          *_elm_widget_focus_highlight_object_get(const Evas_Object *obj);
 EAPI const Elm_Widget_Smart_Class *elm_widget_smart_class_get(void);
+
+//TIZEN_ONLY(20180607): Restore legacy focus
+EAPI Eina_Bool        elm_widget_focus_get(const Eo *obj);
+double                _elm_widget_focus_direction_weight_get(const Evas_Object *obj1, const Evas_Object *obj2, double degree);
+//
 
 /**
  * @internal
