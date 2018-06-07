@@ -76,6 +76,11 @@ unsigned int (*glsym_eglSwapBuffersWithDamage) (EGLDisplay a, void *b, const EGL
 unsigned int (*glsym_eglSetDamageRegionKHR) (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d) = NULL;
 unsigned int (*glsym_eglQueryWaylandBufferWL)(EGLDisplay a, void *b, EGLint c, EGLint *d) = NULL;
 
+
+EGLSyncKHR (*glsym_eglCreateSyncKHR) (EGLDisplay dpy, EGLenum type, const EGLint *attrib_list) = NULL;
+EGLBoolean (*glsym_eglDestroySyncKHR) (EGLDisplay dpy, EGLSyncKHR sync) = NULL;
+EGLint (*glsym_eglWaitSyncKHR) (EGLDisplay dpy, EGLSyncKHR sync, EGLint flags) = NULL;
+
 /* local variables */
 static Eina_Bool initted = EINA_FALSE;
 static int gl_wins = 0;
@@ -181,6 +186,10 @@ eng_gl_symbols(EGLDisplay edsp)
 
    FINDSYM(glsym_eglQueryWaylandBufferWL, "eglQueryWaylandBufferWL",
            glsym_func_uint);
+
+   FINDSYM(glsym_eglCreateSyncKHR, "eglCreateSyncKHR", glsym_func_void_ptr);
+   FINDSYM(glsym_eglDestroySyncKHR, "eglDestroySyncKHR", glsym_func_int);
+   FINDSYM(glsym_eglWaitSyncKHR, "eglWaitSyncKHR", glsym_func_int);
 
    done = EINA_TRUE;
 }
@@ -1093,10 +1102,18 @@ end:
 }
 
 static void
-_native_cb_bind(void *image)
+_native_cb_bind(void *data, void *image)
 {
+   Render_Engine *re;
+   Outbuf *ob;
    Evas_GL_Image *img;
    Native *n;
+
+   EGLBoolean wait_result;
+   EGLBoolean destroy_result;
+
+   if (!(re = (Render_Engine *)data)) return;
+   if (!(ob = eng_get_ob(re))) return;
 
    if (!(img = image)) return;
    if (!(n = img->native.data)) return;
@@ -1132,7 +1149,20 @@ _native_cb_bind(void *image)
                {
                   if (glsym_glEGLImageTargetTexture2DOES)
                     {
-                      GL_TH_CALL(glEGLImageTargetTexture2DOES, glsym_glEGLImageTargetTexture2DOES, GL_TEXTURE_2D, surface);
+                       if (getenv("EVAS_GL_EGL_SYNC_ON") && glsym_eglWaitSyncKHR)
+                         {
+                            wait_result = glsym_eglWaitSyncKHR(ob->egl_disp, ob->egl_fence, 0);
+                            if (!wait_result)
+                              ERR("eglWaitSync failed");
+
+                            if (glsym_eglDestroySyncKHR)
+                              destroy_result = glsym_eglDestroySyncKHR(ob->egl_disp, ob->egl_fence);
+
+                            if (!destroy_result)
+                              ERR("eglDestroySync failed");
+                         }
+
+                       GL_TH_CALL(glEGLImageTargetTexture2DOES, glsym_glEGLImageTargetTexture2DOES, GL_TEXTURE_2D, surface);
                        if (GL_TH(eglGetError) != EGL_SUCCESS)
                          ERR("glEGLImageTargetTexture2DOES() failed.");
                     }
@@ -1161,6 +1191,26 @@ _native_cb_bind(void *image)
         }
 #endif
     }
+}
+
+static void
+eng_gl_get_pixels(void *data EINA_UNUSED, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data,
+ Evas_Object *o, void *image)
+{
+   Render_Engine *re;
+   Outbuf *ob;
+   if (!(re = (Render_Engine *)data)) return;
+   if (!(ob = eng_get_ob(re))) return;
+	 cb(get_pixels_data, o);
+
+   if (getenv("EVAS_GL_EGL_SYNC_ON") && glsym_eglWaitSyncKHR)
+     {
+        if (glsym_eglCreateSyncKHR)
+          ob->egl_fence = glsym_eglCreateSyncKHR(ob->egl_disp, EGL_SYNC_FENCE_KHR, NULL);
+
+        if (ob->egl_fence == EGL_NO_SYNC)
+          ERR("eglCreateSync failed");
+     }
 }
 
 static void
@@ -1745,6 +1795,7 @@ module_open(Evas_Module *em)
    ORD(gl_current_context_get);
    ORD(gl_error_get);
 
+   ORD(gl_get_pixels);
    evas_gl_thread_link_init();
    symbols();
 
