@@ -50,11 +50,11 @@ ecore_device_add()
    Ecore_Device *dev;
    Efl_Input_Device_Data *d;
 
-   dev = efl_add(EFL_INPUT_DEVICE_CLASS, NULL,
-                 efl_name_set(efl_added, NULL),
-                 efl_comment_set(efl_added, NULL),
-                 efl_input_device_type_set(efl_added, EFL_INPUT_DEVICE_TYPE_NONE),
-                 efl_input_device_source_set(efl_added, NULL));
+   dev = efl_add_ref(EFL_INPUT_DEVICE_CLASS, NULL,
+                     efl_name_set(efl_added, NULL),
+                     efl_comment_set(efl_added, NULL),
+                     efl_input_device_type_set(efl_added, EFL_INPUT_DEVICE_TYPE_NONE),
+                     efl_input_device_source_set(efl_added, NULL));
 
    d = efl_data_scope_get(dev, EFL_INPUT_DEVICE_CLASS);
    d->subclass = EFL_INPUT_DEVICE_SUBTYPE_NONE;
