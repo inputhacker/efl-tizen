@@ -6091,7 +6091,7 @@ _elm_entry_cursor_coord_set(Eo *obj, Elm_Entry_Data *sd, Evas_Coord x, Evas_Coor
 }
 
 EOLIAN static void
-_elm_entry_cursor_coord_get(Eo *obj EINA_UNUSED, Elm_Entry_Data *sd, Evas_Coord *x, Evas_Coord *y)
+_elm_entry_cursor_coord_get(const Eo *obj EINA_UNUSED, Elm_Entry_Data *sd, int *x, int *y)
 {
    edje_object_part_text_cursor_geometry_get
       (sd->entry_edje, "elm.text", x, y, NULL, NULL);
