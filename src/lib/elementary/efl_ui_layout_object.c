@@ -376,7 +376,7 @@ _part_cursor_part_apply(const Efl_Ui_Layout_Sub_Object_Cursor *pc)
 }
  */
 static void
-_part_cursor_part_apply(Efl_Ui_Layout_Data *sd, const Efl_Ui_Layout_Sub_Object_Cursor *pc)
+_part_cursor_part_apply(Efl_Ui_Layout_Object_Data *sd, const Efl_Ui_Layout_Sub_Object_Cursor *pc)
 {
    elm_object_sub_cursor_set(pc->obj, sd->obj, pc->cursor);
    elm_object_sub_cursor_style_set(pc->obj, pc->style);
