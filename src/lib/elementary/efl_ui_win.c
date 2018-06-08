@@ -10510,11 +10510,18 @@ elm_win_util_standard_add(const char *name, const char *title)
 {
    Evas_Object *win;
 
+   // TIZEN_ONLY(20180518): apply precreated window
+    win = elm_win_add(NULL, name, ELM_WIN_BASIC);
+    if (!win) return NULL;
+
+    efl_text_set(win, title);
+   /*
    win = elm_legacy_add(EFL_UI_WIN_LEGACY_CLASS, NULL,
                         efl_text_set(efl_added, title),
                         efl_ui_win_name_set(efl_added, name),
                         efl_ui_win_type_set(efl_added, EFL_UI_WIN_BASIC));
    if (!win) return NULL;
+   *//////
 
    _elm_win_standard_init(win);
    return win;
