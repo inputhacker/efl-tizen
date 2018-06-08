@@ -482,6 +482,8 @@ struct _Evas_GL_Image
          void       (*unbind)  (void *image);
          void       (*free)    (void *image);
          int        (*yinvert) (void *image);
+         // TIZEN_ONLY(20180608) : support EGL_IMAGE_SYNC for EvasGL
+         void       *outbuf;
       } func;
       void           *disp;
       Evas_GL_Shared *shared;
