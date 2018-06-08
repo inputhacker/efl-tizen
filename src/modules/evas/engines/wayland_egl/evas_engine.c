@@ -1102,7 +1102,7 @@ end:
 }
 
 static void
-_native_cb_bind(void *data, void *image)
+_native_cb_bind(void *image)
 {
    Render_Engine *re;
    Outbuf *ob;
@@ -1112,11 +1112,12 @@ _native_cb_bind(void *data, void *image)
    EGLBoolean wait_result;
    EGLBoolean destroy_result;
 
-   if (!(re = (Render_Engine *)data)) return;
-   if (!(ob = eng_get_ob(re))) return;
-
    if (!(img = image)) return;
    if (!(n = img->native.data)) return;
+
+    // TIZEN_ONLY(20180608) : support EGL_IMAGE_SYNC for EvasGL
+   ob = (Outbuf*)img->native.func.outbuf;
+   if (!ob) return;
 
    if (n->ns.type == EVAS_NATIVE_SURFACE_WL)
      {
@@ -1194,7 +1195,7 @@ _native_cb_bind(void *data, void *image)
 }
 
 static void
-eng_gl_get_pixels(void *data EINA_UNUSED, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data,
+eng_gl_get_pixels(void *data, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data,
  Evas_Object *o, void *image)
 {
    Render_Engine *re;
@@ -1621,6 +1622,8 @@ eng_image_native_set(void *engine, void *image, void *native)
                   img->native.func.bind = _native_cb_bind;
                   img->native.func.unbind = _native_cb_unbind;
                   img->native.func.free = _native_cb_free;
+                   // TIZEN_ONLY(20180608) : support EGL_IMAGE_SYNC for EvasGL
+                  img->native.func.outbuf = ob;
                   img->native.target = GL_TEXTURE_2D;
                   img->native.mipmap = 0;
 
@@ -1648,6 +1651,8 @@ eng_image_native_set(void *engine, void *image, void *native)
                   img->native.func.unbind = _native_cb_unbind;
                   img->native.func.free = _native_cb_free;
                   img->native.func.yinvert = _native_cb_yinvert;
+                   // TIZEN_ONLY(20180608) : support EGL_IMAGE_SYNC for EvasGL
+                  img->native.func.outbuf = ob;
                   img->native.target = GL_TEXTURE_2D;
                   img->native.mipmap = 0;
 
@@ -1675,6 +1680,8 @@ eng_image_native_set(void *engine, void *image, void *native)
                img->native.func.bind   = _native_cb_bind;
                img->native.func.unbind = _native_cb_unbind;
                img->native.func.free   = _native_cb_free;
+                // TIZEN_ONLY(20180608) : support EGL_IMAGE_SYNC for EvasGL
+               img->native.func.outbuf = ob;
                img->native.target      = GL_TEXTURE_2D;
                img->native.mipmap      = 0;
 
@@ -1714,6 +1721,7 @@ eng_image_native_set(void *engine, void *image, void *native)
                img->native.func.bind   = _native_cb_bind;
                img->native.func.unbind = _native_cb_unbind;
                img->native.func.free   = _native_cb_free;
+               img->native.func.outbuf = ob;
                img->native.target      = GL_TEXTURE_EXTERNAL_OES;
                img->native.mipmap      = 0;
                img->native.rot         = ns->data.tbm.rot;
