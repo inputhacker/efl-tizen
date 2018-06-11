@@ -79,6 +79,10 @@ _elm_widget_item_static_focus_efl_ui_focus_object_prepare_logical_none_recursive
    Eo *logical_child;
    Elm_Widget_Item_Data *wpd = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
 
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(wpd->widget)) return;
+   //
+
    efl_ui_focus_object_prepare_logical_none_recursive(efl_super(obj, MY_CLASS));
 
    if (!pd->realized)
@@ -131,6 +135,10 @@ _elm_widget_item_static_focus_efl_object_constructor(Eo *obj, Elm_Widget_Item_St
    Elm_Widget_Item_Data *wpd = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
    Eo *ret = efl_constructor(efl_super(obj, MY_CLASS));
 
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(wpd->widget)) return ret;
+   //
+
    if (efl_isa(wpd->widget, ELM_GENLIST_CLASS))
      {
         efl_event_callback_add(wpd->widget, ELM_GENLIST_EVENT_REALIZED, _list_realized_cb, obj);
@@ -148,6 +156,12 @@ EOLIAN static void
 _elm_widget_item_static_focus_efl_object_destructor(Eo *obj, Elm_Widget_Item_Static_Focus_Data *pd EINA_UNUSED)
 {
    Elm_Widget_Item_Data *wpd = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
+
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(wpd->widget))
+     return efl_destructor(efl_super(obj, MY_CLASS));
+   //
+
    if (efl_isa(wpd->widget, ELM_GENLIST_CLASS))
      {
         efl_event_callback_del(wpd->widget, ELM_GENLIST_EVENT_REALIZED, _list_realized_cb, obj);

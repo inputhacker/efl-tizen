@@ -9629,6 +9629,7 @@ _elm_genlist_item_efl_ui_focus_object_prepare_logical_none_recursive(Eo *obj, El
    Eina_List *n;
    Efl_Ui_Widget*wid;
 
+   if (elm_widget_is_legacy(WIDGET(pd))) return;
 //   _item_realize(pd, EINA_FALSE);
 
    EINA_LIST_FOREACH(pd->contents, n, wid)
