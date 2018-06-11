@@ -731,7 +731,7 @@ _toggle_entry(Evas_Object *obj)
              sd->entry_visible = EINA_TRUE;
           }
         if (elm_widget_is_legacy(sd->ent))
-          evas_object_smart_callback_add(sd->ent, "focused", _entry_unfocused_cb, obj);
+          evas_object_smart_callback_add(sd->ent, "unfocused", _entry_unfocused_cb, obj);
         else
           efl_event_callback_add
              (sd->ent, EFL_UI_FOCUS_OBJECT_EVENT_FOCUS_CHANGED, _entry_focus_change, obj);
