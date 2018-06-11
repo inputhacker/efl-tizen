@@ -497,6 +497,14 @@ GL_TH_FN(glTexSubImage2DEVAS)(int thread_push, GLenum target, GLint level, GLint
    if (!evas_gl_thread_enabled(EVAS_GL_THREAD_TYPE_GL))
      {
         glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+        GLuint err;
+        err = glGetError();
+        if (err != GL_NO_ERROR)
+          {
+             GLuint tid;
+             glGetIntegerv(GL_TEXTURE_BINDING_2D, &tid);
+             ERR("This texture can't use glTexSubImage2D. because this texture is invalid (tid:%d,data:%p)",tid,pixels);
+          }
         return;
      }
 
