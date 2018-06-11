@@ -745,7 +745,7 @@ _toggle_entry(Evas_Object *obj)
           }
         //TIZEN_ONLY(20180607): Restore legacy focus
         if (elm_widget_is_legacy(sd->ent))
-          evas_object_smart_callback_add(sd->ent, "focused", _entry_unfocused_cb, obj);
+          evas_object_smart_callback_add(sd->ent, "unfocused", _entry_unfocused_cb, obj);
         else
         //
           efl_event_callback_add
