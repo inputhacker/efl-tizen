@@ -1093,16 +1093,29 @@ ecore_wl2_window_hide(Ecore_Wl2_Window *window)
    if (window->tz_resource) tizen_resource_destroy(window->tz_resource);
    window->tz_resource = NULL;
    //
+   // TIZEN_ONLY(20180614) : destroy shell surface and its role
+   if (window->zxdg_popup) zxdg_popup_v6_destroy(window->zxdg_popup);
+   window->zxdg_popup = NULL;
+
+   if (window->zxdg_toplevel) zxdg_toplevel_v6_destroy(window->zxdg_toplevel);
+   window->zxdg_toplevel = NULL;
+
+   if (window->zxdg_surface) zxdg_surface_v6_destroy(window->zxdg_surface);
+   window->zxdg_surface = NULL;
+   // END of TIZEN_ONLY(20180614)
 
    EINA_INLIST_FOREACH_SAFE(window->subsurfs, tmp, subsurf)
      _ecore_wl2_subsurf_unmap(subsurf);
 
+   // TIZEN_ONLY(20180614) : remove below in tizen
+   /*
    if (window->surface)
      {
         wl_surface_attach(window->surface, NULL, 0, 0);
         ecore_wl2_window_commit(window, EINA_TRUE);
         window->commit_pending = EINA_FALSE;
      }
+   */
 
    if (window->callback)
      {
