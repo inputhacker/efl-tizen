@@ -4372,9 +4372,13 @@ _elm_win_screen_reader(Eina_Bool is_screen_reader)
 
         if (!is_screen_reader)
           {
-             efl_access_component_highlight_clear(obj);
+             Evas_Object *ptr = _elm_object_accessibility_currently_highlighted_get();
+             if (ptr) {
+               efl_access_component_highlight_clear(ptr);
+             }
           }
      }
+
 }
 //
 
