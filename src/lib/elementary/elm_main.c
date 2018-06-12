@@ -2053,11 +2053,6 @@ elm_object_accessibility_highlight_set(void *obj, Eina_Bool visible)
         _elm_win_object_set_accessibility_highlight(win, target, visible);
      }
 
-   // if (!visible && (obj == _elm_win_accessibility_highlight_get(win)))
-   //    _elm_win_accessibility_highlight_set(win, NULL);
-   // else if (visible)
-   //    _elm_win_accessibility_highlight_set(win, obj);
-   //
 }
 //
 
