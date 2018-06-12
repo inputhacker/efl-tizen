@@ -985,6 +985,7 @@ _efl_canvas_image_internal_efl_file_save(const Eo *eo_obj, Evas_Image_Data *o, c
    return ok;
 
 no_pixels:
+   free(encoding);
    ERR("Could not get image pixels for saving.");
    return EINA_FALSE;
 }
