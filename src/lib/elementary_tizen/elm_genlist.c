@@ -129,17 +129,9 @@ ELM_PRIV_GENLIST_SIGNALS(ELM_PRIV_STATIC_VARIABLE_DECLARE);
 
 static const Evas_Smart_Cb_Description _smart_callbacks[] = {
    ELM_PRIV_GENLIST_SIGNALS(ELM_PRIV_SMART_CALLBACKS_DESC)
-   {SIG_WIDGET_LANG_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_WIDGET_ACCESS_CHANGED, ""}, /**< handled by elm_widget */
    {SIG_LAYOUT_FOCUSED, ""}, /**< handled by elm_layout */
    {SIG_LAYOUT_UNFOCUSED, ""}, /**< handled by elm_layout */
-   //TIZEN_ONLY(20161213): apply screen_reader_changed callback
-   {SIG_ATSPI_SCREEN_READER_CHANGED, ""},
-   //
-
-   //TIZEN_ONLY(20170724): grab highlight using unrealized item
-   {SIG_WIDGET_ATSPI_HIGHLIGHTED, ""},
-   //
    {NULL, NULL}
 };
 #undef ELM_PRIV_GENLIST_SIGNALS
