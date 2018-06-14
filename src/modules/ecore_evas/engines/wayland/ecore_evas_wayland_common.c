@@ -734,7 +734,9 @@ _ecore_evas_wl_common_cb_window_configure_complete(void *data EINA_UNUSED, int t
 
    einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
    if (!einfo) return ECORE_CALLBACK_PASS_ON;
-
+//TIZEN_ONLY(20180616): show->hide-> configure_cb case,not change into visible state
+   if (!ee->visible) return ECORE_CALLBACK_PASS_ON;
+//
    einfo->info.hidden = EINA_FALSE;
    if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
      ERR("Failed to set Evas Engine Info for '%s'", ee->driver);
