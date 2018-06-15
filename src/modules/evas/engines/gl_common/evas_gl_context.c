@@ -923,9 +923,12 @@ evas_gl_common_context_new(void)
 #endif
 
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-             if ((strstr(ext, "GL_EXT_texture_filter_anisotropic")))
-               GL_TH(glGetFloatv, GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,
-                           &(shared->info.anisotropic));
+             if (getenv("EVAS_GL_ANISOTROPY"))
+               {
+                 if ((strstr(ext, "GL_EXT_texture_filter_anisotropic")))
+                   GL_TH(glGetFloatv, GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,
+                         &(shared->info.anisotropic));
+               }
 #endif
 #ifdef GL_BGRA
              if ((strstr(ext, "GL_EXT_bgra")) ||
