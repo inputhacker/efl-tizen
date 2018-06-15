@@ -152,12 +152,12 @@ if BUILD_TIZEN_EFL
 elementary/themes/default.edj: elementary/themes/default.edc $(elementary_themes_files) $(efl_ui_themes_files) $(top_builddir)/src/bin/edje/edje_cc${EXEEXT}
 	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/themes/; \
-	$(EDJE_CC) $(EDJE_CC_FLAGS) $(EDJE_CC_ELM_FLAGS) $< $@
+	$(EDJE_CC) $(EDJE_CC_FLAGS) $(EDJE_CC_ELM_FLAGS) -N $< $@
 else
 elementary/themes/default.edj: elementary/themes/default.edc $(elementary_themes_files) $(efl_ui_themes_files)
 	$(AM_V_EDJ) \
 	$(MKDIR_P) elementary/themes/; \
-	$(EDJE_CC) $(EDJE_CC_FLAGS) $(EDJE_CC_ELM_FLAGS) $< $@
+	$(EDJE_CC) $(EDJE_CC_FLAGS) $(EDJE_CC_ELM_FLAGS) -N $< $@
 endif
 ##
 
