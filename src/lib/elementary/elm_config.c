@@ -2206,7 +2206,7 @@ _config_flush_get(void)
    if (pre_scale != _elm_config->scale)
      _elm_rescale();
    _elm_recache();
-   _elm_clouseau_reload();
+   _elm_old_clouseau_reload();
    _elm_config_key_binding_hash();
    // TIZEN_ONLY(20160721): enable atspi bridge on background apps
    _elm_config_atspi_mode_set(_elm_config->atspi_mode);
@@ -4158,7 +4158,7 @@ elm_config_clouseau_enabled_set(Eina_Bool enable)
 {
    _elm_config->priv.clouseau_enable = EINA_TRUE;
    _elm_config->clouseau_enable = !!enable;
-   _elm_clouseau_reload();
+   _elm_old_clouseau_reload();
 }
 
 EAPI double
@@ -4421,7 +4421,7 @@ _elm_config_init(void)
    _elm_config_font_overlay_apply();
    _elm_config_color_overlay_apply();
    _elm_recache();
-   _elm_clouseau_reload();
+   _elm_old_clouseau_reload();
    _elm_config_key_binding_hash();
 }
 
@@ -4616,7 +4616,7 @@ _elm_config_reload(void)
      _elm_rescale();
 #undef CMP
    _elm_recache();
-   _elm_clouseau_reload();
+   _elm_old_clouseau_reload();
    _elm_config_key_binding_hash();
    ecore_event_add(ELM_EVENT_CONFIG_ALL_CHANGED, NULL, NULL, NULL);
    if (ptheme) eina_stringshare_del(ptheme);
@@ -4920,7 +4920,7 @@ _elm_config_profile_set(const char *profile)
    _elm_config_color_overlay_apply();
    _elm_rescale();
    _elm_recache();
-   _elm_clouseau_reload();
+   _elm_old_clouseau_reload();
    _elm_config_key_binding_hash();
 }
 
