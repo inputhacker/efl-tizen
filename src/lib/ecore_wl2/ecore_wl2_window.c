@@ -3240,7 +3240,7 @@ ecore_wl2_window_surface_flush(Ecore_Wl2_Window *window)
    EINA_SAFETY_ON_NULL_RETURN(window);
 
    if (!window->wl2_surface) return;
-   ecore_wl2_surface_flush(window->wl2_surface);
+   ecore_wl2_surface_flush(window->wl2_surface, EINA_FALSE);
 }
 
 // TIZEN_ONLY(20171107): add ecore_wl2_window_input_get() EAPI
