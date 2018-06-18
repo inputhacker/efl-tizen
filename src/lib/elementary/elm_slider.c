@@ -979,7 +979,8 @@ _elm_slider_efl_object_constructor(Eo *obj, Elm_Slider_Data *priv)
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
 
-   priv->indicator_show = EINA_TRUE;
+   //TIZEN_ONLY(20180618): keep backward compatibility of Tizen 3.0
+   priv->indicator_show = EINA_FALSE;
    priv->indicator_visible_mode = elm_config_slider_indicator_visible_mode_get();
    //TODO: customize this time duration from api or theme data.
    priv->wheel_indicator_duration = 0.25;
