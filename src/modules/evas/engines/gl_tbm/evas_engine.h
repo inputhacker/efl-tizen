@@ -62,6 +62,7 @@ struct _Outbuf
 
    void *tbm_queue;
    Eina_Bool ext_tbm_queue;
+   void *tbm_disp;
 
    Render_Output_Swap_Mode swap_mode;
    int prev_age, vsync;
