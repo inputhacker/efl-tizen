@@ -530,7 +530,8 @@ _popup_add(Elm_Slider_Data *sd, Eo *obj, Evas_Object **popup,
 
    // XXX popup needs to adapt to theme etc.
    *popup = edje_object_add(evas_object_evas_get(obj));
-   evas_object_smart_member_add(*popup, obj);
+   //TIZEN_ONLY(20180619): do not clip indicator to slider to keep backward compatibility
+   //evas_object_smart_member_add(*popup, obj);
    edje_object_signal_callback_add(*popup, "popup,hide,done", "elm", // XXX: for compat
                                    _popup_hide_done, obj);
    edje_object_signal_callback_add(*popup, "elm,popup,hide,done", "elm",
