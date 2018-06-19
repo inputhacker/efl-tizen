@@ -1033,8 +1033,16 @@ _ecore_wl_cb_pre_handle_data(void *data, Ecore_Fd_Handler *hdl EINA_UNUSED)
 
    if (ewd->prepare_read) return;
 
+   int ret;
    while (wl_display_prepare_read(ewd->wl.display) != 0)
-     wl_display_dispatch_pending(ewd->wl.display);
+     {
+        ret = wl_display_dispatch_pending(ewd->wl.display);
+        if (ret < 0)
+          {
+             ERR("Wayland Display Dispatch Pending Failed");
+             break;
+          }
+     }
 
    wl_display_flush(ewd->wl.display);
 
