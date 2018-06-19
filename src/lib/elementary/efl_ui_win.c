@@ -6633,6 +6633,11 @@ _efl_ui_win_win_role_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, const char *r
 #ifdef HAVE_ELEMENTARY_X
    _elm_win_xwin_update(sd);
 #endif
+   //TIZEN_ONLY(20180619): set role for wayland window
+#ifdef HAVE_ELEMENTARY_WL2
+   ecore_wl2_window_role_set(sd->wl.win, role);
+#endif
+   //
 }
 
 EOLIAN static const char*
