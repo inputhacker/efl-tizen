@@ -163,6 +163,8 @@ struct _Efl_Access_Data
    const char    *translation_domain;
    Efl_Access_Role role;
    Efl_Access_Reading_Info_Type_Mask reading_info;
+
+   Eo            *forced_parent;
 };
 
 typedef struct _Efl_Access_Data Efl_Access_Data;
@@ -204,6 +206,9 @@ _efl_access_parent_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
 {
    Eo *parent = obj;
 
+   if (pd->forced_parent)
+     return pd->forced_parent;
+
    do {
       parent = efl_parent_get(obj);
       if (efl_isa(parent, EFL_ACCESS_MIXIN))
@@ -213,11 +218,17 @@ _efl_access_parent_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
    return efl_isa(parent, EFL_ACCESS_MIXIN) ? parent : NULL;
 }
 
+EOLIAN static Efl_Access *
+_efl_access_forced_parent_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
+{
+   return pd->forced_parent;
+}
+
 EOLIAN static void
 _efl_access_parent_set(Eo *obj, Efl_Access_Data *pd EINA_UNUSED, Efl_Access *new_parent EINA_UNUSED)
 {
-   WRN("The %s object does not implement the \"accessible_parent_set\" function.",
-       efl_class_name_get(efl_class_get(obj)));
+   if (efl_isa(new_parent, EFL_ACCESS_MIXIN))
+     pd->forced_parent = new_parent;
 }
 
 EOLIAN Eina_List*

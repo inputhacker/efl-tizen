@@ -494,6 +494,14 @@ mixin Efl.Access (Efl.Interface, Efl.Object)
             parent: Efl.Access; [[Accessible parent]]
          }
       }
+      @property forced_parent @beta {
+         get {
+            [[Gets object's accessible parent.]]
+         }
+         values {
+            parent: Efl.Access; [[Accessible parent]]
+         }
+      }
       @property state_set @protected @beta {
          get {
             [[Gets set describing object accessible states.]]

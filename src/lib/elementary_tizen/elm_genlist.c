@@ -843,7 +843,8 @@ _item_content_realize(Elm_Gen_Item *it,
                   evas_object_del(content);
                   goto out;
                }
-             elm_widget_sub_object_add(WIDGET(it), content);
+             elm_widget_sub_object_add(EO_OBJ(it), content);
+             efl_access_parent_set(content, EO_OBJ(it));
           }
         *contents = eina_list_append(*contents, content);
 
@@ -9418,15 +9419,13 @@ _elm_genlist_efl_access_widget_action_elm_actions_get(Eo *obj EINA_UNUSED, Elm_G
 EOLIAN Eina_List*
 _elm_genlist_efl_access_children_get(Eo *obj, Elm_Genlist_Data *sd)
 {
-   Eina_List *ret = NULL, *ret2 = NULL;
+   Eina_List *ret = NULL;
    Elm_Gen_Item *it;
 
    EINA_INLIST_FOREACH(sd->items, it)
       ret = eina_list_append(ret, EO_OBJ(it));
 
-   ret2 = efl_access_children_get(efl_super(obj, ELM_GENLIST_CLASS));
-
-   return eina_list_merge(ret, ret2);
+   return ret;
 }
 
 EOLIAN Efl_Access_State_Set
