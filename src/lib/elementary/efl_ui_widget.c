@@ -5949,7 +5949,7 @@ _elm_widget_item_efl_access_object_state_set_get(const Eo *eo_item, Elm_Widget_I
    else
      STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
 
-   if (_elm_object_accessibility_currently_highlighted_get() == (void*)item->view)
+   if (_elm_object_accessibility_currently_highlighted_get() == (void*)item->eo_obj)
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
    //
    return states;
@@ -7620,6 +7620,19 @@ _efl_ui_widget_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, 
     }
 
    return accs;
+}
+
+EOLIAN static Eo*
+_efl_ui_widget_efl_access_parent_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNUSED)
+{
+
+   Eo* access_forced_parent = efl_access_forced_parent_get(obj);
+   if (access_forced_parent)
+     return access_forced_parent;
+
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
+
+   return efl_isa(wd->parent_obj, EFL_ACCESS_MIXIN) ? wd->parent_obj : NULL;
 }
 
 //TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
