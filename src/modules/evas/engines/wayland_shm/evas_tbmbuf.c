@@ -518,7 +518,8 @@ _shm_tzsurf_flusher_cb_free_flush(void *data, struct tizen_surface_shm_flusher *
 {
    Tbmbuf_Surface *surf = data;
 
-   sym_tbm_surface_queue_free_flush(surf->tbm_queue);
+   if (surf->tbm_queue)
+     sym_tbm_surface_queue_free_flush(surf->tbm_queue);
 }
 
 static const struct tizen_surface_shm_flusher_listener _tzsurf_flusher_listener =
