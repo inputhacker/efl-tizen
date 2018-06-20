@@ -1887,7 +1887,8 @@ _elm_color_item_efl_object_constructor(Eo *eo_item, Elm_Color_Item_Data *item)
    // TIZEN_ONLY(20160517): "elm,state,selected" signal is handled by _on_color_selected()
    efl_layout_signal_callback_add(VIEW(item), "elm,state,selected", "elm", _on_color_selected, item);
    //
-   elm_object_part_content_set(VIEW(item), "color_obj", item->color_obj);
+   if (!elm_layout_content_set(VIEW(item), "elm.swallow.color_obj", item->color_obj))
+     elm_layout_content_set(VIEW(item), "color_obj", item->color_obj);
 
    _item_sizing_eval(item);
    evas_object_show(VIEW(item));
