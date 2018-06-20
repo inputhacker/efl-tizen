@@ -1362,7 +1362,8 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
                                    }
                               }
 
-                            if (rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
+                            if ((rp->part->type == EDJE_PART_TYPE_TEXTBLOCK) &&
+                                  rp->part->entry_mode > EDJE_ENTRY_EDIT_MODE_NONE)
                               {
                                  // TIZEN_ONLY(20131129): Reuse ecore_imf_context when theme is changed
                                  Ecore_IMF_Context *ic = NULL;
