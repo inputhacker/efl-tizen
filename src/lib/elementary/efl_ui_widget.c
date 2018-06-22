@@ -7524,14 +7524,9 @@ _efl_ui_widget_efl_access_parent_get(Eo *obj, Elm_Widget_Smart_Data *pd EINA_UNU
    if (access_forced_parent)
      return access_forced_parent;
 
-   Efl_Access *parent = obj;
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, NULL);
 
-   do {
-        ELM_WIDGET_DATA_GET_OR_RETURN(parent, wd, NULL);
-        parent = wd->parent_obj;
-   } while (parent);
-
-   return efl_isa(parent, EFL_ACCESS_MIXIN) ? parent : NULL;
+   return efl_isa(wd->parent_obj, EFL_ACCESS_MIXIN) ? wd->parent_obj : NULL;
 }
 
 //TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
