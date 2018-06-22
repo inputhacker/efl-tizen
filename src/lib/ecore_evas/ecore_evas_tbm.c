@@ -18,6 +18,7 @@
 #include <Ecore_Input.h>
 #include <tbm_bufmgr.h>
 #include <tbm_surface_queue.h>
+#include <tbm_surface_internal.h>
 
 #include "Ecore_Evas.h"
 #include "ecore_evas_tbm.h"
@@ -885,7 +886,8 @@ ecore_evas_tbm_pixels_acquire(Ecore_Evas *ee)
    tbm_data = ee->engine.data;
    if (tbm_surface_queue_can_acquire(tbm_data->tbm_queue, 1)) {
       tbm_surface_queue_acquire(tbm_data->tbm_queue, &(tbm_data->tbm_surf));
-      tbm_surface_get_info(tbm_data->tbm_surf,&surf_info);
+      tbm_surface_internal_ref(tbm_data->tbm_surf);
+      tbm_surface_map(tbm_data->tbm_surf, TBM_SURF_OPTION_READ|TBM_SURF_OPTION_WRITE, &surf_info);
       pixels = surf_info.planes[0].ptr;
    }
    ee->engine.data = tbm_data;
@@ -901,10 +903,12 @@ ecore_evas_tbm_pixels_release(Ecore_Evas *ee)
 
    tbm_data = ee->engine.data;
    if (tbm_data->tbm_surf) {
+      tbm_surface_unmap(tbm_data->tbm_surf);
+      tbm_surface_internal_unref(tbm_data->tbm_surf);
       tbm_surface_queue_release(tbm_data->tbm_queue,tbm_data->tbm_surf);
       tbm_data->tbm_surf= NULL;
    }
-   tbm_data = ee->engine.data;
+   ee->engine.data = tbm_data;
 }
 
 EAPI void *
