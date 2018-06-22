@@ -5,6 +5,8 @@
 #ifndef ELM_MODULE_HELPER_H
 #define ELM_MODULE_HELPER_H
 
+#include "elm_priv.h"
+
 #ifdef EAPI
 # undef EAPI
 #endif
@@ -43,7 +45,6 @@
 /*************************************************************
  * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
  *************************************************************/
-#include "elm_priv.h"
 
 typedef void (*cpfunc)(void *data, Evas_Object *obj, void *event_info);
 
