@@ -3469,6 +3469,7 @@ _efl_ui_widget_focus_next_object_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data 
      sd->focus_right = next;
    else if (dir == ELM_FOCUS_LEFT)
      sd->focus_left = next;
+
 }
 
 EOLIAN static Elm_Object_Item*
@@ -3490,6 +3491,7 @@ _efl_ui_widget_focus_next_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_D
      ret = sd->item_focus_left;
 
    return ret;
+
 }
 
 EOLIAN static void
@@ -3537,11 +3539,11 @@ elm_widget_focus_set(Eo *obj, Eina_Bool focus)
                {
                   if (!_elm_widget_is(child)) continue;
                   if ((_is_focusable(child)) &&
-                      (!elm_widget_disabled_get(child)))
-                    {
-                       elm_widget_focus_set(child, focus);
-                       break;
-                    }
+                       (!elm_widget_disabled_get(child)))
+                      {
+                         elm_widget_focus_set(child, focus);
+                         break;
+                      }
                }
           }
      }
@@ -3890,10 +3892,12 @@ _efl_ui_widget_scroll_hold_push(Eo *obj, Elm_Widget_Smart_Data *sd)
              EINA_LIST_FOREACH(sd->subobjs, l, child)
                {
                   if (elm_widget_is(child) && _elm_scrollable_is(child))
-                    if (elm_widget_is_legacy(obj))
-                      elm_interface_scrollable_hold_set(child, EINA_TRUE);
-                    else
-                      efl_ui_scrollable_scroll_hold_set(child, EINA_TRUE);
+                    {
+                       if (elm_widget_is_legacy(obj))
+                         elm_interface_scrollable_hold_set(child, EINA_TRUE);
+                       else
+                         efl_ui_scrollable_scroll_hold_set(child, EINA_TRUE);
+                    }
                }
           }
      }
@@ -3922,10 +3926,12 @@ _efl_ui_widget_scroll_hold_pop(Eo *obj, Elm_Widget_Smart_Data *sd)
              EINA_LIST_FOREACH(sd->subobjs, l, child)
                {
                   if (elm_widget_is(child) && _elm_scrollable_is(child))
-                    if (elm_widget_is_legacy(obj))
-                      elm_interface_scrollable_hold_set(child, EINA_FALSE);
-                    else
-                      efl_ui_scrollable_scroll_hold_set(child, EINA_FALSE);
+                    {
+                       if (elm_widget_is_legacy(obj))
+                         elm_interface_scrollable_hold_set(child, EINA_FALSE);
+                       else
+                         efl_ui_scrollable_scroll_hold_set(child, EINA_FALSE);
+                    }
                }
           }
      }
