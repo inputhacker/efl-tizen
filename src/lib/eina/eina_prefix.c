@@ -448,6 +448,16 @@ _common_prefix_find(const char *bin, const char *lib, const char *data, const ch
    return b - bin;
 }
 
+static char *
+_reallink(const char *link)
+{
+#ifndef _WIN32
+   return realpath(link, NULL);
+#else
+   return link;
+#endif
+}
+
 /**
  * @endcond
  */
@@ -581,7 +591,16 @@ eina_prefix_new(const char *argv0, void *symbol, const char *envprefix,
                   if (_path_absolute_check(info_dl.dli_fname))
                     {
                        INF("dladdr for symbol=%p: %s", symbol, info_dl.dli_fname);
-                       STRDUP_REP(pfx->exe_path, info_dl.dli_fname);
+                       char *rlink = _reallink(info_dl.dli_fname);
+                       if (rlink)
+                         {
+                            STRDUP_REP(pfx->exe_path, rlink);
+                            free(rlink);
+                         }
+                       else
+                         {
+                            STRDUP_REP(pfx->exe_path, info_dl.dli_fname);
+                         }
                        from_lib = EINA_TRUE;
                     }
                   else
