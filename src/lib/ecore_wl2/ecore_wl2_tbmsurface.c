@@ -477,6 +477,12 @@ ecore_wl2_tbmbuf_surface_create(Ecore_Wl2_Window *win, Eina_Bool alpha,
   out->funcs = &tbmbuf_smanager;
 
   win->wl2_surface = out;
+  /* Since we have loadable modules, we need to make sure this
+   * surface keeps ecore_wl2 from de-initting and dlclose()ing
+   * things until after it's destroyed
+   */
+  ecore_wl2_init();
+
   return out;
 
   err:
