@@ -1198,11 +1198,11 @@ static void
 eng_gl_get_pixels(void *data, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data,
  Evas_Object *o, void *image)
 {
-   Render_Engine *re;
+   Evas_GL_Image *img;
    Outbuf *ob;
-   if (!(re = (Render_Engine *)data)) return;
-   if (!(ob = eng_get_ob(re))) return;
-	 cb(get_pixels_data, o);
+   if (!(img = image)) return;
+   if (!(ob = img->native.func.outbuf)) return;
+     cb(get_pixels_data, o);
 
    if (getenv("EVAS_GL_EGL_SYNC_ON") && glsym_eglWaitSyncKHR)
      {
@@ -1210,7 +1210,7 @@ eng_gl_get_pixels(void *data, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixe
           ob->egl_fence = glsym_eglCreateSyncKHR(ob->egl_disp, EGL_SYNC_FENCE_KHR, NULL);
 
         if (ob->egl_fence == EGL_NO_SYNC)
-          ERR("eglCreateSync failed");
+          ERR("eglCreateSync failed. error:%x", eglGetError());
      }
 }
 
