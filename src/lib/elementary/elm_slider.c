@@ -1273,7 +1273,7 @@ EAPI void
 elm_slider_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
 {
    Efl_Ui_Dir dir;
-   EFL_UI_SLIDER_DATA_GET(obj, sd2);
+   EFL_UI_SLIDER_DATA_GET_OR_RETURN(obj, sd2);
 
    dir = _direction_get(horizontal, _is_inverted(sd2->dir));
 
@@ -1283,6 +1283,8 @@ elm_slider_horizontal_set(Evas_Object *obj, Eina_Bool horizontal)
 EAPI Eina_Bool
 elm_slider_horizontal_get(const Evas_Object *obj)
 {
+   EINA_SAFETY_ON_NULL_RETURN_VAL(obj, EINA_FALSE);
+
    Efl_Ui_Dir dir;
    dir = efl_ui_direction_get(obj);
 
@@ -1317,7 +1319,7 @@ EAPI void
 elm_slider_inverted_set(Evas_Object *obj, Eina_Bool inverted)
 {
    Efl_Ui_Dir dir;
-   EFL_UI_SLIDER_DATA_GET(obj, sd2);
+   EFL_UI_SLIDER_DATA_GET_OR_RETURN(obj, sd2);
 
    dir = _direction_get(_is_horizontal(sd2->dir), inverted);
 
