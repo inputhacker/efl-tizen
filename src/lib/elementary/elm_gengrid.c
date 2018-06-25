@@ -6586,7 +6586,10 @@ _elm_gengrid_item_efl_access_component_highlight_grab(Eo *eo_it EINA_UNUSED, Elm
    //
 
    if (!VIEW(it))
+   {
       sd->atspi_item_to_highlight = it;//it will be highlighted when realized
+      elm_gengrid_item_bring_in(eo_it, ELM_GENGRID_ITEM_SCROLLTO_IN);
+   }
    return EINA_TRUE;
 }
 
