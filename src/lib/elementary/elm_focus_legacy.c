@@ -104,11 +104,11 @@ elm_object_focus_next_object_set(Evas_Object        *obj,
                                  Elm_Focus_Direction dir EINA_UNUSED)
 {
    API_ENTRY()
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   /*
    EINA_SAFETY_ON_FALSE_RETURN(efl_isa(next, EFL_UI_WIDGET_CLASS));
    ELM_WIDGET_DATA_GET_OR_RETURN(next, next_pd);
 
-   //TIZEN_ONLY(20180607): Restore legacy focus
-   /*
    #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction) pd->legacy_focus.field = next;
    MAPPING()
    #undef MAP
