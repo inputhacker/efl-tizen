@@ -45,6 +45,7 @@ struct _Elm_List_Data
    int                                   walking;
    Elm_List_Mode                         h_mode;
    Elm_List_Mode                         mode;
+   Ecore_Job                             *eval_job;
 
    struct
    {

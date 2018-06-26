@@ -674,6 +674,16 @@ _elm_list_deletions_process(Elm_List_Data *sd)
    sd->walking--;
 }
 
+static void
+_list_sizing_eval_job(void *data)
+{
+   Eo *obj = data;
+   ELM_LIST_DATA_GET(obj, sd);
+
+   sd->eval_job = NULL;
+   elm_layout_sizing_eval(obj);
+}
+
 EOLIAN static void
 _elm_list_elm_layout_sizing_eval(Eo *obj, Elm_List_Data *sd)
 {
@@ -682,6 +692,13 @@ _elm_list_elm_layout_sizing_eval(Eo *obj, Elm_List_Data *sd)
    double xw = 0.0, yw = 0.0;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
+
+   if (!sd->box)
+     {
+        if (sd->eval_job) ecore_job_del(sd->eval_job);
+        sd->eval_job = ecore_job_add(_list_sizing_eval_job, obj);
+        return;
+     }
 
    evas_object_size_hint_combined_min_get(sd->box, &minw, &minh);
    evas_object_size_hint_max_get(sd->box, &maxw, &maxh);
@@ -2508,6 +2525,11 @@ _elm_list_efl_canvas_group_group_del(Eo *obj, Elm_List_Data *sd)
    if (sd->walking)
      ERR("ERROR: list deleted while walking.\n");
 
+   if (sd->eval_job)
+     {
+        ecore_job_del(sd->eval_job);
+        sd->eval_job = NULL;
+     }
    sd->delete_me = EINA_TRUE;
    EINA_LIST_FOREACH(sd->items, l, eo_it)
      {
