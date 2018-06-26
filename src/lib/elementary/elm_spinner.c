@@ -1513,6 +1513,9 @@ _elm_spinner_efl_ui_widget_theme_apply(Eo *obj, Elm_Spinner_Data *sd)
    if (_elm_config->access_mode)
      _access_spinner_register(obj, EINA_TRUE);
 
+   //TIZEN_ONLY(20180626): call _label_write for update text button label when theme is changed
+   _label_write(obj);
+   //
    elm_layout_sizing_eval(obj);
    return EFL_UI_THEME_APPLY_SUCCESS;
 }
