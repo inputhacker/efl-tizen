@@ -2657,6 +2657,9 @@ _elm_widget_focus_direction_weight_get(const Evas_Object *obj1,
    double x1, yy1, x2, yy2, xx1, yyy1, xx2, yyy2;
    double ax, ay, cx, cy;
    double weight = -1.0, g = 0.0;
+   // TIZEN_ONLY(20171129): add second_level for weight calculate
+   Eina_Bool second_level = EINA_FALSE;
+   //
 
    if (obj1 == obj2) return 0.0;
 
@@ -2805,19 +2808,47 @@ _elm_widget_focus_direction_weight_get(const Evas_Object *obj1,
      {
         if (degree == 0.0)
           {
-             if ((_R(xx2) < 0) || (_R(yy2) > 0) || (_R(yyy2) < 0)) return 0.0;
+             // TIZEN_ONLY(20171129): add second_level for weight calculate
+             //if ((_R(xx2) < 0) || (_R(yy2) > 0) || (_R(yyy2) < 0)) return 0.0;
+             if ((_R(xx2) < 0) || (_R(yy2) > 0) || (_R(yyy2) < 0))
+               {
+                  if (xx1 <= x2) second_level = EINA_TRUE;
+                  else return 0.0;
+               }
+             //
           }
         else if (degree == 90.0)
           {
-             if ((_R(yyy2) < 0) || (_R(x2) > 0) || (_R(xx2) < 0)) return 0.0;
+             // TIZEN_ONLY(20171129): add second_level for weight calculate
+             //if ((_R(yyy2) < 0) || (_R(x2) > 0) || (_R(xx2) < 0)) return 0.0;
+             if ((_R(yyy2) < 0) || (_R(x2) > 0) || (_R(xx2) < 0))
+               {
+                  if (yyy1 <= yy2) second_level = EINA_TRUE;
+                  else return 0.0;
+               }
+             //
           }
         else if (degree == 180.0)
           {
-             if ((_R(x2) > 0) || (_R(yy2) > 0) || (_R(yyy2) < 0)) return 0.0;
+             // TIZEN_ONLY(20171129): add second_level for weight calculate
+             //if ((_R(x2) > 0) || (_R(yy2) > 0) || (_R(yyy2) < 0)) return 0.0;
+             if ((_R(x2) > 0) || (_R(yy2) > 0) || (_R(yyy2) < 0))
+               {
+                  if (x1 >= xx2) second_level = EINA_TRUE;
+                  else return 0.0;
+               }
+             //
           }
         else if (degree == 270.0)
           {
-             if ((_R(yy2) > 0) || (_R(x2) > 0) || (_R(xx2) < 0)) return 0.0;
+             // TIZEN_ONLY(20171129): add second_level for weight calculate
+             //if ((_R(yy2) > 0) || (_R(x2) > 0) || (_R(xx2) < 0)) return 0.0;
+             if ((_R(yy2) > 0) || (_R(x2) > 0) || (_R(xx2) < 0))
+               {
+                  if (yy1 >= yyy2) second_level = EINA_TRUE;
+                  else return 0.0;
+               }
+             //
           }
         else
           {
@@ -2963,6 +2994,10 @@ _elm_widget_focus_direction_weight_get(const Evas_Object *obj1,
    if (_R(weight) == 0) return -1.0;
 
 #undef _R
+
+   // TIZEN_ONLY(20171129): add second_level for weight calculate
+   if (second_level) return 1.0 / (weight * 1000000.0);
+   //
 
    return 1.0 / weight;
 }
