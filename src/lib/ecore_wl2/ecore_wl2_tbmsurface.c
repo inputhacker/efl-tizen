@@ -100,7 +100,6 @@ buffer_release(void *data, struct wl_buffer *buffer EINA_UNUSED)
   tbm_surface_internal_get_user_data(tbm_surface, KEY_WINDOW, (void **)&tbm_queue);
   if (tbm_queue)
     {
-      ERR("tbm_surface_queue_release");
       tsq_err = tbm_surface_queue_release(tbm_queue, tbm_surface);
       if (tsq_err != TBM_SURFACE_QUEUE_ERROR_ALREADY_EXIST)
         tbm_surface_internal_unref(tbm_surface);
