@@ -153,11 +153,14 @@ evas_shutdown(void)
 
    evas_filter_shutdown();
 
+   //evas_thread_shutdown(); TIZEN_ONLY
    _evas_preload_thread_shutdown();
    evas_async_events_shutdown();
-   evas_module_shutdown();
 
    ecore_shutdown();
+
+   evas_filter_shutdown();
+   evas_module_shutdown();
 
    _efl_gfx_map_shutdown();
 
