@@ -433,6 +433,7 @@ evas_threads_sw_init(void)
 fail_on_software_thread_init:
   eina_threads_shutdown();
 fail_on_eina_thread_init:
+
   return --evas_threads_sw_init_count;
 }
 
