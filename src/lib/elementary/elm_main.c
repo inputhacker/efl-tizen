@@ -393,7 +393,7 @@ elm_init(int argc, char **argv)
 {
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   traceBegin(TTRACE_TAG_EFL, "elm_init");
+   eina_evlog("+elm_init", NULL, 0.0, NULL );
 #endif
    //
    _elm_init_count++;
@@ -401,7 +401,7 @@ elm_init(int argc, char **argv)
      {
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   traceEnd(TTRACE_TAG_EFL);
+   eina_evlog("-elm_init", NULL, 0.0, NULL );
 #endif
    //
         return _elm_init_count;
@@ -443,7 +443,7 @@ elm_init(int argc, char **argv)
 
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   traceEnd(TTRACE_TAG_EFL);
+   eina_evlog("-elm_init", NULL, 0.0, NULL );
 #endif
    //
    return _elm_init_count;

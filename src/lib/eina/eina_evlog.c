@@ -167,6 +167,16 @@ eina_evlog(const char *event, void *obj, double srctime, const char *detail)
    int size;
    unsigned short detail_offset, event_size;
 
+// TIZEN_ONLY(20160401): TTRACE
+#ifdef ENABLE_TTRACE
+#ifndef TIZEN_PROFILE_TV
+   if(!strncmp(event, "+", 1))
+     traceBegin(TTRACE_TAG_GRAPHICS, event + 1);
+   else if(!strncmp(event, "-", 1))
+     traceEnd(TTRACE_TAG_GRAPHICS);
+#endif
+#endif
+// TIZEN_ONLY(20160401): TTRACE
    if (!_evlog_go) return;
    now                 = get_time();
    event_size          = strlen(event) + 1;
@@ -193,16 +203,6 @@ eina_evlog(const char *event, void *obj, double srctime, const char *detail)
    if (detail_offset > 0) strcpy(strings + detail_offset, detail);
    eina_spinlock_release(&_evlog_lock);
 
-// TIZEN_ONLY(20160401): TTRACE
-#ifdef ENABLE_TTRACE
-#ifndef TIZEN_PROFILE_TV
-   if(!strncmp(event, "+", 1))
-     traceBegin(TTRACE_TAG_GRAPHICS, event + 1);
-   else if(!strncmp(event, "-", 1))
-     traceEnd(TTRACE_TAG_GRAPHICS);
-#endif
-#endif
-// TIZEN_ONLY(20160401): TTRACE
 }
 
 EAPI Eina_Evlog_Buf *

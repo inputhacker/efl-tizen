@@ -4025,6 +4025,8 @@ EFL_ADD_LIBS([ECORE_DRM2], [-ldl])
 
 EFL_EVAL_PKGS([ECORE_DRM2])
 
+EFL_LIB_END_OPTIONAL([Ecore_Drm2])
+#### End of Ecore_Drm2
 # Check for ttrace
 PKG_CHECK_MODULES(TTRACE,
                   [ttrace],
@@ -4044,8 +4046,7 @@ fi
 
 ### Checks for library functions
 
-EFL_LIB_END_OPTIONAL([Ecore_Drm2])
-#### End of Ecore_Drm2
+
 
 
 #### Ecore_Audio

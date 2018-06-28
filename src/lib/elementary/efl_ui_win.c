@@ -10483,7 +10483,7 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
 {
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   traceBegin(TTRACE_TAG_EFL, "elm_win_add");
+   eina_evlog("+elm_win_add", NULL, 0.0, NULL );
 #endif
 //
    const Efl_Class *klass = EFL_UI_WIN_LEGACY_CLASS;
@@ -10541,7 +10541,7 @@ elm_win_add(Evas_Object *parent, const char *name, Efl_Ui_Win_Type type)
 
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   traceEnd(TTRACE_TAG_EFL);
+   eina_evlog("-elm_win_add", NULL, 0.0, NULL );
 #endif
 //
    return obj;

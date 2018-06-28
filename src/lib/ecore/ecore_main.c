@@ -261,9 +261,11 @@ static inline void
 _throttle_do(Efl_Loop_Data *pd)
 {
    if (pd->throttle == 0) return
-   eina_evlog("+throttle", NULL, 0.0, NULL);
+   //TIZEN_ONLY(20180628): apply ttrace log system
+   //eina_evlog("+throttle", NULL, 0.0, NULL);
    usleep(pd->throttle);
-   eina_evlog("-throttle", NULL, 0.0, NULL);
+   //eina_evlog("-throttle", NULL, 0.0, NULL);
+   //
 }
 
 #ifdef HAVE_SYS_EPOLL_H
