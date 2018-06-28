@@ -1747,7 +1747,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
      {
         /* don't render if the source is invisible */
         if ((evas_object_is_source_invisible(eo_obj, obj)))
-          return clean_them;
+          return EINA_FALSE;
      }
    else
      proxy_src_clip = proxy_render_data->source_clip;
@@ -1757,7 +1757,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
 
    /* leave early if clipper is not visible */
    if ((obj->cur->clipper) && (!obj->cur->clipper->cur->visible))
-     return clean_them;
+     return EINA_FALSE;
 
    eina_evlog("+render_object", eo_obj, 0.0, NULL);
 #ifdef REND_DBG
@@ -1804,7 +1804,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                   RD(level, "  not rendering mask surface\n");
                   RD(level, "}\n");
                   eina_evlog("-render_object", eo_obj, 0.0, NULL);
-                  return clean_them;
+                  return EINA_FALSE;
                }
              // else don't return: draw mask in its surface
           }
@@ -1820,7 +1820,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                        IFRD(!evas_object_is_visible(eo_obj, obj), level, "  not visible\n");
                        RD(level, "}\n");
                        eina_evlog("-render_object", eo_obj, 0.0, NULL);
-                       return clean_them;
+                       return EINA_FALSE;
                     }
                }
              else
@@ -1835,7 +1835,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                        IFRD(!obj->cur->color.a && (obj->cur->render_op == EVAS_RENDER_BLEND), level, "  proxy_src_clip + 0 alpha\n");
                        RD(level, "}\n");
                        eina_evlog("-render_object", eo_obj, 0.0, NULL);
-                       return clean_them;
+                       return EINA_FALSE;
                     }
                   else if (proxy_render_data && (surface != obj->proxy->surface) &&
                            obj->proxy->src_invisible)
@@ -1843,7 +1843,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
                        RD(level, "  src_invisible + not proxy surface (recursive proxies)\n");
                        RD(level, "}\n");
                        eina_evlog("-render_object", eo_obj, 0.0, NULL);
-                       return clean_them;
+                       return EINA_FALSE;
                     }
                }
           }
@@ -1854,14 +1854,14 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
              IFRD(obj->clip.clipees || obj->cur->have_clipees, level, "  has clippees\n");
              RD(level, "}\n");
              eina_evlog("-render_object", eo_obj, 0.0, NULL);
-             return clean_them;
+             return EINA_FALSE;
           }
         else if (obj->no_render && (surface != obj->proxy->surface))
           {
              RD(level, "  no_render\n");
              RD(level, "}\n");
              eina_evlog("-render_object", eo_obj, 0.0, NULL);
-             return clean_them;
+             return EINA_FALSE;
           }
      }
    else if (!(((evas_object_is_active(eo_obj, obj) && (!obj->clip.clipees) &&
@@ -1873,7 +1873,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
         IFRD(obj->clip.clipees, level, "  has clippees\n");
         RD(level, "}\n");
         eina_evlog("-render_object", eo_obj, 0.0, NULL);
-        return clean_them;
+        return EINA_FALSE;
      }
 
    // set render_pre - for child objs that may not have gotten it.
