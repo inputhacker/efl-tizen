@@ -141,8 +141,6 @@ evas_shutdown(void)
 
    evas_focus_shutdown();
 
-   evas_common_shutdown();
-
 #ifdef EVAS_CSERVE2
    if (evas_cserve2_use_get())
      evas_cserve2_shutdown();
@@ -158,6 +156,7 @@ evas_shutdown(void)
    evas_async_events_shutdown();
 
    ecore_shutdown();
+   evas_common_shutdown();
 
    evas_filter_shutdown();
    evas_module_shutdown();
