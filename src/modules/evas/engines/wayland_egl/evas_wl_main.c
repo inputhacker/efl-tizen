@@ -520,6 +520,13 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
 
    if (ob->win)
      {
+        int aw, ah, dx = 0, dy = 0;
+
+        if ((ob->rot == 90) || (ob->rot == 270))
+          wl_egl_window_get_attached_size(ob->win, &ah, &aw);
+        else
+          wl_egl_window_get_attached_size(ob->win, &aw, &ah);
+
         //TIZEN_ONLY(20171115): support output transform
         /* buffer_transform: screen rotation + window rotation
          * window_transform: window rotation only
@@ -532,9 +539,9 @@ eng_outbuf_reconfigure(Outbuf *ob, int w, int h, int rot, Outbuf_Depth depth EIN
         //
 
         if ((ob->rot == 90) || (ob->rot == 270))
-          wl_egl_window_resize(ob->win, h, w, 0, 0);
+          wl_egl_window_resize(ob->win, h, w, dx, dy);
         else
-          wl_egl_window_resize(ob->win, w, h, 0, 0);
+          wl_egl_window_resize(ob->win, w, h, dx, dy);
      }
 }
 
