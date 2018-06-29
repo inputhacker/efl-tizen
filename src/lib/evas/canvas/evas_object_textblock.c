@@ -628,7 +628,6 @@ struct _Evas_Object_Textblock
    Evas_Object_Textblock_Paragraph    *par_index[TEXTBLOCK_PAR_INDEX_SIZE];
 
    Evas_Object_Textblock_Text_Item    *ellip_ti;
-   Eina_List                          *ellip_prev_it; /* item that is placed before ellipsis item (0.0 <= ellipsis < 1.0), if required */
    Eina_List                          *anchors_a;
    Eina_List                          *anchors_item;
    Eina_List                          *obstacles;
@@ -2942,6 +2941,7 @@ struct _Ctxt
    Evas_Object_Textblock_Format *fmt;
 
    Eina_List *obs_infos; /**< Extra information for items in current line. */
+   Eina_List *ellip_prev_it; /* item that is placed before ellipsis item (0.0 <= ellipsis < 1.0), if required */
 
    int x, y;
    int w, h;
@@ -5586,7 +5586,7 @@ _layout_par_ellipsis_items(Ctxt *c, double ellip)
    Evas_Coord l, h, off;
    int pos;
 
-   c->o->ellip_prev_it = NULL;
+   c->ellip_prev_it = NULL;
 
    /* calc exceed amount */
    items_width = _calc_items_width(c);
@@ -5622,7 +5622,7 @@ _layout_par_ellipsis_items(Ctxt *c, double ellip)
            break;
         off += it->adv;
      }
-   c->o->ellip_prev_it = i;
+   c->ellip_prev_it = i;
    if (it) ellip_ti = _layout_ellipsis_item_new(c, it);
 
 
@@ -5833,7 +5833,7 @@ _layout_par(Ctxt *c)
             ((it->type == EVAS_TEXTBLOCK_ITEM_TEXT) && !it->format->font.font))
           {
              //one more chance for ellipsis special cases
-             if (c->o->ellip_prev_it == i)
+             if (c->ellip_prev_it == i)
                 _layout_par_append_ellipsis(c);
 
              i = eina_list_next(i);
@@ -6256,7 +6256,7 @@ _layout_par(Ctxt *c)
                     }
                }
              if (!obs_info) c->x += it->adv;
-             if (c->o->ellip_prev_it == i)
+             if (c->ellip_prev_it == i)
                 _layout_par_append_ellipsis(c);
              i = eina_list_next(i);
              item_preadv = EINA_FALSE;
@@ -6886,6 +6886,7 @@ _layout_setup(Ctxt *c, const Eo *eo_obj, Evas_Coord w, Evas_Coord h)
    c->h = h;
    c->style_pad.r = c->style_pad.l = c->style_pad.t = c->style_pad.b = 0;
    c->vertical_ellipsis = EINA_FALSE;
+   c->ellip_prev_it = NULL;
 
    /* Update all obstacles */
    if (c->o->obstacle_changed || c->width_changed)
