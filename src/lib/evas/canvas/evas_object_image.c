@@ -688,12 +688,13 @@ _evas_image_orient_set(Eo *eo_obj, Evas_Image_Data *o, Evas_Image_Orient orient)
 
    if (o->cur->orient == orient) return;
 
+   /* TIZEN_ONLY(20180629): This code can cause image loading failure.
    if ((o->preloading) && (o->engine_data))
      {
         o->preloading = EINA_FALSE;
         ENFN->image_data_preload_cancel(ENDT, o->engine_data, eo_obj);
      }
-
+   */
    if (o->engine_data)
      {
         int stride = 0;
