@@ -122,6 +122,7 @@ static void
 _device_keyboard_setup(Ecore_Drm_Evdev *edev)
 {
    Ecore_Drm_Input *input;
+   xkb_mod_index_t xkb_mod_idx;
 
    if ((!edev) || (!edev->seat)) return;
    if (!(input = edev->seat->input)) return;
@@ -142,22 +143,37 @@ _device_keyboard_setup(Ecore_Drm_Evdev *edev)
         return;
      }
 
-   edev->xkb.ctrl_mask = 
-     1 << xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_CTRL);
-   edev->xkb.alt_mask = 
-     1 << xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_ALT);
-   edev->xkb.shift_mask = 
-     1 << xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_SHIFT);
-   edev->xkb.win_mask = 
-     1 << xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_LOGO);
-   edev->xkb.scroll_mask = 
-     1 << xkb_map_mod_get_index(edev->xkb.keymap, XKB_LED_NAME_SCROLL);
-   edev->xkb.num_mask = 
-     1 << xkb_map_mod_get_index(edev->xkb.keymap, XKB_LED_NAME_NUM);
-   edev->xkb.caps_mask = 
-     1 << xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_CAPS);
-   edev->xkb.altgr_mask = 
-     1 << xkb_map_mod_get_index(edev->xkb.keymap, "ISO_Level3_Shift");
+   xkb_mod_idx = xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_CTRL);
+   if (xkb_mod_idx != XKB_MOD_INVALID)
+     edev->xkb.ctrl_mask = 1 << xkb_mod_idx;
+
+   xkb_mod_idx = xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_ALT);
+   if (xkb_mod_idx != XKB_MOD_INVALID)
+     edev->xkb.alt_mask = 1 << xkb_mod_idx;
+
+   xkb_mod_idx = xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_SHIFT);
+   if (xkb_mod_idx != XKB_MOD_INVALID)
+     edev->xkb.shift_mask = 1 << xkb_mod_idx;
+
+   xkb_mod_idx = xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_LOGO);
+   if (xkb_mod_idx != XKB_MOD_INVALID)
+     edev->xkb.win_mask = 1 << xkb_mod_idx;
+
+   xkb_mod_idx = xkb_map_mod_get_index(edev->xkb.keymap, XKB_LED_NAME_SCROLL);
+   if (xkb_mod_idx != XKB_MOD_INVALID)
+     edev->xkb.scroll_mask = 1 << xkb_mod_idx;
+
+   xkb_mod_idx = xkb_map_mod_get_index(edev->xkb.keymap, XKB_LED_NAME_NUM);
+   if (xkb_mod_idx != XKB_MOD_INVALID)
+     edev->xkb.num_mask = 1 << xkb_mod_idx;
+
+   xkb_mod_idx = xkb_map_mod_get_index(edev->xkb.keymap, XKB_MOD_NAME_CAPS);
+   if (xkb_mod_idx != XKB_MOD_INVALID)
+     edev->xkb.caps_mask = 1 << xkb_mod_idx;
+
+   xkb_mod_idx = xkb_map_mod_get_index(edev->xkb.keymap, "ISO_Level3_Shift");
+   if (xkb_mod_idx != XKB_MOD_INVALID)
+     edev->xkb.altgr_mask = 1 << xkb_mod_idx;
 }
 
 static int 
@@ -389,6 +405,7 @@ _device_handle_key(struct libinput_device *device, struct libinput_event_keyboar
    if (!e)
      {
         TRACE_INPUT_END();
+        if (compose) free(compose);
         return;
      }
 
@@ -928,7 +945,6 @@ _device_handle_touch_motion_send(Ecore_Drm_Evdev *edev, struct libinput_event_to
 
    _device_modifiers_update(edev);
    ev->modifiers = edev->xkb.modifiers;
-   ev->modifiers = 0;
 
    ev->x = edev->seat->ptr.ix;
    ev->y = edev->seat->ptr.iy;
