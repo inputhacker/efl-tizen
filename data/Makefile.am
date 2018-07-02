@@ -166,7 +166,7 @@ endif
 elementarydesktopdir = $(datadir)/applications
 elementarydesktop_DATA = elementary/desktop/elementary_test.desktop elementary/desktop/elementary_config.desktop
 
-elementaryicondir = $(datadir)/icons
+elementaryicondir = $(datadir)/icons/hicolor/128x128/apps
 elementaryicon_DATA = elementary/desktop/elementary.png
 
 EXTRA_DIST += $(elementarydesktop_DATA) $(elementaryicon_DATA)
