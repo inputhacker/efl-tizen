@@ -320,11 +320,6 @@ extern Eina_TLS          _eo_table_data;
 extern Eo_Id_Data       *_eo_table_data_shared;
 extern Eo_Id_Table_Data *_eo_table_data_shared_data;
 
-/* TIZEN_ONLY(20180518): See _eo_table_data_get() */
-#ifdef DISABLE_EO_THREAD_CHECK
-extern Eo_Id_Data       *_tizen_eo_table_data;
-#endif
-
 static inline Eo_Id_Table_Data *
 _eo_table_data_table_new(Efl_Id_Domain domain)
 {
@@ -371,17 +366,6 @@ _eo_table_data_table_free(Eo_Id_Table_Data *tdata)
 static inline Eo_Id_Data *
 _eo_table_data_get(void)
 {
-   /* TIZEN_ONLY(20180518): Turn thread-validation off for unstable Tizen 5.0
-      apps which are violating thread-safety. Eo has gotten more strict-check
-      for thread violiation API calls. Since Tizen 5.0, many apps(which
-      violates EAPI thread safety rules) unexpectedly became unstable cause of
-      thread-validation. We disable this function for now but wish to remove
-      this temporary code in the near future when apps are ready to go. */
-#ifdef DISABLE_EO_THREAD_CHECK
-   if (_tizen_eo_table_data) return _tizen_eo_table_data;
-   _tizen_eo_table_data = _eo_table_data_new(EFL_ID_DOMAIN_MAIN);
-   return _tizen_eo_table_data;
-#else
    Eo_Id_Data *data = eina_tls_get(_eo_table_data);
    if (EINA_LIKELY(data != NULL)) return data;
 
@@ -390,7 +374,6 @@ _eo_table_data_get(void)
 
    eina_tls_set(_eo_table_data, data);
    return data;
-#endif
 }
 
 static inline Eo_Id_Table_Data *
