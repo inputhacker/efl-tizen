@@ -4823,7 +4823,7 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
    // that when we begin at start node and we navigate backward, then all children
    // are visited, so navigation will ignore start's children and go to
    // previous sibling available.
-   unsigned char all_children_visited = (search_mode != NEIGHBOR_SEARCH_MODE_RECURSE_FROM_ROOT && !forward);
+   unsigned char all_children_visited = (search_mode != NEIGHBOR_SEARCH_MODE_RECURSE_FROM_ROOT && !forward && start != NULL && start != root);
 
    // true, if starting element should be ignored. this is only used in rare case of
    // recursive search failing to find an object.
