@@ -4244,17 +4244,6 @@ eng_output_redraws_next_update_get(void *engine EINA_UNUSED, void *data, int *x,
 
              if (re->outbuf_swap_mode_get) mode = re->outbuf_swap_mode_get(re->ob);
              re->swap_mode = mode;
-
-             // disable partial rendering when rect's w,h not match tile size
-             rect = (Tilebuf_Rect *)EINA_INLIST_GET(re->rects);
-             if((re->w != rect->w) ||(re->h != rect->h))
-               {
-                  if(rect->w%(re->tb->tile_size.w)||rect->h%(re->tb->tile_size.h))
-                    {
-                       re->swap_mode = MODE_FULL;
-                    }
-               }
-
              if ((re->lost_back) || (re->swap_mode == MODE_FULL) || (re->swap_mode == MODE_AUTO))
                {
                   /* if we lost our backbuffer since the last frame redraw all */
