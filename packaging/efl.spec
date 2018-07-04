@@ -2053,7 +2053,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %{_libdir}/libelementary.so.1
 %{_libdir}/libelementary.so.1.20.*
 %{_datadir}/elementary/edje_externals/*
-%{_datadir}/icons/elementary.png
+%{_datadir}/icons/hicolor/128x128/apps/elementary.png
 %{_libdir}/elementary/modules/
 /usr/lib/debug/%{_libdir}/elementary/modules/
 %exclude %{_datadir}/elementary/config/
