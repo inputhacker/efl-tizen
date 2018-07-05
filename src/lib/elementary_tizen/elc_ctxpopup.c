@@ -3018,7 +3018,7 @@ _elm_ctxpopup_item_efl_access_state_set_get(Eo *obj, Elm_Ctxpopup_Item_Data *it)
    Eina_Rectangle r1, r2;
    Eina_Bool is_showing = EINA_FALSE;
 
-   states = efl_access_state_set_get(efl_super(obj, MY_CLASS));
+   states = efl_access_state_set_get(efl_super(obj, ELM_CTXPOPUP_ITEM_CLASS));
 
    // evaluate showing state
    if (VIEW(it) &&
