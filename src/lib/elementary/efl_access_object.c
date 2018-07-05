@@ -163,8 +163,6 @@ struct _Efl_Access_Object_Data
    const char    *translation_domain;
    Efl_Access_Role role;
    Efl_Access_Reading_Info_Type_Mask reading_info;
-
-   Eo            *forced_parent;
 };
 
 typedef struct _Efl_Access_Object_Data Efl_Access_Object_Data;
@@ -201,6 +199,7 @@ _efl_access_object_index_in_parent_get(const Eo *obj, Efl_Access_Object_Data *pd
    return ret;
 }
 
+
 EOLIAN static Efl_Object *
 _efl_access_object_efl_object_provider_find(const Eo *obj, Efl_Access_Object_Data *pd EINA_UNUSED, const Efl_Object *klass)
 {
@@ -208,35 +207,6 @@ _efl_access_object_efl_object_provider_find(const Eo *obj, Efl_Access_Object_Dat
      return (Eo*)obj;
 
    return efl_provider_find(efl_super(obj, EFL_ACCESS_OBJECT_MIXIN), klass);
-
-EOLIAN static Efl_Access *
-_efl_access_parent_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
-{
-   Eo *parent = obj;
-
-   if (pd->forced_parent)
-     return pd->forced_parent;
-
-   do {
-      parent = efl_parent_get(obj);
-      if (efl_isa(parent, EFL_ACCESS_MIXIN))
-        break;
-   } while (parent);
-
-   return efl_isa(parent, EFL_ACCESS_MIXIN) ? parent : NULL;
-}
-
-EOLIAN static Efl_Access *
-_efl_access_forced_parent_get(Eo *obj EINA_UNUSED, Efl_Access_Data *pd EINA_UNUSED)
-{
-   return pd->forced_parent;
-}
-
-EOLIAN static void
-_efl_access_parent_set(Eo *obj, Efl_Access_Data *pd EINA_UNUSED, Efl_Access *new_parent EINA_UNUSED)
-{
-   if (efl_isa(new_parent, EFL_ACCESS_MIXIN))
-     pd->forced_parent = new_parent;
 }
 
 EOLIAN Eina_List*
