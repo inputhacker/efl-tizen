@@ -2,7 +2,7 @@
 %bcond_with x
 
 Name:           efl
-Version:        1.20.0
+Version:        1.21.0
 Release:        0
 License:        LGPL-2.1+
 Summary:        Enlightenment Foundation Libraries - set of libraries used (not only) by E17
@@ -1326,8 +1326,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.99.100
 
 %preun -n elementary-tizen
 rm -f %{_libdir}/libelementary.so.1
-#ln -sf %{_libdir}/libelementary.so.1.20.* %{_libdir}/libelementary.so.1
-ldconfig -l %{_libdir}/libelementary.so.1.20.*
+#ln -sf %{_libdir}/libelementary.so.1.21.* %{_libdir}/libelementary.so.1
+ldconfig -l %{_libdir}/libelementary.so.1.21.*
 
 %postun -n elementary-tizen -p /sbin/ldconfig
 
@@ -1571,8 +1571,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_con.so.*
 %{_tmpfilesdir}/efl.conf
-%exclude %{_libdir}/ecore_con/utils/v-1.20/efl_net_proxy_helper
-%exclude /usr/lib/debug/%{_libdir}/ecore_con/utils/v-1.20/efl_net_proxy_helper*
+%exclude %{_libdir}/ecore_con/utils/v-1.21/efl_net_proxy_helper
+%exclude /usr/lib/debug/%{_libdir}/ecore_con/utils/v-1.21/efl_net_proxy_helper*
 
 %files -n ecore-con-devel
 %manifest %{name}.manifest
@@ -2046,9 +2046,9 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %license COPYING
 %{_bindir}/elementary_quicklaunch
 %{_bindir}/elementary_run
-%{_libdir}/edje/modules/elm/v-1.20/module.so
+%{_libdir}/edje/modules/elm/v-1.21/module.so
 %{_libdir}/libelementary.so.1
-%{_libdir}/libelementary.so.1.20.*
+%{_libdir}/libelementary.so.1.21.*
 %{_datadir}/elementary/edje_externals/*
 %{_datadir}/icons/hicolor/128x128/apps/elementary.png
 %{_libdir}/elementary/modules/
