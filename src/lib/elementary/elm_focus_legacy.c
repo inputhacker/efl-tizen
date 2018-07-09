@@ -100,8 +100,8 @@ _custom_chain_set(Efl_Ui_Widget *node, Eina_List *lst)
 
 EAPI void
 elm_object_focus_next_object_set(Evas_Object        *obj,
-                                 Evas_Object        *next EINA_UNUSED,
-                                 Elm_Focus_Direction dir EINA_UNUSED)
+                                 Evas_Object        *next,
+                                 Elm_Focus_Direction dir)
 {
    API_ENTRY()
    //TIZEN_ONLY(20180607): Restore legacy focus
@@ -123,7 +123,7 @@ elm_object_focus_next_object_set(Evas_Object        *obj,
 
 EAPI void
 elm_object_focus_custom_chain_set(Evas_Object *obj,
-                                  Eina_List   *objs EINA_UNUSED)
+                                  Eina_List   *objs)
 {
    API_ENTRY()
    //_custom_chain_set(obj, objs);
@@ -170,8 +170,8 @@ elm_object_focus_custom_chain_append(Evas_Object *obj,
 
 EAPI void
 elm_object_focus_custom_chain_prepend(Evas_Object *obj,
-                                      Evas_Object *child EINA_UNUSED,
-                                      Evas_Object *relative_child EINA_UNUSED)
+                                      Evas_Object *child,
+                                      Evas_Object *relative_child)
 {
    API_ENTRY()
    //TIZEN_ONLY(20180607): Restore legacy focus
