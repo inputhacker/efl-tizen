@@ -405,7 +405,7 @@ _device_handle_key(struct libinput_device *device, struct libinput_event_keyboar
    if (!e)
      {
         TRACE_INPUT_END();
-        if (compose) free(compose);
+        if (tmp) free(tmp);
         return;
      }
 
