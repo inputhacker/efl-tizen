@@ -3106,8 +3106,14 @@ _elm_toolbar_efl_gfx_entity_size_set(Eo *obj, Elm_Toolbar_Data *sd, Eina_Size2D 
    if (_evas_object_intercept_call(obj, EVAS_OBJECT_INTERCEPT_CB_RESIZE, 0, sz.w, sz.h))
      return;
 
-   efl_gfx_entity_size_set(efl_super(obj, MY_CLASS), sz);
-   efl_gfx_entity_size_set(sd->hit_rect, sz);
+   // TIZEN_ONLY(20180709): fix flickering issue when item resized.
+   /* resize the box first to avoid flickering of
+      saved state of the toolbar when ratation changed but not in case of scroll */
+   if (sd->shrink_mode != ELM_TOOLBAR_SHRINK_SCROLL)
+     evas_object_resize(sd->bx, sz.w, sz.h);
+   //
+   efl_gfx_size_set(efl_super(obj, MY_CLASS), sz);
+   efl_gfx_size_set(sd->hit_rect, sz);
 }
 
 EOLIAN static void
