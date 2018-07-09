@@ -1039,6 +1039,19 @@ EAPI void evas_textblock_cursor_char_delete(Evas_Textblock_Cursor *cur);
  */
 EAPI Evas_Textblock_Cursor *evas_object_textblock_cursor_get(const Evas_Object *obj);
 #include "canvas/efl_canvas_text.eo.legacy.h"
+
+/* TIZEN_ONLY(20180709): fix build failure caused by missing legacy types */
+typedef Eo Evas_Textblock;
+
+/**
+ * @typedef Evas_Textblock_Node_Format
+ * A format node.
+ *
+ * XXX: Adapter for legacy.
+ */
+typedef struct _Evas_Textblock_Node_Format Evas_Textblock_Node_Format;
+/* END */
+
 /**
  * @}
  */
