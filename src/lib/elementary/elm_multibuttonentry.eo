@@ -180,6 +180,13 @@ class Elm.Multibuttonentry (Efl.Ui.Layout.Object, Efl.Ui.Clickable, Efl.Ui.Legac
       Efl.Object.constructor;
       Efl.Ui.Widget.theme_apply;
       Efl.Ui.Widget.on_access_update;
+      //TIZEN_ONLY(20180709): To maintain legacy focus policy.
+      Efl.Ui.Focus.Object.on_focus_update;
+      Efl.Ui.Widget.focus_next_manager_is;
+      Efl.Ui.Widget.focus_direction_manager_is;
+      Efl.Ui.Widget.focus_next;
+      Efl.Ui.Widget.focus_direction;
+      //
       Efl.Ui.Translatable.translation_update;
       Efl.Ui.Widget.widget_event;
       Efl.Access.Object.access_children { get; }

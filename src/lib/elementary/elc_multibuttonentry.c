@@ -852,8 +852,12 @@ _item_new(Elm_Multibuttonentry_Data *sd,
    //entry is cleared when text is made to button
    elm_object_text_set(sd->entry, "");
 
+   //TIZEN_ONLY(20160524): Layout click signal change.
+   //elm_layout_signal_callback_add
+   //  (obj, "mouse,clicked,1", "*", _mouse_clicked_signal_cb, NULL);
    elm_layout_signal_callback_add
-     (VIEW(item), "mouse,clicked,1", "*", _on_item_clicked, EO_OBJ(item));
+     (VIEW(item), "elm,action,click", "*", _on_item_clicked, EO_OBJ(item));
+   //
    elm_layout_signal_callback_add
      (VIEW(item), "elm,deleted", "elm", _on_item_deleted, EO_OBJ(item));
    evas_object_smart_callback_add
@@ -1715,7 +1719,9 @@ _elm_multibuttonentry_efl_canvas_group_group_add(Eo *obj, Elm_Multibuttonentry_D
                                        elm_widget_theme_style_get(obj)))
      CRI("Failed to set layout!");
 
-   elm_widget_can_focus_set(obj, EINA_FALSE);
+   //TIZEN_ONLY(20180709): To maintain legacy focus policy.
+   //elm_widget_can_focus_set(obj, EINA_FALSE);
+   elm_widget_can_focus_set(obj, EINA_TRUE);
 
    priv->last_it_select = EINA_TRUE;
    priv->editable = EINA_TRUE;
@@ -1810,6 +1816,131 @@ elm_multibuttonentry_add(Evas_Object *parent)
    EINA_SAFETY_ON_NULL_RETURN_VAL(parent, NULL);
    return elm_legacy_add(MY_CLASS, parent);
 }
+
+//TIZEN_ONLY(20180709): To maintain legacy focus policy.
+EOLIAN static Eina_Bool
+_elm_multibuttonentry_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Multibuttonentry_Data *sd)
+{
+   if (elm_widget_focus_get(obj))
+     {
+        // ACCESS
+        if (_elm_config->access_mode == ELM_ACCESS_MODE_ON) goto end;
+
+        if (sd->editable)
+          {
+             if ((sd->selected_it))
+               {
+                  elm_layout_signal_emit(VIEW(sd->selected_it), "elm,state,focused", "elm");
+                  elm_object_focus_set(VIEW(sd->selected_it), EINA_TRUE);
+                  elm_entry_input_panel_show(sd->entry);
+               }
+             else if (((!sd->selected_it) || (!eina_list_count(sd->items))))
+               {
+                  elm_entry_cursor_end_set(sd->entry);
+                  _view_update(sd);
+                  elm_entry_input_panel_show(sd->entry);
+               }
+          }
+
+        evas_object_smart_callback_call(obj, "focused", NULL);
+     }
+   else
+     {
+        if (sd->editable)
+          {
+             _view_update(sd);
+             elm_entry_input_panel_hide(sd->entry);
+          }
+
+        if (sd->selected_it)
+          elm_layout_signal_emit(VIEW(sd->selected_it), "elm,state,unfocused", "elm");
+
+        evas_object_smart_callback_call(obj, "unfocused", NULL);
+     }
+
+end:
+   return EINA_TRUE;
+}
+
+EOLIAN static Eina_Bool
+_elm_multibuttonentry_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_Multibuttonentry_Data *sd
+                                                            EINA_UNUSED)
+{
+   return _elm_multibuttonentry_smart_focus_direction_enable;
+}
+
+EOLIAN static Eina_Bool
+_elm_multibuttonentry_efl_ui_widget_focus_direction(Eo *obj EINA_UNUSED, Elm_Multibuttonentry_Data *sd, const Evas_Object *base, double degree, Evas_Object **direction, Elm_Object_Item **direction_item, double *weight)
+{
+   Eina_Bool ret;
+   Eina_List *items = NULL;
+
+   items = eina_list_append(items, sd->box);
+
+   ret = elm_widget_focus_list_direction_get
+      (obj, base, items, eina_list_data_get, degree, direction, direction_item, weight);
+   eina_list_free(items);
+
+   return ret;
+}
+
+EOLIAN static Eina_Bool
+_elm_multibuttonentry_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Multibuttonentry_Data *sd EINA_UNUSED)
+{
+   return _elm_multibuttonentry_smart_focus_next_enable;
+}
+
+EOLIAN static Eina_Bool
+_elm_multibuttonentry_efl_ui_widget_focus_next(Eo *obj, Elm_Multibuttonentry_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+{
+   Eina_Bool int_ret = EINA_FALSE;
+
+   Eina_List *items = NULL;
+   Eina_List *l = NULL;
+   Elm_Object_Item *eo_item;
+   Evas_Object *ao;
+   Evas_Object *po;
+
+   if (!elm_widget_focus_get(obj))
+     {
+        *next = (Evas_Object *)obj;
+        return EINA_TRUE;
+     }
+
+   if (sd->label)
+     {
+        po = (Evas_Object *)edje_object_part_object_get(sd->label, "elm.text");
+        ao = evas_object_data_get(po, "_part_access_obj");
+        int_ret = elm_widget_focus_get(ao);
+        items = eina_list_append(items, ao);
+     }
+
+   EINA_LIST_FOREACH (sd->items, l, eo_item)
+     {
+        ELM_MULTIBUTTONENTRY_ITEM_DATA_GET(eo_item, item);
+        po = (Evas_Object *)edje_object_part_object_get
+           (elm_layout_edje_get(VIEW(item)), "elm.btn.text");
+        ao = evas_object_data_get(po, "_part_access_obj");
+        int_ret = int_ret || elm_widget_focus_get(ao);
+        items = eina_list_append(items, ao);
+     }
+
+   if (sd->entry)
+     {
+        int_ret = int_ret || elm_widget_focus_get(sd->entry);
+        /* elm_widget_list_focus_liset_next_get() check parent of item
+           because parent sd->entry is not multibuttnentry but sd->box
+           so append sd->box instead of sd->entry, is this proper? */
+        items = eina_list_append(items, sd->box);
+     }
+
+   if (int_ret)
+     return elm_widget_focus_list_next_get
+        (obj, items, eina_list_data_get, dir, next, next_item);
+
+   return EINA_FALSE;
+}
+//
 
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
 //register/unregister access objects accordingly.
@@ -2068,6 +2199,13 @@ _elm_multibuttonentry_item_elm_widget_item_disable(Eo *eo_it, Elm_Multibuttonent
      emission = "elm,state,enabled";
 
    elm_layout_signal_emit(VIEW(it), emission, "elm");
+
+   //TIZEN_ONLY(20180709): Disabled item should not be selected.
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(WIDGET(it), sd, NULL);
+
+   if (sd->selected_it == it)
+     sd->selected_it = NULL;
+   //
 }
 
 EINA_DEPRECATED EAPI void *
