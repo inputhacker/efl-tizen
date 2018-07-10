@@ -3401,6 +3401,11 @@ _elm_list_elm_interface_scrollable_content_pos_set(Eo *obj EINA_UNUSED, Elm_List
    // Evas_Object * highlighted_obj = _elm_win_accessibility_highlight_get(win);
    Evas_Object * highlighted_obj = _elm_object_accessibility_currently_highlighted_get();
    //
+   if (efl_isa(highlighted_obj, ELM_WIDGET_ITEM_CLASS))
+     {
+        Elm_Widget_Item_Data *id = efl_data_scope_get(highlighted_obj, ELM_WIDGET_ITEM_CLASS);
+        highlighted_obj = id->view;
+     }
    Evas_Object * parent = highlighted_obj;
    if (efl_isa(highlighted_obj, EFL_UI_WIDGET_CLASS))
      {
