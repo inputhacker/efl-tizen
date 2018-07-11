@@ -3417,8 +3417,7 @@ evgl_api_get(void *eng_data, Evas_GL_Context_Version version, Eina_Bool alloc_on
      {
         if (evas_gl_common_version_check(&minor_version) < 3)
           {
-             ERR("OpenGL ES 3.x is not supported.");
-             return NULL;
+            WRN("OpenGL ES 3.x is not supported.");
           }
         if (!gles3_funcs) gles3_funcs = calloc(1, EVAS_GL_API_STRUCT_SIZE);
         api = gles3_funcs;
