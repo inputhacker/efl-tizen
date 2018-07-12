@@ -2185,6 +2185,15 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
    gc->pipe[pn].shader.cy = 0;
    gc->pipe[pn].shader.cw = 0;
    gc->pipe[pn].shader.ch = 0;
+   // TIZEN ONLY (20180823): Use PIO for Paletted png
+   if(tex->has_palette)
+     {
+        gc->pipe[pn].shader.palette.xDerivative = 1.0/(pt->w);
+        gc->pipe[pn].shader.palette.yDerivative = 1.0/(pt->h);
+        gc->pipe[pn].shader.palette.cur_texp = tex->tex_palette;
+     }
+   // TIZEN ONLY - END
+
    gc->pipe[pn].array.line = 0;
    gc->pipe[pn].array.use_vertex = 1;
    gc->pipe[pn].array.use_color = !nomul;
@@ -2194,6 +2203,7 @@ evas_gl_common_context_image_push(Evas_Engine_GL_Context *gc,
    gc->pipe[pn].array.use_texsam = (sam != SHD_SAM11);
    gc->pipe[pn].array.use_mask = !!mtex;
    gc->pipe[pn].array.use_masksam = (masksam != SHD_SAM11);
+   gc->pipe[pn].array.use_palette = tex->has_palette;
 
    pipe_region_expand(gc, pn, x, y, w, h);
    PIPE_GROW(gc, pn, 6);
@@ -3424,6 +3434,16 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
                       GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                       GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                     }
+
+                  // TIZEN ONLY (20180823): Use PIO for Paletted png
+                  // Paletted png need to use NEAREST
+                  if(gc->pipe[i].array.use_palette)
+                    {
+                       GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                       GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    }
+                  // TIZEN ONLY - END
+
                   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                }
@@ -3873,6 +3893,7 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
                        GL_TH(glVertexAttribPointer, SHAD_MASKSAM, SAM_CNT, GL_FLOAT, GL_FALSE, 0, masksam_ptr);
                     }
                   else GL_TH(glDisableVertexAttribArray, SHAD_MASKSAM);
+                  ACTIVE_TEXTURE += 1;
                }
              else
                {
@@ -3880,6 +3901,23 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
                   GL_TH(glDisableVertexAttribArray, SHAD_MASKSAM);
                }
 
+             // TIZEN ONLY (20180823): Use PIO for Paletted png
+             if(gc->pipe[i].array.use_palette)
+               {
+                  GL_TH(glUniform1f, prog->uniform.xDerivativeloc ,gc->pipe[i].shader.palette.xDerivative);
+                  GL_TH(glUniform1f, prog->uniform.yDerivativeloc ,gc->pipe[i].shader.palette.yDerivative);
+                  GL_TH(glActiveTexture, ACTIVE_TEXTURE);
+                  GL_TH(glBindTexture, GL_TEXTURE_2D, gc->pipe[i].shader.palette.cur_texp);
+
+                  INF("PALETTE texture tex:%d, ACTIVE_TEXTURE:%d",gc->pipe[i].shader.palette.cur_texp, ACTIVE_TEXTURE);
+                  INF("Push palette context[%d]= %d  xD:%f,yD:%f",
+                   i, gc->pipe[i].shader.palette.cur_texp,
+                   gc->pipe[i].shader.palette.xDerivative, gc->pipe[i].shader.palette.yDerivative);
+
+                  ACTIVE_TEXTURE += 1;
+                  GL_TH(glActiveTexture, GL_TEXTURE0);
+               }
+             // TIZEN ONLY - END
              if (dbgflushnum == 1)
                {
                   const char *types[] =
@@ -3955,6 +3993,7 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
         gc->pipe[i].array.use_mask = 0;
         gc->pipe[i].array.use_masksam = 0;
         gc->pipe[i].array.anti_alias = 0;
+        gc->pipe[i].array.use_palette = 0;
 
         gc->pipe[i].array.vertex = NULL;
         gc->pipe[i].array.color = NULL;

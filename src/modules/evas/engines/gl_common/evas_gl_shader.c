@@ -39,8 +39,12 @@ typedef enum {
    SHADER_FLAG_NOMUL             = (1 << 17),
    SHADER_FLAG_ALPHA             = (1 << 18),
    SHADER_FLAG_RGB_A_PAIR        = (1 << 19),
+   // TIZEN ONLY (20180823): Use PIO for Paletted png
+   SHADER_FLAG_PALETTE   = (1 << 20),
+   SHADER_FLAG_PALETTE_RESIZE = (1 << 21),
+   // TIZEN ONLY - END
 } Shader_Flag;
-#define SHADER_FLAG_COUNT 20
+#define SHADER_FLAG_COUNT 22
 
 static const char *_shader_flags[SHADER_FLAG_COUNT] = {
    "TEX",
@@ -62,7 +66,9 @@ static const char *_shader_flags[SHADER_FLAG_COUNT] = {
    "AFILL",
    "NOMUL",
    "ALPHA",
-   "RGB_A_PAIR"
+   "RGB_A_PAIR",
+   "PALETTE",
+   "PALETTE_RESIZE",
 };
 
 static Eina_Bool compiler_released = EINA_FALSE;
@@ -170,6 +176,14 @@ _evas_gl_common_shader_program_binary_load(Eet_File *ef, unsigned int flags)
    GL_TH(glUseProgram, prg);
    p->uniform.mvp = GL_TH(glGetUniformLocation, prg, "mvp");
    p->uniform.rotation_id = GL_TH(glGetUniformLocation, prg, "rotation_id");
+   // TIZEN ONLY (20180823): Use PIO for Paletted png
+   if(flags & SHADER_FLAG_PALETTE)
+     {
+	      p->uniform.xDerivativeloc = GL_TH(glGetUniformLocation, prg, "xDerivative");
+        p->uniform.yDerivativeloc = GL_TH(glGetUniformLocation, prg, "yDerivative");
+     }
+   // TIZEN ONLY - END
+
    evas_gl_common_shader_textures_bind(p);
 
 finish:
@@ -652,6 +666,13 @@ evas_gl_common_shader_generate_and_compile(Evas_GL_Shared *shared, unsigned int 
         shared->needs_shaders_flush = 1;
         p->uniform.mvp = GL_TH(glGetUniformLocation, p->prog, "mvp");
         p->uniform.rotation_id = GL_TH(glGetUniformLocation, p->prog, "rotation_id");
+        // TIZEN ONLY (20180823): Use PIO for Paletted png
+        if(flags & SHADER_FLAG_PALETTE)
+          {
+             p->uniform.xDerivativeloc = GL_TH(glGetUniformLocation, p->prog, "xDerivative");
+             p->uniform.yDerivativeloc = GL_TH(glGetUniformLocation, p->prog, "yDerivative");
+          }
+        // TIZEN ONLY - END
         evas_gl_common_shader_textures_bind(p);
         eina_hash_add(shared->shaders_hash, &flags, p);
      }
@@ -836,6 +857,18 @@ evas_gl_common_shader_flags_get(Evas_GL_Shared *shared, Shader_Type type,
           flags |= (1 << (SHADER_FLAG_MASKSAM_BITSHIFT + masksam - 1));
      }
 
+   // TIZEN ONLY (20180823): Use PIO for Paletted png
+   if(type == SHD_IMAGE && tex->has_palette)
+     {
+        flags |= SHADER_FLAG_PALETTE;
+        if (smooth)
+          {
+             flags |= SHADER_FLAG_PALETTE_RESIZE;
+          }
+     }
+	 // TIZEN ONLY - END
+
+
    switch (type)
      {
       case SHD_RECT:
@@ -941,6 +974,7 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
       { "texu", 0 },
       { "texv", 0 },
       { "texuv", 0 },
+      { "paletteSampler", 0}, // TIZEN ONLY (20180823): Use PIO for Paletted png
       { NULL, 0 }
    };
    Eina_Bool hastex = 0;
@@ -975,6 +1009,14 @@ evas_gl_common_shader_textures_bind(Evas_GL_Program *p)
         textures[5].enabled = 1;
         hastex = 1;
      }
+
+   // TIZEN ONLY (20180823): Use PIO for Paletted png
+   if ((p->flags & SHADER_FLAG_PALETTE))
+     {
+        textures[6].enabled = 1;
+        hastex = 1;
+     }
+   // TIZEN ONLY - END
 
    if (hastex)
      {
