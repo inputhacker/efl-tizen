@@ -399,7 +399,7 @@ _evas_outbuf_egl_setup(Outbuf *ob)
         return EINA_FALSE;
      }
 
-   ob->gl_context = glsym_evas_gl_common_context_new();
+   ob->gl_context = glsym_evas_gl_common_context_new(0, 0);
    if (!ob->gl_context) return EINA_FALSE;
 
    // TIZEN_ONLY(20160529): set this flag for gl_drm engine surface

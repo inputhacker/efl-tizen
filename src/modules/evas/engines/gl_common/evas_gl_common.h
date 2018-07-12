@@ -361,6 +361,12 @@ struct _Evas_Engine_GL_Context
    //TIZEN_ONLY(20161121)
    // If set, the driver will rotate the buffer itself
    Eina_Bool pre_rotated : 1;
+
+   //TIZEN_ONLY(20180712)
+   // modified to share resource by each gl backend
+   Eina_TLS context_key;
+   Eina_TLS shared_key;
+
 };
 
 struct _Evas_GL_Texture_Pool
@@ -521,7 +527,7 @@ EAPI int          evas_gl_preload_init(void);
 EAPI int          evas_gl_preload_shutdown(void);
 EAPI Eina_Bool    evas_gl_preload_enabled(void);
 
-EAPI Evas_Engine_GL_Context  *evas_gl_common_context_new(void);
+EAPI Evas_Engine_GL_Context  *evas_gl_common_context_new(Eina_TLS context_key, Eina_TLS shared_key);
 
 EAPI void         evas_gl_common_context_flush(Evas_Engine_GL_Context *gc);
 EAPI void         evas_gl_common_context_free(Evas_Engine_GL_Context *gc);
@@ -551,7 +557,7 @@ typedef void (*Evas_GL_Common_Image_Call)(Evas_GL_Image *im);
 typedef void (*Evas_GL_Common_Context_Call)(Evas_Engine_GL_Context *gc);
 typedef Evas_GL_Image *(*Evas_GL_Common_Image_New_From_Data)(Evas_Engine_GL_Context *gc, unsigned int w, unsigned int h, DATA32 *data, int alpha, Evas_Colorspace cspace);
 typedef void (*Evas_GL_Preload_Render_Call)(evas_gl_make_current_cb make_current, void *engine_data);
-typedef Evas_Engine_GL_Context *(*Evas_GL_Common_Context_New)(void);
+typedef Evas_Engine_GL_Context *(*Evas_GL_Common_Context_New)(Eina_TLS context_key, Eina_TLS shared_key);
 //Tizen Only : when multi window are shown, latest window does not show. so force call glviewport when window resizing occur
 //typedef void (*Evas_GL_Common_Context_Resize_Call)(Evas_Engine_GL_Context *gc, int w, int h, int rot);
 typedef void (*Evas_GL_Common_Context_Resize_Call)(Evas_Engine_GL_Context *gc, int w, int h, int rot,int force_update);

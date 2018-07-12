@@ -12,6 +12,8 @@ glsym_func_void glsym_evas_gl_common_context_restore_set = NULL;
 /* local variables */
 static Eina_TLS _outbuf_key = 0;
 static Eina_TLS _context_key = 0;
+static Eina_TLS _gl_context_key = 0;
+static Eina_TLS _gl_shared_key = 0;
 
 typedef EGLContext GLContext;
 static int win_count = 0;
@@ -35,9 +37,15 @@ eng_init(void)
      goto error;
    if (!eina_tls_new(&_context_key))
      goto error;
+   if (!eina_tls_new(&_gl_context_key))
+     goto error;
+   if (!eina_tls_new(&_gl_shared_key))
+     goto error;
 
    eina_tls_set(_outbuf_key, NULL);
    eina_tls_set(_context_key, NULL);
+   eina_tls_set(_gl_context_key, NULL);
+   eina_tls_set(_gl_shared_key, NULL);
 
    initted = EINA_TRUE;
    return EINA_TRUE;
@@ -290,7 +298,7 @@ eng_window_new(Evas *evas, Evas_Engine_Info_Wayland_Egl *einfo, int w, int h, Re
    gw->detected.msaa = val;
    DBG("Detected msaa %d", val);
 
-   if (!(gw->gl_context = glsym_evas_gl_common_context_new()))
+   if (!(gw->gl_context = glsym_evas_gl_common_context_new(0, 0)))
      {
         eng_window_free(gw);
         return NULL;
