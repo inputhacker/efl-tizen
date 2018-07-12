@@ -59,6 +59,30 @@ varying vec2 masktex_s[4];
 # endif
 #endif
 
+#ifdef SHD_PALETTE
+uniform float xDerivative;
+uniform float yDerivative;
+uniform sampler2D paletteSampler;
+vec4 texture2DPaletteResize(sampler2D sampler, highp vec2 texC)
+{
+   float a = texture2D(sampler, texC).a;
+   float a1 = texture2D(sampler, texC + vec2(xDerivative, 0.)).a;
+   float a2 = texture2D(sampler, texC + vec2(0., yDerivative)).a;
+   float a3 = texture2D(sampler, texC + vec2(xDerivative, yDerivative)).a;
+   vec4 color = texture2D(paletteSampler, vec2(a, .5));
+   vec4 color1 = texture2D(paletteSampler, vec2(a1, .5));
+   vec4 color2 = texture2D(paletteSampler, vec2(a2, .5));
+   vec4 color3 = texture2D(paletteSampler, vec2(a3, .5));
+   vec2 f = fract(texC.xy / vec2(xDerivative, yDerivative));
+   return mix(mix(color, color1, f.x), mix(color2, color3, f.x), f.y);
+}
+vec4 texture2DPalette(sampler2D sampler, highp vec2 texC)
+{
+   float a = texture2D(sampler, texC).a;
+   return texture2D(paletteSampler, vec2(a, .5));
+}
+#endif
+
 #ifdef SHD_ALPHA
 # define SWZ aaaa
 #else
@@ -154,6 +178,12 @@ vec4 fetch_pixel(float ox, float oy)
    b = y + u;
    c = vec4(r, g, b, 1.0);
 
+#elif defined(SHD_PALETTE)
+#  if defined(SHD_PALETTE_RESIZE)
+    c = texture2DPaletteResize(tex, tex_c).SWZ;
+#  else
+    c = texture2DPalette(tex, tex_c).SWZ;
+#  endif
 #elif defined(SHD_EXTERNAL)
    c = texture2D(tex, tex_c);
 

@@ -133,6 +133,7 @@ struct _Evas_GL_Program
    unsigned int flags, hitcount, tex_count;
    struct {
       GLuint mvp, rotation_id;
+      GLint xDerivativeloc, yDerivativeloc; // For Palette texture
    } uniform;
    Evas_GL_Filter *filter;
    GLuint    prog;
@@ -344,6 +345,13 @@ struct _Evas_Engine_GL_Context
             Eina_Bool     map_nearest : 1;
             Eina_Bool     map_delete  : 1;
          } filter;
+
+         // TIZEN ONLY (20180823): Use PIO for Paletted png
+         struct {
+            GLuint cur_texp;
+            float xDerivative, yDerivative;
+         }palette;
+         // TIZEN ONLY - END
       } shader;
       struct {
          int            num, alloc;
@@ -373,6 +381,7 @@ struct _Evas_Engine_GL_Context
          Eina_Bool      use_mask    : 1;
          Eina_Bool      use_masksam : 1;
          Eina_Bool      anti_alias  : 1;
+         Eina_Bool      use_palette : 1; // TIZEN ONLY (20180823): Use PIO for Paletted png
       } array;
    } pipe[MAX_PIPES];
 
@@ -463,6 +472,11 @@ struct _Evas_GL_Texture
    Eina_Bool        dyn : 1;
    Eina_Bool        uploaded : 1;
    Eina_Bool        was_preloaded : 1;
+
+   // TIZEN ONLY (20180823): Use PIO for Paletted png
+   GLint tex_palette;
+   Eina_Bool has_palette;
+   // TIZEN ONLY - END
 };
 
 struct _Evas_GL_Image
