@@ -1104,7 +1104,6 @@ end:
 static void
 _native_cb_bind(void *image)
 {
-   Render_Engine *re;
    Outbuf *ob;
    Evas_GL_Image *img;
    Native *n;
@@ -1194,15 +1193,19 @@ _native_cb_bind(void *image)
     }
 }
 
+/* TIZEN_ONLY(20180712): EVAS_GL_EGL_SYNC_ON is only for TV hbbtv.
+   TODO: This feature have to be consider multi threads.
+*/
 static void
-eng_gl_get_pixels(void *data, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data,
+eng_gl_get_pixels(void *data EINA_UNUSED, Evas_Object_Image_Pixels_Get_Cb cb, void *get_pixels_data,
  Evas_Object *o, void *image)
 {
-   Evas_GL_Image *img;
+   Evas_GL_Image *im = image;
    Outbuf *ob;
-   if (!(img = image)) return;
-   if (!(ob = img->native.func.outbuf)) return;
-     cb(get_pixels_data, o);
+
+   cb(get_pixels_data, o);
+
+   if (!(ob = im->native.func.outbuf)) return;
 
    if (getenv("EVAS_GL_EGL_SYNC_ON") && glsym_eglWaitSyncKHR)
      {
