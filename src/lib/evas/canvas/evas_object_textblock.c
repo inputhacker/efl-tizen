@@ -4669,7 +4669,7 @@ _format_finalize(Evas_Object *eo_obj, Evas_Object_Textblock_Format *fmt)
                                    fmt->font.source,
                                    (int)(((double) fmt->font.size) * obj->cur->scale),
                                    fmt->font.bitmap_scalable);
-   if (of) evas_font_free(of);
+   evas_font_free(of);
 }
 
 static Efl_Canvas_Text_Filter_Program *
