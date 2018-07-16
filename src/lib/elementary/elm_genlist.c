@@ -9223,7 +9223,7 @@ _elm_genlist_item_efl_ui_focus_object_prepare_logical(Eo *obj, Elm_Gen_Item *pd)
 
    //Fallback Legacy Focus
    if (elm_widget_is_legacy(obj)) return;
-   
+
    _item_realize(pd, pd->item->order_num_in, EINA_FALSE);
 
    EINA_LIST_FOREACH(pd->contents, n, wid)
@@ -9335,6 +9335,7 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
 
         Elm_Gen_Item * next_previous_item = NULL;
         int viewport_position_result = _is_item_in_viewport(obj_y, h, hy, hh);
+        Eina_Bool traverse_direction = viewport_position_result > 0;
         //only highlight if move direction is correct
         //sometimes highlighted item is brought in and it does not fit viewport
         //however content goes to the viewport position so soon it will
@@ -9346,7 +9347,6 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
               Eina_List *realized_items = elm_genlist_realized_items_get(obj);
               Eo *item;
               Eina_List *l;
-              Eina_Bool traverse_direction = viewport_position_result > 0;
               l = traverse_direction ? realized_items: eina_list_last(realized_items);
 
               while(l)
@@ -9367,6 +9367,16 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
           {
              elm_object_accessibility_highlight_set(EO_OBJ(next_previous_item), EINA_TRUE);
              efl_access_state_changed_signal_emit(EO_OBJ(next_previous_item), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+
+            efl_access_component_highlight_clear(highlighted_obj);
+            if (traverse_direction)
+              {
+                efl_access_move_outed_signal_emit(EO_OBJ(next_previous_item), EFL_ACCESS_MOVE_OUTED_TOP_LEFT);
+              }
+            else
+              {
+                efl_access_move_outed_signal_emit(EO_OBJ(next_previous_item), EFL_ACCESS_MOVE_OUTED_BOTTOM_RIGHT);
+              }
           }
       }
 }
