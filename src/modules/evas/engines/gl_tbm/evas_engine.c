@@ -110,6 +110,7 @@ void (*secsym_tbm_surface_queue_destroy) (void *surface_queue) = NULL;
 static Eina_Bool initted = EINA_FALSE;
 static int gl_wins = 0;
 static Evas_Func func, pfunc;
+static Eina_Bool useHash = EINA_FALSE;
 
 /* external variables */
 int _evas_engine_gl_tbm_log_dom = -1;
@@ -288,6 +289,13 @@ gl_extn_veto(Render_Engine *re)
        char *s;
         if (getenv("EVAS_GL_INFO"))
           printf("EGL EXTN:\n%s\n", str);
+
+        /* check use hash on native surface set */
+        s = getenv("EVAS_USE_HASH_NATIVE_SURFACE");
+        if ((s) && (atoi(s)))
+          {
+            useHash = EINA_TRUE;
+          }
         // Disable Partial Rendering
         if ((s = getenv("EVAS_GL_PARTIAL_DISABLE")) && atoi(s))
           {
@@ -1647,6 +1655,7 @@ eng_image_native_set(void *engine, void *image, void *native)
                                                     EGL_WAYLAND_Y_INVERTED_WL,
                                                     &yinvert) == EGL_FALSE)
                     yinvert = 1;
+                  if (useHash)
                   eina_hash_add(ob->gl_context->shared->native_wl_hash,
                                 &wlid, img);
 
@@ -1704,6 +1713,7 @@ eng_image_native_set(void *engine, void *image, void *native)
              if ((n = calloc(1, sizeof(Native))))
                {
                   memcpy(&(n->ns), ns, sizeof(Evas_Native_Surface));
+                  if (useHash)
                   eina_hash_add(ob->gl_context->shared->native_tex_hash, &texid, img);
 
                   n->ns_data.opengl.surface = 0;
@@ -1732,7 +1742,7 @@ eng_image_native_set(void *engine, void *image, void *native)
            if (n)
              {
                memcpy(&(n->ns), ns, sizeof(Evas_Native_Surface));
-
+               if (useHash)
                eina_hash_add(ob->gl_context->shared->native_evasgl_hash, &buffer, img);
 
                n->ns_data.evasgl.surface = ns->data.evasgl.surface;
@@ -1759,6 +1769,7 @@ eng_image_native_set(void *engine, void *image, void *native)
            n = calloc(1, sizeof(Native));
            if (n)
              {
+               if (useHash)
                eina_hash_add(ob->gl_context->shared->native_tbm_hash, &buffer, img);
 
                memcpy(&(n->ns), ns, sizeof(Evas_Native_Surface));
