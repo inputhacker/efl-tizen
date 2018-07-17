@@ -579,7 +579,7 @@ try_gles2:
 #endif
 
    eng_gl_symbols(gw);
-   gw->gl_context = glsym_evas_gl_common_context_new();
+   gw->gl_context = glsym_evas_gl_common_context_new(0, 0);
    if (!gw->gl_context)
      {
         ERR("Unable to get a new context.");

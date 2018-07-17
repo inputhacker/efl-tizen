@@ -846,19 +846,317 @@ _evas_gl_common_viewport_set(Evas_Engine_GL_Context *gc, int pipe, int force_upd
      }
 }
 
+static Evas_GL_Shared* _evas_gl_common_shared(Evas_Engine_GL_Context *gc)
+{
+  const char *s;
+  int i, gles_version;
+  Evas_GL_Shared *shared;
+  const char *ext;
+
+  shared = calloc(1, sizeof(Evas_GL_Shared));
+  if (!shared) return NULL;
+  ext = (const char *) GL_TH(glGetString, GL_EXTENSIONS);
+  if (ext)
+    {
+       if (getenv("EVAS_GL_INFO"))
+          fprintf(stderr, "EXT:\n%s\n", ext);
+       if ((strstr(ext, "GL_ARB_texture_non_power_of_two")) ||
+           (strstr(ext, "OES_texture_npot")) ||
+           (strstr(ext, "GL_IMG_texture_npot")))
+         shared->info.tex_npo2 = 1;
+       if ((strstr(ext, "GL_NV_texture_rectangle")) ||
+           (strstr(ext, "GL_EXT_texture_rectangle")) ||
+           (strstr(ext, "GL_ARB_texture_rectangle")))
+         shared->info.tex_rect = 1;
+       if ((strstr(ext, "GL_ARB_get_program_binary")) ||
+           (strstr(ext, "GL_OES_get_program_binary")))
+         shared->info.bin_program = 1;
+       else
+         glsym_glGetProgramBinary = NULL;
+#ifdef GL_UNPACK_ROW_LENGTH
+       shared->info.unpack_row_length = 1;
+# ifdef GL_GLES
+       if (!strstr(ext, "_unpack_subimage"))
+         shared->info.unpack_row_length = 0;
+# endif
+#endif
+
+#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
+       if (getenv("EVAS_GL_ANISOTROPY"))
+         {
+           if ((strstr(ext, "GL_EXT_texture_filter_anisotropic")))
+             GL_TH(glGetFloatv, GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,
+                   &(shared->info.anisotropic));
+         }
+#endif
+#ifdef GL_BGRA
+       if ((strstr(ext, "GL_EXT_bgra")) ||
+           (strstr(ext, "GL_EXT_texture_format_BGRA8888")))
+         shared->info.bgra = 1;
+#endif
+       if (strstr(ext, "OES_compressed_ETC1_RGB8_texture"))
+         shared->info.etc1 = 1;
+       if (strstr(ext, "GL_EXT_texture_compression_s3tc") ||
+           strstr(ext, "GL_S3_s3tc"))
+         shared->info.s3tc = 1;
+#ifdef GL_GLES
+       // FIXME: there should be an extension name/string to check for
+       // not just symbols in the lib
+       i = 0;
+       s = getenv("EVAS_GL_NO_MAP_IMAGE_SEC");
+       if (s) i = atoi(s);
+       if (!i)
+         {
+            // test for all needed symbols - be "conservative" and
+            // need all of it
+            if ((eglsym_eglCreateImage) &&
+                (eglsym_eglDestroyImage) &&
+                (secsym_glEGLImageTargetTexture2DOES) &&
+                (secsym_eglMapImageSEC) &&
+                (secsym_eglUnmapImageSEC) &&
+                (secsym_eglGetImageAttribSEC))
+               shared->info.sec_image_map = 1;
+         }
+       i = 0;
+
+       if ((secsym_tbm_surface_create) &&
+            (secsym_tbm_surface_destroy) &&
+            (secsym_tbm_surface_map) &&
+            (secsym_tbm_surface_unmap) &&
+            (secsym_tbm_surface_get_info))
+            shared->info.sec_tbm_surface = 1;
+#endif
+       if (!strstr(ext, "GL_QCOM_tiled_rendering"))
+         {
+            glsym_glStartTiling = NULL;
+            glsym_glEndTiling = NULL;
+         }
+    }
+  GL_TH(glGetIntegerv, GL_MAX_TEXTURE_IMAGE_UNITS,
+                &(shared->info.max_texture_units));
+  GL_TH(glGetIntegerv, GL_MAX_TEXTURE_SIZE,
+                &(shared->info.max_texture_size));
+  shared->info.max_vertex_elements = 6 * 100000;
+#ifdef GL_MAX_ELEMENTS_VERTICES
+/* only applies to glDrawRangeElements. don't really need to get it.
+  GL_TH(glGetIntegerv, GL_MAX_ELEMENTS_VERTICES,
+                &(shared->info.max_vertex_elements));
+*/
+#endif
+  s = getenv("EVAS_GL_VERTEX_MAX");
+  if (s) shared->info.max_vertex_elements = atoi(s);
+  if (shared->info.max_vertex_elements < 6)
+     shared->info.max_vertex_elements = 6;
+
+  // magic numbers that are a result of imperical testing and getting
+  // "best case" performance across a range of systems
+  shared->info.tune.cutout.max                 = DEF_CUTOUT;
+  shared->info.tune.pipes.max                  = DEF_PIPES;
+  shared->info.tune.atlas.max_alloc_size       = DEF_ATLAS_ALLOC;
+  shared->info.tune.atlas.max_alloc_alpha_size = DEF_ATLAS_ALLOC_ALPHA;
+  shared->info.tune.atlas.max_w                = DEF_ATLAS_W;
+  shared->info.tune.atlas.max_h                = DEF_ATLAS_H;
+  shared->info.tune.atlas.max_memcpy_size      = DEF_ATLAS_MEMCPY;
+
+  // per gpu hacks. based on impirical measurement of some known gpu's
+  s = (const char *)GL_TH(glGetString, GL_RENDERER);
+  if (s)
+    {
+       if      (strstr(s, "PowerVR SGX 540"))
+          shared->info.tune.pipes.max = DEF_PIPES_SGX_540;
+       else if (strstr(s, "NVIDIA Tegra 3"))
+          shared->info.tune.pipes.max = DEF_PIPES_TEGRA_3;
+       else if (strstr(s, "NVIDIA Tegra"))
+          shared->info.tune.pipes.max = DEF_PIPES_TEGRA_2;
+    }
+  if (!getenv("EVAS_GL_MAPBUFFER"))
+    {
+       glsym_glMapBuffer = NULL;
+       glsym_glUnmapBuffer = NULL;
+    }
+
+#define GETENVOPT(name, tune_param, min, max) \
+  do { \
+     const char *__v = getenv(name); \
+     if (__v) { \
+        shared->info.tune.tune_param = atoi(__v); \
+        if (shared->info.tune.tune_param > max) \
+           shared->info.tune.tune_param = max; \
+        else if (shared->info.tune.tune_param < min) \
+           shared->info.tune.tune_param = min; \
+     } \
+  } while (0)
+
+  GETENVOPT("EVAS_GL_CUTOUT_MAX", cutout.max, -1, 0x7fffffff);
+  GETENVOPT("EVAS_GL_PIPES_MAX", pipes.max, 1, MAX_PIPES);
+  GETENVOPT("EVAS_GL_ATLAS_ALLOC_SIZE", atlas.max_alloc_size, MIN_ATLAS_ALLOC, MAX_ATLAS_ALLOC);
+  GETENVOPT("EVAS_GL_ATLAS_ALLOC_ALPHA_SIZE", atlas.max_alloc_alpha_size, MIN_ATLAS_ALLOC_ALPHA, MAX_ATLAS_ALLOC_ALPHA);
+  GETENVOPT("EVAS_GL_ATLAS_MAX_W", atlas.max_w, 0, MAX_ATLAS_W);
+  GETENVOPT("EVAS_GL_ATLAS_MAX_H", atlas.max_h, 0, MAX_ATLAS_H);
+  GETENVOPT("EVAS_GL_ATLAS_MEMCPY_SIZE", atlas.max_memcpy_size, 0, MAX_ATLAS_MEMCPY);
+  s = (const char *)getenv("EVAS_GL_GET_PROGRAM_BINARY");
+  if (s)
+    {
+       if (atoi(s) == 0) shared->info.bin_program = 0;
+    }
+
+#ifdef GL_GLES
+  // Detect ECT2 support. We need both RGB and RGBA formats.
+    {
+       GLint texFormatCnt = 0;
+       GL_TH(glGetIntegerv, GL_NUM_COMPRESSED_TEXTURE_FORMATS, &texFormatCnt);
+       if (texFormatCnt > 0)
+         {
+            GLenum *texFormats = malloc(texFormatCnt * sizeof(GLenum));
+            if (texFormats)
+              {
+                 int k, cnt = 0;
+                 GL_TH(glGetIntegerv, GL_COMPRESSED_TEXTURE_FORMATS, (GLint *) texFormats);
+                 for (k = 0; k < texFormatCnt && cnt < 2; k++)
+                   {
+                      if (texFormats[k] == GL_COMPRESSED_RGB8_ETC2)
+                        cnt++;
+                      else if (texFormats[k] == GL_COMPRESSED_RGBA8_ETC2_EAC)
+                        cnt++;
+                   }
+                 shared->info.etc2 = (cnt == 2);
+                 free(texFormats);
+
+                 // Note: If we support ETC2 we'll try to always use ETC2 even when the
+                 // image has colorspace ETC1 (backwards compatibility).
+
+                 if (ext && strstr(ext, "GL_EXT_compressed_ETC1_RGB8_sub_texture"))
+                   shared->info.etc1_subimage = 1;
+                 else
+                   shared->info.etc1_subimage = shared->info.etc2;
+
+                 // FIXME: My NVIDIA driver advertises ETC2 texture formats
+                 // but does not support them. Driver bug? Logic bug?
+                 // This is in #ifdef GL_GLES because Khronos recommends
+                 // use of GL_COMPRESSED_TEXTURE_FORMATS but OpenGL 4.x
+                 // does not.
+              }
+         }
+    }
+#endif
+
+  if (getenv("EVAS_GL_INFO"))
+     fprintf(stderr,
+             "max tex size %ix%i\n"
+             "max units %i\n"
+             "non-power-2 tex %i\n"
+             "rect tex %i\n"
+             "bgra : %i\n"
+             "etc1 : %i\n"
+             "etc2 : %i%s\n"
+             "s3tc : %i\n"
+             "max ansiotropic filtering: %3.3f\n"
+             "egl sec map image: %i\n"
+             "max vertex count: %i\n"
+             "\n"
+             "(can set EVAS_GL_VERTEX_MAX  EVAS_GL_NO_MAP_IMAGE_SEC  EVAS_GL_INFO  EVAS_GL_MEMINFO )\n"
+             "\n"
+             "EVAS_GL_GET_PROGRAM_BINARY: %i\n"
+             "EVAS_GL_CUTOUT_MAX: %i\n"
+             "EVAS_GL_PIPES_MAX: %i\n"
+             "EVAS_GL_ATLAS_ALLOC_SIZE: %i\n"
+             "EVAS_GL_ATLAS_ALLOC_ALPHA_SIZE: %i\n"
+             "EVAS_GL_ATLAS_MAX_W x EVAS_GL_ATLAS_MAX_H: %i x %i\n"
+             "EVAS_GL_ATLAS_MEMCPY_SIZE: %i\n"
+             ,
+             (int)shared->info.max_texture_size, (int)shared->info.max_texture_size,
+             (int)shared->info.max_texture_units,
+             (int)shared->info.tex_npo2,
+             (int)shared->info.tex_rect,
+             (int)shared->info.bgra,
+             (int)shared->info.etc1,
+             (int)shared->info.etc2, shared->info.etc2 ? " (GL_COMPRESSED_RGB8_ETC2, GL_COMPRESSED_RGBA8_ETC2_EAC)" : "",
+             (int)shared->info.s3tc,
+             (double)shared->info.anisotropic,
+             (int)shared->info.sec_image_map,
+             (int)shared->info.max_vertex_elements,
+
+             (int)shared->info.bin_program,
+             (int)shared->info.tune.cutout.max,
+             (int)shared->info.tune.pipes.max,
+             (int)shared->info.tune.atlas.max_alloc_size,
+             (int)shared->info.tune.atlas.max_alloc_alpha_size,
+             (int)shared->info.tune.atlas.max_w, (int)shared->info.tune.atlas.max_h,
+             (int)shared->info.tune.atlas.max_memcpy_size
+            );
+
+  GL_TH(glDisable, GL_DEPTH_TEST);
+  GL_TH(glEnable, GL_DITHER);
+  GL_TH(glDisable, GL_BLEND);
+  GL_TH(glBlendFunc, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+  // no dest alpha
+//        GL_TH(glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // dest alpha
+//        GL_TH(glBlendFunc, GL_SRC_ALPHA, GL_ONE); // ???
+  GL_TH(glDepthMask, GL_FALSE);
+
+  GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
+  if (shared->info.anisotropic > 0.0)
+    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0);
+#endif
+
+  GL_TH(glEnableVertexAttribArray, SHAD_VERTEX);
+  GL_TH(glEnableVertexAttribArray, SHAD_COLOR);
+
+  if (!evas_gl_common_shader_program_init(shared))
+    return NULL;
+
+  if (gc->state.current.prog)
+    GL_TH(glUseProgram, gc->state.current.prog->prog);
+
+  // in shader:
+  // uniform sampler2D tex[8];
+  //
+  // in code:
+  // GLuint texes[8];
+  // GLint loc = glGetUniformLocation(prog, "tex");
+  // glUniform1iv(loc, 8, texes);
+
+  shared->native_pm_hash  = eina_hash_int32_new(NULL);
+  shared->native_tex_hash = eina_hash_int32_new(NULL);
+  shared->native_wl_hash = eina_hash_pointer_new(NULL);
+  shared->native_tbm_hash = eina_hash_pointer_new(NULL);
+  shared->native_evasgl_hash = eina_hash_pointer_new(NULL);
+
+  return shared;
+}
+
 EAPI Evas_Engine_GL_Context *
-evas_gl_common_context_new(void)
+evas_gl_common_context_new(Eina_TLS context_key, Eina_TLS shared_key)
 {
    Evas_Engine_GL_Context *gc;
    const char *s;
    int i, gles_version;
 
 #if 1
+
+   if (context_key)
+     {
+       Evas_Engine_GL_Context *tls_context = eina_tls_get(context_key);
+       if (tls_context)
+         {
+           tls_context->references++;
+           eina_tls_set(context_key, tls_context);
+           return tls_context;
+         }
+     }
+   else
+     {
    if (_evas_gl_common_context)
      {
         _evas_gl_common_context->references++;
         return _evas_gl_common_context;
      }
+     }
+
 #endif
 
    if (!glsym_glGetStringi)
@@ -875,7 +1173,14 @@ evas_gl_common_context_new(void)
 
    gc->references = 1;
 
-   _evas_gl_common_context = gc;
+   if (context_key)
+     {
+       eina_tls_set(context_key, gc);
+     }
+   else
+     {
+       _evas_gl_common_context = gc;
+     }
 
    for (i = 0; i < MAX_PIPES; i++)
      {
@@ -890,285 +1195,33 @@ evas_gl_common_context_new(void)
 
    gc->state.current.tex_target = GL_TEXTURE_2D;
 
-   if (!shared)
+   Evas_GL_Shared *tls_shared = NULL;
+   if(shared_key)
      {
-        const char *ext;
-
-        shared = calloc(1, sizeof(Evas_GL_Shared));
-        if (!shared) goto error;
-        ext = (const char *) GL_TH(glGetString, GL_EXTENSIONS);
-        if (ext)
-          {
-             if (getenv("EVAS_GL_INFO"))
-                fprintf(stderr, "EXT:\n%s\n", ext);
-             if ((strstr(ext, "GL_ARB_texture_non_power_of_two")) ||
-                 (strstr(ext, "OES_texture_npot")) ||
-                 (strstr(ext, "GL_IMG_texture_npot")))
-               shared->info.tex_npo2 = 1;
-             if ((strstr(ext, "GL_NV_texture_rectangle")) ||
-                 (strstr(ext, "GL_EXT_texture_rectangle")) ||
-                 (strstr(ext, "GL_ARB_texture_rectangle")))
-               shared->info.tex_rect = 1;
-             if ((strstr(ext, "GL_ARB_get_program_binary")) ||
-                 (strstr(ext, "GL_OES_get_program_binary")))
-               shared->info.bin_program = 1;
-             else
-               glsym_glGetProgramBinary = NULL;
-#ifdef GL_UNPACK_ROW_LENGTH
-             shared->info.unpack_row_length = 1;
-# ifdef GL_GLES
-             if (!strstr(ext, "_unpack_subimage"))
-               shared->info.unpack_row_length = 0;
-# endif
-#endif
-
-#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-             if (getenv("EVAS_GL_ANISOTROPY"))
-               {
-                 if ((strstr(ext, "GL_EXT_texture_filter_anisotropic")))
-                   GL_TH(glGetFloatv, GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,
-                         &(shared->info.anisotropic));
-               }
-#endif
-#ifdef GL_BGRA
-             if ((strstr(ext, "GL_EXT_bgra")) ||
-                 (strstr(ext, "GL_EXT_texture_format_BGRA8888")))
-               shared->info.bgra = 1;
-#endif
-             if (strstr(ext, "OES_compressed_ETC1_RGB8_texture"))
-               shared->info.etc1 = 1;
-             if (strstr(ext, "GL_EXT_texture_compression_s3tc") ||
-                 strstr(ext, "GL_S3_s3tc"))
-               shared->info.s3tc = 1;
-#ifdef GL_GLES
-             // FIXME: there should be an extension name/string to check for
-             // not just symbols in the lib
-             i = 0;
-             s = getenv("EVAS_GL_NO_MAP_IMAGE_SEC");
-             if (s) i = atoi(s);
-             if (!i)
-               {
-                  // test for all needed symbols - be "conservative" and
-                  // need all of it
-                  if ((eglsym_eglCreateImage) &&
-                      (eglsym_eglDestroyImage) &&
-                      (secsym_glEGLImageTargetTexture2DOES) &&
-                      (secsym_eglMapImageSEC) &&
-                      (secsym_eglUnmapImageSEC) &&
-                      (secsym_eglGetImageAttribSEC))
-                     shared->info.sec_image_map = 1;
-               }
-             i = 0;
-
-             if ((secsym_tbm_surface_create) &&
-                  (secsym_tbm_surface_destroy) &&
-                  (secsym_tbm_surface_map) &&
-                  (secsym_tbm_surface_unmap) &&
-                  (secsym_tbm_surface_get_info))
-                  shared->info.sec_tbm_surface = 1;
-#endif
-             if (!strstr(ext, "GL_QCOM_tiled_rendering"))
-               {
-                  glsym_glStartTiling = NULL;
-                  glsym_glEndTiling = NULL;
-               }
-          }
-        GL_TH(glGetIntegerv, GL_MAX_TEXTURE_IMAGE_UNITS,
-                      &(shared->info.max_texture_units));
-        GL_TH(glGetIntegerv, GL_MAX_TEXTURE_SIZE,
-                      &(shared->info.max_texture_size));
-        shared->info.max_vertex_elements = 6 * 100000;
-#ifdef GL_MAX_ELEMENTS_VERTICES
-/* only applies to glDrawRangeElements. don't really need to get it.
-        GL_TH(glGetIntegerv, GL_MAX_ELEMENTS_VERTICES,
-                      &(shared->info.max_vertex_elements));
- */
-#endif
-        s = getenv("EVAS_GL_VERTEX_MAX");
-        if (s) shared->info.max_vertex_elements = atoi(s);
-        if (shared->info.max_vertex_elements < 6)
-           shared->info.max_vertex_elements = 6;
-
-        // magic numbers that are a result of imperical testing and getting
-        // "best case" performance across a range of systems
-        shared->info.tune.cutout.max                 = DEF_CUTOUT;
-        shared->info.tune.pipes.max                  = DEF_PIPES;
-        shared->info.tune.atlas.max_alloc_size       = DEF_ATLAS_ALLOC;
-        shared->info.tune.atlas.max_alloc_alpha_size = DEF_ATLAS_ALLOC_ALPHA;
-        shared->info.tune.atlas.max_w                = DEF_ATLAS_W;
-        shared->info.tune.atlas.max_h                = DEF_ATLAS_H;
-        shared->info.tune.atlas.max_memcpy_size      = DEF_ATLAS_MEMCPY;
-
-        // per gpu hacks. based on impirical measurement of some known gpu's
-        s = (const char *)GL_TH(glGetString, GL_RENDERER);
-        if (s)
-          {
-             if      (strstr(s, "PowerVR SGX 540"))
-                shared->info.tune.pipes.max = DEF_PIPES_SGX_540;
-             else if (strstr(s, "NVIDIA Tegra 3"))
-                shared->info.tune.pipes.max = DEF_PIPES_TEGRA_3;
-             else if (strstr(s, "NVIDIA Tegra"))
-                shared->info.tune.pipes.max = DEF_PIPES_TEGRA_2;
-          }
-        if (!getenv("EVAS_GL_MAPBUFFER"))
-          {
-             glsym_glMapBuffer = NULL;
-             glsym_glUnmapBuffer = NULL;
-          }
-
-#define GETENVOPT(name, tune_param, min, max) \
-        do { \
-           const char *__v = getenv(name); \
-           if (__v) { \
-              shared->info.tune.tune_param = atoi(__v); \
-              if (shared->info.tune.tune_param > max) \
-                 shared->info.tune.tune_param = max; \
-              else if (shared->info.tune.tune_param < min) \
-                 shared->info.tune.tune_param = min; \
-           } \
-        } while (0)
-
-        GETENVOPT("EVAS_GL_CUTOUT_MAX", cutout.max, -1, 0x7fffffff);
-        GETENVOPT("EVAS_GL_PIPES_MAX", pipes.max, 1, MAX_PIPES);
-        GETENVOPT("EVAS_GL_ATLAS_ALLOC_SIZE", atlas.max_alloc_size, MIN_ATLAS_ALLOC, MAX_ATLAS_ALLOC);
-        GETENVOPT("EVAS_GL_ATLAS_ALLOC_ALPHA_SIZE", atlas.max_alloc_alpha_size, MIN_ATLAS_ALLOC_ALPHA, MAX_ATLAS_ALLOC_ALPHA);
-        GETENVOPT("EVAS_GL_ATLAS_MAX_W", atlas.max_w, 0, MAX_ATLAS_W);
-        GETENVOPT("EVAS_GL_ATLAS_MAX_H", atlas.max_h, 0, MAX_ATLAS_H);
-        GETENVOPT("EVAS_GL_ATLAS_MEMCPY_SIZE", atlas.max_memcpy_size, 0, MAX_ATLAS_MEMCPY);
-        s = (const char *)getenv("EVAS_GL_GET_PROGRAM_BINARY");
-        if (s)
-          {
-             if (atoi(s) == 0) shared->info.bin_program = 0;
-          }
-
-#ifdef GL_GLES
-        // Detect ECT2 support. We need both RGB and RGBA formats.
-          {
-             GLint texFormatCnt = 0;
-             GL_TH(glGetIntegerv, GL_NUM_COMPRESSED_TEXTURE_FORMATS, &texFormatCnt);
-             if (texFormatCnt > 0)
-               {
-                  GLenum *texFormats = malloc(texFormatCnt * sizeof(GLenum));
-                  if (texFormats)
-                    {
-                       int k, cnt = 0;
-                       GL_TH(glGetIntegerv, GL_COMPRESSED_TEXTURE_FORMATS, (GLint *) texFormats);
-                       for (k = 0; k < texFormatCnt && cnt < 2; k++)
-                         {
-                            if (texFormats[k] == GL_COMPRESSED_RGB8_ETC2)
-                              cnt++;
-                            else if (texFormats[k] == GL_COMPRESSED_RGBA8_ETC2_EAC)
-                              cnt++;
-                         }
-                       shared->info.etc2 = (cnt == 2);
-                       free(texFormats);
-
-                       // Note: If we support ETC2 we'll try to always use ETC2 even when the
-                       // image has colorspace ETC1 (backwards compatibility).
-
-                       if (ext && strstr(ext, "GL_EXT_compressed_ETC1_RGB8_sub_texture"))
-                         shared->info.etc1_subimage = 1;
-                       else
-                         shared->info.etc1_subimage = shared->info.etc2;
-
-                       // FIXME: My NVIDIA driver advertises ETC2 texture formats
-                       // but does not support them. Driver bug? Logic bug?
-                       // This is in #ifdef GL_GLES because Khronos recommends
-                       // use of GL_COMPRESSED_TEXTURE_FORMATS but OpenGL 4.x
-                       // does not.
-                    }
-               }
-          }
-#endif
-
-        if (getenv("EVAS_GL_INFO"))
-           fprintf(stderr,
-                   "max tex size %ix%i\n"
-                   "max units %i\n"
-                   "non-power-2 tex %i\n"
-                   "rect tex %i\n"
-                   "bgra : %i\n"
-                   "etc1 : %i\n"
-                   "etc2 : %i%s\n"
-                   "s3tc : %i\n"
-                   "max ansiotropic filtering: %3.3f\n"
-                   "egl sec map image: %i\n"
-                   "max vertex count: %i\n"
-                   "\n"
-                   "(can set EVAS_GL_VERTEX_MAX  EVAS_GL_NO_MAP_IMAGE_SEC  EVAS_GL_INFO  EVAS_GL_MEMINFO )\n"
-                   "\n"
-                   "EVAS_GL_GET_PROGRAM_BINARY: %i\n"
-                   "EVAS_GL_CUTOUT_MAX: %i\n"
-                   "EVAS_GL_PIPES_MAX: %i\n"
-                   "EVAS_GL_ATLAS_ALLOC_SIZE: %i\n"
-                   "EVAS_GL_ATLAS_ALLOC_ALPHA_SIZE: %i\n"
-                   "EVAS_GL_ATLAS_MAX_W x EVAS_GL_ATLAS_MAX_H: %i x %i\n"
-                   "EVAS_GL_ATLAS_MEMCPY_SIZE: %i\n"
-                   ,
-                   (int)shared->info.max_texture_size, (int)shared->info.max_texture_size,
-                   (int)shared->info.max_texture_units,
-                   (int)shared->info.tex_npo2,
-                   (int)shared->info.tex_rect,
-                   (int)shared->info.bgra,
-                   (int)shared->info.etc1,
-                   (int)shared->info.etc2, shared->info.etc2 ? " (GL_COMPRESSED_RGB8_ETC2, GL_COMPRESSED_RGBA8_ETC2_EAC)" : "",
-                   (int)shared->info.s3tc,
-                   (double)shared->info.anisotropic,
-                   (int)shared->info.sec_image_map,
-                   (int)shared->info.max_vertex_elements,
-
-                   (int)shared->info.bin_program,
-                   (int)shared->info.tune.cutout.max,
-                   (int)shared->info.tune.pipes.max,
-                   (int)shared->info.tune.atlas.max_alloc_size,
-                   (int)shared->info.tune.atlas.max_alloc_alpha_size,
-                   (int)shared->info.tune.atlas.max_w, (int)shared->info.tune.atlas.max_h,
-                   (int)shared->info.tune.atlas.max_memcpy_size
-                  );
-
-        GL_TH(glDisable, GL_DEPTH_TEST);
-        GL_TH(glEnable, GL_DITHER);
-        GL_TH(glDisable, GL_BLEND);
-        GL_TH(glBlendFunc, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-        // no dest alpha
-//        GL_TH(glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // dest alpha
-//        GL_TH(glBlendFunc, GL_SRC_ALPHA, GL_ONE); // ???
-        GL_TH(glDepthMask, GL_FALSE);
-
-        GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-        if (shared->info.anisotropic > 0.0)
-          GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0);
-#endif
-
-        GL_TH(glEnableVertexAttribArray, SHAD_VERTEX);
-        GL_TH(glEnableVertexAttribArray, SHAD_COLOR);
-
-        if (!evas_gl_common_shader_program_init(shared))
-          goto error;
-
-        if (gc->state.current.prog)
-          GL_TH(glUseProgram, gc->state.current.prog->prog);
-
-        // in shader:
-        // uniform sampler2D tex[8];
-        //
-        // in code:
-        // GLuint texes[8];
-        // GLint loc = glGetUniformLocation(prog, "tex");
-        // glUniform1iv(loc, 8, texes);
-
-        shared->native_pm_hash  = eina_hash_int32_new(NULL);
-        shared->native_tex_hash = eina_hash_int32_new(NULL);
-        shared->native_wl_hash = eina_hash_pointer_new(NULL);
-        shared->native_tbm_hash = eina_hash_pointer_new(NULL);
-        shared->native_evasgl_hash = eina_hash_pointer_new(NULL);
+       tls_shared = eina_tls_get(shared_key);
+       if (!tls_shared)
+         {
+           tls_shared = _evas_gl_common_shared(gc);
+           if(!tls_shared) goto error;
+           eina_tls_set(shared_key, tls_shared);
+         }
+       gc->shared = tls_shared;
      }
-   gc->shared = shared;
+   else
+     {
+       if (!shared)
+         {
+           shared = _evas_gl_common_shared(gc);
+           if(!shared) goto error;
+         }
+       gc->shared = shared;
+     }
+
    gc->shared->references++;
+
+   if(shared_key)
+     eina_tls_set(shared_key, gc->shared);
+
    _evas_gl_common_viewport_set(gc, 0, 1);
 
    gc->def_surface = evas_gl_common_image_surface_new(gc, 1, 1, 1, EINA_FALSE);
@@ -1417,8 +1470,15 @@ evas_gl_common_context_free(Evas_Engine_GL_Context *gc)
    Eina_List *l;
 
    gc->references--;
+   if(gc->context_key)
+     eina_tls_set(gc->context_key, gc);
    if (gc->references > 0) return;
-   if (gc->shared) gc->shared->references--;
+   if (gc->shared)
+     {
+       gc->shared->references--;
+       if (gc->shared_key)
+         eina_tls_set(gc->shared_key, gc->shared);
+     }
 
    if (gc->def_surface) evas_gl_common_image_free(gc->def_surface);
 
@@ -1482,12 +1542,26 @@ evas_gl_common_context_free(Evas_Engine_GL_Context *gc)
         eina_hash_free(gc->shared->native_evasgl_hash);
         eina_stringshare_del(gc->shared->shaders_checksum);
         free(gc->shared);
+        if (gc->shared_key)
+          eina_tls_set(gc->shared_key, NULL);
         shared = NULL;
      }
-   if (gc == _evas_gl_common_context)
+   if (gc->context_key)
      {
-        _pipebuf_clear();
-        _evas_gl_common_context = NULL;
+       Evas_Engine_GL_Context *tls_context = eina_tls_get(gc->context_key);
+       if (gc == tls_context)
+         {
+           _pipebuf_clear();
+           eina_tls_set(gc->context_key, NULL);
+         }
+     }
+   else
+     {
+       if (gc == _evas_gl_common_context)
+         {
+           _pipebuf_clear();
+           _evas_gl_common_context = NULL;
+         }
      }
    free(gc);
    if (_evas_gl_common_cutout_rects)
@@ -1500,8 +1574,18 @@ evas_gl_common_context_free(Evas_Engine_GL_Context *gc)
 EAPI void
 evas_gl_common_context_use(Evas_Engine_GL_Context *gc)
 {
-   if (_evas_gl_common_context == gc) return;
+  if (gc->context_key)
+    {
+      Evas_Engine_GL_Context *tls_context = eina_tls_get(gc->context_key);
+      if (gc == tls_context) return;
+      eina_tls_set(gc->context_key, gc);
+    }
+  else
+    {
+      if (gc == _evas_gl_common_context) return;
    _evas_gl_common_context = gc;
+    }
+
    if (gc) _evas_gl_common_viewport_set(gc, 0, 0);
 }
 
@@ -1586,7 +1670,7 @@ evas_gl_common_context_newframe(Evas_Engine_GL_Context *gc)
    GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
    GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-   if (shared->info.anisotropic > 0.0)
+   if (gc->shared->info.anisotropic > 0.0)
      GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0);
 #endif
 
@@ -1610,7 +1694,15 @@ evas_gl_common_context_resize(Evas_Engine_GL_Context *gc, int w, int h, int rot,
    gc->rot = rot;
    gc->w = w;
    gc->h = h;
-   if (_evas_gl_common_context == gc) _evas_gl_common_viewport_set(gc, 0, 1);
+   if (gc->context_key)
+     {
+       Evas_Engine_GL_Context *tls_context = eina_tls_get(gc->context_key);
+       if (gc == tls_context) _evas_gl_common_viewport_set(gc, 0, 1);
+     }
+   else
+     {
+       if (_evas_gl_common_context == gc) _evas_gl_common_viewport_set(gc, 0, 1);
+     }
 }
 
 void
@@ -4050,8 +4142,8 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
              if (gc->pipe[i].shader.smooth)
                {
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-                  if (shared->info.anisotropic > 0.0)
-                    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, shared->info.anisotropic);
+                  if (gc->shared->info.anisotropic > 0.0)
+                    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gc->shared->info.anisotropic);
 #endif
                   if (gc->pipe[i].array.im && gc->pipe[i].array.im->native.target == GL_TEXTURE_EXTERNAL_OES)
                     {
@@ -4069,7 +4161,7 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
              else
                {
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-                  if (shared->info.anisotropic > 0.0)
+                  if (gc->shared->info.anisotropic > 0.0)
                     GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0);
 #endif
                   GL_TH(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -4331,8 +4423,8 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
                   GL_TH(glActiveTexture, ACTIVE_TEXTURE);
                   GL_TH(glBindTexture, GL_TEXTURE_2D, gc->pipe[i].shader.cur_texm);
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-                  if (shared->info.anisotropic > 0.0)
-                    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, shared->info.anisotropic);
+                  if (gc->shared->info.anisotropic > 0.0)
+                    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gc->shared->info.anisotropic);
 #endif
                   if (gc->pipe[i].shader.mask_smooth)
                     {
@@ -4385,8 +4477,8 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
                   GL_TH(glActiveTexture, GL_TEXTURE1);
                   GL_TH(glBindTexture, GL_TEXTURE_2D, gc->pipe[i].shader.cur_texa);
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-                  if (shared->info.anisotropic > 0.0)
-                    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, shared->info.anisotropic);
+                  if (gc->shared->info.anisotropic > 0.0)
+                    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gc->shared->info.anisotropic);
 #endif
                   if (gc->pipe[i].shader.smooth)
                     {
@@ -4495,8 +4587,8 @@ _orig_shader_array_flush(Evas_Engine_GL_Context *gc)
                   GL_TH(glActiveTexture, ACTIVE_TEXTURE);
                   GL_TH(glBindTexture, GL_TEXTURE_2D, gc->pipe[i].shader.cur_texm);
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-                  if (shared->info.anisotropic > 0.0)
-                    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, shared->info.anisotropic);
+                  if (gc->shared->info.anisotropic > 0.0)
+                    GL_TH(glTexParameterf, GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gc->shared->info.anisotropic);
 #endif
                   if (gc->pipe[i].shader.mask_smooth)
                     {
