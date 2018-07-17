@@ -131,7 +131,7 @@ evas_outbuf_new(Evas_Engine_Info_GL_Cocoa *info,
    * but i need to find out howon osx to get the extension string list
    * for egl/whatever */
 
-   ob->gl_context = glsym_evas_gl_common_context_new();
+   ob->gl_context = glsym_evas_gl_common_context_new(0, 0);
    if (EINA_UNLIKELY(!ob->gl_context))
      {
         CRI("Failed to create gl_context");

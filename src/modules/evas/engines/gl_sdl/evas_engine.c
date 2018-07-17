@@ -459,7 +459,7 @@ _sdl_output_setup(int w, int h, int fullscreen EINA_UNUSED, int noframe EINA_UNU
    INF("Vendor: '%s', Renderer: '%s', Version: '%s'",
      glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION));
 
-   ob->gl_context = glsym_evas_gl_common_context_new();
+   ob->gl_context = glsym_evas_gl_common_context_new(0, 0);
    if (!ob->gl_context) goto on_error;
 
    glsym_evas_gl_common_context_use(ob->gl_context);

@@ -15,6 +15,9 @@ static Eina_TLS _outbuf_key = 0;
 static Eina_TLS _context_key = 0;
 static Eina_TLS _display_key = 0;
 
+static Eina_TLS _gl_context_key = 0;
+static Eina_TLS _gl_shared_key = 0;
+
 typedef EGLContext GLContext;
 static int win_count = 0;
 static void _convert_glcoords(int *result, Outbuf *ob, int x, int y, int w, int h);
@@ -40,10 +43,16 @@ eng_init(void)
      goto error;
    if (!eina_tls_new(&_display_key))
      goto error;
+   if (!eina_tls_new(&_gl_context_key))
+     goto error;
+   if (!eina_tls_new(&_gl_shared_key))
+     goto error;
 
    eina_tls_set(_outbuf_key, NULL);
    eina_tls_set(_context_key, NULL);
    eina_tls_set(_display_key, NULL);
+   eina_tls_set(_gl_context_key, NULL);
+   eina_tls_set(_gl_shared_key, NULL);
 
    initted = EINA_TRUE;
    return EINA_TRUE;
@@ -282,12 +291,13 @@ eng_window_new(Evas_Engine_Info_GL_Tbm *einfo, int w, int h, Render_Output_Swap_
    if (!gw->gl_context)
      {
         eng_gl_symbols(gw->egl_disp);
-        if (!(gw->gl_context = glsym_evas_gl_common_context_new()))
+        if (!(gw->gl_context = glsym_evas_gl_common_context_new(_gl_context_key, _gl_shared_key)))
           {
              eng_window_free(gw);
              return NULL;
           }
-
+        gw->gl_context->context_key = _gl_context_key;
+        gw->gl_context->shared_key = _gl_shared_key;
         gw->gl_context->egldisp = gw->egl_disp;
         gw->gl_context->eglctxt = gw->egl_context[0];
         eng_window_use(gw);
