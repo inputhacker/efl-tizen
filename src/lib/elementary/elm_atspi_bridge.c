@@ -6575,6 +6575,7 @@ _elm_atspi_bridge_shutdown(void)
      {
         efl_unref(_instance);
         _init_count = 0;
+        _instance = NULL;
      }
 
    //TIZEN_ONLY(20171108): make atspi_proxy work

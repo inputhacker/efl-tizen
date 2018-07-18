@@ -11,6 +11,8 @@
 #include "elm_ctxpopup_item.eo.h"
 //
 
+#define MY_CLASS ELM_ATSPI_PROXY_CLASS
+#define MY_CLASS_NAME "Elm.Atspi.Proxy"
 
 static Eina_List *_socket_list;
 
@@ -96,7 +98,7 @@ _elm_atspi_proxy_efl_object_destructor(Eo *obj, Elm_Atspi_Proxy_Data *_pd)
         _pd->path = NULL;
      }
 
-   efl_destructor(efl_super(obj, ELM_CTXPOPUP_ITEM_CLASS));
+   efl_destructor(efl_super(obj, MY_CLASS));
 }
 
 EOLIAN static void
