@@ -864,6 +864,7 @@ _items_fix(Evas_Object *obj)
      }
 
    _elm_list_walk(obj, sd); // watch out "return" before unwalk!
+   sd->fixing_now = EINA_TRUE;
 
    eina_array_step_set(&walk, sizeof (walk), 8);
 
@@ -1049,6 +1050,7 @@ _items_fix(Evas_Object *obj)
         efl_unref(eo_it);
      }
 
+   sd->fixing_now = EINA_FALSE;
    _elm_list_unwalk(obj, sd);
 
    //focus highlight in_theme is set by list item theme.
@@ -1059,12 +1061,17 @@ _items_fix(Evas_Object *obj)
 static void
 _size_hints_changed_cb(void *data,
                        Evas *e EINA_UNUSED,
-                       Evas_Object *obj EINA_UNUSED,
+                       Evas_Object *obj,
                        void *event_info EINA_UNUSED)
 {
    ELM_LIST_DATA_GET(data, sd);
+   ELM_WIDGET_DATA_GET_OR_RETURN(data, wd);
    if (sd->delete_me) return;
 
+   if (sd->fixing_now)
+     {
+        if ((obj != wd->resize_obj) && (obj != sd->box)) return;
+     }
    _items_fix(data);
    elm_layout_sizing_eval(data);
 }
