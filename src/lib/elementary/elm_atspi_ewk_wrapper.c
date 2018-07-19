@@ -76,7 +76,7 @@ _elm_atspi_ewk_wrapper_proxy_create(const char *plugid, Eo *parent)
         return NULL;
    }
 
-   proxy = efl_add(ELM_ATSPI_PROXY_CLASS, parent, elm_obj_atspi_proxy_constructor(efl_added, ELM_ATSPI_PROXY_TYPE_PLUG));
+   proxy = efl_add(ELM_ATSPI_PROXY_CLASS, parent, elm_obj_atspi_proxy_ctor(efl_added, ELM_ATSPI_PROXY_TYPE_PLUG));
    if (!proxy) {
         ERR("Unable to create Elm_Atspi_Proxy object");
         free(bus); free(path);
@@ -158,7 +158,7 @@ _elm_atspi_ewk_wrapper_a11y_init(Eo *obj EINA_UNUSED, void *pd EINA_UNUSED,
 {
    Evas_Object *wrapper = evas_object_data_get(ewk_view, EWK_A11Y_DATA_KEY);
    if (!wrapper) {
-        wrapper = efl_add(ELM_ATSPI_EWK_WRAPPER_CLASS, parent, elm_obj_atspi_ewk_wrapper_constructor(efl_added, ewk_view));
+        wrapper = efl_add(ELM_ATSPI_EWK_WRAPPER_CLASS, parent, elm_obj_atspi_ewk_wrapper_ewk_constructor(efl_added, ewk_view));
         evas_object_data_set(ewk_view, EWK_A11Y_DATA_KEY, wrapper);
         // make sure that wrapper will not outlive ewk_view
         efl_event_callback_del(wrapper, EFL_EVENT_DEL, _wrapper_widget_del, ewk_view);
