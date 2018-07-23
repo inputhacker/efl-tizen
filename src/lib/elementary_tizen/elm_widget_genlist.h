@@ -488,14 +488,17 @@ struct _Elm_Genlist_Filter
     return
 
 #define ELM_GENLIST_ITEM_CHECK(it)                          \
+  if (!it) return; \
   ELM_WIDGET_ITEM_CHECK_OR_RETURN(it->base, ); \
   ELM_GENLIST_CHECK(it->base->widget);
 
 #define ELM_GENLIST_ITEM_CHECK_OR_RETURN(it, ...)                      \
+  if (!it) return __VA_ARGS__; \
   ELM_WIDGET_ITEM_CHECK_OR_RETURN(it->base, __VA_ARGS__); \
   ELM_GENLIST_CHECK(it->base->widget) __VA_ARGS__;
 
 #define ELM_GENLIST_ITEM_CHECK_OR_GOTO(it, label)              \
+  if (!it) goto label; \
   ELM_WIDGET_ITEM_CHECK_OR_GOTO(it->base, label); \
   if (!it->base->widget || !efl_isa                              \
         ((it->base->widget), ELM_GENLIST_CLASS)) goto label;
