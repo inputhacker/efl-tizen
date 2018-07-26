@@ -4041,7 +4041,11 @@ _efl_canvas_object_efl_canvas_pointer_pointer_inside_get(const Eo *eo_obj,
    EVAS_OBJECT_DATA_ALIVE_CHECK(obj, EINA_FALSE);
 
    if (!pointer)
-     pointer = obj->layer->evas->default_mouse;
+     //TIZEN_ONLY(20180530): add storing last mouse device.
+     //pointer = obj->layer->evas->default_mouse;
+     pointer = (obj->layer->evas->last_mouse ? obj->layer->evas->last_mouse :
+                obj->layer->evas->default_mouse);
+     //
 
    if (!pointer) return EINA_FALSE;
 
@@ -4379,7 +4383,14 @@ _evas_canvas_event_pointer_in_rect_mouse_move_feed(Evas_Public_Data *edata,
           continue;
         if ((in_objects_list && eina_list_data_find(pseat->object.in, obj)) || !in_objects_list)
           {
-             Evas_Pointer_Data *pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
+             //TIZEN_ONLY(20180530): add storing last mouse device.
+             //Evas_Pointer_Data *pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
+             Evas_Pointer_Data *pdata = NULL;
+             if (edata->last_mouse)
+               pdata = _evas_pointer_data_by_device_get(edata, edata->last_mouse);
+             else
+               pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
+             //
              _evas_canvas_event_pointer_move_event_dispatch(edata, pdata, data);
           }
      }
@@ -4415,7 +4426,16 @@ _evas_canvas_event_pointer_in_list_mouse_move_feed(Evas_Public_Data *edata,
         if ((xor_rule && ((in && !found) || (!in && found))) ||
             (!xor_rule && (in || found)))
           {
-             if (!pdata) pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
+             //TIZEN_ONLY(20180530): add storing last mouse device.
+             //if (!pdata) pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
+             if (!pdata)
+               {
+                  if (edata->last_mouse)
+                    pdata = _evas_pointer_data_by_device_get(edata, edata->last_mouse);
+                  else
+                    pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
+               }
+             //
              _evas_canvas_event_pointer_move_event_dispatch(edata, pdata, data);
           }
      }
