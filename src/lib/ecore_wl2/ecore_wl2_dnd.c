@@ -377,6 +377,19 @@ _ecore_wl2_dnd_drop(Ecore_Wl2_Input *input)
    ecore_event_add(ECORE_WL2_EVENT_DND_DROP, ev, _display_event_free, ev->display);
 }
 
+//TIZEN_ONLY(20180724): Supporting copy and paste for cbhm
+void
+_selection_event_free(void *d, void *event)
+{
+   ecore_wl2_display_disconnect(d);
+   Ecore_Wl2_Event_Seat_Selection *ev = event;
+   if (ev->types)
+     free(ev->types);
+   ev->types = NULL;
+   free(event);
+}
+//
+
 void
 _ecore_wl2_dnd_selection(Ecore_Wl2_Input *input, struct wl_data_offer *offer)
 {
@@ -386,14 +399,44 @@ _ecore_wl2_dnd_selection(Ecore_Wl2_Input *input, struct wl_data_offer *offer)
    input->selection.offer = NULL;
 
    if (offer)
+   //TIZEN_ONLY(20180724): Supporting copy and paste for cbhm
+   /*
      input->selection.offer = wl_data_offer_get_user_data(offer);
-   input->selection.enter_serial = input->display->serial;
-   ev = malloc(sizeof(Ecore_Wl2_Event_Seat_Selection));
-   EINA_SAFETY_ON_NULL_RETURN(ev);
-   ev->seat = input->id;
-   ev->display = input->display;
-   ev->display->refs++;
-   ecore_event_add(ECORE_WL2_EVENT_SEAT_SELECTION, ev, _display_event_free, ev->display);
+     input->selection.enter_serial = input->display->serial;
+     ev = malloc(sizeof(Ecore_Wl2_Event_Seat_Selection));
+     EINA_SAFETY_ON_NULL_RETURN(ev);
+     ev->seat = input->id;
+     ev->display = input->display;
+     ev->display->refs++;
+     ecore_event_add(ECORE_WL2_EVENT_SEAT_SELECTION, ev, _display_event_free, ev->display);
+   */
+     {
+        input->selection.offer = wl_data_offer_get_user_data(offer);
+        input->selection.enter_serial = input->display->serial;
+        ev = calloc(1, sizeof(Ecore_Wl2_Event_Seat_Selection));
+        EINA_SAFETY_ON_NULL_RETURN(ev);
+        ev->seat = input->id;
+        ev->display = input->display;
+        ev->display->refs++;
+
+        ev->num_types = 0;
+        Ecore_Wl2_Offer *sel_offer = input->selection.offer;
+        if (sel_offer != NULL)
+          ev->num_types = eina_array_count(sel_offer->mimetypes);
+
+        if (ev->num_types > 0)
+          {
+             ev->types = calloc(ev->num_types, sizeof(char *));
+             int idx = 0;
+             for (idx = 0; idx < ev->num_types; idx++)
+                {
+                   ev->types[idx] = eina_stringshare_add(
+                                    eina_array_data_get(input->selection.offer->mimetypes, idx));
+                }
+             ecore_event_add(ECORE_WL2_EVENT_SEAT_SELECTION, ev, _selection_event_free, ev->display);
+          }
+     }
+   //
 }
 
 void
