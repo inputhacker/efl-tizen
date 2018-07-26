@@ -1834,6 +1834,9 @@ _canvas_event_feed_mouse_updown(Eo *eo_e, int b, Evas_Button_Flags flags,
    ev->data = (void *) data;
    ev->timestamp = timestamp;
    ev->device = efl_ref(device ? device : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   e->last_mouse = ev->device;
+   //
    ev->action = down ? EFL_POINTER_ACTION_DOWN : EFL_POINTER_ACTION_UP;
    ev->button = b;
    ev->button_flags = flags;
@@ -1897,6 +1900,9 @@ _canvas_event_feed_mouse_updown_with_multi_info(Eo *eo_e, int b, Evas_Button_Fla
    ev->data = (void *) data;
    ev->timestamp = timestamp;
    ev->device = efl_ref(device ? device : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   e->last_mouse = ev->device;
+   //
    ev->action = down ? EFL_POINTER_ACTION_DOWN : EFL_POINTER_ACTION_UP;
    ev->button = b;
    ev->button_flags = flags;
@@ -2014,7 +2020,9 @@ evas_event_feed_mouse_cancel(Eo *eo_e, unsigned int timestamp, const void *data)
 
    ev->timestamp = timestamp;
    ev->data = (void *) data;
-   ev->device = efl_ref(_evas_event_legacy_device_get(e->evas, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   ev->device = efl_ref(e->last_mouse ? e->last_mouse : _evas_event_legacy_device_get(e->evas, EINA_TRUE));
+   //
 
    _canvas_event_feed_mouse_cancel_internal(e, ev);
 
@@ -2098,6 +2106,9 @@ EAPI void
 evas_event_feed_mouse_wheel(Eo *eo_e, int direction, int z, unsigned int timestamp, const void *data)
 {
    EINA_SAFETY_ON_FALSE_RETURN(efl_isa(eo_e, EVAS_CANVAS_CLASS));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+   //
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
 
@@ -2107,7 +2118,9 @@ evas_event_feed_mouse_wheel(Eo *eo_e, int direction, int z, unsigned int timesta
    ev->wheel.z = z;
    ev->timestamp = timestamp;
    ev->data = (void *) data;
-   ev->device = efl_ref(_evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   ev->device = efl_ref(e->last_mouse ? e->last_mouse: _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //
 
    _canvas_event_feed_mouse_wheel_internal(eo_e, ev);
    efl_unref(evt);
@@ -2545,7 +2558,9 @@ _canvas_event_feed_mouse_move_legacy(Evas *eo_e, Evas_Public_Data *e, int x, int
 
    ev->data = (void *) data;
    ev->timestamp = timestamp;
-   ev->device = efl_ref(_evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   ev->device = efl_ref(e->last_mouse ? e->last_mouse : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //
    ev->cur.x = x;
    ev->cur.y = y;
 
@@ -2584,7 +2599,9 @@ _canvas_event_feed_mouse_move_with_multi_info_legacy(Evas *eo_e, Evas_Public_Dat
 
    ev->data = (void *) data;
    ev->timestamp = timestamp;
-   ev->device = efl_ref(_evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   ev->device = efl_ref(e->last_mouse ? e->last_mouse : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //
    ev->cur.x = x;
    ev->cur.y = y;
    ev->radius = radius;
@@ -2809,6 +2826,9 @@ static void
 _canvas_event_feed_mouse_inout_legacy(Eo *eo_e, unsigned int timestamp,
                                       const void *data, Eina_Bool in)
 {
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
+   //
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt;
 
@@ -2817,7 +2837,9 @@ _canvas_event_feed_mouse_inout_legacy(Eo *eo_e, unsigned int timestamp,
 
    ev->timestamp = timestamp;
    ev->data = (void *) data;
-   ev->device = efl_ref(_evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   ev->device = efl_ref(e->last_mouse ? e->last_mouse : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //
 
    if (in)
      _canvas_event_feed_mouse_in_internal(eo_e, ev);
@@ -3053,7 +3075,9 @@ _canvas_event_feed_multi_internal(Evas *eo_e, Evas_Public_Data *e,
    ev->button_flags = flags;
    ev->timestamp = timestamp;
    ev->data = (void *) data;
-   ev->device = efl_ref(_evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   ev->device = efl_ref(e->last_mouse ? e->last_mouse : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //
 
    switch (action)
      {
@@ -3588,7 +3612,9 @@ evas_event_feed_hold(Eo *eo_e, int hold, unsigned int timestamp, const void *dat
    ev->data = (void *) data;
    ev->timestamp = timestamp;
    ev->event_flags = e->default_event_flags;
-   ev->device = efl_ref(_evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   ev->device = efl_ref(e->last_mouse ? e->last_mouse : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
+   //
 
    pdata = _evas_pointer_data_by_device_get(e, ev->device);
    if (!pdata) return;
@@ -4146,11 +4172,15 @@ _evas_canvas_event_pointer_cb(void *data, const Efl_Event *event)
    ev->modifiers = &e->modifiers;
    ev->locks = &e->locks;
 
+   //TIZEN_ONLY(20180530): add storing last mouse device.
    if (!ev->device)
      {
         nodev = 1;
-        ev->device = _evas_event_legacy_device_get(e->evas, EINA_TRUE);
+        ev->device = efl_ref(e->last_mouse ? e->last_mouse : _evas_event_legacy_device_get(eo_e, EINA_TRUE));
      }
+   else
+     e->last_mouse = ev->device;
+   //
 
    switch (ev->action)
      {

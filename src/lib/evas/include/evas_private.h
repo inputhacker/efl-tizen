@@ -898,6 +898,9 @@ struct _Evas_Public_Data
    Evas_Device   *default_seat;
    Evas_Device   *default_mouse;
    Evas_Device   *default_keyboard;
+   //TIZEN_ONLY(20180530): add storing last mouse device.
+   Evas_Device   *last_mouse;
+   //
 
    unsigned char  changed : 1;
    unsigned char  delete_me : 1;
