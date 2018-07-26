@@ -506,7 +506,10 @@ ecore_wl2_dnd_set_actions(Ecore_Wl2_Input *input)
 EAPI void
 ecore_wl2_dnd_drag_end(Ecore_Wl2_Input *input)
 {
-   Ecore_Wl2_Event_Dnd_End *ev;
+   //TIZEN_ONLY(20180724): Supporting Drag and Drop
+   //Ecore_Wl2_Event_Dnd_End *ev;
+   Ecore_Wl2_Event_Data_Source_End *ev;
+   //
 
    EINA_SAFETY_ON_NULL_RETURN(input);
 
@@ -520,7 +523,10 @@ ecore_wl2_dnd_drag_end(Ecore_Wl2_Input *input)
         wl_array_init(&input->data.drag.types);
      }
 
-   ev = calloc(1, sizeof(Ecore_Wl2_Event_Dnd_End));
+   //TIZEN_ONLY(20180724): Supporting Drag and Drop
+   //ev = calloc(1, sizeof(Ecore_Wl2_Event_Dnd_End));
+   ev = calloc(1, sizeof(Ecore_Wl2_Event_Data_Source_End));
+   //
    if (!ev) return;
 
    if (input->focus.keyboard)
@@ -532,7 +538,10 @@ ecore_wl2_dnd_drag_end(Ecore_Wl2_Input *input)
    ev->display = input->display;
    ev->display->refs++;
 
-   ecore_event_add(ECORE_WL2_EVENT_DND_END, ev, _display_event_free, ev->display);
+   //TIZEN_ONLY(20180724): Supporting Drag and Drop
+   //ecore_event_add(ECORE_WL2_EVENT_DND_END, ev, _display_event_free, ev->display);
+   ecore_event_add(ECORE_WL2_EVENT_DATA_SOURCE_END, ev, _display_event_free, ev->display);
+   //
 }
 
 EAPI Ecore_Wl2_Offer*

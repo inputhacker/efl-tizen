@@ -2295,9 +2295,16 @@ _wl_efl_sel_manager_drag_start(Eo *obj EINA_UNUSED, Efl_Selection_Manager_Data *
    seat_sel->drag_win_start.x = seat_sel->drag_win_end.x = x;
    seat_sel->drag_win_start.y = seat_sel->drag_win_end.y = y;
 
+   //TIZEN_ONLY(20180724): Supporting Drag and Drop
+   //FIXME(20180724): If drag_win is resized first, drag_win will not be visible.
+   //                 It should be fixed later.
+   //evas_object_move(seat_sel->drag_win, x, y);
+   //evas_object_resize(seat_sel->drag_win, w, h);
+   //evas_object_show(seat_sel->drag_win);
+   evas_object_show(seat_sel->drag_win);
    evas_object_move(seat_sel->drag_win, x, y);
    evas_object_resize(seat_sel->drag_win, w, h);
-   evas_object_show(seat_sel->drag_win);
+   //
 
    evas_pointer_canvas_xy_get(evas_object_evas_get(drag_obj), &x3, &y3);
    seat_sel->drag_pos.x = x3 - x2;
@@ -2761,8 +2768,10 @@ _wl_dnd_end(void *data, int type EINA_UNUSED, void *event)
    ev = event;
    seat_sel = _wl_sel_manager_seat_selection_init(pd, ev->seat);
    sel = seat_sel->sel;
-   if (ev->serial != sel->drag_serial)
-    return ECORE_CALLBACK_RENEW;
+   //TIZEN_ONLY(20180724): Supporting Drag and Drop
+   //FIXME(20180724): Serial is not working now, It should be fixed later
+   //if (ev->serial != sel->drag_serial)
+   //  return ECORE_CALLBACK_RENEW;
 
    if (seat_sel->active_type != EFL_SELECTION_TYPE_DND)
      return ECORE_CALLBACK_RENEW;
@@ -3732,7 +3741,11 @@ _wl_dnd_receive(void *data, int type EINA_UNUSED, void *event)
            sel->request_obj = NULL;
      }
 
-   ecore_wl2_offer_finish(ev->offer);
+   //TIZEN_ONLY(20180724): Supporting Drag and Drop
+   //FIXME(20180724): ecore_wl2_offer_finish cause app termination,
+   //                 It should be fixed or removed later
+   //ecore_wl2_offer_finish(ev->offer);
+   //
 
    return ECORE_CALLBACK_CANCEL;
 }
