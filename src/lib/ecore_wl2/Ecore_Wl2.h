@@ -190,6 +190,10 @@ typedef struct _Ecore_Wl2_Event_Data_Source_Send
 
 typedef struct Ecore_Wl2_Event_Seat_Selection
 {
+   //TIZEN_ONLY(20180724): Supporting copy and paste for cbhm
+   int num_types;
+   const char **types;
+   //
    unsigned int seat;
    Ecore_Wl2_Display *display;
 } Ecore_Wl2_Event_Seat_Selection;
