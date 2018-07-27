@@ -149,8 +149,6 @@ evas_shutdown(void)
 
    evas_font_path_global_clear();
 
-   evas_filter_shutdown();
-
    //evas_thread_shutdown(); TIZEN_ONLY
    _evas_preload_thread_shutdown();
    evas_async_events_shutdown();
