@@ -86,7 +86,9 @@ evas_init(void)
    evas_filter_init();
    evas_cache_vg_init();
 
-   EINA_SAFETY_ON_FALSE_GOTO(evas_thread_init(), shutdown_filter);
+//TIZEN_ONLY(20171114) : support evas gl thread
+//   EINA_SAFETY_ON_FALSE_GOTO(evas_thread_init(), shutdown_filter);
+//
 
    evas_common_init();
 
@@ -99,6 +101,11 @@ evas_init(void)
 
    return _evas_init_count;
 
+//TIZEN_ONLY(20171114) : support evas gl thread
+//shutdown_filter:
+//   evas_filter_shutdown();
+//   _evas_preload_thread_shutdown();
+//
 #ifdef EVAS_CSERVE2
    if (cs2) evas_cserve2_shutdown();
 shutdown_async_events:
@@ -150,7 +157,10 @@ evas_shutdown(void)
 
    evas_font_path_global_clear();
 
-   //evas_thread_shutdown(); TIZEN_ONLY
+
+//TIZEN_ONLY(20171114) : support evas gl thread
+//   evas_thread_shutdown();
+//
    _evas_preload_thread_shutdown();
    evas_async_events_shutdown();
 
