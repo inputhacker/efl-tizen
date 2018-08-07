@@ -213,7 +213,11 @@ _selection_lost_cb(void *data, const Eina_Value value)
         if ((ldata->obj == ldata2->obj) &&
             (ldata->type == ldata2->type))
           {
-             ldata2->loss_cb(ldata2->udata, ldata2->type);
+             //TIZEN ONLY(20180807): check the sel lost object to prevent the invalid access
+             //ldata2->loss_cb(ldata2->udata, ldata2->type);
+             if (efl_data_scope_get(ldata2->obj, EFL_UI_WIDGET_CLASS))
+               ldata2->loss_cb(ldata2->udata, ldata2->type);
+             //
              lost_cb_list = eina_list_remove(lost_cb_list, ldata2);
           }
      }
