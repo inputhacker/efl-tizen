@@ -4,6 +4,7 @@
 
 #define ECORE_EVAS_INTERNAL
 #define EFL_INPUT_EVENT_PROTECTED
+#define IPA_YLNO_ESU_LANRETNI_MLE
 
 #include <stdlib.h>
 #include <string.h>
@@ -4820,7 +4821,7 @@ ecore_evas_wayland_shm_new(const char *disp_name, unsigned int parent,
 //
 
    Ecore_Evas *ee;
-   Ecore_Evas *(*new)(const char *, unsigned int, int, int, int, int, Eina_Bool);
+   Ecore_Evas *(*new)(const char *, Ecore_Window, int, int, int, int, Eina_Bool);
    Eina_Module *m = _ecore_evas_engine_load("wayland");
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
@@ -4837,7 +4838,9 @@ ecore_evas_wayland_shm_new(const char *disp_name, unsigned int parent,
 //
    EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
 
-   ee = new(disp_name, parent, x, y, w, h, frame);
+   if (parent) ERR("Wayland windows with parents not supported through legacy API");
+
+   ee = new(disp_name, 0, x, y, w, h, frame);
    if (!_ecore_evas_cursors_init(ee))
      {
         ecore_evas_free(ee);
@@ -4856,7 +4859,51 @@ ecore_evas_wayland_egl_new(const char *disp_name, unsigned int parent,
 			   int x, int y, int w, int h, Eina_Bool frame)
 {
    Ecore_Evas *ee;
-   Ecore_Evas *(*new)(const char *, unsigned int, int, int, int, int, Eina_Bool);
+   Ecore_Evas *(*new)(const char *, Ecore_Window, int, int, int, int, Eina_Bool);
+   Eina_Module *m = _ecore_evas_engine_load("wayland");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+   new = eina_module_symbol_get(m, "ecore_evas_wayland_egl_new_internal");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
+
+   if (parent) ERR("Wayland windows with parents not supported through legacy API");
+
+   ee = new(disp_name, 0, x, y, w, h, frame);
+   if (!_ecore_evas_cursors_init(ee))
+     {
+        ecore_evas_free(ee);
+        return NULL;
+     }
+   return ee;
+}
+
+Ecore_Evas *
+_wayland_shm_new(const char *disp_name, Ecore_Window parent,
+                 int x, int y, int w, int h, Eina_Bool frame)
+{
+   Ecore_Evas *ee;
+   Ecore_Evas *(*new)(const char *, Ecore_Window, int, int, int, int, Eina_Bool);
+   Eina_Module *m = _ecore_evas_engine_load("wayland");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
+
+   new = eina_module_symbol_get(m, "ecore_evas_wayland_shm_new_internal");
+   EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
+
+   ee = new(disp_name, parent, x, y, w, h, frame);
+   if (!_ecore_evas_cursors_init(ee))
+     {
+        ecore_evas_free(ee);
+        return NULL;
+     }
+   return ee;
+}
+
+Ecore_Evas *
+_wayland_egl_new(const char *disp_name, Ecore_Window parent,
+                 int x, int y, int w, int h, Eina_Bool frame)
+{
+   Ecore_Evas *ee;
+   Ecore_Evas *(*new)(const char *, Ecore_Window, int, int, int, int, Eina_Bool);
    Eina_Module *m = _ecore_evas_engine_load("wayland");
    EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
 
