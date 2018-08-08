@@ -593,9 +593,9 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
    Ecore_Evas *ee;
    Ecore_Evas_Engine_Wl_Data *wdata;
    Ecore_Wl2_Event_Window_Configure *ev;
-   int nw = 0, nh = 0, fw, fh, sw, sh, contentw, contenth;
+   int nw = 0, nh = 0, fw, fh, pfw, pfh, sw, sh, contentw, contenth;
    int framew, frameh;
-   Eina_Bool active, prev_max, prev_full;
+   Eina_Bool active, prev_max, prev_full, state_change = EINA_FALSE;
 
    // TIZEN_ONLY(20160630)
    int nx = 0, ny = 0;
@@ -645,13 +645,14 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
    evas_output_framespace_get(ee->evas, NULL, NULL, &framew, &frameh);
    contentw = wdata->win->set_config.geometry.w - (framew - sw);
    contenth = wdata->win->set_config.geometry.h - (frameh - sh);
-   fw = wdata->win->set_config.geometry.w - contentw;
-   fh = wdata->win->set_config.geometry.h - contenth;
+   pfw = fw = wdata->win->set_config.geometry.w - contentw;
+   pfh = fh = wdata->win->set_config.geometry.h - contenth;
 
    if ((prev_max != ee->prop.maximized) ||
        (prev_full != ee->prop.fullscreen) ||
        (active != wdata->activated))
      {
+        state_change = EINA_TRUE;
         _ecore_evas_wl_common_state_update(ee);
         sw = ee->shadow.l + ee->shadow.r;
         sh = ee->shadow.t + ee->shadow.b;
@@ -667,6 +668,18 @@ _ecore_evas_wl_common_cb_window_configure(void *data EINA_UNUSED, int type EINA_
         if ((ee->x != nx) || (ee->y != ny))
           _ecore_evas_wl_common_move(ee, nx, ny);
 //
+        if ((wdata->win->set_config.serial != wdata->win->req_config.serial) &&
+            wdata->win->req_config.serial && wdata->win->surface &&
+            ((!state_change) || ((pfw == fw) && (pfh == fh))))
+          {
+             if (wdata->win->xdg_configure_ack)
+               wdata->win->xdg_configure_ack(wdata->win->xdg_surface,
+                                              wdata->win->req_config.serial);
+             if (wdata->win->zxdg_configure_ack)
+               wdata->win->zxdg_configure_ack(wdata->win->zxdg_surface,
+                                              wdata->win->req_config.serial);
+             wdata->win->set_config.serial = wdata->win->req_config.serial;
+          }
         return ECORE_CALLBACK_RENEW;
      }
 
