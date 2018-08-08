@@ -197,6 +197,9 @@ _efl_ui_popup_alert_text_text_set(Eo *obj, Efl_Ui_Popup_Alert_Text_Data *pd, con
           {
              // TODO: Change internal component to Efl.Ui.Widget
              pd->message = elm_label_add(obj);
+             //TIZEN_ONLY(20180808): apply tizen theme
+             elm_object_style_set(pd->message, "popup/default");
+             //
              //elm_widget_element_update(obj, pd->message, PART_NAME_TEXT);
              efl_gfx_size_hint_weight_set(pd->message, EVAS_HINT_EXPAND,
                                           EVAS_HINT_EXPAND);
