@@ -1603,7 +1603,7 @@ evas_gl_common_context_free(Evas_Engine_GL_Context *gc)
 EAPI void
 evas_gl_common_context_use(Evas_Engine_GL_Context *gc)
 {
-  if (gc->context_key)
+  if (gc && gc->context_key)
     {
       Evas_Engine_GL_Context *tls_context = eina_tls_get(gc->context_key);
       if (gc == tls_context) return;
