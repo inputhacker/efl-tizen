@@ -435,6 +435,10 @@ _ecore_wl2_dnd_selection(Ecore_Wl2_Input *input, struct wl_data_offer *offer)
                 }
              ecore_event_add(ECORE_WL2_EVENT_SEAT_SELECTION, ev, _selection_event_free, ev->display);
           }
+        else
+          {
+             free(ev);
+          }
      }
    //
 }
