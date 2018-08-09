@@ -2738,6 +2738,7 @@ data_write(void)
 	exit(-1);
      }
 
+   /* TIZEN_ONLY(20180809): remove edje_cc build warning message caused by efl_version
    if ((edje_file->efl_version.major <= 1) && (edje_file->efl_version.minor <= 18)
        && edje_file->has_textblock_min_max)
      {
@@ -2750,6 +2751,8 @@ data_write(void)
             "defined as description.text.{min,max}).",
             EFL_VERSION_MAJOR, EFL_VERSION_MINOR);
      }
+    */
+   /* END */
 
    check_groups(ef);
 
