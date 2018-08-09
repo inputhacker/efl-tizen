@@ -1108,8 +1108,8 @@ _native_cb_bind(void *image)
    Evas_GL_Image *img;
    Native *n;
 
-   EGLBoolean wait_result;
-   EGLBoolean destroy_result;
+   EGLBoolean wait_result = EGL_FALSE;
+   EGLBoolean destroy_result = EGL_FALSE;
 
    if (!(img = image)) return;
    if (!(n = img->native.data)) return;
