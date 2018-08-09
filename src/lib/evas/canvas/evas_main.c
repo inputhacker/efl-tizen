@@ -1914,6 +1914,7 @@ _evas_canvas_efl_canvas_scene_smart_objects_calculate(Eo *eo_e, Evas_Public_Data
 EAPI void
 evas_smart_objects_calculate(Eo *eo_e)
 {
+   EINA_SAFETY_ON_NULL_RETURN(eo_e);
    evas_call_smarts_calculate(eo_e);
 }
 
