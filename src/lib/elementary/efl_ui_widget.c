@@ -7070,7 +7070,7 @@ _efl_ui_widget_on_focus_update(Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Object_It
 
    if (!sd->resize_obj)
      evas_object_focus_set(obj, focused);
-   
+
    if (elm_widget_is_legacy(obj))
      {
         if (focused)
@@ -7389,6 +7389,7 @@ plug_type_proxy_get(Eo *obj, Evas_Object *widget)
      {
         // TIZEN_ONLY(20160930) : endless recursion fix
         efl_access_attribute_append(efl_super(obj, MY_CLASS), "___PlugID", plug_id);
+        efl_access_role_set(obj, EFL_ACCESS_ROLE_EMBEDDED);
 
         proxy = evas_object_data_get(widget, "__widget_proxy");
         // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
