@@ -673,7 +673,6 @@ EAPI void             *ecore_ipc_client_data_get(Ecore_Ipc_Client *cl);
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
->>>>>>> 553265d... Fix typos and some wrong expressions in API reference doxygen.
  */
 EAPI void              ecore_ipc_client_data_size_max_set(Ecore_Ipc_Client *cl, int size);
 

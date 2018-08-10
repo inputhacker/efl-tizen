@@ -7140,7 +7140,6 @@ static void _plug_connect(Eldbus_Connection *conn, Eo *proxy)
 EAPI void elm_atspi_bridge_utils_proxy_connect(Eo *proxy)
 {
    Eo *bridge = _elm_atspi_bridge_get();
-
    if (!bridge)
      {
         ERR("AT-SPI: Atspi bridge is not enabled.");
