@@ -280,6 +280,11 @@ struct _Ecore_Drm_Evdev
              int x, y;
              int w, h;
           } transform;
+        struct
+          {
+             int x;
+             int y;
+          } coords[EVDEV_MAX_SLOTS];
      } touch;
 };
 

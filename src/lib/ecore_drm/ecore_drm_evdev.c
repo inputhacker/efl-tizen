@@ -996,6 +996,12 @@ _device_handle_touch_down(struct libinput_device *device, struct libinput_event_
 
    edev->mt_slot = libinput_event_touch_get_slot(event);
 
+   if (edev->mt_slot < EVDEV_MAX_SLOTS)
+     {
+        edev->touch.coords[edev->mt_slot].x = edev->seat->ptr.ix;
+        edev->touch.coords[edev->mt_slot].y = edev->seat->ptr.iy;
+     }
+
    _device_handle_touch_motion_send(edev, event);
    _device_handle_touch_event_send(edev, event, ECORE_EVENT_MOUSE_BUTTON_DOWN);
 
@@ -1032,6 +1038,12 @@ _device_handle_touch_motion(struct libinput_device *device, struct libinput_even
 
    edev->mt_slot = libinput_event_touch_get_slot(event);
 
+   if (edev->mt_slot < EVDEV_MAX_SLOTS)
+     {
+        edev->touch.coords[edev->mt_slot].x = edev->seat->ptr.ix;
+        edev->touch.coords[edev->mt_slot].y = edev->seat->ptr.iy;
+     }
+
    _device_handle_touch_motion_send(edev, event);
    TRACE_INPUT_END();
 }
@@ -1050,6 +1062,14 @@ _device_handle_touch_up(struct libinput_device *device, struct libinput_event_to
      }
 
    edev->mt_slot = libinput_event_touch_get_slot(event);
+
+   if (edev->mt_slot < EVDEV_MAX_SLOTS)
+     {
+        edev->mouse.dx = edev->seat->ptr.dx = edev->seat->ptr.ix =
+          edev->touch.coords[edev->mt_slot].x;
+        edev->mouse.dy = edev->seat->ptr.dy = edev->seat->ptr.iy =
+          edev->touch.coords[edev->mt_slot].y;
+     }
 
    _device_handle_touch_event_send(edev, event, ECORE_EVENT_MOUSE_BUTTON_UP);
    TRACE_INPUT_END();
