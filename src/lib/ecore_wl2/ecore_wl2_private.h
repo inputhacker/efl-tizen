@@ -119,6 +119,9 @@ struct _Ecore_Wl2_Display
         //TIZEN_ONLY(20171115): support output transform
         struct tizen_screen_rotation *tz_screen_rotation;
         //
+        //TIZEN_ONLY(20180810): support client demand move resize
+        struct tizen_move_resize *tz_moveresize;
+        //
 
         int compositor_version;
      } wl;

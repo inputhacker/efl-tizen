@@ -644,6 +644,17 @@ static const struct tizen_screen_rotation_listener _tizen_screen_rotation_listen
 {
    _tizen_screen_rotation_cb_ignore_output_transform,
 };
+
+static void
+_tizen_move_resize_cb_geometry_done(void *data EINA_UNUSED, struct tizen_move_resize *tz_moveresize EINA_UNUSED, struct wl_surface *surface EINA_UNUSED, uint32_t serial EINA_UNUSED, int32_t x EINA_UNUSED, int32_t y EINA_UNUSED, int32_t w EINA_UNUSED, int32_t h EINA_UNUSED, int32_t err EINA_UNUSED)
+{
+   /* to be implemented*/
+}
+
+static const struct tizen_move_resize_listener _tizen_move_resize_listener =
+{
+   _tizen_move_resize_cb_geometry_done,
+};
 //
 
 static void
@@ -857,6 +868,16 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
           tizen_screen_rotation_add_listener(ewd->wl.tz_screen_rotation, &_tizen_screen_rotation_listener, ewd->wl.display);
      }
 //
+//TIZEN_ONLY(20180810): support client driven move resize
+   else if (!strcmp(interface, "tizen_move_resize"))
+     {
+        ewd->wl.tz_moveresize =
+           wl_registry_bind(registry, id, &tizen_move_resize_interface, 1);
+        if (ewd->wl.tz_moveresize)
+          tizen_screen_rotation_add_listener(ewd->wl.tz_moveresize, &_tizen_move_resize_listener, ewd->wl.display);
+     }
+//
+   //
 
 event:
    /* allocate space for event structure */
@@ -968,6 +989,7 @@ _ecore_wl2_display_globals_cleanup(Ecore_Wl2_Display *ewd)
    if (ewd->wl.tz_indicator) tizen_indicator_destroy(ewd->wl.tz_indicator);
    if (ewd->wl.tz_clipboard) tizen_clipboard_destroy(ewd->wl.tz_clipboard);
    if (ewd->wl.tz_screen_rotation) tizen_screen_rotation_destroy(ewd->wl.tz_screen_rotation);
+   if (ewd->wl.tz_moveresize) tizen_move_resize_destroy(ewd->wl.tz_moveresize);
 //
 
    if (ewd->wl.registry) wl_registry_destroy(ewd->wl.registry);
