@@ -7494,6 +7494,7 @@ plug_type_proxy_get(Eo *obj, Evas_Object *widget)
      {
         // TIZEN_ONLY(20160930) : endless recursion fix
         efl_access_object_attribute_append(efl_super(obj, MY_CLASS), "___PlugID", plug_id);
+        efl_access_object_role_set(obj, EFL_ACCESS_ROLE_EMBEDDED);
 
         proxy = evas_object_data_get(widget, "__widget_proxy");
         // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted

@@ -2792,7 +2792,7 @@ _elm_atspi_bridge_plug_id_split(const char *plug_id, char **bus, char **path)
         else
           {
              char buf[128];
-             snprintf(buf, sizeof(buf), "%s:%s",split[0], split[1]);
+             snprintf(buf, sizeof(buf), "%s.%s",split[0], split[1]);
              if (bus) *bus = strdup(buf);
              if (path) *path = strdup(split[2]);
              ret = EINA_TRUE;
@@ -7161,72 +7161,100 @@ EAPI void elm_atspi_bridge_utils_proxy_connect(Eo *proxy)
    _plug_connect(pd->a11y_bus, proxy);
 }
 
-//TIZEN_ONLY(20171114) atspi: sanitize service name before creating bus
+//TIZEN_ONLY(20180810) atspi: check service, bus and path names for Dbus communication
 /**
- * @brief Service name sanitizer according to specs:
+ * @brief In according to following specification:
  * http://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-names
  * http://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-marshaling-object-path
  */
-static char *_sanitize_service_name(const char *name)
+static Eina_Bool _check_service_name(const char *str)
 {
-   char ret[256] = "\0";
+   if (!str)
+      return NULL;
 
-   if (!name) return NULL;
+   char *tmp = str;
+   while (*tmp)
+      {
+         if (!isalnum(*tmp) && *tmp != '_' && *tmp != '-' && *tmp != '.')
+           {
+              ERR("Invalid service name: %s, following character is forbidden in Dbus specification: %c", str, *tmp);
+              return EINA_FALSE;
+           }
+         ++tmp;
+      }
+   return EINA_TRUE;
+}
 
-   const char *tmp = name;
-   char *dst = ret;
+static char *_sanitize_bus_name(const char *str)
+{
+   char *res = strdup(str);
+   char *tmp = res;
 
-   // name element should not begin with digit. Swallow non-charater prefix
-   while ((*tmp != '\0') && !isalpha(*tmp)) tmp++;
-
-   // append rest of character valid charactes [A-Z][a-z][0-9]_
-   while ((*tmp != '\0') && (dst < &ret[sizeof(ret) - 1]))
+   if (res[0] == ':')
      {
-         if (isalpha(*tmp) || isdigit(*tmp) || (*tmp == '_'))
-           *dst++ = *tmp;
-         tmp++;
+         while (*tmp)
+          {
+            if (*tmp == '.' && isdigit(*(tmp + 1)))
+            *tmp = '_';
+            ++tmp;
+          }
      }
 
-   *++dst = '\0';
-   return strdup(ret);
+   return res;
+}
+
+static char *_sanitize_path_name(const char *str)
+{
+   char *res = strdup(str);
+   char *tmp = res;
+
+   while (*tmp)
+     {
+        if (*tmp == '-' || *tmp == '.')
+           *tmp = '_';
+        ++tmp;
+     }
+
+   return res;
 }
 //
 
 Eo* _elm_atspi_bridge_utils_proxy_create(Eo *parent, const char *svcname, int svcnum, Elm_Atspi_Proxy_Type type)
 {
    Eo *ret;
-   //TIZEN_ONLY(20171114) atspi: sanitize service name before creating bus
-   char bus[256], path[256], *name;
+   //TIZEN_ONLY(20180810) atspi: check service, bus and path names for Dbus communication
+   char bus[256], path[256];
    int res;
 
-   name = _sanitize_service_name(svcname);
-   if (!name) return NULL;
+   Eina_Bool c = _check_service_name(svcname);
+   if (!c) return NULL;
 
-   res = snprintf(bus, sizeof(bus), "elm.atspi.proxy.socket.%s-%d", name, svcnum);
+   res = snprintf(bus, sizeof(bus), "elm.atspi.proxy.socket-%s-%d", svcname, svcnum);
    if (res < 0 || (res >= (int)sizeof(bus)))
      {
-         free(name);
+         ERR("Error occured during creating bus name");
          return NULL;
      }
 
-   res = snprintf(path, sizeof(path), "/elm/atspi/proxy/socket/%s/%d", name, svcnum);
+   res = snprintf(path, sizeof(path), "/elm/atspi/proxy/socket/%s/%d", svcname, svcnum);
    if (res < 0 || (res >= (int)sizeof(path)))
      {
-         free(name);
+         ERR("Error occured during creating bus name");
          return NULL;
      }
-
-   free(name);
-   //
 
    ret = efl_add(ELM_ATSPI_PROXY_CLASS, parent, elm_obj_atspi_proxy_ctor(efl_added, type));
    if (!ret) return NULL;
 
-   snprintf(bus, sizeof(bus), "elm.atspi.proxy.socket.%s-%d", svcname, svcnum);
-   snprintf(path, sizeof(path), "/elm/atspi/proxy/socket/%s/%d", svcname, svcnum);
+   char *bus_sanitized = _sanitize_bus_name(bus);
+   char *path_sanitized = _sanitize_path_name(path);
+   //
 
-   efl_key_data_set(ret, "__svc_bus", eina_stringshare_add(bus));
-   efl_key_data_set(ret, "__svc_path", eina_stringshare_add(path));
+   efl_key_data_set(ret, "__svc_bus", eina_stringshare_add(bus_sanitized));
+   efl_key_data_set(ret, "__svc_path", eina_stringshare_add(path_sanitized));
+
+   free(bus_sanitized);
+   free(path_sanitized);
 
    return ret;
 }
