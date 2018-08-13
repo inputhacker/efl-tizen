@@ -3178,3 +3178,13 @@ ecore_wl2_window_cursor_default_restore(Ecore_Wl2_Window *win)
      ecore_wl2_input_cursor_default_restore(input);
 }
 //
+
+//TIZEN_ONLY(20180810): support client demand move resize
+EAPI void
+ecore_wl2_window_sync_geometry_set(Ecore_Wl2_Window *window, uint32_t serial, int x, int y, int w, int h)
+{
+   if (!window) return;
+   if (window->display->wl.tz_moveresize)
+     tizen_move_resize_set_geometry(window->display->wl.tz_moveresize, window->surface, serial, x, y, w, h);
+}
+//

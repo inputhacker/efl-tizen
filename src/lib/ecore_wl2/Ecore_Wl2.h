@@ -2333,6 +2333,11 @@ EAPI Eina_Bool ecore_wl2_window_ignore_output_transform_get(Ecore_Wl2_Window *wi
 EAPI struct wl_compositor *ecore_wl2_display_compositor_get(Ecore_Wl2_Display *display);
 //
 
+//TIZEN_ONLY(20180810): support client demand move resize
+EAPI void
+ecore_wl2_window_sync_geometry_set(Ecore_Wl2_Window *window, uint32_t serial, int x, int y, int w, int h);
+//
+
 # endif
 
 # undef EAPI
