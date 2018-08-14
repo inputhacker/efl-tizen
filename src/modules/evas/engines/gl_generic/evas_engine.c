@@ -485,6 +485,8 @@ eng_image_native_set(void *engine, void *image, void *native)
             }
         }
     }
+//TIZEN_ONLY(20180814) : Revert "evas engines: do not immediately free native surface when unsetting it"
+/*
   gl_generic_window_find(engine);
 
    if (!ns)
@@ -492,7 +494,20 @@ eng_image_native_set(void *engine, void *image, void *native)
         evas_gl_common_image_free(im);
         return NULL;
      }
+*/
+  if ((!ns) && (!im->native.data)) return im;
 
+  gl_generic_window_find(engine);
+
+  if (im->native.data)
+    {
+      if (im->native.func.free)
+        im->native.func.free(im);
+      evas_gl_common_image_native_disable(im);
+    }
+
+  if (!ns) return im;
+//
   if (ns->type == EVAS_NATIVE_SURFACE_OPENGL)
     {
        texid = tex;
