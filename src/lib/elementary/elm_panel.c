@@ -60,7 +60,6 @@ _elm_panel_elm_layout_sizing_eval(Eo *obj, Elm_Panel_Data *sd)
 {
    Evas_Coord mw = 0, mh = 0;
 
-   EINA_SAFETY_ON_FALSE_RETURN(efl_finalized_get(obj));
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
 
    if (sd->delete_me) return;
@@ -275,7 +274,8 @@ _elm_panel_efl_ui_widget_theme_apply(Eo *obj, Elm_Panel_Data *sd)
           efl_content_set(efl_part(efl_super(obj, MY_CLASS), "elm.swallow.event"), sd->event);
      }
 
-   elm_layout_sizing_eval(obj);
+   if (efl_finalized_get(obj))
+     elm_layout_sizing_eval(obj);
 
    return int_ret;
 }
@@ -815,7 +815,8 @@ _elm_panel_content_set(Eo *obj, Elm_Panel_Data *sd, const char *part, Evas_Objec
           elm_widget_sub_object_add(obj, sd->content);
      }
 
-   elm_layout_sizing_eval(obj);
+   if (efl_finalized_get(obj))
+     elm_layout_sizing_eval(obj);
 
    return EINA_TRUE;
 }
@@ -923,8 +924,6 @@ _elm_panel_efl_canvas_group_group_add(Eo *obj, Elm_Panel_Data *priv)
              efl_content_set(efl_part(efl_super(obj, MY_CLASS), "elm.swallow.event"), priv->event);
           }
      }
-
-   elm_layout_sizing_eval(obj);
 }
 
 EOLIAN static void
@@ -984,8 +983,8 @@ _scrollable_layout_resize(Eo *obj, Elm_Panel_Data *sd, Evas_Coord w, Evas_Coord 
          evas_object_size_hint_min_set(sd->scr_event, w, h);
          break;
      }
-
-   elm_layout_sizing_eval(obj);
+   if (efl_finalized_get(obj))
+     elm_layout_sizing_eval(obj);
 }
 
 EOLIAN static void
@@ -1121,7 +1120,8 @@ _elm_panel_orient_set(Eo *obj, Elm_Panel_Data *sd, Elm_Panel_Orient orient)
    else
      _orient_set_do(obj);
 
-   elm_layout_sizing_eval(obj);
+   if (efl_finalized_get(obj))
+     elm_layout_sizing_eval(obj);
 }
 
 EOLIAN static Elm_Panel_Orient
