@@ -218,6 +218,14 @@ static gboolean   _ecore_glib_idle_enterer_called;
 static gboolean   ecore_fds_ready;
 #endif
 
+static inline void
+_update_loop_time(Efl_Loop_Data *pd)
+{
+   double loop_time = ecore_time_get();
+   if (loop_time > pd->loop_time)
+     pd->loop_time = loop_time;
+}
+
 #ifdef EFL_EXTRA_SANITY_CHECKS
 static inline void
 _ecore_fd_valid(Eo *obj EINA_UNUSED, Efl_Loop_Data *pd EINA_UNUSED)
@@ -694,7 +702,7 @@ _ecore_main_gsource_prepare(GSource *source EINA_UNUSED,
 
    if ((!ecore_idling) && (!_ecore_glib_idle_enterer_called))
      {
-        pd->loop_time = ecore_time_get();
+        _update_loop_time(pd);
         _efl_loop_timer_expired_timers_call(obj, pd, pd->loop_time);
 
         efl_event_callback_call(obj, EFL_LOOP_EVENT_IDLE_ENTER, NULL);
@@ -833,7 +841,7 @@ _ecore_main_gsource_dispatch(GSource    *source EINA_UNUSED,
    gboolean events_ready, timers_ready, idlers_ready;
    double next_time;
 
-   pd->loop_time = ecore_time_get();
+   _update_loop_time(pd);
    _efl_loop_timer_enable_new(obj, pd);
    next_time = _efl_loop_timer_next_get(obj, pd);
 
@@ -926,7 +934,7 @@ _ecore_main_loop_timer_run(uv_timer_t *timer EINA_UNUSED)
         efl_event_callback_call(obj, EFL_LOOP_EVENT_IDLE_EXIT, NULL);
         _ecore_animator_run_reset();
      }
-   pd->loop_time = ecore_time_get();
+   _update_loop_time(pd);
    _ecore_main_loop_uv_check(NULL);
    _ecore_main_loop_uv_prepare(NULL);
 }
@@ -1166,7 +1174,7 @@ _ecore_main_loop_iterate(Eo *obj, Efl_Loop_Data *pd)
           {
 #endif
 #ifndef USE_G_MAIN_LOOP
-             pd->loop_time = ecore_time_get();
+             _update_loop_time(pd);
              _ecore_main_loop_iterate_internal(obj, pd, 1);
 #else
              g_main_context_iteration(NULL, 0);
@@ -1180,7 +1188,7 @@ _ecore_main_loop_iterate(Eo *obj, Efl_Loop_Data *pd)
    else
      {
 #ifndef USE_G_MAIN_LOOP
-        pd->loop_time = ecore_time_get();
+        _update_loop_time(pd);
         _ecore_main_loop_iterate_internal(obj, pd, 1);
 #else
              g_main_context_iteration(NULL, 0);
@@ -1200,7 +1208,7 @@ _ecore_main_loop_iterate_may_block(Eo *obj, Efl_Loop_Data *pd, int may_block)
 #ifndef USE_G_MAIN_LOOP
              in_main_loop++;
              pd->in_loop = in_main_loop;
-             pd->loop_time = ecore_time_get();
+             _update_loop_time(pd);
              _ecore_main_loop_iterate_internal(obj, pd, !may_block);
              in_main_loop--;
              pd->in_loop = in_main_loop;
@@ -1219,7 +1227,7 @@ _ecore_main_loop_iterate_may_block(Eo *obj, Efl_Loop_Data *pd, int may_block)
      {
 #ifndef USE_G_MAIN_LOOP
         pd->in_loop++;
-        pd->loop_time = ecore_time_get();
+        _update_loop_time(pd);
         _ecore_main_loop_iterate_internal(obj, pd, !may_block);
         pd->in_loop--;
         return pd->message_queue ? 1 : 0;
@@ -1245,7 +1253,7 @@ _ecore_main_loop_begin(Eo *obj, Efl_Loop_Data *pd)
 #ifndef USE_G_MAIN_LOOP
              in_main_loop++;
              pd->in_loop = in_main_loop;
-             pd->loop_time = ecore_time_get();
+             _update_loop_time(pd);
              while (!pd->do_quit)
                _ecore_main_loop_iterate_internal(obj, pd, 0);
              pd->do_quit = 0;
@@ -1267,7 +1275,7 @@ _ecore_main_loop_begin(Eo *obj, Efl_Loop_Data *pd)
              DBG("uv_run");
              in_main_loop++;
              pd->in_loop = in_main_loop;
-             pd->loop_time = ecore_time_get();
+             _update_loop_time(pd);
              while (!pd->do_quit)
                _dl_uv_run(_dl_uv_default_loop(), UV_RUN_DEFAULT);
              in_main_loop--;
@@ -1281,7 +1289,7 @@ _ecore_main_loop_begin(Eo *obj, Efl_Loop_Data *pd)
      {
 #ifndef USE_G_MAIN_LOOP
         pd->in_loop++;
-        pd->loop_time = ecore_time_get();
+        _update_loop_time(pd);
         while (!pd->do_quit)
           _ecore_main_loop_iterate_internal(obj, pd, 0);
         pd->do_quit = 0;
@@ -1976,7 +1984,7 @@ _ecore_main_select(Eo *obj, Efl_Loop_Data *pd, double timeout)
    eina_evlog("!WAKE", NULL, 0.0, NULL);
    eina_evlog(">RUN", NULL, 0.0, NULL);
 
-   pd->loop_time = ecore_time_get();
+   _update_loop_time(pd);
    if (ret < 0)
      {
 #ifndef _WIN32
@@ -2359,14 +2367,14 @@ _ecore_main_loop_uv_prepare(uv_prepare_t *handle EINA_UNUSED)
              _ecore_main_uv_idling = EINA_FALSE;
           }
         t = -1;
-        pd->loop_time = ecore_time_get();
+        _update_loop_time(pd);
         _efl_loop_timer_enable_new(obj, pd);
         goto done;
      }
 
    assert(!pd->fd_handlers_to_call);
 
-   pd->loop_time = ecore_time_get();
+   _update_loop_time(pd);
    _efl_loop_timer_enable_new(obj, pd);
    if (_efl_loop_timers_exists(obj, pd) || (t >= 0))
      {
@@ -2404,7 +2412,7 @@ static int
 _ecore_main_loop_spin_core(Eo *obj, Efl_Loop_Data *pd)
 {
    // as we are spinning we need to update loop time per spin
-   pd->loop_time = ecore_time_get();
+   _update_loop_time(pd);
    // call all idlers
    _ecore_main_idler_all_call(obj);
    // which returns false if no more idelrs exist
