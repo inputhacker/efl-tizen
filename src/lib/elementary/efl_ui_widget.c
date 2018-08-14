@@ -9233,7 +9233,7 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
    //
 
    //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
-   _elm_widget_accessibility_highlight_grabbing_set(sd->view, EINA_TRUE);
+   _elm_widget_accessibility_highlight_grabbing_set(obj, EINA_TRUE);
    //
 
    //TIZEN_ONLY(20170119): Show the object highlighted by highlight_grab when the object is completely out of the scroll
@@ -9250,7 +9250,7 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
    //
 
    //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
-    _elm_widget_accessibility_highlight_grabbing_set(sd->view, EINA_FALSE);
+    _elm_widget_accessibility_highlight_grabbing_set(obj, EINA_FALSE);
     //
 
    return EINA_TRUE;
