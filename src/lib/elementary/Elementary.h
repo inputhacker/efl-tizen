@@ -82,6 +82,10 @@
 #include <EMap.h>
 #endif
 
+#ifdef ENABLE_TTRACE
+#include <ttrace.h>
+#endif
+
 #ifdef EAPI
 # undef EAPI
 #endif

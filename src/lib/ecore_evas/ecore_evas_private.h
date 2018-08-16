@@ -59,6 +59,10 @@ EAPI extern int _ecore_evas_log_dom;
 #endif
 #define CRI(...) EINA_LOG_DOM_CRIT(_ecore_evas_log_dom, __VA_ARGS__)
 
+#ifdef ENABLE_TTRACE
+#include <ttrace.h>
+#endif
+
 #define PORTRAIT_CHECK(r) \
   ((r == 0) || (r == 180))
 

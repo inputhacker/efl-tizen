@@ -4818,7 +4818,7 @@ ecore_evas_wayland_shm_new(const char *disp_name, unsigned int parent,
 {
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   eina_evlog("+ecore_evas_wayland_shm_new", NULL, 0.0, NULL );
+   traceBegin(TTRACE_TAG_EFL, "ecore_evas_wayland_shm_new");
 #endif
 //
 
@@ -4827,7 +4827,7 @@ ecore_evas_wayland_shm_new(const char *disp_name, unsigned int parent,
    Eina_Module *m = _ecore_evas_engine_load("wayland");
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   if (!m) eina_evlog("-ecore_evas_wayland_shm_new", NULL, 0.0, NULL );
+   if (!m) traceEnd(TTRACE_TAG_EFL);
 #endif
 //
    EINA_SAFETY_ON_NULL_RETURN_VAL(m, NULL);
@@ -4835,7 +4835,7 @@ ecore_evas_wayland_shm_new(const char *disp_name, unsigned int parent,
    new = eina_module_symbol_get(m, "ecore_evas_wayland_shm_new_internal");
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   if (!new) eina_evlog("-ecore_evas_wayland_shm_new", NULL, 0.0, NULL );
+   if (!new) traceEnd(TTRACE_TAG_EFL);
 #endif
 //
    EINA_SAFETY_ON_NULL_RETURN_VAL(new, NULL);
@@ -4850,7 +4850,7 @@ ecore_evas_wayland_shm_new(const char *disp_name, unsigned int parent,
      }
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
-   eina_evlog("-ecore_evas_wayland_shm_new", NULL, 0.0, NULL );
+   traceEnd(TTRACE_TAG_EFL);
 #endif
 //
    return ee;
