@@ -3253,13 +3253,22 @@ _entry_selection_none_signal_cb(void *data,
 
 // XXX: still try primary selection even if on wl in case it's
 // supported
-//static inline Eina_Bool
-//_entry_win_is_wl(Evas_Object *obj)
-//{
-//   Evas_Object *win = _entry_win_get(obj);
-//   /* primary selection does not exist (yet) */
-//   return win && elm_win_wl_window_get(win);
-//}
+//TIZEN_ONLY(20180817): primary selection is not supported yet
+////static inline Eina_Bool
+////_entry_win_is_wl(Evas_Object *obj)
+////{
+////   Evas_Object *win = _entry_win_get(obj);
+////   /* primary selection does not exist (yet) */
+////   return win && elm_win_wl_window_get(win);
+////}
+static inline Eina_Bool
+_entry_win_is_wl(Evas_Object *obj)
+{
+   Evas_Object *win = _entry_win_get(obj);
+   /* primary selection does not exist (yet) */
+   return win && elm_win_wl_window_get(win);
+}
+//
 
 static void
 _entry_selection_changed_signal_cb(void *data,
@@ -3275,7 +3284,10 @@ _entry_selection_changed_signal_cb(void *data,
      (data, EFL_UI_EVENT_SELECTION_CHANGED, NULL);
    // XXX: still try primary selection even if on wl in case it's
    // supported
-//   if (!_entry_win_is_wl(data))
+   //TIZEN_ONLY(20180817): primary selection is not supported yet
+   ////if (!_entry_win_is_wl(data))
+   if (!_entry_win_is_wl(data))
+   //
      _selection_store(ELM_SEL_TYPE_PRIMARY, data);
    _update_selection_handler(data);
    if (_elm_atspi_enabled())
@@ -3310,7 +3322,10 @@ _entry_selection_cleared_signal_cb(void *data,
      (data, EFL_UI_EVENT_SELECTION_CLEARED, NULL);
    // XXX: still try primary selection even if on wl in case it's
    // supported
-//   if (!_entry_win_is_wl(data))
+   //TIZEN_ONLY(20180817): primary selection is not supported yet
+   ////if (!_entry_win_is_wl(data))
+   if (!_entry_win_is_wl(data))
+   //
      {
         if (sd->cut_sel)
           {
@@ -3367,7 +3382,10 @@ _entry_paste_request_signal_cb(void *data,
    if (!sd->editable) return;
    // XXX: still try primary selection even if on wl in case it's
    // supported
-//   if ((type == ELM_SEL_TYPE_PRIMARY) && _entry_win_is_wl(data)) return;
+   //TIZEN_ONLY(20180817): primary selection is not supported yet
+   ////if ((type == ELM_SEL_TYPE_PRIMARY) && _entry_win_is_wl(data)) return;
+   if ((type == ELM_SEL_TYPE_PRIMARY) && _entry_win_is_wl(data)) return;
+   //
    efl_event_callback_legacy_call
      (data, EFL_UI_EVENT_SELECTION_PASTE, NULL);
 
