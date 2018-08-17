@@ -10027,10 +10027,9 @@ elm_win_focus_get(const Efl_Ui_Win *obj)
    //TIZEN_ONLY(20180607): Restore legacy focus
    if (elm_widget_is_legacy(obj))
      {
-        ELM_WIN_DATA_GET(obj, sd);
+        ELM_WIN_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
         return ecore_evas_focus_get(sd->ee);
      }
-   //
    return efl_ui_focus_object_focus_get(obj);
 }
 
