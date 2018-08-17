@@ -2565,7 +2565,11 @@ _ecore_evas_wayland_alpha_do(Ecore_Evas *ee, int alpha)
 
    if (!ee) return;
    if (ee->alpha == alpha) return;
-   ee->alpha = alpha;
+
+   /* alpha used for transparent as well.
+		ecore_evas_transparent_get() must be valid. */
+   ee->transparent = ee->alpha = alpha;
+
    wdata = ee->engine.data;
    if (!wdata->sync_done) return;
 
