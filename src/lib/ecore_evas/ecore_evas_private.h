@@ -178,6 +178,8 @@ struct _Ecore_Evas_Engine_Func
 
    //TIZEN_ONLY : Evas Engine Resource Free
    void (*fn_evas_engine_rsc_free) (Ecore_Evas *ee);
+   //TIZEN_ONLY(20180817) : Add to get current serial number
+   void (*fn_serial_get) (Ecore_Evas *ee);
 };
 
 struct _Ecore_Evas_Interface

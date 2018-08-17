@@ -23,6 +23,9 @@ struct _Evas_Engine_Info_Wayland
         struct wayland_tbm_client *tbm_client;
         void *tbm_queue;
 //
+//TIZEN_ONLY(20180817) : Add to get current serial number
+        unsigned int serial;
+//
      } info;
 
    /* non-blocking or blocking mode */

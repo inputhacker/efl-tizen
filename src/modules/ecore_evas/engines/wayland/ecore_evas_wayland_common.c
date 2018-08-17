@@ -52,6 +52,24 @@ _ecore_evas_wl_common_engine_rotation_get(Ecore_Evas *ee)
    return einfo->info.rotation;
 }
 
+//TIZEN_ONLY(20180817) : Add to get current serial number
+static void
+_ecore_evas_wl_common_engine_serial_get(Ecore_Evas *ee, unsigned int *serial)
+{
+   *serial = 0;
+
+   if (!strcmp(ee->driver, "wayland_egl"))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
+        Evas_Engine_Info_Wayland *einfo;
+        einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+        *serial = einfo->info.serial;
+#endif
+     }
+}
+// end of TIZEN_ONLY(20180817)
+
 void
 _ecore_evas_wl_common_engine_info_rotation_set(Ecore_Evas *ee, Evas_Engine_Info *info)
 {
@@ -3327,6 +3345,8 @@ static Ecore_Evas_Engine_Func _ecore_wl_engine_func =
    NULL, //fn_last_tick_get
    //TIZEN_ONLY(20171218) : Add to free evas engine rsc before free evas
    _ecore_evas_wl_common_evas_engine_rsc_free,
+   //TIZEN_ONLY(20180817) : Add to get current serial number
+   _ecore_evas_wl_common_engine_serial_get, //fn_serial_get
 };
 
 Ecore_Evas *

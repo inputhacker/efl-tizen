@@ -745,6 +745,11 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *surface_damage, Tilebuf_Rect *buffer_
 // TIZEN_ONLY(20171127) : wayland_egl bug fixed
 //   ecore_wl2_display_flush(ob->wl2_disp);
 //
+
+   //TIZEN_ONLY(20180817) : Add to get current serial number
+   // update next serial after flushed
+   ob->info->info.serial =  wl_egl_window_tizen_get_window_serial(ob->win);
+   //
 }
 
 Evas_Engine_GL_Context *
