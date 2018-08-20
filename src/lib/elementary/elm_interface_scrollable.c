@@ -351,7 +351,6 @@ static Evas_Coord _elm_scroll_page_y_get(
 #define RIGHT              1
 #define UP                 2
 #define DOWN               3
-#define EVTIME             1
 //#define SCROLLDBG 1
 /* smoothness debug calls - for debugging how much smooth your app is */
 #define SMOOTHDBG          1
@@ -2874,11 +2873,7 @@ _elm_scroll_mouse_up_event_cb(void *data,
                   double t, at, dt;
                   Evas_Coord ax, ay, dx, dy, vel;
 
-#ifdef EVTIME
                   t = ev->timestamp / 1000.0;
-#else
-                  t = ecore_loop_time_get();
-#endif
 
                   ev->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
                   ax = ev->canvas.x;
@@ -3277,12 +3272,7 @@ _elm_scroll_mouse_down_event_cb(void *data,
         sid->down.locked = EINA_FALSE;
         memset(&(sid->down.history[0]), 0,
                sizeof(sid->down.history[0]) * 60);
-#ifdef EVTIME
         sid->down.history[0].timestamp = ev->timestamp / 1000.0;
-        sid->down.history[0].localtimestamp = ecore_loop_time_get();
-#else
-        sid->down.history[0].timestamp = ecore_loop_time_get();
-#endif
         sid->down.dragged_began_timestamp = sid->down.history[0].timestamp;
         sid->down.history[0].x = ev->canvas.x;
         sid->down.history[0].y = ev->canvas.y;
@@ -3741,12 +3731,7 @@ _elm_scroll_mouse_move_event_cb(void *data,
 #endif
    memmove(&(sid->down.history[1]), &(sid->down.history[0]),
            sizeof(sid->down.history[0]) * (60 - 1));
-#ifdef EVTIME
    sid->down.history[0].timestamp = ev->timestamp / 1000.0;
-   sid->down.history[0].localtimestamp = ecore_loop_time_get();
-#else
-   sid->down.history[0].timestamp = ecore_loop_time_get();
-#endif
    sid->down.history[0].x = ev->cur.canvas.x;
    sid->down.history[0].y = ev->cur.canvas.y;
 
@@ -3862,11 +3847,7 @@ _elm_scroll_mouse_move_event_cb(void *data,
                {
                   sid->down.x = ev->cur.canvas.x;
                   sid->down.y = ev->cur.canvas.y;
-#ifdef EVTIME
                   sid->down.dragged_began_timestamp = ev->timestamp / 1000.0;
-#else
-                  sid->down.dragged_began_timestamp = ecore_loop_time_get();
-#endif
                }
 
              if (!sid->down.dragged)
