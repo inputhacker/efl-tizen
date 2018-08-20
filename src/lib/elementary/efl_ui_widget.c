@@ -9144,18 +9144,33 @@ _accessible_highlight_region_show(Eo* obj)
 //
 
 //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
+static Eo *_highlight_grabbing_object = NULL;
+
 Eina_Bool
 _elm_widget_accessibility_highlight_grabbing_get(Eo *obj)
 {
-   ELM_WIDGET_DATA_GET(obj, wd);
-   return wd->highlight_grabbing;
+  return _highlight_grabbing_object == obj;
 }
 
 void
 _elm_widget_accessibility_highlight_grabbing_set(Eo *obj, Eina_Bool grabbing)
 {
-   ELM_WIDGET_DATA_GET(obj, wd);
-   wd->highlight_grabbing = grabbing;
+   if (grabbing)
+     {
+       if (!_highlight_grabbing_object)
+           _highlight_grabbing_object = obj;
+       else if (_highlight_grabbing_object == obj)
+           ERR("trying to set grabbing for %p, but it's already set to this object", obj);
+       else
+           ERR("trying to set grabbing for %p, but it's already set to %p", obj, _highlight_grabbing_object);
+     }
+   else
+     {
+       if (_highlight_grabbing_object != obj)
+           ERR("trying to clear grabbing for %p, but it's set to %p", obj, _highlight_grabbing_object);
+       else
+           _highlight_grabbing_object = NULL;
+     }
 }
 //
 

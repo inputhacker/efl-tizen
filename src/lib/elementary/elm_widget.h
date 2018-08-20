@@ -503,9 +503,6 @@ typedef struct _Elm_Widget_Smart_Data
    ///TIZEN_ONLY(20170717) : expose highlight information on atspi
    Eina_Bool                     can_highlight : 1; /**< true if widget have at-spi HIGHLIGHTABLE state */
    ///
-   //TIZEN_ONLY(20171011) : atspi : During the highlight grab, out signal is not sent.
-   Eina_Bool                     highlight_grabbing : 1;
-   //
 // TIZEN_ONLY(20150705): Genlist item align feature
    Eina_Bool                     scroll_item_align_enable : 1;
 //
