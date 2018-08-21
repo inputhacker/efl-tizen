@@ -3829,7 +3829,7 @@ _ecore_evas_mouse_move_process_with_multi_info_internal(Ecore_Evas *ee,
 
    efl_event_callback_legacy_call(ee->evas,
                                   _event_description_get(ev->action), evt);
-   efl_del(evt);
+   efl_unref(evt);
 }
 
 // TIZEN_ONLY(20160429): add multi_info(radius, pressure and angle) to Evas_Event_Mouse_XXX
@@ -3915,7 +3915,7 @@ _ecore_evas_mouse_move_process_with_multi_info_internal2(Ecore_Evas *ee,
 
    efl_event_callback_legacy_call(ee->evas,
                                   _event_description_get(ev->action), evt);
-   efl_del(evt);
+   efl_unref(evt);
 }
 
 

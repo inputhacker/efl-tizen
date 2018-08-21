@@ -1936,7 +1936,7 @@ _canvas_event_feed_mouse_updown_with_multi_info(Eo *eo_e, int b, Evas_Button_Fla
    else
      _canvas_event_feed_mouse_up_internal(e, ev);
 
-   efl_del(evt);
+   efl_unref(evt);
 }
 
 static void
@@ -2629,7 +2629,7 @@ _canvas_event_feed_mouse_move_with_multi_info_legacy(Evas *eo_e, Evas_Public_Dat
 
    _canvas_event_feed_mouse_move_internal(e, ev);
 
-   efl_del(evt);
+   efl_unref(evt);
 }
 
 EAPI void
