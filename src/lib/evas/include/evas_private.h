@@ -909,7 +909,6 @@ struct _Evas_Public_Data
    unsigned char  cleanup : 1;
    Eina_Bool      is_frozen : 1;
    Eina_Bool      rendering : 1;
-   Eina_Bool      render2 : 1;
    Eina_Bool      inside_post_render : 1;
    Eina_Bool      devices_modified : 1;
 };
@@ -1279,15 +1278,6 @@ struct _Evas_Object_Func
 // preparation - may include rendering content to buffer or loading data
 // from disk or uploading to texture etc.
    void (*render_prepare) (Evas_Object *obj, Evas_Object_Protected_Data *pd, Eina_Bool do_async);
-
-// new render2 functions
-
-   void (*render2_walk) (Evas_Object *obj, Evas_Object_Protected_Data *pd,
-                         void *type_private_data, void *updates,
-                         int offx, int offy);
-//   void (*render2) (Evas_Object *obj, Evas_Object_Protected_Data *pd,
-//                    void *type_private_data, void *output, void *context,
-//                    void *surface, int x, int y);
 };
 
 struct _Evas_Func
