@@ -256,6 +256,24 @@ _key_action_move(Evas_Object *obj, const char *params)
              eina_list_free(can_focus_list);
              return EINA_TRUE;
           }
+        else if (!r)
+          {
+             if (!strcmp(dir, "left"))
+               new_focus = efl_ui_widget_focus_next_object_get(current_focus, ELM_FOCUS_LEFT);
+             else if (!strcmp(dir, "right"))
+               new_focus = efl_ui_widget_focus_next_object_get(current_focus, ELM_FOCUS_RIGHT);
+             else if (!strcmp(dir, "up"))
+               new_focus = efl_ui_widget_focus_next_object_get(current_focus, ELM_FOCUS_UP);
+             else if (!strcmp(dir, "down"))
+               new_focus = efl_ui_widget_focus_next_object_get(current_focus, ELM_FOCUS_DOWN);
+
+             if (new_focus)
+               {
+                  efl_ui_widget_focus_steal(new_focus, NULL);
+                  eina_list_free(can_focus_list);
+                  return EINA_TRUE;
+               }
+          }
      }
 
    eina_list_free(can_focus_list);
