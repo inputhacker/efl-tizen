@@ -452,6 +452,23 @@ _ecore_event_window_match(Ecore_Window id)
    return lookup;
 }
 
+static Eina_Bool
+_ecore_event_evas_strcmp(const char *dst, const char *src)
+{
+   int dst_len, src_len, str_len;
+
+   dst_len = strlen(dst);
+   src_len = strlen(src);
+
+   if (src_len > dst_len) str_len = src_len;
+   else str_len = dst_len;
+
+   if (!strncmp(dst, src, str_len))
+     return EINA_TRUE;
+   else
+     return EINA_FALSE;
+}
+
 // TIZEN_ONLY(20180118): support a Ecore_Device
 Evas_Device *
 _ecore_event_evas_device_find(Evas *eo_e, Ecore_Device *ecore_dev)
@@ -461,21 +478,21 @@ _ecore_event_evas_device_find(Evas *eo_e, Ecore_Device *ecore_dev)
    char *evas_device_name, *evas_device_comment;
    char *ecore_device_name, *ecore_device_comment;
 
-   ecore_device_name = ecore_device_name_get(ecore_dev);
-   ecore_device_comment = ecore_device_description_get(ecore_dev);
+   ecore_device_name = (char *)ecore_device_name_get(ecore_dev);
+   ecore_device_comment = (char *)ecore_device_description_get(ecore_dev);
 
    if (!ecore_device_name || !ecore_device_comment) return NULL;
 
    list = (Eina_List *)evas_device_list(eo_e, NULL);
    EINA_LIST_FOREACH(list, l, evas_device)
      {
-        evas_device_name = evas_device_name_get(evas_device);
-        evas_device_comment = evas_device_description_get(evas_device);
+        evas_device_name = (char *)evas_device_name_get(evas_device);
+        evas_device_comment = (char *)evas_device_description_get(evas_device);
         if (!evas_device_name || !evas_device_comment) continue;
 
         if ((evas_device_class_get(evas_device) == (Evas_Device_Class)ecore_device_class_get(ecore_dev)) &&
-            !strncmp(evas_device_name, ecore_device_name, strlen(evas_device_name)) &&
-            !strncmp(evas_device_comment, ecore_device_comment, strlen(evas_device_comment)))
+            _ecore_event_evas_strcmp(evas_device_name, ecore_device_name) &&
+            _ecore_event_evas_strcmp(evas_device_comment, ecore_device_comment))
           {
              return evas_device;
           }
