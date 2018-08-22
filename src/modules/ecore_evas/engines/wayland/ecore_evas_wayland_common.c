@@ -1500,6 +1500,23 @@ _ecore_evas_wl_common_cb_conformant_change(void *data EINA_UNUSED, int type EINA
 }
 //
 
+static Eina_Bool
+_ecore_evas_wl_common_strcmp(const char *dst, const char *src)
+{
+   int dst_len, src_len, str_len;
+
+   dst_len = strlen(dst);
+   src_len = strlen(src);
+
+   if (src_len > dst_len) str_len = src_len;
+   else str_len = dst_len;
+
+   if (!strncmp(dst, src, str_len))
+     return EINA_TRUE;
+   else
+     return EINA_FALSE;
+}
+
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
 
 static Eina_Bool
@@ -1515,10 +1532,10 @@ _ecore_evas_wl_common_evas_device_find(Evas *evas, const char *identifier)
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, device)
      {
-        evas_device_description = evas_device_description_get(device);
+        evas_device_description = (char *)evas_device_description_get(device);
         if (!evas_device_description) continue;
 
-        if (!strncmp(evas_device_description, identifier, strlen(identifier)))
+        if (_ecore_evas_wl_common_strcmp(evas_device_description, identifier))
           {
              return EINA_TRUE;
           }
@@ -1611,9 +1628,10 @@ _ecore_evas_wl_common_cb_tizen_device_del(void *data EINA_UNUSED, int type EINA_
         list = (Eina_List *)evas_device_list(ee->evas, NULL);
         EINA_LIST_FOREACH_SAFE(list, ll, ll_next, device)
           {
-             evas_device_description = evas_device_description_get(device);
+             evas_device_description = (char *)evas_device_description_get(device);
              if (!evas_device_description) continue;
-             if (!strncmp(evas_device_description, ev->identifier, strlen(ev->identifier)))
+
+             if (_ecore_evas_wl_common_strcmp(evas_device_description, ev->identifier))
                {
                   evas_device_del(device);
                }

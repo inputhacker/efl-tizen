@@ -66,6 +66,23 @@ struct _Ecore_Evas_Engine_Tbm_Data {
 Ecore_Event_Handler *_ecore_evas_tbm_ecore_cb_handlers[2] = {0, };
 
 static Eina_Bool
+_ecore_evas_tbm_strcmp(const char *dst, const char *src)
+{
+   int dst_len, src_len, str_len;
+
+   dst_len = strlen(dst);
+   src_len = strlen(src);
+
+   if (src_len > dst_len) str_len = src_len;
+   else str_len = dst_len;
+
+   if (!strncmp(dst, src, str_len))
+     return EINA_TRUE;
+   else
+     return EINA_FALSE;
+}
+
+static Eina_Bool
 _ecore_evas_tbm_evas_device_find(Evas *evas, const char *identifier)
 {
    Eina_List *list, *l;
@@ -78,10 +95,10 @@ _ecore_evas_tbm_evas_device_find(Evas *evas, const char *identifier)
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, device)
      {
-        evas_device_description = evas_device_description_get(device);
+        evas_device_description = (char *)evas_device_description_get(device);
         if (!evas_device_description) continue;
 
-        if (!strncmp(evas_device_description, identifier, strlen(identifier)))
+        if (_ecore_evas_tbm_strcmp(evas_device_description, identifier))
           {
              return EINA_TRUE;
           }
@@ -134,6 +151,7 @@ _ecore_evas_tbm_cb_ecore_device_add(void *data, int type EINA_UNUSED, void *even
 
    return ECORE_CALLBACK_PASS_ON;
 }
+
 
 static Eina_Bool
 _ecore_evas_tbm_cb_ecore_device_del(void *data, int type EINA_UNUSED, void *event)
