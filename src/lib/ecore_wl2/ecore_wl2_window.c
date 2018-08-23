@@ -2877,7 +2877,7 @@ ecore_wl2_window_commit(Ecore_Wl2_Window *window, Eina_Bool flush)
    if (window->commit_pending)
      {
         wl_callback_destroy(window->callback);
-        ERR("Commit before previous commit processed");
+        WRN("Commit before previous commit processed");
      }
    if (!window->pending.configure)
      {
