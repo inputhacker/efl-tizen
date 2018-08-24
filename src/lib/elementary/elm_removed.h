@@ -2871,38 +2871,6 @@ EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_left_get(const Evas_Object *
 EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_right_get(const Evas_Object *obj);
 
 /**
- * Unset the left content used for the panes.
- *
- * @param obj The panes object.
- * @return The left content object that was being used.
- *
- * Unparent and return the left content object which was set for this widget.
- *
- * @see elm_panes_content_left_set() for details.
- * @see elm_panes_content_left_get().
- *
- * @deprecated use elm_object_part_content_unset() instead. Deprecated since 5.0.
- *
- */
-EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_left_unset(Evas_Object *obj);
-
-/**
- * Unset the right content used for the panes.
- *
- * @param obj The panes object.
- * @return The right content object that was being used.
- *
- * Unparent and return the right content object which was set for this
- * widget.
- *
- * @see elm_panes_content_right_set() for details.
- * @see elm_panes_content_right_get().
- *
- * @deprecated use elm_object_part_content_unset() instead. Deprecated since 5.0.
- *
- */
-EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_right_unset(Evas_Object *obj);
-/**
  * Set the label of a given progress bar widget
  *
  * @param obj The progress bar object

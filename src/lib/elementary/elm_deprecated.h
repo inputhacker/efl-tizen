@@ -1695,3 +1695,37 @@ EINA_DEPRECATED EAPI void elm_win_name_set(Evas_Object *obj, const char *name);
  */
 EINA_DEPRECATED EAPI void         elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_profiles);
 //
+// TIZEN_ONLY(20180824) : elm: keep deprecated API before it removed.
+/**
+ * Unset the left content used for the panes.
+ *
+ * @param obj The panes object.
+ * @return The left content object that was being used.
+ *
+ * Unparent and return the left content object which was set for this widget.
+ *
+ * @see elm_panes_content_left_set() for details.
+ * @see elm_panes_content_left_get().
+ *
+ * @deprecated use elm_object_part_content_unset() instead. Deprecated since 5.0.
+ *
+ */
+EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_left_unset(Evas_Object *obj);
+
+/**
+ * Unset the right content used for the panes.
+ *
+ * @param obj The panes object.
+ * @return The right content object that was being used.
+ *
+ * Unparent and return the right content object which was set for this
+ * widget.
+ *
+ * @see elm_panes_content_right_set() for details.
+ * @see elm_panes_content_right_get().
+ *
+ * @deprecated use elm_object_part_content_unset() instead. Deprecated since 5.0.
+ *
+ */
+EINA_DEPRECATED EAPI Evas_Object *elm_panes_content_right_unset(Evas_Object *obj);
+//
