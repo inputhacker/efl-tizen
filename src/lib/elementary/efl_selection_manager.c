@@ -3788,7 +3788,10 @@ _wl_dnd_drop(void *data, int type EINA_UNUSED, void *event)
           }
      }
 
-   win = ecore_wl2_display_window_find(pd->wl_display, ev->win);
+   //TIZEN_ONLY(20180824): get default wayland display
+   //win = ecore_wl2_display_window_find(pd->wl_display, ev->win);
+   win = ecore_wl2_display_window_find(_elm_wl_display, ev->win);
+   //
    ecore_wl2_dnd_drag_end(_wl_seat_get(win, NULL, seat_sel->seat));
    return ECORE_CALLBACK_PASS_ON;
 }
