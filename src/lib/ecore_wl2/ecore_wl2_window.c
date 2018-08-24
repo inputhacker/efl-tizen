@@ -2938,7 +2938,7 @@ ecore_wl2_window_false_commit(Ecore_Wl2_Window *window)
    EINA_SAFETY_ON_TRUE_RETURN(window->pending.configure);
 
    if (window->commit_pending)
-     ERR("Commit before previous commit processed");
+     WRN("Commit before previous commit processed");
 
    window->callback = wl_surface_frame(window->surface);
    wl_callback_add_listener(window->callback, &_frame_listener, window);
