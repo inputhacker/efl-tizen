@@ -83,7 +83,9 @@ static const Evas_Object_Func object_func =
 EAPI Evas_Object *
 evas_object_rectangle_add(Evas *e)
 {
-   EINA_SAFETY_ON_FALSE_RETURN_VAL(efl_isa(e, EVAS_CANVAS_CLASS), NULL);
+   MAGIC_CHECK(e, Evas, MAGIC_EVAS);
+   return NULL;
+   MAGIC_CHECK_END();
    return efl_add(EFL_CANVAS_RECTANGLE_CLASS, evas_find(e), efl_canvas_object_legacy_ctor(efl_added));
 }
 

@@ -4,8 +4,6 @@
 
 #include "edje_private.h"
 
-#include "canvas/evas_canvas.eo.h"
-
 #ifdef MY_CLASS
 # undef MY_CLASS
 #endif
@@ -22,7 +20,7 @@ Eina_Inlist *_edje_edjes = NULL;
 EAPI Evas_Object *
 edje_object_add(Evas *evas)
 {
-   EINA_SAFETY_ON_FALSE_RETURN_VAL(efl_isa(evas, EVAS_CANVAS_CLASS), NULL);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(evas, NULL);
    return efl_add(MY_CLASS, evas_find(evas), efl_canvas_object_legacy_ctor(efl_added));
 }
 
