@@ -14,7 +14,8 @@
 @ELM_DIRENT_H_DEF@ ELM_DIRENT_H
 
 #ifdef EFL_BETA_API_SUPPORT
-# define ELM_ELOCATION
+/* TIZEN ONLY(20180827): Enable this when it's mandatory. */
+//# define ELM_ELOCATION
 #endif
 
 #endif
