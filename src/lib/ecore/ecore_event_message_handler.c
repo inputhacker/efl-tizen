@@ -296,9 +296,7 @@ EOLIAN static Efl_Object *
 _ecore_event_message_handler_efl_object_constructor(Eo *obj, Ecore_Event_Message_Handler_Data *pd)
 {
    obj = efl_constructor(efl_super(obj, MY_CLASS));
-   //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
    pd->event_type_count = 0;
-   //
    pd->current_event_type = -1;
    return obj;
 }
