@@ -3173,6 +3173,20 @@ _wl_data_preparer_text(Sel_Manager_Selection *sel, Efl_Selection_Data *ddata, Ec
    return EINA_TRUE;
 }
 
+//TIZEN_ONLY(20180827): Support Html format for copy and paste
+static Eina_Bool
+_wl_data_preparer_handler_html(Sel_Manager_Selection *sel, Efl_Selection_Data *ddata, Ecore_Wl2_Event_Offer_Data_Ready *ev, Tmp_Info **tmp_info EINA_UNUSED)
+{
+   sel_debug("In\n");
+
+   ddata->format = EFL_SELECTION_FORMAT_HTML;
+   ddata->data.mem = eina_memdup((unsigned char *)ev->data, ev->len, EINA_TRUE);
+   ddata->data.len = ev->len;
+   ddata->action = sel->action;
+
+   return EINA_TRUE;
+}
+//
 
 static void
 _wl_dropable_handle(Sel_Manager_Seat_Selection *seat_sel, Sel_Manager_Dropable *dropable, Evas_Coord x, Evas_Coord y)
@@ -5177,6 +5191,20 @@ _efl_selection_manager_efl_object_constructor(Eo *obj, Efl_Selection_Manager_Dat
 #ifdef HAVE_ELEMENTARY_WL2
    pd->atom_list[SELECTION_ATOM_IMAGE_PPM].wl_data_preparer = _wl_data_preparer_image;
 #endif
+
+//TIZEN_ONLY(20180827): Support Html format for copy and paste
+#ifdef HAVE_ELEMENTARY_WL2
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].name = "text/html;charset=utf-8";
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].format = EFL_SELECTION_FORMAT_HTML;
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].wl_converter = _wl_general_converter;
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].wl_data_preparer = _wl_data_preparer_handler_html;
+
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML].name = "text/html";
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML].format = EFL_SELECTION_FORMAT_HTML;
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML].wl_converter = _wl_general_converter;
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML].wl_data_preparer = _wl_data_preparer_handler_html;
+#endif
+//
 
    pd->atom_list[SELECTION_ATOM_UTF8STRING].name = "UTF8_STRING";
    pd->atom_list[SELECTION_ATOM_UTF8STRING].format = EFL_SELECTION_FORMAT_TEXT | EFL_SELECTION_FORMAT_MARKUP | EFL_SELECTION_FORMAT_HTML;
