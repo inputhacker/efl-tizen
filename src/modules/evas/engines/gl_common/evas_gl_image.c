@@ -943,8 +943,7 @@ evas_gl_common_image_update(Evas_Engine_GL_Context *gc, Evas_GL_Image *im)
                }
           }
         im->dirty = 0;
-        if (!im->tex) return;
-	break;
+        break;
       case EVAS_COLORSPACE_ETC1_ALPHA:
         if ((im->tex) && (im->dirty))
           {
@@ -959,7 +958,6 @@ evas_gl_common_image_update(Evas_Engine_GL_Context *gc, Evas_GL_Image *im)
              evas_cache_image_unload_data(ie);
           }
         im->dirty = 0;
-        if (!im->tex) return;
         break;
       case EVAS_COLORSPACE_YCBCR422P601_PL:
       case EVAS_COLORSPACE_YCBCR422P709_PL:
@@ -973,7 +971,6 @@ evas_gl_common_image_update(Evas_Engine_GL_Context *gc, Evas_GL_Image *im)
              im->tex = evas_gl_common_texture_yuv_new(gc, im->cs.data, ie->w, ie->h);
              im->dirty = 0;
           }
-        if (!im->tex) return;
         break;
       case EVAS_COLORSPACE_YCBCR422601_PL:
         if ((im->tex) && (im->dirty))
@@ -986,7 +983,6 @@ evas_gl_common_image_update(Evas_Engine_GL_Context *gc, Evas_GL_Image *im)
              im->tex = evas_gl_common_texture_yuy2_new(gc, im->cs.data, ie->w, ie->h);
              im->dirty = 0;
           }
-        if (!im->tex) return;
         break;
       case EVAS_COLORSPACE_YCBCR420NV12601_PL:
         if ((im->tex) && (im->dirty))
@@ -999,7 +995,6 @@ evas_gl_common_image_update(Evas_Engine_GL_Context *gc, Evas_GL_Image *im)
              im->tex = evas_gl_common_texture_nv12_new(gc, im->cs.data, ie->w, ie->h);
              im->dirty = 0;
           }
-        if (!im->tex) return;
         break;
       case EVAS_COLORSPACE_YCBCR420TM12601_PL:
         if ((im->tex) && (im->dirty))
@@ -1012,7 +1007,6 @@ evas_gl_common_image_update(Evas_Engine_GL_Context *gc, Evas_GL_Image *im)
              im->tex = evas_gl_common_texture_nv12tiled_new(gc, im->cs.data, ie->w, ie->h);
              im->dirty = 0;
           }
-        if (!im->tex) return;
         break;
       default:
         ERR("unhandled img format colorspace=%d", im->cs.space);
