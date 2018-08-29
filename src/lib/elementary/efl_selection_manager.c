@@ -3336,8 +3336,8 @@ _wl_data_preparer_handler_html(Sel_Manager_Selection *sel, Efl_Selection_Data *d
    sel_debug("In\n");
 
    ddata->format = EFL_SELECTION_FORMAT_HTML;
-   ddata->data.mem = eina_memdup((unsigned char *)ev->data, ev->len, EINA_TRUE);
-   ddata->data.len = ev->len;
+   ddata->content.mem = eina_memdup((unsigned char *)ev->data, ev->len, EINA_TRUE);
+   ddata->content.len = ev->len;
    ddata->action = sel->action;
 
    return EINA_TRUE;
