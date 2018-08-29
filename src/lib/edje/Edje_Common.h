@@ -102,6 +102,10 @@ typedef Efl_Signal_Cb Edje_Signal_Cb;
  *
  * @see edje_object_signal_callback_add() for more on Edje signals.
  * @since 1.1.0
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void *       edje_object_signal_callback_extra_data_get(void);
 
@@ -140,6 +144,9 @@ EAPI void *       edje_object_signal_callback_extra_data_get(void);
  * @see embryo_init()
  * @see eet_init()
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int          edje_init                       (void);
 
@@ -161,6 +168,9 @@ EAPI int          edje_init                       (void);
  * @see embryo_shutdown()
  * @see eet_shutdown()
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int		edje_shutdown			(void);
 
@@ -171,6 +181,9 @@ EAPI int		edje_shutdown			(void);
  *
  * This function sets the edje append fontset.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void		edje_fontset_append_set		(const char *fonts);
 
@@ -190,6 +203,10 @@ EAPI void		edje_fontset_append_set		(const char *fonts);
  * collections { ... }
  *
  * Then, edje_file_data_get("test.edj", "key1") will return "value1"
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI char             *edje_mmap_data_get(const Eina_File *f, const char *key);
 
@@ -211,6 +228,10 @@ EAPI char             *edje_mmap_data_get(const Eina_File *f, const char *key);
  * Then, edje_file_data_get("test.edj", "key1") will return "value1"
  *
  * @see edje_mmap_data_get()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI char        *edje_file_data_get              (const char *file, const char *key);
 
@@ -222,6 +243,9 @@ EAPI char        *edje_file_data_get              (const char *file, const char 
  * Modules are used to add functionality to Edje.
  * So, when a module is loaded, its functionality should be available for use.
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool               edje_module_load                (const char *module);
 
@@ -233,6 +257,9 @@ EAPI Eina_Bool               edje_module_load                (const char *module
  *
  * @see edje_module_load().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Eina_List        *edje_available_modules_get      (void);
 
@@ -246,6 +273,9 @@ EAPI const Eina_List        *edje_available_modules_get      (void);
  *
  * @see edje_fontset_append_set().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char		*edje_fontset_append_get	(void);
 
@@ -261,6 +291,9 @@ EAPI const char		*edje_fontset_append_get	(void);
  * @see edje_file_cache_get()
  * @see edje_file_cache_flush()
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_file_cache_set             (int count);
 
@@ -275,6 +308,9 @@ EAPI void         edje_file_cache_set             (int count);
  * @see edje_file_cache_set()
  * @see edje_file_cache_flush()
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int          edje_file_cache_get             (void);
 
@@ -287,6 +323,9 @@ EAPI int          edje_file_cache_get             (void);
  * @see edje_file_cache_set()
  * @see edje_file_cache_get()
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_file_cache_flush           (void);
 
@@ -303,6 +342,9 @@ EAPI void         edje_file_cache_flush           (void);
  * @see edje_collection_cache_get()
  * @see edje_collection_cache_flush()
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_collection_cache_set       (int count);
 
@@ -317,6 +359,9 @@ EAPI void         edje_collection_cache_set       (int count);
  * @see edje_collection_cache_set()
  * @see edje_collection_cache_flush()
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI int          edje_collection_cache_get       (void);
 
@@ -329,6 +374,9 @@ EAPI int          edje_collection_cache_get       (void);
  * @see edje_collection_cache_set()
  * @see edje_collection_cache_get()
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_collection_cache_flush     (void);
 
@@ -403,6 +451,10 @@ typedef struct _Edje_External_Param
  *
  * @param type the identifier to convert.
  * @return the string with the string representation, or @c "(unknown)".
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *edje_external_param_type_str(Edje_External_Param_Type type) EINA_PURE;
 
@@ -646,6 +698,10 @@ typedef struct _Edje_External_Type_Info Edje_External_Type_Info;
  *         type already registered).
  *
  * @see edje_external_type_array_register()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool    edje_external_type_register             (const char *type_name, const Edje_External_Type *type_info);
 
@@ -659,6 +715,10 @@ EAPI Eina_Bool    edje_external_type_register             (const char *type_name
  *         type_name did not exist).
  *
  * @see edje_external_type_array_unregister()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool    edje_external_type_unregister           (const char *type_name);
 
@@ -684,6 +744,10 @@ EAPI Eina_Bool    edje_external_type_unregister           (const char *type_name
  *         type already registered).
  *
  * @see edje_external_type_register()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_external_type_array_register       (const Edje_External_Type_Info *array);
 
@@ -694,6 +758,10 @@ EAPI void         edje_external_type_array_register       (const Edje_External_T
  *        one used to register with edje_external_type_array_register()
  *
  * @see edje_external_type_unregister()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_external_type_array_unregister     (const Edje_External_Type_Info *array);
 
@@ -715,6 +783,10 @@ EAPI void         edje_external_type_array_unregister     (const Edje_External_T
  *
  * @return The external ABI version the Edje library was compiled with. That
  * is, the value #EDJE_EXTERNAL_TYPE_ABI_VERSION had at that moment.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI unsigned int edje_external_type_abi_version_get      (void) EINA_CONST;
 
@@ -760,6 +832,10 @@ EAPI unsigned int edje_external_type_abi_version_get      (void) EINA_CONST;
  *   }
  *
  * @endcode
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator                  *edje_external_iterator_get     (void);
 
@@ -770,6 +846,10 @@ EAPI Eina_Iterator                  *edje_external_iterator_get     (void);
  * @param key The parameter to look for
  *
  * @return The matching #Edje_External_Param or NULL if it's not found.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Edje_External_Param            *edje_external_param_find       (const Eina_List *params, const char *key);
 
@@ -880,6 +960,10 @@ EAPI Eina_Bool                       edje_external_param_bool_get   (const Eina_
  *
  * @return EINA_TRUE if the parameter was found and is of integer type,
  * EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool                       edje_external_param_choice_get (const Eina_List *params, const char *key, const char **ret);
 
@@ -896,12 +980,20 @@ EAPI Eina_Bool                       edje_external_param_choice_get (const Eina_
  *         it does not have any parameter information.
  *
  * @see edje_external_type_get()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Edje_External_Param_Info *edje_external_param_info_get   (const char *type_name);
 
 /**
  * @brief Gets the #Edje_External_Type that defines an EXTERNAL type registered with
  * the name @p type_name.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const Edje_External_Type       *edje_external_type_get         (const char *type_name);
 
@@ -963,6 +1055,10 @@ EAPI const Edje_External_Type       *edje_external_type_get         (const char 
  * complete @ref edcref "syntax reference" for EDC files.
  *
  * @see edje_scale_get().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         edje_scale_set                  (double scale);
 
@@ -975,6 +1071,9 @@ EAPI void         edje_scale_set                  (double scale);
  *
  * @see edje_scale_set() for more details
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI double       edje_scale_get                  (void);
 
@@ -1097,6 +1196,10 @@ typedef Evas_Object *(*Edje_Item_Provider_Cb)   (void *data, Evas_Object *obj, c
  * The time out value is obtained by edje_password_show_last_timeout_set function.
  *
  * @see edje_password_show_last_timeout_set().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void edje_password_show_last_set(Eina_Bool password_show_last);
 
@@ -1112,6 +1215,9 @@ EAPI void edje_password_show_last_set(Eina_Bool password_show_last);
  *
  * @see edje_password_show_last_set().
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void edje_password_show_last_timeout_set(double password_show_last_timeout);
 
@@ -1214,6 +1320,10 @@ EAPI Eina_Bool    edje_color_class_set            (const char *color_class, int 
  *
  * @note Unlike Evas, Edje colors are @b not pre-multiplied. That is,
  *       half-transparent white is 255 255 255 128.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool    edje_color_class_get            (const char *color_class, int *r, int *g, int *b, int *a, int *r2, int *g2, int *b2, int *a2, int *r3, int *g3, int *b3, int *a3);
 
@@ -1229,6 +1339,10 @@ EAPI Eina_Bool    edje_color_class_get            (const char *color_class, int 
  *
  * Deleting the color class will emit the signal "color_class,del"
  * to all the Edje objects in the running program.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         edje_color_class_del            (const char *color_class);
 
@@ -1241,6 +1355,9 @@ EAPI void         edje_color_class_del            (const char *color_class);
  * This function lists all color classes known about by the current
  * process.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List   *edje_color_class_list           (void);
 
@@ -1253,6 +1370,10 @@ EAPI Eina_List   *edje_color_class_list           (void);
  * an application.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *edje_color_class_active_iterator_new(void);
 
@@ -1264,6 +1385,10 @@ EAPI Eina_Iterator *edje_color_class_active_iterator_new(void);
  * @return an iterator of Edje_Color_Class provided by the Edje file.
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Iterator *edje_mmap_color_class_iterator_new(Eina_File *f);
 
@@ -1544,6 +1669,10 @@ typedef enum _Edje_Aspect_Control
  * function passed to func. layout_data_get will be called with data
  * as its parameter, and this one will be freed by free_data whenever
  * the layout is unregistered from Edje.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         edje_box_layout_register        (const char *name, Evas_Object_Box_Layout func, void *(*layout_data_get)(void *), void (*layout_data_free)(void *), void (*free_data)(void *), void *data);
 
@@ -1616,6 +1745,9 @@ typedef enum _Edje_Object_Table_Homogeneous_Mode
  *
  * @see edje_text_class_get().
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool    edje_text_class_set             (const char *text_class, const char *font, Evas_Font_Size size);
 
@@ -1634,6 +1766,10 @@ EAPI Eina_Bool    edje_text_class_set             (const char *text_class, const
  * @see edje_text_class_set().
  *
  * @since 1.14
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_Bool    edje_text_class_get             (const char *text_class, const char **font, Evas_Font_Size *size);
 
@@ -1645,6 +1781,9 @@ EAPI Eina_Bool    edje_text_class_get             (const char *text_class, const
  * This function deletes any values at the process level for the
  * specified text class.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         edje_text_class_del             (const char *text_class);
 
@@ -1657,6 +1796,9 @@ EAPI void         edje_text_class_del             (const char *text_class);
  * This function lists all text classes known about by the current
  * process.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List   *edje_text_class_list            (void);
 
@@ -1848,6 +1990,10 @@ EAPI Eina_Iterator *edje_mmap_size_class_iterator_new(Eina_File *f);
  *
  * Note: the list must be freed using edje_mmap_collection_list_free()
  * when you are done with it.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_List        *edje_mmap_collection_list(Eina_File *f);
 
@@ -1856,6 +2002,10 @@ EAPI Eina_List        *edje_mmap_collection_list(Eina_File *f);
  * @param lst The Eina_List of groups
  *
  * Frees the list returned by edje_mmap_collection_list().
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void              edje_mmap_collection_list_free(Eina_List *lst);
 
@@ -1903,6 +2053,10 @@ EAPI Eina_Iterator *edje_file_iterator_new(void);
  * when you are done with it.
  *
  * @see edje_mmap_group_exists()
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI Eina_List        *edje_file_collection_list  (const char *file);
 
@@ -1911,6 +2065,10 @@ EAPI Eina_List        *edje_file_collection_list  (const char *file);
  * @param lst The Eina_List of groups
  *
  * Frees the list returned by edje_file_collection_list().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void             edje_file_collection_list_free (Eina_List *lst);
 
@@ -2028,6 +2186,9 @@ typedef enum _Edje_Action_Type
  *
  * @see edje_frametime_get()
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         edje_frametime_set              (double t);
 
@@ -2041,6 +2202,9 @@ EAPI void         edje_frametime_set              (double t);
  *
  * @see edje_frametime_set()
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI double       edje_frametime_get              (void);
 
@@ -2053,6 +2217,9 @@ EAPI double       edje_frametime_get              (void);
  *
  * @see edje_thaw()
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         edje_freeze                     (void);
 
@@ -2065,6 +2232,9 @@ EAPI void         edje_freeze                     (void);
  *
  * @see edje_freeze()
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         edje_thaw                       (void);
 
@@ -2078,6 +2248,10 @@ EAPI void         edje_thaw                       (void);
  * @note: emits signal edje,language,"locale".
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_language_set               (const char *locale);
 
@@ -2101,6 +2275,10 @@ EAPI void         edje_language_set               (const char *locale);
  * @see edje_transition_duration_factor_get()
  *
  * @since 1.15
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void         edje_transition_duration_factor_set        (double scale);
 
@@ -2115,6 +2293,9 @@ EAPI void         edje_transition_duration_factor_set        (double scale);
  *
  * @since 1.15
  *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI double       edje_transition_duration_factor_get                  (void);
 
@@ -2148,6 +2329,9 @@ EAPI double       edje_transition_duration_factor_get                  (void);
  * This function triggers the processing of messages addressed to any
  * (alive) edje objects.
  *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
  */
 EAPI void         edje_message_signal_process             (void);
 
@@ -2347,6 +2531,10 @@ typedef enum _Edje_Channel
  * @see edje_audio_channel_mute_get()
  *
  * @since 1.9
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void edje_audio_channel_mute_set(Edje_Channel channel, Eina_Bool mute);
 
@@ -2359,6 +2547,10 @@ EAPI void edje_audio_channel_mute_set(Edje_Channel channel, Eina_Bool mute);
  * @see edje_audio_channel_mute_set()
  *
  * @since 1.9
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool edje_audio_channel_mute_get(Edje_Channel channel);
 
@@ -2369,6 +2561,10 @@ EAPI Eina_Bool edje_audio_channel_mute_get(Edje_Channel channel);
  * @note If this function returns @c NULL, @p obj was not an Edje part object
  * @see edje_object_part_object_get()
  * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI const char *edje_object_part_object_name_get(const Evas_Object *obj);
 
