@@ -8501,7 +8501,7 @@ static void _elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_
  *******/
 
 
-//TIZEN_ONLY(20160329): widget: improve accessibile_at_point getter (a8aff0423202b9a55dbb3843205875226678fbd6)
+//TIZEN_ONLY(20160329): widget: improve accessible_at_point getter (a8aff0423202b9a55dbb3843205875226678fbd6)
 static void
 _coordinate_system_based_point_translate(Eo *obj, Eina_Bool screen_coords, int *x, int *y)
 {
