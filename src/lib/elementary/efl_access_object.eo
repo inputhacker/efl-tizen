@@ -1,6 +1,13 @@
 type Efl_Access_Reading_Info_Cb: __undefined_type; [[reading information callback]]
 type Efl_Access_Gesture_Cb: __undefined_type; [[gesture callback]]
 type Efl_Access_Reading_Info_Type_Mask: __undefined_type; [[Reading information types]]
+enum Efl.Access.Type
+{
+   [[Type of accessibility object]]
+   regular, [[default accessible object]]
+   disabled, [[skip object and its children in accessibility hierarchy]]
+   skipped [[skip object in accessibility hierarchy]]
+}
 
 enum Efl.Access.Role
 {
