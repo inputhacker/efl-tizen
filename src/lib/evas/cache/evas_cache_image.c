@@ -28,7 +28,7 @@ struct _Evas_Cache_Preload
 static SLK(engine_lock);
 static int _evas_cache_mutex_init = 0;
 
-static void _evas_cache_image_entry_preload_remove(Image_Entry *ie, const Eo *target, Eina_Bool force);
+static void _evas_cache_image_entry_preload_remove(Image_Entry *ie, const Eo *target);
 
 #define FREESTRC(Var)             \
    if (Var)                       \
@@ -364,6 +364,8 @@ _evas_cache_image_async_heavy(void *data)
              _evas_cache_image_entry_surface_alloc(cache, current,
                                                    current->w, current->h);
           }
+        else
+          current->flags.loaded = 1;
      }
    current->channel = pchannel;
    // check the unload cancel flag
@@ -467,7 +469,7 @@ _evas_cache_image_async_cancel(void *data)
 // note - preload_add assumes a target is ONLY added ONCE to the image
 // entry. make sure you only add once, or remove first, then add
 static int
-_evas_cache_image_entry_preload_add(Image_Entry *ie, const Eo *target, void (*preloaded_cb)(void *), void *preloaded_data)
+_evas_cache_image_entry_preload_add(Image_Entry *ie, const Eo *target)
 {
    Evas_Cache_Target *tg;
 
@@ -482,8 +484,6 @@ _evas_cache_image_entry_preload_add(Image_Entry *ie, const Eo *target, void (*pr
    tg = calloc(1, sizeof(Evas_Cache_Target));
    if (!tg) return 0;
    tg->target = target;
-   tg->preloaded_cb = preloaded_cb;
-   tg->preloaded_data = preloaded_data;
 
    ie->targets = (Evas_Cache_Target *)
       eina_inlist_append(EINA_INLIST_GET(ie->targets), EINA_INLIST_GET(tg));
@@ -517,7 +517,12 @@ _evas_cache_image_entry_preload_remove(Image_Entry *ie, const Eo *target, Eina_B
           {
              if (tg->target == target)
                {
-                  tg->preload_cancel = EINA_TRUE;
+                  // FIXME: No callback when we cancel only for one target ?
+                  ie->targets = (Evas_Cache_Target *)
+                     eina_inlist_remove(EINA_INLIST_GET(ie->targets),
+                                        EINA_INLIST_GET(tg));
+
+                  free(tg);
                   break;
                }
           }
@@ -955,9 +960,9 @@ evas_cache_image_alone(Image_Entry *im)
      }
    else
      {
-        im_dirty = evas_cache_image_copied_data(cache, im->w, im->h, 
-                                                evas_cache_image_pixels(im), 
-                                                im->flags.alpha, 
+        im_dirty = evas_cache_image_copied_data(cache, im->w, im->h,
+                                                evas_cache_image_pixels(im),
+                                                im->flags.alpha,
                                                 im->space);
         if (!im_dirty) goto on_error;
         if (cache->func.debug) cache->func.debug("dirty-src", im);
@@ -974,8 +979,8 @@ on_error:
 }
 
 EAPI Image_Entry *
-evas_cache_image_copied_data(Evas_Cache_Image *cache, 
-                             unsigned int w, unsigned int h, 
+evas_cache_image_copied_data(Evas_Cache_Image *cache,
+                             unsigned int w, unsigned int h,
                              DATA32 *image_data, int alpha,
                              Evas_Colorspace cspace)
 {
@@ -1183,7 +1188,7 @@ evas_cache_image_unload_data(Image_Entry *im)
      }
 
    SLKL(im->lock_cancel);
-   if ((!im->flags.loaded) || (!im->file && !im->f) || (!im->info.module) || 
+   if ((!im->flags.loaded) || (!im->file && !im->f) || (!im->info.module) ||
        (im->flags.dirty))
      {
         SLKU(im->lock_cancel);
@@ -1249,7 +1254,7 @@ evas_cache_image_is_loaded(Image_Entry *im)
 }
 
 EAPI void
-evas_cache_image_preload_data(Image_Entry *im, const Eo *target, void (*preloaded_cb)(void *), void *preloaded_data)
+evas_cache_image_preload_data(Image_Entry *im, const Eo *target)
 {
    RGBA_Image *img = (RGBA_Image *)im;
 
@@ -1265,7 +1270,7 @@ evas_cache_image_preload_data(Image_Entry *im, const Eo *target, void (*preloade
         return;
      }
    im->flags.loaded = 0;
-   if (!_evas_cache_image_entry_preload_add(im, target, preloaded_cb, preloaded_data))
+   if (!_evas_cache_image_entry_preload_add(im, target))
      evas_object_inform_call_image_preloaded((Evas_Object*) target);
    evas_cache_image_drop(im);
 }
@@ -1335,7 +1340,7 @@ evas_cache_image_flush(Evas_Cache_Image *cache)
    if (!cache) return 0;
 #ifdef CACHEDUMP
    _dump_cache(cache);
-#endif  
+#endif
    if (cache->limit == (unsigned int)-1) return -1;
 
    SLKL(engine_lock);
