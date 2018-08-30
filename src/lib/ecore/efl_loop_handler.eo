@@ -26,7 +26,7 @@ class Efl.Loop.Handler (Efl.Object)
          }
       }
       @property fd {
-         [[ Controls a file desciptor to listen to for I/O, which points
+         [[ Controls a file descriptor to listen to for I/O, which points
          to a data pipe such as a device, socket or pipe etc. ]]
          set { }
          get { }

@@ -778,7 +778,7 @@ EAPI void elm_atspi_accessible_relationships_clear(Elm_Interface_Atspi_Accessibl
 
 /**
  * @brief Notifies assistive technology clients about current state of the
- * accessibile object.
+ * accessible object.
  *
  * Function limits information broadcast to clients to types specified by
  * state_types_mask parameter.
