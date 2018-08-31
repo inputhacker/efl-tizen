@@ -153,7 +153,8 @@ EFL_START_TEST(ecore_test_ecore_thread_eina_thread_queue_t2)
    mcount = msgs;
    if (mcount < 1000)
      {
-        ck_abort_msg("ERR: not enough messages received -> %i\n", mcount);
+        printf("ERR: not enough messages received\n");
+        fail();
      }
    if (DEBUG) printf("%i messages sent\n", i);
    ecore_thread_wait(th, 0.1);
