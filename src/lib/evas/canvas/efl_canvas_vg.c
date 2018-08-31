@@ -38,12 +38,12 @@ static const Evas_Object_Func object_func =
 {
    /* methods (compulsory) */
    NULL,
-     _efl_canvas_vg_render,
-     _efl_canvas_vg_render_pre,
-     _efl_canvas_vg_render_post,
-     _efl_canvas_vg_id_get,
-     _efl_canvas_vg_visual_id_get,
-     _efl_canvas_vg_engine_data_get,
+   _efl_canvas_vg_render,
+   _efl_canvas_vg_render_pre,
+   _efl_canvas_vg_render_post,
+   _efl_canvas_vg_id_get,
+   _efl_canvas_vg_visual_id_get,
+   _efl_canvas_vg_engine_data_get,
    /* these are optional. NULL = nothing */
      NULL,
      NULL,
@@ -138,7 +138,7 @@ _efl_canvas_vg_root_node_get(Eo *obj EINA_UNUSED, Efl_Canvas_Vg_Data *pd)
 {
    Efl_VG *root;
 
-   if (pd->vg_entry) root = evas_cache_vg_tree_get(pd->vg_entry);
+   if (pd->vg_entry) root = evas_cache_vg_tree_get(pd->vg_entry, pd->frame_index);
    else if (pd->user_entry) root = pd->user_entry->root;
    else root = NULL;
 
@@ -373,7 +373,7 @@ _efl_canvas_vg_efl_object_finalize(Eo *obj, Efl_Canvas_Vg_Data *pd)
 }
 
 static void
-_evas_vg_render(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Data *vd,
+_evas_vg_render(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Object_Data *pd,
                 void *engine, void *output, void *context, void *surface, Efl_VG *n,
                 Eina_Array *clips, Eina_Bool do_async)
 {
@@ -386,7 +386,7 @@ _evas_vg_render(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Data *vd,
         vc = efl_data_scope_get(n, EFL_VG_CONTAINER_CLASS);
 
         EINA_LIST_FOREACH(vc->children, l, child)
-          _evas_vg_render(obj, vd,
+          _evas_vg_render(obj, pd,
                           engine, output, context, surface, child,
                           clips, do_async);
      }
@@ -399,14 +399,14 @@ _evas_vg_render(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Data *vd,
         obj->layer->evas->engine.func->ector_renderer_draw(engine, output, context, surface, nd->renderer, clips, do_async);
 
         if (do_async)
-          eina_array_push(&vd->cleanup, efl_ref(nd->renderer));
+          eina_array_push(&pd->cleanup, efl_ref(nd->renderer));
      }
 }
 
 // renders a vg_tree to an offscreen buffer
 // and push it to the cache.
 static void *
-_render_to_buffer(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Data *vd,
+_render_to_buffer(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Object_Data *pd,
                   void *engine, void *surface,
                   Efl_VG *root, int w, int h, void *key,
                   void *buffer, Eina_Bool do_async)
@@ -441,12 +441,12 @@ _render_to_buffer(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Data *vd,
                                               ector,
                                               0, 0,
                                               do_async);
-   _evas_vg_render(obj, vd,
+   _evas_vg_render(obj, pd,
                    engine, buffer,
                    context, surface,
                    root, NULL,
                    do_async);
-   obj->layer->evas->engine.func->image_dirty_region(engine, buffer, 0, 0, 0, 0);
+   obj->layer->evas->engine.func->image_dirty_region(engine, buffer, 0, 0, w, h);
    obj->layer->evas->engine.func->ector_end(engine, buffer,
                                             context, surface,
                                             ector,do_async);
@@ -483,11 +483,11 @@ _render_buffer_to_screen(Evas_Object_Protected_Data *obj,
 
 static void
 _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
-                       Efl_Canvas_Vg_Data *vd,
+                       Efl_Canvas_Vg_Object_Data *pd,
                        void *engine, void *output, void *context, void *surface,
                        int x, int y, int w, int h, Eina_Bool do_async)
 {
-   Vg_Cache_Entry *vg_entry = vd->vg_entry;
+   Vg_Cache_Entry *vg_entry = pd->vg_entry;
    Efl_VG *root, *dupe_root;
    void *buffer;
 
@@ -496,18 +496,19 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
        (vg_entry->h != h))
      {
          vg_entry = evas_cache_vg_entry_create(vg_entry->file, vg_entry->key, w, h);
-         evas_cache_vg_entry_del(vd->vg_entry);
-         vd->vg_entry = vg_entry;
+         evas_cache_vg_entry_del(pd->vg_entry);
+         pd->vg_entry = vg_entry;
      }
-   // if the buffer is not created yet
-   root = evas_cache_vg_tree_get(vg_entry);
+   root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
    if (!root) return;
    buffer = obj->layer->evas->engine.func->ector_surface_cache_get(engine, root);
    if (!buffer)
      {
+        //FIXME: Duplication Again??
         dupe_root = efl_duplicate(root);
+
         // render to the buffer
-        buffer = _render_to_buffer(obj, vd,
+        buffer = _render_to_buffer(obj, pd,
                                    engine, surface,
                                    dupe_root,
                                    w, h,
@@ -528,11 +529,11 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
 
 static void
 _user_vg_entry_render(Evas_Object_Protected_Data *obj,
-                      Efl_Canvas_Vg_Data *vd,
+                      Efl_Canvas_Vg_Object_Data *pd,
                       void *engine, void *output, void *context, void *surface,
                       int x, int y, int w, int h, Eina_Bool do_async)
 {
-   Vg_User_Entry *user_entry = vd->user_entry;
+   Vg_User_Entry *user_entry = pd->user_entry;
    void *buffer;
 
    // if the size dosen't match
@@ -542,14 +543,14 @@ _user_vg_entry_render(Evas_Object_Protected_Data *obj,
          obj->layer->evas->engine.func->ector_surface_cache_drop(engine, user_entry);
          user_entry->w = w;
          user_entry->h = h;
-         vd->user_entry = user_entry;
+         pd->user_entry = user_entry;
      }
    // if the buffer is not created yet
    buffer = obj->layer->evas->engine.func->ector_surface_cache_get(engine, user_entry);
    if (!buffer)
      {
         // render to the buffer
-        buffer = _render_to_buffer(obj, vd,
+        buffer = _render_to_buffer(obj, pd,
                                    engine, surface,
                                    user_entry->root,
                                    w, h,
@@ -560,8 +561,8 @@ _user_vg_entry_render(Evas_Object_Protected_Data *obj,
    else
      {
         // render to the buffer
-        if (vd->changed)
-          buffer = _render_to_buffer(obj, vd,
+        if (pd->changed)
+          buffer = _render_to_buffer(obj, pd,
                                      engine, surface,
                                      user_entry->root,
                                      w, h,
@@ -585,7 +586,7 @@ _efl_canvas_vg_render(Evas_Object *eo_obj EINA_UNUSED,
                       void *engine, void *output, void *context, void *surface,
                       int x, int y, Eina_Bool do_async)
 {
-   Efl_Canvas_Vg_Data *vd = type_private_data;
+   Efl_Canvas_Vg_Object_Data *pd = type_private_data;
 
    /* render object to surface with context, and offxet by x,y */
    obj->layer->evas->engine.func->context_color_set(engine, context,
@@ -600,21 +601,21 @@ _efl_canvas_vg_render(Evas_Object *eo_obj EINA_UNUSED,
                                                          obj->cur->anti_alias);
    obj->layer->evas->engine.func->context_render_op_set(engine, context,
                                                         obj->cur->render_op);
-   if (vd->vg_entry)
+   if (pd->vg_entry)
      {
-        _cache_vg_entry_render(obj, vd,
+        _cache_vg_entry_render(obj, pd,
                                engine, output, context, surface,
                                obj->cur->geometry.x + x, obj->cur->geometry.y + y,
                                obj->cur->geometry.w, obj->cur->geometry.h, do_async);
      }
-   if (vd->user_entry)
+   if (pd->user_entry)
      {
-        _user_vg_entry_render(obj, vd,
+        _user_vg_entry_render(obj, pd,
                               engine, output, context, surface,
                               obj->cur->geometry.x + x, obj->cur->geometry.y + y,
                               obj->cur->geometry.w, obj->cur->geometry.h, do_async);
      }
-   vd->changed = EINA_FALSE;
+   pd->changed = EINA_FALSE;
 }
 
 static void
@@ -622,11 +623,10 @@ _efl_canvas_vg_render_pre(Evas_Object *eo_obj,
                           Evas_Object_Protected_Data *obj,
                           void *type_private_data)
 {
-   Efl_Canvas_Vg_Data *vd = type_private_data;
+   Efl_Canvas_Vg_Object_Data *pd = type_private_data;
    int is_v, was_v;
    Ector_Surface *s;
 
-   /* dont pre-render the obj twice! */
    if (obj->pre_render_done) return;
    obj->pre_render_done = EINA_TRUE;
 
@@ -647,8 +647,8 @@ _efl_canvas_vg_render_pre(Evas_Object *eo_obj,
 
    // FIXME: handle damage only on changed renderer.
    s = evas_ector_get(obj->layer->evas);
-   if (vd->root && s)
-     _evas_vg_render_pre(vd->root, s, NULL);
+   if (pd->root && s)
+     _evas_vg_render_pre(pd->root, s, NULL);
 
    /* now figure what changed and add draw rects */
    /* if it just became visible or invisible */
@@ -656,7 +656,7 @@ _efl_canvas_vg_render_pre(Evas_Object *eo_obj,
    was_v = evas_object_was_visible(eo_obj,obj);
    if (!(is_v | was_v)) goto done;
 
-   if (vd->changed)
+   if (pd->changed)
      {
         evas_object_render_pre_prev_cur_add(&obj->layer->evas->clip_changes, eo_obj, obj);
         goto done;
@@ -734,7 +734,8 @@ _efl_canvas_vg_render_pre(Evas_Object *eo_obj,
                                y + obj->layer->evas->framespace.y,
                                w, h);
      }
-   done:
+
+done:
    evas_object_render_pre_effect_updates(&obj->layer->evas->clip_changes, eo_obj, is_v, was_v);
 }
 
@@ -791,4 +792,72 @@ _efl_canvas_vg_was_opaque(Evas_Object *eo_obj EINA_UNUSED,
    return 0;
 }
 
-#include "efl_canvas_vg.eo.c"
+/* animated feature */
+EOLIAN static Eina_Bool
+_efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_get(const Eo *eo_obj EINA_UNUSED,
+                                                                      Efl_Canvas_Vg_Object_Data *pd EINA_UNUSED EINA_UNUSED)
+{
+   //TODO:
+   return EINA_TRUE;
+}
+
+EOLIAN static int
+_efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_frame_count_get(const Eo *eo_obj EINA_UNUSED,
+                                                                                  Efl_Canvas_Vg_Object_Data *pd EINA_UNUSED)
+{
+   //TODO: 
+   return 0;
+}
+
+EOLIAN static Efl_Gfx_Image_Animation_Controller_Loop_Hint
+_efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_loop_type_get(const Eo *eo_obj EINA_UNUSED,
+                                                                                Efl_Canvas_Vg_Object_Data *pd EINA_UNUSED)
+{
+   //TODO:
+   return EFL_GFX_IMAGE_ANIMATION_CONTROLLER_LOOP_HINT_NONE;
+}
+
+EOLIAN static int
+_efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_loop_count_get(const Eo *eo_obj EINA_UNUSED,
+                                                                                 Efl_Canvas_Vg_Object_Data *pd EINA_UNUSED)
+{
+   //TODO:
+   return 0;
+}
+
+EOLIAN static double
+_efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_frame_duration_get(const Eo *eo_obj EINA_UNUSED,
+                                                                                     Efl_Canvas_Vg_Object_Data *pd,
+                                                                                     int start_frame EINA_UNUSED,
+                                                                                     int frame_num EINA_UNUSED)
+{
+   if (!pd->vg_entry) return 0;
+   return pd->vg_entry->vfd->anim.duration;
+}
+
+EOLIAN static Eina_Bool
+_efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_frame_set(Eo *eo_obj,
+                                                                            Efl_Canvas_Vg_Object_Data *pd,
+                                                                            int frame_index)
+{
+   //TODO: Validate frame_index range
+
+   if (pd->frame_index == frame_index) return EINA_TRUE;
+
+   pd->frame_index = frame_index;
+   pd->changed = EINA_TRUE;
+   evas_object_change(eo_obj, efl_data_scope_get(eo_obj, EFL_CANVAS_OBJECT_CLASS));
+
+   return EINA_TRUE;
+}
+
+EOLIAN static int
+_efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_frame_get(const Eo *eo_obj EINA_UNUSED,
+                                                                            Efl_Canvas_Vg_Object_Data *pd EINA_UNUSED)
+{
+   if (!pd->vg_entry) return 0;
+   return pd->vg_entry->vfd->anim.frame_cnt;
+}
+
+#include "efl_canvas_vg_object.eo.c"
+>>>>>>> 0b09dbc7bd... evas json: new feature for lottie - #4:src/lib/evas/canvas/efl_canvas_vg_object.c
