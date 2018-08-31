@@ -159,7 +159,7 @@ START_TEST(ecore_test_ecore_thread_eina_thread_queue_t2)
    mcount = msgs;
    if (mcount < 1000000)
      {
-        printf("ERR: not enough messages recieved\n");
+        printf("ERR: not enough messages received\n");
         fail();
      }
    printf("%i messages sent\n", i);
