@@ -320,9 +320,7 @@ _ecore_event_message_handler_efl_object_destructor(Eo *obj, Ecore_Event_Message_
           {
              free(h);
           }
-        //TIZEN_ONLY(20180510): fix backword compatibility bug for ecore event
         for (i = 1; i <= pd->event_type_count; i++)
-        //
           {
              EINA_INLIST_FREE(pd->handlers[i], h)
                {
