@@ -28,7 +28,7 @@ struct _Evas_Cache_Preload
 static SLK(engine_lock);
 static int _evas_cache_mutex_init = 0;
 
-static void _evas_cache_image_entry_preload_remove(Image_Entry *ie, const Eo *target);
+static void _evas_cache_image_entry_preload_remove(Image_Entry *ie, const Eo *target, Eina_Bool force);
 
 #define FREESTRC(Var)             \
    if (Var)                       \
@@ -364,8 +364,6 @@ _evas_cache_image_async_heavy(void *data)
              _evas_cache_image_entry_surface_alloc(cache, current,
                                                    current->w, current->h);
           }
-        else
-          current->flags.loaded = 1;
      }
    current->channel = pchannel;
    // check the unload cancel flag
@@ -393,7 +391,8 @@ _evas_cache_image_preloaded_notify(Image_Entry *ie)
                              EINA_INLIST_GET(ie->targets));
         if (!tmp->delete_me && tmp->preloaded_cb)
           tmp->preloaded_cb(tmp->preloaded_data);
-        evas_object_inform_call_image_preloaded((Evas_Object*) tmp->target);
+        if (!tmp->preload_cancel)
+          evas_object_inform_call_image_preloaded((Eo*) tmp->target);
         free(tmp);
      }
 }
@@ -518,12 +517,7 @@ _evas_cache_image_entry_preload_remove(Image_Entry *ie, const Eo *target, Eina_B
           {
              if (tg->target == target)
                {
-                  // FIXME: No callback when we cancel only for one target ?
-                  ie->targets = (Evas_Cache_Target *)
-                     eina_inlist_remove(EINA_INLIST_GET(ie->targets),
-                                        EINA_INLIST_GET(tg));
-
-                  free(tg);
+                  tg->preload_cancel = EINA_TRUE;
                   break;
                }
           }
