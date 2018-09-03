@@ -81,16 +81,17 @@ typedef Efl_Selection_Format Elm_Sel_Format;
  * Defines the kind of action associated with the drop data if for XDND
  * @since 1.8
  */
-typedef Efl_Selection_Action Elm_Xdnd_Action;
-
-#define ELM_XDND_ACTION_UNKNOWN EFL_SELECTION_ACTION_UNKNOWN
-#define ELM_XDND_ACTION_COPY EFL_SELECTION_ACTION_COPY
-#define ELM_XDND_ACTION_MOVE EFL_SELECTION_ACTION_MOVE
-#define ELM_XDND_ACTION_PRIVATE EFL_SELECTION_ACTION_PRIVATE
-#define ELM_XDND_ACTION_ASK EFL_SELECTION_ACTION_ASK
-#define ELM_XDND_ACTION_LIST EFL_SELECTION_ACTION_LIST
-#define ELM_XDND_ACTION_LINK EFL_SELECTION_ACTION_LINK
-#define ELM_XDND_ACTION_DESCRIPTION EFL_SELECTION_ACTION_DESCRIPTION
+typedef enum
+{
+   ELM_XDND_ACTION_UNKNOWN, /**< Action type is unknown */
+   ELM_XDND_ACTION_COPY, /**< Copy the data */
+   ELM_XDND_ACTION_MOVE, /**< Move the data */
+   ELM_XDND_ACTION_PRIVATE, /**< Private action type */
+   ELM_XDND_ACTION_ASK, /**< Ask the user what to do */
+   ELM_XDND_ACTION_LIST, /**< List the data */
+   ELM_XDND_ACTION_LINK, /**< Link the data */
+   ELM_XDND_ACTION_DESCRIPTION /**< Describe the data */
+} Elm_Xdnd_Action;
 
 /**
  * Structure holding the info about selected data.

@@ -14,7 +14,7 @@
 /**
  * This callback type is used to provide reading status information.
  * @param data The data specified as the last param when setting this callback
- * @param say_signal The signal decribes reading status information
+ * @param say_signal The signal describes reading status information
  * @see elm_atspi_bridge_utils_say
  * @ingroup Elm_Atspi_Bridge
  * @if MOBILE @since_tizen 4.0 @elseif WEARABLE @since_tizen 3.0 @endif

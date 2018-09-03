@@ -545,13 +545,13 @@ static inline Eina_Bool eina_log_level_check(int level);
  * @brief Checks if current thread is the main thread.
  *
  * If there is no thread support (compiled with --disable-pthreads) or
- * threads were not enabled, then #EINA_TRUE is returned. The only case where 
- * #EINA_FALSE is returned is when threads were successfully enabled but the 
- * current thread is not the one that called eina_log_threads_init() (the 
+ * threads were not enabled, then #EINA_TRUE is returned. The only case where
+ * #EINA_FALSE is returned is when threads were successfully enabled but the
+ * current thread is not the one that called eina_log_threads_init() (the
  * main thread).
- * 
- * @return #EINA_TRUE if the current thread is the one that called 
- * eina_log_threads_init(), otherwise #EINA_FALSE. 
+ *
+ * @return #EINA_TRUE if the current thread is the one that called
+ * eina_log_threads_init(), otherwise #EINA_FALSE.
  */
 EAPI Eina_Bool          eina_log_main_thread_check(void) EINA_CONST EINA_WARN_UNUSED_RESULT;
 
@@ -845,14 +845,14 @@ EAPI void eina_log_vprint(int            domain,
 /**
  * @brief Alternative logging method, this will output to standard output stream.
  *
- * @param[in] d The domain.
- * @param[in] level The level.
- * @param[in] file The file which is logged.
- * @param[in] fnc The function which is logged.
- * @param[in] line The line which is logged.
- * @param[in] fmt The output format to use.
- * @param[in] data Not used.
- * @param[in] args The arguments needed by the format.
+ * @param d The domain.
+ * @param level The level.
+ * @param file The file which is logged.
+ * @param fnc The function which is logged.
+ * @param line The line which is logged.
+ * @param fmt The output format to use.
+ * @param data Not used.
+ * @param args The arguments needed by the format.
  *
  * This method will colorize output based on domain provided color and
  * message logging level. To disable color, set environment variable
@@ -880,14 +880,14 @@ EAPI void eina_log_print_cb_stdout(const Eina_Log_Domain *d,
 /**
  * @brief Default logging method, this will output to standard error stream.
  *
- * @param[in] d The domain.
- * @param[in] level The level.
- * @param[in] file The file which is logged.
- * @param[in] fnc The function which is logged.
- * @param[in] line The line which is logged.
- * @param[in] fmt The output format to use.
- * @param[in] data Not used.
- * @param[in] args The arguments needed by the format.
+ * @param d The domain.
+ * @param level The level.
+ * @param file The file which is logged.
+ * @param fnc The function which is logged.
+ * @param line The line which is logged.
+ * @param fmt The output format to use.
+ * @param data Not used.
+ * @param args The arguments needed by the format.
  *
  * This method will colorize output based on domain provided color and
  * message logging level.
@@ -922,14 +922,14 @@ EAPI void eina_log_print_cb_stderr(const Eina_Log_Domain *d,
 /**
  * @brief Alternative logging method, this will output to given file stream.
  *
- * @param[in] d The domain.
- * @param[in] level Not used.
- * @param[in] file The file which is logged.
- * @param[in] fnc The function which is logged.
- * @param[in] line The line which is logged.
- * @param[in] fmt The output format to use.
- * @param[in] data The file which will store the output (as a FILE *).
- * @param[in] args The arguments needed by the format.
+ * @param d The domain.
+ * @param level Not used.
+ * @param file The file which is logged.
+ * @param fnc The function which is logged.
+ * @param line The line which is logged.
+ * @param fmt The output format to use.
+ * @param data The file which will store the output (as a FILE *).
+ * @param args The arguments needed by the format.
  *
  * This method will never output color.
  *
@@ -957,7 +957,7 @@ EAPI void eina_log_print_cb_file(const Eina_Log_Domain *d,
  * @param[in] file The file that is logged
  * @param[in] fnc The function that is logged
  * @param[in] line The line that is logged
- * @param[in] fmt The ouptut format to use
+ * @param[in] fmt The output format to use
  * @param[in] data Not Used
  * @param[in] args The arguments needed by the format
  *
@@ -982,7 +982,7 @@ EAPI void eina_log_print_cb_syslog(const Eina_Log_Domain *d,
  * @param[in] file The file that is logged
  * @param[in] fnc The function that is logged
  * @param[in] line The line that is logged
- * @param[in] fmt The ouptut format to use
+ * @param[in] fmt The output format to use
  * @param[in] data Not Used
  * @param[in] args The arguments needed by the format
  *
@@ -1004,14 +1004,14 @@ EAPI void eina_log_print_cb_dlog(const Eina_Log_Domain *d,
 /**
  * @brief Alternative logging method, this will output to systemd journal.
  *
- * @param[in] d The domain.
- * @param[in] level Not used.
- * @param[in] file The file which is logged.
- * @param[in] fnc The function which is logged.
- * @param[in] line The line which is logged.
- * @param[in] fmt The output format to use.
- * @param[in] data The file which will store the output (as a FILE *).
- * @param[in] args The arguments needed by the format.
+ * @param d The domain.
+ * @param level Not used.
+ * @param file The file which is logged.
+ * @param fnc The function which is logged.
+ * @param line The line which is logged.
+ * @param fmt The output format to use.
+ * @param data The file which will store the output (as a FILE *).
+ * @param args The arguments needed by the format.
  *
  * This method will never output color.
  *
@@ -1050,7 +1050,7 @@ extern EAPI const char *_eina_log_state_init;
 extern EAPI const char *_eina_log_state_shutdown;
 /**
  * @def EINA_LOG_STATE_INIT
- * String that indicates the log system is initializing 
+ * String that indicates the log system is initializing
  *
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
