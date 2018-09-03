@@ -850,7 +850,7 @@ EAPI void eina_log_vprint(int            domain,
  * @param file The file which is logged.
  * @param fnc The function which is logged.
  * @param line The line which is logged.
- * @param fmt The ouptut format to use.
+ * @param fmt The output format to use.
  * @param data Not used.
  * @param args The arguments needed by the format.
  *
@@ -885,7 +885,7 @@ EAPI void eina_log_print_cb_stdout(const Eina_Log_Domain *d,
  * @param file The file which is logged.
  * @param fnc The function which is logged.
  * @param line The line which is logged.
- * @param fmt The ouptut format to use.
+ * @param fmt The output format to use.
  * @param data Not used.
  * @param args The arguments needed by the format.
  *
@@ -927,7 +927,7 @@ EAPI void eina_log_print_cb_stderr(const Eina_Log_Domain *d,
  * @param file The file which is logged.
  * @param fnc The function which is logged.
  * @param line The line which is logged.
- * @param fmt The ouptut format to use.
+ * @param fmt The output format to use.
  * @param data The file which will store the output (as a FILE *).
  * @param args The arguments needed by the format.
  *
@@ -957,7 +957,7 @@ EAPI void eina_log_print_cb_file(const Eina_Log_Domain *d,
  * @param[in] file The file that is logged
  * @param[in] fnc The function that is logged
  * @param[in] line The line that is logged
- * @param[in] fmt The ouptut format to use
+ * @param[in] fmt The output format to use
  * @param[in] data Not Used
  * @param[in] args The arguments needed by the format
  *
@@ -982,7 +982,7 @@ EAPI void eina_log_print_cb_syslog(const Eina_Log_Domain *d,
  * @param[in] file The file that is logged
  * @param[in] fnc The function that is logged
  * @param[in] line The line that is logged
- * @param[in] fmt The ouptut format to use
+ * @param[in] fmt The output format to use
  * @param[in] data Not Used
  * @param[in] args The arguments needed by the format
  *
@@ -1009,7 +1009,7 @@ EAPI void eina_log_print_cb_dlog(const Eina_Log_Domain *d,
  * @param file The file which is logged.
  * @param fnc The function which is logged.
  * @param line The line which is logged.
- * @param fmt The ouptut format to use.
+ * @param fmt The output format to use.
  * @param data The file which will store the output (as a FILE *).
  * @param args The arguments needed by the format.
  *

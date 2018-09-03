@@ -8122,7 +8122,7 @@ _elm_genlist_item_item_class_update(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it,
    if (!GL_IT(it)->block) return;
 
    // FIXME(160711): orignal edje object updated by _view_theme_update
-   // cannot recieve signal emit properly. This edje bug must be fixed.
+   // cannot receive signal emit properly. This edje bug must be fixed.
    _item_cache_all_free(sd);
 
    sd->no_cache = EINA_TRUE;

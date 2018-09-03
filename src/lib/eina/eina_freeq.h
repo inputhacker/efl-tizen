@@ -71,7 +71,7 @@
  *
  * A queue of pointers to free in the future. You may create custom free
  * queues of your own to defer freeing, use the main free queue where the
- * mainloop will free thnigs as it iterates, or eina will free everything
+ * mainloop will free things as it iterates, or eina will free everything
  * on shut down.
  * 
  */

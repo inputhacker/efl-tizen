@@ -4060,7 +4060,7 @@ eet_data_descriptor_encode(Eet_Data_Descriptor *edd,
  * be defined. If the the type is not know at the time of restoring it, eet will still call
  * type_set of @p unified_type but the pointer will be set to a serialized binary representation
  * of what eet know. This make it possible, to save this pointer again by just returning the string
- * given previously and telling it by setting unknow to EINA_TRUE.
+ * given previously and telling it by setting unknown to EINA_TRUE.
  *
  * @since 1.2.4
  * @see Eet_Data_Descriptor_Class

@@ -2345,7 +2345,7 @@ EAPI void         edje_message_signal_process             (void);
  *
  * @brief Functions that deal with 3D projection of an 2D object.
  *
- * Perspective is a graphical tool that makes objets represented in 2D
+ * Perspective is a graphical tool that makes objects represented in 2D
  * look like they have a 3D appearance.
  *
  * Edje allows us to use perspective on any edje object. This group of
@@ -2594,7 +2594,7 @@ EAPI Eina_Bool edje_3d_object_add(Evas_Object *obj, Eo **root_node, Eo *scene);
  *
  * @remarks Tizen only feature (2015.07.16)
  *
- * @remarks Applications NEVER USE THESE APIs for private purporse.
+ * @remarks Applications NEVER USE THESE APIs for private purpose.
  *
  * @see edje_object_part_text_thaw()
  */
@@ -2607,7 +2607,7 @@ EAPI void                    edje_object_part_text_freeze    (Evas_Object *obj, 
  *
  * @remarks Tizen only feature (2015.07.16)
  *
- * @remarks Applications NEVER USE THESE APIs for private purporse.
+ * @remarks Applications NEVER USE THESE APIs for private purpose.
  *
  * @see edje_object_part_text_freeze()
  */

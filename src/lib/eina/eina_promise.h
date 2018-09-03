@@ -480,7 +480,7 @@ struct _Eina_Future_Desc {
  * @li Some other entity (library provider or library user) chained and canceled his future,
  * which will result in your future being canceled.
  *
- * Since a promise may be canceled indirectaly (by code sections that goes beyond your scope)
+ * Since a promise may be canceled indirectly (by code sections that goes beyond your scope)
  * you should always provide a cancel callback, even if you think you'll not need it.
  *
  * Here's a typical example:
@@ -568,7 +568,7 @@ EAPI Eina_Promise *eina_promise_new(Eina_Future_Scheduler *scheduler, Eina_Promi
  * @li Some other entity (library provider or library user) chained and canceled his future,
  * which will result in your future being canceled.
  *
- * Since a promise may be canceled indirectaly (by code sections that goes beyond your scope)
+ * Since a promise may be canceled indirectly (by code sections that goes beyond your scope)
  * you should always provide a cancel callback, even if you think you'll not need it.
  *
  * Here's a typical example:

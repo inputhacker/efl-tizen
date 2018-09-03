@@ -12,7 +12,7 @@ class Efl.Model.Composite.Selection (Efl.Model.Composite.Boolean)
       @property exclusive_selection {
          [[Exclusive Selection property]]
          values {
-           exclusive: bool; [[$true is selection is exclusive, $flase otherwise]]
+           exclusive: bool; [[$true is selection is exclusive, $false otherwise]]
          }
       }
    }

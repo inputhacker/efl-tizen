@@ -93,7 +93,7 @@ typedef enum
    ELM_XDND_ACTION_UNKNOWN, /**< Action type is unknown */
    ELM_XDND_ACTION_COPY, /**< Copy the data */
    ELM_XDND_ACTION_MOVE, /**< Move the data */
-   ELM_XDND_ACTION_PRIVATE, /**< Pricate action type */
+   ELM_XDND_ACTION_PRIVATE, /**< Private action type */
    ELM_XDND_ACTION_ASK, /**< Ask the user what to do */
    ELM_XDND_ACTION_LIST, /**< List the data */
    ELM_XDND_ACTION_LINK, /**< Link the data */

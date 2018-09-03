@@ -272,7 +272,7 @@ glview_create(Evas_Object *parent)
  * OpenGL-ES in an EFL application.
  *
  *
- * @subsection elm_opengl_evasglexample Evas GL initialiation with GLView
+ * @subsection elm_opengl_evasglexample Evas GL initialization with GLView
  *
  * When using @ref Elm_GLView, EFL will take care of the tedious creation of all
  * the surfaces and contexts. Also, EFL hides the underlying display system
