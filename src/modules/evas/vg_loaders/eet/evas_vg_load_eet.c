@@ -26,6 +26,16 @@ evas_vg_load_file_open_eet(const char *file, const char *key, int *error EINA_UN
         return NULL;
      }
 
+   if (key && !strncmp(key, "edje/vectors/json/", 18))
+     {
+        void *json_data;
+        int json_data_len = 0;
+
+        json_data = eet_read(ef, key, &json_data_len);
+        ERR("JSON is NOT SUPPORTED!! - data length[%d], data[%s]", json_data_len, (char *)json_data);
+        return NULL;
+     }
+
    svg_node_eet = vg_common_svg_node_eet();
    node = eet_data_read(ef, svg_node_eet, key);
    eet_close(ef);

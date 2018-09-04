@@ -3224,34 +3224,47 @@ _edje_image_recalc_apply(Edje *ed, Edje_Real_Part *ep, Edje_Calc_Params *p3, Edj
 }
 
 static void
-_edje_svg_recalc_apply(Edje *ed, Edje_Real_Part *ep, Edje_Calc_Params *p3 EINA_UNUSED, Edje_Part_Description_Vector *chosen_desc, FLOAT_T pos)
+_edje_vector_recalc_apply(Edje *ed, Edje_Real_Part *ep, Edje_Calc_Params *p3 EINA_UNUSED, Edje_Part_Description_Vector *chosen_desc, FLOAT_T pos)
 {
-   int new_svg = -1; //invalid svg
+   int new_id = -1; //invalid svg
    int w, h;
    char src_key[32], dest_key[32];
    Efl_VG *src_root, *dest_root, *root;
+   Edje_Vector_File_Type type = chosen_desc->vg.type;
+   Edje_Vector_File_Type new_type;
 
    evas_object_geometry_get(ep->object, NULL, NULL, &w, &h);
    if( (w == 0) || (h == 0)) return;
 
-   snprintf(src_key, sizeof(src_key), "edje/vectors/%i", chosen_desc->vg.id);
+   if (type == EDJE_VECTOR_FILE_TYPE_JSON)
+     snprintf(src_key, sizeof(src_key), "edje/vectors/json/%i", chosen_desc->vg.id);
+   else
+     snprintf(src_key, sizeof(src_key), "edje/vectors/%i", chosen_desc->vg.id);
 
    if (ep->param2)
      {
         Edje_Part_Description_Vector *next_state = (Edje_Part_Description_Vector *)ep->param2->description;
         if (chosen_desc->vg.id != next_state->vg.id)
-          new_svg = next_state->vg.id;
+          {
+             new_id = next_state->vg.id;
+             new_type = next_state->vg.type;
+          }
         else
-          pos = 0;
+          {
+             pos = 0;
+          }
      }
 
-   if (new_svg < 0)
+   if (new_id < 0)
      {
         efl_file_set(ep->object, ed->file->path, src_key);
      }
    else
      {
-        snprintf(dest_key, sizeof(dest_key), "edje/vectors/%i", new_svg);
+        if (new_type == EDJE_VECTOR_FILE_TYPE_JSON)
+          snprintf(dest_key, sizeof(dest_key), "edje/vectors/json/%i", new_id);
+        else
+          snprintf(dest_key, sizeof(dest_key), "edje/vectors/%i", new_id);
 
         efl_file_set(ep->object, ed->file->path, src_key);
         src_root = efl_canvas_vg_root_node_get(ep->object);
@@ -5050,7 +5063,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
              break;
 
            case EDJE_PART_TYPE_VECTOR:
-             _edje_svg_recalc_apply(ed, ep, pf, (Edje_Part_Description_Vector *)chosen_desc, pos);
+             _edje_vector_recalc_apply(ed, ep, pf, (Edje_Part_Description_Vector *)chosen_desc, pos);
              break;
 
            case EDJE_PART_TYPE_EXTERNAL:

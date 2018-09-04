@@ -2492,6 +2492,7 @@ _handle_vector_image(void)
           {
              ed->vg.set = EINA_TRUE;
              ed->vg.id = edje_file->image_dir->vectors[i].id;
+             ed->vg.type = edje_file->image_dir->vectors[i].type;
              break;
           }
      }
@@ -2534,6 +2535,7 @@ st_images_vector(void)
    Edje_Vector_Directory_Entry *vector;
    const char *tmp;
    unsigned int i;
+   size_t entry_len;
 
    check_min_arg_count(1);
 
@@ -2565,6 +2567,16 @@ st_images_vector(void)
 
    vector->entry = tmp;
    vector->id = edje_file->image_dir->vectors_count - 1;
+
+   entry_len = strlen(vector->entry);
+   if ((entry_len > 5) && !strncmp(vector->entry + entry_len - 5, ".json", 5))
+     {
+        vector->type = EDJE_VECTOR_FILE_TYPE_JSON;
+     }
+   else
+     {
+        vector->type = EDJE_VECTOR_FILE_TYPE_SVG;
+     }
 }
 
 
@@ -8933,6 +8945,7 @@ st_collections_group_parts_part_description_inherit(void)
               Edje_Part_Description_Vector *iparent = (Edje_Part_Description_Vector *) parent;
               ied->vg.set = iparent->vg.set;
               ied->vg.id = iparent->vg.id;
+              ied->vg.type = iparent->vg.type;
               break;
            }
      }

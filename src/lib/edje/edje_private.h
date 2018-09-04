@@ -686,10 +686,17 @@ struct _Edje_Image_Directory
    unsigned int vectors_count;
 };
 
+typedef enum _Edje_Vector_File_Type
+{
+   EDJE_VECTOR_FILE_TYPE_SVG = 0,
+   EDJE_VECTOR_FILE_TYPE_JSON
+} Edje_Vector_File_Type;
+
 struct _Edje_Vector_Directory_Entry
 {
    const char *entry; /* the nominal name of the vector image - if any */
    int   id; /* the id no. of the image */
+   Edje_Vector_File_Type type;
 };
 
 struct _Edje_Image_Directory_Entry
@@ -1640,6 +1647,7 @@ struct _Edje_Part_Description_Spec_Svg
 {
    int            id; /* the svg id to use */
    Eina_Bool      set; /* if vg condition it's content */
+   Edje_Vector_File_Type type;
 };
 
 struct _Edje_Part_Description_Image
