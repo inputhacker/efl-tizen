@@ -15,13 +15,6 @@ struct ext_loader_s
    const char *loader;
 };
 
-struct ext_saver_s
-{
-   unsigned int length;
-   const char *extension;
-   const char *saver;
-};
-
 #define MATCHING(Ext, Module) { sizeof(Ext)-1, Ext, Module }
 
 static const struct ext_loader_s loaders[] =
@@ -36,13 +29,6 @@ static const struct ext_loader_s loaders[] =
 static const char *loaders_name[] =
 { /* in order of most likely needed */
   "eet", "json", "svg"
-};
-
-static const struct ext_saver_s savers[] =
-{ /* map extensions to savers to use for good first-guess tries */
-   MATCHING(".eet", "eet"),
-   MATCHING(".edj", "eet"),
-   MATCHING(".svg", "svg")
 };
 
 static Evas_Module *
@@ -106,6 +92,21 @@ _vg_load_from_file(const char *file, const char *key)
    return NULL;
 }
 
+// vg file save
+struct ext_saver_s
+{
+   unsigned int length;
+   const char *extension;
+   const char *saver;
+};
+
+static const struct ext_saver_s savers[] =
+{ /* map extensions to savers to use for good first-guess tries */
+   MATCHING(".eet", "eet"),
+   MATCHING(".edj", "eet"),
+   MATCHING(".svg", "svg")
+};
+
 static Evas_Module *
 _find_saver_module(const char *file)
 {
@@ -128,6 +129,47 @@ _find_saver_module(const char *file)
    if (saver)
      em = evas_module_find_type(EVAS_MODULE_TYPE_VG_SAVER, saver);
    return em;
+}
+
+Eina_Bool
+evas_vg_save_to_file(Vg_File_Data *vfd, const char *file, const char *key, const char *flags)
+{
+   Evas_Module       *em;
+   Evas_Vg_Save_Func *saver;
+   int                error = EVAS_LOAD_ERROR_GENERIC;
+   int                compress = 9;
+
+   if (!file) return EINA_FALSE;
+
+   if (flags)
+     {
+        char *p, *pp;
+        char *tflags;
+
+        tflags = alloca(strlen(flags) + 1);
+        strcpy(tflags, flags);
+        p = tflags;
+        while (p)
+          {
+             pp = strchr(p, ' ');
+             if (pp) *pp = 0;
+             sscanf(p, "compress=%i", &compress);
+             if (pp) p = pp + 1;
+             else break;
+          }
+     }
+
+   em = _find_saver_module(file);
+   if (em)
+     {
+        saver = em->functions;
+        error = saver->file_save(vfd, file, key, compress);
+     }
+
+   if (error)
+     return EINA_FALSE;
+
+   return EINA_TRUE;
 }
 
 static void
@@ -220,6 +262,21 @@ _apply_transformation(Efl_VG *root, double w, double h, Vg_File_Data *vg_data)
    evas_vg_node_transformation_set(root, &m);
 }
 
+static Efl_VG *
+_evas_vg_dup_vg_tree(Vg_File_Data *vfd, double w, double h)
+{
+
+   Efl_VG *root;
+
+   if (!vfd) return NULL;
+   if (w < 1 || h < 1) return NULL;
+
+   root = efl_duplicate(vfd->root);
+   _apply_transformation(root, w, h, vfd);
+
+   return root;
+}
+
 Vg_File_Data *
 evas_cache_vg_file_open(const char *file, const char *key)
 {
@@ -238,6 +295,7 @@ evas_cache_vg_file_open(const char *file, const char *key)
    eina_strbuf_free(hash_key);
    return vfd;
 }
+
 
 Vg_Cache_Entry*
 evas_cache_vg_entry_create(const char *file,
@@ -277,21 +335,9 @@ evas_cache_vg_entry_create(const char *file,
 Efl_VG*
 evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry)
 {
-   if (!vg_entry) return NULL;
+   if(!vg_entry) return NULL;
    if (vg_entry->root) return vg_entry->root;
-   if ((vg_entry->w < 1) || (vg_entry->h < 1)) return NULL;
-
-   Vg_File_Data *vfd = vg_entry->vfd;
-   if (!vfd) return NULL;
-
-   //FIXME: How to pass view size to loader?
-   vfd->view_box.w = vg_entry->w;
-   vfd->view_box.h = vg_entry->h;
-
-   if (!vfd->loader->file_data(vfd)) return NULL;
-   vg_entry->root = efl_duplicate(vfd->root);
-   _apply_transformation(vg_entry->root, vg_entry->w, vg_entry->h, vfd);
-
+   vg_entry->root = _evas_vg_dup_vg_tree(vg_entry->vfd, vg_entry->w, vg_entry->h);
    return vg_entry->root;
 }
 
@@ -304,46 +350,4 @@ evas_cache_vg_entry_del(Vg_Cache_Entry *vg_entry)
    if (!eina_hash_del(vg_cache->vg_entry_hash, vg_entry->hash_key, vg_entry))
      ERR("Failed to delete vg_entry = (%p) from hash", vg_entry);
 }
-
-Eina_Bool
-evas_cache_vg_file_save(Vg_File_Data *vfd, const char *file, const char *key, const char *flags)
-{
-   Evas_Module       *em;
-   Evas_Vg_Save_Func *saver;
-   int                error = EVAS_LOAD_ERROR_GENERIC;
-   int                compress = 9;
-
-   if (!file) return EINA_FALSE;
-
-   if (flags)
-     {
-        char *p, *pp;
-        char *tflags;
-
-        tflags = alloca(strlen(flags) + 1);
-        strcpy(tflags, flags);
-        p = tflags;
-        while (p)
-          {
-             pp = strchr(p, ' ');
-             if (pp) *pp = 0;
-             sscanf(p, "compress=%i", &compress);
-             if (pp) p = pp + 1;
-             else break;
-          }
-     }
-
-   em = _find_saver_module(file);
-   if (em)
-     {
-        saver = em->functions;
-        error = saver->file_save(vfd, file, key, compress);
-     }
-
-   if (error)
-     return EINA_FALSE;
-
-   return EINA_TRUE;
-}
-
 
