@@ -14,7 +14,7 @@ vg_common_json_create_vg_node(Vg_File_Data *vfd)
 
    //Root node
    if (vfd->root) efl_unref(vfd->root);
-   vfd->root = efl_add_ref(EFL_CANVAS_VG_CONTAINER_CLASS, NULL);
+   vfd->root = efl_add_ref(EFL_VG_CONTAINER_CLASS, NULL);
    Efl_VG *root = vfd->root;
    if (!root) return EINA_FALSE;
 

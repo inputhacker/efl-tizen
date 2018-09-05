@@ -21,7 +21,7 @@ enum Efl.Canvas.Vg.Fill_Mode
                   dimension of the viewport.]]
 }
 
-class Efl.Canvas.Vg.Object (Efl.Canvas.Object, Efl.File, Efl.Gfx.Image_Animation_Controller)
+class Efl.Canvas.Vg (Efl.Canvas.Object, Efl.File, Efl.Image.Animated)
 {
    [[Efl vector graphics class]]
    legacy_prefix: evas_object_vg;
@@ -76,11 +76,11 @@ class Efl.Canvas.Vg.Object (Efl.Canvas.Object, Efl.File, Efl.Gfx.Image_Animation
       // FIXME: Implement mmap only (also fix cache keys)
       Efl.File.file { get; set; }
       Efl.File.save;
-      Efl.Gfx.Image_Animation_Controller.animated { get; }
-      Efl.Gfx.Image_Animation_Controller.animated_frame { get; set; }
-      Efl.Gfx.Image_Animation_Controller.animated_frame_count { get; }
-      Efl.Gfx.Image_Animation_Controller.animated_loop_type { get; }
-      Efl.Gfx.Image_Animation_Controller.animated_loop_count { get; }
-      Efl.Gfx.Image_Animation_Controller.animated_frame_duration { get; }
+      Efl.Image.Animated.animated { get; }
+      Efl.Image.Animated.animated_frame { get; set; }
+      Efl.Image.Animated.animated_frame_count { get; }
+      Efl.Image.Animated.animated_loop_type { get; }
+      Efl.Image.Animated.animated_loop_count { get; }
+      Efl.Image.Animated.animated_frame_duration { get; }
    }
 }
