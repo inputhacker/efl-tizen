@@ -2376,9 +2376,7 @@ evas_vg_load_file_data_svg(const char *file, const char *key EINA_UNUSED, int *e
 
 static Evas_Vg_Load_Func evas_vg_load_svg_func =
 {
-   evas_vg_load_file_data_svg,
-   NULL,
-   NULL
+   evas_vg_load_file_data_svg
 };
 
 static int

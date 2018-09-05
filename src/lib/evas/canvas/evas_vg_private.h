@@ -11,14 +11,17 @@ typedef struct _Efl_VG_Interpolation         Efl_VG_Interpolation;
 
 typedef struct _Efl_Canvas_Vg_Data           Efl_Canvas_Vg_Data;
 
-typedef struct _Vg_Cache
-{
-   Eina_Hash             *vfd_hash;
-   Eina_Hash             *vg_entry_hash;
-   int                    ref;
-} Vg_Cache;
+typedef struct _Evas_Cache_Vg_Entry          Evas_Cache_Vg_Entry;
+typedef struct _Evas_Cache_Vg                Evas_Cache_Vg;
 
-typedef struct _Vg_Cache_Entry
+struct _Evas_Cache_Vg
+{
+   Eina_Hash             *vg_hash;
+   Eina_Hash             *active;
+   int                    ref;
+};
+
+struct _Evas_Cache_Vg_Entry
 {
    char                 *hash_key;
    Eina_Stringshare     *file;
@@ -27,30 +30,28 @@ typedef struct _Vg_Cache_Entry
    int                   h;
    Efl_VG               *root;
    int                   ref;
-   Vg_File_Data         *vfd;
-} Vg_Cache_Entry;
+};
 
-// holds the vg tree info set by the user
-typedef struct _Vg_User_Entry
+typedef struct _User_Vg_Entry
 {
    int                   w; // current surface width
    int                   h; // current surface height
    Efl_VG               *root;
-} Vg_User_Entry;
+}User_Vg_Entry; // holds the vg tree info set by the user
 
 struct _Efl_Canvas_Vg_Data
 {
-   void                      *engine_data;
-   Efl_VG                    *root;
-   Vg_Cache_Entry            *vg_entry;
-   Vg_User_Entry             *user_entry; // holds the user set vg tree
-   Eina_Rect                  fill;
-   Eina_Rect                  viewbox;
-   unsigned int               width, height;
-   Eina_Array                 cleanup;
-   double                     align_x, align_y;
-   Efl_Canvas_Vg_Fill_Mode    fill_mode;
-   Eina_Bool                  changed;
+   void                     *engine_data;
+   Efl_VG                   *root;
+   Evas_Cache_Vg_Entry      *vg_entry;
+   User_Vg_Entry            *user_entry; // holds the user set vg tree
+   Eina_Rect                 fill;
+   Eina_Rect                 viewbox;
+   unsigned int              width, height;
+   Eina_Array                cleanup;
+   double                    align_x, align_y;
+   Efl_Canvas_Vg_Fill_Mode   fill_mode;
+   Eina_Bool                 changed;
 };
 
 struct _Efl_VG_Data
@@ -102,11 +103,12 @@ struct _Efl_VG_Interpolation
 
 void                        evas_cache_vg_init(void);
 void                        evas_cache_vg_shutdown(void);
-Vg_Cache_Entry*  evas_cache_vg_entry_create(const char *file, const char *key, int w, int h);
-Efl_VG*                     evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry);
-void                        evas_cache_vg_entry_del(Vg_Cache_Entry *vg_entry);
-Vg_File_Data *              evas_cache_vg_file_open(const char *file, const char *key);
-Eina_Bool                   evas_vg_save_to_file(Vg_File_Data *vfd, const char *file, const char *key, const char *flags);
+Evas_Cache_Vg_Entry*        evas_cache_vg_entry_find(const char *file, const char *key, int w, int h);
+Efl_VG*                     evas_cache_vg_tree_get(Evas_Cache_Vg_Entry *svg_entry);
+void                        evas_cache_vg_entry_del(Evas_Cache_Vg_Entry *svg_entry);
+Vg_File_Data *              evas_cache_vg_file_info(const char *file, const char *key);
+
+Eina_Bool                   evas_vg_save_to_file(Vg_File_Data *evg_data, const char *file, const char *key, const char *flags);
 
 static inline Efl_VG_Data *
 _evas_vg_render_pre(Efl_VG *child, Ector_Surface *s, Eina_Matrix3 *m)
