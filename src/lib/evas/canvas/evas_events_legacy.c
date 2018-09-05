@@ -99,6 +99,13 @@ efl_input_pointer_legacy_info_fill(Evas *eo_evas, Efl_Input_Key *eo_ev, Evas_Cal
              e->button = ev->button;
              e->canvas.x = ev->cur.x;
              e->canvas.y = ev->cur.y;
+             // TIZEN_ONLY(20180905): support single touch's extra axis information
+             e->radius = ev->radius;
+             e->radius_x = ev->radius_x;
+             e->radius_y = ev->radius_y;
+             e->pressure = ev->pressure;
+             e->angle = ev->angle;
+             //
              COORD_DUP(e);
              e->data = ev->data;
              e->flags = ev->button_flags;
@@ -150,6 +157,13 @@ efl_input_pointer_legacy_info_fill(Evas *eo_evas, Efl_Input_Key *eo_ev, Evas_Cal
              e->button = ev->button;
              e->canvas.x = ev->cur.x;
              e->canvas.y = ev->cur.y;
+             // TIZEN_ONLY(20180905): support single touch's extra axis information
+             e->radius = ev->radius;
+             e->radius_x = ev->radius_x;
+             e->radius_y = ev->radius_y;
+             e->pressure = ev->pressure;
+             e->angle = ev->angle;
+             //
              COORD_DUP(e);
              e->data = ev->data;
              e->flags = ev->button_flags;
@@ -203,6 +217,13 @@ efl_input_pointer_legacy_info_fill(Evas *eo_evas, Efl_Input_Key *eo_ev, Evas_Cal
              e->cur.canvas.y = ev->cur.y;
              e->prev.canvas.x = ev->prev.x;
              e->prev.canvas.y = ev->prev.y;
+             // TIZEN_ONLY(20180905): support single touch's extra axis information
+             e->radius = ev->radius;
+             e->radius_x = ev->radius_x;
+             e->radius_y = ev->radius_y;
+             e->pressure = ev->pressure;
+             e->angle = ev->angle;
+             //
              COORD_DUP_CUR(e);
              COORD_DUP_PREV(e);
              e->data = ev->data;
