@@ -2677,10 +2677,8 @@ _elm_scroll_momentum_animator(void *data, const Efl_Event *event EINA_UNUSED)
         else
           {
         //
-             dx = (sid->down.dx * (_elm_config->thumbscroll_friction +
-                                   sid->down.extra_time) * p);
-             dy = (sid->down.dy * (_elm_config->thumbscroll_friction +
-                                   sid->down.extra_time) * p);
+             dx = (sid->down.dx * (_elm_config->thumbscroll_momentum_friction) * p);
+             dy = (sid->down.dy * (_elm_config->thumbscroll_momentum_friction) * p);
         // TIZEN_ONLY(20150705): Genlist item align feature
           }
         //
@@ -3237,10 +3235,8 @@ _elm_scroll_mouse_up_event_cb(void *data,
                                  pos_x = sid->down.dx;
                                  pos_y = sid->down.dy;
 
-                                 pos_x = _round(pos_x * (_elm_config->thumbscroll_friction +
-                                                         sid->down.extra_time), 0);
-                                 pos_y = _round(pos_y * (_elm_config->thumbscroll_friction +
-                                                         sid->down.extra_time), 0);
+                                 pos_x = _round(pos_x * (_elm_config->thumbscroll_momentum_friction), 0);
+                                 pos_y = _round(pos_y * (_elm_config->thumbscroll_momentum_friction), 0);
 
                                  elm_obj_pan_pos_adjust(sid->pan_obj, &pos_x, &pos_y);
 
