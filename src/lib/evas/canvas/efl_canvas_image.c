@@ -75,7 +75,7 @@ _image_preload_internal(Eo *eo_obj, Evas_Image_Data *o, Eina_Bool cancel)
 {
    if (!o->engine_data)
      {
-        o->preload = EVAS_IMAGE_PRELOADING;
+        o->preloading = EINA_TRUE;
         evas_object_inform_call_image_preloaded(eo_obj);
         return;
      }
@@ -84,17 +84,17 @@ _image_preload_internal(Eo *eo_obj, Evas_Image_Data *o, Eina_Bool cancel)
    Evas_Object_Protected_Data *obj = efl_data_scope_get(eo_obj, EFL_CANVAS_OBJECT_CLASS);
    if (cancel)
      {
-        if (o->preload & EVAS_IMAGE_PRELOADING)
+        if (o->preloading)
           {
-             o->preload |= EVAS_IMAGE_PRELOAD_CANCEL;
-             ENFN->image_data_preload_cancel(ENC, o->engine_data, eo_obj, EINA_TRUE);
+             o->preloading = EINA_FALSE;
+             ENFN->image_data_preload_cancel(ENC, o->engine_data, eo_obj);
           }
      }
    else
      {
-        if (o->preload == EVAS_IMAGE_PRELOAD_NONE)
+        if (!o->preloading)
           {
-             o->preload = EVAS_IMAGE_PRELOADING;
+             o->preloading = EINA_TRUE;
              ENFN->image_data_preload_request(ENC, o->engine_data, eo_obj);
           }
      }

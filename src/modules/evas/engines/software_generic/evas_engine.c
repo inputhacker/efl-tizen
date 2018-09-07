@@ -2221,13 +2221,21 @@ eng_image_data_preload_request(void *data EINA_UNUSED, void *image, const Eo *ta
 }
 
 static void
-eng_image_data_preload_cancel(void *data EINA_UNUSED, void *image, const Eo *target, Eina_Bool force)
+eng_image_data_preload_cancel(void *data EINA_UNUSED, void *image, const Eo *target)
 {
    RGBA_Image *im = image;
 
    if (!im) return;
 
-   evas_cache_image_preload_cancel(&im->cache_entry, target, force);
+#ifdef EVAS_CSERVE2
+   if (evas_cserve2_use_get() && evas_cache2_image_cached(&im->cache_entry))
+     {
+        evas_cache2_image_preload_cancel(&im->cache_entry, target);
+        return;
+     }
+#endif
+
+   evas_cache_image_preload_cancel(&im->cache_entry, target);
 }
 
 static void

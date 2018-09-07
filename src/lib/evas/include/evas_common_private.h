@@ -588,8 +588,7 @@ struct _Evas_Cache_Target
    void *data;
    void (*preloaded_cb) (void *data); //Call when preloading done.
    void *preloaded_data;
-   Eina_Bool delete_me : 1;
-   Eina_Bool preload_cancel : 1;
+   Eina_Bool delete_me;
 };
 
 struct _Image_Timestamp
