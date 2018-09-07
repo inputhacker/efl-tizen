@@ -66,14 +66,10 @@ evas_object_inform_call_image_preloaded(Evas_Object *eo_obj)
    int event_id;
 
    EINA_SAFETY_ON_NULL_RETURN(obj);
-
-   unsigned char preload = _evas_object_image_preloading_get(eo_obj);
-
-   //Even cancelled, obj needs to draw image.
+   if (!_evas_object_image_preloading_get(eo_obj)) return;
    _evas_image_load_post_update(eo_obj, obj);
-
-   if (!(preload & EVAS_IMAGE_PRELOADING) ||
-       (preload & EVAS_IMAGE_PRELOAD_CANCEL)) return;
+   _evas_object_image_preloading_check(eo_obj);
+   _evas_object_image_preloading_set(eo_obj, 0);
 
    event_id = _evas_object_event_new();
    evas_object_event_callback_call(eo_obj, obj, EVAS_CALLBACK_IMAGE_PRELOADED, NULL, event_id, EFL_IMAGE_EVENT_PRELOAD);
