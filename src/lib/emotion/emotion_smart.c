@@ -19,6 +19,8 @@
 #include "Emotion.h"
 #include "emotion_private.h"
 
+#include "canvas/evas_canvas.eo.h"
+
 #ifdef _WIN32
 # define FMT_UCHAR "%c"
 #else

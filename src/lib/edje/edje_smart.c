@@ -4,6 +4,8 @@
 
 #include "edje_private.h"
 
+#include "canvas/evas_canvas.eo.h"
+
 #ifdef MY_CLASS
 # undef MY_CLASS
 #endif

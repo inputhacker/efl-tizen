@@ -13,6 +13,8 @@
 
 #include "edje_private.h"
 
+#include "canvas/evas_canvas.eo.h"
+
 #define EDJE_EDIT_IS_UNSTABLE_AND_I_KNOW_ABOUT_IT
 #include "Edje_Edit.h"
 
