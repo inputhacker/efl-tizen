@@ -147,7 +147,7 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
    config_attrs[n++] = 1;
 
    config_attrs[n++] = EGL_ALPHA_SIZE;
-   config_attrs[n++] = gw->alpha;
+   config_attrs[n++] = 8 * !!gw->alpha;
    config_attrs[n++] = EGL_DEPTH_SIZE;
 //TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
 //  config_attrs[n++] = 0;
