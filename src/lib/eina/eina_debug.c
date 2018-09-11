@@ -112,6 +112,9 @@ extern Eina_Bool eina_list_init(void);
 extern Eina_Spinlock _eina_debug_thread_lock;
 
 static Eina_Bool _debug_disabled = EINA_FALSE;
+//TIZEN_ONLY(20180910): disable cpu debug
+static Eina_Bool _debug_cpu_disabled = EINA_FALSE;
+//
 
 /* Local session */
 /* __thread here to allow debuggers to be master and slave by using two different threads */
@@ -732,6 +735,13 @@ eina_debug_init(void)
      {
         eina_debug_local_connect(EINA_FALSE);
      }
+//TIZEN_ONLY(20180910): disable cpu debug
+   if (!getenv("EFL_NO_CPU_DEBUG"))
+     {
+        _debug_disabled = EINA_TRUE;
+     }
+   if (!_debug_disabled)
+//
    _eina_debug_cpu_init();
    _eina_debug_bt_init();
    _eina_debug_timer_init();
@@ -743,6 +753,9 @@ eina_debug_shutdown(void)
 {
    _eina_debug_timer_shutdown();
    _eina_debug_bt_shutdown();
+//TIZEN_ONLY(20180910): disable cpu debug
+   if (!_debug_disabled)
+//
    _eina_debug_cpu_shutdown();
    eina_spinlock_take(&_eina_debug_thread_lock);
    // yes - we never free on shutdown - this is because the monitor thread
