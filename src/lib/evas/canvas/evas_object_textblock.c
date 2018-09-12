@@ -12068,6 +12068,25 @@ _evas_textblock_cursor_range_text_markup_get(const Efl_Text_Cursor_Cursor *cur1,
      }
 }
 
+EOLIAN char *
+_efl_canvas_text_efl_text_markup_markup_range_get(const Eo *eo_obj,
+      Efl_Canvas_Text_Data *o EINA_UNUSED, Efl_Text_Cursor_Cursor *start,
+      Efl_Text_Cursor_Cursor *end)
+{
+   if (!start || !start->node) return NULL;
+   if (!end || !end->node) return NULL;
+   if ((start->obj != eo_obj) || (start->obj != end->obj)) return NULL;
+   /************************************************************************************
+    * TIZEN_ONLY(20181108): Add evas_textblock_cursor_range_text_valid_markup_get API. *
+    ************************************************************************************
+   return _evas_textblock_cursor_range_text_markup_get(start, end);
+    */
+   return _evas_textblock_cursor_range_text_markup_get(start, end, EINA_FALSE);
+   /*******
+    * END *
+    *******/
+}
+
 static char *
 _evas_textblock_cursor_range_text_plain_get(const Efl_Text_Cursor_Cursor *cur1, const Efl_Text_Cursor_Cursor *_cur2)
 {
