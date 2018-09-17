@@ -68,10 +68,12 @@ ecore_con_local_path_new(Eina_Bool is_system, const char *name, int port)
 
    if (!is_system)
      {
+        // TIZEN ONLY (20180917): smack issue: change location
         if (port < 0)
-          eina_vpath_resolve_snprintf(buf, sizeof(buf), "(:usr.run:)/.ecore/%s", name);
+          eina_vpath_resolve_snprintf(buf, sizeof(buf), "/run/.efl/.ecore/%s", name);
         else
-          eina_vpath_resolve_snprintf(buf, sizeof(buf), "(:usr.run:)/.ecore/%s/%i", name, port);
+          eina_vpath_resolve_snprintf(buf, sizeof(buf), "/run/.efl/.ecore/%s/%i", name, port);
+        //
 
         return strdup(buf);
      }
