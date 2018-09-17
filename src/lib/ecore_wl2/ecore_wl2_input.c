@@ -3105,6 +3105,52 @@ _ecore_wl2_input_device_info_send(Ecore_Window win_id, const char *name,  const 
      ecore_event_add(ECORE_EVENT_DEVICE_DEL, e, _ecore_wl2_input_device_info_free, NULL);
 }
 
+// TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+static void
+_ecore_wl2_input_device_update_send(Ecore_Window win, Ecore_Device *dev)
+{
+   Ecore_Event_Device_Update *ev;
+
+   ev = (Ecore_Event_Device_Update *)calloc(sizeof(Ecore_Event_Device_Update), 1);
+   EINA_SAFETY_ON_NULL_RETURN(ev);
+
+   ev->window = win;
+   ev->dev = dev;
+   ecore_event_add(ECORE_EVENT_DEVICE_SUBCLASS_UPDATE, ev, NULL, NULL);
+}
+
+
+static void
+_ecore_wl2_input_device_ecore_device_update(Ecore_Device *dev, Ecore_Device_Subclass subclas)
+{
+   Eina_Hash *windows;
+   Eina_Iterator *itr;
+   Ecore_Wl2_Window *win = NULL;
+   void *data;
+   Eina_Bool has_win = EINA_FALSE;
+
+   ecore_device_subclass_set(dev, subclas);
+
+   windows = _ecore_wl2_window_hash_get();
+   if (windows)
+     {
+        itr = eina_hash_iterator_data_new(windows);
+        while (eina_iterator_next(itr, &data))
+          {
+             win = data;
+             has_win = EINA_TRUE;
+             _ecore_wl2_input_device_update_send(win->id, dev);
+          }
+
+        eina_iterator_free(itr);
+     }
+   if (!has_win)
+     {
+        _ecore_wl2_input_device_update_send((uintptr_t)NULL, dev);
+     }
+}
+//
+
 static Eina_Bool
 _ecore_wl2_input_device_ecore_device_add(Ecore_Wl2_Tizen_Input_Device *dev)
 {
@@ -3119,7 +3165,12 @@ _ecore_wl2_input_device_ecore_device_add(Ecore_Wl2_Tizen_Input_Device *dev)
         ecdev_name = ecore_device_identifier_get(ecdev);
         if (!ecdev_name) continue;
         if ((ecore_device_class_get(ecdev) == dev->clas) && (!strcmp(ecdev_name, dev->identifier)))
-          return EINA_FALSE;
+          {
+             // TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+             _ecore_wl2_input_device_ecore_device_update(ecdev, dev->subclas);
+             //
+             return EINA_FALSE;
+          }
      }
 
    ecdev = ecore_device_add();

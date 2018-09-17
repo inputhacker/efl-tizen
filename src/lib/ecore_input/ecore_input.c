@@ -31,6 +31,9 @@ EAPI int ECORE_EVENT_JOYSTICK = 0;
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
 EAPI int ECORE_EVENT_DETENT_ROTATE = 0;
 //
+// TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+EAPI int ECORE_EVENT_DEVICE_SUBCLASS_UPDATE = 0;
+//
 
 
 static int _ecore_event_init_count = 0;
@@ -72,6 +75,9 @@ ecore_event_init(void)
    ECORE_EVENT_DEVICE_ADD = ecore_event_type_new();
    ECORE_EVENT_DEVICE_DEL = ecore_event_type_new();
    //
+   // TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+   ECORE_EVENT_DEVICE_SUBCLASS_UPDATE = ecore_event_type_new();
+   //
 
    //TIZEN_ONLY(20170307) Remove warning message
    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -105,7 +111,10 @@ ecore_event_shutdown(void)
                           //
                           // TIZEN_ONLY(20180118): support a Ecore_Device
                           ECORE_EVENT_DEVICE_ADD,
-                          ECORE_EVENT_DEVICE_DEL
+                          ECORE_EVENT_DEVICE_DEL,
+                          //
+                          // TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+                          ECORE_EVENT_DEVICE_SUBCLASS_UPDATE
                           //
                           );
    //TIZEN_ONLY(20170307) Remove warning message

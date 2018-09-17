@@ -61,7 +61,7 @@ struct _Ecore_Input_Last
 };
 
 static int _ecore_event_evas_init_count = 0;
-static Ecore_Event_Handler *ecore_event_evas_handlers[10];
+static Ecore_Event_Handler *ecore_event_evas_handlers[11];
 static Eina_Hash *_window_hash = NULL;
 
 static Eina_List *_last_events = NULL;
@@ -999,6 +999,55 @@ ecore_event_evas_axis_update(void *data EINA_UNUSED, int type EINA_UNUSED, void 
    return ECORE_CALLBACK_PASS_ON;
 }
 
+// TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+static void
+_ecore_event_evas_device_update(Evas *e, const char *name EINA_UNUSED, const char *identifier, Ecore_Device_Class clas, Ecore_Device_Subclass subclas)
+{
+   const Eina_List *dev_list = NULL;
+   const Eina_List *l;
+   Evas_Device *edev = NULL;
+   char *edev_identifier;
+
+   dev_list = evas_device_list(e, NULL);
+   if (dev_list)
+     {
+        EINA_LIST_FOREACH(dev_list, l, edev)
+          {
+             edev_identifier = (char *)evas_device_description_get(edev);
+             if (!edev_identifier) continue;
+             if ((evas_device_class_get(edev) == (Evas_Device_Class)clas) &&
+                 _ecore_event_evas_strcmp(edev_identifier, identifier))
+               {
+                  evas_device_subclass_set(edev, (Evas_Device_Subclass)subclas);
+                  break;
+               }
+          }
+     }
+}
+
+
+EAPI Eina_Bool
+ecore_event_evas_device_update(void *data EINA_UNUSED, int type, void *event)
+{
+   Ecore_Event_Device_Update *e = (Ecore_Event_Device_Update *)event;
+   Ecore_Input_Window *lookup;
+
+   lookup = _ecore_event_window_match(e->window);
+   if (!lookup) return ECORE_CALLBACK_PASS_ON;
+
+   if (type == ECORE_EVENT_DEVICE_SUBCLASS_UPDATE)
+     {
+        _ecore_event_evas_device_update(lookup->evas,
+                                        ecore_device_name_get(e->dev),
+                                        ecore_device_identifier_get(e->dev),
+                                        ecore_device_class_get(e->dev),
+                                        ecore_device_subclass_get(e->dev));
+     }
+
+   return ECORE_CALLBACK_PASS_ON;
+}
+//
+
 EAPI int
 ecore_event_evas_init(void)
 {
@@ -1053,6 +1102,11 @@ ecore_event_evas_init(void)
    ecore_event_evas_handlers[9] = ecore_event_handler_add(ECORE_EVENT_MOUSE_BUTTON_CANCEL,
                                                           ecore_event_evas_mouse_button_cancel,
                                                           NULL);
+   // TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+   ecore_event_evas_handlers[10] = ecore_event_handler_add(ECORE_EVENT_DEVICE_SUBCLASS_UPDATE,
+                                                          ecore_event_evas_device_update,
+                                                          NULL);
+   //
 
    _window_hash = eina_hash_pointer_new(free);
 

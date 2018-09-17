@@ -66,6 +66,9 @@ extern "C" {
    EAPI extern int ECORE_EVENT_DEVICE_ADD;
    EAPI extern int ECORE_EVENT_DEVICE_DEL;
    //
+   // TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+   EAPI extern int ECORE_EVENT_DEVICE_SUBCLASS_UPDATE;
+   //
 
 #define ECORE_EVENT_MODIFIER_SHIFT      0x0001
 #define ECORE_EVENT_MODIFIER_CTRL       0x0002
@@ -99,6 +102,9 @@ extern "C" {
    //
    // TIZEN_ONLY(20171206): add dummy functions for ecore_device API
    typedef struct _Ecore_Event_Device_Info  Ecore_Event_Device_Info;
+   //
+   // TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+   typedef struct _Ecore_Event_Device_Update Ecore_Event_Device_Update;
    //
 
    /**
@@ -159,6 +165,13 @@ extern "C" {
         const char *seatname;
         Ecore_Device_Class clas;
         Ecore_Device_Subclass subclas;
+     };
+   //
+   // TIZEN_ONLY(20180917): ecore/evas_device: update device info if subclas is changed
+   struct _Ecore_Event_Device_Update
+     {
+        Ecore_Window window;
+        Ecore_Device *dev;
      };
    //
 
