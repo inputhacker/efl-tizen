@@ -1213,11 +1213,11 @@ _elm_slider_part_indicator_visible_mode_set(Eo *obj, void *_pd EINA_UNUSED, Elm_
    //TIZEN_ONLY(20170419): fix slider indicator behavior
    if (sd->indicator_visible_mode == ELM_SLIDER_INDICATOR_VISIBLE_MODE_ALWAYS)
      {
-        _popup_show(obj, NULL, NULL, NULL);
+        _popup_show(pd->obj, NULL, NULL, NULL);
      }
    else
      {
-        _popup_hide(obj, NULL, NULL, NULL);
+        _popup_hide(pd->obj, NULL, NULL, NULL);
      }
    //
 }
