@@ -2465,45 +2465,48 @@ EAPI void
 ecore_wl2_window_aux_hint_add(Ecore_Wl2_Window *win, int id, const char *hint, const char *val)
 {
    if (!win) return;
-   if ((!win->surface) || (!win->display->wl.efl_aux_hints)) return;
-
-   efl_aux_hints_add_aux_hint(win->display->wl.efl_aux_hints, win->surface, id, hint, val);
-   ecore_wl2_display_flush(win->display);
 
    // TIZEN_ONLY : To use tizen protocols
    if ((win->surface) && (win->display->wl.tz_policy))
      tizen_policy_add_aux_hint(win->display->wl.tz_policy, win->surface, id, hint, val);
    //
+
+   if ((!win->surface) || (!win->display->wl.efl_aux_hints)) return;
+
+   efl_aux_hints_add_aux_hint(win->display->wl.efl_aux_hints, win->surface, id, hint, val);
+   ecore_wl2_display_flush(win->display);
 }
 
 EAPI void
 ecore_wl2_window_aux_hint_change(Ecore_Wl2_Window *win, int id, const char *val)
 {
    if (!win) return;
-   if ((!win->surface) && (!win->display->wl.efl_aux_hints)) return;
-
-   efl_aux_hints_change_aux_hint(win->display->wl.efl_aux_hints, win->surface, id, val);
-   ecore_wl2_display_flush(win->display);
 
    // TIZEN_ONLY : To use tizen protocols
    if ((win->surface) && (win->display->wl.tz_policy))
      tizen_policy_change_aux_hint(win->display->wl.tz_policy, win->surface, id, val);
    //
+
+   if ((!win->surface) && (!win->display->wl.efl_aux_hints)) return;
+
+   efl_aux_hints_change_aux_hint(win->display->wl.efl_aux_hints, win->surface, id, val);
+   ecore_wl2_display_flush(win->display);
 }
 
 EAPI void
 ecore_wl2_window_aux_hint_del(Ecore_Wl2_Window *win, int id)
 {
    if (!win) return;
-   if ((!win->surface) || (!win->display->wl.efl_aux_hints)) return;
-
-   efl_aux_hints_del_aux_hint(win->display->wl.efl_aux_hints, win->surface, id);
-   ecore_wl2_display_flush(win->display);
 
    // TIZEN_ONLY : To use tizen protocols
    if ((win->surface) && (win->display->wl.tz_policy))
      tizen_policy_del_aux_hint(win->display->wl.tz_policy, win->surface, id);
    //
+
+   if ((!win->surface) || (!win->display->wl.efl_aux_hints)) return;
+
+   efl_aux_hints_del_aux_hint(win->display->wl.efl_aux_hints, win->surface, id);
+   ecore_wl2_display_flush(win->display);
 }
 
 EAPI void
