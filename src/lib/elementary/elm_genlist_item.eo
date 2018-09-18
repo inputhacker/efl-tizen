@@ -83,7 +83,7 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                 }
            }
            @property subitems {
-                get @internal {
+                get {
                      [[Get the list of subitems of a given item
 
                        This returns the list of subitems that an item
@@ -204,7 +204,7 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                 }
            }
            @property decorate_mode {
-                get @internal {
+                get {
                      [[Get the item's decorate mode.
 
                        This function just returns the name of the item's
@@ -216,7 +216,7 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                 }
            }
            @property flip {
-                get @internal {
+                get {
                      [[Get the flip state of a given genlist item.
 
                        This function returns the flip state of a given
@@ -224,7 +224,7 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                        returns $false.
                      ]]
                 }
-                set @internal {
+                set {
                      [[Set the flip state of a given genlist item.
 
                        This function sets the flip state of a given genlist
@@ -322,7 +322,7 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                    const(void_ptr) data;
                    }
                    }*/
-           subitems_count @internal {
+           subitems_count {
                 [[Get the number of subitems of a given item.
 
                   This returns the number of subitems that an item possesses.
@@ -469,7 +469,7 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                      @cref itc: Elm.Genlist.Item.Class; [[The item class for the item.]]
                 }
            }
-           decorate_mode_set @internal {
+           decorate_mode_set {
                 [[Activate a genlist mode on an item.
 
                   A genlist mode is a different way of selecting an item.
