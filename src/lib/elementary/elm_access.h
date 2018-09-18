@@ -147,6 +147,8 @@ EAPI void elm_access_object_unregister(Evas_Object *obj);
 EAPI Evas_Object *elm_access_object_get(const Evas_Object *obj);
 
 /**
+ * @internal
+ *
  * @brief Set text to give information for specific type.
  * @since 1.8
  *
@@ -160,6 +162,8 @@ EAPI Evas_Object *elm_access_object_get(const Evas_Object *obj);
 EAPI void elm_access_info_set(Evas_Object *obj, int type, const char *text);
 
 /**
+ * @internal
+ *
  * @brief Set text to give information for specific type.
  * @since 1.8
  *
@@ -172,6 +176,8 @@ EAPI void elm_access_info_set(Evas_Object *obj, int type, const char *text);
 EAPI char *elm_access_info_get(const Evas_Object *obj, int type);
 
 /**
+ * @internal
+ *
  * @brief Set content callback to give information for specific type.
  * @since 1.8
  *
@@ -193,6 +199,8 @@ EAPI char *elm_access_info_get(const Evas_Object *obj, int type);
 EAPI void elm_access_info_cb_set(Evas_Object *obj, int type, Elm_Access_Info_Cb func, const void *data);
 
 /**
+ * @internal
+ *
  * @brief Set activate callback to activate highlight object.
  * @since 1.8
  *
@@ -205,6 +213,8 @@ EAPI void elm_access_info_cb_set(Evas_Object *obj, int type, Elm_Access_Info_Cb 
 EAPI void elm_access_activate_cb_set(Evas_Object *obj, Elm_Access_Activate_Cb func, void *data);
 
 /**
+ * @internal
+ *
  * @brief Read out text information directly.
  * @since 1.8
  *
@@ -217,6 +227,8 @@ EAPI void elm_access_activate_cb_set(Evas_Object *obj, Elm_Access_Activate_Cb fu
 EAPI void elm_access_say(const char *text);
 
 /**
+ * @internal
+ *
  * @brief Give the highlight to the object directly.
  * @since 1.8
  *
@@ -230,6 +242,8 @@ EAPI void elm_access_say(const char *text);
 EAPI void elm_access_highlight_set(Evas_Object* obj);
 
 /**
+ * @internal
+ *
  * @brief Do the accessibility action base on given object.
  * @since 1.8
  *
@@ -248,6 +262,8 @@ EAPI void elm_access_highlight_set(Evas_Object* obj);
 EAPI Eina_Bool elm_access_action(Evas_Object *obj, const Elm_Access_Action_Type type, Elm_Access_Action_Info *action_info);
 
 /**
+ * @internal
+ *
  * @brief Set a callback function to a given accessibility action type
  * @since 1.8
  *
@@ -261,6 +277,8 @@ EAPI Eina_Bool elm_access_action(Evas_Object *obj, const Elm_Access_Action_Type 
 EAPI void elm_access_action_cb_set(Evas_Object *obj, const Elm_Access_Action_Type type, const Elm_Access_Action_Cb cb, const void *data);
 
 /**
+ * @internal
+ *
  * @brief Set the next access object for highlight.
  * @since 1.8
  *
