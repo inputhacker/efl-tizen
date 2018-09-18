@@ -554,212 +554,6 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
         if (ep->part->scale)
           evas_object_scale_set(ep->object, TO_DOUBLE(sc));
 
-        /*****************************************************************************
-         * TIZEN_ONLY(20170920): Calculate text.fit for multiline Textblock properly *
-         *****************************************************************************
-        if ((chosen_desc->text.fit_x) || (chosen_desc->text.fit_y))
-          {
-             double base_s = 1.0;
-             double orig_s;
-             double s = base_s;
-
-             if (ep->part->scale) base_s = TO_DOUBLE(sc);
-             efl_gfx_entity_scale_set(ep->object, base_s);
-             efl_canvas_text_size_native_get(ep->object, &tw, &th);
-
-             orig_s = base_s;
-             // Now make it bigger so calculations will be more accurate
-             // and less influenced by hinting...
-             {
-                orig_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s,
-                                                                               orig_s * TO_INT(params->eval.w) / tw);
-                efl_gfx_entity_scale_set(ep->object, orig_s);
-                efl_canvas_text_size_native_get(ep->object, &tw, &th);
-             }
-             if (chosen_desc->text.fit_x)
-               {
-                  if (tw > 0)
-                    {
-                       s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s,
-                                                                                 orig_s * TO_INT(params->eval.w) / tw);
-                       efl_gfx_entity_scale_set(ep->object, s);
-                       efl_canvas_text_size_native_get(ep->object, NULL, NULL);
-                    }
-               }
-             if (chosen_desc->text.fit_y)
-               {
-                  if (th > 0)
-                    {
-                       double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s,
-                                                                                            orig_s * TO_INT(params->eval.h) / th);
-                       // If we already have X fit, restrict Y to be no bigger
-                       // than what we got with X.
-                       if (!((chosen_desc->text.fit_x) && (tmp_s > s)))
-                         {
-                            s = tmp_s;
-                         }
-
-                       efl_gfx_entity_scale_set(ep->object, s);
-                       efl_canvas_text_size_native_get(ep->object, NULL, NULL);
-                    }
-               }
-
-             // Final tuning, try going down 90% at a time, hoping it'll
-             // actually end up being correct.
-             {
-                int i = 5;   // Tries before we give up.
-                Evas_Coord fw, fh;
-                efl_canvas_text_size_native_get(ep->object, &fw, &fh);
-
-                // If we are still too big, try reducing the size to
-                // 95% each try.
-                while ((i > 0) &&
-                       ((chosen_desc->text.fit_x && (fw > TO_INT(params->eval.w))) ||
-                        (chosen_desc->text.fit_y && (fh > TO_INT(params->eval.h)))))
-                  {
-                     double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s, s * 0.95);
-
-                     // Break if we are not making any progress.
-                     if (EQ(tmp_s, s))
-                       break;
-                     s = tmp_s;
-
-                     efl_gfx_entity_scale_set(ep->object, s);
-                     efl_canvas_text_size_native_get(ep->object, &fw, &fh);
-                     i--;
-                  }
-             }
-          }
-         */
-        /**
-         * FIXME: "size_range" option is not proper option for Textblock.
-         * Textblock can have multiple font size. We need to support "fit_range"
-         * to give size limitation as percentage.
-         * ex) fit_range: 0.7 2.5; // 70% ~ 250%
-         */
-        if ((chosen_desc->text.fit_x) || (chosen_desc->text.fit_y))
-          {
-             double orig_scale = 1.0;
-             double result_scale;
-             double fit_x_scale;
-             double fit_y_scale;
-             int given_w, given_h;
-
-             given_w = TO_INT(params->eval.w);
-             given_h = TO_INT(params->eval.h);
-
-             if (minw && *minw > given_w)
-               given_w = *minw;
-
-             if (minh && *minh > given_h)
-               given_h = *minh;
-
-             if (ep->part->scale) orig_scale = TO_DOUBLE(sc);
-             efl_gfx_entity_scale_set(ep->object, orig_scale);
-             evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_TRUE);
-             efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(given_w, given_h));
-
-             result_scale = 0.0;
-             fit_x_scale = orig_scale;
-             fit_y_scale = orig_scale;
-
-             if (chosen_desc->text.fit_x)
-               {
-                  efl_canvas_text_size_native_get(ep->object, &tw, NULL);
-                  if (tw > 0)
-                    {
-                       fit_x_scale = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale,
-                                                                                           orig_scale * (double)given_w / tw);
-                    }
-
-                  result_scale = fit_x_scale;
-               }
-
-             if (chosen_desc->text.fit_y)
-               {
-                  efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
-                  if (th > 0)
-                    {
-                       double given_size = (double)given_w * (double)given_w + (double)given_h * (double)given_h;
-                       double current_size = (double)given_w * (double)given_w + (double)th * (double)th;
-
-                       fit_y_scale = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale,
-                                                                                           orig_scale * given_size / current_size);
-                    }
-
-                  if (!chosen_desc->text.fit_x)
-                    result_scale = fit_y_scale;
-                  else if (fit_y_scale < result_scale)
-                    result_scale = fit_y_scale;
-               }
-
-             efl_gfx_entity_scale_set(ep->object, result_scale);
-             efl_canvas_text_size_native_get(ep->object, &tw, NULL);
-             efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
-
-             /* Final tuning, try going down/up by 5% at a time, hoping it'll
-              * actually end up being correct. */
-             if (((chosen_desc->text.fit_x && (tw > given_w))) ||
-                 (chosen_desc->text.fit_y && (th > given_h)))
-               {
-                  int i = 5;   /* Tries before we give up. */
-
-                  while ((i > 0) &&
-                         ((chosen_desc->text.fit_x && (tw > given_w)) ||
-                          (chosen_desc->text.fit_y && (th > given_h))))
-                    {
-                       double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale, result_scale * 0.95);
-
-                       /* Break if we are not making any progress. */
-                       if (fabs(tmp_s - result_scale) <= DBL_EPSILON)
-                         break;
-                       result_scale = tmp_s;
-
-                       efl_gfx_entity_scale_set(ep->object, result_scale);
-                       efl_canvas_text_size_native_get(ep->object, &tw, NULL);
-                       efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
-                       i--;
-                    }
-               }
-             else if (((chosen_desc->text.fit_x && (tw < given_w)) ||
-                       (chosen_desc->text.fit_y && (th < given_h))))
-               {
-                  int i = 5;   /* Tries before we give up. */
-
-                  while ((i > 0) &&
-                         ((chosen_desc->text.fit_x && (tw < given_w)) ||
-                          (chosen_desc->text.fit_y && (th < given_h))))
-                    {
-                       double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale, result_scale * 1.05);
-
-                       /* Break if we are not making any progress. */
-                       if (fabs(tmp_s - result_scale) <= DBL_EPSILON)
-                         break;
-
-                       efl_gfx_entity_scale_set(ep->object, tmp_s);
-                       efl_canvas_text_size_native_get(ep->object, &tw, NULL);
-                       efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
-
-                       /* It can't be bigger than given size.
-                        * Restore scale for the object. */
-                       if (((chosen_desc->text.fit_x && (tw > given_w)) ||
-                            (chosen_desc->text.fit_y && (th > given_h))))
-                         {
-                            efl_gfx_entity_scale_set(ep->object, result_scale);
-                            break;
-                         }
-
-                       result_scale = tmp_s;
-                       i--;
-                    }
-               }
-
-             evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_FALSE);
-          }
-        /*******
-         * END *
-         *******/
-
         if (stl)
           {
              if (evas_object_textblock_style_get(ep->object) != stl->style)
@@ -773,6 +567,212 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
                {
                   evas_object_textblock_text_markup_set(ep->object, text);
                }
+
+             /*****************************************************************************
+              * TIZEN_ONLY(20170920): Calculate text.fit for multiline Textblock properly *
+              *****************************************************************************
+             if ((chosen_desc->text.fit_x) || (chosen_desc->text.fit_y))
+               {
+                  double base_s = 1.0;
+                  double orig_s;
+                  double s = base_s;
+
+                  if (ep->part->scale) base_s = TO_DOUBLE(sc);
+                  efl_gfx_entity_scale_set(ep->object, base_s);
+                  efl_canvas_text_size_native_get(ep->object, &tw, &th);
+
+                  orig_s = base_s;
+                  // Now make it bigger so calculations will be more accurate
+                  // and less influenced by hinting...
+                  {
+                     orig_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s,
+                                                                                    orig_s * TO_INT(params->eval.w) / tw);
+                     efl_gfx_entity_scale_set(ep->object, orig_s);
+                     efl_canvas_text_size_native_get(ep->object, &tw, &th);
+                  }
+                  if (chosen_desc->text.fit_x)
+                    {
+                       if (tw > 0)
+                         {
+                            s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s,
+                                                                                      orig_s * TO_INT(params->eval.w) / tw);
+                            efl_gfx_entity_scale_set(ep->object, s);
+                            efl_canvas_text_size_native_get(ep->object, NULL, NULL);
+                         }
+                    }
+                  if (chosen_desc->text.fit_y)
+                    {
+                       if (th > 0)
+                         {
+                            double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s,
+                                                                                                 orig_s * TO_INT(params->eval.h) / th);
+                            // If we already have X fit, restrict Y to be no bigger
+                            // than what we got with X.
+                            if (!((chosen_desc->text.fit_x) && (tmp_s > s)))
+                              {
+                                 s = tmp_s;
+                              }
+
+                            efl_gfx_entity_scale_set(ep->object, s);
+                            efl_canvas_text_size_native_get(ep->object, NULL, NULL);
+                         }
+                    }
+
+                  // Final tuning, try going down 90% at a time, hoping it'll
+                  // actually end up being correct.
+                  {
+                     int i = 5;   // Tries before we give up.
+                     Evas_Coord fw, fh;
+                     efl_canvas_text_size_native_get(ep->object, &fw, &fh);
+
+                     // If we are still too big, try reducing the size to
+                     // 95% each try.
+                     while ((i > 0) &&
+                            ((chosen_desc->text.fit_x && (fw > TO_INT(params->eval.w))) ||
+                             (chosen_desc->text.fit_y && (fh > TO_INT(params->eval.h)))))
+                       {
+                          double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, base_s, s * 0.95);
+
+                          // Break if we are not making any progress.
+                          if (EQ(tmp_s, s))
+                            break;
+                          s = tmp_s;
+
+                          efl_gfx_entity_scale_set(ep->object, s);
+                          efl_canvas_text_size_native_get(ep->object, &fw, &fh);
+                          i--;
+                       }
+                  }
+               }
+              */
+             /**
+              * FIXME: "size_range" option is not proper option for Textblock.
+              * Textblock can have multiple font size. We need to support "fit_range"
+              * to give size limitation as percentage.
+              * ex) fit_range: 0.7 2.5; // 70% ~ 250%
+              */
+             if ((chosen_desc->text.fit_x) || (chosen_desc->text.fit_y))
+               {
+                  double orig_scale = 1.0;
+                  double result_scale;
+                  double fit_x_scale;
+                  double fit_y_scale;
+                  int given_w, given_h;
+
+                  given_w = TO_INT(params->eval.w);
+                  given_h = TO_INT(params->eval.h);
+
+                  if (minw && *minw > given_w)
+                    given_w = *minw;
+
+                  if (minh && *minh > given_h)
+                    given_h = *minh;
+
+                  if (ep->part->scale) orig_scale = TO_DOUBLE(sc);
+                  efl_gfx_entity_scale_set(ep->object, orig_scale);
+                  evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_TRUE);
+                  efl_gfx_entity_size_set(ep->object, EINA_SIZE2D(given_w, given_h));
+
+                  result_scale = 0.0;
+                  fit_x_scale = orig_scale;
+                  fit_y_scale = orig_scale;
+
+                  if (chosen_desc->text.fit_x)
+                    {
+                       efl_canvas_text_size_native_get(ep->object, &tw, NULL);
+                       if (tw > 0)
+                         {
+                            fit_x_scale = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale,
+                                                                                                orig_scale * (double)given_w / tw);
+                         }
+
+                       result_scale = fit_x_scale;
+                    }
+
+                  if (chosen_desc->text.fit_y)
+                    {
+                       efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
+                       if (th > 0)
+                         {
+                            double given_size = (double)given_w * (double)given_w + (double)given_h * (double)given_h;
+                            double current_size = (double)given_w * (double)given_w + (double)th * (double)th;
+
+                            fit_y_scale = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale,
+                                                                                                orig_scale * given_size / current_size);
+                         }
+
+                       if (!chosen_desc->text.fit_x)
+                         result_scale = fit_y_scale;
+                       else if (fit_y_scale < result_scale)
+                         result_scale = fit_y_scale;
+                    }
+
+                  efl_gfx_entity_scale_set(ep->object, result_scale);
+                  efl_canvas_text_size_native_get(ep->object, &tw, NULL);
+                  efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
+
+                  /* Final tuning, try going down/up by 5% at a time, hoping it'll
+                   * actually end up being correct. */
+                  if (((chosen_desc->text.fit_x && (tw > given_w))) ||
+                      (chosen_desc->text.fit_y && (th > given_h)))
+                    {
+                       int i = 5;   /* Tries before we give up. */
+
+                       while ((i > 0) &&
+                              ((chosen_desc->text.fit_x && (tw > given_w)) ||
+                               (chosen_desc->text.fit_y && (th > given_h))))
+                         {
+                            double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale, result_scale * 0.95);
+
+                            /* Break if we are not making any progress. */
+                            if (fabs(tmp_s - result_scale) <= DBL_EPSILON)
+                              break;
+                            result_scale = tmp_s;
+
+                            efl_gfx_entity_scale_set(ep->object, result_scale);
+                            efl_canvas_text_size_native_get(ep->object, &tw, NULL);
+                            efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
+                            i--;
+                         }
+                    }
+                  else if (((chosen_desc->text.fit_x && (tw < given_w)) ||
+                            (chosen_desc->text.fit_y && (th < given_h))))
+                    {
+                       int i = 5;   /* Tries before we give up. */
+
+                       while ((i > 0) &&
+                              ((chosen_desc->text.fit_x && (tw < given_w)) ||
+                               (chosen_desc->text.fit_y && (th < given_h))))
+                         {
+                            double tmp_s = _edje_part_recalc_single_textblock_scale_range_adjust(chosen_desc, orig_scale, result_scale * 1.05);
+
+                            /* Break if we are not making any progress. */
+                            if (fabs(tmp_s - result_scale) <= DBL_EPSILON)
+                              break;
+
+                            efl_gfx_entity_scale_set(ep->object, tmp_s);
+                            efl_canvas_text_size_native_get(ep->object, &tw, NULL);
+                            efl_canvas_text_size_formatted_get(ep->object, NULL, &th);
+
+                            /* It can't be bigger than given size.
+                             * Restore scale for the object. */
+                            if (((chosen_desc->text.fit_x && (tw > given_w)) ||
+                                 (chosen_desc->text.fit_y && (th > given_h))))
+                              {
+                                 efl_gfx_entity_scale_set(ep->object, result_scale);
+                                 break;
+                              }
+
+                            result_scale = tmp_s;
+                            i--;
+                         }
+                    }
+
+                  evas_object_textblock_ellipsis_disabled_set(ep->object, EINA_FALSE);
+               }
+             /*******
+              * END *
+              *******/
 
              /* TIZEN_ONLY(20180103): don't run legacy calculation for Textblock parts
              if ((ed->file->efl_version.major >= 1) && (ed->file->efl_version.minor >= 19))
@@ -815,26 +815,3 @@ _edje_part_recalc_single_textblock(FLOAT_T sc,
      }
 }
 
-/* TIZEN_ONLY(20180205): don't calculate textblock twice
-void
-_edje_textblock_recalc_apply(Edje *ed, Edje_Real_Part *ep,
-                             Edje_Calc_Params *params,
-                             Edje_Part_Description_Text *chosen_desc)
-{
-   // FIXME: this is just an hack.
-   FLOAT_T sc;
-
-#if 0
-   _get_text(ep);
-#endif
-
-   sc = DIV(ed->scale, ed->file->base_scale);
-   if (EQ(sc, ZERO)) sc = DIV(_edje_scale, ed->file->base_scale);
-   if (chosen_desc->text.fit_x || chosen_desc->text.fit_y)
-     {
-        _edje_part_recalc_single_textblock(sc, ed, ep, chosen_desc, params,
-                                           NULL, NULL, NULL, NULL);
-     }
-}
- */
-/* END */
