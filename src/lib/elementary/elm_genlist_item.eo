@@ -84,7 +84,8 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
            }
            @property subitems {
                 get {
-                     [[Get the list of subitems of a given item
+                     [[\@internal
+                       Get the list of subitems of a given item
 
                        This returns the list of subitems that an item
                        possesses. It cannot be changed.
@@ -205,7 +206,8 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
            }
            @property decorate_mode {
                 get {
-                     [[Get the item's decorate mode.
+                     [[\@internal
+                       Get the item's decorate mode.
 
                        This function just returns the name of the item's
                        decorate mode.
@@ -217,7 +219,8 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
            }
            @property flip {
                 get {
-                     [[Get the flip state of a given genlist item.
+                     [[\@internal
+                       Get the flip state of a given genlist item.
 
                        This function returns the flip state of a given
                        genlist item. If the parameter is invalid, it
@@ -225,7 +228,8 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                      ]]
                 }
                 set {
-                     [[Set the flip state of a given genlist item.
+                     [[\@internal
+                       Set the flip state of a given genlist item.
 
                        This function sets the flip state of a given genlist
                        item. Flip mode overrides current item object.
@@ -323,7 +327,8 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                    }
                    }*/
            subitems_count {
-                [[Get the number of subitems of a given item.
+                [[\@internal
+                  Get the number of subitems of a given item.
 
                   This returns the number of subitems that an item possesses.
 
@@ -470,7 +475,8 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
                 }
            }
            decorate_mode_set {
-                [[Activate a genlist mode on an item.
+                [[\@internal
+                  Activate a genlist mode on an item.
 
                   A genlist mode is a different way of selecting an item.
                   Once a mode is activated on an item, any other selected

@@ -74,7 +74,8 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
       }
       @property focus_on_selection {
          set {
-            [[Set focus upon items selection mode
+            [[\@internal
+              Set focus upon items selection mode
 
               When enabled, every selection of an item inside the genlist
               will automatically set focus to its first focusable widget
@@ -85,7 +86,9 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
             ]]
          }
          get {
-            [[Get whether focus upon item's selection mode is enabled.]]
+            [[\@internal
+              Get whether focus upon item's selection mode is enabled.
+            ]]
          }
          values {
             enabled: bool; [[The tree effect status.]]
@@ -172,13 +175,16 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
       }
       @property decorate_mode {
          set {
-            [[Set Genlist decorate mode.
+            [[\@internal
+              Set Genlist decorate mode.
 
               This sets Genlist decorate mode to all items.
             ]]
          }
          get {
-            [[Get Genlist decorate mode.]]
+            [[\@internal
+              Get Genlist decorate mode.
+            ]]
          }
          values {
             decorated: bool; [[The decorate mode status.]]
@@ -186,7 +192,8 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
       }
       @property multi_select_mode {
          set {
-            [[Set the genlist multi select mode.
+            [[\@internal
+              Set the genlist multi select mode.
 
               #ELM_OBJECT_MULTI_SELECT_MODE_DEFAULT means that
               select/unselect items whenever each item is clicked.
@@ -199,7 +206,8 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
             ]]
          }
          get {
-            [[Get the genlist multi select mode.
+            [[\@internal
+              Get the genlist multi select mode.
 
               @since 1.8
             ]]
@@ -329,7 +337,8 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
       }
       @property decorated_item {
          get {
-            [[Get active genlist mode item.
+            [[\@internal
+              Get active genlist mode item.
 
               This function returns the item that was activated with a mode,
               by the function @.decorate_mode.set.
@@ -510,7 +519,8 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
       }
       @property filter {
          set {
-            [[Set filter mode with key.
+            [[\@internal
+              Set filter mode with key.
 
               This initiates the filter mode of genlist with user/application
               provided key. If key is NULL, the filter mode is turned off.
@@ -525,7 +535,8 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
          }
       }
       filter_iterator_new {
-         [[Returns an iterator over the list of filtered items.
+         [[\@internal
+           Returns an iterator over the list of filtered items.
 
            Return NULL if filter is not set. Application must take care
            of the case while calling the API. Must be freed after use.
@@ -628,7 +639,8 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
          }
       }
       search_by_text_item_get {
-         [[Get genlist item by given string.
+         [[\@internal
+           Get genlist item by given string.
 
            It takes pointer to the genlist item that will be used to start
            search from it.
