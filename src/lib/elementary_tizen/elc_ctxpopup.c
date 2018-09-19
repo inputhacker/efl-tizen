@@ -1488,7 +1488,8 @@ _elm_ctxpopup_efl_ui_widget_theme_apply(Eo *obj, Elm_Ctxpopup_Data *sd)
 
    if (sd->scr)
      {
-        elm_layout_theme_set(sd->scr, "scroller", "ctxpopup", elm_widget_style_get(obj));
+        if (!elm_layout_theme_set(sd->scr, "scroller", "ctxpopup", elm_widget_style_get(obj)))
+          CRI("Failed to set layout!");
 
         if (sd->horizontal)
           elm_scroller_policy_set(sd->scr, ELM_SCROLLER_POLICY_AUTO, ELM_SCROLLER_POLICY_OFF);
@@ -2013,7 +2014,8 @@ _list_new(Evas_Object *obj)
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd);
    //scroller
    sd->scr = elm_scroller_add(obj);
-   elm_layout_theme_set(sd->scr, "scroller", "ctxpopup", elm_widget_style_get(obj));
+   if (!elm_layout_theme_set(sd->scr, "scroller", "ctxpopup", elm_widget_style_get(obj)))
+     CRI("Failed to set layout!");
    evas_object_size_hint_align_set(sd->scr, EVAS_HINT_FILL, EVAS_HINT_FILL);
    _elm_widget_color_class_parent_set(sd->scr, obj);
 
