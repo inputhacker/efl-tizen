@@ -86,7 +86,14 @@ _wait_free_buffer(Ecore_Wl2_Buffer *surf)
 {
   if (!surf) return;
 
-  wl_display_dispatch_pending(surf->wl_display);
+  int ret;
+  ret = wl_display_dispatch_pending(surf->wl_display);
+  if (ret < 0)
+  {
+     ERR("Wayland Display Dispatch Pending Failed");
+     return;
+  }
+
   if ( tbm_surface_queue_can_dequeue(surf->tbm_queue, 0))
     return;
 
