@@ -45,11 +45,14 @@ _eina_vpath_data_get(const char *key)
 static char *
 _fallback_runtime_dir(const char *home)
 {
+  static int recursive_fail = 0;   // TIZEN_ONLY(20180920)
+
    char buf[PATH_MAX];
 #if defined(HAVE_GETUID)
    uid_t uid = getuid();
 #endif
    struct stat st;
+
 
 #if defined(HAVE_GETUID) && defined(HAVE_GETEUID)
    if (setuid(geteuid()) != 0)
@@ -75,7 +78,8 @@ _fallback_runtime_dir(const char *home)
                        fprintf(stderr,
                                "FATAL: run dir '%s' exists but not a dir\n",
                                buf);
-                       abort();
+                       /* TIZEN_ONLY(20180920): add the last fallback runtime directory as /tmp instead of abort(); */
+                       goto tizen_fail;
                     }
 #if defined(HAVE_GETUID) && defined(HAVE_GETEUID)
                   if (st.st_uid != geteuid())
@@ -84,7 +88,8 @@ _fallback_runtime_dir(const char *home)
                        fprintf(stderr,
                                "FATAL: run dir '%s' not owned by uid %i\n",
                                buf, (int)geteuid());
-                       abort();
+                       /* TIZEN_ONLY(20180920): add the last fallback runtime directory as /tmp instead of abort(); */
+                       goto tizen_fail;
                     }
 #endif
                }
@@ -94,7 +99,8 @@ _fallback_runtime_dir(const char *home)
                   fprintf(stderr,
                           "FATAL: Cannot verify run dir '%s' errno=%i\n",
                           buf, errno);
-                  abort();
+                  /* TIZEN_ONLY(20180920): add the last fallback runtime directory as /tmp instead of abort(); */
+                  goto tizen_fail;
                }
           }
         else
@@ -103,7 +109,8 @@ _fallback_runtime_dir(const char *home)
              fprintf(stderr,
                      "FATAL: Cannot create run dir '%s' - errno=%i\n",
                      buf, errno);
-             abort();
+             /* TIZEN_ONLY(20180920): add the last fallback runtime directory as /tmp instead of abort(); */
+             goto tizen_fail;
           }
      }
 #if defined(HAVE_GETUID) && defined(HAVE_GETEUID)
@@ -116,9 +123,18 @@ _fallback_runtime_dir(const char *home)
      }
 #endif
 
-   return strdup(buf);
-}
+  recursive_fail = 0;
 
+  return strdup(buf);
+
+tizen_fail:
+   if (!recursive_fail)
+     {
+        recursive_fail = 1;
+        return _fallback_runtime_dir(_eina_vpath_data_get("tmp"));
+     }
+   return NULL;
+}
 static char *
 _fallback_home_dir()
 {
