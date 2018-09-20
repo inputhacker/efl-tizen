@@ -3,13 +3,18 @@
 #ifdef BUILD_NEON
 static void
 _op_copy_c_dp_neon(DATA32 *s EINA_UNUSED, DATA8 *m EINA_UNUSED, DATA32 c, DATA32 *d, int l) {
-#ifdef BUILD_NEON_INTRINSICS
+//TIZEN_ONLY(20180920): disable neon for hotfix
+//#ifdef BUILD_NEON_INTRINSICS
+//
    DATA32 *e;
    UNROLL8_PLD_WHILE(d, l, e,
                      {
                         *d = c;
                         d++;
                      });
+//TIZEN_ONLY(20180920): disable neon for hotfix
+/*
+//
 #else
 #define AP "COPY_C_DP_"
    uint32_t *e = d + l, *tmp;
@@ -94,6 +99,9 @@ _op_copy_c_dp_neon(DATA32 *s EINA_UNUSED, DATA8 *m EINA_UNUSED, DATA32 c, DATA32
 
    );
 #endif
+//TIZEN_ONLY(20180920): disable neon for hotfix
+*/
+//
 }
 
 #define _op_copy_cn_dp_neon _op_copy_c_dp_neon
