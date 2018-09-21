@@ -5326,7 +5326,7 @@ _elm_gengrid_efl_object_constructor(Eo *obj, Elm_Gengrid_Data *sd)
         efl_ui_focus_composition_custom_manager_set(obj, obj);
         efl_ui_focus_composition_logical_mode_set(obj, EINA_TRUE);
 
-        efl_event_callback_add(obj, EFL_UI_FOCUS_MANAGER_EVENT_FOCUSED, _gengrid_element_focused, obj);
+        efl_event_callback_add(obj, EFL_UI_FOCUS_MANAGER_EVENT_FOCUS_CHANGED, _gengrid_element_focused, obj);
      }
 
    obj = efl_constructor(efl_super(obj, MY_CLASS));
