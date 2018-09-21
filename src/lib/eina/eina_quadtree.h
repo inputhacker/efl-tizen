@@ -77,6 +77,10 @@ typedef Eina_Quad_Direction (*Eina_Quad_Callback)(const void *object, size_t mid
  *
  * The vertical and horizontal callbacks are used to assist in
  * determining which quadrant a given data item belongs to.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_QuadTree *eina_quadtree_new(size_t w, size_t h, Eina_Quad_Callback vertical, Eina_Quad_Callback horizontal);
 
@@ -87,6 +91,10 @@ EAPI Eina_QuadTree *eina_quadtree_new(size_t w, size_t h, Eina_Quad_Callback ver
  *
  * Frees the memory for the Eina_QuadTree object, and any memory used by
  * its change tracking and garbage collection internals.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_quadtree_free(Eina_QuadTree *q);
 
@@ -99,6 +107,10 @@ EAPI void eina_quadtree_free(Eina_QuadTree *q);
  *
  * Sets the width and height of the quadtree, but the actual update is
  * done lazily.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_quadtree_resize(Eina_QuadTree *q, size_t w, size_t h);
 
@@ -106,6 +118,10 @@ EAPI void eina_quadtree_resize(Eina_QuadTree *q, size_t w, size_t h);
  * @brief Sets the quadtree's index to 0.
  *
  * @param[in,out] q The quadtree to cycle.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_quadtree_cycle(Eina_QuadTree *q);
 
@@ -115,6 +131,10 @@ EAPI void eina_quadtree_cycle(Eina_QuadTree *q);
  * @param[in,out] object The quadtree item to increase.
  *
  * If necessary, records that the root is no longer sorted.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void eina_quadtree_increase(Eina_QuadTree_Item *object);
 
@@ -129,6 +149,10 @@ EAPI void eina_quadtree_increase(Eina_QuadTree_Item *object);
  * trash) and stores the data @p object in it, then arranges to lazily
  * insert the item into the quadtree (i.e. insertion is delayed until
  * it needs to be used.)
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_QuadTree_Item *eina_quadtree_add(Eina_QuadTree *q, const void *object);
 
@@ -140,6 +164,10 @@ EAPI Eina_QuadTree_Item *eina_quadtree_add(Eina_QuadTree *q, const void *object)
  *
  * Moves the item to the quadtree's internal garbage heap for later
  * reclamation.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_quadtree_del(Eina_QuadTree_Item *object);
 
@@ -148,6 +176,10 @@ EAPI Eina_Bool eina_quadtree_del(Eina_QuadTree_Item *object);
  *
  * @param[in,out] object The object that has changed.
  * @return #EINA_TRUE if change successfully noted, or #EINA_FALSE otherwise.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_quadtree_change(Eina_QuadTree_Item *object);
 
@@ -157,6 +189,10 @@ EAPI Eina_Bool eina_quadtree_change(Eina_QuadTree_Item *object);
  * @param[in,out] object The item within the quadtree to hide.
  * @return #EINA_TRUE if @p object was successfully hidden, or
  *         #EINA_FALSE if it wasn't in the quadtree.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_quadtree_hide(Eina_QuadTree_Item *object);
 
@@ -166,6 +202,10 @@ EAPI Eina_Bool eina_quadtree_hide(Eina_QuadTree_Item *object);
  * @param[in,out] object The item within the quadtree to show.
  * @return #EINA_TRUE if @p object was successfully shown, or
  *         #EINA_FALSE if it wasn't in the quadtree.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Bool eina_quadtree_show(Eina_QuadTree_Item *object);
 
@@ -182,6 +222,10 @@ EAPI Eina_Bool eina_quadtree_show(Eina_QuadTree_Item *object);
  * Forces a rebuild and resort of the quadtree if needed due to pending
  * changes, then performs a collision detection to find items whose
  * geometry is contained within or intersects the given target geometry.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI Eina_Inlist *eina_quadtree_collide(Eina_QuadTree *q, int x, int y, int w, int h);
 
@@ -191,6 +235,10 @@ EAPI Eina_Inlist *eina_quadtree_collide(Eina_QuadTree *q, int x, int y, int w, i
  * @param[in] list The inline list item to lookup
  * @return The contained data object in the Eina_QuadTree_Item, or @c
  *         NULL if none could be found.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
  */
 EAPI void *eina_quadtree_object(Eina_Inlist *list);
 
