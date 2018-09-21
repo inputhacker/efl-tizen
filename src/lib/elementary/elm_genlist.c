@@ -6300,6 +6300,7 @@ _genlist_element_focused(void *data, const Efl_Event *ev)
 EOLIAN static Eo *
 _elm_genlist_efl_object_constructor(Eo *obj, Elm_Genlist_Data *sd)
 {
+   legacy_efl_ui_focus_manager_widget_legacy_signals(obj, obj);
    obj = efl_constructor(efl_super(obj, MY_CLASS));
 
    //TIZEN_ONLY(20180607): Restore legacy focus

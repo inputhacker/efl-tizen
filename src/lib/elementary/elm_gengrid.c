@@ -5313,6 +5313,7 @@ _gengrid_element_focused(void *data, const Efl_Event *ev)
 EOLIAN static Eo *
 _elm_gengrid_efl_object_constructor(Eo *obj, Elm_Gengrid_Data *sd)
 {
+   legacy_efl_ui_focus_manager_widget_legacy_signals(obj, obj);
    sd->content_item_map = eina_hash_pointer_new(NULL);
 
    //TIZEN_ONLY(20180607): Restore legacy focus
