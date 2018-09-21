@@ -2201,7 +2201,7 @@ _elm_multibuttonentry_item_elm_widget_item_disable(Eo *eo_it, Elm_Multibuttonent
    elm_layout_signal_emit(VIEW(it), emission, "elm");
 
    //TIZEN_ONLY(20180709): Disabled item should not be selected.
-   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN_VAL(WIDGET(it), sd, NULL);
+   ELM_MULTIBUTTONENTRY_DATA_GET_OR_RETURN(WIDGET(it), sd);
 
    if (sd->selected_it == it)
      sd->selected_it = NULL;
