@@ -91,9 +91,6 @@ evas_init(void)
 //   evas_filter_shutdown();
 //   _evas_preload_thread_shutdown();
 //
- shutdown_filter:
-   evas_filter_shutdown();
-   _evas_preload_thread_shutdown();
 shutdown_module:
    evas_module_shutdown();
 shutdown_ecore:
