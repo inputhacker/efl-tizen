@@ -283,6 +283,8 @@ eng_image_native_set(void *engine EINA_UNUSED, void *image, void *native)
             im->native.func.free(im);
       }
 
+   if (!ns) return im;
+
    evas_cache_image_drop(ie);
    im = im2;
 
