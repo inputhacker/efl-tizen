@@ -268,7 +268,7 @@ _ecore_try_add_to_call_list(Eo *obj EINA_UNUSED, Efl_Loop_Data *pd, Ecore_Fd_Han
 static inline void
 _throttle_do(Efl_Loop_Data *pd)
 {
-   if (pd->throttle == 0) return
+   if (pd->throttle == 0) return;
    //TIZEN_ONLY(20180628): apply ttrace log system
    //eina_evlog("+throttle", NULL, 0.0, NULL);
    usleep(pd->throttle);
