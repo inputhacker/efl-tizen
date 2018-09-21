@@ -220,6 +220,7 @@ Edje object
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
+ * @ingroup Edje_Object
  */
 EAPI Eina_Bool edje_object_file_set(Edje_Object *obj, const char *file, const char *group);
 
@@ -244,6 +245,7 @@ Edje object
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
+ * @ingroup Edje_Object
  */
 EAPI void edje_object_file_get(const Edje_Object *obj, const char **file, const char **group);
 
@@ -273,7 +275,6 @@ EAPI void edje_object_file_get(const Edje_Object *obj, const char **file, const 
  *
  * @see edje_object_add()
  * @see edje_object_file_get()
- * @see edje_object_mmap_set()
  * @since 1.8
  *
  * @param[in] file The Eina.File pointing to the EDJ file to load @p from
@@ -283,6 +284,9 @@ Edje object
  * @if MOBILE @since_tizen 3.0
  * @elseif WEARABLE @since_tizen 3.0
  * @endif
+ *
+ * @ingroup Edje_Object
+ *
  */
 EAPI Eina_Bool edje_object_mmap_set(Edje_Object *obj, const Eina_File *file, const char *group);
 
