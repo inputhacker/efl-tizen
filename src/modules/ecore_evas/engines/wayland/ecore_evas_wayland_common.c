@@ -974,14 +974,6 @@ _rotation_do(Ecore_Evas *ee, int rotation, int output_rotation, int resize)
 
    wdata = ee->engine.data;
 
-   einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
-   if (einfo)
-     {
-        einfo->info.rotation = rotation;
-        if (!evas_engine_info_set(ee->evas, (Evas_Engine_Info *)einfo))
-          ERR("evas_engine_info_set() for engine '%s' failed.", ee->driver);
-     }
-
    /* calculate difference in rotation */
    rot_dif = ee->rotation - rotation;
    if (rot_dif < 0) rot_dif = -rot_dif;
