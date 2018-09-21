@@ -1020,6 +1020,15 @@ EAPI Elm_Slider_Indicator_Visible_Mode elm_config_slider_indicator_visible_mode_
  */
 
 /**
+ * @defgroup longpress_group Longpress
+ * @ingroup Elementary
+ *
+ * @brief Configuration for longpress events.
+ *
+ * @{
+ */
+
+/**
  * Get the duration for occurring long press event.
  *
  * @return Timeout for long press event
@@ -1034,6 +1043,19 @@ EAPI double       elm_config_longpress_timeout_get(void);
  * @ingroup Longpress
  */
 EAPI void         elm_config_longpress_timeout_set(double longpress_timeout);
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup softcursor_group SotfCursor
+ * @ingroup Elementary
+ *
+ * @brief Configuration for softcursor.
+ *
+ * @{
+ */
 
 /**
  * Set the mode used for software provided mouse cursors inline in the window
@@ -1063,6 +1085,15 @@ EAPI void         elm_config_softcursor_mode_set(Elm_Softcursor_Mode mode);
 EAPI Elm_Softcursor_Mode elm_config_softcursor_mode_get(void);
 
 /**
+ * @}
+ */
+
+/**
+ * @ingroup Elm_Tooltips
+ * @{
+ */
+
+/**
  * Get the duration after which tooltip will be shown.
  *
  * @return Duration after which tooltip will be shown.
@@ -1075,6 +1106,10 @@ EAPI double      elm_config_tooltip_delay_get(void);
  * @return @c EINA_TRUE if value is set.
  */
 EAPI void        elm_config_tooltip_delay_set(double delay);
+
+/**
+ * @}
+ */
 
 /**
  * Get the configured cursor engine only usage
