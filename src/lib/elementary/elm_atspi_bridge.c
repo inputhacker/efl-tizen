@@ -5103,7 +5103,7 @@ _component_get_position(const Eldbus_Service_Interface *iface EINA_UNUSED, const
    const char *obj_path = eldbus_message_path_get(msg);
    Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
-   int x, y;
+   int x = 1, y = 1;
    AtspiCoordType coord_type;
    Eldbus_Message *ret;
 
@@ -5136,7 +5136,7 @@ _component_get_size(const Eldbus_Service_Interface *iface EINA_UNUSED, const Eld
    const char *obj_path = eldbus_message_path_get(msg);
    Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
    Eo *obj = _bridge_object_from_path(bridge, obj_path);
-   int x, y;
+   int x = -1, y = -1;
    Eldbus_Message *ret;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_COMPONENT_MIXIN, msg);
