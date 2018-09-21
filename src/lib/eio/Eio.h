@@ -63,22 +63,56 @@
 extern "C" {
 #endif
 
+/**
+ * @defgroup Eio_Main_Group Eio main API
+ * @ingroup Eio
+ *
+ * @brief These functions provide general initialisation and shut down
+ * functions.
+ *
+ * @{
+ */
+
 #define EIO_VERSION_MAJOR EFL_VERSION_MAJOR
 #define EIO_VERSION_MINOR EFL_VERSION_MINOR
 
-    /**
-    * @typedef Eio_Version
-    * Represents the current version of EIO
-    */
-   typedef struct _Eio_Version
-     {
-        int major; /**< Major version number */
-        int minor; /**< Minor version number */
-        int micro; /**< Micro version number */
-        int revision; /**< Revision number */
-     } Eio_Version;
+/**
+ * @typedef Eio_Version
+ * Represents the current version of EIO
+ */
+typedef struct _Eio_Version
+  {
+     int major; /**< Major version number */
+     int minor; /**< Minor version number */
+     int micro; /**< Micro version number */
+     int revision; /**< Revision number */
+  } Eio_Version;
 
-   EAPI extern Eio_Version *eio_version;
+EAPI extern Eio_Version *eio_version;
+
+/**
+ * @brief Initialize eio and all its required submodule.
+ * @return the current number of eio users.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI int eio_init(void);
+
+/**
+ * @brief Shutdown eio and all its submodule if possible.
+ * @return the number of pending users of eio.
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI int eio_shutdown(void);
+
+/**
+ * @}
+ */
 
 /**
  * @file
@@ -447,9 +481,8 @@ EAPI Eio_File *eio_file_direct_stat(const char *path,
  */
 
 /**
- * @internal
  * @defgroup Eio_Management Eio file management API.
- * @addtogroup Eio
+ * @ingroup Eio
  *
  * @brief A set of function to manage file asynchronously.
  *
@@ -929,27 +962,6 @@ EAPI Eio_File *eio_file_xattr_string_get(const char *path,
  *
  * @{
  */
-
-
-/**
- * @brief Initialize eio and all its required submodule.
- * @return the current number of eio users.
- *
- * @if MOBILE @since_tizen 3.0
- * @elseif WEARABLE @since_tizen 3.0
- * @endif
- */
-EAPI int eio_init(void);
-
-/**
- * @brief Shutdown eio and all its submodule if possible.
- * @return the number of pending users of eio.
- *
- * @if MOBILE @since_tizen 3.0
- * @elseif WEARABLE @since_tizen 3.0
- * @endif
- */
-EAPI int eio_shutdown(void);
 
 /**
  * @brief Set the limit to the maximum amount of memory used
