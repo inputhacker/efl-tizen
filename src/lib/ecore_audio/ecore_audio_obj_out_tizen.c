@@ -107,6 +107,7 @@ static void _stream_write_cb(void *handle, size_t len EINA_UNUSED, void *data)
    Eo *in = data;
    Ecore_Audio_Out_Tizen_Data *_td;
    _td = efl_key_data_get(in, "mod_data");
+   if (!_td) return;
 
    void *buf;
    ssize_t bread = 0;
