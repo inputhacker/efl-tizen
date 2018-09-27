@@ -299,14 +299,14 @@ _field_list_arrange(Evas_Object *obj)
    // remove all the content widget from the layout
    for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
      {
-        snprintf(buf, sizeof(buf), EDC_PART_FIELD_STR, idx);
+        _part_name_snprintf(buf, sizeof(buf), obj, EDC_PART_FIELD_STR, idx);
         elm_layout_content_unset(obj, buf);
      }
    // set as content widget or hide it depending on location
    for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
      {
         field = sd->field_list + idx;
-        snprintf(buf, sizeof(buf), EDC_PART_FIELD_STR, field->location);
+        _part_name_snprintf(buf, sizeof(buf), obj, EDC_PART_FIELD_STR, field->location);
 
         if (field->visible && field->fmt_exist)
           elm_layout_content_set(obj, buf, field->item_obj);
