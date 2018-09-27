@@ -143,6 +143,7 @@ EAPI void        *edje_object_signal_callback_del_full(Evas_Object *obj, const c
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
  *
+ * @ingroup Edje_Object
  */
 EINA_DEPRECATED EAPI void         edje_extern_object_min_size_set (Evas_Object *obj, Evas_Coord minw, Evas_Coord minh);
 
@@ -161,6 +162,7 @@ EINA_DEPRECATED EAPI void         edje_extern_object_min_size_set (Evas_Object *
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
  *
+ * @ingroup Edje_Object
  */
 EINA_DEPRECATED EAPI void         edje_extern_object_max_size_set (Evas_Object *obj, Evas_Coord maxw, Evas_Coord maxh);
 
@@ -183,6 +185,7 @@ EINA_DEPRECATED EAPI void         edje_extern_object_max_size_set (Evas_Object *
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
  *
+ * @ingroup Edje_Object
  */
 EINA_DEPRECATED EAPI void         edje_extern_object_aspect_set   (Evas_Object *obj, Edje_Aspect_Control aspect, Evas_Coord aw, Evas_Coord ah);
 
@@ -302,6 +305,9 @@ EAPI Eina_Bool edje_object_mmap_set(Edje_Object *obj, const Eina_File *file, con
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
  * @endif
+ *
+ * @ingroup Edje_Object
+ *
  */
 EAPI void edje_object_message_signal_process(Edje_Object *obj);
 
