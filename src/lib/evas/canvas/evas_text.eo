@@ -230,12 +230,10 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
       }
       @property max_descent {
          get {
+            [[
+              \@since_tizen 3.0
+            ]]
             return: Evas.Coord;
-               [[
-                 \@if MOBILE \@since_tizen 3.0
-                 \@elseif WEARABLE \@since_tizen 3.0
-                 \@endif
-               ]]
          }
       }
       @property style_pad {
@@ -269,22 +267,18 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
       }
       @property ascent {
          get {
+            [[
+              \@since_tizen 3.0
+            ]]
             return: Evas.Coord;
-               [[
-                 \@if MOBILE \@since_tizen 3.0
-                 \@elseif WEARABLE \@since_tizen 3.0
-                 \@endif
-               ]]
          }
       }
       @property horiz_advance {
          get {
+            [[
+              \@since_tizen 3.0
+            ]]
             return: Evas.Coord;
-               [[
-                 \@if MOBILE \@since_tizen 3.0
-                 \@elseif WEARABLE \@since_tizen 3.0
-                 \@endif
-               ]]
          }
       }
       @property horiz_width_without_ellipsis {
@@ -298,42 +292,34 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
       }
       @property inset {
          get {
+            [[
+              \@since_tizen 3.0
+            ]]
             return: Evas.Coord;
-               [[
-                 \@if MOBILE \@since_tizen 3.0
-                 \@elseif WEARABLE \@since_tizen 3.0
-                 \@endif
-               ]]
          }
       }
       @property max_ascent {
          get {
+            [[
+              \@since_tizen 3.0
+            ]]
             return: Evas.Coord;
-               [[
-                 \@if MOBILE \@since_tizen 3.0
-                 \@elseif WEARABLE \@since_tizen 3.0
-                 \@endif
-               ]]
          }
       }
       @property vert_advance {
          get {
+            [[
+              \@since_tizen 3.0
+            ]]
             return: Evas.Coord;
-               [[
-                 \@if MOBILE \@since_tizen 3.0
-                 \@elseif WEARABLE \@since_tizen 3.0
-                 \@endif
-               ]]
          }
       }
       @property descent {
          get {
+            [[
+              \@since_tizen 3.0
+            ]]
             return: Evas.Coord;
-               [[
-                 \@if MOBILE \@since_tizen 3.0
-                 \@elseif WEARABLE \@since_tizen 3.0
-                 \@endif
-               ]]
          }
       }
       last_up_to_pos @const {
@@ -350,6 +336,9 @@ class Evas.Text (Evas.Object, Efl.Text, Efl.Text_Properties, Evas.Filter)
          }
       }
       char_coords_get @const {
+         [[
+           \@since_tizen 4.0
+         ]]
          return: int;
          params {
             @in x: Evas.Coord;
