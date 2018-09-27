@@ -768,8 +768,8 @@ evas_gl_common_image_update(Evas_Engine_GL_Context *gc, Evas_GL_Image *im)
    if (!im->tex)
      {
         if (ie->preload) return;
-        im->w = ie->w;
-        im->h = ie->h;
+//        im->w = ie->w;
+//      im->h = ie->h;
      }
    evas_gl_common_image_alloc_ensure(im);
    // alloc ensure can change im->im, so only get the local variable later.
