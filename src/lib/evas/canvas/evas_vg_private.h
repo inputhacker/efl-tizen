@@ -3,10 +3,63 @@
 
 #include <Ector.h>
 
+#include "evas_vg_cache.h"
+
 typedef struct _Efl_VG_Base_Data Efl_VG_Base_Data;
 typedef struct _Efl_VG_Container_Data Efl_VG_Container_Data;
 typedef struct _Efl_VG_Gradient_Data Efl_VG_Gradient_Data;
 typedef struct _Efl_VG_Interpolation Efl_VG_Interpolation;
+typedef struct _Evas_VG_Data Evas_VG_Data;
+
+typedef struct _Vg_Cache
+{
+   Eina_Hash            *vfd_hash;
+   Eina_Hash            *vg_entry_hash;
+   int                   ref;
+} Vg_Cache;
+
+typedef struct _Vg_Cache_Entry
+{
+   char                 *hash_key;
+   const Eina_File      *file;
+   Eina_Stringshare     *key;
+   int                   w;
+   int                   h;
+   Efl_VG               *root;
+   int                   ref;
+   Vg_File_Data         *vfd;
+
+   Eina_Bool             mmap : 1;
+} Vg_Cache_Entry;
+
+struct _Evas_VG_Data
+{
+   void   *engine_data;
+   Efl_VG *root;
+   Svg_Entry *svg;
+   Eina_Rectangle fill;
+
+   unsigned int width, height;
+
+   Eina_Array cleanup;
+   Eina_Bool content_changed;
+   void *backing_store;
+
+   Vg_Cache_Entry            *vg_entry;
+   int                        frame_index;
+   Eina_File                 *file;
+   Eina_Stringshare          *key;
+
+};
+
+void                        evas_cache_vg_init(void);
+void                        evas_cache_vg_shutdown(void);
+Vg_Cache_Entry*             evas_cache_vg_entry_resize(Vg_Cache_Entry *entry, int w, int h);
+void                        evas_cache_vg_entry_del(Vg_Cache_Entry *vg_entry);
+Vg_Cache_Entry*             evas_cache_vg_entry_create(const Eina_File *file, const char *key, int w, int h, Eina_Bool mmap);
+Efl_VG*                     evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry, unsigned int frame_num);
+double                      evas_cache_vg_anim_duration_get(const Vg_Cache_Entry *vg_entry);
+unsigned int                evas_cache_vg_anim_frame_count_get(const Vg_Cache_Entry *vg_entry);
 
 struct _Efl_VG_Base_Data
 {

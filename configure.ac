@@ -1740,6 +1740,8 @@ AC_ARG_ENABLE([tbm],
    ],
    [want_evas_engine_tbm="no"])
 
+ARG_ENABLE_EVAS_VG_LOADER(JSON, auto)
+
 # Image Loaders
 
 ARG_ENABLE_EVAS_IMAGE_LOADER(BMP, static)
@@ -2060,6 +2062,7 @@ fi
 
 AM_CONDITIONAL([EVAS_STATIC_BUILD_GL_COMMON], [test "x${have_static_evas_engine_gl_common}" = "xyes"])
 
+EVAS_CHECK_VG_LOADER([JSON], [${want_evas_vg_loader_json}])
 
 ## Image Loaders
 
@@ -5054,6 +5057,7 @@ echo "Emile...........: yes (${features_emile})"
 echo "Eet.............: yes"
 echo "Evas............: yes (${features_evas})"
 echo "  Engines.......: ${features_evas_engine}"
+echo "  Vg Loaders    : ${features_evas_vg_loader}"
 echo "  Image Loaders.: ${features_evas_loader}"
 if test "x${have_pixman}" = "xyes" ; then
 echo "  Pixman........: ${features_evas_pixman}"

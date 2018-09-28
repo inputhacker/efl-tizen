@@ -56,6 +56,7 @@ typedef struct _Evas_Font_Description       Evas_Font_Description;
 typedef struct _Evas_Data_Node              Evas_Data_Node;
 typedef struct _Evas_Func                   Evas_Func;
 typedef struct _Evas_Image_Save_Func        Evas_Image_Save_Func;
+typedef struct _Evas_Vg_Load_Func           Evas_Vg_Load_Func;
 typedef struct _Evas_Object_Func            Evas_Object_Func;
 typedef struct _Evas_Intercept_Func         Evas_Intercept_Func;
 typedef struct _Evas_Key_Grab               Evas_Key_Grab;
@@ -112,6 +113,9 @@ typedef struct _Evas_Canvas3D_Frame_Eet        Evas_Canvas3D_Frame_Eet;
 typedef struct _Evas_Canvas3D_Mesh_Eet         Evas_Canvas3D_Mesh_Eet;
 typedef struct _Evas_Canvas3D_Header_Eet       Evas_Canvas3D_Header_Eet;
 typedef struct _Evas_Canvas3D_File_Eet         Evas_Canvas3D_File_Eet;
+
+typedef struct _Vg_File_Data Vg_File_Data;
+typedef struct _Vg_File_Anim_Data Vg_File_Anim_Data;
 
 struct _Evas_Canvas3D_Vec2_Eet
 {
@@ -1485,6 +1489,34 @@ struct _Evas_Func
 
    // Unset PreRotation
    void (*gl_prerotation_unset)          (void *data);
+};
+
+struct _Vg_File_Anim_Data
+{
+   unsigned int frame_num;            //current frame number
+   unsigned int frame_cnt;            //total frame count
+   float        duration;             //animation duration
+};
+
+struct _Vg_File_Data
+{
+   Efl_VG            *root;
+   Evas_Vg_Load_Func *loader;
+   Eina_Rectangle     view_box;
+   Vg_File_Anim_Data *anim_data;           //only when animation supported.
+   int ref;
+
+   void           *loader_data;            //loader specific local data
+
+   Eina_Bool       static_viewbox: 1;
+   Eina_Bool       preserve_aspect : 1;    //Used in SVG
+};
+
+struct _Evas_Vg_Load_Func
+{
+   Vg_File_Data *(*file_open) (Eina_File *file, const char *key, Eina_Bool mmap, int *error);
+   Eina_Bool (*file_close) (Vg_File_Data *vfd);
+   Eina_Bool (*file_data) (Vg_File_Data *vfd);
 };
 
 struct _Evas_Image_Save_Func

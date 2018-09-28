@@ -66,6 +66,7 @@ evas_init(void)
    _evas_preload_thread_init();
    evas_filter_init();
    evas_cache_svg_init();
+   evas_cache_vg_init();
 
    eina_log_timing(_evas_log_dom_global,
 		   EINA_LOG_STATE_STOP,
@@ -117,6 +118,7 @@ evas_shutdown(void)
      evas_cserve2_shutdown();
 #endif
    evas_cache_svg_shutdown();
+   evas_cache_vg_shutdown();
 
    evas_font_path_global_clear();
    eina_cow_del(evas_object_proxy_cow);

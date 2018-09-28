@@ -13,23 +13,6 @@ static const char o_type[] = "vectors";
 
 const char *o_vg_type = o_type;
 
-/* private struct for rectangle object internal data */
-typedef struct _Evas_VG_Data      Evas_VG_Data;
-
-struct _Evas_VG_Data
-{
-   void   *engine_data;
-   Efl_VG *root;
-   Svg_Entry *svg;
-   Eina_Rectangle fill;
-
-   unsigned int width, height;
-
-   Eina_Array cleanup;
-   Eina_Bool content_changed;
-   void *backing_store;
-};
-
 static void evas_object_vg_render(Evas_Object *eo_obj,
                                   Evas_Object_Protected_Data *obj,
                                   void *type_private_data,
@@ -92,6 +75,170 @@ evas_object_vg_add(Evas *e)
    return eo_obj;
 }
 
+EAPI int
+evas_object_vg_animated_frame_get(const Evas_Object *obj)
+{
+   if (!obj) return 0;
+   Evas_VG_Data *pd = eo_data_scope_get(obj, MY_CLASS);
+   if (!pd) return 0;
+
+   return pd->frame_index;
+}
+
+EAPI double
+evas_object_vg_animated_frame_duration_get(const Evas_Object *obj, int start_frame, int frame_num)
+{
+   if (!obj) return 0;
+   Evas_VG_Data *pd = eo_data_scope_get(obj, MY_CLASS);
+   if (!pd) return 0;
+
+   if (!pd->vg_entry) return 0;
+   return evas_cache_vg_anim_duration_get(pd->vg_entry);
+}
+
+EAPI int
+evas_object_vg_animated_frame_count_get(const Evas_Object *obj)
+{
+   if (!obj) return 0;
+   Evas_VG_Data *pd = eo_data_scope_get(obj, MY_CLASS);
+   if (!pd) return 0;
+
+   if (!pd->vg_entry) return 0;
+   return evas_cache_vg_anim_frame_count_get(pd->vg_entry);
+}
+
+EAPI Eina_Bool
+evas_object_vg_animated_frame_set(Evas_Object *obj, int frame_index)
+{
+   if (!obj) return 0;
+   Evas_VG_Data *pd = eo_data_scope_get(obj, MY_CLASS);
+   if (!pd) return 0;
+
+   //TODO: Validate frame_index range
+
+   if (pd->frame_index == frame_index) return EINA_TRUE;
+
+   pd->frame_index = frame_index;
+   evas_object_change(obj, eo_data_scope_get(obj, EVAS_OBJECT_CLASS));
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+_vg_file_mmap_set(Eo *eo_obj, Evas_VG_Data *pd, const Eina_File *file, const char *key, Eina_Bool mmap)
+{
+   Vg_Cache_Entry *old_entry;
+   Evas_Object_Protected_Data *obj;
+
+   obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
+
+   old_entry = pd->vg_entry;
+
+   if (file)
+     pd->vg_entry = evas_cache_vg_entry_create(file, key,
+                                               obj->cur->geometry.w,
+                                               obj->cur->geometry.h,
+                                               mmap);
+   else
+     pd->vg_entry = NULL;
+
+   evas_object_change(eo_obj, obj);
+   evas_cache_vg_entry_del(old_entry);
+
+   return EINA_TRUE;
+}
+
+EAPI Eina_Bool
+evas_object_vg_mmap_set(Evas_Object *eo_obj, const Eina_File *file, const char *key)
+{
+   Evas_VG_Data *pd = eo_data_scope_get(eo_obj, MY_CLASS);
+
+   Eina_File *pf = pd->file;
+   Eina_Bool ret;
+
+   if (!file)
+     {
+        Evas_Object_Protected_Data *obj;
+        obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
+        evas_cache_vg_entry_del(pd->vg_entry);
+        evas_object_change(eo_obj, obj);
+        eina_stringshare_del(pd->key);
+        pd->vg_entry = NULL;
+        pd->file = NULL;
+        pd->key = NULL;
+        return EINA_TRUE;
+     }
+   if (pd->file == file)
+     {
+        if (!pd->key && !key) return EINA_FALSE;
+        else if (pd->key && key)
+          {
+             if (!strcmp(pd->key, key)) return EINA_FALSE;
+          }
+        pf = NULL;
+     }
+   if (pd->file != file)
+     pd->file = eina_file_dup(file);
+   ret = _vg_file_mmap_set(eo_obj, pd, file, key, EINA_TRUE);
+
+   //Close previous file after deleting ex-cache entry.
+   if (pf) eina_file_close(pf);
+
+   return ret;
+}
+
+EAPI Eina_Bool
+evas_object_vg_file_set(Evas_Object *eo_obj, const char *file, const char *key)
+{
+   Evas_VG_Data *pd = eo_data_scope_get(eo_obj, MY_CLASS);
+
+   Eina_File *pf = pd->file;
+   Eina_Bool ret;
+
+   if (!file)
+     {
+        Evas_Object_Protected_Data *obj;
+        obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
+        evas_cache_vg_entry_del(pd->vg_entry);
+        evas_object_change(eo_obj, obj);
+        eina_stringshare_del(pd->key);
+        pd->vg_entry = NULL;
+        pd->file = NULL;
+        pd->key = NULL;
+        return EINA_TRUE;
+     }
+   if (!pd->file)
+     {
+        pd->file = eina_file_open(file, EINA_FALSE);
+        if (!pd->file) return EINA_FALSE;
+     }
+   else
+     {
+        const char *filename = eina_file_filename_get(pd->file);
+        if (filename)
+          {
+             if (strcmp(filename, file))
+               pd->file = eina_file_open(file, EINA_FALSE);
+             else
+               {
+                  if (!pd->key && !key) return EINA_FALSE;
+                  else if (pd->key && key)
+                    {
+                       if (!strcmp(pd->key, key)) return EINA_FALSE;
+                    }
+                  pf = NULL;
+               }
+          }
+     }
+
+   ret = _vg_file_mmap_set(eo_obj, pd, pd->file, key, EINA_FALSE);
+
+   //Close previous file after deleting ex-cache entry.
+   if (pf) eina_file_close(pf);
+
+   return ret;
+}
+
 EAPI void
 evas_object_vg_path_set(Eo *obj, const char *path, int src_vg,
                         int dest_vg, float pos)
@@ -152,6 +299,9 @@ _evas_vg_eo_base_destructor(Eo *eo_obj, Evas_VG_Data *pd)
 
    eo_unref(pd->root);
    pd->root = NULL;
+
+   evas_cache_vg_entry_del(pd->vg_entry);
+
    eo_do_super(eo_obj, MY_CLASS, eo_destructor());
 }
 
@@ -217,6 +367,128 @@ _evas_vg_render(Evas_Object_Protected_Data *obj, Evas_VG_Data *vd,
         if (do_async)
           eina_array_push(&vd->cleanup, eo_ref(nd->renderer));
      }
+}
+
+// renders a vg_tree to an offscreen buffer
+// and push it to the cache.
+static void *
+_render_to_buffer(Evas_Object_Protected_Data *obj, Evas_VG_Data *pd,
+                  void *output, void *surface EINA_UNUSED,
+                  Efl_VG *root, int w, int h, void *key,
+                  void *buffer, Eina_Bool do_async)
+{
+   Ector_Surface *ector;
+   RGBA_Draw_Context *context;
+   int error = 0;
+   Eina_Bool buffer_created = EINA_FALSE;
+
+   ector = evas_ector_get(obj->layer->evas);
+   if (!ector) return NULL;
+
+   if (!buffer)
+     {
+        // 2. create a buffer
+        buffer = obj->layer->evas->engine.func->ector_surface_create(output,
+                                                                     NULL,
+                                                                     w, h,
+                                                                     EINA_TRUE, &error);
+        if (error) return NULL; // surface creation error
+        buffer_created = EINA_TRUE;
+     }
+
+   //1. render pre
+   _evas_vg_render_pre(root, ector, NULL);
+
+   //3. draw into the buffer
+   context = evas_common_draw_context_new();
+   evas_common_draw_context_set_render_op(context, _EVAS_RENDER_COPY);
+   evas_common_draw_context_set_color(context, 255, 255, 255, 255);
+   obj->layer->evas->engine.func->ector_begin(output, context, ector, buffer, EINA_TRUE,
+                                              0, 0, w, h,
+                                              do_async);
+   _evas_vg_render(obj, pd,
+                   output, context, buffer,
+                   root, NULL,
+                   do_async);
+
+   obj->layer->evas->engine.func->image_dirty_region(output, buffer, 0, 0, w, h);
+   obj->layer->evas->engine.func->ector_end(output, context,
+                                            ector, buffer,
+                                            do_async);
+
+   evas_common_draw_context_free(context);
+
+   if (buffer_created)
+     obj->layer->evas->engine.func->ector_surface_cache_set(output, key, buffer);
+
+   return buffer;
+}
+
+static void
+_render_buffer_to_screen(Evas_Object_Protected_Data *obj,
+                         void *output, void *context, void *surface,
+                         void *buffer,
+                         int x, int y, int w, int h,
+                         Eina_Bool do_async)
+{
+   Eina_Bool async_unref;
+
+   // draw the buffer as image to canvas
+   async_unref = obj->layer->evas->engine.func->image_draw(output, context, surface,
+                                                           buffer,
+                                                           0, 0, w, h,
+                                                           x, y, w, h,
+                                                           EINA_TRUE, do_async);
+   if (do_async && async_unref)
+     {
+        evas_cache_image_ref((Image_Entry *)buffer);
+        evas_unref_queue_image_put(obj->layer->evas, buffer);
+     }
+}
+
+static void
+_cache_vg_entry_render(Evas_Object_Protected_Data *obj,
+                       Evas_VG_Data *pd,
+                       void *output, void *context, void *surface,
+                       int x, int y, int w, int h, Eina_Bool do_async)
+{
+   Vg_Cache_Entry *vg_entry = pd->vg_entry;
+   Efl_VG *root;
+   void *buffer;
+
+   // if the size changed in between path set and the draw call;
+   if ((vg_entry->w != w) ||
+       (vg_entry->h != h))
+     {
+         vg_entry = evas_cache_vg_entry_resize(vg_entry, w, h);
+         evas_cache_vg_entry_del(pd->vg_entry);
+         pd->vg_entry = vg_entry;
+     }
+   root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
+   if (!root) return;
+   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, root);
+
+   // if the buffer is not created yet
+   if (!buffer)
+     {
+        // render to the buffer
+        buffer = _render_to_buffer(obj, pd,
+                                   output, surface,
+                                   root,
+                                   w, h,
+                                   root,
+                                   buffer,
+                                   do_async);
+     }
+//will be flushed if cache is full.
+//   else
+//     obj->layer->evas->engine.func->ector_surface_cache_drop(output, root);
+
+   _render_buffer_to_screen(obj,
+                            output, context, surface,
+                            buffer,
+                            x, y, w, h,
+                            do_async);
 }
 
 static void
@@ -337,6 +609,15 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
                                                          obj->cur->anti_alias);
    obj->layer->evas->engine.func->context_render_op_set(output, context,
                                                         obj->cur->render_op);
+
+   if (vd->vg_entry)
+     {
+        _cache_vg_entry_render(obj, vd,
+                               output, context, surface,
+                               obj->cur->geometry.x + x, obj->cur->geometry.y + y,
+                               obj->cur->geometry.w, obj->cur->geometry.h, do_async);
+        return;
+     }
 
    if (vd->svg)
      {
