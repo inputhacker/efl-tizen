@@ -66,12 +66,6 @@ _efl_ui_bg_widget_efl_object_constructor(Eo *obj, Efl_Ui_Bg_Widget_Data *pd)
    pd->file = NULL;
    pd->key = NULL;
 
-   /* TIZEN_ONLY(20180424): fix legacy bg scale policy */
-   if (elm_widget_is_legacy(obj))
-     elm_image_no_scale_set(pd->img, EINA_TRUE);
-   /* END */
-
-
    efl_ui_widget_focus_allow_set(obj, EINA_FALSE);
 
    return obj;
