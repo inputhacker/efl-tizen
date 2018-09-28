@@ -212,7 +212,34 @@ EAPI int         ecore_evas_init(void);
  */
 EAPI int         ecore_evas_shutdown(void);
 
+/**
+ * @brief Sets application compositor synchronization on/off
+ *
+ * Turns on client+server synchronized rendering in X11.  App comp sync
+ * is disabled by default, but can be turned on optionally.
+ *
+ * @note This is an experimental functionality and is likely to be removed.
+ *
+ * @param do_sync True to enable comp syncing, False to disable
+ * @ingroup Ecore_Evas_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI void        ecore_evas_app_comp_sync_set(Eina_Bool do_sync);
+/**
+ * @brief Get the compositing synchronization state
+ *
+ * @return True if app comp sync is enabled.
+ *
+ * @note This is an experimental functionality and is likely to be removed.
+ * @ingroup Ecore_Evas_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI Eina_Bool   ecore_evas_app_comp_sync_get(void);
 
 /**
@@ -2939,7 +2966,40 @@ EAPI void        ecore_evas_input_event_unregister(Ecore_Evas *ee);
  * @endif
  */
 EAPI void        ecore_evas_manual_render(Ecore_Evas *ee);
+/**
+ * @brief Sets comp syncing to enabled/disabled
+ *
+ * @param ee An @c Ecore_Evas handle
+ * @param do_sync True to enable comp syncing, False to disable
+ *
+ * Turns on client+server synchronized rendering in X11.  Comp sync is
+ * disabled by default, but can be turned on optionally.  Can also be
+ * set via the ECORE_EVAS_COMP_NOSYNC / ECORE_EVAS_COMP_SYNC
+ * environmental variables.
+ *
+ * @note This is an experimental functionality and is likely to be
+ * removed in future versions of EFL.
+ * @ingroup Ecore_Evas_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI void        ecore_evas_comp_sync_set(Ecore_Evas *ee, Eina_Bool do_sync);
+/**
+ * @brief Gets the comp sync state
+ *
+ * @param ee An @c Ecore_Evas handle
+ * @return True if composition synchronization is enabled, False otherwise
+ *
+ * @note This is an experimental functionality and is likely to be
+ * removed in future versions of EFL.
+ * @ingroup Ecore_Evas_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI Eina_Bool   ecore_evas_comp_sync_get(const Ecore_Evas *ee);
 
 /**
@@ -2974,7 +3034,21 @@ EAPI void        ecore_evas_screen_geometry_get(const Ecore_Evas *ee, int *x, in
  */
 EAPI void        ecore_evas_screen_dpi_get(const Ecore_Evas *ee, int *xdpi, int *ydpi);
 
+/**
+ * @ingroup Ecore_Evas_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI void        ecore_evas_draw_frame_set(Ecore_Evas *ee, Eina_Bool draw_frame);
+/**
+ * @ingroup Ecore_Evas_Group
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
 EAPI Eina_Bool   ecore_evas_draw_frame_get(const Ecore_Evas *ee);
 
 /**

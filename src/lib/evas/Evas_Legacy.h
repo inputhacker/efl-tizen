@@ -4637,6 +4637,7 @@ EAPI Evas_Object   *evas_object_grid_add(Evas *evas) EINA_WARN_UNUSED_RESULT EIN
  * Adds an output to the canvas
  *
  * @parem e The canvas to add the output to
+ * @ingroup Evas_Canvas
  * @return The output
  *
  * @see evas_out_engine_info_set
@@ -4656,6 +4657,7 @@ EAPI Evas_Out *evas_out_add(Evas *e);
  * Deletes an output
  *
  * @parem evo The output object
+ * @ingroup Evas_Canvas
  *
  * @see evas_out_add
  *

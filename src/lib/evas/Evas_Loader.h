@@ -194,7 +194,28 @@ struct _Evas_Image_Load_Func
   Eina_Bool do_region;
 };
 
+/**
+ * evas_module_register
+ * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ */
+
 EAPI Eina_Bool    evas_module_register   (const Evas_Module_Api *module, Evas_Module_Type type);
+
+/**
+ * evas_module_unregister
+ * @ingroup Evas_Utils
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ */
+
 EAPI Eina_Bool    evas_module_unregister (const Evas_Module_Api *module, Evas_Module_Type type);
 
 #define EVAS_MODULE_DEFINE(Type, Tn, Name)		\

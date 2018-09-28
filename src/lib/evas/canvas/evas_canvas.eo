@@ -884,6 +884,20 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       event_input_multi_move {
+         [[Mouse multi move events feed from input.
+
+           Similar to the @.event_feed_multi_move, this function will
+           inform Evas about mouse move events which were received by
+           the input system, relative to the 0,0 of the window, not to the
+           canvas 0,0. It will take care of doing any special transformation
+           like adding the framespace offset to the mouse event.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.8
+         ]]
          params {
             @in d: int;
             @in x: int;
@@ -933,6 +947,20 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       event_input_multi_up {
+         [[Mouse up event feed from input.
+
+           Similar to the @.event_feed_multi_up, this function will
+           inform Evas about mouse up events which were received by
+           the input system, relative to the 0,0 of the window, not to the
+           canvas 0,0. It will take care of doing any special transformation
+           like adding the framespace offset to the mouse event.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.8
+         ]]
          params {
             @in d: int;
             @in x: int;
@@ -950,6 +978,16 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       event_feed_multi_down {
+         [[Mouse multi down event feed.
+
+           This function will set some evas properties that is necessary
+           when the mouse multi button is pressed. It prepares information to
+           be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in d: int;
             @in x: int;
@@ -1083,6 +1121,20 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          return: uint; [[The number of touched point on the evas.]]
       }
       event_input_multi_down {
+         [[Mouse down event feed from input.
+
+           Similar to the @.event_feed_multi_down, this function will
+           inform Evas about mouse down events which were received by
+           the input system, relative to the 0,0 of the window, not to the
+           canvas 0,0. It will take care of doing any special transformation
+           like adding the framespace offset to the mouse event.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+
+           @since 1.8
+         ]]
          params {
             @in d: int;
             @in x: int;
@@ -1490,6 +1542,16 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       event_feed_multi_move {
+         [[Mouse multi move event feed.
+
+           This function will set some evas properties that is necessary
+           when the mouse multi are moved from its last position. It prepares
+           information to be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in d: int;
             @in x: int;
@@ -1792,6 +1854,16 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
 
       }
       event_feed_multi_up {
+         [[Mouse multi up event feed.
+
+           This function will set some evas properties that is necessary
+           when the mouse multi button is released. It prepares information to
+           be treated by the callback function.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          params {
             @in d: int;
             @in x: int;
