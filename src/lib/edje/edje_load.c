@@ -703,12 +703,12 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
                        break;
 
                      case EDJE_PART_TYPE_VECTOR:
-                       rp->type = EDJE_PART_TYPE_VECTOR;
+                       rp->type = EDJE_RP_TYPE_VECTOR;
                        rp->typedata.vector = calloc(1, sizeof(Edje_Real_Part_Vector));
                        if (!rp->typedata.vector)
                          memerr = EINA_TRUE;
                        else
-                         rp->typedata.vector->cur.svg_id = -1;
+                         rp->typedata.vector->current_id = -1;
                        break;
 
                      case EDJE_PART_TYPE_GROUP:
@@ -1633,6 +1633,19 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
                        rp->typedata.swallow->swallowed_object = NULL;
                     }
                   free(rp->typedata.swallow);
+               }
+             else if ((rp->type == EDJE_RP_TYPE_VECTOR) &&
+                      (rp->typedata.vector))
+               {
+                  if (rp->typedata.vector->anim)
+                    ecore_animator_del(rp->typedata.vector->anim);
+                  if (rp->typedata.vector->json_virtual_file)
+                    eina_file_close(rp->typedata.vector->json_virtual_file);
+                  if (rp->typedata.vector->json_data)
+                    free(rp->typedata.vector->json_data);
+
+                  free(rp->typedata.vector);
+                  rp->typedata.vector = NULL;
                }
 
              if (rp->object)

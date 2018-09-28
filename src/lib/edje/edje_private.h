@@ -650,10 +650,17 @@ struct _Edje_Image_Directory
    unsigned int vectors_count;
 };
 
+typedef enum _Edje_Vector_File_Type
+{
+   EDJE_VECTOR_FILE_TYPE_SVG = 0,
+   EDJE_VECTOR_FILE_TYPE_JSON
+} Edje_Vector_File_Type;
+
 struct _Edje_Vector_Directory_Entry
 {
    const char *entry; /* the nominal name of the vector image - if any */
    int   id; /* the id no. of the image */
+   Edje_Vector_File_Type type;
 };
 
 struct _Edje_Image_Directory_Entry
@@ -1579,8 +1586,10 @@ struct _Edje_Part_Description_Spec_Camera
 
 struct _Edje_Part_Description_Spec_Svg
 {
-   int            id; /* the svg id to use */
-   Eina_Bool      set; /* if vg condition it's content */
+   int                   id;    /* the svg id to use */
+   Eina_Bool             set;   /* if vg condition it's content */
+   Edje_Vector_File_Type type;
+   double                frame;
 };
 
 struct _Edje_Part_Description_Image
@@ -1932,6 +1941,7 @@ struct _Edje_Real_Part_Drag
 #define EDJE_RP_TYPE_TEXT 1
 #define EDJE_RP_TYPE_CONTAINER 2
 #define EDJE_RP_TYPE_SWALLOW 3
+#define EDJE_RP_TYPE_VECTOR 4
 
 struct _Edje_Real_Part_Text
 {
@@ -2022,7 +2032,6 @@ struct _Edje_Real_Part_Swallow
 
 struct _Edje_Vector_Data
 {
-   int svg_id;
    double x, y, w, h;
    Eina_Bool preserve_aspect;
    Efl_VG *vg;
@@ -2031,6 +2040,14 @@ struct _Edje_Vector_Data
 struct _Edje_Real_Part_Vector
 {
    Edje_Vector_Data cur;
+   Ecore_Animator  *anim;
+   Eina_File *json_virtual_file;
+   char      *json_data;
+   int        start_frame;
+   int        current_id;
+   Eina_Bool  backward : 1;
+   Eina_Bool  loop : 1;
+   Eina_Bool  is_playing : 1;
 };
 
 struct _Edje_Real_Part
@@ -3100,6 +3117,11 @@ void _animation_get(Eo *obj, void *_pd, va_list *list);
 
 void edje_signal_init(void);
 void edje_signal_shutdown(void);
+
+void _edje_part_vector_anim_stop(Edje *ed, Edje_Real_Part *rp);
+void _edje_part_vector_anim_pause(Edje *ed, Edje_Real_Part *rp);
+void _edje_part_vector_anim_resume(Edje *ed, Edje_Real_Part *rp);
+void _edje_part_vector_anim_play(Edje *ed, Edje_Real_Part *rp, Eina_Bool backward, Eina_Bool loop);
 
 // TIZEN_ONLY(20150110): Add plugin keyword.
 #ifdef EDJE_TIZEN_PLUGIN
