@@ -502,6 +502,48 @@ EAPI size_t
 eina_ustrbuf_length_get(const Eina_UStrbuf *buf) EINA_ARG_NONNULL(1) EINA_WARN_UNUSED_RESULT;
 
 /**
+ * @brief Appends an Eina_UStrbuf to a buffer, reallocating as necessary.
+ *
+ * @param buf The string buffer to append to.
+ * @param data The string buffer to append.
+ * @return #EINA_TRUE on success, #EINA_FALSE on failure.
+ *
+ * This function appends @p data to @p buf. @p data must be allocated and
+ * different from @NULL. It is slightly faster than eina_ustrbuf_append() as
+ * it does not compute the size of @p str. If @p buf can't append it,
+ * #EINA_FALSE is returned, otherwise #EINA_TRUE is returned.
+ *
+ * @see eina_ustrbuf_append()
+ * @see eina_ustrbuf_append_n()
+ * @see eina_ustrbuf_append_length()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool eina_ustrbuf_append_buffer(Eina_UStrbuf *buf, const Eina_UStrbuf *data) EINA_ARG_NONNULL(1, 2);
+
+/**
+ * @brief Creates a new string buffer using the passed string. The passed
+ * string is used directly as the buffer, it's somehow the opposite function of
+ * @ref eina_ustrbuf_string_steal . The passed string must be malloced.
+ *
+ * @param str The string to manage
+ * @param length The length of the string.
+ * @return Newly allocated string buffer instance.
+ *
+ * This function creates a new string buffer. On error, @c NULL is
+ * returned. To free the resources, use eina_ustrbuf_free().
+ *
+ * @see eina_ustrbuf_manage_new()
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_UStrbuf *eina_ustrbuf_manage_read_only_new_length(const Eina_Unicode *str, size_t length) EINA_MALLOC EINA_WARN_UNUSED_RESULT;
+
+/**
  * @}
  */
 
