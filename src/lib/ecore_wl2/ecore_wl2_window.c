@@ -2487,7 +2487,7 @@ ecore_wl2_window_aux_hint_change(Ecore_Wl2_Window *win, int id, const char *val)
      tizen_policy_change_aux_hint(win->display->wl.tz_policy, win->surface, id, val);
    //
 
-   if ((!win->surface) && (!win->display->wl.efl_aux_hints)) return;
+   if ((!win->surface) || (!win->display->wl.efl_aux_hints)) return;
 
    efl_aux_hints_change_aux_hint(win->display->wl.efl_aux_hints, win->surface, id, val);
    ecore_wl2_display_flush(win->display);
