@@ -828,8 +828,13 @@ _efl_ui_image_sizing_eval(Evas_Object *obj)
 {
    EFL_UI_IMAGE_DATA_GET_OR_RETURN(obj, sd);
 
+   //TIZEN_ONLY(20181001): remove ecore job temporarily.
+   _sizing_eval_cb(obj);
+   /*
    if (sd->sizing_job) ecore_job_del(sd->sizing_job);
    sd->sizing_job = ecore_job_add(_sizing_eval_cb, obj);
+   */
+   //
 }
 
 static void
