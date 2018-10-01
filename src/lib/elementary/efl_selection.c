@@ -173,7 +173,8 @@ static void
 _selection_data_ready_cb(void *data, Efl_Object *obj, Efl_Selection_Data *seldata)
 {
    printf("obj: %p, data: [", obj);
-   fwrite(seldata->content.mem, seldata->content.len, 1, stdout);
+   if (fwrite(seldata->content.mem, seldata->content.len, 1, stdout) != 1)
+     ERR("cannot write to standard output");
    printf("], length: %zd\n", seldata->content.len);
 
     Cnp_Data_Cb_Wrapper *wdata = data;
