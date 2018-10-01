@@ -1339,6 +1339,12 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          ]]
       }
       objects_in_rectangle_get @const {
+         [[List of objects in the given rectangle.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
          return: list<Evas.Object *> * @warn_unused;
          params {
             @in x: Evas.Coord;
@@ -1491,6 +1497,12 @@ class Evas.Canvas (Eo.Base, Evas.Common_Interface)
          }
       }
       sync {
+         [[Sync evas canvas.
+
+           \@if MOBILE \@since_tizen 3.0
+           \@elseif WEARABLE \@since_tizen 3.0
+           \@endif
+         ]]
       }
       font_path_list @const {
          [[Retrieves the list of font paths used by the given evas.
