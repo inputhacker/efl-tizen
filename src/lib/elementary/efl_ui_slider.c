@@ -192,6 +192,7 @@ _drag_start(void *data,
      elm_object_focus_set(data, EINA_TRUE);
    _slider_update(data, EINA_TRUE);
    efl_event_callback_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_START, NULL);
+   efl_event_callback_legacy_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_START, NULL);
    elm_widget_scroll_freeze_push(data);
 }
 
@@ -203,6 +204,7 @@ _drag_stop(void *data,
 {
    _slider_update(data, EINA_TRUE);
    efl_event_callback_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_STOP, NULL);
+   efl_event_callback_legacy_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_STOP, NULL);
    elm_widget_scroll_freeze_pop(data);
 }
 
@@ -511,6 +513,7 @@ _spacer_down_cb(void *data,
      elm_object_focus_set(data, EINA_TRUE);
    _slider_update(data, EINA_TRUE);
    efl_event_callback_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_START, NULL);
+   efl_event_callback_legacy_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_START, NULL);
 }
 
 static void
@@ -549,6 +552,8 @@ _spacer_move_cb(void *data,
              _slider_update(data, EINA_TRUE);
              efl_event_callback_call
                (data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_STOP, NULL);
+             efl_event_callback_legacy_call
+                (data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_STOP, NULL);
              if (sd->frozen)
                {
                   elm_widget_scroll_freeze_pop(data);
@@ -587,6 +592,7 @@ _spacer_up_cb(void *data,
 
    _slider_update(data, EINA_TRUE);
    efl_event_callback_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_STOP, NULL);
+   efl_event_callback_legacy_call(data, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_STOP, NULL);
 
    if (sd->frozen)
      {
@@ -810,11 +816,13 @@ _efl_ui_slider_efl_access_value_value_and_text_set(Eo *obj, Efl_Ui_Slider_Data *
    if (value > sd->val_max) value = sd->val_max;
 
    efl_event_callback_call(obj, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_START, NULL);
+   efl_event_callback_legacy_call(obj, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_START, NULL);
    sd->val = value;
    efl_ui_slider_val_set(obj);
    sd->val = oldval;
    _slider_update(obj, EINA_TRUE);
    efl_event_callback_call(obj, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_STOP, NULL);
+   efl_event_callback_legacy_call(obj, EFL_UI_SLIDER_EVENT_SLIDER_DRAG_STOP, NULL);
 
    return EINA_TRUE;
 }
