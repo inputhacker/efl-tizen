@@ -1329,6 +1329,7 @@ _compositor_socket_get()
    Ecore_Wl2_Display *display;
    Eina_Iterator *itr;
    Ecore_Wl2_Global *global;
+   struct wl_registry *registry = NULL;
    struct tizen_embedded_compositor *tec = NULL;
    int fd = -1;
 
@@ -1340,6 +1341,8 @@ _compositor_socket_get()
    //  return -1;
 
    display = ecore_wl2_connected_display_get(NULL);
+   if (!display) return -1;
+
    itr = ecore_wl2_display_globals_get(display);
    if (!itr)
      {
@@ -1347,14 +1350,28 @@ _compositor_socket_get()
         return -1;
      }
 
+   registry = ecore_wl2_display_registry_get(display);
+   if (!registry)
+     {
+        eina_iterator_free(itr);
+        return -1;
+     }
+
    EINA_ITERATOR_FOREACH(itr, global)
      {
         if (!strcmp(global->interface, "tizen_embedded_compositor"))
           {
-             tec = wl_registry_bind(ecore_wl2_display_registry_get(display),
+             tec = wl_registry_bind(registry,
                                global->id,
                                &tizen_embedded_compositor_interface,
                                1);
+             if (!tec)
+               {
+                  eina_iterator_free(itr);
+                  ERR("Cannot find tizen embedded compositor");
+                  return -1;
+               }
+
              tizen_embedded_compositor_add_listener(tec,
                                &tizen_embedded_compositor_listener,
                                &fd);
