@@ -41,6 +41,19 @@ static void _filter_buffer_unlock_all(Evas_Filter_Context *ctx);
 #define _free(ptr) free(ptr)
 //eina_freeq_ptr_main_add(ptr, NULL, sizeof(*ptr))
 
+/* TIZEN_ONLY(20181002): remove critical messages from Evas Filter */
+static void
+_buffer_del(Eo *buffer)
+{
+   if (!buffer) return;
+
+   if (efl_parent_get(buffer))
+     efl_del(buffer);
+   else
+     efl_unref(buffer);
+}
+/* END */
+
 Evas_Filter_Context *
 evas_filter_context_new(Evas_Public_Data *evas, Eina_Bool async, void *user_data)
 {
@@ -116,7 +129,11 @@ static void
 _filter_buffer_backing_free(Evas_Filter_Buffer *fb)
 {
    if (!fb || !fb->buffer) return;
+   /* TIZEN_ONLY(20181002): remove critical messages from Evas Filter
    efl_unref(fb->buffer);
+    */
+   _buffer_del((Eo *)fb->buffer);
+   /* END */
    fb->buffer = NULL;
 }
 
@@ -600,7 +617,11 @@ evas_filter_buffer_backing_set(Evas_Filter_Context *ctx, int bufid,
    ret = EINA_TRUE;
 
 end:
+   /* TIZEN_ONLY(20181002): remove critical messages from Evas Filter
    if (fb->buffer != buffer) efl_unref(fb->buffer);
+    */
+   if (fb->buffer != buffer) _buffer_del((Eo *)fb->buffer);
+   /* END */
    fb->buffer = buffer;
    return ret;
 }
