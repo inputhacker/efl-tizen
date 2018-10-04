@@ -2715,6 +2715,11 @@ _wl_selection_send(void *data, int type EINA_UNUSED, void *event)
    if (!seat_sel) return ECORE_CALLBACK_RENEW;
    sel = seat_sel->sel;
 
+   //TIZEN_ONLY: skip other process's send event
+   if (sel->data.mem == NULL)
+     return ECORE_CALLBACK_PASS_ON;
+   //
+
    if ((ev->serial != sel->selection_serial) &&
        (ev->serial != sel->drag_serial))
     return ECORE_CALLBACK_RENEW;
