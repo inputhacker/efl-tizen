@@ -541,7 +541,9 @@ _clock_items_get(const Evas_Object *obj)
    Eina_List *items = NULL;
    Clock_Field *field;
    unsigned int idx;
-   Clock_Field *sorted_fields[EFL_UI_CLOCK_TYPE_COUNT];
+   //TIZEN_ONLY(20170818): Prevent Null pointer ref.
+   Clock_Field *sorted_fields[EFL_UI_CLOCK_TYPE_COUNT] = {0};
+   //Clock_Field *sorted_fields[EFL_UI_CLOCK_TYPE_COUNT];
 
    EFL_UI_CLOCK_DATA_GET(obj, sd);
 
@@ -554,6 +556,9 @@ _clock_items_get(const Evas_Object *obj)
    for (idx = 0; idx < EFL_UI_CLOCK_TYPE_COUNT; idx++)
      {
         field = sorted_fields[idx];
+        //TIZEN_ONLY(20170818): Prevent Null pointer ref.
+        if (!field) continue;
+        //
         if (field->fmt_exist && field->visible)
           items = eina_list_append(items, field->item_obj);
      }
