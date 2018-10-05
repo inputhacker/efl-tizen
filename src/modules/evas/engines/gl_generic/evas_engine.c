@@ -764,6 +764,7 @@ _rotate_image_data(Render_Engine_GL_Generic *re, Evas_GL_Image *im1)
 
    // TIZEN_ONLY(20171114) : image orient
    alpha = eng_image_alpha_get(re, im1);
+   gl_context = gl_generic_context_find(re, 1);
    im2 = evas_gl_common_image_new_from_copied_data(gl_context, w, h, im1->im->image.data, alpha, im1->cs.space);
    if (!im2 || !im2->im) goto on_error;
    im2->rotated_orient = im1->orient;
