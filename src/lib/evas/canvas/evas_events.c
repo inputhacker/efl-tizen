@@ -4427,14 +4427,12 @@ _evas_canvas_event_pointer_in_list_mouse_move_feed(Evas_Public_Data *edata,
             (!xor_rule && (in || found)))
           {
              //TIZEN_ONLY(20180530): add storing last mouse device.
+             //TIZEN_ONLY(20181006): Now, last_mouse is always used even pdata is founded.
              //if (!pdata) pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
-             if (!pdata)
-               {
-                  if (edata->last_mouse)
-                    pdata = _evas_pointer_data_by_device_get(edata, edata->last_mouse);
-                  else
-                    pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
-               }
+             if (edata->last_mouse)
+               pdata = _evas_pointer_data_by_device_get(edata, edata->last_mouse);
+             else if (!pdata)
+               pdata = EINA_INLIST_CONTAINER_GET(pseat->pointers, Evas_Pointer_Data);
              //
              _evas_canvas_event_pointer_move_event_dispatch(edata, pdata, data);
           }
