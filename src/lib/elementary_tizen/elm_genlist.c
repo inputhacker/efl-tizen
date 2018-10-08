@@ -1184,7 +1184,7 @@ _calc(void *data)
 {
    Elm_Genlist_Data *sd = data;
    Item_Block *itb;
-   Evas_Coord minw = 99999999, minh = 0, vw = 0, vh = 0, current_minh = 0;
+   Evas_Coord minw = 0,  minh = 0, vw = 0, vh = 0, current_minh = 0;
    Evas_Coord processed_size = sd->minh;
    int cnt = 0;
 
@@ -1204,12 +1204,14 @@ _calc(void *data)
      }
 //
    elm_interface_scrollable_content_viewport_geometry_get(sd->obj, NULL, NULL, &vw, &vh);
+   if ((sd->mode != ELM_LIST_LIMIT) && (minw < vw)) minw = vw;
+
    EINA_INLIST_FOREACH(sd->blocks, itb)
      {
         itb->x = 0;
         itb->y = minh;
         _item_block_calc(itb, vw, vh);
-        if (minw > itb->minw) minw = itb->minw;
+        if (minw < itb->minw) minw = itb->minw;
         minh += itb->minh;
      }
 
