@@ -1331,6 +1331,8 @@ _compositor_socket_get()
    Ecore_Wl2_Global *global;
    struct wl_registry *registry = NULL;
    struct tizen_embedded_compositor *tec = NULL;
+   struct wl_event_queue *queue;
+   struct wl_display *display_wl = NULL;
    int fd = -1;
 
    const char *s = getenv("ECORE_EVAS_EXTN_DISABLE_SOCKET_FROM_SERVER");
@@ -1386,9 +1388,26 @@ _compositor_socket_get()
         return -1;
      }
 
-   tizen_embedded_compositor_get_socket(tec);
    ecore_wl2_sync();
 
+   display_wl = ecore_wl2_display_get(display);
+   if (!display_wl)
+     {
+        ERR("Cannot get wl display");
+        return -1;
+     }
+
+   queue = wl_display_create_queue(display_wl);
+   wl_proxy_set_queue((struct wl_proxy *) tec, queue);
+
+   tizen_embedded_compositor_get_socket(tec);
+
+   if (0 > wl_display_roundtrip_queue(display_wl, queue))
+     {
+        ERR("Fail to wl_display_roundtrip_queue");
+        return -1;
+     }
+   wl_event_queue_destroy(queue);
    tizen_embedded_compositor_destroy(tec);
    return fd;
 }
