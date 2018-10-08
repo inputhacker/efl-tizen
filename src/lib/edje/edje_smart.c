@@ -186,10 +186,25 @@ _efl_canvas_layout_efl_canvas_group_group_del(Eo *obj, Edje *ed)
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }
 
+/* TIZEN_ONLY(20181008): Update original position for text which running marquee */
+static void
+_edje_object_text_ellipsize_clipper_move(Edje_Real_Part *ep, Eina_Position2D ed_diff)
+{
+   /* ed_diff should be handled because of marquee */
+   ep->typedata.text->ellipsize.marquee.orig_x += ed_diff.x;
+   ep->typedata.text->ellipsize.marquee.orig_y += ed_diff.y;
+}
+/* END */
+
 EOLIAN static void
 _efl_canvas_layout_efl_gfx_entity_position_set(Eo *obj, Edje *ed, Eina_Position2D pos)
 {
    unsigned short i;
+   /* TIZEN_ONLY(20181008): Update original position for text which running marquee */
+   Eina_Position2D ed_diff;
+   ed_diff.x = pos.x - ed->x;
+   ed_diff.y = pos.y - ed->y;
+   /* END */
 
    if (_evas_object_intercept_call(obj, EVAS_OBJECT_INTERCEPT_CB_MOVE, 0, pos.x, pos.y))
      return;
@@ -214,6 +229,12 @@ _efl_canvas_layout_efl_gfx_entity_position_set(Eo *obj, Edje *ed, Eina_Position2
         ep = ed->table_parts[i];
         if ((ep->type == EDJE_RP_TYPE_TEXT) && (ep->typedata.text))
           {
+             /* TIZEN_ONLY(20181008): Update original position for text which running marquee */
+             if (ep->typedata.text->ellipsize.clipper_obj &&
+                 evas_object_visible_get(ep->typedata.text->ellipsize.clipper_obj))
+               _edje_object_text_ellipsize_clipper_move(ep, ed_diff);
+             else
+             /* END */
              if (ep->object)
                evas_object_move(ep->object,
                                 ed->x + ep->x + ep->typedata.text->offset.x,
