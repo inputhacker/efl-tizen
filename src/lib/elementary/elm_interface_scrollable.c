@@ -986,6 +986,8 @@ _elm_scroll_scroll_bar_size_adjust_internal(void *data)
 {
   Elm_Scrollable_Smart_Interface_Data *sid = (Elm_Scrollable_Smart_Interface_Data *)data;
 
+   sid->adjust_job.bar_size_adjust = NULL;
+
    if (!sid->pan_obj || !sid->edje_obj) return;
    if (efl_invalidated_get(sid->pan_obj) || efl_invalidated_get(sid->edje_obj)) return;
 
@@ -1155,9 +1157,9 @@ _elm_scroll_scroll_bar_pos_adjust_internal(void *data)
 {
    Elm_Scrollable_Smart_Interface_Data *sid = (Elm_Scrollable_Smart_Interface_Data *)data;
 
-   if (!sid->pan_obj || !sid->edje_obj) return;
-
    sid->adjust_job.bar_pos_adjust = NULL;
+
+   if (!sid->pan_obj || !sid->edje_obj) return;
 
    const char *iface_scr_dragable_hbar = NULL;
    const char *iface_scr_dragable_vbar = NULL;
