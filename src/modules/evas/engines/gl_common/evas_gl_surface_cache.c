@@ -1,5 +1,6 @@
 #include "evas_gl_private.h"
 
+#define GL_SURFACE_CACHE_LIMIT 50
 static Ector_Surface_Cache *surface_cache = NULL;
 
 static void
@@ -43,7 +44,7 @@ evas_gl_common_surface_cache_set(void *key, void *surface)
    eina_hash_add(surface_cache->surface_hash, &key, surface_data);
    surface_cache->lru_list = eina_list_prepend(surface_cache->lru_list, surface_data);
    count = eina_list_count(surface_cache->lru_list);
-   if (count > 50)
+   if (count > GL_SURFACE_CACHE_LIMIT)
    {
       surface_data = eina_list_data_get(eina_list_last(surface_cache->lru_list));
       eina_hash_del(surface_cache->surface_hash, &surface_data->key, surface_data);

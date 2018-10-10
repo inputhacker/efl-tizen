@@ -4054,6 +4054,8 @@ _ector_surface_cache_dump(void)
      }
 }
 
+#define ECTOR_LRU_CACHE_LIMIT 50
+
 static void
 eng_ector_surface_cache_set(void *data EINA_UNUSED, void *key, void *surface)
 {
@@ -4068,7 +4070,7 @@ eng_ector_surface_cache_set(void *data EINA_UNUSED, void *key, void *surface)
    eina_hash_add(surface_cache->surface_hash, &key, surface_data);
    surface_cache->lru_list = eina_list_prepend(surface_cache->lru_list, surface_data);
    count = eina_list_count(surface_cache->lru_list);
-   if (count > 100)
+   if (count > ECTOR_LRU_CACHE_LIMIT)
    {
       surface_data = eina_list_data_get(eina_list_last(surface_cache->lru_list));
       eina_hash_del(surface_cache->surface_hash, &surface_data->key, surface_data);

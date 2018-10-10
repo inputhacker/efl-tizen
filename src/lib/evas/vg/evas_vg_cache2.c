@@ -253,6 +253,7 @@ evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry, unsigned int frame_num)
 
    if (!vfd->loader->file_data(vfd)) return NULL;
 
+   if (vg_entry->root) eo_del(vg_entry->root);
    vg_entry->root = evas_vg_container_add(NULL);
    evas_vg_node_dup(vg_entry->root, vfd->root);
 

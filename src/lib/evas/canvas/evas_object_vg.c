@@ -78,19 +78,29 @@ evas_object_vg_add(Evas *e)
 EAPI int
 evas_object_vg_animated_frame_get(const Evas_Object *obj)
 {
-   if (!obj) return 0;
    Evas_VG_Data *pd = eo_data_scope_get(obj, MY_CLASS);
    if (!pd) return 0;
+
+   if (pd->magic != MAGIC_OBJ_VG)
+     {
+        ERR("vg object is invalid , obj = %p", obj);
+        return 0;
+     }
 
    return pd->frame_index;
 }
 
 EAPI double
-evas_object_vg_animated_frame_duration_get(const Evas_Object *obj, int start_frame, int frame_num)
+evas_object_vg_animated_frame_duration_get(const Evas_Object *obj, int start_frame EINA_UNUSED, int frame_num EINA_UNUSED)
 {
-   if (!obj) return 0;
    Evas_VG_Data *pd = eo_data_scope_get(obj, MY_CLASS);
    if (!pd) return 0;
+
+   if (pd->magic != MAGIC_OBJ_VG)
+     {
+        ERR("vg object is invalid , obj = %p", obj);
+        return 0;
+     }
 
    if (!pd->vg_entry) return 0;
    return evas_cache_vg_anim_duration_get(pd->vg_entry);
@@ -99,25 +109,38 @@ evas_object_vg_animated_frame_duration_get(const Evas_Object *obj, int start_fra
 EAPI int
 evas_object_vg_animated_frame_count_get(const Evas_Object *obj)
 {
-   if (!obj) return 0;
    Evas_VG_Data *pd = eo_data_scope_get(obj, MY_CLASS);
    if (!pd) return 0;
 
+   if (pd->magic != MAGIC_OBJ_VG)
+     {
+        ERR("vg object is invalid , obj = %p", obj);
+        return 0;
+     }
+
    if (!pd->vg_entry) return 0;
+   ERR("frame count get??? vg = %p", obj);
    return evas_cache_vg_anim_frame_count_get(pd->vg_entry);
 }
 
 EAPI Eina_Bool
 evas_object_vg_animated_frame_set(Evas_Object *obj, int frame_index)
 {
-   if (!obj) return 0;
    Evas_VG_Data *pd = eo_data_scope_get(obj, MY_CLASS);
    if (!pd) return 0;
+
+   if (pd->magic != MAGIC_OBJ_VG)
+     {
+        ERR("vg object is invalid , obj = %p", obj);
+        return 0;
+     }
 
    //TODO: Validate frame_index range
 
    if (pd->frame_index == frame_index) return EINA_TRUE;
 
+   //Image is changed, drop previous cached image.
+   pd->cache_key = NULL;
    pd->frame_index = frame_index;
    evas_object_change(obj, eo_data_scope_get(obj, EVAS_OBJECT_CLASS));
 
@@ -152,6 +175,12 @@ EAPI Eina_Bool
 evas_object_vg_mmap_set(Evas_Object *eo_obj, const Eina_File *file, const char *key)
 {
    Evas_VG_Data *pd = eo_data_scope_get(eo_obj, MY_CLASS);
+
+   if (!pd || pd->magic != MAGIC_OBJ_VG)
+     {
+        ERR("vg object is invalid , obj = %p", eo_obj);
+        return 0;
+     }
 
    Eina_File *pf = pd->file;
    Eina_Bool ret;
@@ -191,6 +220,12 @@ EAPI Eina_Bool
 evas_object_vg_file_set(Evas_Object *eo_obj, const char *file, const char *key)
 {
    Evas_VG_Data *pd = eo_data_scope_get(eo_obj, MY_CLASS);
+
+   if (!pd || pd->magic != MAGIC_OBJ_VG)
+     {
+        ERR("vg object is invalid , obj = %p", eo_obj);
+        return 0;
+     }
 
    Eina_File *pf = pd->file;
    Eina_Bool ret;
@@ -251,6 +286,13 @@ evas_object_vg_path_set(Eo *obj, const char *path, int src_vg,
 
    evas_object_geometry_get(obj, NULL, NULL, &w, &h);
    pd = eo_data_scope_get(obj, MY_CLASS);
+
+   if (!pd || pd->magic != MAGIC_OBJ_VG)
+     {
+        ERR("vg object is invalid , obj = %p", obj);
+        return;
+     }
+
    entry = evas_cache_svg_find(path, src_vg, dest_vg, pos, w, h);
    if (entry != pd->svg)
      {
@@ -288,6 +330,8 @@ _cleanup_reference(void *data,
 void
 _evas_vg_eo_base_destructor(Eo *eo_obj, Evas_VG_Data *pd)
 {
+   pd->magic = 0;
+
    if (pd->backing_store) {
       Evas_Object_Protected_Data *obj = eo_data_scope_get(eo_obj, EVAS_OBJECT_CLASS);
       obj->layer->evas->engine.func->image_free(obj->layer->evas->engine.data.output,
@@ -303,6 +347,7 @@ _evas_vg_eo_base_destructor(Eo *eo_obj, Evas_VG_Data *pd)
    evas_cache_vg_entry_del(pd->vg_entry);
 
    eo_do_super(eo_obj, MY_CLASS, eo_destructor());
+   ERR("vg = %p destroyed!", eo_obj);
 }
 
 Eo *
@@ -322,6 +367,8 @@ _evas_vg_eo_base_constructor(Eo *eo_obj, Evas_VG_Data *pd)
    eo_ref(pd->root);
 
    eina_array_step_set(&pd->cleanup, sizeof(pd->cleanup), 8);
+
+   pd->magic = MAGIC_OBJ_VG;
 
    return eo_obj;
 }
@@ -419,7 +466,10 @@ _render_to_buffer(Evas_Object_Protected_Data *obj, Evas_VG_Data *pd,
    evas_common_draw_context_free(context);
 
    if (buffer_created)
-     obj->layer->evas->engine.func->ector_surface_cache_set(output, key, buffer);
+     {
+        pd->cache_key = key;
+        obj->layer->evas->engine.func->ector_surface_cache_set(output, key, buffer);
+     }
 
    return buffer;
 }
@@ -466,7 +516,7 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
      }
    root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
    if (!root) return;
-   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, root);
+   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, pd->cache_key);
 
    // if the buffer is not created yet
    if (!buffer)
@@ -480,9 +530,6 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
                                    buffer,
                                    do_async);
      }
-//will be flushed if cache is full.
-//   else
-//     obj->layer->evas->engine.func->ector_surface_cache_drop(output, root);
 
    _render_buffer_to_screen(obj,
                             output, context, surface,
@@ -518,7 +565,7 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
    // if the buffer is not created yet
    root = evas_cache_svg_vg_tree_get(svg);
    if (!root) return;
-   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, root);
+   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, vd->cache_key);
    if (!buffer)
      {
         // manual render the vg tree
@@ -571,7 +618,10 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
      }
 
    if (created)
-     obj->layer->evas->engine.func->ector_surface_cache_set(output, root, buffer);
+     {
+        vd->cache_key = root;
+        obj->layer->evas->engine.func->ector_surface_cache_set(output, root, buffer);
+     }
 }
 
 static void

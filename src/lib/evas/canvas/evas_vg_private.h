@@ -49,7 +49,9 @@ struct _Evas_VG_Data
    int                        frame_index;
    Eina_File                 *file;
    Eina_Stringshare          *key;
+   void                      *cache_key; // store ector surface cache key
 
+   int magic;               //private data for safety.
 };
 
 void                        evas_cache_vg_init(void);
