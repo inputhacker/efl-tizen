@@ -1170,27 +1170,6 @@ ecore_wl2_window_hide(Ecore_Wl2_Window *window)
    if (window->tz_resource) tizen_resource_destroy(window->tz_resource);
    window->tz_resource = NULL;
    //
-   // TIZEN_ONLY(20180614) : destroy shell surface and its role
-   if (window->zxdg_popup) zxdg_popup_v6_destroy(window->zxdg_popup);
-   window->zxdg_popup = NULL;
-
-   if (window->zxdg_toplevel) zxdg_toplevel_v6_destroy(window->zxdg_toplevel);
-   window->zxdg_toplevel = NULL;
-
-   if (window->zxdg_surface) zxdg_surface_v6_destroy(window->zxdg_surface);
-   window->zxdg_surface = NULL;
-   // END of TIZEN_ONLY(20180614)
-
-   // TIZEN_ONLY(20181011) : destroy shell surface and its role
-   if (window->xdg_popup) xdg_popup_destroy(window->xdg_popup);
-   window->xdg_popup = NULL;
-
-   if (window->xdg_toplevel) xdg_toplevel_destroy(window->xdg_toplevel);
-   window->xdg_toplevel = NULL;
-
-   if (window->xdg_surface) xdg_surface_destroy(window->xdg_surface);
-   window->xdg_surface = NULL;
-   // END of TIZEN_ONLY(20181011)
 
    EINA_INLIST_FOREACH_SAFE(window->subsurfs, tmp, subsurf)
      _ecore_wl2_subsurf_unmap(subsurf);
@@ -1221,6 +1200,28 @@ ecore_wl2_window_hide(Ecore_Wl2_Window *window)
         wl_callback_destroy(window->callback);
         window->callback = NULL;
      }
+
+   // TIZEN_ONLY(20180614) : destroy shell surface and its role
+   if (window->zxdg_popup) zxdg_popup_v6_destroy(window->zxdg_popup);
+   window->zxdg_popup = NULL;
+
+   if (window->zxdg_toplevel) zxdg_toplevel_v6_destroy(window->zxdg_toplevel);
+   window->zxdg_toplevel = NULL;
+
+   if (window->zxdg_surface) zxdg_surface_v6_destroy(window->zxdg_surface);
+   window->zxdg_surface = NULL;
+   // END of TIZEN_ONLY(20180614)
+
+   // TIZEN_ONLY(20181011) : destroy shell surface and its role
+   if (window->xdg_popup) xdg_popup_destroy(window->xdg_popup);
+   window->xdg_popup = NULL;
+
+   if (window->xdg_toplevel) xdg_toplevel_destroy(window->xdg_toplevel);
+   window->xdg_toplevel = NULL;
+
+   if (window->xdg_surface) xdg_surface_destroy(window->xdg_surface);
+   window->xdg_surface = NULL;
+   // END of TIZEN_ONLY(20181011)
 
    window->set_config.serial = 0;
    window->req_config.serial = 0;
