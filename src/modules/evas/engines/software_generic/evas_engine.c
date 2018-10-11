@@ -4807,6 +4807,9 @@ static Evas_Func func =
      eng_gfx_filter_supports,
      eng_gfx_filter_process,
    /* FUTURE software generic calls go here */
+     /* TIZEN_ONLY(20181011) : add a missing change from EvasGL Render Thread patch */
+     NULL,
+     /* END */
      0 // sizeof (Info)
 };
 
