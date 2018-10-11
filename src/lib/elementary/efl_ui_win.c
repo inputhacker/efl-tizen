@@ -1135,7 +1135,6 @@ _elm_win_pre_render(Ecore_Evas *ee)
           ecore_x_window_shape_input_rectangle_set(sd->x.xwin, 0, 0, 0, 0);
 #endif
         sd->first_draw = EINA_TRUE;
-
         /* set this to handle ecore-evas engine code which incorrectly
          * assumes that a client resize call is the same as a server resize
          * event, or which has no server event
