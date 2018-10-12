@@ -3113,7 +3113,7 @@ ecore_wl2_window_commit(Ecore_Wl2_Window *window, Eina_Bool flush)
 
    if (window->req_config.serial != window->set_config.serial)
      {
-        if (window->xdg_configure_ack && window->xdg_surfac)
+        if (window->xdg_configure_ack && window->xdg_surface)
            window->xdg_configure_ack(window->xdg_surface,
                                       window->req_config.serial);
         if (window->zxdg_configure_ack && window->zxdg_surface)
