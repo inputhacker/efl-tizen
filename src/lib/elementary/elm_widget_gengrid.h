@@ -39,10 +39,16 @@ struct _Elm_Gengrid_Data
    Eina_List                            *group_items; /* a list of
                                                        * groups index
                                                        * items */
+//TIZEN_ONLY(20181015) : Apply circle gengrid
+   Eina_Hash                            *circle_coord_cache;
+//
    Eina_Inlist                          *items; /* an inlist of all items */
    Elm_Gen_Item                         *reorder_it; /* item currently
                                                      * being
                                                      * repositioned */
+//TIZEN_ONLY(20181015) : Apply circle gengrid
+   Elm_Gen_Item                         *adjusted_item;
+//
    Elm_Object_Item                      *last_selected_item;
    Elm_Object_Item                      *focused_item; /**< a focused item by keypad arrow or mouse. This is set to NULL if widget looses focus. */
    Elm_Object_Item                      *last_focused_item; /**< This records the last focused item when widget looses focus. This is required to set the focus on last focused item when widgets gets focus. */
@@ -169,6 +175,9 @@ struct _Elm_Gengrid_Data
 
    Eina_Bool                          scr_minw;
    Eina_Bool                          scr_minh;
+//TIZEN_ONLY(20181015) : Apply circle gengrid
+   Eina_Bool                          circular : 1;
+//
 };
 
 struct Elm_Gen_Item_Type
@@ -176,7 +185,9 @@ struct Elm_Gen_Item_Type
    Elm_Gen_Item           *it;
 
    Elm_Gengrid_Data       *wsd;
-
+//TIZEN_ONLY(20181015) : Apply circle gengrid
+   Evas_Object            *proxy;
+//
    Ecore_Animator         *item_reorder_move_animator;
    Evas_Coord              gx, gy, ox, oy, tx, ty, rx, ry;
    unsigned int            moving_effect_start_time;

@@ -12,6 +12,9 @@ class Elm.Gengrid.Pan extends Elm.Pan
       Efl.Canvas.Group.group_calculate;
       Elm.Pan.content_size { get; }
       Elm.Pan.pos { get; set; }
+//TIZEN_ONLY(20181015) : Apply circle gengrid
+      Elm.Pan.pos_adjust;
+//
       Elm.Pan.pos_min { get; }
       Elm.Pan.pos_max { get; }
    }
