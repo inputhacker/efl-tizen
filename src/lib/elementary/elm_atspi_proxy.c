@@ -150,17 +150,6 @@ _elm_atspi_proxy_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED
    return ret;
 }
 
-EOLIAN Eo*
-_elm_atspi_proxy_efl_object_parent_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Proxy_Data *_pd)
-{
-   Eo *ret = NULL;
-   if (_pd->type == ELM_ATSPI_PROXY_TYPE_PLUG)
-     {
-        ret = efl_parent_get(obj);
-     }
-   return ret;
-}
-
 Eina_List*
 _elm_atspi_proxy_socket_list_get(void)
 {

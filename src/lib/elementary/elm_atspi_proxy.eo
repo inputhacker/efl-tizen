@@ -42,7 +42,6 @@ class Elm.Atspi.Proxy (Efl.Ui.Widget)
    implements {
       Efl.Object.destructor;
       Efl.Access.Object.access_children { get; }
-      Efl.Object.parent { get; }
       Efl.Ui.Widget.atspi;
    }
    events {
