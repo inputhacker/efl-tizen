@@ -7564,12 +7564,6 @@ _efl_ui_widget_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, 
      }
    EINA_LIST_FOREACH(pd->subobjs, l, widget)
      {
-        // TIZEN_ONLY(20160824): Do not append a child, if its accessible parent is different with widget parent
-        if (efl_isa(widget, EFL_ACCESS_OBJECT_MIXIN))
-          {
-             parent = efl_provider_find(efl_parent_get(widget), EFL_ACCESS_OBJECT_MIXIN);
-             if (parent && (parent != obj)) continue;
-          }
         // TIZEN_ONLY(20160705) - enable atspi_proxy to work
         /* This assumes that only one proxy exists in obj */
         if (!proxy)
