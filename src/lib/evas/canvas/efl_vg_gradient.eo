@@ -2,6 +2,7 @@ abstract Efl.VG.Gradient (Efl.VG.Base, Efl.Gfx.Gradient.Base)
 {
    legacy_prefix: evas_vg_gradient;
    implements {
+      Eo.Base.destructor;
       Efl.Gfx.Gradient.Base.stop.set;
       Efl.Gfx.Gradient.Base.stop.get;
       Efl.Gfx.Gradient.Base.spread.set;

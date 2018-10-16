@@ -3,6 +3,8 @@
 
 #include "evas_vg_private.h"
 
+#define MY_CLASS EFL_VG_GRADIENT_CLASS
+
 #include <strings.h>
 
 static void
@@ -108,6 +110,14 @@ _efl_vg_gradient_efl_vg_base_dup(Eo *obj,
    eo_do(obj,
          efl_gfx_gradient_stop_set(fromd->colors, fromd->colors_count),
          efl_gfx_gradient_spread_set(fromd->s));
+}
+
+static void
+_efl_vg_gradient_eo_base_destructor(Eo *obj,
+                                    Efl_VG_Gradient_Data *pd)
+{
+   if (pd->colors) free(pd->colors);
+   eo_do_super(obj, MY_CLASS, eo_destructor());
 }
 
 EAPI void

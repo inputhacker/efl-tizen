@@ -165,6 +165,7 @@ _vg_file_mmap_set(Eo *eo_obj, Evas_VG_Data *pd, const Eina_File *file, const cha
    else
      pd->vg_entry = NULL;
 
+   pd->cache_key = NULL;
    evas_object_change(eo_obj, obj);
    evas_cache_vg_entry_del(old_entry);
 
@@ -301,6 +302,7 @@ evas_object_vg_path_set(Eo *obj, const char *path, int src_vg,
              evas_cache_svg_entry_del(pd->svg);
           }
         pd->svg = entry;
+        pd->cache_key = NULL;
      }
    evas_object_change(obj, eo_data_scope_get(obj, EVAS_OBJECT_CLASS));
 }
@@ -513,6 +515,7 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
          vg_entry = evas_cache_vg_entry_resize(vg_entry, w, h);
          evas_cache_vg_entry_del(pd->vg_entry);
          pd->vg_entry = vg_entry;
+         pd->cache_key = NULL;
      }
    root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
    if (!root) return;
