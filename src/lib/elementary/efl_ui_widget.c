@@ -5949,7 +5949,7 @@ _elm_widget_item_efl_access_object_state_set_get(const Eo *eo_item, Elm_Widget_I
    else
      STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
 
-   if (_elm_object_accessibility_currently_highlighted_get() == (void*)item->view)
+   if (_elm_object_accessibility_currently_highlighted_get() == (void*)item->eo_obj)
      STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
    //
    return states;
