@@ -1222,7 +1222,9 @@ obj_longpress(Evas_Object *obj)
 
    int cbhm_count = 0;
    Evas_Object *ctxparent;
-   Evas_Object *parent, *child;
+   //FIXME(20181019): Set the parent to window since there is an unexpected moving issue
+   // in the complicated layout
+   //Evas_Object *parent, *child;
    const Eina_List *l;
    const Elm_Entry_Context_Menu_Item *it;
    const char *context_menu_orientation;
@@ -1269,6 +1271,9 @@ obj_longpress(Evas_Object *obj)
              ext_mod->popup = NULL;
           }
         ctxparent = elm_widget_top_get(obj);
+        //FIXME(20181019): Set the parent to window since there is an unexpected moving issue
+        // in the complicated layout
+        /*
         parent = elm_widget_parent_get(obj);
         child = obj;
         if (parent)
@@ -1285,6 +1290,7 @@ obj_longpress(Evas_Object *obj)
                   parent = elm_widget_parent_get(parent);
                }
           }
+        */
         ext_mod->ctx_par = ctxparent;
 
         if(ctxparent)
