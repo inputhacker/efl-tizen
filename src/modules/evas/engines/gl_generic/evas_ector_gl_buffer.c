@@ -129,6 +129,16 @@ _evas_ector_gl_buffer_gl_buffer_prepare(Eo *obj, Evas_Ector_GL_Buffer_Data *pd,
    im = evas_gl_common_image_surface_new(gc, w, h, EINA_TRUE, EINA_FALSE);
    if (!im) fail("Failed to create GL surface!");
 
+   /* TIZEN_ONLY(20181019): Clean Evas_Ector_Gl_Buffer */
+   RGBA_Draw_Context *dc_save = gc->dc;
+   gc->dc = evas_common_draw_context_new();
+   evas_common_draw_context_set_color(gc->dc, 0, 0, 0, 0);
+   evas_common_draw_context_set_render_op(gc->dc, _EVAS_RENDER_COPY);
+   evas_gl_common_context_target_surface_set(gc, im);
+   evas_gl_common_rect_draw(gc, 0, 0, w, h);
+   gc->dc = dc_save;
+   /* END */
+
    pd->glim = im;
    return;
 
