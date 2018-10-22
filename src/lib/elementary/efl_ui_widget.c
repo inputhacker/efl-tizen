@@ -1815,6 +1815,9 @@ _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
      }
    sd->subobjs = eina_list_append(sd->subobjs, sobj);
    evas_object_data_set(sobj, "elm-parent", obj);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   efl_access_object_access_parent_set(sobj, obj);
+   //
 
    _callbacks_add(sobj, obj);
    if (_elm_widget_is(sobj))
@@ -1884,6 +1887,9 @@ _efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
    EINA_SAFETY_ON_TRUE_RETURN_VAL(obj == sobj, EINA_FALSE);
 
    sobj_parent = evas_object_data_del(sobj, "elm-parent");
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   efl_access_object_access_parent_set(sobj, NULL);
+   //
    if (sobj_parent && sobj_parent != obj)
      {
         static int abort_on_warn = -1;

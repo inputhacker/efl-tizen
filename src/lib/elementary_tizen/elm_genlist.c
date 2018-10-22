@@ -9276,8 +9276,11 @@ _elm_genlist_item_efl_access_object_access_children_get(const Eo *eo_it EINA_UNU
              part = edje_object_part_swallow_get(VIEW(it), key);
              if (part && efl_isa(part, EFL_ACCESS_OBJECT_MIXIN))
                {
-                  ret = eina_list_append(ret, part);
-                  efl_parent_set(part, eo_it);
+                 ret = eina_list_append(ret, part);
+                 efl_parent_set(part, eo_it);
+                 //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+                 efl_access_object_access_parent_set(part, eo_it);
+                 //
                }
           }
      }
@@ -9454,13 +9457,22 @@ _elm_genlist_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNUSED,
 EOLIAN Eina_List*
 _elm_genlist_efl_access_object_access_children_get(const Eo *obj, Elm_Genlist_Data *sd)
 {
-   Eina_List *ret = NULL, *ret2 = NULL;
+   Eina_List *ret = NULL, *ret2 = NULL, *ret3;
    Elm_Gen_Item *it;
 
    EINA_INLIST_FOREACH(sd->items, it)
-      ret = eina_list_append(ret, EO_OBJ(it));
+   {
+     ret = eina_list_append(ret, EO_OBJ(it));
+     efl_access_object_access_parent_set(EO_OBJ(it), obj);
+   }
 
    ret2 = efl_access_object_access_children_get(efl_super(obj, ELM_GENLIST_CLASS));
+
+   Eo *eo;
+   EINA_LIST_FOREACH(ret2, ret3, eo)
+   {
+     efl_access_object_access_parent_set(eo, obj);
+   }
 
    return eina_list_merge(ret, ret2);
 }

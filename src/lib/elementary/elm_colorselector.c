@@ -2715,6 +2715,11 @@ EOLIAN static Eina_List*
 _elm_colorselector_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, Elm_Colorselector_Data *sd)
 {
    Eina_List *ret = NULL;
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *it;
+   EINA_LIST_FOREACH(sd->items, ret, it)
+     efl_access_object_access_parent_set(it, obj);
+   //
 
    ret = efl_access_object_access_children_get(efl_super(obj, ELM_COLORSELECTOR_CLASS));
    // filter - out box contiainer

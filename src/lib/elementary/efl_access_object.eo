@@ -368,6 +368,18 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
             role: Efl.Access.Role; [[Accessible role]]
          }
       }
+      //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+      @property access_parent {
+         [[Gets object's accessible parent.]]
+         get {
+         }
+         set {
+         }
+         values {
+            parent: Efl.Access.Object; [[Accessible parent]]
+         }
+      }
+      //
       //TIZEN_ONLY(20190922): add name callback, description callback.
       @property description_cb {
          set {
@@ -623,7 +635,6 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
    }
    implements {
       Efl.Object.destructor;
-      Efl.Object.provider_find;
    }
    events {
       property,changed: string; [[Called when property has changed]]

@@ -6831,6 +6831,12 @@ _elm_gengrid_efl_access_object_access_children_get(const Eo *obj, Elm_Gengrid_Da
           ret = eina_list_append(ret, EO_OBJ(it));
      }
 
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *it2;
+   EINA_LIST_FOREACH(ret, ret2, it2)
+     efl_access_object_access_parent_set(it2, obj);
+   //
+
    ret2 = efl_access_object_access_children_get(efl_super(obj, ELM_GENGRID_CLASS));
 
    return eina_list_merge(ret, ret2);
@@ -7086,6 +7092,9 @@ _elm_gengrid_item_efl_access_object_access_children_get(const Eo *eo_it EINA_UNU
              if (part && efl_isa(part, EFL_ACCESS_OBJECT_MIXIN))
                {
                   ret = eina_list_append(ret, part);
+                  //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+                  efl_access_object_access_parent_set(part, eo_it);
+                  //
                   efl_parent_set(part, eo_it);
                }
           }

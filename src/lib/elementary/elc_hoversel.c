@@ -1113,6 +1113,13 @@ _elm_hoversel_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, E
    //TIZEN_ONLY(20161121): Added hover object in children list
    //return eina_list_clone(pd->items);
    Eina_List *ret = NULL;
+
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *it;
+   EINA_LIST_FOREACH(pd->items, ret, it)
+     efl_access_object_access_parent_set(it, obj);
+   //
+
    ret = efl_access_object_access_children_get(efl_super(obj, ELM_HOVERSEL_CLASS));
    ret = eina_list_merge(ret, eina_list_clone(pd->items));
 

@@ -2758,7 +2758,12 @@ _elm_ctxpopup_efl_access_object_access_children_get(const Eo *eo_item EINA_UNUSE
    Elm_Ctxpopup_Item_Data *it;
 
    EINA_LIST_FOREACH(sd->items, l, it)
-      ret = eina_list_append(ret, EO_OBJ(it));
+     {
+       ret = eina_list_append(ret, EO_OBJ(it));
+       //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+       efl_access_object_access_parent_set(EO_OBJ(it), eo_item);
+       //
+     }
 
    return ret;
 }

@@ -2419,6 +2419,10 @@ _elm_naviframe_item_efl_access_object_access_children_get(const Eo *eo_item EINA
 {
    Eina_List *ret = NULL;
 
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   efl_access_object_access_parent_set(VIEW(nit), eo_item);
+   //
+
    ret = eina_list_append(ret, VIEW(nit));
    return ret;
 }

@@ -922,6 +922,12 @@ _efl_ui_view_list_efl_access_object_access_children_get(const Eo *obj, Efl_Ui_Vi
    Eina_List *ret = NULL, *ret2 = NULL;
 
    ret = efl_ui_view_list_relayout_elements_get(pd->relayout);
+
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *it;
+   EINA_LIST_FOREACH(ret, ret2, it)
+     efl_access_object_access_parent_set(it, obj);
+   //
    ret2 = efl_access_object_access_children_get(efl_super(obj, EFL_UI_VIEW_LIST_CLASS));
 
    return eina_list_merge(ret, ret2);

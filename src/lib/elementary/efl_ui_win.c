@@ -6724,6 +6724,11 @@ _efl_ui_win_efl_object_constructor(Eo *obj, Efl_Ui_Win_Data *pd)
    if (!efl_parent_get(obj))
      efl_allow_parent_unref_set(obj, EINA_TRUE);
 
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *root = efl_access_object_access_root_get(EFL_ACCESS_OBJECT_MIXIN);
+   efl_access_object_access_parent_set(obj, root);
+   //
+
    return obj;
 }
 

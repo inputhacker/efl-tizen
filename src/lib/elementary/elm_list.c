@@ -2120,6 +2120,10 @@ _elm_list_item_elm_widget_item_del_pre(Eo *eo_item EINA_UNUSED, Elm_List_Item_Da
    item->deleted = EINA_TRUE;
 
    sd->items = eina_list_remove_list(sd->items, item->node);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   evas_object_data_del(item->node, "elm-parent");
+   efl_access_object_access_parent_set(item->node, NULL);
+   //
    item->node = NULL;
 }
 
@@ -2845,6 +2849,10 @@ _elm_list_item_append(Eo *obj, Elm_List_Data *sd, const char *label, Evas_Object
    it = _item_new(obj, label, icon, end, func, data);
 
    sd->items = eina_list_append(sd->items, EO_OBJ(it));
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   evas_object_data_set(EO_OBJ(it), "elm-parent", obj);
+   efl_access_object_access_parent_set(EO_OBJ(it), obj);
+   //
    it->node = eina_list_last(sd->items);
    elm_box_pack_end(sd->box, VIEW(it));
 
@@ -2862,6 +2870,10 @@ _elm_list_item_prepend(Eo *obj, Elm_List_Data *sd, const char *label, Evas_Objec
    it = _item_new(obj, label, icon, end, func, data);
 
    sd->items = eina_list_prepend(sd->items, EO_OBJ(it));
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   evas_object_data_set(EO_OBJ(it), "elm-parent", obj);
+   efl_access_object_access_parent_set(EO_OBJ(it), obj);
+   //
    it->node = sd->items;
    elm_box_pack_start(sd->box, VIEW(it));
 
@@ -2884,6 +2896,10 @@ _elm_list_item_insert_before(Eo *obj, Elm_List_Data *sd, Elm_Object_Item *eo_bef
 
    it = _item_new(obj, label, icon, end, func, data);
    sd->items = eina_list_prepend_relative_list(sd->items, EO_OBJ(it), before_it->node);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   evas_object_data_set(EO_OBJ(it), "elm-parent", obj);
+   efl_access_object_access_parent_set(EO_OBJ(it), obj);
+   //
    it->node = before_it->node->prev;
    elm_box_pack_before(sd->box, VIEW(it), VIEW(before_it));
 
@@ -2906,6 +2922,10 @@ _elm_list_item_insert_after(Eo *obj, Elm_List_Data *sd, Elm_Object_Item *eo_afte
 
    it = _item_new(obj, label, icon, end, func, data);
    sd->items = eina_list_append_relative_list(sd->items, EO_OBJ(it), after_it->node);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   evas_object_data_set(EO_OBJ(it), "elm-parent", obj);
+   efl_access_object_access_parent_set(EO_OBJ(it), obj);
+   //
    it->node = after_it->node->next;
    elm_box_pack_after(sd->box, VIEW(it), VIEW(after_it));
 
@@ -2924,6 +2944,10 @@ _elm_list_item_sorted_insert(Eo *obj, Elm_List_Data *sd, const char *label, Evas
    it = _item_new(obj, label, icon, end, func, data);
 
    sd->items = eina_list_sorted_insert(sd->items, cmp_func, EO_OBJ(it));
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   evas_object_data_set(EO_OBJ(it), "elm-parent", obj);
+   efl_access_object_access_parent_set(EO_OBJ(it), obj);
+   //
    l = eina_list_data_find_list(sd->items, EO_OBJ(it));
    l = eina_list_next(l);
    if (!l)
@@ -3239,6 +3263,12 @@ EOLIAN Eina_List*
 _elm_list_efl_access_object_access_children_get(const Eo *obj, Elm_List_Data *pd)
 {
    Eina_List *ret;
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *it;
+   EINA_LIST_FOREACH(pd->items, ret, it)
+     efl_access_object_access_parent_set(it, obj);
+   //
+
    ret = efl_access_object_access_children_get(efl_super(obj, ELM_LIST_CLASS));
    return eina_list_merge(eina_list_clone(pd->items), ret);
 }

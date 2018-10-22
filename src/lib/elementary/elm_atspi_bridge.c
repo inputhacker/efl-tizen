@@ -665,6 +665,11 @@ _accessible_get_children(const Eldbus_Service_Interface *iface, const Eldbus_Mes
      {
         _bridge_iter_object_reference_append(bridge, iter_array, children);
         _bridge_object_register(bridge, children);
+        //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+        Eo *parent = efl_access_object_access_parent_get(children);
+        if (parent != obj)
+          ERR("parent mismatch for object %p, should be %p, is %p", children, obj, parent);
+        //
      }
 
    eldbus_message_iter_container_close(iter, iter_array);
@@ -895,6 +900,12 @@ _accessible_child_at_index(const Eldbus_Service_Interface *iface EINA_UNUSED, co
    child = eina_list_nth(children, idx);
    _bridge_iter_object_reference_append(bridge, iter, child);
    _bridge_object_register(bridge, child);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *parent = efl_access_object_access_parent_get(child);
+   if (parent != obj)
+     ERR("parent mismatch for object %p, should be %p, is %p", child, obj, parent);
+   //
+
    eina_list_free(children);
 
    return ret;
@@ -2912,6 +2923,21 @@ _bridge_object_from_path(Eo *bridge, const char *path)
    return ret;
 }
 
+//TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+static Eo *
+_get_accessible_parent(const Eo *eo)
+{
+  if (!eo) return NULL;
+  Eo *parent = efl_access_object_access_parent_get(eo);
+  if (parent) return parent;
+
+  Efl_Access_Role role = efl_access_object_role_get(eo);
+  if (role != EFL_ACCESS_ROLE_APPLICATION)
+    ERR("object %p has no parent, but is not an application!", eo);
+  return NULL;
+}
+//
+
 static const char *
 _path_from_object(const Eo *eo)
 {
@@ -2958,10 +2984,10 @@ _accessible_property_get(const Eldbus_Service_Interface *interface, const char *
      }
    else if (!strcmp(property, "Parent"))
      {
-       ret_obj = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
-       Efl_Access_Role role = EFL_ACCESS_ROLE_INVALID;
-       role = efl_access_object_role_get(obj);
-       if ((!ret_obj) && (EFL_ACCESS_ROLE_APPLICATION == role))
+       //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+       ret_obj = _get_accessible_parent(obj);
+       //
+       if (!ret_obj)
          _object_desktop_reference_append(iter);
        else
          _bridge_iter_object_reference_append(bridge, iter, ret_obj);
@@ -3685,7 +3711,9 @@ _collection_sort_order_reverse_canonical(struct collection_match_rule *rule, Ein
 
   /* Get the current nodes index in it's parent and the parent object. */
   indexinparent = efl_access_object_index_in_parent_get(obj);
-  parent = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
+  //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+  parent = _get_accessible_parent(obj);
+  //
 
   if ((indexinparent > 0) && ((max == 0) || (count < max)))
     {
@@ -3740,8 +3768,9 @@ _collection_inorder(Eo *collection, struct collection_match_rule *rule, Eina_Lis
 
   while ((max == 0 || count < max) && obj && obj != collection)
     {
-       Eo *parent;
-       parent = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
+       //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+       Eo *parent = _get_accessible_parent(obj);
+       //
        idx = efl_access_object_index_in_parent_get(obj);
        count = _collection_sort_order_canonical(rule, list, count, max, parent,
                                      idx + 1, EINA_TRUE, NULL, EINA_TRUE, traverse);
@@ -3819,7 +3848,9 @@ _collection_get_matches_from_handle(Eo *collection, Eo *current, struct collecti
          break;
       case ATSPI_Collection_TREE_RESTRICT_CHILDREN:
          idx = efl_access_object_index_in_parent_get(current);
-         parent = efl_provider_find(efl_parent_get(current), EFL_ACCESS_OBJECT_MIXIN);
+         //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+         parent = _get_accessible_parent(current);
+         //
          _collection_query(rule, sortby, &result, 0, max, parent, idx, EINA_FALSE, NULL, EINA_TRUE, traverse);
          break;
       case ATSPI_Collection_TREE_RESTRICT_SIBLING:
@@ -3880,7 +3911,9 @@ _collection_get_matches_to_handle(Eo *obj, Eo *current, struct collection_match_
    Eo *collection = obj;
 
    if (limit)
-     collection = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
+     //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+     collection = _get_accessible_parent(obj);
+     //
 
    switch (tree)
      {
@@ -4105,10 +4138,11 @@ _cache_item_reference_append_cb(Eo *bridge, Eo *data, Eldbus_Message_Iter *iter_
    /* Marshall application */
    _bridge_iter_object_reference_append(bridge, iter_struct, root);
 
-   Eo *parent = NULL;
-   parent = efl_provider_find(efl_parent_get(data), EFL_ACCESS_OBJECT_MIXIN);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *parent = _get_accessible_parent(data);
+   //
    /* Marshall parent */
-   if ((!parent) && (EFL_ACCESS_ROLE_APPLICATION == role))
+   if (!parent)
      _object_desktop_reference_append(iter_struct);
    else
      _bridge_iter_object_reference_append(bridge, iter_struct, parent);
@@ -4450,13 +4484,16 @@ static unsigned char _accept_object(accessibility_navigation_pointer_table *tabl
 /* The target cannot be a parent of root */
 static Eina_Bool _target_validation_check(Eo *target, Eo *root)
 {
-   Eo *parent;
-   parent = efl_provider_find(efl_parent_get(root), EFL_ACCESS_OBJECT_MIXIN);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *parent = _get_accessible_parent(root);
+   //
 
    while (parent)
      {
         if (parent == target) return EINA_FALSE;
-        parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_OBJECT_MIXIN);
+        //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+        parent = _get_accessible_parent(parent);
+        //
      }
 
    return EINA_TRUE;
@@ -5000,8 +5037,10 @@ unsigned char _object_is_scrollable_impl(struct accessibility_navigation_pointer
 
 void *_get_parent_impl(struct accessibility_navigation_pointer_table *table EINA_UNUSED, void *ptr)
 {
-   Eo *obj = (Eo*)ptr, *ret_obj;
-   ret_obj = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *obj = (Eo*)ptr;
+   Eo *ret_obj = efl_access_object_access_parent_get(obj);
+   //
    return ret_obj;
 }
 

@@ -44,8 +44,13 @@ _elm_atspi_app_object_efl_access_object_access_children_get(const Eo *obj EINA_U
         */
         //TIZEN_ONLY(20171108): make atspi_proxy work
         if (elm_win_type_get(win) != ELM_WIN_SOCKET_IMAGE)
+          {
         //
-          accs = eina_list_append(accs, win);
+            accs = eina_list_append(accs, win);
+            //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+            efl_access_object_access_parent_set(win, obj);
+            //
+          }
      }
 
    return accs;

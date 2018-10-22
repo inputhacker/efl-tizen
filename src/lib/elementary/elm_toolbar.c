@@ -4238,7 +4238,12 @@ _elm_toolbar_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, El
    ret2 = efl_access_object_access_children_get(efl_super(obj, ELM_TOOLBAR_CLASS));
 
    EINA_INLIST_FOREACH(sd->items, it)
-      ret = eina_list_append(ret, EO_OBJ(it));
+     {
+       ret = eina_list_append(ret, EO_OBJ(it));
+       //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+       efl_access_object_access_parent_set(EO_OBJ(it), obj);
+       //
+     }
 
    return eina_list_merge(ret, ret2);
 }

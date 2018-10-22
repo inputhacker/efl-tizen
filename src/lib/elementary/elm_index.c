@@ -1779,6 +1779,12 @@ EOLIAN static Eina_List*
 _elm_index_efl_access_object_access_children_get(const Eo *obj, Elm_Index_Data *data)
 {
    Eina_List *ret;
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   Eo *it;
+   EINA_LIST_FOREACH(data->items, ret, it)
+     efl_access_object_access_parent_set(it, obj);
+   //
+
    ret = efl_access_object_access_children_get(efl_super(obj, ELM_INDEX_CLASS));
    return eina_list_merge(eina_list_clone(data->items), ret);
 }

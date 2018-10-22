@@ -133,9 +133,13 @@ EOLIAN static Eina_List*
 _elm_atspi_ewk_wrapper_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wrapper_Data *_pd)
 {
    if (_pd->proxy)
-     return eina_list_append(NULL, _pd->proxy);
-   else
-     return NULL;
+     {
+       //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+       efl_access_object_access_parent_set(_pd->proxy, obj);
+       //
+       return eina_list_append(NULL, _pd->proxy);
+     }
+   return NULL;
 }
 
 static void
