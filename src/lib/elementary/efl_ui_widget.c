@@ -8324,7 +8324,6 @@ _efl_ui_widget_part_shadow_efl_gfx_filter_filter_state_get(const Eo *obj, void *
 
 /* Widget Shadow End */
 
-
 /* Efl.Part implementation */
 
 EOLIAN static Efl_Object *

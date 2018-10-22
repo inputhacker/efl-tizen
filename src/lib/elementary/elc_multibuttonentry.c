@@ -1996,13 +1996,12 @@ _legacy_manager_changed_cb(void *data EINA_UNUSED, const Efl_Event *ev)
 EOLIAN static Eo *
 _elm_multibuttonentry_efl_object_constructor(Eo *obj, Elm_Multibuttonentry_Data *sd EINA_UNUSED)
 {
+
+   legacy_child_focus_handle(obj);
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
    efl_access_object_role_set(obj, EFL_ACCESS_ROLE_PANEL);
-
-   //listen to manager changes here
-   efl_event_callback_add(obj, EFL_UI_FOCUS_OBJECT_EVENT_MANAGER_CHANGED, _legacy_manager_changed_cb, NULL);
 
    return obj;
 }
