@@ -4863,7 +4863,11 @@ static void *_calculate_neighbor_impl(accessibility_navigation_pointer_table *ta
              }
          }
 
-       void *next_related_in_direction = !force_next ? _get_object_in_relation_flow(table, node, forward) : NULL;
+       //TIZEN_ONLY(20181022): Fix for navigation problems related with relations
+       void *next_related_in_direction = NULL;
+       if (all_children_visited || forward)
+         next_related_in_direction = !force_next ? _get_object_in_relation_flow(table, node, forward) : NULL;
+       //
 
        /* force_next means that the search_mode is NEIGHBOR_SEARCH_MODE_CONTINUE_AFTER_FAILED_RECURSING
           in this case the node is elm_layout which is parent of proxy object.
