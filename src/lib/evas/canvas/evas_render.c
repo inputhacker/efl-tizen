@@ -3289,6 +3289,8 @@ evas_render_updates_internal(Evas *eo_e,
 
    evas_render_pre(eo_e, evas);
 
+   _evas_planes(e);
+
    eina_evlog("+render_calc", eo_e, 0.0, NULL);
    evas_call_smarts_calculate(eo_e);
    eina_evlog("-render_calc", eo_e, 0.0, NULL);
@@ -3468,7 +3470,6 @@ evas_render_updates_internal(Evas *eo_e,
              else
                _evas_object_image_video_overlay_hide(eo_obj);
           }
-        _evas_planes(e);
         eina_evlog("-render_phase7", eo_e, 0.0, NULL);
 
         /* phase 8. go thru each update rect and render objects in it*/
