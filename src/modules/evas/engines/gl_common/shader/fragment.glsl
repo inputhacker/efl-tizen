@@ -253,9 +253,9 @@ vec4 fetch_pixel(float ox, float oy)
 #if defined(SHD_FILTER_CURVE)
    float old_alpha = max(c.a, 0.00001);
    float new_alpha = texture2D(tex_filter, vec2(old_alpha, 0.0)).a;
-   c = vec4(texture2D(tex_filter, vec2(c.r / old_alpha, 0.0)).r * new_alpha,
-            texture2D(tex_filter, vec2(c.g / old_alpha, 0.0)).g * new_alpha,
-            texture2D(tex_filter, vec2(c.b / old_alpha, 0.0)).b * new_alpha,
+   c = vec4(texture2D(tex_filter, vec2(c.r, 0.0)).r,
+            texture2D(tex_filter, vec2(c.g, 0.0)).g,
+            texture2D(tex_filter, vec2(c.b, 0.0)).b,
             new_alpha);
 #endif
 
