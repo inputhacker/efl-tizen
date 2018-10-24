@@ -768,7 +768,7 @@ _elm_popup_elm_layout_sizing_eval(Eo *obj, Elm_Popup_Data *sd)
         /* END */
 
         /* TIZEN_ONLY(20160405): fix popup size problem in landscape mode */
-        str = edje_object_data_get(elm_layout_edje_get(sd->content_area), "content_area_wdith");
+        str = edje_object_data_get(elm_layout_edje_get(sd->content_area), "content_area_width");
         if (str) w_content_area = (int)(atoi(str)
                                     * elm_config_scale_get()
                                     * elm_object_scale_get(obj)
