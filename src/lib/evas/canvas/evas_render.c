@@ -410,7 +410,7 @@ static inline Eina_Bool
 _evas_render_object_changed_get(Evas_Object_Protected_Data *obj)
 {
    if (obj->smart.smart)
-     return evas_object_smart_changed_get(obj->object);
+     return evas_object_smart_changed_get(obj);
    else
      return obj->changed;
 }
@@ -472,7 +472,7 @@ _evas_render_phase1_direct(Evas_Public_Data *e,
              if (obj->proxy->redraw || obj->mask->redraw)
                _evas_render_prev_cur_clip_cache_add(e, obj);
 
-             if (!obj->smart.smart || evas_object_smart_changed_get(eo_obj))
+             if (!obj->smart.smart || evas_object_smart_changed_get(obj))
                {
                   /* proxy sources */
                   if (obj->proxy->proxies || obj->proxy->proxy_textures)
@@ -1932,7 +1932,7 @@ evas_render_mapped(Evas_Public_Data *evas, Evas_Object *eo_obj,
              changed = EINA_TRUE;
           }
 
-        if (!changed) changed = evas_object_smart_changed_get(eo_obj);
+        if (!changed) changed = evas_object_smart_changed_get(obj);
 
         /* mark the old map as invalid, so later we don't reuse it as a
          * cache. */
