@@ -5215,6 +5215,9 @@ _layout_par(Ctxt *c)
    int wrap = -1;
    char *line_breaks = NULL;
    char *word_breaks = NULL;
+   /* TIZEN_ONLY(20181024): remove whitespace before finising line-break by next item */
+   Evas_Object_Textblock_Item *prev_it;
+   /* END */
 
    /* Obstacles logic */
    Eina_Bool handle_obstacles = EINA_FALSE;
@@ -5344,6 +5347,9 @@ _layout_par(Ctxt *c)
 
    Eina_Bool item_preadv = EINA_FALSE;
    Evas_Textblock_Obstacle *obs = NULL;
+   /* TIZEN_ONLY(20181024): remove whitespace before finising line-break by next item */
+   it = NULL;
+   /* END */
    for (i = c->par->logical_items ; i ; )
      {
         Evas_Coord prevdescent = 0, prevascent = 0;
@@ -5354,6 +5360,9 @@ _layout_par(Ctxt *c)
         int redo_item = 0;
         Evas_Textblock_Obstacle_Info *obs_info = NULL;
 
+        /* TIZEN_ONLY(20181024): remove whitespace before finising line-break by next item */
+        prev_it = it;
+        /* END */
         it = _ITEM(eina_list_data_get(i));
 
         /* Skip visually deleted items */
@@ -5710,6 +5719,14 @@ _layout_par(Ctxt *c)
                   else if (wrap == 0)
                     {
                        /* Should wrap before the item */
+                       /* TIZEN_ONLY(20181024): remove whitespace before finising line-break by next item */
+                       if (prev_it && (prev_it->type == EVAS_TEXTBLOCK_ITEM_TEXT))
+                         {
+                            _layout_item_text_split_strip_white(c,
+                                  _ITEM_TEXT(prev_it), eina_list_prev(i),
+                                  _ITEM_TEXT(prev_it)->text_props.text_len);
+                         }
+                       /* END */
 
                        /* We didn't end up using the item, so revert the ascent
                         * and descent changes. */
