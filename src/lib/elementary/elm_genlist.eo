@@ -670,6 +670,7 @@ class Elm.Genlist (Efl.Ui.Layout.Object, Elm.Interface_Scrollable, Efl.Ui.Clicka
       Efl.Gfx.Entity.size { set; }
       Efl.Canvas.Group.group_member_add;
       Efl.Object.provider_find;
+      Efl.Ui.Translatable.translation_update;
       Efl.Ui.Widget.theme_apply;
       Efl.Ui.Widget.widget_sub_object_add;
       Efl.Ui.Widget.widget_sub_object_del;
