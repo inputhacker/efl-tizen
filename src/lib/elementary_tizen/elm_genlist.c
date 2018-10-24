@@ -12,7 +12,6 @@
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
 #define EFL_UI_FOCUS_COMPOSITION_PROTECTED
-#define EFL_UI_TRANSLATABLE_PROTECTED
 
 #include <Elementary.h>
 #include <Elementary_Cursor.h>
@@ -4651,8 +4650,8 @@ _show_region_hook(void *data EINA_UNUSED, Evas_Object *obj, Eina_Rect r)
    elm_interface_scrollable_content_region_show(obj, r.x, r.y, r.w, r.h);
 }
 
-EOLIAN static void
-_elm_genlist_efl_ui_translatable_translation_update(Eo *obj, Elm_Genlist_Data *sd)
+EOLIAN static Eina_Bool
+_elm_genlist_efl_ui_widget_translate(Eo *obj, Elm_Genlist_Data *sd)
 {
    Item_Block *itb;
 
@@ -4681,7 +4680,7 @@ _elm_genlist_efl_ui_translatable_translation_update(Eo *obj, Elm_Genlist_Data *s
    eina_hash_free_buckets(sd->size_caches);
    sd->calc_done = EINA_FALSE;
 
-   efl_ui_translatable_translation_update(efl_super(obj, MY_CLASS));
+   return EINA_TRUE;
 }
 
 EOLIAN static void

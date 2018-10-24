@@ -12,7 +12,6 @@
 #define EFL_ACCESS_WIDGET_ACTION_PROTECTED
 #define ELM_WIDGET_ITEM_PROTECTED
 #define EFL_UI_FOCUS_COMPOSITION_PROTECTED
-#define EFL_UI_TRANSLATABLE_PROTECTED
 
 #include <Elementary.h>
 #include <Elementary_Cursor.h>
@@ -9120,43 +9119,6 @@ EOLIAN static Elm_Object_Item*
 _elm_genlist_efl_ui_widget_focused_item_get(const Eo *obj EINA_UNUSED, Elm_Genlist_Data *sd)
 {
    return sd->focused_item;
-}
-
-EOLIAN static void
-_elm_genlist_efl_ui_translatable_translation_update(Eo *obj, Elm_Genlist_Data *sd)
-{
-   Item_Block *itb;
-
-   // Before calling text_get, inform user first.
-   // FIXME
-   //evas_object_smart_callback_call(obj, SIG_LANG_CHANGED, NULL);
-
-   // FIXME: We should change item's height if lang is changed??
-   EINA_INLIST_FOREACH(sd->blocks, itb)
-     {
-        Eina_List *l;
-        Elm_Gen_Item *it;
-        EINA_LIST_FOREACH(itb->items, l, it)
-          {
-             if (it->realized)
-               {
-                  elm_genlist_item_fields_update(EO_OBJ(it),
-                                                 NULL,
-                                                 ELM_GENLIST_ITEM_FIELD_TEXT |
-                                                 ELM_GENLIST_ITEM_FIELD_CONTENT);
-               }
-             // FIXME
-             //else GL_IT(it)->calc_done = EINA_FALSE;
-          }
-        // FIXME
-        //itb->calc_done = EINA_FALSE;
-     }
-
-   eina_hash_free_buckets(sd->size_caches);
-   // FIXME
-   //sd->calc_done = EINA_FALSE;
-
-   efl_ui_translatable_translation_update(efl_super(obj, MY_CLASS));
 }
 
 EOLIAN static void
