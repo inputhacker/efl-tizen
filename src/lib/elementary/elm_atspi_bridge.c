@@ -2988,9 +2988,14 @@ _accessible_property_get(const Eldbus_Service_Interface *interface, const char *
        ret_obj = _get_accessible_parent(obj);
        //
        if (!ret_obj)
-         _object_desktop_reference_append(iter);
+         {
+            _object_desktop_reference_append(iter);
+         }
        else
-         _bridge_iter_object_reference_append(bridge, iter, ret_obj);
+         {
+            _bridge_object_register(bridge, ret_obj);
+            _bridge_iter_object_reference_append(bridge, iter, ret_obj);
+         }
        return EINA_TRUE;
      }
    else if (!strcmp(property, "ChildCount"))
