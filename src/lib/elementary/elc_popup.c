@@ -195,7 +195,7 @@ _on_show(void *data EINA_UNUSED,
          void *event_info EINA_UNUSED)
 {
    //TIZEN_ONLY(20170919): Handle default label object
-   _elm_win_default_label_obj_append(data);
+   _elm_win_default_label_obj_append(obj);
    //
    elm_object_focus_set(obj, EINA_TRUE);
 }
