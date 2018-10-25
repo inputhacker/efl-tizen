@@ -1694,8 +1694,8 @@ _elm_conformant_efl_object_constructor(Eo *obj, Elm_Conformant_Data *sd)
    Efl_Event event = {};
    sd->win = elm_widget_top_get(obj);
    event.object = sd->win;
-//   _on_indicator_mode_changed(obj, sd->win, NULL, NULL);
-//   _on_rotation_changed(obj, sd->win, NULL, NULL);
+   _on_indicator_mode_changed(obj, &event);
+   _on_rotation_changed(obj, &event);
 
    sd->indmode = elm_win_indicator_mode_get(sd->win);
    sd->ind_o_mode = elm_win_indicator_opacity_get(sd->win);
