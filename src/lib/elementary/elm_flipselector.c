@@ -721,8 +721,8 @@ _atspi_expose_flipselector_top_bottom(Elm_Flipselector_Data *sd, Eina_Bool is_sc
 
    if (is_screen_reader)
      {
-        btn1 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "top_clipper");
-        btn2 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "bottom_clipper");
+        btn1 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "clipper_top");
+        btn2 = (Evas_Object*)edje_object_part_object_get(elm_layout_edje_get(sd->obj), "clipper_bottom");
         if (btn1 && btn2)
           {
              sd->access_top_button = elm_access_object_register(btn1, sd->obj);
