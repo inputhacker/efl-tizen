@@ -3282,12 +3282,18 @@ _gfx_filter_func_get(Render_Engine_GL_Generic *re, Evas_Filter_Command *cmd)
    switch (cmd->mode)
      {
       case EVAS_FILTER_MODE_BLEND: funcptr = gl_filter_blend_func_get(re, cmd); break;
+      /* TIZEN_ONLY(20181029): use SW blur/mask filters function in GL
       case EVAS_FILTER_MODE_BLUR: funcptr = gl_filter_blur_func_get(re, cmd); break;
+       */
+      /* END */
       //case EVAS_FILTER_MODE_BUMP: funcptr = gl_filter_bump_func_get(re, cmd); break;
       case EVAS_FILTER_MODE_CURVE: funcptr = gl_filter_curve_func_get(re, cmd); break;
       case EVAS_FILTER_MODE_DISPLACE: funcptr = gl_filter_displace_func_get(re, cmd); break;
       case EVAS_FILTER_MODE_FILL: funcptr = gl_filter_fill_func_get(re, cmd); break;
+      /* TIZEN_ONLY(20181029): use SW blur/mask filters function in GL
       case EVAS_FILTER_MODE_MASK: funcptr = gl_filter_mask_func_get(re, cmd); break;
+       */
+      /* END */
       //case EVAS_FILTER_MODE_TRANSFORM: funcptr = gl_filter_transform_func_get(re, cmd); break;
       default: return NULL;
      }
