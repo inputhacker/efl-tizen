@@ -2923,8 +2923,6 @@ _banded_item_highlight_anim(void *data, double pos)
      {
         if (pos < 1.0)
           frame = ecore_animator_pos_map_n(pos, ECORE_POS_MAP_CUBIC_BEZIER, 4, v);
-        else if (pos == 1)
-          it->item->banded_anim = NULL;
 
         if (it->highlighted)
           frame = HIGHLIGHT_ALPHA_MAX + (1.0 - HIGHLIGHT_ALPHA_MAX) * (1.0 - frame);
@@ -2937,6 +2935,8 @@ _banded_item_highlight_anim(void *data, double pos)
         color = (color * alpha) / 255;
         evas_object_color_set(GL_IT(it)->banded_bg, color, color, color, alpha);
      }
+
+   if (EINA_DBL_EQ(pos, 1)) it->item->banded_anim = NULL;
 
    return EINA_TRUE;
 }
