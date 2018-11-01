@@ -1567,20 +1567,19 @@ static Eina_Bool _elm_spinner_smart_focus_next_enable = EINA_FALSE;
 
 //TIZEN_ONLY(20180607): Restore legacy focus
 EOLIAN static Eina_Bool
-_elm_spinner_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Spinner_Data *_pd EINA_UNUSED)
+_elm_spinner_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Spinner_Data *pd)
 {
-   ELM_SPINNER_DATA_GET(obj, sd);
-
-   return _elm_spinner_smart_focus_next_enable | sd->button_layout;
+   return _elm_spinner_smart_focus_next_enable |
+          evas_object_visible_get(pd->dec_button) |
+          evas_object_visible_get(pd->inc_button);
 }
 
 EOLIAN static Eina_Bool
-_elm_spinner_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_Spinner_Data *_pd EINA_UNUSED)
+_elm_spinner_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_Spinner_Data *pd)
 {
-   ELM_SPINNER_DATA_GET(obj, sd);
-
-   if (sd->button_layout) return EINA_TRUE;
-   return EINA_FALSE;
+   return _elm_spinner_smart_focus_next_enable |
+          evas_object_visible_get(pd->dec_button) |
+          evas_object_visible_get(pd->inc_button);
 }
 
 EOLIAN static Eina_Bool
