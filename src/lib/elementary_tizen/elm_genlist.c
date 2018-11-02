@@ -847,6 +847,7 @@ _item_content_realize(Elm_Gen_Item *it,
                   goto out;
                }
              elm_widget_sub_object_add(WIDGET(it), content);
+             efl_access_object_access_parent_set(content, EO_OBJ(it));
           }
         *contents = eina_list_append(*contents, content);
 
@@ -1040,7 +1041,6 @@ _item_unrealize(Elm_Gen_Item *it,
    if (!calc)
      {
         efl_event_callback_legacy_call(WIDGET(it), ELM_GENLIST_EVENT_UNREALIZED, EO_OBJ(it));
-        _elm_access_widget_item_unregister(it->base);
         elm_object_item_access_order_unset(EO_OBJ(it));
         //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
         if (_elm_atspi_enabled())
@@ -1742,21 +1742,6 @@ _access_on_highlight_cb(void *data)
 
 
 static void
-_access_widget_item_register(Elm_Gen_Item *it)
-{
-   Elm_Access_Info *ai;
-
-   _elm_access_widget_item_register(it->base);
-
-   ai = _elm_access_info_get(it->base->access_obj);
-
-   _elm_access_callback_set(ai, ELM_ACCESS_INFO, _access_info_cb, it);
-   _elm_access_callback_set(ai, ELM_ACCESS_STATE, _access_state_cb, it);
-   _elm_access_on_highlight_hook_set(ai, _access_on_highlight_cb, it);
-   _elm_access_activate_callback_set(ai, _access_activate_cb, EO_OBJ(it));
-}
-
-static void
 _item_mouse_callbacks_add(Elm_Gen_Item *it,
                           Evas_Object *view)
 {
@@ -1947,7 +1932,6 @@ _item_realize(Elm_Gen_Item *it,
 
         // Register accessibility before realized callback
         // because user can customize accessibility.
-        _access_widget_item_register(it);
         efl_event_callback_legacy_call(WIDGET(it), ELM_GENLIST_EVENT_REALIZED, EO_OBJ(it));
 
      }
@@ -6654,37 +6638,10 @@ _elm_genlist_efl_canvas_group_group_member_add(Eo *obj, Elm_Genlist_Data *sd, Ev
      evas_object_raise(sd->hit_rect);
 }
 
-static void
-_access_obj_process(Elm_Genlist_Data *sd, Eina_Bool is_access)
-{
-   Item_Block *itb;
-   Eina_Bool done = EINA_FALSE;
-
-   EINA_INLIST_FOREACH(sd->blocks, itb)
-     {
-        if (itb->realized)
-          {
-             Eina_List *l;
-             Elm_Gen_Item *it;
-
-             done = EINA_TRUE;
-             EINA_LIST_FOREACH(itb->items, l, it)
-               {
-                  if (!it->realized || it->hide) continue;
-                  if (is_access) _access_widget_item_register(it);
-                  else
-                    _elm_access_widget_item_unregister(it->base);
-               }
-          }
-        else if (done) break;
-     }
-}
-
 EOLIAN static void
 _elm_genlist_efl_ui_widget_on_access_update(Eo *obj EINA_UNUSED, Elm_Genlist_Data *sd, Eina_Bool acs)
 {
    _elm_genlist_smart_focus_next_enable = acs;
-   _access_obj_process(sd, _elm_genlist_smart_focus_next_enable);
 }
 
 //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
@@ -7250,6 +7207,7 @@ _elm_genlist_item_efl_object_constructor(Eo *eo_it, Elm_Gen_Item *it)
 {
    eo_it = efl_constructor(efl_super(eo_it, ELM_GENLIST_ITEM_CLASS));
 
+   efl_access_object_access_parent_set(eo_it, efl_parent_get(eo_it));
    it->base = efl_data_scope_get(eo_it, ELM_WIDGET_ITEM_CLASS);
    efl_access_object_role_set(eo_it, EFL_ACCESS_ROLE_LIST_ITEM);
 
@@ -8936,7 +8894,6 @@ _elm_genlist_decorate_mode_set(Eo *obj, Elm_Genlist_Data *sd, Eina_Bool decorate
           {
              _decorate_all_item_realize(it, EINA_TRUE);
           }
-        _access_widget_item_register(it);
      }
    _changed(sd->pan_obj);
 }
@@ -9085,7 +9042,6 @@ _elm_genlist_item_flip_set(Eo *eo_it EINA_UNUSED, Elm_Gen_Item *it, Eina_Bool fl
         // FIXME: update texts should be done by app?
         _item_text_realize(it, VIEW(it), NULL);
      }
-   _access_widget_item_register(it);
 }
 
 EOLIAN static Eina_Bool
@@ -9462,8 +9418,8 @@ _elm_genlist_efl_access_object_access_children_get(const Eo *obj, Elm_Genlist_Da
 
    EINA_INLIST_FOREACH(sd->items, it)
    {
-     ret = eina_list_append(ret, EO_OBJ(it));
-     efl_access_object_access_parent_set(EO_OBJ(it), obj);
+     if (efl_access_object_access_parent_get(EO_OBJ(it)) == obj)
+       ret = eina_list_append(ret, EO_OBJ(it));
    }
 
    ret2 = efl_access_object_access_children_get(efl_super(obj, ELM_GENLIST_CLASS));
@@ -9471,10 +9427,11 @@ _elm_genlist_efl_access_object_access_children_get(const Eo *obj, Elm_Genlist_Da
    Eo *eo;
    EINA_LIST_FOREACH(ret2, ret3, eo)
    {
-     efl_access_object_access_parent_set(eo, obj);
+     if (efl_access_object_access_parent_get(eo) == obj)
+       ret = eina_list_append(ret, eo);
    }
 
-   return eina_list_merge(ret, ret2);
+  return ret;
 }
 
 EOLIAN Efl_Access_State_Set
