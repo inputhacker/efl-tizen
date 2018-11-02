@@ -1262,7 +1262,15 @@ evas_gl_common_texture_upload(Evas_GL_Texture *tex, RGBA_Image *im, unsigned int
      GL_TH(glPixelStorei, GL_UNPACK_ROW_LENGTH, 0);
    GL_TH(glPixelStorei, GL_UNPACK_ALIGNMENT, bytes_count);
 
-   if ((tex->gc->shared->info.tune.atlas.max_memcpy_size > (int)im->cache_entry.w) &&
+
+   if((tex->x == 0) && (tex->y ==0))
+     {
+        _tex_sub_2d(tex->gc, tex->x, tex->y,
+                    im->cache_entry.w, im->cache_entry.h,
+                    fmt, tex->pt->dataformat,
+                    im->image.data);
+     }
+   else if ((tex->gc->shared->info.tune.atlas.max_memcpy_size > (int)im->cache_entry.w) &&
            (tex->gc->shared->info.tune.atlas.max_memcpy_size > (int)im->cache_entry.h))
      {
         int sw, sh, dw, dh;
