@@ -1123,6 +1123,7 @@ _item_content_realize(Elm_Gen_Item *it,
                  edje_object_signal_emit(target, buf, "elm");
                  goto out;
               }
+              efl_access_object_access_parent_set(content, EO_OBJ(it));
           }
         eina_hash_add(sd->content_item_map, &content, it->base->eo_obj);
         *contents = eina_list_append(*contents, content);
@@ -4958,6 +4959,7 @@ _elm_gengrid_item_efl_object_constructor(Eo *eo_it, Elm_Gen_Item *it)
    eo_it = efl_constructor(efl_super(eo_it, ELM_GENGRID_ITEM_CLASS));
    it->base = efl_data_scope_get(eo_it, ELM_WIDGET_ITEM_CLASS);
    efl_access_object_role_set(eo_it, EFL_ACCESS_ROLE_LIST_ITEM);
+   efl_access_object_access_parent_set(eo_it, efl_parent_get(eo_it));
 
    return eo_it;
 }
@@ -6818,28 +6820,36 @@ static int _sort_items(const void *data1, const void *data2)
 EOLIAN Eina_List*
 _elm_gengrid_efl_access_object_access_children_get(const Eo *obj, Elm_Gengrid_Data *sd)
 {
-   Eina_List *ret = NULL, *ret2 = NULL;
+   Eina_List *ret = NULL, *ret2 = NULL, *tmp;
    Elm_Gen_Item *it;
+   Eo *eo;
 
    //TIZEN_ONLY (20160914) : Accessibility: sort children list according to their x,y position
    if (sd->horizontal)
-     ret =  eina_list_clone(sd->atspi_children);
+     {
+       EINA_LIST_FOREACH(sd->atspi_children, tmp, eo)
+         {
+           if (efl_access_object_access_parent_get(eo) == obj)
+             ret = eina_list_append(ret, eo);
+         }
+     }
    //
    else
      {
-        EINA_INLIST_FOREACH(sd->items, it)
-          ret = eina_list_append(ret, EO_OBJ(it));
+       EINA_INLIST_FOREACH(sd->items, it)
+         {
+           if (efl_access_object_access_parent_get(EO_OBJ(it)) == obj)
+             ret = eina_list_append(ret, EO_OBJ(it));
+         }
+     }
+   ret2 = efl_access_object_access_children_get(efl_super(obj, ELM_GENGRID_CLASS));
+   EINA_LIST_FOREACH(ret2, tmp, eo)
+     {
+       if (efl_access_object_access_parent_get(eo) == obj)
+         ret = eina_list_append(ret, eo);
      }
 
-   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
-   Eo *it2;
-   EINA_LIST_FOREACH(ret, ret2, it2)
-     efl_access_object_access_parent_set(it2, obj);
-   //
-
-   ret2 = efl_access_object_access_children_get(efl_super(obj, ELM_GENGRID_CLASS));
-
-   return eina_list_merge(ret, ret2);
+   return ret;
 }
 
 EOLIAN Efl_Access_State_Set
