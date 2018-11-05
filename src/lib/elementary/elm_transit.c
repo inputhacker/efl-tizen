@@ -342,6 +342,9 @@ _transit_animate_cb(void *data)
    elapsed_time = (transit->time.current - transit->time.begin - transit->time.delayed)
       - (2 * transit->total_revert_time);
    duration = transit->time.duration;
+   if (elapsed_time > duration)
+     elapsed_time = duration;
+
    transit->progress = elapsed_time / duration;
 
    if (transit->revert_mode && transit->revert_begin_progress == 0)
@@ -413,8 +416,11 @@ _transit_animate_cb(void *data)
    /* Reverse? */
    if (transit->repeat.reverse) transit->progress = 1 - transit->progress;
 
-   if (!_transit_animate_op(transit, transit->progress))
-     return ECORE_CALLBACK_CANCEL;
+   if (duration > 0)
+     {
+        if (!_transit_animate_op(transit, transit->progress))
+          return ECORE_CALLBACK_CANCEL;
+     }
 
    if (transit->revert_mode && (transit->progress <= 0 || transit->progress >= 1))
      {
