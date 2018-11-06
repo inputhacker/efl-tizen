@@ -285,6 +285,7 @@ struct _Ecore_Drm_Evdev
              int x;
              int y;
           } coords[EVDEV_MAX_SLOTS];
+        unsigned int pressed;
      } touch;
 };
 

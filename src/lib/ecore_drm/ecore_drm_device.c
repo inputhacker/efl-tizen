@@ -1166,3 +1166,26 @@ ecore_drm_device_mouse_accel_speed_set(Ecore_Drm_Device *dev, double speed)
 
    return ret;
 }
+
+EAPI Eina_Bool
+ecore_drm_device_touch_pressed_get(Ecore_Drm_Device *dev)
+{
+   Ecore_Drm_Seat *seat = NULL;
+   Ecore_Drm_Evdev *edev = NULL;
+   Eina_List *l = NULL, *l2 = NULL;
+   unsigned int pressed = 0x0;
+
+   EINA_SAFETY_ON_NULL_RETURN_VAL(dev, EINA_FALSE);
+
+   EINA_LIST_FOREACH(dev->seats, l, seat)
+     {
+        EINA_LIST_FOREACH(ecore_drm_seat_evdev_list_get(seat), l2, edev)
+          {
+             if (edev->seat_caps & EVDEV_SEAT_TOUCH);
+               pressed |= ecore_drm_evdev_touch_pressed_get(edev);
+          }
+     }
+
+   return pressed;
+}
+
