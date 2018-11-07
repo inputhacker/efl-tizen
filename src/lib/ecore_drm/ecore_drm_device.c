@@ -1181,7 +1181,7 @@ ecore_drm_device_touch_pressed_get(Ecore_Drm_Device *dev)
      {
         EINA_LIST_FOREACH(ecore_drm_seat_evdev_list_get(seat), l2, edev)
           {
-             if (edev->seat_caps & EVDEV_SEAT_TOUCH);
+             if (edev->seat_caps & EVDEV_SEAT_TOUCH)
                pressed |= ecore_drm_evdev_touch_pressed_get(edev);
           }
      }
