@@ -140,7 +140,6 @@ evas_object_vg_animated_frame_set(Evas_Object *obj, int frame_index)
    if (pd->frame_index == frame_index) return EINA_TRUE;
 
    //Image is changed, drop previous cached image.
-   pd->cache_key = NULL;
    pd->frame_index = frame_index;
    evas_object_change(obj, eo_data_scope_get(obj, EVAS_OBJECT_CLASS));
 
@@ -165,7 +164,6 @@ _vg_file_mmap_set(Eo *eo_obj, Evas_VG_Data *pd, const Eina_File *file, const cha
    else
      pd->vg_entry = NULL;
 
-   pd->cache_key = NULL;
    evas_object_change(eo_obj, obj);
    evas_cache_vg_entry_del(old_entry);
 
@@ -302,7 +300,6 @@ evas_object_vg_path_set(Eo *obj, const char *path, int src_vg,
              evas_cache_svg_entry_del(pd->svg);
           }
         pd->svg = entry;
-        pd->cache_key = NULL;
      }
    evas_object_change(obj, eo_data_scope_get(obj, EVAS_OBJECT_CLASS));
 }
@@ -418,13 +415,12 @@ _evas_vg_render(Evas_Object_Protected_Data *obj, Evas_VG_Data *vd,
      }
 }
 
-// renders a vg_tree to an offscreen buffer
-// and push it to the cache.
+//renders a vg_tree to an offscreen buffer and push it to the cache.
 static void *
 _render_to_buffer(Evas_Object_Protected_Data *obj, Evas_VG_Data *pd,
                   void *output, void *surface EINA_UNUSED,
                   Efl_VG *root, int w, int h, void *key,
-                  void *buffer, Eina_Bool do_async)
+                  void *buffer, Eina_Bool do_async, Eina_Bool cacheable)
 {
    Ector_Surface *ector;
    RGBA_Draw_Context *context;
@@ -434,27 +430,27 @@ _render_to_buffer(Evas_Object_Protected_Data *obj, Evas_VG_Data *pd,
    ector = evas_ector_get(obj->layer->evas);
    if (!ector) return NULL;
 
+   //create a buffer
    if (!buffer)
      {
-        // 2. create a buffer
         buffer = obj->layer->evas->engine.func->ector_surface_create(output,
                                                                      NULL,
                                                                      w, h,
                                                                      EINA_TRUE, &error);
-        if (error) return NULL; // surface creation error
+        if (error) return NULL;
         buffer_created = EINA_TRUE;
      }
 
-   //1. render pre
    _evas_vg_render_pre(root, ector, NULL);
 
-   //3. draw into the buffer
+   //initialize buffer
    context = evas_common_draw_context_new();
    evas_common_draw_context_set_render_op(context, _EVAS_RENDER_COPY);
    evas_common_draw_context_set_color(context, 255, 255, 255, 255);
    obj->layer->evas->engine.func->ector_begin(output, context, ector, buffer, EINA_TRUE,
                                               0, 0, w, h,
                                               do_async);
+   //draw on buffer
    _evas_vg_render(obj, pd,
                    output, context, buffer,
                    root, NULL,
@@ -467,11 +463,9 @@ _render_to_buffer(Evas_Object_Protected_Data *obj, Evas_VG_Data *pd,
 
    evas_common_draw_context_free(context);
 
-   if (buffer_created)
-     {
-        pd->cache_key = key;
-        obj->layer->evas->engine.func->ector_surface_cache_set(output, key, buffer);
-     }
+   //caching buffer only for first and last frames.
+   if (buffer_created && cacheable)
+     obj->layer->evas->engine.func->ector_surface_cache_set(output, key, buffer);
 
    return buffer;
 }
@@ -481,7 +475,7 @@ _render_buffer_to_screen(Evas_Object_Protected_Data *obj,
                          void *output, void *context, void *surface,
                          void *buffer,
                          int x, int y, int w, int h,
-                         Eina_Bool do_async)
+                         Eina_Bool do_async, Eina_Bool cacheable)
 {
    Eina_Bool async_unref;
 
@@ -496,49 +490,45 @@ _render_buffer_to_screen(Evas_Object_Protected_Data *obj,
         evas_cache_image_ref((Image_Entry *)buffer);
         evas_unref_queue_image_put(obj->layer->evas, buffer);
      }
+
+   //TODO: Reuse buffer if size is same?
+   if (!cacheable)
+     obj->layer->evas->engine.func->ector_surface_destroy(output, buffer);
 }
 
 static void
 _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
                        Evas_VG_Data *pd,
                        void *output, void *context, void *surface,
-                       int x, int y, int w, int h, Eina_Bool do_async)
+                       int x, int y, int w, int h, Eina_Bool do_async,
+                       Eina_Bool cacheable)
 {
    Vg_Cache_Entry *vg_entry = pd->vg_entry;
    Efl_VG *root;
-   void *buffer;
 
    // if the size changed in between path set and the draw call;
+
    if ((vg_entry->w != w) ||
        (vg_entry->h != h))
      {
          vg_entry = evas_cache_vg_entry_resize(vg_entry, w, h);
          evas_cache_vg_entry_del(pd->vg_entry);
          pd->vg_entry = vg_entry;
-         pd->cache_key = NULL;
      }
    root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
    if (!root) return;
-   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, pd->cache_key);
 
-   // if the buffer is not created yet
+   void *buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, root);
+
    if (!buffer)
-     {
-        // render to the buffer
-        buffer = _render_to_buffer(obj, pd,
-                                   output, surface,
-                                   root,
-                                   w, h,
-                                   root,
-                                   buffer,
-                                   do_async);
-     }
+     buffer = _render_to_buffer(obj, pd, output, surface, root, w, h, root, NULL,
+                                do_async, cacheable);
 
    _render_buffer_to_screen(obj,
                             output, context, surface,
                             buffer,
                             x, y, w, h,
-                            do_async);
+                            do_async, cacheable);
 }
 
 static void
@@ -549,7 +539,6 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
 {
    Svg_Entry *svg = vd->svg;
    Efl_VG *root, *dupe_root;
-   void *buffer;
    Ector_Surface *ector;
    RGBA_Draw_Context *ct;
    Eina_Bool async_unref;
@@ -565,10 +554,11 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
                                    svg->key_frame, obj->cur->geometry.w, obj->cur->geometry.h);
          vd->svg = svg;
      }
+
    // if the buffer is not created yet
    root = evas_cache_svg_vg_tree_get(svg);
    if (!root) return;
-   buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, vd->cache_key);
+   void *buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, root);
    if (!buffer)
      {
         // manual render the vg tree
@@ -621,10 +611,7 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
      }
 
    if (created)
-     {
-        vd->cache_key = root;
-        obj->layer->evas->engine.func->ector_surface_cache_set(output, root, buffer);
-     }
+     obj->layer->evas->engine.func->ector_surface_cache_set(output, root, buffer);
 }
 
 static void
@@ -663,12 +650,19 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
    obj->layer->evas->engine.func->context_render_op_set(output, context,
                                                         obj->cur->render_op);
 
+   //Cache surface?
+   Eina_Bool cacheable = EINA_FALSE;
+
+   if (vd->frame_index == 0 ||
+       (vd->frame_index == (int) evas_cache_vg_anim_frame_count_get(vd->vg_entry) - 1))
+     cacheable = EINA_TRUE;
+
    if (vd->vg_entry)
      {
         _cache_vg_entry_render(obj, vd,
                                output, context, surface,
                                obj->cur->geometry.x + x, obj->cur->geometry.y + y,
-                               obj->cur->geometry.w, obj->cur->geometry.h, do_async);
+                               obj->cur->geometry.w, obj->cur->geometry.h, do_async, cacheable);
         return;
      }
 

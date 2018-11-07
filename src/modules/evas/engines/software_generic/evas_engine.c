@@ -3988,6 +3988,13 @@ _draw_thread_ector_surface_set(void *data)
    eina_mempool_free(_mp_command_ector_surface, ector_surface);
 }
 
+static void
+eng_ector_surface_destroy(void *engine, void *surface)
+{
+   if (!surface) return;
+   eng_image_free(engine, surface);
+}
+
 static void *
 eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_Bool force, int *error)
 {
@@ -4372,6 +4379,7 @@ static Evas_Func func =
      eng_ector_renderer_draw,
      eng_ector_end,
      eng_ector_surface_create,
+     eng_ector_surface_destroy,
      eng_ector_surface_cache_set,
      eng_ector_surface_cache_get,
    /* FUTURE software generic calls go here */

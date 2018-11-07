@@ -46,7 +46,6 @@ static void
 _evas_cache_vg_data_free_cb(void *data)
 {
    Vg_File_Data *vfd = data;
-   eo_unref(vfd->root);
    vfd->loader->file_close(vfd);
 }
 
@@ -72,8 +71,114 @@ _evas_cache_vg_entry_free_cb(void *data)
 
    eina_stringshare_del(vg_entry->key);
    free(vg_entry->hash_key);
-   eo_unref(vg_entry->root);
+   eo_unref(vg_entry->root[0]);
+   eo_unref(vg_entry->root[1]);
+   eo_unref(vg_entry->root[2]);
    free(vg_entry);
+}
+
+static Efl_VG*
+_cached_root_get(Vg_Cache_Entry *vg_entry, unsigned int frame_num)
+{
+   Vg_File_Data *vfd = vg_entry->vfd;
+
+   //Case 1: Animatable
+   if (vfd->anim_data)
+     {
+        //Start frame
+        if (vg_entry->root[1] && frame_num == 0)
+          {
+             return vg_entry->root[1];
+          }
+        else if (vg_entry->root[2] && (frame_num == (vfd->anim_data->frame_cnt - 1)))
+          {
+             return vg_entry->root[2];
+          }
+     }
+   //Case 2: Static
+   else
+     {
+        if (vg_entry->root[0])
+          return vg_entry->root[0];
+     }
+
+   return NULL;
+}
+
+static void
+_caching_root_update(Vg_Cache_Entry *vg_entry)
+{
+   Vg_File_Data *vfd = vg_entry->vfd;
+
+   /* Optimization: static viewbox may have same root data regardless of size.
+      So we can't use the root data directly, but copy it for each vg_entries.
+      In the meantime, non-static viewbox root data may have difference instance for each
+      size. So it's affordable to share the root data for each vg_entries. */
+   if (vfd->static_viewbox)
+     {
+        /* TODO: Yet trivial but still we may have a better solution to
+           avoid this unnecessary copy. If the ector surface key is not
+           to this root pointer. */
+        vg_entry->root[0] = evas_vg_container_add(NULL);
+        evas_vg_node_dup(vg_entry->root[0], vfd->root);
+     }
+   else if (vg_entry->root[0] != vfd->root)
+     {
+        if (vg_entry->root[0]) eo_unref(vg_entry->root[0]);
+        vg_entry->root[0] = eo_ref(vfd->root);
+     }
+
+   //Animatable?
+   if (!vfd->anim_data) return;
+
+   //Start frame
+   if (vfd->anim_data->frame_num == 0)
+     {
+        if (vg_entry->root[1] != vfd->root)
+          {
+             if (vg_entry->root[1]) eo_unref(vg_entry->root[1]);
+             vg_entry->root[1] = eo_ref(vfd->root);
+          }
+     }
+   //End frame
+   else if (vfd->anim_data->frame_num == (vfd->anim_data->frame_cnt - 1))
+     {
+        if (vg_entry->root[2] != vfd->root)
+          {
+             if (vg_entry->root[2]) eo_unref(vg_entry->root[2]);
+             vg_entry->root[2] = eo_ref(vfd->root);
+          }
+     }
+}
+
+static void
+_local_transform(Efl_VG *root, double w, double h, Vg_File_Data *vfd)
+{
+   double sx = 0, sy= 0, scale;
+   Eina_Matrix3 m;
+
+   if (!vfd->static_viewbox) return;
+   if (vfd->view_box.w == w && vfd->view_box.h == h) return;
+
+   sx = w / vfd->view_box.w;
+   sy = h / vfd->view_box.h;
+
+   scale = sx < sy ? sx : sy;
+   eina_matrix3_identity(&m);
+
+   // align hcenter and vcenter
+   if (vfd->preserve_aspect)
+     {
+        eina_matrix3_translate(&m, (w - vfd->view_box.w * scale)/2.0, (h - vfd->view_box.h * scale)/2.0);
+        eina_matrix3_scale(&m, scale, scale);
+        eina_matrix3_translate(&m, -vfd->view_box.x, -vfd->view_box.y);
+     }
+   else
+     {
+        eina_matrix3_scale(&m, sx, sy);
+        eina_matrix3_translate(&m, -vfd->view_box.x, -vfd->view_box.y);
+     }
+   evas_vg_node_transformation_set(root, &m);
 }
 
 void
@@ -106,33 +211,6 @@ evas_cache_vg_shutdown(void)
    eina_hash_free(vg_cache->vg_entry_hash);
    free(vg_cache);
    vg_cache = NULL;
-}
-
-static void
-_apply_transformation(Efl_VG *root, double w, double h, Vg_File_Data *vg_data)
-{
-   double sx = 0, sy= 0, scale;
-   Eina_Matrix3 m;
-
-   if (vg_data->view_box.w)
-     sx = w/vg_data->view_box.w;
-   if (vg_data->view_box.h)
-     sy = h/vg_data->view_box.h;
-   scale = sx < sy ? sx: sy;
-   eina_matrix3_identity(&m);
-   // allign hcenter and vcenter
-   if (vg_data->preserve_aspect)
-     {
-        eina_matrix3_translate(&m, (w - vg_data->view_box.w * scale)/2.0, (h - vg_data->view_box.h * scale)/2.0);
-        eina_matrix3_scale(&m, scale, scale);
-        eina_matrix3_translate(&m, -vg_data->view_box.x, -vg_data->view_box.y);
-     }
-   else
-     {
-        eina_matrix3_scale(&m, sx, sy);
-        eina_matrix3_translate(&m, -vg_data->view_box.x, -vg_data->view_box.y);
-     }
-   evas_vg_node_transformation_set(root, &m);
 }
 
 Vg_File_Data *
@@ -218,8 +296,10 @@ evas_cache_vg_anim_duration_get(const Vg_Cache_Entry* vg_entry)
 unsigned int
 evas_cache_vg_anim_frame_count_get(const Vg_Cache_Entry* vg_entry)
 {
-   if (!vg_entry->vfd->anim_data) return 0;
-   return vg_entry->vfd->anim_data->frame_cnt;
+   if (!vg_entry) return 0;
+   Vg_File_Data *vfd = vg_entry->vfd;
+   if (!vfd || !vfd->anim_data) return 0;
+   return vfd->anim_data->frame_cnt;
 }
 
 Efl_VG*
@@ -231,17 +311,8 @@ evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry, unsigned int frame_num)
    Vg_File_Data *vfd = vg_entry->vfd;
    if (!vfd) return NULL;
 
-   //Hit Caching?
-   if (vg_entry->root)
-     {
-        if (!vfd->anim_data || (frame_num == vfd->anim_data->frame_num))
-          {
-             if (vfd->static_viewbox ||
-                 ((vfd->view_box.w == vg_entry->w) &&
-                  (vfd->view_box.h == vg_entry->h)))
-                 return vg_entry->root;
-          }
-     }
+   Efl_VG *root = _cached_root_get(vg_entry, frame_num);
+   if (root) return root;
 
    if (!vfd->static_viewbox)
      {
@@ -253,13 +324,11 @@ evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry, unsigned int frame_num)
 
    if (!vfd->loader->file_data(vfd)) return NULL;
 
-   if (vg_entry->root) eo_del(vg_entry->root);
-   vg_entry->root = evas_vg_container_add(NULL);
-   evas_vg_node_dup(vg_entry->root, vfd->root);
+   _caching_root_update(vg_entry);
 
-   _apply_transformation(vg_entry->root, vg_entry->w, vg_entry->h, vfd);
+   _local_transform(vg_entry->root[0], vg_entry->w, vg_entry->h, vfd);
 
-   return vg_entry->root;
+   return vg_entry->root[0];
 }
 
 void

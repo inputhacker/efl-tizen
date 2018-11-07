@@ -25,7 +25,7 @@ typedef struct _Vg_Cache_Entry
    Eina_Stringshare     *key;
    int                   w;
    int                   h;
-   Efl_VG               *root;
+   Efl_VG               *root[3];     //0: default, 1: start frame, 2: end frame
    int                   ref;
    Vg_File_Data         *vfd;
 
@@ -49,7 +49,6 @@ struct _Evas_VG_Data
    int                        frame_index;
    Eina_File                 *file;
    Eina_Stringshare          *key;
-   void                      *cache_key; // store ector surface cache key
 
    int magic;               //private data for safety.
 };

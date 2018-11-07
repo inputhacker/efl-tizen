@@ -2871,6 +2871,13 @@ eng_ector_surface_create(void *data, void *surface, int width, int height, Eina_
 }
 
 static void
+eng_ector_surface_destroy(void *engine, void *surface)
+{
+   if (!surface) return;
+   eng_image_free(engine, surface);
+}
+
+static void
 eng_ector_surface_cache_set(void *data EINA_UNUSED, void *key, void *surface)
 {
    evas_gl_common_surface_cache_set(key, surface);
@@ -3036,6 +3043,7 @@ module_open(Evas_Module *em)
    ORD(ector_renderer_draw);
    ORD(ector_end);
    ORD(ector_surface_create);
+   ORD(ector_surface_destroy);
    ORD(ector_surface_cache_set);
    ORD(ector_surface_cache_get);
 
