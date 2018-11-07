@@ -1113,7 +1113,7 @@ EAPI void ecore_drm_device_rotation_set(Ecore_Drm_Device *dev, unsigned int rota
 EAPI Eina_Bool ecore_drm_device_touch_rotation_set(Ecore_Drm_Device *dev, unsigned int rotation);
 EAPI Eina_Bool ecore_drm_device_touch_transformation_set(Ecore_Drm_Device *dev, int offset_x, int offset_y, int w, int h);
 EAPI Eina_Bool ecore_drm_device_mouse_accel_speed_set(Ecore_Drm_Device *dev, double speed);
-EAPI Eina_Bool ecore_drm_device_touch_pressed_get(Ecore_Drm_Device *dev);
+EAPI unsigned int ecore_drm_device_touch_pressed_get(Ecore_Drm_Device *dev);
 
 
 # ifdef __cplusplus

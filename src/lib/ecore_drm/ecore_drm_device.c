@@ -1167,7 +1167,7 @@ ecore_drm_device_mouse_accel_speed_set(Ecore_Drm_Device *dev, double speed)
    return ret;
 }
 
-EAPI Eina_Bool
+EAPI unsigned int
 ecore_drm_device_touch_pressed_get(Ecore_Drm_Device *dev)
 {
    Ecore_Drm_Seat *seat = NULL;
