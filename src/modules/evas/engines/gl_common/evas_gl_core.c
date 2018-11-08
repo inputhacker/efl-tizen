@@ -1014,7 +1014,7 @@ _surface_cap_cache_save(Evas_GL_Context_Version version)
    int tmpfd = -1;
    char cap_dir_path[PATH_MAX];
    char cap_file_path[PATH_MAX];
-   char tmp_file_name[PATH_MAX];
+   char tmp_file_name[PATH_MAX + PATH_MAX + 128];
    Eina_Tmpstr *tmp_file_path = NULL;
 
    /* use eet */
