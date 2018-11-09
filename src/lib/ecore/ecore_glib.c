@@ -201,6 +201,8 @@ _ecore_glib_select__locked(GMainContext   *ctx,
     */
    if (ret > 0)
      _ecore_main_fdh_mark_active(rfds, wfds, efds);
+   else
+     _ecore_main_fdh_mark_active(NULL, NULL, NULL);
 
    /* Once exit from select(), _ecore_main_awake_handler_call() should be called here
     * to call wl_display_cancel_read() or wl_display_read_events().

@@ -614,8 +614,25 @@ _ecore_main_fdh_mark_active(fd_set *rfds, fd_set *wfds, fd_set *exfds)
    Eo *obj = ML_OBJ;
    Efl_Loop_Data *pd = ML_DAT;
 
-#ifdef HAVE_EPOLL
+   if (!rfds && !wfds && !exfds)	//That mean by return value of select is 0
+     {
+        EINA_INLIST_FOREACH(pd->fd_handlers, fdh)
+          {
+             if (!fdh->delete_me)
+               {
+                  if (fdh->read_active || fdh->write_active || fdh->error_active)
+                    ERR("Invalid mark active(fd:%d, read:%d, write:%d, err:%d) ", fdh->fd, fdh->read_active, fdh->write_active, fdh->error_active);
 
+                  fdh->read_active = EINA_FALSE;
+                  fdh->write_active = EINA_FALSE;
+                  fdh->error_active = EINA_FALSE;
+               }
+          }
+
+        return 0;
+     }
+
+#ifdef HAVE_EPOLL
    if (HAVE_EPOLL && pd->epoll_fd >= 0)
      ret = _ecore_main_fdh_epoll_mark_active(obj, pd);
    else
