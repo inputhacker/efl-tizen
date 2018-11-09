@@ -120,7 +120,7 @@ _ecore_evas_wl_common_rotate_update(Ecore_Evas *ee)
    wdata = ee->engine.data;
 
    if (ecore_wl_window_ignore_output_transform_get(wdata->win))
-     rotation = 0;
+     return EINA_FALSE;
    else
      {
         Ecore_Wl_Output *output = ecore_wl_window_output_find(wdata->win);
