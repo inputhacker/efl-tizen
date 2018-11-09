@@ -315,7 +315,6 @@ elm_drag_start(Evas_Object *obj, Elm_Sel_Format format, const char *data,
                Elm_Drag_State drag_done_cb, void *drag_done_data)
 {
    if (!obj) return EINA_FALSE;
-   if (!data) return EINA_FALSE;
    Eo *sel_man = _efl_ui_selection_manager_get(obj);
    int seatid = 1;
    Eina_Slice sl;
