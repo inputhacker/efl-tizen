@@ -511,7 +511,7 @@ _generate_shape_data(Ector_Renderer_Software_Shape_Data *pd)
    return EINA_TRUE;
 }
 
-static void 
+static void
 _update_rle(Eo *obj, Ector_Renderer_Software_Shape_Data *pd)
 {
    const Efl_Gfx_Path_Command *cmds = NULL;
@@ -538,7 +538,8 @@ _update_rle(Eo *obj, Ector_Renderer_Software_Shape_Data *pd)
                                                   (pd->public_shape->stroke.width *
                                                    pd->public_shape->stroke.scale),
                                                    pd->public_shape->stroke.cap,
-                                                   pd->public_shape->stroke.join);
+                                                   pd->public_shape->stroke.join,
+                                                   pd->base->m);
 
              if (pd->public_shape->stroke.dash)
                {
