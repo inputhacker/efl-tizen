@@ -509,8 +509,10 @@ _shm_tzsurf_flusher_cb_flush(void *data, struct tizen_surface_shm_flusher *flush
 {
    Tbmbuf_Surface *surf = data;
 
-   if (surf->tbm_queue)
+   if (surf && surf->tbm_queue)
      sym_tbm_surface_queue_flush(surf->tbm_queue);
+   else
+     WRN("No surf or surf->tbm_queue :  the surface has already been destroyed.");
 }
 
 static void
@@ -518,8 +520,10 @@ _shm_tzsurf_flusher_cb_free_flush(void *data, struct tizen_surface_shm_flusher *
 {
    Tbmbuf_Surface *surf = data;
 
-   if (surf->tbm_queue)
+   if (surf && surf->tbm_queue)
      sym_tbm_surface_queue_free_flush(surf->tbm_queue);
+   else
+     WRN("No surf or surf->tbm_queue :  the surface has already been destroyed.");
 }
 
 static const struct tizen_surface_shm_flusher_listener _tzsurf_flusher_listener =
@@ -642,6 +646,10 @@ _evas_tbmbuf_surface_destroy(Surface *s)
                sym_tbm_surface_queue_destroy(surf->tbm_queue);
                if (s->info) s->info->info.tbm_queue = NULL;
             }
+         else
+           {
+              wl_proxy_set_user_data((struct wl_proxy *) surf->tzsurf_flusher, NULL);
+           }
          if (tbm_queue_ref)
             --tbm_queue_ref;
          free(surf);
@@ -714,6 +722,7 @@ _evas_tbmbuf_surface_create(Surface *s, int w, int h, int num_buff)
 
          /* reuse tzsurf_flusher */
          surf->tzsurf_flusher = s->info->info.tzsurf_flusher;
+         wl_proxy_set_user_data((struct wl_proxy *) surf->tzsurf_flusher, surf);
 
          tbm_queue_ref++;
       }
