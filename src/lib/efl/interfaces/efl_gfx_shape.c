@@ -1716,9 +1716,6 @@ _efl_gfx_shape_fill_rule_set(Eo *obj EINA_UNUSED,
                              Efl_Gfx_Fill_Rule fill_rule)
 {
    pd->fill_rule = fill_rule;
-   eo_do(obj,
-         eo_event_callback_call(EFL_GFX_PATH_CHANGED, NULL),
-         eo_event_callback_call(EFL_GFX_CHANGED, NULL));
 }
 
 static Efl_Gfx_Fill_Rule

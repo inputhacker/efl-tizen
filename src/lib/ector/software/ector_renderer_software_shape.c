@@ -518,11 +518,19 @@ _update_rle(Eo *obj, Ector_Renderer_Software_Shape_Data *pd)
    const double *pts = NULL;
    Eina_Bool close_path;
    Outline *outline, *dash_outline;
+   Efl_Gfx_Fill_Rule fill_rule;
 
+   eo_do(obj, fill_rule = efl_gfx_shape_fill_rule_get());
    eo_do(obj, efl_gfx_shape_path_get(&cmds, &pts));
    if (cmds && (_generate_stroke_data(pd) || _generate_shape_data(pd)))
      {
         outline = _outline_create();
+
+        if (fill_rule == EFL_GFX_FILL_RULE_ODD_EVEN)
+          outline->ft_outline.flags = SW_FT_OUTLINE_EVEN_ODD_FILL;
+        else
+          outline->ft_outline.flags = SW_FT_OUTLINE_NONE;
+
         close_path = _generate_outline(cmds, pts, outline);
         _outline_transform(outline, pd->base->m);
 
