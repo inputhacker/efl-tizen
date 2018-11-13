@@ -7233,6 +7233,11 @@ _elm_gengrid_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Gengrid_Data 
      }
 }
 //
+EOLIAN static Efl_Ui_Focus_Object*
+_elm_gengrid_item_efl_ui_focus_object_focus_parent_get(const Eo *obj EINA_UNUSED, Elm_Gen_Item *pd)
+{
+   return pd->base->widget;
+}
 
 /* Standard widget overrides */
 

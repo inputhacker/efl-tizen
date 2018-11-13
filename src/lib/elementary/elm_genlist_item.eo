@@ -541,5 +541,6 @@ class Elm.Genlist.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Legacy)
            Efl.Access.Component.highlight_grab;
            Efl.Access.Component.highlight_clear;
            //
+           Efl.Ui.Focus.Object.focus_parent { get; }
       }
 }

@@ -239,5 +239,6 @@ class Elm.Gengrid.Item(Elm.Widget.Item.Static_Focus, Efl.Ui.Focus.Object, Efl.Ui
            //TIZEN_ONLY(20171122) Fixed _accessible_set_parent for gengrid items
            Efl.Access.Object.access_children { get; }
            //
+           Efl.Ui.Focus.Object.focus_parent { get; }
       }
 }
