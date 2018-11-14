@@ -5685,7 +5685,7 @@ _layout_item_obstacle_get(Ctxt *c, Evas_Object_Textblock_Item *it);
 static int
 _layout_par(Ctxt *c)
 {
-   Evas_Object_Textblock_Item *it;
+   Evas_Object_Textblock_Item *it, *prev_it;
    Eina_List *i;
    int ret = 0;
    int wrap = -1;
@@ -5815,6 +5815,7 @@ _layout_par(Ctxt *c)
    Eina_Bool item_preadv = EINA_FALSE;
    Evas_Textblock_Obstacle *obs = NULL;
    c->par->last_fw = 0;
+   it = NULL;
    for (i = c->par->logical_items ; i ; )
      {
         Evas_Coord prevdescent = 0, prevascent = 0;
@@ -5826,6 +5827,7 @@ _layout_par(Ctxt *c)
         Evas_Coord needed_w = 0;
         /* END */
 
+        prev_it = it;
         it = _ITEM(eina_list_data_get(i));
         /* Skip visually deleted items */
         if (it->visually_deleted ||
@@ -6194,6 +6196,12 @@ _layout_par(Ctxt *c)
                   else if (wrap == 0)
                     {
                        /* Should wrap before the item */
+                       if (prev_it && (prev_it->type == EVAS_TEXTBLOCK_ITEM_TEXT))
+                         {
+                            _layout_item_text_split_strip_white(c,
+                                  _ITEM_TEXT(prev_it), eina_list_prev(i),
+                                  _ITEM_TEXT(prev_it)->text_props.text_len);
+                         }
 
                        /* We didn't end up using the item, so revert the ascent
                         * and descent changes. */
