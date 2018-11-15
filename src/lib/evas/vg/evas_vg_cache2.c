@@ -346,3 +346,18 @@ evas_cache_vg_entry_del(Vg_Cache_Entry *vg_entry)
    if (!eina_hash_del(vg_cache->vg_entry_hash, vg_entry->hash_key, vg_entry))
      ERR("Failed to delete vg_entry = (%p) from hash", vg_entry);
 }
+
+void
+evas_cache_vg_entry_default_size_get(const Vg_Cache_Entry *vg_entry, int *w, int *h)
+{
+   if (!vg_entry)
+     {
+        if (w) *w = 0;
+        if (h) *h = 0;
+        return;
+     }
+   if (w) *w = vg_entry->vfd->w;
+   if (h) *h = vg_entry->vfd->h;
+}
+
+

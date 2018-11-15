@@ -7,6 +7,8 @@
 
 #include "ector_private.h"
 
+#define MY_CLASS ECTOR_RENDERER_GENERIC_SHAPE_MIXIN
+
 static void
 _ector_renderer_generic_shape_fill_set(Eo *obj EINA_UNUSED,
                                        Ector_Renderer_Generic_Shape_Data *pd,
@@ -51,5 +53,17 @@ _ector_renderer_generic_shape_stroke_marker_get(Eo *obj EINA_UNUSED,
 {
    return pd->stroke.marker;
 }
+
+static void
+_ector_renderer_generic_shape_eo_base_destructor(Eo *obj,
+                                                 Ector_Renderer_Generic_Shape_Data *pd)
+{
+   if (pd->fill) eo_unref(pd->fill);
+   if (pd->stroke.fill) eo_unref(pd->stroke.fill);
+   if (pd->stroke.marker) eo_unref(pd->stroke.marker);
+
+   eo_do_super(obj, MY_CLASS, eo_destructor());
+}
+
 
 #include "ector_renderer_generic_shape.eo.c"

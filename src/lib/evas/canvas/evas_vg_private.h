@@ -61,6 +61,7 @@ Vg_Cache_Entry*             evas_cache_vg_entry_create(const Eina_File *file, co
 Efl_VG*                     evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry, unsigned int frame_num);
 double                      evas_cache_vg_anim_duration_get(const Vg_Cache_Entry *vg_entry);
 unsigned int                evas_cache_vg_anim_frame_count_get(const Vg_Cache_Entry *vg_entry);
+void                        evas_cache_vg_entry_default_size_get(const Vg_Cache_Entry *vg_entry, int *w, int *h);
 
 struct _Efl_VG_Base_Data
 {

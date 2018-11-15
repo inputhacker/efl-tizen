@@ -22,6 +22,16 @@ class Evas.VG (Evas.Object, Efl.Gfx.Fill, Efl.Gfx.View)
             container: Efl_VG *; [[Root node of the VG canvas.]]
          }
       }
+      @property default_size {
+         get {
+            [[Get the default vector size that specified from vector resource.
+              @since 1.22]]
+         }
+         values {
+            x: int;
+            y: int;
+         }
+      }
    }
    implements {
       Eo.Base.constructor;

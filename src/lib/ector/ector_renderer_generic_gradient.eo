@@ -1,4 +1,4 @@
-mixin Ector.Renderer.Generic.Gradient (Efl.Gfx.Gradient.Base)
+mixin Ector.Renderer.Generic.Gradient (Efl.Gfx.Gradient.Base, Eo.Base)
 {
    eo_prefix: ector_renderer_gradient;
    legacy_prefix: null;
@@ -7,5 +7,6 @@ mixin Ector.Renderer.Generic.Gradient (Efl.Gfx.Gradient.Base)
       Efl.Gfx.Gradient.Base.stop.get;
       Efl.Gfx.Gradient.Base.spread.set;
       Efl.Gfx.Gradient.Base.spread.get;
+      Eo.Base.destructor;
    }
 }

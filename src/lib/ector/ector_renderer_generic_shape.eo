@@ -1,4 +1,4 @@
-mixin Ector.Renderer.Generic.Shape (Efl.Gfx.Shape)
+mixin Ector.Renderer.Generic.Shape (Efl.Gfx.Shape, Eo.Base)
 {
    eo_prefix: ector_renderer_shape;
    legacy_prefix: null;
@@ -30,5 +30,8 @@ mixin Ector.Renderer.Generic.Shape (Efl.Gfx.Shape)
 	    r: const(Ector_Renderer) *;
 	 }
       }
+   }
+   implements {
+      Eo.Base.destructor;
    }
 }

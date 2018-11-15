@@ -949,4 +949,14 @@ _evas_vg_efl_gfx_fill_fill_get(Eo *obj EINA_UNUSED, Evas_VG_Data *pd,
    if (h) *h = pd->fill.h;
 }
 
+void
+_evas_vg_default_size_get(Eo *obj EINA_UNUSED,
+                          Evas_VG_Data *pd,
+                          int *x,
+                          int *y)
+{
+   evas_cache_vg_entry_default_size_get(pd->vg_entry, x, y);
+}
+
+
 #include "evas_vg.eo.c"

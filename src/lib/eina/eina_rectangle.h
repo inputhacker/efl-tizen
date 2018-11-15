@@ -55,6 +55,12 @@ typedef struct _Eina_Rectangle
    int h; /**< height of rectangle */
 } Eina_Rectangle;
 
+/** @brief A 2D size in pixel coordinates */
+typedef struct _Eina_Size2D
+{
+   int w, h;
+} Eina_Size2D;
+
 /**
  * @typedef Eina_Rectangle_Pool
  * Type for an opaque pool of rectangle.

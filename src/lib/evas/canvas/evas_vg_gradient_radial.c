@@ -102,8 +102,7 @@ _efl_vg_gradient_radial_render_pre(Eo *obj,
          efl_gfx_gradient_spread_set(gd->s),
          efl_gfx_gradient_radial_center_set(pd->center.x, pd->center.y),
          efl_gfx_gradient_radial_focal_set(pd->focal.x, pd->focal.y),
-         efl_gfx_gradient_radial_radius_set(pd->radius),
-         ector_renderer_prepare());
+         efl_gfx_gradient_radial_radius_set(pd->radius));
 }
 
 static Eo *

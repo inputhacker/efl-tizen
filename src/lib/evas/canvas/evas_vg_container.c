@@ -18,7 +18,7 @@ _efl_vg_container_render_pre(Eo *obj EINA_UNUSED,
    Efl_VG_Base_Data *child_nd;
    Efl_Gfx_Change_Flag flag;
 
-   if (nd->flags == EFL_GFX_CHANGE_FLAG_NONE) return ;
+   if (nd->flags == EFL_GFX_CHANGE_FLAG_NONE) return;
 
    flag = nd->flags;
    nd->flags = EFL_GFX_CHANGE_FLAG_NONE;
@@ -27,6 +27,10 @@ _efl_vg_container_render_pre(Eo *obj EINA_UNUSED,
 
    EINA_LIST_FOREACH(pd->children, l, child)
      {
+        //Skip Gradients. they will be updated by Shape.
+        if (eo_isa(child, EFL_VG_GRADIENT_CLASS))
+          continue;
+
         if (flag & EFL_GFX_CHANGE_FLAG_MATRIX)
           {
              child_nd = eo_data_scope_get(child, EFL_VG_BASE_CLASS);

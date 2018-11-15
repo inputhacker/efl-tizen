@@ -85,8 +85,7 @@ _efl_vg_gradient_linear_render_pre(Eo *obj,
          efl_gfx_gradient_stop_set(gd->colors, gd->colors_count),
          efl_gfx_gradient_spread_set(gd->s),
          efl_gfx_gradient_linear_start_set(pd->start.x, pd->start.y),
-         efl_gfx_gradient_linear_end_set(pd->end.x, pd->end.y),
-         ector_renderer_prepare());
+         efl_gfx_gradient_linear_end_set(pd->end.x, pd->end.y));
 }
 
 static Eo *

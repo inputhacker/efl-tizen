@@ -7,6 +7,8 @@
 
 #include "ector_private.h"
 
+#define MY_CLASS ECTOR_RENDERER_GENERIC_GRADIENT_MIXIN
+
 static void
 _ector_renderer_generic_gradient_efl_gfx_gradient_base_stop_set(Eo *obj EINA_UNUSED,
                                                                 Ector_Renderer_Generic_Gradient_Data *pd,
@@ -49,5 +51,11 @@ _ector_renderer_generic_gradient_efl_gfx_gradient_base_spread_get(Eo *obj EINA_U
    return pd->s;
 }
 
-
+static void
+_ector_renderer_generic_gradient_eo_base_destructor(Eo *obj,
+                                                    Ector_Renderer_Generic_Gradient_Data *pd)
+{
+   if (pd->colors) free(pd->colors);
+   eo_do_super(obj, MY_CLASS, eo_destructor());
+}
 #include "ector_renderer_generic_gradient.eo.c"
