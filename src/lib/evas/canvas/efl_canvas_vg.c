@@ -120,11 +120,21 @@ _efl_canvas_vg_root_node_get(const Eo *obj, Efl_Canvas_Vg_Data *pd)
    Efl_VG *root;
 
    if (pd->vg_entry)
-     root = evas_cache_vg_tree_get(pd->vg_entry, pd->frame_index);
-   else if (pd->user_entry)
-     root = pd->user_entry->root;
-   else
-     root = pd->root;
+     {
+        Evas_Coord w, h;
+        evas_object_geometry_get(obj, NULL, NULL, &w, &h);
+
+        //Update vg data with current size.
+        if ((pd->vg_entry->w != w) || (pd->vg_entry->h != h))
+          {
+             Vg_Cache_Entry *vg_entry = evas_cache_vg_entry_resize(pd->vg_entry, w, h);
+             evas_cache_vg_entry_del(pd->vg_entry);
+             pd->vg_entry = vg_entry;
+          }
+        root = evas_cache_vg_tree_get(pd->vg_entry, pd->frame_index);
+     }
+   else if (pd->user_entry) root = pd->user_entry->root;
+   else root = pd->root;
 
    return root;
 }
