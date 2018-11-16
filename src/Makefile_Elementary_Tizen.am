@@ -155,10 +155,10 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_box_layout.c \
 	lib/elementary/efl_ui_box_private.h \
 	lib/elementary/efl_ui_popup.c \
-	lib/elementary/efl_ui_popup_alert.c \
-	lib/elementary/efl_ui_popup_alert_scroll.c \
-	lib/elementary/efl_ui_popup_alert_text.c \
-	lib/elementary/efl_ui_popup_anchor.c \
+	lib/elementary/efl_ui_alert_popup.c \
+	lib/elementary/efl_ui_scroll_alert_popup.c \
+	lib/elementary/efl_ui_text_alert_popup.c \
+	lib/elementary/efl_ui_anchor_popup.c \
 	lib/elementary/efl_ui_table.c \
 	lib/elementary/efl_ui_table_static.c \
 	lib/elementary/efl_ui_table_private.h \
