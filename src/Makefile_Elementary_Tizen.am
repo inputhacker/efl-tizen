@@ -90,7 +90,7 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/elm_interface_scrollable.c \
 	lib/elementary/elm_inwin.c \
 	lib/elementary/elm_label.c \
-	lib/elementary/efl_ui_layout_object.c \
+	lib/elementary/efl_ui_layout.c \
 	lib/elementary/efl_ui_layout_pack.c \
 	lib/elementary/elm_list.c \
 	lib/elementary/elm_main.c \

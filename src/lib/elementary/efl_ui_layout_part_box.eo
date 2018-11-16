@@ -1,8 +1,8 @@
 /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
-class Efl.Ui.Layout.Part.Box (Efl.Object, Efl.Pack_Linear,
+class Efl.Ui.Layout_Part_Box (Efl.Object, Efl.Pack_Linear,
                               Efl.Ui.Direction)
  */
-class Efl.Ui.Layout.Part.Box (Efl.Ui.Layout.Part, Efl.Pack_Linear,
+class Efl.Ui.Layout_Part_Box (Efl.Ui.Layout_Part, Efl.Pack_Linear,
                               Efl.Ui.Direction)
 /* END */
 {

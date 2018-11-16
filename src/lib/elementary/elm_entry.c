@@ -1410,7 +1410,7 @@ _elm_entry_efl_ui_widget_theme_apply(Eo *obj, Elm_Entry_Data *sd)
     * END *
     *******/
 
-   efl_event_callback_legacy_call(obj, EFL_UI_LAYOUT_OBJECT_EVENT_THEME_CHANGED, NULL);
+   efl_event_callback_legacy_call(obj, EFL_UI_LAYOUT_EVENT_THEME_CHANGED, NULL);
 
    evas_object_unref(obj);
 

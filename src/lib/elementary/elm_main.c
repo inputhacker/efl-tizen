@@ -1499,7 +1499,7 @@ elm_object_domain_translatable_part_text_set(Evas_Object *obj, const char *part,
      {
         if (!part)
           part = efl_ui_widget_default_text_part_get(obj);
-        else if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
+        else if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
            _elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE);
 
         elm_widget_part_translatable_text_set(obj, part, text, domain);
@@ -1521,7 +1521,7 @@ elm_object_translatable_part_text_get(const Evas_Object *obj, const char *part)
      {
         if (!part)
           part = efl_ui_widget_default_text_part_get(obj);
-        else if (efl_isa(obj, EFL_UI_LAYOUT_OBJECT_CLASS))
+        else if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
            _elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE);
 
         return elm_widget_part_translatable_text_get(obj, part, NULL);
@@ -2092,7 +2092,7 @@ elm_object_accessibility_highlight_set(void *obj, Eina_Bool visible)
           _accessibility_currently_highlighted_obj = obj;
      }
 
-   if (efl_isa(target, EFL_UI_LAYOUT_OBJECT_CLASS) && elm_widget_access_highlight_in_theme_get(target))
+   if (efl_isa(target, EFL_UI_LAYOUT_CLASS) && elm_widget_access_highlight_in_theme_get(target))
      {
        if (visible)
          {

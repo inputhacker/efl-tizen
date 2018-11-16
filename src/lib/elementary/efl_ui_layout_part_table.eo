@@ -1,7 +1,7 @@
 /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
-class Efl.Ui.Layout.Part.Table (Efl.Object, Efl.Pack_Table)
+class Efl.Ui.Layout_Part_Table (Efl.Object, Efl.Pack_Table)
  */
-class Efl.Ui.Layout.Part.Table (Efl.Ui.Layout.Part, Efl.Pack_Table)
+class Efl.Ui.Layout_Part_Table (Efl.Ui.Layout_Part, Efl.Pack_Table)
 /* END */
 {
    [[Represents a Table created as part of a layout.

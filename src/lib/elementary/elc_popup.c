@@ -616,7 +616,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
         for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
           {
              snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-             if (efl_ui_layout_object_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
                break;
           }
         if (i == STYLE_PRIORITY_COUNT)
@@ -630,7 +630,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
    for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
      {
         snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-        if (efl_ui_layout_object_theme_set(sd->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_SUCCESS)
+        if (efl_ui_layout_theme_set(sd->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_SUCCESS)
           break;
      }
    if (i == STYLE_PRIORITY_COUNT)
@@ -996,7 +996,7 @@ _button_remove(Evas_Object *obj,
         for (i = 0 ; i < STYLE_PRIORITY_COUNT; i++)
           {
              snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-             if (efl_ui_layout_object_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
                break;
           }
         if (i == STYLE_PRIORITY_COUNT)
@@ -1739,7 +1739,7 @@ _action_button_set(Evas_Object *obj,
    for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
      {
         snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-        if (efl_ui_layout_object_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+        if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
           break;
      }
    if (i == STYLE_PRIORITY_COUNT)
@@ -2225,7 +2225,7 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
    for (i = 0 ; i < STYLE_PRIORITY_COUNT; i++)
      {
         snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-        if (efl_ui_layout_object_theme_set(priv->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_SUCCESS)
+        if (efl_ui_layout_theme_set(priv->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_SUCCESS)
           break;
      }
    if (i == STYLE_PRIORITY_COUNT)

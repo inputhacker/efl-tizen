@@ -4770,7 +4770,7 @@ _deputy_is(Eo *obj)
         Elm_Access_Info *info;
 
         info = _elm_access_info_get(obj);
-        if (info && efl_isa(info->part_object, EFL_UI_LAYOUT_OBJECT_CLASS))
+        if (info && efl_isa(info->part_object, EFL_UI_LAYOUT_CLASS))
           {
              Eina_List *attrs, *l;
              Efl_Access_Attribute *attr;

@@ -738,4 +738,4 @@ EAPI double elm_layout_valign_get(Evas_Object *obj, const char *part);
  * END *
  *******/
 
-#include "efl_ui_layout_object.eo.legacy.h"
+#include "efl_ui_layout.eo.legacy.h"
