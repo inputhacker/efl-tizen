@@ -195,4 +195,4 @@ EAPI void elm_bg_precreated_object_set(Evas_Object *obj);
 EAPI Evas_Object *elm_bg_precreated_object_get(void);
 //
 
-#include "efl_ui_bg_widget.eo.legacy.h"
+#include "efl_ui_bg.eo.legacy.h"

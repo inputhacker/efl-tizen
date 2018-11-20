@@ -103,7 +103,7 @@ _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_U
  * "." to "_" among the class name. */
 static const char *legacy_type_table[][2] =
 {
-     { "Efl.Ui.Bg_Widget_Legacy", "Elm_Bg" },
+     { "Efl.Ui.Bg_Legacy", "Elm_Bg" },
      { "Efl.Ui.Button_Legacy", "Elm_Button" },
      { "Efl.Ui.Check_Legacy", "Elm_Check" },
      { "Efl.Ui.Clock_Legacy", "Elm_Datetime" },
@@ -170,7 +170,7 @@ static const char *legacy_type_table[][2] =
      { "Elm.Web.None", "Elm_Web" },
      { "Elm.Multibuttonentry", "Elm_Multibuttonentry" },
      /* TIZEN_ONLY(20180423): add additional class names for legacy API calls */
-     { "Efl.Ui.Bg_Widget", "Elm_Bg" },
+     { "Efl.Ui.Bg", "Elm_Bg" },
      { "Efl.Ui.Button", "Elm_Button" },
      { "Efl.Ui.Check", "Elm_Check" },
      { "Efl.Ui.Clock", "Elm_Datetime" },
@@ -8324,6 +8324,7 @@ _efl_ui_widget_part_shadow_efl_gfx_filter_filter_state_get(const Eo *obj, void *
 
 /* Widget Shadow End */
 
+
 /* Efl.Part implementation */
 
 EOLIAN static Efl_Object *
@@ -8358,7 +8359,7 @@ _efl_ui_widget_bg_get(const Efl_Ui_Widget *obj)
 
    if (!bg_obj)
      {
-        bg_obj = efl_add(EFL_UI_BG_WIDGET_CLASS, obj);
+        bg_obj = efl_add(EFL_UI_BG_CLASS, obj);
         EINA_SAFETY_ON_NULL_RETURN_VAL(bg_obj, NULL);
         sd->bg = bg_obj;
         efl_canvas_group_member_add(obj, sd->bg);

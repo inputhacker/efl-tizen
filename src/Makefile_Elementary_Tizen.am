@@ -30,7 +30,6 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/elm_atspi_proxy.c \
 	lib/elementary/efl_ui_legacy.c \
 	lib/elementary/efl_ui_bg.c \
-	lib/elementary/efl_ui_bg_widget.c \
 	lib/elementary/elm_box.c \
 	lib/elementary/elm_bubble.c \
 	lib/elementary/efl_ui_button.c \
