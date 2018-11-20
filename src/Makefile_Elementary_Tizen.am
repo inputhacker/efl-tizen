@@ -186,6 +186,9 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_list_default_item.c \
 	lib/elementary/efl_ui_list_empty_item.c \
 	lib/elementary/efl_ui_list.c \
+	lib/elementary/efl_ui_grid_item.c \
+	lib/elementary/efl_ui_grid_default_item.c \
+	lib/elementary/efl_ui_grid.c \
    lib/elementary/efl_ui_list_view.c \
    lib/elementary/efl_ui_list_view_precise_layouter.c \
    lib/elementary/efl_ui_list_view_seg_array.c \
