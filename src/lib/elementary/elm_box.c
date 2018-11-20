@@ -124,15 +124,15 @@ _elm_box_efl_ui_widget_focus_direction(Eo *obj EINA_UNUSED, Elm_Box_Data *_pd EI
             (obj, base, items, list_data_get, degree, direction, direction_item, weight);
 }
 //
-EOLIAN static Efl_Ui_Theme_Apply
+EOLIAN static Efl_Ui_Theme_Apply_Result
 _elm_box_efl_ui_widget_theme_apply(Eo *obj, Elm_Box_Data *sd EINA_UNUSED)
 {
-   Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
+   Efl_Ui_Theme_Apply_Result int_ret = EFL_UI_THEME_APPLY_RESULT_FAIL;
 
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
-   if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
+   if (!int_ret) return EFL_UI_THEME_APPLY_RESULT_FAIL;
 
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_FAILED);
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_RESULT_FAIL);
    evas_object_smart_calculate(wd->resize_obj);
 
    return int_ret;

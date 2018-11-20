@@ -88,7 +88,7 @@ static void _show_finished_cb(void *data, const Efl_Event *event);
 static void _hide_effect_finished_cb(void *data, const Efl_Event *event);
 
 /* TIZEN_ONLY(20161109): add internal style set function */
-static Efl_Ui_Theme_Apply _notify_style_set(Evas_Object *obj, const char *style);
+static Efl_Ui_Theme_Apply_Result _notify_style_set(Evas_Object *obj, const char *style);
 /* END */
 
 static const Elm_Action key_actions[] = {
@@ -569,7 +569,7 @@ _populate_theme_scroll(Elm_Popup_Data *sd)
    sd->theme_scroll = EINA_FALSE;
 }
 
-EOLIAN static Efl_Ui_Theme_Apply
+EOLIAN static Efl_Ui_Theme_Apply_Result
 _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
 {
    Elm_Popup_Item_Data *it;
@@ -586,7 +586,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
    elm_widget_style_set(sd->notify, style);
     */
      {
-        Efl_Ui_Theme_Apply ret;
+        Efl_Ui_Theme_Apply_Result ret;
         const char *obj_style = elm_widget_style_get(obj);
 
         if (obj_style && !strcmp(obj_style, "default"))
@@ -594,9 +594,9 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
         else
           ret = _notify_style_set(sd->notify, obj_style);
 
-        if (ret != EFL_UI_THEME_APPLY_SUCCESS)
-          if (_notify_style_set(sd->notify, style) != EFL_UI_THEME_APPLY_SUCCESS)
-            if (_notify_style_set(sd->notify, "popup") != EFL_UI_THEME_APPLY_SUCCESS)
+        if (ret != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
+          if (_notify_style_set(sd->notify, style) != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
+            if (_notify_style_set(sd->notify, "popup") != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
               _notify_style_set(sd->notify, "popup/default");
      }
    /* END */
@@ -616,7 +616,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
         for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
           {
              snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_RESULT_SUCCESS)
                break;
           }
         if (i == STYLE_PRIORITY_COUNT)
@@ -630,7 +630,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
    for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
      {
         snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-        if (efl_ui_layout_theme_set(sd->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_SUCCESS)
+        if (efl_ui_layout_theme_set(sd->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_RESULT_SUCCESS)
           break;
      }
    if (i == STYLE_PRIORITY_COUNT)
@@ -642,7 +642,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
         /* TIZEN_ONLY(20161109): check theme compatibility more precise
         elm_object_style_set(sd->text_content_obj, style);
         */
-        if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_SUCCESS)
+        if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
           elm_widget_style_set(sd->text_content_obj, "popup/default");
         /* END */
      }
@@ -701,7 +701,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
    /* access */
    if (_elm_config->access_mode) _access_obj_process(obj, EINA_TRUE);
 
-   return EFL_UI_THEME_APPLY_SUCCESS;
+   return EFL_UI_THEME_APPLY_RESULT_SUCCESS;
 }
 
 static void
@@ -996,7 +996,7 @@ _button_remove(Evas_Object *obj,
         for (i = 0 ; i < STYLE_PRIORITY_COUNT; i++)
           {
              snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_RESULT_SUCCESS)
                break;
           }
         if (i == STYLE_PRIORITY_COUNT)
@@ -1473,7 +1473,7 @@ _content_text_set(Evas_Object *obj,
    /* TIZEN_ONLY(20161109): check theme compatibility more precise
    elm_object_style_set(sd->text_content_obj, style);
     */
-   if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_SUCCESS)
+   if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
      elm_widget_style_set(sd->text_content_obj, "popup/default");
    /* END */
    /***********************************************************************************
@@ -1739,7 +1739,7 @@ _action_button_set(Evas_Object *obj,
    for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
      {
         snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-        if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_SUCCESS)
+        if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_RESULT_SUCCESS)
           break;
      }
    if (i == STYLE_PRIORITY_COUNT)
@@ -2136,7 +2136,7 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
    elm_object_style_set(priv->notify, style);
     */
      {
-        Efl_Ui_Theme_Apply ret;
+        Efl_Ui_Theme_Apply_Result ret;
         const char *obj_style = elm_widget_style_get(obj);
 
         if (obj_style && !strcmp(obj_style, "default"))
@@ -2144,9 +2144,9 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
         else
           ret = _notify_style_set(priv->notify, obj_style);
 
-        if (ret != EFL_UI_THEME_APPLY_SUCCESS)
-          if (_notify_style_set(priv->notify, style) != EFL_UI_THEME_APPLY_SUCCESS)
-            if (_notify_style_set(priv->notify, "popup") != EFL_UI_THEME_APPLY_SUCCESS)
+        if (ret != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
+          if (_notify_style_set(priv->notify, style) != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
+            if (_notify_style_set(priv->notify, "popup") != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
               _notify_style_set(priv->notify, "popup/default");
      }
    /* END */
@@ -2225,7 +2225,7 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
    for (i = 0 ; i < STYLE_PRIORITY_COUNT; i++)
      {
         snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-        if (efl_ui_layout_theme_set(priv->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_SUCCESS)
+        if (efl_ui_layout_theme_set(priv->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_RESULT_SUCCESS)
           break;
      }
    if (i == STYLE_PRIORITY_COUNT)
@@ -2685,12 +2685,12 @@ _elm_popup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Popup_D
 
 /* TIZEN_ONLY(20161109): check theme compatibility more precise
                          add internal style set function */
-static Efl_Ui_Theme_Apply
+static Efl_Ui_Theme_Apply_Result
 _notify_style_set(Evas_Object *obj, const char *style)
 {
-   Efl_Ui_Theme_Apply ret = EFL_UI_THEME_APPLY_SUCCESS;
+   Efl_Ui_Theme_Apply_Result ret = EFL_UI_THEME_APPLY_RESULT_SUCCESS;
 
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_FAILED);
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_RESULT_FAIL);
 
    if (eina_stringshare_replace(&wd->style, style))
      {

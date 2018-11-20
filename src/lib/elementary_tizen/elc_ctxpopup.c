@@ -1390,20 +1390,20 @@ _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *s
 }
 
 //FIXME: lost the content size when theme hook is called.
-EOLIAN static Efl_Ui_Theme_Apply
+EOLIAN static Efl_Ui_Theme_Apply_Result
 _elm_ctxpopup_efl_ui_widget_theme_apply(Eo *obj, Elm_Ctxpopup_Data *sd)
 {
    Eina_List *elist;
    Elm_Ctxpopup_Item_Data *item;
    int idx = 0;
    Eina_Bool rtl;
-   Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
+   Efl_Ui_Theme_Apply_Result int_ret = EFL_UI_THEME_APPLY_RESULT_FAIL;
    const char *style;
 
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_FAILED);
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_RESULT_FAIL);
 
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
-   if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
+   if (!int_ret) return EFL_UI_THEME_APPLY_RESULT_FAIL;
 
    rtl = efl_ui_mirrored_get(obj);
 

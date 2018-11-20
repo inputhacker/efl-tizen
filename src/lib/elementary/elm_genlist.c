@@ -599,10 +599,10 @@ _view_style_find(Elm_Gen_Item *it, Evas_Object *view, const char *style)
                     sd->mode == ELM_LIST_COMPRESS ? "_compress" :
                     "",style ? : "default");
      }
-   Efl_Ui_Theme_Apply th_ret =
+   Efl_Ui_Theme_Apply_Result th_ret =
       elm_widget_theme_object_set(WIDGET(it), view, "genlist", buf,
                                   elm_widget_style_get(WIDGET(it)));
-   if (th_ret == EFL_UI_THEME_APPLY_FAILED)
+   if (th_ret == EFL_UI_THEME_APPLY_RESULT_FAIL)
      {
        //TIZEN_ONLY: Fallback to deafult style when first style set failed.
        snprintf(buf2, sizeof(buf2), "item/%s", style ? : "default");
@@ -610,7 +610,7 @@ _view_style_find(Elm_Gen_Item *it, Evas_Object *view, const char *style)
        if (!strcmp(buf, buf2)) return EINA_FALSE;
        th_ret = elm_widget_theme_object_set(WIDGET(it), view, "genlist", buf2,
                                             elm_widget_style_get(WIDGET(it)));
-       if (th_ret == EFL_UI_THEME_APPLY_FAILED) return EINA_FALSE;
+       if (th_ret == EFL_UI_THEME_APPLY_RESULT_FAIL) return EINA_FALSE;
     }
 
   return EINA_TRUE;
@@ -3753,17 +3753,17 @@ _mirrored_set(Evas_Object *obj,
    efl_ui_mirrored_set(obj, rtl);
 }
 
-EOLIAN static Efl_Ui_Theme_Apply
+EOLIAN static Efl_Ui_Theme_Apply_Result
 _elm_genlist_efl_ui_widget_theme_apply(Eo *obj, Elm_Genlist_Data *sd)
 {
    Item_Block *itb;
-   Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
+   Efl_Ui_Theme_Apply_Result int_ret = EFL_UI_THEME_APPLY_RESULT_FAIL;
    Eina_List *l;
    Elm_Gen_Item *it;
    Evas *e;
 
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
-   if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
+   if (!int_ret) return EFL_UI_THEME_APPLY_RESULT_FAIL;
 
    e = evas_object_evas_get(obj);
    evas_event_freeze(e);

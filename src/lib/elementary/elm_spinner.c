@@ -1488,15 +1488,15 @@ _elm_spinner_efl_canvas_group_group_del(Eo *obj, Elm_Spinner_Data *sd)
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }
 
-EOLIAN static Efl_Ui_Theme_Apply
+EOLIAN static Efl_Ui_Theme_Apply_Result
 _elm_spinner_efl_ui_widget_theme_apply(Eo *obj, Elm_Spinner_Data *sd)
 {
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_FAILED);
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_RESULT_FAIL);
 
    if (!efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS)))
      {
         CRI("Failed to set layout!");
-        return EFL_UI_THEME_APPLY_FAILED;
+        return EFL_UI_THEME_APPLY_RESULT_FAIL;
      }
 
    if (edje_object_part_exists(wd->resize_obj, "elm.swallow.dec_button"))
@@ -1543,7 +1543,7 @@ _elm_spinner_efl_ui_widget_theme_apply(Eo *obj, Elm_Spinner_Data *sd)
    _label_write(obj);
    //
    elm_layout_sizing_eval(obj);
-   return EFL_UI_THEME_APPLY_SUCCESS;
+   return EFL_UI_THEME_APPLY_RESULT_SUCCESS;
 }
 
 /* TIZEN_ONLY(20161111, 20180111)

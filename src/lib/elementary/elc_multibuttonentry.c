@@ -98,7 +98,7 @@ _format_count(int count, void *data EINA_UNUSED)
    return strdup(buf);
 }
 
-EOLIAN static Efl_Ui_Theme_Apply
+EOLIAN static Efl_Ui_Theme_Apply_Result
 _elm_multibuttonentry_efl_ui_widget_theme_apply(Eo *obj, Elm_Multibuttonentry_Data *sd)
 {
    const char *str;
@@ -107,9 +107,9 @@ _elm_multibuttonentry_efl_ui_widget_theme_apply(Eo *obj, Elm_Multibuttonentry_Da
    Elm_Object_Item *eo_item;
    double pad_scale;
 
-   Efl_Ui_Theme_Apply int_ret = EFL_UI_THEME_APPLY_FAILED;
+   Efl_Ui_Theme_Apply_Result int_ret = EFL_UI_THEME_APPLY_RESULT_FAIL;
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
-   if (!int_ret) return EFL_UI_THEME_APPLY_FAILED;
+   if (!int_ret) return EFL_UI_THEME_APPLY_RESULT_FAIL;
 
    str = elm_layout_data_get(obj, "horizontal_pad");
    if (str) hpad = atoi(str);
@@ -146,7 +146,7 @@ _elm_multibuttonentry_efl_ui_widget_theme_apply(Eo *obj, Elm_Multibuttonentry_Da
      {
         Eina_Strbuf *buf = eina_strbuf_new();
         eina_strbuf_append_printf(buf, "multibuttonentry/%s", elm_widget_style_get(obj));
-        if (elm_object_style_set(sd->entry, eina_strbuf_string_get(buf)) != EFL_UI_THEME_APPLY_SUCCESS)
+        if (elm_object_style_set(sd->entry, eina_strbuf_string_get(buf)) != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
           elm_object_style_set(sd->entry, "multibuttonentry/default");
         eina_strbuf_free(buf);
      }
