@@ -1431,11 +1431,6 @@ _ecore_evas_extn_plug_connect(Ecore_Evas *ee, const char *svcname, int svcnum, E
 
    // TIZEN ONLY (20180125): smack issue: using fd from E
    int fd = _compositor_socket_get();
-   if (fd == -1)
-     {
-        ERR("failed to get fd from server");
-        return EINA_FALSE;
-     }
    //
 
    if (!ECORE_MAGIC_CHECK(ee, ECORE_MAGIC_EVAS)) return EINA_FALSE;
@@ -2374,14 +2369,6 @@ _ecore_evas_extn_socket_listen(Ecore_Evas *ee, const char *svcname, int svcnum, 
 
         // TIZEN ONLY (20180125): smack issue: using fd from E
         fd = _compositor_socket_get();
-        if (fd == -1)
-          {
-             eina_stringshare_del(extn->svc.name);
-             free(extn);
-             ecore_ipc_shutdown();
-             ERR("failed to get fd from server");
-             return EINA_FALSE;
-          }
         //
 
         for (i = 0; i < NBUF; i++)
