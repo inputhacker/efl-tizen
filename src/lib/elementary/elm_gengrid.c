@@ -2099,9 +2099,8 @@ _item_place(Elm_Gen_Item *it,
                     }
                   if (wsd->reorder_it == it)
                     {
-                       evas_object_move(VIEW(it), wsd->reorder_item_x,
-                                        wsd->reorder_item_y);
-                       evas_object_resize(VIEW(it), iw, ih);
+                       evas_object_geometry_set(VIEW(it), wsd->reorder_item_x,
+                                                wsd->reorder_item_y, iw, ih);
                        return;
                     }
                   else
@@ -2220,8 +2219,7 @@ _item_place(Elm_Gen_Item *it,
         /*
         if (!it->group)
           {
-             evas_object_move(VIEW(it), x, y);
-             evas_object_resize(VIEW(it), iw, ih);
+             evas_object_geometry_set(VIEW(it), x, y, iw, ih);
           }
         else
           item->group_realized = EINA_TRUE;
@@ -2276,9 +2274,8 @@ _group_item_place(Elm_Gengrid_Pan_Data *psd)
                }
              //TIZEN_ONLY(20170131): Group on Top Feature is not tizen UI.
              /*
-             evas_object_move
-               (VIEW(it), GG_IT(it)->gx,
-               GG_IT(it)->gy);
+              * evas_object_geometry_set(VIEW(it), GG_IT(it)->gx, GG_IT(it)->gy,
+              *                          iw, ih);
              */
              evas_object_resize(VIEW(it), iw, ih);
              evas_object_raise(VIEW(it));
