@@ -7076,10 +7076,6 @@ _efl_ui_widget_efl_object_constructor(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UN
    /*******
     * END *
     *******/
-   //TIZEN_ONLY(20180607): Restore legacy focus
-   if (!elm_widget_is_legacy(obj))
-   //
-     efl_event_callback_add(obj, EFL_UI_FOCUS_OBJECT_EVENT_FOCUS_CHANGED, _focus_event_changed, NULL);
 
    return obj;
 }

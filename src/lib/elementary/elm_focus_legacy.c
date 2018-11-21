@@ -429,6 +429,11 @@ _focus_manager_del(void *data, const Efl_Event *ev EINA_UNUSED)
 void
 legacy_efl_ui_focus_manager_widget_legacy_signals(Efl_Ui_Focus_Manager *manager, Efl_Ui_Focus_Manager *emittee)
 {
+   //TIZEN_ONLY(20180607): disable focus manager stuff
+   if (elm_widget_is_legacy(manager))
+     return;
+   //
+
    Legacy_Manager_Focus_State *state = calloc(1, sizeof(Legacy_Manager_Focus_State));
 
    state->emittee = emittee;
@@ -473,6 +478,11 @@ _manager_focus_object_changed(void *data, const Efl_Event *ev EINA_UNUSED)
 void
 legacy_child_focus_handle(Efl_Ui_Focus_Object *object)
 {
+   //TIZEN_ONLY(20180607): disable focus manager stuff
+   if (elm_widget_is_legacy(object))
+     return;
+   //
+
    Legacy_Object_Focus_State *state = calloc(1, sizeof(Legacy_Object_Focus_State));
    state->emittee = object;
 
@@ -492,5 +502,10 @@ _focus_event_changed(void *data EINA_UNUSED, const Efl_Event *event)
 void
 legacy_object_focus_handle(Efl_Ui_Focus_Object *object)
 {
+   //TIZEN_ONLY(20180607): disable focus manager stuff
+   if (elm_widget_is_legacy(object))
+     return;
+   //
+
    efl_event_callback_add(object, EFL_UI_FOCUS_OBJECT_EVENT_FOCUS_CHANGED, _focus_event_changed, NULL);
 }
