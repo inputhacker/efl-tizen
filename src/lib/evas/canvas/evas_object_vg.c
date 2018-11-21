@@ -141,7 +141,9 @@ evas_object_vg_animated_frame_set(Evas_Object *obj, int frame_index)
 
    //Image is changed, drop previous cached image.
    pd->frame_index = frame_index;
+
    evas_object_change(obj, eo_data_scope_get(obj, EVAS_OBJECT_CLASS));
+   pd->content_changed = EINA_TRUE;
 
    return EINA_TRUE;
 }
@@ -166,6 +168,7 @@ _vg_file_mmap_set(Eo *eo_obj, Evas_VG_Data *pd, const Eina_File *file, const cha
 
    evas_object_change(eo_obj, obj);
    evas_cache_vg_entry_del(old_entry);
+   pd->content_changed = EINA_TRUE;
 
    return EINA_TRUE;
 }
@@ -775,6 +778,13 @@ evas_object_vg_render_pre(Evas_Object *eo_obj,
                   (obj->cur->geometry.h != obj->prev->geometry.h))
                 vd->content_changed = EINA_TRUE;
            }
+     }
+
+   if (vd->vg_entry && vd->content_changed)
+     {
+        vd->content_changed = EINA_FALSE;
+        evas_object_render_pre_prev_cur_add(&obj->layer->evas->clip_changes, eo_obj, obj);
+        goto done;
      }
 
    /* now figure what changed and add draw rects */
