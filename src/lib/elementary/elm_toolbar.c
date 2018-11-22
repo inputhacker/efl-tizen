@@ -4687,6 +4687,12 @@ _elm_toolbar_elm_widget_class_color_clear(Eo *obj, Elm_Toolbar_Data *sd EINA_UNU
 /*******
  * END *
  *******/
+EOLIAN static Efl_Ui_Focus_Object*
+_elm_toolbar_item_efl_ui_focus_object_focus_parent_get(const Eo *obj, Elm_Toolbar_Item_Data *pd)
+{
+   return WIDGET(pd);
+}
+
 
 /* Standard widget overrides */
 
