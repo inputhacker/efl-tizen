@@ -64,6 +64,7 @@ _efl_ui_focus_manager_redirect_events_del(Efl_Ui_Focus_Manager *manager, Eo *obj
    efl_event_callback_forwarder_del(manager, EFL_UI_FOCUS_MANAGER_EVENT_REDIRECT_CHANGED, obj);
    efl_event_callback_forwarder_del(manager, EFL_UI_FOCUS_MANAGER_EVENT_FOCUS_CHANGED , obj);
    efl_event_callback_forwarder_del(manager, EFL_UI_FOCUS_MANAGER_EVENT_COORDS_DIRTY, obj);
+   efl_event_callback_forwarder_del(manager, EFL_UI_FOCUS_MANAGER_EVENT_DIRTY_LOGIC_FREEZE_CHANGED, obj);
 }
 
 void
@@ -73,6 +74,7 @@ _efl_ui_focus_manager_redirect_events_add(Efl_Ui_Focus_Manager *manager, Eo *obj
    efl_event_callback_forwarder_add(manager, EFL_UI_FOCUS_MANAGER_EVENT_REDIRECT_CHANGED, obj);
    efl_event_callback_forwarder_add(manager, EFL_UI_FOCUS_MANAGER_EVENT_FOCUS_CHANGED , obj);
    efl_event_callback_forwarder_add(manager, EFL_UI_FOCUS_MANAGER_EVENT_COORDS_DIRTY, obj);
+   efl_event_callback_forwarder_add(manager, EFL_UI_FOCUS_MANAGER_EVENT_DIRTY_LOGIC_FREEZE_CHANGED, obj);
 }
 
 Eina_Bool
