@@ -2648,6 +2648,7 @@ _item_new(Evas_Object *obj,
    WIDGET_ITEM_DATA_SET(EO_OBJ(it), data);
 
    VIEW_SET(it, elm_layout_add(obj));
+   _efl_ui_focus_event_redirector(VIEW(it), eo_it);
    elm_widget_tree_unfocusable_set(VIEW(it), EINA_TRUE);
    evas_object_data_set(VIEW(it), "item", it);
 

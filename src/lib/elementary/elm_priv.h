@@ -1046,5 +1046,6 @@ EAPI void elm_widget_item_class_color_clear(Elm_Object_Item *it);
 /*******
  * END *
  *******/
+void _efl_ui_focus_event_redirector(Efl_Ui_Focus_Object *obj, Efl_Ui_Focus_Object *goal);
 
 #endif
