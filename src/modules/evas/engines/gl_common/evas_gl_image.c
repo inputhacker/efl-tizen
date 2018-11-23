@@ -1162,8 +1162,7 @@ _evas_gl_common_image_push(Evas_Engine_GL_Context *gc, Evas_GL_Image *im,
         else mtex = NULL;
      }
 
-   if (((nx == dx) && (ny == dy) && (nw == dw) && (nh == dh)) ||
-       (sw >= (dw * 2) || sh >= (dh * 2)))
+   if ((nx == dx) && (ny == dy) && (nw == dw) && (nh == dh))
      {
         if (yuv)
           evas_gl_common_context_yuv_push(gc,
