@@ -185,7 +185,7 @@ vec4 fetch_pixel(float ox, float oy)
     c = texture2DPalette(tex, tex_c).SWZ;
 #  endif
 #elif defined(SHD_EXTERNAL)
-   c = texture2D(tex, tex_c);
+   c = texture2D(tex, coord);
 
 #elif defined(SHD_SAM12) || defined(SHD_SAM21)
    vec4 col00 = texture2D(tex, coord + tex_s[0]).SWZ;
@@ -200,7 +200,7 @@ vec4 fetch_pixel(float ox, float oy)
    c = (col00 + col01 + col10 + col11) / div_s;
 
 #elif defined(SHD_TEX)
-   c = texture2D(tex, tex_c).SWZ;
+   c = texture2D(tex, coord).SWZ;
 
 #else
    c = vec4(1, 1, 1, 1);
