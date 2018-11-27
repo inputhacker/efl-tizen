@@ -1954,15 +1954,20 @@ _action_action_name_do(const Eldbus_Service_Interface *iface, const Eldbus_Messa
    ret = eldbus_message_method_return_new(msg);
    EINA_SAFETY_ON_NULL_RETURN_VAL(ret, NULL);
 
-   actions = efl_access_action_actions_get(obj);
-   EINA_LIST_FREE(actions, action)
+   //TIZEN_ONLY(20181127): Add missing call to _is_operation_permitted in DoActionName atspi call
+   if (_is_operation_permitted(obj))
      {
-        if (!result && action && !strcmp(action, action_name))
-          result = EINA_TRUE;
+       actions = efl_access_action_actions_get(obj);
+       EINA_LIST_FREE(actions, action)
+         {
+            if (!result && action && !strcmp(action, action_name))
+              result = EINA_TRUE;
 
-        if (!result)
-          idx++;
+            if (!result)
+              idx++;
+         }
      }
+   //
 
    if (result)
      result = efl_access_action_do(obj, idx);
