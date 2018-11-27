@@ -361,8 +361,6 @@ struct _Ecore_Evas
    Eina_Bool indicator_state : 1;
    Eina_Bool keyboard_state : 1;
    Eina_Bool clipboard_state : 1;
-
-   int screenRotation;
 };
 
 struct _Ecore_Evas_Aux_Hint

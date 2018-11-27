@@ -115,21 +115,24 @@ static Eina_Bool
 _ecore_evas_wl_common_rotate_update(Ecore_Evas *ee)
 {
    Ecore_Evas_Engine_Wl_Data *wdata;
+   int rotation;
 
    wdata = ee->engine.data;
 
-   if (!ecore_wl_window_ignore_output_transform_get(wdata->win))
+   if (ecore_wl_window_ignore_output_transform_get(wdata->win))
+     rotation = 0;
+   else
      {
         Ecore_Wl_Output *output = ecore_wl_window_output_find(wdata->win);
-        ee->screenRotation = ecore_wl_output_transform_get(output) * 90;
+        rotation = ecore_wl_output_transform_get(output) * 90;
      }
 
-   WRN("ignore_output_transform(%d) rotation(%d)", ecore_wl_window_ignore_output_transform_get(wdata->win), ee->screenRotation);
+   WRN("ignore_output_transform(%d) rotation(%d)", ecore_wl_window_ignore_output_transform_get(wdata->win), rotation);
 
-   if (_ecore_evas_wl_common_engine_rotation_get(ee) == ((ee->screenRotation + ee->rotation) % 360))
+   if (_ecore_evas_wl_common_engine_rotation_get(ee) == ((rotation + ee->rotation) % 360))
      return EINA_FALSE;
 
-   _rotation_do(ee, ee->rotation, ee->screenRotation, 0);
+   _rotation_do(ee, ee->rotation, rotation, 0);
 
    return EINA_TRUE;
 }
