@@ -746,9 +746,10 @@ eng_outbuf_flush(Outbuf *ob, Tilebuf_Rect *surface_damage, Tilebuf_Rect *buffer_
 //   ecore_wl2_display_flush(ob->wl2_disp);
 //
 
-   //TIZEN_ONLY(20180817) : Add to get current serial number
-   // update next serial after flushed
-   ob->info->info.serial =  wl_egl_window_tizen_get_window_serial(ob->win);
+   //TIZEN_ONLY(20181130) : update next serial after flushed
+   // set current serial number
+   ob->info->info.serial++;
+   wl_egl_window_tizen_set_window_serial(ob->win, ob->info->info.serial);
    //
 }
 
