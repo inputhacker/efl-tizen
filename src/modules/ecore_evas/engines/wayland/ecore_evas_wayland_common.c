@@ -58,7 +58,16 @@ _ecore_evas_wl_common_engine_serial_get(Ecore_Evas *ee, unsigned int *serial)
 {
    *serial = 0;
 
-   if (!strcmp(ee->driver, "wayland_egl"))
+   if (!strncmp(ee->driver, "wayland_shm", 11))
+     {
+#ifdef BUILD_ECORE_EVAS_WAYLAND_SHM
+        Evas_Engine_Info_Wayland *einfo;
+        einfo = (Evas_Engine_Info_Wayland *)evas_engine_info_get(ee->evas);
+        if (!einfo) return;
+        *serial = einfo->info.serial;
+#endif
+     }
+   else if (!strcmp(ee->driver, "wayland_egl"))
      {
 #ifdef BUILD_ECORE_EVAS_WAYLAND_EGL
         Evas_Engine_Info_Wayland *einfo;

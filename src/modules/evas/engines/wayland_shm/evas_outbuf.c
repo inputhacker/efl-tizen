@@ -518,7 +518,13 @@ _evas_outbuf_redraws_clear(Outbuf *ob)
    if (!ob->priv.rect_count) return;
    wls = ecore_wl2_window_surface_get(ob->info->info.wl2_win);
    if (wls)
-     ecore_wl2_surface_post(ob->surface, ob->priv.rects, ob->priv.rect_count);
+     {
+        ecore_wl2_surface_set_serial(ob->surface, ob->info->info.serial);
+        ecore_wl2_surface_post(ob->surface, ob->priv.rects, ob->priv.rect_count);
+     }
+
+   ob->info->info.serial++;
+
    free(ob->priv.rects);
    ob->priv.rect_count = 0;
 }

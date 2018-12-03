@@ -235,6 +235,11 @@ _evas_dmabuf_surface_flush(Ecore_Wl2_Surface *surface EINA_UNUSED, void *priv_da
      }
 }
 
+static void
+_evas_dmabuf_surface_set_serial(Ecore_Wl2_Surface *surface EINA_UNUSED, void *priv_data, unsigned int count)
+{
+}
+
 static Ecore_Wl2_Surface_Interface dmabuf_smanager =
 {
    .version = 1,
@@ -244,7 +249,8 @@ static Ecore_Wl2_Surface_Interface dmabuf_smanager =
    .data_get = _evas_dmabuf_surface_data_get,
    .assign = _evas_dmabuf_surface_assign,
    .post = _evas_dmabuf_surface_post,
-   .flush = _evas_dmabuf_surface_flush
+   .flush = _evas_dmabuf_surface_flush,
+   .set_serial = _evas_dmabuf_surface_set_serial
 };
 
 Eina_Bool

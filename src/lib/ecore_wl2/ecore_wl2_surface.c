@@ -70,6 +70,14 @@ ecore_wl2_surface_flush(Ecore_Wl2_Surface *surface, Eina_Bool purge)
    surface->funcs->flush(surface, surface->private_data, purge);
 }
 
+EAPI void
+ecore_wl2_surface_set_serial(Ecore_Wl2_Surface *surface, unsigned int serial)
+{
+   EINA_SAFETY_ON_NULL_RETURN(surface);
+
+   surface->funcs->set_serial(surface, surface->private_data, serial);
+}
+
 static Eina_Bool
 _ecore_wl2_surface_cb_offscreen(void *data, int type EINA_UNUSED, void *event)
 {

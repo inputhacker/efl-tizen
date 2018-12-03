@@ -385,6 +385,29 @@ _evas_tbmbuf_surface_flush(Ecore_Wl2_Surface *surface EINA_UNUSED,  void *priv_d
 {
 }
 
+static void
+_evas_tbmbuf_surface_set_serial(Ecore_Wl2_Surface *surface, void *priv_data, unsigned int serial)
+{
+   Ecore_Wl2_Buffer *surf;
+   Ecore_Wl2_Tbmbuf_Private *p = priv_data;
+
+   if (!surface) return;
+   if (!p) return;
+
+   surf = p->current;
+   if (!surf->wl_surface) return;
+
+   struct wl_buffer *buffer = NULL;
+
+   tbm_surface_internal_get_user_data(surf->tbm_surface, KEY_WL_BUFFER, (void **)&buffer);
+   if (!buffer)
+     {
+        ERR("wayland_tbm_client wl_buffer is NULL");
+        return;
+     }
+   wayland_tbm_client_set_buffer_serial(surf->tbm_client, buffer, serial);
+}
+
 static Ecore_Wl2_Surface_Interface tbmbuf_smanager =
 {
 //   .check = _evas_tbmbuf_surface_check,
@@ -393,7 +416,8 @@ static Ecore_Wl2_Surface_Interface tbmbuf_smanager =
    .data_get = _evas_tbmbuf_surface_data_get,
    .assign = _evas_tbmbuf_surface_assign,
    .post = _evas_tbmbuf_surface_post,
-   .flush = _evas_tbmbuf_surface_flush
+   .flush = _evas_tbmbuf_surface_flush,
+   .set_serial = _evas_tbmbuf_surface_set_serial
 };
 
 EAPI void *
