@@ -45,7 +45,7 @@ static void * _accessibility_currently_highlighted_obj = NULL;
 EAPI Elm_Version *elm_version = &_version;
 
 static void
-_focus_ev_redirect_cb(void *data, const Efl_Event *ev)
+_focus_ev_redirect_cb(void *data, const Efl_Event *ev EINA_UNUSED)
 {
    efl_event_callback_call(data, EFL_UI_FOCUS_OBJECT_EVENT_FOCUS_GEOMETRY_CHANGED, NULL);
 }
