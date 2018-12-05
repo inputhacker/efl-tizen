@@ -1,5 +1,8 @@
 enum Efl.Ui.Textpath_Direction {
-    [[Textpath direction]]
+    [[Textpath direction
+
+      \@since_tizen 5.5
+    ]]
     cw, [[Clockwise]]
     ccw [[Counter-clockwise]]
 }
@@ -10,7 +13,10 @@ class Efl.Ui.Textpath (Efl.Ui.Layout, Efl.Text, Efl.Gfx.Path)
    legacy_prefix: elm_textpath;
    methods {
       circle_set {
-         [[Set a circle with given center, radius, and start angle.]]
+         [[Set a circle with given center, radius, and start angle.
+
+           \@since_tizen 5.5
+         ]]
          params {
             @in x: double; [[X coordinate of center]]
             @in y: double; [[Y coordinate of center]]
@@ -21,13 +27,19 @@ class Efl.Ui.Textpath (Efl.Ui.Layout, Efl.Text, Efl.Gfx.Path)
       }
       @property slice_number {
          [[The number of slices. The larger the number of slice_num is,
-           The better the text follows the path.]]
+           The better the text follows the path.
+
+           \@internal
+         ]]
          values {
             slice_no: int; [[Number of slices]]
          }
       }
       @property ellipsis {
-         [[Control the ellipsis behavior of the textpath.]]
+         [[Control the ellipsis behavior of the textpath.
+
+           \@since_tizen 5.5
+         ]]
          set {
          }
          get {
