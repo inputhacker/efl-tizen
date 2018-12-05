@@ -316,7 +316,8 @@ elm_object_focused_object_get(const Evas_Object *obj)
 EAPI Eina_Bool
 elm_object_focus_get(const Evas_Object *obj)
 {
-   API_ENTRY_VAL(EINA_FALSE)
+   //TIZEN_ONLY(20181205): disable focus manager stuff
+   //API_ENTRY_VAL(EINA_FALSE)
 
    if (!elm_widget_is(obj))
      return evas_object_focus_get(obj);

@@ -2051,7 +2051,10 @@ _item_place(Elm_Gen_Item *it,
              _elm_gengrid_item_index_update(it);
              efl_event_callback_legacy_call
                (WIDGET(it), ELM_GENGRID_EVENT_REALIZED, EO_OBJ(it));
-             _flush_focus_on_realization(WIDGET(it), it);
+             //TIZEN_ONLY(20181205): disable focus manager stuff
+             //_flush_focus_on_realization(WIDGET(it), it);
+             if (!elm_widget_is_legacy(WIDGET(it)))
+               _flush_focus_on_realization(WIDGET(it), it);
           }
         if (it->parent)
           {
@@ -2270,7 +2273,10 @@ _group_item_place(Elm_Gengrid_Pan_Data *psd)
                   _elm_gengrid_item_index_update(it);
                   efl_event_callback_legacy_call
                     (WIDGET(it), ELM_GENGRID_EVENT_REALIZED, EO_OBJ(it));
-                  _flush_focus_on_realization(WIDGET(it), it);
+                  //TIZEN_ONLY(20181205): disable focus manager stuff
+                  //_flush_focus_on_realization(WIDGET(it), it);
+                  if (!elm_widget_is_legacy(WIDGET(it)))
+                    _flush_focus_on_realization(WIDGET(it), it);
                }
              //TIZEN_ONLY(20170131): Group on Top Feature is not tizen UI.
              /*
@@ -4821,6 +4827,8 @@ _elm_gengrid_item_elm_widget_item_item_focus_set(Eo *eo_it, Elm_Gen_Item *it, Ei
           {
              if (sd->focused_item)
                _elm_gengrid_item_unfocused(sd->focused_item);
+             //TIZEN_ONLY(20181205): disable focus manager stuff
+             /*
              if (it->realized)
                {
                   _elm_gengrid_item_focused(eo_it);
@@ -4830,6 +4838,22 @@ _elm_gengrid_item_elm_widget_item_item_focus_set(Eo *eo_it, Elm_Gen_Item *it, Ei
              else
                {
                   sd->focus_on_realization = it;
+               }
+             */
+             if (elm_widget_is_legacy(obj))
+               _elm_gengrid_item_focused(eo_it);
+             else
+               {
+                  if (it->realized)
+                    {
+                       _elm_gengrid_item_focused(eo_it);
+                       sd->focus_on_realization = NULL;
+                       efl_ui_focus_manager_focus_set(obj, eo_it);
+                    }
+                  else
+                    {
+                       sd->focus_on_realization = it;
+                    }
                }
           }
      }
