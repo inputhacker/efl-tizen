@@ -9777,6 +9777,14 @@ _elm_genlist_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Gen_Item *
 }
 //
 
+EOLIAN static Efl_Ui_Focus_Object*
+_elm_genlist_item_efl_ui_focus_object_focus_parent_get(const Eo *obj EINA_UNUSED, Elm_Gen_Item *pd)
+{
+   if (!pd->item->block) return NULL;
+   return pd->item->block->adapter;
+}
+
+
 /* Standard widget overrides */
 
 ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_genlist, Elm_Genlist_Data)
