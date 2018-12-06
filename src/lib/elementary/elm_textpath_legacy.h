@@ -9,6 +9,7 @@ typedef Eo Elm_Textpath;
  * @ingroup Elm_Textpath
  *
  * @since 1.22
+ * @since_tizen 5.5
  */
 EAPI Evas_Object                 *elm_textpath_add(Evas_Object *parent);
 
