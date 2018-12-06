@@ -18,7 +18,6 @@ typedef enum
  * @ingroup Elm_Animation_View
  *
  * @since 1.22
- * @since_tizen 5.5
  */
 EAPI Elm_Animation_View     *elm_animation_view_add(Evas_Object *parent);
 
@@ -40,7 +39,6 @@ NULL, otherwise.
  * @ingroup Elm_Animation_View
  *
  * @since 1.22
- * @since_tizen 5.5
 */
 EAPI Eina_Bool        elm_animation_view_file_set(Elm_Animation_View *obj, const char *file, const char *key);
 
@@ -54,7 +52,6 @@ EAPI Eina_Bool        elm_animation_view_file_set(Elm_Animation_View *obj, const
  * @ingroup Elm_Animation_View
  *
  * @since 1.22
- * @since_tizen 5.5
  */
 EAPI Elm_Animation_View_State elm_animation_view_state_get(const Elm_Animation_View *obj);
 
@@ -68,7 +65,6 @@ EAPI Elm_Animation_View_State elm_animation_view_state_get(const Elm_Animation_V
  * @warning If animation view is not on playing, it will return @c EINA_FALSE.
  *
  * @since 1.22
- * @since_tizen 5.5
  */
 EAPI Eina_Bool         elm_animation_view_is_playing_back(const Elm_Animation_View *obj);
 
