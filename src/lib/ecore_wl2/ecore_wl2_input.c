@@ -178,9 +178,14 @@ _ecore_wl2_input_key_conversion_set(Ecore_Wl2_Input *input)
    else
      {
         char* lc_numeric = setlocale(LC_NUMERIC, NULL);
+        char* old_numeric = lc_numeric? strdup(lc_numeric) : NULL;
         setlocale(LC_NUMERIC, "C");
         _tizen_api_version = atof(temp);
-        setlocale(LC_NUMERIC, lc_numeric);
+        if(old_numeric)
+          {
+             setlocale(LC_NUMERIC, old_numeric);
+             free(old_numeric);
+          }
         INF("TIZEN_API_VERSION: %lf, Environment variable: %s\n", _tizen_api_version, temp);
         if (_tizen_api_version < 2.4)
           {
