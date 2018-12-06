@@ -464,7 +464,7 @@ abstract Efl.Canvas.Object (Efl.Loop_Consumer, Efl.Gfx.Entity, Efl.Gfx.Color, Ef
            modifiers that must and mustn't, respectively, be pressed along
            with $keyname key in order to trigger this new key grab.
            Modifiers can be things such as Shift and Ctrl as well as
-           user defined types via @Evas.Canvas.key_modifier_add.
+           user defined types via Evas.Canvas.key_modifier_add.
            $exclusive will make the given object the only one permitted to
            grab the given key. If given $true, subsequent calls on this
            function with different $obj arguments will fail, unless the key
