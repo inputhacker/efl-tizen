@@ -172,7 +172,7 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth)
      }
 }
 
-static Efl_VG *
+static void
 _update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth)
 {
    Efl_VG *ptree = NULL;
