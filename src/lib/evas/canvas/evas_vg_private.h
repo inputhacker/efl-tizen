@@ -63,7 +63,7 @@ struct _Efl_Canvas_Vg_Node_Data
 
    Ector_Renderer *renderer;
 
-   Efl_VG *vg_obj;
+   Efl_VG *vg_obj;    //...Not necessary!!
 
    void (*render_pre)(Evas_Object_Protected_Data *vg_pd, Efl_VG *node,
          Efl_Canvas_Vg_Node_Data *nd, Ector_Surface *surface,

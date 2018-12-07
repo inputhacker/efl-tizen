@@ -99,7 +99,12 @@ _efl_canvas_vg_gradient_efl_gfx_path_interpolate(Eo *obj,
 static void
 _efl_canvas_vg_gradient_efl_object_destructor(Eo *obj, Efl_Canvas_Vg_Gradient_Data *pd)
 {
-   if (pd->colors) free(pd->colors);
+   if (pd->colors)
+     {
+        free(pd->colors);
+        pd->colors = NULL;
+     }
+    pd->colors_count = 0;
 
    efl_destructor(efl_super(obj, MY_CLASS));
 }

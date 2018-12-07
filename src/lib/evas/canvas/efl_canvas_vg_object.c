@@ -116,7 +116,7 @@ _evas_vg_resize(void *data, const Efl_Event *ev)
 EOLIAN static Efl_VG *
 _efl_canvas_vg_object_root_node_get(const Eo *obj, Efl_Canvas_Vg_Object_Data *pd)
 {
-   Efl_VG *root;
+   Efl_VG *root = NULL;
 
    if (pd->vg_entry)
      {
