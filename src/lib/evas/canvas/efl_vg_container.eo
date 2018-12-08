@@ -18,5 +18,6 @@ class Efl.VG.Container (Efl.VG.Base)
       Efl.VG.Base.bounds_get;
       Efl.VG.Base.interpolate;
       Efl.VG.Base.dup;
+      Efl.VG.Base.mask.set;
    }
 }

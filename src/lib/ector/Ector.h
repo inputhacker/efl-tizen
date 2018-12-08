@@ -157,6 +157,13 @@ typedef enum _Ector_Update_Type
   ECTOR_UPDATE_OPAQUE = 8 /* Pushing some opaque pixels (this means that their is no need to read the under layer when blitting this surface) */
 } Ector_Update_Type;
 
+typedef struct Ector_Buffer
+{
+   uint32_t *buffer;
+   int w;
+   int h;
+} Ector_Buffer;
+
 /**
  * @brief Init the ector subsystem
  * @return @c EINA_TRUE on success.

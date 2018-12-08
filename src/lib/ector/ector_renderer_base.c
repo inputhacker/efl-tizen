@@ -96,21 +96,6 @@ _ector_renderer_generic_base_color_get(Eo *obj EINA_UNUSED,
 }
 
 static void
-_ector_renderer_generic_base_mask_set(Eo *obj EINA_UNUSED,
-                                      Ector_Renderer_Generic_Base_Data *pd,
-                                      Ector_Renderer *r)
-{
-   _ector_renderer_replace(&pd->mask, r);
-}
-
-static Ector_Renderer *
-_ector_renderer_generic_base_mask_get(Eo *obj EINA_UNUSED,
-                                      Ector_Renderer_Generic_Base_Data *pd)
-{
-   return pd->mask;
-}
-
-static void
 _ector_renderer_generic_base_quality_set(Eo *obj EINA_UNUSED,
                                          Ector_Renderer_Generic_Base_Data *pd,
                                          Ector_Quality q)
@@ -125,16 +110,6 @@ _ector_renderer_generic_base_quality_get(Eo *obj EINA_UNUSED,
    return pd->q;
 }
 
-static Eina_Bool
-_ector_renderer_generic_base_prepare(Eo *obj EINA_UNUSED,
-                                     Ector_Renderer_Generic_Base_Data *pd)
-{
-   if (pd->mask)
-     eo_do(pd->mask, ector_renderer_prepare());
-
-   return EINA_TRUE;
-}
-
 static unsigned int
 _ector_renderer_generic_base_crc_get(Eo *obj EINA_UNUSED,
                                      Ector_Renderer_Generic_Base_Data *pd)
@@ -146,9 +121,16 @@ _ector_renderer_generic_base_crc_get(Eo *obj EINA_UNUSED,
    crc = eina_crc((void*) &pd->origin, sizeof(pd->origin), crc, EINA_FALSE);
 
    if (pd->m) crc = eina_crc((void*) pd->m, sizeof(Eina_Matrix3), crc, EINA_FALSE);
-   if (pd->mask) crc = _renderer_crc_get(pd->mask, crc);
 
    return crc;
+}
+
+static void
+_ector_renderer_generic_base_mask_set(Eo *obj EINA_UNUSED,
+                                      Ector_Renderer_Generic_Base_Data *pd EINA_UNUSED,
+                                      Ector_Buffer *mask EINA_UNUSED,
+                                      int op EINA_UNUSED)
+{
 }
 
 #include "ector_renderer_generic_base.eo.c"

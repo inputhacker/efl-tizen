@@ -70,8 +70,6 @@ struct _Ector_Renderer_Generic_Base_Data
       int r, g, b, a;
    } color;
 
-   Ector_Renderer *mask;
-
    Ector_Quality q;
    Eina_Bool visibility;
 };

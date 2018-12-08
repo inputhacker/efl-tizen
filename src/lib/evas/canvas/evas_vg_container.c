@@ -5,17 +5,70 @@
 
 #define MY_CLASS EFL_VG_CONTAINER_CLASS
 
+static Ector_Buffer *
+_prepare_mask(Evas_Object_Protected_Data *obj,     //vector object
+              Efl_VG_Base* mask_obj,
+              Ector_Surface *surface,
+              Eina_Matrix3 *ptransform,
+              Ector_Buffer *mask,
+              int mask_op)
+{
+   Efl_VG_Container_Data *pd = eo_data_scope_get(mask_obj, MY_CLASS);
+   Efl_VG_Base_Data *nd =
+         eo_data_scope_get(mask_obj, EFL_VG_BASE_CLASS);
+   if (nd->flags == EFL_GFX_CHANGE_FLAG_NONE) return pd->mask.buffer;
+
+   //1. Mask Size
+   Eina_Rect mbound;
+   mbound.x = 0;
+   mbound.y = 0;
+   mbound.w = obj->cur->geometry.w;
+   mbound.h = obj->cur->geometry.h;
+
+//   efl_gfx_path_bounds_get(mask, &mbound);
+
+   //2. Reusable ector buffer?
+   if (!pd->mask.buffer || (pd->mask.bound.w != mbound.w) ||
+         (pd->mask.bound.h != mbound.h))
+     {
+        if (pd->mask.pixels) free(pd->mask.pixels);
+        if (pd->mask.buffer) free(pd->mask.buffer);
+        pd->mask.pixels = calloc(sizeof(uint32_t), mbound.w * mbound.h);
+        pd->mask.buffer = (Ector_Buffer*) malloc(sizeof(Ector_Buffer));
+        pd->mask.buffer->buffer = pd->mask.pixels;
+        pd->mask.buffer->w = mbound.w;
+        pd->mask.buffer->h = mbound.h;
+        pd->mask.bound.w = mbound.w;
+        pd->mask.bound.h = mbound.h;
+        pd->mask.vg_pd = obj;
+     }
+
+   pd->mask.bound.x = mbound.x;
+   pd->mask.bound.y = mbound.y;
+
+   if (!pd->mask.buffer) ERR("Mask Buffer is invalid");
+
+   pd->mask.dirty = EINA_TRUE;
+
+   //3. Prepare Drawing shapes...
+   _evas_vg_render_pre(obj, mask_obj, surface, ptransform, mask, mask_op);
+
+   return pd->mask.buffer;
+}
+
 static void
-_efl_vg_container_render_pre(Eo *obj EINA_UNUSED,
-                             Eina_Matrix3 *parent,
-                             Ector_Surface *s,
-                             void *data,
-                             Efl_VG_Base_Data *nd)
+_efl_vg_container_render_pre(Evas_Object_Protected_Data *vg_pd,
+                             Efl_VG *obj EINA_UNUSED,
+                             Efl_VG_Base_Data *nd,
+                             Ector_Surface *surface,
+                             Eina_Matrix3 *ptransform,
+                             Ector_Buffer *mask,
+                             int mask_op,
+                             void *data)
 {
    Efl_VG_Container_Data *pd = data;
    Eina_List *l;
-   Eo *child;
-   Efl_VG_Base_Data *child_nd;
+   Efl_VG *child;
    Efl_Gfx_Change_Flag flag;
 
    if (nd->flags == EFL_GFX_CHANGE_FLAG_NONE) return;
@@ -23,20 +76,37 @@ _efl_vg_container_render_pre(Eo *obj EINA_UNUSED,
    flag = nd->flags;
    nd->flags = EFL_GFX_CHANGE_FLAG_NONE;
 
-   EFL_VG_COMPUTE_MATRIX(current, parent, nd);
+   EFL_VG_COMPUTE_MATRIX(ctransform, ptransform, nd);
+
+   //Container may have mask source.
+   if (pd->mask_src)
+     {
+        mask = _prepare_mask(vg_pd, pd->mask_src, surface, ptransform, mask,
+                             mask_op);
+        mask_op = pd->mask.option;
+     }
 
    EINA_LIST_FOREACH(pd->children, l, child)
      {
+        //Don't need to update mask nodes.
+        if (eo_isa(child, MY_CLASS))
+          {
+             Efl_VG_Container_Data *child_cd =
+                eo_data_scope_get(child, MY_CLASS);
+             if (child_cd->mask.target) continue;
+          }
+
         //Skip Gradients. they will be updated by Shape.
         if (eo_isa(child, EFL_VG_GRADIENT_CLASS))
           continue;
 
+        Efl_VG_Base_Data *child_nd =
+           eo_data_scope_get(child, EFL_VG_BASE_CLASS);
+
         if (flag & EFL_GFX_CHANGE_FLAG_MATRIX)
-          {
-             child_nd = eo_data_scope_get(child, EFL_VG_BASE_CLASS);
-             child_nd->flags |= EFL_GFX_CHANGE_FLAG_MATRIX;
-          }
-        _evas_vg_render_pre(child, s, current);
+          child_nd->flags |= EFL_GFX_CHANGE_FLAG_MATRIX;
+
+        _evas_vg_render_pre(vg_pd, child, surface, ctransform, mask, mask_op);
      }
 }
 
@@ -62,10 +132,17 @@ static void
 _efl_vg_container_eo_base_destructor(Eo *obj,
                                      Efl_VG_Container_Data *pd EINA_UNUSED)
 {
-   eo_do_super(obj, MY_CLASS, eo_destructor());
+   //Destroy mask surface
+   if (pd->mask.buffer) free(pd->mask.buffer);
+   if (pd->mask.pixels) free(pd->mask.pixels);
 
+   eo_unref(pd->mask_src);
+   eina_list_free(pd->mask.target);
    eina_hash_free(pd->names);
    pd->names = NULL;
+
+   eo_do_super(obj, MY_CLASS, eo_destructor());
+
 }
 
 static void
@@ -168,6 +245,13 @@ _efl_vg_container_efl_vg_base_dup(Eo *obj,
 
    fromd = eo_data_scope_get(from, EFL_VG_CONTAINER_CLASS);
 
+   //Copy Mask
+   if (pd->mask_src)
+     {
+        Eo * mask_src = eo_add(eo_class_get(pd->mask_src), obj, efl_vg_dup(pd->mask_src));
+        evas_vg_node_mask_set(obj, mask_src, pd->mask.option);
+     }
+
    EINA_LIST_FREE(pd->children, child)
      eo_unref(child);
 
@@ -177,6 +261,36 @@ _efl_vg_container_efl_vg_base_dup(Eo *obj,
         // this new object as a child of obj. Magic at work !
         (void) eo_add(eo_class_get(child), obj, efl_vg_dup(child));
      }
+}
+
+static void
+_efl_vg_container_efl_vg_base_mask_set(Eo *obj,
+                                       Efl_VG_Container_Data *pd,
+                                       Efl_VG_Base *mask,
+                                       int op)
+{
+   if (pd->mask_src == mask) return;
+
+   EINA_SAFETY_ON_FALSE_RETURN(eo_isa(mask, MY_CLASS));
+
+   if (pd->mask_src)
+     {
+        Efl_VG_Container_Data *pd2 =
+              eo_data_scope_get(pd->mask_src, MY_CLASS);
+        pd2->mask.target = eina_list_remove(pd2->mask.target, obj);
+     }
+
+   if (mask)
+     {
+        Efl_VG_Container_Data *pd2 = eo_data_scope_get(mask, MY_CLASS);
+        pd2->mask.target = eina_list_append(pd2->mask.target, obj);
+     }
+
+   pd->mask.option = op;
+   if (pd->mask_src) eo_unref(pd->mask_src);
+   if (mask) eo_ref(mask);
+   pd->mask_src = mask;
+   _efl_vg_base_changed(obj);
 }
 
 EAPI Efl_VG*

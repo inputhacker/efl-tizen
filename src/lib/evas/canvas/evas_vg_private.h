@@ -70,10 +70,11 @@ struct _Efl_VG_Base_Data
    Eina_Matrix3 *m;
    Efl_VG_Interpolation *intp;
 
-   Efl_VG *mask;
    Ector_Renderer *renderer;
 
-   void (*render_pre)(Eo *obj, Eina_Matrix3 *parent, Ector_Surface *s, void *data, Efl_VG_Base_Data *nd);
+   void (*render_pre)(Evas_Object_Protected_Data *vg_pd, Efl_VG *node,
+                      Efl_VG_Base_Data *nd, Ector_Surface *surface,
+                      Eina_Matrix3 *ptransform, Ector_Buffer *mask, int mask_op, void *data);
    void *data;
 
    double x, y;
@@ -84,11 +85,31 @@ struct _Efl_VG_Base_Data
    Eina_Bool changed : 1;
 };
 
+typedef struct _Eina_Rect
+{
+   int x, y, w, h;
+
+} Eina_Rect;
+
+typedef struct _Vg_Mask
+{
+   Evas_Object_Protected_Data *vg_pd;  //Vector Object (for accessing backend engine)
+   Ector_Buffer *buffer;               //Mask Ector Buffer
+   void *pixels;                       //Mask pixel buffer (actual data)
+   Eina_Rect bound;                    //Mask boundary
+   Eina_List *target;                  //Mask target
+   int option;                         //Mask option
+   Eina_Bool dirty : 1;                //Need to update mask image.
+} Vg_Mask;
+
 struct _Efl_VG_Container_Data
 {
    Eina_List *children;
-
    Eina_Hash *names;
+
+   //Masking feature.
+   Efl_VG_Base *mask_src;         //Mask Source
+   Vg_Mask mask;                  //Mask source data
 };
 
 struct _Efl_VG_Gradient_Data
@@ -110,17 +131,12 @@ struct _Efl_VG_Interpolation
 };
 
 static inline Efl_VG_Base_Data *
-_evas_vg_render_pre(Efl_VG *child, Ector_Surface *s, Eina_Matrix3 *m)
+_evas_vg_render_pre(Evas_Object_Protected_Data *vg_pd, Efl_VG *child, Ector_Surface *surface, Eina_Matrix3 *transform, Ector_Buffer *mask, int mask_op)
 {
-   Efl_VG_Base_Data *child_nd = NULL;
-
-   // FIXME: Prevent infinite loop
-   if (child)
-     child_nd = eo_data_scope_get(child, EFL_VG_BASE_CLASS);
-   if (child_nd)
-     child_nd->render_pre(child, m, s, child_nd->data, child_nd);
-
-   return child_nd;
+   if (!child) return NULL;
+   Efl_VG_Base_Data *nd = eo_data_scope_get(child, EFL_VG_BASE_CLASS);
+   if (nd) nd->render_pre(vg_pd, child, nd, surface, transform, mask, mask_op, nd->data);
+   return nd;
 }
 
 static inline void

@@ -2774,7 +2774,8 @@ eng_ector_begin(void *data EINA_UNUSED, void *context EINA_UNUSED, Ector_Surface
    glim = eng_image_data_get(data, glim, EINA_TRUE, &pixels, &load_err,NULL);
    eng_image_stride_get(data, glim, &stride);
    eng_image_size_get(data, glim, &w, &h);
-   memset(pixels, 0, stride * h);
+   if (surface_clear)
+     memset(pixels, 0, stride * h);
 
    if (use_cairo)
      {

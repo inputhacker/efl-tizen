@@ -23,6 +23,9 @@ struct _Ector_Renderer_Software_Shape_Data
    Ector_Renderer_Generic_Base_Data    *base;
    Shape_Rle_Data                      *shape_data;
    Shape_Rle_Data                      *outline_data;
+
+   Ector_Buffer                *mask;
+   int                          mask_op;
 };
 
 typedef struct _Outline
@@ -576,14 +579,6 @@ static Eina_Bool
 _ector_renderer_software_shape_ector_renderer_generic_base_prepare(Eo *obj,
                                                                    Ector_Renderer_Software_Shape_Data *pd)
 {
-   // FIXME: shouldn't that be part of the shape generic implementation ?
-   if (pd->shape->fill)
-     eo_do(pd->shape->fill, ector_renderer_prepare());
-   if (pd->shape->stroke.fill)
-     eo_do(pd->shape->stroke.fill, ector_renderer_prepare());
-   if (pd->shape->stroke.marker)
-     eo_do(pd->shape->stroke.marker, ector_renderer_prepare());
-
    // shouldn't that be moved to the software base object
    if (!pd->surface)
      {
@@ -620,7 +615,9 @@ _ector_renderer_software_shape_ector_renderer_generic_base_draw(Eo *obj,
         eo_do(pd->shape->fill, ector_renderer_software_base_fill());
         ector_software_rasterizer_draw_rle_data(pd->surface->software,
                                                 x, y, mul_col, op,
-                                                pd->shape_data);
+                                                pd->shape_data,
+                                                pd->mask,
+                                                pd->mask_op);
      }
    else
      {
@@ -633,7 +630,9 @@ _ector_renderer_software_shape_ector_renderer_generic_base_draw(Eo *obj,
                                                  pd->base->color.a);
              ector_software_rasterizer_draw_rle_data(pd->surface->software,
                                                      x, y, mul_col, op,
-                                                     pd->shape_data);
+                                                     pd->shape_data,
+                                                     pd->mask,
+                                                     pd->mask_op);
           }
      }
 
@@ -642,7 +641,9 @@ _ector_renderer_software_shape_ector_renderer_generic_base_draw(Eo *obj,
         eo_do(pd->shape->stroke.fill, ector_renderer_software_base_fill());
         ector_software_rasterizer_draw_rle_data(pd->surface->software,
                                                 x, y, mul_col, op,
-                                                pd->outline_data);
+                                                pd->outline_data,
+                                                pd->mask,
+                                                pd->mask_op);
      }
    else
      {
@@ -655,7 +656,9 @@ _ector_renderer_software_shape_ector_renderer_generic_base_draw(Eo *obj,
                                                  pd->public_shape->stroke.color.a);
              ector_software_rasterizer_draw_rle_data(pd->surface->software,
                                                      x, y, mul_col, op,
-                                                     pd->outline_data);
+                                                     pd->outline_data,
+                                                     pd->mask,
+                                                     pd->mask_op);
           }
      }
 
@@ -775,6 +778,17 @@ _ector_renderer_software_shape_ector_renderer_generic_base_crc_get(Eo *obj,
      }
 
    return crc;
+}
+
+static void
+_ector_renderer_software_shape_ector_renderer_generic_base_mask_set(Eo *obj EINA_UNUSED,
+                                                                    Ector_Renderer_Software_Shape_Data *pd,
+                                                                    Ector_Buffer *mask,
+                                                                    int op)
+{
+   //Use ref/unref.
+   pd->mask = mask;
+   pd->mask_op = op;
 }
 
 #include "ector_renderer_software_shape.eo.c"

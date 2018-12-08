@@ -194,21 +194,10 @@ _efl_vg_base_efl_gfx_base_color_part_get(Eo *obj, Efl_VG_Base_Data *pd,
 
 static void
 _efl_vg_base_mask_set(Eo *obj EINA_UNUSED,
-                       Efl_VG_Base_Data *pd,
-                       Efl_VG_Base *r)
+                      Efl_VG_Base_Data *pd EINA_UNUSED,
+                      Efl_VG_Base *mask EINA_UNUSED,
+                      int op EINA_UNUSED)
 {
-   Efl_VG_Base *tmp = pd->mask;
-
-   pd->mask = eo_ref(r);
-   eo_unref(tmp);
-
-   _efl_vg_base_changed(obj);
-}
-
-static Efl_VG_Base*
-_efl_vg_base_mask_get(Eo *obj EINA_UNUSED, Efl_VG_Base_Data *pd)
-{
-   return pd->mask;
 }
 
 static void
@@ -729,12 +718,6 @@ _efl_vg_base_interpolate(Eo *obj,
 
    pd->visibility = pos_map >= 0.5 ? tod->visibility : fromd->visibility;
 
-   if (fromd->mask && tod->mask && pd->mask)
-     {
-        eo_do(pd->mask,
-              r &= efl_vg_interpolate(fromd->mask, tod->mask, pos_map));
-     }
-
    _efl_vg_base_changed(obj);
 
    return r;
@@ -777,15 +760,6 @@ _efl_vg_base_dup(Eo *obj, Efl_VG_Base_Data *pd, const Efl_VG_Base *from)
    else
      {
         free(pd->m);
-     }
-
-   // We may come from an already duped/initialized node, clean it first
-   _efl_vg_clean_object(&pd->mask);
-   if (fromd->mask)
-     {
-        pd->mask = eo_add(eo_class_get(fromd->mask),
-                          obj,
-                          efl_vg_dup(pd->mask));
      }
 
    pd->x = fromd->x;

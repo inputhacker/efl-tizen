@@ -96,15 +96,9 @@ abstract Efl.VG.Base (Eo.Base, Efl.Gfx.Base, Efl.Gfx.Stack)
               \@endif
             ]]
          }
-         get {
-            [[
-              \@if MOBILE \@since_tizen 3.0
-              \@elseif WEARABLE \@since_tizen 3.0
-              \@endif
-            ]]
-         }
          values {
-            m: Efl_VG *;
+            mask: Efl.VG.Base *;  [[Mask object]]
+            op: int; [[Masking Option. Reserved]]
          }
       }
 /*      quality {

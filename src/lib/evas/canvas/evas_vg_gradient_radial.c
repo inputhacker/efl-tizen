@@ -72,11 +72,14 @@ _efl_vg_gradient_radial_efl_gfx_gradient_radial_focal_get(Eo *obj EINA_UNUSED,
 }
 
 static void
-_efl_vg_gradient_radial_render_pre(Eo *obj,
-                                    Eina_Matrix3 *parent,
-                                    Ector_Surface *s,
-                                    void *data,
-                                    Efl_VG_Base_Data *nd)
+_efl_vg_gradient_radial_render_pre(Evas_Object_Protected_Data *vg_pd EINA_UNUSED,
+                                   Efl_VG *obj,
+                                   Efl_VG_Base_Data *nd,
+                                   Ector_Surface *surface,
+                                   Eina_Matrix3 *ptransform,
+                                   Ector_Buffer *mask,
+                                   int mask_op,
+                                   void *data)
 {
    Efl_VG_Gradient_Radial_Data *pd = data;
    Efl_VG_Gradient_Data *gd;
@@ -86,15 +89,15 @@ _efl_vg_gradient_radial_render_pre(Eo *obj,
    nd->flags = EFL_GFX_CHANGE_FLAG_NONE;
 
    gd = eo_data_scope_get(obj, EFL_VG_GRADIENT_CLASS);
-   EFL_VG_COMPUTE_MATRIX(current, parent, nd);
+   EFL_VG_COMPUTE_MATRIX(ctransform, ptransform, nd);
 
    if (!nd->renderer)
      {
-        eo_do(s, nd->renderer = ector_surface_renderer_factory_new(ECTOR_RENDERER_GENERIC_GRADIENT_RADIAL_MIXIN));
+        eo_do(surface, nd->renderer = ector_surface_renderer_factory_new(ECTOR_RENDERER_GENERIC_GRADIENT_RADIAL_MIXIN));
      }
 
    eo_do(nd->renderer,
-         ector_renderer_transformation_set(current),
+         ector_renderer_transformation_set(ctransform),
          ector_renderer_origin_set(nd->x, nd->y),
          ector_renderer_color_set(nd->r, nd->g, nd->b, nd->a),
          ector_renderer_visibility_set(nd->visibility),
@@ -102,7 +105,9 @@ _efl_vg_gradient_radial_render_pre(Eo *obj,
          efl_gfx_gradient_spread_set(gd->s),
          efl_gfx_gradient_radial_center_set(pd->center.x, pd->center.y),
          efl_gfx_gradient_radial_focal_set(pd->focal.x, pd->focal.y),
-         efl_gfx_gradient_radial_radius_set(pd->radius));
+         efl_gfx_gradient_radial_radius_set(pd->radius),
+         ector_renderer_prepare(),
+         ector_renderer_mask_set(mask, mask_op));
 }
 
 static Eo *

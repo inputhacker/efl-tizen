@@ -63,15 +63,6 @@ abstract Ector.Renderer.Generic.Base (Eo.Base)
             a: int; [[The alpha component of the given color.]]
 	 }
       }
-      @property mask {
-         set {
-	 }
-	 get {
-	 }
-	 values {
-	    r: Ector_Renderer *;
-	 }
-      }
       @property quality {
          set {
 	 }
@@ -90,6 +81,15 @@ abstract Ector.Renderer.Generic.Base (Eo.Base)
 	 params {
 	    @out r: Eina.Rectangle;
 	 }
+      }
+      @property mask {
+         [[Set Mask Image to this Renderer]]
+         set {
+         }
+         values {
+            mask: Ector_Buffer *; [[Mask Image Buffer]]
+            op: int; [[Masking option]]
+         }
       }
       draw {
          return: bool @warn_unused;
@@ -113,5 +113,6 @@ abstract Ector.Renderer.Generic.Base (Eo.Base)
       @virtual .draw;
       @virtual .bounds_get;
       @virtual .done;
+      @virtual .prepare;
    }
 }

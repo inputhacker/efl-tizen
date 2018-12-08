@@ -16,20 +16,23 @@ struct _Efl_VG_Root_Node_Data
 };
 
 static void
-_evas_vg_root_node_render_pre(Eo *obj EINA_UNUSED,
-                              Eina_Matrix3 *parent,
-                              Ector_Surface *s,
-                              void *data,
-                              Efl_VG_Base_Data *nd)
+_evas_vg_root_node_render_pre(Evas_Object_Protected_Data *vg_pd,
+                              Efl_VG *obj EINA_UNUSED,
+                              Efl_VG_Base_Data *nd,
+                              Ector_Surface *surface,
+                              Eina_Matrix3 *ptransform,
+                              Ector_Buffer *mask,
+                              int mask_op,
+                              void *data)
 {
    Efl_VG_Container_Data *pd = data;
    Eina_List *l;
    Eo *child;
 
-   EFL_VG_COMPUTE_MATRIX(current, parent, nd);
+   EFL_VG_COMPUTE_MATRIX(ctransform, ptransform, nd);
 
    EINA_LIST_FOREACH(pd->children, l, child)
-     _evas_vg_render_pre(child, s, current);
+     _evas_vg_render_pre(vg_pd, child, surface, ctransform, mask, mask_op);
 }
 
 static Eina_Bool

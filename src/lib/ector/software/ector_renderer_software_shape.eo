@@ -7,6 +7,7 @@ class Ector.Renderer.Software.Shape (Ector.Renderer.Software.Base, Ector.Rendere
       Ector.Renderer.Generic.Base.draw;
       Ector.Renderer.Software.Base.fill;
       Ector.Renderer.Generic.Base.crc.get;
+      Ector.Renderer.Generic.Base.mask.set;
       Efl.Gfx.Shape.path.set;
       Eo.Base.constructor;
       Eo.Base.destructor;      
