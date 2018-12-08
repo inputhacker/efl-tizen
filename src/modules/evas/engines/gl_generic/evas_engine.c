@@ -2,7 +2,6 @@
 #include "evas_gl_core_private.h"
 
 #include "software/Ector_Software.h"
-#include "../software_generic/evas_ector_software.h"
 #include "cairo/Ector_Cairo.h"
 #include "gl/Ector_GL.h"
 #include "evas_ector_gl.h"
@@ -2774,11 +2773,14 @@ eng_ector_buffer_wrap(void *engine EINA_UNUSED, Evas *evas, void *engine_image)
                   evas_ector_buffer_engine_image_set(efl_added, evas, im));
 }
 
+//FIXME: Currently Ector GL doens't work properly. Use software instead.
+#include "../software_generic/evas_ector_software.h"
+
 static Ector_Buffer *
 eng_ector_buffer_new(void *engine, Evas *evas, int w, int h,
                      Efl_Gfx_Colorspace cspace, Ector_Buffer_Flag flags)
 {
-   /* This condition is tricky, this buffer could be used for masking
+   /* FIXME: This condition is tricky, this buffer could be used for masking
     * buffer by vector, Require to use software drawing.
     */
    if (flags != (ECTOR_BUFFER_FLAG_DRAWABLE | ECTOR_BUFFER_FLAG_CPU_READABLE | ECTOR_BUFFER_FLAG_CPU_WRITABLE))
