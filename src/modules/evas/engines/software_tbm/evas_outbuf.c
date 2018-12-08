@@ -1,7 +1,4 @@
 #include "evas_engine.h"
-#ifdef EVAS_CSERVE2
-#include "evas_cs2_private.h"
-#endif
 
 #include <tbm_surface.h>
 #include <tbm_surface_queue.h>
@@ -22,13 +19,7 @@ static void
 _tbm_surface_evas_buffer_info_free(void *data)
 {
    evas_buffer_info* ebuf_info = data;
-
-#ifdef EVAS_CSERVE2
-   if (evas_cserve2_use_get())
-      evas_cache2_image_close(&ebuf_info->im->cache_entry);
-   else
-#endif
-      evas_cache_image_drop(&ebuf_info->im->cache_entry);
+   evas_cache_image_drop(&ebuf_info->im->cache_entry);
 
    free(data);
 }
@@ -46,26 +37,12 @@ _tbm_surface_evas_buffer_info_get(tbm_surface_h surface, Eina_Bool *is_first)
                                        _tbm_surface_evas_buffer_info_free);
         tbm_surface_get_info(surface, &tbm_info);
 
-#ifdef EVAS_CSERVE2
-        if (evas_cserve2_use_get())
-          {
-             img = (RGBA_Image *)
-               evas_cache2_image_data(evas_common_image_cache2_get(),
-                                      tbm_info.planes[0].stride/4, tbm_info.height,
-                                      (DATA32*)tbm_info.planes[0].ptr,
-                                      1,
-                                      EVAS_COLORSPACE_ARGB8888);
-          }
-        else
-#endif
-          {
-             img = (RGBA_Image *)
-               evas_cache_image_data(evas_common_image_cache_get(),
-                                      tbm_info.planes[0].stride/4, tbm_info.height,
-                                      (DATA32*)tbm_info.planes[0].ptr,
-                                      1,
-                                      EVAS_COLORSPACE_ARGB8888);
-          }
+        img = (RGBA_Image *)
+           evas_cache_image_data(evas_common_image_cache_get(),
+                                 tbm_info.planes[0].stride/4, tbm_info.height,
+                                 (DATA32*)tbm_info.planes[0].ptr,
+                                 1,
+                                 EVAS_COLORSPACE_ARGB8888);
 
         if (!img)
           ERR("fail to evas_cache_image_data()");

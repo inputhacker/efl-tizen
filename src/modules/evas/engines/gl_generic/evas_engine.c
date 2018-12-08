@@ -1152,16 +1152,9 @@ eng_image_orient_set(void *engine, void *image, Evas_Image_Orient orient)
    // TIZEN_ONLY(20171114) : image orient
    if (im->im)
      {
-       if (!im->im->image.data)
-         {
-#ifdef EVAS_CSERVE2
-           if (evas_cserve2_use_get() && evas_cache2_image_cached(&im->im->cache_entry))
-             evas_cache2_image_load_data(&im->im->cache_entry);
-           else
-#endif
-             evas_cache_image_load_data(&im->im->cache_entry);
-         }
-       evas_gl_common_image_alloc_ensure(im);
+        if (!im->im->image.data)
+          evas_cache_image_load_data(&im->im->cache_entry);
+        evas_gl_common_image_alloc_ensure(im);
 
        // If the image has already been rotated because of evas_object_image_data_get()
        // undo the previous orientation
@@ -1271,13 +1264,7 @@ eng_image_data_preload_request(void *engine EINA_UNUSED, void *image, const Eo *
    if (gim->native.data) return;
    im = (RGBA_Image *)gim->im;
    if (!im) return;
-
-#ifdef EVAS_CSERVE2
-   if (evas_cserve2_use_get() && evas_cache2_image_cached(&im->cache_entry))
-     evas_cache2_image_preload_data(&im->cache_entry, target, evas_gl_common_image_preload_done, gim);
-   else
-#endif
-     evas_cache_image_preload_data(&im->cache_entry, target, evas_gl_common_image_preload_done, gim);
+   evas_cache_image_preload_data(&im->cache_entry, target, evas_gl_common_image_preload_done, gim);
 }
 
 static void

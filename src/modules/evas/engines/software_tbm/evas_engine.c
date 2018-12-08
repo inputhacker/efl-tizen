@@ -1,8 +1,5 @@
 #include "evas_common_private.h"
 #include "evas_private.h"
-#ifdef EVAS_CSERVE2
-#include "evas_cs2_private.h"
-#endif
 #include "evas_engine.h"
 #include "evas_native_common.h"
 #include <tbm_surface.h>
@@ -298,11 +295,6 @@ eng_image_native_set(void *data EINA_UNUSED, void *image, void *native)
                                                   EVAS_COLORSPACE_ARGB8888);
      }
 
-#ifdef EVAS_CSERVE2
-   if (evas_cserve2_use_get() && evas_cache2_image_cached(ie))
-     evas_cache2_image_close(ie);
-   else
-#endif
      evas_cache_image_drop(ie);
 
    im = im2;

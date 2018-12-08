@@ -264,12 +264,7 @@ struct _RGBA_Font_Int
    Font_Rend_Flags  wanted_rend; /* The wanted rendering style */
    Font_Rend_Flags  runtime_rend; /* The rendering we need to do on runtime
                                      in order to comply with the wanted_rend. */
-
    Eina_List       *task;
-#ifdef EVAS_CSERVE2
-   void            *cs2_handler;
-#endif
-
    int              generation;
 
    Efl_Text_Font_Bitmap_Scalable bitmap_scalable;
