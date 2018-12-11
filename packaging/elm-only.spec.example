@@ -2,7 +2,7 @@
 %bcond_with x
 
 Name:           elementary
-Version:        1.20.0
+Version:        1.21.0
 Release:        0
 License:        LGPL-2.1+
 Summary:        Enlightenment Foundation Libraries - set of libraries used (not only) by E17
@@ -89,6 +89,7 @@ BuildRequires:  pkgconfig(sm)
 BuildRequires:  pkgconfig(ibus-1.0)
 %endif
 
+#BuildRequires:  pkgconfig(lottie-player)
 BuildRequires:  glib2-devel
 #BuildRequires:  pkgconfig(bullet)
 BuildRequires:  pkgconfig(openssl)
@@ -238,7 +239,6 @@ export XDG_RUNTIME_DIR="/tmp/"
     --with-glib=always \
     --disable-xim \
     --disable-scim \
-    --disable-neon \
     --disable-wayland-text-input \
     --disable-gesture \
     --with-tests=none \
@@ -275,19 +275,21 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-libraw \
     --disable-systemd \
     --disable-cserve \
+    --enable-tizenaudio \
     --with-elementary-base-dir="share/.elementary" \
     --with-elementary=elm \
     --with-eolian-gen=/usr/bin/eolian_gen \
     --with-elua=/usr/bin/elua \
     --with-edje-cc=/usr/bin/edje_cc \
     --with-eet-eet=/usr/bin/eet \
-    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb
+    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb \
+    ac_cv_func_getuid=no
 #    --enable-systemd \
 #    --enable-drm \
 #    --enable-gl-drm \
 
-%__make %{?_smp_mflags} --trace \
-2>&1 | sed \
+%__make %{?_smp_mflags} 2>&1 | \
+sed \
 -e 's%^.*: error: .*$%\x1b[37;41m&\x1b[m%' \
 -e 's%^.*: warning: .*$%\x1b[30;43m&\x1b[m%'
 
@@ -311,8 +313,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.99.100
 
 %preun -n elementary-tizen
 rm -f %{_libdir}/libelementary.so.1
-#ln -sf %{_libdir}/libelementary.so.1.20.* %{_libdir}/libelementary.so.1
-ldconfig -l %{_libdir}/libelementary.so.1.20.*
+#ln -sf %{_libdir}/libelementary.so.1.21.* %{_libdir}/libelementary.so.1
+ldconfig -l %{_libdir}/libelementary.so.1.21.*
 
 %postun -n elementary-tizen -p /sbin/ldconfig
 
@@ -323,11 +325,11 @@ ldconfig -l %{_libdir}/libelementary.so.1.20.*
 %license COPYING
 %{_bindir}/elementary_quicklaunch
 %{_bindir}/elementary_run
-%{_libdir}/edje/modules/elm/v-1.20/module.so
+%{_libdir}/edje/modules/elm/v-1.21/module.so
 %{_libdir}/libelementary.so.1
-%{_libdir}/libelementary.so.1.20.*
+%{_libdir}/libelementary.so.1.21.*
 %{_datadir}/elementary/edje_externals/*
-%{_datadir}/icons/elementary.png
+%{_datadir}/icons/hicolor/128x128/apps/elementary.png
 %{_libdir}/elementary/modules/
 /usr/lib/debug/%{_libdir}/elementary/modules/
 %exclude %{_datadir}/elementary/config/

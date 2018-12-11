@@ -2,7 +2,7 @@
 %bcond_with x
 
 Name:           efl
-Version:        1.20.0
+Version:        1.21.0
 Release:        0
 License:        LGPL-2.1+
 Summary:        Enlightenment Foundation Libraries - set of libraries used (not only) by E17
@@ -61,6 +61,7 @@ BuildRequires:  pkgconfig(sm)
 BuildRequires:  pkgconfig(ibus-1.0)
 %endif
 
+#BuildRequires:  pkgconfig(lottie-player)
 BuildRequires:  glib2-devel
 #BuildRequires:  pkgconfig(bullet)
 BuildRequires:  pkgconfig(openssl)
@@ -1161,7 +1162,6 @@ export XDG_RUNTIME_DIR="/tmp/"
     --with-glib=always \
     --disable-xim \
     --disable-scim \
-    --disable-neon \
     --disable-wayland-text-input \
     --disable-gesture \
     --with-tests=none \
@@ -1198,15 +1198,17 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-libraw \
     --disable-systemd \
     --disable-cserve \
+    --enable-tizenaudio \
     --with-elementary-base-dir="share/.elementary" \
     --with-elementary=efl \
-    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb
+    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb \
+    ac_cv_func_getuid=no
 #    --enable-systemd \
 #    --enable-drm \
 #    --enable-gl-drm \
 
-%__make %{?_smp_mflags} --trace \
-2>&1 | sed \
+%__make %{?_smp_mflags} 2>&1 | \
+sed \
 -e 's%^.*: error: .*$%\x1b[37;41m&\x1b[m%' \
 -e 's%^.*: warning: .*$%\x1b[30;43m&\x1b[m%'
 
@@ -1305,6 +1307,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %{_libdir}/libefl.so
 %{_libdir}/pkgconfig/efl*.pc
 %exclude %{_includedir}/efl-cxx-1/*.hh
+%exclude %{_includedir}/efl-cxx-1/cxx/*.hh
 
 %files -n eina
 %manifest %{name}.manifest
@@ -1522,8 +1525,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_con.so.*
 %{_tmpfilesdir}/efl.conf
-%exclude %{_libdir}/ecore_con/utils/v-1.20/efl_net_proxy_helper
-%exclude /usr/lib/debug/%{_libdir}/ecore_con/utils/v-1.20/efl_net_proxy_helper*
+%exclude %{_libdir}/ecore_con/utils/v-1.21/efl_net_proxy_helper
+%exclude /usr/lib/debug/%{_libdir}/ecore_con/utils/v-1.21/efl_net_proxy_helper*
 
 %files -n ecore-con-devel
 %manifest %{name}.manifest
@@ -1672,6 +1675,8 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_wl2.so.*
+%{_libdir}/ecore_wl2/engines/*/*/module.so
+%exclude /usr/lib/debug/%{_libdir}/ecore_wl2/engines/*/*/module.so.debug
 
 %files -n ecore-wl2-devel
 %manifest %{name}.manifest
@@ -1992,4 +1997,5 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 ##%files -n efl-locale -f %{name}.lang
 ##%license COPYING
 ##%defattr(-,root,root,-)
+
 
