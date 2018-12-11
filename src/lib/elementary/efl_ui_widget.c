@@ -5561,7 +5561,6 @@ _elm_widget_item_efl_object_destructor(Eo *eo_item, Elm_Widget_Item_Data *item)
    //
 
    efl_access_object_attributes_clear(eo_item);
-   efl_access_removed(eo_item);
 
    // TIZEN_ONLY(20150709) : atspi relations api
    if (item->atspi_custom_relations)
@@ -7101,7 +7100,6 @@ _efl_ui_widget_efl_object_destructor(Eo *obj, Elm_Widget_Smart_Data *sd)
    //
 
    efl_access_object_attributes_clear(obj);
-   efl_access_removed(obj);
    if (sd->logical.parent)
      {
         efl_weak_unref(&sd->logical.parent);

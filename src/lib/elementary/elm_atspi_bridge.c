@@ -6242,6 +6242,15 @@ _on_object_add(void *data, const Efl_Event *event)
    eldbus_service_signal_send(pd->cache_interface, sig);
 }
 
+//TIZEN_ONLY(20181211): Fix for missing unregistration of atspi objects
+void
+unregister_atspi_object_in_bridge(const Eo *obj)
+{
+   Eo *bridge = _elm_atspi_bridge_get();
+   _bridge_object_unregister(bridge, obj);
+}
+//
+
 static void
 _on_object_del(void *data, const Efl_Event *event)
 {
@@ -6249,7 +6258,9 @@ _on_object_del(void *data, const Efl_Event *event)
 
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(data, pd);
 
-   _bridge_object_unregister(data, event->object);
+   //TIZEN_ONLY(20181211): Fix for missing unregistration of atspi objects
+   unregister_atspi_object_in_bridge(event->object);
+   //
 
    sig = eldbus_service_signal_new(pd->cache_interface, ATSPI_OBJECT_CHILD_REMOVED);
    Eldbus_Message_Iter *iter = eldbus_message_iter_get(sig);

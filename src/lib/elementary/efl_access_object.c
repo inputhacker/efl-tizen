@@ -8,6 +8,10 @@
 #include "elm_widget.h"
 #include "elm_priv.h"
 
+//TIZEN_ONLY(20181211): Fix for missing unregistration of atspi objects
+void unregister_atspi_object_in_bridge(const Eo *obj);
+//
+
 const char* Access_Name[] = {
     "invalid",
     "accelerator label",
@@ -839,6 +843,9 @@ _efl_access_object_efl_object_destructor(Eo *obj, Efl_Access_Object_Data *pd)
    eina_stringshare_del(pd->description);
    eina_stringshare_del(pd->translation_domain);
    efl_access_relation_set_free(&pd->relations);
+   //TIZEN_ONLY(20181211): Fix for missing unregistration of atspi objects
+   unregister_atspi_object_in_bridge(obj);
+   //
 
    efl_destructor(efl_super(obj, EFL_ACCESS_OBJECT_MIXIN));
 }
