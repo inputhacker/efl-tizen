@@ -701,6 +701,7 @@ class Elm.Genlist (Efl.Ui.Layout, Elm.Interface_Scrollable, Efl.Ui.Clickable,
       Efl.Access.Selection.access_selection_clear;
       Efl.Ui.Widget.focus_state_apply;
       Efl.Ui.Focus.Manager.setup_on_first_touch;
+      Efl.Ui.Focus.Manager.manager_focus { get; }
 
       //TIZEN_ONLY(20171114) genlist: enhance accessibility scroll & highlight
       Elm.Interface_Scrollable.content_pos_set;
@@ -710,7 +711,6 @@ class Elm.Genlist (Efl.Ui.Layout, Elm.Interface_Scrollable, Efl.Ui.Clickable,
       Efl.Ui.Widget.focus_next_manager_is;
       Efl.Ui.Widget.focus_next;
       //
-
    }
    events {
       item,focused: Efl.Object; [[Called when genlist item got focus]]
