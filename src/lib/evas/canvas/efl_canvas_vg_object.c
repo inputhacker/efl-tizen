@@ -628,15 +628,48 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
 {
    Vg_Cache_Entry *vg_entry = pd->vg_entry;
    Efl_VG *root;
+   Eina_Position2D offset = {0, 0};  //Offset after keeping aspect ratio.
 
    // if the size changed in between path set and the draw call;
-
    if ((vg_entry->w != w) ||
        (vg_entry->h != h))
      {
-         vg_entry = evas_cache_vg_entry_resize(vg_entry, w, h);
-         evas_cache_vg_entry_del(pd->vg_entry);
-         pd->vg_entry = vg_entry;
+        Eina_Size2D size = evas_cache_vg_entry_default_size_get(pd->vg_entry);
+
+        //adjust size for aspect ratio.
+        if (size.w > 0 && size.h > 0)
+          {
+             float rw = (float) w / (float) size.w;
+             float rh = (float) h / (float) size.h;
+
+             if (rw < rh)
+               {
+                  size.w = w;
+                  size.h = (int) ((float) size.h * rw);
+               }
+             else
+               {
+                  size.w = (int) ((float) size.w * rh);
+                  size.h = h;
+               }
+          }
+        else
+          {
+              size.w = w;
+              size.h = h;
+          }
+
+        vg_entry = evas_cache_vg_entry_resize(vg_entry, size.w, size.h);
+        evas_cache_vg_entry_del(pd->vg_entry);
+        pd->vg_entry = vg_entry;
+
+        //update for adjusted pos and size.
+        offset.x = w - size.w;
+        if (offset.x > 0) offset.x /= 2;
+        offset.y = h - size.h;
+        if (offset.y > 0) offset.y /= 2;
+        w = size.w;
+        h = size.h;
      }
    root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
    if (!root) return;
@@ -653,7 +686,7 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
    _render_buffer_to_screen(obj,
                             engine, output, context, surface,
                             buffer,
-                            x, y, w, h,
+                            x + offset.x, y + offset.y, w, h,
                             do_async, cacheable);
 }
 
