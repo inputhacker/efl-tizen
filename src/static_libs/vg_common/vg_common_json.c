@@ -7,7 +7,7 @@
 
 #ifdef BUILD_VG_LOADER_JSON
 static void
-_construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth)
+_construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
 {
    Efl_VG *parent = root;
    if (!parent) return;
@@ -173,7 +173,7 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth)
 }
 
 static void
-_update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth)
+_update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
 {
    Efl_VG *ptree = NULL;
    Efl_VG *ctree = NULL;
