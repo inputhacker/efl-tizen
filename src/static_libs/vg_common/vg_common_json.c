@@ -17,16 +17,17 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
         const LOTNode *node = layer->mNodeList.ptr[i];
         if (!node) continue;
 
+        const float *data = node->mPath.ptPtr;
+        if (!data) continue;
+
         Efl_VG* shape = evas_vg_shape_add(parent);
         if (!shape) continue;
 #if 0
         for (int i = 0; i < depth; i++) printf("    ");
         printf("%s (%p)\n", efl_class_name_get(efl_class_get(shape)), shape);
 #endif
-
         //0: Path
-        const float *data = node->mPath.ptPtr;
-        if (!data) continue;
+        efl_gfx_path_reserve(shape, node->mPath.elmCount, node->mPath.ptCount);
 
         for (int i = 0; i < node->mPath.elmCount; i++)
           {
@@ -254,7 +255,6 @@ vg_common_json_create_vg_node(Vg_File_Data *vfd)
    printf("%s (%p)\n", efl_class_name_get(efl_class_get(vfd->root)), vfd->root);
 #endif
    _update_vg_tree(root, tree, 1);
-
 #else
    return EINA_FALSE;
 #endif
