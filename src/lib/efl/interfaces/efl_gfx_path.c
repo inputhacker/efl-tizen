@@ -84,7 +84,7 @@ efl_gfx_path_grow(Efl_Gfx_Path_Command command,
         //grow up twice
         if (pts_length > pd->reserved_pts_cnt)
           {
-             double *pts_tmp = realloc(pd->points, sizeof(pd->points) * (pts_length * 2));
+             double *pts_tmp = realloc(pd->points, sizeof(double) * (pts_length * 2));
              if (!pts_tmp) return EINA_FALSE;
              pd->reserved_pts_cnt = pts_length * 2;
              pd->points = pts_tmp;
@@ -355,6 +355,8 @@ _efl_gfx_path_interpolate(Eo *obj, Efl_Gfx_Path_Data *pd,
 
         pd->points_count = from_pd->points_count;
         pd->commands_count = from_pd->commands_count;
+        pd->reserved_cmd_cnt = from_pd->commands_count;
+        pd->reserved_pts_cnt = from_pd->points_count;
 
         interv = interpolate(from_pd->current.x, to_pd->current.x, pos_map);
         pd->current.x = interv;
@@ -398,13 +400,13 @@ _efl_gfx_path_reserve(Eo *obj EINA_UNUSED, Efl_Gfx_Path_Data *pd,
       {
          //+1 for path close.
          pd->reserved_cmd_cnt = cmd_count + 1;
-         pd->commands = realloc(pd->commands, sizeof(pd->commands) * pd->reserved_cmd_cnt);
+         pd->commands = realloc(pd->commands, sizeof(Efl_Gfx_Path_Command) * pd->reserved_cmd_cnt);
       }
 
    if (pd->reserved_pts_cnt < pts_count)
       {
          pd->reserved_pts_cnt = pts_count;
-         pd->points = realloc(pd->points, sizeof(pd->points) * pts_count);
+         pd->points = realloc(pd->points, sizeof(double) * pts_count);
       }
 }
 
