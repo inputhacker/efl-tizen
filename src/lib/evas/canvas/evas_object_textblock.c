@@ -5685,7 +5685,7 @@ _layout_item_obstacle_get(Ctxt *c, Evas_Object_Textblock_Item *it);
 static int
 _layout_par(Ctxt *c)
 {
-   Evas_Object_Textblock_Item *it, *prev_it;
+   Evas_Object_Textblock_Item *it;
    Eina_List *i;
    int ret = 0;
    int wrap = -1;
@@ -5826,8 +5826,8 @@ _layout_par(Ctxt *c)
         /* TIZEN_ONLY(20160517): Calculate exact width for current item */
         Evas_Coord needed_w = 0;
         /* END */
+        Evas_Object_Textblock_Item *prev_it = it;
 
-        prev_it = it;
         it = _ITEM(eina_list_data_get(i));
         /* Skip visually deleted items */
         if (it->visually_deleted ||
