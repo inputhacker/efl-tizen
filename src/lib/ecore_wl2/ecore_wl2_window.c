@@ -540,9 +540,6 @@ _tizen_position_cb_changed(void *data, struct tizen_position *tizen_position EIN
 
    if ((x != win->set_config.geometry.x) || (y != win->set_config.geometry.y))
      {
-        win->saved.x = win->set_config.geometry.x;
-        win->saved.y = win->set_config.geometry.y;
-
         win->set_config.geometry.x = x;
         win->set_config.geometry.y = y;
 
@@ -775,7 +772,7 @@ _ecore_wl2_window_tz_ext_init(Ecore_Wl2_Window *window)
                                          &_tizen_position_listener, window);
              if (window->surface)
                tizen_position_set(window->tz_position,
-                                  window->saved.x, window->saved.y);
+                                  window->set_config.geometry.x, window->set_config.geometry.y);
           }
 
         if (window->role)
@@ -1475,8 +1472,9 @@ ecore_wl2_window_position_set(Ecore_Wl2_Window *window, int x, int y)
 {
    EINA_SAFETY_ON_NULL_RETURN(window);
 
-   window->saved.x = x;
-   window->saved.y = y;
+   if ((window->set_config.geometry.x != x) ||
+       (window->set_config.geometry.y != y))
+     window->pending.geom = EINA_TRUE;
 
    window->set_config.geometry.x = x;
    window->set_config.geometry.y = y;
@@ -3345,6 +3343,18 @@ EAPI void
 ecore_wl2_window_sync_geometry_set(Ecore_Wl2_Window *window, uint32_t serial, int x, int y, int w, int h)
 {
    if (!window) return;
+
+   if ((window->set_config.geometry.x != x) ||
+       (window->set_config.geometry.y != y) ||
+       (window->set_config.geometry.w != w) ||
+       (window->set_config.geometry.h != h))
+     window->pending.geom = EINA_TRUE;
+
+   window->set_config.geometry.x = x;
+   window->set_config.geometry.y = y;
+   window->set_config.geometry.w = w;
+   window->set_config.geometry.h = h;
+
    if (window->display->wl.tz_moveresize)
      tizen_move_resize_set_geometry(window->display->wl.tz_moveresize, window->surface, serial, x, y, w, h);
 }
