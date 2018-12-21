@@ -20,7 +20,7 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
         const float *data = node->mPath.ptPtr;
         if (!data) continue;
 
-        Efl_VG* shape = evas_vg_shape_add(parent);
+        Efl_VG* shape = efl_add(EFL_CANVAS_VG_SHAPE_CLASS, parent);
         if (!shape) continue;
 #if 0
         for (int i = 0; i < depth; i++) printf("    ");
@@ -34,19 +34,19 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
              switch (node->mPath.elmPtr[i])
                {
                 case 0:
-                   evas_vg_shape_append_move_to(shape, data[0], data[1]);
+                   efl_gfx_path_append_move_to(shape, data[0], data[1]);
                    data += 2;
                    break;
                 case 1:
-                   evas_vg_shape_append_line_to(shape, data[0], data[1]);
+                   efl_gfx_path_append_line_to(shape, data[0], data[1]);
                    data += 2;
                    break;
                 case 2:
-                   evas_vg_shape_append_cubic_to(shape, data[0], data[1], data[2], data[3], data[4], data[5]);
+                   efl_gfx_path_append_cubic_to(shape, data[0], data[1], data[2], data[3], data[4], data[5]);
                    data += 6;
                    break;
                 case 3:
-                   evas_vg_shape_append_close(shape);
+                   efl_gfx_path_append_close(shape);
                    break;
                 default:
                    ERR("No reserved path type = %d", node->mPath.elmPtr[i]);
@@ -57,7 +57,7 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
         if (node->mStroke.enable)
           {
              //Stroke Width
-             evas_vg_shape_stroke_width_set(shape, node->mStroke.width);
+             efl_gfx_shape_stroke_width_set(shape, node->mStroke.width);
 
              //Stroke Cap
              Efl_Gfx_Cap cap;
@@ -68,7 +68,7 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
                 case CapRound: cap = EFL_GFX_CAP_ROUND; break;
                 default: cap = EFL_GFX_CAP_BUTT; break;
                }
-             evas_vg_shape_stroke_cap_set(shape, cap);
+             efl_gfx_shape_stroke_cap_set(shape, cap);
 
              //Stroke Join
              Efl_Gfx_Join join;
@@ -79,7 +79,7 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
                 case JoinRound: join = EFL_GFX_JOIN_ROUND; break;
                 default: join = EFL_GFX_JOIN_MITER; break;
                }
-             evas_vg_shape_stroke_join_set(shape, join);
+             efl_gfx_shape_stroke_join_set(shape, join);
 
              //Stroke Dash
              if (node->mStroke.dashArraySize > 0)
@@ -93,7 +93,7 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
                             dash[i].length = node->mStroke.dashArray[i];
                             dash[i].gap = node->mStroke.dashArray[i + 1];
                          }
-                       evas_vg_shape_stroke_dash_set(shape, dash, size);
+                       efl_gfx_shape_stroke_dash_set(shape, dash, size);
                        free(dash);
                     }
                }
@@ -111,9 +111,9 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
                 int a = node->mColor.a;
 
                 if (node->mStroke.enable)
-                  evas_vg_shape_stroke_color_set(shape, r, g, b, a);
+                  efl_gfx_shape_stroke_color_set(shape, r, g, b, a);
                 else
-                  evas_vg_node_color_set(shape, r, g, b, a);
+                  efl_gfx_color_set(shape, r, g, b, a);
              }
              break;
            case BrushGradient:
@@ -122,16 +122,16 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
 
                 if (node->mGradient.type == GradientLinear)
                   {
-                     grad = evas_vg_gradient_linear_add(parent);
-                     evas_vg_gradient_linear_start_set(grad, node->mGradient.start.x, node->mGradient.start.y);
-                     evas_vg_gradient_linear_end_set(grad, node->mGradient.end.x, node->mGradient.end.y);
+                     grad = efl_add(EFL_CANVAS_VG_GRADIENT_LINEAR_CLASS, parent);
+                     efl_gfx_gradient_linear_start_set(grad, node->mGradient.start.x, node->mGradient.start.y);
+                     efl_gfx_gradient_linear_end_set(grad, node->mGradient.end.x, node->mGradient.end.y);
                   }
                 else if (node->mGradient.type == GradientRadial)
                   {
-                     grad = evas_vg_gradient_radial_add(parent);
-                     evas_vg_gradient_radial_center_set(grad, node->mGradient.center.x, node->mGradient.center.y);
-                     evas_vg_gradient_radial_focal_set(grad, node->mGradient.focal.x, node->mGradient.focal.y);
-                     evas_vg_gradient_radial_radius_set(grad, node->mGradient.cradius);
+                     grad = efl_add(EFL_CANVAS_VG_GRADIENT_RADIAL_CLASS, parent);
+                     efl_gfx_gradient_radial_center_set(grad, node->mGradient.center.x, node->mGradient.center.y);
+                     efl_gfx_gradient_radial_focal_set(grad, node->mGradient.focal.x, node->mGradient.focal.y);
+                     efl_gfx_gradient_radial_radius_set(grad, node->mGradient.cradius);
                   }
                 else
                   ERR("No reserved gradient type = %d", node->mGradient.type);
@@ -151,13 +151,13 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
                                stops[i].b = (int)(((float)node->mGradient.stopPtr[i].b) * pa);
                                stops[i].a = node->mGradient.stopPtr[i].a;
                             }
-                          evas_vg_gradient_stop_set(grad, stops, node->mGradient.stopCount);
+                          efl_gfx_gradient_stop_set(grad, stops, node->mGradient.stopCount);
                           free(stops);
                        }
                      if (node->mStroke.enable)
-                       evas_vg_shape_stroke_fill_set(shape, grad);
+                       efl_canvas_vg_shape_stroke_fill_set(shape, grad);
                      else
-                       evas_vg_shape_fill_set(shape, grad);
+                       efl_canvas_vg_shape_fill_set(shape, grad);
                   }
              }
              break;
@@ -244,6 +244,7 @@ vg_common_json_create_vg_node(Vg_File_Data *vfd)
 
    //Root node
    if (vfd->root) efl_unref(vfd->root);
+
    vfd->root = efl_add_ref(EFL_CANVAS_VG_CONTAINER_CLASS, NULL);
    Efl_VG *root = vfd->root;
    if (!root) return EINA_FALSE;
