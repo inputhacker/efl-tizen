@@ -61,7 +61,7 @@ class Efl.Ui.Progressbar (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Format,
       Efl.Text_Markup.markup { get; set; }
       Efl.Content.content { get; set; }
       Efl.Content.content_unset;
-      Efl.Ui.Translatable.translatable_text { get; set; }
+      Efl.Ui.L10n.l10n_text { get; set; }
 
       //TIZEN_ONLY(20161109): apply UI Mirroring for Tizen 3.0 UX
       Efl.Ui.Base.mirrored { get; set; }
