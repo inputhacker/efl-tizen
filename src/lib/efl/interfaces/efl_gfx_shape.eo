@@ -406,5 +406,27 @@ mixin Efl.Gfx.Shape
           @in with: const(Eo.Base)*;
         }
       }
+      reserve {
+        [[Reserve path commands buffer in advance. If you know the count of
+          path commands coming, you can reserve commands buffer in advance
+          to avoid buffer growing job.
+
+          @since 1.22
+        ]]
+        params {
+          @in cmd_count: uint; [[Commands count to reserve]]
+          @in pts_count: uint; [[Pointers count to reserve]]
+        }
+      }
+      commit {
+        [[Request to update the path object.
+
+          One path object may get appending several path calls (such as
+          append_cubic, append_rect, etc) to construct the final path data.
+          Here commit means all path data is prepared and now object
+          could update its own internal status based on the last path
+          information.
+        ]]
+      }
    }
 }

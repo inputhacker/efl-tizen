@@ -46,6 +46,7 @@ struct _Evas_VG_Data
    void *backing_store;
 
    Vg_Cache_Entry            *vg_entry;
+   Evas_Object_Protected_Data *obj;
    int                        frame_index;
    Eina_File                 *file;
    Eina_Stringshare          *key;
@@ -62,6 +63,17 @@ Efl_VG*                     evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry, uns
 double                      evas_cache_vg_anim_duration_get(const Vg_Cache_Entry *vg_entry);
 unsigned int                evas_cache_vg_anim_frame_count_get(const Vg_Cache_Entry *vg_entry);
 void                        evas_cache_vg_entry_default_size_get(const Vg_Cache_Entry *vg_entry, int *w, int *h);
+void                        efl_canvas_vg_node_vg_obj_set(Efl_VG *node, Efl_VG *vg_obj, Evas_VG_Data *vd);
+void                        efl_canvas_vg_node_change(Efl_VG *node);
+void                        efl_canvas_vg_container_vg_obj_update(Efl_VG *obj, Efl_VG_Base_Data *nd);
+
+static inline void
+efl_canvas_vg_object_change(Evas_VG_Data *vd)
+{
+   if (!vd || vd->content_changed) return;
+   vd->content_changed = EINA_TRUE;
+   evas_object_change(vd->obj->object, vd->obj);
+}
 
 struct _Efl_VG_Base_Data
 {
@@ -71,6 +83,9 @@ struct _Efl_VG_Base_Data
    Efl_VG_Interpolation *intp;
 
    Ector_Renderer *renderer;
+
+   Efl_VG *vg_obj;
+   Evas_VG_Data *vd;
 
    void (*render_pre)(Evas_Object_Protected_Data *vg_pd, Efl_VG *node,
                       Efl_VG_Base_Data *nd, Ector_Surface *surface,
@@ -137,12 +152,6 @@ _evas_vg_render_pre(Evas_Object_Protected_Data *vg_pd, Efl_VG *child, Ector_Surf
    Efl_VG_Base_Data *nd = eo_data_scope_get(child, EFL_VG_BASE_CLASS);
    if (nd) nd->render_pre(vg_pd, child, nd, surface, transform, mask, mask_op, nd->data);
    return nd;
-}
-
-static inline void
-_efl_vg_base_changed(Eo *obj)
-{
-   eo_do(obj, eo_event_callback_call(EFL_GFX_CHANGED, NULL));
 }
 
 static inline void *

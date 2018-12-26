@@ -17,17 +17,23 @@ static const Efl_VG_Interpolation interpolation_identity = {
   { 0, 0, 0 }
 };
 
-static Eina_Bool
-_efl_vg_base_property_changed(void *data, Eo *obj, const Eo_Event_Description *desc, void *event_info)
+static void
+_node_change(Efl_VG *obj, Efl_VG_Base_Data *nd)
 {
-   Efl_VG_Base_Data *pd = data;
-   Eo *parent;
+   if (nd->flags != EFL_GFX_CHANGE_FLAG_NONE) return;
+   nd->flags = EFL_GFX_CHANGE_FLAG_ALL;
 
-   if (!pd->flags) pd->flags = EFL_GFX_CHANGE_FLAG_ALL;
-
-   eo_do(obj, parent = eo_parent_get());
-   eo_do(parent, eo_event_callback_call(desc, event_info));
-   return EINA_TRUE;
+   Eo *p = obj;
+   eo_do(p, p = eo_parent_get());
+   while (p)
+     {
+        if (!eo_isa(p, MY_CLASS)) break;
+        Efl_VG_Base_Data *pnd = eo_data_scope_get(p, MY_CLASS);
+        if (pnd->flags != EFL_GFX_CHANGE_FLAG_NONE) break;
+        pnd->flags = EFL_GFX_CHANGE_FLAG_ALL;
+        eo_do(p, p = eo_parent_get());
+     }
+   efl_canvas_vg_object_change(nd->vd);
 }
 
 static void
@@ -56,7 +62,7 @@ _efl_vg_base_transformation_set(Eo *obj,
         pd->m = NULL;
      }
 
-   _efl_vg_base_changed(obj);
+   _node_change(obj, pd);
 }
 
 const Eina_Matrix3 *
@@ -73,7 +79,7 @@ _efl_vg_base_origin_set(Eo *obj,
    pd->x = x;
    pd->y = y;
 
-   _efl_vg_base_changed(obj);
+   _node_change(obj, pd);
 }
 
 static void
@@ -93,7 +99,7 @@ _efl_vg_base_efl_gfx_base_position_set(Eo *obj EINA_UNUSED,
    pd->x = lrint(x);
    pd->y = lrint(y);
 
-   _efl_vg_base_changed(obj);
+   _node_change(obj, pd);
 }
 
 static void
@@ -111,7 +117,7 @@ _efl_vg_base_efl_gfx_base_visible_set(Eo *obj EINA_UNUSED,
 {
    pd->visibility = v;
 
-   _efl_vg_base_changed(obj);
+   _node_change(obj, pd);
 }
 
 
@@ -156,7 +162,7 @@ _efl_vg_base_efl_gfx_base_color_set(Eo *obj EINA_UNUSED,
    pd->b = b;
    pd->a = a;
 
-   _efl_vg_base_changed(obj);
+   _node_change(obj, pd);
 }
 
 static Eina_Bool
@@ -262,7 +268,14 @@ _efl_vg_base_eo_base_constructor(Eo *obj,
         return NULL;
    }
 
-   eo_do(obj, eo_event_callback_add(EFL_GFX_CHANGED, _efl_vg_base_property_changed, pd));
+   if (parent)
+     {
+        Efl_VG_Base_Data *parent_nd =
+           eo_data_scope_get(parent, MY_CLASS);
+        pd->vg_obj = parent_nd->vg_obj;
+        pd->vd = parent_nd->vd;
+     }
+
    pd->flags = EFL_GFX_CHANGE_FLAG_ALL;
    pd->changed = EINA_TRUE;
 
@@ -337,32 +350,49 @@ _efl_vg_base_name_get(Eo *obj EINA_UNUSED, Efl_VG_Base_Data *pd)
 
 static void
 _efl_vg_base_eo_base_parent_set(Eo *obj,
-                                Efl_VG_Base_Data *pd EINA_UNUSED,
+                                Efl_VG_Base_Data *pd,
                                 Eo *parent)
 {
    Efl_VG_Container_Data *cd = NULL;
    Efl_VG_Container_Data *old_cd = NULL;
    Eo *old_parent;
 
-   if (eo_isa(parent, EFL_VG_CONTAINER_CLASS))
+   if (parent)
      {
-        cd = eo_data_scope_get(parent, EFL_VG_CONTAINER_CLASS);
-        if (!cd)
+        if (eo_isa(parent, EFL_VG_CONTAINER_CLASS))
           {
-             ERR("Can't get EFL_VG_CONTAINER_CLASS data from %p.", parent);
-             goto on_error;
+             cd = eo_data_scope_get(parent, EFL_VG_CONTAINER_CLASS);
+             if (!cd)
+               {
+                  ERR("Can't get EFL_VG_CONTAINER_CLASS data from %p.", parent);
+                  return;
+               }
+          }
+        else if (eo_isa(parent, EVAS_VG_CLASS))
+          {
+             if (pd->vg_obj != parent)
+               {
+                  pd->vg_obj = parent;
+                  pd->vd = eo_data_scope_get(parent, EVAS_VG_CLASS);
+                  efl_canvas_vg_container_vg_obj_update(obj, pd);
+               }
+          }
+        else
+          {
+             ERR("%p not even an EVAS_VG_CLASS.", parent);
+             return;
           }
      }
-   else if (parent != NULL)
+   else
      {
-        ERR("%p not even an EVAS_VG_CLASS.", parent);
-        goto on_error;
+        pd->vg_obj = NULL;
+        pd->vd = NULL;
      }
 
    if (!_efl_vg_base_parent_checked_get(obj, &old_parent, &old_cd))
      {
         ERR("Can't check the old parent of %p.", obj);
-        goto on_error;
+        return;
      }
 
    // FIXME: this may become slow with to much object
@@ -371,24 +401,24 @@ _efl_vg_base_eo_base_parent_set(Eo *obj,
         old_cd->children = eina_list_remove(old_cd->children, obj);
 
         if (pd->name) eina_hash_del(old_cd->names, pd->name, obj);
+        _node_change(old_parent, eo_data_scope_get(old_parent, MY_CLASS));
      }
 
    eo_do_super(obj, MY_CLASS, eo_parent_set(parent));
    if (cd)
      {
         cd->children = eina_list_append(cd->children, obj);
-
         _efl_vg_base_name_insert(obj, pd, cd);
+
+        Efl_VG_Base_Data *parent_nd = eo_data_scope_get(parent, MY_CLASS);
+        if (pd->vg_obj != parent_nd->vg_obj)
+          {
+             pd->vg_obj = parent_nd->vg_obj;
+             pd->vd = parent_nd->vd;
+          }
      }
 
-   _efl_vg_base_changed(old_parent);
-   _efl_vg_base_changed(obj);
-   _efl_vg_base_changed(parent);
-
-   return ;
-
- on_error:
-   return ;
+   if (parent) _node_change(obj, pd);
 }
 
 static void
@@ -412,7 +442,7 @@ _efl_vg_base_efl_gfx_stack_raise(Eo *obj, Efl_VG_Base_Data *pd EINA_UNUSED)
    cd->children = eina_list_remove_list(cd->children, lookup);
    cd->children = eina_list_append_relative_list(cd->children, obj, next);
 
-   _efl_vg_base_changed(parent);
+   if (parent) _node_change(obj, pd);
    return ;
 
  on_error:
@@ -442,7 +472,7 @@ _efl_vg_base_efl_gfx_stack_stack_above(Eo *obj,
    cd->children = eina_list_remove_list(cd->children, lookup);
    cd->children = eina_list_append_relative_list(cd->children, obj, ref);
 
-   _efl_vg_base_changed(parent);
+   _node_change(parent, eo_data_scope_get(parent, MY_CLASS));
    return ;
 
  on_error:
@@ -472,7 +502,7 @@ _efl_vg_base_efl_gfx_stack_stack_below(Eo *obj,
    cd->children = eina_list_remove_list(cd->children, lookup);
    cd->children = eina_list_prepend_relative_list(cd->children, obj, ref);
 
-   _efl_vg_base_changed(parent);
+   _node_change(parent, eo_data_scope_get(parent, MY_CLASS));
    return ;
 
  on_error:
@@ -500,7 +530,7 @@ _efl_vg_base_efl_gfx_stack_lower(Eo *obj, Efl_VG_Base_Data *pd EINA_UNUSED)
    cd->children = eina_list_remove_list(cd->children, lookup);
    cd->children = eina_list_prepend_relative_list(cd->children, obj, prev);
 
-   _efl_vg_base_changed(parent);
+   _node_change(parent, eo_data_scope_get(parent, MY_CLASS));
    return ;
 
  on_error:
@@ -718,7 +748,7 @@ _efl_vg_base_interpolate(Eo *obj,
 
    pd->visibility = pos_map >= 0.5 ? tod->visibility : fromd->visibility;
 
-   _efl_vg_base_changed(obj);
+   _node_change(obj, pd);
 
    return r;
 }
@@ -770,7 +800,26 @@ _efl_vg_base_dup(Eo *obj, Efl_VG_Base_Data *pd, const Efl_VG_Base *from)
    pd->a = fromd->a;
    pd->visibility = fromd->visibility;
 
-   _efl_vg_base_changed(obj);
+   _node_change(obj, eo_data_scope_get(obj, EFL_VG_BASE_CLASS));
+}
+
+void
+efl_canvas_vg_node_vg_obj_set(Efl_VG *node, Efl_VG *vg_obj, Evas_VG_Data *vd)
+{
+   Efl_VG_Base_Data *nd = eo_data_scope_get(node, MY_CLASS);
+   if (nd->vg_obj == vg_obj) return;
+   nd->vg_obj = vg_obj;
+   nd->vd = vd;
+
+   //root node is always container.
+   efl_canvas_vg_container_vg_obj_update(node, nd);
+}
+
+void
+efl_canvas_vg_node_change(Eo *obj)
+{
+   if (!obj) return;
+   _node_change(obj, eo_data_scope_get(obj, EFL_VG_BASE_CLASS));
 }
 
 EAPI Eina_Bool

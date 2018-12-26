@@ -370,6 +370,7 @@ _evas_vg_eo_base_constructor(Eo *eo_obj, Evas_VG_Data *pd)
 
    eina_array_step_set(&pd->cleanup, sizeof(pd->cleanup), 8);
 
+   pd->obj = obj;
    pd->magic = MAGIC_OBJ_VG;
 
    return eo_obj;
@@ -544,15 +545,51 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
 {
    Vg_Cache_Entry *vg_entry = pd->vg_entry;
    Efl_VG *root;
+   int offset_x = 0;
+   int offset_y = 0;
 
    // if the size changed in between path set and the draw call;
 
    if ((vg_entry->w != w) ||
        (vg_entry->h != h))
      {
-         vg_entry = evas_cache_vg_entry_resize(vg_entry, w, h);
-         evas_cache_vg_entry_del(pd->vg_entry);
-         pd->vg_entry = vg_entry;
+        int size_w, size_h;
+        evas_cache_vg_entry_default_size_get(pd->vg_entry, &size_w, &size_h);
+
+        //adjust size for aspect ratio.
+        if (size_w > 0 && size_h > 0)
+          {
+             float rw = (float) w / (float) size_w;
+             float rh = (float) h / (float) size_h;
+
+             if (rw < rh)
+               {
+                  size_w = w;
+                  size_h = (int) ((float) size_h * rw);
+               }
+             else
+               {
+                  size_w = (int) ((float) size_w * rh);
+                  size_h = h;
+               }
+          }
+        else
+          {
+              size_w = w;
+              size_h = h;
+          }
+
+        vg_entry = evas_cache_vg_entry_resize(vg_entry, size_w, size_h);
+        evas_cache_vg_entry_del(pd->vg_entry);
+        pd->vg_entry = vg_entry;
+
+        //update for adjusted pos and size.
+        offset_x = w - size_w;
+        if (offset_x > 0) offset_x /= 2;
+        offset_y = h - size_h;
+        if (offset_y > 0) offset_y /= 2;
+        w = size_w;
+        h = size_h;
      }
    root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
    if (!root) return;
@@ -566,7 +603,7 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
    _render_buffer_to_screen(obj,
                             output, context, surface,
                             buffer,
-                            x, y, w, h,
+                            x + offset_x, y + offset_y, w, h,
                             do_async, cacheable);
 }
 

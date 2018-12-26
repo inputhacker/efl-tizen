@@ -95,6 +95,8 @@ _efl_vg_root_node_eo_base_constructor(Eo *obj,
    nd = eo_data_scope_get(obj, EFL_VG_BASE_CLASS);
    nd->render_pre = _evas_vg_root_node_render_pre;
    nd->data = cd;
+   nd->vg_obj = parent;
+   nd->vd = eo_data_scope_get(parent, EVAS_VG_CLASS);
 
    eo_do(obj, eo_event_callback_add(EFL_GFX_CHANGED, _evas_vg_root_node_changed, pd));
 

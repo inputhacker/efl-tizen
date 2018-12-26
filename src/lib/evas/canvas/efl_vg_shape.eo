@@ -63,6 +63,7 @@ class Efl.VG.Shape (Efl.VG.Base, Efl.Gfx.Shape)
    implements {
       Efl.Gfx.Base.color_part.set;
       Efl.Gfx.Base.color_part.get;
+      Efl.Gfx.Shape.commit;
       Efl.VG.Base.bounds_get;
       Efl.VG.Base.interpolate;
       Efl.VG.Base.dup;

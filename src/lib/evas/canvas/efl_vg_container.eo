@@ -15,6 +15,7 @@ class Efl.VG.Container (Efl.VG.Base)
    implements {
       Eo.Base.constructor;
       Eo.Base.destructor;
+      Eo.Base.parent.set;
       Efl.VG.Base.bounds_get;
       Efl.VG.Base.interpolate;
       Efl.VG.Base.dup;
