@@ -1,6 +1,6 @@
-type Efl_Access_Reading_Info_Cb: __undefined_type; [[reading information callback]]
-type Efl_Access_Gesture_Cb: __undefined_type; [[gesture callback]]
-type Efl_Access_Reading_Info_Type_Mask: __undefined_type; [[Reading information types]]
+type Efl.Access.Reading_Info_Cb: __undefined_type; [[reading information callback]]
+type Efl.Access.Gesture_Cb: __undefined_type; [[gesture callback]]
+type Efl.Access.Reading_Info_Type_Mask: __undefined_type; [[Reading information types]]
 enum Efl.Access.Type
 {
    [[Type of accessibility object]]
@@ -248,7 +248,7 @@ enum Efl.Access.Gesture
    three_fingers_flick_down_return,
 }
 
-enum Efl.Access.Gesture.State
+enum Efl.Access.Gesture_State
 {
    start,
    move,
@@ -297,14 +297,14 @@ struct Efl.Access.Relation
    objects: list<Efl.Object>; [[List with relation objects]]
 }
 
-struct Efl.Access.Gesture.Info
+struct Efl.Access.Gesture_Info
 {
    type: Efl.Access.Gesture; [[Gesture type]]
    x_beg: int; [[start gesture x co-ordinate]]
    y_beg: int; [[start gesture y co-ordinate]]
    x_end: int; [[end gesture x co-ordinate]]
    y_end: int; [[end gesture y co-ordinate]]
-   state: Efl.Access.Gesture.State; [[state of gesture]]
+   state: Efl.Access.Gesture_State; [[state of gesture]]
    event_time: uint; [[gesture occurance time]]
 }
 
@@ -344,7 +344,7 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
             ]]
          }
          values {
-            name_cb: Efl_Access_Reading_Info_Cb; [[reading information callback]]
+            name_cb: Efl.Access.Reading_Info_Cb; [[reading information callback]]
             data: const (void_ptr);
          }
       }
@@ -390,7 +390,7 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
             ]]
          }
          values {
-            description_cb: Efl_Access_Reading_Info_Cb; [[The function called to provide the accessible description.]]
+            description_cb: Efl.Access.Reading_Info_Cb; [[The function called to provide the accessible description.]]
             data: const (void_ptr); [[The data passed to \@c description_cb.]]
          }
       }
@@ -409,14 +409,14 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
             ]]
          }
          values {
-            gesture_cb: Efl_Access_Gesture_Cb;
+            gesture_cb: Efl.Access.Gesture_Cb;
             data: const (void_ptr);
          }
       }
       gesture_do @protected {
          [[Handles gesture on given widget.]]
          params {
-            @in gesture_info: Efl.Access.Gesture.Info;
+            @in gesture_info: Efl.Access.Gesture_Info;
          }
          return: bool;
       }
@@ -476,7 +476,7 @@ mixin Efl.Access.Object (Efl.Interface, Efl.Object)
             ]]
          }
          values {
-            reading_info: Efl_Access_Reading_Info_Type_Mask; [[Reading information types]]
+            reading_info: Efl.Access.Reading_Info_Type_Mask; [[Reading information types]]
          }
       }
       @property index_in_parent @protected @beta {

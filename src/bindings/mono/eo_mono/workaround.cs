@@ -127,11 +127,41 @@ public delegate void SignalCb(IntPtr data, IntPtr obj, IntPtr emission, IntPtr s
 
 namespace Access {
 
+public delegate IntPtr ReadingInfoCb(System.IntPtr data, ref Efl.Canvas.Object obj);
+
+public delegate bool GestureCb(System.IntPtr data, ref Efl.Access.GestureInfo info, ref Efl.Canvas.Object obj);
+
+public struct ReadingInfoTypeMask {
+    private uint mask;
+
+    public static implicit operator ReadingInfoTypeMask(uint x)
+    {
+        return new ReadingInfoTypeMask{mask=x};
+    }
+    public static implicit operator uint(ReadingInfoTypeMask x)
+    {
+        return x.mask;
+    }
+}
+
 public struct ActionData {
     public IntPtr name;
     public IntPtr action;
     public IntPtr param;
     public IntPtr func;
+}
+
+public struct RelationSet {
+    private Eina.List<Efl.Access.Relation> payload;
+
+    public static implicit operator RelationSet(Eina.List<Efl.Access.Relation> x)
+    {
+        return new RelationSet{payload=x};
+    }
+    public static implicit operator Eina.List<Efl.Access.Relation>(RelationSet x)
+    {
+        return x.payload;
+    }
 }
 
 public struct StateSet {
