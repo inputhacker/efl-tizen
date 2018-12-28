@@ -15,7 +15,7 @@ enum Efl.Input.Device_Type
 }
 
 // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
-enum Efl.Input.Device.Subtype
+enum Efl.Input.Device_Subtype
 {
    [[General type of input device.
 
