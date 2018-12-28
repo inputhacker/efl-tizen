@@ -576,7 +576,7 @@ _render_to_buffer(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Object_Data *pd
 
    //caching buffer only for first and last frames.
    if (buffer_created && cacheable)
-     ENFN->ector_surface_cache_set(engine, key, buffer);
+     ENFN->ector_surface_cache_set(engine, ((void *) key) + pd->frame_index, buffer);
 
    return buffer;
 }
@@ -661,15 +661,14 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
      }
    root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
    if (!root) return;
-
-   void *buffer = ENFN->ector_surface_cache_get(engine, root);
+   void *buffer = ENFN->ector_surface_cache_get(engine, ((void *) root) + pd->frame_index);
 
    if (!buffer)
      buffer = _render_to_buffer(obj, pd, engine, root, w, h, root, NULL,
                                 do_async, cacheable);
    else
      //cache reference was increased when we get the cache.
-     ENFN->ector_surface_cache_drop(engine, root);
+     ENFN->ector_surface_cache_drop(engine, ((void *) root) + pd->frame_index);
 
    _render_buffer_to_screen(obj,
                             engine, output, context, surface,

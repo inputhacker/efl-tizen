@@ -6,23 +6,64 @@
 #include <Evas.h>
 
 #ifdef BUILD_VG_LOADER_JSON
-static void
-_construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
+
+static char*
+_get_key_val(void *key)
 {
-   Efl_VG *parent = root;
+   static char buf[20];
+   snprintf(buf, sizeof(buf), "%ld", (size_t) key);
+   return buf;
+}
+
+static void
+_construct_drawable_nodes(Efl_Canvas_Vg_Container *parent, const LOTLayerNode *layer, int depth EINA_UNUSED)
+{
    if (!parent) return;
+
+#if TREE_VERIFY
+   Eina_Bool verified = EINA_TRUE;
+   Eina_Iterator *itr = efl_canvas_vg_container_children_get(parent);
+   if (itr)
+     {
+        Efl_Canvas_Vg_Shape *child;
+        int i = 0;
+        EINA_ITERATOR_FOREACH(itr, child)
+          {
+             if (!efl_isa(child, EFL_CANVAS_VG_SHAPE_CLASS)) continue;
+
+             LOTNode *node = layer->mNodeList.ptr[i];
+             if (efl_key_data_get(parent, _get_key_val(node)) != child)
+               {
+                  verified = EINA_FALSE;
+               }
+             i++;
+             efl_gfx_entity_visible_set(child, EINA_FALSE);
+          }
+        eina_iterator_free(itr);
+     }
+   if (!verified) ERR("Shape: Failed to verify!");
+#endif
 
    for (unsigned int i = 0; i < layer->mNodeList.size; i++)
      {
-        const LOTNode *node = layer->mNodeList.ptr[i];
+        LOTNode *node = layer->mNodeList.ptr[i];
         if (!node) continue;
 
         const float *data = node->mPath.ptPtr;
         if (!data) continue;
 
-        Efl_VG* shape = efl_add(EFL_CANVAS_VG_SHAPE_CLASS, parent);
-        if (!shape) continue;
-#if 0
+        char *key = _get_key_val(node);
+        Efl_Canvas_Vg_Shape *shape = efl_key_data_get(parent, key);
+        if (!shape)
+          {
+             shape = efl_add(EFL_CANVAS_VG_SHAPE_CLASS, parent);
+             efl_key_data_set(parent, key, shape);
+          }
+        else
+          efl_gfx_path_reset(shape);
+
+         efl_gfx_entity_visible_set(shape, EINA_TRUE);
+#if DEBUG
         for (int i = 0; i < depth; i++) printf("    ");
         printf("%s (%p)\n", efl_class_name_get(efl_class_get(shape)), shape);
 #endif
@@ -118,7 +159,7 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
              break;
            case BrushGradient:
              {
-                Efl_VG* grad = NULL;
+                Efl_Canvas_Vg_Gradient* grad = NULL;
 
                 if (node->mGradient.type == GradientLinear)
                   {
@@ -174,10 +215,38 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth EIN
 }
 
 static void
-_update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
+_update_vg_tree(Efl_Canvas_Vg_Container *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
 {
-   Efl_VG *ptree = NULL;
-   Efl_VG *ctree = NULL;
+   if (!layer->mVisible)
+     {
+        efl_gfx_entity_visible_set(root, EINA_FALSE);
+        return;
+     }
+   efl_gfx_entity_visible_set(root, EINA_TRUE);
+
+#if TREE_VERIFY
+   Eina_Bool verified = EINA_TRUE;
+   Eina_Iterator *itr = efl_canvas_vg_container_children_get(root);
+   if (itr)
+     {
+        Efl_Canvas_Vg_Node *child;
+        int i = 0;
+        EINA_ITERATOR_FOREACH(itr, child)
+          {
+             if (!efl_isa(child, EFL_CANVAS_VG_CONTAINER_CLASS)) continue;
+             LOTLayerNode *clayer = layer->mLayerList.ptr[i];
+             if (efl_key_data_get(root, _get_key_val(clayer)) != child)
+               {
+                  verified = EINA_FALSE;
+               }
+
+             i++;
+          }
+        eina_iterator_free(itr);
+     }
+   if (!verified) ERR("Layer: Failed to verify!");
+#endif
+   Efl_Canvas_Vg_Container *ptree = NULL;
 
    //Note: We assume that if matte is valid, next layer must be a matte source.
    LOTMatteType matte = MatteNone;
@@ -186,29 +255,38 @@ _update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
    //Is this layer a container layer?
    for (unsigned int i = 0; i < layer->mLayerList.size; i++)
      {
-        if (!layer->mLayerList.ptr[i]->mVisible || skip)
+        LOTLayerNode *clayer = layer->mLayerList.ptr[i];
+
+        //FIXME: we can skip at the top of this function if mVisible is false.
+        if (skip)
           {
              //Next layer must be a dummy. so skip it.
-             if (layer->mLayerList.ptr[i]->mMatte != MatteNone)
+             if (clayer->mMatte != MatteNone)
                skip = EINA_TRUE;
              else
                skip = EINA_FALSE;
              continue;
           }
 
-        ctree = efl_add(EFL_CANVAS_VG_CONTAINER_CLASS, root);
-#if 0
+        char *key = _get_key_val(clayer);
+        Efl_Canvas_Vg_Container *ctree = efl_key_data_get(root, key);
+        if (!ctree)
+          {
+             ctree = efl_add(EFL_CANVAS_VG_CONTAINER_CLASS, root);
+             efl_key_data_set(root, key, ctree);
+          }
+#if DEBUG
         for (int i = 0; i < depth; i++) printf("    ");
         printf("%s (%p) matte:%d => %p\n", efl_class_name_get(efl_class_get(ctree)), ctree, matte, ptree);
 #endif
-        _update_vg_tree(ctree, layer->mLayerList.ptr[i], depth+1);
+        _update_vg_tree(ctree, clayer, depth+1);
 
         //TODO: Only valid for MatteAlphaInverse?
         //TODO: Set this blending option to efl_canvas_vg_node...
         if (matte != MatteNone)
            efl_canvas_vg_node_mask_set(ptree, ctree, matte);
 
-        matte = layer->mLayerList.ptr[i]->mMatte;
+        matte = clayer->mMatte;
         ptree = ctree;
 
         //Debug Matte Info
@@ -242,19 +320,32 @@ vg_common_json_create_vg_node(Vg_File_Data *vfd)
    Lottie_Animation *lot_anim = (Lottie_Animation *) vfd->loader_data;
    if (!lot_anim) return EINA_FALSE;
 
-   //Root node
-   if (vfd->root) efl_unref(vfd->root);
-
-   vfd->root = efl_add_ref(EFL_CANVAS_VG_CONTAINER_CLASS, NULL);
-   Efl_VG *root = vfd->root;
-   if (!root) return EINA_FALSE;
    unsigned int frame_num = (vfd->anim_data) ? vfd->anim_data->frame_num : 0;
    const LOTLayerNode *tree =
       lottie_animation_render_tree(lot_anim, frame_num,
                                    vfd->view_box.w, vfd->view_box.h);
-#if 0
+#if DEBUG
    printf("%s (%p)\n", efl_class_name_get(efl_class_get(vfd->root)), vfd->root);
 #endif
+
+   //Root node
+   Efl_Canvas_Vg_Container *root = vfd->root;
+   if (!root)
+     {
+        root = efl_add_ref(EFL_CANVAS_VG_CONTAINER_CLASS, NULL);
+        if (!root) return EINA_FALSE;
+        efl_key_data_set(root, _get_key_val((void *) tree), tree);
+        vfd->root = root;
+     }
+   else
+     {
+#if TREE_VERIFY
+        if (efl_key_data_get(root, _get_key_val((void *) tree)) != tree)
+          {
+             ERR("Root: Failed to verify!");
+          }
+#endif
+     }
    _update_vg_tree(root, tree, 1);
 #else
    return EINA_FALSE;
