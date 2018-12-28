@@ -157,7 +157,7 @@ enum Efl.Ui.Win_Move_Resize_Mode
 }
 
 //TIZEN_ONLY(20171110): added signal for effect start and done
-enum Efl.Ui.Win.Effect.Type
+enum Efl.Ui.Win_Effect_Type
 {
    [[List of window effect.
 
@@ -175,7 +175,7 @@ enum Efl.Ui.Win.Effect.Type
 //
 
 //TIZEN_ONLY(20160330): add processing properties of window
-enum Efl.Ui.Win.Conformant.Property
+enum Efl.Ui.Win_Conformant_Property
 {
    default = 0,
    indicator_state = 1 << 0,
