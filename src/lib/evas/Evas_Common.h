@@ -3150,16 +3150,10 @@ typedef void (*Evas_Object_Intercept_Clip_Unset_Cb)(void *data, Evas_Object *obj
  * treated specially on resizing scales, by keeping their aspect. This
  * makes setting frames around other objects on UIs easy.
  * See the following figures for a visual explanation:\n
- * @htmlonly
- * <img src="image-borders.png" style="max-width: 100%;" />
- * <a href="image-borders.png">Full-size</a>
- * @endhtmlonly
+ * @image html image-borders.png
  * @image rtf image-borders.png
  * @image latex image-borders.eps width=\textwidth
- * @htmlonly
- * <img src="border-effect.png" style="max-width: 100%;" />
- * <a href="border-effect.png">Full-size</a>
- * @endhtmlonly
+ * @image html border-effect.png
  * @image rtf border-effect.png
  * @image latex border-effect.eps width=\textwidth
  *
