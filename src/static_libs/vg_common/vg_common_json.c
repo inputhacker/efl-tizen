@@ -6,23 +6,41 @@
 #include <Evas.h>
 
 #ifdef BUILD_VG_LOADER_JSON
-static void
-_construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth)
+
+static char*
+_get_key_val(void *key)
 {
-   Efl_VG *parent = root;
+   static char buf[20];
+   snprintf(buf, sizeof(buf), "%ld", (size_t) key);
+   return buf;
+}
+
+static void
+_construct_drawable_nodes(Efl_VG *parent, const LOTLayerNode *layer, int depth EINA_UNUSED)
+{
    if (!parent) return;
 
    for (unsigned int i = 0; i < layer->mNodeList.size; i++)
      {
-        const LOTNode *node = layer->mNodeList.ptr[i];
+        LOTNode *node = layer->mNodeList.ptr[i];
         if (!node) continue;
 
         const float *data = node->mPath.ptPtr;
         if (!data) continue;
 
-        Efl_VG *shape = eo_add(EFL_VG_SHAPE_CLASS, parent);
-        if (!shape) continue;
-#if 0
+        char *key = _get_key_val(node);
+        Efl_VG *shape = NULL;
+        eo_do(parent, shape = eo_key_data_get(key));
+        if (!shape)
+          {
+             shape = eo_add(EFL_VG_SHAPE_CLASS, parent);
+             eo_do(parent, eo_key_data_set(key, shape));
+          }
+        else
+          eo_do(shape, efl_gfx_shape_reset());
+
+         eo_do(shape, efl_gfx_visible_set(EINA_TRUE));
+#if DEBUG
         for (int i = 0; i < depth; i++) printf("    ");
         printf("%s (%p)\n", efl_class_name_get(efl_class_get(shape)), shape);
 #endif
@@ -174,10 +192,16 @@ _construct_drawable_nodes(Efl_VG *root, const LOTLayerNode *layer, int depth)
 }
 
 static void
-_update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth)
+_update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
 {
+   if (!layer->mVisible)
+     {
+        eo_do(root, efl_gfx_visible_set(EINA_FALSE));
+        return;
+     }
+   eo_do(root, efl_gfx_visible_set(EINA_TRUE));
+
    Efl_VG *ptree = NULL;
-   Efl_VG *ctree = NULL;
 
    //Note: We assume that if matte is valid, next layer must be a matte source.
    LOTMatteType matte = MatteNone;
@@ -186,29 +210,39 @@ _update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth)
    //Is this layer a container layer?
    for (unsigned int i = 0; i < layer->mLayerList.size; i++)
      {
-        if (!layer->mLayerList.ptr[i]->mVisible || skip)
+        LOTLayerNode *clayer = layer->mLayerList.ptr[i];
+
+        //FIXME: we can skip at the top of this function if mVisible is false.
+        if (skip)
           {
              //Next layer must be a dummy. so skip it.
-             if (layer->mLayerList.ptr[i]->mMatte != MatteNone)
+             if (clayer->mMatte != MatteNone)
                skip = EINA_TRUE;
              else
                skip = EINA_FALSE;
              continue;
           }
 
-        ctree = eo_add(EFL_VG_CONTAINER_CLASS, root);
-#if 0
+        char *key = _get_key_val(clayer);
+        Efl_VG *ctree;
+        eo_do(root, ctree = eo_key_data_get(key));
+        if (!ctree)
+          {
+             ctree = eo_add(EFL_VG_CONTAINER_CLASS, root);
+             eo_do(root, eo_key_data_set(key, ctree));
+          }
+#if DEBUG
         for (int i = 0; i < depth; i++) printf("    ");
         printf("%s (%p) matte:%d => %p\n", efl_class_name_get(efl_class_get(ctree)), ctree, matte, ptree);
 #endif
-        _update_vg_tree(ctree, layer->mLayerList.ptr[i], depth+1);
+        _update_vg_tree(ctree, clayer, depth+1);
 
         //TODO: Only valid for MatteAlphaInverse?
         //TODO: Set this blending option to efl_canvas_vg_node...
         if (matte != MatteNone)
            evas_vg_node_mask_set(ptree, ctree, matte);
 
-        matte = layer->mLayerList.ptr[i]->mMatte;
+        matte = clayer->mMatte;
         ptree = ctree;
 
         //Debug Matte Info
@@ -242,20 +276,24 @@ vg_common_json_create_vg_node(Vg_File_Data *vfd)
    Lottie_Animation *lot_anim = (Lottie_Animation *) vfd->loader_data;
    if (!lot_anim) return EINA_FALSE;
 
-   //Root node
-   if (vfd->root) eo_unref(vfd->root);
-   vfd->root = eo_add(EFL_VG_CONTAINER_CLASS, NULL);
-   Efl_VG *root = vfd->root;
-   if (!root) return EINA_FALSE;
    unsigned int frame_num = (vfd->anim_data) ? vfd->anim_data->frame_num : 0;
    const LOTLayerNode *tree =
       lottie_animation_render_tree(lot_anim, frame_num,
                                    vfd->view_box.w, vfd->view_box.h);
-#if 0
+#if DEBUG
    printf("%s (%p)\n", efl_class_name_get(efl_class_get(vfd->root)), vfd->root);
 #endif
-   _update_vg_tree(root, tree, 1);
 
+   //Root node
+   Efl_VG *root = vfd->root;
+   if (!root)
+     {
+        root = eo_add(EFL_VG_CONTAINER_CLASS, NULL);
+        if (!root) return EINA_FALSE;
+        eo_do(root, eo_key_data_set(_get_key_val((void *) tree), tree));
+        vfd->root = root;
+     }
+   _update_vg_tree(root, tree, 1);
 #else
    return EINA_FALSE;
 #endif

@@ -505,7 +505,7 @@ _render_to_buffer(Evas_Object_Protected_Data *obj, Evas_VG_Data *pd,
 
    //caching buffer only for first and last frames.
    if (buffer_created && cacheable)
-     obj->layer->evas->engine.func->ector_surface_cache_set(output, key, buffer);
+     obj->layer->evas->engine.func->ector_surface_cache_set(output, ((void *) key) + pd->frame_index, buffer);
 
    return buffer;
 }
@@ -594,7 +594,7 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
    root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
    if (!root) return;
 
-   void *buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, root);
+   void *buffer = obj->layer->evas->engine.func->ector_surface_cache_get(output, ((void *) root) + pd->frame_index);
 
    if (!buffer)
      buffer = _render_to_buffer(obj, pd, output, surface, root, w, h, root, NULL,
