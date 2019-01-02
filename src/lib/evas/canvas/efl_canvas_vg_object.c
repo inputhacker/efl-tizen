@@ -749,7 +749,7 @@ _efl_canvas_vg_object_render(Evas_Object *eo_obj EINA_UNUSED,
    Eina_Bool cacheable = EINA_FALSE;
 
    if (pd->frame_index == 0 ||
-       (pd->frame_index == (int) evas_cache_vg_anim_frame_count_get(pd->vg_entry) - 1))
+       (pd->frame_index == (int) evas_cache_vg_anim_frame_count_get(pd->vg_entry)))
      cacheable = EINA_TRUE;
 
    if (pd->vg_entry)
