@@ -128,7 +128,11 @@ _units_set(Evas_Object *obj)
           }
 
         sd->format_cb(sd->format_cb_data, sd->format_strbuf, val);
-        elm_layout_text_set(obj, "elm.units", eina_strbuf_string_get(sd->format_strbuf));
+        //TIZEN_ONLY(20190102): added check for existence of parts
+        //elm_layout_text_set(obj, "elm.units", eina_strbuf_string_get(sd->format_strbuf));
+        if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.units"))
+          elm_layout_text_set(obj, "elm.units", eina_strbuf_string_get(sd->format_strbuf));
+        //
 
         if (!sd->units_show)
           {
@@ -140,7 +144,11 @@ _units_set(Evas_Object *obj)
      }
    else
      {
-        elm_layout_text_set(obj, "elm.units", NULL);
+        //TIZEN_ONLY(20190102): added check for existence of parts
+        //elm_layout_text_set(obj, "elm.units", NULL);
+        if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.units"))
+          elm_layout_text_set(obj, "elm.units", NULL);
+        //
         if (sd->units_show)
           {
              elm_layout_signal_emit(obj, "elm,state,units,hidden", "elm");
@@ -169,10 +177,17 @@ _indicator_set(Evas_Object *obj)
 
    str = eina_strbuf_string_get(sd->indi_format_strbuf);
 
-   elm_layout_text_set(obj, "elm.indicator", str);
-   elm_layout_text_set(obj, "elm.dragable.slider:elm.indicator", str);
-   if (sd->popup)
+   //TIZEN_ONLY(20190102): added check for existence of parts
+   //elm_layout_text_set(obj, "elm.indicator", str);
+   //elm_layout_text_set(obj, "elm.dragable.slider:elm.indicator", str);
+   //if (sd->popup)
+   if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.indicator"))
+     elm_layout_text_set(obj, "elm.indicator", str);
+   if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.dragable.slider:elm.indicator"))
+     elm_layout_text_set(obj, "elm.dragable.slider:elm.indicator", str);
+   if (sd->popup && edje_object_part_exists(sd->popup, "elm.indicator"))
      edje_object_part_text_set(sd->popup, "elm.indicator", str);
+   //
 
    if (sd->popup2)
      {
@@ -180,8 +195,14 @@ _indicator_set(Evas_Object *obj)
         eina_value_set(&val, pd->intvl_to);
         sd->indi_format_cb(sd->indi_format_cb_data, sd->indi_format_strbuf, val);
         str = eina_strbuf_string_get(sd->indi_format_strbuf);
-        elm_layout_text_set(obj, "elm.dragable2.slider:elm.indicator", str);
-        edje_object_part_text_set(sd->popup2, "elm.indicator", str);
+        //TIZEN_ONLY(20190102): added check for existence of parts
+        //elm_layout_text_set(obj, "elm.dragable2.slider:elm.indicator", str);
+        //edje_object_part_text_set(sd->popup2, "elm.indicator", str);
+        if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.dragable.slider:elm.indicator"))
+          elm_layout_text_set(obj, "elm.dragable2.slider:elm.indicator", str);
+        if (edje_object_part_exists(sd->popup2, "elm.indicator"))
+          edje_object_part_text_set(sd->popup2, "elm.indicator", str);
+        //
      }
 
     eina_value_flush(&val);
@@ -202,13 +223,21 @@ _min_max_set(Evas_Object *obj)
 
    eina_value_set(&val, sd2->val_max);
    sd->format_cb(sd->format_cb_data, str, val);
-   elm_layout_text_set(obj, "elm.units.min", eina_strbuf_string_get(str));
+   //TIZEN_ONLY(20190102): added check for existence of parts
+   //elm_layout_text_set(obj, "elm.units.min", eina_strbuf_string_get(str));
+   if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.units.min"))
+     elm_layout_text_set(obj, "elm.units.min", eina_strbuf_string_get(str));
+   //
 
    eina_strbuf_reset(str);
 
    eina_value_set(&val, sd2->val_min);
    sd->format_cb(sd->format_cb_data, str, val);
-   elm_layout_text_set(obj, "elm.units.max", eina_strbuf_string_get(str));
+   //TIZEN_ONLY(20190102): added check for existence of parts
+   //elm_layout_text_set(obj, "elm.units.max", eina_strbuf_string_get(str));
+   if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.units.max"))
+     elm_layout_text_set(obj, "elm.units.max", eina_strbuf_string_get(str));
+   //
 
    eina_strbuf_free(str);
    eina_value_flush(&val);
@@ -585,8 +614,13 @@ _elm_slider_val_fetch(Evas_Object *obj, Elm_Slider_Data *pd, Eina_Bool user_even
    if (efl_ui_dir_is_horizontal(sd->dir, EINA_TRUE)) pos = posx;
    else pos = posy;
 
-   efl_ui_drag_value_get(efl_part(wd->resize_obj, "elm.dragable2.slider"),
-                         &posx2, &posy2);
+   //TIZEN_ONLY(20190102): added check for existence of parts
+   //efl_ui_drag_value_get(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+   //                      &posx2, &posy2);
+   if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.dragable2.slider"))
+     efl_ui_drag_value_get(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+                           &posx2, &posy2);
+   //
    if (efl_ui_dir_is_horizontal(sd->dir, EINA_TRUE)) pos2 = posx2;
    else pos2 = posy2;
 
@@ -696,8 +730,13 @@ _elm_slider_val_set(Evas_Object *obj, Elm_Slider_Data *pd EINA_UNUSED)
 
    efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable.slider"),
                          pos, pos);
-   efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
-                         pos2, pos2);
+   //TIZEN_ONLY(20190102): added check for existence of parts
+   //efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+   //                      pos2, pos2);
+   if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.dragable2.slider"))
+     efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+                           pos2, pos2);
+   //
 
    // emit accessibility event also if value was changed by API
    if (_elm_config->atspi_mode)
@@ -723,8 +762,13 @@ _elm_slider_down_knob(Evas_Object *obj, Elm_Slider_Data *pd, double button_x, do
 
         efl_ui_drag_value_get(efl_part(wd->resize_obj, "elm.dragable.slider"),
                               &posx, &posy);
-        efl_ui_drag_value_get(efl_part(wd->resize_obj, "elm.dragable2.slider"),
-                              &posx2, &posy2);
+        //TIZEN_ONLY(20190102): added check for existence of parts
+        //efl_ui_drag_value_get(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+        //                      &posx2, &posy2);
+        if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.dragable2.slider"))
+          efl_ui_drag_value_get(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+                                &posx2, &posy2);
+        //
 
         if (efl_ui_dir_is_horizontal(sd->dir, EINA_TRUE))
           {
@@ -747,8 +791,13 @@ _elm_slider_down_knob(Evas_Object *obj, Elm_Slider_Data *pd, double button_x, do
           }
         else if (diff1 > diff2)
           {
-             efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
-                                   button_x, button_y);
+             //TIZEN_ONLY(20190102): added check for existence of parts
+             //efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+             //                      button_x, button_y);
+             if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.dragable2.slider"))
+               efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+                                     button_x, button_y);
+             //
              id->intvl_flag = 2;
           }
         else
@@ -761,8 +810,13 @@ _elm_slider_down_knob(Evas_Object *obj, Elm_Slider_Data *pd, double button_x, do
                }
              else
                {
-                  efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
-                                        button_x, button_y);
+                  //TIZEN_ONLY(20190102): added check for existence of parts
+                  //efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+                  //                      button_x, button_y);
+                  if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.dragable2.slider"))
+                    efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+                                          button_x, button_y);
+                  //
                   id->intvl_flag = 2;
                }
           }
@@ -789,8 +843,13 @@ _elm_slider_move_knob(Evas_Object *obj, Elm_Slider_Data *pd, double button_x, do
           }
         else if (id->intvl_flag == 2)
           {
-             efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
-                                   button_x, button_y);
+             //TIZEN_ONLY(20190102): added check for existence of parts
+             //efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+             //                      button_x, button_y);
+             if (edje_object_part_exists(elm_layout_edje_get(obj), "elm.dragable2.slider"))
+               efl_ui_drag_value_set(efl_part(wd->resize_obj, "elm.dragable2.slider"),
+                                     button_x, button_y);
+             //
           }
 
      }
