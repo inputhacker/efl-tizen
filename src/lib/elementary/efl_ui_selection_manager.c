@@ -3330,11 +3330,11 @@ _wl_data_preparer_text(Sel_Manager_Selection *sel, Efl_Ui_Selection_Data *ddata,
 
 //TIZEN_ONLY(20180827): Support Html format for copy and paste
 static Eina_Bool
-_wl_data_preparer_handler_html(Sel_Manager_Selection *sel, Efl_Selection_Data *ddata, Ecore_Wl2_Event_Offer_Data_Ready *ev, Tmp_Info **tmp_info EINA_UNUSED)
+_wl_data_preparer_handler_html(Sel_Manager_Selection *sel, Efl_Ui_Selection_Data *ddata, Ecore_Wl2_Event_Offer_Data_Ready *ev, Tmp_Info **tmp_info EINA_UNUSED)
 {
    sel_debug("In\n");
 
-   ddata->format = EFL_SELECTION_FORMAT_HTML;
+   ddata->format = EFL_UI_SELECTION_FORMAT_HTML;
    ddata->content.mem = eina_memdup((unsigned char *)ev->data, ev->len, EINA_TRUE);
    ddata->content.len = ev->len;
    ddata->action = sel->action;
@@ -5166,7 +5166,7 @@ _efl_ui_selection_manager_container_drop_item_add(Eo *obj, Efl_Ui_Selection_Mana
    _efl_ui_selection_manager_drop_target_add(obj, pd, cont, format, seat);
 }
 
-EOLIAN static void
+EOLIAN static Eina_Bool
 _efl_ui_selection_manager_container_drop_item_del(Eo *obj EINA_UNUSED, Efl_Ui_Selection_Manager_Data *pd,
                                                Efl_Object *cont, unsigned int seat EINA_UNUSED)
 {
@@ -5215,7 +5215,7 @@ _efl_ui_selection_manager_container_drag_item_add(Eo *obj EINA_UNUSED, Efl_Ui_Se
                                   _cont_obj_mouse_down_cb, dc);
 }
 
-EOLIAN static void
+EOLIAN static Eina_Bool
 _efl_ui_selection_manager_container_drag_item_del(Eo *obj EINA_UNUSED, Efl_Ui_Selection_Manager_Data *pd,
                                                Efl_Object *cont, unsigned int seat EINA_UNUSED)
 {
@@ -5452,12 +5452,12 @@ _efl_ui_selection_manager_efl_object_constructor(Eo *obj, Efl_Ui_Selection_Manag
 //TIZEN_ONLY(20180827): Support Html format for copy and paste
 #ifdef HAVE_ELEMENTARY_WL2
    pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].name = "text/html;charset=utf-8";
-   pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].format = EFL_SELECTION_FORMAT_HTML;
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].format = EFL_UI_SELECTION_FORMAT_HTML;
    pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].wl_converter = _wl_general_converter;
    pd->atom_list[SELECTION_ATOM_TEXT_HTML_UTF8].wl_data_preparer = _wl_data_preparer_handler_html;
 
    pd->atom_list[SELECTION_ATOM_TEXT_HTML].name = "text/html";
-   pd->atom_list[SELECTION_ATOM_TEXT_HTML].format = EFL_SELECTION_FORMAT_HTML;
+   pd->atom_list[SELECTION_ATOM_TEXT_HTML].format = EFL_UI_SELECTION_FORMAT_HTML;
    pd->atom_list[SELECTION_ATOM_TEXT_HTML].wl_converter = _wl_general_converter;
    pd->atom_list[SELECTION_ATOM_TEXT_HTML].wl_data_preparer = _wl_data_preparer_handler_html;
 #endif

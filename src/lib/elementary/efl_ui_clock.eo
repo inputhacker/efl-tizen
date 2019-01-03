@@ -228,7 +228,7 @@ class Efl.Ui.Clock (Efl.Ui.Layout)
       Efl.Ui.Focus.Object.on_focus_update;
       Efl.Ui.L10n.translation_update;
       //TIZEN_ONLY(20170807): Apply UI Mirror for Tizen 4.0 UX
-      Efl.Ui.Base.mirrored { get; set; }
+      Efl.Ui.I18n.mirrored { get; set; }
       //
       //TIZEN_ONLY(20180607): Restore legacy focus
       Efl.Ui.Widget.focus_next_manager_is;

@@ -200,9 +200,9 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/efl_ui_scroll_manager.c \
 	lib/elementary/efl_ui_pan.c \
 	lib/elementary/tizen_vector.c \
-	lib/elementary/efl_selection_manager.c \
-	lib/elementary/efl_selection_manager_private.h \
-	lib/elementary/efl_selection.c \
+	lib/elementary/efl_ui_selection_manager.c \
+	lib/elementary/efl_ui_selection_manager_private.h \
+	lib/elementary/efl_ui_selection.c \
 	lib/elementary/efl_datetime_manager.c \
 	lib/elementary/efl_ui_dnd.c \
 	lib/elementary/elm_focus_legacy.c \

@@ -4505,7 +4505,7 @@ _elm_win_translate(void)
         else
           efl_canvas_object_paragraph_direction_set(obj, EVAS_BIDI_DIRECTION_LTR);
 
-        efl_ui_translatable_translation_update(obj);
+        efl_ui_l10n_translation_update(obj);
      }
    /* END */
 

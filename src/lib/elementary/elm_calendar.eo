@@ -424,7 +424,7 @@ class Elm.Calendar (Efl.Ui.Layout, Efl.Ui.Focus.Composition, Efl.Access.Widget.A
       //
       //
       //TIZEN_ONLY(20161116): Apply UI Mirror for Tizen 3.0 UX
-      Efl.Ui.Base.mirrored { get; set; }
+      Efl.Ui.I18n.mirrored { get; set; }
       //
       Efl.Access.Widget.Action.elm_actions { get; }
    }

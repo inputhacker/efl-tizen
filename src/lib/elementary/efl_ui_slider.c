@@ -697,7 +697,7 @@ _efl_ui_slider_efl_object_constructor(Eo *obj, Efl_Ui_Slider_Data *priv)
 
 //TIZEN_ONLY(20161115): apply UI Mirroring for Tizen 3.0 UX
 EOLIAN static Eina_Bool
-_efl_ui_slider_efl_ui_base_mirrored_get(const Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_pd EINA_UNUSED)
+_efl_ui_slider_efl_ui_i18n_mirrored_get(const Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_pd EINA_UNUSED)
 {
    return EINA_FALSE;
 }
@@ -705,7 +705,7 @@ _efl_ui_slider_efl_ui_base_mirrored_get(const Eo *obj EINA_UNUSED, Efl_Ui_Slider
 
 //TIZEN_ONLY(20161115): apply UI Mirroring for Tizen 3.0 UX
 EOLIAN static void
-_efl_ui_slider_efl_ui_base_mirrored_set(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_pd EINA_UNUSED, Eina_Bool mirrored EINA_UNUSED)
+_efl_ui_slider_efl_ui_i18n_mirrored_set(Eo *obj EINA_UNUSED, Efl_Ui_Slider_Data *_pd EINA_UNUSED, Eina_Bool mirrored EINA_UNUSED)
 {
    return;
 }

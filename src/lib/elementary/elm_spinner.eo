@@ -178,7 +178,7 @@ class Elm.Spinner (Efl.Ui.Layout, Efl.Ui.Range, Efl.Ui.Focus.Composition,
        *  (20161111): apply UI Mirroring for Tizen 3.0 UX
        *  (20180111): change from Elm.Widget.mirrored to Efl.Ui.Base.mirrored
        */
-      Efl.Ui.Base.mirrored { get; set; }
+      Efl.Ui.I18n.mirrored { get; set; }
       /* END */
       Efl.Ui.Range.range_min_max { get; set; }
       Efl.Ui.Range.range_step { get; set; }
