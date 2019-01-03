@@ -6224,7 +6224,8 @@ _bridge_object_unregister(Eo *bridge, Eo *obj)
 {
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(bridge, pd);
 
-   eina_hash_del(pd->cache, &obj, obj);
+   if (pd->cache)
+     eina_hash_del(pd->cache, &obj, obj);
 }
 
 static void
@@ -6247,7 +6248,8 @@ void
 unregister_atspi_object_in_bridge(const Eo *obj)
 {
    Eo *bridge = _elm_atspi_bridge_get();
-   _bridge_object_unregister(bridge, obj);
+   if (bridge)
+     _bridge_object_unregister(bridge, obj);
 }
 //
 
