@@ -34,7 +34,7 @@ inline bool is_function_blacklisted(std::string const& c_name)
     || c_name == "efl_access_name_set"
     || c_name == "efl_access_root_get"
     || c_name == "efl_access_type_get"
-    || c_name == "efl_access_object_role_get"
+    || c_name == "efl_access_role_get"
     || c_name == "efl_access_action_description_get"
     || c_name == "efl_access_action_description_set"
     || c_name == "efl_access_image_description_get"
