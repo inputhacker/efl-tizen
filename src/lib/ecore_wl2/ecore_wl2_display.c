@@ -1077,7 +1077,7 @@ _ecore_wl_cb_pre_handle_data(void *data, Ecore_Fd_Handler *hdl EINA_UNUSED)
         if (ret < 0)
           {
              ERR("Wayland Display Dispatch Pending Failed");
-             break;
+             return;
           }
      }
 
@@ -1097,6 +1097,13 @@ _ecore_wl_cb_awake(void *data)
    if (!ewd->prepare_read) return;
 
    ewd->prepare_read = EINA_FALSE;
+
+   if (ecore_main_fd_handler_active_get(ewd->fd_hdl, ECORE_FD_ERROR))
+     {
+        ERR("[ecore_wl_cb_awake] Received error on wayland display fd");
+        wl_display_cancel_read(ewd->wl.display);
+        return;
+     }
 
    if (ecore_main_fd_handler_active_get(ewd->fd_hdl, ECORE_FD_READ))
      wl_display_read_events(ewd->wl.display);
