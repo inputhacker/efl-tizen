@@ -721,9 +721,16 @@ elm_drop_item_container_del(Evas_Object *obj)
 
    _cont_drop_free_data(obj);
    evas_object_event_callback_del(obj, EVAS_CALLBACK_DEL, _cont_drop_obj_del_cb);
+//TIZEN_ONLY(20190104) Fix failed TC
+/*
+//
    efl_ui_selection_manager_container_drop_item_del(sel_man, obj, seatid);
 
    return EINA_TRUE;
+//TIZEN_ONLY(20190104) Fix failed TC
+*/
+   return efl_ui_selection_manager_container_drop_item_del(sel_man, obj, seatid);
+//
 }
 
 static void
@@ -851,9 +858,16 @@ elm_drag_item_container_del(Evas_Object *obj)
 
    _cont_drag_free_data(obj);
    evas_object_event_callback_del(obj, EVAS_CALLBACK_DEL, _cont_drag_obj_del_cb);
+//TIZEN_ONLY(20190104) Fix failed TC
+/*
+//
    efl_ui_selection_manager_container_drag_item_del(sel_man, obj, seatid);
 
    return EINA_TRUE;
+//TIZEN_ONLY(20190104) Fix failed TC
+*/
+   return efl_ui_selection_manager_container_drag_item_del(sel_man, obj, seatid);
+//
 }
 
 #include "efl_ui_dnd.eo.c"
