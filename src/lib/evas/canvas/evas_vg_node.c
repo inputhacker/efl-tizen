@@ -278,6 +278,7 @@ _efl_vg_base_eo_base_constructor(Eo *obj,
 
    pd->flags = EFL_GFX_CHANGE_FLAG_ALL;
    pd->changed = EINA_TRUE;
+   pd->visibility = EINA_TRUE;
 
    return obj;
 }

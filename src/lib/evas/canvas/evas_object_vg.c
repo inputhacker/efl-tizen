@@ -395,6 +395,10 @@ _evas_vg_render(Evas_Object_Protected_Data *obj, Evas_VG_Data *vd,
                 void *output, void *context, void *surface, Efl_VG *node,
                 Eina_Array *clips, Eina_Bool do_async)
 {
+   Eina_Bool visible;
+   eo_do(node, visible = efl_gfx_visible_get());
+   if (!visible) return;
+
    if (eo_isa(node, EFL_VG_CONTAINER_CLASS))
      {
         Efl_VG_Container_Data *cd =
