@@ -205,23 +205,11 @@ _update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
 
    //Note: We assume that if matte is valid, next layer must be a matte source.
    LOTMatteType matte = MatteNone;
-   Eina_Bool skip = EINA_FALSE;
 
    //Is this layer a container layer?
    for (unsigned int i = 0; i < layer->mLayerList.size; i++)
      {
         LOTLayerNode *clayer = layer->mLayerList.ptr[i];
-
-        //FIXME: we can skip at the top of this function if mVisible is false.
-        if (skip)
-          {
-             //Next layer must be a dummy. so skip it.
-             if (clayer->mMatte != MatteNone)
-               skip = EINA_TRUE;
-             else
-               skip = EINA_FALSE;
-             continue;
-          }
 
         char *key = _get_key_val(clayer);
         Efl_VG *ctree;
