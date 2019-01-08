@@ -6002,6 +6002,10 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
         else if ((disp) && (!strcmp(disp, "fb")))
           {
 #ifdef HAVE_ELEMENTARY_DRM
+             if (is_gl_accel)
+               {
+                  enginelist[p++] = ELM_GL_DRM;
+               }
              enginelist[p++] = ELM_DRM;
 #endif
 #ifdef HAVE_ELEMENTARY_FB
@@ -6058,6 +6062,7 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
                   enginelist[p++] = ELM_WAYLAND_EGL;
 #endif
 #ifdef HAVE_ELEMENTARY_DRM
+                  enginelist[p++] = ELM_GL_DRM;
                   enginelist[p++] = ELM_DRM;
 #endif
 #ifdef HAVE_ELEMENTARY_FB
@@ -6124,6 +6129,7 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
                   enginelist[p++] = ELM_WAYLAND_EGL;
 #endif
 #ifdef HAVE_ELEMENTARY_DRM
+                  enginelist[p++] = ELM_GL_DRM;
                   enginelist[p++] = ELM_DRM;
 #endif
 #ifdef HAVE_ELEMENTARY_SDL
@@ -6216,6 +6222,8 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
                tmp_sd.ee = ecore_evas_buffer_new(1, 1);
              else if (!strcmp(enginelist[i], ELM_DRM))
                tmp_sd.ee = ecore_evas_drm_new(NULL, 0, 0, 0, 1, 1);
+             else if (!strcmp(enginelist[i], ELM_GL_DRM))
+               tmp_sd.ee = ecore_evas_gl_drm_new(NULL, 0, 0, 0, 1, 1);
              else if (!strncmp(enginelist[i], "shot:", 5))
                {
                   tmp_sd.ee = ecore_evas_buffer_new(1, 1);
@@ -6514,7 +6522,8 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
         if ((_elm_config->softcursor_mode == ELM_SOFTCURSOR_MODE_ON) ||
             ((_elm_config->softcursor_mode == ELM_SOFTCURSOR_MODE_AUTO) &&
              ((engine) &&
-              ((!strcmp(engine, ELM_SOFTWARE_FB)) || (!strcmp(engine, ELM_DRM))))))
+              ((!strcmp(engine, ELM_SOFTWARE_FB)) || (!strcmp(engine, ELM_DRM))
+              || (!strcmp(engine, ELM_GL_DRM))))))
           {
              Evas_Object *o;
              Evas_Coord mw = 1, mh = 1, hx = 0, hy = 0;
@@ -6587,7 +6596,8 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
         _elm_win_count++;
 
         if ((engine) &&
-            ((!strcmp(engine, ELM_SOFTWARE_FB)) || (!strcmp(engine, ELM_DRM))))
+            ((!strcmp(engine, ELM_SOFTWARE_FB)) || (!strcmp(engine, ELM_DRM))
+             || (!strcmp(engine, ELM_GL_DRM))))
           {
              TRAP(sd, fullscreen_set, 1);
           }
@@ -7115,7 +7125,8 @@ _efl_ui_win_fullscreen_set(Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd, Eina_Bool f
    // YYY: handle if sd->img_obj
    if (engine_name &&
        ((!strcmp(engine_name, ELM_SOFTWARE_FB)) ||
-        (!strcmp(engine_name, ELM_DRM))))
+        (!strcmp(engine_name, ELM_DRM)) ||
+        (!strcmp(engine_name, ELM_GL_DRM))))
      {
         // these engines... can ONLY be fullscreen
         return;
@@ -7140,7 +7151,8 @@ _efl_ui_win_fullscreen_get(const Eo *obj EINA_UNUSED, Efl_Ui_Win_Data *sd)
 
    if (engine_name &&
        ((!strcmp(engine_name, ELM_SOFTWARE_FB)) ||
-        (!strcmp(engine_name, ELM_DRM))))
+        (!strcmp(engine_name, ELM_DRM)) ||
+        (!strcmp(engine_name, ELM_GL_DRM))))
      {
         // these engines... can ONLY be fullscreen
         return EINA_TRUE;
