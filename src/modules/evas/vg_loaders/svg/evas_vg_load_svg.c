@@ -2378,7 +2378,6 @@ evas_vg_load_file_open_svg(Eina_File *file,
         *error = EVAS_LOAD_ERROR_GENERIC;
      }
    free(loader.svg_parse);
-
    return vg_common_svg_create_vg_node(loader.doc);
 }
 
