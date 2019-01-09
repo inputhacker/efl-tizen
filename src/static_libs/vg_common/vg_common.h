@@ -321,10 +321,6 @@ void vg_common_svg_node_free(Svg_Node *node);
 /******************************************************************************************
  * Lottie Compatible feature implementation
  ******************************************************************************************/
-#ifdef BUILD_VG_LOADER_JSON
-# include <lottieanimation_capi.h>
-#endif
-
 Eina_Bool vg_common_json_create_vg_node(Vg_File_Data *vfd);
 
 #endif //EVAS_VG_COMMON_H_

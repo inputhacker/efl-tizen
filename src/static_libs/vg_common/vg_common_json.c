@@ -7,6 +7,8 @@
 
 #ifdef BUILD_VG_LOADER_JSON
 
+#include <lottieanimation_capi.h>
+
 static char*
 _get_key_val(void *key)
 {
@@ -19,30 +21,6 @@ static void
 _construct_drawable_nodes(Efl_Canvas_Vg_Container *parent, const LOTLayerNode *layer, int depth EINA_UNUSED)
 {
    if (!parent) return;
-
-#if TREE_VERIFY
-   Eina_Bool verified = EINA_TRUE;
-   Eina_Iterator *itr = efl_canvas_vg_container_children_get(parent);
-   if (itr)
-     {
-        Efl_Canvas_Vg_Shape *child;
-        int i = 0;
-        EINA_ITERATOR_FOREACH(itr, child)
-          {
-             if (!efl_isa(child, EFL_CANVAS_VG_SHAPE_CLASS)) continue;
-
-             LOTNode *node = layer->mNodeList.ptr[i];
-             if (efl_key_data_get(parent, _get_key_val(node)) != child)
-               {
-                  verified = EINA_FALSE;
-               }
-             i++;
-             efl_gfx_entity_visible_set(child, EINA_FALSE);
-          }
-        eina_iterator_free(itr);
-     }
-   if (!verified) ERR("Shape: Failed to verify!");
-#endif
 
    for (unsigned int i = 0; i < layer->mNodeList.size; i++)
      {
@@ -224,28 +202,6 @@ _update_vg_tree(Efl_Canvas_Vg_Container *root, const LOTLayerNode *layer, int de
      }
    efl_gfx_entity_visible_set(root, EINA_TRUE);
 
-#if TREE_VERIFY
-   Eina_Bool verified = EINA_TRUE;
-   Eina_Iterator *itr = efl_canvas_vg_container_children_get(root);
-   if (itr)
-     {
-        Efl_Canvas_Vg_Node *child;
-        int i = 0;
-        EINA_ITERATOR_FOREACH(itr, child)
-          {
-             if (!efl_isa(child, EFL_CANVAS_VG_CONTAINER_CLASS)) continue;
-             LOTLayerNode *clayer = layer->mLayerList.ptr[i];
-             if (efl_key_data_get(root, _get_key_val(clayer)) != child)
-               {
-                  verified = EINA_FALSE;
-               }
-
-             i++;
-          }
-        eina_iterator_free(itr);
-     }
-   if (!verified) ERR("Layer: Failed to verify!");
-#endif
    Efl_Canvas_Vg_Container *ptree = NULL;
 
    //Note: We assume that if matte is valid, next layer must be a matte source.
@@ -325,15 +281,7 @@ vg_common_json_create_vg_node(Vg_File_Data *vfd)
         efl_key_data_set(root, _get_key_val((void *) tree), tree);
         vfd->root = root;
      }
-   else
-     {
-#if TREE_VERIFY
-        if (efl_key_data_get(root, _get_key_val((void *) tree)) != tree)
-          {
-             ERR("Root: Failed to verify!");
-          }
-#endif
-     }
+
    _update_vg_tree(root, tree, 1);
 #else
    return EINA_FALSE;

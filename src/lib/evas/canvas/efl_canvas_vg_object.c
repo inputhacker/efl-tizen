@@ -117,7 +117,7 @@ _efl_canvas_vg_object_root_node_get(const Eo *obj, Efl_Canvas_Vg_Object_Data *pd
              evas_cache_vg_entry_del(pd->vg_entry);
              pd->vg_entry = vg_entry;
           }
-        root = evas_cache_vg_tree_get(pd->vg_entry, pd->frame_index);
+        root = evas_cache_vg_tree_get(pd->vg_entry, pd->frame_idx);
      }
    else if (pd->user_entry) root = pd->user_entry->root;
    else root = pd->root;
@@ -576,9 +576,11 @@ _render_to_buffer(Evas_Object_Protected_Data *obj, Efl_Canvas_Vg_Object_Data *pd
    ENFN->ector_end(engine, buffer, context, ector, do_async);
    evas_common_draw_context_free(context);
 
-   //caching buffer only for first and last frames.
    if (buffer_created && cacheable)
-     ENFN->ector_surface_cache_set(engine, ((void *) key) + pd->frame_index, buffer);
+     {
+        ENFN->ector_surface_cache_set(engine, key, buffer);
+        pd->cached_frame_idx = pd->frame_idx;
+     }
 
    return buffer;
 }
@@ -661,16 +663,19 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
         w = size.w;
         h = size.h;
      }
-   root = evas_cache_vg_tree_get(vg_entry, pd->frame_index);
+   root = evas_cache_vg_tree_get(vg_entry, pd->frame_idx);
    if (!root) return;
-   void *buffer = ENFN->ector_surface_cache_get(engine, ((void *) root) + pd->frame_index);
+   void *buffer = NULL;
+
+   if (pd->frame_idx == pd->cached_frame_idx)
+     buffer = ENFN->ector_surface_cache_get(engine, (void *) root);
 
    if (!buffer)
      buffer = _render_to_buffer(obj, pd, engine, root, w, h, root, NULL,
                                 do_async, cacheable);
    else
      //cache reference was increased when we get the cache.
-     ENFN->ector_surface_cache_drop(engine, ((void *) root) + pd->frame_index);
+     ENFN->ector_surface_cache_drop(engine, (void *) root);
 
    _render_buffer_to_screen(obj,
                             engine, output, context, surface,
@@ -750,8 +755,12 @@ _efl_canvas_vg_object_render(Evas_Object *eo_obj EINA_UNUSED,
    //Cache surface?
    Eina_Bool cacheable = EINA_FALSE;
 
-   if (pd->frame_index == 0 ||
-       (pd->frame_index == (int) evas_cache_vg_anim_frame_count_get(pd->vg_entry)))
+   /* Try caching buffer only for first and last frames
+      because it's an overhead task if it caches all frame images.
+      We assume the first and last frame images are the most resusable
+      in generic scenarios. */
+   if (pd->frame_idx == 0 ||
+       (pd->frame_idx == (int) evas_cache_vg_anim_frame_count_get(pd->vg_entry)))
      cacheable = EINA_TRUE;
 
    if (pd->vg_entry)
@@ -971,10 +980,10 @@ _efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_frame_set(Eo *
                                                                             int frame_index)
 {
    //TODO: Validate frame_index range
-   if (pd->frame_index == frame_index) return EINA_TRUE;
+   if (pd->frame_idx == frame_index) return EINA_TRUE;
 
    //Image is changed, drop previous cached image.
-   pd->frame_index = frame_index;
+   pd->frame_idx = frame_index;
    pd->changed = EINA_TRUE;
    evas_object_change(eo_obj, efl_data_scope_get(eo_obj, EFL_CANVAS_OBJECT_CLASS));
 
@@ -985,7 +994,7 @@ EOLIAN static int
 _efl_canvas_vg_object_efl_gfx_image_animation_controller_animated_frame_get(const Eo *eo_obj EINA_UNUSED,
                                                                             Efl_Canvas_Vg_Object_Data *pd EINA_UNUSED)
 {
-   return pd->frame_index;
+   return pd->frame_idx;
 }
 
 EOLIAN static Eina_Size2D
