@@ -2085,12 +2085,11 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
                           // fallthrough intentional
                           case EDJE_PART_TYPE_GROUP:
                             evas_object_del(rp->typedata.swallow->swallowed_object);
-
+                            rp->typedata.swallow->swallowed_object = NULL;
                           default:
                             break;
                          }
                        _edje_real_part_swallow_clear(ed, rp);
-                       rp->typedata.swallow->swallowed_object = NULL;
                     }
                   free(rp->typedata.swallow);
                   rp->typedata.swallow = NULL;
