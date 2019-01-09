@@ -1458,6 +1458,18 @@ _ecore_wl2_display_connect(Ecore_Wl2_Display *ewd, Eina_Bool sync)
                                ECORE_FD_READ | ECORE_FD_WRITE | ECORE_FD_ERROR,
                                _cb_connect_data, ewd, NULL, NULL);
 
+// TIZEN_ONLY(20180109): check null condition
+   if (!ewd->fd_hdl)
+     {
+        ERR("Fail to add ecore fd(%d, wl.display) handler", wl_display_get_fd(ewd->wl.display));
+        wl_registry_destroy(ewd->wl.registry);
+        wl_display_disconnect(ewd->wl.display);
+        ewd->wl.registry = NULL;
+        ewd->wl.display = NULL:
+        return EINA_FALSE;
+     }
+// End of TIZEN_ONLY(20180109)
+
    ewd->idle_enterer = ecore_idle_enterer_add(_cb_connect_idle, ewd);
 // TIZEN_ONLY(20171129): thread-safety for wl
    ecore_main_fd_handler_prepare_callback_set
