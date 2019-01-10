@@ -7522,10 +7522,7 @@ EAPI Eina_Bool elm_atspi_bridge_utils_is_screen_reader_enabled(void)
 {
    Eo *bridge = _elm_atspi_bridge_get();
    if (!bridge)
-     {
-        ERR("AT-SPI: Atspi bridge is not enabled.");
-        return EINA_FALSE;
-     }
+     return EINA_FALSE;
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(bridge, pd, EINA_FALSE);
    return pd->screen_reader_enabled;
 }
