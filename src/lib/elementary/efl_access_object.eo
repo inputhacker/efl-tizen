@@ -308,7 +308,7 @@ struct Efl.Access.Gesture_Info
    event_time: uint; [[gesture occurance time]]
 }
 
-mixin Efl.Access.Object (Efl.Interface, Efl.Object)
+mixin Efl.Access.Object requires Efl.Object
 {
    [[Accessibility accessible mixin]]
    eo_prefix: efl_access_object;
