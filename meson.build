@@ -268,6 +268,7 @@ subprojects = [
 ['ecore_input'      ,[]                    , false,  true, false, false, false, false, ['eina', 'eo'], []],
 ['ecore_x'          ,['x11']               , false,  true, false, false, false, false, ['eina', 'efl'], []],
 ['ecore_fb'         ,['fb']                , false,  true, false, false, false, false, ['eina'], []],
+['ecore_wayland'    ,['wl-deprecated']     , false,  true, false, false, false, false, ['eina'], []],
 ['ecore_wl2'        ,['wl']                ,  true,  true, false, false, false, false, ['eina'], ['libdrm']],
 ['ecore_sdl'        ,['sdl']               , false,  true, false, false, false, false, ['eina'], []],
 ['ecore_ipc'        ,[]                    , false,  true, false, false, false, false, ['eina'], []],
@@ -295,8 +296,7 @@ subprojects = [
 ['elementary'       ,[]                    ,  true,  true,  true,  true,  true,  true, ['eina', 'efl', 'eo', 'eet', 'evas', 'ecore', 'ecore-evas', 'ecore-file', 'ecore-input', 'edje', 'ethumb-client', 'emotion', 'ecore-imf', 'ecore-con', 'eldbus', 'efreet', 'efreet-mime', 'efreet-trash', 'eio', 'elocation'], ['atspi']],
 ['efl_wl'           ,['wl']                , false,  true,  true, false, false, false, ['evas', 'ecore'], []],
 ['elua'             ,['elua']              , false,  true,  true, false,  true, false, ['eina', 'luajit'], []],
-['ecore_wayland'    ,['wl-deprecated']     , false,  true, false, false, false, false, ['eina'], []],
-['ecore_drm'        ,['drm-deprecated']    , false,  true, false, false, false, false, ['eina'], []],
+['ecore_drm'        ,['drm-deprecated']    , true,   true, false, false, false, false, ['eina'], []],
 ]
 
 # We generate Efl_Config.h and config.h later, they will be available here
@@ -345,7 +345,7 @@ foreach package : subprojects
     #private eo files target - never use this :)
     priv_eo_file_target = []
     #use this variable to store custom variables in that should be placed in the .pc file
-    package_pc_variables = []
+    package_pc_variables = ['module_arch='+version_name,]
 
     foreach static_lib : package[9]
       if get_variable(static_lib, tmp_empty) == tmp_empty
@@ -404,13 +404,22 @@ foreach package : subprojects
           version : version_major + '.' + version_minor + '.' + version_micro,
           libraries : tmp_pub_deps,
           requires : package[8],
+          variables : package_pc_variables
+        )
+      elif package_name == 'ecore'
+        pkgconfig.generate(tmp_lib,
+          name : package_name+'-core',
+          subdirs : [package_version_name] + tmp_package_subdirs,
+          version : version_major + '.' + version_minor + '.' + version_micro,
+          libraries : tmp_pub_deps,
+          requires : package[8],
+          variables : package_pc_variables
         )
       endif
     endif
   else
     message(package_name+' disabled!')
   endif
-
 endforeach
 
 subdir('cmakeconfig')
@@ -506,6 +515,6 @@ foreach pc_file : efl_20_pc_files
   pkgconfig.generate(
     name : '-'.join(name.split('_')),
     description: name+' configutation file',
-    requires : libraries,
+    requires: libraries,
   )
 endforeach

@@ -4,7 +4,7 @@ src = files([
 
 shared_module(mod,
     src,
-    dependencies: [elementary],
+    dependencies: [elementary, ecore_wl2, eio],
     install: true,
     install_dir : mod_install_dir
 )

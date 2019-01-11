@@ -1,6 +1,9 @@
 ecore_imf_deps = [ecore]
 ecore_imf_pub_deps = [eina]
 
+# TIZEN_ONLY : Add to keep backward compat
+ecore_imf_pub_deps += ecore_input
+
 ecore_imf_header_src = [
    'Ecore_IMF.h'
 ]

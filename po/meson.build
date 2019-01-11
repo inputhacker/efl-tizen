@@ -17,6 +17,7 @@ if get_option('nls')
   if cc.compiles('#include <libintl.h>', dependencies : intl) == false
     error('libintl.h not found')
   endif
+  config_h.set('HAVE_LIBINTL_H', 1)
 else
   intl = declare_dependency()
 endif

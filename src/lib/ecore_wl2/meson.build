@@ -1,6 +1,7 @@
 ecore_wl2_deps = [
   dependency('wayland-client'), dependency('wayland-server'), dependency('xkbcommon'),
-  wayland_protocol, dl, m, ecore, ecore_input, libdrm, buildsystem
+  wayland_protocol, dl, m, ecore, ecore_input, libdrm, buildsystem,
+  #dependency('libdrm_exynos'), #dependency('libdrm_intel'),
 ]
 ecore_wl2_pub_deps = [eina, ecore]
 
@@ -21,8 +22,22 @@ ecore_wl2_src = [
   'ecore_wl2_surface.c'
 ]
 
+# <----- TIZEN_ONLY(20190109: introduce mesonbuild on tizen env
+ecore_wl2_deps += [
+  dependency('wayland-cursor'),
+  dependency('tizen-extension-client'),
+  dependency('wayland-tbm-client'),
+  dependency('libtdm-client'),
+]
+ecore_wl2_src += [
+  'tizen-policy-ext-client-protocol.h',
+  'tizen-policy-ext-protocol.c',
+  'ecore_wl2_tbmsurface.c',
+]
+# TIZEN_ONLY(20190109: introduce mesonbuild on tizen env ----->
+
 ecore_wl2_lib = library('ecore_wl2',
-    ecore_wl2_src, pub_eo_file_target,
+    ecore_wl2_src, pub_eo_file_target, wayland_protocol_header,
     dependencies: ecore_wl2_deps + ecore_wl2_pub_deps,
     include_directories : config_dir,
     install: true,

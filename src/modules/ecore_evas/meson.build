@@ -8,6 +8,10 @@ engines = [
 ['x', ['x11']],
 ]
 
+engines += [
+  ['tbm', ['tbm']],
+]
+
 if sys_windows == false
   engines += [['extn', []]]
 endif

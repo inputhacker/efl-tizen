@@ -4,21 +4,21 @@ option('audio',
   description : 'Flag for handling audio support in efl'
 )
 
-option('avahi',
+option('avahi', # TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'Flag for handling avahi support in efl'
 )
 
-option('x11',
+option('x11', # TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'Flag for handling x11 support in efl'
 )
 
-option('fb',
+option('fb', # TIZEN_CONFIG
   type : 'boolean',
-  value : false,
+  value : true,
   description : 'Flag for handling frame buffer support in efl'
 )
 
@@ -28,15 +28,15 @@ option('sdl',
   description : 'Flag for handling sdl support in efl'
 )
 
-option('wl',
+option('wl', # TIZEN_CONFIG
   type : 'boolean',
-  value : false,
+  value : true,
   description : 'Flag for handling wayland support in efl'
 )
 
-option('buffer',
+option('buffer', # TIZEN_CONFIG
   type : 'boolean',
-  value : false,
+  value : true,
   description : 'Flag for handling buffer support in efl'
 )
 
@@ -52,9 +52,9 @@ option('cocoa',
   description : 'Flag for handling apple cocoa support in efl'
 )
 
-option('physics',
+option('physics', # TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'Flag for handling the internal physics engine in efl'
 )
 
@@ -64,10 +64,10 @@ option('eeze',
   description : 'Flag for handling the device abstraction layer in efl'
 )
 
-option('opengl',
+option('opengl', # TIZEN_CONFIG
   type : 'combo',
   choices : ['full', 'es-egl', 'none'],
-  value : 'full',
+  value : 'es-egl',
   description : 'build efl with a special opengl support'
 )
 
@@ -88,15 +88,15 @@ option('debug-threads',
   description : 'thread debugging'
 )
 
-option('build-examples',
+option('build-examples', # TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'build examples'
 )
 
-option('build-tests',
+option('build-tests', # TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'build tests'
 )
 
@@ -118,21 +118,21 @@ option('g-mainloop',
   description : 'use glib mainloop or not'
 )
 
-option('gstreamer',
+option('gstreamer', # TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'use gstreamer 1.0 support'
 )
 
-option('systemd',
+option('systemd', # TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'use systemd support'
 )
 
-option('pulseaudio',
+option('pulseaudio', #TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'pulseaudio support'
 )
 
@@ -169,7 +169,7 @@ option('xinput22',
 
 option('tslib',
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'tslib support'
 )
 
@@ -201,22 +201,22 @@ option('evas-modules',
 option('evas-loaders-disabler',
   type : 'array',
   description : 'add names here to disable the loaders',
-  choices : ['gst', 'pdf', 'ps', 'raw', 'svg', 'xcf', 'bmp', 'dds', 'eet', 'generic', 'gif', 'ico', 'jp2k', 'jpeg', 'pmaps', 'png', 'psd', 'tga', 'tgv', 'tiff', 'wbmp', 'webp', 'xpm', 'json'],
-  value : ['webp']
+  choices : ['gst', 'pdf', 'ps', 'raw', 'rsvg', 'svg', 'xcf', 'bmp', 'dds', 'eet', 'generic', 'gif', 'ico', 'jp2k', 'jpeg', 'pmaps', 'png', 'psd', 'tga', 'tgv', 'tiff', 'wbmp', 'webp', 'xpm'],
+  value : ['gst', 'pdf', 'ps', 'rsvg', 'raw', 'webp'],
 )
 
-option('ecore-imf-loaders-disabler',
+option('ecore-imf-loaders-disabler', # TIZEN_CONFIG
   type : 'array',
   description : 'add names here to disable the loaders',
   choices : ['xim', 'ibus', 'scim'],
-  value : ['scim']
+  value : ['xim', 'ibus', 'scim']
 )
 
 option('emotion-loaders-disabler',
   type : 'array',
   description : 'add names here to disable the loaders',
   choices : ['gstreamer', 'gstreamer1', 'libvlc', 'xine'],
-  value : ['gstreamer', 'libvlc', 'xine']
+  value : ['gstreamer','gstreamer1', 'libvlc', 'xine']
 )
 
 option('emotion-generic-loaders-disabler',
@@ -226,9 +226,9 @@ option('emotion-generic-loaders-disabler',
   value : ['vlc']
 )
 
-option('harfbuzz',
+option('harfbuzz', # TIZEN_CONFIG
   type : 'boolean',
-  value : false,
+  value : true,
   description : 'harfbuzz support'
 )
 
@@ -256,9 +256,9 @@ option('pixman',
   description : 'Enable pixman support in evas'
 )
 
-option('hyphen',
+option('hyphen', # TIZEN_CONFIG
   type : 'boolean',
-  value : false,
+  value : true,
   description : 'Enable hyphen support in evas'
 )
 
@@ -286,9 +286,9 @@ option('v4l2',
   description : 'add v4l2 support'
 )
 
-option('elua',
+option('elua', # TIZEN_CONFIG
   type : 'boolean',
-  value : true,
+  value : false,
   description : 'Flag for handling elua support in efl'
 )
 
@@ -313,7 +313,7 @@ option('nls',
 option('bindings',
   type : 'array',
   choices : ['luajit', 'cxx', 'mono'],
-  value : ['luajit', 'cxx'],
+  value : [],
   description : 'Add values here to enable the bindings',
 )
 
@@ -323,10 +323,10 @@ option('mono-beta',
   description: 'Flag for enabling @beta Eo methods in the api'
 )
 
-option('lua-interpreter',
+option('lua-interpreter', # TIZEN_CONFIG
   type: 'combo',
   choices: ['luajit', 'lua'],
-  value: 'luajit',
+  value: 'lua',
   description: 'Select a type of lua interpreter to use it for edje and evas'
 )
 
@@ -355,9 +355,9 @@ option('dictionaries-hyphen-dir',
   description : 'Put the path to hyphen dictionaries directory'
 )
 
-option('elementary-base-dir',
+option('elementary-base-dir', # TIZEN_CONFIG
   type : 'string',
-  value : '.elementary',
+  value : 'share/.elementary',
   description : 'Put the name of a base directory for elementary data'
 )
 
@@ -365,4 +365,16 @@ option('eolian-bootstrap',
   type : 'boolean',
   value : false,
   description : 'Only build efl up to eolian_gen and install eina libeolian and eolian_gen, usefull for cross compiles'
+)
+
+option('tbm',
+  type: 'boolean',
+  value: true,
+  description: 'enable tbm'
+)
+
+option('tizen_audio',
+  type: 'boolean',
+  value: true,
+  description: 'enable tizen audio'
 )

@@ -84,7 +84,7 @@ function_checks = [
   ['geteuid', ['unistd.h']],
   ['getpagesize', ['unistd.h']],
   ['getpwent', ['sys/types.h', 'pwd.h']],
-  ['getuid', ['unistd.h']],
+  #['getuid', ['unistd.h']],
   ['getxattr', ['sys/types.h', 'sys/xattr.h']],
   ['iconv', ['iconv.h']],
   ['listxattr', ['sys/types.h', 'sys/xattr.h']],
@@ -143,7 +143,8 @@ m = cc.find_library('m')
 dl = cc.find_library('dl', required: false)
 rt = cc.find_library('rt', required: false)
 
-thread_dep = dependency('threads')
+#thread_dep = dependency('threads')
+thread_dep = cc.find_library('pthread')
 
 #check for the headers
 foreach header : header_checks

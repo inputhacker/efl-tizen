@@ -19,6 +19,11 @@ pub_legacy_eo_files = [
   'elm_fileselector_part.eo',
 ]
 
+#<--TIZEN_ONLY
+pub_legacy_eo_files += [
+]
+#TIZEN_ONLY-->
+
 pub_eo_file_target = []
 
 foreach eo_file : pub_legacy_eo_files
@@ -39,7 +44,6 @@ endforeach
 
 pub_eo_files = [
   'efl_ui_widget.eo',
-  'efl_ui_animation_view.eo',
   'efl_ui_bg.eo',
   'efl_ui_button.eo',
   'efl_ui_calendar.eo',
@@ -179,6 +183,12 @@ pub_eo_files = [
   'efl_ui_relative_layout.eo',
 ]
 
+#<--TIZEN_ONLY
+pub_eo_files += [
+  'efl_ui_animation_view.eo',
+]
+#TIZEN_ONLY-->
+
 foreach eo_file : pub_eo_files
   pub_eo_file_target += custom_target('eolian_gen_' + eo_file,
     input : eo_file,
@@ -292,7 +302,6 @@ elementary_headers_unstable = [
   'elm_widget_flipselector.h',
   'efl_ui_widget_frame.h',
   'efl_ui_stack_private.h',
-  'efl_ui_animation_view_private.h',
   'elm_widget_gengrid.h',
   'elm_widget_genlist.h',
   'elm_widget_glview.h',
@@ -384,6 +393,30 @@ elementary_headers_unstable = [
   'efl_ui_relative_layout_private.h'
 ]
 
+#<--TIZEN_ONLY
+elementary_headers_unstable += [
+  'efl_ui_animation_view_private.h',
+  'elm_atspi_ewk_wrapper.h',
+  'efl_access_legacy.h',
+  'efl_ui_clock_private.h',
+]
+
+elementary_headers_unstable_tizen = [
+  'elm_widget_ctxpopup.h',
+  'elm_widget_genlist.h',
+]
+
+elementary_headers_unstable_tizen_tmp = []
+foreach item : elementary_headers_unstable_tizen
+  if elementary_headers_unstable_tizen.contains(item) == true
+    elementary_headers_unstable_tizen_tmp += '../elementary_tizen/' + item
+  else
+    elementary_headers_unstable_tizen_tmp += item
+  endif
+endforeach
+elementary_headers_unstable_tizen = elementary_headers_unstable_tizen_tmp
+#TIZEN_ONLY-->
+
 elementary_pub_headers = [
   'elc_ctxpopup.h',
   'elc_ctxpopup_legacy.h',
@@ -407,8 +440,6 @@ elementary_pub_headers = [
   'elc_naviframe_common.h',
   'elc_popup.h',
   'elc_popup_legacy.h',
-  'efl_ui_animation_view.h',
-  'efl_ui_animation_view_legacy.h',
   'elm_access.h',
   'elm_actionslider.h',
   'elm_actionslider_legacy.h',
@@ -417,10 +448,6 @@ elementary_pub_headers = [
   'elm_atspi_app_object_eo.legacy.h',
   'elm_atspi_bridge.h',
   'elm_atspi_bridge_eo.legacy.h',
-  'elm_atspi_ewk_wrapper.h',
-  'elm_atspi_ewk_wrapper_eo.legacy.h',
-  'elm_atspi_proxy.h',
-  'elm_atspi_proxy_eo.legacy.h',
   'elm_authors.h',
   'elm_bg.h',
   'elm_bg_legacy.h',
@@ -603,7 +630,6 @@ elementary_pub_headers = [
   'elm_win_legacy.h',
   'elm_helper.h',
   'elm_part_helper.h',
-  'efl_ui_animation_view_eo.legacy.h',
   'efl_ui_bg_eo.legacy.h',
   'efl_ui_bg_legacy_eo.legacy.h',
   'efl_ui_button_eo.legacy.h',
@@ -721,10 +747,29 @@ elementary_pub_headers = [
   'elm_widget_item_static_focus_eo.legacy.h',
 ]
 
+#<--TIZEN_ONLY
+elementary_pub_headers += [
+  'efl_ui_animation_view.h',
+  'efl_ui_animation_view_legacy.h',
+  'elm_atspi_ewk_wrapper.h',
+  'elm_atspi_ewk_wrapper_eo.legacy.h',
+  'elm_atspi_proxy.h',
+  'elm_atspi_proxy_eo.legacy.h',
+  'efl_ui_animation_view_eo.legacy.h',
+]
+#TIZEN_ONLY-->
+
 elementary_header_src = [
   'Elementary.h',
   'Elementary_Cursor.h'
 ] + elementary_pub_headers + elementary_headers_unstable
+
+#<--TIZEN_ONLY
+elementary_header_src_tizen = [
+  'Elementary.h',
+  'Elementary_Cursor.h'
+] + elementary_pub_headers + elementary_headers_unstable_tizen
+#TIZEN_ONLY-->
 
 elementary_src = [
   'elm_priv.h',
@@ -743,12 +788,9 @@ elementary_src = [
   'elc_popup.c',
   'elc_scrolled_entry.c',
   'elm_access.c',
-  'efl_ui_animation_view.c',
   'elm_actionslider.c',
   'elm_atspi_app_object.c',
   'elm_atspi_bridge.c',
-  'elm_atspi_ewk_wrapper.c',
-  'elm_atspi_proxy.c',
   'efl_ui_legacy.c',
   'efl_ui_bg.c',
   'elm_box.c',
@@ -949,9 +991,39 @@ elementary_src = [
   'efl_ui_relative_layout.c'
 ]
 
+#<--TIZEN_ONLY
+elementary_src += [
+  'efl_ui_animation_view.c',
+  'elm_atspi_ewk_wrapper.c',
+  'elm_atspi_proxy.c',
+  'tizen_vector.c',
+  'tizen_util.c',
+]
+
+elementary_src_tizen = [
+  'elc_ctxpopup.c',
+  'elm_genlist.c',
+]
+
+elementary_src_tizen_tmp = []
+foreach item : elementary_src
+  if elementary_src_tizen.contains(item) == true
+    elementary_src_tizen_tmp += '../elementary_tizen/' + item
+  else
+    elementary_src_tizen_tmp += item
+  endif
+endforeach
+elementary_src_tizen = elementary_src_tizen_tmp
+#TIZEN_ONLY-->
+
 elementary_deps = [emile, eo, efl, edje, ethumb, ethumb_client, emotion, ecore_imf, ecore_con, eldbus, efreet, efreet_mime, efreet_trash, eio, atspi, dl, intl]
 elementary_pub_deps = [eina, eet, evas, ecore, ecore_evas, ecore_file, ecore_input, ecore_imf, ecore_con,
                        edje, eldbus, efreet, efreet_mime, efreet_trash, ethumb_client, efl, elocation]
+
+#<--TIZEN_ONLY
+#elementary_deps += ecore_wl2
+elementary_pub_deps += [dl, thread_dep, ecore_wayland, ecore_wl2]
+#TIZEN_ONLY-->
 
 elm_options = configuration_data()
 
@@ -966,7 +1038,8 @@ else
   elm_options.set('DLL_EXPORT', '1')
 endif
 
-elm_options.set('ELM_ELOCATION', '1')
+#TIZEN ONLY(20180827): Enable this when it's mandatory.
+#elm_options.set('ELM_ELOCATION', '1')
 elm_options.set('ELM_EFREET', '1')
 
 if config_h.has('HAVE_ALLOCA_H')
@@ -1036,3 +1109,19 @@ install_headers(elementary_header_src,
 elementary_config_dir = include_directories('.')
 
 package_pc_variables = ['themes='+join_paths(dir_data, package_name, 'themes')]
+
+elementary_tizen_lib = library('elementary_t',
+    elementary_src_tizen, pub_eo_file_target, priv_eo_file_target, c,
+    dependencies: elementary_pub_deps + elementary_deps,
+    include_directories : config_dir + [include_directories('.')] + [include_directories(join_paths('..', '..', '..'))] + [ecore_evas_wayland_engine_include_dir],
+    install: true,
+    c_args : elm_package_c_args,
+    version : '1.22.100',
+)
+
+elementary_tizen = declare_dependency(
+  include_directories: [include_directories('.')],
+  link_with: elementary_tizen_lib,
+  sources : pub_eo_file_target + priv_eo_file_target,
+  dependencies: elementary_pub_deps,
+)

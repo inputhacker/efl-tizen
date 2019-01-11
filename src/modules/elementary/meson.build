@@ -7,6 +7,10 @@ mods = [
   join_paths('web', 'none')
 ]
 
+mods += [
+  'copypasteUI_ctxpopup',
+]
+
 foreach mod : mods
   mod_install_dir = join_paths(dir_lib, 'elementary', 'modules', mod, version_name)
   subdir(mod)

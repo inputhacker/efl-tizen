@@ -377,9 +377,11 @@ endif
 
 execinfo = cc.find_library('execinfo', required: false)
 
+dlog = dependency('dlog')
+
 eina_lib = library('eina', sources,
   include_directories : config_dir,
-  dependencies: [m, rt, dl, execinfo, iconv, eina_deps, thread_dep, eina_mem_pools, evil],
+  dependencies: [m, rt, dl, execinfo, iconv, eina_deps, thread_dep, eina_mem_pools, evil, dlog],
   install: true,
   version : meson.project_version()
 )

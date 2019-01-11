@@ -59,6 +59,7 @@ endforeach
 wayland_protocol_lib = static_library('wayland_protocol',
     gen_obj_c + gen_obj_header,
 )
+wayland_protocol_header = gen_obj_header
 
 wayland_protocol = declare_dependency(
 	include_directories: include_directories('.'),

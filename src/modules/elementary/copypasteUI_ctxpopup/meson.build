@@ -1,5 +1,7 @@
 src = files([
-  'mod.c',
+  'cbhm_helper.h',
+  'cbhm_helper.c',
+  'copypaste.c',
 ])
 
 shared_module(mod,

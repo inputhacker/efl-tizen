@@ -1,7 +1,11 @@
 %bcond_without wayland
 %bcond_with x
 
+%if "%{buildsystem}" == "meson"
+#
+%else
 %bcond_without automake
+%endif
 
 %define enable_examples       0
 %define enable_ephysics       0
@@ -33,7 +37,7 @@ BuildRequires:  gettext-tools
 BuildRequires:  hyphen-devel
 
 %if %{without automake}
-BuildRequires:  meson
+BuildRequires:  meson >= 0.49.0
 %endif
 
 %if %{with wayland}
@@ -136,6 +140,7 @@ Provides: efl-data
 Obsoletes: efl-data
 
 %define dbus_unavailable 1
+
 
 %description
 EFL is a library collection providing various functionality used (not only) by
@@ -350,9 +355,9 @@ Requires: ecore-wayland
 %endif
 %if %{with x}
 Requires: ecore-x
-%endif
 %if %{with automake}
 Requires: ecore-avahi
+%endif
 %endif
 License: BSD-2-Clause and MIT
 
@@ -384,9 +389,9 @@ Requires: ecore-wayland-devel
 %endif
 %if %{with x}
 Requires: ecore-x-devel
-%endif
 %if %{with automake}
 Requires: ecore-avahi-devel
+%endif
 %endif
 License: BSD-2-Clause and MIT
 
@@ -434,6 +439,7 @@ License: BSD-2-Clause and MIT
 %description -n ecore-audio-devel
 Development files for ecore_audio
 
+%if %{with x}
 %if %{with automake}
 %package -n ecore-avahi
 Summary: Enlightened Core X interface library - avahi
@@ -451,6 +457,7 @@ License: BSD-2-Clause and MIT
 
 %description -n ecore-avahi-devel
 Development files for ecore_avahi
+%endif
 %endif
 
 %package -n ecore-buffer
@@ -1105,7 +1112,7 @@ EFL elementary configuration and test apps package
 %package -n elementary-devel
 Summary:        Development files for elementary
 Group:          Development/Libraries
-Requires:       %{name} = %{version}
+Requires:       elementary = %{version}-%{release}
 Recommends:     elementary
 
 %description -n elementary-devel
@@ -1183,28 +1190,28 @@ License: BSD-2-Clause
 Development files for efl-wl
 
 %if %{with automake}
-%package -n elput
-Summary: Elput provides a wrapper and functions for using libinput
-Requires: %{name}-data = %{version}-%{release}
-License: BSD-2-Clause
-# i am not sure that the license is correct
-
-%description -n elput
-Elput provides a wrapper and functions for using libinput
-
-%package -n elput-devel
-Summary: Development components for the elput package
-Group: Graphics & UI Framework/Development
-Requires: elput = %{version}-%{release}
-License: BSD-2-Clause
-# i am not sure that the license is correct
-
-%description -n elput-devel
-Development files for elput
+##%%package -n elput
+##%Summary: Elput provides a wrapper and functions for using libinput
+##%Requires: %{name}-data = %{version}-%{release}
+##%License: BSD-2-Clause
+##%# i am not sure that the license is correct
+##%
+##%%description -n elput
+##%Elput provides a wrapper and functions for using libinput
+##%
+##%%package -n elput-devel
+##%Summary: Development components for the elput package
+##%Group: Graphics & UI Framework/Development
+##%Requires: elput = %{version}-%{release}
+##%License: BSD-2-Clause
+##%# i am not sure that the license is correct
+##%
+##%%description -n elput-devel
+##%Development files for elput
 %endif
 
-
 %prep
+echo "%{_buildsystem}"
 %setup -q
 cp %{SOURCE1001} .
 
@@ -1280,26 +1287,42 @@ export XDG_RUNTIME_DIR="/tmp/"
 sed \
 -e 's%^.*: error: .*$%\x1b[37;41m&\x1b[m%' \
 -e 's%^.*: warning: .*$%\x1b[30;43m&\x1b[m%'
-# automake above
 %else
-# meson below
-%endif
+export DESTDIR=%{buildroot}
+meson setup \
+                --buildtype plain \
+                --prefix /usr \
+                -Dcpp_std=gnu++11 \
+                builddir 2>&1
 
+sed -i.bak -e "s/soname,libelementary_t/soname,libelementary/g" builddir/build.ninja
+
+ninja \
+                -C builddir \
+                -j %(echo "`/usr/bin/getconf _NPROCESSORS_ONLN`") \
+                -v \
+                all
+%endif
 
 %install
 %if %{with automake}
 %make_install
 rm %{buildroot}/usr/share/ecore_x/checkme
-# automake above
 %else
-# meson below
+export DESTDIR=%{buildroot}
+ninja \
+                -C builddir \
+                -j %(echo "`/usr/bin/getconf _NPROCESSORS_ONLN`") \
+                install
+
+mv %{buildroot}/usr/lib/libelementary_t.so.1.22.100 %{buildroot}/usr/lib/libelementary.so.1.22.100
+rm %{buildroot}/usr/lib/libelementary_t.*
 %endif
 
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
 %find_lang %{name}
-
 
 %post -n eina -p /sbin/ldconfig
 %postun -n eina -p /sbin/ldconfig
@@ -1360,15 +1383,20 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %post -n ecore-wl2 -p /sbin/ldconfig
 %postun -n  ecore-wl2 -p /sbin/ldconfig
 
+%post -n ecore-wayland -p /sbin/ldconfig
+%postun -n  ecore-wayland -p /sbin/ldconfig
+
 %if %{with automake}
-%post -n elput -p /sbin/ldconfig
-%postun -n elput -p /sbin/ldconfig
+##%%post -n elput -p /sbin/ldconfig
+##%%postun -n elput -p /sbin/ldconfig
 %endif
 
 %post -n efl-wl -p /sbin/ldconfig
 %postun -n efl-wl -p /sbin/ldconfig
 
-%post -n elementary -p /sbin/ldconfig
+%post -n elementary
+ldconfig -l %{_libdir}/libelementary.so.1.22.0
+
 %postun -n elementary -p /sbin/ldconfig
 
 %post -n elementary-tizen
@@ -1378,7 +1406,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.100
 ldconfig -l %{_libdir}/libelementary.so.1.22.0
 
 %postun -n elementary-tizen -p /sbin/ldconfig
-
 
 %files -n %{name}
 %manifest %{name}.manifest
@@ -1391,8 +1418,21 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %exclude /usr/lib*/debug/.build-id/
 %exclude /usr/lib*/debug/*
 %if %{with automake}
+#elua
 %exclude %{_libdir}/cmake/Elua/
 %exclude %{_datadir}/elua/checkme
+#elput
+%exclude %exclude %{_libdir}/libelput.so.*
+%exclude %{_libdir}/libelput.so
+%exclude %{_libdir}/pkgconfig/elput.pc
+%exclude %{_includedir}/elput-*1/
+#avahi
+%if %{without x}
+%exclude %{_libdir}/libecore_avahi.so.*
+%exclude %{_includedir}/ecore-avahi*/
+%exclude %{_libdir}/libecore_avahi.so
+%exclude %{_libdir}/pkgconfig/ecore-avahi*.pc
+%endif
 %endif
 
 %files -n %{name}-devel
@@ -1579,6 +1619,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %{_libdir}/libecore_audio.so
 %{_libdir}/pkgconfig/ecore-audio*.pc
 
+%if %{with x}
 %if %{with automake}
 %files -n ecore-avahi
 %manifest %{name}.manifest
@@ -1592,6 +1633,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %{_includedir}/ecore-avahi*/
 %{_libdir}/libecore_avahi.so
 %{_libdir}/pkgconfig/ecore-avahi*.pc
+%endif
 %endif
 
 %files -n ecore-buffer
@@ -1755,7 +1797,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %files -n ecore-wayland-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-wayland-1/
+%{_includedir}/ecore-wayland-*1/
 %{_libdir}/libecore_wayland.so
 %{_libdir}/pkgconfig/ecore-wayland.pc
 %endif
@@ -2078,19 +2120,19 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %{_libdir}/pkgconfig/efl-wl.pc
 
 %if %{with automake}
-%files -n elput
-%manifest %{name}.manifest
-%license licenses/COPYING.BSD
-%defattr(-,root,root,-)
-%{_libdir}/libelput.so.*
-
-%files -n elput-devel
-%manifest %{name}.manifest
-%license licenses/COPYING.BSD
-%defattr(-,root,root,-)
-%{_libdir}/libelput.so
-%{_libdir}/pkgconfig/elput.pc
-%{_includedir}/elput-*1/
+##%%files -n elput
+##%%manifest %{name}.manifest
+##%%license licenses/COPYING.BSD
+##%%defattr(-,root,root,-)
+##%%{_libdir}/libelput.so.*
+##%
+##%%files -n elput-devel
+##%%manifest %{name}.manifest
+##%%license licenses/COPYING.BSD
+##%%defattr(-,root,root,-)
+##%%{_libdir}/libelput.so
+##%%{_libdir}/pkgconfig/elput.pc
+##%%{_includedir}/elput-*1/
 %endif
 
 %files -n elementary

@@ -175,6 +175,12 @@ ecore_src = [
   'efl_core_command_line.c',
 ]
 
+#<--TIZEN_ONLY
+ecore_src += [
+  'ecore_device.c',
+]
+#TIZEN_ONLY-->
+
 if sys_windows == true
   #nothing for now ... needs testing
   ecore_src += ['ecore_exe_win32.c']

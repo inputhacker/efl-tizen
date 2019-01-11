@@ -13,7 +13,6 @@ cmake_src = [
   'Eio',
   'Eldbus',
   'Elementary',
-  'Elua',
   'Emile',
   'Emotion',
   'Eo',
@@ -25,6 +24,10 @@ cmake_src = [
   'Evas',
   'EvasCxx',
 ]
+
+if get_option('elua') == true
+  cmake_src += 'Elua'
+endif
 
 cmake_version_src = [
   'Efl',

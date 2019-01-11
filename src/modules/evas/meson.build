@@ -21,8 +21,15 @@ if get_option('opengl') == 'es-egl'
   engines += [['wayland_egl', ['wl']]]
 endif
 
+if get_option('tbm') == true
+  engines += [
+   ['gl_tbm', []],
+   ['software_tbm', []],
+  ]
+endif
+
 #there are a few modules that should NEVER be build as a module but rather be build as static lib and linked in later
-evas_force_static = ['software_generic', 'gl_common']
+evas_force_static = ['software_generic', 'gl_common', 'buffer']
 evas_static_list = []
 
 #fixed dependencies by efl

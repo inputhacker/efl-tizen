@@ -21,13 +21,22 @@ ecore_wayland_src = [
 ecore_wayland_header_src = [
   'Ecore_Wayland.h'
 ]
-
-
+ecore_wayland_src += [
+  'ecore_wl_tizen.c',
+]
+ecore_wayland_pub_deps += [
+  dependency('xdg-shell-client'),
+  dependency('text-client'),
+  dependency('tizen-extension-client'),
+  dependency('wayland-tbm-client'),
+  dependency('libtdm-client'),
+]
 ecore_wayland_lib = library('ecore_wayland',
-    ecore_wayland_src,
+    ecore_wayland_src, wayland_protocol_header,
     dependencies: [m] + ecore_wayland_deps + ecore_wayland_pub_deps,
     include_directories : config_dir + [include_directories(join_paths('..','..'))],
     install: true,
+    version : meson.project_version(),
     c_args : package_c_args,
 )
 

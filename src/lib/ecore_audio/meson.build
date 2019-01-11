@@ -12,6 +12,10 @@ pub_eo_files = [
   'ecore_audio_out_wasapi.eo'
 ]
 
+pub_eo_files += [
+  'ecore_audio_out_tizen.eo',
+]
+
 foreach eo_file : pub_eo_files
   pub_eo_file_target += custom_target('eolian_gen_' + eo_file,
     input : eo_file,
@@ -68,6 +72,16 @@ if get_option('pulseaudio')
   ]
 
   config_h.set('HAVE_PULSE', '1')
+endif
+
+if get_option('tizen_audio')
+  ecore_audio_header_src += [
+    'ecore_audio_obj_out_tizen.h'
+  ]
+  ecore_audio_src += [
+    'ecore_audio_obj_out_tizen.c'
+  ]
+  config_h.set('HAVE_TIZENAUDIO', '1')
 endif
 
 if sys_windows == true
