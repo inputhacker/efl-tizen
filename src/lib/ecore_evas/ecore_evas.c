@@ -2384,8 +2384,10 @@ EAPI int
 ecore_evas_aux_hint_add(Ecore_Evas *ee, const char *hint, const char *val)
 {
    ECORE_EVAS_CHECK(ee, -1);
+// TIZEN_ONLY(20190111): add NULL check
    EINA_SAFETY_ON_NULL_RETURN_VAL(hint, -1);
    EINA_SAFETY_ON_NULL_RETURN_VAL(val, -1);
+//
 
 // TIZEN_ONLY(20170212): pend rotation until app set rotation
 /* This is really hotfix.
@@ -2512,7 +2514,9 @@ EAPI Eina_Bool
 ecore_evas_aux_hint_val_set(Ecore_Evas *ee, const int id, const char *val)
 {
    ECORE_EVAS_CHECK(ee, EINA_FALSE);
+// TIZEN_ONLY(20190111): add NULL check
    EINA_SAFETY_ON_NULL_RETURN_VAL(val, EINA_FALSE);
+//
 
    Eina_List *ll;
    Ecore_Evas_Aux_Hint *aux;
@@ -2577,7 +2581,9 @@ EAPI int
 ecore_evas_aux_hint_id_get(const Ecore_Evas *ee, const char *hint)
 {
    ECORE_EVAS_CHECK(ee, -1);
+// TIZEN_ONLY(20190111): add NULL check
    EINA_SAFETY_ON_NULL_RETURN_VAL(hint, -1);
+//
 
    Eina_List *ll;
    Ecore_Evas_Aux_Hint *aux;
