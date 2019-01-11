@@ -10438,14 +10438,14 @@ elm_win_aux_hint_val_set(Evas_Object *obj, const int id, const char *val)
 EAPI const char *
 elm_win_aux_hint_val_get(Evas_Object *obj, int id)
 {
-   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, NULL);
    return ecore_evas_aux_hint_val_get(sd->ee, id);
 }
 
 EAPI int
 elm_win_aux_hint_id_get(Evas_Object *obj, const char *hint)
 {
-   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, EINA_FALSE);
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd, -1);
    return ecore_evas_aux_hint_id_get(sd->ee, hint);
 }
 
