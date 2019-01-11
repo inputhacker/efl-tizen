@@ -1465,7 +1465,7 @@ _ecore_wl2_display_connect(Ecore_Wl2_Display *ewd, Eina_Bool sync)
         wl_registry_destroy(ewd->wl.registry);
         wl_display_disconnect(ewd->wl.display);
         ewd->wl.registry = NULL;
-        ewd->wl.display = NULL:
+        ewd->wl.display = NULL;
         return EINA_FALSE;
      }
 // End of TIZEN_ONLY(20180109)
