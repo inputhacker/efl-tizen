@@ -526,14 +526,20 @@ _efl_access_object_relation_set_get(const Eo *obj EINA_UNUSED, Efl_Access_Object
    //
 }
 
+EAPI void
+efl_access_attribute_free(Efl_Access_Attribute *attr)
+{
+   eina_stringshare_del(attr->key);
+   eina_stringshare_del(attr->value);
+   free(attr);
+}
+
 EAPI void efl_access_attributes_list_free(Eina_List *list)
 {
    Efl_Access_Attribute *attr;
    EINA_LIST_FREE(list, attr)
      {
-        eina_stringshare_del(attr->key);
-        eina_stringshare_del(attr->value);
-        free(attr);
+        efl_access_attribute_free(attr);
      }
 }
 

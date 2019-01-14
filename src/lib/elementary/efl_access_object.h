@@ -106,6 +106,12 @@ EAPI void efl_access_relation_set_free(Efl_Access_Relation_Set *set);
 EAPI Efl_Access_Relation_Set efl_access_relation_set_clone(const Efl_Access_Relation_Set *set);
 //
 
+/**
+ * Free the Efl_Access_Attribute type
+ */
+EAPI void
+efl_access_attribute_free(Efl_Access_Attribute *attr);
+
 #ifdef EFL_EO_API_SUPPORT
 
 /**
