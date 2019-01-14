@@ -151,32 +151,6 @@ public struct ActionData {
     public IntPtr func;
 }
 
-public struct RelationSet {
-    private Eina.List<Efl.Access.Relation> payload;
-
-    public static implicit operator RelationSet(Eina.List<Efl.Access.Relation> x)
-    {
-        return new RelationSet{payload=x};
-    }
-    public static implicit operator Eina.List<Efl.Access.Relation>(RelationSet x)
-    {
-        return x.payload;
-    }
-}
-
-public struct StateSet {
-    private ulong val;
-
-    public static implicit operator StateSet(ulong x)
-    {
-        return new StateSet{val=x};
-    }
-    public static implicit operator ulong(StateSet x)
-    {
-        return x.val;
-    }
-}
-
 } // namespace Access
 
 } // namespace Efl
