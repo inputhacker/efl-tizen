@@ -1381,7 +1381,6 @@ EAPI int elm_win_active_win_orientation_get(Evas_Object *obj);
 
 // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
 /**
- * @internal
  * @remarks Tizen only feature
  *
  * @brief Gets the list of supported auxiliary hint strings.
@@ -1403,11 +1402,14 @@ EAPI int elm_win_active_win_orientation_get(Evas_Object *obj);
  *
  * @param obj The window object
  * @return The list of supported auxiliary hint strings
+ *
+ * @if MOBILE @since_tizen 5.5
+ * @elseif WEARABLE @since_tizen 5.5
+ * @endif
  */
 EAPI const Eina_List      *elm_win_aux_hints_supported_get(const Evas_Object *obj);
 
 /**
- * @internal
  * @remarks Tizen only feature
  *
  * @brief Creates an auxiliary hint of the window.
@@ -1421,11 +1423,14 @@ EAPI const Eina_List      *elm_win_aux_hints_supported_get(const Evas_Object *ob
  * @param val The value string
  * @return The ID of the created auxiliary hint,
  *         otherwise @c -1 on failure
+ *
+ * @if MOBILE @since_tizen 5.5
+ * @elseif WEARABLE @since_tizen 5.5
+ * @endif
  */
 EAPI int                   elm_win_aux_hint_add(Evas_Object *obj, const char *hint, const char *val);
 
 /**
- * @internal
  * @remarks Tizen only feature
  *
  * @brief Deletes an auxiliary hint of the window.
@@ -1437,11 +1442,14 @@ EAPI int                   elm_win_aux_hint_add(Evas_Object *obj, const char *hi
  * @param id The ID of the auxiliary hint
  * @return @c EINA_TRUE if no error occurs,
  *         otherwise @c EINA_FALSE
+ *
+ * @if MOBILE @since_tizen 5.5
+ * @elseif WEARABLE @since_tizen 5.5
+ * @endif
  */
 EAPI Eina_Bool             elm_win_aux_hint_del(Evas_Object *obj, const int id);
 
 /**
- * @internal
  * @remarks Tizen only feature
  *
  * @brief Changes a value of the auxiliary hint.
@@ -1454,11 +1462,14 @@ EAPI Eina_Bool             elm_win_aux_hint_del(Evas_Object *obj, const int id);
  * @param val The value string to be set
  * @return @c EINA_TRUE if no error occurs,
  *         otherwise @c EINA_FALSE
+ *
+ * @if MOBILE @since_tizen 5.5
+ * @elseif WEARABLE @since_tizen 5.5
+ * @endif
  */
 EAPI Eina_Bool             elm_win_aux_hint_val_set(Evas_Object *obj, const int id, const char *val);
 
 /**
- * @internal
  * @remarks Tizen only feature
  *
  * @brief Gets a value of the auxiliary hint.
@@ -1468,12 +1479,15 @@ EAPI Eina_Bool             elm_win_aux_hint_val_set(Evas_Object *obj, const int 
  * @param id The auxiliary hint ID
  * @return The string value of the auxiliary hint ID,
  *         otherwise @c NULL
+ *
+ * @if MOBILE @since_tizen 5.5
+ * @elseif WEARABLE @since_tizen 5.5
+ * @endif
  */
 EAPI const char           *elm_win_aux_hint_val_get(Evas_Object *obj, int id);
 
 
 /**
- * @internal
  * @remarks Tizen only feature
  *
  * @brief Gets an ID of the auxiliary hint string.
@@ -1483,6 +1497,10 @@ EAPI const char           *elm_win_aux_hint_val_get(Evas_Object *obj, int id);
  * @param hint The auxiliary hint string
  * @return The ID of the auxiliary hint,
  *         otherwise @c -1 on failure
+ *
+ * @if MOBILE @since_tizen 5.5
+ * @elseif WEARABLE @since_tizen 5.5
+ * @endif
  */
 EAPI int                   elm_win_aux_hint_id_get(Evas_Object *obj, const char *hint);
 
