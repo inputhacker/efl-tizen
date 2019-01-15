@@ -2167,20 +2167,10 @@ _evas_image_render(Eo *eo_obj, Evas_Object_Protected_Data *obj,
                  }
                else if ((obj->cur->geometry.w > o->cur->fill.w) ||
                    (obj->cur->geometry.h > o->cur->fill.h))
-                 ENFN->image_draw(engine,
-                                  output,
-                                  context,
-                                  surface,
-                                  pixels,
-                                  0, 0,
-                                  imagew,
-                                  imageh,
-                                  o->cur->fill.x + (o->cur->fill.w - imagew) / 2,
-                                  o->cur->fill.y + (o->cur->fill.h - imageh) / 2,
-                                  imagew,
-                                  imageh,
-                                  o->cur->smooth_scale,
-                                  do_async);
+                 ENFN->image_draw(engine, output, context, surface, pixels, 0, 0, imagew, imageh,
+                                  obj->cur->geometry.x + o->cur->fill.x + (o->cur->fill.w - imagew) / 2,
+                                  obj->cur->geometry.y + o->cur->fill.y + (o->cur->fill.h - imageh) / 2,
+                                  imagew, imageh, o->cur->smooth_scale, do_async);
                else
                  {
                    if ((o->cur->border.l == 0) &&
