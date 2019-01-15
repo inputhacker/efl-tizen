@@ -409,12 +409,9 @@ evas_image_load_file_data_png(void *loader_data,
          pack_offset = sizeof(DATA16);
          break;
       case EVAS_COLORSPACE_GRY8: pack_offset = sizeof(DATA8); break;
-      case EVAS_COLORSPACE_PALETTE: break;
+      case EVAS_COLORSPACE_PALETTE: pack_offset = sizeof(DATA8); break;
       default: abort();
      }
-
-   if ((color_type == PNG_COLOR_TYPE_PALETTE) && opts->can_load_colormap)
-     pack_offset = sizeof(DATA8);
 
    passes = png_set_interlace_handling(png_ptr);
    
