@@ -2183,7 +2183,6 @@ _edje_file_del(Edje *ed, Eina_Bool reuse_ic)
         EINA_LIST_FREE(ed->actions, runp)
           free(runp);
      }
-   _edje_animators = eina_list_remove(_edje_animators, ed);
    efl_event_callback_del(ed->obj, EFL_EVENT_ANIMATOR_TICK, _edje_timer_cb, ed);
    ecore_animator_del(ed->animator);
    ed->animator = NULL;
