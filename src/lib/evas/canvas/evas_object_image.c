@@ -225,13 +225,14 @@ _efl_canvas_image_internal_efl_object_constructor(Eo *eo_obj, Evas_Image_Data *o
    o->cur = eina_cow_alloc(evas_object_image_state_cow);
    o->prev = eina_cow_alloc(evas_object_image_state_cow);
    o->proxy_src_clip = EINA_TRUE;
-
+#ifdef THIS_IS_NOT_DEFINED_TO_DISABLE_TEMPORARY
    if (!strcmp(obj->layer->evas->engine.module->definition->name, "wayland_egl"))
      {
         EINA_COW_LOAD_OPTS_WRITE_BEGIN(o, low)
            low->can_load_colormap = EINA_TRUE;
         EINA_COW_LOAD_OPTS_WRITE_END(o, low)
      }
+#endif
 
    cspace = ENFN->image_colorspace_get(ENC, o->engine_data);
 
