@@ -733,9 +733,14 @@ evas_object_vg_render(Evas_Object *eo_obj EINA_UNUSED,
    //Cache surface?
    Eina_Bool cacheable = EINA_FALSE;
 
-   if (vd->frame_index == 0 ||
-       (vd->frame_index == (int) evas_cache_vg_anim_frame_count_get(vd->vg_entry) - 1))
-     cacheable = EINA_TRUE;
+   /* Try caching buffer only for first and last frames
+      because it's an overhead task if it caches all frame images.
+      We assume the first and last frame images are the most resusable
+      in generic scenarios. */
+//Buggy, disable this.
+//   if (vd->frame_index == 0 ||
+//       (vd->frame_index == (int) evas_cache_vg_anim_frame_count_get(vd->vg_entry)))
+//     cacheable = EINA_TRUE;
 
    if (vd->vg_entry)
      {

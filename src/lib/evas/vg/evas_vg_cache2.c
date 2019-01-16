@@ -317,8 +317,9 @@ evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry, unsigned int frame_num)
    Vg_File_Data *vfd = vg_entry->vfd;
    if (!vfd) return NULL;
 
-   Efl_VG *root = _cached_root_get(vg_entry, frame_num);
-   if (root) return root;
+//   Efl_VG *root = _cached_root_get(vg_entry, frame_num);
+//   if (root) return root;
+   Efl_VG *root = NULL;
 
    if (!vfd->static_viewbox)
      {
@@ -330,7 +331,9 @@ evas_cache_vg_tree_get(Vg_Cache_Entry *vg_entry, unsigned int frame_num)
 
    if (!vfd->loader->file_data(vfd)) return NULL;
 
-   _caching_root_update(vg_entry);
+   //_caching_root_update(vg_entry);
+   if (vg_entry->root[0]) eo_unref(vg_entry->root[0]);
+   vg_entry->root[0] = eo_ref(vfd->root);
 
    _local_transform(vg_entry->root[0], vg_entry->w, vg_entry->h, vfd);
 
