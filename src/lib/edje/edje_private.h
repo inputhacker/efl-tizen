@@ -2306,6 +2306,7 @@ struct _Edje_Var_Hash
 
 struct _Edje_Var_Timer
 {
+   EINA_INLIST;
    Edje           *edje;
    int             id;
    Embryo_Function func;
@@ -2326,7 +2327,7 @@ struct _Edje_Var_Animator
 struct _Edje_Var_Pool
 {
    int          id_count;
-   Eina_List   *timers;
+   Eina_Inlist *timers;
    Eina_List   *animators;
    int          size;
    Edje_Var    *vars;
