@@ -376,7 +376,7 @@ typedef struct _Elm_Widget_Smart_Data
    Eina_List                    *event_cb;
 
    //TIZEN_ONLY(20150709) add relations atpi
-   Eina_List                    *atspi_custom_relations; /**< Developer-defined accessiblity relations */
+   Efl_Access_Relation_Set       atspi_custom_relations; /**< Developer-defined accessiblity relations */
    ///////////////////////////////////
    //TIZEN_ONLY(20150713) : add widget_item name setter
    const char                    *name;
@@ -646,7 +646,7 @@ struct _Elm_Widget_Item_Data
    const char                    *atspi_translation_domain;
    ///
    //TIZEN_ONLY(20150709) add relations atpi
-   Eina_List                     *atspi_custom_relations; /**< Developer-defined accessiblity relations */
+   Efl_Access_Relation_Set        atspi_custom_relations; /**< Developer-defined accessiblity relations */
    ///////////////////////////////////
 
    /***********************************************************************************

@@ -862,7 +862,7 @@ abstract Efl.Ui.Widget (Efl.Canvas.Group, Efl.Access.Object,
       //
 
       //TIZEN_ONLY(20150709) : atspi relations api
-      Efl.Access.Object.relations_get;
+      Efl.Access.Object.relation_set { get;}
       Efl.Access.Object.relationship_append;
       Efl.Access.Object.relationship_remove;
       Efl.Access.Object.relationships_clear;

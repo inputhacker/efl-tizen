@@ -919,9 +919,9 @@ _accessible_get_relation_set(const Eldbus_Service_Interface *iface EINA_UNUSED, 
    Eo *rel_obj, *obj = _bridge_object_from_path(bridge, obj_path);
    Eldbus_Message *ret = NULL;
    Eldbus_Message_Iter *iter = NULL, *iter_array = NULL, *iter_array2 = NULL, *iter_struct;
-   const Efl_Access_Relation *rel;
-   Eina_List *l;
-   Eina_Iterator *it;
+   Efl_Access_Relation *rel;
+   Eina_List *l, *l2;
+   Efl_Access_Relation_Set rels;
 
    ELM_ATSPI_OBJ_CHECK_OR_RETURN_DBUS_ERROR(obj, EFL_ACCESS_OBJECT_MIXIN, msg);
 
@@ -932,14 +932,15 @@ _accessible_get_relation_set(const Eldbus_Service_Interface *iface EINA_UNUSED, 
    iter_array = eldbus_message_iter_container_new(iter, 'a', "(ua(so))");
    EINA_SAFETY_ON_NULL_GOTO(iter_array, fail);
 
-   it = efl_access_object_relations_get(obj);
-   EINA_ITERATOR_FOREACH(it, rel)
+   rels = efl_access_object_relation_set_get(obj);
+
+   EINA_LIST_FOREACH(rels, l, rel)
      {
         iter_struct = eldbus_message_iter_container_new(iter_array, 'r', NULL);
         eldbus_message_iter_basic_append(iter_struct, 'u', _elm_relation_to_atspi_relation(rel->type));
         iter_array2 = eldbus_message_iter_container_new(iter_struct, 'a', "(so)");
         EINA_SAFETY_ON_NULL_GOTO(iter_array2, fail);
-        EINA_LIST_FOREACH(rel->objects, l, rel_obj)
+        EINA_LIST_FOREACH(rel->objects, l2, rel_obj)
           {
              _bridge_iter_object_reference_append(bridge, iter_array2, rel_obj);
              _bridge_object_register(bridge, rel_obj);
@@ -947,7 +948,9 @@ _accessible_get_relation_set(const Eldbus_Service_Interface *iface EINA_UNUSED, 
         eldbus_message_iter_container_close(iter_struct, iter_array2);
         eldbus_message_iter_container_close(iter_array, iter_struct);
      }
-   eina_iterator_free(it);
+   //TIZEN_ONLY(20171115) Fixed the bugs and warnings in atspi relationship APIS
+   efl_access_relation_set_free(&rels);
+   //
    eldbus_message_iter_container_close(iter, iter_array);
 
    return ret;
@@ -1236,13 +1239,13 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
    Efl_Access_Role role;
    Efl_Access_Attribute *attr;
    Efl_Access_State_Set states;
+   Efl_Access_Relation_Set rels = NULL;
    Efl_Access_Relation *rel;
    Eo *relation_obj = NULL;
    Eo *parent = NULL;
    Eo *child = NULL;
    Eina_Bool is_selected = EINA_FALSE;
    AtspiRole atspi_role = ATSPI_ROLE_INVALID;
-   Eina_Iterator *it;
 
    const char *obj_path = eldbus_message_path_get(msg);
    Eo *bridge = eldbus_service_object_data_get(iface, ELM_ATSPI_BRIDGE_CLASS_NAME);
@@ -1276,8 +1279,8 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
    eldbus_message_iter_basic_append(iter, 's', name);
 
    /* name - LABELED_BY relation */
-   it = efl_access_object_relations_get(obj);
-   EINA_ITERATOR_FOREACH(it, rel)
+   rels = efl_access_object_relation_set_get(obj);
+   EINA_LIST_FOREACH(rels, l, rel)
      {
         if (rel->type == EFL_ACCESS_RELATION_LABELLED_BY)
           {
@@ -1437,7 +1440,8 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
    eldbus_message_iter_basic_append(iter, 'i', selected_child_count);
 
    /* relation object - DESCRIBED_BY */
-   EINA_ITERATOR_FOREACH(it, rel)
+   relation_obj = NULL;
+   EINA_LIST_FOREACH(rels, l, rel)
      {
         if (rel->type == EFL_ACCESS_RELATION_DESCRIBED_BY)
           {
@@ -1447,12 +1451,12 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
           }
      }
    _bridge_iter_object_reference_append(bridge, iter, relation_obj);
-   eina_iterator_free(it);
+   efl_access_relation_set_free(&rels);
 
    return ret;
 
 fail:
-   if (it) eina_iterator_free(it);
+   if (rels) efl_access_relation_set_free(&rels);
    if (ret) eldbus_message_unref(ret);
    return NULL;
 }
@@ -5011,10 +5015,12 @@ static void *_get_object_in_relation_by_type_impl(struct accessibility_navigatio
    if (ptr)
      {
        const Eo *source = ptr;
+       Efl_Access_Relation_Set relations;
        Efl_Access_Relation_Type expected_relation_type = _atspi_relation_to_elm_relation(type);
-       Eina_Iterator *relations = efl_access_object_relations_get(source);
+       relations = efl_access_object_relation_set_get(source);
        Efl_Access_Relation *rel;
-       EINA_ITERATOR_FOREACH(relations, rel)
+       Eina_List *l;
+       EINA_LIST_FOREACH(relations, l, rel)
          {
            if (rel->type == expected_relation_type)
              {
