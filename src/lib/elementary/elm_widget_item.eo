@@ -4,9 +4,11 @@ import efl_ui;
 type Elm_Tooltip_Item_Content_Cb: __undefined_type; [[Elementary tooltip item content callback type]]
 type Elm_Object_Item_Signal_Cb: __undefined_type; [[Elementary object item signal callback type]]
 
-class Elm.Widget.Item(Efl.Object, Efl.Access.Object,
+class Elm.Widget.Item extends Efl.Object implements Efl.Access.Object,
                       Efl.Access.Component,
-                      Efl.Access.Widget.Action)
+                      //TIZEN_ONLY(20171129): elm: Added mechanism for handling the reading stopped/cancelled events for all widgets and widget_items
+                      Efl.Access.Widget.Action
+                      //
 {
       [[Elementary widget item class]]
       eo_prefix: elm_wdg_item;

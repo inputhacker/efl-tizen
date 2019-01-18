@@ -186,12 +186,12 @@ enum Efl.Ui.Win_Conformant_Property
    clipboard_geometry = 1 << 5
 }
 //
-
-class Efl.Ui.Win (Efl.Ui.Widget, Efl.Canvas.Scene, Efl.Access.Window,
+//
+class Efl.Ui.Win extends Efl.Ui.Widget implements Efl.Canvas.Scene, Efl.Access.Window,
                   Efl.Access.Component, Efl.Access.Widget.Action,
                   Efl.Content, Efl.Input.State, Efl.Input.Interface, Efl.Screen,
                   Efl.Text, Efl.Config,
-                  Efl.Ui.Widget_Focus_Manager, Efl.Ui.Focus.Manager_Window_Root)
+                  Efl.Ui.Widget_Focus_Manager, Efl.Ui.Focus.Manager_Window_Root
 {
    [[Efl UI window class]]
    legacy_prefix: elm_win;

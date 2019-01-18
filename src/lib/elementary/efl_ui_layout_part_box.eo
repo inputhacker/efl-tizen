@@ -1,10 +1,10 @@
 /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
-class Efl.Ui.Layout_Part_Box (Efl.Object, Efl.Pack_Linear,
-                              Efl.Ui.Direction)
+class Efl.Ui.Layout_Part_Box extends Efl.Object implements Efl.Pack_Linear,
+                              Efl.Ui.Direction
  */
-class Efl.Ui.Layout_Part_Box (Efl.Ui.Layout_Part, Efl.Pack_Linear,
-                              Efl.Ui.Direction)
 /* END */
+class Efl.Ui.Layout_Part_Box extends Efl.Ui.Layout_Part implements Efl.Pack_Linear,
+                              Efl.Ui.Direction
 {
    [[Represents a Box created as part of a layout.
 
