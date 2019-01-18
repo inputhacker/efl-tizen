@@ -2928,6 +2928,18 @@ _canvas_event_feed_multi_down_internal(Evas_Public_Data *e, Efl_Input_Pointer_Da
    _evas_touch_point_append(eo_e, ev->tool, ev->cur.x, ev->cur.y);
    if (pdata->seat->mouse_grabbed == 0)
      {
+        //TIZEN_ONLY(20190118): get a new event list when grabbed object doesn't exist.
+        Eina_List *ins = evas_event_objects_event_list(eo_e,
+                                                       NULL,
+                                                       pdata->seat->x,
+                                                       pdata->seat->y);
+        /* free our old list of ins */
+        eina_list_free(pdata->seat->object.in);
+        /* and set up the new one */
+        pdata->seat->object.in = ins;
+        /* adjust grabbed count by the number of currently held down
+         * fingers/buttons */
+        //
         if (pdata->seat->downs > 1) addgrab = pdata->seat->downs - 1;
      }
    copy = evas_event_list_copy(pdata->seat->object.in);
