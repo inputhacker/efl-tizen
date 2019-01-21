@@ -508,7 +508,7 @@ _items_add(Evas_Object *obj)
 }
 
 EOLIAN static void
-_elm_flipselector_efl_ui_range_range_min_max_set(Eo *obj, Elm_Flipselector_Data *sd, double min, double max)
+_elm_flipselector_efl_ui_range_display_range_min_max_set(Eo *obj, Elm_Flipselector_Data *sd, double min, double max)
 {
    if ((sd->val_min == min) && (sd->val_max == max)) return;
 
@@ -519,14 +519,14 @@ _elm_flipselector_efl_ui_range_range_min_max_set(Eo *obj, Elm_Flipselector_Data 
 }
 
 EOLIAN static void
-_elm_flipselector_efl_ui_range_range_min_max_get(const Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, double *min, double *max)
+_elm_flipselector_efl_ui_range_display_range_min_max_get(const Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, double *min, double *max)
 {
    if (min) *min = sd->val_min;
    if (max) *max = sd->val_max;
 }
 
 EOLIAN static void
-_elm_flipselector_efl_ui_range_range_step_set(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, double step)
+_elm_flipselector_efl_ui_range_interactive_range_step_set(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, double step)
 {
    if (sd->step == step) return;
 
@@ -538,13 +538,13 @@ _elm_flipselector_efl_ui_range_range_step_set(Eo *obj EINA_UNUSED, Elm_Flipselec
 }
 
 EOLIAN static double
-_elm_flipselector_efl_ui_range_range_step_get(const Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd)
+_elm_flipselector_efl_ui_range_interactive_range_step_get(const Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd)
 {
    return sd->step;
 }
 
 EOLIAN static double
-_elm_flipselector_efl_ui_range_range_value_get(const Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd)
+_elm_flipselector_efl_ui_range_display_range_value_get(const Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd)
 {
    if (sd->val_min == 0 && sd->val_max == 0)
      {
@@ -556,7 +556,7 @@ _elm_flipselector_efl_ui_range_range_value_get(const Eo *obj EINA_UNUSED, Elm_Fl
 }
 
 EOLIAN static void
-_elm_flipselector_efl_ui_range_range_value_set(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, double val)
+_elm_flipselector_efl_ui_range_display_range_value_set(Eo *obj EINA_UNUSED, Elm_Flipselector_Data *sd, double val)
 {
    Eina_List *l;
    Elm_Object_Item *it;
