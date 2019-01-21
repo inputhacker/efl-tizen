@@ -1381,8 +1381,6 @@ EAPI int elm_win_active_win_orientation_get(Evas_Object *obj);
 
 // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
 /**
- * @remarks Tizen only feature
- *
  * @brief Gets the list of supported auxiliary hint strings.
  *
  * @since 1.8
@@ -1410,8 +1408,6 @@ EAPI int elm_win_active_win_orientation_get(Evas_Object *obj);
 EAPI const Eina_List      *elm_win_aux_hints_supported_get(const Evas_Object *obj);
 
 /**
- * @remarks Tizen only feature
- *
  * @brief Creates an auxiliary hint of the window.
  *
  * @since 1.8
@@ -1431,8 +1427,6 @@ EAPI const Eina_List      *elm_win_aux_hints_supported_get(const Evas_Object *ob
 EAPI int                   elm_win_aux_hint_add(Evas_Object *obj, const char *hint, const char *val);
 
 /**
- * @remarks Tizen only feature
- *
  * @brief Deletes an auxiliary hint of the window.
  *
  * @since 1.8
@@ -1450,8 +1444,6 @@ EAPI int                   elm_win_aux_hint_add(Evas_Object *obj, const char *hi
 EAPI Eina_Bool             elm_win_aux_hint_del(Evas_Object *obj, const int id);
 
 /**
- * @remarks Tizen only feature
- *
  * @brief Changes a value of the auxiliary hint.
  *
  * @since 1.8
@@ -1470,8 +1462,6 @@ EAPI Eina_Bool             elm_win_aux_hint_del(Evas_Object *obj, const int id);
 EAPI Eina_Bool             elm_win_aux_hint_val_set(Evas_Object *obj, const int id, const char *val);
 
 /**
- * @remarks Tizen only feature
- *
  * @brief Gets a value of the auxiliary hint.
  *
  * @remarks Support for this depends on the underlying windowing system.
@@ -1488,8 +1478,6 @@ EAPI const char           *elm_win_aux_hint_val_get(Evas_Object *obj, int id);
 
 
 /**
- * @remarks Tizen only feature
- *
  * @brief Gets an ID of the auxiliary hint string.
  *
  * @remarks Support for this depends on the underlying windowing system.
