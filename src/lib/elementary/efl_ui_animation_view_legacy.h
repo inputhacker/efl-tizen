@@ -9,7 +9,6 @@ typedef Eo Elm_Animation_View;
  * @ingroup Elm_Animation_View
  *
  * @since 1.22
- * @since_tizen 5.5
  */
 EAPI Elm_Animation_View     *elm_animation_view_add(Evas_Object *parent);
 
@@ -31,8 +30,7 @@ NULL, otherwise.
  * @ingroup Elm_Animation_View
  *
  * @since 1.22
- * @since_tizen 5.5
 */
 EAPI Eina_Bool        elm_animation_view_file_set(Elm_Animation_View *obj, const char *file, const char *key);
 
-#include "efl_ui_animation_view.eo.legacy.h"
+#include "elm_animation_view.eo.legacy.h"
