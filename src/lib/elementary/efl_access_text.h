@@ -17,6 +17,11 @@
  */
 EAPI void elm_atspi_text_text_attribute_free(Efl_Access_Text_Attribute *attr);
 
+/**
+ * @brief Free Efl_Access_Text_Range structure
+ */
+EAPI void elm_atspi_text_text_range_free(Efl_Access_Text_Range *range);
+
 #endif
 // TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
 //#endif
