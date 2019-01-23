@@ -24,7 +24,7 @@ lib_elementary_tizen_libelementary_la_SOURCES = \
 	lib/elementary/elc_scrolled_entry.c \
 	lib/elementary/elm_access.c \
 	lib/elementary/elm_actionslider.c \
-	lib/elementary/elm_animation_view.c \
+	lib/elementary/efl_ui_animation_view.c \
 	lib/elementary/elm_atspi_app_object.c \
 	lib/elementary/elm_atspi_bridge.c \
 	lib/elementary/elm_atspi_ewk_wrapper.c \
