@@ -221,6 +221,7 @@ EAPI void efl_ui_focus_relation_free(Efl_Ui_Focus_Relations *rel);
 #include <elm_button.h>
 #include <elm_cache.h>
 #include <elm_calendar.h>
+#include <efl_ui_animation_view.h>
 #include <efl_ui_calendar.h>
 #include <elm_check.h>
 #include <elm_clock.h>
@@ -372,7 +373,7 @@ EAPI void efl_ui_focus_relation_free(Efl_Ui_Focus_Relations *rel);
 # include <efl_ui_navigation_bar_part_back_button.eo.h>
 # include <efl_ui_navigation_layout.eo.h>
 # include <efl_ui_stack.eo.h>
-# include <efl_ui_animation_view.h>
+# include <efl_ui_animation_view.eo.h>
 
 # ifndef _EFL_UI_PAGER_EO_CLASS_TYPE
 # define _EFL_UI_PAGER_EO_CLASS_TYPE
