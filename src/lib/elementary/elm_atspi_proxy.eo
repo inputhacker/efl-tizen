@@ -4,7 +4,7 @@ enum Elm.Atspi.Proxy_Type
    PLUG
 }
 
-class Elm.Atspi.Proxy (Efl.Ui.Widget)
+class Elm.Atspi.Proxy extends Efl.Ui.Widget
 {
    eo_prefix: elm_obj_atspi_proxy;
    event_prefix: elm_atspi_proxy;

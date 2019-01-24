@@ -1,4 +1,4 @@
-class Elm.Atspi.Ewk_Wrapper (Efl.Object, Efl.Access.Object, Efl.Access.Component)
+class Elm.Atspi.Ewk_Wrapper extends Efl.Object implements Efl.Access.Object, Efl.Access.Component
 {
    data: Elm_Atspi_Ewk_Wrapper_Data;
    eo_prefix: elm_obj_atspi_ewk_wrapper;
