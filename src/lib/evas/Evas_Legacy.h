@@ -706,7 +706,7 @@ EAPI void             evas_event_thaw_eval(Evas *e) EINA_ARG_NONNULL(1);
 /**
  * @brief Mouse move event feed.
  *
- * This function will set some evas properties that is necessary when the mouse
+ * This function will set some evas properties that are necessary when the mouse
  * is moved from its last position. It prepares information to be treated by
  * the callback function.
  *
@@ -737,7 +737,7 @@ EAPI void             evas_event_input_mouse_move(Evas *obj, int x, int y, unsig
 /**
  * @brief Mouse up event feed.
  *
- * This function will set some evas properties that is necessary when the mouse
+ * This function will set some evas properties that are necessary when the mouse
  * button is released. It prepares information to be treated by the callback
  * function.
  *
@@ -750,7 +750,7 @@ EAPI void             evas_event_feed_mouse_up(Evas *obj, int b, Evas_Button_Fla
 /**
  * @brief Mouse down event feed.
  *
- * This function will set some evas properties that is necessary when the mouse
+ * This function will set some evas properties that are necessary when the mouse
  * button is pressed. It prepares information to be treated by the callback
  * function.
  *
@@ -763,7 +763,7 @@ EAPI void             evas_event_feed_mouse_down(Evas *obj, int b, Evas_Button_F
 /**
  * @brief Mouse wheel event feed.
  *
- * This function will set some evas properties that is necessary when the mouse
+ * This function will set some evas properties that are necessary when the mouse
  * wheel is scrolled up or down. It prepares information to  be treated by the
  * callback function.
  *
@@ -776,7 +776,7 @@ EAPI void             evas_event_feed_mouse_wheel(Evas *obj, int direction, int 
 /**
  * @brief Mouse in event feed.
  *
- * This function will set some evas properties that is necessary when the mouse
+ * This function will set some evas properties that are necessary when the mouse
  * in event happens. It prepares information to be treated by the callback
  * function.
  *
@@ -787,7 +787,7 @@ EAPI void             evas_event_feed_mouse_in(Evas *obj, unsigned int timestamp
 /**
  * @brief Mouse out event feed.
  *
- * This function will set some evas properties that is necessar when the mouse
+ * This function will set some evas properties that are necessary when the mouse
  * out event happens. It prepares information to be treated by the callback
  * function.
  *
@@ -823,7 +823,7 @@ EAPI void             evas_event_feed_mouse_move_with_multi_info(Eo *eo_e, int x
 /**
  * @brief Key down event feed.
  *
- * This function will set some evas properties that is necessary when a key is
+ * This function will set some evas properties that are necessary when a key is
  * pressed. It prepares information to be treated by the callback function.
  *
  * @param[in] key The key pressed.
@@ -837,7 +837,7 @@ EAPI void             evas_event_feed_key_down(Evas *obj, const char *keyname, c
 /**
  * @brief Key up event feed.
  *
- * This function will set some evas properties that is necessary when a key is
+ * This function will set some evas properties that are necessary when a key is
  * released. It prepares information to be treated by the callback function.
  *
  * @param[in] key The key released.
@@ -851,7 +851,7 @@ EAPI void             evas_event_feed_key_up(Evas *obj, const char *keyname, con
 /**
  * @brief Key down event feed with keycode.
  *
- * This function will set some evas properties that is necessary when a key is
+ * This function will set some evas properties that are necessary when a key is
  * pressed. It prepares information to be treated by the callback function.
  *
  * @param[in] key The key released.
@@ -868,7 +868,7 @@ EAPI void             evas_event_feed_key_down_with_keycode(Evas *obj, const cha
 /**
  * @brief Key up event feed with keycode.
  *
- * This function will set some evas properties that is necessary when a key is
+ * This function will set some evas properties that are necessary when a key is
  * released. It prepares information to be treated by the callback function.
  *
  * @param[in] key The key released.
@@ -885,7 +885,7 @@ EAPI void             evas_event_feed_key_up_with_keycode(Evas *obj, const char 
 /**
  * @brief Input device axis update event feed.
  *
- * This function will set some evas properties that is necessary when an e.g.
+ * This function will set some evas properties that are necessary when an e.g.
  * stylus axis is updated. It prepares information to be treated by the
  * callback function.
  *
@@ -1658,7 +1658,7 @@ EAPI void evas_object_size_hint_max_get(const Evas_Object *obj, Evas_Coord *w, E
 /**
  * @brief Sets the hints for an object's optimum size.
  *
- * This is not a size enforcement in any way, it's just a hint that hould be
+ * This is not a size enforcement in any way, it's just a hint that should be
  * used whenever appropriate.
  *
  * Values 0 will be treated as unset hint components, when queried by managers.
@@ -2822,7 +2822,7 @@ EAPI void                     evas_object_data_set(Evas_Object *obj, const char 
  * will be returned. If this is not the case, @c NULL will be
  * returned, signifying an invalid object or a non-existent key. It is
  * possible that a @c NULL pointer was stored given that key, but this
- * situation is non-sensical and thus can be considered an error as
+ * situation is nonsensical and thus can be considered an error as
  * well. @c NULL pointers are never stored as this is the return value
  * if an error occurs.
  *
