@@ -894,6 +894,9 @@ abstract Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Object,
        * END *
        *******/
    }
+   constructors {
+      .style;
+   }
    events {
       moved: Efl.Object; [[Called when widget moved]]
       language,changed: void; [[Called when widget language changed]]
