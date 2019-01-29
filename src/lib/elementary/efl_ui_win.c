@@ -5776,11 +5776,6 @@ _create_indicator(Evas_Object *obj)
    const char *indicator_serv_name;
 
    indicator_serv_name = "elm_indicator_portrait";
-   if (!indicator_serv_name)
-     {
-        ERR("Conformant cannot get portrait indicator service name");
-        return NULL;
-     }
 
    indicator = elm_plug_add(obj);
    if (!indicator)
