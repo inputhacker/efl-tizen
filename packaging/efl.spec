@@ -1,6 +1,8 @@
 %bcond_without wayland
 %bcond_with x
 
+%define enable_examples     0
+
 Name:           efl
 Version:        1.21.0
 Release:        0
@@ -155,14 +157,16 @@ Provides:  eina-bin
 %description -n eina-tools
 The eina tools package the eina binary utility.
 
-#%package -n eina-examples
-#Summary:  Examples for the eina package
-#Group:    Graphics & UI Framework/Testing
-#Requires: eina = %{version}-%{release}
-#License: LGPL-2.1+
+%if %enable_examples
+%package -n eina-examples
+Summary:  Examples for the eina package
+Group:    Graphics & UI Framework/Testing
+Requires: eina = %{version}-%{release}
+License: LGPL-2.1+
 
-#%description -n eina-examples
-#Example files for eina
+%description -n eina-examples
+Example files for eina
+%endif
 
 %package -n eina-devel
 Summary:  Development components for the eina package
@@ -218,13 +222,15 @@ License: BSD-2-Clause
 %description -n eet-tools
 The eet tools package the eet binary utility.
 
-#%package -n eet-examples
-#Summary:  Examples for the eet package
-#Group:    Graphics & UI Framework/Testing
-#Requires: eet = %{version}-%{release}
+%if %enable_examples
+%package -n eet-examples
+Summary:  Examples for the eet package
+Group:    Graphics & UI Framework/Testing
+Requires: eet = %{version}-%{release}
 
-#%description -n eet-examples
-#Example files for eet
+%description -n eet-examples
+Example files for eet
+%endif
 
 %package -n eet-devel
 Summary:  Development components for the eet package
@@ -244,14 +250,15 @@ Requires: %{name}-data = %{version}-%{release}
 The Eo generic object system. It was designed to be the base object
 system for the EFL.
 
-#%package -n eo-examples
-#Summary:  Examples for the eo package
-#Group:    Graphics & UI Framework/Testing
-#Requires: eo = %{version}-%{release}
+%if %enable_examples
+%package -n eo-examples
+Summary:  Examples for the eo package
+Group:    Graphics & UI Framework/Testing
+Requires: eo = %{version}-%{release}
 
-#%description -n eo-examples
-#Example files for eo
-
+%description -n eo-examples
+Example files for eo
+%endif
 %package -n eo-devel
 Summary:  Development components for the eo package
 Group:    Graphics & UI Framework/Development
@@ -290,14 +297,16 @@ Evas is a clean display canvas API for several target display systems
 that can draw anti-aliased text, smooth super and sub-sampled scaled
 images, alpha-blend objects much and more.
 
-#%package -n evas-examples
-#Summary:  Examples for the evas package
-#Group:    Graphics & UI Framework/Testing
-#Requires: evas = %{version}-%{release}
-#License: BSD-2-Clause and Zlib
+%if %enable_examples
+%package -n evas-examples
+Summary:  Examples for the evas package
+Group:    Graphics & UI Framework/Testing
+Requires: evas = %{version}-%{release}
+License: BSD-2-Clause and Zlib
 
-#%description -n evas-examples
-#Example files for evas
+%description -n evas-examples
+Example files for evas
+%endif
 
 %package -n evas-devel
 Summary:  Development components for the evas package
@@ -313,7 +322,6 @@ Development files for evas
 Summary: Enlightened Core X interface library
 Requires: ecore-core
 Requires: ecore-audio
-Requires: ecore-avahi
 Requires: ecore-buffer
 Requires: ecore-con
 Requires: ecore-evas
@@ -330,6 +338,7 @@ Requires: ecore-wl2
 %endif
 %if %{with x}
 Requires: ecore-x
+Requires: ecore-avahi
 %endif
 License: BSD-2-Clause and MIT
 
@@ -343,7 +352,6 @@ Summary:  Development components for the ecore package
 Group:    Graphics & UI Framework/Development
 Requires: ecore-core-devel
 Requires: ecore-audio-devel
-Requires: ecore-avahi-devel
 Requires: ecore-buffer-devel
 Requires: ecore-con-devel
 Requires: ecore-evas-devel
@@ -360,6 +368,7 @@ Requires: ecore-wl2-devel
 %endif
 %if %{with x}
 Requires: ecore-x-devel
+Requires: ecore-avahi-devel
 %endif
 License: BSD-2-Clause and MIT
 
@@ -407,6 +416,7 @@ License: BSD-2-Clause and MIT
 %description -n ecore-audio-devel
 Development files for ecore_audio
 
+%if %{with x}
 %package -n ecore-avahi
 Summary: Enlightened Core X interface library - avahi
 Requires: %{name}-data = %{version}-%{release}
@@ -423,6 +433,7 @@ License: BSD-2-Clause and MIT
 
 %description -n ecore-avahi-devel
 Development files for ecore_avahi
+%endif
 
 %package -n ecore-buffer
 Summary: Enlightened Core X interface library - buffer
@@ -660,25 +671,6 @@ License: BSD-2-Clause and MIT
 %description -n ecore-wayland-devel
 Development files for ecore_wayland
 
-#%package -n ecore-wl2
-#Summary: Ecore wayland interface library version 2 - wayland
-#Requires: %{name}-data = %{version}-%{release}
-#License: BSD-2-Clause and MIT
-
-
-#%description -n ecore-wl2
-#This is a glue/wrapper library to interface EFL to Wayland libraries
-#to tie them into the Ecore main-loop and event queue.
-
-#%package -n ecore-wl2-devel
-#Summary:  Development components for the ecore_wl2 package
-#Group:    Graphics & UI Framework/Development
-#Requires: ecore-wl2 = %{version}-%{release}
-#License: BSD-2-Clause and MIT
-
-#%description -n ecore-wl2-devel
-#Development files for ecore_wl2
-
 %package -n ecore-x
 Summary: Enlightened Core X interface library - x
 Requires: %{name}-data = %{version}-%{release}
@@ -713,14 +705,16 @@ fix some core bugs and completely encapsulating D-Bus without exposing
 libdbus to end-user. One day libdbus may be completely removed as a
 dependency.
 
-#%package -n eldbus-examples
-#Summary:  Examples for the eldbus package
-#Group:    Graphics & UI Framework/Testing
-#Requires: eldbus = %{version}-%{release}
-#License: LGPL-2.1+
+%if %enable_examples
+%package -n eldbus-examples
+Summary:  Examples for the eldbus package
+Group:    Graphics & UI Framework/Testing
+Requires: eldbus = %{version}-%{release}
+License: LGPL-2.1+
 
-#%description -n eldbus-examples
-#Example files for eldbus
+%description -n eldbus-examples
+Example files for eldbus
+%endif
 
 %package -n eldbus-devel
 Summary:  Development components for the eldbus package
@@ -760,14 +754,16 @@ License: LGPL-2.1+
 %description -n eio
 Enlightenment Input/Output Library
 
-#%package -n eio-examples
-#Summary:  Examples for the eio package
-#Group:    Graphics & UI Framework/Testing
-#Requires: eio = %{version}-%{release}
-#License: LGPL-2.1+
+%if %enable_examples
+%package -n eio-examples
+Summary:  Examples for the eio package
+Group:    Graphics & UI Framework/Testing
+Requires: eio = %{version}-%{release}
+License: LGPL-2.1+
 
-#%description -n eio-examples
-#Example files for eio
+%description -n eio-examples
+Example files for eio
+%endif
 
 %package -n eio-devel
 Summary:  Development components for the eio package
@@ -790,14 +786,16 @@ It's not intended to be a physics library (we already have many out there).
 
 Enlightenment Input/Output Library
 
-#%package -n ephysics-examples
-#Summary:  Examples for the ephysics package
-#Group:    Graphics & UI Framework/Testing
-#Requires: ephysics = %{version}-%{release}
-#License: BSD-2-Clause
+%if %enable_examples
+%package -n ephysics-examples
+Summary:  Examples for the ephysics package
+Group:    Graphics & UI Framework/Testing
+Requires: ephysics = %{version}-%{release}
+License: BSD-2-Clause
 
-#%description -n ephysics-examples
-#Example files for ephysics
+%description -n ephysics-examples
+Example files for ephysics
+%endif
 
 %package -n ephysics-devel
 Summary:  Development components for the ephysics package
@@ -841,14 +839,16 @@ License: BSD-2-Clause and GPL-2.0+
 The edje tools package include the compiler, decompiler, visualizer, code
 generator and more.
 
-#%package -n edje-examples
-#Summary:  Examples for the edje package
-#Group:    Graphics & UI Framework/Testing
-#Requires: edje = %{version}-%{release}
-#License: BSD-2-Clause and GPL-2.0+
+%if %enable_examples
+%package -n edje-examples
+Summary:  Examples for the edje package
+Group:    Graphics & UI Framework/Testing
+Requires: edje = %{version}-%{release}
+License: BSD-2-Clause and GPL-2.0+
 
-#%description -n edje-examples
-#Example files for edje
+%description -n edje-examples
+Example files for edje
+%endif
 
 %package -n edje-devel
 Summary:  Development components for the edje package
@@ -918,13 +918,15 @@ License: BSD-2-Clause
 %description -n emotion
 Emotion is a media library with support for different backends as plug-ins.
 
-#%package -n emotion-examples
-#Summary:  Examples for the emotion package
-#Group:    Graphics & UI Framework/Testing
-#Requires: emotion = %{version}-%{release}
+%if %enable_examples
+%package -n emotion-examples
+Summary:  Examples for the emotion package
+Group:    Graphics & UI Framework/Testing
+Requires: emotion = %{version}-%{release}
 
-#%description -n emotion-examples
-#Example files for emotion
+%description -n emotion-examples
+Example files for emotion
+%endif
 
 %package -n emotion-devel
 Summary:  Development components for the emotion package
@@ -944,14 +946,16 @@ License: LGPL-2.1+
 %description -n ethumb
 Enlightenment thumbnailing library
 
-#%package -n ethumb-examples
-#Summary:  Examples for the ethumb package
-#Group:    Graphics & UI Framework/Testing
-#Requires: ethumb = %{version}-%{release}
-#License: LGPL-2.1+
+%if %enable_examples
+%package -n ethumb-examples
+Summary:  Examples for the ethumb package
+Group:    Graphics & UI Framework/Testing
+Requires: ethumb = %{version}-%{release}
+License: LGPL-2.1+
 
-#%description -n ethumb-examples
-#Example files for ethumb
+%description -n ethumb-examples
+Example files for ethumb
+%endif
 
 %package -n ethumb-devel
 Summary:  Development components for the ethumb package
@@ -982,14 +986,17 @@ License: BSD-2-Clause
 %description -n eolian-devel
 Development files for eolian
 
-#%package -n eolian-examples
-#Summary:  Examples for the eolian package
-#Group:    Graphics & UI Framework/Testing
-#Requires: eolian = %{version}-%{release}
-#License: BSD-2-Clause
+%if %enable_examples
+%package -n eolian-examples
+Summary:  Examples for the eolian package
+Group:    Graphics & UI Framework/Testing
+Requires: eolian = %{version}-%{release}
+License: BSD-2-Clause
 
-#%description -n eolian-examples
-#Example files for eolian
+%description -n eolian-examples
+Example files for eolian
+%endif
+############ End of Eolian
 
 ############ Elocation
 %package -n elocation
@@ -1003,14 +1010,16 @@ the usage of geo information in their apps. Adding a geo tag to a picture or
 translating an address to a GPS position and show it on a map widget are just
 some of the use cases.
 
-#%package -n elocation-examples
-#Summary:  Examples for the elocation package
-#Group:    Graphics & UI Framework/Testing
-#Requires: elocation = %{version}-%{release}
-#License: LGPL-2.1+
-#
-#%description -n elocation-examples
-#Example files for elocation
+%if %enable_examples
+%package -n elocation-examples
+Summary:  Examples for the elocation package
+Group:    Graphics & UI Framework/Testing
+Requires: elocation = %{version}-%{release}
+License: LGPL-2.1+
+
+%description -n elocation-examples
+Example files for elocation
+%endif
 
 %package -n elocation-devel
 Summary: Development components for the elocation package
@@ -1040,7 +1049,6 @@ License: BSD-2-Clause
 
 %description -n elua-devel
 Development files for elua
-
 
 %package -n elementary
 Summary: EFL toolkit for small touchscreens
@@ -1074,11 +1082,20 @@ widget "personality" is on top. And that is... Elementary, my dear watson.
 Elementary. This is an alternative package for Tizen devices that uses different
 set of source code.
 
+%package -n elementary-tizen-devel
+Summary:        TODO
+Requires:       elementary
+
+%description -n elementary-tizen-devel
+TODOTODO
+
+%if %enable_examples
 %package -n elementary-examples
 Summary:   EFL elementary examples
 
 %description -n elementary-examples
 EFL elementary examples
+%endif
 
 %package -n elementary-tools
 Summary:   EFL elementary configuration and test apps
@@ -1368,11 +1385,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %exclude %{_bindir}/eina_modinfo
 %exclude /usr/lib/debug/%{_bindir}/eina_modinfo.debug
 
-#%files -n eina-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/eina*/examples/*
-#%{_libdir}/eina/examples/*
+%if %enable_examples
+%files -n eina-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/eina*/examples/
+%{_libdir}/eina/examples/
+%endif
 
 %files -n eina-devel
 %manifest %{name}.manifest
@@ -1410,11 +1429,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %{_bindir}/diffeet
 %{_bindir}/eetpack
 
-#%files -n eet-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/eet/examples/*
-#%{_libdir}/eet/examples/*
+%if %enable_examples
+%files -n eet-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/eet/examples/
+%{_libdir}/eet/examples/
+%endif
 
 %files -n eet-devel
 %manifest %{name}.manifest
@@ -1433,11 +1454,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %exclude %{_libdir}/libeo_dbg.so.*
 %exclude /usr/lib/debug/%{_libdir}/libeo_dbg*
 
-#%files -n eo-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/eo/examples/*
-#%{_libdir}/eo/examples/*
+%if %enable_examples
+%files -n eo-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/eo/examples/
+%{_libdir}/eo/examples/
+%endif
 
 %files -n eo-devel
 %manifest %{name}.manifest
@@ -1480,11 +1503,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %exclude %{_libdir}/evas/utils/*
 %exclude /usr/lib/debug/%{_libdir}/evas/utils/*
 
-#%files -n evas-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/evas/examples/*
-#%{_libdir}/evas/examples/*
+%if %enable_examples
+%files -n evas-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/evas/examples/
+%{_libdir}/evas/examples/
+%endif
 
 %files -n evas-devel
 %manifest %{name}.manifest
@@ -1757,11 +1782,14 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 /usr/share/eolian/include/eldbus-1/*.eot
 %license licenses/COPYING.LGPL
 
-#%files -n eldbus-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/eldbus/examples/*
-#%{_libdir}/eldbus/examples/*
+
+%if %enable_examples
+%files -n eldbus-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/eldbus/examples/*
+%{_libdir}/eldbus/examples/*
+%endif
 
 %files -n eldbus-devel
 %manifest %{name}.manifest
@@ -1792,11 +1820,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %license licenses/COPYING.LGPL
 %{_libdir}/libeio.so.*
 
-#%files -n eio-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/eio/examples/*
-#%{_libdir}/eio/examples/*
+%if %enable_examples
+%files -n eio-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/eio/examples/
+%{_libdir}/eio/examples/
+%endif
 
 %files -n eio-devel
 %manifest %{name}.manifest
@@ -1822,11 +1852,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %{_bindir}/edje*
 #%{_datadir}/edje/data/*
 
-#%files -n edje-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/edje/examples/*
-#%{_libdir}/edje/examples/*
+%if %enable_examples
+%files -n edje-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/edje/examples/
+%{_libdir}/edje/examples/
+%endif
 
 %files -n edje-devel
 %manifest %{name}.manifest
@@ -1894,11 +1926,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %{_datadir}/emotion/*
 #%{_bindir}/emotion_test*
 
-#%files -n emotion-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/emotion/examples/*
-#%{_libdir}/emotion/examples/*
+%if %enable_examples
+%files -n emotion-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/emotion/examples/
+%{_libdir}/emotion/examples/
+%endif
 
 %files -n emotion-devel
 %manifest %{name}.manifest
@@ -1931,11 +1965,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %exclude /usr/lib/debug/%{_bindir}/ethumbd_client.debug
 %exclude /usr/lib/debug/.build-id/*/*
 
-#%files -n ethumb-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/ethumb_client/examples/*
-#%{_libdir}/ethumb_client/examples/*
+%if %enable_examples
+%files -n ethumb-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/ethumb_client/examples/
+%{_libdir}/ethumb_client/examples/
+%endif
 
 %files -n ethumb-devel
 %manifest %{name}.manifest
@@ -1961,8 +1997,10 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 #%{_libdir}/pkgconfig/ephysics.pc
 #%{_includedir}/ephysics-1/EPhysics.h
 
-#%files -n ephysics-examples
-#%{_datadir}/ephysics/examples/*
+%if %enable_examples
+%files -n ephysics-examples
+%{_datadir}/ephysics/examples/
+%endif
 
 %files -n eolian
 %{_bindir}/eolian*
@@ -1977,18 +2015,22 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %{_libdir}/cmake/Eolian*/*.cmake
 %exclude %{_includedir}/eolian-cxx-1/grammar/*.hpp
 
-#%files -n eolian-examples
-#%{_datadir}/eolian_*/examples/*
+%if %enable_examples
+%files -n eolian-examples
+%{_datadir}/eolian_*/examples/
+%endif
 
 %files -n elocation
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_libdir}/libelocation.so.*
 
-#%files -n elocation-examples
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_datadir}/elocation/examples/*
+%if %enable_examples
+%files -n elocation-examples
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_datadir}/elocation/examples/
+%endif
 
 %files -n elocation-devel
 %manifest %{name}.manifest
@@ -2062,10 +2104,12 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %{_libdir}/libelementary.so.1.99.*
 
 %if ! %dbus_unavailable
+%if %enable_examples
 %files -n elementary-examples
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_libdir}/elementary/examples/*
+%endif
 %endif
 
 %files -n elementary-tools
