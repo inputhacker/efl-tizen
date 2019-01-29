@@ -16,13 +16,10 @@ Source1001:     efl.manifest
 
 BuildRequires:  pkgconfig(check)
 BuildRequires:  pkgconfig(libinput)
-BuildRequires:  zlib-devel
+BuildRequires:  pkgconfig(zlib)
 BuildRequires:  gettext-tools
 BuildRequires:  hyphen-devel
-#BuildRequires:  coregl-devel
-#BuildRequires:  gettext-devel
-#BuildRequires:  doxygen
-#BuildRequires:  python-devel
+
 
 %if %{with wayland}
 BuildRequires:  pkgconfig(gles20)
@@ -56,7 +53,7 @@ BuildRequires:  pkgconfig(xdamage)
 BuildRequires:  pkgconfig(xfixes)
 BuildRequires:  pkgconfig(xrender)
 BuildRequires:  pkgconfig(xscrnsaver)
-BuildRequires:  libXtst-devel
+BuildRequires:  pkgconfig(libXtst)
 BuildRequires:  pkgconfig(xi)
 BuildRequires:  pkgconfig(ice)
 BuildRequires:  pkgconfig(sm)
@@ -64,18 +61,17 @@ BuildRequires:  pkgconfig(ibus-1.0)
 %endif
 
 #BuildRequires:  pkgconfig(rlottie)
-BuildRequires:  glib2-devel
-#BuildRequires:  pkgconfig(bullet)
+BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(openssl)
-BuildRequires:  gnutls-devel
-BuildRequires:  curl-devel
+BuildRequires:  pkgconfig(gnutls)
+BuildRequires:  pkgconfig(libcurl)
 BuildRequires:  pkgconfig(vconf)
 BuildRequires:  pkgconfig(xkbcommon)
-BuildRequires:  systemd-devel
+BuildRequires:  pkgconfig(systemd)
 BuildRequires:  pkgconfig(ttrace)
 
 #eldbus
-BuildRequires:  dbus-devel
+BuildRequires:  pkgconfig(dbus-1)
 
 #edje
 BuildRequires:  pkgconfig(lua)
@@ -87,9 +83,9 @@ BuildRequires:  pkgconfig(libpulse)
 #BuildRequires:  pkgconfig(gstreamer-plugins-base-1.0)
 
 #evas
-BuildRequires:  libexif-devel
+BuildRequires:  pkgconfig(libexif)
 BuildRequires:  giflib-devel
-BuildRequires:  libtiff-devel
+BuildRequires:  pkgconfig(libtiff-4)
 BuildRequires:  pkgconfig(libpng)
 BuildRequires:  libjpeg-turbo-devel
 BuildRequires:  pkgconfig(pixman-1)
@@ -100,8 +96,8 @@ BuildRequires:  pkgconfig(harfbuzz)
 BuildRequires:  pkgconfig(libtbm)
 
 #eeze
-BuildRequires:  libudev-devel
-BuildRequires:  libmount-devel
+BuildRequires:  pkgconfig(libudev)
+BuildRequires:  pkgconfig(mount)
 BuildRequires:  pkgconfig(dlog)
 
 #ecore_buffer
