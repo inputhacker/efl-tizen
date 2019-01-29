@@ -61,7 +61,7 @@ BuildRequires:  pkgconfig(sm)
 BuildRequires:  pkgconfig(ibus-1.0)
 %endif
 
-BuildRequires:  pkgconfig(rlottie)
+#BuildRequires:  pkgconfig(rlottie)
 BuildRequires:  glib2-devel
 #BuildRequires:  pkgconfig(bullet)
 BuildRequires:  pkgconfig(openssl)
