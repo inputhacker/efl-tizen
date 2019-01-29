@@ -1115,6 +1115,7 @@ _pointer_cb_button(void *data, struct wl_pointer *pointer EINA_UNUSED, unsigned 
    if (!input) return;
 
    input->display->serial = serial;
+   input->timestamp = timestamp;
 
    if (state == WL_POINTER_BUTTON_STATE_PRESSED)
      {
@@ -1151,6 +1152,8 @@ _pointer_cb_axis(void *data, struct wl_pointer *pointer EINA_UNUSED, unsigned in
 
    input = data;
    if (!input) return;
+
+   input->timestamp = timestamp;
 
    _ecore_wl2_input_mouse_wheel_send(input, axis, wl_fixed_to_int(value),
                                      timestamp);
@@ -1453,6 +1456,7 @@ _keyboard_cb_key(void *data, struct wl_keyboard *keyboard EINA_UNUSED, unsigned 
    //
 
    input->display->serial = serial;
+   input->timestamp = timestamp;
 
    /* xkb rules reflect X broken keycodes, so offset by 8 */
    code = keycode + 8;
@@ -1625,6 +1629,8 @@ _touch_cb_down(void *data, struct wl_touch *touch EINA_UNUSED, unsigned int seri
    if (!window) return;
 
    input->focus.touch = window;
+   input->timestamp = timestamp;
+
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
    _ecore_wl2_input_touch_axis_process(input, id);
    //
