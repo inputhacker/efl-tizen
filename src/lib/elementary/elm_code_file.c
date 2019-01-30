@@ -121,6 +121,8 @@ EAPI Elm_Code_File *elm_code_file_new(Elm_Code *code)
 
 EAPI Elm_Code_File *elm_code_file_open(Elm_Code *code, const char *path)
 {
+   EINA_SAFETY_ON_NULL_RETURN_VAL(code, NULL);
+
    Elm_Code_File *ret;
    Eina_File *file;
    Eina_File_Line *line;
