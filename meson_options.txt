@@ -294,7 +294,7 @@ option('elua',
 
 option('wl-deprecated',
   type : 'boolean',
-  value : false,
+  value : true,
   description : 'Flag for handling deprecated wayland support in efl'
 )
 

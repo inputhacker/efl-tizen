@@ -1,7 +1,19 @@
 %bcond_without wayland
 %bcond_with x
 
-%define enable_examples     0
+%bcond_without automake
+
+%define enable_examples       0
+%define enable_ephysics       0
+%define enable_elua           0
+%define enable_wayland_legacy 1
+
+# this options are for reducing packaing time
+##%%define _source_payload w1.gzdio
+##%%define _binary_payload w1.gzdio
+
+# this option is for debugging
+##%%define _unpackaged_files_terminate_build 0
 
 Name:           efl
 Version:        1.21.0
@@ -20,21 +32,23 @@ BuildRequires:  pkgconfig(zlib)
 BuildRequires:  gettext-tools
 BuildRequires:  hyphen-devel
 
+%if %{without automake}
+BuildRequires:  meson
+%endif
 
 %if %{with wayland}
 BuildRequires:  pkgconfig(gles20)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-cursor)
 BuildRequires:  pkgconfig(wayland-egl)
+BuildRequires:  pkgconfig(wayland-egl-tizen)
 BuildRequires:  pkgconfig(text-client)
 BuildRequires:  pkgconfig(xdg-shell-client)
 BuildRequires:  pkgconfig(wayland-tbm-client)
 BuildRequires:  pkgconfig(wayland-tbm-server)
 BuildRequires:  pkgconfig(tizen-extension-client)
 BuildRequires:  pkgconfig(tizen-remote-surface-client)
-BuildRequires:  pkgconfig(wayland-egl-tizen)
 BuildRequires:  wayland-protocols
-BuildRequires:  pkgconfig(wayland-egl-tizen)
 Requires:       libwayland-extension-client
 Requires:       libwayland-egl-tizen
 %endif
@@ -329,13 +343,17 @@ Requires: ecore-input
 Requires: ecore-input-evas
 Requires: ecore-ipc
 %if %{with wayland}
-Requires: ecore-wayland
 Requires: ecore-wl2
+%if %enable_wayland_legacy
+Requires: ecore-wayland
+%endif
 %endif
 %if %{with x}
 Requires: ecore-x
 %endif
+%if %{with automake}
 Requires: ecore-avahi
+%endif
 License: BSD-2-Clause and MIT
 
 %description -n ecore
@@ -359,13 +377,17 @@ Requires: ecore-input-devel
 Requires: ecore-input-evas-devel
 Requires: ecore-ipc-devel
 %if %{with wayland}
-Requires: ecore-wayland-devel
 Requires: ecore-wl2-devel
+%if %enable_wayland_legacy
+Requires: ecore-wayland-devel
+%endif
 %endif
 %if %{with x}
 Requires: ecore-x-devel
 %endif
+%if %{with automake}
 Requires: ecore-avahi-devel
+%endif
 License: BSD-2-Clause and MIT
 
 %description -n ecore-devel
@@ -412,6 +434,7 @@ License: BSD-2-Clause and MIT
 %description -n ecore-audio-devel
 Development files for ecore_audio
 
+%if %{with automake}
 %package -n ecore-avahi
 Summary: Enlightened Core X interface library - avahi
 Requires: %{name}-data = %{version}-%{release}
@@ -428,6 +451,7 @@ License: BSD-2-Clause and MIT
 
 %description -n ecore-avahi-devel
 Development files for ecore_avahi
+%endif
 
 %package -n ecore-buffer
 Summary: Enlightened Core X interface library - buffer
@@ -647,24 +671,7 @@ License: BSD-2-Clause and MIT
 %description -n ecore-ipc-devel
 Development files for ecore_ipc
 
-%package -n ecore-wayland
-Summary: Enlightened Core X interface library - wayland
-Requires: %{name}-data = %{version}-%{release}
-License: BSD-2-Clause and MIT
-
-%description -n ecore-wayland
-This is a glue/wrapper library to interface EFL to Wayland libraries
-to tie them into the Ecore main-loop and event queue.
-
-%package -n ecore-wayland-devel
-Summary:  Development components for the ecore_wayland package
-Group:    Graphics & UI Framework/Development
-Requires: ecore-wayland = %{version}-%{release}
-License: BSD-2-Clause and MIT
-
-%description -n ecore-wayland-devel
-Development files for ecore_wayland
-
+%if %{with x}
 %package -n ecore-x
 Summary: Enlightened Core X interface library - x
 Requires: %{name}-data = %{version}-%{release}
@@ -683,6 +690,7 @@ License: BSD-2-Clause and MIT
 
 %description -n ecore-x-devel
 Development files for ecore_x
+%endif
 
 ############ Eldbus
 %package -n eldbus
@@ -769,6 +777,7 @@ License: LGPL-2.1+
 Development files for eio
 
 ############ Ephysics
+%if %enable_ephysics
 %package -n ephysics
 Summary: EFL wrapper for the Bullet Physics library
 License: BSD-2-Clause
@@ -799,6 +808,7 @@ License: BSD-2-Clause
 
 %description -n ephysics-devel
 Development files for ephysics
+%endif
 
 ############ Edje
 %package -n edje
@@ -1025,6 +1035,7 @@ License: LGPL-2.1+
 Development files for elocation
 
 ############ Elua
+%if %enable_elua
 %package -n elua
 Summary: EFL lua binding library
 Requires: %{name}-data = %{version}-%{release}
@@ -1043,6 +1054,7 @@ License: BSD-2-Clause
 
 %description -n elua-devel
 Development files for elua
+%endif
 
 %package -n elementary
 Summary: EFL toolkit for small touchscreens
@@ -1113,6 +1125,26 @@ AutoReqProv: 0
 %description -n efl-locale
 This package provides translations for package %{name}.
 
+%if %enable_wayland_legacy
+%package -n ecore-wayland
+Summary: Enlightened Core X interface library - wayland
+Requires: %{name}-data = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-wayland
+This is a glue/wrapper library to interface EFL to Wayland libraries
+to tie them into the Ecore main-loop and event queue.
+
+%package -n ecore-wayland-devel
+Summary:  Development components for the ecore_wayland package
+Group:    Graphics & UI Framework/Development
+Requires: ecore-wayland = %{version}-%{release}
+License: BSD-2-Clause and MIT
+
+%description -n ecore-wayland-devel
+Development files for ecore_wayland
+%endif
+
 %package -n ecore-wl2
 Summary: Ecore_Wl2 provides a wrapper and convenience functions for using the Wayland protocol in implementing a window system.
 Requires: %{name}-data = %{version}-%{release}
@@ -1150,6 +1182,7 @@ License: BSD-2-Clause
 %description -n efl-wl-devel
 Development files for efl-wl
 
+%if %{with automake}
 %package -n elput
 Summary: Elput provides a wrapper and functions for using libinput
 Requires: %{name}-data = %{version}-%{release}
@@ -1168,6 +1201,8 @@ License: BSD-2-Clause
 
 %description -n elput-devel
 Development files for elput
+%endif
+
 
 %prep
 %setup -q
@@ -1175,7 +1210,6 @@ cp %{SOURCE1001} .
 
 
 %build
-
 %if "%{tizen_profile_name}" == "tv"
         export CFLAGS+=" -DTIZEN_PROFILE_TV"
 %endif
@@ -1192,20 +1226,24 @@ CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
 
 export XDG_RUNTIME_DIR="/tmp/"
 
+%if %{with automake}
 %autogen \
     --disable-static \
     --disable-doc \
     --with-glib=always \
+    --disable-cxx-bindings \
+    --disable-avahi \
     --disable-xim \
     --disable-scim \
-    --disable-wayland-text-input \
     --disable-gesture \
     --with-tests=none \
     --enable-fb \
     --disable-tslib \
 %if %{with wayland}
-    --enable-ecore-wayland \
     --enable-wayland \
+%if %enable_wayland_legacy
+    --enable-ecore-wayland \
+%endif
     --enable-egl \
     --with-opengl=es \
     --disable-rpath \
@@ -1236,26 +1274,32 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-cserve \
     --enable-tizenaudio \
     --with-elementary-base-dir="share/.elementary" \
-    --enable-i-really-know-what-i-am-doing-and-that-this-will-probably-break-things-and-i-will-fix-them-myself-and-send-patches-abb \
     ac_cv_func_getuid=no
-#    --enable-systemd \
-#    --enable-drm \
-#    --enable-gl-drm \
 
 %__make %{?_smp_mflags} 2>&1 | \
 sed \
 -e 's%^.*: error: .*$%\x1b[37;41m&\x1b[m%' \
 -e 's%^.*: warning: .*$%\x1b[30;43m&\x1b[m%'
+# automake above
+%else
+# meson below
+%endif
+
 
 %install
+%if %{with automake}
 %make_install
-#rm -rf %{buildroot}%{_libdir}/ecore/system/upower
 rm %{buildroot}/usr/share/ecore_x/checkme
+# automake above
+%else
+# meson below
+%endif
 
 mkdir -p %{buildroot}%{_tmpfilesdir}
 install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 
 %find_lang %{name}
+
 
 %post -n eina -p /sbin/ldconfig
 %postun -n eina -p /sbin/ldconfig
@@ -1302,8 +1346,10 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %post -n ethumb -p /sbin/ldconfig
 %postun -n ethumb -p /sbin/ldconfig
 
-#%post -n ephysics -p /sbin/ldconfig
-#%postun -n ephysics -p /sbin/ldconfig
+%if %enable_ephysics
+%post -n ephysics -p /sbin/ldconfig
+%postun -n ephysics -p /sbin/ldconfig
+%endif
 
 %post -n eolian -p /sbin/ldconfig
 %postun -n eolian -p /sbin/ldconfig
@@ -1314,8 +1360,10 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %post -n ecore-wl2 -p /sbin/ldconfig
 %postun -n  ecore-wl2 -p /sbin/ldconfig
 
+%if %{with automake}
 %post -n elput -p /sbin/ldconfig
 %postun -n elput -p /sbin/ldconfig
+%endif
 
 %post -n efl-wl -p /sbin/ldconfig
 %postun -n efl-wl -p /sbin/ldconfig
@@ -1324,14 +1372,10 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %postun -n elementary -p /sbin/ldconfig
 
 %post -n elementary-tizen
-rm -f %{_libdir}/libelementary.so.1
-#ln -sf %{_libdir}/libelementary.so.1.99.100 %{_libdir}/libelementary.so.1
-ldconfig -l %{_libdir}/libelementary.so.1.99.100
+ldconfig -l %{_libdir}/libelementary.so.1.21.100
 
 %preun -n elementary-tizen
-rm -f %{_libdir}/libelementary.so.1
-#ln -sf %{_libdir}/libelementary.so.1.21.* %{_libdir}/libelementary.so.1
-ldconfig -l %{_libdir}/libelementary.so.1.21.*
+ldconfig -l %{_libdir}/libelementary.so.1.21.99
 
 %postun -n elementary-tizen -p /sbin/ldconfig
 
@@ -1341,23 +1385,23 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.LGPL
 %{_libdir}/libefl.so.*
-/usr/share/eolian/include/efl-1/*.eot
-%exclude %{_bindir}/efl_debug
-%exclude %{_bindir}/efl_debugd
-%exclude /usr/lib/debug/%{_bindir}/efl_debug.debug
-%exclude /usr/lib/debug/%{_bindir}/efl_debugd.debug
+%{_datadir}/eolian/include/efl-*1/
+%{_bindir}/efl_debug
+%{_bindir}/efl_debugd
+%exclude /usr/lib*/debug/.build-id/
+%exclude /usr/lib*/debug/*
+%if %{with automake}
+%exclude %{_libdir}/cmake/Elua/
+%exclude %{_datadir}/elua/checkme
+%endif
 
 %files -n %{name}-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/efl-1/Efl*.h
-%{_includedir}/efl-1/interfaces/efl*.h
-#%{_includedir}/efl-cxx-1/*.hh
-%{_libdir}/cmake/Efl*/*.cmake
+%{_includedir}/efl-*1/
+%{_libdir}/cmake/Efl*/
 %{_libdir}/libefl.so
 %{_libdir}/pkgconfig/efl*.pc
-%exclude %{_includedir}/efl-cxx-1/*.hh
-%exclude %{_includedir}/efl-cxx-1/cxx/*.hh
 
 %files -n eina
 %manifest %{name}.manifest
@@ -1369,7 +1413,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %manifest %{name}.manifest
 %{_bindir}/eina_btlog
 %exclude %{_bindir}/eina_modinfo
-%exclude /usr/lib/debug/%{_bindir}/eina_modinfo.debug
 
 %if %enable_examples
 %files -n eina-examples
@@ -1382,8 +1425,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n eina-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/eina-*1/*.h*
-%{_includedir}/eina-*1/eina*/*
+%{_includedir}/eina-*1/
 %{_libdir}/libeina.so
 %{_libdir}/pkgconfig/eina*.pc
 %{_libdir}/cmake/Eina*/*.cmake
@@ -1397,7 +1439,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n emile-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/emile-*1/*.h*
+%{_includedir}/emile-*1/
 %{_libdir}/libemile.so
 %{_libdir}/pkgconfig/emile*.pc
 %{_libdir}/cmake/Emile*/*.cmake
@@ -1406,7 +1448,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
-%{_libdir}/libeet*.so.*
+%{_libdir}/libeet.so.*
 
 %files -n eet-tools
 %manifest %{name}.manifest
@@ -1426,9 +1468,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n eet-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/eet-*1/*.h*
-#%{_includedir}/eet-*1/*/*.h*
 %{_libdir}/libeet.so
+%{_includedir}/eet-*1/
 %{_libdir}/pkgconfig/eet*.pc
 %{_libdir}/cmake/Eet*/*.cmake
 
@@ -1438,7 +1479,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %license licenses/COPYING.BSD
 %{_libdir}/libeo.so.*
 %exclude %{_libdir}/libeo_dbg.so.*
-%exclude /usr/lib/debug/%{_libdir}/libeo_dbg*
 
 %if %enable_examples
 %files -n eo-examples
@@ -1451,29 +1491,27 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n eo-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/eo-*1/*.h*
+%{_includedir}/eo-*1/
 %{_libdir}/libeo.so
 %{_libdir}/pkgconfig/eo*.pc
 %{_datadir}/eo/gdb/eo_gdb.py
-%{_datadir}/gdb/auto-load/usr/lib*/*
+%{_datadir}/gdb/auto-load/usr/lib*/
 %{_libdir}/cmake/Eo/*.cmake
 %{_libdir}/cmake/EoCxx/*.cmake
 %exclude %{_libdir}/libeo_dbg.so
 %exclude %{_bindir}/eo_debug
-/usr/share/eolian/include/eo-*1/*.eot
 
 %files -n ector
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.FTL licenses/COPYING.GPL
 %{_libdir}/libector.so.*
-/usr/share/eolian/include/ector-1/*.eot
+%{_datadir}/eolian/include/ector-*1/
 
 %files -n ector-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-#%{_includedir}/ector-*1/*.h*
-#%{_includedir}/ector-*1/*/*.h*
+#%{_includedir}/ector-*1/
 %{_libdir}/libector.so
 %{_libdir}/pkgconfig/ector*.pc
 
@@ -1482,12 +1520,11 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_bindir}/ecore_evas_*
-%{_libdir}/evas/modules/*/*/*/module.so
+%{_libdir}/evas/modules/
 %{_libdir}/libevas.so.*
 %{_datadir}/evas/checkme
-/usr/share/evas/filters/lua/*.lua
-%exclude %{_libdir}/evas/utils/*
-%exclude /usr/lib/debug/%{_libdir}/evas/utils/*
+%{_datadir}/evas/filters/lua/*.lua
+%exclude %{_libdir}/evas/utils/
 
 %if %enable_examples
 %files -n evas-examples
@@ -1500,12 +1537,11 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n evas-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/evas-*1/*.h*
-%{_includedir}/evas-*1/*/*.h*
+%{_includedir}/evas-*1/
 %{_libdir}/libevas.so
 %{_libdir}/pkgconfig/evas*.pc
+%{_datadir}/eolian/include/evas-*1/
 %{_libdir}/cmake/Evas*/*.cmake
-/usr/share/eolian/include/evas-*1/*.eot
 
 %files -n ecore
 %license licenses/COPYING.BSD
@@ -1518,21 +1554,17 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore.so.*
-/usr/share/eolian/include/ecore-1/*.eot
-%exclude %{_libdir}/ecore/system/upower/
-%exclude /usr/lib/debug/%{_libdir}/ecore/system/upower/
-#%exclude %{_libdir}/ecore/system/systemd/v-*/module.so
-#%exclude /usr/lib/debug/%{_libdir}/ecore/system/systemd/v-*/module.so.debug
+%{_datadir}/eolian/include/ecore-*1/
 %{_datadir}/ecore/checkme
+%exclude %{_libdir}/ecore/system/upower/
 
 %files -n ecore-core-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-1/*.h
+%{_includedir}/ecore-*1/
 %{_libdir}/libecore.so
 %{_libdir}/pkgconfig/ecore-core.pc
 %{_libdir}/cmake/Ecore*/*.cmake
-%exclude %{_includedir}/ecore-cxx-1/*.hh
 
 %files -n ecore-audio
 %manifest %{name}.manifest
@@ -1543,10 +1575,11 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-audio-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-audio*/*.h
+%{_includedir}/ecore-audio*/
 %{_libdir}/libecore_audio.so
 %{_libdir}/pkgconfig/ecore-audio*.pc
 
+%if %{with automake}
 %files -n ecore-avahi
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
@@ -1556,23 +1589,23 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-avahi-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-avahi*/*.h
+%{_includedir}/ecore-avahi*/
 %{_libdir}/libecore_avahi.so
 %{_libdir}/pkgconfig/ecore-avahi*.pc
+%endif
 
 %files -n ecore-buffer
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_buffer.so.*
-%{_libdir}/ecore_buffer/modules/*/*/module.so
+%{_libdir}/ecore_buffer/modules/
 %exclude %{_libdir}/ecore_buffer/bin/
-%exclude /usr/lib/debug/%{_libdir}/ecore_buffer/bin/
 
 %files -n ecore-buffer-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-buffer*/*.h
+%{_includedir}/ecore-buffer*/
 %{_libdir}/libecore_buffer.so
 %{_libdir}/pkgconfig/ecore-buffer*.pc
 
@@ -1583,12 +1616,11 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %{_libdir}/libecore_con.so.*
 %{_tmpfilesdir}/efl.conf
 %exclude %{_libdir}/ecore_con/utils/v-1.21/efl_net_proxy_helper
-%exclude /usr/lib/debug/%{_libdir}/ecore_con/utils/v-1.21/efl_net_proxy_helper*
 
 %files -n ecore-con-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-con*/*.h
+%{_includedir}/ecore-con*/
 %{_libdir}/libecore_con.so
 %{_libdir}/pkgconfig/ecore-con*.pc
 
@@ -1602,7 +1634,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-evas-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-evas*/*.h
+%{_includedir}/ecore-evas*/
 %{_libdir}/libecore_evas.so
 %{_libdir}/pkgconfig/ecore-evas*.pc
 
@@ -1637,14 +1669,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_imf.so.*
-%exclude %{_libdir}/ecore_imf/modules/*/*/module.so
-%exclude /usr/lib/debug/%{_libdir}/ecore_imf/modules/*/*/module.so.debug
 %{_datadir}/ecore_imf/checkme
+%exclude %{_libdir}/ecore_imf/modules/
 
 %files -n ecore-imf-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-imf-1/*.h
+%{_includedir}/ecore-imf-*1/
 %{_libdir}/libecore_imf.so
 %{_libdir}/pkgconfig/ecore-imf.pc
 
@@ -1657,7 +1688,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-imf-evas-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-imf-evas*/*.h
+%{_includedir}/ecore-imf-evas*/
 %{_libdir}/libecore_imf_evas.so
 %{_libdir}/pkgconfig/ecore-imf-evas.pc
 
@@ -1670,7 +1701,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-input-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-input-1/*.h
+%{_includedir}/ecore-input-*1/
 %{_libdir}/libecore_input.so
 %{_libdir}/pkgconfig/ecore-input.pc
 
@@ -1683,7 +1714,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-input-evas-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-input-evas*/*.h
+%{_includedir}/ecore-input-evas*/
 %{_libdir}/libecore_input_evas.so
 %{_libdir}/pkgconfig/ecore-input-evas.pc
 
@@ -1696,11 +1727,10 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-ipc-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-ipc-1/*.h
+%{_includedir}/ecore-ipc-*1/
 %{_libdir}/libecore_ipc.so
 %{_libdir}/pkgconfig/ecore-ipc.pc
 
-%if %{with wayland}
 #%files -n ecore-drm
 #%manifest %{name}.manifest
 #%defattr(-,root,root,-)
@@ -1714,6 +1744,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 #%{_libdir}/libecore_drm.so
 #%{_libdir}/pkgconfig/ecore-drm*.pc
 
+%if %{with wayland}
+%if %enable_wayland_legacy
 %files -n ecore-wayland
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
@@ -1723,9 +1755,10 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-wayland-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-wayland-1/*.h
+%{_includedir}/ecore-wayland-1/
 %{_libdir}/libecore_wayland.so
 %{_libdir}/pkgconfig/ecore-wayland.pc
+%endif
 
 %files -n ecore-wl2
 %manifest %{name}.manifest
@@ -1733,12 +1766,11 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_wl2.so.*
 %{_libdir}/ecore_wl2/engines/*/*/module.so
-%exclude /usr/lib/debug/%{_libdir}/ecore_wl2/engines/*/*/module.so.debug
 
 %files -n ecore-wl2-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-wl2-1/*.h
+%{_includedir}/ecore-wl2-*1/
 %{_libdir}/libecore_wl2.so
 %{_libdir}/pkgconfig/ecore-wl2.pc
 %endif
@@ -1755,18 +1787,18 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ecore-x-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ecore-x-1/*.h
+%{_includedir}/ecore-x-*1/
 %{_libdir}/libecore_x.so
 %{_libdir}/pkgconfig/ecore-x.pc
 %endif
 
 %files -n eldbus
 %manifest %{name}.manifest
+%license licenses/COPYING.LGPL
 %defattr(-,root,root,-)
 %{_libdir}/libeldbus.so.*
 %{_bindir}/eldbus*
-/usr/share/eolian/include/eldbus-1/*.eot
-%license licenses/COPYING.LGPL
+%{_datadir}/eolian/include/eldbus-*1/
 
 
 %if %enable_examples
@@ -1781,8 +1813,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_libdir}/libeldbus.so
+%{_includedir}/eldbus*/
 %{_libdir}/pkgconfig/eldbus*.pc
-%{_includedir}/eldbus*/*
 %{_libdir}/cmake/Eldbus/*.cmake
 
 %files -n embryo
@@ -1796,7 +1828,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n embryo-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/embryo-1/*.h
+%{_includedir}/embryo-*1/
 %{_libdir}/libembryo.so
 %{_libdir}/pkgconfig/embryo*.pc
 
@@ -1817,26 +1849,24 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n eio-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/eio-1/*
+%{_includedir}/eio-*1/
 %{_libdir}/libeio.so
 %{_libdir}/pkgconfig/eio*.pc
 %{_libdir}/cmake/Eio*/*.cmake
-%exclude %{_includedir}/eio-cxx-1/*.hh
 
 %files -n edje
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libedje.so.*
-%{_libdir}/edje/utils/*/*
+%{_libdir}/edje/utils/
 %{_datadir}/edje/include/edje.inc
-%{_datadir}/edje/images/*
+%{_datadir}/edje/images/
 %{_datadir}/mime/packages/edje.xml
 
 %files -n edje-tools
 %manifest %{name}.manifest
 %{_bindir}/edje*
-#%{_datadir}/edje/data/*
 
 %if %enable_examples
 %files -n edje-examples
@@ -1849,30 +1879,29 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n edje-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/edje*-1/*.h*
+%{_includedir}/edje-*1/
 %{_libdir}/libedje.so
 %{_libdir}/pkgconfig/edje*.pc
 %{_libdir}/cmake/Edje/*.cmake
-/usr/share/eolian/include/edje-*1/*.eot
+%{_datadir}/eolian/include/edje-*1/
 
 %files -n eeze
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libeeze.so.*
+%{_datadir}/eeze/checkme
 %{_bindir}/eeze_disk_ls
 %{_bindir}/eeze_mount
+%{_bindir}/eeze_umount
+%{_libdir}/eeze/modules/sensor/
 %exclude %{_bindir}/eeze_scanner
 %exclude %{_bindir}/eeze_scanner_monitor
-%exclude /usr/lib/debug/%{_bindir}/eeze_scanner*
-%{_bindir}/eeze_umount
-%{_libdir}/eeze/modules/sensor/*/*/module.so
-%{_datadir}/eeze/checkme
 
 %files -n eeze-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/eeze-1/*.h
+%{_includedir}/eeze-*1/
 %{_libdir}/libeeze.so
 %{_libdir}/pkgconfig/eeze*.pc
 %{_libdir}/cmake/Eeze/*.cmake
@@ -1881,21 +1910,19 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
-%exclude %{_bindir}/efreetd
-%exclude /usr/lib/debug/%{_bindir}/efreetd.debug
-%{_libdir}/efreet/*/efreet_desktop_cache_create
-%{_libdir}/efreet/*/efreet_icon_cache_create
 %{_libdir}/libefreet.so.*
 %{_libdir}/libefreet_mime.so.*
 %{_libdir}/libefreet_trash.so.*
-%{_datadir}/efreet/*
+%{_libdir}/efreet/*/efreet_desktop_cache_create
+%{_libdir}/efreet/*/efreet_icon_cache_create
+%{_datadir}/efreet/
+%exclude %{_bindir}/efreetd
 %exclude %{_libdir}/efreet/*/efreet_mime_cache_create
-%exclude /usr/lib/debug/%{_libdir}/efreet/*/
 
 %files -n efreet-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/efreet-1/*.h
+%{_includedir}/efreet-*1/
 %{_libdir}/libefreet.so
 %{_libdir}/libefreet_mime.so
 %{_libdir}/libefreet_trash.so
@@ -1907,10 +1934,13 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libemotion.so.*
-%{_libdir}/edje/modules/emotion/*/module.so
-#%{_libdir}/emotion/modules/*/*/module.so
-%{_datadir}/emotion/*
-#%{_bindir}/emotion_test*
+%{_libdir}/edje/modules/emotion/
+%{_datadir}/emotion/
+%if %{without automake}
+# modules should be linked statically
+# it doesn't implemented for meson build
+%{_libdir}/emotion/modules/
+%endif
 
 %if %enable_examples
 %files -n emotion-examples
@@ -1923,7 +1953,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n emotion-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/emotion-1/*
+%{_includedir}/emotion-*1/
 %{_libdir}/libemotion.so
 %{_libdir}/pkgconfig/emotion*.pc
 %{_libdir}/cmake/Emotion/*.cmake
@@ -1934,22 +1964,14 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %license licenses/COPYING.BSD
 %{_libdir}/libethumb.so.*
 %{_libdir}/libethumb_client.so.*
+%{_datadir}/ethumb_client/
+%{_datadir}/ethumb/
+%{_libdir}/ethumb/modules/
 %exclude %{_datadir}/dbus-1/services/org.enlightenment.Ethumb.service
-#%exclude %{_userunitdir}/ethumb.service
-%{_datadir}/ethumb/*
-%{_datadir}/ethumb_client/*
-#%{_datadir}/ethumb_client/*/*
-%{_libdir}/ethumb/modules/*/*/module.so
-%{_libdir}/ethumb/modules/*/*/template.edj
 %exclude %{_libdir}/ethumb_client/utils/*/ethumbd_slave
-%exclude /usr/lib/debug/%{_libdir}/ethumb_client/utils/*/ethumbd_slave.debug
 %exclude %{_bindir}/ethumb
 %exclude %{_bindir}/ethumbd
 %exclude %{_bindir}/ethumbd_client
-%exclude /usr/lib/debug/%{_bindir}/ethumb.debug
-%exclude /usr/lib/debug/%{_bindir}/ethumbd.debug
-%exclude /usr/lib/debug/%{_bindir}/ethumbd_client.debug
-%exclude /usr/lib/debug/.build-id/*/*
 
 %if %enable_examples
 %files -n ethumb-examples
@@ -1962,44 +1984,45 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n ethumb-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/ethumb-1/*.h
-%{_includedir}/ethumb-client-1/*.h
+%{_includedir}/ethumb-*1/
 %{_libdir}/libethumb.so
 %{_libdir}/libethumb_client.so
 %{_libdir}/pkgconfig/ethumb*.pc
 %{_libdir}/cmake/Ethumb/*.cmake
 %{_libdir}/cmake/EthumbClient/*.cmake
 
-#%files -n ephysics
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%license licenses/COPYING.BSD
-#%{_libdir}/libephysics.so.*
+%if %enable_ephysics
+%files -n ephysics
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license licenses/COPYING.BSD
+%{_libdir}/libephysics.so.*
 
-#%files -n ephysics-devel
-#%manifest %{name}.manifest
-#%defattr(-,root,root,-)
-#%{_libdir}/libephysics.so
-#%{_libdir}/pkgconfig/ephysics.pc
-#%{_includedir}/ephysics-1/EPhysics.h
+%files -n ephysics-devel
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{_libdir}/libephysics.so
+%{_libdir}/pkgconfig/ephysics.pc
+%{_includedir}/ephysics-*1/
 
 %if %enable_examples
 %files -n ephysics-examples
 %{_datadir}/ephysics/examples/
 %endif
+%endif
 
 %files -n eolian
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%license licenses/COPYING.BSD
 %{_bindir}/eolian*
 %{_libdir}/libeolian.so.*
-%license licenses/COPYING.BSD
 
 %files -n eolian-devel
-%{_includedir}/eolian-*1/*.h*
-#%{_includedir}/eolian-*1/*/*.h*
-%{_datadir}/eolian/include/*/*.eo
+%{_includedir}/eolian-*1/
+%{_datadir}/eolian/include/
 %{_libdir}/libeolian.so
 %{_libdir}/cmake/Eolian*/*.cmake
-%exclude %{_includedir}/eolian-cxx-1/grammar/*.hpp
 
 %if %enable_examples
 %files -n eolian-examples
@@ -2021,10 +2044,11 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %files -n elocation-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/elocation-*1/*.h*
+%{_includedir}/elocation-*1/
 %{_libdir}/pkgconfig/elocation.pc
 %{_libdir}/libelocation.so
 
+%if %enable_elua
 %files -n elua
 %manifest %{name}.manifest
 %license licenses/COPYING.BSD
@@ -2035,25 +2059,25 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_libdir}/cmake/Elua*/*.cmake
+%endif
 
 %files -n efl-wl
 %manifest %{name}.manifest
 %license licenses/COPYING.BSD
 %defattr(-,root,root,-)
+%{_libdir}/libefl_wl.so.*
 %exclude %{_bindir}/efl_wl_test
 %exclude %{_bindir}/efl_wl_test_stack
-%exclude /usr/lib/debug/%{_bindir}/efl_wl_test.debug
-%exclude /usr/lib/debug/%{_bindir}/efl_wl_test_stack.debug
-%{_libdir}/libefl_wl.so.*
 
 %files -n efl-wl-devel
 %manifest %{name}.manifest
 %license licenses/COPYING.BSD
 %defattr(-,root,root,-)
 %{_libdir}/libefl_wl.so
+%{_includedir}/efl-wl-*1/
 %{_libdir}/pkgconfig/efl-wl.pc
-%{_includedir}/efl-wl-1/*.h
 
+%if %{with automake}
 %files -n elput
 %manifest %{name}.manifest
 %license licenses/COPYING.BSD
@@ -2066,7 +2090,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %defattr(-,root,root,-)
 %{_libdir}/libelput.so
 %{_libdir}/pkgconfig/elput.pc
-%{_includedir}/elput-1/*.h
+%{_includedir}/elput-*1/
+%endif
 
 %files -n elementary
 %manifest %{name}.manifest
@@ -2075,57 +2100,49 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %{_bindir}/elementary_quicklaunch
 %{_bindir}/elementary_run
 %{_libdir}/edje/modules/elm/v-1.21/module.so
-%{_libdir}/libelementary.so.1
-%{_libdir}/libelementary.so.1.21.*
-%{_datadir}/elementary/edje_externals/*
+%{_libdir}/libelementary.so.*
+%{_datadir}/elementary/edje_externals/
 %{_datadir}/icons/hicolor/128x128/apps/elementary.png
 %{_libdir}/elementary/modules/
-/usr/lib/debug/%{_libdir}/elementary/modules/
 %exclude %{_datadir}/elementary/config/
-##%{_tmpfilesdir}/elementary.conf
 
 %files -n elementary-tizen
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_libdir}/libelementary.so.1.99.*
+%{_libdir}/libelementary.so.1.21.100
 
 %if ! %dbus_unavailable
 %if %enable_examples
 %files -n elementary-examples
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_libdir}/elementary/examples/*
+%{_libdir}/elementary/examples/
 %endif
 %endif
 
 %files -n elementary-tools
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_datadir}/applications/*
-%{_datadir}/elementary/images/*
-%{_datadir}/elementary/objects/*
-%{_bindir}/elementary_config
-%{_bindir}/elementary_test*
-%{_bindir}/elementary_codegen
+%{_datadir}/applications/
+%{_datadir}/elementary/images/
+%{_datadir}/elementary/objects/
+%{_bindir}/elementary_*
 %{_bindir}/elm_prefs_cc
 
 %files -n elementary-devel
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_includedir}/elementary-1/*.h*
-%{_datadir}/eolian/include/elementary-1/*.eo
+%{_includedir}/elementary-*1/
 %{_libdir}/libelementary.so
 %{_libdir}/pkgconfig/elementary.pc
 %{_libdir}/cmake/Elementary/ElementaryConfig.cmake
 %{_libdir}/cmake/Elementary/ElementaryConfigVersion.cmake
-/usr/share/eolian/include/elementary-*1/*.eot
-%exclude %{_includedir}/elementary-cxx-1/*.hh
+%{_datadir}/eolian/include/elementary-*1/
 
 %files -n elementary-theme
 %manifest %{name}.manifest
-%{_datadir}/elementary/themes/*
-%exclude /usr/share/icons/Enlightenment-X
-%exclude /usr/share/elementary/test*
+%{_datadir}/elementary/themes/
+%exclude %{_datadir}/elementary/test*
 
 %files -n efl-locale -f %{name}.lang
 %license COPYING
