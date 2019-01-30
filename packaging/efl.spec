@@ -1364,7 +1364,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %defattr(-,root,root,-)
 %license licenses/COPYING.LGPL
 %{_libdir}/libeina.so.*
-%{_bindir}/eina-bench-cmp
 
 %files -n eina-tools
 %manifest %{name}.manifest
