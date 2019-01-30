@@ -35,7 +35,7 @@
 
 // internally allocated
 #define CLASS_ALLOCATED     0x3a70f00f
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
 #define CIRCLE_GENGRID_PADDING 11
 #define GENGRID_ITEM_DIMMED_COLOR 192
 #define GENGRID_ITEM_INIT_SIZE_RATIO 0.67
@@ -120,14 +120,8 @@ static int _is_item_in_viewport(int viewport_x, int viewport_y, int viewport_w, 
 static int _sort_items(const void *data1, const void *data2);
 //
 static void _elm_gengrid_item_focused(Elm_Object_Item *eo_it);
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
 static void _circle_path_pos(Elm_Gengrid_Data*, Evas_Coord, Evas_Coord, Evas_Coord*, Evas_Coord*);
-
-typedef struct _Coord_Cache {
-     Evas_Coord x;
-     Evas_Coord y;
-} Coord_Cache;
-//
 
 static const Elm_Action key_actions[] = {
    {"move", _key_action_move},
@@ -643,8 +637,8 @@ _calc(void *data)
    sd->items_lost = 0;
 
    evas_object_geometry_get(sd->pan_obj, NULL, NULL, &cvw, &cvh);
-//TIZEN_ONLY(20181015) : Apply circle gengrid
-   if (sd->circle_coord_cache) eina_hash_free_buckets(sd->circle_coord_cache);
+//TIZEN_ONLY(20190130) : Apply circle gengrid
+   if (sd->circle.coord_cache) eina_hash_free_buckets(sd->circle.coord_cache);
 //
 
    if ((cvw != 0) || (cvh != 0))
@@ -688,7 +682,7 @@ _calc(void *data)
           }
         count = sd->item_count + sd->items_lost - count_group;
 
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
         Evas_Coord padding_space;
 //
         if (sd->horizontal)
@@ -701,14 +695,14 @@ _calc(void *data)
                minw = (ceil(count / (float)nmax) * sd->item_width) +
                   (count_group * sd->group_item_width);
 
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
              const char* gengrid_style = elm_widget_style_get(sd->obj);
              if (!strcmp(gengrid_style, "circle"))
                {
                   _circle_path_pos(sd, 0, 0, &padding_space, NULL);
                   minw += (2 * padding_space);
 
-                  sd->circular = EINA_TRUE;
+                  sd->circle.enabled = EINA_TRUE;
                   sd->align_x = 0.0;
                   sd->align_y = 0.5;
                }
@@ -723,14 +717,14 @@ _calc(void *data)
              else
                minh = (ceil(count / (float)nmax) * sd->item_height) +
                   (count_group * sd->group_item_height);
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
              const char* gengrid_style = elm_widget_style_get(sd->obj);
              if (!strcmp(gengrid_style, "circle"))
                {
                   _circle_path_pos(sd, 0, 0, NULL, &padding_space);
                   minh += (2 * padding_space);
 
-                  sd->circular = EINA_TRUE;
+                  sd->circle.enabled = EINA_TRUE;
                   sd->align_x = 0.5;
                   sd->align_y = 0.0;
                }
@@ -1350,7 +1344,7 @@ _elm_gengrid_item_unrealize(Elm_Gen_Item *it,
      efl_event_callback_legacy_call(WIDGET(it), ELM_GENGRID_EVENT_UNREALIZED, EO_OBJ(it));
    ELM_SAFE_FREE(it->long_timer, ecore_timer_del);
 
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
    if (!calc && it->item->proxy)
      {
         evas_object_image_source_visible_set(it->item->proxy, EINA_TRUE);
@@ -1750,7 +1744,8 @@ _item_realize(Elm_Gen_Item *it)
         edje_object_part_swallow(VIEW(it), "elm.swallow.pad", it->spacer);
      }
 
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
+   //FIXME : clipper of item need to be cached by item to clipping new proxy.
    Evas_Object *clip = evas_object_clip_get(VIEW(it));
    if (clip) evas_object_data_set(VIEW(it), "view,clip", clip);
    else clip = evas_object_data_get(VIEW(it), "view,clip");
@@ -1923,7 +1918,7 @@ _reorder_item_move_animator_cb(void *data)
    return ECORE_CALLBACK_RENEW;
 }
 
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
 static void
 _item_circle_path_pos_calc(Elm_Gengrid_Data *sd, double item_angle, Evas_Coord *fx, Evas_Coord *fy)
 {
@@ -1951,7 +1946,7 @@ _circle_path_pos(Elm_Gengrid_Data *sd, Evas_Coord cx, Evas_Coord cy, Evas_Coord 
 {
    double item_angle, padding_angle, row_angle, span_angle, radius;
    Evas_Coord x, y, w, h, item_fx = 0, item_fy = 0, circle_x = 0, circle_y = 0;
-   Coord_Cache *coords = NULL, *tmp = NULL;
+   Eina_Position2D *coords = NULL, *tmp = NULL;
    char key[32];
 
    evas_object_geometry_get(sd->obj, &x, &y, &w, &h);
@@ -1959,7 +1954,7 @@ _circle_path_pos(Elm_Gengrid_Data *sd, Evas_Coord cx, Evas_Coord cy, Evas_Coord 
    if (sd->horizontal)
      {
         sprintf(key, "%d", cy);
-        coords = eina_hash_find(sd->circle_coord_cache, key);
+        coords = eina_hash_find(sd->circle.coord_cache, key);
         if (coords)
           {
              if (fx) *fx = coords->x;
@@ -1973,7 +1968,7 @@ _circle_path_pos(Elm_Gengrid_Data *sd, Evas_Coord cx, Evas_Coord cy, Evas_Coord 
    else
      {
         sprintf(key, "%d", cx);
-        coords = eina_hash_find(sd->circle_coord_cache, key);
+        coords = eina_hash_find(sd->circle.coord_cache, key);
         if (coords)
           {
              if (fx) *fx = coords->x;
@@ -2008,14 +2003,14 @@ _circle_path_pos(Elm_Gengrid_Data *sd, Evas_Coord cx, Evas_Coord cy, Evas_Coord 
    circle_y += item_fy;
    circle_x += item_fx;
 
-   coords = ELM_NEW(Coord_Cache);
+   coords = ELM_NEW(Eina_Position2D);
    coords->x = circle_x;
    coords->y = circle_y;
 
-   tmp = eina_hash_find(sd->circle_coord_cache, key);
+   tmp = eina_hash_find(sd->circle.coord_cache, key);
    if (tmp)
-      eina_hash_del_by_key(sd->circle_coord_cache, key);
-   eina_hash_add(sd->circle_coord_cache, key, coords);
+      eina_hash_del_by_key(sd->circle.coord_cache, key);
+   eina_hash_add(sd->circle.coord_cache, key, coords);
 
    if (fx) *fx = circle_x;
    if (fy) *fy = circle_y;
@@ -2154,7 +2149,7 @@ _item_place(Elm_Gen_Item *it,
      }
    else
      {
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
         Evas_Coord px, py;
 //
         if (wsd->horizontal)
@@ -2179,9 +2174,9 @@ _item_place(Elm_Gen_Item *it,
                        + (item->prev_group * wsd->group_item_width)) -
                      wsd->pan_x + ox + alignw;
                }
-             if (!wsd->circular)
+             if (!wsd->circle.enabled)
                y = (cy * wsd->item_height) - wsd->pan_y + oy + alignh;
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
              else
                {
                   _circle_path_pos(wsd, cx, cy, &px, &py);
@@ -2210,9 +2205,9 @@ _item_place(Elm_Gen_Item *it,
                      wsd->pan_y + oy + alignh;
                }
 
-             if (!wsd->circular)
+             if (!wsd->circle.enabled)
                x = (cx * wsd->item_width) - wsd->pan_x + ox + alignw;
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
              else
                {
                   _circle_path_pos(wsd, cx, cy, &px, &py);
@@ -2421,9 +2416,9 @@ _item_place(Elm_Gen_Item *it,
           item->group_realized = EINA_TRUE;
         */
 
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
         const char *vi_effect = edje_object_data_get(VIEW(it), "vi_effect");
-        if (!wsd->horizontal && wsd->nmax == 1 && wsd->circular)
+        if (!wsd->horizontal && wsd->nmax == 1 && wsd->circle.enabled)
           {
              int color = 0;
              float ratio = 0.0;
@@ -2454,7 +2449,7 @@ _item_place(Elm_Gen_Item *it,
           }
 //
         evas_object_move(VIEW(it), x, y);
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
         if (!it->item->proxy)
            evas_object_resize(VIEW(it), iw, ih);
         else
@@ -2471,7 +2466,7 @@ _item_place(Elm_Gen_Item *it,
      }
    else
      {
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
         if (it->item->proxy)
           evas_object_hide(it->item->proxy);
 //
@@ -2626,7 +2621,7 @@ _elm_gengrid_pan_efl_canvas_group_group_calculate(Eo *obj EINA_UNUSED, Elm_Gengr
    //
 }
 
-//TIZEN_ONLY(20181015) : Apply circle gengrid
+//TIZEN_ONLY(20190130) : Apply circle gengrid
 EOLIAN static void
 _elm_gengrid_pan_elm_pan_pos_adjust(Eo *obj EINA_UNUSED, Elm_Gengrid_Pan_Data *psd, Evas_Coord *x, Evas_Coord *y)
 {
@@ -5479,9 +5474,9 @@ _elm_gengrid_efl_canvas_group_group_del(Eo *obj, Elm_Gengrid_Data *sd)
    _cleanup_custom_size_mode(sd);
 
    _item_cache_zero(sd);
-//TIZEN_ONLY(20181015) : Apply circle gengrid
-   if (sd->circle_coord_cache) eina_hash_free(sd->circle_coord_cache);
-   sd->circle_coord_cache = NULL;
+//TIZEN_ONLY(20190130) : Apply circle gengrid
+   if (sd->circle.coord_cache) eina_hash_free(sd->circle.coord_cache);
+   sd->circle.coord_cache = NULL;
 //
 
    //TIZEN_ONLY(20160511) : Remove job for fixing calculate timing issue.
@@ -5726,11 +5721,21 @@ _gengrid_element_focused(void *data, const Efl_Event *ev)
      }
 }
 
+static void
+_coord_cache_free(void *data)
+{
+   if (data) free(data);
+}
+
 EOLIAN static Eo *
 _elm_gengrid_efl_object_constructor(Eo *obj, Elm_Gengrid_Data *sd)
 {
    legacy_efl_ui_focus_manager_widget_legacy_signals(obj, obj);
    sd->content_item_map = eina_hash_pointer_new(NULL);
+
+   //TIZEN_ONLY(20190130) : Apply circle gengrid
+   sd->circle.coord_cache = eina_hash_pointer_new(_coord_cache_free);
+   //
 
    //TIZEN_ONLY(20180607): Restore legacy focus
    if (!elm_widget_is_legacy(obj))
@@ -5806,8 +5811,8 @@ _elm_gengrid_align_set(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, double align_x
    old_h = sd->align_x;
    old_y = sd->align_y;
 
-//TIZEN_ONLY(20181015) : Apply circle gengrid
-   if (sd->circular) return;
+//TIZEN_ONLY(20190130) : Apply circle gengrid
+   if (sd->circle.enabled) return;
 //
 
    if (align_x > 1.0)

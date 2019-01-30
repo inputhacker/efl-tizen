@@ -39,16 +39,11 @@ struct _Elm_Gengrid_Data
    Eina_List                            *group_items; /* a list of
                                                        * groups index
                                                        * items */
-//TIZEN_ONLY(20181015) : Apply circle gengrid
-   Eina_Hash                            *circle_coord_cache;
 //
    Eina_Inlist                          *items; /* an inlist of all items */
    Elm_Gen_Item                         *reorder_it; /* item currently
                                                      * being
                                                      * repositioned */
-//TIZEN_ONLY(20181015) : Apply circle gengrid
-   Elm_Gen_Item                         *adjusted_item;
-//
    Elm_Object_Item                      *last_selected_item;
    Elm_Object_Item                      *focused_item; /**< a focused item by keypad arrow or mouse. This is set to NULL if widget looses focus. */
    Elm_Object_Item                      *last_focused_item; /**< This records the last focused item when widget looses focus. This is required to set the focus on last focused item when widgets gets focus. */
@@ -102,6 +97,13 @@ struct _Elm_Gengrid_Data
       Elm_Gengrid_Reorder_Type              type; /**< Reorder type */
       Eina_Bool                             running : 1; /**< animation is happening */
    } reorder;
+
+//TIZEN_ONLY(20190130) : Apply circle gengrid
+   struct {
+      Eina_Hash                             *coord_cache; /**< The caching coordinate of items in circular mode */
+      Eina_Bool                             enabled : 1; /**< Flag for circular mode */
+   } circle;
+//
 
    Eina_Bool                             reorder_item_changed : 1;
    Eina_Bool                             move_effect_enabled : 1;
@@ -175,9 +177,6 @@ struct _Elm_Gengrid_Data
 
    Eina_Bool                          scr_minw;
    Eina_Bool                          scr_minh;
-//TIZEN_ONLY(20181015) : Apply circle gengrid
-   Eina_Bool                          circular : 1;
-//
 };
 
 struct Elm_Gen_Item_Type
@@ -185,8 +184,8 @@ struct Elm_Gen_Item_Type
    Elm_Gen_Item           *it;
 
    Elm_Gengrid_Data       *wsd;
-//TIZEN_ONLY(20181015) : Apply circle gengrid
-   Evas_Object            *proxy;
+//TIZEN_ONLY(20190130) : Apply circle gengrid
+   Evas_Object            *proxy;  /* proxy of item for circular effect */
 //
    Ecore_Animator         *item_reorder_move_animator;
    Evas_Coord              gx, gy, ox, oy, tx, ty, rx, ry;
