@@ -334,8 +334,8 @@ Requires: ecore-wl2
 %endif
 %if %{with x}
 Requires: ecore-x
-Requires: ecore-avahi
 %endif
+Requires: ecore-avahi
 License: BSD-2-Clause and MIT
 
 %description -n ecore
@@ -364,8 +364,8 @@ Requires: ecore-wl2-devel
 %endif
 %if %{with x}
 Requires: ecore-x-devel
-Requires: ecore-avahi-devel
 %endif
+Requires: ecore-avahi-devel
 License: BSD-2-Clause and MIT
 
 %description -n ecore-devel
@@ -412,7 +412,6 @@ License: BSD-2-Clause and MIT
 %description -n ecore-audio-devel
 Development files for ecore_audio
 
-%if %{with x}
 %package -n ecore-avahi
 Summary: Enlightened Core X interface library - avahi
 Requires: %{name}-data = %{version}-%{release}
@@ -429,7 +428,6 @@ License: BSD-2-Clause and MIT
 
 %description -n ecore-avahi-devel
 Development files for ecore_avahi
-%endif
 
 %package -n ecore-buffer
 Summary: Enlightened Core X interface library - buffer
@@ -1077,13 +1075,6 @@ fine-grained library splitting means all of this is shared, just a new
 widget "personality" is on top. And that is... Elementary, my dear watson.
 Elementary. This is an alternative package for Tizen devices that uses different
 set of source code.
-
-%package -n elementary-tizen-devel
-Summary:        TODO
-Requires:       elementary
-
-%description -n elementary-tizen-devel
-TODOTODO
 
 %if %enable_examples
 %package -n elementary-examples
