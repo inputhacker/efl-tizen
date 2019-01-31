@@ -77,10 +77,9 @@ _ecore_evas_resize(Ecore_Evas *ee, int w, int h)
    else
      {
         if (bdata->pixels)
-          bdata->free_func(bdata->data,
-                                      bdata->pixels);
-        bdata->pixels = bdata->alloc_func(bdata->data,
-					  ee->w * ee->h * sizeof(int));
+          bdata->free_func(bdata->data, bdata->pixels);
+        bdata->pixels =
+          bdata->alloc_func(bdata->data, ee->w * ee->h * sizeof(int));
         stride = ee->w * sizeof(int);
      }
 
@@ -103,7 +102,7 @@ _ecore_evas_resize(Ecore_Evas *ee, int w, int h)
           }
      }
    if (bdata->image)
-      evas_object_image_data_set(bdata->image, bdata->pixels);
+     evas_object_image_data_set(bdata->image, bdata->pixels);
    else
      bdata->resized = 1;
 }
@@ -176,7 +175,7 @@ _ecore_evas_buffer_prepare(Ecore_Evas *ee)
 
         evas_object_image_size_get(bdata->image, &w, &h);
         if ((w != ee->w) || (h != ee->h))
-           _ecore_evas_resize(ee, w, h);
+          _ecore_evas_resize(ee, w, h);
         bdata->pixels = evas_object_image_data_get(bdata->image, 1);
      }
    else if (bdata->resized)
@@ -522,7 +521,7 @@ _ecore_evas_buffer_alpha_set(Ecore_Evas *ee, int alpha)
    if (((ee->alpha) && (alpha)) || ((!ee->alpha) && (!alpha))) return;
    ee->alpha = alpha;
    if (bdata->image)
-      evas_object_image_alpha_set(bdata->image, ee->alpha);
+     evas_object_image_alpha_set(bdata->image, ee->alpha);
    else
      {
         Evas_Engine_Info_Buffer *einfo;
@@ -897,8 +896,9 @@ ecore_evas_buffer_new(int w, int h)
 
    ecore_event_evas_init();
 
-   ee =  ecore_evas_buffer_allocfunc_new
-     (w, h, _ecore_evas_buffer_pix_alloc, _ecore_evas_buffer_pix_free, NULL);
+   ee =
+     ecore_evas_buffer_allocfunc_new(w, h, _ecore_evas_buffer_pix_alloc,
+                                     _ecore_evas_buffer_pix_free, NULL);
 
    if (!ee) ecore_event_evas_shutdown();
 
