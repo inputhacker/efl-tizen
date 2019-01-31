@@ -328,7 +328,7 @@ typedef enum
    ECORE_IMF_INPUT_PANEL_LAYOUT_PASSWORD,        /**< Like normal, but no auto-correct, no auto-capitalization etc. @since 1.2 */
    ECORE_IMF_INPUT_PANEL_LAYOUT_DATETIME,        /**< Date and time layout @since 1.8 */
    ECORE_IMF_INPUT_PANEL_LAYOUT_EMOTICON,        /**< Emoticon layout @since 1.10 */
-   ECORE_IMF_INPUT_PANEL_LAYOUT_VOICE            /**< Voice layout, but if the IME does not support voice layout, then normal layout will be shown @since 1.19 */
+   ECORE_IMF_INPUT_PANEL_LAYOUT_VOICE            /**< Voice layout, but if the IME does not support voice layout, then normal layout will be shown @since 1.19 @since_tizen 3.0 */
 } Ecore_IMF_Input_Panel_Layout;
 
 /**
