@@ -234,8 +234,8 @@ typedef enum
    ECORE_IMF_CALLBACK_SELECTION_SET,      /**< "SELECTION_SET" is called when the input method needs to set the selection @since 1.9 */
    ECORE_IMF_CALLBACK_PRIVATE_COMMAND_SEND, /**< "PRIVATE_COMMAND_SEND" is called when the input method sends a private command @since 1.12 */
    ECORE_IMF_CALLBACK_COMMIT_CONTENT,     /**< "COMMIT_CONTENT" is called when the input method commits content such as an image @since 1.20 @since_tizen 4.0 */
-   ECORE_IMF_CALLBACK_TRANSACTION_START,  /**< "TRANSACTION_START" is called when a new transaction sequence starts. @since 1.21 */
-   ECORE_IMF_CALLBACK_TRANSACTION_END     /**< "TRANSACTION_END" is called when a new transaction sequence starts. @since 1.21 */
+   ECORE_IMF_CALLBACK_TRANSACTION_START,  /**< "TRANSACTION_START" is called when a new transaction sequence starts. @since 1.21 @since_tizen 5.0 */
+   ECORE_IMF_CALLBACK_TRANSACTION_END     /**< "TRANSACTION_END" is called when a new transaction sequence starts. @since 1.21 @since_tizen 5.0 */
 } Ecore_IMF_Callback_Type;
 
 /**
