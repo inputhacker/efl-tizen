@@ -60,7 +60,7 @@ BuildRequires:  pkgconfig(sm)
 BuildRequires:  pkgconfig(ibus-1.0)
 %endif
 
-#BuildRequires:  pkgconfig(rlottie)
+BuildRequires:  pkgconfig(rlottie)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(openssl)
 BuildRequires:  pkgconfig(gnutls)
