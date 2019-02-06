@@ -1180,8 +1180,6 @@ cp %{SOURCE1001} .
 CFLAGS+=" -DMESA_EGL_NO_X11_HEADERS "
 %endif
 
-CFLAGS+=" -DLIBDIR=\\\"%{_libdir}\\\""
-
 %if "%{asan}" == "1"
 %restore_fcommon
 %endif
