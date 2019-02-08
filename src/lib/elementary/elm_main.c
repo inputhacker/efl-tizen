@@ -2070,6 +2070,42 @@ elm_object_item_del(Eo *obj)
    item->on_deletion = EINA_TRUE;
 }
 
+EAPI Eina_Bool
+elm_object_cursor_set(Eo *obj, const char *cursor)
+{
+   return efl_ui_widget_cursor_set(obj, cursor);
+}
+
+EAPI const char *
+elm_object_cursor_get(const Eo *obj)
+{
+   return efl_ui_widget_cursor_get(obj);
+}
+
+EAPI Eina_Bool
+elm_object_cursor_style_set(Eo *obj, const char *style)
+{
+   return efl_ui_widget_cursor_style_set(obj, style);
+}
+
+EAPI const char *
+elm_object_cursor_style_get(const Eo *obj)
+{
+   return efl_ui_widget_cursor_style_get(obj);
+}
+
+EAPI Eina_Bool
+elm_object_cursor_theme_search_enabled_set(Eo *obj, Eina_Bool allow)
+{
+   return efl_ui_widget_cursor_theme_search_enabled_set(obj, allow);
+}
+
+EAPI Eina_Bool
+elm_object_cursor_theme_search_enabled_get(const Eo *obj)
+{
+   return efl_ui_widget_cursor_theme_search_enabled_get(obj);
+}
+
 //TIZEN_ONLY(20171108): bring HIGHLIGHT related changes
 EAPI void
 elm_object_accessibility_highlight_set(void *obj, Eina_Bool visible)
@@ -2321,4 +2357,3 @@ elm_object_item_color_class_clear(Elm_Object_Item *it)
 /*******
  * END *
  *******/
-
