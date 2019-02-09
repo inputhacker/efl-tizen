@@ -1843,7 +1843,7 @@ _canvas_event_feed_mouse_updown(Eo *eo_e, int b, Evas_Button_Flags flags,
    if (!e) return;
    EVAS_EVENT_FEED_SAFETY_CHECK(e);
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get( eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->data = (void *) data;
@@ -2029,7 +2029,7 @@ evas_event_feed_mouse_cancel(Eo *eo_e, unsigned int timestamp, const void *data)
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt;
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get( eo_e, (void **) &ev);
    if (!ev) return;
    EVAS_EVENT_FEED_SAFETY_CHECK(e);
 
@@ -2125,7 +2125,7 @@ evas_event_feed_mouse_wheel(Eo *eo_e, int direction, int z, unsigned int timesta
    Evas_Public_Data *e = efl_data_scope_get(eo_e, EVAS_CANVAS_CLASS);
    //
    Efl_Input_Pointer_Data *ev = NULL;
-   Efl_Input_Pointer *evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   Efl_Input_Pointer *evt = efl_input_pointer_instance_get( eo_e, (void **) &ev);
 
    if (!ev) return;
 
@@ -2568,7 +2568,7 @@ _canvas_event_feed_mouse_move_legacy(Evas *eo_e, Evas_Public_Data *e, int x, int
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt;
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get( eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->data = (void *) data;
@@ -2847,7 +2847,7 @@ _canvas_event_feed_mouse_inout_legacy(Eo *eo_e, unsigned int timestamp,
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt;
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get( eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->timestamp = timestamp;
@@ -3071,7 +3071,7 @@ _canvas_event_feed_multi_internal(Evas *eo_e, Evas_Public_Data *e,
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt;
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get( eo_e, (void **) &ev);
    if (!e || !ev) return;
    EVAS_EVENT_FEED_SAFETY_CHECK(e);
 
@@ -3552,7 +3552,7 @@ _canvas_event_feed_key_legacy(Eo *eo_e, Evas_Public_Data *e,
 
    if (!keyname) return;
 
-   evt = efl_input_instance_get(EFL_INPUT_KEY_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_key_instance_get( eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->keyname = (char *) keyname;
@@ -3626,7 +3626,7 @@ evas_event_feed_hold(Eo *eo_e, int hold, unsigned int timestamp, const void *dat
 
    event_id = _evas_object_event_new();
 
-   evt = efl_input_instance_get(EFL_INPUT_HOLD_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_hold_instance_get(eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->hold = !!hold;
@@ -3727,7 +3727,7 @@ evas_event_feed_axis_update(Evas *eo_e, unsigned int timestamp, int device, int 
    if (!e) return;
    EVAS_EVENT_FEED_SAFETY_CHECK(e);
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get( eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->data = (void *) data;
@@ -4348,7 +4348,7 @@ _evas_canvas_event_pointer_move_event_dispatch(Evas_Public_Data *edata,
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt;
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, edata->evas,
+   evt = efl_input_pointer_instance_get( edata->evas,
                                 (void **) &ev);
    if (!evt) return;
 
