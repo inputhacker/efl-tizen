@@ -25,7 +25,6 @@ class @beta Efl.Ui.Layout_Part_Table extends Efl.Ui.Layout_Part implements Efl.P
       Efl.Object.destructor;
       Efl.Container.content_iterate;
       Efl.Container.content_count;
-      Efl.Container.content_remove;
       Efl.Pack.pack_clear;
       Efl.Pack.unpack_all;
       Efl.Pack.unpack;
