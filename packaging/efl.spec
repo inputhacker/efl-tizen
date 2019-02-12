@@ -1171,7 +1171,9 @@ cp %{SOURCE1001} .
 
 
 %build
-
+if echo "$CC" | grep -q clang ; then
+	CC="$CC -no-integrated-as"
+fi
 %if "%{tizen_profile_name}" == "tv"
         export CFLAGS+=" -DTIZEN_PROFILE_TV"
 %endif
