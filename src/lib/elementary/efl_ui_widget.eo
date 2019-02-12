@@ -23,6 +23,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
                         Efl.Access.Component, Efl.Part, Efl.Ui.Focus.Object,
                         Efl.Ui.L10n,
                         Efl.Ui.Selection, Efl.Ui.Dnd,
+                        Efl.Ui.Property_Bind, Efl.Ui.View,
                         //TIZEN_ONLY(20160527): widget: add AtspiAction interface to all widgets
                         Efl.Access.Widget.Action
                         //
@@ -652,6 +653,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
       class.constructor;
       Efl.Object.constructor;
       Efl.Object.finalize;
+      Efl.Object.invalidate;
       Efl.Object.destructor;
       Efl.Object.provider_find;
       Efl.Object.debug_name_override;
@@ -716,6 +718,8 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
       /*******
        * END *
        *******/
+      Efl.Ui.View.model { get; set; }
+      Efl.Ui.Property_Bind.property_bind;
    }
    constructors {
       .style @optional;
