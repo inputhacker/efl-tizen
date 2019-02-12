@@ -2482,6 +2482,34 @@ _proxy_unset(Evas_Object *proxy, Evas_Object_Protected_Data *cur_proxy, Evas_Ima
 
    cur_source = eo_data_scope_get(o->cur->source, EVAS_OBJECT_CLASS);
 
+   //TIZEN_ONLY(20190212): To fix mouse grabbed counting fail issue.
+   //                      When the proxy's source object deletion we need to count
+   //                      proxy's mouse_grabbed count as well.
+   if ((cur_proxy->mouse_grabbed > 0) && (cur_proxy->proxy->src_events))
+     {
+        Evas_Object *eo_src = _evas_object_image_source_get(proxy);
+        Evas_Object_Protected_Data *src = eo_data_scope_get(eo_src, EVAS_OBJECT_CLASS);
+
+        Eina_List *l;
+        Evas_Object *eo_child;
+        Evas_Object_Protected_Data *child;
+        EINA_LIST_FOREACH(src->proxy->src_event_in, l, eo_child)
+          {
+             if (src->delete_me) return;
+             child = eo_data_scope_get(eo_child, EVAS_OBJECT_CLASS);
+
+             if (!child) continue;
+
+             if ((child->pointer_mode == EVAS_OBJECT_POINTER_MODE_AUTOGRAB) &&
+                 (child->mouse_grabbed > 0))
+               {
+                  child->mouse_grabbed--;
+                  child->layer->evas->pointer.mouse_grabbed--;
+               }
+          }
+     }
+   //
+
    EINA_COW_WRITE_BEGIN(evas_object_proxy_cow, cur_source->proxy, Evas_Object_Proxy_Data, proxy_source_write)
      {
        proxy_source_write->proxies = eina_list_remove(proxy_source_write->proxies,
