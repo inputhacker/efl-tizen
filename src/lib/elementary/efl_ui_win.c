@@ -8649,6 +8649,15 @@ _efl_ui_win_content_set(Eo *obj, Efl_Ui_Win_Data *sd, const char *part, Eo *cont
           goto err;
         return EINA_TRUE;
      }
+   //TIZEN_ONLY(20190425): add circle content part for circle object
+   else if (eina_streq(part, "efl.content.circle"))
+     {
+        Eina_Bool ret;
+        ret = edje_object_part_swallow(sd->legacy.edje, "efl.content.circle", content);
+        evas_object_show(content);
+        return EINA_TRUE;
+     }
+   //
 
    WIN_PART_ERR(part);
    return EINA_FALSE;
