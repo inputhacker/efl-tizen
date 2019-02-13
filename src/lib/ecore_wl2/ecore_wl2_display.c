@@ -1056,7 +1056,7 @@ _begin_recovery_maybe(Ecore_Wl2_Display *ewd, int code)
      _recovery_timer_add(ewd);
    else if (!_server_displays)
      {
-        ERR("Wayland Socket Error: %s", strerror(errno));
+        ERR("Wayland Socket Error: %s", eina_error_msg_get(errno));
         _ecore_wl2_display_signal_exit();
      }
 }
@@ -1332,7 +1332,6 @@ _ecore_wl2_display_dispatch_error(Ecore_Wl2_Display *ewd)
    uint32_t ecode = 0, id = 0;
    const struct wl_interface *intf = NULL;
    int last_err;
-   char buffer[1024];
    char *str;
 
    /* write out message about protocol error */
@@ -1348,15 +1347,15 @@ _ecore_wl2_display_dispatch_error(Ecore_Wl2_Display *ewd)
      {
         int _err = errno;
         if (last_err) _err = last_err;
-        str = strerror_r(_err, buffer, sizeof(buffer));
-        ERR("Disconnected from a wayland compositor : error:(%d) %s(%s)", _err, buffer, str);
+        str = eina_error_msg_get(_err);
+        ERR("Disconnected from a wayland compositor : error:(%d) %s", _err, str);
         _ecore_wl2_signal_exit();
         return;
      }
    else
      {
-        str = strerror_r(errno, buffer, sizeof(buffer));
-        ERR("wayland socket error:(%d) %s(%s)", errno, buffer, str);
+        str = eina_error_msg_get(errno);
+        ERR("wayland socket error:(%d) %s", errno, str);
         abort();
      }
 }
@@ -1381,7 +1380,7 @@ ecore_wl2_display_sync(Ecore_Wl2_Display *display)
         if (_ecore_wl2_disconnected(last_dpy_err))
           {
              errno = last_dpy_err;
-             ERR("Disconnected from a wayland compositor : %s", strerror(errno));
+             ERR("Disconnected from a wayland compositor : %s", eina_error_msg_get(errno));
              _ecore_wl2_signal_exit();
              return;
           }

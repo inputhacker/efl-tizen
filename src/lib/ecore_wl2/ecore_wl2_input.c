@@ -2886,6 +2886,8 @@ EAPI Eina_List
 
    input = ecore_wl2_input_default_input_get(ewd);
 
+   if(!input) goto err;
+
    while (!input->caps_update)
      {
         INF("Wait until wl_seat_capabilities_update is ready");
