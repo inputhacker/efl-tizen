@@ -129,8 +129,6 @@ EAPI Elm_Code_File *elm_code_file_open(Elm_Code *code, const char *path)
    Eina_Iterator *it;
    unsigned int lastindex;
 
-   if (!code) return NULL;
-
    ret = elm_code_file_new(code);
    file = eina_file_open(path, EINA_FALSE);
    ret->file = file;
