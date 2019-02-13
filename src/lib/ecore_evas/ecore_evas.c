@@ -5454,17 +5454,24 @@ _ecore_evas_event_evas_device_get(Evas *evas, Ecore_Device *ecore_dev)
 {
    Efl_Input_Device *dev = NULL;
    Eina_List *list, *l;
+   char *rname, *lname;
 
    if (efl_class_get(ecore_dev) != EFL_INPUT_DEVICE_CLASS) return NULL;
 
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, dev)
      {
-        if ((evas_device_class_get(dev) == (Evas_Device_Class)ecore_device_class_get(ecore_dev)) &&
-            !strncmp(efl_name_get(dev), efl_name_get(ecore_dev), strlen(efl_name_get(dev))) &&
-            !strncmp(efl_comment_get(dev), efl_comment_get(ecore_dev), strlen(efl_comment_get(dev))))
+        if (evas_device_class_get(dev) == (Evas_Device_Class)ecore_device_class_get(ecore_dev))
           {
-             return dev;
+             lname = efl_name_get(dev);
+             rname = efl_name_get(ecore_dev);
+             if (lname && rname && !strncmp(lname, rname, strlen(lname)))
+               {
+                  lname = efl_comment_get(dev);
+                  rname = efl_comment_get(ecore_dev);
+                  if (lname && rname && !strncmp(lname, rname, strlen(lname)))
+                    return dev;
+               }
           }
      }
 
