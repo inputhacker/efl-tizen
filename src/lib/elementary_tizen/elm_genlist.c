@@ -6800,7 +6800,6 @@ _elm_genlist_efl_object_constructor(Eo *obj, Elm_Genlist_Data *sd)
     efl_ui_focus_parent_provider_gen_container_set(efl_added, obj),
     efl_ui_focus_parent_provider_gen_content_item_map_set(efl_added, sd->content_item_map));
 
-   efl_ui_focus_composition_custom_manager_set(obj, obj);
    efl_ui_focus_composition_logical_mode_set(obj, EINA_TRUE);
 
    sd->obj = obj;
