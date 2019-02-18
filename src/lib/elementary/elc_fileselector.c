@@ -2565,7 +2565,7 @@ _elm_fileselector_elm_interface_fileselector_selected_model_set(Eo *obj, Elm_Fil
 
     if (eina_value_type_get(value) != EINA_VALUE_TYPE_BOOL)
       {
-         ERR("Unexpected type for 'is_dir': '%s' with value '%s'.", eina_value_type_get(value)->name, eina_value_to_string(value));
+         ERR("Unexpected type for 'is_dir': '%s' with value '%s'.", eina_value_type_name_get(eina_value_type_get(value)), eina_value_to_string(value));
          goto clean_up;
       }
 
