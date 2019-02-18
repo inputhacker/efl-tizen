@@ -847,8 +847,7 @@ _create_node(Svg_Node *parent, Svg_Node_Type type)
    if (!node->style)
      {
         free(node);
-        ERR("OOM: Failed calloc()");
-        return NULL;
+        EINA_SAFETY_ON_NULL_RETURN_VAL(node->style, NULL);
      }
 
    // update the default value of stroke and fill
