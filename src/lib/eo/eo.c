@@ -3648,7 +3648,7 @@ end:
 EAPI Eina_Value
 efl_property_reflection_get(Eo *obj_id, const char *property_name)
 {
-   EO_OBJ_POINTER(obj_id, obj);
+   EO_OBJ_POINTER_RETURN_VAL(obj_id, obj, EINA_VALUE_EMPTY);
    const Efl_Object_Property_Reflection *reflection = _efl_class_reflection_find(obj->klass, property_name);
 
    if (!reflection || !reflection->get) goto end;
