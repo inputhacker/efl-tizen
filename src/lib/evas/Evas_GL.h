@@ -129,7 +129,7 @@ Much of it is from Mesa, so their copyright is included as well.
  *
  * To ensure your application is only running on the device with specific features, please define the features in your manifest file using the manifest editor in the SDK.\n
  *
- * More details on featuring your application can be found from <a href="https://developer.tizen.org/development/getting-started/native-application/understanding-tizen-programming/application-filtering"><b>Feature List</b>.</a>
+ * More details on featuring your application can be found from <a href="https://developer.tizen.org/development/tizen-studio/native-tools/configuring-your-app/manifest-text-editor#feature"><b>Feature List</b>.</a>
  * @{
  */
 
