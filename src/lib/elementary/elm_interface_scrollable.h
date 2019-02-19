@@ -179,6 +179,10 @@ struct _Elm_Scrollable_Smart_Interface_Data
       Elm_Interface_Scrollable_Cb hbar_press;
       Elm_Interface_Scrollable_Cb hbar_unpress;
       Elm_Interface_Scrollable_Cb page_change;
+      //TIZEN_ONLY(20190219): fix page snap behavior.
+      Elm_Interface_Scrollable_Cb scroll_start;
+      Elm_Interface_Scrollable_Cb scroll_stop;
+      //
 
       Elm_Interface_Scrollable_Min_Limit_Cb content_min_limit;
       Elm_Interface_Scrollable_Resize_Cb content_viewport_resize;
@@ -235,6 +239,9 @@ struct _Elm_Scrollable_Smart_Interface_Data
    Eina_Bool  go_down : 1;
    Eina_Bool  loop_h : 1;
    Eina_Bool  loop_v : 1;
+   //TIZEN_ONLY(20190219): fix page snap behavior.
+   Eina_Bool  scrolling : 1;
+   //
 
    Efl_Ui_Focus_Manager *manager;
 

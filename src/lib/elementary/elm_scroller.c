@@ -791,6 +791,24 @@ _scroll_drag_stop_cb(Evas_Object *obj,
      (obj, EFL_UI_EVENT_SCROLL_DRAG_STOP, NULL);
 }
 
+//TIZEN_ONLY(20190219): fix page snap behavior.
+static void
+_scroll_start_cb(Evas_Object *obj,
+                      void *data EINA_UNUSED)
+{
+   efl_event_callback_legacy_call
+     (obj, EFL_UI_EVENT_SCROLL_START, NULL);
+}
+
+static void
+_scroll_stop_cb(Evas_Object *obj,
+                     void *data EINA_UNUSED)
+{
+   efl_event_callback_legacy_call
+     (obj, EFL_UI_EVENT_SCROLL_STOP, NULL);
+}
+//
+
 static void
 _vbar_drag_cb(Evas_Object *obj,
                 void *data EINA_UNUSED)
@@ -1051,6 +1069,10 @@ _elm_scroller_efl_canvas_group_group_add(Eo *obj, Elm_Scroller_Data *priv)
    elm_interface_scrollable_scroll_right_cb_set(obj, _scroll_right_cb);
    elm_interface_scrollable_scroll_up_cb_set(obj, _scroll_up_cb);
    elm_interface_scrollable_scroll_down_cb_set(obj, _scroll_down_cb);
+   //TIZEN_ONLY(20190219): fix page snap behavior.
+   elm_interface_scrollable_scroll_start_cb_set(obj, _scroll_start_cb);
+   elm_interface_scrollable_scroll_stop_cb_set(obj, _scroll_stop_cb);
+   //
    elm_interface_scrollable_animate_start_cb_set(obj, _scroll_anim_start_cb);
    elm_interface_scrollable_animate_stop_cb_set(obj, _scroll_anim_stop_cb);
    elm_interface_scrollable_drag_start_cb_set(obj, _scroll_drag_start_cb);
