@@ -309,6 +309,16 @@ mixin Elm.Interface_Scrollable requires Efl.Ui.Widget extends Efl.Ui.Scrollable,
             drag_start_cb: Elm_Interface_Scrollable_Cb @nullable; [[The callback]]
          }
       }
+      //TIZEN_ONLY(20190219): fix page snap behavior.
+      @property scroll_start_cb {
+         set {
+            [[Set the callback to run when scrolling of the contents has started.]]
+         }
+         values {
+            scroll_start_cb: Elm_Interface_Scrollable_Cb @nullable; [[The callback]]
+         }
+      }
+      //
       @property freeze {
           [[Freeze property]]
          set {
@@ -365,6 +375,16 @@ mixin Elm.Interface_Scrollable requires Efl.Ui.Widget extends Efl.Ui.Scrollable,
             drag_stop_cb: Elm_Interface_Scrollable_Cb @nullable; [[The callback]]
          }
       }
+      //TIZEN_ONLY(20190219): fix page snap behavior.
+      @property scroll_stop_cb {
+         set {
+            [[Set the callback to run when scrolling of the contents has stopped.]]
+         }
+         values {
+            scroll_stop_cb: Elm_Interface_Scrollable_Cb @nullable; [[The callback]]
+         }
+      }
+      //
       @property extern_pan {
           [[Extern pan]]
          set {

@@ -1337,33 +1337,52 @@ _elm_scroll_scroll_bar_read_and_update(
    _elm_scroll_wanted_coordinates_update(sid, x, y);
 }
 
+//TIZEN_ONLY(20190219): fix page snap behavior.
 static void
-_elm_scroll_drag_start(Elm_Scrollable_Smart_Interface_Data *sid)
+_elm_scroll_scroll_start(Elm_Scrollable_Smart_Interface_Data *sid)
 {
    sid->current_page.x = _elm_scroll_page_x_get(sid, 0, EINA_FALSE);
    sid->current_page.y = _elm_scroll_page_y_get(sid, 0, EINA_FALSE);
 
+   sid->scrolling = EINA_TRUE;
+
+   if (sid->cb_func.scroll_start)
+     sid->cb_func.scroll_start(sid->obj, NULL);
+}
+
+static void
+_elm_scroll_scroll_stop(Elm_Scrollable_Smart_Interface_Data *sid)
+{
+   Evas_Coord x, y;
+   sid->scrolling = EINA_FALSE;
+   x = _elm_scroll_page_x_get(sid, 0, EINA_FALSE);
+   y = _elm_scroll_page_y_get(sid, 0, EINA_FALSE);
+   if ((sid->cb_func.page_change) &&
+       ((x != sid->current_page.x) || (y != sid->current_page.y)))
+     sid->cb_func.page_change(sid->obj, NULL);
+   sid->current_page.x = x;
+   sid->current_page.y = y;
+
+   if (sid->cb_func.scroll_stop)
+     sid->cb_func.scroll_stop(sid->obj, NULL);
+}
+//
+
+static void
+_elm_scroll_drag_start(Elm_Scrollable_Smart_Interface_Data *sid)
+{
    if (sid->cb_func.drag_start)
      sid->cb_func.drag_start(sid->obj, NULL);
+
+   //TIZEN_ONLY(20190219): fix page snap behavior.
+   if (!sid->scrolling)
+     _elm_scroll_scroll_start(sid);
+   //
 }
 
 static void
 _elm_scroll_drag_stop(Elm_Scrollable_Smart_Interface_Data *sid)
 {
-   Evas_Coord x, y;
-
-   if (!(sid->down.bounce_x_animator) && !(sid->down.bounce_y_animator) &&
-       !(sid->scrollto.x.animator) && !(sid->scrollto.y.animator))
-     {
-        x = _elm_scroll_page_x_get(sid, 0, EINA_FALSE);
-        y = _elm_scroll_page_y_get(sid, 0, EINA_FALSE);
-        if (sid->cb_func.page_change &&
-            ((x != sid->current_page.x) || (y != sid->current_page.y)))
-          sid->cb_func.page_change(sid->obj, NULL);
-        sid->current_page.x = x;
-        sid->current_page.y = y;
-     }
-
    if (sid->cb_func.drag_stop)
      sid->cb_func.drag_stop(sid->obj, NULL);
 }
@@ -1371,11 +1390,13 @@ _elm_scroll_drag_stop(Elm_Scrollable_Smart_Interface_Data *sid)
 static void
 _elm_scroll_anim_start(Elm_Scrollable_Smart_Interface_Data *sid)
 {
-   sid->current_page.x = _elm_scroll_page_x_get(sid, 0, EINA_FALSE);
-   sid->current_page.y = _elm_scroll_page_y_get(sid, 0, EINA_FALSE);
-
    if (sid->cb_func.animate_start)
      sid->cb_func.animate_start(sid->obj, NULL);
+
+   //TIZEN_ONLY(20190219): fix page snap behavior.
+   if (!sid->scrolling)
+     _elm_scroll_scroll_start(sid);
+   //
 }
 
 static void
@@ -1383,18 +1404,13 @@ _elm_scroll_anim_stop(Elm_Scrollable_Smart_Interface_Data *sid)
 {
    Evas_Coord x, y;
 
-   if (sid->cb_func.page_change)
-     {
-        x = _elm_scroll_page_x_get(sid, 0, EINA_FALSE);
-        y = _elm_scroll_page_y_get(sid, 0, EINA_FALSE);
-        if ((x != sid->current_page.x) || (y != sid->current_page.y))
-           sid->cb_func.page_change(sid->obj, NULL);
-        sid->current_page.x = x;
-        sid->current_page.y = y;
-     }
-
    if (sid->cb_func.animate_stop)
      sid->cb_func.animate_stop(sid->obj, NULL);
+
+   //TIZEN_ONLY(20190219): fix page snap behavior.
+   if (sid->scrolling)
+     _elm_scroll_scroll_stop(sid);
+   //
 }
 
 static void
@@ -3431,6 +3447,13 @@ _elm_scroll_mouse_up_event_cb(void *data,
 
         if (!_paging_is_enabled(sid))
           _elm_scroll_bounce_eval(sid);
+
+        //TIZEN_ONLY(20190219): fix page snap behavior.
+        if (sid->scrolling && !sid->down.momentum_animator &&
+            !sid->down.bounce_x_animator && !sid->down.bounce_y_animator &&
+            !sid->scrollto.x.animator && !sid->scrollto.y.animator)
+          _elm_scroll_scroll_stop(sid);
+        //
      }
 }
 
@@ -4875,6 +4898,20 @@ _elm_interface_scrollable_animate_stop_cb_set(Eo *obj EINA_UNUSED, Elm_Scrollabl
    sid->cb_func.animate_stop = animate_stop_cb;
 }
 
+//TIZEN_ONLY(20190219): fix page snap behavior.
+EOLIAN static void
+_elm_interface_scrollable_scroll_start_cb_set(Eo *obj EINA_UNUSED, Elm_Scrollable_Smart_Interface_Data *sid, Elm_Interface_Scrollable_Cb scroll_start_cb)
+{
+   sid->cb_func.scroll_start = scroll_start_cb;
+}
+
+EOLIAN static void
+_elm_interface_scrollable_scroll_stop_cb_set(Eo *obj EINA_UNUSED, Elm_Scrollable_Smart_Interface_Data *sid, Elm_Interface_Scrollable_Cb scroll_stop_cb)
+{
+   sid->cb_func.scroll_stop = scroll_stop_cb;
+}
+//
+
 EOLIAN static void
 _elm_interface_scrollable_page_change_cb_set(Eo *obj EINA_UNUSED, Elm_Scrollable_Smart_Interface_Data *sid, Elm_Interface_Scrollable_Cb page_change_cb EINA_UNUSED)
 {
@@ -5457,6 +5494,9 @@ _elm_interface_scrollable_efl_canvas_group_group_add(Eo *obj, Elm_Scrollable_Sma
    sid->momentum_animator_disabled = EINA_FALSE;
    sid->bounce_animator_disabled = EINA_FALSE;
    sid->block = EFL_UI_SCROLL_BLOCK_NONE;
+   //TIZEN_ONLY(20190219): fix page snap behavior.
+   sid->scrolling = EINA_FALSE;
+   //
 
    _elm_scroll_scroll_bar_reset(sid);
 
