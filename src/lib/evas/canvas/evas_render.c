@@ -1075,6 +1075,9 @@ _evas_render_phase1_object_process(Phase1_Context *p1ctx,
 
    obj->rect_del = EINA_FALSE;
    obj->render_pre = EINA_FALSE;
+//TIZEN_ONLY(20190220): fix rendering bug 'mapped smart parent'+'image_object_update_add'
+   obj->mapped_parent = mapped_parent;
+//TIZEN_ONLY(20190220)
 
    if (obj->delete_me == 2) OBJ_ARRAY_PUSH(p1ctx->delete_objects, obj);
    else if (obj->delete_me != 0) obj->delete_me++;

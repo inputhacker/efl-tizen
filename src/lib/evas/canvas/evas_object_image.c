@@ -2473,6 +2473,10 @@ evas_object_image_render_pre(Evas_Object *eo_obj,
 
    if ((o->cur->fill.w < 1) || (o->cur->fill.h < 1)) return;
 
+//TIZEN_ONLY(20190220): fix rendering bug 'mapped smart parent'+'image_object_update_add'
+   if (obj->mapped_parent) return;
+//TIZEN_ONLY(20190220)
+
    /* if someone is clipping this obj - go calculate the clipper */
    if (obj->cur->clipper)
      {
