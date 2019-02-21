@@ -203,7 +203,6 @@ static void      *_part_free(Edje_Part_Collection *pc, Edje_Part *ep);
 static void       check_has_anchors(void);
 
 static void       st_id(void);
-static void       st_requires(void);
 static void       st_efl_version(void);
 static void       st_externals_external(void);
 
@@ -734,7 +733,6 @@ static void st_collections_plugins_plugin_param(void);
 New_Statement_Handler statement_handlers[] =
 {
    {"id", st_id},
-   {"requires", st_requires},
    {"efl_version", st_efl_version},
    {"externals.external", st_externals_external},
    IMAGE_STATEMENTS("")
@@ -2308,47 +2306,10 @@ st_efl_version(void)
 static void
 st_id(void)
 {
-   Eina_Array_Iterator it;
-   unsigned int i;
-   char *str, *id;
-
-   check_arg_count(1);
-   id = parse_str(0);
-
-   EINA_ARRAY_ITER_NEXT(requires, i, str, it)
-     if (eina_streq(str, id))
-       error_and_abort(NULL, "Cannot use same id for file as one of its required files!");
-   free((void*)edje_file->id);
-   edje_file->id = id;
-}
-
-/** @edcsubsection{toplevel_requires,
- *                 requires} */
-
-/**
-    @page edcref
-
-    @property
-        requires
-    @parameters
-        [name]
-    @effect
-        Specifying this property informs edje not to close the
-        file with the corresponding id property for as long as this
-        file is open. Multiple requires properties can be individually specified.
-    @since 1.21
-    @endproperty
- */
-static void
-st_requires(void)
-{
-   char *str;
    check_arg_count(1);
 
-   str = parse_str(0);
-   if (eina_streq(str, edje_file->id))
-     error_and_abort(NULL, "Cannot require the current file!");
-   eina_array_push(requires, str);
+   free(edje_file->id);
+   edje_file->id = parse_str(0);
 }
 
 /** @edcsubsection{toplevel_externals,
@@ -2455,7 +2416,7 @@ st_externals_external(void)
     @property
         image
     @parameters
-        [image file] [compression method] (compression level)(edje file id)
+        [image file] [compression method] (compression level)
     @effect
         Used to include each image file. The full path to the directory holding
         the images can be defined later with edje_cc's "-id" option.
@@ -2466,7 +2427,6 @@ st_externals_external(void)
         @li LOSSY_ETC1 [0-100]: ETC1 lossy texture compression with quality from 0 to 100.
         @li LOSSY_ETC2 [0-100]: ETC2 lossy texture compression with quality from 0 to 100 (supports alpha).
         @li USER: Do not embed the file, refer to the external file instead.
-        @li EXTERNAL: The file exists in the edje file with the specified id.
 
         Defaults: compression level for lossy methods is 90.
     @endproperty
@@ -2520,7 +2480,6 @@ st_images_image(void)
                   "LOSSY_ETC1", 3,
                   "LOSSY_ETC2", 4,
                   "USER", 5,
-                  "EXTERNAL", 6,
                   NULL);
    if (v == 0)
      {
@@ -2552,29 +2511,16 @@ st_images_image(void)
         img->source_type = EDJE_IMAGE_SOURCE_TYPE_USER;
         img->source_param = 0;
      }
-   else if (v == 6)
-     {
-        img->source_type = EDJE_IMAGE_SOURCE_TYPE_EXTERNAL;
-        img->source_param = 0;
-        img->external_id = parse_str(2);
-     }
    if ((img->source_type < EDJE_IMAGE_SOURCE_TYPE_INLINE_LOSSY) ||
-       (img->source_type == EDJE_IMAGE_SOURCE_TYPE_USER))
+       (img->source_type > EDJE_IMAGE_SOURCE_TYPE_INLINE_LOSSY_ETC2))
      check_arg_count(2);
-   else if (img->source_type != EDJE_IMAGE_SOURCE_TYPE_EXTERNAL)
+   else
      {
         if (check_range_arg_count(2, 3) > 2)
           img->source_param = parse_int_range(2, 0, 100);
         else
           img->source_param = 90;
      }
-   if (!edje_file->image_id_hash)
-     edje_file->image_id_hash = eina_hash_string_superfast_new(free);
-   {
-      Edje_Image_Hash *eih = mem_alloc(SZ(Edje_Image_Hash));
-      eih->id = img->id;
-      eina_hash_add(edje_file->image_id_hash, tmp, eih);
-   }
 }
 
 static void
@@ -2865,7 +2811,7 @@ ob_images_set_image(void)
     @property
         image
     @parameters
-        [image file] [compression method] (compression level)(edje file id)
+        [image file] [compression method] (compression level)
     @effect
         Used to include each image file. The full path to the directory holding
         the images can be defined later with edje_cc's "-id" option.
@@ -2876,7 +2822,6 @@ ob_images_set_image(void)
         @li LOSSY_ETC1 [0-100]: ETC1 lossy texture compression with quality from 0 to 100.
         @li LOSSY_ETC2 [0-100]: ETC2 lossy texture compression with quality from 0 to 100 (supports alpha).
         @li USER: Do not embed the file, refer to the external file instead.
-        @li EXTERNAL: The file exists in the edje file with the specified id.
 
         Defaults: compression level for lossy methods is 90.
     @endproperty

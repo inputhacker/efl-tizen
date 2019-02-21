@@ -1545,7 +1545,7 @@ data_write_images(void)
         /************************************************************************************/
 
         img = &edje_file->image_dir->entries[cur_image_entry];
-        if ((img->source_type >= EDJE_IMAGE_SOURCE_TYPE_USER) || !img->entry)
+        if ((img->source_type == EDJE_IMAGE_SOURCE_TYPE_USER) || !img->entry)
           continue;
 
         if (img->source_type == EDJE_IMAGE_SOURCE_TYPE_INLINE_LOSSY_ETC1 ||
@@ -1626,7 +1626,7 @@ data_write_images(void)
                }
           }
 
-        if (img->source_type < EDJE_IMAGE_SOURCE_TYPE_USER)
+        if (img->source_type != EDJE_IMAGE_SOURCE_TYPE_USER)
           {
              ext = strrchr(img->entry, '.');
              if (ext && (!strcasecmp(ext, ".svg") || !strcasecmp(ext, ".svgz")))
@@ -2904,20 +2904,6 @@ data_write(void)
     */
    /* END */
 
-   if (eina_array_count(requires))
-     {
-        int i = 0;
-
-        edje_file->requires_count = eina_array_count(requires);
-        edje_file->requires = mem_alloc(edje_file->requires_count * sizeof(void*));
-        do
-          {
-             edje_file->requires[i] = eina_array_pop(requires);
-             i++;
-          } while (eina_array_count(requires));
-        eina_array_free(requires);
-     }
-
    check_groups(ef);
 
    ecore_thread_max_set(ecore_thread_max_get() * 2);
@@ -4159,7 +4145,7 @@ free_group:
 
                   if ((de->entry) && (!strcmp(de->entry, image->name)))
                     {
-                       if (de->source_type >= EDJE_IMAGE_SOURCE_TYPE_USER)
+                       if (de->source_type == EDJE_IMAGE_SOURCE_TYPE_USER)
                          *(image->dest) = -de->id - 1;
                        else
                          *(image->dest) = de->id;
