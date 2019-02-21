@@ -274,7 +274,7 @@ _ecore_evas_idle_enter(void *data EINA_UNUSED)
                          {
                             if (!ee->animator_registered)
                               {
-                                 efl_event_callback_add(ee->evas, EFL_EVENT_ANIMATOR_TICK, _ecore_evas_animator, ee);
+                                 efl_event_callback_add(ee->evas, EFL_CANVAS_OBJECT_EVENT_ANIMATOR_TICK, _ecore_evas_animator, ee);
                                  ee->animator_registered = EINA_TRUE;
                               }
                          }
@@ -337,7 +337,7 @@ _ecore_evas_idle_enter(void *data EINA_UNUSED)
 
         if (!change)
           {
-             efl_event_callback_del(ee->evas, EFL_EVENT_ANIMATOR_TICK, _ecore_evas_animator, ee);
+             efl_event_callback_del(ee->evas, EFL_CANVAS_OBJECT_EVENT_ANIMATOR_TICK, _ecore_evas_animator, ee);
              ee->animator_registered = EINA_FALSE;
           }
 #ifdef ECORE_EVAS_ASYNC_RENDER_DEBUG
@@ -3324,7 +3324,7 @@ ecore_evas_animator_tick(Ecore_Evas *ee, Eina_Rectangle *viewport, double loop_t
    // End of TIZEN_ONLY(20171130)
 
    ee->animator_ran = EINA_TRUE;
-   efl_event_callback_call(ee->evas, EFL_EVENT_ANIMATOR_TICK, &a);
+   efl_event_callback_call(ee->evas, EFL_CANVAS_OBJECT_EVENT_ANIMATOR_TICK, &a);
 
    if (ee->ee_anim.active)
      _ecore_evas_animators_do(ee);
@@ -3517,7 +3517,7 @@ _check_animator_event_catcher_add(void *data, const Efl_Event *event)
 
    for (i = 0; array[i].desc != NULL; i++)
      {
-        if (array[i].desc == EFL_EVENT_ANIMATOR_TICK)
+        if (array[i].desc == EFL_CANVAS_OBJECT_EVENT_ANIMATOR_TICK)
           {
              _ticking_start(ee);
 
@@ -3537,7 +3537,7 @@ _check_animator_event_catcher_del(void *data, const Efl_Event *event)
 
    for (i = 0; array[i].desc != NULL; i++)
      {
-        if (array[i].desc == EFL_EVENT_ANIMATOR_TICK)
+        if (array[i].desc == EFL_CANVAS_OBJECT_EVENT_ANIMATOR_TICK)
           {
              _ticking_stop(ee);
              return;
