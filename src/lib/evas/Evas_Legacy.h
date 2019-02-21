@@ -1925,27 +1925,27 @@ EAPI void evas_object_size_hint_aspect_get(const Evas_Object *obj, Evas_Aspect_C
 /** Display mode size hint. */
 typedef enum
 {
-  EFL_GFX_SIZE_HINT_MODE_NONE = 0, /**< Default mode */
+  EFL_GFX_HINT_MODE_NONE = 0, /**< Default mode */
 //TIZEN_ONLY(20151014): add deprecated enum to keep backward compatibility.
-  EFL_GFX_SIZE_HINT_MODE_INHERIT = 1, /**< Deprecated enum, but add for backkward compatibility. */
+  EFL_GFX_HINT_MODE_INHERIT = 1, /**< Deprecated enum, but add for backkward compatibility. */
 //
-  EFL_GFX_SIZE_HINT_MODE_COMPRESS = 2, /**< Use this mode when you want to give
+  EFL_GFX_HINT_MODE_COMPRESS = 2, /**< Use this mode when you want to give
                                         * compress display mode hint to an object */
-  EFL_GFX_SIZE_HINT_MODE_EXPAND = 3, /**< Use this mode when you want to give
+  EFL_GFX_HINT_MODE_EXPAND = 3, /**< Use this mode when you want to give
                                       * expand display mode hint to an object */
-  EFL_GFX_SIZE_HINT_MODE_DONT_CHANGE = 4 /**< Use this mode when an object
+  EFL_GFX_HINT_MODE_DONT_CHANGE = 4 /**< Use this mode when an object
                                           * should not change its display mode */
-} Efl_Gfx_Size_Hint_Mode;
+} Efl_Gfx_Hint_Mode;
 
-typedef Efl_Gfx_Size_Hint_Mode             Evas_Display_Mode;
+typedef Efl_Gfx_Hint_Mode             Evas_Display_Mode;
 
-#define EVAS_DISPLAY_MODE_NONE             EFL_GFX_SIZE_HINT_MODE_NONE
+#define EVAS_DISPLAY_MODE_NONE             EFL_GFX_HINT_MODE_NONE
 //TIZEN_ONLY(20151014): add deprecated enum to keep backward compatibility.
-#define EVAS_DISPLAY_MODE_INHERIT          EFL_GFX_SIZE_HINT_MODE_INHERIT
+#define EVAS_DISPLAY_MODE_INHERIT          EFL_GFX_HINT_MODE_INHERIT
 //
-#define EVAS_DISPLAY_MODE_COMPRESS         EFL_GFX_SIZE_HINT_MODE_COMPRESS
-#define EVAS_DISPLAY_MODE_EXPAND           EFL_GFX_SIZE_HINT_MODE_EXPAND
-#define EVAS_DISPLAY_MODE_DONT_CHANGE      EFL_GFX_SIZE_HINT_MODE_DONT_CHANGE
+#define EVAS_DISPLAY_MODE_COMPRESS         EFL_GFX_HINT_MODE_COMPRESS
+#define EVAS_DISPLAY_MODE_EXPAND           EFL_GFX_HINT_MODE_EXPAND
+#define EVAS_DISPLAY_MODE_DONT_CHANGE      EFL_GFX_HINT_MODE_DONT_CHANGE
 
 /**
  * @brief Sets the hints for an object's disply mode,
