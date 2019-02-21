@@ -697,7 +697,7 @@ _calc(void *data)
 
 //TIZEN_ONLY(20190130) : Apply circle gengrid
              const char* gengrid_style = elm_widget_style_get(sd->obj);
-             if (!strcmp(gengrid_style, "circle"))
+             if (sd->circle.enabled && !strcmp(gengrid_style, "circle"))
                {
                   _circle_path_pos(sd, 0, 0, &padding_space, NULL);
                   minw += (2 * padding_space);
@@ -719,7 +719,7 @@ _calc(void *data)
                   (count_group * sd->group_item_height);
 //TIZEN_ONLY(20190130) : Apply circle gengrid
              const char* gengrid_style = elm_widget_style_get(sd->obj);
-             if (!strcmp(gengrid_style, "circle"))
+             if (sd->circle.enabled && !strcmp(gengrid_style, "circle"))
                {
                   _circle_path_pos(sd, 0, 0, NULL, &padding_space);
                   minh += (2 * padding_space);
@@ -1746,23 +1746,28 @@ _item_realize(Elm_Gen_Item *it)
 
 //TIZEN_ONLY(20190130) : Apply circle gengrid
    //FIXME : clipper of item need to be cached by item to clipping new proxy.
-   Evas_Object *clip = evas_object_clip_get(VIEW(it));
-   if (clip) evas_object_data_set(VIEW(it), "view,clip", clip);
-   else clip = evas_object_data_get(VIEW(it), "view,clip");
-
-   if (!it->item->proxy)
+   const char *vi_effect = edje_object_data_get(VIEW(it), "vi_effect");
+   if (sd->circle.enabled &&
+       (!vi_effect || (vi_effect && !strcmp(vi_effect, "on"))))
      {
-        it->item->proxy = evas_object_image_filled_add(evas_object_evas_get(sd->obj));
-        evas_object_smart_member_add(it->item->proxy, sd->pan_obj);
+        Evas_Object *clip = evas_object_clip_get(VIEW(it));
+        if (clip) evas_object_data_set(VIEW(it), "view,clip", clip);
+        else clip = evas_object_data_get(VIEW(it), "view,clip");
+
+        if (!it->item->proxy)
+          {
+             it->item->proxy = evas_object_image_filled_add(evas_object_evas_get(sd->obj));
+             evas_object_smart_member_add(it->item->proxy, sd->pan_obj);
+          }
+       evas_object_clip_set(it->item->proxy, clip);
+       if (evas_object_clip_get(VIEW(it))) evas_object_clip_unset(VIEW(it));
+       evas_object_image_source_set(it->item->proxy, VIEW(it));
+       evas_object_image_source_visible_set(it->item->proxy, EINA_FALSE);
+       evas_object_image_source_events_set(it->item->proxy, EINA_TRUE);
+       evas_object_image_source_clip_set(it->item->proxy, EINA_FALSE);
+       evas_object_size_hint_min_set(it->item->proxy, sd->item_width, sd->item_height);
+       evas_object_repeat_events_set(it->item->proxy, EINA_TRUE);
      }
-   evas_object_clip_set(it->item->proxy, clip);
-   if (evas_object_clip_get(VIEW(it))) evas_object_clip_unset(VIEW(it));
-   evas_object_image_source_set(it->item->proxy, VIEW(it));
-   evas_object_image_source_visible_set(it->item->proxy, EINA_FALSE);
-   evas_object_image_source_events_set(it->item->proxy, EINA_TRUE);
-   evas_object_image_source_clip_set(it->item->proxy, EINA_FALSE);
-   evas_object_size_hint_min_set(it->item->proxy, sd->item_width, sd->item_height);
-   evas_object_repeat_events_set(it->item->proxy, EINA_TRUE);
 //
 
    /* access */
@@ -2628,6 +2633,7 @@ _elm_gengrid_pan_elm_pan_pos_adjust(Eo *obj EINA_UNUSED, Elm_Gengrid_Pan_Data *p
    Evas_Coord fx, fy, vx, vy, vw, vh, pan_pos_x, pan_pos_y, pos_delta;
 
    if (!y || !x) return;
+   if (!psd->wsd->circle.enabled) return;
 
    _circle_path_pos(psd->wsd, 0, 0, &fx, &fy);
    elm_interface_scrollable_content_viewport_geometry_get(psd->wsd->obj, &vx, &vy, &vw, &vh);
