@@ -134,10 +134,11 @@ _elm_atspi_ewk_wrapper_efl_access_object_access_children_get(const Eo *obj EINA_
 {
    if (_pd->proxy)
      {
-       //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
-       efl_access_object_access_parent_set(_pd->proxy, obj);
-       //
-       return eina_list_append(NULL, _pd->proxy);
+        //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+        if (efl_isa(_pd->proxy, EFL_ACCESS_OBJECT_MIXIN))
+          efl_access_object_access_parent_set(_pd->proxy, obj);
+        //
+        return eina_list_append(NULL, _pd->proxy);
      }
    return NULL;
 }

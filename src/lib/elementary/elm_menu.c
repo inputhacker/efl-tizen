@@ -1315,7 +1315,10 @@ _elm_menu_efl_access_object_access_children_get(const Eo *obj, Elm_Menu_Data *sd
    //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
    Eo *it;
    EINA_LIST_FOREACH(sd->items, ret, it)
-     efl_access_object_access_parent_set(it, obj);
+     {
+        if (efl_isa(it, EFL_ACCESS_OBJECT_MIXIN))
+          efl_access_object_access_parent_set(it, obj);
+     }
    //
 
    ret = efl_access_object_access_children_get(efl_super(obj, ELM_MENU_CLASS));
@@ -1329,7 +1332,10 @@ _elm_menu_item_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, 
    Eina_List *ret;
    Eo *it;
    EINA_LIST_FOREACH(sd->submenu.items, ret, it)
-     efl_access_object_access_parent_set(it, obj);
+     {
+        if (efl_isa(it, EFL_ACCESS_OBJECT_MIXIN))
+          efl_access_object_access_parent_set(it, obj);
+     }
    //
 
    return eina_list_clone(sd->submenu.items);

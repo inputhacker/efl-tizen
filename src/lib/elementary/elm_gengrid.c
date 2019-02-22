@@ -1175,7 +1175,8 @@ _item_content_realize(Elm_Gen_Item *it,
                  edje_object_signal_emit(target, buf, "elm");
                  goto out;
               }
-              efl_access_object_access_parent_set(content, EO_OBJ(it));
+              if (efl_isa(content, EFL_ACCESS_OBJECT_MIXIN))
+                efl_access_object_access_parent_set(content, EO_OBJ(it));
           }
         eina_hash_add(sd->content_item_map, &content, it->base->eo_obj);
         *contents = eina_list_append(*contents, content);

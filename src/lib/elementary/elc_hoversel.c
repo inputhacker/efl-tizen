@@ -1119,7 +1119,10 @@ _elm_hoversel_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, E
    //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
    Eo *it;
    EINA_LIST_FOREACH(pd->items, ret, it)
-     efl_access_object_access_parent_set(it, obj);
+     {
+        if (efl_isa(it, EFL_ACCESS_OBJECT_MIXIN))
+           efl_access_object_access_parent_set(it, obj);
+     }
    //
 
    ret = efl_access_object_access_children_get(efl_super(obj, ELM_HOVERSEL_CLASS));

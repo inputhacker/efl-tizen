@@ -847,7 +847,8 @@ _item_content_realize(Elm_Gen_Item *it,
                   goto out;
                }
              elm_widget_sub_object_add(WIDGET(it), content);
-             efl_access_object_access_parent_set(content, EO_OBJ(it));
+             if (efl_isa(content, EFL_ACCESS_OBJECT_MIXIN))
+                efl_access_object_access_parent_set(content, EO_OBJ(it));
           }
         *contents = eina_list_append(*contents, content);
 

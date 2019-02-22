@@ -2312,20 +2312,25 @@ _elm_multibuttonentry_efl_access_object_access_children_get(const Eo *obj, Elm_M
    //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
    Eo *it;
    EINA_LIST_FOREACH(sd->items, ret, it)
-     efl_access_object_access_parent_set(it, obj);
+     {
+        if (efl_isa(it, EFL_ACCESS_OBJECT_MIXIN))
+          efl_access_object_access_parent_set(it, obj);
+     }
    //
 
    //TIZEN_ONLY(20160527) : Improve MBE atspi support
    if (sd->label && sd->label_packed)
      {
-       ret = eina_list_append(ret, sd->label_access);
-       efl_access_object_access_parent_set(sd->label_access, obj);
+        ret = eina_list_append(ret, sd->label_access);
+        if (efl_isa(sd->label_access, EFL_ACCESS_OBJECT_MIXIN))
+          efl_access_object_access_parent_set(sd->label_access, obj);
      }
    ret = eina_list_merge(ret, eina_list_clone(sd->items));
    if (sd->editable && (sd->view_state != MULTIBUTTONENTRY_VIEW_SHRINK))
      {
-       ret = eina_list_append(ret, sd->box);
-       efl_access_object_access_parent_set(sd->box, obj);
+        ret = eina_list_append(ret, sd->box);
+        if (efl_isa(sd->box, EFL_ACCESS_OBJECT_MIXIN))
+          efl_access_object_access_parent_set(sd->box, obj);
      }
    //
    return ret;

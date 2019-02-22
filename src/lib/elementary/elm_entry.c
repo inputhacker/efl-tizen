@@ -8254,9 +8254,12 @@ _elm_entry_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, Elm_
         EINA_LIST_FOREACH(sd->anchor_atspi_rects, l, rect)
           {
             //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
-            Eo *rect_eo = elm_access_object_get(rect);
-            ret = eina_list_append(ret, rect_eo);
-            efl_access_object_access_parent_set(rect_eo, obj);
+             if (efl_isa(rect, EFL_ACCESS_OBJECT_MIXIN))
+               {
+                  Eo *rect_eo = elm_access_object_get(rect);
+                  ret = eina_list_append(ret, rect_eo);
+                  efl_access_object_access_parent_set(rect_eo, obj);
+               }
             //
           }
      }

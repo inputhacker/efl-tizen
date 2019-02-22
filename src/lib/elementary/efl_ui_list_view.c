@@ -886,7 +886,10 @@ _efl_ui_list_view_efl_access_object_access_children_get(const Eo *obj, Efl_Ui_Li
    //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
    Eo *it;
    EINA_LIST_FOREACH(ret, ret2, it)
-     efl_access_object_access_parent_set(it, obj);
+     {
+        if (efl_isa(it, EFL_ACCESS_OBJECT_MIXIN))
+          efl_access_object_access_parent_set(it, obj);
+     }
    //
    ret2 = efl_access_object_access_children_get(efl_super(obj, EFL_UI_LIST_VIEW_CLASS));
 
