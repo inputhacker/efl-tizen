@@ -371,6 +371,8 @@ EAPI void efl_ui_focus_relation_free(Efl_Ui_Focus_Relations *rel);
 # include <efl_ui_navigation_bar_part_back_button.eo.h>
 # include <efl_ui_navigation_layout.eo.h>
 # include <efl_ui_stack.eo.h>
+# include <efl_ui_relative_layout.eo.h>
+
 # include <efl_ui_animation_view.eo.h>
 
 # ifndef _EFL_UI_PAGER_EO_CLASS_TYPE
