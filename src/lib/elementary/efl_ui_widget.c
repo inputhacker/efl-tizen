@@ -6640,6 +6640,7 @@ static void _elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_
    EFL_CANVAS_GROUP_ADD_DEL_OPS(efl_ui_widget), \
    ELM_PART_CONTENT_DEFAULT_OPS(efl_ui_widget), \
    ELM_PART_TEXT_DEFAULT_OPS(efl_ui_widget), \
+   EFL_OBJECT_OP_FUNC(efl_canvas_object_is_frame_object_set, _efl_ui_widget_efl_canvas_object_is_frame_object_set), \
    EFL_OBJECT_OP_FUNC(efl_dbg_info_get, _efl_ui_widget_efl_object_dbg_info_get), \
 /***********************************************************************************  \
  * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *  \

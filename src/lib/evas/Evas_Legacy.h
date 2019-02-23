@@ -8325,6 +8325,45 @@ EAPI void evas_object_text_filter_source_set(Evas_Object *obj, const char *name,
  */
 EAPI Evas_Object *evas_object_event_grabber_add(Evas *e);
 
+/**
+ * @brief If @c true the object belongs to the window border decorations.
+ *
+ * This will be @c false by default, and should be @c false for all objects
+ * created by the application, unless swallowed in some very specific parts of
+ * the window.
+ *
+ * It is very unlikely that an application needs to call this manually, as the
+ * window will handle this feature automatically.
+ *
+ * @param[in] obj The object.
+ * @param[in] is_frame @c true if the object is a frame, @c false otherwise
+ *
+ * @since 1.2
+ *
+ * @ingroup Evas_Object_Group
+ */
+EAPI void evas_object_is_frame_object_set(Efl_Canvas_Object *obj, Eina_Bool is_frame);
+
+/**
+ * @brief If @c true the object belongs to the window border decorations.
+ *
+ * This will be @c false by default, and should be @c false for all objects
+ * created by the application, unless swallowed in some very specific parts of
+ * the window.
+ *
+ * It is very unlikely that an application needs to call this manually, as the
+ * window will handle this feature automatically.
+ *
+ * @param[in] obj The object.
+ *
+ * @return @c true if the object is a frame, @c false otherwise
+ *
+ * @since 1.2
+ *
+ * @ingroup Evas_Object_Group
+ */
+EAPI Eina_Bool evas_object_is_frame_object_get(const Efl_Canvas_Object *obj);
+
 /*********************************************************************************
  * TIZEN_ONLY(20171110): Import TIZEN_ONLY functions for
  *                       Edje textblock/text calculation/ellipsize feature.
