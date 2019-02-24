@@ -3217,7 +3217,7 @@ _elm_list_efl_ui_widget_focus_highlight_geometry_get(const Eo *obj, Elm_List_Dat
 }
 
 EOLIAN static Elm_Object_Item*
-_elm_list_efl_ui_widget_focused_item_get(const Eo *obj EINA_UNUSED, Elm_List_Data *sd)
+_elm_list_elm_widget_item_container_focused_item_get(const Eo *obj EINA_UNUSED, Elm_List_Data *sd)
 {
    return sd->focused_item;
 }

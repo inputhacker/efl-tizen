@@ -3755,6 +3755,18 @@ _efl_ui_widget_focus_highlight_geometry_get(const Eo *obj, Elm_Widget_Smart_Data
    return r;
 }
 
+EOLIAN static void
+_efl_ui_widget_interest_region_mode_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Elm_Focus_Region_Show_Mode mode)
+{
+   _pd->focus_region_show_mode = mode;
+}
+
+EOLIAN static Elm_Focus_Region_Show_Mode
+_efl_ui_widget_interest_region_mode_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd)
+{
+   return _pd->focus_region_show_mode;
+}
+
 EAPI void
 elm_widget_activate(Evas_Object *obj, Efl_Ui_Activate act)
 {
@@ -7186,24 +7198,6 @@ _efl_ui_widget_focus_mouse_up_handle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UN
 
    efl_ui_widget_focus_steal(obj, NULL);
 }
-EOLIAN static Elm_Object_Item*
-_efl_ui_widget_focused_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   return NULL;
-}
-
-EOLIAN static void
-_efl_ui_widget_interest_region_mode_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Elm_Focus_Region_Show_Mode mode)
-{
-   _pd->focus_region_show_mode = mode;
-}
-
-EOLIAN static Elm_Focus_Region_Show_Mode
-_efl_ui_widget_interest_region_mode_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd)
-{
-   return _pd->focus_region_show_mode;
-}
-
 
 //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
 static Eina_Bool
@@ -9927,6 +9921,7 @@ _elm_object_focus_chain_del_cb(void *data,
 }
 //
 #include "elm_widget_item.eo.c"
+#include "elm_widget_item_container.eo.c"
 #include "efl_ui_widget.eo.c"
 
 /* Others */

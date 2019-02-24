@@ -1583,7 +1583,7 @@ _elm_ctxpopup_selected_item_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd
 
 // TIZEN_ONLY(20180112): remove focused item get function
 EOLIAN static Elm_Object_Item*
-_elm_ctxpopup_efl_ui_widget_focused_item_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
+_elm_ctxpopup_elm_widget_item_container_focused_item_get(const Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd)
 {
    if (!sd->list) return NULL;
 
