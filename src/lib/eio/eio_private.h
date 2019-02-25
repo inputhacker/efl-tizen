@@ -150,6 +150,7 @@ struct _Eio_File_Char
 struct _Eio_File
 {
    Ecore_Thread *thread;
+   Eina_Future *future;
    const void *data;
    void *container;
 
@@ -556,6 +557,7 @@ _efl_io_manager_future_cancel(Eo *o EINA_UNUSED, void *data, Eina_Error error)
 static inline Eina_Future *
 _efl_io_manager_future(const Eo *o, Eina_Future *f, Eio_File *h)
 {
+   h->future = f;
    return efl_future_then(o, f,
                           .error = _efl_io_manager_future_cancel,
                           .data = h);

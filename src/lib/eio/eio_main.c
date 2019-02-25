@@ -243,6 +243,8 @@ eio_common_alloc(size_t size)
 void
 eio_common_free(Eio_File *common)
 {
+   if (common->future)
+     eina_future_cancel(common->future);
    free(common);
 }
 
