@@ -1426,7 +1426,7 @@ _item_mouse_up_cb(void *data,
        (sd->reorder_it))
      {
         efl_event_callback_legacy_call
-          (WIDGET(it), EFL_UI_WIDGET_EVENT_MOVED, EO_OBJ(sd->reorder_it));
+          (WIDGET(it), ELM_GENGRID_EVENT_MOVED, EO_OBJ(sd->reorder_it));
         sd->reorder_it = NULL;
         sd->move_effect_enabled = EINA_FALSE;
         //TIZEN_ONLY(20160511) : Remove job for fixing calculate timing issue.
@@ -3624,7 +3624,7 @@ _item_move_cb(void *data, double pos)
         efl_event_callback_legacy_call
           (sd->obj, ELM_GENGRID_EVENT_ITEM_REORDER_ANIM_STOP, EO_OBJ(sd->reorder.it1));
         efl_event_callback_legacy_call
-          (sd->obj, EFL_UI_WIDGET_EVENT_MOVED, EO_OBJ(sd->reorder.it1));
+          (sd->obj, ELM_GENGRID_EVENT_MOVED, EO_OBJ(sd->reorder.it1));
         sd->reorder.running = EINA_FALSE;
      }
    _elm_widget_focus_highlight_start(sd->obj);
