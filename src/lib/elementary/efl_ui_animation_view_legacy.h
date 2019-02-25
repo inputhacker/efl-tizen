@@ -73,4 +73,8 @@ EAPI Eina_Bool        elm_animation_view_file_set(Elm_Animation_View *obj, const
  */
 EAPI Elm_Animation_View_State elm_animation_view_state_get(Elm_Animation_View *obj);
 
+//Will be removed soon. See: elm_animation_view_progress_set(), elm_animation_view_progress_get()
+EINA_DEPRECATED EAPI void elm_animation_view_keyframe_set(Elm_Animation_View *obj, double keyframe);
+EINA_DEPRECATED EAPI double elm_animation_view_keyframe_get(const Elm_Animation_View *obj);
+
 #include "efl_ui_animation_view.eo.legacy.h"
