@@ -2100,7 +2100,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.99
 %{_bindir}/elementary_quicklaunch
 %{_bindir}/elementary_run
 %{_libdir}/edje/modules/elm/v-1.21/module.so
-%{_libdir}/libelementary.so.*
+%{_libdir}/libelementary.so.1
+%{_libdir}/libelementary.so.1.21.99
 %{_datadir}/elementary/edje_externals/
 %{_datadir}/icons/hicolor/128x128/apps/elementary.png
 %{_libdir}/elementary/modules/
