@@ -1279,10 +1279,6 @@ elm_widget_focus_region_show(Eo *obj)
      }
 }
 
-EOLIAN static void
-_efl_ui_widget_widget_parent_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Evas_Object *parent EINA_UNUSED)
-{
-}
 
 EAPI Eina_Bool
 elm_widget_api_check(int ver)
@@ -1506,68 +1502,120 @@ elm_widget_sub_object_parent_add(Evas_Object *sobj)
    return elm_widget_sub_object_add(parent, sobj);
 }
 
-/*
- * @internal
- *
- * Add sobj to obj's sub object.
- *
- * What does elementary sub object mean? This is unique in elementary, it
- * handles overall elementary policies between parent and sub objects.
- *   focus, access, deletion, theme, scale, mirror, scrollable child get,
- *   translate, name find, display mode set, orientation set, tree dump
- *   AUTOMATICALLY.
- *
- * @see elm_widget_sub_object_parent_add()
- */
+EOLIAN static void
+_efl_ui_widget_widget_parent_set(Eo *obj, Elm_Widget_Smart_Data *pd, Efl_Ui_Widget *parent)
+{
+   Eina_Bool mirrored, pmirrored = efl_ui_mirrored_get(obj);
+   Efl_Ui_Widget *old_parent;
+   //check if we are in the subobject list of parents
+   if (parent)
+     {
+        ELM_WIDGET_DATA_GET_OR_RETURN(parent, ppd);
+        EINA_SAFETY_ON_FALSE_RETURN(eina_list_data_find(ppd->subobjs, obj));
+     }
+
+   old_parent = pd->parent_obj;
+   pd->parent_obj = parent;
+
+   // now lets sync up all states
+
+   if (pd->parent_obj)
+     {
+        /* NOTE: In the following two lines, 'sobj' is correct. Do not change it.
+        * Due to elementary's scale policy, scale and pscale can be different in
+         * some cases. This happens when sobj's previous parent and new parent have
+         * different scale value.
+         * For example, if sobj's previous parent's scale is 5 and new parent's scale
+         * is 2 while sobj's scale is 0. Then 'pscale' is 5 and 'scale' is 2. So we
+         * need to reset sobj's scale to 5.
+         * Note that each widget's scale is 0 by default.
+         */
+        double scale, pscale = efl_gfx_entity_scale_get(obj);
+        Elm_Theme *th, *pth = elm_widget_theme_get(obj);
+
+        scale = efl_gfx_entity_scale_get(obj);
+        th = elm_widget_theme_get(obj);
+        mirrored = efl_ui_mirrored_get(obj);
+
+        if (!pd->on_create)
+          {
+             if ((scale != pscale) || (th != pth) || (pmirrored != mirrored))
+               elm_widget_theme(obj);
+          }
+        if (_is_focused(obj)) _parents_focus(parent);
+        elm_widget_display_mode_set(obj, evas_object_size_hint_display_mode_get(parent));
+        elm_widget_disabled_set(obj, efl_ui_widget_disabled_get(parent));
+        _elm_widget_top_win_focused_set(obj, _elm_widget_top_win_focused_get(parent));
+     }
+
+   _full_eval(obj, pd);
+
+   if (old_parent && _elm_config->atspi_mode)
+     {
+        Efl_Access_Object *aparent;
+        aparent = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
+        if (aparent)
+           efl_access_children_changed_del_signal_emit(aparent, obj);
+     }
+
+   if (pd->parent_obj && _elm_config->atspi_mode && efl_finalized_get(parent))
+     {
+        Efl_Access_Object *aparent;
+        aparent = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
+        if (aparent)
+           efl_access_children_changed_added_signal_emit(aparent, obj);
+     }
+}
+
+static void
+_widget_add_sub(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Object *sobj)
+{
+   sd->subobjs = eina_list_append(sd->subobjs, sobj);
+   evas_object_data_set(sobj, "elm-parent", obj);
+   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
+   if (efl_isa(sobj, EFL_ACCESS_OBJECT_MIXIN))
+     efl_access_object_access_parent_set(sobj, obj);
+   //
+   _callbacks_add(sobj, obj);
+}
+
+static void
+_widget_del_sub(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Object *sobj)
+{
+   sd->subobjs = eina_list_remove(sd->subobjs, sobj);
+   evas_object_data_del(sobj, "elm-parent");
+   _callbacks_del(sobj, obj);
+}
+
 EOLIAN static Eina_Bool
 _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Object *sobj)
 {
-   Eina_Bool mirrored, pmirrored = efl_ui_mirrored_get(obj);
-   Elm_Widget_Smart_Data *sdc = NULL;
+   Efl_Ui_Widget *parent;
 
-   EINA_SAFETY_ON_TRUE_RETURN_VAL(obj == sobj, EINA_FALSE);
-
-   if (_elm_widget_is(sobj))
-     sdc = efl_data_scope_get(sobj, MY_CLASS);
-
-   if (sobj == sd->parent_obj)
+   //first make sure that we unregister the sobj from the parent
+   if (elm_widget_is(sobj))
+     parent = efl_ui_widget_parent_get(sobj);
+   else
+     parent = evas_object_data_get(sobj, "elm-parent");
+   if (parent == obj) return EINA_TRUE;
+   if (parent)
      {
-        /* in this case, sobj must be an elm widget, or something
-         * very wrong is happening */
-        if (!sdc) return EINA_FALSE;
-
-        if (!elm_widget_sub_object_del(sobj, obj)) return EINA_FALSE;
-        WRN("You passed a parent object of obj = %p as the sub object = %p!",
-            obj, sobj);
+        if (!efl_ui_widget_sub_object_del(parent, sobj))
+          return EINA_FALSE;
      }
 
-   if (sdc)
-     {
-        if (sdc->parent_obj == obj) goto end;
-        if (sdc->parent_obj)
-          {
-             if (!elm_widget_sub_object_del(sdc->parent_obj, sobj))
-               return EINA_FALSE;
-          }
-        sdc->parent_obj = obj;
+   //sobj does not have a parent here
+   //first add it to our own children list
+   _widget_add_sub(obj, sd, sobj);
 
-        _full_eval(sobj, sdc);
-
-        if (!sdc->on_create)
-          {
-             if (!sdc->disabled && (elm_widget_disabled_get(obj)))
-               {
-                  //TIZEN_ONLY(20180607): Restore legacy focus
-                  if (elm_widget_is_legacy(sobj))
-                    efl_ui_widget_focus_disabled_handle(sobj);
-                  //
-               }
-          }
-        efl_ui_widget_disabled_set(sobj, efl_ui_widget_disabled_get(obj));
-
-        _elm_widget_top_win_focused_set(sobj, sd->top_win_focused);
+   //and if it is a widget, please set the correct parent on the widget itself
+   //the parent set method will take care of the property syncing etc.
+   if (elm_widget_is(sobj))
+     efl_ui_widget_parent_set(sobj, obj);
 
 //TIZEN_ONLY(20190312): Restore child_can_focus
+   if (elm_widget_is(sobj))
+     {
         /* update child focusable-ness on self and parents, now that a
          * focusable child got in */
         if (!sd->child_can_focus && (_is_focusable(sobj)))
@@ -1585,60 +1633,6 @@ _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
                }
           }
 //
-     }
-   else
-     {
-        void *data = evas_object_data_get(sobj, "elm-parent");
-
-        if (data)
-          {
-             if (data == obj) goto end;
-             if (!elm_widget_sub_object_del(data, sobj)) return EINA_FALSE;
-          }
-     }
-   sd->subobjs = eina_list_append(sd->subobjs, sobj);
-   evas_object_data_set(sobj, "elm-parent", obj);
-   //TIZEN_ONLY(20181024): Fix parent-children incosistencies in atspi tree
-   if (efl_isa(sobj, EFL_ACCESS_OBJECT_MIXIN))
-     efl_access_object_access_parent_set(sobj, obj);
-   //
-
-   _callbacks_add(sobj, obj);
-   if (sdc)
-     {
-        /* NOTE: In the following two lines, 'sobj' is correct. Do not change it.
-         * Due to elementary's scale policy, scale and pscale can be different in
-         * some cases. This happens when sobj's previous parent and new parent have
-         * different scale value.
-         * For example, if sobj's previous parent's scale is 5 and new parent's scale
-         * is 2 while sobj's scale is 0. Then 'pscale' is 5 and 'scale' is 2. So we
-         * need to reset sobj's scale to 5.
-         * Note that each widget's scale is 0 by default.
-         */
-        double scale, pscale = efl_gfx_entity_scale_get(sobj);
-        Elm_Theme *th, *pth = elm_widget_theme_get(sobj);
-
-        scale = efl_gfx_entity_scale_get(sobj);
-        th = elm_widget_theme_get(sobj);
-        mirrored = efl_ui_mirrored_get(sobj);
-
-        if (!sdc->on_create)
-          {
-             if ((scale != pscale) || (th != pth) || (pmirrored != mirrored))
-               elm_widget_theme(sobj);
-          }
-
-        if (_is_focused(sobj)) _parents_focus(obj);
-
-        elm_widget_display_mode_set(sobj,
-              evas_object_size_hint_display_mode_get(obj));
-        if (_elm_atspi_enabled() && !sd->on_create)
-          {
-             Efl_Access_Object *aparent;
-             aparent = efl_provider_find(efl_parent_get(sobj), EFL_ACCESS_OBJECT_MIXIN);
-             if (aparent)
-                efl_access_children_changed_added_signal_emit(aparent, sobj);
-          }
 
         /***********************************************************
          * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
@@ -1655,7 +1649,6 @@ _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
          *******/
      }
 
-end:
    return EINA_TRUE;
 }
 
@@ -1731,20 +1724,6 @@ _efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
                }
           }
 //
-
-        if (_elm_atspi_enabled() && !sd->on_destroy)
-          {
-             Efl_Access_Object *aparent;
-             aparent = efl_provider_find(efl_parent_get(sobj), EFL_ACCESS_OBJECT_MIXIN);
-             if (aparent)
-                efl_access_children_changed_del_signal_emit(aparent, sobj);
-          }
-
-        ELM_WIDGET_DATA_GET(sobj, sdc);
-        sdc->parent_obj = NULL;
-
-        _full_eval(sobj, sdc);
-
         /***********************************************************
          * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
          ***********************************************************/
@@ -1758,13 +1737,13 @@ _efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
         /*******
          * END *
          *******/
+
+        efl_ui_widget_parent_set(sobj, NULL);
      }
 
    if (sd->resize_obj == sobj) sd->resize_obj = NULL;
 
-   sd->subobjs = eina_list_remove(sd->subobjs, sobj);
-
-   _callbacks_del(sobj, obj);
+   _widget_del_sub(obj, sd, sobj);
 
    return EINA_TRUE;
 }
@@ -5518,15 +5497,16 @@ _focus_event_changed(void *data EINA_UNUSED, const Efl_Event *event)
 EOLIAN static Eo *
 _efl_ui_widget_efl_object_constructor(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UNUSED)
 {
-   Eo *parent = NULL;
-
    sd->on_create = EINA_TRUE;
    efl_canvas_group_clipped_set(obj, EINA_FALSE);
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
-   parent = efl_parent_get(obj);
-   efl_ui_widget_parent_set(obj, parent);
+   if (!efl_isa(obj, EFL_UI_WIN_CLASS))
+     {
+        efl_ui_widget_sub_object_add(efl_parent_get(obj), obj);
+     }
+
    sd->on_create = EINA_FALSE;
 
    efl_access_object_role_set(obj, EFL_ACCESS_ROLE_UNKNOWN);
