@@ -1211,9 +1211,6 @@ struct _Evas_Object_Protected_Data
 
    Eina_Bool                   events_filter_enabled : 1;
    Eina_Bool                   is_pointer_inside_legacy : 1;
-//TIZEN_ONLY(20190220): fix rendering bug 'mapped smart parent'+'image_object_update_add'
-   Eina_Bool                   mapped_parent : 1; //used check parent mapped
-//TIZEN_ONLY(20190220)
 };
 
 struct _Evas_Data_Node
