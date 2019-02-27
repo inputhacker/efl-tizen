@@ -280,7 +280,7 @@ class @beta Efl.Ui.Animation_View extends Efl.Ui.Widget implements Efl.Gfx.View,
    implements {
       Efl.Object.constructor;
       Efl.Object.destructor;
-      Efl.File.file { set; }
+      Efl.File.load;
       Efl.Gfx.Entity.visible { set; }
       Efl.Gfx.Entity.position { set; }
       Efl.Gfx.Entity.size { set; }

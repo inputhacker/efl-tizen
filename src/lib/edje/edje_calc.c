@@ -3306,7 +3306,7 @@ _edje_vector_load_json(Edje *ed, Edje_Real_Part *ep, const char *key)
         json_data = (char *)eet_read(ed->file->ef, key, &json_data_len);
         json_data[json_data_len] = '\0';
         file = eina_file_virtualize(NULL, json_data, json_data_len + 1, EINA_FALSE);
-        efl_file_mmap_set(ep->object, file, NULL);
+        efl_file_simple_mmap_load(ep->object, file, NULL);
 
         if (ep->typedata.vector->json_virtual_file)
           eina_file_close(ep->typedata.vector->json_virtual_file);
@@ -3367,17 +3367,17 @@ _edje_vector_recalc_apply(Edje *ed, Edje_Real_Part *ep, Edje_Calc_Params *p3 EIN
 
    if ((new_id < 0) || (new_type == EDJE_VECTOR_FILE_TYPE_JSON))
      {
-        efl_file_set(ep->object, ed->file->path, src_key);
+        efl_file_simple_load(ep->object, ed->file->path, src_key);
      }
    else
      {
         snprintf(dest_key, sizeof(dest_key), "edje/vectors/%i", new_id);
 
-        efl_file_set(ep->object, ed->file->path, src_key);
+        efl_file_simple_load(ep->object, ed->file->path, src_key);
         src_root = efl_canvas_vg_object_root_node_get(ep->object);
         efl_ref(src_root);
 
-        efl_file_set(ep->object, ed->file->path, dest_key);
+        efl_file_simple_load(ep->object, ed->file->path, dest_key);
         dest_root = efl_canvas_vg_object_root_node_get(ep->object);
         efl_ref(dest_root);
 
@@ -5132,7 +5132,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
                           proxy = ed->file->image_dir->entries[pd_mesh_node->mesh_node.texture.id].entry;
                           if (proxy)
                             {
-                               efl_file_mmap_set(texture, ed->file->f, proxy);
+                               efl_file_simple_mmap_load(texture, ed->file->f, proxy);
                                evas_canvas3d_texture_filter_set(texture, pd_mesh_node->mesh_node.texture.filter1, pd_mesh_node->mesh_node.texture.filter2);
                                evas_canvas3d_texture_wrap_set(texture, pd_mesh_node->mesh_node.texture.wrap1, pd_mesh_node->mesh_node.texture.wrap2);
                             }

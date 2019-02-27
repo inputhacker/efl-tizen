@@ -280,13 +280,15 @@ _ready_play(Efl_Ui_Animation_View_Data *pd)
    return EINA_FALSE;
 }
 
-EOLIAN static Eina_Bool
-_efl_ui_animation_view_efl_file_file_set(Eo *obj EINA_UNUSED, Efl_Ui_Animation_View_Data *pd, const char *file, const char *key)
+EOLIAN static Eina_Error
+_efl_ui_animation_view_efl_file_load(Eo *obj, Efl_Ui_Animation_View_Data *pd)
 {
-   if (!evas_object_vg_file_set(pd->vg, file, key)) return EINA_FALSE;
+   const char *file = efl_file_get(obj);
+   const char *key = efl_file_key_get(obj);
 
-   if (pd->file) eina_stringshare_del(pd->file);
-   pd->file = eina_stringshare_add(file);
+   if (!evas_object_vg_file_set(pd->vg, file, key)) return ENOENT;
+
+   pd->file = file;
    pd->progress = 0;
 
    _sizing_eval(pd);
@@ -297,10 +299,10 @@ _efl_ui_animation_view_efl_file_file_set(Eo *obj EINA_UNUSED, Efl_Ui_Animation_V
         pd->frame_cnt = 0;
         pd->frame_duration = 0;
         if (pd->transit) elm_transit_del(pd->transit);
-        return EINA_FALSE;
+        return ENOENT;
      }
 
-   if (!_ready_play(pd)) return EINA_TRUE;
+   if (!_ready_play(pd)) return 0;
 
    if (pd->auto_play)
      {
@@ -308,13 +310,13 @@ _efl_ui_animation_view_efl_file_file_set(Eo *obj EINA_UNUSED, Efl_Ui_Animation_V
 
         if (!_visible_check(obj))
           {
-             elm_transit_paused_set(pd->transit, EINA_TRUE);
+             elm_transit_paused_set(pd->transit, 0);
              pd->state = EFL_UI_ANIMATION_VIEW_STATE_PAUSE;
              pd->auto_play_pause = EINA_TRUE;
              evas_object_smart_callback_call(pd->obj, SIG_PLAY_PAUSE, NULL);
           }
      }
-   return EINA_TRUE;
+   return 0;
 }
 
 EOLIAN static void
@@ -662,7 +664,7 @@ elm_animation_view_add(Evas_Object *parent)
 EAPI Eina_Bool
 elm_animation_view_file_set(Elm_Animation_View *obj, const char *file, const char *key)
 {
-   return efl_file_set(obj, file, key);
+   return efl_file_simple_load(obj, file, key);
 }
 
 EAPI Elm_Animation_View_State
