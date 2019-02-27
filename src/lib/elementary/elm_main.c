@@ -1516,7 +1516,7 @@ elm_object_domain_translatable_part_text_set(Evas_Object *obj, const char *part,
      {
         if (!part)
           part = efl_ui_widget_default_text_part_get(obj);
-        else if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+        else if (efl_isa(obj, EFL_UI_LAYOUT_BASE_CLASS))
            _elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE);
 
         elm_widget_part_translatable_text_set(obj, part, text, domain);
@@ -1538,7 +1538,7 @@ elm_object_translatable_part_text_get(const Evas_Object *obj, const char *part)
      {
         if (!part)
           part = efl_ui_widget_default_text_part_get(obj);
-        else if (efl_isa(obj, EFL_UI_LAYOUT_CLASS))
+        else if (efl_isa(obj, EFL_UI_LAYOUT_BASE_CLASS))
            _elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE);
 
         return elm_widget_part_translatable_text_get(obj, part, NULL);
