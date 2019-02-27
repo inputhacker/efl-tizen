@@ -1619,29 +1619,6 @@ _elm_conformant_efl_canvas_group_group_del(Eo *obj, Elm_Conformant_Data *sd)
    efl_canvas_group_del(efl_super(obj, MY_CLASS));
 }
 
-EOLIAN static void
-_elm_conformant_efl_ui_widget_widget_parent_set(Eo *obj, Elm_Conformant_Data *sd, Evas_Object *parent)
-{
-#ifdef HAVE_ELEMENTARY_X
-   Evas_Object *top = elm_widget_top_get(parent);
-   Ecore_X_Window xwin = elm_win_xwindow_get(parent);
-
-   if ((xwin) && (!elm_win_inlined_image_object_get(top)))
-     {
-
-        sd->prop_hdl = ecore_event_handler_add
-            (ECORE_X_EVENT_WINDOW_PROPERTY, _on_prop_change, obj);
-        sd->vkb_state = ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF;
-        sd->clipboard_state = ECORE_X_ILLUME_CLIPBOARD_STATE_OFF;
-     }
-   // FIXME: get kbd region prop
-#else
-   (void)obj;
-   (void)sd;
-   (void)parent;
-#endif
-}
-
 // TIZEN_ONLY(20160218): Improve launching performance.
 EAPI void
 elm_conformant_precreated_object_set(Evas_Object *obj)
@@ -1686,6 +1663,28 @@ elm_conformant_add(Evas_Object *parent)
 EOLIAN static Eo *
 _elm_conformant_efl_object_constructor(Eo *obj, Elm_Conformant_Data *sd)
 {
+   Eo *parent;
+   obj = efl_constructor(efl_super(obj, MY_CLASS));
+   parent = efl_parent_get(obj);
+#ifdef HAVE_ELEMENTARY_X
+   Evas_Object *top = elm_widget_top_get(parent);
+   Ecore_X_Window xwin = elm_win_xwindow_get(parent);
+
+   if ((xwin) && (!elm_win_inlined_image_object_get(top)))
+     {
+
+        sd->prop_hdl = ecore_event_handler_add
+            (ECORE_X_EVENT_WINDOW_PROPERTY, _on_prop_change, obj);
+        sd->vkb_state = ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF;
+        sd->clipboard_state = ECORE_X_ILLUME_CLIPBOARD_STATE_OFF;
+     }
+   // FIXME: get kbd region prop
+#else
+   (void)obj;
+   (void)sd;
+   (void)parent;
+#endif
+
    obj = efl_constructor(efl_super(obj, MY_CLASS));
    efl_canvas_object_type_set(obj, MY_CLASS_NAME_LEGACY);
    evas_object_smart_callbacks_descriptions_set(obj, _smart_callbacks);
