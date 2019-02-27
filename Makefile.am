@@ -554,6 +554,7 @@ pkgbuild::
 
 clean-local:
 	rm -rf benchmark coverage
+	@find . -name '*eo.legacy.c' -delete
 
 DISTCLEANFILES= \
 ./src/lib/emile/Makefile \
