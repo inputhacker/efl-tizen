@@ -2920,8 +2920,9 @@ _item_focus_left(Elm_Gengrid_Data *sd)
    if (!sd->focused_item)
      {
         prev = ELM_GEN_ITEM_FROM_INLIST(sd->items->last);
-        while (((prev) && (prev->generation < sd->generation))
-               || elm_object_item_disabled_get(EO_OBJ(prev)))
+        while ((prev) &&
+               ((prev->generation < sd->generation)
+               || elm_object_item_disabled_get(EO_OBJ(prev))))
           prev = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(prev)->prev);
      }
    else
@@ -2954,8 +2955,9 @@ _item_focus_right(Elm_Gengrid_Data *sd)
    if (!sd->focused_item)
      {
         next = ELM_GEN_ITEM_FROM_INLIST(sd->items);
-        while (((next) && (next->generation < sd->generation))
-               || elm_object_item_disabled_get(EO_OBJ(next)))
+        while ((next) &&
+               ((next->generation < sd->generation)
+               || elm_object_item_disabled_get(EO_OBJ(next))))
           next = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(next)->next);
      }
    else
@@ -3155,8 +3157,9 @@ _item_single_select_left(Elm_Gengrid_Data *sd)
    if (!sd->selected)
      {
         prev = ELM_GEN_ITEM_FROM_INLIST(sd->items->last);
-        while (((prev) && (prev->generation < sd->generation))
-               || elm_object_item_disabled_get(EO_OBJ(prev)))
+        while ((prev) &&
+               ((prev->generation < sd->generation)
+               || elm_object_item_disabled_get(EO_OBJ(prev))))
           prev = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(prev)->prev);
      }
    else
@@ -3189,8 +3192,9 @@ _item_single_select_right(Elm_Gengrid_Data *sd)
    if (!sd->selected)
      {
         next = ELM_GEN_ITEM_FROM_INLIST(sd->items);
-        while (((next) && (next->generation < sd->generation))
-               || elm_object_item_disabled_get(EO_OBJ(next)))
+        while ((next) &&
+               ((next->generation < sd->generation)
+               || elm_object_item_disabled_get(EO_OBJ(next))))
           next = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(next)->next);
      }
    else
@@ -3914,8 +3918,9 @@ _pick_item(Elm_Gengrid_Data *sd, Elm_Focus_Direction dir)
    else
      next = ELM_GEN_ITEM_FROM_INLIST(sd->items->last);
 
-   while (((next) && (next->generation < sd->generation))
-          || elm_object_item_disabled_get(EO_OBJ(next)))
+   while ((next) &&
+          ((next->generation < sd->generation)
+          || elm_object_item_disabled_get(EO_OBJ(next))))
      {
        if (dir == ELM_FOCUS_RIGHT || dir == ELM_FOCUS_DOWN)
          next = ELM_GEN_ITEM_FROM_INLIST(EINA_INLIST_GET(next)->next);
