@@ -92,7 +92,6 @@ struct _Elm_Translate_String_Data
 static void _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir); // TIZEN_ONLY(20180117): Override Paragraph Direction APIs
 static void _if_focused_revert(Evas_Object *obj, Eina_Bool can_focus_only); //TIZEN_ONLY(20180607): Restore legacy focus
 
-static void elm_widget_disabled_internal(Eo *obj, Eina_Bool disabled);
 static void _on_sub_obj_hide(void *data, const Efl_Event *event);
 
 static inline Eina_Bool _elm_widget_focus_chain_manager_is(const Evas_Object *obj);
@@ -257,7 +256,8 @@ _elm_scrollable_is(const Evas_Object *obj)
         efl_isa(obj, EFL_UI_SCROLLABLE_INTERACTIVE_INTERFACE);
 }
 
-static void _on_sub_obj_del(void *data, const Efl_Event *event);
+static void
+_on_sub_obj_del(void *data, const Efl_Event *event);
 static void _propagate_event(void *data, const Efl_Event *eo_event);
 static void _elm_widget_focus_tree_unfocusable_handle(Eo *obj);
 static void _elm_widget_shadow_update(Efl_Ui_Widget *obj);
@@ -1461,8 +1461,6 @@ EOLIAN static Efl_Ui_Theme_Apply_Result
 _efl_ui_widget_theme_apply(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
 {
    _elm_widget_mirrored_reload(obj);
-   if (elm_widget_disabled_get(obj))
-     elm_widget_disabled_internal(obj, elm_widget_disabled_get(obj));
 
    return EFL_UI_THEME_APPLY_RESULT_SUCCESS;
 }
@@ -1634,9 +1632,9 @@ _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
                   if (elm_widget_is_legacy(sobj))
                     efl_ui_widget_focus_disabled_handle(sobj);
                   //
-                  efl_ui_widget_on_disabled_update(sobj, EINA_TRUE);
                }
           }
+        efl_ui_widget_disabled_set(sobj, efl_ui_widget_disabled_get(obj));
 
         _elm_widget_top_win_focused_set(sobj, sd->top_win_focused);
 
@@ -2704,26 +2702,37 @@ _elm_widget_top_win_focused_get(const Evas_Object *obj)
 }
 
 EOLIAN static void
-_efl_ui_widget_disabled_set(Eo *obj, Elm_Widget_Smart_Data *sd, Eina_Bool disabled)
+_efl_ui_widget_disabled_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd, Eina_Bool disabled)
 {
-   if (sd->disabled == disabled) return;
-   sd->disabled = !!disabled;
+   Efl_Ui_Widget *subs;
+   Eina_List *n;
 
-   elm_widget_disabled_internal(obj, disabled);
+   if (disabled)
+     pd->disabled ++;
+   else
+     pd->disabled = MAX(pd->disabled - 1 ,0);
+
+   EINA_LIST_FOREACH(pd->subobjs, n, subs)
+     {
+        //TIZEN_ONLY(20180607): Restore legacy focus
+        if (elm_widget_is(subs))
+          {
+             if (elm_widget_is_legacy(subs))
+               efl_ui_widget_focus_disabled_handle((Evas_Object *)subs);
+          }
+        //
+        if (efl_isa(subs, EFL_UI_WIDGET_CLASS))
+          efl_ui_widget_disabled_set(subs, efl_ui_widget_disabled_get(obj));
+     }
 
    if (efl_finalized_get(obj))
-     _elm_widget_full_eval_children(obj, sd);
+     _elm_widget_full_eval_children(obj, pd);
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_widget_disabled_get(const Eo *obj, Elm_Widget_Smart_Data *sd)
+_efl_ui_widget_disabled_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd)
 {
-   Eo *parent;
-
-   if (sd->disabled) return EINA_TRUE;
-   if ((parent = elm_widget_parent_get(obj)) != NULL)
-     return elm_widget_disabled_get(parent);
-   return EINA_FALSE;
+   return pd->disabled > 0;
 }
 
 /**
@@ -5761,12 +5770,6 @@ _efl_ui_widget_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Widget_Smart_Dat
      efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, focused);
 
    return EINA_TRUE;
-}
-
-EOLIAN static Eina_Bool
-_efl_ui_widget_on_disabled_update(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Eina_Bool disabled EINA_UNUSED)
-{
-   return EINA_FALSE;
 }
 
 EOLIAN static Eina_Bool
@@ -9763,41 +9766,6 @@ _efl_ui_widget_focus_restore(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
      _parents_on_focus(newest);
 }
 //END
-
-
-static void
-_elm_widget_disabled_eval(const Evas_Object *obj, Eina_Bool disabled)
-{
-   const Eina_List *l;
-   Evas_Object *child;
-   ELM_WIDGET_DATA_GET(obj, sd);
-
-   EINA_LIST_FOREACH(sd->subobjs, l, child)
-     {
-        if (elm_widget_is(child))
-          {
-             //TIZEN_ONLY(20180607): Restore legacy focus
-             if (elm_widget_is_legacy(obj))
-               efl_ui_widget_focus_disabled_handle((Evas_Object *)obj);
-             //
-             efl_ui_widget_on_disabled_update(child, disabled);
-             _elm_widget_disabled_eval(child, disabled);
-          }
-     }
-}
-
-static void
-elm_widget_disabled_internal(Eo *obj, Eina_Bool disabled)
-{
-   if (!disabled && elm_widget_disabled_get(elm_widget_parent_get(obj)))
-     return;
-   //TIZEN_ONLY(20180607): Restore legacy focus
-   if (elm_widget_is_legacy(obj))
-     efl_ui_widget_focus_disabled_handle(obj);
-   //
-   efl_ui_widget_on_disabled_update(obj, disabled);
-   _elm_widget_disabled_eval(obj, disabled);
-}
 
 
 EOLIAN static void

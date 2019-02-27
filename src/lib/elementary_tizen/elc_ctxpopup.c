@@ -2033,21 +2033,6 @@ _list_new(Evas_Object *obj)
    elm_ctxpopup_horizontal_set(obj, sd->horizontal);
 }
 
-EOLIAN static Eina_Bool
-_elm_ctxpopup_efl_ui_widget_on_disabled_update(Eo *obj, Elm_Ctxpopup_Data *sd, Eina_Bool disabled)
-{
-   Eina_List *l;
-   Elm_Ctxpopup_Item_Data *it;
-
-   if (!efl_ui_widget_on_disabled_update(efl_super(obj, MY_CLASS), disabled))
-     return EINA_FALSE;
-
-   EINA_LIST_FOREACH(sd->items, l, it)
-     elm_object_disabled_set(EO_OBJ(it), disabled);
-
-   return EINA_TRUE;
-}
-
 EOLIAN static void
 _elm_ctxpopup_efl_canvas_group_group_add(Eo *obj, Elm_Ctxpopup_Data *priv)
 {

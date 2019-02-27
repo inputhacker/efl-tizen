@@ -1592,11 +1592,10 @@ _elm_slider_efl_ui_i18n_mirrored_set(Eo *obj EINA_UNUSED, Elm_Slider_Data *_pd E
 //
 
 //TIZEN_ONLY(20170419): fix slider indicator behavior
-EOLIAN static Eina_Bool
-_elm_slider_efl_ui_widget_on_disabled_update(Eo *obj, Elm_Slider_Data *sd, Eina_Bool disabled)
+EOLIAN static void
+_elm_slider_efl_ui_widget_disabled_set(Eo *obj, Elm_Slider_Data *sd, Eina_Bool disabled)
 {
-   if (!efl_ui_widget_on_disabled_update(efl_super(obj, MY_CLASS), disabled))
-     return EINA_FALSE;
+   efl_ui_widget_disabled_set(efl_super(obj, MY_CLASS), disabled);
 
    if (sd->popup)
      {
@@ -1613,8 +1612,6 @@ _elm_slider_efl_ui_widget_on_disabled_update(Eo *obj, Elm_Slider_Data *sd, Eina_
         else
           edje_object_signal_emit(sd->popup2, "elm,state,enabled", "elm");
      }
-
-   return EINA_TRUE;
 }
 //
 
