@@ -1200,8 +1200,8 @@ EAPI Eina_Bool elm_win_keygrab_set(Elm_Win *obj, const char *key, Evas_Modifier_
 EAPI Eina_Bool elm_win_keygrab_unset(Elm_Win *obj, const char *key, Evas_Modifier_Mask modifiers, Evas_Modifier_Mask not_modifiers);
 
 /**
- * @brief Gets the elm_win object from any child object
- * 
+ * @brief Get the elm_win object from any child object
+ *
  * @return The elm_win, or @c NULL on failure
  * @since 1.20
  */
@@ -1297,7 +1297,7 @@ EAPI void elm_win_focus_highlight_animate_set(Elm_Win *obj, Eina_Bool animate);
 EAPI Eina_Bool elm_win_focus_highlight_animate_get(const Elm_Win *obj);
 
 /**
- * @brief Raises a window object.
+ * @brief Raise a window object.
  *
  * Places the window pointed by @c obj at the top of the stack, so that it's
  * not covered by any other window.

@@ -1684,6 +1684,7 @@ _item_cache_add(Elm_Gen_Item *it, Eina_List *contents)
    Item_Cache *itc = NULL;
    ELM_GENLIST_DATA_GET_FROM_ITEM(it, sd);
    Evas_Object *obj = sd->obj;
+   Evas_Object *win = elm_widget_top_get(obj);
    Evas *e = evas_object_evas_get(obj);
 
    evas_event_freeze(e);
@@ -1715,7 +1716,7 @@ _item_cache_add(Elm_Gen_Item *it, Eina_List *contents)
    if (elm_wdg_item_disabled_get(EO_OBJ(it)))
      edje_object_signal_emit(itc->base_view, SIGNAL_ENABLED, "elm");
    if ((EO_OBJ(it) == sd->focused_item) &&
-       (elm_widget_focus_highlight_enabled_get(obj) || _elm_config->win_auto_focus_enable))
+       (elm_win_focus_highlight_enabled_get(win) || _elm_config->win_auto_focus_enable))
      edje_object_signal_emit(itc->base_view, SIGNAL_UNFOCUSED, "elm");
 
    //Tizen Only(20160307)
@@ -1901,9 +1902,10 @@ _elm_genlist_item_focus_update(Elm_Gen_Item *it)
 {
    const char *focus_raise;
    Evas_Object *obj = WIDGET(it);
+   Evas_Object *win = elm_widget_top_get(obj);
    ELM_GENLIST_DATA_GET(obj, sd);
 
-   if (elm_widget_focus_highlight_enabled_get(obj)
+   if (elm_win_focus_highlight_enabled_get(win)
        || _elm_config->win_auto_focus_enable)
      edje_object_signal_emit(VIEW(it), SIGNAL_FOCUSED, "elm");
 
@@ -3049,6 +3051,7 @@ _elm_genlist_item_unfocused(Elm_Object_Item *eo_it)
 
    ELM_GENLIST_ITEM_DATA_GET(eo_it, it);
    Evas_Object *obj = WIDGET(it);
+   Evas_Object *win = elm_widget_top_get(obj);
    ELM_GENLIST_DATA_GET(obj, sd);
 
    if (_is_no_select(it))
@@ -3058,7 +3061,7 @@ _elm_genlist_item_unfocused(Elm_Object_Item *eo_it)
        (eo_it != sd->focused_item))
      return;
 
-   if (elm_widget_focus_highlight_enabled_get(obj))
+   if (elm_win_focus_highlight_enabled_get(win))
      {
         ELM_GENLIST_ITEM_DATA_GET(sd->focused_item, focus_it);
         edje_object_signal_emit(VIEW(focus_it), SIGNAL_UNFOCUSED, "elm");
