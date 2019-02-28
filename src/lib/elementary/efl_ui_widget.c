@@ -3052,6 +3052,30 @@ _efl_ui_widget_atspi(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED
 //
 //
 
+EAPI void
+elm_widget_scroll_hold_push(Efl_Ui_Widget *obj)
+{
+   efl_ui_widget_scroll_hold_push(obj);
+}
+
+EAPI void
+elm_widget_scroll_hold_pop(Efl_Ui_Widget *obj)
+{
+   efl_ui_widget_scroll_hold_pop(obj);
+}
+
+EAPI void
+elm_widget_scroll_freeze_push(Efl_Ui_Widget *obj)
+{
+   efl_ui_widget_scroll_freeze_push(obj);
+}
+
+EAPI void
+elm_widget_scroll_freeze_pop(Efl_Ui_Widget *obj)
+{
+   efl_ui_widget_scroll_freeze_pop(obj);
+}
+
 EAPI Elm_Theme *
 elm_widget_theme_get(const Evas_Object *obj)
 {
