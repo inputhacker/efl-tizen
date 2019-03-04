@@ -295,7 +295,7 @@ _evas_image_init_set(const Eina_File *f, const char *key,
           }
         ENFN->image_free(ENC, o->engine_data);
      }
-   o->load_error = EVAS_LOAD_ERROR_NONE;
+   o->load_error = EFL_GFX_IMAGE_LOAD_ERROR_NONE;
    lo->emile.scale_down_by = o->load_opts->scale_down_by;
    lo->emile.dpi = o->load_opts->dpi;
    lo->emile.w = o->load_opts->w;
@@ -353,8 +353,8 @@ _evas_image_done_set(Eo *eo_obj, Evas_Object_Protected_Data *obj, Evas_Image_Dat
      }
    else
      {
-        if (o->load_error == EVAS_LOAD_ERROR_NONE)
-          o->load_error = EVAS_LOAD_ERROR_GENERIC;
+        if (o->load_error == EFL_GFX_IMAGE_LOAD_ERROR_NONE)
+          o->load_error = EFL_GFX_IMAGE_LOAD_ERROR_GENERIC;
 
         EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
         {
@@ -867,7 +867,7 @@ _efl_canvas_image_internal_efl_gfx_image_ratio_get(const Eo *eo_obj EINA_UNUSED,
    return (double)o->cur->image.w / (double)o->cur->image.h;
 }
 
-EOLIAN static Efl_Gfx_Image_Load_Error
+EOLIAN static Eina_Error
 _efl_canvas_image_internal_efl_gfx_image_image_load_error_get(const Eo *eo_obj EINA_UNUSED, Evas_Image_Data *o)
 {
    return o->load_error;
@@ -1139,7 +1139,7 @@ _evas_image_unload(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, Eina_Bo
         ENFN->image_free(ENC, o->engine_data);
      }
    o->engine_data = NULL;
-   o->load_error = EVAS_LOAD_ERROR_NONE;
+   o->load_error = EFL_GFX_IMAGE_LOAD_ERROR_NONE;
 
    EINA_COW_IMAGE_STATE_WRITE_BEGIN(o, state_write)
    {
@@ -1158,6 +1158,7 @@ void
 _evas_image_load(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, Evas_Image_Data *o)
 {
    Evas_Image_Load_Opts lo;
+   int load_error = 0;
 
    if (o->engine_data) return;
 
@@ -1181,7 +1182,8 @@ _evas_image_load(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, Evas_Imag
    lo.emile.degree = 0;
    lo.emile.can_load_colormap = o->load_opts->can_load_colormap;
    lo.skip_head = o->skip_head;
-   o->engine_data = ENFN->image_mmap(ENC, o->cur->f, o->cur->key, &o->load_error, &lo);
+   o->engine_data = ENFN->image_mmap(ENC, o->cur->f, o->cur->key, &load_error, &lo);
+   o->load_error = _evas_load_error_to_efl_gfx_image_load_error(load_error);
 
    if (o->engine_data)
      {
@@ -1210,7 +1212,7 @@ _evas_image_load(Evas_Object *eo_obj, Evas_Object_Protected_Data *obj, Evas_Imag
      }
    else
      {
-        o->load_error = EVAS_LOAD_ERROR_GENERIC;
+        o->load_error = EFL_GFX_IMAGE_LOAD_ERROR_GENERIC;
      }
 }
 
@@ -1249,12 +1251,12 @@ _evas_image_load_post_update(Evas_Object *eo_obj, Evas_Object_Protected_Data *ob
 
         //preloading error check
         if (ENFN->image_load_error_get)
-          o->load_error = ENFN->image_load_error_get(ENC, o->engine_data);
+          o->load_error = _evas_load_error_to_efl_gfx_image_load_error(ENFN->image_load_error_get(ENC, o->engine_data));
      }
    else
      {
         o->preload = EVAS_IMAGE_PRELOAD_NONE;
-        o->load_error = EVAS_LOAD_ERROR_GENERIC;
+        o->load_error = EFL_GFX_IMAGE_LOAD_ERROR_GENERIC;
      }
 }
 
