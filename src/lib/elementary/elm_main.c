@@ -401,6 +401,19 @@ _sys_lang_changed(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA
    return ECORE_CALLBACK_PASS_ON;
 }
 
+EAPI Eina_Error EFL_UI_THEME_APPLY_ERROR_NONE = 0;
+EAPI Eina_Error EFL_UI_THEME_APPLY_ERROR_DEFAULT = 0;
+EAPI Eina_Error EFL_UI_THEME_APPLY_ERROR_GENERIC = 0;
+
+static void
+_efl_ui_theme_apply_error_init(void)
+{
+   if (EFL_UI_THEME_APPLY_ERROR_DEFAULT) return;
+   /* NONE should always be 0 */
+   EFL_UI_THEME_APPLY_ERROR_DEFAULT = eina_error_msg_static_register("Fallback to default style was enabled for this widget");
+   EFL_UI_THEME_APPLY_ERROR_GENERIC = eina_error_msg_static_register("An error occurred and no theme could be set for this widget");
+}
+
 // This is necessary to keep backward compatibility
 static const char *bcargv[] = { "exe" };
 
@@ -456,6 +469,7 @@ elm_init(int argc, char **argv)
      if (_efl_startup_time <= 0)
        _efl_startup_time = _elm_startup_time;
    _elm_startup_time = _efl_startup_time;
+   _efl_ui_theme_apply_error_init();
 
 //TIZEN_ONLY(20160628):  Add Performance log for cold booting
 #ifdef ENABLE_TTRACE
