@@ -50,7 +50,7 @@ abstract @beta Efl.Ui.Layout_Base extends Efl.Ui.Widget implements Efl.Container
            automatic : bool; [[$true to mirror orientation changes to the theme $false otherwise]]
         }
       }
-      theme_rotation_apply @beta {
+      theme_rotation_apply  @beta {
         [[Apply a new rotation value to this object.]]
         params {
           orientation : Efl.Orient; [[The new rotation value.]]
