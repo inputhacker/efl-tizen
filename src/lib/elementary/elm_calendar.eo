@@ -416,7 +416,6 @@ class Elm.Calendar extends Efl.Ui.Layout_Base implements Efl.Ui.Focus.Compositio
       Efl.Ui.Widget.theme_apply;
       Efl.Ui.Widget.on_access_update;
       Efl.Ui.Focus.Object.on_focus_update;
-      Efl.Ui.Widget.widget_event;
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
       //register/unregister access objects accordingly.
       // TIZEN_ONLY(20170516): connect to at-spi dbus based on org.a11y.Status.IsEnabled property
@@ -426,6 +425,7 @@ class Elm.Calendar extends Efl.Ui.Layout_Base implements Efl.Ui.Focus.Compositio
       //TIZEN_ONLY(20161116): Apply UI Mirror for Tizen 3.0 UX
       Efl.Ui.I18n.mirrored { get; set; }
       //
+      Efl.Ui.Widget.widget_input_event_handler;
       Efl.Access.Widget.Action.elm_actions { get; }
    }
    events {

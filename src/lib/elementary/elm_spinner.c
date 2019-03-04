@@ -851,6 +851,43 @@ _key_action_toggle(Evas_Object *obj, const char *params EINA_UNUSED)
    return EINA_FALSE;
 }
 
+EOLIAN static Eina_Bool
+_elm_spinner_efl_ui_widget_widget_input_event_handler(Eo *obj, Elm_Spinner_Data *sd EINA_UNUSED, const Efl_Event *eo_event, Evas_Object *src EINA_UNUSED)
+{
+   Eo *ev = eo_event->info;
+
+   if (efl_input_processed_get(ev)) return EINA_FALSE;
+   if (eo_event->desc == EFL_EVENT_KEY_DOWN)
+     {
+        if (sd->spin_timer) _spin_stop(obj);
+        else return EINA_FALSE;
+     }
+   else if (eo_event->desc == EFL_EVENT_KEY_UP)
+     {
+        if (sd->spin_timer) _spin_stop(obj);
+        else return EINA_FALSE;
+     }
+   else if (eo_event->desc == EFL_EVENT_POINTER_WHEEL)
+     {
+        sd->interval = sd->first_interval;
+        if (efl_input_pointer_wheel_delta_get(ev) < 0)
+          {
+             sd->spin_speed = sd->step;
+             elm_layout_signal_emit(obj, "elm,right,anim,activate", "elm");
+          }
+        else
+          {
+             sd->spin_speed = -sd->step;
+             elm_layout_signal_emit(obj, "elm,left,anim,activate", "elm");
+          }
+        _spin_value(obj);
+     }
+   else return EINA_FALSE;
+
+   efl_input_processed_set(ev, EINA_TRUE);
+   return EINA_TRUE;
+}
+
 static void
 _button_inc_dec_start_cb(void *data,
                      Evas_Object *obj,

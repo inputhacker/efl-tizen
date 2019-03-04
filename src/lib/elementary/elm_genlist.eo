@@ -677,7 +677,8 @@ class Elm.Genlist extends Efl.Ui.Layout_Base implements Elm.Interface_Scrollable
       Efl.Ui.Widget.focus_highlight_geometry { get; }
       //Efl.Ui.Widget.widget_event;
       Efl.Ui.Focus.Object.on_focus_update;
-      Efl.Ui.Widget.widget_event; // rebase
+      Efl.Ui.Widget.widget_sub_object_del;
+      Efl.Ui.Widget.widget_input_event_handler;
       Elm.Widget_Item_Container.focused_item { get; }
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
       //register/unregister access objects accordingly.
