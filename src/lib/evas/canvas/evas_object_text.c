@@ -2593,4 +2593,4 @@ evas_object_text_ellipsis_status_get(const Evas_Object *eo_obj)
 #define EVAS_TEXT_EXTRA_OPS \
    EFL_OBJECT_OP_FUNC(efl_dbg_info_get, _evas_text_efl_object_dbg_info_get)
 
-#include "canvas/evas_text.eo.c"
+#include "canvas/evas_text_eo.c"

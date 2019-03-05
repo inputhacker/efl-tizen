@@ -106,7 +106,7 @@ EAPI Evas_Engine_Info *evas_engine_info_get(const Evas *obj);
 EAPI Eina_Bool evas_image_max_size_get(Eo *eo_e, int *w, int *h);
 
 
-#include "canvas/evas_canvas.eo.legacy.h"
+#include "canvas/evas_canvas_eo.legacy.h"
 
 /**
  * @}
@@ -2331,7 +2331,7 @@ EAPI Eina_Bool evas_object_pointer_inside_get(const Evas_Object *obj) EINA_WARN_
 
 EAPI Eina_Bool evas_object_pointer_coords_inside_get(const Evas_Object *eo_obj, int x, int y) EINA_WARN_UNUSED_RESULT;
 
-#include "canvas/efl_canvas_object.eo.legacy.h"
+#include "canvas/efl_canvas_object_eo.legacy.h"
 
 /**
  * @brief Get the Evas to which this object belongs to
@@ -3747,9 +3747,10 @@ EAPI Eina_Bool evas_object_vg_animated_frame_set(Evas_Object *obj, int frame_ind
 EAPI int evas_object_vg_animated_frame_get(const Evas_Object *obj) EINA_ARG_NONNULL(1);
 
 
-#include "canvas/efl_canvas_vg_node.eo.legacy.h"
-#include "canvas/efl_canvas_vg_object.eo.legacy.h"
-#include "canvas/efl_canvas_vg_container.eo.legacy.h"
+#include "canvas/efl_canvas_vg_node_eo.legacy.h"
+#include "canvas/efl_canvas_vg_object_eo.legacy.h"
+#include "canvas/efl_canvas_vg_container_eo.legacy.h"
+
 /**
  * Creates a new vector shape object.
  *
@@ -3942,7 +3943,7 @@ EAPI void evas_vg_node_raise(Eo *obj);
  */
 EAPI void evas_vg_node_lower(Eo *obj);
 
-#include "canvas/efl_canvas_vg_node.eo.legacy.h"
+#include "canvas/efl_canvas_vg_node_eo.legacy.h"
 
 /**
  *
@@ -4385,7 +4386,7 @@ EAPI void evas_vg_shape_stroke_fill_set(Eo *obj, Efl_VG *f);
  */
 EAPI Efl_VG* evas_vg_shape_stroke_fill_get(const Eo *obj);
 
-#include "canvas/efl_canvas_vg_shape.eo.legacy.h"
+#include "canvas/efl_canvas_vg_shape_eo.legacy.h"
 
 /**
  *
@@ -6073,7 +6074,7 @@ EAPI void evas_object_image_reload(Evas_Object *obj) EINA_DEPRECATED;
  */
 EAPI void evas_object_image_alpha_mask_set(Evas_Object *obj, Eina_Bool ismask) EINA_ARG_NONNULL(1) EINA_DEPRECATED;
 
-#include "canvas/evas_image.eo.legacy.h"
+#include "canvas/evas_image_eo.legacy.h"
 
 /**
  * @}
@@ -6157,7 +6158,7 @@ typedef enum
    EVAS_TEXT_STYLE_SHADOW_DIRECTION_RIGHT = 112 /* 7 >> 4 */ /**< shadow growing to the right */
 } Evas_Text_Style_Type;
 
-#include "canvas/evas_text.eo.legacy.h"
+#include "canvas/evas_text_eo.legacy.h"
 
 /**
  *
@@ -6243,7 +6244,7 @@ EAPI void evas_object_text_font_get(const Eo *obj, const char **font, Evas_Font_
  */
 EAPI Evas_Object *evas_object_textgrid_add(Evas *e);
 
-#include "canvas/evas_textgrid.eo.legacy.h"
+#include "canvas/evas_textgrid_eo.legacy.h"
 
 /**
  *
@@ -6347,7 +6348,7 @@ EAPI void evas_object_textgrid_font_get(const Eo *obj, const char **font_name, E
  */
 EAPI Evas_Object *evas_object_line_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
-#include "canvas/evas_line.eo.legacy.h"
+#include "canvas/evas_line_eo.legacy.h"
 
 /**
  * @}
@@ -6903,7 +6904,7 @@ EAPI void evas_object_smart_changed(Evas_Object *obj);
  */
 EAPI void evas_object_smart_move_children_relative(Evas_Object *obj, Evas_Coord dx, Evas_Coord dy);
 
-#include "canvas/efl_canvas_group.eo.legacy.h"
+#include "canvas/efl_canvas_group_eo.legacy.h"
 
 /**
  * @}
@@ -7039,7 +7040,7 @@ EAPI Eina_Bool                  evas_object_box_option_property_get(const Evas_O
  */
 EAPI Eina_List                 *evas_object_box_children_get(const Evas_Object *o) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
-#include "canvas/evas_box.eo.legacy.h"
+#include "canvas/evas_box_eo.legacy.h"
 
 /**
  * @}
@@ -7086,7 +7087,7 @@ EAPI void evas_object_table_mirrored_set(Eo *obj, Eina_Bool mirrored);
  */
 EAPI Eina_Bool evas_object_table_mirrored_get(const Eo *obj);
 
-#include "canvas/evas_table.eo.legacy.h"
+#include "canvas/evas_table_eo.legacy.h"
 
 /**
  * @}
@@ -7136,7 +7137,7 @@ EAPI void evas_object_grid_mirrored_set(Eo *obj, Eina_Bool mirrored);
  */
 EAPI Eina_Bool evas_object_grid_mirrored_get(const Eo *obj);
 
-#include "canvas/evas_grid.eo.legacy.h"
+#include "canvas/evas_grid_eo.legacy.h"
 
 /**
  * @}
@@ -8542,7 +8543,7 @@ EAPI void evas_object_image_pixels_noti_callback_set(Evas_Object *obj, Evas_Obje
  * END *
  *******/
 
-#include "canvas/efl_canvas_event_grabber.eo.legacy.h"
+#include "canvas/efl_canvas_event_grabber_eo.legacy.h"
 
 #include "canvas/efl_canvas_animation_alpha.eo.legacy.h"
 #include "canvas/efl_canvas_animation.eo.legacy.h"

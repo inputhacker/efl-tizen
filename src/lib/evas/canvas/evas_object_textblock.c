@@ -17442,4 +17442,5 @@ evas_textblock_cursor_paragraph_direction_get(const Evas_Textblock_Cursor *cur)
 /*******/
 
 #include "canvas/efl_canvas_text.eo.c"
+#include "canvas/efl_canvas_text_eo.legacy.c"
 #include "canvas/efl_canvas_text_factory.eo.c" // interface

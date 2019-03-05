@@ -27,7 +27,6 @@ class @beta Efl.Canvas.Vg.Object extends Efl.Canvas.Object implements Efl.File, 
                            //
 {
    [[Efl vector graphics class]]
-   legacy_prefix: evas_object_vg;
    methods {
       @property fill_mode {
          [[Control how the viewbox is mapped to the vg canvas's viewport.]]
