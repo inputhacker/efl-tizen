@@ -9820,8 +9820,8 @@ _elm_object_focus_chain_del_cb(void *data,
    sd->focus_chain = eina_list_remove(sd->focus_chain, obj);
 }
 //
-#include "elm_widget_item.eo.c"
-#include "elm_widget_item_container.eo.c"
+#include "elm_widget_item_eo.c"
+#include "elm_widget_item_container_eo.c"
 #include "efl_ui_widget.eo.c"
 #include "efl_ui_widget_eo.legacy.c"
 

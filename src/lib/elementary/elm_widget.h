@@ -307,7 +307,7 @@ typedef void (*Elm_Access_On_Highlight_Cb)(void *data);
 typedef void * (*list_data_get_func_type)(const Eina_List * l);
 
 #include "efl_ui_widget.eo.h"
-#include "elm_widget_item_container.eo.h"
+#include "elm_widget_item_container_eo.h"
 
 /**
  * @addtogroup Widget
@@ -942,6 +942,6 @@ const char *efl_ui_widget_default_content_part_get(const Eo *obj);
 const char *efl_ui_widget_default_text_part_get(const Eo *obj);
 
 #define ELM_WIDGET_ITEM_PROTECTED
-#include "elm_widget_item.eo.h"
+#include "elm_widget_item_eo.h"
 
 #endif
