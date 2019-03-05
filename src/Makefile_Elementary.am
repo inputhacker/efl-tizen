@@ -198,7 +198,6 @@ endif
 elm_legacy_eolian_files = \
 	lib/elementary/efl_ui_animation_view.eo \
 	lib/elementary/efl_ui_clock_legacy.eo \
-	lib/elementary/elm_label.eo \
 	lib/elementary/elm_list.eo \
 	lib/elementary/elm_map.eo \
 	lib/elementary/elm_map_pan.eo \
@@ -375,6 +374,8 @@ lib/elementary/elm_index_item_eo.legacy.c \
 lib/elementary/elm_interface_fileselector_eo.c \
 lib/elementary/elm_inwin_eo.c \
 lib/elementary/elm_inwin_eo.legacy.c \
+lib/elementary/elm_label_eo.c \
+lib/elementary/elm_label_eo.legacy.c \
 $(NULL)
 
 elm_legacy_eo_headers = \
@@ -504,6 +505,8 @@ lib/elementary/elm_interface_fileselector_eo.h \
 lib/elementary/elm_interface_fileselector_eo.legacy.h \
 lib/elementary/elm_inwin_eo.h \
 lib/elementary/elm_inwin_eo.legacy.h \
+lib/elementary/elm_label_eo.h \
+lib/elementary/elm_label_eo.legacy.h \
 $(NULL)
 
 
