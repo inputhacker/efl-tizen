@@ -9823,6 +9823,7 @@ _elm_object_focus_chain_del_cb(void *data,
 #include "elm_widget_item.eo.c"
 #include "elm_widget_item_container.eo.c"
 #include "efl_ui_widget.eo.c"
+#include "efl_ui_widget_eo.legacy.c"
 
 /* Others */
 #include "efl_ui_l10n.eo.c"

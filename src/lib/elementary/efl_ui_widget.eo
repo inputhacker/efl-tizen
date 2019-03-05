@@ -28,7 +28,6 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
                         //
 {
    [[Efl UI widget abstract class]]
-   legacy_prefix: elm_widget;
    //eo_prefix: efl_ui_widget;
    event_prefix: efl_ui_widget;
    data: Efl_Ui_Widget_Data;
@@ -184,7 +183,6 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
                [[Source object where the event originated. Often same as this.]]
          }
          return: bool; [[$true on success, $false otherwise]]
-         legacy: null;
       }
       // FIXME: focus_allow? can_focus? focusable?
       @property focus_allow {
@@ -202,10 +200,8 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
            not focusable, but a button is).
          ]]
          set {
-            legacy: elm_widget_can_focus_set;
          }
          get {
-            legacy: elm_widget_can_focus_get;
          }
          values {
             can_focus: bool; [[Whether the object is focusable.]]
@@ -219,10 +215,8 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
            meant for internal handling.
          ]]
          set {
-            legacy: elm_widget_parent_set; /* internal in legacy */
          }
          get {
-            legacy: elm_widget_parent_get; /* internal in legacy */
          }
          values {
             parent: Efl.Ui.Widget @nullable; [[Widget parent object]]
@@ -253,7 +247,6 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
             @in act: Efl.Ui.Activate; [[Type of activation.]]
          }
          return: bool; [[$true on success, $false otherwise]]
-         legacy: null; /* FIXME: legacy API does extra work */
       }
       on_access_update @protected @beta {
          [[Hook function called when accessibility is changed on the widget.
@@ -264,7 +257,6 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
          params {
             @in enable: bool; [[$true if accessibility is enabled.]]
          }
-         legacy: null; /* FIXME: legacy API does extra work */
       }
 
       //TIZEN_ONLY(20160822): When atspi mode is dynamically switched on/off,
@@ -300,7 +292,6 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
                [[Sub object to be added. Not necessarily a widget itself.]]
          }
          return: bool; [[Indicates if the operation succeeded.]]
-         legacy: elm_widget_sub_object_add;
       }
       widget_sub_object_del @protected {
          [[Virtual function handling sub objects being removed.
@@ -314,7 +305,6 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
                [[Sub object to be removed. Should be a child of this widget.]]
          }
          return: bool; [[Indicates if the operation succeeded.]]
-         legacy: elm_widget_sub_object_del;
       }
       theme_apply @protected {
          [[Virtual function called when the widget needs to re-apply its theme.
@@ -364,7 +354,6 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
            taken into account, otherwise it is ignored.
          ]]
          get {
-            legacy: elm_widget_focus_region_get;
          }
          values {
             region: Eina.Rect;
