@@ -1917,5 +1917,5 @@ _elm_index_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Index_Item_D
    ELM_LAYOUT_SIZING_EVAL_OPS(elm_index), \
    EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_index)
 
-#include "elm_index_item.eo.c"
-#include "elm_index.eo.c"
+#include "elm_index_item_eo.c"
+#include "elm_index_eo.c"
