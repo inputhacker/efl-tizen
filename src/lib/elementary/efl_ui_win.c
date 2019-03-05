@@ -10118,6 +10118,7 @@ elm_win_keygrab_set(Elm_Win *obj, const char *key,
          ret = ecore_x_window_keygrab_set(sd->x.xwin, key, 0, 0, 0, x_grab_mode);
      }
 #else
+   (void)obj;
    (void)key;
    (void)grab_mode;
 #endif
@@ -10137,7 +10138,7 @@ elm_win_keygrab_unset(Elm_Win *obj, const char *key,
    if (sd->x.xwin)
      ret = ecore_x_window_keygrab_unset(sd->x.xwin, key, 0, 0);
 #else
-   (void)sd;
+   (void)obj;
    (void)key;
 #endif
    return ret;
