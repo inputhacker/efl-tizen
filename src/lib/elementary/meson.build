@@ -2,7 +2,6 @@ pub_legacy_eo_files = [
   'efl_ui_button_legacy.eo',
   'efl_ui_check_legacy.eo',
   'efl_ui_radio_legacy.eo',
-  'efl_ui_bg_legacy.eo',
   'efl_ui_video_legacy.eo',
   'efl_ui_frame_legacy.eo',
   'efl_ui_panes_legacy.eo',
@@ -817,7 +816,9 @@ elementary_pub_headers = [
   'elm_widget_item_container_eo.legacy.h',
   'elm_widget_item_eo.legacy.h',
   'elm_widget_item_static_focus_eo.legacy.h',
->>>>>>> 624d140b8d... efl_ui_animation_view: install legacy additionally.
+  'efl_ui_bg_eo.legacy.h',
+  'efl_ui_bg_legacy_eo.h',
+  'efl_ui_bg_legacy_eo.legacy.h',
 ]
 
 elementary_header_src = [
