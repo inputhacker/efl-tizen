@@ -4718,5 +4718,5 @@ ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_toolbar, Elm_Toolbar_Data)
     * END *
     *******/
 
-#include "elm_toolbar.eo.c"
-#include "elm_toolbar_item.eo.c"
+#include "elm_toolbar_eo.c"
+#include "elm_toolbar_item_eo.c"
