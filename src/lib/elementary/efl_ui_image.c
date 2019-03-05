@@ -2302,7 +2302,7 @@ ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(efl_ui_image, Efl_Ui_Image_Data)
 
 #include "efl_ui_image.eo.c"
 
-#include "efl_ui_image_legacy.eo.h"
+#include "efl_ui_image_legacy_eo.h"
 
 #define MY_CLASS_NAME_LEGACY "elm_image"
 
@@ -2332,4 +2332,4 @@ elm_image_add(Evas_Object *parent)
    return obj;
 }
 
-#include "efl_ui_image_legacy.eo.c"
+#include "efl_ui_image_legacy_eo.c"
