@@ -3535,5 +3535,5 @@ _elm_list_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_List_Item_Data
 }
 //
 
-#include "elm_list.eo.c"
-#include "elm_list_item.eo.c"
+#include "elm_list_eo.c"
+#include "elm_list_item_eo.c"
