@@ -9313,4 +9313,4 @@ ELM_LAYOUT_TEXT_ALIASES_IMPLEMENT(MY_CLASS_PFX)
     * END *
     *******/
 
-#include "elm_entry.eo.c"
+#include "elm_entry_eo.c"
