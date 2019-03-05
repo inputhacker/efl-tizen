@@ -1668,7 +1668,7 @@ _elm_win_focus_in(Ecore_Evas *ee)
    if (_elm_atspi_enabled())
      {
         efl_access_window_activated_signal_emit(obj);
-        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_ACTIVE, EINA_TRUE);
      }
 
    /* do nothing */
@@ -1718,7 +1718,7 @@ _elm_win_focus_out(Ecore_Evas *ee)
    if (_elm_atspi_enabled())
      {
         efl_access_window_deactivated_signal_emit(obj);
-        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_FALSE);
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_ACTIVE, EINA_FALSE);
      }
    //TIZEN_ONLY(20180607): Restore legacy focus
    if (!elm_widget_is_legacy(obj) && sd->type != ELM_WIN_FAKE)
@@ -8308,6 +8308,45 @@ _elm_win_focus_auto_hide(Evas_Object *obj)
      }
 }
 
+static void
+_on_atspi_bus_connected(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
+{
+   Evas_Object *win;
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(_elm_win_list, l, win)
+     {
+        /**
+         * Reemit accessibility events when AT-SPI2 connection is begin
+         * established. This assures that Assistive Technology clients will
+         * receive all org.a11y.window events and could keep track of active
+         * windows whithin system.
+         */
+        efl_access_window_created_signal_emit(win);
+        if (elm_win_focus_get(win))
+          {
+             Evas_Object *target;
+             efl_access_window_activated_signal_emit(win);
+             /** Reemit focused event to inform atspi clients about currently
+              * focused object **/
+             {
+                Efl_Ui_Focus_Manager *m;
+
+                m = win;
+
+                while (efl_ui_focus_manager_redirect_get(m))
+                  m = efl_ui_focus_manager_redirect_get(m);
+
+                target = efl_ui_focus_manager_focus_get(m);
+             }
+             if (target)
+               efl_access_state_changed_signal_emit(target, EFL_ACCESS_STATE_TYPE_FOCUSED, EINA_TRUE);
+          }
+        else
+          efl_access_window_deactivated_signal_emit(win);
+     }
+}
+
 EOLIAN static void
 _efl_ui_win_class_constructor(Efl_Class *klass EINA_UNUSED)
 {
@@ -8342,7 +8381,7 @@ _efl_ui_win_efl_access_object_state_set_get(const Eo *obj, Efl_Ui_Win_Data *sd E
    ret = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
 
    if (elm_win_focus_get(obj))
-     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_ACTIVE);
+     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_ACTIVE);
 
    return ret;
 }

@@ -990,7 +990,7 @@ _efl_ui_widget_efl_gfx_entity_visible_set(Eo *obj, Elm_Widget_Smart_Data *pd, Ei
      {
         efl_access_added(obj);
         if (_elm_widget_onscreen_is(obj))
-          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, EINA_TRUE);
+          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_SHOWING, EINA_TRUE);
      }
    else
      {
@@ -1005,7 +1005,7 @@ _efl_ui_widget_efl_gfx_entity_visible_set(Eo *obj, Elm_Widget_Smart_Data *pd, Ei
                {
                   if (parent == obj)
                     {
-                       efl_access_state_changed_signal_emit(highlighted_obj, EFL_ACCESS_STATE_SHOWING, EINA_FALSE);
+                       efl_access_state_changed_signal_emit(highlighted_obj, EFL_ACCESS_STATE_TYPE_SHOWING, EINA_FALSE);
                        efl_access_component_highlight_clear(highlighted_obj);
                        break;
                     }
@@ -1013,7 +1013,7 @@ _efl_ui_widget_efl_gfx_entity_visible_set(Eo *obj, Elm_Widget_Smart_Data *pd, Ei
                }
           }
         //
-        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, EINA_FALSE);
+        efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_SHOWING, EINA_FALSE);
      }
 }
 
@@ -4366,17 +4366,18 @@ _elm_widget_item_efl_access_object_state_set_get(const Eo *eo_item, Elm_Widget_I
    // //
    //
 
-   STATE_TYPE_SET(states, EFL_ACCESS_STATE_FOCUSABLE);
+   STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_FOCUSABLE);
 
    if (elm_object_item_focus_get(eo_item))
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_FOCUSED);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_FOCUSED);
    if (!elm_object_item_disabled_get(eo_item))
      {
-        STATE_TYPE_SET(states, EFL_ACCESS_STATE_ENABLED);
-        STATE_TYPE_SET(states, EFL_ACCESS_STATE_SENSITIVE);
+        STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_ENABLED);
+        STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_SENSITIVE);
+        STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_VISIBLE);
      }
    if (_elm_widget_item_onscreen_is(eo_item))
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_SHOWING);
 
    //TIZEN_ONLY(20170207) : [ATSPI] enhance expose highlight information on atspi
    /* unrealized genlist item does not have item->view,
@@ -5582,7 +5583,7 @@ _efl_ui_widget_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Widget_Smart_Dat
    //
 
    if (_elm_atspi_enabled() && !elm_widget_child_can_focus_get(obj))
-     efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, focused);
+     efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_FOCUSED, focused);
 
    return EINA_TRUE;
 }
@@ -5753,21 +5754,21 @@ _efl_ui_widget_efl_access_object_state_set_get(const Eo *obj, Elm_Widget_Smart_D
 
    if (evas_object_visible_get(obj))
      {
-        STATE_TYPE_SET(states, EFL_ACCESS_STATE_VISIBLE);
+        STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_VISIBLE);
         if (_elm_widget_onscreen_is(obj))
-          STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
+          STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_SHOWING);
      }
    if (!elm_widget_child_can_focus_get(obj))
      {
         if (elm_object_focus_allow_get(obj))
-          STATE_TYPE_SET(states, EFL_ACCESS_STATE_FOCUSABLE);
+          STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_FOCUSABLE);
         if (elm_object_focus_get(obj))
-          STATE_TYPE_SET(states, EFL_ACCESS_STATE_FOCUSED);
+          STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_FOCUSED);
      }
    if (!elm_object_disabled_get(obj))
      {
-        STATE_TYPE_SET(states, EFL_ACCESS_STATE_ENABLED);
-        STATE_TYPE_SET(states, EFL_ACCESS_STATE_SENSITIVE);
+        STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_ENABLED);
+        STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_SENSITIVE);
      }
 
    //TIZEN_ONLY(20170717) : expose highlight information on atspi

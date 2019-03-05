@@ -1799,7 +1799,7 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
         evas_object_smart_callback_call(obj, "focused", NULL);
         /* END */
         if (_elm_atspi_enabled())
-          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
+          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_FOCUSED, EINA_TRUE);
         _return_key_enabled_check(obj);
         _validate(obj);
 
@@ -1840,7 +1840,7 @@ _elm_entry_focus_update(Eo *obj, Elm_Entry_Data *sd)
         evas_object_smart_callback_call(obj, "unfocused", NULL);
         /* END */
         if (_elm_atspi_enabled())
-          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_FALSE);
+          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_FOCUSED, EINA_FALSE);
 
         /*************************************************************
          * TIZEN_ONLY_FEATURE : Tizen Copy & Paste feature with CBHM *
@@ -7869,7 +7869,7 @@ _elm_entry_efl_access_object_state_set_get(const Eo *obj, Elm_Entry_Data *_pd EI
    ret = efl_access_object_state_set_get(efl_super(obj, ELM_ENTRY_CLASS));
 
    if (elm_entry_editable_get(obj))
-     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_EDITABLE);
+     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_EDITABLE);
 
    return ret;
 }
