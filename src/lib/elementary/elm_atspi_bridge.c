@@ -7353,7 +7353,8 @@ _proxy_interface_register(Eldbus_Connection *conn, Eo *proxy, const char *bus, c
    eldbus_service_object_data_set(proxy_infc, "_atspi_obj", proxy);
 }
 
-static void _socket_ifc_create(Eldbus_Connection *conn, Eo *proxy)
+static void
+_socket_ifc_create(Eldbus_Connection *conn, Eo *proxy)
 {
    const char *bus, *path;
    // TIZEN_ONLY(20160705) - enable atspi_proxy to work
