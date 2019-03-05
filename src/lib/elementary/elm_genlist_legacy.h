@@ -91,5 +91,5 @@ elm_genlist_item_reorder_stop(Elm_Object_Item *item);
  * @}
  */
 
-#include "elm_genlist_item.eo.legacy.h"
-#include "elm_genlist.eo.legacy.h"
+#include "elm_genlist_item_eo.legacy.h"
+#include "elm_genlist_eo.legacy.h"
