@@ -7446,6 +7446,19 @@ fail:
 }
 //
 
+static void
+_key_event_info_free(Key_Event_Info *data)
+{
+   EINA_SAFETY_ON_NULL_RETURN(data);
+
+   eina_stringshare_del(data->event.keyname);
+   eina_stringshare_del(data->event.key);
+   eina_stringshare_del(data->event.string);
+   eina_stringshare_del(data->event.compose);
+
+   free(data);
+}
+
 static Eina_Bool
 _elm_atspi_bridge_key_filter(void *data, void *loop EINA_UNUSED, int type, void *event)
 {
