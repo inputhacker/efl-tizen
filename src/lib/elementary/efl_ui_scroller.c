@@ -137,6 +137,9 @@ _efl_ui_scroller_edje_drag_start_cb(void *data,
    sd->freeze_want = efl_ui_scrollable_scroll_freeze_get(sd->smanager);
    efl_ui_scrollable_scroll_freeze_set(sd->smanager, EINA_TRUE);
    efl_event_callback_call(scroller, EFL_UI_EVENT_SCROLL_DRAG_START, NULL);
+   //TIZEN_ONLY(20190306): add dragging scrollbar feature
+   efl_event_callback_call(scroller, EFL_UI_EVENT_SCROLL_START, NULL);
+   //
 }
 
 static void
@@ -152,6 +155,9 @@ _efl_ui_scroller_edje_drag_stop_cb(void *data,
 
    efl_ui_scrollable_scroll_freeze_set(sd->smanager, sd->freeze_want);
    efl_event_callback_call(scroller, EFL_UI_EVENT_SCROLL_DRAG_STOP, NULL);
+   //TIZEN_ONLY(20190306): add dragging scrollbar feature
+   efl_event_callback_call(scroller, EFL_UI_EVENT_SCROLL_STOP, NULL);
+   //
 }
 
 static void
@@ -208,6 +214,15 @@ _efl_ui_scroller_bar_size_changed_cb(void *data, const Efl_Event *event EINA_UNU
    efl_ui_scrollbar_bar_size_get(sd->smanager, &width, &height);
    edje_object_part_drag_size_set(wd->resize_obj, "efl.dragable.hbar", width, 1.0);
    edje_object_part_drag_size_set(wd->resize_obj, "efl.dragable.vbar", 1.0, height);
+
+   //TIZEN_ONLY(20190306): add dragging scrollbar feature
+   Eina_Size2D content = efl_gfx_entity_size_get(sd->content);
+
+   if (content.w < 1) content.w = 1;
+   if (content.h < 1) content.h = 1;
+   efl_ui_drag_step_set(efl_part(wd->resize_obj, "efl.dragable.hbar"), 30.0 / (double)content.w, 0.0);
+   efl_ui_drag_step_set(efl_part(wd->resize_obj, "efl.dragable.vbar"), 0.0, 30.0 / (double)content.h);
+   //
 }
 
 static void
@@ -427,6 +442,11 @@ _efl_ui_scroller_efl_object_finalize(Eo *obj,
                           _efl_ui_scroller_size_hint_changed_cb, obj);
    efl_event_callback_add(sd->pan_obj, EFL_GFX_ENTITY_EVENT_RESIZE,
                           _efl_ui_scroller_pan_resized_cb, obj);
+
+   //TIZEN_ONLY(20190306): add dragging scrollbar feature
+   efl_ui_drag_page_set(efl_part(wd->resize_obj, "efl.dragable.hbar"), 0.033, 0.0);
+   efl_ui_drag_page_set(efl_part(wd->resize_obj, "efl.dragable.vbar"), 0.0, 0.033);
+   //
 
    return obj;
 }
