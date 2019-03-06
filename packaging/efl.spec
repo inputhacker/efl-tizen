@@ -864,7 +864,7 @@ Example files for edje
 %package -n edje-devel
 Summary:  Development components for the edje package
 Group:    Graphics & UI Framework/Development
-Requires: edje-tools = %{version}-%{release}
+Requires: edje = %{version}-%{release}
 License: BSD-2-Clause and GPL-2.0+
 
 %description -n edje-devel
@@ -1113,7 +1113,6 @@ EFL elementary configuration and test apps package
 Summary:        Development files for elementary
 Group:          Development/Libraries
 Requires:       elementary = %{version}-%{release}
-Recommends:     elementary
 
 %description -n elementary-devel
 Development components for the elementary package
