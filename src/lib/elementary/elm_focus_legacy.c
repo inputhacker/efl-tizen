@@ -109,11 +109,11 @@ elm_object_focus_next_object_set(Evas_Object        *obj,
    EINA_SAFETY_ON_FALSE_RETURN(efl_isa(next, EFL_UI_WIDGET_CLASS));
    ELM_WIDGET_DATA_GET_OR_RETURN(next, next_pd);
 
-   #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction) pd->legacy_focus.field = next;
+   #define MAP(direction, field)  if ((Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_ ##direction) pd->legacy_focus.field = next;
    MAPPING()
    #undef MAP
    dir = efl_ui_focus_util_direction_complement(dir);
-   #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction) next_pd->legacy_focus.field = obj;
+   #define MAP(direction, field)  if ((Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_ ##direction) next_pd->legacy_focus.field = obj;
    MAPPING()
    #undef MAP
    */
@@ -198,13 +198,13 @@ _get_legacy_target(EINA_UNUSED Evas_Object *eo, Elm_Widget_Smart_Data *pd, Elm_F
 {
    Evas_Object *result = NULL;
 
-   #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.item_ ##field) result = elm_object_item_widget_get(pd->legacy_focus.item_ ##field);
+   #define MAP(direction, field)  if ((Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.item_ ##field) result = elm_object_item_widget_get(pd->legacy_focus.item_ ##field);
    MAPPING()
    #undef MAP
 
    if (!result)
      {
-        #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.field) result = pd->legacy_focus.field;
+        #define MAP(direction, field)  if ((Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.field) result = pd->legacy_focus.field;
         MAPPING()
         #undef MAP
      }
@@ -289,7 +289,7 @@ elm_object_focus_next(Evas_Object        *obj,
      o = efl_ui_focus_manager_move(top, dir);
    if (!o)
      {
-        if (dir == EFL_UI_FOCUS_DIRECTION_NEXT || dir == EFL_UI_FOCUS_DIRECTION_PREVIOUS)
+        if ((Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_NEXT || (Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_PREVIOUS)
           {
              Efl_Ui_Focus_Object *root;
 
@@ -310,7 +310,8 @@ elm_object_focus_next_object_get(const Evas_Object  *obj,
    API_ENTRY_VAL(NULL)
    //TIZEN_ONLY(20180607): Restore legacy focus
    /*
-   #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.field) return pd->legacy_focus.field;
+
+   #define MAP(direction, field)  if ((Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.field) return pd->legacy_focus.field;
    MAPPING()
    #undef MAP
 
@@ -327,7 +328,7 @@ elm_object_focus_next_item_get(const Evas_Object  *obj,
    API_ENTRY_VAL(NULL)
 
    /* TIZEN_ONLY(20180607): Restore legacy focus
-    #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.item_ ##field) return pd->legacy_focus.item_ ##field;
+   #define MAP(direction, field)  if ((Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_ ##direction && pd->legacy_focus.item_ ##field) return pd->legacy_focus.item_ ##field;
    MAPPING()
    #undef MAP
 
@@ -345,7 +346,7 @@ elm_object_focus_next_item_set(Evas_Object     *obj,
    API_ENTRY()
 
    /* TIZEN_ONLY(20180607): Restore legacy focus
-   #define MAP(direction, field)  if (dir == EFL_UI_FOCUS_DIRECTION_ ##direction) pd->legacy_focus.item_ ##field = next_item;
+   #define MAP(direction, field)  if ((Efl_Ui_Focus_Direction)dir == EFL_UI_FOCUS_DIRECTION_ ##direction) pd->legacy_focus.item_ ##field = next_item;
    MAPPING()
    #undef MAP
    */
