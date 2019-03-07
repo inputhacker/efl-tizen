@@ -3920,7 +3920,7 @@ _ecore_evas_mouse_move_process_with_multi_info_internal(Ecore_Evas *ee,
 
    if (!send_event) return;
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, ee->evas, (void **) &ev);
+   evt = efl_input_pointer_instance_get(ee->evas, (void **) &ev);
    if (!evt) return;
 
    ev->action = EFL_POINTER_ACTION_MOVE;
@@ -4006,7 +4006,7 @@ _ecore_evas_mouse_move_process_with_multi_info_internal2(Ecore_Evas *ee,
    // send_event = EINA_FALSE;
    if (!send_event) return;
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, ee->evas, (void **) &ev);
+   evt = efl_input_pointer_instance_get(ee->evas, (void **) &ev);
    if (!evt) return;
 
    ev->action = EFL_POINTER_ACTION_MOVE;

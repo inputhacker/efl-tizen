@@ -1909,7 +1909,7 @@ _canvas_event_feed_mouse_updown_with_multi_info(Eo *eo_e, int b, Evas_Button_Fla
    if (!e) return;
    EVAS_EVENT_FEED_SAFETY_CHECK(e);
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get(eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->data = (void *) data;
@@ -2568,7 +2568,7 @@ _canvas_event_feed_mouse_move_legacy(Evas *eo_e, Evas_Public_Data *e, int x, int
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt;
 
-   evt = efl_input_pointer_instance_get( eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get(eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->data = (void *) data;
@@ -2609,7 +2609,7 @@ _canvas_event_feed_mouse_move_with_multi_info_legacy(Evas *eo_e, Evas_Public_Dat
    Efl_Input_Pointer_Data *ev = NULL;
    Efl_Input_Pointer *evt;
 
-   evt = efl_input_instance_get(EFL_INPUT_POINTER_CLASS, eo_e, (void **) &ev);
+   evt = efl_input_pointer_instance_get(eo_e, (void **) &ev);
    if (!ev) return;
 
    ev->data = (void *) data;
