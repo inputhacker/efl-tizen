@@ -158,8 +158,7 @@ _ewk_view_widget_del(void *data, const Efl_Event *event EINA_UNUSED)
 }
 
 EOLIAN void
-_elm_atspi_ewk_wrapper_a11y_init(Eo *obj EINA_UNUSED, void *pd EINA_UNUSED,
-                                 Evas_Object *parent, Evas_Object *ewk_view)
+_elm_atspi_ewk_wrapper_a11y_init(Evas_Object *parent, Evas_Object *ewk_view)
 {
    Evas_Object *wrapper = evas_object_data_get(ewk_view, EWK_A11Y_DATA_KEY);
    if (!wrapper) {
