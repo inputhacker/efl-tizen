@@ -520,6 +520,8 @@ lib/elementary/elm_toolbar_eo.legacy.h \
 lib/elementary/elm_toolbar_item_eo.legacy.h \
 lib/elementary/elm_view_form_eo.legacy.h \
 lib/elementary/elm_view_list_eo.legacy.h \
+lib/elementary/elm_view_form_eo.h \
+lib/elementary/elm_view_list_eo.h \
 lib/elementary/elm_web_eo.legacy.h \
 lib/elementary/elm_widget_item_container_eo.legacy.h \
 lib/elementary/elm_widget_item_eo.legacy.h \
@@ -622,8 +624,6 @@ lib/elementary/elm_table_eo.h \
 lib/elementary/elm_thumb_eo.h \
 lib/elementary/elm_toolbar_eo.h \
 lib/elementary/elm_toolbar_item_eo.h \
-lib/elementary/elm_view_form_eo.h \
-lib/elementary/elm_view_list_eo.h \
 lib/elementary/elm_web_eo.h \
 lib/elementary/elm_widget_item_container_eo.h \
 lib/elementary/elm_widget_item_eo.h \
@@ -641,7 +641,7 @@ lib/elementary/Elementary.h \
 lib/elementary/Elementary_Options.h \
 lib/elementary/Elementary_Cursor.h \
 lib/elementary/Elementary_GL_Helpers.h \
-$(elm_legacy_eo_headers)
+$(elm_legacy_eo_headers_pub)
 includesdir = $(includedir)/elementary-@VMAJ@
 
 includesunstable_HEADERS = \
