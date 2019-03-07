@@ -1,8 +1,8 @@
 /* TIZEN_ONLY(20180508): fix layout_part_cursor things and eo hierarchy of part_box/part_table
-class Efl.Ui.Layout_Part_Table extends Efl.Object implements Efl.Pack_Table
+class @beta Efl.Ui.Layout_Part_Table extends Efl.Object implements Efl.Pack_Table
  */
 /* END */
-class Efl.Ui.Layout_Part_Table extends Efl.Ui.Layout_Part implements Efl.Pack_Table
+class @beta Efl.Ui.Layout_Part_Table extends Efl.Ui.Layout_Part implements Efl.Pack_Table
 {
    [[Represents a Table created as part of a layout.
 

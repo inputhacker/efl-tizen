@@ -310,7 +310,7 @@ struct Efl.Access.Gesture_Info
 
 type Efl.Access.Relation_Set: list<ptr(Efl.Access.Relation)>; [[Elementary Accessibility relation set type]]
 
-mixin Efl.Access.Object requires Efl.Object
+mixin @beta Efl.Access.Object requires Efl.Object
 {
    [[Accessibility accessible mixin]]
    eo_prefix: efl_access_object;
