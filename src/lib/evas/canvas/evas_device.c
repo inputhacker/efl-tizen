@@ -532,6 +532,31 @@ _evas_device_top_get(const Evas *eo_e)
    return eina_array_data_get(e->cur_device, num - 1);
 }
 
+EOLIAN Eina_Bool
+_evas_canvas_efl_canvas_scene_pointer_position_get(const Eo *eo_e, Evas_Public_Data *e, Efl_Input_Device *seat, Eina_Position2D *pos)
+{
+   Eina_Iterator *it;
+   Eo *child;
+
+   if (pos) *pos = EINA_POSITION2D(0, 0);
+   if (!e->default_seat) return EINA_FALSE;
+   if (!seat)
+     {
+        evas_pointer_canvas_xy_get(eo_e, &pos->x, &pos->y);
+        return EINA_TRUE;
+     }
+   it = efl_input_device_children_iterate(seat);
+   EINA_SAFETY_ON_NULL_RETURN_VAL(it, EINA_FALSE);
+
+   EINA_ITERATOR_FOREACH(it, child)
+     if (_is_pointer(efl_input_device_type_get(child)))
+       break;
+   if (child)
+     *pos = efl_input_pointer_position_get(child);
+   eina_iterator_free(it);
+   return !!child;
+}
+
 //TIZEN_ONLY(20171220): send a hw device for pointer events
 EAPI Evas_Device *
 evas_device_top_get(const Evas *eo_e)
@@ -540,6 +565,7 @@ evas_device_top_get(const Evas *eo_e)
 }
 //
 
+//TIZEN_ONLY
 EAPI Evas_Device *
 evas_device_default_get(const Evas *eo_e, Evas_Device_Class clas)
 {
@@ -565,3 +591,5 @@ evas_device_default_get(const Evas *eo_e, Evas_Device_Class clas)
 
    return NULL;
 }
+//
+
