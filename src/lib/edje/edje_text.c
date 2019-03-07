@@ -506,7 +506,7 @@ arrange_text:
       if (params->type.text->align.x < FROM_INT(0))
         {
            /* TIZEN_ONLY(20170216): Apply align according to paragraph_direction
-           if (evas_object_text_direction_get(ep->object) ==
+           if ((Evas_BiDi_Direction)evas_object_text_direction_get(ep->object) ==
                EVAS_BIDI_DIRECTION_RTL)
              {
                 align_x = FROM_INT(1);
