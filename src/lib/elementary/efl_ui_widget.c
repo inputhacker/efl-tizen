@@ -8079,7 +8079,7 @@ EFL_CALLBACKS_ARRAY_DEFINE(widget_shadow_cb,
 { EFL_EVENT_DEL, _widget_shadow_del_cb },
 { EFL_GFX_ENTITY_EVENT_MOVE, _widget_shadow_event_cb },
 { EFL_GFX_ENTITY_EVENT_RESIZE, _widget_shadow_event_cb },
-{ EFL_GFX_ENTITY_EVENT_RESTACK, _widget_shadow_event_cb },
+{ EFL_GFX_ENTITY_EVENT_STACK_CHANGED, _widget_shadow_event_cb },
 { EFL_GFX_ENTITY_EVENT_HIDE, _widget_shadow_event_cb },
 { EFL_GFX_ENTITY_EVENT_SHOW, _widget_shadow_event_cb })
 
@@ -8968,7 +8968,6 @@ _elm_widget_showing_geometry_get(Eo *obj, int *x, int *y, int *w, int *h)
    *y = 0;
    *w = 0;
    *h = 0;
-
    if (!obj) return;
 
    evas_object_geometry_get(obj, x, y, w, h);
