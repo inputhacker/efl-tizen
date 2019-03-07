@@ -1590,8 +1590,6 @@ fi
 EFL_CHECK_LIBS([EMILE], [zlib])
 
 EFL_INTERNAL_DEPEND_PKG([EMILE], [eina])
-requirements_cflags_emile="${requirements_cflags_emile} -I\${top_srcdir}/src/lib/efl -I\${top_builddir}/src/lib/efl"
-requirements_pc_emile="efl >= ${PACKAGE_VERSION} ${requirements_pc_emile}"
 
 EFL_EVAL_PKGS([EMILE])
 
@@ -1643,8 +1641,6 @@ fi
 
 EFL_INTERNAL_DEPEND_PKG([EET], [eina])
 EFL_INTERNAL_DEPEND_PKG([EET], [emile])
-requirements_pc_eet="${requirements_pc_eet} ${requirements_pc_emile}"
-requirements_cflags_eet="${requirements_cflags_eet} ${requirements_cflags_emile}"
 
 EFL_EVAL_PKGS([EET])
 
