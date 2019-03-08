@@ -459,11 +459,11 @@ _efl_ui_scroller_efl_object_finalize(Eo *obj,
                           _efl_ui_scroller_bar_show_cb, obj);
    efl_event_callback_add(obj, EFL_UI_SCROLLBAR_EVENT_BAR_HIDE,
                           _efl_ui_scroller_bar_hide_cb, obj);
-   efl_event_callback_add(obj, EFL_GFX_ENTITY_EVENT_RESIZE,
+   efl_event_callback_add(obj, EFL_GFX_ENTITY_EVENT_SIZE_CHANGED,
                           _efl_ui_scroller_resized_cb, obj);
    efl_event_callback_add(obj, EFL_GFX_ENTITY_EVENT_HINTS_CHANGED,
                           _efl_ui_scroller_size_hint_changed_cb, obj);
-   efl_event_callback_add(sd->pan_obj, EFL_GFX_ENTITY_EVENT_RESIZE,
+   efl_event_callback_add(sd->pan_obj, EFL_GFX_ENTITY_EVENT_SIZE_CHANGED,
                           _efl_ui_scroller_pan_resized_cb, obj);
 
    //TIZEN_ONLY(20190306): add dragging scrollbar feature
@@ -488,11 +488,11 @@ _efl_ui_scroller_efl_object_destructor(Eo *obj,
                           _efl_ui_scroller_bar_show_cb, obj);
    efl_event_callback_del(obj, EFL_UI_SCROLLBAR_EVENT_BAR_HIDE,
                           _efl_ui_scroller_bar_hide_cb, obj);
-   efl_event_callback_del(obj, EFL_GFX_ENTITY_EVENT_RESIZE,
+   efl_event_callback_del(obj, EFL_GFX_ENTITY_EVENT_SIZE_CHANGED,
                           _efl_ui_scroller_resized_cb, obj);
    efl_event_callback_del(obj, EFL_GFX_ENTITY_EVENT_HINTS_CHANGED,
                           _efl_ui_scroller_size_hint_changed_cb, obj);
-   efl_event_callback_del(sd->pan_obj, EFL_GFX_ENTITY_EVENT_RESIZE,
+   efl_event_callback_del(sd->pan_obj, EFL_GFX_ENTITY_EVENT_SIZE_CHANGED,
                           _efl_ui_scroller_pan_resized_cb, obj);
    efl_del(sd->pan_obj);
    sd->pan_obj = NULL;

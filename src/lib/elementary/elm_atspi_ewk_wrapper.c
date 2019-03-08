@@ -24,8 +24,8 @@ static void
 _ewk_view_geometry_changed(void *data, const Efl_Event *event);
 
 EFL_CALLBACKS_ARRAY_DEFINE(resize_watch,
-                          { EFL_GFX_ENTITY_EVENT_MOVE, _ewk_view_geometry_changed },
-                          { EFL_GFX_ENTITY_EVENT_RESIZE, _ewk_view_geometry_changed });
+                          { EFL_GFX_ENTITY_EVENT_POSITION_CHANGED, _ewk_view_geometry_changed },
+                          { EFL_GFX_ENTITY_EVENT_SIZE_CHANGED, _ewk_view_geometry_changed });
 
 static void
 _elm_atspi_ewk_wrapper_disconnect(Elm_Atspi_Ewk_Wrapper_Data *_pd)

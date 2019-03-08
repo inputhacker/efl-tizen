@@ -88,14 +88,30 @@ struct _Elm_Translate_String_Data
    Eina_Bool   preset : 1;
 };
 
-/***********************************************************
- * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
- ***********************************************************/
-static void
-_efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir);
-/*******
- * END *
- *******/
+// TIZEN_ONLY PROTOTYPES
+static void _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir); // TIZEN_ONLY(20180117): Override Paragraph Direction APIs
+static void _if_focused_revert(Evas_Object *obj, Eina_Bool can_focus_only); //TIZEN_ONLY(20180607): Restore legacy focus
+
+static void elm_widget_disabled_internal(Eo *obj, Eina_Bool disabled);
+static void _on_sub_obj_hide(void *data, const Efl_Event *event);
+
+static inline Eina_Bool _elm_widget_focus_chain_manager_is(const Evas_Object *obj);
+static inline Eina_Bool _internal_elm_widget_focus_direction_manager_is(const Evas_Object *obj);
+static void _parent_focus(Evas_Object *obj, Elm_Object_Item *item);
+static void _elm_object_focus_chain_del_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED);
+
+static Eina_List *_lines_split(Eina_List *children);
+static int _sort_vertically(const void *data1, const void *data2);
+static int _sort_horizontally(const void *data1, const void *data2);
+
+Eo * plug_type_proxy_get(Eo *obj, Evas_Object *widget);
+
+static Eina_Bool _elm_widget_can_highlight_get_by_class(Eo *obj);
+static Eina_Bool _accessible_object_on_scroll_is(Eo* obj);
+// TIZEN_ONLY
+
+
+
 
 /* For keeping backward compatibility (EFL 1.18 or older versions).
  * Since EFL 1.19 which starts to use eolian_gen2, it does not convert
@@ -241,14 +257,7 @@ _elm_scrollable_is(const Evas_Object *obj)
         efl_isa(obj, EFL_UI_SCROLLABLE_INTERACTIVE_INTERFACE);
 }
 
-static void
-elm_widget_disabled_internal(Eo *obj, Eina_Bool disabled);
-static void
-_on_sub_obj_del(void *data, const Efl_Event *event);
-//TIZEN_ONLY(20180607): Restore legacy focus
-static void
-_on_sub_obj_hide(void *data, const Efl_Event *event);
-//
+static void _on_sub_obj_del(void *data, const Efl_Event *event);
 static void _propagate_event(void *data, const Efl_Event *eo_event);
 static void _elm_widget_focus_tree_unfocusable_handle(Eo *obj);
 static void _elm_widget_shadow_update(Efl_Ui_Widget *obj);
@@ -886,64 +895,7 @@ _efl_ui_widget_efl_canvas_group_group_add(Eo *obj, Elm_Widget_Smart_Data *priv)
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_IN,
                                   _obj_mouse_in, obj);
 }
-//TIZEN_ONLY(20180607): Restore legacy focus
-static void
-_if_focused_revert(Evas_Object *obj,
-                   Eina_Bool can_focus_only)
-{
-   Evas_Object *top;
-   Evas_Object *newest = NULL;
-   unsigned int newest_focus_order = 0;
 
-   INTERNAL_ENTRY;
-
-   if (!sd->focused) return;
-   if (!sd->parent_obj) return;
-
-   top = elm_widget_top_get(sd->parent_obj);
-   if (top)
-     {
-        newest = efl_ui_widget_newest_focus_order_get
-           (top, &newest_focus_order, can_focus_only);
-        if (newest)
-          {
-             if (newest == top)
-               {
-                  ELM_WIDGET_DATA_GET(newest, sd2);
-                  if (!sd2) return;
-
-                  if (!_is_focused(newest))
-                    efl_ui_widget_focus_steal(newest, NULL);
-                  else
-                    {
-                       if (sd2->resize_obj && _is_focused(sd2->resize_obj))
-                         efl_ui_widget_focused_object_clear(sd2->resize_obj);
-                       else
-                         {
-                            const Eina_List *l;
-                            Evas_Object *child;
-                            EINA_LIST_FOREACH(sd2->subobjs, l, child)
-                              {
-                                 if (!_elm_widget_is(child)) continue;
-                                 if (_is_focused(child))
-                                   {
-                                      efl_ui_widget_focused_object_clear(child);
-                                      break;
-                                   }
-                              }
-                         }
-                    }
-                  evas_object_focus_set(newest, EINA_TRUE);
-               }
-             else
-               {
-                  elm_object_focus_set(newest, EINA_FALSE);
-                  elm_object_focus_set(newest, EINA_TRUE);
-               }
-          }
-     }
-}
-//
 EOLIAN static void
 _efl_ui_widget_efl_canvas_group_group_del(Eo *obj, Elm_Widget_Smart_Data *sd)
 {
@@ -1247,78 +1199,6 @@ _efl_ui_widget_efl_canvas_group_group_member_del(Eo *obj EINA_UNUSED, Elm_Widget
       evas_object_clip_unset(child);
    efl_canvas_group_member_del(efl_super(obj, MY_CLASS), child);
 }
-
-// internal funcs
-//TIZEN_ONLY(20180607): Restore legacy focus
-/**
- * @internal
- *
- * Check if the widget has its own focus next function.
- *
- * @param obj The widget.
- * @return focus next function is implemented/unimplemented.
- * (@c EINA_TRUE = implemented/@c EINA_FALSE = unimplemented.)
- */
-static inline Eina_Bool
-_elm_widget_focus_chain_manager_is(const Evas_Object *obj)
-{
-   ELM_WIDGET_CHECK(obj) EINA_FALSE;
-
-   Eina_Bool manager_is = EINA_FALSE;
-   manager_is = efl_ui_widget_focus_next_manager_is((Eo *)obj);
-   return manager_is;
-}
-
-static inline Eina_Bool
-_internal_elm_widget_focus_direction_manager_is(const Evas_Object *obj)
-{
-   ELM_WIDGET_CHECK(obj) EINA_FALSE;
-
-   Eina_Bool manager_is = EINA_FALSE;
-   manager_is = efl_ui_widget_focus_direction_manager_is((Eo *)obj);
-   return manager_is;
-}
-
-static void
-_parent_focus(Evas_Object *obj, Elm_Object_Item *item)
-{
-   API_ENTRY return;
-
-   if (sd->focused) return;
-
-   Evas_Object *o = elm_widget_parent_get(obj);
-   sd->focus_order_on_calc = EINA_TRUE;
-
-   if (o) _parent_focus(o, item);
-
-   if (!sd->focus_order_on_calc)
-     return;  /* we don't want to override it if by means of any of the
-                 callbacks below one gets to calculate our order
-                 first. */
-
-   focus_order++;
-   sd->focus_order = focus_order;
-   sd->focused = EINA_TRUE;
-
-   if (sd->top_win_focused)
-     efl_ui_focus_object_on_focus_update(obj);
-   sd->focus_order_on_calc = EINA_FALSE;
-
-   if (_elm_config->access_mode == ELM_ACCESS_MODE_ON)
-     _elm_access_highlight_set(obj);
-}
-
-static void
-_elm_object_focus_chain_del_cb(void *data,
-                               Evas *e EINA_UNUSED,
-                               Evas_Object *obj,
-                               void *event_info EINA_UNUSED)
-{
-   ELM_WIDGET_DATA_GET(data, sd);
-
-   sd->focus_chain = eina_list_remove(sd->focus_chain, obj);
-}
-//
 
 // internal funcs
 static void
@@ -2413,221 +2293,6 @@ _propagate_event(void *data EINA_UNUSED, const Efl_Event *eo_event)
      }
 }
 
-//TIZEN_ONLY(20180607): Restore legacy focus
-/**
- * @internal
- *
- * Set custom focus chain.
- *
- * This function i set one new and overwrite any previous custom focus chain
- * with the list of objects. The previous list will be deleted and this list
- * will be managed. After setted, don't modity it.
- *
- * @note On focus cycle, only will be evaluated children of this container.
- *
- * @param obj The container widget
- * @param objs Chain of objects to pass focus
- * @ingroup Widget
- */
-EOLIAN static void
-_efl_ui_widget_focus_custom_chain_set(Eo *obj, Elm_Widget_Smart_Data *sd, Eina_List *objs)
-{
-   if (!_elm_widget_focus_chain_manager_is(obj)) return;
-
-   efl_ui_widget_focus_custom_chain_unset(obj);
-
-   Eina_List *l;
-   Evas_Object *o;
-
-   EINA_LIST_FOREACH(objs, l, o)
-     {
-        evas_object_event_callback_add(o, EVAS_CALLBACK_DEL,
-                                       _elm_object_focus_chain_del_cb, obj);
-     }
-
-   sd->focus_chain = objs;
-}
-
-/**
- * @internal
- *
- * Get custom focus chain
- *
- * @param obj The container widget
- * @ingroup Widget
- */
-EOLIAN static const Eina_List*
-_efl_ui_widget_focus_custom_chain_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
-{
-   return (const Eina_List *)sd->focus_chain;
-}
-
-/**
- * @internal
- *
- * Unset custom focus chain
- *
- * @param obj The container widget
- * @ingroup Widget
- */
-EOLIAN static void
-_efl_ui_widget_focus_custom_chain_unset(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
-{
-   Eina_List *l, *l_next;
-   Evas_Object *o;
-
-   EINA_LIST_FOREACH_SAFE(sd->focus_chain, l, l_next, o)
-     {
-        evas_object_event_callback_del_full(o, EVAS_CALLBACK_DEL,
-                                            _elm_object_focus_chain_del_cb, obj);
-        sd->focus_chain = eina_list_remove_list(sd->focus_chain, l);
-     }
-}
-
-/**
- * @internal
- *
- * Append object to custom focus chain.
- *
- * @note If relative_child equal to NULL or not in custom chain, the object
- * will be added in end.
- *
- * @note On focus cycle, only will be evaluated children of this container.
- *
- * @param obj The container widget
- * @param child The child to be added in custom chain
- * @param relative_child The relative object to position the child
- * @ingroup Widget
- */
-EOLIAN static void
-_efl_ui_widget_focus_custom_chain_append(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Object *child, Evas_Object *relative_child)
-{
-   EINA_SAFETY_ON_NULL_RETURN(child);
-
-   if (!_elm_widget_focus_chain_manager_is(obj)) return;
-
-   evas_object_event_callback_add(child, EVAS_CALLBACK_DEL,
-                                  _elm_object_focus_chain_del_cb, obj);
-
-   if (!relative_child)
-     sd->focus_chain = eina_list_append(sd->focus_chain, child);
-   else
-     sd->focus_chain = eina_list_append_relative(sd->focus_chain,
-                                                 child, relative_child);
-}
-
-/**
- * @internal
- *
- * Prepend object to custom focus chain.
- *
- * @note If relative_child equal to NULL or not in custom chain, the object
- * will be added in begin.
- *
- * @note On focus cycle, only will be evaluated children of this container.
- *
- * @param obj The container widget
- * @param child The child to be added in custom chain
- * @param relative_child The relative object to position the child
- * @ingroup Widget
- */
-EOLIAN static void
-_efl_ui_widget_focus_custom_chain_prepend(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Object *child, Evas_Object *relative_child)
-{
-   EINA_SAFETY_ON_NULL_RETURN(child);
-
-   if (!_elm_widget_focus_chain_manager_is(obj)) return;
-
-   evas_object_event_callback_add(child, EVAS_CALLBACK_DEL,
-                                  _elm_object_focus_chain_del_cb, obj);
-
-   if (!relative_child)
-     sd->focus_chain = eina_list_prepend(sd->focus_chain, child);
-   else
-     sd->focus_chain = eina_list_prepend_relative(sd->focus_chain,
-                                                  child, relative_child);
-}
-
-/**
- * @internal
- *
- * Give focus to next object in object tree.
- *
- * Give focus to next object in focus chain of one object sub-tree.
- * If the last object of chain already have focus, the focus will go to the
- * first object of chain.
- *
- * @param obj The widget root of sub-tree
- * @param dir Direction to cycle the focus
- *
- * @ingroup Widget
- */
-EOLIAN static void
-_efl_ui_widget_focus_cycle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Elm_Focus_Direction dir)
-{
-   Evas_Object *target = NULL;
-   Elm_Object_Item *target_item = NULL;
-   if (!_elm_widget_is(obj))
-     return;
-   efl_ui_widget_focus_next_get(obj, dir, &target, &target_item);
-   if (target)
-     {
-        /* access */
-        if (_elm_config->access_mode)
-          {
-             /* highlight cycle does not steal a focus, only after window gets
-                the ECORE_X_ATOM_E_ILLUME_ACCESS_ACTION_ACTIVATE message,
-                target will steal focus, or focus its own job. */
-             if (!_elm_access_auto_highlight_get())
-               efl_ui_widget_focus_steal(target, target_item);
-
-             _elm_access_highlight_set(target);
-             elm_widget_focus_region_show(target);
-          }
-        else efl_ui_widget_focus_steal(target, target_item);
-     }
-}
-
-/**
- * @internal
- *
- * Give focus to near object(in object tree) in one direction.
- *
- * Give focus to near object(in object tree) in direction of current
- * focused object.  If none focusable object in given direction or
- * none focused object in object tree, the focus will not change.
- *
- * @param obj The reference widget
- * @param degree Degree changes clockwise. i.e. 0-degree: Up,
- *               90-degree: Right, 180-degree: Down, and 270-degree: Left
- * @return EINA_TRUE if focus is moved.
- *
- * @ingroup Widget
- */
-EOLIAN static Eina_Bool
-_efl_ui_widget_focus_direction_go(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, double degree)
-{
-   Evas_Object *target = NULL;
-   Elm_Object_Item *target_item = NULL;
-   Evas_Object *current_focused = NULL;
-   double weight = 0.0;
-
-   if (!_elm_widget_is(obj)) return EINA_FALSE;
-   if (!_is_focused(obj)) return EINA_FALSE;
-
-   current_focused = efl_ui_widget_focused_object_get(obj);
-
-   if (efl_ui_widget_focus_direction_get
-         (obj, current_focused, degree, &target, &target_item, &weight))
-     {
-        efl_ui_widget_focus_steal(target, NULL);
-        return EINA_TRUE;
-     }
-
-   return EINA_FALSE;
-}
-//END
-
 double
 _elm_widget_focus_direction_weight_get(const Evas_Object *obj1,
                       const Evas_Object *obj2,
@@ -2982,693 +2647,6 @@ _elm_widget_focus_direction_weight_get(const Evas_Object *obj1,
    return 1.0 / weight;
 }
 
-//TIZEN_ONLY(20180607): Restore legacy focus
-/**
- * @internal
- *
- * Get near object in one direction of base object.
- *
- * Get near object(in the object sub-tree) in one direction of
- * base object. Return the near object by reference.
- * By initializing weight, you can filter objects locating far
- * from base object. If object is in the specific direction,
- * weight is (1/(distance^2)). If object is not exactly in one
- * direction, some penalty will be added.
- *
- * @param obj The widget root of sub-tree
- * @param base The base object of the direction
- * @param degree Degree changes clockwise. i.e. 0-degree: Up,
- *               90-degree: Right, 180-degree: Down, and 270-degree: Left
- * @param direction The near object in one direction
- * @param weight The weight is bigger when the object is located near
- * @return EINA_TRUE if near object is updated.
- *
- * @ingroup Widget
- */
-
-EOLIAN static Eina_Bool
-_efl_ui_widget_focus_direction_get(const Eo *obj, Elm_Widget_Smart_Data *sd, const Evas_Object *base, double degree, Evas_Object **direction, Elm_Object_Item **direction_item, double *weight)
-{
-   double c_weight;
-
-   /* -1 means the best was already decided. Don't need any more searching. */
-   if (!direction || !weight || !base || (obj == base))
-     return EINA_FALSE;
-
-   /* Ignore if disabled */
-   if ((!evas_object_visible_get(obj))
-       || (elm_widget_disabled_get(obj))
-       || (elm_widget_tree_unfocusable_get(obj)))
-     return EINA_FALSE;
-
-   /* Try use hook */
-   if (_internal_elm_widget_focus_direction_manager_is(obj))
-     {
-        Eina_Bool int_ret = EINA_FALSE;
-        int_ret = efl_ui_widget_focus_direction((Eo *)obj, base, degree, direction, direction_item, weight);
-        return int_ret;
-     }
-
-   if (!elm_widget_can_focus_get(obj) || _is_focused((Eo *)obj))
-     return EINA_FALSE;
-
-   c_weight = _elm_widget_focus_direction_weight_get(base, obj, degree);
-   if ((c_weight == -1.0) ||
-       ((c_weight != 0.0) && (*weight != -1.0) &&
-        ((int)(*weight * 1000000) <= (int)(c_weight * 1000000))))
-     {
-        if (*direction &&
-            ((int)(*weight * 1000000) == (int)(c_weight * 1000000)))
-          {
-             ELM_WIDGET_DATA_GET(*direction, sd1);
-             if (sd1)
-               {
-                  if (sd->focus_order <= sd1->focus_order)
-                    return EINA_FALSE;
-               }
-          }
-        *direction = (Evas_Object *)obj;
-        *weight = c_weight;
-        return EINA_TRUE;
-     }
-
-   return EINA_FALSE;
-}
-
-/**
- * @internal
- *
- * Get near object in one direction of base object in list.
- *
- * Get near object in one direction of base object in the specific
- * object list. Return the near object by reference.
- * By initializing weight, you can filter objects locating far
- * from base object. If object is in the specific direction,
- * weight is (1/(distance^2)). If object is not exactly in one
- * direction, some penalty will be added.
- *
- * @param obj The widget root of sub-tree
- * @param base The base object of the direction
- * @param items list with ordered objects
- * @param list_data_get function to get the object from one item of list
- * @param degree Degree changes clockwise. i.e. 0-degree: Up,
- *               90-degree: Right, 180-degree: Down, and 270-degree: Left
- * @param direction The near object in one direction
- * @param weight The weight is bigger when the object is located near
- * @return EINA_TRUE if near object is updated.
- *
- * @ingroup Widget
- */
-EOLIAN static Eina_Bool
-_efl_ui_widget_focus_list_direction_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, const Evas_Object *base, const Eina_List *items, void* list_data_get, double degree, Evas_Object **direction, Elm_Object_Item **direction_item, double *weight)
-{
-   if (!direction || !weight || !base || !items)
-     return EINA_FALSE;
-
-   const Eina_List *l = items;
-   Evas_Object *current_best = *direction;
-
-   for (; l; l = eina_list_next(l))
-     {
-        Evas_Object *cur = ((list_data_get_func_type)list_data_get)(l);
-        if (cur && _elm_widget_is(cur))
-          efl_ui_widget_focus_direction_get(cur, base, degree, direction, direction_item, weight);
-     }
-   if (current_best != *direction) return EINA_TRUE;
-
-   return EINA_FALSE;
-}
-
-/**
- * @internal
- *
- * Get next object in focus chain of object tree.
- *
- * Get next object in focus chain of one object sub-tree.
- * Return the next object by reference. If don't have any candidate to receive
- * focus before chain end, the first candidate will be returned.
- *
- * @param obj The widget root of sub-tree
- * @param dir Direction of focus chain
- * @param next The next object in focus chain
- * @return EINA_TRUE if don't need focus chain restart/loop back
- *         to use 'next' obj.
- *
- * @ingroup Widget
- */
-EOLIAN static Eina_Bool
-_efl_ui_widget_focus_next_get(const Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
-{
-   Elm_Access_Info *ac;
-
-   if (!next)
-     return EINA_FALSE;
-   *next = NULL;
-
-   /* Ignore if disabled */
-   if (_elm_config->access_mode && _elm_access_auto_highlight_get())
-     {
-        if (!evas_object_visible_get(obj)
-            || (elm_widget_tree_unfocusable_get(obj)))
-          return EINA_FALSE;
-     }
-   else
-     {
-        if ((!evas_object_visible_get(obj))
-            || (elm_widget_disabled_get(obj))
-            || (elm_widget_tree_unfocusable_get(obj)))
-          return EINA_FALSE;
-     }
-
-   /* Try use hook */
-   if (_elm_widget_focus_chain_manager_is(obj))
-     {
-        Eina_Bool int_ret = EINA_FALSE;
-        int_ret = efl_ui_widget_focus_next((Eo *)obj, dir, next, next_item);
-        if (!int_ret && _is_focused((Eo *)obj))
-          {
-             Evas_Object *o = NULL;
-             if (dir == ELM_FOCUS_PREVIOUS)
-               *next_item = sd->item_focus_previous;
-             else if (dir == ELM_FOCUS_NEXT)
-               *next_item = sd->item_focus_next;
-             else if (dir == ELM_FOCUS_UP)
-               *next_item = sd->item_focus_up;
-             else if (dir == ELM_FOCUS_DOWN)
-               *next_item = sd->item_focus_down;
-             else if (dir == ELM_FOCUS_RIGHT)
-               *next_item = sd->item_focus_right;
-             else if (dir == ELM_FOCUS_LEFT)
-               *next_item = sd->item_focus_left;
-             if (*next_item)
-               o = elm_object_item_widget_get(*next_item);
-
-             if (!o)
-               {
-                  if (dir == ELM_FOCUS_PREVIOUS)
-                    o = sd->focus_previous;
-                  else if (dir == ELM_FOCUS_NEXT)
-                    o = sd->focus_next;
-                  else if (dir == ELM_FOCUS_UP)
-                    o = sd->focus_up;
-                  else if (dir == ELM_FOCUS_DOWN)
-                    o = sd->focus_down;
-                  else if (dir == ELM_FOCUS_RIGHT)
-                    o = sd->focus_right;
-                  else if (dir == ELM_FOCUS_LEFT)
-                    o = sd->focus_left;
-               }
-
-             if (o)
-               {
-                  *next = o;
-                  return EINA_TRUE;
-               }
-          }
-        return int_ret;
-     }
-
-   /* access object does not check sd->can_focus, because an object could
-      have highlight even though the object is not focusable. */
-   if (_elm_config->access_mode && _elm_access_auto_highlight_get())
-     {
-        ac = _elm_access_info_get(obj);
-        if (!ac) return EINA_FALSE;
-
-        /* check whether the hover object is visible or not */
-        if (!evas_object_visible_get(ac->hoverobj))
-          return EINA_FALSE;
-     }
-   else if (!elm_widget_can_focus_get(obj))
-     return EINA_FALSE;
-
-   if (_is_focused((Eo *)obj))
-     {
-        if (dir == ELM_FOCUS_PREVIOUS)
-          *next_item = sd->item_focus_previous;
-        else if (dir == ELM_FOCUS_NEXT)
-          *next_item = sd->item_focus_next;
-        else if (dir == ELM_FOCUS_UP)
-          *next_item = sd->item_focus_up;
-        else if (dir == ELM_FOCUS_DOWN)
-          *next_item = sd->item_focus_down;
-        else if (dir == ELM_FOCUS_RIGHT)
-          *next_item = sd->item_focus_right;
-        else if (dir == ELM_FOCUS_LEFT)
-          *next_item = sd->item_focus_left;
-        if (*next_item) *next = elm_object_item_widget_get(*next_item);
-
-        if (!(*next))
-          {
-             if (dir == ELM_FOCUS_PREVIOUS)
-               *next = sd->focus_previous;
-             else if (dir == ELM_FOCUS_NEXT)
-               *next = sd->focus_next;
-             else if (dir == ELM_FOCUS_UP)
-               *next = sd->focus_up;
-             else if (dir == ELM_FOCUS_DOWN)
-               *next = sd->focus_down;
-             else if (dir == ELM_FOCUS_RIGHT)
-               *next = sd->focus_right;
-             else if (dir == ELM_FOCUS_LEFT)
-               *next = sd->focus_left;
-          }
-
-        if (*next) return EINA_TRUE;
-     }
-
-   /* Return */
-   *next = (Evas_Object *)obj;
-   return !ELM_WIDGET_FOCUS_GET(obj);
-}
-
-/**
- * @internal
- *
- * Get next object in focus chain of object tree in list.
- *
- * Get next object in focus chain of one object sub-tree ordered by one list.
- * Return the next object by reference. If don't have any candidate to receive
- * focus before list end, the first candidate will be returned.
- *
- * @param obj The widget root of sub-tree
- * @param items list with ordered objects
- * @param list_data_get function to get the object from one item of list
- * @param dir Direction of focus chain
- * @param next The next object in focus chain
- * @return EINA_TRUE if don't need focus chain restart/loop back
- *         to use 'next' obj.
- *
- * @ingroup Widget
- */
-EOLIAN static Eina_Bool
-_efl_ui_widget_focus_list_next_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, const Eina_List *items, void * list_data_get, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
-{
-   Eina_List *(*list_next)(const Eina_List *list) = NULL;
-   Evas_Object *focused_object = NULL;
-
-   if (!next)
-     return EINA_FALSE;
-   *next = NULL;
-
-   if (!_elm_widget_is(obj))
-     return EINA_FALSE;
-
-   if (!items)
-     return EINA_FALSE;
-
-   /* When Up, Down, Right, or Left, try direction_get first. */
-   focused_object = efl_ui_widget_focused_object_get(obj);
-   if (focused_object)
-     {
-        if ((dir == ELM_FOCUS_UP)
-           || (dir == ELM_FOCUS_DOWN)
-           || (dir == ELM_FOCUS_RIGHT)
-           || (dir == ELM_FOCUS_LEFT))
-          {
-             *next_item = efl_ui_widget_focus_next_item_get(focused_object, dir);
-             if (*next_item)
-               *next = elm_object_item_widget_get(*next_item);
-             else
-               *next = efl_ui_widget_focus_next_object_get(focused_object, dir);
-             if (*next) return EINA_TRUE;
-             else
-               {
-                  Evas_Object *n = NULL;
-                  Elm_Object_Item *n_item = NULL;
-                  double degree = 0;
-                  double weight = 0.0;
-
-                  if (dir == ELM_FOCUS_UP) degree = 0.0;
-                  else if (dir == ELM_FOCUS_DOWN) degree = 180.0;
-                  else if (dir == ELM_FOCUS_RIGHT) degree = 90.0;
-                  else if (dir == ELM_FOCUS_LEFT) degree = 270.0;
-
-                  if (efl_ui_widget_focus_list_direction_get(obj, focused_object,
-                                                          items, list_data_get,
-                                                          degree, &n, &n_item,
-                                                          &weight))
-                    {
-                       *next_item = n_item;
-                       *next = n;
-                       return EINA_TRUE;
-                    }
-               }
-          }
-     }
-
-   /* Direction */
-   if (dir == ELM_FOCUS_PREVIOUS)
-     {
-        items = eina_list_last(items);
-        list_next = eina_list_prev;
-     }
-   else if ((dir == ELM_FOCUS_NEXT)
-            || (dir == ELM_FOCUS_UP)
-            || (dir == ELM_FOCUS_DOWN)
-            || (dir == ELM_FOCUS_RIGHT)
-            || (dir == ELM_FOCUS_LEFT))
-     list_next = eina_list_next;
-   else
-     return EINA_FALSE;
-
-   const Eina_List *l = items;
-
-   /* Recovery last focused sub item */
-   if (ELM_WIDGET_FOCUS_GET(obj))
-     {
-        for (; l; l = list_next(l))
-          {
-             Evas_Object *cur = ((list_data_get_func_type)list_data_get)(l);
-             if (ELM_WIDGET_FOCUS_GET(cur)) break;
-          }
-
-         /* Focused object, but no focused sub item */
-         if (!l) l = items;
-     }
-
-   const Eina_List *start = l;
-   Evas_Object *to_focus = NULL;
-   Elm_Object_Item *to_focus_item = NULL;
-
-   /* Iterate sub items */
-   /* Go to the end of list */
-   for (; l; l = list_next(l))
-     {
-        Evas_Object *tmp = NULL;
-        Elm_Object_Item *tmp_item = NULL;
-        Evas_Object *cur = ((list_data_get_func_type)list_data_get)(l);
-
-        if (!cur) continue;
-        if (!_elm_widget_is(cur)) continue;
-        if (elm_widget_parent_get(cur) != obj)
-          continue;
-
-        /* Try Focus cycle in subitem */
-        if (efl_ui_widget_focus_next_get(cur, dir, &tmp, &tmp_item))
-          {
-             *next = tmp;
-             *next_item = tmp_item;
-             return EINA_TRUE;
-          }
-        else if ((dir == ELM_FOCUS_UP)
-                 || (dir == ELM_FOCUS_DOWN)
-                 || (dir == ELM_FOCUS_RIGHT)
-                 || (dir == ELM_FOCUS_LEFT))
-          {
-             if (tmp && _is_focused(cur))
-               {
-                  *next = tmp;
-                  *next_item = tmp_item;
-                  return EINA_FALSE;
-               }
-          }
-        else if ((tmp) && (!to_focus))
-          {
-             to_focus = tmp;
-             to_focus_item = tmp_item;
-          }
-     }
-
-   l = items;
-
-   /* Get First possible */
-   for (; l != start; l = list_next(l))
-     {
-        Evas_Object *tmp = NULL;
-        Elm_Object_Item *tmp_item = NULL;
-        Evas_Object *cur = ((list_data_get_func_type)list_data_get)(l);
-
-        if (elm_widget_parent_get(cur) != obj)
-          continue;
-
-        /* Try Focus cycle in subitem */
-        efl_ui_widget_focus_next_get(cur, dir, &tmp, &tmp_item);
-        if (tmp)
-          {
-             *next = tmp;
-             *next_item = tmp_item;
-             return EINA_FALSE;
-          }
-     }
-
-   *next = to_focus;
-   *next_item = to_focus_item;
-   return EINA_FALSE;
-}
-
-/**
- * @internal
- *
- * Get next object which was set with specific focus direction.
- *
- * Get next object which was set by elm_widget_focus_next_object_set
- * with specific focus directioin.
- *
- * @param obj The widget
- * @param dir Direction of focus
- * @return Widget which was registered with sepecific focus direction.
- *
- * @ingroup Widget
- */
-EOLIAN static Evas_Object*
-_efl_ui_widget_focus_next_object_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir)
-{
-   Evas_Object *ret = NULL;
-
-   if (dir == ELM_FOCUS_PREVIOUS)
-     ret = sd->focus_previous;
-   else if (dir == ELM_FOCUS_NEXT)
-     ret = sd->focus_next;
-   else if (dir == ELM_FOCUS_UP)
-     ret = sd->focus_up;
-   else if (dir == ELM_FOCUS_DOWN)
-     ret = sd->focus_down;
-   else if (dir == ELM_FOCUS_RIGHT)
-     ret = sd->focus_right;
-   else if (dir == ELM_FOCUS_LEFT)
-     ret = sd->focus_left;
-
-   return ret;
-}
-
-/**
- * @internal
- *
- * Set next object with specific focus direction.
- *
- * When a widget is set with specific focus direction, this widget will be
- * the first candidate when finding the next focus object.
- * Focus next object can be registered with six directions that are previous,
- * next, up, down, right, and left.
- *
- * @param obj The widget
- * @param next Next focus object
- * @param dir Direction of focus
- *
- * @ingroup Widget
- */
-EOLIAN static void
-_efl_ui_widget_focus_next_object_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Evas_Object *next, Elm_Focus_Direction dir)
-{
-
-   if (dir == ELM_FOCUS_PREVIOUS)
-     sd->focus_previous = next;
-   else if (dir == ELM_FOCUS_NEXT)
-     sd->focus_next = next;
-   else if (dir == ELM_FOCUS_UP)
-     sd->focus_up = next;
-   else if (dir == ELM_FOCUS_DOWN)
-     sd->focus_down = next;
-   else if (dir == ELM_FOCUS_RIGHT)
-     sd->focus_right = next;
-   else if (dir == ELM_FOCUS_LEFT)
-     sd->focus_left = next;
-
-}
-
-EOLIAN static Elm_Object_Item*
-_efl_ui_widget_focus_next_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir)
-{
-   Elm_Object_Item *ret = NULL;
-
-   if (dir == ELM_FOCUS_PREVIOUS)
-     ret = sd->item_focus_previous;
-   else if (dir == ELM_FOCUS_NEXT)
-     ret = sd->item_focus_next;
-   else if (dir == ELM_FOCUS_UP)
-     ret = sd->item_focus_up;
-   else if (dir == ELM_FOCUS_DOWN)
-     ret = sd->item_focus_down;
-   else if (dir == ELM_FOCUS_RIGHT)
-     ret = sd->item_focus_right;
-   else if (dir == ELM_FOCUS_LEFT)
-     ret = sd->item_focus_left;
-
-   return ret;
-
-}
-
-EOLIAN static void
-_efl_ui_widget_focus_next_item_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Object_Item *next_item, Elm_Focus_Direction dir)
-{
-   if (dir == ELM_FOCUS_PREVIOUS)
-     sd->item_focus_previous = next_item;
-   else if (dir == ELM_FOCUS_NEXT)
-     sd->item_focus_next = next_item;
-   else if (dir == ELM_FOCUS_UP)
-     sd->item_focus_up = next_item;
-   else if (dir == ELM_FOCUS_DOWN)
-     sd->item_focus_down = next_item;
-   else if (dir == ELM_FOCUS_RIGHT)
-     sd->item_focus_right = next_item;
-   else if (dir == ELM_FOCUS_LEFT)
-     sd->item_focus_left = next_item;
-}
-
-EAPI void
-elm_widget_focus_set(Eo *obj, Eina_Bool focus)
-{
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, sd);
-   if (!sd->focused)
-     {
-        focus_order++;
-        sd->focus_order = focus_order;
-        sd->focused = EINA_TRUE;
-        efl_ui_focus_object_on_focus_update(obj);
-     }
-
-   if (focus)
-     {
-        if ((_is_focusable(sd->resize_obj)) &&
-            (!elm_widget_disabled_get(sd->resize_obj)))
-          {
-             elm_widget_focus_set(sd->resize_obj, focus);
-          }
-        else
-          {
-             const Eina_List *l;
-             Evas_Object *child;
-
-             EINA_LIST_FOREACH(sd->subobjs, l, child)
-               {
-                  if (!_elm_widget_is(child)) continue;
-                  if ((_is_focusable(child)) &&
-                       (!elm_widget_disabled_get(child)))
-                      {
-                         elm_widget_focus_set(child, focus);
-                         break;
-                      }
-               }
-          }
-     }
-   else
-     {
-        const Eina_List *l;
-        Evas_Object *child;
-
-        EINA_LIST_REVERSE_FOREACH(sd->subobjs, l, child)
-          {
-             if (!_elm_widget_is(child)) continue;
-             if ((_is_focusable(child)) &&
-                 (!elm_widget_disabled_get(child)))
-               {
-                  elm_widget_focus_set(child, focus);
-                  break;
-               }
-          }
-     }
-}
-
-static void
-_focused_object_clear(Elm_Widget_Smart_Data *sd)
-{
-   if (sd->resize_obj && elm_widget_is(sd->resize_obj) &&
-       _is_focused(sd->resize_obj))
-     {
-        efl_ui_widget_focused_object_clear(sd->resize_obj);
-     }
-   else
-     {
-        const Eina_List *l;
-        Evas_Object *child;
-        EINA_LIST_FOREACH(sd->subobjs, l, child)
-          {
-             if (_elm_widget_is(child) && _is_focused(child))
-               {
-                  efl_ui_widget_focused_object_clear(child);
-                  break;
-               }
-          }
-     }
-}
-
-EOLIAN static void
-_efl_ui_widget_focused_object_clear(Eo *obj, Elm_Widget_Smart_Data *sd)
-{
-   if (!sd->focused) return;
-   _focused_object_clear(sd);
-   sd->focused = EINA_FALSE;
-   if (sd->top_win_focused)
-     efl_ui_focus_object_on_focus_update(obj);
-}
-
-EOLIAN static void
-_efl_ui_widget_focus_steal(Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Object_Item *item)
-{
-   Evas_Object *parent, *parent2, *o;
-
-   if (sd->focused) return;
-   if (sd->disabled) return;
-   if (!sd->can_focus) return;
-   if (sd->tree_unfocusable) return;
-   parent = obj;
-   for (;; )
-     {
-        o = elm_widget_parent_get(parent);
-        if (!o) break;
-        sd = efl_data_scope_get(o, MY_CLASS);
-        if (sd->disabled || sd->tree_unfocusable) return;
-        if (sd->focused) break;
-        parent = o;
-     }
-   if ((!elm_widget_parent_get(parent)))
-     efl_ui_widget_focused_object_clear(parent);
-   else
-     {
-        parent2 = elm_widget_parent_get(parent);
-        parent = parent2;
-        sd = efl_data_scope_get(parent, MY_CLASS);
-        if (sd) _focused_object_clear(sd);
-     }
-   _parent_focus(obj, item);
-   elm_widget_focus_region_show(obj);
-   return;
-}
-
-static void
-_parents_on_focus(Evas_Object *obj)
-{
-   API_ENTRY return;
-   if (!sd->focused || !sd->top_win_focused) return;
-
-   Evas_Object *o = elm_widget_parent_get(obj);
-   if (o) _parents_on_focus(o);
-   efl_ui_focus_object_on_focus_update(obj);
-}
-
-EOLIAN static void
-_efl_ui_widget_focus_restore(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   Evas_Object *newest = NULL;
-   unsigned int newest_focus_order = 0;
-
-   newest = efl_ui_widget_newest_focus_order_get(obj, &newest_focus_order, EINA_TRUE);
-   if (newest)
-     _parents_on_focus(newest);
-}
-//END
-
 /** @internal */
 EAPI void
 elm_widget_parent_highlight_set(Eo *obj, Eina_Bool highlighted)
@@ -3725,40 +2703,6 @@ _elm_widget_top_win_focused_get(const Evas_Object *obj)
    return sd->top_win_focused;
 }
 
-static void
-_elm_widget_disabled_eval(const Evas_Object *obj, Eina_Bool disabled)
-{
-   const Eina_List *l;
-   Evas_Object *child;
-   ELM_WIDGET_DATA_GET(obj, sd);
-
-   EINA_LIST_FOREACH(sd->subobjs, l, child)
-     {
-        if (elm_widget_is(child))
-          {
-             //TIZEN_ONLY(20180607): Restore legacy focus
-             if (elm_widget_is_legacy(obj))
-               efl_ui_widget_focus_disabled_handle((Evas_Object *)obj);
-             //
-             efl_ui_widget_on_disabled_update(child, disabled);
-             _elm_widget_disabled_eval(child, disabled);
-          }
-     }
-}
-
-static void
-elm_widget_disabled_internal(Eo *obj, Eina_Bool disabled)
-{
-   if (!disabled && elm_widget_disabled_get(elm_widget_parent_get(obj)))
-     return;
-   //TIZEN_ONLY(20180607): Restore legacy focus
-   if (elm_widget_is_legacy(obj))
-     efl_ui_widget_focus_disabled_handle(obj);
-   //
-   efl_ui_widget_on_disabled_update(obj, disabled);
-   _elm_widget_disabled_eval(obj, disabled);
-}
-
 EOLIAN static void
 _efl_ui_widget_disabled_set(Eo *obj, Elm_Widget_Smart_Data *sd, Eina_Bool disabled)
 {
@@ -3780,94 +2724,6 @@ _efl_ui_widget_disabled_get(const Eo *obj, Elm_Widget_Smart_Data *sd)
    if ((parent = elm_widget_parent_get(obj)) != NULL)
      return elm_widget_disabled_get(parent);
    return EINA_FALSE;
-}
-
-EOLIAN static void
-_efl_ui_widget_show_region_set(Eo *obj, Elm_Widget_Smart_Data *sd, Eina_Rect sr, Eina_Bool forceshow)
-{
-   Evas_Object *parent_obj, *child_obj;
-   Evas_Coord px, py, cx, cy, nx = 0, ny = 0;
-
-   /*****************************************************************************
-    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
-    *****************************************************************************
-    * Move this code to the below to update show region geometry properly.
-   evas_smart_objects_calculate(evas_object_evas_get(obj));
-    */
-   /*******
-    * END *
-    *******/
-
-   if (!forceshow && eina_rectangle_equal(&sr.rect, &sd->show_region.rect)) return;
-
-   sd->show_region = sr;
-
-   /*****************************************************************************
-    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
-    *****************************************************************************/
-   /* Block nested call for evas_smart_objects_calculate() and region showing works */
-   if (sd->on_show_region_set) return;
-
-   sd->on_show_region_set = EINA_TRUE;
-
-   evas_smart_objects_calculate(evas_object_evas_get(obj));
-
-   sd->on_show_region_set = EINA_FALSE;
-
-   /* show_region geometry could be changed during processing elm_widget_show_region_set().
-      evas_smart_objects_calculate() can trigger nested show_region_set calls */
-   sr = sd->show_region;
-   /*******
-    * END *
-    *******/
-
-   if (sd->on_show_region)
-     {
-        sd->on_show_region(sd->on_show_region_data, obj, sr);
-
-        if (_elm_scrollable_is(obj))
-          {
-             if (elm_widget_is_legacy(obj))
-               {
-                  elm_interface_scrollable_content_pos_get(obj, &nx, &ny);
-                  sr.x -= nx;
-                  sr.y -= ny;
-               }
-             else
-               {
-                  Eina_Position2D pos;
-                  pos = efl_ui_scrollable_content_pos_get(obj);
-                  sr.x -= pos.x;
-                  sr.y -= pos.y;
-               }
-          }
-     }
-
-   do
-     {
-        parent_obj = sd->parent_obj;
-        child_obj = sd->obj;
-        if ((!parent_obj) || (!_elm_widget_is(parent_obj))) break;
-        sd = efl_data_scope_get(parent_obj, MY_CLASS);
-        if (!sd) break;
-
-        evas_object_geometry_get(parent_obj, &px, &py, NULL, NULL);
-        evas_object_geometry_get(child_obj, &cx, &cy, NULL, NULL);
-
-        sr.x += (cx - px);
-        sr.y += (cy - py);
-        sd->show_region = sr;
-
-        if (sd->on_show_region)
-          sd->on_show_region(sd->on_show_region_data, parent_obj, sr);
-     }
-   while (parent_obj);
-}
-
-EOLIAN static Eina_Rect
-_efl_ui_widget_show_region_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
-{
-   return (Eina_Rect) sd->show_region;
 }
 
 /**
@@ -4045,41 +2901,6 @@ elm_widget_scroll_freeze_get(const Eo *obj)
    if (!sd) return 0;
    return sd->scroll_freeze;
 }
-
-// TIZEN_ONLY(20150705): Genlist item align feature
-EAPI void
-elm_widget_scroll_item_align_enabled_set(Evas_Object *obj,
-                                        Eina_Bool scroll_item_align_enable)
-{
-   API_ENTRY return;
-   if (sd->scroll_item_align_enable == scroll_item_align_enable) return;
-   sd->scroll_item_align_enable = scroll_item_align_enable;
-}
-
-EAPI Eina_Bool
-elm_widget_scroll_item_align_enabled_get(const Evas_Object *obj)
-{
-   API_ENTRY return EINA_FALSE;
-   return sd->scroll_item_align_enable;
-}
-
-EAPI void
-elm_widget_scroll_item_valign_set(Evas_Object *obj,
-                                  const char *scroll_item_valign)
-{
-   API_ENTRY return;
-   if (sd->scroll_item_valign) eina_stringshare_del(sd->scroll_item_valign);
-   if (!scroll_item_valign) sd->scroll_item_valign = NULL;
-   else sd->scroll_item_valign = eina_stringshare_add(scroll_item_valign);
-}
-
-EAPI const char*
-elm_widget_scroll_item_valign_get(const Evas_Object *obj)
-{
-   API_ENTRY return NULL;
-   return sd->scroll_item_valign;
-}
-//
 
 EOLIAN static void
 _efl_ui_widget_efl_gfx_entity_scale_set(Eo *obj, Elm_Widget_Smart_Data *sd, double scale)
@@ -4677,27 +3498,6 @@ elm_widget_type_get(const Evas_Object *obj)
    return ret;
 }
 
-/* TIZEN_ONLY(20180504): add missing item class names and fix edje_class parse rule for legacy */
-const char *
-_elm_widget_item_legacy_type_get(const Evas_Object *obj)
-{
-   const char *ret;
-   int i;
-
-   ret = efl_class_name_get(efl_class_get(obj));
-
-   /* If the given widget is created for legacy,
-    * convert type name to legacy. */
-   for (i = 0; legacy_type_table[i][0] ; i++)
-     {
-        if (eina_streq(ret, legacy_type_table[i][0]))
-          return legacy_type_table[i][1];
-     }
-
-   return ret;
-}
-/* END */
-
 EAPI Eina_Bool
 elm_widget_type_check(const Evas_Object *obj,
                       const char *type,
@@ -4837,15 +3637,6 @@ elm_widget_focus_mouse_up_handle(Eo *obj)
         efl_ui_focus_util_focus(obj);
      }
 }
-//TIZEN_ONLY(20180607): Restore legacy focus
-EOLIAN static void
-_efl_ui_widget_focus_mouse_up_handle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   if (!obj) return;
-   if (!_is_focusable(obj)) return;
-
-   efl_ui_widget_focus_steal(obj, NULL);
-}
 
 EOLIAN static void
 _efl_ui_widget_focus_tree_unfocusable_handle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
@@ -4856,66 +3647,6 @@ _efl_ui_widget_focus_tree_unfocusable_handle(Eo *obj, Elm_Widget_Smart_Data *_pd
      _if_focused_revert(obj, EINA_TRUE);
 }
 
-EOLIAN static void
-_efl_ui_widget_focus_disabled_handle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   efl_ui_widget_focus_tree_unfocusable_handle(obj);
-}
-
-EOLIAN static unsigned int
-_efl_ui_widget_focus_order_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
-{
-   return sd->focus_order;
-}
-
-EOLIAN static Evas_Object*
-_efl_ui_widget_newest_focus_order_get(const Eo *obj, Elm_Widget_Smart_Data *sd, unsigned int *newest_focus_order, Eina_Bool can_focus_only)
-{
-   const Eina_List *l;
-   Evas_Object *child, *cur, *best;
-
-   if (!evas_object_visible_get(obj)
-       || (elm_widget_disabled_get(obj))
-       || (elm_widget_tree_unfocusable_get(obj)))
-     return NULL;
-
-   best = NULL;
-   if (*newest_focus_order < sd->focus_order)
-     {
-        if (!can_focus_only || elm_widget_can_focus_get(obj))
-          {
-             *newest_focus_order = sd->focus_order;
-             best = (Evas_Object *)obj;
-          }
-     }
-   EINA_LIST_FOREACH(sd->subobjs, l, child)
-     {
-        if (!_elm_widget_is(child)) continue;
-
-        cur = efl_ui_widget_newest_focus_order_get
-           (child, newest_focus_order, can_focus_only);
-        if (!cur) continue;
-        best = cur;
-     }
-   return best;
-}
-
-EOLIAN static Eina_Bool
-_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   WRN("The %s widget does not implement the \"focus_next/focus_next_manager_is\" functions.",
-       efl_class_name_get(efl_class_get(obj)));
-   return EINA_FALSE;
-}
-
-static Eina_Bool
-_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   WRN("The %s widget does not implement the \"focus_direction/focus_direction_manager_is\" functions.",
-       efl_class_name_get(efl_class_get(obj)));
-   return EINA_FALSE;
-}
-//
 /*
  * @internal
  *
@@ -5022,24 +3753,6 @@ _efl_ui_widget_focus_highlight_geometry_get(const Eo *obj, Elm_Widget_Smart_Data
      }
 
    return r;
-}
-
-EOLIAN static Elm_Object_Item*
-_efl_ui_widget_focused_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   return NULL;
-}
-
-EOLIAN static void
-_efl_ui_widget_interest_region_mode_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Elm_Focus_Region_Show_Mode mode)
-{
-   _pd->focus_region_show_mode = mode;
-}
-
-EOLIAN static Elm_Focus_Region_Show_Mode
-_efl_ui_widget_interest_region_mode_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd)
-{
-   return _pd->focus_region_show_mode;
 }
 
 EAPI void
@@ -5398,8 +4111,8 @@ static void
 _track_obj_view_del(void *data, const Efl_Event *event);
 
 EFL_CALLBACKS_ARRAY_DEFINE(tracker_callbacks,
-                          { EFL_GFX_ENTITY_EVENT_RESIZE, _track_obj_view_update },
-                          { EFL_GFX_ENTITY_EVENT_MOVE, _track_obj_view_update },
+                          { EFL_GFX_ENTITY_EVENT_SIZE_CHANGED, _track_obj_view_update },
+                          { EFL_GFX_ENTITY_EVENT_POSITION_CHANGED, _track_obj_view_update },
                           { EFL_GFX_ENTITY_EVENT_SHOW, _track_obj_view_update },
                           { EFL_GFX_ENTITY_EVENT_HIDE, _track_obj_view_update },
                           { EFL_EVENT_DEL, _track_obj_view_del });
@@ -5800,101 +4513,6 @@ _elm_widget_item_accessible_plain_name_get(const Elm_Object_Item *item, const ch
    free(accessible_plain_name);
    return id->accessible_name;
 }
-
-//TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
-static Eina_Bool
-_elm_widget_can_highlight_get_by_class(Eo *obj)
-{
-   if (efl_isa(obj, ELM_WIDGET_ITEM_CLASS))
-     {
-        Elm_Widget_Item_Data *id = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
-        if (!id) return EINA_FALSE;
-        if (!id->can_highlight) return EINA_FALSE;
-     }
-   else
-     {
-        Elm_Widget_Smart_Data *wd = efl_data_scope_get(obj, EFL_UI_WIDGET_CLASS);
-        if (!wd) return EINA_FALSE;
-        if (!wd->can_highlight) return EINA_FALSE;
-     }
-   return EINA_TRUE;
-}
-//
-
-//TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
-EAPI Eina_Bool
-_elm_widget_item_highlightable(Elm_Object_Item *item)
-{
-   Eo *parent;
-
-   Elm_Widget_Item_Data *id = efl_data_scope_get(item, ELM_WIDGET_ITEM_CLASS);
-   if (!id) return EINA_FALSE;
-   if (!id->can_highlight) return EINA_FALSE;
-
-   parent = efl_provider_find(efl_parent_get(item), EFL_ACCESS_OBJECT_MIXIN);
-   while (parent && !efl_isa(parent, ELM_ATSPI_APP_OBJECT_CLASS))
-     {
-        //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
-        if (!_elm_widget_can_highlight_get_by_class(parent)) return EINA_FALSE;
-        //
-        parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_OBJECT_MIXIN);
-     }
-   return EINA_TRUE;
-}
-//
-
-//TIZEN_ONLY(20170206): Add check the object is in the scroller content size
-Eina_Bool
-_accessible_object_on_scroll_is(Eo* obj)
-{
-   /* in case of genlist item, the item->view is NULL if item is unrealized.
-      this function is used to check if obj could have HIGHLIGHTABLE or not.
-      the unrealized genlist item should have HIGHLIGHTABLE state.
-      so if obj is NULL return EINA_TRUE */
-   if(!obj) return EINA_TRUE;
-
-   Evas_Object *target = obj;
-   Evas_Object *parent = NULL;
-   Evas_Coord x, y, w, h, wx, wy, ww = 0, wh = 0, nx = 0, ny = 0;
-
-   evas_object_geometry_get(target, &x, &y ,&w, &h);
-
-   if (elm_widget_is(target))
-     parent = elm_widget_parent_get(target);
-   else
-     parent = elm_widget_parent_widget_get(target);
-
-   while (parent)
-     {
-        if (efl_isa(parent, ELM_INTERFACE_SCROLLABLE_MIXIN))
-          {
-             evas_object_geometry_get(parent, &wx, &wy, NULL, NULL);
-             elm_interface_scrollable_content_size_get(parent, &ww, &wh);
-             elm_interface_scrollable_content_pos_get(parent, &nx, &ny);
-
-             /* widget implements scrollable interface but does not use scoller
-                in this case, use widget geometry */
-             if (ww == 0 || wh == 0)
-               {
-                  INF("%s is zero sized scrollable content", efl_class_name_get(efl_class_get(parent)));
-                  evas_object_geometry_get(parent, NULL, NULL, &ww, &wh);
-               }
-
-             wx -= nx;
-             wy -= ny;
-
-             if (((wx < x) && (wx + ww < x)) || ((wx > x + w) && (wx + ww > x + w)) ||
-                 ((wy < y) && (wy + wh < y)) || ((wy > y + h) && (wy + wh > y + h)))
-               return EINA_FALSE;
-
-             break;
-          }
-        parent = elm_widget_parent_get(parent);
-     }
-
-   return EINA_TRUE;
-}
-//
 
 EOLIAN static Efl_Access_State_Set
 _elm_widget_item_efl_access_object_state_set_get(const Eo *eo_item, Elm_Widget_Item_Data *item)
@@ -6721,47 +5339,8 @@ _elm_widget_item_signal_callback_del(Eo *eo_item EINA_UNUSED,
    return NULL;
 }
 
-//TIZEN_ONLY(20180607): Restore legacy focus
-/**
- * @internal
- *
- * Resets the focus_move_policy mode from the system one
- * for widgets that are in automatic mode.
- *
- * @param obj The widget.
- *
- */
-static void
-_elm_widget_focus_move_policy_reload(Evas_Object *obj)
-{
-   API_ENTRY return;
-   Elm_Focus_Move_Policy focus_move_policy = elm_config_focus_move_policy_get();
 
-   if (efl_ui_widget_focus_move_policy_automatic_get(obj) &&
-       (sd->focus_move_policy != focus_move_policy))
-     {
-        sd->focus_move_policy = focus_move_policy;
-     }
-}
 
-EOLIAN static void
-_efl_ui_widget_focus_reconfigure(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   const Eina_List *l;
-   Evas_Object *child;
-   API_ENTRY return;
-
-   EINA_LIST_FOREACH(sd->subobjs, l, child)
-     {
-        if (elm_widget_is(child))
-          efl_ui_widget_focus_reconfigure(child);
-     }
-
-   if (sd->hover_obj) efl_ui_widget_focus_reconfigure(sd->hover_obj);
-
-   _elm_widget_focus_move_policy_reload(obj);
-}
-//
 EOLIAN static void
 _elm_widget_item_access_info_set(Eo *eo_item EINA_UNUSED,
                                  Elm_Widget_Item_Data *item,
@@ -7213,16 +5792,6 @@ _efl_ui_widget_efl_access_component_focus_grab(Eo *obj, Elm_Widget_Smart_Data *p
    return EINA_FALSE;
 }
 
-//TIZEN_ONLY(20150717) add widget name setter
-EOLIAN void
-_efl_ui_widget_efl_access_object_i18n_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data* _pd EINA_UNUSED, const char *name)
-{
-   if (_pd->name)
-     eina_stringshare_del(_pd->name);
-
-   _pd->name = eina_stringshare_add(name);
-}
-//
 
 EOLIAN static const char*
 _efl_ui_widget_efl_access_object_i18n_name_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
@@ -7255,275 +5824,6 @@ _efl_ui_widget_efl_access_object_i18n_name_get(const Eo *obj, Elm_Widget_Smart_D
 
    return _elm_widget_accessible_plain_name_get(obj, ret);
 }
-
-//TIZEN_ONLY(20161111) add widget/widget_item description get/set
-EOLIAN void
-_efl_ui_widget_efl_access_object_description_set(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data* _pd, const char *description)
-{
-   if (_pd->description)
-     eina_stringshare_del(_pd->description);
-
-   _pd->description = eina_stringshare_add(description);
-}
-
-EOLIAN static const char*
-_efl_ui_widget_efl_access_object_description_get(const Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *_pd EINA_UNUSED)
-{
-   const char *ret = NULL;
-   ret = efl_access_object_description_get(efl_super(obj, EFL_UI_WIDGET_CLASS));
-   if (ret) return ret;
-
-#ifdef HAVE_GETTEXT
-   if (_pd->atspi_translation_domain)
-     return dgettext(_pd->atspi_translation_domain, _pd->description);
-#endif
-   return _pd->description;
-}
-//
-
-//TIZEN_ONLY(20171108): make atspi_proxy work
-static void
-_proxy_widget_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
-{
-   Evas_Coord x, y;
-   Eo *proxy = data;
-
-   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
-   elm_atspi_bridge_utils_proxy_offset_set(proxy, x, y);
-}
-
-static void
-_on_widget_del(void *data, const Efl_Event *event)
-{
-   Eo *plug = data;
-   evas_object_event_callback_del_full(event->object, EVAS_CALLBACK_MOVE,
-                                       _proxy_widget_move_cb, plug);
-   efl_del(plug);
-}
-
-static void
-_on_proxy_connected_cb(void *data, const Efl_Event *event)
-{
-   Evas_Coord x, y;
-   Evas_Object *widget = data;
-
-   evas_object_geometry_get(widget, &x, &y, NULL, NULL);
-   elm_atspi_bridge_utils_proxy_offset_set(event->object, x, y);
-
-   evas_object_event_callback_add(widget, EVAS_CALLBACK_MOVE, _proxy_widget_move_cb, event->object);
-}
-//
-
-//TIZEN_ONLY(20161111) add widget/widget_item description get/set
-EOLIAN void
-_elm_widget_item_efl_access_object_description_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd EINA_UNUSED, const char *description)
-{
-   if (_pd->description)
-     eina_stringshare_del(_pd->description);
-
-   _pd->description = eina_stringshare_add(description);
-}
-
-EOLIAN const char*
-_elm_widget_item_efl_access_object_description_get(const Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
-{
-   const char *ret = NULL;
-   ret = efl_access_object_description_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
-   if (ret) return ret;
-
-#ifdef HAVE_GETTEXT
-   if (_pd->atspi_translation_domain)
-     return dgettext(_pd->atspi_translation_domain, _pd->description);
-#endif
-   return _pd->description;
-}
-//
-
-//TIZEN_ONLY(20150713) : add atspi name setter to widget_item
-EOLIAN void
-_elm_widget_item_efl_access_object_i18n_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd EINA_UNUSED, const char *name)
-{
-   if (_pd->name)
-     eina_stringshare_del(_pd->name);
-
-   _pd->name = eina_stringshare_add(name);
-}
-
-EOLIAN const char*
-_elm_widget_item_efl_access_object_i18n_name_get(const Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
-{
-   //TIZEN_ONLY(20190922): add name callback, description callback.
-   const char *ret = NULL;
-   ret = efl_access_object_i18n_name_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
-   if (ret) return ret;
-   //
-
-   if (_pd->name)
-     {
-#ifdef HAVE_GETTEXT
-        if (_pd->atspi_translation_domain)
-          return dgettext(_pd->atspi_translation_domain, _pd->name);
-#endif
-        return _pd->name;
-     }
-
-   return NULL;
-}
-///
-
-//TIZEN_ONLY(20150731) : add i18n support for name and description
-EOLIAN static void
-_efl_ui_widget_efl_access_object_translation_domain_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, const char *domain)
-{
-   eina_stringshare_replace(&_pd->atspi_translation_domain, domain);
-}
-
-EOLIAN static const char*
-_efl_ui_widget_efl_access_object_translation_domain_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd)
-{
-   return _pd->atspi_translation_domain;
-}
-
-EOLIAN static void
-_elm_widget_item_efl_access_object_translation_domain_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd, const char *domain)
-{
-   eina_stringshare_replace(&_pd->atspi_translation_domain, domain);
-}
-
-EOLIAN static const char*
-_elm_widget_item_efl_access_object_translation_domain_get(const Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd)
-{
-   return _pd->atspi_translation_domain;
-}
-///
-
-static int _sort_vertically(const void *data1, const void *data2)
-{
-   Evas_Coord y1, y2;
-   evas_object_geometry_get(data1, NULL, &y1, NULL, NULL);
-   evas_object_geometry_get(data2, NULL, &y2, NULL, NULL);
-
-   return y1 < y2 ? -1 : 1;
-}
-
-static int _sort_horizontally(const void *data1, const void *data2)
-{
-   Evas_Coord x1, x2;
-   evas_object_geometry_get(data1, &x1, NULL, NULL, NULL);
-   evas_object_geometry_get(data2, &x2, NULL, NULL, NULL);
-
-   return x1 < x2 ? -1 : 1;
-}
-
-static Eina_List *_lines_split(Eina_List *children)
-{
-   Eo *c;
-   Eina_List *lines, *line, *l;
-   Evas_Coord yl, y, hl, h;
-   lines = line = NULL;
-
-   if (!children) return NULL;
-
-   EINA_LIST_FOREACH(children, l, c)
-     {
-        evas_object_geometry_get(c, NULL, &yl, NULL, &hl);
-
-        /* remove child if its height == 0 */
-        if (hl != 0) break;
-     }
-
-   EINA_LIST_FREE(children, c)
-     {
-        evas_object_geometry_get(c, NULL, &y, NULL, &h);
-
-        /* remove child if its height == 0 */
-        if (h == 0) continue;
-
-        if ((yl + (int)(0.25 * hl)) >= y)
-          {
-             //same line
-             line = eina_list_append(line,c);
-          }
-        else
-          {
-             // finish current line & start new
-             lines = eina_list_append(lines, line);
-             yl = y, hl = h;
-             line = eina_list_append(NULL, c);
-          }
-     }
-
-   return eina_list_append(lines, line);
-}
-//
-
-//TIZEN_ONLY(20171114) atspi: integrate ewk_view with elementary accessibility
-static void
-_on_ewk_del(void *data, const Efl_Event *desc EINA_UNUSED)
-{
-   Eo *plug = data;
-   efl_del(plug);
-}
-//
-
-//TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
-Eo *
-plug_type_proxy_get(Eo *obj, Evas_Object *widget)
-{
-   Eo *proxy = NULL;
-   const char *plug_id;
-   char *svcname, *svcnum;
-
-   if ((plug_id = evas_object_data_get(widget, "___PLUGID")) != NULL)
-     {
-        // TIZEN_ONLY(20160930) : endless recursion fix
-        efl_access_object_attribute_append(efl_super(obj, MY_CLASS), "___PlugID", plug_id);
-        efl_access_object_role_set(obj, EFL_ACCESS_ROLE_EMBEDDED);
-
-        proxy = evas_object_data_get(widget, "__widget_proxy");
-        // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
-        if (proxy)
-          {
-            if (!evas_object_data_get(proxy, "__proxy_invalid")) return proxy;
-            evas_object_data_del(widget, "__widget_proxy");
-          }
-        //
-
-        if (_elm_atspi_bridge_plug_id_split(plug_id, &svcname, &svcnum))
-          {
-             proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_PLUG);
-             evas_object_data_set(widget, "__widget_proxy", proxy);
-             efl_event_callback_add(widget, EFL_EVENT_DEL, _on_widget_del, proxy);
-             efl_event_callback_add(proxy, ELM_ATSPI_PROXY_EVENT_CONNECTED, _on_proxy_connected_cb, widget);
-             elm_atspi_bridge_utils_proxy_connect(proxy);
-             free(svcname);
-             free(svcnum);
-          }
-     }
-
-   return proxy;
-}
-
-EAPI Eo *
-elm_widget_atspi_plug_type_proxy_get(Evas_Object *obj)
-{
-   Elm_Widget_Smart_Data *wd;
-   Evas_Object *widget;
-   Eina_List *l;
-
-   wd = efl_data_scope_get(obj, EFL_UI_WIDGET_CLASS);
-   if (!wd) return NULL;
-
-   Eo *proxy = NULL;
-   EINA_LIST_FOREACH(wd->subobjs, l, widget)
-     {
-        proxy = plug_type_proxy_get(obj, widget);
-        if (proxy) break;
-     }
-   return proxy;
-}
-//
-
 
 EOLIAN static Eina_List*
 _efl_ui_widget_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *pd)
@@ -7600,28 +5900,6 @@ _efl_ui_widget_efl_access_object_access_children_get(const Eo *obj EINA_UNUSED, 
 
    return accs;
 }
-
-//TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
-EAPI Eina_Bool
-_elm_widget_highlightable(Evas_Object *obj)
-{
-   Eo *parent;
-
-   Elm_Widget_Smart_Data *wd = efl_data_scope_get(obj, EFL_UI_WIDGET_CLASS);
-   if (!wd) return EINA_FALSE;
-   if (!wd->can_highlight) return EINA_FALSE;
-
-   parent = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
-   while (parent && !efl_isa(parent, ELM_ATSPI_APP_OBJECT_CLASS))
-     {
-        //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
-        if (!_elm_widget_can_highlight_get_by_class(parent)) return EINA_FALSE;
-        //
-        parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_OBJECT_MIXIN);
-     }
-   return EINA_TRUE;
-}
-//
 
 /* Legacy APIs */
 
@@ -7714,57 +5992,6 @@ _efl_ui_widget_efl_access_object_attributes_get(const Eo *obj, Elm_Widget_Smart_
    return attr_list;
 }
 
-// TIZEN_ONLY(20150709) : atspi relations api
-EOLIAN static Efl_Access_Relation_Set
-_efl_ui_widget_efl_access_object_relation_set_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
-{
-   return efl_access_relation_set_clone(&sd->atspi_custom_relations);
-}
-EOLIAN static Eina_Bool
-_efl_ui_widget_efl_access_object_relationship_append(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
-{
-   return efl_access_relation_set_relation_append(&sd->atspi_custom_relations, type, relation_obj);
-}
-
-EOLIAN static void
-_efl_ui_widget_efl_access_object_relationship_remove(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
-{
-   efl_access_relation_set_relation_remove(&sd->atspi_custom_relations, type, relation_obj);
-}
-
-EOLIAN static void
-_efl_ui_widget_efl_access_object_relationships_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
-{
-   efl_access_relation_set_free(&sd->atspi_custom_relations);
-   sd->atspi_custom_relations = NULL;
-}
-
-EOLIAN static Elm_Atspi_Relation_Set
-_elm_widget_item_efl_access_object_relation_set_get(const Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd)
-{
-   return efl_access_relation_set_clone(&sd->atspi_custom_relations);
-}
-
-EOLIAN static Eina_Bool
-_elm_widget_item_efl_access_object_relationship_append(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
-{
-   return efl_access_relation_set_relation_append(&sd->atspi_custom_relations, type, relation_obj);
-}
-
-EOLIAN static void
-_elm_widget_item_efl_access_object_relationship_remove(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
-{
-   efl_access_relation_set_relation_remove(&sd->atspi_custom_relations, type, relation_obj);
-}
-
-EOLIAN static void
-_elm_widget_item_efl_access_object_relationships_clear(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd)
-{
-   efl_access_relation_set_free(&sd->atspi_custom_relations);
-   sd->atspi_custom_relations = NULL;
-}
-//////////////////////////////
-
 EOLIAN static Eina_List *
 _elm_widget_item_efl_access_object_attributes_get(const Eo *eo_item, Elm_Widget_Item_Data *pd  EINA_UNUSED)
 {
@@ -7822,55 +6049,6 @@ _elm_widget_item_efl_access_component_focus_grab(Eo *obj EINA_UNUSED, Elm_Widget
    elm_object_item_focus_set(obj, EINA_TRUE);
    return elm_object_item_focus_get(obj);
 }
-
-//TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
-static Eina_Bool
-_children_highlight_check(Eo *obj)
-{
-   Eina_List *children, *l;
-   Eo *child;
-
-   if (_elm_object_accessibility_currently_highlighted_get() == (void *)obj)
-     {
-        efl_access_component_highlight_clear(obj);
-        return EINA_TRUE;
-     }
-
-   children = efl_access_object_access_children_get(obj);
-   EINA_LIST_FOREACH(children, l, child)
-     {
-        if (_children_highlight_check(child)) return EINA_TRUE;
-     }
-
-   return EINA_FALSE;
-}
-
-EOLIAN static void
-_efl_ui_widget_efl_access_object_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Eina_Bool can_highlight)
-{
-   if (!can_highlight) _children_highlight_check(obj);
-   _pd->can_highlight = !!can_highlight;
-}
-
-EOLIAN static Eina_Bool
-_efl_ui_widget_efl_access_object_can_highlight_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
-{
-   return _elm_widget_highlightable(obj);
-}
-
-EOLIAN static void
-_elm_widget_item_efl_access_object_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd, Eina_Bool can_highlight)
-{
-   if (!can_highlight) _children_highlight_check(obj);
-   _pd->can_highlight = !!can_highlight;
-}
-
-EOLIAN static Eina_Bool
-_elm_widget_item_efl_access_object_can_highlight_get(const Eo *obj, Elm_Widget_Item_Data *_pd EINA_UNUSED)
-{
-   return _elm_widget_item_highlightable(obj);
-}
-//
 
 EOLIAN static Efl_Object *
 _efl_ui_widget_efl_object_provider_find(const Eo *obj, Elm_Widget_Smart_Data *pd, const Efl_Object *klass)
@@ -8077,8 +6255,8 @@ _widget_shadow_event_cb(void *data, const Efl_Event *ev EINA_UNUSED)
 
 EFL_CALLBACKS_ARRAY_DEFINE(widget_shadow_cb,
 { EFL_EVENT_DEL, _widget_shadow_del_cb },
-{ EFL_GFX_ENTITY_EVENT_MOVE, _widget_shadow_event_cb },
-{ EFL_GFX_ENTITY_EVENT_RESIZE, _widget_shadow_event_cb },
+{ EFL_GFX_ENTITY_EVENT_POSITION_CHANGED, _widget_shadow_event_cb },
+{ EFL_GFX_ENTITY_EVENT_SIZE_CHANGED, _widget_shadow_event_cb },
 { EFL_GFX_ENTITY_EVENT_STACK_CHANGED, _widget_shadow_event_cb },
 { EFL_GFX_ENTITY_EVENT_HIDE, _widget_shadow_event_cb },
 { EFL_GFX_ENTITY_EVENT_SHOW, _widget_shadow_event_cb })
@@ -8479,6 +6657,689 @@ static void _elm_widget_class_color_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_
  * END *
  *******/
 
+// TIZEN_ONLY(20150709) : atspi relations api
+EOLIAN static Efl_Access_Relation_Set
+_efl_ui_widget_efl_access_object_relation_set_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
+{
+   return efl_access_relation_set_clone(&sd->atspi_custom_relations);
+}
+EOLIAN static Eina_Bool
+_efl_ui_widget_efl_access_object_relationship_append(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
+{
+   return efl_access_relation_set_relation_append(&sd->atspi_custom_relations, type, relation_obj);
+}
+
+EOLIAN static void
+_efl_ui_widget_efl_access_object_relationship_remove(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
+{
+   efl_access_relation_set_relation_remove(&sd->atspi_custom_relations, type, relation_obj);
+}
+
+EOLIAN static void
+_efl_ui_widget_efl_access_object_relationships_clear(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
+{
+   efl_access_relation_set_free(&sd->atspi_custom_relations);
+   sd->atspi_custom_relations = NULL;
+}
+
+EOLIAN static Elm_Atspi_Relation_Set
+_elm_widget_item_efl_access_object_relation_set_get(const Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd)
+{
+   return efl_access_relation_set_clone(&sd->atspi_custom_relations);
+}
+
+EOLIAN static Eina_Bool
+_elm_widget_item_efl_access_object_relationship_append(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
+{
+   return efl_access_relation_set_relation_append(&sd->atspi_custom_relations, type, relation_obj);
+}
+
+EOLIAN static void
+_elm_widget_item_efl_access_object_relationship_remove(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd, Efl_Access_Relation_Type type, const Eo *relation_obj)
+{
+   efl_access_relation_set_relation_remove(&sd->atspi_custom_relations, type, relation_obj);
+}
+
+EOLIAN static void
+_elm_widget_item_efl_access_object_relationships_clear(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *sd)
+{
+   efl_access_relation_set_free(&sd->atspi_custom_relations);
+   sd->atspi_custom_relations = NULL;
+}
+//////////////////////////////
+
+//TIZEN_ONLY(20160726): add API elm_atspi_accessible_can_highlight_set/get
+static Eina_Bool
+_children_highlight_check(Eo *obj)
+{
+   Eina_List *children, *l;
+   Eo *child;
+
+   if (_elm_object_accessibility_currently_highlighted_get() == (void *)obj)
+     {
+        efl_access_component_highlight_clear(obj);
+        return EINA_TRUE;
+     }
+
+   children = efl_access_object_access_children_get(obj);
+   EINA_LIST_FOREACH(children, l, child)
+     {
+        if (_children_highlight_check(child)) return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
+EOLIAN static void
+_efl_ui_widget_efl_access_object_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Eina_Bool can_highlight)
+{
+   if (!can_highlight) _children_highlight_check(obj);
+   _pd->can_highlight = !!can_highlight;
+}
+
+EOLIAN static Eina_Bool
+_efl_ui_widget_efl_access_object_can_highlight_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   return _elm_widget_highlightable(obj);
+}
+
+EOLIAN static void
+_elm_widget_item_efl_access_object_can_highlight_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd, Eina_Bool can_highlight)
+{
+   if (!can_highlight) _children_highlight_check(obj);
+   _pd->can_highlight = !!can_highlight;
+}
+
+EOLIAN static Eina_Bool
+_elm_widget_item_efl_access_object_can_highlight_get(const Eo *obj, Elm_Widget_Item_Data *_pd EINA_UNUSED)
+{
+   return _elm_widget_item_highlightable(obj);
+}
+//
+
+// TIZEN_ONLY(20150705): Genlist item align feature
+EAPI void
+elm_widget_scroll_item_align_enabled_set(Evas_Object *obj,
+                                        Eina_Bool scroll_item_align_enable)
+{
+   API_ENTRY return;
+   if (sd->scroll_item_align_enable == scroll_item_align_enable) return;
+   sd->scroll_item_align_enable = scroll_item_align_enable;
+}
+
+EAPI Eina_Bool
+elm_widget_scroll_item_align_enabled_get(const Evas_Object *obj)
+{
+   API_ENTRY return EINA_FALSE;
+   return sd->scroll_item_align_enable;
+}
+
+
+//TIZEN_ONLY(20150717) add widget name setter
+EOLIAN void
+_efl_ui_widget_efl_access_object_i18n_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data* _pd EINA_UNUSED, const char *name)
+{
+   if (_pd->name)
+     eina_stringshare_del(_pd->name);
+
+   _pd->name = eina_stringshare_add(name);
+}
+//
+
+//TIZEN_ONLY(20161111) add widget/widget_item description get/set
+EOLIAN void
+_efl_ui_widget_efl_access_object_description_set(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data* _pd, const char *description)
+{
+   if (_pd->description)
+     eina_stringshare_del(_pd->description);
+
+   _pd->description = eina_stringshare_add(description);
+}
+
+EOLIAN static const char*
+_efl_ui_widget_efl_access_object_description_get(const Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *_pd EINA_UNUSED)
+{
+   const char *ret = NULL;
+   ret = efl_access_object_description_get(efl_super(obj, EFL_UI_WIDGET_CLASS));
+   if (ret) return ret;
+
+#ifdef HAVE_GETTEXT
+   if (_pd->atspi_translation_domain)
+     return dgettext(_pd->atspi_translation_domain, _pd->description);
+#endif
+   return _pd->description;
+}
+//
+
+//TIZEN_ONLY(20171108): make atspi_proxy work
+static void
+_proxy_widget_move_cb(void *data, Evas *e EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
+{
+   Evas_Coord x, y;
+   Eo *proxy = data;
+
+   evas_object_geometry_get(obj, &x, &y, NULL, NULL);
+   elm_atspi_bridge_utils_proxy_offset_set(proxy, x, y);
+}
+
+static void
+_on_widget_del(void *data, const Efl_Event *event)
+{
+   Eo *plug = data;
+   evas_object_event_callback_del_full(event->object, EVAS_CALLBACK_MOVE,
+                                       _proxy_widget_move_cb, plug);
+   efl_del(plug);
+}
+
+static void
+_on_proxy_connected_cb(void *data, const Efl_Event *event)
+{
+   Evas_Coord x, y;
+   Evas_Object *widget = data;
+
+   evas_object_geometry_get(widget, &x, &y, NULL, NULL);
+   elm_atspi_bridge_utils_proxy_offset_set(event->object, x, y);
+
+   evas_object_event_callback_add(widget, EVAS_CALLBACK_MOVE, _proxy_widget_move_cb, event->object);
+}
+//
+
+//TIZEN_ONLY(20161111) add widget/widget_item description get/set
+EOLIAN void
+_elm_widget_item_efl_access_object_description_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd EINA_UNUSED, const char *description)
+{
+   if (_pd->description)
+     eina_stringshare_del(_pd->description);
+
+   _pd->description = eina_stringshare_add(description);
+}
+
+EOLIAN const char*
+_elm_widget_item_efl_access_object_description_get(const Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
+{
+   const char *ret = NULL;
+   ret = efl_access_object_description_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
+   if (ret) return ret;
+
+#ifdef HAVE_GETTEXT
+   if (_pd->atspi_translation_domain)
+     return dgettext(_pd->atspi_translation_domain, _pd->description);
+#endif
+   return _pd->description;
+}
+//
+
+//TIZEN_ONLY(20150713) : add atspi name setter to widget_item
+EOLIAN void
+_elm_widget_item_efl_access_object_i18n_name_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data* _pd EINA_UNUSED, const char *name)
+{
+   if (_pd->name)
+     eina_stringshare_del(_pd->name);
+
+   _pd->name = eina_stringshare_add(name);
+}
+
+EOLIAN const char*
+_elm_widget_item_efl_access_object_i18n_name_get(const Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd EINA_UNUSED)
+{
+   //TIZEN_ONLY(20190922): add name callback, description callback.
+   const char *ret = NULL;
+   ret = efl_access_object_i18n_name_get(efl_super(obj, ELM_WIDGET_ITEM_CLASS));
+   if (ret) return ret;
+   //
+
+   if (_pd->name)
+     {
+#ifdef HAVE_GETTEXT
+        if (_pd->atspi_translation_domain)
+          return dgettext(_pd->atspi_translation_domain, _pd->name);
+#endif
+        return _pd->name;
+     }
+
+   return NULL;
+}
+///
+
+//TIZEN_ONLY(20150731) : add i18n support for name and description
+EOLIAN static void
+_efl_ui_widget_efl_access_object_translation_domain_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, const char *domain)
+{
+   eina_stringshare_replace(&_pd->atspi_translation_domain, domain);
+}
+
+EOLIAN static const char*
+_efl_ui_widget_efl_access_object_translation_domain_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd)
+{
+   return _pd->atspi_translation_domain;
+}
+
+EOLIAN static void
+_elm_widget_item_efl_access_object_translation_domain_set(Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd, const char *domain)
+{
+   eina_stringshare_replace(&_pd->atspi_translation_domain, domain);
+}
+
+EOLIAN static const char*
+_elm_widget_item_efl_access_object_translation_domain_get(const Eo *obj EINA_UNUSED, Elm_Widget_Item_Data *_pd)
+{
+   return _pd->atspi_translation_domain;
+}
+///
+
+static int _sort_vertically(const void *data1, const void *data2)
+{
+   Evas_Coord y1, y2;
+   evas_object_geometry_get(data1, NULL, &y1, NULL, NULL);
+   evas_object_geometry_get(data2, NULL, &y2, NULL, NULL);
+
+   return y1 < y2 ? -1 : 1;
+}
+
+static int _sort_horizontally(const void *data1, const void *data2)
+{
+   Evas_Coord x1, x2;
+   evas_object_geometry_get(data1, &x1, NULL, NULL, NULL);
+   evas_object_geometry_get(data2, &x2, NULL, NULL, NULL);
+
+   return x1 < x2 ? -1 : 1;
+}
+
+static Eina_List *_lines_split(Eina_List *children)
+{
+   Eo *c;
+   Eina_List *lines, *line, *l;
+   Evas_Coord yl, y, hl, h;
+   lines = line = NULL;
+
+   if (!children) return NULL;
+
+   EINA_LIST_FOREACH(children, l, c)
+     {
+        evas_object_geometry_get(c, NULL, &yl, NULL, &hl);
+
+        /* remove child if its height == 0 */
+        if (hl != 0) break;
+     }
+
+   EINA_LIST_FREE(children, c)
+     {
+        evas_object_geometry_get(c, NULL, &y, NULL, &h);
+
+        /* remove child if its height == 0 */
+        if (h == 0) continue;
+
+        if ((yl + (int)(0.25 * hl)) >= y)
+          {
+             //same line
+             line = eina_list_append(line,c);
+          }
+        else
+          {
+             // finish current line & start new
+             lines = eina_list_append(lines, line);
+             yl = y, hl = h;
+             line = eina_list_append(NULL, c);
+          }
+     }
+
+   return eina_list_append(lines, line);
+}
+//
+
+//TIZEN_ONLY(20171114) atspi: integrate ewk_view with elementary accessibility
+static void
+_on_ewk_del(void *data, const Efl_Event *desc EINA_UNUSED)
+{
+   Eo *plug = data;
+   efl_del(plug);
+}
+//
+
+//TIZEN_ONLY(20170621) handle atspi proxy connection at runtime
+Eo *
+plug_type_proxy_get(Eo *obj, Evas_Object *widget)
+{
+   Eo *proxy = NULL;
+   const char *plug_id;
+   char *svcname, *svcnum;
+
+   if ((plug_id = evas_object_data_get(widget, "___PLUGID")) != NULL)
+     {
+        // TIZEN_ONLY(20160930) : endless recursion fix
+        efl_access_object_attribute_append(efl_super(obj, MY_CLASS), "___PlugID", plug_id);
+        efl_access_object_role_set(obj, EFL_ACCESS_ROLE_EMBEDDED);
+
+        proxy = evas_object_data_get(widget, "__widget_proxy");
+        // TIZEN_ONLY(20171109) : fix for invalid proxy object, when at-spi has been restarted
+        if (proxy)
+          {
+            if (!evas_object_data_get(proxy, "__proxy_invalid")) return proxy;
+            evas_object_data_del(widget, "__widget_proxy");
+          }
+        //
+
+        if (_elm_atspi_bridge_plug_id_split(plug_id, &svcname, &svcnum))
+          {
+             proxy = _elm_atspi_bridge_utils_proxy_create(obj, svcname, atoi(svcnum), ELM_ATSPI_PROXY_TYPE_PLUG);
+             evas_object_data_set(widget, "__widget_proxy", proxy);
+             efl_event_callback_add(widget, EFL_EVENT_DEL, _on_widget_del, proxy);
+             efl_event_callback_add(proxy, ELM_ATSPI_PROXY_EVENT_CONNECTED, _on_proxy_connected_cb, widget);
+             elm_atspi_bridge_utils_proxy_connect(proxy);
+             free(svcname);
+             free(svcnum);
+          }
+     }
+
+   return proxy;
+}
+
+EAPI Eo *
+elm_widget_atspi_plug_type_proxy_get(Evas_Object *obj)
+{
+   Elm_Widget_Smart_Data *wd;
+   Evas_Object *widget;
+   Eina_List *l;
+
+   wd = efl_data_scope_get(obj, EFL_UI_WIDGET_CLASS);
+   if (!wd) return NULL;
+
+   Eo *proxy = NULL;
+   EINA_LIST_FOREACH(wd->subobjs, l, widget)
+     {
+        proxy = plug_type_proxy_get(obj, widget);
+        if (proxy) break;
+     }
+   return proxy;
+}
+//
+
+
+//TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
+EAPI Eina_Bool
+_elm_widget_highlightable(Evas_Object *obj)
+{
+   Eo *parent;
+
+   Elm_Widget_Smart_Data *wd = efl_data_scope_get(obj, EFL_UI_WIDGET_CLASS);
+   if (!wd) return EINA_FALSE;
+   if (!wd->can_highlight) return EINA_FALSE;
+
+   parent = efl_provider_find(efl_parent_get(obj), EFL_ACCESS_OBJECT_MIXIN);
+   while (parent && !efl_isa(parent, ELM_ATSPI_APP_OBJECT_CLASS))
+     {
+        //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
+        if (!_elm_widget_can_highlight_get_by_class(parent)) return EINA_FALSE;
+        //
+        parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_OBJECT_MIXIN);
+     }
+   return EINA_TRUE;
+}
+//
+
+EAPI void
+elm_widget_scroll_item_valign_set(Evas_Object *obj,
+                                  const char *scroll_item_valign)
+{
+   API_ENTRY return;
+   if (sd->scroll_item_valign) eina_stringshare_del(sd->scroll_item_valign);
+   if (!scroll_item_valign) sd->scroll_item_valign = NULL;
+   else sd->scroll_item_valign = eina_stringshare_add(scroll_item_valign);
+}
+
+EAPI const char*
+elm_widget_scroll_item_valign_get(const Evas_Object *obj)
+{
+   API_ENTRY return NULL;
+   return sd->scroll_item_valign;
+}
+//
+
+/* TIZEN_ONLY(20180504): add missing item class names and fix edje_class parse rule for legacy */
+const char *
+_elm_widget_item_legacy_type_get(const Evas_Object *obj)
+{
+   const char *ret;
+   int i;
+
+   ret = efl_class_name_get(efl_class_get(obj));
+
+   /* If the given widget is created for legacy,
+    * convert type name to legacy. */
+   for (i = 0; legacy_type_table[i][0] ; i++)
+     {
+        if (eina_streq(ret, legacy_type_table[i][0]))
+          return legacy_type_table[i][1];
+     }
+
+   return ret;
+}
+/* END */
+
+EOLIAN static void
+_efl_ui_widget_focus_disabled_handle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   efl_ui_widget_focus_tree_unfocusable_handle(obj);
+}
+
+EOLIAN static unsigned int
+_efl_ui_widget_focus_order_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
+{
+   return sd->focus_order;
+}
+
+EOLIAN static Evas_Object*
+_efl_ui_widget_newest_focus_order_get(const Eo *obj, Elm_Widget_Smart_Data *sd, unsigned int *newest_focus_order, Eina_Bool can_focus_only)
+{
+   const Eina_List *l;
+   Evas_Object *child, *cur, *best;
+
+   if (!evas_object_visible_get(obj)
+       || (elm_widget_disabled_get(obj))
+       || (elm_widget_tree_unfocusable_get(obj)))
+     return NULL;
+
+   best = NULL;
+   if (*newest_focus_order < sd->focus_order)
+     {
+        if (!can_focus_only || elm_widget_can_focus_get(obj))
+          {
+             *newest_focus_order = sd->focus_order;
+             best = (Evas_Object *)obj;
+          }
+     }
+   EINA_LIST_FOREACH(sd->subobjs, l, child)
+     {
+        if (!_elm_widget_is(child)) continue;
+
+        cur = efl_ui_widget_newest_focus_order_get
+           (child, newest_focus_order, can_focus_only);
+        if (!cur) continue;
+        best = cur;
+     }
+   return best;
+}
+
+EOLIAN static Eina_Bool
+_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   WRN("The %s widget does not implement the \"focus_next/focus_next_manager_is\" functions.",
+       efl_class_name_get(efl_class_get(obj)));
+   return EINA_FALSE;
+}
+
+static Eina_Bool
+_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   WRN("The %s widget does not implement the \"focus_direction/focus_direction_manager_is\" functions.",
+       efl_class_name_get(efl_class_get(obj)));
+   return EINA_FALSE;
+}
+//
+//TIZEN_ONLY(20180607): Restore legacy focus
+EOLIAN static void
+_efl_ui_widget_focus_mouse_up_handle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   if (!obj) return;
+   if (!_is_focusable(obj)) return;
+
+   efl_ui_widget_focus_steal(obj, NULL);
+}
+EOLIAN static Elm_Object_Item*
+_efl_ui_widget_focused_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   return NULL;
+}
+
+EOLIAN static void
+_efl_ui_widget_interest_region_mode_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd, Elm_Focus_Region_Show_Mode mode)
+{
+   _pd->focus_region_show_mode = mode;
+}
+
+EOLIAN static Elm_Focus_Region_Show_Mode
+_efl_ui_widget_interest_region_mode_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd)
+{
+   return _pd->focus_region_show_mode;
+}
+
+
+//TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
+static Eina_Bool
+_elm_widget_can_highlight_get_by_class(Eo *obj)
+{
+   if (efl_isa(obj, ELM_WIDGET_ITEM_CLASS))
+     {
+        Elm_Widget_Item_Data *id = efl_data_scope_get(obj, ELM_WIDGET_ITEM_CLASS);
+        if (!id) return EINA_FALSE;
+        if (!id->can_highlight) return EINA_FALSE;
+     }
+   else
+     {
+        Elm_Widget_Smart_Data *wd = efl_data_scope_get(obj, EFL_UI_WIDGET_CLASS);
+        if (!wd) return EINA_FALSE;
+        if (!wd->can_highlight) return EINA_FALSE;
+     }
+   return EINA_TRUE;
+}
+//
+
+//TIZEN_ONLY(20161107): enhance elm_atspi_accessible_can_highlight_set to set can_hihglight property to its children
+EAPI Eina_Bool
+_elm_widget_item_highlightable(Elm_Object_Item *item)
+{
+   Eo *parent;
+
+   Elm_Widget_Item_Data *id = efl_data_scope_get(item, ELM_WIDGET_ITEM_CLASS);
+   if (!id) return EINA_FALSE;
+   if (!id->can_highlight) return EINA_FALSE;
+
+   parent = efl_provider_find(efl_parent_get(item), EFL_ACCESS_OBJECT_MIXIN);
+   while (parent && !efl_isa(parent, ELM_ATSPI_APP_OBJECT_CLASS))
+     {
+        //TIZEN_ONLY(20160929) : atspi: Improves how to find the can_highlight of the widget
+        if (!_elm_widget_can_highlight_get_by_class(parent)) return EINA_FALSE;
+        //
+        parent = efl_provider_find(efl_parent_get(parent), EFL_ACCESS_OBJECT_MIXIN);
+     }
+   return EINA_TRUE;
+}
+//
+
+//TIZEN_ONLY(20170206): Add check the object is in the scroller content size
+static Eina_Bool
+_accessible_object_on_scroll_is(Eo* obj)
+{
+   /* in case of genlist item, the item->view is NULL if item is unrealized.
+      this function is used to check if obj could have HIGHLIGHTABLE or not.
+      the unrealized genlist item should have HIGHLIGHTABLE state.
+      so if obj is NULL return EINA_TRUE */
+   if(!obj) return EINA_TRUE;
+
+   Evas_Object *target = obj;
+   Evas_Object *parent = NULL;
+   Evas_Coord x, y, w, h, wx, wy, ww = 0, wh = 0, nx = 0, ny = 0;
+
+   evas_object_geometry_get(target, &x, &y ,&w, &h);
+
+   if (elm_widget_is(target))
+     parent = elm_widget_parent_get(target);
+   else
+     parent = elm_widget_parent_widget_get(target);
+
+   while (parent)
+     {
+        if (efl_isa(parent, ELM_INTERFACE_SCROLLABLE_MIXIN))
+          {
+             evas_object_geometry_get(parent, &wx, &wy, NULL, NULL);
+             elm_interface_scrollable_content_size_get(parent, &ww, &wh);
+             elm_interface_scrollable_content_pos_get(parent, &nx, &ny);
+
+             /* widget implements scrollable interface but does not use scoller
+                in this case, use widget geometry */
+             if (ww == 0 || wh == 0)
+               {
+                  INF("%s is zero sized scrollable content", efl_class_name_get(efl_class_get(parent)));
+                  evas_object_geometry_get(parent, NULL, NULL, &ww, &wh);
+               }
+
+             wx -= nx;
+             wy -= ny;
+
+             if (((wx < x) && (wx + ww < x)) || ((wx > x + w) && (wx + ww > x + w)) ||
+                 ((wy < y) && (wy + wh < y)) || ((wy > y + h) && (wy + wh > y + h)))
+               return EINA_FALSE;
+
+             break;
+          }
+        parent = elm_widget_parent_get(parent);
+     }
+
+   return EINA_TRUE;
+}
+//
+
+//TIZEN_ONLY(20180607): Restore legacy focus
+/**
+ * @internal
+ *
+ * Resets the focus_move_policy mode from the system one
+ * for widgets that are in automatic mode.
+ *
+ * @param obj The widget.
+ *
+ */
+static void
+_elm_widget_focus_move_policy_reload(Evas_Object *obj)
+{
+   API_ENTRY return;
+   Elm_Focus_Move_Policy focus_move_policy = elm_config_focus_move_policy_get();
+
+   if (efl_ui_widget_focus_move_policy_automatic_get(obj) &&
+       (sd->focus_move_policy != focus_move_policy))
+     {
+        sd->focus_move_policy = focus_move_policy;
+     }
+}
+
+EOLIAN static void
+_efl_ui_widget_focus_reconfigure(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   const Eina_List *l;
+   Evas_Object *child;
+   API_ENTRY return;
+
+   EINA_LIST_FOREACH(sd->subobjs, l, child)
+     {
+        if (elm_widget_is(child))
+          efl_ui_widget_focus_reconfigure(child);
+     }
+
+   if (sd->hover_obj) efl_ui_widget_focus_reconfigure(sd->hover_obj);
+
+   _elm_widget_focus_move_policy_reload(obj);
+}
+//
 
 //TIZEN_ONLY(20160329): widget: improve accessible_at_point getter (a8aff0423202b9a55dbb3843205875226678fbd6)
 static void
@@ -9913,6 +8774,1157 @@ EAPI EFL_VOID_FUNC_BODY(elm_widget_item_class_color_clear)
  * END *
  *******/
 
+//TIZEN_ONLY(20180607): Restore legacy focus
+static void
+_if_focused_revert(Evas_Object *obj,
+                   Eina_Bool can_focus_only)
+{
+   Evas_Object *top;
+   Evas_Object *newest = NULL;
+   unsigned int newest_focus_order = 0;
+
+   INTERNAL_ENTRY;
+
+   if (!sd->focused) return;
+   if (!sd->parent_obj) return;
+
+   top = elm_widget_top_get(sd->parent_obj);
+   if (top)
+     {
+        newest = efl_ui_widget_newest_focus_order_get
+           (top, &newest_focus_order, can_focus_only);
+        if (newest)
+          {
+             if (newest == top)
+               {
+                  ELM_WIDGET_DATA_GET(newest, sd2);
+                  if (!sd2) return;
+
+                  if (!_is_focused(newest))
+                    efl_ui_widget_focus_steal(newest, NULL);
+                  else
+                    {
+                       if (sd2->resize_obj && _is_focused(sd2->resize_obj))
+                         efl_ui_widget_focused_object_clear(sd2->resize_obj);
+                       else
+                         {
+                            const Eina_List *l;
+                            Evas_Object *child;
+                            EINA_LIST_FOREACH(sd2->subobjs, l, child)
+                              {
+                                 if (!_elm_widget_is(child)) continue;
+                                 if (_is_focused(child))
+                                   {
+                                      efl_ui_widget_focused_object_clear(child);
+                                      break;
+                                   }
+                              }
+                         }
+                    }
+                  evas_object_focus_set(newest, EINA_TRUE);
+               }
+             else
+               {
+                  elm_object_focus_set(newest, EINA_FALSE);
+                  elm_object_focus_set(newest, EINA_TRUE);
+               }
+          }
+     }
+}
+
+/**
+ * @internal
+ *
+ * Set custom focus chain.
+ *
+ * This function i set one new and overwrite any previous custom focus chain
+ * with the list of objects. The previous list will be deleted and this list
+ * will be managed. After setted, don't modity it.
+ *
+ * @note On focus cycle, only will be evaluated children of this container.
+ *
+ * @param obj The container widget
+ * @param objs Chain of objects to pass focus
+ * @ingroup Widget
+ */
+EOLIAN static void
+_efl_ui_widget_focus_custom_chain_set(Eo *obj, Elm_Widget_Smart_Data *sd, Eina_List *objs)
+{
+   if (!_elm_widget_focus_chain_manager_is(obj)) return;
+
+   efl_ui_widget_focus_custom_chain_unset(obj);
+
+   Eina_List *l;
+   Evas_Object *o;
+
+   EINA_LIST_FOREACH(objs, l, o)
+     {
+        evas_object_event_callback_add(o, EVAS_CALLBACK_DEL,
+                                       _elm_object_focus_chain_del_cb, obj);
+     }
+
+   sd->focus_chain = objs;
+}
+
+/**
+ * @internal
+ *
+ * Get custom focus chain
+ *
+ * @param obj The container widget
+ * @ingroup Widget
+ */
+EOLIAN static const Eina_List*
+_efl_ui_widget_focus_custom_chain_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
+{
+   return (const Eina_List *)sd->focus_chain;
+}
+
+/**
+ * @internal
+ *
+ * Unset custom focus chain
+ *
+ * @param obj The container widget
+ * @ingroup Widget
+ */
+EOLIAN static void
+_efl_ui_widget_focus_custom_chain_unset(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
+{
+   Eina_List *l, *l_next;
+   Evas_Object *o;
+
+   EINA_LIST_FOREACH_SAFE(sd->focus_chain, l, l_next, o)
+     {
+        evas_object_event_callback_del_full(o, EVAS_CALLBACK_DEL,
+                                            _elm_object_focus_chain_del_cb, obj);
+        sd->focus_chain = eina_list_remove_list(sd->focus_chain, l);
+     }
+}
+
+/**
+ * @internal
+ *
+ * Append object to custom focus chain.
+ *
+ * @note If relative_child equal to NULL or not in custom chain, the object
+ * will be added in end.
+ *
+ * @note On focus cycle, only will be evaluated children of this container.
+ *
+ * @param obj The container widget
+ * @param child The child to be added in custom chain
+ * @param relative_child The relative object to position the child
+ * @ingroup Widget
+ */
+EOLIAN static void
+_efl_ui_widget_focus_custom_chain_append(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Object *child, Evas_Object *relative_child)
+{
+   EINA_SAFETY_ON_NULL_RETURN(child);
+
+   if (!_elm_widget_focus_chain_manager_is(obj)) return;
+
+   evas_object_event_callback_add(child, EVAS_CALLBACK_DEL,
+                                  _elm_object_focus_chain_del_cb, obj);
+
+   if (!relative_child)
+     sd->focus_chain = eina_list_append(sd->focus_chain, child);
+   else
+     sd->focus_chain = eina_list_append_relative(sd->focus_chain,
+                                                 child, relative_child);
+}
+
+/**
+ * @internal
+ *
+ * Prepend object to custom focus chain.
+ *
+ * @note If relative_child equal to NULL or not in custom chain, the object
+ * will be added in begin.
+ *
+ * @note On focus cycle, only will be evaluated children of this container.
+ *
+ * @param obj The container widget
+ * @param child The child to be added in custom chain
+ * @param relative_child The relative object to position the child
+ * @ingroup Widget
+ */
+EOLIAN static void
+_efl_ui_widget_focus_custom_chain_prepend(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Object *child, Evas_Object *relative_child)
+{
+   EINA_SAFETY_ON_NULL_RETURN(child);
+
+   if (!_elm_widget_focus_chain_manager_is(obj)) return;
+
+   evas_object_event_callback_add(child, EVAS_CALLBACK_DEL,
+                                  _elm_object_focus_chain_del_cb, obj);
+
+   if (!relative_child)
+     sd->focus_chain = eina_list_prepend(sd->focus_chain, child);
+   else
+     sd->focus_chain = eina_list_prepend_relative(sd->focus_chain,
+                                                  child, relative_child);
+}
+
+/**
+ * @internal
+ *
+ * Give focus to next object in object tree.
+ *
+ * Give focus to next object in focus chain of one object sub-tree.
+ * If the last object of chain already have focus, the focus will go to the
+ * first object of chain.
+ *
+ * @param obj The widget root of sub-tree
+ * @param dir Direction to cycle the focus
+ *
+ * @ingroup Widget
+ */
+EOLIAN static void
+_efl_ui_widget_focus_cycle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Elm_Focus_Direction dir)
+{
+   Evas_Object *target = NULL;
+   Elm_Object_Item *target_item = NULL;
+   if (!_elm_widget_is(obj))
+     return;
+   efl_ui_widget_focus_next_get(obj, dir, &target, &target_item);
+   if (target)
+     {
+        /* access */
+        if (_elm_config->access_mode)
+          {
+             /* highlight cycle does not steal a focus, only after window gets
+                the ECORE_X_ATOM_E_ILLUME_ACCESS_ACTION_ACTIVATE message,
+                target will steal focus, or focus its own job. */
+             if (!_elm_access_auto_highlight_get())
+               efl_ui_widget_focus_steal(target, target_item);
+
+             _elm_access_highlight_set(target);
+             elm_widget_focus_region_show(target);
+          }
+        else efl_ui_widget_focus_steal(target, target_item);
+     }
+}
+
+/**
+ * @internal
+ *
+ * Give focus to near object(in object tree) in one direction.
+ *
+ * Give focus to near object(in object tree) in direction of current
+ * focused object.  If none focusable object in given direction or
+ * none focused object in object tree, the focus will not change.
+ *
+ * @param obj The reference widget
+ * @param degree Degree changes clockwise. i.e. 0-degree: Up,
+ *               90-degree: Right, 180-degree: Down, and 270-degree: Left
+ * @return EINA_TRUE if focus is moved.
+ *
+ * @ingroup Widget
+ */
+EOLIAN static Eina_Bool
+_efl_ui_widget_focus_direction_go(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, double degree)
+{
+   Evas_Object *target = NULL;
+   Elm_Object_Item *target_item = NULL;
+   Evas_Object *current_focused = NULL;
+   double weight = 0.0;
+
+   if (!_elm_widget_is(obj)) return EINA_FALSE;
+   if (!_is_focused(obj)) return EINA_FALSE;
+
+   current_focused = efl_ui_widget_focused_object_get(obj);
+
+   if (efl_ui_widget_focus_direction_get
+         (obj, current_focused, degree, &target, &target_item, &weight))
+     {
+        efl_ui_widget_focus_steal(target, NULL);
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
+/**
+ * @internal
+ *
+ * Get near object in one direction of base object.
+ *
+ * Get near object(in the object sub-tree) in one direction of
+ * base object. Return the near object by reference.
+ * By initializing weight, you can filter objects locating far
+ * from base object. If object is in the specific direction,
+ * weight is (1/(distance^2)). If object is not exactly in one
+ * direction, some penalty will be added.
+ *
+ * @param obj The widget root of sub-tree
+ * @param base The base object of the direction
+ * @param degree Degree changes clockwise. i.e. 0-degree: Up,
+ *               90-degree: Right, 180-degree: Down, and 270-degree: Left
+ * @param direction The near object in one direction
+ * @param weight The weight is bigger when the object is located near
+ * @return EINA_TRUE if near object is updated.
+ *
+ * @ingroup Widget
+ */
+
+EOLIAN static Eina_Bool
+_efl_ui_widget_focus_direction_get(const Eo *obj, Elm_Widget_Smart_Data *sd, const Evas_Object *base, double degree, Evas_Object **direction, Elm_Object_Item **direction_item, double *weight)
+{
+   double c_weight;
+
+   /* -1 means the best was already decided. Don't need any more searching. */
+   if (!direction || !weight || !base || (obj == base))
+     return EINA_FALSE;
+
+   /* Ignore if disabled */
+   if ((!evas_object_visible_get(obj))
+       || (elm_widget_disabled_get(obj))
+       || (elm_widget_tree_unfocusable_get(obj)))
+     return EINA_FALSE;
+
+   /* Try use hook */
+   if (_internal_elm_widget_focus_direction_manager_is(obj))
+     {
+        Eina_Bool int_ret = EINA_FALSE;
+        int_ret = efl_ui_widget_focus_direction((Eo *)obj, base, degree, direction, direction_item, weight);
+        return int_ret;
+     }
+
+   if (!elm_widget_can_focus_get(obj) || _is_focused((Eo *)obj))
+     return EINA_FALSE;
+
+   c_weight = _elm_widget_focus_direction_weight_get(base, obj, degree);
+   if ((c_weight == -1.0) ||
+       ((c_weight != 0.0) && (*weight != -1.0) &&
+        ((int)(*weight * 1000000) <= (int)(c_weight * 1000000))))
+     {
+        if (*direction &&
+            ((int)(*weight * 1000000) == (int)(c_weight * 1000000)))
+          {
+             ELM_WIDGET_DATA_GET(*direction, sd1);
+             if (sd1)
+               {
+                  if (sd->focus_order <= sd1->focus_order)
+                    return EINA_FALSE;
+               }
+          }
+        *direction = (Evas_Object *)obj;
+        *weight = c_weight;
+        return EINA_TRUE;
+     }
+
+   return EINA_FALSE;
+}
+
+/**
+ * @internal
+ *
+ * Get near object in one direction of base object in list.
+ *
+ * Get near object in one direction of base object in the specific
+ * object list. Return the near object by reference.
+ * By initializing weight, you can filter objects locating far
+ * from base object. If object is in the specific direction,
+ * weight is (1/(distance^2)). If object is not exactly in one
+ * direction, some penalty will be added.
+ *
+ * @param obj The widget root of sub-tree
+ * @param base The base object of the direction
+ * @param items list with ordered objects
+ * @param list_data_get function to get the object from one item of list
+ * @param degree Degree changes clockwise. i.e. 0-degree: Up,
+ *               90-degree: Right, 180-degree: Down, and 270-degree: Left
+ * @param direction The near object in one direction
+ * @param weight The weight is bigger when the object is located near
+ * @return EINA_TRUE if near object is updated.
+ *
+ * @ingroup Widget
+ */
+EOLIAN static Eina_Bool
+_efl_ui_widget_focus_list_direction_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *_pd EINA_UNUSED, const Evas_Object *base, const Eina_List *items, void* list_data_get, double degree, Evas_Object **direction, Elm_Object_Item **direction_item, double *weight)
+{
+   if (!direction || !weight || !base || !items)
+     return EINA_FALSE;
+
+   const Eina_List *l = items;
+   Evas_Object *current_best = *direction;
+
+   for (; l; l = eina_list_next(l))
+     {
+        Evas_Object *cur = ((list_data_get_func_type)list_data_get)(l);
+        if (cur && _elm_widget_is(cur))
+          efl_ui_widget_focus_direction_get(cur, base, degree, direction, direction_item, weight);
+     }
+   if (current_best != *direction) return EINA_TRUE;
+
+   return EINA_FALSE;
+}
+
+/**
+ * @internal
+ *
+ * Get next object in focus chain of object tree.
+ *
+ * Get next object in focus chain of one object sub-tree.
+ * Return the next object by reference. If don't have any candidate to receive
+ * focus before chain end, the first candidate will be returned.
+ *
+ * @param obj The widget root of sub-tree
+ * @param dir Direction of focus chain
+ * @param next The next object in focus chain
+ * @return EINA_TRUE if don't need focus chain restart/loop back
+ *         to use 'next' obj.
+ *
+ * @ingroup Widget
+ */
+EOLIAN static Eina_Bool
+_efl_ui_widget_focus_next_get(const Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+{
+   Elm_Access_Info *ac;
+
+   if (!next)
+     return EINA_FALSE;
+   *next = NULL;
+
+   /* Ignore if disabled */
+   if (_elm_config->access_mode && _elm_access_auto_highlight_get())
+     {
+        if (!evas_object_visible_get(obj)
+            || (elm_widget_tree_unfocusable_get(obj)))
+          return EINA_FALSE;
+     }
+   else
+     {
+        if ((!evas_object_visible_get(obj))
+            || (elm_widget_disabled_get(obj))
+            || (elm_widget_tree_unfocusable_get(obj)))
+          return EINA_FALSE;
+     }
+
+   /* Try use hook */
+   if (_elm_widget_focus_chain_manager_is(obj))
+     {
+        Eina_Bool int_ret = EINA_FALSE;
+        int_ret = efl_ui_widget_focus_next((Eo *)obj, dir, next, next_item);
+        if (!int_ret && _is_focused((Eo *)obj))
+          {
+             Evas_Object *o = NULL;
+             if (dir == ELM_FOCUS_PREVIOUS)
+               *next_item = sd->item_focus_previous;
+             else if (dir == ELM_FOCUS_NEXT)
+               *next_item = sd->item_focus_next;
+             else if (dir == ELM_FOCUS_UP)
+               *next_item = sd->item_focus_up;
+             else if (dir == ELM_FOCUS_DOWN)
+               *next_item = sd->item_focus_down;
+             else if (dir == ELM_FOCUS_RIGHT)
+               *next_item = sd->item_focus_right;
+             else if (dir == ELM_FOCUS_LEFT)
+               *next_item = sd->item_focus_left;
+             if (*next_item)
+               o = elm_object_item_widget_get(*next_item);
+
+             if (!o)
+               {
+                  if (dir == ELM_FOCUS_PREVIOUS)
+                    o = sd->focus_previous;
+                  else if (dir == ELM_FOCUS_NEXT)
+                    o = sd->focus_next;
+                  else if (dir == ELM_FOCUS_UP)
+                    o = sd->focus_up;
+                  else if (dir == ELM_FOCUS_DOWN)
+                    o = sd->focus_down;
+                  else if (dir == ELM_FOCUS_RIGHT)
+                    o = sd->focus_right;
+                  else if (dir == ELM_FOCUS_LEFT)
+                    o = sd->focus_left;
+               }
+
+             if (o)
+               {
+                  *next = o;
+                  return EINA_TRUE;
+               }
+          }
+        return int_ret;
+     }
+
+   /* access object does not check sd->can_focus, because an object could
+      have highlight even though the object is not focusable. */
+   if (_elm_config->access_mode && _elm_access_auto_highlight_get())
+     {
+        ac = _elm_access_info_get(obj);
+        if (!ac) return EINA_FALSE;
+
+        /* check whether the hover object is visible or not */
+        if (!evas_object_visible_get(ac->hoverobj))
+          return EINA_FALSE;
+     }
+   else if (!elm_widget_can_focus_get(obj))
+     return EINA_FALSE;
+
+   if (_is_focused((Eo *)obj))
+     {
+        if (dir == ELM_FOCUS_PREVIOUS)
+          *next_item = sd->item_focus_previous;
+        else if (dir == ELM_FOCUS_NEXT)
+          *next_item = sd->item_focus_next;
+        else if (dir == ELM_FOCUS_UP)
+          *next_item = sd->item_focus_up;
+        else if (dir == ELM_FOCUS_DOWN)
+          *next_item = sd->item_focus_down;
+        else if (dir == ELM_FOCUS_RIGHT)
+          *next_item = sd->item_focus_right;
+        else if (dir == ELM_FOCUS_LEFT)
+          *next_item = sd->item_focus_left;
+        if (*next_item) *next = elm_object_item_widget_get(*next_item);
+
+        if (!(*next))
+          {
+             if (dir == ELM_FOCUS_PREVIOUS)
+               *next = sd->focus_previous;
+             else if (dir == ELM_FOCUS_NEXT)
+               *next = sd->focus_next;
+             else if (dir == ELM_FOCUS_UP)
+               *next = sd->focus_up;
+             else if (dir == ELM_FOCUS_DOWN)
+               *next = sd->focus_down;
+             else if (dir == ELM_FOCUS_RIGHT)
+               *next = sd->focus_right;
+             else if (dir == ELM_FOCUS_LEFT)
+               *next = sd->focus_left;
+          }
+
+        if (*next) return EINA_TRUE;
+     }
+
+   /* Return */
+   *next = (Evas_Object *)obj;
+   return !ELM_WIDGET_FOCUS_GET(obj);
+}
+
+/**
+ * @internal
+ *
+ * Get next object in focus chain of object tree in list.
+ *
+ * Get next object in focus chain of one object sub-tree ordered by one list.
+ * Return the next object by reference. If don't have any candidate to receive
+ * focus before list end, the first candidate will be returned.
+ *
+ * @param obj The widget root of sub-tree
+ * @param items list with ordered objects
+ * @param list_data_get function to get the object from one item of list
+ * @param dir Direction of focus chain
+ * @param next The next object in focus chain
+ * @return EINA_TRUE if don't need focus chain restart/loop back
+ *         to use 'next' obj.
+ *
+ * @ingroup Widget
+ */
+EOLIAN static Eina_Bool
+_efl_ui_widget_focus_list_next_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, const Eina_List *items, void * list_data_get, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+{
+   Eina_List *(*list_next)(const Eina_List *list) = NULL;
+   Evas_Object *focused_object = NULL;
+
+   if (!next)
+     return EINA_FALSE;
+   *next = NULL;
+
+   if (!_elm_widget_is(obj))
+     return EINA_FALSE;
+
+   if (!items)
+     return EINA_FALSE;
+
+   /* When Up, Down, Right, or Left, try direction_get first. */
+   focused_object = efl_ui_widget_focused_object_get(obj);
+   if (focused_object)
+     {
+        if ((dir == ELM_FOCUS_UP)
+           || (dir == ELM_FOCUS_DOWN)
+           || (dir == ELM_FOCUS_RIGHT)
+           || (dir == ELM_FOCUS_LEFT))
+          {
+             *next_item = efl_ui_widget_focus_next_item_get(focused_object, dir);
+             if (*next_item)
+               *next = elm_object_item_widget_get(*next_item);
+             else
+               *next = efl_ui_widget_focus_next_object_get(focused_object, dir);
+             if (*next) return EINA_TRUE;
+             else
+               {
+                  Evas_Object *n = NULL;
+                  Elm_Object_Item *n_item = NULL;
+                  double degree = 0;
+                  double weight = 0.0;
+
+                  if (dir == ELM_FOCUS_UP) degree = 0.0;
+                  else if (dir == ELM_FOCUS_DOWN) degree = 180.0;
+                  else if (dir == ELM_FOCUS_RIGHT) degree = 90.0;
+                  else if (dir == ELM_FOCUS_LEFT) degree = 270.0;
+
+                  if (efl_ui_widget_focus_list_direction_get(obj, focused_object,
+                                                          items, list_data_get,
+                                                          degree, &n, &n_item,
+                                                          &weight))
+                    {
+                       *next_item = n_item;
+                       *next = n;
+                       return EINA_TRUE;
+                    }
+               }
+          }
+     }
+
+   /* Direction */
+   if (dir == ELM_FOCUS_PREVIOUS)
+     {
+        items = eina_list_last(items);
+        list_next = eina_list_prev;
+     }
+   else if ((dir == ELM_FOCUS_NEXT)
+            || (dir == ELM_FOCUS_UP)
+            || (dir == ELM_FOCUS_DOWN)
+            || (dir == ELM_FOCUS_RIGHT)
+            || (dir == ELM_FOCUS_LEFT))
+     list_next = eina_list_next;
+   else
+     return EINA_FALSE;
+
+   const Eina_List *l = items;
+
+   /* Recovery last focused sub item */
+   if (ELM_WIDGET_FOCUS_GET(obj))
+     {
+        for (; l; l = list_next(l))
+          {
+             Evas_Object *cur = ((list_data_get_func_type)list_data_get)(l);
+             if (ELM_WIDGET_FOCUS_GET(cur)) break;
+          }
+
+         /* Focused object, but no focused sub item */
+         if (!l) l = items;
+     }
+
+   const Eina_List *start = l;
+   Evas_Object *to_focus = NULL;
+   Elm_Object_Item *to_focus_item = NULL;
+
+   /* Iterate sub items */
+   /* Go to the end of list */
+   for (; l; l = list_next(l))
+     {
+        Evas_Object *tmp = NULL;
+        Elm_Object_Item *tmp_item = NULL;
+        Evas_Object *cur = ((list_data_get_func_type)list_data_get)(l);
+
+        if (!cur) continue;
+        if (!_elm_widget_is(cur)) continue;
+        if (elm_widget_parent_get(cur) != obj)
+          continue;
+
+        /* Try Focus cycle in subitem */
+        if (efl_ui_widget_focus_next_get(cur, dir, &tmp, &tmp_item))
+          {
+             *next = tmp;
+             *next_item = tmp_item;
+             return EINA_TRUE;
+          }
+        else if ((dir == ELM_FOCUS_UP)
+                 || (dir == ELM_FOCUS_DOWN)
+                 || (dir == ELM_FOCUS_RIGHT)
+                 || (dir == ELM_FOCUS_LEFT))
+          {
+             if (tmp && _is_focused(cur))
+               {
+                  *next = tmp;
+                  *next_item = tmp_item;
+                  return EINA_FALSE;
+               }
+          }
+        else if ((tmp) && (!to_focus))
+          {
+             to_focus = tmp;
+             to_focus_item = tmp_item;
+          }
+     }
+
+   l = items;
+
+   /* Get First possible */
+   for (; l != start; l = list_next(l))
+     {
+        Evas_Object *tmp = NULL;
+        Elm_Object_Item *tmp_item = NULL;
+        Evas_Object *cur = ((list_data_get_func_type)list_data_get)(l);
+
+        if (elm_widget_parent_get(cur) != obj)
+          continue;
+
+        /* Try Focus cycle in subitem */
+        efl_ui_widget_focus_next_get(cur, dir, &tmp, &tmp_item);
+        if (tmp)
+          {
+             *next = tmp;
+             *next_item = tmp_item;
+             return EINA_FALSE;
+          }
+     }
+
+   *next = to_focus;
+   *next_item = to_focus_item;
+   return EINA_FALSE;
+}
+
+/**
+ * @internal
+ *
+ * Get next object which was set with specific focus direction.
+ *
+ * Get next object which was set by elm_widget_focus_next_object_set
+ * with specific focus directioin.
+ *
+ * @param obj The widget
+ * @param dir Direction of focus
+ * @return Widget which was registered with sepecific focus direction.
+ *
+ * @ingroup Widget
+ */
+EOLIAN static Evas_Object*
+_efl_ui_widget_focus_next_object_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir)
+{
+   Evas_Object *ret = NULL;
+
+   if (dir == ELM_FOCUS_PREVIOUS)
+     ret = sd->focus_previous;
+   else if (dir == ELM_FOCUS_NEXT)
+     ret = sd->focus_next;
+   else if (dir == ELM_FOCUS_UP)
+     ret = sd->focus_up;
+   else if (dir == ELM_FOCUS_DOWN)
+     ret = sd->focus_down;
+   else if (dir == ELM_FOCUS_RIGHT)
+     ret = sd->focus_right;
+   else if (dir == ELM_FOCUS_LEFT)
+     ret = sd->focus_left;
+
+   return ret;
+}
+
+/**
+ * @internal
+ *
+ * Set next object with specific focus direction.
+ *
+ * When a widget is set with specific focus direction, this widget will be
+ * the first candidate when finding the next focus object.
+ * Focus next object can be registered with six directions that are previous,
+ * next, up, down, right, and left.
+ *
+ * @param obj The widget
+ * @param next Next focus object
+ * @param dir Direction of focus
+ *
+ * @ingroup Widget
+ */
+EOLIAN static void
+_efl_ui_widget_focus_next_object_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Evas_Object *next, Elm_Focus_Direction dir)
+{
+
+   if (dir == ELM_FOCUS_PREVIOUS)
+     sd->focus_previous = next;
+   else if (dir == ELM_FOCUS_NEXT)
+     sd->focus_next = next;
+   else if (dir == ELM_FOCUS_UP)
+     sd->focus_up = next;
+   else if (dir == ELM_FOCUS_DOWN)
+     sd->focus_down = next;
+   else if (dir == ELM_FOCUS_RIGHT)
+     sd->focus_right = next;
+   else if (dir == ELM_FOCUS_LEFT)
+     sd->focus_left = next;
+
+}
+
+EOLIAN static Elm_Object_Item*
+_efl_ui_widget_focus_next_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir)
+{
+   Elm_Object_Item *ret = NULL;
+
+   if (dir == ELM_FOCUS_PREVIOUS)
+     ret = sd->item_focus_previous;
+   else if (dir == ELM_FOCUS_NEXT)
+     ret = sd->item_focus_next;
+   else if (dir == ELM_FOCUS_UP)
+     ret = sd->item_focus_up;
+   else if (dir == ELM_FOCUS_DOWN)
+     ret = sd->item_focus_down;
+   else if (dir == ELM_FOCUS_RIGHT)
+     ret = sd->item_focus_right;
+   else if (dir == ELM_FOCUS_LEFT)
+     ret = sd->item_focus_left;
+
+   return ret;
+
+}
+
+EOLIAN static void
+_efl_ui_widget_focus_next_item_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Object_Item *next_item, Elm_Focus_Direction dir)
+{
+   if (dir == ELM_FOCUS_PREVIOUS)
+     sd->item_focus_previous = next_item;
+   else if (dir == ELM_FOCUS_NEXT)
+     sd->item_focus_next = next_item;
+   else if (dir == ELM_FOCUS_UP)
+     sd->item_focus_up = next_item;
+   else if (dir == ELM_FOCUS_DOWN)
+     sd->item_focus_down = next_item;
+   else if (dir == ELM_FOCUS_RIGHT)
+     sd->item_focus_right = next_item;
+   else if (dir == ELM_FOCUS_LEFT)
+     sd->item_focus_left = next_item;
+}
+
+EAPI void
+elm_widget_focus_set(Eo *obj, Eina_Bool focus)
+{
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, sd);
+   if (!sd->focused)
+     {
+        focus_order++;
+        sd->focus_order = focus_order;
+        sd->focused = EINA_TRUE;
+        efl_ui_focus_object_on_focus_update(obj);
+     }
+
+   if (focus)
+     {
+        if ((_is_focusable(sd->resize_obj)) &&
+            (!elm_widget_disabled_get(sd->resize_obj)))
+          {
+             elm_widget_focus_set(sd->resize_obj, focus);
+          }
+        else
+          {
+             const Eina_List *l;
+             Evas_Object *child;
+
+             EINA_LIST_FOREACH(sd->subobjs, l, child)
+               {
+                  if (!_elm_widget_is(child)) continue;
+                  if ((_is_focusable(child)) &&
+                       (!elm_widget_disabled_get(child)))
+                      {
+                         elm_widget_focus_set(child, focus);
+                         break;
+                      }
+               }
+          }
+     }
+   else
+     {
+        const Eina_List *l;
+        Evas_Object *child;
+
+        EINA_LIST_REVERSE_FOREACH(sd->subobjs, l, child)
+          {
+             if (!_elm_widget_is(child)) continue;
+             if ((_is_focusable(child)) &&
+                 (!elm_widget_disabled_get(child)))
+               {
+                  elm_widget_focus_set(child, focus);
+                  break;
+               }
+          }
+     }
+}
+
+static void
+_focused_object_clear(Elm_Widget_Smart_Data *sd)
+{
+   if (sd->resize_obj && elm_widget_is(sd->resize_obj) &&
+       _is_focused(sd->resize_obj))
+     {
+        efl_ui_widget_focused_object_clear(sd->resize_obj);
+     }
+   else
+     {
+        const Eina_List *l;
+        Evas_Object *child;
+        EINA_LIST_FOREACH(sd->subobjs, l, child)
+          {
+             if (_elm_widget_is(child) && _is_focused(child))
+               {
+                  efl_ui_widget_focused_object_clear(child);
+                  break;
+               }
+          }
+     }
+}
+
+EOLIAN static void
+_efl_ui_widget_focused_object_clear(Eo *obj, Elm_Widget_Smart_Data *sd)
+{
+   if (!sd->focused) return;
+   _focused_object_clear(sd);
+   sd->focused = EINA_FALSE;
+   if (sd->top_win_focused)
+     efl_ui_focus_object_on_focus_update(obj);
+}
+
+EOLIAN static void
+_efl_ui_widget_focus_steal(Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Object_Item *item)
+{
+   Evas_Object *parent, *parent2, *o;
+
+   if (sd->focused) return;
+   if (sd->disabled) return;
+   if (!sd->can_focus) return;
+   if (sd->tree_unfocusable) return;
+   parent = obj;
+   for (;; )
+     {
+        o = elm_widget_parent_get(parent);
+        if (!o) break;
+        sd = efl_data_scope_get(o, MY_CLASS);
+        if (sd->disabled || sd->tree_unfocusable) return;
+        if (sd->focused) break;
+        parent = o;
+     }
+   if ((!elm_widget_parent_get(parent)))
+     efl_ui_widget_focused_object_clear(parent);
+   else
+     {
+        parent2 = elm_widget_parent_get(parent);
+        parent = parent2;
+        sd = efl_data_scope_get(parent, MY_CLASS);
+        if (sd) _focused_object_clear(sd);
+     }
+   _parent_focus(obj, item);
+   elm_widget_focus_region_show(obj);
+   return;
+}
+
+static void
+_parents_on_focus(Evas_Object *obj)
+{
+   API_ENTRY return;
+   if (!sd->focused || !sd->top_win_focused) return;
+
+   Evas_Object *o = elm_widget_parent_get(obj);
+   if (o) _parents_on_focus(o);
+   efl_ui_focus_object_on_focus_update(obj);
+}
+
+EOLIAN static void
+_efl_ui_widget_focus_restore(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED)
+{
+   Evas_Object *newest = NULL;
+   unsigned int newest_focus_order = 0;
+
+   newest = efl_ui_widget_newest_focus_order_get(obj, &newest_focus_order, EINA_TRUE);
+   if (newest)
+     _parents_on_focus(newest);
+}
+//END
+
+
+static void
+_elm_widget_disabled_eval(const Evas_Object *obj, Eina_Bool disabled)
+{
+   const Eina_List *l;
+   Evas_Object *child;
+   ELM_WIDGET_DATA_GET(obj, sd);
+
+   EINA_LIST_FOREACH(sd->subobjs, l, child)
+     {
+        if (elm_widget_is(child))
+          {
+             //TIZEN_ONLY(20180607): Restore legacy focus
+             if (elm_widget_is_legacy(obj))
+               efl_ui_widget_focus_disabled_handle((Evas_Object *)obj);
+             //
+             efl_ui_widget_on_disabled_update(child, disabled);
+             _elm_widget_disabled_eval(child, disabled);
+          }
+     }
+}
+
+static void
+elm_widget_disabled_internal(Eo *obj, Eina_Bool disabled)
+{
+   if (!disabled && elm_widget_disabled_get(elm_widget_parent_get(obj)))
+     return;
+   //TIZEN_ONLY(20180607): Restore legacy focus
+   if (elm_widget_is_legacy(obj))
+     efl_ui_widget_focus_disabled_handle(obj);
+   //
+   efl_ui_widget_on_disabled_update(obj, disabled);
+   _elm_widget_disabled_eval(obj, disabled);
+}
+
+
+EOLIAN static void
+_efl_ui_widget_show_region_set(Eo *obj, Elm_Widget_Smart_Data *sd, Eina_Rect sr, Eina_Bool forceshow)
+{
+   Evas_Object *parent_obj, *child_obj;
+   Evas_Coord px, py, cx, cy, nx = 0, ny = 0;
+
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************
+    * Move this code to the below to update show region geometry properly.
+   evas_smart_objects_calculate(evas_object_evas_get(obj));
+    */
+   /*******
+    * END *
+    *******/
+
+   if (!forceshow && eina_rectangle_equal(&sr.rect, &sd->show_region.rect)) return;
+
+   sd->show_region = sr;
+
+   /*****************************************************************************
+    * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
+    *****************************************************************************/
+   /* Block nested call for evas_smart_objects_calculate() and region showing works */
+   if (sd->on_show_region_set) return;
+
+   sd->on_show_region_set = EINA_TRUE;
+
+   evas_smart_objects_calculate(evas_object_evas_get(obj));
+
+   sd->on_show_region_set = EINA_FALSE;
+
+   /* show_region geometry could be changed during processing elm_widget_show_region_set().
+      evas_smart_objects_calculate() can trigger nested show_region_set calls */
+   sr = sd->show_region;
+   /*******
+    * END *
+    *******/
+
+   if (sd->on_show_region)
+     {
+        sd->on_show_region(sd->on_show_region_data, obj, sr);
+
+        if (_elm_scrollable_is(obj))
+          {
+             if (elm_widget_is_legacy(obj))
+               {
+                  elm_interface_scrollable_content_pos_get(obj, &nx, &ny);
+                  sr.x -= nx;
+                  sr.y -= ny;
+               }
+             else
+               {
+                  Eina_Position2D pos;
+                  pos = efl_ui_scrollable_content_pos_get(obj);
+                  sr.x -= pos.x;
+                  sr.y -= pos.y;
+               }
+          }
+     }
+
+   do
+     {
+        parent_obj = sd->parent_obj;
+        child_obj = sd->obj;
+        if ((!parent_obj) || (!_elm_widget_is(parent_obj))) break;
+        sd = efl_data_scope_get(parent_obj, MY_CLASS);
+        if (!sd) break;
+
+        evas_object_geometry_get(parent_obj, &px, &py, NULL, NULL);
+        evas_object_geometry_get(child_obj, &cx, &cy, NULL, NULL);
+
+        sr.x += (cx - px);
+        sr.y += (cy - py);
+        sd->show_region = sr;
+
+        if (sd->on_show_region)
+          sd->on_show_region(sd->on_show_region_data, parent_obj, sr);
+     }
+   while (parent_obj);
+}
+
+EOLIAN static Eina_Rect
+_efl_ui_widget_show_region_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd)
+{
+   return (Eina_Rect) sd->show_region;
+}
+
+//TIZEN_ONLY(20180607): Restore legacy focus
+/**
+ * @internal
+ *
+ * Check if the widget has its own focus next function.
+ *
+ * @param obj The widget.
+ * @return focus next function is implemented/unimplemented.
+ * (@c EINA_TRUE = implemented/@c EINA_FALSE = unimplemented.)
+ */
+static inline Eina_Bool
+_elm_widget_focus_chain_manager_is(const Evas_Object *obj)
+{
+   ELM_WIDGET_CHECK(obj) EINA_FALSE;
+
+   Eina_Bool manager_is = EINA_FALSE;
+   manager_is = efl_ui_widget_focus_next_manager_is((Eo *)obj);
+   return manager_is;
+}
+
+static inline Eina_Bool
+_internal_elm_widget_focus_direction_manager_is(const Evas_Object *obj)
+{
+   ELM_WIDGET_CHECK(obj) EINA_FALSE;
+
+   Eina_Bool manager_is = EINA_FALSE;
+   manager_is = efl_ui_widget_focus_direction_manager_is((Eo *)obj);
+   return manager_is;
+}
+
+static void
+_parent_focus(Evas_Object *obj, Elm_Object_Item *item)
+{
+   API_ENTRY return;
+
+   if (sd->focused) return;
+
+   Evas_Object *o = elm_widget_parent_get(obj);
+   sd->focus_order_on_calc = EINA_TRUE;
+
+   if (o) _parent_focus(o, item);
+
+   if (!sd->focus_order_on_calc)
+     return;  /* we don't want to override it if by means of any of the
+                 callbacks below one gets to calculate our order
+                 first. */
+
+   focus_order++;
+   sd->focus_order = focus_order;
+   sd->focused = EINA_TRUE;
+
+   if (sd->top_win_focused)
+     efl_ui_focus_object_on_focus_update(obj);
+   sd->focus_order_on_calc = EINA_FALSE;
+
+   if (_elm_config->access_mode == ELM_ACCESS_MODE_ON)
+     _elm_access_highlight_set(obj);
+}
+
+static void
+_elm_object_focus_chain_del_cb(void *data,
+                               Evas *e EINA_UNUSED,
+                               Evas_Object *obj,
+                               void *event_info EINA_UNUSED)
+{
+   ELM_WIDGET_DATA_GET(data, sd);
+
+   sd->focus_chain = eina_list_remove(sd->focus_chain, obj);
+}
+//
 #include "elm_widget_item.eo.c"
 #include "efl_ui_widget.eo.c"
 
