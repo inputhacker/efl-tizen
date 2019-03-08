@@ -3562,8 +3562,6 @@ EWAPI Eina_Bool _evas_object_intercept_call(Evas_Object *obj, Evas_Object_Interc
  */
 EAPI Evas_Object *evas_object_rectangle_add(Evas *e) EINA_WARN_UNUSED_RESULT EINA_ARG_NONNULL(1) EINA_MALLOC;
 
-#include "canvas/efl_canvas_rectangle.eo.legacy.h"
-
 /**
  * @}
  */
@@ -4430,8 +4428,6 @@ EAPI void evas_vg_gradient_spread_set(Eo *obj, Efl_Gfx_Gradient_Spread s);
  */
 EAPI Efl_Gfx_Gradient_Spread evas_vg_gradient_spread_get(Eo *obj);
 
-#include "canvas/efl_canvas_vg_gradient.eo.legacy.h"
-
 /**
  * Creates a new linear gradient object \.
  *
@@ -4480,8 +4476,6 @@ EAPI void evas_vg_gradient_linear_end_set(Eo *obj, double x, double y);
  *
  */
 EAPI void evas_vg_gradient_linear_end_get(Eo *obj, double *x, double *y);
-
-#include "canvas/efl_canvas_vg_gradient_linear.eo.legacy.h"
 
 /**
  * Creates a new radial gradient object \.
@@ -4548,8 +4542,6 @@ EAPI void evas_vg_gradient_radial_focal_set(Eo *obj, double x, double y);
  *
  */
 EAPI void evas_vg_gradient_radial_focal_get(Eo *obj, double *x, double *y);
-
-#include "canvas/efl_canvas_vg_gradient_radial.eo.legacy.h"
 
 /**
  * @}
@@ -8293,8 +8285,6 @@ EAPI void evas_object_map_enable_set(Evas_Object *obj, Eina_Bool enabled);
  * @see evas_object_map_enable_set
  */
 EAPI Eina_Bool evas_object_map_enable_get(const Evas_Object *obj);
-
-#include "canvas/efl_gfx_mapping.eo.legacy.h"
 
 /**
  * @brief Apply an evas filter program on this text object.

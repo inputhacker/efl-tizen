@@ -738,4 +738,5 @@ EAPI double elm_layout_valign_get(Evas_Object *obj, const char *part);
  * END *
  *******/
 
+/* FIXME: this shouldn't have to be included but causes build errors otherwise */
 #include "efl_ui_layout.eo.legacy.h"
