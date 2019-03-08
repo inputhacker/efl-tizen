@@ -266,7 +266,7 @@ EFL_CALLBACKS_ARRAY_DEFINE(elm_widget_subitems_callbacks,
                           //TIZEN_ONLY(20180607): Restore legacy focus
                           //{ EFL_EVENT_DEL, _on_sub_obj_del });
                           { EFL_EVENT_DEL, _on_sub_obj_del },
-                          { EFL_GFX_ENTITY_EVENT_HIDE, _on_sub_obj_hide });
+                          { EFL_GFX_ENTITY_EVENT_VISIBILITY_CHANGED, _on_sub_obj_hide });
                           //
 EFL_CALLBACKS_ARRAY_DEFINE(efl_subitems_callbacks,
                           { EFL_EVENT_DEL, _on_sub_obj_del });
