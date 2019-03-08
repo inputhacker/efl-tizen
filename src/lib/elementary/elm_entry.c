@@ -9260,6 +9260,7 @@ _cursor_handler_update_job_cb(void *data)
  * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
  *****************************************************************************/
 /* Return cursor geometry for show region geometry everytime */
+/*
 EOLIAN static Eina_Rect
 _elm_entry_efl_ui_widget_show_region_get(const Eo *obj EINA_UNUSED, Elm_Entry_Data *sd)
 {
@@ -9270,6 +9271,7 @@ _elm_entry_efl_ui_widget_show_region_get(const Eo *obj EINA_UNUSED, Elm_Entry_Da
 
    return sr;
 }
+*/
 /*******
  * END *
  *******/

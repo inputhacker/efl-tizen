@@ -932,7 +932,7 @@ class Elm.Entry extends Efl.Ui.Layout_Base implements Elm.Interface_Scrollable, 
       /*****************************************************************************
        * TIZEN_ONLY_FEATURE: Fix entry size/cursor/region calculation for Tizen UX *
        *****************************************************************************/
-      Efl.Ui.Widget.show_region { get; }
+      //Efl.Ui.Widget.show_region { get; }
       /*******
        * END *
        *******/
