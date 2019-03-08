@@ -1669,40 +1669,7 @@ _efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
              elm_widget_tree_unfocusable_set(sobj, EINA_TRUE);
              elm_widget_tree_unfocusable_set(sobj, EINA_FALSE);
           }
-<<<<<<< HEAD
-        if ((sd->child_can_focus) && (_is_focusable(sobj)))
-          {
-             Evas_Object *parent = obj;
-
-             /* update child focusable-ness on self and parents, now that a
-              * focusable child is gone */
-             while (parent)
-               {
-                  const Eina_List *l;
-                  Evas_Object *subobj;
-
-                  ELM_WIDGET_DATA_GET(parent, sdp);
-
-                  sdp->child_can_focus = EINA_FALSE;
-                  EINA_LIST_FOREACH(sdp->subobjs, l, subobj)
-                    {
-                       if ((subobj != sobj) && (_is_focusable(subobj)))
-                         {
-                            sdp->child_can_focus = EINA_TRUE;
-                            break;
-                         }
-                    }
-
-                  /* break again, child_can_focus went back to
-                   * original value */
-                  if (sdp->child_can_focus) break;
-                  parent = sdp->parent_obj;
-               }
-          }
         if (_elm_atspi_enabled() && !sd->on_destroy)
-=======
-        if (_elm_config->atspi_mode && !sd->on_destroy)
->>>>>>> 665f8877e9... efl_ui_widget: child_can_focus is not needed anymore
           {
              Efl_Access_Object *aparent;
              aparent = efl_provider_find(efl_parent_get(sobj), EFL_ACCESS_OBJECT_MIXIN);
