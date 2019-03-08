@@ -1243,7 +1243,7 @@ EAPI Eina_Bool elm_win_focus_get(const Elm_Win *obj);
  *
  * @ingroup Efl_Ui_Win
  */
-EAPI void elm_win_focus_highlight_style_set(Elm_Win *obj, const char *style);
+EAPI Eina_Bool elm_win_focus_highlight_style_set(Elm_Win *obj, const char *style);
 
 /**
  * @brief Gets the style set for the focus highlight object.
