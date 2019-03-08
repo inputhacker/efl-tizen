@@ -686,7 +686,7 @@ _efl_ui_layout_base_efl_ui_widget_focus_direction(Eo *obj, Efl_Ui_Layout_Data *s
 }
 //
 EOLIAN static Eina_Bool
-_efl_ui_layout_efl_ui_widget_widget_sub_object_add(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, Evas_Object *sobj)
+_efl_ui_layout_base_efl_ui_widget_widget_sub_object_add(Eo *obj, Efl_Ui_Layout_Data *_pd EINA_UNUSED, Evas_Object *sobj)
 {
    Eina_Bool int_ret = EINA_FALSE;
 
