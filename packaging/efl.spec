@@ -16,7 +16,7 @@
 ##%%define _unpackaged_files_terminate_build 0
 
 Name:           efl
-Version:        1.21.0
+Version:        1.22.0
 Release:        0
 License:        LGPL-2.1+
 Summary:        Enlightenment Foundation Libraries - set of libraries used (not only) by E17
@@ -1372,10 +1372,10 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %postun -n elementary -p /sbin/ldconfig
 
 %post -n elementary-tizen
-ldconfig -l %{_libdir}/libelementary.so.1.21.100
+ldconfig -l %{_libdir}/libelementary.so.1.22.100
 
 %preun -n elementary-tizen
-ldconfig -l %{_libdir}/libelementary.so.1.21.99
+ldconfig -l %{_libdir}/libelementary.so.1.22.0
 
 %postun -n elementary-tizen -p /sbin/ldconfig
 
@@ -1615,7 +1615,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.99
 %license licenses/COPYING.BSD
 %{_libdir}/libecore_con.so.*
 %{_tmpfilesdir}/efl.conf
-%exclude %{_libdir}/ecore_con/utils/v-1.21/efl_net_proxy_helper
+%exclude %{_libdir}/ecore_con/utils/
 
 %files -n ecore-con-devel
 %manifest %{name}.manifest
@@ -2099,9 +2099,9 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.99
 %license COPYING
 %{_bindir}/elementary_quicklaunch
 %{_bindir}/elementary_run
-%{_libdir}/edje/modules/elm/v-1.21/module.so
+%{_libdir}/edje/modules/elm/
 %{_libdir}/libelementary.so.1
-%{_libdir}/libelementary.so.1.21.99
+%{_libdir}/libelementary.so.1.22.0
 %{_datadir}/elementary/edje_externals/
 %{_datadir}/icons/hicolor/128x128/apps/elementary.png
 %{_libdir}/elementary/modules/
@@ -2110,7 +2110,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.99
 %files -n elementary-tizen
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
-%{_libdir}/libelementary.so.1.21.100
+%{_libdir}/libelementary.so.1.22.100
 
 %if ! %dbus_unavailable
 %if %enable_examples

@@ -229,7 +229,7 @@ lib_elementary_tizen_libelementary_la_LIBADD = \
 lib_elementary_tizen_libelementary_la_DEPENDENCIES = @ELEMENTARY_INTERNAL_LIBS@
 lib_elementary_tizen_libelementary_la_LDFLAGS = \
 @EFL_LTLIBRARY_FLAGS@ \
--version-info 22:100:21
+-version-info 23:100:22
 
 lib_elementary_tizen_libelementary_la_CPPFLAGS = \
 -DELM_INTERNAL_API_ARGESFSDFEFC=1 \
