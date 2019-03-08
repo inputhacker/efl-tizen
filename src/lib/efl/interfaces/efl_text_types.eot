@@ -13,7 +13,7 @@ enum Efl.Text_Bidirectional_Type {
    /* END */
 }
 
-struct Efl.Ui.Text_Change_Info {
+struct @beta Efl.Ui.Text_Change_Info {
    [[This structure includes all the information about content changes.
 
      It's meant to be used to implement undo/redo.

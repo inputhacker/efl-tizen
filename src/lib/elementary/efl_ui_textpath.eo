@@ -1,4 +1,4 @@
-enum Efl.Ui.Textpath_Direction {
+enum @beta Efl.Ui.Textpath_Direction {
     [[Textpath direction
 
       \@since_tizen 5.5
