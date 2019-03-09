@@ -2547,19 +2547,6 @@ AC_ARG_ENABLE([pixman-image-scale-sample],
    ],
    [have_pixman_image_scale_sample="no"])
 
-# Tile rotate
-AC_ARG_ENABLE([tile-rotate],
-   [AS_HELP_STRING([--enable-tile-rotate],[Enable tiled rotate algorithm. @<:@default=disabled@:>@])],
-   [
-    if test "x${enableval}" = "xyes" ; then
-       have_tile_rotate="yes"
-       CFOPT_WARNING="xyes"
-    else
-       have_tile_rotate="no"
-    fi
-  ],
-  [have_tile_rotate="no"])
-
 # Ecore Buffer
 AC_ARG_ENABLE([ecore-buffer],
    [AS_HELP_STRING([--enable-ecore-buffer],[enable ecore-buffer. @<:@default=disabled@:>@])],
@@ -3009,13 +2996,6 @@ AC_CHECK_LIB([m], [lround],
 
 
 ### Configuration
-
-## Tile rotation
-
-if test "x${have_tile_rotate}" = "xyes" ; then
-   AC_DEFINE(TILE_ROTATE, 1, [Enable tiled rotate algorithm])
-fi
-
 
 ## dither options
 
