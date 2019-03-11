@@ -705,16 +705,16 @@ _evas_canvas_coord_world_y_to_screen(const Eo *eo_e EINA_UNUSED, Evas_Public_Dat
    else return (int)((((long long)y - (long long)e->viewport.y) * (long long)e->output.h) /  (long long)e->viewport.h);
 }
 
-EOLIAN static Efl_Input_Device *
+EOLIAN static Evas_Device *
 _evas_canvas_default_device_get(const Eo *eo_e EINA_UNUSED,
                                 Evas_Public_Data *e,
-                                Efl_Input_Device_Type klass)
+                                Evas_Device_Class klass)
 {
-   if (klass == EFL_INPUT_DEVICE_TYPE_SEAT)
+   if (klass == (Evas_Device_Class)EFL_INPUT_DEVICE_TYPE_SEAT)
      return e->default_seat;
-   if (klass == EFL_INPUT_DEVICE_TYPE_MOUSE)
+   if (klass == (Evas_Device_Class)EFL_INPUT_DEVICE_TYPE_MOUSE)
      return e->default_mouse;
-   if (klass == EFL_INPUT_DEVICE_TYPE_KEYBOARD)
+   if (klass == (Evas_Device_Class)EFL_INPUT_DEVICE_TYPE_KEYBOARD)
      return e->default_keyboard;
    return NULL;
 }
@@ -768,7 +768,7 @@ evas_object_image_extension_can_load_fast_get(const char *file)
 EOLIAN static void
 _evas_canvas_pointer_output_xy_by_device_get(const Eo *eo_e EINA_UNUSED,
                                              Evas_Public_Data *e,
-                                             Efl_Input_Device *dev,
+                                             Evas_Device *dev,
                                              int *x, int *y)
 {
    Evas_Pointer_Data *pdata = _evas_pointer_data_by_device_get(e, dev);
@@ -789,7 +789,7 @@ _evas_canvas_pointer_output_xy_by_device_get(const Eo *eo_e EINA_UNUSED,
 EOLIAN static void
 _evas_canvas_pointer_canvas_xy_by_device_get(const Eo *eo_e EINA_UNUSED,
                                              Evas_Public_Data *e,
-                                             Efl_Input_Device *dev,
+                                             Evas_Device *dev,
                                              int *x, int *y)
 {
    Evas_Pointer_Data *pdata = _evas_pointer_data_by_device_get(e, dev);
@@ -809,7 +809,7 @@ _evas_canvas_pointer_canvas_xy_by_device_get(const Eo *eo_e EINA_UNUSED,
 EOLIAN static unsigned int
 _evas_canvas_pointer_button_down_mask_by_device_get(const Eo *eo_e EINA_UNUSED,
                                                     Evas_Public_Data *e,
-                                                    Efl_Input_Device *dev)
+                                                    Evas_Device *dev)
 {
    Evas_Pointer_Data *pdata = _evas_pointer_data_by_device_get(e, dev);
    if (!pdata) return 0;
@@ -819,7 +819,7 @@ _evas_canvas_pointer_button_down_mask_by_device_get(const Eo *eo_e EINA_UNUSED,
 EOLIAN static Eina_Bool
 _evas_canvas_efl_canvas_pointer_pointer_inside_get(const Eo *eo_e EINA_UNUSED,
                                                    Evas_Public_Data *e,
-                                                   Efl_Input_Device *dev)
+                                                   Evas_Device *dev)
 {
    Evas_Pointer_Data *pdata = _evas_pointer_data_by_device_get(e, dev);
    if (!pdata) return EINA_FALSE;
@@ -857,7 +857,7 @@ _evas_canvas_data_attach_get(const Eo *eo_e EINA_UNUSED, Evas_Public_Data *e)
 }
 
 static void
-_evas_canvas_focus_inout_dispatch(Eo *eo_e, Efl_Input_Device *seat,
+_evas_canvas_focus_inout_dispatch(Eo *eo_e, Evas_Device *seat,
                                   Eina_Bool in)
 {
    Efl_Input_Focus_Data *ev_data;
@@ -876,7 +876,7 @@ _evas_canvas_focus_inout_dispatch(Eo *eo_e, Efl_Input_Device *seat,
 
 EOLIAN static void
 _evas_canvas_seat_focus_in(Eo *eo_e, Evas_Public_Data *e,
-                           Efl_Input_Device *seat)
+                           Evas_Device *seat)
 {
    if (!seat) seat = e->default_seat;
    if (!seat || efl_input_device_type_get(seat) != EFL_INPUT_DEVICE_TYPE_SEAT) return;
@@ -885,7 +885,7 @@ _evas_canvas_seat_focus_in(Eo *eo_e, Evas_Public_Data *e,
 
 EOLIAN static void
 _evas_canvas_seat_focus_out(Eo *eo_e, Evas_Public_Data *e,
-                            Efl_Input_Device *seat)
+                            Evas_Device *seat)
 {
    if (!seat) seat = e->default_seat;
    if (!seat || efl_input_device_type_get(seat) != EFL_INPUT_DEVICE_TYPE_SEAT) return;
@@ -906,7 +906,7 @@ _evas_canvas_focus_out(Eo *eo_e, Evas_Public_Data *e)
 
 EOLIAN static Eina_Bool
 _evas_canvas_seat_focus_state_get(const Eo *eo_e EINA_UNUSED, Evas_Public_Data *e,
-                                  Efl_Input_Device *seat)
+                                  Evas_Device *seat)
 {
    if (!seat) seat = e->default_seat;
    return eina_list_data_find(e->focused_by, seat) ? EINA_TRUE : EINA_FALSE;
@@ -1452,7 +1452,7 @@ evas_output_viewport_get(const Evas *eo_e, Evas_Coord *x, Evas_Coord *y, Evas_Co
 }
 
 Evas_Pointer_Data *
-_evas_pointer_data_by_device_get(Evas_Public_Data *edata, Efl_Input_Device *pointer)
+_evas_pointer_data_by_device_get(Evas_Public_Data *edata, Evas_Device *pointer)
 {
    Evas_Pointer_Data *pdata;
    Evas_Pointer_Seat *pseat;
@@ -1477,7 +1477,7 @@ _evas_pointer_data_by_device_get(Evas_Public_Data *edata, Efl_Input_Device *poin
 }
 
 Evas_Pointer_Data *
-_evas_pointer_data_add(Evas_Public_Data *edata, Efl_Input_Device *pointer)
+_evas_pointer_data_add(Evas_Public_Data *edata, Evas_Device *pointer)
 {
    Evas_Pointer_Data *pdata;
    Evas_Pointer_Seat *pseat = NULL;
@@ -1513,7 +1513,7 @@ _evas_pointer_data_add(Evas_Public_Data *edata, Efl_Input_Device *pointer)
 }
 
 void
-_evas_pointer_data_remove(Evas_Public_Data *edata, Efl_Input_Device *pointer)
+_evas_pointer_data_remove(Evas_Public_Data *edata, Evas_Device *pointer)
 {
    Evas_Pointer_Data *pdata;
    Evas_Pointer_Seat *pseat;
