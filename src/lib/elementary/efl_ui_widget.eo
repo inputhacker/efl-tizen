@@ -739,12 +739,12 @@ abstract Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Object,
       .style @optional;
    }
    events {
-      language,changed: void; [[Called when widget language changed]]
 
       // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
       atspi,highlighted: void;
       atspi,unhighlighted: void;
       //
+      language,changed @beta: void; [[Called when widget language changed]]
       access,changed @beta: void; [[Called when accessibility changed]]
    }
 }
