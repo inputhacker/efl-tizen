@@ -833,7 +833,7 @@ _item_content_realize(Elm_Gen_Item *it,
                   ELM_WIDGET_DATA_GET_OR_RETURN(content, wd);
 
                   // FIXME : Layout need sizing eval before group calculate
-                  if (efl_class_get(content) == EFL_UI_LAYOUT_CLASS)
+                  if (efl_class_get(content) == EFL_UI_LAYOUT_BASE_CLASS)
                     elm_layout_sizing_eval(content);
 
                   _widget_calculate_recursive(content);
@@ -1799,6 +1799,7 @@ _item_realize(Elm_Gen_Item *it,
    if (it->realized) return;
    Elm_Genlist_Data *sd = GL_IT(it)->wsd;
    ELM_WIDGET_DATA_GET_OR_RETURN(sd->obj, wd);
+   Evas_Object *win = elm_widget_top_get(sd->obj);
 
    it->realized = EINA_TRUE;
 
@@ -1893,7 +1894,7 @@ _item_realize(Elm_Gen_Item *it,
         edje_object_signal_emit(VIEW(it), SIGNAL_FLIP_ENABLED, "elm");
      }
 
-   if (elm_widget_focus_highlight_enabled_get(WIDGET(it)) && (EO_OBJ(it) == sd->focused_item))
+   if (elm_win_focus_highlight_enabled_get(win) && (EO_OBJ(it) == sd->focused_item))
      {
         edje_object_signal_emit(VIEW(it), SIGNAL_FOCUSED, "elm");
      }
@@ -2873,6 +2874,7 @@ static void _item_focused(Elm_Gen_Item *it, Elm_Genlist_Item_Scrollto_Type type)
    Evas_Coord x, y, w, h, sx, sy, sw, sh;
    if (!it) return;
    Elm_Genlist_Data *sd = GL_IT(it)->wsd;
+   Evas_Object *win = elm_widget_top_get(sd->obj);
 
    evas_object_geometry_get(VIEW(it), &x, &y, &w, &h);
    evas_object_geometry_get(sd->obj, &sx, &sy, &sw, &sh);
@@ -2881,7 +2883,7 @@ static void _item_focused(Elm_Gen_Item *it, Elm_Genlist_Item_Scrollto_Type type)
         elm_genlist_item_bring_in(EO_OBJ(it), type);
      }
 
-   if (elm_widget_focus_highlight_enabled_get(sd->obj))
+   if (elm_win_focus_highlight_enabled_get(win))
      {
         if (it->deco_all_view)
           edje_object_signal_emit
