@@ -1597,7 +1597,7 @@ _elm_conformant_efl_canvas_group_group_del(Eo *obj, Elm_Conformant_Data *sd)
    evas_object_data_set(sd->win, "\377 elm,conformant", NULL);
 
    efl_event_callback_del(sd->win, EFL_UI_WIN_EVENT_INDICATOR_PROP_CHANGED, _on_indicator_mode_changed, obj);
-   efl_event_callback_del(sd->win, EFL_UI_WIN_EVENT_ROTATION_CHANGED, _on_rotation_changed, obj);
+   efl_event_callback_del(sd->win, EFL_UI_WIN_EVENT_WIN_ROTATION_CHANGED, _on_rotation_changed, obj);
 
   // TIZEN_ONLY(20150707): implemented elm_win_conformant_set/get for wayland
 #ifdef HAVE_ELEMENTARY_WL2
@@ -1702,7 +1702,7 @@ _elm_conformant_efl_object_constructor(Eo *obj, Elm_Conformant_Data *sd)
    evas_object_data_set(sd->win, "\377 elm,conformant", obj);
 
    efl_event_callback_add(sd->win, EFL_UI_WIN_EVENT_INDICATOR_PROP_CHANGED, _on_indicator_mode_changed, obj);
-   efl_event_callback_add(sd->win, EFL_UI_WIN_EVENT_ROTATION_CHANGED, _on_rotation_changed, obj);
+   efl_event_callback_add(sd->win, EFL_UI_WIN_EVENT_WIN_ROTATION_CHANGED, _on_rotation_changed, obj);
    // TIZEN_ONLY(20150707): implemented elm_win_conformant_set/get for wayland
 #ifdef HAVE_ELEMENTARY_WL2
    evas_object_smart_callback_add
