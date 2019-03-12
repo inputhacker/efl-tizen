@@ -691,4 +691,5 @@ elm_animation_view_keyframe_get(const Eo *obj)
 #define EFL_UI_ANIMATION_VIEW_EXTRA_OPS \
    EFL_CANVAS_GROUP_ADD_DEL_OPS(efl_ui_animation_view)
 
+#include "efl_ui_animation_view_eo.legacy.c"
 #include "efl_ui_animation_view.eo.c"

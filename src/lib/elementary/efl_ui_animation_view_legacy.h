@@ -77,4 +77,4 @@ EAPI Elm_Animation_View_State elm_animation_view_state_get(Elm_Animation_View *o
 EINA_DEPRECATED EAPI void elm_animation_view_keyframe_set(Elm_Animation_View *obj, double keyframe);
 EINA_DEPRECATED EAPI double elm_animation_view_keyframe_get(const Elm_Animation_View *obj);
 
-#include "efl_ui_animation_view.eo.legacy.h"
+#include "efl_ui_animation_view_eo.legacy.h"
