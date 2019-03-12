@@ -769,6 +769,26 @@ evgl_eng_native_win_prerotation_set(void *data)
    return 1;
 }
 
+static void
+evgl_eng_native_win_surface_config_get(void *data, int *win_depth,
+                                         int *win_stencil, int *win_msaa)
+{
+   Render_Engine *re = data;
+   if (!re) return;
+
+   if (win_depth)
+     *win_depth = eng_get_ob(re)->detected.depth_buffer_size;
+   if (win_stencil)
+     *win_stencil = eng_get_ob(re)->detected.stencil_buffer_size;
+   if (win_msaa)
+     *win_msaa = eng_get_ob(re)->detected.msaa;
+
+   DBG("Window config(depth %d, stencil %d, msaa %d)",
+       eng_get_ob(re)->detected.depth_buffer_size,
+       eng_get_ob(re)->detected.stencil_buffer_size,
+       eng_get_ob(re)->detected.msaa);
+}
+
 // TIZEN_ONLY(20171206) : Disable Partial Rendering On EvasGL
 static void
 evgl_eng_partial_rendering_enable()
@@ -812,7 +832,7 @@ static const EVGL_Interface evgl_funcs =
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
    NULL, // OpenGL-ES 1
-   NULL, // native_win_surface_config_get
+   evgl_eng_native_win_surface_config_get,
    evgl_eng_native_win_prerotation_set,
    evgl_eng_partial_rendering_enable,
    evgl_eng_partial_rendering_disable,
