@@ -91,7 +91,7 @@ class Elm.Notify extends Efl.Ui.Widget implements Efl.Ui.Focus.Layer, Efl.Conten
       Efl.Part.part_get;
 
       /* TIZEN_ONLY(170621): support multiscale problem on TM2 */
-      Efl.Ui.Widget.on_orientation_update;
+      //Efl.Ui.Widget.on_orientation_update;
       /* END */
       //TIZEN_ONLY(20180607): Restore legacy focus
       Efl.Ui.Widget.focus_direction;

@@ -260,11 +260,13 @@ _scroller_size_calc(Evas_Object *obj)
    /* TIZEN_ONLY(20160623):Apply popup compress mode UX
    sd->max_sc_h = h - (h_title + h_action_area);
    */
+   /*
    if ((sd->dispmode == EVAS_DISPLAY_MODE_COMPRESS) &&
        ((wd->orient_mode == 90) || (wd->orient_mode == 270)))
       sd->max_sc_h = h - h_action_area;
    else
       sd->max_sc_h = h - (h_title + h_action_area + h_pad);
+   */
    /* END */
 }
 

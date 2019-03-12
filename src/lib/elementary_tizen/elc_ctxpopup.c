@@ -1193,10 +1193,12 @@ _on_parent_resize(void *data,
      }
    else
      {
+        /*
         if (wd->orient_mode == 90 || wd->orient_mode == 270)
          elm_widget_theme_object_set
            (data, sd->layout, "ctxpopup", "layout/landscape", elm_widget_style_get(data));
         else
+        */
          elm_widget_theme_object_set
            (data, sd->layout, "ctxpopup", "layout", elm_widget_style_get(data));
         edje_object_part_swallow(sd->layout, "swallow", wd->resize_obj);
@@ -1412,11 +1414,12 @@ _elm_ctxpopup_efl_ui_widget_theme_apply(Eo *obj, Elm_Ctxpopup_Data *sd)
 
    elm_widget_theme_object_set
      (obj, sd->arrow, "ctxpopup", "arrow", elm_widget_style_get(obj));
-
+   /*
    if (wd->orient_mode == 90 || wd->orient_mode == 270)
      elm_widget_theme_object_set
        (obj, sd->layout, "ctxpopup", "layout/landscape", elm_widget_style_get(obj));
    else
+   */
      elm_widget_theme_object_set
        (obj, sd->layout, "ctxpopup", "layout", elm_widget_style_get(obj));
    edje_object_part_swallow(sd->layout, "swallow", wd->resize_obj);
@@ -1857,11 +1860,12 @@ _on_show(void *data EINA_UNUSED,
    //
 
    elm_layout_signal_emit(obj, "elm,state,show", "elm");
-
+   /*
    if (wd->orient_mode == 90 || wd->orient_mode == 270)
      elm_widget_theme_object_set
        (obj, sd->layout, "ctxpopup", "layout/landscape", elm_widget_style_get(obj));
    else
+   */
      elm_widget_theme_object_set
        (obj, sd->layout, "ctxpopup", "layout", elm_widget_style_get(obj));
    edje_object_part_swallow(sd->layout, "swallow", wd->resize_obj);
@@ -2074,9 +2078,11 @@ _elm_ctxpopup_efl_canvas_group_group_add(Eo *obj, Elm_Ctxpopup_Data *priv)
      (priv->box, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 
    priv->layout = edje_object_add(evas_object_evas_get(obj));
+   /*
    if (wd->orient_mode == 90 || wd->orient_mode == 270)
      elm_widget_theme_object_set(obj, priv->layout, "ctxpopup", "layout/landscape", "default");
    else
+   */
      elm_widget_theme_object_set(obj, priv->layout, "ctxpopup", "layout", "default");
    evas_object_smart_member_add(priv->layout, obj);
    _elm_widget_color_class_parent_set(priv->layout, obj);
