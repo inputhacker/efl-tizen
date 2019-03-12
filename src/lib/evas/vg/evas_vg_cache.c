@@ -70,7 +70,7 @@ _find_loader_module(const char *file)
 }
 
 static Vg_File_Data *
-_vg_load_from_file(const Eina_File *file, const char *key, Eina_Bool mmap)
+_vg_load_from_file(const Eina_File *file, const char *key)
 {
    Evas_Module       *em;
    Evas_Vg_Load_Func *loader;
@@ -83,7 +83,7 @@ _vg_load_from_file(const Eina_File *file, const char *key, Eina_Bool mmap)
    if (em)
      {
         loader = em->functions;
-        vfd = loader->file_open((Eina_File *) file, key, mmap, &error);
+        vfd = loader->file_open((Eina_File *) file, key, &error);
         if (vfd)
           {
              vfd->loader = loader;
@@ -98,7 +98,7 @@ _vg_load_from_file(const Eina_File *file, const char *key, Eina_Bool mmap)
              if (em)
                {
                   loader = em->functions;
-                  vfd = loader->file_open((Eina_File *) file, key, mmap, &error);
+                  vfd = loader->file_open((Eina_File *) file, key, &error);
                   if (vfd)
                     {
                        vfd->loader = loader;
@@ -343,7 +343,7 @@ evas_cache_vg_shutdown(void)
 }
 
 Vg_File_Data *
-evas_cache_vg_file_open(const Eina_File *file, const char *key, Eina_Bool mmap)
+evas_cache_vg_file_open(const Eina_File *file, const char *key)
 {
    Vg_File_Data *vfd;
    Eina_Strbuf *hash_key;
