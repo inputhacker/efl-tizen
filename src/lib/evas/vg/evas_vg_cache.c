@@ -353,7 +353,7 @@ evas_cache_vg_file_open(const Eina_File *file, const char *key)
    vfd = eina_hash_find(vg_cache->vfd_hash, eina_strbuf_string_get(hash_key));
    if (!vfd || vfd->no_share)
      {
-        vfd = _vg_load_from_file(file, key, mmap);
+        vfd = _vg_load_from_file(file, key);
         //File exists.
         if (vfd && !vfd->no_share)
           eina_hash_add(vg_cache->vfd_hash, eina_strbuf_string_get(hash_key), vfd);
@@ -365,14 +365,13 @@ evas_cache_vg_file_open(const Eina_File *file, const char *key)
 Vg_Cache_Entry*
 evas_cache_vg_entry_resize(Vg_Cache_Entry *vg_entry, int w, int h)
 {
-   return evas_cache_vg_entry_create(vg_entry->file, vg_entry->key, w, h, vg_entry->mmap);
+   return evas_cache_vg_entry_create(vg_entry->file, vg_entry->key, w, h);
 }
 
 Vg_Cache_Entry*
 evas_cache_vg_entry_create(const Eina_File *file,
                            const char *key,
-                           int w, int h,
-                           Eina_Bool mmap)
+                           int w, int h)
 {
    Vg_Cache_Entry* vg_entry;
    Eina_Strbuf *hash_key;
@@ -398,13 +397,12 @@ evas_cache_vg_entry_create(const Eina_File *file,
         vg_entry->w = w;
         vg_entry->h = h;
         vg_entry->hash_key = eina_strbuf_string_steal(hash_key);
-        vg_entry->mmap = mmap;
         eina_hash_direct_add(vg_cache->vg_entry_hash, vg_entry->hash_key, vg_entry);
      }
    eina_strbuf_free(hash_key);
    vg_entry->ref++;
 
-   vg_entry->vfd = evas_cache_vg_file_open(file, key, mmap);
+   vg_entry->vfd = evas_cache_vg_file_open(file, key);
    //No File??
    if (!vg_entry->vfd)
      {
@@ -482,7 +480,7 @@ Eina_Bool
 evas_cache_vg_entry_file_save(Vg_Cache_Entry *vg_entry, const char *file, const char *key, const Efl_File_Save_Info *info)
 {
    Vg_File_Data *vfd =
-      evas_cache_vg_file_open(vg_entry->file, vg_entry->key, EINA_FALSE);
+      evas_cache_vg_file_open(vg_entry->file, vg_entry->key);
 
    if (!vfd) return EINA_FALSE;
 
