@@ -423,7 +423,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
 
             @since 1.16]]
           params {
-             @in next_item: Elm.Widget.Item @nullable; [[Focus next object item]]
+             @in next_item: Efl.Ui.Widget @nullable; [[Focus next object item]]
              @in dir: Efl.Ui.Focus.Direction; [[Focus direction]]
           }
        }
@@ -431,7 +431,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
           [[Get the next object item with specific focus direction.
 
             @since 1.16]]
-          return: Elm.Widget.Item; [[Focus next object item]]
+          return: Efl.Ui.Widget; [[Focus next object item]]
           params {
              @in dir: Efl.Ui.Focus.Direction; [[Focus direction]]
           }
@@ -464,7 +464,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
              @in base: const(Efl.Canvas.Object); [[Base object]]
              @in degree: double; [[Degree]]
              @out direction: Efl.Canvas.Object; [[Direction]]
-             @out direction_item: Elm.Widget.Item; [[Direction item]]
+             @out direction_item: Efl.Ui.Widget; [[Direction item]]
              @out weight: double; [[Weight]]
           }
           return: bool; [[$true on success, $false otherwise]]
@@ -482,7 +482,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
              @in list_data_get: void_ptr; [[Data get function]]
              @in degree: double; [[Degree]]
              @out direction: Efl.Canvas.Object; [[Direction]]
-             @out direction_item: Elm.Widget.Item; [[Direction item]]
+             @out direction_item: Efl.Ui.Widget; [[Direction item]]
              @out weight: double; [[Weight]]
           }
        }
@@ -502,7 +502,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
           params {
              @in dir: Efl.Ui.Focus.Direction; [[Focus direction]]
              @out next: Efl.Canvas.Object; [[Next object]]
-             @out next_item: Elm.Widget.Item; [[Next item]]
+             @out next_item: Efl.Ui.Widget; [[Next item]]
           }
        }
        focus_restore @beta {
@@ -520,7 +520,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
        focus_steal @beta {
           [[Steal focus]]
           params {
-             @in item: Elm.Widget.Item @nullable; [[Widget to steal focus from]]
+             @in item: Efl.Ui.Widget @nullable; [[Widget to steal focus from]]
           }
        }
        focus_hide_handle @beta {
@@ -531,7 +531,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
           params {
              @in dir: Efl.Ui.Focus.Direction; [[Focus direction]]
              @out next: Efl.Canvas.Object; [[Next object]]
-             @out next_item: Elm.Widget.Item; [[Next item]]
+             @out next_item: Efl.Ui.Widget; [[Next item]]
           }
           return: bool; [[$true on success, $false otherwise]]
        }
@@ -543,7 +543,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
              @in list_data_get: void_ptr; [[Function type]]
              @in dir: Efl.Ui.Focus.Direction; [[Focus direction]]
              @out next: Efl.Canvas.Object; [[Next object]]
-             @out next_item: Elm.Widget.Item; [[Next item]]
+             @out next_item: Efl.Ui.Widget; [[Next item]]
           }
        }
        focus_mouse_up_handle {
@@ -557,7 +557,7 @@ abstract @beta Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Obje
              @in base: const(Efl.Canvas.Object); [[Base]]
              @in degree: double; [[Degree]]
              @out direction: Efl.Canvas.Object; [[Direction]]
-             @out direction_item: Elm.Widget.Item; [[Direction item]]
+             @out direction_item: Efl.Ui.Widget; [[Direction item]]
              @out weight: double; [[Weight]]
           }
        }

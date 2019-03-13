@@ -19,11 +19,11 @@
 #include "../elementary/elm_priv.h"
 #include "elm_widget_genlist.h"
 #include "../elementary/elm_interface_scrollable.h"
-#include "../elementary/efl_ui_focus_parent_provider_gen.eo.h"
+#include "../elementary/efl_ui_focus_parent_provider_gen_eo.h"
 #include "../elementary/efl_ui_focus_composition_adapter.eo.h"
-#include "../elementary/elm_genlist_item.eo.h"
-#include "../elementary/elm_genlist_pan.eo.h"
-#include "../elementary/elm_genlist.eo.h"
+#include "../elementary/elm_genlist_item_eo.h"
+#include "../elementary/elm_genlist_pan_eo.h"
+#include "../elementary/elm_genlist_eo.h"
 
 #define MY_PAN_CLASS ELM_GENLIST_PAN_CLASS
 
@@ -927,10 +927,10 @@ _view_theme_update(Elm_Gen_Item *it, Evas_Object *view, const char *style)
 
    snprintf(buf, sizeof(buf), "item/%s", style ? : "default");
 
-   Efl_Ui_Theme_Apply_Result th_ret =
+   Eina_Error th_ret =
       elm_widget_theme_object_set(WIDGET(it), view, "genlist", buf,
                                   elm_widget_style_get(WIDGET(it)));
-   if (th_ret == EFL_UI_THEME_APPLY_RESULT_FAIL)
+   if (th_ret == EFL_UI_THEME_APPLY_ERROR_GENERIC)
      {
         ERR("%s is not a valid genlist item style. "
             "Automatically falls back into default style.",
@@ -4642,15 +4642,15 @@ _mirrored_set(Evas_Object *obj,
    efl_ui_mirrored_set(obj, rtl);
 }
 
-EOLIAN static Efl_Ui_Theme_Apply_Result
+EOLIAN static Eina_Error
 _elm_genlist_efl_ui_widget_theme_apply(Eo *obj, Elm_Genlist_Data *sd)
 {
    Item_Block *itb;
-   Efl_Ui_Theme_Apply_Result int_ret = EFL_UI_THEME_APPLY_RESULT_FAIL;
+   Eina_Error int_ret = EFL_UI_THEME_APPLY_ERROR_GENERIC;
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wsd, EFL_UI_THEME_APPLY_RESULT_FAIL);
 
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
-   if (!int_ret) return EFL_UI_THEME_APPLY_RESULT_FAIL;
+   if (int_ret) return EFL_UI_THEME_APPLY_ERROR_GENERIC;
 
    if (!TIZEN_PROFILE_WEARABLE)
      _banded_bg_state_check(obj, sd);
@@ -9503,13 +9503,13 @@ _elm_genlist_efl_access_object_state_set_get(const Eo *obj, Elm_Genlist_Data *sd
 
    ret = efl_access_object_state_set_get(efl_super(obj, ELM_GENLIST_CLASS));
 
-   STATE_TYPE_SET(ret, EFL_ACCESS_STATE_MANAGES_DESCENDANTS);
+   STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_MANAGES_DESCENDANTS);
 
    if (elm_genlist_multi_select_get(obj))
-     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_MULTISELECTABLE);
+     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_MULTISELECTABLE);
 
    if (elm_genlist_reorder_mode_get(obj))
-     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_ANIMATED);
+     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_ANIMATED);
 
    return ret;
 }
@@ -9860,6 +9860,6 @@ ELM_WIDGET_KEY_DOWN_DEFAULT_IMPLEMENT(elm_genlist, Elm_Genlist_Data)
 #define ELM_GENLIST_PAN_EXTRA_OPS \
    EFL_CANVAS_GROUP_DEL_OPS(elm_genlist_pan)
 
-#include "../elementary/elm_genlist.eo.c"
-#include "../elementary/elm_genlist_pan.eo.c"
-#include "../elementary/elm_genlist_item.eo.c"
+#include "../elementary/elm_genlist_eo.c"
+#include "../elementary/elm_genlist_pan_eo.c"
+#include "../elementary/elm_genlist_item_eo.c"

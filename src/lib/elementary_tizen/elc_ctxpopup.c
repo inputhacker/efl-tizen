@@ -14,8 +14,8 @@
 
 #include "../elementary/elm_priv.h"
 #include "elm_widget_ctxpopup.h"
-#include "../elementary/elm_ctxpopup_item.eo.h"
-#include "../elementary/elm_ctxpopup.eo.h"
+#include "../elementary/elm_ctxpopup_item_eo.h"
+#include "../elementary/elm_ctxpopup_eo.h"
 
 #include "../elementary/elm_ctxpopup_part.eo.h"
 #include "../elementary/elm_part_helper.h"
@@ -1392,20 +1392,20 @@ _elm_ctxpopup_efl_ui_widget_event(Eo *obj, Elm_Ctxpopup_Data *sd, Evas_Object *s
 }
 
 //FIXME: lost the content size when theme hook is called.
-EOLIAN static Efl_Ui_Theme_Apply_Result
+EOLIAN static Eina_Error
 _elm_ctxpopup_efl_ui_widget_theme_apply(Eo *obj, Elm_Ctxpopup_Data *sd)
 {
    Eina_List *elist;
    Elm_Ctxpopup_Item_Data *item;
    int idx = 0;
    Eina_Bool rtl;
-   Efl_Ui_Theme_Apply_Result int_ret = EFL_UI_THEME_APPLY_RESULT_FAIL;
+   Eina_Error int_ret = EFL_UI_THEME_APPLY_ERROR_GENERIC;
    const char *style;
 
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_RESULT_FAIL);
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_ERROR_GENERIC);
 
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
-   if (!int_ret) return EFL_UI_THEME_APPLY_RESULT_FAIL;
+   if (int_ret == EFL_UI_THEME_APPLY_ERROR_GENERIC) return int_ret;
 
    rtl = efl_ui_mirrored_get(obj);
 
@@ -2732,10 +2732,10 @@ _elm_ctxpopup_efl_access_object_state_set_get(const Eo *obj, Elm_Ctxpopup_Data *
    Efl_Access_State_Set ret;
    ret = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
 
-   STATE_TYPE_SET(ret, EFL_ACCESS_STATE_MODAL);
+   STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_MODAL);
 
    if (_elm_object_accessibility_currently_highlighted_get() == (void*)sd->scr)
-     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_HIGHLIGHTED);
+     STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED);
 
    return ret;
 }
@@ -3098,9 +3098,9 @@ _elm_ctxpopup_item_efl_access_object_state_set_get(const Eo *obj, Elm_Ctxpopup_I
      }
 
    if (is_showing)
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_SHOWING);
    else
-     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_SHOWING);
+     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_TYPE_SHOWING);
 
    return states;
 }
@@ -3125,5 +3125,5 @@ ELM_PART_OVERRIDE_CONTENT_UNSET(elm_ctxpopup, ELM_CTXPOPUP, Elm_Ctxpopup_Data)
    ELM_LAYOUT_SIZING_EVAL_OPS(elm_ctxpopup), \
    EFL_CANVAS_GROUP_ADD_DEL_OPS(elm_ctxpopup)
 //
-#include "../elementary/elm_ctxpopup_item.eo.c"
-#include "../elementary/elm_ctxpopup.eo.c"
+#include "../elementary/elm_ctxpopup_item_eo.c"
+#include "../elementary/elm_ctxpopup_eo.c"

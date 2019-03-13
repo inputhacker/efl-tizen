@@ -795,8 +795,6 @@ EAPI Eina_Bool        elm_widget_theme_element_set(Evas_Object *obj, const char 
 EAPI const char      *elm_widget_theme_element_get(const Evas_Object *obj);
 EAPI Eina_Bool        elm_widget_theme_style_set(Evas_Object *obj, const char *name);
 EAPI const char      *elm_widget_theme_style_get(const Evas_Object *obj);
-<<<<<<< HEAD
-EAPI Efl_Ui_Theme_Apply_Result elm_widget_element_update(Evas_Object *obj, Evas_Object *component, const char *name);
 //TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
 EAPI Evas_Object     *elm_widget_part_access_object_get(const Evas_Object *obj, const char *part);
 //
@@ -808,9 +806,7 @@ EAPI Eo*              _elm_atspi_bridge_utils_socket_create(Eo *parent, const ch
 EAPI Eina_Bool        _elm_widget_highlightable(Evas_Object *widget);
 EAPI Eina_Bool        _elm_widget_item_highlightable(Elm_Object_Item *item);
 //
-=======
-EAPI Eina_Error elm_widget_element_update(Evas_Object *obj, Evas_Object *component, const char *name);
->>>>>>> bb6caaa471... efl.ui: remove Efl.Ui.Theme_Apply_Error
+EAPI Eina_Error       elm_widget_element_update(Evas_Object *obj, Evas_Object *component, const char *name);
 
 /* debug function. don't use it unless you are tracking parenting issues */
 EAPI void             elm_widget_tree_dump(const Evas_Object *top);
