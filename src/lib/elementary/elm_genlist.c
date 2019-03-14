@@ -3758,7 +3758,7 @@ _elm_genlist_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Elm_G
 }
 
 EOLIAN static Eina_Bool
-_elm_genlist_efl_ui_widget_focus_next(Eo *obj, Elm_Genlist_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_elm_genlist_efl_ui_widget_focus_next(Eo *obj, Elm_Genlist_Data *sd, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Evas_Coord x, y, w, h;
    Evas_Coord sx, sy, sw, sh;

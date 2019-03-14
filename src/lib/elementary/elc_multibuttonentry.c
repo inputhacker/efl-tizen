@@ -1891,7 +1891,7 @@ _elm_multibuttonentry_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, E
 }
 
 EOLIAN static Eina_Bool
-_elm_multibuttonentry_efl_ui_widget_focus_next(Eo *obj, Elm_Multibuttonentry_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_elm_multibuttonentry_efl_ui_widget_focus_next(Eo *obj, Elm_Multibuttonentry_Data *sd, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Eina_Bool int_ret = EINA_FALSE;
 

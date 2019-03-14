@@ -92,7 +92,7 @@ _access_object_get(const Evas_Object *obj, const char* part)
 }
 
 EOLIAN static Eina_Bool
-_elm_ctxpopup_efl_ui_widget_focus_next(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_elm_ctxpopup_efl_ui_widget_focus_next(Eo *obj EINA_UNUSED, Elm_Ctxpopup_Data *sd, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Eina_List *items = NULL;
    Evas_Object *ao;

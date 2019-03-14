@@ -23,7 +23,7 @@ _elm_table_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, void *_pd EI
 }
 
 EOLIAN static Eina_Bool
-_elm_table_efl_ui_widget_focus_next(Eo *obj, void *_pd EINA_UNUSED, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_elm_table_efl_ui_widget_focus_next(Eo *obj, void *_pd EINA_UNUSED, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Eina_Bool int_ret;
 

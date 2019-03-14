@@ -4786,7 +4786,7 @@ _elm_gengrid_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Gengrid_Data *_pd 
 }
 
 EOLIAN static Eina_Bool
-_elm_gengrid_efl_ui_widget_focus_next(Eo *obj, Elm_Gengrid_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_elm_gengrid_efl_ui_widget_focus_next(Eo *obj, Elm_Gengrid_Data *sd, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Eina_List *items = NULL;
    Elm_Gen_Item *it;

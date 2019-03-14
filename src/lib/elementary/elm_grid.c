@@ -22,7 +22,7 @@ _elm_grid_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, void *_pd EIN
 }
 
 EOLIAN static Eina_Bool
-_elm_grid_efl_ui_widget_focus_next(Eo *obj, void *_pd EINA_UNUSED, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_elm_grid_efl_ui_widget_focus_next(Eo *obj, void *_pd EINA_UNUSED, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    const Eina_List *items;
    Eina_List *(*list_free)(Eina_List *list);

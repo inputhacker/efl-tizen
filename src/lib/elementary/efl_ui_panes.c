@@ -612,7 +612,7 @@ _efl_ui_panes_fixed_get(const Eo *obj EINA_UNUSED, Efl_Ui_Panes_Data *sd)
 }
 //TIZEN_ONLY(20180607): Restore legacy focus
 EOLIAN static Eina_Bool
-_efl_ui_panes_efl_ui_widget_focus_next(Eo *obj, Efl_Ui_Panes_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_efl_ui_panes_efl_ui_widget_focus_next(Eo *obj, Efl_Ui_Panes_Data *sd, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    double w, h;
    unsigned char i;

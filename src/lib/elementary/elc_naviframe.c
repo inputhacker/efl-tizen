@@ -1570,7 +1570,7 @@ _elm_naviframe_efl_ui_widget_part_access_object_get(const Eo *obj, Elm_Naviframe
 
 //TIZEN_ONLY(20180607): Restore legacy focus
 EOLIAN static Eina_Bool
-_elm_naviframe_efl_ui_widget_focus_next(Eo *obj, Elm_Naviframe_Data *sd EINA_UNUSED, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_elm_naviframe_efl_ui_widget_focus_next(Eo *obj, Elm_Naviframe_Data *sd EINA_UNUSED, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Evas_Object *ao;
 
