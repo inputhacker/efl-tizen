@@ -112,4 +112,322 @@ EAPI Eina_Error edje_object_layout_load_error_get(const Efl_Canvas_Layout *obj);
  */
 EAPI Eina_Bool edje_object_content_remove(Efl_Canvas_Layout *obj, Efl_Gfx_Entity *content);
 
+/***********************************************************************************
+* TIZEN_ONLY_FEATURE: API for handling text properties of Edje                    *
+***********************************************************************************/
+/**
+ * @brief Sets the object text min calculation policy.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage.
+ *
+ * @if MOBILE @since_tizen 3.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ * @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] state_name The state name
+ * @param[in] min_x The min width policy
+ * @param[in] min_y The min height policy
+ *
+ * @return @c true on success, or @c false on error
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI Eina_Bool edje_object_part_text_min_policy_set(Efl_Canvas_Layout *obj, const char *part, const char *state_name, Eina_Bool min_x, Eina_Bool min_y);
+
+/**
+ * @brief Gets the object text min calculation policy.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage.
+ *
+ * @if MOBILE @since_tizen 3.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ * @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] state_name The state name
+ * @param[out] min_x The min width policy
+ * @param[out] min_y The min height policy
+ *
+ * @return @c true on success, or @c false on error
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI Eina_Bool edje_object_part_text_min_policy_get(const Efl_Canvas_Layout *obj, const char *part, const char *state_name, Eina_Bool *min_x, Eina_Bool *min_y);
+
+/**
+ * @brief Sets the valign for text.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] valign The valign 0.0~1.0. -1.0 for respect EDC's align value.
+ *
+ * @return @c true, on success or @c false, on error
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI Eina_Bool edje_object_part_text_valign_set(Efl_Canvas_Layout *obj, const char *part, double valign);
+
+/**
+ * @brief Gets the valign for text.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ *
+ * @return The valign 0.0~1.0. -1.0 for respect EDC's align value.
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI double edje_object_part_text_valign_get(const Efl_Canvas_Layout *obj, const char *part);
+
+/**
+ * @brief Sets the duration for text's marquee.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] duration The duration. 0.0 for respect EDC's duration value.
+ *
+ * @return @c true, on success or @c false, on error
+ *
+ * @ingroup Edje_Object_Group
+ */
+/*******
+* END *
+*******/
+
+/***********************************************************************************
+* TIZEN_ONLY_FEATURE: ellipsize.marquee, ellipsize.fade for TEXTBLOCK, TEXT part. *
+***********************************************************************************/
+/**
+ * @brief Sets the duration for text's marquee.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] duration The duration. 0.0 for respect EDC's duration value.
+ *
+ * @return @c true, on success or @c false, on error
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI Eina_Bool edje_object_part_text_marquee_duration_set(Efl_Canvas_Layout *obj, const char *part, double duration);
+
+/**
+ * @brief Gets the duration for text's marquee.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ *
+ * @return The duration. 0.0 for respect EDC's duration value.
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI double edje_object_part_text_marquee_duration_get(const Efl_Canvas_Layout *obj, const char *part);
+
+/**
+ * @brief Sets the speed for text's marquee.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] speed The speed. 0.0 for respect EDC's speed value.
+ *
+ * @return @c true, on success or @c false, on error
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI Eina_Bool edje_object_part_text_marquee_speed_set(Efl_Canvas_Layout *obj, const char *part, double speed);
+
+/**
+ * @brief Gets the speed for text's marquee.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ *
+ * @return The speed. 0.0 for respect EDC's speed value.
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI double edje_object_part_text_marquee_speed_get(const Efl_Canvas_Layout *obj, const char *part);
+
+/**
+ * @brief Sets the always mode for text's marquee.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] always The always mode
+ *
+ * @return @c true, on success or @c false, on error
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI Eina_Bool edje_object_part_text_marquee_always_set(Efl_Canvas_Layout *obj, const char *part, Eina_Bool always);
+
+/**
+ * @brief Gets the always mode for text's marquee.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ *
+ * @return The always mode
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI Eina_Bool edje_object_part_text_marquee_always_get(const Efl_Canvas_Layout *obj, const char *part);
+/*******
+* END *
+*******/
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: apply Tizen's color_class features.                         *
+ ***********************************************************************************/
+/**
+ * @brief Sets the parent object for color class.
+ *
+ * @if MOBILE @since_tizen 3.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ * @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] parent The parent object for color class
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI void edje_object_color_class_parent_set(Efl_Canvas_Layout *obj, Efl_Object *parent) EINA_ARG_NONNULL(2);
+
+/**
+ * @brief Unsets the parent object for color class.
+ *
+ * @if MOBILE @since_tizen 3.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ * @internal
+ * @param[in] obj The object.
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI void edje_object_color_class_parent_unset(Efl_Canvas_Layout *obj);
+/*******
+* END *
+*******/
+/***********************************************************************************
+ * TIZEN_ONLY_FEATURE: API for handling common properties of Edje                  *
+ ***********************************************************************************/
+/**
+ * @brief Sets the valign for a common description.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] valign The valign 0.0~1.0. -1.0 for respect EDC's align value.
+ *
+ * @return @c true, on success or @c false, on error
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI Eina_Bool edje_object_part_valign_set(Efl_Canvas_Layout *obj, const char *part, double valign);
+
+/**
+ * @brief Gets the valign for a common description.
+ *
+ * Do not use this API without understanding whats going on. It is made for
+ * internal usage. @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ *
+ * @return The valign 0.0~1.0. -1.0 for respect EDC's align value.
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI double edje_object_part_valign_get(const Efl_Canvas_Layout *obj, const char *part);
+
+/*******
+ * END *
+ *******/
+/**********************************************************************************
+ * TIZEN_ONLY(20171128): add additional cursor function for improving performance *
+ **********************************************************************************/
+/**
+ * @brief Get a position of the given cursor
+ *
+ * @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] cur cursor type
+ * @param[out] x w
+ * @param[out] y h
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI void edje_object_part_text_cursor_coord_get(Efl_Canvas_Layout *obj, const char *part, Edje_Cursor cur, int *x, int *y);
+
+/**
+ * @brief Get a size of the given cursor
+ *
+ * @internal
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[in] cur cursor type
+ * @param[out] w w
+ * @param[out] h h
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI void edje_object_part_text_cursor_size_get(Efl_Canvas_Layout *obj, const char *part, Edje_Cursor cur, int *w, int *h);
+/*******
+ * END *
+ *******/
+/*********************************************************************
+ * TIZEN_ONLY(20161110): keep cursor position on mouse down and move *
+ *********************************************************************/
+/**
+ * @brief Returns the cursor geometry of the part relative to the edje object.
+ * The cursor geometry is kept in mouse down and move.
+ *
+ * @internal @if MOBILE @since_tizen 3.0 @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ *
+ * @param[in] obj The object.
+ * @param[in] part The part name
+ * @param[out] x Cursor X position
+ * @param[out] y Cursor Y position
+ * @param[out] w Cursor width
+ * @param[out] h Cursor height
+ *
+ * @ingroup Edje_Object_Group
+ */
+EAPI void edje_object_part_text_cursor_on_mouse_geometry_get(const Efl_Canvas_Layout *obj, const char *part, int *x, int *y, int *w, int *h);
+/*******
+ * END *
+ *******/
+
+
 #endif

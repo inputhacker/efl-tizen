@@ -1,4 +1,42 @@
 
+//TIZEN_ONLY: Missing method from opensource
+EAPI Eina_Bool
+elm_widget_cursor_set(Efl_Ui_Widget *obj, const char *cursor)
+{
+   return efl_ui_widget_cursor_set(obj, cursor);
+}
+
+EAPI const char *
+elm_widget_cursor_get(const Efl_Ui_Widget *obj)
+{
+   return efl_ui_widget_cursor_get(obj);
+}
+
+EAPI Eina_Bool
+elm_widget_cursor_style_set(Efl_Ui_Widget *obj, const char *style)
+{
+   return efl_ui_widget_cursor_style_set(obj, style);
+}
+
+EAPI const char *
+elm_widget_cursor_style_get(const Efl_Ui_Widget *obj)
+{
+   return efl_ui_widget_cursor_style_get(obj);
+}
+
+EAPI Eina_Bool
+elm_widget_cursor_theme_search_enabled_set(Efl_Ui_Widget *obj, Eina_Bool allow)
+{
+   return efl_ui_widget_cursor_theme_search_enabled_set(obj, allow);
+}
+
+EAPI Eina_Bool
+elm_widget_cursor_theme_search_enabled_get(const Efl_Ui_Widget *obj)
+{
+   return efl_ui_widget_cursor_theme_search_enabled_get(obj);
+}
+//
+
 EAPI void
 elm_widget_resize_object_set(Efl_Ui_Widget *obj, Efl_Canvas_Object *sobj)
 {
@@ -83,8 +121,42 @@ elm_widget_focus_highlight_geometry_get(const Efl_Ui_Widget *obj)
    return efl_ui_widget_focus_highlight_geometry_get(obj);
 }
 
+//TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
+EAPI Efl_Canvas_Object *
+elm_widget_part_access_object_get(const Efl_Ui_Widget *obj, const char *part)
+{
+   return efl_ui_widget_part_access_object_get(obj, part);
+//
+}
+
+//TIZEN_ONLY(20180607): Restore legacy focus
+EAPI Efl_Canvas_Object *
+elm_widget_newest_focus_order_get(const Efl_Ui_Widget *obj, unsigned int *newest_focus_order, Eina_Bool can_focus_only)
+{
+   return efl_ui_widget_newest_focus_order_get(obj, newest_focus_order, can_focus_only);
+}
+
+EAPI void
+elm_widget_focus_tree_unfocusable_handle(Efl_Ui_Widget *obj)
+{
+   efl_ui_widget_focus_tree_unfocusable_handle(obj);
+}
+
+EAPI Eina_Bool
+elm_widget_focus_list_direction_get(const Efl_Ui_Widget *obj, const Efl_Canvas_Object *base, const Eina_List *items, void *list_data_get, double degree, Efl_Canvas_Object **direction, Elm_Widget_Item **direction_item, double *weight)
+{
+   return efl_ui_widget_focus_list_direction_get(obj, base, items, list_data_get, degree, direction, direction_item, weight);
+}
+
+EAPI Eina_Bool
+elm_widget_focus_list_next_get(const Efl_Ui_Widget *obj, const Eina_List *items, void *list_data_get, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item)
+{
+   return efl_ui_widget_focus_list_next_get(obj, items, list_data_get, dir, next, next_item);
+}
+
 EAPI Eina_Bool
 elm_widget_focus_state_apply(Efl_Ui_Widget *obj, Efl_Ui_Widget_Focus_State current_state, Efl_Ui_Widget_Focus_State *configured_state, Efl_Ui_Widget *redirect)
 {
    return efl_ui_widget_focus_state_apply(obj, current_state, configured_state, redirect);
 }
+//

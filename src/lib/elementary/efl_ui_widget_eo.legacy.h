@@ -33,6 +33,123 @@ typedef struct _Efl_Ui_Widget_Focus_State
 
 #endif
 
+//TIZEN_ONLY: Missing method from opensource
+/**
+ * @brief The cursor to be shown when mouse is over the object
+ *
+ * This is the cursor that will be displayed when mouse is over the object. The
+ * object can have only one cursor set to it so if @ref elm_widget_cursor_set
+ * is called twice for an object, the previous set will be unset.
+ *
+ * If using X cursors, a definition of all the valid cursor names is listed on
+ * Elementary_Cursors.h. If an invalid name is set the default cursor will be
+ * used.
+ *
+ * Sets or unsets the current cursor.
+ *
+ * If @c cursor is @c null this function will reset the cursor to the default
+ * one.
+ *
+ * @param[in] obj The object.
+ * @param[in] cursor The cursor name, defined either by the display system or
+ * the theme.
+ *
+ * @return @c true if successful.
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI Eina_Bool elm_widget_cursor_set(Efl_Ui_Widget *obj, const char *cursor);
+
+/**
+ * @brief The cursor to be shown when mouse is over the object
+ *
+ * This is the cursor that will be displayed when mouse is over the object. The
+ * object can have only one cursor set to it so if @ref elm_widget_cursor_set
+ * is called twice for an object, the previous set will be unset.
+ *
+ * If using X cursors, a definition of all the valid cursor names is listed on
+ * Elementary_Cursors.h. If an invalid name is set the default cursor will be
+ * used.
+ *
+ * Returns the current cursor name.
+ *
+ * @param[in] obj The object.
+ *
+ * @return The cursor name, defined either by the display system or the theme.
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI const char *elm_widget_cursor_get(const Efl_Ui_Widget *obj);
+
+/**
+ * @brief A different style for the cursor.
+ *
+ * This only makes sense if theme cursors are used. The cursor should be set
+ * with @ref elm_widget_cursor_set first before setting its style with this
+ * property.
+ *
+ * Sets a style for the current cursor. Call after @ref elm_widget_cursor_set.
+ *
+ * @param[in] obj The object.
+ * @param[in] style A specific style to use, eg. default, transparent, ....
+ *
+ * @return @c true if successful.
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI Eina_Bool elm_widget_cursor_style_set(Efl_Ui_Widget *obj, const char *style);
+
+/**
+ * @brief A different style for the cursor.
+ *
+ * This only makes sense if theme cursors are used. The cursor should be set
+ * with @ref elm_widget_cursor_set first before setting its style with this
+ * property.
+ *
+ * Returns the current cursor style name.
+ *
+ * @param[in] obj The object.
+ *
+ * @return A specific style to use, eg. default, transparent, ....
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI const char *elm_widget_cursor_style_get(const Efl_Ui_Widget *obj);
+
+/**
+ * @brief Whether the cursor may be looked in the theme or not.
+ *
+ * If @c false, the cursor may only come from the render engine, i.e. from the
+ * display manager.
+ *
+ * Enables or disables theme cursors.
+ *
+ * @param[in] obj The object.
+ * @param[in] allow Whether to use theme cursors.
+ *
+ * @return @c true if successful.
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI Eina_Bool elm_widget_cursor_theme_search_enabled_set(Efl_Ui_Widget *obj, Eina_Bool allow);
+
+/**
+ * @brief Whether the cursor may be looked in the theme or not.
+ *
+ * If @c false, the cursor may only come from the render engine, i.e. from the
+ * display manager.
+ *
+ * Returns the current state of theme cursors search.
+ *
+ * @param[in] obj The object.
+ *
+ * @return Whether to use theme cursors.
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI Eina_Bool elm_widget_cursor_theme_search_enabled_get(const Efl_Ui_Widget *obj);
+//
+
 /**
  * @brief This is the internal canvas object managed by a widget.
  *
@@ -305,6 +422,77 @@ EAPI Eina_Rect elm_widget_focus_region_get(const Efl_Ui_Widget *obj);
  */
 EAPI Eina_Rect elm_widget_focus_highlight_geometry_get(const Efl_Ui_Widget *obj);
 
+//TIZEN_ONLY(20160726): add API elm_object_part_access_object_get
+/**
+ * @brief Get the access object of given part of the widget.
+ *
+ * @param[in] obj The object.
+ * @param[in] part The object's part name to get access object
+ *
+ * @since 1.18
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI Efl_Canvas_Object *elm_widget_part_access_object_get(const Efl_Ui_Widget *obj, const char *part);
+//
+
+//TIZEN_ONLY(20180607): Restore legacy focus
+/**
+ * @brief Get newest focus in order
+ *
+ * @param[in] obj The object.
+ * @param[out] newest_focus_order Newest focus order
+ * @param[in] can_focus_only @c true only us widgets which can focus, @c false
+ * otherweise
+ *
+ * @return Handle to focused widget
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI Efl_Canvas_Object *elm_widget_newest_focus_order_get(const Efl_Ui_Widget *obj, unsigned int *newest_focus_order, Eina_Bool can_focus_only);
+
+/** Handle focus tree unfocusable
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI void elm_widget_focus_tree_unfocusable_handle(Efl_Ui_Widget *obj);
+
+/**
+ * @brief Get focus list direction
+ *
+ * @param[in] obj The object.
+ * @param[in] base Base object
+ * @param[in] items Item list
+ * @param[in] list_data_get Data get function
+ * @param[in] degree Degree
+ * @param[out] direction Direction
+ * @param[out] direction_item Direction item
+ * @param[out] weight Weight
+ *
+ * @return @c true on success, @c false otherwise
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI Eina_Bool elm_widget_focus_list_direction_get(const Efl_Ui_Widget *obj, const Efl_Canvas_Object *base, const Eina_List *items, void *list_data_get, double degree, Efl_Canvas_Object **direction, Elm_Widget_Item **direction_item, double *weight);
+
+/**
+ * @brief Get next item in focus list
+ *
+ * @param[in] obj The object.
+ * @param[in] items Item list
+ * @param[in] list_data_get Function type
+ * @param[in] dir Focus direction
+ * @param[out] next Next object
+ * @param[out] next_item Next item
+ *
+ * @return @c true on success, @c false otherwise
+ *
+ * @ingroup Elm_Widget_Group
+ */
+EAPI Eina_Bool elm_widget_focus_list_next_get(const Efl_Ui_Widget *obj, const Eina_List *items, void *list_data_get, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item);
+
+
+
 /**
  * @brief Register focus with the given configuration.
  *
@@ -330,5 +518,6 @@ EAPI Eina_Rect elm_widget_focus_highlight_geometry_get(const Efl_Ui_Widget *obj)
  * @ingroup Elm_Widget_Group
  */
 EAPI Eina_Bool elm_widget_focus_state_apply(Efl_Ui_Widget *obj, Efl_Ui_Widget_Focus_State current_state, Efl_Ui_Widget_Focus_State *configured_state, Efl_Ui_Widget *redirect);
+//
 
 #endif

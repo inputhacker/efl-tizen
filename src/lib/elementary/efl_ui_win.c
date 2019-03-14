@@ -6951,10 +6951,10 @@ _efl_ui_win_win_type_set(Eo *obj, Efl_Ui_Win_Data *sd, Efl_Ui_Win_Type type)
      {
 // TIZEN_ONLY(20160720): Allowed changing type after initializing
 #ifdef HAVE_ELEMENTARY_WL2
-        if (sd->type != ELM_WIN_FAKE) sd->type = type;
+        if (sd->type != EFL_UI_WIN_TYPE_FAKE) sd->type = type;
         _elm_win_wlwin_type_update(sd);
 //TIZEN_ONLY(20161208): supported floating window
-        if (type != ELM_WIN_BASIC)
+        if (type != EFL_UI_WIN_TYPE_BASIC)
           edje_object_signal_emit(sd->legacy.edje, "elm,state,floating,on", "elm");
         else
           edje_object_signal_emit(sd->legacy.edje, "elm,state,floating,off", "elm");

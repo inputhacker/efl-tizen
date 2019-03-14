@@ -21,6 +21,12 @@ void _elm_pan_pos_max_get(const Eo *obj, Elm_Pan_Smart_Data *pd, int *x, int *y)
 
 EOAPI EFL_VOID_FUNC_BODYV_CONST(elm_obj_pan_pos_max_get, EFL_FUNC_CALL(x, y), int *x, int *y);
 
+//TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+void _elm_pan_pos_adjust(Eo *obj, Elm_Pan_Smart_Data *pd, int *x, int *y);
+
+EOAPI EFL_VOID_FUNC_BODYV(elm_obj_pan_pos_adjust, EFL_FUNC_CALL(x, y), int *x, int *y);
+//
+
 Efl_Object *_elm_pan_efl_object_constructor(Eo *obj, Elm_Pan_Smart_Data *pd);
 
 
@@ -50,6 +56,9 @@ _elm_pan_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(elm_obj_pan_content_size_get, _elm_pan_content_size_get),
       EFL_OBJECT_OP_FUNC(elm_obj_pan_pos_min_get, _elm_pan_pos_min_get),
       EFL_OBJECT_OP_FUNC(elm_obj_pan_pos_max_get, _elm_pan_pos_max_get),
+      //TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+      EFL_OBJECT_OP_FUNC(elm_obj_pan_pos_adjust, _elm_pan_pos_adjust),
+      //
       EFL_OBJECT_OP_FUNC(efl_constructor, _elm_pan_efl_object_constructor),
       EFL_OBJECT_OP_FUNC(efl_gfx_entity_visible_set, _elm_pan_efl_gfx_entity_visible_set),
       EFL_OBJECT_OP_FUNC(efl_gfx_entity_position_set, _elm_pan_efl_gfx_entity_position_set),

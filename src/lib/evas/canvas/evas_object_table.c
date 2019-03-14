@@ -944,6 +944,19 @@ _evas_table_efl_gfx_entity_size_set(Eo *obj, Evas_Table_Data *_pd EINA_UNUSED, E
    evas_object_smart_changed(obj);
 }
 
+//TIZEN_ONLY (20181013): Revert "evas: fix child position when the container is moved"
+/*
+EOLIAN static void
+_evas_table_efl_gfx_entity_position_set(Eo *obj, Evas_Table_Data *_pd EINA_UNUSED, Eina_Position2D pos)
+{
+   if (_evas_object_intercept_call(obj, EVAS_OBJECT_INTERCEPT_CB_MOVE, 0, pos.x, pos.y))
+     return;
+
+   efl_gfx_entity_position_set(efl_super(obj, MY_CLASS), pos);
+   evas_object_smart_changed(obj);
+}
+*/
+
 EOLIAN static void
 _evas_table_efl_canvas_group_group_calculate(Eo *o, Evas_Table_Data *priv)
 {

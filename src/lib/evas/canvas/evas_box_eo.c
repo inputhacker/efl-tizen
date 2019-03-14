@@ -164,9 +164,9 @@ Efl_Object *_evas_box_efl_object_constructor(Eo *obj, Evas_Object_Box_Data *pd);
 
 void _evas_box_efl_gfx_entity_size_set(Eo *obj, Evas_Object_Box_Data *pd, Eina_Size2D size);
 
-
-void _evas_box_efl_gfx_entity_position_set(Eo *obj, Evas_Object_Box_Data *pd, Eina_Position2D pos);
-
+//TIZEN_ONLY (20181013): Revert "evas: fix child position when the container is moved"
+//void _evas_box_efl_gfx_entity_position_set(Eo *obj, Evas_Object_Box_Data *pd, Eina_Position2D pos);
+//
 
 void _evas_box_efl_canvas_group_group_calculate(Eo *obj, Evas_Object_Box_Data *pd);
 
@@ -224,7 +224,9 @@ _evas_box_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(evas_obj_box_count, _evas_box_count),
       EFL_OBJECT_OP_FUNC(efl_constructor, _evas_box_efl_object_constructor),
       EFL_OBJECT_OP_FUNC(efl_gfx_entity_size_set, _evas_box_efl_gfx_entity_size_set),
-      EFL_OBJECT_OP_FUNC(efl_gfx_entity_position_set, _evas_box_efl_gfx_entity_position_set),
+      //TIZEN_ONLY (20181013): Revert "evas: fix child position when the container is moved"
+      //EFL_OBJECT_OP_FUNC(efl_gfx_entity_position_set, _evas_box_efl_gfx_entity_position_set),
+      //
       EFL_OBJECT_OP_FUNC(efl_canvas_group_calculate, _evas_box_efl_canvas_group_group_calculate),
       EVAS_BOX_EXTRA_OPS
    );

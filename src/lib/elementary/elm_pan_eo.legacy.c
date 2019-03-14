@@ -28,3 +28,11 @@ elm_pan_pos_max_get(const Elm_Pan *obj, int *x, int *y)
 {
    elm_obj_pan_pos_max_get(obj, x, y);
 }
+
+//TIZEN_ONLY(20180118): Modify logics to make scroller stable on tizen
+EAPI void
+elm_pan_pos_adjust(Elm_Pan *obj, int *x, int *y)
+{
+   elm_obj_pan_pos_adjust(obj, x, y);
+}
+//
