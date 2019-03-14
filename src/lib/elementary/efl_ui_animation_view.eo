@@ -2,7 +2,6 @@
 enum Efl.Ui.Animation_View.State
 {
    //FIXME: This enum is not neccessary in legacy header. but legacy:null command is not working correct.
-   //legacy: null;
    not_ready, [[Animation is not ready to play. (Probably, it didn't file set yet or failed to read file. @since 1.22]]
    play, [[Animation is on playing. see @Efl.Ui.Animation_View.play @since 1.22]]
    play_back, [[Animation is on playing back (rewinding). see @Efl.Ui.Animation_View.play_back @since 1.22]]
