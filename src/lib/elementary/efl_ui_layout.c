@@ -2689,12 +2689,7 @@ _efl_ui_layout_base_efl_part_part_get(const Eo *obj, Efl_Ui_Layout_Data *sd EINA
    if (!efl_layout_group_part_exist_get(wd->resize_obj, part))
      {
         // edje part will handle the error message
-        /* TIZEN_ONLY(20180514): fix elm_layout_text_set to return proper result
-        return efl_part(wd->resize_obj, part);
-         */
-        ERR("Failed to get part is not exist! : obj[%p], part[%s]", obj, part);
-        /* END */
-        return NULL;
+        return efl_part_get(wd->resize_obj, part); 
      }
 
    type = efl_canvas_layout_part_type_get(efl_part(wd->resize_obj, part));
@@ -3038,6 +3033,7 @@ elm_layout_table_clear(Eo *obj, const char *part, Eina_Bool clear)
 EAPI Eina_Bool
 elm_layout_text_set(Eo *obj, const char *part, const char *text)
 {
+   Eo *part_obj;
    if (!part)
      {
         part = efl_ui_widget_default_text_part_get(obj);
@@ -3046,15 +3042,18 @@ elm_layout_text_set(Eo *obj, const char *part, const char *text)
    else if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
      return EINA_FALSE;
 
-   /* TIZEN_ONLY(20180514): fix elm_layout_text_set to return proper result
-   efl_text_set(efl_part(obj, part), text);
-   return EINA_TRUE;
-   */
+   part_obj = efl_ref(efl_part(obj, part));
 
-   Eo *part_obj = efl_part(obj, part);
-   if (!part_obj) return EINA_FALSE;
+   if (!efl_isa(part_obj, EFL_TEXT_INTERFACE) ||
+       !efl_isa(part_obj, EFL_UI_LAYOUT_PART_CLASS))
+     {
+        efl_unref(part_obj);
+        return EINA_FALSE;
+     }
 
    efl_text_set(part_obj, text);
+
+   efl_unref(part_obj);
 
    return EINA_TRUE;
    /* END */
