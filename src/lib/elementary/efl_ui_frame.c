@@ -48,7 +48,7 @@ _efl_ui_frame_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Efl_Ui_Fr
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_frame_efl_ui_widget_focus_next(Eo *obj EINA_UNUSED, Efl_Ui_Frame_Data *_pd EINA_UNUSED, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_efl_ui_frame_efl_ui_widget_focus_next(Eo *obj EINA_UNUSED, Efl_Ui_Frame_Data *_pd EINA_UNUSED, Efl_Ui_Focus_Direction dir, Evas_Object **next, Evas_Object **next_item)
 {
    Evas_Object *content;
 
@@ -70,7 +70,7 @@ _efl_ui_frame_efl_ui_widget_focus_direction_manager_is(Eo *obj EINA_UNUSED, Efl_
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_frame_efl_ui_widget_focus_direction(Eo *obj EINA_UNUSED, Efl_Ui_Frame_Data *_pd EINA_UNUSED, const Evas_Object *base, double degree, Evas_Object **direction, Elm_Object_Item **direction_item, double *weight)
+_efl_ui_frame_efl_ui_widget_focus_direction(Eo *obj EINA_UNUSED, Efl_Ui_Frame_Data *_pd EINA_UNUSED, const Evas_Object *base, double degree, Evas_Object **direction, Evas_Object **direction_item, double *weight)
 {
    Evas_Object *content;
 

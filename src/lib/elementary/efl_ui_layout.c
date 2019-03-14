@@ -586,7 +586,7 @@ _efl_ui_layout_base_efl_ui_focus_object_on_focus_update(Eo *obj, Efl_Ui_Layout_D
           elm_layout_signal_emit(obj, "efl,action,focus", "efl");
         evas_object_focus_set(wd->resize_obj, EINA_TRUE);
         if (_elm_atspi_enabled() && !elm_widget_child_can_focus_get(obj))
-          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_TRUE);
+          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_FOCUSED, EINA_TRUE);
      }
    else
      {
@@ -596,7 +596,7 @@ _efl_ui_layout_base_efl_ui_focus_object_on_focus_update(Eo *obj, Efl_Ui_Layout_D
           elm_layout_signal_emit(obj, "efl,action,unfocus", "efl");
         evas_object_focus_set(wd->resize_obj, EINA_FALSE);
         if (_elm_atspi_enabled() && !elm_widget_child_can_focus_get(obj))
-          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_FOCUSED, EINA_FALSE);
+          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_FOCUSED, EINA_FALSE);
      }
 
    efl_ui_focus_object_on_focus_update(efl_super(obj, MY_CLASS));

@@ -90,6 +90,7 @@ typedef struct _Elm_Atspi_Bridge_Data
 {
    Eldbus_Connection *session_bus;
    Eldbus_Connection *a11y_bus;
+   Eina_List *reemited_events;
    Eina_Hash *cache;
    Eldbus_Service_Interface *cache_interface;
    Eldbus_Signal_Handler *register_hdl;
@@ -567,7 +568,7 @@ static Efl_Access_Relation_Type _atspi_relation_to_elm_relation(AtspiRelationTyp
      {
        if (elm_relation_to_atspi_relation_mapping[i] == (int)type) return (Elm_Atspi_Relation_Type)i;
      }
-   return EFL_ACCESS_RELATION_NULL;
+   return EFL_ACCESS_RELATION_TYPE_NULL;
 }
 
 static AtspiRole _efl_role_to_atspi_role(Efl_Access_Role role)
@@ -1275,7 +1276,7 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
    rels = efl_access_object_relation_set_get(obj);
    EINA_LIST_FOREACH(rels, l, rel)
      {
-        if (rel->type == EFL_ACCESS_RELATION_LABELLED_BY)
+        if (rel->type == EFL_ACCESS_RELATION_TYPE_LABELLED_BY)
           {
              int last_index = eina_list_count(rel->objects) - 1;
              relation_obj = eina_list_nth(rel->objects, last_index);
@@ -1391,7 +1392,7 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
         EINA_LIST_FOREACH(children, l, child)
           {
              states = efl_access_object_state_set_get(child);
-             if (STATE_TYPE_GET(states, EFL_ACCESS_STATE_SELECTED))
+             if (STATE_TYPE_GET(states, EFL_ACCESS_STATE_TYPE_SELECTED))
                break;
              idx++;
           }
@@ -1436,7 +1437,7 @@ _accessible_reading_material_get(const Eldbus_Service_Interface *iface, const El
    relation_obj = NULL;
    EINA_LIST_FOREACH(rels, l, rel)
      {
-        if (rel->type == EFL_ACCESS_RELATION_DESCRIBED_BY)
+        if (rel->type == EFL_ACCESS_RELATION_TYPE_DESCRIBED_BY)
           {
              int last_index = eina_list_count(rel->objects) - 1;
              relation_obj = eina_list_nth(rel->objects, last_index);
@@ -1567,7 +1568,7 @@ _is_operation_permitted(Eo *obj)
    Efl_Access_State_Set states;
    states = efl_access_object_state_set_get(obj);
 
-   if (!STATE_TYPE_GET(states, EFL_ACCESS_STATE_SHOWING)) return EINA_FALSE;
+   if (!STATE_TYPE_GET(states, EFL_ACCESS_STATE_TYPE_SHOWING)) return EINA_FALSE;
 
    Eo *parent = obj;
    while (parent)
@@ -4164,7 +4165,7 @@ _cache_item_reference_append_cb(Eo *bridge, Eo *data, Eldbus_Message_Iter *iter_
   iter_sub_array = eldbus_message_iter_container_new(iter_struct, 'a', "(so)");
   EINA_SAFETY_ON_NULL_GOTO(iter_sub_array, fail);
    //TIZEN_ONLY(20150709) Do not register children of MANAGES_DESCENDATS objects
-   if (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_MANAGES_DESCENDANTS))
+   if (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_TYPE_MANAGES_DESCENDANTS))
      {
         children_list = efl_access_object_access_children_get(data);
    //
@@ -5698,15 +5699,15 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
    ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN(data, pd);
 
    // TIZEN_ONLY(20160802): do not handle events if the window is not activated
-   if ((state_data->type == EFL_ACCESS_STATE_ACTIVE) && efl_isa(event->object, EFL_UI_WIN_CLASS))
+   if ((state_data->type == EFL_ACCESS_STATE_TYPE_ACTIVE) && efl_isa(event->object, EFL_UI_WIN_CLASS))
      {
         pd->window_activated = state_data->new_value;
      }
    //
 
    // TIZEN_ONLY(20161209): reduce IPC of object:state-changed:showing
-   if ((state_data->type == EFL_ACCESS_STATE_SHOWING) ||
-       (state_data->type == EFL_ACCESS_STATE_VISIBLE))
+   if ((state_data->type == EFL_ACCESS_STATE_TYPE_SHOWING) ||
+       (state_data->type == EFL_ACCESS_STATE_TYPE_VISIBLE))
      {
         Efl_Access_Role role = EFL_ACCESS_ROLE_INVALID;
         Efl_Access_State_Set ss;
@@ -5717,7 +5718,7 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
           {
              if ((role != EFL_ACCESS_ROLE_WINDOW) &&
                  (role != EFL_ACCESS_ROLE_PAGE_TAB) &&
-                 (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_MODAL)))
+                 (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_TYPE_MODAL)))
                {
                   efl_event_callback_stop(event->object);
                   return;
@@ -5726,7 +5727,7 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
         else /* Not Showing */
           {
              if ((role != EFL_ACCESS_ROLE_WINDOW) &&
-                 (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_MODAL)) &&
+                 (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_TYPE_MODAL)) &&
                  (_elm_object_accessibility_currently_highlighted_get() != (void *)event->object))
                {
                   efl_event_callback_stop(event->object);
@@ -5742,7 +5743,7 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
         return;
      }
 
-   if ((state_data->type > EFL_ACCESS_STATE_LAST_DEFINED) ||
+   if ((state_data->type > EFL_ACCESS_STATE_TYPE_LAST_DEFINED) ||
         (int)state_data->type < 0)
      {
         efl_event_callback_stop(event->object);
@@ -5752,7 +5753,7 @@ _state_changed_signal_send(void *data, const Efl_Event *event)
    type_desc = elm_states_to_atspi_state[state_data->type].name;
    //TIZEN_ONLY(20170802): handle "gesture_required" attribute
    unsigned int det2 = 0;
-   if (state_data->type == EFL_ACCESS_STATE_HIGHLIGHTED)
+   if (state_data->type == EFL_ACCESS_STATE_TYPE_HIGHLIGHTED)
     {
        if (_ee_obscured_get(event->object))
          return;
@@ -6278,11 +6279,11 @@ _bridge_cache_build(Eo *bridge, void *obj)
       _bridge_object_register(bridge, obj);
 
    ss = efl_access_object_state_set_get(obj);
-   if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_MANAGES_DESCENDANTS))
+   if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_TYPE_MANAGES_DESCENDANTS))
      return;
    if (efl_isa(obj, EFL_ACCESS_WINDOW_INTERFACE))
      {
-        if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_ACTIVE))
+        if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_TYPE_ACTIVE))
           {
              // TIZEN_ONLY(20160802): do not handle events if the window is not activated
              pd->window_activated = EINA_TRUE;
@@ -7440,81 +7441,6 @@ fail:
    if (msg) eldbus_message_unref(msg);
 }
 //
-
-static void
-_key_event_info_free(Key_Event_Info *data)
-{
-   EINA_SAFETY_ON_NULL_RETURN(data);
-
-   eina_stringshare_del(data->event.keyname);
-   eina_stringshare_del(data->event.key);
-   eina_stringshare_del(data->event.string);
-   eina_stringshare_del(data->event.compose);
-
-   free(data);
-}
-
-static Eina_Bool
-_elm_atspi_bridge_key_filter(void *data, void *loop EINA_UNUSED, int type, void *event)
-{
-   Ecore_Event_Key *key_event = event;
-   Key_Event_Info *ke;
-   Eldbus_Object *dobj;
-   Eldbus_Proxy *proxy;
-   Eldbus_Message *req;
-   Eldbus_Message_Iter *iter;
-   Eldbus_Message *reply;
-   Eina_Bool ret = EINA_TRUE;
-   const char *errname = NULL, *errmsg = NULL;
-   Eo *bridge = data;
-
-   ELM_ATSPI_BRIDGE_DATA_GET_OR_RETURN_VAL(bridge, pd, EINA_TRUE);
-
-   if ((type != ECORE_EVENT_KEY_DOWN) && (type != ECORE_EVENT_KEY_UP)) return EINA_TRUE;
-
-   if (!(dobj = eldbus_object_get(pd->a11y_bus, ATSPI_DBUS_NAME_REGISTRY, ATSPI_DBUS_PATH_DEC)))
-     {
-        ERR("Failed to create eldbus object for: " ATSPI_DBUS_PATH_DEC);
-        return EINA_TRUE;
-     }
-
-   if (!(proxy = eldbus_proxy_get(dobj, ATSPI_DBUS_INTERFACE_DEC)))
-     {
-        ERR("Failed to create proxy object for: " ATSPI_DBUS_INTERFACE_DEC);
-        return EINA_TRUE;
-     }
-
-   if (!(req = eldbus_proxy_method_call_new(proxy, "NotifyListenersSync")))
-     {
-        ERR("Failed to create method call on: " ATSPI_DBUS_INTERFACE_DEC "." "NotifyListenersSync");
-        return EINA_TRUE;
-     }
-
-   ke = _key_event_info_new(type, key_event, bridge);
-   if (!ke) return EINA_TRUE;
-
-   iter = eldbus_message_iter_get(req);
-   _iter_marshall_key_event(iter, ke);
-   _key_event_info_free(ke);
-
-   // timeout should be kept reasonably low to avoid delays
-   if (!(reply = eldbus_proxy_send_and_block(proxy, req, 100)))
-     {
-        ERR("Unable to call method " ATSPI_DBUS_INTERFACE_DEC "." "NotifyListenersSync");
-        return EINA_TRUE;
-     }
-
-   if (eldbus_message_error_get(reply, &errname, &errmsg))
-     ERR("Error in call method " ATSPI_DBUS_INTERFACE_DEC "." "NotifyListenersSync" ": %s %s", errname, errmsg);
-   else
-       if (!eldbus_message_arguments_get(reply, "b", &ret))
-          ERR("Invalid answer signature");
-
-   if (ret)
-      return EINA_FALSE;
-
-   return EINA_FALSE;
-}
 
 //TIZEN_ONLY(20160527) - Add direct reading feature
 static void

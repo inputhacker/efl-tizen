@@ -8,7 +8,7 @@
 #include "elm_widget.h"
 #include "elm_priv.h"
 //TIZEN_ONLY(20171222): include headerfile for eo info
-#include "elm_ctxpopup_item.eo.h"
+#include "elm_ctxpopup_item_eo.h"
 //
 
 #define MY_CLASS ELM_ATSPI_PROXY_CLASS

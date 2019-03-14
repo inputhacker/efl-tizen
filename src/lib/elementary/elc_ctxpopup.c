@@ -1761,9 +1761,9 @@ _elm_ctxpopup_item_efl_access_object_state_set_get(const Eo *obj, Elm_Ctxpopup_I
      }
 
    if (is_showing)
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_SHOWING);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_SHOWING);
    else
-     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_SHOWING);
+     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_TYPE_SHOWING);
 
    return states;
 }

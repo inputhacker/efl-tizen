@@ -9,7 +9,10 @@ enum Efl.Ui.Win_Type
      Currently, only the X11 backed engines use them.
    ]]
 
+   //TIZEN_ONLY(20180406): fix ABI break related with window type
+   //FIXME : Follow tizen_only code, this enum value defferent from opensource. opensource started -1.
    unknown, [[Default, unknown, type]]
+   //
    basic, [[A normal window. Indicates a normal, top-level window. Almost every
             window will be created with this type.]]
    dialog_basic, [[Used for simple dialog windows.]]
@@ -38,12 +41,15 @@ enum Efl.Ui.Win_Type
    dnd,
    inlined_image,
    socket_image,
-   fake,
    /* Some types have been removed from EO. Skipping to 17. */
-   naviframe_basic = 17 [[Used for naviframe style replacement with a back
+   naviframe_basic = 17, [[Used for naviframe style replacement with a back
                           button instead of a close button.
                           @since 1.19
                         ]]
+   //TIZEN_ONLY(20180406): fix ABI break related with window type
+   //FIXME : Follow tizen_only code, this enum value defferent from opensource. opensource fake value is 16.
+   fake = 18,
+   //
 }
 
 enum Efl.Ui.Win_Keyboard_Mode

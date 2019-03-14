@@ -144,7 +144,7 @@ _accessible_panel_hidden_set(Evas_Object* obj, Eina_Bool is_hidden)
 {
    is_hidden = !!is_hidden;
    efl_access_object_can_highlight_set(obj, !is_hidden);
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_SHOWING, !is_hidden);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_SHOWING, !is_hidden);
    if (is_hidden)
      _elm_win_default_label_obj_remove(obj);
    else
@@ -1613,11 +1613,11 @@ _elm_panel_efl_access_object_state_set_get(const Eo *obj, Elm_Panel_Data *sd EIN
    ret = efl_access_object_state_set_get(efl_super(obj, MY_CLASS));
 
    if (!sd->hidden)
-      STATE_TYPE_SET(ret, EFL_ACCESS_STATE_SHOWING);
+      STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_SHOWING);
    else
-      STATE_TYPE_UNSET(ret, EFL_ACCESS_STATE_SHOWING);
+      STATE_TYPE_UNSET(ret, EFL_ACCESS_STATE_TYPE_SHOWING);
 
-   STATE_TYPE_SET(ret, EFL_ACCESS_STATE_MODAL);
+   STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_MODAL);
 
    return ret;
 }

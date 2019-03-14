@@ -520,8 +520,8 @@ _efl_ui_win_type_to_elm_win_type(Efl_Ui_Win_Type type)
 {
    switch (type)
      {
-#define CONVERT_TYPE(TYPE) case EFL_UI_WIN_TYPE_##TYPE: return ELM_WIN_##TYPE
-      CONVERT_TYPE(BASIC);
+//#define CONVERT_TYPE(TYPE) case EFL_UI_WIN_TYPE_##TYPE: return ELM_WIN_##TYPE
+      /*CONVERT_TYPE(BASIC);
       CONVERT_TYPE(DIALOG_BASIC);
       CONVERT_TYPE(DESKTOP);
       CONVERT_TYPE(DOCK);
@@ -538,11 +538,29 @@ _efl_ui_win_type_to_elm_win_type(Efl_Ui_Win_Type type)
       CONVERT_TYPE(INLINED_IMAGE);
       CONVERT_TYPE(SOCKET_IMAGE);
       CONVERT_TYPE(FAKE);
-      CONVERT_TYPE(NAVIFRAME_BASIC);
+      CONVERT_TYPE(NAVIFRAME_BASIC);*/
+      case EFL_UI_WIN_TYPE_BASIC: return ELM_WIN_BASIC;
+      case EFL_UI_WIN_TYPE_DIALOG_BASIC: return ELM_WIN_DIALOG_BASIC;
+      case EFL_UI_WIN_TYPE_DESKTOP: return ELM_WIN_DESKTOP;
+      case EFL_UI_WIN_TYPE_DOCK: return ELM_WIN_DOCK;
+      case EFL_UI_WIN_TYPE_TOOLBAR: return ELM_WIN_TOOLBAR;
+      case EFL_UI_WIN_TYPE_MENU: return ELM_WIN_MENU;
+      case EFL_UI_WIN_TYPE_UTILITY: return ELM_WIN_UTILITY;
+      case EFL_UI_WIN_TYPE_SPLASH: return ELM_WIN_SPLASH;
+      case EFL_UI_WIN_TYPE_DROPDOWN_MENU: return ELM_WIN_DROPDOWN_MENU;
+      case EFL_UI_WIN_TYPE_POPUP_MENU: return ELM_WIN_POPUP_MENU;
+      case EFL_UI_WIN_TYPE_TOOLTIP: return ELM_WIN_TOOLTIP;
+      case EFL_UI_WIN_TYPE_NOTIFICATION: return ELM_WIN_NOTIFICATION;
+      case EFL_UI_WIN_TYPE_COMBO: return ELM_WIN_COMBO;
+      case EFL_UI_WIN_TYPE_DND: return ELM_WIN_DND;
+      case EFL_UI_WIN_TYPE_INLINED_IMAGE: return ELM_WIN_INLINED_IMAGE;
+      case EFL_UI_WIN_TYPE_SOCKET_IMAGE: return ELM_WIN_SOCKET_IMAGE;
+      case EFL_UI_WIN_TYPE_FAKE: return ELM_WIN_FAKE;
+      case EFL_UI_WIN_TYPE_NAVIFRAME_BASIC: return ELM_WIN_NAVIFRAME_BASIC;
       default: break;
      }
    return ELM_WIN_UNKNOWN;
-#undef CONVERT_TYPE
+//#undef CONVERT_TYPE
 }
 
 #ifdef HAVE_ELEMENTARY_X
@@ -2214,7 +2232,7 @@ _elm_win_state_change(Ecore_Evas *ee)
         evas_object_smart_callback_call(obj, SIG_VISIBILITY_CHANGED, (void*)!sd->obscured);
         //TIZEN_ONLY(20160701): add atspi window state visible change signal
         if (_elm_atspi_enabled())
-          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_VISIBLE, !sd->obscured);
+          efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_VISIBLE, !sd->obscured);
         //
      }
    //
@@ -2238,7 +2256,7 @@ _efl_ui_win_efl_ui_widget_focus_next_manager_is(Eo *obj EINA_UNUSED, Efl_Ui_Win_
 }
 
 EOLIAN static Eina_Bool
-_efl_ui_win_efl_ui_widget_focus_next(Eo *obj, Efl_Ui_Win_Data *_pd EINA_UNUSED, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_efl_ui_win_efl_ui_widget_focus_next(Eo *obj, Efl_Ui_Win_Data *_pd EINA_UNUSED, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EINA_FALSE);
 
@@ -4596,10 +4614,10 @@ _elm_win_atspi(Eina_Bool is_atspi)
           {
              _access_socket_proxy_listen(obj);
              ss = efl_access_object_state_set_get(obj);
-             if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_ACTIVE))
+             if (STATE_TYPE_GET(ss, EFL_ACCESS_STATE_TYPE_ACTIVE))
                {
                   efl_access_window_activated_signal_emit(obj);
-                  efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
+                  efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_ACTIVE, EINA_TRUE);
                }
              else
                {
@@ -4608,7 +4626,7 @@ _elm_win_atspi(Eina_Bool is_atspi)
                   if (role == EFL_ACCESS_ROLE_INPUT_METHOD_WINDOW)
                     {
                        efl_access_window_activated_signal_emit(obj);
-                       efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_ACTIVE, EINA_TRUE);
+                       efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_ACTIVE, EINA_TRUE);
                     }
                }
           }

@@ -805,8 +805,8 @@ static void _elm_atspi_accessibility_state_notify(Eo *obj, Efl_Access_State_Set 
 
    ss = efl_access_object_state_set_get(obj);
 
-   for (type = EFL_ACCESS_STATE_INVALID;
-        type < EFL_ACCESS_STATE_LAST_DEFINED;
+   for (type = EFL_ACCESS_STATE_TYPE_INVALID;
+        type < EFL_ACCESS_STATE_TYPE_LAST_DEFINED;
         type++)
      {
         if (STATE_TYPE_GET(mask, type))

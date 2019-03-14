@@ -4,6 +4,10 @@ EWAPI const Efl_Event_Description _ELM_NOTIFY_EVENT_TIMEOUT =
    EFL_EVENT_DESCRIPTION("timeout");
 EWAPI const Efl_Event_Description _ELM_NOTIFY_EVENT_DISMISSED =
    EFL_EVENT_DESCRIPTION("dismissed");
+/* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+EWAPI const Efl_Event_Description _ELM_NOTIFY_EVENT_SHOW_FINISHED =
+   EFL_EVENT_DESCRIPTION("show,finished");
+//
 
 void _elm_notify_align_set(Eo *obj, Elm_Notify_Data *pd, double horizontal, double vertical);
 

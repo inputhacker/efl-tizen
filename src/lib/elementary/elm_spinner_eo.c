@@ -10,6 +10,10 @@ EWAPI const Efl_Event_Description _ELM_SPINNER_EVENT_MIN_REACHED =
    EFL_EVENT_DESCRIPTION("min,reached");
 EWAPI const Efl_Event_Description _ELM_SPINNER_EVENT_MAX_REACHED =
    EFL_EVENT_DESCRIPTION("max,reached");
+//TIZEN_ONLY(20160419): Spinner entry changed callback support for datetime UX.
+EWAPI const Efl_Event_Description _ELM_SPINNER_EVENT_ENTRY_CHANGED =
+   EFL_EVENT_DESCRIPTION("entry,changed");
+//
 
 void _elm_spinner_wrap_set(Eo *obj, Elm_Spinner_Data *pd, Eina_Bool wrap);
 

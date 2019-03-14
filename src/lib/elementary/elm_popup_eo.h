@@ -285,4 +285,14 @@ EWAPI extern const Efl_Event_Description _ELM_POPUP_EVENT_DISMISSED;
  */
 #define ELM_POPUP_EVENT_DISMISSED (&(_ELM_POPUP_EVENT_DISMISSED))
 
+/* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+EWAPI extern const Efl_Event_Description _ELM_POPUP_EVENT_SHOW_FINISHED;
+
+/** Called when popup show animation is finished
+ *
+ * @ingroup Elm_Popup
+ */
+#define ELM_POPUP_EVENT_SHOW_FINISHED (&(_ELM_POPUP_EVENT_SHOW_FINISHED))
+//
+
 #endif

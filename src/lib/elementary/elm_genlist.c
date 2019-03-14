@@ -615,7 +615,7 @@ _view_style_find(Elm_Gen_Item *it, Evas_Object *view, const char *style)
        if (!strcmp(buf, buf2)) return EINA_FALSE;
        th_ret = elm_widget_theme_object_set(WIDGET(it), view, "genlist", buf2,
                                             elm_widget_style_get(WIDGET(it)));
-       if (th_ret == EFL_UI_THEME_APPLY_RESULT_FAIL) return EINA_FALSE;
+       if (th_ret == EFL_UI_THEME_APPLY_ERROR_GENERIC) return EINA_FALSE;
     }
 
   return EINA_TRUE;
@@ -2193,7 +2193,7 @@ _item_realize(Elm_Gen_Item *it, const int index, Eina_Bool calc)
        elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
        //TIZEN_ONLY(20170724): grab highlight using unrealized item
        efl_access_state_changed_signal_emit(EO_OBJ(it),
-                                    EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+                                    EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_TRUE);
        evas_object_smart_callback_call(WIDGET(it),
          SIG_WIDGET_ATSPI_HIGHLIGHTED, EO_OBJ(it));
        //
@@ -8979,7 +8979,7 @@ _elm_genlist_item_efl_access_object_state_set_get(const Eo *eo_it, Elm_Gen_Item 
         if (elm_genlist_item_expanded_get(eo_it))
             STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_EXPANDED);
          else
-            STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYOE_COLLAPSED);
+            STATE_TYPE_SET(ret, EFL_ACCESS_STATE_TYPE_COLLAPSED);
      }
    //
 
@@ -9528,7 +9528,7 @@ _elm_genlist_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Genlist_Data 
         if (next_previous_item)
           {
              elm_object_accessibility_highlight_set(EO_OBJ(next_previous_item), EINA_TRUE);
-             efl_access_state_changed_signal_emit(EO_OBJ(next_previous_item), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+             efl_access_state_changed_signal_emit(EO_OBJ(next_previous_item), EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_TRUE);
 
             efl_access_component_highlight_clear(highlighted_obj);
             if (traverse_direction)
@@ -9577,7 +9577,7 @@ _elm_genlist_item_efl_access_component_highlight_grab(Eo *eo_it, Elm_Gen_Item *i
          elm_object_accessibility_highlight_set(EO_OBJ(it), EINA_TRUE);
 
         ///TIZEN_ONLY(20170717) : expose highlight information on atspi
-        efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+        efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_TRUE);
         ///
 
         //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
@@ -9620,7 +9620,7 @@ _elm_genlist_item_efl_access_component_highlight_clear(Eo *eo_it, Elm_Gen_Item *
       sd->atspi_item_to_highlight = NULL;
 
   ///TIZEN_ONLY(20170717) : expose highlight information on atspi
-  efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+  efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_FALSE);
   //
 
   ret = efl_access_component_highlight_clear(efl_super(eo_it, ELM_GENLIST_ITEM_CLASS));

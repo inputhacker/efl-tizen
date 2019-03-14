@@ -3233,28 +3233,6 @@ elm_widget_theme_object_set(Evas_Object *obj, Evas_Object *edj, const char *wnam
      welement = NULL;
    if (eina_streq(wstyle, "default"))
      wstyle = NULL;
-   Efl_Ui_Theme_Apply_Result ret = _elm_theme_object_set(obj, edj, wname, welement, wstyle);
-   if (!ret)
-     {
-        return EFL_UI_THEME_APPLY_RESULT_FAIL;
-     }
-
-   if (sd->orient_mode != -1)
-     {
-        char buf[128];
-
-        if (elm_widget_is_legacy(obj))
-          {
-             snprintf(buf, sizeof(buf), "elm,state,orient,%d", sd->orient_mode);
-             elm_widget_signal_emit(obj, buf, "elm");
-          }
-        else
-          {
-             snprintf(buf, sizeof(buf), "efl,state,orient,%d", sd->orient_mode);
-             elm_widget_signal_emit(obj, buf, "efl");
-          }
-     }
-
    return _elm_theme_object_set(obj, edj, wname, welement, wstyle);
 }
 
@@ -4384,17 +4362,17 @@ _elm_widget_item_efl_access_object_state_set_get(const Eo *eo_item, Elm_Widget_I
    /* unrealized genlist item does not have item->view,
       and item cannot change its visibility, only widget can change the visibility */
    if (evas_object_visible_get(item->widget))
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_VISIBLE);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_VISIBLE);
    //
 
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
    if (_elm_widget_item_highlightable(eo_item) && _accessible_object_on_scroll_is(item->view))
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_HIGHLIGHTABLE);
    else
-     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_TYPE_HIGHLIGHTABLE);
 
    if (_elm_object_accessibility_currently_highlighted_get() == (void*)item->eo_obj)
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED);
    //
    return states;
 }
@@ -5774,12 +5752,12 @@ _efl_ui_widget_efl_access_object_state_set_get(const Eo *obj, Elm_Widget_Smart_D
 
    //TIZEN_ONLY(20170717) : expose highlight information on atspi
    if (_elm_widget_highlightable(obj))
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_HIGHLIGHTABLE);
    else
-     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_HIGHLIGHTABLE);
+     STATE_TYPE_UNSET(states, EFL_ACCESS_STATE_TYPE_HIGHLIGHTABLE);
 
    if (_elm_object_accessibility_currently_highlighted_get() == (void*)pd->obj)
-     STATE_TYPE_SET(states, EFL_ACCESS_STATE_HIGHLIGHTED);
+     STATE_TYPE_SET(states, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED);
    //
 
    return states;
@@ -7370,7 +7348,7 @@ _acceptable_child_is(Eo *obj)
        case EFL_ACCESS_ROLE_PANEL:
          /* remove closed panel fron children list */
          ss = efl_access_object_state_set_get(obj);
-         if (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_SHOWING)) return EINA_FALSE;
+         if (!STATE_TYPE_GET(ss, EFL_ACCESS_STATE_TYPE_SHOWING)) return EINA_FALSE;
          break;
 
        default:
@@ -7725,7 +7703,7 @@ _efl_ui_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_
 //    if (win && efl_isa(win, EFL_UI_WIN_CLASS))
 //      {
 //         _elm_win_accessibility_highlight_set(win, sd->view);
-//         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+//         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_TRUE);
 //         return EINA_TRUE;
 //      }
 //    return EINA_FALSE;
@@ -7742,7 +7720,7 @@ _efl_ui_widget_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Widget_
 //           return EINA_TRUE;
 //
 //         _elm_win_accessibility_highlight_set(win, NULL);
-//         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+//         efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_FALSE);
 //         return EINA_TRUE;
 //      }
 //    return EINA_FALSE;
@@ -7965,7 +7943,7 @@ _efl_ui_widget_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Smart_Dat
    //
 
    elm_object_accessibility_highlight_set(obj, EINA_TRUE);
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_TRUE);
 
    // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
    evas_object_smart_callback_call(obj, SIG_WIDGET_ATSPI_HIGHLIGHTED, NULL);
@@ -7985,7 +7963,7 @@ _efl_ui_widget_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Smart_Da
       return EINA_FALSE;
 
    elm_object_accessibility_highlight_set(obj, EINA_FALSE);
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_FALSE);
    // TIZEN_ONLY(20161018): add highlighted/unhighlighted signal for atspi
    evas_object_smart_callback_call(obj, SIG_WIDGET_ATSPI_UNHIGHLIGHTED, NULL);
    //
@@ -8002,7 +7980,7 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
    // if (win && efl_isa(win, EFL_UI_WIN_CLASS))
    //   {
    //      elm_object_accessibility_highlight_set(sd->view, EINA_TRUE);
-   //      efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   //      efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_TRUE);
    //      return EINA_TRUE;
    //   }
    // return EINA_FALSE;
@@ -8029,7 +8007,7 @@ _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Da
    elm_object_accessibility_highlight_set(sd->eo_obj, EINA_TRUE);
 
    if (!obj) return EINA_FALSE;
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_TRUE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_HIGHLIGHTED, obj);
    //
@@ -8050,7 +8028,7 @@ _elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_D
      return EINA_FALSE;
 
    elm_object_accessibility_highlight_set(sd->eo_obj, EINA_FALSE);
-   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+   efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_FALSE);
    //TIZEN_ONLY(20170412) Make atspi,(un)highlighted work on widget item
    evas_object_smart_callback_call(sd->widget, SIG_WIDGET_ATSPI_UNHIGHLIGHTED, obj);
    //
@@ -8912,7 +8890,7 @@ _efl_ui_widget_focus_custom_chain_prepend(Eo *obj, Elm_Widget_Smart_Data *sd, Ev
  * @ingroup Widget
  */
 EOLIAN static void
-_efl_ui_widget_focus_cycle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Elm_Focus_Direction dir)
+_efl_ui_widget_focus_cycle(Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, Efl_Ui_Focus_Direction dir)
 {
    Evas_Object *target = NULL;
    Elm_Object_Item *target_item = NULL;
@@ -9110,7 +9088,7 @@ _efl_ui_widget_focus_list_direction_get(const Eo *obj EINA_UNUSED, Elm_Widget_Sm
  * @ingroup Widget
  */
 EOLIAN static Eina_Bool
-_efl_ui_widget_focus_next_get(const Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_efl_ui_widget_focus_next_get(const Eo *obj, Elm_Widget_Smart_Data *sd, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Elm_Access_Info *ac;
 
@@ -9255,7 +9233,7 @@ _efl_ui_widget_focus_next_get(const Eo *obj, Elm_Widget_Smart_Data *sd, Elm_Focu
  * @ingroup Widget
  */
 EOLIAN static Eina_Bool
-_efl_ui_widget_focus_list_next_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, const Eina_List *items, void * list_data_get, Elm_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
+_efl_ui_widget_focus_list_next_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EINA_UNUSED, const Eina_List *items, void * list_data_get, Efl_Ui_Focus_Direction dir, Evas_Object **next, Elm_Object_Item **next_item)
 {
    Eina_List *(*list_next)(const Eina_List *list) = NULL;
    Evas_Object *focused_object = NULL;
@@ -9425,7 +9403,7 @@ _efl_ui_widget_focus_list_next_get(const Eo *obj, Elm_Widget_Smart_Data *_pd EIN
  * @ingroup Widget
  */
 EOLIAN static Evas_Object*
-_efl_ui_widget_focus_next_object_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir)
+_efl_ui_widget_focus_next_object_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Efl_Ui_Focus_Direction dir)
 {
    Evas_Object *ret = NULL;
 
@@ -9462,7 +9440,7 @@ _efl_ui_widget_focus_next_object_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart
  * @ingroup Widget
  */
 EOLIAN static void
-_efl_ui_widget_focus_next_object_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Evas_Object *next, Elm_Focus_Direction dir)
+_efl_ui_widget_focus_next_object_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Evas_Object *next, Efl_Ui_Focus_Direction dir)
 {
 
    if (dir == ELM_FOCUS_PREVIOUS)
@@ -9481,7 +9459,7 @@ _efl_ui_widget_focus_next_object_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data 
 }
 
 EOLIAN static Elm_Object_Item*
-_efl_ui_widget_focus_next_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Focus_Direction dir)
+_efl_ui_widget_focus_next_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Efl_Ui_Focus_Direction dir)
 {
    Elm_Object_Item *ret = NULL;
 
@@ -9503,7 +9481,7 @@ _efl_ui_widget_focus_next_item_get(const Eo *obj EINA_UNUSED, Elm_Widget_Smart_D
 }
 
 EOLIAN static void
-_efl_ui_widget_focus_next_item_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Object_Item *next_item, Elm_Focus_Direction dir)
+_efl_ui_widget_focus_next_item_set(Eo *obj EINA_UNUSED, Elm_Widget_Smart_Data *sd, Elm_Object_Item *next_item, Efl_Ui_Focus_Direction dir)
 {
    if (dir == ELM_FOCUS_PREVIOUS)
      sd->item_focus_previous = next_item;

@@ -63,7 +63,9 @@ typedef enum
  */
 typedef enum
 {
-  ELM_WIN_UNKNOWN = -1 /* +1 */, /**< Default, unknown, type */
+  //TIZEN_ONLY(20180406): fix ABI break related with window type
+  ELM_WIN_UNKNOWN = 0 /* +1 */, /**< Default, unknown, type */
+  //
   ELM_WIN_BASIC, /**< A normal window. Indicates a normal, top-level window.
                      * Almost every window will be created with this type. */
   ELM_WIN_DIALOG_BASIC, /**< Used for simple dialog windows. */
@@ -101,12 +103,15 @@ typedef enum
   ELM_WIN_DND,
   ELM_WIN_INLINED_IMAGE,
   ELM_WIN_SOCKET_IMAGE,
-  ELM_WIN_FAKE, /**< See elm_win_fake_add(). @since 1.13 */
 
+  //TIZEN_ONLY(20180406): fix ABI break related with window type
   ELM_WIN_NAVIFRAME_BASIC, /**< Used for naviframe style replacement with
                                    * a back button instead of a close button.
                                    *
                                    * @since 1.19 */
+
+  ELM_WIN_FAKE, /**< See elm_win_fake_add(). @since 1.13 */
+  //
 } Elm_Win_Type;
 
 /**

@@ -347,4 +347,14 @@ EWAPI extern const Efl_Event_Description _ELM_SPINNER_EVENT_MAX_REACHED;
  */
 #define ELM_SPINNER_EVENT_MAX_REACHED (&(_ELM_SPINNER_EVENT_MAX_REACHED))
 
+//TIZEN_ONLY(20160419): Spinner entry changed callback support for datetime UX.
+EWAPI extern const Efl_Event_Description _ELM_SPINNER_EVENT_ENTRY_CHANGED;
+
+/** Called when entry value changed
+ *
+ * @ingroup Elm_Spinner
+ */
+#define ELM_SPINNER_EVENT_ENTRY_CHANGED (&(_ELM_SPINNER_EVENT_ENTRY_CHANGED))
+//
+
 #endif

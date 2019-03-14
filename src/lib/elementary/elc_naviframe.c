@@ -1204,7 +1204,7 @@ _on_item_push_finished(void *data,
 
    //TIZEN_ONLY(20161122): add state_notify api
    if (_elm_atspi_enabled())
-      efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+      efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_TYPE_SHOWING) | ACCESS_STATE(EFL_ACCESS_STATE_TYPE_VISIBLE), EINA_TRUE);
    //
 
    //TIZEN ONLY(20161208): Support tizen transition
@@ -1284,8 +1284,8 @@ _on_item_show_finished(void *data,
 
         if (_elm_atspi_enabled())
           {
-             efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
-                                               | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+             efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_TYPE_SHOWING)
+                                               | ACCESS_STATE(EFL_ACCESS_STATE_TYPE_VISIBLE), EINA_TRUE);
           }
      }
    //
@@ -1406,8 +1406,8 @@ _elm_naviframe_item_efl_object_invalidate(Eo *eo_item, Elm_Naviframe_Item_Data *
 
         //TIZEN_ONLY(20171019): add state_notify api
         if (_elm_atspi_enabled())
-          efl_access_object_state_notify(VIEW(prev_it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
-                                                 | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+          efl_access_object_state_notify(VIEW(prev_it), ACCESS_STATE(EFL_ACCESS_STATE_TYPE_SHOWING)
+                                                 | ACCESS_STATE(EFL_ACCESS_STATE_TYPE_VISIBLE), EINA_TRUE);
         //
 
         efl_event_callback_legacy_call(WIDGET(prev_it), ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, EO_OBJ(prev_it));
@@ -2080,8 +2080,8 @@ _elm_naviframe_item_insert_after(Eo *obj, Elm_Naviframe_Data *sd, Elm_Object_Ite
         evas_object_hide(VIEW(after));
         //TIZEN_ONLY(20171019): add state_notify api
         if (_elm_atspi_enabled())
-          efl_access_object_state_notify(VIEW(after), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
-                                               | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+          efl_access_object_state_notify(VIEW(after), ACCESS_STATE(EFL_ACCESS_STATE_TYPE_SHOWING)
+                                               | ACCESS_STATE(EFL_ACCESS_STATE_TYPE_VISIBLE), EINA_TRUE);
         //
         if (elm_object_focus_allow_get(VIEW(it)))
           elm_object_focus_set(VIEW(it), EINA_TRUE);
@@ -2113,8 +2113,8 @@ _elm_naviframe_item_insert_after(Eo *obj, Elm_Naviframe_Data *sd, Elm_Object_Ite
            //TIZEN_ONLY(20171019): Handle default label object
            _elm_win_default_label_obj_append(VIEW(it));
            if (_elm_atspi_enabled())
-             efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_SHOWING)
-                                               | ACCESS_STATE(EFL_ACCESS_STATE_VISIBLE), EINA_TRUE);
+             efl_access_object_state_notify(VIEW(it), ACCESS_STATE(EFL_ACCESS_STATE_TYPE_SHOWING)
+                                               | ACCESS_STATE(EFL_ACCESS_STATE_TYPE_VISIBLE), EINA_TRUE);
            //
            efl_event_callback_legacy_call(obj, ELM_NAVIFRAME_EVENT_ITEM_ACTIVATED, eo_item);
         }

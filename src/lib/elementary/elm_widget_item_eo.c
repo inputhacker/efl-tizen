@@ -279,7 +279,7 @@ __eolian_elm_widget_item_disabled_get_reflect(Eo *obj)
 
 EOAPI EFL_FUNC_BODY_CONST(elm_wdg_item_disabled_get, Eina_Bool, 0);
 
-const Eina_List *_elm_widget_item_access_order_get(Eo *obj, Elm_Widget_Item_Data *pd);
+const Eina_List *_elm_widget_item_access_order_get(const Eo *obj, Elm_Widget_Item_Data *pd);
 
 EOAPI EFL_FUNC_BODY(elm_wdg_item_access_order_get, const Eina_List *, NULL);
 

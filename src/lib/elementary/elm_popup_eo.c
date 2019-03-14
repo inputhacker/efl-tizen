@@ -8,6 +8,10 @@ EWAPI const Efl_Event_Description _ELM_POPUP_EVENT_ITEM_UNFOCUSED =
    EFL_EVENT_DESCRIPTION("item,unfocused");
 EWAPI const Efl_Event_Description _ELM_POPUP_EVENT_DISMISSED =
    EFL_EVENT_DESCRIPTION("dismissed");
+/* TIZEN_ONLY(20160629) : add "show,finished" internal callback */
+EWAPI const Efl_Event_Description _ELM_POPUP_EVENT_SHOW_FINISHED =
+   EFL_EVENT_DESCRIPTION("show,finished");
+//
 
 void _elm_popup_align_set(Eo *obj, Elm_Popup_Data *pd, double horizontal, double vertical);
 

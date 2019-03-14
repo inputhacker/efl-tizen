@@ -2,6 +2,10 @@ EWAPI const Efl_Event_Description _ELM_PLUG_EVENT_IMAGE_DELETED =
    EFL_EVENT_DESCRIPTION("image,deleted");
 EWAPI const Efl_Event_Description _ELM_PLUG_EVENT_IMAGE_RESIZED =
    EFL_EVENT_DESCRIPTION("image,resized");
+//TIZEN_ONLY(20190313) : Fix for migration missing patch (2f007f7a08 ~ 15e9605b7d) #2
+EWAPI const Efl_Event_Description _ELM_PLUG_EVENT_MESSAGE_RECEIVED =
+   EFL_EVENT_DESCRIPTION("message,received");
+//
 
 Efl_Canvas_Object *_elm_plug_image_object_get(const Eo *obj, void *pd);
 

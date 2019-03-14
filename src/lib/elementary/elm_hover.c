@@ -888,7 +888,7 @@ _elm_hover_efl_access_component_highlight_grab(Eo *obj, Elm_Hover_Data *sd)
       if (sd->subs[i].obj)
         {
            elm_object_accessibility_highlight_set(sd->subs[i].obj, EINA_TRUE);
-           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_TRUE);
+           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_TRUE);
            break;
         }
    }
@@ -903,7 +903,7 @@ _elm_hover_efl_access_component_highlight_clear(Eo *obj, Elm_Hover_Data *sd)
       if (sd->subs[i].obj)
         {
            elm_object_accessibility_highlight_set(sd->subs[i].obj, EINA_FALSE);
-           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_HIGHLIGHTED, EINA_FALSE);
+           efl_access_state_changed_signal_emit(obj, EFL_ACCESS_STATE_TYPE_HIGHLIGHTED, EINA_FALSE);
            break;
         }
    }

@@ -46,7 +46,7 @@ _notify_theme_apply(Evas_Object *obj)
    const char *position;
    double ax, ay;
    /* TIZEN_ONLY(170621): support multiscale problem on TM2 */
-   Efl_Ui_Theme_Apply_Result ret = EFL_UI_THEME_APPLY_RESULT_FAIL;
+   Eina_Error ret = EFL_UI_THEME_APPLY_ERROR_GENERIC;
    /* END */
 
    ELM_NOTIFY_DATA_GET(obj, sd);

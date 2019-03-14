@@ -70,4 +70,13 @@ EWAPI extern const Efl_Event_Description _ELM_PLUG_EVENT_IMAGE_RESIZED;
  */
 #define ELM_PLUG_EVENT_IMAGE_RESIZED (&(_ELM_PLUG_EVENT_IMAGE_RESIZED))
 
+//TIZEN_ONLY(20190313) : Fix for migration missing patch (2f007f7a08 ~ 15e9605b7d) #2
+EWAPI extern const Efl_Event_Description _ELM_PLUG_EVENT_MESSAGE_RECEIVED;
+
+/**
+ * No description
+ */
+#define ELM_PLUG_EVENT_MESSAGE_RECEIVED (&(_ELM_PLUG_EVENT_MESSAGE_RECEIVED))
+//
+
 #endif

@@ -146,7 +146,7 @@ _elm_multibuttonentry_efl_ui_widget_theme_apply(Eo *obj, Elm_Multibuttonentry_Da
      {
         Eina_Strbuf *buf = eina_strbuf_new();
         eina_strbuf_append_printf(buf, "multibuttonentry/%s", elm_widget_style_get(obj));
-        if (elm_object_style_set(sd->entry, eina_strbuf_string_get(buf)) != EFL_UI_THEME_APPLY_RESULT_SUCCESS)
+        if (elm_object_style_set(sd->entry, eina_strbuf_string_get(buf)) == EFL_UI_THEME_APPLY_ERROR_GENERIC)
           elm_object_style_set(sd->entry, "multibuttonentry/default");
         eina_strbuf_free(buf);
      }

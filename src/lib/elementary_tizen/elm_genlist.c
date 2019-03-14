@@ -4647,7 +4647,7 @@ _elm_genlist_efl_ui_widget_theme_apply(Eo *obj, Elm_Genlist_Data *sd)
 {
    Item_Block *itb;
    Eina_Error int_ret = EFL_UI_THEME_APPLY_ERROR_GENERIC;
-   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wsd, EFL_UI_THEME_APPLY_RESULT_FAIL);
+   ELM_WIDGET_DATA_GET_OR_RETURN(obj, wsd, EFL_UI_THEME_APPLY_ERROR_GENERIC);
 
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
    if (int_ret) return EFL_UI_THEME_APPLY_ERROR_GENERIC;
