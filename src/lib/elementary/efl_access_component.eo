@@ -77,7 +77,7 @@ mixin @beta Efl.Access.Component extends Efl.Gfx.Entity, Efl.Gfx.Stack
            \@endif
          ]]
          //TIZEN_ONLY(20160721): atspi: provide highlight legacy API
-         legacy: elm_atspi_component_highlight_grab;
+         //legacy: elm_atspi_component_highlight_grab;
          //
          return: bool;
       }
@@ -90,7 +90,7 @@ mixin @beta Efl.Access.Component extends Efl.Gfx.Entity, Efl.Gfx.Stack
            \@endif
          ]]
          //TIZEN_ONLY(20160721): atspi: provide highlight legacy API
-         legacy: elm_atspi_component_highlight_clear;
+         //legacy: elm_atspi_component_highlight_clear;
          //
          return: bool;
       }

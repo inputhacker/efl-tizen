@@ -3242,7 +3242,10 @@ typedef Eo                 Ecore_Device; /**< A handle for an device */
   * @typedef Ecore_Device_Class
   * An enum of Device Classes.
   */
-typedef Efl_Input_Device_Type Ecore_Device_Class;
+//TIZEN ONLY(20190315): FIx for migration
+typedef unsigned int Ecore_Device_Class;
+//typedef Efl_Input_Device_Type Ecore_Device_Class;
+//
 
 #define ECORE_DEVICE_CLASS_NONE             EFL_INPUT_DEVICE_TYPE_NONE /**< Not a device @since 1.8 */
 #define ECORE_DEVICE_CLASS_SEAT             EFL_INPUT_DEVICE_TYPE_SEAT /**< The user/seat (the user themselves) @since 1.8 */
@@ -3259,7 +3262,10 @@ typedef Efl_Input_Device_Type Ecore_Device_Class;
    * @typedef Ecore_Device_Subclass
    * An enum of Device Subclasses.
    */
-typedef Efl_Input_Device_Subtype Ecore_Device_Subclass;
+//TIZEN ONLY(20190315): FIx for migration
+typedef unsigned int Ecore_Device_Subclass;
+//typedef Efl_Input_Device_Subtype Ecore_Device_Subclass;
+//
 
 #define ECORE_DEVICE_SUBCLASS_NONE   EFL_INPUT_DEVICE_SUBTYPE_NONE /**< Not a device @since 1.18 */
 #define ECORE_DEVICE_SUBCLASS_FINGER   EFL_INPUT_DEVICE_SUBTYPE_FINGER /**< The normal flat of your finger @since 1.18 */

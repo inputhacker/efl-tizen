@@ -3501,7 +3501,9 @@ typedef Eo Efl_Animation_Group_Sequential;
 #ifndef _EFL_INPUT_DEVICE_EO_H_
 #define _EFL_INPUT_DEVICE_EO_H_
 typedef Eo Efl_Input_Device;
-typedef unsigned int Efl_Input_Device_Type;
+//TIZEN ONLY(20190315): FIx for migration
+//typedef unsigned int Efl_Input_Device_Type;
+//
 
 #endif
 

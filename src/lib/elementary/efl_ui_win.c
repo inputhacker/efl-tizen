@@ -2184,7 +2184,6 @@ _elm_win_state_change(Ecore_Evas *ee)
           }
         else
           {
-             efl_event_callback_legacy_call(obj, EFL_UI_WIN_EVENT_UNMAXIMIZED, NULL);
              evas_object_smart_callback_call(obj, "unmaximized", NULL);
              if (_elm_atspi_enabled())
                efl_access_window_restored_signal_emit(obj);
@@ -10605,7 +10604,7 @@ elm_win_aux_msg_options_get(Evas_Object *obj,
  * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
  ***********************************************************/
 EOLIAN static void
-_efl_ui_win_efl_canvas_object_paragraph_direction_set(Eo *obj, Efl_Ui_Win_Data *sd, Evas_BiDi_Direction dir)
+_efl_ui_win_efl_canvas_object_paragraph_direction_set(Eo *obj, Efl_Ui_Win_Data *sd, Efl_Text_Bidirectional_Type dir)
 {
    efl_canvas_object_paragraph_direction_set(sd->legacy.edje, dir);
 

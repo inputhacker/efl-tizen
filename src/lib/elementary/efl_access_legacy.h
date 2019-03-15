@@ -880,6 +880,32 @@ struct _Elm_Atspi_Text_Attribute
 typedef struct _Elm_Atspi_Text_Attribute Elm_Atspi_Text_Attribute;
 //
 
+//TIZEN_ONLY(20160721): atspi: provide highlight legacy API
+typedef Eo Efl_Access_Component;
+/**
+ * @brief Highlights accessible widget. returns true if highlight grab has
+ * successed, false otherwise.
+ *
+ * @if MOBILE @since_tizen 4.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ * @param[in] obj The object.
+ *
+ * @ingroup (null)_Group
+ */
+EAPI Eina_Bool elm_atspi_component_highlight_grab(Efl_Access_Component *obj);
+
+/**
+ * @brief Clears highlight of accessible widget. returns true if clear has
+ * successed, false otherwise.
+ *
+ * @if MOBILE @since_tizen 4.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ * @param[in] obj The object.
+ *
+ * @ingroup (null)_Group
+ */
+EAPI Eina_Bool elm_atspi_component_highlight_clear(Efl_Access_Component *obj);
+//
+
 /**
  * @}
  */
+

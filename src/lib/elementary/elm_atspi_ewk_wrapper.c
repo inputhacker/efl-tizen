@@ -62,7 +62,7 @@ _elm_atspi_ewk_wrapper_ewk_constructor(Eo *obj, Elm_Atspi_Ewk_Wrapper_Data *_pd,
    evas_object_show(obj);
    efl_event_callback_array_add(ewk_view, resize_watch(), obj);
 
-   elm_obj_atspi_ewk_wrapper_connection_init(obj);
+   elm_atspi_ewk_wrapper_connection_init(obj);
 }
 
 static Eo*
@@ -162,7 +162,7 @@ _elm_atspi_ewk_wrapper_a11y_init(Evas_Object *parent, Evas_Object *ewk_view)
 {
    Evas_Object *wrapper = evas_object_data_get(ewk_view, EWK_A11Y_DATA_KEY);
    if (!wrapper) {
-        wrapper = efl_add(ELM_ATSPI_EWK_WRAPPER_CLASS, parent, elm_obj_atspi_ewk_wrapper_ewk_constructor(efl_added, ewk_view));
+        wrapper = efl_add(ELM_ATSPI_EWK_WRAPPER_CLASS, parent, elm_atspi_ewk_wrapper_ewk_constructor(efl_added, ewk_view));
         evas_object_data_set(ewk_view, EWK_A11Y_DATA_KEY, wrapper);
         // make sure that wrapper will not outlive ewk_view
         efl_event_callback_del(wrapper, EFL_EVENT_DEL, _wrapper_widget_del, ewk_view);

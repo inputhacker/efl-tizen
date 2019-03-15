@@ -90,7 +90,7 @@ struct _Elm_Translate_String_Data
 };
 
 // TIZEN_ONLY PROTOTYPES
-static void _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir); // TIZEN_ONLY(20180117): Override Paragraph Direction APIs
+static void _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Efl_Text_Bidirectional_Type dir);  // TIZEN_ONLY(20180117): Override Paragraph Direction APIs
 static void _if_focused_revert(Evas_Object *obj, Eina_Bool can_focus_only); //TIZEN_ONLY(20180607): Restore legacy focus
 
 static void _on_sub_obj_hide(void *data, const Efl_Event *event);
@@ -1694,11 +1694,11 @@ _efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
          * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
          ***********************************************************/
         if (sdc->inherit_paragraph_direction &&
-            (sdc->paragraph_direction != EVAS_BIDI_DIRECTION_NEUTRAL))
+            (sdc->paragraph_direction != EFL_TEXT_BIDIRECTIONAL_TYPE_NEUTRAL))
           {
-             sdc->paragraph_direction = EVAS_BIDI_DIRECTION_NEUTRAL;
+             sdc->paragraph_direction = EFL_TEXT_BIDIRECTIONAL_TYPE_NEUTRAL;
              _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(sobj, sdc, sdc->paragraph_direction);
-             efl_canvas_object_paragraph_direction_set(efl_super(sobj, MY_CLASS), EVAS_BIDI_DIRECTION_NEUTRAL);
+             efl_canvas_object_paragraph_direction_set(efl_super(sobj, MY_CLASS), EFL_TEXT_BIDIRECTIONAL_TYPE_NEUTRAL);
           }
         /*******
          * END *
@@ -8236,7 +8236,7 @@ _elm_widget_item_efl_access_widget_action_elm_actions_get(const Eo *obj EINA_UNU
  * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
  ***********************************************************/
 static void
-_efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir)
+_efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_UNUSED, Efl_Ui_Widget_Data *sd, Efl_Text_Bidirectional_Type dir)
 {
    Evas_Object *child;
    Eina_List *l;
@@ -8265,16 +8265,16 @@ _efl_ui_widget_efl_canvas_object_paragraph_direction_set_internal(Eo *obj EINA_U
 }
 
 EOLIAN static void
-_efl_ui_widget_efl_canvas_object_paragraph_direction_set(Eo *obj, Efl_Ui_Widget_Data *sd, Evas_BiDi_Direction dir)
+_efl_ui_widget_efl_canvas_object_paragraph_direction_set(Eo *obj, Efl_Ui_Widget_Data *sd, Efl_Text_Bidirectional_Type dir)
 {
    if ((!(sd->inherit_paragraph_direction) && (sd->paragraph_direction == dir)) ||
-       (sd->inherit_paragraph_direction && (dir == EVAS_BIDI_DIRECTION_INHERIT)))
+       (sd->inherit_paragraph_direction && (dir == EFL_TEXT_BIDIRECTIONAL_TYPE_INHERIT)))
      return;
 
-   if (dir == EVAS_BIDI_DIRECTION_INHERIT)
+   if (dir == EFL_TEXT_BIDIRECTIONAL_TYPE_INHERIT)
      {
         sd->inherit_paragraph_direction = EINA_TRUE;
-        Evas_BiDi_Direction parent_dir = EVAS_BIDI_DIRECTION_NEUTRAL;
+        Evas_BiDi_Direction parent_dir = EFL_TEXT_BIDIRECTIONAL_TYPE_NEUTRAL;
 
         if (sd->parent_obj)
           parent_dir = efl_canvas_object_paragraph_direction_get(sd->parent_obj);

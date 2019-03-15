@@ -173,4 +173,17 @@ _efl_access_component_socket_offset_get(const Eo *obj EINA_UNUSED, Efl_Access_Co
 }
 //
 
+//TIZEN_ONLY(20160721): atspi: provide highlight legacy API
+EAPI Eina_Bool
+elm_atspi_component_highlight_grab(Efl_Access_Component *obj)
+{
+   return efl_access_component_highlight_grab(obj);
+}
+
+EAPI Eina_Bool
+elm_atspi_component_highlight_clear(Efl_Access_Component *obj)
+{
+   return efl_access_component_highlight_clear(obj);
+}
+//
 #include "efl_access_component.eo.c"
