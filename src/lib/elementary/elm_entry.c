@@ -302,6 +302,7 @@ _load_do(Evas_Object *obj)
 
       default:
         text = NULL;
+        err = EINVAL;
         break;
      }
    if (fail)
