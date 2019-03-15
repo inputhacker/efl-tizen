@@ -523,6 +523,7 @@ lib/elementary/elm_view_list_eo.legacy.h \
 lib/elementary/elm_view_form_eo.h \
 lib/elementary/elm_view_list_eo.h \
 lib/elementary/elm_web_eo.legacy.h \
+lib/elementary/elm_widget_item_eo.h \
 lib/elementary/elm_widget_item_container_eo.legacy.h \
 lib/elementary/elm_widget_item_container_eo.h \
 lib/elementary/elm_widget_item_eo.legacy.h \
