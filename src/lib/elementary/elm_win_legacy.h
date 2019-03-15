@@ -1669,6 +1669,29 @@ EAPI const char       *elm_win_aux_msg_val_get(Evas_Object *obj, Elm_Win_Aux_Mes
 EAPI const Eina_List  *elm_win_aux_msg_options_get(Evas_Object *obj, Elm_Win_Aux_Message *msg);
 // END of TIZEN_ONLY(20150722)
 
+//TIZEN_ONLY(20171214): tizen need to change win type after win creating
+/**
+ * @brief The type of the window.
+ *
+ * It is a hint of how the Window Manager should handle it.
+ *
+ * The window type is a constructing property that need to be set at creation
+ * within @ref eo_add.
+ *
+ * @note Once set, it can NOT be modified afterward.
+ *
+ * Can only be used at creation time, within @ref eo_add.
+ *
+ * @if MOBILE @since_tizen 3.0 @elseif WEARABLE @since_tizen 3.0 @endif
+ *
+ * @param[in] obj The object.
+ * @param[in] type Window type
+ *
+ * @ingroup Elm_Win
+ */
+EAPI void elm_win_type_set(Evas_Object *obj, Elm_Win_Type type);
+//
+
 /**
  * @brief Constrain the maximum width and height of a window to the width and
  * height of the screen.
