@@ -15,12 +15,7 @@ struct _Efl_Access_Action_Data
 
 typedef struct _Efl_Access_Action_Data Efl_Access_Action_Data;
 
-#ifdef EFL_EO_API_SUPPORT
 #include "efl_access_widget_action.eo.h"
-#endif
-#ifndef EFL_NOLEGACY_API_SUPPORT
-#include "efl_access_widget_action.eo.legacy.h"
-#endif
 
 #endif
 // TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c

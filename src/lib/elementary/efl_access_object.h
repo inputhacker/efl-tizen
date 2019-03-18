@@ -22,14 +22,7 @@ typedef Eina_Bool (*Efl_Access_Gesture_Cb)(void *data, Efl_Access_Gesture_Info g
 #define TIZEN_ONLY
 #include "efl_access_legacy.h"
 //
-#ifdef EFL_EO_API_SUPPORT
 #include "efl_access_object.eo.h"
-#endif
-#ifndef EFL_NOLEGACY_API_SUPPORT
-#ifndef TIZEN_ONLY
-#include "efl_access_object.eo.legacy.h"
-#endif
-#endif
 
 // TIZEN_ONLY(20171114): atspi: expose highlight information on atspi
 /*
@@ -111,8 +104,6 @@ EAPI Efl_Access_Relation_Set efl_access_relation_set_clone(const Efl_Access_Rela
  */
 EAPI void
 efl_access_attribute_free(Efl_Access_Attribute *attr);
-
-#ifdef EFL_EO_API_SUPPORT
 
 /**
  * Emits Accessible 'StateChanged' signal.
@@ -237,9 +228,8 @@ efl_access_attribute_free(Efl_Access_Attribute *attr);
 */
 //
 
-#endif
 
-#endif
 // TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
 //#endif
 //
+#endif

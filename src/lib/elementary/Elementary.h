@@ -152,7 +152,6 @@ EAPI extern Elm_Version *elm_version;
 #include <elm_config.h>
 #include <elm_focus.h>
 
-#if defined (EFL_EO_API_SUPPORT) && defined (EFL_BETA_API_SUPPORT)
 #include <Efl.h>
 /* FIXME: wtf? */
 #ifndef EFL_UI_RADIO_EVENT_CHANGED
@@ -166,7 +165,6 @@ typedef Eo Efl_Ui_Focus_Manager;
 
 # include <efl_ui_focus_object.eo.h>
 # include <efl_ui_focus_manager.eo.h>
-EAPI void efl_ui_focus_relation_free(Efl_Ui_Focus_Relations *rel);
 # include <efl_ui_focus_manager_window_root.eo.h>
 # include <efl_ui_focus_manager_calc.eo.h>
 # include <efl_ui_focus_manager_sub.eo.h>
@@ -175,6 +173,8 @@ EAPI void efl_ui_focus_relation_free(Efl_Ui_Focus_Relations *rel);
 # include <efl_ui_l10n.eo.h>
 # include <efl_ui_focus_composition.eo.h>
 # include <efl_ui_focus_layer.eo.h>
+
+#ifdef EFL_BETA_API_SUPPORT
 # include <elm_interface_scrollable.h>
 # include <elm_interface_scrollable.eo.h>
 #endif
@@ -295,7 +295,6 @@ EAPI void efl_ui_focus_relation_free(Efl_Ui_Focus_Relations *rel);
 #include <elm_web.h>
 #include <elm_win.h>
 
-#ifdef EFL_EO_API_SUPPORT
 # include <efl_ui_selection_types.eot.h>
 # include <efl_ui_theme.eo.h>
 # include <efl_config_global.eo.h>
@@ -388,7 +387,6 @@ typedef Eo Efl_Ui_Pager;
 # include <efl_ui_tab_page.eo.h>
 # include <efl_ui_tab_page_part_tab.eo.h>
 # include <efl_ui_tab_pager.eo.h>
-#endif
 
 /* include deprecated calls last of all */
 #include <elm_deprecated.h>

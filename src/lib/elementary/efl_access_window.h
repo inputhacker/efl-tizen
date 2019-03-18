@@ -4,13 +4,8 @@
 // TIZEN_ONLY(20171114): Add accessibility highlight for toolbar items I7892c9433d675d9ba6618991ae46488060752c3c
 //#ifdef EFL_BETA_API_SUPPORT
 //
-#ifdef EFL_EO_API_SUPPORT
 
 #include "efl_access_window.eo.h"
-#endif
-#ifndef EFL_NOLEGACY_API_SUPPORT
-#include "efl_access_window.eo.legacy.h"
-#endif
 
 /**
  * Emits 'Window:Activated' accessible signal.

@@ -169,13 +169,8 @@
 #include <Eina.h>
 
 #include <Eo.h>
-//TIZEN_ONLY(20190318): fix migration build errors related to beta APIs
-//#ifdef EFL_BETA_API_SUPPORT
-///* This include has been added to support Eo in Evas */
-//#include <Efl.h>
-//#endif
+/* This include has been added to support Eo in Evas */
 #include <Efl.h>
-//
 
 #include <Evas_Loader.h>
 

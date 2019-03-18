@@ -274,11 +274,6 @@
 
 #include <Eina.h>
 #include <Eo.h>
-
-//TIZEN_ONLY(20190319): fix migration build erros related to beta APIs
-//#ifdef EFL_BETA_API_SUPPORT
-//#include <Efl.h>
-//#endif
 #include <Efl.h>
 
 #ifdef EAPI
@@ -335,9 +330,7 @@ extern "C" {
 #ifndef EFL_NOLEGACY_API_SUPPORT
 #include "Ecore_Legacy.h"
 #endif
-#ifdef EFL_EO_API_SUPPORT
 #include "Ecore_Eo.h"
-#endif
 
 #ifdef __cplusplus
 }
