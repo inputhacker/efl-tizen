@@ -169,10 +169,13 @@
 #include <Eina.h>
 
 #include <Eo.h>
-#ifdef EFL_BETA_API_SUPPORT
-/* This include has been added to support Eo in Evas */
+//TIZEN_ONLY(20190318): fix migration build errors related to beta APIs
+//#ifdef EFL_BETA_API_SUPPORT
+///* This include has been added to support Eo in Evas */
+//#include <Efl.h>
+//#endif
 #include <Efl.h>
-#endif
+//
 
 #include <Evas_Loader.h>
 
@@ -216,9 +219,12 @@ extern "C" {
 #ifndef EFL_NOLEGACY_API_SUPPORT
 #include <Evas_Legacy.h>
 #endif
-#ifdef EFL_BETA_API_SUPPORT
+//TIZEN_ONLY(20190318): fix migration build errors related to beta APIs
+//#ifdef EFL_BETA_API_SUPPORT
+//#include <Evas_Eo.h>
+//#endif
 #include <Evas_Eo.h>
-#endif
+//
 
 #ifdef __cplusplus
 }
