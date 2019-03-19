@@ -25,6 +25,7 @@ typedef struct _Eina_Future_Race_Result Eina_Future_Race_Result;
 typedef struct _Eina_Future_Cb_Log_Desc Eina_Future_Cb_Log_Desc;
 
 /**
+ * @internal
  * @defgroup Eina_Future_Callbacks Efl Future Callbacks
  * @ingroup eina_future
  * @typedef Eina_Future_Cb Eina_Future_Cb
@@ -452,10 +453,12 @@ struct _Eina_Future_Desc {
 };
 
 /**
+ * @endinternal
  * @}
  */
 
 /**
+ * @internal
  * @defgroup Eina_Promise Eina_Promise
  * Creates a new promise.
  *
@@ -649,10 +652,12 @@ EAPI void eina_promise_reject(Eina_Promise *p, Eina_Error err) EINA_ARG_NONNULL(
 
 
 /**
+ * @endinternal
  * @}
  */
 
 /**
+ * @internal
  * @defgroup Eina_Future Eina_Future
  * Cancels a future.
  *
@@ -1792,6 +1797,7 @@ eina_future_race_array(Eina_Future *array[])
 #define eina_future_chain_easy(_prev, ...) eina_future_chain_easy_array(_prev, (Eina_Future_Cb_Easy_Desc[]) {__VA_ARGS__, {NULL, NULL, NULL, NULL, NULL}})
 
 /**
+ * @endinternal
  * @}
  */
 

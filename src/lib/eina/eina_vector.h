@@ -33,7 +33,7 @@ typedef struct _Eina_Vector2 Eina_Vector2;
 typedef struct _Eina_Vector3 Eina_Vector3;
 
 /**
- * @}
+ * @internal
  * @defgroup Eina_Vector2 Vectors in floating point
  * @ingroup Eina_Basic
  * @brief Vector definition and operations
@@ -47,7 +47,9 @@ struct _Eina_Vector2
 };
 
 /**
+ * @endinternal
  * @}
+ * @internal
  * @defgroup Eina_Vector3 Vectors in floating point
  * @ingroup Eina_Basic
  * @brief Vector definition and operations
@@ -533,7 +535,10 @@ static inline Eina_Bool eina_vector3_triangle_equivalent(Eina_Vector3 *v0, Eina_
                                                          Eina_Vector3 *v2, Eina_Vector3 *w0,
                                                          Eina_Vector3 *w1, Eina_Vector3 *w2);
 
-/** @} */
+/**
+ * @endinternal
+ * @}
+ */
 
 #include "eina_inline_vector.x"
 

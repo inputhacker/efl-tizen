@@ -39,6 +39,7 @@ typedef struct _Elm_Code_Line
 EAPI void elm_code_line_free(Elm_Code_Line *line);
 
 /**
+ * @internal
  * @brief Line manipulation functions.
  * @defgroup Content
  * @{
@@ -84,8 +85,10 @@ EAPI void elm_code_line_merge_up(Elm_Code_Line *line);
 EAPI void elm_code_line_merge_down(Elm_Code_Line *line);
 
 /**
+ * @endinternal
  * @}
  *
+ * @internal
  * @brief Line markup functions.
  * @defgroup Highlighting
  *
@@ -110,6 +113,7 @@ EAPI unsigned int elm_code_line_scope_get(Elm_Code_Line *line);
 EAPI Eina_Bool elm_code_line_contains_widget_cursor(Elm_Code_Line *line);
 
 /**
+ * @endinternal
  * @}
  */
 

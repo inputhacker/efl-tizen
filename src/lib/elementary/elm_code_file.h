@@ -28,6 +28,7 @@ struct _Elm_Code_File
 };
 
 /**
+ * @internal
  * @brief File handling functions.
  * @defgroup File  I/O at a file level
  *
@@ -66,8 +67,10 @@ EAPI Elm_Code_File_Line_Ending elm_code_file_line_ending_get(Elm_Code_File *file
 EAPI const char *elm_code_file_line_ending_chars_get(Elm_Code_File *file, short *length);
 
 /**
+ * @endinternal
  * @}
  *
+ * @internal
  * @brief Content functions.
  * @defgroup Content  Functions for accessing file content
  *
@@ -90,6 +93,7 @@ EAPI void elm_code_file_line_remove(Elm_Code_File *file, unsigned int row);
 EAPI Elm_Code_Line *elm_code_file_line_get(Elm_Code_File *file, unsigned int line);
 
 /**
+ * @endinternal
  * @}
  */
 

@@ -18,6 +18,7 @@ typedef enum
   } Efl_Ui_Image_Preload_Status;
 
 /**
+ * @internal
  * @addtogroup Widget
  * @{
  *

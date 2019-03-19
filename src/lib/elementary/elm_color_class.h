@@ -2,6 +2,7 @@
 # define ELM_COLOR_CLASS_H
 
 /**
+ * @internal
  * @defgroup Elm_Color_Class_Group Color Class Editor
  * @ingroup Elm_Color_Class_Group
  * @brief This group provides a UI for editing color classes in applications.
@@ -76,6 +77,9 @@ EAPI void elm_color_class_list_cb_set(Elm_Color_Class_List_Cb cb);
  * @since 1.14
  **/
 EAPI Eina_List *elm_color_class_util_edje_file_list(Eina_File *f);
-/** @} */
+/**
+ * @endinternal
+ * @}
+ */
 
 #endif

@@ -248,6 +248,7 @@ EAPI Evas_Object                 *elm_object_name_find(const Evas_Object *obj, c
 
 /**
  * @defgroup Elm_Styles Styles
+ * @ingroup elm_infra_group
  *
  * Widgets can have different styles of look. These generic API's
  * set styles of widgets, if they support them (and if the theme(s)
@@ -328,6 +329,7 @@ EAPI Eina_Bool    elm_object_disabled_get(const Evas_Object *obj);
 
 /**
  * @defgroup Elm_WidgetNavigation Widget Tree Navigation
+ * @ingroup elm_infra_group
  *
  * These functions provide checks for if a Evas_Object is an Elementary widget,
  * the possibility of getting a widget's parent, top level parent and getting a

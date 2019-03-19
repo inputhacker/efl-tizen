@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 /**
+ * @internal
  * @brief Selection handling functions.
  * @defgroup Managing the complexities of selecting text across separate lines.
  *
@@ -145,6 +146,7 @@ EAPI void elm_code_widget_selection_select_all(Evas_Object *widget);
 
 
 /**
+ * @endinternal
  * @}
  */
 

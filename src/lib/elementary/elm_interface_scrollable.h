@@ -2,6 +2,7 @@
 #define ELM_INTEFARCE_SCROLLER_H
 
 /**
+ * @internal
  * @addtogroup Widget
  * @{
  *

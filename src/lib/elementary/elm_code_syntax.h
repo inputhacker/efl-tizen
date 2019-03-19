@@ -13,6 +13,7 @@ extern "C" {
 typedef struct _Elm_Code_Syntax Elm_Code_Syntax;
 
 /**
+ * @internal
  * @brief Syntax highlighting helper functions.
  * @defgroup Syntax Parsing and marking up syntax in files
  *
@@ -55,6 +56,7 @@ EAPI void elm_code_syntax_parse_file(Elm_Code_Syntax *syntax, Elm_Code_File *fil
 
 
 /**
+ * @endinternal
  * @}
  */
 
