@@ -1935,7 +1935,7 @@ _win_rotate(Evas_Object *obj, Efl_Ui_Win_Data *sd, int rotation, Eina_Bool resiz
 #endif
    _elm_win_frame_obj_update(sd, 0);
    efl_event_callback_call
-     (obj, EFL_UI_WIN_EVENT_WIN_ROTATION_CHANGED, (void*)(uintptr_t)rotation);
+     (obj, EFL_UI_WIN_EVENT_WIN_ROTATION_CHANGED, &rotation);
    evas_object_smart_callback_call(obj, "rotation,changed", NULL);
    if (_elm_config->atspi_mode)
      {
@@ -2168,7 +2168,7 @@ _elm_win_state_change(Ecore_Evas *ee)
           {
              evas_object_smart_callback_call(obj, "unfullscreen", NULL);
           }
-        efl_event_callback_call(obj, EFL_UI_WIN_EVENT_FULLSCREEN_CHANGED, (void*) (uintptr_t)fullscreen);
+        efl_event_callback_call(obj, EFL_UI_WIN_EVENT_FULLSCREEN_CHANGED, &fullscreen);
      }
    if (ch_maximized)
      {
@@ -2188,7 +2188,7 @@ _elm_win_state_change(Ecore_Evas *ee)
              if (_elm_atspi_enabled())
                efl_access_window_restored_signal_emit(obj);
           }
-        efl_event_callback_call(obj, EFL_UI_WIN_EVENT_MAXIMIZED_CHANGED, (void*) (uintptr_t)maximized);
+        efl_event_callback_call(obj, EFL_UI_WIN_EVENT_MAXIMIZED_CHANGED, &maximized);
      }
    if (ch_profile)
      {
