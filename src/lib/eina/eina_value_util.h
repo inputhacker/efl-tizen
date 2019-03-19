@@ -23,7 +23,7 @@
 #include "eina_value.h"
 
 /**
- * @addtogroup Eina_Value
+ * @addtogroup Eina_Value_Struct_Group
  *
  * @{
  */

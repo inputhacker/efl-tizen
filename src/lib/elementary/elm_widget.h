@@ -210,6 +210,7 @@
 #define ELM_INTERNAL_API_VERSION 7000
 
 /**
+ * @internal
  * @defgroup Widget Widgets Extension Infrastructure
  *
  * This section is intended for people willing to create @b custom
@@ -320,6 +321,7 @@ typedef void * (*list_data_get_func_type)(const Eina_List * l);
 #include "efl_ui_widget.eo.h"
 
 /**
+ * @internal
  * @addtogroup Widget
  * @{
  */

@@ -13,6 +13,7 @@
  */
 
 /**
+ * @internal
  * @addtogroup Widget
  * @{
  *

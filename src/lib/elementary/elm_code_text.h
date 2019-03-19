@@ -13,6 +13,7 @@ extern "C" {
  */
 
 /**
+ * @internal
  * @brief Line text handling functions.
  * @defgroup Text access and manipulation within lines
  *
@@ -41,8 +42,10 @@ EAPI void elm_code_line_text_leading_whitespace_strip(Elm_Code_Line *line);
 EAPI void elm_code_line_text_trailing_whitespace_strip(Elm_Code_Line *line);
 
 /**
+ * @endinternal
  * @}
  *
+ * @internal
  * @brief Generic text handling functions.
  * @defgroup Text helper functions
  *
@@ -59,6 +62,7 @@ EAPI int elm_code_text_newlinenpos(const char *text, unsigned int length, short 
 EAPI unsigned int elm_code_text_is_whitespace(const char *text, unsigned int length);
 
 /**
+ * @endinternal
  * @}
  */
 

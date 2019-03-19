@@ -1,4 +1,5 @@
 /**
+ * @internal
  * @addtogroup Elm_Prefs
  *
  * @{

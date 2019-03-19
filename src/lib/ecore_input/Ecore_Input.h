@@ -44,7 +44,7 @@ extern "C" {
 
 /**
  * @defgroup Ecore_Input_Group Ecore Input
- * @ingroup Ecore_Group
+ * @ingroup Ecore
  *
  *@{
  */

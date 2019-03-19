@@ -17,6 +17,7 @@ extern EAPI Elm_Code_Parser *ELM_CODE_PARSER_STANDARD_DIFF; /**< A provided pars
 extern EAPI Elm_Code_Parser *ELM_CODE_PARSER_STANDARD_TODO; /**< A provided parser that will highlight TODO and FIXME lines */
 
 /**
+ * @internal
  * @brief Parser helper functions.
  * @defgroup Parser  Hooking in and launching parsers 
  *
@@ -32,6 +33,7 @@ EAPI void elm_code_parser_add(Elm_Code *code, void (*parse_line)(Elm_Code_Line *
 EAPI void elm_code_parser_standard_add(Elm_Code *code, Elm_Code_Parser *parser);
 
 /**
+ * @endinternal
  * @}
  */
 

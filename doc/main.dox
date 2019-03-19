@@ -1,7 +1,9 @@
 /**
- * @mainpage Enlightenment Foundation Libraries (EFL)
+ * @defgroup EFL EFL
+ * @ingroup CAPI_UI_FRAMEWORK
+ * @page EFL
  *
- * The Enlightenment Foundation Libraries (EFL) cover a wide range of
+ * @brief The Enlightenment Foundation Libraries (EFL) cover a wide range of
  * functions including inter-process communication (IPC), graphics, audio
  * and even location services. Other powerful features include file
  * handling utilities, widgets and user interface controls, thumbnailing
@@ -18,22 +20,25 @@
  *
  * @li @ref ecore_main operating system abstraction and integration.
  * @li @ref eet_main binary data parser and serializer.
- * @li @ref eeze_main hardware device manipulation and notification.
  * @li @ref eina_main data types and low-level/basic abstractions.
  * @li @ref eio_main asynchronous input/output
+ * @internal
+ * @li @ref eeze_main hardware device manipulation and notification.
  * @li @ref eldbus_main D-Bus integration.
  * @li @ref embryo_main embedded script language.
  * @li @ref eo_main generic object system.
+ * @endinternal
  *
  * <h3>Graphics libraries</h3>
  *
+ * @li @ref elementary_main widget library.
+ * @li @ref evas_main drawing canvas.
+ * @internal
  * @li @ref edje_main layout and theme library with super powers.
  * @li @ref efreet_main freedesktop.org (xdg) menu and desktop integration.
- * @li @ref elementary_main widget library.
  * @li @ref emotion_main to play music and videos.
  * @li @ref ephysics_main physics simulation integration and visual effects.
  * @li @ref ethumb_main to generate thumbnail images of files.
- * @li @ref evas_main drawing canvas.
  *
  * <h3>Operating System specific libraries</h3>
  *
@@ -47,6 +52,7 @@
  *
  * If you are looking for methods that do not fit into the above list you can
  * see the full <a href="modules.html" />module listing</a>.
+ * @endinternal
  */
 
 /**
@@ -174,97 +180,123 @@
  */
 
 /**
+ * @internal
  * @defgroup Eo Eo
+ * @ingroup EFL
  *
  * @brief Generic object system.
  */
 
 /**
  * @defgroup Evas Evas
+ * @ingroup EFL
  *
  * @brief Drawing canvas.
  */
 
 /**
  * @defgroup Eet Eet
+ * @ingroup EFL
  *
  * @brief Binary data parser and serializer.
  */
 
 /**
  * @defgroup Eina Eina
+ * @ingroup EFL
  *
  * @brief Data types and low-level/basic abstractions.
  */
 
 /**
+ * @internal
  * @defgroup Embryo Embryo
+ * @ingroup EFL
  *
  * @brief Embedded script language.
  */
 
 /**
+ * @internal
  * @defgroup Evil Evil
+ * @ingroup EFL
  *
  * @brief Microsoft Windows portability layer.
  */
 
 /**
+ * @internal
  * @defgroup Escape Escape
+ * @ingroup EFL
  *
  * @brief PlayStation3 portability layer.
  */
 
 /**
  * @defgroup Ecore Ecore
+ * @ingroup EFL
  *
  * @brief Operating System Abstraction and Integration.
  */
 
 /**
  * @defgroup Eio Eio
+ * @ingroup EFL
  *
  * @brief Asynchronous input/output and file manipulation.
  */
 
 /**
+ * @internal
  * @defgroup Eldbus Eldbus
+ * @ingroup EFL
  *
  * @brief D-Bus integration with EFL (Ecore).
  */
 
 /**
+ * @internal
  * @defgroup Efreet Efreet
+ * @ingroup EFL
  *
  * @brief FreeDesktop.Org (XDG) menu and desktop integration.
  */
 
 /**
+ * @internal
  * @defgroup Eeze Eeze
+ * @ingroup EFL
  *
  * @brief Hardware device manipulation and notification, wraps UDev and similar.
  */
 
 /**
  * @defgroup Edje Edje
+ * @ingroup EFL
  *
  * @brief Layout and theme library with super-powers.
  */
 
 /**
+ * @internal
  * @defgroup Emotion Emotion
+ * @ingroup EFL
  *
  * @brief Plays music and videos.
  */
 
 /**
+ * @internal
  * @defgroup Ethumb Ethumb
+ * @ingroup EFL
  *
  * @brief Generates thumbnail images of files.
  */
 
- /**
+/**
+ * @internal
  * @defgroup EPhysics EPhysics
+ * @ingroup EFL
  *
  * @brief Physics simulation integration and visual effects.
  */

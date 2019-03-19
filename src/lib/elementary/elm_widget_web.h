@@ -8,6 +8,7 @@
  */
 
 /**
+ * @internal
  * @addtogroup Widget
  * @{
  *

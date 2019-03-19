@@ -2,6 +2,7 @@
 #define ELM_PREFS_H
 
 /**
+ * @internal
  * @addtogroup Elm_Prefs
  * @{
  *

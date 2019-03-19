@@ -11,6 +11,7 @@ extern "C" {
  */
 
 /**
+ * @internal
  * @brief UI Loading functions.
  * @defgroup Init  Creating a diff widget to render an Elm Code backend
  *  when it's referencing a diff file
@@ -27,6 +28,7 @@ EAPI void elm_code_diff_widget_font_set(Evas_Object *widget, const char *name,
                                         int size);
 
 /**
+ * @endinternal
  * @}
  */
 

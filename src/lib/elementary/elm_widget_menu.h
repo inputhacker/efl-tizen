@@ -14,6 +14,7 @@
  */
 
 /**
+ * @internal
  * @addtogroup Widget
  * @{
  *
