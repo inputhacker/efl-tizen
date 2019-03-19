@@ -9110,15 +9110,25 @@ _select_word(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_i
                (sd->entry_edje, "elm.text", EDJE_CURSOR_MAIN);
    evas_textblock_cursor_pos_set(cur, pos);
    evas_textblock_cursor_word_start(cur);
-   pos = evas_textblock_cursor_pos_get(cur);
+   // TIZEN_ONLY(20190319): select full password even if special characters like @ are present
+   if (sd->password)
+     pos = 0;
+   else
+     pos = evas_textblock_cursor_pos_get(cur);
+   //
    edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
                                         EDJE_CURSOR_MAIN, pos);
    edje_object_part_text_select_begin(sd->entry_edje, "elm.text");
    evas_textblock_cursor_word_end(cur);
+   // TIZEN_ONLY(20190319): select full password even if special characters like @ are present
    if (!evas_textblock_cursor_eol_get(cur))
      {
-        evas_textblock_cursor_char_next(cur);
+        if (sd->password)
+          evas_textblock_cursor_line_char_last(cur);
+        else
+          evas_textblock_cursor_char_next(cur);
      }
+   //
    pos = evas_textblock_cursor_pos_get(cur);
    edje_object_part_text_cursor_pos_set(sd->entry_edje, "elm.text",
                                         EDJE_CURSOR_MAIN, pos);
