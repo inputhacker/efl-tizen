@@ -209,13 +209,13 @@ _item_unselect(Elm_Toolbar_Item_Data *item)
    if (item->icon)
      elm_widget_signal_emit(item->icon, "elm,state,unselected", "elm");
    /* TIZEN_ONLY(20160418): Add auto selected item feature for navigation style.
-   efl_event_callback_legacy_call(WIDGET(item), EFL_UI_EVENT_UNSELECTED, EO_OBJ(item));
+   evas_object_smart_callback_call(WIDGET(item), "unselected", EO_OBJ(item));
    if (_elm_atspi_enabled())
     efl_access_state_changed_signal_emit(EO_OBJ(item), EFL_ACCESS_STATE_TYPE_SELECTED, EINA_FALSE);
    */
    if (selected)
      {
-        efl_event_callback_legacy_call(WIDGET(item), EFL_UI_EVENT_UNSELECTED, EO_OBJ(item));
+        evas_object_smart_callback_call(WIDGET(item), "unselected", EO_OBJ(item));
         if (_elm_atspi_enabled())
           efl_access_state_changed_signal_emit(EO_OBJ(item), EFL_ACCESS_STATE_TYPE_SELECTED, EINA_FALSE);
      }
@@ -1262,7 +1262,7 @@ _item_select(Elm_Toolbar_Item_Data *it)
      elm_object_item_focus_set(EO_OBJ(it), EINA_TRUE);
    //
 
-   efl_event_callback_legacy_call(obj, EFL_UI_EVENT_SELECTED, EO_OBJ(it));
+   evas_object_smart_callback_call(obj, "selected", EO_OBJ(it));
    if (_elm_atspi_enabled())
     efl_access_state_changed_signal_emit(EO_OBJ(it), EFL_ACCESS_STATE_TYPE_SELECTED, EINA_TRUE);
 }
