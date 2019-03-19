@@ -275,9 +275,11 @@
 #include <Eina.h>
 #include <Eo.h>
 
-#ifdef EFL_BETA_API_SUPPORT
+//TIZEN_ONLY(20190319): fix migration build erros related to beta APIs
+//#ifdef EFL_BETA_API_SUPPORT
+//#include <Efl.h>
+//#endif
 #include <Efl.h>
-#endif
 
 #ifdef EAPI
 # undef EAPI
