@@ -649,6 +649,14 @@ Eina_Bool _elm_entry_textblock_cursor_geometry_get(const Eo *obj, Elm_Entry_Data
 
 EOAPI EFL_FUNC_BODYV_CONST(elm_obj_entry_textblock_cursor_geometry_get, Eina_Bool, 0, EFL_FUNC_CALL(x, y, w, h), int *x, int *y, int *w, int *h);
 
+Eina_Bool _elm_entry_cursor_coord_set(Eo *obj, Elm_Entry_Data *pd, int x, int y);
+
+EOAPI EFL_FUNC_BODYV(elm_obj_entry_cursor_coord_set, Eina_Bool, 0, EFL_FUNC_CALL(x, y), int x, int y);
+
+void _elm_entry_cursor_coord_get(const Eo *obj, Elm_Entry_Data *pd, int *x, int *y);
+
+EOAPI EFL_VOID_FUNC_BODYV_CONST(elm_obj_entry_cursor_coord_get, EFL_FUNC_CALL(x, y), int *x, int *y);
+
 void *_elm_entry_imf_context_get(const Eo *obj, Elm_Entry_Data *pd);
 
 EOAPI EFL_FUNC_BODY_CONST(elm_obj_entry_imf_context_get, void *, NULL);
@@ -984,7 +992,22 @@ Eina_Error _elm_entry_efl_file_load(Eo *obj, Elm_Entry_Data *pd);
 void _elm_entry_efl_file_unload(Eo *obj, Elm_Entry_Data *pd);
 
 
+Eina_List *_elm_entry_efl_access_object_access_children_get(const Eo *obj, Elm_Entry_Data *pd);
+
+
 Efl_Object *_elm_entry_efl_part_part_get(const Eo *obj, Elm_Entry_Data *pd, const char *name);
+
+
+void _elm_entry_efl_ui_widget_screen_reader(Eo *obj, Elm_Entry_Data *pd, Eina_Bool is_screen_reader);
+
+
+Efl_Object *_elm_entry_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Entry_Data *pd, Eina_Bool screen_coords, int x, int y);
+
+
+Eina_Bool _elm_entry_efl_ui_widget_focus_direction_manager_is(Eo *obj, Elm_Entry_Data *pd);
+
+
+Eina_Bool _elm_entry_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Entry_Data *pd);
 
 
 static Eina_Bool
@@ -1055,6 +1078,8 @@ _elm_entry_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(elm_obj_entry_cursor_end_set, _elm_entry_cursor_end_set),
       EFL_OBJECT_OP_FUNC(elm_obj_entry_textblock_get, _elm_entry_textblock_get),
       EFL_OBJECT_OP_FUNC(elm_obj_entry_textblock_cursor_geometry_get, _elm_entry_textblock_cursor_geometry_get),
+      EFL_OBJECT_OP_FUNC(elm_obj_entry_cursor_coord_set, _elm_entry_cursor_coord_set),
+      EFL_OBJECT_OP_FUNC(elm_obj_entry_cursor_coord_get, _elm_entry_cursor_coord_get),
       EFL_OBJECT_OP_FUNC(elm_obj_entry_imf_context_get, _elm_entry_imf_context_get),
       EFL_OBJECT_OP_FUNC(elm_obj_entry_cursor_is_format_get, _elm_entry_cursor_is_format_get),
       EFL_OBJECT_OP_FUNC(elm_obj_entry_textblock_cursor_content_get, _elm_entry_textblock_cursor_content_get),
@@ -1145,7 +1170,12 @@ _elm_entry_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_file_set, _elm_entry_efl_file_file_set),
       EFL_OBJECT_OP_FUNC(efl_file_load, _elm_entry_efl_file_load),
       EFL_OBJECT_OP_FUNC(efl_file_unload, _elm_entry_efl_file_unload),
+      EFL_OBJECT_OP_FUNC(efl_access_object_access_children_get, _elm_entry_efl_access_object_access_children_get),
       EFL_OBJECT_OP_FUNC(efl_part_get, _elm_entry_efl_part_part_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_screen_reader, _elm_entry_efl_ui_widget_screen_reader),
+      EFL_OBJECT_OP_FUNC(efl_access_component_accessible_at_point_get, _elm_entry_efl_access_component_accessible_at_point_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_entry_efl_ui_widget_focus_direction_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_entry_efl_ui_widget_focus_next_manager_is),
       ELM_ENTRY_EXTRA_OPS
    );
    opsp = &ops;

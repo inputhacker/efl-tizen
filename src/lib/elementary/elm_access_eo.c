@@ -14,6 +14,18 @@ const Efl_Access_Action_Data *_elm_access_efl_access_widget_action_elm_actions_g
 Efl_Access_State_Set _elm_access_efl_access_object_state_set_get(const Eo *obj, void *pd);
 
 
+Eina_Bool _elm_access_efl_access_component_highlight_grab(Eo *obj, void *pd);
+
+
+Eina_Bool _elm_access_efl_access_component_highlight_clear(Eo *obj, void *pd);
+
+
+const char *_elm_access_efl_access_object_i18n_name_get(const Eo *obj, void *pd);
+
+
+const char *_elm_access_efl_access_object_description_get(const Eo *obj, void *pd);
+
+
 static Eina_Bool
 _elm_access_class_initializer(Efl_Class *klass)
 {
@@ -31,6 +43,10 @@ _elm_access_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_focus_object_on_focus_update, _elm_access_efl_ui_focus_object_on_focus_update),
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_access_efl_access_widget_action_elm_actions_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_access_efl_access_object_state_set_get),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_grab, _elm_access_efl_access_component_highlight_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_clear, _elm_access_efl_access_component_highlight_clear),
+      EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_get, _elm_access_efl_access_object_i18n_name_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_description_get, _elm_access_efl_access_object_description_get),
       ELM_ACCESS_EXTRA_OPS
    );
    opsp = &ops;

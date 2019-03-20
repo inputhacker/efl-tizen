@@ -12,6 +12,8 @@ Efl_Object *_elm_conformant_efl_object_constructor(Eo *obj, Elm_Conformant_Data 
 
 Eina_Error _elm_conformant_efl_ui_widget_theme_apply(Eo *obj, Elm_Conformant_Data *pd);
 
+void _elm_conformant_efl_ui_widget_screen_reader(Eo *obj, Elm_Conformant_Data *pd, Eina_Bool is_screen_reader);
+
 
 static Eina_Bool
 _elm_conformant_class_initializer(Efl_Class *klass)
@@ -27,6 +29,7 @@ _elm_conformant_class_initializer(Efl_Class *klass)
    EFL_OPS_DEFINE(ops,
       EFL_OBJECT_OP_FUNC(efl_constructor, _elm_conformant_efl_object_constructor),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_theme_apply, _elm_conformant_efl_ui_widget_theme_apply),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_screen_reader, _elm_conformant_efl_ui_widget_screen_reader),
       ELM_CONFORMANT_EXTRA_OPS
    );
    opsp = &ops;

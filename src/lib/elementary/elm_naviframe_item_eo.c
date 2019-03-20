@@ -52,6 +52,30 @@ void _elm_naviframe_item_elm_widget_item_style_set(Eo *obj, Elm_Naviframe_Item_D
 Eina_List *_elm_naviframe_item_efl_access_object_access_children_get(const Eo *obj, Elm_Naviframe_Item_Data *pd);
 
 
+void _elm_naviframe_item_efl_access_object_i18n_name_set(Eo *obj, Elm_Naviframe_Item_Data *pd, const char *i18n_name);
+
+
+const char *_elm_naviframe_item_efl_access_object_i18n_name_get(const Eo *obj, Elm_Naviframe_Item_Data *pd);
+
+
+void _elm_naviframe_item_efl_access_object_description_set(Eo *obj, Elm_Naviframe_Item_Data *pd, const char *description);
+
+
+const char *_elm_naviframe_item_efl_access_object_description_get(const Eo *obj, Elm_Naviframe_Item_Data *pd);
+
+
+void _elm_naviframe_item_efl_access_object_name_cb_set(Eo *obj, Elm_Naviframe_Item_Data *pd, Efl_Access_Reading_Info_Cb name_cb, const void *data);
+
+
+void _elm_naviframe_item_efl_access_object_description_cb_set(Eo *obj, Elm_Naviframe_Item_Data *pd, Efl_Access_Reading_Info_Cb description_cb, const void *data);
+
+
+void _elm_naviframe_item_efl_access_object_translation_domain_set(Eo *obj, Elm_Naviframe_Item_Data *pd, const char *domain);
+
+
+const char *_elm_naviframe_item_efl_access_object_translation_domain_get(const Eo *obj, Elm_Naviframe_Item_Data *pd);
+
+
 static Eina_Bool
 _elm_naviframe_item_class_initializer(Efl_Class *klass)
 {
@@ -80,6 +104,14 @@ _elm_naviframe_item_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(elm_wdg_item_part_content_unset, _elm_naviframe_item_elm_widget_item_part_content_unset),
       EFL_OBJECT_OP_FUNC(elm_wdg_item_style_set, _elm_naviframe_item_elm_widget_item_style_set),
       EFL_OBJECT_OP_FUNC(efl_access_object_access_children_get, _elm_naviframe_item_efl_access_object_access_children_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_set, _elm_naviframe_item_efl_access_object_i18n_name_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_get, _elm_naviframe_item_efl_access_object_i18n_name_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_description_set, _elm_naviframe_item_efl_access_object_description_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_description_get, _elm_naviframe_item_efl_access_object_description_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_name_cb_set, _elm_naviframe_item_efl_access_object_name_cb_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_description_cb_set, _elm_naviframe_item_efl_access_object_description_cb_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_translation_domain_set, _elm_naviframe_item_efl_access_object_translation_domain_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_translation_domain_get, _elm_naviframe_item_efl_access_object_translation_domain_get),
       ELM_NAVIFRAME_ITEM_EXTRA_OPS
    );
    opsp = &ops;

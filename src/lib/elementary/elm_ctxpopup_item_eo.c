@@ -58,6 +58,12 @@ void _elm_ctxpopup_item_elm_widget_item_signal_emit(Eo *obj, Elm_Ctxpopup_Item_D
 void _elm_ctxpopup_item_elm_widget_item_del_pre(Eo *obj, Elm_Ctxpopup_Item_Data *pd);
 
 
+void _elm_ctxpopup_item_elm_widget_item_style_set(Eo *obj, Elm_Ctxpopup_Item_Data *pd, const char *style);
+
+
+const char *_elm_ctxpopup_item_elm_widget_item_style_get(const Eo *obj, Elm_Ctxpopup_Item_Data *pd);
+
+
 void _elm_ctxpopup_item_elm_widget_item_part_text_set(Eo *obj, Elm_Ctxpopup_Item_Data *pd, const char *part, const char *label);
 
 
@@ -82,6 +88,18 @@ Eina_Bool _elm_ctxpopup_item_elm_widget_item_item_focus_get(const Eo *obj, Elm_C
 const Efl_Access_Action_Data *_elm_ctxpopup_item_efl_access_widget_action_elm_actions_get(const Eo *obj, Elm_Ctxpopup_Item_Data *pd);
 
 
+const char *_elm_ctxpopup_item_efl_access_object_i18n_name_get(const Eo *obj, Elm_Ctxpopup_Item_Data *pd);
+
+
+Efl_Access_State_Set _elm_ctxpopup_item_efl_access_object_state_set_get(const Eo *obj, Elm_Ctxpopup_Item_Data *pd);
+
+
+Eina_Bool _elm_ctxpopup_item_efl_access_component_highlight_grab(Eo *obj, Elm_Ctxpopup_Item_Data *pd);
+
+
+Eina_Bool _elm_ctxpopup_item_efl_access_component_highlight_clear(Eo *obj, Elm_Ctxpopup_Item_Data *pd);
+
+
 static Eina_Bool
 _elm_ctxpopup_item_class_initializer(Efl_Class *klass)
 {
@@ -104,6 +122,8 @@ _elm_ctxpopup_item_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(elm_wdg_item_disable, _elm_ctxpopup_item_elm_widget_item_disable),
       EFL_OBJECT_OP_FUNC(elm_wdg_item_signal_emit, _elm_ctxpopup_item_elm_widget_item_signal_emit),
       EFL_OBJECT_OP_FUNC(elm_wdg_item_del_pre, _elm_ctxpopup_item_elm_widget_item_del_pre),
+      EFL_OBJECT_OP_FUNC(elm_wdg_item_style_set, _elm_ctxpopup_item_elm_widget_item_style_set),
+      EFL_OBJECT_OP_FUNC(elm_wdg_item_style_get, _elm_ctxpopup_item_elm_widget_item_style_get),
       EFL_OBJECT_OP_FUNC(elm_wdg_item_part_text_set, _elm_ctxpopup_item_elm_widget_item_part_text_set),
       EFL_OBJECT_OP_FUNC(elm_wdg_item_part_text_get, _elm_ctxpopup_item_elm_widget_item_part_text_get),
       EFL_OBJECT_OP_FUNC(elm_wdg_item_part_content_set, _elm_ctxpopup_item_elm_widget_item_part_content_set),
@@ -112,6 +132,10 @@ _elm_ctxpopup_item_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(elm_wdg_item_focus_set, _elm_ctxpopup_item_elm_widget_item_item_focus_set),
       EFL_OBJECT_OP_FUNC(elm_wdg_item_focus_get, _elm_ctxpopup_item_elm_widget_item_item_focus_get),
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_ctxpopup_item_efl_access_widget_action_elm_actions_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_get, _elm_ctxpopup_item_efl_access_object_i18n_name_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_ctxpopup_item_efl_access_object_state_set_get),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_grab, _elm_ctxpopup_item_efl_access_component_highlight_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_clear, _elm_ctxpopup_item_efl_access_component_highlight_clear),
       ELM_CTXPOPUP_ITEM_EXTRA_OPS
    );
    opsp = &ops;

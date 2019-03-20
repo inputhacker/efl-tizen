@@ -226,6 +226,12 @@ Eina_Bool _elm_spinner_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Spinner_
 Eina_Bool _elm_spinner_efl_ui_widget_widget_input_event_handler(Eo *obj, Elm_Spinner_Data *pd, const Efl_Event *eo_event, Efl_Canvas_Object *source);
 
 
+void _elm_spinner_efl_ui_i18n_mirrored_set(Eo *obj, Elm_Spinner_Data *pd, Eina_Bool rtl);
+
+
+Eina_Bool _elm_spinner_efl_ui_i18n_mirrored_get(const Eo *obj, Elm_Spinner_Data *pd);
+
+
 void _elm_spinner_efl_ui_range_display_range_min_max_set(Eo *obj, Elm_Spinner_Data *pd, double min, double max);
 
 
@@ -262,6 +268,18 @@ double _elm_spinner_efl_access_value_increment_get(const Eo *obj, Elm_Spinner_Da
 const Efl_Access_Action_Data *_elm_spinner_efl_access_widget_action_elm_actions_get(const Eo *obj, Elm_Spinner_Data *pd);
 
 
+Eina_Bool _elm_spinner_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Spinner_Data *pd);
+
+
+Eina_Bool _elm_spinner_efl_ui_widget_focus_direction_manager_is(Eo *obj, Elm_Spinner_Data *pd);
+
+
+Eina_Bool _elm_spinner_efl_ui_widget_focus_next(Eo *obj, Elm_Spinner_Data *pd, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item);
+
+
+Eina_Bool _elm_spinner_efl_ui_widget_focus_direction(Eo *obj, Elm_Spinner_Data *pd, const Efl_Canvas_Object *base, double degree, Efl_Canvas_Object **direction, Elm_Widget_Item **direction_item, double *weight);
+
+
 static Eina_Bool
 _elm_spinner_class_initializer(Efl_Class *klass)
 {
@@ -292,6 +310,8 @@ _elm_spinner_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_widget_on_access_update, _elm_spinner_efl_ui_widget_on_access_update),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_object_on_focus_update, _elm_spinner_efl_ui_focus_object_on_focus_update),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_input_event_handler, _elm_spinner_efl_ui_widget_widget_input_event_handler),
+      EFL_OBJECT_OP_FUNC(efl_ui_mirrored_set, _elm_spinner_efl_ui_i18n_mirrored_set),
+      EFL_OBJECT_OP_FUNC(efl_ui_mirrored_get, _elm_spinner_efl_ui_i18n_mirrored_get),
       EFL_OBJECT_OP_FUNC(efl_ui_range_min_max_set, _elm_spinner_efl_ui_range_display_range_min_max_set),
       EFL_OBJECT_OP_FUNC(efl_ui_range_min_max_get, _elm_spinner_efl_ui_range_display_range_min_max_get),
       EFL_OBJECT_OP_FUNC(efl_ui_range_step_set, _elm_spinner_efl_ui_range_interactive_range_step_set),
@@ -304,6 +324,10 @@ _elm_spinner_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_value_range_get, _elm_spinner_efl_access_value_range_get),
       EFL_OBJECT_OP_FUNC(efl_access_value_increment_get, _elm_spinner_efl_access_value_increment_get),
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_spinner_efl_access_widget_action_elm_actions_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_spinner_efl_ui_widget_focus_next_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_spinner_efl_ui_widget_focus_direction_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next, _elm_spinner_efl_ui_widget_focus_next),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction, _elm_spinner_efl_ui_widget_focus_direction),
       ELM_SPINNER_EXTRA_OPS
    );
    opsp = &ops;

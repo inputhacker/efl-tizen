@@ -95,6 +95,18 @@ Efl_Object *_elm_scroller_efl_part_part_get(const Eo *obj, Elm_Scroller_Data *pd
 Eina_Bool _elm_scroller_efl_ui_widget_focus_state_apply(Eo *obj, Elm_Scroller_Data *pd, Efl_Ui_Widget_Focus_State current_state, Efl_Ui_Widget_Focus_State *configured_state, Efl_Ui_Widget *redirect);
 
 
+Eina_Bool _elm_scroller_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Scroller_Data *pd);
+
+
+Eina_Bool _elm_scroller_efl_ui_widget_focus_direction_manager_is(Eo *obj, Elm_Scroller_Data *pd);
+
+
+Eina_Bool _elm_scroller_efl_ui_widget_focus_next(Eo *obj, Elm_Scroller_Data *pd, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item);
+
+
+Eina_Bool _elm_scroller_efl_ui_widget_focus_direction(Eo *obj, Elm_Scroller_Data *pd, const Efl_Canvas_Object *base, double degree, Efl_Canvas_Object **direction, Elm_Widget_Item **direction_item, double *weight);
+
+
 static Eina_Bool
 _elm_scroller_class_initializer(Efl_Class *klass)
 {
@@ -128,6 +140,10 @@ _elm_scroller_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_scroller_efl_access_widget_action_elm_actions_get),
       EFL_OBJECT_OP_FUNC(efl_part_get, _elm_scroller_efl_part_part_get),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_state_apply, _elm_scroller_efl_ui_widget_focus_state_apply),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_scroller_efl_ui_widget_focus_next_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_scroller_efl_ui_widget_focus_direction_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next, _elm_scroller_efl_ui_widget_focus_next),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction, _elm_scroller_efl_ui_widget_focus_direction),
       ELM_SCROLLER_EXTRA_OPS
    );
    opsp = &ops;

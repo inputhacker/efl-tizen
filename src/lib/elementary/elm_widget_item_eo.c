@@ -445,6 +445,51 @@ Eina_Rect _elm_widget_item_efl_access_component_extents_get(const Eo *obj, Elm_W
 Eina_Bool _elm_widget_item_efl_access_component_focus_grab(Eo *obj, Elm_Widget_Item_Data *pd);
 
 
+void _elm_widget_item_efl_access_object_i18n_name_set(Eo *obj, Elm_Widget_Item_Data *pd, const char *i18n_name);
+
+
+const char *_elm_widget_item_efl_access_object_i18n_name_get(const Eo *obj, Elm_Widget_Item_Data *pd);
+
+
+void _elm_widget_item_efl_access_object_description_set(Eo *obj, Elm_Widget_Item_Data *pd, const char *description);
+
+
+const char *_elm_widget_item_efl_access_object_description_get(const Eo *obj, Elm_Widget_Item_Data *pd);
+
+
+void _elm_widget_item_efl_access_object_can_highlight_set(Eo *obj, Elm_Widget_Item_Data *pd, Eina_Bool can_highlight);
+
+
+Eina_Bool _elm_widget_item_efl_access_object_can_highlight_get(const Eo *obj, Elm_Widget_Item_Data *pd);
+
+
+void _elm_widget_item_efl_access_object_translation_domain_set(Eo *obj, Elm_Widget_Item_Data *pd, const char *domain);
+
+
+const char *_elm_widget_item_efl_access_object_translation_domain_get(const Eo *obj, Elm_Widget_Item_Data *pd);
+
+
+Efl_Access_Relation_Set _elm_widget_item_efl_access_object_relation_set_get(const Eo *obj, Elm_Widget_Item_Data *pd);
+
+
+Eina_Bool _elm_widget_item_efl_access_object_relationship_append(Eo *obj, Elm_Widget_Item_Data *pd, Efl_Access_Relation_Type type, const Efl_Access_Object *relation_object);
+
+
+void _elm_widget_item_efl_access_object_relationship_remove(Eo *obj, Elm_Widget_Item_Data *pd, Efl_Access_Relation_Type type, const Efl_Access_Object *relation_object);
+
+
+void _elm_widget_item_efl_access_object_relationships_clear(Eo *obj, Elm_Widget_Item_Data *pd);
+
+
+Eina_Bool _elm_widget_item_efl_access_component_highlight_grab(Eo *obj, Elm_Widget_Item_Data *pd);
+
+
+Eina_Bool _elm_widget_item_efl_access_component_highlight_clear(Eo *obj, Elm_Widget_Item_Data *pd);
+
+
+const Efl_Access_Action_Data *_elm_widget_item_efl_access_widget_action_elm_actions_get(const Eo *obj, Elm_Widget_Item_Data *pd);
+
+
 static Eina_Bool
 _elm_widget_item_class_initializer(Efl_Class *klass)
 {
@@ -521,6 +566,21 @@ _elm_widget_item_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_component_extents_set, _elm_widget_item_efl_access_component_extents_set),
       EFL_OBJECT_OP_FUNC(efl_access_component_extents_get, _elm_widget_item_efl_access_component_extents_get),
       EFL_OBJECT_OP_FUNC(efl_access_component_focus_grab, _elm_widget_item_efl_access_component_focus_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_set, _elm_widget_item_efl_access_object_i18n_name_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_get, _elm_widget_item_efl_access_object_i18n_name_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_description_set, _elm_widget_item_efl_access_object_description_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_description_get, _elm_widget_item_efl_access_object_description_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_can_highlight_set, _elm_widget_item_efl_access_object_can_highlight_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_can_highlight_get, _elm_widget_item_efl_access_object_can_highlight_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_translation_domain_set, _elm_widget_item_efl_access_object_translation_domain_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_translation_domain_get, _elm_widget_item_efl_access_object_translation_domain_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_relation_set_get, _elm_widget_item_efl_access_object_relation_set_get),
+      EFL_OBJECT_OP_FUNC(efl_access_object_relationship_append, _elm_widget_item_efl_access_object_relationship_append),
+      EFL_OBJECT_OP_FUNC(efl_access_object_relationship_remove, _elm_widget_item_efl_access_object_relationship_remove),
+      EFL_OBJECT_OP_FUNC(efl_access_object_relationships_clear, _elm_widget_item_efl_access_object_relationships_clear),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_grab, _elm_widget_item_efl_access_component_highlight_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_clear, _elm_widget_item_efl_access_component_highlight_clear),
+      EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_widget_item_efl_access_widget_action_elm_actions_get),
       ELM_WIDGET_ITEM_EXTRA_OPS
    );
    opsp = &ops;

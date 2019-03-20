@@ -145,6 +145,12 @@ void _elm_panel_efl_ui_i18n_mirrored_set(Eo *obj, Elm_Panel_Data *pd, Eina_Bool 
 Efl_Object *_elm_panel_efl_part_part_get(const Eo *obj, Elm_Panel_Data *pd, const char *name);
 
 
+void _elm_panel_efl_orientation_orientation_set(Eo *obj, Elm_Panel_Data *pd, Efl_Orient dir);
+
+
+Efl_Access_State_Set _elm_panel_efl_access_object_state_set_get(const Eo *obj, Elm_Panel_Data *pd);
+
+
 static Eina_Bool
 _elm_panel_class_initializer(Efl_Class *klass)
 {
@@ -178,6 +184,8 @@ _elm_panel_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_panel_efl_access_widget_action_elm_actions_get),
       EFL_OBJECT_OP_FUNC(efl_ui_mirrored_set, _elm_panel_efl_ui_i18n_mirrored_set),
       EFL_OBJECT_OP_FUNC(efl_part_get, _elm_panel_efl_part_part_get),
+      EFL_OBJECT_OP_FUNC(efl_orientation_set, _elm_panel_efl_orientation_orientation_set),
+      EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_panel_efl_access_object_state_set_get),
       ELM_PANEL_EXTRA_OPS
    );
    opsp = &ops;

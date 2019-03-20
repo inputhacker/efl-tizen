@@ -49,6 +49,18 @@ Efl_Access_State_Set _elm_hover_efl_access_object_state_set_get(const Eo *obj, E
 Efl_Object *_elm_hover_efl_part_part_get(const Eo *obj, Elm_Hover_Data *pd, const char *name);
 
 
+Eina_Bool _elm_hover_efl_access_component_highlight_grab(Eo *obj, Elm_Hover_Data *pd);
+
+
+Eina_Bool _elm_hover_efl_access_component_highlight_clear(Eo *obj, Elm_Hover_Data *pd);
+
+
+Eina_Bool _elm_hover_efl_ui_widget_focus_direction_manager_is(Eo *obj, Elm_Hover_Data *pd);
+
+
+Eina_Bool _elm_hover_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Hover_Data *pd);
+
+
 static Eina_Bool
 _elm_hover_class_initializer(Efl_Class *klass)
 {
@@ -75,6 +87,10 @@ _elm_hover_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_hover_efl_access_widget_action_elm_actions_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_hover_efl_access_object_state_set_get),
       EFL_OBJECT_OP_FUNC(efl_part_get, _elm_hover_efl_part_part_get),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_grab, _elm_hover_efl_access_component_highlight_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_clear, _elm_hover_efl_access_component_highlight_clear),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_hover_efl_ui_widget_focus_direction_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_hover_efl_ui_widget_focus_next_manager_is),
       ELM_HOVER_EXTRA_OPS
    );
    opsp = &ops;

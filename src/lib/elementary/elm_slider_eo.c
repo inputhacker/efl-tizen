@@ -41,6 +41,15 @@ const char *_elm_slider_efl_ui_l10n_l10n_text_get(const Eo *obj, Elm_Slider_Data
 Efl_Object *_elm_slider_efl_part_part_get(const Eo *obj, Elm_Slider_Data *pd, const char *name);
 
 
+void _elm_slider_efl_ui_widget_disabled_set(Eo *obj, Elm_Slider_Data *pd, Eina_Bool disabled);
+
+
+void _elm_slider_efl_ui_i18n_mirrored_set(Eo *obj, Elm_Slider_Data *pd, Eina_Bool rtl);
+
+
+Eina_Bool _elm_slider_efl_ui_i18n_mirrored_get(const Eo *obj, Elm_Slider_Data *pd);
+
+
 static Eina_Bool
 _elm_slider_class_initializer(Efl_Class *klass)
 {
@@ -67,6 +76,9 @@ _elm_slider_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_l10n_text_set, _elm_slider_efl_ui_l10n_l10n_text_set),
       EFL_OBJECT_OP_FUNC(efl_ui_l10n_text_get, _elm_slider_efl_ui_l10n_l10n_text_get),
       EFL_OBJECT_OP_FUNC(efl_part_get, _elm_slider_efl_part_part_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_disabled_set, _elm_slider_efl_ui_widget_disabled_set),
+      EFL_OBJECT_OP_FUNC(efl_ui_mirrored_set, _elm_slider_efl_ui_i18n_mirrored_set),
+      EFL_OBJECT_OP_FUNC(efl_ui_mirrored_get, _elm_slider_efl_ui_i18n_mirrored_get),
       ELM_SLIDER_EXTRA_OPS
    );
    opsp = &ops;

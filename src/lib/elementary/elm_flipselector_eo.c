@@ -75,6 +75,8 @@ Eina_Error _elm_flipselector_efl_ui_widget_theme_apply(Eo *obj, Elm_Flipselector
 
 Eina_Bool _elm_flipselector_efl_ui_widget_widget_input_event_handler(Eo *obj, Elm_Flipselector_Data *pd, const Efl_Event *eo_event, Efl_Canvas_Object *source);
 
+void _elm_flipselector_efl_ui_widget_screen_reader(Eo *obj, Elm_Flipselector_Data *pd, Eina_Bool is_screen_reader);
+
 
 void _elm_flipselector_efl_ui_range_display_range_min_max_set(Eo *obj, Elm_Flipselector_Data *pd, double min, double max);
 
@@ -95,6 +97,9 @@ double _elm_flipselector_efl_ui_range_display_range_value_get(const Eo *obj, Elm
 
 
 const Efl_Access_Action_Data *_elm_flipselector_efl_access_widget_action_elm_actions_get(const Eo *obj, Elm_Flipselector_Data *pd);
+
+
+Efl_Object *_elm_flipselector_efl_access_component_accessible_at_point_get(Eo *obj, Elm_Flipselector_Data *pd, Eina_Bool screen_coords, int x, int y);
 
 
 static Eina_Bool
@@ -122,6 +127,7 @@ _elm_flipselector_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_constructor, _elm_flipselector_efl_object_constructor),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_theme_apply, _elm_flipselector_efl_ui_widget_theme_apply),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_input_event_handler, _elm_flipselector_efl_ui_widget_widget_input_event_handler),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_screen_reader, _elm_flipselector_efl_ui_widget_screen_reader),
       EFL_OBJECT_OP_FUNC(efl_ui_range_min_max_set, _elm_flipselector_efl_ui_range_display_range_min_max_set),
       EFL_OBJECT_OP_FUNC(efl_ui_range_min_max_get, _elm_flipselector_efl_ui_range_display_range_min_max_get),
       EFL_OBJECT_OP_FUNC(efl_ui_range_step_set, _elm_flipselector_efl_ui_range_interactive_range_step_set),
@@ -129,6 +135,7 @@ _elm_flipselector_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_range_value_set, _elm_flipselector_efl_ui_range_display_range_value_set),
       EFL_OBJECT_OP_FUNC(efl_ui_range_value_get, _elm_flipselector_efl_ui_range_display_range_value_get),
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_flipselector_efl_access_widget_action_elm_actions_get),
+      EFL_OBJECT_OP_FUNC(efl_access_component_accessible_at_point_get, _elm_flipselector_efl_access_component_accessible_at_point_get),
       ELM_FLIPSELECTOR_EXTRA_OPS
    );
    opsp = &ops;

@@ -149,6 +149,18 @@ void _elm_label_slide_go(Eo *obj, Elm_Label_Data *pd);
 
 EOAPI EFL_VOID_FUNC_BODY(elm_obj_label_slide_go);
 
+void _elm_label_text_style_user_push(Eo *obj, Elm_Label_Data *pd, const char *style);
+
+EOAPI EFL_VOID_FUNC_BODYV(elm_obj_label_text_style_user_push, EFL_FUNC_CALL(style), const char *style);
+
+void _elm_label_text_style_user_pop(Eo *obj, Elm_Label_Data *pd);
+
+EOAPI EFL_VOID_FUNC_BODY(elm_obj_label_text_style_user_pop);
+
+const char *_elm_label_text_style_user_peek(const Eo *obj, Elm_Label_Data *pd);
+
+EOAPI EFL_FUNC_BODY_CONST(elm_obj_label_text_style_user_peek, const char *, NULL);
+
 Efl_Object *_elm_label_efl_object_constructor(Eo *obj, Elm_Label_Data *pd);
 
 
@@ -156,6 +168,12 @@ Eina_Error _elm_label_efl_ui_widget_theme_apply(Eo *obj, Elm_Label_Data *pd);
 
 
 Efl_Object *_elm_label_efl_part_part_get(const Eo *obj, Elm_Label_Data *pd, const char *name);
+
+
+Eina_Bool _elm_label_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Label_Data *pd);
+
+
+Eina_Bool _elm_label_efl_ui_widget_focus_direction_manager_is(Eo *obj, Elm_Label_Data *pd);
 
 
 static Eina_Bool
@@ -183,9 +201,14 @@ _elm_label_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(elm_obj_label_ellipsis_set, _elm_label_ellipsis_set),
       EFL_OBJECT_OP_FUNC(elm_obj_label_ellipsis_get, _elm_label_ellipsis_get),
       EFL_OBJECT_OP_FUNC(elm_obj_label_slide_go, _elm_label_slide_go),
+      EFL_OBJECT_OP_FUNC(elm_obj_label_text_style_user_push, _elm_label_text_style_user_push),
+      EFL_OBJECT_OP_FUNC(elm_obj_label_text_style_user_pop, _elm_label_text_style_user_pop),
+      EFL_OBJECT_OP_FUNC(elm_obj_label_text_style_user_peek, _elm_label_text_style_user_peek),
       EFL_OBJECT_OP_FUNC(efl_constructor, _elm_label_efl_object_constructor),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_theme_apply, _elm_label_efl_ui_widget_theme_apply),
       EFL_OBJECT_OP_FUNC(efl_part_get, _elm_label_efl_part_part_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_label_efl_ui_widget_focus_next_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_label_efl_ui_widget_focus_direction_manager_is),
       ELM_LABEL_EXTRA_OPS
    );
    opsp = &ops;

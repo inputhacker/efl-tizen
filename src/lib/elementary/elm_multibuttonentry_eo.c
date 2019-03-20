@@ -144,6 +144,21 @@ Eina_Error _elm_multibuttonentry_efl_ui_widget_theme_apply(Eo *obj, Elm_Multibut
 void _elm_multibuttonentry_efl_ui_widget_on_access_update(Eo *obj, Elm_Multibuttonentry_Data *pd, Eina_Bool enable);
 
 
+Eina_Bool _elm_multibuttonentry_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Multibuttonentry_Data *pd);
+
+
+Eina_Bool _elm_multibuttonentry_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Multibuttonentry_Data *pd);
+
+
+Eina_Bool _elm_multibuttonentry_efl_ui_widget_focus_direction_manager_is(Eo *obj, Elm_Multibuttonentry_Data *pd);
+
+
+Eina_Bool _elm_multibuttonentry_efl_ui_widget_focus_next(Eo *obj, Elm_Multibuttonentry_Data *pd, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item);
+
+
+Eina_Bool _elm_multibuttonentry_efl_ui_widget_focus_direction(Eo *obj, Elm_Multibuttonentry_Data *pd, const Efl_Canvas_Object *base, double degree, Efl_Canvas_Object **direction, Elm_Widget_Item **direction_item, double *weight);
+
+
 void _elm_multibuttonentry_efl_ui_l10n_translation_update(Eo *obj, Elm_Multibuttonentry_Data *pd);
 
 
@@ -154,6 +169,9 @@ Eina_List *_elm_multibuttonentry_efl_access_object_access_children_get(const Eo 
 
 
 Efl_Object *_elm_multibuttonentry_efl_part_part_get(const Eo *obj, Elm_Multibuttonentry_Data *pd, const char *name);
+
+
+void _elm_multibuttonentry_efl_ui_widget_screen_reader(Eo *obj, Elm_Multibuttonentry_Data *pd, Eina_Bool is_screen_reader);
 
 
 static Eina_Bool
@@ -189,10 +207,16 @@ _elm_multibuttonentry_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_constructor, _elm_multibuttonentry_efl_object_constructor),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_theme_apply, _elm_multibuttonentry_efl_ui_widget_theme_apply),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_on_access_update, _elm_multibuttonentry_efl_ui_widget_on_access_update),
+      EFL_OBJECT_OP_FUNC(efl_ui_focus_object_on_focus_update, _elm_multibuttonentry_efl_ui_focus_object_on_focus_update),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_multibuttonentry_efl_ui_widget_focus_next_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_multibuttonentry_efl_ui_widget_focus_direction_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next, _elm_multibuttonentry_efl_ui_widget_focus_next),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction, _elm_multibuttonentry_efl_ui_widget_focus_direction),
       EFL_OBJECT_OP_FUNC(efl_ui_l10n_translation_update, _elm_multibuttonentry_efl_ui_l10n_translation_update),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_input_event_handler, _elm_multibuttonentry_efl_ui_widget_widget_input_event_handler),
       EFL_OBJECT_OP_FUNC(efl_access_object_access_children_get, _elm_multibuttonentry_efl_access_object_access_children_get),
       EFL_OBJECT_OP_FUNC(efl_part_get, _elm_multibuttonentry_efl_part_part_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_screen_reader, _elm_multibuttonentry_efl_ui_widget_screen_reader),
       ELM_MULTIBUTTONENTRY_EXTRA_OPS
    );
    opsp = &ops;

@@ -174,6 +174,33 @@ const char *_elm_popup_efl_access_object_i18n_name_get(const Eo *obj, Elm_Popup_
 Efl_Object *_elm_popup_efl_part_part_get(const Eo *obj, Elm_Popup_Data *pd, const char *name);
 
 
+Efl_Canvas_Object *_elm_popup_efl_ui_widget_part_access_object_get(const Eo *obj, Elm_Popup_Data *pd, const char *part);
+
+
+void _elm_popup_efl_ui_widget_screen_reader(Eo *obj, Elm_Popup_Data *pd, Eina_Bool is_screen_reader);
+
+
+void _elm_popup_efl_ui_widget_atspi(Eo *obj, Elm_Popup_Data *pd, Eina_Bool is_atspi);
+
+
+Eina_Bool _elm_popup_efl_access_component_highlight_grab(Eo *obj, Elm_Popup_Data *pd);
+
+
+Eina_Bool _elm_popup_efl_access_component_highlight_clear(Eo *obj, Elm_Popup_Data *pd);
+
+
+Eina_Bool _elm_popup_efl_ui_widget_focus_direction(Eo *obj, Elm_Popup_Data *pd, const Efl_Canvas_Object *base, double degree, Efl_Canvas_Object **direction, Elm_Widget_Item **direction_item, double *weight);
+
+
+Eina_Bool _elm_popup_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Popup_Data *pd);
+
+
+Eina_Bool _elm_popup_efl_ui_widget_focus_direction_manager_is(Eo *obj, Elm_Popup_Data *pd);
+
+
+Eina_Bool _elm_popup_efl_ui_widget_focus_next(Eo *obj, Elm_Popup_Data *pd, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item);
+
+
 static Eina_Bool
 _elm_popup_class_initializer(Efl_Class *klass)
 {
@@ -211,6 +238,15 @@ _elm_popup_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_popup_efl_access_object_state_set_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_get, _elm_popup_efl_access_object_i18n_name_get),
       EFL_OBJECT_OP_FUNC(efl_part_get, _elm_popup_efl_part_part_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_part_access_object_get, _elm_popup_efl_ui_widget_part_access_object_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_screen_reader, _elm_popup_efl_ui_widget_screen_reader),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_atspi, _elm_popup_efl_ui_widget_atspi),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_grab, _elm_popup_efl_access_component_highlight_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_clear, _elm_popup_efl_access_component_highlight_clear),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction, _elm_popup_efl_ui_widget_focus_direction),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_popup_efl_ui_widget_focus_next_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_popup_efl_ui_widget_focus_direction_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next, _elm_popup_efl_ui_widget_focus_next),
       ELM_POPUP_EXTRA_OPS
    );
    opsp = &ops;

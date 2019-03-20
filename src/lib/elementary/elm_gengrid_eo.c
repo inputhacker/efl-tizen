@@ -338,6 +338,9 @@ Eina_Rect _elm_gengrid_efl_ui_widget_focus_highlight_geometry_get(const Eo *obj,
 Elm_Widget_Item *_elm_gengrid_elm_widget_item_container_focused_item_get(const Eo *obj, Elm_Gengrid_Data *pd);
 
 
+void _elm_gengrid_efl_ui_widget_screen_reader(Eo *obj, Elm_Gengrid_Data *pd, Eina_Bool is_screen_reader);
+
+
 void _elm_gengrid_elm_interface_scrollable_item_loop_enabled_set(Eo *obj, Elm_Gengrid_Data *pd, Eina_Bool enable);
 
 
@@ -401,6 +404,30 @@ Efl_Ui_Focus_Object *_elm_gengrid_efl_ui_focus_manager_manager_focus_get(const E
 Efl_Ui_Focus_Object *_elm_gengrid_efl_ui_focus_manager_move(Eo *obj, Elm_Gengrid_Data *pd, Efl_Ui_Focus_Direction direction);
 
 
+void _elm_gengrid_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Gengrid_Data *pd, int x, int y, Eina_Bool sig);
+
+
+void _elm_gengrid_elm_interface_scrollable_wanted_region_set(Eo *obj, Elm_Gengrid_Data *pd, int x, int y);
+
+
+void _elm_gengrid_elm_interface_scrollable_custom_pan_pos_adjust(Eo *obj, Elm_Gengrid_Data *pd, int *x, int *y);
+
+
+Eina_Bool _elm_gengrid_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Gengrid_Data *pd);
+
+
+Eina_Bool _elm_gengrid_efl_ui_widget_focus_next(Eo *obj, Elm_Gengrid_Data *pd, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item);
+
+
+Eina_Bool _elm_gengrid_efl_ui_widget_focus_direction(Eo *obj, Elm_Gengrid_Data *pd, const Efl_Canvas_Object *base, double degree, Efl_Canvas_Object **direction, Elm_Widget_Item **direction_item, double *weight);
+
+
+Eina_Bool _elm_gengrid_efl_ui_widget_focus_direction_manager_is(Eo *obj, Elm_Gengrid_Data *pd);
+
+
+Eina_Bool _elm_gengrid_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Gengrid_Data *pd);
+
+
 static Eina_Bool
 _elm_gengrid_class_initializer(Efl_Class *klass)
 {
@@ -462,6 +489,7 @@ _elm_gengrid_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_widget_input_event_handler, _elm_gengrid_efl_ui_widget_widget_input_event_handler),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_highlight_geometry_get, _elm_gengrid_efl_ui_widget_focus_highlight_geometry_get),
       EFL_OBJECT_OP_FUNC(elm_widget_item_container_focused_item_get, _elm_gengrid_elm_widget_item_container_focused_item_get),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_screen_reader, _elm_gengrid_efl_ui_widget_screen_reader),
       EFL_OBJECT_OP_FUNC(elm_interface_scrollable_item_loop_enabled_set, _elm_gengrid_elm_interface_scrollable_item_loop_enabled_set),
       EFL_OBJECT_OP_FUNC(elm_interface_scrollable_item_loop_enabled_get, _elm_gengrid_elm_interface_scrollable_item_loop_enabled_get),
       EFL_OBJECT_OP_FUNC(elm_interface_scrollable_bounce_allow_set, _elm_gengrid_elm_interface_scrollable_bounce_allow_set),
@@ -483,6 +511,14 @@ _elm_gengrid_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_focus_manager_setup_on_first_touch, _elm_gengrid_efl_ui_focus_manager_setup_on_first_touch),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_manager_focus_get, _elm_gengrid_efl_ui_focus_manager_manager_focus_get),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_manager_move, _elm_gengrid_efl_ui_focus_manager_move),
+      EFL_OBJECT_OP_FUNC(elm_interface_scrollable_content_pos_set, _elm_gengrid_elm_interface_scrollable_content_pos_set),
+      EFL_OBJECT_OP_FUNC(elm_interface_scrollable_wanted_region_set, _elm_gengrid_elm_interface_scrollable_wanted_region_set),
+      EFL_OBJECT_OP_FUNC(elm_interface_scrollable_custom_pan_pos_adjust, _elm_gengrid_elm_interface_scrollable_custom_pan_pos_adjust),
+      EFL_OBJECT_OP_FUNC(efl_ui_focus_object_on_focus_update, _elm_gengrid_efl_ui_focus_object_on_focus_update),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next, _elm_gengrid_efl_ui_widget_focus_next),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction, _elm_gengrid_efl_ui_widget_focus_direction),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_gengrid_efl_ui_widget_focus_direction_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_gengrid_efl_ui_widget_focus_next_manager_is),
       ELM_GENGRID_EXTRA_OPS
    );
    opsp = &ops;

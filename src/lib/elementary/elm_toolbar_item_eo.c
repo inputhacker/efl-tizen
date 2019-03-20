@@ -242,6 +242,12 @@ const char *_elm_toolbar_item_efl_access_object_i18n_name_get(const Eo *obj, Elm
 Efl_Access_State_Set _elm_toolbar_item_efl_access_object_state_set_get(const Eo *obj, Elm_Toolbar_Item_Data *pd);
 
 
+Eina_Bool _elm_toolbar_item_efl_access_component_highlight_grab(Eo *obj, Elm_Toolbar_Item_Data *pd);
+
+
+Eina_Bool _elm_toolbar_item_efl_access_component_highlight_clear(Eo *obj, Elm_Toolbar_Item_Data *pd);
+
+
 static Eina_Bool
 _elm_toolbar_item_class_initializer(Efl_Class *klass)
 {
@@ -295,6 +301,8 @@ _elm_toolbar_item_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_focus_object_focus_parent_get, _elm_toolbar_item_efl_ui_focus_object_focus_parent_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_get, _elm_toolbar_item_efl_access_object_i18n_name_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_toolbar_item_efl_access_object_state_set_get),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_grab, _elm_toolbar_item_efl_access_component_highlight_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_clear, _elm_toolbar_item_efl_access_component_highlight_clear),
       ELM_TOOLBAR_ITEM_EXTRA_OPS
    );
    opsp = &ops;

@@ -24,6 +24,9 @@ Eina_Error _elm_plug_efl_ui_widget_theme_apply(Eo *obj, void *pd);
 Eina_Bool _elm_plug_efl_ui_focus_object_on_focus_update(Eo *obj, void *pd);
 
 
+Eina_List *_elm_plug_efl_access_object_access_children_get(const Eo *obj, void *pd);
+
+
 static Eina_Bool
 _elm_plug_class_initializer(Efl_Class *klass)
 {
@@ -41,6 +44,7 @@ _elm_plug_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_constructor, _elm_plug_efl_object_constructor),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_theme_apply, _elm_plug_efl_ui_widget_theme_apply),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_object_on_focus_update, _elm_plug_efl_ui_focus_object_on_focus_update),
+      EFL_OBJECT_OP_FUNC(efl_access_object_access_children_get, _elm_plug_efl_access_object_access_children_get),
       ELM_PLUG_EXTRA_OPS
    );
    opsp = &ops;

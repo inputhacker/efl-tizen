@@ -235,6 +235,9 @@ Eina_Rect _elm_toolbar_efl_ui_widget_focus_highlight_geometry_get(const Eo *obj,
 Elm_Widget_Item *_elm_toolbar_elm_widget_item_container_focused_item_get(const Eo *obj, Elm_Toolbar_Data *pd);
 
 
+void _elm_toolbar_efl_orientation_orientation_set(Eo *obj, Elm_Toolbar_Data *pd, Efl_Orient dir);
+
+
 void _elm_toolbar_efl_ui_direction_direction_set(Eo *obj, Elm_Toolbar_Data *pd, Efl_Ui_Dir dir);
 
 
@@ -242,6 +245,9 @@ Efl_Ui_Dir _elm_toolbar_efl_ui_direction_direction_get(const Eo *obj, Elm_Toolba
 
 
 Eina_Bool _elm_toolbar_efl_ui_widget_focus_state_apply(Eo *obj, Elm_Toolbar_Data *pd, Efl_Ui_Widget_Focus_State current_state, Efl_Ui_Widget_Focus_State *configured_state, Efl_Ui_Widget *redirect);
+
+
+void _elm_toolbar_efl_ui_widget_screen_reader(Eo *obj, Elm_Toolbar_Data *pd, Eina_Bool is_screen_reader);
 
 
 const Efl_Access_Action_Data *_elm_toolbar_efl_access_widget_action_elm_actions_get(const Eo *obj, Elm_Toolbar_Data *pd);
@@ -278,6 +284,15 @@ Eina_Bool _elm_toolbar_efl_access_selection_access_selection_clear(Eo *obj, Elm_
 
 
 void _elm_toolbar_efl_ui_focus_composition_prepare(Eo *obj, Elm_Toolbar_Data *pd);
+
+
+void _elm_toolbar_elm_interface_scrollable_content_pos_set(Eo *obj, Elm_Toolbar_Data *pd, int x, int y, Eina_Bool sig);
+
+
+Eina_Bool _elm_toolbar_efl_ui_widget_focus_next_manager_is(Eo *obj, Elm_Toolbar_Data *pd);
+
+
+Eina_Bool _elm_toolbar_efl_ui_widget_focus_next(Eo *obj, Elm_Toolbar_Data *pd, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item);
 
 
 static Eina_Bool
@@ -329,9 +344,11 @@ _elm_toolbar_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_widget_input_event_handler, _elm_toolbar_efl_ui_widget_widget_input_event_handler),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_highlight_geometry_get, _elm_toolbar_efl_ui_widget_focus_highlight_geometry_get),
       EFL_OBJECT_OP_FUNC(elm_widget_item_container_focused_item_get, _elm_toolbar_elm_widget_item_container_focused_item_get),
+      EFL_OBJECT_OP_FUNC(efl_orientation_set, _elm_toolbar_efl_orientation_orientation_set),
       EFL_OBJECT_OP_FUNC(efl_ui_direction_set, _elm_toolbar_efl_ui_direction_direction_set),
       EFL_OBJECT_OP_FUNC(efl_ui_direction_get, _elm_toolbar_efl_ui_direction_direction_get),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_state_apply, _elm_toolbar_efl_ui_widget_focus_state_apply),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_screen_reader, _elm_toolbar_efl_ui_widget_screen_reader),
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_toolbar_efl_access_widget_action_elm_actions_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_access_children_get, _elm_toolbar_efl_access_object_access_children_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_toolbar_efl_access_object_state_set_get),
@@ -344,6 +361,9 @@ _elm_toolbar_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_selection_all_children_select, _elm_toolbar_efl_access_selection_all_children_select),
       EFL_OBJECT_OP_FUNC(efl_access_selection_clear, _elm_toolbar_efl_access_selection_access_selection_clear),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_composition_prepare, _elm_toolbar_efl_ui_focus_composition_prepare),
+      EFL_OBJECT_OP_FUNC(elm_interface_scrollable_content_pos_set, _elm_toolbar_elm_interface_scrollable_content_pos_set),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_toolbar_efl_ui_widget_focus_next_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next, _elm_toolbar_efl_ui_widget_focus_next),
       ELM_TOOLBAR_EXTRA_OPS
    );
    opsp = &ops;

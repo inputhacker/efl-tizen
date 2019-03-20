@@ -86,6 +86,18 @@ Eina_Bool _elm_table_efl_ui_widget_widget_sub_object_del(Eo *obj, void *pd, Efl_
 void _elm_table_efl_ui_focus_composition_prepare(Eo *obj, void *pd);
 
 
+Eina_Bool _elm_table_efl_ui_widget_focus_direction(Eo *obj, void *pd, const Efl_Canvas_Object *base, double degree, Efl_Canvas_Object **direction, Elm_Widget_Item **direction_item, double *weight);
+
+
+Eina_Bool _elm_table_efl_ui_widget_focus_next_manager_is(Eo *obj, void *pd);
+
+
+Eina_Bool _elm_table_efl_ui_widget_focus_next(Eo *obj, void *pd, Efl_Ui_Focus_Direction dir, Efl_Canvas_Object **next, Elm_Widget_Item **next_item);
+
+
+Eina_Bool _elm_table_efl_ui_widget_focus_direction_manager_is(Eo *obj, void *pd);
+
+
 static Eina_Bool
 _elm_table_class_initializer(Efl_Class *klass)
 {
@@ -115,6 +127,10 @@ _elm_table_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_widget_theme_apply, _elm_table_efl_ui_widget_theme_apply),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_sub_object_del, _elm_table_efl_ui_widget_widget_sub_object_del),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_composition_prepare, _elm_table_efl_ui_focus_composition_prepare),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction, _elm_table_efl_ui_widget_focus_direction),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next_manager_is, _elm_table_efl_ui_widget_focus_next_manager_is),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_next, _elm_table_efl_ui_widget_focus_next),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_focus_direction_manager_is, _elm_table_efl_ui_widget_focus_direction_manager_is),
       ELM_TABLE_EXTRA_OPS
    );
    opsp = &ops;

@@ -78,6 +78,12 @@ const char *_elm_color_item_efl_access_object_i18n_name_get(const Eo *obj, Elm_C
 const Efl_Access_Action_Data *_elm_color_item_efl_access_widget_action_elm_actions_get(const Eo *obj, Elm_Color_Item_Data *pd);
 
 
+Eina_Bool _elm_color_item_efl_access_component_highlight_grab(Eo *obj, Elm_Color_Item_Data *pd);
+
+
+Eina_Bool _elm_color_item_efl_access_component_highlight_clear(Eo *obj, Elm_Color_Item_Data *pd);
+
+
 static Eina_Bool
 _elm_color_item_class_initializer(Efl_Class *klass)
 {
@@ -107,6 +113,8 @@ _elm_color_item_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_color_item_efl_access_object_state_set_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_get, _elm_color_item_efl_access_object_i18n_name_get),
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_color_item_efl_access_widget_action_elm_actions_get),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_grab, _elm_color_item_efl_access_component_highlight_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_clear, _elm_color_item_efl_access_component_highlight_clear),
       ELM_COLOR_ITEM_EXTRA_OPS
    );
    opsp = &ops;

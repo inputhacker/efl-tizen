@@ -305,6 +305,15 @@ Efl_Access_State_Set _elm_genlist_item_efl_access_object_state_set_get(const Eo 
 void _elm_genlist_item_efl_ui_focus_object_setup_order_non_recursive(Eo *obj, Elm_Gen_Item *pd);
 
 
+Eina_List *_elm_genlist_item_efl_access_object_access_children_get(const Eo *obj, Elm_Gen_Item *pd);
+
+
+Eina_Bool _elm_genlist_item_efl_access_component_highlight_grab(Eo *obj, Elm_Gen_Item *pd);
+
+
+Eina_Bool _elm_genlist_item_efl_access_component_highlight_clear(Eo *obj, Elm_Gen_Item *pd);
+
+
 Efl_Ui_Focus_Object *_elm_genlist_item_efl_ui_focus_object_focus_parent_get(const Eo *obj, Elm_Gen_Item *pd);
 
 
@@ -372,6 +381,9 @@ _elm_genlist_item_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_access_object_i18n_name_get, _elm_genlist_item_efl_access_object_i18n_name_get),
       EFL_OBJECT_OP_FUNC(efl_access_object_state_set_get, _elm_genlist_item_efl_access_object_state_set_get),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_object_setup_order_non_recursive, _elm_genlist_item_efl_ui_focus_object_setup_order_non_recursive),
+      EFL_OBJECT_OP_FUNC(efl_access_object_access_children_get, _elm_genlist_item_efl_access_object_access_children_get),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_grab, _elm_genlist_item_efl_access_component_highlight_grab),
+      EFL_OBJECT_OP_FUNC(efl_access_component_highlight_clear, _elm_genlist_item_efl_access_component_highlight_clear),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_object_focus_parent_get, _elm_genlist_item_efl_ui_focus_object_focus_parent_get),
       ELM_GENLIST_ITEM_EXTRA_OPS
    );

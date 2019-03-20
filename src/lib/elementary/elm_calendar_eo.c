@@ -137,6 +137,15 @@ Eina_Bool _elm_calendar_efl_ui_focus_object_on_focus_update(Eo *obj, Elm_Calenda
 Eina_Bool _elm_calendar_efl_ui_widget_widget_input_event_handler(Eo *obj, Elm_Calendar_Data *pd, const Efl_Event *eo_event, Efl_Canvas_Object *source);
 
 
+void _elm_calendar_efl_ui_widget_screen_reader(Eo *obj, Elm_Calendar_Data *pd, Eina_Bool is_screen_reader);
+
+
+void _elm_calendar_efl_ui_i18n_mirrored_set(Eo *obj, Elm_Calendar_Data *pd, Eina_Bool rtl);
+
+
+Eina_Bool _elm_calendar_efl_ui_i18n_mirrored_get(const Eo *obj, Elm_Calendar_Data *pd);
+
+
 const Efl_Access_Action_Data *_elm_calendar_efl_access_widget_action_elm_actions_get(const Eo *obj, Elm_Calendar_Data *pd);
 
 
@@ -181,6 +190,9 @@ _elm_calendar_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(efl_ui_widget_on_access_update, _elm_calendar_efl_ui_widget_on_access_update),
       EFL_OBJECT_OP_FUNC(efl_ui_focus_object_on_focus_update, _elm_calendar_efl_ui_focus_object_on_focus_update),
       EFL_OBJECT_OP_FUNC(efl_ui_widget_input_event_handler, _elm_calendar_efl_ui_widget_widget_input_event_handler),
+      EFL_OBJECT_OP_FUNC(efl_ui_widget_screen_reader, _elm_calendar_efl_ui_widget_screen_reader),
+      EFL_OBJECT_OP_FUNC(efl_ui_mirrored_set, _elm_calendar_efl_ui_i18n_mirrored_set),
+      EFL_OBJECT_OP_FUNC(efl_ui_mirrored_get, _elm_calendar_efl_ui_i18n_mirrored_get),
       EFL_OBJECT_OP_FUNC(efl_access_widget_action_elm_actions_get, _elm_calendar_efl_access_widget_action_elm_actions_get),
       ELM_CALENDAR_EXTRA_OPS
    );
