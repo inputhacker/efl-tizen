@@ -10190,6 +10190,36 @@ elm_win_keygrab_set(Elm_Win *obj, const char *key,
          ret = ecore_x_window_keygrab_set(sd->x.xwin, key, 0, 0, 0, x_grab_mode);
      }
 #else
+
+// TIZEN_ONLY(20150722): Add ecore_wl2_window_keygrab_* APIs
+#ifdef HAVE_ELEMENTARY_WL2
+   Efl_Ui_Win_Data *sd = efl_data_scope_safe_get(obj, MY_CLASS);
+   _elm_win_wlwindow_get(sd);
+   if (sd->wl.win)
+     {
+        Ecore_Wl2_Window_Keygrab_Mode wl_grab_mode;
+        switch (grab_mode)
+          {
+           case ELM_WIN_KEYGRAB_SHARED:
+             wl_grab_mode = ECORE_WL2_WINDOW_KEYGRAB_SHARED;
+             break;
+           case ELM_WIN_KEYGRAB_TOPMOST:
+             wl_grab_mode = ECORE_WL2_WINDOW_KEYGRAB_TOPMOST;
+             break;
+           case ELM_WIN_KEYGRAB_EXCLUSIVE:
+             wl_grab_mode = ECORE_WL2_WINDOW_KEYGRAB_EXCLUSIVE;
+             break;
+           case ELM_WIN_KEYGRAB_OVERRIDE_EXCLUSIVE:
+             wl_grab_mode = ECORE_WL2_WINDOW_KEYGRAB_OVERRIDE_EXCLUSIVE;
+             break;
+           default:
+             return ret;
+          }
+        ret = ecore_wl2_window_keygrab_set(sd->wl.win, key, 0, 0, 0, wl_grab_mode);
+     }
+#endif
+//
+
    (void)obj;
    (void)key;
    (void)grab_mode;
@@ -10210,6 +10240,16 @@ elm_win_keygrab_unset(Elm_Win *obj, const char *key,
    if (sd->x.xwin)
      ret = ecore_x_window_keygrab_unset(sd->x.xwin, key, 0, 0);
 #else
+
+// TIZEN_ONLY(20150722): Add ecore_wl2_window_keygrab_* APIs
+#ifdef HAVE_ELEMENTARY_WL2
+   Efl_Ui_Win_Data *sd = efl_data_scope_safe_get(obj, MY_CLASS);
+   _elm_win_wlwindow_get(sd);
+   if (sd->wl.win)
+     ret = ecore_wl2_window_keygrab_unset(sd->wl.win, key, 0, 0);
+#endif
+//
+
    (void)obj;
    (void)key;
 #endif
