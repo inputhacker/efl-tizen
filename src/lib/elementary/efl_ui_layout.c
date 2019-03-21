@@ -3039,8 +3039,18 @@ elm_layout_text_set(Eo *obj, const char *part, const char *text)
    else if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
      return EINA_FALSE;
 
+   /* TIZEN_ONLY(20180514): fix elm_layout_text_set to return proper result
    efl_text_set(efl_part(obj, part), text);
    return EINA_TRUE;
+   */
+
+   Eo *part_obj = efl_part(obj, part);
+   if (!part_obj) return EINA_FALSE;
+
+   efl_text_set(part_obj, text);
+
+   return EINA_TRUE;
+   /* END */
 }
 
 EAPI const char *
