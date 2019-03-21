@@ -7527,4 +7527,4 @@ EAPI Eina_Bool elm_atspi_bridge_utils_is_screen_reader_enabled(void)
 }
 //
 
-#include "elm_atspi_bridge.eo.c"
+#include "elm_atspi_bridge_eo.c"
