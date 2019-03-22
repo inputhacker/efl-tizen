@@ -166,4 +166,4 @@ _elm_atspi_proxy_efl_ui_widget_atspi(Eo *obj, Elm_Atspi_Proxy_Data *_pd, Eina_Bo
      }
 }
 
-#include "elm_atspi_proxy.eo.c"
+#include "elm_atspi_proxy_eo.c"
