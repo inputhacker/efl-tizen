@@ -13,7 +13,9 @@ function @beta Efl.Ui.Scrollable_On_Show_Region {
 };
 
 struct Efl.Ui.Widget_Focus_State {
-   [[All relevant fields needed for the current state of focus registration]]
+   [[All relevant fields needed for the current state of focus registration
+     @since 1.22
+   ]]
    manager : Efl.Ui.Focus.Manager; [[The manager where the widget is registered in]]
    parent : Efl.Ui.Focus.Object; [[The parent the widget is using as logical parent]]
    logical : bool; [[$true if this is registered as logical currently]]
@@ -28,7 +30,10 @@ abstract Efl.Ui.Widget extends Efl.Canvas.Group implements Efl.Access.Object,
                         Efl.Access.Widget.Action
                         //
 {
-   [[Efl UI widget abstract class]]
+   [[Efl UI widget abstract class
+
+     @since 1.22
+   ]]
    //eo_prefix: efl_ui_widget;
    event_prefix: efl_ui_widget;
    data: Efl_Ui_Widget_Data;
