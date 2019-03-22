@@ -212,4 +212,4 @@ _elm_atspi_ewk_wrapper_ewk_view_get(const Eo *obj EINA_UNUSED, Elm_Atspi_Ewk_Wra
 }
 
 
-#include "elm_atspi_ewk_wrapper.eo.c"
+#include "elm_atspi_ewk_wrapper_eo.c"

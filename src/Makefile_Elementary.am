@@ -143,7 +143,6 @@ elm_public_eolian_files += \
 	lib/elementary/efl_ui_progressbar_legacy_part.eo \
 	lib/elementary/elm_multibuttonentry_part.eo \
 	lib/elementary/elm_interface_scrollable.eo \
-	lib/elementary/elm_atspi_ewk_wrapper.eo \
 	lib/elementary/elm_atspi_proxy.eo \
 	lib/elementary/efl_ui_image_zoomable_pan.eo \
 	$(NULL)
@@ -267,6 +266,8 @@ lib/elementary/elm_actionslider_eo.legacy.c \
 lib/elementary/elm_atspi_app_object_eo.c \
 lib/elementary/elm_atspi_bridge_eo.c \
 lib/elementary/elm_atspi_bridge_eo.legacy.c \
+lib/elementary/elm_atspi_ewk_wrapper_eo.c \
+lib/elementary/elm_atspi_ewk_wrapper_eo.legacy.c \
 lib/elementary/elm_box_eo.c \
 lib/elementary/elm_box_eo.legacy.c \
 lib/elementary/elm_bubble_eo.c \
@@ -447,6 +448,7 @@ lib/elementary/elm_access_eo.legacy.h \
 lib/elementary/elm_actionslider_eo.legacy.h \
 lib/elementary/elm_atspi_app_object_eo.legacy.h \
 lib/elementary/elm_atspi_bridge_eo.legacy.h \
+lib/elementary/elm_atspi_ewk_wrapper_eo.legacy.h \
 lib/elementary/elm_box_eo.legacy.h \
 lib/elementary/elm_bubble_eo.legacy.h \
 lib/elementary/elm_calendar_eo.legacy.h \
@@ -557,6 +559,7 @@ lib/elementary/elm_access_eo.h \
 lib/elementary/elm_actionslider_eo.h \
 lib/elementary/elm_atspi_app_object_eo.h \
 lib/elementary/elm_atspi_bridge_eo.h \
+lib/elementary/elm_atspi_ewk_wrapper_eo.h \
 lib/elementary/elm_box_eo.h \
 lib/elementary/elm_bubble_eo.h \
 lib/elementary/elm_calendar_eo.h \
@@ -776,7 +779,6 @@ includesunstable_HEADERS = \
 	lib/elementary/efl_ui_widget_pan.h \
 	lib/elementary/efl_ui_nstate_private.h \
 	lib/elementary/Efl_Ui.h \
-	lib/elementary/elm_atspi_ewk_wrapper.h \
 	lib/elementary/efl_access_legacy.h \
 	lib/elementary/efl_ui_widget_pager.h \
 	lib/elementary/efl_page_transition.h \
@@ -826,6 +828,7 @@ includesub_HEADERS = \
 	lib/elementary/elm_app.h \
 	lib/elementary/elm_atspi_app_object.h \
 	lib/elementary/elm_atspi_bridge.h \
+	lib/elementary/elm_atspi_ewk_wrapper.h \
         lib/elementary/elm_atspi_proxy.h \
 	lib/elementary/elm_authors.h \
 	lib/elementary/elm_bg.h \
