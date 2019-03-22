@@ -88,18 +88,18 @@ _notify_theme_apply(Evas_Object *obj)
    /* TIZEN_ONLY(170621): support multiscale problem on TM2
    return elm_widget_theme_object_set(obj, sd->notify, "notify", position, style);
     */
-   /*
    ret = elm_widget_theme_object_set(obj, sd->notify, "notify", position, style);
 
+   /*
    if (wd->orient_mode != -1)
      {
         char buf[128];
         snprintf(buf, sizeof(buf), "elm,state,orient,%d", wd->orient_mode);
         edje_object_signal_emit(sd->notify, buf, "elm");
      }
+   */
 
    return ret;
-   */
    /* END */
 }
 

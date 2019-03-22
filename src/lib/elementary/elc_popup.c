@@ -260,13 +260,13 @@ _scroller_size_calc(Evas_Object *obj)
    /* TIZEN_ONLY(20160623):Apply popup compress mode UX
    sd->max_sc_h = h - (h_title + h_action_area);
    */
-   /*
+
+   int rotation = elm_win_rotation_get(elm_widget_top_get(elm_widget_parent_get(sd->notify)));
    if ((sd->dispmode == EVAS_DISPLAY_MODE_COMPRESS) &&
-       ((wd->orient_mode == 90) || (wd->orient_mode == 270)))
+       ((rotation == 90) || (rotation == 270)))
       sd->max_sc_h = h - h_action_area;
    else
       sd->max_sc_h = h - (h_title + h_action_area + h_pad);
-   */
    /* END */
 }
 
@@ -596,9 +596,9 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
         else
           ret = _notify_style_set(sd->notify, obj_style);
 
-        if (ret == EFL_UI_THEME_APPLY_ERROR_GENERIC)
-          if (_notify_style_set(sd->notify, style) == EFL_UI_THEME_APPLY_ERROR_GENERIC)
-            if (_notify_style_set(sd->notify, "popup") == EFL_UI_THEME_APPLY_ERROR_GENERIC)
+        if (ret != EFL_UI_THEME_APPLY_ERROR_NONE)
+          if (_notify_style_set(sd->notify, style) != EFL_UI_THEME_APPLY_ERROR_NONE)
+            if (_notify_style_set(sd->notify, "popup") != EFL_UI_THEME_APPLY_ERROR_NONE)
               _notify_style_set(sd->notify, "popup/default");
      }
    /* END */
@@ -618,7 +618,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
         for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
           {
              snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) != EFL_UI_THEME_APPLY_ERROR_GENERIC)
+             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) == EFL_UI_THEME_APPLY_ERROR_NONE)
                break;
           }
         if (i == STYLE_PRIORITY_COUNT)
@@ -632,7 +632,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
    for (i = 0; i < STYLE_PRIORITY_COUNT; i++)
      {
         snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-        if (efl_ui_layout_theme_set(sd->content_area, "popup", "content", style) != EFL_UI_THEME_APPLY_ERROR_GENERIC)
+        if (efl_ui_layout_theme_set(sd->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_ERROR_NONE)
           break;
      }
    if (i == STYLE_PRIORITY_COUNT)
@@ -644,7 +644,7 @@ _elm_popup_efl_ui_widget_theme_apply(Eo *obj, Elm_Popup_Data *sd)
         /* TIZEN_ONLY(20161109): check theme compatibility more precise
         elm_object_style_set(sd->text_content_obj, style);
         */
-        if (elm_widget_style_set(sd->text_content_obj, style) == EFL_UI_THEME_APPLY_ERROR_GENERIC)
+        if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_ERROR_NONE)
           elm_widget_style_set(sd->text_content_obj, "popup/default");
         /* END */
      }
@@ -990,7 +990,7 @@ _button_remove(Evas_Object *obj,
         for (i = 0 ; i < STYLE_PRIORITY_COUNT; i++)
           {
              snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) != EFL_UI_THEME_APPLY_ERROR_GENERIC)
+             if (efl_ui_layout_theme_set(sd->action_area, "popup", buf, style) != EFL_UI_THEME_APPLY_ERROR_NONE)
                break;
           }
         if (i == STYLE_PRIORITY_COUNT)
@@ -2138,9 +2138,9 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
         else
           ret = _notify_style_set(priv->notify, obj_style);
 
-        if (ret == EFL_UI_THEME_APPLY_ERROR_GENERIC)
-          if (_notify_style_set(priv->notify, style) == EFL_UI_THEME_APPLY_ERROR_GENERIC)
-            if (_notify_style_set(priv->notify, "popup") == EFL_UI_THEME_APPLY_ERROR_GENERIC)
+        if (ret != EFL_UI_THEME_APPLY_ERROR_NONE)
+          if (_notify_style_set(priv->notify, style) != EFL_UI_THEME_APPLY_ERROR_NONE)
+            if (_notify_style_set(priv->notify, "popup") != EFL_UI_THEME_APPLY_ERROR_NONE)
               _notify_style_set(priv->notify, "popup/default");
      }
    /* END */
@@ -2219,7 +2219,7 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
    for (i = 0 ; i < STYLE_PRIORITY_COUNT; i++)
      {
         snprintf(style, sizeof(style), STYLE_PRIORITY[i], elm_widget_style_get(obj));
-        if (efl_ui_layout_theme_set(priv->content_area, "popup", "content", style) != EFL_UI_THEME_APPLY_ERROR_GENERIC)
+        if (efl_ui_layout_theme_set(priv->content_area, "popup", "content", style) == EFL_UI_THEME_APPLY_ERROR_NONE)
           break;
      }
    if (i == STYLE_PRIORITY_COUNT)
@@ -2684,7 +2684,8 @@ _elm_popup_efl_access_component_highlight_clear(Eo *obj EINA_UNUSED, Elm_Popup_D
 static Eina_Error
 _notify_style_set(Evas_Object *obj, const char *style)
 {
-   Eina_Error ret = EFL_UI_THEME_APPLY_ERROR_GENERIC;
+   Eina_Error hover_theme_ret = EFL_UI_THEME_APPLY_ERROR_NONE;
+   Eina_Error notify_theme_ret = EFL_UI_THEME_APPLY_ERROR_GENERIC;
 
    ELM_WIDGET_DATA_GET_OR_RETURN(obj, wd, EFL_UI_THEME_APPLY_ERROR_GENERIC);
 
@@ -2694,17 +2695,27 @@ _notify_style_set(Evas_Object *obj, const char *style)
         Elm_Tooltip *tt;
         Elm_Cursor *cur;
 
-        if (wd->hover_obj) ret &= elm_widget_theme(wd->hover_obj);
+        if (wd->hover_obj) hover_theme_ret = elm_widget_theme(wd->hover_obj);
+        if (hover_theme_ret == EFL_UI_THEME_APPLY_ERROR_GENERIC)
+          return EFL_UI_THEME_APPLY_ERROR_GENERIC;
 
         EINA_LIST_FOREACH(wd->tooltips, l, tt)
           elm_tooltip_theme(tt);
         EINA_LIST_FOREACH(wd->cursors, l, cur)
           elm_cursor_theme(cur);
 
-        ret &= efl_ui_widget_theme_apply(obj);
+        notify_theme_ret = efl_ui_widget_theme_apply(obj);
+        if (notify_theme_ret == EFL_UI_THEME_APPLY_ERROR_GENERIC)
+          return EFL_UI_THEME_APPLY_ERROR_GENERIC;
+
+        if ((hover_theme_ret == EFL_UI_THEME_APPLY_ERROR_DEFAULT) ||
+            (notify_theme_ret == EFL_UI_THEME_APPLY_ERROR_DEFAULT))
+          return EFL_UI_THEME_APPLY_ERROR_DEFAULT;
+
+        return EFL_UI_THEME_APPLY_ERROR_NONE;
      }
 
-   return ret;
+   return EFL_UI_THEME_APPLY_ERROR_GENERIC;
 }
 /* END */
 
