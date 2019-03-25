@@ -10190,6 +10190,7 @@ elm_win_keygrab_set(Elm_Win *obj, const char *key,
 // TIZEN_ONLY(20150722): Add ecore_wl2_window_keygrab_* APIs
 #ifdef HAVE_ELEMENTARY_WL2
    Efl_Ui_Win_Data *sd = efl_data_scope_safe_get(obj, MY_CLASS);
+   EINA_SAFETY_ON_FALSE_RETURN_VAL(sd, EINA_FALSE);
    _elm_win_wlwindow_get(sd);
    if (sd->wl.win)
      {
@@ -10240,6 +10241,7 @@ elm_win_keygrab_unset(Elm_Win *obj, const char *key,
 // TIZEN_ONLY(20150722): Add ecore_wl2_window_keygrab_* APIs
 #ifdef HAVE_ELEMENTARY_WL2
    Efl_Ui_Win_Data *sd = efl_data_scope_safe_get(obj, MY_CLASS);
+   EINA_SAFETY_ON_FALSE_RETURN_VAL(sd, EINA_FALSE);
    _elm_win_wlwindow_get(sd);
    if (sd->wl.win)
      ret = ecore_wl2_window_keygrab_unset(sd->wl.win, key, 0, 0);
