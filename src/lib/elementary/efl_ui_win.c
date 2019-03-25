@@ -6044,18 +6044,15 @@ _elm_win_finalize_internal(Eo *obj, Efl_Ui_Win_Data *sd, const char *name, Efl_U
         return NULL;
      }
 
-
+   parent = efl_parent_get(obj);
    //TIZEN_ONLY(20190321): support legacy window behavior compatibility
-   //parent = efl_parent_get(obj);
-   //if (!(efl_isa(parent, EFL_UI_WIN_CLASS) ||
-   //      efl_isa(parent, EFL_UI_WIN_LEGACY_CLASS) ||
-   //      efl_isa(parent, EFL_UI_WIN_INLINED_CLASS))) parent = NULL;
    if (!elm_widget_is_legacy(obj))
      {
-        parent = efl_parent_get(obj);
-        if (!(efl_isa(parent, EFL_UI_WIN_CLASS) ||
-        efl_isa(parent, EFL_UI_WIN_LEGACY_CLASS) ||
-        efl_isa(parent, EFL_UI_WIN_INLINED_CLASS))) parent = NULL;
+   //
+   if (!(efl_isa(parent, EFL_UI_WIN_CLASS) ||
+         efl_isa(parent, EFL_UI_WIN_LEGACY_CLASS) ||
+         efl_isa(parent, EFL_UI_WIN_INLINED_CLASS))) parent = NULL;
+   //TIZEN_ONLY(20190321): support legacy window behavior compatibility
      }
    //
 
