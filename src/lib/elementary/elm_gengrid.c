@@ -5197,6 +5197,9 @@ _internal_elm_gengrid_clear(Evas_Object *obj,
 
    ELM_GENGRID_DATA_GET(obj, sd);
    if (!sd->items) return;
+   
+   eina_list_free(sd->atspi_children);
+   sd->atspi_children = NULL;
 
    if (!standby) sd->generation++;
 
