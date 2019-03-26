@@ -332,6 +332,7 @@ typedef struct _Elm_Widget_Smart_Data
    Evas_Object                  *resize_obj; /**< an unique object for each widget that shows the look of a widget. Resize object's geometry is same as the widget. This resize object is different from that of window's resize object. */
    Evas_Object                  *hover_obj;
    Evas_Object                  *bg;
+   Evas_Object                  *window;
    Eina_List                    *tooltips, *cursors;
    //TIZEN_ONLY(20180607): Restore legacy focus
    Evas_Object                  *focus_previous, *focus_next;
