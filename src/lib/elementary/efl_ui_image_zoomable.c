@@ -2426,6 +2426,12 @@ _efl_ui_image_zoomable_efl_file_file_set(Eo *obj, Efl_Ui_Image_Zoomable_Data *sd
    return efl_file_set(efl_super(obj, MY_CLASS), file);
 }
 
+EOLIAN static const char *
+_efl_ui_image_zoomable_efl_file_file_get(const Eo *obj EINA_UNUSED, Efl_Ui_Image_Zoomable_Data *sd)
+{
+   return sd->file;
+}
+
 EOLIAN static void
 _efl_ui_image_zoomable_efl_ui_zoom_zoom_level_set(Eo *obj, Efl_Ui_Image_Zoomable_Data *sd, double zoom)
 {
