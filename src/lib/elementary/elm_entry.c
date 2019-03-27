@@ -367,7 +367,7 @@ _save_do(Evas_Object *obj)
 {
    ELM_ENTRY_DATA_GET(obj, sd);
 
-   if (!sd->file) return;
+   if (!efl_file_loaded_get(obj)) return;
    switch (sd->format)
      {
       case ELM_TEXT_FORMAT_PLAIN_UTF8:
@@ -6651,6 +6651,9 @@ EAPI Eina_Bool
 elm_entry_file_set(Evas_Object *obj, const char *file, Elm_Text_Format format)
 {
    Eina_Bool ret;
+   ELM_ENTRY_DATA_GET(obj, sd);
+   ELM_SAFE_FREE(sd->delay_write, ecore_timer_del);
+   if (sd->auto_save) _save_do(obj);
    elm_obj_entry_file_text_format_set(obj, format);
    ret = efl_file_simple_load(obj, file, NULL);
    return ret;
@@ -6664,15 +6667,13 @@ _elm_entry_efl_file_unload(Eo *obj, Elm_Entry_Data *sd)
 }
 
 EOLIAN static Eina_Error
-_elm_entry_efl_file_load(Eo *obj, Elm_Entry_Data *sd)
+_elm_entry_efl_file_load(Eo *obj, Elm_Entry_Data *sd EINA_UNUSED)
 {
    Eina_Error err;
 
    if (efl_file_loaded_get(obj)) return 0;
    err = efl_file_load(efl_super(obj, MY_CLASS));
    if (err) return err;
-   ELM_SAFE_FREE(sd->delay_write, ecore_timer_del);
-   if (sd->auto_save) _save_do(obj);
    return _load_do(obj);
 }
 
