@@ -1280,6 +1280,7 @@ export XDG_RUNTIME_DIR="/tmp/"
     --disable-systemd \
     --disable-cserve \
     --enable-tizenaudio \
+    --enable-install-eo-files \
     --with-elementary-base-dir="share/.elementary" \
     ac_cv_func_getuid=no
 
