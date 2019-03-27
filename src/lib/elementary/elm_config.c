@@ -1761,6 +1761,8 @@ _config_user_load(void)
    return cfg;
 }
 
+#include "elm_default_config.x"
+
 static Elm_Config *
 _config_system_load(void)
 {
@@ -1783,6 +1785,20 @@ _config_system_load(void)
         cfg = eet_data_read(ef, _config_edd, "config");
         eet_close(ef);
      }
+
+   if (!cfg)
+     {
+        Eina_Tmpstr* tmp;
+        ERR("System loading config failed! Check your setup! Falling back to compile time defaults");
+        EINA_SAFETY_ON_FALSE_RETURN_VAL(eina_file_mkstemp("/tmp/elementary_configXXXXXX", &tmp), NULL);
+        ef = eet_open(tmp, EET_FILE_MODE_WRITE);
+        EINA_SAFETY_ON_FALSE_RETURN_VAL(eet_data_undump(ef, "config", embedded_config, strlen(embedded_config)-1, EINA_FALSE), NULL);
+        eet_close(ef);
+        ef = eet_open(tmp, EET_FILE_MODE_READ);
+        cfg = eet_data_read(ef, _config_edd, "config");
+        eet_close(ef);
+     }
+
    return cfg;
 }
 
