@@ -18,7 +18,7 @@ enum @beta Efl.Pointer.Action
    axis,   [[Axis event (pen, stick, ...).]]
 }
 
-enum @beta Efl.Pointer.Flags
+enum Efl.Pointer.Flags
 {
    [[Pointer flags indicating whether a double or triple click is under way.
 
@@ -48,7 +48,7 @@ enum @beta Efl.Input.Flags
                            actually perform anything.]]
 }
 
-enum @beta Efl.Input.Object_Pointer_Mode {
+enum Efl.Input.Object_Pointer_Mode {
    [[How the mouse pointer should be handled by EFL.
 
      In the mode $autograb, when a mouse button is pressed down over an

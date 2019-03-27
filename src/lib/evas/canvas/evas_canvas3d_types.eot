@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // All the below types are for Evas 3D
 
-type @beta Evas.Real: double; [[A type for floating value]]
+type Evas.Real: double; [[A type for floating value]]
 
 enum @beta Evas.Canvas3D.Object_Type
 {
