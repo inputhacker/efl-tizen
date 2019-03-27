@@ -3068,7 +3068,7 @@ _item_unselect(Elm_Gen_Item *it)
    it->selected = EINA_FALSE;
    sd->selected = eina_list_remove(sd->selected, EO_OBJ(it));
    _item_unhighlight(it, EINA_TRUE);
-   efl_event_callback_legacy_call(WIDGET(it), EFL_UI_EVENT_SELECTABLE_UNSELECTED, EO_OBJ(it));
+   evas_object_smart_callback_call(WIDGET(it), "unselected", EO_OBJ(it));
 }
 
 static Eina_Bool
@@ -3138,8 +3138,7 @@ _item_select(Elm_Gen_Item *it)
    evas_object_ref(obj);
    if (it->func.func) it->func.func((void *)it->func.data, obj, EO_OBJ(it));
    if (EINA_MAGIC_CHECK(it->base, ELM_WIDGET_ITEM_MAGIC))
-   efl_event_callback_legacy_call(WIDGET(it), EFL_UI_EVENT_SELECTABLE_SELECTED, EO_OBJ(it));
-
+     evas_object_smart_callback_call(WIDGET(it), "selected", EO_OBJ(it));
    if ((it->base)->on_deletion) goto item_deleted;
 
    if (!(sd->focus_on_selection_enabled || _elm_config->item_select_on_focus_disable))
@@ -4631,7 +4630,7 @@ _elm_genlist_efl_ui_widget_focus_next(Eo *obj, Elm_Genlist_Data *sd, Efl_Ui_Focu
           }
      }
 
-   return elm_widget_focus_list_next_get
+   return efl_ui_widget_focus_list_next_get
             (obj, items, eina_list_data_get, dir, next, next_item);
 }
 

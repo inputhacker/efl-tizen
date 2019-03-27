@@ -643,7 +643,7 @@ mixin Efl.Access.Object requires Efl.Object
       Efl.Object.destructor;
    }
    events {
-      property,changed: string; [[Called when property has changed]]
+      property,changed: const(string); [[Called when property has changed]]
       children,changed: Efl.Access.Event.Children_Changed.Data; [[Called when children have changed]]
       state,changed: Efl.Access.Event.State_Changed.Data; [[Called when state has changed]]
       bounds,changed: Efl.Access.Event.Geometry_Changed.Data; [[Called when boundaries have changed]]

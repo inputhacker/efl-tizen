@@ -1627,6 +1627,7 @@ _efl_ui_widget_widget_sub_object_add(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
         /***********************************************************
          * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
          ***********************************************************/
+        ELM_WIDGET_DATA_GET(sobj, sdc);
         if (sdc->inherit_paragraph_direction &&
             (sdc->paragraph_direction != efl_canvas_object_paragraph_direction_get(obj)))
           {
@@ -1717,6 +1718,7 @@ _efl_ui_widget_widget_sub_object_del(Eo *obj, Elm_Widget_Smart_Data *sd, Evas_Ob
         /***********************************************************
          * TIZEN_ONLY(20180117): Override Paragraph Direction APIs *
          ***********************************************************/
+        ELM_WIDGET_DATA_GET(sobj, sdc);
         if (sdc->inherit_paragraph_direction &&
             (sdc->paragraph_direction != EFL_TEXT_BIDIRECTIONAL_TYPE_NEUTRAL))
           {
@@ -5508,6 +5510,7 @@ _efl_ui_widget_efl_object_constructor(Eo *obj, Elm_Widget_Smart_Data *sd EINA_UN
     ***********************************************************/
    sd->inherit_paragraph_direction = EINA_TRUE;
 
+   Eo *parent = efl_parent_get(obj);
    if (efl_isa(parent, EFL_CANVAS_OBJECT_CLASS))
      {
         if (sd->paragraph_direction != efl_canvas_object_paragraph_direction_get(parent))
