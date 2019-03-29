@@ -403,7 +403,9 @@ eng_window_use(Outbuf *gw)
    glsym_evas_gl_preload_render_lock(eng_preload_make_current, gw);
    if ((gw) && (!gw->gl_context)) return;
 
+   //TIZEN_ONLT(20171104): [evas_gl_thread] Implement evas gl thread
    if (wl_win)
+   //
      {
         if ((GL_TH(eglGetCurrentContext) != wl_win->egl_context)
             || (GL_TH(eglGetCurrentDisplay) != wl_win->egl_disp)
