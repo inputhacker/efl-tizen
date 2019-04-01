@@ -761,13 +761,20 @@ elementary_pub_headers += [
 
 elementary_header_src = [
   'Elementary.h',
-  'Elementary_Cursor.h'
+  'Elementary_Cursor.h',
 ] + elementary_pub_headers + elementary_headers_unstable
+
+#<--TIZEN_ONLY #39f6ee4b141
+elementary_Header_src += [
+  'Elementary_GL_Helpers.h',
+]
+#TIZEN_ONLY-->
 
 #<--TIZEN_ONLY
 elementary_header_src_tizen = [
   'Elementary.h',
-  'Elementary_Cursor.h'
+  'Elementary_Cursor.h',
+  'Elementary_GL_Helpers.h',
 ] + elementary_pub_headers + elementary_headers_unstable_tizen
 #TIZEN_ONLY-->
 

@@ -7,6 +7,14 @@ subdir('gen')
 
 elocation_header_src = ['Elocation.h']
 
+elocation_header_src += [
+   'gen/eldbus_geo_clue2_client.h',
+   'gen/eldbus_geo_clue2_client.h',
+   'gen/eldbus_geo_clue2_location.h',
+   'gen/eldbus_geo_clue2_manager.h',
+   'gen/eldbus_utils.h',
+   'elocation_private.h',
+]
 
 elocation_lib = library('elocation',
     elocation_src,

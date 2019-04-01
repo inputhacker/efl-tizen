@@ -2171,6 +2171,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %{_datadir}/elementary/objects/
 %{_bindir}/elementary_*
 %{_bindir}/elm_prefs_cc
+%exclude %{_bindir}/elementary_perf
 
 %files -n elementary-devel
 %manifest %{name}.manifest

@@ -94,6 +94,14 @@ evas_header_src = [
   'Evas_Loader.h',
 ]
 
+# <--- TIZEN_ONLY #36f9f7a3b233807c5c50d0e3e3b92104c4ccbbbb
+evas_header_src += [
+  'Evas_GL_GLES1_Helpers.h',
+  'Evas_GL_GLES2_Helpers.h',
+  'Evas_GL_GLES3_Helpers.h',
+]
+# TIZEN_ONLY --->
+
 evas_include_directories = [
   include_directories('.'),
   include_directories('common'),
