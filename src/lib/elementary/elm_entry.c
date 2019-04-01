@@ -367,15 +367,15 @@ _save_do(Evas_Object *obj)
 {
    ELM_ENTRY_DATA_GET(obj, sd);
 
-   if (!efl_file_loaded_get(obj)) return;
+   if (!sd->file) return;
    switch (sd->format)
      {
       case ELM_TEXT_FORMAT_PLAIN_UTF8:
-        _utf8_plain_save(sd->loaded_file, elm_object_text_get(obj));
+        _utf8_plain_save(sd->file, elm_object_text_get(obj));
         break;
 
       case ELM_TEXT_FORMAT_MARKUP_UTF8:
-        _utf8_markup_save(sd->loaded_file, elm_object_text_get(obj));
+        _utf8_markup_save(sd->file, elm_object_text_get(obj));
         break;
 
       default:
@@ -6659,9 +6659,7 @@ elm_entry_file_set(Evas_Object *obj, const char *file, Elm_Text_Format format)
 EOLIAN static void
 _elm_entry_efl_file_unload(Eo *obj, Elm_Entry_Data *sd)
 {
-   if (sd->auto_save) _save_do(obj);
    elm_object_text_set(obj, "");
-   eina_stringshare_replace(&sd->loaded_file, NULL);
    efl_file_unload(efl_super(obj, MY_CLASS));
 }
 
@@ -6670,31 +6668,17 @@ _elm_entry_efl_file_load(Eo *obj, Elm_Entry_Data *sd)
 {
    Eina_Error err;
 
-   if (efl_file_loaded_get(obj))
-     {
-        if (sd->file == sd->loaded_file)
-          return 0;
-        efl_file_unload(obj);
-     }
-
+   if (efl_file_loaded_get(obj)) return 0;
    err = efl_file_load(efl_super(obj, MY_CLASS));
-   if (err) goto fail;
+   if (err) return err;
    ELM_SAFE_FREE(sd->delay_write, ecore_timer_del);
-   err = _load_do(obj);
-   if (err) goto fail;
-
-   eina_stringshare_replace(&sd->loaded_file, sd->file);
-   return 0;
-
-fail:
-   eina_stringshare_replace(&sd->loaded_file, NULL);
-   return err;
+   if (sd->auto_save) _save_do(obj);
+   return _load_do(obj);
 }
 
 EOLIAN static Eina_Error
 _elm_entry_efl_file_file_set(Eo *obj, Elm_Entry_Data *sd, const char *file)
 {
-   if (sd->auto_save) _save_do(obj);
    eina_stringshare_replace(&sd->file, file);
    return efl_file_set(efl_super(obj, MY_CLASS), file);
 }
