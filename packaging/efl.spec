@@ -1864,7 +1864,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.SMALL
-%{_bindir}/embryo_cc
+%exclude %{_bindir}/embryo_cc
 %{_libdir}/libembryo.so.*
 %{_datadir}/embryo/include/default.inc
 
@@ -2171,7 +2171,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %{_datadir}/elementary/images/
 %{_datadir}/elementary/objects/
 %{_bindir}/elementary_*
-%{_bindir}/elm_prefs_cc
+%exclude %{_bindir}/elm_prefs_cc
 %exclude %{_bindir}/elementary_perf
 
 %files -n elementary-devel
