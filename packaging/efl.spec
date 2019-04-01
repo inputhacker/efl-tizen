@@ -1548,7 +1548,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.SMALL
-%{_bindir}/embryo_cc
+%exclude %{_bindir}/embryo_cc
 %{_libdir}/libembryo.so.*
 %{_datadir}/embryo/include/default.inc
 
