@@ -4170,7 +4170,6 @@ EFL_ADD_FEATURE([ECORE_AUDIO], [tizenaudio])
 EFL_LIB_END_OPTIONAL([Ecore_Audio])
 AM_CONDITIONAL([HAVE_ECORE_AUDIO_PULSE], [test "x${want_pulseaudio}" = "xyes"])
 AM_CONDITIONAL([HAVE_ECORE_AUDIO_SNDFILE], [test "x${want_sndfile}" = "xyes"])
-AM_CONDITIONAL([HAVE_ECORE_AUDIO_WASASPI], [test "x${want_wasapiaudio}" = "xyes"])
 
 AM_CONDITIONAL([HAVE_ECORE_AUDIO_CORE_AUDIO], [test "x${want_coreaudio}" = "xyes"])
 AM_CONDITIONAL([HAVE_ECORE_AUDIO_TIZEN], [test "x${want_tizenaudio}" = "xyes"])
