@@ -379,8 +379,8 @@ option('tizen_audio',
   description: 'enable tizen audio'
 )
 
-option('install-eo-files',
+option('install-eo-files', # TIZEN_CONFIG
   type: 'boolean',
-  value: false,
+  value: true,
   description : 'Set this to false to not install any eo file'
 )
