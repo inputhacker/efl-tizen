@@ -247,6 +247,34 @@ EOAPI Eina_Bool elm_obj_label_ellipsis_get(const Eo *obj);
  */
 EOAPI void elm_obj_label_slide_go(Eo *obj);
 
+/* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages */
+/**
+ * @internal
+ *
+ * @param[in] style The style user to push.
+ *
+ * @ingroup Elm_Label
+ */
+EOAPI void elm_obj_label_text_style_user_push(Eo *obj, const char *style);
+
+/**
+ * @internal
+ *
+ * @ingroup Elm_Label
+ */
+EOAPI void elm_obj_label_text_style_user_pop(Eo *obj);
+
+/**
+ * @internal
+ *
+ * @return string
+ *
+ * @ingroup Elm_Label
+ */
+EOAPI const char *elm_obj_label_text_style_user_peek(const Eo *obj);
+
+/* END */
+
 EWAPI extern const Efl_Event_Description _ELM_LABEL_EVENT_SLIDE_END;
 
 /** Called when slide stopped

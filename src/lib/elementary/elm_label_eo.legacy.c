@@ -76,3 +76,23 @@ elm_label_slide_go(Elm_Label *obj)
 {
    elm_obj_label_slide_go(obj);
 }
+
+/* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages */
+EAPI void
+elm_label_text_style_user_push(Elm_Label *obj, const char *style)
+{
+   elm_obj_label_text_style_user_push(obj, style);
+}
+
+EAPI void
+elm_label_text_style_user_pop(Elm_Label *obj)
+{
+   elm_obj_label_text_style_user_pop(obj);
+}
+
+EAPI const char *
+elm_label_text_style_user_peek(const Elm_Label *obj)
+{
+   return elm_obj_label_text_style_user_peek(obj);
+}
+/* END */

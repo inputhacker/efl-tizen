@@ -240,4 +240,31 @@ EAPI Eina_Bool elm_label_ellipsis_get(const Elm_Label *obj);
  */
 EAPI void elm_label_slide_go(Elm_Label *obj);
 
+/* TIZEN_ONLY(20170526): Add elm_label_text_style_user_push, pop, peek APIs for internal usages */
+/**
+ * @internal
+ *
+ * @param[in] style The style user to push.
+ *
+ * @ingroup Elm_Label
+ */
+EAPI void elm_label_text_style_user_push(Elm_Label *obj, const char *style);
+
+/**
+ * @internal
+ *
+ * @ingroup Elm_Label
+ */
+EAPI void elm_label_text_style_user_pop(Elm_Label *obj);
+
+/**
+ * @internal
+ *
+ * @return string
+ *
+ * @ingroup Elm_Label
+ */
+EAPI const char * elm_label_text_style_user_peek(const Elm_Label *obj);
+/* END */
+
 #endif
