@@ -765,7 +765,7 @@ elementary_header_src = [
 ] + elementary_pub_headers + elementary_headers_unstable
 
 #<--TIZEN_ONLY #39f6ee4b141
-elementary_Header_src += [
+elementary_header_src += [
   'Elementary_GL_Helpers.h',
 ]
 #TIZEN_ONLY-->
