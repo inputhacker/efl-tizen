@@ -865,6 +865,7 @@ Example files for edje
 Summary:  Development components for the edje package
 Group:    Graphics & UI Framework/Development
 Requires: edje = %{version}-%{release}
+Requires: edje-tools = %{version}-%{release}
 License: BSD-2-Clause and GPL-2.0+
 
 %description -n edje-devel
