@@ -1774,7 +1774,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %manifest %{name}.manifest
 %defattr(-,root,root,-)
 %license licenses/COPYING.SMALL
-%exclude %{_bindir}/embryo_cc
+%{_bindir}/embryo_cc
 %{_libdir}/libembryo.so.*
 %{_datadir}/embryo/include/default.inc
 
