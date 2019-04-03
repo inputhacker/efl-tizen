@@ -764,6 +764,8 @@ elementary_pub_headers += [
   'elm_atspi_proxy.h',
   'elm_atspi_proxy_eo.legacy.h',
   'efl_ui_animation_view_eo.legacy.h',
+  'elm_widget_item_container_eo.h',
+  'elm_widget_item_eo.h',
 ]
 #TIZEN_ONLY-->
 
