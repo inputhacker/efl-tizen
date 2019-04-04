@@ -2077,6 +2077,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.21.*
 %{_bindir}/elementary_test*
 %{_bindir}/elementary_codegen
 %exclude %{_bindir}/elm_prefs_cc
+%exclude %{_libdir}/debug/%{_bindir}/elm_prefs_cc*
 
 %files -n elementary-devel
 %manifest %{name}.manifest
