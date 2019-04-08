@@ -1396,7 +1396,7 @@ install -m 0644 %SOURCE100 %{buildroot}%{_tmpfilesdir}/efl.conf
 %postun -n efl-wl -p /sbin/ldconfig
 
 %post -n elementary
-ldconfig -l %{_libdir}/libelementary.so.1.22.0
+ldconfig -l %{_libdir}/libelementary.so.1.22.99
 
 %postun -n elementary -p /sbin/ldconfig
 
@@ -1404,7 +1404,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 ldconfig -l %{_libdir}/libelementary.so.1.22.100
 
 %preun -n elementary-tizen
-ldconfig -l %{_libdir}/libelementary.so.1.22.0
+ldconfig -l %{_libdir}/libelementary.so.1.22.99
 
 %postun -n elementary-tizen -p /sbin/ldconfig
 
@@ -2144,7 +2144,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.0
 %{_bindir}/elementary_run
 %{_libdir}/edje/modules/elm/
 %{_libdir}/libelementary.so.1
-%{_libdir}/libelementary.so.1.22.0
+%{_libdir}/libelementary.so.1.22.99
 %{_datadir}/elementary/edje_externals/
 %{_datadir}/icons/hicolor/128x128/apps/elementary.png
 %{_libdir}/elementary/modules/
