@@ -4,7 +4,9 @@
 
 #include "Elementary.h"
 
-#define ELEMENTARY_BUILD
+#ifndef EFL_BUILD
+# define EFL_BUILD
+#endif
 #include "private.h"
 
 /* including declaration of each prefs item implementation iface struct */
