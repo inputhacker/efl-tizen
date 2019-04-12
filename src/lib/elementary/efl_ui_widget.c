@@ -691,7 +691,9 @@ _parents_unfocus(Evas_Object *obj)
 static void
 _on_sub_obj_hide(void *data EINA_UNUSED, const Efl_Event *event)
 {
-   efl_ui_widget_focus_hide_handle(event->object);
+   Eina_Bool *visible = event->info;
+   if ((*visible) == EINA_FALSE)
+     efl_ui_widget_focus_hide_handle(event->object);
 }
 //
 static void
