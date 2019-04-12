@@ -2840,6 +2840,7 @@ _ecore_wl2_keyname_get(int keycode)
 
    ewd = ecore_wl2_connected_display_get(NULL);
    input = ecore_wl2_input_default_input_get(ewd);
+   if (!input) return NULL;
 
    sym = xkb_state_key_get_one_sym(input->xkb.state, keycode);
    xkb_keysym_get_name(sym, name, sizeof(name));

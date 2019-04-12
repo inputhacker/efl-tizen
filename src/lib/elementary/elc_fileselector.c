@@ -2358,7 +2358,7 @@ _properties_ready(void *data, const Efl_Event *ev)
           Eina_Bool is_dir = EINA_FALSE;
 
           value = efl_model_property_get(ev->object, "is_dir");
-          if (eina_value_type_get(value) != EINA_VALUE_TYPE_BOOL)
+          if (value && eina_value_type_get(value) != EINA_VALUE_TYPE_BOOL)
             {
                ERR("Unexpected type for 'is_dir': '%s' with value '%s'.", eina_value_type_get(value)->name, eina_value_to_string(value));
                return ;
