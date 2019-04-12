@@ -2098,7 +2098,6 @@ _elm_popup_efl_canvas_group_group_add(Eo *obj, Elm_Popup_Data *priv)
    /* END */
 
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
-   elm_widget_sub_object_parent_add(obj);
 
    /* TIZEN_ONLY(20160624): add a allow eval flag not to call another sizing eval during sizing eval */
    priv->allow_eval = EINA_TRUE;

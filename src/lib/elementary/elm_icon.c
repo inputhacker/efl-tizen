@@ -535,7 +535,6 @@ EOLIAN static void
 _elm_icon_efl_canvas_group_group_add(Eo *obj, Elm_Icon_Data *priv)
 {
    efl_canvas_group_add(efl_super(obj, MY_CLASS));
-   elm_widget_sub_object_parent_add(obj);
 
    /* TIZEN_ONLY(20180412): lookup_order implements */
    priv->has_lookup_order = EINA_FALSE;
