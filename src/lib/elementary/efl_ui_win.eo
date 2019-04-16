@@ -199,7 +199,7 @@ class @beta Efl.Ui.Win extends Efl.Ui.Widget implements Efl.Canvas.Scene, Efl.Ac
          get {
          }
          values {
-            type: Efl.Ui.Win_Indicator_Mode; [[The mype, one of @Efl.Ui.Win_Indicator_Mode.]]
+            type: Efl.Ui.Win_Indicator_Mode; [[The type, one of @Efl.Ui.Win_Indicator_Mode.]]
          }
       }
       @property keyboard_mode @beta {
