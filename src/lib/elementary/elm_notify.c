@@ -183,12 +183,16 @@ EOLIAN static Eina_Error
 _elm_notify_efl_ui_widget_theme_apply(Eo *obj, Elm_Notify_Data *sd)
 {
    Eina_Error int_ret = EFL_UI_THEME_APPLY_ERROR_GENERIC;
+   Eina_Error notify_theme_ret = EFL_UI_THEME_APPLY_ERROR_GENERIC;
    int_ret = efl_ui_widget_theme_apply(efl_super(obj, MY_CLASS));
    if (int_ret == EFL_UI_THEME_APPLY_ERROR_GENERIC) return int_ret;
 
    _mirrored_set(obj, efl_ui_mirrored_get(obj));
 
-   int_ret &= _notify_theme_apply(obj);
+   notify_theme_ret = _notify_theme_apply(obj);
+   if (notify_theme_ret == EFL_UI_THEME_APPLY_ERROR_GENERIC)
+     return notify_theme_ret;
+
    if (sd->block_events) _block_events_theme_apply(obj);
 
    edje_object_scale_set
@@ -205,7 +209,11 @@ _elm_notify_efl_ui_widget_theme_apply(Eo *obj, Elm_Notify_Data *sd)
      edje_object_signal_emit(sd->notify, "elm,action,hide,finished", "elm");
    /* END */
 
-   return int_ret;
+   if ((int_ret == EFL_UI_THEME_APPLY_ERROR_DEFAULT) ||
+       (notify_theme_ret == EFL_UI_THEME_APPLY_ERROR_DEFAULT))
+     return EFL_UI_THEME_APPLY_ERROR_DEFAULT;
+
+   return EFL_UI_THEME_APPLY_ERROR_NONE;
 }
 
 /* Legacy compat. Note that notify has no text parts in the default theme... */
