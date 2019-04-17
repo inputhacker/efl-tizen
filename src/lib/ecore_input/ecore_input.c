@@ -79,8 +79,12 @@ ecore_event_init(void)
    ECORE_EVENT_DEVICE_SUBCLASS_UPDATE = ecore_event_type_new();
    //
 
+   //TIZEN_ONLY(20170307) Remove warning message
+   #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
    if (getenv("ECORE_INPUT_ENABLE_JOYSTICK_INIT"))
      ecore_input_joystick_init();
+   #pragma GCC diagnostic pop
+   //
 
    return _ecore_event_init_count;
 }
@@ -113,7 +117,11 @@ ecore_event_shutdown(void)
                           ECORE_EVENT_DEVICE_SUBCLASS_UPDATE
                           //
                           );
+   //TIZEN_ONLY(20170307) Remove warning message
+   #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
    ecore_input_joystick_shutdown();
+   #pragma GCC diagnostic pop
+   //
    eina_log_domain_unregister(_ecore_input_log_dom);
    _ecore_input_log_dom = -1;
    ecore_shutdown();

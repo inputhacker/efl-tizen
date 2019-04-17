@@ -7141,7 +7141,7 @@ EAPI Eina_Bool evas_object_grid_mirrored_get(const Eo *obj);
  * @endif
  *
  */
-/** @deprecated evas_out_add since 5.0 */
+/** @deprecated evas_out_add */
 EAPI Evas_Out *evas_out_add(Evas *e) EINA_DEPRECATED;
 
 /**
@@ -7159,7 +7159,7 @@ EAPI Evas_Out *evas_out_add(Evas *e) EINA_DEPRECATED;
  * @endif
  *
  */
-/** @deprecated evas_output_del since 5.0 */
+/** @deprecated evas_output_del */
 EAPI void evas_output_del(Evas_Out *evo) EINA_DEPRECATED;
 
 /**
@@ -7179,7 +7179,7 @@ EAPI void evas_output_del(Evas_Out *evo) EINA_DEPRECATED;
  *
  * @ingroup Evas_Canvas
  */
-/** @deprecated evas_output_view_set since 5.0 */
+/** @deprecated evas_output_view_set */
 EAPI void evas_output_view_set(Evas_Out *obj, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h) EINA_DEPRECATED;
 
 /**
@@ -7198,7 +7198,7 @@ EAPI void evas_output_view_set(Evas_Out *obj, Evas_Coord x, Evas_Coord y, Evas_C
  *
  * @ingroup Evas_Canvas
  */
-/** @deprecated evas_output_view_get since 5.0 */
+/** @deprecated evas_output_view_get */
 EAPI void evas_output_view_get(const Evas_Out *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h) EINA_DEPRECATED;
 
 /**

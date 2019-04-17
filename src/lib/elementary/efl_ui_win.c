@@ -10565,6 +10565,18 @@ elm_win_active_win_orientation_get(Evas_Object *obj)
    return angle;
 }
 //
+// TIZEN_ONLY(20160126) : add elm_win_profiles_set
+EINA_DEPRECATED EAPI void
+elm_win_profiles_set(Evas_Object *obj, const char **profiles, unsigned int num_profiles)
+{
+   ELM_WIN_DATA_GET_OR_RETURN(obj, sd);
+
+   // TODO: may need to merge below eolian api
+   //_elm_win_available_profiles_set(obj, sd, profiles, num_profiles);
+   (void)profiles;
+   (void)num_profiles;
+}
+//
 
 //////////////////////////////////////////////////////////////////
 // TIZEN_ONLY(20150722): added signal for aux_hint(auxiliary hint)
