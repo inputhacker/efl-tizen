@@ -261,7 +261,7 @@ lib_elementary_tizen_libelementary_la_CPPFLAGS = \
 -DLOCALE_DIR=\"$(localedir)\" \
 -DICON_DIR=\"$(datadir)/icons\" \
 -DELM_TOP_BUILD_DIR=\"$(top_builddir)\" \
--DELEMENTARY_BUILD \
+-DEFL_BUILD \
 @ELEMENTARY_CFLAGS@
 
 if HAVE_WINDOWS

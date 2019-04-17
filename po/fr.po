@@ -320,7 +320,7 @@ msgstr "Corps du texte du Popup"
 
 #: src/lib/elementary/elc_popup.c:1836
 msgid "Alert"
-msgstr ""
+msgstr "Alerte"
 
 #: src/lib/elementary/elm_bubble.c:163
 msgid "Bubble"
@@ -757,6 +757,3 @@ msgstr "Mois"
 
 msgid "WDS_ST_OPT_YEAR_ABB"
 msgstr "Année"
-
-msgid "Alert"
-msgstr "Alerte"

@@ -314,7 +314,7 @@ msgstr ""
 
 #: src/lib/elementary/elc_popup.c:1836
 msgid "Alert"
-msgstr ""
+msgstr "提示"
 
 #: src/lib/elementary/elm_bubble.c:163
 msgid "Bubble"
@@ -619,6 +619,3 @@ msgstr "月"
 
 msgid "WDS_ST_OPT_YEAR_ABB"
 msgstr "年"
-
-msgid "Alert"
-msgstr "提示"

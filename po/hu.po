@@ -315,7 +315,7 @@ msgstr "Popup szövege"
 
 #: src/lib/elementary/elc_popup.c:1836
 msgid "Alert"
-msgstr ""
+msgstr "Jelzés"
 
 #: src/lib/elementary/elm_bubble.c:163
 msgid "Bubble"
@@ -772,6 +772,3 @@ msgstr "Hónap"
 
 msgid "WDS_ST_OPT_YEAR_ABB"
 msgstr "Év"
-
-msgid "Alert"
-msgstr "Jelzés"

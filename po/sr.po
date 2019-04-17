@@ -317,7 +317,7 @@ msgstr "Тело искачућег текста"
 
 #: src/lib/elementary/elc_popup.c:1836
 msgid "Alert"
-msgstr ""
+msgstr "Upozorenje"
 
 #: src/lib/elementary/elm_bubble.c:163
 msgid "Bubble"
@@ -776,6 +776,3 @@ msgstr "Mesec"
 
 msgid "WDS_ST_OPT_YEAR_ABB"
 msgstr "Godina"
-
-msgid "Alert"
-msgstr "Upozorenje"

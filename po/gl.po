@@ -313,7 +313,7 @@ msgstr "Corpo de texto emerxente"
 
 #: src/lib/elementary/elc_popup.c:1836
 msgid "Alert"
-msgstr ""
+msgstr "Alerta"
 
 #: src/lib/elementary/elm_bubble.c:163
 msgid "Bubble"
@@ -777,6 +777,3 @@ msgstr "Mes"
 
 msgid "WDS_ST_OPT_YEAR_ABB"
 msgstr "Ano"
-
-msgid "Alert"
-msgstr "Alerta"

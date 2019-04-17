@@ -316,7 +316,7 @@ msgstr "Treść główna okienka"
 
 #: src/lib/elementary/elc_popup.c:1836
 msgid "Alert"
-msgstr ""
+msgstr "Alert"
 
 #: src/lib/elementary/elm_bubble.c:163
 msgid "Bubble"
@@ -774,6 +774,3 @@ msgstr "mm"
 
 msgid "WDS_ST_OPT_YEAR_ABB"
 msgstr "rr"
-
-msgid "Alert"
-msgstr "Alert"

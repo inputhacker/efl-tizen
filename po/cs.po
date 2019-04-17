@@ -318,7 +318,7 @@ msgstr "Text vyskakovacího okna"
 
 #: src/lib/elementary/elc_popup.c:1836
 msgid "Alert"
-msgstr ""
+msgstr "Výstraha"
 
 #: src/lib/elementary/elm_bubble.c:163
 msgid "Bubble"
@@ -777,6 +777,3 @@ msgstr "Měsíc"
 
 msgid "WDS_ST_OPT_YEAR_ABB"
 msgstr "Rok"
-
-msgid "Alert"
-msgstr "Výstraha"
