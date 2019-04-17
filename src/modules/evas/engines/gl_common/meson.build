@@ -31,6 +31,19 @@ engine_src = files([
   #join_paths('shader','evas_gl_shaders.x'),
 ])
 
+engine_src_gl_thread = files([
+  'evas_gl_thread.h',
+  'evas_gl_thread.c',
+  'evas_gl_thread_egl.h',
+  'evas_gl_thread_egl.c',
+  'evas_gl_thread_glx.h',
+  'evas_gl_thread_glx.c',
+  'evas_gl_thread_gl.h',
+  'evas_gl_thread_gl.c',
+])
+
+engine_src += engine_src_gl_thread
+
 engine_deps = [gl_deps]
 
 if get_option('evas-modules') == 'shared' and not evas_force_static.contains(engine)

@@ -93,7 +93,6 @@ endforeach
 add_global_arguments(dev_cflags, language: 'c')
 add_global_arguments(dev_cflags, language: 'cpp')
 
-
 foreach lang : ['c', 'objc', 'cpp']
   add_global_arguments('-DHAVE_CONFIG_H=1', language: lang)
   add_global_arguments('-D_GNU_SOURCE=1', language: lang)

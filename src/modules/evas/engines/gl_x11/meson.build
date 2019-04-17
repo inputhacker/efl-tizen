@@ -5,6 +5,8 @@ engine_src = files([
   'evas_x_main.c',
 ])
 
+engine_src += engine_src_gl_thread
+
 engine_deps = [ecore_x_deps, gl_deps]
 
 if get_option('evas-modules') == 'shared' and not evas_force_static.contains(engine)

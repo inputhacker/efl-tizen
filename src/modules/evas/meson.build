@@ -29,8 +29,15 @@ if get_option('tbm') == true
 endif
 
 #there are a few modules that should NEVER be build as a module but rather be build as static lib and linked in later
-evas_force_static = ['software_generic', 'gl_common', 'buffer']
+evas_force_static = ['software_generic', 'gl_common']
 evas_static_list = []
+
+#<--TIZEN_ONLY
+evas_force_static += [
+  'buffer',
+  'gl_generic',
+]
+#-->
 
 #fixed dependencies by efl
 png = dependency('libpng')
@@ -69,10 +76,20 @@ foreach engine_conf : engines
   	subdir(join_paths('engines', engine))
 
     if get_option('evas-modules') == 'static' or evas_force_static.contains(engine)
+
+    if engine == 'gl_common'
+      tmp = static_library(mod_full_name, engine_src,
+        include_directories : config_dir + [engine_include_dir],
+        dependencies : [eina, evas_pre] + engine_deps,
+        c_args: ['-DEVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC',]
+      )
+    else
       tmp = static_library(mod_full_name, engine_src,
         include_directories : config_dir + [engine_include_dir],
         dependencies : [eina, evas_pre] + engine_deps,
       )
+    endif
+
 
       if engine == 'software_generic'
         software_generic = declare_dependency(

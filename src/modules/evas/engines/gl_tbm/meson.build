@@ -8,7 +8,7 @@ engine_header = [
     'Evas_Engine_GL_Tbm.h'
 ]
 
-engine_deps = [gl_deps, libtbm]
+engine_deps = [gl_deps, gl_common, libtbm]
 engine_include_dir = include_directories(join_paths('..','software_generic'))
 message('WKWK2 gl_tbm build')
 if get_option('evas-modules') == 'shared' and not evas_force_static.contains(engine)

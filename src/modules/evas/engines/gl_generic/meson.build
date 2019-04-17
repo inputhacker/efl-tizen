@@ -32,7 +32,7 @@ foreach eo_file : pub_eo_files
                            '-gchd', '@INPUT@'])
 endforeach
 
-engine_deps = [gl_common]
+engine_deps = [gl_deps, gl_common]
 
 engine_include_dir = include_directories(join_paths('..','software_generic'))
 
@@ -42,6 +42,7 @@ if get_option('evas-modules') == 'shared' and not evas_force_static.contains(eng
         dependencies : [eina, evas_pre] + engine_deps + [software_generic],
         install : true,
         install_dir : mod_install_dir,
+        c_args: ['-DEVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC',],
         name_suffix : sys_mod_extension
       )
       module_files += join_paths(mod_install_dir, 'lib'+mod_full_name + '.' + sys_mod_extension)
