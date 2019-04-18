@@ -318,8 +318,6 @@ struct _Evas_Engine_GL_Context
       Eina_Bool          size       : 1;
    } change;
 
-   Eina_Bool             havestuff  : 1;
-
    struct {
       struct { // TIZEN_ONLY(20171114) : EvasGL Render Thread
         int foc, z0, px, py;
@@ -355,7 +353,7 @@ struct _Evas_Engine_GL_Context
       } shader;
       struct {
          int            num, alloc;
-         GLshort       *vertex;
+         GLfloat       *vertex;
          GLubyte       *color;
          GLfloat       *texuv;
          GLfloat       *texuv2;
@@ -402,6 +400,9 @@ struct _Evas_Engine_GL_Context
    GLuint preserve_bit;
    int    gles_version;
 
+   Eina_Bool havestuff : 1;
+   Eina_Bool msaa : 1;
+
    //TIZEN_ONLY(20161121)
    // If set, the driver will rotate the buffer itself
    Eina_Bool pre_rotated : 1;
@@ -410,7 +411,6 @@ struct _Evas_Engine_GL_Context
    // modified to share resource by each gl backend
    Eina_TLS context_key;
    Eina_TLS shared_key;
-
 };
 
 struct _Evas_GL_Texture_Pool
