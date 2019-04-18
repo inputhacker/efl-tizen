@@ -1677,13 +1677,14 @@ EINA_DEPRECATED EAPI void elm_access_external_info_set(Evas_Object *obj, const c
 EINA_DEPRECATED EAPI char *elm_access_external_info_get(const Evas_Object *obj);
 
 /**
- * @deprecated Deprecated since 2.4.
- * @ingroup Elm_Ctxpopup
+ * @deprecated Deprecated since 5.5
+ * @brief Get the direction priority of a ctxpopup.
  *
  * @param[in] obj The object.
  * @param[in] direction The direction to check available to show ctxpopup.
- *
  * @return EINA_TRUE if object is available to show with @p direction.
+ *
+ * @ingroup Elm_Ctxpopup
  *
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
@@ -1699,19 +1700,14 @@ EINA_DEPRECATED EAPI void elm_win_name_set(Evas_Object *obj, const char *name);
 
 // TIZEN_ONLY(20160126) : add elm_win_profiles_set
 /**
+ * @deprecated Deprecated since Tizen 5.5
  * @brief Sets the profile list of a window.
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
  *
  * @param[in] obj The window object
  * @param[in] profiles The list of profile names
  * @param[in] num_profiles The number of profile names
  *
  * @ingroup Elm_Win
- *
- * @deprecated Deprecated since Tizen 2.4
  *
  * @if MOBILE @since_tizen 2.3
  * @elseif WEARABLE @since_tizen 2.3.1
