@@ -78,6 +78,25 @@ EXTRA_DIST2 += \
 	bindings/mono/efl_mono/efl_libs.cs.in \
 	bindings/mono/efl_mono/efl_libs.csv.in
 
+## TIZEN_ONLY(20190418) Install libeflcustomexportsmono.so without --enable-csharp-bindings
+# Efl Custom Exports Mono auxiliary library
+
+lib_LTLIBRARIES += \
+lib/efl_mono/libeflcustomexportsmono.la
+
+lib_efl_mono_libeflcustomexportsmono_la_SOURCES = \
+	$(efl_custom_exports_mono_files)
+
+lib_efl_mono_libeflcustomexportsmono_la_CPPFLAGS = \
+-DEFL_BETA_API_SUPPORT \
+-I$(top_builddir)/src/lib/efl \
+-DEFL_BUILD \
+@EFL_CUSTOM_EXPORTS_MONO_CFLAGS@
+lib_efl_mono_libeflcustomexportsmono_la_LDFLAGS = @EFL_LTLIBRARY_FLAGS@
+lib_efl_mono_libeflcustomexportsmono_la_LIBADD = @EFL_CUSTOM_EXPORTS_MONO_LIBS@
+lib_efl_mono_libeflcustomexportsmono_la_DEPENDENCIES = @EFL_CUSTOM_EXPORTS_MONO_INTERNAL_LIBS@
+##
+
 if HAVE_CSHARP
 
 bin_PROGRAMS += bin/eolian_mono/eolian_mono
@@ -233,22 +252,24 @@ MCSFLAGS += -define:WIN32
 
 endif
 
+## TIZEN_ONLY(20190418) Install libeflcustomexportsmono.so without --enable-csharp-bindings
 # Efl Custom Exports Mono auxiliary library
 
-lib_LTLIBRARIES += \
-lib/efl_mono/libeflcustomexportsmono.la
+#lib_LTLIBRARIES += \
+#lib/efl_mono/libeflcustomexportsmono.la
 
-lib_efl_mono_libeflcustomexportsmono_la_SOURCES = \
-	$(efl_custom_exports_mono_files)
+#lib_efl_mono_libeflcustomexportsmono_la_SOURCES = \
+#	$(efl_custom_exports_mono_files)
 
-lib_efl_mono_libeflcustomexportsmono_la_CPPFLAGS = \
--DEFL_BETA_API_SUPPORT \
--I$(top_builddir)/src/lib/efl \
--DEFL_BUILD \
-@EFL_CUSTOM_EXPORTS_MONO_CFLAGS@
-lib_efl_mono_libeflcustomexportsmono_la_LDFLAGS = @EFL_LTLIBRARY_FLAGS@
-lib_efl_mono_libeflcustomexportsmono_la_LIBADD = @EFL_CUSTOM_EXPORTS_MONO_LIBS@
-lib_efl_mono_libeflcustomexportsmono_la_DEPENDENCIES = @EFL_CUSTOM_EXPORTS_MONO_INTERNAL_LIBS@
+#lib_efl_mono_libeflcustomexportsmono_la_CPPFLAGS = \
+#-DEFL_BETA_API_SUPPORT \
+#-I$(top_builddir)/src/lib/efl \
+#-DEFL_BUILD \
+#@EFL_CUSTOM_EXPORTS_MONO_CFLAGS@
+#lib_efl_mono_libeflcustomexportsmono_la_LDFLAGS = @EFL_LTLIBRARY_FLAGS@
+#lib_efl_mono_libeflcustomexportsmono_la_LIBADD = @EFL_CUSTOM_EXPORTS_MONO_LIBS@
+#lib_efl_mono_libeflcustomexportsmono_la_DEPENDENCIES = @EFL_CUSTOM_EXPORTS_MONO_INTERNAL_LIBS@
+##
 
 #Efl Mono - C Sharp binding library
 

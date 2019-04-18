@@ -1439,7 +1439,10 @@ EFL_EVAL_PKGS([EFL_MONO])
 EFL_LIB_END_OPTIONAL([Efl_Mono])
 
 # Efl Custom Exports Mono
-EFL_LIB_START_OPTIONAL([Efl_Custom_Exports_Mono], [test "x${want_csharp}" = "xyes"])
+## TIZEN_ONLY(20190418) Install libeflcustomexportsmono.so without --enable-csharp-bindings
+#EFL_LIB_START_OPTIONAL([Efl_Custom_Exports_Mono], [test "x${want_csharp}" = "xyes"])
+EFL_LIB_START([Efl_Custom_Exports_Mono])
+##
 
 EFL_PLATFORM_DEPEND([EFL_CUSTOM_EXPORTS_MONO], [evil])
 EFL_INTERNAL_DEPEND_PKG([EFL_CUSTOM_EXPORTS_MONO], [Eina])
@@ -1450,7 +1453,10 @@ EFL_INTERNAL_DEPEND_PKG([EFL_CUSTOM_EXPORTS_MONO], [Eldbus])
 
 EFL_EVAL_PKGS([EFL_CUSTOM_EXPORTS_MONO])
 
-EFL_LIB_END_OPTIONAL([Efl_Custom_Exports_Mono])
+## TIZEN_ONLY(20190418) Install libeflcustomexportsmono.so without --enable-csharp-bindings
+#EFL_LIB_END_OPTIONAL([Efl_Custom_Exports_Mono])
+EFL_LIB_END([Efl_Custom_Exports_Mono])
+##
 
 # Libtool versioning stuff.
 # On windows, the version of the library goes into the filename.

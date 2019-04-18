@@ -1434,6 +1434,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %exclude %{_libdir}/pkgconfig/ecore-avahi*.pc
 %endif
 %endif
+#efl-mono
+%{_libdir}/libeflcustomexportsmono.so*
 
 %files -n %{name}-devel
 %manifest %{name}.manifest
