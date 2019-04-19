@@ -1467,7 +1467,7 @@ _content_text_set(Evas_Object *obj,
    /* TIZEN_ONLY(20161109): check theme compatibility more precise
    elm_object_style_set(sd->text_content_obj, style);
     */
-   if (elm_widget_style_set(sd->text_content_obj, style) == EFL_UI_THEME_APPLY_ERROR_GENERIC)
+   if (elm_widget_style_set(sd->text_content_obj, style) != EFL_UI_THEME_APPLY_ERROR_NONE)
      elm_widget_style_set(sd->text_content_obj, "popup/default");
    /* END */
    /***********************************************************************************
