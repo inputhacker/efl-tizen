@@ -1,6 +1,5 @@
 engines = [
  ['buffer', []],
- ['software_generic', []],
  ['fb', ['fb']],
  ['drm', ['drm']],
  ['software_x11', ['x11']],
@@ -28,15 +27,7 @@ if get_option('tbm') == true
 endif
 
 #there are a few modules that should NEVER be build as a module but rather be build as static lib and linked in later
-evas_force_static = ['software_generic']
 evas_static_list = []
-
-#<--TIZEN_ONLY
-evas_force_static += [
-  'buffer',
-  'gl_generic',
-]
-#-->
 
 #fixed dependencies by efl
 png = dependency('libpng')
@@ -72,32 +63,14 @@ foreach engine_conf : engines
     mod_full_name = engine
     mod_install_dir = join_paths(dir_package_modules, 'engines', engine, version_name)
 
-  	subdir(join_paths('engines', engine))
+    subdir(join_paths('engines', engine))
 
-    if get_option('evas-modules') == 'static' or evas_force_static.contains(engine)
-
-    if engine == 'gl_common'
+    if get_option('evas-modules') == 'static'
       tmp = static_library(mod_full_name, engine_src,
         include_directories : config_dir + [engine_include_dir],
         dependencies : [eina, evas_pre] + engine_deps,
-        c_args: ['-DEVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC',]
+#        c_args: ['-DEVAS_GL_RENDER_THREAD_COMPILE_FOR_GL_GENERIC',]
       )
-    else
-      tmp = static_library(mod_full_name, engine_src,
-        include_directories : config_dir + [engine_include_dir],
-        dependencies : [eina, evas_pre] + engine_deps,
-      )
-    endif
-
-
-      if engine == 'software_generic'
-        software_generic = declare_dependency(
-          include_directories: engine_include_dir,
-          sources : gen_src,
-          dependencies : [eina, evas_pre] + engine_deps,
-          link_with : tmp
-        )
-      endif
       evas_static_list += declare_dependency(
         include_directories: [include_directories('.')] + config_dir + [engine_include_dir],
         link_with: tmp,
@@ -118,3 +91,6 @@ foreach engine_conf : engines
     config_h.set('BUILD_ENGINE_'+engine.to_upper(), '1')
   endif
 endforeach
+
+config_h.set('EVAS_STATIC_BUILD_SOFTWARE_GENERIC', '1')
+config_h.set('BUILD_ENGINE_SOFTWARE_GENERIC', '1')
