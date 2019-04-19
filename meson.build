@@ -422,6 +422,11 @@ foreach package : subprojects
 endforeach
 
 subdir('cmakeconfig')
+
+## TIZEN_ONLY(20190418) Install libeflcustomexportsmono.so without --enable-csharp-bindings
+subdir(join_paths('src', 'lib', 'efl_mono'))
+##
+
 #build this later, as the debug services are depending on ecore
 if get_option('eolian-bootstrap') == false
   subdir(join_paths('src', 'bin', 'efl'))

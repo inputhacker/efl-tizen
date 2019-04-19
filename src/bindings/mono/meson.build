@@ -91,12 +91,14 @@ blacklisted_files = [
   'elm_atspi_app_object.eo',
 ]
 
-efl_mono_lib = library('eflcustomexportsmono',
-    join_paths('..', '..', 'lib', 'efl_mono', 'efl_custom_exports_mono.c'),
-    install : true,
-    install_dir : join_paths(dir_lib, 'efl-mono-'+version_major),
-    dependencies : [eo, eina, ecore]
-)
+## TIZEN_ONLY(20190418) Install libeflcustomexportsmono.so without --enable-csharp-bindings
+#efl_mono_lib = library('eflcustomexportsmono',
+#    join_paths('..', '..', 'lib', 'efl_mono', 'efl_custom_exports_mono.c'),
+#    install : true,
+#    install_dir : join_paths(dir_lib, 'efl-mono-'+version_major),
+#    dependencies : [eo, eina, ecore]
+#)
+##
 
 beta_option = []
 if (get_option('mono-beta'))
