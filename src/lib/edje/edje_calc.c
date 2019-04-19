@@ -2432,29 +2432,12 @@ _edje_filter_get(Edje *ed, Edje_Part_Description_Spec_Filter *filter)
 static void
 _edje_part_pixel_adjust(Edje *ed,
                         Edje_Real_Part *ep,
-                        Edje_Calc_Params *params,
-                        Eina_Bool round)
+                        Edje_Calc_Params *params)
 {
-   int xw, yh, fxw, fyh;
-
-   xw = ABS(params->final.x) + params->final.w;
-   yh = ABS(params->final.y) + params->final.h;
-
-   if (round)
-     {
-        fxw = TO_INT_ROUND(ADD(ABS(params->eval.x), params->eval.w));
-        fyh = TO_INT_ROUND(ADD(ABS(params->eval.y), params->eval.h));
-     }
-   else
-     {
-        fxw = TO_INT(ADD(ABS(params->eval.x), params->eval.w));
-        fyh = TO_INT(ADD(ABS(params->eval.y), params->eval.h));
-     }
-
    /* Adjust rounding to not loose one pixels compared to float
       information only when rendering to avoid infinite adjustement
       when doing min restricted calc */
-   if (xw < fxw)
+   if (ABS(params->final.x) + params->final.w < TO_INT(ADD(ABS(params->eval.x), params->eval.w)))
      {
         if (!ed->calc_only)
           {
@@ -2465,7 +2448,7 @@ _edje_part_pixel_adjust(Edje *ed,
              ep->invalidate = EINA_TRUE;
           }
      }
-   else if (xw > fxw)
+   else if (ABS(params->final.x) + params->final.w > TO_INT(ADD(ABS(params->eval.x), params->eval.w)))
      {
         if (!ed->calc_only)
           {
@@ -2476,8 +2459,7 @@ _edje_part_pixel_adjust(Edje *ed,
              ep->invalidate = EINA_TRUE;
           }
      }
-
-   if (yh < fyh)
+   if (ABS(params->final.y) + params->final.h < TO_INT(ADD(ABS(params->eval.y), params->eval.h)))
      {
         if (!ed->calc_only)
           {
@@ -2488,7 +2470,7 @@ _edje_part_pixel_adjust(Edje *ed,
              ep->invalidate = EINA_TRUE;
           }
      }
-   else if (yh > fyh)
+   else if (ABS(params->final.y) + params->final.h > TO_INT(ADD(ABS(params->eval.y), params->eval.h)))
      {
         if (!ed->calc_only)
           {
@@ -2502,6 +2484,7 @@ _edje_part_pixel_adjust(Edje *ed,
 
    if (params->final.w < 0 || params->final.h < 0)
      ERR("The params final size became negative");
+
 }
 
 static void
@@ -3075,7 +3058,7 @@ _edje_part_recalc_single(Edje *ed,
    params->final.w = TO_INT(params->eval.w);
    params->final.h = TO_INT(params->eval.h);
 
-   _edje_part_pixel_adjust(ed, ep, params, EINA_FALSE);
+   _edje_part_pixel_adjust(ed, ep, params);
    /* fill */
    if (ep->part->type == EDJE_PART_TYPE_IMAGE)
      _edje_part_recalc_single_fill(ep, &((Edje_Part_Description_Image *)desc)->image.fill, params);
@@ -3678,7 +3661,7 @@ _edje_physics_body_add(Edje *ed, Edje_Real_Part *rp, EPhysics_World *world)
    ? (_x1)                \
    : ADD(_x1, MUL(_p, SUB(_x2, _x1))));
 
-#define INTP(_x1, _x2, _p) TO_INT_ROUND(FINTP(_x1, _x2, _p))
+#define INTP(_x1, _x2, _p) TO_INT(FINTP(_x1, _x2, _p))
 
 static void
 _map_colors_free(Edje_Calc_Params *pf)
@@ -4566,7 +4549,7 @@ _edje_part_recalc(Edje *ed, Edje_Real_Part *ep, int flags, Edje_Calc_Params *sta
         p3->req.w = INTP(p1->req.w, p2->req.w, pos);
         p3->req.h = INTP(p1->req.h, p2->req.h, pos);
 
-        _edje_part_pixel_adjust(ed, ep, p3, EINA_TRUE);
+        _edje_part_pixel_adjust(ed, ep, p3);
 
         if (ep->part->dragable.x)
           {
