@@ -208,7 +208,6 @@ _efl_ui_animation_view_efl_canvas_group_group_add(Eo *obj, Efl_Ui_Animation_View
 EOLIAN static void
 _efl_ui_animation_view_efl_canvas_group_group_del(Eo *obj, Efl_Ui_Animation_View_Data *pd EINA_UNUSED)
 {
-   if (pd->file) eina_stringshare_del(pd->file);
    if (pd->transit)
      {
         Elm_Transit *transit = pd->transit;
