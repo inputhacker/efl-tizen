@@ -742,6 +742,9 @@ elementary_pub_headers = [
   'elm_widget_item_container_eo.legacy.h',
   'elm_widget_item_eo.legacy.h',
   'elm_widget_item_static_focus_eo.legacy.h',
+#<--TIZEN_ONLY
+  'efl_access_object_eo.legacy.h',
+#TIZEN_ONLY-->
 ]
 
 #<--TIZEN_ONLY

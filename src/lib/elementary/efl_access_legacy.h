@@ -3,7 +3,7 @@
  * @ingroup elm_accessibility_group
  * @{
  */
-#include "efl_access_object.eo.legacy.h"
+#include "efl_access_object_eo.legacy.h"
 
 typedef Eo Elm_Interface_Atspi_Accessible;
 
