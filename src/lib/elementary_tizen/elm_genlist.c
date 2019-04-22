@@ -610,6 +610,9 @@ _elm_genlist_pan_efl_canvas_group_group_del(Eo *obj, Elm_Genlist_Pan_Data *psd)
 EOLIAN static void
 _elm_genlist_pan_efl_gfx_entity_position_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Position2D pos)
 {
+   if (_evas_object_intercept_call(obj, EVAS_OBJECT_INTERCEPT_CB_MOVE, 0, pos.x, pos.y))
+     return;
+
    efl_gfx_entity_position_set(efl_super(obj, MY_PAN_CLASS), pos);
    psd->wsd->dir = 0;
    _changed(obj);
@@ -618,6 +621,9 @@ _elm_genlist_pan_efl_gfx_entity_position_set(Eo *obj, Elm_Genlist_Pan_Data *psd,
 EOLIAN static void
 _elm_genlist_pan_efl_gfx_entity_size_set(Eo *obj, Elm_Genlist_Pan_Data *psd, Eina_Size2D size)
 {
+   if (_evas_object_intercept_call(obj, EVAS_OBJECT_INTERCEPT_CB_RESIZE, 0, size.w, size.h))
+     return;
+
    if ((size.w > 1 || size.h > 1))
      {
         if (psd->wsd->queue && !psd->wsd->queue_idle_enterer)
