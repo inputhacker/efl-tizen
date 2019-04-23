@@ -4353,6 +4353,7 @@ static Eina_Bool
 _elm_entry_text_set(Eo *obj, Elm_Entry_Data *sd, const char *part, const char *entry)
 {
    int len = 0;
+   const char * current_text = NULL;
 
    if (!entry) entry = "";
    if (!_elm_layout_part_aliasing_eval(obj, &part, EINA_TRUE))
@@ -4365,12 +4366,9 @@ _elm_entry_text_set(Eo *obj, Elm_Entry_Data *sd, const char *part, const char *e
         return EINA_TRUE;
      }
 
-   evas_event_freeze(evas_object_evas_get(obj));
-   ELM_SAFE_FREE(sd->text, eina_stringshare_del);
    /* TIZEN_ONLY(20150519): when password mode is enabled, elm_object_text_get returns utf8 string. */
    ELM_SAFE_FREE(sd->password_text, eina_stringshare_del);
    /* END */
-   sd->changed = EINA_TRUE;
 
    /* Clear currently pending job if there is one */
    if (sd->append_text_idler)
@@ -4398,6 +4396,14 @@ _elm_entry_text_set(Eo *obj, Elm_Entry_Data *sd, const char *part, const char *e
         sd->append_text_left = NULL;
      }
 
+   /* If old and new text are the same do nothing */
+   current_text = edje_object_part_text_get(sd->entry_edje, "elm.text");
+   if (current_text == entry || !strcmp(entry, current_text))
+     goto done;
+
+   ELM_SAFE_FREE(sd->text, eina_stringshare_del);
+   sd->changed = EINA_TRUE;
+
    /* Need to clear the entry first */
    sd->cursor_pos = edje_object_part_text_cursor_pos_get
        (sd->entry_edje, "elm.text", EDJE_CURSOR_MAIN);
@@ -4417,6 +4423,7 @@ _elm_entry_text_set(Eo *obj, Elm_Entry_Data *sd, const char *part, const char *e
      _atspi_expose_anchors(obj, EINA_TRUE);
    //
 
+done:
    evas_event_thaw(evas_object_evas_get(obj));
    evas_event_thaw_eval(evas_object_evas_get(obj));
    return EINA_TRUE;
