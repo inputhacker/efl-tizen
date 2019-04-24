@@ -3,9 +3,17 @@ engine_src = files([
   'evas_engine.h',
   'evas_wl_main.c'
 ])
-engine_src += engine_src_gl_thread
 
-engine_deps = [ecore_wl2, dependency('wayland-egl'), dependency('wayland-client'), dependency('wayland-egl-tizen'), gl_deps, gl_common]
+foreach src : gl_thread_engine_src
+  engine_src += files(join_paths('..','gl_common', src))
+endforeach
+
+engine_deps = [
+   ecore_wl2, gl_deps,
+   dependency('wayland-egl'),
+   dependency('wayland-client'),
+   dependency('wayland-egl-tizen'),
+]
 
 engine_include_dir = include_directories(join_paths('..','wayland_common'))
 

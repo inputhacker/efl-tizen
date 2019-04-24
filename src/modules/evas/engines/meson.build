@@ -1,3 +1,7 @@
+dir_package_modules = join_paths(dir_lib, 'evas', 'modules')
+package_version_name = 'evas-' + version_major
+dir_package_include = join_paths(dir_include, package_version_name)
+
 engines = [
  ['buffer', []],
  ['fb', ['fb']],

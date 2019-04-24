@@ -8,14 +8,13 @@ engine_header = [
     'Evas_Engine_GL_Tbm.h'
 ]
 
-engine_deps = [gl_deps, gl_common, libtbm]
+engine_deps = [gl_deps, libtbm]
 engine_include_dir = include_directories(join_paths('..','software_generic'))
-message('WKWK2 gl_tbm build')
-if get_option('evas-modules') == 'shared' and not evas_force_static.contains(engine)
-   message('WKWK3 gl_tbm build')
+
+if get_option('evas-modules') == 'shared'
   shared_module(mod_full_name, engine_src + engine_header,
         include_directories : config_dir + [engine_include_dir],
-        dependencies : [eina, evas_pre] + engine_deps,
+        dependencies : [eina, evas] + engine_deps,
         install : true,
         install_dir : mod_install_dir,
         name_suffix : sys_mod_extension
