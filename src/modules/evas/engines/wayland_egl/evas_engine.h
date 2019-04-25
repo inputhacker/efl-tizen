@@ -94,6 +94,16 @@ struct _Outbuf
    //TIZEN_ONLY(20161121) : Support PreRotation
    int support_pre_rotation;
 
+   struct {
+      unsigned char depth_buffer_size;
+      unsigned char stencil_buffer_size;
+      unsigned char msaa;
+   } detected;
+
+   int depth_bits;
+   int stencil_bits;
+   int msaa_bits;
+
    Eina_Bool lost_back : 1;
    Eina_Bool surf : 1;
 };

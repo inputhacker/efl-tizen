@@ -122,10 +122,6 @@ eng_window_new(Evas_Engine_Info_Wayland *einfo, int w, int h, Render_Output_Swap
    gw->stencil_bits = einfo->stencil_bits;
    gw->msaa_bits = einfo->msaa_bits;
 
-//TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
-   gw->depth_bits = einfo->depth_bits;
-   gw->stencil_bits = einfo->stencil_bits;
-   gw->msaa_bits = einfo->msaa_bits;
 //
 //TIZEN_ONLY(20161121):Support PreRotation
    gw->support_pre_rotation = 0;
