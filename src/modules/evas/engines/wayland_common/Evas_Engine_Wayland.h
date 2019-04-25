@@ -39,18 +39,18 @@ struct _Evas_Engine_Info_Wayland
    int x_cursor, y_cursor;
    int resizing;
    uint32_t timestamp;
+   /* window surface should be made with these config */
+   int depth_bits;
+   int stencil_bits;
+   int msaa_bits;
+
+   //TIZEN_ONLY(20171115): support output transform
+   int window_rotation;
+
    Eina_Bool dragging : 1;
    Eina_Bool drag_start : 1;
    Eina_Bool drag_stop : 1;
    Eina_Bool drag_ack : 1;
-
-   //TIZEN_ONLY(20171115): support output transform
-   int window_rotation;
-   //
-   /* window surface should be made with these config */
-   int           depth_bits;
-   int           stencil_bits;
-   int           msaa_bits;
 };
 
 #endif

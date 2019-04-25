@@ -70,7 +70,7 @@ struct _Outbuf
    int vsync;
    int frame_cnt;
 
-   struct 
+   struct
      {
         Eina_Bool drew : 1;
      } draw;
@@ -80,9 +80,6 @@ struct _Outbuf
    EGLConfig egl_config;
    EGLDisplay egl_disp;
    EGLSyncKHR egl_fence;
-
-   Eina_Bool lost_back : 1;
-   Eina_Bool surf : 1;
 
    struct {
       unsigned char depth_buffer_size;
@@ -96,6 +93,9 @@ struct _Outbuf
 
    //TIZEN_ONLY(20161121) : Support PreRotation
    int support_pre_rotation;
+
+   Eina_Bool lost_back : 1;
+   Eina_Bool surf : 1;
 };
 
 struct _Context_3D
