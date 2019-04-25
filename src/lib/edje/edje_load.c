@@ -838,7 +838,17 @@ _edje_object_file_set_internal(Evas_Object *obj, const Eina_File *file, const ch
     ***********************************************************************************
    _edje_textblock_style_all_update(ed);
     */
-   _edje_file_textblock_style_all_update(ed->file);
+   /*
+   The textblock styles are loaded at the same time when edje is loaded.
+   And if I change the color class or text class, it will update again.
+
+   I think that if all the widgets are created and the theme is changed,
+   updating the whole style at this point is seen as a waste of resources.
+
+   In case of custom theme, textbloack style is loaded when edje is loaded.
+   I don't think this is need here.
+   //_edje_file_textblock_style_all_update(ed->file);
+   */
    /*******
     * END *
     *******/
