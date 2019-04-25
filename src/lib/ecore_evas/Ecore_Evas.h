@@ -141,6 +141,22 @@ typedef enum _Ecore_Evas_Engine_Type
     /* TIZEN_ONLY(20160330): TBM Backend */
 } Ecore_Evas_Engine_Type;
 
+#define ECORE_EVAS_OPT_NONE         0
+#define ECORE_EVAS_OPT_INDIRECT     1
+#define ECORE_EVAS_OPT_VSYNC        2
+#define ECORE_EVAS_OPT_SWAP_MODE    3
+#define ECORE_EVAS_OPT_GL_DEPTH     4
+#define ECORE_EVAS_OPT_GL_STENCIL   5
+#define ECORE_EVAS_OPT_GL_MSAA      6
+#define ECORE_EVAS_OPT_LAST         7
+
+#define ECORE_EVAS_SWAP_MODE_AUTO   0
+#define ECORE_EVAS_SWAP_MODE_FULL   1
+#define ECORE_EVAS_SWAP_MODE_COPY   2
+#define ECORE_EVAS_SWAP_MODE_DOUBLE 3
+#define ECORE_EVAS_SWAP_MODE_TRIPLE 4
+
+
 /**
  * @enum _Ecore_Evas_Avoid_Damage_Type
  * This option causes updates of the Ecore_Evas to be done on a pixmap, and
@@ -161,22 +177,6 @@ typedef enum _Ecore_Evas_Object_Associate_Flags
   ECORE_EVAS_OBJECT_ASSOCIATE_LAYER = 1 << 1,
   ECORE_EVAS_OBJECT_ASSOCIATE_DEL = 1 << 2
 } Ecore_Evas_Object_Associate_Flags;
-
-#define ECORE_EVAS_OPT_NONE         0
-#define ECORE_EVAS_OPT_INDIRECT     1
-#define ECORE_EVAS_OPT_VSYNC        2
-#define ECORE_EVAS_OPT_SWAP_MODE    3
-#define ECORE_EVAS_OPT_GL_DEPTH     4
-#define ECORE_EVAS_OPT_GL_STENCIL   5
-#define ECORE_EVAS_OPT_GL_MSAA      6
-#define ECORE_EVAS_OPT_LAST         7
-
-#define ECORE_EVAS_SWAP_MODE_AUTO      0
-#define ECORE_EVAS_SWAP_MODE_FULL      1
-#define ECORE_EVAS_SWAP_MODE_COPY      2
-#define ECORE_EVAS_SWAP_MODE_DOUBLE    3
-#define ECORE_EVAS_SWAP_MODE_TRIPLE    4
-#define ECORE_EVAS_SWAP_MODE_QUADRUPLE 5
 
 /* module setup/shutdown calls */
 
