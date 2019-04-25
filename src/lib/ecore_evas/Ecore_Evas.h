@@ -1563,7 +1563,6 @@ EAPI Ecore_Evas     *ecore_evas_wayland_shm_new(const char *disp_name, unsigned 
  * @see ecore_evas_wayland_shm_new()
  */
 EAPI Ecore_Evas     *ecore_evas_wayland_egl_new(const char *disp_name, unsigned int parent, int x, int y, int w, int h, Eina_Bool frame);
-EAPI Ecore_Evas     *ecore_evas_wayland_egl_options_new(const char *disp_name, unsigned int parent, int x, int y, int w, int h, Eina_Bool frame, const int *opt);
 
 /**
  * @brief Begin resizing the Ecore_Evas window.
