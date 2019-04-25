@@ -86,6 +86,10 @@ static Evas_Func func, pfunc;
 int _evas_engine_wl_egl_log_dom = -1;
 Eina_Bool extn_have_buffer_age = EINA_TRUE;
 Eina_Bool extn_have_y_inverted = EINA_TRUE;
+
+/* backup for partail update */
+unsigned int (*glsym_prev_eglSwapBuffersWithDamage) (EGLDisplay a, void *b, const EGLint *d, EGLint c) = NULL;
+unsigned int (*glsym_prev_eglSetDamageRegionKHR) (EGLDisplay a, EGLSurface b, EGLint *c, EGLint d) = NULL;
 Eina_Bool prev_extn_have_buffer_age = EINA_TRUE;
 
 /* local functions */
@@ -771,6 +775,9 @@ evgl_eng_partial_rendering_enable()
 {
    extn_have_buffer_age = prev_extn_have_buffer_age;
    prev_extn_have_buffer_age = EINA_FALSE;
+
+   glsym_eglSwapBuffersWithDamage = glsym_prev_eglSwapBuffersWithDamage;
+   glsym_eglSetDamageRegionKHR = glsym_prev_eglSetDamageRegionKHR;
 }
 
 // TIZEN_ONLY(20171206) : Disable Partial Rendering On EvasGL
@@ -778,7 +785,12 @@ static void
 evgl_eng_partial_rendering_disable()
 {
    prev_extn_have_buffer_age = extn_have_buffer_age;
+   glsym_prev_eglSwapBuffersWithDamage = glsym_eglSwapBuffersWithDamage;
+   glsym_prev_eglSetDamageRegionKHR = glsym_eglSetDamageRegionKHR;
+
    extn_have_buffer_age = EINA_FALSE;
+   glsym_eglSwapBuffersWithDamage = NULL;
+   glsym_eglSetDamageRegionKHR = NULL;
 }
 
 static const EVGL_Interface evgl_funcs =
