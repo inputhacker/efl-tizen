@@ -14,6 +14,8 @@ typedef Eo Elm_Animation_View;
 /**
  * @brief Defines the state of animation view
  *
+ * @since_tizen 5.5
+ *
  * @ingroup Elm_Animation_View
  */
 typedef enum
@@ -69,6 +71,7 @@ typedef enum
  * @param[in] auto_play Auto play mode, Default value is @c false
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -93,6 +96,7 @@ EAPI void elm_animation_view_auto_play_set(Elm_Animation_View *obj, Eina_Bool au
  * @return Auto play mode, Default value is @c false
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -111,6 +115,7 @@ EAPI Eina_Bool elm_animation_view_auto_play_get(const Elm_Animation_View *obj);
  * @param[in] auto_repeat Loop mode, Defalut is @c false.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -130,6 +135,7 @@ EAPI void elm_animation_view_auto_repeat_set(Elm_Animation_View *obj, Eina_Bool 
  * @return Loop mode, Defalut is @c false.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -150,6 +156,7 @@ EAPI Eina_Bool elm_animation_view_auto_repeat_get(const Elm_Animation_View *obj)
  * @return @c true when it's successful. @c false otherwise.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -171,6 +178,7 @@ EAPI Eina_Bool elm_animation_view_speed_set(Elm_Animation_View *obj, double spee
  * @return Speed factor. Default value is 1.0
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -189,6 +197,7 @@ EAPI double elm_animation_view_speed_get(const Elm_Animation_View *obj);
  * @return duration time in the seconds
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -208,6 +217,7 @@ EAPI double elm_animation_view_duration_time_get(const Elm_Animation_View *obj);
  * @param[in] progress Progress position. Value must be 0 ~ 1.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -228,6 +238,7 @@ EAPI void elm_animation_view_progress_set(Elm_Animation_View *obj, double progre
  * @return Progress position. Value must be 0 ~ 1.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -244,6 +255,7 @@ EAPI double elm_animation_view_progress_get(const Elm_Animation_View *obj);
  * @param[in] frame_num Current frame number.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -261,6 +273,7 @@ EAPI void elm_animation_view_frame_set(Elm_Animation_View *obj, int frame_num);
  * @return Current frame number.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -280,6 +293,7 @@ EAPI int elm_animation_view_frame_get(const Elm_Animation_View *obj);
  * @return @c true when it's successful. @c false otherwise.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -299,6 +313,7 @@ EAPI Eina_Bool elm_animation_view_play(Elm_Animation_View *obj);
  * @return @c true when it's successful. @c false otherwise.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -317,6 +332,7 @@ EAPI Eina_Bool elm_animation_view_play_back(Elm_Animation_View *obj);
  * @return @c true when it's successful. @c false otherwise.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -332,6 +348,7 @@ EAPI Eina_Bool elm_animation_view_pause(Elm_Animation_View *obj);
  * @return @c true when it's successful. @c false otherwise.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -349,6 +366,7 @@ EAPI Eina_Bool elm_animation_view_resume(Elm_Animation_View *obj);
  * @return @c true when it's successful. @c false otherwise.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -357,6 +375,7 @@ EAPI Eina_Bool elm_animation_view_stop(Elm_Animation_View *obj);
 /** Get the default view size that specified from vector resource.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -373,6 +392,7 @@ EAPI Eina_Size2D elm_animation_view_default_size_get(const Elm_Animation_View *o
  * @return @c true, if animation on playing back, @c false otherwise.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -387,6 +407,7 @@ EAPI Eina_Bool elm_animation_view_is_playing_back(Elm_Animation_View *obj);
  * @return The number of frames. 0, if it's not animated.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -401,6 +422,7 @@ EAPI int elm_animation_view_frame_count_get(const Elm_Animation_View *obj);
  * @param[in] min_progress The minimum progress. Value must be 0 ~ 1.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -416,6 +438,7 @@ EAPI void elm_animation_view_min_progress_set(Elm_Animation_View *obj, double mi
  * @return The minimum progress. Value must be 0 ~ 1.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -430,6 +453,7 @@ EAPI double elm_animation_view_min_progress_get(const Elm_Animation_View *obj);
  * @param[in] max_progress The maximum progress. Value must be 0 ~ 1.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -445,6 +469,7 @@ EAPI void elm_animation_view_max_progress_set(Elm_Animation_View *obj, double ma
  * @return The maximum progress. Value must be 0 ~ 1.
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -460,6 +485,7 @@ EAPI double elm_animation_view_max_progress_get(const Elm_Animation_View *obj);
  * @ref elm_animation_view_max_frame_get
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -476,6 +502,7 @@ EAPI void elm_animation_view_min_frame_set(Elm_Animation_View *obj, int min_fram
  * @ref elm_animation_view_max_frame_get
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -492,6 +519,7 @@ EAPI int elm_animation_view_min_frame_get(const Elm_Animation_View *obj);
  * @ref elm_animation_view_min_frame_get ~ (@ref elm_animation_view_frame_count_get - 1)
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
@@ -509,6 +537,7 @@ EAPI void elm_animation_view_max_frame_set(Elm_Animation_View *obj, int max_fram
  * @ref elm_animation_view_min_frame_get ~ (@ref elm_animation_view_frame_count_get - 1)
  *
  * @since 1.23
+ * @since_tizen 5.5
  *
  * @ingroup Elm_Animation_View
  */
