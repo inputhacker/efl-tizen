@@ -1158,4 +1158,13 @@ EAPI void elm_widget_item_class_color_clear(Elm_Object_Item *it);
  *******/
 void _efl_ui_focus_event_redirector(Efl_Ui_Focus_Object *obj, Efl_Ui_Focus_Object *goal);
 
+/**
+ * With this flag you can indicate that this widget is used internally.
+ * Indicating that a widget is internal, can be used by the implementing widget, that the parent property of the added sub-object should not be adjusted or altered.
+ * There is no direct promise that any widget behaves like the above, every case should be handchecked.
+ */
+void efl_ui_widget_internal_set(Eo *obj, Eina_Bool internal);
+Eina_Bool efl_ui_widget_internal_get(Eo *obj);
+
+
 #endif
