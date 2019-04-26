@@ -367,7 +367,7 @@ _save_do(Evas_Object *obj)
 {
    ELM_ENTRY_DATA_GET(obj, sd);
 
-   if (!efl_file_loaded_get(obj)) return;
+   if (!sd->file) return;
    switch (sd->format)
      {
       case ELM_TEXT_FORMAT_PLAIN_UTF8:
