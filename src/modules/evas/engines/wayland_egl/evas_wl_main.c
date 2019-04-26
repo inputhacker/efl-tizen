@@ -360,9 +360,7 @@ try_again:
 //TIZEN_ONLY(20171127): do not call ecore_wl2_window_buffer_attach
   gw->surf = EINA_TRUE;
 //
-
   gw->gl_context->msaa = (Eina_Bool) gw->msaa_bits;
-
   return gw;
 }
 
