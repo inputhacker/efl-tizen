@@ -151,7 +151,8 @@ _aux_hints_supported_aux_hints(void *data, struct efl_aux_hints *aux_hints EINA_
    ev->win = win->id;
    ev->display = ewd;
    ewd->refs++;
-   ecore_event_add(ECORE_WL2_EVENT_AUX_HINT_SUPPORTED, ev, _display_event_free, ewd);
+   ecore_event_add(ECORE_WL2_EVENT_AUX_HINT_SUPPORTED, ev,
+                   _display_event_free, ewd);
 }
 
 static void
@@ -171,7 +172,8 @@ _aux_hints_allowed_aux_hint(void *data, struct efl_aux_hints *aux_hints  EINA_UN
    ev->id = id;
    ev->display = ewd;
    ewd->refs++;
-   ecore_event_add(ECORE_WL2_EVENT_AUX_HINT_ALLOWED, ev, _display_event_free, ewd);
+   ecore_event_add(ECORE_WL2_EVENT_AUX_HINT_ALLOWED, ev,
+                   _display_event_free, ewd);
 }
 
  static void
@@ -185,7 +187,7 @@ _cb_aux_message_free(void *data EINA_UNUSED, void *event)
    eina_stringshare_del(ev->key);
    eina_stringshare_del(ev->val);
    EINA_LIST_FREE(ev->options, str)
-      eina_stringshare_del(str);
+     eina_stringshare_del(str);
    free(ev);
 }
 
