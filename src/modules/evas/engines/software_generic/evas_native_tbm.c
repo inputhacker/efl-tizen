@@ -344,6 +344,7 @@ _evas_native_tbm_surface_image_set(void *data EINA_UNUSED, void *image, void *na
            case TBM_FORMAT_BGRA8888:
            case TBM_FORMAT_ARGB8888:
            case TBM_FORMAT_ABGR8888:
+           case TBM_FORMAT_XRGB8888:
               im->cache_entry.w = stride / 4;
               evas_cache_image_colorspace(&im->cache_entry, EVAS_COLORSPACE_ARGB8888);
               im->cache_entry.flags.alpha = (format == TBM_FORMAT_RGBX8888 ? 0 : 1);
