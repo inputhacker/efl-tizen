@@ -1,4 +1,4 @@
-#include <lottieanimation_capi.h>
+#include <rlottie_capi.h>
 #include "vg_common.h"
 
 #ifdef ERR
@@ -48,7 +48,7 @@ evas_vg_load_file_open_json(Eina_File *file,
      {
         const char *data = (const char*) eina_file_map_all(file, EINA_FILE_SEQUENTIAL);
         if (!data) goto err;
-        lot_anim = lottie_animation_from_data(data, key ? key:eina_file_filename_get(file));
+        lot_anim = lottie_animation_from_data(data, key ? key:eina_file_filename_get(file), " ");
         eina_file_map_free(file, (void *) data);
      }
    else

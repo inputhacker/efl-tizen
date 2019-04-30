@@ -12,7 +12,7 @@
  * Lottie Compatible feature implementation
  ******************************************************************************************/
 #ifdef BUILD_VG_LOADER_JSON
-# include <lottieanimation_capi.h>
+# include <rlottie_capi.h>
 #endif
 
 Eina_Bool vg_common_json_create_vg_node(Vg_File_Data *vfd);
