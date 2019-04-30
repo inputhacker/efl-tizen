@@ -1011,6 +1011,7 @@ _ecore_wl2_input_ungrab(Ecore_Wl2_Input *input)
    input->grab.window = NULL;
    input->grab.button = 0;
    input->grab.count = 0;
+   input->grab.touch_count = 0;
 }
 
 static void
@@ -1632,6 +1633,7 @@ _touch_cb_down(void *data, struct wl_touch *touch EINA_UNUSED, unsigned int seri
 
    input->focus.touch = window;
    input->timestamp = timestamp;
+   input->grab.touch_count++;
 
    // TIZEN_ONLY(20171109): support a tizen_input_device_manager interface
    _ecore_wl2_input_touch_axis_process(input, id);
@@ -1681,11 +1683,13 @@ _touch_cb_up(void *data, struct wl_touch *touch EINA_UNUSED, unsigned int serial
                                   BTN_LEFT, timestamp);
 
    if (input->grab.count) input->grab.count--;
+   if (input->grab.touch_count) input->grab.touch_count--;
    if ((input->grab.window) && (input->grab.button == BTN_LEFT) &&
        (!input->grab.count))
      _ecore_wl2_input_ungrab(input);
 
-   input->focus.touch = NULL;
+   if (input->grab.touch_count == 0) input->focus.touch = NULL;
+
 }
 
 static void
