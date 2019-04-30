@@ -26,6 +26,7 @@ ecore_wl2_src = [
 ecore_wl2_deps += [
   dependency('wayland-cursor'),
   dependency('tizen-extension-client'),
+  dependency('tizen-launch-client'),
   dependency('wayland-tbm-client'),
   dependency('libtdm-client'),
 ]

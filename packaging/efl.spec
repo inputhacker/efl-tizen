@@ -51,6 +51,7 @@ BuildRequires:  pkgconfig(xdg-shell-client)
 BuildRequires:  pkgconfig(wayland-tbm-client)
 BuildRequires:  pkgconfig(wayland-tbm-server)
 BuildRequires:  pkgconfig(tizen-extension-client)
+BuildRequires:  pkgconfig(tizen-launch-client)
 BuildRequires:  pkgconfig(tizen-remote-surface-client)
 BuildRequires:  wayland-protocols
 Requires:       libwayland-extension-client

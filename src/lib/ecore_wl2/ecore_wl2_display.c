@@ -18,6 +18,12 @@ static void      _ecore_wl_cb_awake(void *data);
 // End of TIZEN_ONLY(20171129)
 static void _ecore_wl2_display_sync_add(Ecore_Wl2_Display *ewd);
 
+// TIZEN_ONLY(20190430): support client appinfo
+static pid_t _base_resolution_pid = 0;
+static uint32_t _base_resolution_w = 0;
+static uint32_t _base_resolution_h = 0;
+//
+
 void
 _display_event_free(void *d, void *event)
 {
@@ -508,6 +514,29 @@ static const struct tizen_policy_listener _tizen_policy_listener =
    _tizen_policy_cb_conformant_region,
 };
 
+// TIZEN_ONLY(20190430): support client appinfo
+static void
+_tizen_appinfo_cb_base_output_resolution_done(void *data, struct tizen_launch_appinfo *tz_appinfo EINA_UNUSED, uint32_t pid, uint32_t width, uint32_t height)
+{
+   Ecore_Wl2_Display *ewd = data;
+
+   if (!ewd) return;
+   if (_base_resolution_pid != pid)
+     {
+        ERR("tzappinfo_cb_size_get_done pid is different. pid: %d / width: %d / height: %d appinfo_pid: %d", pid, width, height, _base_resolution_pid);
+        return;
+     }
+
+   if (_base_resolution_w != width) _base_resolution_w = width;
+   if (_base_resolution_h != height) _base_resolution_h = height;
+}
+
+static const struct tizen_launch_appinfo_listener _tizen_launch_appinfo_listener =
+{
+   _tizen_appinfo_cb_base_output_resolution_done,
+};
+//
+
 static void
 _tizen_policy_ext_cb_active_angle(void *data, struct tizen_policy_ext *tizen_policy_ext EINA_UNUSED, uint32_t angle)
 {
@@ -878,6 +907,15 @@ _cb_global_add(void *data, struct wl_registry *registry, unsigned int id, const 
            wl_registry_bind(registry, id, &tizen_move_resize_interface, 1);
         if (ewd->wl.tz_moveresize)
           tizen_screen_rotation_add_listener(ewd->wl.tz_moveresize, &_tizen_move_resize_listener, ewd->wl.display);
+     }
+//
+// TIZEN_ONLY(20190430): support client appinfo
+   else if (!strcmp(interface, "tizen_launch_appinfo"))
+     {
+        ewd->wl.tz_appinfo =
+           wl_registry_bind(registry, id, &tizen_launch_appinfo_interface, 1);
+        if (ewd->wl.tz_appinfo)
+          tizen_launch_appinfo_add_listener(ewd->wl.tz_appinfo, &_tizen_launch_appinfo_listener, ewd->wl.display);
      }
 //
    //

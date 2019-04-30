@@ -27,6 +27,10 @@
 #include <tbm_surface_queue.h>
 //
 
+// TIZEN_ONLY(20190430) : support client appinfo
+#include <wayland-extension/tizen-launch-client-protocol.h>
+//
+
 extern int _ecore_wl2_log_dom;
 extern Eina_Bool no_session_recovery;
 
@@ -121,6 +125,9 @@ struct _Ecore_Wl2_Display
         //
         //TIZEN_ONLY(20180810): support client demand move resize
         struct tizen_move_resize *tz_moveresize;
+        //
+        // TIZEN_ONLY(20190430): support client appinfo
+        struct tizen_launch_appinfo *tz_appinfo;
         //
 
         int compositor_version;
