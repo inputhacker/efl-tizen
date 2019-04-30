@@ -1861,6 +1861,9 @@ ecore_wl2_display_screen_size_get(Ecore_Wl2_Display *display, int *w, int *h)
 {
    Ecore_Wl2_Output *output;
    int ow = 0, oh = 0;
+   // TIZEN_ONLY(20190430): support client appinfo
+   pid_t pid = 0;
+   //
 
    EINA_SAFETY_ON_NULL_RETURN(display);
 
@@ -1884,6 +1887,28 @@ ecore_wl2_display_screen_size_get(Ecore_Wl2_Display *display, int *w, int *h)
              break;
           }
      }
+
+   // TIZEN_ONLY(20190430): support client appinfo
+   if (display->wl.tz_appinfo)
+     {
+        pid = getpid();
+        if (_base_resolution_pid != pid) _base_resolution_pid = pid;
+
+        tizen_launch_appinfo_get_base_output_resolution(display->wl.tz_appinfo, pid);
+        ecore_wl2_display_sync(display);
+
+        if (_base_resolution_w <= 0 || _base_resolution_h <= 0)
+          goto without_tz_appinfo;
+
+        if (w) *w = _base_resolution_w;
+        if (h) *h = _base_resolution_h;
+
+        INF("ecore_wl2_display_screen_size_get called, pid: %d / width: %d / height: %d / b_res_w: %d / b_res_h: %d",
+            pid, *w, *h, _base_resolution_w, _base_resolution_h);
+        return;
+     }
+without_tz_appinfo:
+   //
 
    if (w) *w = ow;
    if (h) *h = oh;
