@@ -73,7 +73,7 @@ struct _Elm_Gengrid_Data
 
    /* longpress timeout. this value comes from _elm_config by
     * default. this can be changed by
-    * elm_config_longpress_timeout_set() */
+    * elm_gengrid_longpress_timeout_set() */
    double                                longpress_timeout;
 
    /* a generation of gengrid. when gengrid is cleared, this value

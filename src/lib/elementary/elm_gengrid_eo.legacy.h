@@ -147,6 +147,35 @@ EAPI void elm_gengrid_group_item_size_set(Elm_Gengrid *obj, int w, int h);
 EAPI void elm_gengrid_group_item_size_get(const Elm_Gengrid *obj, int *w, int *h);
 
 /**
+ * @brief Set the timeout in seconds for the longpress event.
+ *
+ * This option will change how long it takes to send an event "longpressed"
+ * after the mouse down signal is sent to the list. If this event occurs, no
+ * "clicked" event will be sent.
+ *
+ * @warning If you set the longpress timeout value with this API, your gengrid
+ * will not be affected by the longpress value of elementary config value
+ * later.
+ *
+ * @param[in] obj The object.
+ * @param[in] timeout Timeout in seconds. Default is elm config value (1.0).
+ *
+ * @ingroup Elm_Gengrid_Group
+ */
+EAPI void elm_gengrid_longpress_timeout_set(Elm_Gengrid *obj, double timeout);
+
+/**
+ * @brief Get the timeout in seconds for the longpress event.
+ *
+ * @param[in] obj The object.
+ *
+ * @return Timeout in seconds. Default is elm config value (1.0).
+ *
+ * @ingroup Elm_Gengrid_Group
+ */
+EAPI double elm_gengrid_longpress_timeout_get(const Elm_Gengrid *obj);
+
+/**
  * @brief Set the gengrid select mode.
  *
  * This changes item select mode in the gengrid widget.

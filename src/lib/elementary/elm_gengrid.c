@@ -1085,7 +1085,7 @@ _item_mouse_down_cb(void *data,
    ELM_SAFE_FREE(it->long_timer, ecore_timer_del);
    if (it->realized)
      it->long_timer = ecore_timer_add
-         (_elm_config->longpress_timeout, _long_press_cb, it);
+         (sd->longpress_timeout, _long_press_cb, it);
    else
      it->long_timer = NULL;
 }
@@ -5474,6 +5474,7 @@ _elm_gengrid_efl_canvas_group_group_add(Eo *obj, Elm_Gengrid_Data *priv)
    priv->align_y = 0.0;
    priv->highlight = EINA_TRUE;
    priv->item_cache_max = CACHE_MAX;
+   priv->longpress_timeout = _elm_config->longpress_timeout;
 
    priv->pan_obj = efl_add(MY_PAN_CLASS, evas_object_evas_get(obj));
    pan_data = efl_data_scope_get(priv->pan_obj, MY_PAN_CLASS);
@@ -6819,6 +6820,18 @@ EOLIAN static unsigned int
 _elm_gengrid_items_count(const Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd)
 {
    return sd->item_count;
+}
+
+EOLIAN static void
+_elm_gengrid_longpress_timeout_set(Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd, double timeout)
+{
+   sd->longpress_timeout = timeout;
+}
+
+EOLIAN static double
+_elm_gengrid_longpress_timeout_get(const Eo *obj EINA_UNUSED, Elm_Gengrid_Data *sd)
+{
+   return sd->longpress_timeout;
 }
 
 EAPI Elm_Gengrid_Item_Class *

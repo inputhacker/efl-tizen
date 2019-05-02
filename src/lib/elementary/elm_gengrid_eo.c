@@ -113,6 +113,14 @@ void _elm_gengrid_group_item_size_get(const Eo *obj, Elm_Gengrid_Data *pd, int *
 
 EOAPI EFL_VOID_FUNC_BODYV_CONST(elm_obj_gengrid_group_item_size_get, EFL_FUNC_CALL(w, h), int *w, int *h);
 
+void _elm_gengrid_longpress_timeout_set(Eo *obj, Elm_Gengrid_Data *pd, double timeout);
+
+EOAPI EFL_VOID_FUNC_BODYV(elm_obj_gengrid_longpress_timeout_set, EFL_FUNC_CALL(timeout), double timeout);
+
+double _elm_gengrid_longpress_timeout_get(const Eo *obj, Elm_Gengrid_Data *pd);
+
+EOAPI EFL_FUNC_BODY_CONST(elm_obj_gengrid_longpress_timeout_get, double, 0);
+
 void _elm_gengrid_select_mode_set(Eo *obj, Elm_Gengrid_Data *pd, Elm_Object_Select_Mode mode);
 
 EOAPI EFL_VOID_FUNC_BODYV(elm_obj_gengrid_select_mode_set, EFL_FUNC_CALL(mode), Elm_Object_Select_Mode mode);
@@ -448,6 +456,8 @@ _elm_gengrid_class_initializer(Efl_Class *klass)
       EFL_OBJECT_OP_FUNC(elm_obj_gengrid_multi_select_get, _elm_gengrid_multi_select_get),
       EFL_OBJECT_OP_FUNC(elm_obj_gengrid_group_item_size_set, _elm_gengrid_group_item_size_set),
       EFL_OBJECT_OP_FUNC(elm_obj_gengrid_group_item_size_get, _elm_gengrid_group_item_size_get),
+      EFL_OBJECT_OP_FUNC(elm_obj_gengrid_longpress_timeout_set, _elm_gengrid_longpress_timeout_set),
+      EFL_OBJECT_OP_FUNC(elm_obj_gengrid_longpress_timeout_get, _elm_gengrid_longpress_timeout_get),
       EFL_OBJECT_OP_FUNC(elm_obj_gengrid_select_mode_set, _elm_gengrid_select_mode_set),
       EFL_OBJECT_OP_FUNC(elm_obj_gengrid_select_mode_get, _elm_gengrid_select_mode_get),
       EFL_OBJECT_OP_FUNC(elm_obj_gengrid_reorder_mode_set, _elm_gengrid_reorder_mode_set),

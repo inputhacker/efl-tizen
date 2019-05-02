@@ -48,6 +48,18 @@ elm_gengrid_group_item_size_get(const Elm_Gengrid *obj, int *w, int *h)
 }
 
 EAPI void
+elm_gengrid_longpress_timeout_set(Elm_Gengrid *obj, double timeout)
+{
+   elm_obj_gengrid_longpress_timeout_set(obj, timeout);
+}
+
+EAPI double
+elm_gengrid_longpress_timeout_get(const Elm_Gengrid *obj)
+{
+   return elm_obj_gengrid_longpress_timeout_get(obj);
+}
+
+EAPI void
 elm_gengrid_select_mode_set(Elm_Gengrid *obj, Elm_Object_Select_Mode mode)
 {
    elm_obj_gengrid_select_mode_set(obj, mode);
