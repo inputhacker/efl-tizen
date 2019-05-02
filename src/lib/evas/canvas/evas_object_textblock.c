@@ -1326,8 +1326,8 @@ static const Escape_Value escape_values_e_common_sorted[] = {
    ESCAPE_VALUE("&amp;", "\x26"),
    ESCAPE_VALUE("&apos;", "\x27"),
    ESCAPE_VALUE("&gt;", "\x3e"),
-   ESCAPE_VALUE("&quot;", "\x22"),
    ESCAPE_VALUE("&lt;", "\x3c"),
+   ESCAPE_VALUE("&quot;", "\x22"),
 };
 
 /**
