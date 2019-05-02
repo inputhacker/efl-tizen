@@ -8457,6 +8457,8 @@ _markup_get_text_utf8_append(Eina_Strbuf *sbuf, const char *text)
            eina_strbuf_append(sbuf, "&amp;");
         else if (ch == '"')
            eina_strbuf_append(sbuf, "&quot;");
+        else if (ch == '\'')
+           eina_strbuf_append(sbuf, "&apos;");
         else if (ch == _PARAGRAPH_SEPARATOR)
            eina_strbuf_append(sbuf, "<ps/>");
         else if (ch == _REPLACEMENT_CHAR)
