@@ -81,6 +81,42 @@ struct _Edje_Size_Class
 };
 
 /**
+ * @defgroup Edje_Object_Communication_Interface_Message Edje Communication Interface: Message
+ * @ingroup Edje_Object_Group
+ *
+ * @brief Functions that deal with messages.
+ *
+ * Edje has two communication interfaces between @b code and @b theme.
+ * Signals and messages.
+ *
+ * Edje messages are one of the communication interfaces between
+ * @b code and a given Edje object's @b theme. With messages, one can
+ * communicate values like strings, float numbers and integer
+ * numbers. Moreover, messages can be identified by integer
+ * numbers. See #Edje_Message_Type for the full list of message types.
+ *
+ * @note Messages must be handled by scripts.
+ *
+ * @{
+ */
+
+/**
+ * @brief Processes all queued up edje messages.
+ *
+ * This function triggers the processing of messages addressed to any
+ * (alive) edje objects.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI void         edje_message_signal_process             (void);
+
+/**
+ * @}
+ */
+
+/**
  * @defgroup Edje_Object_Communication_Interface_Signal Edje Communication Interface: Signal
  * @ingroup Edje_Object_Group
  *
@@ -115,6 +151,105 @@ typedef Efl_Signal_Cb Edje_Signal_Cb;
  * @endif
  */
 EAPI void *       edje_object_signal_callback_extra_data_get(void);
+
+#ifdef EFL_BETA_API_SUPPORT
+/**
+ * @brief Gets seat data passed to callbacks.
+ *
+ * @return The seat data for that callback.
+ *
+ * When a callback is initiated by an input event from a seat, we try to
+ * provide seat information with it.
+ *
+ * Signals fired as programmed responses to these signals will also try
+ * to carry the seat data along.
+ *
+ * This returns an opaque pointer to the seat data.
+ *
+ * @see edje_object_signal_callback_add() for more on Edje signals.
+ * @since 1.21
+ */
+EAPI void *edje_object_signal_callback_seat_data_get(void);
+#endif
+
+
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup Edje_Audio Edje Audio
+ * @ingroup Edje_Audio
+ *
+ * @brief Functions to manipulate audio abilities in edje.
+ *
+ * Perspective is a graphical tool that makes objects represented in 2D
+ * look like they have a 3D appearance.
+ *
+ * Edje allows us to use perspective on any edje object. This group of
+ * functions deal with the use of perspective, by creating and configuring
+ * a perspective object that must set to a edje object or a canvas,
+ * affecting all the objects inside that have no particular perspective
+ * set already.
+ *
+ * @{
+ */
+
+/**
+ * Identifiers of Edje message types, which can be sent back and forth
+ * code and a given Edje object's theme file/group.
+ *
+ * @see edje_audio_channel_mute_set()
+ * @see edje_audio_channel_mute_get()
+ *
+ * @since 1.9
+ */
+typedef enum _Edje_Channel
+{
+   EDJE_CHANNEL_EFFECT = 0, /**< Standard audio effects */
+   EDJE_CHANNEL_BACKGROUND = 1, /**< Background audio sounds  */
+   EDJE_CHANNEL_MUSIC = 2, /**< Music audio */
+   EDJE_CHANNEL_FOREGROUND = 3, /**< Foreground audio sounds */
+   EDJE_CHANNEL_INTERFACE = 4, /**< Sounds related to the interface */
+   EDJE_CHANNEL_INPUT = 5, /**< Sounds related to regular input */
+   EDJE_CHANNEL_ALERT = 6, /**< Sounds for major alerts */
+   EDJE_CHANNEL_ALL = 7 /**< All audio channels (convenience) */
+} Edje_Channel;
+
+/**
+ * @brief Sets the mute state of audio for the process as a whole.
+ *
+ * @param channel The channel to set the mute state of
+ * @param mute The mute state
+ *
+ * This sets the mute (no output) state of audio for the given channel.
+ *
+ * @see edje_audio_channel_mute_get()
+ *
+ * @since 1.9
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI void edje_audio_channel_mute_set(Edje_Channel channel, Eina_Bool mute);
+
+/**
+ * @brief Gets the mute state of the given channel.
+ *
+ * @param channel The channel to get the mute state of
+ * @return The mute state of the channel
+ *
+ * @see edje_audio_channel_mute_set()
+ *
+ * @since 1.9
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI Eina_Bool edje_audio_channel_mute_get(Edje_Channel channel);
 
 /**
  * @}
@@ -1025,6 +1160,52 @@ EAPI const Edje_External_Type       *edje_external_type_get         (const char 
  *
  * @{
  */
+
+/**
+ * @typedef Edje_Aspect_Control
+ *
+ * All Edje aspect control values.
+ *
+ */
+typedef enum _Edje_Aspect_Control
+{
+   EDJE_ASPECT_CONTROL_NONE = 0,       /*< None aspect control value       */
+   EDJE_ASPECT_CONTROL_NEITHER = 1,    /*< Neither aspect control value    */
+   EDJE_ASPECT_CONTROL_HORIZONTAL = 2, /*< Horizontal aspect control value */
+   EDJE_ASPECT_CONTROL_VERTICAL = 3,   /*< Vertical aspect control value   */
+   EDJE_ASPECT_CONTROL_BOTH = 4        /*< Both aspect control value       */
+} Edje_Aspect_Control;
+
+/**
+ * @brief Gets the part name of an edje part object.
+ * @param obj An edje part object
+ * @return The name of the part, if the object is an edje part, or @c NULL
+ * @note If this function returns @c NULL, @p obj was not an Edje part object
+ * @see edje_object_part_object_get()
+ * @since 1.10
+ *
+ * @if MOBILE @since_tizen 3.0
+ * @elseif WEARABLE @since_tizen 3.0
+ * @endif
+ */
+EAPI const char *edje_object_part_object_name_get(const Evas_Object *obj);
+
+#ifdef EFL_BETA_API_SUPPORT
+
+/**
+ * @brief Creates scene and root node which contains all 3D parts of edje object.
+ * @param obj An edje part object
+ * @param root node to collect all 3D parts
+ * @param scene
+ * @return scene and root node which contains all 3D parts of edje object
+ * @note If this function returns @c EINA_FALSE, @p the scene or the root
+ * node wasn't made
+ * @since 1.18
+ */
+EAPI Eina_Bool edje_3d_object_add(Evas_Object *obj, Eo **root_node, Eo *scene);
+
+#endif
+
 /**
  * @}
  */
@@ -1405,6 +1586,26 @@ EAPI Eina_Iterator *edje_mmap_color_class_iterator_new(Eina_File *f);
  */
 
 /**
+ * @defgroup Edje_Object_Geometry_Group Edje Object Geometry
+ * @ingroup Edje_Object_Group
+ *
+ * @brief Functions that deal with object's geometry.
+ *
+ * By geometry we mean size and position. So in this groups there are
+ * functions to manipulate object's geometry or retrieve information
+ * about it.
+ *
+ * Keep in mind that by changing an object's geometry, it may affect
+ * the appearance in the screen of the parts inside. Most times
+ * that is what you want.
+ *
+ * @{
+ */
+/**
+ * @}
+ */
+
+/**
  * @defgroup Edje_Object_Part Edje Part
  * @ingroup Edje_Object_Group
  *
@@ -1543,9 +1744,6 @@ typedef enum _Edje_Text_Ellipsize_Marquee_Type
  * @param part The edje part
  */
 typedef void         (*Edje_Text_Change_Cb)     (void *data, Evas_Object *obj, const char *part);
-/**
- * @}
- */
 
 /**
  * @defgroup Edje_Text_Selection Edje Text Selection
@@ -1586,6 +1784,10 @@ typedef void         (*Edje_Text_Change_Cb)     (void *data, Evas_Object *obj, c
  */
 
 /**
+ * @}
+ */
+
+/**
  * @defgroup Edje_Part_Swallow Edje Swallow Part
  * @ingroup Edje_Object_Part
  *
@@ -1604,41 +1806,6 @@ typedef void         (*Edje_Text_Change_Cb)     (void *data, Evas_Object *obj, c
  * @{
  */
 
-/**
- * @typedef Edje_Aspect_Control
- *
- * All Edje aspect control values.
- *
- */
-typedef enum _Edje_Aspect_Control
-{
-   EDJE_ASPECT_CONTROL_NONE = 0,       /*< None aspect control value       */
-   EDJE_ASPECT_CONTROL_NEITHER = 1,    /*< Neither aspect control value    */
-   EDJE_ASPECT_CONTROL_HORIZONTAL = 2, /*< Horizontal aspect control value */
-   EDJE_ASPECT_CONTROL_VERTICAL = 3,   /*< Vertical aspect control value   */
-   EDJE_ASPECT_CONTROL_BOTH = 4        /*< Both aspect control value       */
-} Edje_Aspect_Control;
-
-/**
- * @}
- */
-
-/**
- * @defgroup Edje_Object_Geometry_Group Edje Object Geometry
- * @ingroup Edje_Object_Group
- *
- * @brief Functions that deal with object's geometry.
- *
- * By geometry we mean size and position. So in this groups there are
- * functions to manipulate object's geometry or retrieve information
- * about it.
- *
- * Keep in mind that by changing an object's geometry, it may affect
- * the appearance in the screen of the parts inside. Most times
- * that is what you want.
- *
- * @{
- */
 /**
  * @}
  */
@@ -1715,124 +1882,6 @@ typedef enum _Edje_Object_Table_Homogeneous_Mode
 /**
  * @}
  */
-
-/**
- * @defgroup Edje_Object_Text_Class Edje Class: Text
- * @ingroup Edje_Object_Group
- * @brief Functions that deal with Text Classes.
- *
- * Sometimes we want to change the text of two or more parts equally and
- * that's when we use text classes.
- *
- * If one or more parts are assigned with a text class, when we set font
- * attributes to this class will update all these parts with the new font
- * attributes. Setting values to a text class at a process level will affect
- * all parts with that text class, while at object level will affect only
- * the parts inside an specified object.
- *
- * @{
- */
-
-/**
- * @brief Sets the Edje text class.
- *
- * @param text_class The text class name
- * @param font The font name
- * @param size The font size
- *
- * @return @c EINA_TRUE on success, or @c EINA_FALSE on error
- *
- * This function updates all Edje members at the process level which
- * belong to this text class with the new font attributes.
- * If the @p size is 0 then the font size will be kept with the previous size.
- * If the @p size is less then 0 then the font size will be calculated in the
- * percentage. For example, if the @p size is -50, then the font size will be
- * scaled to half of the original size and if the @p size is -10 then the font
- * size will be scaled as much as 0.1x.
- *
- * @see edje_text_class_get().
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI Eina_Bool    edje_text_class_set             (const char *text_class, const char *font, Evas_Font_Size size);
-
-/**
- * @brief Gets the font and the font size from Edje text class.
- *
- * @param text_class The text class name
- * @param font The font name
- * @param size The font size
- *
- * @return @c EINA_TRUE on success, or @c EINA_FALSE on error
- *
- * This function gets the font and the font name from the specified Edje
- * text class. The font string will only be valid until the text class is
- * changed or edje is shut down.
- * @see edje_text_class_set().
- *
- * @since 1.14
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI Eina_Bool    edje_text_class_get             (const char *text_class, const char **font, Evas_Font_Size *size);
-
-/**
- * @brief Deletes the text class.
- *
- * @param text_class The text class name string
- *
- * This function deletes any values at the process level for the
- * specified text class.
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI void         edje_text_class_del             (const char *text_class);
-
-/**
- * @brief Lists text classes.
- *
- * @return A list of text class names (strings). These strings are
- * stringshares and the list must be free()'d by the caller.
- *
- * This function lists all text classes known about by the current
- * process.
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI Eina_List   *edje_text_class_list            (void);
-
-/**
- * @brief Iterate over all active classes of an application.
- *
- * @return an iterator of Edje_Text_Class of the currently active text class
- *
- * This function only iterates over the Edje_Text_Class in use by
- * an application.
- *
- * @since 1.17
- *
- */
-EAPI Eina_Iterator *edje_text_class_active_iterator_new(void);
-
-/**
- * @brief Iterate over all text classes provided by an Edje file.
- *
- * @param f The mapped edje file.
- *
- * @return an iterator of Edje_Text_Class provided by the Edje file.
- *
- * @since 1.17
- *
- */
-EAPI Eina_Iterator *edje_mmap_text_class_iterator_new(Eina_File *f);
 
 /**
  * @}
@@ -1965,6 +2014,129 @@ EAPI Eina_Iterator *edje_size_class_active_iterator_new(void);
  * @endif
  */
 EAPI Eina_Iterator *edje_mmap_size_class_iterator_new(Eina_File *f);
+
+
+/**
+ * @}
+ */
+
+/**
+ * @defgroup Edje_Object_Text_Class Edje Class: Text
+ * @ingroup Edje_Object_Group
+ * @brief Functions that deal with Text Classes.
+ *
+ * Sometimes we want to change the text of two or more parts equally and
+ * that's when we use text classes.
+ *
+ * If one or more parts are assigned with a text class, when we set font
+ * attributes to this class will update all these parts with the new font
+ * attributes. Setting values to a text class at a process level will affect
+ * all parts with that text class, while at object level will affect only
+ * the parts inside an specified object.
+ *
+ * @{
+ */
+
+/**
+ * @brief Sets the Edje text class.
+ *
+ * @param text_class The text class name
+ * @param font The font name
+ * @param size The font size
+ *
+ * @return @c EINA_TRUE on success, or @c EINA_FALSE on error
+ *
+ * This function updates all Edje members at the process level which
+ * belong to this text class with the new font attributes.
+ * If the @p size is 0 then the font size will be kept with the previous size.
+ * If the @p size is less then 0 then the font size will be calculated in the
+ * percentage. For example, if the @p size is -50, then the font size will be
+ * scaled to half of the original size and if the @p size is -10 then the font
+ * size will be scaled as much as 0.1x.
+ *
+ * @see edje_text_class_get().
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI Eina_Bool    edje_text_class_set             (const char *text_class, const char *font, Evas_Font_Size size);
+
+/**
+ * @brief Gets the font and the font size from Edje text class.
+ *
+ * @param text_class The text class name
+ * @param font The font name
+ * @param size The font size
+ *
+ * @return @c EINA_TRUE on success, or @c EINA_FALSE on error
+ *
+ * This function gets the font and the font name from the specified Edje
+ * text class. The font string will only be valid until the text class is
+ * changed or edje is shut down.
+ * @see edje_text_class_set().
+ *
+ * @since 1.14
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI Eina_Bool    edje_text_class_get             (const char *text_class, const char **font, Evas_Font_Size *size);
+
+/**
+ * @brief Deletes the text class.
+ *
+ * @param text_class The text class name string
+ *
+ * This function deletes any values at the process level for the
+ * specified text class.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI void         edje_text_class_del             (const char *text_class);
+
+/**
+ * @brief Lists text classes.
+ *
+ * @return A list of text class names (strings). These strings are
+ * stringshares and the list must be free()'d by the caller.
+ *
+ * This function lists all text classes known about by the current
+ * process.
+ *
+ * @if MOBILE @since_tizen 2.3
+ * @elseif WEARABLE @since_tizen 2.3.1
+ * @endif
+ */
+EAPI Eina_List   *edje_text_class_list            (void);
+
+/**
+ * @brief Iterate over all active classes of an application.
+ *
+ * @return an iterator of Edje_Text_Class of the currently active text class
+ *
+ * This function only iterates over the Edje_Text_Class in use by
+ * an application.
+ *
+ * @since 1.17
+ *
+ */
+EAPI Eina_Iterator *edje_text_class_active_iterator_new(void);
+
+/**
+ * @brief Iterate over all text classes provided by an Edje file.
+ *
+ * @param f The mapped edje file.
+ *
+ * @return an iterator of Edje_Text_Class provided by the Edje file.
+ *
+ * @since 1.17
+ *
+ */
+EAPI Eina_Iterator *edje_mmap_text_class_iterator_new(Eina_File *f);
 
 /**
  * @}
@@ -2321,305 +2493,6 @@ EAPI double       edje_transition_duration_factor_get                  (void);
 /**
  * @}
  */
-
-/**
- * @defgroup Edje_Object_Communication_Interface_Message Edje Communication Interface: Message
- * @ingroup Edje_Object_Group
- *
- * @brief Functions that deal with messages.
- *
- * Edje has two communication interfaces between @b code and @b theme.
- * Signals and messages.
- *
- * Edje messages are one of the communication interfaces between
- * @b code and a given Edje object's @b theme. With messages, one can
- * communicate values like strings, float numbers and integer
- * numbers. Moreover, messages can be identified by integer
- * numbers. See #Edje_Message_Type for the full list of message types.
- *
- * @note Messages must be handled by scripts.
- *
- * @{
- */
-
-/**
- * @brief Processes all queued up edje messages.
- *
- * This function triggers the processing of messages addressed to any
- * (alive) edje objects.
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI void         edje_message_signal_process             (void);
-
-/**
- * @}
- */
-
-/**
- * @defgroup Edje_Audio Edje Audio
- * @ingroup Edje
- *
- * @brief Functions that deal with 3D projection of an 2D object.
- *
- * Perspective is a graphical tool that makes objects represented in 2D
- * look like they have a 3D appearance.
- *
- * Edje allows us to use perspective on any edje object. This group of
- * functions deal with the use of perspective, by creating and configuring
- * a perspective object that must set to a edje object or a canvas,
- * affecting all the objects inside that have no particular perspective
- * set already.
- *
- * @{
- */
-
-/**
- * @brief Creates a new perspective in the given canvas.
- *
- * @param e The given canvas (Evas).
- * @return An @ref Edje_Perspective object for this canvas, or @c NULL on errors.
- *
- * This function creates a perspective object that can be set on an Edje
- * object, or globally to all Edje objects on this canvas.
- *
- * @see edje_perspective_set()
- * @see edje_perspective_free()
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI Edje_Perspective       *edje_perspective_new            (Evas *e);
-/**
- * @brief Deletes the given perspective object.
- *
- * @param ps A valid perspective object, or @c NULL.
- *
- * This function will delete the perspective object. If the perspective
- * effect was being applied to any Edje object or part, this effect won't be
- * applied anymore.
- *
- * @see edje_perspective_new()
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI void                    edje_perspective_free           (Edje_Perspective *ps);
-/**
- * @brief Sets up the transform for this perspective object.
- *
- * This sets the parameters of the perspective transformation. X, Y and Z
- * values are used. The px and py points specify the "infinite distance" point
- * in the 3D conversion (where all lines converge to like when artists draw
- * 3D by hand). The @p z0 value specifies the z value at which there is a 1:1
- * mapping between spatial coordinates and screen coordinates. Any points
- * on this z value will not have their X and Y values modified in the transform.
- * Those further away (Z value higher) will shrink into the distance, and
- * those less than this value will expand and become bigger. The @p foc value
- * determines the "focal length" of the camera. This is in reality the distance
- * between the camera lens plane itself (at or closer than this rendering
- * results are undefined) and the "z0" z value. This allows for some "depth"
- * control and @p foc must be greater than 0.
- *
- * @param ps The perspective object
- * @param px The perspective distance X coordinate
- * @param py The perspective distance Y coordinate
- * @param z0 The "0" z plane value
- * @param foc The focal distance
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI void                    edje_perspective_set            (Edje_Perspective *ps, Evas_Coord px, Evas_Coord py, Evas_Coord z0, Evas_Coord foc);
-/**
- * @brief Makes this perspective object be global for its canvas.
- *
- * @param ps The given perspective object
- * @param global @c EINA_TRUE if the perspective should be global, @c
- * EINA_FALSE otherwise.
- *
- * The canvas which this perspective object is being set as global is the one
- * given as argument upon the object creation (the @p evas parameter on the
- * function @c edje_perspective_new(evas) ).
- *
- * There can be only one global perspective object set per canvas, and if
- * a perspective object is set to global when there was already another
- * global perspective set, the old one will be set as non-global.
- *
- * A global perspective just affects a part if its Edje object doesn't have a
- * perspective object set to it, and if the part doesn't point to another
- * part to be used as perspective.
- *
- * @see edje_object_perspective_set()
- * @see edje_perspective_global_get()
- * @see edje_perspective_new()
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI void                    edje_perspective_global_set     (Edje_Perspective *ps, Eina_Bool global);
-/**
- * @brief Gets whether the given perspective object is global or not.
- *
- * @param ps The given perspective object.
- * @return @c EINA_TRUE if this perspective object is global, @c EINA_FALSE
- * otherwise.
- *
- * @see edje_perspective_global_set()
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI Eina_Bool               edje_perspective_global_get     (const Edje_Perspective *ps);
-/**
- * @brief Gets the global perspective object set for this canvas.
- *
- * @param e The given canvas (Evas).
- * @return The perspective object set as global for this canvas. Or @c NULL
- * if there is no global perspective set and on errors.
- *
- * This function will return the perspective object that was set as global
- * with edje_perspective_global_set().
- *
- * @see edje_perspective_global_set()
- * @see edje_perspective_global_get()
- *
- * @if MOBILE @since_tizen 2.3
- * @elseif WEARABLE @since_tizen 2.3.1
- * @endif
- */
-EAPI const Edje_Perspective *edje_evas_global_perspective_get(const Evas *e);
-/**
- * @}
- */
-
-/**
- * @defgroup Edje_Audio Edje Audio
- * @ingroup Edje_Audio
- *
- * @brief Functions to manipulate audio abilities in edje.
- *
- * Perspective is a graphical tool that makes objects represented in 2D
- * look like they have a 3D appearance.
- *
- * Edje allows us to use perspective on any edje object. This group of
- * functions deal with the use of perspective, by creating and configuring
- * a perspective object that must set to a edje object or a canvas,
- * affecting all the objects inside that have no particular perspective
- * set already.
- *
- * @{
- */
-
-/**
- * Identifiers of Edje message types, which can be sent back and forth
- * code and a given Edje object's theme file/group.
- *
- * @see edje_audio_channel_mute_set()
- * @see edje_audio_channel_mute_get()
- *
- * @since 1.9
- */
-typedef enum _Edje_Channel
-{
-   EDJE_CHANNEL_EFFECT = 0, /**< Standard audio effects */
-   EDJE_CHANNEL_BACKGROUND = 1, /**< Background audio sounds  */
-   EDJE_CHANNEL_MUSIC = 2, /**< Music audio */
-   EDJE_CHANNEL_FOREGROUND = 3, /**< Foreground audio sounds */
-   EDJE_CHANNEL_INTERFACE = 4, /**< Sounds related to the interface */
-   EDJE_CHANNEL_INPUT = 5, /**< Sounds related to regular input */
-   EDJE_CHANNEL_ALERT = 6, /**< Sounds for major alerts */
-   EDJE_CHANNEL_ALL = 7 /**< All audio channels (convenience) */
-} Edje_Channel;
-
-/**
- * @brief Sets the mute state of audio for the process as a whole.
- *
- * @param channel The channel to set the mute state of
- * @param mute The mute state
- *
- * This sets the mute (no output) state of audio for the given channel.
- *
- * @see edje_audio_channel_mute_get()
- *
- * @since 1.9
- *
- * @if MOBILE @since_tizen 3.0
- * @elseif WEARABLE @since_tizen 3.0
- * @endif
- */
-EAPI void edje_audio_channel_mute_set(Edje_Channel channel, Eina_Bool mute);
-
-/**
- * @brief Gets the mute state of the given channel.
- *
- * @param channel The channel to get the mute state of
- * @return The mute state of the channel
- *
- * @see edje_audio_channel_mute_set()
- *
- * @since 1.9
- *
- * @if MOBILE @since_tizen 3.0
- * @elseif WEARABLE @since_tizen 3.0
- * @endif
- */
-EAPI Eina_Bool edje_audio_channel_mute_get(Edje_Channel channel);
-
-/**
- * @brief Gets the part name of an edje part object.
- * @param obj An edje part object
- * @return The name of the part, if the object is an edje part, or @c NULL
- * @note If this function returns @c NULL, @p obj was not an Edje part object
- * @see edje_object_part_object_get()
- * @since 1.10
- *
- * @if MOBILE @since_tizen 3.0
- * @elseif WEARABLE @since_tizen 3.0
- * @endif
- */
-EAPI const char *edje_object_part_object_name_get(const Evas_Object *obj);
-
-#ifdef EFL_BETA_API_SUPPORT
-
-/**
- * @brief Creates scene and root node which contains all 3D parts of edje object.
- * @param obj An edje part object
- * @param root node to collect all 3D parts
- * @param scene
- * @return scene and root node which contains all 3D parts of edje object
- * @note If this function returns @c EINA_FALSE, @p the scene or the root
- * node wasn't made
- * @since 1.18
- */
-EAPI Eina_Bool edje_3d_object_add(Evas_Object *obj, Eo **root_node, Eo *scene);
-
-/**
- * @brief Gets seat data passed to callbacks.
- *
- * @return The seat data for that callback.
- *
- * When a callback is initiated by an input event from a seat, we try to
- * provide seat information with it.
- *
- * Signals fired as programmed responses to these signals will also try
- * to carry the seat data along.
- *
- * This returns an opaque pointer to the seat data.
- *
- * @see edje_object_signal_callback_add() for more on Edje signals.
- * @since 1.21
- */
-EAPI void *edje_object_signal_callback_seat_data_get(void);
-
-#endif
 
 /****************************************************************************************************
  * TIZEN_ONLY(20150716): Add edje_object_part_text_freeze, thaw APIs for freezing cursor movements. *
