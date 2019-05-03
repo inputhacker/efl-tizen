@@ -19,6 +19,7 @@ static void
 _evas_vg_root_node_render_pre(Evas_Object_Protected_Data *vg_pd,
                               Efl_VG *obj EINA_UNUSED,
                               Efl_VG_Base_Data *nd,
+                              void *output, void *context, void *buffer,
                               Ector_Surface *surface,
                               Eina_Matrix3 *ptransform,
                               Ector_Buffer *mask,
@@ -32,7 +33,7 @@ _evas_vg_root_node_render_pre(Evas_Object_Protected_Data *vg_pd,
    EFL_VG_COMPUTE_MATRIX(ctransform, ptransform, nd);
 
    EINA_LIST_FOREACH(pd->children, l, child)
-     _evas_vg_render_pre(vg_pd, child, surface, ctransform, mask, mask_op);
+     _evas_vg_render_pre(vg_pd, child, output, context, buffer, surface, ctransform, mask, mask_op);
 }
 
 static Eina_Bool
