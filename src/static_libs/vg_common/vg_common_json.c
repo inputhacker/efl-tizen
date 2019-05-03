@@ -7,6 +7,23 @@
 
 #ifdef BUILD_VG_LOADER_JSON
 
+#include <rlottie_capi.h>
+
+//FIXME: This enum add temporarily to help understanding of additional code
+//related to masking in prepare_mask.
+//This needs to be formally declared through the eo class.
+typedef enum _EFL_CANVAS_VG_NODE_BLEND_TYPE
+{
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_NONE = 0,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA_INV,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_ADD,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_SUBSTRACT,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_INTERSECT,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_DIFFERENCE
+}EFL_CANVAS_VG_NODE_BLEND_TYPE;
+//
+
 static char*
 _get_key_val(void *key)
 {
@@ -192,6 +209,117 @@ _construct_drawable_nodes(Efl_VG *parent, const LOTLayerNode *layer, int depth E
 }
 
 static void
+_construct_mask_nodes(Efl_VG *parent, LOTMask *mask, int depth EINA_UNUSED)
+{
+   const float *data = mask->mPath.ptPtr;
+   if (!data) return;
+
+   char *key = _get_key_val(mask);
+   Efl_VG *shape = NULL;
+   eo_do(parent, shape = eo_key_data_get(key));
+   if (!shape)
+     {
+        shape = eo_add(EFL_VG_SHAPE_CLASS, parent);
+        eo_do(parent, eo_key_data_set(key, shape));
+     }
+   else
+     eo_do(shape, efl_gfx_shape_reset());
+
+   eo_do(shape, efl_gfx_visible_set(EINA_TRUE));
+
+   eo_do(shape, efl_gfx_shape_reserve(mask->mPath.elmCount, mask->mPath.ptCount));
+
+   for (int i = 0; i < mask->mPath.elmCount; i++)
+     {
+        switch (mask->mPath.elmPtr[i])
+          {
+           case 0:
+              eo_do(shape, efl_gfx_shape_append_move_to(data[0], data[1]));
+              data += 2;
+              break;
+           case 1:
+              eo_do(shape, efl_gfx_shape_append_line_to(data[0], data[1]));
+              data += 2;
+              break;
+           case 2:
+              eo_do(shape, efl_gfx_shape_append_cubic_to(data[0], data[1], data[2], data[3], data[4], data[5]));
+              data += 6;
+              break;
+           case 3:
+              eo_do(shape, efl_gfx_shape_append_close());
+              break;
+           default:
+              ERR("No reserved path type = %d", mask->mPath.elmPtr[i]);
+          }
+     }
+
+   //White color and alpha setting
+   float pa = ((float)mask->mAlpha) / 255;
+   int r = (int) (255.0f * pa);
+   int g = (int) (255.0f * pa);
+   int b = (int) (255.0f * pa);
+   int a = mask->mAlpha;
+   eo_do(shape, efl_gfx_color_set(r, g, b, a));
+}
+
+static void
+_construct_masks(Efl_VG *mtarget, LOTMask *masks, unsigned int mask_cnt, int depth)
+{
+   char *key = NULL;
+   Efl_VG *msource = NULL;
+
+   key = _get_key_val(mtarget);
+   eo_do(mtarget, msource = eo_key_data_get(key));
+   if (!msource)
+     {
+        msource = eo_add(EFL_VG_CONTAINER_CLASS, mtarget);
+        eo_do(mtarget, eo_key_data_set(key, msource));
+     }
+
+   //FIXME : EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA option is temporary
+   //Currently matte alpha implemtnes is same the mask intersect impletment.
+   //It has been implemented as a multiplication calculation.
+   evas_vg_node_mask_set(mtarget, msource, EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA);
+
+   mtarget = msource;
+
+   //Make mask layers
+   for (unsigned int i = 0; i < mask_cnt; i++)
+     {
+        LOTMask *mask = &masks[i];;
+        key = _get_key_val(mask);
+        eo_do(mtarget, msource = eo_key_data_get(key));
+
+        if (!msource)
+          {
+             msource = eo_add(EFL_VG_CONTAINER_CLASS, mtarget);
+             eo_do(mtarget, eo_key_data_set(key, msource));
+          }
+        _construct_mask_nodes(msource, mask, depth + 1);
+
+        EFL_CANVAS_VG_NODE_BLEND_TYPE mask_mode;
+        switch (mask->mMode)
+          {
+           case MaskSubstract:
+              mask_mode = EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_SUBSTRACT;
+              break;
+           case MaskIntersect:
+              mask_mode = EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_INTERSECT;
+              break;
+           case MaskDifference:
+              mask_mode = EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_DIFFERENCE;
+              break;
+           case MaskAdd:
+           default:
+              mask_mode = EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_ADD;
+              break;
+          }
+        evas_vg_node_mask_set(mtarget, msource, mask_mode);
+        mtarget = msource;
+     }
+}
+
+static void
 _update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
 {
    if (!layer->mVisible)
@@ -204,7 +332,9 @@ _update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
    Efl_VG *ptree = NULL;
 
    //Note: We assume that if matte is valid, next layer must be a matte source.
-   LOTMatteType matte = MatteNone;
+   int matte_mode = 0;
+   Efl_VG *mtarget = NULL;
+   LOTLayerNode *mlayer = NULL;
 
    //Is this layer a container layer?
    for (unsigned int i = 0; i < layer->mLayerList.size; i++)
@@ -225,35 +355,54 @@ _update_vg_tree(Efl_VG *root, const LOTLayerNode *layer, int depth EINA_UNUSED)
 #endif
         _update_vg_tree(ctree, clayer, depth+1);
 
-        //TODO: Only valid for MatteAlphaInverse?
-        //TODO: Set this blending option to efl_canvas_vg_node...
-        if (matte != MatteNone)
-           evas_vg_node_mask_set(ptree, ctree, matte);
+        if (matte_mode != 0)
+          {
+             evas_vg_node_mask_set(ptree, ctree, matte_mode);
+             mtarget = ctree;
+          }
+        matte_mode = (int) clayer->mMatte;
 
-        matte = clayer->mMatte;
+        if (clayer->mMaskList.size > 0)
+          {
+             mlayer = clayer;
+             if (!mtarget) mtarget = ctree;
+          }
+
         ptree = ctree;
 
-        //Debug Matte Info
-        switch (matte)
+        //Remap Matte Mode
+        switch (matte_mode)
           {
            case MatteNone:
-           case MatteAlphaInv:
+              matte_mode = 0;
+              break;
            case MatteAlpha:
+              matte_mode = EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA;
+              break;
+           case MatteAlphaInv:
+              matte_mode = EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA_INV;
               break;
            case MatteLuma:
+              matte_mode = 0;
               ERR("TODO: MatteLuma");
               break;
            case MatteLumaInv:
+              matte_mode = 0;
               ERR("TODO: MatteLumaInv");
               break;
            default:
-              ERR("No reserved Matte type = %d", matte);
+              matte_mode = 0;
+              break;
           }
      }
 
    //Construct drawable nodes.
    if (layer->mNodeList.size > 0)
      _construct_drawable_nodes(root, layer, depth);
+
+   //Construct node that have mask.
+   if (mlayer)
+     _construct_masks(mtarget, mlayer->mMaskList.ptr, mlayer->mMaskList.size, depth);
 }
 #endif
 
