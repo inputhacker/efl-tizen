@@ -5,6 +5,22 @@
 
 #define MY_CLASS EFL_VG_CONTAINER_CLASS
 
+//FIXME: This enum add temporarily to help understanding of additional code
+//related to masking in prepare_mask.
+//This needs to be formally declared through the eo class.
+//This is a list of blending supported via efl_canvas_vg_node_mask_set().
+typedef enum _EFL_CANVAS_VG_NODE_BLEND_TYPE
+{
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_NONE = 0,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA_INV,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_ADD,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_SUBSTRACT,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_INTERSECT,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_DIFFERENCE
+}EFL_CANVAS_VG_NODE_BLEND_TYPE;
+//
+
 static void
 _draw_mask(Evas_Object_Protected_Data *obj, Efl_VG_Base *node,
            void *output, void *context, void *buffer)
@@ -47,6 +63,7 @@ _prepare_mask(Evas_Object_Protected_Data *obj,     //vector object
    Efl_VG_Base_Data *nd =
          eo_data_scope_get(mask_obj, EFL_VG_BASE_CLASS);
    if (nd->flags == EFL_GFX_CHANGE_FLAG_NONE) return pd->mask.buffer;
+   uint32_t init_buffer = 0x0;
 
    //1. Mask Size
    Eina_Rect mbound;
@@ -55,7 +72,9 @@ _prepare_mask(Evas_Object_Protected_Data *obj,     //vector object
    mbound.w = obj->cur->geometry.w;
    mbound.h = obj->cur->geometry.h;
 
-//   efl_gfx_path_bounds_get(mask, &mbound);
+   //FIXME: If mask typs is SUBSTRACT or INTERSECT, buffer fills in white color(Full alpha color).
+   if (pd->mask.option == EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_SUBSTRACT || pd->mask.option == EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_INTERSECT)
+     init_buffer = 0xFFFFFFFF;
 
    //2. Reusable ector buffer?
    if (!pd->mask.buffer || (pd->mask.bound.w != mbound.w) ||
@@ -63,7 +82,8 @@ _prepare_mask(Evas_Object_Protected_Data *obj,     //vector object
      {
         if (pd->mask.pixels) free(pd->mask.pixels);
         if (pd->mask.buffer) free(pd->mask.buffer);
-        pd->mask.pixels = calloc(sizeof(uint32_t), mbound.w * mbound.h);
+        pd->mask.pixels = malloc(sizeof(uint32_t) * (mbound.w * mbound.h));
+        memset(pd->mask.pixels, init_buffer, sizeof(uint32_t) * (mbound.w * mbound.h));
         pd->mask.buffer = (Ector_Buffer*) malloc(sizeof(Ector_Buffer));
         pd->mask.buffer->buffer = pd->mask.pixels;
         pd->mask.buffer->w = mbound.w;
@@ -75,13 +95,29 @@ _prepare_mask(Evas_Object_Protected_Data *obj,     //vector object
    else
      {
         if (pd->mask.pixels)
-          memset(pd->mask.pixels, 0x0, sizeof(uint32_t) * mbound.w * mbound.h);
+          memset(pd->mask.pixels, init_buffer, sizeof(uint32_t) * mbound.w * mbound.h);
      }
 
    pd->mask.bound.x = mbound.x;
    pd->mask.bound.y = mbound.y;
 
    if (!pd->mask.buffer) ERR("Mask Buffer is invalid");
+
+   //FIXME: This code means that there is another masking container.
+   if (pd->mask.option >= EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_ADD)
+     {
+        Efl_VG_Container_Data *src_pd = pd;
+        mask = pd->mask.buffer;
+        for (Efl_VG *mask_src = pd->mask_src; mask_src; mask_src = src_pd->mask_src)
+          {
+             Efl_VG_Container_Data *target_pd = NULL;
+             src_pd = eo_data_scope_get(mask_src, MY_CLASS);
+             target_pd = eo_data_scope_get(eina_list_nth(src_pd->mask.target, 0), MY_CLASS);
+             _evas_vg_render_pre(obj, mask_src,
+                                 output, context, buffer, surface,
+                                 ctransform, mask, target_pd->mask.option);
+          }
+     }
 
    //3. Prepare Drawing shapes...
    _evas_vg_render_pre(obj, mask_obj,
@@ -124,12 +160,16 @@ _efl_vg_container_render_pre(Evas_Object_Protected_Data *vg_pd,
    EFL_VG_COMPUTE_MATRIX(ctransform, ptransform, nd);
 
    //Container may have mask source.
-   if (pd->mask_src)
+   //FIXME : _prepare_mask() should only work in cases with matte or main mask.
+   // This condition is valid because the main mask use same type as matte alpha.
+   if (pd->mask_src &&
+       (pd->mask.option == EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA ||
+        pd->mask.option == EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA_INV))
      {
+        mask_op = pd->mask.option;
         mask = _prepare_mask(vg_pd, pd->mask_src,
                              output, context, buffer, surface,
                              ptransform, ctransform, mask, mask_op);
-        mask_op = pd->mask.option;
      }
 
    EINA_LIST_FOREACH(pd->children, l, child)
