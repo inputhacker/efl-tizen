@@ -11,6 +11,21 @@
 
 #include "ector_drawhelper_private.h"
 
+//FIXME: This enum add temporarily to help understanding of additional code
+//related to masking in prepare_mask.
+//This needs to be formally declared through the eo class.
+typedef enum _EFL_CANVAS_VG_NODE_BLEND_TYPE
+{
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_NONE = 0,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA_INV,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_ADD,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_SUBSTRACT,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_INTERSECT,
+   EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_DIFFERENCE
+}EFL_CANVAS_VG_NODE_BLEND_TYPE;
+//
+
 /* alpha from 1 to 256 */
 static inline uint32_t
 draw_mul_256(int a, uint32_t c)
@@ -20,7 +35,7 @@ draw_mul_256(int a, uint32_t c)
 }
 
 static void
-_blend_color_argb(int count, const SW_FT_Span *spans, void *user_data)
+_blend_argb(int count, const SW_FT_Span *spans, void *user_data)
 {
    Span_Data *sd = user_data;
    uint32_t color, *buffer, *target;
@@ -37,12 +52,12 @@ _blend_color_argb(int count, const SW_FT_Span *spans, void *user_data)
      {
          target = buffer + ((pix_stride * spans->y) + spans->x);
          comp_func(target, spans->len, color, spans->coverage);
-        ++spans;
+         ++spans;
      }
 }
 
 static void
-_blend_color_argb_with_maskA(int count, const SW_FT_Span *spans, void *user_data)
+_blend_alpha(int count, const SW_FT_Span *spans, void *user_data)
 {
    Span_Data *sd = user_data;
    const int pix_stride = sd->raster_buffer.stride / 4;
@@ -85,7 +100,7 @@ _blend_color_argb_with_maskA(int count, const SW_FT_Span *spans, void *user_data
 }
 
 static void
-_blend_color_argb_with_maskInvA(int count, const SW_FT_Span *spans, void *user_data)
+_blend_alpha_inv(int count, const SW_FT_Span *spans, void *user_data)
 {
    Span_Data *sd = user_data;
    const int pix_stride = sd->raster_buffer.stride / 4;
@@ -123,6 +138,122 @@ _blend_color_argb_with_maskInvA(int count, const SW_FT_Span *spans, void *user_d
              ++temp;
              ++mtarget;
              ++target;
+          }
+        ++spans;
+     }
+}
+
+static void
+_blend_mask_add(int count, const SW_FT_Span *spans, void *user_data)
+{
+   Span_Data *sd = user_data;
+   Ector_Buffer *mask = sd->mask;
+
+   uint32_t color = ECTOR_MUL4_SYM(sd->color, sd->mul_col);
+   RGBA_Comp_Func_Solid comp_func = ector_comp_func_solid_span_get(sd->op, color);
+   uint32_t *mbuffer = mask->buffer;
+
+   while (count--)
+     {
+        uint32_t *ttarget = alloca(sizeof(uint32_t) * spans->len);
+        memset(ttarget, 0x00, sizeof(uint32_t) * spans->len);
+        uint32_t *mtarget = mbuffer + ((mask->w * spans->y) + spans->x);
+        comp_func(ttarget, spans->len, color, spans->coverage);
+        for (int i = 0; i < spans->len; i++)
+          {
+             double adst = A_VAL(&mtarget[i]) == 0 ? 0 : (double)(A_VAL(&mtarget[i])) / (double)255;
+             double asrc = A_VAL(&ttarget[i]) == 0 ? 0 : (double)(A_VAL(&ttarget[i])) / (double)255;
+             uint32_t aout = (int)(((adst * (1 - asrc)) + asrc) * 255);
+             mtarget[i] = (aout<<24) + (0x00FFFFFF & mtarget[i]);
+          }
+        ++spans;
+     }
+}
+
+static void
+_blend_mask_sub(int count, const SW_FT_Span *spans, void *user_data)
+{
+   Span_Data *sd = user_data;
+   Ector_Buffer *mask = sd->mask;
+
+   uint32_t color = ECTOR_MUL4_SYM(sd->color, sd->mul_col);
+   RGBA_Comp_Func_Solid comp_func = ector_comp_func_solid_span_get(sd->op, color);
+   uint32_t *mtarget = mask->buffer;
+
+   int tsize = sd->raster_buffer.width * sd->raster_buffer.height;
+   uint32_t *tbuffer = alloca(sizeof(uint32_t) * tsize);
+   memset(tbuffer, 0x00, sizeof(uint32_t) * tsize);
+
+   while (count--)
+     {
+        uint32_t *ttarget = tbuffer + ((mask->w  * spans->y) + spans->x);
+        comp_func(ttarget, spans->len, color, spans->coverage);
+        ++spans;
+     }
+
+   for(int i = 0; i < tsize; i++)
+     {
+        double adst = A_VAL(&mtarget[i]) == 0 ? 0 : (double)(A_VAL(&mtarget[i])) / (double)255;
+        double asrc = A_VAL(&tbuffer[i]) == 0 ? 0 : (double)(A_VAL(&tbuffer[i])) / (double)255;
+        uint32_t aout = (int)((adst * (1 - asrc)) * 255);
+        mtarget[i] = (aout<<24) + (0x00FFFFFF & mtarget[i]);
+     }
+}
+
+
+static void
+_blend_mask_ins(int count, const SW_FT_Span *spans, void *user_data)
+{
+   Span_Data *sd = user_data;
+   Ector_Buffer *mask = sd->mask;
+
+   uint32_t color = ECTOR_MUL4_SYM(sd->color, sd->mul_col);
+   RGBA_Comp_Func_Solid comp_func = ector_comp_func_solid_span_get(sd->op, color);
+   uint32_t *mtarget = mask->buffer;
+
+   int tsize = sd->raster_buffer.width * sd->raster_buffer.height;
+   uint32_t *tbuffer = alloca(sizeof(uint32_t) * tsize);
+   memset(tbuffer, 0x00, sizeof(uint32_t) * tsize);
+
+   while (count--)
+     {
+        uint32_t *ttarget = tbuffer + ((mask->w  * spans->y) + spans->x);
+        comp_func(ttarget, spans->len, color, spans->coverage);
+        ++spans;
+     }
+
+   for(int i = 0; i < tsize; i++)
+     {
+        double adst = A_VAL(&mtarget[i]) == 0 ? 0 : (double)(A_VAL(&mtarget[i])) / (double)255;
+        double asrc = A_VAL(&tbuffer[i]) == 0 ? 0 : (double)(A_VAL(&tbuffer[i])) / (double)255;
+        uint32_t aout = (int)((adst * asrc) * 255);
+        mtarget[i] = (aout<<24) + (0x00FFFFFF & mtarget[i]);
+     }
+}
+
+
+static void
+_blend_mask_diff(int count, const SW_FT_Span *spans, void *user_data)
+{
+   Span_Data *sd = user_data;
+   Ector_Buffer *mask = sd->mask;
+
+   uint32_t color = ECTOR_MUL4_SYM(sd->color, sd->mul_col);
+   RGBA_Comp_Func_Solid comp_func = ector_comp_func_solid_span_get(sd->op, color);
+   uint32_t *mbuffer = mask->buffer;
+
+   while (count--)
+     {
+        uint32_t *ttarget = alloca(sizeof(uint32_t) * spans->len);
+        memset(ttarget, 0x00, sizeof(uint32_t) * spans->len);
+        uint32_t *mtarget = mbuffer + ((mask->w * spans->y) + spans->x);
+        comp_func(ttarget, spans->len, color, spans->coverage);
+        for (int i = 0; i < spans->len; i++)
+          {
+             double adst = A_VAL(&mtarget[i]) == 0 ? 0 : (double)(A_VAL(&mtarget[i])) / (double)255;
+             double asrc = A_VAL(&ttarget[i]) == 0 ? 0 : (double)(A_VAL(&ttarget[i])) / (double)255;
+             uint32_t aout = (int)((((1 - adst) * asrc) + ((1 - asrc) * adst)) * 255);
+             mtarget[i] = (aout<<24) + (0x00FFFFFF & mtarget[i]);
           }
         ++spans;
      }
@@ -369,14 +500,32 @@ _adjust_span_fill_methods(Span_Data *spdata)
         case Solid:
           {
              if (spdata->mask)
-                {
-                   if (spdata->mask_op == 2)
-                     spdata->unclipped_blend = &_blend_color_argb_with_maskInvA;
-                   else
-                     spdata->unclipped_blend = &_blend_color_argb_with_maskA;
-                }
+               {
+                  switch (spdata->mask_op)
+                    {
+                     default:
+                     case EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA:
+                        spdata->unclipped_blend = &_blend_alpha;
+                        break;
+                     case EFL_CANVAS_VG_NODE_BLEND_TYPE_ALPHA_INV:
+                        spdata->unclipped_blend = &_blend_alpha_inv;
+                        break;
+                     case EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_ADD:
+                        spdata->unclipped_blend = &_blend_mask_add;
+                        break;
+                     case EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_SUBSTRACT:
+                        spdata->unclipped_blend = &_blend_mask_sub;
+                        break;
+                     case EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_INTERSECT:
+                        spdata->unclipped_blend = &_blend_mask_ins;
+                        break;
+                     case EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_DIFFERENCE:
+                        spdata->unclipped_blend = &_blend_mask_diff;
+                        break;
+                    }
+               }
              else
-                spdata->unclipped_blend = &_blend_color_argb;
+                spdata->unclipped_blend = &_blend_argb;
            }
           break;
         case LinearGradient:
@@ -384,6 +533,10 @@ _adjust_span_fill_methods(Span_Data *spdata)
           spdata->unclipped_blend = &_blend_gradient;
           break;
      }
+
+  //FIXME: Mask and mask case is not use clipping.
+  if (spdata->mask_op >= EFL_CANVAS_VG_NODE_BLEND_TYPE_MASK_ADD)
+     spdata->clip.enabled = EINA_FALSE;
 
    // setup clipping
    if (!spdata->unclipped_blend)
