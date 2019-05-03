@@ -1413,7 +1413,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %defattr(-,root,root,-)
 %license licenses/COPYING.LGPL
 %{_libdir}/libefl.so.*
-%{_datadir}/eolian/include/efl-*1/
 %{_bindir}/efl_debug
 %{_bindir}/efl_debugd
 %exclude /usr/lib*/debug/.build-id/
@@ -1445,6 +1444,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %{_libdir}/cmake/Efl*/
 %{_libdir}/libefl.so
 %{_libdir}/pkgconfig/efl*.pc
+%{_datadir}/eolian/include/efl-*1/
 
 %files -n eina
 %manifest %{name}.manifest
@@ -1549,7 +1549,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %defattr(-,root,root,-)
 %license licenses/COPYING.FTL licenses/COPYING.GPL
 %{_libdir}/libector.so.*
-%{_datadir}/eolian/include/ector-*1/
 
 %files -n ector-devel
 %manifest %{name}.manifest
@@ -1557,6 +1556,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 #%{_includedir}/ector-*1/
 %{_libdir}/libector.so
 %{_libdir}/pkgconfig/ector*.pc
+%{_datadir}/eolian/include/ector-*1/
 
 %files -n evas
 %manifest %{name}.manifest
@@ -1597,7 +1597,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %defattr(-,root,root,-)
 %license licenses/COPYING.BSD
 %{_libdir}/libecore.so.*
-%{_datadir}/eolian/include/ecore-*1/
 %{_datadir}/ecore/checkme
 %exclude %{_libdir}/ecore/system/upower/
 
@@ -1608,6 +1607,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %{_libdir}/libecore.so
 %{_libdir}/pkgconfig/ecore-core.pc
 %{_libdir}/cmake/Ecore*/*.cmake
+%{_datadir}/eolian/include/ecore-*1/
 
 %files -n ecore-audio
 %manifest %{name}.manifest
@@ -1843,7 +1843,6 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %defattr(-,root,root,-)
 %{_libdir}/libeldbus.so.*
 %{_bindir}/eldbus*
-%{_datadir}/eolian/include/eldbus-*1/
 
 
 %if %enable_examples
@@ -1861,6 +1860,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %{_includedir}/eldbus*/
 %{_libdir}/pkgconfig/eldbus*.pc
 %{_libdir}/cmake/Eldbus/*.cmake
+%{_datadir}/eolian/include/eldbus-*1/
 
 %files -n embryo
 %manifest %{name}.manifest
