@@ -404,43 +404,6 @@ _evas_vg_render(Evas_Object_Protected_Data *obj, Evas_VG_Data *vd,
         Efl_VG_Container_Data *cd =
            eo_data_scope_get(node, EFL_VG_CONTAINER_CLASS);
 
-        //Update Mask Image
-        if (cd->mask_src)
-          {
-             Efl_VG_Container_Data *cd2 =
-                eo_data_scope_get(cd->mask_src, EFL_VG_CONTAINER_CLASS);
-
-             if (cd2->mask.buffer && cd2->mask.dirty)
-               {
-                  Ector_Surface *ector = evas_ector_get(obj->layer->evas);
-                  if (!ector) return;
-
-                  obj->layer->evas->engine.func->ector_end(output, context, ector, surface, EINA_FALSE);
-
-                  //Need a better approach.
-                  eo_do(ector,
-                        ector_software_surface_set(cd2->mask.pixels, cd2->mask.bound.w, cd2->mask.bound.h, cd2->mask.bound.w * 4),
-                        ector_surface_reference_point_set(-cd2->mask.bound.x, -cd2->mask.bound.y));
-
-                  //Draw Mask Image.
-                  Efl_VG *child;
-                  Eina_List *l;
-                  EINA_LIST_FOREACH(cd2->children, l, child)
-                    _evas_vg_render(obj, vd, output, context, surface, child,
-                                    clips, EINA_FALSE);
-
-                  cd2->mask.dirty = EINA_FALSE;
-#if 0
-                  FILE *fp = fopen("./test.raw", "w+");
-                  fwrite(cd2->mask.pixels, cd2->mask.bound.w * cd2->mask.bound.h, sizeof(uint32_t), fp);
-                  fclose(fp);
-                  ERR("size = %d x %d", cd2->mask.bound.w, cd2->mask.bound.h);
-#endif
-                  //Restore previous ector context
-                  obj->layer->evas->engine.func->ector_begin(output, context, ector, surface, EINA_FALSE, 0, 0, obj->cur->geometry.w, obj->cur->geometry.h, do_async);
-               }
-          }
-
         if (cd->mask.target) return;
 
         Efl_VG *child;
@@ -485,12 +448,14 @@ _render_to_buffer(Evas_Object_Protected_Data *obj, Evas_VG_Data *pd,
         buffer_created = EINA_TRUE;
      }
 
-   _evas_vg_render_pre(obj, root, ector, NULL, NULL, 0);
-
    //initialize buffer
    context = evas_common_draw_context_new();
    evas_common_draw_context_set_render_op(context, _EVAS_RENDER_COPY);
    evas_common_draw_context_set_color(context, 255, 255, 255, 255);
+   //ector begin - end for drawing mask images.
+   _evas_vg_render_pre(obj, root, output, context, buffer, ector, NULL, NULL, 0);
+
+   //Actual content drawing
    obj->layer->evas->engine.func->ector_begin(output, context, ector, buffer, EINA_TRUE,
                                               0, 0, w, h,
                                               do_async);
@@ -647,7 +612,7 @@ _svg_data_render(Evas_Object_Protected_Data *obj,
         dupe_root = evas_vg_container_add(NULL);
         evas_vg_node_dup(dupe_root, root);
         //1. render pre
-        _evas_vg_render_pre(obj, dupe_root, ector, NULL, NULL, 0);
+        _evas_vg_render_pre(obj, dupe_root, output, context, buffer, ector, NULL, NULL, 0);
         // 2. create surface
         buffer = obj->layer->evas->engine.func->ector_surface_create(output,
                                                                      NULL,
@@ -836,8 +801,8 @@ evas_object_vg_render_pre(Evas_Object *eo_obj,
      {
         // FIXME: handle damage only on changed renderer.
         s = evas_ector_get(obj->layer->evas);
-        if (s)
-          _evas_vg_render_pre(obj, vd->root, s, NULL, NULL, 0);
+        if (vd->root && s)
+          _evas_vg_render_pre(obj, vd->root, NULL, NULL, NULL, s, NULL, NULL, 0);
 
         // FIXME: for now the walking Evas_VG_Node tree doesn't trigger any damage
         // So just forcing it here if necessary

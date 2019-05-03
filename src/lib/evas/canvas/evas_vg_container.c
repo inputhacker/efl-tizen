@@ -5,11 +5,41 @@
 
 #define MY_CLASS EFL_VG_CONTAINER_CLASS
 
+static void
+_draw_mask(Evas_Object_Protected_Data *obj, Efl_VG_Base *node,
+           void *output, void *context, void *buffer)
+{
+   Eina_Bool visible = EINA_FALSE;
+   eo_do(node, visible = efl_gfx_visible_get());
+
+   if (!visible) return;
+
+   if (eo_isa(node, EFL_VG_CONTAINER_CLASS))
+     {
+        Efl_VG_Container_Data *cd =
+           eo_data_scope_get(node, EFL_VG_CONTAINER_CLASS);
+
+        //Draw Mask Image.
+        Efl_VG_Base *child;
+        Eina_List *l;
+        EINA_LIST_FOREACH(cd->children, l, child)
+          _draw_mask(obj, child, output, context, buffer);
+     }
+   else
+     {
+        Efl_VG_Base_Data *nd = eo_data_scope_get(node, EFL_VG_BASE_CLASS);
+        obj->layer->evas->engine.func->ector_renderer_draw(output, context, buffer, nd->renderer, NULL, EINA_FALSE);
+
+     }
+}
+
 static Ector_Buffer *
 _prepare_mask(Evas_Object_Protected_Data *obj,     //vector object
               Efl_VG_Base* mask_obj,
+              void *output, void *context, void *buffer,
               Ector_Surface *surface,
               Eina_Matrix3 *ptransform,
+              Eina_Matrix3 *ctransform,
               Ector_Buffer *mask,
               int mask_op)
 {
@@ -53,10 +83,17 @@ _prepare_mask(Evas_Object_Protected_Data *obj,     //vector object
 
    if (!pd->mask.buffer) ERR("Mask Buffer is invalid");
 
-   pd->mask.dirty = EINA_TRUE;
-
    //3. Prepare Drawing shapes...
-   _evas_vg_render_pre(obj, mask_obj, surface, ptransform, mask, mask_op);
+   _evas_vg_render_pre(obj, mask_obj,
+                       output, context, buffer,
+                       surface,
+                       ptransform, mask, mask_op);
+
+   //4. Generating Mask Image.
+    eo_do(surface,
+       ector_software_surface_set(pd->mask.pixels, pd->mask.bound.w, pd->mask.bound.h, pd->mask.bound.w * 4),
+       ector_surface_reference_point_set(-pd->mask.bound.x, -pd->mask.bound.y));
+   _draw_mask(obj, mask_obj, output, context, buffer);
 
    return pd->mask.buffer;
 }
@@ -65,6 +102,9 @@ static void
 _efl_vg_container_render_pre(Evas_Object_Protected_Data *vg_pd,
                              Efl_VG *obj EINA_UNUSED,
                              Efl_VG_Base_Data *nd,
+                             void *output,
+                             void *context,
+                             void *buffer,
                              Ector_Surface *surface,
                              Eina_Matrix3 *ptransform,
                              Ector_Buffer *mask,
@@ -86,8 +126,9 @@ _efl_vg_container_render_pre(Evas_Object_Protected_Data *vg_pd,
    //Container may have mask source.
    if (pd->mask_src)
      {
-        mask = _prepare_mask(vg_pd, pd->mask_src, surface, ptransform, mask,
-                             mask_op);
+        mask = _prepare_mask(vg_pd, pd->mask_src,
+                             output, context, buffer, surface,
+                             ptransform, ctransform, mask, mask_op);
         mask_op = pd->mask.option;
      }
 
@@ -111,7 +152,7 @@ _efl_vg_container_render_pre(Evas_Object_Protected_Data *vg_pd,
         if (flag & EFL_GFX_CHANGE_FLAG_MATRIX)
           child_nd->flags |= EFL_GFX_CHANGE_FLAG_MATRIX;
 
-        _evas_vg_render_pre(vg_pd, child, surface, ctransform, mask, mask_op);
+        _evas_vg_render_pre(vg_pd, child, output, context, buffer, surface, ctransform, mask, mask_op);
      }
 }
 
