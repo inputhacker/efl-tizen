@@ -1435,7 +1435,7 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %endif
 %endif
 #efl-mono
-%{_libdir}/libeflcustomexportsmono.so*
+%{_libdir}/libeflcustomexportsmono.so.*
 
 %files -n %{name}-devel
 %manifest %{name}.manifest
@@ -1445,6 +1445,8 @@ ldconfig -l %{_libdir}/libelementary.so.1.22.99
 %{_libdir}/libefl.so
 %{_libdir}/pkgconfig/efl*.pc
 %{_datadir}/eolian/include/efl-*1/
+#efl-mono
+%{_libdir}/libeflcustomexportsmono.so
 
 %files -n eina
 %manifest %{name}.manifest
