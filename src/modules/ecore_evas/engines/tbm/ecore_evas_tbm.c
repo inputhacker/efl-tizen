@@ -82,15 +82,44 @@ _ecore_evas_tbm_strcmp(const char *dst, const char *src)
      return EINA_FALSE;
 }
 
+static Evas_Device_Class
+_ecore_evas_tbm_ecore_device_class_to_evas(Ecore_Device_Class cls)
+{
+   switch (cls)
+     {
+        case ECORE_DEVICE_CLASS_NONE:
+          return EVAS_DEVICE_CLASS_NONE;
+        case ECORE_DEVICE_CLASS_SEAT:
+          return EVAS_DEVICE_CLASS_SEAT;
+        case ECORE_DEVICE_CLASS_KEYBOARD:
+          return EVAS_DEVICE_CLASS_KEYBOARD;
+        case ECORE_DEVICE_CLASS_MOUSE:
+          return EVAS_DEVICE_CLASS_MOUSE;
+        case ECORE_DEVICE_CLASS_TOUCH:
+          return EVAS_DEVICE_CLASS_TOUCH;
+        case ECORE_DEVICE_CLASS_PEN:
+          return EVAS_DEVICE_CLASS_PEN;
+        case ECORE_DEVICE_CLASS_WAND:
+          return EVAS_DEVICE_CLASS_WAND;
+        case ECORE_DEVICE_CLASS_GAMEPAD:
+          return EVAS_DEVICE_CLASS_GAMEPAD;
+        default:
+          return EVAS_DEVICE_CLASS_NONE;
+     }
+}
+
 static Eina_Bool
-_ecore_evas_tbm_evas_device_find(Evas *evas, const char *identifier)
+_ecore_evas_tbm_evas_device_find(Evas *evas, const char *identifier, Ecore_Device_Class ecore_cls)
 {
    Eina_List *list, *l;
    Evas_Device *device;
    char *evas_device_description;
+   Evas_Device_Class evas_cls = EVAS_DEVICE_CLASS_NONE;
 
    EINA_SAFETY_ON_NULL_RETURN_VAL(evas, EINA_FALSE);
    EINA_SAFETY_ON_NULL_RETURN_VAL(identifier, EINA_FALSE);
+
+   evas_cls = _ecore_evas_tbm_ecore_device_class_to_evas(ecore_cls);
 
    list = (Eina_List *)evas_device_list(evas, NULL);
    EINA_LIST_FOREACH(list, l, device)
@@ -98,7 +127,8 @@ _ecore_evas_tbm_evas_device_find(Evas *evas, const char *identifier)
         evas_device_description = (char *)evas_device_description_get(device);
         if (!evas_device_description) continue;
 
-        if (_ecore_evas_tbm_strcmp(evas_device_description, identifier))
+        if (_ecore_evas_tbm_strcmp(evas_device_description, identifier) &&
+            evas_device_class_get(device) == evas_cls)
           {
              return EINA_TRUE;
           }
@@ -139,7 +169,7 @@ _ecore_evas_tbm_cb_ecore_device_add(void *data, int type EINA_UNUSED, void *even
    ev = event;
 
    if (ee->prop.window != ev->window) return ECORE_CALLBACK_PASS_ON;
-   if (_ecore_evas_tbm_evas_device_find(ee->evas, ev->identifier)) return ECORE_CALLBACK_PASS_ON;
+   if (_ecore_evas_tbm_evas_device_find(ee->evas, ev->identifier, ev->clas)) return ECORE_CALLBACK_PASS_ON;
 
    seat = _ecore_evas_tbm_default_seat_get(ee->evas);
 
