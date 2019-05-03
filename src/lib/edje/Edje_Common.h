@@ -180,7 +180,7 @@ EAPI void *edje_object_signal_callback_seat_data_get(void);
 
 /**
  * @defgroup Edje_Audio Edje Audio
- * @ingroup Edje_Audio
+ * @ingroup Edje
  *
  * @brief Functions to manipulate audio abilities in edje.
  *
