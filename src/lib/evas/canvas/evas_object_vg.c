@@ -548,9 +548,12 @@ _cache_vg_entry_render(Evas_Object_Protected_Data *obj,
               size_h = h;
           }
 
-        vg_entry = evas_cache_vg_entry_resize(vg_entry, size_w, size_h);
-        evas_cache_vg_entry_del(pd->vg_entry);
-        pd->vg_entry = vg_entry;
+        if ((size_w != vg_entry->w) || (size_h != vg_entry->h))
+          {
+             vg_entry = evas_cache_vg_entry_resize(vg_entry, size_w, size_h);
+             evas_cache_vg_entry_del(pd->vg_entry);
+             pd->vg_entry = vg_entry;
+          }
 
         //update for adjusted pos and size.
         offset_x = w - size_w;
