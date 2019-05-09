@@ -3508,7 +3508,12 @@ _ecore_evas_wl_common_new_internal(const char *disp_name, Ecore_Window parent, i
                     }
                }
 
-             einfo->info.destination_alpha = ee_needs_alpha(ee);
+             /* TIZEN_ONLY(20190509):
+                This might bring less performance at full region rendering,
+                but there are some compatibility issues,
+                Non-background ui apps, overlay video apps has been already... */
+             einfo->info.destination_alpha = EINA_TRUE;
+             //einfo->info.destination_alpha = ee_needs_alpha(ee);
              einfo->info.rotation = ee->rotation;
              einfo->info.depth = 32;
              einfo->info.wl2_win = wdata->win;
